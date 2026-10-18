@@ -26,7 +26,7 @@ test("QueryProfile returns an FProfileUpdate with a full profile the client can 
     assert.equal(change.changeType, "fullProfileUpdate");
     assert.equal(typeof change.profile.version, "string");
     assert.equal(typeof change.profile.wipeNumber, "number");
-    assert.deepEqual(change.profile.stats, { attributes: {} });
+    assert.equal(change.profile.stats.attributes.level, 1);
     assert.deepEqual(change.profile.items, {});
 
     assert.ok(fs.existsSync(path.join(backend.dataDir, "accounts", accountId, "profiles", "profile0.json")));

@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { readJson, writeJson } from "../json-file.js";
+import { addMissingStats } from "./defaults.js";
 
 export function createProfileStore(dataDir) {
   const file = (accountId, profileId) => path.join(dataDir, "accounts", accountId, "profiles", `${profileId}.json`);
@@ -8,7 +9,14 @@ export function createProfileStore(dataDir) {
   return {
     load(accountId, profileId) {
       const target = file(accountId, profileId);
-      if (fs.existsSync(target)) return readJson(target);
+      if (fs.existsSync(target)) {
+        const existing = readJson(target);
+        if (addMissingStats(existing)) {
+          existing.rvn += 1;
+          writeJson(target, existing);
+        }
+        return existing;
+      }
 
       const now = new Date().toISOString();
       const profile = {
@@ -23,6 +31,7 @@ export function createProfileStore(dataDir) {
         stats: { attributes: {} },
         items: {}
       };
+      addMissingStats(profile);
       writeJson(target, profile);
       return profile;
     },
