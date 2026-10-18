@@ -38,7 +38,7 @@ test("QueryProfile returns an FProfileUpdate with a full profile the client can 
   }
 });
 
-test("collection books and theater profiles exist for the Cert build, other profiles do not", async () => {
+test("known profile ids are accepted and unknown ones refused", async () => {
   const backend = await startBackend();
   try {
     const { token, accountId } = await userLogin(backend.port, "CoreTest");
@@ -46,6 +46,7 @@ test("collection books and theater profiles exist for the Cert build, other prof
       assert.equal((await post(backend.port, command(accountId, "QueryProfile", profileId), token, {})).status, 200);
     }
     assert.equal((await post(backend.port, command(accountId, "QueryProfile", "common_core"), token, {})).status, 400);
+    assert.ok(backend.unknownLog("3532353").some((entry) => entry.kind === "profile" && entry.query.profileId === "common_core"));
   } finally {
     backend.close();
   }

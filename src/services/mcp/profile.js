@@ -1,9 +1,8 @@
 import express from "express";
 import { requireAuth, requireOwnAccount } from "../../accounts/auth.js";
-import { getBuild } from "../../builds/detect.js";
-import { buildHasProfile } from "../../builds/data.js";
 import { sendError } from "../../errors.js";
 import { recordUnknown } from "../../log.js";
+import { isKnownProfile } from "../../profiles/ids.js";
 import { fullProfile, trackChanges } from "../../profiles/changes.js";
 import { clientCommands } from "./commands/index.js";
 
@@ -12,9 +11,9 @@ export function profileRoutes({ tokens, profiles, dataDir }) {
 
   router.post("/fortnite/api/game/v2/profile/:accountId/client/:command", requireAuth(tokens), requireOwnAccount, (req, res) => {
     const profileId = String(req.query.profileId ?? "");
-    const build = getBuild(req);
 
-    if (!buildHasProfile(build, profileId)) {
+    if (!isKnownProfile(profileId)) {
+      recordUnknown(dataDir, req, "profile");
       return sendError(res, 400, "errors.com.epicgames.modules.profiles.invalid_profile_id", `Unknown profile ${profileId}`);
     }
 
