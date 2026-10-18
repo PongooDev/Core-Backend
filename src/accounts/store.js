@@ -28,6 +28,10 @@ export function createAccountStore(dataDir) {
       return byId.get(id);
     },
 
+    list() {
+      return [...byId.values()];
+    },
+
     getOrCreate(displayName) {
       let account = byName.get(displayName.toLowerCase());
       if (!account) {

@@ -7,6 +7,10 @@ export function createProfileStore(dataDir) {
   const file = (accountId, profileId) => path.join(dataDir, "accounts", accountId, "profiles", `${profileId}.json`);
 
   return {
+    exists(accountId, profileId) {
+      return fs.existsSync(file(accountId, profileId));
+    },
+
     load(accountId, profileId) {
       const target = file(accountId, profileId);
       if (fs.existsSync(target)) {

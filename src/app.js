@@ -1,5 +1,6 @@
 import express from "express";
 import { createAccountStore } from "./accounts/store.js";
+import { adminRoutes } from "./admin/routes.js";
 import { createTokenStore } from "./accounts/tokens.js";
 import { createProfileStore } from "./profiles/store.js";
 import { requestLog, unknownRoute } from "./log.js";
@@ -54,6 +55,7 @@ export function createApp(config) {
   app.use(friendCodeRoutes(context));
   app.use(friendsRoutes(context));
   app.use(datarouterRoutes(context));
+  app.use(adminRoutes(context));
 
   app.use(unknownRoute(config.dataDir));
   return app;

@@ -10,4 +10,7 @@ server.on("error", (error) => {
   process.exit(1);
 });
 
-server.listen(config.port, () => log("Core", `Listening on port ${config.port}`));
+server.listen(config.port, () => {
+  log("Core", `Listening on port ${config.port}`);
+  log("Core", `Admin panel: http://127.0.0.1:${config.port}/admin`);
+});
