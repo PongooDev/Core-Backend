@@ -18,8 +18,12 @@ test("post-login checks answer the way the Cert client parses them", async () =>
 
     const play = await post(backend.port, `/fortnite/api/game/v2/tryPlayOnPlatform/account/${accountId}?platform=PC`, token);
     assert.equal(play.status, 200);
-    assert.match(play.headers["content-type"], /^application\/json/);
-    assert.equal(play.body, true);
+    assert.doesNotMatch(play.headers["content-type"], /^application\/json/);
+    assert.equal(play.body, "true");
+
+    const features = await get(backend.port, "/fortnite/api/game/v2/enabled_features", token);
+    assert.equal(features.status, 200);
+    assert.deepEqual(features.body, []);
   } finally {
     backend.close();
   }

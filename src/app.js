@@ -21,7 +21,7 @@ export function createApp(config) {
   app.disable("x-powered-by");
 
   app.use(originForm);
-  app.use(requestLog);
+  if (config.requestLog !== false) app.use(requestLog);
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
 

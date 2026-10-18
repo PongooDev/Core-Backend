@@ -10,7 +10,7 @@ export const certUserAgent = "game=Fortnite, engine=UE4, build=++Fortnite+Releas
 
 export async function startBackend() {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-backend-"));
-  const server = await createServer({ dataDir });
+  const server = await createServer({ dataDir, requestLog: false });
   server.listen(0, "127.0.0.1");
   await once(server, "listening");
 
@@ -35,7 +35,10 @@ export function send(options, body) {
       let data = "";
       res.setEncoding("utf8");
       res.on("data", (chunk) => (data += chunk));
-      res.on("end", () => resolve({ status: res.statusCode, headers: res.headers, body: data ? JSON.parse(data) : null }));
+      res.on("end", () => {
+        const json = (res.headers["content-type"] ?? "").startsWith("application/json");
+        resolve({ status: res.statusCode, headers: res.headers, body: data ? (json ? JSON.parse(data) : data) : null });
+      });
     });
     req.on("error", reject);
     req.end(body);
