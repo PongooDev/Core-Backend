@@ -1,4 +1,5 @@
 import express from "express";
+import { requireAuth } from "../../accounts/auth.js";
 import { sendError } from "../../errors.js";
 
 function basicClientId(req) {
@@ -29,7 +30,9 @@ export function oauthRoutes({ accounts, tokens }) {
       case "password": {
         const displayName = String(body.username ?? "").split("@")[0].trim();
         if (!displayName) return invalidGrant(res, "A username is required");
-        return res.json(tokens.issueUser(clientId, accounts.getOrCreate(displayName), "password"));
+        const account = accounts.getOrCreate(displayName);
+        accounts.recordLogin(account);
+        return res.json(tokens.issueUser(clientId, account, "password"));
       }
 
       case "refresh_token": {
@@ -43,6 +46,11 @@ export function oauthRoutes({ accounts, tokens }) {
         return sendError(res, 400, "errors.com.epicgames.account.oauth.unsupported_grant_type",
           `Unsupported grant type: ${body.grant_type}`);
     }
+  });
+
+  router.delete("/account/api/oauth/sessions/kill", requireAuth(tokens), (req, res) => {
+    tokens.kill(req.session, String(req.query.killType ?? ""));
+    res.status(204).end();
   });
 
   return router;

@@ -59,6 +59,19 @@ export function createTokenStore() {
       return entry && entry.expiresAt > Date.now() ? entry : null;
     },
 
+    kill(current, killType) {
+      for (const [token, session] of access) {
+        if (session.accountId !== current.accountId) continue;
+        const sameClient = session.clientId === current.clientId;
+        const isCurrent = token === current.token;
+        const killed =
+          (killType === "OTHERS" && !isCurrent) ||
+          (killType === "ALL_ACCOUNT_CLIENT" && sameClient) ||
+          ((killType === "OTHERS_ACCOUNT_CLIENT" || killType === "OTHERS_ACCOUNT_CLIENT_SERVICE") && sameClient && !isCurrent);
+        if (killed) access.delete(token);
+      }
+    },
+
     find(token) {
       const session = access.get(token);
       if (!session) return null;

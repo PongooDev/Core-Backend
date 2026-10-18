@@ -19,6 +19,10 @@ export function createAccountStore(dataDir) {
     if (fs.existsSync(file)) remember(readJson(file));
   }
 
+  function save(account) {
+    writeJson(path.join(dir, account.id, "account.json"), account);
+  }
+
   return {
     get(id) {
       return byId.get(id);
@@ -28,10 +32,15 @@ export function createAccountStore(dataDir) {
       let account = byName.get(displayName.toLowerCase());
       if (!account) {
         account = { id: crypto.randomBytes(16).toString("hex"), displayName, created: new Date().toISOString() };
-        writeJson(path.join(dir, account.id, "account.json"), account);
+        save(account);
         remember(account);
       }
       return account;
+    },
+
+    recordLogin(account) {
+      account.lastLogin = new Date().toISOString();
+      save(account);
     }
   };
 }

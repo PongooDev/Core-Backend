@@ -78,3 +78,12 @@ export function get(port, path, token) {
   if (token) headers.Authorization = `bearer ${token}`;
   return send({ host: "127.0.0.1", port, path, headers });
 }
+
+export async function userLogin(port, username) {
+  const response = await requestToken(port, { grant_type: "password", username, password: "test" });
+  return { token: response.body.access_token, accountId: response.body.account_id };
+}
+
+export function del(port, path, token) {
+  return send({ host: "127.0.0.1", port, method: "DELETE", path, headers: { "User-Agent": certUserAgent, Authorization: `bearer ${token}` } });
+}
