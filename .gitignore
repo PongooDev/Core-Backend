@@ -1,2 +1,4 @@
 node_modules/
 data/
+tools/extractor/bin/
+tools/extractor/obj/
