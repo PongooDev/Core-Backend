@@ -4262,7 +4262,7 @@
       },
       {
         "quantity": 7,
-        "templateId": "Token:founderspackdailyrewardtoken"
+        "templateId": "DailyRewardScheduleToken:founderspackdailyrewardtoken"
       }
     ],
     "type": "Optional"
@@ -4377,7 +4377,7 @@
       },
       {
         "quantity": 21,
-        "templateId": "Token:founderspackdailyrewardtoken"
+        "templateId": "DailyRewardScheduleToken:founderspackdailyrewardtoken"
       }
     ],
     "type": "Optional"
@@ -4424,7 +4424,7 @@
       },
       {
         "quantity": 14,
-        "templateId": "Token:founderspackdailyrewardtoken"
+        "templateId": "DailyRewardScheduleToken:founderspackdailyrewardtoken"
       },
       {
         "quantity": 1,
@@ -4467,7 +4467,7 @@
       },
       {
         "quantity": 42,
-        "templateId": "Token:founderspackdailyrewardtoken"
+        "templateId": "DailyRewardScheduleToken:founderspackdailyrewardtoken"
       },
       {
         "quantity": 1,
@@ -4534,7 +4534,7 @@
       },
       {
         "quantity": 42,
-        "templateId": "Token:founderspackdailyrewardtoken"
+        "templateId": "DailyRewardScheduleToken:founderspackdailyrewardtoken"
       },
       {
         "quantity": 2,
@@ -11340,10 +11340,6 @@
       {
         "quantity": 1,
         "templateId": "Quest:twinepeaksquest_filler_13_d2"
-      },
-      {
-        "quantity": 0,
-        "templateId": "None"
       }
     ],
     "objectives": [

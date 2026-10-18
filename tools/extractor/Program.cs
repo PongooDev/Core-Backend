@@ -45,10 +45,38 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     }
 }
 
+var items = new SortedDictionary<string, object>(StringComparer.Ordinal);
+var unmapped = new SortedSet<string>(StringComparer.Ordinal);
+foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" && assetTypes.IsItemPath(f.Path)))
+{
+    var gamePath = "/Game/" + file.PathWithoutExtension["FortniteGame/Content/".Length..];
+    var assetName = gamePath.Split('/').Last();
+    if (!provider.TryLoadPackage(file, out var package)) continue;
+    var export = package.GetExports().FirstOrDefault(e => e.Name.Equals(assetName, StringComparison.OrdinalIgnoreCase));
+    if (export is null || export.ExportType == "FortQuestItemDefinition") continue;
+    var profile = ItemClasses.ProfileType(export.ExportType);
+    if (profile is null)
+    {
+        if (export.ExportType.EndsWith("ItemDefinition") || export.ExportType.EndsWith("Type")) unmapped.Add(export.ExportType);
+        continue;
+    }
+    var templateId = assetTypes.TemplateId($"{gamePath}.{export.Name}", export.ExportType, true);
+    if (templateId is null) continue;
+    var properties = JsonNode.Parse(JsonConvert.SerializeObject(export))!["Properties"];
+    items[templateId] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+    {
+        ["class"] = export.ExportType,
+        ["profile"] = profile,
+        ["maxStackSize"] = properties?["MaxStackSize"]?.GetValue<int>() ?? ItemClasses.DefaultMaxStackSize(export.ExportType)
+    };
+}
+
 Directory.CreateDirectory(output);
 var options = new JsonSerializerOptions { WriteIndented = true };
 File.WriteAllText(Path.Combine(output, "quests.json"), JsonSerializer.Serialize(quests, options) + "\n");
-Console.WriteLine($"{quests.Count} quests from {version["BranchName"]}-CL-{version["Changelist"]} into {output}");
+File.WriteAllText(Path.Combine(output, "items.json"), JsonSerializer.Serialize(items, options) + "\n");
+Console.WriteLine($"{quests.Count} quests and {items.Count} items from {version["BranchName"]}-CL-{version["Changelist"]} into {output}");
+if (unmapped.Count > 0) Console.WriteLine($"Skipped item classes with no known profile: {string.Join(", ", unmapped)}");
 return 0;
 
 static object Quest(JsonNode p, AssetTypes assetTypes)
@@ -91,12 +119,106 @@ static List<SortedDictionary<string, object>> Items(JsonNode? items, AssetTypes 
     {
         ["templateId"] = i!["TemplateId"]?.GetValue<string>() ?? assetTypes.TemplateId(AssetPath(i["ItemDefinition"])),
         ["quantity"] = i["Quantity"]?.GetValue<int>() ?? 1
-    }).ToList();
+    }).Where(i => (string)i["templateId"] != "None").ToList();
 
 static string? Enum(JsonNode? value) => value?.GetValue<string>().Split("::").Last();
 
 static string AssetPath(JsonNode? value) =>
     value is JsonObject path ? path["AssetPathName"]!.GetValue<string>() : value!.GetValue<string>();
+
+// Parents from the SDK dump; constructor MaxStackSize defaults read from each class's native constructor.
+static class ItemClasses
+{
+    private static readonly Dictionary<string, string> Parents = new()
+    {
+        ["FortAccountItemDefinition"] = "FortItemDefinition",
+        ["FortWorldItemDefinition"] = "FortItemDefinition",
+        ["FortAccountBuffItemDefinition"] = "FortAccountItemDefinition",
+        ["FortAlterableItemDefinition"] = "FortAccountItemDefinition",
+        ["FortAlterationItemDefinition"] = "FortAccountItemDefinition",
+        ["FortCardPackItemDefinition"] = "FortAccountItemDefinition",
+        ["FortCharacterCosmeticItemDefinition"] = "FortAccountItemDefinition",
+        ["FortCharacterType"] = "FortAccountItemDefinition",
+        ["FortCloudSaveItemDefinition"] = "FortAccountItemDefinition",
+        ["FortCodeTokenItemDefinition"] = "FortAccountItemDefinition",
+        ["FortCollectedResourceItemDefinition"] = "FortAccountItemDefinition",
+        ["FortConsumableAccountItemDefinition"] = "FortAccountItemDefinition",
+        ["FortConversionControlItemDefinition"] = "FortAccountItemDefinition",
+        ["FortCurrencyItemDefinition"] = "FortAccountItemDefinition",
+        ["FortExpeditionItemDefinition"] = "FortAccountItemDefinition",
+        ["FortGameplayModifierItemDefinition"] = "FortAccountItemDefinition",
+        ["FortHomebaseBannerColorItemDefinition"] = "FortAccountItemDefinition",
+        ["FortHomebaseBannerIconItemDefinition"] = "FortAccountItemDefinition",
+        ["FortHomebaseNodeItemDefinition"] = "FortAccountItemDefinition",
+        ["FortPersistentResourceItemDefinition"] = "FortAccountItemDefinition",
+        ["FortQuestItemDefinition"] = "FortAccountItemDefinition",
+        ["FortQuotaItemDefinition"] = "FortAccountItemDefinition",
+        ["FortTokenType"] = "FortAccountItemDefinition",
+        ["FortAccountBuffCreditItemDefinition"] = "FortConsumableAccountItemDefinition",
+        ["FortSchematicItemDefinition"] = "FortAlterableItemDefinition",
+        ["FortWorkerType"] = "FortCharacterType",
+        ["FortDefenderItemDefinition"] = "FortCharacterType",
+        ["FortHeroType"] = "FortWorkerType",
+        ["FortDailyRewardScheduleTokenDefinition"] = "FortTokenType",
+        ["FortOutpostItemDefinition"] = "FortCloudSaveItemDefinition",
+        ["FortDeployableBaseCloudSaveItemDefinition"] = "FortCloudSaveItemDefinition",
+        ["FortAmmoItemDefinition"] = "FortWorldItemDefinition",
+        ["FortBackpackItemDefinition"] = "FortWorldItemDefinition",
+        ["FortBadgeItemDefinition"] = "FortWorldItemDefinition",
+        ["FortConsumableItemDefinition"] = "FortWorldItemDefinition",
+        ["FortEmoteItemDefinition"] = "FortWorldItemDefinition",
+        ["FortGadgetItemDefinition"] = "FortWorldItemDefinition",
+        ["FortIngredientItemDefinition"] = "FortWorldItemDefinition",
+        ["FortMissionItemDefinition"] = "FortWorldItemDefinition",
+        ["FortNeverPersistItemDefinition"] = "FortWorldItemDefinition",
+        ["FortResourceItemDefinition"] = "FortWorldItemDefinition",
+        ["FortWeaponItemDefinition"] = "FortWorldItemDefinition",
+        ["FortBuildingItemDefinition"] = "FortWeaponItemDefinition",
+        ["FortDecoItemDefinition"] = "FortWeaponItemDefinition",
+        ["FortEditToolItemDefinition"] = "FortWeaponItemDefinition",
+        ["FortWeaponMeleeItemDefinition"] = "FortWeaponItemDefinition",
+        ["FortWeaponRangedItemDefinition"] = "FortWeaponItemDefinition",
+        ["FortTrapItemDefinition"] = "FortDecoItemDefinition",
+        ["FortFOBCoreDecoItemDefinition"] = "FortDecoItemDefinition"
+    };
+
+    private static readonly Dictionary<string, int> ConstructorMaxStackSize = new()
+    {
+        ["FortItemDefinition"] = 1,
+        ["FortAccountBuffCreditItemDefinition"] = -1,
+        ["FortAmmoItemDefinition"] = int.MaxValue,
+        ["FortBadgeItemDefinition"] = 25,
+        ["FortCodeTokenItemDefinition"] = 1000,
+        ["FortConsumableAccountItemDefinition"] = -1,
+        ["FortConsumableItemDefinition"] = 999,
+        ["FortCurrencyItemDefinition"] = -1,
+        ["FortDecoItemDefinition"] = 999,
+        ["FortGadgetItemDefinition"] = 999,
+        ["FortIngredientItemDefinition"] = 999,
+        ["FortNeverPersistItemDefinition"] = int.MaxValue,
+        ["FortPersistentResourceItemDefinition"] = -1,
+        ["FortResourceItemDefinition"] = int.MaxValue
+    };
+
+    public static IEnumerable<string> Lineage(string itemClass)
+    {
+        for (var current = itemClass; current is not null; current = Parents.GetValueOrDefault(current))
+            yield return current;
+    }
+
+    // Outposts and deployable bases live in their own profiles, which aren't mapped yet.
+    public static string? ProfileType(string itemClass)
+    {
+        var lineage = Lineage(itemClass).ToList();
+        if (lineage.Contains("FortCloudSaveItemDefinition")) return null;
+        if (lineage.Contains("FortAccountItemDefinition")) return "profile";
+        if (lineage.Contains("FortWorldItemDefinition")) return "theater";
+        return null;
+    }
+
+    public static int DefaultMaxStackSize(string itemClass) =>
+        Lineage(itemClass).Where(ConstructorMaxStackSize.ContainsKey).Select(c => ConstructorMaxStackSize[c]).First();
+}
 
 sealed class AssetTypes
 {
@@ -118,22 +240,41 @@ sealed class AssetTypes
         }
     }
 
-    public string TemplateId(string objectPath)
+    public bool IsItemPath(string filePath)
+    {
+        if (!filePath.StartsWith("FortniteGame/Content/", StringComparison.OrdinalIgnoreCase)) return false;
+        var gamePath = "/Game/" + filePath["FortniteGame/Content/".Length..];
+        return rules.Any(rule => rule.Directories.Any(d => gamePath.StartsWith(d, StringComparison.OrdinalIgnoreCase)));
+    }
+
+    public string TemplateId(string objectPath) => TemplateId(objectPath, null, false)!;
+
+    public string? TemplateId(string objectPath, string? exportClass, bool strict)
     {
         if (cache.TryGetValue(objectPath, out var known)) return known;
 
         var packagePath = objectPath.Split('.')[0];
         var assetName = packagePath.Split('/').Last();
         var file = "FortniteGame/Content/" + packagePath["/Game/".Length..] + ".uasset";
-        var exportClass = provider.TryLoadPackage(file, out var package)
+        exportClass ??= provider.TryLoadPackage(file, out var package)
             ? package.GetExports().FirstOrDefault(e => e.Name.Equals(assetName, StringComparison.OrdinalIgnoreCase))?.ExportType
             : null;
 
+        List<string> lineage = exportClass is null ? [] : ItemClasses.Lineage(exportClass).ToList();
         var candidates = rules
             .Select(rule => (rule, depth: rule.Directories.Where(d => packagePath.StartsWith(d, StringComparison.OrdinalIgnoreCase)).Select(d => d.Length).DefaultIfEmpty(-1).Max()))
             .Where(c => c.depth >= 0)
             .ToList();
-        var match = candidates.Where(c => c.rule.BaseClass == exportClass).OrderByDescending(c => c.depth).Select(c => c.rule).FirstOrDefault();
+        // The asset manager only registers assets whose class derives from the rule's base class.
+        // Rules that share a base class (Token, DailyRewardScheduleToken) are told apart by the class name.
+        var match = candidates
+            .Where(c => lineage.Contains(c.rule.BaseClass))
+            .OrderBy(c => lineage.IndexOf(c.rule.BaseClass))
+            .ThenByDescending(c => exportClass == $"Fort{c.rule.Type}Definition" || exportClass == $"Fort{c.rule.Type}ItemDefinition")
+            .ThenByDescending(c => c.depth)
+            .Select(c => c.rule)
+            .FirstOrDefault();
+        if (match.Type is null && strict) return null;
         if (match.Type is null)
             match = candidates.OrderByDescending(c => c.depth).Select(c => c.rule).FirstOrDefault();
         if (match.Type is null)
