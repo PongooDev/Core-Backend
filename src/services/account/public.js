@@ -23,5 +23,9 @@ export function publicAccountRoutes({ accounts, tokens }) {
     res.json([]);
   });
 
+  router.get("/account/api/epicdomains/ssodomains", (req, res) => {
+    res.json([]);
+  });
+
   return router;
 }

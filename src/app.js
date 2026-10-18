@@ -5,6 +5,8 @@ import { requestLog, unknownRoute } from "./log.js";
 import { originForm } from "./proxy.js";
 import { oauthRoutes } from "./services/account/oauth.js";
 import { publicAccountRoutes } from "./services/account/public.js";
+import { eulaRoutes } from "./services/eulatracking/agreements.js";
+import { accessRoutes } from "./services/fortnite/access.js";
 import { cloudStorageRoutes } from "./services/fortnite/cloudstorage.js";
 import { versionRoutes } from "./services/fortnite/version.js";
 import { lightswitchRoutes } from "./services/lightswitch/status.js";
@@ -28,6 +30,8 @@ export function createApp(config) {
   app.use(lightswitchRoutes(context));
   app.use(versionRoutes(context));
   app.use(cloudStorageRoutes(context));
+  app.use(eulaRoutes(context));
+  app.use(accessRoutes(context));
 
   app.use(unknownRoute(config.dataDir));
   return app;

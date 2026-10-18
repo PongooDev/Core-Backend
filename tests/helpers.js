@@ -87,3 +87,10 @@ export async function userLogin(port, username) {
 export function del(port, path, token) {
   return send({ host: "127.0.0.1", port, method: "DELETE", path, headers: { "User-Agent": certUserAgent, Authorization: `bearer ${token}` } });
 }
+
+export function post(port, path, token, body) {
+  const headers = { "User-Agent": certUserAgent };
+  if (token) headers.Authorization = `bearer ${token}`;
+  if (body !== undefined) headers["Content-Type"] = "application/json";
+  return send({ host: "127.0.0.1", port, method: "POST", path, headers }, body === undefined ? undefined : JSON.stringify(body));
+}

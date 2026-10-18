@@ -11,3 +11,11 @@ export function requireAuth(tokens) {
     next();
   };
 }
+
+export function requireOwnAccount(req, res, next) {
+  if (req.session.accountId !== req.params.accountId) {
+    return sendError(res, 403, "errors.com.epicgames.common.missing_permission",
+      "This token cannot act for that account");
+  }
+  next();
+}
