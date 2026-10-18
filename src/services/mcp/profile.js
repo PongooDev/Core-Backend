@@ -27,8 +27,9 @@ export function profileRoutes({ tokens, profiles, dataDir }) {
     const profile = profiles.load(req.params.accountId, profileId);
     const baseRevision = profile.rvn;
     const tracker = trackChanges(profile);
+    const notifications = [];
 
-    command({ req, profile, tracker, profiles });
+    command({ req, profile, tracker, profiles, notifications });
 
     if (tracker.changes.length) {
       profile.rvn += 1;
@@ -41,14 +42,16 @@ export function profileRoutes({ tokens, profiles, dataDir }) {
       ? tracker.changes
       : [{ changeType: "fullProfileUpdate", profile: fullProfile(profile) }];
 
-    res.json({
+    const update = {
       profileRevision: profile.rvn,
       profileId,
       profileChangesBaseRevision: baseRevision,
       profileChanges,
       profileCommandRevision: profile.commandRevision,
       serverTime: new Date().toISOString()
-    });
+    };
+    if (notifications.length) update.notifications = notifications;
+    res.json(update);
   });
 
   return router;
