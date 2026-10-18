@@ -1,11 +1,63 @@
+import crypto from "node:crypto";
+import fs from "node:fs";
+import path from "node:path";
 import express from "express";
-import { requireAuth } from "../../accounts/auth.js";
+import { requireAuth, requireOwnAccount } from "../../accounts/auth.js";
+import { sendError } from "../../errors.js";
+
+const validFilename = /^[A-Za-z0-9._-]{1,128}$/;
 
 export function cloudStorageRoutes({ tokens }) {
   const router = express.Router();
 
   router.get("/fortnite/api/cloudstorage/system", requireAuth(tokens), (req, res) => {
     res.json([]);
+  });
+
+  return router;
+}
+
+export function userCloudStorageRoutes({ tokens, dataDir }) {
+  const router = express.Router();
+  const base = "/fortnite/api/cloudstorage/user/:accountId";
+  const folder = (accountId) => path.join(dataDir, "accounts", accountId, "cloudstorage");
+
+  function checkFilename(req, res, next) {
+    if (!validFilename.test(req.params.filename) || req.params.filename.startsWith(".")) {
+      return sendError(res, 400, "errors.com.epicgames.cloudstorage.invalid_filename", "Invalid file name");
+    }
+    req.file = path.join(folder(req.params.accountId), req.params.filename);
+    next();
+  }
+
+  router.use(base, requireAuth(tokens));
+
+  router.get(base, requireOwnAccount, (req, res) => {
+    const dir = folder(req.params.accountId);
+    const files = fs.existsSync(dir) ? fs.readdirSync(dir).filter((name) => validFilename.test(name)) : [];
+    res.json(files.map((filename) => {
+      const data = fs.readFileSync(path.join(dir, filename));
+      return { filename, hash: crypto.createHash("sha1").update(data).digest("hex"), length: data.length };
+    }));
+  });
+
+  router.get(`${base}/:filename`, requireOwnAccount, checkFilename, (req, res) => {
+    if (!fs.existsSync(req.file)) {
+      return sendError(res, 404, "errors.com.epicgames.cloudstorage.file_not_found", `${req.params.filename} not found`);
+    }
+    res.type("application/octet-stream").send(fs.readFileSync(req.file));
+  });
+
+  router.put(`${base}/:filename`, requireOwnAccount, checkFilename, express.raw({ type: () => true, limit: "16mb" }), (req, res) => {
+    fs.mkdirSync(path.dirname(req.file), { recursive: true });
+    fs.writeFileSync(`${req.file}.tmp`, Buffer.isBuffer(req.body) ? req.body : Buffer.alloc(0));
+    fs.renameSync(`${req.file}.tmp`, req.file);
+    res.status(204).end();
+  });
+
+  router.delete(`${base}/:filename`, requireOwnAccount, checkFilename, (req, res) => {
+    fs.rmSync(req.file, { force: true });
+    res.status(204).end();
   });
 
   return router;

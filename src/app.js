@@ -7,14 +7,15 @@ import { oauthRoutes } from "./services/account/oauth.js";
 import { publicAccountRoutes } from "./services/account/public.js";
 import { eulaRoutes } from "./services/eulatracking/agreements.js";
 import { accessRoutes } from "./services/fortnite/access.js";
-import { cloudStorageRoutes } from "./services/fortnite/cloudstorage.js";
+import { cloudStorageRoutes, userCloudStorageRoutes } from "./services/fortnite/cloudstorage.js";
 import { versionRoutes } from "./services/fortnite/version.js";
 import { lightswitchRoutes } from "./services/lightswitch/status.js";
 
 export function createApp(config) {
   const context = {
     accounts: createAccountStore(config.dataDir),
-    tokens: createTokenStore()
+    tokens: createTokenStore(),
+    dataDir: config.dataDir
   };
 
   const app = express();
@@ -22,6 +23,7 @@ export function createApp(config) {
 
   app.use(originForm);
   if (config.requestLog !== false) app.use(requestLog);
+  app.use(userCloudStorageRoutes(context));
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
 
