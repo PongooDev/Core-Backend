@@ -9,9 +9,11 @@ import { publicAccountRoutes } from "./services/account/public.js";
 import { eulaRoutes } from "./services/eulatracking/agreements.js";
 import { accessRoutes } from "./services/fortnite/access.js";
 import { cloudStorageRoutes, userCloudStorageRoutes } from "./services/fortnite/cloudstorage.js";
+import { receiptRoutes } from "./services/fortnite/receipts.js";
 import { versionRoutes } from "./services/fortnite/version.js";
 import { worldRoutes } from "./services/fortnite/world.js";
 import { lightswitchRoutes } from "./services/lightswitch/status.js";
+import { sessionRoutes } from "./services/matchmaking/sessions.js";
 import { profileRoutes } from "./services/mcp/profile.js";
 
 export function createApp(config) {
@@ -40,6 +42,8 @@ export function createApp(config) {
   app.use(accessRoutes(context));
   app.use(profileRoutes(context));
   app.use(worldRoutes(context));
+  app.use(receiptRoutes(context));
+  app.use(sessionRoutes(context));
 
   app.use(unknownRoute(config.dataDir));
   return app;
