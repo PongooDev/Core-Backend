@@ -6,7 +6,7 @@ import path from "node:path";
 import tls from "node:tls";
 import { createServer } from "../src/server.js";
 
-export const certUserAgent = "Fortnite/++Fortnite+Release-Cert-CL-3532353 Windows/10.0";
+export const certUserAgent = "game=Fortnite, engine=UE4, build=++Fortnite+Release-Cert-CL-3532353";
 
 export async function startBackend() {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-backend-"));
@@ -66,4 +66,15 @@ export function requestToken(port, form, clientId = certClient) {
       "User-Agent": certUserAgent
     }
   }, body);
+}
+
+export async function clientToken(port) {
+  const response = await requestToken(port, { grant_type: "client_credentials", token_type: "eg1" });
+  return response.body.access_token;
+}
+
+export function get(port, path, token) {
+  const headers = { "User-Agent": certUserAgent };
+  if (token) headers.Authorization = `bearer ${token}`;
+  return send({ host: "127.0.0.1", port, path, headers });
 }
