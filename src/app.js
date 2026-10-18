@@ -11,6 +11,7 @@ import { eulaRoutes } from "./services/eulatracking/agreements.js";
 import { accessRoutes } from "./services/fortnite/access.js";
 import { chatRoutes } from "./services/fortnite/chat.js";
 import { cloudStorageRoutes, userCloudStorageRoutes } from "./services/fortnite/cloudstorage.js";
+import { friendCodeRoutes } from "./services/fortnite/friendcodes.js";
 import { receiptRoutes } from "./services/fortnite/receipts.js";
 import { storefrontRoutes } from "./services/fortnite/storefront.js";
 import { versionRoutes } from "./services/fortnite/version.js";
@@ -50,6 +51,7 @@ export function createApp(config) {
   app.use(sessionRoutes(context));
   app.use(storefrontRoutes(context));
   app.use(chatRoutes(context));
+  app.use(friendCodeRoutes(context));
   app.use(friendsRoutes(context));
   app.use(datarouterRoutes(context));
 

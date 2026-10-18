@@ -20,6 +20,7 @@ test("frontend requests answer in the shapes the Cert client parses", async () =
     assert.deepEqual((await get(backend.port, `/friends/api/public/friends/${accountId}?includePending=true`, token)).body, []);
     assert.deepEqual((await get(backend.port, `/friends/api/public/blocklist/${accountId}`, token)).body, { blockedUsers: [] });
     assert.deepEqual((await get(backend.port, `/friends/api/public/list/fortnite/${accountId}/recentPlayers`, token)).body, []);
+    assert.deepEqual((await get(backend.port, `/fortnite/api/game/v2/friendcodes/${accountId}/epic`, token)).body, []);
 
     const analytics = await send({
       host: "127.0.0.1",
@@ -44,6 +45,7 @@ test("GetMcpTimeForLogin returns the server time as the primary notification", a
     assert.equal(time.status, 200);
     const [notification] = time.body.notifications;
     assert.equal(notification.primary, true);
+    assert.equal(typeof notification.type, "string");
     assert.ok(Math.abs(Date.parse(notification.mcpTime) - Date.now()) < 5000);
 
     const quests = await post(backend.port, path("ClientQuestLogin"), token, {});
