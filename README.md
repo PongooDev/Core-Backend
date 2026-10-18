@@ -56,9 +56,13 @@ Core-Backend follows Core V2: one build at a time, each build fully working befo
    npm start
    ```
 
-The backend listens on port `5595`. Fortnite needs a redirect that sends its requests to `127.0.0.1:5595`.
+The backend listens on port `5595`. Fortnite needs a redirect that sends its requests to `127.0.0.1:5595`. The Cert
+build also works without one when launched with `-epicportal -httpproxy=127.0.0.1:5595`.
 
-Right now the backend only records what the client asks for. Login and profiles are next.
+The Cert build logs in, reaches the Save the World frontend, and gets quest rewards and daily login rewards.
+
+The admin panel is at `http://127.0.0.1:5595/admin`, only from the same PC. It lists accounts and can skip the
+tutorial, which needs a gameserver otherwise.
 
 To run the tests:
 
@@ -68,12 +72,13 @@ npm test
 
 ## Config options
 
-Core-Backend reads an optional `config.json` next to `package.json`.
+Core-Backend reads an optional `config.json` from the folder it is started in. Command-line options override it.
 
-| Option | Default | Purpose |
-| --- | ---: | --- |
-| `port` | `5595` | Port the backend listens on. |
-| `dataDir` | `data` | Folder for accounts, profiles and logs. |
+| Option | Command line | Default | Purpose |
+| --- | --- | ---: | --- |
+| `port` | `--port <n>` | `5595` | Port the backend listens on (`0` picks a free one; the log says which). |
+| `dataDir` | `--data <folder>` | `data` | Folder for accounts, profiles, tokens and logs. |
+| | `--config <file>` | `config.json` | Config file to read. |
 
 Example:
 
@@ -82,6 +87,9 @@ Example:
   "port": 5595
 }
 ```
+
+From a launcher: `node src/main.js --port 5595 --data <folder>`. It never prompts, prints `Listening on port <n>` when
+ready, exits with code 1 if the port is taken and 2 for bad options, and shuts down cleanly on Ctrl+C or SIGTERM.
 
 Requests the backend doesn't handle yet are saved to `data/logs/unknown/<CL>.jsonl`, one file per Fortnite build.
 
