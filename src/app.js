@@ -1,13 +1,25 @@
 import express from "express";
+import { createAccountStore } from "./accounts/store.js";
+import { createTokenStore } from "./accounts/tokens.js";
 import { requestLog, unknownRoute } from "./log.js";
+import { originForm } from "./proxy.js";
+import { oauthRoutes } from "./services/account/oauth.js";
 
 export function createApp(config) {
+  const context = {
+    accounts: createAccountStore(config.dataDir),
+    tokens: createTokenStore()
+  };
+
   const app = express();
   app.disable("x-powered-by");
 
+  app.use(originForm);
   app.use(requestLog);
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
+
+  app.use(oauthRoutes(context));
 
   app.use(unknownRoute(config.dataDir));
   return app;

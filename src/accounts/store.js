@@ -1,0 +1,37 @@
+import crypto from "node:crypto";
+import fs from "node:fs";
+import path from "node:path";
+import { readJson, writeJson } from "../json-file.js";
+
+export function createAccountStore(dataDir) {
+  const dir = path.join(dataDir, "accounts");
+  const byId = new Map();
+  const byName = new Map();
+
+  function remember(account) {
+    byId.set(account.id, account);
+    byName.set(account.displayName.toLowerCase(), account);
+  }
+
+  fs.mkdirSync(dir, { recursive: true });
+  for (const id of fs.readdirSync(dir)) {
+    const file = path.join(dir, id, "account.json");
+    if (fs.existsSync(file)) remember(readJson(file));
+  }
+
+  return {
+    get(id) {
+      return byId.get(id);
+    },
+
+    getOrCreate(displayName) {
+      let account = byName.get(displayName.toLowerCase());
+      if (!account) {
+        account = { id: crypto.randomBytes(16).toString("hex"), displayName, created: new Date().toISOString() };
+        writeJson(path.join(dir, account.id, "account.json"), account);
+        remember(account);
+      }
+      return account;
+    }
+  };
+}

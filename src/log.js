@@ -9,12 +9,19 @@ export function log(category, message) {
 }
 
 export function requestLog(req, res, next) {
-  res.on("finish", () => log("HTTP", `${res.statusCode} ${req.method} ${req.originalUrl}`));
+  res.on("finish", () => log("HTTP", `${res.statusCode} ${req.method} ${req.get("host") ?? ""}${req.originalUrl}`));
   next();
 }
 
 function normalizePath(urlPath) {
   return urlPath.replace(/\/[0-9a-f]{32}(?=\/|$)/gi, "/:id");
+}
+
+function describeAuth(header) {
+  if (!header) return undefined;
+  const [scheme, value = ""] = header.split(" ");
+  if (scheme.toLowerCase() !== "basic") return scheme;
+  return `${scheme} ${Buffer.from(value, "base64").toString("utf8").split(":")[0]}:<redacted>`;
 }
 
 function redact(body) {
@@ -31,9 +38,15 @@ export function unknownRoute(dataDir) {
       time: new Date().toISOString(),
       build,
       method: req.method,
+      host: req.get("host"),
       path: normalizePath(req.path),
       url: req.originalUrl,
       query: req.query,
+      headers: {
+        authorization: describeAuth(req.get("authorization")),
+        contentType: req.get("content-type"),
+        userAgent: req.get("user-agent")
+      },
       body: redact(req.body)
     };
 
