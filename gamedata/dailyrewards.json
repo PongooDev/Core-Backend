@@ -1,0 +1,2323 @@
+[
+  {
+    "name": "Default",
+    "rewards": [
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": true,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost"
+      },
+      {
+        "major": false,
+        "quantity": 400,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost_gift"
+      },
+      {
+        "major": false,
+        "quantity": 5,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_custom_firecracker_r"
+      },
+      {
+        "major": false,
+        "quantity": 300,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_defender_r"
+      },
+      {
+        "major": false,
+        "quantity": 300,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost_gift"
+      },
+      {
+        "major": true,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_vr"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 300,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 500,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 300,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 4,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 400,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "ConsumableAccountItem:smallxpboost"
+      },
+      {
+        "major": false,
+        "quantity": 400,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 500,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 6,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 300,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost_gift"
+      },
+      {
+        "major": true,
+        "quantity": 150,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 3,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 3,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 9,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 3,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 300,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost_gift"
+      },
+      {
+        "major": true,
+        "quantity": 150,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 3,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 3,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 9,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 3,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 300,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost_gift"
+      },
+      {
+        "major": true,
+        "quantity": 150,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 3,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 3,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 9,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 3,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 800,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost_gift"
+      },
+      {
+        "major": true,
+        "quantity": 150,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 3,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 3,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 9,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 3,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 300,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost_gift"
+      },
+      {
+        "major": true,
+        "quantity": 150,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 3,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 3,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 9,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 3,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 300,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost_gift"
+      },
+      {
+        "major": true,
+        "quantity": 150,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 3,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 3,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 9,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 3,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 300,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost_gift"
+      },
+      {
+        "major": true,
+        "quantity": 150,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 3,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 3,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 9,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 3,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 800,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost_gift"
+      },
+      {
+        "major": true,
+        "quantity": 150,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 3,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 3,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 9,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 3,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 300,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost_gift"
+      },
+      {
+        "major": true,
+        "quantity": 150,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 3,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 3,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 9,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 3,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 300,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost_gift"
+      },
+      {
+        "major": true,
+        "quantity": 150,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 3,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 3,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 9,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 3,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 300,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "ConsumableAccountItem:smallxpboost_gift"
+      },
+      {
+        "major": true,
+        "quantity": 150,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 3,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 3,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 9,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:heroxp"
+      },
+      {
+        "major": false,
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:personnelxp"
+      },
+      {
+        "major": false,
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      },
+      {
+        "major": false,
+        "quantity": 200,
+        "templateId": "AccountResource:schematicxp"
+      },
+      {
+        "major": false,
+        "quantity": 3,
+        "templateId": "AccountResource:reagent_c_t01"
+      },
+      {
+        "major": true,
+        "quantity": 2000,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  {
+    "name": "FoundersPackDailyRewardToken",
+    "rewards": [
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": true,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_event_founders"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": true,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_event_founders"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": true,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_event_founders"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": true,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_event_founders"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": true,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_event_founders"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": true,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_event_founders"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": true,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_event_founders"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": true,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_event_founders"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": true,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_event_founders"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": true,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_event_founders"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": true,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_event_founders"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": true,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_event_founders"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": true,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_event_founders"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": true,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_event_founders"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": true,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_event_founders"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": true,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_event_founders"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": true,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_event_founders"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": false,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze"
+      },
+      {
+        "major": true,
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_event_founders"
+      }
+    ],
+    "token": "DailyRewardScheduleToken:founderspackdailyrewardtoken"
+  }
+]

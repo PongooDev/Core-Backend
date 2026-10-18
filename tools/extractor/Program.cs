@@ -71,11 +71,40 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     };
 }
 
+// The client calls the schedule without a token "Default" and looks rows up by the name "%d".
+var dailyRewards = new List<SortedDictionary<string, object>>();
+if (!provider.TryLoadPackage("FortniteGame/Content/Balance/DefaultGameData.uasset", out var gameDataPackage))
+    throw new InvalidOperationException("DefaultGameData not found");
+var gameData = JsonNode.Parse(JsonConvert.SerializeObject(gameDataPackage.GetExports().First(e => e.ExportType == "FortGameData")))!;
+foreach (var schedule in gameData["Properties"]?["DailyRewardSchedules"]?.AsArray() ?? [])
+{
+    var tokenPath = schedule!["EnablingToken"] is null ? "" : AssetPath(schedule["EnablingToken"]);
+    var tablePath = schedule["Rewards"]!["ObjectPath"]!.GetValue<string>().Split('.')[0];
+    if (!provider.TryLoadPackage(tablePath + ".uasset", out var tablePackage)) throw new InvalidOperationException($"{tablePath} not found");
+    var rows = JsonNode.Parse(JsonConvert.SerializeObject(tablePackage.GetExports().First(e => e.ExportType == "DataTable")))!["Rows"]!.AsObject();
+    if (!rows.Select(r => r.Key).OrderBy(int.Parse).SequenceEqual(Enumerable.Range(0, rows.Count).Select(i => i.ToString())))
+        throw new InvalidOperationException($"{tablePath} rows are not named 0..{rows.Count - 1}");
+
+    var entry = new SortedDictionary<string, object>(StringComparer.Ordinal)
+    {
+        ["name"] = tokenPath is "" or "None" ? "Default" : tokenPath.Split('/').Last().Split('.').Last(),
+        ["rewards"] = rows.OrderBy(r => int.Parse(r.Key)).Select(r => new SortedDictionary<string, object>(StringComparer.Ordinal)
+        {
+            ["templateId"] = assetTypes.TemplateId(AssetPath(r.Value!["ItemDefinition"])),
+            ["quantity"] = r.Value["ItemCount"]?.GetValue<int>() ?? 1,
+            ["major"] = r.Value["bIsMajorReward"]?.GetValue<bool>() ?? false
+        }).ToList()
+    };
+    if (tokenPath is not ("" or "None")) entry["token"] = assetTypes.TemplateId(tokenPath);
+    dailyRewards.Add(entry);
+}
+
 Directory.CreateDirectory(output);
 var options = new JsonSerializerOptions { WriteIndented = true };
 File.WriteAllText(Path.Combine(output, "quests.json"), JsonSerializer.Serialize(quests, options) + "\n");
 File.WriteAllText(Path.Combine(output, "items.json"), JsonSerializer.Serialize(items, options) + "\n");
-Console.WriteLine($"{quests.Count} quests and {items.Count} items from {version["BranchName"]}-CL-{version["Changelist"]} into {output}");
+File.WriteAllText(Path.Combine(output, "dailyrewards.json"), JsonSerializer.Serialize(dailyRewards, options) + "\n");
+Console.WriteLine($"{quests.Count} quests, {items.Count} items and {dailyRewards.Count} daily reward schedules from {version["BranchName"]}-CL-{version["Changelist"]} into {output}");
 if (unmapped.Count > 0) Console.WriteLine($"Skipped item classes with no known profile: {string.Join(", ", unmapped)}");
 return 0;
 
