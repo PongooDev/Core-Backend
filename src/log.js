@@ -29,29 +29,33 @@ function redact(body) {
   return { ...body, password: "<redacted>" };
 }
 
-export function unknownRoute(dataDir) {
+export function recordUnknown(dataDir, req, kind = "route") {
   const dir = path.join(dataDir, "logs", "unknown");
+  const build = getBuild(req);
+  const entry = {
+    kind,
+    time: new Date().toISOString(),
+    build,
+    method: req.method,
+    host: req.get("host"),
+    path: normalizePath(req.path),
+    url: req.originalUrl,
+    query: req.query,
+    headers: {
+      authorization: describeAuth(req.get("authorization")),
+      contentType: req.get("content-type"),
+      userAgent: req.get("user-agent")
+    },
+    body: redact(req.body)
+  };
 
+  fs.mkdirSync(dir, { recursive: true });
+  fs.appendFileSync(path.join(dir, `${build}.jsonl`), JSON.stringify(entry) + "\n");
+}
+
+export function unknownRoute(dataDir) {
   return (req, res) => {
-    const build = getBuild(req);
-    const entry = {
-      time: new Date().toISOString(),
-      build,
-      method: req.method,
-      host: req.get("host"),
-      path: normalizePath(req.path),
-      url: req.originalUrl,
-      query: req.query,
-      headers: {
-        authorization: describeAuth(req.get("authorization")),
-        contentType: req.get("content-type"),
-        userAgent: req.get("user-agent")
-      },
-      body: redact(req.body)
-    };
-
-    fs.mkdirSync(dir, { recursive: true });
-    fs.appendFileSync(path.join(dir, `${build}.jsonl`), JSON.stringify(entry) + "\n");
+    recordUnknown(dataDir, req);
     notFound(res, req.originalUrl);
   };
 }

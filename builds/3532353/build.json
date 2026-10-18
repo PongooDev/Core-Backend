@@ -1,0 +1,6 @@
+{
+  "changelist": 3532353,
+  "branch": "++Fortnite+Release-Cert",
+  "engine": "4.16",
+  "profiles": ["profile0", "collection_book_*0", "theater*", "outpost*"]
+}
