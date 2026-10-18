@@ -1,3 +1,4 @@
+import { claimLoginReward } from "./ClaimLoginReward.js";
 import { clientQuestLogin } from "./ClientQuestLogin.js";
 import { getMcpTimeForLogin } from "./GetMcpTimeForLogin.js";
 import { markItemSeen } from "./MarkItemSeen.js";
@@ -8,6 +9,7 @@ import { skipTutorial } from "./SkipTutorial.js";
 import { updateQuestClientObjectives } from "./UpdateQuestClientObjectives.js";
 
 export const clientCommands = {
+  ClaimLoginReward: claimLoginReward,
   ClientQuestLogin: clientQuestLogin,
   GetMcpTimeForLogin: getMcpTimeForLogin,
   MarkItemSeen: markItemSeen,

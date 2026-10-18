@@ -34,14 +34,14 @@ test("HTTPS requests through a CONNECT tunnel get a certificate for their host a
 
     const response = await send({
       createConnection: () => tunnel,
-      path: "/account/api/oauth/verify",
+      path: "/account/api/oauth/unrouted",
       headers: { Host: host, "User-Agent": certUserAgent }
     });
 
     assert.equal(response.status, 404);
     const [entry] = backend.unknownLog("3532353");
     assert.equal(entry.host, host);
-    assert.equal(entry.url, "/account/api/oauth/verify");
+    assert.equal(entry.url, "/account/api/oauth/unrouted");
   } finally {
     backend.close();
   }

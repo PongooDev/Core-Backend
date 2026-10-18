@@ -48,6 +48,11 @@ export function oauthRoutes({ accounts, tokens }) {
     }
   });
 
+  // The client checks its token here every minute; a 401 makes it refresh, and a refused refresh logs it out.
+  router.get("/account/api/oauth/verify", requireAuth(tokens), (req, res) => {
+    res.json(tokens.verify(req.session));
+  });
+
   router.delete("/account/api/oauth/sessions/kill", requireAuth(tokens), (req, res) => {
     tokens.kill(req.session, String(req.query.killType ?? ""));
     res.status(204).end();

@@ -25,7 +25,7 @@ import { profileRoutes } from "./services/mcp/profile.js";
 export function createApp(config) {
   const context = {
     accounts: createAccountStore(config.dataDir),
-    tokens: createTokenStore(),
+    tokens: createTokenStore(config.dataDir),
     profiles: createProfileStore(config.dataDir),
     dataDir: config.dataDir
   };
