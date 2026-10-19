@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import { isChoicePack, rollOptions } from "../cardpacks/contents.js";
 
 const never = "0001-01-01T00:00:00.000Z";
 
@@ -59,4 +60,20 @@ export function addMissingItems(profile) {
     }
   }
   return added;
+}
+
+export function upgradeItems(profile) {
+  let changed = false;
+  for (const item of Object.values(profile.items)) {
+    if (!item.templateId.toLowerCase().startsWith("cardpack:")) continue;
+    if (typeof item.attributes.pack_source !== "string") {
+      item.attributes.pack_source = "Store";
+      changed = true;
+    }
+    if (isChoicePack(item.templateId) && !Array.isArray(item.attributes.options)) {
+      item.attributes.options = rollOptions(item.templateId);
+      changed = true;
+    }
+  }
+  return changed;
 }

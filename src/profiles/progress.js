@@ -63,17 +63,18 @@ export function claimQuest(session, itemId, selectedIndex = -1) {
   setState(tracker, itemId, "Claimed");
 
   const shown = [];
+  const options = { packSource: "Quest" };
   for (const reward of [...(quest.rewards ?? []), ...(quest.selectableRewards?.[selectedIndex] ?? [])]) {
-    shown.push(...grant(session, reward.templateId, reward.quantity).filter((entry) => typeOf(entry.templateId) !== "quest"));
+    shown.push(...grant(session, reward.templateId, reward.quantity, options).filter((entry) => typeOf(entry.templateId) !== "quest"));
   }
-  for (const reward of quest.hiddenRewards ?? []) grant(session, reward.templateId, reward.quantity);
+  for (const reward of quest.hiddenRewards ?? []) grant(session, reward.templateId, reward.quantity, options);
   return shown;
 }
 
 // Every grant goes through here so quests that wait on acquiring an item, or a newly granted quest that is
 // already satisfied, move on in the same command.
-export function grant(session, templateId, quantity) {
-  const granted = grantItem(session, templateId, quantity);
+export function grant(session, templateId, quantity, options = {}) {
+  const granted = grantItem(session, templateId, quantity, options);
   for (const entry of granted) {
     if (entry.profileId !== "profile0") continue;
     if (typeOf(entry.templateId) === "quest") refreshQuest(session, entry.itemId);
@@ -87,6 +88,17 @@ export function itemEvent(session, events, templateId, count) {
   for (const { itemId, item, quest } of activeQuests(tracker)) {
     for (const objective of quest.objectives) {
       if (!events.includes(objective.itemEvent) || !objective.item || !sameId(objective.item, templateId)) continue;
+      setObjective(session, itemId, objective, (item.attributes[`completion_${objective.name}`] ?? 0) + count);
+    }
+  }
+}
+
+export function statEvent(session, type, templateId, count) {
+  const tracker = session.profile("profile0");
+  for (const { itemId, item, quest } of activeQuests(tracker)) {
+    for (const objective of quest.objectives) {
+      const stat = objective.stat && getObjectiveStat(objective.stat);
+      if (stat?.type !== type || (stat.templateId && !sameId(stat.templateId, typeOf(templateId)))) continue;
       setObjective(session, itemId, objective, (item.attributes[`completion_${objective.name}`] ?? 0) + count);
     }
   }

@@ -17,7 +17,7 @@ export function claimLoginReward({ session, notifications }) {
   const items = [];
   const claim = (schedule, index) => {
     const reward = schedule.rewards[index % schedule.rewards.length];
-    items.push(...grant(session, reward.templateId, reward.quantity).map(lootEntry));
+    items.push(...grant(session, reward.templateId, reward.quantity, { packSource: "Schedule" }).map(lootEntry));
   };
 
   if (!(Date.parse(stat.lastClaimDate) >= utcMidnight(now))) {

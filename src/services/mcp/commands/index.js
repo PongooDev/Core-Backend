@@ -6,6 +6,8 @@ import { clientQuestLogin } from "./ClientQuestLogin.js";
 import { getMcpTimeForLogin } from "./GetMcpTimeForLogin.js";
 import { markItemSeen } from "./MarkItemSeen.js";
 import { markNewQuestNotificationSent } from "./MarkNewQuestNotificationSent.js";
+import { openCardPack } from "./OpenCardPack.js";
+import { openCardPackBatch } from "./OpenCardPackBatch.js";
 import { purchaseHomebaseNode } from "./PurchaseHomebaseNode.js";
 import { queryProfile } from "./QueryProfile.js";
 import { refreshExpeditions } from "./RefreshExpeditions.js";
@@ -26,6 +28,8 @@ export const clientCommands = {
   GetMcpTimeForLogin: getMcpTimeForLogin,
   MarkItemSeen: markItemSeen,
   MarkNewQuestNotificationSent: markNewQuestNotificationSent,
+  OpenCardPack: openCardPack,
+  OpenCardPackBatch: openCardPackBatch,
   PurchaseHomebaseNode: purchaseHomebaseNode,
   QueryProfile: queryProfile,
   RefreshExpeditions: refreshExpeditions,

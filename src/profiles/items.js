@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import { isChoicePack, rollOptions } from "../cardpacks/contents.js";
 import { getItem } from "../gamedata/items.js";
 import { log } from "../log.js";
 import { grantQuest } from "./quests.js";
@@ -22,9 +23,16 @@ const unassigned = {
   FortDefenderItemDefinition: { squad_id: "", squad_slot_idx: -1 }
 };
 
-function addItem(tracker, templateId, quantity, info) {
+// The client's llama store only opens packs whose pack_source is Store, CollectionBook, Quest, LevelUp or Schedule;
+// the after-mission rewards screen opens "Mission" packs. Choice packs need their options when granted.
+export function cardPackAttributes(templateId, packSource = "Store") {
+  return isChoicePack(templateId) ? { pack_source: packSource, options: rollOptions(templateId) } : { pack_source: packSource };
+}
+
+function addItem(tracker, templateId, quantity, info, options) {
   const itemId = crypto.randomUUID();
   const attributes = info.profile === "profile" ? { level: 1, item_seen: 0, ...unassigned[info.class] } : {};
+  if (info.class === "FortCardPackItemDefinition") Object.assign(attributes, cardPackAttributes(templateId, options.packSource));
   tracker.addItem(itemId, { templateId, attributes, quantity });
   return itemId;
 }
@@ -38,7 +46,7 @@ function unlockCollectionBookPage(tracker, page) {
 export const lootEntry = ({ templateId, itemId, profileId, quantity }) => ({ itemType: templateId, itemGuid: itemId, itemProfile: profileId, quantity });
 
 // Returns what was granted, one entry per item that was added or topped up.
-export function grantItem(session, templateId, quantity) {
+export function grantItem(session, templateId, quantity, options = {}) {
   if (quantity <= 0) return [];
   const [type, name] = templateId.split(":");
   if (type.toLowerCase() === "quest") {
@@ -66,13 +74,13 @@ export function grantItem(session, templateId, quantity) {
   const granted = (itemId, amount) => ({ profileId, itemId, templateId, quantity: amount });
 
   if (info.maxStackSize === 1) {
-    return Array.from({ length: quantity }, () => granted(addItem(tracker, templateId, 1, info), 1));
+    return Array.from({ length: quantity }, () => granted(addItem(tracker, templateId, 1, info, options), 1));
   }
   const limit = info.maxStackSize > 0 ? info.maxStackSize : Infinity;
   const existing = findItem(tracker.profile, templateId);
   if (!existing) {
     const amount = Math.min(quantity, limit);
-    return [granted(addItem(tracker, templateId, amount, info), amount)];
+    return [granted(addItem(tracker, templateId, amount, info, options), amount)];
   }
   const before = tracker.profile.items[existing].quantity;
   const after = Math.min(before + quantity, limit);
