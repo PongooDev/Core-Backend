@@ -85,9 +85,16 @@ export const serverCommands = {
   // A finished mission: its quest progress, and when it succeeded (EFortMissionStatus Succeeded) the mission's rewards
   // from world info as card packs the after-mission rewards screen opens (pack_source "Mission"). A mission alert on it
   // (the zone's theaterMissionAlertId) puts the alert's rewards in the player's pending mission alert rewards.
-  EndPrimaryMission({ req, session, context }) {
-    const { advance: updates, missionStatus, matchmakingSessionId, missionName } = req.body ?? {};
+  // The match's score comes with it too ({numMissionPoints, bCriticalMatchBonus, earnedBadgeData}): this build never
+  // sends EarnScore (nothing in the binary calls it), so the account XP is earned here, won or not.
+  EndPrimaryMission({ req, session, context, notifications }) {
+    const { advance: updates, missionStatus, matchmakingSessionId, missionName, numMissionPoints, bCriticalMatchBonus } = req.body ?? {};
     advance(session, updates);
+    if (Number.isFinite(numMissionPoints) && numMissionPoints > 0) {
+      const { xpEarned, levels, ...parts } = earnScore(session, numMissionPoints, { criticalMatch: bCriticalMatchBonus === true });
+      notifications.push({ type: "earnScore", primary: false, ...parts });
+      for (const level of levels) notifications.push({ type: "levelUp", primary: false, level });
+    }
     if (!/succeeded$/i.test(String(missionStatus ?? ""))) return;
     const mission = sessionMission(context.sessions, matchmakingSessionId);
     if (!mission) {
@@ -101,7 +108,8 @@ export const serverCommands = {
   },
 
   // One call for every player in the match: [{accountId, totalScore, bCriticalMatchBonus}] (FAccountIdAndScore).
-  // Each player gets the XP; the caller's response carries its own earnScore notification.
+  // Each player gets the XP; the caller's response carries its own earnScore notification. Kept for gameservers that
+  // send it; the Cert binary itself scores through EndPrimaryMission.
   EarnScore({ req, sessionFor, session, notifications }) {
     for (const { accountId, totalScore, bCriticalMatchBonus } of Array.isArray(req.body?.playersAndScores) ? req.body.playersAndScores : []) {
       const target = typeof accountId === "string" && sessionFor(accountId);
