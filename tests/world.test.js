@@ -11,6 +11,8 @@ test("world info has a theater whose tiles and missions all point at assets in t
   const [theater] = info.theaters;
   assert.equal(info.theaters.length, 1);
   assert.equal(theater.runtimeInfo.theaterType, "Standard");
+  assert.ok(world.mapPins.includes(theater.runtimeInfo.worldMapPinClass));
+  assert.ok(world.globeSockets.includes(theater.runtimeInfo.socket));
   assert.equal(theater.tiles[0].tileType, "Outpost");
 
   for (const tile of theater.tiles) assert.ok(world.zoneThemes[tile.zoneTheme], tile.zoneTheme);

@@ -7,6 +7,10 @@ export const stonewood = {
   name: "Stonewood",
   description: "The first theater. Its storm shield is your homebase.",
   slot: 0,
+  // The frontend globe spawns this pin class at this socket of WM_Globe; a missing class crashes the client.
+  // Sockets PvE_01-04 match the theaters' Stat.Theater.PvE01-04 tags.
+  mapPin: "WM_PinEasy",
+  socket: "PvE_01",
   outpost: {
     zoneTheme: "BP_ZT_TheOutpost_PvE_01",
     missionGenerator: "MissionGen_TheOutpost_PvE_01",

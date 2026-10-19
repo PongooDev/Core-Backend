@@ -499,6 +499,34 @@
       "threat": "1"
     }
   },
+  "globeSockets": [
+    "Creative_Manor",
+    "Creative_ManorCustomization",
+    "Onboarding_Farmstead",
+    "Onboarding_Gate",
+    "PvE_01",
+    "PvE_02",
+    "PvE_03",
+    "PvE_04",
+    "PvP_01",
+    "PvP_02",
+    "TEST_Combat",
+    "TEST_ElderProto",
+    "TEST_FastCook",
+    "TEST_PerfMem",
+    "TEST_PvE_01",
+    "TEST_PvE_02",
+    "TEST_PvP_01",
+    "TEST_StonewoodV2",
+    "TestChinaPvP_Other",
+    "TestChinaPvP_WT"
+  ],
+  "mapPins": [
+    "/Game/Environments/WorldMap/Blueprints/WM_PinEasy.WM_PinEasy_C",
+    "/Game/Environments/WorldMap/Blueprints/WM_PinHard.WM_PinHard_C",
+    "/Game/Environments/WorldMap/Blueprints/WM_PinMedium.WM_PinMedium_C",
+    "/Game/Environments/WorldMap/Blueprints/WM_Pin_Master.WM_Pin_Master_C"
+  ],
   "missionGenerators": {
     "/Game/World/MissionGens/MissionGen_1Gate.MissionGen_1Gate_C": {
       "parent": "_MissionGen_PARENT_C",

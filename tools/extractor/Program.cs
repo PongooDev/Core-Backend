@@ -227,6 +227,21 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     }
 }
 
+// The world map: theaters sit on sockets of the globe mesh and spawn a pin class there.
+var mapPins = provider.Files.Values
+    .Where(f => f.Extension == "uasset" && f.Path.StartsWith("FortniteGame/Content/Environments/WorldMap/Blueprints/WM_Pin", StringComparison.OrdinalIgnoreCase))
+    .Select(f => provider.TryLoadPackage(f, out var package)
+        ? package.GetExports().Where(e => e.ExportType == "BlueprintGeneratedClass").Select(e => "/Game/" + f.PathWithoutExtension["FortniteGame/Content/".Length..] + "." + e.Name).FirstOrDefault()
+        : null)
+    .OfType<string>().OrderBy(path => path, StringComparer.Ordinal).ToList();
+var globeSockets = new List<string>();
+if (provider.TryLoadPackage("FortniteGame/Content/Environments/WorldMap/Meshes/WM_Globe.uasset", out var globe))
+{
+    globeSockets = globe.GetExports().Where(e => e.ExportType == "StaticMeshSocket")
+        .Select(e => JsonNode.Parse(JsonConvert.SerializeObject(e))!["Properties"]?["SocketName"]?.GetValue<string>())
+        .OfType<string>().OrderBy(name => name, StringComparer.Ordinal).ToList();
+}
+
 var difficulties = new SortedDictionary<string, object>(StringComparer.Ordinal);
 foreach (var (id, row) in LoadRows(provider, JsonValue.Create("/Game/Balance/DataTables/GameDifficultyGrowthBounds.GameDifficultyGrowthBounds")))
 {
@@ -251,7 +266,8 @@ File.WriteAllText(Path.Combine(output, "squads.json"), JsonSerializer.Serialize(
 File.WriteAllText(Path.Combine(output, "objectivestats.json"), JsonSerializer.Serialize(objectiveStats, options) + "\n");
 File.WriteAllText(Path.Combine(output, "world.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal)
 {
-    ["zoneThemes"] = zoneThemes, ["missionGenerators"] = missionGenerators, ["difficulties"] = difficulties
+    ["zoneThemes"] = zoneThemes, ["missionGenerators"] = missionGenerators, ["difficulties"] = difficulties,
+    ["mapPins"] = mapPins, ["globeSockets"] = globeSockets
 }, options) + "\n");
 Console.WriteLine($"{zoneThemes.Count} zone themes, {missionGenerators.Count} mission generators, {difficulties.Count} mission difficulties");
 Console.WriteLine($"{characters.Count} characters, {cardPacks.Count} card packs, {nodes.Count} skill tree nodes, {squads.Count} squads, {objectiveStats.Count} objective stats");

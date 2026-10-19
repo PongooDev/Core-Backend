@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { getDifficulty, missionGeneratorPath, zoneThemePath } from "../gamedata/world.js";
+import { getDifficulty, hasGlobeSocket, mapPinPath, missionGeneratorPath, zoneThemePath } from "../gamedata/world.js";
 import { stonewood } from "./stonewood.js";
 
 const difficultyTable = "/Game/Balance/DataTables/GameDifficultyGrowthBounds.GameDifficultyGrowthBounds";
@@ -76,6 +76,7 @@ function buildTheater(definition) {
     rolls.push({ tileIndices, generators, difficulty: zone.difficulty });
   });
 
+  if (!hasGlobeSocket(definition.socket)) throw new Error(`WM_Globe has no socket ${definition.socket}`);
   const data = {
     displayName: definition.name,
     uniqueId: id,
@@ -83,7 +84,12 @@ function buildTheater(definition) {
     bIsTestTheater: false,
     description: definition.description,
     threatDisplayName: definition.name,
-    runtimeInfo: { theaterType: "Standard", theaterColorInfo: { bUseDifficultyToDetermineColor: true } },
+    runtimeInfo: {
+      theaterType: "Standard",
+      worldMapPinClass: resolve(mapPinPath, definition.mapPin, "Map pin"),
+      socket: definition.socket,
+      theaterColorInfo: { bUseDifficultyToDetermineColor: true }
+    },
     tiles,
     regions
   };
