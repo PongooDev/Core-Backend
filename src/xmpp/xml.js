@@ -84,14 +84,34 @@ function tagEnd(buffer, from) {
 
 const streamName = "stream:stream";
 
+const declaredPrefixes = (attrs) => Object.fromEntries(Object.entries(attrs)
+  .filter(([key]) => key.startsWith("xmlns:")).map(([key, uri]) => [key.slice(6), uri]));
+
 // Feeds bytes in and calls onStreamStart(attrs), onStanza(element) and onStreamEnd(). A new <stream:stream> when no
 // stanza is open is a stream restart (after SASL), reported as another onStreamStart.
+//
+// Prefixed elements are given as their local name with xmlns set: libjingle writes some children with a prefix
+// (<ping:ping xmlns:ping="urn:xmpp:ping"/>), others with a default namespace (<bind xmlns="...">). The stream's own
+// elements (stream:error, stream:features) keep their prefix.
 export function createStreamParser({ onStreamStart, onStanza, onStreamEnd, maxBuffer = 1024 * 1024 }) {
   const decoder = new StringDecoder("utf8");
   let buffer = "";
   let inStream = false;
   let stanzaSize = 0;
-  const open = [];
+  let streamPrefixes = {};
+  const open = []; // {element, rawName, prefixes}
+
+  function namespaced(rawName, attrs) {
+    const prefixes = declaredPrefixes(attrs);
+    const colon = rawName.indexOf(":");
+    const prefix = colon === -1 ? null : rawName.slice(0, colon);
+    if (!prefix || prefix === "stream") return { name: rawName, attrs, prefixes };
+    let uri = prefixes[prefix];
+    for (let i = open.length - 1; uri === undefined && i >= 0; i--) uri = open[i].prefixes[prefix];
+    uri ??= streamPrefixes[prefix];
+    if (uri === undefined) return { name: rawName, attrs, prefixes };
+    return { name: rawName.slice(colon + 1), attrs: { ...attrs, xmlns: uri }, prefixes };
+  }
 
   // Counts what the current stanza has used, so one endless stanza can't grow without limit either.
   function consume(length) {
@@ -107,7 +127,7 @@ export function createStreamParser({ onStreamStart, onStanza, onStreamEnd, maxBu
 
   function addText(text) {
     if (!open.length) return; // whitespace keepalives between stanzas
-    const parent = open[open.length - 1];
+    const parent = open[open.length - 1].element;
     const last = parent.children[parent.children.length - 1];
     if (typeof last === "string") parent.children[parent.children.length - 1] = last + text;
     else parent.children.push(text);
@@ -159,26 +179,28 @@ export function createStreamParser({ onStreamStart, onStanza, onStreamEnd, maxBu
         onStreamEnd();
         return true;
       }
-      const element = open.pop();
-      if (element.name !== name) throw new Error(`</${name}> closes <${element.name}>`);
+      const { element, rawName } = open.pop();
+      if (rawName !== name) throw new Error(`</${name}> closes <${rawName}>`);
       if (!open.length) finish(element);
       return true;
     }
 
-    const { name, attrs, selfClosing } = parseTag(source);
-    if (name === streamName && !open.length) {
+    const tag = parseTag(source);
+    if (tag.name === streamName && !open.length) {
       inStream = true;
       stanzaSize = 0;
-      onStreamStart(attrs);
+      streamPrefixes = declaredPrefixes(tag.attrs);
+      onStreamStart(tag.attrs);
       return true;
     }
-    if (!inStream) throw new Error(`<${name}> outside the stream`);
+    if (!inStream) throw new Error(`<${tag.name}> outside the stream`);
+    const { name, attrs, prefixes } = namespaced(tag.name, tag.attrs);
     const element = new Element(name, attrs);
-    if (open.length) open[open.length - 1].children.push(element);
-    if (selfClosing) {
+    if (open.length) open[open.length - 1].element.children.push(element);
+    if (tag.selfClosing) {
       if (!open.length) finish(element);
     } else {
-      open.push(element);
+      open.push({ element, rawName: tag.name, prefixes });
     }
     return true;
   }

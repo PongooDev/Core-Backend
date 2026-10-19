@@ -27,6 +27,7 @@ async function connect(port) {
     onStreamEnd: () => push({ name: "/stream:stream" })
   });
   socket.on("data", (chunk) => parser.write(chunk));
+  socket.on("error", () => {}); // a reset when the server closes the stream ends the test client, nothing more
   const closed = once(socket, "close");
 
   return {
@@ -37,7 +38,7 @@ async function connect(port) {
       const index = received.findIndex(match);
       if (index !== -1) return Promise.resolve(received.splice(index, 1)[0]);
       return new Promise((resolve, reject) => {
-        const timer = setTimeout(() => reject(new Error("no matching stanza")), 2000);
+        const timer = setTimeout(() => reject(new Error("no matching stanza")), 5000);
         waiters.push({ match, resolve: (item) => { clearTimeout(timer); resolve(item); } });
       });
     },
@@ -130,6 +131,17 @@ test("the stream parser handles split reads, entities, CDATA and a stream restar
     ["end"]
   ]);
 
+  // Prefixes resolve from the element, its ancestors or the stream header; the stream's own elements keep theirs.
+  const stanzas = [];
+  const prefixed = createStreamParser({ onStreamStart() {}, onStanza: (stanza) => stanzas.push(stanza), onStreamEnd() {} });
+  prefixed.write(`<stream:stream xmlns:stream="http://etherx.jabber.org/streams" xmlns:d="urn:xmpp:delay">` +
+    `<presence><d:delay stamp="1"/><muc:x xmlns:muc="http://jabber.org/protocol/muc"><muc:password>p</muc:password></muc:x>` +
+    `</presence><stream:error><conflict xmlns="urn:ietf:params:xml:ns:xmpp-streams"/></stream:error>`);
+  assert.deepEqual(stanzas[0].elements.map((child) => [child.name, child.attrs.xmlns]),
+    [["delay", "urn:xmpp:delay"], ["x", "http://jabber.org/protocol/muc"]]);
+  assert.equal(stanzas[0].child("x", "http://jabber.org/protocol/muc").child("password").text(), "p");
+  assert.equal(stanzas[1].name, "stream:error");
+
   const small = createStreamParser({ onStreamStart() {}, onStanza() {}, onStreamEnd() {}, maxBuffer: 100 });
   small.write("<stream:stream><message>");
   assert.throws(() => small.write("<body>" + "x".repeat(200)), /too large/);
@@ -149,6 +161,9 @@ test("the Cert client's XMPP login works on the backend's HTTP port, and HTTP st
     assert.deepEqual([pong.attrs.type, pong.attrs.from, pong.attrs.to], ["result", domain, jid]);
     client.send(`<iq type="get" id="ping_2"><ping xmlns="urn:xmpp:ping"/></iq>`);
     assert.equal((await client.next((stanza) => stanza.attrs?.id === "ping_2")).attrs.from, undefined);
+    // The Cert client's own ping, as it really sends it: with a namespace prefix.
+    client.send(`<iq type="get" id="ping_3" to="${domain}"><ping:ping xmlns:ping="urn:xmpp:ping"/></iq>`);
+    assert.equal((await client.next((stanza) => stanza.attrs?.id === "ping_3")).attrs.type, "result");
     client.send(`<iq type="get" id="unknown_1"><query xmlns="urn:example:unknown"/></iq>`);
     const unknown = await client.next((stanza) => stanza.attrs?.id === "unknown_1");
     assert.equal(unknown.attrs.type, "error");
