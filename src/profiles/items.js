@@ -4,6 +4,7 @@ import { bannerTemplateId } from "../gamedata/banners.js";
 import { getItem } from "../gamedata/items.js";
 import { log } from "../log.js";
 import { grantQuest } from "./quests.js";
+import { rollWorkerAttributes } from "./workers.js";
 
 const profileFor = { profile: "profile0", theater: "theater0" };
 
@@ -38,6 +39,7 @@ function addItem(tracker, templateId, quantity, info, options) {
   const itemId = crypto.randomUUID();
   const attributes = info.profile === "profile" ? { level: info.minLevel ?? 1, item_seen: 0, ...structuredClone(unassigned[info.class]) } : {};
   if (info.class === "FortCardPackItemDefinition") Object.assign(attributes, cardPackAttributes(templateId, options.packSource));
+  if (info.class === "FortWorkerType") Object.assign(attributes, rollWorkerAttributes(templateId));
   tracker.addItem(itemId, { templateId, attributes, quantity });
   return itemId;
 }

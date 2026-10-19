@@ -5395,1566 +5395,2132 @@
   },
   "Worker:managerdoctor_c_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_c_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_c_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_r_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_r_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_r_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_r_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_r_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_sr_kingsly_t01": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
+    "personality": "Homebase.Worker.Personality.IsCompetitive",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Doctor-kingsly.IconDef-ManagerPortrait-SR-Doctor-kingsly",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_sr_kingsly_t02": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
+    "personality": "Homebase.Worker.Personality.IsCompetitive",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Doctor-kingsly.IconDef-ManagerPortrait-SR-Doctor-kingsly",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_sr_kingsly_t03": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
+    "personality": "Homebase.Worker.Personality.IsCompetitive",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Doctor-kingsly.IconDef-ManagerPortrait-SR-Doctor-kingsly",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_sr_kingsly_t04": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
+    "personality": "Homebase.Worker.Personality.IsCompetitive",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Doctor-kingsly.IconDef-ManagerPortrait-SR-Doctor-kingsly",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_sr_kingsly_t05": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
+    "personality": "Homebase.Worker.Personality.IsCompetitive",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Doctor-kingsly.IconDef-ManagerPortrait-SR-Doctor-kingsly",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_sr_noctor_t01": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
+    "personality": "Homebase.Worker.Personality.IsAnalytical",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Doctor-Noctor.IconDef-ManagerPortrait-SR-Doctor-Noctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_sr_noctor_t02": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
+    "personality": "Homebase.Worker.Personality.IsAnalytical",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Doctor-Noctor.IconDef-ManagerPortrait-SR-Doctor-Noctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_sr_noctor_t03": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
+    "personality": "Homebase.Worker.Personality.IsAnalytical",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Doctor-Noctor.IconDef-ManagerPortrait-SR-Doctor-Noctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_sr_noctor_t04": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
+    "personality": "Homebase.Worker.Personality.IsAnalytical",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Doctor-Noctor.IconDef-ManagerPortrait-SR-Doctor-Noctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_sr_noctor_t05": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
+    "personality": "Homebase.Worker.Personality.IsAnalytical",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Doctor-Noctor.IconDef-ManagerPortrait-SR-Doctor-Noctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_sr_treky_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
+    "personality": "Homebase.Worker.Personality.IsPragmatic",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Doctor-treky.IconDef-ManagerPortrait-SR-Doctor-treky",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_sr_treky_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
+    "personality": "Homebase.Worker.Personality.IsPragmatic",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Doctor-treky.IconDef-ManagerPortrait-SR-Doctor-treky",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_sr_treky_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
+    "personality": "Homebase.Worker.Personality.IsPragmatic",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Doctor-treky.IconDef-ManagerPortrait-SR-Doctor-treky",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_sr_treky_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
+    "personality": "Homebase.Worker.Personality.IsPragmatic",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Doctor-treky.IconDef-ManagerPortrait-SR-Doctor-treky",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_sr_treky_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
+    "personality": "Homebase.Worker.Personality.IsPragmatic",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Doctor-treky.IconDef-ManagerPortrait-SR-Doctor-treky",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_uc_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_uc_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_uc_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_uc_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_vr_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_vr_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_vr_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_vr_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerdoctor_vr_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerengineer_c_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_c_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_c_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_r_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_r_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_r_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_r_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_r_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_sr_countess_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
+    "personality": "Homebase.Worker.Personality.IsPragmatic",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Engineer-countess.IconDef-ManagerPortrait-SR-Engineer-countess",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_sr_countess_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
+    "personality": "Homebase.Worker.Personality.IsPragmatic",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Engineer-countess.IconDef-ManagerPortrait-SR-Engineer-countess",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_sr_countess_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
+    "personality": "Homebase.Worker.Personality.IsPragmatic",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Engineer-countess.IconDef-ManagerPortrait-SR-Engineer-countess",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_sr_countess_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
+    "personality": "Homebase.Worker.Personality.IsPragmatic",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Engineer-countess.IconDef-ManagerPortrait-SR-Engineer-countess",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_sr_countess_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
+    "personality": "Homebase.Worker.Personality.IsPragmatic",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Engineer-countess.IconDef-ManagerPortrait-SR-Engineer-countess",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_sr_maths_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
+    "personality": "Homebase.Worker.Personality.IsAnalytical",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Engineer-maths.IconDef-ManagerPortrait-SR-Engineer-maths",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_sr_maths_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
+    "personality": "Homebase.Worker.Personality.IsAnalytical",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Engineer-maths.IconDef-ManagerPortrait-SR-Engineer-maths",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_sr_maths_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
+    "personality": "Homebase.Worker.Personality.IsAnalytical",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Engineer-maths.IconDef-ManagerPortrait-SR-Engineer-maths",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_sr_maths_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
+    "personality": "Homebase.Worker.Personality.IsAnalytical",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Engineer-maths.IconDef-ManagerPortrait-SR-Engineer-maths",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_sr_maths_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
+    "personality": "Homebase.Worker.Personality.IsAnalytical",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Engineer-maths.IconDef-ManagerPortrait-SR-Engineer-maths",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_sr_sobs_t01": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
+    "personality": "Homebase.Worker.Personality.IsDreamer",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Engineer-sobs.IconDef-ManagerPortrait-SR-Engineer-sobs",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_sr_sobs_t02": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
+    "personality": "Homebase.Worker.Personality.IsDreamer",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Engineer-sobs.IconDef-ManagerPortrait-SR-Engineer-sobs",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_sr_sobs_t03": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
+    "personality": "Homebase.Worker.Personality.IsDreamer",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Engineer-sobs.IconDef-ManagerPortrait-SR-Engineer-sobs",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_sr_sobs_t04": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
+    "personality": "Homebase.Worker.Personality.IsDreamer",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Engineer-sobs.IconDef-ManagerPortrait-SR-Engineer-sobs",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_sr_sobs_t05": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
+    "personality": "Homebase.Worker.Personality.IsDreamer",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Engineer-sobs.IconDef-ManagerPortrait-SR-Engineer-sobs",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_uc_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_uc_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_uc_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_uc_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_vr_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_vr_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_vr_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_vr_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerengineer_vr_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsEngineer",
     "tags": [
       "Homebase.Manager.IsEngineer"
     ]
   },
   "Worker:managerexplorer_c_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_c_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_c_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_r_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_r_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_r_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_r_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_r_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_sr_birdie_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
+    "personality": "Homebase.Worker.Personality.IsCurious",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Explorer-birdie.IconDef-ManagerPortrait-SR-Explorer-birdie",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_sr_birdie_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
+    "personality": "Homebase.Worker.Personality.IsCurious",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Explorer-birdie.IconDef-ManagerPortrait-SR-Explorer-birdie",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_sr_birdie_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
+    "personality": "Homebase.Worker.Personality.IsCurious",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Explorer-birdie.IconDef-ManagerPortrait-SR-Explorer-birdie",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_sr_birdie_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
+    "personality": "Homebase.Worker.Personality.IsCurious",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Explorer-birdie.IconDef-ManagerPortrait-SR-Explorer-birdie",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_sr_birdie_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
+    "personality": "Homebase.Worker.Personality.IsCurious",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Explorer-birdie.IconDef-ManagerPortrait-SR-Explorer-birdie",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_sr_eagle_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
+    "personality": "Homebase.Worker.Personality.IsAdventurous",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Explorer-eagle.IconDef-ManagerPortrait-SR-Explorer-eagle",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_sr_eagle_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
+    "personality": "Homebase.Worker.Personality.IsAdventurous",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Explorer-eagle.IconDef-ManagerPortrait-SR-Explorer-eagle",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_sr_eagle_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
+    "personality": "Homebase.Worker.Personality.IsAdventurous",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Explorer-eagle.IconDef-ManagerPortrait-SR-Explorer-eagle",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_sr_eagle_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
+    "personality": "Homebase.Worker.Personality.IsAdventurous",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Explorer-eagle.IconDef-ManagerPortrait-SR-Explorer-eagle",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_sr_eagle_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
+    "personality": "Homebase.Worker.Personality.IsAdventurous",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Explorer-eagle.IconDef-ManagerPortrait-SR-Explorer-eagle",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_sr_spacebound_t01": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
+    "personality": "Homebase.Worker.Personality.IsDreamer",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Explorer-spacebound.IconDef-ManagerPortrait-SR-Explorer-spacebound",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_sr_spacebound_t02": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
+    "personality": "Homebase.Worker.Personality.IsDreamer",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Explorer-spacebound.IconDef-ManagerPortrait-SR-Explorer-spacebound",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_sr_spacebound_t03": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
+    "personality": "Homebase.Worker.Personality.IsDreamer",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Explorer-spacebound.IconDef-ManagerPortrait-SR-Explorer-spacebound",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_sr_spacebound_t04": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
+    "personality": "Homebase.Worker.Personality.IsDreamer",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Explorer-spacebound.IconDef-ManagerPortrait-SR-Explorer-spacebound",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_sr_spacebound_t05": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
+    "personality": "Homebase.Worker.Personality.IsDreamer",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Explorer-spacebound.IconDef-ManagerPortrait-SR-Explorer-spacebound",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_uc_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_uc_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_uc_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_uc_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_vr_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_vr_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_vr_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_vr_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managerexplorer_vr_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsExplorer",
     "tags": [
       "Homebase.Manager.IsExplorer"
     ]
   },
   "Worker:managergadgeteer_c_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_c_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_c_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_r_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_r_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_r_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_r_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_r_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_sr_fixer_t01": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
+    "personality": "Homebase.Worker.Personality.IsAnalytical",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Gadgeteer-fixer.IconDef-ManagerPortrait-SR-Gadgeteer-fixer",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_sr_fixer_t02": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
+    "personality": "Homebase.Worker.Personality.IsAnalytical",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Gadgeteer-fixer.IconDef-ManagerPortrait-SR-Gadgeteer-fixer",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_sr_fixer_t03": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
+    "personality": "Homebase.Worker.Personality.IsAnalytical",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Gadgeteer-fixer.IconDef-ManagerPortrait-SR-Gadgeteer-fixer",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_sr_fixer_t04": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
+    "personality": "Homebase.Worker.Personality.IsAnalytical",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Gadgeteer-fixer.IconDef-ManagerPortrait-SR-Gadgeteer-fixer",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_sr_fixer_t05": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
+    "personality": "Homebase.Worker.Personality.IsAnalytical",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Gadgeteer-fixer.IconDef-ManagerPortrait-SR-Gadgeteer-fixer",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_sr_flak_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
+    "personality": "Homebase.Worker.Personality.IsDependable",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Gadgeteer-flak.IconDef-ManagerPortrait-SR-Gadgeteer-flak",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_sr_flak_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
+    "personality": "Homebase.Worker.Personality.IsDependable",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Gadgeteer-flak.IconDef-ManagerPortrait-SR-Gadgeteer-flak",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_sr_flak_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
+    "personality": "Homebase.Worker.Personality.IsDependable",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Gadgeteer-flak.IconDef-ManagerPortrait-SR-Gadgeteer-flak",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_sr_flak_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
+    "personality": "Homebase.Worker.Personality.IsDependable",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Gadgeteer-flak.IconDef-ManagerPortrait-SR-Gadgeteer-flak",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_sr_flak_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
+    "personality": "Homebase.Worker.Personality.IsDependable",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Gadgeteer-flak.IconDef-ManagerPortrait-SR-Gadgeteer-flak",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_sr_zapps_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
+    "personality": "Homebase.Worker.Personality.IsCurious",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Gadgeteer-zapps.IconDef-ManagerPortrait-SR-Gadgeteer-zapps",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_sr_zapps_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
+    "personality": "Homebase.Worker.Personality.IsCurious",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Gadgeteer-zapps.IconDef-ManagerPortrait-SR-Gadgeteer-zapps",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_sr_zapps_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
+    "personality": "Homebase.Worker.Personality.IsCurious",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Gadgeteer-zapps.IconDef-ManagerPortrait-SR-Gadgeteer-zapps",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_sr_zapps_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
+    "personality": "Homebase.Worker.Personality.IsCurious",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Gadgeteer-zapps.IconDef-ManagerPortrait-SR-Gadgeteer-zapps",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_sr_zapps_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
+    "personality": "Homebase.Worker.Personality.IsCurious",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Gadgeteer-zapps.IconDef-ManagerPortrait-SR-Gadgeteer-zapps",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_uc_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_uc_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_uc_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_uc_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_vr_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_vr_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_vr_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_vr_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managergadgeteer_vr_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsGadgeteer",
     "tags": [
       "Homebase.Manager.IsGadgeteer"
     ]
   },
   "Worker:managerinventor_c_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_c_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_c_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_r_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_r_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_r_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_r_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_r_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_sr_frequency_t01": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
+    "personality": "Homebase.Worker.Personality.IsDreamer",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Inventor-frequency.IconDef-ManagerPortrait-SR-Inventor-frequency",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_sr_frequency_t02": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
+    "personality": "Homebase.Worker.Personality.IsDreamer",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Inventor-frequency.IconDef-ManagerPortrait-SR-Inventor-frequency",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_sr_frequency_t03": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
+    "personality": "Homebase.Worker.Personality.IsDreamer",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Inventor-frequency.IconDef-ManagerPortrait-SR-Inventor-frequency",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_sr_frequency_t04": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
+    "personality": "Homebase.Worker.Personality.IsDreamer",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Inventor-frequency.IconDef-ManagerPortrait-SR-Inventor-frequency",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_sr_frequency_t05": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
+    "personality": "Homebase.Worker.Personality.IsDreamer",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Inventor-frequency.IconDef-ManagerPortrait-SR-Inventor-frequency",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_sr_rad_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
+    "personality": "Homebase.Worker.Personality.IsCooperative",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Inventor-rad.IconDef-ManagerPortrait-SR-Inventor-rad",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_sr_rad_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
+    "personality": "Homebase.Worker.Personality.IsCooperative",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Inventor-rad.IconDef-ManagerPortrait-SR-Inventor-rad",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_sr_rad_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
+    "personality": "Homebase.Worker.Personality.IsCooperative",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Inventor-rad.IconDef-ManagerPortrait-SR-Inventor-rad",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_sr_rad_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
+    "personality": "Homebase.Worker.Personality.IsCooperative",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Inventor-rad.IconDef-ManagerPortrait-SR-Inventor-rad",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_sr_rad_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
+    "personality": "Homebase.Worker.Personality.IsCooperative",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Inventor-rad.IconDef-ManagerPortrait-SR-Inventor-rad",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_sr_square_t01": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
+    "personality": "Homebase.Worker.Personality.IsPragmatic",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Inventor-square.IconDef-ManagerPortrait-SR-Inventor-square",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_sr_square_t02": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
+    "personality": "Homebase.Worker.Personality.IsPragmatic",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Inventor-square.IconDef-ManagerPortrait-SR-Inventor-square",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_sr_square_t03": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
+    "personality": "Homebase.Worker.Personality.IsPragmatic",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Inventor-square.IconDef-ManagerPortrait-SR-Inventor-square",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_sr_square_t04": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
+    "personality": "Homebase.Worker.Personality.IsPragmatic",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Inventor-square.IconDef-ManagerPortrait-SR-Inventor-square",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_sr_square_t05": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
+    "personality": "Homebase.Worker.Personality.IsPragmatic",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Inventor-square.IconDef-ManagerPortrait-SR-Inventor-square",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_uc_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_uc_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_uc_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_uc_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_vr_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_vr_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_vr_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_vr_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managerinventor_vr_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsInventor",
     "tags": [
       "Homebase.Manager.IsInventor"
     ]
   },
   "Worker:managermartialartist_c_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_c_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_c_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_r_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_r_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_r_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_r_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_r_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_sr_dragon_t01": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
+    "personality": "Homebase.Worker.Personality.IsAdventurous",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-MartialArtist-dragon.IconDef-ManagerPortrait-SR-MartialArtist-dragon",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_sr_dragon_t02": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
+    "personality": "Homebase.Worker.Personality.IsAdventurous",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-MartialArtist-dragon.IconDef-ManagerPortrait-SR-MartialArtist-dragon",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_sr_dragon_t03": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
+    "personality": "Homebase.Worker.Personality.IsAdventurous",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-MartialArtist-dragon.IconDef-ManagerPortrait-SR-MartialArtist-dragon",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_sr_dragon_t04": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
+    "personality": "Homebase.Worker.Personality.IsAdventurous",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-MartialArtist-dragon.IconDef-ManagerPortrait-SR-MartialArtist-dragon",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_sr_dragon_t05": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
+    "personality": "Homebase.Worker.Personality.IsAdventurous",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-MartialArtist-dragon.IconDef-ManagerPortrait-SR-MartialArtist-dragon",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_sr_samurai_t01": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
+    "personality": "Homebase.Worker.Personality.IsCompetitive",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-MartialArtist-samurai.IconDef-ManagerPortrait-SR-MartialArtist-samurai",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_sr_samurai_t02": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
+    "personality": "Homebase.Worker.Personality.IsCompetitive",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-MartialArtist-samurai.IconDef-ManagerPortrait-SR-MartialArtist-samurai",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_sr_samurai_t03": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
+    "personality": "Homebase.Worker.Personality.IsCompetitive",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-MartialArtist-samurai.IconDef-ManagerPortrait-SR-MartialArtist-samurai",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_sr_samurai_t04": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
+    "personality": "Homebase.Worker.Personality.IsCompetitive",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-MartialArtist-samurai.IconDef-ManagerPortrait-SR-MartialArtist-samurai",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_sr_samurai_t05": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
+    "personality": "Homebase.Worker.Personality.IsCompetitive",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-MartialArtist-samurai.IconDef-ManagerPortrait-SR-MartialArtist-samurai",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_sr_tiger_t01": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
+    "personality": "Homebase.Worker.Personality.IsDependable",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-MartialArtist-tiger.IconDef-ManagerPortrait-SR-MartialArtist-tiger",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_sr_tiger_t02": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
+    "personality": "Homebase.Worker.Personality.IsDependable",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-MartialArtist-tiger.IconDef-ManagerPortrait-SR-MartialArtist-tiger",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_sr_tiger_t03": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
+    "personality": "Homebase.Worker.Personality.IsDependable",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-MartialArtist-tiger.IconDef-ManagerPortrait-SR-MartialArtist-tiger",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_sr_tiger_t04": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
+    "personality": "Homebase.Worker.Personality.IsDependable",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-MartialArtist-tiger.IconDef-ManagerPortrait-SR-MartialArtist-tiger",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_sr_tiger_t05": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
+    "personality": "Homebase.Worker.Personality.IsDependable",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-MartialArtist-tiger.IconDef-ManagerPortrait-SR-MartialArtist-tiger",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_uc_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_uc_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_uc_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_uc_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_vr_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_vr_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_vr_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_vr_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managermartialartist_vr_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsMartialArtist",
     "tags": [
       "Homebase.Manager.IsMartialArtist"
     ]
   },
   "Worker:managerquestdoctor_r_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerquestdoctor_r_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerquestdoctor_r_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerquestdoctor_r_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managerquestdoctor_r_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsDoctor",
     "tags": [
       "Homebase.Manager.IsDoctor"
     ]
   },
   "Worker:managersoldier_c_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_c_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_c_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_r_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_r_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_r_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_r_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_r_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_sr_malcolm_t01": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
+    "personality": "Homebase.Worker.Personality.IsCooperative",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Soldier-malcolm.IconDef-ManagerPortrait-SR-Soldier-malcolm",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_sr_malcolm_t02": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
+    "personality": "Homebase.Worker.Personality.IsCooperative",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Soldier-malcolm.IconDef-ManagerPortrait-SR-Soldier-malcolm",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_sr_malcolm_t03": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
+    "personality": "Homebase.Worker.Personality.IsCooperative",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Soldier-malcolm.IconDef-ManagerPortrait-SR-Soldier-malcolm",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_sr_malcolm_t04": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
+    "personality": "Homebase.Worker.Personality.IsCooperative",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Soldier-malcolm.IconDef-ManagerPortrait-SR-Soldier-malcolm",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_sr_malcolm_t05": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
+    "personality": "Homebase.Worker.Personality.IsCooperative",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Soldier-malcolm.IconDef-ManagerPortrait-SR-Soldier-malcolm",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_sr_princess_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
+    "personality": "Homebase.Worker.Personality.IsDependable",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Soldier-princess.IconDef-ManagerPortrait-SR-Soldier-princess",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_sr_princess_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
+    "personality": "Homebase.Worker.Personality.IsDependable",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Soldier-princess.IconDef-ManagerPortrait-SR-Soldier-princess",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_sr_princess_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
+    "personality": "Homebase.Worker.Personality.IsDependable",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Soldier-princess.IconDef-ManagerPortrait-SR-Soldier-princess",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_sr_princess_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
+    "personality": "Homebase.Worker.Personality.IsDependable",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Soldier-princess.IconDef-ManagerPortrait-SR-Soldier-princess",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_sr_princess_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
+    "personality": "Homebase.Worker.Personality.IsDependable",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Soldier-princess.IconDef-ManagerPortrait-SR-Soldier-princess",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_sr_ramsie_t01": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
+    "personality": "Homebase.Worker.Personality.IsAdventurous",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Soldier-ramsie.IconDef-ManagerPortrait-SR-Soldier-ramsie",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_sr_ramsie_t02": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
+    "personality": "Homebase.Worker.Personality.IsAdventurous",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Soldier-ramsie.IconDef-ManagerPortrait-SR-Soldier-ramsie",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_sr_ramsie_t03": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
+    "personality": "Homebase.Worker.Personality.IsAdventurous",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Soldier-ramsie.IconDef-ManagerPortrait-SR-Soldier-ramsie",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_sr_ramsie_t04": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
+    "personality": "Homebase.Worker.Personality.IsAdventurous",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Soldier-ramsie.IconDef-ManagerPortrait-SR-Soldier-ramsie",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_sr_ramsie_t05": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
+    "personality": "Homebase.Worker.Personality.IsAdventurous",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Soldier-ramsie.IconDef-ManagerPortrait-SR-Soldier-ramsie",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_uc_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_uc_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_uc_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_uc_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_vr_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_vr_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_vr_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_vr_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managersoldier_vr_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsSoldier",
     "tags": [
       "Homebase.Manager.IsSoldier"
     ]
   },
   "Worker:managertrainer_c_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_c_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_c_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_r_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_r_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_r_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_r_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_r_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_sr_jumpy_t01": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
+    "personality": "Homebase.Worker.Personality.IsCooperative",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-PersonalTrainer-jumpy.IconDef-ManagerPortrait-SR-PersonalTrainer-jumpy",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_sr_jumpy_t02": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
+    "personality": "Homebase.Worker.Personality.IsCooperative",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-PersonalTrainer-jumpy.IconDef-ManagerPortrait-SR-PersonalTrainer-jumpy",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_sr_jumpy_t03": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
+    "personality": "Homebase.Worker.Personality.IsCooperative",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-PersonalTrainer-jumpy.IconDef-ManagerPortrait-SR-PersonalTrainer-jumpy",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_sr_jumpy_t04": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
+    "personality": "Homebase.Worker.Personality.IsCooperative",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-PersonalTrainer-jumpy.IconDef-ManagerPortrait-SR-PersonalTrainer-jumpy",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_sr_jumpy_t05": {
+    "gender": "Male",
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
+    "personality": "Homebase.Worker.Personality.IsCooperative",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-PersonalTrainer-jumpy.IconDef-ManagerPortrait-SR-PersonalTrainer-jumpy",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_sr_raider_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
+    "personality": "Homebase.Worker.Personality.IsCurious",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-PersonalTrainer-raider.IconDef-ManagerPortrait-SR-PersonalTrainer-raider",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_sr_raider_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
+    "personality": "Homebase.Worker.Personality.IsCurious",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-PersonalTrainer-raider.IconDef-ManagerPortrait-SR-PersonalTrainer-raider",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_sr_raider_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
+    "personality": "Homebase.Worker.Personality.IsCurious",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-PersonalTrainer-raider.IconDef-ManagerPortrait-SR-PersonalTrainer-raider",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_sr_raider_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
+    "personality": "Homebase.Worker.Personality.IsCurious",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-PersonalTrainer-raider.IconDef-ManagerPortrait-SR-PersonalTrainer-raider",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_sr_raider_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
+    "personality": "Homebase.Worker.Personality.IsCurious",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-PersonalTrainer-raider.IconDef-ManagerPortrait-SR-PersonalTrainer-raider",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_sr_yoglattes_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
+    "personality": "Homebase.Worker.Personality.IsCompetitive",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-PersonalTrainer-yoglattes.IconDef-ManagerPortrait-SR-PersonalTrainer-yoglattes",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_sr_yoglattes_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
+    "personality": "Homebase.Worker.Personality.IsCompetitive",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-PersonalTrainer-yoglattes.IconDef-ManagerPortrait-SR-PersonalTrainer-yoglattes",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_sr_yoglattes_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
+    "personality": "Homebase.Worker.Personality.IsCompetitive",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-PersonalTrainer-yoglattes.IconDef-ManagerPortrait-SR-PersonalTrainer-yoglattes",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_sr_yoglattes_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
+    "personality": "Homebase.Worker.Personality.IsCompetitive",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-PersonalTrainer-yoglattes.IconDef-ManagerPortrait-SR-PersonalTrainer-yoglattes",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_sr_yoglattes_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
+    "personality": "Homebase.Worker.Personality.IsCompetitive",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-PersonalTrainer-yoglattes.IconDef-ManagerPortrait-SR-PersonalTrainer-yoglattes",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_uc_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_uc_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_uc_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_uc_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_vr_t01": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_vr_t02": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_vr_t03": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_vr_t04": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
   },
   "Worker:managertrainer_vr_t05": {
     "manager": true,
+    "managerSynergy": "Homebase.Manager.IsTrainer",
     "tags": [
       "Homebase.Manager.IsTrainer"
     ]
@@ -7074,144 +7640,187 @@
     ]
   },
   "Worker:workerhalloween_alt_sr_t01": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Troll.IconDef-WorkerPortrait-Troll",
     "tags": [
       "Homebase.Worker.IsWorker",
       "Homebase.Worker.IsBasicWorker"
     ]
   },
   "Worker:workerhalloween_alt_sr_t02": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Troll.IconDef-WorkerPortrait-Troll",
     "tags": [
       "Homebase.Worker.IsWorker",
       "Homebase.Worker.IsBasicWorker"
     ]
   },
   "Worker:workerhalloween_alt_sr_t03": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Troll.IconDef-WorkerPortrait-Troll",
     "tags": [
       "Homebase.Worker.IsWorker",
       "Homebase.Worker.IsBasicWorker"
     ]
   },
   "Worker:workerhalloween_alt_sr_t04": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Troll.IconDef-WorkerPortrait-Troll",
     "tags": [
       "Homebase.Worker.IsWorker",
       "Homebase.Worker.IsBasicWorker"
     ]
   },
   "Worker:workerhalloween_alt_sr_t05": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Troll.IconDef-WorkerPortrait-Troll",
     "tags": [
       "Homebase.Worker.IsWorker",
       "Homebase.Worker.IsBasicWorker"
     ]
   },
   "Worker:workerhalloween_c_t01": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Husk.IconDef-WorkerPortrait-Husk",
     "tags": [
       "Homebase.Worker.IsWorker",
       "Homebase.Worker.IsBasicWorker"
     ]
   },
   "Worker:workerhalloween_c_t02": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Husk.IconDef-WorkerPortrait-Husk",
     "tags": [
       "Homebase.Worker.IsWorker",
       "Homebase.Worker.IsBasicWorker"
     ]
   },
   "Worker:workerhalloween_r_t01": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Pitcher.IconDef-WorkerPortrait-Pitcher",
     "tags": [
       "Homebase.Worker.IsWorker",
       "Homebase.Worker.IsBasicWorker"
     ]
   },
   "Worker:workerhalloween_r_t02": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Pitcher.IconDef-WorkerPortrait-Pitcher",
     "tags": [
       "Homebase.Worker.IsWorker",
       "Homebase.Worker.IsBasicWorker"
     ]
   },
   "Worker:workerhalloween_r_t03": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Pitcher.IconDef-WorkerPortrait-Pitcher",
     "tags": [
       "Homebase.Worker.IsWorker",
       "Homebase.Worker.IsBasicWorker"
     ]
   },
   "Worker:workerhalloween_r_t04": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Pitcher.IconDef-WorkerPortrait-Pitcher",
     "tags": [
       "Homebase.Worker.IsWorker",
       "Homebase.Worker.IsBasicWorker"
     ]
   },
   "Worker:workerhalloween_sr_t01": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Smasher.IconDef-WorkerPortrait-Smasher",
     "tags": [
       "Homebase.Worker.IsWorker",
       "Homebase.Worker.IsBasicWorker"
     ]
   },
   "Worker:workerhalloween_sr_t02": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Smasher.IconDef-WorkerPortrait-Smasher",
     "tags": [
       "Homebase.Worker.IsWorker",
       "Homebase.Worker.IsBasicWorker"
     ]
   },
   "Worker:workerhalloween_sr_t03": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Smasher.IconDef-WorkerPortrait-Smasher",
     "tags": [
       "Homebase.Worker.IsWorker",
       "Homebase.Worker.IsBasicWorker"
     ]
   },
   "Worker:workerhalloween_sr_t04": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Smasher.IconDef-WorkerPortrait-Smasher",
     "tags": [
       "Homebase.Worker.IsWorker",
       "Homebase.Worker.IsBasicWorker"
     ]
   },
   "Worker:workerhalloween_sr_t05": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Smasher.IconDef-WorkerPortrait-Smasher",
     "tags": [
       "Homebase.Worker.IsWorker",
       "Homebase.Worker.IsBasicWorker"
     ]
   },
   "Worker:workerhalloween_uc_t01": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Husky.IconDef-WorkerPortrait-Husky",
     "tags": [
       "Homebase.Worker.IsWorker",
       "Homebase.Worker.IsBasicWorker"
     ]
   },
   "Worker:workerhalloween_uc_t02": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Husky.IconDef-WorkerPortrait-Husky",
     "tags": [
       "Homebase.Worker.IsWorker",
       "Homebase.Worker.IsBasicWorker"
     ]
   },
   "Worker:workerhalloween_uc_t03": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Husky.IconDef-WorkerPortrait-Husky",
     "tags": [
       "Homebase.Worker.IsWorker",
       "Homebase.Worker.IsBasicWorker"
     ]
   },
   "Worker:workerhalloween_vr_t01": {
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Lobber.IconDef-WorkerPortrait-Lobber",
     "tags": [
       "Homebase.Worker.IsWorker",
       "Homebase.Worker.IsBasicWorker"
     ]
   },
   "Worker:workerhalloween_vr_t02": {
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Lobber.IconDef-WorkerPortrait-Lobber",
     "tags": [
       "Homebase.Worker.IsWorker",
       "Homebase.Worker.IsBasicWorker"
     ]
   },
   "Worker:workerhalloween_vr_t03": {
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Lobber.IconDef-WorkerPortrait-Lobber",
     "tags": [
       "Homebase.Worker.IsWorker",
       "Homebase.Worker.IsBasicWorker"
     ]
   },
   "Worker:workerhalloween_vr_t04": {
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Lobber.IconDef-WorkerPortrait-Lobber",
     "tags": [
       "Homebase.Worker.IsWorker",
       "Homebase.Worker.IsBasicWorker"
     ]
   },
   "Worker:workerhalloween_vr_t05": {
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Lobber.IconDef-WorkerPortrait-Lobber",
     "tags": [
       "Homebase.Worker.IsWorker",
       "Homebase.Worker.IsBasicWorker"

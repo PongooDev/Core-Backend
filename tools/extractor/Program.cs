@@ -181,6 +181,15 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         var required = Strings(properties?["RequiredGPTags"]);
         if (required.Count > 0) character["requiredTags"] = required;
         if (properties?["bIsManager"]?.GetValue<bool>() == true) character["manager"] = true;
+        // Survivors (UFortWorkerType): what the definition fixes; the rest is rolled when one is granted.
+        if (export.ExportType == "FortWorkerType")
+        {
+            if (Enum(properties?["Gender"]) is { } gender and not "Invalid") character["gender"] = gender;
+            if (properties?["FixedPortrait"] is { } portrait && AssetPath(portrait) is { Length: > 0 } portraitPath and not "None") character["portrait"] = ObjectPath(portraitPath);
+            if (Strings(properties?["FixedPersonalityTag"]) is [var personality, ..]) character["personality"] = personality;
+            if (Strings(properties?["FixedSetBonusTag"]) is [var setBonus, ..]) character["setBonus"] = setBonus;
+            if (Strings(properties?["ManagerSynergyTag"]) is [var synergy, ..]) character["managerSynergy"] = synergy;
+        }
         characters[templateId] = character;
     }
 
@@ -231,6 +240,35 @@ foreach (var schedule in gameData["Properties"]?["DailyRewardSchedules"]?.AsArra
     if (tokenPath is not ("" or "None")) entry["token"] = assetTypes.TemplateId(tokenPath);
     dailyRewards.Add(entry);
 }
+
+// Survivor personalities (with each gender's portraits) and set bonuses, from MyFortData (Balance/HomebaseData,
+// UMyTownData): what a new survivor is rolled from.
+var townData = LoadExport(provider, gameData["Properties"]!["MyFortData"], "MyTownData")["Properties"]!;
+var workerData = new SortedDictionary<string, object>(StringComparer.Ordinal)
+{
+    ["personalities"] = (townData["WorkerPersonalities"]?.AsArray() ?? []).Select(entry => new SortedDictionary<string, object>(StringComparer.Ordinal)
+    {
+        ["tag"] = Strings(entry!["PersonalityTypeTag"]).FirstOrDefault() ?? "",
+        ["weight"] = entry["SelectionWeight"]?.GetValue<double>() ?? 1,
+        ["genders"] = (entry["GenderData"]?.AsArray() ?? []).Select(gender => new SortedDictionary<string, object>(StringComparer.Ordinal)
+        {
+            ["gender"] = Enum(gender!["Gender"]) ?? "",
+            ["weight"] = gender["SelectionWeight"]?.GetValue<double>() ?? 1,
+            ["portraits"] = (gender["PotraitData"]?.AsArray() ?? []).Select(portrait => new SortedDictionary<string, object>(StringComparer.Ordinal)
+            {
+                ["portrait"] = ObjectPath(AssetPath(portrait!["Portrait"])),
+                ["weight"] = portrait["SelectionWeight"]?.GetValue<double>() ?? 1
+            }).ToList()
+        }).ToList()
+    }).ToList(),
+    ["setBonuses"] = (townData["WorkerSetBonuses"]?.AsArray() ?? []).Select(entry => new SortedDictionary<string, object>(StringComparer.Ordinal)
+    {
+        ["tag"] = Strings(entry!["SetBonusTypeTag"]).FirstOrDefault() ?? "",
+        ["weight"] = entry["SelectionWeight"]?.GetValue<double>() ?? 1,
+        ["name"] = entry["DisplayName"]?["SourceString"]?.GetValue<string>() ?? "",
+        ["requiredWorkers"] = entry["RequiredWorkersCount"]?.GetValue<int>() ?? 0
+    }).ToList()
+};
 
 // The skill tree and squads come from the homebase manager DefaultGameData points at.
 var manager = LoadExport(provider, gameData["Properties"]!["HomebaseManager"], "FortHomebaseManager")["Properties"]!;
@@ -547,6 +585,7 @@ File.WriteAllText(Path.Combine(output, "quests.json"), JsonSerializer.Serialize(
 File.WriteAllText(Path.Combine(output, "items.json"), JsonSerializer.Serialize(items, options) + "\n");
 File.WriteAllText(Path.Combine(output, "dailyrewards.json"), JsonSerializer.Serialize(dailyRewards, options) + "\n");
 File.WriteAllText(Path.Combine(output, "characters.json"), JsonSerializer.Serialize(characters, options) + "\n");
+File.WriteAllText(Path.Combine(output, "workers.json"), JsonSerializer.Serialize(workerData, options) + "\n");
 File.WriteAllText(Path.Combine(output, "cardpacks.json"), JsonSerializer.Serialize(cardPacks, options) + "\n");
 File.WriteAllText(Path.Combine(output, "homebasenodes.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal) { ["nodes"] = nodes, ["pages"] = pages }, options) + "\n");
 File.WriteAllText(Path.Combine(output, "squads.json"), JsonSerializer.Serialize(squads, options) + "\n");
@@ -659,6 +698,9 @@ static List<SortedDictionary<string, object>> Items(JsonNode? items, AssetTypes 
     }).Where(i => (string)i["templateId"] != "None").ToList();
 
 static string? Enum(JsonNode? value) => value?.GetValue<string>().Split("::").Last();
+
+// A soft object path as the game writes it, "/Game/Path/Asset.Asset" (some references come back without the object name).
+static string ObjectPath(string path) => path.Contains('.') ? path : $"{path}.{path.Split('/').Last()}";
 
 static string AssetPath(JsonNode? value) =>
     value is JsonObject path ? path["AssetPathName"]!.GetValue<string>() : value!.GetValue<string>();

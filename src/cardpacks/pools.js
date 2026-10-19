@@ -21,8 +21,9 @@ const tagged = (tags, prefix) => tags.find((tag) => tag.toLowerCase().startsWith
 const entries = [];
 for (const templateId of Object.keys(items)) {
   const item = describe(templateId);
-  // Founders, test and tutorial items only come from their own packs; tier 0 items are tutorial versions.
-  if (item.tokens.some((token) => ["founders", "test", "tutorial"].includes(token)) || item.tier === 0 || !item.rarity) continue;
+  // Founders, test and tutorial items only come from their own packs, and the Halloween event's (the "Husk"
+  // survivors, WorkerHalloween) from its event; tier 0 items are tutorial versions.
+  if (item.tokens.some((token) => ["founders", "test", "tutorial"].includes(token) || token.includes("halloween")) || item.tier === 0 || !item.rarity) continue;
   const tags = characters.get(templateId.toLowerCase())?.tags ?? items[templateId].tags ?? [];
 
   if (item.type === "hero") entries.push({ ...item, kind: "hero", sub: tagged(tags, "homebase.class.is") });

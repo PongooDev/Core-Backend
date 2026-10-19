@@ -1,0 +1,390 @@
+{
+  "personalities": [
+    {
+      "genders": [
+        {
+          "gender": "Male",
+          "portraits": [
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Adventurous-M01.IconDef-WorkerPortrait-Adventurous-M01",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Adventurous-M02.IconDef-WorkerPortrait-Adventurous-M02",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Adventurous-M03.IconDef-WorkerPortrait-Adventurous-M03",
+              "weight": 1
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "gender": "Female",
+          "portraits": [
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Adventurous-F01.IconDef-WorkerPortrait-Adventurous-F01",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Adventurous-F02.IconDef-WorkerPortrait-Adventurous-F02",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Adventurous-F03.IconDef-WorkerPortrait-Adventurous-F03",
+              "weight": 1
+            }
+          ],
+          "weight": 1
+        }
+      ],
+      "tag": "Homebase.Worker.Personality.IsAdventurous",
+      "weight": 1
+    },
+    {
+      "genders": [
+        {
+          "gender": "Male",
+          "portraits": [
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Analytical-M01.IconDef-WorkerPortrait-Analytical-M01",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Analytical-M02.IconDef-WorkerPortrait-Analytical-M02",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Analytical-M03.IconDef-WorkerPortrait-Analytical-M03",
+              "weight": 1
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "gender": "Female",
+          "portraits": [
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Analytical-F01.IconDef-WorkerPortrait-Analytical-F01",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Analytical-F02.IconDef-WorkerPortrait-Analytical-F02",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Analytical-F03.IconDef-WorkerPortrait-Analytical-F03",
+              "weight": 1
+            }
+          ],
+          "weight": 1
+        }
+      ],
+      "tag": "Homebase.Worker.Personality.IsAnalytical",
+      "weight": 1
+    },
+    {
+      "genders": [
+        {
+          "gender": "Male",
+          "portraits": [
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Competitive-M01.IconDef-WorkerPortrait-Competitive-M01",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Competitive-M02.IconDef-WorkerPortrait-Competitive-M02",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Competitive-M03.IconDef-WorkerPortrait-Competitive-M03",
+              "weight": 1
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "gender": "Female",
+          "portraits": [
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Competitive-F01.IconDef-WorkerPortrait-Competitive-F01",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Competitive-F02.IconDef-WorkerPortrait-Competitive-F02",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Competitive-F03.IconDef-WorkerPortrait-Competitive-F03",
+              "weight": 1
+            }
+          ],
+          "weight": 1
+        }
+      ],
+      "tag": "Homebase.Worker.Personality.IsCompetitive",
+      "weight": 1
+    },
+    {
+      "genders": [
+        {
+          "gender": "Male",
+          "portraits": [
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Cooperative-M01.IconDef-WorkerPortrait-Cooperative-M01",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Cooperative-M02.IconDef-WorkerPortrait-Cooperative-M02",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Cooperative-M03.IconDef-WorkerPortrait-Cooperative-M03",
+              "weight": 1
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "gender": "Female",
+          "portraits": [
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Cooperative-F01.IconDef-WorkerPortrait-Cooperative-F01",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Cooperative-F02.IconDef-WorkerPortrait-Cooperative-F02",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Cooperative-F03.IconDef-WorkerPortrait-Cooperative-F03",
+              "weight": 1
+            }
+          ],
+          "weight": 1
+        }
+      ],
+      "tag": "Homebase.Worker.Personality.IsCooperative",
+      "weight": 1
+    },
+    {
+      "genders": [
+        {
+          "gender": "Male",
+          "portraits": [
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Curious-M01.IconDef-WorkerPortrait-Curious-M01",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Curious-M02.IconDef-WorkerPortrait-Curious-M02",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Curious-M03.IconDef-WorkerPortrait-Curious-M03",
+              "weight": 1
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "gender": "Female",
+          "portraits": [
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Curious-F01.IconDef-WorkerPortrait-Curious-F01",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Curious-F02.IconDef-WorkerPortrait-Curious-F02",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Curious-F03.IconDef-WorkerPortrait-Curious-F03",
+              "weight": 1
+            }
+          ],
+          "weight": 1
+        }
+      ],
+      "tag": "Homebase.Worker.Personality.IsCurious",
+      "weight": 1
+    },
+    {
+      "genders": [
+        {
+          "gender": "Male",
+          "portraits": [
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Dreamer-M01.IconDef-WorkerPortrait-Dreamer-M01",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Dreamer-M02.IconDef-WorkerPortrait-Dreamer-M02",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Dreamer-M03.IconDef-WorkerPortrait-Dreamer-M03",
+              "weight": 1
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "gender": "Female",
+          "portraits": [
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Dreamer-F01.IconDef-WorkerPortrait-Dreamer-F01",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Dreamer-F02.IconDef-WorkerPortrait-Dreamer-F02",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Dreamer-F03.IconDef-WorkerPortrait-Dreamer-F03",
+              "weight": 1
+            }
+          ],
+          "weight": 1
+        }
+      ],
+      "tag": "Homebase.Worker.Personality.IsDreamer",
+      "weight": 1
+    },
+    {
+      "genders": [
+        {
+          "gender": "Male",
+          "portraits": [
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Pragmatic-M01.IconDef-WorkerPortrait-Pragmatic-M01",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Pragmatic-M02.IconDef-WorkerPortrait-Pragmatic-M02",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Pragmatic-M03.IconDef-WorkerPortrait-Pragmatic-M03",
+              "weight": 1
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "gender": "Female",
+          "portraits": [
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Pragmatic-F01.IconDef-WorkerPortrait-Pragmatic-F01",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Pragmatic-F02.IconDef-WorkerPortrait-Pragmatic-F02",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Pragmatic-F03.IconDef-WorkerPortrait-Pragmatic-F03",
+              "weight": 1
+            }
+          ],
+          "weight": 1
+        }
+      ],
+      "tag": "Homebase.Worker.Personality.IsPragmatic",
+      "weight": 1
+    },
+    {
+      "genders": [
+        {
+          "gender": "Male",
+          "portraits": [
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Dependable-M01.IconDef-WorkerPortrait-Dependable-M01",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Dependable-M02.IconDef-WorkerPortrait-Dependable-M02",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Dependable-M03.IconDef-WorkerPortrait-Dependable-M03",
+              "weight": 1
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "gender": "Female",
+          "portraits": [
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Dependable-F01.IconDef-WorkerPortrait-Dependable-F01",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Dependable-F02.IconDef-WorkerPortrait-Dependable-F02",
+              "weight": 1
+            },
+            {
+              "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Dependable-F03.IconDef-WorkerPortrait-Dependable-F03",
+              "weight": 1
+            }
+          ],
+          "weight": 1
+        }
+      ],
+      "tag": "Homebase.Worker.Personality.IsDependable",
+      "weight": 1
+    }
+  ],
+  "setBonuses": [
+    {
+      "name": "Shield Bonus",
+      "requiredWorkers": 2,
+      "tag": "Homebase.Worker.SetBonus.IsResistanceLow",
+      "weight": 1
+    },
+    {
+      "name": "Ability Damage Bonus",
+      "requiredWorkers": 3,
+      "tag": "Homebase.Worker.SetBonus.IsAbilityDamageLow",
+      "weight": 1
+    },
+    {
+      "name": "Melee Damage Bonus",
+      "requiredWorkers": 3,
+      "tag": "Homebase.Worker.SetBonus.IsMeleeDamageLow",
+      "weight": 1
+    },
+    {
+      "name": "Ranged Damage Bonus",
+      "requiredWorkers": 3,
+      "tag": "Homebase.Worker.SetBonus.IsRangedDamageLow",
+      "weight": 1
+    },
+    {
+      "name": "Shield Regen Bonus",
+      "requiredWorkers": 2,
+      "tag": "Homebase.Worker.SetBonus.IsShieldRegenLow",
+      "weight": 1
+    },
+    {
+      "name": "Health Bonus",
+      "requiredWorkers": 2,
+      "tag": "Homebase.Worker.SetBonus.IsFortitudeLow",
+      "weight": 1
+    },
+    {
+      "name": "Trap Durability",
+      "requiredWorkers": 2,
+      "tag": "Homebase.Worker.SetBonus.IsTrapDurabilityHigh",
+      "weight": 1
+    },
+    {
+      "name": "Trap Damage",
+      "requiredWorkers": 3,
+      "tag": "Homebase.Worker.SetBonus.IsTrapDamageLow",
+      "weight": 1
+    }
+  ]
+}
