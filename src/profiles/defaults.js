@@ -3,11 +3,16 @@ import { isChoicePack, rollOptions } from "../cardpacks/contents.js";
 
 const never = "0001-01-01T00:00:00.000Z";
 
+// The client only counts a player's homebase as set up once townName, bannerIconId or bannerColorId has a value
+// (GetHomeBaseInfoForPlayer, FortMcpContext.cpp: FFortHomeBaseInfo.ValidData); until then their party banner spins
+// forever ("Got bad homebase data"). New homebases get the first rows of the BannerIcons and BannerColors tables.
+export const defaultBanner = { bannerIconId: "StandardBanner1", bannerColorId: "DefaultColor1" };
+
 const templates = {
   profile0: () => ({
     level: 1,
     xp: 0,
-    homebase: { townName: "", bannerIconId: "", bannerColorId: "", flagPattern: 0, flagColor: 0, playerXP: 0 },
+    homebase: { townName: "", ...defaultBanner, flagPattern: 0, flagColor: 0, playerXP: 0 },
     default_hero_squad_id: "Squad_Combat_AdventureSquadOne",
     gameplay_stats: [],
     mode_loadouts: [],
@@ -40,6 +45,12 @@ export function addMissingStats(profile) {
       profile.stats.attributes[name] = value;
       added = true;
     }
+  }
+  // Homebases made before the default banner existed have none.
+  const homebase = profile.stats.attributes.homebase;
+  if (homebase && !homebase.bannerIconId && !homebase.bannerColorId) {
+    Object.assign(homebase, defaultBanner);
+    added = true;
   }
   return added;
 }

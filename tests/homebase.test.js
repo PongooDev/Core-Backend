@@ -23,6 +23,26 @@ test("SetHomebaseName stores the town name in the homebase stat", async () => {
   }
 });
 
+test("a new homebase has a banner, so the client counts it as set up, and SetHomebaseBanner changes it", async () => {
+  const backend = await startBackend();
+  try {
+    const { token, accountId } = await userLogin(backend.port, "CoreTest");
+    const query = await post(backend.port, command(accountId, "QueryProfile"), token, {});
+    const { homebase } = query.body.profileChanges[0].profile.stats.attributes;
+    assert.deepEqual([homebase.bannerIconId, homebase.bannerColorId], ["StandardBanner1", "DefaultColor1"]);
+
+    const changed = await post(backend.port, command(accountId, "SetHomebaseBanner", 1), token,
+      { homebaseBannerIconId: "StandardBanner3", homebaseBannerColorId: "DefaultColor8" });
+    const [change] = changed.body.profileChanges;
+    assert.deepEqual([change.name, change.value.bannerIconId, change.value.bannerColorId], ["homebase", "StandardBanner3", "DefaultColor8"]);
+
+    const empty = await post(backend.port, command(accountId, "SetHomebaseBanner", 2), token, { homebaseBannerIconId: "", homebaseBannerColorId: "" });
+    assert.deepEqual(empty.body.profileChanges, []);
+  } finally {
+    backend.close();
+  }
+});
+
 test("SetItemFavoriteStatus sets the int favorite attribute", async () => {
   const backend = await startBackend();
   try {
