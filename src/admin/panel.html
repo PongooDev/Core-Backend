@@ -4,308 +4,775 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Core Admin</title>
-<link rel="icon" href="data:,">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M6 4h20l-4 24H2z' fill='%23ffe74c'/%3E%3C/svg%3E">
 <style>
+  /* Save the World, 2017: deep blue screens, heavy condensed capitals, yellow call-to-action buttons, rarity colours. */
   :root {
     color-scheme: dark;
-    --bg: #101014;
-    --surface: #18181c;
-    --surface-raised: #202024;
-    --border: #2a2a30;
+    --night: #050b23;
+    --deep: #0a1640;
+    --panel: rgba(14, 36, 96, .82);
+    --panel-solid: #0f2560;
+    --panel-raised: #163377;
+    --line: rgba(118, 168, 255, .22);
+    --line-strong: rgba(118, 168, 255, .45);
     --text: #ffffff;
-    --muted: #a0a0ab;
-    --accent: #26bbff;
-    --accent-text: #101014;
-    --good: #3ccb7f;
-    --warn: #ffb02e;
-    --bad: #ff5c5c;
-    --radius: 6px;
-    font-family: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+    --muted: #9fb3e3;
+    --sky: #3fb8ff;
+    --yellow: #ffe74c;
+    --yellow-deep: #f2c21b;
+    --ink: #13104a;
+    --good: #61d64a;
+    --warn: #ffb030;
+    --bad: #ff4b55;
+    --r-c: #9aa6b2;
+    --r-uc: #63c13a;
+    --r-r: #3b9cff;
+    --r-vr: #b65cf2;
+    --r-sr: #f7a032;
+    --display: "Burbank Big Condensed", "Burbank Big Cd Bk", "Bebas Neue", "Oswald", "Roboto Condensed", "Arial Narrow", Impact, sans-serif;
+    --body: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+    font-family: var(--body);
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.45; }
-  button { font: inherit; }
-  code { font-family: Consolas, "Cascadia Mono", ui-monospace, monospace; font-size: 12px; color: var(--muted); }
-
-  header {
-    display: flex; align-items: center; gap: 12px; padding: 0 24px; height: 56px;
-    background: var(--surface); border-bottom: 1px solid var(--border);
+  html { background: var(--night); }
+  body {
+    margin: 0; min-height: 100vh; color: var(--text); font-size: 14px; line-height: 1.45;
+    background:
+      radial-gradient(1200px 600px at 75% -10%, rgba(63, 184, 255, .18), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(140, 70, 255, .16), transparent 60%),
+      repeating-linear-gradient(135deg, rgba(255, 255, 255, .018) 0 2px, transparent 2px 14px),
+      linear-gradient(180deg, var(--deep), var(--night));
+    background-attachment: fixed;
   }
-  .mark { width: 22px; height: 22px; border-radius: 4px; background: var(--accent); }
-  .brand { font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
-  .brand span { color: var(--muted); font-weight: 500; letter-spacing: .04em; text-transform: none; margin-left: 6px; }
-  header .host { margin-left: auto; color: var(--muted); font-size: 12px; }
-
-  .layout { display: grid; grid-template-columns: 320px 1fr; gap: 20px; padding: 24px; max-width: 1280px; margin: 0 auto; }
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); min-width: 0; }
-  .card-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 16px 12px; }
-  h2, h3 { margin: 0; font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
-  h1 { margin: 0; font-size: 26px; font-weight: 700; overflow-wrap: anywhere; }
-
-  .search { display: block; width: calc(100% - 32px); margin: 0 16px 12px; padding: 9px 12px; border-radius: var(--radius);
-    border: 1px solid var(--border); background: var(--bg); color: var(--text); font: inherit; }
-  .search:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
-
-  .accounts { list-style: none; margin: 0; padding: 0 8px 8px; }
-  .accounts button {
-    width: 100%; display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; text-align: left; padding: 10px 10px;
-    border: 0; border-radius: var(--radius); background: transparent; color: inherit; cursor: pointer;
-  }
-  .accounts button:hover { background: var(--surface-raised); }
-  .accounts button[aria-current="true"] { background: var(--surface-raised); box-shadow: inset 3px 0 0 var(--accent); }
-  .accounts .name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .accounts .sub { grid-column: 1 / -1; color: var(--muted); font-size: 12px; }
-
-  .ghost { border: 1px solid var(--border); background: transparent; color: var(--text); padding: 6px 12px;
-    border-radius: var(--radius); cursor: pointer; }
-  .ghost:hover { background: var(--surface-raised); }
-  .primary { border: 0; background: var(--accent); color: var(--accent-text); padding: 10px 18px; border-radius: var(--radius);
-    font-weight: 700; letter-spacing: .04em; text-transform: uppercase; font-size: 13px; cursor: pointer; }
-  .primary:hover { filter: brightness(1.1); }
-  .primary:disabled { background: var(--surface-raised); color: var(--muted); cursor: default; filter: none; }
-  :is(button):focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 999px; font-size: 11px;
-    font-weight: 600; letter-spacing: .04em; text-transform: uppercase; background: var(--surface-raised); color: var(--muted); white-space: nowrap; }
-  .chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-  .chip.good { color: var(--good); }
-  .chip.warn { color: var(--warn); }
-  .chip.accent { color: var(--accent); }
-
-  .detail { padding: 24px; }
-  .empty { color: var(--muted); padding: 48px 16px; text-align: center; }
-  .detail-head { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; justify-content: space-between; }
-  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 24px 0 12px; }
-  .stat { background: var(--surface-raised); border-radius: var(--radius); padding: 12px 14px; }
-  .stat .label { color: var(--muted); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
-  .stat .value { font-size: 18px; font-weight: 600; margin-top: 4px; overflow-wrap: anywhere; }
-  .note { color: var(--muted); font-size: 13px; margin: 0 0 24px; }
-  .give { display: flex; flex-wrap: wrap; gap: 8px; }
-  .field { padding: 9px 12px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--bg); color: var(--text); font: inherit; }
-  .field:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
-  .give .item { flex: 1 1 260px; min-width: 0; }
-  .give .count { width: 96px; }
-
-  section.block { margin-top: 24px; }
-  section.block h3 { margin-bottom: 10px; }
-  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); }
-  table { width: 100%; border-collapse: collapse; }
-  th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
-  th { color: var(--muted); font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; background: var(--surface-raised); }
-  tr:last-child td { border-bottom: 0; }
-  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  button, input, select { font: inherit; color: inherit; }
+  code, .mono { font-family: Consolas, "Cascadia Mono", ui-monospace, monospace; font-size: 12px; }
   .muted { color: var(--muted); }
+  h1, h2, h3, .display { font-family: var(--display); font-weight: 900; text-transform: uppercase; letter-spacing: .02em; margin: 0; }
+  h1 { font-size: 40px; line-height: 1; font-style: italic; }
+  h2 { font-size: 24px; font-style: italic; }
+  h3 { font-size: 17px; color: var(--muted); letter-spacing: .06em; }
 
-  #toast { position: fixed; right: 24px; bottom: 24px; max-width: calc(100% - 48px); padding: 12px 16px; border-radius: var(--radius);
-    background: var(--surface-raised); border: 1px solid var(--border); border-left: 3px solid var(--accent);
-    opacity: 0; transform: translateY(8px); transition: opacity .15s, transform .15s; pointer-events: none; }
+  /* Top bar */
+  .topbar {
+    position: sticky; top: 0; z-index: 10; display: flex; align-items: stretch; gap: 8px; height: 64px; padding: 0 24px;
+    background: linear-gradient(180deg, rgba(5, 11, 35, .97), rgba(10, 22, 64, .94));
+    border-bottom: 2px solid var(--yellow); box-shadow: 0 6px 24px rgba(0, 0, 0, .45);
+  }
+  .logo { display: flex; align-items: center; gap: 10px; margin-right: 18px; }
+  .logo .mark { width: 30px; height: 30px; background: var(--yellow); clip-path: polygon(22% 0, 100% 0, 78% 100%, 0 100%); }
+  .logo .word { font-family: var(--display); font-weight: 900; font-size: 30px; font-style: italic; text-transform: uppercase; line-height: 1; }
+  .logo .word span { color: var(--yellow); margin-left: 6px; }
+  nav.tabs { display: flex; align-items: stretch; gap: 2px; }
+  nav.tabs a {
+    display: flex; align-items: center; padding: 0 18px; color: var(--muted); text-decoration: none;
+    font-family: var(--display); font-weight: 900; font-size: 20px; font-style: italic; text-transform: uppercase; letter-spacing: .03em;
+    border-bottom: 4px solid transparent; margin-bottom: -2px;
+  }
+  nav.tabs a:hover { color: var(--text); }
+  nav.tabs a[aria-current="page"] { color: var(--text); border-bottom-color: var(--yellow); text-shadow: 0 0 18px rgba(255, 231, 76, .35); }
+  .server { margin-left: auto; display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 12px; white-space: nowrap; min-width: 0; overflow: hidden; }
+  .server #server-line { overflow: hidden; text-overflow: ellipsis; }
+  html, body { overflow-x: hidden; }
+  .pulse { width: 9px; height: 9px; border-radius: 50%; background: var(--good); box-shadow: 0 0 0 0 rgba(97, 214, 74, .7); animation: pulse 2s infinite; }
+  .pulse.down { background: var(--bad); animation: none; }
+  @keyframes pulse { 70% { box-shadow: 0 0 0 9px rgba(97, 214, 74, 0); } 100% { box-shadow: 0 0 0 0 rgba(97, 214, 74, 0); } }
+
+  main { max-width: 1440px; margin: 0 auto; padding: 24px; }
+  .view-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
+
+  /* Panels with STW's clipped corner */
+  .panel {
+    background: var(--panel); border: 1px solid var(--line); backdrop-filter: blur(6px);
+    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+    padding: 18px; min-width: 0;
+  }
+  .panel + .panel { margin-top: 16px; }
+  .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+  .grid { display: grid; gap: 16px; }
+  .grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+  /* Buttons */
+  .btn {
+    position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 36px;
+    padding: 0 18px; border: 0; cursor: pointer; transform: skewX(-10deg); white-space: nowrap;
+    font-family: var(--display); font-weight: 900; font-size: 17px; text-transform: uppercase; letter-spacing: .03em;
+    background: linear-gradient(180deg, #2f7cf0, #1b4fc0); color: #fff; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .25);
+    transition: filter .12s, transform .12s;
+  }
+  .btn > * { transform: skewX(10deg); }
+  .btn:hover { filter: brightness(1.15); }
+  .btn:active { transform: skewX(-10deg) translateY(1px); }
+  .btn.primary { background: linear-gradient(180deg, var(--yellow), var(--yellow-deep)); color: var(--ink); box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .18), 0 0 18px rgba(255, 231, 76, .2); }
+  .btn.ghost { background: rgba(255, 255, 255, .06); box-shadow: inset 0 0 0 1px var(--line-strong); }
+  .btn.danger { background: linear-gradient(180deg, #ff5a63, #c8202c); }
+  .btn.small { min-height: 28px; padding: 0 12px; font-size: 14px; }
+  .btn:disabled { filter: grayscale(1) brightness(.6); cursor: default; }
+  .btn:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+  /* Inputs */
+  .field {
+    min-height: 36px; padding: 6px 12px; background: rgba(3, 9, 30, .7); border: 1px solid var(--line-strong); color: var(--text);
+    border-radius: 2px; min-width: 0;
+  }
+  .field:focus { border-color: var(--yellow); outline: none; }
+  .field.num { width: 120px; text-align: right; font-variant-numeric: tabular-nums; }
+  .field.tiny { width: 76px; min-height: 28px; padding: 2px 8px; text-align: right; }
+  select.field { padding-right: 28px; }
+  label.check { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+
+  /* Stat tiles */
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+  .tile {
+    position: relative; padding: 14px 16px 12px; background: linear-gradient(160deg, rgba(37, 82, 180, .55), rgba(12, 30, 84, .7));
+    border: 1px solid var(--line); clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
+  }
+  .tile .label { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .tile .value { font-family: var(--display); font-weight: 900; font-size: 34px; line-height: 1.1; font-style: italic; margin-top: 4px; overflow-wrap: anywhere; }
+  .tile .value small { font-size: 16px; color: var(--muted); font-style: normal; margin-left: 4px; }
+  .tile.vbucks .value { color: #bfe6ff; }
+  .tile.text .value { font-size: 22px; line-height: 1.25; }
+  .tile .value .sub { display: block; font-size: 13px; color: var(--muted); font-style: normal; font-family: var(--body); font-weight: 600; }
+  .tile.accent { border-color: rgba(255, 231, 76, .45); }
+
+  /* Chips */
+  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 2px 9px; font-size: 11px; font-weight: 700; letter-spacing: .06em;
+    text-transform: uppercase; background: rgba(255, 255, 255, .08); color: var(--muted); white-space: nowrap; transform: skewX(-10deg); }
+  .chip > span { transform: skewX(10deg); }
+  .chip.good { color: var(--good); background: rgba(97, 214, 74, .12); }
+  .chip.warn { color: var(--warn); background: rgba(255, 176, 48, .12); }
+  .chip.bad { color: #fff; background: var(--bad); }
+  .chip.sky { color: var(--sky); background: rgba(63, 184, 255, .12); }
+  .chip.yellow { color: var(--ink); background: var(--yellow); }
+
+  /* Tables */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--line); background: rgba(3, 9, 30, .35); }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; vertical-align: middle; }
+  th { font-family: var(--display); font-weight: 900; font-size: 15px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted);
+    background: rgba(22, 51, 119, .65); position: sticky; top: 0; }
+  tbody tr:hover { background: rgba(63, 184, 255, .06); }
+  tr:last-child td { border-bottom: 0; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.wrap { white-space: normal; }
+  .empty { padding: 36px 16px; text-align: center; color: var(--muted); }
+
+  /* Rarity */
+  .rarity { display: inline-block; width: 10px; height: 10px; transform: rotate(45deg); margin-right: 8px; background: var(--r-c); flex: none; }
+  .rarity.uc { background: var(--r-uc); } .rarity.r { background: var(--r-r); } .rarity.vr { background: var(--r-vr); } .rarity.sr { background: var(--r-sr); }
+  .item-name { display: inline-flex; align-items: center; font-weight: 600; }
+  .item-name .tid { margin-left: 8px; color: var(--muted); font-weight: 400; }
+
+  /* Players view */
+  .players { display: grid; grid-template-columns: 330px minmax(0, 1fr); gap: 16px; align-items: start; }
+  .roster { position: sticky; top: 88px; max-height: calc(100vh - 112px); display: flex; flex-direction: column; }
+  .roster .list { list-style: none; margin: 10px -6px 0; padding: 0; overflow-y: auto; }
+  .roster .list button {
+    width: 100%; display: grid; grid-template-columns: auto 1fr auto; gap: 2px 10px; align-items: center; padding: 9px 10px;
+    border: 0; background: transparent; cursor: pointer; text-align: left;
+  }
+  .roster .list button:hover { background: rgba(63, 184, 255, .08); }
+  .roster .list button[aria-current="true"] { background: linear-gradient(90deg, rgba(255, 231, 76, .2), rgba(255, 231, 76, 0)); box-shadow: inset 4px 0 0 var(--yellow); }
+  .avatar { grid-row: span 2; width: 34px; height: 34px; display: grid; place-items: center; font-family: var(--display); font-weight: 900; font-size: 20px;
+    background: linear-gradient(160deg, #3fb8ff, #6b39d6); clip-path: polygon(14% 0, 100% 0, 86% 100%, 0 100%); }
+  .roster .name { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .roster .sub { grid-column: 2 / -1; color: var(--muted); font-size: 12px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #4a5a86; }
+  .dot.on { background: var(--good); box-shadow: 0 0 8px var(--good); }
+
+  .hero-head { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+  .hero-head .avatar { width: 64px; height: 64px; font-size: 38px; grid-row: auto; }
+  .hero-head .who { flex: 1; min-width: 220px; }
+  .hero-head .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .subtabs { display: flex; gap: 4px; margin: 18px 0 16px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .subtabs button {
+    border: 0; background: transparent; cursor: pointer; padding: 8px 14px; color: var(--muted);
+    font-family: var(--display); font-weight: 900; font-size: 18px; font-style: italic; text-transform: uppercase; border-bottom: 3px solid transparent; margin-bottom: -1px;
+  }
+  .subtabs button[aria-selected="true"] { color: var(--text); border-bottom-color: var(--sky); }
+  .subtabs button .count { font-size: 13px; color: var(--muted); margin-left: 4px; font-style: normal; }
+
+  .bar { height: 10px; background: rgba(3, 9, 30, .7); border: 1px solid var(--line); overflow: hidden; }
+  .bar > div { height: 100%; background: linear-gradient(90deg, var(--sky), #8ee4ff); }
+  .bar.rest > div { background: linear-gradient(90deg, #6b39d6, #c58cff); }
+  .balance { display: grid; grid-template-columns: 1fr auto; gap: 8px 12px; align-items: center; padding: 12px; border: 1px solid var(--line); background: rgba(3, 9, 30, .35); }
+  .balance .label { font-weight: 700; }
+  .balance .row { grid-column: 1 / -1; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .balance .amount { font-family: var(--display); font-weight: 900; font-size: 26px; font-style: italic; text-align: right; }
+
+  .filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .filters button { border: 1px solid var(--line-strong); background: rgba(3, 9, 30, .5); padding: 4px 12px; cursor: pointer; transform: skewX(-10deg); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+  .filters button > span { display: inline-block; transform: skewX(10deg); }
+  .filters button[aria-pressed="true"] { background: var(--sky); color: var(--night); border-color: var(--sky); }
+
+  .catalog { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-top: 12px; }
+  .card {
+    position: relative; text-align: left; border: 0; cursor: pointer; padding: 12px 12px 10px; min-height: 86px;
+    background: linear-gradient(160deg, rgba(154, 166, 178, .45), rgba(40, 50, 70, .8));
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+    box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .3);
+  }
+  .card.uc { background: linear-gradient(160deg, rgba(99, 193, 58, .55), rgba(20, 60, 25, .85)); }
+  .card.r { background: linear-gradient(160deg, rgba(59, 156, 255, .6), rgba(14, 40, 100, .85)); }
+  .card.vr { background: linear-gradient(160deg, rgba(182, 92, 242, .6), rgba(50, 18, 90, .85)); }
+  .card.sr { background: linear-gradient(160deg, rgba(247, 160, 50, .65), rgba(95, 45, 10, .85)); }
+  .card[aria-pressed="true"] { outline: 3px solid var(--yellow); outline-offset: -3px; }
+  .card .t { font-weight: 800; line-height: 1.2; padding-right: 70px; }
+  .card .s { font-size: 11px; opacity: .8; margin-top: 4px; overflow-wrap: anywhere; }
+  .card .k { position: absolute; right: 10px; top: 8px; font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; opacity: .85; }
+  .quick { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }
+
+  .shields { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+  .shield { padding: 16px; border: 1px solid var(--line); background: linear-gradient(160deg, rgba(63, 184, 255, .18), rgba(10, 24, 70, .6)); }
+  .shield .lvl { font-family: var(--display); font-weight: 900; font-size: 52px; font-style: italic; line-height: 1; }
+  .shield .lvl small { font-size: 20px; color: var(--muted); }
+  .pips { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; margin: 10px 0 12px; }
+  .pips span { height: 8px; background: rgba(255, 255, 255, .12); transform: skewX(-20deg); }
+  .pips span.on { background: var(--yellow); }
+
+  .danger-zone { border-color: rgba(255, 75, 85, .5); background: linear-gradient(160deg, rgba(120, 10, 25, .35), rgba(14, 36, 96, .6)); }
+  .danger-zone h2 { color: #ffb3b8; }
+  .option-row { display: flex; gap: 16px; flex-wrap: wrap; margin: 10px 0 14px; }
+
+  .log { height: calc(100vh - 360px); min-height: 280px; overflow-y: auto; font-family: Consolas, "Cascadia Mono", ui-monospace, monospace; font-size: 12px;
+    background: rgba(2, 6, 20, .85); border: 1px solid var(--line); padding: 8px 0; }
+  .log div { padding: 1px 12px; white-space: pre-wrap; word-break: break-all; }
+  .log .t { color: #6f84b8; } .log .c { color: var(--yellow); }
+  .log .HTTP { color: var(--sky); } .log .XMPP { color: #c58cff; } .log .Matchmaking { color: var(--good); } .log .World, .log .MCP { color: #ffcf66; }
+
+  #toast { position: fixed; right: 24px; bottom: 24px; z-index: 50; max-width: min(460px, calc(100% - 48px)); padding: 12px 18px;
+    background: var(--panel-raised); border-left: 4px solid var(--yellow); box-shadow: 0 10px 30px rgba(0, 0, 0, .5);
+    opacity: 0; transform: translateY(10px); transition: opacity .15s, transform .15s; pointer-events: none; font-weight: 600; }
   #toast.show { opacity: 1; transform: none; }
   #toast.error { border-left-color: var(--bad); }
+  .note { color: var(--muted); font-size: 12px; }
 
-  @media (max-width: 760px) {
-    header { padding: 0 16px; }
-    .layout { grid-template-columns: 1fr; padding: 16px; gap: 16px; }
-    .detail { padding: 16px; }
+  @media (max-width: 980px) {
+    .players { grid-template-columns: minmax(0, 1fr); }
+    .roster { position: static; max-height: 360px; }
+    .grid.cols-2, .grid.cols-3 { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 720px) {
+    .topbar { height: auto; flex-wrap: wrap; padding: 8px 16px; }
+    nav.tabs { width: 100%; overflow-x: auto; scrollbar-width: none; }
+    nav.tabs a { padding: 6px 10px; font-size: 17px; flex: none; }
+    .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .tile .value { font-size: 26px; }
+    .server { margin-left: 0; width: 100%; }
+    main { padding: 16px; }
+    h1 { font-size: 30px; }
   }
 </style>
 </head>
 <body>
-<header>
-  <div class="mark" aria-hidden="true"></div>
-  <div class="brand">Core<span>Admin</span></div>
-  <div class="host" id="host"></div>
-</header>
-
-<main class="layout">
-  <nav class="card" aria-label="Accounts">
-    <div class="card-head">
-      <h2>Accounts</h2>
-      <button class="ghost" id="refresh" type="button">Refresh</button>
-    </div>
-    <input class="search" id="search" type="search" placeholder="Search accounts" aria-label="Search accounts">
-    <ul class="accounts" id="accounts"></ul>
+<header class="topbar">
+  <div class="logo"><div class="mark" aria-hidden="true"></div><div class="word">Core<span>Admin</span></div></div>
+  <nav class="tabs" aria-label="Sections">
+    <a href="#/dashboard" data-view="dashboard">Dashboard</a>
+    <a href="#/players" data-view="players">Players</a>
+    <a href="#/sessions" data-view="sessions">Sessions</a>
+    <a href="#/logs" data-view="logs">Logs</a>
   </nav>
-  <div class="card detail" id="detail" aria-live="polite">
-    <div class="empty">Select an account. Accounts appear here after their first login.</div>
-  </div>
-</main>
-
+  <div class="server"><span class="pulse" id="pulse"></span><span id="server-line">Connecting…</span></div>
+</header>
+<main id="view" aria-live="polite"></main>
 <div id="toast" role="status"></div>
-<datalist id="item-ids"></datalist>
 
 <script>
-  const state = { accounts: [], selected: null, busy: false };
-  const $ = (id) => document.getElementById(id);
+"use strict";
+const $ = (id) => document.getElementById(id);
+const state = { view: "dashboard", accounts: [], account: null, accountId: null, tab: "overview", inventoryProfile: "items",
+  inventoryCategory: "", inventorySearch: "", catalog: { search: "", category: "", items: [], categories: [], picked: null },
+  logs: [], logAfter: 0, logPaused: false, logFilter: "", logCategory: "", timers: [] };
 
-  function el(tag, props = {}, ...children) {
-    const node = Object.assign(document.createElement(tag), props);
-    for (const child of children.flat()) if (child != null) node.append(child);
-    return node;
+function el(tag, props = {}, ...children) {
+  const node = document.createElement(tag);
+  for (const [key, value] of Object.entries(props ?? {})) {
+    if (value === undefined || value === null || value === false) continue;
+    if (key === "class") node.className = value;
+    else if (key === "text") node.textContent = value;
+    else if (key.startsWith("on")) node.addEventListener(key.slice(2), value);
+    else if (key in node && typeof value !== "string") node[key] = value;
+    else node.setAttribute(key, value === true ? "" : value);
   }
+  for (const child of children.flat(Infinity)) if (child !== null && child !== undefined && child !== false) node.append(child instanceof Node ? child : String(child));
+  return node;
+}
+const btn = (label, onclick, kind = "", extra = {}) => el("button", { type: "button", class: `btn ${kind}`, onclick, ...extra }, el("span", { text: label }));
+const chip = (label, kind = "") => el("span", { class: `chip ${kind}` }, el("span", { text: label }));
+const fmt = (number) => Number(number ?? 0).toLocaleString();
+const kinds = { heroes: "Heroes", schematics: "Schematics", survivors: "Survivors", leads: "Lead survivors", defenders: "Defenders", llamas: "Llamas",
+  vouchers: "Vouchers", resources: "Resources", consumables: "Consumables", transform: "Transform keys", expeditions: "Expeditions",
+  stormshields: "Storm shields", skilltree: "Skill tree", banners: "Banners", quests: "Quests", world: "Backpack and storage", other: "Other" };
+const kindLabel = (key) => kinds[key] ?? key;
 
-  async function api(path, options = {}) {
-    const response = await fetch(path, options.method === "POST"
-      ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(options.body ?? {}) }
-      : undefined);
-    const body = await response.json();
-    if (!response.ok) throw new Error(body.errorMessage ?? response.statusText);
-    return body;
+async function api(path, body) {
+  const response = await fetch(path, body === undefined ? undefined : { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.errorMessage ?? `${response.status} ${response.statusText}`);
+  return data;
+}
+
+let toastTimer;
+function toast(message, error = false) {
+  const node = $("toast");
+  node.textContent = message;
+  node.className = "show" + (error ? " error" : "");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => (node.className = ""), 4200);
+}
+async function act(promise, success) {
+  try {
+    const result = await promise;
+    if (success) toast(typeof success === "function" ? success(result) : success);
+    return result;
+  } catch (error) {
+    toast(error.message, true);
+    return null;
   }
+}
 
-  let toastTimer;
-  function toast(message, error = false) {
-    const node = $("toast");
-    node.textContent = message;
-    node.className = "show" + (error ? " error" : "");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => (node.className = ""), 4000);
+const relative = new Intl.RelativeTimeFormat(undefined, { numeric: "auto" });
+function ago(iso) {
+  if (!iso) return "never";
+  const seconds = (Date.parse(iso) - Date.now()) / 1000;
+  for (const [unit, size] of [["day", 86400], ["hour", 3600], ["minute", 60]]) {
+    if (Math.abs(seconds) >= size) return relative.format(Math.round(seconds / size), unit);
   }
+  return "just now";
+}
+function duration(seconds) {
+  const d = Math.floor(seconds / 86400), h = Math.floor(seconds % 86400 / 3600), m = Math.floor(seconds % 3600 / 60);
+  return d ? `${d}d ${h}h` : h ? `${h}h ${m}m` : `${m}m ${seconds % 60}s`;
+}
+const initial = (name) => (name || "?").trim()[0]?.toUpperCase() ?? "?";
 
-  const relative = new Intl.RelativeTimeFormat(undefined, { numeric: "auto" });
-  function ago(iso) {
-    if (!iso) return "never";
-    const seconds = (Date.parse(iso) - Date.now()) / 1000;
-    for (const [unit, size] of [["day", 86400], ["hour", 3600], ["minute", 60]]) {
-      if (Math.abs(seconds) >= size) return relative.format(Math.round(seconds / size), unit);
-    }
-    return "just now";
+function table(columns, rows, empty = "Nothing here yet.") {
+  if (!rows.length) return el("div", { class: "empty", text: empty });
+  return el("div", { class: "table-wrap" }, el("table", {},
+    el("thead", {}, el("tr", {}, columns.map(([label, , cls]) => el("th", { class: cls ?? "", text: label })))),
+    el("tbody", {}, rows.map((row) => el("tr", {}, columns.map(([, value, cls]) => el("td", { class: cls ?? "" }, value(row))))))));
+}
+const itemName = (item, withId = true) => el("span", { class: "item-name" }, el("span", { class: `rarity ${item.rarity}` }), item.name,
+  withId ? el("span", { class: "tid mono", text: item.templateId }) : null);
+const tile = (label, value, cls = "") => el("div", { class: `tile ${cls}` }, el("div", { class: "label", text: label }), el("div", { class: "value" }, value));
+
+/* ---------- routing ---------- */
+function route() {
+  const [, view = "dashboard", accountId, tab] = location.hash.split("/");
+  for (const timer of state.timers) clearInterval(timer);
+  state.timers = [];
+  const next = ["dashboard", "players", "sessions", "logs"].includes(view) ? view : "dashboard";
+  if (next !== state.view || !$("view").childElementCount) $("view").replaceChildren(el("div", { class: "empty", text: "Loading…" }));
+  state.view = next;
+  for (const link of document.querySelectorAll("nav.tabs a")) link.setAttribute("aria-current", link.dataset.view === state.view ? "page" : "false");
+  if (state.view === "players") {
+    if (accountId && accountId !== state.accountId) { state.accountId = accountId; state.account = null; }
+    if (!accountId) { state.accountId = null; state.account = null; }
+    if (tab) state.tab = tab;
   }
+  ({ dashboard: showDashboard, players: showPlayers, sessions: showSessions, logs: showLogs })[state.view]();
+}
+window.addEventListener("hashchange", route);
+const every = (ms, fn) => state.timers.push(setInterval(fn, ms));
 
-  const tutorialChip = (done) => el("span", { className: "chip " + (done ? "good" : "warn"), textContent: done ? "Tutorial done" : "In tutorial" });
-  const stateChip = (questState) => el("span", {
-    className: "chip " + ({ Claimed: "good", Completed: "good", Active: "accent" }[questState] ?? ""),
-    textContent: questState
-  });
+/* ---------- dashboard ---------- */
+async function showDashboard() {
+  const overview = await act(api("/admin/api/overview"));
+  const unknown = await act(api("/admin/api/unknown")) ?? [];
+  if (!overview || state.view !== "dashboard") return;
+  $("view").replaceChildren(
+    el("div", { class: "view-head" }, el("div", {}, el("h1", { text: "Dashboard" }), el("div", { class: "muted", text: "Save the World backend for Cert CL-3532353" })),
+      el("div", { class: "actions" }, btn("Refresh", showDashboard, "ghost"))),
+    el("div", { class: "tiles" },
+      tile("Accounts", fmt(overview.accounts), "accent"),
+      tile("Online now", fmt(overview.online.length)),
+      tile("Game sessions", fmt(overview.sessions.length)),
+      tile("Banned", fmt(overview.banned)),
+      tile("Uptime", duration(overview.uptimeSeconds)),
+      tile("Backend", [overview.version, overview.commit ? el("span", { class: "sub mono", text: `commit ${overview.commit}` }) : null])),
+    el("div", { class: "grid cols-2", style: "margin-top:16px" },
+      el("section", { class: "panel" }, el("div", { class: "panel-head" }, el("h2", { text: "Online players" })),
+        table([["Player", (p) => el("a", { href: `#/players/${p.accountId}`, text: p.displayName })], ["Connections", (p) => p.resources.join(", ")]],
+          overview.online, "Nobody is connected to XMPP right now.")),
+      el("section", { class: "panel" }, el("div", { class: "panel-head" }, el("h2", { text: "Recent logins" }), el("a", { href: "#/players", class: "muted", text: "All players →" })),
+        table([["Player", (a) => el("a", { href: `#/players/${a.id}`, text: a.displayName })], ["Level", (a) => a.level ?? "—", "num"],
+          ["V-Bucks", (a) => fmt(a.vbucks), "num"], ["Last login", (a) => ago(a.lastLogin)]], overview.recentLogins, "No logins yet."))),
+    el("section", { class: "panel" }, el("div", { class: "panel-head" }, el("h2", { text: "Game sessions" }), el("a", { href: "#/sessions", class: "muted", text: "Manage →" })),
+      sessionTable(overview.sessions, false)),
+    el("section", { class: "panel" }, el("div", { class: "panel-head" }, el("h2", { text: "Unanswered requests" }),
+      el("span", { class: "note", text: "Requests Core had no route for, newest first (data/logs/unknown)." })),
+      table([["When", (u) => ago(u.time)], ["Kind", (u) => u.kind ?? "route"], ["Method", (u) => u.method], ["Path", (u) => el("span", { class: "mono", text: u.path })], ["Build", (u) => u.build]],
+        unknown.slice(0, 12), "Every request so far had an answer.")),
+    el("p", { class: "note", text: `Data folder: ${overview.dataDir} · Node ${overview.node} · started ${ago(overview.startedAt)}` }));
+}
 
-  function renderAccounts() {
-    const query = $("search").value.trim().toLowerCase();
-    const list = state.accounts.filter((a) => !query || a.displayName.toLowerCase().includes(query) || a.id.includes(query));
-    $("accounts").replaceChildren(...(list.length ? list.map((account) => el("li", {},
-      el("button", {
-        type: "button",
-        onclick: () => select(account.id),
-        ariaCurrent: String(account.id === state.selected)
-      },
-        el("span", { className: "name", textContent: account.displayName }),
-        tutorialChip(account.tutorialCompleted),
-        el("span", { className: "sub", textContent: `Last login ${ago(account.lastLogin)}` }))
-    )) : [el("li", { className: "empty", textContent: state.accounts.length ? "No matches" : "No accounts yet" })]));
+/* ---------- players ---------- */
+async function loadAccounts() {
+  state.accounts = await act(api("/admin/api/accounts")) ?? state.accounts;
+}
+
+function roster() {
+  const search = el("input", { class: "field", type: "search", placeholder: "Search name or account id", "aria-label": "Search players", value: state.rosterSearch ?? "" });
+  const list = el("ul", { class: "list" });
+  const render = () => {
+    const query = search.value.trim().toLowerCase();
+    state.rosterSearch = search.value;
+    const shown = state.accounts.filter((a) => !query || a.displayName.toLowerCase().includes(query) || a.id.includes(query));
+    list.replaceChildren(...(shown.length ? shown.map((a) => el("li", {}, el("button", { type: "button", "aria-current": String(a.id === state.accountId),
+      onclick: () => (location.hash = `#/players/${a.id}/${state.tab}`) },
+      el("span", { class: "avatar", text: initial(a.displayName) }),
+      el("span", { class: "name", text: a.displayName }),
+      a.banned ? chip("Banned", "bad") : el("span", { class: `dot ${a.online ? "on" : ""}`, title: a.online ? "Online" : "Offline" }),
+      el("span", { class: "sub", text: `Lv ${a.level ?? "—"} · ${fmt(a.vbucks)} V-Bucks · ${ago(a.lastLogin)}` })))) : [el("li", { class: "empty", text: state.accounts.length ? "No matches" : "No accounts yet. They appear after a first login." })]));
+  };
+  search.addEventListener("input", render);
+  render();
+  state.renderRoster = render;
+  return el("aside", { class: "panel roster" }, el("div", { class: "panel-head" }, el("h2", { text: `Players (${state.accounts.length})` }), btn("↻", async () => { await loadAccounts(); showPlayers(); }, "ghost small", { title: "Refresh" })), search, list);
+}
+
+async function showPlayers() {
+  await loadAccounts();
+  if (state.accountId && !state.account) state.account = await act(api(`/admin/api/accounts/${state.accountId}`));
+  if (state.view !== "players") return;
+  $("view").replaceChildren(el("div", { class: "players" }, roster(), el("div", { id: "player" })));
+  renderPlayer();
+}
+
+function setAccount(account, message) {
+  if (!account) return;
+  state.account = account;
+  const index = state.accounts.findIndex((a) => a.id === account.id);
+  if (index >= 0) state.accounts[index] = { ...state.accounts[index], ...account };
+  state.renderRoster?.();
+  renderPlayer();
+  if (message) toast(message);
+}
+const post = (path, body, message) => act(api(`/admin/api/accounts/${state.account.id}/${path}`, body ?? {})).then((account) => setAccount(account, message));
+
+function renderPlayer() {
+  const holder = $("player");
+  if (!holder) return;
+  const a = state.account;
+  if (!a) {
+    holder.replaceChildren(el("section", { class: "panel" }, el("div", { class: "empty" }, el("h2", { text: "Pick a player" }),
+      el("p", { text: "Choose an account on the left to edit its currencies, items, quests, storm shields and access." }))));
+    return;
   }
+  const tabs = [["overview", "Overview"], ["inventory", "Inventory", a.items.length + a.worldItems.length + a.storage.length], ["give", "Give"],
+    ["quests", "Quests", a.quests.length], ["shields", "Storm shields"], ["account", "Account"]];
+  if (!tabs.some(([key]) => key === state.tab)) state.tab = "overview";
+  const body = ({ overview, inventory, give, quests, shields, account: accountTab })[state.tab];
+  holder.replaceChildren(
+    el("section", { class: "panel" },
+      el("div", { class: "hero-head" },
+        el("span", { class: "avatar", text: initial(a.displayName) }),
+        el("div", { class: "who" }, el("h1", { text: a.displayName }), el("code", { class: "muted", text: a.id }),
+          el("div", { class: "chips" },
+            a.banned ? chip(`Banned${a.banned.reason ? ": " + a.banned.reason : ""}`, "bad") : null,
+            a.online ? chip("Online", "good") : chip("Offline"),
+            chip(a.tutorialCompleted ? "Tutorial done" : "In tutorial", a.tutorialCompleted ? "sky" : "warn"),
+            a.sessions.length ? chip(`In ${a.sessions.length} session${a.sessions.length > 1 ? "s" : ""}`, "yellow") : null,
+            chip(`Last login ${ago(a.lastLogin)}`))),
+        el("div", { class: "actions" },
+          btn("Refresh", async () => setAccount(await act(api(`/admin/api/accounts/${a.id}`))), "ghost"),
+          btn("Kick", () => post("kick", {}, `${a.displayName} was logged out`), "ghost"))),
+      el("div", { class: "subtabs", role: "tablist" }, tabs.map(([key, label, count]) => el("button", { type: "button", role: "tab", "aria-selected": String(state.tab === key),
+        onclick: () => { state.tab = key; history.replaceState(null, "", `#/players/${a.id}/${key}`); renderPlayer(); } }, label, count !== undefined ? el("span", { class: "count", text: count }) : null))),
+      body(a),
+      el("p", { class: "note", style: "margin:16px 0 0", text: "Changes are saved to the profile at once. A player who is in the game sees them after the next profile refresh; Kick makes the game reload them." })));
+}
 
-  function table(columns, rows) {
-    if (!rows.length) return el("p", { className: "muted", textContent: "Nothing here yet." });
-    return el("div", { className: "table-wrap" }, el("table", {},
-      el("thead", {}, el("tr", {}, columns.map(([label, , numeric]) => el("th", { textContent: label, className: numeric ? "num" : "" })))),
-      el("tbody", {}, rows.map((row) => el("tr", {}, columns.map(([, value, numeric]) => {
-        const content = value(row);
-        return el("td", { className: numeric ? "num" : "" }, content instanceof Node ? content : String(content ?? "—"));
-      }))))));
+function overview(a) {
+  const levelInput = el("input", { class: "field num", type: "number", min: 1, max: a.maxLevel, value: a.level ?? 1, "aria-label": "Level" });
+  const span = (a.nextLevelXp ?? a.xp) - a.levelXp;
+  const progress = a.nextLevelXp ? Math.max(0, Math.min(1, (a.xp - a.levelXp) / Math.max(1, span))) : 1;
+  return el("div", {},
+    el("div", { class: "tiles" },
+      tile("Commander level", [a.level ?? 1, el("small", { text: `/ ${a.maxLevel}` })], "accent"),
+      tile("V-Bucks", fmt(a.currencies.find((c) => c.key === "vbucks")?.quantity), "vbucks"),
+      tile("Skill points", fmt(a.currencies.find((c) => c.key === "skillPoints")?.quantity)),
+      tile("Homebase", a.homebaseName || "Unnamed", "text")),
+    el("div", { class: "grid cols-2", style: "margin-top:16px" },
+      el("div", {},
+        el("h3", { text: "Level and XP" }),
+        el("div", { class: "bar", style: "margin:10px 0 6px" }, el("div", { style: `width:${(progress * 100).toFixed(1)}%` })),
+        el("div", { class: "note", text: a.nextLevelXp ? `${fmt(a.xp - a.levelXp)} of ${fmt(span)} XP to level ${(a.level ?? 1) + 1}` : "Max level" }),
+        el("div", { class: "actions", style: "margin-top:10px" }, levelInput, btn("Set level", () => post("level", { level: Number(levelInput.value) }, `Level set to ${levelInput.value}`), "primary"))),
+      el("div", {},
+        el("h3", { text: "Rest XP and mission alerts" }),
+        a.restXp ? [el("div", { class: "bar rest", style: "margin:10px 0 6px" }, el("div", { style: `width:${(a.restXp.max ? a.restXp.value / a.restXp.max * 100 : 0).toFixed(1)}%` })),
+          el("div", { class: "note", text: `${fmt(a.restXp.value)} of ${fmt(a.restXp.max)} rest XP` })] : el("div", { class: "note", text: "No rest XP yet (made at the next login)." }),
+        el("div", { class: "note", style: "margin-top:6px", text: a.missionAlerts ? `${a.missionAlerts.remaining} of 3 mission alerts left today · ${a.missionAlerts.pending} rewards pending` : "" }),
+        el("div", { class: "actions", style: "margin-top:10px" },
+          btn("Refill rest XP", () => post("rest-xp/refill", {}, "Rest XP refilled"), "ghost small"),
+          btn("Reset alert quota", () => post("mission-alerts/reset", {}, "Mission alert quota reset"), "ghost small")))),
+    el("h2", { style: "margin:22px 0 10px", text: "Currencies and resources" }),
+    el("div", { class: "grid cols-3" }, a.currencies.map((currency) => balance(currency))),
+    a.sessions.length ? [el("h2", { style: "margin:22px 0 10px", text: "In game" }), sessionTable(a.sessions, false)] : null);
+}
+
+function balance(currency) {
+  const input = el("input", { class: "field num", type: "number", min: 0, value: currency.quantity, "aria-label": currency.label });
+  const set = (value) => post("currency", { key: currency.key, quantity: Math.max(0, value) }, `${currency.label}: ${fmt(Math.max(0, value))}`);
+  const steps = currency.key === "vbucks" ? [100, 1000] : currency.key.endsWith("Xp") ? [10000, 100000] : [1, 10];
+  return el("div", { class: "balance" },
+    el("div", { class: "label", text: currency.label }), el("div", { class: "amount", text: fmt(currency.quantity) }),
+    el("div", { class: "row" }, input, btn("Set", () => set(Number(input.value)), "primary small"),
+      steps.map((step) => btn(`+${fmt(step)}`, () => set(currency.quantity + step), "ghost small")),
+      btn("0", () => set(0), "ghost small", { title: "Set to zero" })));
+}
+
+function inventory(a) {
+  const sources = [["items", "Account", a.items, "profile0"], ["worldItems", "Backpack", a.worldItems, "theater0"], ["storage", "Storage", a.storage, "outpost0"], ["collectionBook", "Collection book", a.collectionBook, null]];
+  const [, , list, profileId] = sources.find(([key]) => key === state.inventoryProfile) ?? sources[0];
+  const counts = new Map();
+  for (const item of list) counts.set(item.category, (counts.get(item.category) ?? 0) + 1);
+  const search = el("input", { class: "field", type: "search", placeholder: "Filter by name or id", value: state.inventorySearch, style: "flex:1 1 240px" });
+  const rows = el("div");
+  const render = () => {
+    state.inventorySearch = search.value;
+    const query = search.value.trim().toLowerCase();
+    const shown = list.filter((item) => (!state.inventoryCategory || item.category === state.inventoryCategory)
+      && (!query || item.name.toLowerCase().includes(query) || item.templateId.toLowerCase().includes(query)));
+    rows.replaceChildren(table([
+      ["Item", (item) => itemName(item)],
+      ["Kind", (item) => kindLabel(item.category)],
+      ["Level", (item) => profileId ? el("input", { class: "field tiny", type: "number", min: 0, value: item.level ?? "", "data-level": item.itemId, placeholder: "—" }) : item.level ?? "—", "num"],
+      ["Quantity", (item) => profileId ? el("input", { class: "field tiny", type: "number", min: 0, value: item.quantity, "data-qty": item.itemId }) : fmt(item.quantity), "num"],
+      ["", (item) => [item.squad ? chip("In squad", "sky") : null, item.favorite ? chip("Favourite", "yellow") : null, item.packSource ? chip(item.packSource) : null]],
+      ["", (item) => profileId ? el("div", { class: "actions" },
+        btn("Save", () => {
+          const level = rows.querySelector(`[data-level="${item.itemId}"]`).value;
+          const quantity = Number(rows.querySelector(`[data-qty="${item.itemId}"]`).value);
+          const body = { profileId, itemId: item.itemId, quantity };
+          if (level !== "") body.level = Number(level);
+          post("items/update", body, `${item.name} saved`);
+        }, "ghost small"),
+        btn("Remove", () => confirm(`Remove ${item.name}?`) && post("items/remove", { profileId, itemId: item.itemId }, `${item.name} removed`), "danger small")) : null]
+    ], shown, "No items match."));
+  };
+  search.addEventListener("input", render);
+  render();
+  return el("div", {},
+    el("div", { class: "filters" }, sources.map(([key, label, items]) => el("button", { type: "button", "aria-pressed": String(state.inventoryProfile === key),
+      onclick: () => { state.inventoryProfile = key; state.inventoryCategory = ""; renderPlayer(); } }, el("span", { text: `${label} · ${items.length}` })))),
+    el("div", { class: "filters" }, el("button", { type: "button", "aria-pressed": String(!state.inventoryCategory), onclick: () => { state.inventoryCategory = ""; renderPlayer(); } }, el("span", { text: "All" })),
+      [...counts].map(([key, count]) => el("button", { type: "button", "aria-pressed": String(state.inventoryCategory === key),
+        onclick: () => { state.inventoryCategory = key; renderPlayer(); } }, el("span", { text: `${kindLabel(key)} · ${count}` })))),
+    el("div", { class: "actions", style: "margin-bottom:12px" }, search),
+    rows);
+}
+
+const quickGrants = [
+  ["1,000 V-Bucks", "Currency:mtxgiveaway", 1000], ["10 skill points", "Token:homebasepoints", 10], ["10 research points", "Token:collectionresource_nodegatetoken01", 10],
+  ["Upgrade Llama", "CardPack:cardpack_bronze", 1], ["5 Mini Llama vouchers", "AccountResource:voucher_basicpack", 5], ["XP Boost ×5", "ConsumableAccountItem:smallxpboost", 5],
+  ["Teammate XP Boost ×5", "ConsumableAccountItem:smallxpboost_gift", 5], ["25 Training manuals", "AccountResource:reagent_people", 25],
+  ["10,000 Hero XP", "AccountResource:heroxp", 10000], ["10,000 Survivor XP", "AccountResource:personnelxp", 10000], ["10,000 Schematic XP", "AccountResource:schematicxp", 10000],
+  ["Founder's Llama", "CardPack:cardpack_event_founders", 1]
+];
+
+function give(a) {
+  const c = state.catalog;
+  const search = el("input", { class: "field", type: "search", placeholder: "Search heroes, schematics, llamas, quests…", value: c.search, style: "flex:1 1 260px" });
+  const category = el("select", { class: "field", "aria-label": "Kind" }, el("option", { value: "", text: "Every kind" }),
+    c.categories.map(([key, label]) => el("option", { value: key, text: label, selected: c.category === key })));
+  const quantity = el("input", { class: "field num", type: "number", min: 1, value: c.quantity ?? 1, "aria-label": "Quantity" });
+  const results = el("div", { class: "catalog" });
+  const picked = el("div", { class: "note" });
+  const giveButton = btn("Give", () => {
+    if (!c.picked) return toast("Pick an item first", true);
+    c.quantity = Number(quantity.value);
+    post("grant", { templateId: c.picked.templateId, quantity: c.quantity }, `Gave ${fmt(c.quantity)} × ${c.picked.name}`);
+  }, "primary");
+  const renderResults = () => {
+    picked.replaceChildren(c.picked ? ["Selected: ", itemName(c.picked)] : "Pick an item below.");
+    results.replaceChildren(...(c.items.length ? c.items.map((item) => el("button", { type: "button", class: `card ${item.rarity}`, "aria-pressed": String(c.picked?.templateId === item.templateId),
+      onclick: () => { c.picked = item; renderResults(); } }, el("div", { class: "k", text: kindLabel(item.category) }), el("div", { class: "t", text: item.name }),
+      el("div", { class: "s mono", text: item.templateId }))) : [el("div", { class: "empty", text: "Nothing found." })]));
+  };
+  let timer;
+  const load = async () => {
+    c.search = search.value;
+    c.category = category.value;
+    const data = await act(api(`/admin/api/catalog?search=${encodeURIComponent(c.search)}&category=${encodeURIComponent(c.category)}&limit=90`));
+    if (!data) return;
+    c.items = data.items;
+    c.categories = data.categories;
+    if (!category.options.length || category.options.length === 1) category.replaceChildren(el("option", { value: "", text: "Every kind" }),
+      c.categories.map(([key, label]) => el("option", { value: key, text: label, selected: c.category === key })));
+    renderResults();
+  };
+  search.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(load, 180); });
+  category.addEventListener("change", load);
+  if (!c.items.length) load(); else renderResults();
+  return el("div", {},
+    el("h2", { style: "margin-bottom:10px", text: "Quick grants" }),
+    el("div", { class: "quick" }, quickGrants.map(([label, templateId, count]) => btn(label, () => post("grant", { templateId, quantity: count }, `Gave ${label}`), "ghost small"))),
+    el("h2", { style: "margin:22px 0 10px", text: "Any item" }),
+    el("div", { class: "actions" }, search, category, quantity, giveButton),
+    el("div", { style: "margin-top:10px" }, picked),
+    results,
+    el("p", { class: "note", text: "Items are given the way the game gives them: llamas arrive unopened, quests start active, skill tree nodes unlock their perks, and quests waiting on an item move on." }));
+}
+
+function quests(a) {
+  const stateChip = (questState) => chip(questState ?? "—", { Claimed: "good", Completed: "sky", Active: "yellow" }[questState] ?? "");
+  const progress = (q) => q.objectives.map((o) => `${o.progress}/${o.count}`).join(" · ") || "—";
+  return el("div", {},
+    el("div", { class: "actions", style: "margin-bottom:12px" },
+      btn(a.tutorialCompleted ? "Tutorial done" : "Skip tutorial", () => post("skip-tutorial", {}, "Tutorial skipped"), "primary", { disabled: a.tutorialCompleted }),
+      el("span", { class: "note", text: "Add a quest from Give (kind: Quests)." })),
+    table([
+      ["Quest", (q) => el("span", { class: "mono", text: q.questId })],
+      ["Type", (q) => q.type ?? "—"],
+      ["State", (q) => stateChip(q.state)],
+      ["Progress", progress],
+      ["", (q) => el("div", { class: "actions" },
+        q.state === "Active" ? btn("Complete", () => post("quests", { itemId: q.itemId, action: "complete" }, `${q.questId} completed`), "ghost small") : null,
+        q.state !== "Claimed" ? btn("Claim", () => post("quests", { itemId: q.itemId, action: "claim" }, `${q.questId} claimed`), "ghost small") : null,
+        btn("Remove", () => confirm(`Remove quest ${q.questId}?`) && post("quests", { itemId: q.itemId, action: "remove" }, `${q.questId} removed`), "danger small"))]
+    ], a.quests, "No quests yet."));
+}
+
+function shields(a) {
+  return el("div", {},
+    el("p", { class: "note", style: "margin-top:0", text: "A storm shield's level is the number of defenses won; the next visit plays defense level + 1. The client makes the core the first time the player enters." }),
+    el("div", { class: "shields" }, a.stormShields.map((shield) => {
+      const input = el("input", { class: "field num", type: "number", min: 0, max: shield.maxLevel, value: shield.level ?? 0, "aria-label": `${shield.name} level` });
+      return el("div", { class: "shield" },
+        el("h3", { text: shield.name }),
+        el("div", { class: "lvl" }, String(shield.level ?? 0), el("small", { text: ` / ${shield.maxLevel}` })),
+        el("div", { class: "pips" }, Array.from({ length: shield.maxLevel }, (_, i) => el("span", { class: i < (shield.level ?? 0) ? "on" : "" }))),
+        el("div", { class: "note", style: "margin-bottom:10px", text: shield.level === null ? "Not entered yet" : `Next defense: ${Math.min((shield.level ?? 0) + 1, shield.maxLevel)}` }),
+        el("div", { class: "actions" }, input, btn("Set", () => post("storm-shield", { templateId: shield.templateId, level: Number(input.value) }, `${shield.name} set to ${input.value}`), "primary small")));
+    })));
+}
+
+function accountTab(a) {
+  const reason = el("input", { class: "field", placeholder: "Reason (shown when they try to log in)", style: "flex:1 1 260px" });
+  const profileBoxes = ["profile0", "theater0", "outpost0", "collection_book_people0", "collection_book_schematics0"].map((profileId) =>
+    el("label", { class: "check" }, el("input", { type: "checkbox", value: profileId }), profileId));
+  const confirmName = el("input", { class: "field", placeholder: `Type ${a.displayName} to confirm`, style: "flex:1 1 260px" });
+  return el("div", { class: "grid" },
+    el("section", { class: "panel" }, el("h2", { text: "Access" }),
+      el("p", { class: "note", text: "Kick revokes every token and closes XMPP and STOMP: the game drops to the login screen. A ban also refuses future logins." }),
+      a.banned
+        ? el("div", { class: "actions" }, chip(`Banned ${ago(a.banned.at)}${a.banned.reason ? ": " + a.banned.reason : ""}`, "bad"), btn("Unban", () => post("unban", {}, `${a.displayName} unbanned`), "primary"))
+        : el("div", { class: "actions" }, reason, btn("Ban", () => confirm(`Ban ${a.displayName}?`) && post("ban", { reason: reason.value }, `${a.displayName} banned`), "danger"),
+          btn("Kick", () => post("kick", {}, `${a.displayName} was logged out`), "ghost"))),
+    el("section", { class: "panel" }, el("h2", { text: "Profiles on disk" }),
+      el("p", { class: "note", text: `Saved: ${a.profiles.join(", ") || "none yet"}. A reset deletes the chosen profiles; the next login makes them fresh, like a new account. The player is logged out first.` }),
+      el("div", { class: "option-row" }, profileBoxes),
+      el("div", { class: "actions" },
+        btn("Reset selected", () => {
+          const chosen = profileBoxes.map((box) => box.querySelector("input")).filter((box) => box.checked).map((box) => box.value);
+          if (!chosen.length) return toast("Tick at least one profile", true);
+          if (confirm(`Reset ${chosen.join(", ")} for ${a.displayName}? This can't be undone.`)) post("reset", { profiles: chosen }, "Profiles reset");
+        }, "danger"),
+        btn("Reset everything", () => confirm(`Wipe all of ${a.displayName}'s progress? This can't be undone.`) && post("reset", { profiles: "all" }, "Progress wiped"), "danger"))),
+    el("section", { class: "panel danger-zone" }, el("h2", { text: "Delete account" }),
+      el("p", { class: "note", text: "Removes the account, its profiles, friends and cloud saves. Logging in with the same name later makes a new, empty account." }),
+      el("div", { class: "actions" }, confirmName, btn("Delete", async () => {
+        const result = await act(api(`/admin/api/accounts/${a.id}/delete`, { confirm: confirmName.value }));
+        if (!result) return;
+        toast(`${a.displayName} deleted`);
+        state.account = null;
+        location.hash = "#/players";
+      }, "danger"))));
+}
+
+/* ---------- sessions ---------- */
+function sessionTable(sessions, withActions = true) {
+  return table([
+    ["Server", (s) => [el("strong", { text: s.serverName || s.ownerName || "—" }), el("div", { class: "note mono", text: s.id })]],
+    ["Address", (s) => el("span", { class: "mono", text: `${s.serverAddress}:${s.serverPort}` })],
+    ["Mode", (s) => chip(s.gameMode || "—", s.gameMode === "FORTEMPTY" ? "good" : "yellow")],
+    ["Region", (s) => s.region || "—"],
+    ["Players", (s) => (s.players ? s.players.map((p) => p.displayName).join(", ") : `${s.currentPlayers}`) || "—", "wrap"],
+    ["Beacon", (s) => s.beaconPort || "—", "num"],
+    ["State", (s) => chip(s.started ? "Started" : s.currentPlayers ? "Busy" : "Free", s.started ? "yellow" : s.currentPlayers ? "warn" : "good")],
+    ["Heartbeat", (s) => ago(s.lastUpdated)],
+    ...(withActions ? [["", (s) => btn("End", async () => {
+      if (!confirm(`End session ${s.serverName || s.id}? It leaves matchmaking; the server notices at its next heartbeat.`)) return;
+      if (await act(api(`/admin/api/sessions/${s.id}/end`, {}), "Session ended")) showSessions();
+    }, "danger small")]] : [])
+  ], sessions, "No game sessions. Servers register when they start.");
+}
+
+async function showSessions() {
+  const sessions = await act(api("/admin/api/sessions"));
+  if (!sessions || state.view !== "sessions") return;
+  $("view").replaceChildren(
+    el("div", { class: "view-head" }, el("div", {}, el("h1", { text: "Game sessions" }),
+      el("div", { class: "muted", text: "Servers registered through /fortnite/api/matchmaking/session. Refreshes every 5 seconds." })),
+      el("div", { class: "actions" }, btn("Refresh", showSessions, "ghost"))),
+    el("div", { class: "tiles", style: "margin-bottom:16px" },
+      tile("Sessions", fmt(sessions.length), "accent"),
+      tile("Free servers", fmt(sessions.filter((s) => s.gameMode === "FORTEMPTY" && !s.currentPlayers).length)),
+      tile("Players in game", fmt(sessions.reduce((total, s) => total + s.currentPlayers, 0)))),
+    el("section", { class: "panel" }, sessionTable(sessions)));
+  if (!state.timers.length) every(5000, () => state.view === "sessions" && showSessions());
+}
+
+/* ---------- logs ---------- */
+async function pullLogs() {
+  if (state.logPaused) return;
+  const lines = await api(`/admin/api/logs?after=${state.logAfter}`).catch(() => null);
+  if (!lines?.length) return;
+  state.logAfter = lines[lines.length - 1].seq;
+  state.logs.push(...lines);
+  if (state.logs.length > 2000) state.logs.splice(0, state.logs.length - 2000);
+  renderLogLines();
+}
+function renderLogLines() {
+  const box = $("log");
+  if (!box) return;
+  const query = state.logFilter.toLowerCase();
+  const stick = box.scrollTop + box.clientHeight >= box.scrollHeight - 30;
+  const shown = state.logs.filter((line) => (!state.logCategory || line.category === state.logCategory) && (!query || line.message.toLowerCase().includes(query)));
+  box.replaceChildren(...shown.slice(-800).map((line) => el("div", { class: line.category },
+    el("span", { class: "t", text: new Date(line.at).toLocaleTimeString() }), " ", el("span", { class: "c", text: `[${line.category}]` }), " ", line.message)));
+  if (stick) box.scrollTop = box.scrollHeight;
+}
+async function showLogs() {
+  const categories = ["", "HTTP", "Core", "XMPP", "STOMP", "Matchmaking", "MCP", "World", "Items"];
+  const filter = el("input", { class: "field", type: "search", placeholder: "Filter messages", value: state.logFilter, style: "flex:1 1 260px" });
+  filter.addEventListener("input", () => { state.logFilter = filter.value; renderLogLines(); });
+  const category = el("select", { class: "field", "aria-label": "Category" }, categories.map((c) => el("option", { value: c, text: c || "Every category", selected: state.logCategory === c })));
+  category.addEventListener("change", () => { state.logCategory = category.value; renderLogLines(); });
+  const pause = btn(state.logPaused ? "Resume" : "Pause", () => { state.logPaused = !state.logPaused; pause.firstChild.textContent = state.logPaused ? "Resume" : "Pause"; }, "ghost");
+  const unknown = await act(api("/admin/api/unknown")) ?? [];
+  if (state.view !== "logs") return;
+  $("view").replaceChildren(
+    el("div", { class: "view-head" }, el("div", {}, el("h1", { text: "Logs" }), el("div", { class: "muted", text: "The backend's console since it started (the last 2,000 lines), live." })),
+      el("div", { class: "actions" }, filter, category, pause, btn("Clear view", () => { state.logs = []; renderLogLines(); }, "ghost"))),
+    el("section", { class: "panel" }, el("div", { class: "log", id: "log" })),
+    el("section", { class: "panel" }, el("div", { class: "panel-head" }, el("h2", { text: "Unanswered requests" })),
+      table([["When", (u) => `${new Date(u.time).toLocaleString()} (${ago(u.time)})`], ["Kind", (u) => u.kind ?? "route"], ["Method", (u) => u.method],
+        ["Host", (u) => u.host ?? "—"], ["Path", (u) => el("span", { class: "mono", text: u.url ?? u.path })]], unknown, "Every request so far had an answer.")));
+  renderLogLines();
+  await pullLogs();
+  every(2000, pullLogs);
+}
+
+/* ---------- header status ---------- */
+async function heartbeat() {
+  try {
+    const o = await api("/admin/api/overview");
+    $("pulse").className = "pulse";
+    $("server-line").textContent = `${location.host} · ${o.online.length} online · ${o.sessions.length} sessions · up ${duration(o.uptimeSeconds)}`;
+  } catch {
+    $("pulse").className = "pulse down";
+    $("server-line").textContent = `${location.host} · not answering`;
   }
-
-  function renderDetail(account) {
-    const skip = el("button", {
-      className: "primary",
-      type: "button",
-      textContent: account.tutorialCompleted ? "Tutorial done" : "Skip tutorial",
-      disabled: account.tutorialCompleted || state.busy,
-      onclick: () => skipTutorial(account)
-    });
-
-    const progress = (quest) => quest.objectives.map((o) => `${o.progress}/${o.count}`).join(" · ") || "—";
-
-    $("detail").replaceChildren(
-      el("div", { className: "detail-head" },
-        el("div", {}, el("h1", { textContent: account.displayName }), el("code", { textContent: account.id })),
-        skip),
-      el("div", { className: "stats" },
-        [["Level", account.level ?? "—"], ["Tutorial", tutorialChip(account.tutorialCompleted)],
-          ["Homebase", account.homebaseName || "Unnamed"], ["Last login", ago(account.lastLogin)]]
-          .map(([label, value]) => el("div", { className: "stat" }, el("div", { className: "label", textContent: label }),
-            el("div", { className: "value" }, value instanceof Node ? value : String(value))))),
-      el("p", { className: "note", textContent: "Changes apply to the saved profile. Restart the game afterwards so it loads them." }),
-      giveForm(account),
-      el("section", { className: "block" }, el("h3", { textContent: `Quests (${account.quests.length})` }),
-        table([["Quest", (q) => q.questId], ["Type", (q) => q.type], ["State", (q) => stateChip(q.state)], ["Progress", progress]], account.quests)),
-      el("section", { className: "block" }, el("h3", { textContent: `Items (${account.items.length})` }),
-        table([["Item", (i) => i.templateId], ["Level", (i) => i.level, true], ["Quantity", (i) => i.quantity.toLocaleString(), true]], account.items)),
-      el("section", { className: "block" }, el("h3", { textContent: `World items (${account.worldItems.length})` }),
-        table([["Item", (i) => i.templateId], ["Quantity", (i) => i.quantity.toLocaleString(), true]], account.worldItems)));
-  }
-
-  function giveForm(account) {
-    const item = el("input", { className: "field item", placeholder: "Item, e.g. Token:homebasepoints", ariaLabel: "Item to give" });
-    item.setAttribute("list", "item-ids");
-    const count = el("input", { className: "field count", type: "number", min: 1, value: 1, ariaLabel: "Quantity" });
-    const form = el("form", {
-      className: "give",
-      onsubmit: async (event) => {
-        event.preventDefault();
-        const templateId = item.value.trim();
-        if (!templateId) return;
-        try {
-          const result = await api(`/admin/api/accounts/${account.id}/grant`, { method: "POST", body: { templateId, quantity: Number(count.value) } });
-          toast(result.granted ? `Gave ${count.value} × ${templateId}` : `${templateId} is already owned`);
-          renderDetail(result);
-        } catch (error) {
-          toast(error.message, true);
-        }
-      }
-    }, item, count, el("button", { className: "ghost", type: "submit", textContent: "Give" }));
-    return el("section", { className: "block" }, el("h3", { textContent: "Give item" }), form);
-  }
-
-  async function loadItemIds() {
-    try {
-      const ids = await api("/admin/api/items");
-      $("item-ids").replaceChildren(...ids.map((id) => el("option", { value: id })));
-    } catch (error) {
-      toast(error.message, true);
-    }
-  }
-
-  async function loadAccounts() {
-    try {
-      state.accounts = await api("/admin/api/accounts");
-      renderAccounts();
-    } catch (error) {
-      toast(error.message, true);
-    }
-  }
-
-  async function select(accountId) {
-    state.selected = accountId;
-    renderAccounts();
-    try {
-      renderDetail(await api(`/admin/api/accounts/${accountId}`));
-    } catch (error) {
-      toast(error.message, true);
-    }
-  }
-
-  async function skipTutorial(account) {
-    state.busy = true;
-    renderDetail(account);
-    let result = account;
-    try {
-      result = await api(`/admin/api/accounts/${account.id}/skip-tutorial`, { method: "POST" });
-      toast(`Tutorial skipped for ${result.displayName}. Restart the game to load it.`);
-    } catch (error) {
-      toast(error.message, true);
-    }
-    state.busy = false;
-    renderDetail(result);
-    await loadAccounts();
-  }
-
-  $("host").textContent = location.host;
-  $("search").addEventListener("input", renderAccounts);
-  $("refresh").addEventListener("click", async () => {
-    await loadAccounts();
-    if (state.selected) await select(state.selected);
-  });
-  window.addEventListener("focus", loadAccounts);
-  loadAccounts();
-  loadItemIds();
+}
+setInterval(heartbeat, 10000);
+heartbeat();
+route();
 </script>
 </body>
 </html>

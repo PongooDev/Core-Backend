@@ -84,6 +84,9 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         ["tier"] = Enum(properties?["Tier"]) ?? "No_Tier"
     };
     if (Strings(properties?["GameplayTags"]) is { Count: > 0 } itemTags) ((SortedDictionary<string, object>)items[templateId])["tags"] = itemTags;
+    // The in-game name (DisplayName), for the admin panel.
+    if (properties?["DisplayName"]?["SourceString"]?.GetValue<string>() is { Length: > 0 } displayName)
+        ((SortedDictionary<string, object>)items[templateId])["name"] = displayName;
 
     // An item's power (RatingLookup into the BaseItemRating curves, by level): squads add these up for expeditions.
     if (properties?["RatingLookup"]?["RowName"]?.GetValue<string>() is { } ratingRow and not "None"

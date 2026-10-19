@@ -10,6 +10,12 @@ function basicClient(req) {
   return clientId ? { clientId, secret: secret.join(":") } : null;
 }
 
+// The admin panel's ban: the account can't log in (its tokens were revoked when it was banned).
+function banned(res, account) {
+  sendError(res, 403, "errors.com.epicgames.account.account_not_active",
+    `This account is banned${account.banned.reason ? `: ${account.banned.reason}` : ""}`);
+}
+
 function invalidGrant(res, message) {
   sendError(res, 400, "errors.com.epicgames.account.oauth.invalid_grant", message);
 }
@@ -34,6 +40,7 @@ export function oauthRoutes({ accounts, tokens }) {
         const displayName = String(body.username ?? "").split("@")[0].trim();
         if (!displayName) return invalidGrant(res, "A username is required");
         const account = accounts.getOrCreate(displayName);
+        if (account.banned) return banned(res, account);
         accounts.recordLogin(account);
         return res.json(tokens.issueUser(clientId, account, "password"));
       }
@@ -42,6 +49,7 @@ export function oauthRoutes({ accounts, tokens }) {
         const entry = tokens.useRefreshToken(String(body.refresh_token ?? ""));
         const account = entry && accounts.get(entry.accountId);
         if (!account) return invalidGrant(res, "Invalid or expired refresh token");
+        if (account.banned) return banned(res, account);
         return res.json(tokens.issueUser(clientId, account, "refresh_token"));
       }
 

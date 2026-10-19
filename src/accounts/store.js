@@ -49,6 +49,20 @@ export function createAccountStore(dataDir) {
     recordLogin(account) {
       account.lastLogin = new Date().toISOString();
       save(account);
+    },
+
+    // ban: {reason, at} or null to lift it.
+    setBan(account, ban) {
+      if (ban) account.banned = ban;
+      else delete account.banned;
+      save(account);
+    },
+
+    // The account and everything saved for it (profiles, friends, cloud storage).
+    remove(account) {
+      byId.delete(account.id);
+      byName.delete(account.displayName.toLowerCase());
+      fs.rmSync(path.join(dir, account.id), { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
     }
   };
 }

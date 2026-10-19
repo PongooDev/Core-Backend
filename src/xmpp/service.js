@@ -278,6 +278,12 @@ export function createXmppService({ tokens, contactsOf = () => [], publicRooms =
   return {
     handle,
     isOnline: (accountId) => online.has(accountId),
+    // Logged-in accounts and their resources (the admin panel).
+    onlineAccounts: () => [...online.entries()].map(([accountId, resources]) => ({ accountId, resources: [...resources.keys()] })),
+    // Ends an account's streams (kick, ban); the client sees its XMPP connection drop.
+    kick(accountId) {
+      for (const connection of resourcesOf(accountId)) connection.close("policy-violation");
+    },
     roomOccupants: (name) => rooms.occupants(name),
 
     // A service notification, as Epic's friends service sent them: a message from xmpp-admin@<domain> whose body is

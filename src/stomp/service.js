@@ -130,6 +130,11 @@ export function createStompService({ tokens, quiet = false }) {
       }
     },
 
+    // Ends an account's STOMP connections (kick, ban).
+    kick(accountId) {
+      for (const { ws, session } of connections) if (session?.accountId === accountId) ws.close(1008);
+    },
+
     closeAll() {
       for (const { ws } of connections) ws.close(1001);
     }

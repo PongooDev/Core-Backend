@@ -3,12 +3,27 @@ import path from "node:path";
 import { getBuild } from "./builds/detect.js";
 import { notFound } from "./errors.js";
 
+// The last lines logged, for the admin panel's log view (kept in memory, so they start over with the process).
+const recent = [];
+const keepLines = 2000;
+let nextSeq = 1;
+
 export function log(category, message) {
-  const time = new Date().toISOString().slice(11, 23);
-  console.log(`[${time}] [${category}] ${message}`);
+  const at = new Date().toISOString();
+  console.log(`[${at.slice(11, 23)}] [${category}] ${message}`);
+  recent.push({ seq: nextSeq++, at, category, message });
+  if (recent.length > keepLines) recent.splice(0, recent.length - keepLines);
+}
+
+// Lines after seq (0 for all kept), oldest first.
+export function recentLogs(after = 0, limit = 500) {
+  const lines = recent.filter((line) => line.seq > after);
+  return lines.slice(Math.max(0, lines.length - limit));
 }
 
 export function requestLog(req, res, next) {
+  // The admin panel polls its own API; its reads would drown out the game's requests.
+  if (req.method === "GET" && req.originalUrl.startsWith("/admin/api/")) return next();
   res.on("finish", () => log("HTTP", `${res.statusCode} ${req.method} ${req.get("host") ?? ""}${req.originalUrl}`));
   next();
 }

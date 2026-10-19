@@ -42,6 +42,16 @@ export function createProfileStore(dataDir) {
       return profile;
     },
 
+    // A reset: the next load makes the profile anew from the defaults.
+    remove(accountId, profileId) {
+      fs.rmSync(file(accountId, profileId), { force: true });
+    },
+
+    ids(accountId) {
+      const dir = path.join(dataDir, "accounts", accountId, "profiles");
+      return fs.existsSync(dir) ? fs.readdirSync(dir).filter((name) => name.endsWith(".json")).map((name) => name.slice(0, -5)) : [];
+    },
+
     save(profile) {
       profile.updated = new Date().toISOString();
       writeJson(file(profile.accountId, profile.profileId), profile);

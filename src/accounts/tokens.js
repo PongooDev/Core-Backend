@@ -91,6 +91,13 @@ export function createTokenStore(dataDir) {
       save();
     },
 
+    // Every access and refresh token of an account (the admin panel's kick, ban and delete).
+    revokeAccount(accountId) {
+      for (const [token, session] of access) if (session.accountId === accountId) access.delete(token);
+      for (const [token, entry] of refresh) if (entry.accountId === accountId) refresh.delete(token);
+      save();
+    },
+
     find(token) {
       const session = access.get(token);
       if (!session) return null;

@@ -65,8 +65,24 @@ XMPP (presence, chat and parties) is served on the same port. The Cert client co
 not through the redirect; the backend's start-up hotfix (cloud storage `DefaultEngine.ini`) points it at the backend,
 so nothing has to be set up for it.
 
-The admin panel is at `http://127.0.0.1:5595/admin`, only from the same PC. It lists accounts and can skip the
-tutorial, which needs a gameserver otherwise.
+The admin panel is at `http://127.0.0.1:5595/admin`, only from the same PC (no login; it refuses other machines and
+other sites). It has:
+
+- **Dashboard:** accounts, who is online, game sessions, uptime and version, recent logins, unanswered requests.
+- **Players:** search accounts, then per player:
+  - **Overview:** set the level, V-Bucks, skill points, research points, hero/survivor/schematic XP, boost XP,
+    llama vouchers and training manuals; refill rest XP; reset today's mission alerts.
+  - **Inventory:** the account, backpack, storage and collection book items by kind, with level, quantity and remove.
+  - **Give:** quick grants, or search any item, hero, schematic, llama, voucher, quest, skill tree node or banner.
+  - **Quests:** complete, claim or remove quests; skip the tutorial.
+  - **Storm shields:** set each storm shield's level.
+  - **Account:** kick (logs the player out everywhere), ban with a reason and unban, reset chosen profiles or all
+    progress, delete the account.
+- **Sessions:** registered game servers with their mode, region, players and state; end a session.
+- **Logs:** the backend's console live (filter, pause) and the requests nothing answered.
+
+Changes save at once; a player who is in the game sees them after the next profile refresh (Kick makes the game
+reload).
 
 To run the tests:
 
