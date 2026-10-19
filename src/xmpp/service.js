@@ -273,10 +273,33 @@ export function createXmppService({ tokens, contactsOf = () => [], publicRooms =
     });
   }
 
+  const bound = (accountId) => resourcesOf(accountId).filter((connection) => connection.jid && !connection.closed);
+
   return {
     handle,
     isOnline: (accountId) => online.has(accountId),
     roomOccupants: (name) => rooms.occupants(name),
+
+    // A service notification, as Epic's friends service sent them: a message from xmpp-admin@<domain> whose body is
+    // {type, payload, timestamp} (read by XmppMessagesJingle; FOnlineFriendsMcp only takes them from xmpp-admin).
+    notify(accountId, type, payload) {
+      const body = JSON.stringify({ type, payload, timestamp: new Date().toISOString() });
+      for (const connection of bound(accountId)) {
+        connection.send(xml("message", { from: `xmpp-admin@${connection.domain}`, to: connection.jid }, xml("body", {}, body)));
+      }
+    },
+
+    // Two accounts became contacts (each gets the other's presence) or stopped being contacts (an unavailable one).
+    contactsChanged(a, b, linked) {
+      for (const [from, to] of [[a, b], [b, a]]) {
+        for (const sender of bound(from).filter((connection) => connection.available)) {
+          for (const recipient of bound(to).filter((connection) => connection.available)) {
+            const presence = linked ? sender.presence : xml("presence", { type: "unavailable" });
+            recipient.send(withAttrs(presence, { from: sender.jid, to: recipient.jid }));
+          }
+        }
+      }
+    },
     closeAll() {
       for (const connection of connections) connection.close("system-shutdown");
     }

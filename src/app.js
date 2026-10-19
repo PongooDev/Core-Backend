@@ -1,5 +1,6 @@
 import express from "express";
 import { createAccountStore } from "./accounts/store.js";
+import { createFriendStore } from "./friends/store.js";
 import { adminRoutes } from "./admin/routes.js";
 import { createTokenStore } from "./accounts/tokens.js";
 import { createProfileStore } from "./profiles/store.js";
@@ -27,12 +28,20 @@ import { createXmppService } from "./xmpp/service.js";
 // What the HTTP routes and the XMPP service share.
 export function createContext(config) {
   const tokens = createTokenStore(config.dataDir);
+  const accounts = createAccountStore(config.dataDir);
+  const friends = createFriendStore(config.dataDir);
   return {
-    accounts: createAccountStore(config.dataDir),
+    accounts,
     tokens,
+    friends,
     profiles: createProfileStore(config.dataDir),
     sessions: createSessionStore(),
-    xmpp: createXmppService({ tokens, publicRooms: Object.values(generalChatRooms), quiet: config.requestLog === false }),
+    xmpp: createXmppService({
+      tokens,
+      contactsOf: (accountId) => friends.accepted(accountId),
+      publicRooms: Object.values(generalChatRooms),
+      quiet: config.requestLog === false
+    }),
     dataDir: config.dataDir
   };
 }

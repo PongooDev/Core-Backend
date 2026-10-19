@@ -32,6 +32,10 @@ export function createAccountStore(dataDir) {
       return [...byId.values()];
     },
 
+    findByName(displayName) {
+      return byName.get(displayName.toLowerCase());
+    },
+
     getOrCreate(displayName) {
       let account = byName.get(displayName.toLowerCase());
       if (!account) {
