@@ -76,6 +76,19 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     };
     if (Strings(properties?["GameplayTags"]) is { Count: > 0 } itemTags) ((SortedDictionary<string, object>)items[templateId])["tags"] = itemTags;
 
+    // Account items level up and are recycled and evolved (UFortAccountItemDefinition): the XPAccountItemLevels and
+    // XPAccountItemRewards curve rows, the MetaRecipes rows, and MaxLevel (UFortItemDefinition).
+    if (properties?["LevelToXpHandle"]?["RowName"]?.GetValue<string>() is { } levelRow)
+    {
+        var item = (SortedDictionary<string, object>)items[templateId];
+        item["levelCost"] = levelRow;
+        if (properties["LevelToSacrificeXpHandle"]?["RowName"]?.GetValue<string>() is { } recycleRow) item["recycleXp"] = recycleRow;
+        if (properties["SacrificeRecipe"]?["RowName"]?.GetValue<string>() is { } recycleRecipe) item["recycleRecipe"] = recycleRecipe;
+        var conversions = (properties["ConversionRecipes"] as JsonArray)?.Select(r => r?["RowName"]?.GetValue<string>()).OfType<string>().ToList() ?? [];
+        if (conversions.Count > 0) item["conversions"] = conversions;
+        item["maxLevel"] = properties["MaxLevel"]?.GetValue<int>() ?? 1;
+    }
+
     // Squad slots filter on these: TagFilter (defenders), bIsManager (survivor slot 0), RequiredGPTags (hero classes).
     if (export.ExportType is "FortHeroType" or "FortWorkerType" or "FortDefenderItemDefinition")
     {
@@ -260,6 +273,39 @@ foreach (var (id, row) in LoadRows(provider, JsonValue.Create("/Game/Balance/Dat
     };
 }
 
+// Item upgrades: XP per level by curve row (index = level), XP back for recycling at a level, and the MetaRecipes
+// (Evolve.* and Recycle.*: costs, results and the gameplay tags that unlock them).
+static SortedDictionary<string, List<double>> Curves(DefaultFileProvider provider, string path)
+{
+    var curves = new SortedDictionary<string, List<double>>(StringComparer.Ordinal);
+    if (!provider.TryLoadPackage(path, out var package)) throw new InvalidOperationException($"{path} not found");
+    var rows = JsonNode.Parse(JsonConvert.SerializeObject(package.GetExports().First(e => e.ExportType == "CurveTable")))!["Rows"]!.AsObject();
+    foreach (var (name, row) in rows)
+    {
+        var keys = row!["Keys"]!.AsArray().Select(k => (time: (int)k!["Time"]!.GetValue<double>(), value: k["Value"]!.GetValue<double>())).ToList();
+        var values = new List<double> { 0 };
+        for (var level = 1; level <= keys.Max(k => k.time); level++) values.Add(keys.FirstOrDefault(k => k.time == level).value);
+        curves[name] = values;
+    }
+    return curves;
+}
+var recipes = new SortedDictionary<string, object>(StringComparer.Ordinal);
+foreach (var (id, row) in LoadRows(provider, JsonValue.Create("/Game/Items/Datatables/MetaRecipes.MetaRecipes")))
+{
+    recipes[id] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+    {
+        ["costs"] = Items(row!["RecipeCosts"], assetTypes),
+        ["results"] = Items(row["RecipeResults"], assetTypes),
+        ["catalysts"] = Strings(row["RequiredCatalysts"])
+    };
+}
+var upgrades = new SortedDictionary<string, object>(StringComparer.Ordinal)
+{
+    ["levelCosts"] = Curves(provider, "FortniteGame/Content/Balance/DataTables/XPAccountItemLevels.uasset"),
+    ["recycleXp"] = Curves(provider, "FortniteGame/Content/Balance/DataTables/XPAccountItemRewards.uasset"),
+    ["recipes"] = recipes
+};
+
 // Account levels (FortLevelUpData): the total XP each level needs, how XP shows in the UI, and what reaching it gives
 // ("/Game/Items/Tokens/HomebasePoints.HomebasePoints=1", comma separated).
 var accountLevels = new List<object>();
@@ -286,6 +332,7 @@ foreach (var (id, row) in LoadRows(provider, JsonValue.Create("/Game/Balance/Dat
 Directory.CreateDirectory(output);
 var options = new JsonSerializerOptions { WriteIndented = true };
 File.WriteAllText(Path.Combine(output, "accountlevels.json"), JsonSerializer.Serialize(accountLevels, options) + "\n");
+File.WriteAllText(Path.Combine(output, "upgrades.json"), JsonSerializer.Serialize(upgrades, options) + "\n");
 File.WriteAllText(Path.Combine(output, "quests.json"), JsonSerializer.Serialize(quests, options) + "\n");
 File.WriteAllText(Path.Combine(output, "items.json"), JsonSerializer.Serialize(items, options) + "\n");
 File.WriteAllText(Path.Combine(output, "dailyrewards.json"), JsonSerializer.Serialize(dailyRewards, options) + "\n");

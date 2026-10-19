@@ -22,6 +22,7 @@ import { setPinnedQuests } from "./SetPinnedQuests.js";
 import { skipTutorial } from "./SkipTutorial.js";
 import { unassignAllSquads } from "./UnassignAllSquads.js";
 import { updateQuestClientObjectives } from "./UpdateQuestClientObjectives.js";
+import { convertItemCommand, recycleItemBatchCommand, recycleItemCommand, upgradeItemCommand } from "./Upgrades.js";
 
 export const clientCommands = {
   AssignWorkerToSquad: assignWorkerToSquad,
@@ -29,6 +30,7 @@ export const clientCommands = {
   ClaimLoginReward: claimLoginReward,
   ClaimQuestReward: claimQuestReward,
   ClientQuestLogin: clientQuestLogin,
+  ConvertItem: convertItemCommand,
   GetMcpTimeForLogin: getMcpTimeForLogin,
   MarkItemSeen: markItemSeen,
   MarkNewQuestNotificationSent: markNewQuestNotificationSent,
@@ -36,6 +38,8 @@ export const clientCommands = {
   OpenCardPackBatch: openCardPackBatch,
   PurchaseHomebaseNode: purchaseHomebaseNode,
   QueryProfile: queryProfile,
+  RecycleItem: recycleItemCommand,
+  RecycleItemBatch: recycleItemBatchCommand,
   RefreshExpeditions: refreshExpeditions,
   SetDefaultHeroSquad: setDefaultHeroSquad,
   SetGameplayStats: setGameplayStats,
@@ -47,7 +51,8 @@ export const clientCommands = {
   SetPinnedQuests: setPinnedQuests,
   SkipTutorial: skipTutorial,
   UnassignAllSquads: unassignAllSquads,
-  UpdateQuestClientObjectives: updateQuestClientObjectives
+  UpdateQuestClientObjectives: updateQuestClientObjectives,
+  UpgradeItem: upgradeItemCommand
 };
 
 export const adminCommands = {
