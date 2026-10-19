@@ -80,3 +80,25 @@ test("SetHomebaseMeta, SetGameplayStats and SetMtxPlatform store what the client
     backend.close();
   }
 });
+
+test("SetModeLoadout and SetHeroModeLoadout keep gadget loadouts by name, for the account and for a hero", async () => {
+  const backend = await startBackend();
+  try {
+    const { token, accountId } = await userLogin(backend.port, "CoreTest");
+    await post(backend.port, command(accountId, "SkipTutorial"), token, {});
+    const profile = async () => (await post(backend.port, command(accountId, "QueryProfile"), token, {})).body.profileChanges[0].profile;
+    const [heroId] = Object.entries((await profile()).items).find(([, item]) => item.templateId.startsWith("Hero:"));
+
+    await post(backend.port, command(accountId, "SetModeLoadout"), token, {
+      modeLoadout: { loadoutName: "Default", selectedGadgets: ["Gadget:g_generic_banner"] },
+      heroId, heroModeLoadout: { loadoutName: "Default", selectedGadgets: ["Gadget:g_generic_banner"] }
+    });
+    await post(backend.port, command(accountId, "SetHeroModeLoadout"), token, { heroId, modeLoadout: { loadoutName: "Default", selectedGadgets: [] } });
+    const after = await profile();
+    assert.deepEqual(after.stats.attributes.mode_loadouts, [{ loadoutName: "Default", selectedGadgets: ["Gadget:g_generic_banner"] }]);
+    assert.deepEqual(after.items[heroId].attributes.mode_loadouts, [{ loadoutName: "Default", selectedGadgets: [] }]);
+    assert.equal((await post(backend.port, command(accountId, "SetHeroModeLoadout"), token, { heroId: "missing", modeLoadout: { loadoutName: "x" } })).status, 400);
+  } finally {
+    backend.close();
+  }
+});

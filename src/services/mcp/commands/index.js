@@ -5,6 +5,7 @@ import { claimQuestReward } from "./ClaimQuestReward.js";
 import { clientQuestLogin } from "./ClientQuestLogin.js";
 import { fortRerollDailyQuest } from "./FortRerollDailyQuest.js";
 import { getMcpTimeForLogin } from "./GetMcpTimeForLogin.js";
+import { setHeroModeLoadout, setModeLoadout } from "./Loadouts.js";
 import { markItemSeen } from "./MarkItemSeen.js";
 import { markNewQuestNotificationSent } from "./MarkNewQuestNotificationSent.js";
 import { openCardPack } from "./OpenCardPack.js";
@@ -45,10 +46,12 @@ export const clientCommands = {
   RefreshExpeditions: refreshExpeditions,
   SetDefaultHeroSquad: setDefaultHeroSquad,
   SetGameplayStats: setGameplayStats,
+  SetHeroModeLoadout: setHeroModeLoadout,
   SetHomebaseBanner: setHomebaseBanner,
   SetHomebaseMeta: setHomebaseMeta,
   SetHomebaseName: setHomebaseName,
   SetItemFavoriteStatus: setItemFavoriteStatus,
+  SetModeLoadout: setModeLoadout,
   SetMtxPlatform: setMtxPlatform,
   SetPinnedQuests: setPinnedQuests,
   SkipTutorial: skipTutorial,
