@@ -2,11 +2,13 @@ import { McpError } from "../errors.js";
 import { getItem } from "../gamedata/items.js";
 import { readGameData } from "../gamedata/read.js";
 import { grantItem } from "./items.js";
+import { hasUnlocked } from "./unlocks.js";
 
 // Levelling, evolving and recycling account items, from the game data (UFortAccountItemDefinition):
 //   UpgradeItem   one level, costing XPAccountItemLevels[levelCost][level] of the item's XP, up to MaxLevel;
 //   ConvertItem   the evolution recipe ConversionRecipes[index] in MetaRecipes (its costs, for its result);
 //   RecycleItem   XPAccountItemRewards[recycleXp][level] of the item's XP back, plus the SacrificeRecipe's results.
+// Both recipes need their catalyst tags unlocked on the skill tree.
 // Heroes use hero XP, survivors and defenders personnel XP, schematics schematic XP (the client's GetHeroXp,
 // GetPersonnelXp and GetSchematicXp balances).
 const { levelCosts = {}, recycleXp = {}, recipes = {} } = readGameData("upgrades", {});
@@ -16,6 +18,11 @@ const xpResource = {
   FortWorkerType: "AccountResource:personnelxp",
   FortDefenderItemDefinition: "AccountResource:personnelxp",
   FortSchematicItemDefinition: "AccountResource:schematicxp"
+};
+
+// Recipes need their RequiredCatalysts unlocked on the skill tree (the recycler upgrades, each evolution tier).
+const locked = (catalysts) => {
+  throw new McpError("errors.com.epicgames.fortnite.item_consumption_failed", `Unlock ${catalysts.join(", ")} on the skill tree first`);
 };
 
 const fail = (message) => {
@@ -66,6 +73,7 @@ export function convertItem(session, itemId, conversionIndex) {
   const { item, info } = accountItem(tracker, itemId);
   const recipe = recipes[info.conversions?.[conversionIndex]];
   if (!recipe || recipe.results.length !== 1) fail(`${item.templateId} has no evolution ${conversionIndex}`);
+  if (!hasUnlocked(tracker.profile, recipe.catalysts)) locked(recipe.catalysts);
   pay(tracker, recipe.costs);
   const [result] = recipe.results;
   const attributes = { ...item.attributes, item_seen: 0 };
@@ -77,6 +85,8 @@ export function recycleItem(session, itemId) {
   const tracker = session.profile("profile0");
   const { item, info } = accountItem(tracker, itemId);
   if (item.attributes.squad_id) fail(`${item.templateId} is in a squad`);
+  const catalysts = recipes[info.recycleRecipe]?.catalysts ?? [];
+  if (!hasUnlocked(tracker.profile, catalysts)) locked(catalysts);
   const xp = Math.round(recycleXp[info.recycleXp]?.[item.attributes.level ?? 1] ?? 0);
   tracker.removeItem(itemId);
   if (xp > 0) grantItem(session, xpResource[info.class], xp);

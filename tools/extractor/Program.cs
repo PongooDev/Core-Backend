@@ -145,10 +145,17 @@ foreach (var schedule in gameData["Properties"]?["DailyRewardSchedules"]?.AsArra
 // The skill tree and squads come from the homebase manager DefaultGameData points at.
 var manager = LoadExport(provider, gameData["Properties"]!["HomebaseManager"], "FortHomebaseManager")["Properties"]!;
 var nodes = new SortedDictionary<string, object>(StringComparer.Ordinal);
+// What a node unlocks are the gameplay tags its effect rows grant (HomebaseNodeGameplayEffectDataTable
+// GrantedTagsContainer): Unlocks.Class.*, Unlocks.Recycler.*, Evolution.*, Expedition.* and so on.
+var nodeEffects = LoadRows(provider, manager["HomebaseNodeGameplayEffectDataTable"]);
 foreach (var (id, row) in LoadRows(provider, manager["HomebaseNodeDataTable"]))
 {
     var node = new SortedDictionary<string, object>(StringComparer.Ordinal);
-    var cost = (row!["Cost"]?.AsArray() ?? []).Select(c => new SortedDictionary<string, object>(StringComparer.Ordinal)
+    var grantedTags = Strings(row!["GameplayEffectRowNames"])
+        .SelectMany(effect => Strings(nodeEffects[effect]?["GrantedTagsContainer"]))
+        .Distinct(StringComparer.Ordinal).OrderBy(tag => tag, StringComparer.Ordinal).ToList();
+    if (grantedTags.Count > 0) node["tags"] = grantedTags;
+    var cost = (row["Cost"]?.AsArray() ?? []).Select(c => new SortedDictionary<string, object>(StringComparer.Ordinal)
     {
         ["templateId"] = assetTypes.TemplateId(AssetPath(c!["ItemDefinition"])),
         ["quantity"] = c["Quantity"]?.GetValue<int>() ?? 0

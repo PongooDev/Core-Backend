@@ -58,6 +58,12 @@ test("ConvertItem evolves the item in place for its recipe's costs", async () =>
     const [heroId] = await find("Hero:hid_constructor_rushbase_uc_t01");
     await run("UpgradeItem", { targetItemId: heroId });
 
+    // Evolving to tier 2 needs Evolution.Hero.Constructor.Tier2a from the skill tree.
+    const locked = await run("ConvertItem", { targetItemId: heroId, conversionIndex: 0 });
+    assert.equal(locked.status, 400);
+    assert.match(locked.body.errorMessage, /Evolution\.Hero\.Constructor\.Tier2a/);
+    await give("HomebaseNode:t1_main_5faa4c765");
+
     assert.equal((await run("ConvertItem", { targetItemId: heroId, conversionIndex: 0 })).status, 200);
     const [evolvedId, evolved] = await find("Hero:hid_constructor_rushbase_uc_t02");
     assert.deepEqual([evolvedId, evolved.attributes.level], [heroId, 2]);
@@ -77,6 +83,9 @@ test("RecycleItem gives back the item's recycle XP for its level, and won't take
     const { login, give, run, find, amount } = await setup(backend);
     await give("Hero:hid_constructor_rushbase_uc_t01", 2);
     const [first] = await find("Hero:hid_constructor_rushbase_uc_t01");
+    // Uncommon heroes need the second recycler upgrade (Unlocks.Recycler.Upgrade2).
+    assert.equal((await run("RecycleItem", { targetItemId: first })).status, 400);
+    await give("HomebaseNode:t1_main_0abacb4e2");
     assert.equal((await run("RecycleItem", { targetItemId: first })).status, 200);
     assert.equal(await amount("AccountResource:heroxp"), 400);
 

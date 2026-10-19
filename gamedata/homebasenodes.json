@@ -8,6 +8,10 @@
           "slot": 0,
           "squadId": "Squad_Combat_AdventureSquadOne"
         }
+      ],
+      "tags": [
+        "Unlocks.Class.Commando",
+        "Unlocks.Recycler.Upgrade1"
       ]
     },
     "T1_Main_0011CCD10": {
@@ -86,6 +90,10 @@
       ],
       "quests": [
         "challenge_weaponupgrade_1"
+      ],
+      "tags": [
+        "Unlocks.CollectionBook.BaseGrant",
+        "Unlocks.Recycler.Upgrade2"
       ]
     },
     "T1_Main_0CBF7FEC0": {
@@ -136,6 +144,9 @@
             "node": "T1_Main_F681AB1F0"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Hero.Ninja.Tier2a"
       ]
     },
     "T1_Main_195C3EF52": {
@@ -161,6 +172,10 @@
             "node": "T1_Main_7A5E40920"
           }
         ]
+      ],
+      "tags": [
+        "Gameplay.Melee.EnableHeavyAttack.Club",
+        "Gameplay.Melee.EnableHeavyAttack.Tool"
       ]
     },
     "T1_Main_1B6486FC0": {
@@ -284,6 +299,9 @@
             "node": "T1_Main_92E3E2179"
           }
         ]
+      ],
+      "tags": [
+        "Unlocks.DirectedAcquisition.People.Worker"
       ]
     },
     "T1_Main_27C02FC60": {
@@ -339,6 +357,10 @@
             "node": "T1_Main_B4F394680"
           }
         ]
+      ],
+      "tags": [
+        "Gameplay.Melee.EnableHeavyAttack.Spear",
+        "Gameplay.Melee.EnableHeavyAttack.Sword"
       ]
     },
     "T1_Main_38E8A5BF4": {
@@ -496,6 +518,9 @@
             "node": "T1_Main_FF2595300"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Hero.Outlander.Tier2a"
       ]
     },
     "T1_Main_566BFEA11": {
@@ -505,6 +530,9 @@
             "node": "T1_Main_0828407D3"
           }
         ]
+      ],
+      "tags": [
+        "Unlocks.Class.Outlander"
       ]
     },
     "T1_Main_58591E630": {
@@ -535,6 +563,9 @@
             "node": "T1_Main_92E3E2179"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Managers.Tier2a"
       ]
     },
     "T1_Main_5FAA4C765": {
@@ -560,6 +591,9 @@
             "node": "T1_Main_FAEE79B10"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Hero.Constructor.Tier2a"
       ]
     },
     "T1_Main_609C8A9A8": {
@@ -575,6 +609,9 @@
             "node": "T1_Main_27C02FC60"
           }
         ]
+      ],
+      "tags": [
+        "Unlocks.Recycler.Upgrade3"
       ]
     },
     "T1_Main_640195112": {
@@ -722,6 +759,10 @@
             "node": "T1_Main_D1C9E5993"
           }
         ]
+      ],
+      "tags": [
+        "Gameplay.Melee.EnableHeavyAttack.Axe",
+        "Gameplay.Melee.EnableHeavyAttack.Scythe"
       ]
     },
     "T1_Main_82EFDDB312": {
@@ -783,6 +824,9 @@
             "node": "T1_Main_2E3589B80"
           }
         ]
+      ],
+      "tags": [
+        "Unlocks.Class.Ninja"
       ]
     },
     "T1_Main_8A41E9920": {
@@ -798,6 +842,9 @@
             "node": "T1_Main_2996F5C10"
           }
         ]
+      ],
+      "tags": [
+        "Gameplay.Melee.EnableHeavyAttack.Harvest"
       ]
     },
     "T1_Main_8B125D0F0": {
@@ -824,6 +871,9 @@
       ],
       "quests": [
         "homebaseonboardingafteroutpost"
+      ],
+      "tags": [
+        "Unlocks.Class.Constructor"
       ]
     },
     "T1_Main_904080840": {
@@ -893,6 +943,9 @@
             "page": "T1_Main_Nodepage_Layer1"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Workers.Tier2a"
       ]
     },
     "T1_Main_986B7D201": {
@@ -914,6 +967,11 @@
           "slot": 0,
           "squadId": "Squad_Expedition_ExpeditionSquadThree"
         }
+      ],
+      "tags": [
+        "Expedition.Generation.Sea.T01_0",
+        "Expedition.Generation.Sea.T01_1",
+        "ExpeditionSquadThree.Expedition.Sea"
       ]
     },
     "T1_Main_9FDB916E6": {
@@ -989,6 +1047,14 @@
           "slot": 0,
           "squadId": "Squad_Expedition_ExpeditionSquadOne"
         }
+      ],
+      "tags": [
+        "Expedition.Generation.ChoppingWood",
+        "Expedition.Generation.Land.T01_0",
+        "Expedition.Generation.Land.T01_1",
+        "Expedition.Generation.MiningOre",
+        "Expedition.UI.Unlocked",
+        "ExpeditionSquadOne.Expedition.Land"
       ]
     },
     "T1_Main_AD1D66991": {
@@ -1004,6 +1070,12 @@
             "node": "T1_Main_59607C6F0"
           }
         ]
+      ],
+      "tags": [
+        "Unlocks.DirectedAcquisition",
+        "Unlocks.DirectedAcquisition.Weapon.Base",
+        "Unlocks.DirectedAcquisition.Weapon.Melee.Base",
+        "Unlocks.DirectedAcquisition.Weapon.Ranged.Base"
       ]
     },
     "T1_Main_B1A3A3771": {
@@ -1034,6 +1106,9 @@
             "node": "T1_Main_3FFC8E9D7"
           }
         ]
+      ],
+      "tags": [
+        "Unlocks.Recycler.Upgrade4"
       ]
     },
     "T1_Main_B4F394680": {
@@ -1102,6 +1177,9 @@
             "node": "T1_Main_D0B070910"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Hero.Soldier.Tier2a"
       ]
     },
     "T1_Main_C06961E711": {
@@ -2230,6 +2308,9 @@
             "node": "T2_Main_25EFB8C70"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Ranged.Pistols.Tier2a.3a"
       ]
     },
     "T2_Main_04D5C4430": {
@@ -2251,6 +2332,11 @@
           "slot": 0,
           "squadId": "Squad_Expedition_ExpeditionSquadFive"
         }
+      ],
+      "tags": [
+        "Expedition.Generation.Air.T02_0",
+        "Expedition.Generation.Air.T02_1",
+        "ExpeditionSquadFive.Expedition.Air"
       ]
     },
     "T2_Main_079EDD2C0": {
@@ -2284,6 +2370,9 @@
             "node": "T2_Main_AEEEF5183"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.BotTurret.RangeUpgrade1"
       ]
     },
     "T2_Main_07E641121": {
@@ -2376,6 +2465,9 @@
             "page": "T2_Main_Nodepage_Layer1"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Defenders.Tier2a.3a"
       ]
     },
     "T2_Main_180921FB0": {
@@ -2391,6 +2483,14 @@
             "node": "T2_Main_FB4378A61"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Melee.Axes.Tier2a",
+        "Evolution.Schematic.Weapons.Melee.Blunt.Tier2a",
+        "Evolution.Schematic.Weapons.Melee.Hammers.Tier2a",
+        "Evolution.Schematic.Weapons.Melee.Scythes.Tier2a",
+        "Evolution.Schematic.Weapons.Melee.Spears.Tier2a",
+        "Evolution.Schematic.Weapons.Melee.Swords.Tier2a"
       ]
     },
     "T2_Main_19A17BDE3": {
@@ -2429,6 +2529,9 @@
             "node": "T2_Main_25EFB8C70"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Special.Tier2a.3a"
       ]
     },
     "T2_Main_1FDF39DB5": {
@@ -2452,6 +2555,9 @@
             "page": "T2_Main_Nodepage_Layer1"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Workers.Tier2a.3a"
       ]
     },
     "T2_Main_2006052B6": {
@@ -2538,6 +2644,13 @@
             "node": "T2_Main_FB4378A61"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Ranged.Assault.Tier2a",
+        "Evolution.Schematic.Weapons.Ranged.Pistols.Tier2a",
+        "Evolution.Schematic.Weapons.Ranged.Shotguns.Tier2a",
+        "Evolution.Schematic.Weapons.Ranged.Sniper.Tier2a",
+        "Evolution.Schematic.Weapons.Special.Tier2a"
       ]
     },
     "T2_Main_26F4FB891": {
@@ -2639,6 +2752,9 @@
             "node": "T2_Main_25EFB8C70"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Ranged.Shotguns.Tier2a.3a"
       ]
     },
     "T2_Main_41217F7D2": {
@@ -2710,6 +2826,9 @@
             "node": "T1_Main_4BDCB2465"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Hero.Outlander.Tier2a.3a"
       ]
     },
     "T2_Main_4E74E6F91": {
@@ -2752,6 +2871,11 @@
           "slot": 0,
           "squadId": "Squad_Expedition_ExpeditionSquadTwo"
         }
+      ],
+      "tags": [
+        "Expedition.Generation.Land.T02_0",
+        "Expedition.Generation.Land.T02_1",
+        "ExpeditionSquadTwo.Expedition.Land"
       ]
     },
     "T2_Main_5B37C9358": {
@@ -2798,6 +2922,9 @@
             "node": "T1_Main_58591E630"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.SupplyDrop.RandomItemDropUpgrade1"
       ]
     },
     "T2_Main_63F751711": {
@@ -2831,6 +2958,10 @@
             "node": "T2_Main_180921FB0"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Melee.Blunt.Tier2a.3a",
+        "Evolution.Schematic.Weapons.Melee.Hammers.Tier2a.3a"
       ]
     },
     "T2_Main_6A6764682": {
@@ -2864,6 +2995,9 @@
             "node": "T1_Main_E9C41E050"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.Airstrike.BombUpgrade1"
       ]
     },
     "T2_Main_71B7C8AA0": {
@@ -2928,6 +3062,9 @@
             "node": "T2_Main_25EFB8C70"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Ranged.Sniper.Tier2a.3a"
       ]
     },
     "T2_Main_88D0C6DE0": {
@@ -2987,6 +3124,9 @@
             "node": "T2_Main_B99A48BE2"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.Banner.Shockwave1"
       ]
     },
     "T2_Main_9BBF38680": {
@@ -3034,6 +3174,9 @@
             "node": "T1_Main_BF8F555F0"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Hero.Soldier.Tier2a.3a"
       ]
     },
     "T2_Main_9D7FA9270": {
@@ -3073,6 +3216,9 @@
             "node": "T1_Main_1637F10C4"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Hero.Ninja.Tier2a.3a"
       ]
     },
     "T2_Main_9FD8CEE49": {
@@ -3118,6 +3264,10 @@
             "node": "T2_Main_FB4378A61"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Traps.Damage.Tier2a",
+        "Evolution.Schematic.Traps.Healing.Tier2a"
       ]
     },
     "T2_Main_A1487C230": {
@@ -3152,6 +3302,9 @@
             "node": "T1_Main_5FAA4C765"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Hero.Constructor.Tier2a.3a"
       ]
     },
     "T2_Main_A225639B4": {
@@ -3269,6 +3422,10 @@
           "slot": 2,
           "squadId": "Squad_Expedition_ExpeditionSquadThree"
         }
+      ],
+      "tags": [
+        "Expedition.Generation.Sea.T02_0",
+        "Expedition.Generation.Sea.T02_1"
       ]
     },
     "T2_Main_A9644DDD1": {
@@ -3425,6 +3582,9 @@
             "node": "T1_Main_9FDB916E6"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.AdrenalineRush.UpgradeAOE"
       ]
     },
     "T2_Main_B8A9E7CC2": {
@@ -3593,6 +3753,9 @@
             "page": "T2_Main_Nodepage_Layer1"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Managers.Tier2a.3a"
       ]
     },
     "T2_Main_C4BBDFF80": {
@@ -3611,6 +3774,10 @@
             "node": "T2_Main_A0995FCB0"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Traps.Damage.Tier2a.3a",
+        "Evolution.Schematic.Traps.Healing.Tier2a.3a"
       ]
     },
     "T2_Main_C677C3AF0": {
@@ -3629,6 +3796,9 @@
             "node": "T2_Main_25EFB8C70"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Ranged.Assault.Tier2a.3a"
       ]
     },
     "T2_Main_CBBB2FF11": {
@@ -3732,6 +3902,10 @@
             "node": "T2_Main_180921FB0"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Melee.Axes.Tier2a.3a",
+        "Evolution.Schematic.Weapons.Melee.Scythes.Tier2a.3a"
       ]
     },
     "T2_Main_D20A597A4": {
@@ -3795,6 +3969,10 @@
             "node": "T2_Main_180921FB0"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Melee.Spears.Tier2a.3a",
+        "Evolution.Schematic.Weapons.Melee.Swords.Tier2a.3a"
       ]
     },
     "T2_Main_D52B4F3E0": {
@@ -4116,6 +4294,9 @@
             "node": "T2_Main_A3A5DA870"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Defenders.Tier2a"
       ]
     },
     "T2_Main_FBC34AA68": {
@@ -4614,6 +4795,9 @@
             "node": "T2_Research_11FC257C5"
           }
         ]
+      ],
+      "tags": [
+        "Unlocks.DirectedAcquisition.People.Hero.Base"
       ]
     },
     "T2_Research_6C56AEA04": {
@@ -4654,6 +4838,9 @@
             "node": "T2_Research_163260621"
           }
         ]
+      ],
+      "tags": [
+        "Unlocks.DirectedAcquisition.People.Manager.Base"
       ]
     },
     "T2_Research_794309E80": {
@@ -4744,6 +4931,9 @@
             "node": "T2_Research_5F21793E0"
           }
         ]
+      ],
+      "tags": [
+        "Unlocks.DirectedAcquisition.People.Defender"
       ]
     },
     "T2_Research_8C57445F1": {
@@ -4759,6 +4949,11 @@
             "node": "T2_Research_E29CC2D33"
           }
         ]
+      ],
+      "tags": [
+        "Unlocks.DirectedAcquisition.Weapon.Melee.Blunt",
+        "Unlocks.DirectedAcquisition.Weapon.Melee.Edged",
+        "Unlocks.DirectedAcquisition.Weapon.Melee.Piercing"
       ]
     },
     "T2_Research_8D3A925A1": {
@@ -4904,6 +5099,12 @@
             "node": "T2_Research_49280C800"
           }
         ]
+      ],
+      "tags": [
+        "Unlocks.DirectedAcquisition.Weapon.Ranged.Assault",
+        "Unlocks.DirectedAcquisition.Weapon.Ranged.Pistol",
+        "Unlocks.DirectedAcquisition.Weapon.Ranged.Shotgun",
+        "Unlocks.DirectedAcquisition.Weapon.Ranged.Sniper"
       ]
     },
     "T2_Research_BC4833EE0": {
@@ -5266,6 +5467,9 @@
             "node": "T2_Research_5F21793E0"
           }
         ]
+      ],
+      "tags": [
+        "Unlocks.DirectedAcquisition.Trap.Base"
       ]
     },
     "T2_Research_EC48272D2": {
@@ -5410,6 +5614,9 @@
             "node": "T1_Main_E9C41E050"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.Airstrike.BombUpgrade3"
       ]
     },
     "T3_Main_0CEA80C20": {
@@ -5448,6 +5655,9 @@
             "node": "T1_Main_9FDB916E6"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.AdrenalineRush.HOT"
       ]
     },
     "T3_Main_0F7CDF126": {
@@ -5474,6 +5684,9 @@
             "node": "T2_Main_B99A48BE2"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.Banner.WallBuffDuration"
       ]
     },
     "T3_Main_114D8AD91": {
@@ -5537,6 +5750,11 @@
           "slot": 0,
           "squadId": "Squad_Expedition_ExpeditionSquadFour"
         }
+      ],
+      "tags": [
+        "Expedition.Generation.Sea.T03_0",
+        "Expedition.Generation.Sea.T03_1",
+        "ExpeditionSquadFour.Expedition.Sea"
       ]
     },
     "T3_Main_1650B98B5": {
@@ -5580,6 +5798,9 @@
             "node": "T2_Main_AC3B8CE810"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.ProximityMine.ExplosionRadiusUpgrade1"
       ]
     },
     "T3_Main_1D3614B63": {
@@ -5646,6 +5867,9 @@
             "node": "T1_Main_58591E630"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.SupplyDrop.RandomItemDropUpgrade2"
       ]
     },
     "T3_Main_21BAEBB70": {
@@ -5679,6 +5903,9 @@
             "node": "T1_Main_E9C41E050"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.Airstrike.BombUpgrade2"
       ]
     },
     "T3_Main_22DB38500": {
@@ -5888,6 +6115,9 @@
             "node": "T2_Main_75F1308C1"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Ranged.Sniper.Tier2a.3a.4a"
       ]
     },
     "T3_Main_47FDEBF30": {
@@ -6024,6 +6254,9 @@
             "node": "T2_Main_3D00CB840"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Ranged.Shotguns.Tier2a.3a.4a"
       ]
     },
     "T3_Main_5203AC5A1": {
@@ -6132,6 +6365,11 @@
           "slot": 0,
           "squadId": "Squad_Expedition_ExpeditionSquadSix"
         }
+      ],
+      "tags": [
+        "Expedition.Generation.Air.T03_0",
+        "Expedition.Generation.Air.T03_1",
+        "ExpeditionSquadSix.Expedition.Air"
       ]
     },
     "T3_Main_5F1FF8F01": {
@@ -6231,6 +6469,9 @@
             "node": "T2_Main_CBBB2FF11"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.Teleporter.Range1"
       ]
     },
     "T3_Main_78CB0B021": {
@@ -6303,6 +6544,9 @@
             "node": "T2_Main_CF6FD83E3"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.SlowField.RadiusUpgrade1"
       ]
     },
     "T3_Main_81657C2A0": {
@@ -6329,6 +6573,9 @@
             "node": "T2_Main_B99A48BE2"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.Banner.RespawnPoint"
       ]
     },
     "T3_Main_844582E68": {
@@ -6419,6 +6666,9 @@
             "node": "T2_Main_9D4C8CD511"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Hero.Soldier.Tier2a.3a.4a"
       ]
     },
     "T3_Main_924E29D91": {
@@ -6452,6 +6702,10 @@
             "node": "T2_Main_D192EEC22"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Melee.Axes.Tier2a.3a.4a",
+        "Evolution.Schematic.Weapons.Melee.Scythes.Tier2a.3a.4a"
       ]
     },
     "T3_Main_9341DEF82": {
@@ -6490,6 +6744,9 @@
             "node": "T2_Main_CF6FD83E3"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.SlowField.DurationUpgrade1"
       ]
     },
     "T3_Main_94BEADE00": {
@@ -6508,6 +6765,10 @@
             "node": "T2_Main_69A5836F0"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Melee.Blunt.Tier2a.3a.4a",
+        "Evolution.Schematic.Weapons.Melee.Hammers.Tier2a.3a.4a"
       ]
     },
     "T3_Main_95A061850": {
@@ -6614,6 +6875,10 @@
             "node": "T2_Main_C4BBDFF80"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Traps.Damage.Tier2a.3a.4a",
+        "Evolution.Schematic.Traps.Healing.Tier2a.3a.4a"
       ]
     },
     "T3_Main_A9CD47110": {
@@ -6637,6 +6902,9 @@
             "page": "T3_Main_Nodepage_Layer1"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Managers.Tier2a.3a.4a"
       ]
     },
     "T3_Main_A9FEE26B3": {
@@ -6741,6 +7009,10 @@
           "slot": 2,
           "squadId": "Squad_Expedition_ExpeditionSquadTwo"
         }
+      ],
+      "tags": [
+        "Expedition.Generation.Land.T03_0",
+        "Expedition.Generation.Land.T03_1"
       ]
     },
     "T3_Main_AD53DF901": {
@@ -6804,6 +7076,9 @@
             "node": "T3_Main_62511CB01"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Hero.Outlander.Tier2a.3a.4a"
       ]
     },
     "T3_Main_B2F8126F4": {
@@ -6868,6 +7143,9 @@
             "page": "T3_Main_Nodepage_Layer1"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Workers.Tier2a.3a.4a"
       ]
     },
     "T3_Main_B98F78C61": {
@@ -6886,6 +7164,9 @@
             "node": "T2_Main_AEEEF5183"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.BotTurret.DurationUpgrade1"
       ]
     },
     "T3_Main_B9E79E910": {
@@ -6970,6 +7251,9 @@
             "node": "T2_Main_9FC3978C3"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Hero.Ninja.Tier2a.3a.4a"
       ]
     },
     "T3_Main_C0C07FD02": {
@@ -6988,6 +7272,10 @@
             "node": "T2_Main_D2FB71B12"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Melee.Spears.Tier2a.3a.4a",
+        "Evolution.Schematic.Weapons.Melee.Swords.Tier2a.3a.4a"
       ]
     },
     "T3_Main_C1C21E346": {
@@ -7053,6 +7341,9 @@
             "node": "T2_Main_C677C3AF0"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Ranged.Assault.Tier2a.3a.4a"
       ]
     },
     "T3_Main_CC393D8C0": {
@@ -7086,6 +7377,9 @@
             "node": "T1_Main_9FDB916E6"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.AdrenalineRush.HealBoost"
       ]
     },
     "T3_Main_D111A2EE0": {
@@ -7206,6 +7500,9 @@
             "node": "T2_Main_1F8F85AE0"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Special.Tier2a.3a.4a"
       ]
     },
     "T3_Main_E3C7C83C1": {
@@ -7224,6 +7521,9 @@
             "node": "T1_Main_58591E630"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.SupplyDrop.CoreResourceUpgrade1"
       ]
     },
     "T3_Main_E5013A630": {
@@ -7307,6 +7607,9 @@
             "page": "T3_Main_Nodepage_Layer1"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Defenders.Tier2a.3a.4a"
       ]
     },
     "T3_Main_F9620A490": {
@@ -7351,6 +7654,9 @@
             "node": "T2_Main_CBBB2FF11"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.Teleporter.RechargeUpgrade1"
       ]
     },
     "T3_Main_FDEA96100": {
@@ -7369,6 +7675,9 @@
             "node": "T2_Main_01F9D82A0"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Ranged.Pistols.Tier2a.3a.4a"
       ]
     },
     "T3_Main_FF1800780": {
@@ -7395,6 +7704,9 @@
             "node": "T2_Main_A1487C230"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Hero.Constructor.Tier2a.3a.4a"
       ]
     },
     "T3_Research_0095DC2C3": {
@@ -9393,6 +9705,9 @@
             "node": "T2_Main_CBBB2FF11"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.Teleporter.Range2"
       ]
     },
     "T4_Main_08666D8D6": {
@@ -9411,6 +9726,9 @@
             "node": "T2_Main_B99A48BE2"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.Banner.Shockwave2"
       ]
     },
     "T4_Main_0A5D56161": {
@@ -9544,6 +9862,9 @@
             "node": "T3_Main_FDEA96100"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Ranged.Pistols.Tier2a.3a.4a.5a"
       ]
     },
     "T4_Main_140B284C0": {
@@ -9644,6 +9965,10 @@
           "slot": 3,
           "squadId": "Squad_Expedition_ExpeditionSquadTwo"
         }
+      ],
+      "tags": [
+        "Expedition.Generation.Land.T04_0",
+        "Expedition.Generation.Land.T04_1"
       ]
     },
     "T4_Main_1FC4328C1": {
@@ -9763,6 +10088,10 @@
             "node": "T3_Main_931CDF301"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Melee.Axes.Tier2a.3a.4a.5a",
+        "Evolution.Schematic.Weapons.Melee.Scythes.Tier2a.3a.4a.5a"
       ]
     },
     "T4_Main_234E42F51": {
@@ -9843,6 +10172,9 @@
             "node": "T3_Main_B3EC767E5"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Workers.Tier2a.3a.4a.5a"
       ]
     },
     "T4_Main_2FB647A80": {
@@ -9861,6 +10193,9 @@
             "node": "T2_Main_AC3B8CE810"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.ProximityMine.DamageUpgrade1"
       ]
     },
     "T4_Main_33A623670": {
@@ -9884,6 +10219,9 @@
             "page": "T4_Main_Nodepage_Layer1"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Managers.Tier2a.3a.4a.5a"
       ]
     },
     "T4_Main_362079E30": {
@@ -10044,6 +10382,10 @@
           "slot": 2,
           "squadId": "Squad_Expedition_ExpeditionSquadSix"
         }
+      ],
+      "tags": [
+        "Expedition.Generation.Air.T04_0",
+        "Expedition.Generation.Air.T04_1"
       ]
     },
     "T4_Main_4EED13AE1": {
@@ -10090,6 +10432,9 @@
             "node": "T3_Main_51FBB5B30"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Ranged.Shotguns.Tier2a.3a.4a.5a"
       ]
     },
     "T4_Main_5968FE123": {
@@ -10123,6 +10468,9 @@
             "node": "T3_Main_DF62B4190"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Special.Tier2a.3a.4a.5a"
       ]
     },
     "T4_Main_62BCC9A02": {
@@ -10141,6 +10489,10 @@
             "node": "T3_Main_C0C07FD02"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Melee.Spears.Tier2a.3a.4a.5a",
+        "Evolution.Schematic.Weapons.Melee.Swords.Tier2a.3a.4a.5a"
       ]
     },
     "T4_Main_631DBFA62": {
@@ -10213,6 +10565,9 @@
             "node": "T2_Main_AEEEF5183"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.BotTurret.UpgradeExploding"
       ]
     },
     "T4_Main_65B1BCF51": {
@@ -10247,6 +10602,9 @@
             "node": "T3_Main_4363B46C1"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Ranged.Sniper.Tier2a.3a.4a.5a"
       ]
     },
     "T4_Main_66ADEDF16": {
@@ -10280,6 +10638,10 @@
             "node": "T3_Main_A9BDF1C40"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Traps.Damage.Tier2a.3a.4a.5a",
+        "Evolution.Schematic.Traps.Healing.Tier2a.3a.4a.5a"
       ]
     },
     "T4_Main_6C92B3622": {
@@ -10333,6 +10695,9 @@
             "node": "T1_Main_9FDB916E6"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.AdrenalineRush.CooldownUpgrade"
       ]
     },
     "T4_Main_6E14C9711": {
@@ -10383,6 +10748,10 @@
           "slot": 3,
           "squadId": "Squad_Expedition_ExpeditionSquadFour"
         }
+      ],
+      "tags": [
+        "Expedition.Generation.Sea.T04_0",
+        "Expedition.Generation.Sea.T04_1"
       ]
     },
     "T4_Main_70213E0D4": {
@@ -10441,6 +10810,9 @@
             "node": "T2_Main_CF6FD83E3"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.SlowField.SlowAmountUpgrade1"
       ]
     },
     "T4_Main_7C7F5F5B1": {
@@ -10459,6 +10831,9 @@
             "node": "T3_Main_C583B74E0"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Ranged.Assault.Tier2a.3a.4a.5a"
       ]
     },
     "T4_Main_7CD9FDA30": {
@@ -10601,6 +10976,9 @@
             "node": "T3_Main_8C8C10DE9"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Hero.Soldier.Tier2a.3a.4a.5a"
       ]
     },
     "T4_Main_96C918A20": {
@@ -10619,6 +10997,9 @@
             "node": "T2_Main_CF6FD83E3"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.SlowField.DurationUpgrade2"
       ]
     },
     "T4_Main_9AFB1FD60": {
@@ -10688,6 +11069,9 @@
             "page": "T4_Main_Nodepage_Layer1"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Defenders.Tier2a.3a.4a.5a"
       ]
     },
     "T4_Main_9F152D8C6": {
@@ -10735,6 +11119,9 @@
             "node": "T2_Main_CBBB2FF11"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.Teleporter.Range3"
       ]
     },
     "T4_Main_A1A4F7617": {
@@ -10783,6 +11170,9 @@
             "node": "T1_Main_E9C41E050"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.Airstrike.BombUpgrade4"
       ]
     },
     "T4_Main_A23E778A0": {
@@ -10819,6 +11209,9 @@
             "node": "T4_Main_155A29BA1"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Hero.Outlander.Tier2a.3a.4a.5a"
       ]
     },
     "T4_Main_A30E056A0": {
@@ -10858,6 +11251,9 @@
             "node": "T2_Main_AC3B8CE810"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.ProximityMine.ExplosionRadiusUpgrade2"
       ]
     },
     "T4_Main_B854D25D2": {
@@ -10876,6 +11272,9 @@
             "node": "T1_Main_9FDB916E6"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.AdrenalineRush.Resurrect"
       ]
     },
     "T4_Main_BC0E6F120": {
@@ -10998,6 +11397,9 @@
             "node": "T1_Main_E9C41E050"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.Airstrike.BombUpgrade5"
       ]
     },
     "T4_Main_C76C04C11": {
@@ -11057,6 +11459,9 @@
             "node": "T2_Main_CF6FD83E3"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.SlowField.RadiusUpgrade2"
       ]
     },
     "T4_Main_CED279315": {
@@ -11103,6 +11508,9 @@
             "node": "T1_Main_58591E630"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.SupplyDrop.RandomItemDropUpgrade3"
       ]
     },
     "T4_Main_D9295A610": {
@@ -11124,6 +11532,9 @@
             "node": "T4_Main_6AD9A53A0"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Hero.Constructor.Tier2a.3a.4a.5a"
       ]
     },
     "T4_Main_D94772630": {
@@ -11145,6 +11556,9 @@
             "node": "T4_Main_B854D25D2"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Hero.Ninja.Tier2a.3a.4a.5a"
       ]
     },
     "T4_Main_DA1126E08": {
@@ -11163,6 +11577,10 @@
             "node": "T3_Main_94BEADE00"
           }
         ]
+      ],
+      "tags": [
+        "Evolution.Schematic.Weapons.Melee.Blunt.Tier2a.3a.4a.5a",
+        "Evolution.Schematic.Weapons.Melee.Hammers.Tier2a.3a.4a.5a"
       ]
     },
     "T4_Main_DC7E2B381": {
@@ -11301,6 +11719,9 @@
             "node": "T2_Main_B99A48BE2"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.Banner.WallBuff2"
       ]
     },
     "T4_Main_FB88FBD52": {
@@ -11327,6 +11748,9 @@
             "node": "T1_Main_58591E630"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.SupplyDrop.CoreResourceUpgrade2"
       ]
     },
     "T4_Main_FCA70A2B1": {
@@ -11353,6 +11777,9 @@
             "node": "T2_Main_CBBB2FF11"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.Teleporter.RechargeUpgrade2"
       ]
     },
     "T4_Main_FE1404BF2": {
@@ -11386,6 +11813,9 @@
             "node": "T2_Main_AEEEF5183"
           }
         ]
+      ],
+      "tags": [
+        "Abilities.Generic.BotTurret.FireRateUpgrade1"
       ]
     },
     "T4_Research_0002FFCE0": {
