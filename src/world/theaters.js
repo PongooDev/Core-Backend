@@ -1,133 +1,83 @@
 import crypto from "node:crypto";
-import { getDifficulty, hasGlobeSocket, mapPinPath, missionGeneratorPath, zoneThemePath } from "../gamedata/world.js";
-import { stonewood } from "./stonewood.js";
+import { readGameData } from "../gamedata/read.js";
+import { getDifficulty } from "../gamedata/world.js";
 
-const difficultyTable = "/Game/Balance/DataTables/GameDifficultyGrowthBounds.GameDifficultyGrowthBounds";
-const hash = (text) => crypto.createHash("sha1").update(text).digest("hex").slice(0, 32).toUpperCase();
-const difficultyHandle = (rowName) => ({ dataTable: difficultyTable, rowName });
+// Theater layouts come from Epic's world info (see tools/theaters/import.mjs); the client ships none.
+const { theaters = [], rewards = {} } = readGameData("theaters", {});
 
-function resolve(lookup, name, kind) {
-  const path = lookup(name);
-  if (!path) throw new Error(`${kind} ${name} is not in gamedata/world.json`);
-  return path;
+const digest = (text) => crypto.createHash("sha1").update(text).digest();
+const fraction = (bytes) => bytes.readUInt32BE(0) / 0x100000000;
+
+// Missions are rolled from the theater, UTC day and tile, so everyone (and later the gameserver) sees the same ones.
+function missionGuid(seed) {
+  const hex = digest(`guid:${seed}`).toString("hex");
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20, 32)}`;
 }
 
-// Axial hex coordinates of one ring around the centre tile.
-function ring(radius) {
-  const directions = [[1, 0], [1, -1], [0, -1], [-1, 0], [-1, 1], [0, 1]];
-  let [x, y] = [-radius, radius];
-  const coordinates = [];
-  for (const [dx, dy] of directions) {
-    for (let step = 0; step < radius; step++) {
-      coordinates.push([x, y]);
-      x += dx;
-      y += dy;
-    }
+function weighted(entries, seed) {
+  const total = entries.reduce((sum, entry) => sum + (entry.weight ?? 1), 0);
+  let roll = fraction(digest(seed)) * total;
+  for (const entry of entries) {
+    roll -= entry.weight ?? 1;
+    if (roll < 0) return entry;
   }
-  return coordinates;
+  return entries[entries.length - 1];
 }
 
-function region(name, tileIndices, generators, difficulty) {
+function shuffled(list, seed) {
+  return [...list].sort((a, b) => fraction(digest(`${seed}:${a}`)) - fraction(digest(`${seed}:${b}`)));
+}
+
+function mission(seed, tileIndex, missionGenerator, missionDifficultyInfo, tierGroupName, availableUntil) {
   return {
-    displayName: name,
-    tileIndices,
-    missionData: {
-      missionWeights: generators.map((generator) => ({ missionGenerator: generator, weight: 1 })),
-      difficultyWeights: [{ difficultyInfo: difficultyHandle(difficulty), lootTierGroup: getDifficulty(difficulty).lootTierGroup, weight: 1 }],
-      numMissionsAvailable: tileIndices.length,
-      numMissionsToChange: 0,
-      missionChangeFrequency: 0
-    }
+    missionGuid: missionGuid(seed),
+    missionRewards: { tierGroupName, items: rewards[tierGroupName] ?? [] },
+    missionModifiers: { tierGroupName: "", items: [] },
+    missionGenerator,
+    missionDifficultyInfo,
+    tileIndex,
+    availableUntil
   };
 }
 
-// The layout is fixed; the generators and difficulty of each region are kept alongside for mission rolls.
-function buildTheater(definition) {
-  const id = hash(`core:theater:${definition.key}`);
-  const coordinates = [...ring(1), ...ring(2), ...ring(3)];
-  const outpost = definition.outpost;
-  const tiles = [{
-    tileType: "Outpost",
-    zoneTheme: resolve(zoneThemePath, outpost.zoneTheme, "Zone theme"),
-    xCoordinate: 0,
-    yCoordinate: 0,
-    canBeMissionAlert: false
-  }];
-  const regions = [region(`${definition.name} Storm Shield`, [0],
-    [resolve(missionGeneratorPath, outpost.missionGenerator, "Mission generator")], outpost.difficulty)];
-  const rolls = [{ tileIndices: [0], generators: regions[0].missionData.missionWeights.map((w) => w.missionGenerator), difficulty: outpost.difficulty }];
+// As in Epic's data: every AlwaysActive tile hosts a mission, and each region adds numMissionsAvailable missions on
+// its Normal tiles. A tile's own weights override the region's.
+function rollMissions({ data, fixedMissions }, day, availableUntil) {
+  const missions = fixedMissions.map((fixed) => mission(`${data.uniqueId}:${day}:fixed:${fixed.tileIndex}`, fixed.tileIndex,
+    fixed.missionGenerator, fixed.missionDifficultyInfo, fixed.tierGroupName, availableUntil));
 
-  let next = 0;
-  definition.regions.forEach((zone, index) => {
-    const tileIndices = [];
-    for (let i = 0; i < definition.tilesPerRegion[index]; i++) {
-      const [x, y] = coordinates[next++];
-      tileIndices.push(tiles.length);
-      tiles.push({
-        tileType: "Normal",
-        zoneTheme: resolve(zoneThemePath, zone.zoneThemes[i % zone.zoneThemes.length], "Zone theme"),
-        xCoordinate: x,
-        yCoordinate: y,
-        canBeMissionAlert: false
-      });
+  data.regions.forEach((region, regionIndex) => {
+    const missionData = region.missionData ?? {};
+    if (!missionData.numMissionsAvailable) return;
+    const seed = `${data.uniqueId}:${day}:region:${regionIndex}`;
+    const ofType = (type) => region.tileIndices.filter((index) => data.tiles[index].tileType === type);
+    const normal = shuffled(ofType("Normal"), seed).slice(0, missionData.numMissionsAvailable);
+    for (const tileIndex of [...ofType("AlwaysActive"), ...normal]) {
+      const tile = data.tiles[tileIndex];
+      const generators = tile.missionWeightOverrides?.length ? tile.missionWeightOverrides : missionData.missionWeights ?? [];
+      const difficulties = tile.difficultyWeightOverrides?.length ? tile.difficultyWeightOverrides : missionData.difficultyWeights ?? [];
+      if (!generators.length || !difficulties.length) continue;
+      const tileSeed = `${seed}:tile:${tileIndex}`;
+      const { difficultyInfo } = weighted(difficulties, `${tileSeed}:difficulty`);
+      const tierGroupName = getDifficulty(difficultyInfo.rowName)?.lootTierGroup ?? "";
+      missions.push(mission(tileSeed, tileIndex, weighted(generators, `${tileSeed}:generator`).missionGenerator,
+        difficultyInfo, tierGroupName, availableUntil));
     }
-    const generators = zone.missionGenerators.map((name) => resolve(missionGeneratorPath, name, "Mission generator"));
-    regions.push(region(zone.name, tileIndices, generators, zone.difficulty));
-    rolls.push({ tileIndices, generators, difficulty: zone.difficulty });
   });
-
-  if (!hasGlobeSocket(definition.socket)) throw new Error(`WM_Globe has no socket ${definition.socket}`);
-  const data = {
-    displayName: definition.name,
-    uniqueId: id,
-    theaterSlot: definition.slot,
-    bIsTestTheater: false,
-    description: definition.description,
-    threatDisplayName: definition.name,
-    runtimeInfo: {
-      theaterType: "Standard",
-      worldMapPinClass: resolve(mapPinPath, definition.mapPin, "Map pin"),
-      socket: definition.socket,
-      theaterColorInfo: { bUseDifficultyToDetermineColor: true }
-    },
-    tiles,
-    regions
-  };
-  return { id, data, rolls };
-}
-
-const theaters = [buildTheater(stonewood)];
-
-const nextUtcMidnight = (now) => new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
-
-// One mission per tile, rolled from the UTC day so every player (and later the gameserver) sees the same ones.
-function rollMissions(theater, now) {
-  const day = now.toISOString().slice(0, 10);
-  const availableUntil = nextUtcMidnight(now).toISOString();
-  const missions = [];
-  for (const { tileIndices, generators, difficulty } of theater.rolls) {
-    for (const tileIndex of tileIndices) {
-      const missionGuid = hash(`${theater.id}:${day}:${tileIndex}`);
-      missions.push({
-        missionGuid,
-        missionRewards: { tierGroupName: getDifficulty(difficulty).lootTierGroup, items: [] },
-        missionModifiers: { tierGroupName: "", items: [] },
-        missionGenerator: generators[parseInt(missionGuid.slice(0, 8), 16) % generators.length],
-        missionDifficultyInfo: difficultyHandle(difficulty),
-        tileIndex,
-        availableUntil
-      });
-    }
-  }
   return missions;
 }
 
 // FFortActiveTheaterInfo, the body of GET /fortnite/api/game/v2/world/info.
 export function worldInfo(now = new Date()) {
-  const nextRefresh = nextUtcMidnight(now).toISOString();
+  const day = now.toISOString().slice(0, 10);
+  const availableUntil = `${day}T23:59:59.999Z`;
   return {
     theaters: theaters.map((theater) => theater.data),
-    missions: theaters.map((theater) => ({ theaterId: theater.id, availableMissions: rollMissions(theater, now), nextRefresh })),
-    missionAlerts: theaters.map((theater) => ({ theaterId: theater.id, availableMissionAlerts: [], nextRefresh }))
+    missions: theaters.map((theater) => ({
+      theaterId: theater.data.uniqueId,
+      availableMissions: rollMissions(theater, day, availableUntil),
+      nextRefresh: availableUntil
+    })),
+    missionAlerts: theaters.map((theater) => ({ theaterId: theater.data.uniqueId, availableMissionAlerts: [], nextRefresh: availableUntil }))
   };
 }

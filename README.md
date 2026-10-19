@@ -126,6 +126,8 @@ Before submitting code:
 
 - **PongooDev** — project creator and primary maintainer
 - [Core-Backend contributors](https://github.com/PongooDev/Core-Backend/graphs/contributors)
+- [LawinServer](https://github.com/Lawin0129/LawinServer) — its copy of Epic's Save the World world info is where the
+  theater layouts in `gamedata/theaters.json` come from (GPL-3.0), converted by `tools/theaters/import.mjs`
 
 For more help, join the [Core Discord](https://discord.gg/auzEaKs7AS).
 
