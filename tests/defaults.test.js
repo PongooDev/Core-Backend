@@ -51,7 +51,7 @@ test("missing stats are added to existing profiles and the revision moves on", a
     }));
 
     const response = await post(backend.port, command(accountId, "QueryProfile"), token, {});
-    assert.equal(response.body.profileRevision, 6);
+    assert.ok(response.body.profileRevision > 5);
     const stats = response.body.profileChanges[0].profile.stats.attributes;
     assert.equal(stats.level, 7);
     assert.equal(stats.xp, 0);

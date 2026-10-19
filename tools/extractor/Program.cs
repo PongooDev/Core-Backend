@@ -241,6 +241,13 @@ foreach (var schedule in gameData["Properties"]?["DailyRewardSchedules"]?.AsArra
     dailyRewards.Add(entry);
 }
 
+// The hero a new account starts with (UFortGameData DefaultHero: HID_Commando_GrenadeGun_UC_T01, DefaultHeroName
+// "Ramirez").
+var newAccount = new SortedDictionary<string, object>(StringComparer.Ordinal)
+{
+    ["defaultHero"] = assetTypes.TemplateId(AssetPath(gameData["Properties"]!["DefaultHero"]))
+};
+
 // Survivor personalities (with each gender's portraits) and set bonuses, from MyFortData (Balance/HomebaseData,
 // UMyTownData): what a new survivor is rolled from.
 var townData = LoadExport(provider, gameData["Properties"]!["MyFortData"], "MyTownData")["Properties"]!;
@@ -586,6 +593,7 @@ File.WriteAllText(Path.Combine(output, "items.json"), JsonSerializer.Serialize(i
 File.WriteAllText(Path.Combine(output, "dailyrewards.json"), JsonSerializer.Serialize(dailyRewards, options) + "\n");
 File.WriteAllText(Path.Combine(output, "characters.json"), JsonSerializer.Serialize(characters, options) + "\n");
 File.WriteAllText(Path.Combine(output, "workers.json"), JsonSerializer.Serialize(workerData, options) + "\n");
+File.WriteAllText(Path.Combine(output, "newaccount.json"), JsonSerializer.Serialize(newAccount, options) + "\n");
 File.WriteAllText(Path.Combine(output, "cardpacks.json"), JsonSerializer.Serialize(cardPacks, options) + "\n");
 File.WriteAllText(Path.Combine(output, "homebasenodes.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal) { ["nodes"] = nodes, ["pages"] = pages }, options) + "\n");
 File.WriteAllText(Path.Combine(output, "squads.json"), JsonSerializer.Serialize(squads, options) + "\n");

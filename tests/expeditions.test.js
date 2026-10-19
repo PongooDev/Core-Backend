@@ -104,7 +104,7 @@ test("RefreshExpeditions and StartExpedition work through the client route", asy
     const refreshed = await post(backend.port, command("RefreshExpeditions"), token, {});
     const items = Object.entries(refreshed.body.profileChanges[0].profile.items);
     const [expeditionId] = items.find(([, item]) => item.attributes.expedition_slot_id === "MiningOre");
-    const [heroId] = items.find(([, item]) => item.templateId.startsWith("Hero:"));
+    const [heroId] = items.find(([, item]) => item.templateId === "Hero:hid_constructor_rushbase_uc_t01");
     const started = await post(backend.port, command("StartExpedition"), token,
       { expeditionId, squadId: "Squad_Expedition_ExpeditionSquadOne", itemIds: [heroId], slotIndices: [0] });
     assert.equal(started.status, 200);

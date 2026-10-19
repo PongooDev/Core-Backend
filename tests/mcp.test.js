@@ -28,8 +28,8 @@ test("QueryProfile returns an FProfileUpdate with a full profile the client can 
     assert.equal(typeof change.profile.wipeNumber, "number");
     assert.equal(change.profile.stats.attributes.level, 1);
     const templateIds = Object.values(change.profile.items).map((item) => item.templateId);
-    assert.deepEqual(templateIds.filter((templateId) => !templateId.startsWith("HomebaseBanner")), ["HomebaseNode:startnode_commandcenter", "Quota:restxp"]);
-    assert.equal(templateIds.length, 1 + 31 + 21 + 1, "the start node, the starter banners and rest XP");
+    assert.deepEqual(templateIds.filter((templateId) => !templateId.startsWith("HomebaseBanner")), ["HomebaseNode:startnode_commandcenter", "Quota:restxp", "Quest:homebaseonboarding", "Hero:hid_commando_grenadegun_uc_t01"]);
+    assert.equal(templateIds.length, 1 + 31 + 21 + 1 + 2, "the start node, the starter banners, rest XP, the starting quest and hero");
 
     assert.ok(fs.existsSync(path.join(backend.dataDir, "accounts", accountId, "profiles", "profile0.json")));
 

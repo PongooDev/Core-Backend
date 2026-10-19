@@ -8,8 +8,8 @@ const command = (accountId, name, profileId = "profile0", rvn = -1) =>
 
 async function freshAccount(backend) {
   const login = await userLogin(backend.port, "CoreTest");
-  await post(backend.port, command(login.accountId, "ClientQuestLogin"), login.token, {});
-  return login;
+  const quests = await post(backend.port, command(login.accountId, "ClientQuestLogin"), login.token, {});
+  return { ...login, rvn: quests.body.profileRevision };
 }
 
 async function profileItems(backend, { token, accountId }, profileId = "profile0") {
@@ -23,10 +23,10 @@ test("SkipTutorial completes the onboarding chain and grants its rewards where t
   const backend = await startBackend();
   try {
     const login = await freshAccount(backend);
-    const skip = await post(backend.port, command(login.accountId, "SkipTutorial", "profile0", 2), login.token, {});
+    const skip = await post(backend.port, command(login.accountId, "SkipTutorial", "profile0", login.rvn), login.token, {});
     assert.equal(skip.status, 200);
-    assert.equal(skip.body.profileChangesBaseRevision, 2);
-    assert.equal(skip.body.profileRevision, 3);
+    assert.equal(skip.body.profileChangesBaseRevision, login.rvn);
+    assert.equal(skip.body.profileRevision, login.rvn + 1);
     assert.ok(skip.body.profileChanges.length > 0);
     assert.ok(skip.body.profileChanges.every((change) => change.changeType !== "fullProfileUpdate"));
 
@@ -52,7 +52,7 @@ test("SkipTutorial completes the onboarding chain and grants its rewards where t
     }
     assert.ok(profile.stats.attributes.collection_book.pages.includes("pageheroes_commando"));
 
-    const again = await post(backend.port, command(login.accountId, "SkipTutorial", "profile0", 3), login.token, {});
+    const again = await post(backend.port, command(login.accountId, "SkipTutorial", "profile0", login.rvn + 1), login.token, {});
     assert.deepEqual(again.body.profileChanges, []);
     assert.equal(again.body.multiUpdate, undefined);
   } finally {
@@ -88,11 +88,11 @@ test("MarkItemSeen marks granted items as seen", async () => {
   const backend = await startBackend();
   try {
     const login = await freshAccount(backend);
-    await post(backend.port, command(login.accountId, "SkipTutorial"), login.token, {});
+    const skip = await post(backend.port, command(login.accountId, "SkipTutorial"), login.token, {});
     const [heroId] = Object.entries((await profileItems(backend, login)).items)
-      .find(([, item]) => item.templateId.startsWith("Hero:"));
+      .find(([, item]) => item.templateId === "Hero:hid_constructor_rushbase_uc_t01");
 
-    const seen = await post(backend.port, command(login.accountId, "MarkItemSeen", "profile0", 3), login.token, { itemIds: [heroId, "missing"] });
+    const seen = await post(backend.port, command(login.accountId, "MarkItemSeen", "profile0", skip.body.profileRevision), login.token, { itemIds: [heroId, "missing"] });
     assert.deepEqual(seen.body.profileChanges, [{ changeType: "itemAttrChanged", itemId: heroId, attributeName: "item_seen", attributeValue: 1 }]);
   } finally {
     backend.close();
