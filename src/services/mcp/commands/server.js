@@ -4,7 +4,7 @@ import { log } from "../../../log.js";
 import { grantItem } from "../../../profiles/items.js";
 import { advanceObjective } from "../../../profiles/progress.js";
 import { earnScore } from "../../../profiles/xp.js";
-import { worldInfo } from "../../../world/theaters.js";
+import { findMission } from "../../../world/theaters.js";
 import { clientQuestLogin } from "./ClientQuestLogin.js";
 
 // Commands the gameserver sends for its players (POST .../profile/{accountId}/dedicated_server/{command}), from the
@@ -23,17 +23,11 @@ export function sessionMission(sessions, sessionId) {
   const session = sessionId && sessions.get(sessionId);
   const raw = session?.attributes?.ZONEINSTANCEID_s;
   if (!raw) return null;
-  let zone;
   try {
-    zone = typeof raw === "string" ? JSON.parse(raw) : raw;
+    return findMission((typeof raw === "string" ? JSON.parse(raw) : raw).theaterMissionId);
   } catch {
     return null;
   }
-  for (const theater of worldInfo().missions) {
-    const mission = theater.availableMissions.find((candidate) => candidate.missionGuid === zone.theaterMissionId);
-    if (mission) return mission;
-  }
-  return null;
 }
 
 // FMcpProfileChangeRequest {addRequests, removeRequests, changeQuantityRequests, changeAttributesRequests} applied to

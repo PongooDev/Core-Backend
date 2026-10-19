@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readGameData } from "../src/gamedata/read.js";
 import { worldInfo } from "../src/world/theaters.js";
-import { get, startBackend, userLogin } from "./helpers.js";
+import { clientToken, get, post, startBackend, userLogin } from "./helpers.js";
 
 const world = readGameData("world", {});
 const info = worldInfo(new Date("2026-10-19T12:00:00Z"));
@@ -54,6 +54,30 @@ test("GET world/info serves it to a logged in client", async () => {
     assert.equal(response.status, 200);
     assert.equal(response.body.theaters[0].displayName.en, "Stonewood");
     assert.equal((await get(backend.port, "/fortnite/api/game/v2/world/info")).status, 401);
+  } finally {
+    backend.close();
+  }
+});
+
+test("world/validate gives the gameserver the zone it posts, as FFortZoneInstanceDetails", async () => {
+  const backend = await startBackend();
+  try {
+    const token = await clientToken(backend.port);
+    const info = await get(backend.port, "/fortnite/api/game/v2/world/info", token);
+    const theater = info.body.missions.find((entry) => entry.availableMissions.length);
+    const mission = theater.availableMissions[0];
+    const zone = { worldId: "", theaterId: theater.theaterId, theaterMissionId: mission.missionGuid, theaterMissionAlertId: "", zoneThemeClass: "" };
+    const details = await post(backend.port, "/fortnite/api/game/v2/world/validate?sessionId=abc", token, zone);
+    assert.equal(details.status, 200);
+    assert.deepEqual(details.body, {
+      missionGenerator: mission.missionGenerator,
+      zoneDifficultyInfo: mission.missionDifficultyInfo,
+      missionRewards: mission.missionRewards,
+      zoneModifiers: { tierGroupName: "", items: [] },
+      tileIndex: mission.tileIndex
+    });
+    const unknown = await post(backend.port, "/fortnite/api/game/v2/world/validate?sessionId=abc", token, { ...zone, theaterMissionId: "nope" });
+    assert.equal(unknown.status, 404);
   } finally {
     backend.close();
   }

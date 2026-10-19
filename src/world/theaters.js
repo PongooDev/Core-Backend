@@ -81,3 +81,15 @@ export function worldInfo(now = new Date()) {
     missionAlerts: theaters.map((theater) => ({ theaterId: theater.data.uniqueId, availableMissionAlerts: [], nextRefresh: availableUntil }))
   };
 }
+
+// A mission by its guid: today's, or yesterday's for a match that started before UTC midnight.
+export function findMission(missionGuid, now = new Date()) {
+  if (!missionGuid) return null;
+  for (const day of [now, new Date(now.getTime() - 24 * 60 * 60 * 1000)]) {
+    for (const theater of worldInfo(day).missions) {
+      const found = theater.availableMissions.find((candidate) => candidate.missionGuid === missionGuid);
+      if (found) return { theaterId: theater.theaterId, ...found };
+    }
+  }
+  return null;
+}
