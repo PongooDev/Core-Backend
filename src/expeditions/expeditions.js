@@ -2,10 +2,10 @@ import crypto from "node:crypto";
 import { rollContents } from "../cardpacks/contents.js";
 import { McpError } from "../errors.js";
 import { getSquad, slotUnlockNode } from "../gamedata/homebase.js";
-import { getItem } from "../gamedata/items.js";
 import { readGameData } from "../gamedata/read.js";
 import { ownsNode } from "../profiles/homebase.js";
 import { lootEntry } from "../profiles/items.js";
+import { itemRating } from "../profiles/rating.js";
 import { grant, hasTag } from "../profiles/progress.js";
 import { characterType, unassign } from "../profiles/squads.js";
 import { unlockedTags } from "../profiles/unlocks.js";
@@ -22,7 +22,6 @@ import { unlockedTags } from "../profiles/unlocks.js";
 // TierFactor percent below it; a squad's rating is its members' BaseItemRating at their level, added up; rewards are
 // the recipe's packs, opened on collection.
 const { expeditions = {}, recipes = {}, slots = {} } = readGameData("expeditions", {});
-const { ratings = {} } = readGameData("upgrades", {});
 
 const fail = (code, message) => {
   throw new McpError(`errors.com.epicgames.fortnite.${code}`, message);
@@ -53,13 +52,6 @@ export function successChance(rating, min, max) {
   if (rating < min) return 0;
   const progress = max > min ? Math.min(Math.max((rating - min) / (max - min), 0), 1) : 1;
   return 0.05 * (1 - progress) + progress;
-}
-
-function itemRating(item) {
-  const row = getItem(item.templateId)?.rating;
-  const curve = row && ratings[row];
-  if (!curve) return 0;
-  return curve[Math.min(item.attributes.level ?? 1, curve.length - 1)] ?? 0;
 }
 
 const isExpedition = (item) => item.templateId.toLowerCase().startsWith("expedition:");

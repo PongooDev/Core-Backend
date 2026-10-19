@@ -1,6 +1,7 @@
 import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { isBookPage } from "../collectionbook/book.js";
 import { notFound, sendError } from "../errors.js";
 import { getNode, nodeIds } from "../gamedata/homebase.js";
 import { getItem, itemIds } from "../gamedata/items.js";
@@ -89,6 +90,7 @@ export function adminRoutes({ accounts, profiles }) {
     const [type, name = ""] = templateId.split(":");
     const known = type.toLowerCase() === "quest" ? Boolean(getQuest(name))
       : type.toLowerCase() === "homebasenode" ? Boolean(getNode(name))
+      : type.toLowerCase() === "collectionbookpage" ? isBookPage(name)
       : Boolean(getItem(templateId));
     if (!known) return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", `Unknown item ${templateId}`);
 

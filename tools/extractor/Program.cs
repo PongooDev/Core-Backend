@@ -356,6 +356,59 @@ foreach (var (id, row) in LoadRows(provider, manager["ExpeditionSlotsDataTable"]
     };
 }
 
+// The collection book (CollectionBook/Data/CollectionBookData): pages and their profile, sections, slots and the
+// items each takes, the slot XP weights (FortCollectionBookSlotData: Constant + level x ItemLevel + rarity factor x
+// Rarity + rating x ItemRating), the rarity factor curve (by rarity, Handmade = 0) and the book levels' rewards.
+static object BookRewards(JsonNode? rewards, AssetTypes assetTypes) => new SortedDictionary<string, object>(StringComparer.Ordinal)
+{
+    ["standard"] = Items(rewards?["StandardRewards"], assetTypes),
+    ["hidden"] = Items(rewards?["HiddenRewards"], assetTypes),
+    ["selectable"] = (rewards?["SelectableRewards"]?.AsArray() ?? []).Select(group => Items(group?["Rewards"], assetTypes)).ToList()
+};
+var book = LoadExport(provider, JsonValue.Create("/Game/CollectionBook/Data/CollectionBookData.CollectionBookData"), "FortCollectionBookData")["Properties"]!;
+var bookPages = new SortedDictionary<string, object>(StringComparer.Ordinal);
+foreach (var (id, row) in LoadRows(provider, book["PageData"]))
+    bookPages[id] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+    {
+        ["profile"] = (row!["ProfileId"]?.GetValue<string>() ?? "").ToLowerInvariant(),
+        ["sections"] = Strings(row["SectionRowNames"]),
+        ["rewards"] = BookRewards(row["Rewards"], assetTypes)
+    };
+var bookSections = new SortedDictionary<string, object>(StringComparer.Ordinal);
+foreach (var (id, row) in LoadRows(provider, book["SectionData"]))
+    bookSections[id] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+    {
+        ["slots"] = Strings(row!["SlotRowNames"]),
+        ["rewards"] = BookRewards(row["Rewards"], assetTypes)
+    };
+var bookSlots = new SortedDictionary<string, object>(StringComparer.Ordinal);
+foreach (var (id, row) in LoadRows(provider, book["SlotData"]))
+    bookSlots[id] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+    {
+        ["weight"] = row!["SlotXpWeightName"]?.GetValue<string>() ?? "Default",
+        ["items"] = (row["AllowedItems"]?.AsArray() ?? []).Select(path => assetTypes.TemplateId(AssetPath(path))).Where(t => t is not null and not "None").ToList()
+    };
+var bookWeights = new SortedDictionary<string, object>(StringComparer.Ordinal);
+foreach (var (id, row) in LoadRows(provider, book["XPWeightData"]))
+    bookWeights[id] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+    {
+        ["constant"] = row!["ConstantWeight"]?.GetValue<double>() ?? 0,
+        ["rarity"] = row["RarityWeight"]?.GetValue<double>() ?? 0,
+        ["level"] = row["ItemLevelWeight"]?.GetValue<double>() ?? 0,
+        ["rating"] = row["ItemRatingWeight"]?.GetValue<double>() ?? 0
+    };
+var rarityCurve = LoadExport(provider, book["SlotRarityFactorData"], "CurveFloat")["Properties"]!["FloatCurve"]!["Keys"]!.AsArray()
+    .Select(k => (time: k!["Time"]!.GetValue<double>(), value: k["Value"]!.GetValue<double>())).ToList();
+var rarityFactor = Enumerable.Range(0, 7).Select(r => rarityCurve.FirstOrDefault(k => k.time == r).value).ToList();
+var bookLevels = new List<object>();
+foreach (var (id, row) in LoadRows(provider, book["BookXPData"]).OrderBy(entry => int.Parse(entry.Key)))
+    bookLevels.Add(new SortedDictionary<string, object>(StringComparer.Ordinal)
+    {
+        ["level"] = int.Parse(id),
+        ["totalXp"] = row!["TotalXpToGetToThisLevel"]?.GetValue<int>() ?? 0,
+        ["rewards"] = BookRewards(row["Rewards"], assetTypes)
+    });
+
 // Account levels (FortLevelUpData): the total XP each level needs, how XP shows in the UI, and what reaching it gives
 // ("/Game/Items/Tokens/HomebasePoints.HomebasePoints=1", comma separated).
 var accountLevels = new List<object>();
@@ -386,6 +439,11 @@ File.WriteAllText(Path.Combine(output, "upgrades.json"), JsonSerializer.Serializ
 File.WriteAllText(Path.Combine(output, "expeditions.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal)
 {
     ["expeditions"] = expeditions, ["recipes"] = expeditionRecipes, ["slots"] = expeditionSlots
+}, options) + "\n");
+File.WriteAllText(Path.Combine(output, "collectionbook.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal)
+{
+    ["pages"] = bookPages, ["sections"] = bookSections, ["slots"] = bookSlots, ["weights"] = bookWeights,
+    ["rarityFactor"] = rarityFactor, ["levels"] = bookLevels
 }, options) + "\n");
 File.WriteAllText(Path.Combine(output, "quests.json"), JsonSerializer.Serialize(quests, options) + "\n");
 File.WriteAllText(Path.Combine(output, "items.json"), JsonSerializer.Serialize(items, options) + "\n");

@@ -56,25 +56,27 @@ function pay(tracker, costs) {
   }
 }
 
-export function upgradeItem(session, itemId) {
-  const tracker = session.profile("profile0");
+// The item may sit in another profile (a collection book's slotted items); the cost always comes out of profile0.
+export function upgradeItem(session, itemId, profileId = "profile0") {
+  const tracker = session.profile(profileId);
   const { item, info } = accountItem(tracker, itemId);
   const level = item.attributes.level ?? 1;
   if (level >= info.maxLevel) fail(`${item.templateId} is already at its highest level, ${info.maxLevel}`);
   const cost = levelCosts[info.levelCost]?.[level];
   if (!cost) fail(`No level cost for ${info.levelCost} level ${level}`);
-  pay(tracker, [{ templateId: xpResource[info.class], quantity: cost }]);
+  pay(session.profile("profile0"), [{ templateId: xpResource[info.class], quantity: cost }]);
   tracker.setItemAttribute(itemId, "level", level + 1);
 }
 
 // The evolved item takes the old one's place, id and attributes (level, squad slot, favorite) included.
-export function convertItem(session, itemId, conversionIndex) {
-  const tracker = session.profile("profile0");
+export function convertItem(session, itemId, conversionIndex, profileId = "profile0") {
+  const tracker = session.profile(profileId);
+  const account = session.profile("profile0");
   const { item, info } = accountItem(tracker, itemId);
   const recipe = recipes[info.conversions?.[conversionIndex]];
   if (!recipe || recipe.results.length !== 1) fail(`${item.templateId} has no evolution ${conversionIndex}`);
-  if (!hasUnlocked(tracker.profile, recipe.catalysts)) locked(recipe.catalysts);
-  pay(tracker, recipe.costs);
+  if (!hasUnlocked(account.profile, recipe.catalysts)) locked(recipe.catalysts);
+  pay(account, recipe.costs);
   const [result] = recipe.results;
   const attributes = { ...item.attributes, item_seen: 0 };
   tracker.removeItem(itemId);

@@ -3,6 +3,7 @@ import { assignWorkerToSquadBatch } from "./AssignWorkerToSquadBatch.js";
 import { claimLoginReward } from "./ClaimLoginReward.js";
 import { claimQuestReward } from "./ClaimQuestReward.js";
 import { clientQuestLogin } from "./ClientQuestLogin.js";
+import { claimCollectionBookPageRewards, claimCollectionBookRewards, convertSlottedItem, slotItemInCollectionBook, upgradeSlottedItem } from "./CollectionBook.js";
 import { fortRerollDailyQuest } from "./FortRerollDailyQuest.js";
 import { getMcpTimeForLogin } from "./GetMcpTimeForLogin.js";
 import { setHeroModeLoadout, setModeLoadout } from "./Loadouts.js";
@@ -31,11 +32,14 @@ export const clientCommands = {
   AbandonExpedition: abandonExpeditionCommand,
   AssignWorkerToSquad: assignWorkerToSquad,
   AssignWorkerToSquadBatch: assignWorkerToSquadBatch,
+  ClaimCollectionBookPageRewards: claimCollectionBookPageRewards,
+  ClaimCollectionBookRewards: claimCollectionBookRewards,
   ClaimLoginReward: claimLoginReward,
   ClaimQuestReward: claimQuestReward,
   ClientQuestLogin: clientQuestLogin,
   CollectExpedition: collectExpeditionCommand,
   ConvertItem: convertItemCommand,
+  ConvertSlottedItem: convertSlottedItem,
   FortRerollDailyQuest: fortRerollDailyQuest,
   GetMcpTimeForLogin: getMcpTimeForLogin,
   MarkItemSeen: markItemSeen,
@@ -59,10 +63,12 @@ export const clientCommands = {
   SetMtxPlatform: setMtxPlatform,
   SetPinnedQuests: setPinnedQuests,
   SkipTutorial: skipTutorial,
+  SlotItemInCollectionBook: slotItemInCollectionBook,
   StartExpedition: startExpeditionCommand,
   UnassignAllSquads: unassignAllSquads,
   UpdateQuestClientObjectives: updateQuestClientObjectives,
-  UpgradeItem: upgradeItemCommand
+  UpgradeItem: upgradeItemCommand,
+  UpgradeSlottedItem: upgradeSlottedItem
 };
 
 export const adminCommands = {
