@@ -52,6 +52,12 @@ test("entering a storm shield makes its core, the gameserver saves it, and a won
     assert.equal((await profile()).items[coreId].attributes.level, 0);
     await end("Succeeded");
     assert.equal((await profile()).items[coreId].attributes.level, 1);
+
+    // The next visit plays the second defense: the player asked for the session key, so they own this storm shield.
+    const validate = () => post(backend.port, `/fortnite/api/game/v2/world/validate?sessionId=${registered.body.id}`, server.token, zone);
+    assert.equal((await validate()).body.zoneDifficultyInfo.rowName, "Theater_Start_Outpost1");
+    await get(backend.port, `/fortnite/api/game/v2/matchmaking/account/${player.accountId}/session/${registered.body.id}`, player.token);
+    assert.equal((await validate()).body.zoneDifficultyInfo.rowName, "Theater_Start_Outpost2");
   } finally {
     backend.close();
   }

@@ -94,3 +94,15 @@ export function completeOutpostDefense(session, accountId, templateId) {
   const level = tracker.profile.items[itemId].attributes.level ?? 0;
   if (level < (info.maxLevel ?? 10)) tracker.setItemAttribute(itemId, "level", level + 1);
 }
+
+// The storm shield defense a player is up to: world info lists each theater's storm shield at its first defense
+// (Theater_Start_Outpost1, Theater_Normal_Outpost1, ...); Core moves it to <prefix>_Outpost<level + 1> for the core's
+// owner, up to the tenth.
+export function outpostDifficulty(profile, templateId, difficultyInfo) {
+  const info = outpostInfo(templateId);
+  const itemId = info && findItem(profile, info.templateId);
+  const level = itemId ? profile.items[itemId].attributes.level ?? 0 : 0;
+  const rowName = String(difficultyInfo?.rowName ?? "");
+  if (!/_Outpost\d+$/.test(rowName)) return difficultyInfo;
+  return { ...difficultyInfo, rowName: rowName.replace(/\d+$/, String(Math.min(level + 1, info?.maxLevel ?? 10))) };
+}
