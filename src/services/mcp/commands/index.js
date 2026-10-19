@@ -1,6 +1,7 @@
 import { assignWorkerToSquad } from "./AssignWorkerToSquad.js";
 import { assignWorkerToSquadBatch } from "./AssignWorkerToSquadBatch.js";
 import { claimLoginReward } from "./ClaimLoginReward.js";
+import { claimMissionAlertRewards } from "./ClaimMissionAlertRewards.js";
 import { claimQuestReward } from "./ClaimQuestReward.js";
 import { clientQuestLogin } from "./ClientQuestLogin.js";
 import { claimCollectionBookPageRewards, claimCollectionBookRewards, convertSlottedItem, slotItemInCollectionBook, upgradeSlottedItem } from "./CollectionBook.js";
@@ -35,6 +36,7 @@ export const clientCommands = {
   ClaimCollectionBookPageRewards: claimCollectionBookPageRewards,
   ClaimCollectionBookRewards: claimCollectionBookRewards,
   ClaimLoginReward: claimLoginReward,
+  ClaimMissionAlertRewards: claimMissionAlertRewards,
   ClaimQuestReward: claimQuestReward,
   ClientQuestLogin: clientQuestLogin,
   CollectExpedition: collectExpeditionCommand,

@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { McpError } from "../../../errors.js";
 import { log } from "../../../log.js";
+import { completeMissionAlert } from "../../../profiles/alerts.js";
 import { grantItem } from "../../../profiles/items.js";
 import { advanceObjective } from "../../../profiles/progress.js";
 import { earnScore } from "../../../profiles/xp.js";
@@ -24,7 +25,8 @@ export function sessionMission(sessions, sessionId) {
   const raw = session?.attributes?.ZONEINSTANCEID_s;
   if (!raw) return null;
   try {
-    return findMission((typeof raw === "string" ? JSON.parse(raw) : raw).theaterMissionId);
+    const zone = typeof raw === "string" ? JSON.parse(raw) : raw;
+    return findMission(zone.theaterMissionId, new Date(), zone.theaterMissionAlertId);
   } catch {
     return null;
   }
@@ -79,7 +81,8 @@ export const serverCommands = {
   },
 
   // A finished mission: its quest progress, and when it succeeded (EFortMissionStatus Succeeded) the mission's rewards
-  // from world info as card packs the after-mission rewards screen opens (pack_source "Mission").
+  // from world info as card packs the after-mission rewards screen opens (pack_source "Mission"). A mission alert on it
+  // (the zone's theaterMissionAlertId) puts the alert's rewards in the player's pending mission alert rewards.
   EndPrimaryMission({ req, session, context }) {
     const { advance: updates, missionStatus, matchmakingSessionId, missionName } = req.body ?? {};
     advance(session, updates);
@@ -90,6 +93,7 @@ export const serverCommands = {
       return;
     }
     for (const { itemType, quantity } of mission.missionRewards.items) grantItem(session, itemType, quantity, { packSource: "Mission" });
+    if (mission.missionAlert) completeMissionAlert(session, mission.theaterId, mission.missionAlert);
   },
 
   // One call for every player in the match: [{accountId, totalScore, bCriticalMatchBonus}] (FAccountIdAndScore).

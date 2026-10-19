@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { readGameData } from "../gamedata/read.js";
-import { getDifficulty } from "../gamedata/world.js";
+import { getDifficulty, missionAlertTier } from "../gamedata/world.js";
 
 // Theater layouts come from Epic's world info (see tools/theaters/import.mjs); the client ships none.
 const { theaters = [], rewards = {} } = readGameData("theaters", {});
@@ -67,28 +67,78 @@ function rollMissions({ data, fixedMissions }, day, availableUntil) {
   return missions;
 }
 
+// What an alert gives, by the loot tier group of its MissionAlerts row. No shipped loot table has these groups (Epic
+// rolled them on its servers), so this is Core's: V-bucks and the tier's reagents, as the client's own zone packs.
+const alertRewards = {
+  MissionAlert_Proto_01: [["CardPack:zcp_mtx_boost50", 1], ["CardPack:zcp_reagent_c_t01_medium", 1]],
+  MissionAlert_Proto_02: [["CardPack:zcp_mtx_boost50", 1], ["CardPack:zcp_reagent_c_t02_medium", 1]],
+  MissionAlert_Proto_03: [["CardPack:zcp_mtx_boost100", 1], ["CardPack:zcp_reagent_c_t03_medium", 1]],
+  MissionAlert_Proto_04: [["CardPack:zcp_mtx_boost100", 1], ["CardPack:zcp_reagent_c_t04_medium", 1]]
+};
+
+function alertFor(data, mission) {
+  const tile = data.tiles[mission.tileIndex];
+  const tier = missionAlertTier(mission.missionDifficultyInfo.rowName);
+  if (!tile?.canBeMissionAlert || !tier || !alertRewards[tier.lootTierGroup]) return undefined;
+  if (tier.zoneThemes.length && !tier.zoneThemes.includes(tile.zoneTheme)) return undefined;
+  if (tier.missionGenerator && tier.missionGenerator !== mission.missionGenerator) return undefined;
+  return tier;
+}
+
+// Core's placement (the client's theater info would say how many, and none ships): each region gets one alert, on one
+// of its missions whose tile can carry one and whose difficulty has a MissionAlerts row.
+function rollAlerts({ data }, missions, day, availableUntil) {
+  return data.regions.flatMap((region, regionIndex) => {
+    const seed = `${data.uniqueId}:${day}:alert:${regionIndex}`;
+    const candidates = missions.filter((mission) => region.tileIndices.includes(mission.tileIndex) && alertFor(data, mission));
+    if (!candidates.length) return [];
+    const [mission] = shuffled(candidates.map((candidate) => candidate.missionGuid), seed)
+      .map((guid) => candidates.find((candidate) => candidate.missionGuid === guid));
+    const { lootTierGroup } = alertFor(data, mission);
+    return [{
+      missionAlertGuid: missionGuid(seed),
+      tileIndex: mission.tileIndex,
+      availableUntil,
+      missionAlertRewards: {
+        tierGroupName: lootTierGroup,
+        items: alertRewards[lootTierGroup].map(([itemType, quantity]) => ({ itemType, quantity }))
+      }
+    }];
+  });
+}
+
 // FFortActiveTheaterInfo, the body of GET /fortnite/api/game/v2/world/info.
 export function worldInfo(now = new Date()) {
   const day = now.toISOString().slice(0, 10);
   const availableUntil = `${day}T23:59:59.999Z`;
+  const missions = theaters.map((theater) => rollMissions(theater, day, availableUntil));
   return {
     theaters: theaters.map((theater) => theater.data),
-    missions: theaters.map((theater) => ({
+    missions: theaters.map((theater, index) => ({
       theaterId: theater.data.uniqueId,
-      availableMissions: rollMissions(theater, day, availableUntil),
+      availableMissions: missions[index],
       nextRefresh: availableUntil
     })),
-    missionAlerts: theaters.map((theater) => ({ theaterId: theater.data.uniqueId, availableMissionAlerts: [], nextRefresh: availableUntil }))
+    missionAlerts: theaters.map((theater, index) => ({
+      theaterId: theater.data.uniqueId,
+      availableMissionAlerts: rollAlerts(theater, missions[index], day, availableUntil),
+      nextRefresh: availableUntil
+    }))
   };
 }
 
-// A mission by its guid: today's, or yesterday's for a match that started before UTC midnight.
-export function findMission(missionGuid, now = new Date()) {
+// A mission by its guid (and the alert on it, by the alert's guid): today's, or yesterday's for a match that started
+// before UTC midnight.
+export function findMission(missionGuid, now = new Date(), missionAlertGuid = "") {
   if (!missionGuid) return null;
   for (const day of [now, new Date(now.getTime() - 24 * 60 * 60 * 1000)]) {
-    for (const theater of worldInfo(day).missions) {
+    const info = worldInfo(day);
+    for (const [index, theater] of info.missions.entries()) {
       const found = theater.availableMissions.find((candidate) => candidate.missionGuid === missionGuid);
-      if (found) return { theaterId: theater.theaterId, ...found };
+      if (!found) continue;
+      const alert = missionAlertGuid && info.missionAlerts[index].availableMissionAlerts
+        .find((candidate) => candidate.missionAlertGuid === missionAlertGuid && candidate.tileIndex === found.tileIndex);
+      return { theaterId: theater.theaterId, ...found, ...(alert && { missionAlert: alert }) };
     }
   }
   return null;

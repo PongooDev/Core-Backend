@@ -301,6 +301,20 @@ foreach (var (id, row) in LoadRows(provider, JsonValue.Create("/Game/Balance/Dat
     };
 }
 
+// Mission alerts (DefaultGameData MissionAlerts and DailyMissionAlertQuota): which tile difficulties an alert can sit
+// on, and the loot tier group its rewards come from. The client counts the quota as the claim times over 24 hours old.
+var missionAlerts = LoadRows(provider, gameData["Properties"]!["MissionAlerts"]).Select(entry => new SortedDictionary<string, object>(StringComparer.Ordinal)
+{
+    ["name"] = entry.Key,
+    ["minimumDifficulty"] = entry.Value!["MinimumTileDifficulty"]?.GetValue<int>() ?? 0,
+    ["maximumDifficulty"] = entry.Value["MaximumTileDifficulty"]?.GetValue<int>() ?? 0,
+    ["zoneThemes"] = (entry.Value["AllowedZoneThemes"]?.AsArray() ?? []).Select(AssetPath).ToList(),
+    ["missionGenerator"] = entry.Value["MissionGenerator"] is { } generator ? AssetPath(generator) : "",
+    ["lootTierGroup"] = entry.Value["LootTierGroup"]?.GetValue<string>() ?? "",
+    ["lootTier"] = entry.Value["LootTier"]?.GetValue<int>() ?? 0
+}).ToList();
+var dailyMissionAlertQuota = gameData["Properties"]?["DailyMissionAlertQuota"]?.GetValue<int>() ?? 0;
+
 // Item upgrades: XP per level by curve row (index = level), XP back for recycling at a level, and the MetaRecipes
 // (Evolve.* and Recycle.*: costs, results and the gameplay tags that unlock them).
 static SortedDictionary<string, List<double>> Curves(DefaultFileProvider provider, string path)
@@ -456,7 +470,8 @@ File.WriteAllText(Path.Combine(output, "objectivestats.json"), JsonSerializer.Se
 File.WriteAllText(Path.Combine(output, "world.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal)
 {
     ["zoneThemes"] = zoneThemes, ["missionGenerators"] = missionGenerators, ["difficulties"] = difficulties,
-    ["mapPins"] = mapPins, ["globeSockets"] = globeSockets
+    ["mapPins"] = mapPins, ["globeSockets"] = globeSockets, ["missionAlerts"] = missionAlerts,
+    ["dailyMissionAlertQuota"] = dailyMissionAlertQuota
 }, options) + "\n");
 Console.WriteLine($"{zoneThemes.Count} zone themes, {missionGenerators.Count} mission generators, {difficulties.Count} mission difficulties");
 Console.WriteLine($"{characters.Count} characters, {cardPacks.Count} card packs, {nodes.Count} skill tree nodes, {squads.Count} squads, {objectiveStats.Count} objective stats");

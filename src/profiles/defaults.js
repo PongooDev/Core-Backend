@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import { isChoicePack, rollOptions } from "../cardpacks/contents.js";
+import { emptyAlertRecord, withQuotaSlots } from "./alerts.js";
 
 const never = "0001-01-01T00:00:00.000Z";
 
@@ -19,12 +20,7 @@ const templates = {
     quest_manager: { dailyLoginInterval: never, dailyQuestRerolls: 0 },
     client_settings: { pinnedQuestInstances: [] },
     current_mtx_platform: "Epic",
-    mission_alert_redemption_record: {
-      lastClaimedGuidPerTheater: [],
-      lastClaimTimes: [],
-      oldestClaimIndex: 0,
-      pendingMissionAlertRewards: { tierGroupName: "", items: [] }
-    },
+    mission_alert_redemption_record: emptyAlertRecord(),
     player_loadout: { bPlayerIsNew: true, pinnedSchematicInstances: [], zonesCompleted: 0 },
     in_app_purchases: { receipts: [], fulfillmentCounts: {} },
     daily_purchases: { lastInterval: never, purchaseList: {} },
@@ -50,6 +46,11 @@ export function addMissingStats(profile) {
   const homebase = profile.stats.attributes.homebase;
   if (homebase && !homebase.bannerIconId && !homebase.bannerColorId) {
     Object.assign(homebase, defaultBanner);
+    added = true;
+  }
+  const alerts = profile.stats.attributes.mission_alert_redemption_record;
+  if (alerts && withQuotaSlots(alerts) !== alerts) {
+    profile.stats.attributes.mission_alert_redemption_record = withQuotaSlots(alerts);
     added = true;
   }
   return added;

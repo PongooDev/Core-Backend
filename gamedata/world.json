@@ -1,4 +1,5 @@
 {
+  "dailyMissionAlertQuota": 3,
   "difficulties": {
     "TheaterMutatorTestZone5": {
       "difficulty": 30,
@@ -526,6 +527,44 @@
     "/Game/Environments/WorldMap/Blueprints/WM_PinHard.WM_PinHard_C",
     "/Game/Environments/WorldMap/Blueprints/WM_PinMedium.WM_PinMedium_C",
     "/Game/Environments/WorldMap/Blueprints/WM_Pin_Master.WM_Pin_Master_C"
+  ],
+  "missionAlerts": [
+    {
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_Proto_01",
+      "maximumDifficulty": 17,
+      "minimumDifficulty": 5,
+      "missionGenerator": "",
+      "name": "MissionAlert_1",
+      "zoneThemes": []
+    },
+    {
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_Proto_02",
+      "maximumDifficulty": 27,
+      "minimumDifficulty": 18,
+      "missionGenerator": "",
+      "name": "MissionAlert_2",
+      "zoneThemes": []
+    },
+    {
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_Proto_03",
+      "maximumDifficulty": 37,
+      "minimumDifficulty": 28,
+      "missionGenerator": "",
+      "name": "MissionAlert_3",
+      "zoneThemes": []
+    },
+    {
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_Proto_04",
+      "maximumDifficulty": 40,
+      "minimumDifficulty": 38,
+      "missionGenerator": "",
+      "name": "MissionAlert_4",
+      "zoneThemes": []
+    }
   ],
   "missionGenerators": {
     "/Game/World/MissionGens/MissionGen_1Gate.MissionGen_1Gate_C": {
