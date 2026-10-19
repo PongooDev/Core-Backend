@@ -46,6 +46,7 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
 }
 
 var items = new SortedDictionary<string, object>(StringComparer.Ordinal);
+var expeditions = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var characters = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var cardPacks = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var unmapped = new SortedSet<string>(StringComparer.Ordinal);
@@ -75,6 +76,26 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         ["tier"] = Enum(properties?["Tier"]) ?? "No_Tier"
     };
     if (Strings(properties?["GameplayTags"]) is { Count: > 0 } itemTags) ((SortedDictionary<string, object>)items[templateId])["tags"] = itemTags;
+
+    // An item's power (RatingLookup into the BaseItemRating curves, by level): squads add these up for expeditions.
+    if (properties?["RatingLookup"]?["RowName"]?.GetValue<string>() is { } ratingRow and not "None"
+        && properties["RatingLookup"]?["CurveTable"]?["ObjectName"]?.GetValue<string>() == "CurveTable'BaseItemRating'")
+        ((SortedDictionary<string, object>)items[templateId])["rating"] = ratingRow;
+
+    // Expeditions (UFortExpeditionItemDefinition): how long they run and stay on offer, their power range, and the
+    // ExpeditionRecipes row with their cost, reward and required vehicle tag.
+    if (export.ExportType == "FortExpeditionItemDefinition")
+    {
+        expeditions[templateId] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+        {
+            ["durationMinutes"] = properties?["ExpeditionDuration_Minutes"]?.GetValue<double>() ?? 0,
+            ["expirationMinutes"] = properties?["ExpeditionExpirationDuration_Minutes"]?.GetValue<double>() ?? 0,
+            ["basePower"] = properties?["BaseTargetPowerRating"]?.GetValue<int>() ?? 0,
+            ["tierFactor"] = properties?["TierFactor"]?.GetValue<int>() ?? 0,
+            ["powerClamp"] = properties?["MaxTargetPowerClamp"]?.GetValue<int>() ?? 0,
+            ["recipe"] = properties?["ExpeditionRules"]?["RowName"]?.GetValue<string>() ?? ""
+        };
+    }
 
     // Account items level up and are recycled and evolved (UFortAccountItemDefinition): the XPAccountItemLevels and
     // XPAccountItemRewards curve rows, the MetaRecipes rows, and MaxLevel (UFortItemDefinition).
@@ -310,8 +331,30 @@ var upgrades = new SortedDictionary<string, object>(StringComparer.Ordinal)
 {
     ["levelCosts"] = Curves(provider, "FortniteGame/Content/Balance/DataTables/XPAccountItemLevels.uasset"),
     ["recycleXp"] = Curves(provider, "FortniteGame/Content/Balance/DataTables/XPAccountItemRewards.uasset"),
+    ["ratings"] = Curves(provider, "FortniteGame/Content/Items/Datatables/BaseItemRating.uasset"),
     ["recipes"] = recipes
 };
+
+// The expedition board: each slot (unlocked by its tag on the skill tree) and its generator, and the recipes.
+var expeditionRecipes = new SortedDictionary<string, object>(StringComparer.Ordinal);
+foreach (var (id, row) in LoadRows(provider, JsonValue.Create("/Game/Expeditions/ExpeditionRecipes.ExpeditionRecipes")))
+{
+    expeditionRecipes[id] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+    {
+        ["costs"] = Items(row!["RecipeCosts"], assetTypes),
+        ["results"] = Items(row["RecipeResults"], assetTypes),
+        ["catalysts"] = Strings(row["RequiredCatalysts"])
+    };
+}
+var expeditionSlots = new SortedDictionary<string, object>(StringComparer.Ordinal);
+foreach (var (id, row) in LoadRows(provider, manager["ExpeditionSlotsDataTable"]))
+{
+    expeditionSlots[id] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+    {
+        ["tag"] = row!["SlotTag"]?["TagName"]?.GetValue<string>() ?? "",
+        ["generator"] = row["LootTierGroup"]?.GetValue<string>() ?? ""
+    };
+}
 
 // Account levels (FortLevelUpData): the total XP each level needs, how XP shows in the UI, and what reaching it gives
 // ("/Game/Items/Tokens/HomebasePoints.HomebasePoints=1", comma separated).
@@ -340,6 +383,10 @@ Directory.CreateDirectory(output);
 var options = new JsonSerializerOptions { WriteIndented = true };
 File.WriteAllText(Path.Combine(output, "accountlevels.json"), JsonSerializer.Serialize(accountLevels, options) + "\n");
 File.WriteAllText(Path.Combine(output, "upgrades.json"), JsonSerializer.Serialize(upgrades, options) + "\n");
+File.WriteAllText(Path.Combine(output, "expeditions.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal)
+{
+    ["expeditions"] = expeditions, ["recipes"] = expeditionRecipes, ["slots"] = expeditionSlots
+}, options) + "\n");
 File.WriteAllText(Path.Combine(output, "quests.json"), JsonSerializer.Serialize(quests, options) + "\n");
 File.WriteAllText(Path.Combine(output, "items.json"), JsonSerializer.Serialize(items, options) + "\n");
 File.WriteAllText(Path.Combine(output, "dailyrewards.json"), JsonSerializer.Serialize(dailyRewards, options) + "\n");

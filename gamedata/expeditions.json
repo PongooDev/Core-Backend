@@ -1,0 +1,2157 @@
+{
+  "expeditions": {
+    "Expedition:expedition_air_supplyrun_long_t02": {
+      "basePower": 255,
+      "durationMinutes": 1200,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Air_SupplyRun_Long_T02",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_air_supplyrun_long_t03": {
+      "basePower": 445,
+      "durationMinutes": 1200,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Air_SupplyRun_Long_T03",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_air_supplyrun_long_t04": {
+      "basePower": 700,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Air_SupplyRun_Long_T04",
+      "tierFactor": 40
+    },
+    "Expedition:expedition_air_supplyrun_medium_t02": {
+      "basePower": 155,
+      "durationMinutes": 960,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Air_SupplyRun_Medium_T02",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_air_survivorscouting_long_t02": {
+      "basePower": 310,
+      "durationMinutes": 1200,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Air_SurvivorScouting_Long_T02",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_air_survivorscouting_long_t04": {
+      "basePower": 800,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Air_SurvivorScouting_Long_T04",
+      "tierFactor": 40
+    },
+    "Expedition:expedition_air_survivorscouting_medium_t03": {
+      "basePower": 315,
+      "durationMinutes": 960,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Air_SurvivorScouting_Medium_T03",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_choppingwood_t00": {
+      "basePower": 5,
+      "durationMinutes": 240,
+      "expirationMinutes": 90,
+      "powerClamp": 40,
+      "recipe": "ChoppingWood_T00",
+      "tierFactor": 100
+    },
+    "Expedition:expedition_craftingrun_long_t03": {
+      "basePower": 400,
+      "durationMinutes": 1200,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "CraftingRun_Long_T03",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_craftingrun_long_t04": {
+      "basePower": 650,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "CraftingRun_Long_T04",
+      "tierFactor": 40
+    },
+    "Expedition:expedition_craftingrun_medium_t01": {
+      "basePower": 30,
+      "durationMinutes": 960,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "CraftingRun_Medium_T01",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_craftingrun_medium_t02": {
+      "basePower": 120,
+      "durationMinutes": 960,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "CraftingRun_Medium_T02",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_craftingrun_medium_t03": {
+      "basePower": 200,
+      "durationMinutes": 960,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "CraftingRun_Medium_T03",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_craftingrun_short_t01": {
+      "basePower": 20,
+      "durationMinutes": 480,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "CraftingRun_Short_T01",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_craftingrun_short_t02": {
+      "basePower": 80,
+      "durationMinutes": 480,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "CraftingRun_Short_T02",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_craftingrun_short_t03": {
+      "basePower": 150,
+      "durationMinutes": 480,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "CraftingRun_Short_T03",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_miningore_t00": {
+      "basePower": 10,
+      "durationMinutes": 240,
+      "expirationMinutes": 90,
+      "powerClamp": 50,
+      "recipe": "MiningOre_T00",
+      "tierFactor": 100
+    },
+    "Expedition:expedition_rare_air_heroes_t04": {
+      "basePower": 1200,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Air_Heroes_T04",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_air_heroes_t05": {
+      "basePower": 1600,
+      "durationMinutes": 1440,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Air_Heroes_T05",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_air_managers_t04": {
+      "basePower": 1200,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Air_Managers_T04",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_air_managers_t05": {
+      "basePower": 1600,
+      "durationMinutes": 1440,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Air_Managers_T05",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_air_traps_t04": {
+      "basePower": 1200,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Air_Traps_T04",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_air_traps_t05": {
+      "basePower": 1600,
+      "durationMinutes": 1440,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Air_Traps_T05",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_air_weapons_t04": {
+      "basePower": 1200,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Air_Weapons_T04",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_air_weapons_t05": {
+      "basePower": 1600,
+      "durationMinutes": 1440,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Air_Weapons_T05",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_heroes_t03": {
+      "basePower": 750,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Heroes_T03",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_heroes_t04": {
+      "basePower": 1400,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Heroes_T04",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_managers_t03": {
+      "basePower": 750,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Managers_T03",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_managers_t04": {
+      "basePower": 1400,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Managers_T04",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_sea_heroes_t04": {
+      "basePower": 1440,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Sea_Heroes_T04",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_sea_heroes_t05": {
+      "basePower": 2000,
+      "durationMinutes": 1440,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Sea_Heroes_T05",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_sea_managers_t04": {
+      "basePower": 1440,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Sea_Managers_T04",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_sea_managers_t05": {
+      "basePower": 2000,
+      "durationMinutes": 1440,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Sea_Managers_T05",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_sea_traps_t04": {
+      "basePower": 1440,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Sea_Traps_T04",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_sea_traps_t05": {
+      "basePower": 2000,
+      "durationMinutes": 1440,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Sea_Traps_T05",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_sea_weapons_t04": {
+      "basePower": 1440,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Sea_Weapons_T04",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_sea_weapons_t05": {
+      "basePower": 2000,
+      "durationMinutes": 1440,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Sea_Weapons_T05",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_traps_t02": {
+      "basePower": 400,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Traps_T02",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_traps_t03": {
+      "basePower": 750,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Traps_T03",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_traps_t04": {
+      "basePower": 1400,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Traps_T04",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_weapons_t01": {
+      "basePower": 150,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Weapons_T01",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_weapons_t02": {
+      "basePower": 400,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Weapons_T02",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_weapons_t03": {
+      "basePower": 750,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Weapons_T03",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_rare_weapons_t04": {
+      "basePower": 1400,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Rare_Weapons_T04",
+      "tierFactor": 35
+    },
+    "Expedition:expedition_resourcerun_all_medium": {
+      "basePower": 80,
+      "durationMinutes": 960,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "ResourceRun_All_Medium",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_resourcerun_all_short": {
+      "basePower": 350,
+      "durationMinutes": 480,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "ResourceRun_All_Short",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_resourcerun_metal_medium": {
+      "basePower": 65,
+      "durationMinutes": 960,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "ResourceRun_Metal_Medium",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_resourcerun_metal_short": {
+      "basePower": 50,
+      "durationMinutes": 480,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "ResourceRun_Metal_Short",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_resourcerun_stone_medium": {
+      "basePower": 45,
+      "durationMinutes": 960,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "ResourceRun_Stone_Short",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_resourcerun_stone_short": {
+      "basePower": 35,
+      "durationMinutes": 480,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "ResourceRun_Stone_Short",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_resourcerun_wood_medium": {
+      "basePower": 25,
+      "durationMinutes": 960,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "ResourceRun_Wood_Medium",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_resourcerun_wood_short": {
+      "basePower": 20,
+      "durationMinutes": 480,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "ResourceRun_Wood_Short",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_resourcerun_woodstone_medium": {
+      "basePower": 55,
+      "durationMinutes": 960,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "ResourceRun_WoodStone_Medium",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_resourcerun_woodstone_short": {
+      "basePower": 45,
+      "durationMinutes": 480,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "ResourceRun_WoodStone_Short",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_sea_supplyrun_long_t03": {
+      "basePower": 425,
+      "durationMinutes": 1200,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Sea_SupplyRun_Long_T03",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_sea_supplyrun_long_t04": {
+      "basePower": 690,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Sea_SupplyRun_Long_T04",
+      "tierFactor": 40
+    },
+    "Expedition:expedition_sea_supplyrun_medium_t02": {
+      "basePower": 140,
+      "durationMinutes": 960,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Sea_SupplyRun_Medium_T02",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_sea_supplyrun_short_t01": {
+      "basePower": 35,
+      "durationMinutes": 480,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Sea_SupplyRun_Short_T01",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_sea_survivorscouting_long_t04": {
+      "basePower": 790,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Sea_SurvivorScouting_Long_T04",
+      "tierFactor": 40
+    },
+    "Expedition:expedition_sea_survivorscouting_medium_t02": {
+      "basePower": 195,
+      "durationMinutes": 960,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Sea_SurvivorScouting_Medium_T02",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_sea_survivorscouting_medium_t03": {
+      "basePower": 295,
+      "durationMinutes": 960,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Sea_SurvivorScouting_Medium_T03",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_sea_survivorscouting_short_t01": {
+      "basePower": 70,
+      "durationMinutes": 480,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "Sea_SurvivorScouting_Short_T01",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_supplyrun_long_t02": {
+      "basePower": 220,
+      "durationMinutes": 1200,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "SupplyRun_Long_T02",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_supplyrun_long_t03": {
+      "basePower": 400,
+      "durationMinutes": 1200,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "SupplyRun_Long_T03",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_supplyrun_long_t04": {
+      "basePower": 650,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "SupplyRun_Long_T04",
+      "tierFactor": 40
+    },
+    "Expedition:expedition_supplyrun_medium_t01": {
+      "basePower": 30,
+      "durationMinutes": 960,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "SupplyRun_Medium_T01",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_supplyrun_medium_t02": {
+      "basePower": 120,
+      "durationMinutes": 960,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "SupplyRun_Medium_T02",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_supplyrun_medium_t03": {
+      "basePower": 200,
+      "durationMinutes": 960,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "SupplyRun_Medium_T03",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_supplyrun_short_t01": {
+      "basePower": 20,
+      "durationMinutes": 480,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "SupplyRun_Short_T01",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_supplyrun_short_t02": {
+      "basePower": 80,
+      "durationMinutes": 480,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "SupplyRun_Short_T02",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_supplyrun_short_t03": {
+      "basePower": 150,
+      "durationMinutes": 480,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "SupplyRun_Short_T03",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_survivorscouting_long_t03": {
+      "basePower": 470,
+      "durationMinutes": 1200,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "SurvivorScouting_Long_T03",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_survivorscouting_long_t04": {
+      "basePower": 750,
+      "durationMinutes": 1320,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "SurvivorScouting_Long_T04",
+      "tierFactor": 40
+    },
+    "Expedition:expedition_survivorscouting_medium_t02": {
+      "basePower": 175,
+      "durationMinutes": 960,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "SurvivorScouting_Medium_T02",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_survivorscouting_short_t01": {
+      "basePower": 55,
+      "durationMinutes": 480,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "SurvivorScouting_Short_T01",
+      "tierFactor": 20
+    },
+    "Expedition:testexpedition": {
+      "basePower": 100,
+      "durationMinutes": 1,
+      "expirationMinutes": 60,
+      "powerClamp": 5000,
+      "recipe": "ResourceRun_All_Short",
+      "tierFactor": 5
+    },
+    "Expedition:testexpedition_long": {
+      "basePower": 500,
+      "durationMinutes": 5,
+      "expirationMinutes": 60,
+      "powerClamp": 5000,
+      "recipe": "ResourceRun_All_Medium",
+      "tierFactor": 5
+    },
+    "Expedition:testexpedition_medium": {
+      "basePower": 250,
+      "durationMinutes": 2.5,
+      "expirationMinutes": 60,
+      "powerClamp": 5000,
+      "recipe": "ResourceRun_All_Medium",
+      "tierFactor": 5
+    },
+    "Expedition:testexpedition_short": {
+      "basePower": 100,
+      "durationMinutes": 1,
+      "expirationMinutes": 60,
+      "powerClamp": 5000,
+      "recipe": "ResourceRun_All_Short",
+      "tierFactor": 5
+    }
+  },
+  "recipes": {
+    "Air_SupplyRun_Long_T02": {
+      "catalysts": [
+        "Expedition.Air"
+      ],
+      "costs": [
+        {
+          "quantity": 25,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_air_supplyrun_long_t02"
+        }
+      ]
+    },
+    "Air_SupplyRun_Long_T03": {
+      "catalysts": [
+        "Expedition.Air"
+      ],
+      "costs": [
+        {
+          "quantity": 30,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_air_supplyrun_long_t03"
+        }
+      ]
+    },
+    "Air_SupplyRun_Long_T04": {
+      "catalysts": [
+        "Expedition.Air"
+      ],
+      "costs": [
+        {
+          "quantity": 40,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 50,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_air_supplyrun_long_t04"
+        }
+      ]
+    },
+    "Air_SupplyRun_Medium_T02": {
+      "catalysts": [
+        "Expedition.Air"
+      ],
+      "costs": [
+        {
+          "quantity": 15,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_air_supplyrun_medium_t02"
+        }
+      ]
+    },
+    "Air_SurvivorScouting_Long_T02": {
+      "catalysts": [
+        "Expedition.Air"
+      ],
+      "costs": [
+        {
+          "quantity": 20,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_air_survivorscouting_long_t02"
+        }
+      ]
+    },
+    "Air_SurvivorScouting_Long_T04": {
+      "catalysts": [
+        "Expedition.Air"
+      ],
+      "costs": [
+        {
+          "quantity": 55,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 20,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_survivorscouting_medium_t02"
+        }
+      ]
+    },
+    "Air_SurvivorScouting_Medium_T03": {
+      "catalysts": [
+        "Expedition.Air"
+      ],
+      "costs": [
+        {
+          "quantity": 30,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 10,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_survivorscouting_medium_t02"
+        }
+      ]
+    },
+    "ChoppingWood_T00": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_choppingwood"
+        }
+      ]
+    },
+    "CraftingRun_Long_T03": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 15,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 35,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_expedition_craftingrun_long_t03"
+        }
+      ]
+    },
+    "CraftingRun_Long_T04": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 18,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 50,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_expedition_craftingrun_long_t04"
+        }
+      ]
+    },
+    "CraftingRun_Medium_T01": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 10,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_expedition_craftingrun_medium_t01"
+        }
+      ]
+    },
+    "CraftingRun_Medium_T02": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 12,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 25,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_expedition_craftingrun_medium_t02"
+        }
+      ]
+    },
+    "CraftingRun_Medium_T03": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 15,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 30,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_expedition_craftingrun_medium_t03"
+        }
+      ]
+    },
+    "CraftingRun_Short_T01": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 5,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_expedition_craftingrun_short_t01"
+        }
+      ]
+    },
+    "CraftingRun_Short_T02": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 8,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_expedition_craftingrun_short_t02"
+        }
+      ]
+    },
+    "CraftingRun_Short_T03": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 10,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 20,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_expedition_craftingrun_short_t03"
+        }
+      ]
+    },
+    "MiningOre_T00": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_miningore"
+        }
+      ]
+    },
+    "Rare_Air_Heroes_T04": {
+      "catalysts": [
+        "Expedition.Air"
+      ],
+      "costs": [
+        {
+          "quantity": 60,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 150,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_heroes_t04"
+        }
+      ]
+    },
+    "Rare_Air_Heroes_T05": {
+      "catalysts": [
+        "Expedition.Air"
+      ],
+      "costs": [
+        {
+          "quantity": 100,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 250,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_heroes_t05"
+        }
+      ]
+    },
+    "Rare_Air_Managers_T04": {
+      "catalysts": [
+        "Expedition.Air"
+      ],
+      "costs": [
+        {
+          "quantity": 60,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 150,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_managers_t04"
+        }
+      ]
+    },
+    "Rare_Air_Managers_T05": {
+      "catalysts": [
+        "Expedition.Air"
+      ],
+      "costs": [
+        {
+          "quantity": 100,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 250,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_managers_t05"
+        }
+      ]
+    },
+    "Rare_Air_Traps_T04": {
+      "catalysts": [
+        "Expedition.Air"
+      ],
+      "costs": [
+        {
+          "quantity": 60,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 150,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_traps_t04"
+        }
+      ]
+    },
+    "Rare_Air_Traps_T05": {
+      "catalysts": [
+        "Expedition.Air"
+      ],
+      "costs": [
+        {
+          "quantity": 100,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 250,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_traps_t05"
+        }
+      ]
+    },
+    "Rare_Air_Weapons_T04": {
+      "catalysts": [
+        "Expedition.Air"
+      ],
+      "costs": [
+        {
+          "quantity": 60,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 150,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_weapons_t04"
+        }
+      ]
+    },
+    "Rare_Air_Weapons_T05": {
+      "catalysts": [
+        "Expedition.Air"
+      ],
+      "costs": [
+        {
+          "quantity": 100,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 250,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_weapons_t05"
+        }
+      ]
+    },
+    "Rare_Heroes_T03": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 45,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 80,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_heroes_t03"
+        }
+      ]
+    },
+    "Rare_Heroes_T04": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 60,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 150,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_heroes_t04"
+        }
+      ]
+    },
+    "Rare_Managers_T03": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 45,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 80,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_managers_t03"
+        }
+      ]
+    },
+    "Rare_Managers_T04": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 60,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 150,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_managers_t04"
+        }
+      ]
+    },
+    "Rare_Sea_Heroes_T04": {
+      "catalysts": [
+        "Expedition.Sea"
+      ],
+      "costs": [
+        {
+          "quantity": 60,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 150,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_heroes_t04"
+        }
+      ]
+    },
+    "Rare_Sea_Heroes_T05": {
+      "catalysts": [
+        "Expedition.Sea"
+      ],
+      "costs": [
+        {
+          "quantity": 100,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 250,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_heroes_t05"
+        }
+      ]
+    },
+    "Rare_Sea_Managers_T04": {
+      "catalysts": [
+        "Expedition.Sea"
+      ],
+      "costs": [
+        {
+          "quantity": 60,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 150,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_managers_t04"
+        }
+      ]
+    },
+    "Rare_Sea_Managers_T05": {
+      "catalysts": [
+        "Expedition.Sea"
+      ],
+      "costs": [
+        {
+          "quantity": 100,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 250,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_managers_t05"
+        }
+      ]
+    },
+    "Rare_Sea_Traps_T04": {
+      "catalysts": [
+        "Expedition.Sea"
+      ],
+      "costs": [
+        {
+          "quantity": 60,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 150,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_traps_t04"
+        }
+      ]
+    },
+    "Rare_Sea_Traps_T05": {
+      "catalysts": [
+        "Expedition.Sea"
+      ],
+      "costs": [
+        {
+          "quantity": 100,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 250,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_traps_t05"
+        }
+      ]
+    },
+    "Rare_Sea_Weapons_T04": {
+      "catalysts": [
+        "Expedition.Sea"
+      ],
+      "costs": [
+        {
+          "quantity": 60,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 150,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_weapons_t04"
+        }
+      ]
+    },
+    "Rare_Sea_Weapons_T05": {
+      "catalysts": [
+        "Expedition.Sea"
+      ],
+      "costs": [
+        {
+          "quantity": 100,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 250,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_weapons_t05"
+        }
+      ]
+    },
+    "Rare_Traps_T02": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 30,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 50,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_traps_t02"
+        }
+      ]
+    },
+    "Rare_Traps_T03": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 45,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 80,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_traps_t03"
+        }
+      ]
+    },
+    "Rare_Traps_T04": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 60,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 150,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_traps_t04"
+        }
+      ]
+    },
+    "Rare_Weapons_T01": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 25,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 25,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_weapons_t01"
+        }
+      ]
+    },
+    "Rare_Weapons_T02": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 30,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 50,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_weapons_t02"
+        }
+      ]
+    },
+    "Rare_Weapons_T03": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 45,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 80,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_weapons_t03"
+        }
+      ]
+    },
+    "Rare_Weapons_T04": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 60,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 150,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_rareexpedition_weapons_t04"
+        }
+      ]
+    },
+    "ResourceRun_All_Medium": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 10,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_expedition_resourcerun_all_medium"
+        }
+      ]
+    },
+    "ResourceRun_All_Short": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 6,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_expedition_resourcerun_all_short"
+        }
+      ]
+    },
+    "ResourceRun_Metal_Medium": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 10,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_expedition_resourcerun_metal_medium"
+        }
+      ]
+    },
+    "ResourceRun_Metal_Short": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 6,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_expedition_resourcerun_metal_short"
+        }
+      ]
+    },
+    "ResourceRun_Stone_Medium": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 10,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_expedition_resourcerun_stone_medium"
+        }
+      ]
+    },
+    "ResourceRun_Stone_Short": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 15,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_expedition_resourcerun_stone_short"
+        }
+      ]
+    },
+    "ResourceRun_WoodStone_Medium": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 10,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_expedition_resourcerun_woodstone_medium"
+        }
+      ]
+    },
+    "ResourceRun_WoodStone_Short": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 6,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_expedition_resourcerun_woodstone_short"
+        }
+      ]
+    },
+    "ResourceRun_Wood_Medium": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 10,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_expedition_resourcerun_wood_medium"
+        }
+      ]
+    },
+    "ResourceRun_Wood_Short": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 6,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_expedition_resourcerun_wood_short"
+        }
+      ]
+    },
+    "Sea_SupplyRun_Long_T03": {
+      "catalysts": [
+        "Expedition.Sea"
+      ],
+      "costs": [
+        {
+          "quantity": 25,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_sea_supplyrun_long_t03"
+        }
+      ]
+    },
+    "Sea_SupplyRun_Long_T04": {
+      "catalysts": [
+        "Expedition.Sea"
+      ],
+      "costs": [
+        {
+          "quantity": 35,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 40,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_sea_supplyrun_long_t04"
+        }
+      ]
+    },
+    "Sea_SupplyRun_Medium_T02": {
+      "catalysts": [
+        "Expedition.Sea"
+      ],
+      "costs": [
+        {
+          "quantity": 15,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 5,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_sea_supplyrun_medium_t02"
+        }
+      ]
+    },
+    "Sea_SupplyRun_Short_T01": {
+      "catalysts": [
+        "Expedition.Sea"
+      ],
+      "costs": [
+        {
+          "quantity": 10,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_sea_supplyrun_short_t01"
+        }
+      ]
+    },
+    "Sea_SurvivorScouting_Long_T04": {
+      "catalysts": [
+        "Expedition.Sea"
+      ],
+      "costs": [
+        {
+          "quantity": 55,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 20,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_survivorscouting_medium_t02"
+        }
+      ]
+    },
+    "Sea_SurvivorScouting_Medium_T02": {
+      "catalysts": [
+        "Expedition.Sea"
+      ],
+      "costs": [
+        {
+          "quantity": 25,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_sea_survivorscouting_medium_t02"
+        }
+      ]
+    },
+    "Sea_SurvivorScouting_Medium_T03": {
+      "catalysts": [
+        "Expedition.Sea"
+      ],
+      "costs": [
+        {
+          "quantity": 30,
+          "templateId": "AccountResource:peopleresource"
+        },
+        {
+          "quantity": 10,
+          "templateId": "Token:collectionresource_nodegatetoken01"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_survivorscouting_medium_t02"
+        }
+      ]
+    },
+    "Sea_SurvivorScouting_Short_T01": {
+      "catalysts": [
+        "Expedition.Sea"
+      ],
+      "costs": [
+        {
+          "quantity": 15,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_sea_survivorscouting_short_t01"
+        }
+      ]
+    },
+    "SupplyRun_Long_T02": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 15,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_supplyrun_long_t02"
+        }
+      ]
+    },
+    "SupplyRun_Long_T03": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 18,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_supplyrun_long_t03"
+        }
+      ]
+    },
+    "SupplyRun_Long_T04": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 20,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_supplyrun_long_t04"
+        }
+      ]
+    },
+    "SupplyRun_Medium_T01": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 10,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_supplyrun_medium_t01"
+        }
+      ]
+    },
+    "SupplyRun_Medium_T02": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 12,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_supplyrun_medium_t02"
+        }
+      ]
+    },
+    "SupplyRun_Medium_T03": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 15,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_supplyrun_medium_t03"
+        }
+      ]
+    },
+    "SupplyRun_Short_T01": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 5,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_supplyrun_short_t01"
+        }
+      ]
+    },
+    "SupplyRun_Short_T02": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 8,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_supplyrun_short_t02"
+        }
+      ]
+    },
+    "SupplyRun_Short_T03": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 10,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_supplyrun_short_t03"
+        }
+      ]
+    },
+    "SurvivorScouting_Long_T03": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 25,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_survivorscouting_long_t03"
+        }
+      ]
+    },
+    "SurvivorScouting_Long_T04": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 40,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_survivorscouting_long_t04"
+        }
+      ]
+    },
+    "SurvivorScouting_Medium_T02": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 15,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_survivorscouting_medium_t02"
+        }
+      ]
+    },
+    "SurvivorScouting_Short_T01": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 5,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_survivorscouting_short_t01"
+        }
+      ]
+    }
+  },
+  "slots": {
+    "Air2_0": {
+      "generator": "ZCP_ExpeditionGenerator_Air_T02",
+      "tag": "Expedition.Generation.Air.T02_0"
+    },
+    "Air2_1": {
+      "generator": "ZCP_ExpeditionGenerator_Air_T02",
+      "tag": "Expedition.Generation.Air.T02_1"
+    },
+    "Air3_0": {
+      "generator": "ZCP_ExpeditionGenerator_Air_T03",
+      "tag": "Expedition.Generation.Air.T03_0"
+    },
+    "Air3_1": {
+      "generator": "ZCP_ExpeditionGenerator_Air_T03",
+      "tag": "Expedition.Generation.Air.T03_1"
+    },
+    "Air4_0": {
+      "generator": "ZCP_ExpeditionGenerator_Air_T04",
+      "tag": "Expedition.Generation.Air.T04_0"
+    },
+    "Air4_1": {
+      "generator": "ZCP_ExpeditionGenerator_Air_T04",
+      "tag": "Expedition.Generation.Air.T04_1"
+    },
+    "ChoppingWood": {
+      "generator": "ZCP_ExpeditionGenerator_MiningOre_T00",
+      "tag": "Expedition.Generation.ChoppingWood"
+    },
+    "Land1_0": {
+      "generator": "ZCP_ExpeditionGenerator_Land_T01",
+      "tag": "Expedition.Generation.Land.T01_0"
+    },
+    "Land1_1": {
+      "generator": "ZCP_ExpeditionGenerator_Land_T01",
+      "tag": "Expedition.Generation.Land.T01_1"
+    },
+    "Land2_0": {
+      "generator": "ZCP_ExpeditionGenerator_Land_T02",
+      "tag": "Expedition.Generation.Land.T02_0"
+    },
+    "Land2_1": {
+      "generator": "ZCP_ExpeditionGenerator_Land_T02",
+      "tag": "Expedition.Generation.Land.T02_1"
+    },
+    "Land3_0": {
+      "generator": "ZCP_ExpeditionGenerator_Land_T03",
+      "tag": "Expedition.Generation.Land.T03_0"
+    },
+    "Land3_1": {
+      "generator": "ZCP_ExpeditionGenerator_Land_T03",
+      "tag": "Expedition.Generation.Land.T03_1"
+    },
+    "Land4_0": {
+      "generator": "ZCP_ExpeditionGenerator_Land_T04",
+      "tag": "Expedition.Generation.Land.T04_0"
+    },
+    "Land4_1": {
+      "generator": "ZCP_ExpeditionGenerator_Land_T04",
+      "tag": "Expedition.Generation.Land.T04_1"
+    },
+    "MiningOre": {
+      "generator": "ZCP_ExpeditionGenerator_ChoppingWood_T00",
+      "tag": "Expedition.Generation.MiningOre"
+    },
+    "Sea1_0": {
+      "generator": "ZCP_ExpeditionGenerator_Sea_T01",
+      "tag": "Expedition.Generation.Sea.T01_0"
+    },
+    "Sea1_1": {
+      "generator": "ZCP_ExpeditionGenerator_Sea_T01",
+      "tag": "Expedition.Generation.Sea.T01_1"
+    },
+    "Sea2_0": {
+      "generator": "ZCP_ExpeditionGenerator_Sea_T02",
+      "tag": "Expedition.Generation.Sea.T02_0"
+    },
+    "Sea2_1": {
+      "generator": "ZCP_ExpeditionGenerator_Sea_T02",
+      "tag": "Expedition.Generation.Sea.T02_1"
+    },
+    "Sea3_0": {
+      "generator": "ZCP_ExpeditionGenerator_Sea_T03",
+      "tag": "Expedition.Generation.Sea.T03_0"
+    },
+    "Sea3_1": {
+      "generator": "ZCP_ExpeditionGenerator_Sea_T03",
+      "tag": "Expedition.Generation.Sea.T03_1"
+    },
+    "Sea4_0": {
+      "generator": "ZCP_ExpeditionGenerator_Sea_T04",
+      "tag": "Expedition.Generation.Sea.T04_0"
+    },
+    "Sea4_1": {
+      "generator": "ZCP_ExpeditionGenerator_Sea_T04",
+      "tag": "Expedition.Generation.Sea.T04_1"
+    }
+  }
+}

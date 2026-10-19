@@ -13,7 +13,7 @@ import { openCardPackBatch } from "./OpenCardPackBatch.js";
 import { purchaseCatalogEntry } from "./PurchaseCatalogEntry.js";
 import { purchaseHomebaseNode } from "./PurchaseHomebaseNode.js";
 import { queryProfile } from "./QueryProfile.js";
-import { refreshExpeditions } from "./RefreshExpeditions.js";
+import { abandonExpeditionCommand, collectExpeditionCommand, refreshExpeditions, startExpeditionCommand } from "./RefreshExpeditions.js";
 import { setDefaultHeroSquad } from "./SetDefaultHeroSquad.js";
 import { setGameplayStats } from "./SetGameplayStats.js";
 import { setHomebaseBanner } from "./SetHomebaseBanner.js";
@@ -28,11 +28,13 @@ import { updateQuestClientObjectives } from "./UpdateQuestClientObjectives.js";
 import { convertItemCommand, recycleItemBatchCommand, recycleItemCommand, upgradeItemCommand } from "./Upgrades.js";
 
 export const clientCommands = {
+  AbandonExpedition: abandonExpeditionCommand,
   AssignWorkerToSquad: assignWorkerToSquad,
   AssignWorkerToSquadBatch: assignWorkerToSquadBatch,
   ClaimLoginReward: claimLoginReward,
   ClaimQuestReward: claimQuestReward,
   ClientQuestLogin: clientQuestLogin,
+  CollectExpedition: collectExpeditionCommand,
   ConvertItem: convertItemCommand,
   FortRerollDailyQuest: fortRerollDailyQuest,
   GetMcpTimeForLogin: getMcpTimeForLogin,
@@ -57,6 +59,7 @@ export const clientCommands = {
   SetMtxPlatform: setMtxPlatform,
   SetPinnedQuests: setPinnedQuests,
   SkipTutorial: skipTutorial,
+  StartExpedition: startExpeditionCommand,
   UnassignAllSquads: unassignAllSquads,
   UpdateQuestClientObjectives: updateQuestClientObjectives,
   UpgradeItem: upgradeItemCommand

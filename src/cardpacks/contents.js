@@ -76,9 +76,44 @@ function zoneReward(group, templateId, info) {
   if (group === "zcp_snowballs_noscale") return resource("AccountResource:eventcurrency_snowballs", 10);
   match = group.match(/^zcp_tutorial_(hero|melee|ranged|trap)$/);
   if (match) return one(match[1], null, "uc");
+  const expedition = expeditionReward(group, resource);
+  if (expedition) return expedition;
   match = group.match(/^zcp_rareexpedition_(heroes|weapons|managers|traps)/);
   if (match) return one({ heroes: "hero", weapons: "ranged", managers: "manager", traps: "trap" }[match[1]], null, info.rarityCode);
   return [];
+}
+
+// Expedition rewards (ExpeditionRecipes results), by their descriptions: supply caches are XP, rescued survivors are
+// survivors, crafting supplies are ingredients, resource caches and the lumberyard and quarry runs are building
+// materials. They grow with the run's length and tier.
+const runSize = { short: 1, medium: 2, long: 3 };
+const craftingIngredients = ["Ingredient:ingredient_duct_tape", "Ingredient:ingredient_nuts_bolts", "Ingredient:ingredient_planks",
+  "Ingredient:ingredient_herbs", "Ingredient:ingredient_blastpowder", "Ingredient:ingredient_batteries"];
+const materials = { wood: ["wood"], stone: ["stone"], metal: ["metal"], woodstone: ["wood", "stone"], all: ["wood", "stone", "metal"] };
+
+function expeditionReward(group, resource) {
+  let match = group.match(/^zcp_(?:air_|sea_)?supplyrun_(short|medium|long)_t0(\d)$/);
+  if (match) {
+    const amount = 100 * runSize[match[1]] * Number(match[2]);
+    return ["heroxp", "personnelxp", "schematicxp"].flatMap((xp) => resource(`AccountResource:${xp}`, amount));
+  }
+  match = group.match(/^zcp_(?:air_|sea_)?survivorscouting_(short|medium|long)_t0(\d)$/);
+  if (match) {
+    const rarity = ["uc", "uc", "r", "vr", "sr"][Math.min(Number(match[2]), 5) - 1];
+    return Array.from({ length: runSize[match[1]] }, () => one("worker", null, rarity)).flat();
+  }
+  match = group.match(/^zcp_craftingrun_(short|medium|long)_t0(\d)$/);
+  if (match) {
+    const amount = 2 * runSize[match[1]] * Number(match[2]);
+    const pool = [...craftingIngredients];
+    const picks = [0, 1, 2].map(() => pool.splice(crypto.randomInt(pool.length), 1)[0]);
+    return [...picks, `Ingredient:ingredient_mechanical_parts_t0${Math.min(Number(match[2]), 6)}`].flatMap((id) => resource(id, amount));
+  }
+  match = group.match(/^zcp_resourcerun_(all|wood|stone|metal|woodstone)_(short|medium)$/);
+  if (match) return materials[match[1]].flatMap((name) => resource(`WorldItem:${name}itemdata`, 50 * runSize[match[2]]));
+  if (group === "zcp_choppingwood") return resource("WorldItem:wooditemdata", 30);
+  if (group === "zcp_miningore") return resource("WorldItem:stoneitemdata", 30);
+  return null;
 }
 
 // The founders packs name a class; their weapon is the class's upgradeable founders schematic (from the descriptions:
