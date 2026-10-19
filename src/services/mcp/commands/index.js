@@ -12,9 +12,12 @@ import { purchaseHomebaseNode } from "./PurchaseHomebaseNode.js";
 import { queryProfile } from "./QueryProfile.js";
 import { refreshExpeditions } from "./RefreshExpeditions.js";
 import { setDefaultHeroSquad } from "./SetDefaultHeroSquad.js";
+import { setGameplayStats } from "./SetGameplayStats.js";
 import { setHomebaseBanner } from "./SetHomebaseBanner.js";
+import { setHomebaseMeta } from "./SetHomebaseMeta.js";
 import { setHomebaseName } from "./SetHomebaseName.js";
 import { setItemFavoriteStatus } from "./SetItemFavoriteStatus.js";
+import { setMtxPlatform } from "./SetMtxPlatform.js";
 import { setPinnedQuests } from "./SetPinnedQuests.js";
 import { skipTutorial } from "./SkipTutorial.js";
 import { unassignAllSquads } from "./UnassignAllSquads.js";
@@ -35,9 +38,12 @@ export const clientCommands = {
   QueryProfile: queryProfile,
   RefreshExpeditions: refreshExpeditions,
   SetDefaultHeroSquad: setDefaultHeroSquad,
+  SetGameplayStats: setGameplayStats,
   SetHomebaseBanner: setHomebaseBanner,
+  SetHomebaseMeta: setHomebaseMeta,
   SetHomebaseName: setHomebaseName,
   SetItemFavoriteStatus: setItemFavoriteStatus,
+  SetMtxPlatform: setMtxPlatform,
   SetPinnedQuests: setPinnedQuests,
   SkipTutorial: skipTutorial,
   UnassignAllSquads: unassignAllSquads,

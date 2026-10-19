@@ -59,3 +59,24 @@ test("SetItemFavoriteStatus sets the int favorite attribute", async () => {
     backend.close();
   }
 });
+
+test("SetHomebaseMeta, SetGameplayStats and SetMtxPlatform store what the client sends", async () => {
+  const backend = await startBackend();
+  try {
+    const { token, accountId } = await userLogin(backend.port, "CoreTest");
+    const stats = async () => (await post(backend.port, command(accountId, "QueryProfile"), token, {})).body.profileChanges[0].profile.stats.attributes;
+    await post(backend.port, command(accountId, "SetHomebaseMeta"), token, { townName: "Flag Town", flagPattern: 3, flagColor: 0.5 });
+    const { homebase } = await stats();
+    assert.deepEqual([homebase.townName, homebase.flagPattern, homebase.flagColor, homebase.bannerIconId], ["Flag Town", 3, 0.5, "StandardBanner1"]);
+
+    await post(backend.port, command(accountId, "SetGameplayStats"), token, { gameplayStats: [{ statName: "zonescompleted", statValue: 2 }, { statName: "kills", statValue: 9 }] });
+    await post(backend.port, command(accountId, "SetGameplayStats"), token, { gameplayStats: [{ statName: "kills", statValue: 12 }] });
+    assert.deepEqual((await stats()).gameplay_stats, [{ statName: "zonescompleted", statValue: 2 }, { statName: "kills", statValue: 12 }]);
+
+    await post(backend.port, command(accountId, "SetMtxPlatform"), token, { newPlatform: "PSN" });
+    assert.equal((await stats()).current_mtx_platform, "PSN");
+    assert.equal((await post(backend.port, command(accountId, "SetMtxPlatform"), token, { newPlatform: "Steam" })).status, 400);
+  } finally {
+    backend.close();
+  }
+});
