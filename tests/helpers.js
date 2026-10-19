@@ -24,7 +24,8 @@ export async function startBackend() {
     close() {
       server.closeAllConnections();
       server.close();
-      fs.rmSync(dataDir, { recursive: true, force: true });
+      // Windows can hold a just-written file for a moment (indexing, antivirus): retry instead of failing the run.
+      fs.rmSync(dataDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
     }
   };
 }
