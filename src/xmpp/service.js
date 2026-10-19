@@ -57,11 +57,13 @@ function replyError(connection, iq, type = "cancel", condition = "service-unavai
 }
 
 // contactsOf(accountId): the accounts that see this account's presence and whose presence it sees (its friends).
-export function createXmppService({ tokens, contactsOf = () => [], quiet = false }) {
+// publicRooms: room names (the part before @muc.) that belong to the server, like the general chat rooms.
+export function createXmppService({ tokens, contactsOf = () => [], publicRooms = [], quiet = false }) {
   const say = quiet ? () => {} : (message) => log("XMPP", message);
   const online = new Map(); // accountId -> Map(resource -> connection)
   const connections = new Set();
-  const rooms = createRooms({ reply, replyError, stanzaError });
+  const serverRooms = new Set(publicRooms.map((name) => name.toLowerCase()));
+  const rooms = createRooms({ reply, replyError, stanzaError, isPublic: (name) => serverRooms.has(name.toLowerCase()) });
 
   const resourcesOf = (accountId) => [...(online.get(accountId)?.values() ?? [])];
 
@@ -274,6 +276,7 @@ export function createXmppService({ tokens, contactsOf = () => [], quiet = false
   return {
     handle,
     isOnline: (accountId) => online.has(accountId),
+    roomOccupants: (name) => rooms.occupants(name),
     closeAll() {
       for (const connection of connections) connection.close("system-shutdown");
     }

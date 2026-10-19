@@ -91,7 +91,8 @@ async function login(port, accountId, token, resource = "V2:Fortnite:WIN::test")
 // The service on its own server, with made-up tokens and a friends list.
 async function startXmpp(contacts = {}) {
   const sessions = Object.fromEntries(["alice", "bob", "carol"].map((id) => [`token-${id}`, { accountId: id }]));
-  const xmpp = createXmppService({ tokens: { find: (token) => sessions[token] ?? null }, contactsOf: (id) => contacts[id] ?? [], quiet: true });
+  const xmpp = createXmppService({ tokens: { find: (token) => sessions[token] ?? null }, contactsOf: (id) => contacts[id] ?? [],
+    publicRooms: ["Global"], quiet: true });
   const server = net.createServer((socket) => xmpp.handle(socket));
   server.listen(0, "127.0.0.1");
   await once(server, "listening");
@@ -321,6 +322,25 @@ test("party rooms: the first joiner owns the room, everyone sees who's in and ge
     carol.client.send(`<presence to="${room}/carol"/>`);
     const fresh = await carol.client.next((stanza) => stanza.name === "presence");
     assert.deepEqual(status(fresh), ["110", "201"]);
+  } finally {
+    xmpp.close();
+  }
+});
+
+test("the general chat room belongs to the server: the first joiner isn't told it's new or made its owner", async () => {
+  const xmpp = await startXmpp();
+  const room = `Global@muc.${domain}`;
+  const muc = (presence) => presence.child("x", "http://jabber.org/protocol/muc#user");
+  try {
+    const alice = await xmpp.login("alice");
+    alice.client.send(`<presence to="${room}/alice"><muc:x xmlns:muc="http://jabber.org/protocol/muc"/></presence>`);
+    const joined = await alice.client.next((stanza) => stanza.name === "presence");
+    assert.deepEqual(muc(joined).elements.filter((element) => element.name === "status").map((element) => element.attrs.code), ["110"]);
+    assert.deepEqual([muc(joined).child("item").attrs.affiliation, muc(joined).child("item").attrs.role], ["none", "participant"]);
+    assert.equal(xmpp.xmpp.roomOccupants("global"), 1);
+
+    alice.client.send(`<iq type="set" id="config_1" to="${room}"><query xmlns="http://jabber.org/protocol/muc#owner"/></iq>`);
+    assert.equal((await alice.client.next((stanza) => stanza.attrs?.id === "config_1")).attrs.type, "error");
   } finally {
     xmpp.close();
   }

@@ -15,7 +15,12 @@ test("frontend requests answer in the shapes the Cert client parses", async () =
     assert.deepEqual(catalog.body.storefronts, []);
 
     const chat = await post(backend.port, `/fortnite/api/game/v2/chat/${accountId}/recommendGeneralChatRooms/pc`, token, {});
-    assert.deepEqual(chat.body, { elderChatRooms: [], founderChatRooms: [] });
+    assert.deepEqual(chat.body, {
+      elderChatRooms: [{ roomName: "Global", currentMembersCount: 0, maxMembersCount: 1000 }],
+      founderChatRooms: [{ roomName: "Founders", currentMembersCount: 0, maxMembersCount: 1000 }],
+      bIsElder: false,
+      bHasFounderChat: true
+    });
 
     assert.deepEqual((await get(backend.port, `/friends/api/public/friends/${accountId}?includePending=true`, token)).body, []);
     assert.deepEqual((await get(backend.port, `/friends/api/public/blocklist/${accountId}`, token)).body, { blockedUsers: [] });

@@ -2,7 +2,8 @@ import { Element, xml } from "./xml.js";
 
 // Multi-user chat (XEP-0045) rooms on muc.<domain>: what the client's XmppMultiUserChatJingle uses for party and
 // chat rooms. Rooms are made by the first join and go away when the last occupant leaves. They are non-anonymous
-// (every occupant sees the others' real JIDs) and have no passwords, bans or history.
+// (every occupant sees the others' real JIDs) and have no passwords, bans or history. Public rooms (isPublic) belong
+// to the server: joining one never makes the joiner its owner or reports it as new (status 201).
 
 const ns = {
   muc: "http://jabber.org/protocol/muc",
@@ -13,7 +14,7 @@ const ns = {
   discoItems: "http://jabber.org/protocol/disco#items"
 };
 
-export function createRooms({ reply, replyError, stanzaError }) {
+export function createRooms({ reply, replyError, stanzaError, isPublic = () => false }) {
   const rooms = new Map();
   const key = (target) => `${target.local.toLowerCase()}@${target.domain.toLowerCase()}`;
 
@@ -46,15 +47,15 @@ export function createRooms({ reply, replyError, stanzaError }) {
 
   function join(connection, presence, target) {
     let room = rooms.get(key(target));
-    const created = !room;
-    if (created) {
+    const created = !room && !isPublic(target.local);
+    if (!room) {
       room = { key: key(target), jid: `${target.local}@${target.domain}`, occupants: new Map() };
       rooms.set(room.key, room);
     }
 
     const existing = room.occupants.get(target.resource);
     if (existing && existing.connection !== connection) {
-      if (created) rooms.delete(room.key);
+      if (!room.occupants.size) rooms.delete(room.key);
       return connection.send(stanzaError(presence, "cancel", "conflict"));
     }
     if (existing) {
@@ -160,8 +161,11 @@ export function createRooms({ reply, replyError, stanzaError }) {
       connection.rooms.clear();
     },
 
-    get count() {
-      return rooms.size;
+    // How many are in a room, by its name on any muc domain.
+    occupants(name) {
+      let count = 0;
+      for (const room of rooms.values()) if (room.key.startsWith(`${name.toLowerCase()}@`)) count += room.occupants.size;
+      return count;
     }
   };
 }

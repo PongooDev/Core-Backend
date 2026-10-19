@@ -11,7 +11,7 @@ import { publicAccountRoutes } from "./services/account/public.js";
 import { datarouterRoutes } from "./services/datarouter/data.js";
 import { eulaRoutes } from "./services/eulatracking/agreements.js";
 import { accessRoutes } from "./services/fortnite/access.js";
-import { chatRoutes } from "./services/fortnite/chat.js";
+import { chatRoutes, generalChatRooms } from "./services/fortnite/chat.js";
 import { cloudStorageRoutes, userCloudStorageRoutes } from "./services/fortnite/cloudstorage.js";
 import { friendCodeRoutes } from "./services/fortnite/friendcodes.js";
 import { receiptRoutes } from "./services/fortnite/receipts.js";
@@ -32,7 +32,7 @@ export function createContext(config) {
     tokens,
     profiles: createProfileStore(config.dataDir),
     sessions: createSessionStore(),
-    xmpp: createXmppService({ tokens, quiet: config.requestLog === false }),
+    xmpp: createXmppService({ tokens, publicRooms: Object.values(generalChatRooms), quiet: config.requestLog === false }),
     dataDir: config.dataDir
   };
 }
