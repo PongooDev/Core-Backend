@@ -46,6 +46,14 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
 }
 
 var items = new SortedDictionary<string, object>(StringComparer.Ordinal);
+var transmogKeys = new SortedDictionary<string, object>(StringComparer.Ordinal);
+var tables = new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase);
+JsonObject TableRows(JsonNode? table)
+{
+    var key = table?["ObjectPath"]?.GetValue<string>() ?? AssetPath(table);
+    if (!tables.TryGetValue(key, out var rows)) tables[key] = rows = LoadRows(provider, table);
+    return rows;
+}
 var expeditions = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var characters = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var cardPacks = new SortedDictionary<string, object>(StringComparer.Ordinal);
@@ -108,6 +116,32 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         var conversions = (properties["ConversionRecipes"] as JsonArray)?.Select(r => r?["RowName"]?.GetValue<string>()).OfType<string>().ToList() ?? [];
         if (conversions.Count > 0) item["conversions"] = conversions;
         item["maxLevel"] = properties["MaxLevel"]?.GetValue<int>() ?? 1;
+    }
+
+    // What an item is worth when sacrificed in an item transform (TransmogSacrificeRow -> TransmogSacrificePoints).
+    if (properties?["TransmogSacrificeRow"] is { } sacrifice && sacrifice["RowName"]?.GetValue<string>() is { } sacrificeRow and not "None"
+        && TableRows(sacrifice["DataTable"])[sacrificeRow]?["TransmogSacrificePoints"]?.GetValue<int>() is { } sacrificePoints)
+        ((SortedDictionary<string, object>)items[templateId])["transmogPoints"] = sacrificePoints;
+
+    // Transform keys (UFortConversionControlItemDefinition): the ConversionControlCosts row (the resource it takes and,
+    // per EFortRarity, the points needed and how much of that resource), the skill tree tags that unlock it without
+    // owning one, whether a use consumes it (the property defaults to false), and its loot tier group.
+    if (export.ExportType == "FortConversionControlItemDefinition" && properties?["ConversionPointsToTierCosts"] is { } costHandle)
+    {
+        var costs = TableRows(costHandle["DataTable"])[costHandle["RowName"]!.GetValue<string>()]!;
+        string[] rarityNames = ["Handmade", "Ordinary", "Sturdy", "Quality", "Fine", "Elegant", "Masterwork", "Epic", "Badass", "Legendary"];
+        transmogKeys[templateId] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+        {
+            ["requiredItem"] = costs["RequiredItem"] is { } required && AssetPath(required) is { Length: > 0 } requiredPath and not "None" ? assetTypes.TemplateId(requiredPath) : "",
+            ["tiers"] = rarityNames.Select(rarity => new SortedDictionary<string, object>(StringComparer.Ordinal)
+            {
+                ["cost"] = costs[rarity]?["TierCost"]?.GetValue<int>() ?? -1,
+                ["quantity"] = costs[rarity]?["RequiredItemQuantity"]?.GetValue<int>() ?? 0
+            }).ToList(),
+            ["catalysts"] = Strings(costs["RequiredCatalysts"]),
+            ["consumed"] = properties["bConsumedOnConversion"]?.GetValue<bool>() ?? false,
+            ["lootTierGroup"] = properties["LootTierGroup"]?.GetValue<string>() ?? ""
+        };
     }
 
     // Storm shields and deployable bases (UFortCloudSaveItemDefinition): their level range and save ContentVersion.
@@ -488,6 +522,7 @@ File.WriteAllText(Path.Combine(output, "cardpacks.json"), JsonSerializer.Seriali
 File.WriteAllText(Path.Combine(output, "homebasenodes.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal) { ["nodes"] = nodes, ["pages"] = pages }, options) + "\n");
 File.WriteAllText(Path.Combine(output, "squads.json"), JsonSerializer.Serialize(squads, options) + "\n");
 File.WriteAllText(Path.Combine(output, "banners.json"), JsonSerializer.Serialize(banners, options) + "\n");
+File.WriteAllText(Path.Combine(output, "transmog.json"), JsonSerializer.Serialize(transmogKeys, options) + "\n");
 File.WriteAllText(Path.Combine(output, "objectivestats.json"), JsonSerializer.Serialize(objectiveStats, options) + "\n");
 File.WriteAllText(Path.Combine(output, "world.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal)
 {

@@ -1,0 +1,7636 @@
+{
+  "ConversionControl:cck_defender_core_consumable": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Defender",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": 24,
+        "quantity": 1
+      },
+      {
+        "cost": 48,
+        "quantity": 2
+      },
+      {
+        "cost": 120,
+        "quantity": 4
+      },
+      {
+        "cost": 300,
+        "quantity": 7
+      },
+      {
+        "cost": 750,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_defender_core_consumable_c": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Defender",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": 24,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_defender_core_consumable_r": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Defender",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": 120,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_defender_core_consumable_sr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Defender",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": 750,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_defender_core_consumable_uc": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Defender",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 48,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_defender_core_consumable_vr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Defender",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": 300,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_defender_core_unlimited": {
+    "catalysts": [
+      "Unlocks.DirectedAcquisition.People.Defender"
+    ],
+    "consumed": false,
+    "lootTierGroup": "CCK_People_Defender",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": 24,
+        "quantity": 35
+      },
+      {
+        "cost": 48,
+        "quantity": 100
+      },
+      {
+        "cost": 120,
+        "quantity": 220
+      },
+      {
+        "cost": -1,
+        "quantity": 450
+      },
+      {
+        "cost": -1,
+        "quantity": 700
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_defender_rare": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Defender_Rare",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": 32,
+        "quantity": 8
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 30
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_defender_superrare": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Defender_SuperRare",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 8
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": 200,
+        "quantity": 30
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_defender_uncommon": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Defender_Uncommon",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": 12,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 8
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 30
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_defender_veryrare": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Defender_VeryRare",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 8
+      },
+      {
+        "cost": 80,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 30
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_hero_rare": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Hero_Rare",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": 160,
+        "quantity": 8
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 30
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_hero_superrare": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Hero_SuperRare",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 8
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": 1000,
+        "quantity": 30
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_hero_uncommon": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Hero_Uncommon",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": 64,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 8
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 30
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_hero_veryrare": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Hero_VeryRare",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 8
+      },
+      {
+        "cost": 400,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 30
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_manager_rare": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Manager_Rare",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": 80,
+        "quantity": 8
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 30
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_manager_superrare": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Manager_SuperRare",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 8
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": 500,
+        "quantity": 30
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_manager_uncommon": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Manager_Uncommon",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": 32,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 8
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 30
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_manager_unique": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Manager_Unique",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 8
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": 500,
+        "quantity": 30
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_manager_veryrare": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Manager_VeryRare",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 8
+      },
+      {
+        "cost": 200,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 30
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_trap_common": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Trap_Common",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 19,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_trap_rare": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Trap_Rare",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": 96,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_trap_superrare": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Trap_SuperRare",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": 600,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_trap_uncommon": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Trap_Uncommon",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 38,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_trap_veryrare": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Trap_VeryRare",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": 240,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_weapon_common": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Weapon_Common",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_weapon_rare": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Weapon_Rare",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_weapon_superrare": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Weapon_SuperRare",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_weapon_uncommon": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Weapon_Uncommon",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_weapon_veryrare": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Weapon_VeryRare",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_worker_common": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Worker_Common",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": 6,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 8
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 30
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_worker_rare": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Worker_Rare",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": 32,
+        "quantity": 8
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 30
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_worker_superrare": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Worker_SuperRare",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 8
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": 200,
+        "quantity": 30
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_worker_uncommon": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Worker_Uncommon",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": 12,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 8
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 30
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_worker_veryrare": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Expedition_Worker_VeryRare",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 8
+      },
+      {
+        "cost": 80,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 30
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_hero_commando_consumable": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Hero_Commando",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 64,
+        "quantity": 2
+      },
+      {
+        "cost": 160,
+        "quantity": 4
+      },
+      {
+        "cost": 400,
+        "quantity": 7
+      },
+      {
+        "cost": 1000,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_hero_commando_unlimited": {
+    "catalysts": [
+      "Unlocks.DirectedAcquisition.People.Hero.Commando"
+    ],
+    "consumed": false,
+    "lootTierGroup": "CCK_People_Hero_Commando",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 35
+      },
+      {
+        "cost": 64,
+        "quantity": 100
+      },
+      {
+        "cost": 160,
+        "quantity": 220
+      },
+      {
+        "cost": -1,
+        "quantity": 450
+      },
+      {
+        "cost": -1,
+        "quantity": 700
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_hero_constructor_consumable": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Hero_Constructor",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 64,
+        "quantity": 2
+      },
+      {
+        "cost": 160,
+        "quantity": 4
+      },
+      {
+        "cost": 400,
+        "quantity": 7
+      },
+      {
+        "cost": 1000,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_hero_constructor_unlimited": {
+    "catalysts": [
+      "Unlocks.DirectedAcquisition.People.Hero.Constructor"
+    ],
+    "consumed": false,
+    "lootTierGroup": "CCK_People_Hero_Constructor",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 35
+      },
+      {
+        "cost": 64,
+        "quantity": 100
+      },
+      {
+        "cost": 160,
+        "quantity": 220
+      },
+      {
+        "cost": -1,
+        "quantity": 450
+      },
+      {
+        "cost": -1,
+        "quantity": 700
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_hero_core_consumable": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Hero",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 64,
+        "quantity": 2
+      },
+      {
+        "cost": 160,
+        "quantity": 4
+      },
+      {
+        "cost": 400,
+        "quantity": 7
+      },
+      {
+        "cost": 1000,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_hero_core_consumable_r": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Hero",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": 160,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_hero_core_consumable_sr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Hero",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": 1000,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_hero_core_consumable_uc": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Hero",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 64,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_hero_core_consumable_vr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Hero",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": 400,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_hero_core_unlimited": {
+    "catalysts": [
+      "Unlocks.DirectedAcquisition.People.Hero.Base"
+    ],
+    "consumed": false,
+    "lootTierGroup": "CCK_People_Hero",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 30
+      },
+      {
+        "cost": 64,
+        "quantity": 90
+      },
+      {
+        "cost": 160,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 420
+      },
+      {
+        "cost": -1,
+        "quantity": 660
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_hero_core_unlimited_vr": {
+    "catalysts": [],
+    "consumed": false,
+    "lootTierGroup": "CCK_People_Hero",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 30
+      },
+      {
+        "cost": 64,
+        "quantity": 90
+      },
+      {
+        "cost": 160,
+        "quantity": 200
+      },
+      {
+        "cost": 400,
+        "quantity": 420
+      },
+      {
+        "cost": -1,
+        "quantity": 660
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_hero_ninja_consumable": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Hero_Ninja",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 64,
+        "quantity": 2
+      },
+      {
+        "cost": 160,
+        "quantity": 4
+      },
+      {
+        "cost": 400,
+        "quantity": 7
+      },
+      {
+        "cost": 1000,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_hero_ninja_unlimited": {
+    "catalysts": [
+      "Unlocks.DirectedAcquisition.People.Hero.Ninja"
+    ],
+    "consumed": false,
+    "lootTierGroup": "CCK_People_Hero_Ninja",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 35
+      },
+      {
+        "cost": 64,
+        "quantity": 100
+      },
+      {
+        "cost": 160,
+        "quantity": 220
+      },
+      {
+        "cost": -1,
+        "quantity": 450
+      },
+      {
+        "cost": -1,
+        "quantity": 700
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_hero_outlander_consumable": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Hero_Outlander",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 64,
+        "quantity": 2
+      },
+      {
+        "cost": 160,
+        "quantity": 4
+      },
+      {
+        "cost": 400,
+        "quantity": 7
+      },
+      {
+        "cost": 1000,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_hero_outlander_unlimited": {
+    "catalysts": [
+      "Unlocks.DirectedAcquisition.People.Hero.Outlander"
+    ],
+    "consumed": false,
+    "lootTierGroup": "CCK_People_Hero_Outlander",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 35
+      },
+      {
+        "cost": 64,
+        "quantity": 100
+      },
+      {
+        "cost": 160,
+        "quantity": 220
+      },
+      {
+        "cost": -1,
+        "quantity": 450
+      },
+      {
+        "cost": -1,
+        "quantity": 700
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_manager_core_consumable": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Manager_Core",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 16,
+        "quantity": 2
+      },
+      {
+        "cost": 40,
+        "quantity": 4
+      },
+      {
+        "cost": 100,
+        "quantity": 7
+      },
+      {
+        "cost": 250,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_manager_core_consumable_c": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Manager_Core",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": 8,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_manager_core_consumable_r": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Manager_Core",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": 40,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_manager_core_consumable_sr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Manager_Core",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": 250,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_manager_core_consumable_uc": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Manager_Core",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 16,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_manager_core_consumable_vr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Manager_Core",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": 100,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_manager_core_unlimited": {
+    "catalysts": [
+      "Unlocks.DirectedAcquisition.People.Manager.Base"
+    ],
+    "consumed": false,
+    "lootTierGroup": "CCK_People_Manager_Core",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 30
+      },
+      {
+        "cost": 16,
+        "quantity": 80
+      },
+      {
+        "cost": 40,
+        "quantity": 180
+      },
+      {
+        "cost": -1,
+        "quantity": 360
+      },
+      {
+        "cost": -1,
+        "quantity": 550
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_material_event_pumpkinwarhead": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Material_Event_PumpkinWarhead",
+    "requiredItem": "AccountResource:eventcurrency_candy",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 20
+      },
+      {
+        "cost": 60,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 150
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_axe_consumable": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Axe",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_axe_consumable_c": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Axe",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_axe_consumable_r": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Axe",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_axe_consumable_sr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Axe",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_axe_consumable_uc": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Axe",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_axe_consumable_vr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Axe",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_axe_unlimited": {
+    "catalysts": [
+      "Unlocks.DirectedAcquisition.Weapon.Melee.Axe"
+    ],
+    "consumed": false,
+    "lootTierGroup": "CCK_Melee_Axe",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 50
+      },
+      {
+        "cost": 32,
+        "quantity": 150
+      },
+      {
+        "cost": 80,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 2500
+      },
+      {
+        "cost": -1,
+        "quantity": 7500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_blunt_consumable": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Blunt",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_blunt_unlimited": {
+    "catalysts": [
+      "Unlocks.DirectedAcquisition.Weapon.Melee.Blunt"
+    ],
+    "consumed": false,
+    "lootTierGroup": "CCK_Melee_Blunt",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 50
+      },
+      {
+        "cost": 32,
+        "quantity": 150
+      },
+      {
+        "cost": 80,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 2500
+      },
+      {
+        "cost": -1,
+        "quantity": 7500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_club_consumable": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Club",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_club_consumable_c": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Club",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_club_consumable_r": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Club",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_club_consumable_sr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Club",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_club_consumable_uc": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Club",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_club_consumable_vr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Club",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_club_unlimited": {
+    "catalysts": [
+      "Unlocks.DirectedAcquisition.Weapon.Melee.Club"
+    ],
+    "consumed": false,
+    "lootTierGroup": "CCK_Melee_Club",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 50
+      },
+      {
+        "cost": 32,
+        "quantity": 150
+      },
+      {
+        "cost": 80,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 2500
+      },
+      {
+        "cost": -1,
+        "quantity": 7500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_core_consumable": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Core",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_core_unlimited": {
+    "catalysts": [
+      "Unlocks.DirectedAcquisition.Weapon.Melee.Base"
+    ],
+    "consumed": false,
+    "lootTierGroup": "CCK_Melee_Core",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 50
+      },
+      {
+        "cost": 32,
+        "quantity": 150
+      },
+      {
+        "cost": 80,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 2500
+      },
+      {
+        "cost": -1,
+        "quantity": 7500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_core_unlimited_vr": {
+    "catalysts": [],
+    "consumed": false,
+    "lootTierGroup": "CCK_Melee_Core",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 50
+      },
+      {
+        "cost": 32,
+        "quantity": 150
+      },
+      {
+        "cost": 80,
+        "quantity": 500
+      },
+      {
+        "cost": 200,
+        "quantity": 2500
+      },
+      {
+        "cost": -1,
+        "quantity": 7500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_edged_consumable": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Edged",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_edged_unlimited": {
+    "catalysts": [
+      "Unlocks.DirectedAcquisition.Weapon.Melee.Edged"
+    ],
+    "consumed": false,
+    "lootTierGroup": "CCK_Melee_Edged",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 50
+      },
+      {
+        "cost": 32,
+        "quantity": 150
+      },
+      {
+        "cost": 80,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 2500
+      },
+      {
+        "cost": -1,
+        "quantity": 7500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_piercing_consumable": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Piercing",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_piercing_unlimited": {
+    "catalysts": [
+      "Unlocks.DirectedAcquisition.Weapon.Melee.Piercing"
+    ],
+    "consumed": false,
+    "lootTierGroup": "CCK_Melee_Piercing",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 50
+      },
+      {
+        "cost": 32,
+        "quantity": 150
+      },
+      {
+        "cost": 80,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 2500
+      },
+      {
+        "cost": -1,
+        "quantity": 7500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_scythe_consumable": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Scythe",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_scythe_consumable_c": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Scythe",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_scythe_consumable_r": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Scythe",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_scythe_consumable_sr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Scythe",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_scythe_consumable_uc": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Scythe",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_scythe_consumable_vr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Scythe",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_scythe_unlimited": {
+    "catalysts": [
+      "Unlocks.DirectedAcquisition.Weapon.Melee.Scythe"
+    ],
+    "consumed": false,
+    "lootTierGroup": "CCK_Melee_Scythe",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 50
+      },
+      {
+        "cost": 32,
+        "quantity": 150
+      },
+      {
+        "cost": 80,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 2500
+      },
+      {
+        "cost": -1,
+        "quantity": 7500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_spear_consumable": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Spear",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_spear_consumable_c": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Spear",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_spear_consumable_r": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Spear",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_spear_consumable_sr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Spear",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_spear_consumable_uc": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Spear",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_spear_consumable_vr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Spear",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_spear_unlimited": {
+    "catalysts": [
+      "Unlocks.DirectedAcquisition.Weapon.Melee.Spear"
+    ],
+    "consumed": false,
+    "lootTierGroup": "CCK_Melee_Spear",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 50
+      },
+      {
+        "cost": 32,
+        "quantity": 150
+      },
+      {
+        "cost": 80,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 2500
+      },
+      {
+        "cost": -1,
+        "quantity": 7500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_sword_consumable": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Sword",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_sword_consumable_c": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Sword",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_sword_consumable_r": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Sword",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_sword_consumable_sr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Sword",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_sword_consumable_uc": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Sword",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_sword_consumable_vr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Sword",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_sword_unlimited": {
+    "catalysts": [
+      "Unlocks.DirectedAcquisition.Weapon.Melee.Sword"
+    ],
+    "consumed": false,
+    "lootTierGroup": "CCK_Melee_Sword",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 50
+      },
+      {
+        "cost": 32,
+        "quantity": 150
+      },
+      {
+        "cost": 80,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 2500
+      },
+      {
+        "cost": -1,
+        "quantity": 7500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_tool_consumable": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Tool",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_tool_consumable_c": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Tool",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_tool_consumable_r": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Tool",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_tool_consumable_sr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Tool",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_tool_consumable_uc": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Tool",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_tool_consumable_vr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Melee_Tool",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_tool_unlimited": {
+    "catalysts": [
+      "Unlocks.DirectedAcquisition.Weapon.Melee.Tool"
+    ],
+    "consumed": false,
+    "lootTierGroup": "CCK_Melee_Tool",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 50
+      },
+      {
+        "cost": 32,
+        "quantity": 150
+      },
+      {
+        "cost": 80,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 2500
+      },
+      {
+        "cost": -1,
+        "quantity": 7500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_assault_consumable": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Assault",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_assault_consumable_c": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Assault",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_assault_consumable_r": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Assault",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_assault_consumable_sr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Assault",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_assault_consumable_uc": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Assault",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_assault_consumable_vr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Assault",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_assault_unlimited": {
+    "catalysts": [
+      "Unlocks.DirectedAcquisition.Weapon.Ranged.Assault"
+    ],
+    "consumed": false,
+    "lootTierGroup": "CCK_Ranged_Assault",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 50
+      },
+      {
+        "cost": 32,
+        "quantity": 150
+      },
+      {
+        "cost": 80,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 2500
+      },
+      {
+        "cost": -1,
+        "quantity": 7500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_core_consumable": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Core",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_core_unlimited": {
+    "catalysts": [
+      "Unlocks.DirectedAcquisition.Weapon.Ranged.Base"
+    ],
+    "consumed": false,
+    "lootTierGroup": "CCK_Ranged_Core",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 50
+      },
+      {
+        "cost": 32,
+        "quantity": 150
+      },
+      {
+        "cost": 80,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 2500
+      },
+      {
+        "cost": -1,
+        "quantity": 7500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_core_unlimited_vr": {
+    "catalysts": [],
+    "consumed": false,
+    "lootTierGroup": "CCK_Ranged_Core",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 50
+      },
+      {
+        "cost": 32,
+        "quantity": 150
+      },
+      {
+        "cost": 80,
+        "quantity": 500
+      },
+      {
+        "cost": 200,
+        "quantity": 2500
+      },
+      {
+        "cost": -1,
+        "quantity": 7500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_launcher_pumpkin_consumable_sr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Launcher_Pumpkin_SR",
+    "requiredItem": "AccountResource:eventcurrency_pumpkinwarhead",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 50
+      },
+      {
+        "cost": -1,
+        "quantity": 150
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 300
+      },
+      {
+        "cost": 625,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_pistol_consumable": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Pistol",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_pistol_consumable_c": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Pistol",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_pistol_consumable_r": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Pistol",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_pistol_consumable_sr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Pistol",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_pistol_consumable_uc": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Pistol",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_pistol_consumable_vr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Pistol",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_pistol_unlimited": {
+    "catalysts": [
+      "Unlocks.DirectedAcquisition.Weapon.Ranged.Pistol"
+    ],
+    "consumed": false,
+    "lootTierGroup": "CCK_Ranged_Pistol",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 50
+      },
+      {
+        "cost": 32,
+        "quantity": 150
+      },
+      {
+        "cost": 80,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 2500
+      },
+      {
+        "cost": -1,
+        "quantity": 7500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_shotgun_consumable": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Shotgun",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_shotgun_consumable_c": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Shotgun",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_shotgun_consumable_r": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Shotgun",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_shotgun_consumable_sr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Shotgun",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_shotgun_consumable_uc": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Shotgun",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_shotgun_consumable_vr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Shotgun",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_shotgun_unlimited": {
+    "catalysts": [
+      "Unlocks.DirectedAcquisition.Weapon.Ranged.Shotgun"
+    ],
+    "consumed": false,
+    "lootTierGroup": "CCK_Ranged_Shotgun",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 50
+      },
+      {
+        "cost": 32,
+        "quantity": 150
+      },
+      {
+        "cost": 80,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 2500
+      },
+      {
+        "cost": -1,
+        "quantity": 7500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_sniper_consumable": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Sniper",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_sniper_consumable_c": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Sniper",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_sniper_consumable_r": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Sniper",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_sniper_consumable_sr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Sniper",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_sniper_consumable_uc": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Sniper",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_sniper_consumable_vr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Sniper",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_sniper_unlimited": {
+    "catalysts": [
+      "Unlocks.DirectedAcquisition.Weapon.Ranged.Sniper"
+    ],
+    "consumed": false,
+    "lootTierGroup": "CCK_Ranged_Sniper",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 50
+      },
+      {
+        "cost": 32,
+        "quantity": 150
+      },
+      {
+        "cost": 80,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 2500
+      },
+      {
+        "cost": -1,
+        "quantity": 7500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_trap_core_consumable": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Trap_Core",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 18,
+        "quantity": 1
+      },
+      {
+        "cost": 37,
+        "quantity": 2
+      },
+      {
+        "cost": 93,
+        "quantity": 4
+      },
+      {
+        "cost": 232,
+        "quantity": 7
+      },
+      {
+        "cost": 582,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_trap_core_consumable_c": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Trap_Core",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 18,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_trap_core_consumable_r": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Trap_Core",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": 93,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_trap_core_consumable_sr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Trap_Core",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": 582,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_trap_core_consumable_uc": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Trap_Core",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 37,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_trap_core_consumable_vr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Trap_Core",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": 232,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_trap_core_unlimited": {
+    "catalysts": [
+      "Unlocks.DirectedAcquisition.Trap.Base"
+    ],
+    "consumed": false,
+    "lootTierGroup": "CCK_Trap_Core",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 18,
+        "quantity": 50
+      },
+      {
+        "cost": 37,
+        "quantity": 150
+      },
+      {
+        "cost": 93,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 2500
+      },
+      {
+        "cost": -1,
+        "quantity": 7500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_weapon_core_consumable": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Weapon_Core",
+    "requiredItem": "AccountResource:reagent_c_t01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 1
+      },
+      {
+        "cost": 32,
+        "quantity": 2
+      },
+      {
+        "cost": 80,
+        "quantity": 4
+      },
+      {
+        "cost": 200,
+        "quantity": 7
+      },
+      {
+        "cost": 500,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_weapon_core_unlimited": {
+    "catalysts": [
+      "Unlocks.DirectedAcquisition.Weapon.Base"
+    ],
+    "consumed": false,
+    "lootTierGroup": "CCK_Weapon_Core",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 50
+      },
+      {
+        "cost": 32,
+        "quantity": 150
+      },
+      {
+        "cost": 80,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 2500
+      },
+      {
+        "cost": -1,
+        "quantity": 7500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_worker_core_consumable": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Worker",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": 6,
+        "quantity": 1
+      },
+      {
+        "cost": 12,
+        "quantity": 2
+      },
+      {
+        "cost": 30,
+        "quantity": 4
+      },
+      {
+        "cost": 76,
+        "quantity": 7
+      },
+      {
+        "cost": 190,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_worker_core_consumable_c": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Worker",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": 6,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_worker_core_consumable_r": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Worker",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": 30,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_worker_core_consumable_sr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Worker",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": 190,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_worker_core_consumable_uc": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Worker",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 12,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": -1,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_worker_core_consumable_vr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_People_Worker",
+    "requiredItem": "AccountResource:reagent_people",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 4
+      },
+      {
+        "cost": 76,
+        "quantity": 7
+      },
+      {
+        "cost": -1,
+        "quantity": 15
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_worker_core_unlimited": {
+    "catalysts": [
+      "Unlocks.DirectedAcquisition.People.Worker"
+    ],
+    "consumed": false,
+    "lootTierGroup": "CCK_People_Worker",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": 6,
+        "quantity": 20
+      },
+      {
+        "cost": 12,
+        "quantity": 60
+      },
+      {
+        "cost": 30,
+        "quantity": 140
+      },
+      {
+        "cost": -1,
+        "quantity": 240
+      },
+      {
+        "cost": -1,
+        "quantity": 320
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_worker_core_unlimited_vr": {
+    "catalysts": [],
+    "consumed": false,
+    "lootTierGroup": "CCK_People_Worker",
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": 6,
+        "quantity": 20
+      },
+      {
+        "cost": 12,
+        "quantity": 60
+      },
+      {
+        "cost": 30,
+        "quantity": 140
+      },
+      {
+        "cost": 76,
+        "quantity": 240
+      },
+      {
+        "cost": -1,
+        "quantity": 320
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  }
+}

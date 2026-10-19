@@ -63,6 +63,19 @@ export function pool(kind, sub, rarity) {
 
 export const knownKinds = new Set([...entries.map((entry) => entry.kind), ...Object.keys(kindAliases)]);
 
+// Items of any of these kinds whose name holds every word (melee + axe, ranged + launcher + pumpkin, hero + ninja), at
+// a rarity (or the nearest there is) and its lowest tier.
+export function poolMatching(kinds, words, rarity) {
+  const matching = entries.filter((entry) => kinds.includes(entry.kind) && words.every((word) => entry.tokens.includes(word)));
+  for (const wanted of rarityOrder(rarities.includes(rarity) ? rarity : "r")) {
+    const atRarity = matching.filter((entry) => entry.rarity === wanted);
+    if (!atRarity.length) continue;
+    const lowest = Math.min(...atRarity.map((entry) => entry.tier));
+    return atRarity.filter((entry) => entry.tier === lowest).map((entry) => entry.templateId);
+  }
+  return [];
+}
+
 // Named packs (starter, quest, custom): the schematics whose name holds every word of the pack's name.
 export function namedSchematics(words, rarity, { founders = false } = {}) {
   const matches = Object.keys(items).map(describe).filter((item) => item.type === "schematic" && item.tier > 0 &&

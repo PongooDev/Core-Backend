@@ -26,6 +26,7 @@ import { setItemFavoriteStatus } from "./SetItemFavoriteStatus.js";
 import { setMtxPlatform } from "./SetMtxPlatform.js";
 import { setPinnedQuests } from "./SetPinnedQuests.js";
 import { skipTutorial } from "./SkipTutorial.js";
+import { transmogItem } from "./TransmogItem.js";
 import { unassignAllSquads } from "./UnassignAllSquads.js";
 import { updateQuestClientObjectives } from "./UpdateQuestClientObjectives.js";
 import { convertItemCommand, recycleItemBatchCommand, recycleItemCommand, upgradeItemCommand } from "./Upgrades.js";
@@ -69,6 +70,7 @@ export const clientCommands = {
   SkipTutorial: skipTutorial,
   SlotItemInCollectionBook: slotItemInCollectionBook,
   StartExpedition: startExpeditionCommand,
+  TransmogItem: transmogItem,
   UnassignAllSquads: unassignAllSquads,
   UpdateQuestClientObjectives: updateQuestClientObjectives,
   UpgradeItem: upgradeItemCommand,
