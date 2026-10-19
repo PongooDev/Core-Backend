@@ -110,6 +110,15 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         item["maxLevel"] = properties["MaxLevel"]?.GetValue<int>() ?? 1;
     }
 
+    // Storm shields and deployable bases (UFortCloudSaveItemDefinition): their level range and save ContentVersion.
+    if (export.ExportType is "FortOutpostItemDefinition" or "FortDeployableBaseCloudSaveItemDefinition")
+    {
+        var item = (SortedDictionary<string, object>)items[templateId];
+        item["minLevel"] = properties?["MinLevel"]?.GetValue<int>() ?? 1;
+        item["maxLevel"] = properties?["MaxLevel"]?.GetValue<int>() ?? 1;
+        item["contentVersion"] = properties?["ContentVersion"]?.GetValue<int>() ?? 0;
+    }
+
     // Squad slots filter on these: TagFilter (defenders), bIsManager (survivor slot 0), RequiredGPTags (hero classes).
     if (export.ExportType is "FortHeroType" or "FortWorkerType" or "FortDefenderItemDefinition")
     {
@@ -274,6 +283,8 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         if (validDifficulties.Count > 0) theme["difficulties"] = validDifficulties;
         var zoneTags = Strings(props["ZoneTags"]);
         if (zoneTags.Count > 0) theme["tags"] = zoneTags;
+        // Storm shields: the outpost item a player needs to enter (UFortMatchmakingContext::EnterOutpost).
+        if (props["CloudSaveItemDefinition"] is { } cloudSave) theme["cloudSaveItem"] = assetTypes.TemplateId(AssetPath(cloudSave));
         zoneThemes[classPath] = theme;
     }
     else
@@ -668,11 +679,12 @@ static class ItemClasses
             yield return current;
     }
 
-    // Outposts and deployable bases live in their own profiles, which aren't mapped yet.
+    // Outposts and deployable bases (cloud save items) are account items too: CreateOrUpgradeOutpostItem,
+    // UpdateOutpostCore and CreateDeployableBaseItem are UFortMcpProfileAccount commands, and the client reads the
+    // outpost core's level from the account profile.
     public static string? ProfileType(string itemClass)
     {
         var lineage = Lineage(itemClass).ToList();
-        if (lineage.Contains("FortCloudSaveItemDefinition")) return null;
         if (lineage.Contains("FortAccountItemDefinition")) return "profile";
         if (lineage.Contains("FortWorldItemDefinition")) return "theater";
         return null;

@@ -138,7 +138,8 @@ export function findMission(missionGuid, now = new Date(), missionAlertGuid = ""
       if (!found) continue;
       const alert = missionAlertGuid && info.missionAlerts[index].availableMissionAlerts
         .find((candidate) => candidate.missionAlertGuid === missionAlertGuid && candidate.tileIndex === found.tileIndex);
-      return { theaterId: theater.theaterId, ...found, ...(alert && { missionAlert: alert }) };
+      const zoneTheme = info.theaters[index].tiles[found.tileIndex]?.zoneTheme;
+      return { theaterId: theater.theaterId, ...found, zoneTheme, ...(alert && { missionAlert: alert }) };
     }
   }
   return null;

@@ -3,6 +3,7 @@ import { assignWorkerToSquadBatch } from "./AssignWorkerToSquadBatch.js";
 import { claimLoginReward } from "./ClaimLoginReward.js";
 import { claimMissionAlertRewards } from "./ClaimMissionAlertRewards.js";
 import { claimQuestReward } from "./ClaimQuestReward.js";
+import { createOrUpgradeOutpostItem } from "./CreateOrUpgradeOutpostItem.js";
 import { clientQuestLogin } from "./ClientQuestLogin.js";
 import { claimCollectionBookPageRewards, claimCollectionBookRewards, convertSlottedItem, slotItemInCollectionBook, upgradeSlottedItem } from "./CollectionBook.js";
 import { fortRerollDailyQuest } from "./FortRerollDailyQuest.js";
@@ -42,6 +43,7 @@ export const clientCommands = {
   CollectExpedition: collectExpeditionCommand,
   ConvertItem: convertItemCommand,
   ConvertSlottedItem: convertSlottedItem,
+  CreateOrUpgradeOutpostItem: createOrUpgradeOutpostItem,
   FortRerollDailyQuest: fortRerollDailyQuest,
   GetMcpTimeForLogin: getMcpTimeForLogin,
   MarkItemSeen: markItemSeen,

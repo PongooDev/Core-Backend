@@ -2,7 +2,9 @@ import crypto from "node:crypto";
 import { McpError } from "../../../errors.js";
 import { log } from "../../../log.js";
 import { completeMissionAlert } from "../../../profiles/alerts.js";
+import { zoneOutpost } from "../../../gamedata/world.js";
 import { grantItem } from "../../../profiles/items.js";
+import { completeOutpostDefense, saveOutpost, updateOutpostCore } from "../../../profiles/outposts.js";
 import { advanceObjective } from "../../../profiles/progress.js";
 import { earnScore } from "../../../profiles/xp.js";
 import { findMission } from "../../../world/theaters.js";
@@ -94,6 +96,8 @@ export const serverCommands = {
     }
     for (const { itemType, quantity } of mission.missionRewards.items) grantItem(session, itemType, quantity, { packSource: "Mission" });
     if (mission.missionAlert) completeMissionAlert(session, mission.theaterId, mission.missionAlert);
+    const outpost = zoneOutpost(mission.zoneTheme);
+    if (outpost) completeOutpostDefense(session, req.params.accountId, outpost);
   },
 
   // One call for every player in the match: [{accountId, totalScore, bCriticalMatchBonus}] (FAccountIdAndScore).
@@ -129,6 +133,18 @@ export const serverCommands = {
     applyChanges(tracker, req.body?.theaterItemUpdate);
     applyChanges(session.profile("outpost0"), req.body?.outpostItemUpdate);
     advance(session, req.body?.questObjectiveUpdates);
+  },
+
+  // The same from a storm shield, with the core's buildings and build saves: {outpostId, outpostInfo, cloudSaveInfo}.
+  BatchUpdatePlayerOutpost(context) {
+    serverCommands.BatchUpdatePlayer(context);
+    const { outpostId, outpostInfo, cloudSaveInfo } = context.req.body ?? {};
+    saveOutpost(context.session, outpostId, outpostInfo, cloudSaveInfo);
+  },
+
+  // A storm shield's placed buildings and who may edit it (FFortOutpostCoreInfo), on profile0's core item.
+  UpdateOutpostCore({ req, session }) {
+    updateOutpostCore(session, req.body?.coreId, req.body?.coreInfo);
   }
 };
 

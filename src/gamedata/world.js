@@ -1,6 +1,6 @@
 import { readGameData } from "./read.js";
 
-const { difficulties = {}, missionAlerts = [], dailyMissionAlertQuota = 0 } = readGameData("world", {});
+const { difficulties = {}, missionAlerts = [], dailyMissionAlertQuota = 0, zoneThemes = {} } = readGameData("world", {});
 
 export function getDifficulty(rowName) {
   return difficulties[rowName];
@@ -14,3 +14,8 @@ export function missionAlertTier(rowName) {
 }
 
 export { dailyMissionAlertQuota };
+
+// The outpost item a storm shield zone theme belongs to (its CloudSaveItemDefinition), if it is one.
+export function zoneOutpost(zoneTheme) {
+  return zoneThemes[zoneTheme]?.cloudSaveItem;
+}

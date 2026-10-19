@@ -8036,6 +8036,16 @@
     ],
     "tier": "V"
   },
+  "DeployableBaseCloudSave:testdeployablebaseitemdef": {
+    "class": "FortDeployableBaseCloudSaveItemDefinition",
+    "contentVersion": 0,
+    "maxLevel": 1,
+    "maxStackSize": 1,
+    "minLevel": 1,
+    "profile": "profile",
+    "rarity": "Ordinary",
+    "tier": "No_Tier"
+  },
   "Emote:dance": {
     "class": "FortEmoteItemDefinition",
     "maxStackSize": 1,
@@ -20322,6 +20332,56 @@
     "maxStackSize": 5,
     "profile": "theater",
     "rarity": "Quality",
+    "tier": "No_Tier"
+  },
+  "Outpost:outpostcore_pve_00": {
+    "class": "FortOutpostItemDefinition",
+    "contentVersion": 0,
+    "maxLevel": 10,
+    "maxStackSize": 1,
+    "minLevel": 0,
+    "profile": "profile",
+    "rarity": "Ordinary",
+    "tier": "No_Tier"
+  },
+  "Outpost:outpostcore_pve_01": {
+    "class": "FortOutpostItemDefinition",
+    "contentVersion": 1,
+    "maxLevel": 10,
+    "maxStackSize": 1,
+    "minLevel": 0,
+    "profile": "profile",
+    "rarity": "Ordinary",
+    "tier": "No_Tier"
+  },
+  "Outpost:outpostcore_pve_02": {
+    "class": "FortOutpostItemDefinition",
+    "contentVersion": 0,
+    "maxLevel": 10,
+    "maxStackSize": 1,
+    "minLevel": 0,
+    "profile": "profile",
+    "rarity": "Ordinary",
+    "tier": "No_Tier"
+  },
+  "Outpost:outpostcore_pve_03": {
+    "class": "FortOutpostItemDefinition",
+    "contentVersion": 0,
+    "maxLevel": 10,
+    "maxStackSize": 1,
+    "minLevel": 0,
+    "profile": "profile",
+    "rarity": "Ordinary",
+    "tier": "No_Tier"
+  },
+  "Outpost:outpostcore_pve_04": {
+    "class": "FortOutpostItemDefinition",
+    "contentVersion": 0,
+    "maxLevel": 10,
+    "maxStackSize": 1,
+    "minLevel": 0,
+    "profile": "profile",
+    "rarity": "Ordinary",
     "tier": "No_Tier"
   },
   "Quota:restxp": {

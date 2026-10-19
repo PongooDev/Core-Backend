@@ -23,7 +23,9 @@ export function findItem(profile, templateId) {
 const unassigned = {
   FortHeroType: { squad_id: "", squad_slot_idx: -1, slotted_building_id: "", building_slot_used: -1 },
   FortWorkerType: { squad_id: "", squad_slot_idx: -1, slotted_building_id: "", building_slot_used: -1 },
-  FortDefenderItemDefinition: { squad_id: "", squad_slot_idx: -1 }
+  FortDefenderItemDefinition: { squad_id: "", squad_slot_idx: -1 },
+  // A storm shield core with nothing built and no build saved (see profiles/outposts.js).
+  FortOutpostItemDefinition: { outpost_core_info: { placedBuildings: [], accountsWithEditPermission: [] }, cloud_save_info: { saveCount: 0, savedRecords: [] } }
 };
 
 // The client's llama store only opens packs whose pack_source is Store, CollectionBook, Quest, LevelUp or Schedule;
@@ -34,7 +36,7 @@ export function cardPackAttributes(templateId, packSource = "Store") {
 
 function addItem(tracker, templateId, quantity, info, options) {
   const itemId = crypto.randomUUID();
-  const attributes = info.profile === "profile" ? { level: 1, item_seen: 0, ...unassigned[info.class] } : {};
+  const attributes = info.profile === "profile" ? { level: info.minLevel ?? 1, item_seen: 0, ...structuredClone(unassigned[info.class]) } : {};
   if (info.class === "FortCardPackItemDefinition") Object.assign(attributes, cardPackAttributes(templateId, options.packSource));
   tracker.addItem(itemId, { templateId, attributes, quantity });
   return itemId;

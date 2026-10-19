@@ -1,0 +1,96 @@
+import crypto from "node:crypto";
+import { McpError } from "../errors.js";
+import { getItem } from "../gamedata/items.js";
+import { findItem } from "./items.js";
+
+// Storm shields are profile0 items (UFortOutpostItem: a UFortCloudSaveItem with outpost_core_info
+// {placedBuildings: [{buildingTag, placedTag}], accountsWithEditPermission} and cloud_save_info {saveCount,
+// savedRecords: [{recordIndex, archiveNumber, recordFilename}]}), one per theater (the storm shield zone theme's
+// CloudSaveItemDefinition: Outpost:outpostcore_pve_01..04). The core's level is the item's level
+// (UFortFrontEndContext::GetOutpostCoreLevelByTheaterId), from MinLevel 0 to MaxLevel 10.
+const fail = (message) => {
+  throw new McpError("errors.com.epicgames.fortnite.item_not_found", message);
+};
+
+const outpostInfo = (templateId) => {
+  const info = getItem(String(templateId ?? ""));
+  return info?.class === "FortOutpostItemDefinition" ? info : undefined;
+};
+
+function outpostItem(tracker, itemId) {
+  const item = typeof itemId === "string" && tracker.profile.items[itemId];
+  if (!item || !outpostInfo(item.templateId)) fail(`No storm shield ${itemId}`);
+  return item;
+}
+
+// FFortOutpostCoreInfo as the server sent it, keeping only its fields.
+function coreInfo(info) {
+  const strings = (list) => (Array.isArray(list) ? list.filter((value) => typeof value === "string") : []);
+  return {
+    placedBuildings: (Array.isArray(info?.placedBuildings) ? info.placedBuildings : [])
+      .filter((building) => building && typeof building === "object")
+      .map(({ buildingTag, placedTag }) => ({ buildingTag: String(buildingTag ?? ""), placedTag: String(placedTag ?? "") })),
+    accountsWithEditPermission: strings(info?.accountsWithEditPermission)
+  };
+}
+
+// FFortCloudSaveInfo: which save records hold the storm shield's build.
+function cloudSaveInfo(info) {
+  return {
+    saveCount: Number.isInteger(info?.saveCount) ? info.saveCount : 0,
+    savedRecords: (Array.isArray(info?.savedRecords) ? info.savedRecords : [])
+      .filter((record) => record && typeof record === "object")
+      .map(({ recordIndex, archiveNumber, recordFilename }) => ({
+        recordIndex: Number.isInteger(recordIndex) ? recordIndex : 0,
+        archiveNumber: Number.isInteger(archiveNumber) ? archiveNumber : 0,
+        recordFilename: String(recordFilename ?? "")
+      }))
+  };
+}
+
+// CreateOrUpgradeOutpostItem {templateId}: the client sends it when the player enters a storm shield they have no item
+// for (UFortMatchmakingContext::EnterOutpost) and only goes on once it succeeds. A new core is at MinLevel with the
+// player allowed to edit it. Nothing is kept about content versions, so an existing core is left as it is.
+export function createOutpost(session, accountId, templateId) {
+  const info = outpostInfo(templateId);
+  if (!info) fail(`No storm shield ${templateId}`);
+  const tracker = session.profile("profile0");
+  if (findItem(tracker.profile, info.templateId)) return;
+  tracker.addItem(crypto.randomUUID(), {
+    templateId: info.templateId,
+    attributes: {
+      level: info.minLevel ?? 0,
+      item_seen: 0,
+      outpost_core_info: { placedBuildings: [], accountsWithEditPermission: [accountId] },
+      cloud_save_info: { saveCount: 0, savedRecords: [] }
+    },
+    quantity: 1
+  });
+}
+
+// UpdateOutpostCore {coreId, coreInfo} from the gameserver.
+export function updateOutpostCore(session, coreId, info) {
+  const tracker = session.profile("profile0");
+  outpostItem(tracker, coreId);
+  tracker.setItemAttribute(coreId, "outpost_core_info", coreInfo(info));
+}
+
+// BatchUpdatePlayerOutpost's storm shield part: {outpostId, outpostInfo, cloudSaveInfo}.
+export function saveOutpost(session, outpostId, info, saves) {
+  const tracker = session.profile("profile0");
+  outpostItem(tracker, outpostId);
+  tracker.setItemAttribute(outpostId, "outpost_core_info", coreInfo(info));
+  tracker.setItemAttribute(outpostId, "cloud_save_info", cloudSaveInfo(saves));
+}
+
+// Core's: a won storm shield defense raises that core's level by one (the level counts the defenses done, so the next
+// one is level + 1, as the outpost quests count them: complete_outpost_1_1 is Stat.Mission.Primary.Outpost.Leg1).
+export function completeOutpostDefense(session, accountId, templateId) {
+  const info = outpostInfo(templateId);
+  if (!info) return;
+  const tracker = session.profile("profile0");
+  createOutpost(session, accountId, info.templateId);
+  const itemId = findItem(tracker.profile, info.templateId);
+  const level = tracker.profile.items[itemId].attributes.level ?? 0;
+  if (level < (info.maxLevel ?? 10)) tracker.setItemAttribute(itemId, "level", level + 1);
+}

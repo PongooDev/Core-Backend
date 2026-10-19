@@ -1056,21 +1056,25 @@
       "tileClass": "/Game/World/ZoneThemes/Outposts/BP_Hex_OutpostCC_7"
     },
     "/Game/World/ZoneThemes/Outposts/BP_ZT_TheOutpost_PvE_01.BP_ZT_TheOutpost_PvE_01_C": {
+      "cloudSaveItem": "Outpost:outpostcore_pve_01",
       "name": "Homebase Storm Shield",
       "parent": "BP_ZT_PVE_C",
       "tileClass": "/Game/World/ZoneThemes/Outposts/BP_Hex_OutpostCC"
     },
     "/Game/World/ZoneThemes/Outposts/BP_ZT_TheOutpost_PvE_02.BP_ZT_TheOutpost_PvE_02_C": {
+      "cloudSaveItem": "Outpost:outpostcore_pve_02",
       "name": "Plankerton Storm Shield",
       "parent": "BP_ZT_PVE_C",
       "tileClass": "/Game/World/ZoneThemes/Outposts/BP_Hex_Outpost_Theater2"
     },
     "/Game/World/ZoneThemes/Outposts/BP_ZT_TheOutpost_PvE_03.BP_ZT_TheOutpost_PvE_03_C": {
+      "cloudSaveItem": "Outpost:outpostcore_pve_03",
       "name": "Canny Valley Storm Shield",
       "parent": "BP_ZT_PVE_C",
       "tileClass": "/Game/World/ZoneThemes/Outposts/BP_Hex_Outpost_Theater3"
     },
     "/Game/World/ZoneThemes/Outposts/BP_ZT_TheOutpost_PvE_04.BP_ZT_TheOutpost_PvE_04_C": {
+      "cloudSaveItem": "Outpost:outpostcore_pve_04",
       "name": "Twine Peaks Storm Shield",
       "parent": "BP_ZT_PVE_C",
       "tileClass": "/Game/World/ZoneThemes/Outposts/BP_Hex_Outpost_Theater4"
