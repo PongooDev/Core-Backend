@@ -191,7 +191,12 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
             ["displayRarityLevel"] = properties?["DisplayRarityLevel"]?.GetValue<int>() ?? 0,
             ["rarity"] = Enum(properties?["Rarity"]) ?? "Ordinary",
             ["displayName"] = properties?["DisplayName"]?["SourceString"]?.GetValue<string>() ?? "",
-            ["description"] = properties?["Description"]?["SourceString"]?.GetValue<string>() ?? ""
+            ["description"] = properties?["Description"]?["SourceString"]?.GetValue<string>() ?? "",
+            // The store's offer metadata names the pack by asset (FortCatalogMeta.PackDefinition).
+            ["path"] = $"{gamePath}.{export.Name}",
+            // UFortCardPackItemDefinition's constructor sets bAutoOpenAsReward (sub_5A4290); only
+            // CardPack_Bronze_Reward turns it off.
+            ["autoOpenAsReward"] = properties?["bAutoOpenAsReward"]?.GetValue<bool>() ?? true
         };
     }
 }
