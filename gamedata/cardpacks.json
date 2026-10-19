@@ -1,6 +1,8 @@
 {
   "CardPack:cardpack_basic": {
     "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Basic",
@@ -8,6 +10,8 @@
   },
   "CardPack:cardpack_basic_silver": {
     "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 1,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Basic_Silver",
@@ -15,6 +19,8 @@
   },
   "CardPack:cardpack_basic_tutorial": {
     "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Basic",
@@ -22,6 +28,8 @@
   },
   "CardPack:cardpack_bronze": {
     "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Upgrade Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Bronze",
@@ -29,6 +37,8 @@
   },
   "CardPack:cardpack_bronze_collectionbook": {
     "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Upgrade Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Bronze_CollectionBook",
@@ -36,6 +46,8 @@
   },
   "CardPack:cardpack_bronze_halloween": {
     "choice": false,
+    "description": "A haunted limited time offer! Get Candy by opening other Llamas and completing event quests.",
+    "displayName": "Spooky Scary Sad Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Bronze_Halloween",
@@ -43,6 +55,8 @@
   },
   "CardPack:cardpack_bronze_melee": {
     "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Melee Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Bronze_Melee",
@@ -50,6 +64,8 @@
   },
   "CardPack:cardpack_bronze_personnel": {
     "choice": false,
+    "description": "Yes, it\u0027s a people delivery llama. Just make your purchase and move along. Contains at least 6 people. Somehow.",
+    "displayName": "People Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Bronze_Personnel",
@@ -57,6 +73,8 @@
   },
   "CardPack:cardpack_bronze_ranged": {
     "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Ranged Weapon Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Bronze_Ranged",
@@ -64,6 +82,8 @@
   },
   "CardPack:cardpack_bronze_reward": {
     "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Upgrade Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Bronze",
@@ -71,6 +91,8 @@
   },
   "CardPack:cardpack_bronze_traps": {
     "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Trap Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Bronze_Traps",
@@ -78,6 +100,8 @@
   },
   "CardPack:cardpack_bronze_weapons": {
     "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Weapon Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Bronze_Weapons",
@@ -85,6 +109,8 @@
   },
   "CardPack:cardpack_bronze_weekly": {
     "choice": false,
+    "description": "Full of useful stuff and other fluff!",
+    "displayName": "Weekly Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Bronze_Weekly",
@@ -92,6 +118,8 @@
   },
   "CardPack:cardpack_bronze_xp": {
     "choice": false,
+    "description": "A pack that\u0027s completely brimming with crew and schematic XP!",
+    "displayName": "XP Candy Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Bronze_XP",
@@ -99,6 +127,8 @@
   },
   "CardPack:cardpack_choice_all_r": {
     "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Rare Item",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_All_R",
@@ -106,6 +136,8 @@
   },
   "CardPack:cardpack_choice_all_sr": {
     "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Legendary Item",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_All_SR",
@@ -113,6 +145,8 @@
   },
   "CardPack:cardpack_choice_all_vr": {
     "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Epic Item",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_All_VR",
@@ -120,6 +154,8 @@
   },
   "CardPack:cardpack_choice_defender_r": {
     "choice": true,
+    "description": "Choose one of two random defenders.",
+    "displayName": "Rare Defender",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_Defender_R",
@@ -127,6 +163,8 @@
   },
   "CardPack:cardpack_choice_defender_sr": {
     "choice": true,
+    "description": "Choose one of two random defenders.",
+    "displayName": "Legendary Defender",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_Defender_SR",
@@ -134,6 +172,8 @@
   },
   "CardPack:cardpack_choice_defender_vr": {
     "choice": true,
+    "description": "Choose one of two random defenders.",
+    "displayName": "Epic Defender",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_Defender_VR",
@@ -141,6 +181,8 @@
   },
   "CardPack:cardpack_choice_event_founders": {
     "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Epic Item",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_Event_Founders",
@@ -148,6 +190,8 @@
   },
   "CardPack:cardpack_choice_hero_r": {
     "choice": true,
+    "description": "Choose one of two random heroes.",
+    "displayName": "Rare Hero",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_Hero_R",
@@ -155,6 +199,8 @@
   },
   "CardPack:cardpack_choice_hero_sr": {
     "choice": true,
+    "description": "Choose one of two random heroes.",
+    "displayName": "Legendary Hero",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_Hero_SR",
@@ -162,6 +208,8 @@
   },
   "CardPack:cardpack_choice_hero_vr": {
     "choice": true,
+    "description": "Choose one of two random heroes.",
+    "displayName": "Epic Hero",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_Hero_VR",
@@ -169,6 +217,8 @@
   },
   "CardPack:cardpack_choice_manager_r": {
     "choice": true,
+    "description": "Choose one of two random lead survivors.",
+    "displayName": "Epic Lead Survivor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_Manager_R",
@@ -176,6 +226,8 @@
   },
   "CardPack:cardpack_choice_manager_sr": {
     "choice": true,
+    "description": "Choose one of two random lead survivors.",
+    "displayName": "Mythic Lead Survivor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_Manager_SR",
@@ -183,6 +235,8 @@
   },
   "CardPack:cardpack_choice_manager_vr": {
     "choice": true,
+    "description": "Choose one of two random lead survivors.",
+    "displayName": "Legendary Lead Survivor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_Manager_VR",
@@ -190,6 +244,8 @@
   },
   "CardPack:cardpack_choice_melee_r": {
     "choice": true,
+    "description": "Choose one of two random weapon schematics.",
+    "displayName": "Rare Melee Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_Melee_R",
@@ -197,6 +253,8 @@
   },
   "CardPack:cardpack_choice_melee_sr": {
     "choice": true,
+    "description": "Choose one of two random weapon schematics.",
+    "displayName": "Legendary Melee Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_Melee_SR",
@@ -204,6 +262,8 @@
   },
   "CardPack:cardpack_choice_melee_vr": {
     "choice": true,
+    "description": "Choose one of two random weapon schematics.",
+    "displayName": "Epic Melee Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_Melee_VR",
@@ -211,6 +271,8 @@
   },
   "CardPack:cardpack_choice_ranged_r": {
     "choice": true,
+    "description": "Choose one of two random weapon schematics.",
+    "displayName": "Rare Ranged Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_Ranged_R",
@@ -218,6 +280,8 @@
   },
   "CardPack:cardpack_choice_ranged_sr": {
     "choice": true,
+    "description": "Choose one of two random weapon schematics.",
+    "displayName": "Legendary Ranged Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_Ranged_SR",
@@ -225,6 +289,8 @@
   },
   "CardPack:cardpack_choice_ranged_vr": {
     "choice": true,
+    "description": "Choose one of two random weapon schematics.",
+    "displayName": "Epic Ranged Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_Ranged_VR",
@@ -232,6 +298,8 @@
   },
   "CardPack:cardpack_choice_test2": {
     "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Rare Item (Test)",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_All_R",
@@ -239,6 +307,8 @@
   },
   "CardPack:cardpack_choice_test3": {
     "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Epic Item (Test)",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_All_VR",
@@ -246,6 +316,8 @@
   },
   "CardPack:cardpack_choice_test_doublechoice1": {
     "choice": true,
+    "description": "Chose a reward item, twice!",
+    "displayName": "Double Choice Pack (Test 1)",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_Test_DoubleChoice1",
@@ -253,6 +325,8 @@
   },
   "CardPack:cardpack_choice_test_doublechoice2": {
     "choice": true,
+    "description": "Chose a reward item, twice!",
+    "displayName": "Double Choice Pack (Test 2)",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_Test_DoubleChoice2",
@@ -260,6 +334,8 @@
   },
   "CardPack:cardpack_choice_test_doublechoice3": {
     "choice": true,
+    "description": "Chose a reward item, twice!",
+    "displayName": "Double Choice Pack (Test 3)",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_Test_DoubleChoice3",
@@ -267,6 +343,8 @@
   },
   "CardPack:cardpack_choice_weapon_r": {
     "choice": true,
+    "description": "Choose one of two random weapon schematics.",
+    "displayName": "Rare Weapon Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_Weapon_R",
@@ -274,6 +352,8 @@
   },
   "CardPack:cardpack_choice_weapon_sr": {
     "choice": true,
+    "description": "Choose one of two random weapon schematics.",
+    "displayName": "Legendary Weapon Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_Weapon_SR",
@@ -281,6 +361,8 @@
   },
   "CardPack:cardpack_choice_weapon_vr": {
     "choice": true,
+    "description": "Choose one of two random weapon schematics.",
+    "displayName": "Epic Weapon Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_Weapon_VR",
@@ -288,6 +370,8 @@
   },
   "CardPack:cardpack_custom_firecracker_r": {
     "choice": false,
+    "description": "One random Firecracker schematic.",
+    "displayName": "Rare Firecracker Pistol",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Custom_Firecracker_R",
@@ -295,6 +379,8 @@
   },
   "CardPack:cardpack_defender_c": {
     "choice": false,
+    "description": "One random defender.",
+    "displayName": "Common Defender",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Defender_C",
@@ -302,6 +388,8 @@
   },
   "CardPack:cardpack_defender_r": {
     "choice": false,
+    "description": "One random defender.",
+    "displayName": "Rare Defender",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Defender_R",
@@ -309,6 +397,8 @@
   },
   "CardPack:cardpack_defender_sr": {
     "choice": false,
+    "description": "One random defender.",
+    "displayName": "Legendary Defender",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Defender_SR",
@@ -316,6 +406,8 @@
   },
   "CardPack:cardpack_defender_uc": {
     "choice": false,
+    "description": "One random defender.",
+    "displayName": "Uncommon Defender",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Defender_UC",
@@ -323,6 +415,8 @@
   },
   "CardPack:cardpack_defender_vr": {
     "choice": false,
+    "description": "One random defender.",
+    "displayName": "Epic Defender",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Defender_VR",
@@ -330,6 +424,8 @@
   },
   "CardPack:cardpack_defenderassault_c": {
     "choice": false,
+    "description": "One random defender, trained to fight with an assault weapon.",
+    "displayName": "Common Rifleman",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_DefenderAssault_C",
@@ -337,6 +433,8 @@
   },
   "CardPack:cardpack_defenderassault_r": {
     "choice": false,
+    "description": "One random defender, trained to fight with an assault weapon.",
+    "displayName": "Rare Rifleman",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_DefenderAssault_R",
@@ -344,6 +442,8 @@
   },
   "CardPack:cardpack_defenderassault_sr": {
     "choice": false,
+    "description": "One random defender, trained to fight with an assault weapon.",
+    "displayName": "Legendary Rifleman",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_DefenderAssault_SR",
@@ -351,6 +451,8 @@
   },
   "CardPack:cardpack_defenderassault_uc": {
     "choice": false,
+    "description": "One random defender, trained to fight with an assault weapon.",
+    "displayName": "Uncommon Rifleman",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_DefenderAssault_UC",
@@ -358,6 +460,8 @@
   },
   "CardPack:cardpack_defenderassault_vr": {
     "choice": false,
+    "description": "One random defender, trained to fight with an assault weapon.",
+    "displayName": "Epic Rifleman",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_DefenderAssault_VR",
@@ -365,6 +469,8 @@
   },
   "CardPack:cardpack_defenderfoundersassault_vr": {
     "choice": false,
+    "description": "One Defender, trained to fight with an assault weapon.",
+    "displayName": "Epic Founders Rifleman",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Founders_Defender_Assault_VR",
@@ -372,6 +478,8 @@
   },
   "CardPack:cardpack_defenderfounderspistol_vr": {
     "choice": false,
+    "description": "One Defender, trained to fight with an pistol weapon.",
+    "displayName": "Epic Founders Gunslinger",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Founders_Defender_Pistol_VR",
@@ -379,6 +487,8 @@
   },
   "CardPack:cardpack_defendermelee_c": {
     "choice": false,
+    "description": "One random defender, trained to fight with a melee weapon.",
+    "displayName": "Common Bruiser",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_DefenderMelee_C",
@@ -386,6 +496,8 @@
   },
   "CardPack:cardpack_defendermelee_r": {
     "choice": false,
+    "description": "One random defender, trained to fight with a melee weapon.",
+    "displayName": "Rare Bruiser",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_DefenderMelee_R",
@@ -393,6 +505,8 @@
   },
   "CardPack:cardpack_defendermelee_sr": {
     "choice": false,
+    "description": "One random defender, trained to fight with a melee weapon.",
+    "displayName": "Legendary Bruiser",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_DefenderMelee_SR",
@@ -400,6 +514,8 @@
   },
   "CardPack:cardpack_defendermelee_uc": {
     "choice": false,
+    "description": "One random defender, trained to fight with a melee weapon.",
+    "displayName": "Uncommon Bruiser",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_DefenderMelee_UC",
@@ -407,6 +523,8 @@
   },
   "CardPack:cardpack_defendermelee_vr": {
     "choice": false,
+    "description": "One random defender, trained to fight with a melee weapon.",
+    "displayName": "Epic Bruiser",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_DefenderMelee_VR",
@@ -414,6 +532,8 @@
   },
   "CardPack:cardpack_defenderpistol_c": {
     "choice": false,
+    "description": "One random defender, trained to fight with a pistol.",
+    "displayName": "Common Gunslinger",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_DefenderPistol_C",
@@ -421,6 +541,8 @@
   },
   "CardPack:cardpack_defenderpistol_r": {
     "choice": false,
+    "description": "One random defender, trained to fight with a pistol.",
+    "displayName": "Rare Gunslinger",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_DefenderPistol_R",
@@ -428,6 +550,8 @@
   },
   "CardPack:cardpack_defenderpistol_sr": {
     "choice": false,
+    "description": "One random defender, trained to fight with a pistol.",
+    "displayName": "Legendary Gunslinger",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_DefenderPistol_SR",
@@ -435,6 +559,8 @@
   },
   "CardPack:cardpack_defenderpistol_uc": {
     "choice": false,
+    "description": "One random defender, trained to fight with a pistol.",
+    "displayName": "Uncommon Gunslinger",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_DefenderPistol_UC",
@@ -442,6 +568,8 @@
   },
   "CardPack:cardpack_defenderpistol_vr": {
     "choice": false,
+    "description": "One random defender, trained to fight with a pistol.",
+    "displayName": "Epic Gunslinger",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_DefenderPistol_VR",
@@ -449,6 +577,8 @@
   },
   "CardPack:cardpack_defendershotgun_c": {
     "choice": false,
+    "description": "One random defender, trained to fight with a shotgun.",
+    "displayName": "Common Shotgunner",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_DefenderShotgun_C",
@@ -456,6 +586,8 @@
   },
   "CardPack:cardpack_defendershotgun_r": {
     "choice": false,
+    "description": "One random defender, trained to fight with a shotgun.",
+    "displayName": "Rare Shotgunner",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_DefenderShotgun_R",
@@ -463,6 +595,8 @@
   },
   "CardPack:cardpack_defendershotgun_sr": {
     "choice": false,
+    "description": "One random defender, trained to fight with a shotgun.",
+    "displayName": "Legendary Shotgunner",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_DefenderShotgun_SR",
@@ -470,6 +604,8 @@
   },
   "CardPack:cardpack_defendershotgun_uc": {
     "choice": false,
+    "description": "One random defender, trained to fight with a shotgun.",
+    "displayName": "Uncommon Shotgunner",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_DefenderShotgun_UC",
@@ -477,6 +613,8 @@
   },
   "CardPack:cardpack_defendershotgun_vr": {
     "choice": false,
+    "description": "One random defender, trained to fight with a shotgun.",
+    "displayName": "Epic Shotgunner",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_DefenderShotgun_VR",
@@ -484,6 +622,8 @@
   },
   "CardPack:cardpack_defendersniper_c": {
     "choice": false,
+    "description": "One random defender, trained to fight with a sniper rifle.",
+    "displayName": "Common Sniper",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_DefenderSniper_C",
@@ -491,6 +631,8 @@
   },
   "CardPack:cardpack_defendersniper_r": {
     "choice": false,
+    "description": "One random defender, trained to fight with a sniper rifle.",
+    "displayName": "Rare Sniper",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_DefenderSniper_R",
@@ -498,6 +640,8 @@
   },
   "CardPack:cardpack_defendersniper_sr": {
     "choice": false,
+    "description": "One random defender, trained to fight with a sniper rifle.",
+    "displayName": "Legendary Sniper",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_DefenderSniper_SR",
@@ -505,6 +649,8 @@
   },
   "CardPack:cardpack_defendersniper_uc": {
     "choice": false,
+    "description": "One random defender, trained to fight with a sniper rifle.",
+    "displayName": "Uncommon Sniper",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_DefenderSniper_UC",
@@ -512,6 +658,8 @@
   },
   "CardPack:cardpack_defendersniper_vr": {
     "choice": false,
+    "description": "One random defender, trained to fight with a sniper rifle.",
+    "displayName": "Epic Sniper",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_DefenderSniper_VR",
@@ -519,6 +667,8 @@
   },
   "CardPack:cardpack_event_2017_winter_1": {
     "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Winter Llama #1/12",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Bronze",
@@ -526,6 +676,8 @@
   },
   "CardPack:cardpack_event_founders": {
     "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Founder\u0027s Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Event_2017_Founders",
@@ -533,6 +685,8 @@
   },
   "CardPack:cardpack_event_founders_nonexclusive": {
     "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Launch Event Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Event_2017_Founders",
@@ -540,6 +694,8 @@
   },
   "CardPack:cardpack_founders_assault_auto_sr": {
     "choice": false,
+    "description": "Assault Weapon: Fully Automatic. Flexible assault rifle capable of handling all types of combat scenarios. High rate of fire with solid accuracy when aiming down sights and firing in controlled bursts.\r\n\r\nDon\u0027t worry, we\u0027ll give you a running start. - Ramirez",
+    "displayName": "Ramirez Assault Rifle",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Founders_Assault_Auto_SR",
@@ -547,6 +703,8 @@
   },
   "CardPack:cardpack_founders_banners_t01": {
     "choice": false,
+    "description": "A set of exclusive homebase banners!",
+    "displayName": "Founders Banners: Standard",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Founders_Banners_T01",
@@ -554,6 +712,8 @@
   },
   "CardPack:cardpack_founders_banners_t02": {
     "choice": false,
+    "description": "A set of exclusive homebase banners!",
+    "displayName": "Founders Banners: Deluxe",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Founders_Banners_T02",
@@ -561,6 +721,8 @@
   },
   "CardPack:cardpack_founders_banners_t03": {
     "choice": false,
+    "description": "A set of exclusive homebase banners!",
+    "displayName": "Founders Banners: Super Deluxe",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Founders_Banners_T03",
@@ -568,6 +730,8 @@
   },
   "CardPack:cardpack_founders_banners_t04": {
     "choice": false,
+    "description": "A set of exclusive homebase banners!",
+    "displayName": "Founders Banners: Limited",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Founders_Banners_T04",
@@ -575,6 +739,8 @@
   },
   "CardPack:cardpack_founders_banners_t05": {
     "choice": false,
+    "description": "A set of exclusive homebase banners!",
+    "displayName": "Founders Banners: Ultimate",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Founders_Banners_T05",
@@ -582,6 +748,8 @@
   },
   "CardPack:cardpack_founders_constructor_bundle": {
     "choice": false,
+    "description": "Two Legendary Constructor Heroes and one upgradeable shotgun!",
+    "displayName": "Founders Constructor Bundle",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Founders_Constructor_Bundle",
@@ -589,6 +757,8 @@
   },
   "CardPack:cardpack_founders_constructor_weapon_sr": {
     "choice": false,
+    "description": "Shotgun: Tactical. Precise pump shotgun that can deal good damage at medium range. Slow fire rate and limited magazine size.",
+    "displayName": "Copper Deconstructor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Founders_Constructor_Weapon_SR",
@@ -596,6 +766,8 @@
   },
   "CardPack:cardpack_founders_constructor_weapon_vr": {
     "choice": false,
+    "description": "Shotgun: Tactical. Precise pump shotgun that can deal good damage at medium range. Slow fire rate and limited magazine size.",
+    "displayName": "Copper Deconstructor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Founders_Constructor_Weapon_VR",
@@ -603,6 +775,8 @@
   },
   "CardPack:cardpack_founders_ninja_bundle": {
     "choice": false,
+    "description": "Two Legendary Ninja Heroes and one upgradeable sword!",
+    "displayName": "Founders Ninja Bundle",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Founders_Ninja_Bundle",
@@ -610,6 +784,8 @@
   },
   "CardPack:cardpack_founders_ninja_weapon_sr": {
     "choice": false,
+    "description": "Sword: High Tech. Energized blade with a fast swing speed for great sustained damage. Deals energy damage that is fairly effective against elemental enemies. Lunge: Heavy attack that leaps forward, dealing high damage to targets in a narrow cone.",
+    "displayName": "Copper Blazing Masamune",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Founders_Ninja_Weapon_SR",
@@ -617,6 +793,8 @@
   },
   "CardPack:cardpack_founders_ninja_weapon_vr": {
     "choice": false,
+    "description": "Sword: High Tech. Energized blade with a fast swing speed for great sustained damage. Deals energy damage that is fairly effective against elemental enemies. Lunge: Heavy attack that leaps forward, dealing high damage to targets in a narrow cone.",
+    "displayName": "Copper Blazing Masamune",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Founders_Ninja_Weapon_VR",
@@ -624,6 +802,8 @@
   },
   "CardPack:cardpack_founders_outlander_bundle": {
     "choice": false,
+    "description": "Two Legendary Outlander Heroes and one upgradeable pistol!",
+    "displayName": "Founders Outlander Bundle",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Founders_Outlander_Bundle",
@@ -631,6 +811,8 @@
   },
   "CardPack:cardpack_founders_outlander_weapon_sr": {
     "choice": false,
+    "description": "Pistol: Machine Pistol. Fires at a very high rate, dealing great damage while consuming a lot of ammo. Good for run-and-gun combat, and accurate enough to fight at mid range when fired in short bursts.",
+    "displayName": "Copper Quickshot",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Founders_Outlander_Weapon_SR",
@@ -638,6 +820,8 @@
   },
   "CardPack:cardpack_founders_outlander_weapon_vr": {
     "choice": false,
+    "description": "Pistol: Machine Pistol. Fires at a very high rate, dealing great damage while consuming a lot of ammo. Good for run-and-gun combat, and accurate enough to fight at mid range when fired in short bursts.",
+    "displayName": "Copper Quickshot",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Founders_Outlander_Weapon_VR",
@@ -645,6 +829,8 @@
   },
   "CardPack:cardpack_founders_pistol_rapid_vr": {
     "choice": false,
+    "description": "Pistol: Semi-Automatic. Low damage and impact per shot, but able to fire very rapidly with large magazine and decent accuracy.",
+    "displayName": "Copper Founder\u0027s Revolt",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Founders_Pistol_Rapid_VR",
@@ -652,6 +838,8 @@
   },
   "CardPack:cardpack_founders_soldier_bundle": {
     "choice": false,
+    "description": "Two Legendary Soldier Heroes and one upgradeable assault rifle!",
+    "displayName": "Founders Soldier Bundle",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Founders_Soldier_Bundle",
@@ -659,6 +847,8 @@
   },
   "CardPack:cardpack_founders_soldier_weapon_sr": {
     "choice": false,
+    "description": "Assault Weapon: Light Machine Gun. A heavy weapon with high damage, an extreme rate of fire, and a large magazine size. Inaccurate unless aiming down sights and firing in short bursts.",
+    "displayName": "Copper Drumroll",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Founders_Soldier_Weapon_SR",
@@ -666,6 +856,8 @@
   },
   "CardPack:cardpack_founders_soldier_weapon_vr": {
     "choice": false,
+    "description": "Assault Weapon: Light Machine Gun. A heavy weapon with high damage, an extreme rate of fire, and a large magazine size. Inaccurate unless aiming down sights and firing in short bursts.",
+    "displayName": "Copper Drumroll",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Founders_Soldier_Weapon_VR",
@@ -673,6 +865,8 @@
   },
   "CardPack:cardpack_founders_starterweapons_bundle": {
     "choice": false,
+    "description": "Assault Weapon: Fully Automatic. Flexible assault rifle capable of handling all types of combat scenarios. High rate of fire with solid accuracy when aiming down sights and firing in controlled bursts.",
+    "displayName": "Copper Breacher",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Founders_StarterWeapon_Bundle",
@@ -680,6 +874,8 @@
   },
   "CardPack:cardpack_gold": {
     "choice": false,
+    "description": "Full of the best stuff.",
+    "displayName": "Gold Pack",
     "displayRarityLevel": 2,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Gold",
@@ -687,6 +883,8 @@
   },
   "CardPack:cardpack_gold_halloween": {
     "choice": false,
+    "description": "Full of the best stuff.",
+    "displayName": "Gold Pack",
     "displayRarityLevel": 2,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Gold_Halloween",
@@ -694,6 +892,8 @@
   },
   "CardPack:cardpack_gold_melee": {
     "choice": false,
+    "description": "Full of the best stuff.",
+    "displayName": "Gold Melee Pack",
     "displayRarityLevel": 2,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Gold_Melee",
@@ -701,6 +901,8 @@
   },
   "CardPack:cardpack_gold_personnel": {
     "choice": false,
+    "description": "Full of the best stuff.",
+    "displayName": "Gold People Llama",
     "displayRarityLevel": 2,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Gold_Personnel",
@@ -708,6 +910,8 @@
   },
   "CardPack:cardpack_gold_ranged": {
     "choice": false,
+    "description": "Full of the best stuff.",
+    "displayName": "Gold Ranged Weapons Pack",
     "displayRarityLevel": 2,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Gold_Ranged",
@@ -715,6 +919,8 @@
   },
   "CardPack:cardpack_gold_traps": {
     "choice": false,
+    "description": "Full of the best stuff.",
+    "displayName": "Gold Trap Pack",
     "displayRarityLevel": 2,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Gold_Traps",
@@ -722,6 +928,8 @@
   },
   "CardPack:cardpack_gold_weapons": {
     "choice": false,
+    "description": "Full of the best stuff.",
+    "displayName": "Gold Weapons Pack",
     "displayRarityLevel": 2,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Gold_Weapons",
@@ -729,6 +937,8 @@
   },
   "CardPack:cardpack_gold_xp": {
     "choice": false,
+    "description": "A pack that\u0027s completely brimming with crew and schematic XP!",
+    "displayName": "Gold XP Candy Pack",
     "displayRarityLevel": 2,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Gold_XP",
@@ -736,6 +946,8 @@
   },
   "CardPack:cardpack_hero_commando_r": {
     "choice": false,
+    "description": "One random hero.",
+    "displayName": "Rare Soldier",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Hero_Commando_R",
@@ -743,6 +955,8 @@
   },
   "CardPack:cardpack_hero_commando_sr": {
     "choice": false,
+    "description": "One random hero of Legendary or Mythic rarity.",
+    "displayName": "Legendary Soldier",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Hero_Commando_SR",
@@ -750,6 +964,8 @@
   },
   "CardPack:cardpack_hero_commando_uc": {
     "choice": false,
+    "description": "One random hero.",
+    "displayName": "Uncommon Soldier",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Hero_Commando_UC",
@@ -757,6 +973,8 @@
   },
   "CardPack:cardpack_hero_commando_vr": {
     "choice": false,
+    "description": "One random hero.",
+    "displayName": "Epic Soldier",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Hero_Commando_VR",
@@ -764,6 +982,8 @@
   },
   "CardPack:cardpack_hero_constructor_r": {
     "choice": false,
+    "description": "One random hero.",
+    "displayName": "Rare Constructor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Hero_Constructor_R",
@@ -771,6 +991,8 @@
   },
   "CardPack:cardpack_hero_constructor_sr": {
     "choice": false,
+    "description": "One random hero of Legendary or Mythic rarity.",
+    "displayName": "Legendary Constructor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Hero_Constructor_SR",
@@ -778,6 +1000,8 @@
   },
   "CardPack:cardpack_hero_constructor_uc": {
     "choice": false,
+    "description": "One random hero.",
+    "displayName": "Uncommon Constructor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Hero_Constructor_UC",
@@ -785,6 +1009,8 @@
   },
   "CardPack:cardpack_hero_constructor_vr": {
     "choice": false,
+    "description": "One random hero.",
+    "displayName": "Epic Constructor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Hero_Constructor_VR",
@@ -792,6 +1018,8 @@
   },
   "CardPack:cardpack_hero_ninja_r": {
     "choice": false,
+    "description": "One random hero.",
+    "displayName": "Rare Ninja",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Hero_Ninja_R",
@@ -799,6 +1027,8 @@
   },
   "CardPack:cardpack_hero_ninja_sr": {
     "choice": false,
+    "description": "One random hero of Legendary or Mythic rarity.",
+    "displayName": "Legendary Ninja",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Hero_Ninja_SR",
@@ -806,6 +1036,8 @@
   },
   "CardPack:cardpack_hero_ninja_uc": {
     "choice": false,
+    "description": "One random hero.",
+    "displayName": "Uncommon Ninja",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Hero_Ninja_UC",
@@ -813,6 +1045,8 @@
   },
   "CardPack:cardpack_hero_ninja_vr": {
     "choice": false,
+    "description": "One random hero.",
+    "displayName": "Epic Ninja",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Hero_Ninja_VR",
@@ -820,6 +1054,8 @@
   },
   "CardPack:cardpack_hero_outlander_r": {
     "choice": false,
+    "description": "One random hero.",
+    "displayName": "Rare Outlander",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Hero_Outlander_R",
@@ -827,6 +1063,8 @@
   },
   "CardPack:cardpack_hero_outlander_sr": {
     "choice": false,
+    "description": "One random hero of Legendary or Mythic rarity.",
+    "displayName": "Legendary Outlander",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Hero_Outlander_SR",
@@ -834,6 +1072,8 @@
   },
   "CardPack:cardpack_hero_outlander_uc": {
     "choice": false,
+    "description": "One random hero.",
+    "displayName": "Uncommon Outlander",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Hero_Outlander_UC",
@@ -841,6 +1081,8 @@
   },
   "CardPack:cardpack_hero_outlander_vr": {
     "choice": false,
+    "description": "One random hero.",
+    "displayName": "Epic Outlander",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Hero_Outlander_VR",
@@ -848,6 +1090,8 @@
   },
   "CardPack:cardpack_hero_r": {
     "choice": false,
+    "description": "One random hero.",
+    "displayName": "Rare Hero",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Hero_R",
@@ -855,6 +1099,8 @@
   },
   "CardPack:cardpack_hero_sr": {
     "choice": false,
+    "description": "One random hero of Legendary or Mythic rarity.",
+    "displayName": "Legendary Hero",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Hero_SR",
@@ -862,6 +1108,8 @@
   },
   "CardPack:cardpack_hero_uc": {
     "choice": false,
+    "description": "One random hero.",
+    "displayName": "Uncommon Hero",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Hero_UC",
@@ -869,6 +1117,8 @@
   },
   "CardPack:cardpack_hero_vr": {
     "choice": false,
+    "description": "One random hero.",
+    "displayName": "Epic Hero",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Hero_VR",
@@ -876,6 +1126,8 @@
   },
   "CardPack:cardpack_jackpot": {
     "choice": false,
+    "description": "Contains a wide range of valuable items.",
+    "displayName": "Legendary Troll Stash",
     "displayRarityLevel": 2,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Jackpot",
@@ -883,6 +1135,8 @@
   },
   "CardPack:cardpack_jackpot_collectionbook": {
     "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Jackpot Pack",
     "displayRarityLevel": 2,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Jackpot_CollectionBook",
@@ -890,6 +1144,8 @@
   },
   "CardPack:cardpack_jackpot_super": {
     "choice": false,
+    "description": "Months worth of troll loot hoarding in one convenient package!",
+    "displayName": "Legendary Troll Loot Truck",
     "displayRarityLevel": 2,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Jackpot_Super",
@@ -897,6 +1153,8 @@
   },
   "CardPack:cardpack_manager_c": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Uncommon Lead Survivor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_C",
@@ -904,6 +1162,8 @@
   },
   "CardPack:cardpack_manager_doctor_r": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Epic Doctor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_Doctor_R",
@@ -911,6 +1171,8 @@
   },
   "CardPack:cardpack_manager_doctor_sr": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Mythic Doctor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_Doctor_SR",
@@ -918,6 +1180,8 @@
   },
   "CardPack:cardpack_manager_doctor_vr": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Legendary Doctor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_Doctor_VR",
@@ -925,6 +1189,8 @@
   },
   "CardPack:cardpack_manager_engineer_r": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Epic Engineer",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_Engineer_R",
@@ -932,6 +1198,8 @@
   },
   "CardPack:cardpack_manager_engineer_sr": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Mythic Engineer",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_Engineer_SR",
@@ -939,6 +1207,8 @@
   },
   "CardPack:cardpack_manager_engineer_vr": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Legendary Engineer",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_Engineer_VR",
@@ -946,6 +1216,8 @@
   },
   "CardPack:cardpack_manager_explorer_r": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Epic Explorer",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_Explorer_R",
@@ -953,6 +1225,8 @@
   },
   "CardPack:cardpack_manager_explorer_sr": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Mythic Explorer",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_Explorer_SR",
@@ -960,6 +1234,8 @@
   },
   "CardPack:cardpack_manager_explorer_vr": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Legendary Explorer",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_Explorer_VR",
@@ -967,6 +1243,8 @@
   },
   "CardPack:cardpack_manager_gadgeteer_r": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Epic Gadgeteer",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_Gadgeteer_R",
@@ -974,6 +1252,8 @@
   },
   "CardPack:cardpack_manager_gadgeteer_sr": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Mythic Gadgeteer",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_Gadgeteer_SR",
@@ -981,6 +1261,8 @@
   },
   "CardPack:cardpack_manager_gadgeteer_vr": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Legendary Gadgeteer",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_Gadgeteer_VR",
@@ -988,6 +1270,8 @@
   },
   "CardPack:cardpack_manager_inventor_r": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Epic Inventor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_Inventor_R",
@@ -995,6 +1279,8 @@
   },
   "CardPack:cardpack_manager_inventor_sr": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Mythic Inventor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_Inventor_SR",
@@ -1002,6 +1288,8 @@
   },
   "CardPack:cardpack_manager_inventor_vr": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Legendary Inventor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_Inventor_VR",
@@ -1009,6 +1297,8 @@
   },
   "CardPack:cardpack_manager_martialartist_r": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Epic Martial Artist",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_MartialArtist_R",
@@ -1016,6 +1306,8 @@
   },
   "CardPack:cardpack_manager_martialartist_sr": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Mythic Martial Artist",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_MartialArtist_SR",
@@ -1023,6 +1315,8 @@
   },
   "CardPack:cardpack_manager_martialartist_vr": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Legendary Martial Artist",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_MartialArtist_VR",
@@ -1030,6 +1324,8 @@
   },
   "CardPack:cardpack_manager_r": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Epic Lead Survivor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_R",
@@ -1037,6 +1333,8 @@
   },
   "CardPack:cardpack_manager_soldier_r": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Epic Marksman",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_Soldier_R",
@@ -1044,6 +1342,8 @@
   },
   "CardPack:cardpack_manager_soldier_sr": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Mythic Marksman",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_Soldier_SR",
@@ -1051,6 +1351,8 @@
   },
   "CardPack:cardpack_manager_soldier_vr": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Legendary Marksman",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_Soldier_VR",
@@ -1058,6 +1360,8 @@
   },
   "CardPack:cardpack_manager_sr": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Mythic Lead Survivor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_SR",
@@ -1065,6 +1369,8 @@
   },
   "CardPack:cardpack_manager_trainer_r": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Epic Personal Trainer",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_Trainer_R",
@@ -1072,6 +1378,8 @@
   },
   "CardPack:cardpack_manager_trainer_sr": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Mythic Personal Trainer",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_Trainer_SR",
@@ -1079,6 +1387,8 @@
   },
   "CardPack:cardpack_manager_trainer_vr": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Legendary Personal Trainer",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_Trainer_VR",
@@ -1086,6 +1396,8 @@
   },
   "CardPack:cardpack_manager_uc": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Rare Lead Survivor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_UC",
@@ -1093,6 +1405,8 @@
   },
   "CardPack:cardpack_manager_vr": {
     "choice": false,
+    "description": "One random lead survivor.",
+    "displayName": "Legendary Lead Survivor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Manager_VR",
@@ -1100,6 +1414,8 @@
   },
   "CardPack:cardpack_melee_axe_c": {
     "choice": false,
+    "description": "One random axe weapon schematic.",
+    "displayName": "Common Axe Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Axe_C",
@@ -1107,6 +1423,8 @@
   },
   "CardPack:cardpack_melee_axe_r": {
     "choice": false,
+    "description": "One random axe weapon schematic.",
+    "displayName": "Rare Axe Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Axe_R",
@@ -1114,6 +1432,8 @@
   },
   "CardPack:cardpack_melee_axe_sr": {
     "choice": false,
+    "description": "One random axe weapon schematic.",
+    "displayName": "Legendary Axe Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Axe_SR",
@@ -1121,6 +1441,8 @@
   },
   "CardPack:cardpack_melee_axe_uc": {
     "choice": false,
+    "description": "One random axe weapon schematic.",
+    "displayName": "Uncommon Axe Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Axe_UC",
@@ -1128,6 +1450,8 @@
   },
   "CardPack:cardpack_melee_axe_vr": {
     "choice": false,
+    "description": "One random axe weapon schematic.",
+    "displayName": "Epic Axe Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Axe_VR",
@@ -1135,6 +1459,8 @@
   },
   "CardPack:cardpack_melee_c": {
     "choice": false,
+    "description": "One random melee weapon schematic.",
+    "displayName": "Common Melee Weapon Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_C",
@@ -1142,6 +1468,8 @@
   },
   "CardPack:cardpack_melee_club_c": {
     "choice": false,
+    "description": "One random club weapon schematic.",
+    "displayName": "Common Club Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Club_C",
@@ -1149,6 +1477,8 @@
   },
   "CardPack:cardpack_melee_club_r": {
     "choice": false,
+    "description": "One random club weapon schematic.",
+    "displayName": "Rare Club Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Club_R",
@@ -1156,6 +1486,8 @@
   },
   "CardPack:cardpack_melee_club_sr": {
     "choice": false,
+    "description": "One random club weapon schematic.",
+    "displayName": "Legendary Club Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Club_SR",
@@ -1163,6 +1495,8 @@
   },
   "CardPack:cardpack_melee_club_uc": {
     "choice": false,
+    "description": "One random club weapon schematic.",
+    "displayName": "Uncommon Club Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Club_UC",
@@ -1170,6 +1504,8 @@
   },
   "CardPack:cardpack_melee_club_vr": {
     "choice": false,
+    "description": "One random club weapon schematic.",
+    "displayName": "Epic Club Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Club_VR",
@@ -1177,6 +1513,8 @@
   },
   "CardPack:cardpack_melee_r": {
     "choice": false,
+    "description": "One random melee weapon schematic.",
+    "displayName": "Rare Melee Weapon Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_R",
@@ -1184,6 +1522,8 @@
   },
   "CardPack:cardpack_melee_scythe_c": {
     "choice": false,
+    "description": "One random scythe weapon schematic.",
+    "displayName": "Common Scythe Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Scythe_C",
@@ -1191,6 +1531,8 @@
   },
   "CardPack:cardpack_melee_scythe_r": {
     "choice": false,
+    "description": "One random scythe weapon schematic.",
+    "displayName": "Rare Scythe Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Scythe_R",
@@ -1198,6 +1540,8 @@
   },
   "CardPack:cardpack_melee_scythe_sr": {
     "choice": false,
+    "description": "One random scythe weapon schematic.",
+    "displayName": "Legendary Scythe Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Scythe_SR",
@@ -1205,6 +1549,8 @@
   },
   "CardPack:cardpack_melee_scythe_uc": {
     "choice": false,
+    "description": "One random scythe weapon schematic.",
+    "displayName": "Uncommon Scythe Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Scythe_UC",
@@ -1212,6 +1558,8 @@
   },
   "CardPack:cardpack_melee_scythe_vr": {
     "choice": false,
+    "description": "One random scythe weapon schematic.",
+    "displayName": "Epic Scythe Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Scythe_VR",
@@ -1219,6 +1567,8 @@
   },
   "CardPack:cardpack_melee_spear_c": {
     "choice": false,
+    "description": "One random spear weapon schematic.",
+    "displayName": "Common Spear Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Spear_C",
@@ -1226,6 +1576,8 @@
   },
   "CardPack:cardpack_melee_spear_r": {
     "choice": false,
+    "description": "One random spear weapon schematic.",
+    "displayName": "Rare Spear Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Spear_R",
@@ -1233,6 +1585,8 @@
   },
   "CardPack:cardpack_melee_spear_sr": {
     "choice": false,
+    "description": "One random spear weapon schematic.",
+    "displayName": "Legendary Spear Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Spear_SR",
@@ -1240,6 +1594,8 @@
   },
   "CardPack:cardpack_melee_spear_uc": {
     "choice": false,
+    "description": "One random spear weapon schematic.",
+    "displayName": "Uncommon Spear Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Spear_UC",
@@ -1247,6 +1603,8 @@
   },
   "CardPack:cardpack_melee_spear_vr": {
     "choice": false,
+    "description": "One random spear weapon schematic.",
+    "displayName": "Epic Spear Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Spear_VR",
@@ -1254,6 +1612,8 @@
   },
   "CardPack:cardpack_melee_sr": {
     "choice": false,
+    "description": "One random melee weapon schematic.",
+    "displayName": "Legendary Melee Weapon Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_SR",
@@ -1261,6 +1621,8 @@
   },
   "CardPack:cardpack_melee_sword_c": {
     "choice": false,
+    "description": "One random sword weapon schematic.",
+    "displayName": "Common Sword Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Sword_C",
@@ -1268,6 +1630,8 @@
   },
   "CardPack:cardpack_melee_sword_r": {
     "choice": false,
+    "description": "One random sword weapon schematic.",
+    "displayName": "Rare Sword Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Sword_R",
@@ -1275,6 +1639,8 @@
   },
   "CardPack:cardpack_melee_sword_sr": {
     "choice": false,
+    "description": "One random sword weapon schematic.",
+    "displayName": "Legendary Sword Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Sword_SR",
@@ -1282,6 +1648,8 @@
   },
   "CardPack:cardpack_melee_sword_uc": {
     "choice": false,
+    "description": "One random sword weapon schematic.",
+    "displayName": "Uncommon Sword Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Sword_UC",
@@ -1289,6 +1657,8 @@
   },
   "CardPack:cardpack_melee_sword_vr": {
     "choice": false,
+    "description": "One random sword weapon schematic.",
+    "displayName": "Epic Sword Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Sword_VR",
@@ -1296,6 +1666,8 @@
   },
   "CardPack:cardpack_melee_tool_c": {
     "choice": false,
+    "description": "One random tool weapon schematic.",
+    "displayName": "Common Tool Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Tool_C",
@@ -1303,6 +1675,8 @@
   },
   "CardPack:cardpack_melee_tool_r": {
     "choice": false,
+    "description": "One random tool weapon schematic.",
+    "displayName": "Rare Tool Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Tool_R",
@@ -1310,6 +1684,8 @@
   },
   "CardPack:cardpack_melee_tool_sr": {
     "choice": false,
+    "description": "One random tool weapon schematic.",
+    "displayName": "Legendary Tool Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Tool_SR",
@@ -1317,6 +1693,8 @@
   },
   "CardPack:cardpack_melee_tool_uc": {
     "choice": false,
+    "description": "One random tool weapon schematic.",
+    "displayName": "Uncommon Tool Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Tool_UC",
@@ -1324,6 +1702,8 @@
   },
   "CardPack:cardpack_melee_tool_vr": {
     "choice": false,
+    "description": "One random tool weapon schematic.",
+    "displayName": "Epic Tool Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_Tool_VR",
@@ -1331,6 +1711,8 @@
   },
   "CardPack:cardpack_melee_uc": {
     "choice": false,
+    "description": "One random melee weapon schematic.",
+    "displayName": "Uncommon Melee Weapon Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_UC",
@@ -1338,6 +1720,8 @@
   },
   "CardPack:cardpack_melee_vr": {
     "choice": false,
+    "description": "One random melee weapon schematic.",
+    "displayName": "Epic Melee Weapon Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Melee_VR",
@@ -1345,6 +1729,8 @@
   },
   "CardPack:cardpack_ranged_assault_c": {
     "choice": false,
+    "description": "One random assault weapon schematic.",
+    "displayName": "Common Assault Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_Assault_C",
@@ -1352,6 +1738,8 @@
   },
   "CardPack:cardpack_ranged_assault_r": {
     "choice": false,
+    "description": "One random assault weapon schematic.",
+    "displayName": "Rare Assault Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_Assault_R",
@@ -1359,6 +1747,8 @@
   },
   "CardPack:cardpack_ranged_assault_sr": {
     "choice": false,
+    "description": "One random assault weapon schematic.",
+    "displayName": "Legendary Assault Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_Assault_SR",
@@ -1366,6 +1756,8 @@
   },
   "CardPack:cardpack_ranged_assault_uc": {
     "choice": false,
+    "description": "One random assault weapon schematic.",
+    "displayName": "Uncommon Assault Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_Assault_UC",
@@ -1373,6 +1765,8 @@
   },
   "CardPack:cardpack_ranged_assault_vr": {
     "choice": false,
+    "description": "One random assault weapon schematic.",
+    "displayName": "Epic Assault Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_Assault_VR",
@@ -1380,6 +1774,8 @@
   },
   "CardPack:cardpack_ranged_c": {
     "choice": false,
+    "description": "One random ranged weapon schematic.",
+    "displayName": "Common Ranged Weapon Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_C",
@@ -1387,6 +1783,8 @@
   },
   "CardPack:cardpack_ranged_explosive_r": {
     "choice": false,
+    "description": "One random launcher schematic.",
+    "displayName": "Rare Launcher Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_Launcher_R",
@@ -1394,6 +1792,8 @@
   },
   "CardPack:cardpack_ranged_pistol_c": {
     "choice": false,
+    "description": "One random pistol schematic.",
+    "displayName": "Common Pistol Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_Pistol_C",
@@ -1401,6 +1801,8 @@
   },
   "CardPack:cardpack_ranged_pistol_r": {
     "choice": false,
+    "description": "One random pistol schematic.",
+    "displayName": "Rare Pistol Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_Pistol_R",
@@ -1408,6 +1810,8 @@
   },
   "CardPack:cardpack_ranged_pistol_sr": {
     "choice": false,
+    "description": "One random pistol schematic.",
+    "displayName": "Legendary Pistol Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_Pistol_SR",
@@ -1415,6 +1819,8 @@
   },
   "CardPack:cardpack_ranged_pistol_uc": {
     "choice": false,
+    "description": "One random pistol schematic.",
+    "displayName": "Uncommon Pistol Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_Pistol_UC",
@@ -1422,6 +1828,8 @@
   },
   "CardPack:cardpack_ranged_pistol_vr": {
     "choice": false,
+    "description": "One random pistol schematic.",
+    "displayName": "Epic Pistol Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_Pistol_VR",
@@ -1429,6 +1837,8 @@
   },
   "CardPack:cardpack_ranged_r": {
     "choice": false,
+    "description": "One random ranged weapon schematic.",
+    "displayName": "Rare Ranged Weapon Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_R",
@@ -1436,6 +1846,8 @@
   },
   "CardPack:cardpack_ranged_shotgun_c": {
     "choice": false,
+    "description": "One random shotgun schematic.",
+    "displayName": "Common Shotgun Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_Shotgun_C",
@@ -1443,6 +1855,8 @@
   },
   "CardPack:cardpack_ranged_shotgun_r": {
     "choice": false,
+    "description": "One random shotgun schematic.",
+    "displayName": "Rare Shotgun Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_Shotgun_R",
@@ -1450,6 +1864,8 @@
   },
   "CardPack:cardpack_ranged_shotgun_sr": {
     "choice": false,
+    "description": "One random shotgun schematic.",
+    "displayName": "Legendary Shotgun Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_Shotgun_SR",
@@ -1457,6 +1873,8 @@
   },
   "CardPack:cardpack_ranged_shotgun_uc": {
     "choice": false,
+    "description": "One random shotgun schematic.",
+    "displayName": "Uncommon Shotgun Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_Shotgun_UC",
@@ -1464,6 +1882,8 @@
   },
   "CardPack:cardpack_ranged_shotgun_vr": {
     "choice": false,
+    "description": "One random shotgun schematic.",
+    "displayName": "Epic Shotgun Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_Shotgun_VR",
@@ -1471,6 +1891,8 @@
   },
   "CardPack:cardpack_ranged_sniper_c": {
     "choice": false,
+    "description": "One random sniper rifle schematic.",
+    "displayName": "Common Sniper Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_Sniper_C",
@@ -1478,6 +1900,8 @@
   },
   "CardPack:cardpack_ranged_sniper_r": {
     "choice": false,
+    "description": "One random sniper rifle schematic.",
+    "displayName": "Rare Sniper Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_Sniper_R",
@@ -1485,6 +1909,8 @@
   },
   "CardPack:cardpack_ranged_sniper_sr": {
     "choice": false,
+    "description": "One random sniper rifle schematic.",
+    "displayName": "Legendary Sniper Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_Sniper_SR",
@@ -1492,6 +1918,8 @@
   },
   "CardPack:cardpack_ranged_sniper_uc": {
     "choice": false,
+    "description": "One random sniper rifle schematic.",
+    "displayName": "Uncommon Sniper Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_Sniper_UC",
@@ -1499,6 +1927,8 @@
   },
   "CardPack:cardpack_ranged_sniper_vr": {
     "choice": false,
+    "description": "One random sniper rifle schematic.",
+    "displayName": "Epic Sniper Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_Sniper_VR",
@@ -1506,6 +1936,8 @@
   },
   "CardPack:cardpack_ranged_sr": {
     "choice": false,
+    "description": "One random ranged weapon schematic.",
+    "displayName": "Legendary Ranged Weapon Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_SR",
@@ -1513,6 +1945,8 @@
   },
   "CardPack:cardpack_ranged_uc": {
     "choice": false,
+    "description": "One random ranged weapon schematic.",
+    "displayName": "Uncommon Ranged Weapon Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_UC",
@@ -1520,6 +1954,8 @@
   },
   "CardPack:cardpack_ranged_vr": {
     "choice": false,
+    "description": "One random ranged weapon schematic.",
+    "displayName": "Epic Ranged Weapon Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Ranged_VR",
@@ -1527,6 +1963,8 @@
   },
   "CardPack:cardpack_rare_heroes": {
     "choice": false,
+    "description": "A special llama with an assortment of rare heroes. Contains 8 shrink-wrapped champions!",
+    "displayName": "Super Hero Llama",
     "displayRarityLevel": 2,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Rare_Heroes",
@@ -1534,6 +1972,8 @@
   },
   "CardPack:cardpack_rare_melee": {
     "choice": false,
+    "description": "A special llama containing rare melee weapons, including at least one masterwork or better! Contains 5 drool-worthy items.",
+    "displayName": "Super Melee Pack",
     "displayRarityLevel": 2,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Rare_Melee",
@@ -1541,6 +1981,8 @@
   },
   "CardPack:cardpack_rare_personnel": {
     "choice": false,
+    "description": "A special llama containing rare survivors, including at least one Seasoned Lead! Contains 10 tightly packed people.",
+    "displayName": "Super People Llama",
     "displayRarityLevel": 2,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Rare_Personnel",
@@ -1548,6 +1990,8 @@
   },
   "CardPack:cardpack_rare_ranged": {
     "choice": false,
+    "description": "A special llama containing rare ranged weapons, including at least one masterwork or better! Contains 5 drool-worthy items.",
+    "displayName": "Super Ranged Pack",
     "displayRarityLevel": 2,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Rare_Ranged",
@@ -1555,6 +1999,8 @@
   },
   "CardPack:cardpack_schematic_c": {
     "choice": false,
+    "description": "One random schematic.",
+    "displayName": "Common Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Schematic_C",
@@ -1562,6 +2008,8 @@
   },
   "CardPack:cardpack_schematic_r": {
     "choice": false,
+    "description": "One random schematic.",
+    "displayName": "Rare Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Schematic_R",
@@ -1569,6 +2017,8 @@
   },
   "CardPack:cardpack_schematic_sr": {
     "choice": false,
+    "description": "One random schematic.",
+    "displayName": "Legendary Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Schematic_SR",
@@ -1576,6 +2026,8 @@
   },
   "CardPack:cardpack_schematic_uc": {
     "choice": false,
+    "description": "One random schematic.",
+    "displayName": "Uncommon Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Schematic_UC",
@@ -1583,6 +2035,8 @@
   },
   "CardPack:cardpack_schematic_vr": {
     "choice": false,
+    "description": "One random schematic.",
+    "displayName": "Epic Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Schematic_VR",
@@ -1590,6 +2044,8 @@
   },
   "CardPack:cardpack_silver": {
     "choice": false,
+    "description": "Full of high quality stuff.",
+    "displayName": "Silver Pack",
     "displayRarityLevel": 1,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Silver",
@@ -1597,6 +2053,8 @@
   },
   "CardPack:cardpack_silver_collectionbook": {
     "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Upgrade Pack",
     "displayRarityLevel": 1,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Silver_CollectionBook",
@@ -1604,6 +2062,8 @@
   },
   "CardPack:cardpack_silver_halloween": {
     "choice": false,
+    "description": "Full of high quality stuff.",
+    "displayName": "Silver Pack",
     "displayRarityLevel": 1,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Silver_Halloween",
@@ -1611,6 +2071,8 @@
   },
   "CardPack:cardpack_silver_melee": {
     "choice": false,
+    "description": "Full of high quality stuff.",
+    "displayName": "Silver Melee Pack",
     "displayRarityLevel": 1,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Gold_Melee",
@@ -1618,6 +2080,8 @@
   },
   "CardPack:cardpack_silver_personnel": {
     "choice": false,
+    "description": "Full of high quality stuff.",
+    "displayName": "Silver Survivor Llama",
     "displayRarityLevel": 1,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Silver_Personnel",
@@ -1625,6 +2089,8 @@
   },
   "CardPack:cardpack_silver_ranged": {
     "choice": false,
+    "description": "Full of high quality stuff.",
+    "displayName": "Silver Ranged Weapons Pack",
     "displayRarityLevel": 1,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Silver_Ranged",
@@ -1632,6 +2098,8 @@
   },
   "CardPack:cardpack_silver_traps": {
     "choice": false,
+    "description": "Full of high quality stuff.",
+    "displayName": "Silver Trap Pack",
     "displayRarityLevel": 1,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Silver_Traps",
@@ -1639,6 +2107,8 @@
   },
   "CardPack:cardpack_silver_weapons": {
     "choice": false,
+    "description": "Full of high quality stuff.",
+    "displayName": "Silver Weapons Pack",
     "displayRarityLevel": 1,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Silver_Weapons",
@@ -1646,6 +2116,8 @@
   },
   "CardPack:cardpack_silver_xp": {
     "choice": false,
+    "description": "A pack that\u0027s completely brimming with crew and schematic XP!",
+    "displayName": "Silver XP Candy Pack",
     "displayRarityLevel": 1,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Silver_XP",
@@ -1653,6 +2125,8 @@
   },
   "CardPack:cardpack_starter_assault_auto_r": {
     "choice": false,
+    "description": "Assault Weapon: Fully Automatic. Flexible assault rifle capable of handling all types of combat scenarios. High rate of fire with solid accuracy when aiming down sights and firing in controlled bursts.",
+    "displayName": "Copper Breacher",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Starter_Assault_Auto_R",
@@ -1660,6 +2134,8 @@
   },
   "CardPack:cardpack_starter_edged_sword_medium_r": {
     "choice": false,
+    "description": "Sword: Medium. Uses a fast attack speed to deal high sustained damage, with low impact. Lunge: Heavy attack that leaps forward, dealing high damage to targets in a narrow cone.",
+    "displayName": "Copper Shadow Blade",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Starter_Edged_Sword_Medium_R",
@@ -1667,6 +2143,8 @@
   },
   "CardPack:cardpack_starter_floor_spikes_r": {
     "choice": false,
+    "description": "Hits all enemies on trap when triggered doing a medium amount of damage and impact.",
+    "displayName": "Retractable Floor Spikes",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Starter_Floor_Spikes_R",
@@ -1674,6 +2152,8 @@
   },
   "CardPack:cardpack_starter_shotgun_standard_r": {
     "choice": false,
+    "description": "Shotgun: Pump-Action. Deals high damage and knockback at a moderate fire rate. Short range and limited magazine size.",
+    "displayName": "Copper Crusader",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Starter_Shotgun_Standard_R",
@@ -1681,6 +2161,8 @@
   },
   "CardPack:cardpack_starter_sniper_boltaction_scope_r": {
     "choice": false,
+    "description": "Sniper Rifle: Bolt-Action. Powerful and accurate rifle with a bolt-action mechanism that results in a reliable but slow rate of fire. Shots can pierce through multiple enemies.",
+    "displayName": "Copper Scoped Bullseye",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Starter_Sniper_BoltAction_Scope_R",
@@ -1688,6 +2170,8 @@
   },
   "CardPack:cardpack_survivor_c": {
     "choice": false,
+    "description": "One random survivor or defender.",
+    "displayName": "Common Person",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Survivor_C",
@@ -1695,6 +2179,8 @@
   },
   "CardPack:cardpack_survivor_r": {
     "choice": false,
+    "description": "One random survivor, lead survivor, or defender.",
+    "displayName": "Rare Person",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Survivor_R",
@@ -1702,6 +2188,8 @@
   },
   "CardPack:cardpack_survivor_sr": {
     "choice": false,
+    "description": "One random survivor, lead survivor, or defender.",
+    "displayName": "Legendary Person",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Survivor_SR",
@@ -1709,6 +2197,8 @@
   },
   "CardPack:cardpack_survivor_uc": {
     "choice": false,
+    "description": "One random survivor, lead survivor, or defender.",
+    "displayName": "Uncommon Person",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Survivor_UC",
@@ -1716,6 +2206,8 @@
   },
   "CardPack:cardpack_survivor_vr": {
     "choice": false,
+    "description": "One random survivor, lead survivor, or defender.",
+    "displayName": "Epic Person",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Survivor_VR",
@@ -1723,6 +2215,8 @@
   },
   "CardPack:cardpack_trap_c": {
     "choice": false,
+    "description": "One random trap schematic.",
+    "displayName": "Common Trap Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Trap_C",
@@ -1730,6 +2224,8 @@
   },
   "CardPack:cardpack_trap_r": {
     "choice": false,
+    "description": "One random trap schematic.",
+    "displayName": "Rare Trap Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Trap_R",
@@ -1737,6 +2233,8 @@
   },
   "CardPack:cardpack_trap_sr": {
     "choice": false,
+    "description": "One random trap schematic.",
+    "displayName": "Legendary Trap Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Trap_SR",
@@ -1744,6 +2242,8 @@
   },
   "CardPack:cardpack_trap_uc": {
     "choice": false,
+    "description": "One random trap schematic.",
+    "displayName": "Uncommon Trap Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Trap_UC",
@@ -1751,6 +2251,8 @@
   },
   "CardPack:cardpack_trap_vr": {
     "choice": false,
+    "description": "One random trap schematic.",
+    "displayName": "Epic Trap Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Trap_VR",
@@ -1758,6 +2260,8 @@
   },
   "CardPack:cardpack_trapceilinggas_uc": {
     "choice": false,
+    "description": "One uncommon Ceiling Poison Gas trap schematic.",
+    "displayName": "Ceiling Poison Gas Trap Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Quest_TrapCeilingGas_UC",
@@ -1765,6 +2269,8 @@
   },
   "CardPack:cardpack_traps_collectionbook": {
     "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Trap Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Bronze_Traps",
@@ -1772,6 +2278,8 @@
   },
   "CardPack:cardpack_trapwalldarts_uc": {
     "choice": false,
+    "description": "One uncommon Wall Darts trap schematic.",
+    "displayName": "Wall Darts Trap Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Quest_TrapWallDarts_UC",
@@ -1779,6 +2287,8 @@
   },
   "CardPack:cardpack_weapon_c": {
     "choice": false,
+    "description": "One random ranged weapon schematic.",
+    "displayName": "Common Weapon Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Weapon_C",
@@ -1786,6 +2296,8 @@
   },
   "CardPack:cardpack_weapon_r": {
     "choice": false,
+    "description": "One random ranged weapon schematic.",
+    "displayName": "Rare Weapon Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Weapon_R",
@@ -1793,6 +2305,8 @@
   },
   "CardPack:cardpack_weapon_sr": {
     "choice": false,
+    "description": "One random ranged weapon schematic.",
+    "displayName": "Legendary Weapon Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Weapon_SR",
@@ -1800,6 +2314,8 @@
   },
   "CardPack:cardpack_weapon_uc": {
     "choice": false,
+    "description": "One random ranged weapon schematic.",
+    "displayName": "Uncommon Weapon Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Weapon_UC",
@@ -1807,6 +2323,8 @@
   },
   "CardPack:cardpack_weapon_vr": {
     "choice": false,
+    "description": "One random ranged weapon schematic.",
+    "displayName": "Epic Weapon Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Weapon_VR",
@@ -1814,6 +2332,8 @@
   },
   "CardPack:cardpack_weapons_collectionbook": {
     "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Weapon Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Bronze_Weapons",
@@ -1821,6 +2341,8 @@
   },
   "CardPack:cardpack_worker_c": {
     "choice": false,
+    "description": "One random survivor.",
+    "displayName": "Common Survivor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Worker_C",
@@ -1828,6 +2350,8 @@
   },
   "CardPack:cardpack_worker_r": {
     "choice": false,
+    "description": "One random survivor.",
+    "displayName": "Rare Survivor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Worker_R",
@@ -1835,6 +2359,8 @@
   },
   "CardPack:cardpack_worker_sr": {
     "choice": false,
+    "description": "One random survivor.",
+    "displayName": "Legendary Survivor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Worker_SR",
@@ -1842,6 +2368,8 @@
   },
   "CardPack:cardpack_worker_uc": {
     "choice": false,
+    "description": "One random survivor.",
+    "displayName": "Uncommon Survivor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Worker_UC",
@@ -1849,6 +2377,8 @@
   },
   "CardPack:cardpack_worker_vr": {
     "choice": false,
+    "description": "One random survivor.",
+    "displayName": "Epic Survivor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Generic_Worker_VR",
@@ -1856,6 +2386,8 @@
   },
   "CardPack:cardpack_wrapper_choice_test": {
     "choice": false,
+    "description": "Choose a random reward.",
+    "displayName": "Choice Pack (Test)",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Wrapper_Choice_Test",
@@ -1863,6 +2395,8 @@
   },
   "CardPack:cardpack_wrapper_choice_test_basic": {
     "choice": false,
+    "description": "Choose a random reward.",
+    "displayName": "Basic Choice Pack (Test)",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Wrapper_Choice_Test_Basic",
@@ -1870,6 +2404,8 @@
   },
   "CardPack:cardpack_wrapper_choice_test_multichoice": {
     "choice": false,
+    "description": "Choose a random reward.",
+    "displayName": "MultiChoice Pack (Test)",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Wrapper_Choice_Test_MultiChoice",
@@ -1877,6 +2413,8 @@
   },
   "CardPack:cardpack_wrapper_unresolvedchoice": {
     "choice": false,
+    "description": "A leftover choice card from a card pack. Go to the store to open it!",
+    "displayName": "Choice Card",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "",
@@ -1884,6 +2422,8 @@
   },
   "CardPack:ccp_halloween_heroes": {
     "choice": true,
+    "description": "One random hero.",
+    "displayName": "Halloween Hero",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Choice_Halloween_Heroes",
@@ -1891,6 +2431,8 @@
   },
   "CardPack:choicepack_generic": {
     "choice": true,
+    "description": "Decisions, decisions...",
+    "displayName": "Choice Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "CardPack_Bronze",
@@ -1898,6 +2440,8 @@
   },
   "CardPack:testcardpacklvl": {
     "choice": false,
+    "description": "Just a test pack of static \u002B random rewards",
+    "displayName": "Test Level Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "LevelUp_Account_03",
@@ -1905,6 +2449,8 @@
   },
   "CardPack:zcp_air_supplyrun_long_t02": {
     "choice": false,
+    "description": "Supplies gathered on the expedition.",
+    "displayName": "Supply Cache - Large",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Air_SupplyRun_Long_T02",
@@ -1912,6 +2458,8 @@
   },
   "CardPack:zcp_air_supplyrun_long_t03": {
     "choice": false,
+    "description": "Supplies gathered on the expedition.",
+    "displayName": "Supply Cache - Large",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Air_SupplyRun_Long_T03",
@@ -1919,6 +2467,8 @@
   },
   "CardPack:zcp_air_supplyrun_long_t04": {
     "choice": false,
+    "description": "Supplies gathered on the expedition.",
+    "displayName": "Supply Cache - Large",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Air_SupplyRun_Long_T04",
@@ -1926,6 +2476,8 @@
   },
   "CardPack:zcp_air_supplyrun_medium_t02": {
     "choice": false,
+    "description": "Supplies gathered on the expedition.",
+    "displayName": "Supply Cache - Medium",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Air_SupplyRun_Medium_T02",
@@ -1933,6 +2485,8 @@
   },
   "CardPack:zcp_air_survivorscouting_long_t02": {
     "choice": false,
+    "description": "Survivors rescued on an Expedition",
+    "displayName": "Rescued Survivors - Large",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Air_SurvivorScouting_Long_T02",
@@ -1940,6 +2494,8 @@
   },
   "CardPack:zcp_air_survivorscouting_long_t04": {
     "choice": false,
+    "description": "Survivors rescued on an Expedition",
+    "displayName": "Rescued Survivors - Large",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Air_SurvivorScouting_Long_T04",
@@ -1947,6 +2503,8 @@
   },
   "CardPack:zcp_air_survivorscouting_medium_t03": {
     "choice": false,
+    "description": "Survivors rescued on an Expedition",
+    "displayName": "Rescued Survivors - Medium",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Air_SurvivorScouting_Medium_T03",
@@ -1954,6 +2512,8 @@
   },
   "CardPack:zcp_choppingwood": {
     "choice": false,
+    "description": "Some Chopped wood from a lumberyard.",
+    "displayName": "Chopped Wood",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ChoppingWood",
@@ -1961,6 +2521,8 @@
   },
   "CardPack:zcp_crystal_quartz_extreme": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Occasionally found in caves and mountains.",
+    "displayName": "Quartz Crystal",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Crystal_Quartz_Extreme",
@@ -1968,6 +2530,8 @@
   },
   "CardPack:zcp_crystal_quartz_high": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Occasionally found in caves and mountains.",
+    "displayName": "Quartz Crystal",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Crystal_Quartz_High",
@@ -1975,6 +2539,8 @@
   },
   "CardPack:zcp_crystal_quartz_low": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Occasionally found in caves and mountains.",
+    "displayName": "Quartz Crystal",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Crystal_Quartz_Low",
@@ -1982,6 +2548,8 @@
   },
   "CardPack:zcp_crystal_quartz_medium": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Occasionally found in caves and mountains.",
+    "displayName": "Quartz Crystal",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Crystal_Quartz_Medium",
@@ -1989,6 +2557,8 @@
   },
   "CardPack:zcp_crystal_quartz_veryhigh": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Occasionally found in caves and mountains.",
+    "displayName": "Quartz Crystal",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Crystal_Quartz_VeryHigh",
@@ -1996,6 +2566,8 @@
   },
   "CardPack:zcp_crystal_quartz_verylow": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Occasionally found in caves and mountains.",
+    "displayName": "Quartz Crystal",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Crystal_Quartz_VeryLow",
@@ -2003,6 +2575,8 @@
   },
   "CardPack:zcp_crystal_shadowshard_high": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Occasionally found in caves and mountains. Common in Twine Peaks and rare in high end Canny Valley.",
+    "displayName": "Shadowshard Crystal",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Crystal_ShadowShard_High",
@@ -2010,6 +2584,8 @@
   },
   "CardPack:zcp_crystal_shadowshard_low": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Occasionally found in caves and mountains. Common in Twine Peaks and rare in high end Canny Valley.",
+    "displayName": "Shadowshard Crystal",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Crystal_ShadowShard_Low",
@@ -2017,6 +2593,8 @@
   },
   "CardPack:zcp_crystal_shadowshard_medium": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Occasionally found in caves and mountains. Common in Twine Peaks and rare in high end Canny Valley.",
+    "displayName": "Shadowshard Crystal",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Crystal_ShadowShard_Medium",
@@ -2024,6 +2602,8 @@
   },
   "CardPack:zcp_crystal_shadowshard_minimal": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Occasionally found in caves and mountains. Common in Twine Peaks and rare in high end Canny Valley.",
+    "displayName": "Shadowshard Crystal",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Crystal_ShadowShard_Minimal",
@@ -2031,6 +2611,8 @@
   },
   "CardPack:zcp_crystal_shadowshard_veryhigh": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Occasionally found in caves and mountains. Common in Twine Peaks and rare in high end Canny Valley.",
+    "displayName": "Shadowshard Crystal",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Crystal_ShadowShard_VeryHigh",
@@ -2038,6 +2620,8 @@
   },
   "CardPack:zcp_crystal_shadowshard_verylow": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Occasionally found in caves and mountains. Common in Twine Peaks and rare in high end Canny Valley.",
+    "displayName": "Shadowshard Crystal",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Crystal_ShadowShard_VeryLow",
@@ -2045,6 +2629,8 @@
   },
   "CardPack:zcp_crystal_sunbeam_minimal": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Occasionally found in caves and mountains. Rare in high end Twine Peaks.",
+    "displayName": "Sunbeam Crystal",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Crystal_Sunbeam_Minimal",
@@ -2052,6 +2638,8 @@
   },
   "CardPack:zcp_eldergamepayout_noscale": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your schematics Harder missions give significantly higher quantities of resources!",
+    "displayName": "Schematic XP",
     "displayRarityLevel": 0,
     "lootTier": 1,
     "lootTierGroup": "Neighborhood_Select",
@@ -2059,6 +2647,8 @@
   },
   "CardPack:zcp_expedition_craftingrun_long_t03": {
     "choice": false,
+    "description": "A collection of Crafting Supplies gathered on an Expedition",
+    "displayName": "Crafting Supplies - Large",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_CraftingRun_Long_T03",
@@ -2066,6 +2656,8 @@
   },
   "CardPack:zcp_expedition_craftingrun_long_t04": {
     "choice": false,
+    "description": "A collection of Crafting Supplies gathered on an Expedition",
+    "displayName": "Crafting Supplies - Large",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_CraftingRun_Long_T04",
@@ -2073,6 +2665,8 @@
   },
   "CardPack:zcp_expedition_craftingrun_medium_t01": {
     "choice": false,
+    "description": "A collection of Crafting Supplies gathered on an Expedition",
+    "displayName": "Crafting Supplies - Medium",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_CraftingRun_Medium_T01",
@@ -2080,6 +2674,8 @@
   },
   "CardPack:zcp_expedition_craftingrun_medium_t02": {
     "choice": false,
+    "description": "A collection of Crafting Supplies gathered on an Expedition",
+    "displayName": "Crafting Supplies - Medium",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_CraftingRun_Medium_T02",
@@ -2087,6 +2683,8 @@
   },
   "CardPack:zcp_expedition_craftingrun_medium_t03": {
     "choice": false,
+    "description": "A collection of Crafting Supplies gathered on an Expedition",
+    "displayName": "Crafting Supplies - Medium",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_CraftingRun_Medium_T03",
@@ -2094,6 +2692,8 @@
   },
   "CardPack:zcp_expedition_craftingrun_short_t01": {
     "choice": false,
+    "description": "A collection of Crafting Supplies gathered on an Expedition",
+    "displayName": "Crafting Supplies - Small",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_CraftingRun_Short_T01",
@@ -2101,6 +2701,8 @@
   },
   "CardPack:zcp_expedition_craftingrun_short_t02": {
     "choice": false,
+    "description": "A collection of Crafting Supplies gathered on an Expedition",
+    "displayName": "Crafting Supplies - Small",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_CraftingRun_Short_T02",
@@ -2108,6 +2710,8 @@
   },
   "CardPack:zcp_expedition_craftingrun_short_t03": {
     "choice": false,
+    "description": "A collection of Crafting Supplies gathered on an Expedition",
+    "displayName": "Crafting Supplies - Small",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_CraftingRun_Short_T03",
@@ -2115,6 +2719,8 @@
   },
   "CardPack:zcp_expedition_resourcerun_all_medium": {
     "choice": false,
+    "description": "Building materials gathered on Expedition.",
+    "displayName": "Resource Cache - Medium",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ResourceRun_All_Medium",
@@ -2122,6 +2728,8 @@
   },
   "CardPack:zcp_expedition_resourcerun_all_short": {
     "choice": false,
+    "description": "Building materials gathered on Expedition.",
+    "displayName": "Resource Cache - Small",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ResourceRun_All_Short",
@@ -2129,6 +2737,8 @@
   },
   "CardPack:zcp_expedition_resourcerun_metal_medium": {
     "choice": false,
+    "description": "Building materials gathered on Expedition.",
+    "displayName": "Metal Cache - Medium",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ResourceRun_Metal_Medium",
@@ -2136,6 +2746,8 @@
   },
   "CardPack:zcp_expedition_resourcerun_metal_short": {
     "choice": false,
+    "description": "Building materials gathered on Expedition.",
+    "displayName": "Metal Cache - Small",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ResourceRun_Metal_Short",
@@ -2143,6 +2755,8 @@
   },
   "CardPack:zcp_expedition_resourcerun_stone_medium": {
     "choice": false,
+    "description": "Building materials gathered on Expedition.",
+    "displayName": "Stone Cache - Medium",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ResourceRun_Stone_Medium",
@@ -2150,6 +2764,8 @@
   },
   "CardPack:zcp_expedition_resourcerun_stone_short": {
     "choice": false,
+    "description": "Building materials gathered on Expedition.",
+    "displayName": "Stone Cache - Small",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ResourceRun_Stone_Short",
@@ -2157,6 +2773,8 @@
   },
   "CardPack:zcp_expedition_resourcerun_wood_medium": {
     "choice": false,
+    "description": "Building materials gathered on Expedition.",
+    "displayName": "Wood Cache - Medium",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ResourceRun_Wood_Medium",
@@ -2164,6 +2782,8 @@
   },
   "CardPack:zcp_expedition_resourcerun_wood_short": {
     "choice": false,
+    "description": "Building materials gathered on Expedition.",
+    "displayName": "Wood Cache - Small",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ResourceRun_Wood_Short",
@@ -2171,6 +2791,8 @@
   },
   "CardPack:zcp_expedition_resourcerun_woodstone_medium": {
     "choice": false,
+    "description": "Building materials gathered on Expedition.",
+    "displayName": "Wood and Stone Cache - Medium",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ResourceRun_WoodStone_Medium",
@@ -2178,6 +2800,8 @@
   },
   "CardPack:zcp_expedition_resourcerun_woodstone_short": {
     "choice": false,
+    "description": "Building materials gathered on Expedition.",
+    "displayName": "Wood and Stone Cache - Small",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ResourceRun_WoodStone_Short",
@@ -2185,6 +2809,8 @@
   },
   "CardPack:zcp_expedition_slot1": {
     "choice": false,
+    "description": "Claim your free reward llama at the store.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ExpeditionTest_StandardExpedition",
@@ -2192,6 +2818,8 @@
   },
   "CardPack:zcp_expedition_slot2": {
     "choice": false,
+    "description": "Claim your free reward llama at the store.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ExpeditionTest_StandardExpedition",
@@ -2199,6 +2827,8 @@
   },
   "CardPack:zcp_expedition_slot3": {
     "choice": false,
+    "description": "Claim your free reward llama at the store.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ExpeditionTest_StandardExpedition",
@@ -2206,6 +2836,8 @@
   },
   "CardPack:zcp_expedition_slot4": {
     "choice": false,
+    "description": "Claim your free reward llama at the store.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ExpeditionTest_StandardExpedition",
@@ -2213,6 +2845,8 @@
   },
   "CardPack:zcp_expedition_slot5": {
     "choice": false,
+    "description": "Claim your free reward llama at the store.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ExpeditionTest_StandardExpedition",
@@ -2220,6 +2854,8 @@
   },
   "CardPack:zcp_expeditiongenerator_air_t02": {
     "choice": false,
+    "description": "Claim your free reward llama at the store.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ExpeditionGenerator_Air_T02",
@@ -2227,6 +2863,8 @@
   },
   "CardPack:zcp_expeditiongenerator_air_t03": {
     "choice": false,
+    "description": "Claim your free reward llama at the store.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ExpeditionGenerator_Air_T03",
@@ -2234,6 +2872,8 @@
   },
   "CardPack:zcp_expeditiongenerator_air_t04": {
     "choice": false,
+    "description": "Claim your free reward llama at the store.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ExpeditionGenerator_Air_T04",
@@ -2241,6 +2881,8 @@
   },
   "CardPack:zcp_expeditiongenerator_choppingwood_t00": {
     "choice": false,
+    "description": "Claim your free reward llama at the store.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ExpeditionGenerator_ChoppingWood_T00",
@@ -2248,6 +2890,8 @@
   },
   "CardPack:zcp_expeditiongenerator_land_t01": {
     "choice": false,
+    "description": "Claim your free reward llama at the store.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ExpeditionGenerator_Land_T01",
@@ -2255,6 +2899,8 @@
   },
   "CardPack:zcp_expeditiongenerator_land_t02": {
     "choice": false,
+    "description": "Claim your free reward llama at the store.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ExpeditionGenerator_Land_T02",
@@ -2262,6 +2908,8 @@
   },
   "CardPack:zcp_expeditiongenerator_land_t03": {
     "choice": false,
+    "description": "Claim your free reward llama at the store.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ExpeditionGenerator_Land_T03",
@@ -2269,6 +2917,8 @@
   },
   "CardPack:zcp_expeditiongenerator_land_t04": {
     "choice": false,
+    "description": "Claim your free reward llama at the store.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ExpeditionGenerator_Land_T04",
@@ -2276,6 +2926,8 @@
   },
   "CardPack:zcp_expeditiongenerator_miningore_t00": {
     "choice": false,
+    "description": "Claim your free reward llama at the store.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ExpeditionGenerator_MiningOre_T00",
@@ -2283,6 +2935,8 @@
   },
   "CardPack:zcp_expeditiongenerator_sea_t01": {
     "choice": false,
+    "description": "Claim your free reward llama at the store.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ExpeditionGenerator_Sea_T01",
@@ -2290,6 +2944,8 @@
   },
   "CardPack:zcp_expeditiongenerator_sea_t02": {
     "choice": false,
+    "description": "Claim your free reward llama at the store.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ExpeditionGenerator_Sea_T02",
@@ -2297,6 +2953,8 @@
   },
   "CardPack:zcp_expeditiongenerator_sea_t03": {
     "choice": false,
+    "description": "Claim your free reward llama at the store.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ExpeditionGenerator_Sea_T03",
@@ -2304,6 +2962,8 @@
   },
   "CardPack:zcp_expeditiongenerator_sea_t04": {
     "choice": false,
+    "description": "Claim your free reward llama at the store.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ExpeditionGenerator_Sea_T04",
@@ -2311,6 +2971,8 @@
   },
   "CardPack:zcp_expeditiontest_resourcerun": {
     "choice": false,
+    "description": "Claim your free reward llama at the store.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ExpeditionTest_ResourceRun",
@@ -2318,6 +2980,8 @@
   },
   "CardPack:zcp_expeditiontest_standardexpedition": {
     "choice": false,
+    "description": "Claim your free reward llama at the store.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ExpeditionTest_StandardExpedition",
@@ -2325,6 +2989,8 @@
   },
   "CardPack:zcp_expeditiontest_standardexpedition_time1": {
     "choice": false,
+    "description": "Claim your free reward llama at the store.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_ExpeditionTest_StandardExpedition",
@@ -2332,6 +2998,8 @@
   },
   "CardPack:zcp_expeditiontest_standardexpedition_time2": {
     "choice": false,
+    "description": "Claim your free reward llama at the store.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 1,
     "lootTierGroup": "ZCP_ExpeditionTest_StandardExpedition",
@@ -2339,6 +3007,8 @@
   },
   "CardPack:zcp_expeditiontest_standardexpedition_time3": {
     "choice": false,
+    "description": "Claim your free reward llama at the store.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 2,
     "lootTierGroup": "ZCP_ExpeditionTest_StandardExpedition",
@@ -2346,6 +3016,8 @@
   },
   "CardPack:zcp_heroxp_outpost_theater0": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your heroes. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Hero XP",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_HeroXP_Outpost",
@@ -2353,6 +3025,8 @@
   },
   "CardPack:zcp_heroxp_outpost_theater1": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your heroes. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Hero XP",
     "displayRarityLevel": 0,
     "lootTier": 1,
     "lootTierGroup": "ZCP_HeroXP_Outpost",
@@ -2360,6 +3034,8 @@
   },
   "CardPack:zcp_heroxp_outpost_theater2": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your heroes. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Hero XP",
     "displayRarityLevel": 0,
     "lootTier": 2,
     "lootTierGroup": "ZCP_HeroXP_Outpost",
@@ -2367,6 +3043,8 @@
   },
   "CardPack:zcp_heroxp_outpost_theater3": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your heroes. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Hero XP",
     "displayRarityLevel": 0,
     "lootTier": 3,
     "lootTierGroup": "ZCP_HeroXP_Outpost",
@@ -2374,6 +3052,8 @@
   },
   "CardPack:zcp_heroxp_outpost_theater4": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your heroes. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Hero XP",
     "displayRarityLevel": 0,
     "lootTier": 4,
     "lootTierGroup": "ZCP_HeroXP_Outpost",
@@ -2381,6 +3061,8 @@
   },
   "CardPack:zcp_heroxp_t01": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your heroes. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Hero XP",
     "displayRarityLevel": 0,
     "lootTier": 1,
     "lootTierGroup": "ZCP_HeroXP",
@@ -2388,6 +3070,8 @@
   },
   "CardPack:zcp_heroxp_t02": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your heroes. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Hero XP",
     "displayRarityLevel": 0,
     "lootTier": 2,
     "lootTierGroup": "ZCP_HeroXP",
@@ -2395,6 +3079,8 @@
   },
   "CardPack:zcp_heroxp_t03": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your heroes. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Hero XP",
     "displayRarityLevel": 0,
     "lootTier": 3,
     "lootTierGroup": "ZCP_HeroXP",
@@ -2402,6 +3088,8 @@
   },
   "CardPack:zcp_heroxp_t04": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your heroes. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Hero XP",
     "displayRarityLevel": 0,
     "lootTier": 4,
     "lootTierGroup": "ZCP_HeroXP",
@@ -2409,6 +3097,8 @@
   },
   "CardPack:zcp_heroxp_t05": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your heroes. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Hero XP",
     "displayRarityLevel": 0,
     "lootTier": 5,
     "lootTierGroup": "ZCP_HeroXP",
@@ -2416,6 +3106,8 @@
   },
   "CardPack:zcp_heroxp_t06": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your heroes. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Hero XP",
     "displayRarityLevel": 0,
     "lootTier": 6,
     "lootTierGroup": "ZCP_HeroXP",
@@ -2423,6 +3115,8 @@
   },
   "CardPack:zcp_heroxp_t07": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your heroes. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Hero XP",
     "displayRarityLevel": 0,
     "lootTier": 7,
     "lootTierGroup": "ZCP_HeroXP",
@@ -2430,6 +3124,8 @@
   },
   "CardPack:zcp_heroxp_t08": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your heroes. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Hero XP",
     "displayRarityLevel": 0,
     "lootTier": 8,
     "lootTierGroup": "ZCP_HeroXP",
@@ -2437,6 +3133,8 @@
   },
   "CardPack:zcp_heroxp_t09": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your heroes. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Hero XP",
     "displayRarityLevel": 0,
     "lootTier": 9,
     "lootTierGroup": "ZCP_HeroXP",
@@ -2444,6 +3142,8 @@
   },
   "CardPack:zcp_heroxp_t10": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your heroes. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Hero XP",
     "displayRarityLevel": 0,
     "lootTier": 10,
     "lootTierGroup": "ZCP_HeroXP",
@@ -2451,6 +3151,8 @@
   },
   "CardPack:zcp_heroxp_t11": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your heroes. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Hero XP",
     "displayRarityLevel": 0,
     "lootTier": 11,
     "lootTierGroup": "ZCP_HeroXP",
@@ -2458,6 +3160,8 @@
   },
   "CardPack:zcp_heroxp_t12": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your heroes. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Hero XP",
     "displayRarityLevel": 0,
     "lootTier": 12,
     "lootTierGroup": "ZCP_HeroXP",
@@ -2465,6 +3169,8 @@
   },
   "CardPack:zcp_heroxp_t13": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your heroes. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Hero XP",
     "displayRarityLevel": 0,
     "lootTier": 13,
     "lootTierGroup": "ZCP_HeroXP",
@@ -2472,6 +3178,8 @@
   },
   "CardPack:zcp_heroxp_t14": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your heroes. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Hero XP",
     "displayRarityLevel": 0,
     "lootTier": 14,
     "lootTierGroup": "ZCP_HeroXP",
@@ -2479,6 +3187,8 @@
   },
   "CardPack:zcp_heroxp_t15": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your heroes. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Hero XP",
     "displayRarityLevel": 0,
     "lootTier": 15,
     "lootTierGroup": "ZCP_HeroXP",
@@ -2486,6 +3196,8 @@
   },
   "CardPack:zcp_heroxp_t16": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your heroes. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Hero XP",
     "displayRarityLevel": 0,
     "lootTier": 16,
     "lootTierGroup": "ZCP_HeroXP",
@@ -2493,6 +3205,8 @@
   },
   "CardPack:zcp_heroxp_t17": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your heroes. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Hero XP",
     "displayRarityLevel": 0,
     "lootTier": 17,
     "lootTierGroup": "ZCP_HeroXP",
@@ -2500,6 +3214,8 @@
   },
   "CardPack:zcp_heroxp_t18": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your heroes. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Hero XP",
     "displayRarityLevel": 0,
     "lootTier": 18,
     "lootTierGroup": "ZCP_HeroXP",
@@ -2507,6 +3223,8 @@
   },
   "CardPack:zcp_heroxp_t19": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your heroes. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Hero XP",
     "displayRarityLevel": 0,
     "lootTier": 19,
     "lootTierGroup": "ZCP_HeroXP",
@@ -2514,6 +3232,8 @@
   },
   "CardPack:zcp_heroxp_t20": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your heroes. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Hero XP",
     "displayRarityLevel": 0,
     "lootTier": 20,
     "lootTierGroup": "ZCP_HeroXP",
@@ -2521,6 +3241,8 @@
   },
   "CardPack:zcp_improvised_r": {
     "choice": false,
+    "description": "Crafting ingredient. Occasionally found in chests and toolboxes.",
+    "displayName": "Rotating Gizmo",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Improvised_R",
@@ -2528,6 +3250,8 @@
   },
   "CardPack:zcp_improvised_vr": {
     "choice": false,
+    "description": "Crafting ingredient. Rarely found in strange places and chests.",
+    "displayName": "Active Powercell",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Improvised_VR",
@@ -2535,6 +3259,8 @@
   },
   "CardPack:zcp_miningore": {
     "choice": false,
+    "description": "Some mined stone from a quarry.",
+    "displayName": "Mined Stone",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_MiningOre",
@@ -2542,6 +3268,8 @@
   },
   "CardPack:zcp_mtx_10": {
     "choice": false,
+    "description": "Boosted V-bucks reward. You can store up to 300 unclaimed boosted V-bucks at once. You receive one unclaimed boosted V-buck every 15 minutes realtime.",
+    "displayName": "10 V-bucks",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_MTX_Boost10",
@@ -2549,6 +3277,8 @@
   },
   "CardPack:zcp_mtx_boost100": {
     "choice": false,
+    "description": "Bonus V-bucks reward for completing a mission. You can earn up to 300 boosted V-bucks. One boosted V-buck regenerates every 15 minutes (75 hours to max).",
+    "displayName": "100 V-bucks",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_MTX_Boost50",
@@ -2556,6 +3286,8 @@
   },
   "CardPack:zcp_mtx_boost50": {
     "choice": false,
+    "description": "Bonus V-bucks reward for completing a mission. You can earn up to 300 boosted V-bucks. One boosted V-buck regenerates every 15 minutes (75 hours to max).",
+    "displayName": "50 V-bucks",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_MTX_Boost100",
@@ -2563,6 +3295,8 @@
   },
   "CardPack:zcp_neighborhoodcurrency_noscale": {
     "choice": false,
+    "description": "Use these to unlock deployable base upgrades in Operation: Block Party!",
+    "displayName": "Experimental Fun Coins",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_NeighborhoodCurrency_NoScale",
@@ -2570,6 +3304,8 @@
   },
   "CardPack:zcp_ore_brightcore_minimal": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Found in caves, mountains and occasionally in containers in settled areas. Rare in high end Twine Peaks.",
+    "displayName": "Brightcore Ore",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Ore_Brightcore_Minimal",
@@ -2577,6 +3313,8 @@
   },
   "CardPack:zcp_ore_copper_high": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Found in caves, mountains and occasionally in containers in settled areas. It is said that the one who controls the copper controls the world.",
+    "displayName": "Copper Ore",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Ore_Copper_High",
@@ -2584,6 +3322,8 @@
   },
   "CardPack:zcp_ore_copper_low": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Found in caves, mountains and occasionally in containers in settled areas. It is said that the one who controls the copper controls the world.",
+    "displayName": "Copper Ore",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Ore_Copper_Low",
@@ -2591,6 +3331,8 @@
   },
   "CardPack:zcp_ore_copper_medium": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Found in caves, mountains and occasionally in containers in settled areas. It is said that the one who controls the copper controls the world.",
+    "displayName": "Copper Ore",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Ore_Copper_Medium",
@@ -2598,6 +3340,8 @@
   },
   "CardPack:zcp_ore_copper_veryhigh": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Found in caves, mountains and occasionally in containers in settled areas. It is said that the one who controls the copper controls the world.",
+    "displayName": "Copper Ore",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Ore_Copper_VeryHigh",
@@ -2605,6 +3349,8 @@
   },
   "CardPack:zcp_ore_copper_verylow": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Found in caves, mountains and occasionally in containers in settled areas. It is said that the one who controls the copper controls the world.",
+    "displayName": "Copper Ore",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Ore_Copper_VeryLow",
@@ -2612,6 +3358,8 @@
   },
   "CardPack:zcp_ore_malachite_high": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Found in caves, mountains and occasionally in containers in settled areas. Common in Canny Valley and rare in high end Plankerton.",
+    "displayName": "Malachite Ore",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Ore_Malachite_High",
@@ -2619,6 +3367,8 @@
   },
   "CardPack:zcp_ore_malachite_low": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Found in caves, mountains and occasionally in containers in settled areas. Common in Canny Valley and rare in high end Plankerton.",
+    "displayName": "Malachite Ore",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Ore_Malachite_Low",
@@ -2626,6 +3376,8 @@
   },
   "CardPack:zcp_ore_malachite_medium": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Found in caves, mountains and occasionally in containers in settled areas. Common in Canny Valley and rare in high end Plankerton.",
+    "displayName": "Malachite Ore",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Ore_Malachite_Medium",
@@ -2633,6 +3385,8 @@
   },
   "CardPack:zcp_ore_malachite_minimal": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Found in caves, mountains and occasionally in containers in settled areas. Common in Canny Valley and rare in high end Plankerton.",
+    "displayName": "Malachite Ore",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Ore_Malachite_Minimal",
@@ -2640,6 +3394,8 @@
   },
   "CardPack:zcp_ore_malachite_veryhigh": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Found in caves, mountains and occasionally in containers in settled areas. Common in Canny Valley and rare in high end Plankerton.",
+    "displayName": "Malachite Ore",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Ore_Malachite_VeryHigh",
@@ -2647,6 +3403,8 @@
   },
   "CardPack:zcp_ore_malachite_verylow": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Found in caves, mountains and occasionally in containers in settled areas. Common in Canny Valley and rare in high end Plankerton.",
+    "displayName": "Malachite Ore",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Ore_Malachite_VeryLow",
@@ -2654,6 +3412,8 @@
   },
   "CardPack:zcp_ore_obsidian_high": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Found in caves, mountains and occasionally in containers in settled areas. Common in Twine Peaks and rare in high end Canny Valley.",
+    "displayName": "Obsidian Ore",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Ore_Obsidian_High",
@@ -2661,6 +3421,8 @@
   },
   "CardPack:zcp_ore_obsidian_low": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Found in caves, mountains and occasionally in containers in settled areas. Common in Twine Peaks and rare in high end Canny Valley.",
+    "displayName": "Obsidian Ore",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Ore_Obsidian_Low",
@@ -2668,6 +3430,8 @@
   },
   "CardPack:zcp_ore_obsidian_medium": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Found in caves, mountains and occasionally in containers in settled areas. Common in Twine Peaks and rare in high end Canny Valley.",
+    "displayName": "Obsidian Ore",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Ore_Obsidian_Medium",
@@ -2675,6 +3439,8 @@
   },
   "CardPack:zcp_ore_obsidian_minimal": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Found in caves, mountains and occasionally in containers in settled areas. Common in Twine Peaks and rare in high end Canny Valley.",
+    "displayName": "Obsidian Ore",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Ore_Obsidian_Minimal",
@@ -2682,6 +3448,8 @@
   },
   "CardPack:zcp_ore_obsidian_veryhigh": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Found in caves, mountains and occasionally in containers in settled areas. Common in Twine Peaks and rare in high end Canny Valley.",
+    "displayName": "Obsidian Ore",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Ore_Obsidian_VeryHigh",
@@ -2689,6 +3457,8 @@
   },
   "CardPack:zcp_ore_obsidian_verylow": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Found in caves, mountains and occasionally in containers in settled areas. Common in Twine Peaks and rare in high end Canny Valley.",
+    "displayName": "Obsidian Ore",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Ore_Obsidian_VeryLow",
@@ -2696,6 +3466,8 @@
   },
   "CardPack:zcp_ore_silver_high": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Found in caves, mountains and occasionally in containers in settled areas. Common in Plankerton and rare in high end Stonewood.",
+    "displayName": "Silver Ore",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Ore_Silver_High",
@@ -2703,6 +3475,8 @@
   },
   "CardPack:zcp_ore_silver_low": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Found in caves, mountains and occasionally in containers in settled areas. Common in Plankerton and rare in high end Stonewood.",
+    "displayName": "Silver Ore",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Ore_Silver_Low",
@@ -2710,6 +3484,8 @@
   },
   "CardPack:zcp_ore_silver_medium": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Found in caves, mountains and occasionally in containers in settled areas. Common in Plankerton and rare in high end Stonewood.",
+    "displayName": "Silver Ore",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Ore_Silver_Medium",
@@ -2717,6 +3493,8 @@
   },
   "CardPack:zcp_ore_silver_minimal": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Found in caves, mountains and occasionally in containers in settled areas. Common in Plankerton and rare in high end Stonewood.",
+    "displayName": "Silver Ore",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Ore_Silver_Minimal",
@@ -2724,6 +3502,8 @@
   },
   "CardPack:zcp_ore_silver_veryhigh": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Found in caves, mountains and occasionally in containers in settled areas. Common in Plankerton and rare in high end Stonewood.",
+    "displayName": "Silver Ore",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Ore_Silver_VeryHigh",
@@ -2731,6 +3511,8 @@
   },
   "CardPack:zcp_ore_silver_verylow": {
     "choice": false,
+    "description": "Crafting ingredient. Used to make many quality weapons. Found in caves, mountains and occasionally in containers in settled areas. Common in Plankerton and rare in high end Stonewood.",
+    "displayName": "Silver Ore",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Ore_Silver_VeryLow",
@@ -2738,6 +3520,8 @@
   },
   "CardPack:zcp_personnelxp_t01": {
     "choice": false,
+    "description": "A bundle of XP used to upgrade your survivors. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Survivor XP",
     "displayRarityLevel": 0,
     "lootTier": 1,
     "lootTierGroup": "ZCP_SurvivorXP",
@@ -2745,6 +3529,8 @@
   },
   "CardPack:zcp_personnelxp_t02": {
     "choice": false,
+    "description": "A bundle of XP used to upgrade your survivors. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Survivor XP",
     "displayRarityLevel": 0,
     "lootTier": 2,
     "lootTierGroup": "ZCP_SurvivorXP",
@@ -2752,6 +3538,8 @@
   },
   "CardPack:zcp_personnelxp_t03": {
     "choice": false,
+    "description": "A bundle of XP used to upgrade your survivors. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Survivor XP",
     "displayRarityLevel": 0,
     "lootTier": 3,
     "lootTierGroup": "ZCP_SurvivorXP",
@@ -2759,6 +3547,8 @@
   },
   "CardPack:zcp_personnelxp_t04": {
     "choice": false,
+    "description": "A bundle of XP used to upgrade your survivors. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Survivor XP",
     "displayRarityLevel": 0,
     "lootTier": 4,
     "lootTierGroup": "ZCP_SurvivorXP",
@@ -2766,6 +3556,8 @@
   },
   "CardPack:zcp_personnelxp_t05": {
     "choice": false,
+    "description": "A bundle of XP used to upgrade your survivors. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Survivor XP",
     "displayRarityLevel": 0,
     "lootTier": 5,
     "lootTierGroup": "ZCP_SurvivorXP",
@@ -2773,6 +3565,8 @@
   },
   "CardPack:zcp_personnelxp_t06": {
     "choice": false,
+    "description": "A bundle of XP used to upgrade your survivors. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Survivor XP",
     "displayRarityLevel": 0,
     "lootTier": 6,
     "lootTierGroup": "ZCP_SurvivorXP",
@@ -2780,6 +3574,8 @@
   },
   "CardPack:zcp_personnelxp_t07": {
     "choice": false,
+    "description": "A bundle of XP used to upgrade your survivors. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Survivor XP",
     "displayRarityLevel": 0,
     "lootTier": 7,
     "lootTierGroup": "ZCP_SurvivorXP",
@@ -2787,6 +3583,8 @@
   },
   "CardPack:zcp_personnelxp_t08": {
     "choice": false,
+    "description": "A bundle of XP used to upgrade your survivors. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Survivor XP",
     "displayRarityLevel": 0,
     "lootTier": 8,
     "lootTierGroup": "ZCP_SurvivorXP",
@@ -2794,6 +3592,8 @@
   },
   "CardPack:zcp_personnelxp_t09": {
     "choice": false,
+    "description": "A bundle of XP used to upgrade your survivors. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Survivor XP",
     "displayRarityLevel": 0,
     "lootTier": 9,
     "lootTierGroup": "ZCP_SurvivorXP",
@@ -2801,6 +3601,8 @@
   },
   "CardPack:zcp_personnelxp_t10": {
     "choice": false,
+    "description": "A bundle of XP used to upgrade your survivors. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Survivor XP",
     "displayRarityLevel": 0,
     "lootTier": 10,
     "lootTierGroup": "ZCP_SurvivorXP",
@@ -2808,6 +3610,8 @@
   },
   "CardPack:zcp_personnelxp_t11": {
     "choice": false,
+    "description": "A bundle of XP used to upgrade your survivors. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Survivor XP",
     "displayRarityLevel": 0,
     "lootTier": 11,
     "lootTierGroup": "ZCP_SurvivorXP",
@@ -2815,6 +3619,8 @@
   },
   "CardPack:zcp_personnelxp_t12": {
     "choice": false,
+    "description": "A bundle of XP used to upgrade your survivors. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Survivor XP",
     "displayRarityLevel": 0,
     "lootTier": 12,
     "lootTierGroup": "ZCP_SurvivorXP",
@@ -2822,6 +3628,8 @@
   },
   "CardPack:zcp_personnelxp_t13": {
     "choice": false,
+    "description": "A bundle of XP used to upgrade your survivors. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Survivor XP",
     "displayRarityLevel": 0,
     "lootTier": 13,
     "lootTierGroup": "ZCP_SurvivorXP",
@@ -2829,6 +3637,8 @@
   },
   "CardPack:zcp_personnelxp_t14": {
     "choice": false,
+    "description": "A bundle of XP used to upgrade your survivors. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Survivor XP",
     "displayRarityLevel": 0,
     "lootTier": 14,
     "lootTierGroup": "ZCP_SurvivorXP",
@@ -2836,6 +3646,8 @@
   },
   "CardPack:zcp_personnelxp_t15": {
     "choice": false,
+    "description": "A bundle of XP used to upgrade your survivors. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Survivor XP",
     "displayRarityLevel": 0,
     "lootTier": 15,
     "lootTierGroup": "ZCP_SurvivorXP",
@@ -2843,6 +3655,8 @@
   },
   "CardPack:zcp_personnelxp_t16": {
     "choice": false,
+    "description": "A bundle of XP used to upgrade your survivors. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Survivor XP",
     "displayRarityLevel": 0,
     "lootTier": 16,
     "lootTierGroup": "ZCP_SurvivorXP",
@@ -2850,6 +3664,8 @@
   },
   "CardPack:zcp_personnelxp_t17": {
     "choice": false,
+    "description": "A bundle of XP used to upgrade your survivors. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Survivor XP",
     "displayRarityLevel": 0,
     "lootTier": 17,
     "lootTierGroup": "ZCP_SurvivorXP",
@@ -2857,6 +3673,8 @@
   },
   "CardPack:zcp_personnelxp_t18": {
     "choice": false,
+    "description": "A bundle of XP used to upgrade your survivors. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Survivor XP",
     "displayRarityLevel": 0,
     "lootTier": 18,
     "lootTierGroup": "ZCP_SurvivorXP",
@@ -2864,6 +3682,8 @@
   },
   "CardPack:zcp_personnelxp_t19": {
     "choice": false,
+    "description": "A bundle of XP used to upgrade your survivors. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Survivor XP",
     "displayRarityLevel": 0,
     "lootTier": 19,
     "lootTierGroup": "ZCP_SurvivorXP",
@@ -2871,6 +3691,8 @@
   },
   "CardPack:zcp_personnelxp_t20": {
     "choice": false,
+    "description": "A bundle of XP used to upgrade your survivors. Harder missions give significantly higher quantities of resources!",
+    "displayName": "Survivor XP",
     "displayRarityLevel": 0,
     "lootTier": 20,
     "lootTierGroup": "ZCP_SurvivorXP",
@@ -2878,6 +3700,8 @@
   },
   "CardPack:zcp_rareexpedition_heroes_t02": {
     "choice": false,
+    "description": "Small package containing a Transform Key, XP, and Upgrade Materials!",
+    "displayName": "Small Hero Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_RareExpedition_Heroes_T02",
@@ -2885,6 +3709,8 @@
   },
   "CardPack:zcp_rareexpedition_heroes_t03": {
     "choice": false,
+    "description": "Medium package containing a Transform Key, XP, and Upgrade Materials!",
+    "displayName": "Medium Hero Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_RareExpedition_Heroes_T03",
@@ -2892,6 +3718,8 @@
   },
   "CardPack:zcp_rareexpedition_heroes_t04": {
     "choice": false,
+    "description": "Large package containing a Transform Key, XP, and Upgrade Materials!",
+    "displayName": "Large Hero Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_RareExpedition_Heroes_T04",
@@ -2899,6 +3727,8 @@
   },
   "CardPack:zcp_rareexpedition_heroes_t05": {
     "choice": false,
+    "description": "Huge package containing a Transform Key, XP, and Upgrade Materials!",
+    "displayName": "Huge Hero Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_RareExpedition_Heroes_T05",
@@ -2906,6 +3736,8 @@
   },
   "CardPack:zcp_rareexpedition_managers_t02": {
     "choice": false,
+    "description": "Small package containing a Transform Key, XP, and Upgrade Materials!",
+    "displayName": "Small Manager Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_RareExpedition_Managers_T02",
@@ -2913,6 +3745,8 @@
   },
   "CardPack:zcp_rareexpedition_managers_t03": {
     "choice": false,
+    "description": "Medium package containing a Transform Key, XP, and Upgrade Materials!",
+    "displayName": "Medium Manager Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_RareExpedition_Managers_T03",
@@ -2920,6 +3754,8 @@
   },
   "CardPack:zcp_rareexpedition_managers_t04": {
     "choice": false,
+    "description": "Large package containing a Transform Key, XP, and Upgrade Materials!",
+    "displayName": "Large Manager Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_RareExpedition_Managers_T04",
@@ -2927,6 +3763,8 @@
   },
   "CardPack:zcp_rareexpedition_managers_t05": {
     "choice": false,
+    "description": "Huge package containing a Transform Key, XP, and Upgrade Materials!",
+    "displayName": "Huge Manager Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_RareExpedition_Managers_T05",
@@ -2934,6 +3772,8 @@
   },
   "CardPack:zcp_rareexpedition_traps_t02": {
     "choice": false,
+    "description": "Small package containing a Transform Key, XP, and Upgrade Materials!",
+    "displayName": "Small Trap Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_RareExpedition_Traps_T02",
@@ -2941,6 +3781,8 @@
   },
   "CardPack:zcp_rareexpedition_traps_t03": {
     "choice": false,
+    "description": "Medium package containing a Transform Key, XP, and Upgrade Materials!",
+    "displayName": "Medium Trap Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_RareExpedition_Traps_T03",
@@ -2948,6 +3790,8 @@
   },
   "CardPack:zcp_rareexpedition_traps_t04": {
     "choice": false,
+    "description": "Large package containing a Transform Key, XP, and Upgrade Materials!",
+    "displayName": "Large Trap Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_RareExpedition_Traps_T04",
@@ -2955,6 +3799,8 @@
   },
   "CardPack:zcp_rareexpedition_traps_t05": {
     "choice": false,
+    "description": "Huge package containing a Transform Key, XP, and Upgrade Materials!",
+    "displayName": "Huge Trap Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_RareExpedition_Traps_T05",
@@ -2962,6 +3808,8 @@
   },
   "CardPack:zcp_rareexpedition_weapons_t01": {
     "choice": false,
+    "description": "Tiny package containing a Transform Key, XP, and Upgrade Materials!",
+    "displayName": "Tiny Weapon Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_RareExpedition_Weapons_T01",
@@ -2969,6 +3817,8 @@
   },
   "CardPack:zcp_rareexpedition_weapons_t02": {
     "choice": false,
+    "description": "Small package containing a Transform Key, XP, and Upgrade Materials!",
+    "displayName": "Small Weapon Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_RareExpedition_Weapons_T02",
@@ -2976,6 +3826,8 @@
   },
   "CardPack:zcp_rareexpedition_weapons_t03": {
     "choice": false,
+    "description": "Medium package containing a Transform Key, XP, and Upgrade Materials!",
+    "displayName": "Medium Weapon Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_RareExpedition_Weapons_T03",
@@ -2983,6 +3835,8 @@
   },
   "CardPack:zcp_rareexpedition_weapons_t04": {
     "choice": false,
+    "description": "Large package containing a Transform Key, XP, and Upgrade Materials!",
+    "displayName": "Large Weapon Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_RareExpedition_Weapons_T04",
@@ -2990,6 +3844,8 @@
   },
   "CardPack:zcp_rareexpedition_weapons_t05": {
     "choice": false,
+    "description": "Huge package containing a Transform Key, XP, and Upgrade Materials!",
+    "displayName": "Huge Weapon Pack",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_RareExpedition_Weapons_T05",
@@ -2997,6 +3853,8 @@
   },
   "CardPack:zcp_reagent_c_t01_high": {
     "choice": false,
+    "description": "Resource used to upgrade all types of items.",
+    "displayName": "Pure Drop of Rain",
     "displayRarityLevel": 0,
     "lootTier": 3,
     "lootTierGroup": "ZCP_Reagent_C_T01",
@@ -3004,6 +3862,8 @@
   },
   "CardPack:zcp_reagent_c_t01_low": {
     "choice": false,
+    "description": "Resource used to upgrade all types of items.",
+    "displayName": "Pure Drop of Rain",
     "displayRarityLevel": 0,
     "lootTier": 1,
     "lootTierGroup": "ZCP_Reagent_C_T01",
@@ -3011,6 +3871,8 @@
   },
   "CardPack:zcp_reagent_c_t01_medium": {
     "choice": false,
+    "description": "Resource used to upgrade all types of items.",
+    "displayName": "Pure Drop of Rain",
     "displayRarityLevel": 0,
     "lootTier": 2,
     "lootTierGroup": "ZCP_Reagent_C_T01",
@@ -3018,6 +3880,8 @@
   },
   "CardPack:zcp_reagent_c_t01_veryhigh": {
     "choice": false,
+    "description": "Resource used to upgrade all types of items.",
+    "displayName": "Pure Drop of Rain",
     "displayRarityLevel": 0,
     "lootTier": 4,
     "lootTierGroup": "ZCP_Reagent_C_T01",
@@ -3025,6 +3889,8 @@
   },
   "CardPack:zcp_reagent_c_t01_verylow": {
     "choice": false,
+    "description": "Resource used to upgrade all types of items.",
+    "displayName": "Pure Drop of Rain",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Reagent_C_T01",
@@ -3032,6 +3898,8 @@
   },
   "CardPack:zcp_reagent_c_t02_high": {
     "choice": false,
+    "description": "Resource used to upgrade all types of items. Found primarily in Plankerton.",
+    "displayName": "Lightning in a Bottle",
     "displayRarityLevel": 0,
     "lootTier": 3,
     "lootTierGroup": "ZCP_Reagent_C_T02",
@@ -3039,6 +3907,8 @@
   },
   "CardPack:zcp_reagent_c_t02_low": {
     "choice": false,
+    "description": "Resource used to upgrade all types of items. Found primarily in Plankerton.",
+    "displayName": "Lightning in a Bottle",
     "displayRarityLevel": 0,
     "lootTier": 1,
     "lootTierGroup": "ZCP_Reagent_C_T02",
@@ -3046,6 +3916,8 @@
   },
   "CardPack:zcp_reagent_c_t02_medium": {
     "choice": false,
+    "description": "Resource used to upgrade all types of items. Found primarily in Plankerton.",
+    "displayName": "Lightning in a Bottle",
     "displayRarityLevel": 0,
     "lootTier": 2,
     "lootTierGroup": "ZCP_Reagent_C_T02",
@@ -3053,6 +3925,8 @@
   },
   "CardPack:zcp_reagent_c_t02_veryhigh": {
     "choice": false,
+    "description": "Resource used to upgrade all types of items. Found primarily in Plankerton.",
+    "displayName": "Lightning in a Bottle",
     "displayRarityLevel": 0,
     "lootTier": 4,
     "lootTierGroup": "ZCP_Reagent_C_T02",
@@ -3060,6 +3934,8 @@
   },
   "CardPack:zcp_reagent_c_t02_verylow": {
     "choice": false,
+    "description": "Resource used to upgrade all types of items. Found primarily in Plankerton.",
+    "displayName": "Lightning in a Bottle",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Reagent_C_T02",
@@ -3067,6 +3943,8 @@
   },
   "CardPack:zcp_reagent_c_t03_high": {
     "choice": false,
+    "description": "Resource used to upgrade all types of items. Found primarily in Canny Valley.",
+    "displayName": "Eye of the Storm",
     "displayRarityLevel": 0,
     "lootTier": 3,
     "lootTierGroup": "ZCP_Reagent_C_T03",
@@ -3074,6 +3952,8 @@
   },
   "CardPack:zcp_reagent_c_t03_low": {
     "choice": false,
+    "description": "Resource used to upgrade all types of items. Found primarily in Canny Valley.",
+    "displayName": "Eye of the Storm",
     "displayRarityLevel": 0,
     "lootTier": 1,
     "lootTierGroup": "ZCP_Reagent_C_T03",
@@ -3081,6 +3961,8 @@
   },
   "CardPack:zcp_reagent_c_t03_medium": {
     "choice": false,
+    "description": "Resource used to upgrade all types of items. Found primarily in Canny Valley.",
+    "displayName": "Eye of the Storm",
     "displayRarityLevel": 0,
     "lootTier": 2,
     "lootTierGroup": "ZCP_Reagent_C_T03",
@@ -3088,6 +3970,8 @@
   },
   "CardPack:zcp_reagent_c_t03_veryhigh": {
     "choice": false,
+    "description": "Resource used to upgrade all types of items. Found primarily in Canny Valley.",
+    "displayName": "Eye of the Storm",
     "displayRarityLevel": 0,
     "lootTier": 4,
     "lootTierGroup": "ZCP_Reagent_C_T03",
@@ -3095,6 +3979,8 @@
   },
   "CardPack:zcp_reagent_c_t03_verylow": {
     "choice": false,
+    "description": "Resource used to upgrade all types of items. Found primarily in Canny Valley.",
+    "displayName": "Eye of the Storm",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Reagent_C_T03",
@@ -3102,6 +3988,8 @@
   },
   "CardPack:zcp_reagent_c_t04_high": {
     "choice": false,
+    "description": "Resource used to upgrade all types of items. Found primarily in Twine Peaks.",
+    "displayName": "Storm Shard",
     "displayRarityLevel": 0,
     "lootTier": 3,
     "lootTierGroup": "ZCP_Reagent_C_T04",
@@ -3109,6 +3997,8 @@
   },
   "CardPack:zcp_reagent_c_t04_low": {
     "choice": false,
+    "description": "Resource used to upgrade all types of items. Found primarily in Twine Peaks.",
+    "displayName": "Storm Shard",
     "displayRarityLevel": 0,
     "lootTier": 1,
     "lootTierGroup": "ZCP_Reagent_C_T04",
@@ -3116,6 +4006,8 @@
   },
   "CardPack:zcp_reagent_c_t04_medium": {
     "choice": false,
+    "description": "Resource used to upgrade all types of items. Found primarily in Twine Peaks.",
+    "displayName": "Storm Shard",
     "displayRarityLevel": 0,
     "lootTier": 2,
     "lootTierGroup": "ZCP_Reagent_C_T04",
@@ -3123,6 +4015,8 @@
   },
   "CardPack:zcp_reagent_c_t04_veryhigh": {
     "choice": false,
+    "description": "Resource used to upgrade all types of items. Found primarily in Twine Peaks.",
+    "displayName": "Storm Shard",
     "displayRarityLevel": 0,
     "lootTier": 4,
     "lootTierGroup": "ZCP_Reagent_C_T04",
@@ -3130,6 +4024,8 @@
   },
   "CardPack:zcp_reagent_c_t04_verylow": {
     "choice": false,
+    "description": "Resource used to upgrade all types of items. Found primarily in Twine Peaks.",
+    "displayName": "Storm Shard",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Reagent_C_T04",
@@ -3137,6 +4033,8 @@
   },
   "CardPack:zcp_rescued": {
     "choice": false,
+    "description": "You rescued a survivor!",
+    "displayName": "Rescued Survivor",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Rescued",
@@ -3144,6 +4042,8 @@
   },
   "CardPack:zcp_rescued_t01": {
     "choice": false,
+    "description": "You rescued a survivor!",
+    "displayName": "Rescued Survivor",
     "displayRarityLevel": 0,
     "lootTier": 1,
     "lootTierGroup": "ZCP_Rescued",
@@ -3151,6 +4051,8 @@
   },
   "CardPack:zcp_rescued_t02": {
     "choice": false,
+    "description": "You rescued a survivor!",
+    "displayName": "Rescued Survivor",
     "displayRarityLevel": 0,
     "lootTier": 2,
     "lootTierGroup": "ZCP_Rescued",
@@ -3158,6 +4060,8 @@
   },
   "CardPack:zcp_rescued_t03": {
     "choice": false,
+    "description": "You rescued a survivor!",
+    "displayName": "Rescued Survivor",
     "displayRarityLevel": 0,
     "lootTier": 3,
     "lootTierGroup": "ZCP_Rescued",
@@ -3165,6 +4069,8 @@
   },
   "CardPack:zcp_rescued_t04": {
     "choice": false,
+    "description": "You rescued a survivor!",
+    "displayName": "Rescued Survivor",
     "displayRarityLevel": 0,
     "lootTier": 4,
     "lootTierGroup": "ZCP_Rescued",
@@ -3172,6 +4078,8 @@
   },
   "CardPack:zcp_rescued_t05": {
     "choice": false,
+    "description": "You rescued a survivor!",
+    "displayName": "Rescued Survivor",
     "displayRarityLevel": 0,
     "lootTier": 5,
     "lootTierGroup": "ZCP_Rescued",
@@ -3179,6 +4087,8 @@
   },
   "CardPack:zcp_rescued_t06": {
     "choice": false,
+    "description": "You rescued a survivor!",
+    "displayName": "Rescued Survivor",
     "displayRarityLevel": 0,
     "lootTier": 6,
     "lootTierGroup": "ZCP_Rescued",
@@ -3186,6 +4096,8 @@
   },
   "CardPack:zcp_rescued_t07": {
     "choice": false,
+    "description": "You rescued a survivor!",
+    "displayName": "Rescued Survivor",
     "displayRarityLevel": 0,
     "lootTier": 7,
     "lootTierGroup": "ZCP_Rescued",
@@ -3193,6 +4105,8 @@
   },
   "CardPack:zcp_rescued_t08": {
     "choice": false,
+    "description": "You rescued a survivor!",
+    "displayName": "Rescued Survivor",
     "displayRarityLevel": 0,
     "lootTier": 8,
     "lootTierGroup": "ZCP_Rescued",
@@ -3200,6 +4114,8 @@
   },
   "CardPack:zcp_rescued_t09": {
     "choice": false,
+    "description": "You rescued a survivor!",
+    "displayName": "Rescued Survivor",
     "displayRarityLevel": 0,
     "lootTier": 9,
     "lootTierGroup": "ZCP_Rescued",
@@ -3207,6 +4123,8 @@
   },
   "CardPack:zcp_rescued_t10": {
     "choice": false,
+    "description": "You rescued a survivor!",
+    "displayName": "Rescued Survivor",
     "displayRarityLevel": 0,
     "lootTier": 10,
     "lootTierGroup": "ZCP_Rescued",
@@ -3214,6 +4132,8 @@
   },
   "CardPack:zcp_rescued_t11": {
     "choice": false,
+    "description": "You rescued a survivor!",
+    "displayName": "Rescued Survivor",
     "displayRarityLevel": 0,
     "lootTier": 11,
     "lootTierGroup": "ZCP_Rescued",
@@ -3221,6 +4141,8 @@
   },
   "CardPack:zcp_rescued_t12": {
     "choice": false,
+    "description": "You rescued a survivor!",
+    "displayName": "Rescued Survivor",
     "displayRarityLevel": 0,
     "lootTier": 12,
     "lootTierGroup": "ZCP_Rescued",
@@ -3228,6 +4150,8 @@
   },
   "CardPack:zcp_rescued_t13": {
     "choice": false,
+    "description": "You rescued a survivor!",
+    "displayName": "Rescued Survivor",
     "displayRarityLevel": 0,
     "lootTier": 13,
     "lootTierGroup": "ZCP_Rescued",
@@ -3235,6 +4159,8 @@
   },
   "CardPack:zcp_rescued_t14": {
     "choice": false,
+    "description": "You rescued a survivor!",
+    "displayName": "Rescued Survivor",
     "displayRarityLevel": 0,
     "lootTier": 14,
     "lootTierGroup": "ZCP_Rescued",
@@ -3242,6 +4168,8 @@
   },
   "CardPack:zcp_rescued_t15": {
     "choice": false,
+    "description": "You rescued a survivor!",
+    "displayName": "Rescued Survivor",
     "displayRarityLevel": 0,
     "lootTier": 15,
     "lootTierGroup": "ZCP_Rescued",
@@ -3249,6 +4177,8 @@
   },
   "CardPack:zcp_rescued_t16": {
     "choice": false,
+    "description": "You rescued a survivor!",
+    "displayName": "Rescued Survivor",
     "displayRarityLevel": 0,
     "lootTier": 16,
     "lootTierGroup": "ZCP_Rescued",
@@ -3256,6 +4186,8 @@
   },
   "CardPack:zcp_rescued_t17": {
     "choice": false,
+    "description": "You rescued a survivor!",
+    "displayName": "Rescued Survivor",
     "displayRarityLevel": 0,
     "lootTier": 17,
     "lootTierGroup": "ZCP_Rescued",
@@ -3263,6 +4195,8 @@
   },
   "CardPack:zcp_rescued_t18": {
     "choice": false,
+    "description": "You rescued a survivor!",
+    "displayName": "Rescued Survivor",
     "displayRarityLevel": 0,
     "lootTier": 18,
     "lootTierGroup": "ZCP_Rescued",
@@ -3270,6 +4204,8 @@
   },
   "CardPack:zcp_rescued_t19": {
     "choice": false,
+    "description": "You rescued a survivor!",
+    "displayName": "Rescued Survivor",
     "displayRarityLevel": 0,
     "lootTier": 19,
     "lootTierGroup": "ZCP_Rescued",
@@ -3277,6 +4213,8 @@
   },
   "CardPack:zcp_rescued_t20": {
     "choice": false,
+    "description": "You rescued a survivor!",
+    "displayName": "Rescued Survivor",
     "displayRarityLevel": 0,
     "lootTier": 20,
     "lootTierGroup": "ZCP_Rescued",
@@ -3284,6 +4222,8 @@
   },
   "CardPack:zcp_schematicxp_t01": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your schematics Harder missions give significantly higher quantities of resources!",
+    "displayName": "Schematic XP",
     "displayRarityLevel": 0,
     "lootTier": 1,
     "lootTierGroup": "ZCP_SchematicXP",
@@ -3291,6 +4231,8 @@
   },
   "CardPack:zcp_schematicxp_t02": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your schematics Harder missions give significantly higher quantities of resources!",
+    "displayName": "Schematic XP",
     "displayRarityLevel": 0,
     "lootTier": 2,
     "lootTierGroup": "ZCP_SchematicXP",
@@ -3298,6 +4240,8 @@
   },
   "CardPack:zcp_schematicxp_t03": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your schematics Harder missions give significantly higher quantities of resources!",
+    "displayName": "Schematic XP",
     "displayRarityLevel": 0,
     "lootTier": 3,
     "lootTierGroup": "ZCP_SchematicXP",
@@ -3305,6 +4249,8 @@
   },
   "CardPack:zcp_schematicxp_t04": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your schematics Harder missions give significantly higher quantities of resources!",
+    "displayName": "Schematic XP",
     "displayRarityLevel": 0,
     "lootTier": 4,
     "lootTierGroup": "ZCP_SchematicXP",
@@ -3312,6 +4258,8 @@
   },
   "CardPack:zcp_schematicxp_t05": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your schematics Harder missions give significantly higher quantities of resources!",
+    "displayName": "Schematic XP",
     "displayRarityLevel": 0,
     "lootTier": 5,
     "lootTierGroup": "ZCP_SchematicXP",
@@ -3319,6 +4267,8 @@
   },
   "CardPack:zcp_schematicxp_t06": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your schematics Harder missions give significantly higher quantities of resources!",
+    "displayName": "Schematic XP",
     "displayRarityLevel": 0,
     "lootTier": 6,
     "lootTierGroup": "ZCP_SchematicXP",
@@ -3326,6 +4276,8 @@
   },
   "CardPack:zcp_schematicxp_t07": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your schematics Harder missions give significantly higher quantities of resources!",
+    "displayName": "Schematic XP",
     "displayRarityLevel": 0,
     "lootTier": 7,
     "lootTierGroup": "ZCP_SchematicXP",
@@ -3333,6 +4285,8 @@
   },
   "CardPack:zcp_schematicxp_t08": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your schematics Harder missions give significantly higher quantities of resources!",
+    "displayName": "Schematic XP",
     "displayRarityLevel": 0,
     "lootTier": 8,
     "lootTierGroup": "ZCP_SchematicXP",
@@ -3340,6 +4294,8 @@
   },
   "CardPack:zcp_schematicxp_t09": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your schematics Harder missions give significantly higher quantities of resources!",
+    "displayName": "Schematic XP",
     "displayRarityLevel": 0,
     "lootTier": 9,
     "lootTierGroup": "ZCP_SchematicXP",
@@ -3347,6 +4303,8 @@
   },
   "CardPack:zcp_schematicxp_t10": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your schematics Harder missions give significantly higher quantities of resources!",
+    "displayName": "Schematic XP",
     "displayRarityLevel": 0,
     "lootTier": 10,
     "lootTierGroup": "ZCP_SchematicXP",
@@ -3354,6 +4312,8 @@
   },
   "CardPack:zcp_schematicxp_t11": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your schematics Harder missions give significantly higher quantities of resources!",
+    "displayName": "Schematic XP",
     "displayRarityLevel": 0,
     "lootTier": 11,
     "lootTierGroup": "ZCP_SchematicXP",
@@ -3361,6 +4321,8 @@
   },
   "CardPack:zcp_schematicxp_t12": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your schematics Harder missions give significantly higher quantities of resources!",
+    "displayName": "Schematic XP",
     "displayRarityLevel": 0,
     "lootTier": 12,
     "lootTierGroup": "ZCP_SchematicXP",
@@ -3368,6 +4330,8 @@
   },
   "CardPack:zcp_schematicxp_t13": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your schematics Harder missions give significantly higher quantities of resources!",
+    "displayName": "Schematic XP",
     "displayRarityLevel": 0,
     "lootTier": 13,
     "lootTierGroup": "ZCP_SchematicXP",
@@ -3375,6 +4339,8 @@
   },
   "CardPack:zcp_schematicxp_t14": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your schematics Harder missions give significantly higher quantities of resources!",
+    "displayName": "Schematic XP",
     "displayRarityLevel": 0,
     "lootTier": 14,
     "lootTierGroup": "ZCP_SchematicXP",
@@ -3382,6 +4348,8 @@
   },
   "CardPack:zcp_schematicxp_t15": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your schematics Harder missions give significantly higher quantities of resources!",
+    "displayName": "Schematic XP",
     "displayRarityLevel": 0,
     "lootTier": 15,
     "lootTierGroup": "ZCP_SchematicXP",
@@ -3389,6 +4357,8 @@
   },
   "CardPack:zcp_schematicxp_t16": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your schematics Harder missions give significantly higher quantities of resources!",
+    "displayName": "Schematic XP",
     "displayRarityLevel": 0,
     "lootTier": 16,
     "lootTierGroup": "ZCP_SchematicXP",
@@ -3396,6 +4366,8 @@
   },
   "CardPack:zcp_schematicxp_t17": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your schematics Harder missions give significantly higher quantities of resources!",
+    "displayName": "Schematic XP",
     "displayRarityLevel": 0,
     "lootTier": 17,
     "lootTierGroup": "ZCP_SchematicXP",
@@ -3403,6 +4375,8 @@
   },
   "CardPack:zcp_schematicxp_t18": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your schematics Harder missions give significantly higher quantities of resources!",
+    "displayName": "Schematic XP",
     "displayRarityLevel": 0,
     "lootTier": 18,
     "lootTierGroup": "ZCP_SchematicXP",
@@ -3410,6 +4384,8 @@
   },
   "CardPack:zcp_schematicxp_t19": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your schematics Harder missions give significantly higher quantities of resources!",
+    "displayName": "Schematic XP",
     "displayRarityLevel": 0,
     "lootTier": 19,
     "lootTierGroup": "ZCP_SchematicXP",
@@ -3417,6 +4393,8 @@
   },
   "CardPack:zcp_schematicxp_t20": {
     "choice": false,
+    "description": "A bundle of xp used to upgrade your schematics Harder missions give significantly higher quantities of resources!",
+    "displayName": "Schematic XP",
     "displayRarityLevel": 0,
     "lootTier": 20,
     "lootTierGroup": "ZCP_SchematicXP",
@@ -3424,6 +4402,8 @@
   },
   "CardPack:zcp_sea_supplyrun_long_t03": {
     "choice": false,
+    "description": "Supplies gathered on the expedition.",
+    "displayName": "Supply Cache - Large",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Sea_SupplyRun_Long_T03",
@@ -3431,6 +4411,8 @@
   },
   "CardPack:zcp_sea_supplyrun_long_t04": {
     "choice": false,
+    "description": "Supplies gathered on the expedition.",
+    "displayName": "Supply Cache - Large",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Sea_SupplyRun_Long_T04",
@@ -3438,6 +4420,8 @@
   },
   "CardPack:zcp_sea_supplyrun_medium_t02": {
     "choice": false,
+    "description": "Supplies gathered on the expedition.",
+    "displayName": "Supply Cache - Medium",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Sea_SupplyRun_Medium_T02",
@@ -3445,6 +4429,8 @@
   },
   "CardPack:zcp_sea_supplyrun_short_t01": {
     "choice": false,
+    "description": "Supplies gathered on the expedition.",
+    "displayName": "Supply Cache - Small",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Sea_SupplyRun_Short_T01",
@@ -3452,6 +4438,8 @@
   },
   "CardPack:zcp_sea_survivorscouting_long_t04": {
     "choice": false,
+    "description": "Survivors rescued on an Expedition",
+    "displayName": "Rescued Survivors - Large",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Sea_SurvivorScouting_Long_T04",
@@ -3459,6 +4447,8 @@
   },
   "CardPack:zcp_sea_survivorscouting_medium_t02": {
     "choice": false,
+    "description": "Survivors rescued on an Expedition",
+    "displayName": "Rescued Survivors - Medium",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Sea_SurvivorScouting_Medium_T02",
@@ -3466,6 +4456,8 @@
   },
   "CardPack:zcp_sea_survivorscouting_medium_t03": {
     "choice": false,
+    "description": "Survivors rescued on an Expedition",
+    "displayName": "Rescued Survivors - Medium",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Sea_SurvivorScouting_Medium_T03",
@@ -3473,6 +4465,8 @@
   },
   "CardPack:zcp_sea_survivorscouting_short_t01": {
     "choice": false,
+    "description": "Survivors rescued on an Expedition",
+    "displayName": "Rescued Survivors - Small",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Sea_SurvivorScouting_Short_T01",
@@ -3480,6 +4474,8 @@
   },
   "CardPack:zcp_snowballs_noscale": {
     "choice": false,
+    "description": "A bundle of snowflake tickets used to buy special llamas!",
+    "displayName": "Snowflake Tickets",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Snowballs_NoScale",
@@ -3487,6 +4483,8 @@
   },
   "CardPack:zcp_supplyrun_long_t02": {
     "choice": false,
+    "description": "Supplies gathered on the expedition.",
+    "displayName": "Supply Cache - Large",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_SupplyRun_Long_T02",
@@ -3494,6 +4492,8 @@
   },
   "CardPack:zcp_supplyrun_long_t03": {
     "choice": false,
+    "description": "Supplies gathered on the expedition.",
+    "displayName": "Supply Cache - Large",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_SupplyRun_Long_T03",
@@ -3501,6 +4501,8 @@
   },
   "CardPack:zcp_supplyrun_long_t04": {
     "choice": false,
+    "description": "Supplies gathered on the expedition.",
+    "displayName": "Supply Cache - Large",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_SupplyRun_Long_T04",
@@ -3508,6 +4510,8 @@
   },
   "CardPack:zcp_supplyrun_medium_t01": {
     "choice": false,
+    "description": "Supplies gathered on the expedition.",
+    "displayName": "Supply Cache - Medium",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_SupplyRun_Medium_T01",
@@ -3515,6 +4519,8 @@
   },
   "CardPack:zcp_supplyrun_medium_t02": {
     "choice": false,
+    "description": "Supplies gathered on the expedition.",
+    "displayName": "Supply Cache - Medium",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_SupplyRun_Medium_T02",
@@ -3522,6 +4528,8 @@
   },
   "CardPack:zcp_supplyrun_medium_t03": {
     "choice": false,
+    "description": "Supplies gathered on the expedition.",
+    "displayName": "Supply Cache - Medium",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_SupplyRun_Medium_T03",
@@ -3529,6 +4537,8 @@
   },
   "CardPack:zcp_supplyrun_short_t01": {
     "choice": false,
+    "description": "Supplies gathered on the expedition.",
+    "displayName": "Supply Cache - Small",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_SupplyRun_Short_T01",
@@ -3536,6 +4546,8 @@
   },
   "CardPack:zcp_supplyrun_short_t02": {
     "choice": false,
+    "description": "Supplies gathered on the expedition.",
+    "displayName": "Supply Cache - Small",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_SupplyRun_Short_T02",
@@ -3543,6 +4555,8 @@
   },
   "CardPack:zcp_supplyrun_short_t03": {
     "choice": false,
+    "description": "Supplies gathered on the expedition.",
+    "displayName": "Supply Cache - Small",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_SupplyRun_Short_T03",
@@ -3550,6 +4564,8 @@
   },
   "CardPack:zcp_survivorscouting_long_t03": {
     "choice": false,
+    "description": "Survivors rescued on an Expedition",
+    "displayName": "Rescued Survivors - Large",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_SurvivorScouting_Long_T03",
@@ -3557,6 +4573,8 @@
   },
   "CardPack:zcp_survivorscouting_long_t04": {
     "choice": false,
+    "description": "Survivors rescued on an Expedition",
+    "displayName": "Rescued Survivors - Large",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_SurvivorScouting_Long_T04",
@@ -3564,6 +4582,8 @@
   },
   "CardPack:zcp_survivorscouting_medium_t02": {
     "choice": false,
+    "description": "Survivors rescued on an Expedition",
+    "displayName": "Rescued Survivors - Medium",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_SurvivorScouting_Medium_T02",
@@ -3571,6 +4591,8 @@
   },
   "CardPack:zcp_survivorscouting_short_t01": {
     "choice": false,
+    "description": "Survivors rescued on an Expedition",
+    "displayName": "Rescued Survivors - Small",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_SurvivorScouting_Short_T01",
@@ -3578,6 +4600,8 @@
   },
   "CardPack:zcp_tutorial_hero": {
     "choice": false,
+    "description": "You rescued a Soldier hero!",
+    "displayName": "Rescued Soldier",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Tutorial_Hero",
@@ -3585,6 +4609,8 @@
   },
   "CardPack:zcp_tutorial_melee": {
     "choice": false,
+    "description": "You learned how to craft a melee weapon!",
+    "displayName": "Melee Weapon Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Tutorial_Melee",
@@ -3592,6 +4618,8 @@
   },
   "CardPack:zcp_tutorial_ranged": {
     "choice": false,
+    "description": "You\u0027ve learned how to craft a gun!",
+    "displayName": "Ranged Weapon Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Tutorial_Ranged",
@@ -3599,6 +4627,8 @@
   },
   "CardPack:zcp_tutorial_trap": {
     "choice": false,
+    "description": "You\u0027ve learned how to craft a trap!",
+    "displayName": "Trap Schematic",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Tutorial_Trap",
@@ -3606,6 +4636,8 @@
   },
   "CardPack:zcp_voucher_basicpack": {
     "choice": false,
+    "description": "Claim your free reward llama at the store.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Voucher_BasicPack",
@@ -3613,6 +4645,8 @@
   },
   "CardPack:zcp_voucher_tutorialpack": {
     "choice": false,
+    "description": "Claim your free reward llama at the store.",
+    "displayName": "Mini Reward Llama",
     "displayRarityLevel": 0,
     "lootTier": 0,
     "lootTierGroup": "ZCP_Voucher_TutorialPack",

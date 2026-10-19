@@ -69,8 +69,12 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     {
         ["class"] = export.ExportType,
         ["profile"] = profile,
-        ["maxStackSize"] = properties?["MaxStackSize"]?.GetValue<int>() ?? ItemClasses.DefaultMaxStackSize(export.ExportType)
+        ["maxStackSize"] = properties?["MaxStackSize"]?.GetValue<int>() ?? ItemClasses.DefaultMaxStackSize(export.ExportType),
+        // UFortItemDefinition's constructor leaves Rarity at Ordinary and Tier at No_Tier.
+        ["rarity"] = Enum(properties?["Rarity"]) ?? "Ordinary",
+        ["tier"] = Enum(properties?["Tier"]) ?? "No_Tier"
     };
+    if (Strings(properties?["GameplayTags"]) is { Count: > 0 } itemTags) ((SortedDictionary<string, object>)items[templateId])["tags"] = itemTags;
 
     // Squad slots filter on these: TagFilter (defenders), bIsManager (survivor slot 0), RequiredGPTags (hero classes).
     if (export.ExportType is "FortHeroType" or "FortWorkerType" or "FortDefenderItemDefinition")
@@ -90,7 +94,9 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
             ["lootTier"] = properties?["LootTier"]?.GetValue<int>() ?? 0,
             ["choice"] = properties?["bIsChoicePack"]?.GetValue<bool>() ?? false,
             ["displayRarityLevel"] = properties?["DisplayRarityLevel"]?.GetValue<int>() ?? 0,
-            ["rarity"] = Enum(properties?["Rarity"]) ?? "Ordinary"
+            ["rarity"] = Enum(properties?["Rarity"]) ?? "Ordinary",
+            ["displayName"] = properties?["DisplayName"]?["SourceString"]?.GetValue<string>() ?? "",
+            ["description"] = properties?["Description"]?["SourceString"]?.GetValue<string>() ?? ""
         };
     }
 }
