@@ -1,12 +1,15 @@
 import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
+import { requireLoopback } from "../../admin/local.js";
 import { notFound } from "../../errors.js";
 import { log } from "../../log.js";
-import { sessionJson } from "../../matchmaking/sessions.js";
+import { sessionJson, sessionSummary } from "../../matchmaking/sessions.js";
 
-// OnlineSubsystemMcp's session API. Gameservers create, update, heartbeat and end their sessions; the client finds
-// one with matchMakingRequest (the Cert client asks for an empty dedicated server: GAMEMODE_s FORTEMPTY) and then
-// fetches the connection's encryption key.
+// OnlineSubsystemMcp's session API, with the verbs the Cert build sends (FOnlineSessionMcp, Session-Plan §5): servers
+// create (POST), update (PUT), heartbeat every 30 s, start, stop (POST), register and unregister players (POST /
+// DELETE /players) and destroy (DELETE) their sessions; the client finds an empty server with matchMakingRequest
+// (GAMEMODE_s FORTEMPTY), reads one session or a friend's (GET), joins and invites (POST) and fetches the
+// connection's encryption key. Other verbs fall through to the unknown route log.
 export function sessionRoutes({ tokens, sessions }) {
   const router = express.Router();
   const base = "/fortnite/api/matchmaking/session";
@@ -17,56 +20,65 @@ export function sessionRoutes({ tokens, sessions }) {
     handler(session, req, res);
   };
 
+  // The Cert server's create body has no serverAddress (only with -UseLocalIPs), so it is where the request came from.
   router.post(base, auth, (req, res) => {
-    const session = sessions.create(req.body);
+    const session = sessions.create(req.body, req.socket.remoteAddress);
     log("Matchmaking", `Session ${session.id} created by ${session.ownerName || session.ownerId || "a server"} at ${session.serverAddress}:${session.serverPort}`);
-    res.json(sessionJson(session));
+    res.json(sessionJson(session, req));
   });
 
   router.post(`${base}/matchMakingRequest`, auth, (req, res) => {
-    res.json(sessions.search(req.body).map(sessionJson));
+    res.json(sessions.search(req.body).map((session) => sessionJson(session, req)));
   });
 
   router.get(`${base}/findPlayer/:accountId`, auth, (req, res) => {
-    res.json(sessions.findPlayer(req.params.accountId).map(sessionJson));
+    res.json(sessions.findPlayer(req.params.accountId).map((session) => sessionJson(session, req)));
   });
 
-  router.get(`${base}/:sessionId`, auth, withSession((session, req, res) => res.json(sessionJson(session))));
-
   router.route(`${base}/:sessionId`)
-    .put(auth, withSession((session, req, res) => res.json(sessionJson(sessions.update(session.id, req.body)))))
-    .post(auth, withSession((session, req, res) => res.json(sessionJson(sessions.update(session.id, req.body)))))
+    .get(auth, withSession((session, req, res) => res.json(sessionJson(session, req))))
+    .put(auth, withSession((session, req, res) => res.json(sessionJson(sessions.update(session.id, req.body), req))))
     .delete(auth, withSession((session, req, res) => {
       sessions.remove(session.id);
       log("Matchmaking", `Session ${session.id} ended`);
       res.status(204).end();
     }));
 
-  router.all(`${base}/:sessionId/heartbeat`, auth, withSession((session, req, res) => {
+  router.post(`${base}/:sessionId/heartbeat`, auth, withSession((session, req, res) => {
     sessions.heartbeat(session.id);
     res.status(204).end();
   }));
 
   for (const [action, started] of [["start", true], ["stop", false]]) {
-    router.all(`${base}/:sessionId/${action}`, auth, withSession((session, req, res) => {
+    router.post(`${base}/:sessionId/${action}`, auth, withSession((session, req, res) => {
       sessions.setStarted(session.id, started);
       res.status(204).end();
     }));
   }
 
-  router.all(`${base}/:sessionId/players`, auth, withSession((session, req, res) => {
-    sessions.update(session.id, req.body);
-    res.status(204).end();
-  }));
+  router.route(`${base}/:sessionId/players`)
+    .post(auth, withSession((session, req, res) => {
+      sessions.addPlayers(session.id, req.body);
+      res.status(204).end();
+    }))
+    .delete(auth, withSession((session, req, res) => {
+      sessions.removePlayers(session.id, req.body);
+      res.status(204).end();
+    }));
 
   for (const action of ["join", "invite"]) {
-    router.all(`${base}/:sessionId/${action}`, auth, withSession((session, req, res) => res.status(204).end()));
+    router.post(`${base}/:sessionId/${action}`, auth, withSession((session, req, res) => res.status(204).end()));
   }
 
   // The client (for itself) and the server (for each joining player) fetch the same key.
   router.get("/fortnite/api/game/v2/matchmaking/account/:accountId/session/:sessionId", auth, withSession((session, req, res) => {
     res.json({ accountId: req.params.accountId, sessionId: session.id, key: sessions.key(session.id, req.params.accountId) });
   }));
+
+  // Core's: the launcher reads which servers are busy (owner = the server slot's account, players, game mode).
+  router.get("/core/api/sessions", requireLoopback, (req, res) => {
+    res.json(sessions.list().map(sessionSummary));
+  });
 
   return router;
 }

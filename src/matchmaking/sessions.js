@@ -34,19 +34,35 @@ const compare = {
   NOT_IN: (actual, value) => Array.isArray(value) && !value.includes(actual)
 };
 
-function apply(session, body) {
-  for (const field of sessionFields) {
-    if (body?.[field] !== undefined) session[field] = body[field];
-  }
-  session.buildUniqueId = String(session.buildUniqueId);
-  for (const list of ["publicPlayers", "privatePlayers"]) {
-    if (Array.isArray(body?.[list])) session[list] = body[list].map(String);
-  }
+// The client's session reader (sub_37F5010) parses serverAddress as an IP and only maps 0:0:0:0:0:0:0:1 itself
+// ("Failed to parse ip address %s" otherwise). Node reports IPv4 peers on a dual-stack socket as ::ffff:a.b.c.d.
+export function normalizeAddress(address) {
+  const text = String(address ?? "").trim();
+  if (text === "::1" || text === "0:0:0:0:0:0:0:1") return "127.0.0.1";
+  return text.replace(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/i, "$1");
 }
 
+// "" (the Cert server's create body has no address unless -UseLocalIPs) and "0.0.0.0" (its -UseLocalIPs failure value)
+// say nothing about where the server is.
+const usable = (address) => address !== "" && address !== "0.0.0.0";
+export const isLoopback = (address) => /^127\./.test(normalizeAddress(address));
+
+function apply(session, body) {
+  for (const field of sessionFields) {
+    if (body?.[field] === undefined) continue;
+    if (field === "serverAddress") {
+      const address = normalizeAddress(body.serverAddress);
+      if (usable(address)) session.serverAddress = address;
+    } else {
+      session[field] = body[field];
+    }
+  }
+  session.buildUniqueId = String(session.buildUniqueId);
+}
+
+// Players come and go only through /{id}/players (RegisterPlayers adds, UnregisterPlayers removes).
 const players = (session) => [...session.publicPlayers, ...session.privatePlayers];
-const currentPlayers = (session) => Math.max(players(session).length,
-  session.maxPublicPlayers + session.maxPrivatePlayers - session.openPublicPlayers - session.openPrivatePlayers);
+const currentPlayers = (session) => players(session).length;
 
 // Game sessions the gameservers register (OnlineSubsystemMcp's /api/matchmaking/session API), kept in memory:
 // a server re-registers after a backend restart.
@@ -64,7 +80,8 @@ export function createSessionStore() {
   const touch = (session) => { session.lastUpdated = new Date().toISOString(); };
 
   return {
-    create(body) {
+    // connectionAddress: where the create request came from, the server's address when its body names none.
+    create(body, connectionAddress = "") {
       const session = {
         id: crypto.randomBytes(16).toString("hex"),
         ownerId: "", ownerName: "", serverName: "", serverAddress: "", serverPort: 0,
@@ -75,6 +92,7 @@ export function createSessionStore() {
         keys: {}
       };
       apply(session, body);
+      if (!usable(session.serverAddress)) session.serverAddress = normalizeAddress(connectionAddress);
       if (body?.openPublicPlayers === undefined) session.openPublicPlayers = session.maxPublicPlayers;
       if (body?.openPrivatePlayers === undefined) session.openPrivatePlayers = session.maxPrivatePlayers;
       touch(session);
@@ -93,6 +111,34 @@ export function createSessionStore() {
       apply(session, body);
       touch(session);
       return session;
+    },
+
+    // RegisterPlayers {publicPlayers, privatePlayers}: the players joining, by whether they were invited.
+    addPlayers(id, body) {
+      const session = this.get(id);
+      if (!session) return undefined;
+      for (const list of ["publicPlayers", "privatePlayers"]) {
+        for (const accountId of Array.isArray(body?.[list]) ? body[list].map(String) : []) {
+          if (!players(session).includes(accountId)) session[list].push(accountId);
+        }
+      }
+      touch(session);
+      return session;
+    },
+
+    // UnregisterPlayers: a JSON array of the players leaving.
+    removePlayers(id, accountIds) {
+      const session = this.get(id);
+      if (!session) return undefined;
+      const leaving = new Set((Array.isArray(accountIds) ? accountIds : []).map(String));
+      session.publicPlayers = session.publicPlayers.filter((accountId) => !leaving.has(accountId));
+      session.privatePlayers = session.privatePlayers.filter((accountId) => !leaving.has(accountId));
+      touch(session);
+      return session;
+    },
+
+    list() {
+      return live();
     },
 
     heartbeat(id) {
@@ -147,7 +193,34 @@ export function createSessionStore() {
 }
 
 // What the client parses (OnlineSessionJsonMcp): the settings, the session info and the open slot counts.
-export function sessionJson(session) {
+// viewer: the request it goes to. A server on this machine registers as 127.0.0.1, which a client on another machine
+// can't reach; it gets the address it reached the backend on instead (as the XMPP hotfix does), the server being here.
+export function sessionJson(session, viewer) {
   const { keys, ...json } = session;
+  const socket = viewer?.socket;
+  if (socket && isLoopback(json.serverAddress) && !isLoopback(socket.remoteAddress)) {
+    json.serverAddress = normalizeAddress(socket.localAddress);
+  }
   return json;
+}
+
+// The launcher's view (Launcher-Plan "Game sessions"): who runs each session, who is in it and what it hosts.
+export function sessionSummary(session) {
+  return {
+    id: session.id,
+    ownerId: session.ownerId,
+    ownerName: session.ownerName,
+    serverName: session.serverName,
+    serverAddress: session.serverAddress,
+    serverPort: session.serverPort,
+    gameMode: session.attributes?.GAMEMODE_s ?? "",
+    region: session.attributes?.REGION_s ?? "",
+    beaconPort: session.attributes?.BEACONPORT_i ?? 0,
+    publicPlayers: [...session.publicPlayers],
+    privatePlayers: [...session.privatePlayers],
+    currentPlayers: currentPlayers(session),
+    maxPlayers: session.maxPublicPlayers + session.maxPrivatePlayers,
+    started: session.started,
+    lastUpdated: session.lastUpdated
+  };
 }
