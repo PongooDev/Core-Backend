@@ -56,15 +56,13 @@ export function sessionRoutes({ tokens, sessions }) {
     }));
   }
 
+  // Both replies are parsed as a JSON object (RegisterPlayers sub_37F95E0, UnregisterPlayers sub_3807C30); RegisterPlayers
+  // also needs publicPlayers and privatePlayers in it, or "Invalid response payload=" fails the task and the server
+  // drops the player. So both answer with the session's lists after the change.
+  const playerLists = (session) => ({ publicPlayers: [...session.publicPlayers], privatePlayers: [...session.privatePlayers] });
   router.route(`${base}/:sessionId/players`)
-    .post(auth, withSession((session, req, res) => {
-      sessions.addPlayers(session.id, req.body);
-      res.status(204).end();
-    }))
-    .delete(auth, withSession((session, req, res) => {
-      sessions.removePlayers(session.id, req.body);
-      res.status(204).end();
-    }));
+    .post(auth, withSession((session, req, res) => res.json(playerLists(sessions.addPlayers(session.id, req.body)))))
+    .delete(auth, withSession((session, req, res) => res.json(playerLists(sessions.removePlayers(session.id, req.body)))));
 
   for (const action of ["join", "invite"]) {
     router.post(`${base}/:sessionId/${action}`, auth, withSession((session, req, res) => res.status(204).end()));
