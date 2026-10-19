@@ -4,6 +4,7 @@ import { adminRoutes } from "./admin/routes.js";
 import { createTokenStore } from "./accounts/tokens.js";
 import { createProfileStore } from "./profiles/store.js";
 import { requestLog, unknownRoute } from "./log.js";
+import { createSessionStore } from "./matchmaking/sessions.js";
 import { originForm } from "./proxy.js";
 import { oauthRoutes } from "./services/account/oauth.js";
 import { publicAccountRoutes } from "./services/account/public.js";
@@ -27,6 +28,7 @@ export function createApp(config) {
     accounts: createAccountStore(config.dataDir),
     tokens: createTokenStore(config.dataDir),
     profiles: createProfileStore(config.dataDir),
+    sessions: createSessionStore(),
     dataDir: config.dataDir
   };
 
