@@ -37,6 +37,15 @@ test("entering a storm shield makes its core, the gameserver saves it, and a won
     assert.equal(batch.status, 200);
     assert.deepEqual((await profile()).items[coreId].attributes.cloud_save_info, saves);
 
+    // An unknown core doesn't lose the player's inventory changes.
+    const unknownCore = await gameserver("BatchUpdatePlayerOutpost", {
+      theaterItemUpdate: { addRequests: [{ itemId: "stone-1", templateId: "WorldItem:stoneitemdata", quantity: 12, attributes: {} }] },
+      outpostItemUpdate: {}, questObjectiveUpdates: [], outpostId: "nope", outpostInfo: coreInfo, cloudSaveInfo: saves
+    }, "theater0");
+    assert.equal(unknownCore.status, 200);
+    const theater = (await gameserver("QueryProfile", {}, "theater0")).body.profileChanges[0].profile;
+    assert.equal(theater.items["stone-1"]?.quantity, 12);
+
     // Stonewood's storm shield mission, won through the server's game session.
     const info = (await get(backend.port, "/fortnite/api/game/v2/world/info", player.token)).body;
     const stonewood = info.missions.find(({ availableMissions }) => availableMissions.some(({ missionGenerator }) => /TheOutpost_PvE_01/.test(missionGenerator)));

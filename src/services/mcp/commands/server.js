@@ -61,6 +61,16 @@ function applyChanges(tracker, request) {
 
 const accepted = () => {};
 
+// For the part of a batch that mustn't undo the rest: a refusal is logged instead.
+function keepGoing(command, run) {
+  try {
+    run();
+  } catch (error) {
+    if (!(error instanceof McpError)) throw error;
+    log("MCP", `${command}: ${error.message}, skipped`);
+  }
+}
+
 export const serverCommands = {
   QueryProfile: accepted,
 
@@ -147,10 +157,11 @@ export const serverCommands = {
   },
 
   // The same from a storm shield, with the core's buildings and build saves: {outpostId, outpostInfo, cloudSaveInfo}.
+  // An unknown core is logged and skipped, so the player's inventory changes still land.
   BatchUpdatePlayerOutpost(context) {
     serverCommands.BatchUpdatePlayer(context);
     const { outpostId, outpostInfo, cloudSaveInfo } = context.req.body ?? {};
-    saveOutpost(context.session, outpostId, outpostInfo, cloudSaveInfo);
+    keepGoing("BatchUpdatePlayerOutpost", () => saveOutpost(context.session, outpostId, outpostInfo, cloudSaveInfo));
   },
 
   // A storm shield's placed buildings and who may edit it (FFortOutpostCoreInfo), on profile0's core item.
@@ -171,7 +182,7 @@ export const serverCommands = {
   BatchUpdatePlayerDeployableBase(context) {
     serverCommands.BatchUpdatePlayer(context);
     const { deployableBaseItemId, cloudSaveInfo } = context.req.body ?? {};
-    saveDeployableBase(context.session, deployableBaseItemId, cloudSaveInfo);
+    keepGoing("BatchUpdatePlayerDeployableBase", () => saveDeployableBase(context.session, deployableBaseItemId, cloudSaveInfo));
   }
 };
 
