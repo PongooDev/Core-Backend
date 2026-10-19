@@ -62,3 +62,28 @@ test("entering a storm shield makes its core, the gameserver saves it, and a won
     backend.close();
   }
 });
+
+test("the gameserver makes, saves and records tiers on a deployable base, and can abort a disintegration", async () => {
+  const backend = await startBackend();
+  try {
+    const server = await userLogin(backend.port, "CoreServer1");
+    const player = await userLogin(backend.port, "BasePlayer");
+    const gameserver = (name, body, profileId) => post(backend.port, route("dedicated_server", player.accountId, name, profileId), server.token, body);
+    assert.equal((await gameserver("AbortDisintegration", {}, "theater0")).status, 200);
+    assert.equal((await gameserver("CreateDeployableBaseItem", { templateId: "Outpost:outpostcore_pve_01" })).status, 400);
+    assert.equal((await gameserver("CreateDeployableBaseItem", { templateId: "DeployableBaseCloudSave:testdeployablebaseitemdef" })).status, 200);
+    const items = async () => (await gameserver("QueryProfile", {})).body.profileChanges[0].profile.items;
+    const [baseId] = Object.entries(await items()).find(([, item]) => item.templateId.startsWith("DeployableBaseCloudSave:"));
+
+    await gameserver("UpdateDeployableBaseTierProgression", { deployableBaseItemId: baseId, progressionLayoutGuid: "layout", tierDefeated: 2 });
+    await gameserver("UpdateDeployableBaseTierProgression", { deployableBaseItemId: baseId, progressionLayoutGuid: "layout", tierDefeated: 1 });
+    const saves = { saveCount: 1, savedRecords: [{ recordIndex: 0, archiveNumber: 0, recordFilename: "base.sav" }] };
+    assert.equal((await gameserver("BatchUpdatePlayerDeployableBase", { theaterItemUpdate: {}, outpostItemUpdate: {}, questObjectiveUpdates: [],
+      deployableBaseItemId: baseId, cloudSaveInfo: saves }, "theater0")).status, 200);
+    const { attributes } = (await items())[baseId];
+    assert.deepEqual(attributes.tier_progression, { progressionInfo: [{ progressionLayoutGuid: "layout", highestDefeatedTier: 2 }] });
+    assert.deepEqual(attributes.cloud_save_info, saves);
+  } finally {
+    backend.close();
+  }
+});

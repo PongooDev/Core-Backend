@@ -106,3 +106,48 @@ export function outpostDifficulty(profile, templateId, difficultyInfo) {
   if (!/_Outpost\d+$/.test(rowName)) return difficultyInfo;
   return { ...difficultyInfo, rowName: rowName.replace(/\d+$/, String(Math.min(level + 1, info?.maxLevel ?? 10))) };
 }
+
+// Deployable bases (UFortDeployableBaseCloudSaveItem: cloud_save_info and tier_progression {progressionInfo:
+// [{progressionLayoutGuid, highestDefeatedTier}]}): the server makes one (CreateDeployableBaseItem {templateId}),
+// records tiers beaten (UpdateDeployableBaseTierProgression) and saves it (BatchUpdatePlayerDeployableBase). Only a
+// test definition ships.
+const deployableInfo = (templateId) => {
+  const info = getItem(String(templateId ?? ""));
+  return info?.class === "FortDeployableBaseCloudSaveItemDefinition" ? info : undefined;
+};
+
+function deployableItem(tracker, itemId) {
+  const item = typeof itemId === "string" && tracker.profile.items[itemId];
+  if (!item || !deployableInfo(item.templateId)) fail(`No deployable base ${itemId}`);
+  return item;
+}
+
+export function createDeployableBase(session, templateId) {
+  const info = deployableInfo(templateId);
+  if (!info) fail(`No deployable base ${templateId}`);
+  const tracker = session.profile("profile0");
+  if (findItem(tracker.profile, info.templateId)) return;
+  tracker.addItem(crypto.randomUUID(), {
+    templateId: info.templateId,
+    attributes: { level: info.minLevel ?? 1, item_seen: 0, cloud_save_info: { saveCount: 0, savedRecords: [] }, tier_progression: { progressionInfo: [] } },
+    quantity: 1
+  });
+}
+
+export function updateTierProgression(session, itemId, layoutGuid, tierDefeated) {
+  const tracker = session.profile("profile0");
+  const item = deployableItem(tracker, itemId);
+  if (typeof layoutGuid !== "string" || !Number.isInteger(tierDefeated)) return;
+  const progress = item.attributes.tier_progression?.progressionInfo ?? [];
+  const known = progress.find((entry) => entry.progressionLayoutGuid === layoutGuid);
+  const highest = Math.max(known?.highestDefeatedTier ?? -1, tierDefeated);
+  tracker.setItemAttribute(itemId, "tier_progression", {
+    progressionInfo: [...progress.filter((entry) => entry !== known), { progressionLayoutGuid: layoutGuid, highestDefeatedTier: highest }]
+  });
+}
+
+export function saveDeployableBase(session, itemId, saves) {
+  const tracker = session.profile("profile0");
+  deployableItem(tracker, itemId);
+  tracker.setItemAttribute(itemId, "cloud_save_info", cloudSaveInfo(saves));
+}

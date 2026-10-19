@@ -39,6 +39,8 @@ export const clientCommands = {
   AssignWorkerToSquadBatch: assignWorkerToSquadBatch,
   ClaimCollectionBookPageRewards: claimCollectionBookPageRewards,
   ClaimCollectionBookRewards: claimCollectionBookRewards,
+  // No collectors exist in this build (no CollectedResource definitions ship), so there is never anything to claim.
+  ClaimCollectedResources: () => {},
   ClaimLoginReward: claimLoginReward,
   ClaimMissionAlertRewards: claimMissionAlertRewards,
   ClaimQuestReward: claimQuestReward,
@@ -70,6 +72,8 @@ export const clientCommands = {
   SetMtxPlatform: setMtxPlatform,
   SetPinnedQuests: setPinnedQuests,
   SkipTutorial: skipTutorial,
+  // Twitch broadcaster links aren't kept.
+  TwitchUpdateBroadcasterRegistration: () => {},
   SlotItemInCollectionBook: slotItemInCollectionBook,
   StartExpedition: startExpeditionCommand,
   TransmogItem: transmogItem,

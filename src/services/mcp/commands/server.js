@@ -4,7 +4,7 @@ import { log } from "../../../log.js";
 import { completeMissionAlert } from "../../../profiles/alerts.js";
 import { zoneOutpost } from "../../../gamedata/world.js";
 import { grantItem } from "../../../profiles/items.js";
-import { completeOutpostDefense, saveOutpost, updateOutpostCore } from "../../../profiles/outposts.js";
+import { completeOutpostDefense, createDeployableBase, saveDeployableBase, saveOutpost, updateOutpostCore, updateTierProgression } from "../../../profiles/outposts.js";
 import { advanceObjective } from "../../../profiles/progress.js";
 import { earnScore } from "../../../profiles/xp.js";
 import { findMission } from "../../../world/theaters.js";
@@ -71,6 +71,8 @@ export const serverCommands = {
   UnlockProfileForWrite: accepted,
   InitializeTheater: accepted,
   ModifyMission: accepted,
+  // The fabricator: DisintegrateItems is never sent by this build, so there is nothing to abort.
+  AbortDisintegration: accepted,
 
   ServerQuestLogin: clientQuestLogin,
 
@@ -154,6 +156,22 @@ export const serverCommands = {
   // A storm shield's placed buildings and who may edit it (FFortOutpostCoreInfo), on profile0's core item.
   UpdateOutpostCore({ req, session }) {
     updateOutpostCore(session, req.body?.coreId, req.body?.coreInfo);
+  },
+
+  CreateDeployableBaseItem({ req, session }) {
+    createDeployableBase(session, req.body?.templateId);
+  },
+
+  UpdateDeployableBaseTierProgression({ req, session }) {
+    const { deployableBaseItemId, progressionLayoutGuid, tierDefeated } = req.body ?? {};
+    updateTierProgression(session, deployableBaseItemId, progressionLayoutGuid, tierDefeated);
+  },
+
+  // BatchUpdatePlayer's work plus the deployable base's build saves: {deployableBaseItemId, cloudSaveInfo}.
+  BatchUpdatePlayerDeployableBase(context) {
+    serverCommands.BatchUpdatePlayer(context);
+    const { deployableBaseItemId, cloudSaveInfo } = context.req.body ?? {};
+    saveDeployableBase(context.session, deployableBaseItemId, cloudSaveInfo);
   }
 };
 
