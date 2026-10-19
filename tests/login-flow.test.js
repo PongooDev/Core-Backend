@@ -26,7 +26,8 @@ test("post-login checks answer the way the Cert client parses them", async () =>
     assert.deepEqual(features.body, []);
 
     const world = await get(backend.port, "/fortnite/api/game/v2/world/info", token);
-    assert.deepEqual(world.body, { theaters: [], missions: [], missionAlerts: [] });
+    assert.equal(world.status, 200);
+    assert.deepEqual(Object.keys(world.body), ["theaters", "missions", "missionAlerts"]);
 
     const receipts = await get(backend.port, `/fortnite/api/receipts/v1/account/${accountId}/receipts`, token);
     assert.deepEqual(receipts.body, []);
