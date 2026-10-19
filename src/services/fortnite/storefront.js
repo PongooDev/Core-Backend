@@ -1,5 +1,6 @@
 import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
+import { storefronts } from "../../store/catalog.js";
 
 const refreshIntervalHrs = 24;
 
@@ -11,7 +12,7 @@ export function storefrontRoutes({ tokens }) {
       refreshIntervalHrs,
       dailyPurchaseHrs: 24,
       expiration: new Date(Date.now() + refreshIntervalHrs * 60 * 60 * 1000).toISOString(),
-      storefronts: []
+      storefronts: storefronts()
     });
   });
 

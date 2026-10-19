@@ -10,6 +10,7 @@ import { markItemSeen } from "./MarkItemSeen.js";
 import { markNewQuestNotificationSent } from "./MarkNewQuestNotificationSent.js";
 import { openCardPack } from "./OpenCardPack.js";
 import { openCardPackBatch } from "./OpenCardPackBatch.js";
+import { purchaseCatalogEntry } from "./PurchaseCatalogEntry.js";
 import { purchaseHomebaseNode } from "./PurchaseHomebaseNode.js";
 import { queryProfile } from "./QueryProfile.js";
 import { refreshExpeditions } from "./RefreshExpeditions.js";
@@ -39,6 +40,7 @@ export const clientCommands = {
   MarkNewQuestNotificationSent: markNewQuestNotificationSent,
   OpenCardPack: openCardPack,
   OpenCardPackBatch: openCardPackBatch,
+  PurchaseCatalogEntry: purchaseCatalogEntry,
   PurchaseHomebaseNode: purchaseHomebaseNode,
   QueryProfile: queryProfile,
   RecycleItem: recycleItemCommand,

@@ -12,7 +12,7 @@ test("frontend requests answer in the shapes the Cert client parses", async () =
     assert.equal(typeof catalog.body.refreshIntervalHrs, "number");
     assert.equal(typeof catalog.body.dailyPurchaseHrs, "number");
     assert.ok(Date.parse(catalog.body.expiration) > Date.now());
-    assert.deepEqual(catalog.body.storefronts, []);
+    assert.deepEqual(catalog.body.storefronts.map((storefront) => storefront.name), ["CardPackStore", "CardPackStorePromo"]);
 
     const chat = await post(backend.port, `/fortnite/api/game/v2/chat/${accountId}/recommendGeneralChatRooms/pc`, token, {});
     assert.deepEqual(chat.body, {
