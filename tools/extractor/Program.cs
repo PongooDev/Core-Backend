@@ -260,8 +260,32 @@ foreach (var (id, row) in LoadRows(provider, JsonValue.Create("/Game/Balance/Dat
     };
 }
 
+// Account levels (FortLevelUpData): the total XP each level needs, how XP shows in the UI, and what reaching it gives
+// ("/Game/Items/Tokens/HomebasePoints.HomebasePoints=1", comma separated).
+var accountLevels = new List<object>();
+foreach (var (id, row) in LoadRows(provider, JsonValue.Create("/Game/Balance/DataTables/XPAccountLevels.XPAccountLevels"))
+    .OrderBy(entry => int.Parse(entry.Key)))
+{
+    var rewards = (row!["ItemRewardsText"]?.GetValue<string>() ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+        .Select(reward => reward.Split('='))
+        .Select(parts => new SortedDictionary<string, object>(StringComparer.Ordinal)
+        {
+            ["asset"] = parts[0].Split('.').Last(),
+            ["quantity"] = parts.Length > 1 && int.TryParse(parts[1], out var quantity) ? quantity : 1
+        })
+        .ToList();
+    accountLevels.Add(new SortedDictionary<string, object>(StringComparer.Ordinal)
+    {
+        ["level"] = int.Parse(id),
+        ["xp"] = row["XP"]?.GetValue<long>() ?? 0,
+        ["displayMultiplier"] = row["XPDisplayMultiplier"]?.GetValue<double>() ?? 1,
+        ["rewards"] = rewards
+    });
+}
+
 Directory.CreateDirectory(output);
 var options = new JsonSerializerOptions { WriteIndented = true };
+File.WriteAllText(Path.Combine(output, "accountlevels.json"), JsonSerializer.Serialize(accountLevels, options) + "\n");
 File.WriteAllText(Path.Combine(output, "quests.json"), JsonSerializer.Serialize(quests, options) + "\n");
 File.WriteAllText(Path.Combine(output, "items.json"), JsonSerializer.Serialize(items, options) + "\n");
 File.WriteAllText(Path.Combine(output, "dailyrewards.json"), JsonSerializer.Serialize(dailyRewards, options) + "\n");

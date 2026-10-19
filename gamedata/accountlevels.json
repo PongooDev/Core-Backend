@@ -1,0 +1,3407 @@
+[
+  {
+    "displayMultiplier": 0.00025,
+    "level": 1,
+    "rewards": [],
+    "xp": 0
+  },
+  {
+    "displayMultiplier": 0.0005,
+    "level": 2,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 1000000
+  },
+  {
+    "displayMultiplier": 0.0006,
+    "level": 3,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 2000000
+  },
+  {
+    "displayMultiplier": 0.00065,
+    "level": 4,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 3000000
+  },
+  {
+    "displayMultiplier": 0.00125,
+    "level": 5,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 4000000
+  },
+  {
+    "displayMultiplier": 0.0016,
+    "level": 6,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 5000000
+  },
+  {
+    "displayMultiplier": 0.0017,
+    "level": 7,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 6000000
+  },
+  {
+    "displayMultiplier": 0.0018,
+    "level": 8,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 7000000
+  },
+  {
+    "displayMultiplier": 0.00195,
+    "level": 9,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 8000000
+  },
+  {
+    "displayMultiplier": 0.00225,
+    "level": 10,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 9000000
+  },
+  {
+    "displayMultiplier": 0.00235,
+    "level": 11,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "displayMultiplier": 0.0025,
+    "level": 12,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 11000000
+  },
+  {
+    "displayMultiplier": 0.0026,
+    "level": 13,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 12000000
+  },
+  {
+    "displayMultiplier": 0.00275,
+    "level": 14,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 13000000
+  },
+  {
+    "displayMultiplier": 0.00285,
+    "level": 15,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 14000000
+  },
+  {
+    "displayMultiplier": 0.00295,
+    "level": 16,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 15000000
+  },
+  {
+    "displayMultiplier": 0.0031,
+    "level": 17,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 16000000
+  },
+  {
+    "displayMultiplier": 0.0032,
+    "level": 18,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 17000000
+  },
+  {
+    "displayMultiplier": 0.00335,
+    "level": 19,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 18000000
+  },
+  {
+    "displayMultiplier": 0.00345,
+    "level": 20,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 19000000
+  },
+  {
+    "displayMultiplier": 0.0036,
+    "level": 21,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 20000000
+  },
+  {
+    "displayMultiplier": 0.0037,
+    "level": 22,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 21000000
+  },
+  {
+    "displayMultiplier": 0.00385,
+    "level": 23,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 22000000
+  },
+  {
+    "displayMultiplier": 0.00395,
+    "level": 24,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 23000000
+  },
+  {
+    "displayMultiplier": 0.0041,
+    "level": 25,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 24000000
+  },
+  {
+    "displayMultiplier": 0.0047,
+    "level": 26,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 25000000
+  },
+  {
+    "displayMultiplier": 0.00485,
+    "level": 27,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 26000000
+  },
+  {
+    "displayMultiplier": 0.005,
+    "level": 28,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 27000000
+  },
+  {
+    "displayMultiplier": 0.00515,
+    "level": 29,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 28000000
+  },
+  {
+    "displayMultiplier": 0.00525,
+    "level": 30,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 29000000
+  },
+  {
+    "displayMultiplier": 0.0054,
+    "level": 31,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 30000000
+  },
+  {
+    "displayMultiplier": 0.00555,
+    "level": 32,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 31000000
+  },
+  {
+    "displayMultiplier": 0.0057,
+    "level": 33,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 32000000
+  },
+  {
+    "displayMultiplier": 0.00585,
+    "level": 34,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 33000000
+  },
+  {
+    "displayMultiplier": 0.00595,
+    "level": 35,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 34000000
+  },
+  {
+    "displayMultiplier": 0.0061,
+    "level": 36,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 35000000
+  },
+  {
+    "displayMultiplier": 0.00625,
+    "level": 37,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 36000000
+  },
+  {
+    "displayMultiplier": 0.0064,
+    "level": 38,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 37000000
+  },
+  {
+    "displayMultiplier": 0.00655,
+    "level": 39,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 38000000
+  },
+  {
+    "displayMultiplier": 0.00665,
+    "level": 40,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 39000000
+  },
+  {
+    "displayMultiplier": 0.0073,
+    "level": 41,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 40000000
+  },
+  {
+    "displayMultiplier": 0.00745,
+    "level": 42,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 41000000
+  },
+  {
+    "displayMultiplier": 0.0076,
+    "level": 43,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 42000000
+  },
+  {
+    "displayMultiplier": 0.00775,
+    "level": 44,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 43000000
+  },
+  {
+    "displayMultiplier": 0.0079,
+    "level": 45,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 44000000
+  },
+  {
+    "displayMultiplier": 0.00805,
+    "level": 46,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 45000000
+  },
+  {
+    "displayMultiplier": 0.0082,
+    "level": 47,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 46000000
+  },
+  {
+    "displayMultiplier": 0.00835,
+    "level": 48,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 47000000
+  },
+  {
+    "displayMultiplier": 0.0085,
+    "level": 49,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 48000000
+  },
+  {
+    "displayMultiplier": 0.00865,
+    "level": 50,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 49000000
+  },
+  {
+    "displayMultiplier": 0.0088,
+    "level": 51,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 50000000
+  },
+  {
+    "displayMultiplier": 0.00895,
+    "level": 52,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 51000000
+  },
+  {
+    "displayMultiplier": 0.0091,
+    "level": 53,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 52000000
+  },
+  {
+    "displayMultiplier": 0.00925,
+    "level": 54,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 53000000
+  },
+  {
+    "displayMultiplier": 0.0094,
+    "level": 55,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 54000000
+  },
+  {
+    "displayMultiplier": 0.0102,
+    "level": 56,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 55000000
+  },
+  {
+    "displayMultiplier": 0.0104,
+    "level": 57,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 56000000
+  },
+  {
+    "displayMultiplier": 0.01055,
+    "level": 58,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 57000000
+  },
+  {
+    "displayMultiplier": 0.0107,
+    "level": 59,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 58000000
+  },
+  {
+    "displayMultiplier": 0.01085,
+    "level": 60,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 59000000
+  },
+  {
+    "displayMultiplier": 0.01105,
+    "level": 61,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 60000000
+  },
+  {
+    "displayMultiplier": 0.0115,
+    "level": 62,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 61000000
+  },
+  {
+    "displayMultiplier": 0.01195,
+    "level": 63,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 62000000
+  },
+  {
+    "displayMultiplier": 0.0124,
+    "level": 64,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 63000000
+  },
+  {
+    "displayMultiplier": 0.01285,
+    "level": 65,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 64000000
+  },
+  {
+    "displayMultiplier": 0.01335,
+    "level": 66,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 65000000
+  },
+  {
+    "displayMultiplier": 0.01385,
+    "level": 67,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 66000000
+  },
+  {
+    "displayMultiplier": 0.0143,
+    "level": 68,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 67000000
+  },
+  {
+    "displayMultiplier": 0.01485,
+    "level": 69,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 68000000
+  },
+  {
+    "displayMultiplier": 0.01535,
+    "level": 70,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 69000000
+  },
+  {
+    "displayMultiplier": 0.01585,
+    "level": 71,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 70000000
+  },
+  {
+    "displayMultiplier": 0.0164,
+    "level": 72,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 71000000
+  },
+  {
+    "displayMultiplier": 0.01695,
+    "level": 73,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 72000000
+  },
+  {
+    "displayMultiplier": 0.0175,
+    "level": 74,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 73000000
+  },
+  {
+    "displayMultiplier": 0.01805,
+    "level": 75,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 74000000
+  },
+  {
+    "displayMultiplier": 0.0186,
+    "level": 76,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 75000000
+  },
+  {
+    "displayMultiplier": 0.01915,
+    "level": 77,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 76000000
+  },
+  {
+    "displayMultiplier": 0.01975,
+    "level": 78,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 77000000
+  },
+  {
+    "displayMultiplier": 0.02035,
+    "level": 79,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 78000000
+  },
+  {
+    "displayMultiplier": 0.02095,
+    "level": 80,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 79000000
+  },
+  {
+    "displayMultiplier": 0.02155,
+    "level": 81,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 80000000
+  },
+  {
+    "displayMultiplier": 0.02215,
+    "level": 82,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 81000000
+  },
+  {
+    "displayMultiplier": 0.0228,
+    "level": 83,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 82000000
+  },
+  {
+    "displayMultiplier": 0.0234,
+    "level": 84,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 83000000
+  },
+  {
+    "displayMultiplier": 0.02405,
+    "level": 85,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 84000000
+  },
+  {
+    "displayMultiplier": 0.0247,
+    "level": 86,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 85000000
+  },
+  {
+    "displayMultiplier": 0.02535,
+    "level": 87,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 86000000
+  },
+  {
+    "displayMultiplier": 0.02605,
+    "level": 88,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 87000000
+  },
+  {
+    "displayMultiplier": 0.0267,
+    "level": 89,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 88000000
+  },
+  {
+    "displayMultiplier": 0.0274,
+    "level": 90,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 89000000
+  },
+  {
+    "displayMultiplier": 0.0281,
+    "level": 91,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 90000000
+  },
+  {
+    "displayMultiplier": 0.0288,
+    "level": 92,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 91000000
+  },
+  {
+    "displayMultiplier": 0.0295,
+    "level": 93,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 92000000
+  },
+  {
+    "displayMultiplier": 0.0302,
+    "level": 94,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 93000000
+  },
+  {
+    "displayMultiplier": 0.03095,
+    "level": 95,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 94000000
+  },
+  {
+    "displayMultiplier": 0.0317,
+    "level": 96,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 95000000
+  },
+  {
+    "displayMultiplier": 0.03245,
+    "level": 97,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 96000000
+  },
+  {
+    "displayMultiplier": 0.0332,
+    "level": 98,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 97000000
+  },
+  {
+    "displayMultiplier": 0.03395,
+    "level": 99,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 98000000
+  },
+  {
+    "displayMultiplier": 0.03475,
+    "level": 100,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 99000000
+  },
+  {
+    "displayMultiplier": 0.0355,
+    "level": 101,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 100000000
+  },
+  {
+    "displayMultiplier": 0.0363,
+    "level": 102,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 101000000
+  },
+  {
+    "displayMultiplier": 0.0371,
+    "level": 103,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 102000000
+  },
+  {
+    "displayMultiplier": 0.0379,
+    "level": 104,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 103000000
+  },
+  {
+    "displayMultiplier": 0.03875,
+    "level": 105,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 104000000
+  },
+  {
+    "displayMultiplier": 0.03955,
+    "level": 106,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 105000000
+  },
+  {
+    "displayMultiplier": 0.0404,
+    "level": 107,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 106000000
+  },
+  {
+    "displayMultiplier": 0.04125,
+    "level": 108,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 107000000
+  },
+  {
+    "displayMultiplier": 0.0421,
+    "level": 109,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 108000000
+  },
+  {
+    "displayMultiplier": 0.04295,
+    "level": 110,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 109000000
+  },
+  {
+    "displayMultiplier": 0.0438,
+    "level": 111,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 110000000
+  },
+  {
+    "displayMultiplier": 0.0447,
+    "level": 112,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 111000000
+  },
+  {
+    "displayMultiplier": 0.0456,
+    "level": 113,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 112000000
+  },
+  {
+    "displayMultiplier": 0.0465,
+    "level": 114,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 113000000
+  },
+  {
+    "displayMultiplier": 0.0474,
+    "level": 115,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 114000000
+  },
+  {
+    "displayMultiplier": 0.0483,
+    "level": 116,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 115000000
+  },
+  {
+    "displayMultiplier": 0.04925,
+    "level": 117,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 116000000
+  },
+  {
+    "displayMultiplier": 0.05015,
+    "level": 118,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 117000000
+  },
+  {
+    "displayMultiplier": 0.0511,
+    "level": 119,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 118000000
+  },
+  {
+    "displayMultiplier": 0.05205,
+    "level": 120,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 119000000
+  },
+  {
+    "displayMultiplier": 0.05305,
+    "level": 121,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 120000000
+  },
+  {
+    "displayMultiplier": 0.054,
+    "level": 122,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 121000000
+  },
+  {
+    "displayMultiplier": 0.055,
+    "level": 123,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 122000000
+  },
+  {
+    "displayMultiplier": 0.05595,
+    "level": 124,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 123000000
+  },
+  {
+    "displayMultiplier": 0.05695,
+    "level": 125,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 124000000
+  },
+  {
+    "displayMultiplier": 0.05795,
+    "level": 126,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 125000000
+  },
+  {
+    "displayMultiplier": 0.059,
+    "level": 127,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 126000000
+  },
+  {
+    "displayMultiplier": 0.06,
+    "level": 128,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 127000000
+  },
+  {
+    "displayMultiplier": 0.06105,
+    "level": 129,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 128000000
+  },
+  {
+    "displayMultiplier": 0.0621,
+    "level": 130,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 129000000
+  },
+  {
+    "displayMultiplier": 0.06315,
+    "level": 131,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 130000000
+  },
+  {
+    "displayMultiplier": 0.0642,
+    "level": 132,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 131000000
+  },
+  {
+    "displayMultiplier": 0.0653,
+    "level": 133,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 132000000
+  },
+  {
+    "displayMultiplier": 0.06635,
+    "level": 134,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 133000000
+  },
+  {
+    "displayMultiplier": 0.06745,
+    "level": 135,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 134000000
+  },
+  {
+    "displayMultiplier": 0.06855,
+    "level": 136,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 135000000
+  },
+  {
+    "displayMultiplier": 0.06965,
+    "level": 137,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 136000000
+  },
+  {
+    "displayMultiplier": 0.07075,
+    "level": 138,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 137000000
+  },
+  {
+    "displayMultiplier": 0.0719,
+    "level": 139,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 138000000
+  },
+  {
+    "displayMultiplier": 0.07305,
+    "level": 140,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 139000000
+  },
+  {
+    "displayMultiplier": 0.0742,
+    "level": 141,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 140000000
+  },
+  {
+    "displayMultiplier": 0.07535,
+    "level": 142,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 141000000
+  },
+  {
+    "displayMultiplier": 0.0765,
+    "level": 143,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 142000000
+  },
+  {
+    "displayMultiplier": 0.07765,
+    "level": 144,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 143000000
+  },
+  {
+    "displayMultiplier": 0.07885,
+    "level": 145,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 144000000
+  },
+  {
+    "displayMultiplier": 0.08005,
+    "level": 146,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 145000000
+  },
+  {
+    "displayMultiplier": 0.08125,
+    "level": 147,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 146000000
+  },
+  {
+    "displayMultiplier": 0.08245,
+    "level": 148,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 147000000
+  },
+  {
+    "displayMultiplier": 0.0837,
+    "level": 149,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 148000000
+  },
+  {
+    "displayMultiplier": 0.0849,
+    "level": 150,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 149000000
+  },
+  {
+    "displayMultiplier": 0.0861,
+    "level": 151,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 150000000
+  },
+  {
+    "displayMultiplier": 0.08735,
+    "level": 152,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 151000000
+  },
+  {
+    "displayMultiplier": 0.0886,
+    "level": 153,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 152000000
+  },
+  {
+    "displayMultiplier": 0.0898,
+    "level": 154,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 153000000
+  },
+  {
+    "displayMultiplier": 0.0911,
+    "level": 155,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 154000000
+  },
+  {
+    "displayMultiplier": 0.09235,
+    "level": 156,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 155000000
+  },
+  {
+    "displayMultiplier": 0.0936,
+    "level": 157,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 156000000
+  },
+  {
+    "displayMultiplier": 0.0949,
+    "level": 158,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 157000000
+  },
+  {
+    "displayMultiplier": 0.0962,
+    "level": 159,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 158000000
+  },
+  {
+    "displayMultiplier": 0.0975,
+    "level": 160,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 159000000
+  },
+  {
+    "displayMultiplier": 0.0988,
+    "level": 161,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 160000000
+  },
+  {
+    "displayMultiplier": 0.1001,
+    "level": 162,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 161000000
+  },
+  {
+    "displayMultiplier": 0.10145,
+    "level": 163,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 162000000
+  },
+  {
+    "displayMultiplier": 0.1028,
+    "level": 164,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 163000000
+  },
+  {
+    "displayMultiplier": 0.10415,
+    "level": 165,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 164000000
+  },
+  {
+    "displayMultiplier": 0.1055,
+    "level": 166,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 165000000
+  },
+  {
+    "displayMultiplier": 0.10685,
+    "level": 167,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 166000000
+  },
+  {
+    "displayMultiplier": 0.1082,
+    "level": 168,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 167000000
+  },
+  {
+    "displayMultiplier": 0.1096,
+    "level": 169,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 168000000
+  },
+  {
+    "displayMultiplier": 0.111,
+    "level": 170,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 169000000
+  },
+  {
+    "displayMultiplier": 0.1124,
+    "level": 171,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 170000000
+  },
+  {
+    "displayMultiplier": 0.1138,
+    "level": 172,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 171000000
+  },
+  {
+    "displayMultiplier": 0.1152,
+    "level": 173,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 172000000
+  },
+  {
+    "displayMultiplier": 0.11665,
+    "level": 174,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 173000000
+  },
+  {
+    "displayMultiplier": 0.1181,
+    "level": 175,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 174000000
+  },
+  {
+    "displayMultiplier": 0.11955,
+    "level": 176,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 175000000
+  },
+  {
+    "displayMultiplier": 0.121,
+    "level": 177,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 176000000
+  },
+  {
+    "displayMultiplier": 0.12245,
+    "level": 178,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 177000000
+  },
+  {
+    "displayMultiplier": 0.1239,
+    "level": 179,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 178000000
+  },
+  {
+    "displayMultiplier": 0.1254,
+    "level": 180,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 179000000
+  },
+  {
+    "displayMultiplier": 0.1269,
+    "level": 181,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 180000000
+  },
+  {
+    "displayMultiplier": 0.1284,
+    "level": 182,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 181000000
+  },
+  {
+    "displayMultiplier": 0.1299,
+    "level": 183,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 182000000
+  },
+  {
+    "displayMultiplier": 0.1314,
+    "level": 184,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 183000000
+  },
+  {
+    "displayMultiplier": 0.13295,
+    "level": 185,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 184000000
+  },
+  {
+    "displayMultiplier": 0.1345,
+    "level": 186,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 185000000
+  },
+  {
+    "displayMultiplier": 0.13605,
+    "level": 187,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 186000000
+  },
+  {
+    "displayMultiplier": 0.1376,
+    "level": 188,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 187000000
+  },
+  {
+    "displayMultiplier": 0.13915,
+    "level": 189,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 188000000
+  },
+  {
+    "displayMultiplier": 0.14075,
+    "level": 190,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 189000000
+  },
+  {
+    "displayMultiplier": 0.1423,
+    "level": 191,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 190000000
+  },
+  {
+    "displayMultiplier": 0.1439,
+    "level": 192,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 191000000
+  },
+  {
+    "displayMultiplier": 0.1455,
+    "level": 193,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 192000000
+  },
+  {
+    "displayMultiplier": 0.1471,
+    "level": 194,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 193000000
+  },
+  {
+    "displayMultiplier": 0.14875,
+    "level": 195,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 194000000
+  },
+  {
+    "displayMultiplier": 0.15035,
+    "level": 196,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 195000000
+  },
+  {
+    "displayMultiplier": 0.152,
+    "level": 197,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 196000000
+  },
+  {
+    "displayMultiplier": 0.15365,
+    "level": 198,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 197000000
+  },
+  {
+    "displayMultiplier": 0.1553,
+    "level": 199,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 198000000
+  },
+  {
+    "displayMultiplier": 0.15695,
+    "level": 200,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 199000000
+  },
+  {
+    "displayMultiplier": 0.15865,
+    "level": 201,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 200000000
+  },
+  {
+    "displayMultiplier": 0.16035,
+    "level": 202,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 201000000
+  },
+  {
+    "displayMultiplier": 0.16205,
+    "level": 203,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 202000000
+  },
+  {
+    "displayMultiplier": 0.16375,
+    "level": 204,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 203000000
+  },
+  {
+    "displayMultiplier": 0.16545,
+    "level": 205,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 204000000
+  },
+  {
+    "displayMultiplier": 0.16715,
+    "level": 206,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 205000000
+  },
+  {
+    "displayMultiplier": 0.1689,
+    "level": 207,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 206000000
+  },
+  {
+    "displayMultiplier": 0.17065,
+    "level": 208,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 207000000
+  },
+  {
+    "displayMultiplier": 0.1724,
+    "level": 209,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 208000000
+  },
+  {
+    "displayMultiplier": 0.17415,
+    "level": 210,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 209000000
+  },
+  {
+    "displayMultiplier": 0.1759,
+    "level": 211,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 210000000
+  },
+  {
+    "displayMultiplier": 0.1777,
+    "level": 212,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 211000000
+  },
+  {
+    "displayMultiplier": 0.1795,
+    "level": 213,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 212000000
+  },
+  {
+    "displayMultiplier": 0.1813,
+    "level": 214,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 213000000
+  },
+  {
+    "displayMultiplier": 0.1831,
+    "level": 215,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 214000000
+  },
+  {
+    "displayMultiplier": 0.18395,
+    "level": 216,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 215000000
+  },
+  {
+    "displayMultiplier": 0.18475,
+    "level": 217,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 216000000
+  },
+  {
+    "displayMultiplier": 0.18555,
+    "level": 218,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 217000000
+  },
+  {
+    "displayMultiplier": 0.1864,
+    "level": 219,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 218000000
+  },
+  {
+    "displayMultiplier": 0.1872,
+    "level": 220,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 219000000
+  },
+  {
+    "displayMultiplier": 0.188,
+    "level": 221,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 220000000
+  },
+  {
+    "displayMultiplier": 0.18885,
+    "level": 222,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 221000000
+  },
+  {
+    "displayMultiplier": 0.18965,
+    "level": 223,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 222000000
+  },
+  {
+    "displayMultiplier": 0.19045,
+    "level": 224,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 223000000
+  },
+  {
+    "displayMultiplier": 0.1913,
+    "level": 225,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 224000000
+  },
+  {
+    "displayMultiplier": 0.1921,
+    "level": 226,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 225000000
+  },
+  {
+    "displayMultiplier": 0.1929,
+    "level": 227,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 226000000
+  },
+  {
+    "displayMultiplier": 0.19375,
+    "level": 228,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 227000000
+  },
+  {
+    "displayMultiplier": 0.19455,
+    "level": 229,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 228000000
+  },
+  {
+    "displayMultiplier": 0.19535,
+    "level": 230,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 229000000
+  },
+  {
+    "displayMultiplier": 0.1962,
+    "level": 231,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 230000000
+  },
+  {
+    "displayMultiplier": 0.197,
+    "level": 232,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 231000000
+  },
+  {
+    "displayMultiplier": 0.19785,
+    "level": 233,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 232000000
+  },
+  {
+    "displayMultiplier": 0.19865,
+    "level": 234,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 233000000
+  },
+  {
+    "displayMultiplier": 0.19945,
+    "level": 235,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 234000000
+  },
+  {
+    "displayMultiplier": 0.2003,
+    "level": 236,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 235000000
+  },
+  {
+    "displayMultiplier": 0.2011,
+    "level": 237,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 236000000
+  },
+  {
+    "displayMultiplier": 0.2019,
+    "level": 238,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 237000000
+  },
+  {
+    "displayMultiplier": 0.20275,
+    "level": 239,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 238000000
+  },
+  {
+    "displayMultiplier": 0.20355,
+    "level": 240,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 239000000
+  },
+  {
+    "displayMultiplier": 0.20435,
+    "level": 241,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 240000000
+  },
+  {
+    "displayMultiplier": 0.2052,
+    "level": 242,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 241000000
+  },
+  {
+    "displayMultiplier": 0.206,
+    "level": 243,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 242000000
+  },
+  {
+    "displayMultiplier": 0.2068,
+    "level": 244,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 243000000
+  },
+  {
+    "displayMultiplier": 0.20765,
+    "level": 245,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 244000000
+  },
+  {
+    "displayMultiplier": 0.20845,
+    "level": 246,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 245000000
+  },
+  {
+    "displayMultiplier": 0.20925,
+    "level": 247,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 246000000
+  },
+  {
+    "displayMultiplier": 0.2101,
+    "level": 248,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 247000000
+  },
+  {
+    "displayMultiplier": 0.2109,
+    "level": 249,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 248000000
+  },
+  {
+    "displayMultiplier": 0.21175,
+    "level": 250,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 249000000
+  },
+  {
+    "displayMultiplier": 0.21255,
+    "level": 251,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 250000000
+  },
+  {
+    "displayMultiplier": 0.21335,
+    "level": 252,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 251000000
+  },
+  {
+    "displayMultiplier": 0.2142,
+    "level": 253,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 252000000
+  },
+  {
+    "displayMultiplier": 0.215,
+    "level": 254,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 253000000
+  },
+  {
+    "displayMultiplier": 0.2158,
+    "level": 255,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 254000000
+  },
+  {
+    "displayMultiplier": 0.21665,
+    "level": 256,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 255000000
+  },
+  {
+    "displayMultiplier": 0.21745,
+    "level": 257,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 256000000
+  },
+  {
+    "displayMultiplier": 0.21825,
+    "level": 258,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 257000000
+  },
+  {
+    "displayMultiplier": 0.2191,
+    "level": 259,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 258000000
+  },
+  {
+    "displayMultiplier": 0.2199,
+    "level": 260,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 259000000
+  },
+  {
+    "displayMultiplier": 0.2207,
+    "level": 261,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 260000000
+  },
+  {
+    "displayMultiplier": 0.22155,
+    "level": 262,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 261000000
+  },
+  {
+    "displayMultiplier": 0.22235,
+    "level": 263,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 262000000
+  },
+  {
+    "displayMultiplier": 0.22315,
+    "level": 264,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 263000000
+  },
+  {
+    "displayMultiplier": 0.224,
+    "level": 265,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 264000000
+  },
+  {
+    "displayMultiplier": 0.2248,
+    "level": 266,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 265000000
+  },
+  {
+    "displayMultiplier": 0.2256,
+    "level": 267,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 266000000
+  },
+  {
+    "displayMultiplier": 0.22645,
+    "level": 268,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 267000000
+  },
+  {
+    "displayMultiplier": 0.22725,
+    "level": 269,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 268000000
+  },
+  {
+    "displayMultiplier": 0.2281,
+    "level": 270,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 269000000
+  },
+  {
+    "displayMultiplier": 0.2289,
+    "level": 271,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 270000000
+  },
+  {
+    "displayMultiplier": 0.2297,
+    "level": 272,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 271000000
+  },
+  {
+    "displayMultiplier": 0.23055,
+    "level": 273,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 272000000
+  },
+  {
+    "displayMultiplier": 0.23135,
+    "level": 274,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 273000000
+  },
+  {
+    "displayMultiplier": 0.23215,
+    "level": 275,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 274000000
+  },
+  {
+    "displayMultiplier": 0.233,
+    "level": 276,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 275000000
+  },
+  {
+    "displayMultiplier": 0.2338,
+    "level": 277,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 276000000
+  },
+  {
+    "displayMultiplier": 0.2346,
+    "level": 278,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 277000000
+  },
+  {
+    "displayMultiplier": 0.23545,
+    "level": 279,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 278000000
+  },
+  {
+    "displayMultiplier": 0.23625,
+    "level": 280,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 279000000
+  },
+  {
+    "displayMultiplier": 0.23705,
+    "level": 281,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 280000000
+  },
+  {
+    "displayMultiplier": 0.2379,
+    "level": 282,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 281000000
+  },
+  {
+    "displayMultiplier": 0.2387,
+    "level": 283,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 282000000
+  },
+  {
+    "displayMultiplier": 0.2395,
+    "level": 284,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 283000000
+  },
+  {
+    "displayMultiplier": 0.24035,
+    "level": 285,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 284000000
+  },
+  {
+    "displayMultiplier": 0.24115,
+    "level": 286,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 285000000
+  },
+  {
+    "displayMultiplier": 0.24195,
+    "level": 287,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 286000000
+  },
+  {
+    "displayMultiplier": 0.2428,
+    "level": 288,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 287000000
+  },
+  {
+    "displayMultiplier": 0.2436,
+    "level": 289,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 288000000
+  },
+  {
+    "displayMultiplier": 0.24445,
+    "level": 290,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 289000000
+  },
+  {
+    "displayMultiplier": 0.24525,
+    "level": 291,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 290000000
+  },
+  {
+    "displayMultiplier": 0.24605,
+    "level": 292,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 291000000
+  },
+  {
+    "displayMultiplier": 0.2469,
+    "level": 293,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 292000000
+  },
+  {
+    "displayMultiplier": 0.2477,
+    "level": 294,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 293000000
+  },
+  {
+    "displayMultiplier": 0.2485,
+    "level": 295,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 294000000
+  },
+  {
+    "displayMultiplier": 0.24935,
+    "level": 296,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 295000000
+  },
+  {
+    "displayMultiplier": 0.25015,
+    "level": 297,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 296000000
+  },
+  {
+    "displayMultiplier": 0.25095,
+    "level": 298,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 297000000
+  },
+  {
+    "displayMultiplier": 0.2518,
+    "level": 299,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 298000000
+  },
+  {
+    "displayMultiplier": 0.2526,
+    "level": 300,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 299000000
+  },
+  {
+    "displayMultiplier": 0.2534,
+    "level": 301,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 300000000
+  },
+  {
+    "displayMultiplier": 0.25425,
+    "level": 302,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 301000000
+  },
+  {
+    "displayMultiplier": 0.25505,
+    "level": 303,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 302000000
+  },
+  {
+    "displayMultiplier": 0.25585,
+    "level": 304,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 303000000
+  },
+  {
+    "displayMultiplier": 0.2567,
+    "level": 305,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 304000000
+  },
+  {
+    "displayMultiplier": 0.2575,
+    "level": 306,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 305000000
+  },
+  {
+    "displayMultiplier": 0.2583,
+    "level": 307,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 306000000
+  },
+  {
+    "displayMultiplier": 0.25915,
+    "level": 308,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 307000000
+  },
+  {
+    "displayMultiplier": 0.25995,
+    "level": 309,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 308000000
+  },
+  {
+    "displayMultiplier": 0.2608,
+    "level": 310,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 309000000
+  }
+]
