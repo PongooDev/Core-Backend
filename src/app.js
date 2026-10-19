@@ -22,15 +22,22 @@ import { friendsRoutes } from "./services/friends/lists.js";
 import { lightswitchRoutes } from "./services/lightswitch/status.js";
 import { sessionRoutes } from "./services/matchmaking/sessions.js";
 import { profileRoutes } from "./services/mcp/profile.js";
+import { createXmppService } from "./xmpp/service.js";
 
-export function createApp(config) {
-  const context = {
+// What the HTTP routes and the XMPP service share.
+export function createContext(config) {
+  const tokens = createTokenStore(config.dataDir);
+  return {
     accounts: createAccountStore(config.dataDir),
-    tokens: createTokenStore(config.dataDir),
+    tokens,
     profiles: createProfileStore(config.dataDir),
     sessions: createSessionStore(),
+    xmpp: createXmppService({ tokens, quiet: config.requestLog === false }),
     dataDir: config.dataDir
   };
+}
+
+export function createApp(config, context = createContext(config)) {
 
   const app = express();
   app.disable("x-powered-by");

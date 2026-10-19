@@ -61,6 +61,21 @@ build also works without one when launched with `-epicportal -httpproxy=127.0.0.
 
 The Cert build logs in, reaches the Save the World frontend, and gets quest rewards and daily login rewards.
 
+XMPP (presence, chat and parties) is served on the same port. The Cert client connects to it straight over TCP rather
+than through the HTTP redirect, so it needs pointing there. A launcher or redirect has to do this; on its own, the
+client can be pointed with these lines in its `Engine.ini`
+(`%LOCALAPPDATA%\FortniteGame\Saved\Config\WindowsClient\Engine.ini`):
+
+```ini
+[OnlineSubsystemMcp.XMPP]
+ServerAddr=127.0.0.1
+ServerPort=5595
+bUseSSL=false
+```
+
+That file is shared by every Fortnite build on the PC, so remove the lines again before running a build that uses a
+different backend.
+
 The admin panel is at `http://127.0.0.1:5595/admin`, only from the same PC. It lists accounts and can skip the
 tutorial, which needs a gameserver otherwise.
 
