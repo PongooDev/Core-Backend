@@ -3,6 +3,7 @@ import { assignWorkerToSquadBatch } from "./AssignWorkerToSquadBatch.js";
 import { claimLoginReward } from "./ClaimLoginReward.js";
 import { claimQuestReward } from "./ClaimQuestReward.js";
 import { clientQuestLogin } from "./ClientQuestLogin.js";
+import { fortRerollDailyQuest } from "./FortRerollDailyQuest.js";
 import { getMcpTimeForLogin } from "./GetMcpTimeForLogin.js";
 import { markItemSeen } from "./MarkItemSeen.js";
 import { markNewQuestNotificationSent } from "./MarkNewQuestNotificationSent.js";
@@ -31,6 +32,7 @@ export const clientCommands = {
   ClaimQuestReward: claimQuestReward,
   ClientQuestLogin: clientQuestLogin,
   ConvertItem: convertItemCommand,
+  FortRerollDailyQuest: fortRerollDailyQuest,
   GetMcpTimeForLogin: getMcpTimeForLogin,
   MarkItemSeen: markItemSeen,
   MarkNewQuestNotificationSent: markNewQuestNotificationSent,
