@@ -5,7 +5,8 @@ import { Element, createStreamParser, xml } from "./xml.js";
 
 // The XMPP service (presence, chat, party messages and rooms). The Cert client's XmppJingle (libjingle) connects over
 // plain TCP to the server in [OnlineSubsystemMcp.XMPP] ServerAddr/ServerPort, which overrides the built-in
-// xmpp-service-prod.ol.epicgames.com:5222 (FortMcpConfig). Its login, from libjingle's XmppLoginTask:
+// xmpp-service-prod.ol.epicgames.com:5222 (FortMcpConfig); the system hotfix in cloudstorage.js sets those. Its login,
+// from libjingle's XmppLoginTask:
 //   stream (version 1.0) -> features -> SASL PLAIN (\0 accountId@domain \0 access token) -> stream restart ->
 //   features with bind AND session -> bind (result's first child must be <bind><jid>full</jid></bind>) -> session.
 // With bUseSSL=false it never asks for STARTTLS, so none is offered.

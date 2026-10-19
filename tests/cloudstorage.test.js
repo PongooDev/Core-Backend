@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import crypto from "node:crypto";
 import http from "node:http";
-import { certUserAgent, del, get, startBackend, userLogin } from "./helpers.js";
+import { certUserAgent, clientToken, del, get, openTunnel, send, startBackend, userLogin } from "./helpers.js";
 
 function raw(port, method, path, token, body) {
   return new Promise((resolve, reject) => {
@@ -61,6 +61,39 @@ test("user files stay private and file names cannot leave the folder", async () 
 
     const escape = await raw(backend.port, "PUT", `/fortnite/api/cloudstorage/user/${me.accountId}/..%2Faccount.json`, me.token, Buffer.from("x"));
     assert.equal(escape.status, 400);
+  } finally {
+    backend.close();
+  }
+});
+
+test("the system hotfix points the client's XMPP at the address and port it reached the backend on", async () => {
+  const backend = await startBackend();
+  try {
+    const token = await clientToken(backend.port);
+    const list = await get(backend.port, "/fortnite/api/cloudstorage/system", token);
+    assert.equal(list.status, 200);
+    const [file] = list.body;
+    assert.deepEqual(Object.keys(file).sort(), ["filename", "hash", "hash256", "length", "uniqueFilename"]);
+    assert.equal(file.filename, "DefaultEngine.ini");
+
+    const download = await raw(backend.port, "GET", `/fortnite/api/cloudstorage/system/${file.uniqueFilename}`, token);
+    assert.equal(download.status, 200);
+    assert.equal(download.body.length, file.length);
+    assert.equal(crypto.createHash("sha1").update(download.body).digest("hex"), file.hash);
+    assert.equal(crypto.createHash("sha256").update(download.body).digest("hex"), file.hash256);
+    assert.deepEqual(download.body.toString("utf8").split("\r\n"),
+      ["[OnlineSubsystemMcp.XMPP]", "ServerAddr=127.0.0.1", `ServerPort=${backend.port}`, "bUseSSL=false", ""]);
+
+    // The same through the HTTPS proxy tunnel the Cert client uses with -httpproxy.
+    const host = "fortnite-public-service-prod11.ol.epicgames.com";
+    const tunnel = await openTunnel(backend.port, host);
+    const tunnelled = await send({ createConnection: () => tunnel, path: "/fortnite/api/cloudstorage/system",
+      headers: { Host: host, "User-Agent": certUserAgent, Authorization: `bearer ${token}` } });
+    assert.deepEqual(tunnelled.body, list.body);
+
+    const missing = await get(backend.port, "/fortnite/api/cloudstorage/system/DefaultGame.ini", token);
+    assert.equal(missing.status, 404);
+    assert.equal(missing.body.errorCode, "errors.com.epicgames.cloudstorage.file_not_found");
   } finally {
     backend.close();
   }

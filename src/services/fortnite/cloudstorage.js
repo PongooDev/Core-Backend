@@ -7,11 +7,37 @@ import { sendError } from "../../errors.js";
 
 const validFilename = /^[A-Za-z0-9._-]{1,128}$/;
 
+// System files are hotfixes. The client fetches them at start-up, before it logs in, and merges Default*.ini files
+// into the matching config (UOnlineHotfixManager: DefaultEngine.ini -> Engine). Its XMPP connection is made at
+// login and reads [OnlineSubsystemMcp.XMPP] then (sub_37C4C80 -> sub_37C22D0), so this points XMPP at the address
+// and port the client reached this backend on, which is where XMPP is served. Nothing is written on the player's PC.
+function systemFiles(req) {
+  const address = req.socket.localAddress.replace(/^::ffff:/, "");
+  const engine = ["[OnlineSubsystemMcp.XMPP]", `ServerAddr=${address}`, `ServerPort=${req.socket.localPort}`, "bUseSSL=false", ""].join("\r\n");
+  return { "DefaultEngine.ini": Buffer.from(engine, "utf8") };
+}
+
+// What the client reads per file (OnlineTitleFileMcp, sub_37C8D10): hash (SHA-1 hex, also its cache key), hash256,
+// uniqueFilename (the download name), filename and length.
+const header = (filename, data) => ({
+  uniqueFilename: filename,
+  filename,
+  hash: crypto.createHash("sha1").update(data).digest("hex"),
+  hash256: crypto.createHash("sha256").update(data).digest("hex"),
+  length: data.length
+});
+
 export function cloudStorageRoutes({ tokens }) {
   const router = express.Router();
 
   router.get("/fortnite/api/cloudstorage/system", requireAuth(tokens), (req, res) => {
-    res.json([]);
+    res.json(Object.entries(systemFiles(req)).map(([filename, data]) => header(filename, data)));
+  });
+
+  router.get("/fortnite/api/cloudstorage/system/:filename", requireAuth(tokens), (req, res) => {
+    const data = systemFiles(req)[req.params.filename];
+    if (!data) return sendError(res, 404, "errors.com.epicgames.cloudstorage.file_not_found", `${req.params.filename} not found`);
+    res.type("application/octet-stream").send(data);
   });
 
   return router;

@@ -16,7 +16,7 @@ test("start-up checks answer the way the Cert client parses them", async () => {
     assert.deepEqual(version.body, { type: "NO_UPDATE" });
 
     const files = await get(backend.port, "/fortnite/api/cloudstorage/system", token);
-    assert.deepEqual(files.body, []);
+    assert.deepEqual(files.body.map((file) => file.filename), ["DefaultEngine.ini"]);
   } finally {
     backend.close();
   }
