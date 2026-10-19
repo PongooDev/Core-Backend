@@ -64,11 +64,25 @@ test("a quest granted for a node the player already owns completes straight away
   const backend = await startBackend();
   try {
     const account = await skippedAccount(backend);
-    await account.give("HomebaseNode:t1_main_7064c2440");
+    assert.equal((await account.give("HomebaseNode:t1_main_7064c2440", 3)).body.granted, 1);
     const duplicate = await account.give("HomebaseNode:t1_main_7064c2440");
     assert.equal(duplicate.body.granted, 0);
+    assert.equal(Object.values(await account.items()).filter((item) => item.templateId === "HomebaseNode:t1_main_7064c2440").length, 1);
     await account.give("Quest:homebasequest_unlocksquads");
     const [, quest] = await account.find("Quest:homebasequest_unlocksquads");
+    assert.equal(quest.attributes.quest_state, "Completed");
+  } finally {
+    backend.close();
+  }
+});
+
+test("a quest that waits on another quest completes when granted after that quest is done", async () => {
+  const backend = await startBackend();
+  try {
+    const account = await skippedAccount(backend);
+    await account.give("Quest:foundersquest_chooseherobundle");
+    const [, quest] = await account.find("Quest:foundersquest_chooseherobundle");
+    assert.equal(quest.attributes.completion_questcomplete_homebaseonboardingafteroutpost, 1);
     assert.equal(quest.attributes.quest_state, "Completed");
   } finally {
     backend.close();

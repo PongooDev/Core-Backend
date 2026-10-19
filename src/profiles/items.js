@@ -51,7 +51,10 @@ export function grantItem(session, templateId, quantity) {
   }
 
   // A skill tree node is owned or not; quest rewards can grant one the player already bought.
-  if (type.toLowerCase() === "homebasenode" && findItem(session.profile("profile0").profile, templateId)) return [];
+  if (type.toLowerCase() === "homebasenode") {
+    if (findItem(session.profile("profile0").profile, templateId)) return [];
+    quantity = 1;
+  }
 
   const info = itemInfo(templateId);
   if (!info) {

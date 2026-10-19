@@ -130,11 +130,14 @@ function assignedCount(profile, stat) {
   }).length;
 }
 
-// Objectives that describe what the player holds rather than events: owning an item, or having a character
-// assigned somewhere. They are re-counted whenever that could have changed.
+// Objectives that describe what the player holds rather than events: owning an item, a finished quest, or a
+// character assigned somewhere. They are re-counted whenever that could have changed, including when the quest is granted.
 function stateProgress(profile, objective) {
   if (objective.itemEvent === "Acquire" && objective.item) {
     return Object.values(profile.items).filter((item) => sameId(item.templateId, objective.item)).reduce((sum, item) => sum + item.quantity, 0);
+  }
+  if ((objective.itemEvent === "HasCompletedQuest" || objective.itemEvent === "QuestComplete") && objective.item) {
+    return Object.values(profile.items).some((item) => sameId(item.templateId, objective.item) && isDone(item)) ? 1 : 0;
   }
   const stat = objective.stat && getObjectiveStat(objective.stat);
   if (stat?.type === "HasAssignedWorker") return assignedCount(profile, stat);
