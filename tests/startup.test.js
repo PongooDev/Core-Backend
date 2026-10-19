@@ -17,6 +17,12 @@ test("start-up checks answer the way the Cert client parses them", async () => {
 
     const files = await get(backend.port, "/fortnite/api/cloudstorage/system", token);
     assert.deepEqual(files.body.map((file) => file.filename), ["DefaultEngine.ini"]);
+
+    // Fetched before login, without a token.
+    const page = await get(backend.port, "/content/api/pages/fortnite-game");
+    assert.equal(page.status, 200);
+    assert.ok(!Number.isNaN(Date.parse(page.body.lastModified)));
+    assert.deepEqual(page.body._images_, []);
   } finally {
     backend.close();
   }

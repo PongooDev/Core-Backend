@@ -9,6 +9,7 @@ import { createSessionStore } from "./matchmaking/sessions.js";
 import { originForm } from "./proxy.js";
 import { oauthRoutes } from "./services/account/oauth.js";
 import { publicAccountRoutes } from "./services/account/public.js";
+import { contentRoutes } from "./services/content/pages.js";
 import { datarouterRoutes } from "./services/datarouter/data.js";
 import { eulaRoutes } from "./services/eulatracking/agreements.js";
 import { accessRoutes } from "./services/fortnite/access.js";
@@ -62,6 +63,7 @@ export function createApp(config, context = createContext(config)) {
   app.use(oauthRoutes(context));
   app.use(publicAccountRoutes(context));
   app.use(lightswitchRoutes(context));
+  app.use(contentRoutes(context));
   app.use(versionRoutes(context));
   app.use(cloudStorageRoutes(context));
   app.use(eulaRoutes(context));
