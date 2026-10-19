@@ -1,12 +1,13 @@
 import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
+import { dedicatedServerClient } from "../../accounts/clients.js";
 import { sendError } from "../../errors.js";
 
-function basicClientId(req) {
+function basicClient(req) {
   const [scheme, value] = (req.get("authorization") ?? "").split(" ");
   if (scheme?.toLowerCase() !== "basic" || !value) return null;
-  const clientId = Buffer.from(value, "base64").toString("utf8").split(":")[0];
-  return clientId || null;
+  const [clientId, ...secret] = Buffer.from(value, "base64").toString("utf8").split(":");
+  return clientId ? { clientId, secret: secret.join(":") } : null;
 }
 
 function invalidGrant(res, message) {
@@ -17,10 +18,12 @@ export function oauthRoutes({ accounts, tokens }) {
   const router = express.Router();
 
   router.post("/account/api/oauth/token", (req, res) => {
-    const clientId = basicClientId(req);
-    if (!clientId) {
+    const client = basicClient(req);
+    // Any game client id is accepted; the dedicated server client, whose tokens can act for any player, needs its secret.
+    if (!client || (client.clientId === dedicatedServerClient.id && client.secret !== dedicatedServerClient.secret)) {
       return sendError(res, 401, "errors.com.epicgames.account.oauth.invalid_client", "Missing or invalid client credentials");
     }
+    const { clientId } = client;
 
     const body = req.body ?? {};
     switch (body.grant_type) {

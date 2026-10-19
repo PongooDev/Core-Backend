@@ -1,5 +1,5 @@
 import express from "express";
-import { requireAuth, requireOwnAccount } from "../../accounts/auth.js";
+import { requireAuth, requireDedicatedServer, requireOwnAccount } from "../../accounts/auth.js";
 import { requireLoopback } from "../../admin/local.js";
 import { McpError, sendError } from "../../errors.js";
 import { recordUnknown } from "../../log.js";
@@ -67,9 +67,10 @@ export function profileRoutes(context) {
   router.post("/fortnite/api/game/v2/profile/:accountId/public/:command",
     requireAuth(context.tokens), requireExistingAccount(context), runCommand(publicCommands, context));
 
-  // The gameserver acting for its players. Any logged-in token may call it: Core's servers log in as ordinary accounts.
+  // The gameserver acting for its players, with its DedicatedServer client token (UMcpProfileGroup::SendRequestNow's
+  // dedicated-server branch, restored by CoreV2).
   router.post("/fortnite/api/game/v2/profile/:accountId/dedicated_server/:command",
-    requireAuth(context.tokens), requireExistingAccount(context), runCommand(serverCommands, context));
+    requireAuth(context.tokens), requireDedicatedServer, requireExistingAccount(context), runCommand(serverCommands, context));
 
   // The client's DevSkipTutorial cheat posts here.
   router.post("/fortnite/api/admin/account/:accountId/:profileId/command/:command",

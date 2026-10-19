@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { restValue } from "../src/profiles/boosts.js";
-import { post, startBackend, userLogin } from "./helpers.js";
+import { dedicatedServerToken, post, startBackend, userLogin } from "./helpers.js";
 
 test("rest XP refills by the minute once the delay has passed, up to its cap", () => {
   const quota = { current_value: 1000, last_mod_time: "2026-10-19T00:00:00.000Z", units_per_minute_recharge: 10, max_quota: 5000, recharge_delay_minutes: 360 };
@@ -13,7 +13,7 @@ test("rest XP refills by the minute once the delay has passed, up to its cap", (
 test("XP boosts fill Token:xpboost, gifts go to someone else with a notification, and matches spend them", async () => {
   const backend = await startBackend();
   try {
-    const server = await userLogin(backend.port, "CoreServer1");
+    const dedicated = await dedicatedServerToken(backend.port);
     const player = await userLogin(backend.port, "BoostPlayer");
     const friend = await userLogin(backend.port, "BoostFriend");
     const give = (accountId, templateId, quantity) => post(backend.port, `/admin/api/accounts/${accountId}/grant`, undefined, { templateId, quantity });
@@ -40,7 +40,7 @@ test("XP boosts fill Token:xpboost, gifts go to someone else with a notification
     assert.deepEqual((await command(friend, "QueryProfile", {})).body.notifications ?? [], [], "delivered once");
 
     // 100 score = 400,000 base XP: 30% of it (120,000) comes out of the boost.
-    const earned = await post(backend.port, `/fortnite/api/game/v2/profile/${player.accountId}/dedicated_server/EarnScore?profileId=profile0&rvn=-1`, server.token,
+    const earned = await post(backend.port, `/fortnite/api/game/v2/profile/${player.accountId}/dedicated_server/EarnScore?profileId=profile0&rvn=-1`, dedicated,
       { playersAndScores: [{ accountId: player.accountId, totalScore: 100, bCriticalMatchBonus: true }] });
     const [notification] = earned.body.notifications.filter((entry) => entry.type === "earnScore");
     assert.deepEqual([notification.baseXPEarned, notification.bonusXPEarned, notification.boostXPEarned, notification.boostXPMissed],

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { get, post, startBackend, userLogin } from "./helpers.js";
+import { dedicatedServerToken, get, post, startBackend, userLogin } from "./helpers.js";
 
 const route = (kind, accountId, name, profileId = "profile0") =>
   `/fortnite/api/game/v2/profile/${accountId}/${kind}/${name}?profileId=${profileId}&rvn=-1`;
@@ -12,7 +12,8 @@ test("entering a storm shield makes its core, the gameserver saves it, and a won
     const server = await userLogin(backend.port, "CoreServer1");
     const player = await userLogin(backend.port, "OutpostPlayer");
     const client = (name, body) => post(backend.port, route("client", player.accountId, name), player.token, body);
-    const gameserver = (name, body, profileId) => post(backend.port, route("dedicated_server", player.accountId, name, profileId), server.token, body);
+    const dedicated = await dedicatedServerToken(backend.port);
+    const gameserver = (name, body, profileId) => post(backend.port, route("dedicated_server", player.accountId, name, profileId), dedicated, body);
     const profile = async () => (await client("QueryProfile", {})).body.profileChanges[0].profile;
 
     assert.equal((await client("CreateOrUpgradeOutpostItem", { templateId: "Hero:hid_commando_007_r_t01" })).status, 400);
@@ -63,7 +64,7 @@ test("entering a storm shield makes its core, the gameserver saves it, and a won
     assert.equal((await profile()).items[coreId].attributes.level, 1);
 
     // The next visit plays the second defense: the player asked for the session key, so they own this storm shield.
-    const validate = () => post(backend.port, `/fortnite/api/game/v2/world/validate?sessionId=${registered.body.id}`, server.token, zone);
+    const validate = () => post(backend.port, `/fortnite/api/game/v2/world/validate?sessionId=${registered.body.id}`, dedicated, zone);
     assert.equal((await validate()).body.zoneDifficultyInfo.rowName, "Theater_Start_Outpost1");
     await get(backend.port, `/fortnite/api/game/v2/matchmaking/account/${player.accountId}/session/${registered.body.id}`, player.token);
     assert.equal((await validate()).body.zoneDifficultyInfo.rowName, "Theater_Start_Outpost2");
@@ -77,7 +78,8 @@ test("the gameserver makes, saves and records tiers on a deployable base, and ca
   try {
     const server = await userLogin(backend.port, "CoreServer1");
     const player = await userLogin(backend.port, "BasePlayer");
-    const gameserver = (name, body, profileId) => post(backend.port, route("dedicated_server", player.accountId, name, profileId), server.token, body);
+    const dedicated = await dedicatedServerToken(backend.port);
+    const gameserver = (name, body, profileId) => post(backend.port, route("dedicated_server", player.accountId, name, profileId), dedicated, body);
     assert.equal((await gameserver("AbortDisintegration", {}, "theater0")).status, 200);
     assert.equal((await gameserver("CreateDeployableBaseItem", { templateId: "Outpost:outpostcore_pve_01" })).status, 400);
     assert.equal((await gameserver("CreateDeployableBaseItem", { templateId: "DeployableBaseCloudSave:testdeployablebaseitemdef" })).status, 200);

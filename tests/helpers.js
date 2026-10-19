@@ -57,7 +57,7 @@ export async function openTunnel(port, host) {
 
 export const certClient = "ec684b8c687f479fadea3cb2ad83f5c6";
 
-export function requestToken(port, form, clientId = certClient) {
+export function requestToken(port, form, clientId = certClient, secret = "secret") {
   const body = new URLSearchParams(form).toString();
   return send({
     host: "127.0.0.1",
@@ -65,11 +65,17 @@ export function requestToken(port, form, clientId = certClient) {
     method: "POST",
     path: "/account/api/oauth/token",
     headers: {
-      Authorization: `basic ${Buffer.from(`${clientId}:secret`).toString("base64")}`,
+      Authorization: `basic ${Buffer.from(`${clientId}:${secret}`).toString("base64")}`,
       "Content-Type": "application/x-www-form-urlencoded",
       "User-Agent": certUserAgent
     }
   }, body);
+}
+
+// What a Core gameserver's MCP requests carry: the DedicatedServer client's token (src/accounts/clients.js).
+export async function dedicatedServerToken(port) {
+  const response = await requestToken(port, { grant_type: "client_credentials" }, "313dfed3ec3023e52d3be9dda178bdfa", "111aa434a6780d54f5cf759149639f20");
+  return response.body.access_token;
 }
 
 export async function clientToken(port) {

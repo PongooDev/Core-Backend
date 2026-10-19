@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { get, post, startBackend, userLogin } from "./helpers.js";
+import { dedicatedServerToken, get, post, startBackend, userLogin } from "./helpers.js";
 
 const route = (kind, accountId, name, profileId = "profile0", rvn = -1) =>
   `/fortnite/api/game/v2/profile/${accountId}/${kind}/${name}?profileId=${profileId}&rvn=${rvn}`;
@@ -9,10 +9,11 @@ const byTemplate = (profile, templateId) => Object.values(profile.items).filter(
 
 async function setup(backend) {
   const server = await userLogin(backend.port, "CoreServer1");
+  const dedicated = await dedicatedServerToken(backend.port);
   const player = await userLogin(backend.port, "ServerPlayer");
-  const query = (kind, profileId = "profile0") => post(backend.port, route(kind, player.accountId, "QueryProfile", profileId), kind === "client" ? player.token : server.token, {});
+  const query = (kind, profileId = "profile0") => post(backend.port, route(kind, player.accountId, "QueryProfile", profileId), kind === "client" ? player.token : dedicated, {});
   const send = (name, body, profileId = "profile0", rvn = -1) =>
-    post(backend.port, route("dedicated_server", player.accountId, name, profileId, rvn), server.token, body);
+    post(backend.port, route("dedicated_server", player.accountId, name, profileId, rvn), dedicated, body);
   return { server, player, query, send };
 }
 

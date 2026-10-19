@@ -5,7 +5,7 @@ import { alertsRemaining, claimMissionAlertRewards, completeMissionAlert, emptyA
 import { trackChanges } from "../src/profiles/changes.js";
 import { addMissingStats, defaultStats } from "../src/profiles/defaults.js";
 import { worldInfo } from "../src/world/theaters.js";
-import { get, post, startBackend, userLogin } from "./helpers.js";
+import { dedicatedServerToken, get, post, startBackend, userLogin } from "./helpers.js";
 
 function memorySession() {
   const trackers = {};
@@ -90,6 +90,7 @@ test("a won alert mission queues the alert's rewards and ClaimMissionAlertReward
   const backend = await startBackend();
   try {
     const server = await userLogin(backend.port, "CoreServer1");
+    const dedicated = await dedicatedServerToken(backend.port);
     const player = await userLogin(backend.port, "AlertPlayer");
     const route = (kind, name) => `/fortnite/api/game/v2/profile/${player.accountId}/${kind}/${name}?profileId=profile0&rvn=-1`;
     const info = (await get(backend.port, "/fortnite/api/game/v2/world/info", player.token)).body;
@@ -104,7 +105,7 @@ test("a won alert mission queues the alert's rewards and ClaimMissionAlertReward
       maxPublicPlayers: 4, maxPrivatePlayers: 0, buildUniqueId: "595160781",
       attributes: { ZONEINSTANCEID_s: JSON.stringify(zone), GAMEMODE_s: "FORTPVE" }
     });
-    await post(backend.port, route("dedicated_server", "EndPrimaryMission"), server.token,
+    await post(backend.port, route("dedicated_server", "EndPrimaryMission"), dedicated,
       { matchmakingSessionId: registered.body.id, missionName: "m", missionStatus: "Succeeded", advance: [] });
 
     const queried = await post(backend.port, route("client", "QueryProfile"), player.token, {});
