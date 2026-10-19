@@ -18,3 +18,4 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
 - `characters.json`: gameplay tags, required tags and manager flags of heroes, survivors and defenders.
 - `cardpacks.json`: each card pack's loot tier group, tier, choice flag and display level.
 - `objectivestats.json`: the quest objective stat table (type, target tags, condition).
+- `world.json`: zone themes (tile class, valid difficulties), mission generators and the mission difficulty rows.

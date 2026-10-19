@@ -187,6 +187,58 @@ foreach (var (id, row) in LoadRows(provider, JsonValue.Create("/Game/Quests/Obje
     };
 }
 
+// Pieces a theater is built from: zone themes (map tiles), mission generators and mission difficulty rows.
+var zoneThemes = new SortedDictionary<string, object>(StringComparer.Ordinal);
+var missionGenerators = new SortedDictionary<string, object>(StringComparer.Ordinal);
+foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
+    (f.Path.StartsWith("FortniteGame/Content/World/ZoneThemes/", StringComparison.OrdinalIgnoreCase) ||
+     f.Path.StartsWith("FortniteGame/Content/World/MissionGens/", StringComparison.OrdinalIgnoreCase))))
+{
+    if (!provider.TryLoadPackage(file, out var package)) continue;
+    var exports = package.GetExports().ToList();
+    var generated = exports.FirstOrDefault(e => e.ExportType == "BlueprintGeneratedClass");
+    var defaults = exports.FirstOrDefault(e => e.Name.StartsWith("Default__"));
+    if (generated is null || defaults is null) continue;
+    var classPath = "/Game/" + file.PathWithoutExtension["FortniteGame/Content/".Length..] + "." + generated.Name;
+    var props = JsonNode.Parse(JsonConvert.SerializeObject(defaults))!["Properties"] ?? new JsonObject();
+    var parent = JsonNode.Parse(JsonConvert.SerializeObject(generated))!["SuperStruct"]?["ObjectName"]?.GetValue<string>() ?? "";
+    parent = parent.Split('\'').ElementAtOrDefault(1) ?? "";
+
+    if (file.Path.Contains("/ZoneThemes/", StringComparison.OrdinalIgnoreCase))
+    {
+        if (!generated.Name.StartsWith("BP_ZT_", StringComparison.OrdinalIgnoreCase)) continue;
+        var theme = new SortedDictionary<string, object>(StringComparer.Ordinal) { ["parent"] = parent };
+        if (props["TheaterMapTileClass"] is { } tile) theme["tileClass"] = AssetPath(tile);
+        if (props["ZoneName"]?["SourceString"]?.GetValue<string>() is { } zoneName) theme["name"] = zoneName;
+        var validDifficulties = (props["DifficultyProperties"]?.AsArray() ?? [])
+            .SelectMany(d => d!["ValidDifficulties"]?.AsArray() ?? [])
+            .Select(d => d!["RowName"]!.GetValue<string>())
+            .Distinct().ToList();
+        if (validDifficulties.Count > 0) theme["difficulties"] = validDifficulties;
+        var zoneTags = Strings(props["ZoneTags"]);
+        if (zoneTags.Count > 0) theme["tags"] = zoneTags;
+        zoneThemes[classPath] = theme;
+    }
+    else
+    {
+        var generator = new SortedDictionary<string, object>(StringComparer.Ordinal) { ["parent"] = parent };
+        if (props["PrimaryMissionInfo"] is { } primary) generator["primaryMission"] = AssetPath(primary);
+        missionGenerators[classPath] = generator;
+    }
+}
+
+var difficulties = new SortedDictionary<string, object>(StringComparer.Ordinal);
+foreach (var (id, row) in LoadRows(provider, JsonValue.Create("/Game/Balance/DataTables/GameDifficultyGrowthBounds.GameDifficultyGrowthBounds")))
+{
+    difficulties[id] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+    {
+        ["difficulty"] = row!["Difficulty"]?.GetValue<double>() ?? 0,
+        ["recommendedRating"] = row["RecommendedRating"]?.GetValue<int>() ?? 0,
+        ["lootTierGroup"] = row["LootTierGroup"]?.GetValue<string>() ?? "",
+        ["threat"] = row["ThreatDisplayName"]?["SourceString"]?.GetValue<string>() ?? ""
+    };
+}
+
 Directory.CreateDirectory(output);
 var options = new JsonSerializerOptions { WriteIndented = true };
 File.WriteAllText(Path.Combine(output, "quests.json"), JsonSerializer.Serialize(quests, options) + "\n");
@@ -197,6 +249,11 @@ File.WriteAllText(Path.Combine(output, "cardpacks.json"), JsonSerializer.Seriali
 File.WriteAllText(Path.Combine(output, "homebasenodes.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal) { ["nodes"] = nodes, ["pages"] = pages }, options) + "\n");
 File.WriteAllText(Path.Combine(output, "squads.json"), JsonSerializer.Serialize(squads, options) + "\n");
 File.WriteAllText(Path.Combine(output, "objectivestats.json"), JsonSerializer.Serialize(objectiveStats, options) + "\n");
+File.WriteAllText(Path.Combine(output, "world.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal)
+{
+    ["zoneThemes"] = zoneThemes, ["missionGenerators"] = missionGenerators, ["difficulties"] = difficulties
+}, options) + "\n");
+Console.WriteLine($"{zoneThemes.Count} zone themes, {missionGenerators.Count} mission generators, {difficulties.Count} mission difficulties");
 Console.WriteLine($"{characters.Count} characters, {cardPacks.Count} card packs, {nodes.Count} skill tree nodes, {squads.Count} squads, {objectiveStats.Count} objective stats");
 Console.WriteLine($"{quests.Count} quests, {items.Count} items and {dailyRewards.Count} daily reward schedules from {version["BranchName"]}-CL-{version["Changelist"]} into {output}");
 if (unmapped.Count > 0) Console.WriteLine($"Skipped item classes with no known profile: {string.Join(", ", unmapped)}");

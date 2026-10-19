@@ -1,0 +1,1165 @@
+{
+  "difficulties": {
+    "TheaterMutatorTestZone5": {
+      "difficulty": 30,
+      "lootTierGroup": "Mission_Select_T15",
+      "recommendedRating": 70,
+      "threat": "70"
+    },
+    "Theater_Hard_Outpost1": {
+      "difficulty": 20,
+      "lootTierGroup": "Outpost_Select_Theater3",
+      "recommendedRating": 40,
+      "threat": "40"
+    },
+    "Theater_Hard_Outpost10": {
+      "difficulty": 32,
+      "lootTierGroup": "Outpost_Select_Theater3",
+      "recommendedRating": 76,
+      "threat": "76"
+    },
+    "Theater_Hard_Outpost2": {
+      "difficulty": 22,
+      "lootTierGroup": "Outpost_Select_Theater3",
+      "recommendedRating": 46,
+      "threat": "46"
+    },
+    "Theater_Hard_Outpost3": {
+      "difficulty": 24,
+      "lootTierGroup": "Outpost_Select_Theater3",
+      "recommendedRating": 52,
+      "threat": "52"
+    },
+    "Theater_Hard_Outpost4": {
+      "difficulty": 26,
+      "lootTierGroup": "Outpost_Select_Theater3",
+      "recommendedRating": 58,
+      "threat": "58"
+    },
+    "Theater_Hard_Outpost5": {
+      "difficulty": 28,
+      "lootTierGroup": "Outpost_Select_Theater3",
+      "recommendedRating": 64,
+      "threat": "64"
+    },
+    "Theater_Hard_Outpost6": {
+      "difficulty": 30,
+      "lootTierGroup": "Outpost_Select_Theater3",
+      "recommendedRating": 70,
+      "threat": "70"
+    },
+    "Theater_Hard_Outpost7": {
+      "difficulty": 30,
+      "lootTierGroup": "Outpost_Select_Theater3",
+      "recommendedRating": 70,
+      "threat": "70"
+    },
+    "Theater_Hard_Outpost8": {
+      "difficulty": 30,
+      "lootTierGroup": "Outpost_Select_Theater3",
+      "recommendedRating": 70,
+      "threat": "70"
+    },
+    "Theater_Hard_Outpost9": {
+      "difficulty": 32,
+      "lootTierGroup": "Outpost_Select_Theater3",
+      "recommendedRating": 76,
+      "threat": "76"
+    },
+    "Theater_Hard_Zone1": {
+      "difficulty": 22,
+      "lootTierGroup": "Mission_Select_T11",
+      "recommendedRating": 46,
+      "threat": "46"
+    },
+    "Theater_Hard_Zone2": {
+      "difficulty": 24,
+      "lootTierGroup": "Mission_Select_T12",
+      "recommendedRating": 52,
+      "threat": "52"
+    },
+    "Theater_Hard_Zone3": {
+      "difficulty": 26,
+      "lootTierGroup": "Mission_Select_T13",
+      "recommendedRating": 58,
+      "threat": "58"
+    },
+    "Theater_Hard_Zone4": {
+      "difficulty": 28,
+      "lootTierGroup": "Mission_Select_T14",
+      "recommendedRating": 64,
+      "threat": "64"
+    },
+    "Theater_Hard_Zone5": {
+      "difficulty": 30,
+      "lootTierGroup": "Mission_Select_T15",
+      "recommendedRating": 70,
+      "threat": "70"
+    },
+    "Theater_Horde_Final": {
+      "difficulty": 46,
+      "lootTierGroup": "Neighborhood_Rewards_NoScale",
+      "recommendedRating": 124,
+      "threat": "124"
+    },
+    "Theater_Horde_Plankerton_High": {
+      "difficulty": 18,
+      "lootTierGroup": "Neighborhood_Rewards_NoScale",
+      "recommendedRating": 34,
+      "threat": "34"
+    },
+    "Theater_Horde_Plankerton_Low": {
+      "difficulty": 14,
+      "lootTierGroup": "Neighborhood_Rewards_NoScale",
+      "recommendedRating": 23,
+      "threat": "23"
+    },
+    "Theater_Horde_Plankerton_Medium": {
+      "difficulty": 16,
+      "lootTierGroup": "Neighborhood_Rewards_NoScale",
+      "recommendedRating": 28,
+      "threat": "28"
+    },
+    "Theater_Horde_Plankerton_VeryHigh": {
+      "difficulty": 20,
+      "lootTierGroup": "Neighborhood_Rewards_NoScale",
+      "recommendedRating": 40,
+      "threat": "40"
+    },
+    "Theater_Horde_Plankerton_VeryLow": {
+      "difficulty": 12,
+      "lootTierGroup": "Neighborhood_Rewards_NoScale",
+      "recommendedRating": 19,
+      "threat": "19"
+    },
+    "Theater_Horde_Stonewood_High": {
+      "difficulty": 7,
+      "lootTierGroup": "Neighborhood_Rewards_NoScale",
+      "recommendedRating": 9,
+      "threat": "9"
+    },
+    "Theater_Horde_Stonewood_Low": {
+      "difficulty": 3,
+      "lootTierGroup": "Neighborhood_Rewards_NoScale",
+      "recommendedRating": 3,
+      "threat": "3"
+    },
+    "Theater_Horde_Stonewood_Medium": {
+      "difficulty": 5,
+      "lootTierGroup": "Neighborhood_Rewards_NoScale",
+      "recommendedRating": 5,
+      "threat": "5"
+    },
+    "Theater_Horde_Stonewood_VeryHigh": {
+      "difficulty": 10,
+      "lootTierGroup": "Neighborhood_Rewards_NoScale",
+      "recommendedRating": 15,
+      "threat": "15"
+    },
+    "Theater_Horde_Stonewood_VeryLow": {
+      "difficulty": 1,
+      "lootTierGroup": "Neighborhood_Rewards_NoScale",
+      "recommendedRating": 1,
+      "threat": "1"
+    },
+    "Theater_Horde_Twine_High": {
+      "difficulty": 38,
+      "lootTierGroup": "Neighborhood_Rewards_NoScale",
+      "recommendedRating": 94,
+      "threat": "94"
+    },
+    "Theater_Horde_Twine_Low": {
+      "difficulty": 34,
+      "lootTierGroup": "Neighborhood_Rewards_NoScale",
+      "recommendedRating": 82,
+      "threat": "82"
+    },
+    "Theater_Horde_Twine_Medium": {
+      "difficulty": 36,
+      "lootTierGroup": "Neighborhood_Rewards_NoScale",
+      "recommendedRating": 88,
+      "threat": "88"
+    },
+    "Theater_Horde_Twine_VeryHigh": {
+      "difficulty": 40,
+      "lootTierGroup": "Neighborhood_Rewards_NoScale",
+      "recommendedRating": 100,
+      "threat": "100"
+    },
+    "Theater_Horde_Twine_VeryLow": {
+      "difficulty": 32,
+      "lootTierGroup": "Neighborhood_Rewards_NoScale",
+      "recommendedRating": 76,
+      "threat": "76"
+    },
+    "Theater_Horde_Uncanny_High": {
+      "difficulty": 28,
+      "lootTierGroup": "Neighborhood_Rewards_NoScale",
+      "recommendedRating": 64,
+      "threat": "64"
+    },
+    "Theater_Horde_Uncanny_Low": {
+      "difficulty": 24,
+      "lootTierGroup": "Neighborhood_Rewards_NoScale",
+      "recommendedRating": 52,
+      "threat": "52"
+    },
+    "Theater_Horde_Uncanny_Medium": {
+      "difficulty": 26,
+      "lootTierGroup": "Neighborhood_Rewards_NoScale",
+      "recommendedRating": 58,
+      "threat": "58"
+    },
+    "Theater_Horde_Uncanny_VeryHigh": {
+      "difficulty": 30,
+      "lootTierGroup": "Neighborhood_Rewards_NoScale",
+      "recommendedRating": 70,
+      "threat": "70"
+    },
+    "Theater_Horde_Uncanny_VeryLow": {
+      "difficulty": 22,
+      "lootTierGroup": "Neighborhood_Rewards_NoScale",
+      "recommendedRating": 46,
+      "threat": "46"
+    },
+    "Theater_Nightmare_Outpost1": {
+      "difficulty": 30,
+      "lootTierGroup": "Outpost_Select_Theater4",
+      "recommendedRating": 70,
+      "threat": "70"
+    },
+    "Theater_Nightmare_Outpost10": {
+      "difficulty": 50,
+      "lootTierGroup": "Outpost_Select_Theater4",
+      "recommendedRating": 140,
+      "threat": "140"
+    },
+    "Theater_Nightmare_Outpost2": {
+      "difficulty": 32,
+      "lootTierGroup": "Outpost_Select_Theater4",
+      "recommendedRating": 76,
+      "threat": "76"
+    },
+    "Theater_Nightmare_Outpost3": {
+      "difficulty": 34,
+      "lootTierGroup": "Outpost_Select_Theater4",
+      "recommendedRating": 82,
+      "threat": "82"
+    },
+    "Theater_Nightmare_Outpost4": {
+      "difficulty": 36,
+      "lootTierGroup": "Outpost_Select_Theater4",
+      "recommendedRating": 88,
+      "threat": "88"
+    },
+    "Theater_Nightmare_Outpost5": {
+      "difficulty": 38,
+      "lootTierGroup": "Outpost_Select_Theater4",
+      "recommendedRating": 94,
+      "threat": "94"
+    },
+    "Theater_Nightmare_Outpost6": {
+      "difficulty": 40,
+      "lootTierGroup": "Outpost_Select_Theater4",
+      "recommendedRating": 100,
+      "threat": "100"
+    },
+    "Theater_Nightmare_Outpost7": {
+      "difficulty": 42,
+      "lootTierGroup": "Outpost_Select_Theater4",
+      "recommendedRating": 108,
+      "threat": "108"
+    },
+    "Theater_Nightmare_Outpost8": {
+      "difficulty": 44,
+      "lootTierGroup": "Outpost_Select_Theater4",
+      "recommendedRating": 116,
+      "threat": "116"
+    },
+    "Theater_Nightmare_Outpost9": {
+      "difficulty": 48,
+      "lootTierGroup": "Outpost_Select_Theater4",
+      "recommendedRating": 132,
+      "threat": "132"
+    },
+    "Theater_Nightmare_Zone1": {
+      "difficulty": 32,
+      "lootTierGroup": "Mission_Select_T16",
+      "recommendedRating": 76,
+      "threat": "76"
+    },
+    "Theater_Nightmare_Zone2": {
+      "difficulty": 34,
+      "lootTierGroup": "Mission_Select_T17",
+      "recommendedRating": 82,
+      "threat": "82"
+    },
+    "Theater_Nightmare_Zone3": {
+      "difficulty": 36,
+      "lootTierGroup": "Mission_Select_T18",
+      "recommendedRating": 88,
+      "threat": "88"
+    },
+    "Theater_Nightmare_Zone4": {
+      "difficulty": 38,
+      "lootTierGroup": "Mission_Select_T19",
+      "recommendedRating": 94,
+      "threat": "94"
+    },
+    "Theater_Nightmare_Zone5": {
+      "difficulty": 40,
+      "lootTierGroup": "Mission_Select_T20",
+      "recommendedRating": 100,
+      "threat": "100"
+    },
+    "Theater_Normal_Outpost1": {
+      "difficulty": 10,
+      "lootTierGroup": "Outpost_Select_Theater2",
+      "recommendedRating": 15,
+      "threat": "15"
+    },
+    "Theater_Normal_Outpost10": {
+      "difficulty": 22,
+      "lootTierGroup": "Outpost_Select_Theater2",
+      "recommendedRating": 46,
+      "threat": "46"
+    },
+    "Theater_Normal_Outpost2": {
+      "difficulty": 12,
+      "lootTierGroup": "Outpost_Select_Theater2",
+      "recommendedRating": 19,
+      "threat": "19"
+    },
+    "Theater_Normal_Outpost3": {
+      "difficulty": 14,
+      "lootTierGroup": "Outpost_Select_Theater2",
+      "recommendedRating": 23,
+      "threat": "23"
+    },
+    "Theater_Normal_Outpost4": {
+      "difficulty": 16,
+      "lootTierGroup": "Outpost_Select_Theater2",
+      "recommendedRating": 28,
+      "threat": "28"
+    },
+    "Theater_Normal_Outpost5": {
+      "difficulty": 18,
+      "lootTierGroup": "Outpost_Select_Theater2",
+      "recommendedRating": 34,
+      "threat": "34"
+    },
+    "Theater_Normal_Outpost6": {
+      "difficulty": 20,
+      "lootTierGroup": "Outpost_Select_Theater2",
+      "recommendedRating": 40,
+      "threat": "40"
+    },
+    "Theater_Normal_Outpost7": {
+      "difficulty": 20,
+      "lootTierGroup": "Outpost_Select_Theater2",
+      "recommendedRating": 40,
+      "threat": "40"
+    },
+    "Theater_Normal_Outpost8": {
+      "difficulty": 20,
+      "lootTierGroup": "Outpost_Select_Theater2",
+      "recommendedRating": 40,
+      "threat": "40"
+    },
+    "Theater_Normal_Outpost9": {
+      "difficulty": 22,
+      "lootTierGroup": "Outpost_Select_Theater2",
+      "recommendedRating": 46,
+      "threat": "46"
+    },
+    "Theater_Normal_Zone1": {
+      "difficulty": 12,
+      "lootTierGroup": "Mission_Select_T06",
+      "recommendedRating": 19,
+      "threat": "19"
+    },
+    "Theater_Normal_Zone2": {
+      "difficulty": 14,
+      "lootTierGroup": "Mission_Select_T07",
+      "recommendedRating": 23,
+      "threat": "23"
+    },
+    "Theater_Normal_Zone3": {
+      "difficulty": 16,
+      "lootTierGroup": "Mission_Select_T08",
+      "recommendedRating": 28,
+      "threat": "28"
+    },
+    "Theater_Normal_Zone4": {
+      "difficulty": 18,
+      "lootTierGroup": "Mission_Select_T09",
+      "recommendedRating": 34,
+      "threat": "34"
+    },
+    "Theater_Normal_Zone5": {
+      "difficulty": 20,
+      "lootTierGroup": "Mission_Select_T10",
+      "recommendedRating": 40,
+      "threat": "40"
+    },
+    "Theater_Start_Outpost1": {
+      "difficulty": 1,
+      "lootTierGroup": "Outpost_Select_Theater1",
+      "recommendedRating": 1,
+      "threat": "1"
+    },
+    "Theater_Start_Outpost10": {
+      "difficulty": 12,
+      "lootTierGroup": "Outpost_Select_Theater1",
+      "recommendedRating": 19,
+      "threat": "19"
+    },
+    "Theater_Start_Outpost2": {
+      "difficulty": 2,
+      "lootTierGroup": "Outpost_Select_Theater1",
+      "recommendedRating": 2,
+      "threat": "2"
+    },
+    "Theater_Start_Outpost3": {
+      "difficulty": 3,
+      "lootTierGroup": "Outpost_Select_Theater1",
+      "recommendedRating": 3,
+      "threat": "3"
+    },
+    "Theater_Start_Outpost4": {
+      "difficulty": 5,
+      "lootTierGroup": "Outpost_Select_Theater1",
+      "recommendedRating": 5,
+      "threat": "5"
+    },
+    "Theater_Start_Outpost5": {
+      "difficulty": 7,
+      "lootTierGroup": "Outpost_Select_Theater1",
+      "recommendedRating": 9,
+      "threat": "9"
+    },
+    "Theater_Start_Outpost6": {
+      "difficulty": 10,
+      "lootTierGroup": "Outpost_Select_Theater1",
+      "recommendedRating": 15,
+      "threat": "15"
+    },
+    "Theater_Start_Outpost7": {
+      "difficulty": 10,
+      "lootTierGroup": "Outpost_Select_Theater1",
+      "recommendedRating": 15,
+      "threat": "15"
+    },
+    "Theater_Start_Outpost8": {
+      "difficulty": 10,
+      "lootTierGroup": "Outpost_Select_Theater1",
+      "recommendedRating": 15,
+      "threat": "15"
+    },
+    "Theater_Start_Outpost9": {
+      "difficulty": 12,
+      "lootTierGroup": "Outpost_Select_Theater1",
+      "recommendedRating": 19,
+      "threat": "19"
+    },
+    "Theater_Start_Zone1": {
+      "difficulty": 1,
+      "lootTierGroup": "Mission_Select_T01",
+      "recommendedRating": 1,
+      "threat": "1"
+    },
+    "Theater_Start_Zone2": {
+      "difficulty": 3,
+      "lootTierGroup": "Mission_Select_T02",
+      "recommendedRating": 3,
+      "threat": "3"
+    },
+    "Theater_Start_Zone3": {
+      "difficulty": 5,
+      "lootTierGroup": "Mission_Select_T03",
+      "recommendedRating": 5,
+      "threat": "5"
+    },
+    "Theater_Start_Zone4": {
+      "difficulty": 7,
+      "lootTierGroup": "Mission_Select_T04",
+      "recommendedRating": 9,
+      "threat": "9"
+    },
+    "Theater_Start_Zone5": {
+      "difficulty": 10,
+      "lootTierGroup": "Mission_Select_T05",
+      "recommendedRating": 15,
+      "threat": "15"
+    },
+    "Theater_Tutorial_Zone1": {
+      "difficulty": 1,
+      "lootTierGroup": "Mission_Select_Tutorial",
+      "recommendedRating": 1,
+      "threat": "1"
+    }
+  },
+  "missionGenerators": {
+    "/Game/World/MissionGens/MissionGen_1Gate.MissionGen_1Gate_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/Gate/Gate_Single"
+    },
+    "/Game/World/MissionGens/MissionGen_1GateNoBonus.MissionGen_1GateNoBonus_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/Gate/Gate_Single_NoBonus"
+    },
+    "/Game/World/MissionGens/MissionGen_1Gate_VLT.MissionGen_1Gate_VLT_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/Gate/Gate_Single"
+    },
+    "/Game/World/MissionGens/MissionGen_2Gates.MissionGen_2Gates_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/Gate/Gate_Double"
+    },
+    "/Game/World/MissionGens/MissionGen_3Gates.MissionGen_3Gates_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/Gate/Gate_Triple"
+    },
+    "/Game/World/MissionGens/MissionGen_4Gates.MissionGen_4Gates_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/Gate/Gate_Quadruple"
+    },
+    "/Game/World/MissionGens/MissionGen_BuildtheRadarGrid.MissionGen_BuildtheRadarGrid_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/BuildTheRadarGrid/BuildRadarGrid"
+    },
+    "/Game/World/MissionGens/MissionGen_DeliverTheGoods.MissionGen_DeliverTheGoods_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/DeliverGoods/Mission/DeliverGoods"
+    },
+    "/Game/World/MissionGens/MissionGen_DestroyTheEncampments.MissionGen_DestroyTheEncampments_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/DestroyTheEncampments/DestroyTheEncampments"
+    },
+    "/Game/World/MissionGens/MissionGen_EvacuateTheSurvivors.MissionGen_EvacuateTheSurvivors_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/EvacuateTheSurvivors/EvacuteTheSurvivors"
+    },
+    "/Game/World/MissionGens/MissionGen_LaunchTheBalloon.MissionGen_LaunchTheBalloon_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/LaunchTheBalloon/LaunchTheBalloon"
+    },
+    "/Game/World/MissionGens/MissionGen_LaunchTheBalloon_NoSecondary.MissionGen_LaunchTheBalloon_NoSecondary_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/LaunchTheBalloon/1stLaunchTheBalloon"
+    },
+    "/Game/World/MissionGens/MissionGen_LtR_CannyValley.MissionGen_LtR_CannyValley_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/StormShield/LtR_Plankerton"
+    },
+    "/Game/World/MissionGens/MissionGen_LtR_Twine.MissionGen_LtR_Twine_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/StormShield/LtR_Twine"
+    },
+    "/Game/World/MissionGens/MissionGen_Onboarding_Fort.MissionGen_Onboarding_Fort_C": {
+      "parent": "FortMissionGenerator",
+      "primaryMission": "/Game/Missions/Primary/OB_FarmsteadFort/OB_FarmsteadFort"
+    },
+    "/Game/World/MissionGens/MissionGen_PowerTheStormShield.MissionGen_PowerTheStormShield_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/RepairTheShelter/RepairTheShelter"
+    },
+    "/Game/World/MissionGens/MissionGen_RetrieveTheData.MissionGen_RetrieveTheData_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/DeadDrop/DeadDrop"
+    },
+    "/Game/World/MissionGens/MissionGen_RetrieveTheData_NoSecondary.MissionGen_RetrieveTheData_NoSecondary_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/DeadDrop/1stRetrieveTheData"
+    },
+    "/Game/World/MissionGens/MissionGen_T1_HT_Cat1FtS.MissionGen_T1_HT_Cat1FtS_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/Gate/Gate_Single"
+    },
+    "/Game/World/MissionGens/MissionGen_T1_HT_EvacuateTheSurvivors.MissionGen_T1_HT_EvacuateTheSurvivors_C": {
+      "parent": "MissionGen_EvacuateTheSurvivors_C"
+    },
+    "/Game/World/MissionGens/MissionGen_T1_HT_LtB.MissionGen_T1_HT_LtB_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/LaunchTheBalloon/RideTheStorm"
+    },
+    "/Game/World/MissionGens/MissionGen_T1_HT_RtD.MissionGen_T1_HT_RtD_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/DeadDrop/DeadDrop"
+    },
+    "/Game/World/MissionGens/MissionGen_T1_LT_Cat1FtS.MissionGen_T1_LT_Cat1FtS_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/Gate/Gate_Single"
+    },
+    "/Game/World/MissionGens/MissionGen_T1_LT_LtB.MissionGen_T1_LT_LtB_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/LaunchTheBalloon/RideTheStorm"
+    },
+    "/Game/World/MissionGens/MissionGen_T1_MT_Cat1FtS.MissionGen_T1_MT_Cat1FtS_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/Gate/Gate_Single"
+    },
+    "/Game/World/MissionGens/MissionGen_T1_MT_LtB.MissionGen_T1_MT_LtB_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/LaunchTheBalloon/RideTheStorm"
+    },
+    "/Game/World/MissionGens/MissionGen_T1_MT_RtD.MissionGen_T1_MT_RtD_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/DeadDrop/DeadDrop"
+    },
+    "/Game/World/MissionGens/MissionGen_T1_VHT_Cat1FtS.MissionGen_T1_VHT_Cat1FtS_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/Gate/Gate_Single"
+    },
+    "/Game/World/MissionGens/MissionGen_T1_VHT_EvacuateTheSurvivors.MissionGen_T1_VHT_EvacuateTheSurvivors_C": {
+      "parent": "MissionGen_EvacuateTheSurvivors_C"
+    },
+    "/Game/World/MissionGens/MissionGen_T1_VHT_LtB.MissionGen_T1_VHT_LtB_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/LaunchTheBalloon/RideTheStorm"
+    },
+    "/Game/World/MissionGens/MissionGen_T1_VHT_LtR.MissionGen_T1_VHT_LtR_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/StormShield/StormShield"
+    },
+    "/Game/World/MissionGens/MissionGen_T1_VHT_RtD.MissionGen_T1_VHT_RtD_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/DeadDrop/DeadDrop"
+    },
+    "/Game/World/MissionGens/MissionGen_T2_EtS.MissionGen_T2_EtS_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/EvacuateTheShelter/EvacuateTheShelter"
+    },
+    "/Game/World/MissionGens/MissionGen_TheOutpost_PARENT.MissionGen_TheOutpost_PARENT_C": {
+      "parent": "FortMissionGenerator",
+      "primaryMission": "/Game/Missions/Primary/Outpost/MissionInfo_Outpost_PvE_01"
+    },
+    "/Game/World/MissionGens/MissionGen_TheOutpost_PvE_01.MissionGen_TheOutpost_PvE_01_C": {
+      "parent": "MissionGen_TheOutpost_PARENT_C"
+    },
+    "/Game/World/MissionGens/MissionGen_TheOutpost_PvE_02.MissionGen_TheOutpost_PvE_02_C": {
+      "parent": "MissionGen_TheOutpost_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/Outpost/MissionInfo_Outpost_PvE_02"
+    },
+    "/Game/World/MissionGens/MissionGen_TheOutpost_PvE_03.MissionGen_TheOutpost_PvE_03_C": {
+      "parent": "MissionGen_TheOutpost_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/Outpost/MissionInfo_Outpost_PvE_03"
+    },
+    "/Game/World/MissionGens/MissionGen_TheOutpost_PvE_04.MissionGen_TheOutpost_PvE_04_C": {
+      "parent": "MissionGen_TheOutpost_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/Outpost/MissionInfo_Outpost_PvE_04"
+    },
+    "/Game/World/MissionGens/Plankerton/ParentMissionGens/MissionGen_T2_1Gate.MissionGen_T2_1Gate_C": {
+      "parent": "_MissionGen_T2_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/Gate/Gate_Single"
+    },
+    "/Game/World/MissionGens/Plankerton/ParentMissionGens/MissionGen_T2_2Gates.MissionGen_T2_2Gates_C": {
+      "parent": "_MissionGen_T2_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/Gate/Gate_Double"
+    },
+    "/Game/World/MissionGens/Plankerton/ParentMissionGens/MissionGen_T2_3Gates.MissionGen_T2_3Gates_C": {
+      "parent": "_MissionGen_T2_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/Gate/Gate_Triple"
+    },
+    "/Game/World/MissionGens/Plankerton/ParentMissionGens/MissionGen_T2_4Gates.MissionGen_T2_4Gates_C": {
+      "parent": "_MissionGen_T2_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/Gate/Gate_Quadruple"
+    },
+    "/Game/World/MissionGens/Plankerton/ParentMissionGens/MissionGen_T2_BuildtheRadarGrid.MissionGen_T2_BuildtheRadarGrid_C": {
+      "parent": "_MissionGen_T2_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/BuildTheRadarGrid/BuildRadarGrid"
+    },
+    "/Game/World/MissionGens/Plankerton/ParentMissionGens/MissionGen_T2_DtB.MissionGen_T2_DtB_C": {
+      "parent": "_MissionGen_T2_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/DeliverTheBomb/Mission/DeliverTheBomb"
+    },
+    "/Game/World/MissionGens/Plankerton/ParentMissionGens/MissionGen_T2_DtE.MissionGen_T2_DtE_C": {
+      "parent": "_MissionGen_T2_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/DestroyTheEncampments/DestroyTheEncampments"
+    },
+    "/Game/World/MissionGens/Plankerton/ParentMissionGens/MissionGen_T2_EtShelter.MissionGen_T2_EtShelter_C": {
+      "parent": "_MissionGen_T2_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/EvacuateTheShelter/EvacuateTheShelter"
+    },
+    "/Game/World/MissionGens/Plankerton/ParentMissionGens/MissionGen_T2_EtSurvivors.MissionGen_T2_EtSurvivors_C": {
+      "parent": "_MissionGen_T2_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/EvacuateTheSurvivors/EvacuteTheSurvivors"
+    },
+    "/Game/World/MissionGens/Plankerton/ParentMissionGens/MissionGen_T2_LtR.MissionGen_T2_LtR_C": {
+      "parent": "_MissionGen_T2_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/StormShield/StormShield"
+    },
+    "/Game/World/MissionGens/Plankerton/ParentMissionGens/MissionGen_T2_PtS.MissionGen_T2_PtS_C": {
+      "parent": "_MissionGen_T2_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/VindermanLab/VindermanLab"
+    },
+    "/Game/World/MissionGens/Plankerton/ParentMissionGens/MissionGen_T2_RtD.MissionGen_T2_RtD_C": {
+      "parent": "_MissionGen_T2_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/DeadDrop/DeadDrop"
+    },
+    "/Game/World/MissionGens/Plankerton/ParentMissionGens/MissionGen_T2_RtL.MissionGen_T2_RtL_C": {
+      "parent": "_MissionGen_T2_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/LaunchTheBalloon/RideTheStorm"
+    },
+    "/Game/World/MissionGens/Plankerton/ParentMissionGens/MissionGen_T2_RtS.MissionGen_T2_RtS_C": {
+      "parent": "_MissionGen_T2_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/RepairTheShelter/RepairTheShelter"
+    },
+    "/Game/World/MissionGens/Plankerton/ParentMissionGens/_MissionGen_T2_PARENT._MissionGen_T2_PARENT_C": {
+      "parent": "FortMissionGenerator"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_1/MissionGen_T2_R1_1Gate.MissionGen_T2_R1_1Gate_C": {
+      "parent": "MissionGen_T2_1Gate_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_1/MissionGen_T2_R1_2Gates.MissionGen_T2_R1_2Gates_C": {
+      "parent": "MissionGen_T2_2Gates_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_1/MissionGen_T2_R1_BuildtheRadarGrid.MissionGen_T2_R1_BuildtheRadarGrid_C": {
+      "parent": "MissionGen_T2_BuildtheRadarGrid_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_1/MissionGen_T2_R1_DtE.MissionGen_T2_R1_DtE_C": {
+      "parent": "MissionGen_T2_DtE_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_1/MissionGen_T2_R1_EtSurvivors.MissionGen_T2_R1_EtSurvivors_C": {
+      "parent": "MissionGen_T2_EtSurvivors_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_1/MissionGen_T2_R1_RtD.MissionGen_T2_R1_RtD_C": {
+      "parent": "MissionGen_T2_RtD_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_1/MissionGen_T2_R1_RtL.MissionGen_T2_R1_RtL_C": {
+      "parent": "MissionGen_T2_RtL_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_2/MissionGen_T2_R2_1Gate.MissionGen_T2_R2_1Gate_C": {
+      "parent": "MissionGen_T2_1Gate_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_2/MissionGen_T2_R2_2Gates.MissionGen_T2_R2_2Gates_C": {
+      "parent": "MissionGen_T2_2Gates_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_2/MissionGen_T2_R2_BuildtheRadarGrid.MissionGen_T2_R2_BuildtheRadarGrid_C": {
+      "parent": "MissionGen_T2_BuildtheRadarGrid_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_2/MissionGen_T2_R2_DtE.MissionGen_T2_R2_DtE_C": {
+      "parent": "MissionGen_T2_DtE_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_2/MissionGen_T2_R2_EtSurvivors.MissionGen_T2_R2_EtSurvivors_C": {
+      "parent": "MissionGen_T2_EtSurvivors_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_2/MissionGen_T2_R2_RtD.MissionGen_T2_R2_RtD_C": {
+      "parent": "MissionGen_T2_RtD_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_2/MissionGen_T2_R2_RtL.MissionGen_T2_R2_RtL_C": {
+      "parent": "MissionGen_T2_RtL_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_2/MissionGen_T2_R2_RtS.MissionGen_T2_R2_RtS_C": {
+      "parent": "MissionGen_T2_RtS_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_2/MissionGen_T2_R2_RtS_Tutorial.MissionGen_T2_R2_RtS_Tutorial_C": {
+      "parent": "MissionGen_T2_R2_RtS_C",
+      "primaryMission": "/Game/Missions/Primary/RepairTheShelter/1stRepairTheShelter"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_3/MissionGen_T2_R3_1Gate.MissionGen_T2_R3_1Gate_C": {
+      "parent": "MissionGen_T2_1Gate_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_3/MissionGen_T2_R3_2Gates.MissionGen_T2_R3_2Gates_C": {
+      "parent": "MissionGen_T2_2Gates_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_3/MissionGen_T2_R3_BuildtheRadarGrid.MissionGen_T2_R3_BuildtheRadarGrid_C": {
+      "parent": "MissionGen_T2_BuildtheRadarGrid_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_3/MissionGen_T2_R3_DtB_Tutorial.MissionGen_T2_R3_DtB_Tutorial_C": {
+      "parent": "MissionGen_T2_DtB_C",
+      "primaryMission": "/Game/Missions/Primary/DeliverTheBomb/Mission/1stDeliverTheBomb"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_3/MissionGen_T2_R3_DtE.MissionGen_T2_R3_DtE_C": {
+      "parent": "MissionGen_T2_DtE_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_3/MissionGen_T2_R3_EtSurvivors.MissionGen_T2_R3_EtSurvivors_C": {
+      "parent": "MissionGen_T2_EtSurvivors_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_3/MissionGen_T2_R3_RtD.MissionGen_T2_R3_RtD_C": {
+      "parent": "MissionGen_T2_RtD_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_3/MissionGen_T2_R3_RtL.MissionGen_T2_R3_RtL_C": {
+      "parent": "MissionGen_T2_RtL_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_3/MissionGen_T2_R3_RtS.MissionGen_T2_R3_RtS_C": {
+      "parent": "MissionGen_T2_RtS_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_4/MissionGen_T2_R4_EtShelter_Tutorial.MissionGen_T2_R4_EtShelter_Tutorial_C": {
+      "parent": "MissionGen_T2_EtShelter_C",
+      "primaryMission": "/Game/Missions/Primary/EvacuateTheShelter/1stEvacuateTheShelter"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_5/MissionGen_T2_R5_2Gates.MissionGen_T2_R5_2Gates_C": {
+      "parent": "MissionGen_T2_2Gates_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_5/MissionGen_T2_R5_3Gates.MissionGen_T2_R5_3Gates_C": {
+      "parent": "MissionGen_T2_3Gates_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_5/MissionGen_T2_R5_BuildtheRadarGrid.MissionGen_T2_R5_BuildtheRadarGrid_C": {
+      "parent": "MissionGen_T2_BuildtheRadarGrid_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_5/MissionGen_T2_R5_DtB.MissionGen_T2_R5_DtB_C": {
+      "parent": "MissionGen_T2_DtB_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_5/MissionGen_T2_R5_DtE.MissionGen_T2_R5_DtE_C": {
+      "parent": "MissionGen_T2_DtE_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_5/MissionGen_T2_R5_EtShelter.MissionGen_T2_R5_EtShelter_C": {
+      "parent": "MissionGen_T2_EtShelter_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_5/MissionGen_T2_R5_EtSurvivors.MissionGen_T2_R5_EtSurvivors_C": {
+      "parent": "MissionGen_T2_EtSurvivors_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_5/MissionGen_T2_R5_LtR.MissionGen_T2_R5_LtR_C": {
+      "parent": "MissionGen_T2_LtR_C",
+      "primaryMission": "/Game/Missions/Primary/StormShield/LtR_Plankerton"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_5/MissionGen_T2_R5_PtS.MissionGen_T2_R5_PtS_C": {
+      "parent": "MissionGen_T2_PtS_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_5/MissionGen_T2_R5_RtD.MissionGen_T2_R5_RtD_C": {
+      "parent": "MissionGen_T2_RtD_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_5/MissionGen_T2_R5_RtL.MissionGen_T2_R5_RtL_C": {
+      "parent": "MissionGen_T2_RtL_C"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_5/MissionGen_T2_R5_RtS.MissionGen_T2_R5_RtS_C": {
+      "parent": "MissionGen_T2_RtS_C"
+    },
+    "/Game/World/MissionGens/_MissionGen_PARENT._MissionGen_PARENT_C": {
+      "parent": "FortMissionGenerator"
+    }
+  },
+  "zoneThemes": {
+    "/Game/World/ZoneThemes/CriticalMission/BP_ZT_CriticalMission.BP_ZT_CriticalMission_C": {
+      "name": "Play with Others",
+      "parent": "FortZoneTheme",
+      "tileClass": "/Game/World/ZoneThemes/CriticalMission/BP_Hex_CriticalMission"
+    },
+    "/Game/World/ZoneThemes/Onboarding/BP_ZT_Onboarding_Forest_a.BP_ZT_Onboarding_Forest_a_C": {
+      "parent": "BP_ZT_TheForest_C"
+    },
+    "/Game/World/ZoneThemes/Onboarding/BP_ZT_Onboarding_Grasslands_a.BP_ZT_Onboarding_Grasslands_a_C": {
+      "parent": "BP_ZT_TheGrasslands_C"
+    },
+    "/Game/World/ZoneThemes/Onboarding/BP_ZT_Onboarding_Suburban_a.BP_ZT_Onboarding_Suburban_a_C": {
+      "name": "The Suburbs",
+      "parent": "BP_ZT_TheGrasslands_C",
+      "tags": [
+        "Stat.ZoneTheme.TheSuburbs"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/ZT_TheSuburbs/BP_Hex_TheSuburbs"
+    },
+    "/Game/World/ZoneThemes/Onboarding/BP_ZT_VindermansLab.BP_ZT_VindermansLab_C": {
+      "parent": "BP_ZT_TheGrasslands_C"
+    },
+    "/Game/World/ZoneThemes/Onboarding/ZT_OnboardingFort/BP_ZT_Onboarding_Fort.BP_ZT_Onboarding_Fort_C": {
+      "name": "Onboarding Fort",
+      "parent": "BP_ZT_PVE_C",
+      "tileClass": "/Game/World/ZoneThemes/Landmarks/ZT_TheFarmstead/BP_Hex_TheFarmstead"
+    },
+    "/Game/World/ZoneThemes/Outposts/BP_ZT_Homebase_02.BP_ZT_Homebase_02_C": {
+      "difficulties": [
+        "Theater_Start_Zone1",
+        "Theater_Start_Zone2",
+        "Theater_Start_Zone3",
+        "Theater_Start_Zone4",
+        "Theater_Start_Zone5",
+        "Theater_Normal_Zone1",
+        "Theater_Normal_Zone2",
+        "Theater_Normal_Zone3",
+        "Theater_Normal_Zone4",
+        "Theater_Normal_Zone5",
+        "Theater_Hard_Zone1",
+        "Theater_Hard_Zone2",
+        "Theater_Hard_Zone3",
+        "Theater_Hard_Zone4",
+        "Theater_Hard_Zone5",
+        "Theater_Nightmare_Zone1"
+      ],
+      "name": "Your Homebase",
+      "parent": "BP_ZT_PVE_C",
+      "tags": [
+        "Stat.ZoneTheme.TheGrasslands"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/Outposts/BP_Hex_OutpostCC_2"
+    },
+    "/Game/World/ZoneThemes/Outposts/BP_ZT_Homebase_03.BP_ZT_Homebase_03_C": {
+      "difficulties": [
+        "Theater_Start_Zone1",
+        "Theater_Start_Zone2",
+        "Theater_Start_Zone3",
+        "Theater_Start_Zone4",
+        "Theater_Start_Zone5",
+        "Theater_Normal_Zone1",
+        "Theater_Normal_Zone2",
+        "Theater_Normal_Zone3",
+        "Theater_Normal_Zone4",
+        "Theater_Normal_Zone5",
+        "Theater_Hard_Zone1",
+        "Theater_Hard_Zone2",
+        "Theater_Hard_Zone3",
+        "Theater_Hard_Zone4",
+        "Theater_Hard_Zone5",
+        "Theater_Nightmare_Zone1"
+      ],
+      "name": "Your Homebase",
+      "parent": "BP_ZT_PVE_C",
+      "tags": [
+        "Stat.ZoneTheme.TheGrasslands"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/Outposts/BP_Hex_OutpostCC_3"
+    },
+    "/Game/World/ZoneThemes/Outposts/BP_ZT_Homebase_05.BP_ZT_Homebase_05_C": {
+      "difficulties": [
+        "Theater_Start_Zone1",
+        "Theater_Start_Zone2",
+        "Theater_Start_Zone3",
+        "Theater_Start_Zone4",
+        "Theater_Start_Zone5",
+        "Theater_Normal_Zone1",
+        "Theater_Normal_Zone2",
+        "Theater_Normal_Zone3",
+        "Theater_Normal_Zone4",
+        "Theater_Normal_Zone5",
+        "Theater_Hard_Zone1",
+        "Theater_Hard_Zone2",
+        "Theater_Hard_Zone3",
+        "Theater_Hard_Zone4",
+        "Theater_Hard_Zone5",
+        "Theater_Nightmare_Zone1"
+      ],
+      "name": "Your Homebase",
+      "parent": "BP_ZT_PVE_C",
+      "tags": [
+        "Stat.ZoneTheme.TheGrasslands"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/Outposts/BP_Hex_OutpostCC_5"
+    },
+    "/Game/World/ZoneThemes/Outposts/BP_ZT_Homebase_06.BP_ZT_Homebase_06_C": {
+      "difficulties": [
+        "Theater_Start_Zone1",
+        "Theater_Start_Zone2",
+        "Theater_Start_Zone3",
+        "Theater_Start_Zone4",
+        "Theater_Start_Zone5",
+        "Theater_Normal_Zone1",
+        "Theater_Normal_Zone2",
+        "Theater_Normal_Zone3",
+        "Theater_Normal_Zone4",
+        "Theater_Normal_Zone5",
+        "Theater_Hard_Zone1",
+        "Theater_Hard_Zone2",
+        "Theater_Hard_Zone3",
+        "Theater_Hard_Zone4",
+        "Theater_Hard_Zone5",
+        "Theater_Nightmare_Zone1"
+      ],
+      "name": "Your Homebase",
+      "parent": "BP_ZT_PVE_C",
+      "tags": [
+        "Stat.ZoneTheme.TheGrasslands"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/Outposts/BP_Hex_OutpostCC_6"
+    },
+    "/Game/World/ZoneThemes/Outposts/BP_ZT_Homebase_07.BP_ZT_Homebase_07_C": {
+      "difficulties": [
+        "Theater_Start_Zone1",
+        "Theater_Start_Zone2",
+        "Theater_Start_Zone3",
+        "Theater_Start_Zone4",
+        "Theater_Start_Zone5",
+        "Theater_Normal_Zone1",
+        "Theater_Normal_Zone2",
+        "Theater_Normal_Zone3",
+        "Theater_Normal_Zone4",
+        "Theater_Normal_Zone5",
+        "Theater_Hard_Zone1",
+        "Theater_Hard_Zone2",
+        "Theater_Hard_Zone3",
+        "Theater_Hard_Zone4",
+        "Theater_Hard_Zone5",
+        "Theater_Nightmare_Zone1"
+      ],
+      "name": "Your Homebase",
+      "parent": "BP_ZT_PVE_C",
+      "tags": [
+        "Stat.ZoneTheme.TheGrasslands"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/Outposts/BP_Hex_OutpostCC_7"
+    },
+    "/Game/World/ZoneThemes/Outposts/BP_ZT_TheOutpost_PvE_01.BP_ZT_TheOutpost_PvE_01_C": {
+      "name": "Homebase Storm Shield",
+      "parent": "BP_ZT_PVE_C",
+      "tileClass": "/Game/World/ZoneThemes/Outposts/BP_Hex_OutpostCC"
+    },
+    "/Game/World/ZoneThemes/Outposts/BP_ZT_TheOutpost_PvE_02.BP_ZT_TheOutpost_PvE_02_C": {
+      "name": "Plankerton Storm Shield",
+      "parent": "BP_ZT_PVE_C",
+      "tileClass": "/Game/World/ZoneThemes/Outposts/BP_Hex_Outpost_Theater2"
+    },
+    "/Game/World/ZoneThemes/Outposts/BP_ZT_TheOutpost_PvE_03.BP_ZT_TheOutpost_PvE_03_C": {
+      "name": "Canny Valley Storm Shield",
+      "parent": "BP_ZT_PVE_C",
+      "tileClass": "/Game/World/ZoneThemes/Outposts/BP_Hex_Outpost_Theater3"
+    },
+    "/Game/World/ZoneThemes/Outposts/BP_ZT_TheOutpost_PvE_04.BP_ZT_TheOutpost_PvE_04_C": {
+      "name": "Twine Peaks Storm Shield",
+      "parent": "BP_ZT_PVE_C",
+      "tileClass": "/Game/World/ZoneThemes/Outposts/BP_Hex_Outpost_Theater4"
+    },
+    "/Game/World/ZoneThemes/TestZoneThemes/BP_ZT_PVE.BP_ZT_PVE_C": {
+      "difficulties": [
+        "Theater_Start_Zone1",
+        "Theater_Start_Zone2",
+        "Theater_Start_Zone3",
+        "Theater_Start_Zone4",
+        "Theater_Start_Zone5",
+        "Theater_Normal_Zone1",
+        "Theater_Normal_Zone2",
+        "Theater_Normal_Zone3",
+        "Theater_Normal_Zone4",
+        "Theater_Normal_Zone5",
+        "Theater_Hard_Zone1",
+        "Theater_Hard_Zone2",
+        "Theater_Hard_Zone3",
+        "Theater_Hard_Zone4",
+        "Theater_Hard_Zone5",
+        "Theater_Nightmare_Zone1"
+      ],
+      "name": "GENERIC ZONE",
+      "parent": "FortZoneTheme",
+      "tileClass": "/Game/World/BP_Hex_PARENT"
+    },
+    "/Game/World/ZoneThemes/ZT_TheCity/BP_ZT_TheCity.BP_ZT_TheCity_C": {
+      "difficulties": [
+        "Theater_Start_Zone1",
+        "Theater_Start_Zone2",
+        "Theater_Start_Zone3",
+        "Theater_Start_Zone4",
+        "Theater_Start_Zone5",
+        "Theater_Normal_Zone1",
+        "Theater_Normal_Zone2",
+        "Theater_Normal_Zone3",
+        "Theater_Normal_Zone4",
+        "Theater_Normal_Zone5",
+        "Theater_Hard_Zone1",
+        "Theater_Hard_Zone2",
+        "Theater_Hard_Zone3",
+        "Theater_Hard_Zone4",
+        "Theater_Hard_Zone5",
+        "Theater_Nightmare_Zone1"
+      ],
+      "name": "The City",
+      "parent": "BP_ZT_PVE_C",
+      "tags": [
+        "Stat.ZoneTheme.TheCity"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/ZT_TheCity/BP_Hex_TheCity"
+    },
+    "/Game/World/ZoneThemes/ZT_TheForest/BP_ZT_TheForest.BP_ZT_TheForest_C": {
+      "difficulties": [
+        "Theater_Start_Zone1",
+        "Theater_Start_Zone2",
+        "Theater_Start_Zone3",
+        "Theater_Start_Zone4",
+        "Theater_Start_Zone5",
+        "Theater_Normal_Zone1",
+        "Theater_Normal_Zone2",
+        "Theater_Normal_Zone3",
+        "Theater_Normal_Zone4",
+        "Theater_Normal_Zone5",
+        "Theater_Hard_Zone1",
+        "Theater_Hard_Zone2",
+        "Theater_Hard_Zone3",
+        "Theater_Hard_Zone4",
+        "Theater_Hard_Zone5",
+        "Theater_Nightmare_Zone1"
+      ],
+      "name": "The Forest",
+      "parent": "BP_ZT_PVE_C",
+      "tags": [
+        "Stat.ZoneTheme.TheForest"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/ZT_TheForest/BP_Hex_TheForest"
+    },
+    "/Game/World/ZoneThemes/ZT_TheGrasslands/BP_ZT_TheGrasslands.BP_ZT_TheGrasslands_C": {
+      "difficulties": [
+        "Theater_Start_Zone1",
+        "Theater_Start_Zone2",
+        "Theater_Start_Zone3",
+        "Theater_Start_Zone4",
+        "Theater_Start_Zone5",
+        "Theater_Normal_Zone1",
+        "Theater_Normal_Zone2",
+        "Theater_Normal_Zone3",
+        "Theater_Normal_Zone4",
+        "Theater_Normal_Zone5",
+        "Theater_Hard_Zone1",
+        "Theater_Hard_Zone2",
+        "Theater_Hard_Zone3",
+        "Theater_Hard_Zone4",
+        "Theater_Hard_Zone5",
+        "Theater_Nightmare_Zone1"
+      ],
+      "name": "The Grasslands",
+      "parent": "BP_ZT_PVE_C",
+      "tags": [
+        "Stat.ZoneTheme.TheGrasslands"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/ZT_TheGrasslands/BP_Hex_TheGrasslands"
+    },
+    "/Game/World/ZoneThemes/ZT_TheIndustrialPark/BP_ZT_TheIndustrialPark.BP_ZT_TheIndustrialPark_C": {
+      "difficulties": [
+        "Theater_Start_Zone1",
+        "Theater_Start_Zone2",
+        "Theater_Start_Zone3",
+        "Theater_Start_Zone4",
+        "Theater_Start_Zone5",
+        "Theater_Normal_Zone1",
+        "Theater_Normal_Zone2",
+        "Theater_Normal_Zone3",
+        "Theater_Normal_Zone4",
+        "Theater_Normal_Zone5",
+        "Theater_Hard_Zone1",
+        "Theater_Hard_Zone2",
+        "Theater_Hard_Zone3",
+        "Theater_Hard_Zone4",
+        "Theater_Hard_Zone5",
+        "Theater_Nightmare_Zone1"
+      ],
+      "name": "The Industrial Park",
+      "parent": "BP_ZT_PVE_C",
+      "tags": [
+        "Stat.ZoneTheme.TheIndustrialPark"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/ZT_TheIndustrialPark/BP_Hex_TheIndustrialPark"
+    },
+    "/Game/World/ZoneThemes/ZT_TheSuburbs/BP_ZT_TheSuburbs.BP_ZT_TheSuburbs_C": {
+      "difficulties": [
+        "Theater_Start_Zone1",
+        "Theater_Start_Zone2",
+        "Theater_Start_Zone3",
+        "Theater_Start_Zone4",
+        "Theater_Start_Zone5",
+        "Theater_Normal_Zone1",
+        "Theater_Normal_Zone2",
+        "Theater_Normal_Zone3",
+        "Theater_Normal_Zone4",
+        "Theater_Normal_Zone5",
+        "Theater_Hard_Zone1",
+        "Theater_Hard_Zone2",
+        "Theater_Hard_Zone3",
+        "Theater_Hard_Zone4",
+        "Theater_Hard_Zone5",
+        "Theater_Nightmare_Zone1"
+      ],
+      "name": "The Suburbs",
+      "parent": "BP_ZT_PVE_C",
+      "tags": [
+        "Stat.ZoneTheme.TheSuburbs"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/ZT_TheSuburbs/BP_Hex_TheSuburbs"
+    }
+  }
+}
