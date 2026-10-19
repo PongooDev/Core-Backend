@@ -166,6 +166,7 @@ export function createXmppService({ tokens, contactsOf = () => [], quiet = false
     if (!session || !accountId || session.accountId !== accountId) {
       say(`Login refused for ${accountId || "(no account)"}: ${session ? "token belongs to another account" : "unknown or expired token"}`);
       connection.send(xml("failure", { xmlns: ns.sasl }, xml("not-authorized")));
+      connection.authFailed = true;
       return connection.close();
     }
     connection.accountId = accountId;
@@ -203,7 +204,7 @@ export function createXmppService({ tokens, contactsOf = () => [], quiet = false
   function handle(socket) {
     const connection = {
       socket, accountId: null, resource: null, jid: null, bare: null, domain: defaultDomain, mucDomain: `muc.${defaultDomain}`,
-      available: false, presence: null, rooms: new Set(), closed: false,
+      available: false, presence: null, rooms: new Set(), closed: false, streamed: false, authFailed: false,
       send(stanza) {
         if (!this.closed && socket.writable) socket.write(String(stanza));
       },
@@ -221,6 +222,7 @@ export function createXmppService({ tokens, contactsOf = () => [], quiet = false
 
     const parser = createStreamParser({
       onStreamStart(attrs) {
+        connection.streamed = true;
         if (attrs.to) {
           connection.domain = attrs.to.toLowerCase();
           connection.mucDomain = `muc.${connection.domain}`;
@@ -248,7 +250,13 @@ export function createXmppService({ tokens, contactsOf = () => [], quiet = false
     socket.on("close", () => {
       connection.closed = true;
       connections.delete(connection);
-      if (!connection.jid) return;
+      if (!connection.jid) {
+        // libjingle gives up silently here when it won't use the offered mechanism (ERROR_AUTH on the client).
+        if (connection.streamed && !connection.accountId && !connection.authFailed) {
+          say(`A client from ${socket.remoteAddress} left before logging in`);
+        }
+        return;
+      }
       if (connection.available) {
         connection.available = false;
         broadcastPresence(connection, xml("presence", { type: "unavailable" }));
