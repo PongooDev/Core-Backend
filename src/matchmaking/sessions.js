@@ -64,6 +64,12 @@ function apply(session, body) {
 const players = (session) => [...session.publicPlayers, ...session.privatePlayers];
 const currentPlayers = (session) => players(session).length;
 
+// The open slots follow the lists: each list's maximum less the players in it.
+function countOpenSlots(session) {
+  session.openPublicPlayers = Math.max(0, session.maxPublicPlayers - session.publicPlayers.length);
+  session.openPrivatePlayers = Math.max(0, session.maxPrivatePlayers - session.privatePlayers.length);
+}
+
 // Game sessions the gameservers register (OnlineSubsystemMcp's /api/matchmaking/session API), kept in memory:
 // a server re-registers after a backend restart.
 export function createSessionStore() {
@@ -122,6 +128,7 @@ export function createSessionStore() {
           if (!players(session).includes(accountId)) session[list].push(accountId);
         }
       }
+      countOpenSlots(session);
       touch(session);
       return session;
     },
@@ -133,6 +140,7 @@ export function createSessionStore() {
       const leaving = new Set((Array.isArray(accountIds) ? accountIds : []).map(String));
       session.publicPlayers = session.publicPlayers.filter((accountId) => !leaving.has(accountId));
       session.privatePlayers = session.privatePlayers.filter((accountId) => !leaving.has(accountId));
+      countOpenSlots(session);
       touch(session);
       return session;
     },

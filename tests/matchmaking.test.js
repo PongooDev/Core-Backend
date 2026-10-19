@@ -146,20 +146,21 @@ test("RegisterPlayers adds, UnregisterPlayers removes, and the count follows the
     const { token } = await userLogin(backend.port, "CoreTest");
     const { body: session } = await post(backend.port, base, server, certCreate);
     const players = `${base}/${session.id}/players`;
-    // The Cert server reads both replies as a JSON object; RegisterPlayers needs both lists in it.
+    // The Cert server reads both replies as a JSON object; RegisterPlayers needs both lists and the open slots in it.
     const added = await post(backend.port, players, server, { publicPlayers: ["a", "b"], privatePlayers: [] });
     assert.equal(added.status, 200);
-    assert.deepEqual(added.body, { publicPlayers: ["a", "b"], privatePlayers: [] });
+    assert.deepEqual(added.body, { publicPlayers: ["a", "b"], privatePlayers: [], openPublicPlayers: 2, openPrivatePlayers: 0 });
     assert.deepEqual((await post(backend.port, players, server, { publicPlayers: ["a"], privatePlayers: ["c"] })).body,
-      { publicPlayers: ["a", "b"], privatePlayers: ["c"] });
+      { publicPlayers: ["a", "b"], privatePlayers: ["c"], openPublicPlayers: 2, openPrivatePlayers: 0 });
     let current = (await get(backend.port, `${base}/${session.id}`, token)).body;
     assert.deepEqual([current.publicPlayers, current.privatePlayers], [["a", "b"], ["c"]]);
+    assert.deepEqual([current.openPublicPlayers, current.openPrivatePlayers], [2, 0]);
 
     const emptySearch = { criteria: [{ type: "EQUAL", key: "GAMEMODE_s", value: "FORTEMPTY" }], maxCurrentPlayers: 0 };
     assert.deepEqual((await post(backend.port, `${base}/matchMakingRequest`, token, emptySearch)).body, []);
     const removed = await request(backend.port, "DELETE", players, server, ["a", "c"]);
     assert.equal(removed.status, 200);
-    assert.deepEqual(removed.body, { publicPlayers: ["b"], privatePlayers: [] });
+    assert.deepEqual(removed.body, { publicPlayers: ["b"], privatePlayers: [], openPublicPlayers: 3, openPrivatePlayers: 0 });
     current = (await get(backend.port, `${base}/${session.id}`, token)).body;
     assert.deepEqual([current.publicPlayers, current.privatePlayers], [["b"], []]);
     await request(backend.port, "DELETE", players, server, ["b"]);
