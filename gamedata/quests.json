@@ -4,7 +4,8 @@
     "objectives": [
       {
         "count": 500000,
-        "name": "build_any_structure"
+        "name": "build_any_structure",
+        "stat": "build_any_structure"
       }
     ],
     "type": "Optional"
@@ -14,7 +15,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "custom_craftfirstweapon"
+        "name": "custom_craftfirstweapon",
+        "stat": "custom_craftfirstweapon"
       }
     ],
     "type": "Optional"
@@ -24,7 +26,8 @@
     "objectives": [
       {
         "count": 100,
-        "name": "destroy_gnome"
+        "name": "destroy_gnome",
+        "stat": "destroy_gnome"
       }
     ],
     "type": "Optional"
@@ -34,7 +37,8 @@
     "objectives": [
       {
         "count": 1500,
-        "name": "complete_exploration_1"
+        "name": "complete_exploration_1",
+        "stat": "complete_exploration_1"
       }
     ],
     "type": "Optional"
@@ -44,7 +48,8 @@
     "objectives": [
       {
         "count": 20000,
-        "name": "kill_husk_smasher"
+        "name": "kill_husk_smasher",
+        "stat": "kill_husk_smasher"
       }
     ],
     "type": "Optional"
@@ -54,7 +59,8 @@
     "objectives": [
       {
         "count": 300,
-        "name": "interact_treasurechest"
+        "name": "interact_treasurechest",
+        "stat": "interact_treasurechest"
       }
     ],
     "type": "Optional"
@@ -64,7 +70,8 @@
     "objectives": [
       {
         "count": 1000,
-        "name": "quick_complete"
+        "name": "quick_complete",
+        "stat": "quick_complete"
       }
     ],
     "type": "Optional"
@@ -74,7 +81,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "custom_protectthesurvivors"
+        "name": "custom_protectthesurvivors",
+        "stat": "custom_protectthesurvivors"
       }
     ],
     "type": "Optional"
@@ -84,6 +92,8 @@
     "objectives": [
       {
         "count": 10000,
+        "item": "WorldItem:survivoritemdata",
+        "itemEvent": "Collect",
         "name": "questcollect_survivoritemdata"
       }
     ],
@@ -103,7 +113,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff1"
+        "name": "complete_pve03_diff1",
+        "stat": "complete_pve03_diff1"
       }
     ],
     "rewards": [
@@ -128,7 +139,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff2"
+        "name": "complete_pve03_diff2",
+        "stat": "complete_pve03_diff2"
       }
     ],
     "rewards": [
@@ -149,7 +161,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve03_diff3"
+        "name": "complete_pve03_diff3",
+        "stat": "complete_pve03_diff3"
       }
     ],
     "rewards": [
@@ -174,7 +187,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff4"
+        "name": "complete_pve03_diff4",
+        "stat": "complete_pve03_diff4"
       }
     ],
     "rewards": [
@@ -199,7 +213,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff5"
+        "name": "complete_pve03_diff5",
+        "stat": "complete_pve03_diff5"
       }
     ],
     "rewards": [
@@ -228,7 +243,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff1"
+        "name": "complete_pve03_diff1",
+        "stat": "complete_pve03_diff1"
       }
     ],
     "rewards": [
@@ -253,7 +269,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff2"
+        "name": "complete_pve03_diff2",
+        "stat": "complete_pve03_diff2"
       }
     ],
     "rewards": [
@@ -278,7 +295,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff3"
+        "name": "complete_pve03_diff3",
+        "stat": "complete_pve03_diff3"
       }
     ],
     "rewards": [
@@ -299,7 +317,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff4"
+        "name": "complete_pve03_diff4",
+        "stat": "complete_pve03_diff4"
       }
     ],
     "rewards": [
@@ -320,7 +339,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff5"
+        "name": "complete_pve03_diff5",
+        "stat": "complete_pve03_diff5"
       }
     ],
     "rewards": [
@@ -345,7 +365,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve03_diff2"
+        "name": "complete_pve03_diff2",
+        "stat": "complete_pve03_diff2"
       }
     ],
     "rewards": [
@@ -370,7 +391,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve03_diff3"
+        "name": "complete_pve03_diff3",
+        "stat": "complete_pve03_diff3"
       }
     ],
     "rewards": [
@@ -391,7 +413,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve03_diff4"
+        "name": "complete_pve03_diff4",
+        "stat": "complete_pve03_diff4"
       }
     ],
     "rewards": [
@@ -420,7 +443,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff5"
+        "name": "complete_pve03_diff5",
+        "stat": "complete_pve03_diff5"
       }
     ],
     "rewards": [
@@ -445,7 +469,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff2"
+        "name": "complete_pve03_diff2",
+        "stat": "complete_pve03_diff2"
       }
     ],
     "rewards": [
@@ -466,7 +491,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff3"
+        "name": "complete_pve03_diff3",
+        "stat": "complete_pve03_diff3"
       }
     ],
     "rewards": [
@@ -491,7 +517,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff4"
+        "name": "complete_pve03_diff4",
+        "stat": "complete_pve03_diff4"
       }
     ],
     "rewards": [
@@ -512,7 +539,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff5"
+        "name": "complete_pve03_diff5",
+        "stat": "complete_pve03_diff5"
       }
     ],
     "rewards": [
@@ -541,7 +569,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff2"
+        "name": "complete_pve03_diff2",
+        "stat": "complete_pve03_diff2"
       }
     ],
     "rewards": [
@@ -566,7 +595,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff3"
+        "name": "complete_pve03_diff3",
+        "stat": "complete_pve03_diff3"
       }
     ],
     "rewards": [
@@ -591,7 +621,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff4"
+        "name": "complete_pve03_diff4",
+        "stat": "complete_pve03_diff4"
       }
     ],
     "rewards": [
@@ -612,7 +643,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve03_diff5"
+        "name": "complete_pve03_diff5",
+        "stat": "complete_pve03_diff5"
       }
     ],
     "rewards": [
@@ -641,7 +673,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve03_diff3"
+        "name": "complete_pve03_diff3",
+        "stat": "complete_pve03_diff3"
       }
     ],
     "rewards": [
@@ -662,7 +695,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff4"
+        "name": "complete_pve03_diff4",
+        "stat": "complete_pve03_diff4"
       }
     ],
     "rewards": [
@@ -683,7 +717,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff5"
+        "name": "complete_pve03_diff5",
+        "stat": "complete_pve03_diff5"
       }
     ],
     "rewards": [
@@ -712,7 +747,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff4"
+        "name": "complete_pve03_diff4",
+        "stat": "complete_pve03_diff4"
       }
     ],
     "rewards": [
@@ -737,7 +773,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff5"
+        "name": "complete_pve03_diff5",
+        "stat": "complete_pve03_diff5"
       }
     ],
     "rewards": [
@@ -766,7 +803,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff5"
+        "name": "complete_pve03_diff5",
+        "stat": "complete_pve03_diff5"
       }
     ],
     "rewards": [
@@ -791,7 +829,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "quick_complete_pve03"
+        "name": "quick_complete_pve03",
+        "stat": "quick_complete_pve03"
       }
     ],
     "selectableRewards": [
@@ -820,7 +859,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_gate_quadruple_3_diff2"
+        "name": "complete_gate_quadruple_3_diff2",
+        "stat": "complete_gate_quadruple_3_diff2"
       }
     ],
     "rewards": [
@@ -841,7 +881,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_evacuate_3_diff3"
+        "name": "complete_evacuate_3_diff3",
+        "stat": "complete_evacuate_3_diff3"
       }
     ],
     "rewards": [
@@ -866,7 +907,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_mimic_3_diff4"
+        "name": "complete_mimic_3_diff4",
+        "stat": "complete_mimic_3_diff4"
       }
     ],
     "rewards": [
@@ -891,7 +933,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve03_diff5"
+        "name": "complete_pve03_diff5",
+        "stat": "complete_pve03_diff5"
       }
     ],
     "rewards": [
@@ -916,7 +959,8 @@
     "objectives": [
       {
         "count": 15,
-        "name": "kill_husk_smasher_3_diff1_v3"
+        "name": "kill_husk_smasher_3_diff1_v3",
+        "stat": "kill_husk_smasher_3_diff1"
       }
     ],
     "rewards": [
@@ -941,7 +985,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_anomaly_3_diff2"
+        "name": "complete_anomaly_3_diff2",
+        "stat": "complete_anomaly_3_diff2"
       }
     ],
     "rewards": [
@@ -962,11 +1007,13 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_bluglosiphon_3_diff3"
+        "name": "complete_bluglosiphon_3_diff3",
+        "stat": "complete_bluglosiphon_3_diff3"
       },
       {
         "count": 1,
-        "name": "complete_delivergoods_3_diff3"
+        "name": "complete_delivergoods_3_diff3",
+        "stat": "complete_delivergoods_3_diff3"
       }
     ],
     "rewards": [
@@ -987,7 +1034,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff4"
+        "name": "complete_pve03_diff4",
+        "stat": "complete_pve03_diff4"
       }
     ],
     "selectableRewards": [
@@ -1016,11 +1064,14 @@
     "objectives": [
       {
         "count": 15,
+        "item": "WorldItem:survivoritemdata",
+        "itemEvent": "Collect",
         "name": "questcollect_survivoritemdata_v2"
       },
       {
         "count": 3,
-        "name": "complete_pve03_diff5_v2"
+        "name": "complete_pve03_diff5_v2",
+        "stat": "complete_pve03_diff5"
       }
     ],
     "rewards": [
@@ -1045,11 +1096,14 @@
     "objectives": [
       {
         "count": 15,
+        "item": "WorldItem:survivoritemdata",
+        "itemEvent": "Collect",
         "name": "questcollect_survivoritemdata_v2"
       },
       {
         "count": 3,
-        "name": "complete_pve03_diff1_v2"
+        "name": "complete_pve03_diff1_v2",
+        "stat": "complete_pve03_diff1"
       }
     ],
     "rewards": [
@@ -1074,7 +1128,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "complete_encampment_3_diff2"
+        "name": "complete_encampment_3_diff2",
+        "stat": "complete_encampment_3_diff2"
       }
     ],
     "rewards": [
@@ -1099,7 +1154,8 @@
     "objectives": [
       {
         "count": 20,
-        "name": "kill_husk_flinger_3_diff3_v3"
+        "name": "kill_husk_flinger_3_diff3_v3",
+        "stat": "kill_husk_flinger_3_diff3"
       }
     ],
     "rewards": [
@@ -1124,7 +1180,8 @@
     "objectives": [
       {
         "count": 25,
-        "name": "kill_husk_taker_3_diff4_v3"
+        "name": "kill_husk_taker_3_diff4_v3",
+        "stat": "kill_husk_taker_3_diff4"
       }
     ],
     "rewards": [
@@ -1149,7 +1206,8 @@
     "objectives": [
       {
         "count": 30,
-        "name": "kill_husk_smasher_3_diff5_v3"
+        "name": "kill_husk_smasher_3_diff5_v3",
+        "stat": "kill_husk_smasher_3_diff5"
       }
     ],
     "rewards": [
@@ -1174,7 +1232,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_gate_triple_3_v2"
+        "name": "complete_gate_triple_3_v2",
+        "stat": "complete_gate_triple_3"
       }
     ],
     "rewards": [
@@ -1199,7 +1258,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_powerreactor_3_diff2_v2"
+        "name": "complete_powerreactor_3_diff2_v2",
+        "stat": "complete_powerreactor_3_diff2"
       }
     ],
     "rewards": [
@@ -1224,7 +1284,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_gate_quadruple_3_diff3_v2"
+        "name": "complete_gate_quadruple_3_diff3_v2",
+        "stat": "complete_gate_quadruple_3_diff3"
       }
     ],
     "rewards": [
@@ -1249,7 +1310,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_whackatroll_3_diff4_v2"
+        "name": "complete_whackatroll_3_diff4_v2",
+        "stat": "complete_whackatroll_3_diff4"
       }
     ],
     "rewards": [
@@ -1270,7 +1332,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_bluglosiphon_3_diff5_v2"
+        "name": "complete_bluglosiphon_3_diff5_v2",
+        "stat": "complete_bluglosiphon_3_diff5"
       }
     ],
     "rewards": [
@@ -1291,7 +1354,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff1"
+        "name": "complete_pve03_diff1",
+        "stat": "complete_pve03_diff1"
       }
     ],
     "rewards": [
@@ -1316,7 +1380,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff2"
+        "name": "complete_pve03_diff2",
+        "stat": "complete_pve03_diff2"
       }
     ],
     "rewards": [
@@ -1341,7 +1406,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff3"
+        "name": "complete_pve03_diff3",
+        "stat": "complete_pve03_diff3"
       }
     ],
     "rewards": [
@@ -1366,7 +1432,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_destroyencamp_3_diff4"
+        "name": "complete_destroyencamp_3_diff4",
+        "stat": "complete_destroyencamp_3_diff4"
       }
     ],
     "rewards": [
@@ -1391,7 +1458,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_whackatroll_3_diff5_v2"
+        "name": "complete_whackatroll_3_diff5_v2",
+        "stat": "complete_whackatroll_3_diff5"
       }
     ],
     "rewards": [
@@ -1416,7 +1484,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff1"
+        "name": "complete_pve03_diff1",
+        "stat": "complete_pve03_diff1"
       }
     ],
     "rewards": [
@@ -1441,7 +1510,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve03_diff2"
+        "name": "complete_pve03_diff2",
+        "stat": "complete_pve03_diff2"
       }
     ],
     "rewards": [
@@ -1466,7 +1536,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff3"
+        "name": "complete_pve03_diff3",
+        "stat": "complete_pve03_diff3"
       }
     ],
     "rewards": [
@@ -1491,11 +1562,14 @@
     "objectives": [
       {
         "count": 10,
+        "item": "WorldItem:survivoritemdata",
+        "itemEvent": "Collect",
         "name": "questcollect_survivoritemdata_v2"
       },
       {
         "count": 2,
-        "name": "complete_pve03_diff3_v2"
+        "name": "complete_pve03_diff3_v2",
+        "stat": "complete_pve03_diff4"
       }
     ],
     "rewards": [
@@ -1520,7 +1594,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_anomaly_3_diff5_v2"
+        "name": "complete_anomaly_3_diff5_v2",
+        "stat": "complete_anomaly_3_diff5"
       }
     ],
     "rewards": [
@@ -1545,7 +1620,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff1"
+        "name": "complete_pve03_diff1",
+        "stat": "complete_pve03_diff1"
       }
     ],
     "rewards": [
@@ -1570,7 +1646,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve03_diff2"
+        "name": "complete_pve03_diff2",
+        "stat": "complete_pve03_diff2"
       }
     ],
     "rewards": [
@@ -1595,7 +1672,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve03_diff3"
+        "name": "complete_pve03_diff3",
+        "stat": "complete_pve03_diff3"
       }
     ],
     "rewards": [
@@ -1620,7 +1698,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff4"
+        "name": "complete_pve03_diff4",
+        "stat": "complete_pve03_diff4"
       }
     ],
     "rewards": [
@@ -1641,7 +1720,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve03_diff5"
+        "name": "complete_pve03_diff5",
+        "stat": "complete_pve03_diff5"
       }
     ],
     "rewards": [
@@ -1666,7 +1746,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve03_diff1"
+        "name": "complete_pve03_diff1",
+        "stat": "complete_pve03_diff1"
       }
     ],
     "rewards": [
@@ -1691,7 +1772,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff2"
+        "name": "complete_pve03_diff2",
+        "stat": "complete_pve03_diff2"
       }
     ],
     "rewards": [
@@ -1720,7 +1802,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff3"
+        "name": "complete_pve03_diff3",
+        "stat": "complete_pve03_diff3"
       }
     ],
     "rewards": [
@@ -1749,7 +1832,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff4"
+        "name": "complete_pve03_diff4",
+        "stat": "complete_pve03_diff4"
       }
     ],
     "rewards": [
@@ -1770,7 +1854,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff5"
+        "name": "complete_pve03_diff5",
+        "stat": "complete_pve03_diff5"
       }
     ],
     "rewards": [
@@ -1795,7 +1880,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff1"
+        "name": "complete_pve03_diff1",
+        "stat": "complete_pve03_diff1"
       }
     ],
     "rewards": [
@@ -1816,7 +1902,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve03_diff2"
+        "name": "complete_pve03_diff2",
+        "stat": "complete_pve03_diff2"
       }
     ],
     "rewards": [
@@ -1841,7 +1928,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff3"
+        "name": "complete_pve03_diff3",
+        "stat": "complete_pve03_diff3"
       }
     ],
     "rewards": [
@@ -1866,7 +1954,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve03_diff4"
+        "name": "complete_pve03_diff4",
+        "stat": "complete_pve03_diff4"
       }
     ],
     "rewards": [
@@ -1891,7 +1980,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve03_diff5"
+        "name": "complete_pve03_diff5",
+        "stat": "complete_pve03_diff5"
       }
     ],
     "rewards": [
@@ -1920,7 +2010,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_launchrocket_3"
+        "name": "complete_launchrocket_3",
+        "stat": "complete_launchrocket_3"
       }
     ],
     "rewards": [
@@ -1941,7 +2032,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "interact_teddybear_pve03_v2"
+        "name": "interact_teddybear_pve03_v2",
+        "stat": "interact_teddybear_pve03"
       }
     ],
     "rewards": [
@@ -1966,7 +2058,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_gate_double_3_diff2"
+        "name": "complete_gate_double_3_diff2",
+        "stat": "complete_gate_double_3_diff2"
       }
     ],
     "rewards": [
@@ -1991,7 +2084,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "interact_safe_pve03_diff3_v2"
+        "name": "interact_safe_pve03_diff3_v2",
+        "stat": "interact_safe_pve03_diff3"
       }
     ],
     "rewards": [
@@ -2016,7 +2110,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_gate_double_3_diff4_v2"
+        "name": "complete_gate_double_3_diff4_v2",
+        "stat": "complete_gate_double_3_diff4"
       }
     ],
     "rewards": [
@@ -2041,11 +2136,13 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_powerreactor_3_diff5"
+        "name": "complete_powerreactor_3_diff5",
+        "stat": "complete_powerreactor_3_diff5"
       },
       {
         "count": 1,
-        "name": "complete_delivergoods_3_diff5_v2"
+        "name": "complete_delivergoods_3_diff5_v2",
+        "stat": "complete_delivergoods_3_diff5"
       }
     ],
     "rewards": [
@@ -2060,7 +2157,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff1"
+        "name": "complete_pve03_diff1",
+        "stat": "complete_pve03_diff1"
       }
     ],
     "rewards": [
@@ -2075,7 +2173,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff2"
+        "name": "complete_pve03_diff2",
+        "stat": "complete_pve03_diff2"
       }
     ],
     "rewards": [
@@ -2094,7 +2193,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff3"
+        "name": "complete_pve03_diff3",
+        "stat": "complete_pve03_diff3"
       }
     ],
     "rewards": [
@@ -2113,7 +2213,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff4"
+        "name": "complete_pve03_diff4",
+        "stat": "complete_pve03_diff4"
       }
     ],
     "rewards": [
@@ -2138,7 +2239,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff5"
+        "name": "complete_pve03_diff5",
+        "stat": "complete_pve03_diff5"
       }
     ],
     "rewards": [
@@ -2153,7 +2255,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff1"
+        "name": "complete_pve03_diff1",
+        "stat": "complete_pve03_diff1"
       }
     ],
     "rewards": [
@@ -2178,7 +2281,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff2"
+        "name": "complete_pve03_diff2",
+        "stat": "complete_pve03_diff2"
       }
     ],
     "rewards": [
@@ -2203,7 +2307,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve03_diff3"
+        "name": "complete_pve03_diff3",
+        "stat": "complete_pve03_diff3"
       }
     ],
     "rewards": [
@@ -2228,7 +2333,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff4"
+        "name": "complete_pve03_diff4",
+        "stat": "complete_pve03_diff4"
       }
     ],
     "rewards": [
@@ -2253,7 +2359,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff5"
+        "name": "complete_pve03_diff5",
+        "stat": "complete_pve03_diff5"
       }
     ],
     "rewards": [
@@ -2268,7 +2375,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff2"
+        "name": "complete_pve03_diff2",
+        "stat": "complete_pve03_diff2"
       }
     ],
     "rewards": [
@@ -2287,7 +2395,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff3"
+        "name": "complete_pve03_diff3",
+        "stat": "complete_pve03_diff3"
       }
     ],
     "rewards": [
@@ -2302,7 +2411,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff4"
+        "name": "complete_pve03_diff4",
+        "stat": "complete_pve03_diff4"
       }
     ],
     "rewards": [
@@ -2327,7 +2437,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff5"
+        "name": "complete_pve03_diff5",
+        "stat": "complete_pve03_diff5"
       }
     ],
     "rewards": [
@@ -2342,7 +2453,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03_diff5"
+        "name": "complete_pve03_diff5",
+        "stat": "complete_pve03_diff5"
       }
     ],
     "rewards": [
@@ -2372,7 +2484,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "upgrade_any_defender"
+        "name": "upgrade_any_defender",
+        "stat": "upgrade_any_defender"
       }
     ],
     "rewards": [
@@ -2387,7 +2500,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "convert_any_defender"
+        "name": "convert_any_defender",
+        "stat": "convert_any_defender"
       }
     ],
     "rewards": [
@@ -2408,7 +2522,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "kill_husk_smasher"
+        "name": "kill_husk_smasher",
+        "stat": "kill_husk_smasher"
       }
     ],
     "rewards": [
@@ -2423,7 +2538,8 @@
     "objectives": [
       {
         "count": 50,
-        "name": "kill_husk_smasher"
+        "name": "kill_husk_smasher",
+        "stat": "kill_husk_smasher"
       }
     ],
     "rewards": [
@@ -2444,7 +2560,8 @@
     "objectives": [
       {
         "count": 10,
-        "name": "kill_husk_smasher"
+        "name": "kill_husk_smasher",
+        "stat": "kill_husk_smasher"
       }
     ],
     "rewards": [
@@ -2465,7 +2582,8 @@
     "objectives": [
       {
         "count": 15,
-        "name": "kill_husk_smasher"
+        "name": "kill_husk_smasher",
+        "stat": "kill_husk_smasher"
       }
     ],
     "rewards": [
@@ -2486,7 +2604,8 @@
     "objectives": [
       {
         "count": 20,
-        "name": "kill_husk_smasher"
+        "name": "kill_husk_smasher",
+        "stat": "kill_husk_smasher"
       }
     ],
     "rewards": [
@@ -2507,7 +2626,8 @@
     "objectives": [
       {
         "count": 25,
-        "name": "kill_husk_smasher"
+        "name": "kill_husk_smasher",
+        "stat": "kill_husk_smasher"
       }
     ],
     "rewards": [
@@ -2528,7 +2648,8 @@
     "objectives": [
       {
         "count": 30,
-        "name": "kill_husk_smasher"
+        "name": "kill_husk_smasher",
+        "stat": "kill_husk_smasher"
       }
     ],
     "rewards": [
@@ -2549,7 +2670,8 @@
     "objectives": [
       {
         "count": 35,
-        "name": "kill_husk_smasher"
+        "name": "kill_husk_smasher",
+        "stat": "kill_husk_smasher"
       }
     ],
     "rewards": [
@@ -2570,7 +2692,8 @@
     "objectives": [
       {
         "count": 40,
-        "name": "kill_husk_smasher"
+        "name": "kill_husk_smasher",
+        "stat": "kill_husk_smasher"
       }
     ],
     "rewards": [
@@ -2591,7 +2714,8 @@
     "objectives": [
       {
         "count": 45,
-        "name": "kill_husk_smasher"
+        "name": "kill_husk_smasher",
+        "stat": "kill_husk_smasher"
       }
     ],
     "rewards": [
@@ -2612,7 +2736,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "upgrade_any_hero"
+        "name": "upgrade_any_hero",
+        "stat": "upgrade_any_hero"
       }
     ],
     "rewards": [
@@ -2631,7 +2756,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "convert_any_hero"
+        "name": "convert_any_hero",
+        "stat": "convert_any_hero"
       }
     ],
     "rewards": [
@@ -2652,7 +2778,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_outpost"
+        "name": "complete_outpost",
+        "stat": "complete_outpost"
       }
     ],
     "rewards": [
@@ -2667,7 +2794,8 @@
     "objectives": [
       {
         "count": 6,
-        "name": "complete_outpost"
+        "name": "complete_outpost",
+        "stat": "complete_outpost"
       }
     ],
     "rewards": [
@@ -2688,7 +2816,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_outpost"
+        "name": "complete_outpost",
+        "stat": "complete_outpost"
       }
     ],
     "rewards": [
@@ -2709,7 +2838,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_outpost"
+        "name": "complete_outpost",
+        "stat": "complete_outpost"
       }
     ],
     "rewards": [
@@ -2730,7 +2860,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_outpost"
+        "name": "complete_outpost",
+        "stat": "complete_outpost"
       }
     ],
     "rewards": [
@@ -2751,7 +2882,8 @@
     "objectives": [
       {
         "count": 4,
-        "name": "complete_outpost"
+        "name": "complete_outpost",
+        "stat": "complete_outpost"
       }
     ],
     "rewards": [
@@ -2772,7 +2904,8 @@
     "objectives": [
       {
         "count": 4,
-        "name": "complete_outpost"
+        "name": "complete_outpost",
+        "stat": "complete_outpost"
       }
     ],
     "rewards": [
@@ -2793,7 +2926,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "complete_outpost"
+        "name": "complete_outpost",
+        "stat": "complete_outpost"
       }
     ],
     "rewards": [
@@ -2814,7 +2948,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "complete_outpost"
+        "name": "complete_outpost",
+        "stat": "complete_outpost"
       }
     ],
     "rewards": [
@@ -2835,7 +2970,8 @@
     "objectives": [
       {
         "count": 6,
-        "name": "complete_outpost"
+        "name": "complete_outpost",
+        "stat": "complete_outpost"
       }
     ],
     "rewards": [
@@ -2856,6 +2992,8 @@
     "objectives": [
       {
         "count": 20,
+        "item": "WorldItem:survivoritemdata",
+        "itemEvent": "Collect",
         "name": "questcollect_survivoritemdata"
       }
     ],
@@ -2871,6 +3009,8 @@
     "objectives": [
       {
         "count": 70,
+        "item": "WorldItem:survivoritemdata",
+        "itemEvent": "Collect",
         "name": "questcollect_survivoritemdata"
       }
     ],
@@ -2892,6 +3032,8 @@
     "objectives": [
       {
         "count": 25,
+        "item": "WorldItem:survivoritemdata",
+        "itemEvent": "Collect",
         "name": "questcollect_survivoritemdata"
       }
     ],
@@ -2913,6 +3055,8 @@
     "objectives": [
       {
         "count": 30,
+        "item": "WorldItem:survivoritemdata",
+        "itemEvent": "Collect",
         "name": "questcollect_survivoritemdata"
       }
     ],
@@ -2934,6 +3078,8 @@
     "objectives": [
       {
         "count": 35,
+        "item": "WorldItem:survivoritemdata",
+        "itemEvent": "Collect",
         "name": "questcollect_survivoritemdata"
       }
     ],
@@ -2955,6 +3101,8 @@
     "objectives": [
       {
         "count": 40,
+        "item": "WorldItem:survivoritemdata",
+        "itemEvent": "Collect",
         "name": "questcollect_survivoritemdata"
       }
     ],
@@ -2976,6 +3124,8 @@
     "objectives": [
       {
         "count": 45,
+        "item": "WorldItem:survivoritemdata",
+        "itemEvent": "Collect",
         "name": "questcollect_survivoritemdata"
       }
     ],
@@ -2997,6 +3147,8 @@
     "objectives": [
       {
         "count": 50,
+        "item": "WorldItem:survivoritemdata",
+        "itemEvent": "Collect",
         "name": "questcollect_survivoritemdata"
       }
     ],
@@ -3018,6 +3170,8 @@
     "objectives": [
       {
         "count": 55,
+        "item": "WorldItem:survivoritemdata",
+        "itemEvent": "Collect",
         "name": "questcollect_survivoritemdata"
       }
     ],
@@ -3039,6 +3193,8 @@
     "objectives": [
       {
         "count": 60,
+        "item": "WorldItem:survivoritemdata",
+        "itemEvent": "Collect",
         "name": "questcollect_survivoritemdata"
       }
     ],
@@ -3060,7 +3216,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_primary"
+        "name": "complete_primary",
+        "stat": "complete_primary"
       }
     ],
     "rewards": [
@@ -3075,7 +3232,8 @@
     "objectives": [
       {
         "count": 7,
-        "name": "complete_primary"
+        "name": "complete_primary",
+        "stat": "complete_primary"
       }
     ],
     "rewards": [
@@ -3096,7 +3254,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_primary"
+        "name": "complete_primary",
+        "stat": "complete_primary"
       }
     ],
     "rewards": [
@@ -3117,7 +3276,8 @@
     "objectives": [
       {
         "count": 4,
-        "name": "complete_primary"
+        "name": "complete_primary",
+        "stat": "complete_primary"
       }
     ],
     "rewards": [
@@ -3138,7 +3298,8 @@
     "objectives": [
       {
         "count": 4,
-        "name": "complete_primary"
+        "name": "complete_primary",
+        "stat": "complete_primary"
       }
     ],
     "rewards": [
@@ -3159,7 +3320,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "complete_primary"
+        "name": "complete_primary",
+        "stat": "complete_primary"
       }
     ],
     "rewards": [
@@ -3180,7 +3342,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "complete_primary"
+        "name": "complete_primary",
+        "stat": "complete_primary"
       }
     ],
     "rewards": [
@@ -3201,7 +3364,8 @@
     "objectives": [
       {
         "count": 6,
-        "name": "complete_primary"
+        "name": "complete_primary",
+        "stat": "complete_primary"
       }
     ],
     "rewards": [
@@ -3222,7 +3386,8 @@
     "objectives": [
       {
         "count": 6,
-        "name": "complete_primary"
+        "name": "complete_primary",
+        "stat": "complete_primary"
       }
     ],
     "rewards": [
@@ -3243,7 +3408,8 @@
     "objectives": [
       {
         "count": 7,
-        "name": "complete_primary"
+        "name": "complete_primary",
+        "stat": "complete_primary"
       }
     ],
     "rewards": [
@@ -3264,7 +3430,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_mimic"
+        "name": "complete_mimic",
+        "stat": "complete_mimic"
       }
     ],
     "rewards": [
@@ -3279,7 +3446,8 @@
     "objectives": [
       {
         "count": 6,
-        "name": "complete_mimic"
+        "name": "complete_mimic",
+        "stat": "complete_mimic"
       }
     ],
     "rewards": [
@@ -3300,7 +3468,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_mimic"
+        "name": "complete_mimic",
+        "stat": "complete_mimic"
       }
     ],
     "rewards": [
@@ -3321,7 +3490,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_mimic"
+        "name": "complete_mimic",
+        "stat": "complete_mimic"
       }
     ],
     "rewards": [
@@ -3342,7 +3512,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_mimic"
+        "name": "complete_mimic",
+        "stat": "complete_mimic"
       }
     ],
     "rewards": [
@@ -3363,7 +3534,8 @@
     "objectives": [
       {
         "count": 4,
-        "name": "complete_mimic"
+        "name": "complete_mimic",
+        "stat": "complete_mimic"
       }
     ],
     "rewards": [
@@ -3384,7 +3556,8 @@
     "objectives": [
       {
         "count": 4,
-        "name": "complete_mimic"
+        "name": "complete_mimic",
+        "stat": "complete_mimic"
       }
     ],
     "rewards": [
@@ -3405,7 +3578,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "complete_mimic"
+        "name": "complete_mimic",
+        "stat": "complete_mimic"
       }
     ],
     "rewards": [
@@ -3426,7 +3600,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "complete_mimic"
+        "name": "complete_mimic",
+        "stat": "complete_mimic"
       }
     ],
     "rewards": [
@@ -3447,7 +3622,8 @@
     "objectives": [
       {
         "count": 6,
-        "name": "complete_mimic"
+        "name": "complete_mimic",
+        "stat": "complete_mimic"
       }
     ],
     "rewards": [
@@ -3468,7 +3644,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "upgrade_any_weapon"
+        "name": "upgrade_any_weapon",
+        "stat": "upgrade_any_weapon"
       }
     ],
     "rewards": [
@@ -3487,7 +3664,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "convert_any_weapon"
+        "name": "convert_any_weapon",
+        "stat": "convert_any_weapon"
       }
     ],
     "rewards": [
@@ -3502,7 +3680,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "upgrade_any_worker"
+        "name": "upgrade_any_worker",
+        "stat": "upgrade_any_worker"
       }
     ],
     "rewards": [
@@ -3517,7 +3696,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "convert_any_worker"
+        "name": "convert_any_worker",
+        "stat": "convert_any_worker"
       }
     ],
     "rewards": [
@@ -3532,7 +3712,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_launchballoon"
+        "name": "complete_launchballoon",
+        "stat": "complete_launchballoon"
       }
     ],
     "rewards": [
@@ -3551,7 +3732,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_retrievedata"
+        "name": "complete_retrievedata",
+        "stat": "complete_retrievedata"
       }
     ],
     "rewards": [
@@ -3570,7 +3752,8 @@
     "objectives": [
       {
         "count": 6,
-        "name": "quest_reactive_destroyarcade_v2"
+        "name": "quest_reactive_destroyarcade_v2",
+        "stat": "quest_reactive_destroyarcade"
       }
     ],
     "rewards": [
@@ -3589,7 +3772,8 @@
     "objectives": [
       {
         "count": 8,
-        "name": "quest_reactive_destroybear_v3"
+        "name": "quest_reactive_destroybear_v3",
+        "stat": "quest_reactive_destroybear"
       }
     ],
     "rewards": [
@@ -3608,7 +3792,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "quest_reactive_destroyfiretruck_v2"
+        "name": "quest_reactive_destroyfiretruck_v2",
+        "stat": "quest_reactive_destroyfiretruck"
       }
     ],
     "rewards": [
@@ -3627,7 +3812,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "quest_reactive_destroygnome_v2"
+        "name": "quest_reactive_destroygnome_v2",
+        "stat": "quest_reactive_destroygnome"
       }
     ],
     "rewards": [
@@ -3646,7 +3832,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "quest_reactive_destroypropane_v2"
+        "name": "quest_reactive_destroypropane_v2",
+        "stat": "quest_reactive_destroypropane"
       }
     ],
     "rewards": [
@@ -3665,7 +3852,8 @@
     "objectives": [
       {
         "count": 8,
-        "name": "quest_reactive_destroyseesaw_v2"
+        "name": "quest_reactive_destroyseesaw_v2",
+        "stat": "quest_reactive_destroyseesaw"
       }
     ],
     "rewards": [
@@ -3684,7 +3872,8 @@
     "objectives": [
       {
         "count": 4,
-        "name": "quest_reactive_destroyserverrack_v2"
+        "name": "quest_reactive_destroyserverrack_v2",
+        "stat": "quest_reactive_destroyserverrack"
       }
     ],
     "rewards": [
@@ -3703,7 +3892,8 @@
     "objectives": [
       {
         "count": 4,
-        "name": "quest_reactive_destroytransform_v2"
+        "name": "quest_reactive_destroytransform_v2",
+        "stat": "quest_reactive_destroytransform"
       }
     ],
     "rewards": [
@@ -3722,7 +3912,8 @@
     "objectives": [
       {
         "count": 10,
-        "name": "quest_reactive_destroytv_v2"
+        "name": "quest_reactive_destroytv_v2",
+        "stat": "quest_reactive_destroytv"
       }
     ],
     "rewards": [
@@ -3741,7 +3932,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_gate"
+        "name": "complete_gate",
+        "stat": "complete_gate"
       }
     ],
     "rewards": [
@@ -3760,7 +3952,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "quick_complete"
+        "name": "quick_complete",
+        "stat": "quick_complete"
       }
     ],
     "rewards": [
@@ -3779,7 +3972,8 @@
     "objectives": [
       {
         "count": 500,
-        "name": "kill_husk"
+        "name": "kill_husk",
+        "stat": "kill_husk"
       }
     ],
     "rewards": [
@@ -3798,7 +3992,8 @@
     "objectives": [
       {
         "count": 500,
-        "name": "kill_husk_constructor"
+        "name": "kill_husk_constructor",
+        "stat": "kill_husk_constructor"
       }
     ],
     "prerequisites": [
@@ -3820,7 +4015,8 @@
     "objectives": [
       {
         "count": 500,
-        "name": "kill_husk_ninja"
+        "name": "kill_husk_ninja",
+        "stat": "kill_husk_ninja"
       }
     ],
     "prerequisites": [
@@ -3842,7 +4038,8 @@
     "objectives": [
       {
         "count": 500,
-        "name": "kill_husk_outlander"
+        "name": "kill_husk_outlander",
+        "stat": "kill_husk_outlander"
       }
     ],
     "prerequisites": [
@@ -3864,7 +4061,8 @@
     "objectives": [
       {
         "count": 500,
-        "name": "kill_husk_commando"
+        "name": "kill_husk_commando",
+        "stat": "kill_husk_commando"
       }
     ],
     "prerequisites": [
@@ -3886,10 +4084,11 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve03"
+        "name": "complete_pve03",
+        "stat": "complete_pve03"
       }
     ],
-    "prerequisiteQuest": "/game/quests/outpost/outpostquest_t3_l1",
+    "prerequisiteQuest": "outpostquest_t3_l1",
     "rewards": [
       {
         "quantity": 75,
@@ -3906,7 +4105,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_constructor"
+        "name": "complete_constructor",
+        "stat": "complete_constructor"
       }
     ],
     "prerequisites": [
@@ -3928,7 +4128,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_ninja"
+        "name": "complete_ninja",
+        "stat": "complete_ninja"
       }
     ],
     "prerequisites": [
@@ -3950,7 +4151,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_outlander"
+        "name": "complete_outlander",
+        "stat": "complete_outlander"
       }
     ],
     "prerequisites": [
@@ -3972,10 +4174,11 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve02"
+        "name": "complete_pve02",
+        "stat": "complete_pve02"
       }
     ],
-    "prerequisiteQuest": "/game/quests/outpost/outpostquest_t2_l1",
+    "prerequisiteQuest": "outpostquest_t2_l1",
     "rewards": [
       {
         "quantity": 60,
@@ -3992,7 +4195,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_commando"
+        "name": "complete_commando",
+        "stat": "complete_commando"
       }
     ],
     "prerequisites": [
@@ -4014,7 +4218,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve01"
+        "name": "complete_pve01",
+        "stat": "complete_pve01"
       }
     ],
     "rewards": [
@@ -4033,10 +4238,11 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04"
+        "name": "complete_pve04",
+        "stat": "complete_pve04"
       }
     ],
-    "prerequisiteQuest": "/game/quests/outpost/outpostquest_t4_l1",
+    "prerequisiteQuest": "outpostquest_t4_l1",
     "rewards": [
       {
         "quantity": 100,
@@ -4053,6 +4259,8 @@
     "objectives": [
       {
         "count": 25,
+        "item": "WorldItem:survivoritemdata",
+        "itemEvent": "Collect",
         "name": "questcollect_survivoritemdata_v2"
       }
     ],
@@ -4076,7 +4284,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "custom_login"
+        "name": "custom_login",
+        "stat": "custom_login"
       }
     ],
     "rewards": [
@@ -4109,7 +4318,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "custom_login"
+        "name": "custom_login",
+        "stat": "custom_login"
       }
     ],
     "type": "Task"
@@ -4118,7 +4328,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "elder_complete_horde_tier_3"
+        "name": "elder_complete_horde_tier_3",
+        "stat": "elder_complete_horde_tier_7"
       }
     ],
     "rewards": [
@@ -4139,7 +4350,8 @@
     "objectives": [
       {
         "count": 10,
-        "name": "elder_build_deployable_base"
+        "name": "elder_build_deployable_base",
+        "stat": "elder_build_deployable_base"
       }
     ],
     "rewards": [
@@ -4160,6 +4372,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "HomebaseNode:t1_l1_neighborhoods_01_aaa691e61",
+        "itemEvent": "Acquire",
         "name": "unlock_skill_tree_elder"
       }
     ],
@@ -4175,6 +4389,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "Quest:homebaseonboardingafteroutpost",
+        "itemEvent": "HasCompletedQuest",
         "name": "questcomplete_homebaseonboardingafteroutpost"
       }
     ],
@@ -4210,10 +4426,13 @@
     "objectives": [
       {
         "count": 1,
-        "name": "craft_founders_shotgun_vr"
+        "name": "craft_founders_shotgun_vr",
+        "stat": "craft_founders_shotgun_vr"
       },
       {
         "count": 1,
+        "item": "Quest:stonewoodquest_launchrocket_d5",
+        "itemEvent": "HasCompletedQuest",
         "name": "questcomplete_stonewoodquest_launchrocket_d5"
       }
     ],
@@ -4229,10 +4448,13 @@
     "objectives": [
       {
         "count": 1,
-        "name": "craft_founders_shotgun_r"
+        "name": "craft_founders_shotgun_r",
+        "stat": "craft_founders_shotgun_r"
       },
       {
         "count": 1,
+        "item": "Quest:outpostquest_t1_l3",
+        "itemEvent": "HasCompletedQuest",
         "name": "questcomplete_outpostquest_t1_l3"
       }
     ],
@@ -4252,6 +4474,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "Quest:homebaseonboardingafteroutpost",
+        "itemEvent": "HasCompletedQuest",
         "name": "questcomplete_homebaseonboardingafteroutpost"
       }
     ],
@@ -4271,6 +4495,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "Quest:foundersquest_getrewards_0_1",
+        "itemEvent": "HasCompletedQuest",
         "name": "questcomplete_homebaseonboardingafteroutpost"
       }
     ],
@@ -4386,6 +4612,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "Quest:foundersquest_getrewards_1_2",
+        "itemEvent": "HasCompletedQuest",
         "name": "questcomplete_homebaseonboardingafteroutpost"
       }
     ],
@@ -4437,6 +4665,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "Quest:foundersquest_getrewards_2_3",
+        "itemEvent": "HasCompletedQuest",
         "name": "questcomplete_homebaseonboardingafteroutpost"
       }
     ],
@@ -4480,6 +4710,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "Quest:foundersquest_getrewards_3_4",
+        "itemEvent": "HasCompletedQuest",
         "name": "questcomplete_homebaseonboardingafteroutpost"
       }
     ],
@@ -4547,6 +4779,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "Quest:foundersquest_getrewards_0_1",
+        "itemEvent": "HasCompletedQuest",
         "name": "questcomplete_homebaseonboardingafteroutpost"
       }
     ],
@@ -4574,6 +4808,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "Quest:foundersquest_getrewards_0_1",
+        "itemEvent": "HasCompletedQuest",
         "name": "questcomplete_homebaseonboardingafteroutpost"
       }
     ],
@@ -4601,6 +4837,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "Quest:homebaseonboardingafteroutpost",
+        "itemEvent": "HasCompletedQuest",
         "name": "questcomplete_homebaseonboardingafteroutpost"
       }
     ],
@@ -4628,6 +4866,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "Quest:homebaseonboardingafteroutpost",
+        "itemEvent": "HasCompletedQuest",
         "name": "questcomplete_homebaseonboardingafteroutpost"
       }
     ],
@@ -4651,6 +4891,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "Quest:homebaseonboardingafteroutpost",
+        "itemEvent": "HasCompletedQuest",
         "name": "questcomplete_homebaseonboardingafteroutpost"
       }
     ],
@@ -4674,6 +4916,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "Quest:homebaseonboardingafteroutpost",
+        "itemEvent": "HasCompletedQuest",
         "name": "questcomplete_homebaseonboardingafteroutpost"
       }
     ],
@@ -4697,6 +4941,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "Quest:homebaseonboardingafteroutpost",
+        "itemEvent": "HasCompletedQuest",
         "name": "questcomplete_homebaseonboardingafteroutpost"
       }
     ],
@@ -4720,10 +4966,13 @@
     "objectives": [
       {
         "count": 1,
-        "name": "craft_founders_sword_vr"
+        "name": "craft_founders_sword_vr",
+        "stat": "craft_founders_sword_vr"
       },
       {
         "count": 1,
+        "item": "Quest:stonewoodquest_launchrocket_d5",
+        "itemEvent": "HasCompletedQuest",
         "name": "questcomplete_stonewoodquest_launchrocket_d5"
       }
     ],
@@ -4739,10 +4988,13 @@
     "objectives": [
       {
         "count": 1,
-        "name": "craft_founders_sword_r"
+        "name": "craft_founders_sword_r",
+        "stat": "craft_founders_sword_r"
       },
       {
         "count": 1,
+        "item": "Quest:outpostquest_t1_l3",
+        "itemEvent": "HasCompletedQuest",
         "name": "questcomplete_outpostquest_t1_l3"
       }
     ],
@@ -4762,10 +5014,13 @@
     "objectives": [
       {
         "count": 1,
-        "name": "craft_founders_pistol_vr"
+        "name": "craft_founders_pistol_vr",
+        "stat": "craft_founders_pistol_vr"
       },
       {
         "count": 1,
+        "item": "Quest:stonewoodquest_launchrocket_d5",
+        "itemEvent": "HasCompletedQuest",
         "name": "questcomplete_stonewoodquest_launchrocket_d5"
       }
     ],
@@ -4781,10 +5036,13 @@
     "objectives": [
       {
         "count": 1,
-        "name": "craft_founders_pistol_r"
+        "name": "craft_founders_pistol_r",
+        "stat": "craft_founders_pistol_r"
       },
       {
         "count": 1,
+        "item": "Quest:outpostquest_t1_l3",
+        "itemEvent": "HasCompletedQuest",
         "name": "questcomplete_outpostquest_t1_l3"
       }
     ],
@@ -4804,10 +5062,13 @@
     "objectives": [
       {
         "count": 1,
-        "name": "craft_founders_assault_vr"
+        "name": "craft_founders_assault_vr",
+        "stat": "craft_founders_assault_vr"
       },
       {
         "count": 1,
+        "item": "Quest:stonewoodquest_launchrocket_d5",
+        "itemEvent": "HasCompletedQuest",
         "name": "questcomplete_stonewoodquest_launchrocket_d5"
       }
     ],
@@ -4823,10 +5084,13 @@
     "objectives": [
       {
         "count": 1,
-        "name": "craft_founders_assault_r"
+        "name": "craft_founders_assault_r",
+        "stat": "craft_founders_assault_r"
       },
       {
         "count": 1,
+        "item": "Quest:outpostquest_t1_l3",
+        "itemEvent": "HasCompletedQuest",
         "name": "questcomplete_outpostquest_t1_l3"
       }
     ],
@@ -4847,7 +5111,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "complete_pve03_diff3"
+        "name": "complete_pve03_diff3",
+        "stat": "complete_pve03_diff3"
       }
     ],
     "rewards": [
@@ -4869,11 +5134,13 @@
     "objectives": [
       {
         "count": 6,
-        "name": "complete_encampment_1_diff4"
+        "name": "complete_encampment_1_diff4",
+        "stat": "complete_encampment_1_diff4"
       },
       {
         "count": 2,
-        "name": "complete_pve01_diff4"
+        "name": "complete_pve01_diff4",
+        "stat": "complete_pve01_diff4"
       }
     ],
     "rewards": [
@@ -4895,11 +5162,13 @@
     "objectives": [
       {
         "count": 10,
-        "name": "quest_reactive_pumpkinhead"
+        "name": "quest_reactive_pumpkinhead",
+        "stat": "quest_reactive_pumpkinhead"
       },
       {
         "count": 2,
-        "name": "complete_pve01_diff2"
+        "name": "complete_pve01_diff2",
+        "stat": "complete_pve01_diff2"
       }
     ],
     "rewards": [
@@ -4921,15 +5190,18 @@
     "objectives": [
       {
         "count": 1,
-        "name": "craft_pumpkin_launcher"
+        "name": "craft_pumpkin_launcher",
+        "stat": "craft_pumpkin_launcher"
       },
       {
         "count": 6,
-        "name": "kill_husk_lobber_pumplauncher"
+        "name": "kill_husk_lobber_pumplauncher",
+        "stat": "kill_husk_lobber_pumplauncher"
       },
       {
         "count": 1,
-        "name": "complete_pve01_diff5"
+        "name": "complete_pve01_diff5",
+        "stat": "complete_pve01_diff5"
       }
     ],
     "rewards": [
@@ -4951,11 +5223,13 @@
     "objectives": [
       {
         "count": 1,
-        "name": "quest_reactive_gravestone"
+        "name": "quest_reactive_gravestone",
+        "stat": "quest_reactive_gravestone"
       },
       {
         "count": 3,
-        "name": "complete_pve01"
+        "name": "complete_pve01",
+        "stat": "complete_pve01_diff4"
       }
     ],
     "rewards": [
@@ -4981,11 +5255,13 @@
     "objectives": [
       {
         "count": 20,
-        "name": "kill_husk_pumpkinhead"
+        "name": "kill_husk_pumpkinhead",
+        "stat": "kill_husk_pumpkinhead"
       },
       {
         "count": 2,
-        "name": "complete_pve01_diff1"
+        "name": "complete_pve01_diff1",
+        "stat": "complete_pve01_diff1"
       }
     ],
     "rewards": [
@@ -5007,7 +5283,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "complete_pve02_diff3"
+        "name": "complete_pve02_diff3",
+        "stat": "complete_pve02_diff3"
       }
     ],
     "rewards": [
@@ -5029,11 +5306,14 @@
     "objectives": [
       {
         "count": 15,
+        "item": "WorldItem:survivoritemdata",
+        "itemEvent": "Collect",
         "name": "questcollect_survivoritemdata"
       },
       {
         "count": 3,
-        "name": "complete_pve01_diff3"
+        "name": "complete_pve01_diff3",
+        "stat": "complete_pve01_diff3"
       }
     ],
     "rewards": [
@@ -5054,15 +5334,18 @@
     "objectives": [
       {
         "count": 1,
-        "name": "assign_hero_constructor"
+        "name": "assign_hero_constructor",
+        "stat": "assign_hero_constructor"
       },
       {
         "count": 1,
-        "name": "upgrade_constructor"
+        "name": "upgrade_constructor",
+        "stat": "upgrade_constructor"
       },
       {
         "count": 1,
-        "name": "complete_pve01_diff2_constructor"
+        "name": "complete_pve01_diff2_constructor",
+        "stat": "complete_pve01_diff2_constructor"
       }
     ],
     "rewards": [
@@ -5083,19 +5366,23 @@
     "objectives": [
       {
         "count": 1,
-        "name": "ability_bullrush"
+        "name": "ability_bullrush",
+        "stat": "ability_bullrush"
       },
       {
         "count": 1,
-        "name": "build_any_floor_constructor"
+        "name": "build_any_floor_constructor",
+        "stat": "build_any_floor_constructor"
       },
       {
         "count": 1,
-        "name": "ability_base"
+        "name": "ability_base",
+        "stat": "ability_base"
       },
       {
         "count": 1,
-        "name": "complete_pve01_diff2_constructor"
+        "name": "complete_pve01_diff2_constructor",
+        "stat": "complete_pve01_diff2_constructor"
       }
     ],
     "rewards": [
@@ -5114,7 +5401,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_buildradar_1_diff2_con"
+        "name": "complete_buildradar_1_diff2_con",
+        "stat": "complete_buildradar_1_diff2_con"
       }
     ],
     "rewards": [
@@ -5139,6 +5427,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "HomebaseNode:t1_main_8d2c3c4d0",
+        "itemEvent": "Acquire",
         "name": "unlock_skill_tree_constructor_leadership"
       }
     ],
@@ -5168,11 +5458,13 @@
     "objectives": [
       {
         "count": 20,
-        "name": "kill_husk_melee"
+        "name": "kill_husk_melee",
+        "stat": "kill_husk_melee"
       },
       {
         "count": 1,
-        "name": "complete_pve01_diff2"
+        "name": "complete_pve01_diff2",
+        "stat": "complete_pve01_diff2"
       }
     ],
     "rewards": [
@@ -5191,19 +5483,23 @@
     "objectives": [
       {
         "count": 1,
-        "name": "upgrade_ninja_lvl_3"
+        "name": "upgrade_ninja_lvl_3",
+        "stat": "upgrade_ninja_lvl_3"
       },
       {
         "count": 3,
-        "name": "ability_throwingstars"
+        "name": "ability_throwingstars",
+        "stat": "ability_throwingstars"
       },
       {
         "count": 3,
-        "name": "ability_mantisleap"
+        "name": "ability_mantisleap",
+        "stat": "ability_mantisleap"
       },
       {
         "count": 3,
-        "name": "complete_pve01_diff3_ninja"
+        "name": "complete_pve01_diff3_ninja",
+        "stat": "complete_pve01_diff3_ninja"
       }
     ],
     "rewards": [
@@ -5225,6 +5521,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "HomebaseNode:t1_main_8991222d1",
+        "itemEvent": "Acquire",
         "name": "unlock_skill_tree_ninja_leadership"
       }
     ],
@@ -5240,7 +5538,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_exploration_1_diff2"
+        "name": "complete_exploration_1_diff2",
+        "stat": "complete_exploration_1_diff2"
       }
     ],
     "rewards": [
@@ -5259,15 +5558,18 @@
     "objectives": [
       {
         "count": 1,
-        "name": "upgrade_outlander_lvl_3"
+        "name": "upgrade_outlander_lvl_3",
+        "stat": "upgrade_outlander_lvl_3"
       },
       {
         "count": 1,
-        "name": "ability_outlander_fragment"
+        "name": "ability_outlander_fragment",
+        "stat": "ability_outlander_fragment"
       },
       {
         "count": 3,
-        "name": "complete_pve01_diff3_outlander"
+        "name": "complete_pve01_diff3_outlander",
+        "stat": "complete_pve01_diff3_outlander"
       }
     ],
     "rewards": [
@@ -5289,6 +5591,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "HomebaseNode:t1_main_566bfea11",
+        "itemEvent": "Acquire",
         "name": "unlock_skill_tree_outlander_leadership"
       }
     ],
@@ -5304,11 +5608,13 @@
     "objectives": [
       {
         "count": 1,
-        "name": "upgrade_soldier"
+        "name": "upgrade_soldier",
+        "stat": "upgrade_soldier"
       },
       {
         "count": 100,
-        "name": "kill_husk_commando_assault"
+        "name": "kill_husk_commando_assault",
+        "stat": "kill_husk_commando_assault"
       }
     ],
     "rewards": [
@@ -5323,7 +5629,8 @@
     "objectives": [
       {
         "count": 10,
-        "name": "kill_husk_commando_fraggrenade"
+        "name": "kill_husk_commando_fraggrenade",
+        "stat": "kill_husk_commando_fraggrenade"
       }
     ],
     "rewards": [
@@ -5529,15 +5836,18 @@
     "objectives": [
       {
         "count": 1,
-        "name": "hbonboarding_completezone"
+        "name": "hbonboarding_completezone",
+        "stat": "hbonboarding_completezone"
       },
       {
         "count": 1,
-        "name": "hbonboarding_watchsatellitecine"
+        "name": "hbonboarding_watchsatellitecine",
+        "stat": "hbonboarding_watchsatellitecine"
       },
       {
         "count": 1,
-        "name": "hbonboarding_namehomebase"
+        "name": "hbonboarding_namehomebase",
+        "stat": "hbonboarding_namehomebase"
       }
     ],
     "type": "Onboarding"
@@ -5552,15 +5862,20 @@
     "objectives": [
       {
         "count": 1,
+        "item": "CardPack:cardpack_basic",
+        "itemEvent": "OpenCardPack",
         "name": "open_card_pack"
       },
       {
         "count": 1,
+        "item": "CardPack:cardpack_bronze",
+        "itemEvent": "PurchaseCardPack",
         "name": "purchase_card_pack"
       },
       {
         "count": 1,
-        "name": "hbonboarding_watchoutpostunlock"
+        "name": "hbonboarding_watchoutpostunlock",
+        "stat": "hbonboarding_watchoutpostunlock"
       }
     ],
     "rewards": [
@@ -5580,6 +5895,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "Quest:outpostquest_t1_l1",
+        "itemEvent": "QuestComplete",
         "name": "questcomplete_outpostquest_t1_l1"
       }
     ],
@@ -5603,7 +5920,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "collectexpedition"
+        "name": "collectexpedition",
+        "stat": "collectexpedition"
       }
     ],
     "rewards": [
@@ -5618,6 +5936,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "HomebaseNode:t1_research_6114fc651",
+        "itemEvent": "Acquire",
         "name": "unlock_skill_tree_researchfortitude"
       }
     ],
@@ -5639,7 +5959,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "assign_worker_to_emt_squadone"
+        "name": "assign_worker_to_emt_squadone",
+        "stat": "assign_worker_to_emt_squadone"
       }
     ],
     "rewards": [
@@ -5655,7 +5976,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "assign_worker_to_fire_squadone"
+        "name": "assign_worker_to_fire_squadone",
+        "stat": "assign_worker_to_fire_squadone"
       }
     ],
     "rewards": [
@@ -5688,7 +6010,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "assign_defender_to_adventure_squadone"
+        "name": "assign_defender_to_adventure_squadone",
+        "stat": "assign_defender_to_adventure_squadone"
       }
     ],
     "rewards": [
@@ -5709,7 +6032,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "assign_defender"
+        "name": "assign_defender",
+        "stat": "assign_defender"
       }
     ],
     "rewards": [
@@ -5726,6 +6050,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "HomebaseNode:t1_main_7064c2440",
+        "itemEvent": "Acquire",
         "name": "unlock_skill_tree_emtworker"
       }
     ],
@@ -5742,6 +6068,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "HomebaseNode:t1_main_609c8a9a8",
+        "itemEvent": "Acquire",
         "name": "unlock_skill_tree_expeditions"
       }
     ],
@@ -5759,6 +6087,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "HomebaseNode:t1_main_5a8d39bb0",
+        "itemEvent": "Acquire",
         "name": "unlock_skill_tree_fireteamalpha"
       }
     ],
@@ -5774,6 +6104,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "HomebaseNode:t1_main_20d6fb134",
+        "itemEvent": "Acquire",
         "name": "unlock_skill_tree_missiondefender"
       }
     ],
@@ -5795,6 +6127,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "HomebaseNode:t1_main_4658a42d3",
+        "itemEvent": "Acquire",
         "name": "unlock_skill_tree_outpostdefender"
       }
     ],
@@ -5821,6 +6155,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "HomebaseNode:t1_main_fabc7c290",
+        "itemEvent": "Acquire",
         "name": "unlock_skill_tree_research"
       }
     ],
@@ -5842,6 +6178,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "HomebaseNode:t1_main_7064c2440",
+        "itemEvent": "Acquire",
         "name": "unlock_skill_tree_squads"
       }
     ],
@@ -5863,6 +6201,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "HomebaseNode:t1_main_ba01a2361",
+        "itemEvent": "Acquire",
         "name": "unlock_skill_tree_weakpointvision"
       }
     ],
@@ -5892,15 +6232,18 @@
     "objectives": [
       {
         "count": 1,
-        "name": "custom_supplydropreceived"
+        "name": "custom_supplydropreceived",
+        "stat": "custom_supplydropreceived"
       },
       {
         "count": 1,
-        "name": "custom_deployoutpost"
+        "name": "custom_deployoutpost",
+        "stat": "custom_deployoutpost"
       },
       {
         "count": 1,
-        "name": "complete_outpost_1_1"
+        "name": "complete_outpost_1_1",
+        "stat": "complete_outpost_1_1"
       }
     ],
     "rewards": [
@@ -5919,7 +6262,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_1_10"
+        "name": "complete_outpost_1_10",
+        "stat": "complete_outpost_1_10"
       }
     ],
     "rewards": [
@@ -5944,7 +6288,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_1_2"
+        "name": "complete_outpost_1_2",
+        "stat": "complete_outpost_1_2"
       }
     ],
     "rewards": [
@@ -5989,11 +6334,13 @@
     "objectives": [
       {
         "count": 1,
-        "name": "custom_defendersupplyreceived"
+        "name": "custom_defendersupplyreceived",
+        "stat": "custom_defendersupplyreceived"
       },
       {
         "count": 1,
-        "name": "complete_outpost_1_3"
+        "name": "complete_outpost_1_3",
+        "stat": "complete_outpost_1_3"
       }
     ],
     "rewards": [
@@ -6022,7 +6369,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_1_4"
+        "name": "complete_outpost_1_4",
+        "stat": "complete_outpost_1_4"
       }
     ],
     "rewards": [
@@ -6051,7 +6399,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_1_5"
+        "name": "complete_outpost_1_5",
+        "stat": "complete_outpost_1_5"
       }
     ],
     "rewards": [
@@ -6076,7 +6425,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_1_6"
+        "name": "complete_outpost_1_6",
+        "stat": "complete_outpost_1_6"
       }
     ],
     "rewards": [
@@ -6101,7 +6451,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_1_7"
+        "name": "complete_outpost_1_7",
+        "stat": "complete_outpost_1_7"
       }
     ],
     "rewards": [
@@ -6126,7 +6477,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_1_8"
+        "name": "complete_outpost_1_8",
+        "stat": "complete_outpost_1_8"
       }
     ],
     "rewards": [
@@ -6151,7 +6503,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_1_9"
+        "name": "complete_outpost_1_9",
+        "stat": "complete_outpost_1_9"
       }
     ],
     "rewards": [
@@ -6184,11 +6537,13 @@
     "objectives": [
       {
         "count": 1,
-        "name": "custom_plankdeployoutpost"
+        "name": "custom_plankdeployoutpost",
+        "stat": "custom_plankdeployoutpost"
       },
       {
         "count": 1,
-        "name": "complete_outpost_2_1"
+        "name": "complete_outpost_2_1",
+        "stat": "complete_outpost_2_1"
       }
     ],
     "rewards": [
@@ -6207,7 +6562,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_2_10"
+        "name": "complete_outpost_2_10",
+        "stat": "complete_outpost_2_10"
       }
     ],
     "rewards": [
@@ -6232,7 +6588,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_2_2"
+        "name": "complete_outpost_2_2",
+        "stat": "complete_outpost_2_2"
       }
     ],
     "rewards": [
@@ -6261,7 +6618,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_2_3"
+        "name": "complete_outpost_2_3",
+        "stat": "complete_outpost_2_3"
       }
     ],
     "rewards": [
@@ -6286,7 +6644,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_2_4"
+        "name": "complete_outpost_2_4",
+        "stat": "complete_outpost_2_4"
       }
     ],
     "rewards": [
@@ -6311,7 +6670,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_2_5"
+        "name": "complete_outpost_2_5",
+        "stat": "complete_outpost_2_5"
       }
     ],
     "rewards": [
@@ -6336,7 +6696,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_2_6"
+        "name": "complete_outpost_2_6",
+        "stat": "complete_outpost_2_6"
       }
     ],
     "rewards": [
@@ -6361,7 +6722,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_2_7"
+        "name": "complete_outpost_2_7",
+        "stat": "complete_outpost_2_7"
       }
     ],
     "rewards": [
@@ -6386,7 +6748,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_2_8"
+        "name": "complete_outpost_2_8",
+        "stat": "complete_outpost_2_8"
       }
     ],
     "rewards": [
@@ -6411,7 +6774,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_2_9"
+        "name": "complete_outpost_2_9",
+        "stat": "complete_outpost_2_9"
       }
     ],
     "rewards": [
@@ -6444,11 +6808,13 @@
     "objectives": [
       {
         "count": 1,
-        "name": "custom_cannydeployoutpost"
+        "name": "custom_cannydeployoutpost",
+        "stat": "custom_cannydeployoutpost"
       },
       {
         "count": 1,
-        "name": "complete_outpost_3_1"
+        "name": "complete_outpost_3_1",
+        "stat": "complete_outpost_3_1"
       }
     ],
     "rewards": [
@@ -6467,7 +6833,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_3_10"
+        "name": "complete_outpost_3_10",
+        "stat": "complete_outpost_3_10"
       }
     ],
     "rewards": [
@@ -6496,7 +6863,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_3_2"
+        "name": "complete_outpost_3_2",
+        "stat": "complete_outpost_3_2"
       }
     ],
     "rewards": [
@@ -6525,7 +6893,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_3_3"
+        "name": "complete_outpost_3_3",
+        "stat": "complete_outpost_3_3"
       }
     ],
     "rewards": [
@@ -6554,7 +6923,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_3_4"
+        "name": "complete_outpost_3_4",
+        "stat": "complete_outpost_3_4"
       }
     ],
     "rewards": [
@@ -6583,7 +6953,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_3_5"
+        "name": "complete_outpost_3_5",
+        "stat": "complete_outpost_3_5"
       }
     ],
     "rewards": [
@@ -6608,7 +6979,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_3_6"
+        "name": "complete_outpost_3_6",
+        "stat": "complete_outpost_3_6"
       }
     ],
     "rewards": [
@@ -6633,7 +7005,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_3_7"
+        "name": "complete_outpost_3_7",
+        "stat": "complete_outpost_3_7"
       }
     ],
     "rewards": [
@@ -6658,7 +7031,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_3_8"
+        "name": "complete_outpost_3_8",
+        "stat": "complete_outpost_3_8"
       }
     ],
     "rewards": [
@@ -6683,7 +7057,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_3_9"
+        "name": "complete_outpost_3_9",
+        "stat": "complete_outpost_3_9"
       }
     ],
     "rewards": [
@@ -6716,11 +7091,13 @@
     "objectives": [
       {
         "count": 1,
-        "name": "custom_twinedeployoutpost"
+        "name": "custom_twinedeployoutpost",
+        "stat": "custom_twinedeployoutpost"
       },
       {
         "count": 1,
-        "name": "complete_outpost_4_1"
+        "name": "complete_outpost_4_1",
+        "stat": "complete_outpost_4_1"
       }
     ],
     "rewards": [
@@ -6739,7 +7116,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_4_10"
+        "name": "complete_outpost_4_10",
+        "stat": "complete_outpost_4_10"
       }
     ],
     "rewards": [
@@ -6768,7 +7146,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_4_2"
+        "name": "complete_outpost_4_2",
+        "stat": "complete_outpost_4_2"
       }
     ],
     "rewards": [
@@ -6797,7 +7176,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_4_3"
+        "name": "complete_outpost_4_3",
+        "stat": "complete_outpost_4_3"
       }
     ],
     "rewards": [
@@ -6826,7 +7206,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_4_4"
+        "name": "complete_outpost_4_4",
+        "stat": "complete_outpost_4_4"
       }
     ],
     "rewards": [
@@ -6855,7 +7236,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_4_5"
+        "name": "complete_outpost_4_5",
+        "stat": "complete_outpost_4_5"
       }
     ],
     "rewards": [
@@ -6884,7 +7266,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_4_6"
+        "name": "complete_outpost_4_6",
+        "stat": "complete_outpost_4_6"
       }
     ],
     "rewards": [
@@ -6909,7 +7292,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_4_7"
+        "name": "complete_outpost_4_7",
+        "stat": "complete_outpost_4_7"
       }
     ],
     "rewards": [
@@ -6934,7 +7318,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_4_8"
+        "name": "complete_outpost_4_8",
+        "stat": "complete_outpost_4_8"
       }
     ],
     "rewards": [
@@ -6959,7 +7344,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_outpost_4_9"
+        "name": "complete_outpost_4_9",
+        "stat": "complete_outpost_4_9"
       }
     ],
     "rewards": [
@@ -6984,7 +7370,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_launchballoon_2_diff5"
+        "name": "complete_launchballoon_2_diff5",
+        "stat": "complete_launchballoon_2_diff5"
       }
     ],
     "rewards": [
@@ -7013,7 +7400,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_gate_double_2"
+        "name": "complete_gate_double_2",
+        "stat": "complete_gate_double_2"
       }
     ],
     "rewards": [
@@ -7046,7 +7434,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_powerreactor_2_diff2_v2"
+        "name": "complete_powerreactor_2_diff2_v2",
+        "stat": "complete_powerreactor_2_diff2"
       }
     ],
     "rewards": [
@@ -7071,7 +7460,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_stormchest_2_diff3"
+        "name": "complete_stormchest_2_diff3",
+        "stat": "complete_stormchest_2_diff3"
       }
     ],
     "rewards": [
@@ -7100,7 +7490,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_evacuateshelter_2_diff4_v2"
+        "name": "complete_evacuateshelter_2_diff4_v2",
+        "stat": "complete_evacuateshelter_2_diff4"
       }
     ],
     "rewards": [
@@ -7133,7 +7524,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_gate_triple_2_diff5"
+        "name": "complete_gate_triple_2_diff5",
+        "stat": "complete_gate_triple_2_diff5"
       }
     ],
     "rewards": [
@@ -7154,7 +7546,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_evacuate_2"
+        "name": "complete_evacuate_2",
+        "stat": "complete_evacuate_2"
       }
     ],
     "rewards": [
@@ -7179,7 +7572,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_destroyencamp_2_diff2"
+        "name": "complete_destroyencamp_2_diff2",
+        "stat": "complete_destroyencamp_2_diff2"
       }
     ],
     "selectableRewards": [
@@ -7208,7 +7602,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_delivergoods_2_diff3_v2"
+        "name": "complete_delivergoods_2_diff3_v2",
+        "stat": "complete_delivergoods_2_diff3"
       }
     ],
     "rewards": [
@@ -7233,7 +7628,8 @@
     "objectives": [
       {
         "count": 500,
-        "name": "kill_husk_2_diff4_v2"
+        "name": "kill_husk_2_diff4_v2",
+        "stat": "kill_husk_2_diff4"
       }
     ],
     "selectableRewards": [
@@ -7262,11 +7658,14 @@
     "objectives": [
       {
         "count": 25,
+        "item": "WorldItem:survivoritemdata",
+        "itemEvent": "Collect",
         "name": "questcollect_survivoritemdata"
       },
       {
         "count": 2,
-        "name": "complete_evacuateshelter_2_diff5"
+        "name": "complete_evacuateshelter_2_diff5",
+        "stat": "complete_evacuateshelter_2_diff5"
       }
     ],
     "rewards": [
@@ -7291,7 +7690,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_launchballoon_2"
+        "name": "complete_launchballoon_2",
+        "stat": "complete_launchballoon_2"
       }
     ],
     "rewards": [
@@ -7316,7 +7716,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "custom_bluglosyphon_full_v2"
+        "name": "custom_bluglosyphon_full_v2",
+        "stat": "custom_bluglosyphon_full"
       }
     ],
     "rewards": [
@@ -7345,7 +7746,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_anomaly_2_diff3_v2"
+        "name": "complete_anomaly_2_diff3_v2",
+        "stat": "complete_anomaly_2_diff3"
       }
     ],
     "rewards": [
@@ -7366,23 +7768,28 @@
     "objectives": [
       {
         "count": 1,
-        "name": "custom_pylonused_build"
+        "name": "custom_pylonused_build",
+        "stat": "custom_pylonused_build"
       },
       {
         "count": 1,
-        "name": "custom_pylonused_health"
+        "name": "custom_pylonused_health",
+        "stat": "custom_pylonused_health"
       },
       {
         "count": 1,
-        "name": "custom_pylonused_movement"
+        "name": "custom_pylonused_movement",
+        "stat": "custom_pylonused_movement"
       },
       {
         "count": 1,
-        "name": "custom_pylonused_shield"
+        "name": "custom_pylonused_shield",
+        "stat": "custom_pylonused_shield"
       },
       {
         "count": 1,
-        "name": "custom_pylonused_stamina"
+        "name": "custom_pylonused_stamina",
+        "stat": "custom_pylonused_stamina"
       }
     ],
     "rewards": [
@@ -7407,7 +7814,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_retrievedata_2_diff5"
+        "name": "complete_retrievedata_2_diff5",
+        "stat": "complete_retrievedata_2_diff5"
       }
     ],
     "rewards": [
@@ -7428,7 +7836,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_buildradargrid_2"
+        "name": "complete_buildradargrid_2",
+        "stat": "complete_buildradargrid_2"
       }
     ],
     "rewards": [
@@ -7453,7 +7862,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_destroyencamp_2_diff2"
+        "name": "complete_destroyencamp_2_diff2",
+        "stat": "complete_destroyencamp_2_diff2"
       }
     ],
     "rewards": [
@@ -7478,7 +7888,8 @@
     "objectives": [
       {
         "count": 6,
-        "name": "complete_relaysurvivor_2_diff3"
+        "name": "complete_relaysurvivor_2_diff3",
+        "stat": "complete_relaysurvivor_2_diff3"
       }
     ],
     "rewards": [
@@ -7503,11 +7914,13 @@
     "objectives": [
       {
         "count": 3,
-        "name": "interact_treasurechest_pve02_diff4"
+        "name": "interact_treasurechest_pve02_diff4",
+        "stat": "interact_treasurechest_pve02_diff4"
       },
       {
         "count": 1,
-        "name": "complete_mimic_2_diff4"
+        "name": "complete_mimic_2_diff4",
+        "stat": "complete_mimic_2_diff4"
       }
     ],
     "rewards": [
@@ -7532,7 +7945,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_buildradar_2_diff5"
+        "name": "complete_buildradar_2_diff5",
+        "stat": "complete_buildradar_2_diff5"
       }
     ],
     "rewards": [
@@ -7557,7 +7971,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_exploration_2"
+        "name": "complete_exploration_2",
+        "stat": "complete_exploration_2"
       }
     ],
     "rewards": [
@@ -7582,7 +7997,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_medbot_2_diff2"
+        "name": "complete_medbot_2_diff2",
+        "stat": "complete_medbot_2_diff2"
       }
     ],
     "rewards": [
@@ -7607,11 +8023,14 @@
     "objectives": [
       {
         "count": 15,
+        "item": "WorldItem:survivoritemdata",
+        "itemEvent": "Collect",
         "name": "questcollect_survivoritemdata"
       },
       {
         "count": 1,
-        "name": "complete_powerreactor_2_diff3"
+        "name": "complete_powerreactor_2_diff3",
+        "stat": "complete_powerreactor_2_diff3"
       }
     ],
     "rewards": [
@@ -7636,7 +8055,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_retrievedata_2_diff4"
+        "name": "complete_retrievedata_2_diff4",
+        "stat": "complete_retrievedata_2_diff4"
       }
     ],
     "rewards": [
@@ -7657,7 +8077,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_launchballoon_2_diff5"
+        "name": "complete_launchballoon_2_diff5",
+        "stat": "complete_launchballoon_2_diff5"
       }
     ],
     "rewards": [
@@ -7678,7 +8099,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "quick_complete_pve02"
+        "name": "quick_complete_pve02",
+        "stat": "quick_complete_pve02"
       }
     ],
     "rewards": [
@@ -7703,11 +8125,13 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_gate_2_diff4"
+        "name": "complete_gate_2_diff4",
+        "stat": "complete_gate_2_diff4"
       },
       {
         "count": 1,
-        "name": "complete_gate_double_2_diff4"
+        "name": "complete_gate_double_2_diff4",
+        "stat": "complete_gate_double_2_diff4"
       }
     ],
     "rewards": [
@@ -7732,7 +8156,8 @@
     "objectives": [
       {
         "count": 4,
-        "name": "complete_relaysurvivor_2_diff5"
+        "name": "complete_relaysurvivor_2_diff5",
+        "stat": "complete_relaysurvivor_2_diff5"
       }
     ],
     "rewards": [
@@ -7753,7 +8178,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_launchballoon_2_diff3"
+        "name": "complete_launchballoon_2_diff3",
+        "stat": "complete_launchballoon_2_diff3"
       }
     ],
     "rewards": [
@@ -7774,7 +8200,8 @@
     "objectives": [
       {
         "count": 20,
-        "name": "kill_husk_smasher_2_diff4_v2"
+        "name": "kill_husk_smasher_2_diff4_v2",
+        "stat": "kill_husk_smasher_2_diff4"
       }
     ],
     "rewards": [
@@ -7799,7 +8226,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_exploration_2_diff5"
+        "name": "complete_exploration_2_diff5",
+        "stat": "complete_exploration_2_diff5"
       }
     ],
     "rewards": [
@@ -7824,7 +8252,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_delivergoods_2_diff4"
+        "name": "complete_delivergoods_2_diff4",
+        "stat": "complete_delivergoods_2_diff4"
       }
     ],
     "rewards": [
@@ -7845,7 +8274,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "complete_buildradar_2_diff5"
+        "name": "complete_buildradar_2_diff5",
+        "stat": "complete_buildradar_2_diff5"
       }
     ],
     "rewards": [
@@ -7870,7 +8300,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_powerreactor_2_diff4"
+        "name": "complete_powerreactor_2_diff4",
+        "stat": "complete_powerreactor_2_diff4"
       }
     ],
     "rewards": [
@@ -7895,7 +8326,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_delivergoods_2_diff5"
+        "name": "complete_delivergoods_2_diff5",
+        "stat": "complete_delivergoods_2_diff5"
       }
     ],
     "rewards": [
@@ -7928,7 +8360,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_launchrocket_2"
+        "name": "complete_launchrocket_2",
+        "stat": "complete_launchrocket_2"
       }
     ],
     "rewards": [
@@ -7945,6 +8378,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "Quest:outpostquest_t4_l2",
+        "itemEvent": "QuestComplete",
         "name": "questcomplete_progressiontesthidden_t1"
       }
     ],
@@ -7955,7 +8390,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t1_1"
+        "name": "questcomplete_progressiontest_t1_1",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "rewards": [
@@ -7980,7 +8416,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t1_1v"
+        "name": "questcomplete_progressiontest_t1_1v",
+        "stat": "complete_outpost_4_2"
       }
     ],
     "type": "Task"
@@ -7990,7 +8427,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t1_2"
+        "name": "questcomplete_progressiontest_t1_2",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "rewards": [
@@ -8015,7 +8453,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t1_2v"
+        "name": "questcomplete_progressiontest_t1_2v",
+        "stat": "complete_outpost_4_2"
       }
     ],
     "type": "Task"
@@ -8025,7 +8464,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t1_3"
+        "name": "questcomplete_progressiontest_t1_3",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "rewards": [
@@ -8050,7 +8490,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t1_3v"
+        "name": "questcomplete_progressiontest_t1_3v",
+        "stat": "complete_outpost_4_2"
       }
     ],
     "type": "Task"
@@ -8060,7 +8501,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t1_4"
+        "name": "questcomplete_progressiontest_t1_4",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "rewards": [
@@ -8085,7 +8527,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t1_4v"
+        "name": "questcomplete_progressiontest_t1_4v",
+        "stat": "complete_outpost_4_2"
       }
     ],
     "type": "Task"
@@ -8095,7 +8538,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t1_5"
+        "name": "questcomplete_progressiontest_t1_5",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "rewards": [
@@ -8116,7 +8560,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t1_5v"
+        "name": "questcomplete_progressiontest_t1_5v",
+        "stat": "complete_outpost_4_2"
       }
     ],
     "type": "Task"
@@ -8126,7 +8571,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t2_1"
+        "name": "questcomplete_progressiontest_t2_1",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -8150,7 +8596,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t2_10"
+        "name": "questcomplete_progressiontest_t2_10",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -8174,7 +8621,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t2_11"
+        "name": "questcomplete_progressiontest_t2_11",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -8198,7 +8646,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t2_12"
+        "name": "questcomplete_progressiontest_t2_12",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -8218,7 +8667,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t2_2"
+        "name": "questcomplete_progressiontest_t2_2",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -8242,7 +8692,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t2_3"
+        "name": "questcomplete_progressiontest_t2_3",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -8266,7 +8717,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t2_4"
+        "name": "questcomplete_progressiontest_t2_4",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -8290,7 +8742,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t2_5"
+        "name": "questcomplete_progressiontest_t2_5",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -8314,7 +8767,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t2_6"
+        "name": "questcomplete_progressiontest_t2_6",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -8338,7 +8792,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t2_7"
+        "name": "questcomplete_progressiontest_t2_7",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -8362,7 +8817,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t2_8"
+        "name": "questcomplete_progressiontest_t2_8",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -8386,7 +8842,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t2_9"
+        "name": "questcomplete_progressiontest_t2_9",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -8411,7 +8868,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t2_v1"
+        "name": "questcomplete_progressiontest_t2_v1",
+        "stat": "complete_outpost_4_3"
       }
     ],
     "type": "Task"
@@ -8422,7 +8880,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t2_v10"
+        "name": "questcomplete_progressiontest_t2_v10",
+        "stat": "complete_outpost_4_3"
       }
     ],
     "type": "Task"
@@ -8433,7 +8892,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t2_v11"
+        "name": "questcomplete_progressiontest_t2_v11",
+        "stat": "complete_outpost_4_3"
       }
     ],
     "type": "Task"
@@ -8444,7 +8904,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t2_v12"
+        "name": "questcomplete_progressiontest_t2_v12",
+        "stat": "complete_outpost_4_3"
       }
     ],
     "type": "Task"
@@ -8455,7 +8916,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t2_v2"
+        "name": "questcomplete_progressiontest_t2_v2",
+        "stat": "complete_outpost_4_3"
       }
     ],
     "type": "Task"
@@ -8466,7 +8928,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t2_v3"
+        "name": "questcomplete_progressiontest_t2_v3",
+        "stat": "complete_outpost_4_3"
       }
     ],
     "type": "Task"
@@ -8477,7 +8940,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t2_v4"
+        "name": "questcomplete_progressiontest_t2_v4",
+        "stat": "complete_outpost_4_3"
       }
     ],
     "type": "Task"
@@ -8488,7 +8952,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t2_v5"
+        "name": "questcomplete_progressiontest_t2_v5",
+        "stat": "complete_outpost_4_3"
       }
     ],
     "type": "Task"
@@ -8499,7 +8964,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t2_v6"
+        "name": "questcomplete_progressiontest_t2_v6",
+        "stat": "complete_outpost_4_3"
       }
     ],
     "type": "Task"
@@ -8510,7 +8976,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t2_v7"
+        "name": "questcomplete_progressiontest_t2_v7",
+        "stat": "complete_outpost_4_3"
       }
     ],
     "type": "Task"
@@ -8521,7 +8988,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t2_v8"
+        "name": "questcomplete_progressiontest_t2_v8",
+        "stat": "complete_outpost_4_3"
       }
     ],
     "type": "Task"
@@ -8532,7 +9000,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t2_v9"
+        "name": "questcomplete_progressiontest_t2_v9",
+        "stat": "complete_outpost_4_3"
       }
     ],
     "type": "Task"
@@ -8542,7 +9011,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_1"
+        "name": "questcomplete_progressiontest_t3_1",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -8566,7 +9036,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_10"
+        "name": "questcomplete_progressiontest_t3_10",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -8590,7 +9061,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_11"
+        "name": "questcomplete_progressiontest_t3_11",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -8614,7 +9086,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_12"
+        "name": "questcomplete_progressiontest_t3_12",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -8638,7 +9111,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_13"
+        "name": "questcomplete_progressiontest_t3_13",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -8662,7 +9136,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_14"
+        "name": "questcomplete_progressiontest_t3_14",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -8686,7 +9161,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_15"
+        "name": "questcomplete_progressiontest_t3_15",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -8710,7 +9186,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_16"
+        "name": "questcomplete_progressiontest_t3_16",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -8734,7 +9211,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_17"
+        "name": "questcomplete_progressiontest_t3_17",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -8758,7 +9236,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_18"
+        "name": "questcomplete_progressiontest_t3_18",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -8778,7 +9257,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_2"
+        "name": "questcomplete_progressiontest_t3_2",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -8802,7 +9282,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_3"
+        "name": "questcomplete_progressiontest_t3_3",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -8826,7 +9307,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_4"
+        "name": "questcomplete_progressiontest_t3_4",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -8850,7 +9332,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_5"
+        "name": "questcomplete_progressiontest_t3_5",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -8874,7 +9357,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_6"
+        "name": "questcomplete_progressiontest_t3_6",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -8898,7 +9382,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_7"
+        "name": "questcomplete_progressiontest_t3_7",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -8922,7 +9407,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_8"
+        "name": "questcomplete_progressiontest_t3_8",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -8946,7 +9432,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_9"
+        "name": "questcomplete_progressiontest_t3_9",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -8971,7 +9458,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_v1"
+        "name": "questcomplete_progressiontest_t3_v1",
+        "stat": "complete_outpost_4_4"
       }
     ],
     "type": "Task"
@@ -8982,7 +9470,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_v10"
+        "name": "questcomplete_progressiontest_t3_v10",
+        "stat": "complete_outpost_4_4"
       }
     ],
     "type": "Task"
@@ -8993,7 +9482,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_v11"
+        "name": "questcomplete_progressiontest_t3_v11",
+        "stat": "complete_outpost_4_4"
       }
     ],
     "type": "Task"
@@ -9004,7 +9494,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_v12"
+        "name": "questcomplete_progressiontest_t3_v12",
+        "stat": "complete_outpost_4_4"
       }
     ],
     "type": "Task"
@@ -9015,7 +9506,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_v13"
+        "name": "questcomplete_progressiontest_t3_v13",
+        "stat": "complete_outpost_4_4"
       }
     ],
     "type": "Task"
@@ -9026,7 +9518,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_v14"
+        "name": "questcomplete_progressiontest_t3_v14",
+        "stat": "complete_outpost_4_4"
       }
     ],
     "type": "Task"
@@ -9037,7 +9530,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_v15"
+        "name": "questcomplete_progressiontest_t3_v15",
+        "stat": "complete_outpost_4_4"
       }
     ],
     "type": "Task"
@@ -9048,7 +9542,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_v16"
+        "name": "questcomplete_progressiontest_t3_v16",
+        "stat": "complete_outpost_4_4"
       }
     ],
     "type": "Task"
@@ -9059,7 +9554,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_v17"
+        "name": "questcomplete_progressiontest_t3_v17",
+        "stat": "complete_outpost_4_4"
       }
     ],
     "type": "Task"
@@ -9070,7 +9566,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_v18"
+        "name": "questcomplete_progressiontest_t3_v18",
+        "stat": "complete_outpost_4_4"
       }
     ],
     "type": "Task"
@@ -9081,7 +9578,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_v2"
+        "name": "questcomplete_progressiontest_t3_v2",
+        "stat": "complete_outpost_4_4"
       }
     ],
     "type": "Task"
@@ -9092,7 +9590,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_v3"
+        "name": "questcomplete_progressiontest_t3_v3",
+        "stat": "complete_outpost_4_4"
       }
     ],
     "type": "Task"
@@ -9103,7 +9602,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_v4"
+        "name": "questcomplete_progressiontest_t3_v4",
+        "stat": "complete_outpost_4_4"
       }
     ],
     "type": "Task"
@@ -9114,7 +9614,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_v5"
+        "name": "questcomplete_progressiontest_t3_v5",
+        "stat": "complete_outpost_4_4"
       }
     ],
     "type": "Task"
@@ -9125,7 +9626,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_v6"
+        "name": "questcomplete_progressiontest_t3_v6",
+        "stat": "complete_outpost_4_4"
       }
     ],
     "type": "Task"
@@ -9136,7 +9638,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_v7"
+        "name": "questcomplete_progressiontest_t3_v7",
+        "stat": "complete_outpost_4_4"
       }
     ],
     "type": "Task"
@@ -9147,7 +9650,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_v8"
+        "name": "questcomplete_progressiontest_t3_v8",
+        "stat": "complete_outpost_4_4"
       }
     ],
     "type": "Task"
@@ -9158,7 +9662,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "questcomplete_progressiontest_t3_v9"
+        "name": "questcomplete_progressiontest_t3_v9",
+        "stat": "complete_outpost_4_4"
       }
     ],
     "type": "Task"
@@ -9167,6 +9672,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "Quest:homebaseonboardingafteroutpost",
+        "itemEvent": "HasCompletedQuest",
         "name": "questcomplete_homebaseonboardingafteroutpost"
       }
     ],
@@ -9192,7 +9699,8 @@
     "objectives": [
       {
         "count": 4,
-        "name": "quest_reactive_avoiceinthenightv2"
+        "name": "quest_reactive_avoiceinthenightv2",
+        "stat": "quest_reactive_avoiceinthenight"
       }
     ],
     "rewards": [
@@ -9215,7 +9723,8 @@
     "objectives": [
       {
         "count": 10,
-        "name": "quest_reactive_blasters"
+        "name": "quest_reactive_blasters",
+        "stat": "quest_reactive_blasters"
       }
     ],
     "rewards": [
@@ -9235,7 +9744,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "quest_reactive_copperore"
+        "name": "quest_reactive_copperore",
+        "stat": "quest_reactive_copperore"
       }
     ],
     "type": "Optional"
@@ -9244,7 +9754,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "quest_reactive_destroyactor"
+        "name": "quest_reactive_destroyactor",
+        "stat": "quest_reactive_destroyactor"
       }
     ],
     "type": "Optional"
@@ -9259,7 +9770,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "quest_reactive_distresscallv2"
+        "name": "quest_reactive_distresscallv2",
+        "stat": "quest_reactive_distresscall"
       }
     ],
     "rewards": [
@@ -9278,7 +9790,8 @@
     "objectives": [
       {
         "count": 10,
-        "name": "quest_reactive_elemhusky"
+        "name": "quest_reactive_elemhusky",
+        "stat": "quest_reactive_elemhusky"
       }
     ],
     "rewards": [
@@ -9299,7 +9812,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "quest_reactive_finddj"
+        "name": "quest_reactive_finddj",
+        "stat": "quest_reactive_finddj"
       }
     ],
     "rewards": [
@@ -9328,11 +9842,13 @@
     "objectives": [
       {
         "count": 1,
-        "name": "quest_reactive_findmimic"
+        "name": "quest_reactive_findmimic",
+        "stat": "quest_reactive_findmimic"
       },
       {
         "count": 1,
-        "name": "complete_mimic_1_diff5"
+        "name": "complete_mimic_1_diff5",
+        "stat": "complete_mimic_1_diff5"
       }
     ],
     "rewards": [
@@ -9361,7 +9877,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "quest_reactive_findpop"
+        "name": "quest_reactive_findpop",
+        "stat": "quest_reactive_findpop"
       }
     ],
     "rewards": [
@@ -9376,7 +9893,8 @@
     "objectives": [
       {
         "count": 50,
-        "name": "quest_reactive_findsurvivor"
+        "name": "quest_reactive_findsurvivor",
+        "stat": "quest_reactive_findsurvivor"
       }
     ],
     "rewards": [
@@ -9391,7 +9909,8 @@
     "objectives": [
       {
         "count": 10,
-        "name": "quest_reactive_firehusks"
+        "name": "quest_reactive_firehusks",
+        "stat": "quest_reactive_firehusks"
       }
     ],
     "rewards": [
@@ -9410,7 +9929,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "quest_reactive_flingers"
+        "name": "quest_reactive_flingers",
+        "stat": "quest_reactive_flingers"
       }
     ],
     "rewards": [
@@ -9435,7 +9955,8 @@
     "objectives": [
       {
         "count": 8,
-        "name": "quest_reactive_gatherfood"
+        "name": "quest_reactive_gatherfood",
+        "stat": "quest_reactive_gatherfood"
       }
     ],
     "rewards": [
@@ -9459,7 +9980,8 @@
     "objectives": [
       {
         "count": 4,
-        "name": "quest_reactive_goodpop"
+        "name": "quest_reactive_goodpop",
+        "stat": "quest_reactive_goodpop"
       }
     ],
     "rewards": [
@@ -9488,11 +10010,13 @@
     "objectives": [
       {
         "count": 4,
-        "name": "quest_reactive_trappartv2"
+        "name": "quest_reactive_trappartv2",
+        "stat": "quest_reactive_trappart"
       },
       {
         "count": 2,
-        "name": "complete_pve01_diff3"
+        "name": "complete_pve01_diff3",
+        "stat": "complete_pve01_diff3"
       }
     ],
     "rewards": [
@@ -9507,7 +10031,8 @@
     "objectives": [
       {
         "count": 50,
-        "name": "quest_reactive_killsmasher"
+        "name": "quest_reactive_killsmasher",
+        "stat": "quest_reactive_killsmasher"
       }
     ],
     "rewards": [
@@ -9531,7 +10056,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "quest_reactive_knowyourenemy"
+        "name": "quest_reactive_knowyourenemy",
+        "stat": "quest_reactive_knowyourenemy"
       }
     ],
     "rewards": [
@@ -9550,7 +10076,8 @@
     "objectives": [
       {
         "count": 10,
-        "name": "quest_reactive_lightninghusks"
+        "name": "quest_reactive_lightninghusks",
+        "stat": "quest_reactive_lightninghusks"
       }
     ],
     "rewards": [
@@ -9575,7 +10102,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_protecttheservers_2"
+        "name": "complete_protecttheservers_2",
+        "stat": "complete_protecttheservers_2"
       }
     ],
     "rewards": [
@@ -9600,11 +10128,13 @@
     "objectives": [
       {
         "count": 4,
-        "name": "quest_reactive_medicaldata"
+        "name": "quest_reactive_medicaldata",
+        "stat": "quest_reactive_medicaldata"
       },
       {
         "count": 2,
-        "name": "complete_pve01_diff4"
+        "name": "complete_pve01_diff4",
+        "stat": "complete_pve01_diff4"
       }
     ],
     "rewards": [
@@ -9633,7 +10163,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "quest_reactive_medicalsupplies"
+        "name": "quest_reactive_medicalsupplies",
+        "stat": "quest_reactive_medicalsupplies"
       }
     ],
     "rewards": [
@@ -9652,7 +10183,8 @@
     "objectives": [
       {
         "count": 10,
-        "name": "quest_reactive_poisonlobbers"
+        "name": "quest_reactive_poisonlobbers",
+        "stat": "quest_reactive_poisonlobbers"
       }
     ],
     "rewards": [
@@ -9668,6 +10200,7 @@
     "objectives": [
       {
         "count": 3,
+        "itemEvent": "Collect",
         "name": "questcollect_quest_pumpkins"
       }
     ],
@@ -9689,7 +10222,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "quest_reactive_radiostation"
+        "name": "quest_reactive_radiostation",
+        "stat": "quest_reactive_radiostation"
       }
     ],
     "rewards": [
@@ -9714,7 +10248,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "quest_reactive_riftdata"
+        "name": "quest_reactive_riftdata",
+        "stat": "quest_reactive_riftdata"
       }
     ],
     "rewards": [
@@ -9739,7 +10274,8 @@
     "objectives": [
       {
         "count": 4,
-        "name": "quest_reactive_roadhome"
+        "name": "quest_reactive_roadhome",
+        "stat": "quest_reactive_roadhome"
       }
     ],
     "rewards": [
@@ -9764,7 +10300,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "quest_reactive_seebotv2"
+        "name": "quest_reactive_seebotv2",
+        "stat": "quest_reactive_seebot"
       }
     ],
     "rewards": [
@@ -9783,7 +10320,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "quest_reactive_smasher"
+        "name": "quest_reactive_smasher",
+        "stat": "quest_reactive_smasher"
       }
     ],
     "rewards": [
@@ -9816,11 +10354,13 @@
     "objectives": [
       {
         "count": 4,
-        "name": "quest_reactive_larssupplies"
+        "name": "quest_reactive_larssupplies",
+        "stat": "quest_reactive_larssupplies"
       },
       {
         "count": 2,
-        "name": "complete_pve01_diff5"
+        "name": "complete_pve01_diff5",
+        "stat": "complete_pve01_diff5"
       }
     ],
     "rewards": [
@@ -9836,7 +10376,8 @@
     "objectives": [
       {
         "count": 50,
-        "name": "quest_reactive_survivorradio"
+        "name": "quest_reactive_survivorradio",
+        "stat": "quest_reactive_survivorradio"
       }
     ],
     "rewards": [
@@ -9851,7 +10392,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "quest_reactive_taker"
+        "name": "quest_reactive_taker",
+        "stat": "quest_reactive_taker"
       }
     ],
     "rewards": [
@@ -9880,7 +10422,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "quest_reactive_transmitters"
+        "name": "quest_reactive_transmitters",
+        "stat": "quest_reactive_transmitters"
       }
     ],
     "rewards": [
@@ -9901,7 +10444,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "quest_reactive_trollstashinit"
+        "name": "quest_reactive_trollstashinit",
+        "stat": "quest_reactive_trollstashinit"
       }
     ],
     "rewards": [
@@ -9920,7 +10464,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "quest_reactive_trollstash"
+        "name": "quest_reactive_trollstash",
+        "stat": "quest_reactive_trollstash"
       }
     ],
     "selectableRewards": [
@@ -9943,7 +10488,8 @@
     "objectives": [
       {
         "count": 10,
-        "name": "quest_reactive_waterhusks"
+        "name": "quest_reactive_waterhusks",
+        "stat": "quest_reactive_waterhusks"
       }
     ],
     "rewards": [
@@ -9964,7 +10510,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_gate_1"
+        "name": "complete_gate_1",
+        "stat": "complete_gate_1"
       }
     ],
     "rewards": [
@@ -9997,11 +10544,14 @@
     "objectives": [
       {
         "count": 3,
+        "item": "WorldItem:survivoritemdata",
+        "itemEvent": "Collect",
         "name": "questcollect_survivoritemdata"
       },
       {
         "count": 1,
-        "name": "complete_pve01_diff2"
+        "name": "complete_pve01_diff2",
+        "stat": "complete_pve01_diff2"
       }
     ],
     "rewards": [
@@ -10030,7 +10580,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_evacuate_1_diff3"
+        "name": "complete_evacuate_1_diff3",
+        "stat": "complete_evacuate_1_diff3"
       }
     ],
     "rewards": [
@@ -10059,11 +10610,13 @@
     "objectives": [
       {
         "count": 4,
-        "name": "complete_encampment_1_diff4"
+        "name": "complete_encampment_1_diff4",
+        "stat": "complete_encampment_1_diff4"
       },
       {
         "count": 2,
-        "name": "complete_pve01_diff4"
+        "name": "complete_pve01_diff4",
+        "stat": "complete_pve01_diff4"
       }
     ],
     "rewards": [
@@ -10096,11 +10649,13 @@
     "objectives": [
       {
         "count": 5,
-        "name": "craft_health_station"
+        "name": "craft_health_station",
+        "stat": "craft_health_station"
       },
       {
         "count": 2,
-        "name": "complete_pve01_diff3_v2"
+        "name": "complete_pve01_diff3_v2",
+        "stat": "complete_pve01_diff3"
       }
     ],
     "rewards": [
@@ -10125,11 +10680,13 @@
     "objectives": [
       {
         "count": 5,
-        "name": "kill_husk_taker_1_diff5"
+        "name": "kill_husk_taker_1_diff5",
+        "stat": "kill_husk_taker_1_diff5"
       },
       {
         "count": 3,
-        "name": "complete_pve01_diff5"
+        "name": "complete_pve01_diff5",
+        "stat": "complete_pve01_diff5"
       }
     ],
     "rewards": [
@@ -10150,7 +10707,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_launchweatherballoon_1"
+        "name": "complete_launchweatherballoon_1",
+        "stat": "complete_launchweatherballoon_1"
       }
     ],
     "rewards": [
@@ -10183,7 +10741,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_launchrocket_1"
+        "name": "complete_launchrocket_1",
+        "stat": "complete_launchrocket_1"
       }
     ],
     "rewards": [
@@ -10208,7 +10767,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_retrievedata_1"
+        "name": "complete_retrievedata_1",
+        "stat": "complete_retrievedata_1"
       }
     ],
     "rewards": [
@@ -10227,7 +10787,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_whackatroll_1_diff3"
+        "name": "complete_whackatroll_1_diff3",
+        "stat": "complete_whackatroll_1_diff3"
       }
     ],
     "rewards": [
@@ -10246,7 +10807,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "quick_complete_pve01"
+        "name": "quick_complete_pve01",
+        "stat": "quick_complete_pve01"
       }
     ],
     "selectableRewards": [
@@ -10275,11 +10837,14 @@
     "objectives": [
       {
         "count": 15,
+        "item": "WorldItem:survivoritemdata",
+        "itemEvent": "Collect",
         "name": "questcollect_survivoritemdata"
       },
       {
         "count": 3,
-        "name": "complete_pve01_diff5_v2"
+        "name": "complete_pve01_diff5_v2",
+        "stat": "complete_pve01_diff5"
       }
     ],
     "rewards": [
@@ -10308,7 +10873,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "interact_treasurechest_pve01_diff2"
+        "name": "interact_treasurechest_pve01_diff2",
+        "stat": "interact_treasurechest_pve01_diff2"
       }
     ],
     "rewards": [
@@ -10323,7 +10889,8 @@
     "objectives": [
       {
         "count": 100,
-        "name": "deferred_kill_husks"
+        "name": "deferred_kill_husks",
+        "stat": "kill_husk"
       }
     ],
     "rewards": [
@@ -10338,30 +10905,39 @@
     "objectives": [
       {
         "count": 5,
-        "name": "kill_husk"
+        "name": "kill_husk",
+        "stat": "kill_husk"
       },
       {
         "count": 5,
-        "name": "kill_husk_constructor"
+        "name": "kill_husk_constructor",
+        "stat": "kill_husk_constructor"
       },
       {
         "count": 5,
-        "name": "kill_husk_commando"
+        "name": "kill_husk_commando",
+        "stat": "kill_husk_commando"
       },
       {
         "count": 1,
-        "name": "complete_gate"
+        "name": "complete_gate",
+        "stat": "complete_gate"
       },
       {
         "count": 1,
-        "name": "complete_retrievedata"
+        "name": "complete_retrievedata",
+        "stat": "complete_retrievedata"
       },
       {
         "count": 1000,
+        "item": "AccountResource:schematicxp",
+        "itemEvent": "Acquire",
         "name": "acquire_schematicxp"
       },
       {
         "count": 1,
+        "item": "Quest:daily_mission_specialist_plankerton",
+        "itemEvent": "QuestComplete",
         "name": "questcomplete_daily_mission_specialist_plankerton"
       }
     ],
@@ -10386,6 +10962,8 @@
     "objectives": [
       {
         "count": 100,
+        "item": "WorldItem:wooditemdata",
+        "itemEvent": "Acquire",
         "name": "get_survivor_wood_test"
       }
     ],
@@ -10432,7 +11010,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "add_friend"
+        "name": "add_friend",
+        "stat": "friend_add_friend"
       }
     ],
     "rewards": [
@@ -10448,6 +11027,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "HomebaseNode:outlander01_b832ecd82",
+        "itemEvent": "Acquire",
         "name": "unlock_skill_tree_outlander_tier4"
       }
     ],
@@ -10464,11 +11045,13 @@
     "objectives": [
       {
         "count": 3,
-        "name": "activate_constructor_bullrush"
+        "name": "activate_constructor_bullrush",
+        "stat": "ability_bullrush"
       },
       {
         "count": 5,
-        "name": "activate_ninja_dragonslash"
+        "name": "activate_ninja_dragonslash",
+        "stat": "ability_dragonslash"
       }
     ],
     "rewards": [
@@ -10484,27 +11067,33 @@
     "objectives": [
       {
         "count": 5,
-        "name": "slot_constructor_hero"
+        "name": "slot_constructor_hero",
+        "stat": "assign_hero_constructor"
       },
       {
         "count": 5,
-        "name": "slot_ninja_hero"
+        "name": "slot_ninja_hero",
+        "stat": "assign_hero_ninja"
       },
       {
         "count": 5,
-        "name": "slot_common_worker"
+        "name": "slot_common_worker",
+        "stat": "assign_worker"
       },
       {
         "count": 3,
-        "name": "assign_manager"
+        "name": "assign_manager",
+        "stat": "assign_manager"
       },
       {
         "count": 5,
-        "name": "assign_outlander"
+        "name": "assign_outlander",
+        "stat": "assign_hero_outlander"
       },
       {
         "count": 6,
-        "name": "slot_hero_constructor_or_ninja_test"
+        "name": "slot_hero_constructor_or_ninja_test",
+        "stat": "assign_hero_constructor_or_ninja"
       }
     ],
     "rewards": [
@@ -10520,11 +11109,13 @@
     "objectives": [
       {
         "count": 5,
-        "name": "kill_husk_difficulty_test01"
+        "name": "kill_husk_difficulty_test01",
+        "stat": "kill_husk_difficulty_pve01_0"
       },
       {
         "count": 5,
-        "name": "kill_husk_content_level_test01"
+        "name": "kill_husk_content_level_test01",
+        "stat": "kill_husk_content_level_30"
       }
     ],
     "rewards": [
@@ -10540,15 +11131,18 @@
     "objectives": [
       {
         "count": 2,
-        "name": "kill_husk"
+        "name": "kill_husk",
+        "stat": "kill_husk"
       },
       {
         "count": 4,
-        "name": "kill_husk_2"
+        "name": "kill_husk_2",
+        "stat": "kill_husk"
       },
       {
         "count": 3,
-        "name": "kill_husk_hidden"
+        "name": "kill_husk_hidden",
+        "stat": "kill_husk"
       }
     ],
     "rewards": [
@@ -10568,11 +11162,13 @@
     "objectives": [
       {
         "count": 3,
-        "name": "craft_tier_2"
+        "name": "craft_tier_2",
+        "stat": "craft_tier_2"
       },
       {
         "count": 1,
-        "name": "craft_ruler_sword"
+        "name": "craft_ruler_sword",
+        "stat": "craft_ruler_sword"
       }
     ],
     "rewards": [
@@ -10588,6 +11184,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "CardPack:cardpack_basic",
+        "itemEvent": "OpenCardPack",
         "name": "open_card_pack"
       }
     ],
@@ -10608,6 +11206,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "CardPack:cardpack_bronze",
+        "itemEvent": "PurchaseCardPack",
         "name": "purchase_card_pack"
       }
     ],
@@ -10628,11 +11228,14 @@
     "objectives": [
       {
         "count": 1,
+        "item": "Schematic:sid_floor_spikes_wood_c_t01",
+        "itemEvent": "Upgrade",
         "name": "upgrade_item"
       },
       {
         "count": 1,
-        "name": "upgrade_any_hero"
+        "name": "upgrade_any_hero",
+        "stat": "upgrade_any_hero"
       }
     ],
     "rewards": [
@@ -10652,6 +11255,8 @@
     "objectives": [
       {
         "count": 1,
+        "item": "Schematic:sid_shotgun_auto_uc_ore_t01",
+        "itemEvent": "Convert",
         "name": "evolve_item"
       }
     ],
@@ -10671,7 +11276,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "test_narrative_objective0"
+        "name": "test_narrative_objective0",
+        "stat": "kill_husk"
       }
     ],
     "rewards": [
@@ -10687,7 +11293,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "test_selectable_rewards"
+        "name": "test_selectable_rewards",
+        "stat": "assign_worker"
       }
     ],
     "rewards": [
@@ -10729,7 +11336,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "test_selectable_rewards"
+        "name": "test_selectable_rewards",
+        "stat": "assign_worker"
       }
     ],
     "rewards": [
@@ -10759,7 +11367,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "test_selectable_rewards"
+        "name": "test_selectable_rewards",
+        "stat": "assign_worker"
       }
     ],
     "selectableRewards": [
@@ -10783,19 +11392,23 @@
     "objectives": [
       {
         "count": 3,
-        "name": "test_metal_building"
+        "name": "test_metal_building",
+        "stat": "build_any_metal_building"
       },
       {
         "count": 3,
-        "name": "test_edit_wood_walls"
+        "name": "test_edit_wood_walls",
+        "stat": "buildingedit_wood_wall"
       },
       {
         "count": 2,
-        "name": "test_stone_floor_repair"
+        "name": "test_stone_floor_repair",
+        "stat": "buildingrepair_stone_floor"
       },
       {
         "count": 2,
-        "name": "test_upgrade_metal_roof_level2"
+        "name": "test_upgrade_metal_roof_level2",
+        "stat": "buildingupgrade_metal_roof"
       }
     ],
     "rewards": [
@@ -10810,7 +11423,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "slot_any_collection_item_test1"
+        "name": "slot_any_collection_item_test1",
+        "stat": "collection_slot_any_item"
       },
       {
         "count": 2,
@@ -10818,7 +11432,8 @@
       },
       {
         "count": 5,
-        "name": "slot_worker in_collection_book_test"
+        "name": "slot_worker in_collection_book_test",
+        "stat": "collection_slot_worker"
       }
     ],
     "rewards": [
@@ -10833,7 +11448,8 @@
     "objectives": [
       {
         "count": 5,
-        "name": "test_quest_dialog_kill_objective"
+        "name": "test_quest_dialog_kill_objective",
+        "stat": "kill_husk"
       }
     ],
     "rewards": [
@@ -10848,7 +11464,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "test_complete_expedition_success"
+        "name": "test_complete_expedition_success",
+        "stat": "collect_any_successful_expedition"
       }
     ],
     "rewards": [
@@ -10863,31 +11480,38 @@
     "objectives": [
       {
         "count": 1,
-        "name": "has_item_hero_1"
+        "name": "has_item_hero_1",
+        "stat": "has_item_hero"
       },
       {
         "count": 1,
-        "name": "has_item_traps_1"
+        "name": "has_item_traps_1",
+        "stat": "has_item_traps"
       },
       {
         "count": 1,
-        "name": "has_item_evolved_hero_1"
+        "name": "has_item_evolved_hero_1",
+        "stat": "has_item_evolved_hero"
       },
       {
         "count": 1,
-        "name": "has_item_defender_assigned_1"
+        "name": "has_item_defender_assigned_1",
+        "stat": "has_item_defender_assigned"
       },
       {
         "count": 1,
-        "name": "has_item_constructor_assigned_1"
+        "name": "has_item_constructor_assigned_1",
+        "stat": "has_item_constructor_assigned"
       },
       {
         "count": 1,
-        "name": "has_item_worker_assigned_1"
+        "name": "has_item_worker_assigned_1",
+        "stat": "has_item_worker_assigned"
       },
       {
         "count": 10,
-        "name": "has_item_hero_leveled_10"
+        "name": "has_item_hero_leveled_10",
+        "stat": "has_item_hero_leveled_up"
       }
     ],
     "rewards": [
@@ -10903,31 +11527,38 @@
     "objectives": [
       {
         "count": 15,
-        "name": "test_horde_waves"
+        "name": "test_horde_waves",
+        "stat": "complete_horde_waves"
       },
       {
         "count": 5,
-        "name": "test_horde_complete_wave_5"
+        "name": "test_horde_complete_wave_5",
+        "stat": "complete_horde_wave_5"
       },
       {
         "count": 5,
-        "name": "test_horde_tiers"
+        "name": "test_horde_tiers",
+        "stat": "complete_horde_tiers"
       },
       {
         "count": 1,
-        "name": "test_complete_horde_tier_1"
+        "name": "test_complete_horde_tier_1",
+        "stat": "complete_horde_tier_1"
       },
       {
         "count": 1,
-        "name": "test_complete_horde_tier_2"
+        "name": "test_complete_horde_tier_2",
+        "stat": "complete_horde_tier_2"
       },
       {
         "count": 1,
-        "name": "test_complete_horde_tier_3"
+        "name": "test_complete_horde_tier_3",
+        "stat": "complete_horde_tier_3"
       },
       {
         "count": 1,
-        "name": "test_complete_horde_tier_4"
+        "name": "test_complete_horde_tier_4",
+        "stat": "complete_horde_tier_4"
       }
     ],
     "rewards": [
@@ -10942,15 +11573,18 @@
     "objectives": [
       {
         "count": 3,
-        "name": "test_killing_blow"
+        "name": "test_killing_blow",
+        "stat": "kill_initiator_husk"
       },
       {
         "count": 3,
-        "name": "killcontribution_smasher"
+        "name": "killcontribution_smasher",
+        "stat": "killcontribution_smasher"
       },
       {
         "count": 5,
-        "name": "test_commando_killshot_husk_ranged"
+        "name": "test_commando_killshot_husk_ranged",
+        "stat": "kill_initiator_husk_commando_assault"
       }
     ],
     "rewards": [
@@ -10965,11 +11599,13 @@
     "objectives": [
       {
         "count": 5,
-        "name": "test_team_kill"
+        "name": "test_team_kill",
+        "stat": "kill_husk_team"
       },
       {
         "count": 5,
-        "name": "test_group_kill"
+        "name": "test_group_kill",
+        "stat": "kill_husk_group"
       }
     ],
     "rewards": [
@@ -10989,11 +11625,13 @@
     "objectives": [
       {
         "count": 3,
-        "name": "test_slot_defender"
+        "name": "test_slot_defender",
+        "stat": "assign_defender"
       },
       {
         "count": 3,
-        "name": "test_slot_defender_squad_one"
+        "name": "test_slot_defender_squad_one",
+        "stat": "assign_defender_to_adventure_squadone"
       }
     ],
     "rewards": [
@@ -11012,7 +11650,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "quest_reactive_test1"
+        "name": "quest_reactive_test1",
+        "stat": "quest_reactive_test1"
       }
     ],
     "rewards": [
@@ -11027,7 +11666,8 @@
     "objectives": [
       {
         "count": 50,
-        "name": "quest_reactive_test2"
+        "name": "quest_reactive_test2",
+        "stat": "quest_reactive_test2"
       }
     ],
     "rewards": [
@@ -11042,7 +11682,8 @@
     "objectives": [
       {
         "count": 50,
-        "name": "quest_reactive_test3"
+        "name": "quest_reactive_test3",
+        "stat": "quest_reactive_test3"
       }
     ],
     "rewards": [
@@ -11057,15 +11698,18 @@
     "objectives": [
       {
         "count": 20,
-        "name": "quest_reactive_test1"
+        "name": "quest_reactive_test1",
+        "stat": "quest_reactive_test1"
       },
       {
         "count": 10,
-        "name": "quest_reactive_test2"
+        "name": "quest_reactive_test2",
+        "stat": "quest_reactive_test2"
       },
       {
         "count": 2,
-        "name": "quest_reactive_test3"
+        "name": "quest_reactive_test3",
+        "stat": "quest_reactive_test3"
       }
     ],
     "rewards": [
@@ -11086,7 +11730,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff1"
+        "name": "complete_pve04_diff1",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "rewards": [
@@ -11111,7 +11756,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff2"
+        "name": "complete_pve04_diff2",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -11132,7 +11778,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff3"
+        "name": "complete_pve04_diff3",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -11157,7 +11804,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff4"
+        "name": "complete_pve04_diff4",
+        "stat": "complete_pve04_diff4"
       }
     ],
     "rewards": [
@@ -11182,7 +11830,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff5"
+        "name": "complete_pve04_diff5",
+        "stat": "complete_pve04_diff5"
       }
     ],
     "rewards": [
@@ -11203,7 +11852,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff1"
+        "name": "complete_pve04_diff1",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "rewards": [
@@ -11228,7 +11878,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff2"
+        "name": "complete_pve04_diff2",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -11253,7 +11904,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff3"
+        "name": "complete_pve04_diff3",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -11274,7 +11926,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff4"
+        "name": "complete_pve04_diff4",
+        "stat": "complete_pve04_diff4"
       }
     ],
     "rewards": [
@@ -11299,7 +11952,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff5"
+        "name": "complete_pve04_diff5",
+        "stat": "complete_pve04_diff5"
       }
     ],
     "rewards": [
@@ -11324,7 +11978,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff1"
+        "name": "complete_pve04_diff1",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "rewards": [
@@ -11345,7 +12000,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff2"
+        "name": "complete_pve04_diff2",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -11370,7 +12026,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff3"
+        "name": "complete_pve04_diff3",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -11391,7 +12048,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff4"
+        "name": "complete_pve04_diff4",
+        "stat": "complete_pve04_diff4"
       }
     ],
     "rewards": [
@@ -11420,7 +12078,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff5"
+        "name": "complete_pve04_diff5",
+        "stat": "complete_pve04_diff5"
       }
     ],
     "rewards": [
@@ -11441,7 +12100,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff1"
+        "name": "complete_pve04_diff1",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "rewards": [
@@ -11466,7 +12126,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff2"
+        "name": "complete_pve04_diff2",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -11491,7 +12152,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff3"
+        "name": "complete_pve04_diff3",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -11516,7 +12178,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff4"
+        "name": "complete_pve04_diff4",
+        "stat": "complete_pve04_diff4"
       }
     ],
     "rewards": [
@@ -11541,7 +12204,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff5"
+        "name": "complete_pve04_diff5",
+        "stat": "complete_pve04_diff5"
       }
     ],
     "rewards": [
@@ -11562,7 +12226,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff1"
+        "name": "complete_pve04_diff1",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "rewards": [
@@ -11587,7 +12252,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff2"
+        "name": "complete_pve04_diff2",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -11612,7 +12278,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff3"
+        "name": "complete_pve04_diff3",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -11637,7 +12304,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff4"
+        "name": "complete_pve04_diff4",
+        "stat": "complete_pve04_diff4"
       }
     ],
     "rewards": [
@@ -11658,7 +12326,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff5"
+        "name": "complete_pve04_diff5",
+        "stat": "complete_pve04_diff5"
       }
     ],
     "rewards": [
@@ -11679,7 +12348,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff1"
+        "name": "complete_pve04_diff1",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "rewards": [
@@ -11708,7 +12378,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff2"
+        "name": "complete_pve04_diff2",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -11733,7 +12404,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff3"
+        "name": "complete_pve04_diff3",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -11758,7 +12430,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff4"
+        "name": "complete_pve04_diff4",
+        "stat": "complete_pve04_diff4"
       }
     ],
     "rewards": [
@@ -11783,7 +12456,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff5"
+        "name": "complete_pve04_diff5",
+        "stat": "complete_pve04_diff5"
       }
     ],
     "rewards": [
@@ -11804,7 +12478,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff1"
+        "name": "complete_pve04_diff1",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "rewards": [
@@ -11825,7 +12500,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff2"
+        "name": "complete_pve04_diff2",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -11850,7 +12526,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff3"
+        "name": "complete_pve04_diff3",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -11875,7 +12552,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff4"
+        "name": "complete_pve04_diff4",
+        "stat": "complete_pve04_diff4"
       }
     ],
     "rewards": [
@@ -11900,7 +12578,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff5"
+        "name": "complete_pve04_diff5",
+        "stat": "complete_pve04_diff5"
       }
     ],
     "rewards": [
@@ -11929,7 +12608,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff1"
+        "name": "complete_pve04_diff1",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "rewards": [
@@ -11954,7 +12634,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff2"
+        "name": "complete_pve04_diff2",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -11979,7 +12660,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff3"
+        "name": "complete_pve04_diff3",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -12004,7 +12686,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff4"
+        "name": "complete_pve04_diff4",
+        "stat": "complete_pve04_diff4"
       }
     ],
     "rewards": [
@@ -12029,7 +12712,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff5"
+        "name": "complete_pve04_diff5",
+        "stat": "complete_pve04_diff5"
       }
     ],
     "rewards": [
@@ -12054,7 +12738,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff1"
+        "name": "complete_pve04_diff1",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "rewards": [
@@ -12083,7 +12768,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff2"
+        "name": "complete_pve04_diff2",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -12108,7 +12794,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff3"
+        "name": "complete_pve04_diff3",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -12133,7 +12820,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff4"
+        "name": "complete_pve04_diff4",
+        "stat": "complete_pve04_diff4"
       }
     ],
     "rewards": [
@@ -12158,7 +12846,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff5"
+        "name": "complete_pve04_diff5",
+        "stat": "complete_pve04_diff5"
       }
     ],
     "rewards": [
@@ -12187,7 +12876,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff3"
+        "name": "complete_pve04_diff3",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -12212,7 +12902,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff4"
+        "name": "complete_pve04_diff4",
+        "stat": "complete_pve04_diff4"
       }
     ],
     "rewards": [
@@ -12237,7 +12928,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff5"
+        "name": "complete_pve04_diff5",
+        "stat": "complete_pve04_diff5"
       }
     ],
     "rewards": [
@@ -12258,7 +12950,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff1"
+        "name": "complete_pve04_diff1",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "selectableRewards": [
@@ -12287,7 +12980,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff2"
+        "name": "complete_pve04_diff2",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -12312,7 +13006,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff3"
+        "name": "complete_pve04_diff3",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -12337,7 +13032,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff4"
+        "name": "complete_pve04_diff4",
+        "stat": "complete_pve04_diff4"
       }
     ],
     "rewards": [
@@ -12362,7 +13058,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff5"
+        "name": "complete_pve04_diff5",
+        "stat": "complete_pve04_diff5"
       }
     ],
     "rewards": [
@@ -12391,7 +13088,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff4"
+        "name": "complete_pve04_diff4",
+        "stat": "complete_pve04_diff4"
       }
     ],
     "rewards": [
@@ -12416,7 +13114,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff5"
+        "name": "complete_pve04_diff5",
+        "stat": "complete_pve04_diff5"
       }
     ],
     "rewards": [
@@ -12441,7 +13140,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff1"
+        "name": "complete_pve04_diff1",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "rewards": [
@@ -12466,7 +13166,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff2"
+        "name": "complete_pve04_diff2",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -12487,7 +13188,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff3"
+        "name": "complete_pve04_diff3",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -12508,7 +13210,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff4"
+        "name": "complete_pve04_diff4",
+        "stat": "complete_pve04_diff4"
       }
     ],
     "selectableRewards": [
@@ -12537,7 +13240,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff5"
+        "name": "complete_pve04_diff5",
+        "stat": "complete_pve04_diff5"
       }
     ],
     "rewards": [
@@ -12562,7 +13266,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff1"
+        "name": "complete_pve04_diff1",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "rewards": [
@@ -12587,7 +13292,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff2"
+        "name": "complete_pve04_diff2",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -12612,7 +13318,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff3"
+        "name": "complete_pve04_diff3",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -12637,7 +13344,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff4"
+        "name": "complete_pve04_diff4",
+        "stat": "complete_pve04_diff4"
       }
     ],
     "rewards": [
@@ -12662,7 +13370,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff5"
+        "name": "complete_pve04_diff5",
+        "stat": "complete_pve04_diff5"
       }
     ],
     "rewards": [
@@ -12683,7 +13392,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff1"
+        "name": "complete_pve04_diff1",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "rewards": [
@@ -12708,7 +13418,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff2"
+        "name": "complete_pve04_diff2",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -12729,7 +13440,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff3"
+        "name": "complete_pve04_diff3",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -12754,7 +13466,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff4"
+        "name": "complete_pve04_diff4",
+        "stat": "complete_pve04_diff4"
       }
     ],
     "rewards": [
@@ -12775,7 +13488,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff5"
+        "name": "complete_pve04_diff5",
+        "stat": "complete_pve04_diff5"
       }
     ],
     "rewards": [
@@ -12796,7 +13510,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff1"
+        "name": "complete_pve04_diff1",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "rewards": [
@@ -12821,7 +13536,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff2"
+        "name": "complete_pve04_diff2",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -12842,7 +13558,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff3"
+        "name": "complete_pve04_diff3",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -12867,7 +13584,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff4"
+        "name": "complete_pve04_diff4",
+        "stat": "complete_pve04_diff4"
       }
     ],
     "rewards": [
@@ -12892,7 +13610,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff5"
+        "name": "complete_pve04_diff5",
+        "stat": "complete_pve04_diff5"
       }
     ],
     "rewards": [
@@ -12913,7 +13632,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff1"
+        "name": "complete_pve04_diff1",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "rewards": [
@@ -12938,7 +13658,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff2"
+        "name": "complete_pve04_diff2",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -12963,7 +13684,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff3"
+        "name": "complete_pve04_diff3",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -12988,7 +13710,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff4"
+        "name": "complete_pve04_diff4",
+        "stat": "complete_pve04_diff4"
       }
     ],
     "rewards": [
@@ -13013,7 +13736,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff5"
+        "name": "complete_pve04_diff5",
+        "stat": "complete_pve04_diff5"
       }
     ],
     "rewards": [
@@ -13038,7 +13762,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff1"
+        "name": "complete_pve04_diff1",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "rewards": [
@@ -13059,7 +13784,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff2"
+        "name": "complete_pve04_diff2",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -13084,7 +13810,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff3"
+        "name": "complete_pve04_diff3",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -13109,7 +13836,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff4"
+        "name": "complete_pve04_diff4",
+        "stat": "complete_pve04_diff4"
       }
     ],
     "rewards": [
@@ -13134,7 +13862,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff5"
+        "name": "complete_pve04_diff5",
+        "stat": "complete_pve04_diff5"
       }
     ],
     "rewards": [
@@ -13159,7 +13888,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff1"
+        "name": "complete_pve04_diff1",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "rewards": [
@@ -13184,7 +13914,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff2"
+        "name": "complete_pve04_diff2",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -13213,7 +13944,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff3"
+        "name": "complete_pve04_diff3",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -13242,7 +13974,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff4"
+        "name": "complete_pve04_diff4",
+        "stat": "complete_pve04_diff4"
       }
     ],
     "rewards": [
@@ -13263,7 +13996,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff5"
+        "name": "complete_pve04_diff5",
+        "stat": "complete_pve04_diff5"
       }
     ],
     "rewards": [
@@ -13288,7 +14022,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff1"
+        "name": "complete_pve04_diff1",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "rewards": [
@@ -13313,7 +14048,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff2"
+        "name": "complete_pve04_diff2",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -13338,7 +14074,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff3"
+        "name": "complete_pve04_diff3",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -13363,7 +14100,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff4"
+        "name": "complete_pve04_diff4",
+        "stat": "complete_pve04_diff4"
       }
     ],
     "rewards": [
@@ -13388,7 +14126,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff5"
+        "name": "complete_pve04_diff5",
+        "stat": "complete_pve04_diff5"
       }
     ],
     "rewards": [
@@ -13403,7 +14142,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "complete_launchrocket_4"
+        "name": "complete_launchrocket_4",
+        "stat": "complete_launchrocket_4"
       }
     ],
     "type": "Task"
@@ -13418,7 +14158,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff1"
+        "name": "complete_pve04_diff1",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "rewards": [
@@ -13443,7 +14184,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff2"
+        "name": "complete_pve04_diff2",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -13468,7 +14210,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff3"
+        "name": "complete_pve04_diff3",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -13493,7 +14236,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff4"
+        "name": "complete_pve04_diff4",
+        "stat": "complete_pve04_diff4"
       }
     ],
     "rewards": [
@@ -13518,7 +14262,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff5"
+        "name": "complete_pve04_diff5",
+        "stat": "complete_pve04_diff5"
       }
     ],
     "rewards": [
@@ -13537,7 +14282,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff1"
+        "name": "complete_pve04_diff1",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "rewards": [
@@ -13556,7 +14302,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff2"
+        "name": "complete_pve04_diff2",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -13575,7 +14322,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff3"
+        "name": "complete_pve04_diff3",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -13594,7 +14342,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff4"
+        "name": "complete_pve04_diff4",
+        "stat": "complete_pve04_diff4"
       }
     ],
     "rewards": [
@@ -13619,7 +14368,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff5"
+        "name": "complete_pve04_diff5",
+        "stat": "complete_pve04_diff5"
       }
     ],
     "rewards": [
@@ -13638,7 +14388,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff1"
+        "name": "complete_pve04_diff1",
+        "stat": "complete_pve04_diff1"
       }
     ],
     "rewards": [
@@ -13663,7 +14414,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff2"
+        "name": "complete_pve04_diff2",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -13688,7 +14440,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff3"
+        "name": "complete_pve04_diff3",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -13713,7 +14466,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "complete_pve04_diff4"
+        "name": "complete_pve04_diff4",
+        "stat": "complete_pve04_diff4"
       }
     ],
     "rewards": [
@@ -13734,7 +14488,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff5"
+        "name": "complete_pve04_diff5",
+        "stat": "complete_pve04_diff5"
       }
     ],
     "rewards": [
@@ -13753,7 +14508,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff2"
+        "name": "complete_pve04_diff2",
+        "stat": "complete_pve04_diff2"
       }
     ],
     "rewards": [
@@ -13772,7 +14528,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff3"
+        "name": "complete_pve04_diff3",
+        "stat": "complete_pve04_diff3"
       }
     ],
     "rewards": [
@@ -13791,7 +14548,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff4"
+        "name": "complete_pve04_diff4",
+        "stat": "complete_pve04_diff4"
       }
     ],
     "rewards": [
@@ -13816,7 +14574,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff5"
+        "name": "complete_pve04_diff5",
+        "stat": "complete_pve04_diff5"
       }
     ],
     "rewards": [
@@ -13835,7 +14594,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "complete_pve04_diff5"
+        "name": "complete_pve04_diff5",
+        "stat": "complete_pve04_diff5"
       }
     ],
     "rewards": [
@@ -13885,7 +14645,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "quest_reactive_twitch_1"
+        "name": "quest_reactive_twitch_1",
+        "stat": "quest_reactive_twitch_1"
       }
     ],
     "rewards": [
@@ -13900,7 +14661,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "quest_reactive_twitch_10"
+        "name": "quest_reactive_twitch_10",
+        "stat": "quest_reactive_twitch_10"
       }
     ],
     "rewards": [
@@ -13916,7 +14678,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "quest_reactive_twitch_11"
+        "name": "quest_reactive_twitch_11",
+        "stat": "quest_reactive_twitch_11"
       }
     ],
     "rewards": [
@@ -13935,7 +14698,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "quest_reactive_twitch_12"
+        "name": "quest_reactive_twitch_12",
+        "stat": "quest_reactive_twitch_12"
       }
     ],
     "rewards": [
@@ -13951,7 +14715,8 @@
     "objectives": [
       {
         "count": 10,
-        "name": "quest_reactive_twitch_13"
+        "name": "quest_reactive_twitch_13",
+        "stat": "quest_reactive_twitch_13"
       }
     ],
     "rewards": [
@@ -13966,7 +14731,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "quest_reactive_twitch_14"
+        "name": "quest_reactive_twitch_14",
+        "stat": "quest_reactive_twitch_14"
       }
     ],
     "rewards": [
@@ -13982,7 +14748,8 @@
     "objectives": [
       {
         "count": 10,
-        "name": "quest_reactive_twitch_15"
+        "name": "quest_reactive_twitch_15",
+        "stat": "quest_reactive_twitch_15"
       }
     ],
     "rewards": [
@@ -13998,7 +14765,8 @@
     "objectives": [
       {
         "count": 15,
-        "name": "quest_reactive_twitch_2"
+        "name": "quest_reactive_twitch_2",
+        "stat": "quest_reactive_twitch_2"
       }
     ],
     "rewards": [
@@ -14014,7 +14782,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "quest_reactive_twitch_3"
+        "name": "quest_reactive_twitch_3",
+        "stat": "quest_reactive_twitch_3"
       }
     ],
     "rewards": [
@@ -14030,7 +14799,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "quest_reactive_twitch_4"
+        "name": "quest_reactive_twitch_4",
+        "stat": "quest_reactive_twitch_4"
       }
     ],
     "rewards": [
@@ -14050,7 +14820,8 @@
     "objectives": [
       {
         "count": 2,
-        "name": "quest_reactive_twitch_5"
+        "name": "quest_reactive_twitch_5",
+        "stat": "quest_reactive_twitch_5"
       }
     ],
     "rewards": [
@@ -14069,7 +14840,8 @@
     "objectives": [
       {
         "count": 1,
-        "name": "quest_reactive_twitch_6"
+        "name": "quest_reactive_twitch_6",
+        "stat": "quest_reactive_twitch_6"
       }
     ],
     "rewards": [
@@ -14085,7 +14857,8 @@
     "objectives": [
       {
         "count": 15,
-        "name": "quest_reactive_twitch_7"
+        "name": "quest_reactive_twitch_7",
+        "stat": "quest_reactive_twitch_7"
       }
     ],
     "rewards": [
@@ -14105,7 +14878,8 @@
     "objectives": [
       {
         "count": 3,
-        "name": "quest_reactive_twitch_8"
+        "name": "quest_reactive_twitch_8",
+        "stat": "quest_reactive_twitch_8"
       }
     ],
     "rewards": [
@@ -14125,7 +14899,8 @@
     "objectives": [
       {
         "count": 6,
-        "name": "quest_reactive_twitch_9"
+        "name": "quest_reactive_twitch_9",
+        "stat": "quest_reactive_twitch_9"
       }
     ],
     "rewards": [

@@ -46,6 +46,8 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
 }
 
 var items = new SortedDictionary<string, object>(StringComparer.Ordinal);
+var characters = new SortedDictionary<string, object>(StringComparer.Ordinal);
+var cardPacks = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var unmapped = new SortedSet<string>(StringComparer.Ordinal);
 foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" && assetTypes.IsItemPath(f.Path)))
 {
@@ -69,6 +71,28 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         ["profile"] = profile,
         ["maxStackSize"] = properties?["MaxStackSize"]?.GetValue<int>() ?? ItemClasses.DefaultMaxStackSize(export.ExportType)
     };
+
+    // Squad slots filter on these: TagFilter (defenders), bIsManager (survivor slot 0), RequiredGPTags (hero classes).
+    if (export.ExportType is "FortHeroType" or "FortWorkerType" or "FortDefenderItemDefinition")
+    {
+        var character = new SortedDictionary<string, object>(StringComparer.Ordinal) { ["tags"] = Strings(properties?["GameplayTags"]) };
+        var required = Strings(properties?["RequiredGPTags"]);
+        if (required.Count > 0) character["requiredTags"] = required;
+        if (properties?["bIsManager"]?.GetValue<bool>() == true) character["manager"] = true;
+        characters[templateId] = character;
+    }
+
+    if (export.ExportType == "FortCardPackItemDefinition")
+    {
+        cardPacks[templateId] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+        {
+            ["lootTierGroup"] = properties?["LootTierGroup"]?.GetValue<string>() ?? "",
+            ["lootTier"] = properties?["LootTier"]?.GetValue<int>() ?? 0,
+            ["choice"] = properties?["bIsChoicePack"]?.GetValue<bool>() ?? false,
+            ["displayRarityLevel"] = properties?["DisplayRarityLevel"]?.GetValue<int>() ?? 0,
+            ["rarity"] = Enum(properties?["Rarity"]) ?? "Ordinary"
+        };
+    }
 }
 
 // The client calls the schedule without a token "Default" and looks rows up by the name "%d".
@@ -87,7 +111,7 @@ foreach (var schedule in gameData["Properties"]?["DailyRewardSchedules"]?.AsArra
 
     var entry = new SortedDictionary<string, object>(StringComparer.Ordinal)
     {
-        ["name"] = tokenPath is "" or "None" ? "Default" : tokenPath.Split('/').Last().Split('.').Last(),
+        ["name"] = tokenPath is "" or "None" ? "Default" : AssetName(tokenPath),
         ["rewards"] = rows.OrderBy(r => int.Parse(r.Key)).Select(r => new SortedDictionary<string, object>(StringComparer.Ordinal)
         {
             ["templateId"] = assetTypes.TemplateId(AssetPath(r.Value!["ItemDefinition"])),
@@ -99,11 +123,81 @@ foreach (var schedule in gameData["Properties"]?["DailyRewardSchedules"]?.AsArra
     dailyRewards.Add(entry);
 }
 
+// The skill tree and squads come from the homebase manager DefaultGameData points at.
+var manager = LoadExport(provider, gameData["Properties"]!["HomebaseManager"], "FortHomebaseManager")["Properties"]!;
+var nodes = new SortedDictionary<string, object>(StringComparer.Ordinal);
+foreach (var (id, row) in LoadRows(provider, manager["HomebaseNodeDataTable"]))
+{
+    var node = new SortedDictionary<string, object>(StringComparer.Ordinal);
+    var cost = (row!["Cost"]?.AsArray() ?? []).Select(c => new SortedDictionary<string, object>(StringComparer.Ordinal)
+    {
+        ["templateId"] = assetTypes.TemplateId(AssetPath(c!["ItemDefinition"])),
+        ["quantity"] = c["Quantity"]?.GetValue<int>() ?? 0
+    }).ToList();
+    if (cost.Count > 0) node["cost"] = cost;
+    var prerequisites = (row["OR_Prerequisites"]?.AsArray() ?? []).Select(group => (group!["AND_Prerequisites"]?.AsArray() ?? []).Select(a =>
+    {
+        var nodeId = a!["NodeInstanceId"]?.GetValue<string>() ?? "None";
+        return nodeId != "None"
+            ? new SortedDictionary<string, object>(StringComparer.Ordinal) { ["node"] = nodeId }
+            : new SortedDictionary<string, object>(StringComparer.Ordinal)
+            {
+                ["page"] = a["PrereqPageId"]?.GetValue<string>() ?? "None",
+                ["nodeType"] = Enum(a["PrereqNodeType"]) ?? "Invalid",
+                ["min"] = a["MinOwnedNodesRequiredFromPrereqPage"]?.GetValue<int>() ?? 0
+            };
+    }).ToList()).ToList();
+    if (prerequisites.Count > 0) node["prerequisites"] = prerequisites;
+    var questRequirements = (row["QuestTemplateRequirements"]?.AsArray() ?? []).Select(q => AssetName(AssetPath(q)).ToLowerInvariant()).ToList();
+    if (questRequirements.Count > 0) node["quests"] = questRequirements;
+    var squadSlots = (row["UnlockedSquadSlots"]?.AsArray() ?? []).Select(slot => new SortedDictionary<string, object>(StringComparer.Ordinal)
+    {
+        ["squadId"] = slot!["SquadId"]!.GetValue<string>(),
+        ["slot"] = slot["SquadSlotIndex"]?.GetValue<int>() ?? 0
+    }).ToList();
+    if (squadSlots.Count > 0) node["squadSlots"] = squadSlots;
+    nodes[id] = node;
+}
+var pages = new SortedDictionary<string, object>(StringComparer.Ordinal);
+foreach (var (id, row) in LoadRows(provider, manager["HomebaseNodePageDataTable"])) pages[id] = Strings(row!["NodeList"]);
+
+var squads = new SortedDictionary<string, object>(StringComparer.Ordinal);
+foreach (var (id, row) in LoadRows(provider, manager["HomebaseSquadDataTable"]))
+{
+    squads[id] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+    {
+        ["type"] = Enum(row!["SquadType"]) ?? "",
+        ["slots"] = (row["CrewSlots"]?.AsArray() ?? []).Select(slot => new SortedDictionary<string, object>(StringComparer.Ordinal)
+        {
+            ["types"] = Strings(slot!["ValidSlottableItemTypes"]).Select(t => t.Split("::").Last()).ToList(),
+            ["tags"] = Strings(slot["TagFilter"])
+        }).ToList()
+    };
+}
+
+var objectiveStats = new SortedDictionary<string, object>(StringComparer.Ordinal);
+foreach (var (id, row) in LoadRows(provider, JsonValue.Create("/Game/Quests/ObjectiveStatTable.ObjectiveStatTable")))
+{
+    objectiveStats[id.ToLowerInvariant()] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+    {
+        ["type"] = Enum(row!["Type"]) ?? "",
+        ["targetTags"] = row["TargetTags"]?.GetValue<string>() ?? "",
+        ["condition"] = row["Condition"]?.GetValue<string>() ?? "",
+        ["templateId"] = row["TemplateId"]?.GetValue<string>() ?? ""
+    };
+}
+
 Directory.CreateDirectory(output);
 var options = new JsonSerializerOptions { WriteIndented = true };
 File.WriteAllText(Path.Combine(output, "quests.json"), JsonSerializer.Serialize(quests, options) + "\n");
 File.WriteAllText(Path.Combine(output, "items.json"), JsonSerializer.Serialize(items, options) + "\n");
 File.WriteAllText(Path.Combine(output, "dailyrewards.json"), JsonSerializer.Serialize(dailyRewards, options) + "\n");
+File.WriteAllText(Path.Combine(output, "characters.json"), JsonSerializer.Serialize(characters, options) + "\n");
+File.WriteAllText(Path.Combine(output, "cardpacks.json"), JsonSerializer.Serialize(cardPacks, options) + "\n");
+File.WriteAllText(Path.Combine(output, "homebasenodes.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal) { ["nodes"] = nodes, ["pages"] = pages }, options) + "\n");
+File.WriteAllText(Path.Combine(output, "squads.json"), JsonSerializer.Serialize(squads, options) + "\n");
+File.WriteAllText(Path.Combine(output, "objectivestats.json"), JsonSerializer.Serialize(objectiveStats, options) + "\n");
+Console.WriteLine($"{characters.Count} characters, {cardPacks.Count} card packs, {nodes.Count} skill tree nodes, {squads.Count} squads, {objectiveStats.Count} objective stats");
 Console.WriteLine($"{quests.Count} quests, {items.Count} items and {dailyRewards.Count} daily reward schedules from {version["BranchName"]}-CL-{version["Changelist"]} into {output}");
 if (unmapped.Count > 0) Console.WriteLine($"Skipped item classes with no known profile: {string.Join(", ", unmapped)}");
 return 0;
@@ -113,11 +207,7 @@ static object Quest(JsonNode p, AssetTypes assetTypes)
     var quest = new SortedDictionary<string, object>(StringComparer.Ordinal)
     {
         ["type"] = Enum(p["QuestType"]) ?? "Task",
-        ["objectives"] = (p["Objectives"]?.AsArray() ?? []).Select(o => new SortedDictionary<string, object>
-        {
-            ["name"] = o!["BackendName"]!.GetValue<string>().ToLowerInvariant(),
-            ["count"] = o["Count"]?.GetValue<int>() ?? 1
-        }).ToList()
+        ["objectives"] = (p["Objectives"]?.AsArray() ?? []).Select(o => Objective(o!, assetTypes)).ToList()
     };
     AddItems(quest, "rewards", p["Rewards"], assetTypes);
     AddItems(quest, "hiddenRewards", p["HiddenRewards"], assetTypes);
@@ -128,13 +218,68 @@ static object Quest(JsonNode p, AssetTypes assetTypes)
     if (selectable.Count > 0) quest["selectableRewards"] = selectable;
     var prerequisiteQuest = p["PrerequisiteQuest"] is null ? null : AssetPath(p["PrerequisiteQuest"]);
     if (!string.IsNullOrEmpty(prerequisiteQuest) && prerequisiteQuest != "None")
-        quest["prerequisiteQuest"] = prerequisiteQuest.Split('.').Last().ToLowerInvariant();
+        quest["prerequisiteQuest"] = AssetName(prerequisiteQuest).ToLowerInvariant();
     var tags = p["Prerequisites"]?.AsArray().Select(t => t!.GetValue<string>()).ToList();
     if (tags is { Count: > 0 }) quest["prerequisites"] = tags;
     if (p["bHidden"]?.GetValue<bool>() == true) quest["hidden"] = true;
     if (p["bDeprecated"]?.GetValue<bool>() == true) quest["deprecated"] = true;
     if (p["ExpirationDuration"]?.GetValue<int>() is int expiration and > 0) quest["expirationDuration"] = expiration;
     return quest;
+}
+
+// Objectives advance on an item event (e.g. Acquire HomebaseNode:x, OpenCardPack CardPack:y) or a stat row.
+static SortedDictionary<string, object> Objective(JsonNode o, AssetTypes assetTypes)
+{
+    var objective = new SortedDictionary<string, object>(StringComparer.Ordinal)
+    {
+        ["name"] = o["BackendName"]!.GetValue<string>().ToLowerInvariant(),
+        ["count"] = o["Count"]?.GetValue<int>() ?? 1
+    };
+    var itemEvent = Enum(o["ItemEvent"]);
+    if (itemEvent is not (null or "Max_None"))
+    {
+        objective["itemEvent"] = itemEvent;
+        var templateOverride = o["ItemTemplateIdOverride"]?.GetValue<string>() ?? "";
+        var reference = o["ItemReference"] is null ? "" : AssetPath(o["ItemReference"]);
+        if (templateOverride != "") objective["item"] = templateOverride;
+        else if (reference is not ("" or "None")) objective["item"] = assetTypes.TemplateId(reference);
+    }
+    var stat = o["ObjectiveStatHandle"]?["RowName"]?.GetValue<string>();
+    if (stat is not (null or "None")) objective["stat"] = stat.ToLowerInvariant();
+    return objective;
+}
+
+// Soft paths come as "/Game/Dir/Name.Name" or just "/Game/Dir/Name".
+static string AssetName(string path) => path.Split('/').Last().Split('.').Last();
+
+static List<string> Strings(JsonNode? values) => (values as JsonArray)?.Select(v => v!.GetValue<string>()).ToList() ?? [];
+
+static string PackageFile(JsonNode? reference)
+{
+    var path = reference switch
+    {
+        JsonObject o when o["ObjectPath"] is not null => o["ObjectPath"]!.GetValue<string>(),
+        JsonObject o => o["AssetPathName"]!.GetValue<string>(),
+        _ => reference!.GetValue<string>()
+    };
+    path = path.Split('.')[0];
+    if (path.StartsWith("/Game/")) path = "FortniteGame/Content/" + path["/Game/".Length..];
+    return path + ".uasset";
+}
+
+static JsonNode LoadExport(DefaultFileProvider provider, JsonNode? reference, string type)
+{
+    var file = PackageFile(reference);
+    if (!provider.TryLoadPackage(file, out var package)) throw new InvalidOperationException($"{file} not found");
+    return JsonNode.Parse(JsonConvert.SerializeObject(package.GetExports().First(e => e.ExportType == type)))!;
+}
+
+static JsonObject LoadRows(DefaultFileProvider provider, JsonNode? reference)
+{
+    var file = PackageFile(reference);
+    if (!provider.TryLoadPackage(file, out var package)) throw new InvalidOperationException($"{file} not found");
+    var table = package.GetExports().First(e => e.ExportType.EndsWith("DataTable"));
+    return JsonNode.Parse(JsonConvert.SerializeObject(table))!["Rows"]!.AsObject();
 }
 
 static void AddItems(IDictionary<string, object> target, string key, JsonNode? items, AssetTypes assetTypes)

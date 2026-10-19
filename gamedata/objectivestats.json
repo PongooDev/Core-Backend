@@ -1,0 +1,3464 @@
+{
+  "ability_base": {
+    "condition": "",
+    "targetTags": "Abilities.Constructor.BASE",
+    "templateId": "",
+    "type": "Ability"
+  },
+  "ability_bullrush": {
+    "condition": "",
+    "targetTags": "Abilities.Constructor.BullRush",
+    "templateId": "",
+    "type": "Ability"
+  },
+  "ability_dragonslash": {
+    "condition": "",
+    "targetTags": "Abilities.Ninja.DragonSlash",
+    "templateId": "",
+    "type": "Ability"
+  },
+  "ability_fraggrenade": {
+    "condition": "",
+    "targetTags": "Abilities.Commando.FragGrenade",
+    "templateId": "",
+    "type": "Ability"
+  },
+  "ability_mantisleap": {
+    "condition": "",
+    "targetTags": "Abilities.Ninja.MantisLeap",
+    "templateId": "",
+    "type": "Ability"
+  },
+  "ability_outlander_fragment": {
+    "condition": "",
+    "targetTags": "Abilities.Explorer.Fragment",
+    "templateId": "",
+    "type": "Ability"
+  },
+  "ability_throwingstars": {
+    "condition": "",
+    "targetTags": "Abilities.Ninja.ThrowingStars",
+    "templateId": "",
+    "type": "Ability"
+  },
+  "acquire_any_hero": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "Hero",
+    "type": "Acquire"
+  },
+  "assign_defender": {
+    "condition": "Squad.Id == squad_defender_defendersquadone",
+    "targetTags": "Npc.CharacterType.Survivor.Defender",
+    "templateId": "Defender",
+    "type": "HasAssignedWorker"
+  },
+  "assign_defender_to_adventure_squadone": {
+    "condition": "Squad.Id == squad_combat_adventuresquadone",
+    "targetTags": "Npc.CharacterType.Survivor.Defender",
+    "templateId": "Defender",
+    "type": "HasAssignedWorker"
+  },
+  "assign_hero_constructor": {
+    "condition": "Squad.Id == squad_combat_adventuresquadone \u0026\u0026 Squad.Slot == 0",
+    "targetTags": "Homebase.Class.IsConstructor",
+    "templateId": "Hero",
+    "type": "HasAssignedWorker"
+  },
+  "assign_hero_constructor_or_ninja": {
+    "condition": "Item HasTag Homebase.Class.IsConstructor || Item HasTag Homebase.Class.IsNinja",
+    "targetTags": "",
+    "templateId": "Hero",
+    "type": "HasAssignedWorker"
+  },
+  "assign_hero_ninja": {
+    "condition": "",
+    "targetTags": "Homebase.Class.IsNinja",
+    "templateId": "Hero",
+    "type": "HasAssignedWorker"
+  },
+  "assign_hero_outlander": {
+    "condition": "",
+    "targetTags": "Homebase.Class.IsOutlander",
+    "templateId": "Hero",
+    "type": "HasAssignedWorker"
+  },
+  "assign_manager": {
+    "condition": "",
+    "targetTags": "Homebase.Manager",
+    "templateId": "Worker",
+    "type": "HasAssignedWorker"
+  },
+  "assign_worker": {
+    "condition": "",
+    "targetTags": "Homebase.Worker",
+    "templateId": "Worker",
+    "type": "HasAssignedWorker"
+  },
+  "assign_worker_to_emt_squadone": {
+    "condition": "Squad.Id == squad_attribute_medicine_emtsquad",
+    "targetTags": "Homebase.Worker",
+    "templateId": "Worker",
+    "type": "HasAssignedWorker"
+  },
+  "assign_worker_to_fire_squadone": {
+    "condition": "Squad.Id == squad_attribute_arms_fireteamalpha",
+    "targetTags": "Homebase.Worker",
+    "templateId": "Worker",
+    "type": "HasAssignedWorker"
+  },
+  "build_any_floor_constructor": {
+    "condition": "",
+    "targetTags": "Building.Type.Floor",
+    "templateId": "",
+    "type": "Build"
+  },
+  "build_any_metal_building": {
+    "condition": "",
+    "targetTags": "Building.Resource.Metal",
+    "templateId": "",
+    "type": "Build"
+  },
+  "build_any_structure": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Build"
+  },
+  "buildingedit_wood_wall": {
+    "condition": "",
+    "targetTags": "Building.Resource.Wood,Building.Type.Wall",
+    "templateId": "",
+    "type": "BuildingEdit"
+  },
+  "buildingrepair_any_constructor": {
+    "condition": "",
+    "targetTags": "Building.Type.Wall",
+    "templateId": "",
+    "type": "BuildingRepair"
+  },
+  "buildingrepair_stone_floor": {
+    "condition": "",
+    "targetTags": "Building.Resource.Stone,Building.Type.Floor",
+    "templateId": "",
+    "type": "BuildingRepair"
+  },
+  "buildingupgrade_metal_roof": {
+    "condition": "Building.Level == 2",
+    "targetTags": "Building.Resource.Metal,Building.Type.Roof",
+    "templateId": "",
+    "type": "BuildingUpgrade"
+  },
+  "collect_any_successful_expedition": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "Expedition",
+    "type": "CollectSuccessfulExpedition"
+  },
+  "collectexpedition": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "Expedition",
+    "type": "CollectExpedition"
+  },
+  "collection_slot_any_item": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "\u003Cany-item\u003E",
+    "type": "SlotInCollection"
+  },
+  "collection_slot_worker": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "Worker",
+    "type": "SlotInCollection"
+  },
+  "complete_anomaly_1_diff3": {
+    "condition": "Zone.Difficulty \u003E=5",
+    "targetTags": "Stat.Mission.Secondary.Anomaly",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_anomaly_1_diff4": {
+    "condition": "Zone.Difficulty \u003E=7",
+    "targetTags": "Stat.Mission.Secondary.Anomaly",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_anomaly_1_diff5": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "Stat.Mission.Secondary.Anomaly",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_anomaly_2": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "Stat.Mission.Secondary.Anomaly",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_anomaly_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "Stat.Mission.Secondary.Anomaly",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_anomaly_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "Stat.Mission.Secondary.Anomaly",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_anomaly_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Secondary.Anomaly",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_anomaly_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Stat.Mission.Secondary.Anomaly",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_anomaly_3_diff2": {
+    "condition": "Zone.Difficulty \u003E=24",
+    "targetTags": "Stat.Mission.Secondary.Anomaly",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_anomaly_3_diff3": {
+    "condition": "Zone.Difficulty \u003E=26",
+    "targetTags": "Stat.Mission.Secondary.Anomaly",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_anomaly_3_diff4": {
+    "condition": "Zone.Difficulty \u003E=28",
+    "targetTags": "Stat.Mission.Secondary.Anomaly",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_anomaly_3_diff5": {
+    "condition": "Zone.Difficulty \u003E=30",
+    "targetTags": "Stat.Mission.Secondary.Anomaly",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_bluglosiphon_2": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "Stat.Mission.Secondary.BluGloSiphon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_bluglosiphon_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "Stat.Mission.Secondary.BluGloSiphon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_bluglosiphon_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "Stat.Mission.Secondary.BluGloSiphon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_bluglosiphon_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Secondary.BluGloSiphon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_bluglosiphon_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Stat.Mission.Secondary.BluGloSiphon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_bluglosiphon_3_diff3": {
+    "condition": "Zone.Difficulty \u003E=26",
+    "targetTags": "Stat.Mission.Secondary.BluGloSiphon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_bluglosiphon_3_diff4": {
+    "condition": "Zone.Difficulty \u003E=28",
+    "targetTags": "Stat.Mission.Secondary.BluGloSiphon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_bluglosiphon_3_diff5": {
+    "condition": "Zone.Difficulty \u003E=30",
+    "targetTags": "Stat.Mission.Secondary.BluGloSiphon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_buildradar_1_diff2_con": {
+    "condition": "Zone.Difficulty \u003E=3",
+    "targetTags": "Stat.Mission.Secondary.BuildRadarTower",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_buildradar_1_diff3_con": {
+    "condition": "Zone.Difficulty \u003E=5",
+    "targetTags": "Stat.Mission.Secondary.BuildRadarTower",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_buildradar_1_diff4_con": {
+    "condition": "Zone.Difficulty \u003E=7",
+    "targetTags": "Stat.Mission.Secondary.BuildRadarTower",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_buildradar_1_diff5_con": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "Stat.Mission.Secondary.BuildRadarTower",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_buildradar_2": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "Stat.Mission.Secondary.BuildRadarTower",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_buildradar_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "Stat.Mission.Secondary.BuildRadarTower",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_buildradar_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "Stat.Mission.Secondary.BuildRadarTower",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_buildradar_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Secondary.BuildRadarTower",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_buildradar_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Stat.Mission.Secondary.BuildRadarTower",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_buildradargrid_2": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "Stat.Mission.Primary.BuildRadarGrid",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_buildradargrid_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "Stat.Mission.Primary.BuildRadarGrid",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_buildradargrid_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "Stat.Mission.Primary.BuildRadarGrid",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_buildradargrid_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Primary.BuildRadarGrid",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_buildradargrid_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Stat.Mission.Primary.BuildRadarGrid",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_commando": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_constructor": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_delivergoods_2": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "Stat.Mission.Primary.DeliverGoods",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_delivergoods_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "Stat.Mission.Primary.DeliverGoods",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_delivergoods_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "Stat.Mission.Primary.DeliverGoods",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_delivergoods_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Primary.DeliverGoods",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_delivergoods_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Stat.Mission.Primary.DeliverGoods",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_delivergoods_3_diff3": {
+    "condition": "Zone.Difficulty \u003E=26",
+    "targetTags": "Stat.Mission.Primary.DeliverGoods",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_delivergoods_3_diff4": {
+    "condition": "Zone.Difficulty \u003E=28",
+    "targetTags": "Stat.Mission.Primary.DeliverGoods",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_delivergoods_3_diff5": {
+    "condition": "Zone.Difficulty \u003E=30",
+    "targetTags": "Stat.Mission.Primary.DeliverGoods",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_destroyencamp_1_diff5": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "Stat.Mission.Primary.DestroyTheEncampments",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_destroyencamp_2": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "Stat.Mission.Primary.DestroyTheEncampments",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_destroyencamp_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "Stat.Mission.Primary.DestroyTheEncampments",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_destroyencamp_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "Stat.Mission.Primary.DestroyTheEncampments",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_destroyencamp_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Primary.DestroyTheEncampments",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_destroyencamp_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Stat.Mission.Primary.DestroyTheEncampments",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_destroyencamp_3_diff4": {
+    "condition": "Zone.Difficulty \u003E=28",
+    "targetTags": "Stat.Mission.Primary.DestroyTheEncampments",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_destroyencamp_3_diff5": {
+    "condition": "Zone.Difficulty \u003E=30",
+    "targetTags": "Stat.Mission.Primary.DestroyTheEncampments",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_encampment_1_diff4": {
+    "condition": "Zone.Difficulty \u003E=7",
+    "targetTags": "Stat.Mission.Secondary.Encampment",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_encampment_1_diff5": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "Stat.Mission.Secondary.Encampment",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_encampment_2_diff1": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "Stat.Mission.Secondary.Encampment",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_encampment_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "Stat.Mission.Secondary.Encampment",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_encampment_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "Stat.Mission.Secondary.Encampment",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_encampment_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Secondary.Encampment",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_encampment_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Stat.Mission.Secondary.Encampment",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_encampment_3_diff2": {
+    "condition": "Zone.Difficulty \u003E=24",
+    "targetTags": "Stat.Mission.Secondary.Encampment",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_encampment_3_diff3": {
+    "condition": "Zone.Difficulty \u003E=26",
+    "targetTags": "Stat.Mission.Secondary.Encampment",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_encampment_3_diff4": {
+    "condition": "Zone.Difficulty \u003E=28",
+    "targetTags": "Stat.Mission.Secondary.Encampment",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_encampment_3_diff5": {
+    "condition": "Zone.Difficulty \u003E=30",
+    "targetTags": "Stat.Mission.Secondary.Encampment",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_encampment_pve01": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Secondary.Encampment",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_encampment_pve02": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "Stat.Mission.Secondary.Encampment",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_encampment_pve03": {
+    "condition": "Zone.Difficulty \u003E=26",
+    "targetTags": "Stat.Mission.Secondary.Encampment",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_encampment_pve04": {
+    "condition": "Zone.Difficulty \u003E=38",
+    "targetTags": "Stat.Mission.Secondary.Encampment",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuate_1_diff3": {
+    "condition": "Zone.Difficulty \u003E=5",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheSurvivors",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuate_1_diff4": {
+    "condition": "Zone.Difficulty \u003E=7",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheSurvivors",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuate_1_diff5": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheSurvivors",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuate_2": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheSurvivors",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuate_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheSurvivors",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuate_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheSurvivors",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuate_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheSurvivors",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuate_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheSurvivors",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuate_3_diff3": {
+    "condition": "Zone.Difficulty \u003E=26",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheSurvivors",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuate_3_diff4": {
+    "condition": "Zone.Difficulty \u003E=28",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheSurvivors",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuate_3_diff5": {
+    "condition": "Zone.Difficulty \u003E=30",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheSurvivors",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuateshelter_2": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheShelter",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuateshelter_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheShelter",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuateshelter_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheShelter",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuateshelter_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheShelter",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuateshelter_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheShelter",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_exploration_1": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Secondary.ExplorationMission",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_exploration_1_diff2": {
+    "condition": "Zone.Difficulty \u003E=3",
+    "targetTags": "Stat.Mission.Secondary.ExplorationMission",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_exploration_1_diff3": {
+    "condition": "Zone.Difficulty \u003E=5",
+    "targetTags": "Stat.Mission.Secondary.ExplorationMission",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_exploration_1_diff4": {
+    "condition": "Zone.Difficulty \u003E=7",
+    "targetTags": "Stat.Mission.Secondary.ExplorationMission",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_exploration_1_diff5": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "Stat.Mission.Secondary.ExplorationMission",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_exploration_2": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "Stat.Mission.Secondary.ExplorationMission",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_exploration_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "Stat.Mission.Secondary.ExplorationMission",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_exploration_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "Stat.Mission.Secondary.ExplorationMission",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_exploration_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Secondary.ExplorationMission",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_exploration_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Stat.Mission.Secondary.ExplorationMission",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Gate",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_1": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Gate",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_1_diff2": {
+    "condition": "Zone.Difficulty \u003E=3",
+    "targetTags": "Stat.Mission.Primary.Gate",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_1_diff3": {
+    "condition": "Zone.Difficulty \u003E=5",
+    "targetTags": "Stat.Mission.Primary.Gate",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_1_diff4": {
+    "condition": "Zone.Difficulty \u003E=7",
+    "targetTags": "Stat.Mission.Primary.Gate",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_1_diff5": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "Stat.Mission.Primary.Gate",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_2": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "Stat.Mission.Primary.Gate",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "Stat.Mission.Primary.Gate",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "Stat.Mission.Primary.Gate",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Primary.Gate",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Stat.Mission.Primary.Gate",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_3_diff2": {
+    "condition": "Zone.Difficulty \u003E=24",
+    "targetTags": "Stat.Mission.Primary.Gate",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_3_diff3": {
+    "condition": "Zone.Difficulty \u003E=26",
+    "targetTags": "Stat.Mission.Primary.Gate",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_3_diff4": {
+    "condition": "Zone.Difficulty \u003E=28",
+    "targetTags": "Stat.Mission.Primary.Gate",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_3_diff5": {
+    "condition": "Zone.Difficulty \u003E=30",
+    "targetTags": "Stat.Mission.Primary.Gate",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_double_2": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Double",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_double_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Double",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_double_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Double",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_double_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Double",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_double_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Double",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_double_3": {
+    "condition": "Zone.Difficulty \u003E=22",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Double",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_double_3_diff2": {
+    "condition": "Zone.Difficulty \u003E=24",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Double",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_double_3_diff3": {
+    "condition": "Zone.Difficulty \u003E=26",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Double",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_double_3_diff4": {
+    "condition": "Zone.Difficulty \u003E=28",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Double",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_double_3_diff5": {
+    "condition": "Zone.Difficulty \u003E=30",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Double",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_quadruple_3_diff2": {
+    "condition": "Zone.Difficulty \u003E=24",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Quadruple",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_quadruple_3_diff3": {
+    "condition": "Zone.Difficulty \u003E=26",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Quadruple",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_quadruple_3_diff4": {
+    "condition": "Zone.Difficulty \u003E=28",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Quadruple",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_quadruple_3_diff5": {
+    "condition": "Zone.Difficulty \u003E=30",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Quadruple",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_triple_2": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Triple",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_triple_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Triple",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_triple_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Triple",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_triple_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Triple",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_triple_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Triple",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_triple_3": {
+    "condition": "Zone.Difficulty \u003E=22",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Triple",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_triple_3_diff2": {
+    "condition": "Zone.Difficulty \u003E=24",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Triple",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_triple_3_diff3": {
+    "condition": "Zone.Difficulty \u003E=26",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Triple",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_triple_3_diff4": {
+    "condition": "Zone.Difficulty \u003E=28",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Triple",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_triple_3_diff5": {
+    "condition": "Zone.Difficulty \u003E=30",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Triple",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_horde_tier_1": {
+    "condition": "Mission.Tier = 1 \u0026\u0026 Mission.Wave = 10",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "complete_horde_tier_2": {
+    "condition": "Mission.Tier = 2 \u0026\u0026 Mission.Wave = 10",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "complete_horde_tier_3": {
+    "condition": "Mission.Tier = 3 \u0026\u0026 Mission.Wave = 10",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "complete_horde_tier_4": {
+    "condition": "Mission.Tier = 4 \u0026\u0026 Mission.Wave = 10",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "complete_horde_tiers": {
+    "condition": "Mission.Wave = 10",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "complete_horde_wave_5": {
+    "condition": "Mission.Wave = 5",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "complete_horde_waves": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "complete_launchballoon": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.LaunchWeatherBalloon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_launchballoon_1_diff5": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "Stat.Mission.Primary.LaunchWeatherBalloon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_launchballoon_2": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "Stat.Mission.Primary.LaunchWeatherBalloon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_launchballoon_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "Stat.Mission.Primary.LaunchWeatherBalloon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_launchballoon_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "Stat.Mission.Primary.LaunchWeatherBalloon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_launchballoon_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Primary.LaunchWeatherBalloon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_launchballoon_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Stat.Mission.Primary.LaunchWeatherBalloon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_launchballoon_3_diff2": {
+    "condition": "Zone.Difficulty \u003E=24",
+    "targetTags": "Stat.Mission.Primary.LaunchWeatherBalloon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_launchballoon_3_diff3": {
+    "condition": "Zone.Difficulty \u003E=26",
+    "targetTags": "Stat.Mission.Primary.LaunchWeatherBalloon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_launchballoon_3_diff4": {
+    "condition": "Zone.Difficulty \u003E=28",
+    "targetTags": "Stat.Mission.Primary.LaunchWeatherBalloon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_launchballoon_3_diff5": {
+    "condition": "Zone.Difficulty \u003E=30",
+    "targetTags": "Stat.Mission.Primary.LaunchWeatherBalloon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_launchrocket_1": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "Stat.Mission.Primary.LaunchRocket",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_launchrocket_2": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Stat.Mission.Primary.LaunchRocket",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_launchrocket_3": {
+    "condition": "Zone.Difficulty \u003E=30",
+    "targetTags": "Stat.Mission.Primary.LaunchRocket",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_launchrocket_4": {
+    "condition": "Zone.Difficulty \u003E=40",
+    "targetTags": "Stat.Mission.Primary.LaunchRocket",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_launchweatherballoon_1": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.LaunchWeatherBalloon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_medbot_2": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "Stat.Mission.Secondary.Medbot",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_medbot_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "Stat.Mission.Secondary.Medbot",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_medbot_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "Stat.Mission.Secondary.Medbot",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_medbot_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Secondary.Medbot",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_medbot_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Stat.Mission.Secondary.Medbot",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_mimic": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Secondary.Mimic",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_mimic_1_diff5": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "Stat.Mission.Secondary.Mimic",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_mimic_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "Stat.Mission.Secondary.Mimic",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_mimic_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "Stat.Mission.Secondary.Mimic",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_mimic_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Secondary.Mimic",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_mimic_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Stat.Mission.Secondary.Mimic",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_mimic_3_diff4": {
+    "condition": "Zone.Difficulty \u003E=28",
+    "targetTags": "Stat.Mission.Secondary.Mimic",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_mimic_3_diff5": {
+    "condition": "Zone.Difficulty \u003E=30",
+    "targetTags": "Stat.Mission.Secondary.Mimic",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_ninja": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outlander": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_1_0": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg0",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_1_1": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg1",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_1_10": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg10",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_1_2": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg2",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_1_3": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg3",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_1_4": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg4",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_1_5": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg5",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_1_6": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg6",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_1_7": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg7",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_1_8": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg8",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_1_9": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg9",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_2_1": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg1",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_2_10": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg10",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_2_2": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg2",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_2_3": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg3",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_2_4": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg4",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_2_5": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg5",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_2_6": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg6",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_2_7": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg7",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_2_8": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg8",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_2_9": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg9",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_3_1": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg1",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_3_10": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg10",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_3_2": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg2",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_3_3": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg3",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_3_4": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg4",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_3_5": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg5",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_3_6": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg6",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_3_7": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg7",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_3_8": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg8",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_3_9": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg9",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_4_1": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg1",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_4_10": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg10",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_4_2": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg2",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_4_3": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg3",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_4_4": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg4",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_4_5": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg5",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_4_6": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg6",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_4_7": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg7",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_4_8": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg8",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_4_9": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost.Leg9",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_fabricator": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Secondary.Outpost.Fabricator",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_harvesting": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Secondary.Outpost.HarvestingUpgrade",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_pve02": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_pve03": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_outpost_pve04": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Outpost",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_patrol_1_diff4": {
+    "condition": "Zone.Difficulty \u003E=7",
+    "targetTags": "Stat.Mission.Secondary.Patrol",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_patrol_1_diff5": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "Stat.Mission.Secondary.Patrol",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_powerreactor": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.PowerReactor",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_powerreactor_2": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "Stat.Mission.Primary.PowerReactor",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_powerreactor_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "Stat.Mission.Primary.PowerReactor",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_powerreactor_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "Stat.Mission.Primary.PowerReactor",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_powerreactor_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Primary.PowerReactor",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_powerreactor_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Stat.Mission.Primary.PowerReactor",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_powerreactor_3_diff2": {
+    "condition": "Zone.Difficulty \u003E=24",
+    "targetTags": "Stat.Mission.Primary.PowerReactor",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_powerreactor_3_diff3": {
+    "condition": "Zone.Difficulty \u003E=26",
+    "targetTags": "Stat.Mission.Primary.PowerReactor",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_powerreactor_3_diff4": {
+    "condition": "Zone.Difficulty \u003E=28",
+    "targetTags": "Stat.Mission.Primary.PowerReactor",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_powerreactor_3_diff5": {
+    "condition": "Zone.Difficulty \u003E=30",
+    "targetTags": "Stat.Mission.Primary.PowerReactor",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_primary": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_protecttheservers_2": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Stat.Mission.Primary.ProtectTheServers",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_diff1": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_diff1_commando": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_diff1_constructor": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_diff1_ninja": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_diff1_outlander": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_diff2": {
+    "condition": "Zone.Difficulty \u003E=3",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_diff2_commando": {
+    "condition": "Zone.Difficulty \u003E=3",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_diff2_constructor": {
+    "condition": "Zone.Difficulty \u003E=3",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_diff2_ninja": {
+    "condition": "Zone.Difficulty \u003E=3",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_diff2_outlander": {
+    "condition": "Zone.Difficulty \u003E=3",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_diff3": {
+    "condition": "Zone.Difficulty \u003E=5",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_diff3_commando": {
+    "condition": "Zone.Difficulty \u003E=5",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_diff3_constructor": {
+    "condition": "Zone.Difficulty \u003E=5",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_diff3_ninja": {
+    "condition": "Zone.Difficulty \u003E=5",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_diff3_outlander": {
+    "condition": "Zone.Difficulty \u003E=5",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_diff4": {
+    "condition": "Zone.Difficulty \u003E=7",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_diff4_commando": {
+    "condition": "Zone.Difficulty \u003E=7",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_diff4_constructor": {
+    "condition": "Zone.Difficulty \u003E=7",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_diff4_ninja": {
+    "condition": "Zone.Difficulty \u003E=7",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_diff4_outlander": {
+    "condition": "Zone.Difficulty \u003E=7",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_diff5": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_diff5_commando": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_diff5_constructor": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_diff5_ninja": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_diff5_outlander": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_hb1_diff2": {
+    "condition": "Zone.Difficulty \u003E=3",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_hb2_diff3": {
+    "condition": "Zone.Difficulty \u003E=5",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_hb3_diff4": {
+    "condition": "Zone.Difficulty \u003E=7",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve01_hb4_diff5": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve02": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve02_diff1": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve02_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve02_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve02_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve02_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve03": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve03_diff1": {
+    "condition": "Zone.Difficulty \u003E=22",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve03_diff2": {
+    "condition": "Zone.Difficulty \u003E=24",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve03_diff3": {
+    "condition": "Zone.Difficulty \u003E=26",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve03_diff4": {
+    "condition": "Zone.Difficulty \u003E=28",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve03_diff5": {
+    "condition": "Zone.Difficulty \u003E=30",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve04": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve04_diff1": {
+    "condition": "Zone.Difficulty \u003E=32",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve04_diff2": {
+    "condition": "Zone.Difficulty \u003E=34",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve04_diff3": {
+    "condition": "Zone.Difficulty \u003E=36",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve04_diff4": {
+    "condition": "Zone.Difficulty \u003E=38",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_pve04_diff5": {
+    "condition": "Zone.Difficulty \u003E=40",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_relaysurvivor_2": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "Stat.Mission.Secondary.RelaySurvivor",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_relaysurvivor_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "Stat.Mission.Secondary.RelaySurvivor",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_relaysurvivor_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "Stat.Mission.Secondary.RelaySurvivor",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_relaysurvivor_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Secondary.RelaySurvivor",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_relaysurvivor_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Stat.Mission.Secondary.RelaySurvivor",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_retrievedata": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.RetrieveData",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_retrievedata_1": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.RetrieveData",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_retrievedata_1_diff5": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "Stat.Mission.Primary.RetrieveData",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_retrievedata_2": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "Stat.Mission.Primary.RetrieveData",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_retrievedata_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "Stat.Mission.Primary.RetrieveData",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_retrievedata_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "Stat.Mission.Primary.RetrieveData",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_retrievedata_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Primary.RetrieveData",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_retrievedata_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Stat.Mission.Primary.RetrieveData",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_retrievedata_3_diff2": {
+    "condition": "Zone.Difficulty \u003E=24",
+    "targetTags": "Stat.Mission.Primary.RetrieveData",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_retrievedata_3_diff3": {
+    "condition": "Zone.Difficulty \u003E=26",
+    "targetTags": "Stat.Mission.Primary.RetrieveData",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_retrievedata_3_diff4": {
+    "condition": "Zone.Difficulty \u003E=28",
+    "targetTags": "Stat.Mission.Primary.RetrieveData",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_retrievedata_3_diff5": {
+    "condition": "Zone.Difficulty \u003E=30",
+    "targetTags": "Stat.Mission.Primary.RetrieveData",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormchest_2": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "Stat.Mission.Secondary.StormChest",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormchest_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "Stat.Mission.Secondary.StormChest",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormchest_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "Stat.Mission.Secondary.StormChest",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormchest_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Secondary.StormChest",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormchest_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Stat.Mission.Secondary.StormChest",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_whackatroll_1_diff3": {
+    "condition": "Zone.Difficulty \u003E=5",
+    "targetTags": "Stat.Mission.Secondary.WhackaTroll",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_whackatroll_1_diff4": {
+    "condition": "Zone.Difficulty \u003E=7",
+    "targetTags": "Stat.Mission.Secondary.WhackaTroll",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_whackatroll_1_diff5": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "Stat.Mission.Secondary.WhackaTroll",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_whackatroll_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "Stat.Mission.Secondary.WhackaTroll",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_whackatroll_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "Stat.Mission.Secondary.WhackaTroll",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_whackatroll_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Secondary.WhackaTroll",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_whackatroll_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Stat.Mission.Secondary.WhackaTroll",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_whackatroll_3_diff4": {
+    "condition": "Zone.Difficulty \u003E=28",
+    "targetTags": "Stat.Mission.Secondary.WhackaTroll",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_whackatroll_3_diff5": {
+    "condition": "Zone.Difficulty \u003E=30",
+    "targetTags": "Stat.Mission.Secondary.WhackaTroll",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "convert_any_defender": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "Defender",
+    "type": "HasConverted"
+  },
+  "convert_any_hero": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "Hero",
+    "type": "HasConverted"
+  },
+  "convert_any_trap": {
+    "condition": "",
+    "targetTags": "Trap",
+    "templateId": "Schematic",
+    "type": "HasConverted"
+  },
+  "convert_any_weapon": {
+    "condition": "Item HasTag Trap || Item HasTag Weapon",
+    "targetTags": "",
+    "templateId": "Schematic",
+    "type": "HasConverted"
+  },
+  "convert_any_worker": {
+    "condition": "Item HasTag Homebase.Worker || Item HasTag Homebase.Manager",
+    "targetTags": "",
+    "templateId": "Worker",
+    "type": "HasConverted"
+  },
+  "craft_ammo": {
+    "condition": "",
+    "targetTags": "supplies.ammo",
+    "templateId": "",
+    "type": "Craft"
+  },
+  "craft_assault_rifle": {
+    "condition": "",
+    "targetTags": "weapon.ranged.assault",
+    "templateId": "",
+    "type": "Craft"
+  },
+  "craft_founders_assault_r": {
+    "condition": "Item.Rarity \u003E= Sturdy",
+    "targetTags": "weapon.Ranged.assault",
+    "templateId": "",
+    "type": "Craft"
+  },
+  "craft_founders_assault_vr": {
+    "condition": "Item.Rarity \u003E= Quality",
+    "targetTags": "weapon.Ranged.assault",
+    "templateId": "",
+    "type": "Craft"
+  },
+  "craft_founders_pistol_r": {
+    "condition": "Item.Rarity \u003E= Sturdy",
+    "targetTags": "weapon.ranged.pistol",
+    "templateId": "",
+    "type": "Craft"
+  },
+  "craft_founders_pistol_vr": {
+    "condition": "Item.Rarity \u003E= Quality",
+    "targetTags": "weapon.ranged.pistol",
+    "templateId": "",
+    "type": "Craft"
+  },
+  "craft_founders_shotgun_r": {
+    "condition": "Item.Rarity \u003E= Sturdy",
+    "targetTags": "weapon.ranged.shotgun",
+    "templateId": "",
+    "type": "Craft"
+  },
+  "craft_founders_shotgun_vr": {
+    "condition": "Item.Rarity \u003E= Quality",
+    "targetTags": "weapon.ranged.shotgun",
+    "templateId": "",
+    "type": "Craft"
+  },
+  "craft_founders_sword_r": {
+    "condition": "Item.Rarity \u003E= Sturdy",
+    "targetTags": "weapon.melee.edged.Sword",
+    "templateId": "",
+    "type": "Craft"
+  },
+  "craft_founders_sword_vr": {
+    "condition": "Item.Rarity \u003E= Quality",
+    "targetTags": "weapon.melee.edged.Sword",
+    "templateId": "",
+    "type": "Craft"
+  },
+  "craft_health_station": {
+    "condition": "",
+    "targetTags": "trap.floor.health",
+    "templateId": "",
+    "type": "Craft"
+  },
+  "craft_pumpkin_launcher": {
+    "condition": "",
+    "targetTags": "SpecialEvent.Halloween.PumpkinLauncher",
+    "templateId": "",
+    "type": "Craft"
+  },
+  "craft_ruler_sword": {
+    "condition": "",
+    "targetTags": "weapon.melee.edged.Sword",
+    "templateId": "",
+    "type": "Craft"
+  },
+  "craft_tier_2": {
+    "condition": "Item.Tier \u003E= II",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Craft"
+  },
+  "custom_bluglosyphon_full": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "Stat.Mission.Secondary.BluGloSiphon",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "custom_cannydeployoutpost": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "custom_craftfirstweapon": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "custom_defendersupplyreceived": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "custom_deployoutpost": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "custom_leavetutorial": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "custom_login": {
+    "condition": "",
+    "targetTags": "Stat.Account.Login",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "custom_plankdeployoutpost": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "custom_protectthesurvivors": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "custom_pylonused_build": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Secondary.BluGloPylon_Building",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "custom_pylonused_health": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Secondary.BluGloPylon_Health",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "custom_pylonused_movement": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Secondary.BluGloPylon_Speed",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "custom_pylonused_shield": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Secondary.BluGloPylon_Shield",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "custom_pylonused_stamina": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Stat.Mission.Secondary.BluGloPylon_Stamina",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "custom_supplydropreceived": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "custom_twinedeployoutpost": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "destroy_gnome": {
+    "condition": "",
+    "targetTags": "Building.Type.Prop.Gnome",
+    "templateId": "",
+    "type": "Destroy"
+  },
+  "destroy_gnome_pve02": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "Building.Type.Prop.Gnome",
+    "templateId": "",
+    "type": "Destroy"
+  },
+  "destroy_gnome_pve02_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Building.Type.Prop.Gnome",
+    "templateId": "",
+    "type": "Destroy"
+  },
+  "destroy_gnome_pve02_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Building.Type.Prop.Gnome",
+    "templateId": "",
+    "type": "Destroy"
+  },
+  "elder_build_deployable_base": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Build"
+  },
+  "elder_complete_horde_tier_7": {
+    "condition": "Mission.Tier \u003E= 7 \u0026\u0026 Mission.Wave = 10",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "friend_add_friend": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Client"
+  },
+  "has_item_constructor_assigned": {
+    "condition": "Squad.Id == squad_combat_adventuresquadone",
+    "targetTags": "Homebase.Class.IsConstructor",
+    "templateId": "Hero",
+    "type": "HasItem"
+  },
+  "has_item_defender_assigned": {
+    "condition": "Squad.Id == squad_defender_defendersquadone",
+    "targetTags": "Npc.CharacterType.Survivor.Defender",
+    "templateId": "Defender",
+    "type": "HasItem"
+  },
+  "has_item_evolved_hero": {
+    "condition": "Item.Level \u003E= 11",
+    "targetTags": "",
+    "templateId": "Hero",
+    "type": "HasItem"
+  },
+  "has_item_hero": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "Hero",
+    "type": "HasItem"
+  },
+  "has_item_hero_leveled_up": {
+    "condition": "Item.Level \u003E= 2",
+    "targetTags": "",
+    "templateId": "Hero",
+    "type": "HasItem"
+  },
+  "has_item_traps": {
+    "condition": "",
+    "targetTags": "Trap",
+    "templateId": "Schematic",
+    "type": "HasItem"
+  },
+  "has_item_worker_assigned": {
+    "condition": "Squad.Id == squad_attribute_arms_fireteamalpha",
+    "targetTags": "Homebase.Worker",
+    "templateId": "Worker",
+    "type": "HasItem"
+  },
+  "hbonboarding_buildherobuilding": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Client"
+  },
+  "hbonboarding_completezone": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.OnboardingFort",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "hbonboarding_namehomebase": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Client"
+  },
+  "hbonboarding_recruithero": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Client"
+  },
+  "hbonboarding_watchoutpostunlock": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Client"
+  },
+  "hbonboarding_watchsatellitecine": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Client"
+  },
+  "interact_mailbox": {
+    "condition": "",
+    "targetTags": "Building.Type.Container.Mailbox",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_mailbox_pve02": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "Building.Type.Container.Mailbox",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_mailbox_pve02_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "Building.Type.Container.Mailbox",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_mailbox_pve02_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "Building.Type.Container.Mailbox",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_mailbox_pve02_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Building.Type.Container.Mailbox",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_mailbox_pve02_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Building.Type.Container.Mailbox",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_safe": {
+    "condition": "",
+    "targetTags": "Building.Type.Container.Safe",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_safe_pve03": {
+    "condition": "Zone.Difficulty \u003E=22",
+    "targetTags": "Building.Type.Container.Safe",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_safe_pve03_diff3": {
+    "condition": "Zone.Difficulty \u003E=26",
+    "targetTags": "Building.Type.Container.Safe",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_safe_pve03_diff4": {
+    "condition": "Zone.Difficulty \u003E=28",
+    "targetTags": "Building.Type.Container.Safe",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_safe_pve03_diff5": {
+    "condition": "Zone.Difficulty \u003E=30",
+    "targetTags": "Building.Type.Container.Safe",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_teddybear": {
+    "condition": "",
+    "targetTags": "Building.Type.Prop.TeddyBear",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_teddybear_pve03": {
+    "condition": "Zone.Difficulty \u003E=22",
+    "targetTags": "Building.Type.Prop.TeddyBear",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_treasurechest": {
+    "condition": "",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_treasurechest_pve01_diff2": {
+    "condition": "Zone.Difficulty \u003E=3",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_treasurechest_pve01_diff3": {
+    "condition": "Zone.Difficulty \u003E=5",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_treasurechest_pve01_diff4": {
+    "condition": "Zone.Difficulty \u003E=7",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_treasurechest_pve01_diff5": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_treasurechest_pve02": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_treasurechest_pve02_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_treasurechest_pve02_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_treasurechest_pve02_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_treasurechest_pve02_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "kill_husk": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_1_diff2": {
+    "condition": "Zone.Difficulty \u003E=3",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_1_diff3": {
+    "condition": "Zone.Difficulty \u003E=5",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_1_diff4": {
+    "condition": "Zone.Difficulty \u003E=7",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_1_diff5": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_2": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_blaster": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Blaster.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_blaster_2_diff1": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "NPC.CharacterType.Blaster.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_blaster_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "NPC.CharacterType.Blaster.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_blaster_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "NPC.CharacterType.Blaster.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_blaster_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "NPC.CharacterType.Blaster.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_blaster_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "NPC.CharacterType.Blaster.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_blaster_3_diff1": {
+    "condition": "Zone.Difficulty \u003E=22",
+    "targetTags": "NPC.CharacterType.Blaster.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_blaster_3_diff2": {
+    "condition": "Zone.Difficulty \u003E=24",
+    "targetTags": "NPC.CharacterType.Blaster.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_blaster_3_diff3": {
+    "condition": "Zone.Difficulty \u003E=26",
+    "targetTags": "NPC.CharacterType.Blaster.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_blaster_3_diff4": {
+    "condition": "Zone.Difficulty \u003E=28",
+    "targetTags": "NPC.CharacterType.Blaster.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_blaster_3_diff5": {
+    "condition": "Zone.Difficulty \u003E=30",
+    "targetTags": "NPC.CharacterType.Blaster.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_blaster_pve02": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Blaster.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_blaster_pve03": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Blaster.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_commando": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_commando_assault": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_commando_fraggrenade": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_constructor": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_content_level_30": {
+    "condition": "Zone.ContentAccountLevel \u003E= 40",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_difficulty_pve01_0": {
+    "condition": "Zone.Difficulty \u003E=3",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_flinger": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Flinger.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_flinger_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "NPC.CharacterType.Flinger.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_flinger_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "NPC.CharacterType.Flinger.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_flinger_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "NPC.CharacterType.Flinger.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_flinger_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "NPC.CharacterType.Flinger.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_flinger_3_diff1": {
+    "condition": "Zone.Difficulty \u003E=22",
+    "targetTags": "NPC.CharacterType.Flinger.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_flinger_3_diff2": {
+    "condition": "Zone.Difficulty \u003E=24",
+    "targetTags": "NPC.CharacterType.Flinger.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_flinger_3_diff3": {
+    "condition": "Zone.Difficulty \u003E=26",
+    "targetTags": "NPC.CharacterType.Flinger.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_flinger_3_diff4": {
+    "condition": "Zone.Difficulty \u003E=28",
+    "targetTags": "NPC.CharacterType.Flinger.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_flinger_3_diff5": {
+    "condition": "Zone.Difficulty \u003E=30",
+    "targetTags": "NPC.CharacterType.Flinger.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_flinger_pve03": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Flinger.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_group": {
+    "condition": "Player.Count \u003E 1",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_lobber_pumplauncher": {
+    "condition": "(Pawn.Tags HasTag NPC.CharacterType.Husk.Bombshell || Pawn.Tags HasTag NPC.CharacterType.Husk.PoisonLobber) \u0026\u0026 (Zone.Difficulty \u003E= 10)",
+    "targetTags": "",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_melee": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_ninja": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_outlander": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_pumpkinhead": {
+    "condition": "",
+    "targetTags": "SpecialEvent.Halloween.PumpkinHead",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_smasher": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Smasher.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_smasher_1_diff4": {
+    "condition": "Zone.Difficulty \u003E=7",
+    "targetTags": "NPC.CharacterType.Smasher.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_smasher_1_diff5": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "NPC.CharacterType.Smasher.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_smasher_2_diff1": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "NPC.CharacterType.Smasher.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_smasher_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "NPC.CharacterType.Smasher.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_smasher_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "NPC.CharacterType.Smasher.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_smasher_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "NPC.CharacterType.Smasher.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_smasher_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "NPC.CharacterType.Smasher.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_smasher_3_diff1": {
+    "condition": "Zone.Difficulty \u003E=22",
+    "targetTags": "NPC.CharacterType.Smasher.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_smasher_3_diff2": {
+    "condition": "Zone.Difficulty \u003E=24",
+    "targetTags": "NPC.CharacterType.Smasher.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_smasher_3_diff3": {
+    "condition": "Zone.Difficulty \u003E=26",
+    "targetTags": "NPC.CharacterType.Smasher.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_smasher_3_diff4": {
+    "condition": "Zone.Difficulty \u003E=28",
+    "targetTags": "NPC.CharacterType.Smasher.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_smasher_3_diff5": {
+    "condition": "Zone.Difficulty \u003E=30",
+    "targetTags": "NPC.CharacterType.Smasher.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_smasher_pve02": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Smasher.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_smasher_pve03": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Smasher.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_taker": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Taker.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_taker_1_diff5": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "NPC.CharacterType.Taker.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_taker_2": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "NPC.CharacterType.Taker.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_taker_2_diff2": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "NPC.CharacterType.Taker.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_taker_2_diff3": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "NPC.CharacterType.Taker.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_taker_2_diff4": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "NPC.CharacterType.Taker.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_taker_2_diff5": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "NPC.CharacterType.Taker.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_taker_3_diff1": {
+    "condition": "Zone.Difficulty \u003E=22",
+    "targetTags": "NPC.CharacterType.Taker.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_taker_3_diff2": {
+    "condition": "Zone.Difficulty \u003E=24",
+    "targetTags": "NPC.CharacterType.Taker.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_taker_3_diff3": {
+    "condition": "Zone.Difficulty \u003E=26",
+    "targetTags": "NPC.CharacterType.Taker.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_taker_3_diff4": {
+    "condition": "Zone.Difficulty \u003E=28",
+    "targetTags": "NPC.CharacterType.Taker.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_taker_3_diff5": {
+    "condition": "Zone.Difficulty \u003E=30",
+    "targetTags": "NPC.CharacterType.Taker.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_taker_pve03": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Taker.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_team": {
+    "condition": "Team.Size \u003E 1",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_initiator_husk": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_initiator_husk_commando_assault": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "killcontribution_blaster": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Blaster.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "killcontribution_smasher": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Smasher.Basic",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "open_any_cardpack": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "CardPack",
+    "type": "OpenCardPack"
+  },
+  "quest_reactive_avoiceinthenight": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_blasters": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_copperore": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_destroyactor": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_destroyarcade": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_destroybear": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_destroyfiretruck": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_destroygnome": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_destroypropane": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_destroyseesaw": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_destroyserverrack": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_destroytransform": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_destroytv": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_distresscall": {
+    "condition": "Zone.Difficulty \u003E=5",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_distresscallinit": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_elemhusky": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_finddj": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_findmimic": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_findpop": {
+    "condition": "Zone.Difficulty \u003E=12",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_findsurvivor": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_firehusks": {
+    "condition": "Zone.Difficulty \u003E=16",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_flingers": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_gatherfood": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_goodpop": {
+    "condition": "Zone.Difficulty \u003E=5",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_gravestone": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_killsmasher": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_knowyourenemy": {
+    "condition": "Zone.Difficulty \u003E=5",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_larssupplies": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_lightninghusks": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_masterservers": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_medicaldata": {
+    "condition": "Zone.Difficulty \u003E=7",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_medicalsupplies": {
+    "condition": "Zone.Difficulty \u003E=7",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_poisonlobbers": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_pumpkinhead": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_radiostation": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_riftdata": {
+    "condition": "Zone.Difficulty \u003E=14",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_roadhome": {
+    "condition": "Zone.Difficulty \u003E=18",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_seebot": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_smasher": {
+    "condition": "Zone.Difficulty \u003E=7",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_survivorradio": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_taker": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_test1": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_test2": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_test3": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_test4": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_transmitters": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_trappart": {
+    "condition": "Zone.Difficulty \u003E=5",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_trollstash": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_trollstashinit": {
+    "condition": "Zone.Difficulty \u003E=10",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_twitch_1": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_twitch_10": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_twitch_11": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_twitch_12": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_twitch_13": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_twitch_14": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_twitch_15": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_twitch_2": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_twitch_3": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_twitch_4": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_twitch_5": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_twitch_6": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_twitch_7": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_twitch_8": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_twitch_9": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_waterhusks": {
+    "condition": "Zone.Difficulty \u003E=20",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quick_complete": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "quick_complete_pve01": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "quick_complete_pve02": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "quick_complete_pve03": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "quick_complete_pve04": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "upgrade_any_defender": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "Defender",
+    "type": "Upgrade"
+  },
+  "upgrade_any_hero": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "Hero",
+    "type": "Upgrade"
+  },
+  "upgrade_any_trap": {
+    "condition": "",
+    "targetTags": "Trap",
+    "templateId": "Schematic",
+    "type": "Upgrade"
+  },
+  "upgrade_any_weapon": {
+    "condition": "Item HasTag Trap || Item HasTag Weapon",
+    "targetTags": "",
+    "templateId": "Schematic",
+    "type": "Upgrade"
+  },
+  "upgrade_any_worker": {
+    "condition": "Item HasTag Homebase.Worker || Item HasTag Homebase.Manager",
+    "targetTags": "",
+    "templateId": "Worker",
+    "type": "Upgrade"
+  },
+  "upgrade_constructor": {
+    "condition": "",
+    "targetTags": "Homebase.Class.IsConstructor",
+    "templateId": "Hero",
+    "type": "HasUpgraded"
+  },
+  "upgrade_ninja_lvl_3": {
+    "condition": "Item.Level \u003E= 3",
+    "targetTags": "Homebase.Class.IsNinja",
+    "templateId": "Hero",
+    "type": "HasUpgraded"
+  },
+  "upgrade_outlander_lvl_3": {
+    "condition": "Item.Level \u003E= 3",
+    "targetTags": "Homebase.Class.IsOutlander",
+    "templateId": "Hero",
+    "type": "HasUpgraded"
+  },
+  "upgrade_soldier": {
+    "condition": "",
+    "targetTags": "Homebase.Class.IsCommando",
+    "templateId": "Hero",
+    "type": "HasUpgraded"
+  },
+  "upgrade_walls_lvl_3": {
+    "condition": "Building.Level == 3",
+    "targetTags": "Building.Type.Wall",
+    "templateId": "",
+    "type": "BuildingUpgrade"
+  }
+}

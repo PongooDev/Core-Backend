@@ -1,0 +1,821 @@
+{
+  "Squad_Attribute_Arms_CloseAssaultSquad": {
+    "slots": [
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      }
+    ],
+    "type": "AttributeSquad"
+  },
+  "Squad_Attribute_Arms_FireTeamAlpha": {
+    "slots": [
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      }
+    ],
+    "type": "AttributeSquad"
+  },
+  "Squad_Attribute_Medicine_EMTSquad": {
+    "slots": [
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      }
+    ],
+    "type": "AttributeSquad"
+  },
+  "Squad_Attribute_Medicine_TrainingTeam": {
+    "slots": [
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      }
+    ],
+    "type": "AttributeSquad"
+  },
+  "Squad_Attribute_Scavenging_Gadgeteers": {
+    "slots": [
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      }
+    ],
+    "type": "AttributeSquad"
+  },
+  "Squad_Attribute_Scavenging_ScoutingParty": {
+    "slots": [
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      }
+    ],
+    "type": "AttributeSquad"
+  },
+  "Squad_Attribute_Synthesis_CorpsofEngineering": {
+    "slots": [
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      }
+    ],
+    "type": "AttributeSquad"
+  },
+  "Squad_Attribute_Synthesis_TheThinkTank": {
+    "slots": [
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Worker"
+        ]
+      }
+    ],
+    "type": "AttributeSquad"
+  },
+  "Squad_Combat_AdventureSquadOne": {
+    "slots": [
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Defender"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Defender"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Defender"
+        ]
+      }
+    ],
+    "type": "CombatSquad"
+  },
+  "Squad_Defender_DefenderSquadFour": {
+    "slots": [
+      {
+        "tags": [
+          "npc.charactertype.survivor.defender.assaultrifle"
+        ],
+        "types": [
+          "Defender"
+        ]
+      },
+      {
+        "tags": [
+          "npc.charactertype.survivor.defender.pistol"
+        ],
+        "types": [
+          "Defender"
+        ]
+      },
+      {
+        "tags": [
+          "npc.charactertype.survivor.defender.melee"
+        ],
+        "types": [
+          "Defender"
+        ]
+      },
+      {
+        "tags": [
+          "npc.charactertype.survivor.defender.sniper"
+        ],
+        "types": [
+          "Defender"
+        ]
+      },
+      {
+        "tags": [
+          "npc.charactertype.survivor.defender.shotgun"
+        ],
+        "types": [
+          "Defender"
+        ]
+      }
+    ],
+    "type": "DefenderSquad"
+  },
+  "Squad_Defender_DefenderSquadOne": {
+    "slots": [
+      {
+        "tags": [
+          "npc.charactertype.survivor.defender.assaultrifle"
+        ],
+        "types": [
+          "Defender"
+        ]
+      },
+      {
+        "tags": [
+          "npc.charactertype.survivor.defender.pistol"
+        ],
+        "types": [
+          "Defender"
+        ]
+      },
+      {
+        "tags": [
+          "npc.charactertype.survivor.defender.melee"
+        ],
+        "types": [
+          "Defender"
+        ]
+      },
+      {
+        "tags": [
+          "npc.charactertype.survivor.defender.sniper"
+        ],
+        "types": [
+          "Defender"
+        ]
+      },
+      {
+        "tags": [
+          "npc.charactertype.survivor.defender.shotgun"
+        ],
+        "types": [
+          "Defender"
+        ]
+      }
+    ],
+    "type": "DefenderSquad"
+  },
+  "Squad_Defender_DefenderSquadThree": {
+    "slots": [
+      {
+        "tags": [
+          "npc.charactertype.survivor.defender.assaultrifle"
+        ],
+        "types": [
+          "Defender"
+        ]
+      },
+      {
+        "tags": [
+          "npc.charactertype.survivor.defender.pistol"
+        ],
+        "types": [
+          "Defender"
+        ]
+      },
+      {
+        "tags": [
+          "npc.charactertype.survivor.defender.melee"
+        ],
+        "types": [
+          "Defender"
+        ]
+      },
+      {
+        "tags": [
+          "npc.charactertype.survivor.defender.sniper"
+        ],
+        "types": [
+          "Defender"
+        ]
+      },
+      {
+        "tags": [
+          "npc.charactertype.survivor.defender.shotgun"
+        ],
+        "types": [
+          "Defender"
+        ]
+      }
+    ],
+    "type": "DefenderSquad"
+  },
+  "Squad_Defender_DefenderSquadTwo": {
+    "slots": [
+      {
+        "tags": [
+          "npc.charactertype.survivor.defender.assaultrifle"
+        ],
+        "types": [
+          "Defender"
+        ]
+      },
+      {
+        "tags": [
+          "npc.charactertype.survivor.defender.pistol"
+        ],
+        "types": [
+          "Defender"
+        ]
+      },
+      {
+        "tags": [
+          "npc.charactertype.survivor.defender.melee"
+        ],
+        "types": [
+          "Defender"
+        ]
+      },
+      {
+        "tags": [
+          "npc.charactertype.survivor.defender.sniper"
+        ],
+        "types": [
+          "Defender"
+        ]
+      },
+      {
+        "tags": [
+          "npc.charactertype.survivor.defender.shotgun"
+        ],
+        "types": [
+          "Defender"
+        ]
+      }
+    ],
+    "type": "DefenderSquad"
+  },
+  "Squad_Expedition_ExpeditionSquadFive": {
+    "slots": [
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      }
+    ],
+    "type": "ExpeditionSquad"
+  },
+  "Squad_Expedition_ExpeditionSquadFour": {
+    "slots": [
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      }
+    ],
+    "type": "ExpeditionSquad"
+  },
+  "Squad_Expedition_ExpeditionSquadOne": {
+    "slots": [
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      }
+    ],
+    "type": "ExpeditionSquad"
+  },
+  "Squad_Expedition_ExpeditionSquadSix": {
+    "slots": [
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      }
+    ],
+    "type": "ExpeditionSquad"
+  },
+  "Squad_Expedition_ExpeditionSquadThree": {
+    "slots": [
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      }
+    ],
+    "type": "ExpeditionSquad"
+  },
+  "Squad_Expedition_ExpeditionSquadTwo": {
+    "slots": [
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      },
+      {
+        "tags": [],
+        "types": [
+          "Hero"
+        ]
+      }
+    ],
+    "type": "ExpeditionSquad"
+  }
+}

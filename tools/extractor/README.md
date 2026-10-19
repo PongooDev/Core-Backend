@@ -13,3 +13,8 @@ dotnet run -c Release --project tools/extractor -- "<build folder with FortniteG
 
 Item template ids are resolved with the build's own asset manager rules (`PrimaryAssetTypesToScan` in
 `DefaultGame.ini`): an asset gets the type of the rule whose directory holds it and whose base class it derives from.
+- `dailyrewards.json`: the daily login reward schedules from `DefaultGameData`, rows in lookup order.
+- `homebasenodes.json`, `squads.json`: the skill tree (nodes, pages) and squads from the homebase manager.
+- `characters.json`: gameplay tags, required tags and manager flags of heroes, survivors and defenders.
+- `cardpacks.json`: each card pack's loot tier group, tier, choice flag and display level.
+- `objectivestats.json`: the quest objective stat table (type, target tags, condition).

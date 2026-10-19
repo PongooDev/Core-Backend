@@ -1,0 +1,3621 @@
+{
+  "CardPack:cardpack_basic": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Basic",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_basic_silver": {
+    "choice": false,
+    "displayRarityLevel": 1,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Basic_Silver",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_basic_tutorial": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Basic",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_bronze": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_bronze_collectionbook": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze_CollectionBook",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_bronze_halloween": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze_Halloween",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_bronze_melee": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze_Melee",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_bronze_personnel": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze_Personnel",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_bronze_ranged": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze_Ranged",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_bronze_reward": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_bronze_traps": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze_Traps",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_bronze_weapons": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze_Weapons",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_bronze_weekly": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze_Weekly",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_bronze_xp": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze_XP",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_choice_all_r": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_All_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_choice_all_sr": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_All_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_choice_all_vr": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_All_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_choice_defender_r": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Defender_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_choice_defender_sr": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Defender_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_choice_defender_vr": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Defender_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_choice_event_founders": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Event_Founders",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_choice_hero_r": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Hero_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_choice_hero_sr": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Hero_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_choice_hero_vr": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Hero_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_choice_manager_r": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Manager_R",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_choice_manager_sr": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Manager_SR",
+    "rarity": "Elegant"
+  },
+  "CardPack:cardpack_choice_manager_vr": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Manager_VR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_choice_melee_r": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Melee_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_choice_melee_sr": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Melee_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_choice_melee_vr": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Melee_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_choice_ranged_r": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Ranged_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_choice_ranged_sr": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Ranged_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_choice_ranged_vr": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Ranged_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_choice_test2": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_All_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_choice_test3": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_All_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_choice_test_doublechoice1": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Test_DoubleChoice1",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_choice_test_doublechoice2": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Test_DoubleChoice2",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_choice_test_doublechoice3": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Test_DoubleChoice3",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_choice_weapon_r": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Weapon_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_choice_weapon_sr": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Weapon_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_choice_weapon_vr": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Weapon_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_custom_firecracker_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Custom_Firecracker_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_defender_c": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Defender_C",
+    "rarity": "Handmade"
+  },
+  "CardPack:cardpack_defender_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Defender_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_defender_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Defender_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_defender_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Defender_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_defender_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Defender_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_defenderassault_c": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_DefenderAssault_C",
+    "rarity": "Handmade"
+  },
+  "CardPack:cardpack_defenderassault_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_DefenderAssault_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_defenderassault_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_DefenderAssault_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_defenderassault_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_DefenderAssault_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_defenderassault_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_DefenderAssault_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_defenderfoundersassault_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Founders_Defender_Assault_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_defenderfounderspistol_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Founders_Defender_Pistol_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_defendermelee_c": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_DefenderMelee_C",
+    "rarity": "Handmade"
+  },
+  "CardPack:cardpack_defendermelee_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_DefenderMelee_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_defendermelee_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_DefenderMelee_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_defendermelee_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_DefenderMelee_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_defendermelee_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_DefenderMelee_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_defenderpistol_c": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_DefenderPistol_C",
+    "rarity": "Handmade"
+  },
+  "CardPack:cardpack_defenderpistol_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_DefenderPistol_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_defenderpistol_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_DefenderPistol_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_defenderpistol_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_DefenderPistol_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_defenderpistol_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_DefenderPistol_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_defendershotgun_c": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_DefenderShotgun_C",
+    "rarity": "Handmade"
+  },
+  "CardPack:cardpack_defendershotgun_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_DefenderShotgun_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_defendershotgun_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_DefenderShotgun_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_defendershotgun_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_DefenderShotgun_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_defendershotgun_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_DefenderShotgun_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_defendersniper_c": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_DefenderSniper_C",
+    "rarity": "Handmade"
+  },
+  "CardPack:cardpack_defendersniper_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_DefenderSniper_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_defendersniper_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_DefenderSniper_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_defendersniper_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_DefenderSniper_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_defendersniper_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_DefenderSniper_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_event_2017_winter_1": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_event_founders": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Event_2017_Founders",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_event_founders_nonexclusive": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Event_2017_Founders",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_founders_assault_auto_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Founders_Assault_Auto_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_founders_banners_t01": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Founders_Banners_T01",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_founders_banners_t02": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Founders_Banners_T02",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_founders_banners_t03": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Founders_Banners_T03",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_founders_banners_t04": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Founders_Banners_T04",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_founders_banners_t05": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Founders_Banners_T05",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_founders_constructor_bundle": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Founders_Constructor_Bundle",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_founders_constructor_weapon_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Founders_Constructor_Weapon_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_founders_constructor_weapon_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Founders_Constructor_Weapon_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_founders_ninja_bundle": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Founders_Ninja_Bundle",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_founders_ninja_weapon_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Founders_Ninja_Weapon_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_founders_ninja_weapon_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Founders_Ninja_Weapon_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_founders_outlander_bundle": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Founders_Outlander_Bundle",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_founders_outlander_weapon_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Founders_Outlander_Weapon_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_founders_outlander_weapon_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Founders_Outlander_Weapon_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_founders_pistol_rapid_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Founders_Pistol_Rapid_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_founders_soldier_bundle": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Founders_Soldier_Bundle",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_founders_soldier_weapon_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Founders_Soldier_Weapon_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_founders_soldier_weapon_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Founders_Soldier_Weapon_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_founders_starterweapons_bundle": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Founders_StarterWeapon_Bundle",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_gold": {
+    "choice": false,
+    "displayRarityLevel": 2,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Gold",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_gold_halloween": {
+    "choice": false,
+    "displayRarityLevel": 2,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Gold_Halloween",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_gold_melee": {
+    "choice": false,
+    "displayRarityLevel": 2,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Gold_Melee",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_gold_personnel": {
+    "choice": false,
+    "displayRarityLevel": 2,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Gold_Personnel",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_gold_ranged": {
+    "choice": false,
+    "displayRarityLevel": 2,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Gold_Ranged",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_gold_traps": {
+    "choice": false,
+    "displayRarityLevel": 2,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Gold_Traps",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_gold_weapons": {
+    "choice": false,
+    "displayRarityLevel": 2,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Gold_Weapons",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_gold_xp": {
+    "choice": false,
+    "displayRarityLevel": 2,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Gold_XP",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_hero_commando_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Hero_Commando_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_hero_commando_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Hero_Commando_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_hero_commando_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Hero_Commando_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_hero_commando_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Hero_Commando_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_hero_constructor_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Hero_Constructor_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_hero_constructor_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Hero_Constructor_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_hero_constructor_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Hero_Constructor_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_hero_constructor_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Hero_Constructor_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_hero_ninja_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Hero_Ninja_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_hero_ninja_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Hero_Ninja_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_hero_ninja_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Hero_Ninja_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_hero_ninja_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Hero_Ninja_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_hero_outlander_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Hero_Outlander_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_hero_outlander_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Hero_Outlander_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_hero_outlander_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Hero_Outlander_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_hero_outlander_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Hero_Outlander_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_hero_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Hero_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_hero_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Hero_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_hero_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Hero_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_hero_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Hero_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_jackpot": {
+    "choice": false,
+    "displayRarityLevel": 2,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Jackpot",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_jackpot_collectionbook": {
+    "choice": false,
+    "displayRarityLevel": 2,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Jackpot_CollectionBook",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_jackpot_super": {
+    "choice": false,
+    "displayRarityLevel": 2,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Jackpot_Super",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_manager_c": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_C",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_manager_doctor_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_Doctor_R",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_manager_doctor_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_Doctor_SR",
+    "rarity": "Elegant"
+  },
+  "CardPack:cardpack_manager_doctor_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_Doctor_VR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_manager_engineer_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_Engineer_R",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_manager_engineer_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_Engineer_SR",
+    "rarity": "Elegant"
+  },
+  "CardPack:cardpack_manager_engineer_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_Engineer_VR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_manager_explorer_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_Explorer_R",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_manager_explorer_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_Explorer_SR",
+    "rarity": "Elegant"
+  },
+  "CardPack:cardpack_manager_explorer_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_Explorer_VR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_manager_gadgeteer_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_Gadgeteer_R",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_manager_gadgeteer_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_Gadgeteer_SR",
+    "rarity": "Elegant"
+  },
+  "CardPack:cardpack_manager_gadgeteer_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_Gadgeteer_VR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_manager_inventor_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_Inventor_R",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_manager_inventor_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_Inventor_SR",
+    "rarity": "Elegant"
+  },
+  "CardPack:cardpack_manager_inventor_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_Inventor_VR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_manager_martialartist_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_MartialArtist_R",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_manager_martialartist_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_MartialArtist_SR",
+    "rarity": "Elegant"
+  },
+  "CardPack:cardpack_manager_martialartist_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_MartialArtist_VR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_manager_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_R",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_manager_soldier_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_Soldier_R",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_manager_soldier_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_Soldier_SR",
+    "rarity": "Elegant"
+  },
+  "CardPack:cardpack_manager_soldier_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_Soldier_VR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_manager_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_SR",
+    "rarity": "Elegant"
+  },
+  "CardPack:cardpack_manager_trainer_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_Trainer_R",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_manager_trainer_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_Trainer_SR",
+    "rarity": "Elegant"
+  },
+  "CardPack:cardpack_manager_trainer_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_Trainer_VR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_manager_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_UC",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_manager_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Manager_VR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_melee_axe_c": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Axe_C",
+    "rarity": "Handmade"
+  },
+  "CardPack:cardpack_melee_axe_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Axe_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_melee_axe_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Axe_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_melee_axe_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Axe_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_melee_axe_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Axe_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_melee_c": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_C",
+    "rarity": "Handmade"
+  },
+  "CardPack:cardpack_melee_club_c": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Club_C",
+    "rarity": "Handmade"
+  },
+  "CardPack:cardpack_melee_club_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Club_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_melee_club_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Club_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_melee_club_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Club_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_melee_club_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Club_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_melee_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_melee_scythe_c": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Scythe_C",
+    "rarity": "Handmade"
+  },
+  "CardPack:cardpack_melee_scythe_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Scythe_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_melee_scythe_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Scythe_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_melee_scythe_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Scythe_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_melee_scythe_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Scythe_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_melee_spear_c": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Spear_C",
+    "rarity": "Handmade"
+  },
+  "CardPack:cardpack_melee_spear_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Spear_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_melee_spear_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Spear_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_melee_spear_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Spear_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_melee_spear_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Spear_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_melee_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_melee_sword_c": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Sword_C",
+    "rarity": "Handmade"
+  },
+  "CardPack:cardpack_melee_sword_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Sword_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_melee_sword_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Sword_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_melee_sword_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Sword_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_melee_sword_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Sword_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_melee_tool_c": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Tool_C",
+    "rarity": "Handmade"
+  },
+  "CardPack:cardpack_melee_tool_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Tool_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_melee_tool_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Tool_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_melee_tool_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Tool_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_melee_tool_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_Tool_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_melee_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_melee_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Melee_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_ranged_assault_c": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_Assault_C",
+    "rarity": "Handmade"
+  },
+  "CardPack:cardpack_ranged_assault_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_Assault_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_ranged_assault_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_Assault_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_ranged_assault_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_Assault_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_ranged_assault_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_Assault_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_ranged_c": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_C",
+    "rarity": "Handmade"
+  },
+  "CardPack:cardpack_ranged_explosive_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_Launcher_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_ranged_pistol_c": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_Pistol_C",
+    "rarity": "Handmade"
+  },
+  "CardPack:cardpack_ranged_pistol_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_Pistol_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_ranged_pistol_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_Pistol_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_ranged_pistol_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_Pistol_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_ranged_pistol_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_Pistol_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_ranged_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_ranged_shotgun_c": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_Shotgun_C",
+    "rarity": "Handmade"
+  },
+  "CardPack:cardpack_ranged_shotgun_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_Shotgun_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_ranged_shotgun_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_Shotgun_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_ranged_shotgun_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_Shotgun_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_ranged_shotgun_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_Shotgun_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_ranged_sniper_c": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_Sniper_C",
+    "rarity": "Handmade"
+  },
+  "CardPack:cardpack_ranged_sniper_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_Sniper_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_ranged_sniper_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_Sniper_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_ranged_sniper_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_Sniper_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_ranged_sniper_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_Sniper_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_ranged_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_ranged_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_ranged_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Ranged_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_rare_heroes": {
+    "choice": false,
+    "displayRarityLevel": 2,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Rare_Heroes",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_rare_melee": {
+    "choice": false,
+    "displayRarityLevel": 2,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Rare_Melee",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_rare_personnel": {
+    "choice": false,
+    "displayRarityLevel": 2,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Rare_Personnel",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_rare_ranged": {
+    "choice": false,
+    "displayRarityLevel": 2,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Rare_Ranged",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_schematic_c": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Schematic_C",
+    "rarity": "Handmade"
+  },
+  "CardPack:cardpack_schematic_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Schematic_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_schematic_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Schematic_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_schematic_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Schematic_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_schematic_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Schematic_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_silver": {
+    "choice": false,
+    "displayRarityLevel": 1,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Silver",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_silver_collectionbook": {
+    "choice": false,
+    "displayRarityLevel": 1,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Silver_CollectionBook",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_silver_halloween": {
+    "choice": false,
+    "displayRarityLevel": 1,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Silver_Halloween",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_silver_melee": {
+    "choice": false,
+    "displayRarityLevel": 1,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Gold_Melee",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_silver_personnel": {
+    "choice": false,
+    "displayRarityLevel": 1,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Silver_Personnel",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_silver_ranged": {
+    "choice": false,
+    "displayRarityLevel": 1,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Silver_Ranged",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_silver_traps": {
+    "choice": false,
+    "displayRarityLevel": 1,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Silver_Traps",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_silver_weapons": {
+    "choice": false,
+    "displayRarityLevel": 1,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Silver_Weapons",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_silver_xp": {
+    "choice": false,
+    "displayRarityLevel": 1,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Silver_XP",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_starter_assault_auto_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Starter_Assault_Auto_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_starter_edged_sword_medium_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Starter_Edged_Sword_Medium_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_starter_floor_spikes_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Starter_Floor_Spikes_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_starter_shotgun_standard_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Starter_Shotgun_Standard_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_starter_sniper_boltaction_scope_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Starter_Sniper_BoltAction_Scope_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_survivor_c": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Survivor_C",
+    "rarity": "Handmade"
+  },
+  "CardPack:cardpack_survivor_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Survivor_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_survivor_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Survivor_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_survivor_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Survivor_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_survivor_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Survivor_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_trap_c": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Trap_C",
+    "rarity": "Handmade"
+  },
+  "CardPack:cardpack_trap_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Trap_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_trap_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Trap_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_trap_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Trap_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_trap_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Trap_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_trapceilinggas_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Quest_TrapCeilingGas_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_traps_collectionbook": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze_Traps",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_trapwalldarts_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Quest_TrapWallDarts_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_weapon_c": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Weapon_C",
+    "rarity": "Handmade"
+  },
+  "CardPack:cardpack_weapon_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Weapon_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_weapon_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Weapon_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_weapon_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Weapon_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_weapon_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Weapon_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_weapons_collectionbook": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze_Weapons",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_worker_c": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Worker_C",
+    "rarity": "Handmade"
+  },
+  "CardPack:cardpack_worker_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Worker_R",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_worker_sr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Worker_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_worker_uc": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Worker_UC",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_worker_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Generic_Worker_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_wrapper_choice_test": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Wrapper_Choice_Test",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_wrapper_choice_test_basic": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Wrapper_Choice_Test_Basic",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_wrapper_choice_test_multichoice": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Wrapper_Choice_Test_MultiChoice",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_wrapper_unresolvedchoice": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "",
+    "rarity": "Handmade"
+  },
+  "CardPack:ccp_halloween_heroes": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Halloween_Heroes",
+    "rarity": "Fine"
+  },
+  "CardPack:choicepack_generic": {
+    "choice": true,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze",
+    "rarity": "Sturdy"
+  },
+  "CardPack:testcardpacklvl": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "LevelUp_Account_03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_air_supplyrun_long_t02": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Air_SupplyRun_Long_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_air_supplyrun_long_t03": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Air_SupplyRun_Long_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_air_supplyrun_long_t04": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Air_SupplyRun_Long_T04",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_air_supplyrun_medium_t02": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Air_SupplyRun_Medium_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_air_survivorscouting_long_t02": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Air_SurvivorScouting_Long_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_air_survivorscouting_long_t04": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Air_SurvivorScouting_Long_T04",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_air_survivorscouting_medium_t03": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Air_SurvivorScouting_Medium_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_choppingwood": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ChoppingWood",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_crystal_quartz_extreme": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Crystal_Quartz_Extreme",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_crystal_quartz_high": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Crystal_Quartz_High",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_crystal_quartz_low": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Crystal_Quartz_Low",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_crystal_quartz_medium": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Crystal_Quartz_Medium",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_crystal_quartz_veryhigh": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Crystal_Quartz_VeryHigh",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_crystal_quartz_verylow": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Crystal_Quartz_VeryLow",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_crystal_shadowshard_high": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Crystal_ShadowShard_High",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_crystal_shadowshard_low": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Crystal_ShadowShard_Low",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_crystal_shadowshard_medium": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Crystal_ShadowShard_Medium",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_crystal_shadowshard_minimal": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Crystal_ShadowShard_Minimal",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_crystal_shadowshard_veryhigh": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Crystal_ShadowShard_VeryHigh",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_crystal_shadowshard_verylow": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Crystal_ShadowShard_VeryLow",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_crystal_sunbeam_minimal": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Crystal_Sunbeam_Minimal",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_eldergamepayout_noscale": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 1,
+    "lootTierGroup": "Neighborhood_Select",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expedition_craftingrun_long_t03": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_CraftingRun_Long_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expedition_craftingrun_long_t04": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_CraftingRun_Long_T04",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expedition_craftingrun_medium_t01": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_CraftingRun_Medium_T01",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expedition_craftingrun_medium_t02": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_CraftingRun_Medium_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expedition_craftingrun_medium_t03": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_CraftingRun_Medium_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expedition_craftingrun_short_t01": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_CraftingRun_Short_T01",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expedition_craftingrun_short_t02": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_CraftingRun_Short_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expedition_craftingrun_short_t03": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_CraftingRun_Short_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expedition_resourcerun_all_medium": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ResourceRun_All_Medium",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expedition_resourcerun_all_short": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ResourceRun_All_Short",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expedition_resourcerun_metal_medium": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ResourceRun_Metal_Medium",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expedition_resourcerun_metal_short": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ResourceRun_Metal_Short",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expedition_resourcerun_stone_medium": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ResourceRun_Stone_Medium",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expedition_resourcerun_stone_short": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ResourceRun_Stone_Short",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expedition_resourcerun_wood_medium": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ResourceRun_Wood_Medium",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expedition_resourcerun_wood_short": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ResourceRun_Wood_Short",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expedition_resourcerun_woodstone_medium": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ResourceRun_WoodStone_Medium",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expedition_resourcerun_woodstone_short": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ResourceRun_WoodStone_Short",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expedition_slot1": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ExpeditionTest_StandardExpedition",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expedition_slot2": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ExpeditionTest_StandardExpedition",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expedition_slot3": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ExpeditionTest_StandardExpedition",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expedition_slot4": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ExpeditionTest_StandardExpedition",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expedition_slot5": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ExpeditionTest_StandardExpedition",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expeditiongenerator_air_t02": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ExpeditionGenerator_Air_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expeditiongenerator_air_t03": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ExpeditionGenerator_Air_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expeditiongenerator_air_t04": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ExpeditionGenerator_Air_T04",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expeditiongenerator_choppingwood_t00": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ExpeditionGenerator_ChoppingWood_T00",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expeditiongenerator_land_t01": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ExpeditionGenerator_Land_T01",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expeditiongenerator_land_t02": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ExpeditionGenerator_Land_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expeditiongenerator_land_t03": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ExpeditionGenerator_Land_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expeditiongenerator_land_t04": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ExpeditionGenerator_Land_T04",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expeditiongenerator_miningore_t00": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ExpeditionGenerator_MiningOre_T00",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expeditiongenerator_sea_t01": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ExpeditionGenerator_Sea_T01",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expeditiongenerator_sea_t02": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ExpeditionGenerator_Sea_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expeditiongenerator_sea_t03": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ExpeditionGenerator_Sea_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expeditiongenerator_sea_t04": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ExpeditionGenerator_Sea_T04",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expeditiontest_resourcerun": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ExpeditionTest_ResourceRun",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expeditiontest_standardexpedition": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ExpeditionTest_StandardExpedition",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expeditiontest_standardexpedition_time1": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_ExpeditionTest_StandardExpedition",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expeditiontest_standardexpedition_time2": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 1,
+    "lootTierGroup": "ZCP_ExpeditionTest_StandardExpedition",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expeditiontest_standardexpedition_time3": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 2,
+    "lootTierGroup": "ZCP_ExpeditionTest_StandardExpedition",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_heroxp_outpost_theater0": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_HeroXP_Outpost",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_heroxp_outpost_theater1": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 1,
+    "lootTierGroup": "ZCP_HeroXP_Outpost",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_heroxp_outpost_theater2": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 2,
+    "lootTierGroup": "ZCP_HeroXP_Outpost",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_heroxp_outpost_theater3": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 3,
+    "lootTierGroup": "ZCP_HeroXP_Outpost",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_heroxp_outpost_theater4": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 4,
+    "lootTierGroup": "ZCP_HeroXP_Outpost",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_heroxp_t01": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 1,
+    "lootTierGroup": "ZCP_HeroXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_heroxp_t02": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 2,
+    "lootTierGroup": "ZCP_HeroXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_heroxp_t03": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 3,
+    "lootTierGroup": "ZCP_HeroXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_heroxp_t04": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 4,
+    "lootTierGroup": "ZCP_HeroXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_heroxp_t05": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 5,
+    "lootTierGroup": "ZCP_HeroXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_heroxp_t06": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 6,
+    "lootTierGroup": "ZCP_HeroXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_heroxp_t07": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 7,
+    "lootTierGroup": "ZCP_HeroXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_heroxp_t08": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 8,
+    "lootTierGroup": "ZCP_HeroXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_heroxp_t09": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 9,
+    "lootTierGroup": "ZCP_HeroXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_heroxp_t10": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 10,
+    "lootTierGroup": "ZCP_HeroXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_heroxp_t11": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 11,
+    "lootTierGroup": "ZCP_HeroXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_heroxp_t12": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 12,
+    "lootTierGroup": "ZCP_HeroXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_heroxp_t13": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 13,
+    "lootTierGroup": "ZCP_HeroXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_heroxp_t14": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 14,
+    "lootTierGroup": "ZCP_HeroXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_heroxp_t15": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 15,
+    "lootTierGroup": "ZCP_HeroXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_heroxp_t16": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 16,
+    "lootTierGroup": "ZCP_HeroXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_heroxp_t17": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 17,
+    "lootTierGroup": "ZCP_HeroXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_heroxp_t18": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 18,
+    "lootTierGroup": "ZCP_HeroXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_heroxp_t19": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 19,
+    "lootTierGroup": "ZCP_HeroXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_heroxp_t20": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 20,
+    "lootTierGroup": "ZCP_HeroXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_improvised_r": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Improvised_R",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_improvised_vr": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Improvised_VR",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_miningore": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_MiningOre",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_mtx_10": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_MTX_Boost10",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_mtx_boost100": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_MTX_Boost50",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_mtx_boost50": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_MTX_Boost100",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_neighborhoodcurrency_noscale": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_NeighborhoodCurrency_NoScale",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_ore_brightcore_minimal": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Ore_Brightcore_Minimal",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_ore_copper_high": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Ore_Copper_High",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_ore_copper_low": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Ore_Copper_Low",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_ore_copper_medium": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Ore_Copper_Medium",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_ore_copper_veryhigh": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Ore_Copper_VeryHigh",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_ore_copper_verylow": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Ore_Copper_VeryLow",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_ore_malachite_high": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Ore_Malachite_High",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_ore_malachite_low": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Ore_Malachite_Low",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_ore_malachite_medium": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Ore_Malachite_Medium",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_ore_malachite_minimal": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Ore_Malachite_Minimal",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_ore_malachite_veryhigh": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Ore_Malachite_VeryHigh",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_ore_malachite_verylow": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Ore_Malachite_VeryLow",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_ore_obsidian_high": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Ore_Obsidian_High",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_ore_obsidian_low": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Ore_Obsidian_Low",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_ore_obsidian_medium": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Ore_Obsidian_Medium",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_ore_obsidian_minimal": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Ore_Obsidian_Minimal",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_ore_obsidian_veryhigh": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Ore_Obsidian_VeryHigh",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_ore_obsidian_verylow": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Ore_Obsidian_VeryLow",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_ore_silver_high": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Ore_Silver_High",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_ore_silver_low": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Ore_Silver_Low",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_ore_silver_medium": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Ore_Silver_Medium",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_ore_silver_minimal": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Ore_Silver_Minimal",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_ore_silver_veryhigh": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Ore_Silver_VeryHigh",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_ore_silver_verylow": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Ore_Silver_VeryLow",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_personnelxp_t01": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 1,
+    "lootTierGroup": "ZCP_SurvivorXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_personnelxp_t02": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 2,
+    "lootTierGroup": "ZCP_SurvivorXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_personnelxp_t03": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 3,
+    "lootTierGroup": "ZCP_SurvivorXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_personnelxp_t04": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 4,
+    "lootTierGroup": "ZCP_SurvivorXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_personnelxp_t05": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 5,
+    "lootTierGroup": "ZCP_SurvivorXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_personnelxp_t06": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 6,
+    "lootTierGroup": "ZCP_SurvivorXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_personnelxp_t07": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 7,
+    "lootTierGroup": "ZCP_SurvivorXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_personnelxp_t08": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 8,
+    "lootTierGroup": "ZCP_SurvivorXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_personnelxp_t09": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 9,
+    "lootTierGroup": "ZCP_SurvivorXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_personnelxp_t10": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 10,
+    "lootTierGroup": "ZCP_SurvivorXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_personnelxp_t11": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 11,
+    "lootTierGroup": "ZCP_SurvivorXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_personnelxp_t12": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 12,
+    "lootTierGroup": "ZCP_SurvivorXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_personnelxp_t13": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 13,
+    "lootTierGroup": "ZCP_SurvivorXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_personnelxp_t14": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 14,
+    "lootTierGroup": "ZCP_SurvivorXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_personnelxp_t15": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 15,
+    "lootTierGroup": "ZCP_SurvivorXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_personnelxp_t16": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 16,
+    "lootTierGroup": "ZCP_SurvivorXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_personnelxp_t17": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 17,
+    "lootTierGroup": "ZCP_SurvivorXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_personnelxp_t18": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 18,
+    "lootTierGroup": "ZCP_SurvivorXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_personnelxp_t19": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 19,
+    "lootTierGroup": "ZCP_SurvivorXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_personnelxp_t20": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 20,
+    "lootTierGroup": "ZCP_SurvivorXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rareexpedition_heroes_t02": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_RareExpedition_Heroes_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rareexpedition_heroes_t03": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_RareExpedition_Heroes_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rareexpedition_heroes_t04": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_RareExpedition_Heroes_T04",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rareexpedition_heroes_t05": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_RareExpedition_Heroes_T05",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rareexpedition_managers_t02": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_RareExpedition_Managers_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rareexpedition_managers_t03": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_RareExpedition_Managers_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rareexpedition_managers_t04": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_RareExpedition_Managers_T04",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rareexpedition_managers_t05": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_RareExpedition_Managers_T05",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rareexpedition_traps_t02": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_RareExpedition_Traps_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rareexpedition_traps_t03": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_RareExpedition_Traps_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rareexpedition_traps_t04": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_RareExpedition_Traps_T04",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rareexpedition_traps_t05": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_RareExpedition_Traps_T05",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rareexpedition_weapons_t01": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_RareExpedition_Weapons_T01",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rareexpedition_weapons_t02": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_RareExpedition_Weapons_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rareexpedition_weapons_t03": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_RareExpedition_Weapons_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rareexpedition_weapons_t04": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_RareExpedition_Weapons_T04",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rareexpedition_weapons_t05": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_RareExpedition_Weapons_T05",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_reagent_c_t01_high": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 3,
+    "lootTierGroup": "ZCP_Reagent_C_T01",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_reagent_c_t01_low": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 1,
+    "lootTierGroup": "ZCP_Reagent_C_T01",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_reagent_c_t01_medium": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 2,
+    "lootTierGroup": "ZCP_Reagent_C_T01",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_reagent_c_t01_veryhigh": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 4,
+    "lootTierGroup": "ZCP_Reagent_C_T01",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_reagent_c_t01_verylow": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Reagent_C_T01",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_reagent_c_t02_high": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 3,
+    "lootTierGroup": "ZCP_Reagent_C_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_reagent_c_t02_low": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 1,
+    "lootTierGroup": "ZCP_Reagent_C_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_reagent_c_t02_medium": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 2,
+    "lootTierGroup": "ZCP_Reagent_C_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_reagent_c_t02_veryhigh": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 4,
+    "lootTierGroup": "ZCP_Reagent_C_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_reagent_c_t02_verylow": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Reagent_C_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_reagent_c_t03_high": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 3,
+    "lootTierGroup": "ZCP_Reagent_C_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_reagent_c_t03_low": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 1,
+    "lootTierGroup": "ZCP_Reagent_C_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_reagent_c_t03_medium": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 2,
+    "lootTierGroup": "ZCP_Reagent_C_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_reagent_c_t03_veryhigh": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 4,
+    "lootTierGroup": "ZCP_Reagent_C_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_reagent_c_t03_verylow": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Reagent_C_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_reagent_c_t04_high": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 3,
+    "lootTierGroup": "ZCP_Reagent_C_T04",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_reagent_c_t04_low": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 1,
+    "lootTierGroup": "ZCP_Reagent_C_T04",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_reagent_c_t04_medium": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 2,
+    "lootTierGroup": "ZCP_Reagent_C_T04",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_reagent_c_t04_veryhigh": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 4,
+    "lootTierGroup": "ZCP_Reagent_C_T04",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_reagent_c_t04_verylow": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Reagent_C_T04",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rescued": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Rescued",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rescued_t01": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 1,
+    "lootTierGroup": "ZCP_Rescued",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rescued_t02": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 2,
+    "lootTierGroup": "ZCP_Rescued",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rescued_t03": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 3,
+    "lootTierGroup": "ZCP_Rescued",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rescued_t04": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 4,
+    "lootTierGroup": "ZCP_Rescued",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rescued_t05": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 5,
+    "lootTierGroup": "ZCP_Rescued",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rescued_t06": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 6,
+    "lootTierGroup": "ZCP_Rescued",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rescued_t07": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 7,
+    "lootTierGroup": "ZCP_Rescued",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rescued_t08": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 8,
+    "lootTierGroup": "ZCP_Rescued",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rescued_t09": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 9,
+    "lootTierGroup": "ZCP_Rescued",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rescued_t10": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 10,
+    "lootTierGroup": "ZCP_Rescued",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rescued_t11": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 11,
+    "lootTierGroup": "ZCP_Rescued",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rescued_t12": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 12,
+    "lootTierGroup": "ZCP_Rescued",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rescued_t13": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 13,
+    "lootTierGroup": "ZCP_Rescued",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rescued_t14": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 14,
+    "lootTierGroup": "ZCP_Rescued",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rescued_t15": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 15,
+    "lootTierGroup": "ZCP_Rescued",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rescued_t16": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 16,
+    "lootTierGroup": "ZCP_Rescued",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rescued_t17": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 17,
+    "lootTierGroup": "ZCP_Rescued",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rescued_t18": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 18,
+    "lootTierGroup": "ZCP_Rescued",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rescued_t19": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 19,
+    "lootTierGroup": "ZCP_Rescued",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_rescued_t20": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 20,
+    "lootTierGroup": "ZCP_Rescued",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_schematicxp_t01": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 1,
+    "lootTierGroup": "ZCP_SchematicXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_schematicxp_t02": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 2,
+    "lootTierGroup": "ZCP_SchematicXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_schematicxp_t03": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 3,
+    "lootTierGroup": "ZCP_SchematicXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_schematicxp_t04": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 4,
+    "lootTierGroup": "ZCP_SchematicXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_schematicxp_t05": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 5,
+    "lootTierGroup": "ZCP_SchematicXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_schematicxp_t06": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 6,
+    "lootTierGroup": "ZCP_SchematicXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_schematicxp_t07": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 7,
+    "lootTierGroup": "ZCP_SchematicXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_schematicxp_t08": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 8,
+    "lootTierGroup": "ZCP_SchematicXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_schematicxp_t09": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 9,
+    "lootTierGroup": "ZCP_SchematicXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_schematicxp_t10": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 10,
+    "lootTierGroup": "ZCP_SchematicXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_schematicxp_t11": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 11,
+    "lootTierGroup": "ZCP_SchematicXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_schematicxp_t12": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 12,
+    "lootTierGroup": "ZCP_SchematicXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_schematicxp_t13": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 13,
+    "lootTierGroup": "ZCP_SchematicXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_schematicxp_t14": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 14,
+    "lootTierGroup": "ZCP_SchematicXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_schematicxp_t15": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 15,
+    "lootTierGroup": "ZCP_SchematicXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_schematicxp_t16": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 16,
+    "lootTierGroup": "ZCP_SchematicXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_schematicxp_t17": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 17,
+    "lootTierGroup": "ZCP_SchematicXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_schematicxp_t18": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 18,
+    "lootTierGroup": "ZCP_SchematicXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_schematicxp_t19": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 19,
+    "lootTierGroup": "ZCP_SchematicXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_schematicxp_t20": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 20,
+    "lootTierGroup": "ZCP_SchematicXP",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_sea_supplyrun_long_t03": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Sea_SupplyRun_Long_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_sea_supplyrun_long_t04": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Sea_SupplyRun_Long_T04",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_sea_supplyrun_medium_t02": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Sea_SupplyRun_Medium_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_sea_supplyrun_short_t01": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Sea_SupplyRun_Short_T01",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_sea_survivorscouting_long_t04": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Sea_SurvivorScouting_Long_T04",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_sea_survivorscouting_medium_t02": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Sea_SurvivorScouting_Medium_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_sea_survivorscouting_medium_t03": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Sea_SurvivorScouting_Medium_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_sea_survivorscouting_short_t01": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Sea_SurvivorScouting_Short_T01",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_snowballs_noscale": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Snowballs_NoScale",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_supplyrun_long_t02": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_SupplyRun_Long_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_supplyrun_long_t03": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_SupplyRun_Long_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_supplyrun_long_t04": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_SupplyRun_Long_T04",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_supplyrun_medium_t01": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_SupplyRun_Medium_T01",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_supplyrun_medium_t02": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_SupplyRun_Medium_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_supplyrun_medium_t03": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_SupplyRun_Medium_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_supplyrun_short_t01": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_SupplyRun_Short_T01",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_supplyrun_short_t02": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_SupplyRun_Short_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_supplyrun_short_t03": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_SupplyRun_Short_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_survivorscouting_long_t03": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_SurvivorScouting_Long_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_survivorscouting_long_t04": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_SurvivorScouting_Long_T04",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_survivorscouting_medium_t02": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_SurvivorScouting_Medium_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_survivorscouting_short_t01": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_SurvivorScouting_Short_T01",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_tutorial_hero": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Tutorial_Hero",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_tutorial_melee": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Tutorial_Melee",
+    "rarity": "Handmade"
+  },
+  "CardPack:zcp_tutorial_ranged": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Tutorial_Ranged",
+    "rarity": "Handmade"
+  },
+  "CardPack:zcp_tutorial_trap": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Tutorial_Trap",
+    "rarity": "Handmade"
+  },
+  "CardPack:zcp_voucher_basicpack": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Voucher_BasicPack",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_voucher_tutorialpack": {
+    "choice": false,
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_Voucher_TutorialPack",
+    "rarity": "Ordinary"
+  }
+}

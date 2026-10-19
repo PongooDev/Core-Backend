@@ -1,0 +1,7220 @@
+{
+  "Defender:did_defenderassault_basic_c_t00": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_c_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_c_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_r_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_r_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_r_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_r_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_sr_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_sr_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_sr_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_sr_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_sr_t05": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_uc_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_uc_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_uc_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_vr_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_vr_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_vr_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_vr_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_vr_t05": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_founders_vr_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_founders_vr_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_founders_vr_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_founders_vr_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_founders_vr_t05": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defendermelee_basic_c_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Melee"
+    ]
+  },
+  "Defender:did_defendermelee_basic_c_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Melee"
+    ]
+  },
+  "Defender:did_defendermelee_basic_r_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Melee"
+    ]
+  },
+  "Defender:did_defendermelee_basic_r_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Melee"
+    ]
+  },
+  "Defender:did_defendermelee_basic_r_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Melee"
+    ]
+  },
+  "Defender:did_defendermelee_basic_r_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Melee"
+    ]
+  },
+  "Defender:did_defendermelee_basic_sr_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Melee"
+    ]
+  },
+  "Defender:did_defendermelee_basic_sr_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Melee"
+    ]
+  },
+  "Defender:did_defendermelee_basic_sr_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Melee"
+    ]
+  },
+  "Defender:did_defendermelee_basic_sr_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Melee"
+    ]
+  },
+  "Defender:did_defendermelee_basic_sr_t05": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Melee"
+    ]
+  },
+  "Defender:did_defendermelee_basic_uc_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Melee"
+    ]
+  },
+  "Defender:did_defendermelee_basic_uc_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Melee"
+    ]
+  },
+  "Defender:did_defendermelee_basic_uc_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Melee"
+    ]
+  },
+  "Defender:did_defendermelee_basic_vr_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Melee"
+    ]
+  },
+  "Defender:did_defendermelee_basic_vr_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Melee"
+    ]
+  },
+  "Defender:did_defendermelee_basic_vr_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Melee"
+    ]
+  },
+  "Defender:did_defendermelee_basic_vr_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Melee"
+    ]
+  },
+  "Defender:did_defendermelee_basic_vr_t05": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Melee"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_c_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_c_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_r_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_r_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_r_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_r_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_sr_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_sr_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_sr_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_sr_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_sr_t05": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_uc_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_uc_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_uc_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_vr_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_vr_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_vr_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_vr_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_vr_t05": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_founders_vr_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_founders_vr_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_founders_vr_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_founders_vr_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_founders_vr_t05": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_c_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_c_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_r_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_r_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_r_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_r_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_sr_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_sr_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_sr_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_sr_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_sr_t05": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_uc_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_uc_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_uc_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_vr_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_vr_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_vr_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_vr_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_vr_t05": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendersniper_basic_c_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_c_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_r_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_r_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_r_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_r_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_sr_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_sr_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_sr_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_sr_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_sr_t05": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_uc_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_uc_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_uc_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_vr_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_vr_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_vr_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_vr_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_vr_t05": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Hero:hid_commando_007_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_007_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_007_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_007_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_007_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_007_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_007_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_007_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_007_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_007_uc_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_007_uc_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_007_uc_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_007_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_007_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_007_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_007_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_007_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_008_foundersf_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Gunner"
+    ]
+  },
+  "Hero:hid_commando_008_foundersf_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Gunner"
+    ]
+  },
+  "Hero:hid_commando_008_foundersf_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Gunner"
+    ]
+  },
+  "Hero:hid_commando_008_foundersf_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Gunner"
+    ]
+  },
+  "Hero:hid_commando_008_foundersf_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Gunner"
+    ]
+  },
+  "Hero:hid_commando_008_foundersm_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Gunner"
+    ]
+  },
+  "Hero:hid_commando_008_foundersm_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Gunner"
+    ]
+  },
+  "Hero:hid_commando_008_foundersm_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Gunner"
+    ]
+  },
+  "Hero:hid_commando_008_foundersm_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Gunner"
+    ]
+  },
+  "Hero:hid_commando_008_foundersm_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Gunner"
+    ]
+  },
+  "Hero:hid_commando_008_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Gunner"
+    ]
+  },
+  "Hero:hid_commando_008_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Gunner"
+    ]
+  },
+  "Hero:hid_commando_008_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Gunner"
+    ]
+  },
+  "Hero:hid_commando_008_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Gunner"
+    ]
+  },
+  "Hero:hid_commando_008_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Gunner"
+    ]
+  },
+  "Hero:hid_commando_008_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Gunner"
+    ]
+  },
+  "Hero:hid_commando_008_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Gunner"
+    ]
+  },
+  "Hero:hid_commando_008_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Gunner"
+    ]
+  },
+  "Hero:hid_commando_008_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Gunner"
+    ]
+  },
+  "Hero:hid_commando_008_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Gunner"
+    ]
+  },
+  "Hero:hid_commando_008_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Gunner"
+    ]
+  },
+  "Hero:hid_commando_008_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Gunner"
+    ]
+  },
+  "Hero:hid_commando_008_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Gunner"
+    ]
+  },
+  "Hero:hid_commando_008_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Gunner"
+    ]
+  },
+  "Hero:hid_commando_009_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_010_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.LeadStorm"
+    ]
+  },
+  "Hero:hid_commando_010_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.LeadStorm"
+    ]
+  },
+  "Hero:hid_commando_010_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.LeadStorm"
+    ]
+  },
+  "Hero:hid_commando_010_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.LeadStorm"
+    ]
+  },
+  "Hero:hid_commando_010_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.LeadStorm"
+    ]
+  },
+  "Hero:hid_commando_010_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.LeadStorm"
+    ]
+  },
+  "Hero:hid_commando_010_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.LeadStorm"
+    ]
+  },
+  "Hero:hid_commando_010_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.LeadStorm"
+    ]
+  },
+  "Hero:hid_commando_010_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.LeadStorm"
+    ]
+  },
+  "Hero:hid_commando_010_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.LeadStorm"
+    ]
+  },
+  "Hero:hid_commando_cinematic_test_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_gcgrenade_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_gcgrenade_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_gcgrenade_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_gcgrenade_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_gcgrenade_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_gcgrenade_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_gcgrenade_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_gcgrenade_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_gcgrenade_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_gcgrenade_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_gcgrenade_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_gcgrenade_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_gcgrenade_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_gcgrenade_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_grenadegun_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_grenadegun_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_grenadegun_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_grenadegun_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_grenadegun_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_grenadegun_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_grenadegun_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_grenadegun_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_grenadegun_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_grenadegun_uc_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_grenadegun_uc_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_grenadegun_uc_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_grenadegun_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_grenadegun_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_grenadegun_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_grenadegun_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_grenadegun_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_grenademaster_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.MasterGrenadier"
+    ]
+  },
+  "Hero:hid_commando_grenademaster_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.MasterGrenadier"
+    ]
+  },
+  "Hero:hid_commando_grenademaster_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.MasterGrenadier"
+    ]
+  },
+  "Hero:hid_commando_grenademaster_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.MasterGrenadier"
+    ]
+  },
+  "Hero:hid_commando_grenademaster_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.MasterGrenadier"
+    ]
+  },
+  "Hero:hid_commando_gunheadshot_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_commando_gunheadshot_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_commando_gunheadshot_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_commando_gunheadshot_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_commando_gunheadshot_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_commando_gunheadshot_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_commando_gunheadshot_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_commando_gunheadshot_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_commando_gunheadshot_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_commando_gunheadshot_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_commando_gunheadshothw_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_commando_gunheadshothw_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_commando_gunheadshothw_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_commando_gunheadshothw_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_commando_gunheadshothw_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_commando_guntough_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Survivalist"
+    ]
+  },
+  "Hero:hid_commando_guntough_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Survivalist"
+    ]
+  },
+  "Hero:hid_commando_guntough_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Survivalist"
+    ]
+  },
+  "Hero:hid_commando_guntough_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Survivalist"
+    ]
+  },
+  "Hero:hid_commando_guntough_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Survivalist"
+    ]
+  },
+  "Hero:hid_commando_guntough_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Survivalist"
+    ]
+  },
+  "Hero:hid_commando_guntough_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Survivalist"
+    ]
+  },
+  "Hero:hid_commando_guntough_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Survivalist"
+    ]
+  },
+  "Hero:hid_commando_guntough_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Survivalist"
+    ]
+  },
+  "Hero:hid_commando_guntough_uc_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Survivalist"
+    ]
+  },
+  "Hero:hid_commando_guntough_uc_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Survivalist"
+    ]
+  },
+  "Hero:hid_commando_guntough_uc_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Survivalist"
+    ]
+  },
+  "Hero:hid_commando_guntough_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Survivalist"
+    ]
+  },
+  "Hero:hid_commando_guntough_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Survivalist"
+    ]
+  },
+  "Hero:hid_commando_guntough_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Survivalist"
+    ]
+  },
+  "Hero:hid_commando_guntough_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Survivalist"
+    ]
+  },
+  "Hero:hid_commando_guntough_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Survivalist"
+    ]
+  },
+  "Hero:hid_commando_shockdamage_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.ShockTrooper"
+    ]
+  },
+  "Hero:hid_commando_shockdamage_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.ShockTrooper"
+    ]
+  },
+  "Hero:hid_commando_shockdamage_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.ShockTrooper"
+    ]
+  },
+  "Hero:hid_commando_shockdamage_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.ShockTrooper"
+    ]
+  },
+  "Hero:hid_commando_shockdamage_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.ShockTrooper"
+    ]
+  },
+  "Hero:hid_commando_shockdamage_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.ShockTrooper"
+    ]
+  },
+  "Hero:hid_commando_shockdamage_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.ShockTrooper"
+    ]
+  },
+  "Hero:hid_commando_shockdamage_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.ShockTrooper"
+    ]
+  },
+  "Hero:hid_commando_shockdamage_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.ShockTrooper"
+    ]
+  },
+  "Hero:hid_commando_shockdamage_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.ShockTrooper"
+    ]
+  },
+  "Hero:hid_commando_shockdamage_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.ShockTrooper"
+    ]
+  },
+  "Hero:hid_commando_shockdamage_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.ShockTrooper"
+    ]
+  },
+  "Hero:hid_commando_shockdamage_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.ShockTrooper"
+    ]
+  },
+  "Hero:hid_commando_shockdamage_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.ShockTrooper"
+    ]
+  },
+  "Hero:hid_commando_sony_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_sony_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_sony_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_sony_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_constructor_007_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_007_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_007_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_007_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_007_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_007_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_007_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_007_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_007_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_007_uc_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_007_uc_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_007_uc_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_007_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_007_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_007_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_007_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_007_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_008_foundersf_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PowerBASE"
+    ]
+  },
+  "Hero:hid_constructor_008_foundersf_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PowerBASE"
+    ]
+  },
+  "Hero:hid_constructor_008_foundersf_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PowerBASE"
+    ]
+  },
+  "Hero:hid_constructor_008_foundersf_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PowerBASE"
+    ]
+  },
+  "Hero:hid_constructor_008_foundersf_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PowerBASE"
+    ]
+  },
+  "Hero:hid_constructor_008_foundersm_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PowerBASE"
+    ]
+  },
+  "Hero:hid_constructor_008_foundersm_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PowerBASE"
+    ]
+  },
+  "Hero:hid_constructor_008_foundersm_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PowerBASE"
+    ]
+  },
+  "Hero:hid_constructor_008_foundersm_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PowerBASE"
+    ]
+  },
+  "Hero:hid_constructor_008_foundersm_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PowerBASE"
+    ]
+  },
+  "Hero:hid_constructor_008_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PowerBASE"
+    ]
+  },
+  "Hero:hid_constructor_008_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PowerBASE"
+    ]
+  },
+  "Hero:hid_constructor_008_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PowerBASE"
+    ]
+  },
+  "Hero:hid_constructor_008_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PowerBASE"
+    ]
+  },
+  "Hero:hid_constructor_008_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PowerBASE"
+    ]
+  },
+  "Hero:hid_constructor_008_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PowerBASE"
+    ]
+  },
+  "Hero:hid_constructor_008_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PowerBASE"
+    ]
+  },
+  "Hero:hid_constructor_008_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PowerBASE"
+    ]
+  },
+  "Hero:hid_constructor_008_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PowerBASE"
+    ]
+  },
+  "Hero:hid_constructor_008_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PowerBASE"
+    ]
+  },
+  "Hero:hid_constructor_008_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PowerBASE"
+    ]
+  },
+  "Hero:hid_constructor_008_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PowerBASE"
+    ]
+  },
+  "Hero:hid_constructor_008_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PowerBASE"
+    ]
+  },
+  "Hero:hid_constructor_008_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PowerBASE"
+    ]
+  },
+  "Hero:hid_constructor_009_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaPack"
+    ]
+  },
+  "Hero:hid_constructor_009_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaPack"
+    ]
+  },
+  "Hero:hid_constructor_009_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaPack"
+    ]
+  },
+  "Hero:hid_constructor_009_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaPack"
+    ]
+  },
+  "Hero:hid_constructor_009_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaPack"
+    ]
+  },
+  "Hero:hid_constructor_009_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaPack"
+    ]
+  },
+  "Hero:hid_constructor_009_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaPack"
+    ]
+  },
+  "Hero:hid_constructor_009_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaPack"
+    ]
+  },
+  "Hero:hid_constructor_009_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaPack"
+    ]
+  },
+  "Hero:hid_constructor_009_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaPack"
+    ]
+  },
+  "Hero:hid_constructor_009_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaPack"
+    ]
+  },
+  "Hero:hid_constructor_009_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaPack"
+    ]
+  },
+  "Hero:hid_constructor_009_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaPack"
+    ]
+  },
+  "Hero:hid_constructor_009_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaPack"
+    ]
+  },
+  "Hero:hid_constructor_010_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_010_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_010_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_010_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_010_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_010_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_010_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_010_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_010_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_010_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_basebig_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.MEGABASE"
+    ]
+  },
+  "Hero:hid_constructor_basebig_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.MEGABASE"
+    ]
+  },
+  "Hero:hid_constructor_basebig_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.MEGABASE"
+    ]
+  },
+  "Hero:hid_constructor_basebig_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.MEGABASE"
+    ]
+  },
+  "Hero:hid_constructor_basebig_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.MEGABASE"
+    ]
+  },
+  "Hero:hid_constructor_basehyper_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Hotfix"
+    ]
+  },
+  "Hero:hid_constructor_basehyper_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Hotfix"
+    ]
+  },
+  "Hero:hid_constructor_basehyper_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Hotfix"
+    ]
+  },
+  "Hero:hid_constructor_basehyper_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Hotfix"
+    ]
+  },
+  "Hero:hid_constructor_basehyper_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Hotfix"
+    ]
+  },
+  "Hero:hid_constructor_basehyper_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Hotfix"
+    ]
+  },
+  "Hero:hid_constructor_basehyper_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Hotfix"
+    ]
+  },
+  "Hero:hid_constructor_basehyper_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Hotfix"
+    ]
+  },
+  "Hero:hid_constructor_basehyper_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Hotfix"
+    ]
+  },
+  "Hero:hid_constructor_basehyper_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Hotfix"
+    ]
+  },
+  "Hero:hid_constructor_basehyper_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Hotfix"
+    ]
+  },
+  "Hero:hid_constructor_basehyper_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Hotfix"
+    ]
+  },
+  "Hero:hid_constructor_basehyper_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Hotfix"
+    ]
+  },
+  "Hero:hid_constructor_basehyper_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Hotfix"
+    ]
+  },
+  "Hero:hid_constructor_basehyperhw_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Hotfix"
+    ]
+  },
+  "Hero:hid_constructor_basehyperhw_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Hotfix"
+    ]
+  },
+  "Hero:hid_constructor_basehyperhw_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Hotfix"
+    ]
+  },
+  "Hero:hid_constructor_basehyperhw_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Hotfix"
+    ]
+  },
+  "Hero:hid_constructor_basehyperhw_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Hotfix"
+    ]
+  },
+  "Hero:hid_constructor_cinematic_test_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Tank"
+    ]
+  },
+  "Hero:hid_constructor_hammerplasma_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Mixer"
+    ]
+  },
+  "Hero:hid_constructor_hammerplasma_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Mixer"
+    ]
+  },
+  "Hero:hid_constructor_hammerplasma_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Mixer"
+    ]
+  },
+  "Hero:hid_constructor_hammerplasma_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Mixer"
+    ]
+  },
+  "Hero:hid_constructor_hammerplasma_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Mixer"
+    ]
+  },
+  "Hero:hid_constructor_hammerplasma_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Mixer"
+    ]
+  },
+  "Hero:hid_constructor_hammerplasma_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Mixer"
+    ]
+  },
+  "Hero:hid_constructor_hammerplasma_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Mixer"
+    ]
+  },
+  "Hero:hid_constructor_hammerplasma_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Mixer"
+    ]
+  },
+  "Hero:hid_constructor_hammerplasma_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Mixer"
+    ]
+  },
+  "Hero:hid_constructor_hammertank_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Tank"
+    ]
+  },
+  "Hero:hid_constructor_hammertank_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Tank"
+    ]
+  },
+  "Hero:hid_constructor_hammertank_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Tank"
+    ]
+  },
+  "Hero:hid_constructor_hammertank_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Tank"
+    ]
+  },
+  "Hero:hid_constructor_hammertank_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Tank"
+    ]
+  },
+  "Hero:hid_constructor_hammertank_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Tank"
+    ]
+  },
+  "Hero:hid_constructor_hammertank_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Tank"
+    ]
+  },
+  "Hero:hid_constructor_hammertank_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Tank"
+    ]
+  },
+  "Hero:hid_constructor_hammertank_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Tank"
+    ]
+  },
+  "Hero:hid_constructor_hammertank_uc_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Tank"
+    ]
+  },
+  "Hero:hid_constructor_hammertank_uc_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Tank"
+    ]
+  },
+  "Hero:hid_constructor_hammertank_uc_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Tank"
+    ]
+  },
+  "Hero:hid_constructor_hammertank_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Tank"
+    ]
+  },
+  "Hero:hid_constructor_hammertank_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Tank"
+    ]
+  },
+  "Hero:hid_constructor_hammertank_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Tank"
+    ]
+  },
+  "Hero:hid_constructor_hammertank_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Tank"
+    ]
+  },
+  "Hero:hid_constructor_hammertank_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Tank"
+    ]
+  },
+  "Hero:hid_constructor_plasmadamage_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaShield"
+    ]
+  },
+  "Hero:hid_constructor_plasmadamage_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaShield"
+    ]
+  },
+  "Hero:hid_constructor_plasmadamage_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaShield"
+    ]
+  },
+  "Hero:hid_constructor_plasmadamage_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaShield"
+    ]
+  },
+  "Hero:hid_constructor_plasmadamage_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaShield"
+    ]
+  },
+  "Hero:hid_constructor_plasmadamage_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaShield"
+    ]
+  },
+  "Hero:hid_constructor_plasmadamage_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaShield"
+    ]
+  },
+  "Hero:hid_constructor_plasmadamage_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaShield"
+    ]
+  },
+  "Hero:hid_constructor_plasmadamage_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaShield"
+    ]
+  },
+  "Hero:hid_constructor_plasmadamage_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaShield"
+    ]
+  },
+  "Hero:hid_constructor_plasmadamage_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaShield"
+    ]
+  },
+  "Hero:hid_constructor_plasmadamage_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaShield"
+    ]
+  },
+  "Hero:hid_constructor_plasmadamage_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaShield"
+    ]
+  },
+  "Hero:hid_constructor_plasmadamage_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaShield"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_uc_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_uc_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_uc_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_sony_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_sony_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_sony_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_sony_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_ninja_007_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Brawler"
+    ]
+  },
+  "Hero:hid_ninja_007_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Brawler"
+    ]
+  },
+  "Hero:hid_ninja_007_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Brawler"
+    ]
+  },
+  "Hero:hid_ninja_007_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Brawler"
+    ]
+  },
+  "Hero:hid_ninja_007_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Brawler"
+    ]
+  },
+  "Hero:hid_ninja_007_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Brawler"
+    ]
+  },
+  "Hero:hid_ninja_007_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Brawler"
+    ]
+  },
+  "Hero:hid_ninja_007_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Brawler"
+    ]
+  },
+  "Hero:hid_ninja_007_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Brawler"
+    ]
+  },
+  "Hero:hid_ninja_007_uc_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Brawler"
+    ]
+  },
+  "Hero:hid_ninja_007_uc_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Brawler"
+    ]
+  },
+  "Hero:hid_ninja_007_uc_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Brawler"
+    ]
+  },
+  "Hero:hid_ninja_007_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Brawler"
+    ]
+  },
+  "Hero:hid_ninja_007_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Brawler"
+    ]
+  },
+  "Hero:hid_ninja_007_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Brawler"
+    ]
+  },
+  "Hero:hid_ninja_007_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Brawler"
+    ]
+  },
+  "Hero:hid_ninja_007_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Brawler"
+    ]
+  },
+  "Hero:hid_ninja_008_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.StonefootNinja"
+    ]
+  },
+  "Hero:hid_ninja_008_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.StonefootNinja"
+    ]
+  },
+  "Hero:hid_ninja_008_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.StonefootNinja"
+    ]
+  },
+  "Hero:hid_ninja_008_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.StonefootNinja"
+    ]
+  },
+  "Hero:hid_ninja_008_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.StonefootNinja"
+    ]
+  },
+  "Hero:hid_ninja_008_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.StonefootNinja"
+    ]
+  },
+  "Hero:hid_ninja_008_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.StonefootNinja"
+    ]
+  },
+  "Hero:hid_ninja_008_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.StonefootNinja"
+    ]
+  },
+  "Hero:hid_ninja_008_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.StonefootNinja"
+    ]
+  },
+  "Hero:hid_ninja_008_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.StonefootNinja"
+    ]
+  },
+  "Hero:hid_ninja_008_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.StonefootNinja"
+    ]
+  },
+  "Hero:hid_ninja_008_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.StonefootNinja"
+    ]
+  },
+  "Hero:hid_ninja_008_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.StonefootNinja"
+    ]
+  },
+  "Hero:hid_ninja_008_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.StonefootNinja"
+    ]
+  },
+  "Hero:hid_ninja_009_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Skirmisher"
+    ]
+  },
+  "Hero:hid_ninja_009_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Skirmisher"
+    ]
+  },
+  "Hero:hid_ninja_009_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Skirmisher"
+    ]
+  },
+  "Hero:hid_ninja_009_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Skirmisher"
+    ]
+  },
+  "Hero:hid_ninja_009_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Skirmisher"
+    ]
+  },
+  "Hero:hid_ninja_009_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Skirmisher"
+    ]
+  },
+  "Hero:hid_ninja_009_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Skirmisher"
+    ]
+  },
+  "Hero:hid_ninja_009_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Skirmisher"
+    ]
+  },
+  "Hero:hid_ninja_009_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Skirmisher"
+    ]
+  },
+  "Hero:hid_ninja_009_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Skirmisher"
+    ]
+  },
+  "Hero:hid_ninja_009_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Skirmisher"
+    ]
+  },
+  "Hero:hid_ninja_009_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Skirmisher"
+    ]
+  },
+  "Hero:hid_ninja_009_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Skirmisher"
+    ]
+  },
+  "Hero:hid_ninja_009_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Skirmisher"
+    ]
+  },
+  "Hero:hid_ninja_010_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Poisoner"
+    ]
+  },
+  "Hero:hid_ninja_010_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Poisoner"
+    ]
+  },
+  "Hero:hid_ninja_010_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Poisoner"
+    ]
+  },
+  "Hero:hid_ninja_010_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Poisoner"
+    ]
+  },
+  "Hero:hid_ninja_010_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Poisoner"
+    ]
+  },
+  "Hero:hid_ninja_010_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Poisoner"
+    ]
+  },
+  "Hero:hid_ninja_010_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Poisoner"
+    ]
+  },
+  "Hero:hid_ninja_010_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Poisoner"
+    ]
+  },
+  "Hero:hid_ninja_010_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Poisoner"
+    ]
+  },
+  "Hero:hid_ninja_010_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Poisoner"
+    ]
+  },
+  "Hero:hid_ninja_cinematic_test_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Fleetfoot"
+    ]
+  },
+  "Hero:hid_ninja_slashbreath_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Dragon"
+    ]
+  },
+  "Hero:hid_ninja_slashbreath_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Dragon"
+    ]
+  },
+  "Hero:hid_ninja_slashbreath_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Dragon"
+    ]
+  },
+  "Hero:hid_ninja_slashbreath_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Dragon"
+    ]
+  },
+  "Hero:hid_ninja_slashbreath_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Dragon"
+    ]
+  },
+  "Hero:hid_ninja_slashbreath_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Dragon"
+    ]
+  },
+  "Hero:hid_ninja_slashbreath_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Dragon"
+    ]
+  },
+  "Hero:hid_ninja_slashbreath_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Dragon"
+    ]
+  },
+  "Hero:hid_ninja_slashbreath_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Dragon"
+    ]
+  },
+  "Hero:hid_ninja_slashbreath_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Dragon"
+    ]
+  },
+  "Hero:hid_ninja_slashbreath_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Dragon"
+    ]
+  },
+  "Hero:hid_ninja_slashbreath_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Dragon"
+    ]
+  },
+  "Hero:hid_ninja_slashbreath_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Dragon"
+    ]
+  },
+  "Hero:hid_ninja_slashbreath_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Dragon"
+    ]
+  },
+  "Hero:hid_ninja_slashtail_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Fleetfoot"
+    ]
+  },
+  "Hero:hid_ninja_slashtail_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Fleetfoot"
+    ]
+  },
+  "Hero:hid_ninja_slashtail_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Fleetfoot"
+    ]
+  },
+  "Hero:hid_ninja_slashtail_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Fleetfoot"
+    ]
+  },
+  "Hero:hid_ninja_slashtail_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Fleetfoot"
+    ]
+  },
+  "Hero:hid_ninja_slashtail_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Fleetfoot"
+    ]
+  },
+  "Hero:hid_ninja_slashtail_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Fleetfoot"
+    ]
+  },
+  "Hero:hid_ninja_slashtail_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Fleetfoot"
+    ]
+  },
+  "Hero:hid_ninja_slashtail_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Fleetfoot"
+    ]
+  },
+  "Hero:hid_ninja_slashtail_uc_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Fleetfoot"
+    ]
+  },
+  "Hero:hid_ninja_slashtail_uc_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Fleetfoot"
+    ]
+  },
+  "Hero:hid_ninja_slashtail_uc_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Fleetfoot"
+    ]
+  },
+  "Hero:hid_ninja_slashtail_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Fleetfoot"
+    ]
+  },
+  "Hero:hid_ninja_slashtail_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Fleetfoot"
+    ]
+  },
+  "Hero:hid_ninja_slashtail_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Fleetfoot"
+    ]
+  },
+  "Hero:hid_ninja_slashtail_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Fleetfoot"
+    ]
+  },
+  "Hero:hid_ninja_slashtail_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Fleetfoot"
+    ]
+  },
+  "Hero:hid_ninja_smokedimmak_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.DimMak"
+    ]
+  },
+  "Hero:hid_ninja_smokedimmak_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.DimMak"
+    ]
+  },
+  "Hero:hid_ninja_smokedimmak_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.DimMak"
+    ]
+  },
+  "Hero:hid_ninja_smokedimmak_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.DimMak"
+    ]
+  },
+  "Hero:hid_ninja_smokedimmak_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.DimMak"
+    ]
+  },
+  "Hero:hid_ninja_smokedimmak_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.DimMak"
+    ]
+  },
+  "Hero:hid_ninja_smokedimmak_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.DimMak"
+    ]
+  },
+  "Hero:hid_ninja_smokedimmak_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.DimMak"
+    ]
+  },
+  "Hero:hid_ninja_smokedimmak_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.DimMak"
+    ]
+  },
+  "Hero:hid_ninja_smokedimmak_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.DimMak"
+    ]
+  },
+  "Hero:hid_ninja_smokedimmak_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.DimMak"
+    ]
+  },
+  "Hero:hid_ninja_smokedimmak_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.DimMak"
+    ]
+  },
+  "Hero:hid_ninja_smokedimmak_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.DimMak"
+    ]
+  },
+  "Hero:hid_ninja_smokedimmak_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.DimMak"
+    ]
+  },
+  "Hero:hid_ninja_sony_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_sony_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_sony_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_sony_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_foundersf_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_foundersf_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_foundersf_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_foundersf_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_foundersf_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_foundersm_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_foundersm_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_foundersm_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_foundersm_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_foundersm_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_uc_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_uc_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_uc_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsassassin_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsrain_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Shuriken"
+    ]
+  },
+  "Hero:hid_ninja_starsrain_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Shuriken"
+    ]
+  },
+  "Hero:hid_ninja_starsrain_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Shuriken"
+    ]
+  },
+  "Hero:hid_ninja_starsrain_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Shuriken"
+    ]
+  },
+  "Hero:hid_ninja_starsrain_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Shuriken"
+    ]
+  },
+  "Hero:hid_ninja_starsrain_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Shuriken"
+    ]
+  },
+  "Hero:hid_ninja_starsrain_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Shuriken"
+    ]
+  },
+  "Hero:hid_ninja_starsrain_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Shuriken"
+    ]
+  },
+  "Hero:hid_ninja_starsrain_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Shuriken"
+    ]
+  },
+  "Hero:hid_ninja_starsrain_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Shuriken"
+    ]
+  },
+  "Hero:hid_ninja_starsrainhw_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Shuriken"
+    ]
+  },
+  "Hero:hid_ninja_starsrainhw_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Shuriken"
+    ]
+  },
+  "Hero:hid_ninja_starsrainhw_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Shuriken"
+    ]
+  },
+  "Hero:hid_ninja_starsrainhw_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Shuriken"
+    ]
+  },
+  "Hero:hid_ninja_starsrainhw_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Shuriken"
+    ]
+  },
+  "Hero:hid_ninja_swordmaster_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.LegendarySwordmaster"
+    ]
+  },
+  "Hero:hid_ninja_swordmaster_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.LegendarySwordmaster"
+    ]
+  },
+  "Hero:hid_ninja_swordmaster_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.LegendarySwordmaster"
+    ]
+  },
+  "Hero:hid_ninja_swordmaster_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.LegendarySwordmaster"
+    ]
+  },
+  "Hero:hid_ninja_swordmaster_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.LegendarySwordmaster"
+    ]
+  },
+  "Hero:hid_outlander_007_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Ursine"
+    ]
+  },
+  "Hero:hid_outlander_007_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Ursine"
+    ]
+  },
+  "Hero:hid_outlander_007_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Ursine"
+    ]
+  },
+  "Hero:hid_outlander_007_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Ursine"
+    ]
+  },
+  "Hero:hid_outlander_007_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Ursine"
+    ]
+  },
+  "Hero:hid_outlander_007_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Ursine"
+    ]
+  },
+  "Hero:hid_outlander_007_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Ursine"
+    ]
+  },
+  "Hero:hid_outlander_007_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Ursine"
+    ]
+  },
+  "Hero:hid_outlander_007_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Ursine"
+    ]
+  },
+  "Hero:hid_outlander_007_uc_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Ursine"
+    ]
+  },
+  "Hero:hid_outlander_007_uc_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Ursine"
+    ]
+  },
+  "Hero:hid_outlander_007_uc_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Ursine"
+    ]
+  },
+  "Hero:hid_outlander_007_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Ursine"
+    ]
+  },
+  "Hero:hid_outlander_007_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Ursine"
+    ]
+  },
+  "Hero:hid_outlander_007_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Ursine"
+    ]
+  },
+  "Hero:hid_outlander_007_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Ursine"
+    ]
+  },
+  "Hero:hid_outlander_007_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Ursine"
+    ]
+  },
+  "Hero:hid_outlander_008_foundersf_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Exploration"
+    ]
+  },
+  "Hero:hid_outlander_008_foundersf_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Exploration"
+    ]
+  },
+  "Hero:hid_outlander_008_foundersf_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Exploration"
+    ]
+  },
+  "Hero:hid_outlander_008_foundersf_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Exploration"
+    ]
+  },
+  "Hero:hid_outlander_008_foundersf_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Exploration"
+    ]
+  },
+  "Hero:hid_outlander_008_foundersm_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Exploration"
+    ]
+  },
+  "Hero:hid_outlander_008_foundersm_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Exploration"
+    ]
+  },
+  "Hero:hid_outlander_008_foundersm_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Exploration"
+    ]
+  },
+  "Hero:hid_outlander_008_foundersm_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Exploration"
+    ]
+  },
+  "Hero:hid_outlander_008_foundersm_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Exploration"
+    ]
+  },
+  "Hero:hid_outlander_008_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Exploration"
+    ]
+  },
+  "Hero:hid_outlander_008_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Exploration"
+    ]
+  },
+  "Hero:hid_outlander_008_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Exploration"
+    ]
+  },
+  "Hero:hid_outlander_008_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Exploration"
+    ]
+  },
+  "Hero:hid_outlander_008_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Exploration"
+    ]
+  },
+  "Hero:hid_outlander_008_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Exploration"
+    ]
+  },
+  "Hero:hid_outlander_008_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Exploration"
+    ]
+  },
+  "Hero:hid_outlander_008_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Exploration"
+    ]
+  },
+  "Hero:hid_outlander_008_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Exploration"
+    ]
+  },
+  "Hero:hid_outlander_008_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Exploration"
+    ]
+  },
+  "Hero:hid_outlander_008_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Exploration"
+    ]
+  },
+  "Hero:hid_outlander_008_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Exploration"
+    ]
+  },
+  "Hero:hid_outlander_008_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Exploration"
+    ]
+  },
+  "Hero:hid_outlander_008_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Exploration"
+    ]
+  },
+  "Hero:hid_outlander_009_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.PhasePuncher"
+    ]
+  },
+  "Hero:hid_outlander_009_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.PhasePuncher"
+    ]
+  },
+  "Hero:hid_outlander_009_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.PhasePuncher"
+    ]
+  },
+  "Hero:hid_outlander_009_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.PhasePuncher"
+    ]
+  },
+  "Hero:hid_outlander_009_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.PhasePuncher"
+    ]
+  },
+  "Hero:hid_outlander_009_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.PhasePuncher"
+    ]
+  },
+  "Hero:hid_outlander_009_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.PhasePuncher"
+    ]
+  },
+  "Hero:hid_outlander_009_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.PhasePuncher"
+    ]
+  },
+  "Hero:hid_outlander_009_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.PhasePuncher"
+    ]
+  },
+  "Hero:hid_outlander_009_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.PhasePuncher"
+    ]
+  },
+  "Hero:hid_outlander_009_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.PhasePuncher"
+    ]
+  },
+  "Hero:hid_outlander_009_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.PhasePuncher"
+    ]
+  },
+  "Hero:hid_outlander_009_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.PhasePuncher"
+    ]
+  },
+  "Hero:hid_outlander_009_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.PhasePuncher"
+    ]
+  },
+  "Hero:hid_outlander_010_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Lockdown"
+    ]
+  },
+  "Hero:hid_outlander_010_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Lockdown"
+    ]
+  },
+  "Hero:hid_outlander_010_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Lockdown"
+    ]
+  },
+  "Hero:hid_outlander_010_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Lockdown"
+    ]
+  },
+  "Hero:hid_outlander_010_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Lockdown"
+    ]
+  },
+  "Hero:hid_outlander_010_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Lockdown"
+    ]
+  },
+  "Hero:hid_outlander_010_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Lockdown"
+    ]
+  },
+  "Hero:hid_outlander_010_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Lockdown"
+    ]
+  },
+  "Hero:hid_outlander_010_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Lockdown"
+    ]
+  },
+  "Hero:hid_outlander_010_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Lockdown"
+    ]
+  },
+  "Hero:hid_outlander_cinematic_test_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Shocking"
+    ]
+  },
+  "Hero:hid_outlander_punchdamage_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.AntiMaterialBlaster"
+    ]
+  },
+  "Hero:hid_outlander_punchdamage_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.AntiMaterialBlaster"
+    ]
+  },
+  "Hero:hid_outlander_punchdamage_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.AntiMaterialBlaster"
+    ]
+  },
+  "Hero:hid_outlander_punchdamage_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.AntiMaterialBlaster"
+    ]
+  },
+  "Hero:hid_outlander_punchdamage_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.AntiMaterialBlaster"
+    ]
+  },
+  "Hero:hid_outlander_punchdamage_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.AntiMaterialBlaster"
+    ]
+  },
+  "Hero:hid_outlander_punchdamage_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.AntiMaterialBlaster"
+    ]
+  },
+  "Hero:hid_outlander_punchdamage_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.AntiMaterialBlaster"
+    ]
+  },
+  "Hero:hid_outlander_punchdamage_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.AntiMaterialBlaster"
+    ]
+  },
+  "Hero:hid_outlander_punchdamage_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.AntiMaterialBlaster"
+    ]
+  },
+  "Hero:hid_outlander_punchphase_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Shocking"
+    ]
+  },
+  "Hero:hid_outlander_punchphase_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Shocking"
+    ]
+  },
+  "Hero:hid_outlander_punchphase_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Shocking"
+    ]
+  },
+  "Hero:hid_outlander_punchphase_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Shocking"
+    ]
+  },
+  "Hero:hid_outlander_punchphase_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Shocking"
+    ]
+  },
+  "Hero:hid_outlander_punchphase_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Shocking"
+    ]
+  },
+  "Hero:hid_outlander_punchphase_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Shocking"
+    ]
+  },
+  "Hero:hid_outlander_punchphase_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Shocking"
+    ]
+  },
+  "Hero:hid_outlander_punchphase_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Shocking"
+    ]
+  },
+  "Hero:hid_outlander_punchphase_uc_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Shocking"
+    ]
+  },
+  "Hero:hid_outlander_punchphase_uc_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Shocking"
+    ]
+  },
+  "Hero:hid_outlander_punchphase_uc_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Shocking"
+    ]
+  },
+  "Hero:hid_outlander_punchphase_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Shocking"
+    ]
+  },
+  "Hero:hid_outlander_punchphase_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Shocking"
+    ]
+  },
+  "Hero:hid_outlander_punchphase_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Shocking"
+    ]
+  },
+  "Hero:hid_outlander_punchphase_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Shocking"
+    ]
+  },
+  "Hero:hid_outlander_punchphase_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Shocking"
+    ]
+  },
+  "Hero:hid_outlander_sony_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_sony_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_sony_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_sony_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_spherefragment_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_spherefragment_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_spherefragment_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_spherefragment_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_spherefragment_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_spherefragment_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_spherefragment_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_spherefragment_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_spherefragment_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_spherefragment_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_spherefragment_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_spherefragment_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_spherefragment_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_spherefragment_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_zonefragment_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.ZoneMaster"
+    ]
+  },
+  "Hero:hid_outlander_zonefragment_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.ZoneMaster"
+    ]
+  },
+  "Hero:hid_outlander_zonefragment_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.ZoneMaster"
+    ]
+  },
+  "Hero:hid_outlander_zonefragment_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.ZoneMaster"
+    ]
+  },
+  "Hero:hid_outlander_zonefragment_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.ZoneMaster"
+    ]
+  },
+  "Hero:hid_outlander_zoneharvest_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Harvesting"
+    ]
+  },
+  "Hero:hid_outlander_zoneharvest_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Harvesting"
+    ]
+  },
+  "Hero:hid_outlander_zoneharvest_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Harvesting"
+    ]
+  },
+  "Hero:hid_outlander_zoneharvest_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Harvesting"
+    ]
+  },
+  "Hero:hid_outlander_zoneharvest_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Harvesting"
+    ]
+  },
+  "Hero:hid_outlander_zoneharvest_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Harvesting"
+    ]
+  },
+  "Hero:hid_outlander_zoneharvest_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Harvesting"
+    ]
+  },
+  "Hero:hid_outlander_zoneharvest_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Harvesting"
+    ]
+  },
+  "Hero:hid_outlander_zoneharvest_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Harvesting"
+    ]
+  },
+  "Hero:hid_outlander_zoneharvest_uc_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Harvesting"
+    ]
+  },
+  "Hero:hid_outlander_zoneharvest_uc_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Harvesting"
+    ]
+  },
+  "Hero:hid_outlander_zoneharvest_uc_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Harvesting"
+    ]
+  },
+  "Hero:hid_outlander_zoneharvest_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Harvesting"
+    ]
+  },
+  "Hero:hid_outlander_zoneharvest_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Harvesting"
+    ]
+  },
+  "Hero:hid_outlander_zoneharvest_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Harvesting"
+    ]
+  },
+  "Hero:hid_outlander_zoneharvest_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Harvesting"
+    ]
+  },
+  "Hero:hid_outlander_zoneharvest_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Harvesting"
+    ]
+  },
+  "Hero:hid_outlander_zonepistol_r_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Deadeye"
+    ]
+  },
+  "Hero:hid_outlander_zonepistol_r_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Deadeye"
+    ]
+  },
+  "Hero:hid_outlander_zonepistol_r_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Deadeye"
+    ]
+  },
+  "Hero:hid_outlander_zonepistol_r_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Deadeye"
+    ]
+  },
+  "Hero:hid_outlander_zonepistol_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Deadeye"
+    ]
+  },
+  "Hero:hid_outlander_zonepistol_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Deadeye"
+    ]
+  },
+  "Hero:hid_outlander_zonepistol_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Deadeye"
+    ]
+  },
+  "Hero:hid_outlander_zonepistol_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Deadeye"
+    ]
+  },
+  "Hero:hid_outlander_zonepistol_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Deadeye"
+    ]
+  },
+  "Hero:hid_outlander_zonepistol_vr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Deadeye"
+    ]
+  },
+  "Hero:hid_outlander_zonepistol_vr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Deadeye"
+    ]
+  },
+  "Hero:hid_outlander_zonepistol_vr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Deadeye"
+    ]
+  },
+  "Hero:hid_outlander_zonepistol_vr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Deadeye"
+    ]
+  },
+  "Hero:hid_outlander_zonepistol_vr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Deadeye"
+    ]
+  },
+  "Hero:hid_outlander_zonepistolhw_sr_t01": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Deadeye"
+    ]
+  },
+  "Hero:hid_outlander_zonepistolhw_sr_t02": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Deadeye"
+    ]
+  },
+  "Hero:hid_outlander_zonepistolhw_sr_t03": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Deadeye"
+    ]
+  },
+  "Hero:hid_outlander_zonepistolhw_sr_t04": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Deadeye"
+    ]
+  },
+  "Hero:hid_outlander_zonepistolhw_sr_t05": {
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Deadeye"
+    ]
+  },
+  "Worker:managerdoctor_c_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_c_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_c_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_r_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_r_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_r_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_r_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_r_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_sr_kingsly_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_sr_kingsly_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_sr_kingsly_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_sr_kingsly_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_sr_kingsly_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_sr_noctor_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_sr_noctor_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_sr_noctor_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_sr_noctor_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_sr_noctor_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_sr_treky_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_sr_treky_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_sr_treky_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_sr_treky_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_sr_treky_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_uc_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_uc_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_uc_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_uc_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_vr_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_vr_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_vr_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_vr_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerdoctor_vr_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerengineer_c_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_c_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_c_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_r_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_r_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_r_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_r_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_r_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_sr_countess_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_sr_countess_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_sr_countess_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_sr_countess_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_sr_countess_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_sr_maths_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_sr_maths_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_sr_maths_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_sr_maths_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_sr_maths_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_sr_sobs_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_sr_sobs_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_sr_sobs_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_sr_sobs_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_sr_sobs_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_uc_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_uc_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_uc_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_uc_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_vr_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_vr_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_vr_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_vr_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerengineer_vr_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsEngineer"
+    ]
+  },
+  "Worker:managerexplorer_c_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_c_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_c_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_r_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_r_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_r_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_r_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_r_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_sr_birdie_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_sr_birdie_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_sr_birdie_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_sr_birdie_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_sr_birdie_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_sr_eagle_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_sr_eagle_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_sr_eagle_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_sr_eagle_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_sr_eagle_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_sr_spacebound_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_sr_spacebound_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_sr_spacebound_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_sr_spacebound_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_sr_spacebound_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_uc_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_uc_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_uc_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_uc_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_vr_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_vr_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_vr_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_vr_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managerexplorer_vr_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsExplorer"
+    ]
+  },
+  "Worker:managergadgeteer_c_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_c_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_c_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_r_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_r_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_r_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_r_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_r_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_sr_fixer_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_sr_fixer_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_sr_fixer_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_sr_fixer_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_sr_fixer_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_sr_flak_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_sr_flak_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_sr_flak_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_sr_flak_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_sr_flak_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_sr_zapps_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_sr_zapps_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_sr_zapps_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_sr_zapps_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_sr_zapps_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_uc_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_uc_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_uc_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_uc_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_vr_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_vr_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_vr_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_vr_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managergadgeteer_vr_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsGadgeteer"
+    ]
+  },
+  "Worker:managerinventor_c_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_c_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_c_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_r_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_r_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_r_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_r_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_r_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_sr_frequency_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_sr_frequency_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_sr_frequency_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_sr_frequency_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_sr_frequency_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_sr_rad_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_sr_rad_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_sr_rad_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_sr_rad_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_sr_rad_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_sr_square_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_sr_square_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_sr_square_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_sr_square_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_sr_square_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_uc_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_uc_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_uc_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_uc_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_vr_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_vr_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_vr_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_vr_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managerinventor_vr_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsInventor"
+    ]
+  },
+  "Worker:managermartialartist_c_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_c_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_c_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_r_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_r_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_r_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_r_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_r_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_sr_dragon_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_sr_dragon_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_sr_dragon_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_sr_dragon_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_sr_dragon_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_sr_samurai_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_sr_samurai_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_sr_samurai_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_sr_samurai_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_sr_samurai_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_sr_tiger_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_sr_tiger_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_sr_tiger_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_sr_tiger_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_sr_tiger_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_uc_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_uc_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_uc_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_uc_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_vr_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_vr_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_vr_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_vr_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managermartialartist_vr_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsMartialArtist"
+    ]
+  },
+  "Worker:managerquestdoctor_r_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerquestdoctor_r_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerquestdoctor_r_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerquestdoctor_r_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managerquestdoctor_r_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsDoctor"
+    ]
+  },
+  "Worker:managersoldier_c_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_c_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_c_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_r_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_r_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_r_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_r_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_r_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_sr_malcolm_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_sr_malcolm_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_sr_malcolm_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_sr_malcolm_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_sr_malcolm_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_sr_princess_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_sr_princess_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_sr_princess_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_sr_princess_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_sr_princess_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_sr_ramsie_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_sr_ramsie_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_sr_ramsie_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_sr_ramsie_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_sr_ramsie_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_uc_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_uc_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_uc_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_uc_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_vr_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_vr_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_vr_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_vr_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managersoldier_vr_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsSoldier"
+    ]
+  },
+  "Worker:managertrainer_c_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_c_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_c_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_r_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_r_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_r_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_r_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_r_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_sr_jumpy_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_sr_jumpy_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_sr_jumpy_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_sr_jumpy_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_sr_jumpy_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_sr_raider_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_sr_raider_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_sr_raider_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_sr_raider_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_sr_raider_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_sr_yoglattes_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_sr_yoglattes_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_sr_yoglattes_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_sr_yoglattes_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_sr_yoglattes_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_uc_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_uc_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_uc_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_uc_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_vr_t01": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_vr_t02": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_vr_t03": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_vr_t04": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:managertrainer_vr_t05": {
+    "manager": true,
+    "tags": [
+      "Homebase.Manager.IsTrainer"
+    ]
+  },
+  "Worker:workerbasic_c_t01": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerbasic_c_t02": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerbasic_r_t01": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerbasic_r_t02": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerbasic_r_t03": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerbasic_r_t04": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerbasic_sr_t01": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerbasic_sr_t02": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerbasic_sr_t03": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerbasic_sr_t04": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerbasic_sr_t05": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerbasic_uc_t01": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerbasic_uc_t02": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerbasic_uc_t03": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerbasic_vr_t01": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerbasic_vr_t02": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerbasic_vr_t03": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerbasic_vr_t04": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerbasic_vr_t05": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerhalloween_alt_sr_t01": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerhalloween_alt_sr_t02": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerhalloween_alt_sr_t03": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerhalloween_alt_sr_t04": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerhalloween_alt_sr_t05": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerhalloween_c_t01": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerhalloween_c_t02": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerhalloween_r_t01": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerhalloween_r_t02": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerhalloween_r_t03": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerhalloween_r_t04": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerhalloween_sr_t01": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerhalloween_sr_t02": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerhalloween_sr_t03": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerhalloween_sr_t04": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerhalloween_sr_t05": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerhalloween_uc_t01": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerhalloween_uc_t02": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerhalloween_uc_t03": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerhalloween_vr_t01": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerhalloween_vr_t02": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerhalloween_vr_t03": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerhalloween_vr_t04": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:workerhalloween_vr_t05": {
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  }
+}
