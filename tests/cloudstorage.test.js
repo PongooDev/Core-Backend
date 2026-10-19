@@ -82,7 +82,8 @@ test("the system hotfix points the client's XMPP at the address and port it reac
     assert.equal(crypto.createHash("sha1").update(download.body).digest("hex"), file.hash);
     assert.equal(crypto.createHash("sha256").update(download.body).digest("hex"), file.hash256);
     assert.deepEqual(download.body.toString("utf8").split("\r\n"),
-      ["[OnlineSubsystemMcp.XMPP]", "ServerAddr=127.0.0.1", `ServerPort=${backend.port}`, "bUseSSL=false", ""]);
+      ["[OnlineSubsystemMcp.XMPP]", "ServerAddr=127.0.0.1", `ServerPort=${backend.port}`, "bUseSSL=false", "",
+        "[OnlineSubsystemMcp.StompServiceMcp]", "Protocol=ws", `Domain=127.0.0.1:${backend.port}`, ""]);
 
     // The same through the HTTPS proxy tunnel the Cert client uses with -httpproxy.
     const host = "fortnite-public-service-prod11.ol.epicgames.com";

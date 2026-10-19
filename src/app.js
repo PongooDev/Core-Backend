@@ -23,6 +23,7 @@ import { friendsRoutes } from "./services/friends/lists.js";
 import { lightswitchRoutes } from "./services/lightswitch/status.js";
 import { sessionRoutes } from "./services/matchmaking/sessions.js";
 import { profileRoutes } from "./services/mcp/profile.js";
+import { createStompService } from "./stomp/service.js";
 import { createXmppService } from "./xmpp/service.js";
 
 // What the HTTP routes and the XMPP service share.
@@ -36,6 +37,7 @@ export function createContext(config) {
     friends,
     profiles: createProfileStore(config.dataDir),
     sessions: createSessionStore(),
+    stomp: createStompService({ tokens, quiet: config.requestLog === false }),
     xmpp: createXmppService({
       tokens,
       contactsOf: (accountId) => friends.accepted(accountId),

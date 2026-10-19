@@ -10,10 +10,16 @@ const validFilename = /^[A-Za-z0-9._-]{1,128}$/;
 // System files are hotfixes. The client fetches them at start-up, before it logs in, and merges Default*.ini files
 // into the matching config (UOnlineHotfixManager: DefaultEngine.ini -> Engine). Its XMPP connection is made at
 // login and reads [OnlineSubsystemMcp.XMPP] then (sub_37C4C80 -> sub_37C22D0), so this points XMPP at the address
-// and port the client reached this backend on, which is where XMPP is served. Nothing is written on the player's PC.
+// and port the client reached this backend on, which is where XMPP is served. STOMP's service config takes Protocol
+// and Domain from [OnlineSubsystemMcp.StompServiceMcp] the same way (sub_3808800); its URL is
+// <Protocol>://<Domain>/stomp. Nothing is written on the player's PC.
 function systemFiles(req) {
   const address = req.socket.localAddress.replace(/^::ffff:/, "");
-  const engine = ["[OnlineSubsystemMcp.XMPP]", `ServerAddr=${address}`, `ServerPort=${req.socket.localPort}`, "bUseSSL=false", ""].join("\r\n");
+  const port = req.socket.localPort;
+  const engine = [
+    "[OnlineSubsystemMcp.XMPP]", `ServerAddr=${address}`, `ServerPort=${port}`, "bUseSSL=false", "",
+    "[OnlineSubsystemMcp.StompServiceMcp]", "Protocol=ws", `Domain=${address}:${port}`, ""
+  ].join("\r\n");
   return { "DefaultEngine.ini": Buffer.from(engine, "utf8") };
 }
 
