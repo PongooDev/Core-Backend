@@ -15,9 +15,16 @@ export function findItem(profile, templateId) {
   return Object.keys(profile.items).find((itemId) => profile.items[itemId].templateId.toLowerCase() === templateId.toLowerCase());
 }
 
+// Characters start outside any squad: the client treats squad_id "" / squad_slot_idx -1 as unassigned.
+const unassigned = {
+  FortHeroType: { squad_id: "", squad_slot_idx: -1, slotted_building_id: "", building_slot_used: -1 },
+  FortWorkerType: { squad_id: "", squad_slot_idx: -1, slotted_building_id: "", building_slot_used: -1 },
+  FortDefenderItemDefinition: { squad_id: "", squad_slot_idx: -1 }
+};
+
 function addItem(tracker, templateId, quantity, info) {
   const itemId = crypto.randomUUID();
-  const attributes = info.profile === "profile" ? { level: 1, item_seen: 0 } : {};
+  const attributes = info.profile === "profile" ? { level: 1, item_seen: 0, ...unassigned[info.class] } : {};
   tracker.addItem(itemId, { templateId, attributes, quantity });
   return itemId;
 }
@@ -27,6 +34,8 @@ function unlockCollectionBookPage(tracker, page) {
   if (book.pages.some((known) => known.toLowerCase() === page.toLowerCase())) return;
   tracker.setStat("collection_book", { ...book, pages: [...book.pages, page] });
 }
+
+export const lootEntry = ({ templateId, itemId, profileId, quantity }) => ({ itemType: templateId, itemGuid: itemId, itemProfile: profileId, quantity });
 
 // Returns what was granted, one entry per item that was added or topped up.
 export function grantItem(session, templateId, quantity) {
@@ -40,6 +49,9 @@ export function grantItem(session, templateId, quantity) {
     unlockCollectionBookPage(session.profile("profile0"), name);
     return [];
   }
+
+  // A skill tree node is owned or not; quest rewards can grant one the player already bought.
+  if (type.toLowerCase() === "homebasenode" && findItem(session.profile("profile0").profile, templateId)) return [];
 
   const info = itemInfo(templateId);
   if (!info) {

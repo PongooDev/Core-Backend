@@ -1,13 +1,21 @@
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { readGameData } from "./read.js";
 
-const file = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "gamedata", "items.json");
-const items = new Map(
-  Object.entries(fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, "utf8")) : {})
-    .map(([templateId, item]) => [templateId.toLowerCase(), item])
-);
+const items = new Map(Object.entries(readGameData("items", {})).map(([templateId, item]) => [templateId.toLowerCase(), { templateId, ...item }]));
+const characters = new Map(Object.entries(readGameData("characters", {})).map(([templateId, data]) => [templateId.toLowerCase(), data]));
+const cardPacks = new Map(Object.entries(readGameData("cardpacks", {})).map(([templateId, data]) => [templateId.toLowerCase(), data]));
 
 export function getItem(templateId) {
   return items.get(templateId.toLowerCase());
+}
+
+export function getCharacter(templateId) {
+  return characters.get(templateId.toLowerCase());
+}
+
+export function getCardPack(templateId) {
+  return cardPacks.get(templateId.toLowerCase());
+}
+
+export function itemIds() {
+  return [...items.values()].map((item) => item.templateId);
 }

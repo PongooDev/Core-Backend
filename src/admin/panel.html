@@ -80,6 +80,11 @@
   .stat .label { color: var(--muted); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
   .stat .value { font-size: 18px; font-weight: 600; margin-top: 4px; overflow-wrap: anywhere; }
   .note { color: var(--muted); font-size: 13px; margin: 0 0 24px; }
+  .give { display: flex; flex-wrap: wrap; gap: 8px; }
+  .field { padding: 9px 12px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--bg); color: var(--text); font: inherit; }
+  .field:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .give .item { flex: 1 1 260px; min-width: 0; }
+  .give .count { width: 96px; }
 
   section.block { margin-top: 24px; }
   section.block h3 { margin-bottom: 10px; }
@@ -126,6 +131,7 @@
 </main>
 
 <div id="toast" role="status"></div>
+<datalist id="item-ids"></datalist>
 
 <script>
   const state = { accounts: [], selected: null, busy: false };
@@ -139,7 +145,7 @@
 
   async function api(path, options = {}) {
     const response = await fetch(path, options.method === "POST"
-      ? { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" }
+      ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(options.body ?? {}) }
       : undefined);
     const body = await response.json();
     if (!response.ok) throw new Error(body.errorMessage ?? response.statusText);
@@ -217,12 +223,44 @@
           .map(([label, value]) => el("div", { className: "stat" }, el("div", { className: "label", textContent: label }),
             el("div", { className: "value" }, value instanceof Node ? value : String(value))))),
       el("p", { className: "note", textContent: "Changes apply to the saved profile. Restart the game afterwards so it loads them." }),
+      giveForm(account),
       el("section", { className: "block" }, el("h3", { textContent: `Quests (${account.quests.length})` }),
         table([["Quest", (q) => q.questId], ["Type", (q) => q.type], ["State", (q) => stateChip(q.state)], ["Progress", progress]], account.quests)),
       el("section", { className: "block" }, el("h3", { textContent: `Items (${account.items.length})` }),
         table([["Item", (i) => i.templateId], ["Level", (i) => i.level, true], ["Quantity", (i) => i.quantity.toLocaleString(), true]], account.items)),
       el("section", { className: "block" }, el("h3", { textContent: `World items (${account.worldItems.length})` }),
         table([["Item", (i) => i.templateId], ["Quantity", (i) => i.quantity.toLocaleString(), true]], account.worldItems)));
+  }
+
+  function giveForm(account) {
+    const item = el("input", { className: "field item", placeholder: "Item, e.g. Token:homebasepoints", ariaLabel: "Item to give" });
+    item.setAttribute("list", "item-ids");
+    const count = el("input", { className: "field count", type: "number", min: 1, value: 1, ariaLabel: "Quantity" });
+    const form = el("form", {
+      className: "give",
+      onsubmit: async (event) => {
+        event.preventDefault();
+        const templateId = item.value.trim();
+        if (!templateId) return;
+        try {
+          const result = await api(`/admin/api/accounts/${account.id}/grant`, { method: "POST", body: { templateId, quantity: Number(count.value) } });
+          toast(result.granted ? `Gave ${count.value} × ${templateId}` : `${templateId} is already owned`);
+          renderDetail(result);
+        } catch (error) {
+          toast(error.message, true);
+        }
+      }
+    }, item, count, el("button", { className: "ghost", type: "submit", textContent: "Give" }));
+    return el("section", { className: "block" }, el("h3", { textContent: "Give item" }), form);
+  }
+
+  async function loadItemIds() {
+    try {
+      const ids = await api("/admin/api/items");
+      $("item-ids").replaceChildren(...ids.map((id) => el("option", { value: id })));
+    } catch (error) {
+      toast(error.message, true);
+    }
   }
 
   async function loadAccounts() {
@@ -267,6 +305,7 @@
   });
   window.addEventListener("focus", loadAccounts);
   loadAccounts();
+  loadItemIds();
 </script>
 </body>
 </html>

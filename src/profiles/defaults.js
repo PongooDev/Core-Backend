@@ -1,3 +1,5 @@
+import crypto from "node:crypto";
+
 const never = "0001-01-01T00:00:00.000Z";
 
 const templates = {
@@ -35,6 +37,24 @@ export function addMissingStats(profile) {
   for (const [name, value] of Object.entries(defaultStats(profile.profileId))) {
     if (!(name in profile.stats.attributes)) {
       profile.stats.attributes[name] = value;
+      added = true;
+    }
+  }
+  return added;
+}
+
+// Nothing in the game data grants the skill tree's start node, yet it unlocks the first hero slot, Commando slotting
+// and the starting storage, so every profile0 owns it (inferred: it can't be bought and sits on no page).
+const startingItems = {
+  profile0: [{ templateId: "HomebaseNode:startnode_commandcenter", attributes: { level: 1, item_seen: 0 }, quantity: 1 }]
+};
+
+export function addMissingItems(profile) {
+  let added = false;
+  for (const item of startingItems[profile.profileId] ?? []) {
+    const held = Object.values(profile.items).some((existing) => existing.templateId.toLowerCase() === item.templateId.toLowerCase());
+    if (!held) {
+      profile.items[crypto.randomUUID()] = structuredClone(item);
       added = true;
     }
   }

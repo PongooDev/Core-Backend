@@ -16,8 +16,8 @@ function memorySession() {
 }
 
 test("item data routes account items to profile0 and world items to theater0", () => {
-  assert.deepEqual(getItem("Hero:hid_constructor_rushbase_uc_t01"), { class: "FortHeroType", maxStackSize: 1, profile: "profile" });
-  assert.deepEqual(getItem("weapon:WID_Shotgun_Standard_UC_Ore_T01"), { class: "FortWeaponRangedItemDefinition", maxStackSize: 1, profile: "theater" });
+  assert.deepEqual(getItem("Hero:hid_constructor_rushbase_uc_t01"), { templateId: "Hero:hid_constructor_rushbase_uc_t01", class: "FortHeroType", maxStackSize: 1, profile: "profile" });
+  assert.deepEqual(getItem("weapon:WID_Shotgun_Standard_UC_Ore_T01"), { templateId: "Weapon:wid_shotgun_standard_uc_ore_t01", class: "FortWeaponRangedItemDefinition", maxStackSize: 1, profile: "theater" });
   assert.equal(getItem("Currency:mtxgiveaway").maxStackSize, 999999);
 });
 

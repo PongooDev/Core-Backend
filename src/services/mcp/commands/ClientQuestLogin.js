@@ -1,6 +1,7 @@
 import { startingQuests } from "../../../gamedata/quests.js";
-import { grantQuest } from "../../../profiles/quests.js";
+import { grant } from "../../../profiles/progress.js";
 
-export function clientQuestLogin({ tracker }) {
-  for (const questId of startingQuests) grantQuest(tracker, questId);
+// The client may send this several times a session and logs out after 5 failed retries, so it must always succeed.
+export function clientQuestLogin({ session }) {
+  for (const questId of startingQuests) grant(session, `Quest:${questId}`, 1);
 }

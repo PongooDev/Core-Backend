@@ -1,9 +1,6 @@
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { readGameData } from "./read.js";
 
-const file = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "gamedata", "quests.json");
-const quests = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, "utf8")) : {};
+const quests = readGameData("quests", {});
 
 const granted = new Set(
   Object.values(quests).flatMap((quest) => [
@@ -21,4 +18,8 @@ export const startingQuests = Object.entries(quests)
 
 export function getQuest(id) {
   return quests[id.toLowerCase()];
+}
+
+export function questIds() {
+  return Object.keys(quests);
 }

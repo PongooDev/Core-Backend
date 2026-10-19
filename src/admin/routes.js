@@ -1,9 +1,11 @@
 import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { notFound } from "../errors.js";
-import { getQuest } from "../gamedata/quests.js";
-import { skipTutorial } from "../profiles/progress.js";
+import { notFound, sendError } from "../errors.js";
+import { getNode, nodeIds } from "../gamedata/homebase.js";
+import { getItem, itemIds } from "../gamedata/items.js";
+import { getQuest, questIds } from "../gamedata/quests.js";
+import { grant, skipTutorial } from "../profiles/progress.js";
 import { questIdOf, tutorialCompleted } from "../profiles/quests.js";
 import { openSession } from "../profiles/session.js";
 import { requireLoopback, requirePanelRequest } from "./local.js";
@@ -69,6 +71,31 @@ export function adminRoutes({ accounts, profiles }) {
     const account = accounts.get(req.params.accountId);
     if (!account) return notFound(res, req.originalUrl);
     res.json(details(account, profiles));
+  });
+
+  router.get("/admin/api/items", (req, res) => {
+    res.json([...itemIds(), ...questIds().map((id) => `Quest:${id}`), ...nodeIds().map((id) => `HomebaseNode:${id.toLowerCase()}`)].sort());
+  });
+
+  // Test helper: give an item the normal way, so quests that wait on it move on too.
+  router.post("/admin/api/accounts/:accountId/grant", (req, res) => {
+    const account = accounts.get(req.params.accountId);
+    if (!account) return notFound(res, req.originalUrl);
+    const templateId = String(req.body?.templateId ?? "").trim();
+    const quantity = Number(req.body?.quantity ?? 1);
+    if (!Number.isInteger(quantity) || quantity < 1 || quantity > 1_000_000) {
+      return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "Quantity must be 1 to 1000000");
+    }
+    const [type, name = ""] = templateId.split(":");
+    const known = type.toLowerCase() === "quest" ? Boolean(getQuest(name))
+      : type.toLowerCase() === "homebasenode" ? Boolean(getNode(name))
+      : Boolean(getItem(templateId));
+    if (!known) return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", `Unknown item ${templateId}`);
+
+    const session = openSession(profiles, account.id);
+    const granted = grant(session, templateId, quantity);
+    session.commit();
+    res.json({ granted: granted.length, ...details(account, profiles) });
   });
 
   router.post("/admin/api/accounts/:accountId/skip-tutorial", (req, res) => {

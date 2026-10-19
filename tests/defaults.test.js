@@ -65,7 +65,7 @@ test("MarkNewQuestNotificationSent flags only the given quest items", async () =
   try {
     const { token, accountId } = await userLogin(backend.port, "CoreTest");
     const login = await post(backend.port, command(accountId, "ClientQuestLogin", "profile0", -1), token, {});
-    const questId = Object.keys(login.body.profileChanges[0].profile.items)[0];
+    const [questId] = Object.entries(login.body.profileChanges[0].profile.items).find(([, item]) => item.templateId.startsWith("Quest:"));
 
     const marked = await post(backend.port, command(accountId, "MarkNewQuestNotificationSent", "profile0", login.body.profileRevision), token,
       { itemIds: [questId, "not-an-item"] });

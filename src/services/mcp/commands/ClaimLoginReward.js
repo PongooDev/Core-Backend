@@ -1,5 +1,6 @@
 import { defaultSchedule, tokenSchedules } from "../../../gamedata/dailyrewards.js";
-import { findItem, grantItem } from "../../../profiles/items.js";
+import { findItem, lootEntry } from "../../../profiles/items.js";
+import { grant } from "../../../profiles/progress.js";
 
 const utcMidnight = (date) => Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
 
@@ -16,9 +17,7 @@ export function claimLoginReward({ session, notifications }) {
   const items = [];
   const claim = (schedule, index) => {
     const reward = schedule.rewards[index % schedule.rewards.length];
-    for (const granted of grantItem(session, reward.templateId, reward.quantity)) {
-      items.push({ itemType: granted.templateId, itemGuid: granted.itemId, itemProfile: granted.profileId, quantity: granted.quantity });
-    }
+    items.push(...grant(session, reward.templateId, reward.quantity).map(lootEntry));
   };
 
   if (!(Date.parse(stat.lastClaimDate) >= utcMidnight(now))) {

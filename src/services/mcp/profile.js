@@ -1,7 +1,7 @@
 import express from "express";
 import { requireAuth, requireOwnAccount } from "../../accounts/auth.js";
 import { requireLoopback } from "../../admin/local.js";
-import { sendError } from "../../errors.js";
+import { McpError, sendError } from "../../errors.js";
 import { recordUnknown } from "../../log.js";
 import { isKnownProfile } from "../../profiles/ids.js";
 import { openSession } from "../../profiles/session.js";
@@ -26,7 +26,12 @@ function runCommand(commands, { profiles, dataDir }) {
     const tracker = session.profile(profileId);
     const notifications = [];
 
-    command({ req, profile: tracker.profile, tracker, session, notifications });
+    try {
+      command({ req, profile: tracker.profile, tracker, session, notifications });
+    } catch (error) {
+      if (error instanceof McpError) return sendError(res, 400, error.errorCode, error.message);
+      throw error;
+    }
     session.commit();
 
     res.json(session.response(profileId, Number(req.query.rvn ?? -1), notifications));

@@ -35,7 +35,7 @@ test("ClientQuestLogin grants the starting quest once, active with zeroed object
 
     const query = await post(backend.port, command(accountId, "QueryProfile"), token, {});
     const items = Object.values(query.body.profileChanges[0].profile.items);
-    assert.deepEqual(items.map((item) => item.templateId), ["Quest:homebaseonboarding"]);
+    assert.deepEqual(items.map((item) => item.templateId).filter((id) => id.startsWith("Quest:")), ["Quest:homebaseonboarding"]);
   } finally {
     backend.close();
   }
