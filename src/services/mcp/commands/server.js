@@ -103,13 +103,14 @@ export const serverCommands = {
   // One call for every player in the match: [{accountId, totalScore, bCriticalMatchBonus}] (FAccountIdAndScore).
   // Each player gets the XP; the caller's response carries its own earnScore notification.
   EarnScore({ req, sessionFor, session, notifications }) {
-    for (const { accountId, totalScore } of Array.isArray(req.body?.playersAndScores) ? req.body.playersAndScores : []) {
+    for (const { accountId, totalScore, bCriticalMatchBonus } of Array.isArray(req.body?.playersAndScores) ? req.body.playersAndScores : []) {
       const target = typeof accountId === "string" && sessionFor(accountId);
       if (!target || !Number.isFinite(totalScore) || totalScore <= 0) continue;
-      const { xpEarned, levels } = earnScore(target, totalScore);
+      const { baseXPEarned, bonusXPEarned, boostXPEarned, boostXPMissed, restXPEarned, groupBoostXPEarned, levels } =
+        earnScore(target, totalScore, { criticalMatch: bCriticalMatchBonus === true });
       if (target !== session) continue;
-      notifications.push({ type: "earnScore", primary: false, baseXPEarned: xpEarned, bonusXPEarned: 0, boostXPEarned: 0,
-        boostXPMissed: 0, restXPEarned: 0, groupBoostXPEarned: 0 });
+      notifications.push({ type: "earnScore", primary: false, baseXPEarned, bonusXPEarned, boostXPEarned, boostXPMissed,
+        restXPEarned, groupBoostXPEarned });
       for (const level of levels) notifications.push({ type: "levelUp", primary: false, level });
     }
   },

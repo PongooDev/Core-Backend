@@ -144,6 +144,24 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         };
     }
 
+    // Quotas (UFortQuotaItemDefinition, Quota:RestXP): where the value starts, its cap, and how it refills.
+    if (export.ExportType == "FortQuotaItemDefinition")
+    {
+        var item = (SortedDictionary<string, object>)items[templateId];
+        item["startingValue"] = properties?["StartingValue"]?.GetValue<double>() ?? 0;
+        item["maximumValue"] = properties?["MaximumValue"]?.GetValue<int>() ?? 0;
+        item["rechargePerMinute"] = properties?["UnitsPerMinuteRechargeRate"]?.GetValue<double>() ?? 0;
+        item["rechargeDelayMinutes"] = properties?["RechargeDelayMinutes"]?.GetValue<int>() ?? 0;
+    }
+
+    // Account consumables (UFortConsumableAccountItemDefinition, the XP boosts): who they can be used on.
+    if (export.ExportType == "FortConsumableAccountItemDefinition")
+    {
+        var item = (SortedDictionary<string, object>)items[templateId];
+        item["activateOnSelf"] = properties?["bCanActivateOnSelf"]?.GetValue<bool>() ?? true;
+        item["activateOnOthers"] = properties?["bCanActivateOnOthers"]?.GetValue<bool>() ?? false;
+    }
+
     // Storm shields and deployable bases (UFortCloudSaveItemDefinition): their level range and save ContentVersion.
     if (export.ExportType is "FortOutpostItemDefinition" or "FortDeployableBaseCloudSaveItemDefinition")
     {
@@ -497,6 +515,9 @@ foreach (var (id, row) in LoadRows(provider, JsonValue.Create("/Game/Balance/Dat
         ["level"] = int.Parse(id),
         ["xp"] = row["XP"]?.GetValue<long>() ?? 0,
         ["displayMultiplier"] = row["XPDisplayMultiplier"]?.GetValue<double>() ?? 1,
+        ["restXpCap"] = row["RestXPCap"]?.GetValue<int>() ?? 0,
+        ["restXpRechargeRate"] = row["RestXPRechargeRate"]?.GetValue<int>() ?? 0,
+        ["boostXpPerConsumable"] = row["BoostXPPerConsumable"]?.GetValue<int>() ?? 0,
         ["rewards"] = rewards
     });
 }

@@ -3,6 +3,7 @@ import { createAccountStore } from "./accounts/store.js";
 import { createFriendStore } from "./friends/store.js";
 import { adminRoutes } from "./admin/routes.js";
 import { createTokenStore } from "./accounts/tokens.js";
+import { createMailbox } from "./profiles/mailbox.js";
 import { createProfileStore } from "./profiles/store.js";
 import { requestLog, unknownRoute } from "./log.js";
 import { createSessionStore } from "./matchmaking/sessions.js";
@@ -37,6 +38,7 @@ export function createContext(config) {
     tokens,
     friends,
     profiles: createProfileStore(config.dataDir),
+    mailbox: createMailbox(),
     sessions: createSessionStore(),
     stomp: createStompService({ tokens, quiet: config.requestLog === false }),
     xmpp: createXmppService({

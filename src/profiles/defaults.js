@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import { isChoicePack, rollOptions } from "../cardpacks/contents.js";
 import { starterBanners } from "../gamedata/banners.js";
 import { emptyAlertRecord, withQuotaSlots } from "./alerts.js";
+import { restQuotaAttributes } from "./boosts.js";
 
 const never = "0001-01-01T00:00:00.000Z";
 
@@ -63,7 +64,9 @@ export function addMissingStats(profile) {
 const startingItems = {
   profile0: [
     { templateId: "HomebaseNode:startnode_commandcenter", attributes: { level: 1, item_seen: 0 }, quantity: 1 },
-    ...starterBanners.map((templateId) => ({ templateId, attributes: { item_seen: 1 }, quantity: 1 }))
+    ...starterBanners.map((templateId) => ({ templateId, attributes: { item_seen: 1 }, quantity: 1 })),
+    // Rest XP (Quota:RestXP) starts full; the client shows its balance from this item.
+    { templateId: "Quota:restxp", attributes: (profile) => restQuotaAttributes(profile.stats.attributes.level ?? 1), quantity: 1 }
   ]
 };
 
@@ -72,7 +75,8 @@ export function addMissingItems(profile) {
   for (const item of startingItems[profile.profileId] ?? []) {
     const held = Object.values(profile.items).some((existing) => existing.templateId.toLowerCase() === item.templateId.toLowerCase());
     if (!held) {
-      profile.items[crypto.randomUUID()] = structuredClone(item);
+      const attributes = typeof item.attributes === "function" ? item.attributes(profile) : item.attributes;
+      profile.items[crypto.randomUUID()] = structuredClone({ ...item, attributes });
       added = true;
     }
   }

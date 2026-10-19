@@ -1,3 +1,4 @@
+import { activateConsumable } from "./ActivateConsumable.js";
 import { assignWorkerToSquad } from "./AssignWorkerToSquad.js";
 import { assignWorkerToSquadBatch } from "./AssignWorkerToSquadBatch.js";
 import { claimLoginReward } from "./ClaimLoginReward.js";
@@ -33,6 +34,7 @@ import { convertItemCommand, recycleItemBatchCommand, recycleItemCommand, upgrad
 
 export const clientCommands = {
   AbandonExpedition: abandonExpeditionCommand,
+  ActivateConsumable: activateConsumable,
   AssignWorkerToSquad: assignWorkerToSquad,
   AssignWorkerToSquadBatch: assignWorkerToSquadBatch,
   ClaimCollectionBookPageRewards: claimCollectionBookPageRewards,

@@ -8,7 +8,7 @@ import { openSession } from "../../profiles/session.js";
 import { adminCommands, clientCommands } from "./commands/index.js";
 import { publicCommands, serverCommands } from "./commands/server.js";
 
-function runCommand(commands, context) {
+function runCommand(commands, context, { deliverMail = false } = {}) {
   const { profiles, dataDir } = context;
   return (req, res) => {
     const profileId = String(req.params.profileId ?? req.query.profileId ?? "");
@@ -44,6 +44,7 @@ function runCommand(commands, context) {
     }
     session.commit();
     for (const other of others.values()) other.commit();
+    if (deliverMail) notifications.push(...(context.mailbox?.take(req.params.accountId) ?? []));
 
     res.json(session.response(profileId, Number(req.query.rvn ?? -1), notifications));
   };
@@ -60,7 +61,7 @@ export function profileRoutes(context) {
   const router = express.Router();
 
   router.post("/fortnite/api/game/v2/profile/:accountId/client/:command",
-    requireAuth(context.tokens), requireOwnAccount, runCommand(clientCommands, context));
+    requireAuth(context.tokens), requireOwnAccount, runCommand(clientCommands, context, { deliverMail: true }));
 
   // Other accounts' profiles (a party member's banner and heroes), read only.
   router.post("/fortnite/api/game/v2/profile/:accountId/public/:command",

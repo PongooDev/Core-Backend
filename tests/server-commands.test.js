@@ -96,14 +96,16 @@ test("EarnScore gives every listed player XP, levels them up with their rewards,
     ] });
     assert.equal(earned.status, 200);
     const [notification] = earned.body.notifications.filter((entry) => entry.type === "earnScore");
-    assert.equal(notification.baseXPEarned, 1200000);
-    assert.deepEqual(earned.body.notifications.filter((entry) => entry.type === "levelUp").map((entry) => entry.level), [2]);
+    // 300 score at level 1 is 1,200,000 XP; a new account's full rest XP doubles it; there's no boost to spend.
+    assert.deepEqual([notification.baseXPEarned, notification.restXPEarned, notification.boostXPEarned, notification.boostXPMissed],
+      [1200000, 1200000, 0, 360000]);
+    assert.deepEqual(earned.body.notifications.filter((entry) => entry.type === "levelUp").map((entry) => entry.level), [2, 3]);
 
     const stats = profileOf(await send("QueryProfile", {})).stats.attributes;
-    assert.deepEqual([stats.level, stats.xp], [2, 1200000]);
-    assert.equal(byTemplate(profileOf(await send("QueryProfile", {})), "Token:homebasepoints")[0]?.quantity, 1);
+    assert.deepEqual([stats.level, stats.xp], [3, 2400000]);
+    assert.equal(byTemplate(profileOf(await send("QueryProfile", {})), "Token:homebasepoints")[0]?.quantity, 2);
     const otherStats = profileOf(await post(backend.port, route("client", other.accountId, "QueryProfile"), other.token, {})).stats.attributes;
-    assert.deepEqual([otherStats.level, otherStats.xp], [1, 400000]);
+    assert.deepEqual([otherStats.level, otherStats.xp], [1, 800000]);
   } finally {
     backend.close();
   }

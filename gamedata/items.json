@@ -5073,6 +5073,8 @@
     "tier": "No_Tier"
   },
   "ConsumableAccountItem:foundersfriendcode": {
+    "activateOnOthers": false,
+    "activateOnSelf": true,
     "class": "FortConsumableAccountItemDefinition",
     "maxStackSize": -1,
     "profile": "profile",
@@ -5080,6 +5082,8 @@
     "tier": "No_Tier"
   },
   "ConsumableAccountItem:smallxpboost": {
+    "activateOnOthers": false,
+    "activateOnSelf": true,
     "class": "FortConsumableAccountItemDefinition",
     "maxStackSize": -1,
     "profile": "profile",
@@ -5087,6 +5091,8 @@
     "tier": "No_Tier"
   },
   "ConsumableAccountItem:smallxpboost_gift": {
+    "activateOnOthers": true,
+    "activateOnSelf": false,
     "class": "FortConsumableAccountItemDefinition",
     "maxStackSize": -1,
     "profile": "profile",
@@ -21050,8 +21056,12 @@
   "Quota:restxp": {
     "class": "FortQuotaItemDefinition",
     "maxStackSize": 1,
+    "maximumValue": 2396133,
     "profile": "profile",
     "rarity": "Ordinary",
+    "rechargeDelayMinutes": 360,
+    "rechargePerMinute": 1997,
+    "startingValue": 2396133,
     "tier": "No_Tier"
   },
   "Schematic:ammo_bulletsheavy": {
