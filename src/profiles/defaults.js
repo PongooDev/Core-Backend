@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import { isChoicePack, rollOptions } from "../cardpacks/contents.js";
+import { starterBanners } from "../gamedata/banners.js";
 import { emptyAlertRecord, withQuotaSlots } from "./alerts.js";
 
 const never = "0001-01-01T00:00:00.000Z";
@@ -57,9 +58,13 @@ export function addMissingStats(profile) {
 }
 
 // Nothing in the game data grants the skill tree's start node, yet it unlocks the first hero slot, Commando slotting
-// and the starting storage, so every profile0 owns it (inferred: it can't be bought and sits on no page).
+// and the starting storage, so every profile0 owns it (inferred: it can't be bought and sits on no page). The banner
+// editor only lists banners the player owns, so the starter banners are starting items too.
 const startingItems = {
-  profile0: [{ templateId: "HomebaseNode:startnode_commandcenter", attributes: { level: 1, item_seen: 0 }, quantity: 1 }]
+  profile0: [
+    { templateId: "HomebaseNode:startnode_commandcenter", attributes: { level: 1, item_seen: 0 }, quantity: 1 },
+    ...starterBanners.map((templateId) => ({ templateId, attributes: { item_seen: 1 }, quantity: 1 }))
+  ]
 };
 
 export function addMissingItems(profile) {

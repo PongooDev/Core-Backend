@@ -27,7 +27,9 @@ test("QueryProfile returns an FProfileUpdate with a full profile the client can 
     assert.equal(typeof change.profile.version, "string");
     assert.equal(typeof change.profile.wipeNumber, "number");
     assert.equal(change.profile.stats.attributes.level, 1);
-    assert.deepEqual(Object.values(change.profile.items).map((item) => item.templateId), ["HomebaseNode:startnode_commandcenter"]);
+    const templateIds = Object.values(change.profile.items).map((item) => item.templateId);
+    assert.deepEqual(templateIds.filter((templateId) => !templateId.startsWith("HomebaseBanner")), ["HomebaseNode:startnode_commandcenter"]);
+    assert.equal(templateIds.length, 1 + 31 + 21, "the start node and the starter banners");
 
     assert.ok(fs.existsSync(path.join(backend.dataDir, "accounts", accountId, "profiles", "profile0.json")));
 

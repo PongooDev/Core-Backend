@@ -31,6 +31,8 @@ test("the packs players can get roll real items, and the descriptions decide wha
   assert.match(roll("CardPack:cardpack_custom_firecracker_r")[0], /firecracker/);
   assert.deepEqual(rollContents("CardPack:zcp_heroxp_t01"), [{ templateId: "AccountResource:heroxp", quantity: 100 }]);
   assert.deepEqual(rollContents("CardPack:zcp_reagent_c_t02_high"), [{ templateId: "AccountResource:reagent_c_t02", quantity: 2 }]);
+  assert.deepEqual(roll("CardPack:cardpack_founders_banners_t01"),
+    ["FounderTier1Banner1", "FounderTier1Banner2", "FounderTier1Banner3", "FounderTier1Banner4"].map((row) => `HomebaseBannerIcon:${row}`));
   const options = rollOptions("CardPack:cardpack_choice_hero_r");
   assert.equal(options.length, 2);
   for (const option of options) assert.match(option.itemType, /^Hero:hid_.*_r_t01$/);

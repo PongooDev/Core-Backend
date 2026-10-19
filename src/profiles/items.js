@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import { isChoicePack, rollOptions } from "../cardpacks/contents.js";
+import { bannerTemplateId } from "../gamedata/banners.js";
 import { getItem } from "../gamedata/items.js";
 import { log } from "../log.js";
 import { grantQuest } from "./quests.js";
@@ -9,6 +10,8 @@ const profileFor = { profile: "profile0", theater: "theater0" };
 function itemInfo(templateId) {
   // Homebase nodes are built from data tables rather than assets; their class derives from FortAccountItemDefinition.
   if (templateId.toLowerCase().startsWith("homebasenode:")) return { profile: "profile", maxStackSize: 1 };
+  // So are banners: every icon shares DefaultHomebaseBannerIconItemDefinition and keeps its row (BannerRowName).
+  if (bannerTemplateId(templateId)) return { profile: "profile", maxStackSize: 1 };
   return getItem(templateId);
 }
 
@@ -58,8 +61,9 @@ export function grantItem(session, templateId, quantity, options = {}) {
     return [];
   }
 
-  // A skill tree node is owned or not; quest rewards can grant one the player already bought.
-  if (type.toLowerCase() === "homebasenode") {
+  // A skill tree node or a banner is owned or not; quest rewards can grant one the player already bought.
+  if (bannerTemplateId(templateId)) templateId = bannerTemplateId(templateId);
+  if (type.toLowerCase() === "homebasenode" || bannerTemplateId(templateId)) {
     if (findItem(session.profile("profile0").profile, templateId)) return [];
     quantity = 1;
   }

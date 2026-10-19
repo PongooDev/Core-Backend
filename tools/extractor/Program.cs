@@ -165,6 +165,16 @@ foreach (var schedule in gameData["Properties"]?["DailyRewardSchedules"]?.AsArra
 
 // The skill tree and squads come from the homebase manager DefaultGameData points at.
 var manager = LoadExport(provider, gameData["Properties"]!["HomebaseManager"], "FortHomebaseManager")["Properties"]!;
+
+// Banners: the editor lists the profile0 items HomebaseBannerIcon:<row> and HomebaseBannerColor:<row> the player owns
+// (UFortBannerUtilities::GetBannerIconsForCategory), by the rows' categories.
+SortedDictionary<string, string> BannerRows(JsonObject rows) =>
+    new(rows.ToDictionary(r => r.Key, r => r.Value!["CategoryRowName"]?.GetValue<string>() ?? ""), StringComparer.Ordinal);
+var banners = new SortedDictionary<string, object>(StringComparer.Ordinal)
+{
+    ["icons"] = BannerRows(LoadRows(provider, manager["HomebaseBannerIconData"])),
+    ["colors"] = BannerRows(LoadRows(provider, manager["HomebaseBannerColorData"]))
+};
 var nodes = new SortedDictionary<string, object>(StringComparer.Ordinal);
 // What a node unlocks are the gameplay tags its effect rows grant (HomebaseNodeGameplayEffectDataTable
 // GrantedTagsContainer): Unlocks.Class.*, Unlocks.Recycler.*, Evolution.*, Expedition.* and so on.
@@ -466,6 +476,7 @@ File.WriteAllText(Path.Combine(output, "characters.json"), JsonSerializer.Serial
 File.WriteAllText(Path.Combine(output, "cardpacks.json"), JsonSerializer.Serialize(cardPacks, options) + "\n");
 File.WriteAllText(Path.Combine(output, "homebasenodes.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal) { ["nodes"] = nodes, ["pages"] = pages }, options) + "\n");
 File.WriteAllText(Path.Combine(output, "squads.json"), JsonSerializer.Serialize(squads, options) + "\n");
+File.WriteAllText(Path.Combine(output, "banners.json"), JsonSerializer.Serialize(banners, options) + "\n");
 File.WriteAllText(Path.Combine(output, "objectivestats.json"), JsonSerializer.Serialize(objectiveStats, options) + "\n");
 File.WriteAllText(Path.Combine(output, "world.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal)
 {

@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import { bannerIds } from "../gamedata/banners.js";
 import { getCardPack } from "../gamedata/items.js";
 import { hasItem, knownKinds, namedSchematics, pool, rarities } from "./pools.js";
 
@@ -132,9 +133,17 @@ function founders(group) {
   if (group === "cardpack_founders_starterweapon_bundle") return starterWeapons.flatMap((words) => pickOne(namedSchematics(words, "r")));
   match = group.match(/^cardpack_founders_defender_(assault|pistol|melee|sniper|shotgun)_(vr|sr)$/);
   if (match) return one("defender", match[1], match[2]);
+  match = group.match(/^cardpack_founders_banners_t(\d\d)$/);
+  if (match) return foundersBanners(Number(match[1]));
   match = group.match(/^cardpack_founders_(.+)_(r|vr|sr)$/);
   if (match && !match[1].startsWith("banners")) return pickOne(namedSchematics(match[1].split("_"), match[2], { founders: true }));
   return [];
+}
+
+// "Founders Banners: Standard" (T01) to "Ultimate" (T05): the Founder icons of that tier (FounderTier<N>Banner<M>).
+function foundersBanners(tier) {
+  return bannerIds().filter((templateId) => templateId.startsWith(`HomebaseBannerIcon:FounderTier${tier}Banner`))
+    .map((templateId) => ({ templateId, quantity: 1 }));
 }
 
 const pickOne = (choices) => (choices.length ? [{ templateId: pick(choices), quantity: 1 }] : []);

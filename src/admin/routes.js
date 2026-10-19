@@ -2,6 +2,7 @@ import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { isBookPage } from "../collectionbook/book.js";
+import { bannerIds, bannerTemplateId } from "../gamedata/banners.js";
 import { notFound, sendError } from "../errors.js";
 import { getNode, nodeIds } from "../gamedata/homebase.js";
 import { getItem, itemIds } from "../gamedata/items.js";
@@ -75,7 +76,7 @@ export function adminRoutes({ accounts, profiles }) {
   });
 
   router.get("/admin/api/items", (req, res) => {
-    res.json([...itemIds(), ...questIds().map((id) => `Quest:${id}`), ...nodeIds().map((id) => `HomebaseNode:${id.toLowerCase()}`)].sort());
+    res.json([...itemIds(), ...questIds().map((id) => `Quest:${id}`), ...nodeIds().map((id) => `HomebaseNode:${id.toLowerCase()}`), ...bannerIds()].sort());
   });
 
   // Test helper: give an item the normal way, so quests that wait on it move on too.
@@ -91,7 +92,7 @@ export function adminRoutes({ accounts, profiles }) {
     const known = type.toLowerCase() === "quest" ? Boolean(getQuest(name))
       : type.toLowerCase() === "homebasenode" ? Boolean(getNode(name))
       : type.toLowerCase() === "collectionbookpage" ? isBookPage(name)
-      : Boolean(getItem(templateId));
+      : Boolean(getItem(templateId) ?? bannerTemplateId(templateId));
     if (!known) return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", `Unknown item ${templateId}`);
 
     const session = openSession(profiles, account.id);

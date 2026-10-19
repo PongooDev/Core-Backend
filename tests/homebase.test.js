@@ -43,6 +43,34 @@ test("a new homebase has a banner, so the client counts it as set up, and SetHom
   }
 });
 
+test("the banner editor's owned list: Standard icons and every color, others once granted", async () => {
+  const backend = await startBackend();
+  try {
+    const { token, accountId } = await userLogin(backend.port, "BannerTest");
+    const items = async () => Object.values((await post(backend.port, command(accountId, "QueryProfile"), token, {})).body.profileChanges[0].profile.items)
+      .map((item) => item.templateId).filter((templateId) => templateId.startsWith("HomebaseBanner"));
+    const owned = await items();
+    assert.equal(owned.filter((templateId) => templateId.startsWith("HomebaseBannerIcon:Standard")).length, 31);
+    assert.equal(owned.filter((templateId) => templateId.startsWith("HomebaseBannerColor:")).length, 21);
+    assert.equal(owned.some((templateId) => templateId.startsWith("HomebaseBannerIcon:Founder")), false);
+
+    const locked = await post(backend.port, command(accountId, "SetHomebaseBanner"), token,
+      { homebaseBannerIconId: "FounderTier1Banner1", homebaseBannerColorId: "DefaultColor1" });
+    assert.equal(locked.status, 400);
+
+    // The admin panel grants any row, under the client's spelling, once.
+    for (let i = 0; i < 2; i++) {
+      await post(backend.port, `/admin/api/accounts/${accountId}/grant`, undefined, { templateId: "homebasebannericon:foundertier1banner1", quantity: 1 });
+    }
+    assert.equal((await items()).filter((templateId) => templateId === "HomebaseBannerIcon:FounderTier1Banner1").length, 1);
+    const set = await post(backend.port, command(accountId, "SetHomebaseBanner"), token,
+      { homebaseBannerIconId: "FounderTier1Banner1", homebaseBannerColorId: "DefaultColor1" });
+    assert.equal(set.status, 200);
+  } finally {
+    backend.close();
+  }
+});
+
 test("SetItemFavoriteStatus sets the int favorite attribute", async () => {
   const backend = await startBackend();
   try {
