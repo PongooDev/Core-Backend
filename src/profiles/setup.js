@@ -3,7 +3,7 @@ import { readGameData } from "../gamedata/read.js";
 import { startingQuests } from "../gamedata/quests.js";
 import { ownsNode } from "./homebase.js";
 import { grant } from "./progress.js";
-import { findQuestItem, tutorialCompleted } from "./quests.js";
+import { findQuestItem } from "./quests.js";
 import { assignToSquad, characterType } from "./squads.js";
 
 // What a new profile0 starts with that takes the game's rules to add, so the account's first login looks like any
@@ -17,16 +17,19 @@ import { assignToSquad, characterType } from "./squads.js";
 // - The tutorial's tier 0 weapon schematics (🟡 Core's set): the tutorial's crafting step needs
 //   SID_Assault_Auto_C_Ore_T00 in the profile (AFortPlayerController::ServerCraftSchematic 0x767BD0 looks it up by
 //   item id and does nothing without it), and nothing in the client, its quests or its game data grants any of the
-//   tier 0 weapons (the tier 0 Healing Pad comes from stonewoodquest_launchballoon_d1). Given while the tutorial
-//   isn't done.
+//   tier 0 weapons (the tier 0 Healing Pad comes from stonewoodquest_launchballoon_d1). Every profile gets the
+//   missing ones once (retail accounts always had them), so a recycled one isn't given back.
 // Profiles made before this, or left with no hero at all, get what they lack when they next load. So does a profile
 // whose lead slot is empty: its first hero in no squad takes it (heroes in other slots or on expeditions stay).
 const { defaultHero } = readGameData("newaccount", {});
 const fallbackSquad = "Squad_Combat_AdventureSquadOne";
 const starterSchematics = ["Schematic:sid_assault_auto_c_ore_t00", "Schematic:sid_assault_semiauto_c_ore_t00",
   "Schematic:sid_pistol_semiauto_c_ore_t00", "Schematic:sid_edged_sword_medium_c_ore_t00"];
-const missingSchematics = (profile) => tutorialCompleted(profile) ? []
-  : starterSchematics.filter((templateId) => !Object.values(profile.items).some((item) => item.templateId.toLowerCase() === templateId.toLowerCase()));
+// Core's own one-time changes are listed on the saved profile (coreMigrations); the client is never sent it.
+const schematicsMigration = "starterSchematics";
+const migrated = (profile, name) => (profile.coreMigrations ?? []).includes(name);
+const missingSchematics = (profile) => starterSchematics
+  .filter((templateId) => !Object.values(profile.items).some((item) => item.templateId.toLowerCase() === templateId.toLowerCase()));
 
 const heroes = (profile) => Object.entries(profile.items).filter(([, item]) => characterType(item) === "Hero");
 const leadSquad = (profile) => profile.stats.attributes.default_hero_squad_id || fallbackSquad;
@@ -44,14 +47,17 @@ function leadCandidate(profile) {
 export function needsSetUp(profile) {
   if (profile.profileId !== "profile0") return false;
   return startingQuests.some((questId) => !findQuestItem(profile, questId)) || Boolean(defaultHero && !heroes(profile).length)
-    || Boolean(leadCandidate(profile)) || missingSchematics(profile).length > 0;
+    || Boolean(leadCandidate(profile)) || !migrated(profile, schematicsMigration);
 }
 
 export function setUpProfile(session) {
   for (const questId of startingQuests) grant(session, `Quest:${questId}`, 1);
 
   const { profile } = session.profile("profile0");
-  for (const templateId of missingSchematics(profile)) grant(session, templateId, 1);
+  if (!migrated(profile, schematicsMigration)) {
+    for (const templateId of missingSchematics(profile)) grant(session, templateId, 1);
+    profile.coreMigrations = [...(profile.coreMigrations ?? []), schematicsMigration];
+  }
   if (defaultHero && !heroes(profile).length) grant(session, defaultHero, 1);
   const lead = leadCandidate(profile);
   if (lead) assignToSquad(session, lead, leadSquad(profile), 0);

@@ -144,3 +144,39 @@ test("a new account has the tutorial's tier 0 weapon schematics, and they aren't
     backend.close();
   }
 });
+
+test("accounts made before the starter schematics get them once, tutorial done or not", async () => {
+  const backend = await startBackend();
+  try {
+    const { token, accountId } = await userLogin(backend.port, "Veteran");
+    const file = path.join(backend.dataDir, "accounts", accountId, "profiles", "profile0.json");
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, JSON.stringify({
+      profileId: "profile0", accountId, rvn: 12, wipeNumber: 1, version: "core", commandRevision: 11, stats: { attributes: { level: 5 } },
+      items: {
+        hero: { templateId: "Hero:hid_commando_grenadegun_uc_t01", quantity: 1, attributes: { level: 5, squad_id: "Squad_Combat_AdventureSquadOne", squad_slot_idx: 0 } },
+        sword: { templateId: "Schematic:sid_edged_sword_medium_c_ore_t00", quantity: 1, attributes: { level: 1, item_seen: 1 } },
+        ...Object.fromEntries(["homebaseonboarding", "homebaseonboardinggrantschematics", "outpostquest_t1_l1", "homebaseonboardingafteroutpost"]
+          .map((questId) => [questId, { templateId: `Quest:${questId}`, quantity: 1, attributes: { quest_state: "Claimed" } }]))
+      }
+    }));
+    const query = async (rvn = -1) => (await post(backend.port, command(accountId, "QueryProfile", rvn), token, {})).body;
+    const schematics = (profile) => Object.values(profile.items).map((item) => item.templateId).filter((id) => /^Schematic:.*_t00$/.test(id)).sort();
+
+    const first = await query();
+    assert.ok(first.profileRevision > 12);
+    const { profile } = first.profileChanges[0];
+    assert.deepEqual(schematics(profile), ["Schematic:sid_assault_auto_c_ore_t00", "Schematic:sid_assault_semiauto_c_ore_t00",
+      "Schematic:sid_edged_sword_medium_c_ore_t00", "Schematic:sid_pistol_semiauto_c_ore_t00"], "the three missing ones, the sword kept");
+    assert.equal(profile.coreMigrations, undefined, "Core's bookkeeping isn't sent to the client");
+    assert.deepEqual(JSON.parse(fs.readFileSync(file, "utf8")).coreMigrations, ["starterSchematics"]);
+
+    const [rifleId] = Object.entries(profile.items).find(([, item]) => item.templateId === "Schematic:sid_assault_auto_c_ore_t00");
+    await post(backend.port, `/admin/api/accounts/${accountId}/items/remove`, undefined, { itemId: rifleId });
+    const after = await query();
+    assert.equal(schematics(after.profileChanges[0].profile).length, 3, "once only: a recycled one stays gone");
+    assert.deepEqual((await query(after.profileRevision)).profileChanges, []);
+  } finally {
+    backend.close();
+  }
+});

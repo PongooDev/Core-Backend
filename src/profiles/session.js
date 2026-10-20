@@ -32,6 +32,8 @@ export function openSession(profiles, accountId, { setUp = true } = {}) {
           const setup = openSession(profiles, accountId, { setUp: false });
           setUpProfile(setup);
           setup.commit({ newRevision: !created });
+          // The setup may only have noted a one-time migration (coreMigrations), which no tracked change saves.
+          profiles.save(setup.profile(profileId).profile);
           profile = profiles.load(accountId, profileId);
         }
         opened.set(profileId, { baseRevision: profile.rvn, tracker: trackChanges(profile) });
