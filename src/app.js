@@ -25,6 +25,7 @@ import { friendsRoutes } from "./services/friends/lists.js";
 import { lightswitchRoutes } from "./services/lightswitch/status.js";
 import { sessionRoutes } from "./services/matchmaking/sessions.js";
 import { profileRoutes } from "./services/mcp/profile.js";
+import { replayRoutes } from "./services/replay/replays.js";
 import { createStompService } from "./stomp/service.js";
 import { createXmppService } from "./xmpp/service.js";
 
@@ -59,6 +60,7 @@ export function createApp(config, context = createContext(config)) {
   app.use(originForm);
   if (config.requestLog !== false) app.use(requestLog);
   app.use(userCloudStorageRoutes(context));
+  app.use(replayRoutes(context));
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
 

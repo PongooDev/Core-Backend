@@ -762,7 +762,7 @@ function renderLogLines() {
   if (stick) box.scrollTop = box.scrollHeight;
 }
 async function showLogs() {
-  const categories = ["", "HTTP", "Core", "XMPP", "STOMP", "Matchmaking", "MCP", "World", "Items"];
+  const categories = ["", "HTTP", "Core", "XMPP", "STOMP", "Matchmaking", "MCP", "World", "Items", "Replay"];
   const filter = el("input", { class: "field", type: "search", placeholder: "Filter messages", value: state.logFilter, style: "flex:1 1 260px" });
   filter.addEventListener("input", () => { state.logFilter = filter.value; renderLogLines(); });
   const category = el("select", { class: "field", "aria-label": "Category" }, categories.map((c) => el("option", { value: c, text: c || "Every category", selected: state.logCategory === c })));
