@@ -4,11 +4,31 @@ import { requireLoopback } from "../../admin/local.js";
 import { McpError, sendError } from "../../errors.js";
 import { recordUnknown } from "../../log.js";
 import { isKnownProfile } from "../../profiles/ids.js";
+import { lockTimeout } from "../../profiles/locks.js";
 import { openSession } from "../../profiles/session.js";
 import { adminCommands, clientCommands } from "./commands/index.js";
 import { publicCommands, serverCommands } from "./commands/server.js";
 
-function runCommand(commands, context, { deliverMail = false } = {}) {
+const unlockCommands = new Set(["UnlockProfiles", "UnlockProfileForWrite"]);
+
+// The gameserver's world profile locks (profiles/locks.js): taken, given back or renewed by its commands.
+function trackLock(locks, req) {
+  const accountId = req.params.accountId;
+  if (req.params.command === "LockProfiles" || req.params.command === "LockProfileForWrite") {
+    locks.lock(accountId, lockTimeout(req.get("x-epicgames-profilewritelock")));
+  } else if (unlockCommands.has(req.params.command)) locks.unlock(accountId);
+  else locks.renew(accountId);
+}
+
+function withLockExpiration(locks, accountId, result) {
+  for (const update of [result, ...(result.multiUpdate ?? [])]) {
+    const lockExpiration = locks.expiration(accountId, update.profileId);
+    if (lockExpiration) update.lockExpiration = lockExpiration;
+  }
+  return result;
+}
+
+function runCommand(commands, context, { deliverMail = false, locks = null } = {}) {
   const { profiles, dataDir } = context;
   return (req, res) => {
     const profileId = String(req.params.profileId ?? req.query.profileId ?? "");
@@ -46,7 +66,12 @@ function runCommand(commands, context, { deliverMail = false } = {}) {
     for (const other of others.values()) other.commit();
     if (deliverMail) notifications.push(...(context.mailbox?.take(req.params.accountId) ?? []));
 
-    res.json(session.response(profileId, Number(req.query.rvn ?? -1), notifications));
+    const result = session.response(profileId, Number(req.query.rvn ?? -1), notifications);
+    if (locks) {
+      trackLock(locks, req);
+      withLockExpiration(locks, req.params.accountId, result);
+    }
+    res.json(result);
   };
 }
 
@@ -70,7 +95,7 @@ export function profileRoutes(context) {
   // The gameserver acting for its players, with its DedicatedServer client token (UMcpProfileGroup::SendRequestNow's
   // dedicated-server branch, restored by CoreV2).
   router.post("/fortnite/api/game/v2/profile/:accountId/dedicated_server/:command",
-    requireAuth(context.tokens), requireDedicatedServer, requireExistingAccount(context), runCommand(serverCommands, context));
+    requireAuth(context.tokens), requireDedicatedServer, requireExistingAccount(context), runCommand(serverCommands, context, { locks: context.locks }));
 
   // The client's DevSkipTutorial cheat posts here.
   router.post("/fortnite/api/admin/account/:accountId/:profileId/command/:command",

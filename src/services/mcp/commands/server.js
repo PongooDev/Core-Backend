@@ -34,29 +34,71 @@ export function sessionMission(sessions, sessionId) {
   }
 }
 
-// FMcpProfileChangeRequest {addRequests, removeRequests, changeQuantityRequests, changeAttributesRequests} applied to
-// a world profile (theater0 for the player's backpack and storage, outpost0 for the storm shield).
+// FMcpProfileChangeRequest {baseCommandRevision, addRequests, removeRequests, changeQuantityRequests,
+// changeAttributesRequests, changeStatRequests} applied to a world profile (theater0 for the player's backpack and
+// storage, outpost0 for the storm shield). The server writes item ids as FGuid text (%08X-%04X-..., upper case) while
+// Core's are lower case, so ids match whatever their case. An add for an item that's already there replaces it, a
+// remove or change for one that isn't is skipped, and a null attribute value removes the attribute. Returns counts
+// for the log.
+function findItemId(tracker, itemId) {
+  if (typeof itemId !== "string" || !itemId) return undefined;
+  if (tracker.profile.items[itemId]) return itemId;
+  const wanted = itemId.toLowerCase();
+  return Object.keys(tracker.profile.items).find((id) => id.toLowerCase() === wanted);
+}
+
 function applyChanges(tracker, request) {
-  if (!request || typeof request !== "object") return;
+  const counts = { added: 0, replaced: 0, removed: 0, quantities: 0, attributes: 0, stats: 0, skipped: 0 };
+  if (!request || typeof request !== "object") return counts;
   for (const { itemId, templateId, quantity, attributes } of request.addRequests ?? []) {
-    if (typeof templateId !== "string" || !templateId) continue;
-    const id = typeof itemId === "string" && itemId && !tracker.profile.items[itemId] ? itemId : crypto.randomUUID();
-    tracker.addItem(id, { templateId, attributes: attributes && typeof attributes === "object" ? attributes : {}, quantity: Number.isInteger(quantity) ? quantity : 1 });
+    if (typeof templateId !== "string" || !templateId) { counts.skipped++; continue; }
+    const item = { templateId, attributes: attributes && typeof attributes === "object" ? attributes : {}, quantity: Number.isInteger(quantity) ? quantity : 1 };
+    const existing = findItemId(tracker, itemId);
+    if (existing) {
+      tracker.removeItem(existing);
+      tracker.addItem(existing, item);
+      counts.replaced++;
+    } else {
+      tracker.addItem(typeof itemId === "string" && itemId ? itemId : crypto.randomUUID(), item);
+      counts.added++;
+    }
   }
   for (const { itemId } of request.removeRequests ?? []) {
-    if (tracker.profile.items[itemId]) tracker.removeItem(itemId);
+    const id = findItemId(tracker, itemId);
+    if (!id) { counts.skipped++; continue; }
+    tracker.removeItem(id);
+    counts.removed++;
   }
   for (const { itemId, deltaQuantity } of request.changeQuantityRequests ?? []) {
-    const item = tracker.profile.items[itemId];
-    if (!item || !Number.isInteger(deltaQuantity)) continue;
-    const quantity = item.quantity + deltaQuantity;
-    if (quantity > 0) tracker.setQuantity(itemId, quantity);
-    else tracker.removeItem(itemId);
+    const id = findItemId(tracker, itemId);
+    if (!id || !Number.isInteger(deltaQuantity)) { counts.skipped++; continue; }
+    const quantity = tracker.profile.items[id].quantity + deltaQuantity;
+    if (quantity > 0) tracker.setQuantity(id, quantity);
+    else tracker.removeItem(id);
+    counts.quantities++;
   }
   for (const { itemId, attributes } of request.changeAttributesRequests ?? []) {
-    if (!tracker.profile.items[itemId] || !attributes || typeof attributes !== "object") continue;
-    for (const [name, value] of Object.entries(attributes)) tracker.setItemAttribute(itemId, name, value);
+    const id = findItemId(tracker, itemId);
+    if (!id || !attributes || typeof attributes !== "object") { counts.skipped++; continue; }
+    for (const [name, value] of Object.entries(attributes)) {
+      if (value === null) {
+        if (name in tracker.profile.items[id].attributes) tracker.removeItemAttribute(id, name);
+      } else tracker.setItemAttribute(id, name, value);
+    }
+    counts.attributes++;
   }
+  for (const { statName, statValue } of request.changeStatRequests ?? []) {
+    if (typeof statName !== "string" || !statName) { counts.skipped++; continue; }
+    tracker.setStat(statName, statValue);
+    counts.stats++;
+  }
+  return counts;
+}
+
+function describeChanges(profileId, counts, request) {
+  const added = (request?.addRequests ?? []).map((add) => `${add?.templateId}×${add?.quantity ?? 1}`).slice(0, 12).join(", ");
+  return `${profileId} +${counts.added} replaced ${counts.replaced} -${counts.removed} qty ${counts.quantities} attrs ${counts.attributes} stats ${counts.stats}`
+    + (counts.skipped ? ` skipped ${counts.skipped}` : "") + (added ? ` [${added}]` : "");
 }
 
 const accepted = () => {};
@@ -151,9 +193,12 @@ export const serverCommands = {
   // The player's world inventory as the server left it (theater0), the storm shield's (outpost0), and quest progress.
   BatchUpdatePlayer({ req, session, tracker, profileId }) {
     if (!profileId.startsWith("theater")) throw new McpError("errors.com.epicgames.modules.profiles.invalid_command", "BatchUpdatePlayer is a theater profile command");
-    applyChanges(tracker, req.body?.theaterItemUpdate);
-    applyChanges(session.profile("outpost0"), req.body?.outpostItemUpdate);
+    const theater = applyChanges(tracker, req.body?.theaterItemUpdate);
+    const outpost = applyChanges(session.profile("outpost0"), req.body?.outpostItemUpdate);
+    const quests = Array.isArray(req.body?.questObjectiveUpdates) ? req.body.questObjectiveUpdates.length : 0;
     advance(session, req.body?.questObjectiveUpdates);
+    log("MCP", `${req.params.command} for ${req.params.accountId}: ${describeChanges(profileId, theater, req.body?.theaterItemUpdate)}; `
+      + `${describeChanges("outpost0", outpost, req.body?.outpostItemUpdate)}; quest updates ${quests}`);
   },
 
   // The same from a storm shield, with the core's buildings and build saves: {outpostId, outpostInfo, cloudSaveInfo}.

@@ -25,6 +25,12 @@ export function trackChanges(profile) {
       changes.push({ changeType: "itemAttrChanged", itemId, attributeName, attributeValue });
     },
 
+    // The delta says null for an attribute that's gone.
+    removeItemAttribute(itemId, attributeName) {
+      delete profile.items[itemId].attributes[attributeName];
+      changes.push({ changeType: "itemAttrChanged", itemId, attributeName, attributeValue: null });
+    },
+
     setStat(name, value) {
       profile.stats.attributes[name] = value;
       changes.push({ changeType: "statModified", name, value });
