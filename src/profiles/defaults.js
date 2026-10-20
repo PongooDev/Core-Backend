@@ -4,6 +4,7 @@ import { starterBanners } from "../gamedata/banners.js";
 import { emptyAlertRecord, withQuotaSlots } from "./alerts.js";
 import { restQuotaAttributes } from "./boosts.js";
 import { fillHeroAttributes } from "./heroes.js";
+import { isMtxCurrency, mtxPlatform } from "./items.js";
 import { fillWorkerAttributes } from "./workers.js";
 
 const never = "0001-01-01T00:00:00.000Z";
@@ -90,6 +91,11 @@ export function upgradeItems(profile) {
   for (const item of Object.values(profile.items)) {
     if (fillWorkerAttributes(item)) changed = true;
     if (fillHeroAttributes(item)) changed = true;
+    // V-Bucks made before the platform attribute showed as 0 in the game.
+    if (isMtxCurrency(item.templateId) && item.attributes.platform !== mtxPlatform) {
+      item.attributes.platform = mtxPlatform;
+      changed = true;
+    }
     if (!item.templateId.toLowerCase().startsWith("cardpack:")) continue;
     if (typeof item.attributes.pack_source !== "string") {
       item.attributes.pack_source = "Store";

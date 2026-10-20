@@ -30,6 +30,12 @@ const unassigned = {
   FortOutpostItemDefinition: { outpost_core_info: { placedBuildings: [], accountsWithEditPermission: [] }, cloud_save_info: { saveCount: 0, savedRecords: [] } }
 };
 
+// V-Bucks count only with platform "Epic": the client's balance (sub_68A110) adds up Currency:MtxPurchased,
+// MtxPurchaseBonus, MtxGiveaway and MtxComplimentary items whose platform attribute is exactly "Epic" (sub_A4ED0).
+const mtxCurrencies = new Set(["currency:mtxpurchased", "currency:mtxpurchasebonus", "currency:mtxgiveaway", "currency:mtxcomplimentary"]);
+export const mtxPlatform = "Epic";
+export const isMtxCurrency = (templateId) => mtxCurrencies.has(templateId.toLowerCase());
+
 // The client's llama store only opens packs whose pack_source is Store, CollectionBook, Quest, LevelUp or Schedule;
 // the after-mission rewards screen opens "Mission" packs. Choice packs need their options when granted.
 export function cardPackAttributes(templateId, packSource = "Store") {
@@ -42,6 +48,7 @@ function addItem(tracker, templateId, quantity, info, options) {
   if (info.class === "FortCardPackItemDefinition") Object.assign(attributes, cardPackAttributes(templateId, options.packSource));
   if (info.class === "FortWorkerType") Object.assign(attributes, rollWorkerAttributes(templateId));
   if (info.class === "FortHeroType") Object.assign(attributes, heroAttributes(templateId));
+  if (isMtxCurrency(templateId)) attributes.platform = mtxPlatform;
   tracker.addItem(itemId, { templateId, attributes, quantity });
   return itemId;
 }
