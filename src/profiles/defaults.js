@@ -3,6 +3,7 @@ import { isChoicePack, rollOptions } from "../cardpacks/contents.js";
 import { starterBanners } from "../gamedata/banners.js";
 import { emptyAlertRecord, withQuotaSlots } from "./alerts.js";
 import { restQuotaAttributes } from "./boosts.js";
+import { fillHeroAttributes } from "./heroes.js";
 import { fillWorkerAttributes } from "./workers.js";
 
 const never = "0001-01-01T00:00:00.000Z";
@@ -88,6 +89,7 @@ export function upgradeItems(profile) {
   let changed = false;
   for (const item of Object.values(profile.items)) {
     if (fillWorkerAttributes(item)) changed = true;
+    if (fillHeroAttributes(item)) changed = true;
     if (!item.templateId.toLowerCase().startsWith("cardpack:")) continue;
     if (typeof item.attributes.pack_source !== "string") {
       item.attributes.pack_source = "Store";

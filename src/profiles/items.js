@@ -3,6 +3,7 @@ import { isChoicePack, rollOptions } from "../cardpacks/contents.js";
 import { bannerTemplateId } from "../gamedata/banners.js";
 import { getItem } from "../gamedata/items.js";
 import { log } from "../log.js";
+import { heroAttributes } from "./heroes.js";
 import { grantQuest } from "./quests.js";
 import { rollWorkerAttributes } from "./workers.js";
 
@@ -40,6 +41,7 @@ function addItem(tracker, templateId, quantity, info, options) {
   const attributes = info.profile === "profile" ? { level: info.minLevel ?? 1, item_seen: 0, ...structuredClone(unassigned[info.class]) } : {};
   if (info.class === "FortCardPackItemDefinition") Object.assign(attributes, cardPackAttributes(templateId, options.packSource));
   if (info.class === "FortWorkerType") Object.assign(attributes, rollWorkerAttributes(templateId));
+  if (info.class === "FortHeroType") Object.assign(attributes, heroAttributes(templateId));
   tracker.addItem(itemId, { templateId, attributes, quantity });
   return itemId;
 }

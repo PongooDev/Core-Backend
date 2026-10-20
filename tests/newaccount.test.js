@@ -1,5 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
 import { getQuest } from "../src/gamedata/quests.js";
 import { readGameData } from "../src/gamedata/read.js";
 import { post, startBackend, userLogin } from "./helpers.js";
@@ -65,6 +67,59 @@ test("a profile left with no hero gets the default one back when it next loads",
     assert.equal(others.length, 0);
     assert.notEqual(newId, heroId);
     assert.equal(hero.attributes.squad_slot_idx, 0);
+  } finally {
+    backend.close();
+  }
+});
+
+const heroTemplate = { xp: 0, favorite: 0, max_level_bonus: 0, portrait: "", hero_name: "DefaultHeroName", equipped_cosmetics: ["", "", "", "", "", "", "", ""], mode_loadouts: [] };
+
+test("heroes carry what the client's hero template has, with their hero type's gender", async () => {
+  const backend = await startBackend();
+  try {
+    const { token, accountId } = await userLogin(backend.port, "HeroAttributes");
+    await post(backend.port, `/admin/api/accounts/${accountId}/grant`, undefined, { templateId: "Hero:hid_constructor_rushbase_uc_t01", quantity: 1 });
+    const { profile } = (await post(backend.port, command(accountId, "QueryProfile"), token, {})).body.profileChanges[0];
+    const byTemplate = Object.fromEntries(heroes(profile).map(([, item]) => [item.templateId, item.attributes]));
+    // Ramirez's definition saves no Gender, so it keeps UFortWorkerType's default, Female (2); RushBASE saves Male.
+    assert.deepEqual(byTemplate["Hero:hid_commando_grenadegun_uc_t01"], { level: 1, item_seen: 0, squad_id: "Squad_Combat_AdventureSquadOne",
+      squad_slot_idx: 0, slotted_building_id: "", building_slot_used: -1, ...heroTemplate, gender: 2 });
+    assert.deepEqual(byTemplate["Hero:hid_constructor_rushbase_uc_t01"], { level: 1, item_seen: 0, squad_id: "", squad_slot_idx: -1,
+      slotted_building_id: "", building_slot_used: -1, ...heroTemplate, gender: 1 });
+  } finally {
+    backend.close();
+  }
+});
+
+test("existing heroes get the missing attributes, and an empty lead slot gets the first free hero", async () => {
+  const backend = await startBackend();
+  try {
+    const { token, accountId } = await userLogin(backend.port, "OldHeroes");
+    const file = path.join(backend.dataDir, "accounts", accountId, "profiles", "profile0.json");
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, JSON.stringify({
+      profileId: "profile0", accountId, rvn: 9, wipeNumber: 1, version: "core", commandRevision: 8,
+      stats: { attributes: { level: 3, default_hero_squad_id: "Squad_Combat_AdventureSquadOne" } },
+      items: {
+        away: { templateId: "Hero:hid_commando_grenadegun_uc_t01", quantity: 1,
+          attributes: { level: 4, item_seen: 1, squad_id: "Squad_Expedition_ExpeditionSquadOne", squad_slot_idx: 0, gender: 0 } },
+        free: { templateId: "Hero:hid_constructor_rushbase_uc_t01", quantity: 1,
+          attributes: { level: 2, item_seen: 1, squad_id: "", squad_slot_idx: -1, slotted_building_id: "", building_slot_used: -1, hero_name: "Hype" } },
+        quest: { templateId: "Quest:homebaseonboarding", quantity: 1, attributes: { quest_state: "Claimed" } }
+      }
+    }));
+
+    const first = (await post(backend.port, command(accountId, "QueryProfile"), token, {})).body;
+    assert.ok(first.profileRevision > 9);
+    const { away, free } = first.profileChanges[0].profile.items;
+    assert.deepEqual(free.attributes, { level: 2, item_seen: 1, squad_id: "Squad_Combat_AdventureSquadOne", squad_slot_idx: 0, slotted_building_id: "",
+      building_slot_used: -1, ...heroTemplate, hero_name: "Hype", gender: 1 });
+    assert.equal(away.attributes.squad_id, "Squad_Expedition_ExpeditionSquadOne", "a hero on an expedition stays there");
+    assert.equal(away.attributes.gender, 2, "an Invalid gender becomes the hero type's");
+    assert.equal(away.attributes.level, 4);
+
+    const again = await post(backend.port, command(accountId, "QueryProfile", first.profileRevision), token, {});
+    assert.deepEqual(again.body.profileChanges, [], "once filled, nothing more changes");
   } finally {
     backend.close();
   }

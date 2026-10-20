@@ -530,6 +530,7 @@
     ]
   },
   "Hero:hid_commando_007_r_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -538,6 +539,7 @@
     ]
   },
   "Hero:hid_commando_007_r_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -546,6 +548,7 @@
     ]
   },
   "Hero:hid_commando_007_r_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -554,6 +557,7 @@
     ]
   },
   "Hero:hid_commando_007_r_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -562,6 +566,7 @@
     ]
   },
   "Hero:hid_commando_007_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -570,6 +575,7 @@
     ]
   },
   "Hero:hid_commando_007_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -578,6 +584,7 @@
     ]
   },
   "Hero:hid_commando_007_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -586,6 +593,7 @@
     ]
   },
   "Hero:hid_commando_007_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -594,6 +602,7 @@
     ]
   },
   "Hero:hid_commando_007_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -602,6 +611,7 @@
     ]
   },
   "Hero:hid_commando_007_uc_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -610,6 +620,7 @@
     ]
   },
   "Hero:hid_commando_007_uc_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -618,6 +629,7 @@
     ]
   },
   "Hero:hid_commando_007_uc_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -626,6 +638,7 @@
     ]
   },
   "Hero:hid_commando_007_vr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -634,6 +647,7 @@
     ]
   },
   "Hero:hid_commando_007_vr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -642,6 +656,7 @@
     ]
   },
   "Hero:hid_commando_007_vr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -650,6 +665,7 @@
     ]
   },
   "Hero:hid_commando_007_vr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -658,6 +674,7 @@
     ]
   },
   "Hero:hid_commando_007_vr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -666,6 +683,7 @@
     ]
   },
   "Hero:hid_commando_008_foundersf_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -674,6 +692,7 @@
     ]
   },
   "Hero:hid_commando_008_foundersf_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -682,6 +701,7 @@
     ]
   },
   "Hero:hid_commando_008_foundersf_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -690,6 +710,7 @@
     ]
   },
   "Hero:hid_commando_008_foundersf_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -698,6 +719,7 @@
     ]
   },
   "Hero:hid_commando_008_foundersf_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -706,6 +728,7 @@
     ]
   },
   "Hero:hid_commando_008_foundersm_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -714,6 +737,7 @@
     ]
   },
   "Hero:hid_commando_008_foundersm_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -722,6 +746,7 @@
     ]
   },
   "Hero:hid_commando_008_foundersm_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -730,6 +755,7 @@
     ]
   },
   "Hero:hid_commando_008_foundersm_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -738,6 +764,7 @@
     ]
   },
   "Hero:hid_commando_008_foundersm_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -746,6 +773,7 @@
     ]
   },
   "Hero:hid_commando_008_r_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -754,6 +782,7 @@
     ]
   },
   "Hero:hid_commando_008_r_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -762,6 +791,7 @@
     ]
   },
   "Hero:hid_commando_008_r_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -770,6 +800,7 @@
     ]
   },
   "Hero:hid_commando_008_r_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -778,6 +809,7 @@
     ]
   },
   "Hero:hid_commando_008_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -786,6 +818,7 @@
     ]
   },
   "Hero:hid_commando_008_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -794,6 +827,7 @@
     ]
   },
   "Hero:hid_commando_008_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -802,6 +836,7 @@
     ]
   },
   "Hero:hid_commando_008_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -810,6 +845,7 @@
     ]
   },
   "Hero:hid_commando_008_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -818,6 +854,7 @@
     ]
   },
   "Hero:hid_commando_008_vr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -826,6 +863,7 @@
     ]
   },
   "Hero:hid_commando_008_vr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -834,6 +872,7 @@
     ]
   },
   "Hero:hid_commando_008_vr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -842,6 +881,7 @@
     ]
   },
   "Hero:hid_commando_008_vr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -850,6 +890,7 @@
     ]
   },
   "Hero:hid_commando_008_vr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -858,6 +899,7 @@
     ]
   },
   "Hero:hid_commando_009_r_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -866,6 +908,7 @@
     ]
   },
   "Hero:hid_commando_009_r_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -874,6 +917,7 @@
     ]
   },
   "Hero:hid_commando_009_r_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -882,6 +926,7 @@
     ]
   },
   "Hero:hid_commando_009_r_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -890,6 +935,7 @@
     ]
   },
   "Hero:hid_commando_009_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -898,6 +944,7 @@
     ]
   },
   "Hero:hid_commando_009_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -906,6 +953,7 @@
     ]
   },
   "Hero:hid_commando_009_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -914,6 +962,7 @@
     ]
   },
   "Hero:hid_commando_009_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -922,6 +971,7 @@
     ]
   },
   "Hero:hid_commando_009_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -930,6 +980,7 @@
     ]
   },
   "Hero:hid_commando_009_vr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -938,6 +989,7 @@
     ]
   },
   "Hero:hid_commando_009_vr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -946,6 +998,7 @@
     ]
   },
   "Hero:hid_commando_009_vr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -954,6 +1007,7 @@
     ]
   },
   "Hero:hid_commando_009_vr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -962,6 +1016,7 @@
     ]
   },
   "Hero:hid_commando_009_vr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -970,6 +1025,7 @@
     ]
   },
   "Hero:hid_commando_010_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -978,6 +1034,7 @@
     ]
   },
   "Hero:hid_commando_010_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -986,6 +1043,7 @@
     ]
   },
   "Hero:hid_commando_010_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -994,6 +1052,7 @@
     ]
   },
   "Hero:hid_commando_010_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1002,6 +1061,7 @@
     ]
   },
   "Hero:hid_commando_010_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1010,6 +1070,7 @@
     ]
   },
   "Hero:hid_commando_010_vr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1018,6 +1079,7 @@
     ]
   },
   "Hero:hid_commando_010_vr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1026,6 +1088,7 @@
     ]
   },
   "Hero:hid_commando_010_vr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1034,6 +1097,7 @@
     ]
   },
   "Hero:hid_commando_010_vr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1042,6 +1106,7 @@
     ]
   },
   "Hero:hid_commando_010_vr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1050,6 +1115,7 @@
     ]
   },
   "Hero:hid_commando_cinematic_test_r_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1058,6 +1124,7 @@
     ]
   },
   "Hero:hid_commando_gcgrenade_r_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1066,6 +1133,7 @@
     ]
   },
   "Hero:hid_commando_gcgrenade_r_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1074,6 +1142,7 @@
     ]
   },
   "Hero:hid_commando_gcgrenade_r_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1082,6 +1151,7 @@
     ]
   },
   "Hero:hid_commando_gcgrenade_r_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1090,6 +1160,7 @@
     ]
   },
   "Hero:hid_commando_gcgrenade_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1098,6 +1169,7 @@
     ]
   },
   "Hero:hid_commando_gcgrenade_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1106,6 +1178,7 @@
     ]
   },
   "Hero:hid_commando_gcgrenade_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1114,6 +1187,7 @@
     ]
   },
   "Hero:hid_commando_gcgrenade_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1122,6 +1196,7 @@
     ]
   },
   "Hero:hid_commando_gcgrenade_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1130,6 +1205,7 @@
     ]
   },
   "Hero:hid_commando_gcgrenade_vr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1138,6 +1214,7 @@
     ]
   },
   "Hero:hid_commando_gcgrenade_vr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1146,6 +1223,7 @@
     ]
   },
   "Hero:hid_commando_gcgrenade_vr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1154,6 +1232,7 @@
     ]
   },
   "Hero:hid_commando_gcgrenade_vr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1162,6 +1241,7 @@
     ]
   },
   "Hero:hid_commando_gcgrenade_vr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1170,6 +1250,7 @@
     ]
   },
   "Hero:hid_commando_grenadegun_r_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1178,6 +1259,7 @@
     ]
   },
   "Hero:hid_commando_grenadegun_r_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1186,6 +1268,7 @@
     ]
   },
   "Hero:hid_commando_grenadegun_r_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1194,6 +1277,7 @@
     ]
   },
   "Hero:hid_commando_grenadegun_r_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1202,6 +1286,7 @@
     ]
   },
   "Hero:hid_commando_grenadegun_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1210,6 +1295,7 @@
     ]
   },
   "Hero:hid_commando_grenadegun_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1218,6 +1304,7 @@
     ]
   },
   "Hero:hid_commando_grenadegun_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1226,6 +1313,7 @@
     ]
   },
   "Hero:hid_commando_grenadegun_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1234,6 +1322,7 @@
     ]
   },
   "Hero:hid_commando_grenadegun_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1242,6 +1331,7 @@
     ]
   },
   "Hero:hid_commando_grenadegun_uc_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1250,6 +1340,7 @@
     ]
   },
   "Hero:hid_commando_grenadegun_uc_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1258,6 +1349,7 @@
     ]
   },
   "Hero:hid_commando_grenadegun_uc_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1266,6 +1358,7 @@
     ]
   },
   "Hero:hid_commando_grenadegun_vr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1274,6 +1367,7 @@
     ]
   },
   "Hero:hid_commando_grenadegun_vr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1282,6 +1376,7 @@
     ]
   },
   "Hero:hid_commando_grenadegun_vr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1290,6 +1385,7 @@
     ]
   },
   "Hero:hid_commando_grenadegun_vr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1298,6 +1394,7 @@
     ]
   },
   "Hero:hid_commando_grenadegun_vr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1306,6 +1403,7 @@
     ]
   },
   "Hero:hid_commando_grenademaster_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1314,6 +1412,7 @@
     ]
   },
   "Hero:hid_commando_grenademaster_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1322,6 +1421,7 @@
     ]
   },
   "Hero:hid_commando_grenademaster_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1330,6 +1430,7 @@
     ]
   },
   "Hero:hid_commando_grenademaster_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1338,6 +1439,7 @@
     ]
   },
   "Hero:hid_commando_grenademaster_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1346,6 +1448,7 @@
     ]
   },
   "Hero:hid_commando_gunheadshot_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1354,6 +1457,7 @@
     ]
   },
   "Hero:hid_commando_gunheadshot_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1362,6 +1466,7 @@
     ]
   },
   "Hero:hid_commando_gunheadshot_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1370,6 +1475,7 @@
     ]
   },
   "Hero:hid_commando_gunheadshot_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1378,6 +1484,7 @@
     ]
   },
   "Hero:hid_commando_gunheadshot_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1386,6 +1493,7 @@
     ]
   },
   "Hero:hid_commando_gunheadshot_vr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1394,6 +1502,7 @@
     ]
   },
   "Hero:hid_commando_gunheadshot_vr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1402,6 +1511,7 @@
     ]
   },
   "Hero:hid_commando_gunheadshot_vr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1410,6 +1520,7 @@
     ]
   },
   "Hero:hid_commando_gunheadshot_vr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1418,6 +1529,7 @@
     ]
   },
   "Hero:hid_commando_gunheadshot_vr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1426,6 +1538,7 @@
     ]
   },
   "Hero:hid_commando_gunheadshothw_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1434,6 +1547,7 @@
     ]
   },
   "Hero:hid_commando_gunheadshothw_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1442,6 +1556,7 @@
     ]
   },
   "Hero:hid_commando_gunheadshothw_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1450,6 +1565,7 @@
     ]
   },
   "Hero:hid_commando_gunheadshothw_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1458,6 +1574,7 @@
     ]
   },
   "Hero:hid_commando_gunheadshothw_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1466,6 +1583,7 @@
     ]
   },
   "Hero:hid_commando_guntough_r_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1474,6 +1592,7 @@
     ]
   },
   "Hero:hid_commando_guntough_r_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1482,6 +1601,7 @@
     ]
   },
   "Hero:hid_commando_guntough_r_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1490,6 +1610,7 @@
     ]
   },
   "Hero:hid_commando_guntough_r_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1498,6 +1619,7 @@
     ]
   },
   "Hero:hid_commando_guntough_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1506,6 +1628,7 @@
     ]
   },
   "Hero:hid_commando_guntough_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1514,6 +1637,7 @@
     ]
   },
   "Hero:hid_commando_guntough_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1522,6 +1646,7 @@
     ]
   },
   "Hero:hid_commando_guntough_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1530,6 +1655,7 @@
     ]
   },
   "Hero:hid_commando_guntough_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1538,6 +1664,7 @@
     ]
   },
   "Hero:hid_commando_guntough_uc_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1546,6 +1673,7 @@
     ]
   },
   "Hero:hid_commando_guntough_uc_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1554,6 +1682,7 @@
     ]
   },
   "Hero:hid_commando_guntough_uc_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1562,6 +1691,7 @@
     ]
   },
   "Hero:hid_commando_guntough_vr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1570,6 +1700,7 @@
     ]
   },
   "Hero:hid_commando_guntough_vr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1578,6 +1709,7 @@
     ]
   },
   "Hero:hid_commando_guntough_vr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1586,6 +1718,7 @@
     ]
   },
   "Hero:hid_commando_guntough_vr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1594,6 +1727,7 @@
     ]
   },
   "Hero:hid_commando_guntough_vr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1602,6 +1736,7 @@
     ]
   },
   "Hero:hid_commando_shockdamage_r_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1610,6 +1745,7 @@
     ]
   },
   "Hero:hid_commando_shockdamage_r_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1618,6 +1754,7 @@
     ]
   },
   "Hero:hid_commando_shockdamage_r_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1626,6 +1763,7 @@
     ]
   },
   "Hero:hid_commando_shockdamage_r_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1634,6 +1772,7 @@
     ]
   },
   "Hero:hid_commando_shockdamage_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1642,6 +1781,7 @@
     ]
   },
   "Hero:hid_commando_shockdamage_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1650,6 +1790,7 @@
     ]
   },
   "Hero:hid_commando_shockdamage_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1658,6 +1799,7 @@
     ]
   },
   "Hero:hid_commando_shockdamage_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1666,6 +1808,7 @@
     ]
   },
   "Hero:hid_commando_shockdamage_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1674,6 +1817,7 @@
     ]
   },
   "Hero:hid_commando_shockdamage_vr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1682,6 +1826,7 @@
     ]
   },
   "Hero:hid_commando_shockdamage_vr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1690,6 +1835,7 @@
     ]
   },
   "Hero:hid_commando_shockdamage_vr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1698,6 +1844,7 @@
     ]
   },
   "Hero:hid_commando_shockdamage_vr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1706,6 +1853,7 @@
     ]
   },
   "Hero:hid_commando_shockdamage_vr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1714,6 +1862,7 @@
     ]
   },
   "Hero:hid_commando_sony_r_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1722,6 +1871,7 @@
     ]
   },
   "Hero:hid_commando_sony_r_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1730,6 +1880,7 @@
     ]
   },
   "Hero:hid_commando_sony_r_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1738,6 +1889,7 @@
     ]
   },
   "Hero:hid_commando_sony_r_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Commando"
     ],
@@ -1746,6 +1898,7 @@
     ]
   },
   "Hero:hid_constructor_007_r_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1754,6 +1907,7 @@
     ]
   },
   "Hero:hid_constructor_007_r_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1762,6 +1916,7 @@
     ]
   },
   "Hero:hid_constructor_007_r_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1770,6 +1925,7 @@
     ]
   },
   "Hero:hid_constructor_007_r_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1778,6 +1934,7 @@
     ]
   },
   "Hero:hid_constructor_007_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1786,6 +1943,7 @@
     ]
   },
   "Hero:hid_constructor_007_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1794,6 +1952,7 @@
     ]
   },
   "Hero:hid_constructor_007_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1802,6 +1961,7 @@
     ]
   },
   "Hero:hid_constructor_007_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1810,6 +1970,7 @@
     ]
   },
   "Hero:hid_constructor_007_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1818,6 +1979,7 @@
     ]
   },
   "Hero:hid_constructor_007_uc_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1826,6 +1988,7 @@
     ]
   },
   "Hero:hid_constructor_007_uc_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1834,6 +1997,7 @@
     ]
   },
   "Hero:hid_constructor_007_uc_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1842,6 +2006,7 @@
     ]
   },
   "Hero:hid_constructor_007_vr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1850,6 +2015,7 @@
     ]
   },
   "Hero:hid_constructor_007_vr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1858,6 +2024,7 @@
     ]
   },
   "Hero:hid_constructor_007_vr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1866,6 +2033,7 @@
     ]
   },
   "Hero:hid_constructor_007_vr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1874,6 +2042,7 @@
     ]
   },
   "Hero:hid_constructor_007_vr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1882,6 +2051,7 @@
     ]
   },
   "Hero:hid_constructor_008_foundersf_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1890,6 +2060,7 @@
     ]
   },
   "Hero:hid_constructor_008_foundersf_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1898,6 +2069,7 @@
     ]
   },
   "Hero:hid_constructor_008_foundersf_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1906,6 +2078,7 @@
     ]
   },
   "Hero:hid_constructor_008_foundersf_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1914,6 +2087,7 @@
     ]
   },
   "Hero:hid_constructor_008_foundersf_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1922,6 +2096,7 @@
     ]
   },
   "Hero:hid_constructor_008_foundersm_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1930,6 +2105,7 @@
     ]
   },
   "Hero:hid_constructor_008_foundersm_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1938,6 +2114,7 @@
     ]
   },
   "Hero:hid_constructor_008_foundersm_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1946,6 +2123,7 @@
     ]
   },
   "Hero:hid_constructor_008_foundersm_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1954,6 +2132,7 @@
     ]
   },
   "Hero:hid_constructor_008_foundersm_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1962,6 +2141,7 @@
     ]
   },
   "Hero:hid_constructor_008_r_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1970,6 +2150,7 @@
     ]
   },
   "Hero:hid_constructor_008_r_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1978,6 +2159,7 @@
     ]
   },
   "Hero:hid_constructor_008_r_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1986,6 +2168,7 @@
     ]
   },
   "Hero:hid_constructor_008_r_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -1994,6 +2177,7 @@
     ]
   },
   "Hero:hid_constructor_008_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2002,6 +2186,7 @@
     ]
   },
   "Hero:hid_constructor_008_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2010,6 +2195,7 @@
     ]
   },
   "Hero:hid_constructor_008_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2018,6 +2204,7 @@
     ]
   },
   "Hero:hid_constructor_008_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2026,6 +2213,7 @@
     ]
   },
   "Hero:hid_constructor_008_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2034,6 +2222,7 @@
     ]
   },
   "Hero:hid_constructor_008_vr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2042,6 +2231,7 @@
     ]
   },
   "Hero:hid_constructor_008_vr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2050,6 +2240,7 @@
     ]
   },
   "Hero:hid_constructor_008_vr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2058,6 +2249,7 @@
     ]
   },
   "Hero:hid_constructor_008_vr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2066,6 +2258,7 @@
     ]
   },
   "Hero:hid_constructor_008_vr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2074,6 +2267,7 @@
     ]
   },
   "Hero:hid_constructor_009_r_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2082,6 +2276,7 @@
     ]
   },
   "Hero:hid_constructor_009_r_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2090,6 +2285,7 @@
     ]
   },
   "Hero:hid_constructor_009_r_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2098,6 +2294,7 @@
     ]
   },
   "Hero:hid_constructor_009_r_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2106,6 +2303,7 @@
     ]
   },
   "Hero:hid_constructor_009_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2114,6 +2312,7 @@
     ]
   },
   "Hero:hid_constructor_009_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2122,6 +2321,7 @@
     ]
   },
   "Hero:hid_constructor_009_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2130,6 +2330,7 @@
     ]
   },
   "Hero:hid_constructor_009_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2138,6 +2339,7 @@
     ]
   },
   "Hero:hid_constructor_009_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2146,6 +2348,7 @@
     ]
   },
   "Hero:hid_constructor_009_vr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2154,6 +2357,7 @@
     ]
   },
   "Hero:hid_constructor_009_vr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2162,6 +2366,7 @@
     ]
   },
   "Hero:hid_constructor_009_vr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2170,6 +2375,7 @@
     ]
   },
   "Hero:hid_constructor_009_vr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2178,6 +2384,7 @@
     ]
   },
   "Hero:hid_constructor_009_vr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2186,6 +2393,7 @@
     ]
   },
   "Hero:hid_constructor_010_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2194,6 +2402,7 @@
     ]
   },
   "Hero:hid_constructor_010_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2202,6 +2411,7 @@
     ]
   },
   "Hero:hid_constructor_010_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2210,6 +2420,7 @@
     ]
   },
   "Hero:hid_constructor_010_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2218,6 +2429,7 @@
     ]
   },
   "Hero:hid_constructor_010_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2226,6 +2438,7 @@
     ]
   },
   "Hero:hid_constructor_010_vr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2234,6 +2447,7 @@
     ]
   },
   "Hero:hid_constructor_010_vr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2242,6 +2456,7 @@
     ]
   },
   "Hero:hid_constructor_010_vr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2250,6 +2465,7 @@
     ]
   },
   "Hero:hid_constructor_010_vr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2258,6 +2474,7 @@
     ]
   },
   "Hero:hid_constructor_010_vr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2266,6 +2483,7 @@
     ]
   },
   "Hero:hid_constructor_basebig_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2274,6 +2492,7 @@
     ]
   },
   "Hero:hid_constructor_basebig_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2282,6 +2501,7 @@
     ]
   },
   "Hero:hid_constructor_basebig_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2290,6 +2510,7 @@
     ]
   },
   "Hero:hid_constructor_basebig_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2298,6 +2519,7 @@
     ]
   },
   "Hero:hid_constructor_basebig_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2306,6 +2528,7 @@
     ]
   },
   "Hero:hid_constructor_basehyper_r_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2314,6 +2537,7 @@
     ]
   },
   "Hero:hid_constructor_basehyper_r_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2322,6 +2546,7 @@
     ]
   },
   "Hero:hid_constructor_basehyper_r_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2330,6 +2555,7 @@
     ]
   },
   "Hero:hid_constructor_basehyper_r_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2338,6 +2564,7 @@
     ]
   },
   "Hero:hid_constructor_basehyper_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2346,6 +2573,7 @@
     ]
   },
   "Hero:hid_constructor_basehyper_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2354,6 +2582,7 @@
     ]
   },
   "Hero:hid_constructor_basehyper_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2362,6 +2591,7 @@
     ]
   },
   "Hero:hid_constructor_basehyper_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2370,6 +2600,7 @@
     ]
   },
   "Hero:hid_constructor_basehyper_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2378,6 +2609,7 @@
     ]
   },
   "Hero:hid_constructor_basehyper_vr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2386,6 +2618,7 @@
     ]
   },
   "Hero:hid_constructor_basehyper_vr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2394,6 +2627,7 @@
     ]
   },
   "Hero:hid_constructor_basehyper_vr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2402,6 +2636,7 @@
     ]
   },
   "Hero:hid_constructor_basehyper_vr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2410,6 +2645,7 @@
     ]
   },
   "Hero:hid_constructor_basehyper_vr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2418,6 +2654,7 @@
     ]
   },
   "Hero:hid_constructor_basehyperhw_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2426,6 +2663,7 @@
     ]
   },
   "Hero:hid_constructor_basehyperhw_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2434,6 +2672,7 @@
     ]
   },
   "Hero:hid_constructor_basehyperhw_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2442,6 +2681,7 @@
     ]
   },
   "Hero:hid_constructor_basehyperhw_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2450,6 +2690,7 @@
     ]
   },
   "Hero:hid_constructor_basehyperhw_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2458,6 +2699,7 @@
     ]
   },
   "Hero:hid_constructor_cinematic_test_r_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2466,6 +2708,7 @@
     ]
   },
   "Hero:hid_constructor_hammerplasma_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2474,6 +2717,7 @@
     ]
   },
   "Hero:hid_constructor_hammerplasma_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2482,6 +2726,7 @@
     ]
   },
   "Hero:hid_constructor_hammerplasma_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2490,6 +2735,7 @@
     ]
   },
   "Hero:hid_constructor_hammerplasma_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2498,6 +2744,7 @@
     ]
   },
   "Hero:hid_constructor_hammerplasma_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2506,6 +2753,7 @@
     ]
   },
   "Hero:hid_constructor_hammerplasma_vr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2514,6 +2762,7 @@
     ]
   },
   "Hero:hid_constructor_hammerplasma_vr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2522,6 +2771,7 @@
     ]
   },
   "Hero:hid_constructor_hammerplasma_vr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2530,6 +2780,7 @@
     ]
   },
   "Hero:hid_constructor_hammerplasma_vr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2538,6 +2789,7 @@
     ]
   },
   "Hero:hid_constructor_hammerplasma_vr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2546,6 +2798,7 @@
     ]
   },
   "Hero:hid_constructor_hammertank_r_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2554,6 +2807,7 @@
     ]
   },
   "Hero:hid_constructor_hammertank_r_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2562,6 +2816,7 @@
     ]
   },
   "Hero:hid_constructor_hammertank_r_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2570,6 +2825,7 @@
     ]
   },
   "Hero:hid_constructor_hammertank_r_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2578,6 +2834,7 @@
     ]
   },
   "Hero:hid_constructor_hammertank_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2586,6 +2843,7 @@
     ]
   },
   "Hero:hid_constructor_hammertank_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2594,6 +2852,7 @@
     ]
   },
   "Hero:hid_constructor_hammertank_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2602,6 +2861,7 @@
     ]
   },
   "Hero:hid_constructor_hammertank_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2610,6 +2870,7 @@
     ]
   },
   "Hero:hid_constructor_hammertank_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2618,6 +2879,7 @@
     ]
   },
   "Hero:hid_constructor_hammertank_uc_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2626,6 +2888,7 @@
     ]
   },
   "Hero:hid_constructor_hammertank_uc_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2634,6 +2897,7 @@
     ]
   },
   "Hero:hid_constructor_hammertank_uc_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2642,6 +2906,7 @@
     ]
   },
   "Hero:hid_constructor_hammertank_vr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2650,6 +2915,7 @@
     ]
   },
   "Hero:hid_constructor_hammertank_vr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2658,6 +2924,7 @@
     ]
   },
   "Hero:hid_constructor_hammertank_vr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2666,6 +2933,7 @@
     ]
   },
   "Hero:hid_constructor_hammertank_vr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2674,6 +2942,7 @@
     ]
   },
   "Hero:hid_constructor_hammertank_vr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2682,6 +2951,7 @@
     ]
   },
   "Hero:hid_constructor_plasmadamage_r_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2690,6 +2960,7 @@
     ]
   },
   "Hero:hid_constructor_plasmadamage_r_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2698,6 +2969,7 @@
     ]
   },
   "Hero:hid_constructor_plasmadamage_r_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2706,6 +2978,7 @@
     ]
   },
   "Hero:hid_constructor_plasmadamage_r_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2714,6 +2987,7 @@
     ]
   },
   "Hero:hid_constructor_plasmadamage_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2722,6 +2996,7 @@
     ]
   },
   "Hero:hid_constructor_plasmadamage_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2730,6 +3005,7 @@
     ]
   },
   "Hero:hid_constructor_plasmadamage_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2738,6 +3014,7 @@
     ]
   },
   "Hero:hid_constructor_plasmadamage_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2746,6 +3023,7 @@
     ]
   },
   "Hero:hid_constructor_plasmadamage_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2754,6 +3032,7 @@
     ]
   },
   "Hero:hid_constructor_plasmadamage_vr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2762,6 +3041,7 @@
     ]
   },
   "Hero:hid_constructor_plasmadamage_vr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2770,6 +3050,7 @@
     ]
   },
   "Hero:hid_constructor_plasmadamage_vr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2778,6 +3059,7 @@
     ]
   },
   "Hero:hid_constructor_plasmadamage_vr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2786,6 +3068,7 @@
     ]
   },
   "Hero:hid_constructor_plasmadamage_vr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2794,6 +3077,7 @@
     ]
   },
   "Hero:hid_constructor_rushbase_r_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2802,6 +3086,7 @@
     ]
   },
   "Hero:hid_constructor_rushbase_r_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2810,6 +3095,7 @@
     ]
   },
   "Hero:hid_constructor_rushbase_r_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2818,6 +3104,7 @@
     ]
   },
   "Hero:hid_constructor_rushbase_r_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2826,6 +3113,7 @@
     ]
   },
   "Hero:hid_constructor_rushbase_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2834,6 +3122,7 @@
     ]
   },
   "Hero:hid_constructor_rushbase_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2842,6 +3131,7 @@
     ]
   },
   "Hero:hid_constructor_rushbase_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2850,6 +3140,7 @@
     ]
   },
   "Hero:hid_constructor_rushbase_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2858,6 +3149,7 @@
     ]
   },
   "Hero:hid_constructor_rushbase_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2866,6 +3158,7 @@
     ]
   },
   "Hero:hid_constructor_rushbase_uc_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2874,6 +3167,7 @@
     ]
   },
   "Hero:hid_constructor_rushbase_uc_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2882,6 +3176,7 @@
     ]
   },
   "Hero:hid_constructor_rushbase_uc_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2890,6 +3185,7 @@
     ]
   },
   "Hero:hid_constructor_rushbase_vr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2898,6 +3194,7 @@
     ]
   },
   "Hero:hid_constructor_rushbase_vr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2906,6 +3203,7 @@
     ]
   },
   "Hero:hid_constructor_rushbase_vr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2914,6 +3212,7 @@
     ]
   },
   "Hero:hid_constructor_rushbase_vr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2922,6 +3221,7 @@
     ]
   },
   "Hero:hid_constructor_rushbase_vr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2930,6 +3230,7 @@
     ]
   },
   "Hero:hid_constructor_sony_r_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2938,6 +3239,7 @@
     ]
   },
   "Hero:hid_constructor_sony_r_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2946,6 +3248,7 @@
     ]
   },
   "Hero:hid_constructor_sony_r_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2954,6 +3257,7 @@
     ]
   },
   "Hero:hid_constructor_sony_r_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Constructor"
     ],
@@ -2962,6 +3266,7 @@
     ]
   },
   "Hero:hid_ninja_007_r_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -2970,6 +3275,7 @@
     ]
   },
   "Hero:hid_ninja_007_r_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -2978,6 +3284,7 @@
     ]
   },
   "Hero:hid_ninja_007_r_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -2986,6 +3293,7 @@
     ]
   },
   "Hero:hid_ninja_007_r_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -2994,6 +3302,7 @@
     ]
   },
   "Hero:hid_ninja_007_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3002,6 +3311,7 @@
     ]
   },
   "Hero:hid_ninja_007_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3010,6 +3320,7 @@
     ]
   },
   "Hero:hid_ninja_007_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3018,6 +3329,7 @@
     ]
   },
   "Hero:hid_ninja_007_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3026,6 +3338,7 @@
     ]
   },
   "Hero:hid_ninja_007_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3034,6 +3347,7 @@
     ]
   },
   "Hero:hid_ninja_007_uc_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3042,6 +3356,7 @@
     ]
   },
   "Hero:hid_ninja_007_uc_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3050,6 +3365,7 @@
     ]
   },
   "Hero:hid_ninja_007_uc_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3058,6 +3374,7 @@
     ]
   },
   "Hero:hid_ninja_007_vr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3066,6 +3383,7 @@
     ]
   },
   "Hero:hid_ninja_007_vr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3074,6 +3392,7 @@
     ]
   },
   "Hero:hid_ninja_007_vr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3082,6 +3401,7 @@
     ]
   },
   "Hero:hid_ninja_007_vr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3090,6 +3410,7 @@
     ]
   },
   "Hero:hid_ninja_007_vr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3098,6 +3419,7 @@
     ]
   },
   "Hero:hid_ninja_008_r_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3106,6 +3428,7 @@
     ]
   },
   "Hero:hid_ninja_008_r_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3114,6 +3437,7 @@
     ]
   },
   "Hero:hid_ninja_008_r_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3122,6 +3446,7 @@
     ]
   },
   "Hero:hid_ninja_008_r_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3130,6 +3455,7 @@
     ]
   },
   "Hero:hid_ninja_008_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3138,6 +3464,7 @@
     ]
   },
   "Hero:hid_ninja_008_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3146,6 +3473,7 @@
     ]
   },
   "Hero:hid_ninja_008_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3154,6 +3482,7 @@
     ]
   },
   "Hero:hid_ninja_008_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3162,6 +3491,7 @@
     ]
   },
   "Hero:hid_ninja_008_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3170,6 +3500,7 @@
     ]
   },
   "Hero:hid_ninja_008_vr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3178,6 +3509,7 @@
     ]
   },
   "Hero:hid_ninja_008_vr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3186,6 +3518,7 @@
     ]
   },
   "Hero:hid_ninja_008_vr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3194,6 +3527,7 @@
     ]
   },
   "Hero:hid_ninja_008_vr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3202,6 +3536,7 @@
     ]
   },
   "Hero:hid_ninja_008_vr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3210,6 +3545,7 @@
     ]
   },
   "Hero:hid_ninja_009_r_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3218,6 +3554,7 @@
     ]
   },
   "Hero:hid_ninja_009_r_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3226,6 +3563,7 @@
     ]
   },
   "Hero:hid_ninja_009_r_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3234,6 +3572,7 @@
     ]
   },
   "Hero:hid_ninja_009_r_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3242,6 +3581,7 @@
     ]
   },
   "Hero:hid_ninja_009_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3250,6 +3590,7 @@
     ]
   },
   "Hero:hid_ninja_009_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3258,6 +3599,7 @@
     ]
   },
   "Hero:hid_ninja_009_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3266,6 +3608,7 @@
     ]
   },
   "Hero:hid_ninja_009_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3274,6 +3617,7 @@
     ]
   },
   "Hero:hid_ninja_009_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3282,6 +3626,7 @@
     ]
   },
   "Hero:hid_ninja_009_vr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3290,6 +3635,7 @@
     ]
   },
   "Hero:hid_ninja_009_vr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3298,6 +3644,7 @@
     ]
   },
   "Hero:hid_ninja_009_vr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3306,6 +3653,7 @@
     ]
   },
   "Hero:hid_ninja_009_vr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3314,6 +3662,7 @@
     ]
   },
   "Hero:hid_ninja_009_vr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3322,6 +3671,7 @@
     ]
   },
   "Hero:hid_ninja_010_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3330,6 +3680,7 @@
     ]
   },
   "Hero:hid_ninja_010_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3338,6 +3689,7 @@
     ]
   },
   "Hero:hid_ninja_010_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3346,6 +3698,7 @@
     ]
   },
   "Hero:hid_ninja_010_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3354,6 +3707,7 @@
     ]
   },
   "Hero:hid_ninja_010_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3362,6 +3716,7 @@
     ]
   },
   "Hero:hid_ninja_010_vr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3370,6 +3725,7 @@
     ]
   },
   "Hero:hid_ninja_010_vr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3378,6 +3734,7 @@
     ]
   },
   "Hero:hid_ninja_010_vr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3386,6 +3743,7 @@
     ]
   },
   "Hero:hid_ninja_010_vr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3394,6 +3752,7 @@
     ]
   },
   "Hero:hid_ninja_010_vr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3402,6 +3761,7 @@
     ]
   },
   "Hero:hid_ninja_cinematic_test_r_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3410,6 +3770,7 @@
     ]
   },
   "Hero:hid_ninja_slashbreath_r_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3418,6 +3779,7 @@
     ]
   },
   "Hero:hid_ninja_slashbreath_r_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3426,6 +3788,7 @@
     ]
   },
   "Hero:hid_ninja_slashbreath_r_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3434,6 +3797,7 @@
     ]
   },
   "Hero:hid_ninja_slashbreath_r_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3442,6 +3806,7 @@
     ]
   },
   "Hero:hid_ninja_slashbreath_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3450,6 +3815,7 @@
     ]
   },
   "Hero:hid_ninja_slashbreath_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3458,6 +3824,7 @@
     ]
   },
   "Hero:hid_ninja_slashbreath_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3466,6 +3833,7 @@
     ]
   },
   "Hero:hid_ninja_slashbreath_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3474,6 +3842,7 @@
     ]
   },
   "Hero:hid_ninja_slashbreath_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3482,6 +3851,7 @@
     ]
   },
   "Hero:hid_ninja_slashbreath_vr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3490,6 +3860,7 @@
     ]
   },
   "Hero:hid_ninja_slashbreath_vr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3498,6 +3869,7 @@
     ]
   },
   "Hero:hid_ninja_slashbreath_vr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3506,6 +3878,7 @@
     ]
   },
   "Hero:hid_ninja_slashbreath_vr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3514,6 +3887,7 @@
     ]
   },
   "Hero:hid_ninja_slashbreath_vr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3522,6 +3896,7 @@
     ]
   },
   "Hero:hid_ninja_slashtail_r_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3530,6 +3905,7 @@
     ]
   },
   "Hero:hid_ninja_slashtail_r_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3538,6 +3914,7 @@
     ]
   },
   "Hero:hid_ninja_slashtail_r_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3546,6 +3923,7 @@
     ]
   },
   "Hero:hid_ninja_slashtail_r_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3554,6 +3932,7 @@
     ]
   },
   "Hero:hid_ninja_slashtail_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3562,6 +3941,7 @@
     ]
   },
   "Hero:hid_ninja_slashtail_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3570,6 +3950,7 @@
     ]
   },
   "Hero:hid_ninja_slashtail_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3578,6 +3959,7 @@
     ]
   },
   "Hero:hid_ninja_slashtail_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3586,6 +3968,7 @@
     ]
   },
   "Hero:hid_ninja_slashtail_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3594,6 +3977,7 @@
     ]
   },
   "Hero:hid_ninja_slashtail_uc_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3602,6 +3986,7 @@
     ]
   },
   "Hero:hid_ninja_slashtail_uc_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3610,6 +3995,7 @@
     ]
   },
   "Hero:hid_ninja_slashtail_uc_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3618,6 +4004,7 @@
     ]
   },
   "Hero:hid_ninja_slashtail_vr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3626,6 +4013,7 @@
     ]
   },
   "Hero:hid_ninja_slashtail_vr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3634,6 +4022,7 @@
     ]
   },
   "Hero:hid_ninja_slashtail_vr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3642,6 +4031,7 @@
     ]
   },
   "Hero:hid_ninja_slashtail_vr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3650,6 +4040,7 @@
     ]
   },
   "Hero:hid_ninja_slashtail_vr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3658,6 +4049,7 @@
     ]
   },
   "Hero:hid_ninja_smokedimmak_r_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3666,6 +4058,7 @@
     ]
   },
   "Hero:hid_ninja_smokedimmak_r_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3674,6 +4067,7 @@
     ]
   },
   "Hero:hid_ninja_smokedimmak_r_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3682,6 +4076,7 @@
     ]
   },
   "Hero:hid_ninja_smokedimmak_r_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3690,6 +4085,7 @@
     ]
   },
   "Hero:hid_ninja_smokedimmak_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3698,6 +4094,7 @@
     ]
   },
   "Hero:hid_ninja_smokedimmak_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3706,6 +4103,7 @@
     ]
   },
   "Hero:hid_ninja_smokedimmak_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3714,6 +4112,7 @@
     ]
   },
   "Hero:hid_ninja_smokedimmak_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3722,6 +4121,7 @@
     ]
   },
   "Hero:hid_ninja_smokedimmak_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3730,6 +4130,7 @@
     ]
   },
   "Hero:hid_ninja_smokedimmak_vr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3738,6 +4139,7 @@
     ]
   },
   "Hero:hid_ninja_smokedimmak_vr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3746,6 +4148,7 @@
     ]
   },
   "Hero:hid_ninja_smokedimmak_vr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3754,6 +4157,7 @@
     ]
   },
   "Hero:hid_ninja_smokedimmak_vr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3762,6 +4166,7 @@
     ]
   },
   "Hero:hid_ninja_smokedimmak_vr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3770,6 +4175,7 @@
     ]
   },
   "Hero:hid_ninja_sony_r_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3778,6 +4184,7 @@
     ]
   },
   "Hero:hid_ninja_sony_r_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3786,6 +4193,7 @@
     ]
   },
   "Hero:hid_ninja_sony_r_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3794,6 +4202,7 @@
     ]
   },
   "Hero:hid_ninja_sony_r_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3802,6 +4211,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_foundersf_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3810,6 +4220,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_foundersf_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3818,6 +4229,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_foundersf_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3826,6 +4238,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_foundersf_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3834,6 +4247,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_foundersf_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3842,6 +4256,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_foundersm_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3850,6 +4265,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_foundersm_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3858,6 +4274,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_foundersm_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3866,6 +4283,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_foundersm_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3874,6 +4292,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_foundersm_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3882,6 +4301,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_r_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3890,6 +4310,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_r_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3898,6 +4319,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_r_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3906,6 +4328,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_r_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3914,6 +4337,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3922,6 +4346,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3930,6 +4355,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3938,6 +4364,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3946,6 +4373,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3954,6 +4382,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_uc_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3962,6 +4391,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_uc_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3970,6 +4400,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_uc_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3978,6 +4409,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_vr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3986,6 +4418,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_vr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -3994,6 +4427,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_vr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -4002,6 +4436,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_vr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -4010,6 +4445,7 @@
     ]
   },
   "Hero:hid_ninja_starsassassin_vr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -4018,6 +4454,7 @@
     ]
   },
   "Hero:hid_ninja_starsrain_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -4026,6 +4463,7 @@
     ]
   },
   "Hero:hid_ninja_starsrain_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -4034,6 +4472,7 @@
     ]
   },
   "Hero:hid_ninja_starsrain_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -4042,6 +4481,7 @@
     ]
   },
   "Hero:hid_ninja_starsrain_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -4050,6 +4490,7 @@
     ]
   },
   "Hero:hid_ninja_starsrain_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -4058,6 +4499,7 @@
     ]
   },
   "Hero:hid_ninja_starsrain_vr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -4066,6 +4508,7 @@
     ]
   },
   "Hero:hid_ninja_starsrain_vr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -4074,6 +4517,7 @@
     ]
   },
   "Hero:hid_ninja_starsrain_vr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -4082,6 +4526,7 @@
     ]
   },
   "Hero:hid_ninja_starsrain_vr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -4090,6 +4535,7 @@
     ]
   },
   "Hero:hid_ninja_starsrain_vr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -4098,6 +4544,7 @@
     ]
   },
   "Hero:hid_ninja_starsrainhw_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -4106,6 +4553,7 @@
     ]
   },
   "Hero:hid_ninja_starsrainhw_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -4114,6 +4562,7 @@
     ]
   },
   "Hero:hid_ninja_starsrainhw_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -4122,6 +4571,7 @@
     ]
   },
   "Hero:hid_ninja_starsrainhw_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -4130,6 +4580,7 @@
     ]
   },
   "Hero:hid_ninja_starsrainhw_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -4138,6 +4589,7 @@
     ]
   },
   "Hero:hid_ninja_swordmaster_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -4146,6 +4598,7 @@
     ]
   },
   "Hero:hid_ninja_swordmaster_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -4154,6 +4607,7 @@
     ]
   },
   "Hero:hid_ninja_swordmaster_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -4162,6 +4616,7 @@
     ]
   },
   "Hero:hid_ninja_swordmaster_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -4170,6 +4625,7 @@
     ]
   },
   "Hero:hid_ninja_swordmaster_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Ninja"
     ],
@@ -4178,6 +4634,7 @@
     ]
   },
   "Hero:hid_outlander_007_r_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4186,6 +4643,7 @@
     ]
   },
   "Hero:hid_outlander_007_r_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4194,6 +4652,7 @@
     ]
   },
   "Hero:hid_outlander_007_r_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4202,6 +4661,7 @@
     ]
   },
   "Hero:hid_outlander_007_r_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4210,6 +4670,7 @@
     ]
   },
   "Hero:hid_outlander_007_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4218,6 +4679,7 @@
     ]
   },
   "Hero:hid_outlander_007_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4226,6 +4688,7 @@
     ]
   },
   "Hero:hid_outlander_007_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4234,6 +4697,7 @@
     ]
   },
   "Hero:hid_outlander_007_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4242,6 +4706,7 @@
     ]
   },
   "Hero:hid_outlander_007_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4250,6 +4715,7 @@
     ]
   },
   "Hero:hid_outlander_007_uc_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4258,6 +4724,7 @@
     ]
   },
   "Hero:hid_outlander_007_uc_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4266,6 +4733,7 @@
     ]
   },
   "Hero:hid_outlander_007_uc_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4274,6 +4742,7 @@
     ]
   },
   "Hero:hid_outlander_007_vr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4282,6 +4751,7 @@
     ]
   },
   "Hero:hid_outlander_007_vr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4290,6 +4760,7 @@
     ]
   },
   "Hero:hid_outlander_007_vr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4298,6 +4769,7 @@
     ]
   },
   "Hero:hid_outlander_007_vr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4306,6 +4778,7 @@
     ]
   },
   "Hero:hid_outlander_007_vr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4314,6 +4787,7 @@
     ]
   },
   "Hero:hid_outlander_008_foundersf_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4322,6 +4796,7 @@
     ]
   },
   "Hero:hid_outlander_008_foundersf_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4330,6 +4805,7 @@
     ]
   },
   "Hero:hid_outlander_008_foundersf_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4338,6 +4814,7 @@
     ]
   },
   "Hero:hid_outlander_008_foundersf_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4346,6 +4823,7 @@
     ]
   },
   "Hero:hid_outlander_008_foundersf_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4354,6 +4832,7 @@
     ]
   },
   "Hero:hid_outlander_008_foundersm_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4362,6 +4841,7 @@
     ]
   },
   "Hero:hid_outlander_008_foundersm_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4370,6 +4850,7 @@
     ]
   },
   "Hero:hid_outlander_008_foundersm_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4378,6 +4859,7 @@
     ]
   },
   "Hero:hid_outlander_008_foundersm_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4386,6 +4868,7 @@
     ]
   },
   "Hero:hid_outlander_008_foundersm_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4394,6 +4877,7 @@
     ]
   },
   "Hero:hid_outlander_008_r_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4402,6 +4886,7 @@
     ]
   },
   "Hero:hid_outlander_008_r_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4410,6 +4895,7 @@
     ]
   },
   "Hero:hid_outlander_008_r_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4418,6 +4904,7 @@
     ]
   },
   "Hero:hid_outlander_008_r_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4426,6 +4913,7 @@
     ]
   },
   "Hero:hid_outlander_008_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4434,6 +4922,7 @@
     ]
   },
   "Hero:hid_outlander_008_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4442,6 +4931,7 @@
     ]
   },
   "Hero:hid_outlander_008_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4450,6 +4940,7 @@
     ]
   },
   "Hero:hid_outlander_008_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4458,6 +4949,7 @@
     ]
   },
   "Hero:hid_outlander_008_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4466,6 +4958,7 @@
     ]
   },
   "Hero:hid_outlander_008_vr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4474,6 +4967,7 @@
     ]
   },
   "Hero:hid_outlander_008_vr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4482,6 +4976,7 @@
     ]
   },
   "Hero:hid_outlander_008_vr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4490,6 +4985,7 @@
     ]
   },
   "Hero:hid_outlander_008_vr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4498,6 +4994,7 @@
     ]
   },
   "Hero:hid_outlander_008_vr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4506,6 +5003,7 @@
     ]
   },
   "Hero:hid_outlander_009_r_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4514,6 +5012,7 @@
     ]
   },
   "Hero:hid_outlander_009_r_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4522,6 +5021,7 @@
     ]
   },
   "Hero:hid_outlander_009_r_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4530,6 +5030,7 @@
     ]
   },
   "Hero:hid_outlander_009_r_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4538,6 +5039,7 @@
     ]
   },
   "Hero:hid_outlander_009_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4546,6 +5048,7 @@
     ]
   },
   "Hero:hid_outlander_009_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4554,6 +5057,7 @@
     ]
   },
   "Hero:hid_outlander_009_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4562,6 +5066,7 @@
     ]
   },
   "Hero:hid_outlander_009_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4570,6 +5075,7 @@
     ]
   },
   "Hero:hid_outlander_009_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4578,6 +5084,7 @@
     ]
   },
   "Hero:hid_outlander_009_vr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4586,6 +5093,7 @@
     ]
   },
   "Hero:hid_outlander_009_vr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4594,6 +5102,7 @@
     ]
   },
   "Hero:hid_outlander_009_vr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4602,6 +5111,7 @@
     ]
   },
   "Hero:hid_outlander_009_vr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4610,6 +5120,7 @@
     ]
   },
   "Hero:hid_outlander_009_vr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4618,6 +5129,7 @@
     ]
   },
   "Hero:hid_outlander_010_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4626,6 +5138,7 @@
     ]
   },
   "Hero:hid_outlander_010_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4634,6 +5147,7 @@
     ]
   },
   "Hero:hid_outlander_010_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4642,6 +5156,7 @@
     ]
   },
   "Hero:hid_outlander_010_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4650,6 +5165,7 @@
     ]
   },
   "Hero:hid_outlander_010_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4658,6 +5174,7 @@
     ]
   },
   "Hero:hid_outlander_010_vr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4666,6 +5183,7 @@
     ]
   },
   "Hero:hid_outlander_010_vr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4674,6 +5192,7 @@
     ]
   },
   "Hero:hid_outlander_010_vr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4682,6 +5201,7 @@
     ]
   },
   "Hero:hid_outlander_010_vr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4690,6 +5210,7 @@
     ]
   },
   "Hero:hid_outlander_010_vr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4698,6 +5219,7 @@
     ]
   },
   "Hero:hid_outlander_cinematic_test_r_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4706,6 +5228,7 @@
     ]
   },
   "Hero:hid_outlander_punchdamage_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4714,6 +5237,7 @@
     ]
   },
   "Hero:hid_outlander_punchdamage_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4722,6 +5246,7 @@
     ]
   },
   "Hero:hid_outlander_punchdamage_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4730,6 +5255,7 @@
     ]
   },
   "Hero:hid_outlander_punchdamage_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4738,6 +5264,7 @@
     ]
   },
   "Hero:hid_outlander_punchdamage_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4746,6 +5273,7 @@
     ]
   },
   "Hero:hid_outlander_punchdamage_vr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4754,6 +5282,7 @@
     ]
   },
   "Hero:hid_outlander_punchdamage_vr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4762,6 +5291,7 @@
     ]
   },
   "Hero:hid_outlander_punchdamage_vr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4770,6 +5300,7 @@
     ]
   },
   "Hero:hid_outlander_punchdamage_vr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4778,6 +5309,7 @@
     ]
   },
   "Hero:hid_outlander_punchdamage_vr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4786,6 +5318,7 @@
     ]
   },
   "Hero:hid_outlander_punchphase_r_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4794,6 +5327,7 @@
     ]
   },
   "Hero:hid_outlander_punchphase_r_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4802,6 +5336,7 @@
     ]
   },
   "Hero:hid_outlander_punchphase_r_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4810,6 +5345,7 @@
     ]
   },
   "Hero:hid_outlander_punchphase_r_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4818,6 +5354,7 @@
     ]
   },
   "Hero:hid_outlander_punchphase_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4826,6 +5363,7 @@
     ]
   },
   "Hero:hid_outlander_punchphase_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4834,6 +5372,7 @@
     ]
   },
   "Hero:hid_outlander_punchphase_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4842,6 +5381,7 @@
     ]
   },
   "Hero:hid_outlander_punchphase_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4850,6 +5390,7 @@
     ]
   },
   "Hero:hid_outlander_punchphase_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4858,6 +5399,7 @@
     ]
   },
   "Hero:hid_outlander_punchphase_uc_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4866,6 +5408,7 @@
     ]
   },
   "Hero:hid_outlander_punchphase_uc_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4874,6 +5417,7 @@
     ]
   },
   "Hero:hid_outlander_punchphase_uc_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4882,6 +5426,7 @@
     ]
   },
   "Hero:hid_outlander_punchphase_vr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4890,6 +5435,7 @@
     ]
   },
   "Hero:hid_outlander_punchphase_vr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4898,6 +5444,7 @@
     ]
   },
   "Hero:hid_outlander_punchphase_vr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4906,6 +5453,7 @@
     ]
   },
   "Hero:hid_outlander_punchphase_vr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4914,6 +5462,7 @@
     ]
   },
   "Hero:hid_outlander_punchphase_vr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4922,6 +5471,7 @@
     ]
   },
   "Hero:hid_outlander_sony_r_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4930,6 +5480,7 @@
     ]
   },
   "Hero:hid_outlander_sony_r_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4938,6 +5489,7 @@
     ]
   },
   "Hero:hid_outlander_sony_r_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4946,6 +5498,7 @@
     ]
   },
   "Hero:hid_outlander_sony_r_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4954,6 +5507,7 @@
     ]
   },
   "Hero:hid_outlander_spherefragment_r_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4962,6 +5516,7 @@
     ]
   },
   "Hero:hid_outlander_spherefragment_r_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4970,6 +5525,7 @@
     ]
   },
   "Hero:hid_outlander_spherefragment_r_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4978,6 +5534,7 @@
     ]
   },
   "Hero:hid_outlander_spherefragment_r_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4986,6 +5543,7 @@
     ]
   },
   "Hero:hid_outlander_spherefragment_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -4994,6 +5552,7 @@
     ]
   },
   "Hero:hid_outlander_spherefragment_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5002,6 +5561,7 @@
     ]
   },
   "Hero:hid_outlander_spherefragment_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5010,6 +5570,7 @@
     ]
   },
   "Hero:hid_outlander_spherefragment_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5018,6 +5579,7 @@
     ]
   },
   "Hero:hid_outlander_spherefragment_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5026,6 +5588,7 @@
     ]
   },
   "Hero:hid_outlander_spherefragment_vr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5034,6 +5597,7 @@
     ]
   },
   "Hero:hid_outlander_spherefragment_vr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5042,6 +5606,7 @@
     ]
   },
   "Hero:hid_outlander_spherefragment_vr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5050,6 +5615,7 @@
     ]
   },
   "Hero:hid_outlander_spherefragment_vr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5058,6 +5624,7 @@
     ]
   },
   "Hero:hid_outlander_spherefragment_vr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5066,6 +5633,7 @@
     ]
   },
   "Hero:hid_outlander_zonefragment_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5074,6 +5642,7 @@
     ]
   },
   "Hero:hid_outlander_zonefragment_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5082,6 +5651,7 @@
     ]
   },
   "Hero:hid_outlander_zonefragment_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5090,6 +5660,7 @@
     ]
   },
   "Hero:hid_outlander_zonefragment_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5098,6 +5669,7 @@
     ]
   },
   "Hero:hid_outlander_zonefragment_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5106,6 +5678,7 @@
     ]
   },
   "Hero:hid_outlander_zoneharvest_r_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5114,6 +5687,7 @@
     ]
   },
   "Hero:hid_outlander_zoneharvest_r_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5122,6 +5696,7 @@
     ]
   },
   "Hero:hid_outlander_zoneharvest_r_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5130,6 +5705,7 @@
     ]
   },
   "Hero:hid_outlander_zoneharvest_r_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5138,6 +5714,7 @@
     ]
   },
   "Hero:hid_outlander_zoneharvest_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5146,6 +5723,7 @@
     ]
   },
   "Hero:hid_outlander_zoneharvest_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5154,6 +5732,7 @@
     ]
   },
   "Hero:hid_outlander_zoneharvest_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5162,6 +5741,7 @@
     ]
   },
   "Hero:hid_outlander_zoneharvest_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5170,6 +5750,7 @@
     ]
   },
   "Hero:hid_outlander_zoneharvest_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5178,6 +5759,7 @@
     ]
   },
   "Hero:hid_outlander_zoneharvest_uc_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5186,6 +5768,7 @@
     ]
   },
   "Hero:hid_outlander_zoneharvest_uc_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5194,6 +5777,7 @@
     ]
   },
   "Hero:hid_outlander_zoneharvest_uc_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5202,6 +5786,7 @@
     ]
   },
   "Hero:hid_outlander_zoneharvest_vr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5210,6 +5795,7 @@
     ]
   },
   "Hero:hid_outlander_zoneharvest_vr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5218,6 +5804,7 @@
     ]
   },
   "Hero:hid_outlander_zoneharvest_vr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5226,6 +5813,7 @@
     ]
   },
   "Hero:hid_outlander_zoneharvest_vr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5234,6 +5822,7 @@
     ]
   },
   "Hero:hid_outlander_zoneharvest_vr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5242,6 +5831,7 @@
     ]
   },
   "Hero:hid_outlander_zonepistol_r_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5250,6 +5840,7 @@
     ]
   },
   "Hero:hid_outlander_zonepistol_r_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5258,6 +5849,7 @@
     ]
   },
   "Hero:hid_outlander_zonepistol_r_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5266,6 +5858,7 @@
     ]
   },
   "Hero:hid_outlander_zonepistol_r_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5274,6 +5867,7 @@
     ]
   },
   "Hero:hid_outlander_zonepistol_sr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5282,6 +5876,7 @@
     ]
   },
   "Hero:hid_outlander_zonepistol_sr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5290,6 +5885,7 @@
     ]
   },
   "Hero:hid_outlander_zonepistol_sr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5298,6 +5894,7 @@
     ]
   },
   "Hero:hid_outlander_zonepistol_sr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5306,6 +5903,7 @@
     ]
   },
   "Hero:hid_outlander_zonepistol_sr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5314,6 +5912,7 @@
     ]
   },
   "Hero:hid_outlander_zonepistol_vr_t01": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5322,6 +5921,7 @@
     ]
   },
   "Hero:hid_outlander_zonepistol_vr_t02": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5330,6 +5930,7 @@
     ]
   },
   "Hero:hid_outlander_zonepistol_vr_t03": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5338,6 +5939,7 @@
     ]
   },
   "Hero:hid_outlander_zonepistol_vr_t04": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5346,6 +5948,7 @@
     ]
   },
   "Hero:hid_outlander_zonepistol_vr_t05": {
+    "gender": "Male",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5354,6 +5957,7 @@
     ]
   },
   "Hero:hid_outlander_zonepistolhw_sr_t01": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5362,6 +5966,7 @@
     ]
   },
   "Hero:hid_outlander_zonepistolhw_sr_t02": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5370,6 +5975,7 @@
     ]
   },
   "Hero:hid_outlander_zonepistolhw_sr_t03": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5378,6 +5984,7 @@
     ]
   },
   "Hero:hid_outlander_zonepistolhw_sr_t04": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],
@@ -5386,6 +5993,7 @@
     ]
   },
   "Hero:hid_outlander_zonepistolhw_sr_t05": {
+    "gender": "Female",
     "requiredTags": [
       "Unlocks.Class.Outlander"
     ],

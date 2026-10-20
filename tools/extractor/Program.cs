@@ -181,6 +181,10 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         var required = Strings(properties?["RequiredGPTags"]);
         if (required.Count > 0) character["requiredTags"] = required;
         if (properties?["bIsManager"]?.GetValue<bool>() == true) character["manager"] = true;
+        // A hero's gender is its definition's (AFortPlayerState::SetHeroType sub_7B1BD0 takes HeroType->Gender). Only
+        // the male heroes save it: UFortWorkerType's constructor (sub_5A62C0) makes Female the default.
+        if (export.ExportType == "FortHeroType")
+            character["gender"] = Enum(properties?["Gender"]) is { } heroGender and not "Invalid" ? heroGender : "Female";
         // Survivors (UFortWorkerType): what the definition fixes; the rest is rolled when one is granted.
         if (export.ExportType == "FortWorkerType")
         {
