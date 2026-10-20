@@ -124,3 +124,23 @@ test("existing heroes get the missing attributes, and an empty lead slot gets th
     backend.close();
   }
 });
+
+test("a new account has the tutorial's tier 0 weapon schematics, and they aren't given back after the tutorial", async () => {
+  const backend = await startBackend();
+  try {
+    const { token, accountId } = await userLogin(backend.port, "Crafter");
+    const query = async () => (await post(backend.port, command(accountId, "QueryProfile"), token, {})).body.profileChanges[0].profile;
+    const schematics = (profile) => Object.entries(profile.items).filter(([, item]) => /_t00$/.test(item.templateId) && item.templateId.startsWith("Schematic:"));
+    const first = schematics(await query());
+    assert.deepEqual(first.map(([, item]) => item.templateId).sort(), ["Schematic:sid_assault_auto_c_ore_t00", "Schematic:sid_assault_semiauto_c_ore_t00",
+      "Schematic:sid_edged_sword_medium_c_ore_t00", "Schematic:sid_pistol_semiauto_c_ore_t00"]);
+    assert.ok(first.every(([, item]) => item.attributes.level === 1 && item.quantity === 1));
+
+    await post(backend.port, `/admin/api/accounts/${accountId}/skip-tutorial`, undefined, {});
+    const [rifleId] = first.find(([, item]) => item.templateId === "Schematic:sid_assault_auto_c_ore_t00");
+    await post(backend.port, `/admin/api/accounts/${accountId}/items/remove`, undefined, { itemId: rifleId });
+    assert.equal(schematics(await query()).length, 3, "recycled after the tutorial: stays gone");
+  } finally {
+    backend.close();
+  }
+});
