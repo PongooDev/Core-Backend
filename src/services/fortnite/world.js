@@ -20,7 +20,8 @@ export function worldRoutes({ tokens, sessions, profiles }) {
   // theaterMissionId, theaterMissionAlertId, zoneThemeClass}, and reads back FFortZoneInstanceDetails (that info plus
   // missionGenerator, zoneDifficultyInfo, missionRewards, zoneModifiers, tileIndex) from a 200-206 reply. A non-empty
   // worldId would send it into a cloud-save world load (LoadingWorldRecord, sub_591A30); without one it makes a new
-  // world record and succeeds. Any other status fails the zone.
+  // world record and succeeds. Any other status fails the zone. The difficulty it replies with is the one the session's
+  // zone starts at (sessions.setZoneDifficulty).
   router.post("/fortnite/api/game/v2/world/validate", requireAuth(tokens), (req, res) => {
     log("World", `validate for session ${req.query.sessionId ?? "(none)"}: ${JSON.stringify(req.body ?? {})}`);
     const mission = findMission(req.body?.theaterMissionId) ?? sessionMission(sessions, String(req.query.sessionId ?? ""));
@@ -34,6 +35,7 @@ export function worldRoutes({ tokens, sessions, profiles }) {
     const session = sessions.get(String(req.query.sessionId ?? ""));
     const owner = session && [...Object.keys(session.keys ?? {}), ...(session.publicPlayers ?? []), ...(session.privatePlayers ?? [])][0];
     if (outpost && owner) zoneDifficultyInfo = outpostDifficulty(openSession(profiles, owner).profile("profile0").profile, outpost, zoneDifficultyInfo);
+    sessions.setZoneDifficulty(String(req.query.sessionId ?? ""), zoneDifficultyInfo.rowName);
     const info = req.body ?? {};
     res.json({
       theaterId: String(info.theaterId ?? mission.theaterId ?? ""),

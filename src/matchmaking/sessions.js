@@ -96,7 +96,8 @@ export function createSessionStore() {
         openPublicPlayers: 0, openPrivatePlayers: 0, sortWeight: 0,
         publicPlayers: [], privatePlayers: [],
         started: false,
-        keys: {}
+        keys: {},
+        zoneDifficulty: ""
       };
       apply(session, body);
       if (!usable(session.serverAddress)) session.serverAddress = normalizeAddress(connectionAddress);
@@ -156,6 +157,13 @@ export function createSessionStore() {
       return session;
     },
 
+    // Core's: the difficulty row the session's zone is played at, world/validate's reply and then each ModifyMission.
+    setZoneDifficulty(id, rowName) {
+      const session = this.get(id);
+      if (session) session.zoneDifficulty = rowName;
+      return session;
+    },
+
     setStarted(id, started) {
       const session = this.get(id);
       if (session) {
@@ -205,7 +213,7 @@ export function createSessionStore() {
 // viewer: the request it goes to. A server on this machine registers as 127.0.0.1, which a client on another machine
 // can't reach; it gets the address it reached the backend on instead (as the XMPP hotfix does), the server being here.
 export function sessionJson(session, viewer) {
-  const { keys, ...json } = session;
+  const { keys, zoneDifficulty, ...json } = session;
   const socket = viewer?.socket;
   if (socket && isLoopback(json.serverAddress) && !isLoopback(socket.remoteAddress)) {
     json.serverAddress = normalizeAddress(socket.localAddress);

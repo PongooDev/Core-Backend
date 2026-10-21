@@ -95,6 +95,48 @@ test("a won mission grants its rewards as Mission card packs, found through the 
   }
 });
 
+test("ModifyMission moves the session's zone to another difficulty row, and a won mission's rewards follow it", async () => {
+  const backend = await startBackend();
+  try {
+    const { server, send } = await setup(backend);
+    const dedicated = await dedicatedServerToken(backend.port);
+    const info = await get(backend.port, "/fortnite/api/game/v2/world/info", server.token);
+    const theater = info.body.missions.find((entry) => entry.availableMissions.length);
+    const mission = theater.availableMissions.find((entry) => !/Outpost/.test(entry.missionGenerator));
+    const zone = { worldId: "", theaterId: theater.theaterId, theaterMissionId: mission.missionGuid, theaterMissionAlertId: "", zoneThemeClass: "" };
+    const registered = await post(backend.port, "/fortnite/api/matchmaking/session", server.token, {
+      ownerId: server.accountId, ownerName: "CoreServer1", serverName: "Core-1", serverPort: 7777, maxPublicPlayers: 4, maxPrivatePlayers: 0,
+      buildUniqueId: "595160781", attributes: { ZONEINSTANCEID_s: JSON.stringify(zone), GAMEMODE_s: "FORTPVE" }
+    });
+    const sessionId = registered.body.id;
+    const validate = () => post(backend.port, `/fortnite/api/game/v2/world/validate?sessionId=${sessionId}`, dedicated, zone);
+    assert.equal((await validate()).body.zoneDifficultyInfo.rowName, mission.missionDifficultyInfo.rowName);
+
+    // The Cert server's body (UStructToJsonAttributes over the UFunction's MatchmakingSessionId and Difficulty).
+    const harder = "Theater_Hard_Zone4";
+    assert.notEqual(mission.missionRewards.tierGroupName, "Mission_Select_T14");
+    for (const body of [{ matchmakingSessionId: sessionId, difficulty: "NoSuchRow" }, { matchmakingSessionId: "gone", difficulty: harder }]) {
+      assert.equal((await send("ModifyMission", body)).status, 200);
+    }
+    assert.equal((await send("ModifyMission", { matchmakingSessionId: sessionId, difficulty: harder })).status, 200);
+    const session = (await get(backend.port, `/fortnite/api/matchmaking/session/${sessionId}`, server.token)).body;
+    assert.equal(session.zoneDifficulty, undefined);
+
+    await send("EndPrimaryMission", { matchmakingSessionId: sessionId, missionName: "m", missionStatus: "Succeeded", advance: [] });
+    const packs = Object.values(profileOf(await send("QueryProfile", {})).items)
+      .filter((item) => item.attributes.pack_source === "Mission").map((item) => item.templateId).sort();
+    assert.deepEqual(packs, ["CardPack:zcp_crystal_shadowshard_minimal", "CardPack:zcp_heroxp_t14"]);
+
+    // The next zone on this session starts from what world/validate replies again.
+    await validate();
+    await send("EndPrimaryMission", { matchmakingSessionId: sessionId, missionName: "m", missionStatus: "Succeeded", advance: [] });
+    const profile = profileOf(await send("QueryProfile", {}));
+    for (const { itemType } of mission.missionRewards.items) assert.ok(byTemplate(profile, itemType).length, itemType);
+  } finally {
+    backend.close();
+  }
+});
+
 test("EarnScore gives every listed player XP, levels them up with their rewards, and notifies the caller", async () => {
   const backend = await startBackend();
   try {

@@ -1,12 +1,13 @@
 import crypto from "node:crypto";
 import { McpError } from "../../../errors.js";
 import { log } from "../../../log.js";
+import { getDifficulty } from "../../../gamedata/world.js";
 import { completeMissionAlert } from "../../../profiles/alerts.js";
 import { grantItem } from "../../../profiles/items.js";
 import { createDeployableBase, saveDeployableBase, saveOutpost, updateOutpostCore, updateTierProgression } from "../../../profiles/outposts.js";
 import { advanceObjective } from "../../../profiles/progress.js";
 import { earnScore } from "../../../profiles/xp.js";
-import { findMission } from "../../../world/theaters.js";
+import { atDifficulty, findMission } from "../../../world/theaters.js";
 import { clientQuestLogin } from "./ClientQuestLogin.js";
 
 // Commands the gameserver sends for its players (POST .../profile/{accountId}/dedicated_server/{command}), from the
@@ -31,6 +32,12 @@ export function sessionMission(sessions, sessionId) {
   } catch {
     return null;
   }
+}
+
+// That mission at the difficulty its zone is played at (the session's zoneDifficulty).
+function playedMission(sessions, sessionId) {
+  const mission = sessionMission(sessions, sessionId);
+  return mission && atDifficulty(mission, sessions.get(sessionId)?.zoneDifficulty);
 }
 
 // FMcpProfileChangeRequest {baseCommandRevision, addRequests, removeRequests, changeQuantityRequests,
@@ -128,7 +135,22 @@ export const serverCommands = {
     if (loadout.bPlayerIsNew === false) return;
     tracker.setStat("player_loadout", { ...loadout, bPlayerIsNew: false });
   },
-  ModifyMission: accepted,
+  // AFortGameStateZone::SetZoneDifficultyInfoAndUpdateGameDifficulty, when a zone that has a difficulty row is given
+  // another (Mission_Outpost does for each storm shield leg): {matchmakingSessionId, difficulty (the
+  // GameDifficultyGrowthBounds row name)}. The session's zone plays on at that row.
+  ModifyMission({ req, context }) {
+    const { matchmakingSessionId, difficulty } = req.body ?? {};
+    const rowName = String(difficulty ?? "");
+    if (!getDifficulty(rowName)) {
+      log("MCP", `ModifyMission: no difficulty ${rowName || "(none)"}, skipped`);
+      return;
+    }
+    if (!context.sessions.setZoneDifficulty(String(matchmakingSessionId ?? ""), rowName)) {
+      log("MCP", `ModifyMission: no session ${matchmakingSessionId}, skipped`);
+      return;
+    }
+    log("MCP", `ModifyMission: session ${matchmakingSessionId} plays at ${rowName}`);
+  },
   // The fabricator: DisintegrateItems is never sent by this build, so there is nothing to abort.
   AbortDisintegration: accepted,
 
@@ -143,8 +165,9 @@ export const serverCommands = {
   },
 
   // A finished mission: its quest progress, and when it succeeded (EFortMissionStatus Succeeded) the mission's rewards
-  // from world info as card packs the after-mission rewards screen opens (pack_source "Mission"). A mission alert on it
-  // (the zone's theaterMissionAlertId) puts the alert's rewards in the player's pending mission alert rewards.
+  // from world info, at the difficulty the session played, as card packs the after-mission rewards screen opens
+  // (pack_source "Mission"). A mission alert on it (the zone's theaterMissionAlertId) puts the alert's rewards in the
+  // player's pending mission alert rewards.
   // The match's score comes with it too ({numMissionPoints, bCriticalMatchBonus, earnedBadgeData}): this build never
   // sends EarnScore (nothing in the binary calls it), so the account XP is earned here, won or not. The earnScore
   // notification always goes out, with no XP for no points: the server's handler for it is what sets the player state's
@@ -157,7 +180,7 @@ export const serverCommands = {
     notifications.push({ type: "earnScore", primary: false, ...parts });
     for (const level of levels) notifications.push({ type: "levelUp", primary: false, level });
     if (!/succeeded$/i.test(String(missionStatus ?? ""))) return;
-    const mission = sessionMission(context.sessions, matchmakingSessionId);
+    const mission = playedMission(context.sessions, matchmakingSessionId);
     if (!mission) {
       log("MCP", `EndPrimaryMission: no mission found for session ${matchmakingSessionId} (${missionName}), no rewards`);
       return;

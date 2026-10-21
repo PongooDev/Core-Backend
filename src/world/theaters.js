@@ -127,6 +127,17 @@ export function worldInfo(now = new Date()) {
   };
 }
 
+// A mission played at another difficulty row (Core's): its rewards are that row's loot tier group's, as rolled missions'.
+export function atDifficulty(mission, rowName) {
+  if (!rowName || rowName === mission.missionDifficultyInfo.rowName) return mission;
+  const tierGroupName = getDifficulty(rowName)?.lootTierGroup ?? "";
+  return {
+    ...mission,
+    missionDifficultyInfo: { ...mission.missionDifficultyInfo, rowName },
+    missionRewards: { tierGroupName, items: rewards[tierGroupName] ?? [] }
+  };
+}
+
 // A mission by its guid (and the alert on it, by the alert's guid): today's, or yesterday's for a match that started
 // before UTC midnight.
 export function findMission(missionGuid, now = new Date(), missionAlertGuid = "") {
