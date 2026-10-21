@@ -73,6 +73,9 @@ test("a won mission grants its rewards as Mission card packs, found through the 
 
     const lost = await send("EndPrimaryMission", { matchmakingSessionId: sessionId, missionName: "m", missionStatus: "Failed", advance: [] });
     assert.equal(lost.body.profileRevision, lost.body.profileChangesBaseRevision);
+    // No points still sends the earnScore notification the server finalizes the player's experience on.
+    assert.deepEqual(lost.body.notifications, [{ type: "earnScore", primary: false,
+      baseXPEarned: 0, bonusXPEarned: 0, boostXPEarned: 0, boostXPMissed: 0, restXPEarned: 0, groupBoostXPEarned: 0 }]);
 
     // The match's points become account XP, won or lost (100 points at level 1 = 400,000, doubled by rest XP).
     const scored = await send("EndPrimaryMission", { matchmakingSessionId: sessionId, missionName: "m", missionStatus: "Failed", advance: [],
