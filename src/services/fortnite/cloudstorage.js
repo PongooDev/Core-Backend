@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import express from "express";
 import { requireAuth, requireOwnAccount } from "../../accounts/auth.js";
+import { isDedicatedServerToken } from "../../accounts/clients.js";
 import { sendError } from "../../errors.js";
 
 const validFilename = /^[A-Za-z0-9._-]{1,128}$/;
@@ -49,10 +50,18 @@ export function cloudStorageRoutes({ tokens }) {
   return router;
 }
 
-export function userCloudStorageRoutes({ tokens, dataDir }) {
+export function userCloudStorageRoutes({ tokens, accounts, dataDir }) {
   const router = express.Router();
   const base = "/fortnite/api/cloudstorage/user/:accountId";
   const folder = (accountId) => path.join(dataDir, "accounts", accountId, "cloudstorage");
+
+  // A player's own files, and any existing account's for a gameserver's DedicatedServer token: a storm shield's world
+  // record is its owner's, which the zone server lists, reads and writes while it hosts it (LoadingWorldRecord).
+  function requireOwnerOrGameserver(req, res, next) {
+    if (!isDedicatedServerToken(req.session)) return requireOwnAccount(req, res, next);
+    if (accounts.get(req.params.accountId)) return next();
+    sendError(res, 404, "errors.com.epicgames.account.account_not_found", `Sorry, we couldn't find an account for ${req.params.accountId}`);
+  }
 
   function checkFilename(req, res, next) {
     if (!validFilename.test(req.params.filename) || req.params.filename.startsWith(".")) {
@@ -64,7 +73,7 @@ export function userCloudStorageRoutes({ tokens, dataDir }) {
 
   router.use(base, requireAuth(tokens));
 
-  router.get(base, requireOwnAccount, (req, res) => {
+  router.get(base, requireOwnerOrGameserver, (req, res) => {
     const dir = folder(req.params.accountId);
     const files = fs.existsSync(dir) ? fs.readdirSync(dir).filter((name) => validFilename.test(name)) : [];
     res.json(files.map((filename) => {
@@ -73,14 +82,14 @@ export function userCloudStorageRoutes({ tokens, dataDir }) {
     }));
   });
 
-  router.get(`${base}/:filename`, requireOwnAccount, checkFilename, (req, res) => {
+  router.get(`${base}/:filename`, requireOwnerOrGameserver, checkFilename, (req, res) => {
     if (!fs.existsSync(req.file)) {
       return sendError(res, 404, "errors.com.epicgames.cloudstorage.file_not_found", `${req.params.filename} not found`);
     }
     res.type("application/octet-stream").send(fs.readFileSync(req.file));
   });
 
-  router.put(`${base}/:filename`, requireOwnAccount, checkFilename, express.raw({ type: () => true, limit: "16mb" }), (req, res) => {
+  router.put(`${base}/:filename`, requireOwnerOrGameserver, checkFilename, express.raw({ type: () => true, limit: "16mb" }), (req, res) => {
     fs.mkdirSync(path.dirname(req.file), { recursive: true });
     fs.writeFileSync(`${req.file}.tmp`, Buffer.isBuffer(req.body) ? req.body : Buffer.alloc(0));
     fs.renameSync(`${req.file}.tmp`, req.file);

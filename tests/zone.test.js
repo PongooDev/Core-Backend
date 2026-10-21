@@ -21,7 +21,7 @@ async function zoneFor(backend, dedicated) {
   return { mission, zone: { worldId: "", theaterId: theater.theaterId, theaterMissionId: mission.missionGuid, theaterMissionAlertId: "", zoneThemeClass: tile.zoneTheme } };
 }
 
-test("the zone server validates its zone with the Cert body and gets details without a worldId", async () => {
+test("the zone server validates its zone with the Cert body and gets details with the worldId it posted", async () => {
   const backend = await startBackend();
   try {
     const server = await userLogin(backend.port, "CoreServer1");
@@ -36,12 +36,16 @@ test("the zone server validates its zone with the Cert body and gets details wit
     const validate = (body) => post(backend.port, `/fortnite/api/game/v2/world/validate?sessionId=${session.id}`, dedicated, body);
     const validated = await validate(zone);
     assert.equal(validated.status, 200);
-    assert.ok(!validated.body.worldId, "an empty or missing worldId keeps the server off the cloud-save world load");
+    assert.equal(validated.body.worldId, "", "an empty worldId makes the server a brand-new world record");
     assert.equal(validated.body.missionGenerator, mission.missionGenerator);
     assert.deepEqual(validated.body.zoneDifficultyInfo, mission.missionDifficultyInfo);
     assert.equal(validated.body.tileIndex, mission.tileIndex);
     assert.deepEqual([validated.body.theaterId, validated.body.theaterMissionId, validated.body.zoneThemeClass],
       [zone.theaterId, zone.theaterMissionId, zone.zoneThemeClass]);
+
+    // A storm shield posts its core item's id, which the server loads the world record by.
+    const coreId = "2D6E5BB04A1F4C33B1F8C1A0C7E9F2D4";
+    assert.equal((await validate({ ...zone, worldId: coreId })).body.worldId, coreId);
 
     // An unknown mission in the body falls back to the session's own zone.
     const fallback = await validate({ ...zone, theaterMissionId: "00000000-0000-0000-0000-000000000000" });
