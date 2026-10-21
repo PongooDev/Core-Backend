@@ -2,9 +2,8 @@ import crypto from "node:crypto";
 import { McpError } from "../../../errors.js";
 import { log } from "../../../log.js";
 import { completeMissionAlert } from "../../../profiles/alerts.js";
-import { zoneOutpost } from "../../../gamedata/world.js";
 import { grantItem } from "../../../profiles/items.js";
-import { completeOutpostDefense, createDeployableBase, saveDeployableBase, saveOutpost, updateOutpostCore, updateTierProgression } from "../../../profiles/outposts.js";
+import { createDeployableBase, saveDeployableBase, saveOutpost, updateOutpostCore, updateTierProgression } from "../../../profiles/outposts.js";
 import { advanceObjective } from "../../../profiles/progress.js";
 import { earnScore } from "../../../profiles/xp.js";
 import { findMission } from "../../../world/theaters.js";
@@ -165,8 +164,6 @@ export const serverCommands = {
     }
     for (const { itemType, quantity } of mission.missionRewards.items) grantItem(session, itemType, quantity, { packSource: "Mission" });
     if (mission.missionAlert) completeMissionAlert(session, mission.theaterId, mission.missionAlert);
-    const outpost = zoneOutpost(mission.zoneTheme);
-    if (outpost) completeOutpostDefense(session, req.params.accountId, outpost);
   },
 
   // One call for every player in the match: [{accountId, totalScore, bCriticalMatchBonus}] (FAccountIdAndScore).

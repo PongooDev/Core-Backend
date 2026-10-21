@@ -6223,6 +6223,7 @@
     "type": "Task"
   },
   "outpostquest_t1_l1": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -6259,6 +6260,7 @@
     "type": "Onboarding"
   },
   "outpostquest_t1_l10": {
+    "expandsStormShield": true,
     "objectives": [
       {
         "count": 1,
@@ -6279,6 +6281,7 @@
     "type": "Optional"
   },
   "outpostquest_t1_l2": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -6305,6 +6308,7 @@
     "type": "Task"
   },
   "outpostquest_t1_l3": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -6356,6 +6360,7 @@
     "type": "Task"
   },
   "outpostquest_t1_l4": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -6386,6 +6391,7 @@
     "type": "Task"
   },
   "outpostquest_t1_l5": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -6416,6 +6422,7 @@
     "type": "Task"
   },
   "outpostquest_t1_l6": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -6442,6 +6449,7 @@
     "type": "Task"
   },
   "outpostquest_t1_l7": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -6468,6 +6476,7 @@
     "type": "Optional"
   },
   "outpostquest_t1_l8": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -6494,6 +6503,7 @@
     "type": "Optional"
   },
   "outpostquest_t1_l9": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -6528,6 +6538,7 @@
     "type": "Optional"
   },
   "outpostquest_t2_l1": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -6559,6 +6570,7 @@
     "type": "Task"
   },
   "outpostquest_t2_l10": {
+    "expandsStormShield": true,
     "objectives": [
       {
         "count": 1,
@@ -6579,6 +6591,7 @@
     "type": "Optional"
   },
   "outpostquest_t2_l2": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -6605,6 +6618,7 @@
     "type": "Task"
   },
   "outpostquest_t2_l3": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -6635,6 +6649,7 @@
     "type": "Task"
   },
   "outpostquest_t2_l4": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -6661,6 +6676,7 @@
     "type": "Task"
   },
   "outpostquest_t2_l5": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -6687,6 +6703,7 @@
     "type": "Task"
   },
   "outpostquest_t2_l6": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -6713,6 +6730,7 @@
     "type": "Task"
   },
   "outpostquest_t2_l7": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -6739,6 +6757,7 @@
     "type": "Optional"
   },
   "outpostquest_t2_l8": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -6765,6 +6784,7 @@
     "type": "Optional"
   },
   "outpostquest_t2_l9": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -6799,6 +6819,7 @@
     "type": "Optional"
   },
   "outpostquest_t3_l1": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -6830,6 +6851,7 @@
     "type": "Task"
   },
   "outpostquest_t3_l10": {
+    "expandsStormShield": true,
     "objectives": [
       {
         "count": 1,
@@ -6850,6 +6872,7 @@
     "type": "Optional"
   },
   "outpostquest_t3_l2": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -6880,6 +6903,7 @@
     "type": "Task"
   },
   "outpostquest_t3_l3": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -6910,6 +6934,7 @@
     "type": "Task"
   },
   "outpostquest_t3_l4": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -6940,6 +6965,7 @@
     "type": "Task"
   },
   "outpostquest_t3_l5": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -6970,6 +6996,7 @@
     "type": "Task"
   },
   "outpostquest_t3_l6": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -6996,6 +7023,7 @@
     "type": "Task"
   },
   "outpostquest_t3_l7": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -7022,6 +7050,7 @@
     "type": "Optional"
   },
   "outpostquest_t3_l8": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -7048,6 +7077,7 @@
     "type": "Optional"
   },
   "outpostquest_t3_l9": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -7082,6 +7112,7 @@
     "type": "Optional"
   },
   "outpostquest_t4_l1": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -7113,6 +7144,7 @@
     "type": "Task"
   },
   "outpostquest_t4_l10": {
+    "expandsStormShield": true,
     "objectives": [
       {
         "count": 1,
@@ -7133,6 +7165,7 @@
     "type": "Optional"
   },
   "outpostquest_t4_l2": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -7163,6 +7196,7 @@
     "type": "Task"
   },
   "outpostquest_t4_l3": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -7193,6 +7227,7 @@
     "type": "Task"
   },
   "outpostquest_t4_l4": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -7223,6 +7258,7 @@
     "type": "Task"
   },
   "outpostquest_t4_l5": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -7253,6 +7289,7 @@
     "type": "Task"
   },
   "outpostquest_t4_l6": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -7283,6 +7320,7 @@
     "type": "Task"
   },
   "outpostquest_t4_l7": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -7309,6 +7347,7 @@
     "type": "Optional"
   },
   "outpostquest_t4_l8": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,
@@ -7335,6 +7374,7 @@
     "type": "Optional"
   },
   "outpostquest_t4_l9": {
+    "expandsStormShield": true,
     "hiddenRewards": [
       {
         "quantity": 1,

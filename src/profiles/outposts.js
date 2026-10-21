@@ -83,16 +83,19 @@ export function saveOutpost(session, outpostId, info, saves) {
   tracker.setItemAttribute(outpostId, "cloud_save_info", cloudSaveInfo(saves));
 }
 
-// Core's: a won storm shield defense raises that core's level by one (the level counts the defenses done, so the next
-// one is level + 1, as the outpost quests count them: complete_outpost_1_1 is Stat.Mission.Primary.Outpost.Leg1).
-export function completeOutpostDefense(session, accountId, templateId) {
-  const info = outpostInfo(templateId);
+// The storm shield follows the outpost quests: Mission_Outpost plays the leg of the active OutpostQuest_T{N}_L{L} and
+// checks each leg's quest is done, and those quests are the ones with bExpandsStormShield ("Your Storm Shield has
+// expanded"). Core's (inferred): completing one raises theater N's core (Outpost:outpostcore_pve_0N) to level L, so
+// the level counts the legs done and the next one is level + 1. The core is made if the player has none yet.
+export function expandStormShield(session, questId) {
+  const [, theater, leg] = /^outpostquest_t(\d+)_l(\d+)$/i.exec(questId) ?? [];
+  const info = theater && outpostInfo(`Outpost:outpostcore_pve_${theater.padStart(2, "0")}`);
   if (!info) return;
   const tracker = session.profile("profile0");
-  createOutpost(session, accountId, info.templateId);
+  createOutpost(session, session.accountId, info.templateId);
   const itemId = findItem(tracker.profile, info.templateId);
-  const level = tracker.profile.items[itemId].attributes.level ?? 0;
-  if (level < (info.maxLevel ?? 10)) tracker.setItemAttribute(itemId, "level", level + 1);
+  const level = Math.min(Number(leg), info.maxLevel ?? 10);
+  if (level > (tracker.profile.items[itemId].attributes.level ?? 0)) tracker.setItemAttribute(itemId, "level", level);
 }
 
 // The storm shield defense a player is up to: world info lists each theater's storm shield at its first defense

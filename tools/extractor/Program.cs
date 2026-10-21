@@ -637,6 +637,7 @@ static object Quest(JsonNode p, AssetTypes assetTypes)
     if (tags is { Count: > 0 }) quest["prerequisites"] = tags;
     if (p["bHidden"]?.GetValue<bool>() == true) quest["hidden"] = true;
     if (p["bDeprecated"]?.GetValue<bool>() == true) quest["deprecated"] = true;
+    if (p["bExpandsStormShield"]?.GetValue<bool>() == true) quest["expandsStormShield"] = true;
     if (p["ExpirationDuration"]?.GetValue<int>() is int expiration and > 0) quest["expirationDuration"] = expiration;
     return quest;
 }

@@ -5,8 +5,12 @@ import { dedicatedServerToken, get, post, startBackend, userLogin } from "./help
 const route = (kind, accountId, name, profileId = "profile0") =>
   `/fortnite/api/game/v2/profile/${accountId}/${kind}/${name}?profileId=${profileId}&rvn=-1`;
 const outposts = (profile) => Object.entries(profile.items).filter(([, item]) => item.templateId.startsWith("Outpost:"));
+const stats = (...names) => names.map((statName) => ({ statName, count: 1 }));
+// The homebase onboarding quest's objectives: done, it grants OutpostQuest_T1_L1.
+const onboarding = stats("hbonboarding_completezone", "hbonboarding_watchsatellitecine", "hbonboarding_namehomebase");
+const firstLeg = stats("custom_supplydropreceived", "custom_deployoutpost", "complete_outpost_1_1");
 
-test("entering a storm shield makes its core, the gameserver saves it, and a won defense raises its level", async () => {
+test("entering a storm shield makes its core, the gameserver saves it, and its quest done raises its level", async () => {
   const backend = await startBackend();
   try {
     const server = await userLogin(backend.port, "CoreServer1");
@@ -57,10 +61,13 @@ test("entering a storm shield makes its core, the gameserver saves it, and a won
       maxPublicPlayers: 4, maxPrivatePlayers: 0, buildUniqueId: "595160781",
       attributes: { ZONEINSTANCEID_s: JSON.stringify(zone), GAMEMODE_s: "FORTPVE" }
     });
-    const end = (missionStatus) => gameserver("EndPrimaryMission", { matchmakingSessionId: registered.body.id, missionName: "m", missionStatus, advance: [] });
+    const end = (missionStatus, advance = []) => gameserver("EndPrimaryMission", { matchmakingSessionId: registered.body.id, missionName: "m", missionStatus, advance });
     await end("Failed");
-    assert.equal((await profile()).items[coreId].attributes.level, 0);
     await end("Succeeded");
+    assert.equal((await profile()).items[coreId].attributes.level, 0);
+    // The storm shield follows the outpost quests: OutpostQuest_T1_L1 done is the first leg played.
+    await gameserver("UpdateQuests", { advance: onboarding });
+    await end("Succeeded", firstLeg);
     assert.equal((await profile()).items[coreId].attributes.level, 1);
 
     // The next visit plays the second defense: the player asked for the session key, so they own this storm shield.
@@ -68,6 +75,38 @@ test("entering a storm shield makes its core, the gameserver saves it, and a won
     assert.equal((await validate()).body.zoneDifficultyInfo.rowName, "Theater_Start_Outpost1");
     await get(backend.port, `/fortnite/api/game/v2/matchmaking/account/${player.accountId}/session/${registered.body.id}`, player.token);
     assert.equal((await validate()).body.zoneDifficultyInfo.rowName, "Theater_Start_Outpost2");
+  } finally {
+    backend.close();
+  }
+});
+
+test("an outpost quest done raises its theater's storm shield to its leg, making the core if needed, and never lowers it", async () => {
+  const backend = await startBackend();
+  try {
+    const dedicated = await dedicatedServerToken(backend.port);
+    const play = async (name, setUp = async () => {}) => {
+      const player = await userLogin(backend.port, name);
+      await setUp(player);
+      const gameserver = (command, body) => post(backend.port, route("dedicated_server", player.accountId, command), dedicated, body);
+      await gameserver("UpdateQuests", { advance: onboarding });
+      await gameserver("EndPrimaryMission", { matchmakingSessionId: "", missionName: "m", missionStatus: "Failed", advance: firstLeg });
+      const items = (await gameserver("QueryProfile", {})).body.profileChanges[0].profile.items;
+      const [quest] = Object.values(items).filter((item) => item.templateId === "Quest:outpostquest_t1_l1");
+      return { player, quest, cores: outposts({ items }) };
+    };
+
+    const fresh = await play("FirstLegPlayer");
+    assert.equal(fresh.quest.attributes.quest_state, "Completed");
+    const [[, core], ...others] = fresh.cores;
+    assert.equal(others.length, 0);
+    assert.equal(core.templateId, "Outpost:outpostcore_pve_01");
+    assert.equal(core.attributes.level, 1);
+    assert.deepEqual(core.attributes.outpost_core_info, { placedBuildings: [], accountsWithEditPermission: [fresh.player.accountId] });
+
+    const ahead = await play("ThirdLegPlayer", ({ accountId }) =>
+      post(backend.port, `/admin/api/accounts/${accountId}/storm-shield`, undefined, { templateId: "Outpost:outpostcore_pve_01", level: 3 }));
+    assert.equal(ahead.quest.attributes.quest_state, "Completed");
+    assert.deepEqual(ahead.cores.map(([, item]) => item.attributes.level), [3]);
   } finally {
     backend.close();
   }

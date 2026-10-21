@@ -2,6 +2,7 @@ import { getObjectiveStat } from "../gamedata/homebase.js";
 import { getCharacter, getItem } from "../gamedata/items.js";
 import { getQuest, startingQuests } from "../gamedata/quests.js";
 import { grantItem } from "./items.js";
+import { expandStormShield } from "./outposts.js";
 import { grantQuest, isDone, questIdOf } from "./quests.js";
 
 const typeOf = (templateId) => templateId.split(":")[0].toLowerCase();
@@ -51,6 +52,7 @@ export function completeQuest(session, itemId) {
     if (item.attributes[key] !== objective.count) tracker.setItemAttribute(itemId, key, objective.count);
   }
   setState(tracker, itemId, "Completed");
+  if (quest.expandsStormShield) expandStormShield(session, questId);
   if (!hasVisibleRewards(quest)) claimQuest(session, itemId);
 
   itemEvent(session, ["HasCompletedQuest", "QuestComplete"], `Quest:${questId}`, 1);
