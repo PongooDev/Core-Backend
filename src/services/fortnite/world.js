@@ -1,5 +1,6 @@
 import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
+import { isDedicatedServerToken } from "../../accounts/clients.js";
 import { sendError } from "../../errors.js";
 import { zoneOutpost } from "../../gamedata/world.js";
 import { log } from "../../log.js";
@@ -35,7 +36,8 @@ export function worldRoutes({ tokens, sessions, profiles }) {
     const session = sessions.get(String(req.query.sessionId ?? ""));
     const owner = session && [...Object.keys(session.keys ?? {}), ...(session.publicPlayers ?? []), ...(session.privatePlayers ?? [])][0];
     if (outpost && owner) zoneDifficultyInfo = outpostDifficulty(openSession(profiles, owner).profile("profile0").profile, outpost, zoneDifficultyInfo);
-    sessions.setZoneDifficulty(String(req.query.sessionId ?? ""), zoneDifficultyInfo.rowName);
+    // Only the gameserver's DedicatedServer token sets it, so a player's own token can't move a session's rewards.
+    if (isDedicatedServerToken(req.session)) sessions.setZoneDifficulty(String(req.query.sessionId ?? ""), zoneDifficultyInfo.rowName);
     const info = req.body ?? {};
     res.json({
       theaterId: String(info.theaterId ?? mission.theaterId ?? ""),

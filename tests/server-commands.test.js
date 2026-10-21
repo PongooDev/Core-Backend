@@ -98,7 +98,7 @@ test("a won mission grants its rewards as Mission card packs, found through the 
 test("ModifyMission moves the session's zone to another difficulty row, and a won mission's rewards follow it", async () => {
   const backend = await startBackend();
   try {
-    const { server, send } = await setup(backend);
+    const { server, player, send } = await setup(backend);
     const dedicated = await dedicatedServerToken(backend.port);
     const info = await get(backend.port, "/fortnite/api/game/v2/world/info", server.token);
     const theater = info.body.missions.find((entry) => entry.availableMissions.length);
@@ -127,11 +127,19 @@ test("ModifyMission moves the session's zone to another difficulty row, and a wo
       .filter((item) => item.attributes.pack_source === "Mission").map((item) => item.templateId).sort();
     assert.deepEqual(packs, ["CardPack:zcp_crystal_shadowshard_minimal", "CardPack:zcp_heroxp_t14"]);
 
-    // The next zone on this session starts from what world/validate replies again.
+    // The next zone on this session starts from what the gameserver's world/validate replies again. A player's own token
+    // validating another mission for the session doesn't move it.
     await validate();
+    const other = info.body.missions.flatMap((entry) => entry.availableMissions)
+      .find((entry) => entry.missionRewards.items.length && entry.missionRewards.tierGroupName !== mission.missionRewards.tierGroupName);
+    const playerValidate = await post(backend.port, `/fortnite/api/game/v2/world/validate?sessionId=${sessionId}`, player.token,
+      { ...zone, theaterMissionId: other.missionGuid });
+    assert.equal(playerValidate.body.missionRewards.tierGroupName, other.missionRewards.tierGroupName);
+    const before = new Set(Object.keys(profileOf(await send("QueryProfile", {})).items));
     await send("EndPrimaryMission", { matchmakingSessionId: sessionId, missionName: "m", missionStatus: "Succeeded", advance: [] });
-    const profile = profileOf(await send("QueryProfile", {}));
-    for (const { itemType } of mission.missionRewards.items) assert.ok(byTemplate(profile, itemType).length, itemType);
+    const granted = Object.entries(profileOf(await send("QueryProfile", {})).items)
+      .filter(([itemId, item]) => !before.has(itemId) && item.attributes.pack_source === "Mission").map(([, item]) => item.templateId);
+    assert.deepEqual([...new Set(granted)].sort(), [...new Set(mission.missionRewards.items.map(({ itemType }) => itemType))].sort());
   } finally {
     backend.close();
   }
