@@ -17,8 +17,8 @@ const settingDefaults = {
   attributes: {}
 };
 
-const sessionFields = ["ownerId", "ownerName", "serverName", "serverAddress", "serverPort", "openPublicPlayers",
-  "openPrivatePlayers", "sortWeight", ...Object.keys(settingDefaults)];
+// openPublicPlayers and openPrivatePlayers aren't taken from the body: they follow the player lists (countOpenSlots).
+const sessionFields = ["ownerId", "ownerName", "serverName", "serverAddress", "serverPort", "sortWeight", ...Object.keys(settingDefaults)];
 
 // A session the server stops heartbeating is gone; the client must never be sent to a dead server.
 const staleAfterMs = 5 * 60 * 1000;
@@ -64,7 +64,8 @@ function apply(session, body) {
 const players = (session) => [...session.publicPlayers, ...session.privatePlayers];
 const currentPlayers = (session) => players(session).length;
 
-// The open slots follow the lists: each list's maximum less the players in it.
+// The open slots follow the lists: each list's maximum less the players in it. The server checks the counts it gets back
+// against its own ("OSS: Open slots count mismatch").
 function countOpenSlots(session) {
   session.openPublicPlayers = Math.max(0, session.maxPublicPlayers - session.publicPlayers.length);
   session.openPrivatePlayers = Math.max(0, session.maxPrivatePlayers - session.privatePlayers.length);
@@ -99,8 +100,7 @@ export function createSessionStore() {
       };
       apply(session, body);
       if (!usable(session.serverAddress)) session.serverAddress = normalizeAddress(connectionAddress);
-      if (body?.openPublicPlayers === undefined) session.openPublicPlayers = session.maxPublicPlayers;
-      if (body?.openPrivatePlayers === undefined) session.openPrivatePlayers = session.maxPrivatePlayers;
+      countOpenSlots(session);
       touch(session);
       sessions.set(session.id, session);
       return session;
@@ -115,6 +115,7 @@ export function createSessionStore() {
       const session = this.get(id);
       if (!session) return undefined;
       apply(session, body);
+      countOpenSlots(session);
       touch(session);
       return session;
     },

@@ -48,8 +48,8 @@ test("a server registers an empty session and the client's mission search finds 
       { ...clientSearch, criteria: [{ type: "EQUAL", key: "GAMEMODE_s", value: "FORTPVE" }] });
     assert.deepEqual(otherMode.body, []);
 
-    const busy = await request(backend.port, "PUT", `${base}/${created.body.id}`, server, { openPublicPlayers: 3, attributes: { ...emptyServer.attributes, GAMEMODE_s: "FORTPVE" } });
-    assert.equal(busy.body.openPublicPlayers, 3);
+    const busy = await request(backend.port, "PUT", `${base}/${created.body.id}`, server, { attributes: { ...emptyServer.attributes, GAMEMODE_s: "FORTPVE" } });
+    assert.equal(busy.body.attributes.GAMEMODE_s, "FORTPVE");
     assert.deepEqual((await post(backend.port, `${base}/matchMakingRequest`, token, clientSearch)).body, []);
   } finally {
     backend.close();
@@ -165,6 +165,26 @@ test("RegisterPlayers adds, UnregisterPlayers removes, and the count follows the
     assert.deepEqual([current.publicPlayers, current.privatePlayers], [["b"], []]);
     await request(backend.port, "DELETE", players, server, ["b"]);
     assert.equal((await post(backend.port, `${base}/matchMakingRequest`, token, emptySearch)).body.length, 1);
+  } finally {
+    backend.close();
+  }
+});
+
+test("the open slots are each list's maximum less its players, whatever counts the server's create and updates send", async () => {
+  const backend = await startBackend();
+  try {
+    const server = await clientToken(backend.port);
+    const created = await post(backend.port, base, server, { ...certCreate, openPublicPlayers: 1, openPrivatePlayers: 3 });
+    assert.deepEqual([created.body.openPublicPlayers, created.body.openPrivatePlayers], [4, 0]);
+    const session = `${base}/${created.body.id}`;
+    await post(backend.port, `${session}/players`, server, { publicPlayers: ["a"], privatePlayers: [] });
+
+    const updated = await request(backend.port, "PUT", session, server, { ...certCreate, openPublicPlayers: 4, openPrivatePlayers: 0 });
+    assert.deepEqual([updated.body.openPublicPlayers, updated.body.openPrivatePlayers], [3, 0]);
+    const resized = await request(backend.port, "PUT", session, server, { ...certCreate, maxPublicPlayers: 2, maxPrivatePlayers: 1 });
+    assert.deepEqual([resized.body.openPublicPlayers, resized.body.openPrivatePlayers], [1, 1]);
+    const read = (await get(backend.port, session, server)).body;
+    assert.deepEqual([read.openPublicPlayers, read.openPrivatePlayers], [1, 1]);
   } finally {
     backend.close();
   }
