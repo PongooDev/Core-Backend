@@ -19,16 +19,22 @@ import { assignToSquad, characterType } from "./squads.js";
 //   item id and does nothing without it), and nothing in the client, its quests or its game data grants any of the
 //   tier 0 weapons (the tier 0 Healing Pad comes from stonewoodquest_launchballoon_d1). Every profile gets the
 //   missing ones once (retail accounts always had them), so a recycled one isn't given back.
+// - The bullet and shell ammo schematics, from UFortGameData DefaultInventoryList (Balance/DefaultGameData:
+//   Ammo_BulletsLight/Medium/Heavy, Ammo_Shells). Without them the crafting tab and hold-R quick craft have no ammo
+//   to offer. The energy cell schematic stays a reward of outpostquest_t1_l1, as Epic had it. Same once-only rule.
 // Profiles made before this, or left with no hero at all, get what they lack when they next load. So does a profile
 // whose lead slot is empty: its first hero in no squad takes it (heroes in other slots or on expeditions stay).
 const { defaultHero } = readGameData("newaccount", {});
 const fallbackSquad = "Squad_Combat_AdventureSquadOne";
-const starterSchematics = ["Schematic:sid_assault_auto_c_ore_t00", "Schematic:sid_assault_semiauto_c_ore_t00",
-  "Schematic:sid_pistol_semiauto_c_ore_t00", "Schematic:sid_edged_sword_medium_c_ore_t00"];
 // Core's own one-time changes are listed on the saved profile (coreMigrations); the client is never sent it.
-const schematicsMigration = "starterSchematics";
+const schematicMigrations = [
+  { name: "starterSchematics", schematics: ["Schematic:sid_assault_auto_c_ore_t00", "Schematic:sid_assault_semiauto_c_ore_t00",
+    "Schematic:sid_pistol_semiauto_c_ore_t00", "Schematic:sid_edged_sword_medium_c_ore_t00"] },
+  { name: "ammoSchematics", schematics: ["Schematic:ammo_bulletsmedium", "Schematic:ammo_bulletslight", "Schematic:ammo_shells",
+    "Schematic:ammo_bulletsheavy"] }
+];
 const migrated = (profile, name) => (profile.coreMigrations ?? []).includes(name);
-const missingSchematics = (profile) => starterSchematics
+const missingSchematics = (profile, schematics) => schematics
   .filter((templateId) => !Object.values(profile.items).some((item) => item.templateId.toLowerCase() === templateId.toLowerCase()));
 
 const heroes = (profile) => Object.entries(profile.items).filter(([, item]) => characterType(item) === "Hero");
@@ -47,16 +53,17 @@ function leadCandidate(profile) {
 export function needsSetUp(profile) {
   if (profile.profileId !== "profile0") return false;
   return startingQuests.some((questId) => !findQuestItem(profile, questId)) || Boolean(defaultHero && !heroes(profile).length)
-    || Boolean(leadCandidate(profile)) || !migrated(profile, schematicsMigration);
+    || Boolean(leadCandidate(profile)) || schematicMigrations.some(({ name }) => !migrated(profile, name));
 }
 
 export function setUpProfile(session) {
   for (const questId of startingQuests) grant(session, `Quest:${questId}`, 1);
 
   const { profile } = session.profile("profile0");
-  if (!migrated(profile, schematicsMigration)) {
-    for (const templateId of missingSchematics(profile)) grant(session, templateId, 1);
-    profile.coreMigrations = [...(profile.coreMigrations ?? []), schematicsMigration];
+  for (const { name, schematics } of schematicMigrations) {
+    if (migrated(profile, name)) continue;
+    for (const templateId of missingSchematics(profile, schematics)) grant(session, templateId, 1);
+    profile.coreMigrations = [...(profile.coreMigrations ?? []), name];
   }
   if (defaultHero && !heroes(profile).length) grant(session, defaultHero, 1);
   const lead = leadCandidate(profile);
