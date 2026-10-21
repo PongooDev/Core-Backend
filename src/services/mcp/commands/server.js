@@ -121,7 +121,14 @@ export const serverCommands = {
   UnlockProfiles: accepted,
   LockProfileForWrite: accepted,
   UnlockProfileForWrite: accepted,
-  InitializeTheater: accepted,
+  // A player's first time in a theater: the server sends it while theater0's player_loadout still says bPlayerIsNew, and
+  // won't save that profile until it doesn't (UFortMcpProfileWorld::IsSafeToSave checks CachedPlayerLoadout).
+  InitializeTheater({ tracker, profileId }) {
+    if (!profileId.startsWith("theater")) return;
+    const loadout = tracker.profile.stats.attributes.player_loadout ?? {};
+    if (loadout.bPlayerIsNew === false) return;
+    tracker.setStat("player_loadout", { ...loadout, bPlayerIsNew: false });
+  },
   ModifyMission: accepted,
   // The fabricator: DisintegrateItems is never sent by this build, so there is nothing to abort.
   AbortDisintegration: accepted,

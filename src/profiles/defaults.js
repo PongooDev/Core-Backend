@@ -32,6 +32,11 @@ const templates = {
     weekly_purchases: { lastInterval: never, purchaseList: {} },
     collection_book: { pages: [], maxBookXpLevelAchieved: 0 },
     daily_rewards: { nextDefaultReward: 0, totalDaysLoggedIn: 0, lastClaimDate: never, additionalSchedules: {} }
+  }),
+  // The gameserver reads the backpack profile's own player_loadout into UFortMcpProfileWorld::CachedPlayerLoadout and
+  // won't save the profile while bPlayerIsNew is set; InitializeTheater clears it on the player's first zone.
+  theater0: () => ({
+    player_loadout: { bPlayerIsNew: true, pinnedSchematicInstances: [], zonesCompleted: 0 }
   })
 };
 
