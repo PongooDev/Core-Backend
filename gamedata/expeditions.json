@@ -1,7 +1,112 @@
 {
+  "criteria": {
+    "NoCriteria": {
+      "global": false,
+      "mod": 0,
+      "rarity": "",
+      "tag": "None"
+    },
+    "RequiresCommando": {
+      "global": false,
+      "mod": 1.5,
+      "rarity": "",
+      "tag": "Homebase.Class.IsCommando"
+    },
+    "RequiresConstructor": {
+      "global": false,
+      "mod": 1.5,
+      "rarity": "",
+      "tag": "Homebase.Class.IsConstructor"
+    },
+    "RequiresEpicCommando": {
+      "global": false,
+      "mod": 1.75,
+      "rarity": "Quality",
+      "tag": "Homebase.Class.IsCommando"
+    },
+    "RequiresEpicConstructor": {
+      "global": false,
+      "mod": 1.75,
+      "rarity": "Quality",
+      "tag": "Homebase.Class.IsConstructor"
+    },
+    "RequiresEpicNinja": {
+      "global": false,
+      "mod": 1.75,
+      "rarity": "Quality",
+      "tag": "Homebase.Class.IsNinja"
+    },
+    "RequiresEpicOutlander": {
+      "global": false,
+      "mod": 1.75,
+      "rarity": "Quality",
+      "tag": "Homebase.Class.IsOutlander"
+    },
+    "RequiresLegendaryCommando": {
+      "global": false,
+      "mod": 2,
+      "rarity": "Fine",
+      "tag": "Homebase.Class.IsCommando"
+    },
+    "RequiresLegendaryConstructor": {
+      "global": false,
+      "mod": 2,
+      "rarity": "Fine",
+      "tag": "Homebase.Class.IsConstructor"
+    },
+    "RequiresLegendaryNinja": {
+      "global": false,
+      "mod": 2,
+      "rarity": "Fine",
+      "tag": "Homebase.Class.IsNinja"
+    },
+    "RequiresLegendaryOutlander": {
+      "global": false,
+      "mod": 2,
+      "rarity": "Fine",
+      "tag": "Homebase.Class.IsOutlander"
+    },
+    "RequiresNinja": {
+      "global": false,
+      "mod": 1.5,
+      "rarity": "",
+      "tag": "Homebase.Class.IsNinja"
+    },
+    "RequiresOutlander": {
+      "global": false,
+      "mod": 1.5,
+      "rarity": "",
+      "tag": "Homebase.Class.IsOutlander"
+    },
+    "RequiresRareCommando": {
+      "global": false,
+      "mod": 1.625,
+      "rarity": "Sturdy",
+      "tag": "Homebase.Class.IsCommando"
+    },
+    "RequiresRareConstructor": {
+      "global": false,
+      "mod": 1.625,
+      "rarity": "Sturdy",
+      "tag": "Homebase.Class.IsConstructor"
+    },
+    "RequiresRareNinja": {
+      "global": false,
+      "mod": 1.625,
+      "rarity": "Sturdy",
+      "tag": "Homebase.Class.IsNinja"
+    },
+    "RequiresRareOutlander": {
+      "global": false,
+      "mod": 1.625,
+      "rarity": "Sturdy",
+      "tag": "Homebase.Class.IsOutlander"
+    }
+  },
   "expeditions": {
     "Expedition:expedition_air_supplyrun_long_t02": {
       "basePower": 255,
+      "criteriaTier": "Expeditions_Criteria_T02",
       "durationMinutes": 1200,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -10,6 +115,7 @@
     },
     "Expedition:expedition_air_supplyrun_long_t03": {
       "basePower": 445,
+      "criteriaTier": "Expeditions_Criteria_T03",
       "durationMinutes": 1200,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -18,6 +124,7 @@
     },
     "Expedition:expedition_air_supplyrun_long_t04": {
       "basePower": 700,
+      "criteriaTier": "Expeditions_Criteria_T04",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -26,6 +133,7 @@
     },
     "Expedition:expedition_air_supplyrun_medium_t02": {
       "basePower": 155,
+      "criteriaTier": "Expeditions_Criteria_T02",
       "durationMinutes": 960,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -34,6 +142,7 @@
     },
     "Expedition:expedition_air_survivorscouting_long_t02": {
       "basePower": 310,
+      "criteriaTier": "Expeditions_Criteria_T02",
       "durationMinutes": 1200,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -42,6 +151,7 @@
     },
     "Expedition:expedition_air_survivorscouting_long_t04": {
       "basePower": 800,
+      "criteriaTier": "Expeditions_Criteria_T04",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -50,6 +160,7 @@
     },
     "Expedition:expedition_air_survivorscouting_medium_t03": {
       "basePower": 315,
+      "criteriaTier": "Expeditions_Criteria_T03",
       "durationMinutes": 960,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -58,6 +169,7 @@
     },
     "Expedition:expedition_choppingwood_t00": {
       "basePower": 5,
+      "criteriaTier": "None",
       "durationMinutes": 240,
       "expirationMinutes": 90,
       "powerClamp": 40,
@@ -66,6 +178,7 @@
     },
     "Expedition:expedition_craftingrun_long_t03": {
       "basePower": 400,
+      "criteriaTier": "Expeditions_Criteria_T03",
       "durationMinutes": 1200,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -74,6 +187,7 @@
     },
     "Expedition:expedition_craftingrun_long_t04": {
       "basePower": 650,
+      "criteriaTier": "Expeditions_Criteria_T04",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -82,6 +196,7 @@
     },
     "Expedition:expedition_craftingrun_medium_t01": {
       "basePower": 30,
+      "criteriaTier": "Expeditions_Criteria_T01",
       "durationMinutes": 960,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -90,6 +205,7 @@
     },
     "Expedition:expedition_craftingrun_medium_t02": {
       "basePower": 120,
+      "criteriaTier": "Expeditions_Criteria_T02",
       "durationMinutes": 960,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -98,6 +214,7 @@
     },
     "Expedition:expedition_craftingrun_medium_t03": {
       "basePower": 200,
+      "criteriaTier": "Expeditions_Criteria_T03",
       "durationMinutes": 960,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -106,6 +223,7 @@
     },
     "Expedition:expedition_craftingrun_short_t01": {
       "basePower": 20,
+      "criteriaTier": "Expeditions_Criteria_T01",
       "durationMinutes": 480,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -114,6 +232,7 @@
     },
     "Expedition:expedition_craftingrun_short_t02": {
       "basePower": 80,
+      "criteriaTier": "Expeditions_Criteria_T02",
       "durationMinutes": 480,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -122,6 +241,7 @@
     },
     "Expedition:expedition_craftingrun_short_t03": {
       "basePower": 150,
+      "criteriaTier": "Expeditions_Criteria_T03",
       "durationMinutes": 480,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -130,6 +250,7 @@
     },
     "Expedition:expedition_miningore_t00": {
       "basePower": 10,
+      "criteriaTier": "None",
       "durationMinutes": 240,
       "expirationMinutes": 90,
       "powerClamp": 50,
@@ -138,6 +259,7 @@
     },
     "Expedition:expedition_rare_air_heroes_t04": {
       "basePower": 1200,
+      "criteriaTier": "Expeditions_Criteria_T04",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -146,6 +268,7 @@
     },
     "Expedition:expedition_rare_air_heroes_t05": {
       "basePower": 1600,
+      "criteriaTier": "Expeditions_Criteria_T05",
       "durationMinutes": 1440,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -154,6 +277,7 @@
     },
     "Expedition:expedition_rare_air_managers_t04": {
       "basePower": 1200,
+      "criteriaTier": "Expeditions_Criteria_T04",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -162,6 +286,7 @@
     },
     "Expedition:expedition_rare_air_managers_t05": {
       "basePower": 1600,
+      "criteriaTier": "Expeditions_Criteria_T05",
       "durationMinutes": 1440,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -170,6 +295,7 @@
     },
     "Expedition:expedition_rare_air_traps_t04": {
       "basePower": 1200,
+      "criteriaTier": "Expeditions_Criteria_T04",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -178,6 +304,7 @@
     },
     "Expedition:expedition_rare_air_traps_t05": {
       "basePower": 1600,
+      "criteriaTier": "Expeditions_Criteria_T05",
       "durationMinutes": 1440,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -186,6 +313,7 @@
     },
     "Expedition:expedition_rare_air_weapons_t04": {
       "basePower": 1200,
+      "criteriaTier": "Expeditions_Criteria_T04",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -194,6 +322,7 @@
     },
     "Expedition:expedition_rare_air_weapons_t05": {
       "basePower": 1600,
+      "criteriaTier": "Expeditions_Criteria_T05",
       "durationMinutes": 1440,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -202,6 +331,7 @@
     },
     "Expedition:expedition_rare_heroes_t03": {
       "basePower": 750,
+      "criteriaTier": "Expeditions_Criteria_T03",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -210,6 +340,7 @@
     },
     "Expedition:expedition_rare_heroes_t04": {
       "basePower": 1400,
+      "criteriaTier": "Expeditions_Criteria_T04",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -218,6 +349,7 @@
     },
     "Expedition:expedition_rare_managers_t03": {
       "basePower": 750,
+      "criteriaTier": "Expeditions_Criteria_T03",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -226,6 +358,7 @@
     },
     "Expedition:expedition_rare_managers_t04": {
       "basePower": 1400,
+      "criteriaTier": "Expeditions_Criteria_T04",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -234,6 +367,7 @@
     },
     "Expedition:expedition_rare_sea_heroes_t04": {
       "basePower": 1440,
+      "criteriaTier": "Expeditions_Criteria_T04",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -242,6 +376,7 @@
     },
     "Expedition:expedition_rare_sea_heroes_t05": {
       "basePower": 2000,
+      "criteriaTier": "Expeditions_Criteria_T05",
       "durationMinutes": 1440,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -250,6 +385,7 @@
     },
     "Expedition:expedition_rare_sea_managers_t04": {
       "basePower": 1440,
+      "criteriaTier": "Expeditions_Criteria_T04",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -258,6 +394,7 @@
     },
     "Expedition:expedition_rare_sea_managers_t05": {
       "basePower": 2000,
+      "criteriaTier": "Expeditions_Criteria_T05",
       "durationMinutes": 1440,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -266,6 +403,7 @@
     },
     "Expedition:expedition_rare_sea_traps_t04": {
       "basePower": 1440,
+      "criteriaTier": "Expeditions_Criteria_T04",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -274,6 +412,7 @@
     },
     "Expedition:expedition_rare_sea_traps_t05": {
       "basePower": 2000,
+      "criteriaTier": "Expeditions_Criteria_T05",
       "durationMinutes": 1440,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -282,6 +421,7 @@
     },
     "Expedition:expedition_rare_sea_weapons_t04": {
       "basePower": 1440,
+      "criteriaTier": "Expeditions_Criteria_T04",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -290,6 +430,7 @@
     },
     "Expedition:expedition_rare_sea_weapons_t05": {
       "basePower": 2000,
+      "criteriaTier": "Expeditions_Criteria_T05",
       "durationMinutes": 1440,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -298,6 +439,7 @@
     },
     "Expedition:expedition_rare_traps_t02": {
       "basePower": 400,
+      "criteriaTier": "Expeditions_Criteria_T02",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -306,6 +448,7 @@
     },
     "Expedition:expedition_rare_traps_t03": {
       "basePower": 750,
+      "criteriaTier": "Expeditions_Criteria_T03",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -314,6 +457,7 @@
     },
     "Expedition:expedition_rare_traps_t04": {
       "basePower": 1400,
+      "criteriaTier": "Expeditions_Criteria_T04",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -322,6 +466,7 @@
     },
     "Expedition:expedition_rare_weapons_t01": {
       "basePower": 150,
+      "criteriaTier": "Expeditions_Criteria_T01",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -330,6 +475,7 @@
     },
     "Expedition:expedition_rare_weapons_t02": {
       "basePower": 400,
+      "criteriaTier": "Expeditions_Criteria_T02",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -338,6 +484,7 @@
     },
     "Expedition:expedition_rare_weapons_t03": {
       "basePower": 750,
+      "criteriaTier": "Expeditions_Criteria_T03",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -346,6 +493,7 @@
     },
     "Expedition:expedition_rare_weapons_t04": {
       "basePower": 1400,
+      "criteriaTier": "Expeditions_Criteria_T04",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -354,6 +502,7 @@
     },
     "Expedition:expedition_resourcerun_all_medium": {
       "basePower": 80,
+      "criteriaTier": "None",
       "durationMinutes": 960,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -362,6 +511,7 @@
     },
     "Expedition:expedition_resourcerun_all_short": {
       "basePower": 350,
+      "criteriaTier": "None",
       "durationMinutes": 480,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -370,6 +520,7 @@
     },
     "Expedition:expedition_resourcerun_metal_medium": {
       "basePower": 65,
+      "criteriaTier": "None",
       "durationMinutes": 960,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -378,6 +529,7 @@
     },
     "Expedition:expedition_resourcerun_metal_short": {
       "basePower": 50,
+      "criteriaTier": "None",
       "durationMinutes": 480,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -386,6 +538,7 @@
     },
     "Expedition:expedition_resourcerun_stone_medium": {
       "basePower": 45,
+      "criteriaTier": "None",
       "durationMinutes": 960,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -394,6 +547,7 @@
     },
     "Expedition:expedition_resourcerun_stone_short": {
       "basePower": 35,
+      "criteriaTier": "None",
       "durationMinutes": 480,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -402,6 +556,7 @@
     },
     "Expedition:expedition_resourcerun_wood_medium": {
       "basePower": 25,
+      "criteriaTier": "None",
       "durationMinutes": 960,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -410,6 +565,7 @@
     },
     "Expedition:expedition_resourcerun_wood_short": {
       "basePower": 20,
+      "criteriaTier": "None",
       "durationMinutes": 480,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -418,6 +574,7 @@
     },
     "Expedition:expedition_resourcerun_woodstone_medium": {
       "basePower": 55,
+      "criteriaTier": "None",
       "durationMinutes": 960,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -426,6 +583,7 @@
     },
     "Expedition:expedition_resourcerun_woodstone_short": {
       "basePower": 45,
+      "criteriaTier": "None",
       "durationMinutes": 480,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -434,6 +592,7 @@
     },
     "Expedition:expedition_sea_supplyrun_long_t03": {
       "basePower": 425,
+      "criteriaTier": "Expeditions_Criteria_T03",
       "durationMinutes": 1200,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -442,6 +601,7 @@
     },
     "Expedition:expedition_sea_supplyrun_long_t04": {
       "basePower": 690,
+      "criteriaTier": "Expeditions_Criteria_T04",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -450,6 +610,7 @@
     },
     "Expedition:expedition_sea_supplyrun_medium_t02": {
       "basePower": 140,
+      "criteriaTier": "Expeditions_Criteria_T02",
       "durationMinutes": 960,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -458,6 +619,7 @@
     },
     "Expedition:expedition_sea_supplyrun_short_t01": {
       "basePower": 35,
+      "criteriaTier": "Expeditions_Criteria_T01",
       "durationMinutes": 480,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -466,6 +628,7 @@
     },
     "Expedition:expedition_sea_survivorscouting_long_t04": {
       "basePower": 790,
+      "criteriaTier": "Expeditions_Criteria_T04",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -474,6 +637,7 @@
     },
     "Expedition:expedition_sea_survivorscouting_medium_t02": {
       "basePower": 195,
+      "criteriaTier": "Expeditions_Criteria_T02",
       "durationMinutes": 960,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -482,6 +646,7 @@
     },
     "Expedition:expedition_sea_survivorscouting_medium_t03": {
       "basePower": 295,
+      "criteriaTier": "Expeditions_Criteria_T03",
       "durationMinutes": 960,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -490,6 +655,7 @@
     },
     "Expedition:expedition_sea_survivorscouting_short_t01": {
       "basePower": 70,
+      "criteriaTier": "Expeditions_Criteria_T01",
       "durationMinutes": 480,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -498,6 +664,7 @@
     },
     "Expedition:expedition_supplyrun_long_t02": {
       "basePower": 220,
+      "criteriaTier": "Expeditions_Criteria_T02",
       "durationMinutes": 1200,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -506,6 +673,7 @@
     },
     "Expedition:expedition_supplyrun_long_t03": {
       "basePower": 400,
+      "criteriaTier": "Expeditions_Criteria_T03",
       "durationMinutes": 1200,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -514,6 +682,7 @@
     },
     "Expedition:expedition_supplyrun_long_t04": {
       "basePower": 650,
+      "criteriaTier": "Expeditions_Criteria_T04",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -522,6 +691,7 @@
     },
     "Expedition:expedition_supplyrun_medium_t01": {
       "basePower": 30,
+      "criteriaTier": "Expeditions_Criteria_T01",
       "durationMinutes": 960,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -530,6 +700,7 @@
     },
     "Expedition:expedition_supplyrun_medium_t02": {
       "basePower": 120,
+      "criteriaTier": "Expeditions_Criteria_T02",
       "durationMinutes": 960,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -538,6 +709,7 @@
     },
     "Expedition:expedition_supplyrun_medium_t03": {
       "basePower": 200,
+      "criteriaTier": "Expeditions_Criteria_T03",
       "durationMinutes": 960,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -546,6 +718,7 @@
     },
     "Expedition:expedition_supplyrun_short_t01": {
       "basePower": 20,
+      "criteriaTier": "Expeditions_Criteria_T01",
       "durationMinutes": 480,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -554,6 +727,7 @@
     },
     "Expedition:expedition_supplyrun_short_t02": {
       "basePower": 80,
+      "criteriaTier": "Expeditions_Criteria_T02",
       "durationMinutes": 480,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -562,6 +736,7 @@
     },
     "Expedition:expedition_supplyrun_short_t03": {
       "basePower": 150,
+      "criteriaTier": "Expeditions_Criteria_T03",
       "durationMinutes": 480,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -570,6 +745,7 @@
     },
     "Expedition:expedition_survivorscouting_long_t03": {
       "basePower": 470,
+      "criteriaTier": "Expeditions_Criteria_T03",
       "durationMinutes": 1200,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -578,6 +754,7 @@
     },
     "Expedition:expedition_survivorscouting_long_t04": {
       "basePower": 750,
+      "criteriaTier": "Expeditions_Criteria_T04",
       "durationMinutes": 1320,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -586,6 +763,7 @@
     },
     "Expedition:expedition_survivorscouting_medium_t02": {
       "basePower": 175,
+      "criteriaTier": "Expeditions_Criteria_T02",
       "durationMinutes": 960,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -594,6 +772,7 @@
     },
     "Expedition:expedition_survivorscouting_short_t01": {
       "basePower": 55,
+      "criteriaTier": "Expeditions_Criteria_T01",
       "durationMinutes": 480,
       "expirationMinutes": 90,
       "powerClamp": 5000,
@@ -602,6 +781,7 @@
     },
     "Expedition:testexpedition": {
       "basePower": 100,
+      "criteriaTier": "None",
       "durationMinutes": 1,
       "expirationMinutes": 60,
       "powerClamp": 5000,
@@ -610,6 +790,7 @@
     },
     "Expedition:testexpedition_long": {
       "basePower": 500,
+      "criteriaTier": "None",
       "durationMinutes": 5,
       "expirationMinutes": 60,
       "powerClamp": 5000,
@@ -618,6 +799,7 @@
     },
     "Expedition:testexpedition_medium": {
       "basePower": 250,
+      "criteriaTier": "None",
       "durationMinutes": 2.5,
       "expirationMinutes": 60,
       "powerClamp": 5000,
@@ -626,6 +808,7 @@
     },
     "Expedition:testexpedition_short": {
       "basePower": 100,
+      "criteriaTier": "None",
       "durationMinutes": 1,
       "expirationMinutes": 60,
       "powerClamp": 5000,

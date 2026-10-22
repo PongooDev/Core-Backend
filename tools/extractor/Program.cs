@@ -129,7 +129,9 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
             ["basePower"] = properties?["BaseTargetPowerRating"]?.GetValue<int>() ?? 0,
             ["tierFactor"] = properties?["TierFactor"]?.GetValue<int>() ?? 0,
             ["powerClamp"] = properties?["MaxTargetPowerClamp"]?.GetValue<int>() ?? 0,
-            ["recipe"] = properties?["ExpeditionRules"]?["RowName"]?.GetValue<string>() ?? ""
+            ["recipe"] = properties?["ExpeditionRules"]?["RowName"]?.GetValue<string>() ?? "",
+            // The loot tier group Epic's server rolled the bonus criteria (expedition_criteria) from.
+            ["criteriaTier"] = properties?["CriteriaRequirementsLootTier"]?.GetValue<string>() ?? "None"
         };
     }
 
@@ -591,6 +593,20 @@ foreach (var (id, row) in LoadRows(provider, manager["ExpeditionSlotsDataTable"]
         ["generator"] = row["LootTierGroup"]?.GetValue<string>() ?? ""
     };
 }
+// Bonus criteria (DefaultGameData ExpeditionCriteriaRequirementsData, FortCriteriaRequirementData): the hero tag a squad
+// member needs (and the minimum rarity when bRequireRarity), and the rating multiplier it gives (on that member, or on
+// the whole squad when bGlobalMod).
+var expeditionCriteria = new SortedDictionary<string, object>(StringComparer.Ordinal);
+foreach (var (id, row) in LoadRows(provider, gameData["Properties"]!["ExpeditionCriteriaRequirementsData"]))
+{
+    expeditionCriteria[id] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+    {
+        ["tag"] = row!["RequiredTag"]?["TagName"]?.GetValue<string>() ?? "None",
+        ["global"] = row["bGlobalMod"]?.GetValue<bool>() ?? false,
+        ["mod"] = row["ModValue"]?.GetValue<double>() ?? 0,
+        ["rarity"] = row["bRequireRarity"]?.GetValue<bool>() == true ? Enum(row["RequiredRarity"]) ?? "Handmade" : ""
+    };
+}
 
 // The collection book (CollectionBook/Data/CollectionBookData): pages and their profile, sections, slots and the
 // items each takes, the slot XP weights (FortCollectionBookSlotData: Constant + level x ItemLevel + rarity factor x
@@ -677,7 +693,7 @@ File.WriteAllText(Path.Combine(output, "accountlevels.json"), JsonSerializer.Ser
 File.WriteAllText(Path.Combine(output, "upgrades.json"), JsonSerializer.Serialize(upgrades, options) + "\n");
 File.WriteAllText(Path.Combine(output, "expeditions.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal)
 {
-    ["expeditions"] = expeditions, ["recipes"] = expeditionRecipes, ["slots"] = expeditionSlots
+    ["expeditions"] = expeditions, ["recipes"] = expeditionRecipes, ["slots"] = expeditionSlots, ["criteria"] = expeditionCriteria
 }, options) + "\n");
 File.WriteAllText(Path.Combine(output, "collectionbook.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal)
 {
