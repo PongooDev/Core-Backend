@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import { isChoicePack, rollOptions } from "../cardpacks/contents.js";
+import { unlockPage } from "../collectionbook/pages.js";
 import { bannerTemplateId } from "../gamedata/banners.js";
 import { getItem } from "../gamedata/items.js";
 import { log } from "../log.js";
@@ -56,12 +57,6 @@ function addItem(tracker, templateId, quantity, info, options) {
   return itemId;
 }
 
-function unlockCollectionBookPage(tracker, page) {
-  const book = tracker.profile.stats.attributes.collection_book;
-  if (book.pages.some((known) => known.toLowerCase() === page.toLowerCase())) return;
-  tracker.setStat("collection_book", { ...book, pages: [...book.pages, page] });
-}
-
 export const lootEntry = ({ templateId, itemId, profileId, quantity }) => ({ itemType: templateId, itemGuid: itemId, itemProfile: profileId, quantity });
 
 // Returns what was granted, one entry per item that was added or topped up.
@@ -73,7 +68,7 @@ export function grantItem(session, templateId, quantity, options = {}) {
     return itemId ? [{ profileId: "profile0", itemId, templateId, quantity: 1 }] : [];
   }
   if (type.toLowerCase() === "collectionbookpage") {
-    unlockCollectionBookPage(session.profile("profile0"), name);
+    if (!unlockPage(session, name)) log("Items", `No collection book page ${name}, not granted`);
     return [];
   }
 

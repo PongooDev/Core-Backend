@@ -42,6 +42,9 @@ test("collection book pages are unlocked once and unknown items are skipped", ()
   grantItem(session, "CollectionBookPage:pageheroes_commando", 1);
   grantItem(session, "CollectionBookPage:PageHeroes_Commando", 1);
   grantItem(session, "Hero:does_not_exist", 1);
-  assert.deepEqual(session.trackers.profile0.profile.stats.attributes.collection_book.pages, ["pageheroes_commando"]);
+  assert.deepEqual(session.trackers.profile0.profile.stats.attributes.collection_book.pages, ["pageHeroes_Commando"]);
   assert.deepEqual(session.trackers.profile0.profile.items, {});
+  // The client builds the book from its page items: one per unlocked page, in the page's book profile.
+  assert.deepEqual(Object.values(session.trackers.collection_book_people0.profile.items),
+    [{ templateId: "CollectionBookPage:pageHeroes_Commando", attributes: { sectionStates: [], state: "Active" }, quantity: 1 }]);
 });

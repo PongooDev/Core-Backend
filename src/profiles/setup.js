@@ -1,3 +1,4 @@
+import { addPageItem, bookProfiles, pageId, pages, refreshPage } from "../collectionbook/pages.js";
 import { slotUnlockNode } from "../gamedata/homebase.js";
 import { getItem } from "../gamedata/items.js";
 import { readGameData } from "../gamedata/read.js";
@@ -26,6 +27,10 @@ import { levelStartXp, settleLevel } from "./xp.js";
 //   to offer. The energy cell schematic stays a reward of outpostquest_t1_l1, as Epic had it. Same once-only rule.
 // - The xp stat as XP into the current level (profiles/xp.js). Profiles saved before 2026-10-22 hold the total, which
 //   the client showed as an overfull bar (issue #7): theirs becomes what is past their level's start, once.
+// - In a collection book profile, a page item for each of its pages profile0's collection_book.pages has unlocked
+//   (collectionbook/pages.js), which the client builds the book from. Core used to keep the unlocked pages in that stat
+//   only, so the book showed no categories, slotting filled nothing and the XP stayed at 0 (issue #13). Profiles saved
+//   before then get their page items and their pages' states once (and lose Core's old claimed_page_rewards stat).
 // Profiles made before this, or left with no hero at all, get what they lack when they next load. So does a profile
 // whose lead slot is empty: its first hero in no squad takes it (heroes in other slots or on expeditions stay).
 const { defaultHero } = readGameData("newaccount", {});
@@ -56,6 +61,7 @@ function leadCandidate(profile) {
 
 export function needsSetUp(profile) {
   if (profile.profileId === "theater0") return !migrated(profile, "itemDurability");
+  if (bookProfiles.includes(profile.profileId)) return !migrated(profile, "bookPages");
   if (profile.profileId !== "profile0") return false;
   return startingQuests.some((questId) => !findQuestItem(profile, questId)) || Boolean(defaultHero && !heroes(profile).length)
     || Boolean(leadCandidate(profile)) || schematicMigrations.some(({ name }) => !migrated(profile, name)) || !migrated(profile, "levelXp");
@@ -72,8 +78,21 @@ function setUpTheater(session) {
   tracker.profile.coreMigrations = [...(tracker.profile.coreMigrations ?? []), "itemDurability"];
 }
 
+function setUpBook(session, profileId) {
+  const tracker = session.profile(profileId);
+  const unlocked = session.profile("profile0").profile.stats.attributes.collection_book?.pages ?? [];
+  for (const id of new Set(unlocked.map(pageId).filter(Boolean))) {
+    if (pages[id].profile !== profileId) continue;
+    addPageItem(session, id);
+    refreshPage(session, id);
+  }
+  delete tracker.profile.stats.attributes.claimed_page_rewards;
+  tracker.profile.coreMigrations = [...(tracker.profile.coreMigrations ?? []), "bookPages"];
+}
+
 export function setUpProfile(session, profileId = "profile0") {
   if (profileId === "theater0") return setUpTheater(session);
+  if (bookProfiles.includes(profileId)) return setUpBook(session, profileId);
   for (const questId of startingQuests) grant(session, `Quest:${questId}`, 1);
 
   const { profile } = session.profile("profile0");

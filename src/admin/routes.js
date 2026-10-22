@@ -116,7 +116,9 @@ export function adminRoutes(context) {
       items,
       worldItems,
       storage: inventory(loadIfExists(account.id, "outpost0")),
-      collectionBook: [...inventory(loadIfExists(account.id, "collection_book_people0")), ...inventory(loadIfExists(account.id, "collection_book_schematics0"))],
+      // The book profiles' slotted items; their page items are the unlocked pages.
+      collectionBook: [...inventory(loadIfExists(account.id, "collection_book_people0")), ...inventory(loadIfExists(account.id, "collection_book_schematics0"))]
+        .filter((item) => !item.templateId.toLowerCase().startsWith("collectionbookpage:")),
       sessions: sessionsOf(account.id),
       profiles: profiles.ids(account.id)
     };

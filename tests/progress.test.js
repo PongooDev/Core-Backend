@@ -30,10 +30,15 @@ test("SkipTutorial completes the onboarding chain and grants its rewards where t
     assert.ok(skip.body.profileChanges.length > 0);
     assert.ok(skip.body.profileChanges.every((change) => change.changeType !== "fullProfileUpdate"));
 
-    const [theater] = skip.body.multiUpdate;
-    assert.equal(theater.profileId, "theater0");
+    const theater = skip.body.multiUpdate.find((update) => update.profileId === "theater0");
     assert.equal(theater.profileRevision, theater.profileChangesBaseRevision + 1);
     assert.deepEqual(theater.profileChanges.map((change) => change.item.templateId), ["Weapon:wid_shotgun_standard_uc_ore_t01"]);
+    // homebaseonboarding's hidden rewards unlock the book: every page gets its page item in its book profile.
+    const pagesAdded = (profileId) => skip.body.multiUpdate.find((update) => update.profileId === profileId).profileChanges
+      .filter((change) => change.changeType === "itemAdded").map((change) => change.item.templateId);
+    assert.equal(pagesAdded("collection_book_people0").length, 8);
+    assert.equal(pagesAdded("collection_book_schematics0").length, 24);
+    assert.ok(pagesAdded("collection_book_schematics0").includes("CollectionBookPage:pageRanged_Assault_Weapons"));
 
     const profile = await profileItems(backend, login);
     for (const questId of ["homebaseonboarding", "homebaseonboardinggrantschematics", "outpostquest_t1_l1", "homebaseonboardingafteroutpost"]) {
@@ -50,7 +55,7 @@ test("SkipTutorial completes the onboarding chain and grants its rewards where t
     for (const schematic of ["ingredient_blastpowder", "ingredient_duct_tape", "ammo_energycell"]) {
       assert.equal(byTemplate(profile, `Schematic:${schematic}`).length, 1, schematic);
     }
-    assert.ok(profile.stats.attributes.collection_book.pages.includes("pageheroes_commando"));
+    assert.ok(profile.stats.attributes.collection_book.pages.includes("pageHeroes_Commando"));
 
     const again = await post(backend.port, command(login.accountId, "SkipTutorial", "profile0", login.rvn + 1), login.token, {});
     assert.deepEqual(again.body.profileChanges, []);

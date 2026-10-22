@@ -9,18 +9,17 @@ function bookProfile(profileId) {
   return profileId;
 }
 
-export function slotItemInCollectionBook({ req, session }) {
-  slotItem(session, req.body?.itemId);
+export function slotItemInCollectionBook({ req, session, notifications }) {
+  slotItem(session, req.body?.itemId, notifications);
 }
 
-export function claimCollectionBookRewards({ req, session }) {
-  claimBookLevel(session, req.body?.requiredXp, req.body?.selectedRewardIndex ?? 0);
+export function claimCollectionBookRewards({ req, session, notifications }) {
+  claimBookLevel(session, req.body?.requiredXp, req.body?.selectedRewardIndex ?? 0, notifications);
 }
 
-export function claimCollectionBookPageRewards({ req, session, profileId }) {
+export function claimCollectionBookPageRewards({ req, session, profileId, notifications }) {
   bookProfile(profileId);
-  const page = String(req.body?.pageTemplateId ?? "").replace(/^CollectionBookPage:/i, "");
-  claimPageRewards(session, page, req.body?.sectionId || undefined, req.body?.selectedRewardIndex ?? 0);
+  claimPageRewards(session, req.body?.pageTemplateId, req.body?.sectionId, req.body?.selectedRewardIndex ?? 0, notifications);
 }
 
 export function upgradeSlottedItem({ req, session, profileId }) {

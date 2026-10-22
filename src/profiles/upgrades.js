@@ -98,3 +98,9 @@ export function recycleItem(session, itemId) {
   if (xp > 0) grantItem(session, xpResource[info.class], xp);
   for (const { templateId, quantity } of recipes[info.recycleRecipe]?.results ?? []) grantItem(session, templateId, quantity);
 }
+
+// UFortAccountItemDefinition::GetRecyclingRefunds: the SacrificeRecipe's results, what recycling the item gives besides
+// its XP.
+export function recyclingRefunds(templateId) {
+  return recipes[getItem(templateId)?.recycleRecipe]?.results ?? [];
+}
