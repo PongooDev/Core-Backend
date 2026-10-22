@@ -8,9 +8,11 @@ import { createServer } from "../src/server.js";
 
 export const certUserAgent = "game=Fortnite, engine=UE4, build=++Fortnite+Release-Cert-CL-3532353";
 
-export async function startBackend() {
+// A search for an empty server that finds none is answered at once unless a test asks for the wait the backend
+// otherwise makes (emptyServerWaitMs, src/services/matchmaking/sessions.js).
+export async function startBackend(config = {}) {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-backend-"));
-  const server = await createServer({ dataDir, requestLog: false });
+  const server = await createServer({ dataDir, requestLog: false, emptyServerWaitMs: 0, ...config });
   server.listen(0, "127.0.0.1");
   await once(server, "listening");
 

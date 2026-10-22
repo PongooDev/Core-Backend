@@ -1,6 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createSessionStore, normalizeAddress, sessionJson } from "../src/matchmaking/sessions.js";
+import { defaultEmptyServerWaitMs } from "../src/services/matchmaking/sessions.js";
+import http from "node:http";
 import { certUserAgent, clientToken, del, get, openTunnel, post, request, send, startBackend, userLogin } from "./helpers.js";
 
 const base = "/fortnite/api/matchmaking/session";
@@ -270,4 +272,121 @@ test("addresses are what the client's session reader parses, and remote clients 
 
   const remoteServer = createSessionStore().create(certCreate, "::ffff:192.168.1.40");
   assert.equal(sessionJson(remoteServer, viewer("::ffff:192.168.1.30", "::ffff:192.168.1.10")).serverAddress, "192.168.1.40");
+});
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const timed = async (promise) => {
+  const started = Date.now();
+  const result = await promise;
+  return { ...result, ms: Date.now() - started };
+};
+
+// Core-Backend #11: the launcher reports a gameserver ready when its game port is bound, but the server only creates its
+// session 35 to 70 s later (a stalled first tick, then login, hotfix check, beacon). A brand-new account's tutorial started matchmaking in that
+// gap: every empty-server search came back empty, the client cancelled after four, and Retry (once CoreServer1 had
+// registered) worked. Replayed here with the Cert gameserver's calls: create, update, heartbeat, key, join.
+test("a new account's tutorial search made before any gameserver has registered is answered when the first one does", async () => {
+  const backend = await startBackend({ emptyServerWaitMs: 5000 });
+  try {
+    const client = await userLogin(backend.port, "Norman");
+    const servers = [await userLogin(backend.port, "CoreServer1"), await userLogin(backend.port, "CoreServer2")];
+
+    const search = timed(post(backend.port, `${base}/matchMakingRequest`, client.token, clientSearch));
+    await delay(300);
+    const { body: first } = await post(backend.port, base, servers[0].token,
+      { ...certCreate, ownerId: servers[0].accountId, ownerName: "CoreServer1", serverName: "CoreServer1" });
+    const found = await search;
+    assert.equal(found.status, 200);
+    assert.deepEqual(found.body.map((session) => session.id), [first.id]);
+    assert.ok(found.ms >= 250 && found.ms < 5000, `answered when the session registered (${found.ms} ms)`);
+    assert.equal(found.body[0].serverAddress, "127.0.0.1");
+    assert.equal(found.body[0].attributes.BEACONPORT_i, 15000);
+
+    // What the server sends next: its update (address as the IPv4 number) and its 30 s heartbeat. Then the client's key
+    // and join, as on Retry in the report.
+    const sessionPath = `${base}/${first.id}`;
+    assert.equal((await request(backend.port, "PUT", sessionPath, servers[0].token, { ...certCreate, serverAddress: "2130706433" })).status, 200);
+    assert.equal((await post(backend.port, `${sessionPath}/heartbeat`, servers[0].token)).status, 204);
+    const key = await get(backend.port, `/fortnite/api/game/v2/matchmaking/account/${client.accountId}/session/${first.id}`, client.token);
+    assert.equal(key.status, 200);
+    assert.equal((await post(backend.port, `${sessionPath}/join?accountId=${client.accountId}`, client.token)).status, 204);
+
+    // CoreServer1 takes the player into the tutorial; the next search waits for CoreServer2, which is still starting.
+    await post(backend.port, `${sessionPath}/players`, servers[0].token, { publicPlayers: [client.accountId], privatePlayers: [] });
+    await request(backend.port, "PUT", sessionPath, servers[0].token, { ...certCreate, attributes: { ...certCreate.attributes, GAMEMODE_s: "FORTPVE" } });
+    await post(backend.port, `${sessionPath}/start`, servers[0].token);
+    const other = await userLogin(backend.port, "Podge");
+    const next = timed(post(backend.port, `${base}/matchMakingRequest`, other.token, clientSearch));
+    await delay(200);
+    const { body: second } = await post(backend.port, base, servers[1].token,
+      { ...certCreate, ownerId: servers[1].accountId, ownerName: "CoreServer2", serverName: "CoreServer2", serverPort: 7778,
+        attributes: { ...certCreate.attributes, BEACONPORT_i: 15001 } });
+    assert.deepEqual((await next).body.map((session) => session.id), [second.id]);
+  } finally {
+    backend.close();
+  }
+});
+
+test("an empty-server search waits for a busy server to free up, and ends empty when none does", async () => {
+  const backend = await startBackend({ emptyServerWaitMs: 600 });
+  try {
+    const server = await userLogin(backend.port, "CoreServer1");
+    const { token, accountId } = await userLogin(backend.port, "CoreTest");
+
+    const nothing = await timed(post(backend.port, `${base}/matchMakingRequest`, token, clientSearch));
+    assert.deepEqual(nothing.body, []);
+    assert.ok(nothing.ms >= 550, `waited for a server (${nothing.ms} ms)`);
+
+    const { body: session } = await post(backend.port, base, server.token, certCreate);
+    await post(backend.port, `${base}/${session.id}/players`, server.token, { publicPlayers: [accountId], privatePlayers: [] });
+    const freed = timed(post(backend.port, `${base}/matchMakingRequest`, token, clientSearch));
+    await delay(100);
+    await request(backend.port, "DELETE", `${base}/${session.id}/players`, server.token, [accountId]);
+    const found = await freed;
+    assert.deepEqual(found.body.map((found) => found.id), [session.id]);
+    assert.ok(found.ms < 550, `answered when the player left (${found.ms} ms)`);
+  } finally {
+    backend.close();
+  }
+});
+
+test("only empty-server searches wait: a search for an existing session to join is answered at once", async () => {
+  const backend = await startBackend({ emptyServerWaitMs: 5000 });
+  try {
+    const { token } = await userLogin(backend.port, "CoreTest");
+    // NONEMPTYONLY sends minCurrentPlayers; the critical mission search looks for a session in that zone.
+    const existing = { criteria: [{ type: "EQUAL", key: "GAMEMODE_s", value: "FORTPVE" }], requireDedicated: true, minCurrentPlayers: 1, buildUniqueId: "595160781" };
+    const answered = await timed(post(backend.port, `${base}/matchMakingRequest`, token, existing));
+    assert.deepEqual(answered.body, []);
+    assert.ok(answered.ms < 1000, `${answered.ms} ms`);
+  } finally {
+    backend.close();
+  }
+});
+
+test("a client that cancels while its search waits is dropped, and the backend waits 30 s by default", async () => {
+  assert.equal(defaultEmptyServerWaitMs, 30_000);
+  const backend = await startBackend({ emptyServerWaitMs: undefined });
+  try {
+    const server = await userLogin(backend.port, "CoreServer1");
+    const { token } = await userLogin(backend.port, "CoreTest");
+
+    const body = JSON.stringify(clientSearch);
+    const cancelled = http.request({ host: "127.0.0.1", port: backend.port, method: "POST", path: `${base}/matchMakingRequest`,
+      headers: { "User-Agent": certUserAgent, Authorization: `bearer ${token}`, "Content-Type": "application/json", "Content-Length": Buffer.byteLength(body) } });
+    cancelled.on("error", () => {});
+    cancelled.end(body);
+    await delay(200);
+    cancelled.destroy();
+    await delay(100);
+
+    const search = timed(post(backend.port, `${base}/matchMakingRequest`, token, clientSearch));
+    await delay(200);
+    const { body: session } = await post(backend.port, base, server.token, certCreate);
+    const found = await search;
+    assert.deepEqual(found.body.map((found) => found.id), [session.id]);
+    assert.ok(found.ms < 5000, `${found.ms} ms`);
+  } finally {
+    backend.close();
+  }
 });

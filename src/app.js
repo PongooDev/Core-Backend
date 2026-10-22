@@ -43,6 +43,7 @@ export function createContext(config) {
     mailbox: createMailbox(),
     locks: createProfileLocks(),
     sessions: createSessionStore(),
+    emptyServerWaitMs: config.emptyServerWaitMs,
     stomp: createStompService({ tokens, quiet: config.requestLog === false }),
     xmpp: createXmppService({
       tokens,

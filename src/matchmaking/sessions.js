@@ -84,6 +84,11 @@ function countOpenSlots(session) {
 // a server re-registers after a backend restart.
 export function createSessionStore() {
   const sessions = new Map();
+  // Called after every change a search can see (a session made, updated, filled, emptied or started).
+  const watchers = new Set();
+  const changed = () => {
+    for (const watcher of [...watchers]) watcher();
+  };
 
   function live() {
     const now = Date.now();
@@ -121,6 +126,7 @@ export function createSessionStore() {
         for (const [id, previous] of sessions) if (previous.hostAccountId === session.hostAccountId) sessions.delete(id);
       }
       sessions.set(session.id, session);
+      changed();
       return session;
     },
 
@@ -135,6 +141,7 @@ export function createSessionStore() {
       apply(session, body);
       countOpenSlots(session);
       touch(session);
+      changed();
       return session;
     },
 
@@ -149,6 +156,7 @@ export function createSessionStore() {
       }
       countOpenSlots(session);
       touch(session);
+      changed();
       return session;
     },
 
@@ -161,6 +169,7 @@ export function createSessionStore() {
       session.privatePlayers = session.privatePlayers.filter((accountId) => !leaving.has(accountId));
       countOpenSlots(session);
       touch(session);
+      changed();
       return session;
     },
 
@@ -186,6 +195,7 @@ export function createSessionStore() {
       if (session) {
         session.started = started;
         touch(session);
+        changed();
       }
       return session;
     },
@@ -212,6 +222,12 @@ export function createSessionStore() {
       // after staleAfterMs), and the client joins the first one that takes its reservation.
       results.sort((a, b) => b.sortWeight - a.sortWeight || b.lastUpdated.localeCompare(a.lastUpdated));
       return results.slice(0, Number.isFinite(request?.maxResults) ? request.maxResults : results.length);
+    },
+
+    // listener runs after each change a search can see; the returned function stops it.
+    watch(listener) {
+      watchers.add(listener);
+      return () => watchers.delete(listener);
     },
 
     // The live sessions a gameserver account created.

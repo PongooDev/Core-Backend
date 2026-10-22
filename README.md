@@ -98,6 +98,7 @@ Core-Backend reads an optional `config.json` from the folder it is started in. C
 | --- | --- | ---: | --- |
 | `port` | `--port <n>` | `5595` | Port the backend listens on (`0` picks a free one; the log says which). |
 | `dataDir` | `--data <folder>` | `data` | Folder for accounts, profiles, tokens and logs. |
+| `emptyServerWaitMs` | | `30000` | How long a client's search for an empty gameserver waits for one to register or free up before it is answered with none. |
 | | `--config <file>` | `config.json` | Config file to read. |
 
 Example:

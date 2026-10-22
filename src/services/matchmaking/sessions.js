@@ -10,7 +10,20 @@ import { sessionJson, sessionSummary } from "../../matchmaking/sessions.js";
 // DELETE /players) and destroy (DELETE) their sessions; the client finds an empty server with matchMakingRequest
 // (GAMEMODE_s FORTEMPTY), reads one session or a friend's (GET), joins and invites (POST) and fetches the
 // connection's encryption key. Other verbs fall through to the unknown route log.
-export function sessionRoutes({ tokens, sessions }) {
+//
+// A Core gameserver binds its game port 35 to 70 s before it registers its session (its first tick stalls for most of
+// that, then it logs in, checks the hotfix and opens its beacon), and the launcher calls it ready at the bind, so a
+// client that starts a mission while the servers are still starting finds no empty server. The tutorial's automatic matchmaking gives up after a few empty answers ("Matchmaking canceled", Retry then
+// works: Core-Backend #11). So a search for an empty server that finds none waits for one to register or free up, up to
+// emptyServerWaitMs, and is answered as soon as one does. The Cert client's HTTP requests time out after HttpTimeout
+// (300 s by default, FHttpModule 0x185B670), well beyond that.
+export const defaultEmptyServerWaitMs = 30_000;
+
+// EMPTYONLY searches (the client's "Finding Empty Server") are the ones that send maxCurrentPlayers, as 0 (writer
+// sub_380C0E0); a search for an existing session to join is answered at once.
+const wantsEmptyServer = (search) => search?.maxCurrentPlayers === 0;
+
+export function sessionRoutes({ tokens, sessions, emptyServerWaitMs = defaultEmptyServerWaitMs }) {
   const router = express.Router();
   const base = "/fortnite/api/matchmaking/session";
   const auth = requireAuth(tokens);
@@ -28,7 +41,30 @@ export function sessionRoutes({ tokens, sessions }) {
   });
 
   router.post(`${base}/matchMakingRequest`, auth, (req, res) => {
-    res.json(sessions.search(req.body).map((session) => sessionJson(session, req)));
+    const answer = (found) => res.json(found.map((session) => sessionJson(session, req)));
+    const found = sessions.search(req.body);
+    if (found.length > 0 || !wantsEmptyServer(req.body) || !(emptyServerWaitMs > 0)) return answer(found);
+
+    const started = Date.now();
+    let waiting = true;
+    const finish = (result) => {
+      if (!waiting) return;
+      waiting = false;
+      clearTimeout(timer);
+      stopWatching();
+      if (!result) return; // The client gave up (cancelled matchmaking or closed the connection).
+      const waited = ((Date.now() - started) / 1000).toFixed(1);
+      log("Matchmaking", result.length > 0
+        ? `Found an empty server after ${waited} s of waiting for one`
+        : `No empty server came up within ${waited} s`);
+      answer(result);
+    };
+    const stopWatching = sessions.watch(() => {
+      const now = sessions.search(req.body);
+      if (now.length > 0) finish(now);
+    });
+    const timer = setTimeout(() => finish(sessions.search(req.body)), emptyServerWaitMs);
+    res.on("close", () => finish());
   });
 
   router.get(`${base}/findPlayer/:accountId`, auth, (req, res) => {
