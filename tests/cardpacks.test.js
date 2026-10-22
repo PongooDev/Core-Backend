@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { readGameData } from "../src/gamedata/read.js";
-import { rollContents, rollOptions } from "../src/cardpacks/contents.js";
+import { rollContents, rollOptions, upgradedPack } from "../src/cardpacks/contents.js";
 import { post, startBackend, userLogin } from "./helpers.js";
 
 const items = new Set(Object.keys(readGameData("items", {})).map((id) => id.toLowerCase()));
@@ -46,7 +46,15 @@ test("OpenCardPack takes the pack, grants what it held and reports it for the ll
     const [packId, pack] = await user.find("CardPack:cardpack_bronze");
     assert.equal(pack.attributes.pack_source, "Store");
 
-    const opened = await user.run("OpenCardPack", { cardPackItemId: packId, selectionIdx: 0 });
+    // A roll past the upgrade chances keeps the llama bronze.
+    const random = Math.random;
+    Math.random = () => 0.99;
+    let opened;
+    try {
+      opened = await user.run("OpenCardPack", { cardPackItemId: packId, selectionIdx: 0 });
+    } finally {
+      Math.random = random;
+    }
     assert.equal(opened.status, 200);
     const [notification] = opened.body.notifications;
     assert.deepEqual([notification.type, notification.primary, notification.lootGranted.tierGroupName, notification.displayLevel], ["cardPackResult", true, "CardPack_Bronze", 0]);
@@ -58,6 +66,60 @@ test("OpenCardPack takes the pack, grants what it held and reports it for the ll
     }
 
     assert.equal((await user.run("OpenCardPack", { cardPackItemId: packId, selectionIdx: 0 })).status, 400);
+  } finally {
+    backend.close();
+  }
+});
+
+test("store llamas can turn silver or gold, from the silver and gold llama definitions that ship", () => {
+  const upgrade = (templateId, roll) => upgradedPack(templateId, roll).templateId;
+  assert.equal(upgrade("CardPack:cardpack_bronze", 0.99), "CardPack:cardpack_bronze");
+  assert.equal(upgrade("CardPack:cardpack_bronze", 0.1), "CardPack:cardpack_silver");
+  assert.equal(upgrade("CardPack:cardpack_bronze", 0.01), "CardPack:cardpack_gold");
+  assert.equal(upgrade("CardPack:cardpack_bronze_melee", 0.01), "CardPack:cardpack_gold_melee");
+  assert.equal(upgrade("CardPack:cardpack_bronze_personnel", 0.1), "CardPack:cardpack_silver_personnel");
+  assert.equal(upgrade("CardPack:cardpack_event_2017_winter_1", 0.01), "CardPack:cardpack_gold");
+  // The Mini Reward Llama only has a silver version.
+  assert.equal(upgrade("CardPack:cardpack_basic", 0.01), "CardPack:cardpack_basic_silver");
+  assert.equal(upgrade("CardPack:cardpack_basic", 0.99), "CardPack:cardpack_basic");
+  assert.equal(upgrade("CardPack:cardpack_worker_vr", 0.01), "CardPack:cardpack_worker_vr");
+
+  for (const id of ["CardPack:cardpack_silver", "CardPack:cardpack_gold", "CardPack:cardpack_silver_melee", "CardPack:cardpack_basic_silver"]) {
+    const rolled = rollContents(id);
+    assert.ok(rolled.length >= 3, id);
+    for (const item of rolled) assert.ok(items.has(item.templateId.toLowerCase()), `${id} -> ${item.templateId}`);
+  }
+  assert.equal(rollContents("CardPack:cardpack_gold").length, 6);
+});
+
+test("a gold Upgrade Llama reports displayLevel 2 and the gold group, and still counts as the llama opened", async () => {
+  const backend = await startBackend();
+  try {
+    const user = await account(backend);
+    await user.give("Quest:homebaseonboardingafteroutpost");
+    await user.give("CardPack:cardpack_bronze");
+    await user.give("CardPack:cardpack_basic");
+    const [bronzeId] = await user.find("CardPack:cardpack_bronze");
+    const [basicId] = await user.find("CardPack:cardpack_basic");
+
+    const random = Math.random;
+    Math.random = () => 0.01;
+    let gold;
+    let silver;
+    try {
+      gold = await user.run("OpenCardPack", { cardPackItemId: bronzeId, selectionIdx: 0 });
+      silver = await user.run("OpenCardPack", { cardPackItemId: basicId, selectionIdx: 0 });
+    } finally {
+      Math.random = random;
+    }
+    const [goldResult] = gold.body.notifications;
+    assert.deepEqual([goldResult.displayLevel, goldResult.lootGranted.tierGroupName, goldResult.lootGranted.items.length], [2, "CardPack_Gold", 6]);
+    const [silverResult] = silver.body.notifications;
+    assert.deepEqual([silverResult.displayLevel, silverResult.lootGranted.tierGroupName], [1, "CardPack_Basic_Silver"]);
+
+    const quest = Object.values(await user.profile().then((profile) => profile.items))
+      .find((item) => item.templateId === "Quest:homebaseonboardingafteroutpost");
+    assert.equal(quest.attributes.completion_open_card_pack, 1);
   } finally {
     backend.close();
   }

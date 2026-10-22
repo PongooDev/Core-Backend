@@ -30,6 +30,8 @@ const llamas = {
   cardpack_basic: { count: 2, rarity: [["c", 50], ["uc", 45], ["r", 5]] },
   cardpack_basic_silver: { count: 3, rarity: [["uc", 60], ["r", 35], ["vr", 5]] },
   cardpack_bronze: { count: 4, rarity: [["uc", 50], ["r", 35], ["vr", 12], ["sr", 3]] },
+  cardpack_silver: { count: 5, rarity: [["uc", 20], ["r", 50], ["vr", 25], ["sr", 5]] },
+  cardpack_gold: { count: 6, rarity: [["r", 40], ["vr", 45], ["sr", 15]] },
   cardpack_event_2017_founders: { count: 6, rarity: [["r", 55], ["vr", 35], ["sr", 10]] }
 };
 
@@ -173,6 +175,10 @@ export function rollContents(templateId) {
   const withRarity = { ...info, rarityCode: rarities.includes(rarity) ? rarity : "r" };
 
   if (llamas[group]) return llama(llamas[group]);
+  // By id: CardPack_Silver_Melee's group is CardPack_Gold_Melee in the data.
+  const name = templateId.split(":")[1].toLowerCase();
+  if (name.startsWith("cardpack_silver")) return llama(llamas.cardpack_silver);
+  if (name.startsWith("cardpack_gold")) return llama(llamas.cardpack_gold);
   if (group.startsWith("cardpack_bronze") || group.startsWith("cardpack_event")) return llama(llamas.cardpack_bronze);
   if (group.startsWith("zcp_")) return zoneReward(group, templateId, withRarity);
   if (group.startsWith("cardpack_founders_")) return founders(group);
@@ -183,6 +189,29 @@ export function rollContents(templateId) {
   if (match && knownKinds.has(match[1])) return one(match[1], match[2], match[3]);
   if (/^cardpack_(starter|quest|custom)_/.test(group)) return named(originalGroup, templateId, withRarity.rarityCode);
   return one("schematic", null, withRarity.rarityCode);
+}
+
+// A llama opened in the store can turn silver or gold (FCardPackResultNotification.displayLevel 1 or 2, the pinata
+// the client plays) and then holds what that llama holds. The upgraded llamas ship as their own definitions:
+// CardPack_Bronze[_X] -> CardPack_Silver[_X] / CardPack_Gold[_X], CardPack_Basic -> CardPack_Basic_Silver. How often
+// Epic upgraded one is server data that doesn't ship; these chances are Core's.
+export const upgradeChances = { gold: 0.05, silver: 0.2 };
+
+export function upgradedPack(templateId, roll = Math.random()) {
+  const info = getCardPack(templateId);
+  if (!info || info.choice) return info;
+  const group = info.lootTierGroup.toLowerCase();
+  let silver;
+  let gold;
+  if (group === "cardpack_basic") silver = getCardPack("CardPack:cardpack_basic_silver");
+  else if (group.startsWith("cardpack_bronze")) {
+    const family = group.slice("cardpack_bronze".length);
+    silver = getCardPack(`CardPack:cardpack_silver${family}`);
+    gold = getCardPack(`CardPack:cardpack_gold${family}`);
+  }
+  if (gold && roll < upgradeChances.gold) return gold;
+  if (silver && roll < upgradeChances.gold + upgradeChances.silver) return silver;
+  return info;
 }
 
 // A choice pack's two options, chosen when the pack is granted (UFortCardPackItem.Options, FMcpLootEntry shape).
