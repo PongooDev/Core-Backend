@@ -35,10 +35,15 @@ const compare = {
 };
 
 // The client's session reader (sub_37F5010) parses serverAddress as an IP and only maps 0:0:0:0:0:0:0:1 itself
-// ("Failed to parse ip address %s" otherwise). Node reports IPv4 peers on a dual-stack socket as ::ffff:a.b.c.d.
+// ("Failed to parse ip address %s" otherwise). Node reports IPv4 peers on a dual-stack socket as ::ffff:a.b.c.d, and
+// the Cert server's update body (sub_380D1E0) writes its address as the IPv4 number ("%u", 2130706433 for 127.0.0.1).
 export function normalizeAddress(address) {
   const text = String(address ?? "").trim();
   if (text === "::1" || text === "0:0:0:0:0:0:0:1") return "127.0.0.1";
+  if (/^\d+$/.test(text) && Number(text) <= 0xffffffff) {
+    const ip = Number(text);
+    return [ip >>> 24, (ip >>> 16) & 255, (ip >>> 8) & 255, ip & 255].join(".");
+  }
   return text.replace(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/i, "$1");
 }
 
@@ -110,6 +115,11 @@ export function createSessionStore() {
       if (!usable(session.serverAddress)) session.serverAddress = normalizeAddress(connectionAddress);
       countOpenSlots(session);
       touch(session);
+      // A gameserver account runs one server, which hosts one session: one it made before is from a server that has
+      // since exited (the launcher restarts a crashed one under the same account), and must not be matched any more.
+      if (session.hostAccountId) {
+        for (const [id, previous] of sessions) if (previous.hostAccountId === session.hostAccountId) sessions.delete(id);
+      }
       sessions.set(session.id, session);
       return session;
     },
@@ -198,7 +208,9 @@ export function createSessionStore() {
         if (players(session).some((id) => excluded.has(id))) return false;
         return (request?.criteria ?? []).every(({ type, key, value }) => compare[type]?.(session.attributes?.[key], value) ?? false);
       });
-      results.sort((a, b) => b.sortWeight - a.sortWeight || a.lastUpdated.localeCompare(b.lastUpdated));
+      // The most recently heard from first: a server that stopped heartbeating may be gone (its session is only dropped
+      // after staleAfterMs), and the client joins the first one that takes its reservation.
+      results.sort((a, b) => b.sortWeight - a.sortWeight || b.lastUpdated.localeCompare(a.lastUpdated));
       return results.slice(0, Number.isFinite(request?.maxResults) ? request.maxResults : results.length);
     },
 

@@ -104,7 +104,7 @@ test("the Cert server's create gets the address it connected from, kept when its
     assert.equal(created.body.serverPort, 7777);
     assert.equal(created.body.attributes.BEACONPORT_i, 15000);
 
-    for (const serverAddress of [undefined, "", "0.0.0.0"]) {
+    for (const serverAddress of [undefined, "", "0.0.0.0", "0"]) {
       const updated = await request(backend.port, "PUT", `${base}/${created.body.id}`, server, { ...certCreate, serverAddress });
       assert.equal(updated.body.serverAddress, "127.0.0.1");
     }
@@ -190,6 +190,53 @@ test("the open slots are each list's maximum less its players, whatever counts t
   }
 });
 
+test("a restarted gameserver's new session replaces the one its exited process left, and live servers are matched first", async () => {
+  const backend = await startBackend();
+  try {
+    const first = await userLogin(backend.port, "CoreServer1");
+    const second = await userLogin(backend.port, "CoreServer2");
+    const { token, accountId } = await userLogin(backend.port, "CoreTest");
+    const create = (server, serverPort, BEACONPORT_i) =>
+      post(backend.port, base, server.token, { ...certCreate, serverPort, attributes: { ...certCreate.attributes, BEACONPORT_i } });
+
+    // CoreServer1 takes a player into a zone and its process exits; CoreServer2's process exits while idle.
+    const { body: crashed } = await create(first, 7777, 15000);
+    await post(backend.port, `${base}/${crashed.id}/players`, first.token, { publicPlayers: [accountId], privatePlayers: [] });
+    const { body: idleCrashed } = await create(second, 7778, 15001);
+    await new Promise((resolve) => setTimeout(resolve, 5));
+
+    // The launcher restarts both, on each other's ports.
+    const { body: restartedSecond } = await create(second, 7777, 15000);
+    await new Promise((resolve) => setTimeout(resolve, 5));
+    const { body: restartedFirst } = await create(first, 7778, 15001);
+    for (const gone of [crashed, idleCrashed]) assert.equal((await get(backend.port, `${base}/${gone.id}`, token)).status, 404);
+    assert.deepEqual((await get(backend.port, `${base}/findPlayer/${accountId}`, token)).body, []);
+    assert.deepEqual((await post(backend.port, `${base}/matchMakingRequest`, token, clientSearch)).body.map((session) => session.id),
+      [restartedFirst.id, restartedSecond.id]);
+
+    // Of two idle servers, the one heard from last comes first.
+    assert.equal((await post(backend.port, `${base}/${restartedSecond.id}/heartbeat`, second.token)).status, 204);
+    assert.deepEqual((await post(backend.port, `${base}/matchMakingRequest`, token, clientSearch)).body.map((session) => session.id),
+      [restartedSecond.id, restartedFirst.id]);
+  } finally {
+    backend.close();
+  }
+});
+
+test("the Cert server's update writes its address as the IPv4 number, which is kept as the dotted address", async () => {
+  const backend = await startBackend();
+  try {
+    const server = await userLogin(backend.port, "CoreServer1");
+    const { body: session } = await post(backend.port, base, server.token, certCreate);
+    const updated = await request(backend.port, "PUT", `${base}/${session.id}`, server.token,
+      { ...certCreate, serverAddress: "2130706433", attributes: { ...certCreate.attributes, GAMEMODE_s: "FORTPVE" } });
+    assert.equal(updated.body.serverAddress, "127.0.0.1");
+    assert.equal((await request(backend.port, "PUT", `${base}/${session.id}`, server.token, { ...certCreate, serverAddress: 3232235796 })).body.serverAddress, "192.168.1.20");
+  } finally {
+    backend.close();
+  }
+});
+
 test("the launcher lists sessions with their owner, players and game mode, from this machine only", async () => {
   const backend = await startBackend();
   try {
@@ -211,6 +258,9 @@ test("addresses are what the client's session reader parses, and remote clients 
   assert.equal(normalizeAddress("::1"), "127.0.0.1");
   assert.equal(normalizeAddress("0:0:0:0:0:0:0:1"), "127.0.0.1");
   assert.equal(normalizeAddress("192.168.1.20"), "192.168.1.20");
+  assert.equal(normalizeAddress("2130706433"), "127.0.0.1");
+  assert.equal(normalizeAddress(167772165), "10.0.0.5");
+  assert.equal(normalizeAddress("0"), "0.0.0.0", "an unknown address, which updates leave alone");
 
   const session = createSessionStore().create(certCreate, "::ffff:127.0.0.1");
   const viewer = (remoteAddress, localAddress) => ({ socket: { remoteAddress, localAddress } });
