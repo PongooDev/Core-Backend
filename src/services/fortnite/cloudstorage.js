@@ -3,7 +3,9 @@ import fs from "node:fs";
 import path from "node:path";
 import express from "express";
 import { requireAuth, requireOwnAccount } from "../../accounts/auth.js";
+import { isDedicatedServerToken } from "../../accounts/clients.js";
 import { sendError } from "../../errors.js";
+import { sessionMembers } from "../../matchmaking/sessions.js";
 
 const validFilename = /^[A-Za-z0-9._-]{1,128}$/;
 
@@ -49,10 +51,27 @@ export function cloudStorageRoutes({ tokens }) {
   return router;
 }
 
-export function userCloudStorageRoutes({ tokens, dataDir }) {
+export function userCloudStorageRoutes({ tokens, accounts, sessions, dataDir }) {
   const router = express.Router();
   const base = "/fortnite/api/cloudstorage/user/:accountId";
   const folder = (accountId) => path.join(dataDir, "accounts", accountId, "cloudstorage");
+
+  // A storm shield's build is saved in its owner's user cloud storage (<core item id>_r<zone>_a<0|1>.sav), which the
+  // zone server lists, reads and writes for that owner (UFortUserCloudHelperComponent) with its own signed-in account's
+  // token: the OSS falls back to the first signed-in user when it holds no login for the file's owner (sub_37E9DF0).
+  // So the files of the players on a session an account hosts are open to that account's tokens, and to the
+  // DedicatedServer client's. The OSS turns a 401 or 403 from any service into InvalidUser or NotAuthorized, which
+  // AFortGameSessionDedicated answers by shutting the server down (exit code 6), so a gameserver is refused with a 404.
+  function requireOwnerOrHost(req, res, next) {
+    const { accountId } = req.params;
+    if (req.session.accountId === accountId) return next();
+    const dedicated = isDedicatedServerToken(req.session);
+    const hosted = sessions.hostedBy(req.session.accountId);
+    if (!dedicated && !hosted.length) return requireOwnAccount(req, res, next);
+    if (accounts.get(accountId) && (dedicated || hosted.some((session) => sessionMembers(session).includes(accountId)))) return next();
+    sendError(res, 404, "errors.com.epicgames.cloudstorage.user_not_found",
+      `${accountId} isn't a player on a session this server hosts`);
+  }
 
   function checkFilename(req, res, next) {
     if (!validFilename.test(req.params.filename) || req.params.filename.startsWith(".")) {
@@ -64,7 +83,7 @@ export function userCloudStorageRoutes({ tokens, dataDir }) {
 
   router.use(base, requireAuth(tokens));
 
-  router.get(base, requireOwnAccount, (req, res) => {
+  router.get(base, requireOwnerOrHost, (req, res) => {
     const dir = folder(req.params.accountId);
     const files = fs.existsSync(dir) ? fs.readdirSync(dir).filter((name) => validFilename.test(name)) : [];
     res.json(files.map((filename) => {
@@ -73,14 +92,15 @@ export function userCloudStorageRoutes({ tokens, dataDir }) {
     }));
   });
 
-  router.get(`${base}/:filename`, requireOwnAccount, checkFilename, (req, res) => {
+  router.get(`${base}/:filename`, requireOwnerOrHost, checkFilename, (req, res) => {
     if (!fs.existsSync(req.file)) {
       return sendError(res, 404, "errors.com.epicgames.cloudstorage.file_not_found", `${req.params.filename} not found`);
     }
     res.type("application/octet-stream").send(fs.readFileSync(req.file));
   });
 
-  router.put(`${base}/:filename`, requireOwnAccount, checkFilename, express.raw({ type: () => true, limit: "16mb" }), (req, res) => {
+  // The body is read before any refusal, so the answer never cuts off an upload in progress.
+  router.put(`${base}/:filename`, express.raw({ type: () => true, limit: "16mb" }), requireOwnerOrHost, checkFilename, (req, res) => {
     fs.mkdirSync(path.dirname(req.file), { recursive: true });
     fs.writeFileSync(`${req.file}.tmp`, Buffer.isBuffer(req.body) ? req.body : Buffer.alloc(0));
     fs.renameSync(`${req.file}.tmp`, req.file);

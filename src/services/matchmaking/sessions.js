@@ -22,7 +22,7 @@ export function sessionRoutes({ tokens, sessions }) {
 
   // The Cert server's create body has no serverAddress (only with -UseLocalIPs), so it is where the request came from.
   router.post(base, auth, (req, res) => {
-    const session = sessions.create(req.body, req.socket.remoteAddress);
+    const session = sessions.create(req.body, req.socket.remoteAddress, req.session.accountId);
     log("Matchmaking", `Session ${session.id} created by ${session.ownerName || session.ownerId || "a server"} at ${session.serverAddress}:${session.serverPort}`);
     res.json(sessionJson(session, req));
   });
