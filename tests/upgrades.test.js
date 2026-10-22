@@ -48,6 +48,26 @@ test("UpgradeItem spends the item's XP type per its level curve, up to its max l
   }
 });
 
+test("UpgradeItem levels a defender with hero XP, as the client's GetUpgradeXPBalance does", async () => {
+  const backend = await startBackend();
+  try {
+    const { give, run, find, amount } = await setup(backend);
+    await give("Defender:did_defenderassault_basic_c_t01");
+    await give("AccountResource:heroxp", 1000);
+    await give("AccountResource:personnelxp", 1000);
+    const [defenderId] = await find("Defender:did_defenderassault_basic_c_t01");
+
+    // Common costs 100 at level 1 and 200 at level 2.
+    assert.equal((await run("UpgradeItem", { targetItemId: defenderId })).status, 200);
+    assert.equal((await run("UpgradeItem", { targetItemId: defenderId })).status, 200);
+    assert.equal((await find("Defender:did_defenderassault_basic_c_t01"))[1].attributes.level, 3);
+    assert.equal(await amount("AccountResource:heroxp"), 700);
+    assert.equal(await amount("AccountResource:personnelxp"), 1000);
+  } finally {
+    backend.close();
+  }
+});
+
 test("ConvertItem evolves the item in place for its recipe's costs", async () => {
   const backend = await startBackend();
   try {

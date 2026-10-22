@@ -9,14 +9,15 @@ import { hasUnlocked } from "./unlocks.js";
 //   ConvertItem   the evolution recipe ConversionRecipes[index] in MetaRecipes (its costs, for its result);
 //   RecycleItem   XPAccountItemRewards[recycleXp][level] of the item's XP back, plus the SacrificeRecipe's results.
 // Both recipes need their catalyst tags unlocked on the skill tree.
-// Heroes use hero XP, survivors and defenders personnel XP, schematics schematic XP (the client's GetHeroXp,
-// GetPersonnelXp and GetSchematicXp balances).
+// Heroes and defenders use hero XP, survivors personnel XP, schematics schematic XP: the client's
+// UFortMcpContext::GetUpgradeXPBalance(EFortItemType) (sub_64BE00) reads GetHeroXp for Hero and Defender, GetSchematicXp
+// for Schematic and GetPersonnelXp for Worker.
 const { levelCosts = {}, recycleXp = {}, recipes = {} } = readGameData("upgrades", {});
 
 const xpResource = {
   FortHeroType: "AccountResource:heroxp",
   FortWorkerType: "AccountResource:personnelxp",
-  FortDefenderItemDefinition: "AccountResource:personnelxp",
+  FortDefenderItemDefinition: "AccountResource:heroxp",
   FortSchematicItemDefinition: "AccountResource:schematicxp"
 };
 
