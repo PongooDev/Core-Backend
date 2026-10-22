@@ -7779,6 +7779,7 @@
         "Defender:did_defenderassault_basic_c_t01",
         "Defender:did_defenderassault_basic_c_t02"
       ],
+      "personalities": [],
       "weight": "Defender"
     },
     "DID.DefenderAssault.Basic.R.T01": {
@@ -7788,6 +7789,7 @@
         "Defender:did_defenderassault_basic_r_t03",
         "Defender:did_defenderassault_basic_r_t04"
       ],
+      "personalities": [],
       "weight": "Defender"
     },
     "DID.DefenderAssault.Basic.SR.T01": {
@@ -7798,6 +7800,7 @@
         "Defender:did_defenderassault_basic_sr_t04",
         "Defender:did_defenderassault_basic_sr_t05"
       ],
+      "personalities": [],
       "weight": "Defender"
     },
     "DID.DefenderAssault.Basic.UC.T01": {
@@ -7806,6 +7809,7 @@
         "Defender:did_defenderassault_basic_uc_t02",
         "Defender:did_defenderassault_basic_uc_t03"
       ],
+      "personalities": [],
       "weight": "Defender"
     },
     "DID.DefenderAssault.Basic.VR.T01": {
@@ -7816,6 +7820,7 @@
         "Defender:did_defenderassault_basic_vr_t04",
         "Defender:did_defenderassault_basic_vr_t05"
       ],
+      "personalities": [],
       "weight": "Defender"
     },
     "DID.DefenderMelee.Basic.C.T01": {
@@ -7823,6 +7828,7 @@
         "Defender:did_defendermelee_basic_c_t01",
         "Defender:did_defendermelee_basic_c_t02"
       ],
+      "personalities": [],
       "weight": "Defender"
     },
     "DID.DefenderMelee.Basic.R.T01": {
@@ -7832,6 +7838,7 @@
         "Defender:did_defendermelee_basic_r_t03",
         "Defender:did_defendermelee_basic_r_t04"
       ],
+      "personalities": [],
       "weight": "Defender"
     },
     "DID.DefenderMelee.Basic.SR.T01": {
@@ -7842,6 +7849,7 @@
         "Defender:did_defendermelee_basic_sr_t04",
         "Defender:did_defendermelee_basic_sr_t05"
       ],
+      "personalities": [],
       "weight": "Defender"
     },
     "DID.DefenderMelee.Basic.UC.T01": {
@@ -7850,6 +7858,7 @@
         "Defender:did_defendermelee_basic_uc_t02",
         "Defender:did_defendermelee_basic_uc_t03"
       ],
+      "personalities": [],
       "weight": "Defender"
     },
     "DID.DefenderMelee.Basic.VR.T01": {
@@ -7860,6 +7869,7 @@
         "Defender:did_defendermelee_basic_vr_t04",
         "Defender:did_defendermelee_basic_vr_t05"
       ],
+      "personalities": [],
       "weight": "Defender"
     },
     "DID.DefenderPistol.Basic.C.T01": {
@@ -7867,6 +7877,7 @@
         "Defender:did_defenderpistol_basic_c_t01",
         "Defender:did_defenderpistol_basic_c_t02"
       ],
+      "personalities": [],
       "weight": "Defender"
     },
     "DID.DefenderPistol.Basic.R.T01": {
@@ -7876,6 +7887,7 @@
         "Defender:did_defenderpistol_basic_r_t03",
         "Defender:did_defenderpistol_basic_r_t04"
       ],
+      "personalities": [],
       "weight": "Defender"
     },
     "DID.DefenderPistol.Basic.SR.T01": {
@@ -7886,6 +7898,7 @@
         "Defender:did_defenderpistol_basic_sr_t04",
         "Defender:did_defenderpistol_basic_sr_t05"
       ],
+      "personalities": [],
       "weight": "Defender"
     },
     "DID.DefenderPistol.Basic.UC.T01": {
@@ -7894,6 +7907,7 @@
         "Defender:did_defenderpistol_basic_uc_t02",
         "Defender:did_defenderpistol_basic_uc_t03"
       ],
+      "personalities": [],
       "weight": "Defender"
     },
     "DID.DefenderPistol.Basic.VR.T01": {
@@ -7904,6 +7918,7 @@
         "Defender:did_defenderpistol_basic_vr_t04",
         "Defender:did_defenderpistol_basic_vr_t05"
       ],
+      "personalities": [],
       "weight": "Defender"
     },
     "DID.DefenderShotgun.Basic.C.T01": {
@@ -7911,6 +7926,7 @@
         "Defender:did_defendershotgun_basic_c_t01",
         "Defender:did_defendershotgun_basic_c_t02"
       ],
+      "personalities": [],
       "weight": "Defender"
     },
     "DID.DefenderShotgun.Basic.R.T01": {
@@ -7920,6 +7936,7 @@
         "Defender:did_defendershotgun_basic_r_t03",
         "Defender:did_defendershotgun_basic_r_t04"
       ],
+      "personalities": [],
       "weight": "Defender"
     },
     "DID.DefenderShotgun.Basic.SR.T01": {
@@ -7930,6 +7947,7 @@
         "Defender:did_defendershotgun_basic_sr_t04",
         "Defender:did_defendershotgun_basic_sr_t05"
       ],
+      "personalities": [],
       "weight": "Defender"
     },
     "DID.DefenderShotgun.Basic.UC.T01": {
@@ -7938,6 +7956,7 @@
         "Defender:did_defendershotgun_basic_uc_t02",
         "Defender:did_defendershotgun_basic_uc_t03"
       ],
+      "personalities": [],
       "weight": "Defender"
     },
     "DID.DefenderShotgun.Basic.VR.T01": {
@@ -7948,6 +7967,7 @@
         "Defender:did_defendershotgun_basic_vr_t04",
         "Defender:did_defendershotgun_basic_vr_t05"
       ],
+      "personalities": [],
       "weight": "Defender"
     },
     "DID.DefenderSniper.Basic.C.T01": {
@@ -7955,6 +7975,7 @@
         "Defender:did_defendersniper_basic_c_t01",
         "Defender:did_defendersniper_basic_c_t02"
       ],
+      "personalities": [],
       "weight": "Defender"
     },
     "DID.DefenderSniper.Basic.R.T01": {
@@ -7964,6 +7985,7 @@
         "Defender:did_defendersniper_basic_r_t03",
         "Defender:did_defendersniper_basic_r_t04"
       ],
+      "personalities": [],
       "weight": "Defender"
     },
     "DID.DefenderSniper.Basic.SR.T01": {
@@ -7974,6 +7996,7 @@
         "Defender:did_defendersniper_basic_sr_t04",
         "Defender:did_defendersniper_basic_sr_t05"
       ],
+      "personalities": [],
       "weight": "Defender"
     },
     "DID.DefenderSniper.Basic.UC.T01": {
@@ -7982,6 +8005,7 @@
         "Defender:did_defendersniper_basic_uc_t02",
         "Defender:did_defendersniper_basic_uc_t03"
       ],
+      "personalities": [],
       "weight": "Defender"
     },
     "DID.DefenderSniper.Basic.VR.T01": {
@@ -7992,6 +8016,7 @@
         "Defender:did_defendersniper_basic_vr_t04",
         "Defender:did_defendersniper_basic_vr_t05"
       ],
+      "personalities": [],
       "weight": "Defender"
     },
     "HID.Commando.007.R.T01": {
@@ -8001,6 +8026,7 @@
         "Hero:hid_commando_007_r_t03",
         "Hero:hid_commando_007_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.007.SR.T01": {
@@ -8011,6 +8037,7 @@
         "Hero:hid_commando_007_sr_t04",
         "Hero:hid_commando_007_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.007.UC.T01": {
@@ -8019,6 +8046,7 @@
         "Hero:hid_commando_007_uc_t02",
         "Hero:hid_commando_007_uc_t03"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.007.VR.T01": {
@@ -8029,6 +8057,7 @@
         "Hero:hid_commando_007_vr_t04",
         "Hero:hid_commando_007_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.008.R.T01": {
@@ -8038,6 +8067,7 @@
         "Hero:hid_commando_008_r_t03",
         "Hero:hid_commando_008_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.008.SR.T01": {
@@ -8048,6 +8078,7 @@
         "Hero:hid_commando_008_sr_t04",
         "Hero:hid_commando_008_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.008.VR.T01": {
@@ -8058,6 +8089,7 @@
         "Hero:hid_commando_008_vr_t04",
         "Hero:hid_commando_008_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.009.R.T01": {
@@ -8067,6 +8099,7 @@
         "Hero:hid_commando_009_r_t03",
         "Hero:hid_commando_009_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.009.SR.T01": {
@@ -8077,6 +8110,7 @@
         "Hero:hid_commando_009_sr_t04",
         "Hero:hid_commando_009_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.009.VR.T01": {
@@ -8087,6 +8121,7 @@
         "Hero:hid_commando_009_vr_t04",
         "Hero:hid_commando_009_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.010.SR.T01": {
@@ -8097,6 +8132,7 @@
         "Hero:hid_commando_010_sr_t04",
         "Hero:hid_commando_010_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.010.VR.T01": {
@@ -8107,6 +8143,7 @@
         "Hero:hid_commando_010_vr_t04",
         "Hero:hid_commando_010_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.GCGrenade.R.T01": {
@@ -8116,6 +8153,7 @@
         "Hero:hid_commando_gcgrenade_r_t03",
         "Hero:hid_commando_gcgrenade_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.GCGrenade.SR.T01": {
@@ -8126,6 +8164,7 @@
         "Hero:hid_commando_gcgrenade_sr_t04",
         "Hero:hid_commando_gcgrenade_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.GCGrenade.VR.T01": {
@@ -8136,6 +8175,7 @@
         "Hero:hid_commando_gcgrenade_vr_t04",
         "Hero:hid_commando_gcgrenade_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.GrenadeGun.R.T01": {
@@ -8145,6 +8185,7 @@
         "Hero:hid_commando_grenadegun_r_t03",
         "Hero:hid_commando_grenadegun_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.GrenadeGun.SR.T01": {
@@ -8155,6 +8196,7 @@
         "Hero:hid_commando_grenadegun_sr_t04",
         "Hero:hid_commando_grenadegun_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.GrenadeGun.UC.T01": {
@@ -8163,6 +8205,7 @@
         "Hero:hid_commando_grenadegun_uc_t02",
         "Hero:hid_commando_grenadegun_uc_t03"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.GrenadeGun.VR.T01": {
@@ -8173,6 +8216,7 @@
         "Hero:hid_commando_grenadegun_vr_t04",
         "Hero:hid_commando_grenadegun_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.GrenadeMaster.SR.T01": {
@@ -8183,6 +8227,7 @@
         "Hero:hid_commando_grenademaster_sr_t04",
         "Hero:hid_commando_grenademaster_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.GunHeadshot.SR.T01": {
@@ -8193,6 +8238,7 @@
         "Hero:hid_commando_gunheadshot_sr_t04",
         "Hero:hid_commando_gunheadshot_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.GunHeadshot.VR.T01": {
@@ -8203,6 +8249,7 @@
         "Hero:hid_commando_gunheadshot_vr_t04",
         "Hero:hid_commando_gunheadshot_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.GunHeadshotHW.SR.T01": {
@@ -8213,6 +8260,7 @@
         "Hero:hid_commando_gunheadshothw_sr_t04",
         "Hero:hid_commando_gunheadshothw_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.GunTough.R.T01": {
@@ -8222,6 +8270,7 @@
         "Hero:hid_commando_guntough_r_t03",
         "Hero:hid_commando_guntough_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.GunTough.SR.T01": {
@@ -8232,6 +8281,7 @@
         "Hero:hid_commando_guntough_sr_t04",
         "Hero:hid_commando_guntough_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.GunTough.UC.T01": {
@@ -8240,6 +8290,7 @@
         "Hero:hid_commando_guntough_uc_t02",
         "Hero:hid_commando_guntough_uc_t03"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.GunTough.VR.T01": {
@@ -8250,6 +8301,7 @@
         "Hero:hid_commando_guntough_vr_t04",
         "Hero:hid_commando_guntough_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.ShockDamage.R.T01": {
@@ -8259,6 +8311,7 @@
         "Hero:hid_commando_shockdamage_r_t03",
         "Hero:hid_commando_shockdamage_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.ShockDamage.SR.T01": {
@@ -8269,6 +8322,7 @@
         "Hero:hid_commando_shockdamage_sr_t04",
         "Hero:hid_commando_shockdamage_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Commando.ShockDamage.VR.T01": {
@@ -8279,6 +8333,7 @@
         "Hero:hid_commando_shockdamage_vr_t04",
         "Hero:hid_commando_shockdamage_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.007.R.T01": {
@@ -8288,6 +8343,7 @@
         "Hero:hid_constructor_007_r_t03",
         "Hero:hid_constructor_007_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.007.SR.T01": {
@@ -8298,6 +8354,7 @@
         "Hero:hid_constructor_007_sr_t04",
         "Hero:hid_constructor_007_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.007.UC.T01": {
@@ -8306,6 +8363,7 @@
         "Hero:hid_constructor_007_uc_t02",
         "Hero:hid_constructor_007_uc_t03"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.007.VR.T01": {
@@ -8316,6 +8374,7 @@
         "Hero:hid_constructor_007_vr_t04",
         "Hero:hid_constructor_007_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.008.R.T01": {
@@ -8325,6 +8384,7 @@
         "Hero:hid_constructor_008_r_t03",
         "Hero:hid_constructor_008_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.008.SR.T01": {
@@ -8335,6 +8395,7 @@
         "Hero:hid_constructor_008_sr_t04",
         "Hero:hid_constructor_008_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.008.VR.T01": {
@@ -8345,6 +8406,7 @@
         "Hero:hid_constructor_008_vr_t04",
         "Hero:hid_constructor_008_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.009.R.T01": {
@@ -8354,6 +8416,7 @@
         "Hero:hid_constructor_009_r_t03",
         "Hero:hid_constructor_009_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.009.SR.T01": {
@@ -8364,6 +8427,7 @@
         "Hero:hid_constructor_009_sr_t04",
         "Hero:hid_constructor_009_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.009.VR.T01": {
@@ -8374,6 +8438,7 @@
         "Hero:hid_constructor_009_vr_t04",
         "Hero:hid_constructor_009_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.010.SR.T01": {
@@ -8384,6 +8449,7 @@
         "Hero:hid_constructor_010_sr_t04",
         "Hero:hid_constructor_010_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.010.VR.T01": {
@@ -8394,6 +8460,7 @@
         "Hero:hid_constructor_010_vr_t04",
         "Hero:hid_constructor_010_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.BASEBig.SR.T01": {
@@ -8404,6 +8471,7 @@
         "Hero:hid_constructor_basebig_sr_t04",
         "Hero:hid_constructor_basebig_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.BaseHyper.R.T01": {
@@ -8413,6 +8481,7 @@
         "Hero:hid_constructor_basehyper_r_t03",
         "Hero:hid_constructor_basehyper_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.BaseHyper.SR.T01": {
@@ -8423,6 +8492,7 @@
         "Hero:hid_constructor_basehyper_sr_t04",
         "Hero:hid_constructor_basehyper_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.BaseHyper.VR.T01": {
@@ -8433,6 +8503,7 @@
         "Hero:hid_constructor_basehyper_vr_t04",
         "Hero:hid_constructor_basehyper_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.HammerPlasma.SR.T01": {
@@ -8443,6 +8514,7 @@
         "Hero:hid_constructor_hammerplasma_sr_t04",
         "Hero:hid_constructor_hammerplasma_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.HammerPlasma.VR.T01": {
@@ -8453,6 +8525,7 @@
         "Hero:hid_constructor_hammerplasma_vr_t04",
         "Hero:hid_constructor_hammerplasma_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.HammerTank.R.T01": {
@@ -8462,6 +8535,7 @@
         "Hero:hid_constructor_hammertank_r_t03",
         "Hero:hid_constructor_hammertank_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.HammerTank.SR.T01": {
@@ -8472,6 +8546,7 @@
         "Hero:hid_constructor_hammertank_sr_t04",
         "Hero:hid_constructor_hammertank_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.HammerTank.UC.T01": {
@@ -8480,6 +8555,7 @@
         "Hero:hid_constructor_hammertank_uc_t02",
         "Hero:hid_constructor_hammertank_uc_t03"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.HammerTank.VR.T01": {
@@ -8490,6 +8566,7 @@
         "Hero:hid_constructor_hammertank_vr_t04",
         "Hero:hid_constructor_hammertank_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.PlasmaDamage.R.T01": {
@@ -8499,6 +8576,7 @@
         "Hero:hid_constructor_plasmadamage_r_t03",
         "Hero:hid_constructor_plasmadamage_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.PlasmaDamage.SR.T01": {
@@ -8509,6 +8587,7 @@
         "Hero:hid_constructor_plasmadamage_sr_t04",
         "Hero:hid_constructor_plasmadamage_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.PlasmaDamage.VR.T01": {
@@ -8519,6 +8598,7 @@
         "Hero:hid_constructor_plasmadamage_vr_t04",
         "Hero:hid_constructor_plasmadamage_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.RushBASE.R.T01": {
@@ -8528,6 +8608,7 @@
         "Hero:hid_constructor_rushbase_r_t03",
         "Hero:hid_constructor_rushbase_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.RushBASE.SR.T01": {
@@ -8538,6 +8619,7 @@
         "Hero:hid_constructor_rushbase_sr_t04",
         "Hero:hid_constructor_rushbase_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.RushBASE.UC.T01": {
@@ -8546,6 +8628,7 @@
         "Hero:hid_constructor_rushbase_uc_t02",
         "Hero:hid_constructor_rushbase_uc_t03"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Constructor.RushBASE.VR.T01": {
@@ -8556,6 +8639,7 @@
         "Hero:hid_constructor_rushbase_vr_t04",
         "Hero:hid_constructor_rushbase_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.007.R.T01": {
@@ -8565,6 +8649,7 @@
         "Hero:hid_ninja_007_r_t03",
         "Hero:hid_ninja_007_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.007.SR.T01": {
@@ -8575,6 +8660,7 @@
         "Hero:hid_ninja_007_sr_t04",
         "Hero:hid_ninja_007_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.007.UC.T01": {
@@ -8583,6 +8669,7 @@
         "Hero:hid_ninja_007_uc_t02",
         "Hero:hid_ninja_007_uc_t03"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.007.VR.T01": {
@@ -8593,6 +8680,7 @@
         "Hero:hid_ninja_007_vr_t04",
         "Hero:hid_ninja_007_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.008.R.T01": {
@@ -8602,6 +8690,7 @@
         "Hero:hid_ninja_008_r_t03",
         "Hero:hid_ninja_008_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.008.SR.T01": {
@@ -8612,6 +8701,7 @@
         "Hero:hid_ninja_008_sr_t04",
         "Hero:hid_ninja_008_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.008.VR.T01": {
@@ -8622,6 +8712,7 @@
         "Hero:hid_ninja_008_vr_t04",
         "Hero:hid_ninja_008_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.009.R.T01": {
@@ -8631,6 +8722,7 @@
         "Hero:hid_ninja_009_r_t03",
         "Hero:hid_ninja_009_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.009.SR.T01": {
@@ -8641,6 +8733,7 @@
         "Hero:hid_ninja_009_sr_t04",
         "Hero:hid_ninja_009_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.009.VR.T01": {
@@ -8651,6 +8744,7 @@
         "Hero:hid_ninja_009_vr_t04",
         "Hero:hid_ninja_009_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.010.SR.T01": {
@@ -8661,6 +8755,7 @@
         "Hero:hid_ninja_010_sr_t04",
         "Hero:hid_ninja_010_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.010.VR.T01": {
@@ -8671,6 +8766,7 @@
         "Hero:hid_ninja_010_vr_t04",
         "Hero:hid_ninja_010_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.SlashBreath.R.T01": {
@@ -8680,6 +8776,7 @@
         "Hero:hid_ninja_slashbreath_r_t03",
         "Hero:hid_ninja_slashbreath_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.SlashBreath.SR.T01": {
@@ -8690,6 +8787,7 @@
         "Hero:hid_ninja_slashbreath_sr_t04",
         "Hero:hid_ninja_slashbreath_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.SlashBreath.VR.T01": {
@@ -8700,6 +8798,7 @@
         "Hero:hid_ninja_slashbreath_vr_t04",
         "Hero:hid_ninja_slashbreath_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.SlashTail.R.T01": {
@@ -8709,6 +8808,7 @@
         "Hero:hid_ninja_slashtail_r_t03",
         "Hero:hid_ninja_slashtail_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.SlashTail.SR.T01": {
@@ -8719,6 +8819,7 @@
         "Hero:hid_ninja_slashtail_sr_t04",
         "Hero:hid_ninja_slashtail_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.SlashTail.UC.T01": {
@@ -8727,6 +8828,7 @@
         "Hero:hid_ninja_slashtail_uc_t02",
         "Hero:hid_ninja_slashtail_uc_t03"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.SlashTail.VR.T01": {
@@ -8737,6 +8839,7 @@
         "Hero:hid_ninja_slashtail_vr_t04",
         "Hero:hid_ninja_slashtail_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.SmokeDimMak.R.T01": {
@@ -8746,6 +8849,7 @@
         "Hero:hid_ninja_smokedimmak_r_t03",
         "Hero:hid_ninja_smokedimmak_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.SmokeDimMak.SR.T01": {
@@ -8756,6 +8860,7 @@
         "Hero:hid_ninja_smokedimmak_sr_t04",
         "Hero:hid_ninja_smokedimmak_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.SmokeDimMak.VR.T01": {
@@ -8766,6 +8871,7 @@
         "Hero:hid_ninja_smokedimmak_vr_t04",
         "Hero:hid_ninja_smokedimmak_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.StarsAssassin.R.T01": {
@@ -8775,6 +8881,7 @@
         "Hero:hid_ninja_starsassassin_r_t03",
         "Hero:hid_ninja_starsassassin_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.StarsAssassin.SR.T01": {
@@ -8785,6 +8892,7 @@
         "Hero:hid_ninja_starsassassin_sr_t04",
         "Hero:hid_ninja_starsassassin_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.StarsAssassin.UC.T01": {
@@ -8793,6 +8901,7 @@
         "Hero:hid_ninja_starsassassin_uc_t02",
         "Hero:hid_ninja_starsassassin_uc_t03"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.StarsAssassin.VR.T01": {
@@ -8803,6 +8912,7 @@
         "Hero:hid_ninja_starsassassin_vr_t04",
         "Hero:hid_ninja_starsassassin_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.StarsRain.SR.T01": {
@@ -8813,6 +8923,7 @@
         "Hero:hid_ninja_starsrain_sr_t04",
         "Hero:hid_ninja_starsrain_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.StarsRain.VR.T01": {
@@ -8823,6 +8934,7 @@
         "Hero:hid_ninja_starsrain_vr_t04",
         "Hero:hid_ninja_starsrain_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Ninja.Swordmaster.SR.T01": {
@@ -8833,6 +8945,7 @@
         "Hero:hid_ninja_swordmaster_sr_t04",
         "Hero:hid_ninja_swordmaster_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.007.R.T01": {
@@ -8842,6 +8955,7 @@
         "Hero:hid_outlander_007_r_t03",
         "Hero:hid_outlander_007_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.007.SR.T01": {
@@ -8852,6 +8966,7 @@
         "Hero:hid_outlander_007_sr_t04",
         "Hero:hid_outlander_007_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.007.UC.T01": {
@@ -8860,6 +8975,7 @@
         "Hero:hid_outlander_007_uc_t02",
         "Hero:hid_outlander_007_uc_t03"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.007.VR.T01": {
@@ -8870,6 +8986,7 @@
         "Hero:hid_outlander_007_vr_t04",
         "Hero:hid_outlander_007_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.008.R.T01": {
@@ -8879,6 +8996,7 @@
         "Hero:hid_outlander_008_r_t03",
         "Hero:hid_outlander_008_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.008.SR.T01": {
@@ -8889,6 +9007,7 @@
         "Hero:hid_outlander_008_sr_t04",
         "Hero:hid_outlander_008_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.008.VR.T01": {
@@ -8899,6 +9018,7 @@
         "Hero:hid_outlander_008_vr_t04",
         "Hero:hid_outlander_008_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.009.R.T01": {
@@ -8908,6 +9028,7 @@
         "Hero:hid_outlander_009_r_t03",
         "Hero:hid_outlander_009_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.009.SR.T01": {
@@ -8918,6 +9039,7 @@
         "Hero:hid_outlander_009_sr_t04",
         "Hero:hid_outlander_009_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.009.VR.T01": {
@@ -8928,6 +9050,7 @@
         "Hero:hid_outlander_009_vr_t04",
         "Hero:hid_outlander_009_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.010.SR.T01": {
@@ -8938,6 +9061,7 @@
         "Hero:hid_outlander_010_sr_t04",
         "Hero:hid_outlander_010_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.010.VR.T01": {
@@ -8948,6 +9072,7 @@
         "Hero:hid_outlander_010_vr_t04",
         "Hero:hid_outlander_010_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.PunchDamage.SR.T01": {
@@ -8958,6 +9083,7 @@
         "Hero:hid_outlander_punchdamage_sr_t04",
         "Hero:hid_outlander_punchdamage_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.PunchDamage.VR.T01": {
@@ -8968,6 +9094,7 @@
         "Hero:hid_outlander_punchdamage_vr_t04",
         "Hero:hid_outlander_punchdamage_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.PunchPhase.R.T01": {
@@ -8977,6 +9104,7 @@
         "Hero:hid_outlander_punchphase_r_t03",
         "Hero:hid_outlander_punchphase_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.PunchPhase.SR.T01": {
@@ -8987,6 +9115,7 @@
         "Hero:hid_outlander_punchphase_sr_t04",
         "Hero:hid_outlander_punchphase_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.PunchPhase.UC.T01": {
@@ -8995,6 +9124,7 @@
         "Hero:hid_outlander_punchphase_uc_t02",
         "Hero:hid_outlander_punchphase_uc_t03"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.PunchPhase.VR.T01": {
@@ -9005,6 +9135,7 @@
         "Hero:hid_outlander_punchphase_vr_t04",
         "Hero:hid_outlander_punchphase_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.SphereFragment.R.T01": {
@@ -9014,6 +9145,7 @@
         "Hero:hid_outlander_spherefragment_r_t03",
         "Hero:hid_outlander_spherefragment_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.SphereFragment.SR.T01": {
@@ -9024,6 +9156,7 @@
         "Hero:hid_outlander_spherefragment_sr_t04",
         "Hero:hid_outlander_spherefragment_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.SphereFragment.VR.T01": {
@@ -9034,6 +9167,7 @@
         "Hero:hid_outlander_spherefragment_vr_t04",
         "Hero:hid_outlander_spherefragment_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.ZoneFragment.SR.T01": {
@@ -9044,6 +9178,7 @@
         "Hero:hid_outlander_zonefragment_sr_t04",
         "Hero:hid_outlander_zonefragment_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.ZoneHarvest.R.T01": {
@@ -9053,6 +9188,7 @@
         "Hero:hid_outlander_zoneharvest_r_t03",
         "Hero:hid_outlander_zoneharvest_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.ZoneHarvest.SR.T01": {
@@ -9063,6 +9199,7 @@
         "Hero:hid_outlander_zoneharvest_sr_t04",
         "Hero:hid_outlander_zoneharvest_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.ZoneHarvest.UC.T01": {
@@ -9071,6 +9208,7 @@
         "Hero:hid_outlander_zoneharvest_uc_t02",
         "Hero:hid_outlander_zoneharvest_uc_t03"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.ZoneHarvest.VR.T01": {
@@ -9081,6 +9219,7 @@
         "Hero:hid_outlander_zoneharvest_vr_t04",
         "Hero:hid_outlander_zoneharvest_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.ZonePistol.R.T01": {
@@ -9090,6 +9229,7 @@
         "Hero:hid_outlander_zonepistol_r_t03",
         "Hero:hid_outlander_zonepistol_r_t04"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.ZonePistol.SR.T01": {
@@ -9100,6 +9240,7 @@
         "Hero:hid_outlander_zonepistol_sr_t04",
         "Hero:hid_outlander_zonepistol_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.ZonePistol.VR.T01": {
@@ -9110,6 +9251,7 @@
         "Hero:hid_outlander_zonepistol_vr_t04",
         "Hero:hid_outlander_zonepistol_vr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "HID.Outlander.ZonePistolHW.SR.T01": {
@@ -9120,6 +9262,7 @@
         "Hero:hid_outlander_zonepistolhw_sr_t04",
         "Hero:hid_outlander_zonepistolhw_sr_t05"
       ],
+      "personalities": [],
       "weight": "Hero"
     },
     "ManagerDoctor.C.T01": {
@@ -9128,6 +9271,7 @@
         "Worker:managerdoctor_c_t02",
         "Worker:managerdoctor_c_t03"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerDoctor.R.T01": {
@@ -9138,6 +9282,7 @@
         "Worker:managerdoctor_r_t04",
         "Worker:managerdoctor_r_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerDoctor.SR.kingsly.T01": {
@@ -9148,6 +9293,7 @@
         "Worker:managerdoctor_sr_kingsly_t04",
         "Worker:managerdoctor_sr_kingsly_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerDoctor.SR.noctor.T01": {
@@ -9158,6 +9304,7 @@
         "Worker:managerdoctor_sr_noctor_t04",
         "Worker:managerdoctor_sr_noctor_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerDoctor.SR.treky.T01": {
@@ -9168,6 +9315,7 @@
         "Worker:managerdoctor_sr_treky_t04",
         "Worker:managerdoctor_sr_treky_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerDoctor.UC.T01": {
@@ -9177,6 +9325,7 @@
         "Worker:managerdoctor_uc_t03",
         "Worker:managerdoctor_uc_t04"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerDoctor.VR.T01": {
@@ -9187,6 +9336,7 @@
         "Worker:managerdoctor_vr_t04",
         "Worker:managerdoctor_vr_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerEngineer.C.T01": {
@@ -9195,6 +9345,7 @@
         "Worker:managerengineer_c_t02",
         "Worker:managerengineer_c_t03"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerEngineer.R.T01": {
@@ -9205,6 +9356,7 @@
         "Worker:managerengineer_r_t04",
         "Worker:managerengineer_r_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerEngineer.SR.countess.T01": {
@@ -9215,6 +9367,7 @@
         "Worker:managerengineer_sr_countess_t04",
         "Worker:managerengineer_sr_countess_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerEngineer.SR.maths.T01": {
@@ -9225,6 +9378,7 @@
         "Worker:managerengineer_sr_maths_t04",
         "Worker:managerengineer_sr_maths_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerEngineer.SR.sobs.T01": {
@@ -9235,6 +9389,7 @@
         "Worker:managerengineer_sr_sobs_t04",
         "Worker:managerengineer_sr_sobs_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerEngineer.UC.T01": {
@@ -9244,6 +9399,7 @@
         "Worker:managerengineer_uc_t03",
         "Worker:managerengineer_uc_t04"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerEngineer.VR.T01": {
@@ -9254,6 +9410,7 @@
         "Worker:managerengineer_vr_t04",
         "Worker:managerengineer_vr_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerExplorer.C.T01": {
@@ -9262,6 +9419,7 @@
         "Worker:managerexplorer_c_t02",
         "Worker:managerexplorer_c_t03"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerExplorer.R.T01": {
@@ -9272,6 +9430,7 @@
         "Worker:managerexplorer_r_t04",
         "Worker:managerexplorer_r_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerExplorer.SR.birdie.T01": {
@@ -9282,6 +9441,7 @@
         "Worker:managerexplorer_sr_birdie_t04",
         "Worker:managerexplorer_sr_birdie_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerExplorer.SR.eagle.T01": {
@@ -9292,6 +9452,7 @@
         "Worker:managerexplorer_sr_eagle_t04",
         "Worker:managerexplorer_sr_eagle_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerExplorer.SR.spacebound.T01": {
@@ -9302,6 +9463,7 @@
         "Worker:managerexplorer_sr_spacebound_t04",
         "Worker:managerexplorer_sr_spacebound_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerExplorer.UC.T01": {
@@ -9311,6 +9473,7 @@
         "Worker:managerexplorer_uc_t03",
         "Worker:managerexplorer_uc_t04"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerExplorer.VR.T01": {
@@ -9321,6 +9484,7 @@
         "Worker:managerexplorer_vr_t04",
         "Worker:managerexplorer_vr_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerGadgeteer.C.T01": {
@@ -9329,6 +9493,7 @@
         "Worker:managergadgeteer_c_t02",
         "Worker:managergadgeteer_c_t03"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerGadgeteer.R.T01": {
@@ -9339,6 +9504,7 @@
         "Worker:managergadgeteer_r_t04",
         "Worker:managergadgeteer_r_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerGadgeteer.SR.fixer.T01": {
@@ -9349,6 +9515,7 @@
         "Worker:managergadgeteer_sr_fixer_t04",
         "Worker:managergadgeteer_sr_fixer_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerGadgeteer.SR.flak.T01": {
@@ -9359,6 +9526,7 @@
         "Worker:managergadgeteer_sr_flak_t04",
         "Worker:managergadgeteer_sr_flak_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerGadgeteer.SR.zapps.T01": {
@@ -9369,6 +9537,7 @@
         "Worker:managergadgeteer_sr_zapps_t04",
         "Worker:managergadgeteer_sr_zapps_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerGadgeteer.UC.T01": {
@@ -9378,6 +9547,7 @@
         "Worker:managergadgeteer_uc_t03",
         "Worker:managergadgeteer_uc_t04"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerGadgeteer.VR.T01": {
@@ -9388,6 +9558,7 @@
         "Worker:managergadgeteer_vr_t04",
         "Worker:managergadgeteer_vr_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerInventor.C.T01": {
@@ -9396,6 +9567,7 @@
         "Worker:managerinventor_c_t02",
         "Worker:managerinventor_c_t03"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerInventor.R.T01": {
@@ -9406,6 +9578,7 @@
         "Worker:managerinventor_r_t04",
         "Worker:managerinventor_r_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerInventor.SR.frequency.T01": {
@@ -9416,6 +9589,7 @@
         "Worker:managerinventor_sr_frequency_t04",
         "Worker:managerinventor_sr_frequency_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerInventor.SR.rad.T01": {
@@ -9426,6 +9600,7 @@
         "Worker:managerinventor_sr_rad_t04",
         "Worker:managerinventor_sr_rad_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerInventor.SR.square.T01": {
@@ -9436,6 +9611,7 @@
         "Worker:managerinventor_sr_square_t04",
         "Worker:managerinventor_sr_square_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerInventor.UC.T01": {
@@ -9445,6 +9621,7 @@
         "Worker:managerinventor_uc_t03",
         "Worker:managerinventor_uc_t04"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerInventor.VR.T01": {
@@ -9455,6 +9632,7 @@
         "Worker:managerinventor_vr_t04",
         "Worker:managerinventor_vr_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerMartialArtist.C.T01": {
@@ -9463,6 +9641,7 @@
         "Worker:managermartialartist_c_t02",
         "Worker:managermartialartist_c_t03"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerMartialArtist.R.T01": {
@@ -9473,6 +9652,7 @@
         "Worker:managermartialartist_r_t04",
         "Worker:managermartialartist_r_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerMartialArtist.SR.dragon.T01": {
@@ -9483,6 +9663,7 @@
         "Worker:managermartialartist_sr_dragon_t04",
         "Worker:managermartialartist_sr_dragon_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerMartialArtist.SR.samurai.T01": {
@@ -9493,6 +9674,7 @@
         "Worker:managermartialartist_sr_samurai_t04",
         "Worker:managermartialartist_sr_samurai_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerMartialArtist.SR.tiger.T01": {
@@ -9503,6 +9685,7 @@
         "Worker:managermartialartist_sr_tiger_t04",
         "Worker:managermartialartist_sr_tiger_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerMartialArtist.UC.T01": {
@@ -9512,6 +9695,7 @@
         "Worker:managermartialartist_uc_t03",
         "Worker:managermartialartist_uc_t04"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerMartialArtist.VR.T01": {
@@ -9522,6 +9706,7 @@
         "Worker:managermartialartist_vr_t04",
         "Worker:managermartialartist_vr_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerSoldier.C.T01": {
@@ -9530,6 +9715,7 @@
         "Worker:managersoldier_c_t02",
         "Worker:managersoldier_c_t03"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerSoldier.R.T01": {
@@ -9540,6 +9726,7 @@
         "Worker:managersoldier_r_t04",
         "Worker:managersoldier_r_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerSoldier.SR.malcolm.T01": {
@@ -9550,6 +9737,7 @@
         "Worker:managersoldier_sr_malcolm_t04",
         "Worker:managersoldier_sr_malcolm_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerSoldier.SR.princess.T01": {
@@ -9560,6 +9748,7 @@
         "Worker:managersoldier_sr_princess_t04",
         "Worker:managersoldier_sr_princess_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerSoldier.SR.ramsie.T01": {
@@ -9570,6 +9759,7 @@
         "Worker:managersoldier_sr_ramsie_t04",
         "Worker:managersoldier_sr_ramsie_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerSoldier.UC.T01": {
@@ -9579,6 +9769,7 @@
         "Worker:managersoldier_uc_t03",
         "Worker:managersoldier_uc_t04"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerSoldier.VR.T01": {
@@ -9589,6 +9780,7 @@
         "Worker:managersoldier_vr_t04",
         "Worker:managersoldier_vr_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerTrainer.C.T01": {
@@ -9597,6 +9789,7 @@
         "Worker:managertrainer_c_t02",
         "Worker:managertrainer_c_t03"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerTrainer.R.T01": {
@@ -9607,6 +9800,7 @@
         "Worker:managertrainer_r_t04",
         "Worker:managertrainer_r_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerTrainer.SR.jumpy.T01": {
@@ -9617,6 +9811,7 @@
         "Worker:managertrainer_sr_jumpy_t04",
         "Worker:managertrainer_sr_jumpy_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerTrainer.SR.raider.T01": {
@@ -9627,6 +9822,7 @@
         "Worker:managertrainer_sr_raider_t04",
         "Worker:managertrainer_sr_raider_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerTrainer.SR.yoglattes.T01": {
@@ -9637,6 +9833,7 @@
         "Worker:managertrainer_sr_yoglattes_t04",
         "Worker:managertrainer_sr_yoglattes_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerTrainer.UC.T01": {
@@ -9646,6 +9843,7 @@
         "Worker:managertrainer_uc_t03",
         "Worker:managertrainer_uc_t04"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "ManagerTrainer.VR.T01": {
@@ -9656,6 +9854,7 @@
         "Worker:managertrainer_vr_t04",
         "Worker:managertrainer_vr_t05"
       ],
+      "personalities": [],
       "weight": "Lead"
     },
     "SID.Assault.Auto.C.Ore.T01": {
@@ -9663,6 +9862,7 @@
         "Schematic:sid_assault_auto_c_ore_t01",
         "Schematic:sid_assault_auto_c_ore_t02"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Auto.R.Ore.T01": {
@@ -9672,6 +9872,7 @@
         "Schematic:sid_assault_auto_r_ore_t03",
         "Schematic:sid_assault_auto_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Auto.SR.Crystal.T04": {
@@ -9679,6 +9880,7 @@
         "Schematic:sid_assault_auto_sr_crystal_t04",
         "Schematic:sid_assault_auto_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Auto.SR.Ore.T01": {
@@ -9689,6 +9891,7 @@
         "Schematic:sid_assault_auto_sr_ore_t04",
         "Schematic:sid_assault_auto_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Auto.UC.Ore.T01": {
@@ -9697,6 +9900,7 @@
         "Schematic:sid_assault_auto_uc_ore_t02",
         "Schematic:sid_assault_auto_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Auto.VR.Crystal.T04": {
@@ -9704,6 +9908,7 @@
         "Schematic:sid_assault_auto_vr_crystal_t04",
         "Schematic:sid_assault_auto_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Auto.VR.Ore.T01": {
@@ -9714,6 +9919,7 @@
         "Schematic:sid_assault_auto_vr_ore_t04",
         "Schematic:sid_assault_auto_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Burst.C.Ore.T01": {
@@ -9721,6 +9927,7 @@
         "Schematic:sid_assault_burst_c_ore_t01",
         "Schematic:sid_assault_burst_c_ore_t02"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Burst.R.Ore.T01": {
@@ -9730,6 +9937,7 @@
         "Schematic:sid_assault_burst_r_ore_t03",
         "Schematic:sid_assault_burst_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Burst.SR.Crystal.T04": {
@@ -9737,6 +9945,7 @@
         "Schematic:sid_assault_burst_sr_crystal_t04",
         "Schematic:sid_assault_burst_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Burst.SR.Ore.T01": {
@@ -9747,6 +9956,7 @@
         "Schematic:sid_assault_burst_sr_ore_t04",
         "Schematic:sid_assault_burst_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Burst.UC.Ore.T01": {
@@ -9755,6 +9965,7 @@
         "Schematic:sid_assault_burst_uc_ore_t02",
         "Schematic:sid_assault_burst_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Burst.VR.Crystal.T04": {
@@ -9762,6 +9973,7 @@
         "Schematic:sid_assault_burst_vr_crystal_t04",
         "Schematic:sid_assault_burst_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Burst.VR.Ore.T01": {
@@ -9772,6 +9984,7 @@
         "Schematic:sid_assault_burst_vr_ore_t04",
         "Schematic:sid_assault_burst_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Doubleshot.SR.Crystal.T04": {
@@ -9779,6 +9992,7 @@
         "Schematic:sid_assault_doubleshot_sr_crystal_t04",
         "Schematic:sid_assault_doubleshot_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Doubleshot.SR.Ore.T01": {
@@ -9789,6 +10003,7 @@
         "Schematic:sid_assault_doubleshot_sr_ore_t04",
         "Schematic:sid_assault_doubleshot_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Doubleshot.VR.Crystal.T04": {
@@ -9796,6 +10011,7 @@
         "Schematic:sid_assault_doubleshot_vr_crystal_t04",
         "Schematic:sid_assault_doubleshot_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Doubleshot.VR.Ore.T01": {
@@ -9806,6 +10022,7 @@
         "Schematic:sid_assault_doubleshot_vr_ore_t04",
         "Schematic:sid_assault_doubleshot_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Hydra.SR.Crystal.T04": {
@@ -9813,6 +10030,7 @@
         "Schematic:sid_assault_hydra_sr_crystal_t04",
         "Schematic:sid_assault_hydra_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Hydra.SR.Ore.T01": {
@@ -9823,6 +10041,7 @@
         "Schematic:sid_assault_hydra_sr_ore_t04",
         "Schematic:sid_assault_hydra_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.LMG.R.Ore.T01": {
@@ -9832,6 +10051,7 @@
         "Schematic:sid_assault_lmg_r_ore_t03",
         "Schematic:sid_assault_lmg_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.LMG.SR.Crystal.T04": {
@@ -9839,6 +10059,7 @@
         "Schematic:sid_assault_lmg_sr_crystal_t04",
         "Schematic:sid_assault_lmg_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.LMG.SR.Ore.T01": {
@@ -9849,6 +10070,7 @@
         "Schematic:sid_assault_lmg_sr_ore_t04",
         "Schematic:sid_assault_lmg_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.LMG.VR.Crystal.T04": {
@@ -9856,6 +10078,7 @@
         "Schematic:sid_assault_lmg_vr_crystal_t04",
         "Schematic:sid_assault_lmg_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.LMG.VR.Ore.T01": {
@@ -9866,6 +10089,7 @@
         "Schematic:sid_assault_lmg_vr_ore_t04",
         "Schematic:sid_assault_lmg_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Raygun.SR.Crystal.T04": {
@@ -9873,6 +10097,7 @@
         "Schematic:sid_assault_raygun_sr_crystal_t04",
         "Schematic:sid_assault_raygun_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Raygun.SR.Ore.T01": {
@@ -9883,6 +10108,7 @@
         "Schematic:sid_assault_raygun_sr_ore_t04",
         "Schematic:sid_assault_raygun_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Raygun.VR.Crystal.T04": {
@@ -9890,6 +10116,7 @@
         "Schematic:sid_assault_raygun_vr_crystal_t04",
         "Schematic:sid_assault_raygun_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Raygun.VR.Ore.T01": {
@@ -9900,6 +10127,7 @@
         "Schematic:sid_assault_raygun_vr_ore_t04",
         "Schematic:sid_assault_raygun_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.SemiAuto.C.Ore.T01": {
@@ -9907,6 +10135,7 @@
         "Schematic:sid_assault_semiauto_c_ore_t01",
         "Schematic:sid_assault_semiauto_c_ore_t02"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.SemiAuto.R.Ore.T01": {
@@ -9916,6 +10145,7 @@
         "Schematic:sid_assault_semiauto_r_ore_t03",
         "Schematic:sid_assault_semiauto_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.SemiAuto.SR.Crystal.T04": {
@@ -9923,6 +10153,7 @@
         "Schematic:sid_assault_semiauto_sr_crystal_t04",
         "Schematic:sid_assault_semiauto_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.SemiAuto.SR.Ore.T01": {
@@ -9933,6 +10164,7 @@
         "Schematic:sid_assault_semiauto_sr_ore_t04",
         "Schematic:sid_assault_semiauto_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.SemiAuto.UC.Ore.T01": {
@@ -9941,6 +10173,7 @@
         "Schematic:sid_assault_semiauto_uc_ore_t02",
         "Schematic:sid_assault_semiauto_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.SemiAuto.VR.Crystal.T04": {
@@ -9948,6 +10181,7 @@
         "Schematic:sid_assault_semiauto_vr_crystal_t04",
         "Schematic:sid_assault_semiauto_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.SemiAuto.VR.Ore.T01": {
@@ -9958,6 +10192,7 @@
         "Schematic:sid_assault_semiauto_vr_ore_t04",
         "Schematic:sid_assault_semiauto_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.SingleShot.R.Ore.T01": {
@@ -9967,6 +10202,7 @@
         "Schematic:sid_assault_singleshot_r_ore_t03",
         "Schematic:sid_assault_singleshot_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.SingleShot.SR.Crystal.T04": {
@@ -9974,6 +10210,7 @@
         "Schematic:sid_assault_singleshot_sr_crystal_t04",
         "Schematic:sid_assault_singleshot_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.SingleShot.SR.Ore.T01": {
@@ -9984,6 +10221,7 @@
         "Schematic:sid_assault_singleshot_sr_ore_t04",
         "Schematic:sid_assault_singleshot_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.SingleShot.VR.Ore.T01": {
@@ -9994,6 +10232,7 @@
         "Schematic:sid_assault_singleshot_vr_ore_t04",
         "Schematic:sid_assault_singleshot_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Surgical.SR.Crystal.T04": {
@@ -10001,6 +10240,7 @@
         "Schematic:sid_assault_surgical_sr_crystal_t04",
         "Schematic:sid_assault_surgical_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Surgical.SR.Ore.T01": {
@@ -10011,6 +10251,7 @@
         "Schematic:sid_assault_surgical_sr_ore_t04",
         "Schematic:sid_assault_surgical_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Surgical.VR.Crystal.T04": {
@@ -10018,6 +10259,7 @@
         "Schematic:sid_assault_surgical_vr_crystal_t04",
         "Schematic:sid_assault_surgical_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Assault.Surgical.VR.Ore.T01": {
@@ -10028,6 +10270,7 @@
         "Schematic:sid_assault_surgical_vr_ore_t04",
         "Schematic:sid_assault_surgical_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Blunt.Club.Light.SR.Crystal.T04": {
@@ -10035,6 +10278,7 @@
         "Schematic:sid_blunt_club_light_sr_crystal_t04",
         "Schematic:sid_blunt_club_light_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Club.Light.SR.Ore.T01": {
@@ -10045,6 +10289,7 @@
         "Schematic:sid_blunt_club_light_sr_ore_t04",
         "Schematic:sid_blunt_club_light_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Club.Light.VR.Crystal.T04": {
@@ -10052,6 +10297,7 @@
         "Schematic:sid_blunt_club_light_vr_crystal_t04",
         "Schematic:sid_blunt_club_light_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Club.Light.VR.Ore.T01": {
@@ -10062,6 +10308,7 @@
         "Schematic:sid_blunt_club_light_vr_ore_t04",
         "Schematic:sid_blunt_club_light_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Hammer.Heavy.C.Ore.T01": {
@@ -10069,12 +10316,14 @@
         "Schematic:sid_blunt_hammer_heavy_c_ore_t01",
         "Schematic:sid_blunt_hammer_heavy_c_ore_t02"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Hammer.Heavy.R.Crystal.T04": {
       "items": [
         "Schematic:sid_blunt_hammer_heavy_r_crystal_t04"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Hammer.Heavy.R.Ore.T01": {
@@ -10084,6 +10333,7 @@
         "Schematic:sid_blunt_hammer_heavy_r_ore_t03",
         "Schematic:sid_blunt_hammer_heavy_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Hammer.Heavy.SR.Crystal.T04": {
@@ -10091,6 +10341,7 @@
         "Schematic:sid_blunt_hammer_heavy_sr_crystal_t04",
         "Schematic:sid_blunt_hammer_heavy_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Hammer.Heavy.SR.Ore.T01": {
@@ -10101,6 +10352,7 @@
         "Schematic:sid_blunt_hammer_heavy_sr_ore_t04",
         "Schematic:sid_blunt_hammer_heavy_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Hammer.Heavy.UC.Ore.T01": {
@@ -10109,6 +10361,7 @@
         "Schematic:sid_blunt_hammer_heavy_uc_ore_t02",
         "Schematic:sid_blunt_hammer_heavy_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Hammer.Heavy.VR.Crystal.T04": {
@@ -10116,6 +10369,7 @@
         "Schematic:sid_blunt_hammer_heavy_vr_crystal_t04",
         "Schematic:sid_blunt_hammer_heavy_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Hammer.Heavy.VR.Ore.T01": {
@@ -10126,6 +10380,7 @@
         "Schematic:sid_blunt_hammer_heavy_vr_ore_t04",
         "Schematic:sid_blunt_hammer_heavy_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Hammer.Rocket.SR.Crystal.T04": {
@@ -10133,6 +10388,7 @@
         "Schematic:sid_blunt_hammer_rocket_sr_crystal_t04",
         "Schematic:sid_blunt_hammer_rocket_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Hammer.Rocket.SR.Ore.T01": {
@@ -10143,6 +10399,7 @@
         "Schematic:sid_blunt_hammer_rocket_sr_ore_t04",
         "Schematic:sid_blunt_hammer_rocket_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Hammer.Rocket.VR.Crystal.T04": {
@@ -10150,6 +10407,7 @@
         "Schematic:sid_blunt_hammer_rocket_vr_crystal_t04",
         "Schematic:sid_blunt_hammer_rocket_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Hammer.Rocket.VR.Ore.T01": {
@@ -10160,6 +10418,7 @@
         "Schematic:sid_blunt_hammer_rocket_vr_ore_t04",
         "Schematic:sid_blunt_hammer_rocket_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Heavy.Paddle.C.Ore.T01": {
@@ -10167,12 +10426,14 @@
         "Schematic:sid_blunt_heavy_paddle_c_ore_t01",
         "Schematic:sid_blunt_heavy_paddle_c_ore_t02"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Heavy.Paddle.R.Crystal.T04": {
       "items": [
         "Schematic:sid_blunt_heavy_paddle_r_crystal_t04"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Heavy.Paddle.R.Ore.T01": {
@@ -10182,6 +10443,7 @@
         "Schematic:sid_blunt_heavy_paddle_r_ore_t03",
         "Schematic:sid_blunt_heavy_paddle_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Heavy.Paddle.UC.Ore.T01": {
@@ -10190,12 +10452,14 @@
         "Schematic:sid_blunt_heavy_paddle_uc_ore_t02",
         "Schematic:sid_blunt_heavy_paddle_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Light.Bat.R.Crystal.T04": {
       "items": [
         "Schematic:sid_blunt_light_bat_r_crystal_t04"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Light.Bat.R.Ore.T01": {
@@ -10205,6 +10469,7 @@
         "Schematic:sid_blunt_light_bat_r_ore_t03",
         "Schematic:sid_blunt_light_bat_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Light.Bat.UC.Ore.T01": {
@@ -10213,6 +10478,7 @@
         "Schematic:sid_blunt_light_bat_uc_ore_t03",
         "Schematic:sid_blunt_light_bat_uc_ore_t02"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Light.C.Ore.T01": {
@@ -10220,12 +10486,14 @@
         "Schematic:sid_blunt_light_c_ore_t01",
         "Schematic:sid_blunt_light_c_ore_t02"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Light.R.Crystal.T04": {
       "items": [
         "Schematic:sid_blunt_light_r_crystal_t04"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Light.R.Ore.T01": {
@@ -10235,6 +10503,7 @@
         "Schematic:sid_blunt_light_r_ore_t03",
         "Schematic:sid_blunt_light_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Light.Rocketbat.SR.Crystal.T04": {
@@ -10242,6 +10511,7 @@
         "Schematic:sid_blunt_light_rocketbat_sr_crystal_t04",
         "Schematic:sid_blunt_light_rocketbat_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Light.Rocketbat.SR.Ore.T01": {
@@ -10252,6 +10522,7 @@
         "Schematic:sid_blunt_light_rocketbat_sr_ore_t04",
         "Schematic:sid_blunt_light_rocketbat_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Light.Rocketbat.VR.Crystal.T04": {
@@ -10259,6 +10530,7 @@
         "Schematic:sid_blunt_light_rocketbat_vr_crystal_t04",
         "Schematic:sid_blunt_light_rocketbat_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Light.Rocketbat.VR.Ore.T01": {
@@ -10269,6 +10541,7 @@
         "Schematic:sid_blunt_light_rocketbat_vr_ore_t04",
         "Schematic:sid_blunt_light_rocketbat_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Light.SR.Crystal.T04": {
@@ -10276,6 +10549,7 @@
         "Schematic:sid_blunt_light_sr_crystal_t04",
         "Schematic:sid_blunt_light_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Light.SR.Ore.T01": {
@@ -10286,6 +10560,7 @@
         "Schematic:sid_blunt_light_sr_ore_t04",
         "Schematic:sid_blunt_light_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Light.UC.Ore.T01": {
@@ -10294,6 +10569,7 @@
         "Schematic:sid_blunt_light_uc_ore_t02",
         "Schematic:sid_blunt_light_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Light.VR.Crystal.T04": {
@@ -10301,6 +10577,7 @@
         "Schematic:sid_blunt_light_vr_crystal_t04",
         "Schematic:sid_blunt_light_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Light.VR.Ore.T01": {
@@ -10311,6 +10588,7 @@
         "Schematic:sid_blunt_light_vr_ore_t04",
         "Schematic:sid_blunt_light_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Medium.C.Ore.T01": {
@@ -10318,12 +10596,14 @@
         "Schematic:sid_blunt_medium_c_ore_t01",
         "Schematic:sid_blunt_medium_c_ore_t02"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Medium.R.Crystal.T04": {
       "items": [
         "Schematic:sid_blunt_medium_r_crystal_t04"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Medium.R.Ore.T01": {
@@ -10333,6 +10613,7 @@
         "Schematic:sid_blunt_medium_r_ore_t03",
         "Schematic:sid_blunt_medium_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Medium.SR.Crystal.T04": {
@@ -10340,6 +10621,7 @@
         "Schematic:sid_blunt_medium_sr_crystal_t04",
         "Schematic:sid_blunt_medium_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Medium.SR.Ore.T01": {
@@ -10350,6 +10632,7 @@
         "Schematic:sid_blunt_medium_sr_ore_t04",
         "Schematic:sid_blunt_medium_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Medium.UC.Ore.T01": {
@@ -10358,6 +10641,7 @@
         "Schematic:sid_blunt_medium_uc_ore_t02",
         "Schematic:sid_blunt_medium_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Medium.VR.Crystal.T04": {
@@ -10365,6 +10649,7 @@
         "Schematic:sid_blunt_medium_vr_crystal_t04",
         "Schematic:sid_blunt_medium_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Medium.VR.Ore.T01": {
@@ -10375,12 +10660,14 @@
         "Schematic:sid_blunt_medium_vr_ore_t04",
         "Schematic:sid_blunt_medium_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Tool.Light.R.Crystal.T04": {
       "items": [
         "Schematic:sid_blunt_tool_light_r_crystal_t04"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Tool.Light.R.Ore.T01": {
@@ -10390,6 +10677,7 @@
         "Schematic:sid_blunt_tool_light_r_ore_t03",
         "Schematic:sid_blunt_tool_light_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Blunt.Tool.Light.UC.Ore.T01": {
@@ -10398,6 +10686,7 @@
         "Schematic:sid_blunt_tool_light_uc_ore_t02",
         "Schematic:sid_blunt_tool_light_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Ceiling.Electric.AOE.R.T01": {
@@ -10407,6 +10696,7 @@
         "Schematic:sid_ceiling_electric_aoe_r_t03",
         "Schematic:sid_ceiling_electric_aoe_r_t04"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Ceiling.Electric.AOE.SR.T01": {
@@ -10417,6 +10707,7 @@
         "Schematic:sid_ceiling_electric_aoe_sr_t04",
         "Schematic:sid_ceiling_electric_aoe_sr_t05"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Ceiling.Electric.AOE.VR.T01": {
@@ -10427,6 +10718,7 @@
         "Schematic:sid_ceiling_electric_aoe_vr_t04",
         "Schematic:sid_ceiling_electric_aoe_vr_t05"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Ceiling.Electric.Single.C.T01": {
@@ -10434,6 +10726,7 @@
         "Schematic:sid_ceiling_electric_single_c_t01",
         "Schematic:sid_ceiling_electric_single_c_t02"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Ceiling.Electric.Single.R.T01": {
@@ -10443,6 +10736,7 @@
         "Schematic:sid_ceiling_electric_single_r_t03",
         "Schematic:sid_ceiling_electric_single_r_t04"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Ceiling.Electric.Single.SR.T01": {
@@ -10453,6 +10747,7 @@
         "Schematic:sid_ceiling_electric_single_sr_t04",
         "Schematic:sid_ceiling_electric_single_sr_t05"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Ceiling.Electric.Single.UC.T01": {
@@ -10461,6 +10756,7 @@
         "Schematic:sid_ceiling_electric_single_uc_t02",
         "Schematic:sid_ceiling_electric_single_uc_t03"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Ceiling.Electric.Single.VR.T01": {
@@ -10471,6 +10767,7 @@
         "Schematic:sid_ceiling_electric_single_vr_t04",
         "Schematic:sid_ceiling_electric_single_vr_t05"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Ceiling.Gas.R.T01": {
@@ -10480,6 +10777,7 @@
         "Schematic:sid_ceiling_gas_r_t03",
         "Schematic:sid_ceiling_gas_r_t04"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Ceiling.Gas.SR.T01": {
@@ -10490,6 +10788,7 @@
         "Schematic:sid_ceiling_gas_sr_t04",
         "Schematic:sid_ceiling_gas_sr_t05"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Ceiling.Gas.UC.T01": {
@@ -10498,6 +10797,7 @@
         "Schematic:sid_ceiling_gas_uc_t02",
         "Schematic:sid_ceiling_gas_uc_t03"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Ceiling.Gas.VR.T01": {
@@ -10508,6 +10808,7 @@
         "Schematic:sid_ceiling_gas_vr_t04",
         "Schematic:sid_ceiling_gas_vr_t05"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Edged.Axe.Heavy.C.Ore.T01": {
@@ -10515,6 +10816,7 @@
         "Schematic:sid_edged_axe_heavy_c_ore_t01",
         "Schematic:sid_edged_axe_heavy_c_ore_t02"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Axe.Heavy.R.Ore.T01": {
@@ -10524,6 +10826,7 @@
         "Schematic:sid_edged_axe_heavy_r_ore_t03",
         "Schematic:sid_edged_axe_heavy_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Axe.Heavy.SR.Crystal.T04": {
@@ -10531,6 +10834,7 @@
         "Schematic:sid_edged_axe_heavy_sr_crystal_t04",
         "Schematic:sid_edged_axe_heavy_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Axe.Heavy.SR.Ore.T01": {
@@ -10541,6 +10845,7 @@
         "Schematic:sid_edged_axe_heavy_sr_ore_t04",
         "Schematic:sid_edged_axe_heavy_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Axe.Heavy.UC.Ore.T01": {
@@ -10549,6 +10854,7 @@
         "Schematic:sid_edged_axe_heavy_uc_ore_t02",
         "Schematic:sid_edged_axe_heavy_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Axe.Heavy.VR.Crystal.T04": {
@@ -10556,6 +10862,7 @@
         "Schematic:sid_edged_axe_heavy_vr_crystal_t04",
         "Schematic:sid_edged_axe_heavy_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Axe.Heavy.VR.Ore.T01": {
@@ -10566,6 +10873,7 @@
         "Schematic:sid_edged_axe_heavy_vr_ore_t04",
         "Schematic:sid_edged_axe_heavy_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Axe.Light.C.Ore.T01": {
@@ -10573,6 +10881,7 @@
         "Schematic:sid_edged_axe_light_c_ore_t01",
         "Schematic:sid_edged_axe_light_c_ore_t02"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Axe.Light.R.Ore.T01": {
@@ -10582,6 +10891,7 @@
         "Schematic:sid_edged_axe_light_r_ore_t03",
         "Schematic:sid_edged_axe_light_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Axe.Light.SR.Crystal.T04": {
@@ -10589,6 +10899,7 @@
         "Schematic:sid_edged_axe_light_sr_crystal_t04",
         "Schematic:sid_edged_axe_light_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Axe.Light.SR.Ore.T01": {
@@ -10599,6 +10910,7 @@
         "Schematic:sid_edged_axe_light_sr_ore_t04",
         "Schematic:sid_edged_axe_light_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Axe.Light.UC.Ore.T01": {
@@ -10607,6 +10919,7 @@
         "Schematic:sid_edged_axe_light_uc_ore_t02",
         "Schematic:sid_edged_axe_light_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Axe.Light.VR.Crystal.T04": {
@@ -10614,6 +10927,7 @@
         "Schematic:sid_edged_axe_light_vr_crystal_t04",
         "Schematic:sid_edged_axe_light_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Axe.Light.VR.Ore.T01": {
@@ -10624,6 +10938,7 @@
         "Schematic:sid_edged_axe_light_vr_ore_t04",
         "Schematic:sid_edged_axe_light_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Axe.Medium.C.Ore.T01": {
@@ -10631,6 +10946,7 @@
         "Schematic:sid_edged_axe_medium_c_ore_t01",
         "Schematic:sid_edged_axe_medium_c_ore_t02"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Axe.Medium.Laser.SR.Crystal.T04": {
@@ -10638,6 +10954,7 @@
         "Schematic:sid_edged_axe_medium_laser_sr_crystal_t04",
         "Schematic:sid_edged_axe_medium_laser_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Axe.Medium.Laser.SR.Ore.T01": {
@@ -10648,6 +10965,7 @@
         "Schematic:sid_edged_axe_medium_laser_sr_ore_t04",
         "Schematic:sid_edged_axe_medium_laser_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Axe.Medium.Laser.VR.Crystal.T04": {
@@ -10655,6 +10973,7 @@
         "Schematic:sid_edged_axe_medium_laser_vr_crystal_t04",
         "Schematic:sid_edged_axe_medium_laser_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Axe.Medium.Laser.VR.Ore.T01": {
@@ -10665,6 +10984,7 @@
         "Schematic:sid_edged_axe_medium_laser_vr_ore_t04",
         "Schematic:sid_edged_axe_medium_laser_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Axe.Medium.R.Ore.T01": {
@@ -10674,6 +10994,7 @@
         "Schematic:sid_edged_axe_medium_r_ore_t03",
         "Schematic:sid_edged_axe_medium_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Axe.Medium.SR.Crystal.T04": {
@@ -10681,6 +11002,7 @@
         "Schematic:sid_edged_axe_medium_sr_crystal_t04",
         "Schematic:sid_edged_axe_medium_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Axe.Medium.SR.Ore.T01": {
@@ -10691,6 +11013,7 @@
         "Schematic:sid_edged_axe_medium_sr_ore_t04",
         "Schematic:sid_edged_axe_medium_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Axe.Medium.UC.Ore.T01": {
@@ -10699,6 +11022,7 @@
         "Schematic:sid_edged_axe_medium_uc_ore_t02",
         "Schematic:sid_edged_axe_medium_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Axe.Medium.VR.Crystal.T04": {
@@ -10706,6 +11030,7 @@
         "Schematic:sid_edged_axe_medium_vr_crystal_t04",
         "Schematic:sid_edged_axe_medium_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Axe.Medium.VR.Ore.T01": {
@@ -10716,6 +11041,7 @@
         "Schematic:sid_edged_axe_medium_vr_ore_t04",
         "Schematic:sid_edged_axe_medium_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Scythe.C.Ore.T01": {
@@ -10723,6 +11049,7 @@
         "Schematic:sid_edged_scythe_c_ore_t01",
         "Schematic:sid_edged_scythe_c_ore_t02"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Scythe.Laser.SR.Crystal.T04": {
@@ -10730,6 +11057,7 @@
         "Schematic:sid_edged_scythe_laser_sr_crystal_t04",
         "Schematic:sid_edged_scythe_laser_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Scythe.Laser.SR.Ore.T01": {
@@ -10740,6 +11068,7 @@
         "Schematic:sid_edged_scythe_laser_sr_ore_t04",
         "Schematic:sid_edged_scythe_laser_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Scythe.Laser.VR.Crystal.T04": {
@@ -10747,6 +11076,7 @@
         "Schematic:sid_edged_scythe_laser_vr_crystal_t04",
         "Schematic:sid_edged_scythe_laser_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Scythe.Laser.VR.Ore.T01": {
@@ -10757,6 +11087,7 @@
         "Schematic:sid_edged_scythe_laser_vr_ore_t04",
         "Schematic:sid_edged_scythe_laser_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Scythe.R.Ore.T01": {
@@ -10766,6 +11097,7 @@
         "Schematic:sid_edged_scythe_r_ore_t03",
         "Schematic:sid_edged_scythe_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Scythe.SR.Crystal.T04": {
@@ -10773,6 +11105,7 @@
         "Schematic:sid_edged_scythe_sr_crystal_t04",
         "Schematic:sid_edged_scythe_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Scythe.SR.Ore.T01": {
@@ -10783,6 +11116,7 @@
         "Schematic:sid_edged_scythe_sr_ore_t04",
         "Schematic:sid_edged_scythe_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Scythe.UC.Ore.T01": {
@@ -10791,6 +11125,7 @@
         "Schematic:sid_edged_scythe_uc_ore_t02",
         "Schematic:sid_edged_scythe_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Scythe.VR.Crystal.T04": {
@@ -10798,6 +11133,7 @@
         "Schematic:sid_edged_scythe_vr_crystal_t04",
         "Schematic:sid_edged_scythe_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Scythe.VR.Ore.T01": {
@@ -10808,6 +11144,7 @@
         "Schematic:sid_edged_scythe_vr_ore_t04",
         "Schematic:sid_edged_scythe_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Sword.Heavy.C.Ore.T01": {
@@ -10815,6 +11152,7 @@
         "Schematic:sid_edged_sword_heavy_c_ore_t01",
         "Schematic:sid_edged_sword_heavy_c_ore_t02"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Sword.Heavy.R.Ore.T01": {
@@ -10824,6 +11162,7 @@
         "Schematic:sid_edged_sword_heavy_r_ore_t03",
         "Schematic:sid_edged_sword_heavy_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Sword.Heavy.SR.Crystal.T04": {
@@ -10831,6 +11170,7 @@
         "Schematic:sid_edged_sword_heavy_sr_crystal_t04",
         "Schematic:sid_edged_sword_heavy_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Sword.Heavy.SR.Ore.T01": {
@@ -10841,6 +11181,7 @@
         "Schematic:sid_edged_sword_heavy_sr_ore_t04",
         "Schematic:sid_edged_sword_heavy_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Sword.Heavy.UC.Ore.T01": {
@@ -10849,6 +11190,7 @@
         "Schematic:sid_edged_sword_heavy_uc_ore_t02",
         "Schematic:sid_edged_sword_heavy_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Sword.Heavy.VR.Crystal.T04": {
@@ -10856,6 +11198,7 @@
         "Schematic:sid_edged_sword_heavy_vr_crystal_t04",
         "Schematic:sid_edged_sword_heavy_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Sword.Heavy.VR.Ore.T01": {
@@ -10866,6 +11209,7 @@
         "Schematic:sid_edged_sword_heavy_vr_ore_t04",
         "Schematic:sid_edged_sword_heavy_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Sword.Light.C.Ore.T01": {
@@ -10873,6 +11217,7 @@
         "Schematic:sid_edged_sword_light_c_ore_t01",
         "Schematic:sid_edged_sword_light_c_ore_t02"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Sword.Light.R.Ore.T01": {
@@ -10882,6 +11227,7 @@
         "Schematic:sid_edged_sword_light_r_ore_t03",
         "Schematic:sid_edged_sword_light_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Sword.Light.SR.Crystal.T04": {
@@ -10889,6 +11235,7 @@
         "Schematic:sid_edged_sword_light_sr_crystal_t04",
         "Schematic:sid_edged_sword_light_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Sword.Light.SR.Ore.T01": {
@@ -10899,6 +11246,7 @@
         "Schematic:sid_edged_sword_light_sr_ore_t04",
         "Schematic:sid_edged_sword_light_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Sword.Light.UC.Ore.T01": {
@@ -10907,6 +11255,7 @@
         "Schematic:sid_edged_sword_light_uc_ore_t02",
         "Schematic:sid_edged_sword_light_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Sword.Light.VR.Crystal.T04": {
@@ -10914,6 +11263,7 @@
         "Schematic:sid_edged_sword_light_vr_crystal_t04",
         "Schematic:sid_edged_sword_light_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Sword.Light.VR.Ore.T01": {
@@ -10924,6 +11274,7 @@
         "Schematic:sid_edged_sword_light_vr_ore_t04",
         "Schematic:sid_edged_sword_light_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Sword.Medium.C.Ore.T01": {
@@ -10931,6 +11282,7 @@
         "Schematic:sid_edged_sword_medium_c_ore_t01",
         "Schematic:sid_edged_sword_medium_c_ore_t02"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Sword.Medium.Laser.SR.Crystal.T04": {
@@ -10938,6 +11290,7 @@
         "Schematic:sid_edged_sword_medium_laser_sr_crystal_t04",
         "Schematic:sid_edged_sword_medium_laser_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Sword.Medium.Laser.SR.Ore.T01": {
@@ -10948,6 +11301,7 @@
         "Schematic:sid_edged_sword_medium_laser_sr_ore_t04",
         "Schematic:sid_edged_sword_medium_laser_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Sword.Medium.Laser.VR.Crystal.T04": {
@@ -10955,6 +11309,7 @@
         "Schematic:sid_edged_sword_medium_laser_vr_crystal_t04",
         "Schematic:sid_edged_sword_medium_laser_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Sword.Medium.Laser.VR.Ore.T01": {
@@ -10965,6 +11320,7 @@
         "Schematic:sid_edged_sword_medium_laser_vr_ore_t04",
         "Schematic:sid_edged_sword_medium_laser_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Sword.Medium.R.Ore.T01": {
@@ -10974,6 +11330,7 @@
         "Schematic:sid_edged_sword_medium_r_ore_t03",
         "Schematic:sid_edged_sword_medium_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Sword.Medium.SR.Crystal.T04": {
@@ -10981,6 +11338,7 @@
         "Schematic:sid_edged_sword_medium_sr_crystal_t04",
         "Schematic:sid_edged_sword_medium_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Sword.Medium.SR.Ore.T01": {
@@ -10991,6 +11349,7 @@
         "Schematic:sid_edged_sword_medium_sr_ore_t04",
         "Schematic:sid_edged_sword_medium_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Sword.Medium.UC.Ore.T01": {
@@ -10999,6 +11358,7 @@
         "Schematic:sid_edged_sword_medium_uc_ore_t02",
         "Schematic:sid_edged_sword_medium_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Sword.Medium.VR.Crystal.T04": {
@@ -11006,6 +11366,7 @@
         "Schematic:sid_edged_sword_medium_vr_crystal_t04",
         "Schematic:sid_edged_sword_medium_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Edged.Sword.Medium.VR.Ore.T01": {
@@ -11016,30 +11377,35 @@
         "Schematic:sid_edged_sword_medium_vr_ore_t04",
         "Schematic:sid_edged_sword_medium_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Floor.Health.R.T01": {
       "items": [
         "Schematic:sid_floor_health_r_t01"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Floor.Health.SR.T01": {
       "items": [
         "Schematic:sid_floor_health_sr_t01"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Floor.Health.UC.T01": {
       "items": [
         "Schematic:sid_floor_health_uc_t01"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Floor.Health.VR.T01": {
       "items": [
         "Schematic:sid_floor_health_vr_t01"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Floor.Launcher.R.T01": {
@@ -11049,6 +11415,7 @@
         "Schematic:sid_floor_launcher_r_t03",
         "Schematic:sid_floor_launcher_r_t04"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Floor.Launcher.SR.T01": {
@@ -11059,6 +11426,7 @@
         "Schematic:sid_floor_launcher_sr_t04",
         "Schematic:sid_floor_launcher_sr_t05"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Floor.Launcher.UC.T01": {
@@ -11067,6 +11435,7 @@
         "Schematic:sid_floor_launcher_uc_t02",
         "Schematic:sid_floor_launcher_uc_t03"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Floor.Launcher.VR.T01": {
@@ -11077,6 +11446,7 @@
         "Schematic:sid_floor_launcher_vr_t04",
         "Schematic:sid_floor_launcher_vr_t05"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Floor.Spikes.R.T01": {
@@ -11086,6 +11456,7 @@
         "Schematic:sid_floor_spikes_r_t03",
         "Schematic:sid_floor_spikes_r_t04"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Floor.Spikes.SR.T01": {
@@ -11096,6 +11467,7 @@
         "Schematic:sid_floor_spikes_sr_t04",
         "Schematic:sid_floor_spikes_sr_t05"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Floor.Spikes.UC.T01": {
@@ -11104,6 +11476,7 @@
         "Schematic:sid_floor_spikes_uc_t02",
         "Schematic:sid_floor_spikes_uc_t03"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Floor.Spikes.VR.T01": {
@@ -11114,6 +11487,7 @@
         "Schematic:sid_floor_spikes_vr_t04",
         "Schematic:sid_floor_spikes_vr_t05"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Floor.Spikes.Wood.C.T01": {
@@ -11121,6 +11495,7 @@
         "Schematic:sid_floor_spikes_wood_c_t01",
         "Schematic:sid_floor_spikes_wood_c_t02"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Floor.Spikes.Wood.R.T01": {
@@ -11130,6 +11505,7 @@
         "Schematic:sid_floor_spikes_wood_r_t03",
         "Schematic:sid_floor_spikes_wood_r_t04"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Floor.Spikes.Wood.SR.T01": {
@@ -11140,6 +11516,7 @@
         "Schematic:sid_floor_spikes_wood_sr_t04",
         "Schematic:sid_floor_spikes_wood_sr_t05"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Floor.Spikes.Wood.UC.T01": {
@@ -11148,6 +11525,7 @@
         "Schematic:sid_floor_spikes_wood_uc_t02",
         "Schematic:sid_floor_spikes_wood_uc_t03"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Floor.Spikes.Wood.VR.T01": {
@@ -11158,6 +11536,7 @@
         "Schematic:sid_floor_spikes_wood_vr_t04",
         "Schematic:sid_floor_spikes_wood_vr_t05"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Floor.Ward.R.T01": {
@@ -11167,6 +11546,7 @@
         "Schematic:sid_floor_ward_r_t03",
         "Schematic:sid_floor_ward_r_t04"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Floor.Ward.SR.T01": {
@@ -11177,6 +11557,7 @@
         "Schematic:sid_floor_ward_sr_t04",
         "Schematic:sid_floor_ward_sr_t05"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Floor.Ward.UC.T01": {
@@ -11185,6 +11566,7 @@
         "Schematic:sid_floor_ward_uc_t02",
         "Schematic:sid_floor_ward_uc_t03"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Floor.Ward.VR.T01": {
@@ -11195,6 +11577,7 @@
         "Schematic:sid_floor_ward_vr_t04",
         "Schematic:sid_floor_ward_vr_t05"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Launcher.Grenade.R.Ore.T01": {
@@ -11204,6 +11587,7 @@
         "Schematic:sid_launcher_grenade_r_ore_t03",
         "Schematic:sid_launcher_grenade_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Launcher.Grenade.SR.Ore.T01": {
@@ -11214,6 +11598,7 @@
         "Schematic:sid_launcher_grenade_sr_ore_t04",
         "Schematic:sid_launcher_grenade_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Launcher.Grenade.VR.Ore.T01": {
@@ -11224,6 +11609,7 @@
         "Schematic:sid_launcher_grenade_vr_ore_t04",
         "Schematic:sid_launcher_grenade_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Launcher.Rocket.R.Ore.T01": {
@@ -11233,6 +11619,7 @@
         "Schematic:sid_launcher_rocket_r_ore_t03",
         "Schematic:sid_launcher_rocket_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Launcher.Rocket.SR.Ore.T01": {
@@ -11243,6 +11630,7 @@
         "Schematic:sid_launcher_rocket_sr_ore_t04",
         "Schematic:sid_launcher_rocket_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Launcher.Rocket.VR.Ore.T01": {
@@ -11253,6 +11641,7 @@
         "Schematic:sid_launcher_rocket_vr_ore_t04",
         "Schematic:sid_launcher_rocket_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Piercing.Spear.C.Ore.T01": {
@@ -11260,6 +11649,7 @@
         "Schematic:sid_piercing_spear_c_ore_t01",
         "Schematic:sid_piercing_spear_c_ore_t02"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Piercing.Spear.Laser.SR.Crystal.T04": {
@@ -11267,6 +11657,7 @@
         "Schematic:sid_piercing_spear_laser_sr_crystal_t04",
         "Schematic:sid_piercing_spear_laser_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Piercing.Spear.Laser.SR.Ore.T01": {
@@ -11277,6 +11668,7 @@
         "Schematic:sid_piercing_spear_laser_sr_ore_t04",
         "Schematic:sid_piercing_spear_laser_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Piercing.Spear.Laser.VR.Crystal.T04": {
@@ -11284,6 +11676,7 @@
         "Schematic:sid_piercing_spear_laser_vr_crystal_t04",
         "Schematic:sid_piercing_spear_laser_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Piercing.Spear.Laser.VR.Ore.T01": {
@@ -11294,12 +11687,14 @@
         "Schematic:sid_piercing_spear_laser_vr_ore_t04",
         "Schematic:sid_piercing_spear_laser_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Piercing.Spear.Military.R.Crystal.T04": {
       "items": [
         "Schematic:sid_piercing_spear_military_r_crystal_t04"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Piercing.Spear.Military.R.Ore.T01": {
@@ -11309,6 +11704,7 @@
         "Schematic:sid_piercing_spear_military_r_ore_t03",
         "Schematic:sid_piercing_spear_military_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Piercing.Spear.Military.SR.Crystal.T04": {
@@ -11316,6 +11712,7 @@
         "Schematic:sid_piercing_spear_military_sr_crystal_t04",
         "Schematic:sid_piercing_spear_military_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Piercing.Spear.Military.SR.Ore.T01": {
@@ -11326,6 +11723,7 @@
         "Schematic:sid_piercing_spear_military_sr_ore_t04",
         "Schematic:sid_piercing_spear_military_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Piercing.Spear.Military.VR.Crystal.T04": {
@@ -11333,6 +11731,7 @@
         "Schematic:sid_piercing_spear_military_vr_crystal_t04",
         "Schematic:sid_piercing_spear_military_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Piercing.Spear.Military.VR.Ore.T01": {
@@ -11343,6 +11742,7 @@
         "Schematic:sid_piercing_spear_military_vr_ore_t04",
         "Schematic:sid_piercing_spear_military_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Piercing.Spear.R.Ore.T01": {
@@ -11352,6 +11752,7 @@
         "Schematic:sid_piercing_spear_r_ore_t03",
         "Schematic:sid_piercing_spear_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Piercing.Spear.SR.Crystal.T04": {
@@ -11359,6 +11760,7 @@
         "Schematic:sid_piercing_spear_sr_crystal_t04",
         "Schematic:sid_piercing_spear_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Piercing.Spear.SR.Ore.T01": {
@@ -11369,6 +11771,7 @@
         "Schematic:sid_piercing_spear_sr_ore_t04",
         "Schematic:sid_piercing_spear_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Piercing.Spear.UC.Ore.T01": {
@@ -11377,6 +11780,7 @@
         "Schematic:sid_piercing_spear_uc_ore_t02",
         "Schematic:sid_piercing_spear_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Piercing.Spear.VR.Crystal.T04": {
@@ -11384,6 +11788,7 @@
         "Schematic:sid_piercing_spear_vr_crystal_t04",
         "Schematic:sid_piercing_spear_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Piercing.Spear.VR.Ore.T01": {
@@ -11394,6 +11799,7 @@
         "Schematic:sid_piercing_spear_vr_ore_t04",
         "Schematic:sid_piercing_spear_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Melee"
     },
     "SID.Pistol.Auto.C.Ore.T01": {
@@ -11401,6 +11807,7 @@
         "Schematic:sid_pistol_auto_c_ore_t01",
         "Schematic:sid_pistol_auto_c_ore_t02"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Auto.R.Ore.T01": {
@@ -11410,6 +11817,7 @@
         "Schematic:sid_pistol_auto_r_ore_t03",
         "Schematic:sid_pistol_auto_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Auto.SR.Crystal.T04": {
@@ -11417,6 +11825,7 @@
         "Schematic:sid_pistol_auto_sr_crystal_t04",
         "Schematic:sid_pistol_auto_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Auto.SR.Ore.T01": {
@@ -11427,6 +11836,7 @@
         "Schematic:sid_pistol_auto_sr_ore_t04",
         "Schematic:sid_pistol_auto_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Auto.UC.Ore.T01": {
@@ -11435,6 +11845,7 @@
         "Schematic:sid_pistol_auto_uc_ore_t02",
         "Schematic:sid_pistol_auto_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Auto.VR.Crystal.T04": {
@@ -11442,6 +11853,7 @@
         "Schematic:sid_pistol_auto_vr_crystal_t04",
         "Schematic:sid_pistol_auto_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Auto.VR.Ore.T01": {
@@ -11452,12 +11864,14 @@
         "Schematic:sid_pistol_auto_vr_ore_t04",
         "Schematic:sid_pistol_auto_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.AutoHeavy.R.Crystal.T04": {
       "items": [
         "Schematic:sid_pistol_autoheavy_r_crystal_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.AutoHeavy.R.Ore.T01": {
@@ -11467,6 +11881,7 @@
         "Schematic:sid_pistol_autoheavy_r_ore_t03",
         "Schematic:sid_pistol_autoheavy_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.AutoHeavy.SR.Crystal.T04": {
@@ -11474,6 +11889,7 @@
         "Schematic:sid_pistol_autoheavy_sr_crystal_t04",
         "Schematic:sid_pistol_autoheavy_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.AutoHeavy.SR.Ore.T01": {
@@ -11484,6 +11900,7 @@
         "Schematic:sid_pistol_autoheavy_sr_ore_t04",
         "Schematic:sid_pistol_autoheavy_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.AutoHeavy.VR.Crystal.T04": {
@@ -11491,6 +11908,7 @@
         "Schematic:sid_pistol_autoheavy_vr_crystal_t04",
         "Schematic:sid_pistol_autoheavy_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.AutoHeavy.VR.Ore.T01": {
@@ -11501,6 +11919,7 @@
         "Schematic:sid_pistol_autoheavy_vr_ore_t04",
         "Schematic:sid_pistol_autoheavy_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Bolt.SR.Crystal.T04": {
@@ -11508,6 +11927,7 @@
         "Schematic:sid_pistol_bolt_sr_crystal_t04",
         "Schematic:sid_pistol_bolt_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Bolt.SR.Ore.T01": {
@@ -11518,6 +11938,7 @@
         "Schematic:sid_pistol_bolt_sr_ore_t04",
         "Schematic:sid_pistol_bolt_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Bolt.VR.Crystal.T04": {
@@ -11525,6 +11946,7 @@
         "Schematic:sid_pistol_bolt_vr_crystal_t04",
         "Schematic:sid_pistol_bolt_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Bolt.VR.Ore.T01": {
@@ -11535,6 +11957,7 @@
         "Schematic:sid_pistol_bolt_vr_ore_t04",
         "Schematic:sid_pistol_bolt_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.BoltRevolver.C.Ore.T01": {
@@ -11542,6 +11965,7 @@
         "Schematic:sid_pistol_boltrevolver_c_ore_t01",
         "Schematic:sid_pistol_boltrevolver_c_ore_t02"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.BoltRevolver.R.Ore.T01": {
@@ -11551,6 +11975,7 @@
         "Schematic:sid_pistol_boltrevolver_r_ore_t03",
         "Schematic:sid_pistol_boltrevolver_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.BoltRevolver.UC.Ore.T01": {
@@ -11559,6 +11984,7 @@
         "Schematic:sid_pistol_boltrevolver_uc_ore_t02",
         "Schematic:sid_pistol_boltrevolver_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Dragon.SR.Crystal.T04": {
@@ -11566,6 +11992,7 @@
         "Schematic:sid_pistol_dragon_sr_crystal_t04",
         "Schematic:sid_pistol_dragon_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Dragon.SR.Ore.T01": {
@@ -11576,6 +12003,7 @@
         "Schematic:sid_pistol_dragon_sr_ore_t04",
         "Schematic:sid_pistol_dragon_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Dragon.VR.Crystal.T04": {
@@ -11583,6 +12011,7 @@
         "Schematic:sid_pistol_dragon_vr_crystal_t04",
         "Schematic:sid_pistol_dragon_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Dragon.VR.Ore.T01": {
@@ -11593,6 +12022,7 @@
         "Schematic:sid_pistol_dragon_vr_ore_t04",
         "Schematic:sid_pistol_dragon_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.FireCracker.R.Ore.T01": {
@@ -11602,6 +12032,7 @@
         "Schematic:sid_pistol_firecracker_r_ore_t03",
         "Schematic:sid_pistol_firecracker_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.FireCracker.SR.Crystal.T04": {
@@ -11609,6 +12040,7 @@
         "Schematic:sid_pistol_firecracker_sr_crystal_t04",
         "Schematic:sid_pistol_firecracker_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.FireCracker.SR.Ore.T01": {
@@ -11619,6 +12051,7 @@
         "Schematic:sid_pistol_firecracker_sr_ore_t04",
         "Schematic:sid_pistol_firecracker_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.FireCracker.VR.Crystal.T04": {
@@ -11626,6 +12059,7 @@
         "Schematic:sid_pistol_firecracker_vr_crystal_t04",
         "Schematic:sid_pistol_firecracker_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.FireCracker.VR.Ore.T01": {
@@ -11636,6 +12070,7 @@
         "Schematic:sid_pistol_firecracker_vr_ore_t04",
         "Schematic:sid_pistol_firecracker_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Gatling.SR.Crystal.T04": {
@@ -11643,6 +12078,7 @@
         "Schematic:sid_pistol_gatling_sr_crystal_t04",
         "Schematic:sid_pistol_gatling_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Gatling.SR.Ore.T01": {
@@ -11653,6 +12089,7 @@
         "Schematic:sid_pistol_gatling_sr_ore_t04",
         "Schematic:sid_pistol_gatling_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Gatling.VR.Crystal.T04": {
@@ -11660,6 +12097,7 @@
         "Schematic:sid_pistol_gatling_vr_crystal_t04",
         "Schematic:sid_pistol_gatling_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Gatling.VR.Ore.T01": {
@@ -11670,6 +12108,7 @@
         "Schematic:sid_pistol_gatling_vr_ore_t04",
         "Schematic:sid_pistol_gatling_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Handcannon.R.Ore.T01": {
@@ -11679,6 +12118,7 @@
         "Schematic:sid_pistol_handcannon_r_ore_t03",
         "Schematic:sid_pistol_handcannon_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Handcannon.SR.Crystal.T04": {
@@ -11686,6 +12126,7 @@
         "Schematic:sid_pistol_handcannon_sr_crystal_t04",
         "Schematic:sid_pistol_handcannon_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Handcannon.SR.Ore.T01": {
@@ -11696,12 +12137,14 @@
         "Schematic:sid_pistol_handcannon_sr_ore_t04",
         "Schematic:sid_pistol_handcannon_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Handcannon.Semi.R.Crystal.T04": {
       "items": [
         "Schematic:sid_pistol_handcannon_semi_r_crystal_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Handcannon.Semi.R.Ore.T01": {
@@ -11711,6 +12154,7 @@
         "Schematic:sid_pistol_handcannon_semi_r_ore_t03",
         "Schematic:sid_pistol_handcannon_semi_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Handcannon.Semi.SR.Crystal.T04": {
@@ -11718,6 +12162,7 @@
         "Schematic:sid_pistol_handcannon_semi_sr_crystal_t04",
         "Schematic:sid_pistol_handcannon_semi_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Handcannon.Semi.SR.Ore.T01": {
@@ -11728,6 +12173,7 @@
         "Schematic:sid_pistol_handcannon_semi_sr_ore_t04",
         "Schematic:sid_pistol_handcannon_semi_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Handcannon.Semi.VR.Crystal.T04": {
@@ -11735,6 +12181,7 @@
         "Schematic:sid_pistol_handcannon_semi_vr_crystal_t04",
         "Schematic:sid_pistol_handcannon_semi_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Handcannon.Semi.VR.Ore.T01": {
@@ -11745,6 +12192,7 @@
         "Schematic:sid_pistol_handcannon_semi_vr_ore_t04",
         "Schematic:sid_pistol_handcannon_semi_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Handcannon.VR.Crystal.T04": {
@@ -11752,6 +12200,7 @@
         "Schematic:sid_pistol_handcannon_vr_crystal_t04",
         "Schematic:sid_pistol_handcannon_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Handcannon.VR.Ore.T01": {
@@ -11762,6 +12211,7 @@
         "Schematic:sid_pistol_handcannon_vr_ore_t04",
         "Schematic:sid_pistol_handcannon_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Rapid.R.Ore.T01": {
@@ -11771,6 +12221,7 @@
         "Schematic:sid_pistol_rapid_r_ore_t03",
         "Schematic:sid_pistol_rapid_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Rapid.SR.Crystal.T04": {
@@ -11778,6 +12229,7 @@
         "Schematic:sid_pistol_rapid_sr_crystal_t04",
         "Schematic:sid_pistol_rapid_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Rapid.SR.Ore.T01": {
@@ -11788,6 +12240,7 @@
         "Schematic:sid_pistol_rapid_sr_ore_t04",
         "Schematic:sid_pistol_rapid_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Rapid.VR.Crystal.T04": {
@@ -11795,6 +12248,7 @@
         "Schematic:sid_pistol_rapid_vr_crystal_t04",
         "Schematic:sid_pistol_rapid_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Rapid.VR.Ore.T01": {
@@ -11805,6 +12259,7 @@
         "Schematic:sid_pistol_rapid_vr_ore_t04",
         "Schematic:sid_pistol_rapid_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Rocket.SR.Crystal.T04": {
@@ -11812,6 +12267,7 @@
         "Schematic:sid_pistol_rocket_sr_crystal_t04",
         "Schematic:sid_pistol_rocket_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Rocket.SR.Ore.T01": {
@@ -11822,6 +12278,7 @@
         "Schematic:sid_pistol_rocket_sr_ore_t04",
         "Schematic:sid_pistol_rocket_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.SemiAuto.C.Ore.T01": {
@@ -11829,6 +12286,7 @@
         "Schematic:sid_pistol_semiauto_c_ore_t01",
         "Schematic:sid_pistol_semiauto_c_ore_t02"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.SemiAuto.R.Ore.T01": {
@@ -11838,6 +12296,7 @@
         "Schematic:sid_pistol_semiauto_r_ore_t03",
         "Schematic:sid_pistol_semiauto_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.SemiAuto.SR.Crystal.T04": {
@@ -11845,6 +12304,7 @@
         "Schematic:sid_pistol_semiauto_sr_crystal_t04",
         "Schematic:sid_pistol_semiauto_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.SemiAuto.SR.Ore.T01": {
@@ -11855,6 +12315,7 @@
         "Schematic:sid_pistol_semiauto_sr_ore_t04",
         "Schematic:sid_pistol_semiauto_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.SemiAuto.UC.Ore.T01": {
@@ -11863,6 +12324,7 @@
         "Schematic:sid_pistol_semiauto_uc_ore_t02",
         "Schematic:sid_pistol_semiauto_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.SemiAuto.VR.Crystal.T04": {
@@ -11870,6 +12332,7 @@
         "Schematic:sid_pistol_semiauto_vr_crystal_t04",
         "Schematic:sid_pistol_semiauto_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.SemiAuto.VR.Ore.T01": {
@@ -11880,6 +12343,7 @@
         "Schematic:sid_pistol_semiauto_vr_ore_t04",
         "Schematic:sid_pistol_semiauto_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.SixShooter.C.Ore.T01": {
@@ -11887,6 +12351,7 @@
         "Schematic:sid_pistol_sixshooter_c_ore_t01",
         "Schematic:sid_pistol_sixshooter_c_ore_t02"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.SixShooter.R.Ore.T01": {
@@ -11896,6 +12361,7 @@
         "Schematic:sid_pistol_sixshooter_r_ore_t03",
         "Schematic:sid_pistol_sixshooter_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.SixShooter.UC.Ore.T01": {
@@ -11904,6 +12370,7 @@
         "Schematic:sid_pistol_sixshooter_uc_ore_t02",
         "Schematic:sid_pistol_sixshooter_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Space.SR.Crystal.T04": {
@@ -11911,6 +12378,7 @@
         "Schematic:sid_pistol_space_sr_crystal_t04",
         "Schematic:sid_pistol_space_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Space.SR.Ore.T01": {
@@ -11921,6 +12389,7 @@
         "Schematic:sid_pistol_space_sr_ore_t04",
         "Schematic:sid_pistol_space_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Space.VR.Crystal.T04": {
@@ -11928,6 +12397,7 @@
         "Schematic:sid_pistol_space_vr_crystal_t04",
         "Schematic:sid_pistol_space_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Space.VR.Ore.T01": {
@@ -11938,6 +12408,7 @@
         "Schematic:sid_pistol_space_vr_ore_t04",
         "Schematic:sid_pistol_space_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Zapper.SR.Crystal.T04": {
@@ -11945,6 +12416,7 @@
         "Schematic:sid_pistol_zapper_sr_crystal_t04",
         "Schematic:sid_pistol_zapper_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Zapper.SR.Ore.T01": {
@@ -11955,6 +12427,7 @@
         "Schematic:sid_pistol_zapper_sr_ore_t04",
         "Schematic:sid_pistol_zapper_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Zapper.VR.Crystal.T04": {
@@ -11962,6 +12435,7 @@
         "Schematic:sid_pistol_zapper_vr_crystal_t04",
         "Schematic:sid_pistol_zapper_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Pistol.Zapper.VR.Ore.T01": {
@@ -11972,6 +12446,7 @@
         "Schematic:sid_pistol_zapper_vr_ore_t04",
         "Schematic:sid_pistol_zapper_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Auto.R.Ore.T01": {
@@ -11981,6 +12456,7 @@
         "Schematic:sid_shotgun_auto_r_ore_t03",
         "Schematic:sid_shotgun_auto_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Auto.SR.Crystal.T04": {
@@ -11988,6 +12464,7 @@
         "Schematic:sid_shotgun_auto_sr_crystal_t04",
         "Schematic:sid_shotgun_auto_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Auto.SR.Ore.T01": {
@@ -11998,6 +12475,7 @@
         "Schematic:sid_shotgun_auto_sr_ore_t04",
         "Schematic:sid_shotgun_auto_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Auto.UC.Ore.T01": {
@@ -12006,6 +12484,7 @@
         "Schematic:sid_shotgun_auto_uc_ore_t02",
         "Schematic:sid_shotgun_auto_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Auto.VR.Crystal.T04": {
@@ -12013,6 +12492,7 @@
         "Schematic:sid_shotgun_auto_vr_crystal_t04",
         "Schematic:sid_shotgun_auto_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Auto.VR.Ore.T01": {
@@ -12023,6 +12503,7 @@
         "Schematic:sid_shotgun_auto_vr_ore_t04",
         "Schematic:sid_shotgun_auto_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Break.C.Ore.T01": {
@@ -12030,12 +12511,14 @@
         "Schematic:sid_shotgun_break_c_ore_t01",
         "Schematic:sid_shotgun_break_c_ore_t02"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Break.OU.R.Crystal.T04": {
       "items": [
         "Schematic:sid_shotgun_break_ou_r_crystal_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Break.OU.R.Ore.T01": {
@@ -12045,6 +12528,7 @@
         "Schematic:sid_shotgun_break_ou_r_ore_t03",
         "Schematic:sid_shotgun_break_ou_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Break.OU.SR.Crystal.T04": {
@@ -12052,6 +12536,7 @@
         "Schematic:sid_shotgun_break_ou_sr_crystal_t04",
         "Schematic:sid_shotgun_break_ou_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Break.OU.SR.Ore.T01": {
@@ -12062,6 +12547,7 @@
         "Schematic:sid_shotgun_break_ou_sr_ore_t04",
         "Schematic:sid_shotgun_break_ou_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Break.OU.UC.Ore.T01": {
@@ -12070,6 +12556,7 @@
         "Schematic:sid_shotgun_break_ou_uc_ore_t02",
         "Schematic:sid_shotgun_break_ou_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Break.OU.VR.Crystal.T04": {
@@ -12077,6 +12564,7 @@
         "Schematic:sid_shotgun_break_ou_vr_crystal_t04",
         "Schematic:sid_shotgun_break_ou_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Break.OU.VR.Ore.T01": {
@@ -12087,6 +12575,7 @@
         "Schematic:sid_shotgun_break_ou_vr_ore_t04",
         "Schematic:sid_shotgun_break_ou_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Break.R.Ore.T01": {
@@ -12096,6 +12585,7 @@
         "Schematic:sid_shotgun_break_r_ore_t03",
         "Schematic:sid_shotgun_break_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Break.SR.Crystal.T04": {
@@ -12103,6 +12593,7 @@
         "Schematic:sid_shotgun_break_sr_crystal_t04",
         "Schematic:sid_shotgun_break_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Break.SR.Ore.T01": {
@@ -12113,6 +12604,7 @@
         "Schematic:sid_shotgun_break_sr_ore_t04",
         "Schematic:sid_shotgun_break_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Break.UC.Ore.T01": {
@@ -12121,6 +12613,7 @@
         "Schematic:sid_shotgun_break_uc_ore_t02",
         "Schematic:sid_shotgun_break_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Break.VR.Crystal.T04": {
@@ -12128,6 +12621,7 @@
         "Schematic:sid_shotgun_break_vr_crystal_t04",
         "Schematic:sid_shotgun_break_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Break.VR.Ore.T01": {
@@ -12138,6 +12632,7 @@
         "Schematic:sid_shotgun_break_vr_ore_t04",
         "Schematic:sid_shotgun_break_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Heavy.SR.Crystal.T04": {
@@ -12145,6 +12640,7 @@
         "Schematic:sid_shotgun_heavy_sr_crystal_t04",
         "Schematic:sid_shotgun_heavy_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Heavy.SR.Ore.T01": {
@@ -12155,6 +12651,7 @@
         "Schematic:sid_shotgun_heavy_sr_ore_t04",
         "Schematic:sid_shotgun_heavy_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Longarm.SR.Crystal.T04": {
@@ -12162,6 +12659,7 @@
         "Schematic:sid_shotgun_longarm_sr_crystal_t04",
         "Schematic:sid_shotgun_longarm_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Longarm.SR.Ore.T01": {
@@ -12172,6 +12670,7 @@
         "Schematic:sid_shotgun_longarm_sr_ore_t04",
         "Schematic:sid_shotgun_longarm_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Longarm.VR.Crystal.T04": {
@@ -12179,6 +12678,7 @@
         "Schematic:sid_shotgun_longarm_vr_crystal_t04",
         "Schematic:sid_shotgun_longarm_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Longarm.VR.Ore.T01": {
@@ -12189,6 +12689,7 @@
         "Schematic:sid_shotgun_longarm_vr_ore_t04",
         "Schematic:sid_shotgun_longarm_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Minigun.SR.Crystal.T04": {
@@ -12196,6 +12697,7 @@
         "Schematic:sid_shotgun_minigun_sr_crystal_t04",
         "Schematic:sid_shotgun_minigun_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Minigun.SR.Ore.T01": {
@@ -12206,6 +12708,7 @@
         "Schematic:sid_shotgun_minigun_sr_ore_t04",
         "Schematic:sid_shotgun_minigun_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Standard.C.Ore.T01": {
@@ -12213,6 +12716,7 @@
         "Schematic:sid_shotgun_standard_c_ore_t01",
         "Schematic:sid_shotgun_standard_c_ore_t02"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Standard.R.Ore.T01": {
@@ -12222,6 +12726,7 @@
         "Schematic:sid_shotgun_standard_r_ore_t03",
         "Schematic:sid_shotgun_standard_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Standard.SR.Crystal.T04": {
@@ -12229,6 +12734,7 @@
         "Schematic:sid_shotgun_standard_sr_crystal_t04",
         "Schematic:sid_shotgun_standard_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Standard.SR.Ore.T01": {
@@ -12239,6 +12745,7 @@
         "Schematic:sid_shotgun_standard_sr_ore_t04",
         "Schematic:sid_shotgun_standard_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Standard.UC.Ore.T01": {
@@ -12247,6 +12754,7 @@
         "Schematic:sid_shotgun_standard_uc_ore_t02",
         "Schematic:sid_shotgun_standard_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Standard.VR.Crystal.T04": {
@@ -12254,6 +12762,7 @@
         "Schematic:sid_shotgun_standard_vr_crystal_t04",
         "Schematic:sid_shotgun_standard_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Standard.VR.Ore.T01": {
@@ -12264,6 +12773,7 @@
         "Schematic:sid_shotgun_standard_vr_ore_t04",
         "Schematic:sid_shotgun_standard_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Tactical.C.Ore.T01": {
@@ -12271,12 +12781,14 @@
         "Schematic:sid_shotgun_tactical_c_ore_t01",
         "Schematic:sid_shotgun_tactical_c_ore_t02"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Tactical.Precision.R.Crystal.T04": {
       "items": [
         "Schematic:sid_shotgun_tactical_precision_r_crystal_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Tactical.Precision.R.Ore.T01": {
@@ -12286,6 +12798,7 @@
         "Schematic:sid_shotgun_tactical_precision_r_ore_t03",
         "Schematic:sid_shotgun_tactical_precision_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Tactical.Precision.SR.Crystal.T04": {
@@ -12293,6 +12806,7 @@
         "Schematic:sid_shotgun_tactical_precision_sr_crystal_t04",
         "Schematic:sid_shotgun_tactical_precision_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Tactical.Precision.SR.Ore.T01": {
@@ -12303,6 +12817,7 @@
         "Schematic:sid_shotgun_tactical_precision_sr_ore_t04",
         "Schematic:sid_shotgun_tactical_precision_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Tactical.Precision.VR.Crystal.T04": {
@@ -12310,6 +12825,7 @@
         "Schematic:sid_shotgun_tactical_precision_vr_crystal_t04",
         "Schematic:sid_shotgun_tactical_precision_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Tactical.Precision.VR.Ore.T01": {
@@ -12320,12 +12836,14 @@
         "Schematic:sid_shotgun_tactical_precision_vr_ore_t04",
         "Schematic:sid_shotgun_tactical_precision_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Tactical.R.Crystal.T04": {
       "items": [
         "Schematic:sid_shotgun_tactical_r_crystal_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Tactical.R.Ore.T01": {
@@ -12335,6 +12853,7 @@
         "Schematic:sid_shotgun_tactical_r_ore_t03",
         "Schematic:sid_shotgun_tactical_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Shotgun.Tactical.UC.Ore.T01": {
@@ -12343,6 +12862,7 @@
         "Schematic:sid_shotgun_tactical_uc_ore_t02",
         "Schematic:sid_shotgun_tactical_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.AMR.R.Ore.T01": {
@@ -12352,6 +12872,7 @@
         "Schematic:sid_sniper_amr_r_ore_t03",
         "Schematic:sid_sniper_amr_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.AMR.SR.Crystal.T04": {
@@ -12359,6 +12880,7 @@
         "Schematic:sid_sniper_amr_sr_crystal_t04",
         "Schematic:sid_sniper_amr_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.AMR.SR.Ore.T01": {
@@ -12369,6 +12891,7 @@
         "Schematic:sid_sniper_amr_sr_ore_t04",
         "Schematic:sid_sniper_amr_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.AMR.VR.Crystal.T04": {
@@ -12376,6 +12899,7 @@
         "Schematic:sid_sniper_amr_vr_crystal_t04",
         "Schematic:sid_sniper_amr_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.AMR.VR.Ore.T01": {
@@ -12386,6 +12910,7 @@
         "Schematic:sid_sniper_amr_vr_ore_t04",
         "Schematic:sid_sniper_amr_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.Auto.R.Ore.T01": {
@@ -12395,6 +12920,7 @@
         "Schematic:sid_sniper_auto_r_ore_t03",
         "Schematic:sid_sniper_auto_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.Auto.SR.Crystal.T04": {
@@ -12402,6 +12928,7 @@
         "Schematic:sid_sniper_auto_sr_crystal_t04",
         "Schematic:sid_sniper_auto_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.Auto.SR.Ore.T01": {
@@ -12412,6 +12939,7 @@
         "Schematic:sid_sniper_auto_sr_ore_t04",
         "Schematic:sid_sniper_auto_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.Auto.UC.Ore.T01": {
@@ -12420,6 +12948,7 @@
         "Schematic:sid_sniper_auto_uc_ore_t02",
         "Schematic:sid_sniper_auto_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.Auto.VR.Crystal.T04": {
@@ -12427,6 +12956,7 @@
         "Schematic:sid_sniper_auto_vr_crystal_t04",
         "Schematic:sid_sniper_auto_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.Auto.VR.Ore.T01": {
@@ -12437,6 +12967,7 @@
         "Schematic:sid_sniper_auto_vr_ore_t04",
         "Schematic:sid_sniper_auto_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.BoltAction.C.Ore.T01": {
@@ -12444,6 +12975,7 @@
         "Schematic:sid_sniper_boltaction_c_ore_t01",
         "Schematic:sid_sniper_boltaction_c_ore_t02"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.BoltAction.R.Ore.T01": {
@@ -12453,6 +12985,7 @@
         "Schematic:sid_sniper_boltaction_r_ore_t03",
         "Schematic:sid_sniper_boltaction_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.BoltAction.Scope.R.Ore.T01": {
@@ -12462,6 +12995,7 @@
         "Schematic:sid_sniper_boltaction_scope_r_ore_t03",
         "Schematic:sid_sniper_boltaction_scope_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.BoltAction.Scope.SR.Crystal.T04": {
@@ -12469,6 +13003,7 @@
         "Schematic:sid_sniper_boltaction_scope_sr_crystal_t04",
         "Schematic:sid_sniper_boltaction_scope_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.BoltAction.Scope.SR.Ore.T01": {
@@ -12479,6 +13014,7 @@
         "Schematic:sid_sniper_boltaction_scope_sr_ore_t04",
         "Schematic:sid_sniper_boltaction_scope_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.BoltAction.Scope.VR.Crystal.T04": {
@@ -12486,6 +13022,7 @@
         "Schematic:sid_sniper_boltaction_scope_vr_crystal_t04",
         "Schematic:sid_sniper_boltaction_scope_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.BoltAction.Scope.VR.Ore.T01": {
@@ -12496,6 +13033,7 @@
         "Schematic:sid_sniper_boltaction_scope_vr_ore_t04",
         "Schematic:sid_sniper_boltaction_scope_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.BoltAction.UC.Ore.T01": {
@@ -12504,6 +13042,7 @@
         "Schematic:sid_sniper_boltaction_uc_ore_t02",
         "Schematic:sid_sniper_boltaction_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.Shredder.SR.Crystal.T04": {
@@ -12511,6 +13050,7 @@
         "Schematic:sid_sniper_shredder_sr_crystal_t04",
         "Schematic:sid_sniper_shredder_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.Shredder.SR.Ore.T01": {
@@ -12521,6 +13061,7 @@
         "Schematic:sid_sniper_shredder_sr_ore_t04",
         "Schematic:sid_sniper_shredder_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.Shredder.VR.Crystal.T04": {
@@ -12528,6 +13069,7 @@
         "Schematic:sid_sniper_shredder_vr_crystal_t04",
         "Schematic:sid_sniper_shredder_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.Shredder.VR.Ore.T01": {
@@ -12538,6 +13080,7 @@
         "Schematic:sid_sniper_shredder_vr_ore_t04",
         "Schematic:sid_sniper_shredder_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.Standard.C.Ore.T01": {
@@ -12545,6 +13088,7 @@
         "Schematic:sid_sniper_standard_c_ore_t01",
         "Schematic:sid_sniper_standard_c_ore_t02"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.Standard.R.Ore.T01": {
@@ -12554,6 +13098,7 @@
         "Schematic:sid_sniper_standard_r_ore_t03",
         "Schematic:sid_sniper_standard_r_ore_t04"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.Standard.SR.Crystal.T04": {
@@ -12561,6 +13106,7 @@
         "Schematic:sid_sniper_standard_sr_crystal_t04",
         "Schematic:sid_sniper_standard_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.Standard.SR.Ore.T01": {
@@ -12571,6 +13117,7 @@
         "Schematic:sid_sniper_standard_sr_ore_t04",
         "Schematic:sid_sniper_standard_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.Standard.Scope.SR.Crystal.T04": {
@@ -12578,6 +13125,7 @@
         "Schematic:sid_sniper_standard_scope_sr_crystal_t04",
         "Schematic:sid_sniper_standard_scope_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.Standard.Scope.SR.Ore.T01": {
@@ -12588,6 +13136,7 @@
         "Schematic:sid_sniper_standard_scope_sr_ore_t04",
         "Schematic:sid_sniper_standard_scope_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.Standard.Scope.VR.Crystal.T04": {
@@ -12595,6 +13144,7 @@
         "Schematic:sid_sniper_standard_scope_vr_crystal_t04",
         "Schematic:sid_sniper_standard_scope_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.Standard.Scope.VR.Ore.T01": {
@@ -12605,6 +13155,7 @@
         "Schematic:sid_sniper_standard_scope_vr_ore_t04",
         "Schematic:sid_sniper_standard_scope_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.Standard.UC.Ore.T01": {
@@ -12613,6 +13164,7 @@
         "Schematic:sid_sniper_standard_uc_ore_t02",
         "Schematic:sid_sniper_standard_uc_ore_t03"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.Standard.VR.Crystal.T04": {
@@ -12620,6 +13172,7 @@
         "Schematic:sid_sniper_standard_vr_crystal_t04",
         "Schematic:sid_sniper_standard_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.Standard.VR.Ore.T01": {
@@ -12630,6 +13183,7 @@
         "Schematic:sid_sniper_standard_vr_ore_t04",
         "Schematic:sid_sniper_standard_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.TripleShot.SR.Crystal.T04": {
@@ -12637,6 +13191,7 @@
         "Schematic:sid_sniper_tripleshot_sr_crystal_t04",
         "Schematic:sid_sniper_tripleshot_sr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.TripleShot.SR.Ore.T01": {
@@ -12647,6 +13202,7 @@
         "Schematic:sid_sniper_tripleshot_sr_ore_t04",
         "Schematic:sid_sniper_tripleshot_sr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.TripleShot.VR.Crystal.T04": {
@@ -12654,6 +13210,7 @@
         "Schematic:sid_sniper_tripleshot_vr_crystal_t04",
         "Schematic:sid_sniper_tripleshot_vr_crystal_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Sniper.TripleShot.VR.Ore.T01": {
@@ -12664,6 +13221,7 @@
         "Schematic:sid_sniper_tripleshot_vr_ore_t04",
         "Schematic:sid_sniper_tripleshot_vr_ore_t05"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "SID.Wall.Darts.R.T01": {
@@ -12673,6 +13231,7 @@
         "Schematic:sid_wall_darts_r_t03",
         "Schematic:sid_wall_darts_r_t04"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Wall.Darts.SR.T01": {
@@ -12683,6 +13242,7 @@
         "Schematic:sid_wall_darts_sr_t04",
         "Schematic:sid_wall_darts_sr_t05"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Wall.Darts.UC.T01": {
@@ -12691,6 +13251,7 @@
         "Schematic:sid_wall_darts_uc_t02",
         "Schematic:sid_wall_darts_uc_t03"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Wall.Darts.VR.T01": {
@@ -12701,6 +13262,7 @@
         "Schematic:sid_wall_darts_vr_t04",
         "Schematic:sid_wall_darts_vr_t05"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Wall.Electric.R.T01": {
@@ -12710,6 +13272,7 @@
         "Schematic:sid_wall_electric_r_t03",
         "Schematic:sid_wall_electric_r_t04"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Wall.Electric.SR.T01": {
@@ -12720,6 +13283,7 @@
         "Schematic:sid_wall_electric_sr_t04",
         "Schematic:sid_wall_electric_sr_t05"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Wall.Electric.UC.T01": {
@@ -12728,6 +13292,7 @@
         "Schematic:sid_wall_electric_uc_t02",
         "Schematic:sid_wall_electric_uc_t03"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Wall.Electric.VR.T01": {
@@ -12738,6 +13303,7 @@
         "Schematic:sid_wall_electric_vr_t04",
         "Schematic:sid_wall_electric_vr_t05"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Wall.Launcher.R.T01": {
@@ -12747,6 +13313,7 @@
         "Schematic:sid_wall_launcher_r_t03",
         "Schematic:sid_wall_launcher_r_t04"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Wall.Launcher.SR.T01": {
@@ -12757,6 +13324,7 @@
         "Schematic:sid_wall_launcher_sr_t04",
         "Schematic:sid_wall_launcher_sr_t05"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Wall.Launcher.UC.T01": {
@@ -12765,6 +13333,7 @@
         "Schematic:sid_wall_launcher_uc_t02",
         "Schematic:sid_wall_launcher_uc_t03"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Wall.Launcher.VR.T01": {
@@ -12775,6 +13344,7 @@
         "Schematic:sid_wall_launcher_vr_t04",
         "Schematic:sid_wall_launcher_vr_t05"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Wall.Light.R.T01": {
@@ -12784,6 +13354,7 @@
         "Schematic:sid_wall_light_r_t03",
         "Schematic:sid_wall_light_r_t04"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Wall.Light.SR.T01": {
@@ -12794,6 +13365,7 @@
         "Schematic:sid_wall_light_sr_t04",
         "Schematic:sid_wall_light_sr_t05"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Wall.Light.VR.T01": {
@@ -12804,6 +13376,7 @@
         "Schematic:sid_wall_light_vr_t04",
         "Schematic:sid_wall_light_vr_t05"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Wall.Wood.Spikes.C.T01": {
@@ -12811,6 +13384,7 @@
         "Schematic:sid_wall_wood_spikes_c_t01",
         "Schematic:sid_wall_wood_spikes_c_t02"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Wall.Wood.Spikes.R.T01": {
@@ -12820,6 +13394,7 @@
         "Schematic:sid_wall_wood_spikes_r_t03",
         "Schematic:sid_wall_wood_spikes_r_t04"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Wall.Wood.Spikes.SR.T01": {
@@ -12830,6 +13405,7 @@
         "Schematic:sid_wall_wood_spikes_sr_t04",
         "Schematic:sid_wall_wood_spikes_sr_t05"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Wall.Wood.Spikes.UC.T01": {
@@ -12838,6 +13414,7 @@
         "Schematic:sid_wall_wood_spikes_uc_t02",
         "Schematic:sid_wall_wood_spikes_uc_t03"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "SID.Wall.Wood.Spikes.VR.T01": {
@@ -12848,18 +13425,23 @@
         "Schematic:sid_wall_wood_spikes_vr_t04",
         "Schematic:sid_wall_wood_spikes_vr_t05"
       ],
+      "personalities": [],
       "weight": "Trap"
     },
     "TestSlot_Test": {
       "items": [
         "Schematic:sid_edged_sword_medium_c_ore_t00"
       ],
+      "personalities": [],
       "weight": "Ranged"
     },
     "worker_C_Adventurous": {
       "items": [
         "Worker:workerbasic_c_t01",
         "Worker:workerbasic_c_t02"
+      ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsAdventurous"
       ],
       "weight": "Survivor"
     },
@@ -12868,12 +13450,18 @@
         "Worker:workerbasic_c_t01",
         "Worker:workerbasic_c_t02"
       ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsAnalytical"
+      ],
       "weight": "Survivor"
     },
     "worker_C_Competitive": {
       "items": [
         "Worker:workerbasic_c_t01",
         "Worker:workerbasic_c_t02"
+      ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsCompetitive"
       ],
       "weight": "Survivor"
     },
@@ -12882,12 +13470,18 @@
         "Worker:workerbasic_c_t01",
         "Worker:workerbasic_c_t02"
       ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsCooperative"
+      ],
       "weight": "Survivor"
     },
     "worker_C_Curious": {
       "items": [
         "Worker:workerbasic_c_t01",
         "Worker:workerbasic_c_t02"
+      ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsCurious"
       ],
       "weight": "Survivor"
     },
@@ -12896,6 +13490,9 @@
         "Worker:workerbasic_c_t01",
         "Worker:workerbasic_c_t02"
       ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsDependable"
+      ],
       "weight": "Survivor"
     },
     "worker_C_Dreamer": {
@@ -12903,12 +13500,18 @@
         "Worker:workerbasic_c_t01",
         "Worker:workerbasic_c_t02"
       ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsDreamer"
+      ],
       "weight": "Survivor"
     },
     "worker_C_Pragmatic": {
       "items": [
         "Worker:workerbasic_c_t01",
         "Worker:workerbasic_c_t02"
+      ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsPragmatic"
       ],
       "weight": "Survivor"
     },
@@ -12919,6 +13522,9 @@
         "Worker:workerbasic_r_t03",
         "Worker:workerbasic_r_t04"
       ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsAdventurous"
+      ],
       "weight": "Survivor"
     },
     "worker_R_Analytical": {
@@ -12927,6 +13533,9 @@
         "Worker:workerbasic_r_t02",
         "Worker:workerbasic_r_t03",
         "Worker:workerbasic_r_t04"
+      ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsAnalytical"
       ],
       "weight": "Survivor"
     },
@@ -12937,6 +13546,9 @@
         "Worker:workerbasic_r_t03",
         "Worker:workerbasic_r_t04"
       ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsCompetitive"
+      ],
       "weight": "Survivor"
     },
     "worker_R_Cooperative": {
@@ -12945,6 +13557,9 @@
         "Worker:workerbasic_r_t02",
         "Worker:workerbasic_r_t03",
         "Worker:workerbasic_r_t04"
+      ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsCooperative"
       ],
       "weight": "Survivor"
     },
@@ -12955,6 +13570,9 @@
         "Worker:workerbasic_r_t03",
         "Worker:workerbasic_r_t04"
       ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsCurious"
+      ],
       "weight": "Survivor"
     },
     "worker_R_Dependable": {
@@ -12963,6 +13581,9 @@
         "Worker:workerbasic_r_t02",
         "Worker:workerbasic_r_t03",
         "Worker:workerbasic_r_t04"
+      ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsDependable"
       ],
       "weight": "Survivor"
     },
@@ -12973,6 +13594,9 @@
         "Worker:workerbasic_r_t03",
         "Worker:workerbasic_r_t04"
       ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsDreamer"
+      ],
       "weight": "Survivor"
     },
     "worker_R_Pragmatic": {
@@ -12981,6 +13605,9 @@
         "Worker:workerbasic_r_t02",
         "Worker:workerbasic_r_t03",
         "Worker:workerbasic_r_t04"
+      ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsPragmatic"
       ],
       "weight": "Survivor"
     },
@@ -12992,6 +13619,9 @@
         "Worker:workerbasic_sr_t04",
         "Worker:workerbasic_sr_t05"
       ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsAdventurous"
+      ],
       "weight": "Survivor"
     },
     "worker_SR_Analytical": {
@@ -13001,6 +13631,9 @@
         "Worker:workerbasic_sr_t03",
         "Worker:workerbasic_sr_t04",
         "Worker:workerbasic_sr_t05"
+      ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsAnalytical"
       ],
       "weight": "Survivor"
     },
@@ -13012,6 +13645,9 @@
         "Worker:workerbasic_sr_t04",
         "Worker:workerbasic_sr_t05"
       ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsCompetitive"
+      ],
       "weight": "Survivor"
     },
     "worker_SR_Cooperative": {
@@ -13021,6 +13657,9 @@
         "Worker:workerbasic_sr_t03",
         "Worker:workerbasic_sr_t04",
         "Worker:workerbasic_sr_t05"
+      ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsCooperative"
       ],
       "weight": "Survivor"
     },
@@ -13032,6 +13671,9 @@
         "Worker:workerbasic_sr_t04",
         "Worker:workerbasic_sr_t05"
       ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsCurious"
+      ],
       "weight": "Survivor"
     },
     "worker_SR_Dependable": {
@@ -13041,6 +13683,9 @@
         "Worker:workerbasic_sr_t03",
         "Worker:workerbasic_sr_t04",
         "Worker:workerbasic_sr_t05"
+      ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsDependable"
       ],
       "weight": "Survivor"
     },
@@ -13052,6 +13697,9 @@
         "Worker:workerbasic_sr_t04",
         "Worker:workerbasic_sr_t05"
       ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsDreamer"
+      ],
       "weight": "Survivor"
     },
     "worker_SR_Pragmatic": {
@@ -13062,6 +13710,9 @@
         "Worker:workerbasic_sr_t04",
         "Worker:workerbasic_sr_t05"
       ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsPragmatic"
+      ],
       "weight": "Survivor"
     },
     "worker_UC_Adventurous": {
@@ -13069,6 +13720,9 @@
         "Worker:workerbasic_uc_t01",
         "Worker:workerbasic_uc_t02",
         "Worker:workerbasic_uc_t03"
+      ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsAdventurous"
       ],
       "weight": "Survivor"
     },
@@ -13078,6 +13732,9 @@
         "Worker:workerbasic_uc_t02",
         "Worker:workerbasic_uc_t03"
       ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsAnalytical"
+      ],
       "weight": "Survivor"
     },
     "worker_UC_Competitive": {
@@ -13085,6 +13742,9 @@
         "Worker:workerbasic_uc_t01",
         "Worker:workerbasic_uc_t02",
         "Worker:workerbasic_uc_t03"
+      ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsCompetitive"
       ],
       "weight": "Survivor"
     },
@@ -13094,6 +13754,9 @@
         "Worker:workerbasic_uc_t02",
         "Worker:workerbasic_uc_t03"
       ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsCooperative"
+      ],
       "weight": "Survivor"
     },
     "worker_UC_Curious": {
@@ -13101,6 +13764,9 @@
         "Worker:workerbasic_uc_t01",
         "Worker:workerbasic_uc_t02",
         "Worker:workerbasic_uc_t03"
+      ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsCurious"
       ],
       "weight": "Survivor"
     },
@@ -13110,6 +13776,9 @@
         "Worker:workerbasic_uc_t02",
         "Worker:workerbasic_uc_t03"
       ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsDependable"
+      ],
       "weight": "Survivor"
     },
     "worker_UC_Dreamer": {
@@ -13118,6 +13787,9 @@
         "Worker:workerbasic_uc_t02",
         "Worker:workerbasic_uc_t03"
       ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsDreamer"
+      ],
       "weight": "Survivor"
     },
     "worker_UC_Pragmatic": {
@@ -13125,6 +13797,9 @@
         "Worker:workerbasic_uc_t01",
         "Worker:workerbasic_uc_t02",
         "Worker:workerbasic_uc_t03"
+      ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsPragmatic"
       ],
       "weight": "Survivor"
     },
@@ -13136,6 +13811,9 @@
         "Worker:workerbasic_vr_t04",
         "Worker:workerbasic_vr_t05"
       ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsAdventurous"
+      ],
       "weight": "Survivor"
     },
     "worker_VR_Analytical": {
@@ -13145,6 +13823,9 @@
         "Worker:workerbasic_vr_t03",
         "Worker:workerbasic_vr_t04",
         "Worker:workerbasic_vr_t05"
+      ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsAnalytical"
       ],
       "weight": "Survivor"
     },
@@ -13156,6 +13837,9 @@
         "Worker:workerbasic_vr_t04",
         "Worker:workerbasic_vr_t05"
       ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsCompetitive"
+      ],
       "weight": "Survivor"
     },
     "worker_VR_Cooperative": {
@@ -13165,6 +13849,9 @@
         "Worker:workerbasic_vr_t03",
         "Worker:workerbasic_vr_t04",
         "Worker:workerbasic_vr_t05"
+      ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsCooperative"
       ],
       "weight": "Survivor"
     },
@@ -13176,6 +13863,9 @@
         "Worker:workerbasic_vr_t04",
         "Worker:workerbasic_vr_t05"
       ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsCurious"
+      ],
       "weight": "Survivor"
     },
     "worker_VR_Dependable": {
@@ -13185,6 +13875,9 @@
         "Worker:workerbasic_vr_t03",
         "Worker:workerbasic_vr_t04",
         "Worker:workerbasic_vr_t05"
+      ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsDependable"
       ],
       "weight": "Survivor"
     },
@@ -13196,6 +13889,9 @@
         "Worker:workerbasic_vr_t04",
         "Worker:workerbasic_vr_t05"
       ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsDreamer"
+      ],
       "weight": "Survivor"
     },
     "worker_VR_Pragmatic": {
@@ -13205,6 +13901,9 @@
         "Worker:workerbasic_vr_t03",
         "Worker:workerbasic_vr_t04",
         "Worker:workerbasic_vr_t05"
+      ],
+      "personalities": [
+        "Homebase.Worker.Personality.IsPragmatic"
       ],
       "weight": "Survivor"
     }

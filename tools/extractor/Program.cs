@@ -638,7 +638,9 @@ foreach (var (id, row) in LoadRows(provider, book["SlotData"]))
     bookSlots[id] = new SortedDictionary<string, object>(StringComparer.Ordinal)
     {
         ["weight"] = row!["SlotXpWeightName"]?.GetValue<string>() ?? "Default",
-        ["items"] = (row["AllowedItems"]?.AsArray() ?? []).Select(path => assetTypes.TemplateId(AssetPath(path))).Where(t => t is not null and not "None").ToList()
+        ["items"] = (row["AllowedItems"]?.AsArray() ?? []).Select(path => assetTypes.TemplateId(AssetPath(path))).Where(t => t is not null and not "None").ToList(),
+        ["personalities"] = (row["AllowedWorkerPersonalities"]?.AsArray() ?? []).Select(tag => tag?["TagName"]?.GetValue<string>())
+            .Where(tag => !string.IsNullOrEmpty(tag) && tag != "None").Distinct().ToList()
     };
 var bookWeights = new SortedDictionary<string, object>(StringComparer.Ordinal);
 foreach (var (id, row) in LoadRows(provider, book["XPWeightData"]))

@@ -25,3 +25,6 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
 - `fabricator.json`: the storm shield fabricator's numbers (OutpostData's FabricatorBuildingData) and each world item's
   quantum goo values (the MCP template's static_disintegration_value and static_fabrication_value).
 - `world.json`: zone themes (tile class, valid difficulties), mission generators and the mission difficulty rows.
+- `collectionbook.json`: the collection book's pages (book profile, sections, rewards), sections (slots, rewards),
+  slots (allowed item templates, survivor personalities, XP weight row), the slot XP weights, the rarity factor curve
+  and the book levels (total XP, rewards).
