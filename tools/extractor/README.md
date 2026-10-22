@@ -18,4 +18,6 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
 - `characters.json`: gameplay tags, required tags and manager flags of heroes, survivors and defenders.
 - `cardpacks.json`: each card pack's loot tier group, tier, choice flag and display level.
 - `objectivestats.json`: the quest objective stat table (type, target tags, condition).
+- `fabricator.json`: the storm shield fabricator's numbers (OutpostData's FabricatorBuildingData) and each world item's
+  quantum goo values (the MCP template's static_disintegration_value and static_fabrication_value).
 - `world.json`: zone themes (tile class, valid difficulties), mission generators and the mission difficulty rows.

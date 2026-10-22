@@ -58,6 +58,8 @@ var expeditions = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var characters = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var cardPacks = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var unmapped = new SortedSet<string>(StringComparer.Ordinal);
+var disintegrationItems = new SortedDictionary<string, (bool FromRecipe, int FabricationOverride)>(StringComparer.Ordinal);
+var schematicRecipes = new Dictionary<string, (int Produced, List<(string TemplateId, int Count)> Costs)>(StringComparer.Ordinal);
 foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" && assetTypes.IsItemPath(f.Path)))
 {
     var gamePath = "/Game/" + file.PathWithoutExtension["FortniteGame/Content/".Length..];
@@ -197,6 +199,20 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         characters[templateId] = character;
     }
 
+    // The storm shield fabricator (UFortWorldItemDefinition): bHasDisintegrationValue, bUsesCraftingRecipeToGetDisintegrationValue
+    // (class constructor defaults in ItemClasses) and FabricationValueOverride (-1, sub_5DB330). A recipe-valued item takes
+    // its value from the schematic that makes it (Result, QuantityProduced 1 by default, and the CraftingRequirements row's
+    // Requirements, which UFortSchematicItemDefinition::GetRequirements sub_5EB780 reads).
+    if (profile == "theater" && (properties?["bHasDisintegrationValue"]?.GetValue<bool>() ?? ItemClasses.HasDisintegrationValue(export.ExportType)))
+        disintegrationItems[templateId] = (properties?["bUsesCraftingRecipeToGetDisintegrationValue"]?.GetValue<bool>() ?? ItemClasses.UsesCraftingRecipeForDisintegration(export.ExportType),
+            properties?["FabricationValueOverride"]?.GetValue<int>() ?? -1);
+    if (export.ExportType == "FortSchematicItemDefinition" && properties?["Result"] is { } schematicResult
+        && AssetPath(schematicResult) is { Length: > 0 } resultPath and not "None"
+        && properties["CraftingRequirements"] is { } craftingRequirements && craftingRequirements["RowName"]?.GetValue<string>() is { } craftingRow and not "None"
+        && TableRows(craftingRequirements["DataTable"])[craftingRow] is { } craftingRequirementsRow)
+        schematicRecipes.TryAdd(assetTypes.TemplateId(resultPath), (properties["QuantityProduced"]?.GetValue<int>() ?? 1,
+            (craftingRequirementsRow["Requirements"]?.AsArray() ?? []).Select(r => (assetTypes.TemplateId(GamePath(r!["ItemDefinition"]!["ObjectPath"]!.GetValue<string>())), r["Count"]?.GetValue<int>() ?? 0)).ToList()));
+
     if (export.ExportType == "FortCardPackItemDefinition")
     {
         cardPacks[templateId] = new SortedDictionary<string, object>(StringComparer.Ordinal)
@@ -216,6 +232,59 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         };
     }
 }
+
+// The fabricator's goo values, as Epic's MCP had them in each world item template (UFortWorldItemDefinition's template export,
+// sub_5FCE60): static_disintegration_value is the OutpostFabricatorData row (FortOutpostData::GetDisintegrationValueFromFabricatorData,
+// sub_55CA90) or, for recipe items, the schematic's ingredients' values times their counts over QuantityProduced
+// (CalculateDisintegrationValueFromRecipe, sub_5DE470); static_fabrication_value is FabricationValueOverride when it is set,
+// else DisintegrationToFabricationRatio times the disintegration value. The fabricator's own numbers come from OutpostData's
+// FabricatorBuildingData, whose constructor defaults (UFortOutpostData sub_54DDF0) are FabricationDuration 1,
+// DisintegrationToFabricationRatio 3 and QuantumGooProductionTime 10.
+var outpostData = LoadExport(provider, JsonValue.Create("/Game/TheOutpost/OutpostData.OutpostData"), "FortOutpostData")["Properties"]!;
+var fabricatorData = outpostData["FabricatorData"]!;
+var fabricationRatio = fabricatorData["DisintegrationToFabricationRatio"]?.GetValue<int>() ?? 3;
+var tableValues = new Dictionary<string, int>(StringComparer.Ordinal);
+foreach (var (_, row) in LoadRows(provider, fabricatorData["DefaultIngredientDisintergrationData"]))
+{
+    if (row?["ItemDefinition"] is { } rowItem && AssetPath(rowItem) is { Length: > 0 } rowPath and not "None")
+        tableValues.TryAdd(assetTypes.TemplateId(rowPath), row["DisintegrationValue"]?.GetValue<int>() ?? 0);
+}
+var disintegrationValues = new Dictionary<string, int>(StringComparer.Ordinal);
+int DisintegrationValue(string templateId, int depth)
+{
+    if (!disintegrationItems.TryGetValue(templateId, out var flags) || depth > 16) return 0;
+    if (disintegrationValues.TryGetValue(templateId, out var known)) return known;
+    var value = 0;
+    if (!flags.FromRecipe) value = tableValues.GetValueOrDefault(templateId);
+    else if (schematicRecipes.TryGetValue(templateId, out var recipe))
+    {
+        value = recipe.Costs.Sum(cost => cost.Count * DisintegrationValue(cost.TemplateId, depth + 1));
+        if (recipe.Produced > 0) value /= recipe.Produced;
+    }
+    return disintegrationValues[templateId] = value;
+}
+var fabricatorValues = new SortedDictionary<string, object>(StringComparer.Ordinal);
+foreach (var (templateId, flags) in disintegrationItems)
+{
+    var disintegration = DisintegrationValue(templateId, 0);
+    fabricatorValues[templateId] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+    {
+        ["disintegration"] = disintegration,
+        ["fabrication"] = flags.FabricationOverride >= 0 ? flags.FabricationOverride : fabricationRatio * disintegration
+    };
+}
+string OutpostTemplateId(JsonNode? definition) => $"Outpost:{AssetName(AssetPath(definition)).ToLowerInvariant()}";
+var fabricator = new SortedDictionary<string, object>(StringComparer.Ordinal)
+{
+    ["fabricatorTemplateId"] = OutpostTemplateId(fabricatorData["ItemDefinition"]),
+    ["postTemplateId"] = OutpostTemplateId(outpostData["OutpostUpgradeAndPrestigeData"]?["ItemDefinition"]),
+    ["fabricationDuration"] = fabricatorData["FabricationDuration"]?.GetValue<double>() ?? 1,
+    ["fabricationRatio"] = fabricationRatio,
+    ["quantumGooProductionTime"] = fabricatorData["QuantumGooProductionTime"]?.GetValue<int>() ?? 10,
+    ["quantumGooCapacityPerLevel"] = (fabricatorData["QuantumGooCapacityPerLevel"] as JsonArray)?.Select(v => v!.GetValue<int>()).ToList() ?? [],
+    ["alwaysAvailable"] = (fabricatorData["AlwaysAvailableFabricationItems"] as JsonArray)?.Select(v => assetTypes.TemplateId(AssetPath(v))).Distinct().ToList() ?? [],
+    ["values"] = fabricatorValues
+};
 
 // The client calls the schedule without a token "Default" and looks rows up by the name "%d".
 var dailyRewards = new List<SortedDictionary<string, object>>();
@@ -603,6 +672,7 @@ File.WriteAllText(Path.Combine(output, "homebasenodes.json"), JsonSerializer.Ser
 File.WriteAllText(Path.Combine(output, "squads.json"), JsonSerializer.Serialize(squads, options) + "\n");
 File.WriteAllText(Path.Combine(output, "banners.json"), JsonSerializer.Serialize(banners, options) + "\n");
 File.WriteAllText(Path.Combine(output, "transmog.json"), JsonSerializer.Serialize(transmogKeys, options) + "\n");
+File.WriteAllText(Path.Combine(output, "fabricator.json"), JsonSerializer.Serialize(fabricator, options) + "\n");
 File.WriteAllText(Path.Combine(output, "objectivestats.json"), JsonSerializer.Serialize(objectiveStats, options) + "\n");
 File.WriteAllText(Path.Combine(output, "world.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal)
 {
@@ -662,6 +732,14 @@ static SortedDictionary<string, object> Objective(JsonNode o, AssetTypes assetTy
     var stat = o["ObjectiveStatHandle"]?["RowName"]?.GetValue<string>();
     if (stat is not (null or "None")) objective["stat"] = stat.ToLowerInvariant();
     return objective;
+}
+
+// An object reference's "FortniteGame/Content/Dir/Name.0" as the soft path "/Game/Dir/Name.Name".
+static string GamePath(string objectPath)
+{
+    var package = objectPath.Split('.')[0];
+    if (package.StartsWith("FortniteGame/Content/")) package = "/Game/" + package["FortniteGame/Content/".Length..];
+    return $"{package}.{package.Split('/').Last()}";
 }
 
 // Soft paths come as "/Game/Dir/Name.Name" or just "/Game/Dir/Name".
@@ -791,6 +869,37 @@ static class ItemClasses
         ["FortPersistentResourceItemDefinition"] = -1,
         ["FortResourceItemDefinition"] = int.MaxValue
     };
+
+    // bHasDisintegrationValue / bUsesCraftingRecipeToGetDisintegrationValue as each class's constructor sets them: consumables
+    // (sub_5A47F0), ingredients (sub_5A5BA0) and resources (sub_5DAD30) are valued from the fabricator table; weapons
+    // (sub_8226F0), ammo (sub_822390) and traps (sub_5DB140) from their recipe; deco (sub_5A49C0) and building pieces
+    // (sub_5A4190) clear the first again.
+    private static readonly Dictionary<string, bool> ConstructorHasDisintegrationValue = new()
+    {
+        ["FortWorldItemDefinition"] = false,
+        ["FortConsumableItemDefinition"] = true,
+        ["FortIngredientItemDefinition"] = true,
+        ["FortResourceItemDefinition"] = true,
+        ["FortWeaponItemDefinition"] = true,
+        ["FortAmmoItemDefinition"] = true,
+        ["FortDecoItemDefinition"] = false,
+        ["FortBuildingItemDefinition"] = false,
+        ["FortTrapItemDefinition"] = true
+    };
+
+    private static readonly Dictionary<string, bool> ConstructorUsesCraftingRecipe = new()
+    {
+        ["FortWorldItemDefinition"] = false,
+        ["FortWeaponItemDefinition"] = true,
+        ["FortAmmoItemDefinition"] = true,
+        ["FortTrapItemDefinition"] = true
+    };
+
+    public static bool HasDisintegrationValue(string itemClass) =>
+        Lineage(itemClass).Where(ConstructorHasDisintegrationValue.ContainsKey).Select(c => ConstructorHasDisintegrationValue[c]).FirstOrDefault();
+
+    public static bool UsesCraftingRecipeForDisintegration(string itemClass) =>
+        Lineage(itemClass).Where(ConstructorUsesCraftingRecipe.ContainsKey).Select(c => ConstructorUsesCraftingRecipe[c]).FirstOrDefault();
 
     public static IEnumerable<string> Lineage(string itemClass)
     {

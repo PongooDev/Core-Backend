@@ -3,6 +3,7 @@ import { McpError } from "../../../errors.js";
 import { log } from "../../../log.js";
 import { getDifficulty } from "../../../gamedata/world.js";
 import { completeMissionAlert } from "../../../profiles/alerts.js";
+import { abortDisintegration, depositPostResources, disintegrateItems, fabricateItem } from "../../../profiles/fabricator.js";
 import { grantItem } from "../../../profiles/items.js";
 import { createDeployableBase, saveDeployableBase, saveOutpost, updateOutpostCore, updateTierProgression } from "../../../profiles/outposts.js";
 import { advanceObjective } from "../../../profiles/progress.js";
@@ -151,8 +152,25 @@ export const serverCommands = {
     }
     log("MCP", `ModifyMission: session ${matchmakingSessionId} plays at ${rowName}`);
   },
-  // The fabricator: DisintegrateItems is never sent by this build, so there is nothing to abort.
-  AbortDisintegration: accepted,
+  // The storm shield fabricator and P.O.S.T. (profiles/fabricator.js), on the player's theater0. The Cert server's senders
+  // were stripped; CoreV2 restores them from AFortPlayerControllerOutpost's Server RPCs.
+  DisintegrateItems({ req, tracker, profileId }) {
+    const goo = disintegrateItems(tracker, profileId, req.body?.itemsToDisintegrateIds, req.body?.itemCountsToDisintegrate);
+    log("MCP", `DisintegrateItems for ${req.params.accountId}: ${goo} quantum goo to process`);
+  },
+
+  AbortDisintegration({ tracker, profileId }) {
+    abortDisintegration(tracker, profileId);
+  },
+
+  FabricateItem({ req, session, tracker, profileId }) {
+    fabricateItem(session, tracker, profileId, req.body?.templateId);
+    log("MCP", `FabricateItem for ${req.params.accountId}: ${req.body?.templateId}`);
+  },
+
+  DepositPostResources({ req, tracker, profileId }) {
+    depositPostResources(tracker, profileId, req.body?.itemsToDepositIds, req.body?.itemCountsToDeposit);
+  },
 
   ServerQuestLogin: clientQuestLogin,
 
