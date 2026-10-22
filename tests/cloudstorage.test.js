@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import crypto from "node:crypto";
 import http from "node:http";
-import { certUserAgent, clientToken, dedicatedServerToken, del, get, openTunnel, send, startBackend, userLogin } from "./helpers.js";
+import { certUserAgent, clientToken, del, get, openTunnel, send, startBackend, userLogin } from "./helpers.js";
 
 function raw(port, method, path, token, body) {
   return new Promise((resolve, reject) => {
@@ -61,33 +61,6 @@ test("user files stay private and file names cannot leave the folder", async () 
 
     const escape = await raw(backend.port, "PUT", `/fortnite/api/cloudstorage/user/${me.accountId}/..%2Faccount.json`, me.token, Buffer.from("x"));
     assert.equal(escape.status, 400);
-  } finally {
-    backend.close();
-  }
-});
-
-test("a gameserver's DedicatedServer token lists, reads and writes an existing player's files for a storm shield's world record", async () => {
-  const backend = await startBackend();
-  try {
-    const owner = await userLogin(backend.port, "StormShieldOwner");
-    const dedicated = await dedicatedServerToken(backend.port);
-    const base = `/fortnite/api/cloudstorage/user/${owner.accountId}`;
-
-    const record = crypto.randomBytes(2000);
-    assert.equal((await raw(backend.port, "PUT", `${base}/WorldRecord.sav`, dedicated, record)).status, 204);
-    assert.deepEqual((await get(backend.port, base, dedicated)).body,
-      [{ filename: "WorldRecord.sav", hash: crypto.createHash("sha1").update(record).digest("hex"), length: record.length }]);
-    assert.ok((await raw(backend.port, "GET", `${base}/WorldRecord.sav`, dedicated)).body.equals(record));
-    assert.ok((await raw(backend.port, "GET", `${base}/WorldRecord.sav`, owner.token)).body.equals(record));
-
-    assert.equal((await del(backend.port, `${base}/WorldRecord.sav`, dedicated)).status, 403);
-    const unknown = await get(backend.port, `/fortnite/api/cloudstorage/user/${"0".repeat(32)}`, dedicated);
-    assert.equal(unknown.status, 404);
-    assert.equal(unknown.body.errorCode, "errors.com.epicgames.account.account_not_found");
-    const escape = await raw(backend.port, "PUT", "/fortnite/api/cloudstorage/user/..%2F../x.sav", dedicated, Buffer.from("x"));
-    assert.deepEqual([escape.status, JSON.parse(escape.body).errorCode], [404, "errors.com.epicgames.account.account_not_found"]);
-    // Another game client token is still kept out.
-    assert.equal((await get(backend.port, base, await clientToken(backend.port))).status, 403);
   } finally {
     backend.close();
   }

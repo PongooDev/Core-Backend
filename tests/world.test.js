@@ -70,7 +70,6 @@ test("world/validate gives the gameserver the zone it posts, as FFortZoneInstanc
     const details = await post(backend.port, "/fortnite/api/game/v2/world/validate?sessionId=abc", token, zone);
     assert.equal(details.status, 200);
     assert.deepEqual(details.body, {
-      worldId: "",
       theaterId: zone.theaterId,
       theaterMissionId: zone.theaterMissionId,
       theaterMissionAlertId: "",

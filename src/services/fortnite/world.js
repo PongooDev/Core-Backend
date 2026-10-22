@@ -17,13 +17,12 @@ export function worldRoutes({ tokens, sessions, profiles }) {
   });
 
   // The gameserver's zone lookup (AFortWorldManager RetrievingZoneInformation, sub_6A7E90, FortMcpWorlds.cpp): it posts
-  // the zone it is to host, its CurrentZoneInstanceId as FFortZoneInstanceInfo {worldId, theaterId, theaterMissionId,
-  // theaterMissionAlertId, zoneThemeClass}, and reads back FFortZoneInstanceDetails (that info plus missionGenerator,
-  // zoneDifficultyInfo, missionRewards, zoneModifiers, tileIndex) from a 200-206 reply. Any other status fails the zone.
-  // The worldId is echoed: a storm shield posts its Outpost core item's id, other missions "". A non-empty one loads
-  // that world record from the owner's user cloud storage (LoadingWorldRecord, sub_591A30) and the game state's
-  // CurrentWUID, which the storm shield core is found by, is its id; an empty one makes a brand-new world record. The
-  // difficulty it replies with is the one the session's zone starts at (sessions.setZoneDifficulty).
+  // the zone it is to host, its CurrentZoneInstanceId as FFortZoneInstanceInfo {worldId: "", theaterId,
+  // theaterMissionId, theaterMissionAlertId, zoneThemeClass}, and reads back FFortZoneInstanceDetails (that info plus
+  // missionGenerator, zoneDifficultyInfo, missionRewards, zoneModifiers, tileIndex) from a 200-206 reply. A non-empty
+  // worldId would send it into a cloud-save world load (LoadingWorldRecord, sub_591A30); without one it makes a new
+  // world record and succeeds. Any other status fails the zone. The difficulty it replies with is the one the session's
+  // zone starts at (sessions.setZoneDifficulty).
   router.post("/fortnite/api/game/v2/world/validate", requireAuth(tokens), (req, res) => {
     log("World", `validate for session ${req.query.sessionId ?? "(none)"}: ${JSON.stringify(req.body ?? {})}`);
     const mission = findMission(req.body?.theaterMissionId) ?? sessionMission(sessions, String(req.query.sessionId ?? ""));
@@ -41,7 +40,6 @@ export function worldRoutes({ tokens, sessions, profiles }) {
     if (isDedicatedServerToken(req.session)) sessions.setZoneDifficulty(String(req.query.sessionId ?? ""), zoneDifficultyInfo.rowName);
     const info = req.body ?? {};
     res.json({
-      worldId: String(info.worldId ?? ""),
       theaterId: String(info.theaterId ?? mission.theaterId ?? ""),
       theaterMissionId: String(info.theaterMissionId ?? mission.missionGuid ?? ""),
       theaterMissionAlertId: String(info.theaterMissionAlertId ?? ""),
