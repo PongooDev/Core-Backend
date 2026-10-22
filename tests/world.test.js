@@ -36,6 +36,36 @@ test("Plankerton, Canny Valley and Twine Peaks need the previous zone's Launch t
   for (const theater of info.theaters) assert.equal(theater.runtimeInfo.theaterVisibilityRequirements.questDefinition, undefined);
 });
 
+test("each zone of a theater opens with its Storm Shield Defense, and only storm shields and the tutorial are open before", () => {
+  const quests = readGameData("quests", {});
+  const questId = (path) => path.split(".").pop().toLowerCase();
+  for (const [index, theater] of info.theaters.entries()) {
+    const regionOf = new Map(theater.regions.flatMap((region) => region.tileIndices.map((tile) => [tile, region])));
+    for (const region of theater.regions) {
+      const zone = region.regionTags.gameplayTags.map(({ tagName }) => /^Stat\.Theater\.PvE0(\d)\.Difficulty0(\d)$/.exec(tagName)).find(Boolean);
+      const gate = region.requirements.questDefinition;
+      if (!zone) {
+        assert.equal(gate, undefined);
+        continue;
+      }
+      assert.equal(gate, `/Game/Quests/Outpost/OutpostQuest_T${zone[1]}_L${zone[2]}.OutpostQuest_T${zone[1]}_L${zone[2]}`);
+      assert.ok(quests[questId(gate)], gate);
+    }
+    for (const mission of info.missions[index].availableMissions) {
+      if (regionOf.get(mission.tileIndex).requirements.questDefinition) continue;
+      assert.ok(["Outpost", "AlwaysActive"].includes(theater.tiles[mission.tileIndex].tileType), `${theater.uniqueId} tile ${mission.tileIndex}`);
+      assert.match(mission.missionDifficultyInfo.rowName, /_Outpost1$|^Theater_Tutorial_/);
+    }
+  }
+  // Plankerton, Canny Valley and Twine Peaks hand out each zone's first story quest from that zone's defense.
+  for (const [theater, prefix] of [[2, "plankertonquest"], [3, "cannyvalleyquest"], [4, "twinepeaksquest"]]) {
+    for (let zone = 1; zone <= 5; zone += 1) {
+      const defense = quests[`outpostquest_t${theater}_l${zone}`];
+      assert.ok(defense.hiddenRewards.some((reward) => reward.templateId === `Quest:${prefix}_filler_1_d${zone}`), `${prefix} ${zone}`);
+    }
+  }
+});
+
 test("missions sit on every AlwaysActive tile, on each region's share of Normal tiles and on the storm shield", () => {
   // The same counts as Epic's world info the theaters come from.
   assert.deepEqual(info.missions.map((theater) => theater.availableMissions.length), [25, 57, 45, 42, 1]);

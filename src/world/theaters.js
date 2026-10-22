@@ -20,6 +20,27 @@ for (const { data } of theaters) {
   if (questDefinition) data.runtimeInfo.requirements = { ...data.runtimeInfo.requirements, questDefinition };
 }
 
+// The storm shield opens each zone of a theater: the client hides a region's tiles under the storm until
+// IsRequirementsMet(region Requirements) passes (sub_812C00), and every zone's story quests (tag
+// Stat.Theater.PvE0<t>.Difficulty0<n>, objectives complete_pve0<t>_diff<n>) start from Storm Shield Defense <n>
+// (OutpostQuest_T<t>_L<n>, bExpandsStormShield). The dump's regions have their requirements emptied, so each zone
+// gets that defense's quest as Requirements.QuestDefinition again.
+const outpostQuest = (theater, defense) =>
+  `/Game/Quests/Outpost/OutpostQuest_T${theater}_L${defense}.OutpostQuest_T${theater}_L${defense}`;
+function zoneGate(region) {
+  for (const { tagName } of region.regionTags?.gameplayTags ?? []) {
+    const zone = /^Stat\.Theater\.PvE0(\d)\.Difficulty0(\d)$/.exec(tagName);
+    if (zone) return outpostQuest(Number(zone[1]), Number(zone[2]));
+  }
+  return undefined;
+}
+for (const { data } of theaters) {
+  for (const region of data.regions) {
+    const questDefinition = zoneGate(region);
+    if (questDefinition) region.requirements = { ...region.requirements, questDefinition };
+  }
+}
+
 const digest = (text) => crypto.createHash("sha1").update(text).digest();
 const fraction = (bytes) => bytes.readUInt32BE(0) / 0x100000000;
 
