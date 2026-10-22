@@ -112,6 +112,29 @@ test("an outpost quest done raises its theater's storm shield to its leg, making
   }
 });
 
+// The gameserver sends ClientOnBuildingLevelChanged once its copy of profile0 shows the core above the level it recorded
+// at the won defense, so the new level has to come back in this response.
+test("the EndPrimaryMission that completes a storm shield quest returns the core's new level to the gameserver", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "UpgradePlayer");
+    const dedicated = await dedicatedServerToken(backend.port);
+    const at = (name, body, rvn) => post(backend.port,
+      `/fortnite/api/game/v2/profile/${player.accountId}/dedicated_server/${name}?profileId=profile0&rvn=${rvn}`, dedicated, body);
+    await post(backend.port, route("client", player.accountId, "CreateOrUpgradeOutpostItem"), player.token, { templateId: "Outpost:outpostcore_pve_01" });
+    await at("UpdateQuests", { advance: onboarding }, -1);
+    const known = (await at("QueryProfile", {}, -1)).body;
+    const [[coreId]] = outposts(known.profileChanges[0].profile);
+
+    const response = (await at("EndPrimaryMission", { matchmakingSessionId: "", missionName: "m", missionStatus: "Succeeded", advance: firstLeg }, known.profileRevision)).body;
+    assert.equal(response.profileChangesBaseRevision, known.profileRevision);
+    assert.deepEqual(response.profileChanges.filter(({ itemId, attributeName }) => itemId === coreId && attributeName === "level"),
+      [{ changeType: "itemAttrChanged", itemId: coreId, attributeName: "level", attributeValue: 1 }]);
+  } finally {
+    backend.close();
+  }
+});
+
 test("the gameserver makes, saves and records tiers on a deployable base, and can abort a disintegration", async () => {
   const backend = await startBackend();
   try {
