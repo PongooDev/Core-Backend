@@ -25,6 +25,11 @@ export function assignToSquad(session, characterId, squadId, slotIndex) {
   const tracker = session.profile("profile0");
   const { profile } = tracker;
   const item = profile.items[characterId];
+  // A hero out on an expedition stays in its expedition squad until it comes home
+  // (EFortSquadSlottingRestrictionReason::ItemIsOnActiveExpedition).
+  if (item?.attributes.squad_id && getSquad(item.attributes.squad_id)?.type === "ExpeditionSquad") {
+    refuse(`${item.templateId} is out on an expedition`);
+  }
 
   if (squadId === "") {
     if (!item) return; // the recycle flow unassigns, then recycles without waiting
