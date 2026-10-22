@@ -32,6 +32,17 @@ export function publicAccountRoutes({ accounts, tokens }) {
     res.json(accountJson(account));
   });
 
+  // The persona service's QueryUserIdMapping (OnlinePersonaMcp, sub_3822250 builds /api/public/account/lookup?q=`name, sub_3860640
+  // parses the reply): the friends list's "add by name" goes through it.
+  router.get("/persona/api/public/account/lookup", requireAuth(tokens), (req, res) => {
+    const account = accounts.findByName(String(req.query.q ?? ""));
+    if (!account) {
+      return sendError(res, 404, "errors.com.epicgames.account.account_not_found",
+        `Sorry, we couldn't find an account for ${req.query.q ?? ""}`);
+    }
+    res.json({ ...accountJson(account), externalAuths: {} });
+  });
+
   router.get("/account/api/public/account/:accountId", requireAuth(tokens), findAccount, (req, res) => {
     res.json(accountJson(req.account));
   });

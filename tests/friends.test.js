@@ -111,6 +111,9 @@ test("players are found by display name, and several at once by id", async () =>
     const byName = await get(backend.port, "/account/api/public/account/displayName/lookuptwo", one.token);
     assert.deepEqual([byName.body.id, byName.body.displayName], [two.accountId, "LookupTwo"]);
     assert.equal((await get(backend.port, "/account/api/public/account/displayName/Nobody", one.token)).status, 404);
+    const persona = await get(backend.port, "/persona/api/public/account/lookup?q=lookuptwo", one.token);
+    assert.deepEqual([persona.body.id, persona.body.displayName], [two.accountId, "LookupTwo"]);
+    assert.equal((await get(backend.port, "/persona/api/public/account/lookup?q=Nobody", one.token)).status, 404);
 
     const many = await get(backend.port, `/account/api/public/account?accountId=${one.accountId}&accountId=${two.accountId}&accountId=${"0".repeat(32)}`, one.token);
     assert.deepEqual(many.body.map((account) => account.displayName), ["LookupOne", "LookupTwo"]);
