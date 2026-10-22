@@ -54,6 +54,23 @@ JsonObject TableRows(JsonNode? table)
     if (!tables.TryGetValue(key, out var rows)) tables[key] = rows = LoadRows(provider, table);
     return rows;
 }
+
+// GetMaxDurability: 1 without the stats row or its WeaponDurabilityRarity row (DurabilityRowName), else
+// (max(0, Level - BaseLevel) x DurabilityScale + 1) x the row's column for the definition's rarity, truncated, and 1 if
+// that is 0.
+JsonNode? Row(JsonObject rows, string name) => rows.FirstOrDefault(r => r.Key.Equals(name, StringComparison.OrdinalIgnoreCase)).Value;
+int MaxDurability(JsonNode? statHandle, string rarity, int level)
+{
+    if (statHandle?["DataTable"] is not JsonObject statTable || statHandle["RowName"]?.GetValue<string>() is not { } statRow || statRow == "None"
+        || Row(TableRows(statTable), statRow) is not JsonObject stats) return 1;
+    if (stats["Durability"] is not JsonObject durabilityTable || stats["DurabilityRowName"]?.GetValue<string>() is not { } durabilityRow || durabilityRow == "None"
+        || Row(TableRows(durabilityTable), durabilityRow) is not JsonObject byRarity) return 1;
+    var baseLevel = stats["BaseLevel"]?.GetValue<int>() ?? 0;
+    var scale = stats["DurabilityScale"]?.GetValue<float>() ?? 0f;
+    var max = (int)(((float)Math.Max(0, level - baseLevel) * scale + 1.0f) * (byRarity[rarity]?.GetValue<int>() ?? 1));
+    return max == 0 ? 1 : max;
+}
+
 var expeditions = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var characters = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var cardPacks = new SortedDictionary<string, object>(StringComparer.Ordinal);
@@ -86,6 +103,12 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         ["tier"] = Enum(properties?["Tier"]) ?? "No_Tier"
     };
     if (Strings(properties?["GameplayTags"]) is { Count: > 0 } itemTags) ((SortedDictionary<string, object>)items[templateId])["tags"] = itemTags;
+    // The MCP template's static_max_durability (UFortWorldItemDefinition's template export sub_5FCE60 writes it when
+    // bItemHasDurability is set): GetMaxDurability at level 0. Weapons, traps, the edit tool and building pieces
+    // (UFortWeaponItemDefinition, sub_837C20) read it from their WeaponStatHandle row; gadgets have their own.
+    if (profile == "theater" && ItemClasses.Lineage(export.ExportType).Contains("FortWeaponItemDefinition")
+        && (properties?["bItemHasDurability"]?.GetValue<bool>() ?? true))
+        ((SortedDictionary<string, object>)items[templateId])["maxDurability"] = MaxDurability(properties?["WeaponStatHandle"], (string)((SortedDictionary<string, object>)items[templateId])["rarity"], 0);
     // The in-game name (DisplayName), for the admin panel.
     if (properties?["DisplayName"]?["SourceString"]?.GetValue<string>() is { Length: > 0 } displayName)
         ((SortedDictionary<string, object>)items[templateId])["name"] = displayName;

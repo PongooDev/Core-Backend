@@ -9,7 +9,11 @@ dotnet run -c Release --project tools/extractor -- "<build folder with FortniteG
 
 - `quests.json`: every quest's type, objectives, rewards and prerequisites.
 - `items.json`: every item definition's class, the profile it lives in (`profile` for account items, `theater` for
-  world items) and its stack limit (the asset's `MaxStackSize`, else the class constructor's default).
+  world items) and its stack limit (the asset's `MaxStackSize`, else the class constructor's default). World items of
+  weapon definitions (weapons, traps, building pieces) that have durability (`bItemHasDurability`, unless the asset
+  turns it off) carry `maxDurability`, the MCP template's static_max_durability: GetMaxDurability at level 0, from the
+  definition's `WeaponStatHandle` row (`BaseLevel`, `DurabilityScale`) and its `WeaponDurabilityRarity` row
+  (`DurabilityRowName`) at the item's rarity; 1 when either row is missing.
 
 Item template ids are resolved with the build's own asset manager rules (`PrimaryAssetTypesToScan` in
 `DefaultGame.ini`): an asset gets the type of the rule whose directory holds it and whose base class it derives from.

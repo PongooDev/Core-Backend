@@ -1,4 +1,5 @@
 import { slotUnlockNode } from "../gamedata/homebase.js";
+import { getItem } from "../gamedata/items.js";
 import { readGameData } from "../gamedata/read.js";
 import { startingQuests } from "../gamedata/quests.js";
 import { ownsNode } from "./homebase.js";
@@ -54,12 +55,25 @@ function leadCandidate(profile) {
 }
 
 export function needsSetUp(profile) {
+  if (profile.profileId === "theater0") return !migrated(profile, "itemDurability");
   if (profile.profileId !== "profile0") return false;
   return startingQuests.some((questId) => !findQuestItem(profile, questId)) || Boolean(defaultHero && !heroes(profile).length)
     || Boolean(leadCandidate(profile)) || schematicMigrations.some(({ name }) => !migrated(profile, name)) || !migrated(profile, "levelXp");
 }
 
-export function setUpProfile(session) {
+// theater0's world items granted before Core gave new ones their template's durability (profiles/items.js) get it, once;
+// an item that has a durability keeps it.
+function setUpTheater(session) {
+  const tracker = session.profile("theater0");
+  for (const [itemId, item] of Object.entries(tracker.profile.items)) {
+    const maxDurability = getItem(item.templateId)?.maxDurability;
+    if (maxDurability !== undefined && item.attributes && !("durability" in item.attributes)) tracker.setItemAttribute(itemId, "durability", maxDurability);
+  }
+  tracker.profile.coreMigrations = [...(tracker.profile.coreMigrations ?? []), "itemDurability"];
+}
+
+export function setUpProfile(session, profileId = "profile0") {
+  if (profileId === "theater0") return setUpTheater(session);
   for (const questId of startingQuests) grant(session, `Quest:${questId}`, 1);
 
   const { profile } = session.profile("profile0");

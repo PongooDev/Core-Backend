@@ -26,11 +26,11 @@ export function openSession(profiles, accountId, { setUp = true } = {}) {
       if (!opened.has(profileId)) {
         const created = !profiles.exists(accountId, profileId);
         let profile = profiles.load(accountId, profileId);
-        // A new profile0 is set up as a command of its own first (profiles/setup.js), so this one starts from it. No
-        // client has seen a profile made just now, so what it starts with leaves it at its first revision.
+        // A new profile0 or theater0 is set up as a command of its own first (profiles/setup.js), so this one starts from
+        // it. No client has seen a profile made just now, so what it starts with leaves it at its first revision.
         if (setUp && needsSetUp(profile)) {
           const setup = openSession(profiles, accountId, { setUp: false });
-          setUpProfile(setup);
+          setUpProfile(setup, profileId);
           setup.commit({ newRevision: !created });
           // The setup may only have noted a one-time migration (coreMigrations), which no tracked change saves.
           profiles.save(setup.profile(profileId).profile);

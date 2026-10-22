@@ -42,9 +42,12 @@ export function cardPackAttributes(templateId, packSource = "Store") {
   return isChoicePack(templateId) ? { pack_source: packSource, options: rollOptions(templateId) } : { pack_source: packSource };
 }
 
+// A world item's FFortItemEntry is read from its attributes by property name; without durability it loads at the entry's
+// default, 1.0, and breaks on its first use. New ones start at their template's static_max_durability (🟡).
 function addItem(tracker, templateId, quantity, info, options) {
   const itemId = crypto.randomUUID();
   const attributes = info.profile === "profile" ? { level: info.minLevel ?? 1, item_seen: 0, ...structuredClone(unassigned[info.class]) } : {};
+  if (info.profile === "theater" && info.maxDurability !== undefined) attributes.durability = info.maxDurability;
   if (info.class === "FortCardPackItemDefinition") Object.assign(attributes, cardPackAttributes(templateId, options.packSource));
   if (info.class === "FortWorkerType") Object.assign(attributes, rollWorkerAttributes(templateId));
   if (info.class === "FortHeroType") Object.assign(attributes, heroAttributes(templateId));
