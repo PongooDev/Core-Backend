@@ -82,6 +82,7 @@ export function grant(session, templateId, quantity, options = {}) {
     if (typeOf(entry.templateId) === "quest") refreshQuest(session, entry.itemId);
     else itemEvent(session, ["Acquire"], entry.templateId, entry.quantity);
   }
+  if (granted.some((entry) => entry.profileId === "profile0" && typeOf(entry.templateId) !== "quest")) refreshHeldItems(session);
   return granted;
 }
 
@@ -120,7 +121,10 @@ export function hasTag(tags, wanted) {
   return tags.some((tag) => tag.toLowerCase() === target || tag.toLowerCase().startsWith(`${target}.`));
 }
 
-// ObjectiveStatTable conditions: "Squad.Id == x", "Squad.Slot == n", "Item HasTag t", joined by && and ||.
+// ObjectiveStatTable conditions: "Squad.Id == x", "Squad.Slot == n", "Item HasTag t", "Item.Level >= n", joined by && and ||.
+// (Item.Rarity and Item.Tier only appear on Craft stats, which the gameserver counts.)
+const compare = { "==": (a, b) => a === b, "!=": (a, b) => a !== b, ">=": (a, b) => a >= b, "<=": (a, b) => a <= b, ">": (a, b) => a > b, "<": (a, b) => a < b };
+
 function conditionHolds(condition, item, tags) {
   if (!condition.trim()) return true;
   return condition.split("||").some((either) => either.split("&&").every((term) => {
@@ -131,18 +135,30 @@ function conditionHolds(condition, item, tags) {
     if (match) return item.attributes.squad_slot_idx === Number(match[1]);
     match = text.match(/^Item\s+HasTag\s+(\S+)$/i);
     if (match) return hasTag(tags, match[1]);
+    match = text.match(/^Item\.Level\s*(==|!=|>=|<=|>|<)\s*(\d+)$/i);
+    if (match) return compare[match[1]](item.attributes.level ?? 1, Number(match[2]));
     return false;
   }));
 }
 
-function assignedCount(profile, stat) {
-  return Object.values(profile.items).filter((item) => {
-    if (!item.attributes.squad_id) return false;
-    if (stat.templateId && typeOf(item.templateId) !== stat.templateId.toLowerCase()) return false;
-    const tags = getCharacter(item.templateId)?.tags ?? [];
-    return (!stat.targetTags || hasTag(tags, stat.targetTags)) && conditionHolds(stat.condition, item, tags);
-  }).length;
+// Whether an account item is what a stat row is about: its TemplateId (the item type), TargetTags and Condition.
+function statMatches(stat, item) {
+  if (stat.templateId && typeOf(item.templateId) !== stat.templateId.toLowerCase()) return false;
+  const tags = getCharacter(item.templateId)?.tags ?? getItem(item.templateId)?.tags ?? [];
+  return (!stat.targetTags || hasTag(tags, stat.targetTags)) && conditionHolds(stat.condition, item, tags);
 }
+
+function assignedCount(profile, stat) {
+  return Object.values(profile.items).filter((item) => item.attributes.squad_id && statMatches(stat, item)).length;
+}
+
+// HasItem: matching items held. HasUpgraded: matching items held that have been levelled at least once.
+function heldCount(profile, stat) {
+  const upgraded = stat.type === "HasUpgraded";
+  return Object.values(profile.items).filter((item) => (!upgraded || (item.attributes.level ?? 1) > 1) && statMatches(stat, item)).length;
+}
+
+const heldStats = { HasAssignedWorker: assignedCount, HasItem: heldCount };
 
 // Objectives that describe what the player holds rather than events: owning an item, a finished quest, or a
 // character assigned somewhere. They are re-counted whenever that could have changed, including when the quest is granted.
@@ -154,7 +170,8 @@ function stateProgress(profile, objective) {
     return Object.values(profile.items).some((item) => sameId(item.templateId, objective.item) && isDone(item)) ? 1 : 0;
   }
   const stat = objective.stat && getObjectiveStat(objective.stat);
-  if (stat?.type === "HasAssignedWorker") return assignedCount(profile, stat);
+  if (heldStats[stat?.type]) return heldStats[stat.type](profile, stat);
+  if (stat?.type === "HasUpgraded") return heldCount(profile, stat);
   return undefined;
 }
 
@@ -167,14 +184,32 @@ function refreshQuest(session, itemId) {
   }
 }
 
-export function refreshAssignments(session) {
+// Re-counts the objectives about what the player holds (assigned characters, HasItem) after squads or items changed.
+export function refreshHeldItems(session) {
   const tracker = session.profile("profile0");
   for (const { itemId, quest } of activeQuests(tracker)) {
     for (const objective of quest.objectives) {
       const stat = objective.stat && getObjectiveStat(objective.stat);
-      if (stat?.type === "HasAssignedWorker") setObjective(session, itemId, objective, assignedCount(tracker.profile, stat));
+      if (heldStats[stat?.type]) setObjective(session, itemId, objective, heldStats[stat.type](tracker.profile, stat));
     }
   }
+}
+
+// UpgradeItem / ConvertItem (and the collection book's UpgradeSlottedItem / ConvertSlottedItem) on an account item:
+// each Upgrade and HasUpgraded stat (or HasConverted) the item matches after the change counts once, as do objectives
+// with the Upgrade (Convert) item event naming the item's template.
+export function itemChanged(session, change, item, templateId = item.templateId) {
+  const tracker = session.profile("profile0");
+  const types = change === "Upgrade" ? ["Upgrade", "HasUpgraded"] : ["HasConverted"];
+  for (const { itemId, item: questItem, quest } of activeQuests(tracker)) {
+    for (const objective of quest.objectives) {
+      const stat = objective.stat && getObjectiveStat(objective.stat);
+      if (!stat || !types.includes(stat.type) || !statMatches(stat, item)) continue;
+      setObjective(session, itemId, objective, (questItem.attributes[`completion_${objective.name}`] ?? 0) + 1);
+    }
+  }
+  itemEvent(session, [change], templateId, 1);
+  refreshHeldItems(session);
 }
 
 // Completes and claims every Onboarding quest, following the chain each one grants, which is what the client checks.

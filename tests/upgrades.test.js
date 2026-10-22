@@ -118,3 +118,70 @@ test("RecycleItem gives back the item's recycle XP for its level, and won't take
     backend.close();
   }
 });
+
+test("levelling and evolving items advances the quests that wait on it, by item type, tags and level", async () => {
+  const backend = await startBackend();
+  try {
+    const { give, profile, run, find } = await setup(backend);
+    const quest = async (questId) => Object.values((await profile()).items).find((item) => item.templateId === `Quest:${questId}`)?.attributes;
+    await give("AccountResource:heroxp", 100000);
+    await give("AccountResource:schematicxp", 100000);
+    await give("AccountResource:personnelxp", 100000);
+
+    // Hero Training - Stage 1 ("Level Up a Hero") is only advanced by a hero; on completion it grants Weapon Enhancement.
+    await give("Quest:challenge_herotraining_1");
+    await give("Hero:hid_commando_007_uc_t01");
+    await give("Defender:did_defenderassault_basic_c_t01");
+    const [defenderId] = await find("Defender:did_defenderassault_basic_c_t01");
+    await run("UpgradeItem", { targetItemId: defenderId });
+    assert.equal((await quest("challenge_herotraining_1")).completion_upgrade_any_hero, 0);
+    const [heroId] = await find("Hero:hid_commando_007_uc_t01");
+    assert.equal((await run("UpgradeItem", { targetItemId: heroId })).status, 200);
+    assert.equal((await quest("challenge_herotraining_1")).completion_upgrade_any_hero, 1);
+    assert.equal((await quest("challenge_herotraining_1")).quest_state, "Completed");
+    const [stageOneId] = await find("Quest:challenge_herotraining_1");
+    assert.equal((await run("ClaimQuestReward", { questId: stageOneId })).status, 200);
+    assert.equal((await quest("challenge_weaponupgrade_1")).quest_state, "Active");
+
+    // upgrade_any_weapon: a schematic with the Trap or Weapon tag.
+    await give("Schematic:sid_floor_spikes_wood_c_t01");
+    const [trapId] = await find("Schematic:sid_floor_spikes_wood_c_t01");
+    await run("UpgradeItem", { targetItemId: trapId });
+    assert.equal((await quest("challenge_weaponupgrade_1")).completion_upgrade_any_weapon, 1);
+
+    // upgrade_any_worker (Homebase.Worker or Homebase.Manager) and upgrade_any_defender.
+    await give("Quest:challenge_workertraining_1");
+    await give("Quest:challenge_defendertraining_1");
+    await give("Worker:managerdoctor_c_t01");
+    const [managerId] = await find("Worker:managerdoctor_c_t01");
+    await run("UpgradeItem", { targetItemId: managerId });
+    await run("UpgradeItem", { targetItemId: defenderId });
+    assert.equal((await quest("challenge_workertraining_1")).completion_upgrade_any_worker, 1);
+    assert.equal((await quest("challenge_defendertraining_1")).completion_upgrade_any_defender, 1);
+
+    // "Level Up a Ninja to Level 3": a ninja reaching level 3, or one already there when the quest is granted.
+    await give("Quest:heroquest_ninja_2");
+    await give("Hero:hid_ninja_007_r_t01");
+    const [ninjaId] = await find("Hero:hid_ninja_007_r_t01");
+    await run("UpgradeItem", { targetItemId: heroId });
+    await run("UpgradeItem", { targetItemId: ninjaId });
+    assert.equal((await quest("heroquest_ninja_2")).completion_upgrade_ninja_lvl_3, 0);
+    await run("UpgradeItem", { targetItemId: ninjaId });
+    assert.equal((await quest("heroquest_ninja_2")).completion_upgrade_ninja_lvl_3, 1);
+    await give("Quest:heroquest_outlander_2");
+    assert.equal((await quest("heroquest_outlander_2")).completion_upgrade_outlander_lvl_3, 0);
+    await give("Quest:heroquest_soldier_1");
+    assert.equal((await quest("heroquest_soldier_1")).completion_upgrade_soldier, 1);
+
+    // Hero Training - Stage 2 ("Evolve a Hero").
+    await give("Quest:challenge_herotraining_2");
+    await give("Hero:hid_constructor_rushbase_uc_t01");
+    await give("AccountResource:reagent_c_t01", 7);
+    await give("HomebaseNode:t1_main_5faa4c765");
+    const [constructorId] = await find("Hero:hid_constructor_rushbase_uc_t01");
+    assert.equal((await run("ConvertItem", { targetItemId: constructorId, conversionIndex: 0 })).status, 200);
+    assert.equal((await quest("challenge_herotraining_2")).completion_convert_any_hero, 1);
+  } finally {
+    backend.close();
+  }
+});

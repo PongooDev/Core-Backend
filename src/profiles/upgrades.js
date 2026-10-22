@@ -2,6 +2,7 @@ import { McpError } from "../errors.js";
 import { getItem } from "../gamedata/items.js";
 import { readGameData } from "../gamedata/read.js";
 import { grantItem } from "./items.js";
+import { itemChanged } from "./progress.js";
 import { hasUnlocked } from "./unlocks.js";
 
 // Levelling, evolving and recycling account items, from the game data (UFortAccountItemDefinition):
@@ -67,6 +68,7 @@ export function upgradeItem(session, itemId, profileId = "profile0") {
   if (!cost) fail(`No level cost for ${info.levelCost} level ${level}`);
   pay(session.profile("profile0"), [{ templateId: xpResource[info.class], quantity: cost }]);
   tracker.setItemAttribute(itemId, "level", level + 1);
+  itemChanged(session, "Upgrade", tracker.profile.items[itemId]);
 }
 
 // The evolved item takes the old one's place, id and attributes (level, squad slot, favorite) included.
@@ -82,6 +84,7 @@ export function convertItem(session, itemId, conversionIndex, profileId = "profi
   const attributes = { ...item.attributes, item_seen: 0 };
   tracker.removeItem(itemId);
   tracker.addItem(itemId, { templateId: result.templateId, attributes, quantity: 1 });
+  itemChanged(session, "Convert", tracker.profile.items[itemId], item.templateId);
 }
 
 export function recycleItem(session, itemId) {

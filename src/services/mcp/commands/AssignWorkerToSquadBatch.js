@@ -1,5 +1,5 @@
 import { McpError } from "../../../errors.js";
-import { refreshAssignments } from "../../../profiles/progress.js";
+import { refreshHeldItems } from "../../../profiles/progress.js";
 import { assignToSquad } from "../../../profiles/squads.js";
 
 // Registered in this build but nothing in the client sends it.
@@ -9,5 +9,5 @@ export function assignWorkerToSquadBatch({ req, session }) {
     throw new McpError("errors.com.epicgames.fortnite.invalid_parameter", "characterIds, squadIds and slotIndices must be the same length");
   }
   characterIds.forEach((characterId, i) => assignToSquad(session, String(characterId), String(squadIds[i]), slotIndices[i]));
-  refreshAssignments(session);
+  refreshHeldItems(session);
 }
