@@ -82,3 +82,41 @@ test("reward vouchers buy their llamas in the store, which then opens them", asy
     backend.close();
   }
 });
+
+test("buying and opening llamas in the store advances the Loot Llamas quest", async () => {
+  const backend = await startBackend();
+  try {
+    const { token, accountId } = await userLogin(backend.port, "LootLlamasTest");
+    const command = (name, body) => post(backend.port, `/fortnite/api/game/v2/profile/${accountId}/client/${name}?profileId=profile0&rvn=-1`, token, body);
+    const give = (templateId, quantity) => post(backend.port, `/admin/api/accounts/${accountId}/grant`, undefined, { templateId, quantity });
+    const quest = async () => Object.values((await command("QueryProfile", {})).body.profileChanges[0].profile.items)
+      .find((item) => item.templateId === "Quest:homebaseonboardingafteroutpost").attributes;
+    const offers = (await get(backend.port, "/fortnite/api/storefront/v2/catalog", token)).body.storefronts
+      .find((storefront) => storefront.name === "CardPackStore").catalogEntries;
+    const offerFor = (templateId) => offers.find((offer) => offer.itemGrants[0].templateId === templateId);
+
+    await give("Quest:homebaseonboardingafteroutpost", 1);
+    await give("AccountResource:voucher_basicpack", 1);
+    await give("Currency:mtxpurchased", 50);
+
+    const mini = offerFor("CardPack:cardpack_basic");
+    const redeemed = await command("PurchaseCatalogEntry", { offerId: mini.offerId, purchaseQuantity: 1, currency: "GameItem",
+      currencySubType: "AccountResource:voucher_basicpack", expectedPrice: 1 });
+    assert.equal(redeemed.status, 200);
+    assert.deepEqual([(await quest()).completion_open_card_pack, (await quest()).completion_purchase_card_pack], [0, 0]);
+    const [{ itemGuid }] = redeemed.body.notifications[0].lootResult.items;
+    assert.equal((await command("OpenCardPack", { cardPackItemId: itemGuid, selectionIdx: 0 })).status, 200);
+    assert.equal((await quest()).completion_open_card_pack, 1);
+
+    const upgrade = offerFor("CardPack:cardpack_bronze");
+    const bought = await command("PurchaseCatalogEntry", { offerId: upgrade.offerId, purchaseQuantity: 1, currency: "MtxCurrency", expectedPrice: 50 });
+    assert.equal(bought.status, 200);
+    assert.equal((await quest()).completion_purchase_card_pack, 1);
+    assert.equal((await quest()).quest_state, "Active");
+
+    await command("UpdateQuestClientObjectives", { advance: [{ statName: "hbonboarding_watchoutpostunlock", count: 1 }] });
+    assert.notEqual((await quest()).quest_state, "Active");
+  } finally {
+    backend.close();
+  }
+});

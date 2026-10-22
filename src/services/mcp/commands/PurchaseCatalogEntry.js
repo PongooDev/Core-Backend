@@ -1,6 +1,6 @@
 import { McpError } from "../../../errors.js";
 import { lootEntry } from "../../../profiles/items.js";
-import { grant } from "../../../profiles/progress.js";
+import { grant, itemEvent } from "../../../profiles/progress.js";
 import { findOffer } from "../../../store/catalog.js";
 
 // V-Bucks are spread over these stacks; the cheapest kinds go first.
@@ -59,5 +59,6 @@ export function purchaseCatalogEntry({ req, session, notifications }) {
   if (offer.currencyType === "GameItem") spendItem(tracker, offer.currencySubType, total);
   else spendMtx(tracker, total);
   const items = grant(session, offer.templateId, purchaseQuantity, { packSource: "Store" }).map(lootEntry);
+  if (offer.templateId.toLowerCase().startsWith("cardpack:")) itemEvent(session, ["PurchaseCardPack"], offer.templateId, purchaseQuantity);
   notifications.push({ type: "CatalogPurchase", primary: true, lootResult: { items } });
 }
