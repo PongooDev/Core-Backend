@@ -28,22 +28,22 @@ test("the result's rarity is the highest tier whose cost the points reach", () =
 test("a key turns sacrificed items into an item of its kind, spending its resource and itself", () => {
   const session = memorySession();
   const tracker = session.profile("profile0");
+  tracker.addItem("recycler", { templateId: "HomebaseNode:t1_main_609c8a9a8", attributes: {}, quantity: 1 }); // Unlocks.Recycler.Upgrade3
   tracker.addItem("key", { templateId: key, attributes: {}, quantity: 2 });
   tracker.addItem("reagents", { templateId: "AccountResource:reagent_people", attributes: {}, quantity: 5 });
   tracker.addItem("a", { templateId: "Hero:hid_commando_007_r_t01", attributes: { level: 1, squad_id: "" }, quantity: 1 });
   tracker.addItem("b", { templateId: "Hero:hid_ninja_007_r_t01", attributes: { level: 1, squad_id: "" }, quantity: 1 });
   tracker.addItem("worker", { templateId: "Worker:workerbasic_c_t01", attributes: { level: 1, squad_id: "" }, quantity: 1 });
-  tracker.addItem("busy", { templateId: "Hero:hid_ninja_008_r_t01", attributes: { level: 1, squad_id: "Squad_Attribute_Medicine_EMTSquad" }, quantity: 1 });
 
   const notifications = [];
   assert.throws(() => transmogItem(session, key, ["worker"], notifications), /isn't enough/);
-  assert.throws(() => transmogItem(session, key, ["busy"], notifications), /in a squad/);
   assert.throws(() => transmogItem(session, "ConversionControl:cck_hero_ninja_unlimited", ["a"], notifications), /don't have/);
 
   // Two rare heroes: 80 + 80 = 160 points, Sturdy (rare), 4 people reagents.
   transmogItem(session, key, ["a", "b"], notifications);
   const [result] = notifications;
   assert.equal(result.type, "transmogResult");
+  assert.equal(result.primary, true);
   assert.deepEqual(result.recycledItems.map((entry) => entry.itemGuid), ["a", "b"]);
   assert.equal(result.transmoggedItems.length, 1);
   assert.match(result.transmoggedItems[0].itemType, /^Hero:hid_ninja_.*_r_t01$/);
@@ -53,8 +53,42 @@ test("a key turns sacrificed items into an item of its kind, spending its resour
   assert.equal(items.reagents.quantity, 1);
   assert.equal(items.key.quantity, 1);
   assert.ok(items[result.transmoggedItems[0].itemGuid]);
+});
 
-  assert.throws(() => transmogItem(session, key, ["worker", "busy"], notifications), /squad/);
+// UFortInventoryContext::IsRecyclable decides what the transform screen's picker offers, and the screen sends
+// TransmogItem without unassigning squad members first.
+test("the sacrifices are what the client's picker offers: squad members leave their squad, the hero squad stays", () => {
+  const session = memorySession();
+  const tracker = session.profile("profile0");
+  const keyFor = "ConversionControl:cck_hero_core_consumable";
+  tracker.addItem("key", { templateId: keyFor, attributes: {}, quantity: 5 });
+  tracker.addItem("reagents", { templateId: "AccountResource:reagent_people", attributes: {}, quantity: 50 });
+  const hero = (itemId, templateId, squadId, slot = 0) => tracker.addItem(itemId, {
+    templateId, attributes: { level: 1, squad_id: squadId, squad_slot_idx: squadId ? slot : -1 }, quantity: 1
+  });
+  hero("lead", "Hero:hid_commando_007_uc_t01", "Squad_Combat_AdventureSquadOne");
+  hero("support", "Hero:hid_ninja_007_uc_t01", "Squad_Combat_AdventureSquadOne", 2);
+  hero("medic", "Hero:hid_constructor_007_uc_t01", "Squad_Attribute_Medicine_EMTSquad");
+  hero("away", "Hero:hid_outlander_007_uc_t01", "Squad_Expedition_ExpeditionSquadOne");
+  hero("rare", "Hero:hid_commando_007_r_t01", "");
+  const notifications = [];
+
+  // The uncommon heroes' SacrificeRecipe (Recycle.Hero.UC) needs Recycler Upgrade2, the rare one's Upgrade3.
+  assert.throws(() => transmogItem(session, keyFor, ["medic"], notifications), /Unlocks\.Recycler\.Upgrade2/);
+  tracker.addItem("recycler2", { templateId: "HomebaseNode:t1_main_0abacb4e2", attributes: {}, quantity: 1 });
+  assert.throws(() => transmogItem(session, keyFor, ["rare"], notifications), /Unlocks\.Recycler\.Upgrade3/);
+
+  // "Cannot retire slotted hero": every hero in default_hero_squad_id, in any slot.
+  assert.throws(() => transmogItem(session, keyFor, ["lead"], notifications), /hero squad/);
+  assert.throws(() => transmogItem(session, keyFor, ["support"], notifications), /hero squad/);
+  tracker.setStat("default_hero_squad_id", "Squad_Combat_AdventureSquadTwo");
+  assert.throws(() => transmogItem(session, keyFor, ["medic", "away"], notifications), /expedition/);
+
+  transmogItem(session, keyFor, ["support", "medic"], notifications);
+  assert.equal(tracker.profile.items.support, undefined);
+  assert.equal(tracker.profile.items.medic, undefined);
+  assert.deepEqual(notifications[0].recycledItems.map((entry) => entry.itemGuid), ["support", "medic"]);
+  assert.ok(tracker.profile.items.lead);
 });
 
 test("TransmogItem works through the client route", async () => {
@@ -66,11 +100,29 @@ test("TransmogItem works through the client route", async () => {
     await give(key, 1);
     await give("AccountResource:reagent_people", 2);
     await give("Hero:hid_commando_007_r_t01", 1);
-    const items = Object.entries((await command("QueryProfile", {})).body.profileChanges[0].profile.items);
+    await give("HomebaseNode:t1_main_609c8a9a8", 1); // Recycler Upgrade3, which rare heroes' SacrificeRecipe needs
+    let items = Object.entries((await command("QueryProfile", {})).body.profileChanges[0].profile.items);
     const [heroId] = items.find(([, item]) => item.templateId === "Hero:hid_commando_007_r_t01");
     const transformed = await command("TransmogItem", { transmogKeyTemplateId: key, sacrificeItemIds: [heroId] });
     assert.equal(transformed.status, 200);
     assert.match(transformed.body.notifications[0].transmoggedItems[0].itemType, /^Hero:hid_ninja_.*_uc_t01$/);
+
+    // A permanent key: no item, unlocked by its skill tree node (Unlocks.DirectedAcquisition.People.Worker), paid in
+    // People. The client names the key by its definition's persistent name.
+    await give("HomebaseNode:t1_main_266068670", 1);
+    await give("AccountResource:peopleresource", 25);
+    await give("Worker:workerbasic_c_t01", 2);
+    items = Object.entries((await command("QueryProfile", {})).body.profileChanges[0].profile.items);
+    const workers = items.filter(([, item]) => item.templateId === "Worker:workerbasic_c_t01").map(([itemId]) => itemId);
+    const permanent = await command("TransmogItem", { transmogKeyTemplateId: "ConversionControl:CCK_Worker_Core_Unlimited", sacrificeItemIds: workers });
+    assert.equal(permanent.status, 200);
+    const [result] = permanent.body.notifications;
+    assert.equal(result.type, "transmogResult");
+    assert.equal(result.primary, true);
+    assert.match(result.transmoggedItems[0].itemType, /^Worker:/);
+    const after = (await command("QueryProfile", {})).body.profileChanges[0].profile.items;
+    assert.equal(Object.values(after).find((item) => item.templateId === "AccountResource:peopleresource").quantity, 5);
+    assert.ok(workers.every((itemId) => !after[itemId]));
   } finally {
     backend.close();
   }

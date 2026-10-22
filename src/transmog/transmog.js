@@ -16,6 +16,13 @@ import { hasUnlocked } from "../profiles/unlocks.js";
 // Core's: the result is a random item named by the key's loot tier group (CCK_People_Hero_Ninja -> a ninja hero,
 // CCK_Melee_Axe -> an axe, CCK_Weapon_Core -> any weapon), at that rarity and the lowest tier there is; Epic rolled
 // those groups on its servers.
+// What may be sacrificed is what the item picker offers (UFortInventoryContext::IsRecyclable, sub_2C18D40): not a hero
+// in the default hero squad ("Cannot retire slotted hero"), not an item whose SacrificeRecipe catalysts the skill tree
+// hasn't unlocked ("Recycle locked"). Items in any other squad are offered, and the client sends TransmogItem without
+// unassigning them first (the recycle screen does, the transform screen doesn't), so they leave their squad with the
+// item. Members of an expedition under way are kept (Core's choice: removing them would strand the expedition).
+const { recipes = {} } = readGameData("upgrades", {});
+const fallbackHeroSquad = "Squad_Combat_AdventureSquadOne";
 const keys = new Map(Object.entries(readGameData("transmog", {})).map(([templateId, key]) => [templateId.toLowerCase(), { templateId, ...key }]));
 const rarityCodes = ["c", "uc", "r", "vr", "sr"];
 const skipWords = new Set(["cck", "expedition", "core", "people", "common", "uncommon", "rare", "veryrare", "superrare", "unique", "sr"]);
@@ -65,13 +72,18 @@ export function transmogItem(session, keyTemplateId, sacrificeItemIds, notificat
 
   const ids = Array.isArray(sacrificeItemIds) ? sacrificeItemIds : [];
   if (!ids.length || new Set(ids).size !== ids.length) fail("Choose the items to transform");
+  const heroSquad = (profile.stats.attributes.default_hero_squad_id || fallbackHeroSquad).toLowerCase();
   let points = 0;
   for (const itemId of ids) {
     const item = typeof itemId === "string" && profile.items[itemId];
-    const worth = item && getItem(item.templateId)?.transmogPoints;
-    if (!worth) fail(`${itemId} can't be transformed`);
-    if (item.attributes.squad_id) fail(`${item.templateId} is in a squad`);
-    points += worth;
+    const info = item && getItem(item.templateId);
+    if (!info?.transmogPoints) fail(`${itemId} can't be transformed`);
+    const squadId = String(item.attributes.squad_id ?? "").toLowerCase();
+    if (info.class === "FortHeroType" && squadId === heroSquad) fail(`${item.templateId} is in your hero squad`);
+    if (squadId.startsWith("squad_expedition_")) fail(`${item.templateId} is out on an expedition`);
+    const catalysts = recipes[info.recycleRecipe]?.catalysts ?? [];
+    if (!hasUnlocked(profile, catalysts)) fail(`Unlock ${catalysts.join(", ")} on the skill tree to transform ${item.templateId}`);
+    points += info.transmogPoints;
   }
   const tier = transmogTier(key, points);
   if (tier < 0) fail(`${points} points isn't enough for ${key.templateId}`);
@@ -86,6 +98,7 @@ export function transmogItem(session, keyTemplateId, sacrificeItemIds, notificat
   });
   if (key.consumed && ownedKey) spend(tracker, key.templateId, 1);
   const result = choices[Math.floor(Math.random() * choices.length)];
+  // The grant also recounts the held-item objectives (HasAssignedWorker, HasItem) the sacrificed squad members counted for.
   const transmoggedItems = grant(session, result, 1).map(lootEntry);
   notifications.push({ type: "transmogResult", primary: true, transmoggedItems, recycledItems });
 }
