@@ -18,6 +18,7 @@ import { claimQuest, completeQuest, grant, skipTutorial } from "../profiles/prog
 import { createOutpost } from "../profiles/outposts.js";
 import { questIdOf, tutorialCompleted } from "../profiles/quests.js";
 import { openSession } from "../profiles/session.js";
+import { maxLevel, xpForLevel } from "../profiles/xp.js";
 import { categories, currencies, describeItem, searchCatalog, stormShields } from "./describe.js";
 import { requireLoopback, requirePanelRequest } from "./local.js";
 
@@ -25,8 +26,6 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const panel = path.join(here, "panel.html");
 const root = path.join(here, "..", "..");
 const startedAt = new Date().toISOString();
-const levels = readGameData("accountlevels", []);
-const maxLevel = levels.length ? levels[levels.length - 1].level : 1;
 const profileIds = ["profile0", "theater0", "outpost0", "collection_book_people0", "collection_book_schematics0"];
 
 function backendVersion() {
@@ -104,8 +103,7 @@ export function adminRoutes(context) {
       homebaseName: stats.homebase?.townName ?? "",
       xp: stats.xp ?? 0,
       maxLevel,
-      nextLevelXp: levels.find((entry) => entry.level === level + 1)?.xp ?? null,
-      levelXp: levels.find((entry) => entry.level === level)?.xp ?? 0,
+      xpForLevel: level < maxLevel ? xpForLevel(level) : null,
       currencies: currencies.map(({ key, label, templates }) => ({ key, label, quantity: sum(profile, templates) })),
       restXp: restItem ? { value: restValue(restItem.attributes), max: restItem.attributes.max_quota ?? 0 } : null,
       missionAlerts: record ? { remaining: alertsRemaining(withQuotaSlots(record)), pending: record.pendingMissionAlertRewards?.items?.length ?? 0 } : null,
@@ -215,13 +213,13 @@ export function adminRoutes(context) {
     if (quantity > 0) grantItem(session, currency.setAs ?? currency.templates[0], quantity);
   }));
 
-  // {level}: the account level, with the XP at its start; rest XP takes the level's cap and rate.
+  // {level}: the account level, at its start (no XP into it); rest XP takes the level's cap and rate.
   router.post("/admin/api/accounts/:accountId/level", change(({ req, res, session }) => {
     const level = Number(req.body?.level);
     if (!Number.isInteger(level) || level < 1 || level > maxLevel) return invalid(res, `The level must be 1 to ${maxLevel}`);
     const tracker = session.profile("profile0");
     tracker.setStat("level", level);
-    tracker.setStat("xp", levels.find((entry) => entry.level === level)?.xp ?? 0);
+    tracker.setStat("xp", 0);
     levelRest(session, level);
   }));
 

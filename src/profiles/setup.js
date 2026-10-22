@@ -5,6 +5,7 @@ import { ownsNode } from "./homebase.js";
 import { grant } from "./progress.js";
 import { findQuestItem } from "./quests.js";
 import { assignToSquad, characterType } from "./squads.js";
+import { levelStartXp, settleLevel } from "./xp.js";
 
 // What a new profile0 starts with that takes the game's rules to add, so the account's first login looks like any
 // later one:
@@ -22,6 +23,8 @@ import { assignToSquad, characterType } from "./squads.js";
 // - The bullet and shell ammo schematics, from UFortGameData DefaultInventoryList (Balance/DefaultGameData:
 //   Ammo_BulletsLight/Medium/Heavy, Ammo_Shells). Without them the crafting tab and hold-R quick craft have no ammo
 //   to offer. The energy cell schematic stays a reward of outpostquest_t1_l1, as Epic had it. Same once-only rule.
+// - The xp stat as XP into the current level (profiles/xp.js). Profiles saved before 2026-10-22 hold the total, which
+//   the client showed as an overfull bar (issue #7): theirs becomes what is past their level's start, once.
 // Profiles made before this, or left with no hero at all, get what they lack when they next load. So does a profile
 // whose lead slot is empty: its first hero in no squad takes it (heroes in other slots or on expeditions stay).
 const { defaultHero } = readGameData("newaccount", {});
@@ -53,7 +56,7 @@ function leadCandidate(profile) {
 export function needsSetUp(profile) {
   if (profile.profileId !== "profile0") return false;
   return startingQuests.some((questId) => !findQuestItem(profile, questId)) || Boolean(defaultHero && !heroes(profile).length)
-    || Boolean(leadCandidate(profile)) || schematicMigrations.some(({ name }) => !migrated(profile, name));
+    || Boolean(leadCandidate(profile)) || schematicMigrations.some(({ name }) => !migrated(profile, name)) || !migrated(profile, "levelXp");
 }
 
 export function setUpProfile(session) {
@@ -64,6 +67,13 @@ export function setUpProfile(session) {
     if (migrated(profile, name)) continue;
     for (const templateId of missingSchematics(profile, schematics)) grant(session, templateId, 1);
     profile.coreMigrations = [...(profile.coreMigrations ?? []), name];
+  }
+  if (!migrated(profile, "levelXp")) {
+    const { level = 1, xp = 0 } = profile.stats.attributes;
+    const inLevel = Math.max(0, xp - levelStartXp(level));
+    if (inLevel !== xp) session.profile("profile0").setStat("xp", inLevel);
+    settleLevel(session);
+    profile.coreMigrations = [...(profile.coreMigrations ?? []), "levelXp"];
   }
   if (defaultHero && !heroes(profile).length) grant(session, defaultHero, 1);
   const lead = leadCandidate(profile);

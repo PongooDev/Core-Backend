@@ -162,8 +162,9 @@ test("EarnScore gives every listed player XP, levels them up with their rewards,
       [1225802, 1225802, 0, 367741]);
     assert.deepEqual(earned.body.notifications.filter((entry) => entry.type === "levelUp").map((entry) => entry.level), [2, 3]);
 
+    // xp is what's past level 3's start (2,000,000 total).
     const stats = profileOf(await send("QueryProfile", {})).stats.attributes;
-    assert.deepEqual([stats.level, stats.xp], [3, 2451604]);
+    assert.deepEqual([stats.level, stats.xp], [3, 451604]);
     assert.equal(byTemplate(profileOf(await send("QueryProfile", {})), "Token:homebasepoints")[0]?.quantity, 2);
     const otherStats = profileOf(await post(backend.port, route("client", other.accountId, "QueryProfile"), other.token, {})).stats.attributes;
     assert.deepEqual([otherStats.level, otherStats.xp], [1, 612902]);

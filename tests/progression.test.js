@@ -1,5 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
 import { dedicatedServerToken, post, startBackend, userLogin } from "./helpers.js";
 
 const command = (accountId, name, rvn = -1) => `/fortnite/api/game/v2/profile/${accountId}/client/${name}?profileId=profile0&rvn=${rvn}`;
@@ -173,6 +175,51 @@ test("SetPinnedQuests keeps only real quest ids, once each", async () => {
     const pinned = await account.run("SetPinnedQuests", { pinnedQuestIds: [questId, questId, heroId, "missing"] });
     const change = pinned.body.profileChanges[0].profile.stats.attributes.client_settings;
     assert.deepEqual(change.pinnedQuestInstances, [questId]);
+  } finally {
+    backend.close();
+  }
+});
+
+test("account xp is the XP into the current level, carried over every level-up a match's XP reaches", async () => {
+  const backend = await startBackend();
+  try {
+    const account = await skippedAccount(backend);
+    const dedicated = await dedicatedServerToken(backend.port);
+    const stats = async () => (await account.run("QueryProfile", {})).body.profileChanges[0].profile.stats.attributes;
+    const earn = (totalScore) => post(backend.port, `/fortnite/api/game/v2/profile/${account.accountId}/dedicated_server/EarnScore?profileId=profile0&rvn=-1`,
+      dedicated, { playersAndScores: [{ accountId: account.accountId, totalScore, bCriticalMatchBonus: false }] });
+
+    // 1,000,000 score: 612,901 base XP and as much rest XP, 1,225,802 in all; level 2 starts at 1,000,000.
+    await earn(1000000);
+    assert.deepEqual([(await stats()).level, (await stats()).xp], [2, 225802]);
+
+    // Enough for two more levels in one match: each level from 2 needs 1,000,000 more.
+    const levelUps = (await earn(3500000)).body.notifications.filter((entry) => entry.type === "levelUp").map((entry) => entry.level);
+    const after = await stats();
+    assert.ok(levelUps.length >= 2, String(levelUps));
+    assert.equal(after.level, 2 + levelUps.length);
+    assert.ok(after.xp >= 0 && after.xp < 1000000, String(after.xp));
+    assert.equal((await account.find("Token:homebasepoints"))[1].quantity, 1 + levelUps.length);
+  } finally {
+    backend.close();
+  }
+});
+
+test("a profile saved with the total XP gets the XP past its level's start, once", async () => {
+  const backend = await startBackend();
+  try {
+    const account = await skippedAccount(backend);
+    const file = path.join(backend.dataDir, "accounts", account.accountId, "profiles", "profile0.json");
+    const saved = JSON.parse(fs.readFileSync(file, "utf8"));
+    // The issue's account: level 2 with 1,103,333 total, which the client showed as 662 of 600.
+    saved.stats.attributes.level = 2;
+    saved.stats.attributes.xp = 1103333;
+    saved.coreMigrations = saved.coreMigrations.filter((name) => name !== "levelXp");
+    fs.writeFileSync(file, JSON.stringify(saved));
+
+    const stats = async () => (await account.run("QueryProfile", {})).body.profileChanges[0].profile.stats.attributes;
+    assert.deepEqual([(await stats()).level, (await stats()).xp], [2, 103333]);
+    assert.deepEqual([(await stats()).level, (await stats()).xp], [2, 103333]);
   } finally {
     backend.close();
   }

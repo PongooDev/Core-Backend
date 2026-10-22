@@ -28,7 +28,7 @@ test("the panel searches accounts and edits balances, level, items, quests and s
     assert.equal((await admin(backend, `/accounts/${player.accountId}/currency`, { key: "nope", quantity: 1 })).status, 400);
 
     details = (await admin(backend, `/accounts/${player.accountId}/level`, { level: 12 })).body;
-    assert.deepEqual([details.level, details.xp], [12, details.levelXp]);
+    assert.deepEqual([details.level, details.xp, details.xpForLevel], [12, 0, 1000000]);
     assert.equal((await profileOf(backend, player)).stats.attributes.level, 12);
     assert.equal((await admin(backend, `/accounts/${player.accountId}/level`, { level: 9999 })).status, 400);
 

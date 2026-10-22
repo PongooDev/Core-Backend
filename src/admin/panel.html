@@ -511,8 +511,7 @@ function renderPlayer() {
 
 function overview(a) {
   const levelInput = el("input", { class: "field num", type: "number", min: 1, max: a.maxLevel, value: a.level ?? 1, "aria-label": "Level" });
-  const span = (a.nextLevelXp ?? a.xp) - a.levelXp;
-  const progress = a.nextLevelXp ? Math.max(0, Math.min(1, (a.xp - a.levelXp) / Math.max(1, span))) : 1;
+  const progress = a.xpForLevel ? Math.max(0, Math.min(1, a.xp / a.xpForLevel)) : 1;
   return el("div", {},
     el("div", { class: "tiles" },
       tile("Commander level", [a.level ?? 1, el("small", { text: `/ ${a.maxLevel}` })], "accent"),
@@ -523,7 +522,7 @@ function overview(a) {
       el("div", {},
         el("h3", { text: "Level and XP" }),
         el("div", { class: "bar", style: "margin:10px 0 6px" }, el("div", { style: `width:${(progress * 100).toFixed(1)}%` })),
-        el("div", { class: "note", text: a.nextLevelXp ? `${fmt(a.xp - a.levelXp)} of ${fmt(span)} XP to level ${(a.level ?? 1) + 1}` : "Max level" }),
+        el("div", { class: "note", text: a.xpForLevel ? `${fmt(a.xp)} of ${fmt(a.xpForLevel)} XP to level ${(a.level ?? 1) + 1}` : "Max level" }),
         el("div", { class: "actions", style: "margin-top:10px" }, levelInput, btn("Set level", () => post("level", { level: Number(levelInput.value) }, `Level set to ${levelInput.value}`), "primary"))),
       el("div", {},
         el("h3", { text: "Rest XP and mission alerts" }),
