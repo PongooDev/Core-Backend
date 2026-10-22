@@ -20,6 +20,22 @@ test("world info serves Epic's theaters, and everything they name exists in this
   }
 });
 
+test("Plankerton, Canny Valley and Twine Peaks need the previous zone's Launch the Rocket quest completed", () => {
+  const quests = readGameData("quests", {});
+  const gates = info.theaters.map((theater) => theater.runtimeInfo.requirements.questDefinition);
+  assert.deepEqual(gates, [undefined,
+    "/Game/Quests/Stonewood/StonewoodQuest_LaunchRocket_D5.StonewoodQuest_LaunchRocket_D5",
+    "/Game/Quests/Plankerton/PlankertonQuest_LaunchRocket_D5.PlankertonQuest_LaunchRocket_D5",
+    "/Game/Quests/CannyValley/CannyValleyQuest_LaunchRocket_D5.CannyValleyQuest_LaunchRocket_D5",
+    undefined]);
+  // Each gate is the quest that grants that zone's first storm shield quest.
+  for (const [gate, outpostQuest] of [[gates[1], "outpostquest_t2_l1"], [gates[2], "outpostquest_t3_l1"], [gates[3], "outpostquest_t4_l1"]]) {
+    const questId = gate.split(".").pop().toLowerCase();
+    assert.ok(quests[questId].hiddenRewards.some((reward) => reward.templateId === `Quest:${outpostQuest}`), questId);
+  }
+  for (const theater of info.theaters) assert.equal(theater.runtimeInfo.theaterVisibilityRequirements.questDefinition, undefined);
+});
+
 test("missions sit on every AlwaysActive tile, on each region's share of Normal tiles and on the storm shield", () => {
   // The same counts as Epic's world info the theaters come from.
   assert.deepEqual(info.missions.map((theater) => theater.availableMissions.length), [25, 57, 45, 42, 1]);

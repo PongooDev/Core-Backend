@@ -5,6 +5,21 @@ import { getDifficulty, missionAlertTier } from "../gamedata/world.js";
 // Theater layouts come from Epic's world info (see tools/theaters/import.mjs); the client ships none.
 const { theaters = [], rewards = {} } = readGameData("theaters", {});
 
+// The story opens each later theater: the client's TheaterSelect shows "Requires completing quest: {Quest}" for
+// RuntimeInfo.Requirements.QuestDefinition and only enables Select once AFortPlayerController::IsRequirementsMet
+// (sub_755C40: that quest held and completed) passes. The dump the layouts come from has its requirements emptied,
+// so the gates are restored from the quest chain: each zone's Launch the Rocket quest grants the next zone's first
+// storm shield quest ("Onward to Canny Valley!").
+const storyGates = {
+  D477605B4FA48648107B649CE97FCF27: "/Game/Quests/Stonewood/StonewoodQuest_LaunchRocket_D5.StonewoodQuest_LaunchRocket_D5",
+  E6ECBD064B153234656CB4BDE6743870: "/Game/Quests/Plankerton/PlankertonQuest_LaunchRocket_D5.PlankertonQuest_LaunchRocket_D5",
+  D9A801C5444D1C74D1B7DAB5C7C12C5B: "/Game/Quests/CannyValley/CannyValleyQuest_LaunchRocket_D5.CannyValleyQuest_LaunchRocket_D5"
+};
+for (const { data } of theaters) {
+  const questDefinition = storyGates[data.uniqueId];
+  if (questDefinition) data.runtimeInfo.requirements = { ...data.runtimeInfo.requirements, questDefinition };
+}
+
 const digest = (text) => crypto.createHash("sha1").update(text).digest();
 const fraction = (bytes) => bytes.readUInt32BE(0) / 0x100000000;
 
