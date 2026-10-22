@@ -39,13 +39,13 @@ test("XP boosts fill Token:xpboost, gifts go to someone else with a notification
     assert.equal(Object.values(friendView.body.profileChanges[0].profile.items).find((item) => item.templateId === "Token:xpboost").quantity, 784189);
     assert.deepEqual((await command(friend, "QueryProfile", {})).body.notifications ?? [], [], "delivered once");
 
-    // 100 score = 400,000 base XP: 30% of it (120,000) comes out of the boost.
+    // 1,000,000 score = 612,901 base XP: 30% of it (183,870) comes out of the boost.
     const earned = await post(backend.port, `/fortnite/api/game/v2/profile/${player.accountId}/dedicated_server/EarnScore?profileId=profile0&rvn=-1`, dedicated,
-      { playersAndScores: [{ accountId: player.accountId, totalScore: 100, bCriticalMatchBonus: true }] });
+      { playersAndScores: [{ accountId: player.accountId, totalScore: 1000000, bCriticalMatchBonus: true }] });
     const [notification] = earned.body.notifications.filter((entry) => entry.type === "earnScore");
     assert.deepEqual([notification.baseXPEarned, notification.bonusXPEarned, notification.boostXPEarned, notification.boostXPMissed],
-      [400000, 80000, 120000, 0]);
-    assert.equal((await itemOf(player, "Token:xpboost"))[1].quantity, 784189 - 120000);
+      [612901, 122580, 183870, 0]);
+    assert.equal((await itemOf(player, "Token:xpboost"))[1].quantity, 784189 - 183870);
   } finally {
     backend.close();
   }

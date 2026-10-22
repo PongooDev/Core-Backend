@@ -6,7 +6,7 @@ import { completeMissionAlert } from "../../../profiles/alerts.js";
 import { grantItem } from "../../../profiles/items.js";
 import { createDeployableBase, saveDeployableBase, saveOutpost, updateOutpostCore, updateTierProgression } from "../../../profiles/outposts.js";
 import { advanceObjective } from "../../../profiles/progress.js";
-import { earnScore } from "../../../profiles/xp.js";
+import { earnScore, noXpEarned } from "../../../profiles/xp.js";
 import { atDifficulty, findMission } from "../../../world/theaters.js";
 import { clientQuestLogin } from "./ClientQuestLogin.js";
 
@@ -168,17 +168,14 @@ export const serverCommands = {
   // from world info, at the difficulty the session played, as card packs the after-mission rewards screen opens
   // (pack_source "Mission"). A mission alert on it (the zone's theaterMissionAlertId) puts the alert's rewards in the
   // player's pending mission alert rewards.
-  // The match's score comes with it too ({numMissionPoints, bCriticalMatchBonus, earnedBadgeData}): this build never
-  // sends EarnScore (nothing in the binary calls it), so the account XP is earned here, won or not. The earnScore
-  // notification always goes out, with no XP for no points: the server's handler for it is what sets the player state's
-  // bIsExperienceFinalized, which the results screen waits for.
+  // numMissionPoints is the sum of the player's badges' MissionPoints (BadgeScoring, capped at the mission info's
+  // MaxMissionPoints), not score: account XP comes from EarnScore's totalScore. The earnScore notification still goes
+  // out here, with no XP: the server's handler for it is what sets the player state's bIsExperienceFinalized, which the
+  // results screen waits for.
   EndPrimaryMission({ req, session, context, notifications }) {
-    const { advance: updates, missionStatus, matchmakingSessionId, missionName, numMissionPoints, bCriticalMatchBonus } = req.body ?? {};
+    const { advance: updates, missionStatus, matchmakingSessionId, missionName } = req.body ?? {};
     advance(session, updates);
-    const score = Number.isFinite(numMissionPoints) && numMissionPoints > 0 ? numMissionPoints : 0;
-    const { xpEarned, levels, ...parts } = earnScore(session, score, { criticalMatch: bCriticalMatchBonus === true });
-    notifications.push({ type: "earnScore", primary: false, ...parts });
-    for (const level of levels) notifications.push({ type: "levelUp", primary: false, level });
+    notifications.push({ type: "earnScore", primary: false, ...noXpEarned });
     if (!/succeeded$/i.test(String(missionStatus ?? ""))) return;
     const mission = playedMission(context.sessions, matchmakingSessionId);
     if (!mission) {
@@ -190,8 +187,9 @@ export const serverCommands = {
   },
 
   // One call for every player in the match: [{accountId, totalScore, bCriticalMatchBonus}] (FAccountIdAndScore).
-  // Each player gets the XP; the caller's response carries its own earnScore notification. Kept for gameservers that
-  // send it; the Cert binary itself scores through EndPrimaryMission.
+  // Each player gets the XP; the caller's response carries its own earnScore notification. AFortGameMode's sender
+  // (sub_4EBCB0) scores each player as the change in the players' TotalScore stats times GroupScoreRates[players - 1];
+  // in the Cert binary its per-player check is stripped, so the gameserver has to send it.
   EarnScore({ req, sessionFor, session, notifications }) {
     for (const { accountId, totalScore, bCriticalMatchBonus } of Array.isArray(req.body?.playersAndScores) ? req.body.playersAndScores : []) {
       const target = typeof accountId === "string" && sessionFor(accountId);

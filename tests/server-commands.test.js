@@ -77,12 +77,12 @@ test("a won mission grants its rewards as Mission card packs, found through the 
     assert.deepEqual(lost.body.notifications, [{ type: "earnScore", primary: false,
       baseXPEarned: 0, bonusXPEarned: 0, boostXPEarned: 0, boostXPMissed: 0, restXPEarned: 0, groupBoostXPEarned: 0 }]);
 
-    // The match's points become account XP, won or lost (100 points at level 1 = 400,000, doubled by rest XP).
+    // Mission points are the badges' MissionPoints, not score: they give no account XP.
     const scored = await send("EndPrimaryMission", { matchmakingSessionId: sessionId, missionName: "m", missionStatus: "Failed", advance: [],
-      earnedBadgeData: [], numMissionPoints: 100, bCriticalMatchBonus: false });
+      earnedBadgeData: [], numMissionPoints: 22, bCriticalMatchBonus: false });
     const [earned] = scored.body.notifications.filter((entry) => entry.type === "earnScore");
-    assert.deepEqual([earned.baseXPEarned, earned.restXPEarned], [400000, 400000]);
-    assert.equal(profileOf(await send("QueryProfile", {})).stats.attributes.xp, 800000);
+    assert.deepEqual([earned.baseXPEarned, earned.restXPEarned], [0, 0]);
+    assert.equal(profileOf(await send("QueryProfile", {})).stats.attributes.xp, 0);
     await send("EndPrimaryMission", { matchmakingSessionId: sessionId, missionName: "m", missionStatus: "Succeeded", advance: [] });
     const profile = profileOf(await send("QueryProfile", {}));
     for (const { itemType } of mission.missionRewards.items) {
@@ -151,22 +151,22 @@ test("EarnScore gives every listed player XP, levels them up with their rewards,
     const { player, send } = await setup(backend);
     const other = await userLogin(backend.port, "ServerPlayerTwo");
     const earned = await send("EarnScore", { matchmakingSessionId: "abc", playersAndScores: [
-      { accountId: player.accountId, totalScore: 300, bCriticalMatchBonus: false },
-      { accountId: other.accountId, totalScore: 100, bCriticalMatchBonus: false },
+      { accountId: player.accountId, totalScore: 2000000, bCriticalMatchBonus: false },
+      { accountId: other.accountId, totalScore: 500000, bCriticalMatchBonus: false },
       { accountId: "0".repeat(32), totalScore: 100, bCriticalMatchBonus: false }
     ] });
     assert.equal(earned.status, 200);
     const [notification] = earned.body.notifications.filter((entry) => entry.type === "earnScore");
-    // 300 score at level 1 is 1,200,000 XP; a new account's full rest XP doubles it; there's no boost to spend.
+    // 2,000,000 score is 1,225,802 XP at ScoreToXPLinearRate; a new account's full rest XP doubles it; there's no boost.
     assert.deepEqual([notification.baseXPEarned, notification.restXPEarned, notification.boostXPEarned, notification.boostXPMissed],
-      [1200000, 1200000, 0, 360000]);
+      [1225802, 1225802, 0, 367741]);
     assert.deepEqual(earned.body.notifications.filter((entry) => entry.type === "levelUp").map((entry) => entry.level), [2, 3]);
 
     const stats = profileOf(await send("QueryProfile", {})).stats.attributes;
-    assert.deepEqual([stats.level, stats.xp], [3, 2400000]);
+    assert.deepEqual([stats.level, stats.xp], [3, 2451604]);
     assert.equal(byTemplate(profileOf(await send("QueryProfile", {})), "Token:homebasepoints")[0]?.quantity, 2);
     const otherStats = profileOf(await post(backend.port, route("client", other.accountId, "QueryProfile"), other.token, {})).stats.attributes;
-    assert.deepEqual([otherStats.level, otherStats.xp], [1, 800000]);
+    assert.deepEqual([otherStats.level, otherStats.xp], [1, 612902]);
   } finally {
     backend.close();
   }

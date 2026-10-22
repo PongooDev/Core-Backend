@@ -3,8 +3,7 @@ import { boostBalance, levelRest, restBalance, spendBoost, spendRest, xpBonus } 
 import { grantItem } from "./items.js";
 
 // Account levels (Balance/DataTables/XPAccountLevels): the total XP each level needs and the multiplier the UI shows
-// XP through (1,000,000 XP between early levels shows as 250). Match score is turned into XP at the current level's
-// multiplier, so the XP the player sees rises by the score they earned (Core's rule: Epic did this on its servers).
+// XP through (1,000,000 XP between early levels shows as 250).
 const levels = readGameData("accountlevels", []);
 const maxLevel = levels.length ? levels[levels.length - 1].level : 1;
 const levelData = (level) => levels.find((entry) => entry.level === level);
@@ -13,7 +12,12 @@ const levelData = (level) => levels.find((entry) => entry.level === level);
 const items = readGameData("items", {});
 const rewardTemplate = (asset) => Object.keys(items).find((id) => id.split(":")[1] === asset.toLowerCase());
 
-const none = { baseXPEarned: 0, bonusXPEarned: 0, boostXPEarned: 0, boostXPMissed: 0, restXPEarned: 0, groupBoostXPEarned: 0 };
+// Match score to account XP: UFortGameData ScoreToXPLinearRate 0.612901 up to LinearEnd 18,300,000 score
+// (Balance/DefaultGameData). Nothing in the client converts score to XP, so Epic's servers did; past LinearEnd Core keeps
+// the linear rate (inferred).
+export const scoreToXpRate = 0.612901;
+
+export const noXpEarned = { baseXPEarned: 0, bonusXPEarned: 0, boostXPEarned: 0, boostXPMissed: 0, restXPEarned: 0, groupBoostXPEarned: 0 };
 
 // Adds score as XP to the account (profile0 stats level and xp, xp being the total) and grants each new level's
 // rewards. On top of the base XP (the parts FFortEarnScoreNotification reports, Core's rule with the client's rates):
@@ -25,9 +29,8 @@ export function earnScore(session, score, { criticalMatch = false, now = new Dat
   const stats = tracker.profile.stats.attributes;
   let level = stats.level ?? 1;
   let xp = stats.xp ?? 0;
-  const multiplier = levelData(level)?.displayMultiplier ?? 1;
-  const base = Math.max(0, Math.round(score / multiplier));
-  if (!base) return { ...none, xpEarned: 0, levels: [] };
+  const base = Math.max(0, Math.round(score * scoreToXpRate));
+  if (!base) return { ...noXpEarned, xpEarned: 0, levels: [] };
 
   const bonus = criticalMatch ? Math.round(base * xpBonus.criticalMatch) : 0;
   const rest = Math.min(restBalance(session, now), Math.round(base * xpBonus.rest));

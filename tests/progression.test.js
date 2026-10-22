@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { post, startBackend, userLogin } from "./helpers.js";
+import { dedicatedServerToken, post, startBackend, userLogin } from "./helpers.js";
 
 const command = (accountId, name, rvn = -1) => `/fortnite/api/game/v2/profile/${accountId}/client/${name}?profileId=profile0&rvn=${rvn}`;
 const hero = "Hero:hid_constructor_rushbase_uc_t01";
@@ -55,6 +55,24 @@ test("buying a skill tree node pays for it, adds it and completes the quest that
 
     const twice = await account.run("ClaimQuestReward", { questId, selectedRewardIndex: -1 });
     assert.deepEqual(twice.body.notifications[0].loot.items, []);
+  } finally {
+    backend.close();
+  }
+});
+
+test("a first match's score reaches account level 2, whose skill point buys Constructor Leadership", async () => {
+  const backend = await startBackend();
+  try {
+    const account = await skippedAccount(backend);
+    const dedicated = await dedicatedServerToken(backend.port);
+    const earned = await post(backend.port, `/fortnite/api/game/v2/profile/${account.accountId}/dedicated_server/EarnScore?profileId=profile0&rvn=-1`,
+      dedicated, { playersAndScores: [{ accountId: account.accountId, totalScore: 1000000, bCriticalMatchBonus: false }] });
+    assert.deepEqual(earned.body.notifications.filter((entry) => entry.type === "levelUp").map((entry) => entry.level), [2]);
+    assert.equal((await account.find("Token:homebasepoints"))[1].quantity, 1);
+
+    assert.equal((await account.run("PurchaseHomebaseNode", { nodeId: "T1_Main_8D2C3C4D0" })).status, 200);
+    assert.equal(await account.find("Token:homebasepoints"), undefined);
+    assert.equal((await account.find("Quest:heroquest_constructorleadership"))[1].attributes.quest_state, "Completed");
   } finally {
     backend.close();
   }
