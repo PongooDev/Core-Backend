@@ -295,6 +295,7 @@
       <a href="#/dashboard" data-view="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></svg><span>Dashboard</span></a>
       <a href="#/players" data-view="players"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4M18 14.8c2 .7 3.2 2.5 3.5 5.2"/></svg><span>Players</span></a>
       <a href="#/sessions" data-view="sessions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="4" width="17" height="6.5" rx="2"/><rect x="3.5" y="13.5" width="17" height="6.5" rx="2"/><path d="M7.5 7.25h.01M7.5 16.75h.01M11 7.25h5M11 16.75h5"/></svg><span>Sessions</span></a>
+      <a href="#/friends" data-view="friends"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.3 2.4 3.4 5.2 3.4 8.5s-1.1 6.1-3.4 8.5c-2.3-2.4-3.4-5.2-3.4-8.5s1.1-6.1 3.4-8.5z"/></svg><span>Friends</span></a>
       <a href="#/logs" data-view="logs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="m7 9.5 3 2.5-3 2.5M12.5 15h4.5"/></svg><span>Logs</span></a>
     </nav>
     <div class="server" title="Backend status"><span class="pulse" id="pulse"></span><span id="server-line">Connecting…</span></div>
@@ -406,7 +407,7 @@ function route() {
   const [, view = "dashboard", accountId, tab] = location.hash.split("/");
   for (const timer of state.timers) clearInterval(timer);
   state.timers = [];
-  const next = ["dashboard", "players", "sessions", "logs"].includes(view) ? view : "dashboard";
+  const next = ["dashboard", "players", "sessions", "friends", "logs"].includes(view) ? view : "dashboard";
   if (next !== state.view || !$("view").childElementCount) $("view").replaceChildren(el("div", { class: "empty", text: "Loading…" }));
   state.view = next;
   for (const link of document.querySelectorAll("nav.nav a")) link.setAttribute("aria-current", link.dataset.view === state.view ? "page" : "false");
@@ -415,7 +416,7 @@ function route() {
     if (!accountId) { state.accountId = null; state.account = null; }
     if (tab) state.tab = tab;
   }
-  ({ dashboard: showDashboard, players: showPlayers, sessions: showSessions, logs: showLogs })[state.view]();
+  ({ dashboard: showDashboard, players: showPlayers, sessions: showSessions, friends: showFriends, logs: showLogs })[state.view]();
 }
 window.addEventListener("hashchange", route);
 const every = (ms, fn) => state.timers.push(setInterval(fn, ms));
@@ -757,6 +758,62 @@ async function showSessions() {
       tile("Players in game", fmt(sessions.reduce((total, s) => total + s.currentPlayers, 0)))),
     el("section", { class: "panel" }, sessionTable(sessions)));
   if (!state.timers.length) every(5000, () => state.view === "sessions" && showSessions());
+}
+
+/* ---------- play with friends ---------- */
+async function showFriends() {
+  const network = await act(api("/admin/api/network"));
+  if (!network || state.view !== "friends") return;
+  const port = network.listening.port;
+  const fixed = (key) => network.fixed.includes(key);
+  const save = async (changes, success) => {
+    const updated = await act(api("/admin/api/network", changes), success);
+    if (updated) showFriends();
+  };
+  const everywhere = network.listening.host === "" ? "every network interface" : network.listening.host;
+  const publicInput = el("input", { class: "field", value: network.publicAddress, placeholder: "e.g. 203.0.113.7 or my-house.duckdns.org",
+    "aria-label": "Public address", style: "flex:1 1 280px", disabled: fixed("publicAddress") });
+  const forwarded = network.servers.length
+    ? network.servers.flatMap((server) => [
+      { protocol: "UDP", port: server.serverPort, what: `${server.name || "Gameserver"}: game` },
+      ...(server.beaconPort ? [{ protocol: "UDP", port: server.beaconPort, what: `${server.name || "Gameserver"}: beacon` }] : [])])
+    : [{ protocol: "UDP", port: "7777 and up", what: "Gameservers: game (one port per server: 7777, 7778, …)" },
+      { protocol: "UDP", port: "15000 and up", what: "Gameservers: beacon (one per server: 15000, 15001, …)" }];
+  const internet = network.publicAddress || "your public IP";
+
+  $("view").replaceChildren(
+    el("div", { class: "view-head" }, el("div", {}, el("h1", { text: "Play with friends" }),
+      el("div", { class: "muted", text: "Let friends on other PCs log in to this backend and join your gameservers." })),
+      el("div", { class: "actions" }, btn("Refresh", showFriends, "ghost"))),
+    el("section", { class: "panel" },
+      el("div", { class: "panel-head" }, el("h2", { text: "Remote access" }), network.remoteAccess ? chip("On", "good") : chip("Off: this PC only")),
+      el("p", { class: "note", text: network.remoteAccess
+        ? `Listening on ${everywhere}, port ${port}. Other machines can log in and play; the admin panel still only opens on this PC.`
+        : `Listening on 127.0.0.1, port ${port}: nothing outside this PC can connect. Turn it on to let friends join.` }),
+      el("div", { class: "actions", style: "margin-top:12px" },
+        btn(network.remoteAccess ? "Turn off remote access" : "Turn on remote access",
+          () => save({ remoteAccess: !network.remoteAccess }, network.remoteAccess ? "Remote access is off" : "Remote access is on"),
+          network.remoteAccess ? "danger" : "primary", { disabled: fixed("remoteAccess") })),
+      fixed("remoteAccess") ? el("p", { class: "note", text: "Set on the backend's command line (--remote-access or --local-only), so it can't be changed here." }) : null,
+      el("p", { class: "note", style: "margin-top:12px", text: "Core doesn't check passwords: anyone who can reach this port can log in with any name. Only share the address with people you trust; Players → Account can kick and ban." })),
+    el("section", { class: "panel" },
+      el("div", { class: "panel-head" }, el("h2", { text: "Public address" }),
+        network.publicIp && network.publicIp !== network.publicAddress ? chip(`Looks up to ${network.publicIp}`, "sky") : null,
+        network.publicAddressError ? chip(`Lookup failed: ${network.publicAddressError}`, "bad") : null),
+      el("p", { class: "note", text: "Optional: the address friends on the internet reach this PC at, your public IP (search \"what is my IP\") or a dynamic DNS name. Players are sent to your gameservers at the IP they connected to, so this is only needed when friends connect with a host name or without CoreRedirect.dll. When set, it is used for every player on the internet; players on your network or a VPN (Tailscale, ZeroTier, Hamachi, Radmin) always get the address they connected to." }),
+      el("div", { class: "actions", style: "margin-top:12px" }, publicInput,
+        btn("Save", () => save({ publicAddress: publicInput.value }, publicInput.value.trim() ? `Public address set to ${publicInput.value.trim()}` : "Public address cleared"), "primary", { disabled: fixed("publicAddress") })),
+      fixed("publicAddress") ? el("p", { class: "note", text: "Set on the backend's command line (--public-address)." }) : null),
+    el("div", { class: "grid cols-2", style: "margin-top:16px" },
+      el("section", { class: "panel" }, el("div", { class: "panel-head" }, el("h2", { text: "What friends enter" })),
+        el("p", { class: "note", text: "In Core Launcher: Settings → Backend → A friend's backend, then this address. They need the same Fortnite build as you." }),
+        table([["Where", (row) => row.where], ["Address", (row) => el("span", { class: "mono", text: row.address })]],
+          [...network.lanAddresses.map((address) => ({ where: "Your network or VPN", address: `${address}:${port}` })),
+            { where: "The internet", address: `${internet}:${port}` }])),
+      el("section", { class: "panel" }, el("div", { class: "panel-head" }, el("h2", { text: "Ports to forward" })),
+        el("p", { class: "note", text: "For friends on the internet, forward these on your router to this PC (same port numbers), and allow Node.js and Fortnite through Windows Firewall when it asks. Friends on your network or a VPN need none of this." }),
+        table([["Protocol", (row) => row.protocol], ["Port", (row) => el("span", { class: "mono", text: String(row.port) })], ["For", (row) => row.what]],
+          [{ protocol: "TCP", port, what: "Core-Backend: login, MCP, XMPP chat and parties" }, ...forwarded]))));
 }
 
 /* ---------- logs ---------- */
