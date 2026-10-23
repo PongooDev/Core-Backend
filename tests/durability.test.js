@@ -14,7 +14,9 @@ function memorySession() {
   return {
     trackers,
     profile(profileId) {
-      trackers[profileId] ??= trackChanges({ profileId, stats: { attributes: {} }, items: {} });
+      // profile0 owns the start node, which gives the backpack its first 50 slots (profiles/vault.js).
+      const items = profileId === "profile0" ? { start: { templateId: "HomebaseNode:startnode_commandcenter", attributes: {}, quantity: 1 } } : {};
+      trackers[profileId] ??= trackChanges({ profileId, stats: { attributes: {} }, items });
       return trackers[profileId];
     }
   };
@@ -43,7 +45,8 @@ test("granted world items start at their template's max durability", () => {
   assert.deepEqual(granted("Trap:tid_floor_spikes_r_t01").attributes, { durability: 30 });
   assert.deepEqual(granted("Weapon:wid_harvest_pickaxe_c_t01").attributes, {});
   assert.deepEqual(granted("Ammo:ammodatabulletslight").attributes, {});
-  assert.deepEqual(Object.keys(session.trackers), ["theater0"]);
+  assert.deepEqual(Object.keys(session.trackers).sort(), ["profile0", "theater0"], "profile0 is only read, for the backpack's size");
+  assert.deepEqual(session.trackers.profile0.changes, []);
 });
 
 test("an admin grant puts a weapon in theater0 with its durability", async () => {

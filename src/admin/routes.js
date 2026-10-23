@@ -13,11 +13,12 @@ import { recentLogs } from "../log.js";
 import { sessionSummary } from "../matchmaking/sessions.js";
 import { alertsRemaining, emptyAlertRecord, withQuotaSlots } from "../profiles/alerts.js";
 import { levelRest, restBalance, restValue } from "../profiles/boosts.js";
-import { findItem, grantItem } from "../profiles/items.js";
+import { findItem, grantItem, worldStacksNeeded } from "../profiles/items.js";
 import { claimQuest, completeQuest, grant, skipTutorial } from "../profiles/progress.js";
 import { createOutpost } from "../profiles/outposts.js";
 import { questIdOf, tutorialCompleted } from "../profiles/quests.js";
 import { openSession } from "../profiles/session.js";
+import { backpackState, inOverflow, vaultState, worldStackCap } from "../profiles/vault.js";
 import { maxLevel, xpForLevel } from "../profiles/xp.js";
 import { categories, currencies, describeItem, searchCatalog, stormShields } from "./describe.js";
 import { requireLoopback, requirePanelRequest } from "./local.js";
@@ -77,7 +78,8 @@ export function adminRoutes(context) {
     .filter(([, item]) => !questIdOf(item))
     .map(([itemId, item]) => ({
       itemId, ...describeItem(item.templateId), quantity: item.quantity, level: item.attributes.level ?? null,
-      favorite: Boolean(item.attributes.favorite), squad: item.attributes.squad_id || null, packSource: item.attributes.pack_source ?? null
+      favorite: Boolean(item.attributes.favorite), squad: item.attributes.squad_id || null, packSource: item.attributes.pack_source ?? null,
+      overflow: inOverflow(item)
     }))
     .sort((a, b) => categoryOrder(a.category) - categoryOrder(b.category) || a.name.localeCompare(b.name));
 
@@ -115,6 +117,9 @@ export function adminRoutes(context) {
       quests,
       items,
       worldItems,
+      // The vault ("Inventory n / limit" in the game) and the backpack: what counts toward each limit.
+      vault: profile ? vaultState(profile) : null,
+      backpack: profile ? backpackState(loadIfExists(account.id, "theater0") ?? { items: {} }, profile) : null,
       storage: inventory(loadIfExists(account.id, "outpost0")),
       // The book profiles' slotted items; their page items are the unlocked pages.
       collectionBook: [...inventory(loadIfExists(account.id, "collection_book_people0")), ...inventory(loadIfExists(account.id, "collection_book_schematics0"))]
@@ -201,6 +206,13 @@ export function adminRoutes(context) {
     if (!known) return invalid(res, `Unknown item ${templateId}`);
     // bNeverPersisted items (ability ammo, quest pickups) only exist in a zone; the game never saves one to a profile.
     if (getItem(templateId)?.neverPersisted) return invalid(res, `${templateId} only exists in a zone and is never kept in a profile`);
+    // The world inventory holds at most 512 stacks (profiles/vault.js); past that the game keeps nothing.
+    if (getItem(templateId)?.profile === "theater") {
+      const theater = session.profile("theater0").profile;
+      const needed = worldStacksNeeded(theater, templateId, quantity);
+      const stacks = Object.keys(theater.items).length;
+      if (stacks + needed > worldStackCap) return invalid(res, `That needs ${needed} new backpack stacks; the backpack holds ${stacks} of at most ${worldStackCap}`);
+    }
     return { granted: grant(session, templateId, quantity).length };
   }));
 

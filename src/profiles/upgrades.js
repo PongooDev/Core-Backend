@@ -4,6 +4,7 @@ import { readGameData } from "../gamedata/read.js";
 import { grantItem } from "./items.js";
 import { itemChanged } from "./progress.js";
 import { hasUnlocked } from "./unlocks.js";
+import { inOverflow } from "./vault.js";
 
 // Levelling, evolving and recycling account items, from the game data (UFortAccountItemDefinition):
 //   UpgradeItem   one level, costing XPAccountItemLevels[levelCost][level] of the item's XP, up to MaxLevel;
@@ -62,6 +63,8 @@ function pay(tracker, costs) {
 export function upgradeItem(session, itemId, profileId = "profile0") {
   const tracker = session.profile(profileId);
   const { item, info } = accountItem(tracker, itemId);
+  // ItemUpgradeRestrictionReason_VaultOverflow: "Items in the vault overflow temporarily can not level up." (profiles/vault.js)
+  if (inOverflow(item)) fail(`${item.templateId} is in the vault overflow and can't level up`);
   const level = item.attributes.level ?? 1;
   if (level >= info.maxLevel) fail(`${item.templateId} is already at its highest level, ${info.maxLevel}`);
   const cost = levelCosts[info.levelCost]?.[level];
@@ -76,6 +79,8 @@ export function convertItem(session, itemId, conversionIndex, profileId = "profi
   const tracker = session.profile(profileId);
   const account = session.profile("profile0");
   const { item, info } = accountItem(tracker, itemId);
+  // ItemEvolutionRestrictionReason_VaultOverflow: "Items in the vault overflow temporarily can not be evolved."
+  if (inOverflow(item)) fail(`${item.templateId} is in the vault overflow and can't be evolved`);
   const recipe = recipes[info.conversions?.[conversionIndex]];
   if (!recipe || recipe.results.length !== 1) fail(`${item.templateId} has no evolution ${conversionIndex}`);
   if (!hasUnlocked(account.profile, recipe.catalysts)) locked(recipe.catalysts);

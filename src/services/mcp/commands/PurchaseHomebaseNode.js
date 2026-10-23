@@ -3,6 +3,7 @@ import { McpError } from "../../../errors.js";
 import { grant } from "../../../profiles/progress.js";
 import { heldQuantity, ownsNode as owns } from "../../../profiles/homebase.js";
 import { questIdOf } from "../../../profiles/quests.js";
+import { vaultState } from "../../../profiles/vault.js";
 
 // Same checks the client runs before sending (AreNodePrereqsMet, AreNodeQuestReqsMet, AreNodeCostsMet).
 function prerequisitesMet(profile, node) {
@@ -33,6 +34,10 @@ export function purchaseHomebaseNode({ req, session }) {
 
   if (!node) refuse(`No skill tree node ${req.body?.nodeId}`);
   if (owns(profile, node.id)) refuse(`${node.id} is already owned`);
+  // HomebaseNodePurchaseRestrictionReason_VaultIsOverflown: "The vault has overflown. Clear some space to unlock node
+  // purchasing." (profiles/vault.js)
+  const vault = vaultState(profile);
+  if (vault.count > vault.limit) refuse(`The vault holds ${vault.count} of ${vault.limit} items; clear some space first`);
   if (!prerequisitesMet(profile, node)) refuse(`${node.id} needs other nodes first`);
   if (!questsClaimed(profile, node)) refuse(`${node.id} needs quests ${node.quests.join(", ")}`);
   for (const cost of node.cost ?? []) {

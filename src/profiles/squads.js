@@ -3,6 +3,7 @@ import { getSquad, slotUnlockNode } from "../gamedata/homebase.js";
 import { getCharacter, getItem } from "../gamedata/items.js";
 import { ownsNode } from "./homebase.js";
 import { hasTag } from "./progress.js";
+import { inOverflow } from "./vault.js";
 
 const characterTypes = { FortHeroType: "Hero", FortWorkerType: "Worker", FortDefenderItemDefinition: "Defender" };
 const refuse = (message) => { throw new McpError("errors.com.epicgames.fortnite.invalid_squad_assignment", message); };
@@ -38,6 +39,8 @@ export function assignToSquad(session, characterId, squadId, slotIndex) {
   }
 
   if (!item) refuse(`No item ${characterId}`);
+  // EFortSquadSlottingRestrictionReason::ItemIsInInventoryOverflow: "Item is in vault overflow and cannot be used."
+  if (inOverflow(item)) refuse(`${item.templateId} is in the vault overflow`);
   const type = characterType(item);
   if (!type) refuse(`${characterId} is not a hero, survivor or defender`);
   const squad = getSquad(squadId);

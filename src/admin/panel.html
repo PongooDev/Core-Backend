@@ -585,7 +585,7 @@ function inventory(a) {
       ["Kind", (item) => kindLabel(item.category)],
       ["Level", (item) => profileId ? el("input", { class: "field tiny", type: "number", min: 0, value: item.level ?? "", "data-level": item.itemId, placeholder: "—" }) : item.level ?? "—", "num"],
       ["Quantity", (item) => profileId ? el("input", { class: "field tiny", type: "number", min: 0, value: item.quantity, "data-qty": item.itemId }) : fmt(item.quantity), "num"],
-      ["", (item) => [item.squad ? chip("In squad", "sky") : null, item.favorite ? chip("Favourite", "yellow") : null, item.packSource ? chip(item.packSource) : null]],
+      ["", (item) => [item.overflow ? chip("Overflow", "bad") : null, item.squad ? chip("In squad", "sky") : null, item.favorite ? chip("Favourite", "yellow") : null, item.packSource ? chip(item.packSource) : null]],
       ["", (item) => profileId ? el("div", { class: "actions" },
         btn("Save", () => {
           const level = rows.querySelector(`[data-level="${item.itemId}"]`).value;
@@ -605,8 +605,18 @@ function inventory(a) {
     el("div", { class: "filters" }, el("button", { type: "button", "aria-pressed": String(!state.inventoryCategory), onclick: () => { state.inventoryCategory = ""; renderPlayer(); } }, el("span", { text: "All" })),
       [...counts].map(([key, count]) => el("button", { type: "button", "aria-pressed": String(state.inventoryCategory === key),
         onclick: () => { state.inventoryCategory = key; renderPlayer(); } }, el("span", { text: `${kindLabel(key)} · ${count}` })))),
-    el("div", { class: "actions", style: "margin-bottom:12px" }, search),
+    el("div", { class: "actions", style: "margin-bottom:12px" }, search, limitLine(a, (sources.find(([key]) => key === state.inventoryProfile) ?? sources[0])[0])),
     rows);
+}
+
+// The game's own limit for the list shown: the vault (Account) and the backpack count limited items, overflow included
+// for the vault, one per stack for the backpack.
+function limitLine(a, key) {
+  const shown = key === "items" ? a.vault && ["Vault", a.vault.count, a.vault.limit, a.vault.overflow]
+    : key === "worldItems" ? a.backpack && ["Backpack", a.backpack.count, a.backpack.limit, 0] : null;
+  if (!shown) return null;
+  const [label, count, limit, overflow] = shown;
+  return chip(`${label} ${fmt(count)} / ${fmt(limit)}${overflow ? ` · ${fmt(overflow)} in overflow` : ""}`, count > limit ? "bad" : count === limit ? "warn" : "");
 }
 
 const quickGrants = [

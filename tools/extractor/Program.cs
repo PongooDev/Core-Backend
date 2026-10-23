@@ -112,6 +112,9 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     // 0x5C53E0 ((+0xF4 & 3) == 0: not bIsAccountItem, not bNeverPersisted), so MCP never holds one.
     if (profile == "theater" && (properties?["bNeverPersisted"]?.GetValue<bool>() ?? ItemClasses.NeverPersistedByDefault(export.ExportType)))
         ((SortedDictionary<string, object>)items[templateId])["neverPersisted"] = true;
+    // bInventorySizeLimited: counts toward the account vault limit (account items) or the backpack limit (world items).
+    if (properties?["bInventorySizeLimited"]?.GetValue<bool>() ?? ItemClasses.InventorySizeLimitedByDefault(export.ExportType))
+        ((SortedDictionary<string, object>)items[templateId])["inventorySizeLimited"] = true;
     // The MCP template's static_max_durability (UFortWorldItemDefinition's template export sub_5FCE60 writes it when
     // bItemHasDurability is set): GetMaxDurability at level 0. Weapons, traps, the edit tool and building pieces
     // (UFortWeaponItemDefinition, sub_837C20) read it from their WeaponStatHandle row; gadgets have their own.
@@ -482,6 +485,41 @@ foreach (var (id, row) in LoadRows(provider, manager["HomebaseNodeDataTable"]))
         sums[attribute] = (sums.TryGetValue(attribute, out var sum) ? sum : 0) + modifier["Magnitude"]!.GetValue<double>();
     }
 }
+// The item limits (UFortHomebaseManager's FortHomebaseSet attributes, raised by skill tree node effect rows): the account
+// vault's InventorySizeBonus (UFortInventoryContext GetVaultItemLimit, sub_2BEF5B0: the attribute plus the account
+// inventory bonus tokens), the backpack's WorldInventorySizeBonus and the storage vault's StorageInventorySizeBonus.
+string[] inventoryAttributes = ["InventorySizeBonus", "WorldInventorySizeBonus", "StorageInventorySizeBonus"];
+var inventoryNodes = new SortedDictionary<string, SortedDictionary<string, double>>(StringComparer.Ordinal);
+foreach (var (id, row) in LoadRows(provider, manager["HomebaseNodeDataTable"]))
+{
+    foreach (var effect in Strings(row!["GameplayEffectRowNames"]))
+    {
+        var modifier = nodeEffects[effect];
+        var attribute = modifier?["Attribute"]?["AttributeName"]?.GetValue<string>() ?? "";
+        if (!inventoryAttributes.Contains(attribute)) continue;
+        if (Enum(modifier!["Operation"]) != "Additive") throw new InvalidOperationException($"{effect} is not additive");
+        var sums = inventoryNodes.TryGetValue(id, out var existing) ? existing : inventoryNodes[id] = new(StringComparer.Ordinal);
+        sums[attribute] = (sums.TryGetValue(attribute, out var sum) ? sum : 0) + modifier["Magnitude"]!.GetValue<double>();
+    }
+}
+// Account buffs that raise them (BuffEffects modifiers, Additive), e.g. Buff_World_Inventory_20.
+var inventoryBuffs = new SortedDictionary<string, SortedDictionary<string, double>>(StringComparer.Ordinal);
+foreach (var (buff, effects) in accountBuffEffects)
+{
+    foreach (var effect in effects)
+    {
+        if (!provider.TryLoadPackage(PackageFile(JsonValue.Create(effect)), out var package)) continue;
+        var defaults = JsonNode.Parse(JsonConvert.SerializeObject(package.GetExports().First(e => e.Name.StartsWith("Default__"))))!["Properties"];
+        foreach (var modifier in defaults?["Modifiers"]?.AsArray() ?? [])
+        {
+            var attribute = modifier!["Attribute"]?["AttributeName"]?.GetValue<string>() ?? "";
+            if (!inventoryAttributes.Contains(attribute)) continue;
+            if (Enum(modifier["ModifierOp"]) is not (null or "Additive")) throw new InvalidOperationException($"{effect} is not additive");
+            var sums = inventoryBuffs.TryGetValue(buff, out var existing) ? existing : inventoryBuffs[buff] = new(StringComparer.Ordinal);
+            sums[attribute] = (sums.TryGetValue(attribute, out var sum) ? sum : 0) + modifier["ModifierMagnitude"]!["ScalableFloatMagnitude"]!["Value"]!.GetValue<double>();
+        }
+    }
+}
 var researchBuffs = new SortedDictionary<string, SortedDictionary<string, double>>(StringComparer.Ordinal);
 foreach (var (buff, effects) in accountBuffEffects)
 {
@@ -814,6 +852,10 @@ File.WriteAllText(Path.Combine(output, "workers.json"), JsonSerializer.Serialize
 File.WriteAllText(Path.Combine(output, "newaccount.json"), JsonSerializer.Serialize(newAccount, options) + "\n");
 File.WriteAllText(Path.Combine(output, "cardpacks.json"), JsonSerializer.Serialize(cardPacks, options) + "\n");
 File.WriteAllText(Path.Combine(output, "homebasenodes.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal) { ["nodes"] = nodes, ["pages"] = pages }, options) + "\n");
+File.WriteAllText(Path.Combine(output, "inventory.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal)
+{
+    ["nodes"] = inventoryNodes, ["buffs"] = inventoryBuffs
+}, options) + "\n");
 File.WriteAllText(Path.Combine(output, "research.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal)
 {
     ["collectors"] = collectors, ["nodes"] = researchNodes, ["buffs"] = researchBuffs
@@ -1048,12 +1090,42 @@ static class ItemClasses
     public static bool HasDisintegrationValue(string itemClass) =>
         Lineage(itemClass).Where(ConstructorHasDisintegrationValue.ContainsKey).Select(c => ConstructorHasDisintegrationValue[c]).FirstOrDefault();
 
-    // bNeverPersisted as the class constructors set it.
+    // bNeverPersisted (+0xF4 bit 1, setter thunk 0xA3F760) as the class constructors set it: UFortItemDefinition 0x5A5D60
+    // clears it; NeverPersist 0x5DAA90, Backpack 0x5A3FC0 and Emote 0x5A4E60 set it.
     private static readonly Dictionary<string, bool> ConstructorNeverPersisted = new()
     {
         ["FortItemDefinition"] = false,
-        ["FortNeverPersistItemDefinition"] = true
+        ["FortNeverPersistItemDefinition"] = true,
+        ["FortBackpackItemDefinition"] = true,
+        ["FortEmoteItemDefinition"] = true
     };
+
+    // bInventorySizeLimited (+0x141, UFortItemDefinition::IsInventorySizeLimited 0xA02A10) as the class constructors set
+    // it: what counts toward the vault (account items) and backpack (world items) limits.
+    private static readonly Dictionary<string, bool> ConstructorInventorySizeLimited = new()
+    {
+        ["FortItemDefinition"] = false,             // 0x5A5D60
+        ["FortWorldItemDefinition"] = true,         // 0x5DB330
+        ["FortAlterationItemDefinition"] = true,    // 0x5A3E80
+        ["FortSchematicItemDefinition"] = true,     // 0x5DAE20
+        ["FortDefenderItemDefinition"] = true,      // 0x5A4C90
+        ["FortWorkerType"] = true,                  // 0x5A62C0
+        ["FortHeroType"] = true,                    // 0x5A53F0
+        ["FortWeaponItemDefinition"] = true,        // 0x8226F0
+        ["FortTrapItemDefinition"] = true,          // 0x5DB140
+        ["FortConsumableItemDefinition"] = true,    // 0x5A47F0
+        ["FortIngredientItemDefinition"] = true,    // 0x5A5BA0
+        ["FortMissionItemDefinition"] = true,       // 0x5DAA30
+        ["FortNeverPersistItemDefinition"] = false, // 0x5DAA90
+        ["FortResourceItemDefinition"] = false,     // 0x5DAD30
+        ["FortAmmoItemDefinition"] = false,         // 0x822390
+        ["FortBadgeItemDefinition"] = false,        // 0x5A40B0
+        ["FortBuildingItemDefinition"] = false,     // 0x5A4190
+        ["FortEditToolItemDefinition"] = false      // 0x5A4E10
+    };
+
+    public static bool InventorySizeLimitedByDefault(string itemClass) =>
+        Lineage(itemClass).Where(ConstructorInventorySizeLimited.ContainsKey).Select(c => ConstructorInventorySizeLimited[c]).First();
 
     public static bool NeverPersistedByDefault(string itemClass) =>
         Lineage(itemClass).Where(ConstructorNeverPersisted.ContainsKey).Select(c => ConstructorNeverPersisted[c]).First();

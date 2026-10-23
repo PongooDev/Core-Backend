@@ -1,5 +1,6 @@
 import { fullProfile, trackChanges } from "./changes.js";
 import { needsSetUp, setUpProfile } from "./setup.js";
+import { settleVault } from "./vault.js";
 
 // One command's view of an account's profiles: loads each on first use and saves the changed ones together.
 export function openSession(profiles, accountId, { setUp = true } = {}) {
@@ -42,6 +43,9 @@ export function openSession(profiles, accountId, { setUp = true } = {}) {
     },
 
     commit({ newRevision = true } = {}) {
+      // A change to profile0 can fill or free the vault: its overflow follows (profiles/vault.js).
+      const account = opened.get("profile0")?.tracker;
+      if (account?.changes.length) settleVault(account);
       for (const { tracker } of opened.values()) {
         if (!tracker.changes.length) continue;
         if (newRevision) {

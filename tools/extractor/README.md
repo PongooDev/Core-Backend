@@ -14,8 +14,10 @@ dotnet run -c Release --project tools/extractor -- "<build folder with FortniteG
   turns it off) carry `maxDurability`, the MCP template's static_max_durability: GetMaxDurability at level 0, from the
   definition's `WeaponStatHandle` row (`BaseLevel`, `DurabilityScale`) and its `WeaponDurabilityRarity` row
   (`DurabilityRowName`) at the item's rarity; 1 when either row is missing.
-  World items the game never saves to a profile (`bNeverPersisted` on the asset, or a `FortNeverPersistItemDefinition`)
-  carry `neverPersisted: true`.
+  World items the game never saves to a profile (`bNeverPersisted` on the asset, else the class constructor's: set for
+  `FortNeverPersistItemDefinition`, backpacks and emotes) carry `neverPersisted: true`. Items that count toward the
+  account vault or backpack limit (`bInventorySizeLimited` on the asset, else the class constructor's) carry
+  `inventorySizeLimited: true`.
   Badges carry their MCP template's static_cardpack_reward (`cardPackReward`, BadgeCardPackReward) and
   static_item_rewards (`itemRewards`, ItemRewards {templateId, quantity}).
 
@@ -34,6 +36,8 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
 - `collectionbook.json`: the collection book's pages (book profile, sections, rewards), sections (slots, rewards),
   slots (allowed item templates, survivor personalities, XP weight row), the slot XP weights, the rarity factor curve
   and the book levels (total XP, rewards).
+- `inventory.json`: what each skill tree node and account buff adds to the item limits (FortHomebaseSet
+  `InventorySizeBonus` for the account vault, `WorldInventorySizeBonus` for the backpack, `StorageInventorySizeBonus`).
 - `research.json`: the resource collectors (research points): each CollectedResource template's payout and the
   homebase attributes its rate, capacity and wallet cap come from, what each skill tree node adds to those attributes
   (its CommandConsole_GEImporter rows) and the account buffs that multiply them (BuffEffects modifiers).

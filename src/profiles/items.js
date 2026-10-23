@@ -6,6 +6,7 @@ import { getItem } from "../gamedata/items.js";
 import { log } from "../log.js";
 import { heroAttributes } from "./heroes.js";
 import { grantQuest } from "./quests.js";
+import { settleBackpack, worldStackCap } from "./vault.js";
 import { rollWorkerAttributes } from "./workers.js";
 
 const profileFor = { profile: "profile0", theater: "theater0" };
@@ -62,8 +63,11 @@ const sameTemplate = (item, templateId) => item.templateId.toLowerCase() === tem
 // A world item given the way the world inventory gives one (AFortInventory, as CoreV2's GiveItemToInventoryOwner
 // restores it): each stack of the template below its MaxStackSize is topped up in turn, then the rest becomes new stacks
 // of at most MaxStackSize. Returns [itemId, amount] per stack that grew or was made.
-function grantWorldStacks(tracker, templateId, quantity, limit, info, options) {
+// New stacks stop at the world inventory's 512-stack cap (profiles/vault.js); what is left isn't granted. New stacks that
+// don't fit the backpack go to its overflow.
+function grantWorldStacks(session, tracker, templateId, quantity, limit, info, options) {
   const changed = [];
+  const added = [];
   let remaining = quantity;
   for (const [itemId, item] of Object.entries(tracker.profile.items)) {
     if (remaining <= 0) break;
@@ -73,12 +77,25 @@ function grantWorldStacks(tracker, templateId, quantity, limit, info, options) {
     changed.push([itemId, amount]);
     remaining -= amount;
   }
-  while (remaining > 0) {
+  while (remaining > 0 && Object.keys(tracker.profile.items).length < worldStackCap) {
     const amount = Math.min(remaining, limit);
-    changed.push([addItem(tracker, templateId, amount, info, options), amount]);
+    const itemId = addItem(tracker, templateId, amount, info, options);
+    changed.push([itemId, amount]);
+    added.push(itemId);
     remaining -= amount;
   }
+  if (remaining > 0) log("Items", `${tracker.profile.profileId} holds ${worldStackCap} stacks, ${remaining} ${templateId} not granted`);
+  if (added.length && tracker.profile.profileId === "theater0") settleBackpack(tracker, session.profile("profile0").profile, added);
   return changed;
+}
+
+// The new stacks a world item grant needs.
+export function worldStacksNeeded(profile, templateId, quantity) {
+  const info = itemInfo(templateId);
+  const limit = info?.maxStackSize > 0 ? info.maxStackSize : Infinity;
+  const room = Object.values(profile.items).filter((item) => sameTemplate(item, templateId))
+    .reduce((total, item) => total + Math.max(0, limit - item.quantity), 0);
+  return Math.max(0, Math.ceil((quantity - room) / limit));
 }
 
 const stableJson = (value) => (value && typeof value === "object" && !Array.isArray(value)
@@ -159,11 +176,11 @@ export function grantItem(session, templateId, quantity, options = {}) {
     log("Items", `${templateId} is never persisted, not granted`);
     return [];
   }
+  const limit = info.maxStackSize > 0 ? info.maxStackSize : Infinity;
+  if (info.profile === "theater") return grantWorldStacks(session, tracker, templateId, quantity, limit, info, options).map(([itemId, amount]) => granted(itemId, amount));
   if (info.maxStackSize === 1) {
     return Array.from({ length: quantity }, () => granted(addItem(tracker, templateId, 1, info, options), 1));
   }
-  const limit = info.maxStackSize > 0 ? info.maxStackSize : Infinity;
-  if (info.profile === "theater") return grantWorldStacks(tracker, templateId, quantity, limit, info, options).map(([itemId, amount]) => granted(itemId, amount));
   const existing = findItem(tracker.profile, templateId);
   if (!existing) {
     const amount = Math.min(quantity, limit);

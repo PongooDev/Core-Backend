@@ -1,0 +1,122 @@
+{
+  "nodes": {
+    "StartNode_CommandCenter": {
+      "InventorySizeBonus": 200,
+      "WorldInventorySizeBonus": 50
+    },
+    "T1_Main_1B6486FC0": {
+      "StorageInventorySizeBonus": 5
+    },
+    "T1_Main_849930D55": {
+      "StorageInventorySizeBonus": 5
+    },
+    "T1_Main_B1A3A3771": {
+      "WorldInventorySizeBonus": 5
+    },
+    "T1_Main_FF2595300": {
+      "WorldInventorySizeBonus": 5
+    },
+    "T1_Research_5201143F2": {
+      "WorldInventorySizeBonus": 5
+    },
+    "T1_Research_C3D05C4B2": {
+      "WorldInventorySizeBonus": 5
+    },
+    "T2_Main_079EDD2C0": {
+      "StorageInventorySizeBonus": 5
+    },
+    "T2_Main_21CE15E51": {
+      "WorldInventorySizeBonus": 5
+    },
+    "T2_Main_26F4FB891": {
+      "WorldInventorySizeBonus": 5
+    },
+    "T2_Main_93D6486A6": {
+      "WorldInventorySizeBonus": 5
+    },
+    "T2_Main_A454A2615": {
+      "WorldInventorySizeBonus": 5
+    },
+    "T2_Main_A50295643": {
+      "WorldInventorySizeBonus": 5
+    },
+    "T2_Main_D26651800": {
+      "WorldInventorySizeBonus": 5
+    },
+    "T2_Research_371F90623": {
+      "StorageInventorySizeBonus": 5
+    },
+    "T2_Research_45306C490": {
+      "WorldInventorySizeBonus": 5
+    },
+    "T2_Research_5D47FE190": {
+      "WorldInventorySizeBonus": 5
+    },
+    "T2_Research_C4DCB3993": {
+      "StorageInventorySizeBonus": 5
+    },
+    "T3_Main_38ADE9320": {
+      "WorldInventorySizeBonus": 5
+    },
+    "T3_Main_41C374291": {
+      "WorldInventorySizeBonus": 5
+    },
+    "T3_Main_68DB04EE0": {
+      "WorldInventorySizeBonus": 5
+    },
+    "T3_Main_7AAE50F90": {
+      "WorldInventorySizeBonus": 5
+    },
+    "T3_Main_BB09D9260": {
+      "WorldInventorySizeBonus": 5
+    },
+    "T3_Main_D259FE9E0": {
+      "StorageInventorySizeBonus": 5
+    },
+    "T3_Research_60B83C472": {
+      "WorldInventorySizeBonus": 5
+    },
+    "T3_Research_9CDE36052": {
+      "WorldInventorySizeBonus": 5
+    },
+    "T3_Research_A39241861": {
+      "StorageInventorySizeBonus": 5
+    },
+    "T3_Research_DDCAA1041": {
+      "StorageInventorySizeBonus": 5
+    },
+    "T4_Main_44036CC70": {
+      "StorageInventorySizeBonus": 5
+    },
+    "T4_Main_49DF3CFD1": {
+      "WorldInventorySizeBonus": 5
+    },
+    "T4_Main_4EED13AE1": {
+      "WorldInventorySizeBonus": 5
+    },
+    "T4_Main_6572170A0": {
+      "WorldInventorySizeBonus": 5
+    },
+    "T4_Main_6C92B3622": {
+      "StorageInventorySizeBonus": 5
+    },
+    "T4_Main_7CD9FDA30": {
+      "WorldInventorySizeBonus": 5
+    },
+    "T4_Main_E6F4B67E0": {
+      "WorldInventorySizeBonus": 5
+    },
+    "T4_Research_7A19BC553": {
+      "WorldInventorySizeBonus": 5
+    },
+    "T4_Research_7BE60D1F6": {
+      "StorageInventorySizeBonus": 5
+    },
+    "T4_Research_CB52ED2E6": {
+      "StorageInventorySizeBonus": 5
+    },
+    "T4_Research_F1D475263": {
+      "WorldInventorySizeBonus": 5
+    }
+  }
+}
