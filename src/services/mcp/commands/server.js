@@ -3,6 +3,7 @@ import { McpError } from "../../../errors.js";
 import { log } from "../../../log.js";
 import { getDifficulty } from "../../../gamedata/world.js";
 import { completeMissionAlert } from "../../../profiles/alerts.js";
+import { grantBadgeRewards } from "../../../profiles/badges.js";
 import { abortDisintegration, depositPostResources, disintegrateItems, fabricateItem } from "../../../profiles/fabricator.js";
 import { grantItem } from "../../../profiles/items.js";
 import { createDeployableBase, saveDeployableBase, saveOutpost, updateOutpostCore, updateTierProgression } from "../../../profiles/outposts.js";
@@ -190,10 +191,13 @@ export const serverCommands = {
   // MaxMissionPoints), not score: account XP comes from EarnScore's totalScore. The earnScore notification still goes
   // out here, with no XP: the server's handler for it is what sets the player state's bIsExperienceFinalized, which the
   // results screen waits for.
+  // earnedBadgeData ([{templateId, count}], FFortQuestEarnedBadgeData) are the badges the player earned, whatever the
+  // mission's status; their reward packs (survivor badges: "Rescued Survivor") join the mission's (profiles/badges.js).
   EndPrimaryMission({ req, session, context, notifications }) {
-    const { advance: updates, missionStatus, matchmakingSessionId, missionName } = req.body ?? {};
+    const { advance: updates, missionStatus, matchmakingSessionId, missionName, earnedBadgeData } = req.body ?? {};
     advance(session, updates);
     notifications.push({ type: "earnScore", primary: false, ...noXpEarned });
+    grantBadgeRewards(session, earnedBadgeData);
     if (!/succeeded$/i.test(String(missionStatus ?? ""))) return;
     const mission = playedMission(context.sessions, matchmakingSessionId);
     if (!mission) {

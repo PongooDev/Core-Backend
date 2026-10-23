@@ -74,7 +74,7 @@ function zoneReward(group, templateId, info) {
   // "10 V-bucks", "50 V-bucks": the amount is in the pack's id (zcp_mtx_10, zcp_mtx_boost50).
   match = templateId.toLowerCase().match(/^cardpack:zcp_mtx_(?:boost)?(\d+)$/);
   if (match) return resource("Currency:mtxgiveaway", Number(match[1]));
-  if (group === "zcp_rescued") return one("worker", null, rarities[Math.min(Math.floor((level - 1) / 2), rarities.length - 1)]);
+  if (group === "zcp_rescued") return resource("AccountResource:peopleresource", rescuedPeople(info));
   if (group === "zcp_neighborhoodcurrency_noscale") return resource("Token:neighborhoodcurrency", 10);
   if (group === "zcp_snowballs_noscale") return resource("AccountResource:eventcurrency_snowballs", 10);
   match = group.match(/^zcp_tutorial_(hero|melee|ranged|trap)$/);
@@ -85,6 +85,11 @@ function zoneReward(group, templateId, info) {
   if (match) return one({ heroes: "hero", weapons: "ranged", managers: "manager", traps: "trap" }[match[1]], null, info.rarityCode);
   return [];
 }
+
+// "Rescued Survivor" (ZCP_Rescued[_Tnn], the survivor badges' BadgeCardPackReward, tier = the zone's loot level): People,
+// "Survivors who have decided to join your Homebase", the cost of transforms and expeditions. Core's amount (🟡, the
+// group's contents are server data): the pack's tier + 1, so 1 untiered, 2 at T01, 21 at T20.
+const rescuedPeople = (info) => (info.lootTier || 0) + 1;
 
 // Expedition rewards (ExpeditionRecipes results), by their descriptions: supply caches are XP, rescued survivors are
 // survivors, crafting supplies are ingredients, resource caches and the lumberyard and quarry runs are building

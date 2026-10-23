@@ -88286,6 +88286,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_bronze": {
+    "cardPackReward": "CardPack:zcp_rescued",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88294,6 +88295,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_bronze_t01": {
+    "cardPackReward": "CardPack:zcp_rescued_t01",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88302,6 +88304,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_bronze_t02": {
+    "cardPackReward": "CardPack:zcp_rescued_t02",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88310,6 +88313,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_bronze_t03": {
+    "cardPackReward": "CardPack:zcp_rescued_t03",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88318,6 +88322,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_bronze_t04": {
+    "cardPackReward": "CardPack:zcp_rescued_t04",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88326,6 +88331,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_bronze_t05": {
+    "cardPackReward": "CardPack:zcp_rescued_t05",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88334,6 +88340,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_bronze_t06": {
+    "cardPackReward": "CardPack:zcp_rescued_t06",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88342,6 +88349,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_bronze_t07": {
+    "cardPackReward": "CardPack:zcp_rescued_t07",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88350,6 +88358,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_bronze_t08": {
+    "cardPackReward": "CardPack:zcp_rescued_t08",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88358,6 +88367,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_bronze_t09": {
+    "cardPackReward": "CardPack:zcp_rescued_t09",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88366,6 +88376,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_bronze_t10": {
+    "cardPackReward": "CardPack:zcp_rescued_t10",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88374,6 +88385,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_bronze_t11": {
+    "cardPackReward": "CardPack:zcp_rescued_t11",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88382,6 +88394,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_bronze_t12": {
+    "cardPackReward": "CardPack:zcp_rescued_t12",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88390,6 +88403,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_bronze_t13": {
+    "cardPackReward": "CardPack:zcp_rescued_t13",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88398,6 +88412,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_bronze_t14": {
+    "cardPackReward": "CardPack:zcp_rescued_t14",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88406,6 +88421,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_bronze_t15": {
+    "cardPackReward": "CardPack:zcp_rescued_t15",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88414,6 +88430,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_bronze_t16": {
+    "cardPackReward": "CardPack:zcp_rescued_t16",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88422,6 +88439,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_bronze_t17": {
+    "cardPackReward": "CardPack:zcp_rescued_t17",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88430,6 +88448,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_bronze_t18": {
+    "cardPackReward": "CardPack:zcp_rescued_t18",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88438,6 +88457,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_bronze_t19": {
+    "cardPackReward": "CardPack:zcp_rescued_t19",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88446,6 +88466,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_bronze_t20": {
+    "cardPackReward": "CardPack:zcp_rescued_t20",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88454,6 +88475,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_gold": {
+    "cardPackReward": "CardPack:zcp_rescued",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88462,6 +88484,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_gold_t01": {
+    "cardPackReward": "CardPack:zcp_rescued_t01",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88470,6 +88493,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_gold_t02": {
+    "cardPackReward": "CardPack:zcp_rescued_t02",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88478,6 +88502,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_gold_t03": {
+    "cardPackReward": "CardPack:zcp_rescued_t03",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88486,6 +88511,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_gold_t04": {
+    "cardPackReward": "CardPack:zcp_rescued_t04",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88494,6 +88520,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_gold_t05": {
+    "cardPackReward": "CardPack:zcp_rescued_t05",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88502,6 +88529,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_gold_t06": {
+    "cardPackReward": "CardPack:zcp_rescued_t06",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88510,6 +88538,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_gold_t07": {
+    "cardPackReward": "CardPack:zcp_rescued_t07",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88518,6 +88547,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_gold_t08": {
+    "cardPackReward": "CardPack:zcp_rescued_t08",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88526,6 +88556,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_gold_t09": {
+    "cardPackReward": "CardPack:zcp_rescued_t09",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88534,6 +88565,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_gold_t10": {
+    "cardPackReward": "CardPack:zcp_rescued_t10",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88542,6 +88574,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_gold_t11": {
+    "cardPackReward": "CardPack:zcp_rescued_t11",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88550,6 +88583,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_gold_t12": {
+    "cardPackReward": "CardPack:zcp_rescued_t12",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88558,6 +88592,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_gold_t13": {
+    "cardPackReward": "CardPack:zcp_rescued_t13",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88566,6 +88601,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_gold_t14": {
+    "cardPackReward": "CardPack:zcp_rescued_t14",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88574,6 +88610,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_gold_t15": {
+    "cardPackReward": "CardPack:zcp_rescued_t15",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88582,6 +88619,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_gold_t16": {
+    "cardPackReward": "CardPack:zcp_rescued_t16",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88590,6 +88628,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_gold_t17": {
+    "cardPackReward": "CardPack:zcp_rescued_t17",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88598,6 +88637,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_gold_t18": {
+    "cardPackReward": "CardPack:zcp_rescued_t18",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88606,6 +88646,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_gold_t19": {
+    "cardPackReward": "CardPack:zcp_rescued_t19",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88614,6 +88655,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_gold_t20": {
+    "cardPackReward": "CardPack:zcp_rescued_t20",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88622,6 +88664,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_silver": {
+    "cardPackReward": "CardPack:zcp_rescued",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88630,6 +88673,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_silver_t01": {
+    "cardPackReward": "CardPack:zcp_rescued_t01",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88638,6 +88682,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_silver_t02": {
+    "cardPackReward": "CardPack:zcp_rescued_t02",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88646,6 +88691,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_silver_t03": {
+    "cardPackReward": "CardPack:zcp_rescued_t03",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88654,6 +88700,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_silver_t04": {
+    "cardPackReward": "CardPack:zcp_rescued_t04",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88662,6 +88709,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_silver_t05": {
+    "cardPackReward": "CardPack:zcp_rescued_t05",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88670,6 +88718,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_silver_t06": {
+    "cardPackReward": "CardPack:zcp_rescued_t06",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88678,6 +88727,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_silver_t07": {
+    "cardPackReward": "CardPack:zcp_rescued_t07",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88686,6 +88736,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_silver_t08": {
+    "cardPackReward": "CardPack:zcp_rescued_t08",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88694,6 +88745,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_silver_t09": {
+    "cardPackReward": "CardPack:zcp_rescued_t09",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88702,6 +88754,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_silver_t10": {
+    "cardPackReward": "CardPack:zcp_rescued_t10",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88710,6 +88763,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_silver_t11": {
+    "cardPackReward": "CardPack:zcp_rescued_t11",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88718,6 +88772,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_silver_t12": {
+    "cardPackReward": "CardPack:zcp_rescued_t12",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88726,6 +88781,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_silver_t13": {
+    "cardPackReward": "CardPack:zcp_rescued_t13",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88734,6 +88790,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_silver_t14": {
+    "cardPackReward": "CardPack:zcp_rescued_t14",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88742,6 +88799,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_silver_t15": {
+    "cardPackReward": "CardPack:zcp_rescued_t15",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88750,6 +88808,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_silver_t16": {
+    "cardPackReward": "CardPack:zcp_rescued_t16",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88758,6 +88817,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_silver_t17": {
+    "cardPackReward": "CardPack:zcp_rescued_t17",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88766,6 +88826,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_silver_t18": {
+    "cardPackReward": "CardPack:zcp_rescued_t18",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88774,6 +88835,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_silver_t19": {
+    "cardPackReward": "CardPack:zcp_rescued_t19",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -88782,6 +88844,7 @@
     "tier": "No_Tier"
   },
   "WorldItem:missionbadge_survivor_silver_t20": {
+    "cardPackReward": "CardPack:zcp_rescued_t20",
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
     "name": "Survivor Badge",
@@ -89111,6 +89174,12 @@
   },
   "WorldItem:reactivequest_distresscallbadge": {
     "class": "FortBadgeItemDefinition",
+    "itemRewards": [
+      {
+        "quantity": 0,
+        "templateId": "Quest:reactivequest_distresscalls"
+      }
+    ],
     "maxStackSize": 25,
     "profile": "theater",
     "rarity": "Ordinary",
