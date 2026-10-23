@@ -40,7 +40,7 @@ function notifyProfiles(context, session) {
   }
 }
 
-function runCommand(commands, context, { deliverMail = false, locks = null, notify = false } = {}) {
+function runCommand(commands, context, { deliverMail = false, deliverScores = false, locks = null, notify = false } = {}) {
   const { profiles, dataDir } = context;
   return (req, res) => {
     const profileId = String(req.params.profileId ?? req.query.profileId ?? "");
@@ -78,6 +78,9 @@ function runCommand(commands, context, { deliverMail = false, locks = null, noti
     for (const other of others.values()) other.commit();
     if (notify) for (const changed of [session, ...others.values()]) notifyProfiles(context, changed);
     if (deliverMail) notifications.push(...(context.mailbox?.take(req.params.accountId) ?? []));
+    // Another player's EarnScore XP for this one (profiles/scores.js), first: the server's handler finalizes the player
+    // on the first earnScore it gets.
+    if (deliverScores) notifications.unshift(...(context.heldScores?.take(req.params.accountId) ?? []));
 
     const result = session.response(profileId, Number(req.query.rvn ?? -1), notifications);
     if (locks) {
@@ -85,6 +88,17 @@ function runCommand(commands, context, { deliverMail = false, locks = null, noti
       withLockExpiration(locks, req.params.accountId, result);
     }
     res.json(result);
+  };
+}
+
+// The players' EndPrimaryMissions go out on their own MCP queues right after the EarnScore sent through one of them,
+// so one can arrive first: it waits for the game session's EarnScore, whose XP its response then carries
+// (profiles/scores.js).
+function waitForEarnScore({ heldScores, sessions }) {
+  return async (req, res, next) => {
+    const sessionId = req.params.command === "EndPrimaryMission" ? req.body?.matchmakingSessionId : null;
+    if (heldScores && typeof sessionId === "string" && sessions.get(sessionId)) await heldScores.waitForScore(sessionId);
+    next();
   };
 }
 
@@ -108,7 +122,8 @@ export function profileRoutes(context) {
   // The gameserver acting for its players, with its DedicatedServer client token (UMcpProfileGroup::SendRequestNow's
   // dedicated-server branch, restored by CoreV2).
   router.post("/fortnite/api/game/v2/profile/:accountId/dedicated_server/:command",
-    requireAuth(context.tokens), requireDedicatedServer, requireExistingAccount(context), runCommand(serverCommands, context, { locks: context.locks, notify: true }));
+    requireAuth(context.tokens), requireDedicatedServer, requireExistingAccount(context), waitForEarnScore(context),
+    runCommand(serverCommands, context, { deliverScores: true, locks: context.locks, notify: true }));
 
   // The client's DevSkipTutorial cheat posts here.
   router.post("/fortnite/api/admin/account/:accountId/:profileId/command/:command",

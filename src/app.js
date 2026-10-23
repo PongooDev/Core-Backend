@@ -7,6 +7,7 @@ import { createTokenStore } from "./accounts/tokens.js";
 import { createProfileLocks } from "./profiles/locks.js";
 import { createMailbox } from "./profiles/mailbox.js";
 import { createPrimaryMissions } from "./profiles/missions.js";
+import { createHeldScores } from "./profiles/scores.js";
 import { createProfileStore } from "./profiles/store.js";
 import { requestLog, unknownRoute } from "./log.js";
 import { createSessionStore } from "./matchmaking/sessions.js";
@@ -47,6 +48,7 @@ export function createContext(config) {
     mailbox: createMailbox(),
     locks: createProfileLocks(),
     primaryMissions: createPrimaryMissions(),
+    heldScores: createHeldScores({ waitMs: config.earnScoreWaitMs }),
     sessions: createSessionStore(),
     network: createNetwork(config),
     emptyServerWaitMs: config.emptyServerWaitMs,

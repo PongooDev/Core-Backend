@@ -193,17 +193,18 @@ export const serverCommands = {
   // (pack_source "Mission"). A mission alert on it (the zone's theaterMissionAlertId) puts the alert's rewards in the
   // player's pending mission alert rewards.
   // numMissionPoints is the sum of the player's badges' MissionPoints (BadgeScoring, capped at the mission info's
-  // MaxMissionPoints), not score: account XP comes from EarnScore's totalScore. The earnScore notification still goes
-  // out here, with no XP: the server's handler for it is what sets the player state's bIsExperienceFinalized, which the
-  // results screen waits for before it reads the XP once. CoreV2 sends EarnScore first, so its XP notification is what
-  // finalizes the player it notifies (CoreV2 #34); this one finalizes the rest.
+  // MaxMissionPoints), not score: account XP comes from EarnScore's totalScore. The server's earnScore handler is what
+  // sets the player state's bIsExperienceFinalized, which the results screen waits for before it reads the XP once.
+  // CoreV2 sends EarnScore first: the player it went through got the XP notification in its response (CoreV2 #34), and
+  // every other player's comes in this response (held by EarnScore, profiles/scores.js). A player EarnScore didn't
+  // score still gets one here with no XP, so their results screen finishes too.
   // earnedBadgeData ([{templateId, count}], FFortQuestEarnedBadgeData) are the badges the player earned, whatever the
   // mission's status; their reward packs (survivor badges: "Rescued Survivor") join the mission's (profiles/badges.js).
   EndPrimaryMission({ req, session, context, notifications }) {
     const { advance: updates, missionStatus, matchmakingSessionId, missionName, earnedBadgeData } = req.body ?? {};
     const held = context.primaryMissions.end(req.params.accountId) ?? heldProgress();
     advance(session, updates, held);
-    notifications.push({ type: "earnScore", primary: false, ...noXpEarned });
+    if (!context.heldScores?.hasEarnScore(req.params.accountId)) notifications.push({ type: "earnScore", primary: false, ...noXpEarned });
     grantBadgeRewards(session, earnedBadgeData);
     if (!/succeeded$/i.test(String(missionStatus ?? ""))) {
       revertHeldProgress(session, held);
@@ -220,20 +221,26 @@ export const serverCommands = {
   },
 
   // One call for every player in the match: [{accountId, totalScore, bCriticalMatchBonus}] (FAccountIdAndScore).
-  // Each player gets the XP; the caller's response carries its own earnScore notification. AFortGameMode's sender
-  // (sub_4EBCB0) scores each player as the change in the players' TotalScore stats times GroupScoreRates[players - 1];
-  // in the Cert binary its per-player check is stripped, so the gameserver has to send it.
-  EarnScore({ req, sessionFor, session, notifications }) {
+  // Each player gets the XP once, here. AFortGameMode's sender (sub_4EBCB0) scores each player as the change in the
+  // players' TotalScore stats times GroupScoreRates[players - 1]; in the Cert binary its per-player check is stripped,
+  // so the gameserver has to send it. A response's notifications only reach the player whose profile it answers
+  // (0x3903DB0), so the caller's earnScore and levelUp notifications go in this response and every other player's wait
+  // for that player's next dedicated_server response, their EndPrimaryMission (profiles/scores.js).
+  EarnScore({ req, sessionFor, session, notifications, context }) {
     for (const { accountId, totalScore, bCriticalMatchBonus } of Array.isArray(req.body?.playersAndScores) ? req.body.playersAndScores : []) {
       const target = typeof accountId === "string" && sessionFor(accountId);
       if (!target || !Number.isFinite(totalScore) || totalScore <= 0) continue;
       const { baseXPEarned, bonusXPEarned, boostXPEarned, boostXPMissed, restXPEarned, groupBoostXPEarned, levels } =
         earnScore(target, totalScore, { criticalMatch: bCriticalMatchBonus === true });
-      if (target !== session) continue;
-      notifications.push({ type: "earnScore", primary: false, baseXPEarned, bonusXPEarned, boostXPEarned, boostXPMissed,
-        restXPEarned, groupBoostXPEarned });
-      for (const level of levels) notifications.push({ type: "levelUp", primary: false, level });
+      const earned = [{ type: "earnScore", primary: false, baseXPEarned, bonusXPEarned, boostXPEarned, boostXPMissed,
+        restXPEarned, groupBoostXPEarned }, ...levels.map((level) => ({ type: "levelUp", primary: false, level }))];
+      if (target === session) notifications.push(...earned);
+      else {
+        context.heldScores?.hold(accountId, earned);
+        log("MCP", `EarnScore: ${accountId}'s XP (${baseXPEarned} base) goes in their next gameserver response`);
+      }
     }
+    context.heldScores?.scored(req.body?.matchmakingSessionId);
   },
 
   // Items used up in the zone: parallel lists of item ids and counts.
