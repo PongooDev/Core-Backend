@@ -28,7 +28,19 @@ function withLockExpiration(locks, accountId, result) {
   return result;
 }
 
-function runCommand(commands, context, { deliverMail = false, locks = null } = {}) {
+// What the gameserver changes reaches the player's client as MCP profile notifications on its STOMP topic
+// (/topic/fn/profile/<accountId>/<app>, McpProfileGroup.ProfileNotificationsStompTopic): FOnlineNotification
+// {type: "profile/<profileId>/update", ...FProfileUpdateNotification {changes, lockExpiration, commandRevision,
+// revision}} (UMcpProfileGroup's handler sub_390C5A0 splits the type at "/", McpProfileState sub_390D460 reads the
+// rest). The client applies one when its revision follows the client's ("Delta profile update ... from
+// notifications"), which is how its quests move in the zone.
+function notifyProfiles(context, session) {
+  for (const { profileId, changes, revision, commandRevision } of session.changedProfiles()) {
+    context.stomp?.publishProfile(session.accountId, { type: `profile/${profileId}/update`, changes, commandRevision, revision });
+  }
+}
+
+function runCommand(commands, context, { deliverMail = false, locks = null, notify = false } = {}) {
   const { profiles, dataDir } = context;
   return (req, res) => {
     const profileId = String(req.params.profileId ?? req.query.profileId ?? "");
@@ -64,6 +76,7 @@ function runCommand(commands, context, { deliverMail = false, locks = null } = {
     }
     session.commit();
     for (const other of others.values()) other.commit();
+    if (notify) for (const changed of [session, ...others.values()]) notifyProfiles(context, changed);
     if (deliverMail) notifications.push(...(context.mailbox?.take(req.params.accountId) ?? []));
 
     const result = session.response(profileId, Number(req.query.rvn ?? -1), notifications);
@@ -95,7 +108,7 @@ export function profileRoutes(context) {
   // The gameserver acting for its players, with its DedicatedServer client token (UMcpProfileGroup::SendRequestNow's
   // dedicated-server branch, restored by CoreV2).
   router.post("/fortnite/api/game/v2/profile/:accountId/dedicated_server/:command",
-    requireAuth(context.tokens), requireDedicatedServer, requireExistingAccount(context), runCommand(serverCommands, context, { locks: context.locks }));
+    requireAuth(context.tokens), requireDedicatedServer, requireExistingAccount(context), runCommand(serverCommands, context, { locks: context.locks, notify: true }));
 
   // The client's DevSkipTutorial cheat posts here.
   router.post("/fortnite/api/admin/account/:accountId/:profileId/command/:command",

@@ -15,7 +15,8 @@ async function setup(backend, username) {
   const progress = async () => {
     const profile = (await post(backend.port, route("client", player.accountId, "QueryProfile"), player.token, {})).body.profileChanges[0].profile;
     const { attributes } = Object.values(profile.items).find((item) => item.templateId === quest);
-    return { survivors: attributes.completion_questcollect_survivoritemdata ?? 0, zone: attributes.completion_complete_pve01_diff2 ?? 0 };
+    return { survivors: attributes.completion_questcollect_survivoritemdata ?? 0, zone: attributes.completion_complete_pve01_diff2 ?? 0,
+      state: attributes.quest_state };
   };
   const start = () => send("StartPrimaryMission", { advance: [], matchmakingSessionId: "no-session", missionName: "m" });
   const end = (missionStatus, advance = []) =>
@@ -32,40 +33,57 @@ test("Gimme Three's survivors only count once the primary mission is won", () =>
   assert.equal(zone.requirePrimaryMissionCompletion, undefined);
 });
 
-test("progress that needs a won primary mission waits for EndPrimaryMission and counts when it succeeded", async () => {
+test("progress that needs a won primary mission counts as it comes, and the gameserver's response carries it", async () => {
   const backend = await startBackend();
   try {
     const { send, progress, start, end } = await setup(backend, "HeldWon");
     await start();
-    await send("UpdateQuests", { advance: [...survivors(1), { statName: "complete_pve01_diff2", count: 1 }] });
+    const updated = await send("UpdateQuests", { advance: [...survivors(1), { statName: "complete_pve01_diff2", count: 1 }] });
+    const { attributes } = Object.values(updated.body.profileChanges[0].profile.items).find((item) => item.templateId === quest);
+    assert.equal(attributes.completion_questcollect_survivoritemdata, 1);
     assert.equal((await send("BatchUpdatePlayer", { questObjectiveUpdates: survivors(1) }, "theater0")).status, 200);
-    assert.deepEqual(await progress(), { survivors: 0, zone: 1 });
+    assert.deepEqual(await progress(), { survivors: 2, zone: 1, state: "Active" });
 
-    await end("Succeeded");
-    assert.equal((await progress()).survivors, 2);
-    // Outside a primary mission the server's progress counts as it comes.
+    // Met in the zone, the quest completes when the mission is won.
     await send("UpdateQuests", { advance: survivors(1) });
-    assert.equal((await progress()).survivors, 3);
+    assert.deepEqual(await progress(), { survivors: 3, zone: 1, state: "Active" });
+    await end("Succeeded");
+    assert.notEqual((await progress()).state, "Active");
   } finally {
     backend.close();
   }
 });
 
-test("a failed or abandoned primary mission drops the progress it held", async () => {
+test("outside a primary mission the server's progress counts and completes as it comes", async () => {
+  const backend = await startBackend();
+  try {
+    const { send, progress } = await setup(backend, "HeldNone");
+    await send("UpdateQuests", { advance: [...survivors(3), { statName: "complete_pve01_diff2", count: 1 }] });
+    assert.notEqual((await progress()).state, "Active");
+  } finally {
+    backend.close();
+  }
+});
+
+test("a failed or abandoned primary mission takes back the progress it made", async () => {
   const backend = await startBackend();
   try {
     const { send, progress, start, end } = await setup(backend, "HeldLost");
+    await send("UpdateQuests", { advance: survivors(1) });
     await start();
-    await send("UpdateQuests", { advance: survivors(2) });
+    await send("UpdateQuests", { advance: [...survivors(5), { statName: "complete_pve01_diff2", count: 1 }] });
+    assert.deepEqual(await progress(), { survivors: 3, zone: 1, state: "Active" });
     await end("Failed", survivors(1));
-    assert.equal((await progress()).survivors, 0);
+    // What it added (capped at the objective's count) comes off; the progress from before it and the zone stay.
+    assert.deepEqual(await progress(), { survivors: 1, zone: 1, state: "Active" });
 
-    // A mission that never ended is dropped by the next one's start.
+    // A mission that never ended loses its progress at the next one's start.
     await start();
-    await send("UpdateQuests", { advance: survivors(2) });
+    await send("UpdateQuests", { advance: survivors(1) });
     await start();
-    await end("Succeeded", survivors(1));
     assert.equal((await progress()).survivors, 1);
+    await end("Succeeded", survivors(1));
+    assert.equal((await progress()).survivors, 2);
   } finally {
     backend.close();
   }

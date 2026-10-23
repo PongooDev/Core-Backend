@@ -56,6 +56,13 @@ export function openSession(profiles, accountId, { setUp = true } = {}) {
       }
     },
 
+    // The profiles this command changed, as MCP's profile notifications carry them (FProfileUpdateNotification).
+    changedProfiles() {
+      return [...opened].filter(([, { tracker }]) => tracker.changes.length).map(([profileId, { tracker }]) => ({
+        profileId, changes: tracker.changes, revision: tracker.profile.rvn, commandRevision: tracker.profile.commandRevision
+      }));
+    },
+
     response(profileId, clientRevision, notifications = []) {
       const result = { ...update(profileId, clientRevision), serverTime: new Date().toISOString() };
       const others = [...opened]

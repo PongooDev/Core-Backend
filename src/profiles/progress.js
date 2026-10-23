@@ -32,15 +32,18 @@ function activeQuests(tracker) {
     .map(([itemId, item]) => ({ itemId, item, quest: getQuest(questIdOf(item)) }));
 }
 
-function setObjective(session, itemId, objective, value) {
+// Returns how much the objective went up. complete: false leaves a quest whose objectives are now met active.
+function setObjective(session, itemId, objective, value, { complete = true } = {}) {
   const tracker = session.profile("profile0");
   const item = tracker.profile.items[itemId];
-  if (item?.attributes.quest_state !== "Active") return;
+  if (item?.attributes.quest_state !== "Active") return 0;
   const key = `completion_${objective.name}`;
+  const before = item.attributes[key] ?? 0;
   const clamped = Math.max(0, Math.min(value, objective.count));
   if (item.attributes[key] !== clamped) tracker.setItemAttribute(itemId, key, clamped);
   const quest = getQuest(questIdOf(item));
-  if (objectivesMet(item, quest)) completeQuest(session, itemId);
+  if (complete && objectivesMet(item, quest)) completeQuest(session, itemId);
+  return clamped - before;
 }
 
 export function completeQuest(session, itemId) {
@@ -114,24 +117,40 @@ export function statEvent(session, type, templateId, count) {
 }
 
 // held (a primary mission's progress, see missions.js): objectives with requirePrimaryMissionCompletion
-// (bRequirePrimaryMissionCompletion, "... in successful missions") wait there for the mission's end instead.
+// (bRequirePrimaryMissionCompletion, "... in successful missions") count at once and note what they added there, and
+// a quest with such progress waits for the mission's end to complete.
 export function advanceObjective(session, statName, count, held = null) {
   const tracker = session.profile("profile0");
   for (const { itemId, item, quest } of activeQuests(tracker)) {
     const objective = quest.objectives.find((candidate) => candidate.name === statName.toLowerCase());
     if (!objective) continue;
-    if (held && objective.requirePrimaryMissionCompletion) held.add(itemId, objective.name, count);
-    else setObjective(session, itemId, objective, (item.attributes[`completion_${objective.name}`] ?? 0) + count);
+    const value = (item.attributes[`completion_${objective.name}`] ?? 0) + count;
+    if (!held || (!objective.requirePrimaryMissionCompletion && !held.holds(itemId))) {
+      setObjective(session, itemId, objective, value);
+      continue;
+    }
+    const added = setObjective(session, itemId, objective, value, { complete: false });
+    if (objective.requirePrimaryMissionCompletion && added > 0) held.add(itemId, objective.name, added);
   }
 }
 
-// A won primary mission's held progress, on the quests that are still active.
+// A won primary mission: the quests its progress went to complete once their objectives are met.
 export function applyHeldProgress(session, held) {
+  const tracker = session.profile("profile0");
+  for (const itemId of new Set(held.entries().map((entry) => entry.itemId))) {
+    const item = tracker.profile.items[itemId];
+    const quest = item?.attributes.quest_state === "Active" && getQuest(questIdOf(item) ?? "");
+    if (quest && objectivesMet(item, quest)) completeQuest(session, itemId);
+  }
+}
+
+// A failed, abandoned or never ended primary mission: what its progress added comes off the quests still active.
+export function revertHeldProgress(session, held) {
   const tracker = session.profile("profile0");
   for (const { itemId, name, count } of held.entries()) {
     const item = tracker.profile.items[itemId];
     const objective = item && getQuest(questIdOf(item) ?? "")?.objectives.find((candidate) => candidate.name === name);
-    if (objective) setObjective(session, itemId, objective, (item.attributes[`completion_${name}`] ?? 0) + count);
+    if (objective) setObjective(session, itemId, objective, (item.attributes[`completion_${name}`] ?? 0) - count, { complete: false });
   }
 }
 

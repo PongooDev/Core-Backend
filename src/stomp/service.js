@@ -130,6 +130,21 @@ export function createStompService({ tokens, quiet = false }) {
       }
     },
 
+    // An MCP profile notification to the account's own subscriptions to its profile topic,
+    // /topic/fn/profile/<accountId>/<app> whatever the app name's case.
+    publishProfile(accountId, body) {
+      const text = JSON.stringify(body);
+      const prefix = `/topic/fn/profile/${accountId}/`.toLowerCase();
+      for (const { ws, session, subscriptions } of connections) {
+        if (session?.accountId !== accountId) continue;
+        for (const [id, destination] of subscriptions) {
+          if (!destination.toLowerCase().startsWith(prefix)) continue;
+          ws.send(encodeFrame("MESSAGE", { subscription: id, "message-id": crypto.randomUUID(), destination,
+            "content-type": "application/json", "content-length": Buffer.byteLength(text) }, text));
+        }
+      }
+    },
+
     // Ends an account's STOMP connections (kick, ban).
     kick(accountId) {
       for (const { ws, session } of connections) if (session?.accountId === accountId) ws.close(1008);

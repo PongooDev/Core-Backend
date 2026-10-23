@@ -5,7 +5,7 @@ import { getDifficulty } from "../../../gamedata/world.js";
 import { completeMissionAlert } from "../../../profiles/alerts.js";
 import { grantBadgeRewards } from "../../../profiles/badges.js";
 import { abortDisintegration, depositPostResources, disintegrateItems, fabricateItem } from "../../../profiles/fabricator.js";
-import { advanceObjective, applyHeldProgress, grant } from "../../../profiles/progress.js";
+import { advanceObjective, applyHeldProgress, grant, revertHeldProgress } from "../../../profiles/progress.js";
 import { heldProgress } from "../../../profiles/missions.js";
 import { createDeployableBase, saveDeployableBase, saveOutpost, updateOutpostCore, updateTierProgression } from "../../../profiles/outposts.js";
 import { earnScore, noXpEarned } from "../../../profiles/xp.js";
@@ -16,7 +16,7 @@ import { clientQuestLogin } from "./ClientQuestLogin.js";
 // SDK's FDedicatedServerUrlContext functions. Parameters are the UFunction's with the first letter lowered.
 
 // Quest progress the server saw: [{statName, count}] (FFortQuestObjectiveCompletion). In a primary mission, progress
-// that needs the mission won is held for its EndPrimaryMission (profiles/missions.js).
+// that needs the mission won counts at once and is noted for its EndPrimaryMission (profiles/missions.js).
 function advance(session, updates, held = null) {
   for (const { statName, count } of Array.isArray(updates) ? updates : []) {
     if (typeof statName === "string" && Number.isInteger(count) && count > 0) advanceObjective(session, statName, count, held);
@@ -181,10 +181,11 @@ export const serverCommands = {
   },
 
   // UFortQuestManager's SendStartPrimaryMission (sub_7B3910): the progress from before the mission, then the mission
-  // starts (the quest manager's bPrimaryMissionStarted, +0x20A).
+  // starts (the quest manager's bPrimaryMissionStarted, +0x20A). A mission that never ended loses its progress.
   StartPrimaryMission({ req, session, context }) {
     advance(session, req.body?.advance);
-    context.primaryMissions.start(req.params.accountId);
+    const unended = context.primaryMissions.start(req.params.accountId);
+    if (unended) revertHeldProgress(session, unended);
   },
 
   // A finished mission: its quest progress, and when it succeeded (EFortMissionStatus Succeeded) the mission's rewards
@@ -203,7 +204,10 @@ export const serverCommands = {
     advance(session, updates, held);
     notifications.push({ type: "earnScore", primary: false, ...noXpEarned });
     grantBadgeRewards(session, earnedBadgeData);
-    if (!/succeeded$/i.test(String(missionStatus ?? ""))) return;
+    if (!/succeeded$/i.test(String(missionStatus ?? ""))) {
+      revertHeldProgress(session, held);
+      return;
+    }
     applyHeldProgress(session, held);
     const mission = playedMission(context.sessions, matchmakingSessionId);
     if (!mission) {

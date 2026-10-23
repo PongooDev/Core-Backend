@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { once } from "node:events";
 import http from "node:http";
 import { createFrameParser, createStompService, encodeFrame, enableStomp } from "../src/stomp/service.js";
-import { startBackend, userLogin } from "./helpers.js";
+import { dedicatedServerToken, post, startBackend, userLogin } from "./helpers.js";
 
 // A STOMP client like UE's Stomp module: WebSocket subprotocols v10-v12.stomp, frames in WebSocket messages.
 async function stompClient(port) {
@@ -89,5 +89,46 @@ test("published notifications reach the subscribers of their destination", async
   } finally {
     server.closeAllConnections();
     server.close();
+  }
+});
+
+test("what the gameserver changes reaches the player's client as MCP profile notifications, and nobody else's", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "StompQuests");
+    const other = await userLogin(backend.port, "StompOther");
+    const quest = "Quest:stonewoodquest_filler_1_d2";
+    await post(backend.port, `/admin/api/accounts/${player.accountId}/grant`, undefined, { templateId: quest, quantity: 1 });
+    const connect = async ({ accountId, token }) => {
+      const client = await stompClient(backend.port);
+      client.send("CONNECT", { "accept-version": "1.2", login: accountId, passcode: token });
+      await client.next();
+      client.send("SUBSCRIBE", { id: "mcp-0-nil", destination: `/topic/fn/profile/${player.accountId}/fortnite`, receipt: "r" });
+      await client.next();
+      return client;
+    };
+    const own = await connect(player);
+    const snooper = await connect(other);
+    const dedicated = await dedicatedServerToken(backend.port);
+    const route = `/fortnite/api/game/v2/profile/${player.accountId}/dedicated_server/UpdateQuests?profileId=profile0&rvn=-1`;
+    const response = await post(backend.port, route, dedicated, { advance: [{ statName: "questcollect_survivoritemdata", count: 2 }] });
+
+    const message = await own.next();
+    assert.equal(message.headers.destination, `/topic/fn/profile/${player.accountId}/fortnite`);
+    const notification = JSON.parse(message.body);
+    assert.equal(notification.type, "profile/profile0/update");
+    assert.equal(notification.revision, response.body.profileRevision);
+    assert.equal(notification.commandRevision, response.body.profileCommandRevision);
+    assert.deepEqual(notification.changes.map(({ changeType, attributeName, attributeValue }) => [changeType, attributeName, attributeValue]),
+      [["itemAttrChanged", "completion_questcollect_survivoritemdata", 2]]);
+
+    // Nothing changed, nothing sent; and the other account's subscription to the player's topic gets nothing.
+    await post(backend.port, route, dedicated, { advance: [] });
+    snooper.send("DISCONNECT", { receipt: "bye" });
+    assert.equal((await snooper.next()).command, "RECEIPT");
+    own.send("DISCONNECT", { receipt: "bye" });
+    assert.equal((await own.next()).command, "RECEIPT");
+  } finally {
+    backend.close();
   }
 });
