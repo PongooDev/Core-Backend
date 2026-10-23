@@ -22,7 +22,7 @@ async function setup(backend, username) {
   const end = (missionStatus, advance = []) =>
     send("EndPrimaryMission", { advance, matchmakingSessionId: "no-session", missionName: "m", missionStatus, earnedBadgeData: [],
       numMissionPoints: 0, bCriticalMatchBonus: false });
-  return { send, progress, start, end };
+  return { send, progress, start, end, accountId: player.accountId };
 }
 
 const survivors = (count) => [{ statName: "questcollect_survivoritemdata", count }];
@@ -84,6 +84,35 @@ test("a failed or abandoned primary mission takes back the progress it made", as
     assert.equal((await progress()).survivors, 1);
     await end("Succeeded", survivors(1));
     assert.equal((await progress()).survivors, 2);
+  } finally {
+    backend.close();
+  }
+});
+
+// The gameserver's earnScore handler (0x762AE0) adds an ExperienceDelta and finalizes the player's experience; the
+// results screen reads the XP once it's finalized (Results_CommanderXP.Initialize -> GetXpInfo). So at zone end the
+// first earnScore notification it gets has to carry the XP: CoreV2 sends EarnScore before EndPrimaryMission, whose own
+// earnScore (zero XP) only finalizes players EarnScore doesn't notify (CoreV2 #34).
+test("zone end in the gameserver's order: EarnScore's notification carries the XP, EndPrimaryMission still ends the mission", async () => {
+  const backend = await startBackend();
+  try {
+    const { send, progress, start, end, accountId } = await setup(backend, "HeldXp");
+    await start();
+    await send("UpdateQuests", { advance: [...survivors(3), { statName: "complete_pve01_diff2", count: 1 }] });
+
+    const earned = await send("EarnScore", { matchmakingSessionId: "no-session", playersAndScores: [
+      { accountId, totalScore: 17029, bCriticalMatchBonus: false }] });
+    const [first] = earned.body.notifications.filter((entry) => entry.type === "earnScore");
+    // 17,029 score at ScoreToXPLinearRate is 10,437 base XP, doubled by a new account's rest XP.
+    assert.deepEqual([first.baseXPEarned, first.restXPEarned], [10437, 10437]);
+    // Granted while the mission is still open, the XP doesn't complete the quest its progress waits on.
+    assert.deepEqual(await progress(), { survivors: 3, zone: 1, state: "Active" });
+
+    const ended = await end("Succeeded");
+    assert.deepEqual(ended.body.notifications.filter((entry) => entry.type === "earnScore").map((entry) => entry.baseXPEarned), [0]);
+    assert.notEqual((await progress()).state, "Active");
+    const stats = (await send("QueryProfile", {})).body.profileChanges[0].profile.stats.attributes;
+    assert.deepEqual([stats.level, stats.xp], [1, 20874]);
   } finally {
     backend.close();
   }

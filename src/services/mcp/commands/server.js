@@ -195,7 +195,8 @@ export const serverCommands = {
   // numMissionPoints is the sum of the player's badges' MissionPoints (BadgeScoring, capped at the mission info's
   // MaxMissionPoints), not score: account XP comes from EarnScore's totalScore. The earnScore notification still goes
   // out here, with no XP: the server's handler for it is what sets the player state's bIsExperienceFinalized, which the
-  // results screen waits for.
+  // results screen waits for before it reads the XP once. CoreV2 sends EarnScore first, so its XP notification is what
+  // finalizes the player it notifies (CoreV2 #34); this one finalizes the rest.
   // earnedBadgeData ([{templateId, count}], FFortQuestEarnedBadgeData) are the badges the player earned, whatever the
   // mission's status; their reward packs (survivor badges: "Rescued Survivor") join the mission's (profiles/badges.js).
   EndPrimaryMission({ req, session, context, notifications }) {
