@@ -390,3 +390,127 @@ test("a client that cancels while its search waits is dropped, and the backend w
     backend.close();
   }
 });
+
+// Core-Backend #27: the map's critical mission tile ("?", "Play with others") looks for a running zone to join with
+// FindCriticalMission (sub_646BB0). Its query settings, written by sub_380C0E0 / sub_380B260: the search base
+// (sub_674C50, sub_674AE0) REGION_s EQUAL, MATCHMAKINGPOOL_s IN, MINSLOTSAVAILABLE 1 (openPlayersRequired), PLAYLISTID_i
+// EQUAL; then MMLVL_i DISTANCE, NEEDS_i GREATER_THAN_OR_EQUAL, NEEDSSORT_i DISTANCE INT32_MIN, MAXDIFFICULTY_i
+// LESS_THAN_OR_EQUAL, MINDIFFICULTY_i GREATER_THAN_OR_EQUAL, CRITICALMISSION_b EQUAL true and THEATERID_s EQUAL.
+// DISTANCE (EOnlineComparisonOp::Near) only orders the results; Core matched nothing for it, so every such search came
+// back empty and the client went round FindCriticalMission / OnNoExistingCriticalMissionsFound / StartCriticalMission
+// for good while no empty server was free (all of them busy, one with the zone it was meant to join).
+const stonewood = "33A2311D4AE64B361CCE27BC9F313C8B";
+const criticalSearch = (overrides = {}) => ({
+  criteria: [
+    { type: "EQUAL", key: "REGION_s", value: "NA" },
+    { type: "IN", key: "MATCHMAKINGPOOL_s", value: ["Desktop", "Any"] },
+    { type: "EQUAL", key: "PLAYLISTID_i", value: 2 },
+    { type: "DISTANCE", key: "MMLVL_i", value: 5 },
+    { type: "GREATER_THAN_OR_EQUAL", key: "NEEDS_i", value: 1 },
+    { type: "DISTANCE", key: "NEEDSSORT_i", value: -2147483648 },
+    { type: "LESS_THAN_OR_EQUAL", key: "MAXDIFFICULTY_i", value: 900 },
+    { type: "GREATER_THAN_OR_EQUAL", key: "MINDIFFICULTY_i", value: 100 },
+    { type: "EQUAL", key: "CRITICALMISSION_b", value: true },
+    { type: "EQUAL", key: "THEATERID_s", value: stonewood }
+  ],
+  openPlayersRequired: 1, buildUniqueId: "595160781", maxResults: 50, ...overrides
+});
+
+// What a gameserver's session says once its zone is running: AFortGameModeZone::UpdateSessionForMatchmaking
+// (sub_53FB70) sets CRITICALMISSION_b (the zone game mode's +0x7B0, true from its constructor sub_50C560) and
+// MIN/MAXDIFFICULTY_i (sub_53AA50), sub_63A050 PLAYLISTID_i, ZONEINSTANCEID_s and THEATERID_s, and the lobby beacon
+// host NEEDS_i and NEEDSSORT_i ("Setting GameSession player need size to %d", sub_667CE0).
+const runningZone = (attributes = {}) => ({
+  ...certCreate,
+  attributes: {
+    ...certCreate.attributes, GAMEMODE_s: "FORTPVE", PLAYLISTID_i: 2, ZONEINSTANCEID_s: "{zone}", THEATERID_s: stonewood,
+    CRITICALMISSION_b: true, MINDIFFICULTY_i: 300, MAXDIFFICULTY_i: 500, NEEDS_i: 3, NEEDSSORT_i: 3, MMLVL_i: 5, ...attributes
+  }
+});
+
+test("the critical mission tile's search finds a friend's running zone, and DISTANCE orders the results", async () => {
+  const backend = await startBackend({ emptyServerWaitMs: 5000 });
+  try {
+    const friendServer = await userLogin(backend.port, "CoreServer1");
+    const otherServer = await userLogin(backend.port, "CoreServer2");
+    const idleServer = await userLogin(backend.port, "CoreServer3");
+    const friend = await userLogin(backend.port, "Friend");
+    const { token, accountId } = await userLogin(backend.port, "MrPodge6");
+
+    // The friend's zone: created idle, then updated, given its player and started, as the Cert server does.
+    const { body: zone } = await post(backend.port, base, friendServer.token, certCreate);
+    await request(backend.port, "PUT", `${base}/${zone.id}`, friendServer.token, runningZone());
+    await post(backend.port, `${base}/${zone.id}/players`, friendServer.token, { publicPlayers: [friend.accountId], privatePlayers: [] });
+    assert.equal((await post(backend.port, `${base}/${zone.id}/start`, friendServer.token)).status, 204);
+    await post(backend.port, base, idleServer.token, { ...certCreate, serverPort: 7779 });
+
+    const found = await timed(post(backend.port, `${base}/matchMakingRequest`, token, criticalSearch()));
+    assert.equal(found.status, 200);
+    assert.deepEqual(found.body.map((session) => session.id), [zone.id]);
+    assert.ok(found.ms < 1000, `answered at once (${found.ms} ms)`);
+    assert.equal(found.body[0].attributes.BEACONPORT_i, 15000);
+    assert.equal(found.body[0].openPublicPlayers, 3);
+
+    // The key and join the client sends after the reservation beacon takes it, for the started session.
+    const key = await get(backend.port, `/fortnite/api/game/v2/matchmaking/account/${accountId}/session/${zone.id}`, token);
+    assert.equal(key.status, 200);
+    assert.equal((await post(backend.port, `${base}/${zone.id}/join?accountId=${accountId}`, token)).status, 204);
+
+    // Another theater, a harder zone, one that isn't open to the tile and a full one are left out.
+    for (const [attributes, why] of [
+      [{ THEATERID_s: "D477605B4FA48648107B649CE97FCF27" }, "another theater"],
+      [{ MAXDIFFICULTY_i: 1200 }, "too hard"],
+      [{ CRITICALMISSION_b: false }, "not open to the critical mission tile"]
+    ]) {
+      await request(backend.port, "PUT", `${base}/${zone.id}`, friendServer.token, runningZone(attributes));
+      assert.deepEqual((await post(backend.port, `${base}/matchMakingRequest`, token, criticalSearch())).body, [], why);
+    }
+    await request(backend.port, "PUT", `${base}/${zone.id}`, friendServer.token, runningZone());
+    await post(backend.port, `${base}/${zone.id}/players`, friendServer.token, { publicPlayers: ["b", "c", "d"], privatePlayers: [] });
+    assert.deepEqual((await post(backend.port, `${base}/matchMakingRequest`, token, criticalSearch())).body, [], "full");
+    await request(backend.port, "DELETE", `${base}/${zone.id}/players`, friendServer.token, ["b", "c", "d"]);
+
+    // Two zones to join: the one nearest the searcher's MMLVL_i first, then the one needing the fewest players.
+    const { body: other } = await post(backend.port, base, otherServer.token, { ...runningZone({ NEEDS_i: 1, NEEDSSORT_i: 1 }), serverPort: 7778 });
+    const order = async () => (await post(backend.port, `${base}/matchMakingRequest`, token, criticalSearch())).body.map((session) => session.id);
+    assert.deepEqual(await order(), [other.id, zone.id], "fewest needed first");
+    await request(backend.port, "PUT", `${base}/${other.id}`, otherServer.token, { ...runningZone({ NEEDS_i: 1, NEEDSSORT_i: 1, MMLVL_i: 9 }), serverPort: 7778 });
+    assert.deepEqual(await order(), [zone.id, other.id], "nearest level first");
+    await request(backend.port, "PUT", `${base}/${zone.id}`, friendServer.token, runningZone({ MMLVL_i: undefined }));
+    assert.deepEqual(await order(), [other.id, zone.id], "a session without the attribute comes last");
+
+    // A criterion type Core doesn't know still matches nothing.
+    assert.deepEqual((await post(backend.port, `${base}/matchMakingRequest`, token,
+      criticalSearch({ criteria: [{ type: "SOMETHING_NEW", key: "THEATERID_s", value: stonewood }] }))).body, []);
+  } finally {
+    backend.close();
+  }
+});
+
+test("the join-in-progress search finds a running zone of the same mission", async () => {
+  const backend = await startBackend();
+  try {
+    const server = await userLogin(backend.port, "CoreServer1");
+    const { token } = await userLogin(backend.port, "CoreTest");
+    const { body: zone } = await post(backend.port, base, server.token, runningZone());
+    await post(backend.port, `${base}/${zone.id}/players`, server.token, { publicPlayers: ["friend"], privatePlayers: [] });
+    await post(backend.port, `${base}/${zone.id}/start`, server.token);
+
+    // FindJIPSession (sub_6477A0): the search base with the zone instance, NEEDS_i and NEEDSSORT_i.
+    const jip = (zoneInstance) => ({
+      criteria: [
+        { type: "EQUAL", key: "REGION_s", value: "NA" },
+        { type: "IN", key: "MATCHMAKINGPOOL_s", value: ["Desktop", "Any"] },
+        { type: "EQUAL", key: "PLAYLISTID_i", value: 2 },
+        { type: "EQUAL", key: "ZONEINSTANCEID_s", value: zoneInstance },
+        { type: "GREATER_THAN_OR_EQUAL", key: "NEEDS_i", value: 1 },
+        { type: "DISTANCE", key: "NEEDSSORT_i", value: -2147483648 }
+      ],
+      openPlayersRequired: 1, buildUniqueId: "595160781"
+    });
+    assert.deepEqual((await post(backend.port, `${base}/matchMakingRequest`, token, jip("{zone}"))).body.map((session) => session.id), [zone.id]);
+    assert.deepEqual((await post(backend.port, `${base}/matchMakingRequest`, token, jip("{other}"))).body, []);
+  } finally {
+    backend.close();
+  }
+});

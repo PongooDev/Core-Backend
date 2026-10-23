@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import { log } from "../log.js";
 import { createNetwork, normalizeAddress } from "../network.js";
 
 // Every key the client's session parser requires (OnlineSessionJsonMcp, sub_37F59F0): a session missing one is dropped
@@ -34,6 +35,31 @@ const compare = {
   IN: (actual, value) => Array.isArray(value) && value.includes(actual),
   NOT_IN: (actual, value) => Array.isArray(value) && !value.includes(actual)
 };
+
+// DISTANCE is the writer's name for EOnlineComparisonOp::Near (sub_3806070): it orders the results by how close the
+// attribute is to the value and drops none. Every search for a session to join in progress sends two: the critical
+// mission tile's FindCriticalMission (sub_646BB0) MMLVL_i and NEEDSSORT_i, the gather search's FindGatheringSession
+// (sub_6473B0) the same pair, FindJIPSession (sub_6477A0) NEEDSSORT_i, each NEEDSSORT_i with the value INT32_MIN (so
+// the session needing the fewest players comes first). A session without the attribute comes after those with it.
+const distance = (session, { key, value }) => {
+  const actual = session.attributes?.[key];
+  return typeof actual === "number" && typeof value === "number" ? Math.abs(actual - value) : Infinity;
+};
+
+// A criterion type the search doesn't know matches nothing, so the search can never find a session: logged once a type.
+const unknownTypes = new Set();
+function matches(session, { type, key, value }) {
+  if (type === "DISTANCE") return true;
+  const test = compare[type];
+  if (!test) {
+    if (!unknownTypes.has(type)) {
+      unknownTypes.add(type);
+      log("Matchmaking", `Unknown matchmaking criterion type ${type} (key ${key}): no session matches it`);
+    }
+    return false;
+  }
+  return test(session.attributes?.[key], value);
+}
 
 // Address helpers live with the network settings; normalizeAddress and isLoopback are also used from here.
 export { isLoopback, normalizeAddress } from "../network.js";
@@ -198,6 +224,8 @@ export function createSessionStore() {
     // openPlayersRequired, excludePlayers, buildUniqueId, maxResults}. Criteria keys are attribute keys like REGION_s.
     search(request) {
       const excluded = new Set((request?.excludePlayers ?? []).map(String));
+      const criteria = Array.isArray(request?.criteria) ? request.criteria : [];
+      const nearness = criteria.filter(({ type }) => type === "DISTANCE");
       const results = live().filter((session) => {
         if (request?.requireDedicated && !session.isDedicated) return false;
         if (request?.buildUniqueId !== undefined && String(request.buildUniqueId) !== session.buildUniqueId) return false;
@@ -206,11 +234,19 @@ export function createSessionStore() {
         if (Number.isFinite(request?.minCurrentPlayers) && current < request.minCurrentPlayers) return false;
         if (Number.isFinite(request?.openPlayersRequired) && session.openPublicPlayers < request.openPlayersRequired) return false;
         if (players(session).some((id) => excluded.has(id))) return false;
-        return (request?.criteria ?? []).every(({ type, key, value }) => compare[type]?.(session.attributes?.[key], value) ?? false);
+        return criteria.every((criterion) => matches(session, criterion));
       });
-      // The most recently heard from first: a server that stopped heartbeating may be gone (its session is only dropped
-      // after staleAfterMs), and the client joins the first one that takes its reservation.
-      results.sort((a, b) => b.sortWeight - a.sortWeight || b.lastUpdated.localeCompare(a.lastUpdated));
+      // The DISTANCE criteria first, in the order sent; then the most recently heard from: a server that stopped
+      // heartbeating may be gone (its session is only dropped after staleAfterMs), and the client joins the first one
+      // that takes its reservation.
+      const byNearness = (a, b) => {
+        for (const criterion of nearness) {
+          const [da, db] = [distance(a, criterion), distance(b, criterion)];
+          if (da !== db) return da < db ? -1 : 1;
+        }
+        return 0;
+      };
+      results.sort((a, b) => byNearness(a, b) || b.sortWeight - a.sortWeight || b.lastUpdated.localeCompare(a.lastUpdated));
       return results.slice(0, Number.isFinite(request?.maxResults) ? request.maxResults : results.length);
     },
 
