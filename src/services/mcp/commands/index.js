@@ -1,6 +1,7 @@
 import { activateConsumable } from "./ActivateConsumable.js";
 import { assignWorkerToSquad } from "./AssignWorkerToSquad.js";
 import { assignWorkerToSquadBatch } from "./AssignWorkerToSquadBatch.js";
+import { claimCollectedResources } from "./ClaimCollectedResources.js";
 import { claimLoginReward } from "./ClaimLoginReward.js";
 import { claimMissionAlertRewards } from "./ClaimMissionAlertRewards.js";
 import { claimQuestReward } from "./ClaimQuestReward.js";
@@ -39,8 +40,7 @@ export const clientCommands = {
   AssignWorkerToSquadBatch: assignWorkerToSquadBatch,
   ClaimCollectionBookPageRewards: claimCollectionBookPageRewards,
   ClaimCollectionBookRewards: claimCollectionBookRewards,
-  // No collectors exist in this build (no CollectedResource definitions ship), so there is never anything to claim.
-  ClaimCollectedResources: () => {},
+  ClaimCollectedResources: claimCollectedResources,
   ClaimLoginReward: claimLoginReward,
   ClaimMissionAlertRewards: claimMissionAlertRewards,
   ClaimQuestReward: claimQuestReward,

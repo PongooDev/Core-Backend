@@ -2,6 +2,7 @@ import { addPageItem, bookProfiles, pageId, pages, refreshPage } from "../collec
 import { slotUnlockNode } from "../gamedata/homebase.js";
 import { getItem } from "../gamedata/items.js";
 import { readGameData } from "../gamedata/read.js";
+import { addCollectors, missingCollectors } from "../research/collector.js";
 import { startingQuests } from "../gamedata/quests.js";
 import { ownsNode } from "./homebase.js";
 import { grant } from "./progress.js";
@@ -31,6 +32,8 @@ import { levelStartXp, settleLevel } from "./xp.js";
 //   (collectionbook/pages.js), which the client builds the book from. Core used to keep the unlocked pages in that stat
 //   only, so the book showed no categories, slotting filled nothing and the XP stayed at 0 (issue #13). Profiles saved
 //   before then get their page items and their pages' states once (and lose Core's old claimed_page_rewards stat).
+// - The research point collector (research/collector.js) of a profile that owns Unlock Research: Tier 1. Core had no
+//   collectors before 2026-10-23, so profiles that bought the node then get theirs, empty, when they next load.
 // Profiles made before this, or left with no hero at all, get what they lack when they next load. So does a profile
 // whose lead slot is empty: its first hero in no squad takes it (heroes in other slots or on expeditions stay).
 const { defaultHero } = readGameData("newaccount", {});
@@ -64,7 +67,8 @@ export function needsSetUp(profile) {
   if (bookProfiles.includes(profile.profileId)) return !migrated(profile, "bookPages");
   if (profile.profileId !== "profile0") return false;
   return startingQuests.some((questId) => !findQuestItem(profile, questId)) || Boolean(defaultHero && !heroes(profile).length)
-    || Boolean(leadCandidate(profile)) || schematicMigrations.some(({ name }) => !migrated(profile, name)) || !migrated(profile, "levelXp");
+    || Boolean(leadCandidate(profile)) || schematicMigrations.some(({ name }) => !migrated(profile, name)) || !migrated(profile, "levelXp")
+    || missingCollectors(profile).length > 0;
 }
 
 // theater0's world items granted before Core gave new ones their template's durability (profiles/items.js) get it, once;
@@ -108,6 +112,7 @@ export function setUpProfile(session, profileId = "profile0") {
     settleLevel(session);
     profile.coreMigrations = [...(profile.coreMigrations ?? []), "levelXp"];
   }
+  addCollectors(session);
   if (defaultHero && !heroes(profile).length) grant(session, defaultHero, 1);
   const lead = leadCandidate(profile);
   if (lead) assignToSquad(session, lead, leadSquad(profile), 0);

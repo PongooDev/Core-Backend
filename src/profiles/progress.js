@@ -4,6 +4,7 @@ import { getQuest, startingQuests } from "../gamedata/quests.js";
 import { grantItem } from "./items.js";
 import { expandStormShield } from "./outposts.js";
 import { grantQuest, isDone, questIdOf } from "./quests.js";
+import { changesResearch, updatingCollectors } from "../research/collector.js";
 
 const typeOf = (templateId) => templateId.split(":")[0].toLowerCase();
 const sameId = (a, b) => a.toLowerCase() === b.toLowerCase();
@@ -76,7 +77,10 @@ export function claimQuest(session, itemId, selectedIndex = -1) {
 // Every grant goes through here so quests that wait on acquiring an item, or a newly granted quest that is
 // already satisfied, move on in the same command.
 export function grant(session, templateId, quantity, options = {}) {
-  const granted = grantItem(session, templateId, quantity, options);
+  // A node or buff that changes the research collector's rate banks what it gathered first (research/collector.js).
+  const granted = changesResearch(templateId)
+    ? updatingCollectors(session, () => grantItem(session, templateId, quantity, options))
+    : grantItem(session, templateId, quantity, options);
   for (const entry of granted) {
     if (entry.profileId !== "profile0") continue;
     if (typeOf(entry.templateId) === "quest") refreshQuest(session, entry.itemId);
