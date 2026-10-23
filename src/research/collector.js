@@ -1,9 +1,12 @@
 import crypto from "node:crypto";
 import { McpError } from "../errors.js";
+import { nodeTemplateId } from "../gamedata/homebase.js";
+import { getQuest } from "../gamedata/quests.js";
 import { caseInsensitive, readGameData } from "../gamedata/read.js";
 import { heldQuantity, ownsNode } from "../profiles/homebase.js";
 import { lootEntry } from "../profiles/items.js";
 import { grant } from "../profiles/progress.js";
+import { isDone, questIdOf } from "../profiles/quests.js";
 
 // Research points come from a resource collector, the profile0 item CollectedResource:Token_collectionresource_nodegatetoken01
 // (UFortCollectedResourceItem; every one shares the UFortCollectedResourceItemDefinition CDO, sub_5A46A0, so no asset
@@ -20,6 +23,10 @@ import { grant } from "../profiles/progress.js";
 // rate (T1_Main_FABC7C290, Unlock Research: Tier 1), empty; a node or buff that changes its rate or capacity first
 // banks what it gathered so far (stored_value, last_updated = now), so the client's estimate never jumps back; a claim
 // grants the whole points gathered, up to the wallet cap, and keeps the rest (fractions and anything over the cap).
+// The client counts from UtcNow (GetSystemTime, sub_1152B90) whether or not the game ran in between, so the time a
+// player is away fills the collector up to its capacity; the backend only touches last_updated when it banks or claims.
+// Profiles that owned the node before Core had collectors (issue #20) get one that has been filling since the node was
+// bought, as far as the profile shows (rateSince); the empty ones Core gave them before that start then too, once.
 const { collectors = {}, nodes = {}, buffs = {} } = readGameData("research", {});
 const collectorsById = caseInsensitive(collectors);
 const nodeEffects = Object.entries(nodes);
@@ -78,10 +85,62 @@ export function missingCollectors(profile) {
       && !Object.values(profile.items).some((item) => item.templateId.toLowerCase() === templateId.toLowerCase()));
 }
 
-export function addCollectors(session, now = new Date()) {
+// Adds the missing collectors, empty as of now, or (since: true) as of when the profile first had their rate.
+export function addCollectors(session, now = new Date(), { since = false } = {}) {
   const tracker = session.profile("profile0");
   for (const templateId of missingCollectors(tracker.profile)) {
-    tracker.addItem(crypto.randomUUID(), { templateId, attributes: { stored_value: 0, last_updated: timestamp(now) }, quantity: 1 });
+    const start = since ? Math.min(now.getTime(), rateSince(tracker.profile, templateId) ?? Infinity) : now.getTime();
+    tracker.addItem(crypto.randomUUID(), { templateId, attributes: { stored_value: 0, last_updated: timestamp(new Date(start)) }, quantity: 1 });
+  }
+}
+
+// 🟡 When the profile began to have the collector's rate, as far as it shows (Epic's collector existed from the node's
+// purchase; the node item holds no date): the earliest last_state_change_time of a done quest that waits on acquiring an
+// owned node that gives the rate (HomebaseQuest_UnlockResearch: Acquire HomebaseNode:t1_main_fabc7c290). That is when the
+// quest completed or was claimed, so never before the node was bought. Undefined without one.
+function rateSince(profile, templateId) {
+  const collector = collectorsById.get(templateId.toLowerCase());
+  if (!collector) return undefined;
+  const rateNodes = new Set(nodeEffects.filter(([nodeId, effects]) => effects[collector.rateAttribute] && ownsNode(profile, nodeId))
+    .map(([nodeId]) => nodeTemplateId(nodeId).toLowerCase()));
+  let earliest;
+  for (const item of Object.values(profile.items)) {
+    const questId = questIdOf(item);
+    if (!questId || !isDone(item)) continue;
+    const waitsOnNode = getQuest(questId)?.objectives
+      .some((objective) => objective.itemEvent === "Acquire" && rateNodes.has(String(objective.item).toLowerCase()));
+    const time = Date.parse(item.attributes.last_state_change_time);
+    if (waitsOnNode && Number.isFinite(time) && !(time >= earliest)) earliest = time;
+  }
+  return earliest;
+}
+
+// Core's one-time change for issue #20 (coreMigrations collectorStart): collectors added to profiles that already owned
+// the node (0f36ae9) started empty at that load, losing the time since the node was bought. One still untouched
+// (stored_value exactly 0: every claim or bank since leaves a fraction, as the rate isn't a whole number) starts from
+// rateSince instead, when that is earlier. A collector added at the purchase starts within a second of it, so stays.
+const startMigration = "collectorStart";
+const migrated = (profile) => (profile.coreMigrations ?? []).includes(startMigration);
+
+const hasCollector = (profile) => Object.values(profile.items).some(isCollector);
+
+export const collectorsNeedSetUp = (profile) => missingCollectors(profile).length > 0 || (hasCollector(profile) && !migrated(profile));
+
+// On profile load (profiles/setup.js): the missing collectors, filling since the rate began, then the one-time start
+// fix. Only profiles holding a collector are marked; one added later starts at its purchase or from rateSince already.
+export function setUpCollectors(session, now = new Date()) {
+  const tracker = session.profile("profile0");
+  const { profile } = tracker;
+  addCollectors(session, now, { since: true });
+  if (hasCollector(profile) && !migrated(profile)) {
+    for (const [itemId, item] of Object.entries(profile.items)) {
+      if (!isCollector(item) || item.attributes?.stored_value !== 0) continue;
+      const since = rateSince(profile, item.templateId);
+      if (since !== undefined && secondsOf(since) < secondsOf(Date.parse(item.attributes.last_updated))) {
+        tracker.setItemAttribute(itemId, "last_updated", timestamp(new Date(since)));
+      }
+    }
+    profile.coreMigrations = [...(profile.coreMigrations ?? []), startMigration];
   }
 }
 

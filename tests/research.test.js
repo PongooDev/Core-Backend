@@ -1,4 +1,4 @@
-import { test } from "node:test";
+import { mock, test } from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
@@ -7,7 +7,7 @@ import { trackChanges } from "../src/profiles/changes.js";
 import { defaultStats } from "../src/profiles/defaults.js";
 import { grant } from "../src/profiles/progress.js";
 import { needsSetUp } from "../src/profiles/setup.js";
-import { claimCollectedResources, collectorRates, gathered } from "../src/research/collector.js";
+import { claimCollectedResources, collectorRates, collectorsNeedSetUp, gathered, setUpCollectors } from "../src/research/collector.js";
 import { post, startBackend, userLogin } from "./helpers.js";
 
 const collectorId = "CollectedResource:Token_collectionresource_nodegatetoken01";
@@ -25,6 +25,15 @@ function memorySession() {
       return trackers[profileId];
     }
   };
+}
+
+// The client's estimate (GetResourceCollectorRewardsEstimate, sub_5C00D0 -> sub_5ADA90): whole seconds of UtcNow minus
+// whole seconds of last_updated; none -> int(stored_value), else min(capacity, int(elapsed x rate + stored_value)).
+function clientEstimate(item, { rate, capacity }, nowMs) {
+  const stored = item.attributes.stored_value;
+  const elapsed = Math.floor(nowMs / 1000) - Math.floor(Date.parse(item.attributes.last_updated) / 1000);
+  if (elapsed <= 0) return Math.trunc(stored);
+  return Math.min(Math.trunc(elapsed * rate + stored), capacity);
 }
 
 const collectorOf = (tracker) => Object.entries(tracker.profile.items).find(([, item]) => item.templateId === collectorId);
@@ -157,4 +166,126 @@ test("ClaimCollectedResources works through the client route, and older profiles
   } finally {
     backend.close();
   }
+});
+
+// Issue #20: the time a player is away fills the collector, up to its capacity, exactly as the client shows it.
+test("offline time accrues across a logout and login, up to the capacity, as the client estimates it", async () => {
+  const start = Date.parse("2026-10-23T10:00:00Z");
+  mock.timers.enable({ apis: ["Date"], now: start });
+  const backend = await startBackend();
+  try {
+    const hour = 3600 * 1000;
+    let { token, accountId } = await userLogin(backend.port, "ResearchOffline");
+    const command = (name, body = {}) => post(backend.port, `/fortnite/api/game/v2/profile/${accountId}/client/${name}?profileId=profile0&rvn=-1`, token, body);
+    const profile = async (name = "QueryProfile", body = {}) => {
+      const response = await command(name, body);
+      assert.equal(response.status, 200);
+      return response.body.profileChanges.at(-1).profile ?? JSON.parse(fs.readFileSync(file, "utf8"));
+    };
+    const collector = (items) => Object.entries(items).find(([, item]) => item.templateId === collectorId);
+    const file = path.join(backend.dataDir, "accounts", accountId, "profiles", "profile0.json");
+    await profile();
+
+    // Buy Unlock Research: Tier 1 the way the client does.
+    const saved = JSON.parse(fs.readFileSync(file, "utf8"));
+    saved.items.prereq = { templateId: "HomebaseNode:t1_main_7064c2440", attributes: { level: 1 }, quantity: 1 };
+    saved.items.points = { templateId: "Token:homebasepoints", attributes: {}, quantity: 1 };
+    fs.writeFileSync(file, JSON.stringify(saved));
+    assert.equal((await command("PurchaseHomebaseNode", { nodeId: "T1_Main_FABC7C290" })).status, 200);
+    let items = (await profile()).items;
+    const [itemId, bought] = collector(items);
+    assert.deepEqual(bought.attributes, { stored_value: 0, last_updated: new Date(start).toISOString() });
+    const rates = collectorRates({ items }, collectorId);
+
+    // An hour in the lobby, then Collect.
+    mock.timers.tick(hour);
+    assert.equal(clientEstimate(collector((await profile()).items)[1], rates, Date.now()), 54);
+    let claimed = await command("ClaimCollectedResources", { collectorsToClaim: [itemId] });
+    assert.equal(claimed.body.notifications[0].loot.items[0].quantity, 54);
+
+    // Logged out for five hours: no requests at all. Then a new login, with the client's login commands.
+    mock.timers.tick(5 * hour);
+    ({ token } = await userLogin(backend.port, "ResearchOffline"));
+    for (const name of ["QueryProfile", "ClientQuestLogin", "RefreshExpeditions", "ClaimLoginReward"]) assert.equal((await command(name)).status, 200);
+    items = (await profile()).items;
+    const back = collector(items)[1];
+    assert.equal(back.attributes.last_updated, new Date(start + hour).toISOString());
+    const shown = clientEstimate(back, rates, Date.now());
+    assert.equal(shown, Math.trunc(back.attributes.stored_value + 5 * 3600 * rate));
+    claimed = await command("ClaimCollectedResources", { collectorsToClaim: [itemId] });
+    assert.equal(claimed.body.notifications[0].loot.items[0].quantity, shown);
+
+    // Away for a month: full, and no more.
+    mock.timers.tick(30 * 24 * hour);
+    ({ token } = await userLogin(backend.port, "ResearchOffline"));
+    items = (await profile()).items;
+    assert.equal(clientEstimate(collector(items)[1], rates, Date.now()), 1065);
+    claimed = await command("ClaimCollectedResources", { collectorsToClaim: [itemId] });
+    assert.equal(claimed.body.notifications[0].loot.items[0].quantity, 1065);
+    assert.equal(held({ profile: JSON.parse(fs.readFileSync(file, "utf8")) }, research), 54 + shown + 1065);
+  } finally {
+    backend.close();
+    mock.timers.reset();
+  }
+});
+
+// A profile that owned the node before Core had collectors: its unlock quest dates the purchase.
+function oldProfile(session, unlockedAt) {
+  const tracker = session.profile("profile0");
+  tracker.addItem("node", { templateId: unlockNode, attributes: { level: 1 }, quantity: 1 });
+  tracker.addItem("quest", { templateId: "Quest:homebasequest_unlockresearch",
+    attributes: { quest_state: "Claimed", last_state_change_time: new Date(unlockedAt).toISOString() }, quantity: 1 });
+  return tracker;
+}
+
+test("an older profile's collector has been filling since its research unlock quest was done", () => {
+  const session = memorySession();
+  const tracker = oldProfile(session, now.getTime() - 5 * 3600 * 1000);
+  assert.equal(needsSetUp(tracker.profile), true);
+  setUpCollectors(session, now);
+  const [, collector] = collectorOf(tracker);
+  assert.deepEqual(collector.attributes, { stored_value: 0, last_updated: new Date(now.getTime() - 5 * 3600 * 1000).toISOString() });
+  assert.equal(clientEstimate(collector, collectorRates(tracker.profile, collectorId), now.getTime()), 271);
+  assert.ok(tracker.profile.coreMigrations.includes("collectorStart"));
+  assert.equal(collectorsNeedSetUp(tracker.profile), false);
+
+  // Without a done unlock quest nothing dates the purchase: empty, as of now.
+  const unknown = memorySession();
+  unknown.profile("profile0").addItem("node", { templateId: unlockNode, attributes: { level: 1 }, quantity: 1 });
+  setUpCollectors(unknown, now);
+  assert.equal(collectorOf(unknown.profile("profile0"))[1].attributes.last_updated, now.toISOString());
+});
+
+test("the empty collector an older profile got at its first load starts from the unlock instead, once", () => {
+  const unlockedAt = now.getTime() - 9 * 3600 * 1000;
+  const firstLoad = new Date(now.getTime() - 3600 * 1000).toISOString();
+  const session = memorySession();
+  const tracker = oldProfile(session, unlockedAt);
+  tracker.addItem("collector", { templateId: collectorId, attributes: { stored_value: 0, last_updated: firstLoad }, quantity: 1 });
+  setUpCollectors(session, now);
+  assert.equal(tracker.profile.items.collector.attributes.last_updated, new Date(unlockedAt).toISOString());
+  assert.equal(clientEstimate(tracker.profile.items.collector, collectorRates(tracker.profile, collectorId), now.getTime()), 489);
+  assert.equal(Object.values(tracker.profile.items).filter((item) => item.templateId === collectorId).length, 1);
+
+  // Only once: an empty collector later on (a claim or bank of exactly nothing) keeps its time.
+  tracker.profile.items.collector.attributes.last_updated = firstLoad;
+  setUpCollectors(session, now);
+  assert.equal(tracker.profile.items.collector.attributes.last_updated, firstLoad);
+
+  // One claimed or banked since (a fraction stored) has been paid for its time: it keeps it too.
+  const claimed = memorySession();
+  const claimedTracker = oldProfile(claimed, unlockedAt);
+  claimedTracker.addItem("collector", { templateId: collectorId, attributes: { stored_value: 0.4, last_updated: firstLoad }, quantity: 1 });
+  setUpCollectors(claimed, now);
+  assert.equal(claimedTracker.profile.items.collector.attributes.last_updated, firstLoad);
+
+  // One added when the node was bought starts then already.
+  const bought = memorySession();
+  const boughtTracker = oldProfile(bought, unlockedAt);
+  const atPurchase = new Date(unlockedAt).toISOString();
+  boughtTracker.addItem("collector", { templateId: collectorId, attributes: { stored_value: 0, last_updated: atPurchase }, quantity: 1 });
+  const before = boughtTracker.changes.length;
+  setUpCollectors(bought, now);
+  assert.equal(boughtTracker.profile.items.collector.attributes.last_updated, atPurchase);
+  assert.ok(!boughtTracker.changes.slice(before).some((change) => change.itemId === "collector"));
 });
