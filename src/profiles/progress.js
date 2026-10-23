@@ -179,11 +179,11 @@ function heldCount(profile, stat) {
   return Object.values(profile.items).filter((item) => (!upgraded || (item.attributes.level ?? 1) > 1) && statMatches(stat, item)).length;
 }
 
-const heldStats = { HasAssignedWorker: assignedCount, HasItem: heldCount };
+const heldStats = { HasAssignedWorker: assignedCount, HasItem: heldCount, HasUpgraded: heldCount };
 
 // The collection book's objectives (collectionbook/book.js), worked out from the book profiles: the objective
 // collectionbook_levelup (no stat, no item event: Epic's MCP knew it by its backend name) is the book level reached,
-// and a SlotInCollection stat counts the matching items slotted. Both only go up, so they never take progress away.
+// and a SlotInCollection stat counts the matching items slotted.
 const levelUpObjective = "collectionbook_levelup";
 
 function bookProgress(session, objective) {
@@ -193,8 +193,9 @@ function bookProgress(session, objective) {
   return [...slottedItems(session).values()].filter(({ item }) => statMatches(stat, item)).length;
 }
 
-// Objectives that describe what the player holds rather than events: owning an item, a finished quest, or a
-// character assigned somewhere. They are re-counted whenever that could have changed, including when the quest is granted.
+// Objectives that describe what the player holds rather than events: owning an item (Acquire), a finished quest
+// (HasCompletedQuest / QuestComplete), a character assigned somewhere (HasAssignedWorker), a matching item held
+// (HasItem) or levelled (HasUpgraded), and the collection book. Undefined for event objectives.
 function stateProgress(session, objective) {
   const { profile } = session.profile("profile0");
   const book = bookProgress(session, objective);
@@ -206,33 +207,29 @@ function stateProgress(session, objective) {
     return Object.values(profile.items).some((item) => sameId(item.templateId, objective.item) && isDone(item)) ? 1 : 0;
   }
   const stat = objective.stat && getObjectiveStat(objective.stat);
-  if (heldStats[stat?.type]) return heldStats[stat.type](profile, stat);
-  if (stat?.type === "HasUpgraded") return heldCount(profile, stat);
-  return undefined;
+  return heldStats[stat?.type]?.(profile, stat);
 }
 
+// 🟡 State objectives only ever go up: what the player holds is counted when the quest is granted and whenever it could
+// have changed, and progress already made stays. The client shows a quest one Stage at a time (CurrentStage = the
+// lowest Stage with an objective short of its count, sub_79E200), so taking progress back (a hero sent on an
+// expedition or swapped out of the lead slot) would put an earlier stage back on screen: issue #23's "Assign a
+// Constructor to your Primary Hero Squad 0/1".
 function refreshQuest(session, itemId) {
   const tracker = session.profile("profile0");
   const item = tracker.profile.items[itemId];
+  if (item?.attributes.quest_state !== "Active") return;
   for (const objective of getQuest(questIdOf(item)).objectives) {
     const value = stateProgress(session, objective);
-    if (value !== undefined && value > 0) setObjective(session, itemId, objective, value);
+    const current = tracker.profile.items[itemId].attributes[`completion_${objective.name}`] ?? 0;
+    if (value !== undefined && value > current) setObjective(session, itemId, objective, value);
   }
 }
 
-// Re-counts the objectives about what the player holds (assigned characters, HasItem, the collection book) after
-// squads, items or the book changed, and at quest login, so quests already active when the account got there catch up.
+// Re-counts every active quest's state objectives after squads, items or the book changed, and at quest login, so
+// quests already active when the account got there catch up.
 export function refreshHeldItems(session) {
-  const tracker = session.profile("profile0");
-  for (const { itemId, item, quest } of activeQuests(tracker)) {
-    for (const objective of quest.objectives) {
-      const stat = objective.stat && getObjectiveStat(objective.stat);
-      if (heldStats[stat?.type]) setObjective(session, itemId, objective, heldStats[stat.type](tracker.profile, stat));
-      const book = bookProgress(session, objective);
-      const current = item.attributes[`completion_${objective.name}`] ?? 0;
-      if (book !== undefined && book > current) setObjective(session, itemId, objective, book);
-    }
-  }
+  for (const { itemId } of activeQuests(session.profile("profile0"))) refreshQuest(session, itemId);
 }
 
 // UpgradeItem / ConvertItem (and the collection book's UpgradeSlottedItem / ConvertSlottedItem) on an account item:
