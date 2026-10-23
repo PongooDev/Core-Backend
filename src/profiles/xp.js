@@ -1,6 +1,6 @@
 import { readGameData } from "../gamedata/read.js";
 import { boostBalance, levelRest, restBalance, spendBoost, spendRest, xpBonus } from "./boosts.js";
-import { grantItem } from "./items.js";
+import { grant } from "./progress.js";
 
 // Account levels (Balance/DataTables/XPAccountLevels): the total XP each level needs and the multiplier the UI shows
 // XP through (1,000,000 XP between early levels shows as 250).
@@ -28,7 +28,7 @@ export function settleLevel(session) {
     gained.push(level);
     for (const { asset, quantity } of levelData(level).rewards) {
       const templateId = rewardTemplate(asset);
-      if (templateId) grantItem(session, templateId, quantity, { packSource: "LevelUp" });
+      if (templateId) grant(session, templateId, quantity, { packSource: "LevelUp" });
     }
   }
   if (level >= maxLevel) xp = 0;

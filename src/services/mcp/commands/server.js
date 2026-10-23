@@ -5,10 +5,9 @@ import { getDifficulty } from "../../../gamedata/world.js";
 import { completeMissionAlert } from "../../../profiles/alerts.js";
 import { grantBadgeRewards } from "../../../profiles/badges.js";
 import { abortDisintegration, depositPostResources, disintegrateItems, fabricateItem } from "../../../profiles/fabricator.js";
-import { grantItem } from "../../../profiles/items.js";
+import { advanceObjective, applyHeldProgress, grant } from "../../../profiles/progress.js";
 import { heldProgress } from "../../../profiles/missions.js";
 import { createDeployableBase, saveDeployableBase, saveOutpost, updateOutpostCore, updateTierProgression } from "../../../profiles/outposts.js";
-import { advanceObjective, applyHeldProgress } from "../../../profiles/progress.js";
 import { earnScore, noXpEarned } from "../../../profiles/xp.js";
 import { atDifficulty, findMission } from "../../../world/theaters.js";
 import { clientQuestLogin } from "./ClientQuestLogin.js";
@@ -211,7 +210,7 @@ export const serverCommands = {
       log("MCP", `EndPrimaryMission: no mission found for session ${matchmakingSessionId} (${missionName}), no rewards`);
       return;
     }
-    for (const { itemType, quantity } of mission.missionRewards.items) grantItem(session, itemType, quantity, { packSource: "Mission" });
+    for (const { itemType, quantity } of mission.missionRewards.items) grant(session, itemType, quantity, { packSource: "Mission" });
     if (mission.missionAlert) completeMissionAlert(session, mission.theaterId, mission.missionAlert);
   },
 

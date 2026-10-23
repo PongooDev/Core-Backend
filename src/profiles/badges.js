@@ -1,6 +1,6 @@
 import { getItem } from "../gamedata/items.js";
 import { log } from "../log.js";
-import { grantItem } from "./items.js";
+import { grant } from "./progress.js";
 
 // What the badges a player earned in a zone give (EndPrimaryMission's earnedBadgeData, [FFortQuestEarnedBadgeData
 // {templateId, count}]). Epic's MCP knew a badge's rewards from its item template: static_cardpack_reward
@@ -20,10 +20,10 @@ export function grantBadgeRewards(session, earnedBadgeData) {
     if (!badge || badge.class !== "FortBadgeItemDefinition" || !Number.isInteger(count) || count <= 0) continue;
     const times = Math.min(count, maxBadgeCount);
     if (badge.cardPackReward) {
-      granted.push(...grantItem(session, badge.cardPackReward, times, { packSource: "Mission" }));
+      granted.push(...grant(session, badge.cardPackReward, times, { packSource: "Mission" }));
     }
     for (const reward of badge.itemRewards ?? []) {
-      granted.push(...grantItem(session, reward.templateId, Math.max(reward.quantity, 1) * times));
+      granted.push(...grant(session, reward.templateId, Math.max(reward.quantity, 1) * times));
     }
   }
   if (granted.length) {
