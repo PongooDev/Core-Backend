@@ -35,6 +35,9 @@ provider.PostMount();
 var assetTypes = new AssetTypes(provider);
 
 var quests = new SortedDictionary<string, object>(StringComparer.Ordinal);
+// Each quest's object path ("/Game/Quests/.../Name.Name"), as world info names quests (theater and region Requirements,
+// tiles' LinkedQuests).
+var questPaths = new SortedDictionary<string, object>(StringComparer.Ordinal);
 foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" && f.Path.StartsWith("FortniteGame/Content/Quests/", StringComparison.OrdinalIgnoreCase)))
 {
     foreach (var export in provider.LoadPackage(file).GetExports())
@@ -42,6 +45,7 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         if (export.ExportType != "FortQuestItemDefinition") continue;
         var properties = JsonNode.Parse(JsonConvert.SerializeObject(export))!["Properties"] ?? new JsonObject();
         quests[export.Name.ToLowerInvariant()] = Quest(properties, assetTypes);
+        questPaths[export.Name.ToLowerInvariant()] = "/Game/" + file.PathWithoutExtension["FortniteGame/Content/".Length..] + "." + export.Name;
     }
 }
 
@@ -528,13 +532,17 @@ foreach (var (id, row) in LoadRows(provider, manager["HomebaseSquadDataTable"]))
 var objectiveStats = new SortedDictionary<string, object>(StringComparer.Ordinal);
 foreach (var (id, row) in LoadRows(provider, JsonValue.Create("/Game/Quests/ObjectiveStatTable.ObjectiveStatTable")))
 {
-    objectiveStats[id.ToLowerInvariant()] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+    var stat = new SortedDictionary<string, object>(StringComparer.Ordinal)
     {
         ["type"] = Enum(row!["Type"]) ?? "",
         ["targetTags"] = row["TargetTags"]?.GetValue<string>() ?? "",
         ["condition"] = row["Condition"]?.GetValue<string>() ?? "",
         ["templateId"] = row["TemplateId"]?.GetValue<string>() ?? ""
     };
+    // Who did it (Class.IsCommando, Stat.Source.OnCriticalMission) and where (Stat.Theater.PvE02), when the row says.
+    if (row["SourceTags"]?.GetValue<string>().Trim() is { Length: > 0 } sourceTags) stat["sourceTags"] = sourceTags;
+    if (row["ContextTags"]?.GetValue<string>().Trim() is { Length: > 0 } contextTags) stat["contextTags"] = contextTags;
+    objectiveStats[id.ToLowerInvariant()] = stat;
 }
 
 // Pieces a theater is built from: zone themes (map tiles), mission generators and mission difficulty rows.
@@ -577,6 +585,21 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         if (props["PrimaryMissionInfo"] is { } primary) generator["primaryMission"] = AssetPath(primary);
         missionGenerators[classPath] = generator;
     }
+}
+
+// The primary missions the generators run, with their MissionTags: the Stat.Mission.Primary.* tags that quest objectives
+// (ObjectiveStatTable TargetTags) count a won mission by.
+var primaryMissions = new SortedDictionary<string, object>(StringComparer.Ordinal);
+foreach (var missionPath in missionGenerators.Values.Cast<SortedDictionary<string, object>>()
+    .Select(generator => generator.TryGetValue("primaryMission", out var primary) ? primary as string : null)
+    .OfType<string>().Distinct())
+{
+    var packagePath = "FortniteGame/Content/" + missionPath["/Game/".Length..].Split('.')[0] + ".uasset";
+    if (!provider.TryLoadPackage(packagePath, out var missionPackage)) continue;
+    var info = missionPackage.GetExports().FirstOrDefault(e => e.ExportType == "FortMissionInfo");
+    if (info is null) continue;
+    var infoProps = JsonNode.Parse(JsonConvert.SerializeObject(info))!["Properties"] ?? new JsonObject();
+    primaryMissions[missionPath] = new SortedDictionary<string, object>(StringComparer.Ordinal) { ["tags"] = Strings(infoProps["MissionTags"]) };
 }
 
 // The world map: theaters sit on sockets of the globe mesh and spawn a pin class there.
@@ -802,7 +825,7 @@ File.WriteAllText(Path.Combine(output, "fabricator.json"), JsonSerializer.Serial
 File.WriteAllText(Path.Combine(output, "objectivestats.json"), JsonSerializer.Serialize(objectiveStats, options) + "\n");
 File.WriteAllText(Path.Combine(output, "world.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal)
 {
-    ["zoneThemes"] = zoneThemes, ["missionGenerators"] = missionGenerators, ["difficulties"] = difficulties,
+    ["zoneThemes"] = zoneThemes, ["missionGenerators"] = missionGenerators, ["primaryMissions"] = primaryMissions, ["questPaths"] = questPaths, ["difficulties"] = difficulties,
     ["mapPins"] = mapPins, ["globeSockets"] = globeSockets, ["missionAlerts"] = missionAlerts,
     ["dailyMissionAlertQuota"] = dailyMissionAlertQuota
 }, options) + "\n");

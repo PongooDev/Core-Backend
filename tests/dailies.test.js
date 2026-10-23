@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { getQuest } from "../src/gamedata/quests.js";
 import { trackChanges } from "../src/profiles/changes.js";
 import { defaultStats } from "../src/profiles/defaults.js";
-import { refreshDailyQuests } from "../src/profiles/dailies.js";
+import { canHaveDaily, refreshDailyQuests } from "../src/profiles/dailies.js";
 import { grantQuest, questIdOf } from "../src/profiles/quests.js";
 import { post, startBackend, userLogin } from "./helpers.js";
 
@@ -60,5 +60,46 @@ test("FortRerollDailyQuest swaps an open daily once a day and names the new one"
     assert.equal(again.status, 400);
   } finally {
     backend.close();
+  }
+});
+
+test("dailies are only the ones the player can do: a theater's after its first storm shield, a class's once unlocked", () => {
+  const theaterDailies = ["daily_mission_specialist_plankerton", "daily_mission_specialist_cannyvalley", "daily_mission_specialist_twinepeaks"];
+  const classDailies = ["daily_mission_specialist_constructor", "daily_huskextermination_ninja", "daily_mission_specialist_outlander"];
+  for (let run = 0; run < 20; run += 1) {
+    const session = memorySession();
+    grantQuest(session.tracker, "dailyquesttrigger");
+    for (let day = 10; day < 13; day += 1) refreshDailyQuests(session, new Date(`2026-10-${day}T10:00:00Z`));
+    for (const [, item] of dailies(session.tracker)) {
+      assert.ok(![...theaterDailies, ...classDailies].includes(questIdOf(item)), questIdOf(item));
+    }
+  }
+
+  const session = memorySession();
+  const { tracker } = session;
+  assert.equal(canHaveDaily(tracker.profile, "daily_mission_specialist_plankerton"), false);
+  tracker.setItemAttribute(grantQuest(tracker, "outpostquest_t2_l1"), "quest_state", "Completed");
+  assert.equal(canHaveDaily(tracker.profile, "daily_mission_specialist_plankerton"), true);
+  assert.equal(canHaveDaily(tracker.profile, "daily_mission_specialist_cannyvalley"), false);
+  assert.equal(canHaveDaily(tracker.profile, "daily_mission_specialist_constructor"), false);
+  tracker.addItem("node", { templateId: "HomebaseNode:t1_main_8d2c3c4d0", attributes: {}, quantity: 1 }); // Unlocks.Class.Constructor
+  assert.equal(canHaveDaily(tracker.profile, "daily_mission_specialist_constructor"), true);
+  assert.equal(canHaveDaily(tracker.profile, "daily_mission_specialist_ninja"), false);
+});
+
+test("an open daily the player can't do yet becomes one they can at the next quest login", () => {
+  const session = memorySession();
+  const { tracker } = session;
+  grantQuest(tracker, "dailyquesttrigger");
+  refreshDailyQuests(session, new Date("2026-10-19T10:00:00Z"));
+  const unreachable = grantQuest(tracker, "daily_mission_specialist_twinepeaks");
+  const done = grantQuest(tracker, "daily_mission_specialist_cannyvalley");
+  tracker.setItemAttribute(done, "quest_state", "Completed");
+  refreshDailyQuests(session, new Date("2026-10-19T11:00:00Z"));
+  assert.equal(tracker.profile.items[unreachable], undefined);
+  assert.ok(tracker.profile.items[done], "a finished one stays to be claimed");
+  assert.equal(dailies(tracker).length, 3);
+  for (const [itemId, item] of dailies(tracker)) {
+    if (itemId !== done) assert.ok(canHaveDaily(tracker.profile, questIdOf(item)), questIdOf(item));
   }
 });

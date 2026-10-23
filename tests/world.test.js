@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readGameData } from "../src/gamedata/read.js";
+import { missionMeets, missionObjectives } from "../src/world/quests.js";
 import { worldInfo } from "../src/world/theaters.js";
 import { clientToken, get, post, startBackend, userLogin } from "./helpers.js";
 
@@ -132,4 +133,107 @@ test("world/validate gives the gameserver the zone it posts, as FFortZoneInstanc
   } finally {
     backend.close();
   }
+});
+
+// Which storm shield defenses a quest can't be given before: the ones every chain of quests that grants it goes through.
+function questChains() {
+  const quests = readGameData("quests", {});
+  const grantedBy = {};
+  for (const [id, quest] of Object.entries(quests)) {
+    for (const reward of [...(quest.rewards ?? []), ...(quest.hiddenRewards ?? [])]) {
+      if (/^quest:/i.test(reward.templateId)) (grantedBy[reward.templateId.slice(6).toLowerCase()] ??= []).push(id);
+    }
+  }
+  const before = new Map();
+  const doneBefore = (id, path = new Set()) => {
+    if (before.has(id)) return before.get(id);
+    if (path.has(id)) return null;
+    path.add(id);
+    let done = null;
+    for (const parent of grantedBy[id] ?? []) {
+      const parentDone = doneBefore(parent, path);
+      if (!parentDone) continue;
+      const withParent = new Set([...parentDone, parent]);
+      done = done ? new Set([...done].filter((quest) => withParent.has(quest))) : withParent;
+    }
+    path.delete(id);
+    if (!grantedBy[id]?.length) done = new Set();
+    before.set(id, done);
+    return done;
+  };
+  return { quests, grantedBy, doneBefore };
+}
+
+test("every story quest that names a mission finds one on the map, in a zone open by the time it is given, every day", () => {
+  const { quests, grantedBy, doneBefore } = questChains();
+  const questId = (path) => path?.split(".").pop().toLowerCase();
+  const theaterNumber = { stonewoodquest: 1, plankertonquest: 2, cannyvalleyquest: 3, twinepeaksquest: 4 };
+  let checked = 0;
+  for (let day = 0; day < 14; day += 1) {
+    const today = worldInfo(new Date(Date.UTC(2026, 9, 19 + day, 12)));
+    for (const [id, quest] of Object.entries(quests)) {
+      if (!["Task", "Onboarding", "Optional"].includes(quest.type) || /^(test|progressiontest|achievement|challenge|halloween)/.test(id)) continue;
+      if (!grantedBy[id]?.length) continue; // Never given in this build (Twine Peaks' story stops at its storm shields).
+      const done = doneBefore(id);
+      if (!done) continue;
+      for (const objective of missionObjectives(id)) {
+        if (objective.missionTag.startsWith("Stat.Mission.Primary.Outpost")) continue; // The storm shield tile, always there.
+        const wanted = objective.theaterTag ?? (theaterNumber[id.split("_")[0]] && `Stat.Theater.PvE0${theaterNumber[id.split("_")[0]]}`);
+        const found = today.theaters.slice(0, 4).some((theater, index) => {
+          if (wanted && !theater.regions.some((region) => region.regionTags.gameplayTags.some(({ tagName }) => tagName.startsWith(wanted)))) return false;
+          if (theater.runtimeInfo.requirements.questDefinition && !done.has(questId(theater.runtimeInfo.requirements.questDefinition))) return false;
+          const regionOf = new Map(theater.regions.flatMap((region) => region.tileIndices.map((tile) => [tile, region])));
+          return today.missions[index].availableMissions.some((mission) => {
+            const gate = regionOf.get(mission.tileIndex).requirements.questDefinition;
+            return (!gate || done.has(questId(gate))) && missionMeets(objective, mission.missionGenerator, mission.missionDifficultyInfo.rowName);
+          });
+        });
+        assert.ok(found, `${id} ${objective.stat} on day ${day}`);
+        checked += 1;
+      }
+    }
+  }
+  assert.ok(checked > 14 * 40, `${checked} objectives checked`);
+});
+
+test("tiles carry the story quests they were placed for (LinkedQuests)", () => {
+  const quests = readGameData("quests", {});
+  const linked = (theater, tile) => theater.tiles[tile].linkedQuests.map(({ questDefinition }) => questDefinition.split(".").pop());
+  const [stonewood, plankerton, , twinePeaks] = info.theaters;
+  assert.deepEqual(linked(stonewood, 37), ["StonewoodQuest_Filler_1_D3"]); // Rescue the Survivors, zone 3
+  assert.deepEqual(linked(stonewood, 61), ["StonewoodQuest_LaunchBalloon_D1"]);
+  assert.deepEqual(linked(stonewood, 29), ["StonewoodQuest_RetrieveData_D1"]);
+  assert.deepEqual(linked(stonewood, 8), ["StonewoodQuest_LaunchRocket_D5"]);
+  assert.deepEqual(linked(stonewood, 64), Array.from({ length: 10 }, (_, level) => `OutpostQuest_T1_L${level + 1}`));
+  assert.deepEqual(linked(stonewood, 36).sort(), ["Daily_High_Priority", "StonewoodQuest_Side_1_D4"]);
+  assert.deepEqual(linked(plankerton, 14).sort(), ["PlankertonQuest_Filler_2_D2", "PlankertonQuest_Filler_4_D2"]);
+  assert.deepEqual(linked(plankerton, 35), ["PlankertonQuest_Filler_2_D1"]);
+  assert.deepEqual(linked(twinePeaks, 10), ["Daily_High_Priority"]);
+  for (const theater of info.theaters) {
+    for (const tile of theater.tiles) {
+      for (const { questDefinition } of tile.linkedQuests) {
+        assert.match(questDefinition, /^\/Game\/Quests\/.+\/(\w+)\.\1$/);
+        assert.ok(quests[questDefinition.split(".").pop().toLowerCase()], questDefinition);
+      }
+      if (tile.tileType === "Outpost" || tile.tileType === "CriticalMission") continue;
+      for (const { questDefinition } of tile.linkedQuests) {
+        const objectives = missionObjectives(questDefinition.split(".").pop());
+        const [generator] = tile.missionWeightOverrides;
+        assert.ok(objectives.some((objective) => missionMeets(objective, generator.missionGenerator, "Theater_Nightmare_Zone5")), questDefinition);
+      }
+    }
+  }
+});
+
+test("a mission and its alert last the UTC day, and the theater's missions refresh at midnight", () => {
+  for (const [index, theater] of info.missions.entries()) {
+    assert.equal(theater.nextRefresh, "2026-10-19T23:59:59.999Z");
+    assert.equal(info.missionAlerts[index].nextRefresh, "2026-10-19T23:59:59.999Z");
+    for (const alert of info.missionAlerts[index].availableMissionAlerts) assert.equal(alert.availableUntil, "2026-10-19T23:59:59.999Z");
+  }
+  // Fixed tiles keep their mission across days (a new one each day), rolled tiles may change it.
+  const tomorrow = worldInfo(new Date("2026-10-20T12:00:00Z"));
+  const rescue = (world) => world.missions[0].availableMissions.find((mission) => mission.tileIndex === 37);
+  assert.equal(rescue(tomorrow).missionGenerator, rescue(info).missionGenerator);
+  assert.notEqual(rescue(tomorrow).missionGuid, rescue(info).missionGuid);
 });

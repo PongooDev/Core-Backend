@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { readGameData } from "../gamedata/read.js";
 import { getDifficulty, missionAlertTier } from "../gamedata/world.js";
+import { linkedQuests, questPath } from "./quests.js";
 
 // Theater layouts come from Epic's world info (see tools/theaters/import.mjs); the client ships none.
 const { theaters = [], rewards = {} } = readGameData("theaters", {});
@@ -39,6 +40,21 @@ for (const { data } of theaters) {
     const questDefinition = zoneGate(region);
     if (questDefinition) region.requirements = { ...region.requirements, questDefinition };
   }
+}
+
+// The story quests each tile was placed for: the client marks a tile whose linked quest is in progress
+// (AFortTheaterMapTile::IsTileQuestRecommended, sub_813150), shows the pin on it while that quest is the marked one
+// (IsTileValidForMarkedQuest → sub_8136B0 → sub_812E90) and goes there first when the quest log's Play picks a tile
+// (SelectTileForQuest, sub_819190: a linked tile is validity 2 in GetMissionQuestValidity, ahead of tiles whose mission
+// only meets the objectives, 3). The dump kept these entries without their quests; see linkedQuests for the rebuild.
+for (const { data } of theaters) {
+  const links = linkedQuests(data);
+  data.tiles.forEach((tile, index) => {
+    tile.linkedQuests = (links.get(index) ?? []).flatMap((questId) => {
+      const questDefinition = questPath(questId);
+      return questDefinition ? [{ questDefinition }] : [];
+    });
+  });
 }
 
 const digest = (text) => crypto.createHash("sha1").update(text).digest();

@@ -109,6 +109,7 @@
   },
   "build_any_floor_constructor": {
     "condition": "",
+    "sourceTags": "Stat.Source.IsInitiator,Class.IsConstructor",
     "targetTags": "Building.Type.Floor",
     "templateId": "",
     "type": "Build"
@@ -133,6 +134,7 @@
   },
   "buildingrepair_any_constructor": {
     "condition": "",
+    "sourceTags": "Stat.Source.IsInitiator,Class.IsConstructor",
     "targetTags": "Building.Type.Wall",
     "templateId": "",
     "type": "BuildingRepair"
@@ -295,24 +297,28 @@
   },
   "complete_buildradar_1_diff2_con": {
     "condition": "Zone.Difficulty \u003E=3",
+    "sourceTags": "Class.IsConstructor",
     "targetTags": "Stat.Mission.Secondary.BuildRadarTower",
     "templateId": "",
     "type": "Complete"
   },
   "complete_buildradar_1_diff3_con": {
     "condition": "Zone.Difficulty \u003E=5",
+    "sourceTags": "Class.IsConstructor",
     "targetTags": "Stat.Mission.Secondary.BuildRadarTower",
     "templateId": "",
     "type": "Complete"
   },
   "complete_buildradar_1_diff4_con": {
     "condition": "Zone.Difficulty \u003E=7",
+    "sourceTags": "Class.IsConstructor",
     "targetTags": "Stat.Mission.Secondary.BuildRadarTower",
     "templateId": "",
     "type": "Complete"
   },
   "complete_buildradar_1_diff5_con": {
     "condition": "Zone.Difficulty \u003E=10",
+    "sourceTags": "Class.IsConstructor",
     "targetTags": "Stat.Mission.Secondary.BuildRadarTower",
     "templateId": "",
     "type": "Complete"
@@ -379,12 +385,14 @@
   },
   "complete_commando": {
     "condition": "",
+    "sourceTags": "Class.IsCommando",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
   },
   "complete_constructor": {
     "condition": "",
+    "sourceTags": "Class.IsConstructor",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
@@ -967,42 +975,49 @@
   },
   "complete_horde_tier_1": {
     "condition": "Mission.Tier = 1 \u0026\u0026 Mission.Wave = 10",
+    "contextTags": "Stat.Mission.Primary.Horde",
     "targetTags": "",
     "templateId": "",
     "type": "WaveComplete"
   },
   "complete_horde_tier_2": {
     "condition": "Mission.Tier = 2 \u0026\u0026 Mission.Wave = 10",
+    "contextTags": "Stat.Mission.Primary.Horde",
     "targetTags": "",
     "templateId": "",
     "type": "WaveComplete"
   },
   "complete_horde_tier_3": {
     "condition": "Mission.Tier = 3 \u0026\u0026 Mission.Wave = 10",
+    "contextTags": "Stat.Mission.Primary.Horde",
     "targetTags": "",
     "templateId": "",
     "type": "WaveComplete"
   },
   "complete_horde_tier_4": {
     "condition": "Mission.Tier = 4 \u0026\u0026 Mission.Wave = 10",
+    "contextTags": "Stat.Mission.Primary.Horde",
     "targetTags": "",
     "templateId": "",
     "type": "WaveComplete"
   },
   "complete_horde_tiers": {
     "condition": "Mission.Wave = 10",
+    "contextTags": "Stat.Mission.Primary.Horde",
     "targetTags": "",
     "templateId": "",
     "type": "WaveComplete"
   },
   "complete_horde_wave_5": {
     "condition": "Mission.Wave = 5",
+    "contextTags": "Stat.Mission.Primary.Horde",
     "targetTags": "",
     "templateId": "",
     "type": "WaveComplete"
   },
   "complete_horde_waves": {
     "condition": "",
+    "contextTags": "Stat.Mission.Primary.Horde",
     "targetTags": "",
     "templateId": "",
     "type": "WaveComplete"
@@ -1183,12 +1198,14 @@
   },
   "complete_ninja": {
     "condition": "",
+    "sourceTags": "Class.IsNinja",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outlander": {
     "condition": "",
+    "sourceTags": "Class.IsOutlander",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
@@ -1201,276 +1218,365 @@
   },
   "complete_outpost_1_0": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE01",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg0",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_1_1": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE01",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg1",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_1_10": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE01",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg10",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_1_2": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE01",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg2",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_1_3": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE01",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg3",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_1_4": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE01",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg4",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_1_5": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE01",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg5",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_1_6": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE01",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg6",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_1_7": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE01",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg7",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_1_8": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE01",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg8",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_1_9": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE01",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg9",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_2_1": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE02",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg1",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_2_10": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE02",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg10",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_2_2": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE02",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg2",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_2_3": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE02",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg3",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_2_4": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE02",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg4",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_2_5": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE02",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg5",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_2_6": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE02",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg6",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_2_7": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE02",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg7",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_2_8": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE02",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg8",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_2_9": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE02",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg9",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_3_1": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE03",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg1",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_3_10": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE03",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg10",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_3_2": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE03",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg2",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_3_3": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE03",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg3",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_3_4": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE03",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg4",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_3_5": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE03",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg5",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_3_6": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE03",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg6",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_3_7": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE03",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg7",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_3_8": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE03",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg8",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_3_9": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE03",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg9",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_4_1": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE04",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg1",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_4_10": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE04",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg10",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_4_2": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE04",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg2",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_4_3": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE04",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg3",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_4_4": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE04",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg4",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_4_5": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE04",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg5",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_4_6": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE04",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg6",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_4_7": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE04",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg7",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_4_8": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE04",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg8",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_4_9": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE04",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Primary.Outpost.Leg9",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_fabricator": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE02",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Secondary.Outpost.Fabricator",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_harvesting": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE01",
+    "sourceTags": "Stat.Source.IsWorldOwner",
     "targetTags": "Stat.Mission.Secondary.Outpost.HarvestingUpgrade",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_pve02": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE02",
     "targetTags": "Stat.Mission.Primary.Outpost",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_pve03": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE03",
     "targetTags": "Stat.Mission.Primary.Outpost",
     "templateId": "",
     "type": "Complete"
   },
   "complete_outpost_pve04": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE04",
     "targetTags": "Stat.Mission.Primary.Outpost",
     "templateId": "",
     "type": "Complete"
@@ -1561,6 +1667,7 @@
   },
   "complete_pve01": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE01",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
@@ -1573,24 +1680,28 @@
   },
   "complete_pve01_diff1_commando": {
     "condition": "",
+    "sourceTags": "Class.IsCommando",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
   },
   "complete_pve01_diff1_constructor": {
     "condition": "",
+    "sourceTags": "Class.IsConstructor",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
   },
   "complete_pve01_diff1_ninja": {
     "condition": "",
+    "sourceTags": "Class.IsNinja",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
   },
   "complete_pve01_diff1_outlander": {
     "condition": "",
+    "sourceTags": "Class.IsOutlander",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
@@ -1603,24 +1714,28 @@
   },
   "complete_pve01_diff2_commando": {
     "condition": "Zone.Difficulty \u003E=3",
+    "sourceTags": "Class.IsCommando",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
   },
   "complete_pve01_diff2_constructor": {
     "condition": "Zone.Difficulty \u003E=3",
+    "sourceTags": "Class.IsConstructor",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
   },
   "complete_pve01_diff2_ninja": {
     "condition": "Zone.Difficulty \u003E=3",
+    "sourceTags": "Class.IsNinja",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
   },
   "complete_pve01_diff2_outlander": {
     "condition": "Zone.Difficulty \u003E=3",
+    "sourceTags": "Class.IsOutlander",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
@@ -1633,24 +1748,28 @@
   },
   "complete_pve01_diff3_commando": {
     "condition": "Zone.Difficulty \u003E=5",
+    "sourceTags": "Class.IsCommando",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
   },
   "complete_pve01_diff3_constructor": {
     "condition": "Zone.Difficulty \u003E=5",
+    "sourceTags": "Class.IsConstructor",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
   },
   "complete_pve01_diff3_ninja": {
     "condition": "Zone.Difficulty \u003E=5",
+    "sourceTags": "Class.IsNinja",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
   },
   "complete_pve01_diff3_outlander": {
     "condition": "Zone.Difficulty \u003E=5",
+    "sourceTags": "Class.IsOutlander",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
@@ -1663,24 +1782,28 @@
   },
   "complete_pve01_diff4_commando": {
     "condition": "Zone.Difficulty \u003E=7",
+    "sourceTags": "Class.IsCommando",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
   },
   "complete_pve01_diff4_constructor": {
     "condition": "Zone.Difficulty \u003E=7",
+    "sourceTags": "Class.IsConstructor",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
   },
   "complete_pve01_diff4_ninja": {
     "condition": "Zone.Difficulty \u003E=7",
+    "sourceTags": "Class.IsNinja",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
   },
   "complete_pve01_diff4_outlander": {
     "condition": "Zone.Difficulty \u003E=7",
+    "sourceTags": "Class.IsOutlander",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
@@ -1693,24 +1816,28 @@
   },
   "complete_pve01_diff5_commando": {
     "condition": "Zone.Difficulty \u003E=10",
+    "sourceTags": "Class.IsCommando",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
   },
   "complete_pve01_diff5_constructor": {
     "condition": "Zone.Difficulty \u003E=10",
+    "sourceTags": "Class.IsConstructor",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
   },
   "complete_pve01_diff5_ninja": {
     "condition": "Zone.Difficulty \u003E=10",
+    "sourceTags": "Class.IsNinja",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
   },
   "complete_pve01_diff5_outlander": {
     "condition": "Zone.Difficulty \u003E=10",
+    "sourceTags": "Class.IsOutlander",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
@@ -1741,6 +1868,7 @@
   },
   "complete_pve02": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE02",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
@@ -1777,6 +1905,7 @@
   },
   "complete_pve03": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE03",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
@@ -1813,6 +1942,7 @@
   },
   "complete_pve04": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE04",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
@@ -2155,6 +2285,7 @@
   },
   "custom_cannydeployoutpost": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE03",
     "targetTags": "",
     "templateId": "",
     "type": "Custom"
@@ -2167,12 +2298,14 @@
   },
   "custom_defendersupplyreceived": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE01",
     "targetTags": "",
     "templateId": "",
     "type": "Custom"
   },
   "custom_deployoutpost": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE01",
     "targetTags": "",
     "templateId": "",
     "type": "Custom"
@@ -2191,6 +2324,7 @@
   },
   "custom_plankdeployoutpost": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE02",
     "targetTags": "",
     "templateId": "",
     "type": "Custom"
@@ -2239,6 +2373,7 @@
   },
   "custom_twinedeployoutpost": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE04",
     "targetTags": "",
     "templateId": "",
     "type": "Custom"
@@ -2269,12 +2404,14 @@
   },
   "elder_build_deployable_base": {
     "condition": "",
+    "contextTags": "Stat.Mission.Primary.Horde",
     "targetTags": "",
     "templateId": "",
     "type": "Build"
   },
   "elder_complete_horde_tier_7": {
     "condition": "Mission.Tier \u003E= 7 \u0026\u0026 Mission.Wave = 10",
+    "contextTags": "Stat.Mission.Primary.Horde",
     "targetTags": "",
     "templateId": "",
     "type": "WaveComplete"
@@ -2629,36 +2766,42 @@
   },
   "kill_husk_blaster_pve02": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE02",
     "targetTags": "NPC.CharacterType.Blaster.Basic",
     "templateId": "",
     "type": "KillContribution"
   },
   "kill_husk_blaster_pve03": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE03",
     "targetTags": "NPC.CharacterType.Blaster.Basic",
     "templateId": "",
     "type": "KillContribution"
   },
   "kill_husk_commando": {
     "condition": "",
+    "sourceTags": "Class.IsCommando",
     "targetTags": "NPC.CharacterType.Husk",
     "templateId": "",
     "type": "KillContribution"
   },
   "kill_husk_commando_assault": {
     "condition": "",
+    "sourceTags": "Class.IsCommando,weapon.ranged.assault",
     "targetTags": "NPC.CharacterType.Husk",
     "templateId": "",
     "type": "KillContribution"
   },
   "kill_husk_commando_fraggrenade": {
     "condition": "",
+    "sourceTags": "Class.IsCommando,Abilities.Commando.FragGrenade",
     "targetTags": "NPC.CharacterType.Husk",
     "templateId": "",
     "type": "KillContribution"
   },
   "kill_husk_constructor": {
     "condition": "",
+    "sourceTags": "Class.IsConstructor",
     "targetTags": "NPC.CharacterType.Husk",
     "templateId": "",
     "type": "KillContribution"
@@ -2737,6 +2880,7 @@
   },
   "kill_husk_flinger_pve03": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE03",
     "targetTags": "NPC.CharacterType.Flinger.Basic",
     "templateId": "",
     "type": "KillContribution"
@@ -2749,24 +2893,28 @@
   },
   "kill_husk_lobber_pumplauncher": {
     "condition": "(Pawn.Tags HasTag NPC.CharacterType.Husk.Bombshell || Pawn.Tags HasTag NPC.CharacterType.Husk.PoisonLobber) \u0026\u0026 (Zone.Difficulty \u003E= 10)",
+    "sourceTags": "SpecialEvent.Halloween.PumpkinLauncher",
     "targetTags": "",
     "templateId": "",
     "type": "KillContribution"
   },
   "kill_husk_melee": {
     "condition": "",
+    "sourceTags": "weapon.melee",
     "targetTags": "NPC.CharacterType.Husk",
     "templateId": "",
     "type": "KillContribution"
   },
   "kill_husk_ninja": {
     "condition": "",
+    "sourceTags": "Class.IsNinja",
     "targetTags": "NPC.CharacterType.Husk",
     "templateId": "",
     "type": "KillContribution"
   },
   "kill_husk_outlander": {
     "condition": "",
+    "sourceTags": "Class.IsOutlander",
     "targetTags": "NPC.CharacterType.Husk",
     "templateId": "",
     "type": "KillContribution"
@@ -2857,12 +3005,14 @@
   },
   "kill_husk_smasher_pve02": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE02",
     "targetTags": "NPC.CharacterType.Smasher.Basic",
     "templateId": "",
     "type": "KillContribution"
   },
   "kill_husk_smasher_pve03": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE03",
     "targetTags": "NPC.CharacterType.Smasher.Basic",
     "templateId": "",
     "type": "KillContribution"
@@ -2941,6 +3091,7 @@
   },
   "kill_husk_taker_pve03": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE03",
     "targetTags": "NPC.CharacterType.Taker.Basic",
     "templateId": "",
     "type": "KillContribution"
@@ -2953,12 +3104,14 @@
   },
   "kill_initiator_husk": {
     "condition": "",
+    "sourceTags": "Stat.Source.IsInitiator",
     "targetTags": "NPC.CharacterType.Husk",
     "templateId": "",
     "type": "KillContribution"
   },
   "kill_initiator_husk_commando_assault": {
     "condition": "",
+    "sourceTags": "Stat.Source.IsInitiator,Class.IsCommando,weapon.ranged.assault",
     "targetTags": "NPC.CharacterType.Husk",
     "templateId": "",
     "type": "KillContribution"
@@ -3373,30 +3526,39 @@
   },
   "quick_complete": {
     "condition": "",
+    "sourceTags": "Stat.Source.OnCriticalMission",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
   },
   "quick_complete_pve01": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE01",
+    "sourceTags": "Stat.Source.OnCriticalMission",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
   },
   "quick_complete_pve02": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE02",
+    "sourceTags": "Stat.Source.OnCriticalMission",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
   },
   "quick_complete_pve03": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE03",
+    "sourceTags": "Stat.Source.OnCriticalMission",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
   },
   "quick_complete_pve04": {
     "condition": "",
+    "contextTags": "Stat.Theater.PvE04",
+    "sourceTags": "Stat.Source.OnCriticalMission",
     "targetTags": "Stat.Mission.Primary",
     "templateId": "",
     "type": "Complete"
@@ -3457,6 +3619,7 @@
   },
   "upgrade_walls_lvl_3": {
     "condition": "Building.Level == 3",
+    "sourceTags": "Stat.Source.IsInitiator,Class.IsConstructor",
     "targetTags": "Building.Type.Wall",
     "templateId": "",
     "type": "BuildingUpgrade"
