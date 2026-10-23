@@ -24,6 +24,7 @@ Core-Backend follows Core V2: one build at a time, each build fully working befo
 ## Contents
 
 - [Running](#running)
+- [Play with friends](#play-with-friends)
 - [Config options](#config-options)
 - [Contributing](#contributing)
 - [Credits](#credits)
@@ -56,7 +57,8 @@ Core-Backend follows Core V2: one build at a time, each build fully working befo
    npm start
    ```
 
-The backend listens on port `5595`. Fortnite needs a redirect that sends its requests to `127.0.0.1:5595`. The Cert
+The backend listens on port `5595`, on `127.0.0.1` only: other PCs can't connect until you turn on remote access
+([Play with friends](#play-with-friends)). Fortnite needs a redirect that sends its requests to `127.0.0.1:5595`. The Cert
 build also works without one when launched with `-epicportal -httpproxy=127.0.0.1:5595`.
 
 The Cert build logs in, reaches the Save the World frontend, and gets quest rewards and daily login rewards.
@@ -79,6 +81,8 @@ other sites). It has:
   - **Account:** kick (logs the player out everywhere), ban with a reason and unban, reset chosen profiles or all
     progress, delete the account.
 - **Sessions:** registered game servers with their mode, region, players and state; end a session.
+- **Friends:** turn remote access on or off, set the public address, and see what friends enter and which ports to
+  forward ([Play with friends](#play-with-friends)).
 - **Logs:** the backend's console live (filter, pause) and the requests nothing answered.
 
 Changes save at once; a player who is in the game sees them after the next profile refresh (Kick makes the game
@@ -90,6 +94,45 @@ To run the tests:
 npm test
 ```
 
+## Play with friends
+
+Friends on other PCs can log in to your backend and join your gameservers.
+
+**On your PC (the host):**
+
+1. Open the admin panel's **Friends** page and press **Turn on remote access**. The backend then listens on every
+   network interface instead of `127.0.0.1` only (at once, no restart). Allow Node.js through Windows Firewall if it
+   asks, and Fortnite too when your gameservers start.
+2. For friends on the internet, forward these ports on your router to your PC, with the same port numbers:
+
+   | Protocol | Port | For |
+   | --- | --- | --- |
+   | TCP | `5595` (the backend's port) | Login, MCP, XMPP chat and parties |
+   | UDP | `7777` and up, one per gameserver | The game |
+   | UDP | `15000` and up, one per gameserver | The gameserver's beacon (joining) |
+
+   The Friends page lists the ports your running gameservers use. Friends on your network, or on a VPN such as
+   Tailscale, ZeroTier, Hamachi or Radmin, need no forwarding.
+3. Optionally set **Public address** to your public IP or a dynamic DNS name. Players are sent to your gameservers at
+   the IP they connected to, so it is only needed when friends connect with a host name or without `CoreRedirect.dll`.
+4. Tell your friends the address: your public IP (or your network/VPN address, which the Friends page shows) and the
+   port, e.g. `203.0.113.7:5595`. They need the same Fortnite build as you.
+
+**On your friend's PC:** in [Core Launcher](https://github.com/PongooDev/Core-Launcher), Settings → Backend → **A
+friend's backend**, enter the address, **Test connection**, Save, and Play. Without the launcher, start the game with
+`-CoreBackend=http://<address>:<port>` (CoreRedirect.dll) and `-httpproxy=<address>:<port>`.
+
+Your friend gets an account on your backend, named after their player name. Core doesn't check passwords, so anyone who
+can reach the port can log in with any name: only share the address with people you trust (Players → Account can kick
+and ban). The admin panel and the launcher's `/core/api` routes still only answer on your PC; the one route other
+machines get is `GET /core/api/status` (`{"name":"Core-Backend","version":...}`), which the launcher uses to check
+the connection.
+
+Gameserver addresses: a gameserver on your PC registers as `127.0.0.1`, which another PC can't use. A player on your
+PC gets that; a player on your network or VPN gets the address they reached the backend on; a player on the internet
+gets the public address when one is set, else the IP they connected to. The same goes for the XMPP address in the
+start-up hotfix.
+
 ## Config options
 
 Core-Backend reads an optional `config.json` from the folder it is started in. Command-line options override it.
@@ -99,13 +142,22 @@ Core-Backend reads an optional `config.json` from the folder it is started in. C
 | `port` | `--port <n>` | `5595` | Port the backend listens on (`0` picks a free one; the log says which). |
 | `dataDir` | `--data <folder>` | `data` | Folder for accounts, profiles, tokens and logs. |
 | `emptyServerWaitMs` | | `30000` | How long a client's search for an empty gameserver waits for one to register or free up before it is answered with none. |
+| `remoteAccess` | `--remote-access` / `--local-only` | `false` | Let other PCs connect: listen on every interface instead of `127.0.0.1` only ([Play with friends](#play-with-friends)). |
+| `listenAddress` | `--listen <ip>` | | With remote access on, listen on this one address of your PC (e.g. its VPN address) instead of every interface. |
+| `publicAddress` | `--public-address <ip or host>` | | The address players on the internet are sent to for your gameservers and XMPP. A host name is looked up every 5 minutes. |
 | | `--config <file>` | `config.json` | Config file to read. |
+
+`remoteAccess` and `publicAddress` can also be changed on the admin panel's Friends page, which saves them in
+`<dataDir>/network.json` (kept with the accounts, so launcher updates keep them). That file overrides `config.json`;
+an option given on the command line overrides both and can't be changed in the panel.
 
 Example:
 
 ```json
 {
-  "port": 5595
+  "port": 5595,
+  "remoteAccess": true,
+  "publicAddress": "203.0.113.7"
 }
 ```
 
