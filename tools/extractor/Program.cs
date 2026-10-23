@@ -853,6 +853,7 @@ static SortedDictionary<string, object> Objective(JsonNode o, AssetTypes assetTy
     }
     var stat = o["ObjectiveStatHandle"]?["RowName"]?.GetValue<string>();
     if (stat is not (null or "None")) objective["stat"] = stat.ToLowerInvariant();
+    if (o["bRequirePrimaryMissionCompletion"]?.GetValue<bool>() == true) objective["requirePrimaryMissionCompletion"] = true;
     return objective;
 }
 

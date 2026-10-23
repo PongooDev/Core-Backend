@@ -111,11 +111,25 @@ export function statEvent(session, type, templateId, count) {
   }
 }
 
-export function advanceObjective(session, statName, count) {
+// held (a primary mission's progress, see missions.js): objectives with requirePrimaryMissionCompletion
+// (bRequirePrimaryMissionCompletion, "... in successful missions") wait there for the mission's end instead.
+export function advanceObjective(session, statName, count, held = null) {
   const tracker = session.profile("profile0");
   for (const { itemId, item, quest } of activeQuests(tracker)) {
     const objective = quest.objectives.find((candidate) => candidate.name === statName.toLowerCase());
-    if (objective) setObjective(session, itemId, objective, (item.attributes[`completion_${objective.name}`] ?? 0) + count);
+    if (!objective) continue;
+    if (held && objective.requirePrimaryMissionCompletion) held.add(itemId, objective.name, count);
+    else setObjective(session, itemId, objective, (item.attributes[`completion_${objective.name}`] ?? 0) + count);
+  }
+}
+
+// A won primary mission's held progress, on the quests that are still active.
+export function applyHeldProgress(session, held) {
+  const tracker = session.profile("profile0");
+  for (const { itemId, name, count } of held.entries()) {
+    const item = tracker.profile.items[itemId];
+    const objective = item && getQuest(questIdOf(item) ?? "")?.objectives.find((candidate) => candidate.name === name);
+    if (objective) setObjective(session, itemId, objective, (item.attributes[`completion_${name}`] ?? 0) + count);
   }
 }
 

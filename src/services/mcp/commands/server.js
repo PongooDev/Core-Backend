@@ -6,8 +6,9 @@ import { completeMissionAlert } from "../../../profiles/alerts.js";
 import { grantBadgeRewards } from "../../../profiles/badges.js";
 import { abortDisintegration, depositPostResources, disintegrateItems, fabricateItem } from "../../../profiles/fabricator.js";
 import { grantItem } from "../../../profiles/items.js";
+import { heldProgress } from "../../../profiles/missions.js";
 import { createDeployableBase, saveDeployableBase, saveOutpost, updateOutpostCore, updateTierProgression } from "../../../profiles/outposts.js";
-import { advanceObjective } from "../../../profiles/progress.js";
+import { advanceObjective, applyHeldProgress } from "../../../profiles/progress.js";
 import { earnScore, noXpEarned } from "../../../profiles/xp.js";
 import { atDifficulty, findMission } from "../../../world/theaters.js";
 import { clientQuestLogin } from "./ClientQuestLogin.js";
@@ -15,10 +16,11 @@ import { clientQuestLogin } from "./ClientQuestLogin.js";
 // Commands the gameserver sends for its players (POST .../profile/{accountId}/dedicated_server/{command}), from the
 // SDK's FDedicatedServerUrlContext functions. Parameters are the UFunction's with the first letter lowered.
 
-// Quest progress the server saw: [{statName, count}] (FFortQuestObjectiveCompletion).
-function advance(session, updates) {
+// Quest progress the server saw: [{statName, count}] (FFortQuestObjectiveCompletion). In a primary mission, progress
+// that needs the mission won is held for its EndPrimaryMission (profiles/missions.js).
+function advance(session, updates, held = null) {
   for (const { statName, count } of Array.isArray(updates) ? updates : []) {
-    if (typeof statName === "string" && Number.isInteger(count) && count > 0) advanceObjective(session, statName, count);
+    if (typeof statName === "string" && Number.isInteger(count) && count > 0) advanceObjective(session, statName, count, held);
   }
 }
 
@@ -175,12 +177,15 @@ export const serverCommands = {
 
   ServerQuestLogin: clientQuestLogin,
 
-  UpdateQuests({ req, session }) {
-    advance(session, req.body?.advance);
+  UpdateQuests({ req, session, context }) {
+    advance(session, req.body?.advance, context.primaryMissions.held(req.params.accountId));
   },
 
-  StartPrimaryMission({ req, session }) {
+  // UFortQuestManager's SendStartPrimaryMission (sub_7B3910): the progress from before the mission, then the mission
+  // starts (the quest manager's bPrimaryMissionStarted, +0x20A).
+  StartPrimaryMission({ req, session, context }) {
     advance(session, req.body?.advance);
+    context.primaryMissions.start(req.params.accountId);
   },
 
   // A finished mission: its quest progress, and when it succeeded (EFortMissionStatus Succeeded) the mission's rewards
@@ -195,10 +200,12 @@ export const serverCommands = {
   // mission's status; their reward packs (survivor badges: "Rescued Survivor") join the mission's (profiles/badges.js).
   EndPrimaryMission({ req, session, context, notifications }) {
     const { advance: updates, missionStatus, matchmakingSessionId, missionName, earnedBadgeData } = req.body ?? {};
-    advance(session, updates);
+    const held = context.primaryMissions.end(req.params.accountId) ?? heldProgress();
+    advance(session, updates, held);
     notifications.push({ type: "earnScore", primary: false, ...noXpEarned });
     grantBadgeRewards(session, earnedBadgeData);
     if (!/succeeded$/i.test(String(missionStatus ?? ""))) return;
+    applyHeldProgress(session, held);
     const mission = playedMission(context.sessions, matchmakingSessionId);
     if (!mission) {
       log("MCP", `EndPrimaryMission: no mission found for session ${matchmakingSessionId} (${missionName}), no rewards`);
@@ -239,12 +246,12 @@ export const serverCommands = {
   },
 
   // The player's world inventory as the server left it (theater0), the storm shield's (outpost0), and quest progress.
-  BatchUpdatePlayer({ req, session, tracker, profileId }) {
+  BatchUpdatePlayer({ req, session, tracker, profileId, context }) {
     if (!profileId.startsWith("theater")) throw new McpError("errors.com.epicgames.modules.profiles.invalid_command", "BatchUpdatePlayer is a theater profile command");
     const theater = applyChanges(tracker, req.body?.theaterItemUpdate);
     const outpost = applyChanges(session.profile("outpost0"), req.body?.outpostItemUpdate);
     const quests = Array.isArray(req.body?.questObjectiveUpdates) ? req.body.questObjectiveUpdates.length : 0;
-    advance(session, req.body?.questObjectiveUpdates);
+    advance(session, req.body?.questObjectiveUpdates, context.primaryMissions.held(req.params.accountId));
     log("MCP", `${req.params.command} for ${req.params.accountId}: ${describeChanges(profileId, theater, req.body?.theaterItemUpdate)}; `
       + `${describeChanges("outpost0", outpost, req.body?.outpostItemUpdate)}; quest updates ${quests}`);
   },

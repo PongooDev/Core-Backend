@@ -5,6 +5,7 @@ import { adminRoutes } from "./admin/routes.js";
 import { createTokenStore } from "./accounts/tokens.js";
 import { createProfileLocks } from "./profiles/locks.js";
 import { createMailbox } from "./profiles/mailbox.js";
+import { createPrimaryMissions } from "./profiles/missions.js";
 import { createProfileStore } from "./profiles/store.js";
 import { requestLog, unknownRoute } from "./log.js";
 import { createSessionStore } from "./matchmaking/sessions.js";
@@ -42,6 +43,7 @@ export function createContext(config) {
     profiles: createProfileStore(config.dataDir),
     mailbox: createMailbox(),
     locks: createProfileLocks(),
+    primaryMissions: createPrimaryMissions(),
     sessions: createSessionStore(),
     emptyServerWaitMs: config.emptyServerWaitMs,
     stomp: createStompService({ tokens, quiet: config.requestLog === false }),

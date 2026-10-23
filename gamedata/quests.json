@@ -5,6 +5,7 @@
       {
         "count": 500000,
         "name": "build_any_structure",
+        "requirePrimaryMissionCompletion": true,
         "stat": "build_any_structure"
       }
     ],
@@ -27,6 +28,7 @@
       {
         "count": 100,
         "name": "destroy_gnome",
+        "requirePrimaryMissionCompletion": true,
         "stat": "destroy_gnome"
       }
     ],
@@ -38,6 +40,7 @@
       {
         "count": 1500,
         "name": "complete_exploration_1",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_exploration_1"
       }
     ],
@@ -49,6 +52,7 @@
       {
         "count": 20000,
         "name": "kill_husk_smasher",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk_smasher"
       }
     ],
@@ -60,6 +64,7 @@
       {
         "count": 300,
         "name": "interact_treasurechest",
+        "requirePrimaryMissionCompletion": true,
         "stat": "interact_treasurechest"
       }
     ],
@@ -94,7 +99,8 @@
         "count": 10000,
         "item": "WorldItem:survivoritemdata",
         "itemEvent": "Collect",
-        "name": "questcollect_survivoritemdata"
+        "name": "questcollect_survivoritemdata",
+        "requirePrimaryMissionCompletion": true
       }
     ],
     "type": "Optional"
@@ -908,6 +914,7 @@
       {
         "count": 2,
         "name": "complete_mimic_3_diff4",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_mimic_3_diff4"
       }
     ],
@@ -960,6 +967,7 @@
       {
         "count": 15,
         "name": "kill_husk_smasher_3_diff1_v3",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk_smasher_3_diff1"
       }
     ],
@@ -986,6 +994,7 @@
       {
         "count": 3,
         "name": "complete_anomaly_3_diff2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_anomaly_3_diff2"
       }
     ],
@@ -1008,6 +1017,7 @@
       {
         "count": 2,
         "name": "complete_bluglosiphon_3_diff3",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_bluglosiphon_3_diff3"
       },
       {
@@ -1066,7 +1076,8 @@
         "count": 15,
         "item": "WorldItem:survivoritemdata",
         "itemEvent": "Collect",
-        "name": "questcollect_survivoritemdata_v2"
+        "name": "questcollect_survivoritemdata_v2",
+        "requirePrimaryMissionCompletion": true
       },
       {
         "count": 3,
@@ -1098,7 +1109,8 @@
         "count": 15,
         "item": "WorldItem:survivoritemdata",
         "itemEvent": "Collect",
-        "name": "questcollect_survivoritemdata_v2"
+        "name": "questcollect_survivoritemdata_v2",
+        "requirePrimaryMissionCompletion": true
       },
       {
         "count": 3,
@@ -1129,6 +1141,7 @@
       {
         "count": 5,
         "name": "complete_encampment_3_diff2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_encampment_3_diff2"
       }
     ],
@@ -1155,6 +1168,7 @@
       {
         "count": 20,
         "name": "kill_husk_flinger_3_diff3_v3",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk_flinger_3_diff3"
       }
     ],
@@ -1181,6 +1195,7 @@
       {
         "count": 25,
         "name": "kill_husk_taker_3_diff4_v3",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk_taker_3_diff4"
       }
     ],
@@ -1207,6 +1222,7 @@
       {
         "count": 30,
         "name": "kill_husk_smasher_3_diff5_v3",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk_smasher_3_diff5"
       }
     ],
@@ -1311,6 +1327,7 @@
       {
         "count": 3,
         "name": "complete_whackatroll_3_diff4_v2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_whackatroll_3_diff4"
       }
     ],
@@ -1333,6 +1350,7 @@
       {
         "count": 2,
         "name": "complete_bluglosiphon_3_diff5_v2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_bluglosiphon_3_diff5"
       }
     ],
@@ -1459,6 +1477,7 @@
       {
         "count": 3,
         "name": "complete_whackatroll_3_diff5_v2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_whackatroll_3_diff5"
       }
     ],
@@ -1564,7 +1583,8 @@
         "count": 10,
         "item": "WorldItem:survivoritemdata",
         "itemEvent": "Collect",
-        "name": "questcollect_survivoritemdata_v2"
+        "name": "questcollect_survivoritemdata_v2",
+        "requirePrimaryMissionCompletion": true
       },
       {
         "count": 2,
@@ -1595,6 +1615,7 @@
       {
         "count": 3,
         "name": "complete_anomaly_3_diff5_v2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_anomaly_3_diff5"
       }
     ],
@@ -2033,6 +2054,7 @@
       {
         "count": 5,
         "name": "interact_teddybear_pve03_v2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "interact_teddybear_pve03"
       }
     ],
@@ -2085,6 +2107,7 @@
       {
         "count": 5,
         "name": "interact_safe_pve03_diff3_v2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "interact_safe_pve03_diff3"
       }
     ],
@@ -2523,6 +2546,7 @@
       {
         "count": 5,
         "name": "kill_husk_smasher",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk_smasher"
       }
     ],
@@ -2539,6 +2563,7 @@
       {
         "count": 50,
         "name": "kill_husk_smasher",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk_smasher"
       }
     ],
@@ -2561,6 +2586,7 @@
       {
         "count": 10,
         "name": "kill_husk_smasher",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk_smasher"
       }
     ],
@@ -2583,6 +2609,7 @@
       {
         "count": 15,
         "name": "kill_husk_smasher",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk_smasher"
       }
     ],
@@ -2605,6 +2632,7 @@
       {
         "count": 20,
         "name": "kill_husk_smasher",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk_smasher"
       }
     ],
@@ -2627,6 +2655,7 @@
       {
         "count": 25,
         "name": "kill_husk_smasher",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk_smasher"
       }
     ],
@@ -2649,6 +2678,7 @@
       {
         "count": 30,
         "name": "kill_husk_smasher",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk_smasher"
       }
     ],
@@ -2671,6 +2701,7 @@
       {
         "count": 35,
         "name": "kill_husk_smasher",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk_smasher"
       }
     ],
@@ -2693,6 +2724,7 @@
       {
         "count": 40,
         "name": "kill_husk_smasher",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk_smasher"
       }
     ],
@@ -2715,6 +2747,7 @@
       {
         "count": 45,
         "name": "kill_husk_smasher",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk_smasher"
       }
     ],
@@ -2994,7 +3027,8 @@
         "count": 20,
         "item": "WorldItem:survivoritemdata",
         "itemEvent": "Collect",
-        "name": "questcollect_survivoritemdata"
+        "name": "questcollect_survivoritemdata",
+        "requirePrimaryMissionCompletion": true
       }
     ],
     "rewards": [
@@ -3011,7 +3045,8 @@
         "count": 70,
         "item": "WorldItem:survivoritemdata",
         "itemEvent": "Collect",
-        "name": "questcollect_survivoritemdata"
+        "name": "questcollect_survivoritemdata",
+        "requirePrimaryMissionCompletion": true
       }
     ],
     "rewards": [
@@ -3034,7 +3069,8 @@
         "count": 25,
         "item": "WorldItem:survivoritemdata",
         "itemEvent": "Collect",
-        "name": "questcollect_survivoritemdata"
+        "name": "questcollect_survivoritemdata",
+        "requirePrimaryMissionCompletion": true
       }
     ],
     "rewards": [
@@ -3057,7 +3093,8 @@
         "count": 30,
         "item": "WorldItem:survivoritemdata",
         "itemEvent": "Collect",
-        "name": "questcollect_survivoritemdata"
+        "name": "questcollect_survivoritemdata",
+        "requirePrimaryMissionCompletion": true
       }
     ],
     "rewards": [
@@ -3080,7 +3117,8 @@
         "count": 35,
         "item": "WorldItem:survivoritemdata",
         "itemEvent": "Collect",
-        "name": "questcollect_survivoritemdata"
+        "name": "questcollect_survivoritemdata",
+        "requirePrimaryMissionCompletion": true
       }
     ],
     "rewards": [
@@ -3103,7 +3141,8 @@
         "count": 40,
         "item": "WorldItem:survivoritemdata",
         "itemEvent": "Collect",
-        "name": "questcollect_survivoritemdata"
+        "name": "questcollect_survivoritemdata",
+        "requirePrimaryMissionCompletion": true
       }
     ],
     "rewards": [
@@ -3126,7 +3165,8 @@
         "count": 45,
         "item": "WorldItem:survivoritemdata",
         "itemEvent": "Collect",
-        "name": "questcollect_survivoritemdata"
+        "name": "questcollect_survivoritemdata",
+        "requirePrimaryMissionCompletion": true
       }
     ],
     "rewards": [
@@ -3149,7 +3189,8 @@
         "count": 50,
         "item": "WorldItem:survivoritemdata",
         "itemEvent": "Collect",
-        "name": "questcollect_survivoritemdata"
+        "name": "questcollect_survivoritemdata",
+        "requirePrimaryMissionCompletion": true
       }
     ],
     "rewards": [
@@ -3172,7 +3213,8 @@
         "count": 55,
         "item": "WorldItem:survivoritemdata",
         "itemEvent": "Collect",
-        "name": "questcollect_survivoritemdata"
+        "name": "questcollect_survivoritemdata",
+        "requirePrimaryMissionCompletion": true
       }
     ],
     "rewards": [
@@ -3195,7 +3237,8 @@
         "count": 60,
         "item": "WorldItem:survivoritemdata",
         "itemEvent": "Collect",
-        "name": "questcollect_survivoritemdata"
+        "name": "questcollect_survivoritemdata",
+        "requirePrimaryMissionCompletion": true
       }
     ],
     "rewards": [
@@ -3431,6 +3474,7 @@
       {
         "count": 2,
         "name": "complete_mimic",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_mimic"
       }
     ],
@@ -3447,6 +3491,7 @@
       {
         "count": 6,
         "name": "complete_mimic",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_mimic"
       }
     ],
@@ -3469,6 +3514,7 @@
       {
         "count": 2,
         "name": "complete_mimic",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_mimic"
       }
     ],
@@ -3491,6 +3537,7 @@
       {
         "count": 3,
         "name": "complete_mimic",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_mimic"
       }
     ],
@@ -3513,6 +3560,7 @@
       {
         "count": 3,
         "name": "complete_mimic",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_mimic"
       }
     ],
@@ -3535,6 +3583,7 @@
       {
         "count": 4,
         "name": "complete_mimic",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_mimic"
       }
     ],
@@ -3557,6 +3606,7 @@
       {
         "count": 4,
         "name": "complete_mimic",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_mimic"
       }
     ],
@@ -3579,6 +3629,7 @@
       {
         "count": 5,
         "name": "complete_mimic",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_mimic"
       }
     ],
@@ -3601,6 +3652,7 @@
       {
         "count": 5,
         "name": "complete_mimic",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_mimic"
       }
     ],
@@ -3623,6 +3675,7 @@
       {
         "count": 6,
         "name": "complete_mimic",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_mimic"
       }
     ],
@@ -3753,6 +3806,7 @@
       {
         "count": 6,
         "name": "quest_reactive_destroyarcade_v2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_destroyarcade"
       }
     ],
@@ -3773,6 +3827,7 @@
       {
         "count": 8,
         "name": "quest_reactive_destroybear_v3",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_destroybear"
       }
     ],
@@ -3793,6 +3848,7 @@
       {
         "count": 3,
         "name": "quest_reactive_destroyfiretruck_v2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_destroyfiretruck"
       }
     ],
@@ -3813,6 +3869,7 @@
       {
         "count": 3,
         "name": "quest_reactive_destroygnome_v2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_destroygnome"
       }
     ],
@@ -3833,6 +3890,7 @@
       {
         "count": 5,
         "name": "quest_reactive_destroypropane_v2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_destroypropane"
       }
     ],
@@ -3853,6 +3911,7 @@
       {
         "count": 8,
         "name": "quest_reactive_destroyseesaw_v2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_destroyseesaw"
       }
     ],
@@ -3873,6 +3932,7 @@
       {
         "count": 4,
         "name": "quest_reactive_destroyserverrack_v2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_destroyserverrack"
       }
     ],
@@ -3893,6 +3953,7 @@
       {
         "count": 4,
         "name": "quest_reactive_destroytransform_v2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_destroytransform"
       }
     ],
@@ -3913,6 +3974,7 @@
       {
         "count": 10,
         "name": "quest_reactive_destroytv_v2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_destroytv"
       }
     ],
@@ -3973,6 +4035,7 @@
       {
         "count": 500,
         "name": "kill_husk",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk"
       }
     ],
@@ -3993,6 +4056,7 @@
       {
         "count": 500,
         "name": "kill_husk_constructor",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk_constructor"
       }
     ],
@@ -4016,6 +4080,7 @@
       {
         "count": 500,
         "name": "kill_husk_ninja",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk_ninja"
       }
     ],
@@ -4039,6 +4104,7 @@
       {
         "count": 500,
         "name": "kill_husk_outlander",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk_outlander"
       }
     ],
@@ -4062,6 +4128,7 @@
       {
         "count": 500,
         "name": "kill_husk_commando",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk_commando"
       }
     ],
@@ -4261,7 +4328,8 @@
         "count": 25,
         "item": "WorldItem:survivoritemdata",
         "itemEvent": "Collect",
-        "name": "questcollect_survivoritemdata_v2"
+        "name": "questcollect_survivoritemdata_v2",
+        "requirePrimaryMissionCompletion": true
       }
     ],
     "rewards": [
@@ -5402,6 +5470,7 @@
       {
         "count": 1,
         "name": "complete_buildradar_1_diff2_con",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_buildradar_1_diff2_con"
       }
     ],
@@ -5459,6 +5528,7 @@
       {
         "count": 20,
         "name": "kill_husk_melee",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk_melee"
       },
       {
@@ -5539,6 +5609,7 @@
       {
         "count": 1,
         "name": "complete_exploration_1_diff2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_exploration_1_diff2"
       }
     ],
@@ -5614,6 +5685,7 @@
       {
         "count": 100,
         "name": "kill_husk_commando_assault",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk_commando_assault"
       }
     ],
@@ -5630,6 +5702,7 @@
       {
         "count": 10,
         "name": "kill_husk_commando_fraggrenade",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk_commando_fraggrenade"
       }
     ],
@@ -7501,6 +7574,7 @@
       {
         "count": 1,
         "name": "complete_stormchest_2_diff3",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_stormchest_2_diff3"
       }
     ],
@@ -7669,6 +7743,7 @@
       {
         "count": 500,
         "name": "kill_husk_2_diff4_v2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk_2_diff4"
       }
     ],
@@ -7700,7 +7775,8 @@
         "count": 25,
         "item": "WorldItem:survivoritemdata",
         "itemEvent": "Collect",
-        "name": "questcollect_survivoritemdata"
+        "name": "questcollect_survivoritemdata",
+        "requirePrimaryMissionCompletion": true
       },
       {
         "count": 2,
@@ -7757,6 +7833,7 @@
       {
         "count": 3,
         "name": "custom_bluglosyphon_full_v2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "custom_bluglosyphon_full"
       }
     ],
@@ -7787,6 +7864,7 @@
       {
         "count": 3,
         "name": "complete_anomaly_2_diff3_v2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_anomaly_2_diff3"
       }
     ],
@@ -7809,26 +7887,31 @@
       {
         "count": 1,
         "name": "custom_pylonused_build",
+        "requirePrimaryMissionCompletion": true,
         "stat": "custom_pylonused_build"
       },
       {
         "count": 1,
         "name": "custom_pylonused_health",
+        "requirePrimaryMissionCompletion": true,
         "stat": "custom_pylonused_health"
       },
       {
         "count": 1,
         "name": "custom_pylonused_movement",
+        "requirePrimaryMissionCompletion": true,
         "stat": "custom_pylonused_movement"
       },
       {
         "count": 1,
         "name": "custom_pylonused_shield",
+        "requirePrimaryMissionCompletion": true,
         "stat": "custom_pylonused_shield"
       },
       {
         "count": 1,
         "name": "custom_pylonused_stamina",
+        "requirePrimaryMissionCompletion": true,
         "stat": "custom_pylonused_stamina"
       }
     ],
@@ -7929,6 +8012,7 @@
       {
         "count": 6,
         "name": "complete_relaysurvivor_2_diff3",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_relaysurvivor_2_diff3"
       }
     ],
@@ -7955,11 +8039,13 @@
       {
         "count": 3,
         "name": "interact_treasurechest_pve02_diff4",
+        "requirePrimaryMissionCompletion": true,
         "stat": "interact_treasurechest_pve02_diff4"
       },
       {
         "count": 1,
         "name": "complete_mimic_2_diff4",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_mimic_2_diff4"
       }
     ],
@@ -7986,6 +8072,7 @@
       {
         "count": 3,
         "name": "complete_buildradar_2_diff5",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_buildradar_2_diff5"
       }
     ],
@@ -8012,6 +8099,7 @@
       {
         "count": 1,
         "name": "complete_exploration_2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_exploration_2"
       }
     ],
@@ -8038,6 +8126,7 @@
       {
         "count": 3,
         "name": "complete_medbot_2_diff2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_medbot_2_diff2"
       }
     ],
@@ -8065,7 +8154,8 @@
         "count": 15,
         "item": "WorldItem:survivoritemdata",
         "itemEvent": "Collect",
-        "name": "questcollect_survivoritemdata"
+        "name": "questcollect_survivoritemdata",
+        "requirePrimaryMissionCompletion": true
       },
       {
         "count": 1,
@@ -8197,6 +8287,7 @@
       {
         "count": 4,
         "name": "complete_relaysurvivor_2_diff5",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_relaysurvivor_2_diff5"
       }
     ],
@@ -8241,6 +8332,7 @@
       {
         "count": 20,
         "name": "kill_husk_smasher_2_diff4_v2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk_smasher_2_diff4"
       }
     ],
@@ -8267,6 +8359,7 @@
       {
         "count": 2,
         "name": "complete_exploration_2_diff5",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_exploration_2_diff5"
       }
     ],
@@ -8315,6 +8408,7 @@
       {
         "count": 5,
         "name": "complete_buildradar_2_diff5",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_buildradar_2_diff5"
       }
     ],
@@ -9740,6 +9834,7 @@
       {
         "count": 4,
         "name": "quest_reactive_avoiceinthenightv2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_avoiceinthenight"
       }
     ],
@@ -9764,6 +9859,7 @@
       {
         "count": 10,
         "name": "quest_reactive_blasters",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_blasters"
       }
     ],
@@ -9811,6 +9907,7 @@
       {
         "count": 5,
         "name": "quest_reactive_distresscallv2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_distresscall"
       }
     ],
@@ -9831,6 +9928,7 @@
       {
         "count": 10,
         "name": "quest_reactive_elemhusky",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_elemhusky"
       }
     ],
@@ -9853,6 +9951,7 @@
       {
         "count": 3,
         "name": "quest_reactive_finddj",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_finddj"
       }
     ],
@@ -9883,11 +9982,13 @@
       {
         "count": 1,
         "name": "quest_reactive_findmimic",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_findmimic"
       },
       {
         "count": 1,
         "name": "complete_mimic_1_diff5",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_mimic_1_diff5"
       }
     ],
@@ -9918,6 +10019,7 @@
       {
         "count": 3,
         "name": "quest_reactive_findpop",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_findpop"
       }
     ],
@@ -9950,6 +10052,7 @@
       {
         "count": 10,
         "name": "quest_reactive_firehusks",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_firehusks"
       }
     ],
@@ -9970,6 +10073,7 @@
       {
         "count": 5,
         "name": "quest_reactive_flingers",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_flingers"
       }
     ],
@@ -9996,6 +10100,7 @@
       {
         "count": 8,
         "name": "quest_reactive_gatherfood",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_gatherfood"
       }
     ],
@@ -10021,6 +10126,7 @@
       {
         "count": 4,
         "name": "quest_reactive_goodpop",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_goodpop"
       }
     ],
@@ -10051,6 +10157,7 @@
       {
         "count": 4,
         "name": "quest_reactive_trappartv2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_trappart"
       },
       {
@@ -10097,6 +10204,7 @@
       {
         "count": 5,
         "name": "quest_reactive_knowyourenemy",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_knowyourenemy"
       }
     ],
@@ -10117,6 +10225,7 @@
       {
         "count": 10,
         "name": "quest_reactive_lightninghusks",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_lightninghusks"
       }
     ],
@@ -10169,6 +10278,7 @@
       {
         "count": 4,
         "name": "quest_reactive_medicaldata",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_medicaldata"
       },
       {
@@ -10204,6 +10314,7 @@
       {
         "count": 2,
         "name": "quest_reactive_medicalsupplies",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_medicalsupplies"
       }
     ],
@@ -10224,6 +10335,7 @@
       {
         "count": 10,
         "name": "quest_reactive_poisonlobbers",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_poisonlobbers"
       }
     ],
@@ -10263,6 +10375,7 @@
       {
         "count": 5,
         "name": "quest_reactive_radiostation",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_radiostation"
       }
     ],
@@ -10289,6 +10402,7 @@
       {
         "count": 3,
         "name": "quest_reactive_riftdata",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_riftdata"
       }
     ],
@@ -10315,6 +10429,7 @@
       {
         "count": 4,
         "name": "quest_reactive_roadhome",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_roadhome"
       }
     ],
@@ -10341,6 +10456,7 @@
       {
         "count": 5,
         "name": "quest_reactive_seebotv2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_seebot"
       }
     ],
@@ -10361,6 +10477,7 @@
       {
         "count": 5,
         "name": "quest_reactive_smasher",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_smasher"
       }
     ],
@@ -10395,6 +10512,7 @@
       {
         "count": 4,
         "name": "quest_reactive_larssupplies",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_larssupplies"
       },
       {
@@ -10433,6 +10551,7 @@
       {
         "count": 5,
         "name": "quest_reactive_taker",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_taker"
       }
     ],
@@ -10463,6 +10582,7 @@
       {
         "count": 3,
         "name": "quest_reactive_transmitters",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_transmitters"
       }
     ],
@@ -10529,6 +10649,7 @@
       {
         "count": 10,
         "name": "quest_reactive_waterhusks",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_waterhusks"
       }
     ],
@@ -10586,7 +10707,8 @@
         "count": 3,
         "item": "WorldItem:survivoritemdata",
         "itemEvent": "Collect",
-        "name": "questcollect_survivoritemdata"
+        "name": "questcollect_survivoritemdata",
+        "requirePrimaryMissionCompletion": true
       },
       {
         "count": 1,
@@ -10651,6 +10773,7 @@
       {
         "count": 4,
         "name": "complete_encampment_1_diff4",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_encampment_1_diff4"
       },
       {
@@ -10721,6 +10844,7 @@
       {
         "count": 5,
         "name": "kill_husk_taker_1_diff5",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk_taker_1_diff5"
       },
       {
@@ -10828,6 +10952,7 @@
       {
         "count": 2,
         "name": "complete_whackatroll_1_diff3",
+        "requirePrimaryMissionCompletion": true,
         "stat": "complete_whackatroll_1_diff3"
       }
     ],
@@ -10879,7 +11004,8 @@
         "count": 15,
         "item": "WorldItem:survivoritemdata",
         "itemEvent": "Collect",
-        "name": "questcollect_survivoritemdata"
+        "name": "questcollect_survivoritemdata",
+        "requirePrimaryMissionCompletion": true
       },
       {
         "count": 3,
@@ -10914,6 +11040,7 @@
       {
         "count": 1,
         "name": "interact_treasurechest_pve01_diff2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "interact_treasurechest_pve01_diff2"
       }
     ],
@@ -10930,6 +11057,7 @@
       {
         "count": 100,
         "name": "deferred_kill_husks",
+        "requirePrimaryMissionCompletion": true,
         "stat": "kill_husk"
       }
     ],
@@ -14686,6 +14814,7 @@
       {
         "count": 2,
         "name": "quest_reactive_twitch_1",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_twitch_1"
       }
     ],
@@ -14702,6 +14831,7 @@
       {
         "count": 3,
         "name": "quest_reactive_twitch_10",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_twitch_10"
       }
     ],
@@ -14719,6 +14849,7 @@
       {
         "count": 3,
         "name": "quest_reactive_twitch_11",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_twitch_11"
       }
     ],
@@ -14739,6 +14870,7 @@
       {
         "count": 2,
         "name": "quest_reactive_twitch_12",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_twitch_12"
       }
     ],
@@ -14756,6 +14888,7 @@
       {
         "count": 10,
         "name": "quest_reactive_twitch_13",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_twitch_13"
       }
     ],
@@ -14772,6 +14905,7 @@
       {
         "count": 1,
         "name": "quest_reactive_twitch_14",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_twitch_14"
       }
     ],
@@ -14789,6 +14923,7 @@
       {
         "count": 10,
         "name": "quest_reactive_twitch_15",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_twitch_15"
       }
     ],
@@ -14806,6 +14941,7 @@
       {
         "count": 15,
         "name": "quest_reactive_twitch_2",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_twitch_2"
       }
     ],
@@ -14823,6 +14959,7 @@
       {
         "count": 1,
         "name": "quest_reactive_twitch_3",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_twitch_3"
       }
     ],
@@ -14840,6 +14977,7 @@
       {
         "count": 2,
         "name": "quest_reactive_twitch_4",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_twitch_4"
       }
     ],
@@ -14861,6 +14999,7 @@
       {
         "count": 2,
         "name": "quest_reactive_twitch_5",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_twitch_5"
       }
     ],
@@ -14881,6 +15020,7 @@
       {
         "count": 1,
         "name": "quest_reactive_twitch_6",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_twitch_6"
       }
     ],
@@ -14898,6 +15038,7 @@
       {
         "count": 15,
         "name": "quest_reactive_twitch_7",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_twitch_7"
       }
     ],
@@ -14919,6 +15060,7 @@
       {
         "count": 3,
         "name": "quest_reactive_twitch_8",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_twitch_8"
       }
     ],
@@ -14940,6 +15082,7 @@
       {
         "count": 6,
         "name": "quest_reactive_twitch_9",
+        "requirePrimaryMissionCompletion": true,
         "stat": "quest_reactive_twitch_9"
       }
     ],
