@@ -187,3 +187,70 @@ test("book profiles saved with pages only in profile0's stat get their page item
     backend.close();
   }
 });
+
+const questOf = async (book, questId) => (await book.itemsOf(`Quest:${questId}`))[0]?.[1];
+
+test("levelling the book completes Collections (challenge_collectionbook_1) and the test quest counts slots and levels", async () => {
+  const backend = await startBackend();
+  try {
+    const book = await bookAccount(backend, "BookQuests");
+    await book.give("Quest:challenge_collectionbook_1");
+    await book.give("Quest:testquestcollectionbook");
+    await book.give("CollectionBookPage:pageHeroes_Commando");
+    await book.give("CollectionBookPage:pagePeople_Survivors");
+    assert.equal((await questOf(book, "challenge_collectionbook_1")).attributes.quest_state, "Active");
+
+    // A common survivor is far short of level 1 (1500 XP): slotted, but the book hasn't levelled.
+    await book.give("Worker:workerbasic_c_t01");
+    const [[worker]] = await book.itemsOf("Worker:workerbasic_c_t01");
+    assert.equal((await book.run("SlotItemInCollectionBook", { itemId: worker })).status, 200);
+    let test = await questOf(book, "testquestcollectionbook");
+    assert.equal(test.attributes.completion_slot_any_collection_item_test1, 1);
+    assert.equal(test.attributes["completion_slot_worker in_collection_book_test"], 1);
+    assert.equal((await questOf(book, "challenge_collectionbook_1")).attributes.quest_state, "Active");
+
+    // A rare hero takes it to level 2 (3800 XP) without a claim: the level the client shows counts.
+    await book.give("Hero:hid_commando_007_r_t01");
+    const [[hero]] = await book.itemsOf("Hero:hid_commando_007_r_t01");
+    assert.equal((await book.run("SlotItemInCollectionBook", { itemId: hero })).status, 200);
+    const quest = await questOf(book, "challenge_collectionbook_1");
+    assert.equal(quest.attributes.completion_collectionbook_levelup, 1);
+    assert.equal(quest.attributes.quest_state, "Completed", "its schematic XP reward waits for the rewards screen");
+    test = await questOf(book, "testquestcollectionbook");
+    assert.equal(test.attributes.completion_slot_any_collection_item_test1, 2);
+    assert.equal(test.attributes["completion_slot_worker in_collection_book_test"], 1);
+    assert.equal(test.attributes.completion_collectionbook_levelup, 2);
+    assert.equal(test.attributes.quest_state, "Active", "5 survivors still to slot");
+    assert.equal((await book.run("ClaimCollectionBookRewards", { requiredXp: 1500, selectedRewardIndex: 0 })).status, 200);
+  } finally {
+    backend.close();
+  }
+});
+
+test("a book already levelled counts for Collections when it is granted and, if it was missed, at quest login", async () => {
+  const backend = await startBackend();
+  try {
+    const book = await bookAccount(backend, "BookQuestsLater");
+    await book.give("CollectionBookPage:pageHeroes_Commando");
+    await book.give("Hero:hid_commando_007_r_t01");
+    const [[hero]] = await book.itemsOf("Hero:hid_commando_007_r_t01");
+    assert.equal((await book.run("SlotItemInCollectionBook", { itemId: hero })).status, 200);
+
+    await book.give("Quest:challenge_collectionbook_1");
+    let [questId, quest] = (await book.itemsOf("Quest:challenge_collectionbook_1"))[0];
+    assert.equal(quest.attributes.quest_state, "Completed");
+
+    // An account whose quest stayed at 0/1 (issue #22, before the book counted) catches up at its next quest login.
+    const file = path.join(backend.dataDir, "accounts", book.accountId, "profiles", "profile0.json");
+    const saved = JSON.parse(fs.readFileSync(file, "utf8"));
+    Object.assign(saved.items[questId].attributes, { quest_state: "Active", completion_collectionbook_levelup: 0 });
+    fs.writeFileSync(file, JSON.stringify(saved));
+    assert.equal((await questOf(book, "challenge_collectionbook_1")).attributes.quest_state, "Active");
+    assert.equal((await book.run("ClientQuestLogin")).status, 200);
+    [questId, quest] = (await book.itemsOf("Quest:challenge_collectionbook_1"))[0];
+    assert.equal(quest.attributes.completion_collectionbook_levelup, 1);
+    assert.equal(quest.attributes.quest_state, "Completed");
+  } finally {
+    backend.close();
+  }
+});

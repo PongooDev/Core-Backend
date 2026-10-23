@@ -1,3 +1,5 @@
+import { bookLevel } from "../collectionbook/book.js";
+import { slottedItems } from "../collectionbook/pages.js";
 import { getObjectiveStat } from "../gamedata/homebase.js";
 import { getCharacter, getItem } from "../gamedata/items.js";
 import { getQuest, startingQuests } from "../gamedata/quests.js";
@@ -160,8 +162,9 @@ function conditionHolds(condition, item, tags) {
 }
 
 // Whether an account item is what a stat row is about: its TemplateId (the item type), TargetTags and Condition.
+// The TemplateId <any-item> (collection_slot_any_item) matches every item.
 function statMatches(stat, item) {
-  if (stat.templateId && typeOf(item.templateId) !== stat.templateId.toLowerCase()) return false;
+  if (stat.templateId && stat.templateId !== "<any-item>" && typeOf(item.templateId) !== stat.templateId.toLowerCase()) return false;
   const tags = getCharacter(item.templateId)?.tags ?? getItem(item.templateId)?.tags ?? [];
   return (!stat.targetTags || hasTag(tags, stat.targetTags)) && conditionHolds(stat.condition, item, tags);
 }
@@ -178,9 +181,24 @@ function heldCount(profile, stat) {
 
 const heldStats = { HasAssignedWorker: assignedCount, HasItem: heldCount };
 
+// The collection book's objectives (collectionbook/book.js), worked out from the book profiles: the objective
+// collectionbook_levelup (no stat, no item event: Epic's MCP knew it by its backend name) is the book level reached,
+// and a SlotInCollection stat counts the matching items slotted. Both only go up, so they never take progress away.
+const levelUpObjective = "collectionbook_levelup";
+
+function bookProgress(session, objective) {
+  if (objective.name === levelUpObjective) return bookLevel(session);
+  const stat = objective.stat && getObjectiveStat(objective.stat);
+  if (stat?.type !== "SlotInCollection") return undefined;
+  return [...slottedItems(session).values()].filter(({ item }) => statMatches(stat, item)).length;
+}
+
 // Objectives that describe what the player holds rather than events: owning an item, a finished quest, or a
 // character assigned somewhere. They are re-counted whenever that could have changed, including when the quest is granted.
-function stateProgress(profile, objective) {
+function stateProgress(session, objective) {
+  const { profile } = session.profile("profile0");
+  const book = bookProgress(session, objective);
+  if (book !== undefined) return book;
   if (objective.itemEvent === "Acquire" && objective.item) {
     return Object.values(profile.items).filter((item) => sameId(item.templateId, objective.item)).reduce((sum, item) => sum + item.quantity, 0);
   }
@@ -197,18 +215,22 @@ function refreshQuest(session, itemId) {
   const tracker = session.profile("profile0");
   const item = tracker.profile.items[itemId];
   for (const objective of getQuest(questIdOf(item)).objectives) {
-    const value = stateProgress(tracker.profile, objective);
+    const value = stateProgress(session, objective);
     if (value !== undefined && value > 0) setObjective(session, itemId, objective, value);
   }
 }
 
-// Re-counts the objectives about what the player holds (assigned characters, HasItem) after squads or items changed.
+// Re-counts the objectives about what the player holds (assigned characters, HasItem, the collection book) after
+// squads, items or the book changed, and at quest login, so quests already active when the account got there catch up.
 export function refreshHeldItems(session) {
   const tracker = session.profile("profile0");
-  for (const { itemId, quest } of activeQuests(tracker)) {
+  for (const { itemId, item, quest } of activeQuests(tracker)) {
     for (const objective of quest.objectives) {
       const stat = objective.stat && getObjectiveStat(objective.stat);
       if (heldStats[stat?.type]) setObjective(session, itemId, objective, heldStats[stat.type](tracker.profile, stat));
+      const book = bookProgress(session, objective);
+      const current = item.attributes[`completion_${objective.name}`] ?? 0;
+      if (book !== undefined && book > current) setObjective(session, itemId, objective, book);
     }
   }
 }

@@ -1,6 +1,6 @@
 import { McpError } from "../errors.js";
 import { lootEntry } from "../profiles/items.js";
-import { grant } from "../profiles/progress.js";
+import { grant, itemEvent, refreshHeldItems } from "../profiles/progress.js";
 import { itemRating } from "../profiles/rating.js";
 import { recyclingRefunds } from "../profiles/upgrades.js";
 import { findPageItem, isUnlocked, levels, pageId, pageOfSlot, pages, rarityFactor, refreshPage, sectionOfSlot, sections, slotFor, slots,
@@ -41,11 +41,20 @@ export function bookXp(session) {
   return [...bySection.values()].reduce((sum, xp) => sum + Math.round(xp), 0);
 }
 
+// The level the client shows (sub_4671F0): the higher of the XP's level and the last one claimed.
+export function bookLevel(session) {
+  const xp = bookXp(session);
+  const reached = levels.reduce((level, entry) => entry.totalXp <= xp ? Math.max(level, entry.level) : level, 0);
+  const claimed = session.profile("profile0").profile.stats.attributes.collection_book?.maxBookXpLevelAchieved ?? 0;
+  return Math.max(reached, claimed);
+}
+
 // SlotItemInCollectionBook {itemId}: the item moves, id and attributes kept, into its slot's page profile. A slot that
 // already holds an item takes the new one in its place: the picker shows the old one's recycling refunds
 // (CollectionBookItemPicker → CollectionBookRecycleSlotResultsWidget, UFortAccountItemDefinition::GetRecyclingRefunds)
 // and Core grants them (🟡). The reply's primary notification is FFortCollectionBookSlotItemNotification
-// {slottedItemId}, which the client's completion (sub_47B740) reads to find the slotted item.
+// {slottedItemId}, which the client's completion (sub_47B740) reads to find the slotted item. The quests that wait on
+// the book (a level reached, items slotted) are re-counted (progress.js) and the SlotInCollection item event is fed.
 export function slotItem(session, itemId, notifications = []) {
   const account = session.profile("profile0");
   const item = typeof itemId === "string" && account.profile.items[itemId];
@@ -65,6 +74,8 @@ export function slotItem(session, itemId, notifications = []) {
   account.removeItem(itemId);
   book.addItem(itemId, { templateId: item.templateId, attributes: { ...item.attributes }, quantity: 1 });
   refreshPage(session, page);
+  itemEvent(session, ["SlotInCollection"], item.templateId, 1);
+  refreshHeldItems(session);
   notifications.push({ type: "collectionBookSlotItem", primary: true, slottedItemId: itemId });
 }
 
@@ -89,6 +100,7 @@ export function claimBookLevel(session, requiredXp, selectedIndex = 0, notificat
   if (xp < requiredXp) fail(`The book has ${xp} of ${requiredXp} XP`);
   grantRewards(session, level.rewards, selectedIndex, notifications);
   account.setStat("collection_book", { ...book, maxBookXpLevelAchieved: level.level });
+  refreshHeldItems(session);
 }
 
 // ClaimCollectionBookPageRewards {pageTemplateId, sectionId, selectedRewardIndex} on the page's book profile: a
