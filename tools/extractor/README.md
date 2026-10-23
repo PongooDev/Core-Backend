@@ -28,3 +28,6 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
 - `collectionbook.json`: the collection book's pages (book profile, sections, rewards), sections (slots, rewards),
   slots (allowed item templates, survivor personalities, XP weight row), the slot XP weights, the rarity factor curve
   and the book levels (total XP, rewards).
+- `research.json`: the resource collectors (research points): each CollectedResource template's payout and the
+  homebase attributes its rate, capacity and wallet cap come from, what each skill tree node adds to those attributes
+  (its CommandConsole_GEImporter rows) and the account buffs that multiply them (BuffEffects modifiers).

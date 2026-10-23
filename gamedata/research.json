@@ -1,0 +1,40 @@
+{
+  "buffs": {
+    "Buff:vipstatus": {
+      "rate_per_second_collector_Token_collectionresource_nodegatetoken01": 2
+    }
+  },
+  "collectors": {
+    "CollectedResource:Token_collectionresource_nodegatetoken01": {
+      "capacityAttribute": "max_capacity_collector_Token_collectionresource_nodegatetoken01",
+      "payout": "Token:collectionresource_nodegatetoken01",
+      "rateAttribute": "rate_per_second_collector_Token_collectionresource_nodegatetoken01",
+      "walletAttribute": "ResearchPointMaxBonus"
+    }
+  },
+  "nodes": {
+    "T1_Main_FABC7C290": {
+      "ResearchPointMaxBonus": 1600,
+      "max_capacity_collector_Token_collectionresource_nodegatetoken01": 1065,
+      "rate_per_second_collector_Token_collectionresource_nodegatetoken01": 0.015096618
+    },
+    "T2_Main_E321E3463": {
+      "rate_per_second_collector_Token_collectionresource_nodegatetoken01": 0.015096618
+    },
+    "T3_Main_2E9E28772": {
+      "rate_per_second_collector_Token_collectionresource_nodegatetoken01": 0.015096618
+    },
+    "TRTrunk_2_0": {
+      "ResearchPointMaxBonus": 3725,
+      "max_capacity_collector_Token_collectionresource_nodegatetoken01": 1065
+    },
+    "TRTrunk_3_0": {
+      "ResearchPointMaxBonus": 12250,
+      "max_capacity_collector_Token_collectionresource_nodegatetoken01": 1065
+    },
+    "TRTrunk_4_0": {
+      "ResearchPointMaxBonus": 10115,
+      "max_capacity_collector_Token_collectionresource_nodegatetoken01": 1065
+    }
+  }
+}

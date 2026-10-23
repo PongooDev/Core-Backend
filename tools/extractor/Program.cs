@@ -75,6 +75,7 @@ var expeditions = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var characters = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var cardPacks = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var unmapped = new SortedSet<string>(StringComparer.Ordinal);
+var accountBuffEffects = new SortedDictionary<string, List<string>>(StringComparer.Ordinal);
 var disintegrationItems = new SortedDictionary<string, (bool FromRecipe, int FabricationOverride)>(StringComparer.Ordinal);
 var schematicRecipes = new Dictionary<string, (int Produced, List<(string TemplateId, int Count)> Costs)>(StringComparer.Ordinal);
 foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" && assetTypes.IsItemPath(f.Path)))
@@ -113,6 +114,10 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     if (properties?["DisplayName"]?["SourceString"]?.GetValue<string>() is { Length: > 0 } displayName)
         ((SortedDictionary<string, object>)items[templateId])["name"] = displayName;
 
+    // Account buffs (UFortAccountBuffItemDefinition BuffEffects): the gameplay effects the buff puts on the homebase.
+    if (export.ExportType == "FortAccountBuffItemDefinition")
+        accountBuffEffects[templateId] = (properties?["BuffEffects"]?.AsArray() ?? []).Select(e => AssetPath(e)).ToList();
+
     // An item's power (RatingLookup into the BaseItemRating curves, by level): squads add these up for expeditions.
     if (properties?["RatingLookup"]?["RowName"]?.GetValue<string>() is { } ratingRow and not "None"
         && properties["RatingLookup"]?["CurveTable"]?["ObjectName"]?.GetValue<string>() == "CurveTable'BaseItemRating'")
@@ -133,6 +138,24 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
             // The loot tier group Epic's server rolled the bonus criteria (expedition_criteria) from.
             ["criteriaTier"] = properties?["CriteriaRequirementsLootTier"]?.GetValue<string>() ?? "None"
         };
+    }
+
+    // Badges (UFortBadgeItemDefinition): what the MCP template says a badge earns (template export sub_5D1FD0):
+    // static_cardpack_reward (BadgeCardPackReward) and static_item_rewards (ItemRewards, FFortItemQuantityPair
+    // {ItemDefinition, Quantity}). The gameserver reports earned badges in EndPrimaryMission's earnedBadgeData.
+    if (export.ExportType == "FortBadgeItemDefinition")
+    {
+        var badge = (SortedDictionary<string, object>)items[templateId];
+        if (properties?["BadgeCardPackReward"] is { } packReward && AssetPath(packReward) is { Length: > 0 } packPath and not "None")
+            badge["cardPackReward"] = assetTypes.TemplateId(ObjectPath(packPath));
+        var itemRewards = (properties?["ItemRewards"] as JsonArray ?? []).OfType<JsonObject>()
+            .Where(pair => pair["ItemDefinition"] is { } reward && AssetPath(reward) is { Length: > 0 } and not "None")
+            .Select(pair => new SortedDictionary<string, object>(StringComparer.Ordinal)
+            {
+                ["templateId"] = assetTypes.TemplateId(ObjectPath(AssetPath(pair["ItemDefinition"]))),
+                ["quantity"] = pair["Quantity"]?.GetValue<int>() ?? 0
+            }).ToList();
+        if (itemRewards.Count > 0) badge["itemRewards"] = itemRewards;
     }
 
     // Account items level up and are recycled and evolved (UFortAccountItemDefinition): the XPAccountItemLevels and
@@ -430,6 +453,60 @@ foreach (var (id, row) in LoadRows(provider, manager["HomebaseNodeDataTable"]))
 var pages = new SortedDictionary<string, object>(StringComparer.Ordinal);
 foreach (var (id, row) in LoadRows(provider, manager["HomebaseNodePageDataTable"])) pages[id] = Strings(row!["NodeList"]);
 
+// Research points come from a resource collector (UFortCollectedResourceItem, profile0 CollectedResource:<X>). The
+// client's rate and capacity for it are the homebase attributes rate_per_second_collector_<X> and
+// max_capacity_collector_<X> (UHomeBaseContext::GetResourceCollectorRateInfo, sub_5C03D0: <X> is the collector's
+// template id after the ':'), and the research wallet's cap is ResearchPointMaxBonus (WarehouseCollectorSubWidget
+// enables Collect only below it). All three are FortHomebaseSet attributes that skill tree nodes raise through their
+// effect rows (Additive), and the VIP account buff doubles the rate (Buff_DoubleResearchPointRate, Multiplicitive).
+const string ratePrefix = "rate_per_second_collector_", capacityPrefix = "max_capacity_collector_", walletAttribute = "ResearchPointMaxBonus";
+static bool ResearchAttribute(string attribute) => attribute.StartsWith(ratePrefix) || attribute.StartsWith(capacityPrefix) || attribute == walletAttribute;
+var researchNodes = new SortedDictionary<string, SortedDictionary<string, double>>(StringComparer.Ordinal);
+foreach (var (id, row) in LoadRows(provider, manager["HomebaseNodeDataTable"]))
+{
+    foreach (var effect in Strings(row!["GameplayEffectRowNames"]))
+    {
+        var modifier = nodeEffects[effect];
+        var attribute = modifier?["Attribute"]?["AttributeName"]?.GetValue<string>() ?? "";
+        if (!ResearchAttribute(attribute)) continue;
+        if (Enum(modifier!["Operation"]) != "Additive") throw new InvalidOperationException($"{effect} is not additive");
+        var sums = researchNodes.TryGetValue(id, out var existing) ? existing : researchNodes[id] = new(StringComparer.Ordinal);
+        sums[attribute] = (sums.TryGetValue(attribute, out var sum) ? sum : 0) + modifier["Magnitude"]!.GetValue<double>();
+    }
+}
+var researchBuffs = new SortedDictionary<string, SortedDictionary<string, double>>(StringComparer.Ordinal);
+foreach (var (buff, effects) in accountBuffEffects)
+{
+    foreach (var effect in effects)
+    {
+        if (!provider.TryLoadPackage(PackageFile(JsonValue.Create(effect)), out var package)) continue;
+        var defaults = JsonNode.Parse(JsonConvert.SerializeObject(package.GetExports().First(e => e.Name.StartsWith("Default__"))))!["Properties"];
+        foreach (var modifier in defaults?["Modifiers"]?.AsArray() ?? [])
+        {
+            var attribute = modifier!["Attribute"]?["AttributeName"]?.GetValue<string>() ?? "";
+            if (!ResearchAttribute(attribute)) continue;
+            if (Enum(modifier["ModifierOp"]) != "Multiplicitive") throw new InvalidOperationException($"{effect} is not multiplicative");
+            var factors = researchBuffs.TryGetValue(buff, out var existing) ? existing : researchBuffs[buff] = new(StringComparer.Ordinal);
+            factors[attribute] = modifier["ModifierMagnitude"]!["ScalableFloatMagnitude"]!["Value"]!.GetValue<double>();
+        }
+    }
+}
+// Each collector the rate attributes name. Its payout is <X> with its first '_' back to ':' (the attributes spell the
+// payout's template id that way: Token_collectionresource_nodegatetoken01); the wallet cap is the research one when
+// the payout is the research point token (UFortHomebaseManager ResearchPointItemDefinition).
+var collectors = new SortedDictionary<string, object>(StringComparer.Ordinal);
+foreach (var name in researchNodes.Values.SelectMany(sums => sums.Keys).Where(a => a.StartsWith(ratePrefix)).Distinct())
+{
+    var suffix = name[ratePrefix.Length..];
+    var payout = suffix[..suffix.IndexOf('_')] + ":" + suffix[(suffix.IndexOf('_') + 1)..];
+    var collector = new SortedDictionary<string, object>(StringComparer.Ordinal)
+    {
+        ["payout"] = payout, ["rateAttribute"] = name, ["capacityAttribute"] = capacityPrefix + suffix
+    };
+    if (payout.Equals("Token:collectionresource_nodegatetoken01", StringComparison.OrdinalIgnoreCase)) collector["walletAttribute"] = walletAttribute;
+    collectors[$"CollectedResource:{suffix}"] = collector;
+}
+
 var squads = new SortedDictionary<string, object>(StringComparer.Ordinal);
 foreach (var (id, row) in LoadRows(provider, manager["HomebaseSquadDataTable"]))
 {
@@ -710,6 +787,10 @@ File.WriteAllText(Path.Combine(output, "workers.json"), JsonSerializer.Serialize
 File.WriteAllText(Path.Combine(output, "newaccount.json"), JsonSerializer.Serialize(newAccount, options) + "\n");
 File.WriteAllText(Path.Combine(output, "cardpacks.json"), JsonSerializer.Serialize(cardPacks, options) + "\n");
 File.WriteAllText(Path.Combine(output, "homebasenodes.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal) { ["nodes"] = nodes, ["pages"] = pages }, options) + "\n");
+File.WriteAllText(Path.Combine(output, "research.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal)
+{
+    ["collectors"] = collectors, ["nodes"] = researchNodes, ["buffs"] = researchBuffs
+}, options) + "\n");
 File.WriteAllText(Path.Combine(output, "squads.json"), JsonSerializer.Serialize(squads, options) + "\n");
 File.WriteAllText(Path.Combine(output, "banners.json"), JsonSerializer.Serialize(banners, options) + "\n");
 File.WriteAllText(Path.Combine(output, "transmog.json"), JsonSerializer.Serialize(transmogKeys, options) + "\n");
