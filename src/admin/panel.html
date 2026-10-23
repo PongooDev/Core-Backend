@@ -370,6 +370,25 @@ function duration(seconds) {
   const d = Math.floor(seconds / 86400), h = Math.floor(seconds % 86400 / 3600), m = Math.floor(seconds % 3600 / 60);
   return d ? `${d}d ${h}h` : h ? `${h}h ${m}m` : `${m}m ${seconds % 60}s`;
 }
+
+/* The backend's uptime keeps counting between overview requests: every element marked data-uptime shows the time since
+   upSince (when the backend started, from the latest overview's uptimeSeconds) and is rewritten once a second while the
+   tab is visible and the backend answers. A new overview only moves upSince when it disagrees by more than rounding,
+   e.g. after a restart. */
+let upSince = null;
+const uptimeSeconds = () => Math.max(0, Math.floor((Date.now() - upSince) / 1000));
+function uptime(seconds) {
+  const since = Date.now() - seconds * 1000;
+  if (upSince === null || Math.abs(since - upSince) > 1500) upSince = since;
+  return el("span", { "data-uptime": true, text: duration(uptimeSeconds()) });
+}
+function tickUptime() {
+  if (upSince === null || document.hidden || $("pulse").classList.contains("down")) return;
+  const text = duration(uptimeSeconds());
+  for (const node of document.querySelectorAll("[data-uptime]")) if (node.textContent !== text) node.textContent = text;
+}
+setInterval(tickUptime, 1000);
+document.addEventListener("visibilitychange", tickUptime);
 const initial = (name) => (name || "?").trim()[0]?.toUpperCase() ?? "?";
 
 function table(columns, rows, empty = "Nothing here yet.") {
@@ -414,7 +433,7 @@ async function showDashboard() {
       tile("Online now", fmt(overview.online.length)),
       tile("Game sessions", fmt(overview.sessions.length)),
       tile("Banned", fmt(overview.banned)),
-      tile("Uptime", duration(overview.uptimeSeconds)),
+      tile("Uptime", uptime(overview.uptimeSeconds)),
       tile("Backend", [overview.version, overview.commit ? el("span", { class: "sub mono", text: `commit ${overview.commit}` }) : null])),
     el("div", { class: "grid cols-2", style: "margin-top:16px" },
       el("section", { class: "panel" }, el("div", { class: "panel-head" }, el("h2", { text: "Online players" })),
@@ -786,7 +805,7 @@ async function heartbeat() {
   try {
     const o = await api("/admin/api/overview");
     $("pulse").className = "pulse";
-    $("server-line").textContent = `${location.host} · ${o.online.length} online · ${o.sessions.length} sessions · up ${duration(o.uptimeSeconds)}`;
+    $("server-line").replaceChildren(`${location.host} · ${o.online.length} online · ${o.sessions.length} sessions · up `, uptime(o.uptimeSeconds));
   } catch {
     $("pulse").className = "pulse down";
     $("server-line").textContent = `${location.host} · not answering`;
