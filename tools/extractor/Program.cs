@@ -104,6 +104,10 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         ["tier"] = Enum(properties?["Tier"]) ?? "No_Tier"
     };
     if (Strings(properties?["GameplayTags"]) is { Count: > 0 } itemTags) ((SortedDictionary<string, object>)items[templateId])["tags"] = itemTags;
+    // bNeverPersisted: the world profile's save (ConstructBatchUpdate 0x6A9750) only adds items whose definition passes
+    // 0x5C53E0 ((+0xF4 & 3) == 0: not bIsAccountItem, not bNeverPersisted), so MCP never holds one.
+    if (profile == "theater" && (properties?["bNeverPersisted"]?.GetValue<bool>() ?? ItemClasses.NeverPersistedByDefault(export.ExportType)))
+        ((SortedDictionary<string, object>)items[templateId])["neverPersisted"] = true;
     // The MCP template's static_max_durability (UFortWorldItemDefinition's template export sub_5FCE60 writes it when
     // bItemHasDurability is set): GetMaxDurability at level 0. Weapons, traps, the edit tool and building pieces
     // (UFortWeaponItemDefinition, sub_837C20) read it from their WeaponStatHandle row; gadgets have their own.
@@ -1020,6 +1024,16 @@ static class ItemClasses
 
     public static bool HasDisintegrationValue(string itemClass) =>
         Lineage(itemClass).Where(ConstructorHasDisintegrationValue.ContainsKey).Select(c => ConstructorHasDisintegrationValue[c]).FirstOrDefault();
+
+    // bNeverPersisted as the class constructors set it.
+    private static readonly Dictionary<string, bool> ConstructorNeverPersisted = new()
+    {
+        ["FortItemDefinition"] = false,
+        ["FortNeverPersistItemDefinition"] = true
+    };
+
+    public static bool NeverPersistedByDefault(string itemClass) =>
+        Lineage(itemClass).Where(ConstructorNeverPersisted.ContainsKey).Select(c => ConstructorNeverPersisted[c]).First();
 
     public static bool UsesCraftingRecipeForDisintegration(string itemClass) =>
         Lineage(itemClass).Where(ConstructorUsesCraftingRecipe.ContainsKey).Select(c => ConstructorUsesCraftingRecipe[c]).FirstOrDefault();

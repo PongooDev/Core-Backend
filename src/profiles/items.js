@@ -57,6 +57,71 @@ function addItem(tracker, templateId, quantity, info, options) {
   return itemId;
 }
 
+const sameTemplate = (item, templateId) => item.templateId.toLowerCase() === templateId.toLowerCase();
+
+// A world item given the way the world inventory gives one (AFortInventory, as CoreV2's GiveItemToInventoryOwner
+// restores it): each stack of the template below its MaxStackSize is topped up in turn, then the rest becomes new stacks
+// of at most MaxStackSize. Returns [itemId, amount] per stack that grew or was made.
+function grantWorldStacks(tracker, templateId, quantity, limit, info, options) {
+  const changed = [];
+  let remaining = quantity;
+  for (const [itemId, item] of Object.entries(tracker.profile.items)) {
+    if (remaining <= 0) break;
+    if (!sameTemplate(item, templateId) || item.quantity >= limit) continue;
+    const amount = Math.min(remaining, limit - item.quantity);
+    tracker.setQuantity(itemId, item.quantity + amount);
+    changed.push([itemId, amount]);
+    remaining -= amount;
+  }
+  while (remaining > 0) {
+    const amount = Math.min(remaining, limit);
+    changed.push([addItem(tracker, templateId, amount, info, options), amount]);
+    remaining -= amount;
+  }
+  return changed;
+}
+
+const stableJson = (value) => (value && typeof value === "object" && !Array.isArray(value)
+  ? `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${stableJson(value[key])}`).join(",")}}`
+  : JSON.stringify(value));
+
+// A world profile (theater0, outpost0) as the game would have kept it: never-persisted items dropped, and stacks of one
+// template that are otherwise the same (equal attributes, e.g. single items an older Core granted one by one) merged
+// up to MaxStackSize, the earlier stacks filled first. Items that differ (durability, level...) stay apart. Returns
+// counts for the log.
+export function tidyWorldStacks(tracker) {
+  const counts = { removed: 0, merged: 0 };
+  const groups = new Map();
+  for (const [itemId, item] of Object.entries(tracker.profile.items)) {
+    const info = getItem(item.templateId);
+    if (info?.neverPersisted) {
+      tracker.removeItem(itemId);
+      counts.removed++;
+      continue;
+    }
+    if (!info || info.maxStackSize === 1) continue;
+    const key = `${item.templateId.toLowerCase()}|${stableJson(item.attributes ?? {})}`;
+    if (!groups.has(key)) groups.set(key, { limit: info.maxStackSize > 0 ? info.maxStackSize : Infinity, ids: [] });
+    groups.get(key).ids.push(itemId);
+  }
+  for (const { limit, ids } of groups.values()) {
+    if (ids.length < 2) continue;
+    let remaining = ids.reduce((sum, itemId) => sum + tracker.profile.items[itemId].quantity, 0);
+    for (const [index, itemId] of ids.entries()) {
+      // Nothing is lost: what no longer fits (stacks already over their limit) stays on the last one.
+      const quantity = index === ids.length - 1 ? remaining : Math.min(remaining, limit);
+      remaining -= quantity;
+      if (quantity === 0) {
+        tracker.removeItem(itemId);
+        counts.merged++;
+      } else if (tracker.profile.items[itemId].quantity !== quantity) {
+        tracker.setQuantity(itemId, quantity);
+      }
+    }
+  }
+  return counts;
+}
+
 export const lootEntry = ({ templateId, itemId, profileId, quantity }) => ({ itemType: templateId, itemGuid: itemId, itemProfile: profileId, quantity });
 
 // Returns what was granted, one entry per item that was added or topped up.
@@ -88,10 +153,17 @@ export function grantItem(session, templateId, quantity, options = {}) {
   const tracker = session.profile(profileId);
   const granted = (itemId, amount) => ({ profileId, itemId, templateId, quantity: amount });
 
+  // A never-persisted world item (bNeverPersisted, e.g. ability ammo and quest pickups) lives only in a zone: the theater0
+  // save never adds one (ConstructBatchUpdate 0x6A9750 keeps definitions passing 0x5C53E0), so MCP never holds one.
+  if (info.neverPersisted) {
+    log("Items", `${templateId} is never persisted, not granted`);
+    return [];
+  }
   if (info.maxStackSize === 1) {
     return Array.from({ length: quantity }, () => granted(addItem(tracker, templateId, 1, info, options), 1));
   }
   const limit = info.maxStackSize > 0 ? info.maxStackSize : Infinity;
+  if (info.profile === "theater") return grantWorldStacks(tracker, templateId, quantity, limit, info, options).map(([itemId, amount]) => granted(itemId, amount));
   const existing = findItem(tracker.profile, templateId);
   if (!existing) {
     const amount = Math.min(quantity, limit);

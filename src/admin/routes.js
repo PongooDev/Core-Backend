@@ -199,6 +199,8 @@ export function adminRoutes(context) {
       : type.toLowerCase() === "collectionbookpage" ? isBookPage(name)
       : Boolean(getItem(templateId) ?? bannerTemplateId(templateId));
     if (!known) return invalid(res, `Unknown item ${templateId}`);
+    // bNeverPersisted items (ability ammo, quest pickups) only exist in a zone; the game never saves one to a profile.
+    if (getItem(templateId)?.neverPersisted) return invalid(res, `${templateId} only exists in a zone and is never kept in a profile`);
     return { granted: grant(session, templateId, quantity).length };
   }));
 

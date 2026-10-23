@@ -14,6 +14,8 @@ dotnet run -c Release --project tools/extractor -- "<build folder with FortniteG
   turns it off) carry `maxDurability`, the MCP template's static_max_durability: GetMaxDurability at level 0, from the
   definition's `WeaponStatHandle` row (`BaseLevel`, `DurabilityScale`) and its `WeaponDurabilityRarity` row
   (`DurabilityRowName`) at the item's rarity; 1 when either row is missing.
+  World items the game never saves to a profile (`bNeverPersisted` on the asset, or a `FortNeverPersistItemDefinition`)
+  carry `neverPersisted: true`.
   Badges carry their MCP template's static_cardpack_reward (`cardPackReward`, BadgeCardPackReward) and
   static_item_rewards (`itemRewards`, ItemRewards {templateId, quantity}).
 

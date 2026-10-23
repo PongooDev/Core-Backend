@@ -62,9 +62,9 @@ export function describeItem(templateId) {
 }
 
 let catalog;
-// Everything the panel can give: items, quests, skill tree nodes, banners.
+// Everything the panel can give: items (not the never-persisted ones), quests, skill tree nodes, banners.
 function allTemplates() {
-  catalog ??= [...itemIds(), ...questIds().filter((id) => getQuest(id)).map((id) => `Quest:${id}`),
+  catalog ??= [...itemIds().filter((templateId) => !getItem(templateId)?.neverPersisted), ...questIds().filter((id) => getQuest(id)).map((id) => `Quest:${id}`),
     ...nodeIds().filter((id) => getNode(id)).map((id) => `HomebaseNode:${id.toLowerCase()}`), ...bannerIds()]
     .map(describeItem);
   return catalog;

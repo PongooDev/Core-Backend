@@ -2,9 +2,11 @@ import { addPageItem, bookProfiles, pageId, pages, refreshPage } from "../collec
 import { slotUnlockNode } from "../gamedata/homebase.js";
 import { getItem } from "../gamedata/items.js";
 import { readGameData } from "../gamedata/read.js";
+import { log } from "../log.js";
 import { addCollectors, missingCollectors } from "../research/collector.js";
 import { startingQuests } from "../gamedata/quests.js";
 import { ownsNode } from "./homebase.js";
+import { tidyWorldStacks } from "./items.js";
 import { grant } from "./progress.js";
 import { findQuestItem } from "./quests.js";
 import { assignToSquad, characterType } from "./squads.js";
@@ -32,6 +34,13 @@ import { levelStartXp, settleLevel } from "./xp.js";
 //   (collectionbook/pages.js), which the client builds the book from. Core used to keep the unlocked pages in that stat
 //   only, so the book showed no categories, slotting filled nothing and the XP stayed at 0 (issue #13). Profiles saved
 //   before then get their page items and their pages' states once (and lose Core's old claimed_page_rewards stat).
+// - theater0 and outpost0 as the world inventory keeps them (tidyWorldStacks, profiles/items.js): Core used to give
+//   never-persisted world items (ability ammo, quest pickups; the game never saves one) and, past a full first stack,
+//   dropped the rest of a stackable grant. An admin grant of 3000 Bot Turret ammo (MaxStackSize 1, bNeverPersisted) made
+//   3000 theater0 items; the server loads every one into the world inventory, whose first FFortItemList delta then holds
+//   them all, and the client rejects more than 2048 changed entries (FastArrayDeltaSerialize<FFortItemEntry> 0x89A720,
+//   "NumChanged > MAX_NUM_CHANGED"), so the player never got into the zone (issue #17). Never-persisted items go and equal
+//   stacks merge, once per profile.
 // - The research point collector (research/collector.js) of a profile that owns Unlock Research: Tier 1. Core had no
 //   collectors before 2026-10-23, so profiles that bought the node then get theirs, empty, when they next load.
 // Profiles made before this, or left with no hero at all, get what they lack when they next load. So does a profile
@@ -63,7 +72,8 @@ function leadCandidate(profile) {
 }
 
 export function needsSetUp(profile) {
-  if (profile.profileId === "theater0") return !migrated(profile, "itemDurability");
+  if (profile.profileId === "theater0") return !migrated(profile, "itemDurability") || !migrated(profile, "worldStacks");
+  if (profile.profileId === "outpost0") return !migrated(profile, "worldStacks");
   if (bookProfiles.includes(profile.profileId)) return !migrated(profile, "bookPages");
   if (profile.profileId !== "profile0") return false;
   return startingQuests.some((questId) => !findQuestItem(profile, questId)) || Boolean(defaultHero && !heroes(profile).length)
@@ -75,11 +85,20 @@ export function needsSetUp(profile) {
 // an item that has a durability keeps it.
 function setUpTheater(session) {
   const tracker = session.profile("theater0");
+  if (!migrated(tracker.profile, "worldStacks")) setUpWorldStacks(session, "theater0");
+  if (migrated(tracker.profile, "itemDurability")) return;
   for (const [itemId, item] of Object.entries(tracker.profile.items)) {
     const maxDurability = getItem(item.templateId)?.maxDurability;
     if (maxDurability !== undefined && item.attributes && !("durability" in item.attributes)) tracker.setItemAttribute(itemId, "durability", maxDurability);
   }
   tracker.profile.coreMigrations = [...(tracker.profile.coreMigrations ?? []), "itemDurability"];
+}
+
+function setUpWorldStacks(session, profileId) {
+  const tracker = session.profile(profileId);
+  const { removed, merged } = tidyWorldStacks(tracker);
+  if (removed || merged) log("Profiles", `${session.accountId} ${profileId}: ${removed} never-persisted items removed, ${merged} stacks merged`);
+  tracker.profile.coreMigrations = [...(tracker.profile.coreMigrations ?? []), "worldStacks"];
 }
 
 function setUpBook(session, profileId) {
@@ -96,6 +115,7 @@ function setUpBook(session, profileId) {
 
 export function setUpProfile(session, profileId = "profile0") {
   if (profileId === "theater0") return setUpTheater(session);
+  if (profileId === "outpost0") return setUpWorldStacks(session, profileId);
   if (bookProfiles.includes(profileId)) return setUpBook(session, profileId);
   for (const questId of startingQuests) grant(session, `Quest:${questId}`, 1);
 

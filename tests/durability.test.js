@@ -90,7 +90,7 @@ test("theater0 items saved without durability get their template's, once", async
     assert.deepEqual(items.pickaxe.attributes, {});
     assert.deepEqual(items.wood.attributes, {});
     assert.equal(first.profileChanges[0].profile.coreMigrations, undefined, "Core's bookkeeping isn't sent to the client");
-    assert.deepEqual(JSON.parse(fs.readFileSync(file, "utf8")).coreMigrations, ["itemDurability"]);
+    assert.deepEqual(JSON.parse(fs.readFileSync(file, "utf8")).coreMigrations, ["worldStacks", "itemDurability"]);
 
     const saved = JSON.parse(fs.readFileSync(file, "utf8"));
     saved.items.shotgun.attributes = {};
