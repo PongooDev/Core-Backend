@@ -98,10 +98,19 @@ export function recycleItem(session, itemId) {
   if (item.attributes.squad_id) fail(`${item.templateId} is in a squad`);
   const catalysts = recipes[info.recycleRecipe]?.catalysts ?? [];
   if (!hasUnlocked(tracker.profile, catalysts)) locked(catalysts);
-  const xp = Math.round(recycleXp[info.recycleXp]?.[item.attributes.level ?? 1] ?? 0);
+  const xp = recycleXpRefund(item);
   tracker.removeItem(itemId);
-  if (xp > 0) grantItem(session, xpResource[info.class], xp);
+  if (xp) grantItem(session, xp.templateId, xp.quantity);
   for (const { templateId, quantity } of recipes[info.recycleRecipe]?.results ?? []) grantItem(session, templateId, quantity);
+}
+
+// The XP an item gives back when it's recycled or sacrificed to a transform: UFortAccountItem::GetRecycleValue (vslot
+// 0x258, sub_5BF970) reads the definition's LevelToSacrificeXpHandle row of XPAccountItemRewards at the item's level and
+// truncates it; the XP type is the one levelling it costs (hero XP for heroes and defenders, schematic XP, survivor XP).
+export function recycleXpRefund(item) {
+  const info = getItem(item.templateId);
+  const quantity = Math.trunc(recycleXp[info?.recycleXp]?.[item.attributes?.level ?? 1] ?? 0);
+  return quantity > 0 && xpResource[info.class] ? { templateId: xpResource[info.class], quantity } : null;
 }
 
 // UFortAccountItemDefinition::GetRecyclingRefunds: the SacrificeRecipe's results, what recycling the item gives besides

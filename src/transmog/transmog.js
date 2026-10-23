@@ -2,9 +2,10 @@ import { poolMatching } from "../cardpacks/pools.js";
 import { McpError } from "../errors.js";
 import { getItem } from "../gamedata/items.js";
 import { readGameData } from "../gamedata/read.js";
-import { findItem, lootEntry } from "../profiles/items.js";
+import { findItem, grantItem, lootEntry } from "../profiles/items.js";
 import { grant } from "../profiles/progress.js";
 import { hasUnlocked } from "../profiles/unlocks.js";
+import { recycleXpRefund } from "../profiles/upgrades.js";
 
 // Item transform (TransmogItem), from the game data:
 //  - A key (UFortConversionControlItemDefinition) is usable when the player owns one, or when its RequiredCatalysts
@@ -21,6 +22,10 @@ import { hasUnlocked } from "../profiles/unlocks.js";
 // hasn't unlocked ("Recycle locked"). Items in any other squad are offered, and the client sends TransmogItem without
 // unassigning them first (the recycle screen does, the transform screen doesn't), so they leave their squad with the
 // item. Members of an expedition under way are kept (Core's choice: removing them would strand the expedition).
+// The sacrificed items give back their recycle XP (issue #26): the confirmation's "Results" (ItemTransformResultItems.
+// CalculateRecycleXP) list the main reward and, per XP type, the sum of each item's GetRecycleValue (Hero and Defender ->
+// hero XP, Schematic -> schematic XP, Worker -> survivor XP), and nothing else; the SacrificeRecipe's results (Training
+// Manuals) aren't listed, so they aren't given (inferred: Epic's server did the same).
 const { recipes = {} } = readGameData("upgrades", {});
 const fallbackHeroSquad = "Squad_Combat_AdventureSquadOne";
 const keys = new Map(Object.entries(readGameData("transmog", {})).map(([templateId, key]) => [templateId.toLowerCase(), { templateId, ...key }]));
@@ -61,7 +66,10 @@ function spend(tracker, templateId, quantity) {
 }
 
 // TransmogItem {transmogKeyTemplateId, sacrificeItemIds}; reported as transmogResult (FFortTransmogResultNotification
-// {transmoggedItems, recycledItems}, both [FMcpLootEntry]).
+// {transmoggedItems, recycledItems}, both [FMcpLootEntry]). The client (sub_64DD20) looks each recycledItems itemGuid up
+// in profile0, adding up the quantities of entries with the same guid, and the result modal lists those items with
+// their quantities under the new item, skipping any it can't find: recycledItems are what the sacrifices gave back,
+// the XP stacks they topped up (the sacrificed items are gone by then, so the modal could never show one).
 export function transmogItem(session, keyTemplateId, sacrificeItemIds, notifications) {
   const key = keys.get(String(keyTemplateId ?? "").toLowerCase());
   if (!key) fail(`No transform key ${keyTemplateId}`);
@@ -91,12 +99,14 @@ export function transmogItem(session, keyTemplateId, sacrificeItemIds, notificat
   if (!choices.length) fail(`${key.templateId} has nothing to transform into`);
 
   if (key.requiredItem && key.tiers[tier].quantity > 0) spend(tracker, key.requiredItem, key.tiers[tier].quantity);
-  const recycledItems = ids.map((itemId) => {
-    const { templateId, quantity } = profile.items[itemId];
+  const refunds = new Map();
+  for (const itemId of ids) {
+    const xp = recycleXpRefund(profile.items[itemId]);
+    if (xp) refunds.set(xp.templateId, (refunds.get(xp.templateId) ?? 0) + xp.quantity);
     tracker.removeItem(itemId);
-    return lootEntry({ templateId, itemId, profileId: "profile0", quantity });
-  });
+  }
   if (key.consumed && ownedKey) spend(tracker, key.templateId, 1);
+  const recycledItems = [...refunds].flatMap(([templateId, quantity]) => grantItem(session, templateId, quantity)).map(lootEntry);
   const result = choices[Math.floor(Math.random() * choices.length)];
   // The grant also recounts the held-item objectives (HasAssignedWorker, HasItem) the sacrificed squad members counted for.
   const transmoggedItems = grant(session, result, 1).map(lootEntry);
