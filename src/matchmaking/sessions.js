@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import { createNetwork, normalizeAddress } from "../network.js";
 
 // Every key the client's session parser requires (OnlineSessionJsonMcp, sub_37F59F0): a session missing one is dropped
 // with "Unable to read session settings!". buildUniqueId is read as a string.
@@ -34,23 +35,12 @@ const compare = {
   NOT_IN: (actual, value) => Array.isArray(value) && !value.includes(actual)
 };
 
-// The client's session reader (sub_37F5010) parses serverAddress as an IP and only maps 0:0:0:0:0:0:0:1 itself
-// ("Failed to parse ip address %s" otherwise). Node reports IPv4 peers on a dual-stack socket as ::ffff:a.b.c.d, and
-// the Cert server's update body (sub_380D1E0) writes its address as the IPv4 number ("%u", 2130706433 for 127.0.0.1).
-export function normalizeAddress(address) {
-  const text = String(address ?? "").trim();
-  if (text === "::1" || text === "0:0:0:0:0:0:0:1") return "127.0.0.1";
-  if (/^\d+$/.test(text) && Number(text) <= 0xffffffff) {
-    const ip = Number(text);
-    return [ip >>> 24, (ip >>> 16) & 255, (ip >>> 8) & 255, ip & 255].join(".");
-  }
-  return text.replace(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/i, "$1");
-}
+// Address helpers live with the network settings; normalizeAddress and isLoopback are also used from here.
+export { isLoopback, normalizeAddress } from "../network.js";
 
 // "" (the Cert server's create body has no address unless -UseLocalIPs) and "0.0.0.0" (its -UseLocalIPs failure value)
 // say nothing about where the server is.
 const usable = (address) => address !== "" && address !== "0.0.0.0";
-export const isLoopback = (address) => /^127\./.test(normalizeAddress(address));
 
 function apply(session, body) {
   for (const field of sessionFields) {
@@ -250,14 +240,14 @@ export function createSessionStore() {
 }
 
 // What the client parses (OnlineSessionJsonMcp): the settings, the session info and the open slot counts.
-// viewer: the request it goes to. A server on this machine registers as 127.0.0.1, which a client on another machine
-// can't reach; it gets the address it reached the backend on instead (as the XMPP hotfix does), the server being here.
-export function sessionJson(session, viewer) {
+// viewer: the request it goes to. A server on this machine registers as 127.0.0.1 (or a private address), which a
+// client on another machine can't reach: it gets an address of this machine it can reach instead (network.js
+// serverAddressFor: the address it reached the backend on, or for a player on the internet the configured
+// publicAddress or the IP it typed), the server being here.
+const defaultNetwork = createNetwork();
+export function sessionJson(session, viewer, network = defaultNetwork) {
   const { keys, zoneDifficulty, hostAccountId, ...json } = session;
-  const socket = viewer?.socket;
-  if (socket && isLoopback(json.serverAddress) && !isLoopback(socket.remoteAddress)) {
-    json.serverAddress = normalizeAddress(socket.localAddress);
-  }
+  json.serverAddress = network.serverAddressFor(json.serverAddress, viewer);
   return json;
 }
 

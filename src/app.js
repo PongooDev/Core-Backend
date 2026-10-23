@@ -1,6 +1,7 @@
 import express from "express";
 import { createAccountStore } from "./accounts/store.js";
 import { createFriendStore } from "./friends/store.js";
+import { networkAdminRoutes } from "./admin/network.js";
 import { adminRoutes } from "./admin/routes.js";
 import { createTokenStore } from "./accounts/tokens.js";
 import { createProfileLocks } from "./profiles/locks.js";
@@ -9,10 +10,12 @@ import { createPrimaryMissions } from "./profiles/missions.js";
 import { createProfileStore } from "./profiles/store.js";
 import { requestLog, unknownRoute } from "./log.js";
 import { createSessionStore } from "./matchmaking/sessions.js";
+import { createNetwork } from "./network.js";
 import { originForm } from "./proxy.js";
 import { oauthRoutes } from "./services/account/oauth.js";
 import { publicAccountRoutes } from "./services/account/public.js";
 import { contentRoutes } from "./services/content/pages.js";
+import { coreStatusRoutes } from "./services/core/status.js";
 import { datarouterRoutes } from "./services/datarouter/data.js";
 import { eulaRoutes } from "./services/eulatracking/agreements.js";
 import { accessRoutes } from "./services/fortnite/access.js";
@@ -45,6 +48,7 @@ export function createContext(config) {
     locks: createProfileLocks(),
     primaryMissions: createPrimaryMissions(),
     sessions: createSessionStore(),
+    network: createNetwork(config),
     emptyServerWaitMs: config.emptyServerWaitMs,
     stomp: createStompService({ tokens, quiet: config.requestLog === false }),
     xmpp: createXmppService({
@@ -86,6 +90,8 @@ export function createApp(config, context = createContext(config)) {
   app.use(friendCodeRoutes(context));
   app.use(friendsRoutes(context));
   app.use(datarouterRoutes(context));
+  app.use(coreStatusRoutes());
+  app.use(networkAdminRoutes(context));
   app.use(adminRoutes(context));
 
   app.use(unknownRoute(config.dataDir));

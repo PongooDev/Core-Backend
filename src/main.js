@@ -1,4 +1,5 @@
 import { loadConfig } from "./config.js";
+import { describeHost, listen } from "./listen.js";
 import { log } from "./log.js";
 import { createServer } from "./server.js";
 
@@ -11,17 +12,22 @@ try {
 }
 
 const server = await createServer(config);
+const { network } = server;
 
-server.on("error", (error) => {
+let port;
+try {
+  port = await listen(server, network, config.port);
+} catch (error) {
   log("Core", error.code === "EADDRINUSE" ? `Port ${config.port} is already in use` : error.message);
   process.exit(1);
-});
+}
 
-server.listen(config.port, () => {
-  const { port } = server.address();
-  log("Core", `Listening on port ${port}`);
-  log("Core", `Admin panel: http://127.0.0.1:${port}/admin`);
-});
+log("Core", `Listening on port ${port}`);
+log("Core", `Admin panel: http://127.0.0.1:${port}/admin`);
+const { remoteAccess, publicAddress } = network.settings();
+log("Core", remoteAccess
+  ? `Remote access is on: listening on ${describeHost(network.bindAddress())}, friends can connect${publicAddress ? ` (public address ${publicAddress})` : ""}`
+  : "Remote access is off: only this PC can connect (turn it on in the admin panel to play with friends)");
 
 // Every write is a temp file plus rename, so a hard kill is safe too; this just closes sockets politely.
 function shutdown(signal) {

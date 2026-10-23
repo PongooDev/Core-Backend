@@ -23,7 +23,7 @@ export const defaultEmptyServerWaitMs = 30_000;
 // sub_380C0E0); a search for an existing session to join is answered at once.
 const wantsEmptyServer = (search) => search?.maxCurrentPlayers === 0;
 
-export function sessionRoutes({ tokens, sessions, emptyServerWaitMs = defaultEmptyServerWaitMs }) {
+export function sessionRoutes({ tokens, sessions, network, emptyServerWaitMs = defaultEmptyServerWaitMs }) {
   const router = express.Router();
   const base = "/fortnite/api/matchmaking/session";
   const auth = requireAuth(tokens);
@@ -37,11 +37,11 @@ export function sessionRoutes({ tokens, sessions, emptyServerWaitMs = defaultEmp
   router.post(base, auth, (req, res) => {
     const session = sessions.create(req.body, req.socket.remoteAddress, req.session.accountId);
     log("Matchmaking", `Session ${session.id} created by ${session.ownerName || session.ownerId || "a server"} at ${session.serverAddress}:${session.serverPort}`);
-    res.json(sessionJson(session, req));
+    res.json(sessionJson(session, req, network));
   });
 
   router.post(`${base}/matchMakingRequest`, auth, (req, res) => {
-    const answer = (found) => res.json(found.map((session) => sessionJson(session, req)));
+    const answer = (found) => res.json(found.map((session) => sessionJson(session, req, network)));
     const found = sessions.search(req.body);
     if (found.length > 0 || !wantsEmptyServer(req.body) || !(emptyServerWaitMs > 0)) return answer(found);
 
@@ -68,12 +68,12 @@ export function sessionRoutes({ tokens, sessions, emptyServerWaitMs = defaultEmp
   });
 
   router.get(`${base}/findPlayer/:accountId`, auth, (req, res) => {
-    res.json(sessions.findPlayer(req.params.accountId).map((session) => sessionJson(session, req)));
+    res.json(sessions.findPlayer(req.params.accountId).map((session) => sessionJson(session, req, network)));
   });
 
   router.route(`${base}/:sessionId`)
-    .get(auth, withSession((session, req, res) => res.json(sessionJson(session, req))))
-    .put(auth, withSession((session, req, res) => res.json(sessionJson(sessions.update(session.id, req.body), req))))
+    .get(auth, withSession((session, req, res) => res.json(sessionJson(session, req, network))))
+    .put(auth, withSession((session, req, res) => res.json(sessionJson(sessions.update(session.id, req.body), req, network))))
     .delete(auth, withSession((session, req, res) => {
       sessions.remove(session.id);
       log("Matchmaking", `Session ${session.id} ended`);

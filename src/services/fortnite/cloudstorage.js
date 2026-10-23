@@ -6,17 +6,20 @@ import { requireAuth, requireOwnAccount } from "../../accounts/auth.js";
 import { isDedicatedServerToken } from "../../accounts/clients.js";
 import { sendError } from "../../errors.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
+import { createNetwork } from "../../network.js";
 
 const validFilename = /^[A-Za-z0-9._-]{1,128}$/;
 
 // System files are hotfixes. The client fetches them at start-up, before it logs in, and merges Default*.ini files
 // into the matching config (UOnlineHotfixManager: DefaultEngine.ini -> Engine). Its XMPP connection is made at
 // login and reads [OnlineSubsystemMcp.XMPP] then (sub_37C4C80 -> sub_37C22D0), so this points XMPP at the address
-// and port the client reached this backend on, which is where XMPP is served. STOMP's service config takes Protocol
+// and port the client reached this backend on, which is where XMPP is served (for a player on the internet, the
+// public address it can reach this machine at: network.js reachableAddress). STOMP's service config takes Protocol
 // and Domain from [OnlineSubsystemMcp.StompServiceMcp] the same way (sub_3808800); its URL is
 // <Protocol>://<Domain>/stomp. Nothing is written on the player's PC.
-function systemFiles(req) {
-  const address = req.socket.localAddress.replace(/^::ffff:/, "");
+const defaultNetwork = createNetwork();
+function systemFiles(req, network = defaultNetwork) {
+  const address = network.reachableAddress(req);
   const port = req.socket.localPort;
   const engine = [
     "[OnlineSubsystemMcp.XMPP]", `ServerAddr=${address}`, `ServerPort=${port}`, "bUseSSL=false", "",
@@ -35,15 +38,15 @@ const header = (filename, data) => ({
   length: data.length
 });
 
-export function cloudStorageRoutes({ tokens }) {
+export function cloudStorageRoutes({ tokens, network }) {
   const router = express.Router();
 
   router.get("/fortnite/api/cloudstorage/system", requireAuth(tokens), (req, res) => {
-    res.json(Object.entries(systemFiles(req)).map(([filename, data]) => header(filename, data)));
+    res.json(Object.entries(systemFiles(req, network)).map(([filename, data]) => header(filename, data)));
   });
 
   router.get("/fortnite/api/cloudstorage/system/:filename", requireAuth(tokens), (req, res) => {
-    const data = systemFiles(req)[req.params.filename];
+    const data = systemFiles(req, network)[req.params.filename];
     if (!data) return sendError(res, 404, "errors.com.epicgames.cloudstorage.file_not_found", `${req.params.filename} not found`);
     res.type("application/octet-stream").send(data);
   });
