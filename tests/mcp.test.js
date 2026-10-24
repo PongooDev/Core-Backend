@@ -28,8 +28,9 @@ test("QueryProfile returns an FProfileUpdate with a full profile the client can 
     assert.equal(typeof change.profile.wipeNumber, "number");
     assert.equal(change.profile.stats.attributes.level, 1);
     const templateIds = Object.values(change.profile.items).map((item) => item.templateId);
-    assert.deepEqual(templateIds.filter((templateId) => !templateId.startsWith("HomebaseBanner")), ["HomebaseNode:startnode_commandcenter", "Quota:restxp", "Quest:homebaseonboarding", "Schematic:sid_assault_auto_c_ore_t00", "Schematic:sid_assault_semiauto_c_ore_t00", "Schematic:sid_pistol_semiauto_c_ore_t00", "Schematic:sid_edged_sword_medium_c_ore_t00", "Schematic:ammo_bulletsmedium", "Schematic:ammo_bulletslight", "Schematic:ammo_shells", "Schematic:ammo_bulletsheavy", "Hero:hid_commando_grenadegun_uc_t01"]);
-    assert.equal(templateIds.length, 1 + 31 + 21 + 1 + 2 + 4 + 4, "the start node, the starter banners, rest XP, the starting quest and hero, the tutorial and ammo schematics");
+    assert.deepEqual(templateIds.filter((templateId) => !templateId.startsWith("HomebaseBanner")), ["HomebaseNode:startnode_commandcenter", "Quota:restxp", "Quest:homebaseonboarding", "Token:founderspack_1", "Quest:foundersquest_getrewards_0_1", "Schematic:sid_assault_auto_c_ore_t00", "Schematic:sid_assault_semiauto_c_ore_t00", "Schematic:sid_pistol_semiauto_c_ore_t00", "Schematic:sid_edged_sword_medium_c_ore_t00", "Schematic:ammo_bulletsmedium", "Schematic:ammo_bulletslight", "Schematic:ammo_shells", "Schematic:ammo_bulletsheavy", "Hero:hid_commando_grenadegun_uc_t01"]);
+    assert.equal(templateIds.length, 1 + 31 + 21 + 1 + 2 + 2 + 4 + 4,
+      "the start node, the starter banners, rest XP, the starting quest and hero, the founder's pack, the tutorial and ammo schematics");
 
     assert.ok(fs.existsSync(path.join(backend.dataDir, "accounts", accountId, "profiles", "profile0.json")));
 

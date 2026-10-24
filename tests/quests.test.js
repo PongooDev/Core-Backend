@@ -15,7 +15,9 @@ test("a new profile holds the starting quest once, active with zeroed objectives
   try {
     const { token, accountId } = await userLogin(backend.port, "CoreTest");
     const first = await post(backend.port, command(accountId, "QueryProfile"), token, {});
-    const quests = (body) => Object.entries(body.profileChanges[0].profile.items).filter(([, item]) => item.templateId.startsWith("Quest:"));
+    // The founder's pack quest (profiles/founders.js) is the only other one.
+    const quests = (body) => Object.entries(body.profileChanges[0].profile.items)
+      .filter(([, item]) => item.templateId.startsWith("Quest:") && item.templateId !== "Quest:foundersquest_getrewards_0_1");
     const [[itemId, quest], ...others] = quests(first.body);
     assert.equal(others.length, 0);
     assert.match(itemId, /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);
