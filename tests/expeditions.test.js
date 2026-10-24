@@ -1,7 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  abandonExpedition, collectExpedition, refreshExpeditions, rollCriteria, squadRating, startExpedition, successChance
+  abandonExpedition, collectExpedition, expeditionsNeedSetUp, minTargetPower, powerRange, refreshExpeditions, rollCriteria,
+  setUpExpeditions, squadRating, startExpedition, successChance
 } from "../src/expeditions/expeditions.js";
 import { readGameData } from "../src/gamedata/read.js";
 import { trackChanges } from "../src/profiles/changes.js";
@@ -43,6 +44,20 @@ test("the chance is 5% at the minimum power rising to 100% at the target, and no
   assert.equal(successChance(10, 10, 20), 0.05);
   assert.equal(successChance(15, 10, 20), 0.525);
   assert.equal(successChance(30, 10, 20), 1);
+});
+
+test("the minimum power is 5% of the target, as Epic's offers had it, so the chance follows the squad's rating (#30)", () => {
+  // Epic's expedition_min_target_power / expedition_max_target_power pairs (LawinServer expeditionData.json).
+  for (const [max, min] of [[20, 1], [25, 1], [95, 4], [105, 5], [230, 11], [330, 16], [490, 24], [1540, 77]]) {
+    assert.equal(minTargetPower(max), min, `target ${max}`);
+  }
+  const { expeditions } = readGameData("expeditions", {});
+  assert.deepEqual(powerRange(expeditions["Expedition:expedition_supplyrun_short_t01"]), { min: 1, max: 20 });
+  assert.deepEqual(powerRange(expeditions["Expedition:expedition_choppingwood_t00"]), { min: 0, max: 5 });
+  assert.deepEqual(powerRange(expeditions["Expedition:expedition_rare_sea_heroes_t05"]), { min: 100, max: 2000 });
+  // A target of 20: one uncommon hero (5), one rare (10) and the two together (15) each show their own chance.
+  const chances = [5, 10, 15, 20].map((rating) => successChance(rating, 1, 20));
+  assert.deepEqual(chances.map((chance) => Math.round(chance * 100)), [25, 50, 75, 100]);
 });
 
 test("expeditions keep their criteria tier and the criteria table holds the client's rows", () => {
@@ -159,6 +174,54 @@ test("the success chance counts the expedition's bonus criteria like the client"
   tracker.addItem("tokens", { templateId: "Token:collectionresource_nodegatetoken01", attributes: {}, quantity: 100 });
   startExpedition(session, { expeditionId, squadId: squadOne, itemIds: ["hero"], slotIndices: [0] }, now);
   assert.equal(tracker.profile.items[expeditionId].attributes.expedition_success_chance, successChance(7.5, 5, 10));
+});
+
+test("StartExpedition stores the chance the squad screen shows, between 0 and 100%, and collecting rolls against it (#30)", () => {
+  const { session, tracker } = withExpeditions();
+  refreshExpeditions(session, now);
+  const [expeditionId, offer] = inSlot(tracker, "Land1_0");
+  assert.equal(offer.attributes.expedition_min_target_power, minTargetPower(offer.attributes.expedition_max_target_power));
+  // The T01 Gathering run's target (rare weapon runs aim at 150, which a rating of 5 can't start).
+  const max = 20;
+  tracker.setItemAttribute(expeditionId, "expedition_max_target_power", max);
+  tracker.setItemAttribute(expeditionId, "expedition_min_target_power", minTargetPower(max));
+  tracker.setItemAttribute(expeditionId, "expedition_criteria", []);
+  tracker.addItem("people", { templateId: "AccountResource:peopleresource", attributes: {}, quantity: 100 });
+  tracker.addItem("tokens", { templateId: "Token:collectionresource_nodegatetoken01", attributes: {}, quantity: 100 });
+  startExpedition(session, { expeditionId, squadId: squadOne, itemIds: ["hero"], slotIndices: [0] }, now);
+  const chance = tracker.profile.items[expeditionId].attributes.expedition_success_chance;
+  assert.equal(chance, successChance(5, minTargetPower(max), max));
+  assert.equal(Math.round(chance * 100), 25, "rating 5 against a target of 20");
+
+  const back = new Date(Date.parse(tracker.profile.items[expeditionId].attributes.expedition_end_time));
+  const notifications = [];
+  collectExpedition(session, expeditionId, notifications, back, chance + 0.01);
+  assert.equal(notifications[0].bExpeditionSucceeded, false, "a roll above the chance fails");
+});
+
+test("offers saved with Core's old minimum get 5% of their target once, and one under way its squad's better chance (#30)", () => {
+  const { session, tracker } = withExpeditions();
+  tracker.addItem("offer", { templateId: "Expedition:expedition_supplyrun_short_t01", quantity: 1, attributes: {
+    expedition_slot_id: "Land1_0", expedition_criteria: [], expedition_min_target_power: 16, expedition_max_target_power: 20,
+    expedition_expiration_start_time: now.toISOString(), expedition_expiration_end_time: later(90).toISOString(), level: 1
+  } });
+  tracker.addItem("away", { templateId: "Expedition:expedition_supplyrun_medium_t01", quantity: 1, attributes: {
+    expedition_slot_id: "Land1_1", expedition_criteria: [], expedition_min_target_power: 4, expedition_max_target_power: 30,
+    expedition_squad_id: squadOne, expedition_start_time: now.toISOString(), expedition_end_time: later(960).toISOString(),
+    expedition_success_chance: successChance(15, 4, 30), level: 1
+  } });
+  tracker.addItem("rare", hero("Hero:hid_commando_007_r_t01", 1, squadOne, 0));
+  tracker.addItem("uncommon", hero("Hero:hid_constructor_rushbase_uc_t01", 1, squadOne, 1));
+  assert.equal(expeditionsNeedSetUp(tracker.profile), true);
+  setUpExpeditions(session);
+  assert.equal(tracker.profile.items.offer.attributes.expedition_min_target_power, 1);
+  assert.equal(tracker.profile.items.away.attributes.expedition_min_target_power, 1);
+  assert.equal(tracker.profile.items.away.attributes.expedition_success_chance, successChance(15, 1, 30));
+  assert.equal(expeditionsNeedSetUp(tracker.profile), false);
+
+  tracker.setItemAttribute("offer", "expedition_min_target_power", 16);
+  setUpExpeditions(session);
+  assert.equal(tracker.profile.items.offer.attributes.expedition_min_target_power, 16, "only once");
 });
 
 test("an abandoned expedition brings the squad home with nothing", () => {

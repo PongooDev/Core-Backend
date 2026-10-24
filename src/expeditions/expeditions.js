@@ -27,8 +27,10 @@ import { hasUnlocked, unlockedTags } from "../profiles/unlocks.js";
 //  - The chance (sub_2BEE7F0) is 5% at expedition_min_target_power rising linearly to 100% at
 //    expedition_max_target_power; nothing below the minimum can start.
 // Core's rules where Epic decided on its servers: the slot generators (ZCP_ExpeditionGenerator_<Vehicle>_T0N) offer an
-// expedition of that vehicle and tier; the target power is BaseTargetPowerRating (clamped) and the minimum is
-// TierFactor percent below it; the criteria (CriteriaRequirementsLootTier Expeditions_Criteria_T0N) are drawn from the
+// expedition of that vehicle and tier; the target power is BaseTargetPowerRating (clamped) and the minimum is 5% of it,
+// rounded down, as every expedition Epic's servers handed out had it (so the chance shown is about rating / target;
+// issue #30: Core used to put the minimum TierFactor percent below the target, so the chance jumped from 0 to 100%);
+// the criteria (CriteriaRequirementsLootTier Expeditions_Criteria_T0N) are drawn from the
 // class rows of the tier's rarities; no Cert asset raises the ExpeditionSquad<N>_Power attribute, so it counts as 0;
 // rewards are the recipe's packs, opened on collection.
 const { expeditions = {}, recipes = {}, slots = {}, criteria = {} } = readGameData("expeditions", {});
@@ -56,9 +58,13 @@ function candidates(generator) {
   });
 }
 
-function powerRange(definition) {
+// The least rating that can start an expedition aiming at target: 5% of it, rounded down (Epic's offers: 20 -> 1,
+// 95 -> 4, 330 -> 16, 1540 -> 77). The client's chance is 5% there, so it comes to rating / target.
+export const minTargetPower = (target) => Math.floor((Math.max(Number(target) || 0, 0) * 5) / 100);
+
+export function powerRange(definition) {
   const target = Math.min(definition.basePower, definition.powerClamp || definition.basePower);
-  return { min: Math.floor(target * (1 - Math.min(definition.tierFactor, 100) / 100)), max: target };
+  return { min: minTargetPower(target), max: target };
 }
 
 // Core's criteria tiers (inferred): which rarities' class rows each Expeditions_Criteria_T0N draws from, and at most
@@ -133,6 +139,34 @@ function findExpedition(tracker, itemId) {
 // Whether a hero is out with an expedition squad (EFortSquadSlottingRestrictionReason::ItemIsOnActiveExpedition).
 export function onExpedition(item) {
   return Boolean(item?.attributes.squad_id) && getSquad(item.attributes.squad_id)?.type === "ExpeditionSquad";
+}
+
+// Core's one-time change for issue #30 (coreMigrations expeditionPower): offers made before it have their minimum
+// TierFactor percent below the target. Each gets Epic's 5%; one under way also gets the chance its squad has against
+// that minimum when that is higher (a lower minimum only raises it), so what it brings back follows the new rule.
+const powerMigration = "expeditionPower";
+
+export const expeditionsNeedSetUp = (profile) => !(profile.coreMigrations ?? []).includes(powerMigration);
+
+export function setUpExpeditions(session) {
+  const tracker = session.profile("profile0");
+  const { profile } = tracker;
+  if (!expeditionsNeedSetUp(profile)) return;
+  for (const [itemId, item] of Object.entries(profile.items)) {
+    if (!isExpedition(item)) continue;
+    const { attributes } = item;
+    const max = Number(attributes.expedition_max_target_power) || 0;
+    const min = minTargetPower(max);
+    if (attributes.expedition_min_target_power !== min) tracker.setItemAttribute(itemId, "expedition_min_target_power", min);
+    if (!attributes.expedition_start_time || !attributes.expedition_squad_id) continue;
+    const members = Object.values(profile.items)
+      .filter((member) => characterType(member) && sameSquad(member.attributes.squad_id, attributes.expedition_squad_id))
+      .sort((a, b) => (a.attributes.squad_slot_idx ?? 0) - (b.attributes.squad_slot_idx ?? 0))
+      .map((member) => ({ item: member }));
+    const chance = successChance(squadRating(attributes.expedition_criteria, members), min, max);
+    if (chance > (attributes.expedition_success_chance ?? 0)) tracker.setItemAttribute(itemId, "expedition_success_chance", chance);
+  }
+  profile.coreMigrations = [...(profile.coreMigrations ?? []), powerMigration];
 }
 
 // RefreshExpeditions: every unlocked slot holds an expedition; offers that expired unstarted are replaced.

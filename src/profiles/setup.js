@@ -1,4 +1,5 @@
 import { addPageItem, bookProfiles, pageId, pages, refreshPage } from "../collectionbook/pages.js";
+import { expeditionsNeedSetUp, setUpExpeditions } from "../expeditions/expeditions.js";
 import { slotUnlockNode } from "../gamedata/homebase.js";
 import { getItem } from "../gamedata/items.js";
 import { readGameData } from "../gamedata/read.js";
@@ -44,6 +45,8 @@ import { levelStartXp, settleLevel } from "./xp.js";
 // - The research point collector (research/collector.js) of a profile that owns Unlock Research: Tier 1. Core had no
 //   collectors before 2026-10-23, so profiles that bought the node then get theirs when they next load, filled since the
 //   node was bought as far as the profile shows; the empty ones they got before that (issue #20) start then too, once.
+// - Expedition offers with Epic's minimum power, 5% of the target (expeditions/expeditions.js): Core's used to sit
+//   TierFactor percent below it, so the chance shown was 0 or 100% (issue #30). Older offers get it once.
 // Profiles made before this, or left with no hero at all, get what they lack when they next load. So does a profile
 // whose lead slot is empty: its first hero in no squad takes it (heroes in other slots or on expeditions stay).
 const { defaultHero } = readGameData("newaccount", {});
@@ -79,7 +82,7 @@ export function needsSetUp(profile) {
   if (profile.profileId !== "profile0") return false;
   return startingQuests.some((questId) => !findQuestItem(profile, questId)) || Boolean(defaultHero && !heroes(profile).length)
     || Boolean(leadCandidate(profile)) || schematicMigrations.some(({ name }) => !migrated(profile, name)) || !migrated(profile, "levelXp")
-    || collectorsNeedSetUp(profile);
+    || collectorsNeedSetUp(profile) || expeditionsNeedSetUp(profile);
 }
 
 // theater0's world items granted before Core gave new ones their template's durability (profiles/items.js) get it, once;
@@ -134,6 +137,7 @@ export function setUpProfile(session, profileId = "profile0") {
     profile.coreMigrations = [...(profile.coreMigrations ?? []), "levelXp"];
   }
   setUpCollectors(session);
+  setUpExpeditions(session);
   if (defaultHero && !heroes(profile).length) grant(session, defaultHero, 1);
   const lead = leadCandidate(profile);
   if (lead) assignToSquad(session, lead, leadSquad(profile), 0);

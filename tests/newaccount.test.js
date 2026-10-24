@@ -169,7 +169,7 @@ test("accounts made before the starter schematics get them once, tutorial done o
     assert.deepEqual(schematics(profile), ["Schematic:sid_assault_auto_c_ore_t00", "Schematic:sid_assault_semiauto_c_ore_t00",
       "Schematic:sid_edged_sword_medium_c_ore_t00", "Schematic:sid_pistol_semiauto_c_ore_t00"], "the three missing ones, the sword kept");
     assert.equal(profile.coreMigrations, undefined, "Core's bookkeeping isn't sent to the client");
-    assert.deepEqual(JSON.parse(fs.readFileSync(file, "utf8")).coreMigrations, ["starterSchematics", "ammoSchematics", "levelXp"]);
+    assert.deepEqual(JSON.parse(fs.readFileSync(file, "utf8")).coreMigrations, ["starterSchematics", "ammoSchematics", "levelXp", "expeditionPower"]);
 
     const [rifleId] = Object.entries(profile.items).find(([, item]) => item.templateId === "Schematic:sid_assault_auto_c_ore_t00");
     await post(backend.port, `/admin/api/accounts/${accountId}/items/remove`, undefined, { itemId: rifleId });
