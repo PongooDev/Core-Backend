@@ -265,3 +265,56 @@ test("the general chat room belongs to the server: the first joiner isn't told i
     xmpp.close();
   }
 });
+
+// CoreV2 #48: a player joins a party from a zone's reward screen and is out of it back in the lobby. In Cert the party
+// lives in the clients (FOnlinePartySystemMcp): the backend only relays the handshake and hosts the party's room. The
+// member's own client leaves on its return (CleanupPartyForMainMenu: no ClientStayWithParty since it joined, Backend-
+// Evidence "Parties"), so the backend must keep the membership as the clients made it and send nothing on its own.
+test("a party joined in a zone stays as the clients made it: the backend sends nothing when they go back to the lobby", async () => {
+  const xmpp = await startXmpp(); // not friends: met in the zone
+  const partyId = "869297DB4C1C62D1CF55289810277FD4";
+  const room = `party-${partyId.toLowerCase()}@muc.${domain}`;
+  const party = (type, payload = {}) => `<body>${JSON.stringify({ type, payload: { partyId, ...payload } })}</body>`;
+  const typeOf = (message) => JSON.parse(message.child("body").text()).type;
+  try {
+    const leader = await xmpp.login("alice");
+    const member = await xmpp.login("bob");
+    leader.client.send(`<presence to="${room}/alice"><x xmlns="http://jabber.org/protocol/muc"/></presence>`);
+    await leader.client.next((stanza) => stanza.name === "presence");
+
+    // The handshake from the leader's log (16:22:08-16:22:14), each message to the other account's bare JID.
+    const steps = [
+      [leader, member, "com.epicgames.party.invitation"],
+      [member, leader, "com.epicgames.party.queryjoinability"],
+      [leader, member, "com.epicgames.party.queryjoinability.response"],
+      [member, leader, "com.epicgames.party.joinrequest"],
+      [leader, member, "com.epicgames.party.joinrequest.approved"],
+      [member, leader, "com.epicgames.party.joinacknowledged"],
+      [leader, member, "com.epicgames.party.joinacknowledged.response"],
+      [leader, member, "com.epicgames.party.memberjoined"],
+      [member, leader, "com.epicgames.party.memberdata"]
+    ];
+    for (const [from, to, type] of steps) {
+      from.client.send(`<message to="${to.jid.split("/")[0]}" type="chat">${party(type)}</message>`);
+      const message = await to.client.next((stanza) => stanza.name === "message");
+      assert.deepEqual([message.attrs.from, typeOf(message)], [from.jid, type]);
+    }
+    member.client.send(`<presence to="${room}/bob"><x xmlns="http://jabber.org/protocol/muc"/></presence>`);
+    assert.equal((await member.client.next((stanza) => stanza.name === "presence")).attrs.from, `${room}/alice`);
+    assert.equal((await member.client.next((stanza) => stanza.name === "presence")).attrs.from, `${room}/bob`);
+    await leader.client.next((stanza) => stanza.name === "presence" && stanza.attrs.from === `${room}/bob`);
+    assert.equal(xmpp.xmpp.roomOccupants(`party-${partyId.toLowerCase()}`), 2);
+
+    // Both go back to the lobby: a map change, not a new XMPP stream, then party data again. Nothing else arrives and
+    // both are still in the room.
+    for (const [from, to] of [[leader, member], [member, leader]]) {
+      from.client.send(`<message to="${to.jid.split("/")[0]}" type="chat">${party("com.epicgames.party.memberdata")}</message>`);
+      assert.equal(typeOf(await to.client.next((stanza) => stanza.name === "message")), "com.epicgames.party.memberdata");
+    }
+    await leader.client.nothing((stanza) => stanza.name === "presence" || stanza.name === "message");
+    await member.client.nothing((stanza) => stanza.name === "presence" || stanza.name === "message");
+    assert.equal(xmpp.xmpp.roomOccupants(`party-${partyId.toLowerCase()}`), 2);
+  } finally {
+    xmpp.close();
+  }
+});
