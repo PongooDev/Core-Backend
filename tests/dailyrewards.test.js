@@ -96,3 +96,48 @@ test("a new UTC day gives the next row, and a held schedule token adds its own r
     backend.close();
   }
 });
+
+// Issue #28: the XP boosts screen (XpBoostCounts_C) shows GetAccountItemWithDefinition(SmallXpBoost / SmallXpBoost_Gift)
+// ->Quantity from profile0, and the panel's card for the day is row nextDefaultReward before the claim (sub_4DF050 reads
+// row nextDefaultReward - 1 + i after the client's own +1 at sub_4D7830). Day 3 (row 2) is an XP Boost, day 5 (row 4)
+// and day 13 (row 12) a Teammate XP Boost.
+test("the XP Boost and Teammate XP Boost days give profile0 the consumables the boosts screen counts, on one stack", async () => {
+  const backend = await startBackend();
+  try {
+    const { token, accountId } = await userLogin(backend.port, "CoreTest");
+    await post(backend.port, command(accountId, "QueryProfile"), token, {});
+    const claimRow = async (row) => {
+      editProfile(backend, accountId, (profile) => {
+        profile.stats.attributes.daily_rewards.nextDefaultReward = row;
+        profile.stats.attributes.daily_rewards.lastClaimDate = new Date(Date.now() - 86400000).toISOString();
+      });
+      const claim = await post(backend.port, command(accountId, "ClaimLoginReward"), token, {});
+      assert.equal(claim.status, 200);
+      return { items: claim.body.notifications[0].items, profile: claim.body.profileChanges[0].profile };
+    };
+    const stacks = (profile, templateId) => Object.entries(profile.items).filter(([, item]) => item.templateId === templateId);
+
+    assert.equal(defaultSchedule.rewards[2].templateId, "ConsumableAccountItem:smallxpboost");
+    assert.equal(defaultSchedule.rewards[4].templateId, "ConsumableAccountItem:smallxpboost_gift");
+    assert.equal(defaultSchedule.rewards[12].templateId, "ConsumableAccountItem:smallxpboost_gift");
+
+    const day3 = await claimRow(2);
+    const [[boostId, boost]] = stacks(day3.profile, "ConsumableAccountItem:smallxpboost");
+    assert.equal(boost.quantity, 1);
+    assert.deepEqual(day3.items, [{ itemType: "ConsumableAccountItem:smallxpboost", itemGuid: boostId, itemProfile: "profile0", quantity: 1 }]);
+    assert.equal(day3.profile.stats.attributes.daily_rewards.nextDefaultReward, 3);
+
+    const day5 = await claimRow(4);
+    const [[giftId, gift]] = stacks(day5.profile, "ConsumableAccountItem:smallxpboost_gift");
+    assert.equal(gift.quantity, 1);
+    assert.deepEqual(day5.items, [{ itemType: "ConsumableAccountItem:smallxpboost_gift", itemGuid: giftId, itemProfile: "profile0", quantity: 1 }]);
+
+    const day13 = await claimRow(12);
+    const gifts = stacks(day13.profile, "ConsumableAccountItem:smallxpboost_gift");
+    assert.deepEqual(gifts.map(([itemId, item]) => [itemId, item.quantity]), [[giftId, 2]]);
+    assert.deepEqual(day13.items, [{ itemType: "ConsumableAccountItem:smallxpboost_gift", itemGuid: giftId, itemProfile: "profile0", quantity: 1 }]);
+    assert.equal(stacks(day13.profile, "ConsumableAccountItem:smallxpboost")[0][1].quantity, 1, "the XP Boost stays apart");
+  } finally {
+    backend.close();
+  }
+});
