@@ -13,6 +13,7 @@ import { recentLogs } from "../log.js";
 import { sessionSummary } from "../matchmaking/sessions.js";
 import { alertsRemaining, emptyAlertRecord, withQuotaSlots } from "../profiles/alerts.js";
 import { levelRest, restBalance, restValue } from "../profiles/boosts.js";
+import { foundersEditionOf, foundersEditions, setFoundersEdition } from "../profiles/founders.js";
 import { findItem, grantItem, worldStacksNeeded } from "../profiles/items.js";
 import { claimQuest, completeQuest, grant, skipTutorial } from "../profiles/progress.js";
 import { createOutpost } from "../profiles/outposts.js";
@@ -20,6 +21,7 @@ import { questIdOf, tutorialCompleted } from "../profiles/quests.js";
 import { openSession } from "../profiles/session.js";
 import { backpackState, inOverflow, vaultState, worldStackCap } from "../profiles/vault.js";
 import { maxLevel, xpForLevel } from "../profiles/xp.js";
+import { notifyProfiles } from "../services/mcp/profile.js";
 import { categories, currencies, describeItem, searchCatalog, stormShields } from "./describe.js";
 import { requireLoopback, requirePanelRequest } from "./local.js";
 
@@ -114,6 +116,8 @@ export function adminRoutes(context) {
         const info = getItem(templateId);
         return { templateId, name: info?.name ?? templateId, level: itemId ? profile.items[itemId].attributes.level ?? 0 : null, maxLevel: info?.maxLevel ?? 10 };
       }),
+      // The founder's pack edition (profiles/founders.js): the highest Token:FoundersPack_<n> held.
+      founders: { edition: profile ? foundersEditionOf(profile) : null, editions: foundersEditions.map(({ edition, name }) => ({ edition, name })) },
       quests,
       items,
       worldItems,
@@ -129,7 +133,8 @@ export function adminRoutes(context) {
     };
   }
 
-  // Runs a change on an account's profiles and answers with its new details.
+  // Runs a change on an account's profiles and answers with its new details. A player in the game gets the change as
+  // MCP profile notifications on STOMP, as with the gameserver's commands (services/mcp/profile.js).
   function change(handler) {
     return (req, res) => {
       const account = accounts.get(req.params.accountId);
@@ -138,6 +143,7 @@ export function adminRoutes(context) {
       const result = handler({ req, res, account, session });
       if (res.headersSent) return;
       session.commit();
+      notifyProfiles(context, session);
       res.json({ ...details(account), ...(result && typeof result === "object" ? result : {}) });
     };
   }
@@ -296,6 +302,14 @@ export function adminRoutes(context) {
     createOutpost(session, account.id, info.templateId);
     const tracker = session.profile("profile0");
     tracker.setItemAttribute(findItem(tracker.profile, info.templateId), "level", level);
+  }));
+
+  // {edition: 1-5}: raises the account's founder's pack edition (Standard, Deluxe, Super Deluxe, Limited, Ultimate) with
+  // each missing edition's rewards quest, and the hero bundles of Limited and Ultimate; an edition can't be lowered.
+  router.post("/admin/api/accounts/:accountId/founders", change(({ req, res, session }) => {
+    const { error, granted } = setFoundersEdition(session, Number(req.body?.edition));
+    if (error) return invalid(res, error);
+    return { granted };
   }));
 
   router.post("/admin/api/accounts/:accountId/skip-tutorial", change(({ session }) => skipTutorial(session)));

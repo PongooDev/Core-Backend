@@ -526,7 +526,7 @@ function renderPlayer() {
       el("div", { class: "subtabs", role: "tablist" }, tabs.map(([key, label, count]) => el("button", { type: "button", role: "tab", "aria-selected": String(state.tab === key),
         onclick: () => { state.tab = key; history.replaceState(null, "", `#/players/${a.id}/${key}`); renderPlayer(); } }, label, count !== undefined ? el("span", { class: "count", text: count }) : null))),
       body(a),
-      el("p", { class: "note", style: "margin:16px 0 0", text: "Changes are saved to the profile at once. A player who is in the game sees them after the next profile refresh; Kick makes the game reload them." })));
+      el("p", { class: "note", style: "margin:16px 0 0", text: "Changes are saved to the profile at once and sent to a player who is in the game as a profile update; Kick makes the game reload everything." })));
 }
 
 function overview(a) {
@@ -552,9 +552,32 @@ function overview(a) {
         el("div", { class: "actions", style: "margin-top:10px" },
           btn("Refill rest XP", () => post("rest-xp/refill", {}, "Rest XP refilled"), "ghost small"),
           btn("Reset alert quota", () => post("mission-alerts/reset", {}, "Mission alert quota reset"), "ghost small")))),
+    founders(a),
     el("h2", { style: "margin:22px 0 10px", text: "Currencies and resources" }),
     el("div", { class: "grid cols-3" }, a.currencies.map((currency) => balance(currency))),
     a.sessions.length ? [el("h2", { style: "margin:22px 0 10px", text: "In game" }), sessionTable(a.sessions, false)] : null);
+}
+
+// The founder's pack edition: raising it gives each missing edition's rewards quest (claimed in the game, once the
+// store tutorial is done); it can't be lowered.
+function founders(a) {
+  const { edition, editions } = a.founders;
+  const current = editions.find((entry) => entry.edition === edition);
+  const higher = editions.filter((entry) => entry.edition > (edition ?? 0));
+  const select = el("select", { class: "field", "aria-label": "Founder's pack edition", disabled: !higher.length },
+    higher.length ? higher.map((entry) => el("option", { value: entry.edition, text: `${entry.name} Edition` })) : el("option", { text: "Highest edition" }));
+  return el("div", { style: "margin-top:22px" },
+    el("h2", { style: "margin-bottom:10px", text: "Founder's pack" }),
+    el("div", { class: "actions" },
+      chip(current ? `${current.name} Edition` : edition === null ? "Made at the next login" : "None", current ? "sky" : ""),
+      select,
+      btn("Upgrade", () => {
+        const chosen = editions.find((entry) => entry.edition === Number(select.value));
+        if (chosen && confirm(`Upgrade ${a.displayName} to the ${chosen.name} Edition? An edition can't be lowered again.`)) {
+          post("founders", { edition: chosen.edition }, `${a.displayName} is now a ${chosen.name} Edition founder`);
+        }
+      }, "primary", { disabled: !higher.length })),
+    el("p", { class: "note", text: "Each edition up to the one chosen adds its \"<Edition> Edition Rewards!\" quest (and Limited and Ultimate their hero bundles), as Epic's store did. They complete with the Loot Llamas store tutorial and the player claims them in the game." }));
 }
 
 function balance(currency) {

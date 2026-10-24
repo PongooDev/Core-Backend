@@ -33,8 +33,8 @@ function withLockExpiration(locks, accountId, result) {
 // {type: "profile/<profileId>/update", ...FProfileUpdateNotification {changes, lockExpiration, commandRevision,
 // revision}} (UMcpProfileGroup's handler sub_390C5A0 splits the type at "/", McpProfileState sub_390D460 reads the
 // rest). The client applies one when its revision follows the client's ("Delta profile update ... from
-// notifications"), which is how its quests move in the zone.
-function notifyProfiles(context, session) {
+// notifications"), which is how its quests move in the zone. The admin panel's changes go out the same way.
+export function notifyProfiles(context, session) {
   for (const { profileId, changes, revision, commandRevision } of session.changedProfiles()) {
     context.stomp?.publishProfile(session.accountId, { type: `profile/${profileId}/update`, changes, commandRevision, revision });
   }

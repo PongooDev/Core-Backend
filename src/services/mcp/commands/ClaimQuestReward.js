@@ -1,6 +1,7 @@
 import { getQuest } from "../../../gamedata/quests.js";
 import { McpError } from "../../../errors.js";
 import { lootEntry } from "../../../profiles/items.js";
+import { chooseHeroBundle, noteHeroBundleChoice } from "../../../profiles/founders.js";
 import { claimQuest } from "../../../profiles/progress.js";
 import { questIdOf } from "../../../profiles/quests.js";
 
@@ -26,4 +27,6 @@ export function claimQuestReward({ req, session, notifications }) {
     }
   }
   result(claimQuest(session, questId, selected).map(lootEntry));
+  // The Limited Edition's hero bundle choice decides the Ultimate Edition's bundles (profiles/founders.js).
+  if (questIdOf(item) === chooseHeroBundle) noteHeroBundleChoice(tracker.profile, selected);
 }

@@ -132,3 +132,31 @@ test("what the gameserver changes reaches the player's client as MCP profile not
     backend.close();
   }
 });
+
+test("an admin panel change reaches the player's client as an MCP profile notification (Core-Backend #32)", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "StompAdmin");
+    const query = await post(backend.port, `/fortnite/api/game/v2/profile/${player.accountId}/client/QueryProfile?profileId=profile0&rvn=-1`, player.token, {});
+    const client = await stompClient(backend.port);
+    client.send("CONNECT", { "accept-version": "1.2", login: player.accountId, passcode: player.token });
+    await client.next();
+    client.send("SUBSCRIBE", { id: "mcp-0-nil", destination: `/topic/fn/profile/${player.accountId}/fortnite`, receipt: "r" });
+    await client.next();
+
+    const upgraded = await post(backend.port, `/admin/api/accounts/${player.accountId}/founders`, undefined, { edition: 2 });
+    assert.equal(upgraded.status, 200);
+    const notification = JSON.parse((await client.next()).body);
+    assert.equal(notification.type, "profile/profile0/update");
+    assert.equal(notification.revision, query.body.profileRevision + 1, "the revision after the client's, so it applies the delta");
+    assert.deepEqual(notification.changes.filter(({ changeType }) => changeType === "itemAdded").map(({ item }) => item.templateId),
+      ["Token:founderspack_2", "Quest:foundersquest_getrewards_1_2"]);
+
+    // A refused change sends nothing.
+    assert.equal((await post(backend.port, `/admin/api/accounts/${player.accountId}/founders`, undefined, { edition: 1 })).status, 400);
+    client.send("DISCONNECT", { receipt: "bye" });
+    assert.equal((await client.next()).command, "RECEIPT");
+  } finally {
+    backend.close();
+  }
+});
