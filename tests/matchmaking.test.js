@@ -514,3 +514,95 @@ test("the join-in-progress search finds a running zone of the same mission", asy
     backend.close();
   }
 });
+
+// CoreV2 #42: the storm shield screen's "Send request for help for the next defense" (OutpostScreenStormShieldContent)
+// sets BP_PlayerControllerOutpost.GetHelp, and Expand Shield sends ServerStartExpandingOutpost(GetHelp). With GetHelp,
+// Mission_Outpost calls UFortOutpostFunctionLibrary::SetCriticalMissionJoinability(true) (sub_6E5410 → sub_539260),
+// shows "Searching for Help!" for 90 s, then starts the defense and turns it off again 180 s later (TurnOffJoinability).
+// sub_539260 writes CRITICALMISSION_b into the session settings and updates the session (PUT). The storm shield's game
+// mode starts with it false (AFortGameModeOutpost ctor sub_50C470: +0x7B0 = 0, GAMEMODE FORTOUTPOST), and
+// UpdateSessionForMatchmaking (sub_53FB70) publishes that, so an ordinary storm shield never matches the critical mission
+// tile's search. All of this is native and intact in the Cert server: the backend only has to match the attributes.
+// The session as the Cert server publishes it for a Stonewood storm shield at its second defense
+// (Theater_Start_Outpost2: Difficulty 2, matchmaking range 1-2 → MIN/MAXDIFFICULTY_i 100/200, sub_53AA50). The
+// reservation's playlist is -1 (every "empty server reservation request" in the Cert logs), so neither side sends
+// PLAYLISTID_i (the search base, sub_674AE0, leaves it out for -1; 🟡 that the tile's search has -1 too is inferred).
+const outpostZone = (attributes = {}) => ({
+  ...certCreate,
+  attributes: {
+    ...certCreate.attributes, GAMEMODE_s: "FORTOUTPOST", MATCHMAKINGPOOL_s: "Desktop", THEATERID_s: stonewood,
+    ZONEINSTANCEID_s: `{"worldId":"","theaterId":"${stonewood}","theaterMissionId":"e027105a-8a0f-fc0e-d7ea-6920ecdedcbd","theaterMissionAlertId":"","zoneThemeClass":"/Game/World/ZoneThemes/Outposts/BP_ZT_TheOutpost_PvE_01.BP_ZT_TheOutpost_PvE_01_C"}`,
+    WUID_s: "5c6eb5b4-57ea-4e91-89aa-8ded5db40785", GATHERABLE_b: true, CRITICALMISSION_b: false,
+    MINDIFFICULTY_i: 100, MAXDIFFICULTY_i: 200, NEEDS_i: 3, NEEDSSORT_i: 3, ...attributes
+  }
+});
+
+// FindCriticalMission from the map's "?" tile (MissionStartQueue: StartCriticalMission(0, the hardest available
+// difficulty's matchmaking maximum), or the chosen difficulty's range).
+const helperSearch = ({ min = 0, max = 1100 } = {}) => {
+  const search = criticalSearch();
+  return {
+    ...search,
+    criteria: search.criteria
+      .filter(({ key }) => key !== "PLAYLISTID_i")
+      .map((criterion) => criterion.key === "MAXDIFFICULTY_i" ? { ...criterion, value: max }
+        : criterion.key === "MINDIFFICULTY_i" ? { ...criterion, value: min } : criterion)
+  };
+};
+
+test("a storm shield is found by the critical mission tile only while its owner has asked for help", async () => {
+  const backend = await startBackend();
+  try {
+    const shieldServer = await userLogin(backend.port, "CoreServer1");
+    const owner = await userLogin(backend.port, "MrPodge6");
+    const helper = await userLogin(backend.port, "Helper");
+
+    // The owner's storm shield: created idle, given its zone, its owner registered, started.
+    const { body: shield } = await post(backend.port, base, shieldServer.token, certCreate);
+    await request(backend.port, "PUT", `${base}/${shield.id}`, shieldServer.token, outpostZone());
+    await post(backend.port, `${base}/${shield.id}/players`, shieldServer.token, { publicPlayers: [owner.accountId], privatePlayers: [] });
+    assert.equal((await post(backend.port, `${base}/${shield.id}/start`, shieldServer.token)).status, 204);
+    const find = async (search = helperSearch()) =>
+      (await post(backend.port, `${base}/matchMakingRequest`, helper.token, search)).body.map((session) => session.id);
+
+    // Without a help request it stays to its owner and party: the "?" tile doesn't find it, and nor do the gather and
+    // join-in-progress searches, which name the mission they are for (ZONEINSTANCEID_s).
+    assert.deepEqual(await find(), [], "no help asked for");
+    const otherMission = '{"worldId":"","theaterId":"' + stonewood + '","theaterMissionId":"0f9e3a1c-0000-0000-0000-000000000000"}';
+    const regionAndPool = criticalSearch().criteria.slice(0, 2);
+    assert.deepEqual(await find({ criteria: [...regionAndPool, { type: "EQUAL", key: "ZONEINSTANCEID_s", value: otherMission },
+      { type: "DISTANCE", key: "MMLVL_i", value: 5 }, { type: "GREATER_THAN_OR_EQUAL", key: "NEEDS_i", value: 1 },
+      { type: "DISTANCE", key: "NEEDSSORT_i", value: -2147483648 }, { type: "EQUAL", key: "GATHERABLE_b", value: true }],
+    openPlayersRequired: 1, buildUniqueId: "595160781" }), [], "a gather search for another mission");
+
+    // Expand Shield with the box ticked: SetCriticalMissionJoinability(true) → PUT with CRITICALMISSION_b true.
+    await request(backend.port, "PUT", `${base}/${shield.id}`, shieldServer.token, outpostZone({ CRITICALMISSION_b: true }));
+    const found = (await post(backend.port, `${base}/matchMakingRequest`, helper.token, helperSearch())).body;
+    assert.deepEqual(found.map((session) => session.id), [shield.id], "help asked for");
+    assert.equal(found[0].attributes.GAMEMODE_s, "FORTOUTPOST");
+    assert.equal(found[0].openPublicPlayers, 3);
+    assert.ok(found[0].shouldAdvertise && found[0].allowJoinInProgress, "the client keeps it (sub_37CF5E0)");
+
+    // Its range (1-2) must lie inside the helper's: a helper who chose a harder difficulty (Theater_Start_Zone3, 5-6)
+    // or whose hardest is below the shield's misses it.
+    assert.deepEqual(await find(helperSearch({ min: 500, max: 600 })), [], "harder than the shield");
+    assert.deepEqual(await find(helperSearch({ min: 100, max: 200 })), [shield.id], "the shield's own range");
+    assert.deepEqual(await find(helperSearch({ min: 0, max: 100 })), [], "easier than the shield");
+
+    // The helper joins as from any critical mission: the connection key, then the server registers it.
+    const key = await get(backend.port, `/fortnite/api/game/v2/matchmaking/account/${helper.accountId}/session/${shield.id}`, helper.token);
+    assert.equal(key.status, 200);
+    assert.equal((await get(backend.port, `/fortnite/api/game/v2/matchmaking/account/${helper.accountId}/session/${shield.id}`, shieldServer.token)).body.key, key.body.key);
+    await post(backend.port, `${base}/${shield.id}/players`, shieldServer.token, { publicPlayers: [helper.accountId], privatePlayers: [] });
+
+    // Another random player still finds it while there is room and help is still asked for.
+    const second = await userLogin(backend.port, "Helper2");
+    assert.deepEqual((await post(backend.port, `${base}/matchMakingRequest`, second.token, helperSearch())).body.map((session) => session.id), [shield.id]);
+
+    // TurnOffJoinability (180 s into the defense): SetCriticalMissionJoinability(false) → CRITICALMISSION_b false.
+    await request(backend.port, "PUT", `${base}/${shield.id}`, shieldServer.token, outpostZone({ CRITICALMISSION_b: false }));
+    assert.deepEqual((await post(backend.port, `${base}/matchMakingRequest`, second.token, helperSearch())).body, [], "help window over");
+  } finally {
+    backend.close();
+  }
+});
