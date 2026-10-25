@@ -120,3 +120,43 @@ test("buying and opening llamas in the store advances the Loot Llamas quest", as
     backend.close();
   }
 });
+
+test("Founder's Coins buy the Launch Event Llama, offered always", async () => {
+  const backend = await startBackend();
+  try {
+    const { token, accountId } = await userLogin(backend.port, "FoundersCoinsTest");
+    const command = (name, body) => post(backend.port, `/fortnite/api/game/v2/profile/${accountId}/client/${name}?profileId=profile0&rvn=-1`, token, body);
+    const give = (templateId, quantity) => post(backend.port, `/admin/api/accounts/${accountId}/grant`, undefined, { templateId, quantity });
+    const offers = (await get(backend.port, "/fortnite/api/storefront/v2/catalog", token)).body.storefronts
+      .find((storefront) => storefront.name === "CardPackStore").catalogEntries;
+
+    // Shown with no coins held: the client lists it among its event packs and greys the price out.
+    const llama = offers.find((offer) => offer.prices[0].currencySubType === "AccountResource:eventcurrency_founders");
+    assert.deepEqual([llama.title, llama.prices[0].currencyType, llama.prices[0].finalPrice, llama.itemGrants, llama.dailyLimit, llama.weeklyLimit],
+      ["Launch Event Llama", "GameItem", 100, [{ templateId: "CardPack:cardpack_event_founders_nonexclusive", quantity: 1 }], -1, -1]);
+    assert.equal(llama.metaAssetInfo.payload.packDefinition,
+      "/Game/Items/CardPacks/Events/Release/CardPack_Event_Founders_NonExclusive.CardPack_Event_Founders_NonExclusive");
+
+    const buy = (quantity) => command("PurchaseCatalogEntry", { offerId: llama.offerId, purchaseQuantity: quantity, currency: "GameItem",
+      currencySubType: "AccountResource:eventcurrency_founders", expectedPrice: 100 * quantity });
+    await give("AccountResource:eventcurrency_founders", 140);
+    const short = await buy(2);
+    assert.equal(short.status, 400);
+    assert.equal(short.body.errorCode, "errors.com.epicgames.modules.gamesubcatalog.purchase_not_allowed");
+
+    const bought = await buy(1);
+    assert.equal(bought.status, 200);
+    const [{ itemGuid, itemType }] = bought.body.notifications[0].lootResult.items;
+    const items = bought.body.profileChanges[0].profile.items;
+    assert.equal(itemType, "CardPack:cardpack_event_founders_nonexclusive");
+    assert.equal(items[itemGuid].attributes.pack_source, "Store");
+    assert.equal(Object.values(items).find((item) => item.templateId === "AccountResource:eventcurrency_founders").quantity, 40);
+
+    const opened = await command("OpenCardPack", { cardPackItemId: itemGuid, selectionIdx: 0 });
+    assert.equal(opened.status, 200);
+    assert.equal(opened.body.notifications[0].lootGranted.tierGroupName, "CardPack_Event_2017_Founders");
+    assert.ok(opened.body.notifications[0].lootGranted.items.length > 0);
+  } finally {
+    backend.close();
+  }
+});

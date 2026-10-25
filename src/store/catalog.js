@@ -41,7 +41,20 @@ const voucherOffers = itemIds()
     }];
   });
 
-const allOffers = [...mtxOffers, ...voucherOffers];
+// Founder's Coins: AccountResource:eventcurrency_founders (EventCurrency_Founders, bIsEventItem; "Can be traded for special
+// llamas, only available during Founder's Month!"), 20 from every daily quest and five Twitch quests. The store shows an
+// offer priced in an event item with its event packs (StoreRoot ShouldShowOffer → ShowEventPacks, on except while the
+// store tutorial's StoreShowOnlyBasic / StoreShowOnlyRewardLlama events hold it) and the Founder's Coins cost widget
+// (GetCustomStoreOfferCost → 5). This build has no calendar or event flag service, so Founder's Month was only which
+// offers Epic's catalog held; Core keeps the offer always (Core's choice). Which llama and the price are inferred / Core's:
+// the Launch Event Llama (CardPack_Event_Founders_NonExclusive), the Founder's Llama's twin (same loot tier group and
+// art) that nothing in the game data grants, for 100 coins (five daily quests), with no purchase limit.
+const eventOffers = [
+  { offerId: "core_event_founders_llama", templateId: "CardPack:cardpack_event_founders_nonexclusive", title: "Launch Event Llama",
+    currencyType: "GameItem", currencySubType: "AccountResource:eventcurrency_founders", price: 100, always: true }
+];
+
+const allOffers = [...mtxOffers, ...eventOffers, ...voucherOffers];
 
 function offerJson(offer, sortPriority) {
   const { offerId, templateId, title, currencyType, currencySubType, price } = offer;
@@ -74,7 +87,7 @@ const holds = (profile, templateId) => Object.values(profile?.items ?? {})
 
 // profile: the viewer's profile0, for the vouchers only shown to players who have one.
 export function storefronts(profile) {
-  const shown = allOffers.filter((offer) => offer.currencyType !== "GameItem"
+  const shown = allOffers.filter((offer) => offer.currencyType !== "GameItem" || offer.always
     || listedVouchers.some((voucher) => voucher.toLowerCase() === offer.currencySubType.toLowerCase())
     || holds(profile, offer.currencySubType));
   return [
