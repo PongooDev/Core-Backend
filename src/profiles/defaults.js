@@ -80,9 +80,11 @@ const startingItems = {
 
 export function addMissingItems(profile) {
   let added = false;
-  for (const item of startingItems[profile.profileId] ?? []) {
-    const held = Object.values(profile.items).some((existing) => existing.templateId.toLowerCase() === item.templateId.toLowerCase());
-    if (!held) {
+  const wanted = startingItems[profile.profileId] ?? [];
+  if (!wanted.length) return false;
+  const held = new Set(Object.values(profile.items).map((existing) => existing.templateId.toLowerCase()));
+  for (const item of wanted) {
+    if (!held.has(item.templateId.toLowerCase())) {
       const attributes = typeof item.attributes === "function" ? item.attributes(profile) : item.attributes;
       profile.items[crypto.randomUUID()] = structuredClone({ ...item, attributes });
       added = true;

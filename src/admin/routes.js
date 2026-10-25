@@ -22,7 +22,7 @@ import { openSession } from "../profiles/session.js";
 import { backpackState, inOverflow, vaultState, worldStackCap } from "../profiles/vault.js";
 import { maxLevel, xpForLevel } from "../profiles/xp.js";
 import { notifyProfiles } from "../services/mcp/profile.js";
-import { categories, currencies, describeItem, searchCatalog, stormShields } from "./describe.js";
+import { categories, currencies, describeItem, isSingleItem, searchCatalog, stormShields } from "./describe.js";
 import { requireLoopback, requirePanelRequest } from "./local.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -43,6 +43,13 @@ function backendVersion() {
   }
   return { version, commit };
 }
+
+// The most single items (heroes, survivors, schematics, defenders, llamas...; describe.js isSingleItem) one grant may
+// make: each unit is a profile item of its own, which the game's vault counts one by one (its limit starts at 200,
+// profiles/vault.js) and every login downloads in full (#34). The panel asks before granting more than
+// singleGrantConfirm of them.
+export const singleGrantCap = 500;
+export const singleGrantConfirm = 10;
 
 const categoryOrder = (key) => categories.findIndex(([category]) => category === key);
 const invalid = (res, message) => sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", message);
@@ -191,7 +198,7 @@ export function adminRoutes(context) {
   });
 
   router.get("/admin/api/catalog", (req, res) => {
-    res.json({ categories, items: searchCatalog(req.query.search, req.query.category, Math.min(Number(req.query.limit) || 60, 500)) });
+    res.json({ categories, items: searchCatalog(req.query.search, req.query.category, Math.min(Number(req.query.limit) || 60, 500)), singleGrantCap, singleGrantConfirm });
   });
 
   // Kept for scripts: every template id the panel can give.
@@ -210,6 +217,9 @@ export function adminRoutes(context) {
       : type.toLowerCase() === "collectionbookpage" ? isBookPage(name)
       : Boolean(getItem(templateId) ?? bannerTemplateId(templateId));
     if (!known) return invalid(res, `Unknown item ${templateId}`);
+    if (isSingleItem(templateId) && quantity > singleGrantCap) {
+      return invalid(res, `${describeItem(templateId).name} is kept one per item: give at most ${singleGrantCap} at a time`);
+    }
     // bNeverPersisted items (ability ammo, quest pickups) only exist in a zone; the game never saves one to a profile.
     if (getItem(templateId)?.neverPersisted) return invalid(res, `${templateId} only exists in a zone and is never kept in a profile`);
     // The world inventory holds at most 512 stacks (profiles/vault.js); past that the game keeps nothing.
@@ -271,6 +281,26 @@ export function adminRoutes(context) {
     const tracker = session.profile(profileId);
     if (!tracker.profile.items[itemId]) return invalid(res, `No item ${itemId}`);
     tracker.removeItem(itemId);
+  }));
+
+  // {profileId, templateId, keep = 0}: removes the copies of a template past the first keep, for an account given too
+  // many (#34). Items in a squad stay (the game would find an empty slot); favourites go after the rest, and items in
+  // the vault's overflow first. Answers with removed and kept counts.
+  router.post("/admin/api/accounts/:accountId/items/remove-template", change(({ req, res, session }) => {
+    const { profileId = "profile0", templateId, keep = 0 } = req.body ?? {};
+    if (!profileIds.includes(profileId)) return invalid(res, `Unknown profile ${profileId}`);
+    if (typeof templateId !== "string" || !templateId) return invalid(res, "Choose a template");
+    if (!Number.isInteger(keep) || keep < 0) return invalid(res, "keep must be 0 or more");
+    const tracker = session.profile(profileId);
+    const copies = Object.entries(tracker.profile.items)
+      .filter(([, item]) => item.templateId.toLowerCase() === templateId.toLowerCase() && !questIdOf(item));
+    if (!copies.length) return invalid(res, `No ${templateId} in ${profileId}`);
+    const rank = ([, item]) => (item.attributes?.squad_id ? 3 : item.attributes?.favorite ? 2 : inOverflow(item) ? 0 : 1);
+    // Kept first: squad members, favourites, then the oldest (profile order), overflow last.
+    const order = copies.map((entry, index) => ({ entry, index })).sort((a, b) => rank(b.entry) - rank(a.entry) || a.index - b.index);
+    const removable = order.slice(keep).filter(({ entry }) => !entry[1].attributes?.squad_id);
+    for (const { entry: [itemId] } of removable) tracker.removeItem(itemId);
+    return { removed: removable.length, kept: copies.length - removable.length };
   }));
 
   // {itemId, action: complete | claim | remove}

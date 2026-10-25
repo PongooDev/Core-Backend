@@ -44,7 +44,25 @@ const prettify = (name) => name.split("_")
   .filter((word) => word && !skipWords.has(word) && !rarityCodes.includes(word) && !/^t\d\d$/.test(word))
   .map((word) => word[0].toUpperCase() + word.slice(1)).join(" ") || name;
 
+// One description per template: an account view describes every item, and a big profile holds thousands of copies.
+const described = new Map();
 export function describeItem(templateId) {
+  const key = String(templateId);
+  if (!described.has(key)) described.set(key, describe(key));
+  return described.get(key);
+}
+
+// Items the game keeps one per unit (MaxStackSize 1 account items: heroes, schematics, survivors, defenders, llamas,
+// expeditions...): a grant of n makes n profile items. Skill tree nodes, banners and quests are owned once whatever
+// the quantity, so they aren't.
+export function isSingleItem(templateId) {
+  const type = String(templateId).split(":")[0].toLowerCase();
+  if (type === "quest" || type === "homebasenode" || type === "homebasebannericon" || type === "homebasebannercolor") return false;
+  const info = getItem(templateId);
+  return info?.profile === "profile" && info.maxStackSize === 1;
+}
+
+function describe(templateId) {
   const [rawType, rawName = ""] = String(templateId).split(":");
   const type = rawType.toLowerCase();
   const name = rawName.toLowerCase();
@@ -58,7 +76,7 @@ export function describeItem(templateId) {
       : type === "homebasebannercolor" ? `Banner colour ${rawName}`
       : type === "homebasenode" ? `Skill tree node ${rawName}`
       : prettify(name));
-  return { templateId, name: displayName, category: category(type, name), rarity, tier, maxLevel: info?.maxLevel ?? null };
+  return { templateId, name: displayName, category: category(type, name), rarity, tier, maxLevel: info?.maxLevel ?? null, single: isSingleItem(templateId) };
 }
 
 let catalog;

@@ -74,8 +74,11 @@ other sites). It has:
 - **Players:** search accounts, then per player:
   - **Overview:** set the level, V-Bucks, skill points, research points, hero/survivor/schematic XP, boost XP,
     llama vouchers and training manuals; refill rest XP; reset today's mission alerts.
-  - **Inventory:** the account, backpack, storage and collection book items by kind, with level, quantity and remove.
+  - **Inventory:** the account, backpack, storage and collection book items by kind, with level, quantity and remove,
+    100 to a page; **Group copies** shows one row per template and removes the extra copies (squad members stay).
   - **Give:** quick grants, or search any item, hero, schematic, llama, voucher, quest, skill tree node or banner.
+    Heroes, schematics, survivors, defenders and llamas are one item each: at most 500 per grant, and more than 10
+    asks first.
   - **Quests:** complete, claim or remove quests; skip the tutorial.
   - **Storm shields:** set each storm shield's level.
   - **Account:** kick (logs the player out everywhere), ban with a reason and unban, reset chosen profiles or all

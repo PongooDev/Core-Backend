@@ -86,13 +86,26 @@ export function grant(session, templateId, quantity, options = {}) {
   const granted = changesResearch(templateId)
     ? updatingCollectors(session, () => grantItem(session, templateId, quantity, options))
     : grantItem(session, templateId, quantity, options);
+  // A grant of single items (survivors, heroes, schematics...) has one entry per item. Once no active quest's Acquire
+  // objective for the template can still move, the rest of its entries would change nothing, so they skip the scan of
+  // every quest (which made a big grant take time in the square of its size: 10,000 survivors took 21 s, #34).
+  let acquiring = null;
   for (const entry of granted) {
     if (entry.profileId !== "profile0") continue;
     if (typeOf(entry.templateId) === "quest") refreshQuest(session, entry.itemId);
-    else itemEvent(session, ["Acquire"], entry.templateId, entry.quantity);
+    else if (acquiring === null || !sameId(acquiring.templateId, entry.templateId) || acquiring.wanted) {
+      itemEvent(session, ["Acquire"], entry.templateId, entry.quantity);
+      acquiring = { templateId: entry.templateId, wanted: wantsAcquire(session.profile("profile0"), entry.templateId) };
+    }
   }
   if (granted.some((entry) => entry.profileId === "profile0" && typeOf(entry.templateId) !== "quest")) refreshHeldItems(session);
   return granted;
+}
+
+// Whether an active quest has an Acquire objective for templateId that hasn't reached its count.
+function wantsAcquire(tracker, templateId) {
+  return activeQuests(tracker).some(({ item, quest }) => quest.objectives.some((objective) => objective.itemEvent === "Acquire"
+    && objective.item && sameId(objective.item, templateId) && (item.attributes[`completion_${objective.name}`] ?? 0) < objective.count));
 }
 
 export function itemEvent(session, events, templateId, count) {

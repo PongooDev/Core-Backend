@@ -308,7 +308,7 @@
 "use strict";
 const $ = (id) => document.getElementById(id);
 const state = { view: "dashboard", accounts: [], account: null, accountId: null, tab: "overview", inventoryProfile: "items",
-  inventoryCategory: "", inventorySearch: "", catalog: { search: "", category: "", items: [], categories: [], picked: null },
+  inventoryCategory: "", inventorySearch: "", inventoryPage: 0, inventoryGrouped: null, catalog: { search: "", category: "", items: [], categories: [], picked: null },
   logs: [], logAfter: 0, logPaused: false, logFilter: "", logCategory: "", timers: [] };
 
 function el(tag, props = {}, ...children) {
@@ -412,7 +412,7 @@ function route() {
   state.view = next;
   for (const link of document.querySelectorAll("nav.nav a")) link.setAttribute("aria-current", link.dataset.view === state.view ? "page" : "false");
   if (state.view === "players") {
-    if (accountId && accountId !== state.accountId) { state.accountId = accountId; state.account = null; }
+    if (accountId && accountId !== state.accountId) { state.accountId = accountId; state.account = null; state.inventoryPage = 0; state.inventoryGrouped = null; }
     if (!accountId) { state.accountId = null; state.account = null; }
     if (tab) state.tab = tab;
   }
@@ -591,45 +591,104 @@ function balance(currency) {
       btn("0", () => set(0), "ghost small", { title: "Set to zero" })));
 }
 
+/* A big account (thousands of survivors, #34) stays usable: the list shows a page of rows at a time, and "Group copies"
+   shows one row per template with how many copies there are and a way to remove the extra ones. */
+const inventoryPageSize = 100;
+const groupedByDefault = 300;
 function inventory(a) {
   const sources = [["items", "Account", a.items, "profile0"], ["worldItems", "Backpack", a.worldItems, "theater0"], ["storage", "Storage", a.storage, "outpost0"], ["collectionBook", "Collection book", a.collectionBook, null]];
-  const [, , list, profileId] = sources.find(([key]) => key === state.inventoryProfile) ?? sources[0];
+  const [sourceKey, , list, profileId] = sources.find(([key]) => key === state.inventoryProfile) ?? sources[0];
   const counts = new Map();
   for (const item of list) counts.set(item.category, (counts.get(item.category) ?? 0) + 1);
+  const grouped = state.inventoryGrouped ?? list.length > groupedByDefault;
   const search = el("input", { class: "field", type: "search", placeholder: "Filter by name or id", value: state.inventorySearch, style: "flex:1 1 240px" });
   const rows = el("div");
+  const pager = el("div", { class: "actions", style: "margin-top:12px" });
+  const itemRows = (shown) => table([
+    ["Item", (item) => itemName(item)],
+    ["Kind", (item) => kindLabel(item.category)],
+    ["Level", (item) => profileId ? el("input", { class: "field tiny", type: "number", min: 0, value: item.level ?? "", "data-level": item.itemId, placeholder: "—" }) : item.level ?? "—", "num"],
+    ["Quantity", (item) => profileId ? el("input", { class: "field tiny", type: "number", min: 0, value: item.quantity, "data-qty": item.itemId }) : fmt(item.quantity), "num"],
+    ["", (item) => [item.overflow ? chip("Overflow", "bad") : null, item.squad ? chip("In squad", "sky") : null, item.favorite ? chip("Favourite", "yellow") : null, item.packSource ? chip(item.packSource) : null]],
+    ["", (item) => profileId ? el("div", { class: "actions" },
+      btn("Save", () => {
+        const level = rows.querySelector(`[data-level="${item.itemId}"]`).value;
+        const quantity = Number(rows.querySelector(`[data-qty="${item.itemId}"]`).value);
+        const body = { profileId, itemId: item.itemId, quantity };
+        if (level !== "") body.level = Number(level);
+        post("items/update", body, `${item.name} saved`);
+      }, "ghost small"),
+      btn("Remove", () => confirm(`Remove ${item.name}?`) && post("items/remove", { profileId, itemId: item.itemId }, `${item.name} removed`), "danger small")) : null]
+  ], shown, "No items match.");
+  // Removes the copies of a template past the number to keep (the backend keeps items in a squad).
+  const removeCopies = (group) => {
+    const answer = prompt(`${group.name}: ${fmt(group.copies)} ${group.copies === 1 ? "copy" : "copies"}${group.squad ? `, ${fmt(group.squad)} in a squad (always kept)` : ""}. How many should the account keep?`, group.copies > 1 ? "1" : "0");
+    if (answer === null) return;
+    const keep = Number(answer);
+    if (!Number.isInteger(keep) || keep < 0) return toast("Enter a whole number, 0 or more", true);
+    const removing = Math.max(0, group.copies - Math.max(keep, group.squad));
+    if (!removing) return toast(`Nothing to remove: ${group.name} has ${fmt(group.copies)}`);
+    if (!confirm(`Remove ${fmt(removing)} × ${group.name}? This can't be undone.`)) return;
+    act(api(`/admin/api/accounts/${a.id}/items/remove-template`, { profileId, templateId: group.templateId, keep }))
+      .then((account) => setAccount(account, account && `Removed ${fmt(account.removed)} × ${group.name}${account.kept ? `, ${fmt(account.kept)} kept` : ""}`));
+  };
+  const groupRows = (matching) => {
+    const groups = new Map();
+    for (const item of matching) {
+      const key = item.templateId.toLowerCase();
+      if (!groups.has(key)) groups.set(key, { ...item, copies: 0, total: 0, overflow: 0, squad: 0, favorite: 0 });
+      const group = groups.get(key);
+      group.copies++;
+      group.total += item.quantity;
+      if (item.overflow) group.overflow++;
+      if (item.squad) group.squad++;
+      if (item.favorite) group.favorite++;
+    }
+    return [...groups.values()].sort((x, y) => y.copies - x.copies || x.name.localeCompare(y.name));
+  };
+  const groupTable = (shown) => table([
+    ["Item", (group) => itemName(group)],
+    ["Kind", (group) => kindLabel(group.category)],
+    ["Copies", (group) => fmt(group.copies), "num"],
+    ["Quantity", (group) => fmt(group.total), "num"],
+    ["", (group) => [group.overflow ? chip(`${fmt(group.overflow)} in overflow`, "bad") : null, group.squad ? chip(`${fmt(group.squad)} in squad`, "sky") : null,
+      group.favorite ? chip(`${fmt(group.favorite)} favourite`, "yellow") : null]],
+    ["", (group) => profileId ? el("div", { class: "actions" },
+      btn("Show", () => { state.inventoryGrouped = false; state.inventorySearch = group.templateId; state.inventoryPage = 0; renderPlayer(); }, "ghost small"),
+      btn(group.copies > 1 ? "Remove copies…" : "Remove…", () => removeCopies(group), "danger small")) : null]
+  ], shown, "No items match.");
   const render = () => {
+    if (state.inventorySearch !== search.value) state.inventoryPage = 0;
     state.inventorySearch = search.value;
     const query = search.value.trim().toLowerCase();
-    const shown = list.filter((item) => (!state.inventoryCategory || item.category === state.inventoryCategory)
+    const matching = list.filter((item) => (!state.inventoryCategory || item.category === state.inventoryCategory)
       && (!query || item.name.toLowerCase().includes(query) || item.templateId.toLowerCase().includes(query)));
-    rows.replaceChildren(table([
-      ["Item", (item) => itemName(item)],
-      ["Kind", (item) => kindLabel(item.category)],
-      ["Level", (item) => profileId ? el("input", { class: "field tiny", type: "number", min: 0, value: item.level ?? "", "data-level": item.itemId, placeholder: "—" }) : item.level ?? "—", "num"],
-      ["Quantity", (item) => profileId ? el("input", { class: "field tiny", type: "number", min: 0, value: item.quantity, "data-qty": item.itemId }) : fmt(item.quantity), "num"],
-      ["", (item) => [item.overflow ? chip("Overflow", "bad") : null, item.squad ? chip("In squad", "sky") : null, item.favorite ? chip("Favourite", "yellow") : null, item.packSource ? chip(item.packSource) : null]],
-      ["", (item) => profileId ? el("div", { class: "actions" },
-        btn("Save", () => {
-          const level = rows.querySelector(`[data-level="${item.itemId}"]`).value;
-          const quantity = Number(rows.querySelector(`[data-qty="${item.itemId}"]`).value);
-          const body = { profileId, itemId: item.itemId, quantity };
-          if (level !== "") body.level = Number(level);
-          post("items/update", body, `${item.name} saved`);
-        }, "ghost small"),
-        btn("Remove", () => confirm(`Remove ${item.name}?`) && post("items/remove", { profileId, itemId: item.itemId }, `${item.name} removed`), "danger small")) : null]
-    ], shown, "No items match."));
+    const entries = grouped ? groupRows(matching) : matching;
+    const pages = Math.max(1, Math.ceil(entries.length / inventoryPageSize));
+    const page = Math.max(0, Math.min(state.inventoryPage ?? 0, pages - 1));
+    state.inventoryPage = page;
+    const shown = entries.slice(page * inventoryPageSize, (page + 1) * inventoryPageSize);
+    rows.replaceChildren(grouped ? groupTable(shown) : itemRows(shown));
+    const go = (to) => { state.inventoryPage = to; render(); };
+    pager.replaceChildren(...(pages > 1 ? [
+      btn("Previous", () => go(page - 1), "ghost small", { disabled: page === 0 }),
+      el("span", { class: "note", text: `Page ${page + 1} of ${fmt(pages)} · ${fmt(entries.length)} ${grouped ? "templates" : "items"}` }),
+      btn("Next", () => go(page + 1), "ghost small", { disabled: page >= pages - 1 })] : []));
   };
   search.addEventListener("input", render);
   render();
+  const toggle = el("button", { type: "button", "aria-pressed": String(grouped), title: "One row per template, with how many copies the account has",
+    onclick: () => { state.inventoryGrouped = !grouped; state.inventoryPage = 0; renderPlayer(); } }, el("span", { text: "Group copies" }));
   return el("div", {},
     el("div", { class: "filters" }, sources.map(([key, label, items]) => el("button", { type: "button", "aria-pressed": String(state.inventoryProfile === key),
-      onclick: () => { state.inventoryProfile = key; state.inventoryCategory = ""; renderPlayer(); } }, el("span", { text: `${label} · ${items.length}` })))),
-    el("div", { class: "filters" }, el("button", { type: "button", "aria-pressed": String(!state.inventoryCategory), onclick: () => { state.inventoryCategory = ""; renderPlayer(); } }, el("span", { text: "All" })),
+      onclick: () => { state.inventoryProfile = key; state.inventoryCategory = ""; state.inventoryPage = 0; renderPlayer(); } }, el("span", { text: `${label} · ${fmt(items.length)}` })))),
+    el("div", { class: "filters" }, el("button", { type: "button", "aria-pressed": String(!state.inventoryCategory), onclick: () => { state.inventoryCategory = ""; state.inventoryPage = 0; renderPlayer(); } }, el("span", { text: "All" })),
       [...counts].map(([key, count]) => el("button", { type: "button", "aria-pressed": String(state.inventoryCategory === key),
-        onclick: () => { state.inventoryCategory = key; renderPlayer(); } }, el("span", { text: `${kindLabel(key)} · ${count}` })))),
-    el("div", { class: "actions", style: "margin-bottom:12px" }, search, limitLine(a, (sources.find(([key]) => key === state.inventoryProfile) ?? sources[0])[0])),
-    rows);
+        onclick: () => { state.inventoryCategory = key; state.inventoryPage = 0; renderPlayer(); } }, el("span", { text: `${kindLabel(key)} · ${fmt(count)}` })))),
+    el("div", { class: "actions", style: "margin-bottom:12px" }, search, el("div", { class: "filters", style: "margin:0" }, toggle), limitLine(a, sourceKey)),
+    sourceKey === "items" && a.vault?.overflow ? el("p", { class: "note", style: "margin:0 0 12px", text: `${fmt(a.vault.overflow)} items are past the vault limit; the game won't level, evolve or slot them. Group copies to remove the extras.` }) : null,
+    rows,
+    pager);
 }
 
 // The game's own limit for the list shown: the vault (Account) and the backpack count limited items, overflow included
@@ -658,13 +717,22 @@ function give(a) {
   const quantity = el("input", { class: "field num", type: "number", min: 1, value: c.quantity ?? 1, "aria-label": "Quantity" });
   const results = el("div", { class: "catalog" });
   const picked = el("div", { class: "note" });
+  // Single items (heroes, survivors, schematics, defenders, llamas...) are one profile item each: a grant of many is
+  // capped by the backend (singleGrantCap) and asks first past singleGrantConfirm, since every one fills a vault slot.
   const giveButton = btn("Give", () => {
     if (!c.picked) return toast("Pick an item first", true);
-    c.quantity = Number(quantity.value);
+    const amount = Number(quantity.value);
+    if (!Number.isInteger(amount) || amount < 1) return toast("Enter a quantity of 1 or more", true);
+    if (c.picked.single && c.cap && amount > c.cap) return toast(`${c.picked.name} is kept one per item: give at most ${fmt(c.cap)} at a time`, true);
+    if (c.picked.single && amount > (c.confirmAbove ?? 10)) {
+      const vault = a.vault ? `\n\nEach one is a separate item. The vault holds ${fmt(a.vault.count)} / ${fmt(a.vault.limit)}${a.vault.count + amount > a.vault.limit ? "; items past the limit go into overflow, where the game won't level, evolve or slot them" : ""}.` : "";
+      if (!confirm(`Add ${fmt(amount)} × ${c.picked.name}?${vault}`)) return;
+    }
+    c.quantity = amount;
     post("grant", { templateId: c.picked.templateId, quantity: c.quantity }, `Gave ${fmt(c.quantity)} × ${c.picked.name}`);
   }, "primary");
   const renderResults = () => {
-    picked.replaceChildren(c.picked ? ["Selected: ", itemName(c.picked)] : "Pick an item below.");
+    picked.replaceChildren(...(c.picked ? ["Selected: ", itemName(c.picked)] : ["Pick an item below."]));
     results.replaceChildren(...(c.items.length ? c.items.map((item) => el("button", { type: "button", class: `card ${item.rarity}`, "aria-pressed": String(c.picked?.templateId === item.templateId),
       onclick: () => { c.picked = item; renderResults(); } }, el("div", { class: "k", text: kindLabel(item.category) }), el("div", { class: "t", text: item.name }),
       el("div", { class: "s mono", text: item.templateId }))) : [el("div", { class: "empty", text: "Nothing found." })]));
@@ -677,6 +745,8 @@ function give(a) {
     if (!data) return;
     c.items = data.items;
     c.categories = data.categories;
+    c.cap = data.singleGrantCap;
+    c.confirmAbove = data.singleGrantConfirm;
     if (!category.options.length || category.options.length === 1) category.replaceChildren(el("option", { value: "", text: "Every kind" }),
       c.categories.map(([key, label]) => el("option", { value: key, text: label, selected: c.category === key })));
     renderResults();
