@@ -89,7 +89,8 @@ test("store llamas can turn silver or gold, from the silver and gold llama defin
     assert.ok(rolled.length >= 3, id);
     for (const item of rolled) assert.ok(items.has(item.templateId.toLowerCase()), `${id} -> ${item.templateId}`);
   }
-  assert.equal(rollContents("CardPack:cardpack_gold").length, 6);
+  // Six items and the gold llama's Founder's Coins.
+  assert.equal(rollContents("CardPack:cardpack_gold").length, 7);
 });
 
 test("a gold Upgrade Llama reports displayLevel 2 and the gold group, and still counts as the llama opened", async () => {
@@ -113,7 +114,8 @@ test("a gold Upgrade Llama reports displayLevel 2 and the gold group, and still 
       Math.random = random;
     }
     const [goldResult] = gold.body.notifications;
-    assert.deepEqual([goldResult.displayLevel, goldResult.lootGranted.tierGroupName, goldResult.lootGranted.items.length], [2, "CardPack_Gold", 6]);
+    assert.deepEqual([goldResult.displayLevel, goldResult.lootGranted.tierGroupName, goldResult.lootGranted.items.length], [2, "CardPack_Gold", 7]);
+    assert.deepEqual(goldResult.lootGranted.items.filter((item) => item.itemType === "AccountResource:eventcurrency_founders").map((item) => item.quantity), [20]);
     const [silverResult] = silver.body.notifications;
     assert.deepEqual([silverResult.displayLevel, silverResult.lootGranted.tierGroupName], [1, "CardPack_Basic_Silver"]);
 

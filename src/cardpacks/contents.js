@@ -25,19 +25,26 @@ function one(kind, sub, rarity) {
 }
 
 // Upgrade, mini and founders llamas: a few random items, rarer the better the llama.
+// Founder's Coins (AccountResource:eventcurrency_founders): "Can be traded for special llamas ... Found by completing
+// quests and in other llamas." The quests are the daily quests (their Rewards hold 20 each); no shipped loot table names
+// the coins, so which llamas held them and how many is Core's (🟡): every llama but the founders event llamas the coins
+// buy (the Founder's Llama and the Launch Event Llama, CardPack_Event_2017_Founders) holds `coins` of them on top of its
+// items, more the better the llama (a store llama that turns silver or gold holds that llama's).
+const foundersCoins = "AccountResource:eventcurrency_founders";
 const mixedKinds = [["ranged", 25], ["melee", 15], ["trap", 15], ["worker", 25], ["manager", 5], ["hero", 10], ["defender", 5]];
 const llamas = {
-  cardpack_basic: { count: 2, rarity: [["c", 50], ["uc", 45], ["r", 5]] },
-  cardpack_basic_silver: { count: 3, rarity: [["uc", 60], ["r", 35], ["vr", 5]] },
-  cardpack_bronze: { count: 4, rarity: [["uc", 50], ["r", 35], ["vr", 12], ["sr", 3]] },
-  cardpack_silver: { count: 5, rarity: [["uc", 20], ["r", 50], ["vr", 25], ["sr", 5]] },
-  cardpack_gold: { count: 6, rarity: [["r", 40], ["vr", 45], ["sr", 15]] },
-  cardpack_event_2017_founders: { count: 6, rarity: [["r", 55], ["vr", 35], ["sr", 10]] }
+  cardpack_basic: { count: 2, rarity: [["c", 50], ["uc", 45], ["r", 5]], coins: 5 },
+  cardpack_basic_silver: { count: 3, rarity: [["uc", 60], ["r", 35], ["vr", 5]], coins: 10 },
+  cardpack_bronze: { count: 4, rarity: [["uc", 50], ["r", 35], ["vr", 12], ["sr", 3]], coins: 10 },
+  cardpack_silver: { count: 5, rarity: [["uc", 20], ["r", 50], ["vr", 25], ["sr", 5]], coins: 15 },
+  cardpack_gold: { count: 6, rarity: [["r", 40], ["vr", 45], ["sr", 15]], coins: 20 },
+  cardpack_event_2017_founders: { count: 6, rarity: [["r", 55], ["vr", 35], ["sr", 10]], coins: 0 }
 };
 
-function llama({ count, rarity }) {
+function llama({ count, rarity, coins }) {
   const contents = [];
   for (let attempt = 0; contents.length < count && attempt < count * 4; attempt++) contents.push(...one(weighted(mixedKinds), null, weighted(rarity)));
+  if (coins > 0 && hasItem(foundersCoins)) contents.push({ templateId: foundersCoins, quantity: coins });
   return contents;
 }
 
