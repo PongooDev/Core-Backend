@@ -1,6 +1,7 @@
 import express from "express";
 import { createAccountStore } from "./accounts/store.js";
 import { createFriendStore } from "./friends/store.js";
+import { createFriendCodeStore } from "./friendcodes/store.js";
 import { networkAdminRoutes } from "./admin/network.js";
 import { adminRoutes } from "./admin/routes.js";
 import { createTokenStore } from "./accounts/tokens.js";
@@ -44,6 +45,7 @@ export function createContext(config) {
     accounts,
     tokens,
     friends,
+    friendCodes: createFriendCodeStore(config.dataDir),
     profiles: createProfileStore(config.dataDir),
     mailbox: createMailbox(),
     locks: createProfileLocks(),

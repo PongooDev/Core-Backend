@@ -10,6 +10,7 @@ import { clientQuestLogin } from "./ClientQuestLogin.js";
 import { claimCollectionBookPageRewards, claimCollectionBookRewards, convertSlottedItem, slotItemInCollectionBook, upgradeSlottedItem } from "./CollectionBook.js";
 import { fortRerollDailyQuest } from "./FortRerollDailyQuest.js";
 import { getMcpTimeForLogin } from "./GetMcpTimeForLogin.js";
+import { issueFriendCode } from "./IssueFriendCode.js";
 import { setHeroModeLoadout, setModeLoadout } from "./Loadouts.js";
 import { markItemSeen } from "./MarkItemSeen.js";
 import { markNewQuestNotificationSent } from "./MarkNewQuestNotificationSent.js";
@@ -51,6 +52,7 @@ export const clientCommands = {
   CreateOrUpgradeOutpostItem: createOrUpgradeOutpostItem,
   FortRerollDailyQuest: fortRerollDailyQuest,
   GetMcpTimeForLogin: getMcpTimeForLogin,
+  IssueFriendCode: issueFriendCode,
   MarkItemSeen: markItemSeen,
   MarkNewQuestNotificationSent: markNewQuestNotificationSent,
   OpenCardPack: openCardPack,

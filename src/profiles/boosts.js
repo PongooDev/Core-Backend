@@ -1,6 +1,7 @@
 import { McpError } from "../errors.js";
 import { getItem } from "../gamedata/items.js";
 import { readGameData } from "../gamedata/read.js";
+import { consume, consumedInto } from "./friendcodes.js";
 import { findItem, grantItem } from "./items.js";
 
 // Rest XP and XP boosts, from the client:
@@ -109,6 +110,11 @@ export function activateConsumable(session, accountId, itemId, targetAccountId, 
   if (!self && !info.activateOnOthers) fail("invalid_parameter", `${item.templateId} can only be used on yourself`);
   const target = self ? session : targetSession;
   if (!target) fail("invalid_parameter", `No account ${targetAccountId}`);
+  // A founder's friend code is consumed as it is granted (profiles/friendcodes.js); one still held becomes its code token.
+  if (self && consumedInto(item.templateId)) {
+    consume(session, itemId);
+    return null;
+  }
   if (!/^consumableaccountitem:smallxpboost(_gift)?$/i.test(item.templateId)) fail("invalid_parameter", `Nothing uses ${item.templateId} yet`);
 
   const amount = levelData(target.profile("profile0").profile.stats.attributes.level ?? 1).boostXpPerConsumable ?? 0;

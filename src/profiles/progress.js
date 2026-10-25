@@ -3,6 +3,7 @@ import { slottedItems } from "../collectionbook/pages.js";
 import { getObjectiveStat } from "../gamedata/homebase.js";
 import { getCharacter, getItem } from "../gamedata/items.js";
 import { getQuest, startingQuests } from "../gamedata/quests.js";
+import { consumedInto } from "./friendcodes.js";
 import { grantItem } from "./items.js";
 import { expandStormShield } from "./outposts.js";
 import { grantQuest, isDone, questIdOf } from "./quests.js";
@@ -82,6 +83,8 @@ export function claimQuest(session, itemId, selectedIndex = -1) {
 // Every grant goes through here so quests that wait on acquiring an item, or a newly granted quest that is
 // already satisfied, move on in the same command.
 export function grant(session, templateId, quantity, options = {}) {
+  // An automatically consumed item turns into what it gives as it is granted (profiles/friendcodes.js).
+  templateId = consumedInto(templateId) ?? templateId;
   // A node or buff that changes the research collector's rate banks what it gathered first (research/collector.js).
   const granted = changesResearch(templateId)
     ? updatingCollectors(session, () => grantItem(session, templateId, quantity, options))

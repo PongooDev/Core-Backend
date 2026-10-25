@@ -7,6 +7,7 @@ import { log } from "../log.js";
 import { collectorsNeedSetUp, setUpCollectors } from "../research/collector.js";
 import { startingQuests } from "../gamedata/quests.js";
 import { foundersNeedSetUp, setUpFounders } from "./founders.js";
+import { friendCodesNeedSetUp, setUpFriendCodes } from "./friendcodes.js";
 import { ownsNode } from "./homebase.js";
 import { tidyWorldStacks } from "./items.js";
 import { grant } from "./progress.js";
@@ -50,6 +51,8 @@ import { levelStartXp, settleLevel } from "./xp.js";
 //   TierFactor percent below it, so the chance shown was 0 or 100% (issue #30). Older offers get it once.
 // - The founder's pack (profiles/founders.js): the Standard Edition's founders quest, whose daily reward tokens bring the
 //   Founder's Llama. Core gave none before 2026-10-24 (issue #31); older profiles get it once.
+// - Founder's friend codes held as the consumable are turned into the code tokens the friend code screen issues codes
+//   from (profiles/friendcodes.js, issue #35).
 // Profiles made before this, or left with no hero at all, get what they lack when they next load. So does a profile
 // whose lead slot is empty: its first hero in no squad takes it (heroes in other slots or on expeditions stay).
 const { defaultHero } = readGameData("newaccount", {});
@@ -85,7 +88,8 @@ export function needsSetUp(profile) {
   if (profile.profileId !== "profile0") return false;
   return startingQuests.some((questId) => !findQuestItem(profile, questId)) || Boolean(defaultHero && !heroes(profile).length)
     || Boolean(leadCandidate(profile)) || schematicMigrations.some(({ name }) => !migrated(profile, name)) || !migrated(profile, "levelXp")
-    || collectorsNeedSetUp(profile) || expeditionsNeedSetUp(profile) || foundersNeedSetUp(profile);
+    || collectorsNeedSetUp(profile) || expeditionsNeedSetUp(profile) || foundersNeedSetUp(profile)
+    || friendCodesNeedSetUp(profile);
 }
 
 // theater0's world items granted before Core gave new ones their template's durability (profiles/items.js) get it, once;
@@ -126,6 +130,7 @@ export function setUpProfile(session, profileId = "profile0") {
   if (bookProfiles.includes(profileId)) return setUpBook(session, profileId);
   for (const questId of startingQuests) grant(session, `Quest:${questId}`, 1);
   setUpFounders(session);
+  setUpFriendCodes(session);
 
   const { profile } = session.profile("profile0");
   for (const { name, schematics } of schematicMigrations) {
