@@ -41,3 +41,20 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
 - `research.json`: the resource collectors (research points): each CollectedResource template's payout and the
   homebase attributes its rate, capacity and wallet cap come from, what each skill tree node adds to those attributes
   (its CommandConsole_GEImporter rows) and the account buffs that multiply them (BuffEffects modifiers).
+
+## Other builds
+
+`gamedata/` is Cert's (CL-3532353). A build whose data differs keeps only its differences, in `gamedata/<changelist>/`:
+each file there is the JSON merge patch (RFC 7396: objects merge, `null` removes a key, anything else replaces) that turns
+Cert's file into that build's. The backend serves each request the data of the build its User-Agent names, Cert's for
+any build without a folder (`src/gamedata/read.js`, `perBuild`). To make or refresh an overlay, extract both builds
+with the same extractor and diff them (both paks are v3 with an unencrypted index; only the config `.ini` files are
+encrypted, with the same key for Cert and 1.2):
+
+```
+dotnet run -c Release --project tools/extractor -- "<Cert build folder>" <aes key> <cert output folder>
+dotnet run -c Release --project tools/extractor -- "<other build folder>" <aes key> <other output folder>
+node tools/overlay/overlay.mjs <cert output folder> <other output folder> <changelist>
+```
+
+`theaters.json` isn't extracted and is shared by every build.

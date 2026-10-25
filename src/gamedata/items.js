@@ -1,21 +1,23 @@
-import { readGameData } from "./read.js";
+import { perBuild } from "./read.js";
 
-const items = new Map(Object.entries(readGameData("items", {})).map(([templateId, item]) => [templateId.toLowerCase(), { templateId, ...item }]));
-const characters = new Map(Object.entries(readGameData("characters", {})).map(([templateId, data]) => [templateId.toLowerCase(), data]));
-const cardPacks = new Map(Object.entries(readGameData("cardpacks", {})).map(([templateId, data]) => [templateId.toLowerCase(), { templateId, ...data }]));
+const data = perBuild((read) => ({
+  items: new Map(Object.entries(read("items", {})).map(([templateId, item]) => [templateId.toLowerCase(), { templateId, ...item }])),
+  characters: new Map(Object.entries(read("characters", {})).map(([templateId, character]) => [templateId.toLowerCase(), character])),
+  cardPacks: new Map(Object.entries(read("cardpacks", {})).map(([templateId, pack]) => [templateId.toLowerCase(), { templateId, ...pack }]))
+}));
 
 export function getItem(templateId) {
-  return items.get(templateId.toLowerCase());
+  return data().items.get(templateId.toLowerCase());
 }
 
 export function getCharacter(templateId) {
-  return characters.get(templateId.toLowerCase());
+  return data().characters.get(templateId.toLowerCase());
 }
 
 export function getCardPack(templateId) {
-  return cardPacks.get(templateId.toLowerCase());
+  return data().cardPacks.get(templateId.toLowerCase());
 }
 
 export function itemIds() {
-  return [...items.values()].map((item) => item.templateId);
+  return [...data().items.values()].map((item) => item.templateId);
 }

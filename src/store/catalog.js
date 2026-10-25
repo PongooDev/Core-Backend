@@ -1,4 +1,5 @@
 import { getCardPack, itemIds } from "../gamedata/items.js";
+import { perBuild } from "../gamedata/read.js";
 
 // The llama store. The client's store reads the CardPackStore and CardPackStorePromo storefronts (FortStorefront);
 // each offer is FCatalogOffer, its card pack art and featured items coming from metaAssetInfo FortCatalogMeta
@@ -26,7 +27,8 @@ function voucherPack(voucherId) {
     .find((pack) => pack?.lootTierGroup.toLowerCase() === `cardpack_${name}`);
 }
 
-const voucherOffers = itemIds()
+// The requesting build's vouchers.
+const voucherOffers = perBuild(() => itemIds()
   .filter((templateId) => templateId.toLowerCase().startsWith("accountresource:voucher_"))
   .flatMap((voucherId) => {
     const pack = voucherPack(voucherId);
@@ -39,7 +41,7 @@ const voucherOffers = itemIds()
       currencySubType: voucherId,
       price: 1
     }];
-  });
+  }));
 
 // Founder's Coins: AccountResource:eventcurrency_founders (EventCurrency_Founders, bIsEventItem; "Can be traded for special
 // llamas, only available during Founder's Month!"), 20 from every daily quest and five Twitch quests. The store shows an
@@ -54,7 +56,7 @@ const eventOffers = [
     currencyType: "GameItem", currencySubType: "AccountResource:eventcurrency_founders", price: 100, always: true }
 ];
 
-const allOffers = [...mtxOffers, ...eventOffers, ...voucherOffers];
+const allOffers = () => [...mtxOffers, ...eventOffers, ...voucherOffers()];
 
 function offerJson(offer, sortPriority) {
   const { offerId, templateId, title, currencyType, currencySubType, price } = offer;
@@ -87,7 +89,7 @@ const holds = (profile, templateId) => Object.values(profile?.items ?? {})
 
 // profile: the viewer's profile0, for the vouchers only shown to players who have one.
 export function storefronts(profile) {
-  const shown = allOffers.filter((offer) => offer.currencyType !== "GameItem" || offer.always
+  const shown = allOffers().filter((offer) => offer.currencyType !== "GameItem" || offer.always
     || listedVouchers.some((voucher) => voucher.toLowerCase() === offer.currencySubType.toLowerCase())
     || holds(profile, offer.currencySubType));
   return [
@@ -96,4 +98,4 @@ export function storefronts(profile) {
   ];
 }
 
-export const findOffer = (offerId) => allOffers.find((offer) => offer.offerId === offerId);
+export const findOffer = (offerId) => allOffers().find((offer) => offer.offerId === offerId);

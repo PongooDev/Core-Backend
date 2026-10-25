@@ -1,7 +1,8 @@
 import { poolMatching } from "../cardpacks/pools.js";
 import { McpError } from "../errors.js";
 import { getItem } from "../gamedata/items.js";
-import { readGameData } from "../gamedata/read.js";
+import { perBuild } from "../gamedata/read.js";
+import { upgradeData } from "../gamedata/upgrades.js";
 import { findItem, grantItem, lootEntry } from "../profiles/items.js";
 import { grant } from "../profiles/progress.js";
 import { hasUnlocked } from "../profiles/unlocks.js";
@@ -26,9 +27,8 @@ import { recycleXpRefund } from "../profiles/upgrades.js";
 // CalculateRecycleXP) list the main reward and, per XP type, the sum of each item's GetRecycleValue (Hero and Defender ->
 // hero XP, Schematic -> schematic XP, Worker -> survivor XP), and nothing else; the SacrificeRecipe's results (Training
 // Manuals) aren't listed, so they aren't given (inferred: Epic's server did the same).
-const { recipes = {} } = readGameData("upgrades", {});
 const fallbackHeroSquad = "Squad_Combat_AdventureSquadOne";
-const keys = new Map(Object.entries(readGameData("transmog", {})).map(([templateId, key]) => [templateId.toLowerCase(), { templateId, ...key }]));
+const keys = perBuild((read) => new Map(Object.entries(read("transmog", {})).map(([templateId, key]) => [templateId.toLowerCase(), { templateId, ...key }])));
 const rarityCodes = ["c", "uc", "r", "vr", "sr"];
 const skipWords = new Set(["cck", "expedition", "core", "people", "common", "uncommon", "rare", "veryrare", "superrare", "unique", "sr"]);
 const kindsFor = { hero: ["hero"], defender: ["defender"], manager: ["manager"], worker: ["worker"], trap: ["trap"],
@@ -71,7 +71,7 @@ function spend(tracker, templateId, quantity) {
 // their quantities under the new item, skipping any it can't find: recycledItems are what the sacrifices gave back,
 // the XP stacks they topped up (the sacrificed items are gone by then, so the modal could never show one).
 export function transmogItem(session, keyTemplateId, sacrificeItemIds, notifications) {
-  const key = keys.get(String(keyTemplateId ?? "").toLowerCase());
+  const key = keys().get(String(keyTemplateId ?? "").toLowerCase());
   if (!key) fail(`No transform key ${keyTemplateId}`);
   const tracker = session.profile("profile0");
   const { profile } = tracker;
@@ -89,7 +89,7 @@ export function transmogItem(session, keyTemplateId, sacrificeItemIds, notificat
     const squadId = String(item.attributes.squad_id ?? "").toLowerCase();
     if (info.class === "FortHeroType" && squadId === heroSquad) fail(`${item.templateId} is in your hero squad`);
     if (squadId.startsWith("squad_expedition_")) fail(`${item.templateId} is out on an expedition`);
-    const catalysts = recipes[info.recycleRecipe]?.catalysts ?? [];
+    const catalysts = upgradeData().recipes[info.recycleRecipe]?.catalysts ?? [];
     if (!hasUnlocked(profile, catalysts)) fail(`Unlock ${catalysts.join(", ")} on the skill tree to transform ${item.templateId}`);
     points += info.transmogPoints;
   }

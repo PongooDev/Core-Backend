@@ -1,0 +1,51 @@
+{
+  "Schematic:sid_edged_sword_medium_laser_founders_r_crystal_t04": {
+    "conversions": null
+  },
+  "Schematic:sid_edged_sword_medium_laser_founders_r_ore_t01": {
+    "conversions": [
+      "Evolve.SID.Edged.Sword.Medium.Laser.Founders.R.Ore.T02"
+    ]
+  },
+  "Schematic:sid_edged_sword_medium_laser_founders_r_ore_t02": {
+    "conversions": [
+      "Evolve.SID.Edged.Sword.Medium.Laser.Founders.R.Ore.T03"
+    ]
+  },
+  "Schematic:sid_edged_sword_medium_laser_founders_r_ore_t03": {
+    "conversions": [
+      "Evolve.SID.Edged.Sword.Medium.Laser.Founders.R.Ore.T04",
+      "Evolve.SID.Edged.Sword.Medium.Laser.Founders.R.Crystal.T04"
+    ]
+  },
+  "Weapon:wid_harvest_pickaxe_c_t01": {
+    "inventorySizeLimited": null
+  },
+  "Weapon:wid_harvest_pickaxe_c_t02": {
+    "inventorySizeLimited": null
+  },
+  "Weapon:wid_harvest_pickaxe_r_t03": {
+    "inventorySizeLimited": null
+  },
+  "Weapon:wid_harvest_pickaxe_r_t04": {
+    "inventorySizeLimited": null
+  },
+  "Weapon:wid_harvest_pickaxe_sr_t05": {
+    "inventorySizeLimited": null
+  },
+  "Weapon:wid_harvest_pickaxe_sr_t06": {
+    "inventorySizeLimited": null
+  },
+  "Weapon:wid_harvest_pickaxe_uc_t02": {
+    "inventorySizeLimited": null
+  },
+  "Weapon:wid_harvest_pickaxe_uc_t03": {
+    "inventorySizeLimited": null
+  },
+  "Weapon:wid_harvest_pickaxe_vr_t04": {
+    "inventorySizeLimited": null
+  },
+  "Weapon:wid_harvest_pickaxe_vr_t05": {
+    "inventorySizeLimited": null
+  }
+}

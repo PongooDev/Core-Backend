@@ -1,0 +1,13 @@
+{
+  "twitchquest_reactive_7": {
+    "objectives": [
+      {
+        "count": 15,
+        "item": "FortMissionInfo:blugloworlditemdata",
+        "itemEvent": "Collect",
+        "name": "quest_reactive_twitch_7",
+        "requirePrimaryMissionCompletion": true
+      }
+    ]
+  }
+}

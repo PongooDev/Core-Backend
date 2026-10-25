@@ -6,7 +6,7 @@ import { post, startBackend, userLogin } from "./helpers.js";
 const command = (accountId, name, rvn = -1) => `/fortnite/api/game/v2/profile/${accountId}/client/${name}?profileId=profile0&rvn=${rvn}`;
 
 test("the starting quests are the onboarding quests nothing else grants", () => {
-  assert.deepEqual(startingQuests, ["homebaseonboarding"]);
+  assert.deepEqual(startingQuests(), ["homebaseonboarding"]);
   assert.equal(getQuest("HomebaseOnboarding").type, "Onboarding");
 });
 

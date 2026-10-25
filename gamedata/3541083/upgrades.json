@@ -1,0 +1,124 @@
+{
+  "recipes": {
+    "Evolve.SID.Edged.Sword.Medium.Laser.Founders.R.Crystal.T04": {
+      "catalysts": [
+        "Evolution.Schematic.Weapons.Melee.Swords.Tier2a.3a.4a"
+      ],
+      "costs": [
+        {
+          "quantity": 6000,
+          "templateId": "AccountResource:schematicxp"
+        },
+        {
+          "quantity": 30,
+          "templateId": "AccountResource:reagent_c_t01"
+        },
+        {
+          "quantity": 6,
+          "templateId": "AccountResource:reagent_weapons"
+        },
+        {
+          "quantity": 14,
+          "templateId": "AccountResource:reagent_c_t02"
+        },
+        {
+          "quantity": 7,
+          "templateId": "AccountResource:reagent_c_t03"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "Schematic:sid_edged_sword_medium_laser_founders_r_crystal_t04"
+        }
+      ]
+    },
+    "Evolve.SID.Edged.Sword.Medium.Laser.Founders.R.Ore.T02": {
+      "catalysts": [
+        "Evolution.Schematic.Weapons.Melee.Swords.Tier2a"
+      ],
+      "costs": [
+        {
+          "quantity": 1500,
+          "templateId": "AccountResource:schematicxp"
+        },
+        {
+          "quantity": 10,
+          "templateId": "AccountResource:reagent_c_t01"
+        },
+        {
+          "quantity": 1,
+          "templateId": "AccountResource:reagent_weapons"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "Schematic:sid_edged_sword_medium_laser_founders_r_ore_t02"
+        }
+      ]
+    },
+    "Evolve.SID.Edged.Sword.Medium.Laser.Founders.R.Ore.T03": {
+      "catalysts": [
+        "Evolution.Schematic.Weapons.Melee.Swords.Tier2a.3a"
+      ],
+      "costs": [
+        {
+          "quantity": 3750,
+          "templateId": "AccountResource:schematicxp"
+        },
+        {
+          "quantity": 20,
+          "templateId": "AccountResource:reagent_c_t01"
+        },
+        {
+          "quantity": 3,
+          "templateId": "AccountResource:reagent_weapons"
+        },
+        {
+          "quantity": 7,
+          "templateId": "AccountResource:reagent_c_t02"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "Schematic:sid_edged_sword_medium_laser_founders_r_ore_t03"
+        }
+      ]
+    },
+    "Evolve.SID.Edged.Sword.Medium.Laser.Founders.R.Ore.T04": {
+      "catalysts": [
+        "Evolution.Schematic.Weapons.Melee.Swords.Tier2a.3a.4a"
+      ],
+      "costs": [
+        {
+          "quantity": 6000,
+          "templateId": "AccountResource:schematicxp"
+        },
+        {
+          "quantity": 30,
+          "templateId": "AccountResource:reagent_c_t01"
+        },
+        {
+          "quantity": 6,
+          "templateId": "AccountResource:reagent_weapons"
+        },
+        {
+          "quantity": 14,
+          "templateId": "AccountResource:reagent_c_t02"
+        },
+        {
+          "quantity": 7,
+          "templateId": "AccountResource:reagent_c_t03"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "Schematic:sid_edged_sword_medium_laser_founders_r_ore_t04"
+        }
+      ]
+    }
+  }
+}

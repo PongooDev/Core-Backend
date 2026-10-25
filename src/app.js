@@ -1,5 +1,6 @@
 import express from "express";
 import { createAccountStore } from "./accounts/store.js";
+import { requestBuild } from "./builds/context.js";
 import { createFriendStore } from "./friends/store.js";
 import { createFriendCodeStore } from "./friendcodes/store.js";
 import { networkAdminRoutes } from "./admin/network.js";
@@ -71,6 +72,8 @@ export function createApp(config, context = createContext(config)) {
   app.disable("x-powered-by");
 
   app.use(originForm);
+  // Everything a request does uses its build's game data (src/builds/context.js, src/gamedata/read.js).
+  app.use(requestBuild);
   if (config.requestLog !== false) app.use(requestLog);
   app.use(userCloudStorageRoutes(context));
   app.use(replayRoutes(context));

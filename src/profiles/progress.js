@@ -287,7 +287,7 @@ export function itemChanged(session, change, item, templateId = item.templateId)
 // Completes and claims every Onboarding quest, following the chain each one grants, which is what the client checks.
 export function skipTutorial(session) {
   const tracker = session.profile("profile0");
-  for (const questId of startingQuests) {
+  for (const questId of startingQuests()) {
     const itemId = grantQuest(tracker, questId);
     if (itemId) refreshQuest(session, itemId);
   }

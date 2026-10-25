@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import { bannerIds } from "../gamedata/banners.js";
 import { getCardPack } from "../gamedata/items.js";
-import { hasItem, knownKinds, namedSchematics, pool, rarities } from "./pools.js";
+import { hasItem, isKnownKind, namedSchematics, pool, rarities } from "./pools.js";
 
 // What a card pack holds. Epic decided pack contents on its servers and no loot table for them ships with the client,
 // so these rules are Core's design (chosen by the user), built from what the game data says about each pack: its loot
@@ -198,7 +198,7 @@ export function rollContents(templateId) {
   let match = group.match(/^cardpack_generic_(defender)(assault|pistol|melee|sniper|shotgun)_(c|uc|r|vr|sr)$/);
   if (match) return one("defender", match[2], match[3]);
   match = group.match(/^cardpack_(?:generic_)?([a-z]+)(?:_([a-z]+))?_(c|uc|r|vr|sr)$/);
-  if (match && knownKinds.has(match[1])) return one(match[1], match[2], match[3]);
+  if (match && isKnownKind(match[1])) return one(match[1], match[2], match[3]);
   if (/^cardpack_(starter|quest|custom)_/.test(group)) return named(originalGroup, templateId, withRarity.rarityCode);
   return one("schematic", null, withRarity.rarityCode);
 }
@@ -234,7 +234,7 @@ export function rollOptions(templateId) {
   if (!info) return [];
   const parts = info.lootTierGroup.toLowerCase().split("_");
   const rarity = rarities.includes(parts[parts.length - 1]) ? parts[parts.length - 1] : "r";
-  const kind = parts.map((part) => part.replace(/es$|s$/, "")).find((part) => part !== "cardpack" && knownKinds.has(part));
+  const kind = parts.map((part) => part.replace(/es$|s$/, "")).find((part) => part !== "cardpack" && isKnownKind(part));
   const options = [];
   const taken = new Set();
   for (let attempt = 0; options.length < 2 && attempt < 20; attempt++) {

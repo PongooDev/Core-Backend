@@ -6,7 +6,7 @@ import { grant, refreshHeldItems } from "../../../profiles/progress.js";
 // Objectives about what the account holds are re-counted, so quests already active catch up with it (e.g. a collection
 // book levelled before Core credited collectionbook_levelup).
 export function clientQuestLogin({ session }) {
-  for (const questId of startingQuests) grant(session, `Quest:${questId}`, 1);
+  for (const questId of startingQuests()) grant(session, `Quest:${questId}`, 1);
   refreshDailyQuests(session);
   refreshHeldItems(session);
 }

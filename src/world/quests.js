@@ -1,15 +1,20 @@
-import { readGameData } from "../gamedata/read.js";
+import { perBuild } from "../gamedata/read.js";
 
-// What quests ask of a mission, and which missions a theater's tiles can carry, from the extracted game data.
-const { missionGenerators = {}, primaryMissions = {}, difficulties = {}, questPaths = {} } = readGameData("world", {});
-const quests = readGameData("quests", {});
-const objectiveStats = readGameData("objectivestats", {});
-
-const generatorsByClass = new Map(Object.keys(missionGenerators).map((path) => [path.split(".").pop(), path]));
+// What quests ask of a mission, and which missions a theater's tiles can carry, from the requesting build's game data.
+const data = perBuild((read) => {
+  const { missionGenerators = {}, primaryMissions = {}, difficulties = {}, questPaths = {} } = read("world", {});
+  return {
+    missionGenerators, primaryMissions, difficulties, questPaths,
+    quests: read("quests", {}),
+    objectiveStats: read("objectivestats", {}),
+    generatorsByClass: new Map(Object.keys(missionGenerators).map((path) => [path.split(".").pop(), path]))
+  };
+});
 
 // The MissionTags of the primary mission a generator runs (FortMissionGenerator PrimaryMissionInfo, inherited from the
 // parent generator class when the child doesn't set it), e.g. Stat.Mission.Primary.EvacuateTheSurvivors.
 export function generatorMissionTags(generator) {
+  const { missionGenerators, primaryMissions, generatorsByClass } = data();
   for (let path = generator, depth = 0; path && depth < 16; depth += 1) {
     const entry = missionGenerators[path];
     if (!entry) return [];
@@ -19,10 +24,10 @@ export function generatorMissionTags(generator) {
   return [];
 }
 
-export const difficultyOf = (rowName) => difficulties[rowName]?.difficulty ?? 0;
+export const difficultyOf = (rowName) => data().difficulties[rowName]?.difficulty ?? 0;
 
 export function questPath(questId) {
-  return questPaths[questId.toLowerCase()];
+  return data().questPaths[questId.toLowerCase()];
 }
 
 // A tag matches a query tag when it is that tag or one of its children (Gate.Gate_Double counts for Gate).
@@ -31,6 +36,7 @@ const matchesTag = (tag, query) => tag === query || tag.startsWith(`${query}.`);
 // The Complete objectives of a quest that name one kind of primary mission ("Complete a Rescue the Survivors mission in
 // a 5+ zone": Stat.Mission.Primary.EvacuateTheSurvivors, Zone.Difficulty >=5), with the theater they must be in, if any.
 export function missionObjectives(questId) {
+  const { quests, objectiveStats } = data();
   const quest = quests[questId.toLowerCase()];
   return (quest?.objectives ?? []).flatMap((objective) => {
     const stat = objective.stat && objectiveStats[objective.stat];
@@ -56,6 +62,7 @@ export function missionMeets(objective, generator, rowName) {
 // The objectives done on a critical mission ("Complete 3 missions in Stonewood with Play with others": quick_complete_*,
 // SourceTags Stat.Source.OnCriticalMission), with their theater if they name one.
 function criticalObjectives(questId) {
+  const { quests, objectiveStats } = data();
   const quest = quests[questId.toLowerCase()];
   return (quest?.objectives ?? []).flatMap((objective) => {
     const stat = objective.stat && objectiveStats[objective.stat];
@@ -85,6 +92,7 @@ function isStory(questId, quest) {
 // and 72 get links the dump's later build didn't have; its tiles 17, 20, 21, 38 and Canny Valley's 97 were linked to
 // quests Cert doesn't have).
 export function linkedQuests(theater) {
+  const { quests } = data();
   const theaterTag = theater.regions.flatMap((region) => region.regionTags?.gameplayTags ?? [])
     .map(({ tagName }) => /^Stat\.Theater\.PvE0\d/.exec(tagName)?.[0]).find(Boolean);
   const links = new Map();

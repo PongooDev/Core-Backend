@@ -1,6 +1,6 @@
 import { McpError } from "../errors.js";
 import { getItem } from "../gamedata/items.js";
-import { readGameData } from "../gamedata/read.js";
+import { upgradeData } from "../gamedata/upgrades.js";
 import { grantItem } from "./items.js";
 import { itemChanged } from "./progress.js";
 import { hasUnlocked } from "./unlocks.js";
@@ -13,8 +13,8 @@ import { inOverflow } from "./vault.js";
 // Both recipes need their catalyst tags unlocked on the skill tree.
 // Heroes and defenders use hero XP, survivors personnel XP, schematics schematic XP: the client's
 // UFortMcpContext::GetUpgradeXPBalance(EFortItemType) (sub_64BE00) reads GetHeroXp for Hero and Defender, GetSchematicXp
-// for Schematic and GetPersonnelXp for Worker.
-const { levelCosts = {}, recycleXp = {}, recipes = {} } = readGameData("upgrades", {});
+// for Schematic and GetPersonnelXp for Worker. The recipes are the requesting build's (1.2 fixed the Founder's rare laser
+// sword evolving into the very rare one, gamedata/3541083).
 
 const xpResource = {
   FortHeroType: "AccountResource:heroxp",
@@ -67,7 +67,7 @@ export function upgradeItem(session, itemId, profileId = "profile0") {
   if (inOverflow(item)) fail(`${item.templateId} is in the vault overflow and can't level up`);
   const level = item.attributes.level ?? 1;
   if (level >= info.maxLevel) fail(`${item.templateId} is already at its highest level, ${info.maxLevel}`);
-  const cost = levelCosts[info.levelCost]?.[level];
+  const cost = upgradeData().levelCosts[info.levelCost]?.[level];
   if (!cost) fail(`No level cost for ${info.levelCost} level ${level}`);
   pay(session.profile("profile0"), [{ templateId: xpResource[info.class], quantity: cost }]);
   tracker.setItemAttribute(itemId, "level", level + 1);
@@ -81,7 +81,7 @@ export function convertItem(session, itemId, conversionIndex, profileId = "profi
   const { item, info } = accountItem(tracker, itemId);
   // ItemEvolutionRestrictionReason_VaultOverflow: "Items in the vault overflow temporarily can not be evolved."
   if (inOverflow(item)) fail(`${item.templateId} is in the vault overflow and can't be evolved`);
-  const recipe = recipes[info.conversions?.[conversionIndex]];
+  const recipe = upgradeData().recipes[info.conversions?.[conversionIndex]];
   if (!recipe || recipe.results.length !== 1) fail(`${item.templateId} has no evolution ${conversionIndex}`);
   if (!hasUnlocked(account.profile, recipe.catalysts)) locked(recipe.catalysts);
   pay(account, recipe.costs);
@@ -96,6 +96,7 @@ export function recycleItem(session, itemId) {
   const tracker = session.profile("profile0");
   const { item, info } = accountItem(tracker, itemId);
   if (item.attributes.squad_id) fail(`${item.templateId} is in a squad`);
+  const { recipes } = upgradeData();
   const catalysts = recipes[info.recycleRecipe]?.catalysts ?? [];
   if (!hasUnlocked(tracker.profile, catalysts)) locked(catalysts);
   const xp = recycleXpRefund(item);
@@ -109,12 +110,12 @@ export function recycleItem(session, itemId) {
 // truncates it; the XP type is the one levelling it costs (hero XP for heroes and defenders, schematic XP, survivor XP).
 export function recycleXpRefund(item) {
   const info = getItem(item.templateId);
-  const quantity = Math.trunc(recycleXp[info?.recycleXp]?.[item.attributes?.level ?? 1] ?? 0);
+  const quantity = Math.trunc(upgradeData().recycleXp[info?.recycleXp]?.[item.attributes?.level ?? 1] ?? 0);
   return quantity > 0 && xpResource[info.class] ? { templateId: xpResource[info.class], quantity } : null;
 }
 
 // UFortAccountItemDefinition::GetRecyclingRefunds: the SacrificeRecipe's results, what recycling the item gives besides
 // its XP.
 export function recyclingRefunds(templateId) {
-  return recipes[getItem(templateId)?.recycleRecipe]?.results ?? [];
+  return upgradeData().recipes[getItem(templateId)?.recycleRecipe]?.results ?? [];
 }

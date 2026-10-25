@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { McpError } from "../errors.js";
 import { questIds, getQuest } from "../gamedata/quests.js";
+import { perBuild } from "../gamedata/read.js";
 import { grant } from "./progress.js";
 import { findQuestItem, isDone, questIdOf } from "./quests.js";
 import { hasUnlocked } from "./unlocks.js";
@@ -10,7 +11,7 @@ import { hasUnlocked } from "./unlocks.js";
 // servers. Core's rule: on the first quest login of each UTC day, claimed dailies are cleared, one new daily (a quest of
 // type DailyQuest the player doesn't hold and can do) is added while fewer than 3 are open, and the daily reroll is
 // restored.
-const dailyIds = questIds().filter((id) => getQuest(id).type === "DailyQuest");
+const dailyIds = perBuild(() => questIds().filter((id) => getQuest(id).type === "DailyQuest"));
 const maxOpen = 3;
 const rerollsPerDay = 1;
 
@@ -37,7 +38,7 @@ export function canHaveDaily(profile, questId) {
 function newDaily(session) {
   const tracker = session.profile("profile0");
   const held = new Set(heldDailies(tracker).map(([, item]) => questIdOf(item)));
-  const choices = dailyIds.filter((id) => !held.has(id) && canHaveDaily(tracker.profile, id));
+  const choices = dailyIds().filter((id) => !held.has(id) && canHaveDaily(tracker.profile, id));
   if (!choices.length) return null;
   const [granted] = grant(session, `Quest:${choices[crypto.randomInt(choices.length)]}`, 1);
   return granted?.itemId ?? null;

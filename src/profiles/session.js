@@ -1,4 +1,4 @@
-import { fullProfile, trackChanges } from "./changes.js";
+import { fullProfile, trackChanges, visibleChanges } from "./changes.js";
 import { needsSetUp, setUpProfile } from "./setup.js";
 import { settleVault } from "./vault.js";
 
@@ -14,7 +14,7 @@ export function openSession(profiles, accountId, { setUp = true } = {}) {
       profileId,
       profileChangesBaseRevision: baseRevision,
       profileChanges: clientRevision === baseRevision
-        ? tracker.changes
+        ? visibleChanges(tracker.changes)
         : [{ changeType: "fullProfileUpdate", profile: fullProfile(profile) }],
       profileCommandRevision: profile.commandRevision
     };
@@ -59,7 +59,7 @@ export function openSession(profiles, accountId, { setUp = true } = {}) {
     // The profiles this command changed, as MCP's profile notifications carry them (FProfileUpdateNotification).
     changedProfiles() {
       return [...opened].filter(([, { tracker }]) => tracker.changes.length).map(([profileId, { tracker }]) => ({
-        profileId, changes: tracker.changes, revision: tracker.profile.rvn, commandRevision: tracker.profile.commandRevision
+        profileId, changes: visibleChanges(tracker.changes), revision: tracker.profile.rvn, commandRevision: tracker.profile.commandRevision
       }));
     },
 

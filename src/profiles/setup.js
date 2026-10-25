@@ -86,7 +86,7 @@ export function needsSetUp(profile) {
   if (profile.profileId === "outpost0") return !migrated(profile, "worldStacks");
   if (bookProfiles.includes(profile.profileId)) return !migrated(profile, "bookPages");
   if (profile.profileId !== "profile0") return false;
-  return startingQuests.some((questId) => !findQuestItem(profile, questId)) || Boolean(defaultHero && !heroes(profile).length)
+  return startingQuests().some((questId) => !findQuestItem(profile, questId)) || Boolean(defaultHero && !heroes(profile).length)
     || Boolean(leadCandidate(profile)) || schematicMigrations.some(({ name }) => !migrated(profile, name)) || !migrated(profile, "levelXp")
     || collectorsNeedSetUp(profile) || expeditionsNeedSetUp(profile) || foundersNeedSetUp(profile)
     || friendCodesNeedSetUp(profile);
@@ -128,7 +128,7 @@ export function setUpProfile(session, profileId = "profile0") {
   if (profileId === "theater0") return setUpTheater(session);
   if (profileId === "outpost0") return setUpWorldStacks(session, profileId);
   if (bookProfiles.includes(profileId)) return setUpBook(session, profileId);
-  for (const questId of startingQuests) grant(session, `Quest:${questId}`, 1);
+  for (const questId of startingQuests()) grant(session, `Quest:${questId}`, 1);
   setUpFounders(session);
   setUpFriendCodes(session);
 

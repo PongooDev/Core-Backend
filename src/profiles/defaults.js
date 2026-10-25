@@ -68,19 +68,19 @@ export function addMissingStats(profile) {
 
 // Nothing in the game data grants the skill tree's start node, yet it unlocks the first hero slot, Commando slotting
 // and the starting storage, so every profile0 owns it (inferred: it can't be bought and sits on no page). The banner
-// editor only lists banners the player owns, so the starter banners are starting items too.
-const startingItems = {
+// editor only lists banners the player owns, so the starter banners (the requesting build's) are starting items too.
+const startingItems = () => ({
   profile0: [
     { templateId: "HomebaseNode:startnode_commandcenter", attributes: { level: 1, item_seen: 0 }, quantity: 1 },
-    ...starterBanners.map((templateId) => ({ templateId, attributes: { item_seen: 1 }, quantity: 1 })),
+    ...starterBanners().map((templateId) => ({ templateId, attributes: { item_seen: 1 }, quantity: 1 })),
     // Rest XP (Quota:RestXP) starts full; the client shows its balance from this item.
     { templateId: "Quota:restxp", attributes: (profile) => restQuotaAttributes(profile.stats.attributes.level ?? 1), quantity: 1 }
   ]
-};
+});
 
 export function addMissingItems(profile) {
   let added = false;
-  const wanted = startingItems[profile.profileId] ?? [];
+  const wanted = startingItems()[profile.profileId] ?? [];
   if (!wanted.length) return false;
   const held = new Set(Object.values(profile.items).map((existing) => existing.templateId.toLowerCase()));
   for (const item of wanted) {

@@ -1,10 +1,7 @@
 import crypto from "node:crypto";
-import { readGameData } from "../gamedata/read.js";
+import { perBuild } from "../gamedata/read.js";
 import { getDifficulty, missionAlertTier } from "../gamedata/world.js";
 import { linkedQuests, questPath } from "./quests.js";
-
-// Theater layouts come from Epic's world info (see tools/theaters/import.mjs); the client ships none.
-const { theaters = [], rewards = {} } = readGameData("theaters", {});
 
 // The story opens each later theater: the client's TheaterSelect shows "Requires completing quest: {Quest}" for
 // RuntimeInfo.Requirements.QuestDefinition and only enables Select once AFortPlayerController::IsRequirementsMet
@@ -16,10 +13,6 @@ const storyGates = {
   E6ECBD064B153234656CB4BDE6743870: "/Game/Quests/Plankerton/PlankertonQuest_LaunchRocket_D5.PlankertonQuest_LaunchRocket_D5",
   D9A801C5444D1C74D1B7DAB5C7C12C5B: "/Game/Quests/CannyValley/CannyValleyQuest_LaunchRocket_D5.CannyValleyQuest_LaunchRocket_D5"
 };
-for (const { data } of theaters) {
-  const questDefinition = storyGates[data.uniqueId];
-  if (questDefinition) data.runtimeInfo.requirements = { ...data.runtimeInfo.requirements, questDefinition };
-}
 
 // The storm shield opens each zone of a theater: the client hides a region's tiles under the storm until
 // IsRequirementsMet(region Requirements) passes (sub_812C00), and every zone's story quests (tag
@@ -35,27 +28,34 @@ function zoneGate(region) {
   }
   return undefined;
 }
-for (const { data } of theaters) {
-  for (const region of data.regions) {
-    const questDefinition = zoneGate(region);
-    if (questDefinition) region.requirements = { ...region.requirements, questDefinition };
-  }
-}
 
 // The story quests each tile was placed for: the client marks a tile whose linked quest is in progress
 // (AFortTheaterMapTile::IsTileQuestRecommended, sub_813150), shows the pin on it while that quest is the marked one
 // (IsTileValidForMarkedQuest → sub_8136B0 → sub_812E90) and goes there first when the quest log's Play picks a tile
 // (SelectTileForQuest, sub_819190: a linked tile is validity 2 in GetMissionQuestValidity, ahead of tiles whose mission
 // only meets the objectives, 3). The dump kept these entries without their quests; see linkedQuests for the rebuild.
-for (const { data } of theaters) {
-  const links = linkedQuests(data);
-  data.tiles.forEach((tile, index) => {
-    tile.linkedQuests = (links.get(index) ?? []).flatMap((questId) => {
-      const questDefinition = questPath(questId);
-      return questDefinition ? [{ questDefinition }] : [];
+//
+// Theater layouts come from Epic's world info (see tools/theaters/import.mjs); the client ships none. Every build has
+// the same layouts, finished with the requesting build's quests.
+const layout = perBuild((read) => {
+  const { theaters = [], rewards = {} } = read("theaters", {});
+  for (const { data } of theaters) {
+    const questDefinition = storyGates[data.uniqueId];
+    if (questDefinition) data.runtimeInfo.requirements = { ...data.runtimeInfo.requirements, questDefinition };
+    for (const region of data.regions) {
+      const zoneQuest = zoneGate(region);
+      if (zoneQuest) region.requirements = { ...region.requirements, questDefinition: zoneQuest };
+    }
+    const links = linkedQuests(data);
+    data.tiles.forEach((tile, index) => {
+      tile.linkedQuests = (links.get(index) ?? []).flatMap((questId) => {
+        const linked = questPath(questId);
+        return linked ? [{ questDefinition: linked }] : [];
+      });
     });
-  });
-}
+  }
+  return { theaters, rewards };
+});
 
 const digest = (text) => crypto.createHash("sha1").update(text).digest();
 const fraction = (bytes) => bytes.readUInt32BE(0) / 0x100000000;
@@ -83,7 +83,7 @@ function shuffled(list, seed) {
 function mission(seed, tileIndex, missionGenerator, missionDifficultyInfo, tierGroupName, availableUntil) {
   return {
     missionGuid: missionGuid(seed),
-    missionRewards: { tierGroupName, items: rewards[tierGroupName] ?? [] },
+    missionRewards: { tierGroupName, items: layout().rewards[tierGroupName] ?? [] },
     missionModifiers: { tierGroupName: "", items: [] },
     missionGenerator,
     missionDifficultyInfo,
@@ -163,6 +163,7 @@ function rollAlerts({ data }, missions, day, availableUntil) {
 export function worldInfo(now = new Date()) {
   const day = now.toISOString().slice(0, 10);
   const availableUntil = `${day}T23:59:59.999Z`;
+  const { theaters } = layout();
   const missions = theaters.map((theater) => rollMissions(theater, day, availableUntil));
   return {
     theaters: theaters.map((theater) => theater.data),
@@ -186,7 +187,7 @@ export function atDifficulty(mission, rowName) {
   return {
     ...mission,
     missionDifficultyInfo: { ...mission.missionDifficultyInfo, rowName },
-    missionRewards: { tierGroupName, items: rewards[tierGroupName] ?? [] }
+    missionRewards: { tierGroupName, items: layout().rewards[tierGroupName] ?? [] }
   };
 }
 

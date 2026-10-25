@@ -1,3 +1,4 @@
+import { itemIds } from "../gamedata/items.js";
 import { readGameData } from "../gamedata/read.js";
 import { boostBalance, levelRest, restBalance, spendBoost, spendRest, xpBonus } from "./boosts.js";
 import { grant } from "./progress.js";
@@ -38,8 +39,7 @@ export function settleLevel(session) {
 }
 
 // Level-up rewards name assets ("HomebasePoints"); items are keyed "Type:name".
-const items = readGameData("items", {});
-const rewardTemplate = (asset) => Object.keys(items).find((id) => id.split(":")[1] === asset.toLowerCase());
+const rewardTemplate = (asset) => itemIds().find((id) => id.split(":")[1] === asset.toLowerCase());
 
 // Match score to account XP: UFortGameData ScoreToXPLinearRate 0.612901 up to LinearEnd 18,300,000 score
 // (Balance/DefaultGameData). Nothing in the client converts score to XP, so Epic's servers did; past LinearEnd Core keeps
