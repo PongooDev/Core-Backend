@@ -27,6 +27,7 @@ import { cloudStorageRoutes, userCloudStorageRoutes } from "./services/fortnite/
 import { friendCodeRoutes } from "./services/fortnite/friendcodes.js";
 import { receiptRoutes } from "./services/fortnite/receipts.js";
 import { storefrontRoutes } from "./services/fortnite/storefront.js";
+import { twitchRoutes } from "./services/fortnite/twitch.js";
 import { versionRoutes } from "./services/fortnite/version.js";
 import { worldRoutes } from "./services/fortnite/world.js";
 import { friendsRoutes } from "./services/friends/lists.js";
@@ -95,6 +96,7 @@ export function createApp(config, context = createContext(config)) {
   app.use(storefrontRoutes(context));
   app.use(chatRoutes(context));
   app.use(friendCodeRoutes(context));
+  app.use(twitchRoutes(context));
   app.use(friendsRoutes(context));
   app.use(datarouterRoutes(context));
   app.use(coreStatusRoutes());
