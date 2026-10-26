@@ -6,7 +6,7 @@ import { bookData } from "../src/collectionbook/pages.js";
 import { nodeIds } from "../src/gamedata/homebase.js";
 import { cloudSaveProfile, getItem } from "../src/gamedata/items.js";
 import { buildGameData } from "../src/gamedata/read.js";
-import { send, startBackend, userLogin } from "./helpers.js";
+import { get, post, send, startBackend, userLogin } from "./helpers.js";
 
 const build172 = "3700114";
 const agents = {
@@ -97,6 +97,30 @@ test("a 1.2 account's storm shield moves into metadata on its first 1.7.2 login;
   }
 });
 
+test("the admin panel shows and sets a 1.7.2 player's storm shields, which are metadata items (#51)", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "Panel172");
+    const run = (name, profileId, body) => command(backend.port, build172, player, name, profileId, body);
+    await run("QueryProfile", "metadata");
+    await run("CreateOrUpgradeOutpostItem", "metadata", { templateId: "Outpost:outpostcore_pve_01" });
+    const shield = (details, templateId) => details.stormShields.find((entry) => entry.templateId === templateId);
+
+    const details = (await get(backend.port, `/admin/api/accounts/${player.accountId}`)).body;
+    assert.notEqual(shield(details, "Outpost:outpostcore_pve_01").level, null);
+    const set = (await post(backend.port, `/admin/api/accounts/${player.accountId}/storm-shield`, undefined, { templateId: "Outpost:outpostcore_pve_01", level: 5 })).body;
+    assert.equal(shield(set, "Outpost:outpostcore_pve_01").level, 5);
+    // A shield the player has no core for yet is made where their others are.
+    await post(backend.port, `/admin/api/accounts/${player.accountId}/storm-shield`, undefined, { templateId: "Outpost:outpostcore_pve_02", level: 3 });
+
+    const metadata = profileOf(await run("QueryProfile", "metadata"), "metadata");
+    assert.deepEqual(cores(metadata).map(([, item]) => [item.templateId, item.attributes.level]).sort(),
+      [["Outpost:outpostcore_pve_01", 5], ["Outpost:outpostcore_pve_02", 3]]);
+  } finally {
+    backend.close();
+  }
+});
+
 test("RequestEventFlags answers with no active event and when to ask again; IncrementNamedCounterStat counts in named_counters", async () => {
   const backend = await startBackend();
   try {
@@ -157,7 +181,9 @@ test("1.7.2 asks for general chat per sub game and reads globalChatRooms; Battle
     assert.deepEqual(athena.body.globalChatRooms.map((room) => room.roomName), ["GlobalBattleRoyale"]);
     assert.deepEqual([athena.body.founderChatRooms, athena.body.bIsFounderChatDisabled], [[], true]);
     const stats = await ask(`/fortnite/api/stats/accountId/${player.accountId}/bulk/window/alltime`, "GET");
-    assert.deepEqual([stats.status, stats.body], [200, []]);
+    assert.equal(stats.status, 200);
+    assert.deepEqual(stats.body.map((stat) => stat.name), ["br_lastmodified_pc_m0_p2", "br_lastmodified_pc_m0_p10", "br_lastmodified_pc_m0_p9"]);
+    assert.ok(stats.body.every((stat) => stat.window === "alltime" && Math.abs(stat.value - Date.now() / 1000) < 60));
   } finally {
     backend.close();
   }
