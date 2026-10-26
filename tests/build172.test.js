@@ -162,3 +162,18 @@ test("1.7.2 asks for general chat per sub game and reads globalChatRooms; Battle
     backend.close();
   }
 });
+
+test("Send Feedback's multipart upload is accepted and kept nowhere", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "Feedback172");
+    const body = "--b\r\nContent-Disposition: form-data; name=\"subject\"\r\n\r\nHello\r\n--b--\r\n";
+    const response = await send({
+      host: "127.0.0.1", port: backend.port, method: "POST", path: "/fortnite/api/feedback/usertext",
+      headers: { "User-Agent": agents[build172], Authorization: `bearer ${player.token}`, "Content-Type": "multipart/form-data; boundary=b", "Content-Length": Buffer.byteLength(body) }
+    }, body);
+    assert.equal(response.status, 204);
+  } finally {
+    backend.close();
+  }
+});

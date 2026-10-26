@@ -23,6 +23,7 @@ import { datarouterRoutes } from "./services/datarouter/data.js";
 import { eulaRoutes } from "./services/eulatracking/agreements.js";
 import { accessRoutes } from "./services/fortnite/access.js";
 import { chatRoutes, generalChatRooms } from "./services/fortnite/chat.js";
+import { feedbackRoutes } from "./services/fortnite/feedback.js";
 import { statsRoutes } from "./services/fortnite/stats.js";
 import { cloudStorageRoutes, userCloudStorageRoutes } from "./services/fortnite/cloudstorage.js";
 import { friendCodeRoutes } from "./services/fortnite/friendcodes.js";
@@ -97,6 +98,7 @@ export function createApp(config, context = createContext(config)) {
   app.use(storefrontRoutes(context));
   app.use(chatRoutes(context));
   app.use(statsRoutes(context));
+  app.use(feedbackRoutes(context));
   app.use(friendCodeRoutes(context));
   app.use(twitchRoutes(context));
   app.use(friendsRoutes(context));
