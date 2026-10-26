@@ -45,6 +45,15 @@ export function bucketMatches(pattern, bucketId) {
   return want.length === have.length && want.every((field, index) => field === "*" || field === have[index]);
 }
 
+// Queued's estimatedWaitSec, from the time left until a forming match is assigned. The client shows "N/A" for an ETA
+// whose seconds part is 0 (0x2E40A10 checks ticks / 10^7 % 60 > 0), so 0 stays "N/A" (no free server: nothing to
+// estimate) and a whole minute is sent a second over (#56).
+export function estimatedWaitSec(remainingMs) {
+  if (!(remainingMs > 0)) return 0;
+  const seconds = Math.ceil(remainingMs / 1000);
+  return seconds % 60 === 0 ? seconds + 1 : seconds;
+}
+
 const message = (name, payload) => JSON.stringify({ name, payload });
 const status = (state, fields = {}) => message("StatusUpdate", { ...fields, state });
 const newId = () => crypto.randomUUID().replaceAll("-", "");
@@ -141,7 +150,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
     for (const server of servers) {
       if (server.forming || party.size > server.maxPlayers) continue;
       if (!server.patterns.some((pattern) => bucketMatches(pattern, party.ticket.bucketId))) continue;
-      server.forming = { matchId: newId(), bucketId: party.ticket.bucketId, parties: [party], players: party.size };
+      server.forming = { matchId: newId(), bucketId: party.ticket.bucketId, parties: [party], players: party.size, started: Date.now() };
       server.forming.timer = setTimeout(() => assign(server), gatherMs);
       server.forming.timer.unref?.();
       say(`Match ${server.forming.matchId} forms on session ${server.sessionId} for bucket ${party.ticket.bucketId}`);
@@ -156,24 +165,45 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
     return [...waiting, ...forming].filter((party) => party.ticket.bucketId === bucketId && !party.ws.closed);
   }
 
-  // Queued {queuedPlayers}: everyone queued for the bucket, sent again to each of them whenever it changes.
+  // How long until a party is sent to its match: the rest of its forming match's gather time, or 0 while it waits for a
+  // free server.
+  function remainingMs(party) {
+    for (const server of servers) {
+      const forming = server.forming;
+      if (forming && !forming.sent && forming.parties.includes(party)) return forming.started + gatherMs + playDelayMs - Date.now();
+    }
+    return 0;
+  }
+
+  // Queued {queuedPlayers, estimatedWaitSec}: everyone queued for the bucket, sent again to each of them whenever it
+  // changes, and every second while a match forms so the ETA counts down.
   function announceQueue(bucketId) {
     const parties = queuedParties(bucketId);
     // A party's members each queue with their own ticket: the party counts once.
     const queuedPlayers = [...new Map(parties.map((party) => [party.key, party.size])).values()].reduce((sum, size) => sum + size, 0);
     for (const party of parties) {
+      const wait = estimatedWaitSec(remainingMs(party));
       for (const member of [party, ...party.members]) {
         if (member.done || member.ws.closed) continue;
-        member.ws.send(status("Queued", { ticketId: member.ticket.ticketId, queuedPlayers, estimatedWaitSec: 0, status: {} }));
+        member.ws.send(status("Queued", { ticketId: member.ticket.ticketId, queuedPlayers, estimatedWaitSec: wait, status: {} }));
       }
     }
   }
 
+  const countdown = setInterval(() => {
+    const forming = new Set([...servers].filter((server) => server.forming && !server.forming.sent).map((server) => server.forming.bucketId));
+    for (const bucketId of forming) announceQueue(bucketId);
+  }, 1000);
+  countdown.unref?.();
+
+  // Parties placed in a forming match hear their ETA straight away.
   function placeWaiting() {
+    const placed = new Set();
     for (let index = 0; index < waiting.length;) {
-      if (place(waiting[index])) waiting.splice(index, 1);
+      if (place(waiting[index])) placed.add(waiting.splice(index, 1)[0].ticket.bucketId);
       else index++;
     }
+    for (const bucketId of placed) announceQueue(bucketId);
   }
 
   function assign(server) {
@@ -294,6 +324,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
     isMatchmakingUpgrade: (req) => String(req.headers.authorization ?? "").startsWith("Epic-Signed "),
     handleUpgrade,
     closeAll() {
+      clearInterval(countdown);
       for (const ws of sockets) ws.close(1001);
     },
     // Core's: what the launcher and the admin panel can show.

@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import crypto from "node:crypto";
 import http from "node:http";
-import { bucketMatches, parseBucket } from "../src/matchmaking/service.js";
+import { bucketMatches, estimatedWaitSec, parseBucket } from "../src/matchmaking/service.js";
 import { get, post, startBackend, userLogin } from "./helpers.js";
 
 // MatchmakingServiceClient's connection: a WebSocket with the ticket in its Authorization header, which the browser-style
@@ -71,6 +71,10 @@ test("a bucket names the playlist and region; a server's pattern takes any playl
   assert.ok(!bucketMatches("858118782:0:EU:*", "858118782:0:NA:10"));
 });
 
+test("the ETA is whole seconds, never a whole minute (the client shows N/A for those), and 0 when unknown", () => {
+  assert.deepEqual([0, -5, NaN, 1, 9200, 60000, 59001, 120000].map(estimatedWaitSec), [0, 0, 0, 1, 10, 61, 60 + 1, 121]);
+});
+
 test("a party's tickets wait for a registered server, which gets the match and sends them all to its session", async () => {
   const backend = await startBackend({ matchmakingGatherMs: 200 });
   try {
@@ -94,8 +98,9 @@ test("a party's tickets wait for a registered server, which gets the match and s
     assert.deepEqual(states.map(({ name, payload }) => [name, payload.state]),
       [["StatusUpdate", "Connecting"], ["StatusUpdate", "Waiting"], ["StatusUpdate", "Queued"]]);
     assert.deepEqual([states[1].payload.totalPlayers, states[1].payload.connectedPlayers], [2, 2]);
-    // The queue counts everyone queued for the bucket (#55): the party of two.
+    // The queue counts everyone queued for the bucket (#55): the party of two. With no server free there's no ETA ("N/A").
     assert.equal(states[2].payload.queuedPlayers, 2);
+    assert.equal(states[2].payload.estimatedWaitSec, 0);
     client.send("ping");
     assert.equal(await client.next(), "pong");
     const followerClient = await matchmakingClient(backend.port, authorizationOf((await ticketOf(follower, party)).body));
@@ -143,8 +148,14 @@ test("a party's tickets wait for a registered server, which gets the match and s
     assert.deepEqual(nextAssign.payload.teams, [[[latecomer.accountId]]]);
     nextServer.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: nextAssign.payload.matchId, result: "ready" } }));
     let message;
-    do message = JSON.parse(await late.next()); while (message.name !== "Play");
+    const waits = [];
+    do {
+      message = JSON.parse(await late.next());
+      if (message.payload.state === "Queued") waits.push(message.payload.estimatedWaitSec);
+    } while (message.name !== "Play");
     assert.equal(message.payload.sessionId, nextSession.id);
+    // Once its match forms, the ETA is the rest of the gather time (#56).
+    assert.ok(waits.at(-1) > 0, `ETAs ${waits}`);
     late.close();
 
     // The server asks who has won before when its match is assigned, and records the winners at its end.
