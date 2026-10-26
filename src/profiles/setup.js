@@ -1,4 +1,4 @@
-import { addPageItem, bookProfiles, pageId, pages, refreshPage } from "../collectionbook/pages.js";
+import { addPageItem, bookData, bookProfiles, pageId, refreshPage } from "../collectionbook/pages.js";
 import { expeditionsNeedSetUp, setUpExpeditions } from "../expeditions/expeditions.js";
 import { slotUnlockNode } from "../gamedata/homebase.js";
 import { getItem } from "../gamedata/items.js";
@@ -84,7 +84,7 @@ function leadCandidate(profile) {
 export function needsSetUp(profile) {
   if (profile.profileId === "theater0") return !migrated(profile, "itemDurability") || !migrated(profile, "worldStacks");
   if (profile.profileId === "outpost0") return !migrated(profile, "worldStacks");
-  if (bookProfiles.includes(profile.profileId)) return !migrated(profile, "bookPages");
+  if (bookProfiles().includes(profile.profileId)) return !migrated(profile, "bookPages");
   if (profile.profileId !== "profile0") return false;
   return startingQuests().some((questId) => !findQuestItem(profile, questId)) || Boolean(defaultHero && !heroes(profile).length)
     || Boolean(leadCandidate(profile)) || schematicMigrations.some(({ name }) => !migrated(profile, name)) || !migrated(profile, "levelXp")
@@ -116,7 +116,7 @@ function setUpBook(session, profileId) {
   const tracker = session.profile(profileId);
   const unlocked = session.profile("profile0").profile.stats.attributes.collection_book?.pages ?? [];
   for (const id of new Set(unlocked.map(pageId).filter(Boolean))) {
-    if (pages[id].profile !== profileId) continue;
+    if (bookData().pages[id].profile !== profileId) continue;
     addPageItem(session, id);
     refreshPage(session, id);
   }
@@ -127,7 +127,7 @@ function setUpBook(session, profileId) {
 export function setUpProfile(session, profileId = "profile0") {
   if (profileId === "theater0") return setUpTheater(session);
   if (profileId === "outpost0") return setUpWorldStacks(session, profileId);
-  if (bookProfiles.includes(profileId)) return setUpBook(session, profileId);
+  if (bookProfiles().includes(profileId)) return setUpBook(session, profileId);
   for (const questId of startingQuests()) grant(session, `Quest:${questId}`, 1);
   setUpFounders(session);
   setUpFriendCodes(session);

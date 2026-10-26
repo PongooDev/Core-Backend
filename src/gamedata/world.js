@@ -1,21 +1,21 @@
-import { readGameData } from "./read.js";
+import { perBuild } from "./read.js";
 
-const { difficulties = {}, missionAlerts = [], dailyMissionAlertQuota = 0, zoneThemes = {} } = readGameData("world", {});
+const data = perBuild((read) => ({ difficulties: {}, missionAlerts: [], dailyMissionAlertQuota: 0, zoneThemes: {}, ...read("world", {}) }));
 
 export function getDifficulty(rowName) {
-  return difficulties[rowName];
+  return data().difficulties[rowName];
 }
 
 // The MissionAlerts row a mission of this difficulty can carry an alert from, if any.
 export function missionAlertTier(rowName) {
-  const difficulty = difficulties[rowName]?.difficulty;
+  const difficulty = data().difficulties[rowName]?.difficulty;
   if (difficulty === undefined) return undefined;
-  return missionAlerts.find((row) => difficulty >= row.minimumDifficulty && difficulty <= row.maximumDifficulty);
+  return data().missionAlerts.find((row) => difficulty >= row.minimumDifficulty && difficulty <= row.maximumDifficulty);
 }
 
-export { dailyMissionAlertQuota };
+export const dailyMissionAlertQuota = () => data().dailyMissionAlertQuota;
 
 // The outpost item a storm shield zone theme belongs to (its CloudSaveItemDefinition), if it is one.
 export function zoneOutpost(zoneTheme) {
-  return zoneThemes[zoneTheme]?.cloudSaveItem;
+  return data().zoneThemes[zoneTheme]?.cloudSaveItem;
 }

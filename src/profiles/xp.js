@@ -1,19 +1,19 @@
 import { itemIds } from "../gamedata/items.js";
-import { readGameData } from "../gamedata/read.js";
+import { perBuild } from "../gamedata/read.js";
 import { boostBalance, levelRest, restBalance, spendBoost, spendRest, xpBonus } from "./boosts.js";
 import { grant } from "./progress.js";
 
 // Account levels (Balance/DataTables/XPAccountLevels): the total XP each level needs and the multiplier the UI shows
 // XP through (1,000,000 XP between early levels shows as 250).
-const levels = readGameData("accountlevels", []);
-export const maxLevel = levels.length ? levels[levels.length - 1].level : 1;
-const levelData = (level) => levels.find((entry) => entry.level === level);
+const levels = perBuild((read) => read("accountlevels", []));
+export const maxLevel = () => (levels().length ? levels()[levels().length - 1].level : 1);
+const levelData = (level) => levels().find((entry) => entry.level === level);
 
 // profile0's xp stat is the XP earned into the current level, not the total: the client's account info (sub_667B60,
 // FFortPublicAccountInfo) shows LevelXp = display(level, xp) against LevelXpForLevel = display(level,
 // TotalXp(level + 1) - TotalXp(level)), and the XP bar fills by their ratio.
 export const levelStartXp = (level) => levelData(level)?.xp ?? 0;
-export const xpForLevel = (level) => (level < maxLevel ? levelData(level + 1).xp - levelData(level).xp : 0);
+export const xpForLevel = (level) => (level < maxLevel() ? levelData(level + 1).xp - levelData(level).xp : 0);
 
 // Moves the account up through every level its xp fills, granting each new level's rewards, and keeps the rest of
 // the xp in the level reached. A maxed account keeps none. Returns the levels gained.
@@ -23,7 +23,7 @@ export function settleLevel(session) {
   let level = stats.level ?? 1;
   let xp = Math.max(0, stats.xp ?? 0);
   const gained = [];
-  while (level < maxLevel && xp >= xpForLevel(level)) {
+  while (level < maxLevel() && xp >= xpForLevel(level)) {
     xp -= xpForLevel(level);
     level += 1;
     gained.push(level);
@@ -32,7 +32,7 @@ export function settleLevel(session) {
       if (templateId) grant(session, templateId, quantity, { packSource: "LevelUp" });
     }
   }
-  if (level >= maxLevel) xp = 0;
+  if (level >= maxLevel()) xp = 0;
   if (xp !== stats.xp) tracker.setStat("xp", xp);
   if (gained.length) tracker.setStat("level", level);
   return gained;

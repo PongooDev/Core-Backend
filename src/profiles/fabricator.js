@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { McpError } from "../errors.js";
-import { caseInsensitive, readGameData } from "../gamedata/read.js";
+import { caseInsensitive, perBuild } from "../gamedata/read.js";
 import { findItem, grantItem } from "./items.js";
 
 // The storm shield fabricator and P.O.S.T. (UFortMcpProfileWorld commands the gameserver sends on the player's theater0,
@@ -11,17 +11,21 @@ import { findItem, grantItem } from "./items.js";
 // OutpostData fabricator's template) and the P.O.S.T.'s post_info (FFortOutpostPOSTInfo {depositedPostItems:
 // [{templateId, quantity}]}). Goo values are the item templates' static_disintegration_value and
 // static_fabrication_value (gamedata/fabricator.json).
-const data = readGameData("fabricator", { values: {} });
-const values = caseInsensitive(data.values ?? {});
-const productionMs = (data.quantumGooProductionTime ?? 10) * 1000;
-export const fabricatorTemplateId = data.fabricatorTemplateId ?? "Outpost:outpost_fabricator";
-export const postTemplateId = data.postTemplateId ?? "Outpost:outpost_post";
+const data = perBuild((read) => {
+  const fabricator = read("fabricator", { values: {} });
+  return {
+    values: caseInsensitive(fabricator.values ?? {}),
+    productionMs: (fabricator.quantumGooProductionTime ?? 10) * 1000,
+    fabricatorTemplateId: fabricator.fabricatorTemplateId ?? "Outpost:outpost_fabricator",
+    postTemplateId: fabricator.postTemplateId ?? "Outpost:outpost_post"
+  };
+});
 
 const invalid = (message) => {
   throw new McpError("errors.com.epicgames.modules.profiles.invalid_command", message);
 };
 
-export const fabricatorValue = (templateId) => values.get(String(templateId ?? "").toLowerCase());
+export const fabricatorValue = (templateId) => data().values.get(String(templateId ?? "").toLowerCase());
 
 // The server writes item ids as FGuid text (upper case), Core keeps them as made.
 function findItemId(tracker, itemId) {
@@ -60,6 +64,7 @@ export function settleFabricator(info, now = Date.now()) {
   if (!still || !Number.isFinite(start)) {
     return { disintegrationStartTime: new Date(now).toISOString(), quantumGooCompleted: completed, quantumGooStillToProcess: 0 };
   }
+  const { productionMs } = data();
   const processed = Math.max(0, Math.min(still, Math.floor((now - start) / productionMs)));
   return {
     disintegrationStartTime: new Date(processed === still ? now : start + processed * productionMs).toISOString(),
@@ -69,7 +74,7 @@ export function settleFabricator(info, now = Date.now()) {
 }
 
 function fabricator(tracker, now) {
-  const itemId = stateItem(tracker, fabricatorTemplateId, "fabricator_info", settleFabricator({}, now));
+  const itemId = stateItem(tracker, data().fabricatorTemplateId, "fabricator_info", settleFabricator({}, now));
   return [itemId, settleFabricator(tracker.profile.items[itemId].attributes.fabricator_info, now)];
 }
 
@@ -116,7 +121,7 @@ export function fabricateItem(session, tracker, profileId, templateId, now = Dat
 // DepositPostResources {itemsToDepositIds, itemCountsToDeposit}: the items go into the P.O.S.T.'s deposits.
 export function depositPostResources(tracker, profileId, ids, counts) {
   requireTheater(profileId, "DepositPostResources");
-  const itemId = stateItem(tracker, postTemplateId, "post_info", { depositedPostItems: [] });
+  const itemId = stateItem(tracker, data().postTemplateId, "post_info", { depositedPostItems: [] });
   const deposited = [...(tracker.profile.items[itemId].attributes.post_info?.depositedPostItems ?? [])]
     .filter((entry) => entry && typeof entry.templateId === "string")
     .map(({ templateId, quantity }) => ({ templateId, quantity: Number.isInteger(quantity) ? quantity : 0 }));

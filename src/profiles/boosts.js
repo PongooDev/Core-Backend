@@ -1,6 +1,6 @@
 import { McpError } from "../errors.js";
 import { getItem } from "../gamedata/items.js";
-import { readGameData } from "../gamedata/read.js";
+import { perBuild } from "../gamedata/read.js";
 import { consume, consumedInto } from "./friendcodes.js";
 import { findItem, grantItem } from "./items.js";
 
@@ -15,8 +15,8 @@ import { findItem, grantItem } from "./items.js";
 //  - UFortGameData's constructor (sub_4CC560, not overridden by DefaultGameData): CriticalMatch_XpBonusPercent 0.2,
 //    PersonalBoost_XpBonusPercent 0.3, GroupBoost_XpBonusPercent 0.05, GroupBoost_BuffMultiplier 2,
 //    Rest_XpBonusPercent 1.
-const levels = readGameData("accountlevels", []);
-const levelData = (level) => levels.find((entry) => entry.level === level) ?? levels[0] ?? {};
+const levels = perBuild((read) => read("accountlevels", []));
+const levelData = (level) => levels().find((entry) => entry.level === level) ?? levels()[0] ?? {};
 export const xpBonus = { criticalMatch: 0.2, personalBoost: 0.3, groupBoost: 0.05, groupBuffMultiplier: 2, rest: 1 };
 
 const restTemplate = "Quota:restxp";

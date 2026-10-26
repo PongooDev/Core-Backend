@@ -2,6 +2,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { inBuild } from "../src/builds/context.js";
 import { certBuild } from "../src/builds/detect.js";
+import { bookData } from "../src/collectionbook/pages.js";
+import { nodeIds } from "../src/gamedata/homebase.js";
 import { cloudSaveProfile, getItem } from "../src/gamedata/items.js";
 import { buildGameData } from "../src/gamedata/read.js";
 import { send, startBackend, userLogin } from "./helpers.js";
@@ -39,6 +41,11 @@ test("1.7.2's data keeps storm shields and deployable bases in the metadata prof
   }
   assert.equal(inBuild(build172, () => getItem("Hero:hid_commando_007_r_t01").profile), "profile");
   assert.deepEqual(buildGameData(build172, "dailyrewards"), buildGameData(certBuild, "dailyrewards"), "1.7.2 moved the schedules to their own asset, unchanged");
+});
+
+test("1.7.2 gets its own skill tree and collection book, not Cert's", () => {
+  assert.deepEqual([nodeIds().length, inBuild(build172, () => nodeIds().length)], [683, 772]);
+  assert.deepEqual([Object.keys(bookData().pages).length, inBuild(build172, () => Object.keys(bookData().pages).length)], [33, 39]);
 });
 
 test("a 1.7.2 client's storm shield is a metadata item, and moves to the profile the build of each later request uses", async () => {

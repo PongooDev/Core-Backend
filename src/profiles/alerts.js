@@ -15,7 +15,7 @@ const day = 24 * 60 * 60 * 1000;
 export function emptyAlertRecord() {
   return {
     lastClaimedGuidPerTheater: [],
-    lastClaimTimes: Array(dailyMissionAlertQuota).fill(never),
+    lastClaimTimes: Array(dailyMissionAlertQuota()).fill(never),
     oldestClaimIndex: 0,
     pendingMissionAlertRewards: { tierGroupName: "", items: [] }
   };
@@ -24,8 +24,8 @@ export function emptyAlertRecord() {
 // Records made before the quota slots existed have no claim times, which the client reads as no alerts left.
 export function withQuotaSlots(record) {
   const times = Array.isArray(record?.lastClaimTimes) ? record.lastClaimTimes : [];
-  if (times.length >= dailyMissionAlertQuota) return record;
-  return { ...emptyAlertRecord(), ...record, lastClaimTimes: [...times, ...Array(dailyMissionAlertQuota - times.length).fill(never)] };
+  if (times.length >= dailyMissionAlertQuota()) return record;
+  return { ...emptyAlertRecord(), ...record, lastClaimTimes: [...times, ...Array(dailyMissionAlertQuota() - times.length).fill(never)] };
 }
 
 export function alertsRemaining(record, now = new Date()) {

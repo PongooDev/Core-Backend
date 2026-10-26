@@ -3,7 +3,7 @@ import { rollContents } from "../cardpacks/contents.js";
 import { McpError } from "../errors.js";
 import { getSquad, slotUnlockNode } from "../gamedata/homebase.js";
 import { getCharacter, getItem } from "../gamedata/items.js";
-import { readGameData } from "../gamedata/read.js";
+import { perBuild } from "../gamedata/read.js";
 import { ownsNode } from "../profiles/homebase.js";
 import { lootEntry } from "../profiles/items.js";
 import { itemRating } from "../profiles/rating.js";
@@ -33,7 +33,7 @@ import { hasUnlocked, unlockedTags } from "../profiles/unlocks.js";
 // the criteria (CriteriaRequirementsLootTier Expeditions_Criteria_T0N) are drawn from the
 // class rows of the tier's rarities; no Cert asset raises the ExpeditionSquad<N>_Power attribute, so it counts as 0;
 // rewards are the recipe's packs, opened on collection.
-const { expeditions = {}, recipes = {}, slots = {}, criteria = {} } = readGameData("expeditions", {});
+const data = perBuild((read) => ({ expeditions: {}, recipes: {}, slots: {}, criteria: {}, ...read("expeditions", {}) }));
 
 const rarities = ["Handmade", "Ordinary", "Sturdy", "Quality", "Fine", "Elegant", "Masterwork", "Epic", "Badass", "Legendary"];
 const rarityRank = (rarity) => Math.max(rarities.indexOf(rarity ?? ""), 0);
@@ -51,10 +51,10 @@ function candidates(generator) {
   const match = generator.match(/^ZCP_ExpeditionGenerator_([A-Za-z]+)_T(\d\d)$/);
   if (!match) return [];
   const [, kind, tier] = match;
-  if (tier === "00") return Object.keys(expeditions).filter((id) => id.toLowerCase() === `expedition:expedition_${kind.toLowerCase()}_t00`);
-  return Object.keys(expeditions).filter((id) => {
+  if (tier === "00") return Object.keys(data().expeditions).filter((id) => id.toLowerCase() === `expedition:expedition_${kind.toLowerCase()}_t00`);
+  return Object.keys(data().expeditions).filter((id) => {
     const lower = id.toLowerCase();
-    return !lower.includes("test") && lower.endsWith(`_t${tier}`) && vehicleOf(recipes[expeditions[id].recipe]) === kind;
+    return !lower.includes("test") && lower.endsWith(`_t${tier}`) && vehicleOf(data().recipes[data().expeditions[id].recipe]) === kind;
   });
 }
 
@@ -80,7 +80,7 @@ const criteriaTiers = {
 export function rollCriteria(definition, randomInt = crypto.randomInt) {
   const tier = criteriaTiers[Number(definition?.criteriaTier?.match(/^Expeditions_Criteria_T(\d+)$/)?.[1])];
   if (!tier) return [];
-  const pool = Object.entries(criteria)
+  const pool = Object.entries(data().criteria)
     .filter(([, row]) => row.tag !== "None" && tier.rarities.includes(row.rarity))
     .map(([name]) => name)
     .sort();
@@ -110,7 +110,7 @@ export function squadRating(expeditionCriteria, members) {
   const taken = members.map(() => new Set());
   let global = 1;
   for (const name of expeditionCriteria ?? []) {
-    const row = criteria[name];
+    const row = data().criteria[name];
     if (!row) continue;
     let best = -1;
     let bestRating = 0;
@@ -173,7 +173,7 @@ export function setUpExpeditions(session) {
 export function refreshExpeditions(session, now = new Date()) {
   const tracker = session.profile("profile0");
   const owned = unlockedTags(tracker.profile);
-  for (const [slotId, slot] of Object.entries(slots)) {
+  for (const [slotId, slot] of Object.entries(data().slots)) {
     if (!hasTag(owned, slot.tag)) continue;
     const held = Object.entries(tracker.profile.items).find(([, item]) => isExpedition(item) && item.attributes.expedition_slot_id === slotId);
     if (held) {
@@ -184,7 +184,7 @@ export function refreshExpeditions(session, now = new Date()) {
     const choices = candidates(slot.generator);
     if (!choices.length) continue;
     const templateId = choices[crypto.randomInt(choices.length)];
-    const definition = expeditions[templateId];
+    const definition = data().expeditions[templateId];
     const { min, max } = powerRange(definition);
     tracker.addItem(crypto.randomUUID(), {
       templateId,
@@ -217,8 +217,8 @@ export function startExpedition(session, { expeditionId, squadId, itemIds = [], 
   if (Object.values(profile.items).some((item) => isExpedition(item) && sameSquad(item.attributes.expedition_squad_id, squad.id))) {
     fail("invalid_squad_assignment", `${squad.id} is already out on an expedition`);
   }
-  const definition = expeditions[expedition.templateId];
-  const recipe = recipes[definition?.recipe];
+  const definition = data().expeditions[expedition.templateId];
+  const recipe = data().recipes[definition?.recipe];
   const vehicle = vehicleOf(recipe);
   const squadName = squad.id.replace(/^Squad_Expedition_/, "");
   if (vehicle && !hasTag(unlockedTags(profile), `${squadName}.Expedition.${vehicle}`)) {
@@ -300,7 +300,7 @@ export function collectExpedition(session, expeditionId, notifications, now = ne
   const succeeded = roll < (attributes.expedition_success_chance ?? 0);
   const rewards = [];
   if (succeeded) {
-    const recipe = recipes[expeditions[templateId]?.recipe];
+    const recipe = data().recipes[data().expeditions[templateId]?.recipe];
     for (const { templateId: pack, quantity } of recipe?.results ?? []) {
       for (let opened = 0; opened < quantity; opened++) {
         for (const content of rollContents(pack)) rewards.push(...grant(session, content.templateId, content.quantity).map(lootEntry));

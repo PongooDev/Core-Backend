@@ -3,8 +3,7 @@ import { lootEntry } from "../profiles/items.js";
 import { grant, itemEvent, refreshHeldItems } from "../profiles/progress.js";
 import { itemRating } from "../profiles/rating.js";
 import { recyclingRefunds } from "../profiles/upgrades.js";
-import { findPageItem, isUnlocked, levels, pageId, pageOfSlot, pages, rarityFactor, refreshPage, sectionOfSlot, sections, slotFor, slots,
-  slottedItems, weights } from "./pages.js";
+import { bookData, findPageItem, isUnlocked, pageId, refreshPage, slotFor, slottedItems } from "./pages.js";
 
 export { bookProfiles, isBookPage } from "./pages.js";
 
@@ -25,6 +24,7 @@ const fail = (message) => {
 };
 
 export function slotXp(item) {
+  const { weights, slots, rarityFactor } = bookData();
   const weight = weights[slots[slotFor(item)]?.weight] ?? weights.Default;
   if (!weight) return 0;
   return weight.constant + (item.attributes.level ?? 1) * weight.level
@@ -34,8 +34,8 @@ export function slotXp(item) {
 export function bookXp(session) {
   const bySection = new Map();
   for (const { item, slotId } of slottedItems(session).values()) {
-    if (!isUnlocked(session, pageOfSlot.get(slotId))) continue;
-    const sectionId = sectionOfSlot.get(slotId);
+    if (!isUnlocked(session, bookData().pageOfSlot.get(slotId))) continue;
+    const sectionId = bookData().sectionOfSlot.get(slotId);
     bySection.set(sectionId, (bySection.get(sectionId) ?? 0) + slotXp(item));
   }
   return [...bySection.values()].reduce((sum, xp) => sum + Math.round(xp), 0);
@@ -44,7 +44,7 @@ export function bookXp(session) {
 // The level the client shows (sub_4671F0): the higher of the XP's level and the last one claimed.
 export function bookLevel(session) {
   const xp = bookXp(session);
-  const reached = levels.reduce((level, entry) => entry.totalXp <= xp ? Math.max(level, entry.level) : level, 0);
+  const reached = bookData().levels.reduce((level, entry) => entry.totalXp <= xp ? Math.max(level, entry.level) : level, 0);
   const claimed = session.profile("profile0").profile.stats.attributes.collection_book?.maxBookXpLevelAchieved ?? 0;
   return Math.max(reached, claimed);
 }
@@ -61,11 +61,11 @@ export function slotItem(session, itemId, notifications = []) {
   if (!item) fail(`No item ${itemId}`);
   const slotId = slotFor(item);
   if (!slotId) fail(`${item.templateId} has no place in the collection book`);
-  const page = pageOfSlot.get(slotId);
+  const page = bookData().pageOfSlot.get(slotId);
   if (!page || !isUnlocked(session, page)) fail(`The ${page ?? slotId} page isn't unlocked`);
   if (item.attributes.squad_id) fail(`${item.templateId} is in a squad`);
 
-  const book = session.profile(pages[page].profile);
+  const book = session.profile(bookData().pages[page].profile);
   const replaced = slottedItems(session).get(slotId);
   if (replaced) {
     session.profile(replaced.profileId).removeItem(replaced.itemId);
@@ -93,7 +93,7 @@ function grantRewards(session, rewards, selectedIndex, notifications, page = "",
 export function claimBookLevel(session, requiredXp, selectedIndex = 0, notifications = []) {
   const account = session.profile("profile0");
   const book = account.profile.stats.attributes.collection_book ?? { pages: [], maxBookXpLevelAchieved: 0 };
-  const level = levels.find((entry) => entry.level > 0 && entry.totalXp === requiredXp);
+  const level = bookData().levels.find((entry) => entry.level > 0 && entry.totalXp === requiredXp);
   if (!level) fail(`No book level at ${requiredXp} XP`);
   if (level.level !== (book.maxBookXpLevelAchieved ?? 0) + 1) fail(`Book level ${level.level} isn't the next one to claim`);
   const xp = bookXp(session);
@@ -109,7 +109,7 @@ export function claimBookLevel(session, requiredXp, selectedIndex = 0, notificat
 export function claimPageRewards(session, pageTemplateId, sectionId, selectedIndex = 0, notifications = []) {
   const id = pageId(pageTemplateId);
   if (!id) fail(`No page ${pageTemplateId}`);
-  const page = pages[id];
+  const page = bookData().pages[id];
   const section = sectionId && String(sectionId).toLowerCase() !== "none"
     ? page.sections.find((entry) => entry.toLowerCase() === String(sectionId).toLowerCase()) ?? fail(`No section ${sectionId} on ${id}`)
     : undefined;
@@ -122,7 +122,7 @@ export function claimPageRewards(session, pageTemplateId, sectionId, selectedInd
   if (section) {
     const state = attributes.sectionStates.find((entry) => entry.section.toLowerCase() === section.toLowerCase())?.state ?? "Active";
     if (state !== "Completed") fail(state === "Claimed" ? "Already claimed" : "Fill every slot first");
-    grantRewards(session, sections[section].rewards, selectedIndex, notifications, id, section);
+    grantRewards(session, bookData().sections[section].rewards, selectedIndex, notifications, id, section);
     tracker.setItemAttribute(itemId, "sectionStates", attributes.sectionStates
       .map((entry) => entry.section.toLowerCase() === section.toLowerCase() ? { ...entry, state: "Claimed" } : entry));
   } else {

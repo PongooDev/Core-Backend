@@ -113,8 +113,8 @@ export function adminRoutes(context) {
       ...summary(account),
       homebaseName: stats.homebase?.townName ?? "",
       xp: stats.xp ?? 0,
-      maxLevel,
-      xpForLevel: level < maxLevel ? xpForLevel(level) : null,
+      maxLevel: maxLevel(),
+      xpForLevel: level < maxLevel() ? xpForLevel(level) : null,
       currencies: currencies.map(({ key, label, templates }) => ({ key, label, quantity: sum(profile, templates) })),
       restXp: restItem ? { value: restValue(restItem.attributes), max: restItem.attributes.max_quota ?? 0 } : null,
       missionAlerts: record ? { remaining: alertsRemaining(withQuotaSlots(record)), pending: record.pendingMissionAlertRewards?.items?.length ?? 0 } : null,
@@ -248,7 +248,7 @@ export function adminRoutes(context) {
   // {level}: the account level, at its start (no XP into it); rest XP takes the level's cap and rate.
   router.post("/admin/api/accounts/:accountId/level", change(({ req, res, session }) => {
     const level = Number(req.body?.level);
-    if (!Number.isInteger(level) || level < 1 || level > maxLevel) return invalid(res, `The level must be 1 to ${maxLevel}`);
+    if (!Number.isInteger(level) || level < 1 || level > maxLevel()) return invalid(res, `The level must be 1 to ${maxLevel()}`);
     const tracker = session.profile("profile0");
     tracker.setStat("level", level);
     tracker.setStat("xp", 0);

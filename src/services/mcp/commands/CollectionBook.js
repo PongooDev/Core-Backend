@@ -6,7 +6,7 @@ import { conversionResult } from "./Upgrades.js";
 // SlotItemInCollectionBook and ClaimCollectionBookRewards are profile0 commands (UFortMcpProfileAccount); the rest
 // are sent to a book profile (UFortMcpProfileCollectionBook).
 function bookProfile(profileId) {
-  if (!bookProfiles.includes(profileId)) throw new McpError("errors.com.epicgames.modules.profiles.invalid_command", `${profileId} isn't a collection book`);
+  if (!bookProfiles().includes(profileId)) throw new McpError("errors.com.epicgames.modules.profiles.invalid_command", `${profileId} isn't a collection book`);
   return profileId;
 }
 
