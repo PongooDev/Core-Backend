@@ -97,6 +97,35 @@ test("a new UTC day gives the next row, and a held schedule token adds its own r
   }
 });
 
+// Issue #42: the panel reads each token schedule's claimedToday from the stored stat before it claims, and shows that
+// schedule's card for today only while it is false, so the day's first QueryProfile clears yesterday's.
+test("QueryProfile on a new UTC day clears the token schedules' claimedToday, and leaves them on the day of a claim", async () => {
+  const backend = await startBackend();
+  try {
+    const { token, accountId } = await userLogin(backend.port, "CoreTest");
+    await post(backend.port, command(accountId, "QueryProfile"), token, {});
+    editProfile(backend, accountId, (profile) => {
+      profile.items["founders-token"] = { templateId: "DailyRewardScheduleToken:founderspackdailyrewardtoken", attributes: {}, quantity: 5 };
+    });
+    await post(backend.port, command(accountId, "ClaimLoginReward"), token, {});
+    const claimed = { FoundersPackDailyRewardToken: { rewardsClaimed: 1, claimedToday: true } };
+    const schedules = async () => (await post(backend.port, command(accountId, "QueryProfile"), token, {}))
+      .body.profileChanges[0].profile.stats.attributes.daily_rewards.additionalSchedules;
+    assert.deepEqual(await schedules(), claimed);
+
+    editProfile(backend, accountId, (profile) => {
+      profile.stats.attributes.daily_rewards.lastClaimDate = new Date(Date.now() - 86400000).toISOString();
+    });
+    assert.deepEqual(await schedules(), { FoundersPackDailyRewardToken: { rewardsClaimed: 1, claimedToday: false } });
+
+    const claim = await post(backend.port, command(accountId, "ClaimLoginReward"), token, {});
+    assert.equal(claim.body.notifications[0].items.length, 2);
+    assert.deepEqual(await schedules(), { FoundersPackDailyRewardToken: { rewardsClaimed: 2, claimedToday: true } });
+  } finally {
+    backend.close();
+  }
+});
+
 // Issue #28: the XP boosts screen (XpBoostCounts_C) shows GetAccountItemWithDefinition(SmallXpBoost / SmallXpBoost_Gift)
 // ->Quantity from profile0, and the panel's card for the day is row nextDefaultReward before the claim (sub_4DF050 reads
 // row nextDefaultReward - 1 + i after the client's own +1 at sub_4D7830). Day 3 (row 2) is an XP Boost, day 5 (row 4)
