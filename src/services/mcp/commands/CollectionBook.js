@@ -1,6 +1,7 @@
 import { bookProfiles, claimBookLevel, claimPageRewards, slotItem } from "../../../collectionbook/book.js";
 import { McpError } from "../../../errors.js";
 import { convertItem, upgradeItem } from "../../../profiles/upgrades.js";
+import { conversionResult } from "./Upgrades.js";
 
 // SlotItemInCollectionBook and ClaimCollectionBookRewards are profile0 commands (UFortMcpProfileAccount); the rest
 // are sent to a book profile (UFortMcpProfileCollectionBook).
@@ -26,6 +27,7 @@ export function upgradeSlottedItem({ req, session, profileId }) {
   upgradeItem(session, req.body?.targetItemId, bookProfile(profileId));
 }
 
-export function convertSlottedItem({ req, session, profileId }) {
-  convertItem(session, req.body?.targetItemId, req.body?.conversionIndex ?? 0, bookProfile(profileId));
+export function convertSlottedItem({ req, session, profileId, notifications }) {
+  const evolved = convertItem(session, req.body?.targetItemId, req.body?.conversionIndex ?? 0, bookProfile(profileId));
+  notifications.push(conversionResult(evolved));
 }

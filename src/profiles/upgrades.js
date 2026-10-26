@@ -75,6 +75,7 @@ export function upgradeItem(session, itemId, profileId = "profile0") {
 }
 
 // The evolved item takes the old one's place, id and attributes (level, squad slot, favorite) included.
+// Returns the evolved item as a grant entry (profiles/items.js lootEntry).
 export function convertItem(session, itemId, conversionIndex, profileId = "profile0") {
   const tracker = session.profile(profileId);
   const account = session.profile("profile0");
@@ -90,6 +91,7 @@ export function convertItem(session, itemId, conversionIndex, profileId = "profi
   tracker.removeItem(itemId);
   tracker.addItem(itemId, { templateId: result.templateId, attributes, quantity: 1 });
   itemChanged(session, "Convert", tracker.profile.items[itemId], item.templateId);
+  return { templateId: result.templateId, itemId, profileId, quantity: 1 };
 }
 
 export function recycleItem(session, itemId) {

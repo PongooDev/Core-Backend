@@ -84,9 +84,14 @@ test("ConvertItem evolves the item in place for its recipe's costs", async () =>
     assert.match(locked.body.errorMessage, /Evolution\.Hero\.Constructor\.Tier2a/);
     await give("HomebaseNode:t1_main_5faa4c765");
 
-    assert.equal((await run("ConvertItem", { targetItemId: heroId, conversionIndex: 0 })).status, 200);
+    const converted = await run("ConvertItem", { targetItemId: heroId, conversionIndex: 0 });
+    assert.equal(converted.status, 200);
     const [evolvedId, evolved] = await find("Hero:hid_constructor_rushbase_uc_t02");
     assert.deepEqual([evolvedId, evolved.attributes.level], [heroId, 2]);
+    // The item screen moves on to the evolved item from the primary notification (#43).
+    const result = converted.body.notifications.find((notification) => notification.primary);
+    assert.deepEqual(result.itemsGranted,
+      [{ itemType: "Hero:hid_constructor_rushbase_uc_t02", itemGuid: heroId, itemProfile: "profile0", quantity: 1 }]);
     assert.equal(await find("Hero:hid_constructor_rushbase_uc_t01"), undefined);
     assert.equal(await amount("AccountResource:heroxp"), 50);
     assert.equal(await amount("AccountResource:reagent_c_t01"), 0);
