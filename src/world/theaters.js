@@ -185,6 +185,13 @@ function rollAlerts({ data }, missions, day, availableUntil) {
 }
 
 // FFortActiveTheaterInfo, the body of GET /fortnite/api/game/v2/world/info.
+// The mission's reward chest level, from the badges' mission points: the client's "Level N Loot" (Results_Summary
+// PointsPerLootLevel 5, InitializeLootChest; 1.7.2 sub_5DDB80 caps it): points / 5 + 1, up to 6.
+export function missionLootLevel(missionPoints) {
+  const points = Number.isFinite(missionPoints) && missionPoints > 0 ? missionPoints : 0;
+  return Math.min(Math.floor(points / 5), 5) + 1;
+}
+
 export function worldInfo(now = new Date()) {
   const day = now.toISOString().slice(0, 10);
   const availableUntil = `${day}T23:59:59.999Z`;

@@ -9,7 +9,7 @@ import { advanceObjective, applyHeldProgress, grant, revertHeldProgress } from "
 import { heldProgress } from "../../../profiles/missions.js";
 import { createDeployableBase, saveDeployableBase, saveOutpost, updateOutpostCore, updateTierProgression } from "../../../profiles/outposts.js";
 import { earnScore, noXpEarned } from "../../../profiles/xp.js";
-import { atDifficulty, findMission } from "../../../world/theaters.js";
+import { atDifficulty, findMission, missionLootLevel } from "../../../world/theaters.js";
 import { clientQuestLogin } from "./ClientQuestLogin.js";
 
 // Commands the gameserver sends for its players (POST .../profile/{accountId}/dedicated_server/{command}), from the
@@ -200,8 +200,11 @@ export const serverCommands = {
   // score still gets one here with no XP, so their results screen finishes too.
   // earnedBadgeData ([{templateId, count}], FFortQuestEarnedBadgeData) are the badges the player earned, whatever the
   // mission's status; their reward packs (survivor badges: "Rescued Survivor") join the mission's (profiles/badges.js).
+  // The reward chest's level (missionLootLevel, from numMissionPoints) multiplies the mission's rewards 🟡: how Epic scaled
+  // them by chest level was its server's data, which didn't ship, so a level 4 chest gives four times a level 1's
+  // (Core-Backend #53).
   EndPrimaryMission({ req, session, context, notifications }) {
-    const { advance: updates, missionStatus, matchmakingSessionId, missionName, earnedBadgeData } = req.body ?? {};
+    const { advance: updates, missionStatus, matchmakingSessionId, missionName, earnedBadgeData, numMissionPoints } = req.body ?? {};
     const held = context.primaryMissions.end(req.params.accountId) ?? heldProgress();
     advance(session, updates, held);
     if (!context.heldScores?.hasEarnScore(req.params.accountId)) notifications.push({ type: "earnScore", primary: false, ...noXpEarned });
@@ -216,7 +219,9 @@ export const serverCommands = {
       log("MCP", `EndPrimaryMission: no mission found for session ${matchmakingSessionId} (${missionName}), no rewards`);
       return;
     }
-    for (const { itemType, quantity } of mission.missionRewards.items) grant(session, itemType, quantity, { packSource: "Mission" });
+    const lootLevel = missionLootLevel(Number(numMissionPoints));
+    log("MCP", `EndPrimaryMission: ${missionName} rewards at loot level ${lootLevel} (${Number(numMissionPoints) || 0} mission points)`);
+    for (const { itemType, quantity } of mission.missionRewards.items) grant(session, itemType, quantity * lootLevel, { packSource: "Mission" });
     if (mission.missionAlert) completeMissionAlert(session, mission.theaterId, mission.missionAlert);
   },
 

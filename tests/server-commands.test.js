@@ -85,11 +85,27 @@ test("a won mission grants its rewards as Mission card packs, found through the 
     assert.equal(profileOf(await send("QueryProfile", {})).stats.attributes.xp, 0);
     await send("EndPrimaryMission", { matchmakingSessionId: sessionId, missionName: "m", missionStatus: "Succeeded", advance: [] });
     const profile = profileOf(await send("QueryProfile", {}));
+    // How many of each reward pack a chest of this level gives, and how many the player holds.
+    const counts = (level) => {
+      const wanted = Object.fromEntries(mission.missionRewards.items.map(({ itemType }) => [itemType, 0]));
+      for (const { itemType, quantity } of mission.missionRewards.items) wanted[itemType] += quantity * level;
+      return wanted;
+    };
+    const held = (current) => Object.fromEntries(mission.missionRewards.items.map(({ itemType }) =>
+      [itemType, byTemplate(current, itemType).reduce((sum, item) => sum + item.quantity, 0)]));
     for (const { itemType } of mission.missionRewards.items) {
       const [pack] = byTemplate(profile, itemType);
       assert.ok(pack, itemType);
       assert.equal(pack.attributes.pack_source, "Mission");
     }
+    // No mission points: a level 1 chest, the rewards once.
+    assert.deepEqual(held(profile), counts(1));
+
+    // 15 mission points are a level 4 chest (Core-Backend #53): four times the rewards.
+    await send("EndPrimaryMission", { matchmakingSessionId: sessionId, missionName: "m", missionStatus: "Succeeded", advance: [], numMissionPoints: 15 });
+    const before = held(profile);
+    const after = held(profileOf(await send("QueryProfile", {})));
+    assert.deepEqual(Object.fromEntries(Object.entries(after).map(([itemType, count]) => [itemType, count - before[itemType]])), counts(4));
   } finally {
     backend.close();
   }
@@ -206,4 +222,9 @@ test("BatchUpdatePlayer applies the server's item changes to theater0 and outpos
   } finally {
     backend.close();
   }
+});
+
+test("the reward chest level is the mission points over 5, plus 1, up to 6", async () => {
+  const { missionLootLevel } = await import("../src/world/theaters.js");
+  assert.deepEqual([undefined, 0, 4, 5, 15, 24, 25, 100].map(missionLootLevel), [1, 1, 1, 2, 4, 5, 6, 6]);
 });
