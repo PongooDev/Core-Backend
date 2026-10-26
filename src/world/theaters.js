@@ -188,9 +188,18 @@ function rollAlerts({ data }, missions, day, availableUntil) {
 // The mission's reward chest level, from the badges' mission points: the client's "Level N Loot" (Results_Summary
 // PointsPerLootLevel 5, InitializeLootChest; 1.7.2 sub_5DDB80 caps it): points / 5 + 1, up to 6.
 export function missionLootLevel(missionPoints) {
-  const points = Number.isFinite(missionPoints) && missionPoints > 0 ? missionPoints : 0;
-  return Math.min(Math.floor(points / 5), 5) + 1;
+  return Math.min(Math.floor(wholePoints(missionPoints) / 5), 5) + 1;
 }
+
+// The pack_source of a won mission's reward packs. Back in the lobby the rewards screen's chest takes its level from
+// them, not from the mission: 1.7.2's AreMissionRewardsAvailable (sub_6FB500) reads the number after "Mission" and one
+// more character of each "Mission" pack's pack_source, and puts the largest into the cached reward report's mission
+// points (+0x64), which sub_5DDB80 turns into the level as above. A bare "Mission" is 0 points, a level 1 chest (#53).
+export function missionPackSource(missionPoints) {
+  return `Mission_${wholePoints(missionPoints)}`;
+}
+
+const wholePoints = (missionPoints) => (Number.isFinite(missionPoints) && missionPoints > 0 ? Math.floor(missionPoints) : 0);
 
 export function worldInfo(now = new Date()) {
   const day = now.toISOString().slice(0, 10);

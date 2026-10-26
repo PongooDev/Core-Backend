@@ -96,7 +96,7 @@ test("a won mission grants its rewards as Mission card packs, found through the 
     for (const { itemType } of mission.missionRewards.items) {
       const [pack] = byTemplate(profile, itemType);
       assert.ok(pack, itemType);
-      assert.equal(pack.attributes.pack_source, "Mission");
+      assert.equal(pack.attributes.pack_source, "Mission_0");
     }
     // No mission points: a level 1 chest, the rewards once.
     assert.deepEqual(held(profile), counts(1));
@@ -106,6 +106,12 @@ test("a won mission grants its rewards as Mission card packs, found through the 
     const before = held(profile);
     const after = held(profileOf(await send("QueryProfile", {})));
     assert.deepEqual(Object.fromEntries(Object.entries(after).map(([itemType, count]) => [itemType, count - before[itemType]])), counts(4));
+    // Their packs say so: back in the lobby the rewards screen's chest reads its level from the points in pack_source,
+    // so they stack apart from the level 1 chest's.
+    const won = profileOf(await send("QueryProfile", {}));
+    for (const { itemType } of mission.missionRewards.items) {
+      assert.deepEqual([...new Set(byTemplate(won, itemType).map((item) => item.attributes.pack_source))].sort(), ["Mission_0", "Mission_15"]);
+    }
   } finally {
     backend.close();
   }
@@ -140,7 +146,7 @@ test("ModifyMission moves the session's zone to another difficulty row, and a wo
 
     await send("EndPrimaryMission", { matchmakingSessionId: sessionId, missionName: "m", missionStatus: "Succeeded", advance: [] });
     const packs = Object.values(profileOf(await send("QueryProfile", {})).items)
-      .filter((item) => item.attributes.pack_source === "Mission").map((item) => item.templateId).sort();
+      .filter((item) => item.attributes.pack_source?.startsWith("Mission_")).map((item) => item.templateId).sort();
     assert.deepEqual(packs, ["CardPack:zcp_crystal_shadowshard_minimal", "CardPack:zcp_heroxp_t14"]);
 
     // The next zone on this session starts from what the gameserver's world/validate replies again. A player's own token
@@ -154,7 +160,7 @@ test("ModifyMission moves the session's zone to another difficulty row, and a wo
     const before = new Set(Object.keys(profileOf(await send("QueryProfile", {})).items));
     await send("EndPrimaryMission", { matchmakingSessionId: sessionId, missionName: "m", missionStatus: "Succeeded", advance: [] });
     const granted = Object.entries(profileOf(await send("QueryProfile", {})).items)
-      .filter(([itemId, item]) => !before.has(itemId) && item.attributes.pack_source === "Mission").map(([, item]) => item.templateId);
+      .filter(([itemId, item]) => !before.has(itemId) && item.attributes.pack_source?.startsWith("Mission_")).map(([, item]) => item.templateId);
     assert.deepEqual([...new Set(granted)].sort(), [...new Set(mission.missionRewards.items.map(({ itemType }) => itemType))].sort());
   } finally {
     backend.close();

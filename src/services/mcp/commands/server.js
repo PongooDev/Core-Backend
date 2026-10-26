@@ -9,7 +9,7 @@ import { advanceObjective, applyHeldProgress, grant, revertHeldProgress } from "
 import { heldProgress } from "../../../profiles/missions.js";
 import { createDeployableBase, saveDeployableBase, saveOutpost, updateOutpostCore, updateTierProgression } from "../../../profiles/outposts.js";
 import { earnScore, noXpEarned } from "../../../profiles/xp.js";
-import { atDifficulty, findMission, missionLootLevel } from "../../../world/theaters.js";
+import { atDifficulty, findMission, missionLootLevel, missionPackSource } from "../../../world/theaters.js";
 import { clientQuestLogin } from "./ClientQuestLogin.js";
 
 // Commands the gameserver sends for its players (POST .../profile/{accountId}/dedicated_server/{command}), from the
@@ -190,7 +190,7 @@ export const serverCommands = {
 
   // A finished mission: its quest progress, and when it succeeded (EFortMissionStatus Succeeded) the mission's rewards
   // from world info, at the difficulty the session played, as card packs the after-mission rewards screen opens
-  // (pack_source "Mission"). A mission alert on it (the zone's theaterMissionAlertId) puts the alert's rewards in the
+  // (pack_source "Mission_<points>", missionPackSource). A mission alert on it (the zone's theaterMissionAlertId) puts the alert's rewards in the
   // player's pending mission alert rewards.
   // numMissionPoints is the sum of the player's badges' MissionPoints (BadgeScoring, capped at the mission info's
   // MaxMissionPoints), not score: account XP comes from EarnScore's totalScore. The server's earnScore handler is what
@@ -220,8 +220,9 @@ export const serverCommands = {
       return;
     }
     const lootLevel = missionLootLevel(Number(numMissionPoints));
+    const packSource = missionPackSource(Number(numMissionPoints));
     log("MCP", `EndPrimaryMission: ${missionName} rewards at loot level ${lootLevel} (${Number(numMissionPoints) || 0} mission points)`);
-    for (const { itemType, quantity } of mission.missionRewards.items) grant(session, itemType, quantity * lootLevel, { packSource: "Mission" });
+    for (const { itemType, quantity } of mission.missionRewards.items) grant(session, itemType, quantity * lootLevel, { packSource });
     if (mission.missionAlert) completeMissionAlert(session, mission.theaterId, mission.missionAlert);
   },
 

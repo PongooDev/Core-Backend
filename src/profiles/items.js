@@ -202,7 +202,11 @@ export function grantItem(session, templateId, quantity, options = {}) {
   if (info.maxStackSize === 1) {
     return Array.from({ length: quantity }, () => granted(addItem(tracker, templateId, 1, info, options), 1));
   }
-  const existing = findItem(tracker.profile, templateId);
+  // A card pack joins only a stack from the same source: the rewards screen opens "Mission" packs and takes its chest's
+  // level from their pack_source (world/theaters.js missionPackSource), and the llama store opens the others.
+  const packSource = options.packSource ?? "Store";
+  const existing = Object.keys(tracker.profile.items).find((itemId) => sameTemplate(tracker.profile.items[itemId], templateId) &&
+    (info.class !== "FortCardPackItemDefinition" || tracker.profile.items[itemId].attributes?.pack_source === packSource));
   if (!existing) {
     const amount = Math.min(quantity, limit);
     return [granted(addItem(tracker, templateId, amount, info, options), amount)];
