@@ -167,3 +167,71 @@ test("the rewards screen opens several packs at once, and packs granted before p
     backend.close();
   }
 });
+
+// Core-Backend #40: the llama store reads an opened pack's cardPackResult, and with no items in it shows "Oh no! Your
+// pack didn't contain anything" (FortStoreContext's OpenCardPack callback, 1.2 sub_142C1CA80 / Cert sub_2C21850).
+test("a Founders Banners pack whose banners the account already has opens to those banners (#40)", async () => {
+  const backend = await startBackend();
+  try {
+    const user = await account(backend);
+    const packTemplate = "CardPack:cardpack_founders_banners_t01";
+    await user.give(packTemplate, 2);
+    const packs = Object.entries((await user.profile()).items).filter(([, item]) => item.templateId === packTemplate).map(([id]) => id);
+    assert.equal(packs.length, 2);
+
+    const first = await user.run("OpenCardPack", { cardPackItemId: packs[0], selectionIdx: 0 });
+    const banners = first.body.notifications[0].lootGranted.items;
+    assert.deepEqual(banners.map((loot) => loot.itemType),
+      ["FounderTier1Banner1", "FounderTier1Banner2", "FounderTier1Banner3", "FounderTier1Banner4"].map((row) => `HomebaseBannerIcon:${row}`));
+
+    // A banner is owned once, so the second pack adds none: it reports the banners the account holds.
+    const second = await user.run("OpenCardPack", { cardPackItemId: packs[1], selectionIdx: 0 });
+    assert.equal(second.status, 200);
+    const [result] = second.body.notifications;
+    assert.equal(result.type, "cardPackResult");
+    assert.deepEqual(result.lootGranted.items.map((loot) => [loot.itemType, loot.itemGuid, loot.itemProfile, loot.quantity]),
+      banners.map((loot) => [loot.itemType, loot.itemGuid, "profile0", 1]));
+    const after = await user.profile();
+    assert.equal(after.items[packs[1]], undefined, "the pack is used up");
+    assert.equal(Object.values(after.items).filter((item) => item.templateId.startsWith("HomebaseBannerIcon:FounderTier1")).length, 4);
+  } finally {
+    backend.close();
+  }
+});
+
+test("a pack that gives nothing is refused and kept, opened alone or with the mission rewards (#40)", async () => {
+  const backend = await startBackend();
+  try {
+    const user = await account(backend);
+    // Accounts are shared by builds: a choice pack rolled where its options' template exists, opened on a build without it.
+    await user.give("CardPack:cardpack_choice_hero_r");
+    const [packId] = await user.find("CardPack:cardpack_choice_hero_r");
+    const file = path.join(backend.dataDir, "accounts", user.accountId, "profiles", "profile0.json");
+    const saved = JSON.parse(fs.readFileSync(file, "utf8"));
+    for (const option of saved.items[packId].attributes.options) option.itemType = "Hero:hid_no_such_hero_r_t01";
+    fs.writeFileSync(file, JSON.stringify(saved));
+
+    const opened = await user.run("OpenCardPack", { cardPackItemId: packId, selectionIdx: 0 });
+    assert.equal(opened.status, 400);
+    assert.equal(opened.body.errorCode, "errors.com.epicgames.fortnite.card_pack_empty");
+    assert.ok((await user.profile()).items[packId], "the pack is kept");
+
+    for (const cardPackItemIds of [[packId], ["missing"], [packId, "missing"]]) {
+      const batch = await user.run("OpenCardPackBatch", { cardPackItemIds });
+      assert.equal(batch.status, 400, JSON.stringify(cardPackItemIds));
+    }
+    assert.ok((await user.profile()).items[packId], "the pack is still kept");
+
+    // With a pack that does open, the batch reports that one and keeps the other.
+    await user.give("CardPack:zcp_heroxp_t01");
+    const [heroXpPack] = await user.find("CardPack:zcp_heroxp_t01");
+    const batch = await user.run("OpenCardPackBatch", { cardPackItemIds: [packId, heroXpPack] });
+    assert.equal(batch.status, 200);
+    assert.deepEqual(batch.body.notifications[0].lootGranted.items.map((item) => [item.itemType, item.quantity]), [["AccountResource:heroxp", 100]]);
+    const after = await user.profile();
+    assert.ok(after.items[packId]);
+    assert.equal(after.items[heroXpPack], undefined);
+  } finally {
+    backend.close();
+  }
+});

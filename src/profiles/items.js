@@ -141,6 +141,21 @@ export function tidyWorldStacks(tracker) {
 
 export const lootEntry = ({ templateId, itemId, profileId, quantity }) => ({ itemType: templateId, itemGuid: itemId, itemProfile: profileId, quantity });
 
+// A skill tree node or a banner is owned or not: the template id the account holds one under, or undefined for any
+// other template.
+function ownedOnceTemplate(templateId) {
+  return bannerTemplateId(templateId) ?? (templateId.split(":")[0].toLowerCase() === "homebasenode" ? templateId : undefined);
+}
+
+// grantItem gives none of an owned-once template the account already has. This is the one it holds, as a grant entry
+// (quantity 1), for what has to show it anyway (an opened pack, OpenCardPack.js); undefined when it holds none.
+export function heldOwnedOnce(session, templateId) {
+  const owned = ownedOnceTemplate(templateId);
+  const { profile } = session.profile("profile0");
+  const itemId = owned && findItem(profile, owned);
+  return itemId ? { profileId: "profile0", itemId, templateId: profile.items[itemId].templateId, quantity: 1 } : undefined;
+}
+
 // Returns what was granted, one entry per item that was added or topped up.
 export function grantItem(session, templateId, quantity, options = {}) {
   if (quantity <= 0) return [];
@@ -155,9 +170,10 @@ export function grantItem(session, templateId, quantity, options = {}) {
   }
 
   // A skill tree node or a banner is owned or not; quest rewards can grant one the player already bought.
-  if (bannerTemplateId(templateId)) templateId = bannerTemplateId(templateId);
-  if (type.toLowerCase() === "homebasenode" || bannerTemplateId(templateId)) {
-    if (findItem(session.profile("profile0").profile, templateId)) return [];
+  const owned = ownedOnceTemplate(templateId);
+  if (owned) {
+    if (findItem(session.profile("profile0").profile, owned)) return [];
+    templateId = owned;
     quantity = 1;
   }
 
