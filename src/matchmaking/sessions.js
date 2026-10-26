@@ -307,3 +307,4 @@ export function sessionSummary(session) {
     lastUpdated: session.lastUpdated
   };
 }
+

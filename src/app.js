@@ -12,6 +12,7 @@ import { createPrimaryMissions } from "./profiles/missions.js";
 import { createHeldScores } from "./profiles/scores.js";
 import { createProfileStore } from "./profiles/store.js";
 import { requestLog, unknownRoute } from "./log.js";
+import { createMatchmaker } from "./matchmaking/service.js";
 import { createSessionStore } from "./matchmaking/sessions.js";
 import { createNetwork } from "./network.js";
 import { originForm } from "./proxy.js";
@@ -23,6 +24,7 @@ import { datarouterRoutes } from "./services/datarouter/data.js";
 import { eulaRoutes } from "./services/eulatracking/agreements.js";
 import { accessRoutes } from "./services/fortnite/access.js";
 import { chatRoutes, generalChatRooms } from "./services/fortnite/chat.js";
+import { battleRoyaleRoutes } from "./services/fortnite/battleroyale.js";
 import { feedbackRoutes } from "./services/fortnite/feedback.js";
 import { statsRoutes } from "./services/fortnite/stats.js";
 import { cloudStorageRoutes, userCloudStorageRoutes } from "./services/fortnite/cloudstorage.js";
@@ -35,6 +37,7 @@ import { worldRoutes } from "./services/fortnite/world.js";
 import { friendsRoutes } from "./services/friends/lists.js";
 import { lightswitchRoutes } from "./services/lightswitch/status.js";
 import { sessionRoutes } from "./services/matchmaking/sessions.js";
+import { ticketRoutes } from "./services/matchmaking/ticket.js";
 import { profileRoutes } from "./services/mcp/profile.js";
 import { replayRoutes } from "./services/replay/replays.js";
 import { createStompService } from "./stomp/service.js";
@@ -45,6 +48,7 @@ export function createContext(config) {
   const tokens = createTokenStore(config.dataDir);
   const accounts = createAccountStore(config.dataDir);
   const friends = createFriendStore(config.dataDir);
+  const sessions = createSessionStore();
   return {
     accounts,
     tokens,
@@ -55,7 +59,8 @@ export function createContext(config) {
     locks: createProfileLocks(),
     primaryMissions: createPrimaryMissions(),
     heldScores: createHeldScores({ waitMs: config.earnScoreWaitMs }),
-    sessions: createSessionStore(),
+    sessions,
+    matchmaker: createMatchmaker({ sessions, gatherMs: config.matchmakingGatherMs, quiet: config.requestLog === false }),
     network: createNetwork(config),
     emptyServerWaitMs: config.emptyServerWaitMs,
     stomp: createStompService({ tokens, quiet: config.requestLog === false }),
@@ -95,10 +100,12 @@ export function createApp(config, context = createContext(config)) {
   app.use(worldRoutes(context));
   app.use(receiptRoutes(context));
   app.use(sessionRoutes(context));
+  app.use(ticketRoutes(context));
   app.use(storefrontRoutes(context));
   app.use(chatRoutes(context));
   app.use(statsRoutes(context));
   app.use(feedbackRoutes(context));
+  app.use(battleRoyaleRoutes(context));
   app.use(friendCodeRoutes(context));
   app.use(twitchRoutes(context));
   app.use(friendsRoutes(context));

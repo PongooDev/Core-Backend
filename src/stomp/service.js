@@ -156,12 +156,17 @@ export function createStompService({ tokens, quiet = false }) {
   };
 }
 
-// WebSocket upgrades on the backend port are STOMP connections.
-export function enableStomp(server, stomp) {
-  server.on("upgrade", (req, socket, head) => stomp.handleUpgrade(req, socket, head));
+// WebSocket upgrades on the backend port are STOMP connections, except Battle Royale matchmaking's, which carry an
+// Epic-Signed ticket (src/matchmaking/service.js).
+export function enableStomp(server, stomp, matchmaker) {
+  server.on("upgrade", (req, socket, head) => {
+    if (matchmaker?.isMatchmakingUpgrade(req)) return matchmaker.handleUpgrade(req, socket, head);
+    stomp.handleUpgrade(req, socket, head);
+  });
   const closeAllConnections = server.closeAllConnections.bind(server);
   server.closeAllConnections = () => {
     stomp.closeAll();
+    matchmaker?.closeAll();
     closeAllConnections();
   };
 }

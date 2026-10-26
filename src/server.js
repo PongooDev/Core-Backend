@@ -11,7 +11,7 @@ export async function createServer(config) {
   const server = http.createServer(createApp(config, context));
   await enableProxy(server);
   enableXmpp(server, context.xmpp);
-  enableStomp(server, context.stomp);
+  enableStomp(server, context.stomp, context.matchmaker);
   // After enableXmpp, which takes over "connection" to tell XMPP streams from HTTP: this one runs before both.
   guardConnections(server, context.network);
   server.network = context.network;
