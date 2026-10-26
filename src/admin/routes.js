@@ -29,7 +29,7 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const panel = path.join(here, "panel.html");
 const root = path.join(here, "..", "..");
 const startedAt = new Date().toISOString();
-const profileIds = ["profile0", "theater0", "outpost0", "collection_book_people0", "collection_book_schematics0"];
+const profileIds = ["profile0", "metadata", "theater0", "outpost0", "collection_book_people0", "collection_book_schematics0"];
 
 function backendVersion() {
   const version = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8")).version;

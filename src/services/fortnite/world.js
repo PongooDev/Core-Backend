@@ -38,7 +38,7 @@ export function worldRoutes({ tokens, sessions, profiles }) {
     const outpost = zoneOutpost(mission.zoneTheme);
     const session = sessions.get(String(req.query.sessionId ?? ""));
     const owner = session && [...Object.keys(session.keys ?? {}), ...(session.publicPlayers ?? []), ...(session.privatePlayers ?? [])][0];
-    if (outpost && owner) zoneDifficultyInfo = outpostDifficulty(openSession(profiles, owner).profile("profile0").profile, outpost, zoneDifficultyInfo);
+    if (outpost && owner) zoneDifficultyInfo = outpostDifficulty(openSession(profiles, owner), outpost, zoneDifficultyInfo);
     // Only the gameserver's DedicatedServer token sets it, so a player's own token can't move a session's rewards.
     if (isDedicatedServerToken(req.session)) sessions.setZoneDifficulty(String(req.query.sessionId ?? ""), zoneDifficultyInfo.rowName);
     const info = req.body ?? {};

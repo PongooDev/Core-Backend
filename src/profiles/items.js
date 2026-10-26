@@ -9,7 +9,12 @@ import { grantQuest } from "./quests.js";
 import { settleBackpack, worldStackCap } from "./vault.js";
 import { rollWorkerAttributes } from "./workers.js";
 
-const profileFor = { profile: "profile0", theater: "theater0" };
+const profileFor = { profile: "profile0", theater: "theater0", metadata: "metadata" };
+
+// The profile an item of this type lives in. Account items are profile0's, except the cloud save items (storm shields,
+// deployable bases), which 1.7.2 keeps in a profile of their own, metadata (UFortMcpProfileMetadata).
+export const profileIdOf = (profileType) => profileFor[profileType];
+const isAccountType = (profileType) => profileType === "profile" || profileType === "metadata";
 
 function itemInfo(templateId) {
   // Homebase nodes are built from data tables rather than assets; their class derives from FortAccountItemDefinition.
@@ -48,7 +53,7 @@ export function cardPackAttributes(templateId, packSource = "Store") {
 // default, 1.0, and breaks on its first use. New ones start at their template's static_max_durability (🟡).
 function addItem(tracker, templateId, quantity, info, options) {
   const itemId = crypto.randomUUID();
-  const attributes = info.profile === "profile" ? { level: info.minLevel ?? 1, item_seen: 0, ...structuredClone(unassigned[info.class]) } : {};
+  const attributes = isAccountType(info.profile) ? { level: info.minLevel ?? 1, item_seen: 0, ...structuredClone(unassigned[info.class]) } : {};
   if (info.profile === "theater" && info.maxDurability !== undefined) attributes.durability = info.maxDurability;
   if (info.class === "FortCardPackItemDefinition") Object.assign(attributes, cardPackAttributes(templateId, options.packSource));
   if (info.class === "FortWorkerType") Object.assign(attributes, rollWorkerAttributes(templateId));

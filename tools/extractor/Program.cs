@@ -20,6 +20,7 @@ var output = args.Length > 2 ? args[2] : Path.GetFullPath(Path.Combine(AppContex
 
 var version = JsonNode.Parse(File.ReadAllText(Path.Combine(buildRoot, "Engine", "Build", "Build.version")))!;
 var engine = $"{version["MajorVersion"]}.{version["MinorVersion"]}";
+var changelist = version["Changelist"]?.GetValue<int>() ?? 0;
 var game = engine switch
 {
     "4.16" => EGame.GAME_UE4_16,
@@ -89,7 +90,7 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     if (!provider.TryLoadPackage(file, out var package)) continue;
     var export = package.GetExports().FirstOrDefault(e => e.Name.Equals(assetName, StringComparison.OrdinalIgnoreCase));
     if (export is null || export.ExportType == "FortQuestItemDefinition") continue;
-    var profile = ItemClasses.ProfileType(export.ExportType);
+    var profile = ItemClasses.ProfileType(export.ExportType, changelist);
     if (profile is null)
     {
         if (export.ExportType.EndsWith("ItemDefinition") || export.ExportType.EndsWith("Type")) unmapped.Add(export.ExportType);
@@ -350,7 +351,13 @@ var dailyRewards = new List<SortedDictionary<string, object>>();
 if (!provider.TryLoadPackage("FortniteGame/Content/Balance/DefaultGameData.uasset", out var gameDataPackage))
     throw new InvalidOperationException("DefaultGameData not found");
 var gameData = JsonNode.Parse(JsonConvert.SerializeObject(gameDataPackage.GetExports().First(e => e.ExportType == "FortGameData")))!;
-foreach (var schedule in gameData["Properties"]?["DailyRewardSchedules"]?.AsArray() ?? [])
+// DefaultGameData holds the schedules up to 1.2; 1.7.2 moved them to their own asset
+// (Balance/DailyRewardScheduleDefinitions, UFortDailyRewardScheduleDefinitions Schedules), which also names each one.
+var scheduleSource = gameData["Properties"]?["DailyRewardSchedules"];
+var schedules = scheduleSource is JsonObject
+    ? LoadExport(provider, scheduleSource, "FortDailyRewardScheduleDefinitions")["Properties"]?["Schedules"]?.AsArray()
+    : scheduleSource?.AsArray();
+foreach (var schedule in schedules ?? [])
 {
     var tokenPath = schedule!["EnablingToken"] is null ? "" : AssetPath(schedule["EnablingToken"]);
     var tablePath = schedule["Rewards"]!["ObjectPath"]!.GetValue<string>().Split('.')[0];
@@ -1139,12 +1146,18 @@ static class ItemClasses
             yield return current;
     }
 
-    // Outposts and deployable bases (cloud save items) are account items too: CreateOrUpgradeOutpostItem,
+    // Outposts and deployable bases (cloud save items) are account items up to 1.2: CreateOrUpgradeOutpostItem,
     // UpdateOutpostCore and CreateDeployableBaseItem are UFortMcpProfileAccount commands, and the client reads the
-    // outpost core's level from the account profile.
-    public static string? ProfileType(string itemClass)
+    // outpost core's level from the account profile. 1.7.2 (CL 3700114) moved them to a profile of their own: those
+    // commands are UFortMcpProfileMetadata's, and the cloud save items' MCP template (sub_685410) names
+    // static_profile_type "metadata" where the other account items' (sub_653990) name "profile". Only the client
+    // shows which builds have it, so the changelist decides.
+    public const int FirstMetadataProfileChangelist = 3700114;
+
+    public static string? ProfileType(string itemClass, int changelist)
     {
         var lineage = Lineage(itemClass).ToList();
+        if (lineage.Contains("FortCloudSaveItemDefinition") && changelist >= FirstMetadataProfileChangelist) return "metadata";
         if (lineage.Contains("FortAccountItemDefinition")) return "profile";
         if (lineage.Contains("FortWorldItemDefinition")) return "theater";
         return null;

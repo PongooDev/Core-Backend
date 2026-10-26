@@ -10,6 +10,7 @@ import { clientQuestLogin } from "./ClientQuestLogin.js";
 import { claimCollectionBookPageRewards, claimCollectionBookRewards, convertSlottedItem, slotItemInCollectionBook, upgradeSlottedItem } from "./CollectionBook.js";
 import { fortRerollDailyQuest } from "./FortRerollDailyQuest.js";
 import { getMcpTimeForLogin } from "./GetMcpTimeForLogin.js";
+import { incrementNamedCounterStat } from "./IncrementNamedCounterStat.js";
 import { issueFriendCode } from "./IssueFriendCode.js";
 import { setHeroModeLoadout, setModeLoadout } from "./Loadouts.js";
 import { markItemSeen } from "./MarkItemSeen.js";
@@ -20,6 +21,7 @@ import { purchaseCatalogEntry } from "./PurchaseCatalogEntry.js";
 import { purchaseHomebaseNode } from "./PurchaseHomebaseNode.js";
 import { queryProfile } from "./QueryProfile.js";
 import { abandonExpeditionCommand, collectExpeditionCommand, refreshExpeditions, startExpeditionCommand } from "./RefreshExpeditions.js";
+import { requestEventFlags } from "./RequestEventFlags.js";
 import { setDefaultHeroSquad } from "./SetDefaultHeroSquad.js";
 import { setGameplayStats } from "./SetGameplayStats.js";
 import { setHomebaseBanner } from "./SetHomebaseBanner.js";
@@ -52,6 +54,7 @@ export const clientCommands = {
   CreateOrUpgradeOutpostItem: createOrUpgradeOutpostItem,
   FortRerollDailyQuest: fortRerollDailyQuest,
   GetMcpTimeForLogin: getMcpTimeForLogin,
+  IncrementNamedCounterStat: incrementNamedCounterStat,
   IssueFriendCode: issueFriendCode,
   MarkItemSeen: markItemSeen,
   MarkNewQuestNotificationSent: markNewQuestNotificationSent,
@@ -63,6 +66,7 @@ export const clientCommands = {
   RecycleItem: recycleItemCommand,
   RecycleItemBatch: recycleItemBatchCommand,
   RefreshExpeditions: refreshExpeditions,
+  RequestEventFlags: requestEventFlags,
   SetDefaultHeroSquad: setDefaultHeroSquad,
   SetGameplayStats: setGameplayStats,
   SetHeroModeLoadout: setHeroModeLoadout,

@@ -1,4 +1,5 @@
-const knownProfiles = ["profile0", "collection_book_*0", "theater*", "outpost*"];
+// metadata holds the storm shields and deployable bases from 1.7.2 (profiles/outposts.js).
+const knownProfiles = ["profile0", "metadata", "collection_book_*0", "theater*", "outpost*"];
 
 function matches(pattern, value) {
   const [prefix, suffix] = pattern.split("*");

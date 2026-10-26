@@ -23,7 +23,7 @@ test("the build is the changelist a request's User-Agent names; builds without t
   const agent = (value) => ({ get: () => value });
   assert.equal(getBuild(agent(agent12)), build12);
   assert.equal(getBuild(agent("game=FortniteGame, engine=UE4, version=4.16.0-3541083+++Fortnite+Release-Cert, platform=Windows")), build12);
-  assert.deepEqual(dataBuilds, [certBuild, build12]);
+  assert.deepEqual(dataBuilds, [certBuild, build12, "3700114"]);
   assert.equal(dataBuild(build12), build12);
   for (const other of [certBuild, "unknown", "3700000", undefined]) assert.equal(dataBuild(other), certBuild);
   assert.equal(activeBuild(), certBuild, "outside a request");

@@ -5,6 +5,7 @@ import { McpError, sendError } from "../../errors.js";
 import { recordUnknown } from "../../log.js";
 import { isKnownProfile } from "../../profiles/ids.js";
 import { lockTimeout } from "../../profiles/locks.js";
+import { settleCloudSaves } from "../../profiles/outposts.js";
 import { openSession } from "../../profiles/session.js";
 import { adminCommands, clientCommands } from "./commands/index.js";
 import { publicCommands, serverCommands } from "./commands/server.js";
@@ -57,6 +58,8 @@ function runCommand(commands, context, { deliverMail = false, deliverScores = fa
     }
 
     const session = openSession(profiles, req.params.accountId);
+    // Storm shields go where the requesting build's client looks for them: profile0, or metadata from 1.7.2.
+    if (profileId === "profile0" || profileId === "metadata") settleCloudSaves(session);
     const tracker = session.profile(profileId);
     const notifications = [];
     // Some server commands change several players at once (EarnScore); each other player gets their own session.

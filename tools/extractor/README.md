@@ -9,7 +9,7 @@ dotnet run -c Release --project tools/extractor -- "<build folder with FortniteG
 
 - `quests.json`: every quest's type, objectives, rewards and prerequisites.
 - `items.json`: every item definition's class, the profile it lives in (`profile` for account items, `theater` for
-  world items) and its stack limit (the asset's `MaxStackSize`, else the class constructor's default). World items of
+  world items; from 1.7.2, CL 3700114, `metadata` for storm shields and deployable bases) and its stack limit (the asset's `MaxStackSize`, else the class constructor's default). World items of
   weapon definitions (weapons, traps, building pieces) that have durability (`bItemHasDurability`, unless the asset
   turns it off) carry `maxDurability`, the MCP template's static_max_durability: GetMaxDurability at level 0, from the
   definition's `WeaponStatHandle` row (`BaseLevel`, `DurabilityScale`) and its `WeaponDurabilityRarity` row
@@ -23,7 +23,8 @@ dotnet run -c Release --project tools/extractor -- "<build folder with FortniteG
 
 Item template ids are resolved with the build's own asset manager rules (`PrimaryAssetTypesToScan` in
 `DefaultGame.ini`): an asset gets the type of the rule whose directory holds it and whose base class it derives from.
-- `dailyrewards.json`: the daily login reward schedules from `DefaultGameData`, rows in lookup order.
+- `dailyrewards.json`: the daily login reward schedules from `DefaultGameData` (from 1.7.2, the
+  `DailyRewardScheduleDefinitions` asset it points to), rows in lookup order.
 - `homebasenodes.json`, `squads.json`: the skill tree (nodes, pages) and squads from the homebase manager.
 - `characters.json`: gameplay tags, required tags and manager flags of heroes, survivors and defenders.
 - `cardpacks.json`: each card pack's loot tier group, tier, choice flag and display level.

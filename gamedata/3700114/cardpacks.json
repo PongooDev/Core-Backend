@@ -1,0 +1,369 @@
+{
+  "CardPack:cardpack_bronze_personnel_reward": {
+    "autoOpenAsReward": false,
+    "choice": false,
+    "description": "Yes, it's a people delivery llama. Just make your purchase and move along. Contains at least 6 people. Somehow.",
+    "displayName": "People Llama",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze_Personnel",
+    "path": "/Game/Items/CardPacks/CardPack_Bronze_Personnel_Reward.CardPack_Bronze_Personnel_Reward",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_bronze_weapons_reward": {
+    "autoOpenAsReward": false,
+    "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Weapon Pack",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze_Weapons",
+    "path": "/Game/Items/CardPacks/CardPack_Bronze_Weapons_Reward.CardPack_Bronze_Weapons_Reward",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_choice_hero_firststorm_sr": {
+    "autoOpenAsReward": true,
+    "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Legendary Item",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Hero_FirstStorm_SR",
+    "path": "/Game/Items/CardPacks/Events/Limited/CardPack_Choice_Hero_FirstStorm_SR.CardPack_Choice_Hero_FirstStorm_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_choice_hero_firststorm_vr": {
+    "autoOpenAsReward": true,
+    "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Epic Item",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Hero_FirstStorm_VR",
+    "path": "/Game/Items/CardPacks/Events/Limited/CardPack_Choice_Hero_FirstStorm_VR.CardPack_Choice_Hero_FirstStorm_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_choice_hero_scavenger_sr": {
+    "autoOpenAsReward": true,
+    "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Legendary Item",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Hero_Scavenger_SR",
+    "path": "/Game/Items/CardPacks/Events/Limited/CardPack_Choice_Hero_Scavenger_SR.CardPack_Choice_Hero_Scavenger_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_choice_hero_scavenger_vr": {
+    "autoOpenAsReward": true,
+    "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Epic Item",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Hero_Scavenger_VR",
+    "path": "/Game/Items/CardPacks/Events/Limited/CardPack_Choice_Hero_Scavenger_VR.CardPack_Choice_Hero_Scavenger_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_choice_hydraulic_sr": {
+    "autoOpenAsReward": true,
+    "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Legendary Item",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Event_Hydraulic_SR",
+    "path": "/Game/Items/CardPacks/Events/Limited/CardPack_Choice_Hydraulic_SR.CardPack_Choice_Hydraulic_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_choice_hydraulic_vr": {
+    "autoOpenAsReward": true,
+    "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Epic Item",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Event_Hydraulic_VR",
+    "path": "/Game/Items/CardPacks/Events/Limited/CardPack_Choice_Hydraulic_VR.CardPack_Choice_Hydraulic_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_choice_scavenger_sr": {
+    "autoOpenAsReward": true,
+    "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Legendary Item",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Event_Scavenger_SR",
+    "path": "/Game/Items/CardPacks/Events/Limited/CardPack_Choice_Scavenger_SR.CardPack_Choice_Scavenger_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_choice_scavenger_vr": {
+    "autoOpenAsReward": true,
+    "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Epic Item",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Event_Scavenger_VR",
+    "path": "/Game/Items/CardPacks/Events/Limited/CardPack_Choice_Scavenger_VR.CardPack_Choice_Scavenger_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_defendershotgun_basic_f_vr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "A defender trained to fight with shotguns.",
+    "displayName": "Epic Shotgunner",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_DefenderShotgun_Basic_F_VR",
+    "path": "/Game/Items/CardPacks/Events/Scavenger/CardPack_DefenderShotgun_Basic_F_VR.CardPack_DefenderShotgun_Basic_F_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_defendersniper_basic_m_vr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "A defender trained to fight with sniper rifles.",
+    "displayName": "Epic Sniper",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_DefenderSniper_Basic_M_VR",
+    "path": "/Game/Items/CardPacks/Events/Scavenger/CardPack_DefenderSniper_Basic_M_VR.CardPack_DefenderSniper_Basic_M_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_event_firststorm": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Guarantees at least one Epic or better limited time Hydraulic weapon or Hero!",
+    "displayName": "Storm Llama",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Event_2017_FirstStorm",
+    "path": "/Game/Items/CardPacks/Events/Release/CardPack_Event_FirstStorm.CardPack_Event_FirstStorm",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_event_scavenger": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Guarantees at least one Epic or better limited time Scavenger weapon or Hero!",
+    "displayName": "Scavenger Choice Llama",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Event_2017_Scavenger",
+    "path": "/Game/Items/CardPacks/Events/Release/CardPack_Event_Scavenger.CardPack_Event_Scavenger",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_event_scavenger_melee_vr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "One random Scavenger melee weapon schematic.",
+    "displayName": "Epic Scavenger Melee Weapon Schematic",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Event_Scavenger_Melee_VR",
+    "path": "/Game/Items/CardPacks/Events/Scavenger/CardPack_Event_Scavenger_Melee_VR.CardPack_Event_Scavenger_Melee_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_event_scavenger_ranged_vr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "One random Scavenger ranged weapon schematic.",
+    "displayName": "Epic Scavenger Ranged Weapon Schematic",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Event_Scavenger_Ranged_VR",
+    "path": "/Game/Items/CardPacks/Events/Scavenger/CardPack_Event_Scavenger_Ranged_VR.CardPack_Event_Scavenger_Ranged_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_melee_tool_c": {
+    "description": "One random hardware melee weapon schematic.",
+    "displayName": "Common Hardware Schematic"
+  },
+  "CardPack:cardpack_melee_tool_r": {
+    "description": "One random hardware melee weapon schematic.",
+    "displayName": "Rare Hardware Schematic"
+  },
+  "CardPack:cardpack_melee_tool_sr": {
+    "description": "One random hardware melee weapon schematic.",
+    "displayName": "Legendary Hardware Schematic"
+  },
+  "CardPack:cardpack_melee_tool_uc": {
+    "description": "One random hardware melee weapon schematic.",
+    "displayName": "Uncommon Hardware Schematic"
+  },
+  "CardPack:cardpack_melee_tool_vr": {
+    "description": "One random hardware melee weapon schematic.",
+    "displayName": "Epic Hardware Schematic"
+  },
+  "CardPack:cardpack_stormzone_assault_hydra_sr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Assault Weapon: Hydraulic. A hybrid weapon that fires a tight cluster of pellets, with considerably more knockback than an assault rifle, but better range and more focused damage than a shotgun.",
+    "displayName": "Copper Hydra",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_StormZone_Assault_Hydra_SR",
+    "path": "/Game/Items/CardPacks/Events/StormZone/CardPack_StormZone_Assault_Hydra_SR.CardPack_StormZone_Assault_Hydra_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_stormzone_banners_cannyvalley": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "A set of exclusive homebase banners!",
+    "displayName": "Storm Event Banner",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Stormzone_Banners_CannyValley",
+    "path": "/Game/Items/CardPacks/Founders/CardPack_StormZone_Banners_CannyValley.CardPack_StormZone_Banners_CannyValley",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_stormzone_banners_plankerton": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "A set of exclusive homebase banners!",
+    "displayName": "Storm Event Banner",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Stormzone_Banners_Plankerton",
+    "path": "/Game/Items/CardPacks/Founders/CardPack_StormZone_Banners_Plankerton.CardPack_StormZone_Banners_Plankerton",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_stormzone_banners_stonewood": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "A set of exclusive homebase banners!",
+    "displayName": "Storm Event Banner",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Stormzone_Banners_Stonewood",
+    "path": "/Game/Items/CardPacks/Founders/CardPack_StormZone_Banners_Stonewood.CardPack_StormZone_Banners_Stonewood",
+    "rarity": "Fine"
+  },
+  "CardPack:zcp_expedition_craftingrun_short_t00": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "A collection of Crafting Supplies gathered on an Expedition",
+    "displayName": "Crafting Supplies - Tiny",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_CraftingRun_Short_T00",
+    "path": "/Game/Items/CardPacks/Expeditions/ZCP_Expedition_CraftingRun_Short_T00.ZCP_Expedition_CraftingRun_Short_T00",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_expedition_slot1": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expedition_slot2": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expedition_slot3": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expedition_slot4": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expedition_slot5": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_air_t02": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_air_t03": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_air_t04": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_choppingwood_t00": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_land_t01": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_land_t02": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_land_t03": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_land_t04": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_miningore_t00": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_sea_t01": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_sea_t02": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_sea_t03": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_sea_t04": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiontest_resourcerun": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiontest_standardexpedition": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiontest_standardexpedition_time1": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiontest_standardexpedition_time2": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiontest_standardexpedition_time3": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_supplyrun_short_t00": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Supplies gathered on the expedition.",
+    "displayName": "Supply Cache - Tiny",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_SupplyRun_Short_T00",
+    "path": "/Game/Items/CardPacks/Expeditions/ZCP_SupplyRun_Short_T00.ZCP_SupplyRun_Short_T00",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_survival_t01": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Storm Coins and rare items based on how long you survive!",
+    "displayName": "Survival Rewards",
+    "displayRarityLevel": 0,
+    "lootTier": 1,
+    "lootTierGroup": "ZCP_Survival",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_Survival_T01.ZCP_Survival_T01",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_survival_t02": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Storm Coins and rare items based on how long you survive!",
+    "displayName": "Survival Rewards",
+    "displayRarityLevel": 0,
+    "lootTier": 2,
+    "lootTierGroup": "ZCP_Survival",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_Survival_T02.ZCP_Survival_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_survival_t03": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Storm Coins and rare items based on how long you survive!",
+    "displayName": "Survival Rewards",
+    "displayRarityLevel": 0,
+    "lootTier": 3,
+    "lootTierGroup": "ZCP_Survival",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_Survival_T03.ZCP_Survival_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_voucher_basicpack": {
+    "description": "Claim your free reward llama in the Loot tab."
+  }
+}

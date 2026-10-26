@@ -23,6 +23,11 @@ export function openSession(profiles, accountId, { setUp = true } = {}) {
   return {
     accountId,
 
+    // Whether the account has the profile, without making it.
+    hasProfile(profileId) {
+      return opened.has(profileId) || profiles.exists(accountId, profileId);
+    },
+
     profile(profileId) {
       if (!opened.has(profileId)) {
         const created = !profiles.exists(accountId, profileId);

@@ -1,4 +1,9 @@
 {
+  "buffs": {
+    "Buff:vipstatus": {
+      "WorldInventorySizeBonus": 20
+    }
+  },
   "nodes": {
     "StartNode_CommandCenter": {
       "InventorySizeBonus": 200,
