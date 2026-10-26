@@ -94,6 +94,8 @@ test("a party's tickets wait for a registered server, which gets the match and s
     assert.deepEqual(states.map(({ name, payload }) => [name, payload.state]),
       [["StatusUpdate", "Connecting"], ["StatusUpdate", "Waiting"], ["StatusUpdate", "Queued"]]);
     assert.deepEqual([states[1].payload.totalPlayers, states[1].payload.connectedPlayers], [2, 2]);
+    // The queue counts everyone queued for the bucket (#55): the party of two.
+    assert.equal(states[2].payload.queuedPlayers, 2);
     client.send("ping");
     assert.equal(await client.next(), "pong");
     const followerClient = await matchmakingClient(backend.port, authorizationOf((await ticketOf(follower, party)).body));

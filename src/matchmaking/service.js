@@ -150,6 +150,25 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
     return false;
   }
 
+  // The parties still in the queue for a bucket: waiting for a server, or in a match that hasn't been assigned yet.
+  function queuedParties(bucketId) {
+    const forming = [...servers].flatMap((server) => (server.forming && !server.forming.sent ? server.forming.parties : []));
+    return [...waiting, ...forming].filter((party) => party.ticket.bucketId === bucketId && !party.ws.closed);
+  }
+
+  // Queued {queuedPlayers}: everyone queued for the bucket, sent again to each of them whenever it changes.
+  function announceQueue(bucketId) {
+    const parties = queuedParties(bucketId);
+    // A party's members each queue with their own ticket: the party counts once.
+    const queuedPlayers = [...new Map(parties.map((party) => [party.key, party.size])).values()].reduce((sum, size) => sum + size, 0);
+    for (const party of parties) {
+      for (const member of [party, ...party.members]) {
+        if (member.done || member.ws.closed) continue;
+        member.ws.send(status("Queued", { ticketId: member.ticket.ticketId, queuedPlayers, estimatedWaitSec: 0, status: {} }));
+      }
+    }
+  }
+
   function placeWaiting() {
     for (let index = 0; index < waiting.length;) {
       if (place(waiting[index])) waiting.splice(index, 1);
@@ -182,6 +201,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
       server.ws.close(1000);
       waiting.unshift(...forming.parties);
       placeWaiting();
+      announceQueue(forming.bucketId);
       return;
     }
     servers.delete(server);
@@ -209,13 +229,16 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
           server.forming = null;
         }
       }
-      if (!party.done) say(`${ticket.accountId} left the queue for bucket ${ticket.bucketId}`);
+      if (!party.done) {
+        say(`${ticket.accountId} left the queue for bucket ${ticket.bucketId}`);
+        announceQueue(ticket.bucketId);
+      }
     });
     ws.send(status("Connecting"));
     ws.send(status("Waiting", { totalPlayers: party.size, connectedPlayers: party.size }));
-    ws.send(status("Queued", { ticketId: ticket.ticketId, queuedPlayers: waiting.length, estimatedWaitSec: 0, status: {} }));
     say(`${ticket.accountId} (party of ${party.size}) queued for bucket ${ticket.bucketId}`);
     if (!place(party)) waiting.push(party);
+    if (!party.done) announceQueue(ticket.bucketId);
   }
 
   function acceptServer(ws, ticket) {
