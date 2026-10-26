@@ -15,9 +15,10 @@ This repository does NOT include Fortnite game files, a launcher, a redirect, or
 
 ## Version support
 
-| Fortnite version | Status |
-| --- | --- |
-| Cert CL-3532353 (UE 4.16) | In progress 🚧 |
+| Fortnite version | Build | Status |
+| --- | --- | --- |
+| 1.1 | Cert CL-3532353 (UE 4.16) | Full support ✅ |
+| 1.2 | Release-Cert CL-3541083 (UE 4.16) | In development 🚧 |
 
 Core-Backend follows Core V2: one build at a time, each build fully working before the next.
 
