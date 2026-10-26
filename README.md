@@ -29,7 +29,7 @@ Core-Backend follows Core V2: one build at a time, each build fully working befo
 | --- | --- | --- |
 | 1.1 | Cert CL-3532353 (UE 4.16) | Full support ✅ |
 | 1.2 | Release-Cert CL-3541083 (UE 4.16) | Full support ✅ |
-| 1.7.2 | Release-1.7.2 CL-3700114 | In development 🚧 |
+| 1.7.2 | Release-Cert CL-3700114 (UE 4.16) | In development 🚧 |
 
 </details>
 
