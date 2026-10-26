@@ -139,3 +139,26 @@ test("a 1.7.2 account holds Save the World's access token and the named_counters
     backend.close();
   }
 });
+
+test("1.7.2 asks for general chat per sub game and reads globalChatRooms; Battle Royale's stats are an empty list", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "Chat172");
+    const ask = (path, method = "POST") => send({
+      host: "127.0.0.1", port: backend.port, method, path,
+      headers: { "User-Agent": agents[build172], Authorization: `bearer ${player.token}`, ...(method === "POST" ? { "Content-Type": "application/json", "Content-Length": 2 } : {}) }
+    }, method === "POST" ? "{}" : undefined);
+    const campaign = await ask(`/fortnite/api/game/v2/chat/${player.accountId}/recommendGeneralChatRooms/Campaign/pc`);
+    assert.equal(campaign.status, 200);
+    assert.deepEqual(campaign.body.globalChatRooms.map((room) => [room.roomName, room.publicFacingShardName]), [["Global", ""]]);
+    assert.deepEqual(campaign.body.founderChatRooms.map((room) => room.roomName), ["Founders"]);
+    assert.equal(campaign.body.bIsGlobalChatDisabled, false);
+    const athena = await ask(`/fortnite/api/game/v2/chat/${player.accountId}/recommendGeneralChatRooms/Athena/pc`);
+    assert.deepEqual(athena.body.globalChatRooms.map((room) => room.roomName), ["GlobalBattleRoyale"]);
+    assert.deepEqual([athena.body.founderChatRooms, athena.body.bIsFounderChatDisabled], [[], true]);
+    const stats = await ask(`/fortnite/api/stats/accountId/${player.accountId}/bulk/window/alltime`, "GET");
+    assert.deepEqual([stats.status, stats.body], [200, []]);
+  } finally {
+    backend.close();
+  }
+});
