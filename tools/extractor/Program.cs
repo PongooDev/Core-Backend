@@ -872,12 +872,28 @@ File.WriteAllText(Path.Combine(output, "banners.json"), JsonSerializer.Serialize
 File.WriteAllText(Path.Combine(output, "transmog.json"), JsonSerializer.Serialize(transmogKeys, options) + "\n");
 File.WriteAllText(Path.Combine(output, "fabricator.json"), JsonSerializer.Serialize(fabricator, options) + "\n");
 File.WriteAllText(Path.Combine(output, "objectivestats.json"), JsonSerializer.Serialize(objectiveStats, options) + "\n");
-File.WriteAllText(Path.Combine(output, "world.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal)
+// The Theater.* gameplay tags the build defines (Balance/GameplayTags tables): 1.7.2's ActivitiesTags adds
+// Theater.MainProgression, which its quest driven missions (SharedMissionLists TheaterTagQuery) need on a theater.
+var theaterTags = new SortedSet<string>(StringComparer.Ordinal);
+foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" && f.Path.StartsWith("FortniteGame/Content/Balance/GameplayTags/", StringComparison.OrdinalIgnoreCase)))
+{
+    if (!provider.TryLoadPackage(file, out var tagPackage)) continue;
+    var tagTable = tagPackage.GetExports().FirstOrDefault(e => e.ExportType.EndsWith("DataTable"));
+    if (tagTable is null) continue;
+    foreach (var (_, row) in JsonNode.Parse(JsonConvert.SerializeObject(tagTable))!["Rows"]?.AsObject() ?? [])
+    {
+        if (row?["Tag"]?.GetValue<string>() is { } tag && tag.StartsWith("Theater.", StringComparison.Ordinal)) theaterTags.Add(tag);
+    }
+}
+
+var world = new SortedDictionary<string, object>(StringComparer.Ordinal)
 {
     ["zoneThemes"] = zoneThemes, ["missionGenerators"] = missionGenerators, ["primaryMissions"] = primaryMissions, ["questPaths"] = questPaths, ["difficulties"] = difficulties,
     ["mapPins"] = mapPins, ["globeSockets"] = globeSockets, ["missionAlerts"] = missionAlerts,
     ["dailyMissionAlertQuota"] = dailyMissionAlertQuota
-}, options) + "\n");
+};
+if (theaterTags.Count > 0) world["theaterTags"] = theaterTags;
+File.WriteAllText(Path.Combine(output, "world.json"), JsonSerializer.Serialize(world, options) + "\n");
 Console.WriteLine($"{zoneThemes.Count} zone themes, {missionGenerators.Count} mission generators, {difficulties.Count} mission difficulties");
 Console.WriteLine($"{characters.Count} characters, {cardPacks.Count} card packs, {nodes.Count} skill tree nodes, {squads.Count} squads, {objectiveStats.Count} objective stats");
 Console.WriteLine($"{quests.Count} quests, {items.Count} items and {dailyRewards.Count} daily reward schedules from {version["BranchName"]}-CL-{version["Changelist"]} into {output}");

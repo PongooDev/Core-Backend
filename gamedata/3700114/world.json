@@ -706,6 +706,9 @@
     "survivalmodequest_anymode_3missions": "/Game/Quests/Events/SurvivalMode/SurvivalModeQuest_AnyMode_3Missions.SurvivalModeQuest_AnyMode_3Missions",
     "survivalmodequest_plankertondiff_7missions": "/Game/Quests/Events/SurvivalMode/SurvivalModeQuest_PlankertonDiff_7Missions.SurvivalModeQuest_PlankertonDiff_7Missions"
   },
+  "theaterTags": [
+    "Theater.MainProgression"
+  ],
   "zoneThemes": {
     "/Game/World/ZoneThemes/FortniteSurvival/BP_ZT_Survival.BP_ZT_Survival_C": {
       "name": "Fortnite Survival Prototype",

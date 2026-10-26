@@ -37,9 +37,22 @@ function zoneGate(region) {
 //
 // Theater layouts come from Epic's world info (see tools/theaters/import.mjs); the client ships none. Every build has
 // the same layouts, finished with the requesting build's quests.
+//
+// 1.7.2 tags the campaign's theaters Theater.MainProgression (its ActivitiesTags define the tag), and only a theater with
+// it takes quest driven missions (SharedMissionLists TheaterTagQuery: the tapes of ReactiveQuest_DistressCalls and the
+// like), so without it the client found no mission for those quests and hid their Play Now (Core-Backend #45). The
+// dump predates the tag; the main theaters (Stonewood to Twine Peaks) get it in builds that define it.
+const mainProgression = "Theater.MainProgression";
+const isMainTheater = (data) => data.runtimeInfo.theaterType === "Standard" &&
+  (data.runtimeInfo.theaterTags?.gameplayTags ?? []).some(({ tagName }) => /^Stat\.Theater\.PvE0\d$/.test(tagName));
+
 const layout = perBuild((read) => {
   const { theaters = [], rewards = {} } = read("theaters", {});
+  const { theaterTags = [] } = read("world", {});
   for (const { data } of theaters) {
+    if (theaterTags.includes(mainProgression) && isMainTheater(data)) {
+      data.runtimeInfo.theaterTags = { gameplayTags: [...data.runtimeInfo.theaterTags.gameplayTags, { tagName: mainProgression }] };
+    }
     const questDefinition = storyGates[data.uniqueId];
     if (questDefinition) data.runtimeInfo.requirements = { ...data.runtimeInfo.requirements, questDefinition };
     for (const region of data.regions) {

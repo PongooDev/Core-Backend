@@ -177,3 +177,17 @@ test("Send Feedback's multipart upload is accepted and kept nowhere", async () =
     backend.close();
   }
 });
+
+// Issue #45: 1.7.2's quest driven missions (the tapes of Keep Circulating the Tapes) only go on theaters tagged
+// Theater.MainProgression, a tag 1.7.2 defines and the theater dump predates.
+test("1.7.2's main theaters carry Theater.MainProgression; Cert's and the tutorial's don't", async () => {
+  const { worldInfo } = await import("../src/world/theaters.js");
+  const tags = (build) => inBuild(build, () => worldInfo(new Date("2026-10-26T12:00:00Z")).theaters
+    .map((theater) => [theater.runtimeInfo.theaterType, theater.runtimeInfo.theaterTags.gameplayTags.map(({ tagName }) => tagName)]));
+  assert.deepEqual(tags(build172), [
+    ["Standard", ["Stat.Theater.PvE01", "Theater.MainProgression"]], ["Standard", ["Stat.Theater.PvE02", "Theater.MainProgression"]],
+    ["Standard", ["Stat.Theater.PvE03", "Theater.MainProgression"]], ["Standard", ["Stat.Theater.PvE04", "Theater.MainProgression"]],
+    ["Tutorial", []]
+  ]);
+  assert.ok(tags(certBuild).every(([, list]) => !list.includes("Theater.MainProgression")));
+});
