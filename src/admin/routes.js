@@ -16,7 +16,7 @@ import { levelRest, restBalance, restValue } from "../profiles/boosts.js";
 import { foundersEditionOf, foundersEditions, setFoundersEdition } from "../profiles/founders.js";
 import { findItem, grantItem, worldStacksNeeded } from "../profiles/items.js";
 import { claimQuest, completeQuest, grant, skipTutorial } from "../profiles/progress.js";
-import { createOutpost } from "../profiles/outposts.js";
+import { createOutpost, storedCloudSaveProfile } from "../profiles/outposts.js";
 import { questIdOf, tutorialCompleted } from "../profiles/quests.js";
 import { openSession } from "../profiles/session.js";
 import { backpackState, inOverflow, vaultState, worldStackCap } from "../profiles/vault.js";
@@ -108,6 +108,8 @@ export function adminRoutes(context) {
     const restItem = profile && Object.values(profile.items).find((item) => item.templateId.toLowerCase() === "quota:restxp");
     const items = inventory(profile);
     const worldItems = inventory(loadIfExists(account.id, "theater0"));
+    // profile0's up to 1.2, metadata's from 1.7.2 (profiles/outposts.js).
+    const shieldProfile = loadIfExists(account.id, storedCloudSaveProfile((profileId) => profiles.exists(account.id, profileId), (profileId) => profiles.load(account.id, profileId)));
 
     return {
       ...summary(account),
@@ -119,9 +121,9 @@ export function adminRoutes(context) {
       restXp: restItem ? { value: restValue(restItem.attributes), max: restItem.attributes.max_quota ?? 0 } : null,
       missionAlerts: record ? { remaining: alertsRemaining(withQuotaSlots(record)), pending: record.pendingMissionAlertRewards?.items?.length ?? 0 } : null,
       stormShields: stormShields.map((templateId) => {
-        const itemId = profile && findItem(profile, templateId);
+        const itemId = shieldProfile && findItem(shieldProfile, templateId);
         const info = getItem(templateId);
-        return { templateId, name: info?.name ?? templateId, level: itemId ? profile.items[itemId].attributes.level ?? 0 : null, maxLevel: info?.maxLevel ?? 10 };
+        return { templateId, name: info?.name ?? templateId, level: itemId ? shieldProfile.items[itemId].attributes.level ?? 0 : null, maxLevel: info?.maxLevel ?? 10 };
       }),
       // The founder's pack edition (profiles/founders.js): the highest Token:FoundersPack_<n> held.
       founders: { edition: profile ? foundersEditionOf(profile) : null, editions: foundersEditions.map(({ edition, name }) => ({ edition, name })) },
@@ -329,8 +331,8 @@ export function adminRoutes(context) {
     if (!Number.isInteger(level) || level < (info.minLevel ?? 0) || level > (info.maxLevel ?? 10)) {
       return invalid(res, `The level must be ${info.minLevel ?? 0} to ${info.maxLevel ?? 10}`);
     }
-    createOutpost(session, account.id, info.templateId);
-    const tracker = session.profile("profile0");
+    const tracker = session.profile(storedCloudSaveProfile((profileId) => session.hasProfile(profileId), (profileId) => session.profile(profileId).profile));
+    createOutpost(session, account.id, info.templateId, tracker);
     tracker.setItemAttribute(findItem(tracker.profile, info.templateId), "level", level);
   }));
 

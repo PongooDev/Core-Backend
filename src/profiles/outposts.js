@@ -57,10 +57,9 @@ function cloudSaveInfo(info) {
 // CreateOrUpgradeOutpostItem {templateId}: the client sends it when the player enters a storm shield they have no item
 // for (UFortMatchmakingContext::EnterOutpost) and only goes on once it succeeds. A new core is at MinLevel with the
 // player allowed to edit it. Nothing is kept about content versions, so an existing core is left as it is.
-export function createOutpost(session, accountId, templateId) {
+export function createOutpost(session, accountId, templateId, tracker = cloudSaves(session)) {
   const info = outpostInfo(templateId);
   if (!info) fail(`No storm shield ${templateId}`);
-  const tracker = cloudSaves(session);
   if (findItem(tracker.profile, info.templateId)) return;
   tracker.addItem(crypto.randomUUID(), {
     templateId: info.templateId,
@@ -163,6 +162,13 @@ export function saveDeployableBase(session, itemId, saves) {
 }
 
 const isCloudSave = (info) => info?.class === "FortOutpostItemDefinition" || info?.class === "FortDeployableBaseCloudSaveItemDefinition";
+
+// Where an account's storm shields and deployable bases are outside a game request (the admin panel, whose requests name
+// no build): the profile the last build the player signed in with settled them into, else the active build's.
+export function storedCloudSaveProfile(hasProfile, load) {
+  const holds = (profileId) => hasProfile(profileId) && Object.values(load(profileId).items).some((item) => isCloudSave(getItem(item.templateId)));
+  return ["metadata", "profile0"].find(holds) ?? profileIdOf(cloudSaveProfile());
+}
 
 // Accounts are shared by every build, so a storm shield made on 1.2 is a profile0 item and one made on 1.7.2 a metadata
 // one. Before a command on either profile, the ones in the other are moved to where the requesting build's client
