@@ -13763,255 +13763,785 @@
     }
   ],
   "rewards": {
-    "Mission_Select_T03": [
-      {
-        "itemType": "CardPack:zcp_heroxp_t03",
-        "quantity": 1
-      },
-      {
-        "itemType": "CardPack:zcp_personnelxp_t03",
-        "quantity": 1
-      }
-    ],
-    "Mission_Select_T05": [
-      {
-        "itemType": "CardPack:zcp_schematicxp_t05",
-        "quantity": 1
-      },
-      {
-        "itemType": "CardPack:zcp_reagent_c_t01_verylow",
-        "quantity": 1
-      }
-    ],
-    "Mission_Select_T01": [
-      {
-        "itemType": "CardPack:zcp_heroxp_t01",
-        "quantity": 1
-      },
-      {
-        "itemType": "CardPack:zcp_personnelxp_t01",
-        "quantity": 1
-      }
-    ],
-    "Mission_Select_T04": [
-      {
-        "itemType": "CardPack:zcp_schematicxp_t04",
-        "quantity": 1
-      },
-      {
-        "itemType": "CardPack:zcp_reagent_c_t01_verylow",
-        "quantity": 1
-      }
-    ],
-    "Mission_Select_T02": [
-      {
-        "itemType": "CardPack:zcp_heroxp_t02",
-        "quantity": 1
-      },
-      {
-        "itemType": "CardPack:zcp_personnelxp_t02",
-        "quantity": 1
-      }
-    ],
-    "Mission_Select_T06": [
-      {
-        "itemType": "CardPack:zcp_heroxp_t06",
-        "quantity": 1
-      },
-      {
-        "itemType": "CardPack:zcp_personnelxp_t06",
-        "quantity": 1
-      }
-    ],
-    "Outpost_Select_Theater1": [
-      {
-        "itemType": "CardPack:zcp_voucher_basicpack",
-        "quantity": 1
-      },
-      {
-        "itemType": "CardPack:zcp_heroxp_outpost_theater1",
-        "quantity": 1
-      }
-    ],
-    "Mission_Select_T07": [
-      {
-        "itemType": "CardPack:zcp_heroxp_t07",
-        "quantity": 1
-      },
-      {
-        "itemType": "CardPack:zcp_schematicxp_t07",
-        "quantity": 1
-      }
-    ],
-    "Mission_Select_T09": [
-      {
-        "itemType": "CardPack:zcp_schematicxp_t09",
-        "quantity": 1
-      },
-      {
-        "itemType": "CardPack:zcp_personnelxp_t09",
-        "quantity": 1
-      }
-    ],
-    "Mission_Select_T08": [
-      {
-        "itemType": "CardPack:zcp_schematicxp_t08",
-        "quantity": 1
-      },
-      {
-        "itemType": "CardPack:zcp_schematicxp_t08",
-        "quantity": 1
-      }
-    ],
-    "Mission_Select_T10": [
-      {
-        "itemType": "CardPack:zcp_personnelxp_t10",
-        "quantity": 1
-      },
-      {
-        "itemType": "CardPack:zcp_personnelxp_t10",
-        "quantity": 1
-      }
-    ],
-    "Mission_Select_T11": [
-      {
-        "itemType": "CardPack:zcp_heroxp_t11",
-        "quantity": 1
-      },
-      {
-        "itemType": "CardPack:zcp_schematicxp_t11",
-        "quantity": 1
-      }
-    ],
-    "Outpost_Select_Theater2": [
-      {
-        "itemType": "CardPack:zcp_voucher_basicpack",
-        "quantity": 1
-      },
-      {
-        "itemType": "CardPack:zcp_heroxp_outpost_theater2",
-        "quantity": 1
-      }
-    ],
-    "Mission_Select_T12": [
-      {
-        "itemType": "CardPack:zcp_heroxp_t12",
-        "quantity": 1
-      },
-      {
-        "itemType": "CardPack:zcp_improvised_vr",
-        "quantity": 1
-      }
-    ],
-    "Mission_Select_T13": [
-      {
-        "itemType": "CardPack:zcp_schematicxp_t13",
-        "quantity": 1
-      },
-      {
-        "itemType": "CardPack:zcp_ore_malachite_medium",
-        "quantity": 1
-      }
-    ],
-    "Mission_Select_T15": [
-      {
-        "itemType": "CardPack:zcp_personnelxp_t15",
-        "quantity": 1
-      },
-      {
-        "itemType": "CardPack:zcp_reagent_c_t01_medium",
-        "quantity": 1
-      }
-    ],
-    "Mission_Select_T14": [
-      {
-        "itemType": "CardPack:zcp_heroxp_t14",
-        "quantity": 1
-      },
-      {
-        "itemType": "CardPack:zcp_crystal_shadowshard_minimal",
-        "quantity": 1
-      }
-    ],
-    "Outpost_Select_Theater3": [
-      {
-        "itemType": "CardPack:zcp_voucher_basicpack",
-        "quantity": 1
-      },
-      {
-        "itemType": "CardPack:zcp_heroxp_outpost_theater3",
-        "quantity": 1
-      }
-    ],
-    "Mission_Select_T17": [
-      {
-        "itemType": "CardPack:zcp_heroxp_t17",
-        "quantity": 1
-      },
-      {
-        "itemType": "CardPack:zcp_schematicxp_t17",
-        "quantity": 1
-      }
-    ],
-    "Mission_Select_T18": [
-      {
-        "itemType": "CardPack:zcp_heroxp_t18",
-        "quantity": 1
-      },
-      {
-        "itemType": "CardPack:zcp_ore_obsidian_medium",
-        "quantity": 1
-      }
-    ],
-    "Mission_Select_T20": [
-      {
-        "itemType": "CardPack:zcp_schematicxp_t20",
-        "quantity": 1
-      },
-      {
-        "itemType": "CardPack:zcp_reagent_c_t02_medium",
-        "quantity": 1
-      }
-    ],
-    "Mission_Select_T19": [
-      {
-        "itemType": "CardPack:zcp_schematicxp_t19",
-        "quantity": 1
-      },
-      {
-        "itemType": "CardPack:zcp_reagent_c_t01_high",
-        "quantity": 1
-      }
-    ],
-    "Mission_Select_T16": [
-      {
-        "itemType": "CardPack:zcp_schematicxp_t16",
-        "quantity": 1
-      },
-      {
-        "itemType": "CardPack:zcp_ore_obsidian_verylow",
-        "quantity": 1
-      }
-    ],
-    "Outpost_Select_Theater4": [
-      {
-        "itemType": "CardPack:zcp_voucher_basicpack",
-        "quantity": 1
-      },
-      {
-        "itemType": "CardPack:zcp_heroxp_outpost_theater4",
-        "quantity": 1
-      }
-    ],
-    "Mission_Select_Tutorial": [
-      {
-        "itemType": "CardPack:zcp_tutorial_melee",
-        "quantity": 1
-      },
-      {
-        "itemType": "CardPack:zcp_tutorial_trap",
-        "quantity": 1
-      }
-    ]
+    "Mission_Select_T03": {
+      "count": 2,
+      "pool": [
+        {
+          "itemType": "CardPack:zcp_crystal_quartz_low",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_heroxp_t03",
+          "quantity": 1,
+          "weight": 4
+        },
+        {
+          "itemType": "CardPack:zcp_personnelxp_t03",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_schematicxp_t03",
+          "quantity": 1,
+          "weight": 1
+        }
+      ]
+    },
+    "Mission_Select_T05": {
+      "count": 2,
+      "pool": [
+        {
+          "itemType": "CardPack:zcp_heroxp_t05",
+          "quantity": 1,
+          "weight": 4
+        },
+        {
+          "itemType": "CardPack:zcp_ore_silver_minimal",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_personnelxp_t05",
+          "quantity": 1,
+          "weight": 4
+        },
+        {
+          "itemType": "CardPack:zcp_reagent_c_t01_verylow",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_schematicxp_t05",
+          "quantity": 1,
+          "weight": 2
+        }
+      ]
+    },
+    "Mission_Select_T01": {
+      "count": 2,
+      "pool": [
+        {
+          "itemType": "CardPack:zcp_heroxp_t01",
+          "quantity": 1,
+          "weight": 3
+        },
+        {
+          "itemType": "CardPack:zcp_personnelxp_t01",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_schematicxp_t01",
+          "quantity": 1,
+          "weight": 1
+        }
+      ]
+    },
+    "Mission_Select_T04": {
+      "count": 2,
+      "pool": [
+        {
+          "itemType": "CardPack:zcp_heroxp_t04",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_personnelxp_t04",
+          "quantity": 1,
+          "weight": 4
+        },
+        {
+          "itemType": "CardPack:zcp_reagent_c_t01_verylow",
+          "quantity": 1,
+          "weight": 3
+        },
+        {
+          "itemType": "CardPack:zcp_schematicxp_t04",
+          "quantity": 1,
+          "weight": 1
+        }
+      ]
+    },
+    "Mission_Select_T02": {
+      "count": 2,
+      "pool": [
+        {
+          "itemType": "CardPack:zcp_heroxp_t02",
+          "quantity": 1,
+          "weight": 3
+        },
+        {
+          "itemType": "CardPack:zcp_personnelxp_t02",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_schematicxp_t02",
+          "quantity": 1,
+          "weight": 2
+        }
+      ]
+    },
+    "Mission_Select_T06": {
+      "count": 2,
+      "pool": [
+        {
+          "itemType": "CardPack:zcp_heroxp_t06",
+          "quantity": 1,
+          "weight": 9
+        },
+        {
+          "itemType": "CardPack:zcp_improvised_r",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_ore_silver_verylow",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_personnelxp_t06",
+          "quantity": 1,
+          "weight": 9
+        },
+        {
+          "itemType": "CardPack:zcp_schematicxp_t06",
+          "quantity": 1,
+          "weight": 1
+        }
+      ]
+    },
+    "Outpost_Select_Theater1": {
+      "count": 2,
+      "pool": [
+        {
+          "itemType": "CardPack:zcp_heroxp_outpost_theater1",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_voucher_basicpack",
+          "quantity": 1,
+          "weight": 1
+        }
+      ]
+    },
+    "Mission_Select_T07": {
+      "count": 2,
+      "pool": [
+        {
+          "itemType": "CardPack:zcp_heroxp_t07",
+          "quantity": 1,
+          "weight": 3
+        },
+        {
+          "itemType": "CardPack:zcp_improvised_r",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_ore_silver_low",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_personnelxp_t07",
+          "quantity": 1,
+          "weight": 9
+        },
+        {
+          "itemType": "CardPack:zcp_schematicxp_t07",
+          "quantity": 1,
+          "weight": 5
+        }
+      ]
+    },
+    "Mission_Select_T09": {
+      "count": 2,
+      "pool": [
+        {
+          "itemType": "CardPack:zcp_heroxp_t09",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_improvised_r",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_ore_malachite_minimal",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_ore_silver_high",
+          "quantity": 1,
+          "weight": 6
+        },
+        {
+          "itemType": "CardPack:zcp_personnelxp_t09",
+          "quantity": 1,
+          "weight": 8
+        },
+        {
+          "itemType": "CardPack:zcp_reagent_c_t01_low",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_schematicxp_t09",
+          "quantity": 1,
+          "weight": 5
+        }
+      ]
+    },
+    "Mission_Select_T08": {
+      "count": 2,
+      "pool": [
+        {
+          "itemType": "CardPack:zcp_heroxp_t08",
+          "quantity": 1,
+          "weight": 4
+        },
+        {
+          "itemType": "CardPack:zcp_improvised_r",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_improvised_vr",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_ore_silver_medium",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_personnelxp_t08",
+          "quantity": 1,
+          "weight": 6
+        },
+        {
+          "itemType": "CardPack:zcp_reagent_c_t02_verylow",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_schematicxp_t08",
+          "quantity": 1,
+          "weight": 7
+        }
+      ]
+    },
+    "Mission_Select_T10": {
+      "count": 2,
+      "pool": [
+        {
+          "itemType": "CardPack:zcp_crystal_quartz_extreme",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_heroxp_t10",
+          "quantity": 1,
+          "weight": 3
+        },
+        {
+          "itemType": "CardPack:zcp_ore_malachite_minimal",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_ore_silver_veryhigh",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_personnelxp_t10",
+          "quantity": 1,
+          "weight": 8
+        },
+        {
+          "itemType": "CardPack:zcp_reagent_c_t01_low",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_reagent_c_t02_verylow",
+          "quantity": 1,
+          "weight": 3
+        },
+        {
+          "itemType": "CardPack:zcp_schematicxp_t10",
+          "quantity": 1,
+          "weight": 5
+        }
+      ]
+    },
+    "Mission_Select_T11": {
+      "count": 2,
+      "pool": [
+        {
+          "itemType": "CardPack:zcp_heroxp_t11",
+          "quantity": 1,
+          "weight": 7
+        },
+        {
+          "itemType": "CardPack:zcp_improvised_r",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_personnelxp_t11",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_reagent_c_t02_low",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_schematicxp_t11",
+          "quantity": 1,
+          "weight": 8
+        }
+      ]
+    },
+    "Outpost_Select_Theater2": {
+      "count": 2,
+      "pool": [
+        {
+          "itemType": "CardPack:zcp_heroxp_outpost_theater2",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_voucher_basicpack",
+          "quantity": 1,
+          "weight": 1
+        }
+      ]
+    },
+    "Mission_Select_T12": {
+      "count": 2,
+      "pool": [
+        {
+          "itemType": "CardPack:zcp_heroxp_t12",
+          "quantity": 1,
+          "weight": 4
+        },
+        {
+          "itemType": "CardPack:zcp_improvised_vr",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_ore_malachite_low",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_personnelxp_t12",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_reagent_c_t03_verylow",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_schematicxp_t12",
+          "quantity": 1,
+          "weight": 6
+        }
+      ]
+    },
+    "Mission_Select_T13": {
+      "count": 2,
+      "pool": [
+        {
+          "itemType": "CardPack:zcp_heroxp_t13",
+          "quantity": 1,
+          "weight": 4
+        },
+        {
+          "itemType": "CardPack:zcp_ore_malachite_medium",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_personnelxp_t13",
+          "quantity": 1,
+          "weight": 3
+        },
+        {
+          "itemType": "CardPack:zcp_reagent_c_t03_verylow",
+          "quantity": 1,
+          "weight": 3
+        },
+        {
+          "itemType": "CardPack:zcp_schematicxp_t13",
+          "quantity": 1,
+          "weight": 6
+        }
+      ]
+    },
+    "Mission_Select_T15": {
+      "count": 2,
+      "pool": [
+        {
+          "itemType": "CardPack:zcp_heroxp_t15",
+          "quantity": 1,
+          "weight": 4
+        },
+        {
+          "itemType": "CardPack:zcp_improvised_r",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_ore_malachite_veryhigh",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_personnelxp_t15",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_reagent_c_t01_medium",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_reagent_c_t03_verylow",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_schematicxp_t15",
+          "quantity": 1,
+          "weight": 7
+        }
+      ]
+    },
+    "Mission_Select_T14": {
+      "count": 2,
+      "pool": [
+        {
+          "itemType": "CardPack:zcp_crystal_shadowshard_minimal",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_heroxp_t14",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_improvised_r",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_ore_malachite_high",
+          "quantity": 1,
+          "weight": 3
+        },
+        {
+          "itemType": "CardPack:zcp_ore_obsidian_minimal",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_personnelxp_t14",
+          "quantity": 1,
+          "weight": 6
+        },
+        {
+          "itemType": "CardPack:zcp_reagent_c_t01_medium",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_reagent_c_t02_low",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_schematicxp_t14",
+          "quantity": 1,
+          "weight": 3
+        }
+      ]
+    },
+    "Outpost_Select_Theater3": {
+      "count": 2,
+      "pool": [
+        {
+          "itemType": "CardPack:zcp_heroxp_outpost_theater3",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_voucher_basicpack",
+          "quantity": 1,
+          "weight": 1
+        }
+      ]
+    },
+    "Mission_Select_T17": {
+      "count": 2,
+      "pool": [
+        {
+          "itemType": "CardPack:zcp_crystal_shadowshard_low",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_heroxp_t17",
+          "quantity": 1,
+          "weight": 5
+        },
+        {
+          "itemType": "CardPack:zcp_improvised_r",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_personnelxp_t17",
+          "quantity": 1,
+          "weight": 3
+        },
+        {
+          "itemType": "CardPack:zcp_schematicxp_t17",
+          "quantity": 1,
+          "weight": 4
+        }
+      ]
+    },
+    "Mission_Select_T18": {
+      "count": 2,
+      "pool": [
+        {
+          "itemType": "CardPack:zcp_crystal_shadowshard_medium",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_heroxp_t18",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_ore_obsidian_medium",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_personnelxp_t18",
+          "quantity": 1,
+          "weight": 6
+        },
+        {
+          "itemType": "CardPack:zcp_reagent_c_t01_high",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_reagent_c_t02_medium",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_reagent_c_t03_low",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_schematicxp_t18",
+          "quantity": 1,
+          "weight": 2
+        }
+      ]
+    },
+    "Mission_Select_T20": {
+      "count": 2,
+      "pool": [
+        {
+          "itemType": "CardPack:zcp_heroxp_t20",
+          "quantity": 1,
+          "weight": 5
+        },
+        {
+          "itemType": "CardPack:zcp_improvised_r",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_ore_obsidian_veryhigh",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_personnelxp_t20",
+          "quantity": 1,
+          "weight": 3
+        },
+        {
+          "itemType": "CardPack:zcp_reagent_c_t01_high",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_reagent_c_t02_medium",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_reagent_c_t04_low",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_reagent_c_t04_verylow",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_schematicxp_t20",
+          "quantity": 1,
+          "weight": 3
+        }
+      ]
+    },
+    "Mission_Select_T19": {
+      "count": 2,
+      "pool": [
+        {
+          "itemType": "CardPack:zcp_crystal_shadowshard_high",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_crystal_sunbeam_minimal",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_heroxp_t19",
+          "quantity": 1,
+          "weight": 5
+        },
+        {
+          "itemType": "CardPack:zcp_improvised_r",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_personnelxp_t19",
+          "quantity": 1,
+          "weight": 3
+        },
+        {
+          "itemType": "CardPack:zcp_reagent_c_t01_high",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_reagent_c_t02_medium",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_reagent_c_t03_low",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_schematicxp_t19",
+          "quantity": 1,
+          "weight": 3
+        }
+      ]
+    },
+    "Mission_Select_T16": {
+      "count": 2,
+      "pool": [
+        {
+          "itemType": "CardPack:zcp_crystal_shadowshard_verylow",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_heroxp_t16",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_improvised_r",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_ore_obsidian_verylow",
+          "quantity": 1,
+          "weight": 2
+        },
+        {
+          "itemType": "CardPack:zcp_personnelxp_t16",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_reagent_c_t02_medium",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_schematicxp_t16",
+          "quantity": 1,
+          "weight": 5
+        }
+      ]
+    },
+    "Outpost_Select_Theater4": {
+      "count": 2,
+      "pool": [
+        {
+          "itemType": "CardPack:zcp_heroxp_outpost_theater4",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_voucher_basicpack",
+          "quantity": 1,
+          "weight": 1
+        }
+      ]
+    },
+    "Mission_Select_Tutorial": {
+      "count": 2,
+      "pool": [
+        {
+          "itemType": "CardPack:zcp_tutorial_melee",
+          "quantity": 1,
+          "weight": 1
+        },
+        {
+          "itemType": "CardPack:zcp_tutorial_trap",
+          "quantity": 1,
+          "weight": 1
+        }
+      ]
+    }
   }
 }

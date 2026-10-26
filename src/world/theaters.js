@@ -80,10 +80,22 @@ function shuffled(list, seed) {
   return [...list].sort((a, b) => fraction(digest(`${seed}:${a}`)) - fraction(digest(`${seed}:${b}`)));
 }
 
+// A mission's rewards: its loot tier group's count of zone card packs, each drawn by weight from the packs that group's
+// missions carried in Epic's world info (tools/theaters/import.mjs), so missions of one difficulty mostly show its XP
+// packs and now and then materials, as Epic's did. A group seen on one mission only (storm shields, the tutorial) keeps
+// that mission's packs.
+function missionRewards(seed, tierGroupName) {
+  const { count = 0, pool = [] } = layout().rewards[tierGroupName] ?? {};
+  const drawn = pool.reduce((total, reward) => total + reward.weight, 0);
+  const items = drawn <= count ? pool.flatMap(({ itemType, quantity, weight }) => Array(weight).fill({ itemType, quantity }))
+    : Array.from({ length: count }, (_, index) => weighted(pool, `${seed}:reward:${index}`));
+  return { tierGroupName, items: items.map(({ itemType, quantity }) => ({ itemType, quantity })) };
+}
+
 function mission(seed, tileIndex, missionGenerator, missionDifficultyInfo, tierGroupName, availableUntil) {
   return {
     missionGuid: missionGuid(seed),
-    missionRewards: { tierGroupName, items: layout().rewards[tierGroupName] ?? [] },
+    missionRewards: missionRewards(seed, tierGroupName),
     missionModifiers: { tierGroupName: "", items: [] },
     missionGenerator,
     missionDifficultyInfo,
@@ -187,7 +199,7 @@ export function atDifficulty(mission, rowName) {
   return {
     ...mission,
     missionDifficultyInfo: { ...mission.missionDifficultyInfo, rowName },
-    missionRewards: { tierGroupName, items: layout().rewards[tierGroupName] ?? [] }
+    missionRewards: missionRewards(`${mission.missionGuid}:${rowName}`, tierGroupName)
   };
 }
 

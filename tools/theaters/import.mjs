@@ -143,17 +143,26 @@ function fixedMissions(theater, missions) {
     .filter((mission) => world.missionGenerators[mission.missionGenerator]);
 }
 
-// Reward previews per loot tier group, from the missions in the dump; only items this build has.
+// Each loot tier group's rewards, from the missions in the dump; only items this build has. Epic's MCP rolled each
+// mission's rewards (Mission_Select_T<n> isn't in the client's loot tables): in the dump a group's missions carry two
+// zone card packs each, drawn from the group's XP packs and, less often, materials, so a group keeps every pack its
+// missions showed with how many times it was drawn (weight) and how many a mission got (count).
 const rewards = {};
 for (const theaterMissions of dump.missions) {
   for (const mission of theaterMissions.availableMissions) {
     const group = mission.missionRewards?.tierGroupName;
-    if (!group || rewards[group]) continue;
-    rewards[group] = (mission.missionRewards.items ?? [])
-      .filter((item) => items.has(item.itemType.toLowerCase()))
-      .map(({ itemType, quantity }) => ({ itemType, quantity }));
+    if (!group) continue;
+    const drawn = (mission.missionRewards.items ?? []).filter((item) => items.has(item.itemType.toLowerCase()));
+    const entry = rewards[group] ??= { count: drawn.length, pool: [] };
+    entry.count = Math.max(entry.count, drawn.length);
+    for (const { itemType, quantity } of drawn) {
+      const known = entry.pool.find((reward) => reward.itemType === itemType && reward.quantity === quantity);
+      if (known) known.weight += 1;
+      else entry.pool.push({ itemType, quantity, weight: 1 });
+    }
   }
 }
+for (const entry of Object.values(rewards)) entry.pool.sort((a, b) => a.itemType.localeCompare(b.itemType));
 
 const theaters = dump.theaters.map((theater) => ({
   data: convertTheater(theater),

@@ -237,3 +237,23 @@ test("a mission and its alert last the UTC day, and the theater's missions refre
   assert.equal(rescue(tomorrow).missionGenerator, rescue(info).missionGenerator);
   assert.notEqual(rescue(tomorrow).missionGuid, rescue(info).missionGuid);
 });
+
+// Issue #49: Epic's missions of one difficulty each drew their own two zone card packs (mostly the tier's XP packs,
+// sometimes materials), where Core used to give every mission of a loot tier group the same pair.
+test("missions roll their rewards from their loot tier group's packs, so one difficulty's missions differ; storm shields keep theirs", () => {
+  const info = worldInfo(new Date("2026-10-26T12:00:00Z"));
+  const missions = info.missions.flatMap((theater) => theater.availableMissions);
+  const byGroup = new Map();
+  for (const { missionRewards } of missions) {
+    const sets = byGroup.get(missionRewards.tierGroupName) ?? new Set();
+    sets.add(missionRewards.items.map((item) => item.itemType).sort().join(","));
+    byGroup.set(missionRewards.tierGroupName, sets);
+    if (missionRewards.tierGroupName.startsWith("Mission_Select_T")) {
+      assert.equal(missionRewards.items.length, 2);
+      assert.ok(missionRewards.items.every((item) => item.itemType.startsWith("CardPack:zcp_")), missionRewards.tierGroupName);
+    }
+  }
+  assert.ok([...byGroup].some(([group, sets]) => group.startsWith("Mission_Select_T") && sets.size > 1), "some difficulty shows different rewards");
+  assert.deepEqual([...(byGroup.get("Outpost_Select_Theater1") ?? [])], ["CardPack:zcp_heroxp_outpost_theater1,CardPack:zcp_voucher_basicpack"]);
+  assert.deepEqual(worldInfo(new Date("2026-10-26T12:00:00Z")), info, "the same for everyone on a day");
+});
