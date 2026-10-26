@@ -123,7 +123,8 @@ test("a party's tickets wait for a registered server, which gets the match and s
       let message;
       do message = JSON.parse(await party.next()); while (message.name !== "Play");
       assert.deepEqual([message.payload.matchId, message.payload.sessionId], [assign.payload.matchId, session.id]);
-      party.close();
+      // The client joins once the service closes its socket.
+      assert.equal(await party.next(), null);
     }
 
     // The assigned match holds only its players: a party that queues later waits for the next free server.

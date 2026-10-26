@@ -9,8 +9,8 @@ import { acceptWebSocket } from "../stomp/websocket.js";
 // /fortnite/api/game/v2/matchmakingservice/ticket/player/{id}?partyPlayerIds=&bucketId=<netcl>:0:<region>:<playlistId>,
 // then a WebSocket with "Authorization: Epic-Signed <ticketType> <payload> <signature>" that gets StatusUpdate
 // messages (payload.state Connecting, Waiting {totalPlayers, connectedPlayers}, Queued {ticketId, queuedPlayers,
-// estimatedWaitSec, status}, SessionAssignment {matchId}) and then Play {matchId, sessionId}. The client finds that
-// session and travels straight to its game port.
+// estimatedWaitSec, status}, SessionAssignment {matchId}) and then Play {matchId, sessionId}. When the service closes
+// the socket with 1000, the client finds that session and travels straight to its game port.
 //
 // Gameservers (-EnableMMS, MatchmakingServiceDedicatedServer): once their session is created they take a ticket from
 // /fortnite/api/game/v2/matchmakingservice/ticket/session/{sessionId}?bucketIds=<netcl>:0:<region>:*,...&minPlayers=
@@ -85,11 +85,16 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
     }
   }
 
+  // The client keeps the session id from Play and joins it when the service closes the socket with 1000
+  // (MatchmakingServiceClient HandleWebSocketConnectionClosed 0x3AB6530: InSessionAssignment with a session id → Finished).
   function play(party, sessionId, matchId) {
     for (const member of [party, ...party.members]) {
       member.done = true;
       member.ws.send(status("SessionAssignment", { matchId }));
-      setTimeout(() => member.ws.send(message("Play", { matchId, sessionId, joinDelaySec: 1 })), playDelayMs).unref?.();
+      setTimeout(() => {
+        member.ws.send(message("Play", { matchId, sessionId, joinDelaySec: 1 }));
+        member.ws.close(1000);
+      }, playDelayMs).unref?.();
     }
   }
 
