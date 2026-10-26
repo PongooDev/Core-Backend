@@ -9,7 +9,7 @@ const command = (accountId, name, profileId = "profile0", rvn = -1) =>
 
 const isoDate = (value) => typeof value === "string" && !Number.isNaN(Date.parse(value));
 
-test("a new profile0 has every stat the Cert client reads, in its struct shape", async () => {
+test("a new profile0 has every stat the Cert and 1.7.2 clients read, in its struct shape", async () => {
   const backend = await startBackend();
   try {
     const { token, accountId } = await userLogin(backend.port, "CoreTest");
@@ -19,7 +19,7 @@ test("a new profile0 has every stat the Cert client reads, in its struct shape",
     assert.deepEqual(Object.keys(stats).sort(), [
       "client_settings", "collection_book", "current_mtx_platform", "daily_purchases", "daily_rewards",
       "default_hero_squad_id", "gameplay_stats", "homebase", "in_app_purchases", "level", "mission_alert_redemption_record",
-      "mode_loadouts", "player_loadout", "quest_manager", "weekly_purchases", "xp"
+      "mode_loadouts", "named_counters", "player_loadout", "quest_manager", "weekly_purchases", "xp"
     ]);
     assert.equal(stats.level, 1);
     assert.equal(stats.xp, 0);

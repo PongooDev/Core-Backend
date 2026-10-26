@@ -121,3 +121,21 @@ test("RequestEventFlags answers with no active event and when to ask again; Incr
     backend.close();
   }
 });
+
+test("a 1.7.2 account holds Save the World's access token and the named_counters stat its front end reads; Cert has no such token", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "Access172");
+    const certProfile = profileOf(await command(backend.port, certBuild, player, "QueryProfile", "profile0"), "profile0");
+    assert.equal(Object.values(certProfile.items).some((item) => item.templateId.toLowerCase() === "token:campaignaccess"), false);
+    assert.deepEqual(certProfile.stats.attributes.named_counters, {});
+
+    const profile = profileOf(await command(backend.port, build172, player, "QueryProfile", "profile0"), "profile0");
+    assert.equal(Object.values(profile.items).filter((item) => item.templateId.toLowerCase() === "token:campaignaccess").length, 1);
+    assert.deepEqual(profile.stats.attributes.named_counters, {});
+    const again = profileOf(await command(backend.port, build172, player, "QueryProfile", "profile0"), "profile0");
+    assert.equal(Object.values(again.items).filter((item) => item.templateId.toLowerCase() === "token:campaignaccess").length, 1);
+  } finally {
+    backend.close();
+  }
+});

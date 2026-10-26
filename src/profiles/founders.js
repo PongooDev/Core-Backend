@@ -1,3 +1,4 @@
+import { getItem } from "../gamedata/items.js";
 import { findItem } from "./items.js";
 import { grant } from "./progress.js";
 import { findQuestItem } from "./quests.js";
@@ -42,12 +43,21 @@ export const heroBundleClasses = ["constructor", "ninja", "outlander", "soldier"
 const allHeroBundles = "foundersquest_herobundle_nochoice";
 const otherHeroBundles = (chosen) => `foundersquest_herobundle_no${chosen}`;
 
-export const foundersNeedSetUp = (profile) => !(profile.coreMigrations ?? []).includes(foundersMigration);
+// From 1.7.2 Save the World is behind an access token, which came with the founder's pack: DefaultGame.ini's
+// SubGameAccess gives Campaign LimitedAccess and Athena OpenAccess, and DefaultGameData's SubGameInfo names
+// Token:CampaignAccess as Campaign's AccessToken. Without it the front end only offers "The Save The World PvE campaign
+// is in paid Early Access" and its Learn More. Builds before 1.7.2 have no such item, so it is given wherever the
+// requesting build has one (a build without it hides it as a foreign template).
+export const campaignAccessToken = "Token:campaignaccess";
+const campaignAccessMissing = (profile) => Boolean(getItem(campaignAccessToken)) && !findItem(profile, campaignAccessToken);
+
+export const foundersNeedSetUp = (profile) => !(profile.coreMigrations ?? []).includes(foundersMigration) || campaignAccessMissing(profile);
 
 // Once per profile0: new accounts with their starting quests, older ones when they next load.
 export function setUpFounders(session) {
   const { profile } = session.profile("profile0");
-  if (!foundersNeedSetUp(profile)) return;
+  if (campaignAccessMissing(profile)) grant(session, campaignAccessToken, 1);
+  if ((profile.coreMigrations ?? []).includes(foundersMigration)) return;
   for (const templateId of [foundersEdition.token, foundersEdition.quest]) {
     if (!findItem(profile, templateId)) grant(session, templateId, 1);
   }
