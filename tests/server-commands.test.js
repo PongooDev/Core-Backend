@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { dedicatedServerToken, get, post, startBackend, userLogin } from "./helpers.js";
+import { atDifficulty } from "../src/world/theaters.js";
 
 const route = (kind, accountId, name, profileId = "profile0", rvn = -1) =>
   `/fortnite/api/game/v2/profile/${accountId}/${kind}/${name}?profileId=${profileId}&rvn=${rvn}`;
@@ -147,7 +148,10 @@ test("ModifyMission moves the session's zone to another difficulty row, and a wo
     await send("EndPrimaryMission", { matchmakingSessionId: sessionId, missionName: "m", missionStatus: "Succeeded", advance: [] });
     const packs = Object.values(profileOf(await send("QueryProfile", {})).items)
       .filter((item) => item.attributes.pack_source?.startsWith("Mission_")).map((item) => item.templateId).sort();
-    assert.deepEqual(packs, ["CardPack:zcp_crystal_shadowshard_minimal", "CardPack:zcp_heroxp_t14"]);
+    // The rewards are rolled from the mission and the row, so the day's mission decides which packs they are.
+    const expected = [...new Set(atDifficulty(mission, harder).missionRewards.items.map(({ itemType }) => itemType))].sort();
+    assert.equal(atDifficulty(mission, harder).missionRewards.tierGroupName, "Mission_Select_T14");
+    assert.deepEqual([...new Set(packs)].sort(), expected);
 
     // The next zone on this session starts from what the gameserver's world/validate replies again. A player's own token
     // validating another mission for the session doesn't move it.
