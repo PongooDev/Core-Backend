@@ -34,6 +34,7 @@ import { receiptRoutes } from "./services/fortnite/receipts.js";
 import { storefrontRoutes } from "./services/fortnite/storefront.js";
 import { twitchRoutes } from "./services/fortnite/twitch.js";
 import { versionRoutes } from "./services/fortnite/version.js";
+import { calendarRoutes } from "./services/fortnite/calendar.js";
 import { worldRoutes } from "./services/fortnite/world.js";
 import { friendsRoutes } from "./services/friends/lists.js";
 import { lightswitchRoutes } from "./services/lightswitch/status.js";
@@ -95,6 +96,7 @@ export function createApp(config, context = createContext(config)) {
   app.use(lightswitchRoutes(context));
   app.use(contentRoutes(context, config));
   app.use(versionRoutes(context));
+  app.use(calendarRoutes(context));
   app.use(cloudStorageRoutes(context));
   app.use(eulaRoutes(context));
   app.use(accessRoutes(context));

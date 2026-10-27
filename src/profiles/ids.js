@@ -1,5 +1,6 @@
-// metadata holds the storm shields and deployable bases from 1.7.2 (profiles/outposts.js).
-const knownProfiles = ["profile0", "metadata", "collection_book_*0", "theater*", "outpost*"];
+// metadata holds the storm shields and deployable bases from 1.7.2 (profiles/outposts.js). athena is Battle Royale's from
+// 1.8 (UFortMcpProfileAthena): its login queries it and gives up ("Profile Query Failed") when it isn't there.
+const knownProfiles = ["profile0", "metadata", "athena", "collection_book_*0", "theater*", "outpost*"];
 
 function matches(pattern, value) {
   const [prefix, suffix] = pattern.split("*");

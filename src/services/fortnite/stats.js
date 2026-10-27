@@ -30,5 +30,14 @@ export function statsRoutes({ tokens, stats }) {
     }));
   });
 
+  // 1.8's Battle Royale lobby asks for the player's leaderboard cohort, the accounts its leaderboard ranks them among
+  // ({accountId, cohortAccounts, expiresAt, playlist}, read by 1.8 sub_74DAD0). Core has no leaderboards (🟡), so a
+  // player's cohort is just them, for a day.
+  router.get("/fortnite/api/game/v2/leaderboards/cohort/:accountId", requireAuth(tokens), (req, res) => {
+    const { accountId } = req.params;
+    const expiresAt = new Date(Date.now() + 24 * 3600000).toISOString();
+    res.json({ accountId, cohortAccounts: [accountId], expiresAt, playlist: String(req.query.playlist ?? "") });
+  });
+
   return router;
 }

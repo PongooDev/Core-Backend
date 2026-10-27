@@ -37,6 +37,25 @@ const templates = {
     // (IncrementNamedCounterStat).
     named_counters: {}
   }),
+  // Battle Royale's profile from 1.8. Its loadout (FFortAthenaLoadout, built by 1.8's sub_41B610) reads the banner and
+  // a favorite_* item id per cosmetic slot from these; an empty id is the slot's default, so a player without
+  // cosmetics plays the default ones. level and accountLevel are the Battle Royale level shown in the lobby.
+  athena: () => ({
+    level: 1,
+    xp: 0,
+    accountLevel: 1,
+    banner_icon: defaultBanner.bannerIconId,
+    banner_color: defaultBanner.bannerColorId,
+    favorite_character: "",
+    favorite_hat: "",
+    favorite_backpack: "",
+    favorite_pickaxe: "",
+    favorite_glider: "",
+    favorite_loadingscreen: "",
+    favorite_battlebus: "",
+    favorite_dance: "",
+    favorite_victorypose: ""
+  }),
   // The gameserver reads the backpack profile's own player_loadout into UFortMcpProfileWorld::CachedPlayerLoadout and
   // won't save the profile while bPlayerIsNew is set; InitializeTheater clears it on the player's first zone.
   theater0: () => ({
