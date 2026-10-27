@@ -161,6 +161,7 @@ Core-Backend reads an optional `config.json` from the folder it is started in. C
 | `listenAddress` | `--listen <ip>` | | With remote access on, listen on this one address of your PC (e.g. its VPN address) instead of every interface. |
 | `publicAddress` | `--public-address <ip or host>` | | The address players on the internet are sent to for your gameservers and XMPP. A host name is looked up every 5 minutes. |
 | `battleRoyaleNews` | | Core's | The Battle Royale lobby's news box (1.7.2+): `{"title": "...", "body": "..."}`. |
+| `loginMessage` | | Core's | The login screen's message box (the patch notes): `{"title": "...", "body": "..."}`. |
 | | `--config <file>` | `config.json` | Config file to read. |
 
 `remoteAccess` and `publicAddress` can also be changed on the admin panel's Friends page, which saves them in

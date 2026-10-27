@@ -25,6 +25,8 @@ test("start-up checks answer the way the Cert client parses them", async () => {
     assert.deepEqual(page.body._images_, []);
     // Battle Royale's lobby news box (Core-Backend #61).
     assert.deepEqual(page.body.battleRoyaleNews.news.message, { title: "Battle Royale - 1.7.2", body: "Welcome to Battle Royale on Core!" });
+    // The login screen's message box.
+    assert.deepEqual(page.body.loginmessage.loginmessage.message, { title: "v1.7.2", body: "Welcome to Fortnite on Core!" });
   } finally {
     backend.close();
   }
