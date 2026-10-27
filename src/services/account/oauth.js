@@ -1,6 +1,7 @@
 import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
 import { dedicatedServerClient } from "../../accounts/clients.js";
+import { isServerAccountName, verifyPassword } from "../../accounts/password.js";
 import { sendError } from "../../errors.js";
 
 function basicClient(req) {
@@ -20,7 +21,7 @@ function invalidGrant(res, message) {
   sendError(res, 400, "errors.com.epicgames.account.oauth.invalid_grant", message);
 }
 
-export function oauthRoutes({ accounts, tokens }) {
+export function oauthRoutes({ accounts, tokens, settings }) {
   const router = express.Router();
 
   router.post("/account/api/oauth/token", (req, res) => {
@@ -39,7 +40,47 @@ export function oauthRoutes({ accounts, tokens }) {
       case "password": {
         const displayName = String(body.username ?? "").split("@")[0].trim();
         if (!displayName) return invalidGrant(res, "A username is required");
-        const account = accounts.getOrCreate(displayName);
+
+        const config = settings?.get?.() ?? {};
+        const requirePassword = config.requirePassword ?? false;
+        const allowAutoRegistration = config.allowAutoRegistration ?? (!requirePassword);
+
+        let account = accounts.findByName(displayName);
+        const isServer = isServerAccountName(displayName);
+
+        if (!account) {
+          if (isServer) {
+            // Dedicated server accounts (CoreServer{n} or Server{n}) can be created without a password
+            account = accounts.getOrCreate(displayName);
+          } else {
+            // Player accounts cannot be created without a password!
+            const plainPassword = String(body.password ?? "").trim();
+            if (allowAutoRegistration && plainPassword) {
+              account = accounts.createWithPassword(displayName, plainPassword);
+              if (!account) {
+                return sendError(res, 500, "errors.com.epicgames.server.internal_error",
+                  "Failed to create account. Please try again.");
+              }
+            } else {
+              return sendError(res, 400, "errors.com.epicgames.account.invalid_account_credentials",
+                "Your e-mail and/or password are incorrect, or this account does not exist. Only CoreServer{n} or Server{n} accounts can be created without a password. Please register first.");
+            }
+          }
+        }
+
+        // Server accounts bypass password authentication
+        if (!isServer && requirePassword) {
+          if (!account.password) {
+            return sendError(res, 400, "errors.com.epicgames.account.invalid_account_credentials",
+              "This account does not have a password configured. Please set a password in the web portal.");
+          }
+          const plainPassword = String(body.password ?? "");
+          if (!verifyPassword(plainPassword, account.password)) {
+            return sendError(res, 400, "errors.com.epicgames.account.invalid_account_credentials",
+              "Your e-mail and/or password are incorrect. Please check them and try again.");
+          }
+        }
+
         if (account.banned) return banned(res, account);
         accounts.recordLogin(account);
         return res.json(tokens.issueUser(clientId, account, "password"));

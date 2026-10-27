@@ -124,6 +124,18 @@
   label.check { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; color: var(--muted); }
   label.check input { accent-color: var(--blue); width: 16px; height: 16px; }
 
+  /* Switch toggle */
+  .switch { position: relative; display: inline-block; width: 44px; height: 24px; flex: none; cursor: pointer; }
+  .switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+  .slider { position: absolute; cursor: pointer; inset: 0; background: rgba(255, 255, 255, .14);
+    border: 1px solid var(--line-strong); transition: background-color .15s, border-color .15s; border-radius: 999px; }
+  .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px;
+    background: #fff; transition: transform .15s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 50%; box-shadow: 0 1px 3px rgba(0, 0, 0, .4); }
+  .switch input:checked + .slider { background: var(--blue); border-color: var(--blue); }
+  .switch input:focus-visible + .slider { outline: 2px solid var(--blue); outline-offset: 2px; }
+  .switch input:checked + .slider:before { transform: translateX(20px); }
+  .switch input:disabled + .slider { opacity: .4; cursor: default; }
+
   /* Stat tiles */
   .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
   .tile { padding: 16px 18px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); min-width: 0; }
@@ -297,6 +309,7 @@
       <a href="#/sessions" data-view="sessions"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="4" width="17" height="6.5" rx="2"/><rect x="3.5" y="13.5" width="17" height="6.5" rx="2"/><path d="M7.5 7.25h.01M7.5 16.75h.01M11 7.25h5M11 16.75h5"/></svg><span>Sessions</span></a>
       <a href="#/friends" data-view="friends"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.3 2.4 3.4 5.2 3.4 8.5s-1.1 6.1-3.4 8.5c-2.3-2.4-3.4-5.2-3.4-8.5s1.1-6.1 3.4-8.5z"/></svg><span>Friends</span></a>
       <a href="#/logs" data-view="logs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="m7 9.5 3 2.5-3 2.5M12.5 15h4.5"/></svg><span>Logs</span></a>
+      <a href="#/settings" data-view="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Settings</span></a>
     </nav>
     <div class="server" title="Backend status"><span class="pulse" id="pulse"></span><span id="server-line">Connecting…</span></div>
   </aside>
@@ -326,6 +339,12 @@ function el(tag, props = {}, ...children) {
 }
 const btn = (label, onclick, kind = "", extra = {}) => el("button", { type: "button", class: `btn ${kind}`, onclick, ...extra }, el("span", { text: label }));
 const chip = (label, kind = "") => el("span", { class: `chip ${kind}` }, el("span", { text: label }));
+const toggleSwitch = (checked, onchange, disabled = false) => {
+  const input = el("input", { type: "checkbox", checked: Boolean(checked), disabled: Boolean(disabled),
+    onchange: (e) => onchange(e.target.checked) });
+  const slider = el("span", { class: "slider" });
+  return el("label", { class: "switch" }, input, slider);
+};
 const fmt = (number) => Number(number ?? 0).toLocaleString();
 const kinds = { heroes: "Heroes", schematics: "Schematics", survivors: "Survivors", leads: "Lead survivors", defenders: "Defenders", llamas: "Llamas",
   vouchers: "Vouchers", resources: "Resources", consumables: "Consumables", transform: "Transform keys", expeditions: "Expeditions",
@@ -407,7 +426,7 @@ function route() {
   const [, view = "dashboard", accountId, tab] = location.hash.split("/");
   for (const timer of state.timers) clearInterval(timer);
   state.timers = [];
-  const next = ["dashboard", "players", "sessions", "friends", "logs"].includes(view) ? view : "dashboard";
+  const next = ["dashboard", "players", "sessions", "friends", "logs", "settings"].includes(view) ? view : "dashboard";
   if (next !== state.view || !$("view").childElementCount) $("view").replaceChildren(el("div", { class: "empty", text: "Loading…" }));
   state.view = next;
   for (const link of document.querySelectorAll("nav.nav a")) link.setAttribute("aria-current", link.dataset.view === state.view ? "page" : "false");
@@ -416,7 +435,7 @@ function route() {
     if (!accountId) { state.accountId = null; state.account = null; }
     if (tab) state.tab = tab;
   }
-  ({ dashboard: showDashboard, players: showPlayers, sessions: showSessions, friends: showFriends, logs: showLogs })[state.view]();
+  ({ dashboard: showDashboard, players: showPlayers, sessions: showSessions, friends: showFriends, logs: showLogs, settings: showSettings })[state.view]();
 }
 window.addEventListener("hashchange", route);
 const every = (ms, fn) => state.timers.push(setInterval(fn, ms));
@@ -809,6 +828,20 @@ function accountTab(a) {
         ? el("div", { class: "actions" }, chip(`Banned ${ago(a.banned.at)}${a.banned.reason ? ": " + a.banned.reason : ""}`, "bad"), btn("Unban", () => post("unban", {}, `${a.displayName} unbanned`), "primary"))
         : el("div", { class: "actions" }, reason, btn("Ban", () => confirm(`Ban ${a.displayName}?`) && post("ban", { reason: reason.value }, `${a.displayName} banned`), "danger"),
           btn("Kick", () => post("kick", {}, `${a.displayName} was logged out`), "ghost"))),
+    el("section", { class: "panel" }, el("h2", { text: "Password" }),
+      el("p", { class: "note", text: a.isServer
+        ? "This is a dedicated gameserver account (CoreServer{n} or Server{n}). Server accounts do not use or require passwords."
+        : "Manage this player's credentials. Setting or changing a password invalidates active sessions and requires them to log in again." }),
+      el("div", { class: "actions" },
+        a.isServer ? chip("Dedicated Server (No password required)", "sky")
+          : a.hasPassword ? chip("Password configured", "good") : chip("No password set", "warn"),
+        !a.isServer ? btn("Set / Reset password…", async () => {
+          const pw = prompt(`Enter new password for ${a.displayName} (min 8 characters):`);
+          if (pw === null) return;
+          if (pw.length < 8) return toast("Password must be at least 8 characters", true);
+          const updated = await act(api(`/admin/api/accounts/${a.id}/password/reset`, { newPassword: pw }), `Password updated for ${a.displayName}`);
+          if (updated) setAccount(updated);
+        }, "primary small") : null)),
     el("section", { class: "panel" }, el("h2", { text: "Profiles on disk" }),
       el("p", { class: "note", text: `Saved: ${a.profiles.join(", ") || "none yet"}. A reset deletes the chosen profiles; the next login makes them fresh, like a new account. The player is logged out first.` }),
       el("div", { class: "option-row" }, profileBoxes),
@@ -898,7 +931,7 @@ async function showFriends() {
           () => save({ remoteAccess: !network.remoteAccess }, network.remoteAccess ? "Remote access is off" : "Remote access is on"),
           network.remoteAccess ? "danger" : "primary", { disabled: fixed("remoteAccess") })),
       fixed("remoteAccess") ? el("p", { class: "note", text: "Set on the backend's command line (--remote-access or --local-only), so it can't be changed here." }) : null,
-      el("p", { class: "note", style: "margin-top:12px", text: "Core doesn't check passwords: anyone who can reach this port can log in with any name. Only share the address with people you trust; Players → Account can kick and ban." })),
+      el("p", { class: "note", style: "margin-top:12px", text: "Password authentication and the player registration portal can be configured under Settings." })),
     el("section", { class: "panel" },
       el("div", { class: "panel-head" }, el("h2", { text: "Public address" }),
         network.publicIp && network.publicIp !== network.publicAddress ? chip(`Looks up to ${network.publicIp}`, "sky") : null,
@@ -958,6 +991,70 @@ async function showLogs() {
   renderLogLines();
   await pullLogs();
   every(2000, pullLogs);
+}
+
+/* ---------- settings ---------- */
+async function showSettings() {
+  const settings = await act(api("/admin/api/settings"));
+  if (!settings || state.view !== "settings") return;
+
+  const save = async (changes, msg) => {
+    const updated = await act(api("/admin/api/settings", changes), msg);
+    if (updated) showSettings();
+  };
+
+  const portalLink = settings.portalUrl || `${location.origin}/register`;
+
+  $("view").replaceChildren(
+    el("div", { class: "view-head" },
+      el("div", {},
+        el("h1", { text: "Server Settings" }),
+        el("div", { class: "muted", text: "Configure authentication, password requirements, and the player web portal." })),
+      el("div", { class: "actions" }, btn("Refresh", showSettings, "ghost"))),
+
+    el("section", { class: "panel" },
+      el("div", { class: "panel-head", style: "margin-bottom:8px" },
+        el("div", { class: "actions" },
+          el("h2", { text: "Password Authentication" }),
+          settings.requirePassword ? chip("Required", "good") : chip("Disabled")),
+        toggleSwitch(settings.requirePassword, (checked) =>
+          save({ requirePassword: checked }, checked ? "Password requirement enabled" : "Password requirement disabled"))),
+      el("p", { class: "note", text: settings.requirePassword
+        ? "Passwords are required for in-game login. Players must register an account and enter the matching password to authenticate."
+        : "Passwords are not checked: any player connecting to your backend can log in with any name and password." })),
+
+    el("div", { class: "grid cols-2", style: "margin-top:16px" },
+      el("section", { class: "panel" },
+        el("div", { class: "panel-head", style: "margin-bottom:8px" },
+          el("div", { class: "actions" },
+            el("h2", { text: "Web Portal Registration" }),
+            settings.allowRegistration ? chip("Open", "good") : chip("Closed")),
+          toggleSwitch(settings.allowRegistration, (checked) =>
+            save({ allowRegistration: checked }, checked ? "Registration opened" : "Registration closed"))),
+        el("p", { class: "note", text: "Controls whether new players can self-register their accounts and passwords via the public web portal." })),
+
+      el("section", { class: "panel" },
+        el("div", { class: "panel-head", style: "margin-bottom:8px" },
+          el("div", { class: "actions" },
+            el("h2", { text: "In-Game Auto-Creation" }),
+            settings.allowAutoRegistration ? chip("Enabled", "warn") : chip("Disabled")),
+          toggleSwitch(settings.allowAutoRegistration, (checked) =>
+            save({ allowAutoRegistration: checked }, checked ? "In-game auto-creation enabled" : "In-game auto-creation disabled"))),
+        el("p", { class: "note", text: "When enabled, logging in with an unknown name automatically creates a new account in-game with the provided password. Only dedicated server accounts (CoreServer{n} or Server{n}) can be created without a password." }))),
+
+    el("section", { class: "panel", style: "margin-top:16px" },
+      el("div", { class: "panel-head" },
+        el("h2", { text: "Player Web Portal" }),
+        settings.publicAddress ? chip(`Public: ${settings.publicAddress}`, "sky") : null),
+      el("p", { class: "note", text: "Share this URL with players so they can register their account or change their password in their browser." }),
+      el("div", { class: "actions", style: "margin-top:12px; align-items:center;" },
+        el("input", { class: "field", value: portalLink, readonly: true, style: "flex:1 1 320px; font-family:var(--mono);" }),
+        btn("Copy link", () => {
+          navigator.clipboard.writeText(portalLink);
+          toast("Portal URL copied to clipboard");
+        }, "ghost"),
+        btn("Open portal", () => window.open(portalLink, "_blank"), "primary")))
+  );
 }
 
 /* ---------- header status ---------- */

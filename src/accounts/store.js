@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { readJson, writeJson } from "../json-file.js";
+import { hashPassword, isServerAccountName } from "./password.js";
 
 export function createAccountStore(dataDir) {
   const dir = path.join(dataDir, "accounts");
@@ -39,11 +40,43 @@ export function createAccountStore(dataDir) {
     getOrCreate(displayName) {
       let account = byName.get(displayName.toLowerCase());
       if (!account) {
+        if (!isServerAccountName(displayName)) {
+          throw new Error(`Only CoreServer{n} or Server{n} accounts can be created without a password (attempted: "${displayName}")`);
+        }
         account = { id: crypto.randomBytes(16).toString("hex"), displayName, created: new Date().toISOString() };
         save(account);
         remember(account);
       }
       return account;
+    },
+
+    createWithPassword(displayName, plainPassword) {
+      if (byName.has(displayName.toLowerCase())) return null;
+      if (!plainPassword || typeof plainPassword !== "string" || !plainPassword.trim()) {
+        throw new Error("A non-empty password is required to create an account");
+      }
+      if (isServerAccountName(displayName)) {
+        throw new Error("Server account names (CoreServer{n} or Server{n}) cannot be created with a password");
+      }
+      const account = {
+        id: crypto.randomBytes(16).toString("hex"),
+        displayName,
+        created: new Date().toISOString(),
+        password: hashPassword(plainPassword)
+      };
+      save(account);
+      remember(account);
+      return account;
+    },
+
+    setPassword(account, plainPassword) {
+      account.password = hashPassword(plainPassword);
+      save(account);
+    },
+
+    clearPassword(account) {
+      delete account.password;
+      save(account);
     },
 
     recordLogin(account) {

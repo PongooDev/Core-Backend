@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Core</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230078f2'/%3E%3Cpath d='M21 11.5a6 6 0 1 0 0 9' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #121212;
+    --surface: #1e1e1e;
+    --surface-2: #282828;
+    --surface-3: #343434;
+    --field: #161616;
+    --line: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.16);
+    --text: #ffffff;
+    --muted: rgba(255, 255, 255, 0.65);
+    --faint: rgba(255, 255, 255, 0.42);
+    --blue: #0078f2;
+    --blue-hover: #268ef5;
+    --blue-soft: rgba(0, 120, 242, 0.16);
+    --good: #3ccf6e;
+    --good-soft: rgba(60, 207, 110, 0.14);
+    --warn: #f5b13d;
+    --bad: #ef4444;
+    --bad-soft: rgba(239, 68, 68, 0.15);
+    --radius: 14px;
+    --radius-sm: 8px;
+    --sans: "Inter", "Segoe UI Variable Text", system-ui, -apple-system, sans-serif;
+    --display: "Barlow Condensed", "Bahnschrift SemiBold Condensed", sans-serif;
+    --mono: "Cascadia Mono", Consolas, monospace;
+    font-family: var(--sans);
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--bg); }
+  body {
+    margin: 0; min-height: 100vh; color: var(--text); background: var(--bg);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 32px 16px; -webkit-font-smoothing: antialiased;
+  }
+  .container { width: 100%; max-width: 480px; margin: 0 auto; }
+  
+  .brand-header {
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+    margin-bottom: 24px;
+  }
+  .brand-logo {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 44px; height: 44px; border-radius: 12px; background: var(--blue);
+    box-shadow: 0 6px 20px rgba(0, 120, 242, 0.35); flex: none;
+  }
+  h1 {
+    font-family: var(--display); font-size: 38px; font-weight: 800;
+    letter-spacing: 0.02em; margin: 0; text-transform: uppercase; line-height: 1;
+  }
+  
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 26px; box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+  }
+  
+  .tabs {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+    background: var(--field); padding: 4px; border-radius: var(--radius-sm);
+    margin-bottom: 22px; border: 1px solid var(--line);
+  }
+  .tab-btn {
+    background: transparent; border: 0; padding: 9px 12px; color: var(--muted);
+    font-size: 13px; font-weight: 600; border-radius: 6px; cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .tab-btn:hover { color: #fff; }
+  .tab-btn.active {
+    background: var(--surface-2); color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  }
+  
+  .form-group { margin-bottom: 18px; }
+  label {
+    display: block; font-size: 12px; font-weight: 600; color: var(--muted);
+    margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .input-wrap {
+    position: relative; display: flex; align-items: center;
+  }
+  input.field {
+    width: 100%; height: 42px; background: var(--field); border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm); color: #fff; padding: 0 14px; font-size: 14px;
+    transition: border-color 0.15s, box-shadow 0.15s; outline: none;
+  }
+  input.field:focus {
+    border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-soft);
+  }
+  input.field::placeholder { color: var(--faint); }
+  
+  .toggle-pw {
+    position: absolute; right: 10px; background: transparent; border: 0;
+    color: var(--muted); cursor: pointer; padding: 4px; display: grid; place-items: center;
+  }
+  .toggle-pw:hover { color: #fff; }
+  
+  .helper {
+    font-size: 12px; color: var(--muted); margin-top: 5px; min-height: 16px;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .helper.error { color: var(--bad); }
+  .helper.good { color: var(--good); }
+  
+  .btn-submit {
+    width: 100%; height: 44px; background: var(--blue); color: #fff; border: 0;
+    border-radius: var(--radius-sm); font-size: 15px; font-weight: 600; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background 0.15s, transform 0.05s; margin-top: 10px;
+  }
+  .btn-submit:hover { background: var(--blue-hover); }
+  .btn-submit:active { transform: translateY(1px); }
+  .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+  
+  .alert {
+    padding: 12px 14px; border-radius: var(--radius-sm); font-size: 13px;
+    margin-bottom: 18px; display: none; line-height: 1.45;
+  }
+  .alert.show { display: block; }
+  .alert.error { background: var(--bad-soft); border: 1px solid rgba(239, 68, 68, 0.35); color: #ff9d9d; }
+  .alert.success { background: var(--good-soft); border: 1px solid rgba(60, 207, 110, 0.35); color: #76e99d; }
+  
+  .success-box {
+    text-align: center; padding: 12px 0; display: none;
+  }
+  .success-box.show { display: block; }
+  .success-icon {
+    width: 52px; height: 52px; border-radius: 50%; background: var(--good-soft);
+    color: var(--good); display: grid; place-items: center; margin: 0 auto 16px;
+  }
+  .success-box h2 {
+    font-family: var(--display); font-size: 26px; margin: 0 0 6px; text-transform: uppercase;
+  }
+  .success-box p { color: var(--muted); font-size: 14px; margin: 0 0 18px; }
+  .info-snippet {
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius-sm);
+    padding: 12px 14px; font-family: var(--mono); font-size: 13px; text-align: left;
+    margin-bottom: 18px; color: #a9d5ff; word-break: break-all;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="brand-header">
+    <div class="brand-logo" aria-hidden="true">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round"><path d="M17 7.5a6.5 6.5 0 1 0 0 9"/></svg>
+    </div>
+    <h1>Core</h1>
+  </div>
+
+  <div class="card">
+    <div class="tabs">
+      <button type="button" class="tab-btn active" id="tab-btn-register" onclick="switchTab('register')">Create Account</button>
+      <button type="button" class="tab-btn" id="tab-btn-change" onclick="switchTab('change')">Change Password</button>
+    </div>
+
+    <div id="alert-msg" class="alert"></div>
+
+    <!-- Registration Form -->
+    <form id="form-register" onsubmit="handleRegister(event)">
+      <div class="form-group">
+        <label for="reg-username">Player Name / Username</label>
+        <div class="input-wrap">
+          <input type="text" id="reg-username" class="field" placeholder="e.g. ShadowKnight" required minlength="3" maxlength="24" autocomplete="username">
+        </div>
+        <div id="username-helper" class="helper">3 to 24 characters (letters, numbers, hyphens, underscores)</div>
+      </div>
+
+      <div class="form-group">
+        <label for="reg-password">Password</label>
+        <div class="input-wrap">
+          <input type="password" id="reg-password" class="field" placeholder="At least 8 characters" required minlength="8" maxlength="128" autocomplete="new-password">
+          <button type="button" class="toggle-pw" onclick="togglePw('reg-password', this)" title="Show/Hide Password" aria-label="Toggle password visibility">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="reg-confirm">Confirm Password</label>
+        <div class="input-wrap">
+          <input type="password" id="reg-confirm" class="field" placeholder="Re-enter password" required minlength="8" maxlength="128" autocomplete="new-password">
+          <button type="button" class="toggle-pw" onclick="togglePw('reg-confirm', this)" title="Show/Hide Password" aria-label="Toggle password visibility">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" id="btn-reg-submit" class="btn-submit">
+        <span>Create Account</span>
+      </button>
+    </form>
+
+    <!-- Registration Success View -->
+    <div id="reg-success" class="success-box">
+      <div class="success-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      </div>
+      <h2>Account Ready!</h2>
+      <p>Your account <strong id="success-username" style="color:#fff"></strong> is registered and ready to play.</p>
+      <div class="info-snippet" id="success-instructions">
+        Log in with your username and password in the game launcher.
+      </div>
+      <button type="button" class="btn-submit" onclick="resetRegisterForm()">Register Another Account</button>
+    </div>
+
+    <!-- Change Password Form -->
+    <form id="form-change" style="display:none" onsubmit="handleChangePassword(event)">
+      <div class="form-group">
+        <label for="chg-username">Player Name / Username</label>
+        <div class="input-wrap">
+          <input type="text" id="chg-username" class="field" placeholder="Your existing username" required autocomplete="username">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="chg-current">Current Password</label>
+        <div class="input-wrap">
+          <input type="password" id="chg-current" class="field" placeholder="Existing password (if set)" autocomplete="current-password">
+          <button type="button" class="toggle-pw" onclick="togglePw('chg-current', this)" title="Show/Hide Password" aria-label="Toggle password visibility">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="chg-new">New Password</label>
+        <div class="input-wrap">
+          <input type="password" id="chg-new" class="field" placeholder="At least 8 characters" required minlength="8" maxlength="128" autocomplete="new-password">
+          <button type="button" class="toggle-pw" onclick="togglePw('chg-new', this)" title="Show/Hide Password" aria-label="Toggle password visibility">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" id="btn-chg-submit" class="btn-submit">
+        <span>Update Password</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+let debounceTimer = null;
+const $ = (id) => document.getElementById(id);
+
+function showAlert(text, isError = true) {
+  const node = $("alert-msg");
+  node.textContent = text;
+  node.className = "alert show " + (isError ? "error" : "success");
+}
+
+function clearAlert() {
+  const node = $("alert-msg");
+  node.className = "alert";
+  node.textContent = "";
+}
+
+function switchTab(tab) {
+  clearAlert();
+  if (tab === "register") {
+    $("tab-btn-register").classList.add("active");
+    $("tab-btn-change").classList.remove("active");
+    $("form-register").style.display = "block";
+    $("form-change").style.display = "none";
+    $("reg-success").classList.remove("show");
+  } else {
+    $("tab-btn-change").classList.add("active");
+    $("tab-btn-register").classList.remove("active");
+    $("form-register").style.display = "none";
+    $("reg-success").classList.remove("show");
+    $("form-change").style.display = "block";
+  }
+}
+
+function togglePw(inputId, btn) {
+  const input = $(inputId);
+  if (input.type === "password") {
+    input.type = "text";
+    btn.style.color = "var(--blue)";
+  } else {
+    input.type = "password";
+    btn.style.color = "var(--muted)";
+  }
+}
+
+// Live username availability check
+$("reg-username").addEventListener("input", (e) => {
+  clearTimeout(debounceTimer);
+  const name = e.target.value.trim();
+  const helper = $("username-helper");
+  if (!name || name.length < 3) {
+    helper.className = "helper";
+    helper.textContent = "3 to 24 characters (letters, numbers, hyphens, underscores)";
+    return;
+  }
+  debounceTimer = setTimeout(async () => {
+    try {
+      const res = await fetch(`/api/check-username?username=${encodeURIComponent(name)}`);
+      const data = await res.json();
+      if (!res.ok || data.error) {
+        helper.className = "helper error";
+        helper.textContent = data.error || "Invalid username";
+      } else if (data.available) {
+        helper.className = "helper good";
+        helper.textContent = "✓ Username is available";
+      } else {
+        helper.className = "helper error";
+        helper.textContent = "✗ Username is already taken";
+      }
+    } catch {
+      // Ignore network noise during typing
+    }
+  }, 350);
+});
+
+async function handleRegister(e) {
+  e.preventDefault();
+  clearAlert();
+
+  const username = $("reg-username").value.trim();
+  const password = $("reg-password").value;
+  const confirm = $("reg-confirm").value;
+
+  if (password !== confirm) {
+    showAlert("Passwords do not match.", true);
+    return;
+  }
+
+  const btn = $("btn-reg-submit");
+  btn.disabled = true;
+  btn.innerHTML = "<span>Registering…</span>";
+
+  try {
+    const res = await fetch("/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.errorMessage || "Registration failed.");
+    }
+
+    $("form-register").style.display = "none";
+    $("success-username").textContent = data.displayName || username;
+    $("reg-success").classList.add("show");
+  } catch (err) {
+    showAlert(err.message, true);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = "<span>Create Account</span>";
+  }
+}
+
+function resetRegisterForm() {
+  $("form-register").reset();
+  $("username-helper").className = "helper";
+  $("username-helper").textContent = "3 to 24 characters (letters, numbers, hyphens, underscores)";
+  $("reg-success").classList.remove("show");
+  $("form-register").style.display = "block";
+  clearAlert();
+}
+
+async function handleChangePassword(e) {
+  e.preventDefault();
+  clearAlert();
+
+  const username = $("chg-username").value.trim();
+  const currentPassword = $("chg-current").value;
+  const newPassword = $("chg-new").value;
+
+  const btn = $("btn-chg-submit");
+  btn.disabled = true;
+  btn.innerHTML = "<span>Updating…</span>";
+
+  try {
+    const res = await fetch("/api/change-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, currentPassword, newPassword })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.errorMessage || "Password change failed.");
+    }
+
+    showAlert(data.message || "Password updated successfully! Any active sessions have been logged out.", false);
+    $("form-change").reset();
+  } catch (err) {
+    showAlert(err.message, true);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = "<span>Update Password</span>";
+  }
+}
+
+// Fetch public portal status
+fetch("/api/portal/status").then(r => r.json()).then(data => {
+  if (data.allowRegistration === false) {
+    $("btn-reg-submit").disabled = true;
+    $("btn-reg-submit").textContent = "Registration Closed";
+    showAlert("Public registration is currently disabled by the server host.", true);
+  }
+}).catch(() => {});
+</script>
+</body>
+</html>

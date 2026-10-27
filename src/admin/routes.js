@@ -25,6 +25,8 @@ import { notifyProfiles } from "../services/mcp/profile.js";
 import { categories, currencies, describeItem, isSingleItem, searchCatalog, stormShields } from "./describe.js";
 import { requireLoopback, requirePanelRequest } from "./local.js";
 
+import { isServerAccountName, validatePassword } from "../accounts/password.js";
+
 const here = path.dirname(fileURLToPath(import.meta.url));
 const panel = path.join(here, "panel.html");
 const root = path.join(here, "..", "..");
@@ -58,7 +60,7 @@ const sum = (profile, templates) => Object.values(profile?.items ?? {})
   .reduce((total, item) => total + item.quantity, 0);
 
 export function adminRoutes(context) {
-  const { accounts, profiles, tokens, sessions, xmpp, stomp, dataDir } = context;
+  const { accounts, profiles, tokens, sessions, xmpp, stomp, settings, network, dataDir } = context;
   const router = express.Router();
   router.use("/admin", requireLoopback, requirePanelRequest);
 
@@ -79,7 +81,9 @@ export function adminRoutes(context) {
       vbucks: profile ? sum(profile, currencies[0].templates) : 0,
       tutorialCompleted: profile ? tutorialCompleted(profile) : false,
       online: online(account.id),
-      banned: account.banned ?? null
+      banned: account.banned ?? null,
+      hasPassword: Boolean(account.password),
+      isServer: isServerAccountName(account.displayName)
     };
   }
 
@@ -408,6 +412,60 @@ export function adminRoutes(context) {
     kick(account);
     accounts.remove(account);
     res.json({ deleted: account.id });
+  });
+
+  // Admin password reset: sets or replaces the password for any player account.
+  router.post("/admin/api/accounts/:accountId/password/reset", (req, res) => {
+    const account = accounts.get(req.params.accountId);
+    if (!account) return notFound(res, req.originalUrl);
+    const newPassword = String(req.body?.newPassword ?? "");
+    const error = validatePassword(newPassword);
+    if (error) return invalid(res, error);
+    accounts.setPassword(account, newPassword);
+    kick(account);
+    res.json(details(account));
+  });
+
+  function portalUrl(req) {
+    const net = network?.settings?.() ?? {};
+    const res = network?.resolution?.() ?? {};
+    const port = network?.listening?.port || req.socket?.localPort || 3551;
+    const protocol = req.protocol || "http";
+
+    const publicHost = net.publicAddress ? (res.address || net.publicAddress) : (res.address || null);
+    if (publicHost) {
+      return `${protocol}://${publicHost}:${port}/register`;
+    }
+    return `${protocol}://${req.get("host")}/register`;
+  }
+
+  // Get current server settings
+  router.get("/admin/api/settings", (req, res) => {
+    const current = settings?.get?.() ?? {};
+    const net = network?.settings?.() ?? {};
+    const resInfo = network?.resolution?.() ?? {};
+    res.json({
+      ...current,
+      publicAddress: net.publicAddress ? (resInfo.address || net.publicAddress) : (resInfo.address || null),
+      portalUrl: portalUrl(req)
+    });
+  });
+
+  // Update server settings
+  router.post("/admin/api/settings", (req, res) => {
+    if (!settings?.update) return invalid(res, "Settings store not available");
+    const updated = settings.update({
+      requirePassword: req.body?.requirePassword,
+      allowRegistration: req.body?.allowRegistration,
+      allowAutoRegistration: req.body?.allowAutoRegistration
+    });
+    const net = network?.settings?.() ?? {};
+    const resInfo = network?.resolution?.() ?? {};
+    res.json({
+      ...updated,
+      publicAddress: net.publicAddress ? (resInfo.address || net.publicAddress) : (resInfo.address || null),
+      portalUrl: portalUrl(req)
+    });
   });
 
   router.get("/admin/api/sessions", (req, res) => {
