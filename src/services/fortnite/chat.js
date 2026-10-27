@@ -24,18 +24,21 @@ export function chatRoutes({ tokens, xmpp }) {
   // 1.7.2 asks per sub game (/recommendGeneralChatRooms/{Campaign|Athena}/{platform}) and reads a new
   // FGeneralChatRecommendations: globalChatRooms (was elderChatRooms) and founderChatRooms, each room with a
   // publicFacingShardName, and the flags bNeedsPaidAccessForGlobalChat, bNeedsPaidAccessForFounderChat,
-  // bIsGlobalChatDisabled, bIsFounderChatDisabled and bIsSubGameGlobalChatDisabled. Battle Royale gets a room of its own
-  // and, as it wasn't part of the founder's pack, no founders room (🟡 Core's rooms).
+  // bIsGlobalChatDisabled, bIsFounderChatDisabled and bIsSubGameGlobalChatDisabled. Battle Royale gets a global room of
+  // its own (🟡 Core's rooms) and the same Founders room as Save the World: the client asks again for each sub game it
+  // enters (sub_7191F0) and its handler (sub_7147B0) treats an empty founderChatRooms with bIsFounderChatDisabled as
+  // "founder chat is currently disabled in the backend", which the Founders tab shows as "Currently unavailable."
+  // (Core-Backend #62: it only worked once Save the World had joined the Founders room).
   router.post("/fortnite/api/game/v2/chat/:accountId/recommendGeneralChatRooms/:subGame/:platform", requireAuth(tokens), requireOwnAccount, (req, res) => {
     const athena = req.params.subGame.toLowerCase() === "athena";
     const shard = (roomName) => ({ ...room(roomName), publicFacingShardName: "" });
     res.json({
       globalChatRooms: [shard(athena ? generalChatRooms.athena : generalChatRooms.global)],
-      founderChatRooms: athena ? [] : [shard(generalChatRooms.founders)],
+      founderChatRooms: [shard(generalChatRooms.founders)],
       bNeedsPaidAccessForGlobalChat: false,
       bNeedsPaidAccessForFounderChat: false,
       bIsGlobalChatDisabled: false,
-      bIsFounderChatDisabled: athena,
+      bIsFounderChatDisabled: false,
       bIsSubGameGlobalChatDisabled: false
     });
   });
