@@ -16,7 +16,7 @@ export function requirePanelRequest(req, res, next) {
   if (!localHostnames.has(req.hostname?.toLowerCase())) {
     return sendError(res, 403, "errors.com.epicgames.common.missing_permission", "Open the admin panel through localhost");
   }
-  if (req.method !== "GET" && !req.is("application/json")) {
+  if (req.method !== "GET" && req.method !== "DELETE" && !req.is("application/json")) {
     return sendError(res, 415, "errors.com.epicgames.common.unsupported_media_type", "Admin writes must be JSON");
   }
   next();

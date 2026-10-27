@@ -60,7 +60,7 @@ const sum = (profile, templates) => Object.values(profile?.items ?? {})
   .reduce((total, item) => total + item.quantity, 0);
 
 export function adminRoutes(context) {
-  const { accounts, profiles, tokens, sessions, xmpp, stomp, settings, network, dataDir } = context;
+  const { accounts, profiles, tokens, sessions, xmpp, stomp, settings, network, dataDir, resetTokens } = context;
   const router = express.Router();
   router.use("/admin", requireLoopback, requirePanelRequest);
 
@@ -415,13 +415,13 @@ export function adminRoutes(context) {
   });
 
   // Admin password reset: sets or replaces the password for any player account.
-  router.post("/admin/api/accounts/:accountId/password/reset", (req, res) => {
+  router.post("/admin/api/accounts/:accountId/password/reset", async (req, res) => {
     const account = accounts.get(req.params.accountId);
     if (!account) return notFound(res, req.originalUrl);
-    const newPassword = String(req.body?.newPassword ?? "");
+    const newPassword = String(req.body?.newPassword ?? "").trim();
     const error = validatePassword(newPassword);
     if (error) return invalid(res, error);
-    accounts.setPassword(account, newPassword);
+    await accounts.setPassword(account, newPassword);
     kick(account);
     res.json(details(account));
   });
@@ -429,7 +429,7 @@ export function adminRoutes(context) {
   function portalUrl(req) {
     const net = network?.settings?.() ?? {};
     const res = network?.resolution?.() ?? {};
-    const port = network?.listening?.port || req.socket?.localPort || 3551;
+    const port = network?.listening?.port || req.socket?.localPort || 5595;
     const protocol = req.protocol || "http";
 
     const publicHost = net.publicAddress ? (res.address || net.publicAddress) : (res.address || null);
@@ -438,6 +438,56 @@ export function adminRoutes(context) {
     }
     return `${protocol}://${req.get("host")}/register`;
   }
+
+  function resetPasswordUrl(req, token) {
+    const net = network?.settings?.() ?? {};
+    const res = network?.resolution?.() ?? {};
+    const port = network?.listening?.port || req.socket?.localPort || 5595;
+    const protocol = req.protocol || "http";
+
+    const publicHost = net.publicAddress ? (res.address || net.publicAddress) : (res.address || null);
+    if (publicHost) {
+      return `${protocol}://${publicHost}:${port}/reset-password?token=${token}`;
+    }
+    return `${protocol}://${req.get("host")}/reset-password?token=${token}`;
+  }
+
+  // Admin generates a single-use, 24-hour Password Reset Link for an account
+  router.post("/admin/api/accounts/:accountId/password-reset-link", (req, res) => {
+    const account = accounts.get(req.params.accountId);
+    if (!account) return notFound(res, req.originalUrl);
+    if (!resetTokens?.createToken) return invalid(res, "Reset token service not available");
+    const entry = resetTokens.createToken(account);
+    res.json({
+      success: true,
+      token: entry.token,
+      url: resetPasswordUrl(req, entry.token),
+      expiresAt: entry.expiresAt
+    });
+  });
+
+  // Hosting IPs configuration (for dedicated server passwordless bypass)
+  const getHostingIps = (req, res) => {
+    const current = settings?.get?.() ?? {};
+    res.json({ allowedHostingIps: current.allowedHostingIps ?? ["127.0.0.1", "::1"] });
+  };
+  const addHostingIp = (req, res) => {
+    const ip = String(req.body?.ip ?? "").trim();
+    if (!ip) return invalid(res, "IP address is required");
+    const updated = settings?.addHostingIp?.(ip) ?? settings?.get?.();
+    res.json({ allowedHostingIps: updated.allowedHostingIps });
+  };
+  const removeHostingIp = (req, res) => {
+    const ip = decodeURIComponent(req.params.ip).trim();
+    const updated = settings?.removeHostingIp?.(ip) ?? settings?.get?.();
+    res.json({ allowedHostingIps: updated.allowedHostingIps });
+  };
+  router.get("/admin/api/sessions/hosting-ips", getHostingIps);
+  router.get("/admin/api/settings/hosting-ips", getHostingIps);
+  router.post("/admin/api/sessions/hosting-ips", addHostingIp);
+  router.post("/admin/api/settings/hosting-ips", addHostingIp);
+  router.delete("/admin/api/sessions/hosting-ips/:ip", removeHostingIp);
+  router.delete("/admin/api/settings/hosting-ips/:ip", removeHostingIp);
 
   // Get current server settings
   router.get("/admin/api/settings", (req, res) => {
@@ -457,7 +507,8 @@ export function adminRoutes(context) {
     const updated = settings.update({
       requirePassword: req.body?.requirePassword,
       allowRegistration: req.body?.allowRegistration,
-      allowAutoRegistration: req.body?.allowAutoRegistration
+      allowAutoRegistration: req.body?.allowAutoRegistration,
+      allowedHostingIps: req.body?.allowedHostingIps
     });
     const net = network?.settings?.() ?? {};
     const resInfo = network?.resolution?.() ?? {};

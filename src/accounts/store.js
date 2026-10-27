@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { readJson, writeJson } from "../json-file.js";
-import { hashPassword, isServerAccountName } from "./password.js";
+import { hashPassword, isServerAccountName, validatePassword } from "./password.js";
 
 export function createAccountStore(dataDir) {
   const dir = path.join(dataDir, "accounts");
@@ -50,7 +50,7 @@ export function createAccountStore(dataDir) {
       return account;
     },
 
-    createWithPassword(displayName, plainPassword) {
+    async createWithPassword(displayName, plainPassword) {
       if (byName.has(displayName.toLowerCase())) return null;
       if (!plainPassword || typeof plainPassword !== "string" || !plainPassword.trim()) {
         throw new Error("A non-empty password is required to create an account");
@@ -62,15 +62,15 @@ export function createAccountStore(dataDir) {
         id: crypto.randomBytes(16).toString("hex"),
         displayName,
         created: new Date().toISOString(),
-        password: hashPassword(plainPassword)
+        password: await hashPassword(plainPassword)
       };
       save(account);
       remember(account);
       return account;
     },
 
-    setPassword(account, plainPassword) {
-      account.password = hashPassword(plainPassword);
+    async setPassword(account, plainPassword) {
+      account.password = await hashPassword(plainPassword);
       save(account);
     },
 

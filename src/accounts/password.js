@@ -1,9 +1,19 @@
 import crypto from "node:crypto";
+import util from "node:util";
+
+const scryptAsync = util.promisify(crypto.scrypt);
 
 export const MIN_PASSWORD_LENGTH = 8;
 export const MAX_PASSWORD_LENGTH = 128;
 export const MIN_USERNAME_LENGTH = 3;
 export const MAX_USERNAME_LENGTH = 24;
+
+export const loopbackAddresses = new Set(["127.0.0.1", "::1", "::ffff:127.0.0.1", "localhost"]);
+
+export function isLoopbackAddress(ip) {
+  if (!ip || typeof ip !== "string") return false;
+  return loopbackAddresses.has(ip) || ip.startsWith("127.") || ip === "::1" || ip === "localhost" || ip.endsWith("127.0.0.1");
+}
 
 export function isServerAccountName(name) {
   if (typeof name !== "string") return false;
@@ -12,8 +22,9 @@ export function isServerAccountName(name) {
 
 export function validatePassword(plain) {
   if (typeof plain !== "string") return "Password must be a string";
-  if (plain.length < MIN_PASSWORD_LENGTH) return `Password must be at least ${MIN_PASSWORD_LENGTH} characters`;
-  if (plain.length > MAX_PASSWORD_LENGTH) return `Password must be at most ${MAX_PASSWORD_LENGTH} characters`;
+  const trimmed = plain.trim();
+  if (trimmed.length < MIN_PASSWORD_LENGTH) return `Password must be at least ${MIN_PASSWORD_LENGTH} characters`;
+  if (trimmed.length > MAX_PASSWORD_LENGTH) return `Password must be at most ${MAX_PASSWORD_LENGTH} characters`;
   return null;
 }
 
@@ -28,17 +39,18 @@ export function validateUsername(name) {
   return null;
 }
 
-
-export function hashPassword(plain) {
+export async function hashPassword(plain) {
+  const trimmed = String(plain ?? "").trim();
   const salt = crypto.randomBytes(16).toString("hex");
-  const hash = crypto.scryptSync(plain, salt, 64).toString("hex");
-  return { salt, hash };
+  const derived = await scryptAsync(trimmed, salt, 64);
+  return { salt, hash: derived.toString("hex") };
 }
 
-export function verifyPassword(plain, stored) {
+export async function verifyPassword(plain, stored) {
   if (!stored || !stored.salt || !stored.hash || typeof plain !== "string") return false;
+  const trimmed = plain.trim();
   try {
-    const derived = crypto.scryptSync(plain, stored.salt, 64);
+    const derived = await scryptAsync(trimmed, stored.salt, 64);
     const storedBuffer = Buffer.from(stored.hash, "hex");
     if (derived.length !== storedBuffer.length) return false;
     return crypto.timingSafeEqual(derived, storedBuffer);
@@ -46,3 +58,4 @@ export function verifyPassword(plain, stored) {
     return false;
   }
 }
+
