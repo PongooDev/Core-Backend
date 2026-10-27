@@ -38,11 +38,15 @@ export function parseBucket(bucketId) {
 }
 
 // A server's bucket pattern ("858118782:0:NA:*") against a player's bucket ("858118782:0:NA:10"): field by field, "*"
-// matching anything, with the same number of fields.
+// matching anything, with the same number of fields. A last field of "**" matches whatever fields are left: 1.8's
+// servers register one pattern, "<netcl>:0:NA:**", where 1.7.2's registered "...:*" and "...:*:*:*" (Core-Backend #74:
+// 1.8 players were never matched).
 export function bucketMatches(pattern, bucketId) {
   const want = String(pattern).split(":");
   const have = String(bucketId).split(":");
-  return want.length === have.length && want.every((field, index) => field === "*" || field === have[index]);
+  const rest = want.at(-1) === "**";
+  const fields = rest ? want.slice(0, -1) : want;
+  return (rest ? have.length > fields.length : want.length === have.length) && fields.every((field, index) => field === "*" || field === have[index]);
 }
 
 // Queued's estimatedWaitSec, from the time left until a forming match is assigned. The client shows "N/A" for an ETA

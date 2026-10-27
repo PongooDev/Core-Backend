@@ -69,6 +69,11 @@ test("a bucket names the playlist and region; a server's pattern takes any playl
   assert.ok(bucketMatches("858118782:0:NA:*", "858118782:0:NA:10"));
   assert.ok(!bucketMatches("858118782:0:NA:*:*:*", "858118782:0:NA:10"));
   assert.ok(!bucketMatches("858118782:0:EU:*", "858118782:0:NA:10"));
+  // 1.8's servers register "<netcl>:0:<region>:**", the rest of the bucket matching anything (#74).
+  assert.ok(bucketMatches("1944448041:0:NA:**", "1944448041:0:NA:2"));
+  assert.ok(bucketMatches("1944448041:0:NA:**", "1944448041:0:NA:10:1:0"));
+  assert.ok(!bucketMatches("1944448041:0:NA:**", "1944448041:0:NA"));
+  assert.ok(!bucketMatches("1944448041:0:NA:**", "858118782:0:NA:2"));
 });
 
 test("the ETA is whole seconds, never a whole minute (the client shows N/A for those), and 0 when unknown", () => {
