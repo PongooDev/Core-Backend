@@ -1,5 +1,6 @@
 import express from "express";
 import { createAccountStore } from "./accounts/store.js";
+import { createResetTokenStore } from "./accounts/reset-tokens.js";
 import { createSettingsStore } from "./settings/store.js";
 import { requestBuild } from "./builds/context.js";
 import { createFriendStore } from "./friends/store.js";
@@ -60,6 +61,7 @@ export function createContext(config) {
     accounts,
     tokens,
     settings,
+    resetTokens: createResetTokenStore(),
     friends,
     friendCodes: createFriendCodeStore(config.dataDir),
     stats: createStatsStore(config.dataDir),
