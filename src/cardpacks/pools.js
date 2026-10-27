@@ -96,3 +96,19 @@ export function namedSchematics(words, rarity, { founders = false } = {}) {
 }
 
 export const hasItem = (templateId) => data().lowerIds.has(templateId.toLowerCase());
+
+// The Halloween event's survivors and heroes at a rarity (or the nearest there is), lowest tier: the survivors named
+// Halloween (WorkerHalloween_*, 1.8's Worker_Halloween_<husk kind>_*, kept out of the other pools above) and the heroes
+// whose variant ends in HW (HID_Commando_007HW_SR_T01; the Fortnitemares quests' heroes).
+export function halloweenPool(kind, rarity) {
+  const matching = data().ids.map(describe).filter((item) => item.tier > 0 && item.rarity && (kind === "worker"
+    ? item.type === "worker" && item.tokens.some((token) => token.includes("halloween"))
+    : item.type === "hero" && item.tokens.slice(1, -2).some((token) => token.endsWith("hw"))));
+  for (const wanted of rarityOrder(rarities.includes(rarity) ? rarity : "r")) {
+    const atRarity = matching.filter((item) => item.rarity === wanted);
+    if (!atRarity.length) continue;
+    const lowest = Math.min(...atRarity.map((item) => item.tier));
+    return atRarity.filter((item) => item.tier === lowest).map((item) => item.templateId);
+  }
+  return [];
+}

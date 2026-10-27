@@ -17,11 +17,11 @@ function editProfile(backend, accountId, edit) {
 const statChange = (body) => body.profileChanges.find((change) => change.changeType === "statModified" && change.name === "daily_rewards");
 
 test("the reward schedules come from DefaultGameData in row order", () => {
-  assert.equal(defaultSchedule.name, "Default");
-  assert.equal(defaultSchedule.rewards.length, 336);
-  assert.deepEqual(defaultSchedule.rewards[0], { major: false, quantity: 200, templateId: "AccountResource:heroxp" });
-  assert.deepEqual(defaultSchedule.rewards[1], { major: true, quantity: 2, templateId: "AccountResource:voucher_basicpack" });
-  assert.deepEqual(tokenSchedules.map((schedule) => [schedule.name, schedule.token, schedule.rewards.length]),
+  assert.equal(defaultSchedule().name, "Default");
+  assert.equal(defaultSchedule().rewards.length, 336);
+  assert.deepEqual(defaultSchedule().rewards[0], { major: false, quantity: 200, templateId: "AccountResource:heroxp" });
+  assert.deepEqual(defaultSchedule().rewards[1], { major: true, quantity: 2, templateId: "AccountResource:voucher_basicpack" });
+  assert.deepEqual(tokenSchedules().map((schedule) => [schedule.name, schedule.token, schedule.rewards.length]),
     [["FoundersPackDailyRewardToken", "DailyRewardScheduleToken:founderspackdailyrewardtoken", 126]]);
 });
 
@@ -73,8 +73,8 @@ test("a new UTC day gives the next row, and a held schedule token adds its own r
     const claim = await post(backend.port, command(accountId, "ClaimLoginReward"), token, {});
     const { items } = claim.body.notifications[0];
     assert.deepEqual(items.map((item) => [item.itemType, item.quantity]), [
-      [defaultSchedule.rewards[1].templateId, defaultSchedule.rewards[1].quantity],
-      [tokenSchedules[0].rewards[4].templateId, 1]
+      [defaultSchedule().rewards[1].templateId, defaultSchedule().rewards[1].quantity],
+      [tokenSchedules()[0].rewards[4].templateId, 1]
     ]);
 
     const profile = claim.body.profileChanges[0].profile;
@@ -146,9 +146,9 @@ test("the XP Boost and Teammate XP Boost days give profile0 the consumables the 
     };
     const stacks = (profile, templateId) => Object.entries(profile.items).filter(([, item]) => item.templateId === templateId);
 
-    assert.equal(defaultSchedule.rewards[2].templateId, "ConsumableAccountItem:smallxpboost");
-    assert.equal(defaultSchedule.rewards[4].templateId, "ConsumableAccountItem:smallxpboost_gift");
-    assert.equal(defaultSchedule.rewards[12].templateId, "ConsumableAccountItem:smallxpboost_gift");
+    assert.equal(defaultSchedule().rewards[2].templateId, "ConsumableAccountItem:smallxpboost");
+    assert.equal(defaultSchedule().rewards[4].templateId, "ConsumableAccountItem:smallxpboost_gift");
+    assert.equal(defaultSchedule().rewards[12].templateId, "ConsumableAccountItem:smallxpboost_gift");
 
     const day3 = await claimRow(2);
     const [[boostId, boost]] = stacks(day3.profile, "ConsumableAccountItem:smallxpboost");

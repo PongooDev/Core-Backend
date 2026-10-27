@@ -1,3 +1,5 @@
+import { fortnitemares, isEventActive } from "../events/events.js";
+import { candy } from "../events/fortnitemares.js";
 import { getCardPack, itemIds } from "../gamedata/items.js";
 import { perBuild } from "../gamedata/read.js";
 
@@ -51,12 +53,24 @@ const voucherOffers = perBuild(() => itemIds()
 // offers Epic's catalog held; Core keeps the offer always (Core's choice). Which llama and the price are inferred / Core's:
 // the Launch Event Llama (CardPack_Event_Founders_NonExclusive), the Founder's Llama's twin (same loot tier group and
 // art) that nothing in the game data grants, for 100 coins (five daily quests), with no purchase limit.
+//
+// The Fortnitemares Llama (CardPack_Event_2017_Halloween, "Guarantees at least one Epic or better limited time
+// Fortnitemares Survivor or Hero!") is bought with Candy (EventCurrency_Candy, bIsEventItem, "Candy found during the
+// Fortnitemares Event."), while the event runs (events/events.js). The store shows a Candy price with the Candy cost
+// widget (1.8 StoreRoot GetCustomStoreOfferCost: EventCurrency_Candy → 2) among the event packs (ShouldShowOffer: an
+// event item's offer shows with ShowEventPacks). The price is Core's (🟡): 1,000 Candy, about four of the event's
+// 250 Candy quests.
 const eventOffers = [
   { offerId: "core_event_founders_llama", templateId: "CardPack:cardpack_event_founders_nonexclusive", title: "Launch Event Llama",
-    currencyType: "GameItem", currencySubType: "AccountResource:eventcurrency_founders", price: 100, always: true }
+    currencyType: "GameItem", currencySubType: "AccountResource:eventcurrency_founders", price: 100, always: true },
+  { offerId: "core_event_fortnitemares_llama", templateId: "CardPack:cardpack_event_2017_halloween", title: "Fortnitemares Llama",
+    currencyType: "GameItem", currencySubType: candy, price: 1000, always: true, event: fortnitemares }
 ];
 
-const allOffers = () => [...mtxOffers, ...eventOffers, ...voucherOffers()];
+// An event's offers are on sale while the requesting build runs the event and has their llama.
+const onSale = (offer) => !offer.event || (isEventActive(offer.event) && Boolean(getCardPack(offer.templateId)));
+
+const allOffers = () => [...mtxOffers, ...eventOffers.filter(onSale), ...voucherOffers()];
 
 function offerJson(offer, sortPriority) {
   const { offerId, templateId, title, currencyType, currencySubType, price } = offer;
