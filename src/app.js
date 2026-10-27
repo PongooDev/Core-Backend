@@ -93,7 +93,7 @@ export function createApp(config, context = createContext(config)) {
   app.use(oauthRoutes(context));
   app.use(publicAccountRoutes(context));
   app.use(lightswitchRoutes(context));
-  app.use(contentRoutes(context));
+  app.use(contentRoutes(context, config));
   app.use(versionRoutes(context));
   app.use(cloudStorageRoutes(context));
   app.use(eulaRoutes(context));

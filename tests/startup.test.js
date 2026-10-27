@@ -23,6 +23,8 @@ test("start-up checks answer the way the Cert client parses them", async () => {
     assert.equal(page.status, 200);
     assert.ok(!Number.isNaN(Date.parse(page.body.lastModified)));
     assert.deepEqual(page.body._images_, []);
+    // Battle Royale's lobby news box (Core-Backend #61).
+    assert.deepEqual(page.body.battleRoyaleNews.news.message, { title: "Battle Royale - 1.7.2", body: "Welcome to Battle Royale on Core!" });
   } finally {
     backend.close();
   }
