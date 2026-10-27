@@ -14,6 +14,7 @@ import { createProfileStore } from "./profiles/store.js";
 import { requestLog, unknownRoute } from "./log.js";
 import { createMatchmaker } from "./matchmaking/service.js";
 import { createSessionStore } from "./matchmaking/sessions.js";
+import { createStatsStore } from "./stats/store.js";
 import { createNetwork } from "./network.js";
 import { originForm } from "./proxy.js";
 import { oauthRoutes } from "./services/account/oauth.js";
@@ -54,6 +55,7 @@ export function createContext(config) {
     tokens,
     friends,
     friendCodes: createFriendCodeStore(config.dataDir),
+    stats: createStatsStore(config.dataDir),
     profiles: createProfileStore(config.dataDir),
     mailbox: createMailbox(),
     locks: createProfileLocks(),

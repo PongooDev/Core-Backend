@@ -5,16 +5,29 @@ import { requireAuth } from "../../accounts/auth.js";
 // duo and squad. The client's platform is always pc.
 const playlists = [2, 10, 9];
 
-// Battle Royale's stats screen (1.7.2: bAthenaStatsFrontendEnabled) asks for a player's lifetime stats, a list of
-// {name, value, window, ownerType}. Core keeps no Battle Royale stats yet, so the counts are all absent (0). The screen's
-// "Last Updated" is GameplayStat.BR.LastModified (br_lastmodified_*, Unix seconds; "Never" when missing): with nothing
-// recorded, the stats are as of now.
-export function statsRoutes({ tokens }) {
+// Battle Royale's stats screen (1.7.2: bAthenaStatsFrontendEnabled) asks for a player's lifetime stats (window alltime,
+// the screen's only one: 0x2D6C28D), a list of {name, value, window, ownerType}: br_placetop1 (Wins), br_placetop<n>,
+// br_kills, br_matchesplayed and br_minutesplayed ("Time Played"), each "_pc_m0_p<playlist>", from what Core recorded
+// (src/stats/store.js; a stat it hasn't is absent, 0). The screen's "Last Updated" is GameplayStat.BR.LastModified
+// (br_lastmodified_*, Unix seconds; "Never" when missing): when the playlist was last recorded, else now.
+export function statsRoutes({ tokens, stats }) {
   const router = express.Router();
 
   router.get("/fortnite/api/stats/accountId/:accountId/bulk/window/:window", requireAuth(tokens), (req, res) => {
+    const { window } = req.params;
+    const recorded = window === "alltime" ? stats.playlists(req.params.accountId) : {};
     const now = Math.floor(Date.now() / 1000);
-    res.json(playlists.map((playlist) => ({ name: `br_lastmodified_pc_m0_p${playlist}`, value: now, window: req.params.window, ownerType: 1 })));
+    const entry = (playlist, name, value) => ({ name: `br_${name}_pc_m0_p${playlist}`, value, window, ownerType: 1 });
+
+    const ids = [...new Set([...playlists, ...Object.keys(recorded).map(Number)])];
+    res.json(ids.flatMap((playlist) => {
+      const { secondsplayed, lastmodified, ...counts } = recorded[playlist] ?? {};
+      return [
+        ...Object.entries(counts).map(([name, value]) => entry(playlist, name, value)),
+        ...(secondsplayed === undefined ? [] : [entry(playlist, "minutesplayed", Math.floor(secondsplayed / 60))]),
+        entry(playlist, "lastmodified", lastmodified ?? now)
+      ];
+    }));
   });
 
   return router;
