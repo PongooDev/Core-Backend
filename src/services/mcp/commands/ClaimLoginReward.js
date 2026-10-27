@@ -34,14 +34,15 @@ export function claimLoginReward({ session, notifications }) {
 
   if (!(Date.parse(stat.lastClaimDate) >= utcMidnight(now))) {
     for (const schedule of Object.values(stat.additionalSchedules)) schedule.claimedToday = false;
-    if (defaultSchedule) claim(defaultSchedule, stat.nextDefaultReward);
+    const schedule = defaultSchedule();
+    if (schedule) claim(schedule, stat.nextDefaultReward);
     stat.nextDefaultReward += 1;
     stat.totalDaysLoggedIn += 1;
     stat.lastClaimDate = now.toISOString();
   }
 
   // Each claim uses one token; at zero it's removed, or the client would keep asking for that schedule.
-  for (const schedule of tokenSchedules) {
+  for (const schedule of tokenSchedules()) {
     const tokenId = findItem(profile, schedule.token);
     if (!tokenId || profile.items[tokenId].quantity <= 0) continue;
     const key = Object.keys(stat.additionalSchedules).find((name) => name.toLowerCase() === schedule.name.toLowerCase()) ?? schedule.name;

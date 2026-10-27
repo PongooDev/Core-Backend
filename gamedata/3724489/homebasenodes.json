@@ -1,0 +1,1832 @@
+{
+  "nodes": {
+    "T1_Horde_004A6DFD5": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier1"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T1_Horde_B4E96661D"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Resources.Stone.Tier1.Upgrade1"
+      ]
+    },
+    "T1_Horde_1865D14BE": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier1"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T1_Horde_61727C9B3"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Metal.Tier1.Upgrade1"
+      ]
+    },
+    "T1_Horde_352D7BEC5": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier1"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T1_Horde_582E5999C"
+          },
+          {
+            "node": "T1_Horde_61727C9B3"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Crafting.Tier1.WeaponResources1"
+      ]
+    },
+    "T1_Horde_35DFE0DC4": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier1"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T1_Horde_004A6DFD5"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Resources.Wood.Tier1.Upgrade2"
+      ]
+    },
+    "T1_Horde_3A5280D45": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier1"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T1_Horde_4EEB103AA"
+          },
+          {
+            "node": "T1_Horde_352D7BEC5"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Crafting.Tier1.WeaponResources2"
+      ]
+    },
+    "T1_Horde_4EEB103AA": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier1"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T1_Horde_582E5999C"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Ammo.Tier1.Upgrade1"
+      ]
+    },
+    "T1_Horde_50133B9AD": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier1"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T1_Horde_B4E96661D"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.PlotExpansion.Horizontal.Upgrade1"
+      ]
+    },
+    "T1_Horde_582E5999C": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier1"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T1_Horde_DED01F8C3"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Crafting.Tier1.TrapResources1"
+      ]
+    },
+    "T1_Horde_61727C9B3": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier1"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T1_Horde_DED01F8C3"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Stone.Tier1.Upgrade1"
+      ]
+    },
+    "T1_Horde_744E39A7E": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier1"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T1_Horde_50133B9AD"
+          },
+          {
+            "node": "T1_Horde_004A6DFD5"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.PlotExpansion.Vertical.Upgrade1"
+      ]
+    },
+    "T1_Horde_99587FCCD": {
+      "quests": [
+        "outpostquest_t1_l3"
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.BaseGrant",
+        "Unlocks.Horde.Feature",
+        "Unlocks.Horde.Neighborhood.Crafting.BaseGrant",
+        "Unlocks.Horde.Neighborhood.Resources.BaseGrant",
+        "Unlocks.Neighborhood.Feature"
+      ]
+    },
+    "T1_Horde_AB7DC3C21": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier1"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T1_Horde_50133B9AD"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Crafting.Tier1.TrapResources1"
+      ]
+    },
+    "T1_Horde_B4E96661D": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier1"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T1_Horde_99587FCCD"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Resources.Wood.Tier1.Upgrade1"
+      ]
+    },
+    "T1_Horde_BA294788E": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier1"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T1_Horde_AB7DC3C21"
+          },
+          {
+            "node": "T1_Horde_744E39A7E"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Crafting.Tier1.TrapResources2"
+      ]
+    },
+    "T1_Horde_C311892E8": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier1"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T1_Horde_744E39A7E"
+          },
+          {
+            "node": "T1_Horde_35DFE0DC4"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Resources.Metal.Tier1.Upgrade1"
+      ]
+    },
+    "T1_Horde_D4729C297": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier1"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T1_Horde_352D7BEC5"
+          },
+          {
+            "node": "T1_Horde_1865D14BE"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Crafting.Tier1.TrapResources2"
+      ]
+    },
+    "T1_Horde_DED01F8C3": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier1"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T1_Horde_99587FCCD"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Wood.Tier1.Upgrade1"
+      ]
+    },
+    "T1_Main_3E84C12D0": {
+      "squadSlots": [
+        {
+          "slot": 0,
+          "squadId": "Squad_Attribute_Medicine_EMTSquad"
+        }
+      ]
+    },
+    "T1_Main_7064C2440": {
+      "squadSlots": [
+        {
+          "slot": 1,
+          "squadId": "Squad_Attribute_Arms_FireTeamAlpha"
+        },
+        {
+          "slot": 2,
+          "squadId": "Squad_Attribute_Arms_FireTeamAlpha"
+        },
+        {
+          "slot": 1,
+          "squadId": "Squad_Attribute_Medicine_EMTSquad"
+        },
+        {
+          "slot": 2,
+          "squadId": "Squad_Attribute_Medicine_EMTSquad"
+        }
+      ]
+    },
+    "T1_Main_A7E71BED0": {
+      "squadSlots": [
+        {
+          "slot": 0,
+          "squadId": "Squad_Attribute_Arms_FireTeamAlpha"
+        }
+      ]
+    },
+    "T2_Horde_092E05987": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier2"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T2_Horde_859C53767"
+          },
+          {
+            "node": "T2_Horde_A3A7FC3B8"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Resources.Metal.Tier2.Upgrade2"
+      ]
+    },
+    "T2_Horde_18D65C9C8": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier2"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T2_Horde_60C352C32"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Metal.Tier2.Upgrade2"
+      ]
+    },
+    "T2_Horde_3285B0BA1": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier2"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T2_Horde_BC100D5CC"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Crafting.Tier2.TrapResources2"
+      ]
+    },
+    "T2_Horde_47AAFA928": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier2"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T2_Horde_8066E0097"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Wood.Tier2.Upgrade1"
+      ]
+    },
+    "T2_Horde_5F8E08565": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier2"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T2_Horde_C88A3B904"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Ammo.Tier2.Upgrade1"
+      ]
+    },
+    "T2_Horde_60C352C32": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier2"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T2_Horde_77A1A0B05"
+          },
+          {
+            "node": "T2_Horde_5F8E08565"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Wood.Tier2.Upgrade2"
+      ]
+    },
+    "T2_Horde_64E60E923": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier2"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T2_Horde_3285B0BA1"
+          },
+          {
+            "node": "T2_Horde_77A1A0B05"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Stone.Tier2.Upgrade2"
+      ]
+    },
+    "T2_Horde_77A1A0B05": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier2"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T2_Horde_BC100D5CC"
+          },
+          {
+            "node": "T2_Horde_F163423A5"
+          },
+          {
+            "node": "T2_Horde_C88A3B904"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Crafting.Tier2.WeaponResources1"
+      ]
+    },
+    "T2_Horde_7A608697E": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier2"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T2_Horde_64E60E923"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Crafting.Tier2.WeaponResources2"
+      ]
+    },
+    "T2_Horde_8066E0097": {
+      "prerequisites": [
+        [
+          {
+            "node": "T1_Horde_99587FCCD"
+          }
+        ]
+      ],
+      "quests": [
+        "stonewoodquest_launchrocket_d5"
+      ]
+    },
+    "T2_Horde_859C53767": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier2"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T2_Horde_8A2845AA8"
+          },
+          {
+            "node": "T2_Horde_B20DBA2A6"
+          },
+          {
+            "node": "T2_Horde_AB27B3104"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Resources.Stone.Tier2.Upgrade2"
+      ]
+    },
+    "T2_Horde_8A2845AA8": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier2"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T2_Horde_C806053BA"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Resources.Metal.Tier2.Upgrade1"
+      ]
+    },
+    "T2_Horde_A3A7FC3B8": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier2"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T2_Horde_AB27B3104"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Resources.Wood.Tier2.Upgrade2"
+      ]
+    },
+    "T2_Horde_AB27B3104": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier2"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T2_Horde_EEDDBC74C"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.PlotExpansion.Vertical.Upgrade2"
+      ]
+    },
+    "T2_Horde_B20DBA2A6": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier2"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T2_Horde_C806053BA"
+          },
+          {
+            "node": "T2_Horde_EEDDBC74C"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Crafting.Tier2.TrapResources2"
+      ]
+    },
+    "T2_Horde_BC100D5CC": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier2"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T2_Horde_47AAFA928"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Metal.Tier2.Upgrade1"
+      ]
+    },
+    "T2_Horde_C806053BA": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier2"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T2_Horde_E1C438C50"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Resources.Stone.Tier2.Upgrade1"
+      ]
+    },
+    "T2_Horde_C88A3B904": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier2"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T2_Horde_47AAFA928"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Stone.Tier2.Upgrade1"
+      ]
+    },
+    "T2_Horde_E1C438C50": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier2"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T2_Horde_8066E0097"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Resources.Wood.Tier2.Upgrade1"
+      ]
+    },
+    "T2_Horde_EC06A6D43": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier2"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T2_Horde_EF7696468"
+          },
+          {
+            "node": "T2_Horde_859C53767"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Crafting.Tier2.TrapResources3"
+      ]
+    },
+    "T2_Horde_EEDDBC74C": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier2"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T2_Horde_E1C438C50"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Crafting.Tier2.TrapResources1"
+      ]
+    },
+    "T2_Horde_EF7696468": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier2"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T2_Horde_8A2845AA8"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.PlotExpansion.Horizontal.Upgrade2"
+      ]
+    },
+    "T2_Horde_F163423A5": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier2"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T2_Horde_47AAFA928"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Crafting.Tier2.TrapResources1"
+      ]
+    },
+    "T2_Horde_F77F91E87": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier2"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T2_Horde_64E60E923"
+          },
+          {
+            "node": "T2_Horde_60C352C32"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Ammo.Tier2.Upgrade2"
+      ]
+    },
+    "T2_Research_6C56AEA04": {
+      "prerequisites": [
+        [
+          {
+            "node": "T2_Research_00E5B7763"
+          }
+        ],
+        [
+          {
+            "node": "T2_Research_11FC257C5"
+          }
+        ],
+        [
+          {
+            "node": "T2_Research_15F1DC0B3"
+          }
+        ]
+      ]
+    },
+    "T3_Horde_00C6EB5EC": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier3"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T3_Horde_E10B18E30"
+          },
+          {
+            "node": "T3_Horde_DEFA5A7C7"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Metal.Tier3.Upgrade1"
+      ]
+    },
+    "T3_Horde_01992EAB5": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier3"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T3_Horde_4E73C510F"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Crafting.Tier3.TrapResources2"
+      ]
+    },
+    "T3_Horde_07A4A7B84": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier3"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T3_Horde_FAAACFC98"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Resources.Metal.Tier3.Upgrade1"
+      ]
+    },
+    "T3_Horde_160E91E03": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier3"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T3_Horde_1FBE52E6E"
+          },
+          {
+            "node": "T3_Horde_518D290BF"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Crafting.Tier3.TrapResources2"
+      ]
+    },
+    "T3_Horde_1FBE52E6E": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier3"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T3_Horde_07A4A7B84"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.PlotExpansion.Vertical.Upgrade3"
+      ]
+    },
+    "T3_Horde_1FC8878C8": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier3"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T3_Horde_4E73C510F"
+          },
+          {
+            "node": "T3_Horde_00C6EB5EC"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Wood.Tier3.Upgrade2"
+      ]
+    },
+    "T3_Horde_21C290BAF": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier3"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T3_Horde_DEFA5A7C7"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Ammo.Tier3.Upgrade1"
+      ]
+    },
+    "T3_Horde_3176425F2": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier3"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T3_Horde_160E91E03"
+          },
+          {
+            "node": "T3_Horde_C0E199546"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Resources.Stone.Tier3.Upgrade2"
+      ]
+    },
+    "T3_Horde_4E73C510F": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier3"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T3_Horde_E10B18E30"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Stone.Tier3.Upgrade1"
+      ]
+    },
+    "T3_Horde_518D290BF": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier3"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T3_Horde_07A4A7B84"
+          },
+          {
+            "node": "T3_Horde_55A36D8A3"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Resources.Stone.Tier3.Upgrade1"
+      ]
+    },
+    "T3_Horde_55A36D8A3": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier3"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T3_Horde_FAAACFC98"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Crafting.Tier3.TrapResources1"
+      ]
+    },
+    "T3_Horde_76A559411": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier3"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T3_Horde_01992EAB5"
+          },
+          {
+            "node": "T3_Horde_1FC8878C8"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Ammo.Tier3.Upgrade2"
+      ]
+    },
+    "T3_Horde_8CCCAD667": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier3"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T3_Horde_55A36D8A3"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Resources.Wood.Tier3.Upgrade2"
+      ]
+    },
+    "T3_Horde_AD7A4BBCB": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier3"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T3_Horde_00C6EB5EC"
+          },
+          {
+            "node": "T3_Horde_21C290BAF"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Crafting.Tier3.WeaponResources2"
+      ]
+    },
+    "T3_Horde_BBAF5C885": {
+      "prerequisites": [
+        [
+          {
+            "node": "T2_Horde_8066E0097"
+          }
+        ]
+      ],
+      "quests": [
+        "plankertonquest_launchrocket_d5"
+      ]
+    },
+    "T3_Horde_C0E199546": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier3"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T3_Horde_518D290BF"
+          },
+          {
+            "node": "T3_Horde_8CCCAD667"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.PlotExpansion.Horizontal.Upgrade3"
+      ]
+    },
+    "T3_Horde_D08B92C26": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier3"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T3_Horde_BBAF5C885"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Crafting.Tier3.TrapResources1"
+      ]
+    },
+    "T3_Horde_D36875E4F": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier3"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T3_Horde_160E91E03"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Resources.Metal.Tier3.Upgrade2"
+      ]
+    },
+    "T3_Horde_D49AAFB92": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier3"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T3_Horde_21C290BAF"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Stone.Tier3.Upgrade2"
+      ]
+    },
+    "T3_Horde_DEFA5A7C7": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier3"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T3_Horde_D08B92C26"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Wood.Tier3.Upgrade1"
+      ]
+    },
+    "T3_Horde_E10B18E30": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier3"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T3_Horde_D08B92C26"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Crafting.Tier3.WeaponResources1"
+      ]
+    },
+    "T3_Horde_E21728874": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier3"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T3_Horde_C0E199546"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Crafting.Tier3.TrapResources3"
+      ]
+    },
+    "T3_Horde_F58B4E05A": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier3"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T3_Horde_AD7A4BBCB"
+          },
+          {
+            "node": "T3_Horde_D49AAFB92"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Metal.Tier3.Upgrade2"
+      ]
+    },
+    "T3_Horde_FAAACFC98": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier3"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T3_Horde_BBAF5C885"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Resources.Wood.Tier3.Upgrade1"
+      ]
+    },
+    "T4_Horde_098960E04": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier4"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T4_Horde_716010078"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.PlotExpansion.Vertical.Upgrade4"
+      ]
+    },
+    "T4_Horde_0A8739395": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier4"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T4_Horde_4F162A096"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Stone.Tier4.Upgrade1"
+      ]
+    },
+    "T4_Horde_111F4D917": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier4"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T4_Horde_E1036688B"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Resources.Metal.Tier4.Upgrade2"
+      ]
+    },
+    "T4_Horde_2AEF8779D": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier4"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T4_Horde_8513D40D0"
+          },
+          {
+            "node": "T4_Horde_098960E04"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Resources.Stone.Tier4.Upgrade2"
+      ]
+    },
+    "T4_Horde_4F162A096": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier4"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T4_Horde_645A4C120"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Wood.Tier4.Upgrade1"
+      ]
+    },
+    "T4_Horde_542624A5C": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier4"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T4_Horde_62ED7A427"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Crafting.Tier4.TrapResources1"
+      ]
+    },
+    "T4_Horde_62ED7A427": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier4"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T4_Horde_645A4C120"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Resources.Wood.Tier4.Upgrade1"
+      ]
+    },
+    "T4_Horde_645A4C120": {
+      "prerequisites": [
+        [
+          {
+            "node": "T3_Horde_BBAF5C885"
+          }
+        ]
+      ],
+      "quests": [
+        "cannyvalleyquest_launchrocket_d5"
+      ]
+    },
+    "T4_Horde_6B789BCDA": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier4"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T4_Horde_542624A5C"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Crafting.Tier4.TrapResources2"
+      ]
+    },
+    "T4_Horde_6D3195362": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier4"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T4_Horde_2AEF8779D"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.PlotExpansion.Horizontal.Upgrade4"
+      ]
+    },
+    "T4_Horde_716010078": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier4"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T4_Horde_62ED7A427"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Resources.Metal.Tier4.Upgrade1"
+      ]
+    },
+    "T4_Horde_72F52D7D1": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier4"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T4_Horde_EDEB1103B"
+          },
+          {
+            "node": "T4_Horde_E01856492"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Crafting.Tier4.TrapResources2"
+      ]
+    },
+    "T4_Horde_82F039D6D": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier4"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T4_Horde_4F162A096"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Crafting.Tier4.WeaponResources1"
+      ]
+    },
+    "T4_Horde_8513D40D0": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier4"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T4_Horde_542624A5C"
+          },
+          {
+            "node": "T4_Horde_716010078"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Resources.Stone.Tier4.Upgrade1"
+      ]
+    },
+    "T4_Horde_8CF2FAC9C": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier4"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T4_Horde_0A8739395"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Crafting.Tier4.TrapResources1"
+      ]
+    },
+    "T4_Horde_97BA51EA6": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier4"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T4_Horde_BACDB92CF"
+          },
+          {
+            "node": "T4_Horde_C5C492155"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Ammo.Tier4.Upgrade1"
+      ]
+    },
+    "T4_Horde_9849F0CBE": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier4"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T4_Horde_D2781408F"
+          },
+          {
+            "node": "T4_Horde_97BA51EA6"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Crafting.Tier4.WeaponResources2"
+      ]
+    },
+    "T4_Horde_ACFD35AD1": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier4"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T4_Horde_E1036688B"
+          },
+          {
+            "node": "T4_Horde_2AEF8779D"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Crafting.Tier4.TrapResources3"
+      ]
+    },
+    "T4_Horde_BACDB92CF": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier4"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T4_Horde_82F039D6D"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Metal.Tier4.Upgrade1"
+      ]
+    },
+    "T4_Horde_C5C492155": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier4"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T4_Horde_82F039D6D"
+          },
+          {
+            "node": "T4_Horde_0A8739395"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Wood.Tier4.Upgrade2"
+      ]
+    },
+    "T4_Horde_D2781408F": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier4"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T4_Horde_BACDB92CF"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Stone.Tier4.Upgrade2"
+      ]
+    },
+    "T4_Horde_E01856492": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier4"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T4_Horde_8CF2FAC9C"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Ammo.Tier4.Upgrade2"
+      ]
+    },
+    "T4_Horde_E1036688B": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier4"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T4_Horde_6B789BCDA"
+          },
+          {
+            "node": "T4_Horde_8513D40D0"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Neighborhood.Resources.Wood.Tier4.Upgrade2"
+      ]
+    },
+    "T4_Horde_EDEB1103B": {
+      "cost": [
+        {
+          "quantity": 1,
+          "templateId": "Token:hordepointstier4"
+        }
+      ],
+      "prerequisites": [
+        [
+          {
+            "node": "T4_Horde_C5C492155"
+          },
+          {
+            "node": "T4_Horde_8CF2FAC9C"
+          }
+        ]
+      ],
+      "tags": [
+        "Unlocks.Horde.Combat.Resources.Metal.Tier4.Upgrade2"
+      ]
+    }
+  },
+  "pages": {
+    "T1_Horde_Nodepage_Layer": [
+      "T1_Horde_99587FCCD",
+      "T2_Horde_8066E0097",
+      "T3_Horde_BBAF5C885",
+      "T4_Horde_645A4C120",
+      "T1_Horde_B4E96661D",
+      "T1_Horde_50133B9AD",
+      "T1_Horde_004A6DFD5",
+      "T1_Horde_AB7DC3C21",
+      "T1_Horde_744E39A7E",
+      "T1_Horde_35DFE0DC4",
+      "T1_Horde_BA294788E",
+      "T1_Horde_C311892E8",
+      "T1_Horde_DED01F8C3",
+      "T1_Horde_582E5999C",
+      "T1_Horde_61727C9B3",
+      "T1_Horde_4EEB103AA",
+      "T1_Horde_352D7BEC5",
+      "T1_Horde_1865D14BE",
+      "T1_Horde_3A5280D45",
+      "T1_Horde_D4729C297",
+      "T2_Horde_E1C438C50",
+      "T2_Horde_C806053BA",
+      "T2_Horde_EEDDBC74C",
+      "T2_Horde_8A2845AA8",
+      "T2_Horde_B20DBA2A6",
+      "T2_Horde_AB27B3104",
+      "T2_Horde_EF7696468",
+      "T2_Horde_859C53767",
+      "T2_Horde_A3A7FC3B8",
+      "T2_Horde_EC06A6D43",
+      "T2_Horde_092E05987",
+      "T2_Horde_47AAFA928",
+      "T2_Horde_BC100D5CC",
+      "T2_Horde_F163423A5",
+      "T2_Horde_C88A3B904",
+      "T2_Horde_3285B0BA1",
+      "T2_Horde_77A1A0B05",
+      "T2_Horde_5F8E08565",
+      "T2_Horde_64E60E923",
+      "T2_Horde_60C352C32",
+      "T2_Horde_7A608697E",
+      "T2_Horde_F77F91E87",
+      "T2_Horde_18D65C9C8",
+      "T3_Horde_FAAACFC98",
+      "T3_Horde_07A4A7B84",
+      "T3_Horde_55A36D8A3",
+      "T3_Horde_1FBE52E6E",
+      "T3_Horde_518D290BF",
+      "T3_Horde_8CCCAD667",
+      "T3_Horde_160E91E03",
+      "T3_Horde_C0E199546",
+      "T3_Horde_D36875E4F",
+      "T3_Horde_3176425F2",
+      "T3_Horde_E21728874",
+      "T3_Horde_D08B92C26",
+      "T3_Horde_E10B18E30",
+      "T3_Horde_DEFA5A7C7",
+      "T3_Horde_4E73C510F",
+      "T3_Horde_00C6EB5EC",
+      "T3_Horde_21C290BAF",
+      "T3_Horde_01992EAB5",
+      "T3_Horde_1FC8878C8",
+      "T3_Horde_AD7A4BBCB",
+      "T3_Horde_D49AAFB92",
+      "T3_Horde_76A559411",
+      "T3_Horde_F58B4E05A",
+      "T4_Horde_62ED7A427",
+      "T4_Horde_542624A5C",
+      "T4_Horde_716010078",
+      "T4_Horde_6B789BCDA",
+      "T4_Horde_8513D40D0",
+      "T4_Horde_098960E04",
+      "T4_Horde_E1036688B",
+      "T4_Horde_2AEF8779D",
+      "T4_Horde_111F4D917",
+      "T4_Horde_ACFD35AD1",
+      "T4_Horde_6D3195362",
+      "T4_Horde_4F162A096",
+      "T4_Horde_82F039D6D",
+      "T4_Horde_0A8739395",
+      "T4_Horde_BACDB92CF",
+      "T4_Horde_C5C492155",
+      "T4_Horde_8CF2FAC9C",
+      "T4_Horde_D2781408F",
+      "T4_Horde_97BA51EA6",
+      "T4_Horde_EDEB1103B",
+      "T4_Horde_E01856492",
+      "T4_Horde_9849F0CBE",
+      "T4_Horde_72F52D7D1"
+    ]
+  }
+}

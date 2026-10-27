@@ -59,4 +59,8 @@ dotnet run -c Release --project tools/extractor -- "<other build folder>" <aes k
 node tools/overlay/overlay.mjs <cert output folder> <other output folder> <changelist>
 ```
 
+Without the Cert build at hand, the committed `gamedata/*.json` (all but `theaters.json`) stand in for its extraction:
+they are what this extractor makes from Cert (a fresh 1.7.2 extraction is exactly Cert's files with
+`gamedata/3700114` applied), and 1.8's overlay (`gamedata/3724489`) was made against them.
+
 `theaters.json` isn't extracted and is shared by every build.
