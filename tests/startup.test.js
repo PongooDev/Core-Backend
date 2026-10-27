@@ -27,6 +27,9 @@ test("start-up checks answer the way the Cert client parses them", async () => {
     assert.deepEqual(page.body.battleRoyaleNews.news.message, { title: "Battle Royale - 1.7.2", body: "Welcome to Battle Royale on Core!" });
     // The login screen's message box.
     assert.deepEqual(page.body.loginmessage.loginmessage.message, { title: "v1.7.2", body: "Welcome to Fortnite on Core!" });
+    // The mode select screen's descriptions (#63).
+    assert.equal(page.body.subgameselectdata.battleRoyale.message.title, "100 Player PvP");
+    assert.equal(page.body.subgameselectdata.saveTheWorld.message.title, "Co-op PvE");
   } finally {
     backend.close();
   }
