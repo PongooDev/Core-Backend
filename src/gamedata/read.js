@@ -9,11 +9,18 @@ const dir = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "..", 
 
 // Game data is Cert's (gamedata/<name>.json, extracted from CL-3532353). A build whose data differs has its own folder,
 // gamedata/<changelist>/, holding only the files that differ, each as the merge patch that turns Cert's file into
-// that build's (src/gamedata/patch.js, made by tools/overlay). Any other build gets Cert's data.
+// that build's (src/gamedata/patch.js, made by tools/overlay). A build without a folder gets the data of the closest
+// build before it that has one (1.8, CL-3724489, gets 1.7.2's: it plays like 1.7.2 and game data only moves forward);
+// a request without a changelist, or one older than Cert, gets Cert's.
 export const dataBuilds = [certBuild, ...(fs.existsSync(dir) ? fs.readdirSync(dir, { withFileTypes: true }) : [])
   .filter((entry) => entry.isDirectory() && /^\d+$/.test(entry.name) && entry.name !== certBuild).map((entry) => entry.name)];
 
-export const dataBuild = (changelist) => (dataBuilds.includes(changelist) ? changelist : certBuild);
+export function dataBuild(changelist) {
+  if (dataBuilds.includes(changelist)) return changelist;
+  const number = Number(changelist);
+  const earlier = Number.isInteger(number) ? dataBuilds.filter((build) => Number(build) <= number) : [];
+  return earlier.length ? earlier.reduce((closest, build) => (Number(build) > Number(closest) ? build : closest)) : certBuild;
+}
 
 // The data build of the request being served (Cert outside a request).
 export const activeBuild = () => dataBuild(currentBuild());
