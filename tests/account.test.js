@@ -13,6 +13,11 @@ test("account info has the id, displayName and lastLogin the client stores", asy
     assert.equal(info.body.displayName, "CoreTest");
     assert.ok(Date.parse(info.body.lastLogin) <= Date.now());
     assert.equal(info.body.headless, false);
+    assert.equal(info.body.email, "CoreTest@core.com");
+    const other = await userLogin(backend.port, "Core Other");
+    const otherInfo = await get(backend.port, `/account/api/public/account/${other.accountId}`, token);
+    assert.equal(otherInfo.body.email, undefined);
+    assert.equal((await get(backend.port, `/account/api/public/account/${other.accountId}`, other.token)).body.email, "CoreOther@core.com");
 
     const externalAuths = await get(backend.port, `/account/api/public/account/${accountId}/externalAuths`, token);
     assert.deepEqual(externalAuths.body, []);

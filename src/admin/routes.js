@@ -73,6 +73,7 @@ export function adminRoutes(context) {
     return {
       id: account.id,
       displayName: account.displayName,
+      email: account.email ?? null,
       created: account.created,
       lastLogin: account.lastLogin ?? null,
       level: profile?.stats.attributes.level ?? null,
