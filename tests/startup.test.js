@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { getBuild } from "../src/builds/detect.js";
-import { clientToken, get, startBackend } from "./helpers.js";
+import { clientToken, get, send, startBackend } from "./helpers.js";
 
 test("start-up checks answer the way the Cert client parses them", async () => {
   const backend = await startBackend();
@@ -23,10 +23,18 @@ test("start-up checks answer the way the Cert client parses them", async () => {
     assert.equal(page.status, 200);
     assert.ok(!Number.isNaN(Date.parse(page.body.lastModified)));
     assert.deepEqual(page.body._images_, []);
-    // Battle Royale's lobby news box (Core-Backend #61).
-    assert.deepEqual(page.body.battleRoyaleNews.news.message, { title: "Battle Royale - 1.7.2", body: "Welcome to Battle Royale on Core!" });
-    // The login screen's message box.
-    assert.deepEqual(page.body.loginmessage.loginmessage.message, { title: "v1.7.2", body: "Welcome to Fortnite on Core!" });
+    // Battle Royale's lobby news box (Core-Backend #61) and the login screen's message box name the build asking (#68):
+    // the helpers ask as Cert (1.1).
+    assert.deepEqual(page.body.battleRoyaleNews.news.message, { title: "Battle Royale - 1.1", body: "Welcome to Battle Royale on Core!" });
+    assert.deepEqual(page.body.loginmessage.loginmessage.message, { title: "v1.1", body: "Welcome to Fortnite on Core!" });
+    const pageFor = (changelist) => send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/content/api/pages/fortnite-game",
+      headers: { "User-Agent": `game=Fortnite, engine=UE4, version=4.16.0-${changelist}+++Fortnite+Release-Cert` } });
+    for (const [changelist, version] of [["3700114", "1.7.2"], ["3724489", "1.8"]]) {
+      const built = (await pageFor(changelist)).body;
+      assert.equal(built.battleRoyaleNews.news.message.title, `Battle Royale - ${version}`);
+      assert.equal(built.loginmessage.loginmessage.message.title, `v${version}`);
+    }
+    assert.equal((await pageFor("3757339")).body.loginmessage.loginmessage.message.title, "CL-3757339");
     // The mode select screen's descriptions (#63).
     assert.equal(page.body.subgameselectdata.battleRoyale.message.title, "100 Player PvP");
     assert.equal(page.body.subgameselectdata.saveTheWorld.message.title, "Co-op PvE");
