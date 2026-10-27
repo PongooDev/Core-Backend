@@ -38,6 +38,9 @@ export function createStatsStore(dataDir) {
     // {<playlistId>: {<stat>: value}} for every playlist the account has played.
     playlists: (accountId) => structuredClone(load(accountId).playlists),
 
+    // A win in any playlist (Battle Royale's umbrella, services/fortnite/battleroyale.js).
+    hasWon: (accountId) => Object.values(load(accountId).playlists).some((playlist) => (playlist.placetop1 ?? 0) > 0),
+
     recordWin(accountId, playlistId) {
       change(accountId, playlistId, (playlist) => add(playlist, "placetop1", 1));
     },

@@ -114,3 +114,29 @@ test("only a gameserver records stats: its own login for its session's players, 
     backend.close();
   }
 });
+
+// Core #97: 1.7.2 gives a player who has won (in any playlist) Season 1's umbrella instead of the stock glider, from
+// what the backend answers when the server asks who in its match has won before (battleroyale/winners).
+test("a Battle Royale winner glides on the umbrella from the next match, everyone else on the stock glider", async () => {
+  const backend = await startBackend();
+  try {
+    const winner = await userLogin(backend.port, "UmbrellaWinner");
+    const loser = await userLogin(backend.port, "UmbrellaLoser");
+    const server = await hostedMatch(backend, winner, loser);
+    const ask = async (accountIds) => (await post(backend.port, "/fortnite/api/game/v2/battleroyale/winners", server.token, { playlistId: 2, accountIds })).body;
+
+    // Nobody has won yet: no umbrellas.
+    assert.deepEqual(await ask([winner.accountId, loser.accountId]), { playlistId: 2, winners: [] });
+
+    // A squad win counts for the next solo match too; a 2nd place, unknown accounts and what isn't an id don't.
+    await post(backend.port, "/fortnite/api/game/v2/battleroyale/recordwin", server.token, { playlistId: 9, accountIds: [winner.accountId] });
+    await post(backend.port, "/fortnite/api/game/v2/battleroyale/recordresults", server.token, { playlistId: 9, results: [{ accountId: loser.accountId, place: 2, kills: 1, secondsAlive: 300 }] });
+    assert.deepEqual(await ask([winner.accountId, loser.accountId, "00000000000000000000000000000000", 7, null]), {
+      playlistId: 2, winners: [{ accountId: winner.accountId, umbrellaType: "umbrella" }]
+    });
+    assert.deepEqual(await ask(undefined), { playlistId: 2, winners: [] });
+    assert.equal(fs.existsSync(path.join(backend.dataDir, "accounts", "00000000000000000000000000000000")), false);
+  } finally {
+    backend.close();
+  }
+});

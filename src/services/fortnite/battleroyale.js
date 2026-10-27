@@ -8,8 +8,13 @@ import { sessionMembers } from "../../matchmaking/sessions.js";
 // made from (src/stats/store.js, the stats screen: services/fortnite/stats.js).
 // - winners: POST {playlistId, accountIds} when the match is assigned, answered {playlistId, winners: [...]}
 //   (OnQueryAthenaWinnersComplete 0x722560, serializer 0x732ED0: "Invalid response" without it). A winner is
-//   {accountId, umbrellaType} (0x732DF0), which the game mode keeps per account (0x3F42F0); nobody gets one yet 🟡
-//   (which umbrella types there are wasn't looked at).
+//   {accountId, umbrellaType} (0x732DF0), which the game mode keeps per account (0x3F42F0, PostLogin 0x3F8760) and
+//   turns into the player's glider, AFortPlayerControllerAthena::GliderType (EFortGliderType): "umbrella" Umbrella
+//   (with AFortPlayerStateAthena::bHasWonAGame), "founder_umbrella" FounderUmbrella, "founder_glider" FounderGlider,
+//   anything else or no entry the StockGlider. 1.7.2 has no glider items; this answer is the only thing that picks one.
+//   Season 1's Victory Umbrella (Core #97): every player with a win in any playlist gets "umbrella", from the match
+//   after it (the question is asked once, at assignment); the founder types go unused 🟡 (who Epic gave them wasn't
+//   looked at, and every Core account is a founder).
 // - recordwin: POST {playlistId, accountIds}, the winners at the end of the match (OnRecordWinnerComplete, 0x3F4950,
 //   request 0x72E130): a win (br_placetop1) each.
 // - recordresults: Core's (CoreV2's server; the 1.7.2 server reports nothing else), POST {playlistId, results:
@@ -29,7 +34,11 @@ export function battleRoyaleRoutes({ tokens, accounts, sessions, stats }) {
   }
 
   router.post("/fortnite/api/game/v2/battleroyale/winners", auth, (req, res) => {
-    res.json({ playlistId: playlistOf(req.body), winners: [] });
+    const accountIds = Array.isArray(req.body?.accountIds) ? req.body.accountIds : [];
+    const winners = accountIds.filter((accountId) => typeof accountId === "string" && accounts.get(accountId) && stats.hasWon(accountId))
+      .map((accountId) => ({ accountId, umbrellaType: "umbrella" }));
+    log("Battle Royale", `Umbrella for ${winners.map(({ accountId }) => accountId).join(", ") || "nobody"} of ${accountIds.length} players`);
+    res.json({ playlistId: playlistOf(req.body), winners });
   });
 
   router.post("/fortnite/api/game/v2/battleroyale/recordwin", auth, (req, res) => {
