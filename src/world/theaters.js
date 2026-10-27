@@ -1,6 +1,8 @@
 import crypto from "node:crypto";
+import { candy } from "../events/fortnitemares.js";
 import { perBuild } from "../gamedata/read.js";
 import { getDifficulty, missionAlertTier } from "../gamedata/world.js";
+import { candyReward, hexsylvania, isHexsylvania } from "./hexsylvania.js";
 import { linkedQuests, questPath } from "./quests.js";
 
 // The story opens each later theater: the client's TheaterSelect shows "Requires completing quest: {Quest}" for
@@ -97,18 +99,20 @@ function shuffled(list, seed) {
 // missions carried in Epic's world info (tools/theaters/import.mjs), so missions of one difficulty mostly show its XP
 // packs and now and then materials, as Epic's did. A group seen on one mission only (storm shields, the tutorial) keeps
 // that mission's packs.
-function missionRewards(seed, tierGroupName) {
+// A Hexsylvania mission (world/hexsylvania.js) also gives Candy, which world info shows with its other rewards.
+function missionRewards(seed, tierGroupName, theaterId, rowName) {
   const { count = 0, pool = [] } = layout().rewards[tierGroupName] ?? {};
   const drawn = pool.reduce((total, reward) => total + reward.weight, 0);
   const items = drawn <= count ? pool.flatMap(({ itemType, quantity, weight }) => Array(weight).fill({ itemType, quantity }))
     : Array.from({ length: count }, (_, index) => weighted(pool, `${seed}:reward:${index}`));
+  if (isHexsylvania(theaterId)) items.push({ itemType: candy, quantity: candyReward(rowName) });
   return { tierGroupName, items: items.map(({ itemType, quantity }) => ({ itemType, quantity })) };
 }
 
-function mission(seed, tileIndex, missionGenerator, missionDifficultyInfo, tierGroupName, availableUntil) {
+function mission(seed, theaterId, tileIndex, missionGenerator, missionDifficultyInfo, tierGroupName, availableUntil) {
   return {
     missionGuid: missionGuid(seed),
-    missionRewards: missionRewards(seed, tierGroupName),
+    missionRewards: missionRewards(seed, tierGroupName, theaterId, missionDifficultyInfo.rowName),
     missionModifiers: { tierGroupName: "", items: [] },
     missionGenerator,
     missionDifficultyInfo,
@@ -120,7 +124,7 @@ function mission(seed, tileIndex, missionGenerator, missionDifficultyInfo, tierG
 // As in Epic's data: every AlwaysActive tile hosts a mission, and each region adds numMissionsAvailable missions on
 // its Normal tiles. A tile's own weights override the region's.
 function rollMissions({ data, fixedMissions }, day, availableUntil) {
-  const missions = fixedMissions.map((fixed) => mission(`${data.uniqueId}:${day}:fixed:${fixed.tileIndex}`, fixed.tileIndex,
+  const missions = fixedMissions.map((fixed) => mission(`${data.uniqueId}:${day}:fixed:${fixed.tileIndex}`, data.uniqueId, fixed.tileIndex,
     fixed.missionGenerator, fixed.missionDifficultyInfo, fixed.tierGroupName, availableUntil));
 
   data.regions.forEach((region, regionIndex) => {
@@ -137,7 +141,7 @@ function rollMissions({ data, fixedMissions }, day, availableUntil) {
       const tileSeed = `${seed}:tile:${tileIndex}`;
       const { difficultyInfo } = weighted(difficulties, `${tileSeed}:difficulty`);
       const tierGroupName = getDifficulty(difficultyInfo.rowName)?.lootTierGroup ?? "";
-      missions.push(mission(tileSeed, tileIndex, weighted(generators, `${tileSeed}:generator`).missionGenerator,
+      missions.push(mission(tileSeed, data.uniqueId, tileIndex, weighted(generators, `${tileSeed}:generator`).missionGenerator,
         difficultyInfo, tierGroupName, availableUntil));
     }
   });
@@ -146,7 +150,13 @@ function rollMissions({ data, fixedMissions }, day, availableUntil) {
 
 // What an alert gives, by the loot tier group of its MissionAlerts row. No shipped loot table has these groups (Epic
 // rolled them on its servers), so this is Core's: V-bucks and the tier's reagents, as the client's own zone packs.
+//
+// Hexsylvania's alerts come from the HalloweenCategory row (MissionAlert_41, LootTierGroup Halloween2017_MissionAlert,
+// every difficulty), whose category is the Transylvania theater's (MissionAlertCategories). What it gave was Epic's
+// too; Core's is Candy (🟡: 100, a few missions' worth).
+const halloweenAlerts = "Halloween2017_MissionAlert";
 const alertRewards = {
+  [halloweenAlerts]: [[candy, 100]],
   MissionAlert_Proto_01: [["CardPack:zcp_mtx_boost50", 1], ["CardPack:zcp_reagent_c_t01_medium", 1]],
   MissionAlert_Proto_02: [["CardPack:zcp_mtx_boost50", 1], ["CardPack:zcp_reagent_c_t02_medium", 1]],
   MissionAlert_Proto_03: [["CardPack:zcp_mtx_boost100", 1], ["CardPack:zcp_reagent_c_t03_medium", 1]],
@@ -155,7 +165,7 @@ const alertRewards = {
 
 function alertFor(data, mission) {
   const tile = data.tiles[mission.tileIndex];
-  const tier = missionAlertTier(mission.missionDifficultyInfo.rowName);
+  const tier = missionAlertTier(mission.missionDifficultyInfo.rowName, isHexsylvania(data.uniqueId) ? halloweenAlerts : undefined);
   if (!tile?.canBeMissionAlert || !tier || !alertRewards[tier.lootTierGroup]) return undefined;
   if (tier.zoneThemes.length && !tier.zoneThemes.includes(tile.zoneTheme)) return undefined;
   if (tier.missionGenerator && tier.missionGenerator !== mission.missionGenerator) return undefined;
@@ -204,7 +214,8 @@ const wholePoints = (missionPoints) => (Number.isFinite(missionPoints) && missio
 export function worldInfo(now = new Date()) {
   const day = now.toISOString().slice(0, 10);
   const availableUntil = `${day}T23:59:59.999Z`;
-  const { theaters } = layout();
+  const event = hexsylvania();
+  const theaters = event ? [...layout().theaters, event] : layout().theaters;
   const missions = theaters.map((theater) => rollMissions(theater, day, availableUntil));
   return {
     theaters: theaters.map((theater) => theater.data),
@@ -228,7 +239,7 @@ export function atDifficulty(mission, rowName) {
   return {
     ...mission,
     missionDifficultyInfo: { ...mission.missionDifficultyInfo, rowName },
-    missionRewards: missionRewards(`${mission.missionGuid}:${rowName}`, tierGroupName)
+    missionRewards: missionRewards(`${mission.missionGuid}:${rowName}`, tierGroupName, mission.theaterId, rowName)
   };
 }
 

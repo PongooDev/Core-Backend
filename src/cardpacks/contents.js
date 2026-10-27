@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import { bannerIds } from "../gamedata/banners.js";
 import { getCardPack } from "../gamedata/items.js";
-import { hasItem, isKnownKind, namedSchematics, pool, rarities } from "./pools.js";
+import { halloweenPool, hasItem, isKnownKind, namedSchematics, pool, rarities } from "./pools.js";
 
 // What a card pack holds. Epic decided pack contents on its servers and no loot table for them ships with the client,
 // so these rules are Core's design (chosen by the user), built from what the game data says about each pack: its loot
@@ -162,6 +162,17 @@ function foundersBanners(tier) {
 
 const pickOne = (choices) => (choices.length ? [{ templateId: pick(choices), quantity: 1 }] : []);
 
+// The Fortnitemares Llama (CardPack_Event_2017_Halloween, 1.8): "Guarantees at least one Epic or better limited time
+// Fortnitemares Survivor or Hero!" An Upgrade Llama's items and one Fortnitemares survivor or hero, Epic or (a quarter
+// of the time) Legendary; the odds are Core's (🟡). The Monster 'Cosplayer' packs (CardPack_HalloweenWorker_<rarity>,
+// groups CardPack_CB_Halloween_2017_Worker_<Rarity>: "A random Rare Monster 'Cosplayer'.") hold one such survivor.
+const halloweenRarities = { uncommon: "uc", rare: "r", veryrare: "vr", superrare: "sr" };
+
+function fortnitemaresLlama() {
+  const rarity = weighted([["vr", 75], ["sr", 25]]);
+  return [...llama(llamas.cardpack_bronze), ...pickOne(halloweenPool(weighted([["worker", 50], ["hero", 50]]), rarity))];
+}
+
 // A named pack's schematic, found by the words of its group ("CardPack_Quest_TrapWallDarts_UC" -> wall, darts) or of
 // its id ("cardpack_starter_sniper_boltaction_scope_r" -> sniper, boltaction, scope).
 function named(group, templateId, rarity) {
@@ -187,6 +198,9 @@ export function rollContents(templateId) {
   const withRarity = { ...info, rarityCode: rarities.includes(rarity) ? rarity : "r" };
 
   if (llamas[group]) return llama(llamas[group]);
+  if (group === "cardpack_event_2017_halloween") return fortnitemaresLlama();
+  const cosplayer = /^cardpack_cb_halloween_2017_worker_([a-z]+)$/.exec(group);
+  if (cosplayer && halloweenRarities[cosplayer[1]]) return pickOne(halloweenPool("worker", halloweenRarities[cosplayer[1]]));
   // By id: CardPack_Silver_Melee's group is CardPack_Gold_Melee in the data.
   const name = templateId.split(":")[1].toLowerCase();
   if (name.startsWith("cardpack_silver")) return llama(llamas.cardpack_silver);
