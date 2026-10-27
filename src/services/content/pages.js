@@ -39,7 +39,7 @@ const messageOf = (configured, fallback) => ({
 export function contentPage(news = defaultBattleRoyaleNews, loginMessage = defaultLoginMessage) {
   return {
     _title: "Fortnite Game",
-    lastModified: "2026-10-27T12:00:00.000Z",
+    lastModified: "2026-10-27T16:30:00.000Z",
     _images_: [],
     battleRoyaleNews: { news: { message: messageOf(news, defaultBattleRoyaleNews), region_messages: [], platform_messages: [] } },
     loginmessage: { loginmessage: { message: messageOf(loginMessage, defaultLoginMessage) } },
