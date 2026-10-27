@@ -54,3 +54,13 @@ test("the build is read from both User-Agent formats the Cert client uses", () =
   assert.equal(getBuild(agent("game=FortniteGame, engine=UE4, version=4.16.0-3532353+++Fortnite+Release-Cert, platform=Windows")), "3532353");
   assert.equal(getBuild(agent(undefined)), "unknown");
 });
+
+test("the login's waiting room has no queue (a PS4 client asks for it, #65)", async () => {
+  const backend = await startBackend();
+  try {
+    const room = await get(backend.port, "/waitingroom/api/waitingroom");
+    assert.equal(room.status, 204);
+  } finally {
+    backend.close();
+  }
+});
