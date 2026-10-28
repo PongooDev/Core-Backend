@@ -2,6 +2,7 @@ import express from "express";
 import { createAccountStore } from "./accounts/store.js";
 import { createResetTokenStore } from "./accounts/reset-tokens.js";
 import { createSettingsStore } from "./settings/store.js";
+import { createReportStore } from "./reports/store.js";
 import { requestBuild } from "./builds/context.js";
 import { createFriendStore } from "./friends/store.js";
 import { createFriendCodeStore } from "./friendcodes/store.js";
@@ -60,10 +61,12 @@ export function createContext(config) {
   const friends = createFriendStore(config.dataDir);
   const sessions = createSessionStore();
   const stats = createStatsStore(config.dataDir);
+  const reports = createReportStore(config.dataDir);
   return {
     accounts,
     tokens,
     settings,
+    reports,
     resetTokens: createResetTokenStore(),
     friends,
     friendCodes: createFriendCodeStore(config.dataDir),
