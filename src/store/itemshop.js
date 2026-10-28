@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { currentBuild } from "../builds/context.js";
-import { athenaCosmetics } from "../gamedata/athena.js";
+import { athenaCosmetics, athenaDisplayAssets } from "../gamedata/athena.js";
 import { isNonShopCosmetic } from "../profiles/athena.js";
 
 // Battle Royale's item shop (Core-Backend #69). 1.8's lobby Store tab is AthenaDirectAcquisitionScreen
@@ -16,12 +16,18 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // services/fortnite/calendar.js sends weeklyStoreEnd. Without it the end is zero and the weekly countdown shows 0:00.
 // 1.7.2 has no Battle Royale store (no FortDirectAcquisition classes), nor does anything before 1.8.
 //
-// An offer is a FCatalogOffer whose first item grant is the cosmetic: the tile shows its LargePreviewImage, rarity, name
-// and type (no displayAssetPath: HasDisplayAsset is false; no title, so the name and type are the item definition's:
-// store/catalog.js offerJson) and its MtxCurrency price in V-Bucks. The offer's title here is only for messages. Offers carry no
-// requirements: the client leaves out every offer whose requirements fail (0x3C52200 with the store's flags), where an
-// owned item should show as owned (UFortMcpContext::IsOwned 0x710D00, the offer's grants held in athena or profile0:
-// the tile's OwnedSwitcher; the details screen then shows "owned" and offers no purchase).
+// An offer is a FCatalogOffer whose first item grant is the cosmetic: the tile shows its art, rarity, name and type (no
+// title, so the name and type are the item definition's: store/catalog.js offerJson) and its MtxCurrency price in
+// V-Bucks. The art is the offer's display asset's TileImage when it has one, else the cosmetic's LargePreviewImage (the
+// locker icon): AthenaDirectAcquisitionOfferWidget's OfferSet asks the offer info HasDisplayAsset (0x2E37EA0: its
+// UFortMtxOfferData at +0x40 is set) and then shows GetTileImage (0x2E2EA30). The store loads every offer's
+// displayAssetPath (FCatalogOffer +0x190) as a soft object path (sub_2EAC960, RequestAsyncLoad) and gives an offer the
+// loaded FortMtxOfferData whose path name is its displayAssetPath, compared case-insensitively (sub_2E845F0 →
+// sub_2E7C980), so the path must name the object: "/Game/Catalog/DisplayAssets/DA_X.DA_X" (Core-Backend #99). The
+// offer's title here is only for messages. Offers carry no requirements: the client leaves out every offer whose
+// requirements fail (0x3C52200 with the store's flags), where an owned item should show as owned
+// (UFortMcpContext::IsOwned 0x710D00, the offer's grants held in athena or profile0: the tile's OwnedSwitcher; the
+// details screen then shows "owned" and offers no purchase).
 //
 // What is on sale is Epic's own shop of Season 1 (1.8 to 1.10), day by day from 30 October to 13 December 2017, as
 // fnbr.co recorded it (itemshop.json: the featured items, then the daily ones, with their V-Buck prices; every item is in
@@ -222,13 +228,36 @@ export function weeklyStoreEnd(now = new Date(), overrideConfig = null) {
 
 const offerIdOf = (templateId) => `core_br_${templateId.split(":")[1].toLowerCase()}`;
 
+// The featured items' shop art. 1.8's display assets with Battle Royale tile art (gamedata/athena.json displayAssets,
+// tools/extractor) are DA_Featured_<name>, the cosmetic they show only in that name and in their textures
+// (UI/Foundation/Textures/BattleRoyale/FeaturedItems): an outfit's is T-AthenaSoldiers-<its HeroDefinition>; the others'
+// were matched by their art (T-Featured-PickaxeHalloween is Reaper's scythe, not Batsickle). Nothing names one for
+// any other cosmetic: their tiles keep the locker icon. Lucky's and Close Shave's DA_HappyPickAxe and DA_BoltOnPickaxe
+// are Save the World's founders tiles (T-Founders-Tile-Standard), not their art. Only the featured (weekly) storefront's
+// offers carry one, as the assets' name says; a daily tile shows the locker icon.
+const featuredDisplayAssets = {
+  "AthenaCharacter:cid_027_athena_commando_f": "DA_Featured_SFemaleHID027",
+  "AthenaCharacter:cid_029_athena_commando_f_halloween": "DA_Featured_SFemaleHalloween",
+  "AthenaCharacter:cid_030_athena_commando_m_halloween": "DA_Featured_SMaleHalloween",
+  "AthenaGlider:glider_prismatic": "DA_Featured_GliderPrismatic",
+  "AthenaGlider:glider_voyager": "DA_Featured_GliderVoyager",
+  "AthenaPickaxe:halloweenscythe": "DA_Featured_PickaxeHalloween",
+  "AthenaPickaxe:pickaxe_flamingo": "DA_Featured_PickaxeFlamingo"
+};
+
+// The display asset a featured offer of the cosmetic shows, by object path, if the requesting build has it; else "".
+export function featuredDisplayAsset(templateId) {
+  const name = featuredDisplayAssets[templateId];
+  return (name && athenaDisplayAssets().find((assetPath) => assetPath.endsWith(`/${name}.${name}`))) || "";
+}
+
 // The day's offers by storefront, those the requesting build has the cosmetic for.
 export function itemShopOffers(now = new Date(), overrideConfig = null) {
   if (!hasItemShop()) return { BRWeeklyStorefront: [], BRDailyStorefront: [] };
   const cosmetics = athenaCosmetics();
   const config = overrideConfig ?? currentShopConfig();
 
-  const toOffers = (entries) => entries
+  const toOffers = (entries, featured = false) => entries
     .filter(([templateId]) => cosmetics[templateId])
     .map(([templateId, price]) => {
       const cosmetic = cosmetics[templateId];
@@ -240,6 +269,7 @@ export function itemShopOffers(now = new Date(), overrideConfig = null) {
         currencyType: "MtxCurrency",
         currencySubType: "",
         price: validPrice,
+        displayAssetPath: featured ? featuredDisplayAsset(templateId) : "",
         athena: true
       };
     });
@@ -248,7 +278,7 @@ export function itemShopOffers(now = new Date(), overrideConfig = null) {
     const feat = Array.isArray(config.custom.featured) ? config.custom.featured : [];
     const daily = Array.isArray(config.custom.daily) ? config.custom.daily : [];
     return {
-      BRWeeklyStorefront: toOffers(feat),
+      BRWeeklyStorefront: toOffers(feat, true),
       BRDailyStorefront: toOffers(daily)
     };
   }
@@ -256,14 +286,14 @@ export function itemShopOffers(now = new Date(), overrideConfig = null) {
   if (config.mode === "random") {
     const random = generateRandomShop(now, config);
     return {
-      BRWeeklyStorefront: toOffers(random.featured),
+      BRWeeklyStorefront: toOffers(random.featured, true),
       BRDailyStorefront: toOffers(random.daily)
     };
   }
 
   const day = shopDay(now, config);
   return {
-    BRWeeklyStorefront: toOffers(day.featured),
+    BRWeeklyStorefront: toOffers(day.featured, true),
     BRDailyStorefront: toOffers(day.daily)
   };
 }

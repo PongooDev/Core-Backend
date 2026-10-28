@@ -101,7 +101,7 @@ function offerJson(offer, sortPriority) {
     description: "",
     appStoreId: "",
     metaAssetInfo: { structName: "FortCatalogMeta", payload: { chaseItems: [], packDefinition: offer.athena ? "" : getCardPack(templateId)?.path ?? "" } },
-    displayAssetPath: "",
+    displayAssetPath: offer.displayAssetPath ?? "",
     itemGrants: [{ templateId, quantity: 1 }],
     requirements: [],
     denyItemTemplateIds: []

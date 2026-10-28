@@ -1,8 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { inBuild } from "../src/builds/context.js";
-import { athenaCosmetics } from "../src/gamedata/athena.js";
-import { itemShopOffers, nextRotation, shopDay, weeklyStoreEnd } from "../src/store/itemshop.js";
+import { athenaCosmetics, athenaDisplayAssets } from "../src/gamedata/athena.js";
+import { featuredDisplayAsset, itemShopOffers, nextRotation, shopDay, weeklyStoreEnd } from "../src/store/itemshop.js";
 import { post, send, startBackend, userLogin } from "./helpers.js";
 
 // Battle Royale's item shop (Core-Backend #69).
@@ -80,6 +80,68 @@ test("1.8's catalog has the day's Battle Royale storefronts, good until the next
 
     const cert = (await as("cert", backend.port, "GET", "/fortnite/api/storefront/v2/catalog", token)).body;
     assert.deepEqual(cert.storefronts.map((storefront) => storefront.name), ["CardPackStore", "CardPackStorePromo"]);
+  } finally {
+    backend.close();
+  }
+});
+
+test("a featured offer shows its cosmetic's display asset, by object path, in every shop mode (Core-Backend #99)", async () => {
+  const da = (name) => `/Game/Catalog/DisplayAssets/${name}.${name}`;
+  const art = (offers) => offers.map(({ templateId, displayAssetPath }) => [templateId, displayAssetPath]);
+  // 1.8's Battle Royale display assets, from its paks (Catalog/DisplayAssets with BattleRoyale tile art), each one some
+  // shop cosmetic's; the founders tiles (DA_HappyPickAxe, DA_BoltOnPickaxe) aren't among them.
+  const inOneEight = (fn) => inBuild("3724489", fn);
+  assert.deepEqual(inOneEight(() => athenaDisplayAssets()), ["DA_Featured_GliderPrismatic", "DA_Featured_GliderVoyager",
+    "DA_Featured_PickaxeFlamingo", "DA_Featured_PickaxeHalloween", "DA_Featured_SFemaleHID027", "DA_Featured_SFemaleHalloween",
+    "DA_Featured_SMaleHalloween"].map(da));
+  const shown = Object.keys(athenaCosmetics()).map((templateId) => inOneEight(() => featuredDisplayAsset(templateId))).filter(Boolean);
+  assert.deepEqual(shown.sort(), inOneEight(() => athenaDisplayAssets()));
+  assert.equal(inOneEight(() => featuredDisplayAsset("AthenaPickaxe:happypickaxe")), "");
+
+  // History: Halloween's troopers show their featured art; Reaper, on sale that day too, is a daily offer and keeps the
+  // locker icon. A week later Pink Flamingo and Survival Specialist; Batsickle's week has no art for Batsickle.
+  const halloween = inOneEight(() => itemShopOffers(new Date("2017-10-31T10:00:00Z"), { mode: "fnbr" }));
+  assert.deepEqual(art(halloween.BRWeeklyStorefront), [
+    ["AthenaCharacter:cid_029_athena_commando_f_halloween", da("DA_Featured_SFemaleHalloween")],
+    ["AthenaCharacter:cid_030_athena_commando_m_halloween", da("DA_Featured_SMaleHalloween")]]);
+  assert.ok(halloween.BRDailyStorefront.some(({ templateId }) => templateId === "AthenaPickaxe:halloweenscythe"));
+  assert.ok(halloween.BRDailyStorefront.every(({ displayAssetPath }) => displayAssetPath === ""));
+  assert.deepEqual(art(inOneEight(() => itemShopOffers(new Date("2017-11-05T10:00:00Z"), { mode: "fnbr" })).BRWeeklyStorefront), [
+    ["AthenaPickaxe:pickaxe_flamingo", da("DA_Featured_PickaxeFlamingo")],
+    ["AthenaCharacter:cid_027_athena_commando_f", da("DA_Featured_SFemaleHID027")]]);
+  for (let n = 0; n < 45; n++) {
+    const { BRWeeklyStorefront } = inOneEight(() => itemShopOffers(new Date(Date.UTC(2017, 9, 30 + n, 6)), { mode: "fnbr" }));
+    for (const offer of BRWeeklyStorefront) assert.equal(offer.displayAssetPath, inOneEight(() => featuredDisplayAsset(offer.templateId)));
+  }
+
+  // Custom: an admin's featured Voyager and Reaper show theirs, a featured cosmetic without one and any daily offer don't.
+  const custom = inOneEight(() => itemShopOffers(new Date(), { mode: "custom", custom: {
+    featured: [["AthenaGlider:glider_voyager", 1200], ["AthenaPickaxe:halloweenscythe", 800], ["AthenaPickaxe:sicklebatpickaxe", 800]],
+    daily: [["AthenaGlider:glider_prismatic", 800]] } }));
+  assert.deepEqual(art(custom.BRWeeklyStorefront), [["AthenaGlider:glider_voyager", da("DA_Featured_GliderVoyager")],
+    ["AthenaPickaxe:halloweenscythe", da("DA_Featured_PickaxeHalloween")], ["AthenaPickaxe:sicklebatpickaxe", ""]]);
+  assert.deepEqual(art(custom.BRDailyStorefront), [["AthenaGlider:glider_prismatic", ""]]);
+
+  // Random: every week's featured pair carries its cosmetics' art (14 of these 60 featured offers have one), the daily
+  // items none.
+  let withArt = 0;
+  for (let week = 0; week < 30; week++) {
+    const random = inOneEight(() => itemShopOffers(new Date(Date.UTC(2026, 0, 1 + 7 * week, 6)), { mode: "random", random: { seed: "da" } }));
+    for (const offer of random.BRWeeklyStorefront) assert.equal(offer.displayAssetPath, inOneEight(() => featuredDisplayAsset(offer.templateId)));
+    withArt += random.BRWeeklyStorefront.filter(({ displayAssetPath }) => displayAssetPath).length;
+    assert.ok(random.BRDailyStorefront.every(({ displayAssetPath }) => displayAssetPath === ""));
+  }
+  assert.equal(withArt, 14);
+
+  // The catalog sends it: the weekly entries' displayAssetPath, the daily and llama store's empty.
+  const backend = await startBackend();
+  try {
+    const { token } = await userLogin(backend.port, "DisplayAssets18");
+    const catalog = (await as("1.8", backend.port, "GET", "/fortnite/api/storefront/v2/catalog", token)).body;
+    const offers = inOneEight(() => itemShopOffers(new Date()));
+    const front = (name) => catalog.storefronts.find((storefront) => storefront.name === name).catalogEntries;
+    assert.deepEqual(front("BRWeeklyStorefront").map((entry) => entry.displayAssetPath), offers.BRWeeklyStorefront.map((offer) => offer.displayAssetPath));
+    for (const entry of [...front("BRDailyStorefront"), ...front("CardPackStore")]) assert.equal(entry.displayAssetPath, "", entry.offerId);
   } finally {
     backend.close();
   }

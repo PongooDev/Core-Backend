@@ -1,14 +1,16 @@
 import { perBuild } from "./read.js";
 
-// Battle Royale's game data (gamedata/athena.json, tools/extractor): its cosmetics, quests, season levels and the
-// objective stat rows its quests count. 1.8 (CL-3724489) is the first build with an athena profile and the base file
-// holds its data (the extractor makes it empty from Cert; no earlier build asks for it) rather than 1.8's overlay:
-// CoreV2's own match reports (battleroyale/recordresults, User-Agent "Core V2") name no build, so they are read with
-// Cert's data, and they need the season levels and challenges. A later build whose data differs overlays it as usual.
+// Battle Royale's game data (gamedata/athena.json, tools/extractor): its cosmetics, the item shop's display assets, its
+// quests, season levels and the objective stat rows its quests count. 1.8 (CL-3724489) is the first build with an athena
+// profile and the base file holds its data (the extractor makes it empty from Cert; no earlier build asks for it) rather
+// than 1.8's overlay: CoreV2's own match reports (battleroyale/recordresults, User-Agent "Core V2") name no build, so
+// they are read with Cert's data, and they need the season levels and challenges. A later build whose data differs
+// overlays it as usual.
 const data = perBuild((read) => {
-  const { cosmetics = {}, quests = {}, levels = [], objectiveStats = {} } = read("athena", {});
+  const { cosmetics = {}, displayAssets = [], quests = {}, levels = [], objectiveStats = {} } = read("athena", {});
   return {
     cosmetics,
+    displayAssets,
     quests,
     levels: [...levels].sort((a, b) => a.level - b.level),
     objectiveStats,
@@ -20,6 +22,10 @@ const data = perBuild((read) => {
 
 // templateId -> {class, name, rarity}.
 export const athenaCosmetics = () => data().cosmetics;
+
+// The item shop's display assets (FortMtxOfferData with Battle Royale tile art), by object path:
+// "/Game/Catalog/DisplayAssets/DA_Featured_GliderVoyager.DA_Featured_GliderVoyager".
+export const athenaDisplayAssets = () => data().displayAssets;
 
 export const getAthenaQuest = (questId) => data().quests[String(questId).toLowerCase()];
 

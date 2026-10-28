@@ -933,6 +933,21 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         ["rarity"] = Enum(properties["Rarity"]) ?? "Ordinary"
     };
 }
+// The item shop's display assets: Catalog/DisplayAssets' FortMtxOfferData whose TileImage is Battle Royale art
+// (UI/Foundation/Textures/BattleRoyale; the others are Save the World's founders and V-Bucks tiles), by object path, as
+// an offer's displayAssetPath names one (src/store/itemshop.js).
+var athenaDisplayAssets = new SortedSet<string>(StringComparer.Ordinal);
+foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" && f.Path.StartsWith("FortniteGame/Content/Catalog/DisplayAssets/", StringComparison.OrdinalIgnoreCase)))
+{
+    var gamePath = "/Game/" + file.PathWithoutExtension["FortniteGame/Content/".Length..];
+    var assetName = gamePath.Split('/').Last();
+    if (!provider.TryLoadPackage(file, out var package)) continue;
+    var export = package.GetExports().FirstOrDefault(e => e.ExportType == "FortMtxOfferData" && e.Name.Equals(assetName, StringComparison.OrdinalIgnoreCase));
+    if (export is null) continue;
+    var tile = JsonNode.Parse(JsonConvert.SerializeObject(export))!["Properties"]?["TileImage"]?["ResourceObject"]?["ObjectPath"]?.GetValue<string>();
+    if (tile?.StartsWith("FortniteGame/Content/UI/Foundation/Textures/BattleRoyale/", StringComparison.OrdinalIgnoreCase) != true) continue;
+    athenaDisplayAssets.Add($"{gamePath}.{export.Name}");
+}
 if (provider.TryLoadPackage("FortniteGame/Content/Balance/AthenaGameData.uasset", out var athenaGameData))
 {
     var athenaData = JsonNode.Parse(JsonConvert.SerializeObject(athenaGameData.GetExports().First(e => e.ExportType == "AthenaGameData")))!["Properties"];
@@ -960,9 +975,10 @@ foreach (var quest in athenaQuests.Values.Cast<SortedDictionary<string, object>>
 }
 File.WriteAllText(Path.Combine(output, "athena.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal)
 {
-    ["cosmetics"] = athenaCosmetics, ["quests"] = athenaQuests, ["levels"] = athenaLevels, ["objectiveStats"] = athenaStats
+    ["cosmetics"] = athenaCosmetics, ["displayAssets"] = athenaDisplayAssets, ["quests"] = athenaQuests, ["levels"] = athenaLevels,
+    ["objectiveStats"] = athenaStats
 }, options) + "\n");
-Console.WriteLine($"Battle Royale: {athenaCosmetics.Count} cosmetics, {athenaQuests.Count} quests, {athenaLevels.Count} season levels");
+Console.WriteLine($"Battle Royale: {athenaCosmetics.Count} cosmetics, {athenaDisplayAssets.Count} display assets, {athenaQuests.Count} quests, {athenaLevels.Count} season levels");
 Console.WriteLine($"{zoneThemes.Count} zone themes, {missionGenerators.Count} mission generators, {difficulties.Count} mission difficulties");
 Console.WriteLine($"{characters.Count} characters, {cardPacks.Count} card packs, {nodes.Count} skill tree nodes, {squads.Count} squads, {objectiveStats.Count} objective stats");
 Console.WriteLine($"{quests.Count} quests, {items.Count} items and {dailyRewards.Count} daily reward schedules from {version["BranchName"]}-CL-{version["Changelist"]} into {output}");

@@ -351,6 +351,15 @@
       "rarity": "Ordinary"
     }
   },
+  "displayAssets": [
+    "/Game/Catalog/DisplayAssets/DA_Featured_GliderPrismatic.DA_Featured_GliderPrismatic",
+    "/Game/Catalog/DisplayAssets/DA_Featured_GliderVoyager.DA_Featured_GliderVoyager",
+    "/Game/Catalog/DisplayAssets/DA_Featured_PickaxeFlamingo.DA_Featured_PickaxeFlamingo",
+    "/Game/Catalog/DisplayAssets/DA_Featured_PickaxeHalloween.DA_Featured_PickaxeHalloween",
+    "/Game/Catalog/DisplayAssets/DA_Featured_SFemaleHID027.DA_Featured_SFemaleHID027",
+    "/Game/Catalog/DisplayAssets/DA_Featured_SFemaleHalloween.DA_Featured_SFemaleHalloween",
+    "/Game/Catalog/DisplayAssets/DA_Featured_SMaleHalloween.DA_Featured_SMaleHalloween"
+  ],
   "levels": [
     {
       "level": 1,
