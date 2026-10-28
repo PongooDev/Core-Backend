@@ -111,7 +111,7 @@ test("the Battle Royale locker equips a cosmetic per slot (EquipBattleRoyaleCust
   }
 });
 
-test("the Battle Royale banner (SetBattleRoyaleBanner) is one the player owns, kept in athena apart from the homebase's", async () => {
+test("the Battle Royale banner (SetBattleRoyaleBanner) is one the player owns, kept in athena and the homebase alike", async () => {
   const backend = await startBackend();
   try {
     const player = await userLogin(backend.port, "Banner18");
@@ -126,12 +126,56 @@ test("the Battle Royale banner (SetBattleRoyaleBanner) is one the player owns, k
     assert.equal((await set(icon, color)).status, 200);
     const attributes = (await athenaProfile(backend.port, player)).stats.attributes;
     assert.deepEqual([attributes.banner_icon, attributes.banner_color], [icon, color]);
-    // The homebase banner stays as it was.
+    // The homebase banner follows (#98), the rest of the homebase stays as it was.
     const homebase = (await command(backend.port, player, "QueryProfile", "profile0")).body.profileChanges[0].profile.stats.attributes.homebase;
-    assert.deepEqual(homebase, account.stats.attributes.homebase);
+    assert.deepEqual(homebase, { ...account.stats.attributes.homebase, bannerIconId: icon, bannerColorId: color });
 
     // A banner the player doesn't own (or no such row) is refused.
     assert.equal((await set("NoSuchBanner", color)).body.errorCode, "errors.com.epicgames.fortnite.item_not_found");
+  } finally {
+    backend.close();
+  }
+});
+
+// Core-Backend #98: 1.8's banner editor sends nothing when the choice matches profile0's homebase banner
+// (CommitChosenIconAndColor, 0x3015C00, reads it through sub_707CF0), whichever profile it saves to. With athena's
+// banner kept apart, picking red, then orange, then red again left orange on in Battle Royale.
+test("a 1.8 banner can be put back on: each SetBattleRoyaleBanner brings profile0's homebase banner along, which the editor checks against", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "BannerBack18");
+    const account = (await command(backend.port, player, "QueryProfile", "profile0")).body.profileChanges[0].profile;
+    assert.equal((await command(backend.port, player, "QueryProfile", "athena")).status, 200);
+    const icon = account.stats.attributes.homebase.bannerIconId;
+    const owned = (type) => Object.values(account.items).map((item) => item.templateId).filter((id) => id.startsWith(`${type}:`)).map((id) => id.split(":")[1]);
+    const colors = owned("HomebaseBannerColor");
+    assert.ok(colors.includes("DefaultColor2") && colors.includes("DefaultColor3"));
+
+    // What the client's editor compares its choice with: the homebase banner in the profile0 it holds.
+    let clientHomebase = account.stats.attributes.homebase;
+    // Red (DefaultColor2), orange (DefaultColor3), red again, and back to the first banner.
+    for (const color of ["DefaultColor2", "DefaultColor3", "DefaultColor2", account.stats.attributes.homebase.bannerColorId]) {
+      // The editor would send nothing for the banner profile0 already has.
+      assert.notDeepEqual([clientHomebase.bannerIconId, clientHomebase.bannerColorId], [icon, color], color);
+      const response = await command(backend.port, player, "SetBattleRoyaleBanner", "athena",
+        { homebaseBannerIconId: icon, homebaseBannerColorId: color });
+      assert.equal(response.status, 200);
+      // (A full athena, for rvn -1.)
+      const { banner_icon, banner_color } = athenaOf(response.body).profileChanges[0].profile.stats.attributes;
+      assert.deepEqual([banner_icon, banner_color], [icon, color]);
+      // profile0 goes along as the change the client applies to the profile0 it holds.
+      const profile0 = response.body.multiUpdate.find((update) => update.profileId === "profile0");
+      const change = profile0.profileChanges.find((entry) => entry.changeType === "statModified" && entry.name === "homebase");
+      assert.deepEqual([change.value.bannerIconId, change.value.bannerColorId], [icon, color]);
+      clientHomebase = change.value;
+    }
+
+    // The homebase editor's SetHomebaseBanner brings athena's along the same way.
+    const homebase = await command(backend.port, player, "SetHomebaseBanner", "profile0",
+      { homebaseBannerIconId: icon, homebaseBannerColorId: "DefaultColor3" });
+    assert.equal(homebase.status, 200);
+    const { banner_icon, banner_color } = (await athenaProfile(backend.port, player)).stats.attributes;
+    assert.deepEqual([banner_icon, banner_color], [icon, "DefaultColor3"]);
   } finally {
     backend.close();
   }

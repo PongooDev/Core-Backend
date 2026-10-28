@@ -320,21 +320,6 @@ export function equipCustomization(session, slotName, itemToSlot) {
   if (tracker.profile.stats.attributes[stat] !== itemId) tracker.setStat(stat, itemId);
 }
 
-// SetBattleRoyaleBanner {homebaseBannerIconId, homebaseBannerColorId}: the banner editor's (ESaveProfileForBanners::
-// BattleRoyale; 0x3015C00 sends it in place of SetHomebaseBanner) row names, of banners the player owns in profile0,
-// which is where the editor's choices come from. The Battle Royale lobby shows athena's banner_icon and banner_color.
-export function setBattleRoyaleBanner(session, iconId, colorId) {
-  if (typeof iconId !== "string" || typeof colorId !== "string" || !iconId || !colorId) return;
-  const account = session.profile("profile0").profile;
-  for (const templateId of [`HomebaseBannerIcon:${iconId}`, `HomebaseBannerColor:${colorId}`]) {
-    const banner = bannerTemplateId(templateId);
-    if (!banner || !findItem(account, banner)) throw new McpError("errors.com.epicgames.fortnite.item_not_found", `${templateId} isn't one of your banners`);
-  }
-  const tracker = session.profile("athena");
-  if (tracker.profile.stats.attributes.banner_icon !== iconId) tracker.setStat("banner_icon", iconId);
-  if (tracker.profile.stats.attributes.banner_color !== colorId) tracker.setStat("banner_color", colorId);
-}
-
 // The season level. The lobby (1.8's sub_707030) shows level, xp against the level's XpToNextLevel (so xp is the XP
 // into the level, as in profile0) and accountLevel. A level's chase reward (ChaseRewardTemplateId: the BRSeason01
 // banner at 10, the Mako glider at 25) is the player's once they reach it. accountLevel was Epic's count of levels over
