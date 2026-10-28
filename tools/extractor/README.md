@@ -40,6 +40,11 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   and the book levels (total XP, rewards).
 - `inventory.json`: what each skill tree node and account buff adds to the item limits (FortHomebaseSet
   `InventorySizeBonus` for the account vault, `WorldInventorySizeBonus` for the backpack, `StorageInventorySizeBonus`).
+- `athena.json`: Battle Royale's, from 1.8 (CL 3724489; empty for earlier builds): its cosmetics (`Athena/Items/Cosmetics`
+  without the test characters: class, display name, rarity), its quests (`Athena/Items/Quests`, as in `quests.json` plus
+  their category and weight), the season levels (AthenaGameData's `SeasonXpLevelsTable`) and the objective stat rows those
+  quests count. Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
+  name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `research.json`: the resource collectors (research points): each CollectedResource template's payout and the
   homebase attributes its rate, capacity and wallet cap come from, what each skill tree node adds to those attributes
   (its CommandConsole_GEImporter rows) and the account buffs that multiply them (BuffEffects modifiers).
@@ -58,5 +63,9 @@ dotnet run -c Release --project tools/extractor -- "<Cert build folder>" <aes ke
 dotnet run -c Release --project tools/extractor -- "<other build folder>" <aes key> <other output folder>
 node tools/overlay/overlay.mjs <cert output folder> <other output folder> <changelist>
 ```
+
+Without the Cert build at hand, the committed `gamedata/*.json` (all but `theaters.json`) stand in for its extraction:
+they are what this extractor makes from Cert (a fresh 1.7.2 extraction is exactly Cert's files with
+`gamedata/3700114` applied), and 1.8's overlay (`gamedata/3724489`) was made against them.
 
 `theaters.json` isn't extracted and is shared by every build.

@@ -1,4 +1,5 @@
-import { addPageItem, bookData, bookProfiles, pageId, refreshPage } from "../collectionbook/pages.js";
+import { addPageItem, bookData, bookProfiles, pageId, pageTemplateId, refreshPage, unlockPage } from "../collectionbook/pages.js";
+import { eventBookPages } from "../events/fortnitemares.js";
 import { expeditionsNeedSetUp, setUpExpeditions } from "../expeditions/expeditions.js";
 import { slotUnlockNode } from "../gamedata/homebase.js";
 import { getItem } from "../gamedata/items.js";
@@ -6,6 +7,7 @@ import { readGameData } from "../gamedata/read.js";
 import { log } from "../log.js";
 import { collectorsNeedSetUp, setUpCollectors } from "../research/collector.js";
 import { startingQuests } from "../gamedata/quests.js";
+import { athenaNeedsSetUp, setUpAthena } from "./athena.js";
 import { foundersNeedSetUp, setUpFounders } from "./founders.js";
 import { friendCodesNeedSetUp, setUpFriendCodes } from "./friendcodes.js";
 import { ownsNode } from "./homebase.js";
@@ -37,6 +39,8 @@ import { levelStartXp, settleLevel } from "./xp.js";
 //   (collectionbook/pages.js), which the client builds the book from. Core used to keep the unlocked pages in that stat
 //   only, so the book showed no categories, slotting filled nothing and the XP stayed at 0 (issue #13). Profiles saved
 //   before then get their page items and their pages' states once (and lose Core's old claimed_page_rewards stat).
+//   A build that runs an event unlocks the event's pages too (events/fortnitemares.js), in the book profile they're on,
+//   once the book loads there; nothing in the game grants them (issue #75).
 // - theater0 and outpost0 as the world inventory keeps them (tidyWorldStacks, profiles/items.js): Core used to give
 //   never-persisted world items (ability ammo, quest pickups; the game never saves one) and, past a full first stack,
 //   dropped the rest of a stackable grant. An admin grant of 3000 Bot Turret ammo (MaxStackSize 1, bNeverPersisted) made
@@ -53,6 +57,8 @@ import { levelStartXp, settleLevel } from "./xp.js";
 //   Founder's Llama. Core gave none before 2026-10-24 (issue #31); older profiles get it once.
 // - Founder's friend codes held as the consumable are turned into the code tokens the friend code screen issues codes
 //   from (profiles/friendcodes.js, issue #35).
+// - Battle Royale's athena profile (1.8) holds the build's starter cosmetics and those the player earned, or every
+//   cosmetic when the host gives them all (giveAllCosmetics); the locker lists them (profiles/athena.js).
 // Profiles made before this, or left with no hero at all, get what they lack when they next load. So does a profile
 // whose lead slot is empty: its first hero in no squad takes it (heroes in other slots or on expeditions stay).
 const { defaultHero } = readGameData("newaccount", {});
@@ -81,10 +87,11 @@ function leadCandidate(profile) {
   return all.find(([, item]) => !item.attributes.squad_id)?.[0] ?? null;
 }
 
-export function needsSetUp(profile) {
+export function needsSetUp(profile, settings = {}) {
   if (profile.profileId === "theater0") return !migrated(profile, "itemDurability") || !migrated(profile, "worldStacks");
   if (profile.profileId === "outpost0") return !migrated(profile, "worldStacks");
-  if (bookProfiles().includes(profile.profileId)) return !migrated(profile, "bookPages");
+  if (profile.profileId === "athena") return athenaNeedsSetUp(profile, settings);
+  if (bookProfiles().includes(profile.profileId)) return !migrated(profile, "bookPages") || missingEventPages(profile).length > 0;
   if (profile.profileId !== "profile0") return false;
   return startingQuests().some((questId) => !findQuestItem(profile, questId)) || Boolean(defaultHero && !heroes(profile).length)
     || Boolean(leadCandidate(profile)) || schematicMigrations.some(({ name }) => !migrated(profile, name)) || !migrated(profile, "levelXp")
@@ -112,7 +119,17 @@ function setUpWorldStacks(session, profileId) {
   tracker.profile.coreMigrations = [...(tracker.profile.coreMigrations ?? []), "worldStacks"];
 }
 
+// The event pages of the requesting build that belong in this book profile and have no page item there.
+const missingEventPages = (profile) => eventBookPages().filter((id) => bookData().pages[id].profile === profile.profileId
+  && !Object.values(profile.items).some((item) => item.templateId.toLowerCase() === pageTemplateId(id).toLowerCase()));
+
 function setUpBook(session, profileId) {
+  const tracker = session.profile(profileId);
+  if (!migrated(tracker.profile, "bookPages")) migrateBook(session, profileId);
+  for (const id of missingEventPages(tracker.profile)) unlockPage(session, id);
+}
+
+function migrateBook(session, profileId) {
   const tracker = session.profile(profileId);
   const unlocked = session.profile("profile0").profile.stats.attributes.collection_book?.pages ?? [];
   for (const id of new Set(unlocked.map(pageId).filter(Boolean))) {
@@ -127,6 +144,7 @@ function setUpBook(session, profileId) {
 export function setUpProfile(session, profileId = "profile0") {
   if (profileId === "theater0") return setUpTheater(session);
   if (profileId === "outpost0") return setUpWorldStacks(session, profileId);
+  if (profileId === "athena") return setUpAthena(session);
   if (bookProfiles().includes(profileId)) return setUpBook(session, profileId);
   for (const questId of startingQuests()) grant(session, `Quest:${questId}`, 1);
   setUpFounders(session);

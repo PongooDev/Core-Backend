@@ -30,6 +30,10 @@ const playDelayMs = 1000;
 // The server's warmup starts with its first player, the others join during it (WarmupRequiredPlayerCount, read by
 // OnGivenMatchAssignment 0x3F3CD0).
 const matchOptions = { "match.option.warmupRequiredPlayerCount": "1" };
+// Each playlist's team size, from the server's own table (1.7.2 ConfigureForMatchAssignment 0x751960, 1.8
+// GetMaxTeamInfoForPlaylist 0x79B690, the same): Solo 2 is 100 teams of 1, Duo 10 100 of 2, Squad 9 100 of 4. Playlists
+// 0 (1×4), 1 (2×5) and 99 (1×1) aren't Battle Royale's.
+const teamSizes = { 0: 4, 1: 5, 2: 1, 9: 4, 10: 2, 99: 1 };
 
 export function parseBucket(bucketId) {
   const parts = String(bucketId ?? "").split(":");
@@ -37,12 +41,46 @@ export function parseBucket(bucketId) {
   return { netcl: parts[0], region: parts[2] ?? "", playlistId: Number.isInteger(playlistId) ? playlistId : null, parts };
 }
 
+// The team size of a bucket's playlist, or null for one the server doesn't know.
+export const teamSizeOf = (bucketId) => teamSizes[parseBucket(bucketId).playlistId] ?? null;
+
+// AssignMatch's teams ([team][party][accountId]) from a match's parties, [{players, fill}]: a party that fills
+// (player.option.fillTeam, the matchmaking panel's Squad Fill) shares a team with other such parties, biggest first so
+// the smaller ones fill the gaps; one that doesn't fill plays alone (Core-Backend #78). The server makes one beacon
+// reservation per party on its team's index (ConfigureForMatchAssignment sets the Manual team assignment method, so
+// GetTeamAssignment 0x391AD10 keeps it), and PickTeam 0x3F6500 gives a joining player their reservation's team ("PickTeam
+// for [%s] used beacon value [HumanPvP_Team1]" for team 0). A party bigger than a team is split into teams: no team
+// would have room for its reservation and the server would refuse the match.
+export function formTeams(parties, teamSize) {
+  if (!teamSize) return parties.map((party) => [party.players]);
+  const pieces = parties.flatMap((party) => {
+    const chunks = [];
+    for (let index = 0; index < party.players.length; index += teamSize) chunks.push(party.players.slice(index, index + teamSize));
+    return chunks.map((players) => ({ players, fill: party.fill }));
+  });
+  const teams = [];
+  for (const piece of pieces.sort((a, b) => b.players.length - a.players.length)) {
+    const team = piece.fill && teams.find((entry) => entry.fill && entry.players + piece.players.length <= teamSize);
+    if (team) {
+      team.parties.push(piece.players);
+      team.players += piece.players.length;
+    } else {
+      teams.push({ fill: piece.fill, parties: [piece.players], players: piece.players.length });
+    }
+  }
+  return teams.map((team) => team.parties);
+}
+
 // A server's bucket pattern ("858118782:0:NA:*") against a player's bucket ("858118782:0:NA:10"): field by field, "*"
-// matching anything, with the same number of fields.
+// matching anything, with the same number of fields. A last field of "**" matches whatever fields are left: 1.8's
+// servers register one pattern, "<netcl>:0:NA:**", where 1.7.2's registered "...:*" and "...:*:*:*" (Core-Backend #74:
+// 1.8 players were never matched).
 export function bucketMatches(pattern, bucketId) {
   const want = String(pattern).split(":");
   const have = String(bucketId).split(":");
-  return want.length === have.length && want.every((field, index) => field === "*" || field === have[index]);
+  const rest = want.at(-1) === "**";
+  const fields = rest ? want.slice(0, -1) : want;
+  return (rest ? have.length > fields.length : want.length === have.length) && fields.every((field, index) => field === "*" || field === have[index]);
 }
 
 // Queued's estimatedWaitSec, from the time left until a forming match is assigned. The client shows "N/A" for an ETA
@@ -72,6 +110,9 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
   const sockets = new Set();
 
   const sizeOf = (ticket) => Math.max(1, ticket.partyPlayerIds.length);
+  // Whether a party fills its team with others. Only the party leader's ticket says (the others' have no
+  // player.option.fillTeam); without it the party fills, as the client asks for every playlist but Squads with No Fill.
+  const fills = (party) => [party, ...party.members].map((member) => member.ticket.fillTeam).find((fill) => typeof fill === "boolean") ?? true;
 
   function issueTicket(kind, fields) {
     const ticket = { ...fields, kind, ticketId: newId(), issued: Date.now() };
@@ -216,8 +257,8 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
       return;
     }
     forming.sent = true;
-    const teams = forming.parties.map((party) => [party.ticket.partyPlayerIds]);
-    say(`Assigning match ${forming.matchId} (${forming.players} players, bucket ${forming.bucketId}) to session ${server.sessionId}`);
+    const teams = formTeams(forming.parties.map((party) => ({ players: party.ticket.partyPlayerIds, fill: fills(party) })), teamSizeOf(forming.bucketId));
+    say(`Assigning match ${forming.matchId} (${forming.players} players in ${teams.length} teams, bucket ${forming.bucketId}) to session ${server.sessionId}`);
     server.ws.send(message("AssignMatch", { matchId: forming.matchId, bucketId: forming.bucketId, matchOptions, teams }));
   }
 

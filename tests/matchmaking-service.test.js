@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import crypto from "node:crypto";
 import http from "node:http";
-import { bucketMatches, estimatedWaitSec, parseBucket } from "../src/matchmaking/service.js";
+import { bucketMatches, estimatedWaitSec, formTeams, parseBucket, teamSizeOf } from "../src/matchmaking/service.js";
 import { get, post, startBackend, userLogin } from "./helpers.js";
 
 // MatchmakingServiceClient's connection: a WebSocket with the ticket in its Authorization header, which the browser-style
@@ -69,6 +69,29 @@ test("a bucket names the playlist and region; a server's pattern takes any playl
   assert.ok(bucketMatches("858118782:0:NA:*", "858118782:0:NA:10"));
   assert.ok(!bucketMatches("858118782:0:NA:*:*:*", "858118782:0:NA:10"));
   assert.ok(!bucketMatches("858118782:0:EU:*", "858118782:0:NA:10"));
+  // 1.8's servers register "<netcl>:0:<region>:**", the rest of the bucket matching anything (#74).
+  assert.ok(bucketMatches("1944448041:0:NA:**", "1944448041:0:NA:2"));
+  assert.ok(bucketMatches("1944448041:0:NA:**", "1944448041:0:NA:10:1:0"));
+  assert.ok(!bucketMatches("1944448041:0:NA:**", "1944448041:0:NA"));
+  assert.ok(!bucketMatches("1944448041:0:NA:**", "858118782:0:NA:2"));
+});
+
+test("parties that fill share teams up to the playlist's team size; the others play alone (#78)", () => {
+  assert.deepEqual(["858118782:0:NA:2", "858118782:0:NA:10", "858118782:0:NA:9", "1944448041:0:NA:9:1:0", "858118782:0:NA:7", ""].map(teamSizeOf),
+    [1, 2, 4, 4, null, null]);
+  const party = (fill, ...players) => ({ players, fill });
+  // Squads: biggest first, so a solo tops up the three and two duos pair up; No Fill parties stay alone, and so does a
+  // solo left with no team that has room.
+  assert.deepEqual(formTeams([party(true, "a"), party(true, "b", "c"), party(false, "d"), party(true, "e", "f", "g"), party(true, "h"),
+    party(true, "i", "j"), party(false, "k", "l")], 4),
+  [[["e", "f", "g"], ["a"]], [["b", "c"], ["i", "j"]], [["k", "l"]], [["d"]], [["h"]]]);
+  // Duos pair up two solos that fill; Solo is a team each; an unknown playlist keeps each party a team.
+  assert.deepEqual(formTeams([party(true, "a"), party(false, "b"), party(true, "c")], 2), [[["a"], ["c"]], [["b"]]]);
+  assert.deepEqual(formTeams([party(true, "a"), party(true, "b")], 1), [[["a"]], [["b"]]]);
+  assert.deepEqual(formTeams([party(true, "a"), party(true, "b", "c")], null), [[["a"]], [["b", "c"]]]);
+  // A party bigger than a team is split, or the server would have no team with room for its reservation.
+  assert.deepEqual(formTeams([party(true, "a", "b", "c"), party(true, "d")], 2), [[["a", "b"]], [["c"], ["d"]]]);
+  assert.deepEqual(formTeams([party(false, "a", "b", "c"), party(true, "d")], 2), [[["a", "b"]], [["c"]], [["d"]]]);
 });
 
 test("the ETA is whole seconds, never a whole minute (the client shows N/A for those), and 0 when unknown", () => {
@@ -167,6 +190,53 @@ test("a party's tickets wait for a registered server, which gets the match and s
     assert.equal(JSON.parse(await refused.next()).name, "Error");
     assert.equal(await refused.next(), null);
   } finally {
+    backend.close();
+  }
+});
+
+test("AssignMatch's teams follow each party leader's Squad Fill choice (#78)", async () => {
+  const backend = await startBackend({ matchmakingGatherMs: 200 });
+  const clients = [];
+  try {
+    const players = {};
+    for (const name of ["Solo", "DuoLeader", "DuoMate", "Lone", "Filler", "PairLeader", "PairMate"]) players[name] = await userLogin(backend.port, `Fill${name}`);
+    const server = await userLogin(backend.port, "CoreServer1");
+    const bucket = "858118782:0:NA:9";
+    const id = (name) => players[name].accountId;
+    // The leader's client adds player.option.fillTeam (false only for Squads on No Fill); the other members' don't.
+    const queue = async (name, party, fill) => {
+      const option = fill === undefined ? "" : `&player.option.fillTeam=${fill}`;
+      const ticket = await get(backend.port, `/fortnite/api/game/v2/matchmakingservice/ticket/player/${id(name)}?partyPlayerIds=${party.map(id).join(",")}` +
+        `&bucketId=${bucket}&player.platform=Windows${option}`, players[name].token);
+      const client = await matchmakingClient(backend.port, authorizationOf(ticket.body));
+      for (let index = 0; index < 3; index++) await client.next();
+      clients.push(client);
+    };
+    await queue("Solo", ["Solo"], true);
+    await queue("DuoLeader", ["DuoLeader", "DuoMate"], true);
+    await queue("DuoMate", ["DuoLeader", "DuoMate"]);
+    await queue("Lone", ["Lone"], false);
+    await queue("Filler", ["Filler"], true);
+    // A No Fill pair whose other member queues before its leader.
+    await queue("PairMate", ["PairLeader", "PairMate"]);
+    await queue("PairLeader", ["PairLeader", "PairMate"], false);
+
+    const session = (await post(backend.port, "/fortnite/api/matchmaking/session", server.token, {
+      ownerId: server.accountId, ownerName: "CoreServer1", serverName: "Core-1", serverAddress: "127.0.0.1", serverPort: 7777,
+      maxPublicPlayers: 100, maxPrivatePlayers: 0, buildUniqueId: "858118782", attributes: { GAMEMODE_s: "FORTATHENA", REGION_s: "NA" }
+    })).body;
+    const gameserver = await matchmakingClient(backend.port, authorizationOf((await get(backend.port,
+      `/fortnite/api/game/v2/matchmakingservice/ticket/session/${session.id}?bucketIds=${encodeURIComponent("858118782:0:NA:*")}&minPlayers=1&maxPlayers=100`,
+      server.token)).body));
+    clients.push(gameserver);
+    assert.equal(JSON.parse(await gameserver.next()).name, "Registered");
+    const assign = JSON.parse(await gameserver.next());
+    assert.equal(assign.name, "AssignMatch");
+    // The duo takes both solos that fill; the pair and the lone player stay on their own.
+    assert.deepEqual(assign.payload.teams, [[[id("DuoLeader"), id("DuoMate")], [id("Solo")], [id("Filler")]],
+      [[id("PairLeader"), id("PairMate")]], [[id("Lone")]]]);
+  } finally {
+    for (const client of clients) client.close();
     backend.close();
   }
 });

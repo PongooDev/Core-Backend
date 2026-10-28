@@ -37,6 +37,8 @@ import { receiptRoutes } from "./services/fortnite/receipts.js";
 import { storefrontRoutes } from "./services/fortnite/storefront.js";
 import { twitchRoutes } from "./services/fortnite/twitch.js";
 import { versionRoutes } from "./services/fortnite/version.js";
+import { calendarRoutes } from "./services/fortnite/calendar.js";
+import { waitingRoomRoutes } from "./services/fortnite/waitingroom.js";
 import { worldRoutes } from "./services/fortnite/world.js";
 import { friendsRoutes } from "./services/friends/lists.js";
 import { lightswitchRoutes } from "./services/lightswitch/status.js";
@@ -57,6 +59,7 @@ export function createContext(config) {
   if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
   const friends = createFriendStore(config.dataDir);
   const sessions = createSessionStore();
+  const stats = createStatsStore(config.dataDir);
   return {
     accounts,
     tokens,
@@ -64,8 +67,12 @@ export function createContext(config) {
     resetTokens: createResetTokenStore(),
     friends,
     friendCodes: createFriendCodeStore(config.dataDir),
-    stats: createStatsStore(config.dataDir),
-    profiles: createProfileStore(config.dataDir),
+    stats,
+    profiles: createProfileStore(config.dataDir, {
+      giveAllCosmetics: config.giveAllCosmetics === true,
+      wonPlaylists: (accountId) => Object.entries(stats.playlists(accountId))
+        .filter(([, playlist]) => (playlist.placetop1 ?? 0) > 0).map(([playlistId]) => Number(playlistId))
+    }),
     mailbox: createMailbox(),
     locks: createProfileLocks(),
     primaryMissions: createPrimaryMissions(),
@@ -105,6 +112,8 @@ export function createApp(config, context = createContext(config)) {
   app.use(lightswitchRoutes(context));
   app.use(contentRoutes(context, config));
   app.use(versionRoutes(context));
+  app.use(calendarRoutes(context));
+  app.use(waitingRoomRoutes(context));
   app.use(cloudStorageRoutes(context));
   app.use(eulaRoutes(context));
   app.use(accessRoutes(context));

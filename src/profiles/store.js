@@ -3,10 +3,14 @@ import path from "node:path";
 import { readJson, writeJson } from "../json-file.js";
 import { addMissingItems, addMissingStats, upgradeItems } from "./defaults.js";
 
-export function createProfileStore(dataDir) {
+// settings: what the host chose that changes what profiles hold, read when a profile is set up (profiles/setup.js):
+// giveAllCosmetics (config.json) and wonPlaylists(accountId), the playlists the account has a recorded win in.
+export function createProfileStore(dataDir, settings = {}) {
   const file = (accountId, profileId) => path.join(dataDir, "accounts", accountId, "profiles", `${profileId}.json`);
 
   return {
+    settings,
+
     exists(accountId, profileId) {
       return fs.existsSync(file(accountId, profileId));
     },

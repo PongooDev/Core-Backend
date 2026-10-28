@@ -19,14 +19,20 @@ export function ticketRoutes({ tokens, sessions, matchmaker }) {
       return sendError(res, 403, "errors.com.epicgames.common.missing_permission", `Can't matchmake for ${accountId}`);
     }
     const partyPlayerIds = list(req.query.partyPlayerIds);
+    // player.option.fillTeam: the party leader's client sends "false" for Squads with Squad Fill on No Fill
+    // (FFortPartyRepState::bSquadFill) and "true" otherwise (1.7.2 0x2E68050, 1.8 0x2EACF10); the other members' tickets
+    // leave it out.
+    const fill = req.query["player.option.fillTeam"];
     const { ticket, response } = matchmaker.playerTicket({
       accountId,
       partyPlayerIds: partyPlayerIds.length ? partyPlayerIds : [accountId],
       bucketId: String(req.query.bucketId ?? ""),
       platform: String(req.query["player.platform"] ?? ""),
+      fillTeam: fill === "true" ? true : fill === "false" ? false : null,
       serviceUrl: serviceUrl(req)
     });
-    log("Matchmaking", `Ticket for ${accountId}, party of ${ticket.partyPlayerIds.length}, bucket ${ticket.bucketId}`);
+    const fills = ticket.fillTeam === null ? "" : ticket.fillTeam ? ", fill" : ", no fill";
+    log("Matchmaking", `Ticket for ${accountId}, party of ${ticket.partyPlayerIds.length}${fills}, bucket ${ticket.bucketId}`);
     res.json(response);
   });
 

@@ -6,11 +6,13 @@ export function getDifficulty(rowName) {
   return data().difficulties[rowName];
 }
 
-// The MissionAlerts row a mission of this difficulty can carry an alert from, if any.
-export function missionAlertTier(rowName) {
+// The MissionAlerts row a mission of this difficulty can carry an alert from, if any (of that loot tier group, when
+// given).
+export function missionAlertTier(rowName, lootTierGroup) {
   const difficulty = data().difficulties[rowName]?.difficulty;
   if (difficulty === undefined) return undefined;
-  return data().missionAlerts.find((row) => difficulty >= row.minimumDifficulty && difficulty <= row.maximumDifficulty);
+  return data().missionAlerts.find((row) => difficulty >= row.minimumDifficulty && difficulty <= row.maximumDifficulty
+    && (!lootTierGroup || row.lootTierGroup === lootTierGroup));
 }
 
 export const dailyMissionAlertQuota = () => data().dailyMissionAlertQuota;

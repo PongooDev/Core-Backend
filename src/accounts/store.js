@@ -4,6 +4,10 @@ import path from "node:path";
 import { readJson, writeJson } from "../json-file.js";
 import { hashPassword, isServerAccountName, validatePassword } from "./password.js";
 
+// Every account has an email, <name>@core.com (Core-Backend #64), as Epic's accounts did: its own account info carries it.
+// An address can't hold whitespace, so a name's spaces are left out.
+export const accountEmail = (displayName) => `${displayName.replace(/\s+/g, "")}@core.com`;
+
 export function createAccountStore(dataDir) {
   const dir = path.join(dataDir, "accounts");
   const byId = new Map();
@@ -14,14 +18,21 @@ export function createAccountStore(dataDir) {
     byName.set(account.displayName.toLowerCase(), account);
   }
 
+  function save(account) {
+    writeJson(path.join(dir, account.id, "account.json"), account);
+  }
+
   fs.mkdirSync(dir, { recursive: true });
   for (const id of fs.readdirSync(dir)) {
     const file = path.join(dir, id, "account.json");
-    if (fs.existsSync(file)) remember(readJson(file));
-  }
-
-  function save(account) {
-    writeJson(path.join(dir, account.id, "account.json"), account);
+    if (!fs.existsSync(file)) continue;
+    const account = readJson(file);
+    // Accounts made before #64 get theirs on the next start.
+    if (!account.email) {
+      account.email = accountEmail(account.displayName);
+      save(account);
+    }
+    remember(account);
   }
 
   return {
@@ -40,7 +51,7 @@ export function createAccountStore(dataDir) {
     getOrCreate(displayName) {
       let account = byName.get(displayName.toLowerCase());
       if (!account) {
-        account = { id: crypto.randomBytes(16).toString("hex"), displayName, created: new Date().toISOString() };
+        account = { id: crypto.randomBytes(16).toString("hex"), displayName, email: accountEmail(displayName), created: new Date().toISOString() };
         save(account);
         remember(account);
       }
@@ -58,6 +69,7 @@ export function createAccountStore(dataDir) {
       const account = {
         id: crypto.randomBytes(16).toString("hex"),
         displayName,
+        email: accountEmail(displayName),
         created: new Date().toISOString(),
         password: await hashPassword(plainPassword)
       };

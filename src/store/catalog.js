@@ -1,5 +1,8 @@
+import { fortnitemares, isEventActive } from "../events/events.js";
+import { candy } from "../events/fortnitemares.js";
 import { getCardPack, itemIds } from "../gamedata/items.js";
 import { perBuild } from "../gamedata/read.js";
+import { itemShopOffers } from "./itemshop.js";
 
 // The llama store. The client's store reads the CardPackStore and CardPackStorePromo storefronts (FortStorefront);
 // each offer is FCatalogOffer, its card pack art and featured items coming from metaAssetInfo FortCatalogMeta
@@ -51,12 +54,24 @@ const voucherOffers = perBuild(() => itemIds()
 // offers Epic's catalog held; Core keeps the offer always (Core's choice). Which llama and the price are inferred / Core's:
 // the Launch Event Llama (CardPack_Event_Founders_NonExclusive), the Founder's Llama's twin (same loot tier group and
 // art) that nothing in the game data grants, for 100 coins (five daily quests), with no purchase limit.
+//
+// The Fortnitemares Llama (CardPack_Event_2017_Halloween, "Guarantees at least one Epic or better limited time
+// Fortnitemares Survivor or Hero!") is bought with Candy (EventCurrency_Candy, bIsEventItem, "Candy found during the
+// Fortnitemares Event."), while the event runs (events/events.js). The store shows a Candy price with the Candy cost
+// widget (1.8 StoreRoot GetCustomStoreOfferCost: EventCurrency_Candy → 2) among the event packs (ShouldShowOffer: an
+// event item's offer shows with ShowEventPacks). The price is Core's (🟡): 1,000 Candy, about four of the event's
+// 250 Candy quests.
 const eventOffers = [
   { offerId: "core_event_founders_llama", templateId: "CardPack:cardpack_event_founders_nonexclusive", title: "Launch Event Llama",
-    currencyType: "GameItem", currencySubType: "AccountResource:eventcurrency_founders", price: 100, always: true }
+    currencyType: "GameItem", currencySubType: "AccountResource:eventcurrency_founders", price: 100, always: true },
+  { offerId: "core_event_fortnitemares_llama", templateId: "CardPack:cardpack_event_2017_halloween", title: "Fortnitemares Llama",
+    currencyType: "GameItem", currencySubType: candy, price: 1000, always: true, event: fortnitemares }
 ];
 
-const allOffers = () => [...mtxOffers, ...eventOffers, ...voucherOffers()];
+// An event's offers are on sale while the requesting build runs the event and has their llama.
+const onSale = (offer) => !offer.event || (isEventActive(offer.event) && Boolean(getCardPack(offer.templateId)));
+
+const allOffers = () => [...mtxOffers, ...eventOffers.filter(onSale), ...voucherOffers()];
 
 function offerJson(offer, sortPriority) {
   const { offerId, templateId, title, currencyType, currencySubType, price } = offer;
@@ -76,7 +91,7 @@ function offerJson(offer, sortPriority) {
     shortDescription: "",
     description: "",
     appStoreId: "",
-    metaAssetInfo: { structName: "FortCatalogMeta", payload: { chaseItems: [], packDefinition: getCardPack(templateId)?.path ?? "" } },
+    metaAssetInfo: { structName: "FortCatalogMeta", payload: { chaseItems: [], packDefinition: offer.athena ? "" : getCardPack(templateId)?.path ?? "" } },
     displayAssetPath: "",
     itemGrants: [{ templateId, quantity: 1 }],
     requirements: [],
@@ -87,15 +102,21 @@ function offerJson(offer, sortPriority) {
 const holds = (profile, templateId) => Object.values(profile?.items ?? {})
   .some((item) => item.templateId.toLowerCase() === templateId.toLowerCase() && item.quantity > 0);
 
-// profile: the viewer's profile0, for the vouchers only shown to players who have one.
-export function storefronts(profile) {
+// profile: the viewer's profile0, for the vouchers only shown to players who have one. Battle Royale's storefronts
+// (store/itemshop.js) hold the day's offers in 1.8 and later, nothing before.
+export function storefronts(profile, now = new Date()) {
   const shown = allOffers().filter((offer) => offer.currencyType !== "GameItem" || offer.always
     || listedVouchers.some((voucher) => voucher.toLowerCase() === offer.currencySubType.toLowerCase())
     || holds(profile, offer.currencySubType));
+  const itemShop = Object.entries(itemShopOffers(now))
+    .map(([name, offers]) => ({ name, catalogEntries: offers.map((offer, index) => offerJson(offer, -index)) }));
   return [
     { name: "CardPackStore", catalogEntries: shown.map((offer, index) => offerJson(offer, -index)) },
-    { name: "CardPackStorePromo", catalogEntries: [] }
+    { name: "CardPackStorePromo", catalogEntries: [] },
+    ...itemShop.filter(({ catalogEntries }) => catalogEntries.length)
   ];
 }
 
-export const findOffer = (offerId) => allOffers().find((offer) => offer.offerId === offerId);
+// An offer on sale now: the llama store's, or one of the item shop's of the day.
+export const findOffer = (offerId, now = new Date()) => [...allOffers(), ...Object.values(itemShopOffers(now)).flat()]
+  .find((offer) => offer.offerId === offerId);

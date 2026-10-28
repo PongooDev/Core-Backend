@@ -1,4 +1,5 @@
 import { McpError } from "../../../errors.js";
+import { grantCosmetic, ownsCosmetic } from "../../../profiles/athena.js";
 import { lootEntry } from "../../../profiles/items.js";
 import { grant, itemEvent } from "../../../profiles/progress.js";
 import { findOffer } from "../../../store/catalog.js";
@@ -56,6 +57,19 @@ export function purchaseCatalogEntry({ req, session, notifications }) {
   }
 
   const tracker = session.profile("profile0");
+  // An item shop offer (store/itemshop.js) is a Battle Royale cosmetic, owned or not: one the player has isn't sold
+  // again and costs nothing (the client shows it as owned and offers no purchase). It is paid in profile0's V-Bucks,
+  // the balance 1.8's store shows, and goes to the athena profile's locker.
+  if (offer.athena) {
+    if (purchaseQuantity !== 1) throw new McpError("errors.com.epicgames.common.invalid_parameter", `Can't buy ${purchaseQuantity} of ${offer.title}`);
+    if (ownsCosmetic(session, offer.templateId)) {
+      throw new McpError("errors.com.epicgames.modules.gamesubcatalog.purchase_not_allowed", `You already own ${offer.title}`);
+    }
+    spendMtx(tracker, total);
+    const item = grantCosmetic(session, offer.templateId);
+    notifications.push({ type: "CatalogPurchase", primary: true, lootResult: { items: [lootEntry(item)] } });
+    return;
+  }
   if (offer.currencyType === "GameItem") spendItem(tracker, offer.currencySubType, total);
   else spendMtx(tracker, total);
   const items = grant(session, offer.templateId, purchaseQuantity, { packSource: "Store" }).map(lootEntry);

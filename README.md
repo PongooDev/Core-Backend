@@ -17,8 +17,8 @@ This repository does NOT include Fortnite game files, a launcher, a redirect, or
 
 | Status | Fortnite versions |
 | --- | --- |
-| Full support ✅ | 1.1 – 1.2 |
-| In development 🚧 | 1.7.2 |
+| Full support ✅ | 1.1 – 1.7.2 |
+| In development 🚧 | 1.8 |
 
 Core-Backend follows Core V2: one build at a time, each build fully working before the next, skipping builds nobody has a copy of. Full support is always one range: every build from the first version to the last one listed.
 
@@ -29,7 +29,8 @@ Core-Backend follows Core V2: one build at a time, each build fully working befo
 | --- | --- | --- |
 | 1.1 | Cert CL-3532353 (UE 4.16) | Full support ✅ |
 | 1.2 | Release-Cert CL-3541083 (UE 4.16) | Full support ✅ |
-| 1.7.2 | Release-Cert CL-3700114 (UE 4.16) | In development 🚧 |
+| 1.7.2 | Release-Cert CL-3700114 (UE 4.16) | Full support ✅ |
+| 1.8 | Release-Live CL-3724489 (UE 4.16) | In development 🚧 |
 
 </details>
 
@@ -158,8 +159,9 @@ Core-Backend reads an optional `config.json` from the folder it is started in. C
 | `remoteAccess` | `--remote-access` / `--local-only` | `false` | Let other PCs connect: listen on every interface instead of `127.0.0.1` only ([Play with friends](#play-with-friends)). |
 | `listenAddress` | `--listen <ip>` | | With remote access on, listen on this one address of your PC (e.g. its VPN address) instead of every interface. |
 | `publicAddress` | `--public-address <ip or host>` | | The address players on the internet are sent to for your gameservers and XMPP. A host name is looked up every 5 minutes. |
-| `battleRoyaleNews` | | Core's | The Battle Royale lobby's news box (1.7.2+): `{"title": "...", "body": "..."}`. |
-| `loginMessage` | | Core's | The login screen's message box (the patch notes): `{"title": "...", "body": "..."}`. |
+| `battleRoyaleNews` | | Core's | The Battle Royale lobby's news box (1.7.2+): `{"title": "...", "body": "..."}`; `{version}` in it becomes the player's build (Core's default title is "Battle Royale - {version}"). |
+| `loginMessage` | | Core's | The login screen's message box (the patch notes): `{"title": "...", "body": "..."}`; `{version}` works here too (Core's default title is "v{version}"). |
+| `giveAllCosmetics` | | `false` | Battle Royale (1.8+): give every player every cosmetic of their build. Off, a new locker holds the starter cosmetics and the rest are bought in the item shop with V-Bucks or earned (season level rewards, victory umbrellas); turning it off again takes back what it gave that wasn't bought or earned since. |
 | | `--config <file>` | `config.json` | Config file to read. |
 
 `remoteAccess` and `publicAddress` can also be changed on the admin panel's Friends page, which saves them in

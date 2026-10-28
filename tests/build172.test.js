@@ -164,7 +164,7 @@ test("a 1.7.2 account holds Save the World's access token and the named_counters
   }
 });
 
-test("1.7.2 asks for general chat per sub game and reads globalChatRooms; Battle Royale's stats are an empty list", async () => {
+test("1.7.2 asks for general chat per sub game and reads globalChatRooms, with the Founders room in both; Battle Royale's stats are an empty list", async () => {
   const backend = await startBackend();
   try {
     const player = await userLogin(backend.port, "Chat172");
@@ -179,7 +179,8 @@ test("1.7.2 asks for general chat per sub game and reads globalChatRooms; Battle
     assert.equal(campaign.body.bIsGlobalChatDisabled, false);
     const athena = await ask(`/fortnite/api/game/v2/chat/${player.accountId}/recommendGeneralChatRooms/Athena/pc`);
     assert.deepEqual(athena.body.globalChatRooms.map((room) => room.roomName), ["GlobalBattleRoyale"]);
-    assert.deepEqual([athena.body.founderChatRooms, athena.body.bIsFounderChatDisabled], [[], true]);
+    // Battle Royale's Founders tab joins the same Founders room (#62: it said "Currently unavailable" until Save the World).
+    assert.deepEqual([athena.body.founderChatRooms.map((room) => room.roomName), athena.body.bIsFounderChatDisabled], [["Founders"], false]);
     const stats = await ask(`/fortnite/api/stats/accountId/${player.accountId}/bulk/window/alltime`, "GET");
     assert.equal(stats.status, 200);
     assert.deepEqual(stats.body.map((stat) => stat.name), ["br_lastmodified_pc_m0_p2", "br_lastmodified_pc_m0_p10", "br_lastmodified_pc_m0_p9"]);

@@ -1,0 +1,1571 @@
+{
+  "cosmetics": {
+    "AthenaBattleBus:bbid_defaultbus": {
+      "class": "AthenaBattleBusItemDefinition",
+      "name": "Battle Bus",
+      "rarity": "Ordinary"
+    },
+    "AthenaBattleBus:bbid_purplebus": {
+      "class": "AthenaBattleBusItemDefinition",
+      "name": "Purple Battle Bus",
+      "rarity": "Ordinary"
+    },
+    "AthenaCharacter:cid_001_athena_commando_f_default": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Recruit",
+      "rarity": "Handmade"
+    },
+    "AthenaCharacter:cid_002_athena_commando_f_default": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Recruit",
+      "rarity": "Handmade"
+    },
+    "AthenaCharacter:cid_003_athena_commando_f_default": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Recruit",
+      "rarity": "Handmade"
+    },
+    "AthenaCharacter:cid_004_athena_commando_f_default": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Recruit",
+      "rarity": "Handmade"
+    },
+    "AthenaCharacter:cid_005_athena_commando_m_default": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Recruit",
+      "rarity": "Handmade"
+    },
+    "AthenaCharacter:cid_006_athena_commando_m_default": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Recruit",
+      "rarity": "Handmade"
+    },
+    "AthenaCharacter:cid_007_athena_commando_m_default": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Recruit",
+      "rarity": "Handmade"
+    },
+    "AthenaCharacter:cid_008_athena_commando_m_default": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Recruit",
+      "rarity": "Handmade"
+    },
+    "AthenaCharacter:cid_009_athena_commando_m": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Tracker",
+      "rarity": "Ordinary"
+    },
+    "AthenaCharacter:cid_010_athena_commando_m": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Ranger",
+      "rarity": "Ordinary"
+    },
+    "AthenaCharacter:cid_011_athena_commando_m": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Scout",
+      "rarity": "Ordinary"
+    },
+    "AthenaCharacter:cid_012_athena_commando_m": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Trooper",
+      "rarity": "Ordinary"
+    },
+    "AthenaCharacter:cid_013_athena_commando_f": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Renegade",
+      "rarity": "Ordinary"
+    },
+    "AthenaCharacter:cid_014_athena_commando_f": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Pathfinder ",
+      "rarity": "Ordinary"
+    },
+    "AthenaCharacter:cid_015_athena_commando_f": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Assault Trooper",
+      "rarity": "Ordinary"
+    },
+    "AthenaCharacter:cid_016_athena_commando_f": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Commando ",
+      "rarity": "Ordinary"
+    },
+    "AthenaCharacter:cid_017_athena_commando_m": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Paratrooper",
+      "rarity": "Sturdy"
+    },
+    "AthenaCharacter:cid_018_athena_commando_m": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Recon Scout",
+      "rarity": "Sturdy"
+    },
+    "AthenaCharacter:cid_019_athena_commando_m": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Infiltrator",
+      "rarity": "Sturdy"
+    },
+    "AthenaCharacter:cid_020_athena_commando_m": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Special Forces",
+      "rarity": "Sturdy"
+    },
+    "AthenaCharacter:cid_021_athena_commando_f": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Brawler",
+      "rarity": "Sturdy"
+    },
+    "AthenaCharacter:cid_022_athena_commando_f": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Recon Expert",
+      "rarity": "Sturdy"
+    },
+    "AthenaCharacter:cid_023_athena_commando_f": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Munitions Expert",
+      "rarity": "Sturdy"
+    },
+    "AthenaCharacter:cid_024_athena_commando_f": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Recon Specialist",
+      "rarity": "Sturdy"
+    },
+    "AthenaCharacter:cid_025_athena_commando_m": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "First strike Specialist",
+      "rarity": "Sturdy"
+    },
+    "AthenaCharacter:cid_026_athena_commando_m": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Desperado",
+      "rarity": "Sturdy"
+    },
+    "AthenaCharacter:cid_027_athena_commando_f": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Survival Specialist",
+      "rarity": "Sturdy"
+    },
+    "AthenaCharacter:cid_028_athena_commando_f": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Paratrooper ",
+      "rarity": "Sturdy"
+    },
+    "AthenaCharacter:cid_029_athena_commando_f_halloween": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Ghoul Trooper",
+      "rarity": "Quality"
+    },
+    "AthenaCharacter:cid_030_athena_commando_m_halloween": {
+      "class": "AthenaCharacterItemDefinition",
+      "name": "Skull Trooper ",
+      "rarity": "Quality"
+    },
+    "AthenaConsumableEmote:eid_gunshow": {
+      "class": "AthenaConsumableEmoteItemDefinition",
+      "name": "GUN SHOW",
+      "rarity": "Ordinary"
+    },
+    "AthenaDance:eid_dancemoves": {
+      "class": "AthenaDanceItemDefinition",
+      "name": "Dance Moves",
+      "rarity": "Ordinary"
+    },
+    "AthenaGlider:defaultglider": {
+      "class": "AthenaGliderItemDefinition",
+      "name": "Glider",
+      "rarity": "Handmade"
+    },
+    "AthenaGlider:duo_umbrella": {
+      "class": "AthenaGliderItemDefinition",
+      "name": "Duo Umbrella",
+      "rarity": "Handmade"
+    },
+    "AthenaGlider:founderglider": {
+      "class": "AthenaGliderItemDefinition",
+      "name": "Founder\u0027s Glider",
+      "rarity": "Handmade"
+    },
+    "AthenaGlider:founderumbrella": {
+      "class": "AthenaGliderItemDefinition",
+      "name": "Founder\u0027s Umbrella",
+      "rarity": "Handmade"
+    },
+    "AthenaGlider:glider_bold": {
+      "class": "AthenaGliderItemDefinition",
+      "name": "Modern",
+      "rarity": "Ordinary"
+    },
+    "AthenaGlider:glider_flames": {
+      "class": "AthenaGliderItemDefinition",
+      "name": "Hot Rod",
+      "rarity": "Ordinary"
+    },
+    "AthenaGlider:glider_flowerpower": {
+      "class": "AthenaGliderItemDefinition",
+      "name": "Petunia",
+      "rarity": "Ordinary"
+    },
+    "AthenaGlider:glider_mig": {
+      "class": "AthenaGliderItemDefinition",
+      "name": "Raptor",
+      "rarity": "Ordinary"
+    },
+    "AthenaGlider:glider_military": {
+      "class": "AthenaGliderItemDefinition",
+      "name": "Warthog",
+      "rarity": "Ordinary"
+    },
+    "AthenaGlider:glider_prismatic": {
+      "class": "AthenaGliderItemDefinition",
+      "name": "Prismatic",
+      "rarity": "Sturdy"
+    },
+    "AthenaGlider:glider_roadtrip": {
+      "class": "AthenaGliderItemDefinition",
+      "name": "Roadtrip",
+      "rarity": "Ordinary"
+    },
+    "AthenaGlider:glider_stealth": {
+      "class": "AthenaGliderItemDefinition",
+      "name": "Stealth",
+      "rarity": "Ordinary"
+    },
+    "AthenaGlider:glider_venom": {
+      "class": "AthenaGliderItemDefinition",
+      "name": "Wasp",
+      "rarity": "Ordinary"
+    },
+    "AthenaGlider:glider_voyager": {
+      "class": "AthenaGliderItemDefinition",
+      "name": "Voyager",
+      "rarity": "Sturdy"
+    },
+    "AthenaGlider:glider_warthog": {
+      "class": "AthenaGliderItemDefinition",
+      "name": "Mako",
+      "rarity": "Ordinary"
+    },
+    "AthenaGlider:preseasonglider": {
+      "class": "AthenaGliderItemDefinition",
+      "name": "Rainbow Glider",
+      "rarity": "Handmade"
+    },
+    "AthenaGlider:preseasonglider_elite": {
+      "class": "AthenaGliderItemDefinition",
+      "name": "Rainbow Glider Elite",
+      "rarity": "Handmade"
+    },
+    "AthenaGlider:solo_umbrella": {
+      "class": "AthenaGliderItemDefinition",
+      "name": "The Umbrella",
+      "rarity": "Handmade"
+    },
+    "AthenaGlider:squad_umbrella": {
+      "class": "AthenaGliderItemDefinition",
+      "name": "Squad Umbrella",
+      "rarity": "Handmade"
+    },
+    "AthenaGlider:umbrella_bronze": {
+      "class": "AthenaGliderItemDefinition",
+      "name": "The Umbrella",
+      "rarity": "Handmade"
+    },
+    "AthenaGlider:umbrella_gold": {
+      "class": "AthenaGliderItemDefinition",
+      "name": "The Umbrella",
+      "rarity": "Handmade"
+    },
+    "AthenaGlider:umbrella_platinum": {
+      "class": "AthenaGliderItemDefinition",
+      "name": "The Umbrella",
+      "rarity": "Handmade"
+    },
+    "AthenaGlider:umbrella_silver": {
+      "class": "AthenaGliderItemDefinition",
+      "name": "The Umbrella",
+      "rarity": "Handmade"
+    },
+    "AthenaLoadingScreen:lsid_defaultbg": {
+      "class": "AthenaLoadingScreenItemDefinition",
+      "name": "LSID_DefaultBG",
+      "rarity": "Ordinary"
+    },
+    "AthenaLoadingScreen:lsid_fiercecloudpuff": {
+      "class": "AthenaLoadingScreenItemDefinition",
+      "name": "Fierce Cloudpuff Loading Screen Background",
+      "rarity": "Ordinary"
+    },
+    "AthenaPickaxe:boltonpickaxe": {
+      "class": "AthenaPickaxeItemDefinition",
+      "name": "Close Shave",
+      "rarity": "Sturdy"
+    },
+    "AthenaPickaxe:defaultpickaxe": {
+      "class": "AthenaPickaxeItemDefinition",
+      "name": "Pickaxe",
+      "rarity": "Handmade"
+    },
+    "AthenaPickaxe:halloweenscythe": {
+      "class": "AthenaPickaxeItemDefinition",
+      "name": "Reaper",
+      "rarity": "Sturdy"
+    },
+    "AthenaPickaxe:happypickaxe": {
+      "class": "AthenaPickaxeItemDefinition",
+      "name": "Lucky",
+      "rarity": "Ordinary"
+    },
+    "AthenaPickaxe:pickaxe_deathvalley": {
+      "class": "AthenaPickaxeItemDefinition",
+      "name": "Death Valley",
+      "rarity": "Quality"
+    },
+    "AthenaPickaxe:pickaxe_flamingo": {
+      "class": "AthenaPickaxeItemDefinition",
+      "name": "Pink Flamingo",
+      "rarity": "Quality"
+    },
+    "AthenaPickaxe:pickaxe_lockjaw": {
+      "class": "AthenaPickaxeItemDefinition",
+      "name": "Lockjaw",
+      "rarity": "Quality"
+    },
+    "AthenaPickaxe:sicklebatpickaxe": {
+      "class": "AthenaPickaxeItemDefinition",
+      "name": "Batsickle",
+      "rarity": "Sturdy"
+    },
+    "AthenaPickaxe:skiicepickaxe": {
+      "class": "AthenaPickaxeItemDefinition",
+      "name": "Cliffhanger",
+      "rarity": "Sturdy"
+    },
+    "AthenaPickaxe:spikypickaxe": {
+      "class": "AthenaPickaxeItemDefinition",
+      "name": "Spiky",
+      "rarity": "Sturdy"
+    },
+    "AthenaVictoryPose:eid_ridethepony": {
+      "class": "AthenaVictoryPoseItemDefinition",
+      "name": "Ride the Pony",
+      "rarity": "Ordinary"
+    }
+  },
+  "levels": [
+    {
+      "level": 1,
+      "xpToNextLevel": 100,
+      "xpTotal": 0
+    },
+    {
+      "level": 2,
+      "xpToNextLevel": 250,
+      "xpTotal": 100
+    },
+    {
+      "level": 3,
+      "xpToNextLevel": 300,
+      "xpTotal": 350
+    },
+    {
+      "level": 4,
+      "xpToNextLevel": 350,
+      "xpTotal": 650
+    },
+    {
+      "level": 5,
+      "xpToNextLevel": 700,
+      "xpTotal": 1000
+    },
+    {
+      "level": 6,
+      "xpToNextLevel": 700,
+      "xpTotal": 1700
+    },
+    {
+      "level": 7,
+      "xpToNextLevel": 700,
+      "xpTotal": 2400
+    },
+    {
+      "level": 8,
+      "xpToNextLevel": 700,
+      "xpTotal": 3100
+    },
+    {
+      "level": 9,
+      "xpToNextLevel": 700,
+      "xpTotal": 3800
+    },
+    {
+      "chaseReward": "HomebaseBannerIcon:brseason01",
+      "level": 10,
+      "xpToNextLevel": 700,
+      "xpTotal": 4500
+    },
+    {
+      "level": 11,
+      "xpToNextLevel": 700,
+      "xpTotal": 5200
+    },
+    {
+      "level": 12,
+      "xpToNextLevel": 700,
+      "xpTotal": 5900
+    },
+    {
+      "level": 13,
+      "xpToNextLevel": 700,
+      "xpTotal": 6600
+    },
+    {
+      "level": 14,
+      "xpToNextLevel": 700,
+      "xpTotal": 7300
+    },
+    {
+      "level": 15,
+      "xpToNextLevel": 1700,
+      "xpTotal": 8000
+    },
+    {
+      "level": 16,
+      "xpToNextLevel": 1700,
+      "xpTotal": 9700
+    },
+    {
+      "level": 17,
+      "xpToNextLevel": 1700,
+      "xpTotal": 11400
+    },
+    {
+      "level": 18,
+      "xpToNextLevel": 1700,
+      "xpTotal": 13100
+    },
+    {
+      "level": 19,
+      "xpToNextLevel": 1700,
+      "xpTotal": 14800
+    },
+    {
+      "level": 20,
+      "xpToNextLevel": 1700,
+      "xpTotal": 16500
+    },
+    {
+      "level": 21,
+      "xpToNextLevel": 1700,
+      "xpTotal": 18200
+    },
+    {
+      "level": 22,
+      "xpToNextLevel": 1700,
+      "xpTotal": 19900
+    },
+    {
+      "level": 23,
+      "xpToNextLevel": 1700,
+      "xpTotal": 21600
+    },
+    {
+      "level": 24,
+      "xpToNextLevel": 1700,
+      "xpTotal": 23300
+    },
+    {
+      "chaseReward": "AthenaGlider:glider_warthog",
+      "level": 25,
+      "xpToNextLevel": 1700,
+      "xpTotal": 25000
+    },
+    {
+      "level": 26,
+      "xpToNextLevel": 1800,
+      "xpTotal": 26800
+    },
+    {
+      "level": 27,
+      "xpToNextLevel": 1900,
+      "xpTotal": 28700
+    },
+    {
+      "level": 28,
+      "xpToNextLevel": 2000,
+      "xpTotal": 30700
+    },
+    {
+      "level": 29,
+      "xpToNextLevel": 2100,
+      "xpTotal": 32800
+    },
+    {
+      "level": 30,
+      "xpToNextLevel": 2200,
+      "xpTotal": 35000
+    },
+    {
+      "level": 31,
+      "xpToNextLevel": 2300,
+      "xpTotal": 37300
+    },
+    {
+      "level": 32,
+      "xpToNextLevel": 2400,
+      "xpTotal": 39700
+    },
+    {
+      "level": 33,
+      "xpToNextLevel": 2500,
+      "xpTotal": 42200
+    },
+    {
+      "level": 34,
+      "xpToNextLevel": 2600,
+      "xpTotal": 44800
+    },
+    {
+      "level": 35,
+      "xpToNextLevel": 2700,
+      "xpTotal": 47500
+    },
+    {
+      "level": 36,
+      "xpToNextLevel": 2800,
+      "xpTotal": 50300
+    },
+    {
+      "level": 37,
+      "xpToNextLevel": 2900,
+      "xpTotal": 53200
+    },
+    {
+      "level": 38,
+      "xpToNextLevel": 3000,
+      "xpTotal": 56200
+    },
+    {
+      "level": 39,
+      "xpToNextLevel": 3100,
+      "xpTotal": 59300
+    },
+    {
+      "level": 40,
+      "xpToNextLevel": 3200,
+      "xpTotal": 62500
+    },
+    {
+      "level": 41,
+      "xpToNextLevel": 3300,
+      "xpTotal": 65800
+    },
+    {
+      "level": 42,
+      "xpToNextLevel": 3400,
+      "xpTotal": 69200
+    },
+    {
+      "level": 43,
+      "xpToNextLevel": 3500,
+      "xpTotal": 72700
+    },
+    {
+      "level": 44,
+      "xpToNextLevel": 3600,
+      "xpTotal": 76300
+    },
+    {
+      "level": 45,
+      "xpToNextLevel": 3700,
+      "xpTotal": 80000
+    },
+    {
+      "level": 46,
+      "xpToNextLevel": 3800,
+      "xpTotal": 83800
+    },
+    {
+      "level": 47,
+      "xpToNextLevel": 3900,
+      "xpTotal": 87700
+    },
+    {
+      "level": 48,
+      "xpToNextLevel": 4000,
+      "xpTotal": 91700
+    },
+    {
+      "level": 49,
+      "xpToNextLevel": 4100,
+      "xpTotal": 95800
+    },
+    {
+      "level": 50,
+      "xpToNextLevel": 4200,
+      "xpTotal": 100000
+    },
+    {
+      "level": 51,
+      "xpToNextLevel": 4300,
+      "xpTotal": 104300
+    },
+    {
+      "level": 52,
+      "xpToNextLevel": 4400,
+      "xpTotal": 108700
+    },
+    {
+      "level": 53,
+      "xpToNextLevel": 4500,
+      "xpTotal": 113200
+    },
+    {
+      "level": 54,
+      "xpToNextLevel": 4600,
+      "xpTotal": 117800
+    },
+    {
+      "level": 55,
+      "xpToNextLevel": 4700,
+      "xpTotal": 122500
+    },
+    {
+      "level": 56,
+      "xpToNextLevel": 4800,
+      "xpTotal": 127300
+    },
+    {
+      "level": 57,
+      "xpToNextLevel": 4900,
+      "xpTotal": 132200
+    },
+    {
+      "level": 58,
+      "xpToNextLevel": 5000,
+      "xpTotal": 137200
+    },
+    {
+      "level": 59,
+      "xpToNextLevel": 5100,
+      "xpTotal": 142300
+    },
+    {
+      "level": 60,
+      "xpToNextLevel": 5200,
+      "xpTotal": 147500
+    },
+    {
+      "level": 61,
+      "xpToNextLevel": 5300,
+      "xpTotal": 152800
+    },
+    {
+      "level": 62,
+      "xpToNextLevel": 5400,
+      "xpTotal": 158200
+    },
+    {
+      "level": 63,
+      "xpToNextLevel": 5500,
+      "xpTotal": 163700
+    },
+    {
+      "level": 64,
+      "xpToNextLevel": 5600,
+      "xpTotal": 169300
+    },
+    {
+      "level": 65,
+      "xpToNextLevel": 5700,
+      "xpTotal": 175000
+    },
+    {
+      "level": 66,
+      "xpToNextLevel": 5800,
+      "xpTotal": 180800
+    },
+    {
+      "level": 67,
+      "xpToNextLevel": 5900,
+      "xpTotal": 186700
+    },
+    {
+      "level": 68,
+      "xpToNextLevel": 6000,
+      "xpTotal": 192700
+    },
+    {
+      "level": 69,
+      "xpToNextLevel": 6100,
+      "xpTotal": 198800
+    },
+    {
+      "level": 70,
+      "xpToNextLevel": 6200,
+      "xpTotal": 205000
+    },
+    {
+      "level": 71,
+      "xpToNextLevel": 6300,
+      "xpTotal": 211300
+    },
+    {
+      "level": 72,
+      "xpToNextLevel": 6400,
+      "xpTotal": 217700
+    },
+    {
+      "level": 73,
+      "xpToNextLevel": 6500,
+      "xpTotal": 224200
+    },
+    {
+      "level": 74,
+      "xpToNextLevel": 6600,
+      "xpTotal": 230800
+    },
+    {
+      "level": 75,
+      "xpToNextLevel": 6700,
+      "xpTotal": 237500
+    },
+    {
+      "level": 76,
+      "xpToNextLevel": 6800,
+      "xpTotal": 244300
+    },
+    {
+      "level": 77,
+      "xpToNextLevel": 6900,
+      "xpTotal": 251200
+    },
+    {
+      "level": 78,
+      "xpToNextLevel": 7000,
+      "xpTotal": 258200
+    },
+    {
+      "level": 79,
+      "xpToNextLevel": 7100,
+      "xpTotal": 265300
+    },
+    {
+      "level": 80,
+      "xpToNextLevel": 7200,
+      "xpTotal": 272500
+    },
+    {
+      "level": 81,
+      "xpToNextLevel": 7300,
+      "xpTotal": 279800
+    },
+    {
+      "level": 82,
+      "xpToNextLevel": 7400,
+      "xpTotal": 287200
+    },
+    {
+      "level": 83,
+      "xpToNextLevel": 7500,
+      "xpTotal": 294700
+    },
+    {
+      "level": 84,
+      "xpToNextLevel": 7600,
+      "xpTotal": 302300
+    },
+    {
+      "level": 85,
+      "xpToNextLevel": 7700,
+      "xpTotal": 310000
+    },
+    {
+      "level": 86,
+      "xpToNextLevel": 7800,
+      "xpTotal": 317800
+    },
+    {
+      "level": 87,
+      "xpToNextLevel": 7900,
+      "xpTotal": 325700
+    },
+    {
+      "level": 88,
+      "xpToNextLevel": 8000,
+      "xpTotal": 333700
+    },
+    {
+      "level": 89,
+      "xpToNextLevel": 8100,
+      "xpTotal": 341800
+    },
+    {
+      "level": 90,
+      "xpToNextLevel": 8200,
+      "xpTotal": 350000
+    },
+    {
+      "level": 91,
+      "xpToNextLevel": 8300,
+      "xpTotal": 358300
+    },
+    {
+      "level": 92,
+      "xpToNextLevel": 8400,
+      "xpTotal": 366700
+    },
+    {
+      "level": 93,
+      "xpToNextLevel": 8500,
+      "xpTotal": 375200
+    },
+    {
+      "level": 94,
+      "xpToNextLevel": 8600,
+      "xpTotal": 383800
+    },
+    {
+      "level": 95,
+      "xpToNextLevel": 8700,
+      "xpTotal": 392500
+    },
+    {
+      "level": 96,
+      "xpToNextLevel": 8800,
+      "xpTotal": 401300
+    },
+    {
+      "level": 97,
+      "xpToNextLevel": 8900,
+      "xpTotal": 410200
+    },
+    {
+      "level": 98,
+      "xpToNextLevel": 9000,
+      "xpTotal": 419200
+    },
+    {
+      "level": 99,
+      "xpToNextLevel": 9100,
+      "xpTotal": 428300
+    }
+  ],
+  "objectiveStats": {
+    "build_any_structure": {
+      "condition": "",
+      "targetTags": "",
+      "templateId": "",
+      "type": "Build"
+    },
+    "build_any_wall": {
+      "condition": "",
+      "targetTags": "Building.Type.Wall",
+      "templateId": "",
+      "type": "Build"
+    },
+    "complete_athena": {
+      "condition": "",
+      "contextTags": "Athena.Playlist",
+      "targetTags": "",
+      "templateId": "",
+      "type": "AthenaRank"
+    },
+    "complete_athena_duo_top_12": {
+      "condition": "Athena.Rank \u003C=12",
+      "contextTags": "Athena.Playlist.Duo",
+      "targetTags": "",
+      "templateId": "",
+      "type": "AthenaRank"
+    },
+    "complete_athena_solo_top_25": {
+      "condition": "Athena.Rank \u003C=25",
+      "contextTags": "Athena.Playlist.Solo",
+      "targetTags": "",
+      "templateId": "",
+      "type": "AthenaRank"
+    },
+    "complete_athena_squad_top_6": {
+      "condition": "Athena.Rank \u003C=6",
+      "contextTags": "Athena.Playlist.Squad",
+      "targetTags": "",
+      "templateId": "",
+      "type": "AthenaRank"
+    },
+    "complete_primary": {
+      "condition": "",
+      "targetTags": "Stat.Mission.Primary",
+      "templateId": "",
+      "type": "Complete"
+    },
+    "custom_login": {
+      "condition": "",
+      "targetTags": "Stat.Account.Login",
+      "templateId": "",
+      "type": "Custom"
+    },
+    "interact_athena_ammobox": {
+      "condition": "",
+      "contextTags": "Athena.Playlist",
+      "targetTags": "Building.Type.Container.Ammobox",
+      "templateId": "",
+      "type": "Interact"
+    },
+    "interact_athena_treasurechest": {
+      "condition": "",
+      "contextTags": "Athena.Playlist",
+      "targetTags": "Building.Type.Container.TreasureChest",
+      "templateId": "",
+      "type": "Interact"
+    },
+    "killingblow_athena_player": {
+      "condition": "",
+      "contextTags": "Athena.Playlist",
+      "sourceTags": "Homebase.Class",
+      "targetTags": "Homebase.Class",
+      "templateId": "",
+      "type": "Kill"
+    },
+    "killingblow_athena_player_assault": {
+      "condition": "",
+      "contextTags": "Athena.Playlist",
+      "sourceTags": "Homebase.Class,Weapon.Ranged.assault",
+      "targetTags": "Homebase.Class",
+      "templateId": "",
+      "type": "Kill"
+    },
+    "killingblow_athena_player_grenade_launcher": {
+      "condition": "",
+      "contextTags": "Athena.Playlist",
+      "sourceTags": "Homebase.Class,Weapon.Ranged.Heavy.grenade_launcher",
+      "targetTags": "Homebase.Class",
+      "templateId": "",
+      "type": "Kill"
+    },
+    "killingblow_athena_player_pistol": {
+      "condition": "",
+      "contextTags": "Athena.Playlist",
+      "sourceTags": "Homebase.Class,Weapon.Ranged.pistol",
+      "targetTags": "Homebase.Class",
+      "templateId": "",
+      "type": "Kill"
+    },
+    "killingblow_athena_player_rocket_launcher": {
+      "condition": "",
+      "contextTags": "Athena.Playlist",
+      "sourceTags": "Homebase.Class,Weapon.Ranged.Heavy.rocket_launcher",
+      "targetTags": "Homebase.Class",
+      "templateId": "",
+      "type": "Kill"
+    },
+    "killingblow_athena_player_shotgun": {
+      "condition": "",
+      "contextTags": "Athena.Playlist",
+      "sourceTags": "Homebase.Class,Weapon.Ranged.shotgun",
+      "targetTags": "Homebase.Class",
+      "templateId": "",
+      "type": "Kill"
+    },
+    "killingblow_athena_player_smg": {
+      "condition": "",
+      "contextTags": "Athena.Playlist",
+      "sourceTags": "Homebase.Class,weapon.ranged.smg",
+      "targetTags": "Homebase.Class",
+      "templateId": "",
+      "type": "Kill"
+    },
+    "killingblow_athena_player_sniper": {
+      "condition": "",
+      "contextTags": "Athena.Playlist",
+      "sourceTags": "Homebase.Class,Weapon.Ranged.sniper",
+      "targetTags": "Homebase.Class",
+      "templateId": "",
+      "type": "Kill"
+    },
+    "outlive_athena": {
+      "condition": "",
+      "contextTags": "Athena.Playlist",
+      "targetTags": "",
+      "templateId": "",
+      "type": "AthenaOutlive"
+    },
+    "outlive_athena_duo": {
+      "condition": "",
+      "contextTags": "Athena.Playlist.Duo",
+      "targetTags": "",
+      "templateId": "",
+      "type": "AthenaOutlive"
+    },
+    "outlive_athena_solo": {
+      "condition": "",
+      "contextTags": "Athena.Playlist.Solo",
+      "targetTags": "",
+      "templateId": "",
+      "type": "AthenaOutlive"
+    },
+    "outlive_athena_squad": {
+      "condition": "",
+      "contextTags": "Athena.Playlist.Squad",
+      "targetTags": "",
+      "templateId": "",
+      "type": "AthenaOutlive"
+    }
+  },
+  "quests": {
+    "athena_dailyquestpack": {
+      "hidden": true,
+      "objectives": [],
+      "type": "Athena"
+    },
+    "athena_dailyquesttrigger": {
+      "objectives": [
+        {
+          "count": 1,
+          "name": "custom_login",
+          "stat": "custom_login"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 1,
+          "templateId": "Quest:athena_dailyquesttrigger"
+        },
+        {
+          "quantity": 1,
+          "templateId": "Quest:athena_dailyquestpack"
+        }
+      ],
+      "type": "Athena"
+    },
+    "athenadaily_duo_top12": {
+      "category": "AthenaDailyQuests",
+      "objectives": [
+        {
+          "count": 1,
+          "name": "daily_athena_duo_top12_v2",
+          "stat": "complete_athena_duo_top_12"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "Athena"
+    },
+    "athenadaily_outlive": {
+      "category": "AthenaDailyQuests",
+      "objectives": [
+        {
+          "count": 200,
+          "name": "daily_athena_outlive_players_v2",
+          "stat": "outlive_athena"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "AthenaDailyQuest"
+    },
+    "athenadaily_outlive500": {
+      "category": "AthenaDailyQuests",
+      "objectives": [
+        {
+          "count": 500,
+          "name": "daily_athena_outlive_players",
+          "stat": "outlive_athena"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 20,
+          "templateId": "AccountResource:battlebucks"
+        }
+      ],
+      "type": "Athena",
+      "weight": 0
+    },
+    "athenadaily_outlive_duo": {
+      "category": "AthenaDailyQuests",
+      "objectives": [
+        {
+          "count": 150,
+          "name": "daily_athena_outlive_duo_players_v2",
+          "stat": "outlive_athena_duo"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "Athena"
+    },
+    "athenadaily_outlive_duo_400": {
+      "category": "AthenaDailyQuests",
+      "objectives": [
+        {
+          "count": 400,
+          "name": "daily_athena_outlive_duo_players",
+          "stat": "outlive_athena_duo"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 20,
+          "templateId": "AccountResource:battlebucks"
+        }
+      ],
+      "type": "Athena",
+      "weight": 0
+    },
+    "athenadaily_outlive_solo": {
+      "category": "AthenaDailyQuests",
+      "objectives": [
+        {
+          "count": 150,
+          "name": "daily_athena_outlive_solo_players",
+          "stat": "outlive_athena_solo"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "AthenaDailyQuest"
+    },
+    "athenadaily_outlive_solo_400": {
+      "category": "AthenaDailyQuests",
+      "objectives": [
+        {
+          "count": 400,
+          "name": "daily_athena_outlive_solo_players",
+          "stat": "outlive_athena_solo"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 20,
+          "templateId": "AccountResource:battlebucks"
+        }
+      ],
+      "type": "Athena",
+      "weight": 0
+    },
+    "athenadaily_outlive_squad": {
+      "category": "AthenaDailyQuests",
+      "objectives": [
+        {
+          "count": 150,
+          "name": "daily_athena_outlive_squad_players_v2",
+          "stat": "outlive_athena_squad"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "AthenaDailyQuest"
+    },
+    "athenadaily_outlive_squad_400": {
+      "category": "AthenaDailyQuests",
+      "objectives": [
+        {
+          "count": 400,
+          "name": "daily_athena_outlive_squad_players",
+          "stat": "outlive_athena_squad"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 20,
+          "templateId": "AccountResource:battlebucks"
+        }
+      ],
+      "type": "Athena"
+    },
+    "athenadaily_play10matches": {
+      "category": "AthenaDailyQuests",
+      "objectives": [
+        {
+          "count": 3,
+          "name": "daily_athena_play_matches_v1",
+          "stat": "complete_athena"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 20,
+          "templateId": "AccountResource:battlebucks"
+        }
+      ],
+      "type": "Athena",
+      "weight": 0
+    },
+    "athenadaily_playmatches": {
+      "category": "AthenaDailyQuests",
+      "objectives": [
+        {
+          "count": 3,
+          "name": "daily_athena_play_matches_v2",
+          "stat": "complete_athena"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "AthenaDailyQuest"
+    },
+    "athenadaily_solo_top25": {
+      "category": "AthenaDailyQuests",
+      "objectives": [
+        {
+          "count": 1,
+          "name": "daily_athena_solo_top25_v2",
+          "stat": "complete_athena_solo_top_25"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "AthenaDailyQuest"
+    },
+    "athenadaily_squad_top6": {
+      "category": "AthenaDailyQuests",
+      "objectives": [
+        {
+          "count": 1,
+          "name": "daily_athena_squad_top6_v2",
+          "stat": "complete_athena_squad_top_6"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "AthenaDailyQuest"
+    },
+    "athenadailyquest_interactammocrate": {
+      "category": "AthenaDailyQuests",
+      "objectives": [
+        {
+          "count": 10,
+          "name": "athena_daily_loot_ammobox",
+          "stat": "interact_athena_ammobox"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "AthenaDailyQuest",
+      "weight": 0.75
+    },
+    "athenadailyquest_interacttreasurechest": {
+      "category": "AthenaDailyQuests",
+      "objectives": [
+        {
+          "count": 5,
+          "name": "daily_athena_loot_chest",
+          "stat": "interact_athena_treasurechest"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "AthenaDailyQuest"
+    },
+    "athenadailyquest_playerelimination": {
+      "category": "AthenaDailyQuests",
+      "objectives": [
+        {
+          "count": 10,
+          "name": "athena_daily_kill_players_v2",
+          "stat": "killingblow_athena_player"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "AthenaDailyQuest",
+      "weight": 0.75
+    },
+    "athenadailyquest_playereliminationassaultrifles": {
+      "category": "AthenaDailyQuests",
+      "objectives": [
+        {
+          "count": 5,
+          "name": "athena_daily_kill_players_assault_rifles",
+          "stat": "killingblow_athena_player_assault"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "AthenaDailyQuest",
+      "weight": 0.75
+    },
+    "athenadailyquest_playereliminationgrenadelaunchers": {
+      "category": "AthenaDailyQuests",
+      "objectives": [
+        {
+          "count": 5,
+          "name": "athena_daily_kill_players_grenade_launcher",
+          "stat": "killingblow_athena_player_grenade_launcher"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 20,
+          "templateId": "AccountResource:battlebucks"
+        }
+      ],
+      "type": "Athena",
+      "weight": 0
+    },
+    "athenadailyquest_playereliminationpistols": {
+      "category": "AthenaDailyQuests",
+      "objectives": [
+        {
+          "count": 5,
+          "name": "athena_daily_kill_players_pistol",
+          "stat": "killingblow_athena_player_pistol"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "AthenaDailyQuest",
+      "weight": 0.75
+    },
+    "athenadailyquest_playereliminationrocketlaunchers": {
+      "category": "AthenaDailyQuests",
+      "objectives": [
+        {
+          "count": 2,
+          "name": "athena_daily_kill_players_rocket_launcher",
+          "stat": "killingblow_athena_player_rocket_launcher"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 20,
+          "templateId": "AccountResource:battlebucks"
+        }
+      ],
+      "type": "Athena",
+      "weight": 0
+    },
+    "athenadailyquest_playereliminationshotguns": {
+      "category": "AthenaDailyQuests",
+      "objectives": [
+        {
+          "count": 5,
+          "name": "athena_daily_kill_players_shotgun",
+          "stat": "killingblow_athena_player_shotgun"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "AthenaDailyQuest",
+      "weight": 0.75
+    },
+    "athenadailyquest_playereliminationsmgs": {
+      "category": "AthenaDailyQuests",
+      "objectives": [
+        {
+          "count": 5,
+          "name": "athena_daily_kill_players_smg",
+          "stat": "killingblow_athena_player_smg"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "AthenaDailyQuest",
+      "weight": 0.75
+    },
+    "athenadailyquest_playereliminationsniperrifles": {
+      "category": "AthenaDailyQuests",
+      "objectives": [
+        {
+          "count": 5,
+          "name": "athena_daily_kill_players_sniper",
+          "stat": "killingblow_athena_player_sniper"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "AthenaDailyQuest",
+      "weight": 0.75
+    },
+    "battleprogram_testquest1": {
+      "objectives": [
+        {
+          "count": 50,
+          "name": "buildstructures",
+          "requirePrimaryMissionCompletion": true,
+          "stat": "build_any_structure"
+        }
+      ],
+      "type": "Athena"
+    },
+    "compendium_v1_build_1": {
+      "category": "Compendium",
+      "objectives": [
+        {
+          "count": 50,
+          "name": "build_any_wall",
+          "stat": "build_any_wall"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 200,
+          "templateId": "AccountResource:battlebucks"
+        },
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:compendiumxp"
+        }
+      ],
+      "type": "Athena"
+    },
+    "compendium_v1_completeallquests": {
+      "category": "Compendium",
+      "objectives": [
+        {
+          "count": 1,
+          "item": "Quest:compendium_v1_playereliminationexplosives_1",
+          "itemEvent": "QuestComplete",
+          "name": "compendium_v1_complete_player_elimination_explosives_quest"
+        },
+        {
+          "count": 1,
+          "item": "Quest:compendium_v1_playerelimination",
+          "itemEvent": "QuestComplete",
+          "name": "compendium_v1_complete_player_elimination_quest"
+        },
+        {
+          "count": 1,
+          "item": "Quest:compendium_v1_build_1",
+          "itemEvent": "QuestComplete",
+          "name": "compendium_v1_complete_build_walls"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 5000,
+          "templateId": "AccountResource:compendiumxp"
+        }
+      ],
+      "type": "Athena"
+    },
+    "compendium_v1_playerelimination": {
+      "category": "Compendium",
+      "objectives": [
+        {
+          "count": 20,
+          "name": "kill_athena_players",
+          "stat": "killingblow_athena_player"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 200,
+          "templateId": "AccountResource:battlebucks"
+        },
+        {
+          "quantity": 1000,
+          "templateId": "AccountResource:compendiumxp"
+        }
+      ],
+      "type": "Athena"
+    },
+    "compendium_v1_playereliminationexplosives_1": {
+      "category": "Compendium",
+      "objectives": [
+        {
+          "count": 1,
+          "name": "kill_player_with_explosives",
+          "stat": "killingblow_athena_player_rocket_launcher"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 200,
+          "templateId": "AccountResource:battlebucks"
+        },
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:compendiumxp"
+        }
+      ],
+      "type": "Athena"
+    },
+    "compendium_v1_rankplacement_1": {
+      "category": "Challenges",
+      "hiddenRewards": [
+        {
+          "quantity": 1,
+          "templateId": "Quest:challenge_missionaccomplished_2"
+        }
+      ],
+      "objectives": [
+        {
+          "count": 3,
+          "name": "complete_primary",
+          "stat": "complete_primary"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 1000,
+          "templateId": "AccountResource:compendiumxp"
+        }
+      ],
+      "type": "Athena"
+    }
+  }
+}

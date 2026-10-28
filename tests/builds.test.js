@@ -19,13 +19,19 @@ const build12 = "3541083";
 const agent12 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-Cert-CL-3541083";
 const gamedata = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "gamedata");
 
-test("the build is the changelist a request's User-Agent names; builds without their own data get Cert's", () => {
+test("the build is the changelist a request's User-Agent names; builds without their own data get the closest earlier build's", () => {
   const agent = (value) => ({ get: () => value });
   assert.equal(getBuild(agent(agent12)), build12);
   assert.equal(getBuild(agent("game=FortniteGame, engine=UE4, version=4.16.0-3541083+++Fortnite+Release-Cert, platform=Windows")), build12);
-  assert.deepEqual(dataBuilds, [certBuild, build12, "3700114"]);
+  assert.deepEqual(dataBuilds, [certBuild, build12, "3700114", "3724489"]);
   assert.equal(dataBuild(build12), build12);
-  for (const other of [certBuild, "unknown", "3700000", undefined]) assert.equal(dataBuild(other), certBuild);
+  for (const other of [certBuild, "unknown", "3500000", undefined]) assert.equal(dataBuild(other), certBuild);
+  // A build without its own data takes the closest earlier one's: 1.8.1 and 1.8.2 play on 1.8's, 1.7.3 would on 1.7.2's.
+  assert.equal(dataBuild("3724489"), "3724489");
+  assert.equal(dataBuild("3729133"), "3724489");
+  assert.equal(dataBuild("3741772"), "3724489");
+  assert.equal(dataBuild("3710000"), "3700114");
+  assert.equal(dataBuild("3600000"), build12);
   assert.equal(activeBuild(), certBuild, "outside a request");
   assert.equal(inBuild(build12, activeBuild), build12);
   assert.equal(inBuild("unknown", activeBuild), certBuild);

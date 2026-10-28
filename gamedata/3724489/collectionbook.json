@@ -1,0 +1,2821 @@
+{
+  "pages": {
+    "PageSpecial_Halloween2017_Heroes": {
+      "profile": "collection_book_people0",
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "sections": [
+        "section_Heroes_Halloween2017_Commando",
+        "section_Heroes_Halloween2017_Ninja",
+        "section_Heroes_Halloween2017_Outlander",
+        "section_Heroes_Halloween2017_Constructor"
+      ]
+    },
+    "PageSpecial_Halloween2017_Workers": {
+      "profile": "collection_book_people0",
+      "rewards": {
+        "hidden": [],
+        "selectable": [
+          [
+            {
+              "quantity": 1,
+              "templateId": "Hero:hid_commando_gunheadshothw_sr_t01"
+            }
+          ],
+          [
+            {
+              "quantity": 1,
+              "templateId": "Hero:hid_constructor_basehyperhw_sr_t01"
+            }
+          ],
+          [
+            {
+              "quantity": 1,
+              "templateId": "Hero:hid_ninja_starsrainhw_sr_t01"
+            }
+          ],
+          [
+            {
+              "quantity": 1,
+              "templateId": "Hero:hid_outlander_zonepistolhw_sr_t01"
+            }
+          ]
+        ],
+        "standard": []
+      },
+      "sections": [
+        "section_Workers_Halloween2017_Common",
+        "section_Workers_Halloween2017_Uncommon",
+        "section_Workers_Halloween2017_Rare",
+        "section_Workers_Halloween2017_VeryRare",
+        "section_Workers_Halloween2017_SuperRare"
+      ]
+    },
+    "PageSpecial_Hydraulic": {
+      "profile": "collection_book_schematics0",
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "sections": [
+        "Weapons_Ranged_Hydraulic_1",
+        "Weapons_Ranged_Hydraulic_2",
+        "Weapons_Ranged_Hydraulic_3",
+        "Weapons_Ranged_Hydraulic_4",
+        "Weapons_Ranged_Hydraulic_5",
+        "Weapons_Melee_Hydraulic_1",
+        "Weapons_Melee_Hydraulic_2",
+        "Weapons_Melee_Hydraulic_3"
+      ]
+    },
+    "PageSpecial_Hydraulic_Crystal": {
+      "profile": "collection_book_schematics0",
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "sections": [
+        "Weapons_Ranged_Hydraulic_Crystal_1",
+        "Weapons_Ranged_Hydraulic_Crystal_2",
+        "Weapons_Ranged_Hydraulic_Crystal_3",
+        "Weapons_Ranged_Hydraulic_Crystal_4",
+        "Weapons_Melee_Hydraulic_Crystal_1",
+        "Weapons_Melee_Hydraulic_Crystal_2",
+        "Weapons_Melee_Hydraulic_Crystal_3"
+      ]
+    },
+    "PageSpecial_Scavenger": {
+      "profile": "collection_book_schematics0",
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "sections": [
+        "Weapons_Ranged_Scavenger_1",
+        "Weapons_Ranged_Scavenger_2",
+        "Weapons_Ranged_Scavenger_3",
+        "Weapons_Ranged_Scavenger_4",
+        "Weapons_Ranged_Scavenger_5",
+        "Weapons_Melee_Scavenger_1",
+        "Weapons_Melee_Scavenger_2",
+        "Weapons_Melee_Scavenger_3"
+      ]
+    },
+    "PageSpecial_Scavenger_Crystal": {
+      "profile": "collection_book_schematics0",
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "sections": [
+        "Weapons_Ranged_Scavenger_Crystal_1",
+        "Weapons_Ranged_Scavenger_Crystal_2",
+        "Weapons_Ranged_Scavenger_Crystal_3",
+        "Weapons_Ranged_Scavenger_Crystal_4",
+        "Weapons_Ranged_Scavenger_Crystal_5",
+        "Weapons_Melee_Scavenger_Crystal_1",
+        "Weapons_Melee_Scavenger_Crystal_2",
+        "Weapons_Melee_Scavenger_Crystal_3"
+      ]
+    },
+    "PageSpecial_Scavenger_Heroes": {
+      "profile": "collection_book_people0",
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "sections": [
+        "section_Heroes_Scavenger_Commando",
+        "section_Heroes_Scavenger_Ninja",
+        "section_Heroes_Scavenger_Outlander",
+        "section_Heroes_Scavenger_Constructor"
+      ]
+    },
+    "PageSpecial_StormZone_Heroes": {
+      "profile": "collection_book_people0",
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "sections": [
+        "section_Heroes_StormZone_Commando",
+        "section_Heroes_StormZone_Ninja",
+        "section_Heroes_StormZone_Outlander",
+        "section_Heroes_StormZone_Constructor"
+      ]
+    },
+    "pageMelee_Axes_Weapons_Crystal": {
+      "sections": [
+        "weapons_Melee_Axes_Crystal_1",
+        "weapons_Melee_Axes_Crystal_2",
+        "weapons_Melee_Axes_Crystal_3",
+        "weapons_Melee_Axes_Crystal_4"
+      ]
+    },
+    "pageMelee_Swords_Weapons_Crystal": {
+      "sections": [
+        "weapons_Melee_Swords_Crystal_1",
+        "weapons_Melee_Swords_Crystal_2",
+        "weapons_Melee_Swords_Crystal_3",
+        "weapons_Melee_Swords_Crystal_4"
+      ]
+    },
+    "pagePeople_Defenders": {
+      "sections": [
+        "people_Defenders_1",
+        "people_Defenders_2",
+        "people_Defenders_3",
+        "people_Defenders_4",
+        "people_Defenders_5",
+        "people_Defenders_6",
+        "people_Defenders_7",
+        "people_Defenders_8",
+        "people_Defenders_9"
+      ]
+    },
+    "pageRanged_Assault_Weapons_Crystal": {
+      "sections": [
+        "weapons_Ranged_Assault_Crystal_1",
+        "weapons_Ranged_Assault_Crystal_2",
+        "weapons_Ranged_Assault_Crystal_3",
+        "weapons_Ranged_Assault_Crystal_4",
+        "weapons_Ranged_Assault_Crystal_5",
+        "weapons_Ranged_Assault_Crystal_6",
+        "weapons_Ranged_Assault_Crystal_7"
+      ]
+    },
+    "pageRanged_Shotgun_Weapons_Crystal": {
+      "sections": [
+        "weapons_Ranged_Shotguns_Crystal_1",
+        "weapons_Ranged_Shotguns_Crystal_2",
+        "weapons_Ranged_Shotguns_Crystal_3",
+        "weapons_Ranged_Shotguns_Crystal_4",
+        "weapons_Ranged_Shotguns_Crystal_5",
+        "weapons_Ranged_Shotguns_Crystal_6"
+      ]
+    },
+    "pageRanged_Snipers_Weapons_Crystal": {
+      "sections": [
+        "weapons_Ranged_Snipers_Crystal_1",
+        "weapons_Ranged_Snipers_Crystal_2",
+        "weapons_Ranged_Snipers_Crystal_3",
+        "weapons_Ranged_Snipers_Crystal_4",
+        "weapons_Ranged_Snipers_Crystal_5",
+        "weapons_Ranged_Snipers_Crystal_6",
+        "weapons_Ranged_Snipers_Crystal_7"
+      ]
+    },
+    "pageTraps_Ceiling": {
+      "sections": [
+        "traps_Ceiling_1",
+        "traps_Ceiling_2",
+        "traps_Ceiling_3",
+        "traps_Ceiling_4"
+      ]
+    },
+    "pageTraps_Floor": {
+      "sections": [
+        "traps_Floor_1",
+        "traps_Floor_2",
+        "traps_Floor_3",
+        "traps_Floor_4",
+        "traps_Floor_5",
+        "traps_Floor_6"
+      ]
+    },
+    "page_Ranged_Pistols_Weapons_Crystal": {
+      "sections": [
+        "weapons_Ranged_Pistols_Crystal_1",
+        "weapons_Ranged_Pistols_Crystal_2",
+        "weapons_Ranged_Pistols_Crystal_3",
+        "weapons_Ranged_Pistols_Crystal_4",
+        "weapons_Ranged_Pistols_Crystal_5",
+        "weapons_Ranged_Pistols_Crystal_6",
+        "weapons_Ranged_Pistols_Crystal_7",
+        "weapons_Ranged_Pistols_Crystal_8",
+        "weapons_Ranged_Pistols_Crystal_9",
+        "weapons_Ranged_Pistols_Crystal_10"
+      ]
+    },
+    "test_TestPage": {
+      "rewards": {
+        "standard": [
+          {
+            "quantity": 130,
+            "templateId": "AccountResource:schematicxp"
+          }
+        ]
+      }
+    }
+  },
+  "sections": {
+    "Weapons_Melee_Hydraulic_1": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Edged.Sword.Hydraulic.VR.Ore.T01",
+        "SID.Edged.Sword.Hydraulic.SR.Ore.T01"
+      ]
+    },
+    "Weapons_Melee_Hydraulic_2": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Piercing.Spear.Hydraulic.VR.Ore.T01",
+        "SID.Piercing.Spear.Hydraulic.SR.Ore.T01"
+      ]
+    },
+    "Weapons_Melee_Hydraulic_3": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Blunt.Hammer.Hydraulic.VR.Ore.T01",
+        "SID.Blunt.Hammer.Hydraulic.SR.Ore.T01"
+      ]
+    },
+    "Weapons_Melee_Hydraulic_Crystal_1": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Edged.Sword.Hydraulic.VR.Crystal.T04",
+        "SID.Edged.Sword.Hydraulic.SR.Crystal.T04"
+      ]
+    },
+    "Weapons_Melee_Hydraulic_Crystal_2": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Piercing.Spear.Hydraulic.VR.Crystal.T04",
+        "SID.Piercing.Spear.Hydraulic.SR.Crystal.T04"
+      ]
+    },
+    "Weapons_Melee_Hydraulic_Crystal_3": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Blunt.Hammer.Hydraulic.VR.Crystal.T04",
+        "SID.Blunt.Hammer.Hydraulic.SR.Crystal.T04"
+      ]
+    },
+    "Weapons_Melee_Scavenger_1": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Edged.Axe.Scavenger.VR.Ore.T01",
+        "SID.Edged.Axe.Scavenger.SR.Ore.T01"
+      ]
+    },
+    "Weapons_Melee_Scavenger_2": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Piercing.Spear.Scavenger.VR.Ore.T01",
+        "SID.Piercing.Spear.Scavenger.SR.Ore.T01"
+      ]
+    },
+    "Weapons_Melee_Scavenger_3": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Blunt.Scavenger.VR.Ore.T01",
+        "SID.Blunt.Scavenger.SR.Ore.T01"
+      ]
+    },
+    "Weapons_Melee_Scavenger_Crystal_1": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Edged.Axe.Scavenger.VR.Crystal.T04",
+        "SID.Edged.Axe.Scavenger.SR.Crystal.T04"
+      ]
+    },
+    "Weapons_Melee_Scavenger_Crystal_2": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Piercing.Spear.Scavenger.VR.Crystal.T04",
+        "SID.Piercing.Spear.Scavenger.SR.Crystal.T04"
+      ]
+    },
+    "Weapons_Melee_Scavenger_Crystal_3": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Blunt.Scavenger.VR.Crystal.T04",
+        "SID.Blunt.Scavenger.SR.Crystal.T04"
+      ]
+    },
+    "Weapons_Ranged_Hydraulic_1": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Assault.Hydraulic.Drum.VR.Ore.T01",
+        "SID.Assault.Hydraulic.Drum.SR.Ore.T01"
+      ]
+    },
+    "Weapons_Ranged_Hydraulic_2": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Shotgun.Hydraulic.VR.Ore.T01",
+        "SID.Shotgun.Hydraulic.SR.Ore.T01"
+      ]
+    },
+    "Weapons_Ranged_Hydraulic_3": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Pistol.Hydraulic.VR.Ore.T01",
+        "SID.Pistol.Hydraulic.SR.Ore.T01"
+      ]
+    },
+    "Weapons_Ranged_Hydraulic_4": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Sniper.Hydraulic.VR.Ore.T01",
+        "SID.Sniper.Hydraulic.SR.Ore.T01"
+      ]
+    },
+    "Weapons_Ranged_Hydraulic_5": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Launcher.Hydraulic.VR.Ore.T01",
+        "SID.Launcher.Hydraulic.SR.Ore.T01"
+      ]
+    },
+    "Weapons_Ranged_Hydraulic_Crystal_1": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Assault.Hydraulic.Drum.VR.Crystal.T04",
+        "SID.Assault.Hydraulic.Drum.SR.Crystal.T04"
+      ]
+    },
+    "Weapons_Ranged_Hydraulic_Crystal_2": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Shotgun.Hydraulic.VR.Crystal.T04",
+        "SID.Shotgun.Hydraulic.SR.Crystal.T04"
+      ]
+    },
+    "Weapons_Ranged_Hydraulic_Crystal_3": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Pistol.Hydraulic.VR.Crystal.T04",
+        "SID.Pistol.Hydraulic.SR.Crystal.T04"
+      ]
+    },
+    "Weapons_Ranged_Hydraulic_Crystal_4": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Sniper.Hydraulic.VR.Crystal.T04",
+        "SID.Sniper.Hydraulic.SR.Crystal.T04"
+      ]
+    },
+    "Weapons_Ranged_Hydraulic_Crystal_5": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Launcher.Hydraulic.VR.Crystal.T04",
+        "SID.Launcher.Hydraulic.SR.Crystal.T04"
+      ]
+    },
+    "Weapons_Ranged_Scavenger_1": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Assault.Scavenger.VR.Ore.T01",
+        "SID.Assault.Scavenger.SR.Ore.T01"
+      ]
+    },
+    "Weapons_Ranged_Scavenger_2": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Shotgun.Break.Scavenger.VR.Ore.T01",
+        "SID.Shotgun.Break.Scavenger.SR.Ore.T01"
+      ]
+    },
+    "Weapons_Ranged_Scavenger_3": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Shotgun.SemiAuto.Scavenger.VR.Ore.T01",
+        "SID.Shotgun.SemiAuto.Scavenger.SR.Ore.T01"
+      ]
+    },
+    "Weapons_Ranged_Scavenger_4": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Pistol.Scavenger.VR.Ore.T01",
+        "SID.Pistol.Scavenger.SR.Ore.T01"
+      ]
+    },
+    "Weapons_Ranged_Scavenger_5": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Sniper.Scavenger.VR.Ore.T01",
+        "SID.Sniper.Scavenger.SR.Ore.T01"
+      ]
+    },
+    "Weapons_Ranged_Scavenger_Crystal_1": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Assault.Scavenger.VR.Crystal.T04",
+        "SID.Assault.Scavenger.SR.Crystal.T04"
+      ]
+    },
+    "Weapons_Ranged_Scavenger_Crystal_2": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Shotgun.Break.Scavenger.VR.Crystal.T04",
+        "SID.Shotgun.Break.Scavenger.SR.Crystal.T04"
+      ]
+    },
+    "Weapons_Ranged_Scavenger_Crystal_3": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Shotgun.SemiAuto.Scavenger.VR.Crystal.T04",
+        "SID.Shotgun.SemiAuto.Scavenger.SR.Crystal.T04"
+      ]
+    },
+    "Weapons_Ranged_Scavenger_Crystal_4": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Pistol.Scavenger.VR.Crystal.T04",
+        "SID.Pistol.Scavenger.SR.Crystal.T04"
+      ]
+    },
+    "Weapons_Ranged_Scavenger_Crystal_5": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Sniper.Scavenger.VR.Crystal.T04",
+        "SID.Sniper.Scavenger.SR.Crystal.T04"
+      ]
+    },
+    "people_Defenders_2": {
+      "slots": [
+        "DID.DefenderAssault.Basic.M.R.T01",
+        "DID.DefenderAssault.Basic.M.VR.T01",
+        "DID.DefenderAssault.Basic.M.SR.T01"
+      ]
+    },
+    "people_Defenders_3": {
+      "slots": [
+        "DID.DefenderMelee.Basic.C.T01",
+        "DID.DefenderMelee.Basic.UC.T01",
+        "DID.DefenderMelee.Basic.R.T01",
+        "DID.DefenderMelee.Basic.VR.T01",
+        "DID.DefenderMelee.Basic.SR.T01"
+      ]
+    },
+    "people_Defenders_4": {
+      "slots": [
+        "DID.DefenderPistol.Basic.C.T01",
+        "DID.DefenderPistol.Basic.UC.T01",
+        "DID.DefenderPistol.Basic.R.T01",
+        "DID.DefenderPistol.Basic.VR.T01",
+        "DID.DefenderPistol.Basic.SR.T01"
+      ]
+    },
+    "people_Defenders_5": {
+      "slots": [
+        "DID.DefenderPistol.Basic.F.R.T01",
+        "DID.DefenderPistol.Basic.F.VR.T01",
+        "DID.DefenderPistol.Basic.F.SR.T01"
+      ]
+    },
+    "people_Defenders_6": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "DID.DefenderShotgun.Basic.C.T01",
+        "DID.DefenderShotgun.Basic.UC.T01",
+        "DID.DefenderShotgun.Basic.R.T01",
+        "DID.DefenderShotgun.Basic.VR.T01",
+        "DID.DefenderShotgun.Basic.SR.T01"
+      ]
+    },
+    "people_Defenders_7": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "DID.DefenderShotgun.Basic.F.R.T01",
+        "DID.DefenderShotgun.Basic.F.VR.T01",
+        "DID.DefenderShotgun.Basic.F.SR.T01"
+      ]
+    },
+    "people_Defenders_8": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "DID.DefenderSniper.Basic.C.T01",
+        "DID.DefenderSniper.Basic.UC.T01",
+        "DID.DefenderSniper.Basic.R.T01",
+        "DID.DefenderSniper.Basic.VR.T01",
+        "DID.DefenderSniper.Basic.SR.T01"
+      ]
+    },
+    "people_Defenders_9": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "DID.DefenderSniper.Basic.M.R.T01",
+        "DID.DefenderSniper.Basic.M.VR.T01",
+        "DID.DefenderSniper.Basic.M.SR.T01"
+      ]
+    },
+    "section_Heroes_Halloween2017_Commando": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "HID.Commando.007HW.VR.T01",
+        "HID.Commando.007HW.SR.T01",
+        "HID.Commando.GunHeadshotHW.VR.T01",
+        "HID.Commando.GunHeadshotHW.SR.T01"
+      ]
+    },
+    "section_Heroes_Halloween2017_Constructor": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "HID.Constructor.007HW.VR.T01",
+        "HID.Constructor.007HW.SR.T01",
+        "HID.Constructor.BaseHyperHW.VR.T01",
+        "HID.Constructor.BaseHyperHW.SR.T01"
+      ]
+    },
+    "section_Heroes_Halloween2017_Ninja": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "HID.Ninja.SlashBreathHW.VR.T01",
+        "HID.Ninja.SlashBreathHW.SR.T01",
+        "HID.Ninja.StarsRainHW.VR.T01",
+        "HID.Ninja.StarsRainHW.SR.T01"
+      ]
+    },
+    "section_Heroes_Halloween2017_Outlander": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "HID.Outlander.ZonePistolHW.VR.T01",
+        "HID.Outlander.ZonePistolHW.SR.T01"
+      ]
+    },
+    "section_Heroes_Scavenger_Commando": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "HID.Commando.011.UC.T01",
+        "HID.Commando.011.R.T01",
+        "HID.Commando.011.VR.T01",
+        "HID.Commando.011.SR.T01"
+      ]
+    },
+    "section_Heroes_Scavenger_Constructor": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "HID.Constructor.011.R.T01",
+        "HID.Constructor.011.VR.T01",
+        "HID.Constructor.011.SR.T01"
+      ]
+    },
+    "section_Heroes_Scavenger_Ninja": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "HID.Ninja.011.R.T01",
+        "HID.Ninja.011.VR.T01",
+        "HID.Ninja.011.SR.T01"
+      ]
+    },
+    "section_Heroes_Scavenger_Outlander": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "HID.Outlander.011.VR.T01",
+        "HID.Outlander.011.SR.T01"
+      ]
+    },
+    "section_Heroes_StormZone_Commando": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "HID.Commando.009.M.R.T01",
+        "HID.Commando.009.M.VR.T01",
+        "HID.Commando.009.M.SR.T01"
+      ]
+    },
+    "section_Heroes_StormZone_Constructor": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "HID.Constructor.RushBASE.F.VR.T01",
+        "HID.Constructor.RushBASE.F.SR.T01"
+      ]
+    },
+    "section_Heroes_StormZone_Ninja": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "HID.Ninja.010.F.VR.T01",
+        "HID.Ninja.010.F.SR.T01"
+      ]
+    },
+    "section_Heroes_StormZone_Outlander": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "HID.Outlander.010.M.VR.T01",
+        "HID.Outlander.010.M.SR.T01"
+      ]
+    },
+    "section_Workers_Halloween2017_Common": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": [
+          {
+            "quantity": 1,
+            "templateId": "CardPack:cardpack_halloweenworker_uncommon"
+          }
+        ]
+      },
+      "slots": [
+        "Worker.Halloween.Husk.C.T01",
+        "Worker.Halloween.Husky.C.T01",
+        "Worker.Halloween.Pitcher.C.T01"
+      ]
+    },
+    "section_Workers_Halloween2017_Rare": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": [
+          {
+            "quantity": 1,
+            "templateId": "CardPack:cardpack_halloweenworker_veryrare"
+          }
+        ]
+      },
+      "slots": [
+        "Worker.Halloween.Husky.R.T01",
+        "Worker.Halloween.Lobber.R.T01",
+        "Worker.Halloween.Pitcher.R.T01"
+      ]
+    },
+    "section_Workers_Halloween2017_SuperRare": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": [
+          {
+            "quantity": 1,
+            "templateId": "CardPack:cardpack_ranged_launcher_halloween_sr"
+          }
+        ]
+      },
+      "slots": [
+        "Worker.Halloween.Lobber.SR.T01",
+        "Worker.Halloween.Smasher.SR.T01",
+        "Worker.Halloween.Troll.SR.T01"
+      ]
+    },
+    "section_Workers_Halloween2017_Uncommon": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": [
+          {
+            "quantity": 1,
+            "templateId": "CardPack:cardpack_halloweenworker_rare"
+          }
+        ]
+      },
+      "slots": [
+        "Worker.Halloween.Husk.UC.T01",
+        "Worker.Halloween.Husky.UC.T01",
+        "Worker.Halloween.Pitcher.UC.T01"
+      ]
+    },
+    "section_Workers_Halloween2017_VeryRare": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": [
+          {
+            "quantity": 1,
+            "templateId": "CardPack:cardpack_halloweenworker_superrare"
+          }
+        ]
+      },
+      "slots": [
+        "Worker.Halloween.Husky.VR.T01",
+        "Worker.Halloween.Lobber.VR.T01",
+        "Worker.Halloween.Troll.VR.T01"
+      ]
+    },
+    "traps_Ceiling_4": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Ceiling.Falling.R.T01",
+        "SID.Ceiling.Falling.VR.T01",
+        "SID.Ceiling.Falling.SR.T01"
+      ]
+    },
+    "traps_Floor_6": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Floor.Freeze.R.T01",
+        "SID.Floor.Freeze.VR.T01",
+        "SID.Floor.Freeze.SR.T01"
+      ]
+    },
+    "weapons_Melee_Axes_Crystal_1": {
+      "slots": [
+        "SID.Edged.Axe.Light.R.Crystal.T04",
+        "SID.Edged.Axe.Light.VR.Crystal.T04",
+        "SID.Edged.Axe.Light.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Melee_Axes_Crystal_2": {
+      "slots": [
+        "SID.Edged.Axe.Medium.R.Crystal.T04",
+        "SID.Edged.Axe.Medium.VR.Crystal.T04",
+        "SID.Edged.Axe.Medium.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Melee_Axes_Crystal_3": {
+      "slots": [
+        "SID.Edged.Axe.Heavy.R.Crystal.T04",
+        "SID.Edged.Axe.Heavy.VR.Crystal.T04",
+        "SID.Edged.Axe.Heavy.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Melee_Axes_Crystal_4": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Edged.Axe.Medium.Laser.VR.Crystal.T04",
+        "SID.Edged.Axe.Medium.Laser.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Melee_Scythes_Crystal_1": {
+      "slots": [
+        "SID.Edged.Scythe.R.Crystal.T04",
+        "SID.Edged.Scythe.Laser.VR.Crystal.T04",
+        "SID.Edged.Scythe.Laser.SR.Crystal.T04",
+        "SID.Edged.Scythe.VR.Crystal.T04",
+        "SID.Edged.Scythe.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Melee_Spears_Crystal_1": {
+      "slots": [
+        "SID.Piercing.Spear.R.Crystal.T04",
+        "SID.Piercing.Spear.VR.Crystal.T04",
+        "SID.Piercing.Spear.SR.Crystal.T04",
+        "SID.Piercing.Spear.Laser.VR.Crystal.T04",
+        "SID.Piercing.Spear.Laser.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Melee_Swords_4": {
+      "slots": [
+        "SID.Edged.Sword.Medium.Laser.VR.Ore.T01",
+        "SID.Edged.Sword.Medium.Laser.SR.Ore.T01"
+      ]
+    },
+    "weapons_Melee_Swords_Crystal_1": {
+      "slots": [
+        "SID.Edged.Sword.Light.R.Crystal.T04",
+        "SID.Edged.Sword.Light.VR.Crystal.T04",
+        "SID.Edged.Sword.Light.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Melee_Swords_Crystal_2": {
+      "slots": [
+        "SID.Edged.Sword.Medium.R.Crystal.T04",
+        "SID.Edged.Sword.Medium.VR.Crystal.T04",
+        "SID.Edged.Sword.Medium.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Melee_Swords_Crystal_3": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Edged.Sword.Heavy.R.Crystal.T04",
+        "SID.Edged.Sword.Heavy.VR.Crystal.T04",
+        "SID.Edged.Sword.Heavy.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Melee_Swords_Crystal_4": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Edged.Sword.Medium.Laser.VR.Crystal.T04",
+        "SID.Edged.Sword.Medium.Laser.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Melee_Tools_3": {
+      "slots": [
+        "SID.Blunt.Hammer.Rocket.VR.Ore.T01",
+        "SID.Blunt.Hammer.Rocket.SR.Ore.T01"
+      ]
+    },
+    "weapons_Ranged_Assault_Crystal_1": {
+      "slots": [
+        "SID.Assault.Auto.R.Crystal.T04",
+        "SID.Assault.Auto.VR.Crystal.T04",
+        "SID.Assault.Auto.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Assault_Crystal_2": {
+      "slots": [
+        "SID.Assault.Burst.R.Crystal.T04",
+        "SID.Assault.Burst.VR.Crystal.T04",
+        "SID.Assault.Burst.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Assault_Crystal_3": {
+      "slots": [
+        "SID.Assault.Doubleshot.VR.Crystal.T04",
+        "SID.Assault.Doubleshot.SR.Crystal.T04",
+        "SID.Assault.Raygun.VR.Crystal.T04",
+        "SID.Assault.Raygun.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Assault_Crystal_4": {
+      "slots": [
+        "SID.Assault.LMG.R.Crystal.T04",
+        "SID.Assault.LMG.VR.Crystal.T04",
+        "SID.Assault.LMG.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Assault_Crystal_5": {
+      "slots": [
+        "SID.Assault.SemiAuto.R.Crystal.T04",
+        "SID.Assault.SemiAuto.VR.Crystal.T04",
+        "SID.Assault.SemiAuto.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Assault_Crystal_6": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Assault.SingleShot.R.Crystal.T04",
+        "SID.Assault.SingleShot.VR.Crystal.T04",
+        "SID.Assault.SingleShot.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Assault_Crystal_7": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Assault.Surgical.VR.Crystal.T04",
+        "SID.Assault.Surgical.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Pistols_Crystal_1": {
+      "slots": [
+        "SID.Pistol.Auto.R.Crystal.T04",
+        "SID.Pistol.Auto.VR.Crystal.T04",
+        "SID.Pistol.Auto.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Pistols_Crystal_10": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Pistol.Space.VR.Crystal.T04",
+        "SID.Pistol.Space.SR.Crystal.T04",
+        "SID.Pistol.Zapper.VR.Crystal.T04",
+        "SID.Pistol.Zapper.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Pistols_Crystal_2": {
+      "slots": [
+        "SID.Pistol.BoltRevolver.R.Crystal.T04",
+        "SID.Pistol.Bolt.VR.Crystal.T04",
+        "SID.Pistol.Bolt.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Pistols_Crystal_3": {
+      "slots": [
+        "SID.Pistol.AutoHeavy.R.Crystal.T04",
+        "SID.Pistol.AutoHeavy.VR.Crystal.T04",
+        "SID.Pistol.AutoHeavy.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Pistols_Crystal_4": {
+      "slots": [
+        "SID.Pistol.Dragon.VR.Crystal.T04",
+        "SID.Pistol.Dragon.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Pistols_Crystal_5": {
+      "slots": [
+        "SID.Pistol.FireCracker.R.Crystal.T04",
+        "SID.Pistol.FireCracker.VR.Crystal.T04",
+        "SID.Pistol.FireCracker.SR.Crystal.T04",
+        "SID.Pistol.Rocket.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Pistols_Crystal_6": {
+      "slots": [
+        "SID.Pistol.SixShooter.R.Crystal.T04",
+        "SID.Pistol.Handcannon.R.Crystal.T04",
+        "SID.Pistol.Handcannon.VR.Crystal.T04",
+        "SID.Pistol.Handcannon.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Pistols_Crystal_7": {
+      "slots": [
+        "SID.Pistol.Handcannon.Semi.R.Crystal.T04",
+        "SID.Pistol.Handcannon.Semi.VR.Crystal.T04",
+        "SID.Pistol.Handcannon.Semi.SR.Crystal.T04",
+        "SID.Pistol.Gatling.VR.Crystal.T04",
+        "SID.Pistol.Gatling.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Pistols_Crystal_8": {
+      "slots": [
+        "SID.Pistol.Rapid.R.Crystal.T04",
+        "SID.Pistol.Rapid.VR.Crystal.T04",
+        "SID.Pistol.Rapid.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Pistols_Crystal_9": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Pistol.SemiAuto.R.Crystal.T04",
+        "SID.Pistol.SemiAuto.VR.Crystal.T04",
+        "SID.Pistol.SemiAuto.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Shotguns_Crystal_1": {
+      "slots": [
+        "SID.Shotgun.Auto.R.Crystal.T04",
+        "SID.Shotgun.Auto.VR.Crystal.T04",
+        "SID.Shotgun.Auto.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Shotguns_Crystal_2": {
+      "slots": [
+        "SID.Shotgun.Break.R.Crystal.T04",
+        "SID.Shotgun.Break.VR.Crystal.T04",
+        "SID.Shotgun.Break.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Shotguns_Crystal_3": {
+      "slots": [
+        "SID.Shotgun.Longarm.VR.Crystal.T04",
+        "SID.Shotgun.Longarm.SR.Crystal.T04",
+        "SID.Shotgun.Minigun.SR.Crystal.T04",
+        "SID.Shotgun.Heavy.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Shotguns_Crystal_4": {
+      "slots": [
+        "SID.Shotgun.Standard.R.Crystal.T04",
+        "SID.Shotgun.Standard.VR.Crystal.T04",
+        "SID.Shotgun.Standard.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Shotguns_Crystal_5": {
+      "slots": [
+        "SID.Shotgun.Tactical.R.Crystal.T04",
+        "SID.Shotgun.Tactical.Precision.R.Crystal.T04",
+        "SID.Shotgun.Tactical.Precision.VR.Crystal.T04",
+        "SID.Shotgun.Tactical.Precision.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Shotguns_Crystal_6": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Shotgun.Break.OU.R.Crystal.T04",
+        "SID.Shotgun.Break.OU.VR.Crystal.T04",
+        "SID.Shotgun.Break.OU.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Snipers_Crystal_1": {
+      "slots": [
+        "SID.Sniper.AMR.R.Crystal.T04",
+        "SID.Sniper.AMR.VR.Crystal.T04",
+        "SID.Sniper.AMR.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Snipers_Crystal_2": {
+      "slots": [
+        "SID.Sniper.Auto.R.Crystal.T04",
+        "SID.Sniper.Auto.VR.Crystal.T04",
+        "SID.Sniper.Auto.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Snipers_Crystal_3": {
+      "slots": [
+        "SID.Sniper.BoltAction.R.Crystal.T04",
+        "SID.Sniper.BoltAction.Scope.R.Crystal.T04",
+        "SID.Sniper.BoltAction.Scope.VR.Crystal.T04",
+        "SID.Sniper.BoltAction.Scope.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Snipers_Crystal_5": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Sniper.Shredder.VR.Crystal.T04",
+        "SID.Sniper.Shredder.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Snipers_Crystal_6": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Sniper.Standard.R.Crystal.T04",
+        "SID.Sniper.Standard.VR.Crystal.T04",
+        "SID.Sniper.Standard.SR.Crystal.T04"
+      ]
+    },
+    "weapons_Ranged_Snipers_Crystal_7": {
+      "rewards": {
+        "hidden": [],
+        "selectable": [],
+        "standard": []
+      },
+      "slots": [
+        "SID.Sniper.TripleShot.VR.Crystal.T04",
+        "SID.Sniper.TripleShot.SR.Crystal.T04"
+      ]
+    }
+  },
+  "slots": {
+    "DID.DefenderAssault.Basic.M.R.T01": {
+      "items": [
+        "Defender:did_defenderassault_basic_m_r_t01",
+        "Defender:did_defenderassault_basic_m_r_t02",
+        "Defender:did_defenderassault_basic_m_r_t03",
+        "Defender:did_defenderassault_basic_m_r_t04"
+      ],
+      "personalities": [],
+      "weight": "Defender"
+    },
+    "DID.DefenderAssault.Basic.M.SR.T01": {
+      "items": [
+        "Defender:did_defenderassault_basic_m_sr_t01",
+        "Defender:did_defenderassault_basic_m_sr_t02",
+        "Defender:did_defenderassault_basic_m_sr_t03",
+        "Defender:did_defenderassault_basic_m_sr_t04",
+        "Defender:did_defenderassault_basic_m_sr_t05"
+      ],
+      "personalities": [],
+      "weight": "Defender"
+    },
+    "DID.DefenderAssault.Basic.M.VR.T01": {
+      "items": [
+        "Defender:did_defenderassault_basic_m_vr_t01",
+        "Defender:did_defenderassault_basic_m_vr_t02",
+        "Defender:did_defenderassault_basic_m_vr_t03",
+        "Defender:did_defenderassault_basic_m_vr_t04",
+        "Defender:did_defenderassault_basic_m_vr_t05"
+      ],
+      "personalities": [],
+      "weight": "Defender"
+    },
+    "DID.DefenderPistol.Basic.F.R.T01": {
+      "items": [
+        "Defender:did_defenderpistol_basic_f_r_t01",
+        "Defender:did_defenderpistol_basic_f_r_t02",
+        "Defender:did_defenderpistol_basic_f_r_t03",
+        "Defender:did_defenderpistol_basic_f_r_t04"
+      ],
+      "personalities": [],
+      "weight": "Defender"
+    },
+    "DID.DefenderPistol.Basic.F.SR.T01": {
+      "items": [
+        "Defender:did_defenderpistol_basic_f_sr_t01",
+        "Defender:did_defenderpistol_basic_f_sr_t02",
+        "Defender:did_defenderpistol_basic_f_sr_t03",
+        "Defender:did_defenderpistol_basic_f_sr_t04"
+      ],
+      "personalities": [],
+      "weight": "Defender"
+    },
+    "DID.DefenderPistol.Basic.F.VR.T01": {
+      "items": [
+        "Defender:did_defenderpistol_basic_f_vr_t01",
+        "Defender:did_defenderpistol_basic_f_vr_t02",
+        "Defender:did_defenderpistol_basic_f_vr_t03",
+        "Defender:did_defenderpistol_basic_f_vr_t04",
+        "Defender:did_defenderpistol_basic_f_vr_t05"
+      ],
+      "personalities": [],
+      "weight": "Defender"
+    },
+    "DID.DefenderShotgun.Basic.F.R.T01": {
+      "items": [
+        "Defender:did_defendershotgun_basic_f_r_t01",
+        "Defender:did_defendershotgun_basic_f_r_t02",
+        "Defender:did_defendershotgun_basic_f_r_t03",
+        "Defender:did_defendershotgun_basic_f_r_t04"
+      ],
+      "personalities": [],
+      "weight": "Defender"
+    },
+    "DID.DefenderShotgun.Basic.F.SR.T01": {
+      "items": [
+        "Defender:did_defendershotgun_basic_f_sr_t01",
+        "Defender:did_defendershotgun_basic_f_sr_t02",
+        "Defender:did_defendershotgun_basic_f_sr_t03",
+        "Defender:did_defendershotgun_basic_f_sr_t04",
+        "Defender:did_defendershotgun_basic_f_sr_t05"
+      ],
+      "personalities": [],
+      "weight": "Defender"
+    },
+    "DID.DefenderShotgun.Basic.F.VR.T01": {
+      "items": [
+        "Defender:did_defendershotgun_basic_f_vr_t01",
+        "Defender:did_defendershotgun_basic_f_vr_t02",
+        "Defender:did_defendershotgun_basic_f_vr_t03",
+        "Defender:did_defendershotgun_basic_f_vr_t04",
+        "Defender:did_defendershotgun_basic_f_vr_t05"
+      ],
+      "personalities": [],
+      "weight": "Defender"
+    },
+    "DID.DefenderSniper.Basic.M.R.T01": {
+      "items": [
+        "Defender:did_defendersniper_basic_m_r_t01",
+        "Defender:did_defendersniper_basic_m_r_t02",
+        "Defender:did_defendersniper_basic_m_r_t03",
+        "Defender:did_defendersniper_basic_m_r_t04"
+      ],
+      "personalities": [],
+      "weight": "Defender"
+    },
+    "DID.DefenderSniper.Basic.M.SR.T01": {
+      "items": [
+        "Defender:did_defendersniper_basic_m_sr_t01",
+        "Defender:did_defendersniper_basic_m_sr_t02",
+        "Defender:did_defendersniper_basic_m_sr_t03",
+        "Defender:did_defendersniper_basic_m_sr_t04",
+        "Defender:did_defendersniper_basic_m_sr_t05"
+      ],
+      "personalities": [],
+      "weight": "Defender"
+    },
+    "DID.DefenderSniper.Basic.M.VR.T01": {
+      "items": [
+        "Defender:did_defendersniper_basic_m_vr_t01",
+        "Defender:did_defendersniper_basic_m_vr_t02",
+        "Defender:did_defendersniper_basic_m_vr_t03",
+        "Defender:did_defendersniper_basic_m_vr_t04",
+        "Defender:did_defendersniper_basic_m_vr_t05"
+      ],
+      "personalities": [],
+      "weight": "Defender"
+    },
+    "HID.Commando.007HW.SR.T01": {
+      "items": [
+        "Hero:hid_commando_007hw_sr_t01",
+        "Hero:hid_commando_007hw_sr_t02",
+        "Hero:hid_commando_007hw_sr_t03",
+        "Hero:hid_commando_007hw_sr_t04",
+        "Hero:hid_commando_007hw_sr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Commando.007HW.VR.T01": {
+      "items": [
+        "Hero:hid_commando_007hw_vr_t01",
+        "Hero:hid_commando_007hw_vr_t02",
+        "Hero:hid_commando_007hw_vr_t03",
+        "Hero:hid_commando_007hw_vr_t04",
+        "Hero:hid_commando_007hw_vr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Commando.009.M.R.T01": {
+      "items": [
+        "Hero:hid_commando_009_m_r_t01",
+        "Hero:hid_commando_009_m_r_t02",
+        "Hero:hid_commando_009_m_r_t03",
+        "Hero:hid_commando_009_m_r_t04"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Commando.009.M.SR.T01": {
+      "items": [
+        "Hero:hid_commando_009_m_sr_t01",
+        "Hero:hid_commando_009_m_sr_t02",
+        "Hero:hid_commando_009_m_sr_t03",
+        "Hero:hid_commando_009_m_sr_t04",
+        "Hero:hid_commando_009_m_sr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Commando.009.M.VR.T01": {
+      "items": [
+        "Hero:hid_commando_009_m_vr_t01",
+        "Hero:hid_commando_009_m_vr_t02",
+        "Hero:hid_commando_009_m_vr_t03",
+        "Hero:hid_commando_009_m_vr_t04",
+        "Hero:hid_commando_009_m_vr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Commando.011.R.T01": {
+      "items": [
+        "Hero:hid_commando_011_r_t01",
+        "Hero:hid_commando_011_r_t02",
+        "Hero:hid_commando_011_r_t03",
+        "Hero:hid_commando_011_r_t04"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Commando.011.SR.T01": {
+      "items": [
+        "Hero:hid_commando_011_sr_t01",
+        "Hero:hid_commando_011_sr_t02",
+        "Hero:hid_commando_011_sr_t03",
+        "Hero:hid_commando_011_sr_t04",
+        "Hero:hid_commando_011_sr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Commando.011.UC.T01": {
+      "items": [
+        "Hero:hid_commando_011_uc_t01",
+        "Hero:hid_commando_011_uc_t02",
+        "Hero:hid_commando_011_uc_t03"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Commando.011.VR.T01": {
+      "items": [
+        "Hero:hid_commando_011_vr_t01",
+        "Hero:hid_commando_011_vr_t02",
+        "Hero:hid_commando_011_vr_t03",
+        "Hero:hid_commando_011_vr_t04",
+        "Hero:hid_commando_011_vr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Commando.GunHeadshotHW.VR.T01": {
+      "items": [
+        "Hero:hid_commando_gunheadshothw_vr_t01",
+        "Hero:hid_commando_gunheadshothw_vr_t02",
+        "Hero:hid_commando_gunheadshothw_vr_t03",
+        "Hero:hid_commando_gunheadshothw_vr_t04",
+        "Hero:hid_commando_gunheadshothw_vr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Constructor.007HW.SR.T01": {
+      "items": [
+        "Hero:hid_constructor_007hw_sr_t01",
+        "Hero:hid_constructor_007hw_sr_t02",
+        "Hero:hid_constructor_007hw_sr_t03",
+        "Hero:hid_constructor_007hw_sr_t04",
+        "Hero:hid_constructor_007hw_sr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Constructor.007HW.VR.T01": {
+      "items": [
+        "Hero:hid_constructor_007hw_vr_t01",
+        "Hero:hid_constructor_007hw_vr_t02",
+        "Hero:hid_constructor_007hw_vr_t03",
+        "Hero:hid_constructor_007hw_vr_t04",
+        "Hero:hid_constructor_007hw_vr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Constructor.011.R.T01": {
+      "items": [
+        "Hero:hid_constructor_011_r_t01",
+        "Hero:hid_constructor_011_r_t02",
+        "Hero:hid_constructor_011_r_t03",
+        "Hero:hid_constructor_011_r_t04"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Constructor.011.SR.T01": {
+      "items": [
+        "Hero:hid_constructor_011_sr_t01",
+        "Hero:hid_constructor_011_sr_t02",
+        "Hero:hid_constructor_011_sr_t03",
+        "Hero:hid_constructor_011_sr_t04",
+        "Hero:hid_constructor_011_sr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Constructor.011.VR.T01": {
+      "items": [
+        "Hero:hid_constructor_011_vr_t01",
+        "Hero:hid_constructor_011_vr_t02",
+        "Hero:hid_constructor_011_vr_t03",
+        "Hero:hid_constructor_011_vr_t04",
+        "Hero:hid_constructor_011_vr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Constructor.BaseHyperHW.SR.T01": {
+      "items": [
+        "Hero:hid_constructor_basehyperhw_sr_t01",
+        "Hero:hid_constructor_basehyperhw_sr_t02",
+        "Hero:hid_constructor_basehyperhw_sr_t03",
+        "Hero:hid_constructor_basehyperhw_sr_t04",
+        "Hero:hid_constructor_basehyperhw_sr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Constructor.BaseHyperHW.VR.T01": {
+      "items": [
+        "Hero:hid_constructor_basehyperhw_vr_t01",
+        "Hero:hid_constructor_basehyperhw_vr_t02",
+        "Hero:hid_constructor_basehyperhw_vr_t03",
+        "Hero:hid_constructor_basehyperhw_vr_t04",
+        "Hero:hid_constructor_basehyperhw_vr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Constructor.RushBASE.F.SR.T01": {
+      "items": [
+        "Hero:hid_constructor_rushbase_f_sr_t01",
+        "Hero:hid_constructor_rushbase_f_sr_t02",
+        "Hero:hid_constructor_rushbase_f_sr_t03",
+        "Hero:hid_constructor_rushbase_f_sr_t04",
+        "Hero:hid_constructor_rushbase_f_sr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Constructor.RushBASE.F.VR.T01": {
+      "items": [
+        "Hero:hid_constructor_rushbase_f_vr_t01",
+        "Hero:hid_constructor_rushbase_f_vr_t02",
+        "Hero:hid_constructor_rushbase_f_vr_t03",
+        "Hero:hid_constructor_rushbase_f_vr_t04",
+        "Hero:hid_constructor_rushbase_f_vr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Ninja.010.F.SR.T01": {
+      "items": [
+        "Hero:hid_ninja_010_f_sr_t01",
+        "Hero:hid_ninja_010_f_sr_t02",
+        "Hero:hid_ninja_010_f_sr_t03",
+        "Hero:hid_ninja_010_f_sr_t04",
+        "Hero:hid_ninja_010_f_sr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Ninja.010.F.VR.T01": {
+      "items": [
+        "Hero:hid_ninja_010_f_vr_t01",
+        "Hero:hid_ninja_010_f_vr_t02",
+        "Hero:hid_ninja_010_f_vr_t03",
+        "Hero:hid_ninja_010_f_vr_t04",
+        "Hero:hid_ninja_010_f_vr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Ninja.011.R.T01": {
+      "items": [
+        "Hero:hid_ninja_011_r_t01",
+        "Hero:hid_ninja_011_r_t02",
+        "Hero:hid_ninja_011_r_t03",
+        "Hero:hid_ninja_011_r_t04"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Ninja.011.SR.T01": {
+      "items": [
+        "Hero:hid_ninja_011_sr_t01",
+        "Hero:hid_ninja_011_sr_t02",
+        "Hero:hid_ninja_011_sr_t03",
+        "Hero:hid_ninja_011_sr_t04",
+        "Hero:hid_ninja_011_sr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Ninja.011.VR.T01": {
+      "items": [
+        "Hero:hid_ninja_011_vr_t01",
+        "Hero:hid_ninja_011_vr_t02",
+        "Hero:hid_ninja_011_vr_t03",
+        "Hero:hid_ninja_011_vr_t04",
+        "Hero:hid_ninja_011_vr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Ninja.SlashBreathHW.SR.T01": {
+      "items": [
+        "Hero:hid_ninja_slashbreathhw_sr_t01",
+        "Hero:hid_ninja_slashbreathhw_sr_t02",
+        "Hero:hid_ninja_slashbreathhw_sr_t03",
+        "Hero:hid_ninja_slashbreathhw_sr_t04",
+        "Hero:hid_ninja_slashbreathhw_sr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Ninja.SlashBreathHW.VR.T01": {
+      "items": [
+        "Hero:hid_ninja_slashbreathhw_vr_t01",
+        "Hero:hid_ninja_slashbreathhw_vr_t02",
+        "Hero:hid_ninja_slashbreathhw_vr_t03",
+        "Hero:hid_ninja_slashbreathhw_vr_t04",
+        "Hero:hid_ninja_slashbreathhw_vr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Ninja.StarsRainHW.SR.T01": {
+      "items": [
+        "Hero:hid_ninja_starsrainhw_sr_t01",
+        "Hero:hid_ninja_starsrainhw_sr_t02",
+        "Hero:hid_ninja_starsrainhw_sr_t03",
+        "Hero:hid_ninja_starsrainhw_sr_t04",
+        "Hero:hid_ninja_starsrainhw_sr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Ninja.StarsRainHW.VR.T01": {
+      "items": [
+        "Hero:hid_ninja_starsrainhw_vr_t01",
+        "Hero:hid_ninja_starsrainhw_vr_t02",
+        "Hero:hid_ninja_starsrainhw_vr_t03",
+        "Hero:hid_ninja_starsrainhw_vr_t04",
+        "Hero:hid_ninja_starsrainhw_vr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Outlander.010.M.SR.T01": {
+      "items": [
+        "Hero:hid_outlander_010_m_sr_t01",
+        "Hero:hid_outlander_010_m_sr_t02",
+        "Hero:hid_outlander_010_m_sr_t03",
+        "Hero:hid_outlander_010_m_sr_t04",
+        "Hero:hid_outlander_010_m_sr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Outlander.010.M.VR.T01": {
+      "items": [
+        "Hero:hid_outlander_010_m_vr_t01",
+        "Hero:hid_outlander_010_m_vr_t02",
+        "Hero:hid_outlander_010_m_vr_t03",
+        "Hero:hid_outlander_010_m_vr_t04",
+        "Hero:hid_outlander_010_m_vr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Outlander.011.SR.T01": {
+      "items": [
+        "Hero:hid_outlander_011_sr_t01",
+        "Hero:hid_outlander_011_sr_t02",
+        "Hero:hid_outlander_011_sr_t03",
+        "Hero:hid_outlander_011_sr_t04",
+        "Hero:hid_outlander_011_sr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Outlander.011.VR.T01": {
+      "items": [
+        "Hero:hid_outlander_011_vr_t01",
+        "Hero:hid_outlander_011_vr_t02",
+        "Hero:hid_outlander_011_vr_t03",
+        "Hero:hid_outlander_011_vr_t04",
+        "Hero:hid_outlander_011_vr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Outlander.ZoneHarvestHW.SR.T01": {
+      "items": [
+        "Hero:hid_outlander_zoneharvesthw_sr_t01",
+        "Hero:hid_outlander_zoneharvesthw_sr_t02",
+        "Hero:hid_outlander_zoneharvesthw_sr_t03",
+        "Hero:hid_outlander_zoneharvesthw_sr_t04",
+        "Hero:hid_outlander_zoneharvesthw_sr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "HID.Outlander.ZonePistolHW.VR.T01": {
+      "items": [
+        "Hero:hid_outlander_zonepistolhw_vr_t01",
+        "Hero:hid_outlander_zonepistolhw_vr_t02",
+        "Hero:hid_outlander_zonepistolhw_vr_t03",
+        "Hero:hid_outlander_zonepistolhw_vr_t04",
+        "Hero:hid_outlander_zonepistolhw_vr_t05"
+      ],
+      "personalities": [],
+      "weight": "Hero"
+    },
+    "SID.Assault.Auto.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_assault_auto_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Assault.Burst.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_assault_burst_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Assault.Hydraulic.Drum.SR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_assault_hydraulic_drum_sr_crystal_t04",
+        "Schematic:sid_assault_hydraulic_drum_sr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Assault.Hydraulic.Drum.SR.Ore.T01": {
+      "items": [
+        "Schematic:sid_assault_hydraulic_drum_sr_ore_t01",
+        "Schematic:sid_assault_hydraulic_drum_sr_ore_t02",
+        "Schematic:sid_assault_hydraulic_drum_sr_ore_t03",
+        "Schematic:sid_assault_hydraulic_drum_sr_ore_t04",
+        "Schematic:sid_assault_hydraulic_drum_sr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Assault.Hydraulic.Drum.VR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_assault_hydraulic_drum_vr_crystal_t04",
+        "Schematic:sid_assault_hydraulic_drum_vr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Assault.Hydraulic.Drum.VR.Ore.T01": {
+      "items": [
+        "Schematic:sid_assault_hydraulic_drum_vr_ore_t01",
+        "Schematic:sid_assault_hydraulic_drum_vr_ore_t02",
+        "Schematic:sid_assault_hydraulic_drum_vr_ore_t03",
+        "Schematic:sid_assault_hydraulic_drum_vr_ore_t04",
+        "Schematic:sid_assault_hydraulic_drum_vr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Assault.LMG.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_assault_lmg_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Assault.Scavenger.SR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_assault_scavenger_sr_crystal_t04",
+        "Schematic:sid_assault_scavenger_sr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Assault.Scavenger.SR.Ore.T01": {
+      "items": [
+        "Schematic:sid_assault_scavenger_sr_ore_t01",
+        "Schematic:sid_assault_scavenger_sr_ore_t02",
+        "Schematic:sid_assault_scavenger_sr_ore_t03",
+        "Schematic:sid_assault_scavenger_sr_ore_t04",
+        "Schematic:sid_assault_scavenger_sr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Assault.Scavenger.VR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_assault_scavenger_vr_crystal_t04",
+        "Schematic:sid_assault_scavenger_vr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Assault.Scavenger.VR.Ore.T01": {
+      "items": [
+        "Schematic:sid_assault_scavenger_vr_ore_t01",
+        "Schematic:sid_assault_scavenger_vr_ore_t02",
+        "Schematic:sid_assault_scavenger_vr_ore_t03",
+        "Schematic:sid_assault_scavenger_vr_ore_t04",
+        "Schematic:sid_assault_scavenger_vr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Assault.SemiAuto.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_assault_semiauto_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Assault.SingleShot.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_assault_singleshot_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Assault.SingleShot.VR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_assault_singleshot_vr_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Blunt.Hammer.Hydraulic.SR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_blunt_hammer_hydraulic_sr_crystal_t04",
+        "Schematic:sid_blunt_hammer_hydraulic_sr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Blunt.Hammer.Hydraulic.SR.Ore.T01": {
+      "items": [
+        "Schematic:sid_blunt_hammer_hydraulic_sr_ore_t01",
+        "Schematic:sid_blunt_hammer_hydraulic_sr_ore_t02",
+        "Schematic:sid_blunt_hammer_hydraulic_sr_ore_t03",
+        "Schematic:sid_blunt_hammer_hydraulic_sr_ore_t04",
+        "Schematic:sid_blunt_hammer_hydraulic_sr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Blunt.Hammer.Hydraulic.VR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_blunt_hammer_hydraulic_vr_crystal_t04",
+        "Schematic:sid_blunt_hammer_hydraulic_vr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Blunt.Hammer.Hydraulic.VR.Ore.T01": {
+      "items": [
+        "Schematic:sid_blunt_hammer_hydraulic_vr_ore_t01",
+        "Schematic:sid_blunt_hammer_hydraulic_vr_ore_t02",
+        "Schematic:sid_blunt_hammer_hydraulic_vr_ore_t03",
+        "Schematic:sid_blunt_hammer_hydraulic_vr_ore_t04",
+        "Schematic:sid_blunt_hammer_hydraulic_vr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Blunt.Scavenger.SR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_blunt_scavenger_sr_crystal_t04",
+        "Schematic:sid_blunt_scavenger_sr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Blunt.Scavenger.SR.Ore.T01": {
+      "items": [
+        "Schematic:sid_blunt_scavenger_sr_ore_t01",
+        "Schematic:sid_blunt_scavenger_sr_ore_t02",
+        "Schematic:sid_blunt_scavenger_sr_ore_t03",
+        "Schematic:sid_blunt_scavenger_sr_ore_t04",
+        "Schematic:sid_blunt_scavenger_sr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Blunt.Scavenger.VR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_blunt_scavenger_vr_crystal_t04",
+        "Schematic:sid_blunt_scavenger_vr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Blunt.Scavenger.VR.Ore.T01": {
+      "items": [
+        "Schematic:sid_blunt_scavenger_vr_ore_t01",
+        "Schematic:sid_blunt_scavenger_vr_ore_t02",
+        "Schematic:sid_blunt_scavenger_vr_ore_t03",
+        "Schematic:sid_blunt_scavenger_vr_ore_t04",
+        "Schematic:sid_blunt_scavenger_vr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Ceiling.Falling.R.T01": {
+      "items": [
+        "Schematic:sid_ceiling_falling_r_t01",
+        "Schematic:sid_ceiling_falling_r_t02",
+        "Schematic:sid_ceiling_falling_r_t03",
+        "Schematic:sid_ceiling_falling_r_t04"
+      ],
+      "personalities": [],
+      "weight": "Trap"
+    },
+    "SID.Ceiling.Falling.SR.T01": {
+      "items": [
+        "Schematic:sid_ceiling_falling_sr_t01",
+        "Schematic:sid_ceiling_falling_sr_t02",
+        "Schematic:sid_ceiling_falling_sr_t03",
+        "Schematic:sid_ceiling_falling_sr_t04",
+        "Schematic:sid_ceiling_falling_sr_t05"
+      ],
+      "personalities": [],
+      "weight": "Trap"
+    },
+    "SID.Ceiling.Falling.VR.T01": {
+      "items": [
+        "Schematic:sid_ceiling_falling_vr_t01",
+        "Schematic:sid_ceiling_falling_vr_t02",
+        "Schematic:sid_ceiling_falling_vr_t03",
+        "Schematic:sid_ceiling_falling_vr_t04",
+        "Schematic:sid_ceiling_falling_vr_t05"
+      ],
+      "personalities": [],
+      "weight": "Trap"
+    },
+    "SID.Edged.Axe.Heavy.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_edged_axe_heavy_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Edged.Axe.Light.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_edged_axe_light_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Edged.Axe.Medium.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_edged_axe_medium_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Edged.Axe.Scavenger.SR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_edged_axe_scavenger_sr_crystal_t04",
+        "Schematic:sid_edged_axe_scavenger_sr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Edged.Axe.Scavenger.SR.Ore.T01": {
+      "items": [
+        "Schematic:sid_edged_axe_scavenger_sr_ore_t01",
+        "Schematic:sid_edged_axe_scavenger_sr_ore_t02",
+        "Schematic:sid_edged_axe_scavenger_sr_ore_t03",
+        "Schematic:sid_edged_axe_scavenger_sr_ore_t04",
+        "Schematic:sid_edged_axe_scavenger_sr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Edged.Axe.Scavenger.VR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_edged_axe_scavenger_vr_crystal_t04",
+        "Schematic:sid_edged_axe_scavenger_vr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Edged.Axe.Scavenger.VR.Ore.T01": {
+      "items": [
+        "Schematic:sid_edged_axe_scavenger_vr_ore_t01",
+        "Schematic:sid_edged_axe_scavenger_vr_ore_t02",
+        "Schematic:sid_edged_axe_scavenger_vr_ore_t03",
+        "Schematic:sid_edged_axe_scavenger_vr_ore_t04",
+        "Schematic:sid_edged_axe_scavenger_vr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Edged.Scythe.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_edged_scythe_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Edged.Sword.Heavy.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_edged_sword_heavy_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Edged.Sword.Hydraulic.SR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_edged_sword_hydraulic_sr_crystal_t04",
+        "Schematic:sid_edged_sword_hydraulic_sr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Edged.Sword.Hydraulic.SR.Ore.T01": {
+      "items": [
+        "Schematic:sid_edged_sword_hydraulic_sr_ore_t01",
+        "Schematic:sid_edged_sword_hydraulic_sr_ore_t02",
+        "Schematic:sid_edged_sword_hydraulic_sr_ore_t03",
+        "Schematic:sid_edged_sword_hydraulic_sr_ore_t04",
+        "Schematic:sid_edged_sword_hydraulic_sr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Edged.Sword.Hydraulic.VR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_edged_sword_hydraulic_vr_crystal_t04",
+        "Schematic:sid_edged_sword_hydraulic_vr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Edged.Sword.Hydraulic.VR.Ore.T01": {
+      "items": [
+        "Schematic:sid_edged_sword_hydraulic_vr_ore_t01",
+        "Schematic:sid_edged_sword_hydraulic_vr_ore_t02",
+        "Schematic:sid_edged_sword_hydraulic_vr_ore_t03",
+        "Schematic:sid_edged_sword_hydraulic_vr_ore_t04",
+        "Schematic:sid_edged_sword_hydraulic_vr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Edged.Sword.Light.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_edged_sword_light_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Edged.Sword.Medium.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_edged_sword_medium_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Floor.Freeze.R.T01": {
+      "items": [
+        "Schematic:sid_floor_freeze_r_t01",
+        "Schematic:sid_floor_freeze_r_t02",
+        "Schematic:sid_floor_freeze_r_t03",
+        "Schematic:sid_floor_freeze_r_t04"
+      ],
+      "personalities": [],
+      "weight": "Trap"
+    },
+    "SID.Floor.Freeze.SR.T01": {
+      "items": [
+        "Schematic:sid_floor_freeze_sr_t01",
+        "Schematic:sid_floor_freeze_sr_t02",
+        "Schematic:sid_floor_freeze_sr_t03",
+        "Schematic:sid_floor_freeze_sr_t04",
+        "Schematic:sid_floor_freeze_sr_t05"
+      ],
+      "personalities": [],
+      "weight": "Trap"
+    },
+    "SID.Floor.Freeze.VR.T01": {
+      "items": [
+        "Schematic:sid_floor_freeze_vr_t01",
+        "Schematic:sid_floor_freeze_vr_t02",
+        "Schematic:sid_floor_freeze_vr_t03",
+        "Schematic:sid_floor_freeze_vr_t04",
+        "Schematic:sid_floor_freeze_vr_t05"
+      ],
+      "personalities": [],
+      "weight": "Trap"
+    },
+    "SID.Launcher.Hydraulic.SR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_launcher_hydraulic_sr_crystal_t04",
+        "Schematic:sid_launcher_hydraulic_sr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Launcher.Hydraulic.SR.Ore.T01": {
+      "items": [
+        "Schematic:sid_launcher_hydraulic_sr_ore_t01",
+        "Schematic:sid_launcher_hydraulic_sr_ore_t02",
+        "Schematic:sid_launcher_hydraulic_sr_ore_t03",
+        "Schematic:sid_launcher_hydraulic_sr_ore_t04",
+        "Schematic:sid_launcher_hydraulic_sr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Launcher.Hydraulic.VR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_launcher_hydraulic_vr_crystal_t04",
+        "Schematic:sid_launcher_hydraulic_vr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Launcher.Hydraulic.VR.Ore.T01": {
+      "items": [
+        "Schematic:sid_launcher_hydraulic_vr_ore_t01",
+        "Schematic:sid_launcher_hydraulic_vr_ore_t02",
+        "Schematic:sid_launcher_hydraulic_vr_ore_t03",
+        "Schematic:sid_launcher_hydraulic_vr_ore_t04",
+        "Schematic:sid_launcher_hydraulic_vr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Piercing.Spear.Hydraulic.SR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_piercing_spear_hydraulic_sr_crystal_t04",
+        "Schematic:sid_piercing_spear_hydraulic_sr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Piercing.Spear.Hydraulic.SR.Ore.T01": {
+      "items": [
+        "Schematic:sid_piercing_spear_hydraulic_sr_ore_t01",
+        "Schematic:sid_piercing_spear_hydraulic_sr_ore_t02",
+        "Schematic:sid_piercing_spear_hydraulic_sr_ore_t03",
+        "Schematic:sid_piercing_spear_hydraulic_sr_ore_t04",
+        "Schematic:sid_piercing_spear_hydraulic_sr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Piercing.Spear.Hydraulic.VR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_piercing_spear_hydraulic_vr_crystal_t04",
+        "Schematic:sid_piercing_spear_hydraulic_vr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Piercing.Spear.Hydraulic.VR.Ore.T01": {
+      "items": [
+        "Schematic:sid_piercing_spear_hydraulic_vr_ore_t01",
+        "Schematic:sid_piercing_spear_hydraulic_vr_ore_t02",
+        "Schematic:sid_piercing_spear_hydraulic_vr_ore_t03",
+        "Schematic:sid_piercing_spear_hydraulic_vr_ore_t04",
+        "Schematic:sid_piercing_spear_hydraulic_vr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Piercing.Spear.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_piercing_spear_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Piercing.Spear.Scavenger.SR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_piercing_spear_scavenger_sr_crystal_t04",
+        "Schematic:sid_piercing_spear_scavenger_sr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Piercing.Spear.Scavenger.SR.Ore.T01": {
+      "items": [
+        "Schematic:sid_piercing_spear_scavenger_sr_ore_t01",
+        "Schematic:sid_piercing_spear_scavenger_sr_ore_t02",
+        "Schematic:sid_piercing_spear_scavenger_sr_ore_t03",
+        "Schematic:sid_piercing_spear_scavenger_sr_ore_t04",
+        "Schematic:sid_piercing_spear_scavenger_sr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Piercing.Spear.Scavenger.VR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_piercing_spear_scavenger_vr_crystal_t04",
+        "Schematic:sid_piercing_spear_scavenger_vr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Piercing.Spear.Scavenger.VR.Ore.T01": {
+      "items": [
+        "Schematic:sid_piercing_spear_scavenger_vr_ore_t01",
+        "Schematic:sid_piercing_spear_scavenger_vr_ore_t02",
+        "Schematic:sid_piercing_spear_scavenger_vr_ore_t03",
+        "Schematic:sid_piercing_spear_scavenger_vr_ore_t04",
+        "Schematic:sid_piercing_spear_scavenger_vr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Melee"
+    },
+    "SID.Pistol.Auto.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_pistol_auto_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Pistol.BoltRevolver.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_pistol_boltrevolver_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Pistol.FireCracker.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_pistol_firecracker_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Pistol.Handcannon.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_pistol_handcannon_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Pistol.Hydraulic.SR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_pistol_hydraulic_sr_crystal_t04",
+        "Schematic:sid_pistol_hydraulic_sr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Pistol.Hydraulic.SR.Ore.T01": {
+      "items": [
+        "Schematic:sid_pistol_hydraulic_sr_ore_t01",
+        "Schematic:sid_pistol_hydraulic_sr_ore_t02",
+        "Schematic:sid_pistol_hydraulic_sr_ore_t03",
+        "Schematic:sid_pistol_hydraulic_sr_ore_t04",
+        "Schematic:sid_pistol_hydraulic_sr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Pistol.Hydraulic.VR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_pistol_hydraulic_vr_crystal_t04",
+        "Schematic:sid_pistol_hydraulic_vr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Pistol.Hydraulic.VR.Ore.T01": {
+      "items": [
+        "Schematic:sid_pistol_hydraulic_vr_ore_t01",
+        "Schematic:sid_pistol_hydraulic_vr_ore_t02",
+        "Schematic:sid_pistol_hydraulic_vr_ore_t03",
+        "Schematic:sid_pistol_hydraulic_vr_ore_t04",
+        "Schematic:sid_pistol_hydraulic_vr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Pistol.Rapid.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_pistol_rapid_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Pistol.Scavenger.SR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_pistol_scavenger_sr_crystal_t04",
+        "Schematic:sid_pistol_scavenger_sr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Pistol.Scavenger.SR.Ore.T01": {
+      "items": [
+        "Schematic:sid_pistol_scavenger_sr_ore_t01",
+        "Schematic:sid_pistol_scavenger_sr_ore_t02",
+        "Schematic:sid_pistol_scavenger_sr_ore_t03",
+        "Schematic:sid_pistol_scavenger_sr_ore_t04",
+        "Schematic:sid_pistol_scavenger_sr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Pistol.Scavenger.VR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_pistol_scavenger_vr_crystal_t04",
+        "Schematic:sid_pistol_scavenger_vr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Pistol.Scavenger.VR.Ore.T01": {
+      "items": [
+        "Schematic:sid_pistol_scavenger_vr_ore_t01",
+        "Schematic:sid_pistol_scavenger_vr_ore_t02",
+        "Schematic:sid_pistol_scavenger_vr_ore_t03",
+        "Schematic:sid_pistol_scavenger_vr_ore_t04",
+        "Schematic:sid_pistol_scavenger_vr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Pistol.SemiAuto.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_pistol_semiauto_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Pistol.SixShooter.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_pistol_sixshooter_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Shotgun.Auto.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_shotgun_auto_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Shotgun.Break.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_shotgun_break_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Shotgun.Break.Scavenger.SR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_shotgun_break_scavenger_sr_crystal_t04",
+        "Schematic:sid_shotgun_break_scavenger_sr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Shotgun.Break.Scavenger.SR.Ore.T01": {
+      "items": [
+        "Schematic:sid_shotgun_break_scavenger_sr_ore_t01",
+        "Schematic:sid_shotgun_break_scavenger_sr_ore_t02",
+        "Schematic:sid_shotgun_break_scavenger_sr_ore_t03",
+        "Schematic:sid_shotgun_break_scavenger_sr_ore_t04",
+        "Schematic:sid_shotgun_break_scavenger_sr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Shotgun.Break.Scavenger.VR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_shotgun_break_scavenger_vr_crystal_t04",
+        "Schematic:sid_shotgun_break_scavenger_vr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Shotgun.Break.Scavenger.VR.Ore.T01": {
+      "items": [
+        "Schematic:sid_shotgun_break_scavenger_vr_ore_t01",
+        "Schematic:sid_shotgun_break_scavenger_vr_ore_t02",
+        "Schematic:sid_shotgun_break_scavenger_vr_ore_t03",
+        "Schematic:sid_shotgun_break_scavenger_vr_ore_t04",
+        "Schematic:sid_shotgun_break_scavenger_vr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Shotgun.Hydraulic.SR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_shotgun_hydraulic_sr_crystal_t04",
+        "Schematic:sid_shotgun_hydraulic_sr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Shotgun.Hydraulic.SR.Ore.T01": {
+      "items": [
+        "Schematic:sid_shotgun_hydraulic_sr_ore_t01",
+        "Schematic:sid_shotgun_hydraulic_sr_ore_t02",
+        "Schematic:sid_shotgun_hydraulic_sr_ore_t03",
+        "Schematic:sid_shotgun_hydraulic_sr_ore_t04",
+        "Schematic:sid_shotgun_hydraulic_sr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Shotgun.Hydraulic.VR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_shotgun_hydraulic_vr_crystal_t04",
+        "Schematic:sid_shotgun_hydraulic_vr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Shotgun.Hydraulic.VR.Ore.T01": {
+      "items": [
+        "Schematic:sid_shotgun_hydraulic_vr_ore_t01",
+        "Schematic:sid_shotgun_hydraulic_vr_ore_t02",
+        "Schematic:sid_shotgun_hydraulic_vr_ore_t03",
+        "Schematic:sid_shotgun_hydraulic_vr_ore_t04",
+        "Schematic:sid_shotgun_hydraulic_vr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Shotgun.SemiAuto.Scavenger.SR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_shotgun_semiauto_scavenger_sr_crystal_t04",
+        "Schematic:sid_shotgun_semiauto_scavenger_sr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Shotgun.SemiAuto.Scavenger.SR.Ore.T01": {
+      "items": [
+        "Schematic:sid_shotgun_semiauto_scavenger_sr_ore_t01",
+        "Schematic:sid_shotgun_semiauto_scavenger_sr_ore_t02",
+        "Schematic:sid_shotgun_semiauto_scavenger_sr_ore_t03",
+        "Schematic:sid_shotgun_semiauto_scavenger_sr_ore_t04",
+        "Schematic:sid_shotgun_semiauto_scavenger_sr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Shotgun.SemiAuto.Scavenger.VR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_shotgun_semiauto_scavenger_vr_crystal_t04",
+        "Schematic:sid_shotgun_semiauto_scavenger_vr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Shotgun.SemiAuto.Scavenger.VR.Ore.T01": {
+      "items": [
+        "Schematic:sid_shotgun_semiauto_scavenger_vr_ore_t01",
+        "Schematic:sid_shotgun_semiauto_scavenger_vr_ore_t02",
+        "Schematic:sid_shotgun_semiauto_scavenger_vr_ore_t03",
+        "Schematic:sid_shotgun_semiauto_scavenger_vr_ore_t04",
+        "Schematic:sid_shotgun_semiauto_scavenger_vr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Shotgun.Standard.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_shotgun_standard_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Sniper.AMR.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_sniper_amr_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Sniper.Auto.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_sniper_auto_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Sniper.BoltAction.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_sniper_boltaction_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Sniper.BoltAction.Scope.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_sniper_boltaction_scope_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Sniper.Hydraulic.SR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_sniper_hydraulic_sr_crystal_t04",
+        "Schematic:sid_sniper_hydraulic_sr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Sniper.Hydraulic.SR.Ore.T01": {
+      "items": [
+        "Schematic:sid_sniper_hydraulic_sr_ore_t01",
+        "Schematic:sid_sniper_hydraulic_sr_ore_t02",
+        "Schematic:sid_sniper_hydraulic_sr_ore_t03",
+        "Schematic:sid_sniper_hydraulic_sr_ore_t04",
+        "Schematic:sid_sniper_hydraulic_sr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Sniper.Hydraulic.VR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_sniper_hydraulic_vr_crystal_t04",
+        "Schematic:sid_sniper_hydraulic_vr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Sniper.Hydraulic.VR.Ore.T01": {
+      "items": [
+        "Schematic:sid_sniper_hydraulic_vr_ore_t01",
+        "Schematic:sid_sniper_hydraulic_vr_ore_t02",
+        "Schematic:sid_sniper_hydraulic_vr_ore_t03",
+        "Schematic:sid_sniper_hydraulic_vr_ore_t04",
+        "Schematic:sid_sniper_hydraulic_vr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Sniper.Scavenger.SR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_sniper_scavenger_sr_crystal_t04",
+        "Schematic:sid_sniper_scavenger_sr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Sniper.Scavenger.SR.Ore.T01": {
+      "items": [
+        "Schematic:sid_sniper_scavenger_sr_ore_t01",
+        "Schematic:sid_sniper_scavenger_sr_ore_t02",
+        "Schematic:sid_sniper_scavenger_sr_ore_t03",
+        "Schematic:sid_sniper_scavenger_sr_ore_t04",
+        "Schematic:sid_sniper_scavenger_sr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Sniper.Scavenger.VR.Crystal.T04": {
+      "items": [
+        "Schematic:sid_sniper_scavenger_vr_crystal_t04",
+        "Schematic:sid_sniper_scavenger_vr_crystal_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Sniper.Scavenger.VR.Ore.T01": {
+      "items": [
+        "Schematic:sid_sniper_scavenger_vr_ore_t01",
+        "Schematic:sid_sniper_scavenger_vr_ore_t02",
+        "Schematic:sid_sniper_scavenger_vr_ore_t03",
+        "Schematic:sid_sniper_scavenger_vr_ore_t04",
+        "Schematic:sid_sniper_scavenger_vr_ore_t05"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "SID.Sniper.Standard.R.Crystal.T04": {
+      "items": [
+        "Schematic:sid_sniper_standard_r_crystal_t04"
+      ],
+      "personalities": [],
+      "weight": "Ranged"
+    },
+    "TestSlot_Test": {
+      "items": [
+        "AccountResource:schematicxp"
+      ]
+    },
+    "Worker.Halloween.Husk.C.T01": {
+      "items": [
+        "Worker:worker_halloween_husk_c_t01",
+        "Worker:worker_halloween_husk_c_t02"
+      ],
+      "personalities": [],
+      "weight": "Survivor"
+    },
+    "Worker.Halloween.Husk.UC.T01": {
+      "items": [
+        "Worker:worker_halloween_husk_uc_t01",
+        "Worker:worker_halloween_husk_uc_t02",
+        "Worker:worker_halloween_husk_uc_t03"
+      ],
+      "personalities": [],
+      "weight": "Survivor"
+    },
+    "Worker.Halloween.Husky.C.T01": {
+      "items": [
+        "Worker:worker_halloween_husky_c_t01",
+        "Worker:worker_halloween_husky_c_t02"
+      ],
+      "personalities": [],
+      "weight": "Survivor"
+    },
+    "Worker.Halloween.Husky.R.T01": {
+      "items": [
+        "Worker:worker_halloween_husky_r_t01",
+        "Worker:worker_halloween_husky_r_t02",
+        "Worker:worker_halloween_husky_r_t03",
+        "Worker:worker_halloween_husky_r_t04"
+      ],
+      "personalities": [],
+      "weight": "Survivor"
+    },
+    "Worker.Halloween.Husky.UC.T01": {
+      "items": [
+        "Worker:worker_halloween_husky_uc_t01",
+        "Worker:worker_halloween_husky_uc_t02",
+        "Worker:worker_halloween_husky_uc_t03"
+      ],
+      "personalities": [],
+      "weight": "Survivor"
+    },
+    "Worker.Halloween.Husky.VR.T01": {
+      "items": [
+        "Worker:worker_halloween_husky_vr_t01",
+        "Worker:worker_halloween_husky_vr_t02",
+        "Worker:worker_halloween_husky_vr_t03",
+        "Worker:worker_halloween_husky_vr_t04",
+        "Worker:worker_halloween_husky_vr_t05"
+      ],
+      "personalities": [],
+      "weight": "Survivor"
+    },
+    "Worker.Halloween.Lobber.R.T01": {
+      "items": [
+        "Worker:worker_halloween_lobber_r_t01",
+        "Worker:worker_halloween_lobber_r_t02",
+        "Worker:worker_halloween_lobber_r_t03",
+        "Worker:worker_halloween_lobber_r_t04"
+      ],
+      "personalities": [],
+      "weight": "Survivor"
+    },
+    "Worker.Halloween.Lobber.SR.T01": {
+      "items": [
+        "Worker:worker_halloween_lobber_sr_t01",
+        "Worker:worker_halloween_lobber_sr_t02",
+        "Worker:worker_halloween_lobber_sr_t03",
+        "Worker:worker_halloween_lobber_sr_t04",
+        "Worker:worker_halloween_lobber_sr_t05"
+      ],
+      "personalities": [],
+      "weight": "Survivor"
+    },
+    "Worker.Halloween.Lobber.VR.T01": {
+      "items": [
+        "Worker:worker_halloween_lobber_vr_t01",
+        "Worker:worker_halloween_lobber_vr_t02",
+        "Worker:worker_halloween_lobber_vr_t03",
+        "Worker:worker_halloween_lobber_vr_t04",
+        "Worker:worker_halloween_lobber_vr_t05"
+      ],
+      "personalities": [],
+      "weight": "Survivor"
+    },
+    "Worker.Halloween.Pitcher.C.T01": {
+      "items": [
+        "Worker:worker_halloween_pitcher_c_t01",
+        "Worker:worker_halloween_pitcher_c_t02"
+      ],
+      "personalities": [],
+      "weight": "Survivor"
+    },
+    "Worker.Halloween.Pitcher.R.T01": {
+      "items": [
+        "Worker:worker_halloween_pitcher_r_t01",
+        "Worker:worker_halloween_pitcher_r_t02",
+        "Worker:worker_halloween_pitcher_r_t03",
+        "Worker:worker_halloween_pitcher_r_t04"
+      ],
+      "personalities": [],
+      "weight": "Survivor"
+    },
+    "Worker.Halloween.Pitcher.UC.T01": {
+      "items": [
+        "Worker:worker_halloween_pitcher_uc_t01",
+        "Worker:worker_halloween_pitcher_uc_t02",
+        "Worker:worker_halloween_pitcher_uc_t03"
+      ],
+      "personalities": [],
+      "weight": "Survivor"
+    },
+    "Worker.Halloween.Smasher.SR.T01": {
+      "items": [
+        "Worker:worker_halloween_smasher_sr_t01",
+        "Worker:worker_halloween_smasher_sr_t02",
+        "Worker:worker_halloween_smasher_sr_t03",
+        "Worker:worker_halloween_smasher_sr_t04",
+        "Worker:worker_halloween_smasher_sr_t05"
+      ],
+      "personalities": [],
+      "weight": "Survivor"
+    },
+    "Worker.Halloween.Troll.SR.T01": {
+      "items": [
+        "Worker:worker_halloween_troll_sr_t01",
+        "Worker:worker_halloween_troll_sr_t02",
+        "Worker:worker_halloween_troll_sr_t03",
+        "Worker:worker_halloween_troll_sr_t04",
+        "Worker:worker_halloween_troll_sr_t05"
+      ],
+      "personalities": [],
+      "weight": "Survivor"
+    },
+    "Worker.Halloween.Troll.VR.T01": {
+      "items": [
+        "Worker:worker_halloween_troll_vr_t01",
+        "Worker:worker_halloween_troll_vr_t02",
+        "Worker:worker_halloween_troll_vr_t03",
+        "Worker:worker_halloween_troll_vr_t04",
+        "Worker:worker_halloween_troll_vr_t05"
+      ],
+      "personalities": [],
+      "weight": "Survivor"
+    }
+  }
+}

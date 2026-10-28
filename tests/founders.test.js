@@ -32,7 +32,7 @@ test("the Standard Edition's founders quest gives the founders banners and a wee
     [["HasCompletedQuest", "Quest:homebaseonboardingafteroutpost"]]);
   assert.deepEqual(quest.rewards, [{ quantity: 1, templateId: "CardPack:cardpack_founders_banners_t01" }, { quantity: 7, templateId: foundersToken }]);
   // DailyFoundersRewards: an Upgrade Llama a day, the Founder's Llama every seventh (rows 6, 13, …).
-  const [schedule] = tokenSchedules;
+  const [schedule] = tokenSchedules();
   assert.equal(schedule.rewards.length, 126);
   schedule.rewards.forEach((reward, row) => assert.equal(reward.templateId,
     row % 7 === 6 ? "CardPack:cardpack_event_founders" : "CardPack:cardpack_bronze", `row ${row}`));
