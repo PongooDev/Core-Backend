@@ -80,12 +80,19 @@ const notShopGliders = ["AthenaGlider:umbrella_bronze", "AthenaGlider:umbrella_s
 const isLockerItem = (templateId) => !notLockerItems.some((id) => id.toLowerCase() === String(templateId).toLowerCase());
 const heldNonLockerItems = (profile) => Object.entries(profile.items)
   .filter(([, item]) => !isLockerItem(item.templateId)).map(([itemId]) => itemId);
-const lockerCosmetics = () => Object.keys(athenaCosmetics()).filter(isLockerItem);
+// The build's locker cosmetics, as its game data spells them.
+export const lockerCosmetics = () => Object.keys(athenaCosmetics()).filter(isLockerItem);
 
 // The build's template id for one of its cosmetics, as its game data spells it; undefined if it has none.
 function cosmeticId(templateId) {
   const wanted = String(templateId).toLowerCase();
   return Object.keys(athenaCosmetics()).find((id) => id.toLowerCase() === wanted);
+}
+
+// The build's template id for one of its locker cosmetics; undefined if its data has none or it is never a locker item.
+export function lockerCosmeticId(templateId) {
+  const id = cosmeticId(templateId);
+  return id && isLockerItem(id) ? id : undefined;
 }
 
 const starterIds = () => starters.map(cosmeticId).filter(Boolean);

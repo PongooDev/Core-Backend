@@ -1964,7 +1964,77 @@
               run("remove-granted", (account) => `Took back ${counts(account.removed)}`);
             }
           }, "danger", { disabled: !granted })),
-        el("p", { class: "note", text: "Outfits, back blings, pickaxes, gliders, emotes, loading screens and the rest of every build's locker, and every banner for the banner editor. Equipped items that are taken back go back to the default." }));
+        el("p", { class: "note", text: "Outfits, back blings, pickaxes, gliders, emotes, loading screens and the rest of every build's locker, and every banner for the banner editor. Equipped items that are taken back go back to the default." }),
+        cosmeticPicker(a));
+    }
+
+    // Single Battle Royale cosmetics (Core-Backend #108), from one build's locker: the build picker lists the builds with
+    // Battle Royale, and only the chosen build's cosmetics are shown and given (the backend refuses any other).
+    function cosmeticPicker(a) {
+      if (state.cosmetics?.accountId !== a.id) state.cosmetics = { accountId: a.id, build: "", search: "", type: "", data: null, picked: new Map() };
+      const c = state.cosmetics;
+      const buildSelect = el("select", { class: "field", "aria-label": "Build" });
+      const typeSelect = el("select", { class: "field", "aria-label": "Cosmetic type" });
+      const search = el("input", { class: "field", type: "search", placeholder: "Search outfits, gliders, emotes…", value: c.search, style: "flex:1 1 240px" });
+      const summary = el("div", { class: "note" });
+      const results = el("div", { class: "catalog" });
+      const giveButton = btn("Give selected", () => {
+        const picked = [...c.picked.values()];
+        if (!picked.length) return toast("Pick one or more cosmetics first", true);
+        const names = (ids) => ids.map((id) => c.picked.get(id)?.name ?? id).join(", ");
+        act(api(`/admin/api/accounts/${a.id}/cosmetics/grant`, { build: c.build, templateIds: picked.map((item) => item.templateId) })).then((account) => {
+          if (!account) return;
+          const { granted, alreadyOwned, version } = account.cosmeticGrant;
+          const message = [granted.length ? `Gave ${a.displayName} ${names(granted)} (${version})` : `Nothing given: ${a.displayName} already owns ${picked.length === 1 ? "it" : "them all"}`,
+            granted.length && alreadyOwned.length ? `already owned: ${names(alreadyOwned)}` : null].filter(Boolean).join("; ");
+          c.picked.clear();
+          c.data = null;
+          setAccount(account, message);
+        });
+      }, "primary");
+      const clearButton = btn("Clear", () => { c.picked.clear(); render(); }, "ghost small");
+      const options = (select, list, chosen) => select.replaceChildren(...list.map(([value, label]) => el("option", { value, text: label, selected: value === chosen })));
+      function render() {
+        const data = c.data;
+        if (!data) return;
+        options(buildSelect, data.builds.map(({ build, version }) => [build, `${version} (CL-${build})`]), data.build);
+        options(typeSelect, [["", "Every type"], ...data.types.map((type) => [type, type])], c.type);
+        giveButton.querySelector("span").textContent = c.picked.size ? `Give selected (${c.picked.size})` : "Give selected";
+        giveButton.disabled = !c.picked.size;
+        clearButton.disabled = !c.picked.size;
+        summary.replaceChildren(`${fmt(data.owned)} / ${fmt(data.total)} of ${data.version}'s cosmetics owned`,
+          data.hasProfile ? "" : " · no Battle Royale profile yet: a grant makes it, with the starter cosmetics",
+          data.matches > data.items.length ? ` · showing ${fmt(data.items.length)} of ${fmt(data.matches)} matches` : "");
+        results.replaceChildren(...(data.items.length ? data.items.map((item) => el("button", {
+          type: "button", class: `card ${item.rarityCode}`, "aria-pressed": String(c.picked.has(item.templateId)),
+          title: item.owned ? `${a.displayName} owns this already` : "",
+          onclick: () => { if (c.picked.has(item.templateId)) c.picked.delete(item.templateId); else c.picked.set(item.templateId, item); render(); }
+        }, el("div", { class: "k", text: item.type }), el("div", { class: "t", text: item.name }),
+          el("div", { class: "s", style: "margin-top:8px" }, chip(item.rarity), " ", item.owned ? chip("Owned", "good") : null),
+          el("div", { class: "s mono", text: item.templateId }))) : [el("div", { class: "empty", text: "Nothing found." })]));
+      }
+      const load = async () => {
+        c.search = search.value;
+        const query = new URLSearchParams({ build: c.build, search: c.search, type: c.type, limit: "300" });
+        const data = await act(api(`/admin/api/accounts/${a.id}/cosmetics?${query}`));
+        if (!data || state.cosmetics !== c) return;
+        c.data = data;
+        c.build = data.build;
+        if (c.type && !data.types.includes(c.type)) c.type = "";
+        render();
+      };
+      let timer;
+      search.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(load, 180); });
+      typeSelect.addEventListener("change", () => { c.type = typeSelect.value; load(); });
+      // Another build's cosmetics: what was picked from the last one may not be in it.
+      buildSelect.addEventListener("change", () => { c.build = buildSelect.value; c.picked.clear(); load(); });
+      if (c.data) render(); else load();
+      return el("div", { style: "margin-top:16px" },
+        el("h3", { text: "Give cosmetics" }),
+        el("div", { class: "actions", style: "margin-top:8px" }, buildSelect, typeSelect, search, giveButton, clearButton),
+        el("div", { style: "margin-top:10px" }, summary),
+        results,
+        el("p", { class: "note", text: "Only the chosen build's cosmetics are listed and given. Pick one or more; a cosmetic the account already owns is left as it is. Given cosmetics are the player's for good (Remove granted keeps them), and a player in the game gets them at once." }));
     }
 
     // Battle Royale's season level (Core-Backend #106): set to the start of a level, with its chase rewards.

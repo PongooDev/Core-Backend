@@ -13,7 +13,8 @@ import { readGameData } from "../gamedata/read.js";
 import { recentLogs } from "../log.js";
 import { sessionSummary } from "../matchmaking/sessions.js";
 import { alertsRemaining, emptyAlertRecord, withQuotaSlots } from "../profiles/alerts.js";
-import { fullLockerState, grantFullLocker, maxSeasonLevel, removeFullLocker, setSeasonLevel } from "../profiles/athena.js";
+import { fullLockerState, grantCosmetic, grantFullLocker, lockerCosmeticId, lockerCosmetics, maxSeasonLevel, ownsCosmetic, removeFullLocker,
+  setSeasonLevel } from "../profiles/athena.js";
 import { levelRest, restBalance, restValue } from "../profiles/boosts.js";
 import { foundersEditionOf, foundersEditions, setFoundersEdition } from "../profiles/founders.js";
 import { findItem, grantItem, worldStacksNeeded } from "../profiles/items.js";
@@ -24,10 +25,11 @@ import { openSession } from "../profiles/session.js";
 import { backpackState, inOverflow, vaultState, worldStackCap } from "../profiles/vault.js";
 import { maxLevel, xpForLevel } from "../profiles/xp.js";
 import { notifyProfiles } from "../services/mcp/profile.js";
-import { categories, currencies, describeItem, isSingleItem, searchCatalog, stormShields } from "./describe.js";
+import { categories, currencies, describeCosmetics, describeItem, isSingleItem, searchCatalog, stormShields } from "./describe.js";
 import { requireLoopback, requirePanelRequest } from "./local.js";
 import { defaultBattleRoyaleNews, defaultLoginMessage } from "../services/content/pages.js";
 import { inBuild } from "../builds/context.js";
+import { battleRoyaleBuilds, versionOf } from "../builds/detect.js";
 import { eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, shopDay, weeklyStoreEnd } from "../store/itemshop.js";
 
 import { isServerAccountName, validatePassword } from "../accounts/password.js";
@@ -383,6 +385,61 @@ export function adminRoutes(context) {
   }));
   router.post("/admin/api/accounts/:accountId/locker/grant-all", lockerChange((session) => ({ granted: grantFullLocker(session) })));
   router.post("/admin/api/accounts/:accountId/locker/remove-granted", lockerChange((session) => ({ removed: removeFullLocker(session) })));
+
+  // Battle Royale cosmetics one by one (Core-Backend #108): a build's locker cosmetics, of every type, with which the
+  // account owns, and giving some of them. Profiles are shared by every build, so the panel names the build whose
+  // cosmetics it shows and gives, one with Battle Royale (detect.js battleRoyaleBuilds), and a cosmetic that build's game
+  // data hasn't is refused. The backend doesn't record which build a player last played, so the default is the newest.
+  // A grant is for good, as a purchase is (profiles/athena.js grantCosmetic): the full locker's Remove granted keeps it.
+  const cosmeticBuilds = battleRoyaleBuilds.map((build) => ({ build, version: versionOf(build) }));
+  const cosmeticBuild = (value) => {
+    const build = String(value ?? "").trim() || battleRoyaleBuilds.at(-1);
+    return battleRoyaleBuilds.includes(build) ? build : null;
+  };
+  const notBattleRoyaleBuild = (res, value) => invalid(res, `${value} isn't a build with Battle Royale: pick one of ${cosmeticBuilds
+    .map(({ build, version }) => `${build} (${version})`).join(", ")}`);
+
+  router.get("/admin/api/accounts/:accountId/cosmetics", (req, res) => {
+    const account = accounts.get(req.params.accountId);
+    if (!account) return notFound(res, req.originalUrl);
+    const build = cosmeticBuild(req.query.build);
+    if (!build) return notBattleRoyaleBuild(res, req.query.build);
+    const athena = loadIfExists(account.id, "athena");
+    const held = new Set(Object.values(athena?.items ?? {}).map((item) => item.templateId.toLowerCase()));
+    const all = inBuild(build, () => describeCosmetics(lockerCosmetics()))
+      .map((cosmetic) => ({ ...cosmetic, owned: held.has(cosmetic.templateId.toLowerCase()) }));
+    const type = String(req.query.type ?? "");
+    const words = String(req.query.search ?? "").toLowerCase().split(/\s+/).filter(Boolean);
+    const matches = all.filter((cosmetic) => !type || cosmetic.type === type)
+      .filter((cosmetic) => words.every((word) => [cosmetic.name, cosmetic.templateId, cosmetic.type, cosmetic.rarity].some((text) => text.toLowerCase().includes(word))));
+    res.json({
+      build, version: versionOf(build), builds: cosmeticBuilds, hasProfile: Boolean(athena),
+      types: [...new Set(all.map((cosmetic) => cosmetic.type))],
+      total: all.length, owned: all.filter((cosmetic) => cosmetic.owned).length, matches: matches.length,
+      items: matches.slice(0, Math.min(Number(req.query.limit) || 120, 1000))
+    });
+  });
+
+  // {build, templateIds}: gives the account those of the build's cosmetics it lacks; one it owns is left as it is.
+  router.post("/admin/api/accounts/:accountId/cosmetics/grant", change(({ req, res, session }) => {
+    const build = cosmeticBuild(req.body?.build);
+    if (!build) return notBattleRoyaleBuild(res, req.body?.build);
+    const version = versionOf(build);
+    const requested = (Array.isArray(req.body?.templateIds) ? req.body.templateIds : [req.body?.templateId])
+      .map((templateId) => (typeof templateId === "string" ? templateId.trim() : "")).filter(Boolean);
+    if (!requested.length || requested.length > 1000) return invalid(res, "Pick 1 to 1000 cosmetics to give");
+    const unknown = requested.filter((templateId) => !inBuild(build, () => lockerCosmeticId(templateId)));
+    if (unknown.length) return invalid(res, `${version} has no locker cosmetic ${unknown.join(", ")}: give only cosmetics that build has`);
+    return inBuild(build, () => {
+      const granted = [];
+      const alreadyOwned = [];
+      for (const templateId of new Set(requested.map(lockerCosmeticId))) {
+        if (ownsCosmetic(session, templateId)) alreadyOwned.push(templateId);
+        else if (grantCosmetic(session, templateId)) granted.push(templateId);
+      }
+      return { cosmeticGrant: { build, version, granted, alreadyOwned } };
+    });
+  }));
 
   router.post("/admin/api/accounts/:accountId/skip-tutorial", change(({ session }) => skipTutorial(session)));
 

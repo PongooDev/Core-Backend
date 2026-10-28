@@ -55,12 +55,32 @@ export function currentShopConfig() {
   return (shopConfigProvider ? shopConfigProvider() : null) ?? { mode: "fnbr" };
 }
 
-// Determines the cosmetic type label ("Outfit", "Harvesting Tool", "Glider")
-export function cosmeticType(cosmeticClass) {
-  if (cosmeticClass === "AthenaCharacterItemDefinition") return "Outfit";
-  if (cosmeticClass === "AthenaPickaxeItemDefinition") return "Harvesting Tool";
-  if (cosmeticClass === "AthenaGliderItemDefinition") return "Glider";
-  return "Cosmetic";
+// The type a cosmetic's tile and the admin panel show ("Outfit", "Harvesting Tool", "Glider"…), by its item definition
+// class, in the locker's order. A class not listed is named from its template type (AthenaFoo:… → "Foo").
+const cosmeticTypes = {
+  AthenaCharacterItemDefinition: "Outfit",
+  AthenaBackpackItemDefinition: "Back Bling",
+  AthenaPickaxeItemDefinition: "Harvesting Tool",
+  AthenaGliderItemDefinition: "Glider",
+  AthenaSkyDiveContrailItemDefinition: "Contrail",
+  AthenaDanceItemDefinition: "Emote",
+  AthenaConsumableEmoteItemDefinition: "Consumable Emote",
+  AthenaVictoryPoseItemDefinition: "Victory Pose",
+  AthenaSprayItemDefinition: "Spray",
+  AthenaEmojiItemDefinition: "Emoticon",
+  AthenaToyItemDefinition: "Toy",
+  AthenaHatItemDefinition: "Hat",
+  AthenaItemWrapDefinition: "Wrap",
+  AthenaMusicPackItemDefinition: "Music",
+  AthenaPetCarrierItemDefinition: "Pet",
+  AthenaLoadingScreenItemDefinition: "Loading Screen",
+  AthenaBattleBusItemDefinition: "Battle Bus"
+};
+export const cosmeticTypeOrder = Object.values(cosmeticTypes);
+
+export function cosmeticType(cosmeticClass, templateId = "") {
+  const type = String(templateId).split(":")[0].replace(/^Athena/i, "");
+  return cosmeticTypes[cosmeticClass] ?? (type ? type.replace(/([a-z])([A-Z])/g, "$1 $2") : "Cosmetic");
 }
 
 const rarityMap = {

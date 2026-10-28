@@ -9,7 +9,8 @@ import { bannerIds } from "../src/gamedata/banners.js";
 import { addSeasonXp, grantCosmetic, grantFullLocker, removeFullLocker } from "../src/profiles/athena.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
-import { dedicatedServerToken, post, send, startBackend, userLogin } from "./helpers.js";
+import { createFrameParser, encodeFrame } from "../src/stomp/service.js";
+import { dedicatedServerToken, get, post, send, startBackend, userLogin } from "./helpers.js";
 
 // Battle Royale's locker (Core-Backend #77): the starters, then what is earned (victory umbrellas, season level rewards)
 // or bought; giveAllCosmetics gives everything.
@@ -256,6 +257,126 @@ test("the admin panel sets an account's Battle Royale season level, with its cha
 
     for (const bad of [0, set.body.battleRoyale.maxLevel + 1, 2.5, "x"]) assert.equal((await setLevel(bad)).status, 400);
     assert.equal((await setLevel(5)).body.battleRoyale.level, 5);
+  } finally {
+    backend.close();
+  }
+});
+
+async function stompClient(port) {
+  const ws = new WebSocket(`ws://127.0.0.1:${port}/stomp`, ["v10.stomp", "v11.stomp", "v12.stomp"]);
+  ws.binaryType = "arraybuffer";
+  const frames = [];
+  const waiters = [];
+  const parse = createFrameParser((frame) => {
+    const waiter = waiters.shift();
+    if (waiter) waiter(frame);
+    else frames.push(frame);
+  });
+  ws.addEventListener("message", (event) => parse(Buffer.from(typeof event.data === "string" ? event.data : new Uint8Array(event.data))));
+  await new Promise((resolve, reject) => {
+    ws.addEventListener("open", resolve, { once: true });
+    ws.addEventListener("error", reject, { once: true });
+  });
+  return {
+    ws,
+    send: (command, headers, body) => ws.send(encodeFrame(command, headers, body)),
+    next: () => (frames.length ? Promise.resolve(frames.shift()) : new Promise((resolve) => waiters.push(resolve)))
+  };
+}
+
+// Core-Backend #108: single cosmetics from the panel, of one build with Battle Royale, and only that build's.
+test("the admin panel gives single cosmetics of the chosen build, and refuses what that build hasn't", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "OneCosmetic");
+    const list = (query = "") => get(backend.port, `/admin/api/accounts/${player.accountId}/cosmetics${query}`);
+    const give = (body) => post(backend.port, `/admin/api/accounts/${player.accountId}/cosmetics/grant`, undefined, body);
+
+    // The builds with Battle Royale, the newest the default (no build a player last played is recorded).
+    let listed = await list();
+    assert.equal(listed.status, 200);
+    assert.deepEqual(listed.body.builds, [{ build: "3724489", version: "1.8" }, { build: "3729133", version: "1.8.1" }, { build: "3741772", version: "1.8.2" }]);
+    assert.deepEqual([listed.body.build, listed.body.version, listed.body.hasProfile], ["3741772", "1.8.2", false]);
+    for (const bad of ["3700114", "3532353", "nope"]) {
+      assert.equal((await list(`?build=${bad}`)).status, 400, bad);
+      assert.equal((await give({ build: bad, templateIds: ["AthenaPickaxe:halloweenscythe"] })).status, 400, bad);
+    }
+
+    // Every locker cosmetic of the build, of every type, with its name, type and rarity; never the Recruit outfits or the
+    // unused umbrellas.
+    listed = await list("?build=3724489");
+    const lockerIds = inBuild("3724489", () => Object.keys(athenaCosmetics()))
+      .filter((id) => !/cid_00\d_athena_commando_\w_default|duo_umbrella|squad_umbrella/i.test(id));
+    assert.deepEqual([listed.body.build, listed.body.total, listed.body.matches], ["3724489", lockerIds.length, lockerIds.length]);
+    assert.deepEqual(listed.body.items.map((item) => item.templateId).sort(), [...lockerIds].sort());
+    const byId = (body, templateId) => body.items.find((item) => item.templateId === templateId);
+    assert.deepEqual(byId(listed.body, "AthenaPickaxe:halloweenscythe"),
+      { templateId: "AthenaPickaxe:halloweenscythe", name: "Reaper", type: "Harvesting Tool", rarity: "Rare", rarityCode: "r", owned: false });
+    assert.deepEqual(byId(listed.body, "AthenaCharacter:cid_029_athena_commando_f_halloween"),
+      { templateId: "AthenaCharacter:cid_029_athena_commando_f_halloween", name: "Ghoul Trooper", type: "Outfit", rarity: "Epic", rarityCode: "vr", owned: false });
+    for (const type of ["Outfit", "Harvesting Tool", "Glider", "Emote", "Loading Screen", "Battle Bus"]) assert.ok(listed.body.types.includes(type), type);
+    const emotes = (await list("?build=3724489&type=Emote")).body.items;
+    assert.ok(emotes.length && emotes.every((item) => item.type === "Emote"));
+    assert.deepEqual((await list("?build=3724489&search=reaper")).body.items.map((item) => item.templateId), ["AthenaPickaxe:halloweenscythe"]);
+
+    // Only from the panel's own page.
+    const rebound = await send({ host: "127.0.0.1", port: backend.port, method: "POST", path: `/admin/api/accounts/${player.accountId}/cosmetics/grant`,
+      headers: { Host: "attacker.example", "Content-Type": "application/json" } }, JSON.stringify({ templateIds: ["AthenaPickaxe:halloweenscythe"] }));
+    assert.equal(rebound.status, 403);
+
+    // A template the build hasn't, or one that's never a locker item, refuses the whole grant.
+    const revision = async () => (await command(backend.port, player, "QueryProfile", "athena")).body.profileRevision;
+    const beforeRvn = await revision();
+    for (const templateIds of [["AthenaPickaxe:halloweenscythe", "AthenaCharacter:cid_999_athena_commando_f_notreal"],
+      ["AthenaCharacter:cid_001_athena_commando_f_default"], ["AthenaGlider:duo_umbrella"], ["Hero:hid_commando_007_r_t01"], [], "x"]) {
+      assert.equal((await give({ build: "3724489", templateIds })).status, 400, JSON.stringify(templateIds));
+    }
+    assert.match((await give({ build: "3729133", templateIds: ["AthenaCharacter:cid_999_athena_commando_f_notreal"] })).body.errorMessage, /^1\.8\.1 has no locker cosmetic/);
+    assert.ok(!(await athena(backend.port, player)).items["AthenaPickaxe:halloweenscythe"]);
+    assert.equal(await revision(), beforeRvn);
+
+    // The player is online: the grant reaches their client as an athena notification at a new revision.
+    const client = await stompClient(backend.port);
+    try {
+      client.send("CONNECT", { "accept-version": "1.2", login: player.accountId, passcode: player.token });
+      await client.next();
+      client.send("SUBSCRIBE", { id: "mcp-0-nil", destination: `/topic/fn/profile/${player.accountId}/fortnite`, receipt: "r" });
+      await client.next();
+
+      // Any spelling of the build's ids; each once.
+      const given = await give({ build: "3724489", templateIds: ["athenapickaxe:HalloweenScythe", "AthenaGlider:glider_prismatic", "AthenaPickaxe:halloweenscythe"] });
+      assert.equal(given.status, 200);
+      assert.deepEqual(given.body.cosmeticGrant, { build: "3724489", version: "1.8", granted: ["AthenaPickaxe:halloweenscythe", "AthenaGlider:glider_prismatic"], alreadyOwned: [] });
+      const notification = JSON.parse((await client.next()).body);
+      assert.equal(notification.type, "profile/athena/update");
+      assert.equal(notification.revision, beforeRvn + 1);
+      assert.deepEqual(notification.changes.filter((change) => change.changeType === "itemAdded").map((change) => change.item.templateId).sort(),
+        ["AthenaGlider:glider_prismatic", "AthenaPickaxe:halloweenscythe"]);
+    } finally {
+      client.ws.close();
+    }
+    const items = (await athena(backend.port, player)).items;
+    assert.ok(items["AthenaPickaxe:halloweenscythe"] && items["AthenaGlider:glider_prismatic"]);
+    assert.equal(await revision(), beforeRvn + 1);
+    listed = await list("?build=3729133");
+    assert.equal(listed.body.hasProfile, true);
+    assert.equal(byId(listed.body, "AthenaGlider:glider_prismatic").owned, true);
+    assert.equal(byId(listed.body, "AthenaCharacter:cid_029_athena_commando_f_halloween").owned, false);
+
+    // An owned cosmetic is left as it is, and the answer says so; a grant of only owned ones changes nothing.
+    const again = await give({ build: "3741772", templateIds: ["AthenaGlider:glider_prismatic", "AthenaCharacter:cid_029_athena_commando_f_halloween"] });
+    assert.deepEqual(again.body.cosmeticGrant, { build: "3741772", version: "1.8.2", granted: ["AthenaCharacter:cid_029_athena_commando_f_halloween"],
+      alreadyOwned: ["AthenaGlider:glider_prismatic"] });
+    const rvn = await revision();
+    const owned = await give({ build: "3724489", templateIds: ["AthenaGlider:glider_prismatic"] });
+    assert.deepEqual([owned.body.cosmeticGrant.granted, owned.body.cosmeticGrant.alreadyOwned], [[], ["AthenaGlider:glider_prismatic"]]);
+    assert.equal(await revision(), rvn);
+
+    // They're the player's for good: the full locker's Remove granted keeps them.
+    await post(backend.port, `/admin/api/accounts/${player.accountId}/locker/grant-all`, undefined, {});
+    await post(backend.port, `/admin/api/accounts/${player.accountId}/locker/remove-granted`, undefined, {});
+    const kept = (await athena(backend.port, player)).items;
+    assert.ok(kept["AthenaPickaxe:halloweenscythe"] && kept["AthenaGlider:glider_prismatic"] && kept["AthenaCharacter:cid_029_athena_commando_f_halloween"]);
   } finally {
     backend.close();
   }

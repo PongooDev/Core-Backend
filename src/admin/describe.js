@@ -6,6 +6,7 @@ import { getNode, nodeIds } from "../gamedata/homebase.js";
 import { getCardPack, getItem, itemIds } from "../gamedata/items.js";
 import { getQuest, questIds } from "../gamedata/quests.js";
 import { dataBuilds } from "../gamedata/read.js";
+import { cosmeticRarity, cosmeticType, cosmeticTypeOrder } from "../store/itemshop.js";
 
 // How the panel names, groups and colours items. Names are the game's DisplayName where it has one; rarity comes from
 // the name (_c … _sr) first because this build's Rarity properties are placeholders for many items.
@@ -129,6 +130,19 @@ export function searchCatalog(query = "", categoryKey = "", limit = 60) {
     .filter((entry) => words.every((word) => entry.templateId.toLowerCase().includes(word) || entry.name.toLowerCase().includes(word)))
     .slice(0, limit);
 }
+
+// Battle Royale's cosmetics as the panel's cosmetic picker shows them (Core-Backend #108): the name, type and rarity in
+// the data of the build being served (run it inBuild), sorted in the locker's order of types, then by name.
+export function describeCosmetics(templateIds) {
+  const cosmetics = athenaCosmetics();
+  return templateIds.map((templateId) => {
+    const cosmetic = cosmetics[templateId];
+    const { code, label } = cosmeticRarity(cosmetic?.rarity);
+    return { templateId, name: named(cosmetic?.name) ?? prettify(templateId.split(":")[1]?.toLowerCase() ?? templateId),
+      type: cosmeticType(cosmetic?.class, templateId), rarity: label, rarityCode: code };
+  }).sort((a, b) => typeRank(a.type) - typeRank(b.type) || a.name.localeCompare(b.name) || a.templateId.localeCompare(b.templateId));
+}
+const typeRank = (type) => (cosmeticTypeOrder.includes(type) ? cosmeticTypeOrder.indexOf(type) : cosmeticTypeOrder.length);
 
 // The balances the panel edits directly. V-Bucks are spread over four currencies; setting them leaves one Giveaway
 // stack, which the store spends like the others.

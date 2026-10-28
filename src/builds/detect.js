@@ -7,6 +7,10 @@ export const buildVersions = { 3532353: "1.1", 3541083: "1.2", 3700114: "1.7.2",
 
 export const versionOf = (changelist) => buildVersions[changelist] ?? null;
 
+// The builds with Battle Royale's athena profile and locker: 1.8 (CL-3724489) and later, oldest first.
+export const battleRoyaleBuilds = Object.keys(buildVersions).filter((changelist) => Number(changelist) >= 3724489)
+  .sort((a, b) => Number(a) - Number(b));
+
 // The changelist a request's User-Agent names: "build=++Fortnite+Release-Cert-CL-3541083" (services, the gameserver
 // too) or "version=4.16.0-3541083+++Fortnite+Release-Cert" (CMS, datarouter).
 export function getBuild(req) {
