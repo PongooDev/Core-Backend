@@ -24,6 +24,7 @@ import { maxLevel, xpForLevel } from "../profiles/xp.js";
 import { notifyProfiles } from "../services/mcp/profile.js";
 import { categories, currencies, describeItem, isSingleItem, searchCatalog, stormShields } from "./describe.js";
 import { requireLoopback, requirePanelRequest } from "./local.js";
+import { defaultBattleRoyaleNews, defaultLoginMessage } from "../services/content/pages.js";
 
 import { isServerAccountName, validatePassword } from "../accounts/password.js";
 
@@ -517,6 +518,57 @@ export function adminRoutes(context) {
       ...updated,
       publicAddress: net.publicAddress ? (resInfo.address || net.publicAddress) : (resInfo.address || null),
       portalUrl: portalUrl(req)
+    });
+  });
+
+  // In-game news and login messages
+  router.get("/admin/api/news", (req, res) => {
+    const current = settings?.get?.() ?? {};
+    const configNews = context.config?.battleRoyaleNews;
+    const configLogin = context.config?.loginMessage;
+    res.json({
+      battleRoyaleNews: current.battleRoyaleNews ?? configNews ?? defaultBattleRoyaleNews,
+      loginMessage: current.loginMessage ?? configLogin ?? defaultLoginMessage,
+      defaults: {
+        battleRoyaleNews: configNews ?? defaultBattleRoyaleNews,
+        loginMessage: configLogin ?? defaultLoginMessage
+      }
+    });
+  });
+
+  router.post("/admin/api/news", (req, res) => {
+    if (!settings?.update) return invalid(res, "Settings store not available");
+    const updates = {};
+    if (req.body?.battleRoyaleNews !== undefined) {
+      if (req.body.battleRoyaleNews === null) {
+        updates.battleRoyaleNews = null;
+      } else if (typeof req.body.battleRoyaleNews === "object") {
+        updates.battleRoyaleNews = {
+          title: String(req.body.battleRoyaleNews.title ?? ""),
+          body: String(req.body.battleRoyaleNews.body ?? "")
+        };
+      }
+    }
+    if (req.body?.loginMessage !== undefined) {
+      if (req.body.loginMessage === null) {
+        updates.loginMessage = null;
+      } else if (typeof req.body.loginMessage === "object") {
+        updates.loginMessage = {
+          title: String(req.body.loginMessage.title ?? ""),
+          body: String(req.body.loginMessage.body ?? "")
+        };
+      }
+    }
+    const current = settings.update(updates);
+    const configNews = context.config?.battleRoyaleNews;
+    const configLogin = context.config?.loginMessage;
+    res.json({
+      battleRoyaleNews: current.battleRoyaleNews ?? configNews ?? defaultBattleRoyaleNews,
+      loginMessage: current.loginMessage ?? configLogin ?? defaultLoginMessage,
+      defaults: {
+        battleRoyaleNews: configNews ?? defaultBattleRoyaleNews,
+        loginMessage: configLogin ?? defaultLoginMessage
+      }
     });
   });
 

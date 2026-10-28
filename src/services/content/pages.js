@@ -55,7 +55,12 @@ export function contentPage(news = defaultBattleRoyaleNews, loginMessage = defau
 
 export function contentRoutes(context, config = {}) {
   const router = express.Router();
-  router.get("/content/api/pages/fortnite-game", (req, res) => res.json(contentPage(config.battleRoyaleNews, config.loginMessage, getBuild(req))));
+  router.get("/content/api/pages/fortnite-game", (req, res) => {
+    const settings = context?.settings?.get?.() ?? {};
+    const news = settings.battleRoyaleNews ?? config.battleRoyaleNews ?? defaultBattleRoyaleNews;
+    const loginMessage = settings.loginMessage ?? config.loginMessage ?? defaultLoginMessage;
+    res.json(contentPage(news, loginMessage, getBuild(req)));
+  });
 
   return router;
 }

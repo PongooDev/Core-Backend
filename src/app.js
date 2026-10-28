@@ -88,7 +88,8 @@ export function createContext(config) {
       publicRooms: Object.values(generalChatRooms),
       quiet: config.requestLog === false
     }),
-    dataDir: config.dataDir
+    dataDir: config.dataDir,
+    config
   };
 }
 
