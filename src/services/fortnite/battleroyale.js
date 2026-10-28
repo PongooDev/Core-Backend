@@ -5,6 +5,7 @@ import { log } from "../../log.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
 import { addSeasonXp, awardVictory, matchXp, recordMatchProgress } from "../../profiles/athena.js";
 import { openSession } from "../../profiles/session.js";
+import { isMainPlaylist } from "../../stats/store.js";
 import { notifyProfiles } from "../mcp/profile.js";
 
 // What a Battle Royale gameserver (1.7.2) tells the backend about its match's players, which Battle Royale's stats are
@@ -15,7 +16,7 @@ import { notifyProfiles } from "../mcp/profile.js";
 //   turns into the player's glider, AFortPlayerControllerAthena::GliderType (EFortGliderType): "umbrella" Umbrella
 //   (with AFortPlayerStateAthena::bHasWonAGame), "founder_umbrella" FounderUmbrella, "founder_glider" FounderGlider,
 //   anything else or no entry the StockGlider. 1.7.2 has no glider items; this answer is the only thing that picks one.
-//   Season 1's Victory Umbrella (Core #97): every player with a win in any playlist gets "umbrella", from the match
+//   Season 1's Victory Umbrella (Core #97): every player with a win in solo, duo or squad gets "umbrella", from the match
 //   after it (the question is asked once, at assignment); the founder types go unused 🟡 (who Epic gave them wasn't
 //   looked at, and every Core account is a founder).
 // - recordwin: POST {playlistId, accountIds}, the winners at the end of the match (OnRecordWinnerComplete, 0x3F4950,
@@ -27,8 +28,8 @@ import { notifyProfiles } from "../mcp/profile.js";
 //   is the win too; without countWins (1.7.2, or a CoreV2 from before) recordwin counts it, so a win isn't counted
 //   twice. A player with a Battle Royale profile (1.8's athena) also gets the match's season XP and its placement and
 //   elimination challenge progress (profiles/athena.js), which reach their client as profile notifications, and for a
-//   win (place 1) in any playlist The Umbrella and the Founder's Umbrella in the locker (Core-Backend #77, #84): 1.8's
-//   umbrella is a glider item.
+//   win (place 1) in solo, duo or squad The Umbrella and the Founder's Umbrella in the locker (Core-Backend #77, #84):
+//   1.8's umbrella is a glider item.
 // The gameserver's own login records the players on a session it hosts, the DedicatedServer client (CoreV2) anyone's;
 // other players are skipped, so a player's own token can't award itself wins. Both records answer 204 whatever they kept.
 export function battleRoyaleRoutes(context) {
@@ -83,7 +84,7 @@ export function battleRoyaleRoutes(context) {
       if (!session.hasProfile("athena")) continue;
       recordMatchProgress(session, playlistId, { place, kills });
       addSeasonXp(session, matchXp(playlistId, { place, kills, secondsAlive }));
-      if (place === 1) awardVictory(session);
+      if (place === 1 && isMainPlaylist(playlistId)) awardVictory(session);
       session.commit();
       notifyProfiles(context, session);
     }

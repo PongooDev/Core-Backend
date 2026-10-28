@@ -86,15 +86,16 @@ const starterIds = () => starters.map(cosmeticId).filter(Boolean);
 const sameId = (a, b) => a.toLowerCase() === b.toLowerCase();
 const migrated = (profile, name) => (profile.coreMigrations ?? []).includes(name);
 
-// The victory umbrellas: a win in any mode (solo, duo, squad or another playlist) gives The Umbrella (Solo_Umbrella,
+// The victory umbrellas: a win in a main mode (solo, duo or squad, stats/store.js isMainPlaylist; not a limited-time
+// playlist) gives The Umbrella (Solo_Umbrella,
 // "The fabled victory umbrella."; Core-Backend #84) and the Founder's Umbrella ("Founder's exclusive!", 1.7.2's
 // founder_umbrella winner type; every Core account is a founder). 1.7.2 gives every winner the same "umbrella" too
 // (services/fortnite/battleroyale.js). 1.8 has no winners question (none of 1.7.2's battleroyale/winners or recordwin
 // strings are left): its umbrella is a glider item the locker equips.
 const victoryUmbrellas = ["AthenaGlider:solo_umbrella", "AthenaGlider:founderumbrella"];
 
-// The cosmetics the player has earned: the chase rewards of the season levels reached and, with a recorded win in any
-// playlist (settings.wonPlaylists, the stats: 1.7.2's recordwin; 1.8's own wins give theirs when the gameserver reports
+// The cosmetics the player has earned: the chase rewards of the season levels reached and, with a recorded win in solo,
+// duo or squad (settings.wonPlaylists, the stats: 1.7.2's recordwin; 1.8's own wins give theirs when the gameserver reports
 // them, services/fortnite/battleroyale.js), the victory umbrellas.
 function earnedCosmetics(profile, settings) {
   const level = profile.stats.attributes.level ?? 1;

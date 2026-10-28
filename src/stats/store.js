@@ -17,6 +17,10 @@ import { readJson, writeJson } from "../json-file.js";
 // solo top 10 and 25, duo top 5 and 12, squad top 3 and 6. A place counts toward every one it is within, a win too.
 export const placements = { 2: [10, 25], 10: [5, 12], 9: [3, 6] };
 
+// The main modes, solo, duo and squad (the playlists above): only their wins give the victory umbrellas (Core-Backend
+// #84), not a limited-time playlist's.
+export const isMainPlaylist = (playlistId) => Object.hasOwn(placements, String(playlistId));
+
 // The leaderboards' time windows (EMcpLeaderboardTimeWindow: daily, weekly, monthly, alltime), each from its start
 // in UTC: the day, the week from Monday (🟡: when Epic's weeks began wasn't looked at) and the month.
 export const windows = ["daily", "weekly", "monthly", "alltime"];
@@ -85,8 +89,9 @@ export function createStatsStore(dataDir) {
     // {<playlistId>: {<stat>: value}} for every playlist the account has played.
     playlists: (accountId) => structuredClone(load(accountId).playlists),
 
-    // A win in any playlist (Battle Royale's umbrella, services/fortnite/battleroyale.js).
-    hasWon: (accountId) => Object.values(load(accountId).playlists).some((playlist) => (playlist.placetop1 ?? 0) > 0),
+    // A win in solo, duo or squad (Battle Royale's umbrella, services/fortnite/battleroyale.js).
+    hasWon: (accountId) => Object.entries(load(accountId).playlists)
+      .some(([playlistId, playlist]) => isMainPlaylist(playlistId) && (playlist.placetop1 ?? 0) > 0),
 
     windowed,
 

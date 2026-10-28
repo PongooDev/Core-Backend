@@ -55,6 +55,17 @@ test("a win in any playlist gives 1.8 players The Umbrella and the Founder's Umb
     const veteranItems = (await athena(backend.port, veteran)).items;
     assert.ok(veteranItems["AthenaGlider:solo_umbrella"] && veteranItems["AthenaGlider:founderumbrella"]);
     assert.ok(!veteranItems["AthenaGlider:duo_umbrella"]);
+
+    // A win in a limited-time playlist (neither solo, duo nor squad) gives no umbrella, reported or recorded
+    // (Core-Backend #84).
+    const limited = await userLogin(backend.port, "LimitedTime");
+    await post(backend.port, "/fortnite/api/game/v2/battleroyale/recordresults", dedicated, { playlistId: 35, results: [
+      { accountId: limited.accountId, place: 1, kills: 0, secondsAlive: 600 }] });
+    await post(backend.port, "/fortnite/api/game/v2/battleroyale/recordwin", dedicated, { playlistId: 35, accountIds: [limited.accountId] });
+    const limitedItems = (await athena(backend.port, limited)).items;
+    assert.ok(!limitedItems["AthenaGlider:solo_umbrella"] && !limitedItems["AthenaGlider:founderumbrella"]);
+    const umbrellas = await post(backend.port, "/fortnite/api/game/v2/battleroyale/winners", dedicated, { playlistId: 2, accountIds: [limited.accountId, veteran.accountId] });
+    assert.deepEqual(umbrellas.body.winners.map(({ accountId }) => accountId), [veteran.accountId]);
   } finally {
     backend.close();
   }

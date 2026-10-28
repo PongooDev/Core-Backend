@@ -16,7 +16,7 @@ import { createProfileStore } from "./profiles/store.js";
 import { requestLog, unknownRoute } from "./log.js";
 import { createMatchmaker } from "./matchmaking/service.js";
 import { createSessionStore } from "./matchmaking/sessions.js";
-import { createStatsStore } from "./stats/store.js";
+import { createStatsStore, isMainPlaylist } from "./stats/store.js";
 import { createNetwork } from "./network.js";
 import { originForm } from "./proxy.js";
 import { oauthRoutes } from "./services/account/oauth.js";
@@ -71,7 +71,7 @@ export function createContext(config) {
     profiles: createProfileStore(config.dataDir, {
       giveAllCosmetics: config.giveAllCosmetics === true,
       wonPlaylists: (accountId) => Object.entries(stats.playlists(accountId))
-        .filter(([, playlist]) => (playlist.placetop1 ?? 0) > 0).map(([playlistId]) => Number(playlistId))
+        .filter(([playlistId, playlist]) => isMainPlaylist(playlistId) && (playlist.placetop1 ?? 0) > 0).map(([playlistId]) => Number(playlistId))
     }),
     mailbox: createMailbox(),
     locks: createProfileLocks(),
