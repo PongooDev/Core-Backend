@@ -154,43 +154,63 @@ function rollMissions({ data, fixedMissions }, day, availableUntil) {
 // Hexsylvania's alerts come from the HalloweenCategory row (MissionAlert_41, LootTierGroup Halloween2017_MissionAlert,
 // every difficulty), whose category is the Transylvania theater's (MissionAlertCategories). What it gave was Epic's
 // too; Core's is Candy (🟡: 100, a few missions' worth).
+//
+// The storm alerts (StormLowCategory rows, MissionAlert_23-39: MissionAlert_Storm_T04 to T20, one tile difficulty each
+// from 8 to 40) are Core's too (🟡): no V-Bucks, the zone's reagents at the "high" size (T04-T05 Stonewood's, T06-T10
+// Plankerton's, T11-T15 Canny Valley's, T16-T20 Twine Peaks').
 const halloweenAlerts = "Halloween2017_MissionAlert";
+const stormTier = (tier) => (tier <= 5 ? 1 : tier <= 10 ? 2 : tier <= 15 ? 3 : 4);
 const alertRewards = {
   [halloweenAlerts]: [[candy, 100]],
   MissionAlert_Proto_01: [["CardPack:zcp_mtx_boost50", 1], ["CardPack:zcp_reagent_c_t01_medium", 1]],
   MissionAlert_Proto_02: [["CardPack:zcp_mtx_boost50", 1], ["CardPack:zcp_reagent_c_t02_medium", 1]],
   MissionAlert_Proto_03: [["CardPack:zcp_mtx_boost100", 1], ["CardPack:zcp_reagent_c_t03_medium", 1]],
-  MissionAlert_Proto_04: [["CardPack:zcp_mtx_boost100", 1], ["CardPack:zcp_reagent_c_t04_medium", 1]]
+  MissionAlert_Proto_04: [["CardPack:zcp_mtx_boost100", 1], ["CardPack:zcp_reagent_c_t04_medium", 1]],
+  ...Object.fromEntries(Array.from({ length: 17 }, (_, index) => index + 4).map((tier) =>
+    [`MissionAlert_Storm_T${String(tier).padStart(2, "0")}`, [[`CardPack:zcp_reagent_c_t0${stormTier(tier)}_high`, 1]]]))
 };
 
-function alertFor(data, mission) {
+function alertFor(data, mission, category) {
   const tile = data.tiles[mission.tileIndex];
-  const tier = missionAlertTier(mission.missionDifficultyInfo.rowName, isHexsylvania(data.uniqueId) ? halloweenAlerts : undefined);
+  const tier = missionAlertTier(mission.missionDifficultyInfo.rowName, category);
   if (!tile?.canBeMissionAlert || !tier || !alertRewards[tier.lootTierGroup]) return undefined;
   if (tier.zoneThemes.length && !tier.zoneThemes.includes(tile.zoneTheme)) return undefined;
   if (tier.missionGenerator && tier.missionGenerator !== mission.missionGenerator) return undefined;
   return tier;
 }
 
-// Core's placement (the client's theater info would say how many, and none ships): each region gets one alert, on one
-// of its missions whose tile can carry one and whose difficulty has a MissionAlerts row.
+// Core's placement (the client's theater info would say how many, and none ships): each region gets one alert of each
+// category the theater has, on missions whose tile can carry one and whose difficulty has a row of that category, one
+// alert a mission. A main theater's are a general one (MissionAlert_1-4) and a storm one (StormLowCategory), Hexsylvania's
+// a Halloween one. The alert names its category (FFortAvailableMissionAlertData CategoryName), which the map tile looks
+// up in MissionAlertCategories (AFortTheaterMapTile::GetMissionAlertCategory, 1.8 0x8F3D40, the tile's alert's category
+// name): BP_Hex_PARENT's HandleMissionAlert shows every alert's indicator and, for Storm and StormLow, the storm swirl
+// (P_StormAffected) and its timer (Core-Backend #91). Without a name every alert was General.
 function rollAlerts({ data }, missions, day, availableUntil) {
+  const categories = isHexsylvania(data.uniqueId) ? ["HalloweenCategory"] : ["GeneralCategory", "StormLowCategory"];
   return data.regions.flatMap((region, regionIndex) => {
-    const seed = `${data.uniqueId}:${day}:alert:${regionIndex}`;
-    const candidates = missions.filter((mission) => region.tileIndices.includes(mission.tileIndex) && alertFor(data, mission));
-    if (!candidates.length) return [];
-    const [mission] = shuffled(candidates.map((candidate) => candidate.missionGuid), seed)
-      .map((guid) => candidates.find((candidate) => candidate.missionGuid === guid));
-    const { lootTierGroup } = alertFor(data, mission);
-    return [{
-      missionAlertGuid: missionGuid(seed),
-      tileIndex: mission.tileIndex,
-      availableUntil,
-      missionAlertRewards: {
-        tierGroupName: lootTierGroup,
-        items: alertRewards[lootTierGroup].map(([itemType, quantity]) => ({ itemType, quantity }))
-      }
-    }];
+    const taken = new Set();
+    return categories.flatMap((category) => {
+      // The general alert keeps the seed alerts had before categories, so a day's alerts kept their guids.
+      const seed = `${data.uniqueId}:${day}:alert:${regionIndex}${category === "GeneralCategory" ? "" : `:${category}`}`;
+      const candidates = missions.filter((mission) => region.tileIndices.includes(mission.tileIndex) && !taken.has(mission.missionGuid)
+        && alertFor(data, mission, category));
+      if (!candidates.length) return [];
+      const [mission] = shuffled(candidates.map((candidate) => candidate.missionGuid), seed)
+        .map((guid) => candidates.find((candidate) => candidate.missionGuid === guid));
+      taken.add(mission.missionGuid);
+      const { lootTierGroup } = alertFor(data, mission, category);
+      return [{
+        categoryName: category,
+        missionAlertGuid: missionGuid(seed),
+        tileIndex: mission.tileIndex,
+        availableUntil,
+        missionAlertRewards: {
+          tierGroupName: lootTierGroup,
+          items: alertRewards[lootTierGroup].map(([itemType, quantity]) => ({ itemType, quantity }))
+        }
+      }];
+    });
   });
 }
 

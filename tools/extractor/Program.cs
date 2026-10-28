@@ -675,11 +675,17 @@ foreach (var (id, row) in LoadRows(provider, JsonValue.Create("/Game/Balance/Dat
 }
 
 // Mission alerts (DefaultGameData MissionAlerts and DailyMissionAlertQuota): which tile difficulties an alert can sit
-// on, and the loot tier group its rewards come from. The client counts the quota as the claim times over 24 hours old.
+// on, the loot tier group its rewards come from, its category (a MissionAlertCategories row: the map's storm swirl is
+// for Storm and StormLow), the event flag it waits for, whether it only spreads storms, and its modifiers' tier group.
+// The client counts the quota as the claim times over 24 hours old.
 var missionAlerts = LoadRows(provider, gameData["Properties"]!["MissionAlerts"]).Select(entry => new SortedDictionary<string, object>(StringComparer.Ordinal)
 {
     ["name"] = entry.Key,
-    ["minimumDifficulty"] = entry.Value!["MinimumTileDifficulty"]?.GetValue<int>() ?? 0,
+    ["category"] = entry.Value!["CategoryRowName"]?.GetValue<string>() ?? "",
+    ["requiredEventFlag"] = entry.Value["RequiredEventFlag"]?.GetValue<string>() ?? "",
+    ["onlyUsedForSpreading"] = entry.Value["bOnlyUsedForSpreading"]?.GetValue<bool>() ?? false,
+    ["modifierTierGroup"] = entry.Value["ModifierTierGroup"]?.GetValue<string>() ?? "",
+    ["minimumDifficulty"] = entry.Value["MinimumTileDifficulty"]?.GetValue<int>() ?? 0,
     ["maximumDifficulty"] = entry.Value["MaximumTileDifficulty"]?.GetValue<int>() ?? 0,
     ["zoneThemes"] = (entry.Value["AllowedZoneThemes"]?.AsArray() ?? []).Select(AssetPath).ToList(),
     ["missionGenerator"] = entry.Value["MissionGenerator"] is { } generator ? AssetPath(generator) : "",

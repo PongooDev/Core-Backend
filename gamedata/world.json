@@ -530,39 +530,55 @@
   ],
   "missionAlerts": [
     {
+      "category": "GeneralCategory",
       "lootTier": 0,
       "lootTierGroup": "MissionAlert_Proto_01",
       "maximumDifficulty": 17,
       "minimumDifficulty": 5,
       "missionGenerator": "",
+      "modifierTierGroup": "",
       "name": "MissionAlert_1",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "",
       "zoneThemes": []
     },
     {
+      "category": "GeneralCategory",
       "lootTier": 0,
       "lootTierGroup": "MissionAlert_Proto_02",
       "maximumDifficulty": 27,
       "minimumDifficulty": 18,
       "missionGenerator": "",
+      "modifierTierGroup": "",
       "name": "MissionAlert_2",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "",
       "zoneThemes": []
     },
     {
+      "category": "GeneralCategory",
       "lootTier": 0,
       "lootTierGroup": "MissionAlert_Proto_03",
       "maximumDifficulty": 37,
       "minimumDifficulty": 28,
       "missionGenerator": "",
+      "modifierTierGroup": "",
       "name": "MissionAlert_3",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "",
       "zoneThemes": []
     },
     {
+      "category": "GeneralCategory",
       "lootTier": 0,
       "lootTierGroup": "MissionAlert_Proto_04",
       "maximumDifficulty": 40,
       "minimumDifficulty": 38,
       "missionGenerator": "",
+      "modifierTierGroup": "",
       "name": "MissionAlert_4",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "",
       "zoneThemes": []
     }
   ],

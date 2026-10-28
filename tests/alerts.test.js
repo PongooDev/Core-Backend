@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { inBuild } from "../src/builds/context.js";
 import { missionAlertTier } from "../src/gamedata/world.js";
 import { alertsRemaining, claimMissionAlertRewards, completeMissionAlert, emptyAlertRecord } from "../src/profiles/alerts.js";
 import { trackChanges } from "../src/profiles/changes.js";
@@ -32,9 +33,10 @@ test("alerts sit on missions whose tile and difficulty allow one, a region each,
     const missions = info.missions[index].availableMissions;
     const regions = availableMissionAlerts.map(({ tileIndex }) => data.regions.findIndex((region) => region.tileIndices.includes(tileIndex)));
     assert.equal(new Set(regions).size, regions.length, `${theaterId}: one alert per region`);
-    for (const { tileIndex, missionAlertRewards, availableUntil } of availableMissionAlerts) {
+    for (const { categoryName, tileIndex, missionAlertRewards, availableUntil } of availableMissionAlerts) {
       const mission = missions.find((candidate) => candidate.tileIndex === tileIndex);
       assert.ok(mission && data.tiles[tileIndex].canBeMissionAlert);
+      assert.equal(categoryName, "GeneralCategory");
       assert.equal(missionAlertRewards.tierGroupName, missionAlertTier(mission.missionDifficultyInfo.rowName).lootTierGroup);
       assert.ok(missionAlertRewards.items.some(({ itemType }) => itemType.startsWith("CardPack:zcp_mtx_")));
       assert.equal(availableUntil, "2026-10-19T23:59:59.999Z");
@@ -42,6 +44,40 @@ test("alerts sit on missions whose tile and difficulty allow one, a region each,
   });
   assert.ok(info.missionAlerts.some(({ availableMissionAlerts }) => availableMissionAlerts.length));
   assert.deepEqual(worldInfo(now).missionAlerts, info.missionAlerts, "the same all day");
+});
+
+test("1.7.2 and 1.8 add a storm alert a region (StormLowCategory, the map's storm swirl), on another mission (Core-Backend #91)", () => {
+  for (const changelist of ["3700114", "3724489"]) {
+    inBuild(changelist, () => {
+      const info = worldInfo(now);
+      let storms = 0;
+      info.missionAlerts.forEach(({ theaterId, availableMissionAlerts }, index) => {
+        const data = info.theaters[index];
+        const missions = info.missions[index].availableMissions;
+        assert.equal(new Set(availableMissionAlerts.map(({ tileIndex }) => tileIndex)).size, availableMissionAlerts.length, `${theaterId}: one alert a mission`);
+        for (const category of new Set(availableMissionAlerts.map(({ categoryName }) => categoryName))) {
+          const alerts = availableMissionAlerts.filter(({ categoryName }) => categoryName === category);
+          const regions = alerts.map(({ tileIndex }) => data.regions.findIndex((region) => region.tileIndices.includes(tileIndex)));
+          assert.equal(new Set(regions).size, regions.length, `${theaterId}: one ${category} alert per region`);
+        }
+        for (const { categoryName, tileIndex, missionAlertRewards } of availableMissionAlerts) {
+          const mission = missions.find((candidate) => candidate.tileIndex === tileIndex);
+          const tier = missionAlertTier(mission.missionDifficultyInfo.rowName, categoryName);
+          assert.equal(missionAlertRewards.tierGroupName, tier.lootTierGroup, `${changelist} ${categoryName}`);
+          if (categoryName !== "StormLowCategory") continue;
+          storms++;
+          assert.match(tier.lootTierGroup, /^MissionAlert_Storm_T\d\d$/);
+          assert.deepEqual(missionAlertRewards.items.map(({ itemType }) => itemType.replace(/_t0\d_/, "_t0N_")), ["CardPack:zcp_reagent_c_t0N_high"]);
+        }
+      });
+      assert.ok(storms >= 4, `${changelist}: ${storms} storm alerts`);
+    });
+  }
+  // The Storm rows wait for EventFlag.FirstStorm, which Core doesn't run; spreading-only rows are never alerts.
+  inBuild("3724489", () => {
+    assert.equal(missionAlertTier("Theater_Normal_Zone1", "StormCategory"), undefined);
+    assert.equal(missionAlertTier("Theater_Normal_Zone1", "StormLowCategory").lootTierGroup, "MissionAlert_Storm_T06");
+  });
 });
 
 test("three alerts a day: each takes the oldest claim time, a done alert doesn't count twice", () => {
