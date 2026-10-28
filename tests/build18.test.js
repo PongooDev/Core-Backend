@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { athenaCosmetics } from "../src/gamedata/athena.js";
+import { createProfileStore } from "../src/profiles/store.js";
 import { get, send, startBackend, userLogin } from "./helpers.js";
 
 const agent18 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-Live-CL-3724489";
@@ -131,6 +132,61 @@ test("the Battle Royale banner (SetBattleRoyaleBanner) is one the player owns, k
 
     // A banner the player doesn't own (or no such row) is refused.
     assert.equal((await set("NoSuchBanner", color)).body.errorCode, "errors.com.epicgames.fortnite.item_not_found");
+  } finally {
+    backend.close();
+  }
+});
+
+// Core-Backend #94: 1.8's client queries only another player's profile0 (sub_61C940), so their profile0 brings their
+// athena along for the lobby's player menu banner, whichever side of the party reads it.
+test("another 1.8 player's profile0 brings their athena along, so a party member's menu shows their banner", async () => {
+  const backend = await startBackend();
+  try {
+    const leader = await userLogin(backend.port, "Leader18");
+    const member = await userLogin(backend.port, "Member18");
+    const loner = await userLogin(backend.port, "Loner18");
+    const publicQuery = (viewer, owner, profileId, agent = agent18) => send({
+      host: "127.0.0.1",
+      port: backend.port,
+      method: "POST",
+      path: `/fortnite/api/game/v2/profile/${owner.accountId}/public/QueryProfile?profileId=${profileId}&rvn=-1`,
+      headers: { "User-Agent": agent, Authorization: `bearer ${viewer.token}`, "Content-Type": "application/json", "Content-Length": 2 }
+    }, "{}");
+
+    const banners = {};
+    for (const [player, index] of [[leader, 0], [member, 1]]) {
+      const account = (await command(backend.port, player, "QueryProfile", "profile0")).body.profileChanges[0].profile;
+      const owned = (type) => Object.values(account.items).map((item) => item.templateId).filter((id) => id.startsWith(`${type}:`)).map((id) => id.split(":")[1]);
+      banners[player.accountId] = [owned("HomebaseBannerIcon")[index + 1], owned("HomebaseBannerColor")[index + 1]];
+      const [homebaseBannerIconId, homebaseBannerColorId] = banners[player.accountId];
+      assert.equal((await command(backend.port, player, "SetBattleRoyaleBanner", "athena", { homebaseBannerIconId, homebaseBannerColorId })).status, 200);
+      // Their daily challenges.
+      assert.equal((await command(backend.port, player, "ClientQuestLogin", "athena")).status, 200);
+    }
+    assert.notDeepEqual(banners[leader.accountId], banners[member.accountId]);
+
+    for (const [viewer, owner] of [[member, leader], [leader, member]]) {
+      const response = await publicQuery(viewer, owner, "profile0");
+      assert.equal(response.status, 200);
+      assert.equal(response.body.profileId, "profile0");
+      const athena = response.body.multiUpdate.find((update) => update.profileId === "athena");
+      assert.equal(athena.profileChanges[0].changeType, "fullProfileUpdate");
+      const { banner_icon, banner_color } = athena.profileChanges[0].profile.stats.attributes;
+      assert.deepEqual([banner_icon, banner_color], banners[owner.accountId]);
+      const own = athenaOf((await command(backend.port, owner, "QueryProfile", "athena")).body);
+      assert.equal(athena.profileRevision, own.profileRevision);
+      // Their cosmetics go along, their challenges don't.
+      const templates = (profile) => Object.values(profile.items).map((item) => item.templateId);
+      assert.ok(templates(own.profileChanges[0].profile).some((id) => id.startsWith("Quest:")));
+      assert.deepEqual(templates(athena.profileChanges[0].profile), templates(own.profileChanges[0].profile).filter((id) => !id.startsWith("Quest:")));
+    }
+
+    // The player's own profile0 and other profiles go alone, as do older builds' and a player who has no athena yet.
+    assert.equal((await command(backend.port, leader, "QueryProfile", "profile0")).body.multiUpdate, undefined);
+    assert.equal((await publicQuery(member, leader, "theater0")).body.multiUpdate, undefined);
+    assert.equal((await publicQuery(member, leader, "profile0", "game=Fortnite, engine=UE4, build=++Fortnite+Release-Cert-CL-3700114")).body.multiUpdate, undefined);
+    assert.equal((await publicQuery(member, loner, "profile0")).body.multiUpdate, undefined);
+    assert.equal(createProfileStore(backend.dataDir).exists(loner.accountId, "athena"), false);
   } finally {
     backend.close();
   }

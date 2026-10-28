@@ -1,8 +1,9 @@
 import express from "express";
 import { requireAuth, requireDedicatedServer, requireOwnAccount } from "../../accounts/auth.js";
 import { requireLoopback } from "../../admin/local.js";
+import { currentBuild } from "../../builds/context.js";
 import { McpError, sendError } from "../../errors.js";
-import { recordUnknown } from "../../log.js";
+import { log, recordUnknown } from "../../log.js";
 import { isKnownProfile } from "../../profiles/ids.js";
 import { lockTimeout } from "../../profiles/locks.js";
 import { settleCloudSaves } from "../../profiles/outposts.js";
@@ -41,7 +42,34 @@ export function notifyProfiles(context, session) {
   }
 }
 
-function runCommand(commands, context, { deliverMail = false, deliverScores = false, locks = null, notify = false } = {}) {
+// Another player's Battle Royale banner (the lobby's player menu: PlayerBanner's SetBannerIconAndColorFromProfile,
+// UFortMcpContext::GetLoadoutForPlayer, 1.8's sub_709B80) comes from their athena profile in the profile group the
+// viewer's client keeps for them. 1.8's UFortRegisteredPlayerInfo makes that group with an athena profile in it
+// (sub_617700) but queries athena only for its own player or on a server (sub_61C940: NetMode or IsLocalController);
+// for a party member it queries profile0 alone. Their athena stayed empty and its banner ids None, what the widget had
+// just cleared to (ClearBannerState), so it kept the banner it last drew: the viewer's own. The client applies a
+// response's multiUpdate to the group's profiles by profileId (sub_3C3D970), so another player's profile0 now brings
+// their athena along: its stats and cosmetics, the loadout's (sub_41B610 reads banner_icon, banner_color and the
+// favorite_* items), without their challenges.
+const firstAthenaBuild = 3724489;
+
+function publicCompanions(profileId) {
+  return profileId === "profile0" && Number(currentBuild()) >= firstAthenaBuild ? ["athena"] : [];
+}
+
+function withoutQuests(update) {
+  for (const change of update.profileChanges) {
+    if (change.changeType !== "fullProfileUpdate") continue;
+    const items = Object.entries(change.profile.items).filter(([, item]) => !item.templateId.toLowerCase().startsWith("quest:"));
+    change.profile = { ...change.profile, items: Object.fromEntries(items) };
+  }
+}
+
+// companions(profileId): the account's other profiles that go along whole (session.response). logReads logs who read
+// whose profile0, which tells a party's two sides apart.
+function runCommand(commands, context, {
+  deliverMail = false, deliverScores = false, locks = null, notify = false, companions = () => [], logReads = false
+} = {}) {
   const { profiles, dataDir } = context;
   return (req, res) => {
     const profileId = String(req.params.profileId ?? req.query.profileId ?? "");
@@ -85,7 +113,14 @@ function runCommand(commands, context, { deliverMail = false, deliverScores = fa
     // on the first earnScore it gets.
     if (deliverScores) notifications.unshift(...(context.heldScores?.take(req.params.accountId) ?? []));
 
-    const result = session.response(profileId, Number(req.query.rvn ?? -1), notifications);
+    const whole = companions(profileId);
+    const result = session.response(profileId, Number(req.query.rvn ?? -1), notifications, whole);
+    const companionUpdates = (result.multiUpdate ?? []).filter((update) => whole.includes(update.profileId));
+    for (const update of companionUpdates) withoutQuests(update);
+    if (logReads && profileId === "profile0") {
+      const sent = [profileId, ...companionUpdates.map((update) => update.profileId)];
+      log("MCP", `${req.session.accountId ?? req.session.clientId} reads ${req.params.accountId}'s ${sent.join(" and ")}`);
+    }
     if (locks) {
       trackLock(locks, req);
       withLockExpiration(locks, req.params.accountId, result);
@@ -118,9 +153,10 @@ export function profileRoutes(context) {
   router.post("/fortnite/api/game/v2/profile/:accountId/client/:command",
     requireAuth(context.tokens), requireOwnAccount, runCommand(clientCommands, context, { deliverMail: true }));
 
-  // Other accounts' profiles (a party member's banner and heroes), read only.
+  // Other accounts' profiles (a party member's banner, power and heroes; from 1.8 their athena with profile0), read only.
   router.post("/fortnite/api/game/v2/profile/:accountId/public/:command",
-    requireAuth(context.tokens), requireExistingAccount(context), runCommand(publicCommands, context));
+    requireAuth(context.tokens), requireExistingAccount(context),
+    runCommand(publicCommands, context, { companions: publicCompanions, logReads: true }));
 
   // The gameserver acting for its players, with its DedicatedServer client token (UMcpProfileGroup::SendRequestNow's
   // dedicated-server branch, restored by CoreV2).

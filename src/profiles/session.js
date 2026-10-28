@@ -71,11 +71,18 @@ export function openSession(profiles, accountId, { setUp = true } = {}) {
       }));
     },
 
-    response(profileId, clientRevision, notifications = []) {
+    // whole: other profiles of the account's that go along in full (multiUpdate), changed or not; one it doesn't have
+    // is left out rather than made.
+    response(profileId, clientRevision, notifications = [], whole = []) {
       const result = { ...update(profileId, clientRevision), serverTime: new Date().toISOString() };
       const others = [...opened]
         .filter(([id, { tracker }]) => id !== profileId && tracker.changes.length)
         .map(([id, { baseRevision }]) => update(id, baseRevision));
+      for (const id of whole) {
+        if (id === profileId || others.some((other) => other.profileId === id) || !this.hasProfile(id)) continue;
+        this.profile(id);
+        others.push(update(id, null));
+      }
       if (others.length) result.multiUpdate = others;
       if (notifications.length) result.notifications = notifications;
       return result;
