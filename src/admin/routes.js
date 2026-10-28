@@ -25,6 +25,8 @@ import { notifyProfiles } from "../services/mcp/profile.js";
 import { categories, currencies, describeItem, isSingleItem, searchCatalog, stormShields } from "./describe.js";
 import { requireLoopback, requirePanelRequest } from "./local.js";
 
+import { isServerAccountName, validatePassword } from "../accounts/password.js";
+
 const here = path.dirname(fileURLToPath(import.meta.url));
 const panel = path.join(here, "panel.html");
 const root = path.join(here, "..", "..");
@@ -58,7 +60,7 @@ const sum = (profile, templates) => Object.values(profile?.items ?? {})
   .reduce((total, item) => total + item.quantity, 0);
 
 export function adminRoutes(context) {
-  const { accounts, profiles, tokens, sessions, xmpp, stomp, dataDir } = context;
+  const { accounts, profiles, tokens, sessions, xmpp, stomp, settings, network, dataDir, resetTokens } = context;
   const router = express.Router();
   router.use("/admin", requireLoopback, requirePanelRequest);
 
@@ -80,7 +82,9 @@ export function adminRoutes(context) {
       vbucks: profile ? sum(profile, currencies[0].templates) : 0,
       tutorialCompleted: profile ? tutorialCompleted(profile) : false,
       online: online(account.id),
-      banned: account.banned ?? null
+      banned: account.banned ?? null,
+      hasPassword: Boolean(account.password),
+      isServer: isServerAccountName(account.displayName)
     };
   }
 
@@ -409,6 +413,111 @@ export function adminRoutes(context) {
     kick(account);
     accounts.remove(account);
     res.json({ deleted: account.id });
+  });
+
+  // Admin password reset: sets or replaces the password for any player account.
+  router.post("/admin/api/accounts/:accountId/password/reset", async (req, res) => {
+    const account = accounts.get(req.params.accountId);
+    if (!account) return notFound(res, req.originalUrl);
+    const newPassword = String(req.body?.newPassword ?? "").trim();
+    const error = validatePassword(newPassword);
+    if (error) return invalid(res, error);
+    await accounts.setPassword(account, newPassword);
+    kick(account);
+    res.json(details(account));
+  });
+
+  function portalUrl(req) {
+    const net = network?.settings?.() ?? {};
+    const res = network?.resolution?.() ?? {};
+    const port = network?.listening?.port || req.socket?.localPort || 5595;
+    const protocol = req.protocol || "http";
+
+    const publicHost = net.publicAddress ? (res.address || net.publicAddress) : (res.address || null);
+    if (publicHost) {
+      return `${protocol}://${publicHost}:${port}/register`;
+    }
+    return `${protocol}://${req.get("host")}/register`;
+  }
+
+  function resetPasswordUrl(req, token) {
+    const net = network?.settings?.() ?? {};
+    const res = network?.resolution?.() ?? {};
+    const port = network?.listening?.port || req.socket?.localPort || 5595;
+    const protocol = req.protocol || "http";
+
+    const publicHost = net.publicAddress ? (res.address || net.publicAddress) : (res.address || null);
+    if (publicHost) {
+      return `${protocol}://${publicHost}:${port}/reset-password?token=${token}`;
+    }
+    return `${protocol}://${req.get("host")}/reset-password?token=${token}`;
+  }
+
+  // Admin generates a single-use, 24-hour Password Reset Link for an account
+  router.post("/admin/api/accounts/:accountId/password-reset-link", (req, res) => {
+    const account = accounts.get(req.params.accountId);
+    if (!account) return notFound(res, req.originalUrl);
+    if (!resetTokens?.createToken) return invalid(res, "Reset token service not available");
+    const entry = resetTokens.createToken(account);
+    res.json({
+      success: true,
+      token: entry.token,
+      url: resetPasswordUrl(req, entry.token),
+      expiresAt: entry.expiresAt
+    });
+  });
+
+  // Hosting IPs configuration (for dedicated server passwordless bypass)
+  const getHostingIps = (req, res) => {
+    const current = settings?.get?.() ?? {};
+    res.json({ allowedHostingIps: current.allowedHostingIps ?? ["127.0.0.1", "::1"] });
+  };
+  const addHostingIp = (req, res) => {
+    const ip = String(req.body?.ip ?? "").trim();
+    if (!ip) return invalid(res, "IP address is required");
+    const updated = settings?.addHostingIp?.(ip) ?? settings?.get?.();
+    res.json({ allowedHostingIps: updated.allowedHostingIps });
+  };
+  const removeHostingIp = (req, res) => {
+    const ip = decodeURIComponent(req.params.ip).trim();
+    const updated = settings?.removeHostingIp?.(ip) ?? settings?.get?.();
+    res.json({ allowedHostingIps: updated.allowedHostingIps });
+  };
+  router.get("/admin/api/sessions/hosting-ips", getHostingIps);
+  router.get("/admin/api/settings/hosting-ips", getHostingIps);
+  router.post("/admin/api/sessions/hosting-ips", addHostingIp);
+  router.post("/admin/api/settings/hosting-ips", addHostingIp);
+  router.delete("/admin/api/sessions/hosting-ips/:ip", removeHostingIp);
+  router.delete("/admin/api/settings/hosting-ips/:ip", removeHostingIp);
+
+  // Get current server settings
+  router.get("/admin/api/settings", (req, res) => {
+    const current = settings?.get?.() ?? {};
+    const net = network?.settings?.() ?? {};
+    const resInfo = network?.resolution?.() ?? {};
+    res.json({
+      ...current,
+      publicAddress: net.publicAddress ? (resInfo.address || net.publicAddress) : (resInfo.address || null),
+      portalUrl: portalUrl(req)
+    });
+  });
+
+  // Update server settings
+  router.post("/admin/api/settings", (req, res) => {
+    if (!settings?.update) return invalid(res, "Settings store not available");
+    const updated = settings.update({
+      requirePassword: req.body?.requirePassword,
+      allowRegistration: req.body?.allowRegistration,
+      allowAutoRegistration: req.body?.allowAutoRegistration,
+      allowedHostingIps: req.body?.allowedHostingIps
+    });
+    const net = network?.settings?.() ?? {};
+    const resInfo = network?.resolution?.() ?? {};
+    res.json({
+      ...updated,
+      publicAddress: net.publicAddress ? (resInfo.address || net.publicAddress) : (resInfo.address || null),
+      portalUrl: portalUrl(req)
+    });
   });
 
   router.get("/admin/api/sessions", (req, res) => {

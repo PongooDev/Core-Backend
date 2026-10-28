@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { readJson, writeJson } from "../json-file.js";
+import { hashPassword, isServerAccountName, validatePassword } from "./password.js";
 
 // Every account has an email, <name>@core.com (Core-Backend #64), as Epic's accounts did: its own account info carries it.
 // An address can't hold whitespace, so a name's spaces are left out.
@@ -55,6 +56,36 @@ export function createAccountStore(dataDir) {
         remember(account);
       }
       return account;
+    },
+
+    async createWithPassword(displayName, plainPassword) {
+      if (byName.has(displayName.toLowerCase())) return null;
+      if (!plainPassword || typeof plainPassword !== "string" || !plainPassword.trim()) {
+        throw new Error("A non-empty password is required to create an account");
+      }
+      if (isServerAccountName(displayName)) {
+        throw new Error("Server account names (CoreServer{n} or Server{n}) cannot be created with a password");
+      }
+      const account = {
+        id: crypto.randomBytes(16).toString("hex"),
+        displayName,
+        email: accountEmail(displayName),
+        created: new Date().toISOString(),
+        password: await hashPassword(plainPassword)
+      };
+      save(account);
+      remember(account);
+      return account;
+    },
+
+    async setPassword(account, plainPassword) {
+      account.password = await hashPassword(plainPassword);
+      save(account);
+    },
+
+    clearPassword(account) {
+      delete account.password;
+      save(account);
     },
 
     recordLogin(account) {

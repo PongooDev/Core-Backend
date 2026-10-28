@@ -138,9 +138,7 @@ Friends on other PCs can log in to your backend and join your gameservers.
 friend's backend**, enter the address, **Test connection**, Save, and Play. Without the launcher, start the game with
 `-CoreBackend=http://<address>:<port>` (CoreRedirect.dll) and `-httpproxy=<address>:<port>`.
 
-Your friend gets an account on your backend, named after their player name. Core doesn't check passwords, so anyone who
-can reach the port can log in with any name: only share the address with people you trust (Players → Account can kick
-and ban). The admin panel and the launcher's `/core/api` routes still only answer on your PC; the one route other
+Your friend gets an account on your backend, named after their player name. Password requirements can be toggled in the admin panel's **Settings** tab (`requirePassword`, disabled by default). Accounts that have a password configured are always verified regardless of `requirePassword`; when `requirePassword` is turned on, passwordless accounts cannot log in until an admin sets a password or issues a reset link. Auto-registration (`allowAutoRegistration`, enabled by default) creates an account for any new name on first login: when `requirePassword` is on, it creates an account for any new name if provided with a valid 8+ character password; when off, it creates a passwordless account with whatever password was sent (such as the launcher's `Core` default). Dedicated gameservers (`CoreServer{n}` / `Server{n}`) bypass password checks when connecting from loopback, with `DedicatedServer` credentials, or from an IP in the **Trusted Hosting IPs** whitelist in Settings (players should not choose server names, as any login from loopback or a whitelisted hosting IP with those names is treated as a dedicated server). The admin panel and the launcher's `/core/api` routes still only answer on your PC; the one route other
 machines get is `GET /core/api/status` (`{"name":"Core-Backend","version":...}`), which the launcher uses to check
 the connection.
 
