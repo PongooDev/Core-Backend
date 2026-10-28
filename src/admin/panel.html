@@ -1913,6 +1913,7 @@
               btn("Refill rest XP", () => post("rest-xp/refill", {}, "Rest XP refilled"), "ghost small"),
               btn("Reset alert quota", () => post("mission-alerts/reset", {}, "Mission alert quota reset"), "ghost small")))),
         founders(a),
+        locker(a),
         el("h2", { style: "margin:22px 0 10px", text: "Currencies and resources" }),
         el("div", { class: "grid cols-3" }, a.currencies.map((currency) => balance(currency))),
         a.sessions.length ? [el("h2", { style: "margin:22px 0 10px", text: "In game" }), sessionTable(a.sessions, false)] : null);
@@ -1938,6 +1939,31 @@
             }
           }, "primary", { disabled: !higher.length })),
         el("p", { class: "note", text: "Each edition up to the one chosen adds its \"<Edition> Edition Rewards!\" quest (and Limited and Ultimate their hero bundles), as Epic's store did. They complete with the Loot Llamas store tutorial and the player claims them in the game." }));
+    }
+
+    // Battle Royale's full locker (Core-Backend #97): every cosmetic and banner any build has, and taking back what that
+    // gave (what the player bought or earned since stays).
+    function locker(a) {
+      const { cosmetics, banners, granted } = a.locker;
+      const complete = cosmetics.owned >= cosmetics.total && banners.owned >= banners.total;
+      const counts = ({ cosmetics: c, banners: b }) => `${fmt(c)} cosmetic${c === 1 ? "" : "s"} and ${fmt(b)} banner${b === 1 ? "" : "s"}`;
+      const run = (path, message) => act(api(`/admin/api/accounts/${a.id}/locker/${path}`, {})).then((account) => setAccount(account, account && message(account)));
+      return el("div", { style: "margin-top:22px" },
+        el("h2", { style: "margin-bottom:10px", text: "Battle Royale locker" }),
+        el("div", { class: "actions" },
+          chip(`${fmt(cosmetics.owned)} / ${fmt(cosmetics.total)} cosmetics`, cosmetics.owned >= cosmetics.total ? "good" : ""),
+          chip(`${fmt(banners.owned)} / ${fmt(banners.total)} banners`, banners.owned >= banners.total ? "good" : ""),
+          btn(complete ? "Full locker owned" : "Grant full locker", () => {
+            if (confirm(`Give ${a.displayName} every Battle Royale cosmetic and banner they don't own yet?`)) {
+              run("grant-all", (account) => `Gave ${a.displayName} ${counts(account.granted)}`);
+            }
+          }, "primary", { disabled: complete }),
+          btn(`Remove granted${granted ? ` (${fmt(granted)})` : ""}`, () => {
+            if (confirm(`Take back the ${fmt(granted)} cosmetics and banners the full locker gave ${a.displayName}? What they bought or earned since stays.`)) {
+              run("remove-granted", (account) => `Took back ${counts(account.removed)}`);
+            }
+          }, "danger", { disabled: !granted })),
+        el("p", { class: "note", text: "Outfits, back blings, pickaxes, gliders, emotes, loading screens and the rest of every build's locker, and every banner for the banner editor. Equipped items that are taken back go back to the default." }));
     }
 
     function balance(currency) {

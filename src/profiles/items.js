@@ -177,7 +177,14 @@ export function grantItem(session, templateId, quantity, options = {}) {
   // A skill tree node or a banner is owned or not; quest rewards can grant one the player already bought.
   const owned = ownedOnceTemplate(templateId);
   if (owned) {
-    if (findItem(session.profile("profile0").profile, owned)) return [];
+    const account = session.profile("profile0").profile;
+    if (findItem(account, owned)) {
+      // The panel's full locker gave it first (profiles/athena.js): it's the player's own now, and stays if that's undone.
+      if (account.coreGrantedBanners?.some((id) => id.toLowerCase() === owned.toLowerCase())) {
+        account.coreGrantedBanners = account.coreGrantedBanners.filter((id) => id.toLowerCase() !== owned.toLowerCase());
+      }
+      return [];
+    }
     templateId = owned;
     quantity = 1;
   }

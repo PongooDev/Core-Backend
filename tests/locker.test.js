@@ -5,7 +5,8 @@ import os from "node:os";
 import path from "node:path";
 import { inBuild } from "../src/builds/context.js";
 import { athenaCosmetics } from "../src/gamedata/athena.js";
-import { addSeasonXp, grantCosmetic } from "../src/profiles/athena.js";
+import { bannerIds } from "../src/gamedata/banners.js";
+import { addSeasonXp, grantCosmetic, grantFullLocker, removeFullLocker } from "../src/profiles/athena.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
 import { dedicatedServerToken, post, send, startBackend, userLogin } from "./helpers.js";
@@ -153,4 +154,81 @@ test("lockers lose the Duo and Squad Umbrellas, and a glider slot holding one ge
   // Nothing gives them back: not a purchase or grant, and the next load changes nothing.
   assert.equal(grantCosmetic(session, "AthenaGlider:duo_umbrella"), null);
   assert.equal(openSession(store(), accountId).profile("athena").profile.rvn, rvn);
+})));
+
+// Core-Backend #97: the admin panel's full locker, every cosmetic and banner of any build, and taking it back.
+test("the admin panel gives the full locker and takes back only what it gave", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "FullLocker");
+    const admin = (action) => post(backend.port, `/admin/api/accounts/${player.accountId}/locker/${action}`, undefined, {});
+    const account = async () => updateOf((await command(backend.port, player, "QueryProfile", "profile0")).body, "profile0").profileChanges[0].profile;
+    const before = await athena(backend.port, player);
+    const revision = async () => (await command(backend.port, player, "QueryProfile", "athena")).body.profileRevision;
+    const beforeRvn = await revision();
+    const lockerIds = inBuild("3724489", () => Object.keys(athenaCosmetics()))
+      .filter((id) => !/cid_00\d_athena_commando_\w_default|duo_umbrella|squad_umbrella/i.test(id));
+    const bannerRows = inBuild("3724489", bannerIds);
+    const icon = bannerRows.find((id) => /^HomebaseBannerIcon:FounderTier/.test(id));
+    assert.ok(icon && !Object.values((await account()).items).some((item) => item.templateId === icon));
+
+    // Only from the panel's own page.
+    const rebound = await send({ host: "127.0.0.1", port: backend.port, method: "POST", path: `/admin/api/accounts/${player.accountId}/locker/grant-all`,
+      headers: { Host: "attacker.example", "Content-Type": "application/json" } }, "{}");
+    assert.equal(rebound.status, 403);
+
+    const given = await admin("grant-all");
+    assert.equal(given.status, 200);
+    const starters = Object.keys(before.items).filter((id) => before.items[id].templateId === id);
+    assert.equal(given.body.granted.cosmetics, lockerIds.length - starters.length);
+    assert.ok(given.body.granted.banners > 0);
+    const { cosmetics, banners, granted } = given.body.locker;
+    assert.deepEqual([cosmetics.owned, banners.owned], [cosmetics.total, banners.total]);
+    assert.equal(granted, given.body.granted.cosmetics + given.body.granted.banners);
+
+    // The 1.8 client sees every cosmetic and banner at a new revision.
+    const full = await athena(backend.port, player);
+    for (const id of lockerIds) assert.ok(full.items[id], id);
+    const accountItems = Object.values((await account()).items).map((item) => item.templateId.toLowerCase());
+    for (const id of bannerRows) assert.ok(accountItems.includes(id.toLowerCase()), id);
+    assert.ok(await revision() > beforeRvn);
+    assert.deepEqual((await admin("grant-all")).body.granted, { cosmetics: 0, banners: 0 });
+
+    // Equipped, and a win that earns the umbrellas the full locker gave.
+    assert.equal((await command(backend.port, player, "EquipBattleRoyaleCustomization", "athena",
+      { slotName: "Glider", itemToSlot: "AthenaGlider:glider_prismatic" })).status, 200);
+    assert.equal((await command(backend.port, player, "SetBattleRoyaleBanner", "athena",
+      { homebaseBannerIconId: icon.split(":")[1], homebaseBannerColorId: "DefaultColor1" })).status, 200);
+    const dedicated = await dedicatedServerToken(backend.port);
+    await post(backend.port, "/fortnite/api/game/v2/battleroyale/recordresults", dedicated, { playlistId: 2, results: [
+      { accountId: player.accountId, place: 1, kills: 1, secondsAlive: 600 }] });
+
+    const removed = await admin("remove-granted");
+    assert.equal(removed.status, 200);
+    assert.deepEqual(removed.body.removed, { cosmetics: given.body.granted.cosmetics - 2, banners: given.body.granted.banners });
+    assert.equal(removed.body.locker.granted, 0);
+    const after = await athena(backend.port, player);
+    assert.deepEqual(Object.keys(after.items).filter((id) => !id.startsWith("Quest:") && after.items[id].templateId === id).sort(),
+      [...starters, "AthenaGlider:solo_umbrella", "AthenaGlider:founderumbrella"].sort());
+    assert.equal(after.stats.attributes.favorite_glider, "AthenaGlider:defaultglider");
+    assert.equal(after.stats.attributes.banner_icon, "StandardBanner1");
+    assert.ok(!Object.values((await account()).items).some((item) => item.templateId === icon));
+    assert.deepEqual((await admin("remove-granted")).body.removed, { cosmetics: 0, banners: 0 });
+  } finally {
+    backend.close();
+  }
+});
+
+test("what giveAllCosmetics gave stays once the panel gives the full locker", () => withStore((dataDir) => inBuild("3724489", () => {
+  const locker = (settings) => openSession(createProfileStore(dataDir, settings), "blanketlocker");
+  let session = locker({ giveAllCosmetics: true });
+  const total = Object.keys(session.profile("athena").profile.items).length;
+  const held = Object.values(session.profile("profile0").profile.items).filter((item) => /^HomebaseBanner/.test(item.templateId)).length;
+  assert.deepEqual(grantFullLocker(session), { cosmetics: 0, banners: bannerIds().length - held });
+  session.commit();
+  for (const profileId of ["athena", "profile0"]) createProfileStore(dataDir).save(session.profile(profileId).profile);
+
+  session = locker({});
+  assert.equal(Object.keys(session.profile("athena").profile.items).length, total);
+  assert.equal(removeFullLocker(session).cosmetics, total - 6);
 })));

@@ -13,6 +13,7 @@ import { readGameData } from "../gamedata/read.js";
 import { recentLogs } from "../log.js";
 import { sessionSummary } from "../matchmaking/sessions.js";
 import { alertsRemaining, emptyAlertRecord, withQuotaSlots } from "../profiles/alerts.js";
+import { fullLockerState, grantFullLocker, removeFullLocker } from "../profiles/athena.js";
 import { levelRest, restBalance, restValue } from "../profiles/boosts.js";
 import { foundersEditionOf, foundersEditions, setFoundersEdition } from "../profiles/founders.js";
 import { findItem, grantItem, worldStacksNeeded } from "../profiles/items.js";
@@ -146,6 +147,8 @@ export function adminRoutes(context) {
       // The book profiles' slotted items; their page items are the unlocked pages.
       collectionBook: [...inventory(loadIfExists(account.id, "collection_book_people0")), ...inventory(loadIfExists(account.id, "collection_book_schematics0"))]
         .filter((item) => !item.templateId.toLowerCase().startsWith("collectionbookpage:")),
+      // Battle Royale's full locker (profiles/athena.js): what the account holds of every cosmetic and banner.
+      locker: fullLockerState(loadIfExists(account.id, "athena"), profile),
       sessions: sessionsOf(account.id),
       profiles: profiles.ids(account.id)
     };
@@ -355,6 +358,17 @@ export function adminRoutes(context) {
     if (error) return invalid(res, error);
     return { granted };
   }));
+
+  // Battle Royale's full locker (Core-Backend #97): every cosmetic and banner of any build that the account lacks, and
+  // taking back what that gave. Answers with how many were given or taken. What only Core's bookkeeping noted (which
+  // items the panel gave) is saved even when no item changed.
+  const lockerChange = (run) => change(({ session }) => {
+    const result = run(session);
+    for (const profileId of ["athena", "profile0"]) profiles.save(session.profile(profileId).profile);
+    return result;
+  });
+  router.post("/admin/api/accounts/:accountId/locker/grant-all", lockerChange((session) => ({ granted: grantFullLocker(session) })));
+  router.post("/admin/api/accounts/:accountId/locker/remove-granted", lockerChange((session) => ({ removed: removeFullLocker(session) })));
 
   router.post("/admin/api/accounts/:accountId/skip-tutorial", change(({ session }) => skipTutorial(session)));
 

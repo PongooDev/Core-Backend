@@ -1,16 +1,18 @@
 import { activeBuild, buildGameData, dataBuilds } from "./read.js";
 
-// The template ids a build's data has: items, quests, skill tree nodes and banners, lower-cased.
+// The template ids a build's data has: items, quests, skill tree nodes, banners and Battle Royale's cosmetics, lower-cased.
 function templateIds(build) {
   const read = (name) => buildGameData(build, name, {});
   const { nodes = {} } = read("homebasenodes");
   const { icons = {}, colors = {} } = read("banners");
+  const { cosmetics = {} } = read("athena");
   return new Set([
     ...Object.keys(read("items")),
     ...Object.keys(read("quests")).map((id) => `Quest:${id}`),
     ...Object.keys(nodes).map((id) => `HomebaseNode:${id}`),
     ...Object.keys(icons).map((row) => `HomebaseBannerIcon:${row}`),
-    ...Object.keys(colors).map((row) => `HomebaseBannerColor:${row}`)
+    ...Object.keys(colors).map((row) => `HomebaseBannerColor:${row}`),
+    ...Object.keys(cosmetics)
   ].map((id) => id.toLowerCase()));
 }
 

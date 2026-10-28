@@ -1,9 +1,12 @@
 import crypto from "node:crypto";
+import { inBuild } from "../builds/context.js";
 import { McpError } from "../errors.js";
 import { athenaCosmetics, athenaDailyIds, athenaObjectiveStat, dailyWeight, getAthenaQuest, seasonLevels } from "../gamedata/athena.js";
-import { bannerTemplateId } from "../gamedata/banners.js";
+import { bannerIds, bannerTemplateId } from "../gamedata/banners.js";
+import { dataBuilds } from "../gamedata/read.js";
 import { log } from "../log.js";
 import { placements } from "../stats/store.js";
+import { defaultBanner } from "./defaults.js";
 import { findItem } from "./items.js";
 import { grant } from "./progress.js";
 
@@ -151,6 +154,7 @@ export function grantCosmetic(session, templateId) {
   const tracker = session.profile("athena");
   const { profile } = tracker;
   if (blanket(profile).some((held) => sameId(held, id))) profile.coreBlanketCosmetics = blanket(profile).filter((held) => !sameId(held, id));
+  if (adminGranted(profile).some((held) => sameId(held, id))) profile.coreGrantedCosmetics = adminGranted(profile).filter((held) => !sameId(held, id));
   if (findItem(profile, id)) return null;
   addCosmetic(tracker, id, false);
   log("Battle Royale", `${session.accountId} got ${id}`);
@@ -196,6 +200,102 @@ export function setUpAthena(session) {
   for (const slot of emptyDefaultSlots(profile)) {
     tracker.setStat(slots[slot][1], defaultItemId(profile, slot));
   }
+}
+
+// The full locker (Core-Backend #97), from the admin panel: every locker cosmetic and every banner the account lacks.
+// Accounts are shared by every build, so it is what any build's data has (a build's client isn't sent templates only
+// other builds have, gamedata/templates.js). profile.coreGrantedCosmetics (athena) and coreGrantedBanners (profile0), Core's
+// and never sent to the client, list what it gave that the player hasn't bought or earned since, so it can be taken back
+// (removeFullLocker). What giveAllCosmetics gave counts as the panel's from then on: it stays when the host turns that off.
+const adminGranted = (profile) => profile.coreGrantedCosmetics ?? [];
+const adminBanners = (profile) => profile.coreGrantedBanners ?? [];
+
+// ids(): a build's template ids. Every data build's, each once (as the first build to have it spells it).
+function inEveryBuild(ids) {
+  const found = new Map();
+  for (const build of dataBuilds) {
+    for (const id of inBuild(build, ids)) if (!found.has(id.toLowerCase())) found.set(id.toLowerCase(), id);
+  }
+  return [...found.values()];
+}
+
+// The panel's count of what the full locker holds and what the account has of it. Reads the profiles as saved.
+export function fullLockerState(athena, account) {
+  const cosmetics = inEveryBuild(lockerCosmetics);
+  const banners = inEveryBuild(bannerIds);
+  const owned = (profile, ids) => (profile ? ids.filter((id) => findItem(profile, id)).length : 0);
+  return {
+    cosmetics: { owned: owned(athena, cosmetics), total: cosmetics.length },
+    banners: { owned: owned(account, banners), total: banners.length },
+    granted: (athena ? adminGranted(athena).length : 0) + (account ? adminBanners(account).length : 0)
+  };
+}
+
+// Returns how many cosmetics and banners were added.
+export function grantFullLocker(session) {
+  const tracker = session.profile("athena");
+  const { profile } = tracker;
+  let cosmetics = 0;
+  const given = [];
+  for (const templateId of inEveryBuild(lockerCosmetics)) {
+    const fromBlanket = blanket(profile).some((held) => sameId(held, templateId));
+    const held = findItem(profile, templateId);
+    if (held && !fromBlanket) continue;
+    if (fromBlanket) profile.coreBlanketCosmetics = blanket(profile).filter((id) => !sameId(id, templateId));
+    if (!held) {
+      addCosmetic(tracker, templateId, true);
+      cosmetics += 1;
+    }
+    given.push(templateId);
+  }
+  profile.coreGrantedCosmetics = [...adminGranted(profile), ...given];
+
+  const account = session.profile("profile0");
+  const banners = inEveryBuild(bannerIds).filter((templateId) => !findItem(account.profile, templateId));
+  for (const templateId of banners) account.addItem(crypto.randomUUID(), { templateId, attributes: { item_seen: 1 }, quantity: 1 });
+  account.profile.coreGrantedBanners = [...adminBanners(account.profile), ...banners];
+  log("Battle Royale", `${session.accountId} was given the full locker: ${cosmetics} cosmetics and ${banners.length} banners`);
+  return { cosmetics, banners: banners.length };
+}
+
+// Takes back what grantFullLocker gave and the player hasn't bought or earned since. Slots and banners showing an item
+// that goes get their default. Returns how many cosmetics and banners were removed.
+export function removeFullLocker(session) {
+  const tracker = session.profile("athena");
+  const { profile } = tracker;
+  const keep = [...starterIds(), ...earnedCosmetics(profile, session.settings ?? {})];
+  let cosmetics = 0;
+  for (const templateId of adminGranted(profile)) {
+    const itemId = findItem(profile, templateId);
+    if (!itemId || keep.some((id) => sameId(id, templateId))) continue;
+    removeCosmetic(tracker, itemId);
+    cosmetics += 1;
+  }
+  profile.coreGrantedCosmetics = [];
+
+  const account = session.profile("profile0");
+  const removed = [];
+  for (const templateId of adminBanners(account.profile)) {
+    const itemId = findItem(account.profile, templateId);
+    if (!itemId) continue;
+    account.removeItem(itemId);
+    removed.push(templateId.split(":")[1].toLowerCase());
+  }
+  account.profile.coreGrantedBanners = [];
+  const gone = (row) => removed.includes(String(row ?? "").toLowerCase());
+  const { attributes } = tracker.profile.stats;
+  if (gone(attributes.banner_icon)) tracker.setStat("banner_icon", defaultBanner.bannerIconId);
+  if (gone(attributes.banner_color)) tracker.setStat("banner_color", defaultBanner.bannerColorId);
+  const homebase = account.profile.stats.attributes.homebase;
+  if (homebase && (gone(homebase.bannerIconId) || gone(homebase.bannerColorId))) {
+    account.setStat("homebase", { ...homebase,
+      bannerIconId: gone(homebase.bannerIconId) ? defaultBanner.bannerIconId : homebase.bannerIconId,
+      bannerColorId: gone(homebase.bannerColorId) ? defaultBanner.bannerColorId : homebase.bannerColorId });
+  }
+  // A season level reward banner the full locker gave first is the player's again.
+  settleChaseRewards(session);
+  log("Battle Royale", `${session.accountId}'s full locker was taken back: ${cosmetics} cosmetics and ${removed.length} banners`);
+  return { cosmetics, banners: removed.length };
 }
 
 // A win in any playlist (1.8's, reported by the gameserver): the victory umbrellas the player lacks.
