@@ -579,6 +579,12 @@ export function adminRoutes(context) {
   router.get("/admin/api/reports/:id/attachment/:filename", (req, res) => {
     const filePath = reports?.attachmentPath?.(req.params.id, req.params.filename);
     if (!filePath) return notFound(res, req.originalUrl);
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    const isImage = /\.(jpe?g|png|webp)$/i.test(path.basename(filePath));
+    if (!isImage) {
+      res.setHeader("Content-Disposition", `attachment; filename="${path.basename(filePath)}"`);
+      res.setHeader("Content-Type", "application/octet-stream");
+    }
     res.sendFile(filePath);
   });
 

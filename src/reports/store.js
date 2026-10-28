@@ -3,6 +3,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { readJson, writeJson } from "../json-file.js";
 
+const REPORT_ID_PATTERN = /^\d+_[0-9a-f]{8}$/;
+
 export function createReportStore(dataDir) {
   const dir = dataDir && path.join(dataDir, "reports");
   if (dir && !fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
@@ -14,9 +16,21 @@ export function createReportStore(dataDir) {
       if (reportDir) fs.mkdirSync(reportDir, { recursive: true });
 
       const savedAttachments = [];
+      const usedNames = new Set(["report.json"]);
       for (const att of attachments) {
         if (!att?.name || !att?.buffer) continue;
-        const safeName = path.basename(att.name).replace(/[^a-zA-Z0-9._-]/g, "_");
+        let baseName = path.basename(att.name).replace(/[^a-zA-Z0-9._-]/g, "_");
+        if (!baseName || baseName === "." || baseName === "..") baseName = "attachment.bin";
+
+        const ext = path.extname(baseName);
+        const stem = path.basename(baseName, ext);
+        let safeName = baseName;
+        let counter = 1;
+        while (usedNames.has(safeName.toLowerCase())) {
+          safeName = `${stem}_${counter++}${ext}`;
+        }
+        usedNames.add(safeName.toLowerCase());
+
         if (reportDir) {
           fs.writeFileSync(path.join(reportDir, safeName), att.buffer);
         }
@@ -36,6 +50,8 @@ export function createReportStore(dataDir) {
         body: String(fields.body ?? fields.feedbackbody ?? ""),
         accountId: fields.accountId ? String(fields.accountId) : undefined,
         displayName: fields.displayName ? String(fields.displayName) : undefined,
+        claimedAccountId: fields.claimedAccountId ? String(fields.claimedAccountId) : undefined,
+        claimedDisplayName: fields.claimedDisplayName ? String(fields.claimedDisplayName) : undefined,
         email: fields.email ? String(fields.email) : undefined,
         platform: fields.platform ? String(fields.platform) : undefined,
         engineVersion: fields.engineVersion ? String(fields.engineVersion) : undefined,
@@ -59,6 +75,7 @@ export function createReportStore(dataDir) {
       const list = [];
       for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
         if (!entry.isDirectory()) continue;
+        if (!REPORT_ID_PATTERN.test(entry.name)) continue;
         const reportFile = path.join(dir, entry.name, "report.json");
         if (!fs.existsSync(reportFile)) continue;
         try {
@@ -89,8 +106,8 @@ export function createReportStore(dataDir) {
     },
 
     get(id) {
-      if (!dir || typeof id !== "string") return null;
-      const reportFile = path.join(dir, path.basename(id), "report.json");
+      if (!dir || typeof id !== "string" || !REPORT_ID_PATTERN.test(id)) return null;
+      const reportFile = path.join(dir, id, "report.json");
       if (!fs.existsSync(reportFile)) return null;
       try {
         return readJson(reportFile);
@@ -100,18 +117,18 @@ export function createReportStore(dataDir) {
     },
 
     delete(id) {
-      if (!dir || typeof id !== "string") return false;
-      const reportDir = path.join(dir, path.basename(id));
+      if (!dir || typeof id !== "string" || !REPORT_ID_PATTERN.test(id)) return false;
+      const reportDir = path.join(dir, id);
       if (!fs.existsSync(reportDir)) return false;
       fs.rmSync(reportDir, { recursive: true, force: true });
       return true;
     },
 
     attachmentPath(id, filename) {
-      if (!dir || typeof id !== "string" || typeof filename !== "string") return null;
-      const safeId = path.basename(id);
+      if (!dir || typeof id !== "string" || !REPORT_ID_PATTERN.test(id) || typeof filename !== "string") return null;
       const safeFile = path.basename(filename);
-      const filePath = path.join(dir, safeId, safeFile);
+      if (safeFile.toLowerCase() === "report.json") return null;
+      const filePath = path.join(dir, id, safeFile);
       if (fs.existsSync(filePath)) return filePath;
       return null;
     }

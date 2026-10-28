@@ -2442,6 +2442,22 @@
 
         const imageAtt = (report.attachments || []).find((a) => /\.(jpe?g|png|webp)$/i.test(a.name));
         const otherAtts = (report.attachments || []).filter((a) => a !== imageAtt);
+        const downloadIcon = () => {
+          const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+          svg.setAttribute("viewBox", "0 0 24 24");
+          svg.setAttribute("width", "16");
+          svg.setAttribute("height", "16");
+          svg.setAttribute("fill", "none");
+          svg.setAttribute("stroke", "currentColor");
+          svg.setAttribute("stroke-width", "1.8");
+          svg.setAttribute("stroke-linecap", "round");
+          svg.setAttribute("stroke-linejoin", "round");
+          svg.setAttribute("aria-hidden", "true");
+          const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          path.setAttribute("d", "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 M7 10l5 5 5-5 M12 15V3");
+          svg.appendChild(path);
+          return svg;
+        };
 
         $("view").replaceChildren(
           el("div", { class: "view-head" },
@@ -2507,9 +2523,8 @@
               ...otherAtts.map((att) => el("a", {
                 href: `/admin/api/reports/${report.id}/attachment/${encodeURIComponent(att.name)}`,
                 download: att.name,
-                class: "btn ghost",
-                text: `💾 Download ${att.name} (${fmt(att.size)} bytes)`
-              }))
+                class: "btn ghost"
+              }, downloadIcon(), el("span", { text: `Download ${att.name} (${fmt(att.size)} bytes)` })))
             )
           ) : null
         );

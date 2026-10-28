@@ -1,5 +1,49 @@
 import express from "express";
+import { Transform } from "node:stream";
 import { requireAuth } from "../../accounts/auth.js";
+import { log } from "../../log.js";
+
+const MAX_REPORT_BYTES = 32 * 1024 * 1024; // 32 MB
+const MAX_REPORTS_PER_WINDOW = 5;
+const REPORT_WINDOW_MS = 60 * 1000; // 1 minute
+
+const recentReportsByAccount = new Map();
+
+export function clearFeedbackRateLimits() {
+  recentReportsByAccount.clear();
+}
+
+function isRateLimited(accountId) {
+  if (!accountId) return false;
+  const now = Date.now();
+  const windowStart = now - REPORT_WINDOW_MS;
+  const timestamps = recentReportsByAccount.get(accountId) || [];
+  const recent = timestamps.filter((t) => t > windowStart);
+  if (recent.length >= MAX_REPORTS_PER_WINDOW) {
+    recentReportsByAccount.set(accountId, recent);
+    return true;
+  }
+  recent.push(now);
+  recentReportsByAccount.set(accountId, recent);
+  return false;
+}
+
+function createByteLimitStream(maxBytes) {
+  let received = 0;
+  const stream = new Transform({
+    transform(chunk, encoding, callback) {
+      received += chunk.length;
+      if (received > maxBytes) {
+        const error = new Error("Payload Too Large");
+        error.statusCode = 413;
+        return callback(error);
+      }
+      callback(null, chunk);
+    }
+  });
+  stream.on("error", () => {});
+  return stream;
+}
 
 // The front end's Send Feedback (1.7.2, sub_2CF38D0) posts a multipart form: feedbacktype, displayname, email,
 // accountid, engineversion, platform, gamebackend, gamename, subgamename, subject, feedbackbody, and a screenshot
@@ -8,12 +52,31 @@ export function feedbackRoutes({ tokens, reports, accounts }) {
   const router = express.Router();
 
   router.post("/fortnite/api/feedback/:kind", requireAuth(tokens), async (req, res) => {
+    const accountId = req.session?.accountId;
+    if (isRateLimited(accountId)) {
+      req.resume();
+      return res.status(429).json({ error: "Too many feedback reports. Please wait before submitting another report." });
+    }
+
+    const contentLength = Number(req.headers["content-length"]);
+    if (Number.isFinite(contentLength) && contentLength > MAX_REPORT_BYTES) {
+      req.resume();
+      res.setHeader("Connection", "close");
+      return res.status(413).json({ error: "Payload Too Large" });
+    }
+
+    let exceededLimit = false;
     try {
+      const limitedStream = req.pipe(createByteLimitStream(MAX_REPORT_BYTES));
+      limitedStream.on("error", (err) => {
+        if (err.statusCode === 413) exceededLimit = true;
+      });
+
       const url = `http://${req.headers.host || "localhost"}${req.originalUrl || req.url}`;
       const webReq = new Request(url, {
         method: req.method,
         headers: req.headers,
-        body: req,
+        body: limitedStream,
         duplex: "half"
       });
 
@@ -34,8 +97,8 @@ export function feedbackRoutes({ tokens, reports, accounts }) {
         }
       }
 
-      const accountId = fields.accountid || req.session?.accountId;
-      const displayName = fields.displayname || req.session?.displayName || (accountId && accounts?.get ? accounts.get(accountId)?.displayName : undefined);
+      const account = accountId && accounts?.get ? accounts.get(accountId) : null;
+      const displayName = account?.displayName || req.session?.displayName || accountId;
 
       let subject = String(fields.subject ?? "").trim();
       const feedbackType = String(fields.feedbacktype ?? "");
@@ -62,6 +125,8 @@ export function feedbackRoutes({ tokens, reports, accounts }) {
           body: fields.feedbackbody,
           accountId,
           displayName,
+          claimedAccountId: fields.accountid && fields.accountid !== accountId ? fields.accountid : undefined,
+          claimedDisplayName: fields.displayname && fields.displayname !== displayName ? fields.displayname : undefined,
           email: fields.email,
           platform: fields.platform,
           engineVersion: fields.engineversion,
@@ -73,9 +138,13 @@ export function feedbackRoutes({ tokens, reports, accounts }) {
           reportedDisplayName: reportedAccount?.displayName
         }, attachments);
       }
-    } catch {
-      // If parsing fails, resume stream to prevent hanging sockets
+    } catch (error) {
+      log("Feedback", `Failed to parse form: ${error?.message || error}`);
       req.resume();
+      if (exceededLimit || error?.statusCode === 413 || error?.message?.includes("Payload Too Large")) {
+        res.setHeader("Connection", "close");
+        return res.status(413).json({ error: "Payload Too Large" });
+      }
     }
 
     res.status(204).end();
