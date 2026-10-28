@@ -2493,6 +2493,15 @@
             el("p", { class: "note", text: "When enabled, logging in with an unknown name automatically creates a new account in-game with the provided password. Only dedicated server accounts (CoreServer{n} or Server{n}) can be created without a password." }))),
 
         el("section", { class: "panel", style: "margin-top:16px" },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" },
+            el("div", { class: "actions" },
+              el("h2", { text: "Seasonal Events" }),
+              settings.seasonalEvents !== false ? chip("Running", "good") : chip("Off")),
+            toggleSwitch(settings.seasonalEvents !== false, (checked) =>
+              save({ seasonalEvents: checked }, checked ? "Seasonal events turned on" : "Seasonal events turned off"))),
+          el("p", { class: "note", text: "Runs each build's own seasonal event, such as Fortnitemares on 1.8: its View Event page and quests, Hexsylvania on the map and its Candy llama. Players see the change the next time they log in." })),
+
+        el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head" },
             el("h2", { text: "Trusted Hosting IPs" }),
             chip("Dedicated Server Whitelist", "sky")),

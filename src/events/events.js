@@ -1,3 +1,4 @@
+import { AsyncLocalStorage } from "node:async_hooks";
 import { currentBuild } from "../builds/context.js";
 
 // The seasonal events Core runs. A build runs the event its own update shipped, for as long as it is played: Epic
@@ -14,8 +15,15 @@ const events = [
   { flag: fortnitemares, firstBuild: 3724489, lastBuild: 3741772 }
 ];
 
+// Whether the host runs the seasonal events (settings.seasonalEvents, the admin panel's Seasonal Events switch,
+// Core-Backend #66), for everything a request does. Switched off, no build runs one: no event flags, quests, theater or
+// event offers. Work that no request started runs them.
+const eventsSetting = new AsyncLocalStorage();
+export const seasonalEvents = (enabled) => (req, res, next) => eventsSetting.run(enabled(), next);
+
 // The event flags the requesting build runs (none outside a request).
 export function activeEventFlags(changelist = currentBuild()) {
+  if (eventsSetting.getStore() === false) return [];
   const number = Number(changelist);
   if (!Number.isInteger(number)) return [];
   return events.filter((event) => number >= event.firstBuild && number <= event.lastBuild).map((event) => event.flag);

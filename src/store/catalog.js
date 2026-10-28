@@ -59,13 +59,13 @@ const voucherOffers = perBuild(() => itemIds()
 // Fortnitemares Survivor or Hero!") is bought with Candy (EventCurrency_Candy, bIsEventItem, "Candy found during the
 // Fortnitemares Event."), while the event runs (events/events.js). The store shows a Candy price with the Candy cost
 // widget (1.8 StoreRoot GetCustomStoreOfferCost: EventCurrency_Candy → 2) among the event packs (ShouldShowOffer: an
-// event item's offer shows with ShowEventPacks). The price is Core's (🟡): 1,000 Candy, about four of the event's
-// 250 Candy quests.
+// event item's offer shows with ShowEventPacks). It cost 500 Candy (the Fortnite wiki's Fortnitemares Llama, Core-Backend
+// #66).
 const eventOffers = [
   { offerId: "core_event_founders_llama", templateId: "CardPack:cardpack_event_founders_nonexclusive", title: "Launch Event Llama",
     currencyType: "GameItem", currencySubType: "AccountResource:eventcurrency_founders", price: 100, always: true },
   { offerId: "core_event_fortnitemares_llama", templateId: "CardPack:cardpack_event_2017_halloween", title: "Fortnitemares Llama",
-    currencyType: "GameItem", currencySubType: candy, price: 1000, always: true, event: fortnitemares }
+    currencyType: "GameItem", currencySubType: candy, price: 500, always: true, event: fortnitemares }
 ];
 
 // An event's offers are on sale while the requesting build runs the event and has their llama.

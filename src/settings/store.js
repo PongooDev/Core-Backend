@@ -6,6 +6,8 @@ const defaults = {
   requirePassword: false,
   allowRegistration: true,
   allowAutoRegistration: true,
+  // Whether the seasonal events (events/events.js) run on the builds that shipped them (the admin panel's switch).
+  seasonalEvents: true,
   allowedHostingIps: ["127.0.0.1", "::1"]
 };
 
@@ -55,6 +57,7 @@ export function createSettingsStore(dataDir) {
       if (typeof partial.requirePassword === "boolean") settings.requirePassword = partial.requirePassword;
       if (typeof partial.allowRegistration === "boolean") settings.allowRegistration = partial.allowRegistration;
       if (typeof partial.allowAutoRegistration === "boolean") settings.allowAutoRegistration = partial.allowAutoRegistration;
+      if (typeof partial.seasonalEvents === "boolean") settings.seasonalEvents = partial.seasonalEvents;
       if (Array.isArray(partial.allowedHostingIps)) {
         settings.allowedHostingIps = [...new Set(partial.allowedHostingIps.filter((ip) => typeof ip === "string" && ip.trim()))];
       }

@@ -170,8 +170,9 @@ export function hexsylvania() {
 export const isHexsylvania = (theaterId) => theaterId === hexsylvaniaId;
 
 // Candy (EventCurrency_Candy, "Candy found during the Fortnitemares Event.") a won Hexsylvania mission adds to its
-// rewards. No shipped table says how much (Epic's mission rewards were its world info's), so this is Core's (🟡): 10
-// plus the zone's difficulty (15 in a 5 zone, 50 in a 40 one), before the reward chest's level multiplies it.
+// rewards. No shipped table says how much (Epic's mission rewards were its world info's). Footage of a 2017 mission
+// shows 50 Candy among its rewards (Core-Backend #66), so Core's (🟡) is 45 plus the zone's difficulty (50 in a 5 zone,
+// 85 in a 40 one), before the reward chest's level multiplies it.
 export function candyReward(rowName) {
-  return 10 + difficultyOf(rowName);
+  return 45 + difficultyOf(rowName);
 }

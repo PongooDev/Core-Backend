@@ -3,6 +3,7 @@ import { createAccountStore } from "./accounts/store.js";
 import { createResetTokenStore } from "./accounts/reset-tokens.js";
 import { createSettingsStore } from "./settings/store.js";
 import { requestBuild } from "./builds/context.js";
+import { seasonalEvents } from "./events/events.js";
 import { createFriendStore } from "./friends/store.js";
 import { createFriendCodeStore } from "./friendcodes/store.js";
 import { networkAdminRoutes } from "./admin/network.js";
@@ -57,6 +58,7 @@ export function createContext(config) {
   if (config.requirePassword !== undefined) settings.update({ requirePassword: config.requirePassword });
   if (config.allowRegistration !== undefined) settings.update({ allowRegistration: config.allowRegistration });
   if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
+  if (config.seasonalEvents !== undefined) settings.update({ seasonalEvents: config.seasonalEvents });
   const friends = createFriendStore(config.dataDir);
   const sessions = createSessionStore();
   const stats = createStatsStore(config.dataDir);
@@ -101,6 +103,7 @@ export function createApp(config, context = createContext(config)) {
   app.use(originForm);
   // Everything a request does uses its build's game data (src/builds/context.js, src/gamedata/read.js).
   app.use(requestBuild);
+  app.use(seasonalEvents(() => context.settings.get().seasonalEvents !== false));
   if (config.requestLog !== false) app.use(requestLog);
   app.use(userCloudStorageRoutes(context));
   app.use(replayRoutes(context));

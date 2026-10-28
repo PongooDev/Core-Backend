@@ -9,7 +9,7 @@ import { getCardPack, itemIds } from "../src/gamedata/items.js";
 import { getQuest } from "../src/gamedata/quests.js";
 import { atDifficulty, findMission, worldInfo } from "../src/world/theaters.js";
 import { hexsylvaniaId } from "../src/world/hexsylvania.js";
-import { dedicatedServerToken, send, startBackend, userLogin } from "./helpers.js";
+import { dedicatedServerToken, post, send, startBackend, userLogin } from "./helpers.js";
 
 const builds = { cert: "3532353", "1.7.2": "3700114", "1.8": "3724489", "1.8.2": "3741772" };
 const agent = (changelist) => `game=Fortnite, engine=UE4, build=++Fortnite+Release-Cert-CL-${changelist}`;
@@ -91,6 +91,31 @@ test("1.8 learns the event flag from ClientQuestLogin and RequestEventFlags, and
   }
 });
 
+test("the admin panel's Seasonal Events switch turns Fortnitemares off and on (Core-Backend #66)", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "EventsSwitch18");
+    const flags = async () => (await as(builds["1.8"], backend.port, "GET", "/fortnite/api/calendar/v1/timeline", player.token))
+      .body.channels["client-events"].states[0].activeEvents.map((event) => event.eventName);
+    const llamaOffered = async () => (await as(builds["1.8"], backend.port, "GET", "/fortnite/api/storefront/v2/catalog", player.token)).body
+      .storefronts.find((front) => front.name === "CardPackStore").catalogEntries.some((entry) => entry.offerId === "core_event_fortnitemares_llama");
+    const settings = (body) => post(backend.port, "/admin/api/settings", null, body);
+
+    assert.equal((await settings({})).body.seasonalEvents, true);
+    assert.deepEqual(await flags(), ["EventFlag.Fortnitemares"]);
+    assert.equal((await settings({ seasonalEvents: false })).body.seasonalEvents, false);
+    assert.deepEqual(await flags(), []);
+    assert.equal(await llamaOffered(), false);
+    const quests = await mcp(builds["1.8"], backend.port, player, "RequestEventFlags");
+    assert.deepEqual(quests.body.notifications.find((entry) => entry.type === "eventFlags").eventFlags, []);
+    await settings({ seasonalEvents: true });
+    assert.deepEqual(await flags(), ["EventFlag.Fortnitemares"]);
+    assert.equal(await llamaOffered(), true);
+  } finally {
+    backend.close();
+  }
+});
+
 test("1.8's calendar has Fortnitemares active; 1.7.2's has nothing", async () => {
   const backend = await startBackend();
   try {
@@ -105,7 +130,7 @@ test("1.8's calendar has Fortnitemares active; 1.7.2's has nothing", async () =>
   }
 });
 
-test("the llama store sells the Fortnitemares Llama for 1,000 Candy on 1.8, and buying it spends the Candy", async () => {
+test("the llama store sells the Fortnitemares Llama for 500 Candy on 1.8, and buying it spends the Candy", async () => {
   const backend = await startBackend();
   try {
     const player = await userLogin(backend.port, "Llama18");
@@ -113,14 +138,14 @@ test("the llama store sells the Fortnitemares Llama for 1,000 Candy on 1.8, and 
       .storefronts.find((front) => front.name === "CardPackStore").catalogEntries;
     const offer = (await catalog(builds["1.8"])).find((entry) => entry.offerId === "core_event_fortnitemares_llama");
     assert.deepEqual(offer.prices.map(({ currencyType, currencySubType, finalPrice }) => [currencyType, currencySubType, finalPrice]),
-      [["GameItem", candy, 1000]]);
+      [["GameItem", candy, 500]]);
     assert.deepEqual(offer.itemGrants, [{ templateId: llama, quantity: 1 }]);
     assert.equal(offer.metaAssetInfo.payload.packDefinition, "/Game/Items/CardPacks/Events/Release/CardPack_Event_2017_Halloween.CardPack_Event_2017_Halloween");
     for (const changelist of [builds.cert, builds["1.7.2"]]) {
       assert.ok(!(await catalog(changelist)).some((entry) => entry.offerId === "core_event_fortnitemares_llama"), changelist);
     }
 
-    const purchase = { offerId: "core_event_fortnitemares_llama", purchaseQuantity: 1, currency: "GameItem", currencySubType: candy, expectedPrice: 1000 };
+    const purchase = { offerId: "core_event_fortnitemares_llama", purchaseQuantity: 1, currency: "GameItem", currencySubType: candy, expectedPrice: 500 };
     await mcp(builds["1.8"], backend.port, player, "QueryProfile");
     const poor = await mcp(builds["1.8"], backend.port, player, "PurchaseCatalogEntry", purchase);
     assert.equal(poor.body.errorCode, "errors.com.epicgames.modules.gamesubcatalog.purchase_not_allowed");
@@ -132,7 +157,7 @@ test("the llama store sells the Fortnitemares Llama for 1,000 Candy on 1.8, and 
     assert.equal(bought.status, 200);
     assert.deepEqual(bought.body.notifications[0].lootResult.items.map((item) => item.itemType), [llama]);
     const profile = profileOf(await mcp(builds["1.8"], backend.port, player, "QueryProfile"));
-    assert.equal(held(profile, candy), 500);
+    assert.equal(held(profile, candy), 1000);
     assert.equal(held(profile, llama), 1);
 
     // Not for sale where the event doesn't run.
@@ -186,7 +211,7 @@ test("1.8's world info adds Hexsylvania: the Transylvania theater, its missions 
   for (const mission of missions) {
     const candyReward = mission.missionRewards.items.filter((item) => item.itemType === candy);
     assert.equal(candyReward.length, 1, mission.missionGenerator);
-    assert.ok(candyReward[0].quantity >= 15);
+    assert.ok(candyReward[0].quantity >= 50);
   }
   const alerts = info.missionAlerts.find((entry) => entry.theaterId === hexsylvaniaId).availableMissionAlerts;
   assert.ok(alerts.length);
@@ -197,7 +222,7 @@ test("1.8's world info adds Hexsylvania: the Transylvania theater, its missions 
     const found = findMission(missions[2].missionGuid);
     assert.equal(found.theaterId, hexsylvaniaId);
     const harder = atDifficulty(found, "Theater_Nightmare_Zone5");
-    assert.deepEqual(harder.missionRewards.items.filter((item) => item.itemType === candy), [{ itemType: candy, quantity: 50 }]);
+    assert.deepEqual(harder.missionRewards.items.filter((item) => item.itemType === candy), [{ itemType: candy, quantity: 85 }]);
   });
 
   // No other build has it, and the main theaters' missions give no Candy.

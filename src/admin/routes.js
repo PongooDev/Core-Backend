@@ -510,6 +510,7 @@ export function adminRoutes(context) {
       requirePassword: req.body?.requirePassword,
       allowRegistration: req.body?.allowRegistration,
       allowAutoRegistration: req.body?.allowAutoRegistration,
+      seasonalEvents: req.body?.seasonalEvents,
       allowedHostingIps: req.body?.allowedHostingIps
     });
     const net = network?.settings?.() ?? {};
