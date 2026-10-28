@@ -3,6 +3,7 @@ import { candy } from "../events/fortnitemares.js";
 import { getCardPack, itemIds } from "../gamedata/items.js";
 import { perBuild } from "../gamedata/read.js";
 import { itemShopOffers } from "./itemshop.js";
+import { seasonShopOffers, seasonStorefront } from "./seasonshop.js";
 
 // The llama store. The client's store reads the CardPackStore and CardPackStorePromo storefronts (FortStorefront);
 // each offer is FCatalogOffer, its card pack art and featured items coming from metaAssetInfo FortCatalogMeta
@@ -89,7 +90,8 @@ function offerJson(offer, sortPriority) {
     offerType: "StaticPrice",
     prices: [{ currencyType, currencySubType, regularPrice: price, finalPrice: price, saleType: "NotOnSale",
       saleExpiration: "9999-12-31T23:59:59.999Z" }],
-    metaInfo: [],
+    // A Season Shop offer's season level (store/seasonshop.js).
+    metaInfo: offer.seasonLevel ? [{ key: "season_level", value: String(offer.seasonLevel) }] : [],
     dailyLimit: -1,
     weeklyLimit: -1,
     categories: [],
@@ -112,20 +114,22 @@ const holds = (profile, templateId) => Object.values(profile?.items ?? {})
   .some((item) => item.templateId.toLowerCase() === templateId.toLowerCase() && item.quantity > 0);
 
 // profile: the viewer's profile0, for the vouchers only shown to players who have one. Battle Royale's storefronts
-// (store/itemshop.js) hold the day's offers in 1.8 and later, nothing before.
+// (store/itemshop.js) hold the day's offers in 1.8 and later, nothing before; its Season Shop (store/seasonshop.js) is
+// 1.8.2's and later.
 export function storefronts(profile, now = new Date()) {
   const shown = allOffers().filter((offer) => offer.currencyType !== "GameItem" || offer.always
     || listedVouchers.some((voucher) => voucher.toLowerCase() === offer.currencySubType.toLowerCase())
     || holds(profile, offer.currencySubType));
   const itemShop = Object.entries(itemShopOffers(now))
     .map(([name, offers]) => ({ name, catalogEntries: offers.map((offer, index) => offerJson(offer, -index)) }));
+  const seasonShop = { name: seasonStorefront, catalogEntries: seasonShopOffers().map((offer, index) => offerJson(offer, -index)) };
   return [
     { name: "CardPackStore", catalogEntries: shown.map((offer, index) => offerJson(offer, -index)) },
     { name: "CardPackStorePromo", catalogEntries: [] },
-    ...itemShop.filter(({ catalogEntries }) => catalogEntries.length)
+    ...[...itemShop, seasonShop].filter(({ catalogEntries }) => catalogEntries.length)
   ];
 }
 
-// An offer on sale now: the llama store's, or one of the item shop's of the day.
-export const findOffer = (offerId, now = new Date()) => [...allOffers(), ...Object.values(itemShopOffers(now)).flat()]
+// An offer on sale now: the llama store's, one of the item shop's of the day, or the Season Shop's.
+export const findOffer = (offerId, now = new Date()) => [...allOffers(), ...Object.values(itemShopOffers(now)).flat(), ...seasonShopOffers()]
   .find((offer) => offer.offerId === offerId);

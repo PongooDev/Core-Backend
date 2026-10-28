@@ -65,6 +65,13 @@ export function purchaseCatalogEntry({ req, session, notifications }) {
     if (ownsCosmetic(session, offer.templateId)) {
       throw new McpError("errors.com.epicgames.modules.gamesubcatalog.purchase_not_allowed", `You already own ${offer.title}`);
     }
+    // A Season Shop offer (store/seasonshop.js) unlocks at its season level, the athena profile's level, as the client
+    // locks it.
+    const level = session.profile("athena").profile.stats.attributes.level ?? 1;
+    if (offer.seasonLevel && level < offer.seasonLevel) {
+      throw new McpError("errors.com.epicgames.modules.gamesubcatalog.purchase_not_allowed",
+        `${offer.title} unlocks at season level ${offer.seasonLevel}, and you are level ${level}`);
+    }
     spendMtx(tracker, total);
     const item = grantCosmetic(session, offer.templateId);
     notifications.push({ type: "CatalogPurchase", primary: true, lootResult: { items: [lootEntry(item)] } });

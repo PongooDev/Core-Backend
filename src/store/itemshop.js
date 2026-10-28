@@ -246,6 +246,18 @@ export function weeklyStoreEnd(now = new Date(), overrideConfig = null) {
   return dayStart(dayNumber + history.length);
 }
 
+// When the season ends, for the Season Shop's countdown (store/seasonshop.js): the end of the history's 45-day cycle, at
+// the rotation hour. The history is Season 1's shop from 30 October to its last day, 13 December 2017, so each cycle is
+// that stretch of Season 1 again and ends when the season did, the shop then starting over (Core's choice, in every
+// shop mode).
+export function seasonEnd(now = new Date(), overrideConfig = null) {
+  const config = overrideConfig ?? currentShopConfig();
+  const rotationMs = Math.max(0, Math.min(23, Number(config?.rotationHour ?? 0))) * 60 * 60 * 1000;
+  const days = Math.floor((now.getTime() - rotationMs - firstDay) / dayMs);
+  const cycle = Math.floor(days / history.length);
+  return new Date(firstDay + (cycle + 1) * history.length * dayMs + rotationMs);
+}
+
 const offerIdOf = (templateId) => `core_br_${templateId.split(":")[1].toLowerCase()}`;
 
 // The featured items' shop art: the display asset (FortMtxOfferData with Battle Royale tile art) the extractor matched to
