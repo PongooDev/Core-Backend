@@ -167,7 +167,8 @@ test("the admin panel gives the full locker and takes back only what it gave", a
     const before = await athena(backend.port, player);
     const revision = async () => (await command(backend.port, player, "QueryProfile", "athena")).body.profileRevision;
     const beforeRvn = await revision();
-    const lockerIds = inBuild("3724489", () => Object.keys(athenaCosmetics()))
+    // The full locker gives every build's cosmetics: the newest build's are all of them (1.8.2 adds Aerial Assault One).
+    const lockerIds = inBuild("3741772", () => Object.keys(athenaCosmetics()))
       .filter((id) => !/cid_00\d_athena_commando_\w_default|duo_umbrella|squad_umbrella/i.test(id));
     const bannerRows = inBuild("3724489", bannerIds);
     const icon = bannerRows.find((id) => /^HomebaseBannerIcon:FounderTier/.test(id));
@@ -187,9 +188,11 @@ test("the admin panel gives the full locker and takes back only what it gave", a
     assert.deepEqual([cosmetics.owned, banners.owned], [cosmetics.total, banners.total]);
     assert.equal(granted, given.body.granted.cosmetics + given.body.granted.banners);
 
-    // The 1.8 client sees every cosmetic and banner at a new revision.
+    // The 1.8 client sees every cosmetic of its build and every banner at a new revision; a later build's (1.8.2's
+    // Aerial Assault One) is kept from it.
     const full = await athena(backend.port, player);
-    for (const id of lockerIds) assert.ok(full.items[id], id);
+    const lockerIds18 = new Set(inBuild("3724489", () => Object.keys(athenaCosmetics())));
+    for (const id of lockerIds) assert.equal(Boolean(full.items[id]), lockerIds18.has(id), id);
     const accountItems = Object.values((await account()).items).map((item) => item.templateId.toLowerCase());
     for (const id of bannerRows) assert.ok(accountItems.includes(id.toLowerCase()), id);
     assert.ok(await revision() > beforeRvn);
@@ -220,7 +223,7 @@ test("the admin panel gives the full locker and takes back only what it gave", a
   }
 });
 
-test("what giveAllCosmetics gave stays once the panel gives the full locker", () => withStore((dataDir) => inBuild("3724489", () => {
+test("what giveAllCosmetics gave stays once the panel gives the full locker", () => withStore((dataDir) => inBuild("3741772", () => {
   const locker = (settings) => openSession(createProfileStore(dataDir, settings), "blanketlocker");
   let session = locker({ giveAllCosmetics: true });
   const total = Object.keys(session.profile("athena").profile.items).length;

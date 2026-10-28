@@ -1,0 +1,70 @@
+{
+  "expeditions": {
+    "Expedition:expedition_rare_traps_t02": {
+      "basePower": 300
+    },
+    "Expedition:expedition_rare_traps_t03": {
+      "basePower": 600
+    },
+    "Expedition:expedition_rare_weapons_t02": {
+      "basePower": 300
+    },
+    "Expedition:expedition_rare_weapons_t03": {
+      "basePower": 600
+    },
+    "Expedition:expedition_craftingrun_short_t00": {
+      "basePower": 20,
+      "criteriaTier": "Expeditions_Criteria_T01",
+      "durationMinutes": 240,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "CraftingRun_Short_T00",
+      "tierFactor": 20
+    },
+    "Expedition:expedition_supplyrun_short_t00": {
+      "basePower": 20,
+      "criteriaTier": "Expeditions_Criteria_T01",
+      "durationMinutes": 240,
+      "expirationMinutes": 90,
+      "powerClamp": 5000,
+      "recipe": "SupplyRun_Short_T00",
+      "tierFactor": 20
+    }
+  },
+  "recipes": {
+    "CraftingRun_Short_T00": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 5,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_expedition_craftingrun_short_t00"
+        }
+      ]
+    },
+    "SupplyRun_Short_T00": {
+      "catalysts": [
+        "Expedition.Land"
+      ],
+      "costs": [
+        {
+          "quantity": 5,
+          "templateId": "AccountResource:peopleresource"
+        }
+      ],
+      "results": [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:zcp_supplyrun_short_t00"
+        }
+      ]
+    }
+  }
+}
