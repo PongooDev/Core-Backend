@@ -617,6 +617,14 @@
       white-space: nowrap;
     }
 
+    button.chip {
+      border: none;
+      outline: none;
+      box-shadow: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
     .chip.good {
       color: #6ee59a;
       background: rgba(60, 207, 110, .14);
@@ -1491,6 +1499,12 @@
             <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
             <line x1="4" y1="22" x2="4" y2="15" />
           </svg><span>Reports</span></a>
+        <a href="#/shop" data-view="shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <path d="M16 10a4 4 0 0 1-8 0" />
+          </svg><span>Shop</span></a>
         <a href="#/logs" data-view="logs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="3" y="4" width="18" height="16" rx="2.5" />
@@ -1743,10 +1757,10 @@
 
     /* ---------- routing ---------- */
     function route() {
-      const [, view = "dashboard", accountId, tab] = location.hash.split("/");
+      const [view = "dashboard", accountId, tab] = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
       for (const timer of state.timers) clearInterval(timer);
       state.timers = [];
-      const next = ["dashboard", "players", "sessions", "friends", "news", "reports", "logs", "settings"].includes(view) ? view : "dashboard";
+      const next = ["dashboard", "players", "sessions", "friends", "news", "shop", "reports", "logs", "settings"].includes(view) ? view : "dashboard";
       if (next !== state.view || !$("view").childElementCount) $("view").replaceChildren(el("div", { class: "empty", text: "Loading…" }));
       state.view = next;
       for (const link of document.querySelectorAll("nav.nav a")) link.setAttribute("aria-current", link.dataset.view === state.view ? "page" : "false");
@@ -1758,7 +1772,7 @@
       if (state.view === "reports") {
         state.reportId = accountId || null;
       }
-      ({ dashboard: showDashboard, players: showPlayers, sessions: showSessions, friends: showFriends, news: showNews, reports: showReports, logs: showLogs, settings: showSettings })[state.view]();
+      ({ dashboard: showDashboard, players: showPlayers, sessions: showSessions, friends: showFriends, news: showNews, shop: showShop, reports: showReports, logs: showLogs, settings: showSettings })[state.view]();
     }
     window.addEventListener("hashchange", route);
     const every = (ms, fn) => state.timers.push(setInterval(fn, ms));
@@ -2431,6 +2445,342 @@
             el("div", { class: "actions", style: "margin-top:4px;" },
               saveLoginBtn,
               resetLoginBtn)))
+      );
+    }
+
+    /* ---------- shop ---------- */
+    async function showShop() {
+      const shop = await act(api("/admin/api/shop"));
+      if (!shop || state.view !== "shop") return;
+
+      if (!state.customShop) {
+        state.customShop = JSON.parse(JSON.stringify(shop.custom || { featured: [], daily: [] }));
+      }
+
+      const activeMode = shop.mode || "fnbr";
+
+      const modeTabs = [
+        ["fnbr", "FNBR Historical Shop"],
+        ["random", "Randomize Locally"],
+        ["custom", "Custom Shop Builder"]
+      ];
+
+      const switchMode = async (newMode) => {
+        if (newMode === activeMode) return;
+        const payload = { mode: newMode };
+        if (newMode === "custom") payload.custom = state.customShop;
+        const res = await act(api("/admin/api/shop", payload), `Switched to ${newMode === "fnbr" ? "FNBR history" : newMode === "random" ? "randomized" : "custom"} shop`);
+        if (res) showShop();
+      };
+
+      const modePicker = el("div", { class: "subtabs", role: "tablist" },
+        modeTabs.map(([key, label]) => el("button", {
+          type: "button",
+          role: "tab",
+          "aria-selected": String(activeMode === key),
+          onclick: () => switchMode(key)
+        }, el("span", { text: label })))
+      );
+
+      // Modal cosmetic picker
+      function openCosmeticPicker(onSelect) {
+        let filterCategory = "";
+        let searchQuery = "";
+
+        const searchInput = el("input", {
+          class: "field",
+          placeholder: "Search cosmetics by name...",
+          style: "width:100%;"
+        });
+
+        const listContainer = el("div", {
+          class: "grid",
+          style: "grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:14px; max-height:60vh; min-height:440px; overflow-y:auto; margin-top:14px; padding-right:4px;"
+        });
+
+        const renderList = () => {
+          const query = searchQuery.trim().toLowerCase();
+          const items = (shop.availableCosmetics || []).filter((c) => {
+            if (filterCategory && c.type !== filterCategory) return false;
+            if (query && !c.name.toLowerCase().includes(query) && !c.templateId.toLowerCase().includes(query)) return false;
+            return true;
+          });
+
+          listContainer.replaceChildren(
+            ...items.map((c) => el("button", {
+              type: "button",
+              class: `card ${c.rarityCode}`,
+              style: "cursor:pointer; padding:16px 18px; min-height:115px; display:flex; flex-direction:column; justify-content:space-between;",
+              onclick: () => {
+                close();
+                onSelect(c);
+              }
+            },
+              el("div", {},
+                el("div", { class: "k", text: c.type }),
+                el("div", { class: "t", style: "font-weight:700; font-size:15px; line-height:1.3;", text: c.name }),
+                el("div", { class: "s mono", style: "font-size:11px; margin-top:4px;", text: c.templateId })),
+              el("div", { style: "display:flex; justify-content:space-between; align-items:center; margin-top:12px;" },
+                chip(c.rarity, c.rarityCode),
+                el("span", { class: "mono", style: "color:var(--amber); font-weight:700; font-size:13px;", text: `${fmt(c.defaultPrice)} V-Bucks` })
+              )
+            ))
+          );
+          if (!items.length) {
+            listContainer.replaceChildren(el("div", { class: "empty", text: "No cosmetics match." }));
+          }
+        };
+
+        searchInput.addEventListener("input", (e) => {
+          searchQuery = e.target.value;
+          renderList();
+        });
+
+        const categories = ["", "Outfit", "Harvesting Tool", "Glider"];
+        const filterChips = el("div", { class: "actions", style: "gap:6px; margin-top:10px;" },
+          categories.map((cat) => el("button", {
+            type: "button",
+            class: `chip ${filterCategory === cat ? "good" : ""}`,
+            style: "cursor:pointer; border:none; outline:none; box-shadow:none;",
+            onclick: () => {
+              filterCategory = cat;
+              renderList();
+              for (const btn of filterChips.children) {
+                btn.className = `chip ${btn.dataset.cat === filterCategory ? "good" : ""}`;
+              }
+            },
+            "data-cat": cat,
+            text: cat || "All"
+          }))
+        );
+
+        const close = () => {
+          backdrop.classList.remove("show");
+          setTimeout(() => backdrop.remove(), 150);
+        };
+
+        const dialog = el("div", { class: "modal-dialog", style: "max-width:960px; width:92vw; max-height:90vh; display:flex; flex-direction:column;", onclick: (e) => e.stopPropagation() },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" },
+            el("h2", { text: "Choose a Cosmetic" }),
+            el("button", { type: "button", class: "btn ghost", style: "min-height:28px; padding:0 8px; border:none;", text: "✕", onclick: close })),
+          el("p", { class: "note", text: "Select an outfit, harvesting tool, or glider to add to the shop." }),
+          searchInput,
+          filterChips,
+          listContainer
+        );
+
+        const backdrop = el("div", {
+          class: "modal-backdrop",
+          onclick: (e) => { if (e.target === backdrop) close(); }
+        }, dialog);
+
+        document.body.append(backdrop);
+        requestAnimationFrame(() => {
+          backdrop.classList.add("show");
+          searchInput.focus();
+          renderList();
+        });
+      }
+
+      // Mode-specific configuration section
+      let configSection;
+
+      if (activeMode === "fnbr") {
+        configSection = el("section", { class: "panel" },
+          el("div", { class: "panel-head" },
+            el("h2", { text: "FNBR Historical Rotation" })),
+          el("p", { class: "note", text: "Replaying Epic's authentic Season 1 shop (30 October – 13 December 2017) day-by-day in a 45-day cycle. Rotation occurs automatically at UTC midnight." }),
+          el("div", { class: "row", style: "margin-top:14px; gap:24px; align-items:center;" },
+            el("div", { style: "display:flex; flex-direction:column; gap:4px;" },
+              el("span", { class: "muted", style: "font-size:12px; font-weight:600;", text: "Recorded Date in Cycle" }),
+              el("span", { style: "font-size:16px; font-weight:700; color:var(--text);", text: shop.history?.date || "2017-10-30" })),
+            el("div", { style: "display:flex; flex-direction:column; gap:4px;" },
+              el("span", { class: "muted", style: "font-size:12px; font-weight:600;", text: "Cycle Duration" }),
+              el("span", { style: "font-size:16px; font-weight:700; color:var(--text);", text: "45 Days (Modulo)" }))
+          )
+        );
+      } else if (activeMode === "random") {
+        configSection = el("section", { class: "panel" },
+          el("div", { class: "panel-head" },
+            el("h2", { text: "Local Shop Randomizer" })),
+          el("p", { class: "note", text: "Generates randomized Featured and Daily cosmetics from available 1.8 game data with authentic rarity-based V-Buck pricing." }),
+          el("div", { class: "actions", style: "margin-top:14px; align-items:center; gap:12px;" },
+            btn("Reroll Shop Now", async () => {
+              const res = await act(api("/admin/api/shop/randomize", {}), "Shop rerolled with new random items");
+              if (res) showShop();
+            }, "primary"),
+            el("span", { class: "note", text: `Last generated: ${shop.random?.generatedAt ? new Date(shop.random.generatedAt).toLocaleTimeString() : "Current session"}` }))
+        );
+      } else {
+        // Custom Shop Builder
+        const custom = state.customShop;
+
+        const renderCustomTile = (entry, index, isFeatured) => {
+          const [templateId, price] = entry;
+          const cosmetic = (shop.availableCosmetics || []).find((c) => c.templateId.toLowerCase() === templateId.toLowerCase()) || {
+            templateId,
+            name: templateId.split(":")[1] || templateId,
+            type: "Cosmetic",
+            rarityCode: "uc"
+          };
+
+          const priceInput = el("input", {
+            type: "number",
+            class: "field",
+            value: price,
+            min: "0",
+            max: "100000",
+            style: "width:100px; text-align:right;",
+            onchange: (e) => {
+              const val = Math.max(0, parseInt(e.target.value) || 0);
+              entry[1] = val;
+            }
+          });
+
+          return el("div", {
+            class: `card ${cosmetic.rarityCode}`,
+            style: "padding:16px 18px; min-height:120px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;"
+          },
+            el("div", { style: "display:flex; justify-content:space-between; align-items:flex-start; gap:8px;" },
+              el("div", { style: "min-width:0; flex:1;" },
+                el("div", { class: "t", style: "font-size:15px; font-weight:700; padding-right:0;", text: cosmetic.name }),
+                el("div", { class: "s mono", style: "font-size:11px; margin-top:4px;", text: cosmetic.templateId })),
+              el("div", { style: "display:flex; align-items:center; gap:8px; flex-shrink:0;" },
+                el("span", { class: "k", style: "position:static;", text: cosmetic.type }),
+                el("button", {
+                  type: "button",
+                  class: "btn ghost small",
+                  style: "border:none; color:var(--bad); min-height:24px; padding:0 8px; font-size:14px; line-height:1;",
+                  text: "✕",
+                  title: "Remove item",
+                  onclick: () => {
+                    if (isFeatured) custom.featured.splice(index, 1);
+                    else custom.daily.splice(index, 1);
+                    showShop();
+                  }
+                }))
+            ),
+            el("div", { style: "display:flex; justify-content:space-between; align-items:center; margin-top:auto;" },
+              el("span", { class: "muted", style: "font-size:13px; font-weight:500;", text: "V-Bucks:" }),
+              priceInput
+            )
+          );
+        };
+
+        const featuredGrid = el("div", {
+          class: "grid",
+          style: "grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:14px; margin-top:14px;"
+        },
+          ...custom.featured.map((item, idx) => renderCustomTile(item, idx, true)),
+          custom.featured.length === 0 ? el("div", { class: "empty", text: "No featured items. Click 'Add Featured Item' below." }) : null
+        );
+
+        const dailyGrid = el("div", {
+          class: "grid",
+          style: "grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:14px; margin-top:14px;"
+        },
+          ...custom.daily.map((item, idx) => renderCustomTile(item, idx, false)),
+          custom.daily.length === 0 ? el("div", { class: "empty", text: "No daily items. Click 'Add Daily Item' below." }) : null
+        );
+
+        const addFeaturedBtn = btn("+ Add Featured Item", () => {
+          openCosmeticPicker((c) => {
+            custom.featured.push([c.templateId, c.defaultPrice]);
+            showShop();
+          });
+        }, "ghost small");
+
+        const addDailyBtn = btn("+ Add Daily Item", () => {
+          openCosmeticPicker((c) => {
+            custom.daily.push([c.templateId, c.defaultPrice]);
+            showShop();
+          });
+        }, "ghost small");
+
+        const saveCustomBtn = btn("Save Custom Shop", async () => {
+          const res = await act(api("/admin/api/shop", { mode: "custom", custom }), "Custom shop saved and activated");
+          if (res) showShop();
+        }, "primary");
+
+        const resetToFnbrBtn = btn("Reset to Default History", async () => {
+          if (confirm("Reset the shop back to the default Season 1 FNBR rotation?")) {
+            state.customShop = null;
+            const res = await act(api("/admin/api/shop/reset", {}), "Shop reset to default FNBR history");
+            if (res) showShop();
+          }
+        }, "ghost");
+
+        configSection = el("section", { class: "panel" },
+          el("div", { class: "panel-head" },
+            el("h2", { text: "Custom Shop Builder" })),
+          el("p", { class: "note", text: "Add and price custom Featured (BRWeeklyStorefront) and Daily (BRDailyStorefront) items. In-game players will see these offers immediately." }),
+
+          el("div", { style: "margin-top:16px;" },
+            el("div", { style: "display:flex; justify-content:space-between; align-items:center;" },
+              el("h3", { text: `Featured Items (${custom.featured.length})`, style: "font-size:15px;" }),
+              addFeaturedBtn),
+            featuredGrid),
+
+          el("div", { style: "margin-top:20px;" },
+            el("div", { style: "display:flex; justify-content:space-between; align-items:center;" },
+              el("h3", { text: `Daily Items (${custom.daily.length})`, style: "font-size:15px;" }),
+              addDailyBtn),
+            dailyGrid),
+
+          el("div", { class: "actions", style: "margin-top:20px; border-top:1px solid var(--line); padding-top:16px;" },
+            saveCustomBtn,
+            resetToFnbrBtn)
+        );
+      }
+
+      // Live In-Game Shop Preview
+      const liveFeatured = shop.currentShop?.featured || [];
+      const liveDaily = shop.currentShop?.daily || [];
+
+      const renderPreviewCard = (o, isLarge) => el("div", {
+        class: `card ${o.rarityCode}`,
+        style: "display:flex; flex-direction:column; justify-content:space-between; padding:16px 18px; min-height:145px;"
+      },
+        el("div", {},
+          el("div", { class: "k", text: o.type }),
+          el("div", { class: "t", style: `font-size:${isLarge ? "17px" : "16px"}; font-weight:700;`, text: o.name }),
+          el("div", { class: "s mono", style: "font-size:11px; margin-top:4px;", text: o.templateId })),
+        el("div", { style: "display:flex; justify-content:space-between; align-items:center; margin-top:14px;" },
+          chip(o.rarity, o.rarityCode),
+          el("span", { class: "chip warn", style: "font-weight:700;", text: `${fmt(o.price)} V-Bucks` }))
+      );
+
+      const previewSection = el("section", { class: "panel", style: "margin-top:16px;" },
+        el("div", { class: "panel-head" },
+          el("h2", { text: "Live In-Game Shop Preview" }),
+          el("span", { class: "note", text: `Rotates in ${Math.max(0, Math.round((new Date(shop.nextRotation) - new Date()) / 3600000))}h` })),
+        el("p", { class: "note", text: "This is what players running 1.8+ currently see on the Store tab in the game lobby." }),
+
+        el("div", { style: "margin-top:14px;" },
+          el("h3", { text: `Featured Items (${liveFeatured.length})`, style: "font-size:14px; margin-bottom:8px; color:var(--muted);" }),
+          el("div", { class: "grid", style: "grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:14px;" },
+            ...liveFeatured.map((o) => renderPreviewCard(o, true)),
+            liveFeatured.length === 0 ? el("div", { class: "empty", text: "No featured items on sale." }) : null
+          )),
+
+        el("div", { style: "margin-top:18px;" },
+          el("h3", { text: `Daily Items (${liveDaily.length})`, style: "font-size:14px; margin-bottom:8px; color:var(--muted);" }),
+          el("div", { class: "grid", style: "grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:14px;" },
+            ...liveDaily.map((o) => renderPreviewCard(o, false)),
+            liveDaily.length === 0 ? el("div", { class: "empty", text: "No daily items on sale." }) : null
+          ))
+      );
+
+      $("view").replaceChildren(
+        el("div", { class: "view-head" },
+          el("div", {},
+            el("h1", { text: "Item Shop" }),
+            el("div", { class: "muted", text: "Configure Battle Royale's Store tab (Athena Direct Acquisition) for 1.8+ builds." })),
+          el("div", { class: "actions" },
+            btn("Refresh", showShop, "ghost"))),
+        modePicker,
+        configSection,
+        previewSection
       );
     }
 

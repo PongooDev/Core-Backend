@@ -25,6 +25,8 @@ import { notifyProfiles } from "../services/mcp/profile.js";
 import { categories, currencies, describeItem, isSingleItem, searchCatalog, stormShields } from "./describe.js";
 import { requireLoopback, requirePanelRequest } from "./local.js";
 import { defaultBattleRoyaleNews, defaultLoginMessage } from "../services/content/pages.js";
+import { inBuild } from "../builds/context.js";
+import { eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, shopDay, weeklyStoreEnd } from "../store/itemshop.js";
 
 import { isServerAccountName, validatePassword } from "../accounts/password.js";
 
@@ -169,7 +171,10 @@ export function adminRoutes(context) {
     stomp?.kick(account.id);
   }
 
-  router.get("/admin", (req, res) => res.sendFile(panel));
+  router.get("/admin", (req, res) => {
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    res.sendFile(panel);
+  });
   // Browsers ask for this on any page; the panel has its own icon.
   router.get("/favicon.ico", (req, res) => res.status(204).end());
 
@@ -535,6 +540,97 @@ export function adminRoutes(context) {
         loginMessage: configLogin ?? defaultLoginMessage
       }
     });
+  });
+
+  function getShopPayload() {
+    const now = new Date();
+    const config = settings?.get?.()?.itemShop ?? { mode: "fnbr" };
+    const build = "3724489";
+    const offers = inBuild(build, () => itemShopOffers(now, config));
+    const cosmetics = inBuild(build, () => eligibleCosmetics());
+    const currentDay = shopDay(now);
+
+    const mapOffer = (o) => {
+      const match = cosmetics.find((c) => c.templateId.toLowerCase() === o.templateId.toLowerCase());
+      return {
+        templateId: o.templateId,
+        name: o.title || match?.name || o.templateId,
+        price: o.price,
+        type: match?.type ?? "Cosmetic",
+        rarity: match?.rarity ?? "Uncommon",
+        rarityCode: match?.rarityCode ?? "uc"
+      };
+    };
+
+    return {
+      mode: config.mode || "fnbr",
+      currentShop: {
+        featured: offers.BRWeeklyStorefront.map(mapOffer),
+        daily: offers.BRDailyStorefront.map(mapOffer)
+      },
+      history: {
+        date: currentDay.date,
+        featured: currentDay.featured,
+        daily: currentDay.daily
+      },
+      custom: config.custom ?? {
+        featured: currentDay.featured,
+        daily: currentDay.daily
+      },
+      random: config.random ?? null,
+      nextRotation: nextRotation(now).toISOString(),
+      weeklyStoreEnd: weeklyStoreEnd(now, config).toISOString(),
+      availableCosmetics: cosmetics
+    };
+  }
+
+  router.get("/admin/api/shop", (req, res) => {
+    res.json(getShopPayload());
+  });
+
+  router.post("/admin/api/shop", (req, res) => {
+    if (!settings?.update) return invalid(res, "Settings store not available");
+    const mode = ["fnbr", "random", "custom"].includes(req.body?.mode) ? req.body.mode : "fnbr";
+    const update = { mode };
+
+    if (req.body?.custom && typeof req.body.custom === "object") {
+      const sanitizeList = (list) => {
+        if (!Array.isArray(list)) return [];
+        return list
+          .filter((item) => Array.isArray(item) && typeof item[0] === "string" && item[0].trim())
+          .map(([templateId, price]) => [templateId.trim(), Math.max(0, Math.floor(Number(price) || 800))]);
+      };
+      update.custom = {
+        featured: sanitizeList(req.body.custom.featured),
+        daily: sanitizeList(req.body.custom.daily)
+      };
+    }
+
+    settings.update({ itemShop: update });
+    res.json(getShopPayload());
+  });
+
+  router.post("/admin/api/shop/randomize", (req, res) => {
+    if (!settings?.update) return invalid(res, "Settings store not available");
+    const build = "3724489";
+    const randomShop = inBuild(build, () => generateRandomShop());
+    settings.update({
+      itemShop: {
+        mode: "random",
+        random: randomShop
+      }
+    });
+    res.json(getShopPayload());
+  });
+
+  router.post("/admin/api/shop/reset", (req, res) => {
+    if (!settings?.update) return invalid(res, "Settings store not available");
+    settings.update({
+      itemShop: {
+        mode: "fnbr"
+      }
+    });
+    res.json(getShopPayload());
   });
 
   function resolveReportedPlayer(report) {

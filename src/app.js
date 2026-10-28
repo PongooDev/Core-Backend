@@ -3,6 +3,7 @@ import { createAccountStore } from "./accounts/store.js";
 import { createResetTokenStore } from "./accounts/reset-tokens.js";
 import { createSettingsStore } from "./settings/store.js";
 import { createReportStore } from "./reports/store.js";
+import { configureItemShop } from "./store/itemshop.js";
 import { requestBuild } from "./builds/context.js";
 import { seasonalEvents } from "./events/events.js";
 import { createFriendStore } from "./friends/store.js";
@@ -56,6 +57,7 @@ export function createContext(config) {
   const tokens = createTokenStore(config.dataDir);
   const accounts = createAccountStore(config.dataDir);
   const settings = createSettingsStore(config.dataDir);
+  configureItemShop(() => settings.get().itemShop);
   if (config.requirePassword !== undefined) settings.update({ requirePassword: config.requirePassword });
   if (config.allowRegistration !== undefined) settings.update({ allowRegistration: config.allowRegistration });
   if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
