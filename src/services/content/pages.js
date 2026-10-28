@@ -16,10 +16,14 @@ import { getBuild, versionOf } from "../../builds/detect.js";
 // The mode select screen's descriptions next to Save the World and Battle Royale (0x3018C70 body, 0x301A360 title, both
 // through 0x30184B0) read subgameselectdata.{saveTheWorld | battleRoyale}.message {title, body} (Core-Backend #63);
 // saveTheWorldUnowned is for players without Save the World, whom Core doesn't have. The title is the short line in the
-// red tag beside the Save the World button (SubgameSelectScreen InitializeShortDescriptions: PVEDescriptionText from
-// GetShortDescription(Campaign), the tag hidden when it's empty), the body the longer description below. Save the World
-// was discounted while 1.8 to 1.8.2 were live (October and November 2017), and their tag said "ON SALE NOW - LIMITED
-// TIME!" (Core-Backend #93); other builds keep "Co-op PvE".
+// tag beside the Save the World button (SubgameSelectScreen InitializeShortDescriptions: PVEDescriptionText from
+// GetShortDescription(Campaign)), the body the longer description below. Save the World was discounted while 1.8 to
+// 1.8.2 were live (October and November 2017), and their tag said "ON SALE NOW - LIMITED TIME!" (Core-Backend #93);
+// other builds keep "Co-op PvE".
+// The tag's colour is cooked into the widget, not served: 1.8's PVEDescriptionBorder is a Border whose brush is the red
+// M-NPVP-Notification material (designer text "On sale!"), but 1.8.1 (CL-3729133) re-cooked it as a CommonBorder on
+// M-Gradient-Backing, the same blue strip as PVPDescriptionBorder, and doesn't ship M-NPVP-Notification at all. Its
+// blueprint only sets the tag's text, so no field here can make 1.8.1's tag red (Core-Backend #103).
 export const defaultBattleRoyaleNews = {
   title: "Battle Royale - {version}",
   body: "Welcome to Battle Royale on Core!"
