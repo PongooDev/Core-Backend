@@ -24,11 +24,8 @@ const athenaProfile = async (port, player) => {
 };
 
 // The starter cosmetics a new locker holds (Core-Backend #77); the rest are bought or earned.
+// No Recruit outfits (CID_001-008): an empty character slot plays one at random (#77).
 const starters = ["AthenaGlider:defaultglider", "AthenaPickaxe:defaultpickaxe", "AthenaDance:eid_dancemoves",
-  "AthenaCharacter:cid_001_athena_commando_f_default", "AthenaCharacter:cid_002_athena_commando_f_default",
-  "AthenaCharacter:cid_003_athena_commando_f_default", "AthenaCharacter:cid_004_athena_commando_f_default",
-  "AthenaCharacter:cid_005_athena_commando_m_default", "AthenaCharacter:cid_006_athena_commando_m_default",
-  "AthenaCharacter:cid_007_athena_commando_m_default", "AthenaCharacter:cid_008_athena_commando_m_default",
   "AthenaLoadingScreen:lsid_defaultbg", "AthenaBattleBus:bbid_defaultbus", "AthenaGlider:founderglider"];
 
 test("1.8's login queries the athena profile: the starter cosmetics, the default glider and pickaxe equipped, the other slots empty for their defaults", async () => {
@@ -53,7 +50,7 @@ test("1.8's login queries the athena profile: the starter cosmetics, the default
   }
 });
 
-test("with giveAllCosmetics on, the locker holds every Battle Royale cosmetic of the build", async () => {
+test("with giveAllCosmetics on, the locker holds every Battle Royale cosmetic of the build but the random Recruits", async () => {
   const backend = await startBackend({ giveAllCosmetics: true });
   try {
     const profile = await athenaProfile(backend.port, await userLogin(backend.port, "AllCosmetics18"));
@@ -61,7 +58,10 @@ test("with giveAllCosmetics on, the locker holds every Battle Royale cosmetic of
     const cosmetics = Object.keys(athenaCosmetics());
     assert.ok(cosmetics.length >= 70);
     assert.ok(!cosmetics.some((templateId) => templateId.includes("cid_test")));
-    assert.deepEqual(Object.keys(profile.items).sort(), [...cosmetics].sort());
+    // The Recruit outfits (CID_001-008) are never locker items: an empty character slot plays one at random (#77).
+    const recruit = (templateId) => /cid_00[1-8]_athena_commando_[fm]_default$/.test(templateId);
+    assert.equal(cosmetics.filter(recruit).length, 8);
+    assert.deepEqual(Object.keys(profile.items).sort(), cosmetics.filter((templateId) => !recruit(templateId)).sort());
     for (const templateId of ["AthenaCharacter:cid_029_athena_commando_f_halloween", "AthenaPickaxe:halloweenscythe", "AthenaGlider:glider_warthog",
       "AthenaVictoryPose:eid_ridethepony", "AthenaLoadingScreen:lsid_fiercecloudpuff", "AthenaBattleBus:bbid_purplebus"]) {
       assert.equal(profile.items[templateId]?.templateId, templateId);

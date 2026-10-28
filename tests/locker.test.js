@@ -74,7 +74,8 @@ test("season level 25 gives the Mako glider; giveAllCosmetics turned off again t
 
   // Everything, then a purchase and an equipped item.
   session = locker({ giveAllCosmetics: true });
-  assert.equal(Object.keys(session.profile("athena").profile.items).length, Object.keys(athenaCosmetics()).length);
+  // Every cosmetic but the 8 random Recruit outfits (#77).
+  assert.equal(Object.keys(session.profile("athena").profile.items).length, Object.keys(athenaCosmetics()).length - 8);
   grantCosmetic(session, "AthenaPickaxe:halloweenscythe");
   session.profile("athena").setStat("favorite_character", "AthenaCharacter:cid_029_athena_commando_f_halloween");
   session.profile("athena").setStat("favorite_pickaxe", "AthenaPickaxe:halloweenscythe");
@@ -102,11 +103,7 @@ test("lockers made before #77, which got every cosmetic, keep only the starters 
   const session = openSession(createProfileStore(dataDir, { wonPlaylists: () => [2] }), accountId);
   const { profile } = session.profile("athena");
   const held = Object.keys(profile.items).sort();
-  assert.deepEqual(held, ["AthenaBattleBus:bbid_defaultbus", "AthenaCharacter:cid_001_athena_commando_f_default",
-    "AthenaCharacter:cid_002_athena_commando_f_default", "AthenaCharacter:cid_003_athena_commando_f_default",
-    "AthenaCharacter:cid_004_athena_commando_f_default", "AthenaCharacter:cid_005_athena_commando_m_default",
-    "AthenaCharacter:cid_006_athena_commando_m_default", "AthenaCharacter:cid_007_athena_commando_m_default",
-    "AthenaCharacter:cid_008_athena_commando_m_default", "AthenaDance:eid_dancemoves", "AthenaGlider:defaultglider",
+  assert.deepEqual(held, ["AthenaBattleBus:bbid_defaultbus", "AthenaDance:eid_dancemoves", "AthenaGlider:defaultglider",
     "AthenaGlider:founderglider", "AthenaGlider:founderumbrella", "AthenaGlider:glider_warthog", "AthenaGlider:solo_umbrella",
     "AthenaLoadingScreen:lsid_defaultbg", "AthenaPickaxe:defaultpickaxe"]);
   // Slots holding a removed item go back to their default; the others stay.

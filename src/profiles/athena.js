@@ -54,14 +54,20 @@ const typeOf = (templateId) => templateId.split(":")[0].toLowerCase();
 // (store/itemshop.js), earned (season level chase rewards, victory umbrellas) or, when the host turns giveAllCosmetics on
 // (config.json), all given at once.
 // The starters: the default glider and pickaxe the empty slots hold (above); AthenaGameData's FallbackDance
-// (EID_DanceMoves) and RandomCharacters (CID_001-008, the "Recruit" outfits an empty character slot picks from); the
-// default loading screen and battle bus; and the Founder's Glider: Core's accounts are all founders
+// (EID_DanceMoves); the default loading screen and battle bus; and the Founder's Glider: Core's accounts are all founders
 // (profiles/founders.js), and 1.7.2's winners answer had a founder_glider type for founders
 // (services/fortnite/battleroyale.js), which 1.8 made this item (🟡 who Epic granted it to is inferred from that).
 const starters = ["AthenaGlider:defaultglider", "AthenaPickaxe:defaultpickaxe", "AthenaDance:eid_dancemoves",
-  ...[1, 2, 3, 4].map((n) => `AthenaCharacter:cid_00${n}_athena_commando_f_default`),
-  ...[5, 6, 7, 8].map((n) => `AthenaCharacter:cid_00${n}_athena_commando_m_default`),
   "AthenaLoadingScreen:lsid_defaultbg", "AthenaBattleBus:bbid_defaultbus", "AthenaGlider:founderglider"];
+
+// AthenaGameData's RandomCharacters, CID_001-008 (the "Recruit" outfits): an empty character slot plays one of them at
+// random, and they're never locker items one can pick (Core-Backend #77). A locker that held them loses them, and a
+// character slot holding one goes back to "" (random).
+const randomCharacters = [1, 2, 3, 4, 5, 6, 7, 8].map((n) => `AthenaCharacter:cid_00${n}_athena_commando_${n <= 4 ? "f" : "m"}_default`);
+const isRandomCharacter = (templateId) => randomCharacters.some((id) => id.toLowerCase() === String(templateId).toLowerCase());
+const heldRandomCharacters = (profile) => Object.entries(profile.items)
+  .filter(([, item]) => isRandomCharacter(item.templateId)).map(([itemId]) => itemId);
+const lockerCosmetics = () => Object.keys(athenaCosmetics()).filter((templateId) => !isRandomCharacter(templateId));
 
 // The build's template id for one of its cosmetics, as its game data spells it; undefined if it has none.
 function cosmeticId(templateId) {
@@ -103,8 +109,8 @@ const missing = (profile, templateIds) => templateIds.filter((templateId) => !fi
 export function athenaNeedsSetUp(profile, settings = {}) {
   return !migrated(profile, "athenaLocker") || missing(profile, starterIds()).length > 0
     || missing(profile, earnedCosmetics(profile, settings)).length > 0
-    || (settings.giveAllCosmetics ? missing(profile, Object.keys(athenaCosmetics())).length > 0 : blanket(profile).length > 0)
-    || emptyDefaultSlots(profile).length > 0;
+    || (settings.giveAllCosmetics ? missing(profile, lockerCosmetics()).length > 0 : blanket(profile).length > 0)
+    || emptyDefaultSlots(profile).length > 0 || heldRandomCharacters(profile).length > 0;
 }
 
 function addCosmetic(tracker, templateId, seen) {
@@ -148,8 +154,9 @@ export function setUpAthena(session) {
   }
   for (const templateId of missing(profile, starterIds())) addCosmetic(tracker, templateId, true);
   for (const templateId of earnedCosmetics(profile, settings)) grantCosmetic(session, templateId);
+  for (const itemId of heldRandomCharacters(profile)) removeCosmetic(tracker, itemId);
   if (settings.giveAllCosmetics) {
-    const given = missing(profile, Object.keys(athenaCosmetics()));
+    const given = missing(profile, lockerCosmetics());
     for (const templateId of given) addCosmetic(tracker, templateId, true);
     profile.coreBlanketCosmetics = [...blanket(profile), ...given];
   } else if (blanket(profile).length) {
