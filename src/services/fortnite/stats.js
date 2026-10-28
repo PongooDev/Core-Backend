@@ -7,7 +7,8 @@ import { windows } from "../../stats/store.js";
 const playlists = [2, 10, 9];
 
 // Battle Royale's stats screen (1.7.2: bAthenaStatsFrontendEnabled) asks for a player's lifetime stats (window alltime,
-// the screen's only one: 0x2D6C28D; a daily, weekly or monthly window has what those days added), a list of {name,
+// the screen's only one: 1.7.2 0x2D6C28D, 1.8 0x2DDF4B9 into QueryPlayerStats 0x772F20, the same GET and the same
+// LeaderboardStats rows; a daily, weekly or monthly window has what those days added), a list of {name,
 // value, window, ownerType}: br_placetop1 (Wins), br_placetop<n>, br_kills, br_matchesplayed and br_minutesplayed
 // ("Time Played"), each "_pc_m0_p<playlist>", from what Core recorded
 // (src/stats/store.js; a stat it hasn't is absent, 0). The screen's "Last Updated" is GameplayStat.BR.LastModified

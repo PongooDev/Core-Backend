@@ -8,8 +8,10 @@ import { readJson, writeJson } from "../json-file.js";
 // days holds what each UTC day added, for 1.8's leaderboards, which rank by day, week and month as well as all time;
 // days older than the longest of those go.
 // Epic's stats service kept them from what its gameservers reported. The 1.7.2 server reports only its winners
-// (battleroyale/recordwin, its RecordUserStatsUrl /api/stats/bulk has no caller), so Core's server reports every
-// player's place, kills and time alive when their team is out or wins (battleroyale/recordresults, CoreV2).
+// (battleroyale/recordwin, its RecordUserStatsUrl /api/stats/bulk has no caller), and 1.8's nothing at all (no
+// recordwin), so Core's server reports every player's place, kills and time alive when their team is out or wins
+// (battleroyale/recordresults, CoreV2), with the win on a build that doesn't report it itself. Both builds' stats
+// screens ask for the same stats of the same playlists, so a player's stats are the same on either.
 
 // The places each playlist's stats count besides wins (Balance/DataTables/LeaderboardStats, the stats screen's tabs):
 // solo top 10 and 25, duo top 5 and 12, squad top 3 and 6. A place counts toward every one it is within, a win too.
@@ -97,9 +99,11 @@ export function createStatsStore(dataDir) {
       change(accountId, playlistId, { placetop1: 1 }, now);
     },
 
-    // One match: its place counts toward the playlist's placements below a win (recordWin counts the win itself).
-    recordResult(accountId, playlistId, { place, kills, secondsAlive }, now = new Date()) {
+    // One match: its place counts toward the playlist's placements below a win, and with win (1.8, whose server has no
+    // recordwin) the win itself; otherwise recordWin counts it.
+    recordResult(accountId, playlistId, { place, kills, secondsAlive, win = false }, now = new Date()) {
       const counts = { matchesplayed: 1, kills, secondsplayed: secondsAlive };
+      if (win && place === 1) counts.placetop1 = 1;
       for (const top of placements[playlistId] ?? []) {
         if (place <= top) counts[`placetop${top}`] = 1;
       }
