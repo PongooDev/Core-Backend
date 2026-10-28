@@ -3061,6 +3061,27 @@
           el("p", { class: "note", text: "Runs each build's own seasonal event, such as Fortnitemares on 1.8: its View Event page and quests, Hexsylvania on the map and its Candy llama. Players see the change the next time they log in." })),
 
         el("section", { class: "panel", style: "margin-top:16px" },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" },
+            el("div", { class: "actions" },
+              el("h2", { text: "Battle Royale V-Bucks Rewards" }),
+              settings.battleRoyaleVbucks ? chip("On", "good") : chip("Off")),
+            toggleSwitch(settings.battleRoyaleVbucks === true, (checked) =>
+              save({ battleRoyaleVbucks: checked }, checked ? "Battle Royale V-Bucks rewards turned on" : "Battle Royale V-Bucks rewards turned off"))),
+          el("p", { class: "note", text: "Pays V-Bucks for every kill and for a win in any Battle Royale playlist, when the match's gameserver reports the player's result. Each match pays a player once." }),
+          (() => {
+            const perKill = el("input", { class: "field num", type: "number", min: 0, max: 100000, value: settings.vbucksPerKill ?? 50, "aria-label": "V-Bucks per kill" });
+            const perWin = el("input", { class: "field num", type: "number", min: 0, max: 100000, value: settings.vbucksPerWin ?? 500, "aria-label": "V-Bucks per win" });
+            return el("div", { class: "actions", style: "margin-top:12px; align-items:center; gap:8px; flex-wrap:wrap;" },
+              el("span", { class: "muted", text: "Per kill" }), perKill,
+              el("span", { class: "muted", text: "Per win" }), perWin,
+              btn("Save amounts", () => {
+                const [kill, win] = [Number(perKill.value), Number(perWin.value)];
+                if (![kill, win].every((value) => Number.isInteger(value) && value >= 0 && value <= 100000)) return toast("Amounts must be whole numbers from 0 to 100000", true);
+                save({ vbucksPerKill: kill, vbucksPerWin: win }, `V-Bucks rewards: ${kill} a kill, ${win} a win`);
+              }, "primary"));
+          })()),
+
+        el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head" },
             el("h2", { text: "Trusted Hosting IPs" }),
             chip("Dedicated Server Whitelist", "sky")),

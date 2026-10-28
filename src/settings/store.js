@@ -8,8 +8,20 @@ const defaults = {
   allowAutoRegistration: true,
   // Whether the seasonal events (events/events.js) run on the builds that shipped them (the admin panel's switch).
   seasonalEvents: true,
+  // V-Bucks for Battle Royale kills and wins (Core-Backend #100, services/fortnite/battleroyale.js): off unless turned on,
+  // then vbucksPerKill for each kill and vbucksPerWin for a win (place 1) in any Battle Royale playlist.
+  battleRoyaleVbucks: false,
+  vbucksPerKill: 50,
+  vbucksPerWin: 500,
   allowedHostingIps: ["127.0.0.1", "::1"]
 };
+
+// A reward amount: a whole number of V-Bucks from 0 to maxReward, or undefined for anything else.
+const maxReward = 100000;
+function rewardAmount(value) {
+  const amount = typeof value === "string" && value.trim() ? Number(value) : value;
+  return Number.isInteger(amount) && amount >= 0 && amount <= maxReward ? amount : undefined;
+}
 
 export function createSettingsStore(dataDir) {
   const file = dataDir && path.join(dataDir, "settings.json");
@@ -19,6 +31,8 @@ export function createSettingsStore(dataDir) {
     try {
       const loaded = readJson(file);
       Object.assign(settings, loaded);
+      if (typeof loaded.battleRoyaleVbucks !== "boolean") settings.battleRoyaleVbucks = defaults.battleRoyaleVbucks;
+      for (const key of ["vbucksPerKill", "vbucksPerWin"]) settings[key] = rewardAmount(loaded[key]) ?? defaults[key];
       if (Array.isArray(loaded.allowedHostingIps)) {
         settings.allowedHostingIps = [...loaded.allowedHostingIps];
       }
@@ -74,6 +88,11 @@ export function createSettingsStore(dataDir) {
       if (typeof partial.allowRegistration === "boolean") settings.allowRegistration = partial.allowRegistration;
       if (typeof partial.allowAutoRegistration === "boolean") settings.allowAutoRegistration = partial.allowAutoRegistration;
       if (typeof partial.seasonalEvents === "boolean") settings.seasonalEvents = partial.seasonalEvents;
+      if (typeof partial.battleRoyaleVbucks === "boolean") settings.battleRoyaleVbucks = partial.battleRoyaleVbucks;
+      for (const key of ["vbucksPerKill", "vbucksPerWin"]) {
+        const amount = rewardAmount(partial[key]);
+        if (amount !== undefined) settings[key] = amount;
+      }
       if (Array.isArray(partial.allowedHostingIps)) {
         settings.allowedHostingIps = [...new Set(partial.allowedHostingIps.filter((ip) => typeof ip === "string" && ip.trim()))];
       }

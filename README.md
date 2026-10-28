@@ -162,6 +162,7 @@ Core-Backend reads an optional `config.json` from the folder it is started in. C
 | `publicAddress` | `--public-address <ip or host>` | | The address players on the internet are sent to for your gameservers and XMPP. A host name is looked up every 5 minutes. |
 | `battleRoyaleNews` | | Core's | The Battle Royale lobby's news box (1.7.2+): `{"title": "...", "body": "..."}`; `{version}` in it becomes the player's build (Core's default title is "Battle Royale - {version}"). |
 | `loginMessage` | | Core's | The login screen's message box (the patch notes): `{"title": "...", "body": "..."}`; `{version}` works here too (Core's default title is "v{version}"). |
+| `battleRoyaleVbucks`, `vbucksPerKill`, `vbucksPerWin` | | `false`, `50`, `500` | Battle Royale V-Bucks rewards: with `battleRoyaleVbucks` on, every kill pays `vbucksPerKill` V-Bucks and a win `vbucksPerWin` (0 to 100000 each), in any Battle Royale playlist, once a match per player. Also on the admin panel's Settings page, which saves them in `<dataDir>/settings.json`; a value in `config.json` is set again at every start. Needs a Core V2 gameserver that sends its match's `matchId` with the results. |
 | `giveAllCosmetics` | | `false` | Battle Royale (1.8+): give every player every cosmetic of their build. Off, a new locker holds the starter cosmetics and the rest are bought in the item shop with V-Bucks or earned (season level rewards, victory umbrellas); turning it off again takes back what it gave that wasn't bought or earned since. |
 | | `--config <file>` | `config.json` | Config file to read. |
 

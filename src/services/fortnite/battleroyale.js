@@ -4,6 +4,7 @@ import { isDedicatedServerToken } from "../../accounts/clients.js";
 import { log } from "../../log.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
 import { addSeasonXp, awardVictory, matchXp, recordMatchProgress } from "../../profiles/athena.js";
+import { grant } from "../../profiles/progress.js";
 import { openSession } from "../../profiles/session.js";
 import { isMainPlaylist } from "../../stats/store.js";
 import { notifyProfiles } from "../mcp/profile.js";
@@ -22,16 +23,52 @@ import { notifyProfiles } from "../mcp/profile.js";
 // - recordwin: POST {playlistId, accountIds}, the winners at the end of the match (OnRecordWinnerComplete, 0x3F4950,
 //   request 0x72E130): a win (br_placetop1) each.
 // - recordresults: Core's (CoreV2's server; the 1.7.2 server reports nothing else), POST {playlistId, results:
-//   [{accountId, place, kills, secondsAlive}], countWins}, when a team is out of the match or has won: its players'
-//   match, place, kills and time alive. 1.8 has neither winners nor recordwin (Core-Backend #81: no
+//   [{accountId, place, kills, secondsAlive}], countWins, matchId}, when a team is out of the match or has won: its
+//   players' match, place, kills and time alive. 1.8 has neither winners nor recordwin (Core-Backend #81: no
 //   "battleroyale/recordwin" in its exe), so CoreV2 sends countWins: true from a build without it and a place 1 there
 //   is the win too; without countWins (1.7.2, or a CoreV2 from before) recordwin counts it, so a win isn't counted
 //   twice. A player with a Battle Royale profile (1.8's athena) also gets the match's season XP and its placement and
 //   elimination challenge progress (profiles/athena.js), which reach their client as profile notifications, and for a
 //   win (place 1) in solo, duo or squad The Umbrella and the Founder's Umbrella in the locker (Core-Backend #77, #84):
 //   1.8's umbrella is a glider item.
+//   With battleRoyaleVbucks on (Core-Backend #100, the admin panel's Settings), each result also pays V-Bucks:
+//   vbucksPerKill a kill and vbucksPerWin for a place 1, in any Battle Royale playlist and on either build (1.7.2's
+//   results have its winners' place 1 too, whatever recordwin says). They go to profile0, the balance the game shows, as
+//   Currency:mtxgiveaway, the way the admin panel's and the llamas' V-Bucks do. A result pays once per match: the report's
+//   matchId (CoreV2's, one id for the whole match) is kept in the player's profile0 with the V-Bucks it paid
+//   (coreBattleRoyaleRewards, Core's, never sent to the client), so a report sent again pays nothing; a report without
+//   one pays nothing either, as there is no telling it from a replay.
 // The gameserver's own login records the players on a session it hosts, the DedicatedServer client (CoreV2) anyone's;
 // other players are skipped, so a player's own token can't award itself wins. Both records answer 204 whatever they kept.
+
+// How long a paid match is remembered. CoreV2 reports a player once a match, when their team is out or has won; a
+// replay of a report weeks later isn't something a gameserver does.
+const rewardedMatchMs = 30 * 24 * 60 * 60 * 1000;
+const matchIdPattern = /^[A-Za-z0-9_-]{1,64}$/;
+
+// The V-Bucks a result pays (settings, battleRoyaleVbucks), granted into the session's profile0: 0 when off, when it
+// earns nothing, without a match id, or when this match already paid the player.
+function payMatchVbucks(session, settings, matchId, { kills, win }, now = new Date()) {
+  if (settings.battleRoyaleVbucks !== true) return 0;
+  const amount = kills * (settings.vbucksPerKill ?? 0) + (win ? settings.vbucksPerWin ?? 0 : 0);
+  if (amount <= 0) return 0;
+  if (!matchId) {
+    log("Battle Royale", `No V-Bucks for ${session.accountId}: the result has no matchId, so a replay of it couldn't be told apart`);
+    return 0;
+  }
+  const account = session.profile("profile0").profile;
+  const paid = Object.fromEntries(Object.entries(account.coreBattleRoyaleRewards ?? {})
+    .filter(([, { at }]) => now.getTime() - Date.parse(at) < rewardedMatchMs));
+  if (Object.hasOwn(paid, matchId)) {
+    log("Battle Royale", `No V-Bucks for ${session.accountId}: match ${matchId} already paid them ${paid[matchId].vbucks}`);
+    return 0;
+  }
+  grant(session, "Currency:mtxgiveaway", amount);
+  // Saved with the V-Bucks, in the same profile write.
+  account.coreBattleRoyaleRewards = { ...paid, [matchId]: { vbucks: amount, at: now.toISOString() } };
+  return amount;
+}
+
 export function battleRoyaleRoutes(context) {
   const { tokens, accounts, sessions, stats, profiles } = context;
   const router = express.Router();
@@ -68,6 +105,8 @@ export function battleRoyaleRoutes(context) {
     const playlistId = playlistOf(req.body);
     const results = Array.isArray(req.body?.results) && Number.isInteger(playlistId) && playlistId > 0 ? req.body.results : [];
     const countWins = req.body?.countWins === true;
+    const matchId = typeof req.body?.matchId === "string" && matchIdPattern.test(req.body.matchId) ? req.body.matchId : null;
+    const rewards = context.settings?.get?.() ?? {};
     for (const result of results) {
       const place = count(result?.place, 1000);
       const kills = count(result?.kills, 1000);
@@ -81,10 +120,13 @@ export function battleRoyaleRoutes(context) {
       log("Battle Royale", `${result.accountId} placed ${place} in playlist ${playlistId} with ${kills} kills, ${secondsAlive} s alive`
         + (win ? " (a win)" : ""));
       const session = openSession(profiles, result.accountId);
-      if (!session.hasProfile("athena")) continue;
-      recordMatchProgress(session, playlistId, { place, kills });
-      addSeasonXp(session, matchXp(playlistId, { place, kills, secondsAlive }));
-      if (place === 1 && isMainPlaylist(playlistId)) awardVictory(session);
+      const vbucks = payMatchVbucks(session, rewards, matchId, { kills, win: place === 1 });
+      if (vbucks) log("Battle Royale", `${result.accountId} earned ${vbucks} V-Bucks in match ${matchId}`);
+      if (session.hasProfile("athena")) {
+        recordMatchProgress(session, playlistId, { place, kills });
+        addSeasonXp(session, matchXp(playlistId, { place, kills, secondsAlive }));
+        if (place === 1 && isMainPlaylist(playlistId)) awardVictory(session);
+      }
       session.commit();
       notifyProfiles(context, session);
     }

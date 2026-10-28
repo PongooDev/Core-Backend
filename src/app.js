@@ -62,6 +62,9 @@ export function createContext(config) {
   if (config.allowRegistration !== undefined) settings.update({ allowRegistration: config.allowRegistration });
   if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
   if (config.seasonalEvents !== undefined) settings.update({ seasonalEvents: config.seasonalEvents });
+  for (const key of ["battleRoyaleVbucks", "vbucksPerKill", "vbucksPerWin"]) {
+    if (config[key] !== undefined) settings.update({ [key]: config[key] });
+  }
   const friends = createFriendStore(config.dataDir);
   const sessions = createSessionStore();
   const stats = createStatsStore(config.dataDir);

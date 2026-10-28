@@ -531,6 +531,9 @@ export function adminRoutes(context) {
       allowRegistration: req.body?.allowRegistration,
       allowAutoRegistration: req.body?.allowAutoRegistration,
       seasonalEvents: req.body?.seasonalEvents,
+      battleRoyaleVbucks: req.body?.battleRoyaleVbucks,
+      vbucksPerKill: req.body?.vbucksPerKill,
+      vbucksPerWin: req.body?.vbucksPerWin,
       allowedHostingIps: req.body?.allowedHostingIps
     });
     const net = network?.settings?.() ?? {};
