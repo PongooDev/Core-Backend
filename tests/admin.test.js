@@ -1,5 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
+import { describeItem } from "../src/admin/describe.js";
 import { get, openTunnel, post, send, startBackend, userLogin } from "./helpers.js";
 
 test("the admin panel lists accounts and skips the tutorial", async () => {
@@ -71,6 +74,40 @@ test("the client's DevSkipTutorial admin command skips the tutorial for its own 
     assert.equal(response.body.profileId, "profile0");
     const items = Object.values(response.body.profileChanges[0].profile.items);
     assert.ok(items.some((item) => item.templateId === "Quest:homebaseonboardingafteroutpost" && item.attributes.quest_state === "Claimed"));
+  } finally {
+    backend.close();
+  }
+});
+
+test("the panel names items as the game does, later builds' items and schematics included (#76)", async () => {
+  const name = (templateId) => describeItem(templateId).name;
+  // 1.8's heroes, survivors and schematics, which Cert's data hasn't.
+  assert.equal(name("Hero:hid_commando_gunheadshothw_vr_t01"), "Skull Trooper Jonesy");
+  assert.equal(describeItem("Hero:hid_commando_gunheadshothw_vr_t01").maxLevel, 10);
+  assert.equal(name("Hero:hid_outlander_zoneharvesthw_sr_t01"), "Bloodfinder A.C.");
+  assert.equal(name("Worker:worker_halloween_troll_sr_t01"), "Troll");
+  // A schematic is named after what it crafts, trimmed; one with a name of its own keeps it (Cert's tier names).
+  assert.equal(name("Schematic:sid_assault_auto_halloween_sr_ore_t01"), "Grave Digger");
+  assert.equal(name("Schematic:sid_assault_auto_c_ore_t00"), "Assault Rifle");
+  assert.equal(name("Schematic:sid_floor_spikes_wood_c_t01"), "Wooden Floor Spikes");
+  assert.equal(name("Schematic:ammo_bulletsheavy"), "Ammo: Heavy Bullets");
+  assert.equal(name("Schematic:sid_launcher_pumpkin_rpg_sr_ore_t01"), "Copper Jack-O-Launcher");
+  // Items Cert has keep Cert's names; Battle Royale's cosmetics get theirs.
+  assert.equal(name("CardPack:cardpack_melee_tool_c"), "Common Tool Schematic");
+  assert.equal(name("Hero:hid_commando_007_r_t01"), "Support Specialist Hawk");
+  assert.equal(name("AthenaCharacter:cid_030_athena_commando_m_halloween"), "Skull Trooper");
+  assert.equal(name("AthenaGlider:founderglider"), "Founder's Glider");
+
+  const backend = await startBackend();
+  try {
+    const { token, accountId } = await userLogin(backend.port, "Names18");
+    await post(backend.port, `/fortnite/api/game/v2/profile/${accountId}/client/QueryProfile?profileId=profile0&rvn=-1`, token, {});
+    const file = path.join(backend.dataDir, "accounts", accountId, "profiles", "profile0.json");
+    const profile = JSON.parse(fs.readFileSync(file, "utf8"));
+    profile.items.jonesy = { templateId: "Hero:hid_commando_gunheadshothw_vr_t01", attributes: { level: 1 }, quantity: 1 };
+    fs.writeFileSync(file, JSON.stringify(profile));
+    const { items } = (await get(backend.port, `/admin/api/accounts/${accountId}`)).body;
+    assert.equal(items.find((item) => item.itemId === "jonesy").name, "Skull Trooper Jonesy");
   } finally {
     backend.close();
   }

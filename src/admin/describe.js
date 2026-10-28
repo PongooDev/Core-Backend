@@ -1,7 +1,11 @@
+import { inBuild } from "../builds/context.js";
+import { certBuild } from "../builds/detect.js";
+import { athenaCosmetics } from "../gamedata/athena.js";
 import { bannerIds } from "../gamedata/banners.js";
 import { getNode, nodeIds } from "../gamedata/homebase.js";
 import { getCardPack, getItem, itemIds } from "../gamedata/items.js";
 import { getQuest, questIds } from "../gamedata/quests.js";
+import { dataBuilds } from "../gamedata/read.js";
 
 // How the panel names, groups and colours items. Names are the game's DisplayName where it has one; rarity comes from
 // the name (_c … _sr) first because this build's Rarity properties are placeholders for many items.
@@ -44,6 +48,35 @@ const prettify = (name) => name.split("_")
   .filter((word) => word && !skipWords.has(word) && !rarityCodes.includes(word) && !/^t\d\d$/.test(word))
   .map((word) => word[0].toUpperCase() + word.slice(1)).join(" ") || name;
 
+// The panel's requests name no build, so they read Cert's data (builds/context.js), which hasn't the items later builds
+// added: 1.8's Skull Trooper Jonesy (Hero:hid_commando_gunheadshothw_vr_t01) showed as "Commando Gunheadshothw" (issue
+// #76). An item is described from Cert's data when it has it, else from the newest build's that does, so items Cert
+// knows keep their names and later ones get theirs.
+const describedBuilds = [certBuild, ...dataBuilds.filter((build) => build !== certBuild).sort((a, b) => Number(b) - Number(a))];
+const fromBuilds = (lookup) => {
+  for (const build of describedBuilds) {
+    const found = inBuild(build, lookup);
+    if (found !== undefined) return found;
+  }
+  return undefined;
+};
+const itemOf = (templateId) => fromBuilds(() => getItem(templateId));
+// Display names as the game shows them: some DisplayNames end in spaces ("Grave Digger  ").
+const named = (name) => (typeof name === "string" && name.trim()) || undefined;
+const gameName = (templateId) => fromBuilds(() => named(getItem(templateId)?.name) ?? named(getCardPack(templateId)?.displayName));
+const cosmeticName = (templateId) => fromBuilds(() => named(Object.entries(athenaCosmetics())
+  .find(([id]) => id.toLowerCase() === templateId.toLowerCase())?.[1].name));
+
+// A schematic has no DisplayName of its own (1.8's only ones, the Jack-O-Launcher's, are its weapon's): the game shows
+// the name of what it crafts, its Result. In 1.8's paks 2,131 of the 2,135 schematics craft the world item named like
+// them (SID_X → WID_X or TID_X, Ammo_X → AmmoDataX); the others (SID_Floor_Track's gadget, an outpost and a Founders
+// tier mismatch, which crafts a same-named weapon) keep a name made from theirs.
+function craftedName(name) {
+  if (name.startsWith("ammo_")) return gameName(`Ammo:ammodata${name.slice("ammo_".length)}`);
+  const rest = name.replace(/^(sid|wid|tid)_/, "");
+  return gameName(`Weapon:wid_${rest}`) ?? gameName(`Trap:tid_${rest}`);
+}
+
 // One description per template: an account view describes every item, and a big profile holds thousands of copies.
 const described = new Map();
 export function describeItem(templateId) {
@@ -58,7 +91,7 @@ export function describeItem(templateId) {
 export function isSingleItem(templateId) {
   const type = String(templateId).split(":")[0].toLowerCase();
   if (type === "quest" || type === "homebasenode" || type === "homebasebannericon" || type === "homebasebannercolor") return false;
-  const info = getItem(templateId);
+  const info = itemOf(templateId);
   return info?.profile === "profile" && info.maxStackSize === 1;
 }
 
@@ -66,11 +99,12 @@ function describe(templateId) {
   const [rawType, rawName = ""] = String(templateId).split(":");
   const type = rawType.toLowerCase();
   const name = rawName.toLowerCase();
-  const info = getItem(templateId);
+  const info = itemOf(templateId);
   const tokens = name.split("_");
   const rarity = [...tokens].reverse().find((token) => rarityCodes.includes(token)) ?? rarityOfProperty[info?.rarity] ?? "c";
   const tier = Number(tokens.find((token) => /^t\d\d$/.test(token))?.slice(1) ?? 0);
-  const displayName = info?.name ?? getCardPack(templateId)?.displayName
+  const displayName = gameName(templateId) ?? (type === "schematic" ? craftedName(name) : undefined)
+    ?? (type.startsWith("athena") ? cosmeticName(templateId) : undefined)
     ?? (type === "quest" ? `Quest: ${prettify(name)}`
       : type === "homebasebannericon" ? `Banner icon ${rawName}`
       : type === "homebasebannercolor" ? `Banner colour ${rawName}`
