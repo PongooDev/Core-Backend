@@ -2204,12 +2204,11 @@
     }
 
     /* ---------- sessions ---------- */
-    const isSessionBusy = (s) => Boolean(s.started || s.currentPlayers);
     function sessionTable(sessions, withActions = true) {
       return table([
         ["Server", (s) => [el("strong", { text: s.serverName || s.ownerName || "—" }), el("div", { class: "note mono", text: s.id })]],
         ["Address", (s) => el("span", { class: "mono", text: `${s.serverAddress}:${s.serverPort}` })],
-        ["Mode", (s) => chip(s.gameMode || "—", isSessionBusy(s) ? "yellow" : "good")],
+        ["Mode", (s) => chip(s.gameMode || "—", s.gameMode === "FORTEMPTY" ? "good" : "yellow")],
         ["Region", (s) => s.region || "—"],
         ["Players", (s) => (s.players ? s.players.map((p) => p.displayName).join(", ") : `${s.currentPlayers}`) || "—", "wrap"],
         ["Beacon", (s) => s.beaconPort || "—", "num"],
@@ -2232,7 +2231,7 @@
           el("div", { class: "actions" }, btn("Refresh", showSessions, "ghost"))),
         el("div", { class: "tiles", style: "margin-bottom:16px" },
           tile("Sessions", fmt(sessions.length), "accent"),
-          tile("Free servers", fmt(sessions.filter((s) => !isSessionBusy(s)).length)),
+          tile("Free servers", fmt(sessions.filter((s) => s.gameMode === "FORTEMPTY" && !s.currentPlayers).length)),
           tile("Players in game", fmt(sessions.reduce((total, s) => total + s.currentPlayers, 0)))),
         el("section", { class: "panel" }, sessionTable(sessions))
       );
