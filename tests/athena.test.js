@@ -127,6 +127,31 @@ test("1.8's daily challenges: one a day up to 3, claimed ones cleared the next d
     assert.equal(quests().length, 3);
     assert.ok(!quests().includes(done));
   });
+
+  // Core-Backend #92: missed days stack, one daily a day up to MaxActiveDailyQuests (3); a done one stays, claimed, until
+  // the next day and isn't replaced before it.
+  withSession((session) => {
+    const tracker = session.profile("athena");
+    const day = (n, hour = 12) => new Date(Date.UTC(2026, 9, n, hour));
+    const quests = () => Object.values(tracker.profile.items).filter((item) => item.templateId.startsWith("Quest:"));
+    const open = () => quests().filter((item) => item.attributes.quest_state === "Active");
+    refreshAthenaDailies(session, day(1));
+    assert.equal(quests().length, 1, "the first login: one");
+    const [first] = quests();
+    first.attributes.quest_state = "Claimed";
+    refreshAthenaDailies(session, day(1, 23));
+    assert.deepEqual(quests(), [first], "done today: kept, claimed, and nothing new until tomorrow");
+
+    refreshAthenaDailies(session, day(3, 0));
+    assert.equal(quests().length, 2, "two days later: two new ones");
+    assert.ok(!quests().includes(first));
+    refreshAthenaDailies(session, day(10));
+    assert.equal(open().length, 3, "a week away: up to 3");
+
+    open()[0].attributes.quest_state = "Claimed";
+    refreshAthenaDailies(session, day(11));
+    assert.equal(open().length, 3);
+  });
 });
 
 test("challenge progress: placements and eliminations from the match results, the rest from the gameserver; done ones pay XP", () => {
@@ -163,6 +188,23 @@ test("challenge progress: placements and eliminations from the match results, th
     assert.equal(item("athenadailyquest_playerelimination").completion_athena_daily_kill_players_v2, 10);
     // 4 challenges at 500 XP: 2000, past levels 1-5 (1700), 300 into level 6.
     assert.deepEqual([tracker.profile.stats.attributes.level, tracker.profile.stats.attributes.xp], [6, 300]);
+  });
+});
+
+test("Search Chests (Core-Backend #92): five chests the gameserver reports, one per search, claim it and pay 500 XP once", () => {
+  withSession((session) => {
+    const tracker = session.profile("athena");
+    const itemId = grantAthenaQuest(tracker, "athenadailyquest_interacttreasurechest");
+    const chest = [{ statName: "daily_athena_loot_chest", count: 1 }];
+    for (let search = 0; search < 4; search++) advanceAthenaObjectives(session, chest);
+    assert.equal(tracker.profile.items[itemId].attributes.quest_state, "Active");
+    advanceAthenaObjectives(session, chest);
+    assert.equal(tracker.profile.items[itemId].attributes.quest_state, "Claimed");
+    assert.equal(tracker.profile.items[itemId].attributes.completion_daily_athena_loot_chest, 5);
+    // From level 1 with 0 XP: level 1 takes 100 and level 2 250 (SeasonXpTable), so 500 is level 3 with 150.
+    assert.deepEqual([tracker.profile.stats.attributes.level, tracker.profile.stats.attributes.xp], [3, 150]);
+    advanceAthenaObjectives(session, chest);
+    assert.deepEqual([tracker.profile.stats.attributes.level, tracker.profile.stats.attributes.xp], [3, 150], "done: no more XP");
   });
 });
 

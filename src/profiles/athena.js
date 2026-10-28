@@ -307,7 +307,12 @@ function addProgress(session, itemId, objective, count) {
   const item = tracker.profile.items[itemId];
   const key = `completion_${objective.name}`;
   const value = Math.min((item.attributes[key] ?? 0) + count, objective.count);
-  if (item.attributes[key] !== value) tracker.setItemAttribute(itemId, key, value);
+  if (item.attributes[key] !== value) {
+    tracker.setItemAttribute(itemId, key, value);
+    // Logged so a challenge that never moves (Core-Backend #92's "Search Chests" at 0/5 after a match) shows whether
+    // its progress reached the backend at all.
+    log("Battle Royale", `${session.accountId}: ${questIdOf(item)} ${objective.name} ${value}/${objective.count}`);
+  }
   const quest = athenaQuestOf(item);
   if (quest.objectives.every((other) => (item.attributes[`completion_${other.name}`] ?? 0) >= other.count)) completeQuest(session, itemId);
 }
@@ -349,20 +354,32 @@ export function recordMatchProgress(session, playlistId, { place, kills }) {
 export function advanceAthenaObjectives(session, updates) {
   for (const { statName, count } of Array.isArray(updates) ? updates : []) {
     if (typeof statName !== "string" || !Number.isInteger(count) || count <= 0) continue;
+    let held = false;
     for (const { itemId, quest } of activeQuests(session.profile("athena"))) {
       const objective = quest.objectives.find((candidate) => candidate.name === statName.toLowerCase());
-      if (!objective || countedFromResults(objective.stat)) continue;
+      if (!objective) continue;
+      held = true;
+      if (countedFromResults(objective.stat)) continue;
       if (session.profile("athena").profile.items[itemId]?.attributes.quest_state === "Active") addProgress(session, itemId, objective, count);
     }
+    // The server's quest manager only sends objectives of quests its copy of the profile has open, so one no open
+    // challenge here has is a copy out of step with the backend's.
+    if (!held) log("Battle Royale", `${session.accountId}: the gameserver advanced ${statName} by ${count}, which no open challenge has`);
   }
 }
 
 // Daily challenges, as Core gives STW's (profiles/dailies.js): 1.8's Athena_DailyQuestTrigger and its quest pack name
-// none, Epic chose them on its servers. On the first quest login of each UTC day, claimed dailies are cleared, one new
-// one (a daily the player doesn't hold, by the quests' weights) is added while fewer than 3 are open, and the daily
-// reroll is restored.
+// none, Epic chose them on its servers. The pack's limits are the game's: UFortGameData::QuestPackInfos
+// (Balance/DefaultGameData) has athenaDailyQuestInfo {DefaultQuestPack Athena_DailyQuestPack, MaxActiveDailyQuests 3,
+// MaxRerollsPerDay 1}. On the first quest login of each UTC day, claimed dailies are cleared, one new daily (one the
+// player doesn't hold, by the quests' weights) is added for every day since the last quest login while fewer than 3
+// are held, so a player away for three days finds three waiting (Core-Backend #92: Seasons 1 and 2 gave one a day and
+// kept them up to the cap), and the daily reroll is restored. A done daily stays, Claimed, until that next day: the quest
+// manager doesn't listen for a Completed or Claimed quest's objectives (EFortQuestState 2 and 3 skipped in
+// SendStatEventWithTags, 0x890AB7), so it can't be done twice.
 const maxOpen = 3;
 const rerollsPerDay = 1;
+const utcDay = (time) => Math.floor(time / 86_400_000);
 const heldDailies = (tracker) => Object.entries(tracker.profile.items)
   .filter(([, item]) => athenaQuestOf(item)?.type === "AthenaDailyQuest");
 
@@ -378,11 +395,15 @@ function newDaily(tracker) {
 export function refreshAthenaDailies(session, now = new Date()) {
   const tracker = session.profile("athena");
   const manager = tracker.profile.stats.attributes.quest_manager ?? {};
-  if ((manager.dailyLoginInterval ?? "").slice(0, 10) >= now.toISOString().slice(0, 10)) return;
+  const last = Date.parse(manager.dailyLoginInterval ?? "");
+  const days = Number.isNaN(last) ? 1 : utcDay(now.getTime()) - utcDay(last);
+  if (days <= 0) return;
   for (const [itemId, item] of heldDailies(tracker)) {
     if (item.attributes.quest_state === "Claimed") tracker.removeItem(itemId);
   }
-  if (heldDailies(tracker).length < maxOpen) newDaily(tracker);
+  for (let day = 0; day < days && heldDailies(tracker).length < maxOpen; day++) {
+    if (!newDaily(tracker)) break;
+  }
   tracker.setStat("quest_manager", { ...manager, dailyLoginInterval: now.toISOString(), dailyQuestRerolls: rerollsPerDay });
 }
 
