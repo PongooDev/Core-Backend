@@ -1,9 +1,10 @@
 import { perBuild } from "./read.js";
 
 // Battle Royale's game data (gamedata/athena.json, tools/extractor): its cosmetics, quests, season levels and the
-// objective stat rows its quests count. 1.8 (CL-3724489) is the first build with an athena profile and the file holds
-// its data; no earlier build asks for it. Once 1.8 has an overlay of its own (gamedata/3724489), this can move into it
-// as a patch of Cert's empty file, which is what the extractor makes from Cert.
+// objective stat rows its quests count. 1.8 (CL-3724489) is the first build with an athena profile and the base file
+// holds its data (the extractor makes it empty from Cert; no earlier build asks for it) rather than 1.8's overlay:
+// CoreV2's own match reports (battleroyale/recordresults, User-Agent "Core V2") name no build, so they are read with
+// Cert's data, and they need the season levels and challenges. A later build whose data differs overlays it as usual.
 const data = perBuild((read) => {
   const { cosmetics = {}, quests = {}, levels = [], objectiveStats = {} } = read("athena", {});
   return {

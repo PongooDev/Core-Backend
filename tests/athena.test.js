@@ -186,3 +186,26 @@ test("the gameserver's UpdateQuests, EndBattleRoyaleGame and ReportConsumableUse
     backend.close();
   }
 });
+
+test("the season's level 10 banner (BRSeason01) is the player's from their next 1.8 quest login, for the Battle Royale banner", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "Chase18");
+    await athena(backend.port, player);
+    const dedicated = await dedicatedServerToken(backend.port);
+    // CoreV2's reports name no build: the XP counts, but Cert's banners lack the 1.8 one.
+    for (let match = 0; match < 4; match++) {
+      await record(backend.port, dedicated, 2, [{ accountId: player.accountId, place: 1, kills: 20, secondsAlive: 1200 }]);
+    }
+    assert.equal((await athena(backend.port, player)).stats.attributes.level, 11, "5600 XP: past level 10 (4500)");
+
+    const login = await command(backend.port, player, "ClientQuestLogin", "athena");
+    const added = (login.body.multiUpdate ?? []).find((update) => update.profileId === "profile0")?.profileChanges ?? [];
+    assert.ok(added.some((change) => change.changeType === "itemAdded" && change.item.templateId === "HomebaseBannerIcon:BRSeason01"));
+    const banner = await command(backend.port, player, "SetBattleRoyaleBanner", "athena", { homebaseBannerIconId: "BRSeason01", homebaseBannerColorId: "DefaultColor1" });
+    assert.equal(banner.status, 200);
+    assert.equal(athenaOf(banner.body).profileChanges[0].profile.stats.attributes.banner_icon, "BRSeason01");
+  } finally {
+    backend.close();
+  }
+});
