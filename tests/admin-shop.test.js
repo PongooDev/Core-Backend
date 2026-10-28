@@ -154,3 +154,15 @@ test("admin shop API queries, customizes, randomizes, and resets the item shop",
   }
 });
 
+
+test("the weekly countdown ends when the random shop's featured pair changes, at the rotation hour", () => {
+  const config = { mode: "random", rotationHour: 5, weeklyDurationDays: 7, random: { seed: "countdown" } };
+  // Wednesday 28 October 2026, 03:00 UTC: still Tuesday's shop with a 05:00 rotation, the week runs Sunday 25 to Sunday 1.
+  const now = new Date("2026-10-28T03:00:00Z");
+  const end = weeklyStoreEnd(now, config);
+  assert.equal(end.toISOString(), "2026-11-01T05:00:00.000Z");
+  const featured = (at) => JSON.stringify(generateRandomShop(at, config).featured);
+  assert.equal(featured(new Date(end.getTime() - 1)), featured(now));
+  assert.notEqual(featured(end), featured(now));
+  assert.equal(weeklyStoreEnd(new Date("2026-11-01T04:59:59Z"), config).toISOString(), end.toISOString());
+});

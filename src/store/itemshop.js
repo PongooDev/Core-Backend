@@ -196,26 +196,28 @@ export function nextRotation(now = new Date(), overrideConfig = null) {
   return new Date(todayRotation.getTime() + dayMs);
 }
 
-// When the featured (weekly) items next change:
+// When the featured (weekly) items next change, at the rotation hour: in history mode, the first day from now whose
+// recorded day features other items (Epic's pair lasted a week, Sunday to Saturday from 5 November; the cycle's first and
+// last weeks are shorter); in random and custom mode, the end of the weeklyDurationDays-day period generateRandomShop
+// seeds the featured pair by.
 const featuredOf = (day) => JSON.stringify(day.featured.map(([templateId]) => templateId));
 export function weeklyStoreEnd(now = new Date(), overrideConfig = null) {
   const config = overrideConfig ?? currentShopConfig();
-  const weeklyDays = Math.max(1, Math.min(30, Number(config?.weeklyDurationDays ?? 7)));
+  const rotationMs = Math.max(0, Math.min(23, Number(config?.rotationHour ?? 0))) * 60 * 60 * 1000;
+  const dayNumber = Math.floor((now.getTime() - rotationMs) / dayMs);
+  const dayStart = (day) => new Date(day * dayMs + rotationMs);
 
-  if (config.mode === "custom" || config.mode === "random" || (config.weeklyDurationDays !== undefined && config.weeklyDurationDays !== null && config.weeklyDurationDays !== 7)) {
-    const midnight = Math.floor(now.getTime() / dayMs) * dayMs;
-    const dayNumber = Math.floor(now.getTime() / dayMs);
-    const daysIntoCycle = ((dayNumber + 4) % weeklyDays + weeklyDays) % weeklyDays;
-    const daysRemaining = weeklyDays - daysIntoCycle;
-    return new Date(midnight + (daysRemaining || weeklyDays) * dayMs);
+  if (config.mode === "custom" || config.mode === "random") {
+    const weeklyDays = Math.max(1, Math.min(30, Number(config?.weeklyDurationDays ?? 7)));
+    const weekNumber = Math.floor((dayNumber + 4) / weeklyDays);
+    return dayStart((weekNumber + 1) * weeklyDays - 4);
   }
 
   const today = featuredOf(shopDay(now, config));
-  const midnight = Math.floor(now.getTime() / dayMs) * dayMs;
   for (let days = 1; days < history.length; days++) {
-    if (featuredOf(shopDay(new Date(midnight + days * dayMs), config)) !== today) return new Date(midnight + days * dayMs);
+    if (featuredOf(shopDay(dayStart(dayNumber + days), config)) !== today) return dayStart(dayNumber + days);
   }
-  return new Date(midnight + history.length * dayMs);
+  return dayStart(dayNumber + history.length);
 }
 
 const offerIdOf = (templateId) => `core_br_${templateId.split(":")[1].toLowerCase()}`;

@@ -69,19 +69,11 @@ const starters = ["AthenaGlider:defaultglider", "AthenaPickaxe:defaultpickaxe", 
 //   namespace, where Solo_Umbrella's has its package's). A glider slot holding one goes back to the default glider.
 // A locker that holds one loses it; nothing gives one.
 const randomCharacters = [1, 2, 3, 4, 5, 6, 7, 8].map((n) => `AthenaCharacter:cid_00${n}_athena_commando_${n <= 4 ? "f" : "m"}_default`);
-const unusedUmbrellas = [
-  "AthenaGlider:duo_umbrella",
-  "AthenaGlider:squad_umbrella",
-  "AthenaGlider:umbrella_bronze",
-  "AthenaGlider:umbrella_silver",
-  "AthenaGlider:umbrella_gold",
-  "AthenaGlider:umbrella_platinum"
-];
-const preseasonGliders = [
-  "AthenaGlider:preseasonglider",
-  "AthenaGlider:preseasonglider_elite"
-];
-const notLockerItems = [...randomCharacters, ...unusedUmbrellas, ...preseasonGliders];
+const unusedUmbrellas = ["AthenaGlider:duo_umbrella", "AthenaGlider:squad_umbrella"];
+const notLockerItems = [...randomCharacters, ...unusedUmbrellas];
+// Locker items the shop never sold (Core-Backend #95): the tiered umbrellas and the preseason gliders.
+const notShopGliders = ["AthenaGlider:umbrella_bronze", "AthenaGlider:umbrella_silver", "AthenaGlider:umbrella_gold",
+  "AthenaGlider:umbrella_platinum", "AthenaGlider:preseasonglider", "AthenaGlider:preseasonglider_elite"];
 const isLockerItem = (templateId) => !notLockerItems.some((id) => id.toLowerCase() === String(templateId).toLowerCase());
 const heldNonLockerItems = (profile) => Object.entries(profile.items)
   .filter(([, item]) => !isLockerItem(item.templateId)).map(([itemId]) => itemId);
@@ -114,7 +106,7 @@ export const nonShopCosmeticIds = () => [
   ...chaseRewardIds(),
   ...victoryUmbrellas,
   ...unusedUmbrellas,
-  ...preseasonGliders,
+  ...notShopGliders,
   ...randomCharacters
 ];
 
