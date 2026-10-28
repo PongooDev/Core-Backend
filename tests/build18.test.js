@@ -23,7 +23,7 @@ const athenaProfile = async (port, player) => {
   return athenaOf(response.body).profileChanges[0].profile;
 };
 
-test("1.8's login queries the athena profile: every Battle Royale cosmetic, and the loadout's slots empty for the defaults", async () => {
+test("1.8's login queries the athena profile: every Battle Royale cosmetic, the default glider and pickaxe equipped, the other slots empty for their defaults", async () => {
   const backend = await startBackend();
   try {
     const player = await userLogin(backend.port, "Athena18");
@@ -40,9 +40,12 @@ test("1.8's login queries the athena profile: every Battle Royale cosmetic, and 
     const attributes = profile.stats.attributes;
     assert.equal(attributes.level, 1);
     assert.equal(attributes.accountLevel, 1);
-    for (const slot of ["character", "hat", "backpack", "pickaxe", "glider", "loadingscreen", "battlebus", "dance", "victorypose"]) {
+    for (const slot of ["character", "hat", "backpack", "loadingscreen", "battlebus", "dance", "victorypose"]) {
       assert.equal(attributes[`favorite_${slot}`], "", slot);
     }
+    // The glider and pickaxe hold the defaults: an empty glider crashed the client loading into a match (#74).
+    assert.equal(attributes.favorite_glider, "AthenaGlider:defaultglider");
+    assert.equal(attributes.favorite_pickaxe, "AthenaPickaxe:defaultpickaxe");
   } finally {
     backend.close();
   }
@@ -76,6 +79,9 @@ test("the Battle Royale locker equips a cosmetic per slot (EquipBattleRoyaleCust
     attributes = (await athenaProfile(backend.port, player)).stats.attributes;
     assert.equal(attributes.favorite_character, "");
     assert.equal(attributes.favorite_glider, "AthenaGlider:glider_warthog");
+    // Unequipping the glider puts the default glider back, never an empty one (#74).
+    assert.equal((await equip("Glider", "")).status, 200);
+    assert.equal((await athenaProfile(backend.port, player)).stats.attributes.favorite_glider, "AthenaGlider:defaultglider");
   } finally {
     backend.close();
   }

@@ -27,6 +27,20 @@ const slots = {
 };
 const slotOrder = ["None", ...Object.keys(slots)];
 
+// The slots whose "" the game doesn't fill in: an empty glider reaches clients as a null CustomizationLoadout glider,
+// and their pawn's parachute setup (1.8's sub_43D4A0, reading the glider's mesh) crashed the game on loading into a
+// match (Core-Backend #74). They hold the build's default item instead, as Epic's accounts did.
+const slotDefaults = { Glider: "AthenaGlider:DefaultGlider", Pickaxe: "AthenaPickaxe:DefaultPickaxe" };
+
+// A slot's default item in this profile (its id, as the profile spells it), if the build has one.
+function defaultItemId(profile, slot) {
+  const templateId = slotDefaults[slot];
+  return templateId ? Object.keys(profile.items).find((id) => id.toLowerCase() === templateId.toLowerCase()) ?? "" : "";
+}
+
+const emptyDefaultSlots = (profile) => Object.keys(slotDefaults)
+  .filter((slot) => !profile.stats.attributes[slots[slot][1]] && defaultItemId(profile, slot));
+
 // The enum comes as its name; its full name or its value are taken too.
 function slotOf(value) {
   const name = typeof value === "number" ? slotOrder[value] : String(value ?? "").split("::").pop();
@@ -39,12 +53,15 @@ const typeOf = (templateId) => templateId.split(":")[0].toLowerCase();
 // id, as Epic's athena profiles kept them. A build with more cosmetics adds them when the profile next loads.
 const missingCosmetics = (profile) => Object.keys(athenaCosmetics()).filter((templateId) => !findItem(profile, templateId));
 
-export const athenaNeedsSetUp = (profile) => missingCosmetics(profile).length > 0;
+export const athenaNeedsSetUp = (profile) => missingCosmetics(profile).length > 0 || emptyDefaultSlots(profile).length > 0;
 
 export function setUpAthena(session) {
   const tracker = session.profile("athena");
   for (const templateId of missingCosmetics(tracker.profile)) {
     tracker.addItem(templateId, { templateId, attributes: { level: 1, item_seen: 1, favorite: 0 }, quantity: 1 });
+  }
+  for (const slot of emptyDefaultSlots(tracker.profile)) {
+    tracker.setStat(slots[slot][1], defaultItemId(tracker.profile, slot));
   }
 }
 
@@ -55,6 +72,7 @@ export function equipCustomization(session, slotName, itemToSlot) {
   if (!slot) throw new McpError("errors.com.epicgames.fortnite.invalid_parameter", `No locker slot ${slotName}`);
   const [type, stat] = slots[slot];
   let itemId = typeof itemToSlot === "string" ? itemToSlot : "";
+  itemId ||= defaultItemId(tracker.profile, slot);
   if (itemId) {
     itemId = Object.keys(tracker.profile.items).find((id) => id.toLowerCase() === itemId.toLowerCase());
     const item = itemId && tracker.profile.items[itemId];
