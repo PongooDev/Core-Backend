@@ -1486,6 +1486,11 @@
             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
             <path d="M8 8h8M8 12h8M8 16h5" />
           </svg><span>News</span></a>
+        <a href="#/reports" data-view="reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+            <line x1="4" y1="22" x2="4" y2="15" />
+          </svg><span>Reports</span></a>
         <a href="#/logs" data-view="logs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="3" y="4" width="18" height="16" rx="2.5" />
@@ -1741,7 +1746,7 @@
       const [, view = "dashboard", accountId, tab] = location.hash.split("/");
       for (const timer of state.timers) clearInterval(timer);
       state.timers = [];
-      const next = ["dashboard", "players", "sessions", "friends", "news", "logs", "settings"].includes(view) ? view : "dashboard";
+      const next = ["dashboard", "players", "sessions", "friends", "news", "reports", "logs", "settings"].includes(view) ? view : "dashboard";
       if (next !== state.view || !$("view").childElementCount) $("view").replaceChildren(el("div", { class: "empty", text: "Loading…" }));
       state.view = next;
       for (const link of document.querySelectorAll("nav.nav a")) link.setAttribute("aria-current", link.dataset.view === state.view ? "page" : "false");
@@ -1750,7 +1755,10 @@
         if (!accountId) { state.accountId = null; state.account = null; }
         if (tab) state.tab = tab;
       }
-      ({ dashboard: showDashboard, players: showPlayers, sessions: showSessions, friends: showFriends, news: showNews, logs: showLogs, settings: showSettings })[state.view]();
+      if (state.view === "reports") {
+        state.reportId = accountId || null;
+      }
+      ({ dashboard: showDashboard, players: showPlayers, sessions: showSessions, friends: showFriends, news: showNews, reports: showReports, logs: showLogs, settings: showSettings })[state.view]();
     }
     window.addEventListener("hashchange", route);
     const every = (ms, fn) => state.timers.push(setInterval(fn, ms));
@@ -2423,6 +2431,131 @@
             el("div", { class: "actions", style: "margin-top:4px;" },
               saveLoginBtn,
               resetLoginBtn)))
+      );
+    }
+
+    /* ---------- reports ---------- */
+    async function showReports() {
+      if (state.reportId) {
+        const report = await act(api(`/admin/api/reports/${state.reportId}`));
+        if (!report || state.view !== "reports") return;
+
+        const imageAtt = (report.attachments || []).find((a) => /\.(jpe?g|png|webp)$/i.test(a.name));
+        const otherAtts = (report.attachments || []).filter((a) => a !== imageAtt);
+        const downloadIcon = () => {
+          const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+          svg.setAttribute("viewBox", "0 0 24 24");
+          svg.setAttribute("width", "16");
+          svg.setAttribute("height", "16");
+          svg.setAttribute("fill", "none");
+          svg.setAttribute("stroke", "currentColor");
+          svg.setAttribute("stroke-width", "1.8");
+          svg.setAttribute("stroke-linecap", "round");
+          svg.setAttribute("stroke-linejoin", "round");
+          svg.setAttribute("aria-hidden", "true");
+          const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          path.setAttribute("d", "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 M7 10l5 5 5-5 M12 15V3");
+          svg.appendChild(path);
+          return svg;
+        };
+
+        $("view").replaceChildren(
+          el("div", { class: "view-head" },
+            el("div", { class: "actions", style: "gap:12px; align-items:center;" },
+              btn("← Back to Reports", () => { location.hash = "#/reports"; }, "ghost"),
+              el("h1", { text: report.subject || "Report Details" })),
+            el("div", { class: "actions" },
+              btn("Delete Report", async () => {
+                if (confirm("Delete this report?")) {
+                  await act(api(`/admin/api/reports/${report.id}`, {}, "DELETE"), "Report deleted");
+                  location.hash = "#/reports";
+                }
+              }, "ghost"))),
+
+          el("div", { class: "grid cols-2", style: "margin-top:16px;" },
+            el("section", { class: "panel" },
+              el("div", { class: "panel-head" },
+                el("h2", { text: "Report Information" }),
+                chip(report.feedbackType || report.kind || "Feedback", "sky")),
+              el("div", { style: "display:flex; flex-direction:column; gap:8px; margin-top:12px;" },
+                el("div", {}, el("strong", { text: "Reporter: " }),
+                  report.displayName
+                    ? el("a", { href: `#/players/${report.accountId}`, text: `${report.displayName} (${report.accountId || "-"})` })
+                    : el("span", { class: "muted", text: report.accountId || "Anonymous" })),
+                report.reportedPlayer || report.reportedAccountId ? el("div", {},
+                  el("strong", { text: "Reported Player: " }),
+                  report.reportedAccountId
+                    ? el("a", { href: `#/players/${report.reportedAccountId}`, style: "font-weight:600;", text: `${report.reportedDisplayName || report.reportedPlayer} (${report.reportedAccountId})` })
+                    : el("span", {},
+                        el("span", { text: report.reportedPlayer || "Unknown" }),
+                        el("span", { class: "note", style: "margin-left:6px;", text: "(Player not found in backend)" })
+                      )) : null,
+                report.email ? el("div", {}, el("strong", { text: "Email: " }), el("span", { text: report.email })) : null,
+                el("div", {}, el("strong", { text: "Submitted: " }), el("span", { text: `${new Date(report.time).toLocaleString()} (${ago(report.time)})` })),
+                report.platform ? el("div", {}, el("strong", { text: "Platform: " }), el("span", { text: report.platform })) : null,
+                report.engineVersion ? el("div", {}, el("strong", { text: "Build: " }), el("span", { class: "mono", text: report.engineVersion })) : null,
+                report.subGameName ? el("div", {}, el("strong", { text: "Subgame: " }), el("span", { text: report.subGameName })) : null
+              )),
+
+            el("section", { class: "panel" },
+              el("div", { class: "panel-head" },
+                el("h2", { text: "Message Body" })),
+              el("div", { style: "white-space:pre-wrap; word-break:break-word; margin-top:12px; background:var(--field); padding:12px; border-radius:var(--radius-sm); border:1px solid var(--line); font-family:inherit; font-size:14px; min-height:100px;", text: report.body || "(No text provided)" })
+            )
+          ),
+
+          imageAtt ? el("section", { class: "panel", style: "margin-top:16px;" },
+            el("div", { class: "panel-head" },
+              el("h2", { text: "Attached Screenshot" }),
+              el("a", { href: `/admin/api/reports/${report.id}/attachment/${encodeURIComponent(imageAtt.name)}`, target: "_blank", class: "muted", text: "Open full size ↗" })),
+            el("div", { style: "margin-top:12px; text-align:center;" },
+              el("img", {
+                src: `/admin/api/reports/${report.id}/attachment/${encodeURIComponent(imageAtt.name)}`,
+                alt: "Report screenshot",
+                style: "max-width:100%; max-height:550px; border-radius:var(--radius-sm); border:1px solid var(--line-strong);"
+              }))
+          ) : null,
+
+          otherAtts.length ? el("section", { class: "panel", style: "margin-top:16px;" },
+            el("div", { class: "panel-head" },
+              el("h2", { text: "Attachments & Logs" })),
+            el("div", { class: "actions", style: "margin-top:12px; flex-direction:column; align-items:flex-start; gap:8px;" },
+              ...otherAtts.map((att) => el("a", {
+                href: `/admin/api/reports/${report.id}/attachment/${encodeURIComponent(att.name)}`,
+                download: att.name,
+                class: "btn ghost"
+              }, downloadIcon(), el("span", { text: `Download ${att.name} (${fmt(att.size)} bytes)` })))
+            )
+          ) : null
+        );
+        return;
+      }
+
+      const list = await act(api("/admin/api/reports"));
+      if (!list || state.view !== "reports") return;
+
+      $("view").replaceChildren(
+        el("div", { class: "view-head" },
+          el("div", {},
+            el("h1", { text: `Player Reports (${list.length})` }),
+            el("div", { class: "muted", text: "In-game bug reports and feedback submitted through the Send Feedback menu." })),
+          el("div", { class: "actions" }, btn("Refresh", showReports, "ghost"))),
+
+        el("section", { class: "panel" },
+          table([
+            ["When", (r) => ago(r.time)],
+            ["Reporter", (r) => r.displayName ? el("a", { href: `#/players/${r.accountId}`, text: r.displayName }) : (r.accountId || "Anonymous")],
+            ["Type", (r) => chip(r.feedbackType || r.kind || "Feedback", "sky")],
+            ["Subject", (r) => el("a", { href: `#/reports/${r.id}`, style: "font-weight:600;", text: r.subject || "(No subject)" })],
+            ["Platform", (r) => r.platform || "-"],
+            ["Attachments", (r) => r.hasScreenshot ? chip("Screenshot", "good") : (r.attachmentsCount > 0 ? chip(`${r.attachmentsCount} files`) : "-")],
+            ["", (r) => el("div", { class: "actions" },
+              btn("View", () => { location.hash = `#/reports/${r.id}`; }, "ghost small"),
+              btn("Delete", async () => {
+                await act(api(`/admin/api/reports/${r.id}`, {}, "DELETE"), "Report deleted");
+                showReports();
+              }, "ghost small"))]
+          ], list, "No reports or feedback submitted yet."))
       );
     }
 

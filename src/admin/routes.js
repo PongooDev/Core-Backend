@@ -61,7 +61,7 @@ const sum = (profile, templates) => Object.values(profile?.items ?? {})
   .reduce((total, item) => total + item.quantity, 0);
 
 export function adminRoutes(context) {
-  const { accounts, profiles, tokens, sessions, xmpp, stomp, settings, network, dataDir, resetTokens } = context;
+  const { accounts, profiles, tokens, sessions, xmpp, stomp, settings, network, dataDir, resetTokens, reports } = context;
   const router = express.Router();
   router.use("/admin", requireLoopback, requirePanelRequest);
 
@@ -535,6 +535,58 @@ export function adminRoutes(context) {
         loginMessage: configLogin ?? defaultLoginMessage
       }
     });
+  });
+
+  function resolveReportedPlayer(report) {
+    let reportedPlayer = report.reportedPlayer;
+    if (!reportedPlayer && /^player\s*:\s*/i.test(report.subject ?? "")) {
+      reportedPlayer = report.subject.replace(/^player\s*:\s*/i, "").trim();
+    }
+    let reportedAccountId = report.reportedAccountId;
+    let reportedDisplayName = report.reportedDisplayName;
+    if (reportedPlayer && !reportedAccountId && accounts) {
+      const found = accounts.findByName?.(reportedPlayer) || accounts.get?.(reportedPlayer);
+      if (found) {
+        reportedAccountId = found.id;
+        reportedDisplayName = found.displayName;
+      }
+    }
+    return {
+      ...report,
+      reportedPlayer,
+      reportedAccountId,
+      reportedDisplayName
+    };
+  }
+
+  // Player feedback and bug reports
+  router.get("/admin/api/reports", (req, res) => {
+    const list = (reports?.list?.() ?? []).map(resolveReportedPlayer);
+    res.json(list);
+  });
+
+  router.get("/admin/api/reports/:id", (req, res) => {
+    const report = reports?.get?.(req.params.id);
+    if (!report) return notFound(res, req.originalUrl);
+    res.json(resolveReportedPlayer(report));
+  });
+
+  router.delete("/admin/api/reports/:id", (req, res) => {
+    const deleted = reports?.delete?.(req.params.id);
+    if (!deleted) return notFound(res, req.originalUrl);
+    res.json({ deleted: req.params.id });
+  });
+
+  router.get("/admin/api/reports/:id/attachment/:filename", (req, res) => {
+    const filePath = reports?.attachmentPath?.(req.params.id, req.params.filename);
+    if (!filePath) return notFound(res, req.originalUrl);
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    const isImage = /\.(jpe?g|png|webp)$/i.test(path.basename(filePath));
+    if (!isImage) {
+      res.setHeader("Content-Disposition", `attachment; filename="${path.basename(filePath)}"`);
+      res.setHeader("Content-Type", "application/octet-stream");
+    }
+    res.sendFile(filePath);
   });
 
   router.post("/admin/api/news", (req, res) => {
