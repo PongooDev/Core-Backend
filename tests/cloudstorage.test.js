@@ -4,14 +4,14 @@ import crypto from "node:crypto";
 import http from "node:http";
 import { certUserAgent, clientToken, dedicatedServerToken, del, get, openTunnel, post, request, send, startBackend, userLogin } from "./helpers.js";
 
-function raw(port, method, path, token, body) {
+function raw(port, method, path, token, body, userAgent = certUserAgent) {
   return new Promise((resolve, reject) => {
     const req = http.request({
       host: "127.0.0.1",
       port,
       method,
       path,
-      headers: { "User-Agent": certUserAgent, Authorization: `bearer ${token}`, "Content-Type": "application/octet-stream" }
+      headers: { "User-Agent": userAgent, Authorization: `bearer ${token}`, "Content-Type": "application/octet-stream" }
     }, (res) => {
       const chunks = [];
       res.on("data", (chunk) => chunks.push(chunk));
@@ -130,6 +130,35 @@ test("the system hotfix turns off the client's cache of Battle Royale stats answ
     assert.equal(crypto.createHash("sha1").update(download.body).digest("hex"), file.hash);
     assert.deepEqual(download.body.toString("utf8").split("\r\n"),
       ["[/Script/FortniteGame.FortGlobals]", "TimeBetweenLeaderboardRequestsMinutes=0", ""]);
+  } finally {
+    backend.close();
+  }
+});
+
+// 1.8.1 (CL-3729133) checks an answer's age with a clock that has moved on by the time it checks, so 0 minutes fails every
+// stats and leaderboard answer there (Core-Backend #101); up to 1.8 the check's clock counts whole milliseconds and 0
+// still lets each answer through.
+test("the system hotfix keeps stats answers for a minute from 1.8.1 on, and for none before (Core-Backend #101)", async () => {
+  const backend = await startBackend();
+  try {
+    const token = await clientToken(backend.port);
+    const builds = {
+      "++Fortnite+Release-Cert-CL-3532353": 0,
+      "++Fortnite+Release-Cert-CL-3700114": 0,
+      "++Fortnite+Release-Live-CL-3724489": 0,
+      "++Fortnite+Release-Cert-CL-3729133": 1,
+      "++Fortnite+Release-Cert-CL-3741772": 1
+    };
+    for (const [build, minutes] of Object.entries(builds)) {
+      const agent = `game=Fortnite, engine=UE4, build=${build}`;
+      const list = JSON.parse((await raw(backend.port, "GET", "/fortnite/api/cloudstorage/system", token, undefined, agent)).body);
+      const file = list.find(({ filename }) => filename === "DefaultGame.ini");
+      const download = await raw(backend.port, "GET", `/fortnite/api/cloudstorage/system/${file.uniqueFilename}`, token, undefined, agent);
+      assert.equal(download.status, 200);
+      assert.equal(crypto.createHash("sha1").update(download.body).digest("hex"), file.hash, build);
+      assert.deepEqual(download.body.toString("utf8").split("\r\n"),
+        ["[/Script/FortniteGame.FortGlobals]", `TimeBetweenLeaderboardRequestsMinutes=${minutes}`, ""], build);
+    }
   } finally {
     backend.close();
   }

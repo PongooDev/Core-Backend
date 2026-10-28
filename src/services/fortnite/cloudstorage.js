@@ -4,6 +4,7 @@ import path from "node:path";
 import express from "express";
 import { requireAuth, requireOwnAccount } from "../../accounts/auth.js";
 import { isDedicatedServerToken } from "../../accounts/clients.js";
+import { getBuild } from "../../builds/detect.js";
 import { sendError } from "../../errors.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
 import { createNetwork } from "../../network.js";
@@ -25,7 +26,18 @@ const validFilename = /^[A-Za-z0-9._-]{1,128}$/;
 // again, the one who hadn't saw the match. Every answer is now older than 0 minutes. The hotfix reloads the config
 // of the objects of each [/Script/<Module>.<Class>] section's class (1.7.2 HotfixIniFile 0x3B10AF0), the game
 // singleton UFortGlobals among them; a build without the setting ignores it.
-const game = ["[/Script/FortniteGame.FortGlobals]", "TimeBetweenLeaderboardRequestsMinutes=0", ""].join("\r\n");
+// The same setting also decides whether an answer that just came in is used at all (Core-Backend #101): the stats
+// and leaderboard answer handlers (1.8 0x73FE90, 0x740CF0) use an answer only when the time its parse stamped
+// (+0x68) plus TimeBetweenLeaderboardRequestsMinutes is no earlier than now, and otherwise fail it as "Invalid or
+// Expired Data" (stats N/A, "Unable to retrieve leaderboard"). Up to 1.8 both times are FDateTime::UtcNow (1.8
+// 0x1318F20), which counts in whole milliseconds, so a stamp taken microseconds earlier still equals now and 0 works.
+// 1.8.1 (CL-3729133) stamps and checks with FPlatformTime::Seconds in ticks instead (0x6F3980, QueryPerformanceCounter;
+// its handlers 0x71D440, 0x71DF80, parsers 0x730560, 0x72FDA0), so every stamp is already earlier than now and 0
+// fails every answer. From 1.8.1 on an answer is kept for a minute: one asked for again within a minute of the last
+// comes from the cache, and a match ends more than a minute after the lobby the player last looked from.
+const freshStatsBuild = 3729133;
+const gameFile = (minutes) => ["[/Script/FortniteGame.FortGlobals]", `TimeBetweenLeaderboardRequestsMinutes=${minutes}`, ""].join("\r\n");
+const statsAnswerMinutes = (changelist) => (Number(changelist) >= freshStatsBuild ? 1 : 0);
 const defaultNetwork = createNetwork();
 function systemFiles(req, network = defaultNetwork) {
   const address = network.reachableAddress(req);
@@ -34,6 +46,7 @@ function systemFiles(req, network = defaultNetwork) {
     "[OnlineSubsystemMcp.XMPP]", `ServerAddr=${address}`, `ServerPort=${port}`, "bUseSSL=false", "",
     "[OnlineSubsystemMcp.StompServiceMcp]", "Protocol=ws", `Domain=${address}:${port}`, ""
   ].join("\r\n");
+  const game = gameFile(statsAnswerMinutes(getBuild(req)));
   return { "DefaultEngine.ini": Buffer.from(engine, "utf8"), "DefaultGame.ini": Buffer.from(game, "utf8") };
 }
 
