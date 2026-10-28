@@ -20,7 +20,10 @@ import { athenaCosmetics } from "../gamedata/athena.js";
 //
 // What is on sale is Epic's own shop of Season 1 (1.8 to 1.10), day by day from 30 October to 13 December 2017, as
 // fnbr.co recorded it (itemshop.json: the featured items, then the daily ones, with their V-Buck prices; every item is in
-// 1.8's game data). The shop replays that history in a 45-day cycle: day 0 is 30 October 2017, and each UTC day since
+// 1.8's game data). The prices are what the shop charged that day, not fnbr.co's (today's): the Fortnite Wiki's Item Shop
+// History pages for those days agree with fnbr.co's except for Skull Trooper, 1,200 V-Bucks in 2017 (1,500 since its
+// 2018 return; the reporter's 2017 footage on #69 shows 1,200 too), and Pink Flamingo from 3 to 9 December, 1,200 there
+// but 1,500 in November and on every other source (🟡: kept at 1,500). The shop replays that history in a 45-day cycle: day 0 is 30 October 2017, and each UTC day since
 // then shows the recorded day it falls on, modulo 45 (Core's choice). It changes at UTC midnight, as Epic's did.
 const historyFile = path.join(path.dirname(fileURLToPath(import.meta.url)), "itemshop.json");
 const history = JSON.parse(fs.readFileSync(historyFile, "utf8")).days;

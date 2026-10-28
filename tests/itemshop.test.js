@@ -34,10 +34,14 @@ test("the item shop replays Season 1's shop in a 45-day cycle from 30 October 20
   assert.equal(nextRotation(new Date("2026-10-28T12:34:56Z")).toISOString(), "2026-10-29T00:00:00.000Z");
   assert.equal(nextRotation(new Date("2026-10-28T00:00:00Z")).toISOString(), "2026-10-29T00:00:00.000Z");
 
-  // 1.8 sells the recorded day: Halloween's featured troopers on 30 October, 1,500 V-Bucks each.
+  // 1.8 sells the recorded day at that day's prices: Halloween's featured troopers on 30 October, Ghoul Trooper for
+  // 1,500 V-Bucks and Skull Trooper for 1,200 (1,500 only from 2018), wherever he is on sale.
   const halloween = inBuild("3724489", () => itemShopOffers(new Date("2017-10-30T10:00:00Z")));
   assert.deepEqual(halloween.BRWeeklyStorefront.map(({ templateId, price }) => [templateId, price]), [
-    ["AthenaCharacter:cid_029_athena_commando_f_halloween", 1500], ["AthenaCharacter:cid_030_athena_commando_m_halloween", 1500]]);
+    ["AthenaCharacter:cid_029_athena_commando_f_halloween", 1500], ["AthenaCharacter:cid_030_athena_commando_m_halloween", 1200]]);
+  const skullTrooper = inBuild("3724489", () => itemShopOffers(new Date("2017-11-27T10:00:00Z"))).BRDailyStorefront
+    .find(({ templateId }) => templateId === "AthenaCharacter:cid_030_athena_commando_m_halloween");
+  assert.equal(skullTrooper.price, 1200);
   assert.deepEqual(halloween.BRDailyStorefront.map(({ title, price }) => [title, price]),
     [["First strike Specialist", 1200], ["Recon Expert", 1200], ["Petunia", 500], ["Scout", 800]]);
   // Every day has its featured and daily items, all of them 1.8 cosmetics; earlier builds have no item shop.
