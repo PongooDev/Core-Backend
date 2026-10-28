@@ -46,3 +46,23 @@ test("HTTPS requests through a CONNECT tunnel get a certificate for their host a
     backend.close();
   }
 });
+
+test("the game's launcher icon requests get a quiet 404, not an unanswered request (#107)", async () => {
+  const backend = await startBackend();
+  const host = "launcher-resources.s3.amazonaws.com";
+
+  try {
+    for (const app of ["launcher", "fortnite", "default"]) {
+      const response = await send({
+        host: "127.0.0.1",
+        port: backend.port,
+        path: `http://${host}/launcher-resources/0.1_b76b28ed708e4efcbb6d0e843fcc6456/${app}/icon.png`,
+        headers: { Host: host, "User-Agent": certUserAgent }
+      });
+      assert.equal(response.status, 404);
+    }
+    assert.throws(() => backend.unknownLog("3532353"), { code: "ENOENT" });
+  } finally {
+    backend.close();
+  }
+});

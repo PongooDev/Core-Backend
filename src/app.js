@@ -147,6 +147,11 @@ export function createApp(config, context = createContext(config)) {
   app.use(networkAdminRoutes(context));
   app.use(adminRoutes(context));
 
+  // The game asks Epic's launcher bucket for its launcher, Fortnite and default app icons
+  // (launcher-resources.s3.amazonaws.com/launcher-resources/<version>/<app>/icon.png). Core has none to serve, and the
+  // game goes on without them, so they get a quiet 404 instead of filling the unanswered requests (Core-Backend #107).
+  app.get(/^\/launcher-resources\//, (req, res) => res.status(404).end());
+
   app.use(unknownRoute(config.dataDir));
   return app;
 }
