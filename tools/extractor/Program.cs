@@ -894,6 +894,69 @@ var world = new SortedDictionary<string, object>(StringComparer.Ordinal)
 };
 if (theaterTags.Count > 0) world["theaterTags"] = theaterTags;
 File.WriteAllText(Path.Combine(output, "world.json"), JsonSerializer.Serialize(world, options) + "\n");
+
+// Battle Royale's (athena.json), from 1.8 (CL 3724489), the first build with an athena profile; earlier builds write it
+// empty. Its cosmetics (Athena/Items/Cosmetics, the test characters of 00_TestAssets left out), its quests
+// (Athena/Items/Quests, which the quest loop above doesn't scan: they are granted to the athena profile) and the season
+// levels (AthenaGameData's SeasonXpLevelsTable, FAthenaLevelUpData rows).
+var athenaCosmetics = new SortedDictionary<string, object>(StringComparer.Ordinal);
+var athenaQuests = new SortedDictionary<string, object>(StringComparer.Ordinal);
+var athenaLevels = new List<object>();
+foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" && f.Path.StartsWith("FortniteGame/Content/Athena/Items/", StringComparison.OrdinalIgnoreCase)))
+{
+    if (file.Path.Contains("/00_TestAssets/", StringComparison.OrdinalIgnoreCase)) continue;
+    var gamePath = "/Game/" + file.PathWithoutExtension["FortniteGame/Content/".Length..];
+    var assetName = gamePath.Split('/').Last();
+    if (!provider.TryLoadPackage(file, out var package)) continue;
+    var export = package.GetExports().FirstOrDefault(e => e.Name.Equals(assetName, StringComparison.OrdinalIgnoreCase));
+    if (export is null) continue;
+    var properties = JsonNode.Parse(JsonConvert.SerializeObject(export))!["Properties"] ?? new JsonObject();
+    if (export.ExportType == "FortQuestItemDefinition")
+    {
+        var quest = (SortedDictionary<string, object>)Quest(properties, assetTypes);
+        if (properties["Category"]?["RowName"]?.GetValue<string>() is { } category and not "None") quest["category"] = category;
+        if (properties["Weight"]?.GetValue<float>() is float weight) quest["weight"] = weight;
+        athenaQuests[export.Name.ToLowerInvariant()] = quest;
+        continue;
+    }
+    if (!ItemClasses.AthenaCosmetics.Contains(export.ExportType)) continue;
+    athenaCosmetics[assetTypes.TemplateId($"{gamePath}.{export.Name}", export.ExportType, false)!] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+    {
+        ["class"] = export.ExportType,
+        ["name"] = properties["DisplayName"]?["LocalizedString"]?.GetValue<string>() ?? export.Name,
+        ["rarity"] = Enum(properties["Rarity"]) ?? "Ordinary"
+    };
+}
+if (provider.TryLoadPackage("FortniteGame/Content/Balance/AthenaGameData.uasset", out var athenaGameData))
+{
+    var athenaData = JsonNode.Parse(JsonConvert.SerializeObject(athenaGameData.GetExports().First(e => e.ExportType == "AthenaGameData")))!["Properties"];
+    foreach (var (_, row) in LoadRows(provider, athenaData!["SeasonXpLevelsTable"]).OrderBy(r => r.Value!["Level"]!.GetValue<int>()))
+    {
+        var level = new SortedDictionary<string, object>(StringComparer.Ordinal)
+        {
+            ["level"] = row!["Level"]!.GetValue<int>(),
+            ["xpToNextLevel"] = row["XpToNextLevel"]!.GetValue<int>(),
+            ["xpTotal"] = row["XpTotal"]!.GetValue<int>()
+        };
+        if (row["ChaseRewardTemplateId"]?.GetValue<string>() is { Length: > 0 } chaseReward) level["chaseReward"] = chaseReward;
+        athenaLevels.Add(level);
+    }
+}
+// The objective stat rows those quests count (the gameserver's quest manager evaluates them; Core matches a reported
+// match result against AthenaRank's Athena.Rank condition and the playlist context tags).
+var athenaStats = new SortedDictionary<string, object>(StringComparer.Ordinal);
+foreach (var quest in athenaQuests.Values.Cast<SortedDictionary<string, object>>())
+{
+    foreach (var objective in (List<SortedDictionary<string, object>>)quest["objectives"])
+    {
+        if (objective.TryGetValue("stat", out var stat) && objectiveStats.TryGetValue((string)stat, out var row)) athenaStats[(string)stat] = row;
+    }
+}
+File.WriteAllText(Path.Combine(output, "athena.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal)
+{
+    ["cosmetics"] = athenaCosmetics, ["quests"] = athenaQuests, ["levels"] = athenaLevels, ["objectiveStats"] = athenaStats
+}, options) + "\n");
+Console.WriteLine($"Battle Royale: {athenaCosmetics.Count} cosmetics, {athenaQuests.Count} quests, {athenaLevels.Count} season levels");
 Console.WriteLine($"{zoneThemes.Count} zone themes, {missionGenerators.Count} mission generators, {difficulties.Count} mission difficulties");
 Console.WriteLine($"{characters.Count} characters, {cardPacks.Count} card packs, {nodes.Count} skill tree nodes, {squads.Count} squads, {objectiveStats.Count} objective stats");
 Console.WriteLine($"{quests.Count} quests, {items.Count} items and {dailyRewards.Count} daily reward schedules from {version["BranchName"]}-CL-{version["Changelist"]} into {output}");
@@ -1014,6 +1077,14 @@ static string AssetPath(JsonNode? value) =>
 // Parents from the SDK dump; constructor MaxStackSize defaults read from each class's native constructor.
 static class ItemClasses
 {
+    // Battle Royale's cosmetics (1.8's EAthenaCustomizationCategory slots, besides medals): only athena.json has them.
+    public static readonly HashSet<string> AthenaCosmetics =
+    [
+        "AthenaCharacterItemDefinition", "AthenaHatItemDefinition", "AthenaBackpackItemDefinition", "AthenaPickaxeItemDefinition",
+        "AthenaGliderItemDefinition", "AthenaLoadingScreenItemDefinition", "AthenaBattleBusItemDefinition", "AthenaDanceItemDefinition",
+        "AthenaConsumableEmoteItemDefinition", "AthenaVictoryPoseItemDefinition"
+    ];
+
     private static readonly Dictionary<string, string> Parents = new()
     {
         ["FortAccountItemDefinition"] = "FortItemDefinition",

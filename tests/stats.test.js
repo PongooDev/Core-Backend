@@ -66,9 +66,13 @@ test("a duo's win, places, kills and time alive show on the Battle Royale stats 
     assert.ok(Math.abs(after.br_lastmodified_pc_m0_p2 - Date.now() / 1000) < 60);
     assert.ok("br_lastmodified_pc_m0_p9" in after);
 
-    // Other windows have no counts.
-    const weekly = (await get(backend.port, `/fortnite/api/stats/accountId/${leader.accountId}/bulk/window/weekly`, leader.token)).body;
-    assert.deepEqual(weekly.map((stat) => stat.name), ["br_lastmodified_pc_m0_p2", "br_lastmodified_pc_m0_p10", "br_lastmodified_pc_m0_p9"]);
+    // The other windows have what was recorded in them (1.8's leaderboards): all of it was today. One that isn't a
+    // window has no counts.
+    const window = async (name) => (await get(backend.port, `/fortnite/api/stats/accountId/${leader.accountId}/bulk/window/${name}`, leader.token)).body;
+    const weekly = await window("weekly");
+    assert.ok(weekly.every((stat) => stat.window === "weekly"));
+    assert.deepEqual(counts(Object.fromEntries(weekly.map((stat) => [stat.name, stat.value]))), leaderStats);
+    assert.deepEqual((await window("yearly")).map((stat) => stat.name), ["br_lastmodified_pc_m0_p2", "br_lastmodified_pc_m0_p10", "br_lastmodified_pc_m0_p9"]);
 
     backend.close();
     backend = await startBackend({ dataDir });

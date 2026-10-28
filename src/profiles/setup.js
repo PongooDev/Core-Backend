@@ -6,6 +6,7 @@ import { readGameData } from "../gamedata/read.js";
 import { log } from "../log.js";
 import { collectorsNeedSetUp, setUpCollectors } from "../research/collector.js";
 import { startingQuests } from "../gamedata/quests.js";
+import { athenaNeedsSetUp, setUpAthena } from "./athena.js";
 import { foundersNeedSetUp, setUpFounders } from "./founders.js";
 import { friendCodesNeedSetUp, setUpFriendCodes } from "./friendcodes.js";
 import { ownsNode } from "./homebase.js";
@@ -53,6 +54,7 @@ import { levelStartXp, settleLevel } from "./xp.js";
 //   Founder's Llama. Core gave none before 2026-10-24 (issue #31); older profiles get it once.
 // - Founder's friend codes held as the consumable are turned into the code tokens the friend code screen issues codes
 //   from (profiles/friendcodes.js, issue #35).
+// - Battle Royale's athena profile (1.8) holds every cosmetic of the build (profiles/athena.js), which the locker lists.
 // Profiles made before this, or left with no hero at all, get what they lack when they next load. So does a profile
 // whose lead slot is empty: its first hero in no squad takes it (heroes in other slots or on expeditions stay).
 const { defaultHero } = readGameData("newaccount", {});
@@ -84,6 +86,7 @@ function leadCandidate(profile) {
 export function needsSetUp(profile) {
   if (profile.profileId === "theater0") return !migrated(profile, "itemDurability") || !migrated(profile, "worldStacks");
   if (profile.profileId === "outpost0") return !migrated(profile, "worldStacks");
+  if (profile.profileId === "athena") return athenaNeedsSetUp(profile);
   if (bookProfiles().includes(profile.profileId)) return !migrated(profile, "bookPages");
   if (profile.profileId !== "profile0") return false;
   return startingQuests().some((questId) => !findQuestItem(profile, questId)) || Boolean(defaultHero && !heroes(profile).length)
@@ -127,6 +130,7 @@ function setUpBook(session, profileId) {
 export function setUpProfile(session, profileId = "profile0") {
   if (profileId === "theater0") return setUpTheater(session);
   if (profileId === "outpost0") return setUpWorldStacks(session, profileId);
+  if (profileId === "athena") return setUpAthena(session);
   if (bookProfiles().includes(profileId)) return setUpBook(session, profileId);
   for (const questId of startingQuests()) grant(session, `Quest:${questId}`, 1);
   setUpFounders(session);

@@ -3,6 +3,7 @@ import { McpError } from "../../../errors.js";
 import { log } from "../../../log.js";
 import { getDifficulty } from "../../../gamedata/world.js";
 import { completeMissionAlert } from "../../../profiles/alerts.js";
+import { advanceAthenaObjectives } from "../../../profiles/athena.js";
 import { grantBadgeRewards } from "../../../profiles/badges.js";
 import { abortDisintegration, depositPostResources, disintegrateItems, fabricateItem } from "../../../profiles/fabricator.js";
 import { advanceObjective, applyHeldProgress, grant, revertHeldProgress } from "../../../profiles/progress.js";
@@ -176,9 +177,25 @@ export const serverCommands = {
 
   ServerQuestLogin: clientQuestLogin,
 
-  UpdateQuests({ req, session, context }) {
+  // On athena, 1.8's Battle Royale challenges (profiles/athena.js); the objectives Core counts from the match results
+  // are skipped there.
+  UpdateQuests({ req, session, context, profileId }) {
+    if (profileId === "athena") return advanceAthenaObjectives(session, req.body?.advance);
     advance(session, req.body?.advance, context.primaryMissions.held(req.params.accountId));
   },
+
+  // UFortMcpProfileAthena::EndBattleRoyaleGame {advance, matchType, minutesAlive, personalKills, teamKills, placement,
+  // medals}: a player's match as the 1.8 server would report it. 1.8's code never sends it (no wrapper calls it: its FName,
+  // 0x662E1A0, is only referenced where it is made), so the match's stats and XP come from Core's recordresults
+  // (services/fortnite/battleroyale.js) and only its quest progress counts here.
+  EndBattleRoyaleGame({ req, session, profileId }) {
+    log("MCP", `EndBattleRoyaleGame for ${req.params.accountId}: ${JSON.stringify({ ...req.body, advance: undefined })}`);
+    if (profileId === "athena") advanceAthenaObjectives(session, req.body?.advance);
+  },
+
+  // UFortMcpProfileAthena::ReportConsumableUsed {usedQuantity, itemType}: Battle Royale's consumables aren't kept in a
+  // profile.
+  ReportConsumableUsed: accepted,
 
   // UFortQuestManager's SendStartPrimaryMission (sub_7B3910): the progress from before the mission, then the mission
   // starts (the quest manager's bPrimaryMissionStarted, +0x20A). A mission that never ended loses its progress.

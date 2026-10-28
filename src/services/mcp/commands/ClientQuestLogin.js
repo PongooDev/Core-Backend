@@ -1,6 +1,7 @@
 import { activeEventFlags } from "../../../events/events.js";
 import { eventQuests } from "../../../events/fortnitemares.js";
 import { startingQuests } from "../../../gamedata/quests.js";
+import { athenaQuestLogin } from "../../../profiles/athena.js";
 import { refreshDailyQuests } from "../../../profiles/dailies.js";
 import { grant, refreshHeldItems } from "../../../profiles/progress.js";
 import { eventFlagsNotification } from "./RequestEventFlags.js";
@@ -14,9 +15,15 @@ import { eventFlagsNotification } from "./RequestEventFlags.js";
 // JsonObjectToUStruct, then ActiveEventFlags +0x1C0 and OnActiveEventFlagsChanged) and only then schedules
 // RequestEventFlags (sub_88C060, the command's only sender) for refreshTime. Without it the client never asks for the
 // flags, so a build that runs an event gets them in this response; the others' responses are as before.
-export function clientQuestLogin({ session, notifications }) {
-  for (const questId of [...startingQuests(), ...eventQuests()]) grant(session, `Quest:${questId}`, 1);
-  refreshDailyQuests(session);
-  refreshHeldItems(session);
+//
+// On athena (1.8's Battle Royale quest log), its daily challenges (profiles/athena.js), with the event flags all the
+// same in case that quest manager is the one asking.
+export function clientQuestLogin({ session, notifications, profileId }) {
+  if (profileId === "athena") athenaQuestLogin(session);
+  else {
+    for (const questId of [...startingQuests(), ...eventQuests()]) grant(session, `Quest:${questId}`, 1);
+    refreshDailyQuests(session);
+    refreshHeldItems(session);
+  }
   if (activeEventFlags().length) notifications.push(eventFlagsNotification());
 }
