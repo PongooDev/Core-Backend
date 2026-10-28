@@ -49,21 +49,124 @@ function slotOf(value) {
 
 const typeOf = (templateId) => templateId.split(":")[0].toLowerCase();
 
-// Every account owns every cosmetic of the build (Core has no item shop for them), each under its template id as item
-// id, as Epic's athena profiles kept them. A build with more cosmetics adds them when the profile next loads.
-const missingCosmetics = (profile) => Object.keys(athenaCosmetics()).filter((templateId) => !findItem(profile, templateId));
+// What the locker holds (Core-Backend #77): each cosmetic under its template id as item id, as Epic's athena profiles
+// kept them. A new account starts with the build's starter cosmetics; the rest are bought in the item shop
+// (store/itemshop.js), earned (season level chase rewards, victory umbrellas) or, when the host turns giveAllCosmetics on
+// (config.json), all given at once.
+// The starters: the default glider and pickaxe the empty slots hold (above); AthenaGameData's FallbackDance
+// (EID_DanceMoves) and RandomCharacters (CID_001-008, the "Recruit" outfits an empty character slot picks from); the
+// default loading screen and battle bus; and the Founder's Glider: Core's accounts are all founders
+// (profiles/founders.js), and 1.7.2's winners answer had a founder_glider type for founders
+// (services/fortnite/battleroyale.js), which 1.8 made this item (🟡 who Epic granted it to is inferred from that).
+const starters = ["AthenaGlider:defaultglider", "AthenaPickaxe:defaultpickaxe", "AthenaDance:eid_dancemoves",
+  ...[1, 2, 3, 4].map((n) => `AthenaCharacter:cid_00${n}_athena_commando_f_default`),
+  ...[5, 6, 7, 8].map((n) => `AthenaCharacter:cid_00${n}_athena_commando_m_default`),
+  "AthenaLoadingScreen:lsid_defaultbg", "AthenaBattleBus:bbid_defaultbus", "AthenaGlider:founderglider"];
 
-export const athenaNeedsSetUp = (profile) => missingCosmetics(profile).length > 0 || emptyDefaultSlots(profile).length > 0;
+// The build's template id for one of its cosmetics, as its game data spells it; undefined if it has none.
+function cosmeticId(templateId) {
+  const wanted = String(templateId).toLowerCase();
+  return Object.keys(athenaCosmetics()).find((id) => id.toLowerCase() === wanted);
+}
+
+const starterIds = () => starters.map(cosmeticId).filter(Boolean);
+const sameId = (a, b) => a.toLowerCase() === b.toLowerCase();
+const migrated = (profile, name) => (profile.coreMigrations ?? []).includes(name);
+
+// The victory umbrellas: a win in a playlist gives its umbrella (Solo_Umbrella "The Umbrella", "The fabled victory
+// umbrella."; Duo_Umbrella "Duo Victory Umbrella."; Squad_Umbrella) and the Founder's Umbrella ("Founder's exclusive!",
+// 1.7.2's founder_umbrella winner type; every Core account is a founder). 1.8 has no winners question (none of 1.7.2's
+// battleroyale/winners or recordwin strings are left): its umbrella is a glider item the locker equips. A playlist that
+// is none of the three gives The Umbrella (🟡).
+const umbrellas = { 2: "AthenaGlider:solo_umbrella", 10: "AthenaGlider:duo_umbrella", 9: "AthenaGlider:squad_umbrella" };
+const founderUmbrella = "AthenaGlider:founderumbrella";
+const victoryUmbrellas = (playlistId) => [umbrellas[playlistId] ?? umbrellas[2], founderUmbrella];
+
+// The cosmetics the player has earned: the chase rewards of the season levels reached and the umbrellas of the
+// playlists with a recorded win (settings.wonPlaylists, the stats: 1.7.2's recordwin; 1.8's own wins give theirs when
+// the gameserver reports them, services/fortnite/battleroyale.js).
+function earnedCosmetics(profile, settings) {
+  const level = profile.stats.attributes.level ?? 1;
+  const rewards = seasonLevels().filter((entry) => entry.level <= level && entry.chaseReward).map((entry) => entry.chaseReward);
+  const won = settings.wonPlaylists?.(profile.accountId) ?? [];
+  return [...new Set([...rewards, ...won.flatMap(victoryUmbrellas)].map(cosmeticId).filter(Boolean))];
+}
+
+// profile.coreBlanketCosmetics (Core's, never sent to the client) lists what giveAllCosmetics put in the locker that the
+// player hasn't bought or earned since; with the setting off they leave it. Profiles made before #77, when every account
+// got every cosmetic, had nothing to buy or earn them with (the item shop came with #77, and earned cosmetics were already
+// held), so everything they held beyond the starters counts as that blanket grant and goes, apart from what the player
+// had earned by then (the level 25 Mako, the umbrellas of recorded wins): once, migration athenaLocker.
+const blanket = (profile) => profile.coreBlanketCosmetics ?? [];
+const missing = (profile, templateIds) => templateIds.filter((templateId) => !findItem(profile, templateId));
+
+export function athenaNeedsSetUp(profile, settings = {}) {
+  return !migrated(profile, "athenaLocker") || missing(profile, starterIds()).length > 0
+    || missing(profile, earnedCosmetics(profile, settings)).length > 0
+    || (settings.giveAllCosmetics ? missing(profile, Object.keys(athenaCosmetics())).length > 0 : blanket(profile).length > 0)
+    || emptyDefaultSlots(profile).length > 0;
+}
+
+function addCosmetic(tracker, templateId, seen) {
+  tracker.addItem(templateId, { templateId, attributes: { level: 1, item_seen: seen ? 1 : 0, favorite: 0 }, quantity: 1 });
+}
+
+// A cosmetic the player now owns for good (bought or earned): added if the locker lacks it, and no longer the blanket
+// grant's if that gave it. Returns the grant ({profileId, itemId, templateId, quantity}), or null when the player
+// already had it or the build has no such cosmetic.
+export function grantCosmetic(session, templateId) {
+  const id = cosmeticId(templateId);
+  if (!id) return null;
+  const tracker = session.profile("athena");
+  const { profile } = tracker;
+  if (blanket(profile).some((held) => sameId(held, id))) profile.coreBlanketCosmetics = blanket(profile).filter((held) => !sameId(held, id));
+  if (findItem(profile, id)) return null;
+  addCosmetic(tracker, id, false);
+  log("Battle Royale", `${session.accountId} got ${id}`);
+  return { profileId: "athena", itemId: id, templateId: id, quantity: 1 };
+}
+
+export const ownsCosmetic = (session, templateId) => Boolean(findItem(session.profile("athena").profile, templateId));
+
+// A slot holding an item that leaves the locker goes back to its default (the default glider and pickaxe, "" elsewhere).
+function removeCosmetic(tracker, itemId) {
+  tracker.removeItem(itemId);
+  for (const [slot, [, stat]] of Object.entries(slots)) {
+    if (sameId(String(tracker.profile.stats.attributes[stat] ?? ""), itemId)) tracker.setStat(stat, defaultItemId(tracker.profile, slot));
+  }
+}
 
 export function setUpAthena(session) {
   const tracker = session.profile("athena");
-  for (const templateId of missingCosmetics(tracker.profile)) {
-    tracker.addItem(templateId, { templateId, attributes: { level: 1, item_seen: 1, favorite: 0 }, quantity: 1 });
+  const { profile } = tracker;
+  const { settings = {} } = session;
+  if (!migrated(profile, "athenaLocker")) {
+    const held = Object.values(profile.items).map((item) => item.templateId)
+      .filter((templateId) => cosmeticId(templateId) && !starterIds().some((id) => sameId(id, templateId)));
+    profile.coreBlanketCosmetics = [...new Set([...blanket(profile), ...held])];
+    profile.coreMigrations = [...(profile.coreMigrations ?? []), "athenaLocker"];
   }
-  for (const slot of emptyDefaultSlots(tracker.profile)) {
-    tracker.setStat(slots[slot][1], defaultItemId(tracker.profile, slot));
+  for (const templateId of missing(profile, starterIds())) addCosmetic(tracker, templateId, true);
+  for (const templateId of earnedCosmetics(profile, settings)) grantCosmetic(session, templateId);
+  if (settings.giveAllCosmetics) {
+    const given = missing(profile, Object.keys(athenaCosmetics()));
+    for (const templateId of given) addCosmetic(tracker, templateId, true);
+    profile.coreBlanketCosmetics = [...blanket(profile), ...given];
+  } else if (blanket(profile).length) {
+    log("Battle Royale", `${session.accountId}: ${blanket(profile).length} cosmetics given to everyone leave the locker`);
+    for (const templateId of blanket(profile)) {
+      const itemId = findItem(profile, templateId);
+      if (itemId) removeCosmetic(tracker, itemId);
+    }
+    profile.coreBlanketCosmetics = [];
+  }
+  for (const slot of emptyDefaultSlots(profile)) {
+    tracker.setStat(slots[slot][1], defaultItemId(profile, slot));
   }
 }
+
+// A win in a playlist (1.8's, reported by the gameserver): its victory umbrellas the player lacks.
+export const awardVictory = (session, playlistId) => victoryUmbrellas(playlistId).map((templateId) => grantCosmetic(session, templateId)).filter(Boolean);
 
 // EquipBattleRoyaleCustomization {slotName, itemToSlot}: an item of the slot's type, or "" for its default.
 export function equipCustomization(session, slotName, itemToSlot) {
@@ -127,12 +230,13 @@ export function addSeasonXp(session, amount) {
 }
 
 // The chase rewards of the levels reached that the player lacks: banners go to profile0, where the banner editor finds
-// them. Every cosmetic is already the player's; a banner the build's data doesn't have waits for a build that has it.
+// them, cosmetics to the locker. One the build's data doesn't have waits for a build that has it.
 export function settleChaseRewards(session) {
   const level = session.profile("athena").profile.stats.attributes.level ?? 1;
   for (const { chaseReward } of seasonLevels().filter((entry) => entry.level <= level && entry.chaseReward)) {
     const banner = bannerTemplateId(chaseReward);
     if (banner && !findItem(session.profile("profile0").profile, banner)) grant(session, banner, 1);
+    else if (!banner) grantCosmetic(session, chaseReward);
   }
 }
 

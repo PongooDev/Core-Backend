@@ -23,20 +23,22 @@ const athenaProfile = async (port, player) => {
   return athenaOf(response.body).profileChanges[0].profile;
 };
 
-test("1.8's login queries the athena profile: every Battle Royale cosmetic, the default glider and pickaxe equipped, the other slots empty for their defaults", async () => {
+// The starter cosmetics a new locker holds (Core-Backend #77); the rest are bought or earned.
+const starters = ["AthenaGlider:defaultglider", "AthenaPickaxe:defaultpickaxe", "AthenaDance:eid_dancemoves",
+  "AthenaCharacter:cid_001_athena_commando_f_default", "AthenaCharacter:cid_002_athena_commando_f_default",
+  "AthenaCharacter:cid_003_athena_commando_f_default", "AthenaCharacter:cid_004_athena_commando_f_default",
+  "AthenaCharacter:cid_005_athena_commando_m_default", "AthenaCharacter:cid_006_athena_commando_m_default",
+  "AthenaCharacter:cid_007_athena_commando_m_default", "AthenaCharacter:cid_008_athena_commando_m_default",
+  "AthenaLoadingScreen:lsid_defaultbg", "AthenaBattleBus:bbid_defaultbus", "AthenaGlider:founderglider"];
+
+test("1.8's login queries the athena profile: the starter cosmetics, the default glider and pickaxe equipped, the other slots empty for their defaults", async () => {
   const backend = await startBackend();
   try {
     const player = await userLogin(backend.port, "Athena18");
     const profile = await athenaProfile(backend.port, player);
-    // Each cosmetic under its template id as item id; the test characters (00_TestAssets) aren't among them.
-    const cosmetics = Object.keys(athenaCosmetics());
-    assert.ok(cosmetics.length >= 70);
-    assert.deepEqual(Object.keys(profile.items).sort(), [...cosmetics].sort());
-    for (const templateId of ["AthenaCharacter:cid_029_athena_commando_f_halloween", "AthenaPickaxe:halloweenscythe", "AthenaGlider:glider_warthog",
-      "AthenaDance:eid_dancemoves", "AthenaVictoryPose:eid_ridethepony", "AthenaLoadingScreen:lsid_fiercecloudpuff", "AthenaBattleBus:bbid_purplebus"]) {
-      assert.equal(profile.items[templateId]?.templateId, templateId);
-    }
-    assert.ok(!cosmetics.some((templateId) => templateId.includes("cid_test")));
+    // Each cosmetic under its template id as item id.
+    assert.deepEqual(Object.keys(profile.items).sort(), [...starters].sort());
+    for (const templateId of starters) assert.equal(profile.items[templateId].templateId, templateId);
     const attributes = profile.stats.attributes;
     assert.equal(attributes.level, 1);
     assert.equal(attributes.accountLevel, 1);
@@ -51,8 +53,26 @@ test("1.8's login queries the athena profile: every Battle Royale cosmetic, the 
   }
 });
 
+test("with giveAllCosmetics on, the locker holds every Battle Royale cosmetic of the build", async () => {
+  const backend = await startBackend({ giveAllCosmetics: true });
+  try {
+    const profile = await athenaProfile(backend.port, await userLogin(backend.port, "AllCosmetics18"));
+    // The test characters (00_TestAssets) aren't among them.
+    const cosmetics = Object.keys(athenaCosmetics());
+    assert.ok(cosmetics.length >= 70);
+    assert.ok(!cosmetics.some((templateId) => templateId.includes("cid_test")));
+    assert.deepEqual(Object.keys(profile.items).sort(), [...cosmetics].sort());
+    for (const templateId of ["AthenaCharacter:cid_029_athena_commando_f_halloween", "AthenaPickaxe:halloweenscythe", "AthenaGlider:glider_warthog",
+      "AthenaVictoryPose:eid_ridethepony", "AthenaLoadingScreen:lsid_fiercecloudpuff", "AthenaBattleBus:bbid_purplebus"]) {
+      assert.equal(profile.items[templateId]?.templateId, templateId);
+    }
+  } finally {
+    backend.close();
+  }
+});
+
 test("the Battle Royale locker equips a cosmetic per slot (EquipBattleRoyaleCustomization) and takes it off again", async () => {
-  const backend = await startBackend();
+  const backend = await startBackend({ giveAllCosmetics: true });
   try {
     const player = await userLogin(backend.port, "Locker18");
     await athenaProfile(backend.port, player);

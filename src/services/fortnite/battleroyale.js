@@ -3,7 +3,7 @@ import { requireAuth } from "../../accounts/auth.js";
 import { isDedicatedServerToken } from "../../accounts/clients.js";
 import { log } from "../../log.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
-import { addSeasonXp, matchXp, recordMatchProgress } from "../../profiles/athena.js";
+import { addSeasonXp, awardVictory, matchXp, recordMatchProgress } from "../../profiles/athena.js";
 import { openSession } from "../../profiles/session.js";
 import { notifyProfiles } from "../mcp/profile.js";
 
@@ -24,7 +24,8 @@ import { notifyProfiles } from "../mcp/profile.js";
 //   [{accountId, place, kills, secondsAlive}]} when a team is out of the match or has won: its players' match, place,
 //   kills and time alive. A player with a Battle Royale profile (1.8's athena) also gets the match's season XP and its
 //   placement and elimination challenge progress (profiles/athena.js), which reach their client as profile
-//   notifications.
+//   notifications, and for a win (place 1) the playlist's victory umbrella in the locker (Core-Backend #77): 1.8 has
+//   neither winners nor recordwin, its umbrella is a glider item.
 // The gameserver's own login records the players on a session it hosts, the DedicatedServer client (CoreV2) anyone's;
 // other players are skipped, so a player's own token can't award itself wins. Both records answer 204 whatever they kept.
 export function battleRoyaleRoutes(context) {
@@ -51,6 +52,7 @@ export function battleRoyaleRoutes(context) {
     const playlistId = playlistOf(req.body);
     const accountIds = Array.isArray(req.body?.accountIds) ? req.body.accountIds : [];
     const winners = Number.isInteger(playlistId) && playlistId > 0 ? accountIds.filter((accountId) => recordable(req, accountId)) : [];
+    // A 1.7.2 win also unlocks 1.8's umbrellas, the next time the player's athena profile loads (profiles/athena.js).
     for (const accountId of winners) stats.recordWin(accountId, playlistId);
     log("Battle Royale", `Win recorded in playlist ${playlistId} for ${winners.join(", ") || "nobody"}`
       + (winners.length < accountIds.length ? ` (${accountIds.length - winners.length} not on a session of this server)` : ""));
@@ -75,6 +77,7 @@ export function battleRoyaleRoutes(context) {
       if (!session.hasProfile("athena")) continue;
       recordMatchProgress(session, playlistId, { place, kills });
       addSeasonXp(session, matchXp(playlistId, { place, kills, secondsAlive }));
+      if (place === 1) awardVictory(session, playlistId);
       session.commit();
       notifyProfiles(context, session);
     }

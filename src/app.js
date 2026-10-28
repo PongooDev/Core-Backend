@@ -52,13 +52,18 @@ export function createContext(config) {
   const accounts = createAccountStore(config.dataDir);
   const friends = createFriendStore(config.dataDir);
   const sessions = createSessionStore();
+  const stats = createStatsStore(config.dataDir);
   return {
     accounts,
     tokens,
     friends,
     friendCodes: createFriendCodeStore(config.dataDir),
-    stats: createStatsStore(config.dataDir),
-    profiles: createProfileStore(config.dataDir),
+    stats,
+    profiles: createProfileStore(config.dataDir, {
+      giveAllCosmetics: config.giveAllCosmetics === true,
+      wonPlaylists: (accountId) => Object.entries(stats.playlists(accountId))
+        .filter(([, playlist]) => (playlist.placetop1 ?? 0) > 0).map(([playlistId]) => Number(playlistId))
+    }),
     mailbox: createMailbox(),
     locks: createProfileLocks(),
     primaryMissions: createPrimaryMissions(),

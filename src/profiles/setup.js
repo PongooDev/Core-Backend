@@ -57,7 +57,8 @@ import { levelStartXp, settleLevel } from "./xp.js";
 //   Founder's Llama. Core gave none before 2026-10-24 (issue #31); older profiles get it once.
 // - Founder's friend codes held as the consumable are turned into the code tokens the friend code screen issues codes
 //   from (profiles/friendcodes.js, issue #35).
-// - Battle Royale's athena profile (1.8) holds every cosmetic of the build (profiles/athena.js), which the locker lists.
+// - Battle Royale's athena profile (1.8) holds the build's starter cosmetics and those the player earned, or every
+//   cosmetic when the host gives them all (giveAllCosmetics); the locker lists them (profiles/athena.js).
 // Profiles made before this, or left with no hero at all, get what they lack when they next load. So does a profile
 // whose lead slot is empty: its first hero in no squad takes it (heroes in other slots or on expeditions stay).
 const { defaultHero } = readGameData("newaccount", {});
@@ -86,10 +87,10 @@ function leadCandidate(profile) {
   return all.find(([, item]) => !item.attributes.squad_id)?.[0] ?? null;
 }
 
-export function needsSetUp(profile) {
+export function needsSetUp(profile, settings = {}) {
   if (profile.profileId === "theater0") return !migrated(profile, "itemDurability") || !migrated(profile, "worldStacks");
   if (profile.profileId === "outpost0") return !migrated(profile, "worldStacks");
-  if (profile.profileId === "athena") return athenaNeedsSetUp(profile);
+  if (profile.profileId === "athena") return athenaNeedsSetUp(profile, settings);
   if (bookProfiles().includes(profile.profileId)) return !migrated(profile, "bookPages") || missingEventPages(profile).length > 0;
   if (profile.profileId !== "profile0") return false;
   return startingQuests().some((questId) => !findQuestItem(profile, questId)) || Boolean(defaultHero && !heroes(profile).length)
