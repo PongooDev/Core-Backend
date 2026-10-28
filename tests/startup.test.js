@@ -38,6 +38,13 @@ test("start-up checks answer the way the Cert client parses them", async () => {
     // The mode select screen's descriptions (#63).
     assert.equal(page.body.subgameselectdata.battleRoyale.message.title, "100 Player PvP");
     assert.equal(page.body.subgameselectdata.saveTheWorld.message.title, "Co-op PvE");
+    // 1.8's tag shows Save the World's sale (#93).
+    for (const changelist of ["3724489", "3741772"]) {
+      const selectData = (await pageFor(changelist)).body.subgameselectdata;
+      assert.equal(selectData.saveTheWorld.message.title, "ON SALE NOW - LIMITED TIME!");
+      assert.equal(selectData.saveTheWorld.message.body, "Cooperative PvE storm-fighting adventure!");
+    }
+    assert.equal((await pageFor("3700114")).body.subgameselectdata.saveTheWorld.message.title, "Co-op PvE");
   } finally {
     backend.close();
   }
