@@ -165,3 +165,21 @@ test("a 1.2 client evolves the Founder's rare laser sword with 1.2's recipe, a C
     backend.close();
   }
 });
+
+test("a build's overlay holds every file its data differs from Cert's in, so a new build never falls back to Cert's", () => {
+  // Overlays apply to Cert's data, not the build before's: 1.8.1's first overlay held only the files 1.8.1 changed, and
+  // every other file (Fortnitemares' quests, Hexsylvania's world, the Halloween llama) went back to Cert's (#102).
+  const dir = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "gamedata");
+  const builds = dataBuilds.filter((build) => build !== certBuild).sort((a, b) => Number(a) - Number(b));
+  for (let i = 1; i < builds.length; i++) {
+    const files = (build) => new Set(fs.readdirSync(path.join(dir, build)).filter((file) => file.endsWith(".json")));
+    const later = files(builds[i]);
+    for (const file of files(builds[i - 1])) assert.ok(later.has(file), `gamedata/${builds[i]} has no ${file}, which ${builds[i - 1]} has`);
+  }
+  // 1.8.1 plays on 1.8's data but for what its patch changed.
+  const changed = ["athena", "fabricator", "homebasenodes", "items", "objectivestats", "transmog"];
+  for (const file of fs.readdirSync(path.join(dir, "3724489")).map((file) => file.replace(/\.json$/, ""))) {
+    if (!changed.includes(file)) assert.deepEqual(buildGameData("3729133", file, null), buildGameData("3724489", file, null), file);
+  }
+  assert.equal(buildGameData("3729133", "athena", {}).quests.athenadaily_playmatches.objectives[0].count, 5);
+});
