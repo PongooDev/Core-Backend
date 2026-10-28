@@ -23,6 +23,9 @@ export function openSession(profiles, accountId, { setUp = true } = {}) {
   return {
     accountId,
 
+    // The host's profile settings (profiles/store.js).
+    settings: profiles.settings ?? {},
+
     // Whether the account has the profile, without making it.
     hasProfile(profileId) {
       return opened.has(profileId) || profiles.exists(accountId, profileId);
@@ -34,7 +37,7 @@ export function openSession(profiles, accountId, { setUp = true } = {}) {
         let profile = profiles.load(accountId, profileId);
         // A new profile0 or theater0 is set up as a command of its own first (profiles/setup.js), so this one starts from
         // it. No client has seen a profile made just now, so what it starts with leaves it at its first revision.
-        if (setUp && needsSetUp(profile)) {
+        if (setUp && needsSetUp(profile, profiles.settings ?? {})) {
           const setup = openSession(profiles, accountId, { setUp: false });
           setUpProfile(setup, profileId);
           setup.commit({ newRevision: !created });
