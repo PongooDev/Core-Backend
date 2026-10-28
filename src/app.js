@@ -122,7 +122,7 @@ export function createApp(config, context = createContext(config)) {
   app.use(twitchRoutes(context));
   app.use(friendsRoutes(context));
   app.use(datarouterRoutes(context));
-  app.use(coreStatusRoutes());
+  app.use(coreStatusRoutes(context));
   app.use(networkAdminRoutes(context));
   app.use(adminRoutes(context));
 

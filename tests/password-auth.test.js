@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { hashPassword, validatePassword, validateUsername, verifyPassword } from "../src/accounts/password.js";
-import { post, requestToken, send, startBackend } from "./helpers.js";
+import { get, post, requestToken, send, startBackend } from "./helpers.js";
 
 test("password hashing and timing-safe verification", async () => {
   const plain = "SecretPassword123!";
@@ -414,3 +414,63 @@ test("login does not leak reset tokens and always verifies existing passwords", 
     backend.close();
   }
 });
+
+test("status route tells the launcher whether a password is required globally or per account", async () => {
+  const backend = await startBackend();
+  try {
+    // 1. Plain status preserves backward compatibility with name and version
+    const plainStatus = await get(backend.port, "/core/api/status");
+    assert.equal(plainStatus.status, 200);
+    assert.equal(plainStatus.body.name, "Core-Backend");
+    assert.ok(plainStatus.body.version);
+
+    // With auth=1 or via /core/api/auth-requirements, it tells the launcher the requirements
+    const globalStatus = await get(backend.port, "/core/api/status?auth=1");
+    assert.equal(globalStatus.status, 200);
+    assert.equal(globalStatus.body.requirePassword, false);
+    assert.equal(globalStatus.body.passwordRequired, false);
+
+    const authReq = await get(backend.port, "/core/api/auth-requirements");
+    assert.equal(authReq.status, 200);
+    assert.equal(authReq.body.requirePassword, false);
+    assert.equal(authReq.body.passwordRequired, false);
+
+    // 2. Create an account with a password on the portal
+    await post(backend.port, "/api/register", null, {
+      username: "SecureUser",
+      password: "Password123!"
+    });
+
+    // 3. User with password requires a password even when server requirePassword is false
+    const userStatus = await get(backend.port, "/core/api/status?username=SecureUser");
+    assert.equal(userStatus.status, 200);
+    assert.equal(userStatus.body.requirePassword, false);
+    assert.equal(userStatus.body.passwordRequired, true);
+    assert.equal(userStatus.body.accountExists, true);
+    assert.equal(userStatus.body.hasPassword, true);
+
+    const userAuthReq = await get(backend.port, "/core/api/auth-requirements?username=SecureUser");
+    assert.equal(userAuthReq.body.passwordRequired, true);
+    assert.equal(userAuthReq.body.hasPassword, true);
+
+    // 4. Querying a non-existent or passwordless user when requirePassword is false
+    const unknownUser = await get(backend.port, "/core/api/status?username=UnknownUser");
+    assert.equal(unknownUser.status, 200);
+    assert.equal(unknownUser.body.passwordRequired, false);
+    assert.equal(unknownUser.body.accountExists, false);
+
+    // 5. Turn requirePassword ON globally
+    await post(backend.port, "/admin/api/settings", null, { requirePassword: true });
+
+    const globalStatusOn = await get(backend.port, "/core/api/status?auth=1");
+    assert.equal(globalStatusOn.body.requirePassword, true);
+    assert.equal(globalStatusOn.body.passwordRequired, true);
+
+    const unknownUserOn = await get(backend.port, "/core/api/status?username=UnknownUser");
+    assert.equal(unknownUserOn.body.requirePassword, true);
+    assert.equal(unknownUserOn.body.passwordRequired, true);
+  } finally {
+    backend.close();
+  }
+});
+
