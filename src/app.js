@@ -1,5 +1,7 @@
 import express from "express";
 import { createAccountStore } from "./accounts/store.js";
+import { createResetTokenStore } from "./accounts/reset-tokens.js";
+import { createSettingsStore } from "./settings/store.js";
 import { requestBuild } from "./builds/context.js";
 import { createFriendStore } from "./friends/store.js";
 import { createFriendCodeStore } from "./friendcodes/store.js";
@@ -19,6 +21,7 @@ import { createNetwork } from "./network.js";
 import { originForm } from "./proxy.js";
 import { oauthRoutes } from "./services/account/oauth.js";
 import { publicAccountRoutes } from "./services/account/public.js";
+import { portalRoutes } from "./services/portal/routes.js";
 import { contentRoutes } from "./services/content/pages.js";
 import { coreStatusRoutes } from "./services/core/status.js";
 import { datarouterRoutes } from "./services/datarouter/data.js";
@@ -50,12 +53,18 @@ import { createXmppService } from "./xmpp/service.js";
 export function createContext(config) {
   const tokens = createTokenStore(config.dataDir);
   const accounts = createAccountStore(config.dataDir);
+  const settings = createSettingsStore(config.dataDir);
+  if (config.requirePassword !== undefined) settings.update({ requirePassword: config.requirePassword });
+  if (config.allowRegistration !== undefined) settings.update({ allowRegistration: config.allowRegistration });
+  if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
   const friends = createFriendStore(config.dataDir);
   const sessions = createSessionStore();
   const stats = createStatsStore(config.dataDir);
   return {
     accounts,
     tokens,
+    settings,
+    resetTokens: createResetTokenStore(),
     friends,
     friendCodes: createFriendCodeStore(config.dataDir),
     stats,
@@ -97,6 +106,7 @@ export function createApp(config, context = createContext(config)) {
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
 
+  app.use(portalRoutes(context));
   app.use(oauthRoutes(context));
   app.use(publicAccountRoutes(context));
   app.use(lightswitchRoutes(context));
@@ -121,7 +131,7 @@ export function createApp(config, context = createContext(config)) {
   app.use(twitchRoutes(context));
   app.use(friendsRoutes(context));
   app.use(datarouterRoutes(context));
-  app.use(coreStatusRoutes());
+  app.use(coreStatusRoutes(context));
   app.use(networkAdminRoutes(context));
   app.use(adminRoutes(context));
 
