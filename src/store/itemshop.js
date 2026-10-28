@@ -1,8 +1,10 @@
+import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { currentBuild } from "../builds/context.js";
 import { athenaCosmetics } from "../gamedata/athena.js";
+import { isNonShopCosmetic } from "../profiles/athena.js";
 
 // Battle Royale's item shop (Core-Backend #69). 1.8's lobby Store tab is AthenaDirectAcquisitionScreen
 // (UFortDirectAcquisitionWidgetBase), whose StorefrontNames are ["BRWeeklyStorefront", "BRDailyStorefront"]: the first
@@ -21,10 +23,14 @@ import { athenaCosmetics } from "../gamedata/athena.js";
 // owned item should show as owned (UFortMcpContext::IsOwned 0x710D00, the offer's grants held in athena or profile0:
 // the tile's OwnedSwitcher; the details screen then shows "owned" and offers no purchase).
 //
-// What is on sale by default is Epic's own shop of Season 1 (1.8 to 1.10), day by day from 30 October to 13 December 2017, as
+// What is on sale is Epic's own shop of Season 1 (1.8 to 1.10), day by day from 30 October to 13 December 2017, as
 // fnbr.co recorded it (itemshop.json: the featured items, then the daily ones, with their V-Buck prices; every item is in
-// 1.8's game data). The shop replays that history in a 45-day cycle. Admins can also switch the shop to local randomized
-// generation or a fully customized shop via the admin panel.
+// 1.8's game data). The prices are what the shop charged that day, not fnbr.co's (today's): the Fortnite Wiki's Item Shop
+// History pages for those days agree with fnbr.co's except for Skull Trooper, 1,200 V-Bucks in 2017 (1,500 since its
+// 2018 return; the reporter's 2017 footage on #69 shows 1,200 too), and Pink Flamingo from 3 to 9 December, 1,200 there
+// but 1,500 in November and on every other source (🟡: kept at 1,500). The shop replays that history in a 45-day cycle: day 0 is 30 October 2017, and each UTC day since
+// then shows the recorded day it falls on, modulo 45 (Core's choice). It changes at UTC midnight, as Epic's did.
+// Admins can also configure the shop via the admin panel (mode: "fnbr" | "random" | "custom", Core-Backend #69).
 const historyFile = path.join(path.dirname(fileURLToPath(import.meta.url)), "itemshop.json");
 const history = JSON.parse(fs.readFileSync(historyFile, "utf8")).days;
 const firstDay = Date.parse(`${history[0].date}T00:00:00Z`);
@@ -79,7 +85,8 @@ export function defaultPriceFor(cosmetic) {
   return 500;
 }
 
-// Returns list of all eligible cosmetics in 1.8 that can appear in the item shop
+// Returns list of all eligible cosmetics in 1.8 that can appear in the item shop,
+// excluding starters, chase rewards, victory umbrellas and recruit outfits (Core-Backend #69).
 export function eligibleCosmetics() {
   const cosmetics = athenaCosmetics();
   const allowedClasses = [
@@ -88,13 +95,7 @@ export function eligibleCosmetics() {
     "AthenaGliderItemDefinition"
   ];
   return Object.entries(cosmetics)
-    .filter(([id, c]) => {
-      if (!allowedClasses.includes(c.class)) return false;
-      const lower = id.toLowerCase();
-      if (lower.includes("_default") || lower.includes("defaultpickaxe")) return false;
-      if (lower.includes("umbrella")) return false;
-      return true;
-    })
+    .filter(([id, c]) => allowedClasses.includes(c.class) && c.rarity !== "Handmade" && !isNonShopCosmetic(id))
     .map(([templateId, c]) => {
       const { code, label } = cosmeticRarity(c.rarity);
       return {
@@ -110,10 +111,35 @@ export function eligibleCosmetics() {
     .sort((a, b) => a.name.localeCompare(b.name));
 }
 
-// Generate a randomized shop: 2 featured items, 4 to 6 daily items
-export function generateRandomShop(now = new Date()) {
+function createPrng(seedStr) {
+  let hash = crypto.createHash("sha256").update(String(seedStr)).digest();
+  let offset = 0;
+  return function nextFloat() {
+    if (offset + 4 > hash.length) {
+      hash = crypto.createHash("sha256").update(hash).digest();
+      offset = 0;
+    }
+    const val = hash.readUInt32BE(offset);
+    offset += 4;
+    return val / 0x100000000;
+  };
+}
+
+// Generate a deterministic randomized shop: 2 featured items (weekly), 6 daily items (daily)
+export function generateRandomShop(now = new Date(), overrideConfig = null) {
   const eligible = eligibleCosmetics();
   if (!eligible.length) return { featured: [], daily: [], generatedAt: now.toISOString() };
+
+  const config = overrideConfig ?? currentShopConfig();
+  const seed = config?.random?.seed ?? "core_shop_seed_0";
+  const rotationHour = Math.max(0, Math.min(23, Number(config?.rotationHour ?? 0)));
+  const weeklyDays = Math.max(1, Math.min(30, Number(config?.weeklyDurationDays ?? 7)));
+
+  // Daily offset adjusted for rotation hour
+  const adjustedTime = now.getTime() - rotationHour * 60 * 60 * 1000;
+  const dayKey = new Date(adjustedTime).toISOString().slice(0, 10);
+  const dayNumber = Math.floor(adjustedTime / dayMs);
+  const weekNumber = Math.floor((dayNumber + 4) / weeklyDays);
 
   const characters = eligible.filter((i) => i.class === "AthenaCharacterItemDefinition");
   const gear = eligible.filter((i) => i.class !== "AthenaCharacterItemDefinition");
@@ -121,25 +147,26 @@ export function generateRandomShop(now = new Date()) {
   const featured = [];
   const used = new Set();
 
-  function pickRandom(pool) {
+  function pick(pool, rng) {
     const available = pool.filter((item) => !used.has(item.templateId));
     if (!available.length) return null;
-    const choice = available[Math.floor(Math.random() * available.length)];
+    const choice = available[Math.floor(rng() * available.length)];
     used.add(choice.templateId);
     return choice;
   }
 
-  // Pick 2 featured (prefer characters, or mix of character and gear)
-  const f1 = pickRandom(characters) || pickRandom(eligible);
+  // 1. Featured items (2 items), seeded weekly
+  const featRng = createPrng(`${seed}:featured:${weekNumber}`);
+  const f1 = pick(characters, featRng) || pick(eligible, featRng);
   if (f1) featured.push([f1.templateId, f1.defaultPrice]);
-  const f2 = pickRandom(Math.random() > 0.5 ? gear : characters) || pickRandom(eligible);
+  const f2 = pick(featRng() > 0.5 ? gear : characters, featRng) || pick(eligible, featRng);
   if (f2) featured.push([f2.templateId, f2.defaultPrice]);
 
-  // Pick 4 to 6 daily items
+  // 2. Daily items (6 items), seeded daily and distinct from featured
+  const dailyRng = createPrng(`${seed}:daily:${dayKey}`);
   const daily = [];
-  const dailyCount = 4 + Math.floor(Math.random() * 3); // 4, 5, or 6
-  for (let i = 0; i < dailyCount; i++) {
-    const item = pickRandom(eligible);
+  for (let i = 0; i < 6; i++) {
+    const item = pick(eligible, dailyRng);
     if (!item) break;
     daily.push([item.templateId, item.defaultPrice]);
   }
@@ -151,32 +178,42 @@ export function generateRandomShop(now = new Date()) {
   };
 }
 
-// The recorded day the UTC day of now shows in fnbr history.
-export function shopDay(now = new Date()) {
-  const days = Math.floor((now.getTime() - firstDay) / dayMs);
+// The recorded day the UTC day of now shows in fnbr history (adjusted for rotation hour).
+export function shopDay(now = new Date(), overrideConfig = null) {
+  const config = overrideConfig ?? currentShopConfig();
+  const rotationHour = Math.max(0, Math.min(23, Number(config?.rotationHour ?? 0)));
+  const adjustedTime = now.getTime() - rotationHour * 60 * 60 * 1000;
+  const days = Math.floor((adjustedTime - firstDay) / dayMs);
   return history[((days % history.length) + history.length) % history.length];
 }
 
-// When the shop next changes: the next UTC midnight.
-export function nextRotation(now = new Date()) {
-  return new Date(Math.floor(now.getTime() / dayMs) * dayMs + dayMs);
+// When the shop next changes: the next rotation hour UTC.
+export function nextRotation(now = new Date(), overrideConfig = null) {
+  const config = overrideConfig ?? currentShopConfig();
+  const rotationHour = Math.max(0, Math.min(23, Number(config?.rotationHour ?? 0)));
+  const todayRotation = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), rotationHour, 0, 0, 0));
+  if (now.getTime() < todayRotation.getTime()) return todayRotation;
+  return new Date(todayRotation.getTime() + dayMs);
 }
 
-// When the featured (weekly) items next change: the first UTC midnight from now whose recorded day features other items.
-// Epic's featured pair lasted a week (Sunday to Saturday from 5 November); the cycle's first and last weeks are shorter.
+// When the featured (weekly) items next change:
 const featuredOf = (day) => JSON.stringify(day.featured.map(([templateId]) => templateId));
 export function weeklyStoreEnd(now = new Date(), overrideConfig = null) {
   const config = overrideConfig ?? currentShopConfig();
-  if (config.mode === "custom" || config.mode === "random") {
+  const weeklyDays = Math.max(1, Math.min(30, Number(config?.weeklyDurationDays ?? 7)));
+
+  if (config.mode === "custom" || config.mode === "random" || (config.weeklyDurationDays !== undefined && config.weeklyDurationDays !== null && config.weeklyDurationDays !== 7)) {
     const midnight = Math.floor(now.getTime() / dayMs) * dayMs;
-    const dayOfWeek = new Date(midnight).getUTCDay(); // 0 is Sunday
-    const daysUntilSunday = (7 - dayOfWeek) % 7 || 7;
-    return new Date(midnight + daysUntilSunday * dayMs);
+    const dayNumber = Math.floor(now.getTime() / dayMs);
+    const daysIntoCycle = ((dayNumber + 4) % weeklyDays + weeklyDays) % weeklyDays;
+    const daysRemaining = weeklyDays - daysIntoCycle;
+    return new Date(midnight + (daysRemaining || weeklyDays) * dayMs);
   }
-  const today = featuredOf(shopDay(now));
+
+  const today = featuredOf(shopDay(now, config));
   const midnight = Math.floor(now.getTime() / dayMs) * dayMs;
   for (let days = 1; days < history.length; days++) {
-    if (featuredOf(shopDay(new Date(midnight + days * dayMs))) !== today) return new Date(midnight + days * dayMs);
+    if (featuredOf(shopDay(new Date(midnight + days * dayMs), config)) !== today) return new Date(midnight + days * dayMs);
   }
   return new Date(midnight + history.length * dayMs);
 }
@@ -214,18 +251,15 @@ export function itemShopOffers(now = new Date(), overrideConfig = null) {
     };
   }
 
-  if (config.mode === "random" && config.random) {
-    const feat = Array.isArray(config.random.featured) ? config.random.featured : [];
-    const daily = Array.isArray(config.random.daily) ? config.random.daily : [];
-    if (feat.length || daily.length) {
-      return {
-        BRWeeklyStorefront: toOffers(feat),
-        BRDailyStorefront: toOffers(daily)
-      };
-    }
+  if (config.mode === "random") {
+    const random = generateRandomShop(now, config);
+    return {
+      BRWeeklyStorefront: toOffers(random.featured),
+      BRDailyStorefront: toOffers(random.daily)
+    };
   }
 
-  const day = shopDay(now);
+  const day = shopDay(now, config);
   return {
     BRWeeklyStorefront: toOffers(day.featured),
     BRDailyStorefront: toOffers(day.daily)

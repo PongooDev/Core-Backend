@@ -2457,11 +2457,61 @@
         state.customShop = JSON.parse(JSON.stringify(shop.custom || { featured: [], daily: [] }));
       }
 
+      // General Shop Settings Section
+      const rotationHourSelect = el("select", { class: "field", style: "min-width:150px;" },
+        Array.from({ length: 24 }, (_, i) => {
+          const str = String(i).padStart(2, "0") + ":00 UTC";
+          return el("option", { value: String(i), text: str, selected: (shop.rotationHour ?? 0) === i });
+        })
+      );
+
+      const weeklyDurationInput = el("input", {
+        type: "number",
+        class: "field",
+        min: "1",
+        max: "30",
+        value: String(shop.weeklyDurationDays ?? 7),
+        style: "width:120px;"
+      });
+
+      const saveTimingBtn = btn("Save Timing Settings", async () => {
+        const h = parseInt(rotationHourSelect.value, 10);
+        const d = Math.max(1, Math.min(30, parseInt(weeklyDurationInput.value, 10) || 7));
+        const res = await act(api("/admin/api/shop", { rotationHour: h, weeklyDurationDays: d }), "Shop timing settings saved");
+        if (res) showShop();
+      }, "primary");
+
+      const resetAllBtn = btn("Reset to Defaults", async () => {
+        if (confirm("Reset the shop and timing settings back to factory defaults (Historical Season 1 shop, midnight rotation, 7-day weekly duration)?")) {
+          state.customShop = null;
+          const res = await act(api("/admin/api/shop/reset", {}), "Shop settings reset to defaults");
+          if (res) showShop();
+        }
+      }, "ghost");
+
+      const timingSettingsSection = el("section", { class: "panel" },
+        el("div", { class: "panel-head", style: "margin-bottom:6px;" },
+          el("h2", { text: "General Shop Settings" })),
+        el("p", { class: "note", style: "margin:0;", text: "Configure when the daily shop rotates and how long weekly featured items last in the in-game store." }),
+        el("div", { style: "display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-top:16px;" },
+          el("div", { style: "display:flex; gap:16px; align-items:flex-end; flex-wrap:wrap;" },
+            el("label", { style: "display:flex; flex-direction:column; gap:6px; font-size:12px; font-weight:600; color:var(--muted);" },
+              el("span", { text: "Daily Rotation Time (UTC)" }),
+              rotationHourSelect),
+            el("label", { style: "display:flex; flex-direction:column; gap:6px; font-size:12px; font-weight:600; color:var(--muted);" },
+              el("span", { text: "Weekly Duration (Days)" }),
+              weeklyDurationInput)),
+          el("div", { class: "actions", style: "gap:8px;" },
+            saveTimingBtn,
+            resetAllBtn)
+        )
+      );
+
       const activeMode = shop.mode || "fnbr";
 
       const modeTabs = [
-        ["fnbr", "FNBR Historical Shop"],
-        ["random", "Randomize Locally"],
+        ["fnbr", "Historical Shop"],
+        ["random", "Randomized"],
         ["custom", "Custom Shop Builder"]
       ];
 
@@ -2588,28 +2638,27 @@
       if (activeMode === "fnbr") {
         configSection = el("section", { class: "panel" },
           el("div", { class: "panel-head" },
-            el("h2", { text: "FNBR Historical Rotation" })),
-          el("p", { class: "note", text: "Replaying Epic's authentic Season 1 shop (30 October – 13 December 2017) day-by-day in a 45-day cycle. Rotation occurs automatically at UTC midnight." }),
+            el("h2", { text: "Historical Rotation" })),
+          el("p", { class: "note", text: "Replaying Epic's authentic Season 1 shop (30 October – 13 December 2017) day-by-day in a 45-day cycle. Rotates automatically at the configured rotation time." }),
           el("div", { class: "row", style: "margin-top:14px; gap:24px; align-items:center;" },
             el("div", { style: "display:flex; flex-direction:column; gap:4px;" },
               el("span", { class: "muted", style: "font-size:12px; font-weight:600;", text: "Recorded Date in Cycle" }),
               el("span", { style: "font-size:16px; font-weight:700; color:var(--text);", text: shop.history?.date || "2017-10-30" })),
             el("div", { style: "display:flex; flex-direction:column; gap:4px;" },
               el("span", { class: "muted", style: "font-size:12px; font-weight:600;", text: "Cycle Duration" }),
-              el("span", { style: "font-size:16px; font-weight:700; color:var(--text);", text: "45 Days (Modulo)" }))
+              el("span", { style: "font-size:16px; font-weight:700; color:var(--text);", text: "45 Days" }))
           )
         );
       } else if (activeMode === "random") {
         configSection = el("section", { class: "panel" },
           el("div", { class: "panel-head" },
-            el("h2", { text: "Local Shop Randomizer" })),
-          el("p", { class: "note", text: "Generates randomized Featured and Daily cosmetics from available 1.8 game data with authentic rarity-based V-Buck pricing." }),
-          el("div", { class: "actions", style: "margin-top:14px; align-items:center; gap:12px;" },
+            el("h2", { text: "Randomized Rotation" })),
+          el("p", { class: "note", text: "Daily items rotate automatically every UTC day, and featured items rotate weekly, seeded so all players share the same shop with authentic rarity-based pricing." }),
+          el("div", { class: "actions", style: "margin-top:14px;" },
             btn("Reroll Shop Now", async () => {
-              const res = await act(api("/admin/api/shop/randomize", {}), "Shop rerolled with new random items");
+              const res = await act(api("/admin/api/shop/randomize", {}), "Shop re-seeded with new items");
               if (res) showShop();
-            }, "primary"),
-            el("span", { class: "note", text: `Last generated: ${shop.random?.generatedAt ? new Date(shop.random.generatedAt).toLocaleTimeString() : "Current session"}` }))
+            }, "primary"))
         );
       } else {
         // Custom Shop Builder
@@ -2778,6 +2827,7 @@
             el("div", { class: "muted", text: "Configure Battle Royale's Store tab (Athena Direct Acquisition) for 1.8+ builds." })),
           el("div", { class: "actions" },
             btn("Refresh", showShop, "ghost"))),
+        timingSettingsSection,
         modePicker,
         configSection,
         previewSection

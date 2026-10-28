@@ -1,4 +1,5 @@
 import express from "express";
+import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -544,11 +545,11 @@ export function adminRoutes(context) {
 
   function getShopPayload() {
     const now = new Date();
-    const config = settings?.get?.()?.itemShop ?? { mode: "fnbr" };
+    const config = settings?.get?.()?.itemShop ?? { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 };
     const build = "3724489";
     const offers = inBuild(build, () => itemShopOffers(now, config));
     const cosmetics = inBuild(build, () => eligibleCosmetics());
-    const currentDay = shopDay(now);
+    const currentDay = shopDay(now, config);
 
     const mapOffer = (o) => {
       const match = cosmetics.find((c) => c.templateId.toLowerCase() === o.templateId.toLowerCase());
@@ -564,6 +565,8 @@ export function adminRoutes(context) {
 
     return {
       mode: config.mode || "fnbr",
+      rotationHour: config.rotationHour ?? 0,
+      weeklyDurationDays: config.weeklyDurationDays ?? 7,
       currentShop: {
         featured: offers.BRWeeklyStorefront.map(mapOffer),
         daily: offers.BRDailyStorefront.map(mapOffer)
@@ -578,7 +581,7 @@ export function adminRoutes(context) {
         daily: currentDay.daily
       },
       random: config.random ?? null,
-      nextRotation: nextRotation(now).toISOString(),
+      nextRotation: nextRotation(now, config).toISOString(),
       weeklyStoreEnd: weeklyStoreEnd(now, config).toISOString(),
       availableCosmetics: cosmetics
     };
@@ -590,8 +593,18 @@ export function adminRoutes(context) {
 
   router.post("/admin/api/shop", (req, res) => {
     if (!settings?.update) return invalid(res, "Settings store not available");
-    const mode = ["fnbr", "random", "custom"].includes(req.body?.mode) ? req.body.mode : "fnbr";
+    const currentConfig = settings.get?.()?.itemShop ?? { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 };
+    const mode = ["fnbr", "random", "custom"].includes(req.body?.mode) ? req.body.mode : currentConfig.mode;
     const update = { mode };
+
+    if (req.body?.rotationHour !== undefined) {
+      const h = Number(req.body.rotationHour);
+      if (Number.isInteger(h) && h >= 0 && h <= 23) update.rotationHour = h;
+    }
+    if (req.body?.weeklyDurationDays !== undefined) {
+      const d = Number(req.body.weeklyDurationDays);
+      if (Number.isInteger(d) && d >= 1 && d <= 30) update.weeklyDurationDays = d;
+    }
 
     if (req.body?.custom && typeof req.body.custom === "object") {
       const sanitizeList = (list) => {
@@ -612,12 +625,14 @@ export function adminRoutes(context) {
 
   router.post("/admin/api/shop/randomize", (req, res) => {
     if (!settings?.update) return invalid(res, "Settings store not available");
-    const build = "3724489";
-    const randomShop = inBuild(build, () => generateRandomShop());
+    const newSeed = crypto.randomBytes(4).toString("hex");
     settings.update({
       itemShop: {
         mode: "random",
-        random: randomShop
+        random: {
+          seed: newSeed,
+          rerolledAt: new Date().toISOString()
+        }
       }
     });
     res.json(getShopPayload());
@@ -627,7 +642,11 @@ export function adminRoutes(context) {
     if (!settings?.update) return invalid(res, "Settings store not available");
     settings.update({
       itemShop: {
-        mode: "fnbr"
+        mode: "fnbr",
+        rotationHour: 0,
+        weeklyDurationDays: 7,
+        custom: null,
+        random: null
       }
     });
     res.json(getShopPayload());

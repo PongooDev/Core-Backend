@@ -3,6 +3,9 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { inBuild } from "../src/builds/context.js";
+import { eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, weeklyStoreEnd } from "../src/store/itemshop.js";
+import { isNonShopCosmetic, nonShopCosmeticIds } from "../src/profiles/athena.js";
 import { get, post, send, startBackend, userLogin } from "./helpers.js";
 
 const admin = (backend, path, body) => (body === undefined
@@ -33,15 +36,30 @@ test("admin shop API queries, customizes, randomizes, and resets the item shop",
     const player = await userLogin(backend.port, "ShopTester");
     await setVbucks(backend.port, player.accountId, 10000);
 
-    // 1. GET /admin/api/shop returns default fnbr mode
+    // 1. GET /admin/api/shop returns default fnbr mode and default timing
     const initial = await admin(backend, "/shop");
     assert.equal(initial.status, 200);
     assert.equal(initial.body.mode, "fnbr");
+    assert.equal(initial.body.rotationHour, 0);
+    assert.equal(initial.body.weeklyDurationDays, 7);
     assert.ok(initial.body.currentShop.featured.length >= 2);
     assert.ok(initial.body.currentShop.daily.length >= 4);
     assert.ok(initial.body.availableCosmetics.length >= 35);
     assert.ok(initial.body.nextRotation);
     assert.ok(initial.body.weeklyStoreEnd);
+
+    // Verify non-shop items (starters, chase rewards, victory/founder umbrellas, recruit defaults, preseason gliders) are excluded
+    const nonShopIds = nonShopCosmeticIds().map((id) => id.toLowerCase());
+    assert.ok(nonShopIds.includes("athenaglider:founderglider"));
+    assert.ok(nonShopIds.includes("athenaglider:glider_warthog")); // Mako
+    assert.ok(nonShopIds.includes("athenaglider:solo_umbrella"));
+    assert.ok(nonShopIds.includes("athenaglider:preseasonglider"));
+    assert.ok(nonShopIds.includes("athenaglider:umbrella_bronze"));
+    assert.ok(nonShopIds.includes("athenacharacter:cid_001_athena_commando_f_default"));
+    for (const item of initial.body.availableCosmetics) {
+      assert.notEqual(item.rarity, "Handmade", `Handmade cosmetic ${item.templateId} must not be eligible`);
+      assert.ok(!nonShopIds.includes(item.templateId.toLowerCase()), `Non-shop cosmetic ${item.templateId} must not be eligible`);
+    }
 
     // 2. Set Custom Shop mode with specific items and custom prices
     const customConfig = {
@@ -89,17 +107,46 @@ test("admin shop API queries, customizes, randomizes, and resets the item shop",
     const owned = Object.values(profile.items).some((i) => i.templateId === "AthenaCharacter:cid_029_athena_commando_f_halloween");
     assert.ok(owned, "Player must own purchased custom cosmetic");
 
-    // 5. POST /admin/api/shop/randomize generates random shop
+    // 5. Update general timing settings (rotation hour and weekly duration)
+    const timingRes = await admin(backend, "/shop", { rotationHour: 15, weeklyDurationDays: 14 });
+    assert.equal(timingRes.status, 200);
+    assert.equal(timingRes.body.rotationHour, 15);
+    assert.equal(timingRes.body.weeklyDurationDays, 14);
+
+    // 6. POST /admin/api/shop/randomize generates deterministic random shop with seed
     const randRes = await admin(backend, "/shop/randomize", {});
     assert.equal(randRes.status, 200);
     assert.equal(randRes.body.mode, "random");
+    assert.ok(randRes.body.random?.seed);
     assert.equal(randRes.body.currentShop.featured.length, 2);
-    assert.ok(randRes.body.currentShop.daily.length >= 4);
+    assert.equal(randRes.body.currentShop.daily.length, 6);
 
-    // 6. POST /admin/api/shop/reset restores default FNBR history
+    // Deterministic random rotation: same date & seed produces exact same shop
+    const seed = randRes.body.random.seed;
+    const d1 = new Date("2026-10-28T12:00:00Z");
+    const roll1 = inBuild("3724489", () => generateRandomShop(d1, { random: { seed } }));
+    const roll2 = inBuild("3724489", () => generateRandomShop(d1, { random: { seed } }));
+    assert.deepEqual(roll1, roll2);
+
+    // Next day produces different daily items but identical weekly featured items
+    const d2 = new Date("2026-10-29T12:00:00Z");
+    const rollNextDay = inBuild("3724489", () => generateRandomShop(d2, { random: { seed } }));
+    assert.deepEqual(rollNextDay.featured, roll1.featured);
+    assert.notDeepEqual(rollNextDay.daily, roll1.daily);
+
+    // Next week produces different featured items
+    const d3 = new Date("2026-11-08T12:00:00Z");
+    const rollNextWeek = inBuild("3724489", () => generateRandomShop(d3, { random: { seed } }));
+    assert.notDeepEqual(rollNextWeek.featured, roll1.featured);
+
+    // 7. POST /admin/api/shop/reset restores default FNBR history and timing defaults
     const resetRes = await admin(backend, "/shop/reset", {});
     assert.equal(resetRes.status, 200);
     assert.equal(resetRes.body.mode, "fnbr");
+    assert.equal(resetRes.body.rotationHour, 0);
+    assert.equal(resetRes.body.weeklyDurationDays, 7);
+    assert.equal(resetRes.body.random, null);
+    assert.ok(resetRes.body.custom?.featured);
     assert.deepEqual(resetRes.body.currentShop.featured.map((o) => o.templateId), initial.body.currentShop.featured.map((o) => o.templateId));
   } finally {
     backend.close();
