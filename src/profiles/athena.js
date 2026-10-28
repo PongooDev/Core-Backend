@@ -347,6 +347,20 @@ export function addSeasonXp(session, amount) {
   settleChaseRewards(session);
 }
 
+// The season level an admin sets (Core-Backend #106): the start of that level (no XP into it) and its chase rewards up to
+// it. Going down takes nothing back, as XP only ever moved the level up. The level a 1.8 lobby can show, 1 to the last
+// season level.
+export const maxSeasonLevel = () => seasonLevels().reduce((max, entry) => Math.max(max, entry.level), 1);
+export function setSeasonLevel(session, level) {
+  const tracker = session.profile("athena");
+  const { attributes } = tracker.profile.stats;
+  if (attributes.level !== level) tracker.setStat("level", level);
+  if (attributes.xp !== 0) tracker.setStat("xp", 0);
+  if (attributes.accountLevel !== level) tracker.setStat("accountLevel", level);
+  log("Battle Royale", `${session.accountId} set to season level ${level} from the admin panel`);
+  settleChaseRewards(session);
+}
+
 // The chase rewards of the levels reached that the player lacks: banners go to profile0, where the banner editor finds
 // them, cosmetics to the locker. One the build's data doesn't have waits for a build that has it.
 export function settleChaseRewards(session) {

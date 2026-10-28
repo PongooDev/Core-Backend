@@ -1950,6 +1950,7 @@
       const run = (path, message) => act(api(`/admin/api/accounts/${a.id}/locker/${path}`, {})).then((account) => setAccount(account, account && message(account)));
       return el("div", { style: "margin-top:22px" },
         el("h2", { style: "margin-bottom:10px", text: "Battle Royale locker" }),
+        seasonLevel(a),
         el("div", { class: "actions" },
           chip(`${fmt(cosmetics.owned)} / ${fmt(cosmetics.total)} cosmetics`, cosmetics.owned >= cosmetics.total ? "good" : ""),
           chip(`${fmt(banners.owned)} / ${fmt(banners.total)} banners`, banners.owned >= banners.total ? "good" : ""),
@@ -1964,6 +1965,19 @@
             }
           }, "danger", { disabled: !granted })),
         el("p", { class: "note", text: "Outfits, back blings, pickaxes, gliders, emotes, loading screens and the rest of every build's locker, and every banner for the banner editor. Equipped items that are taken back go back to the default." }));
+    }
+
+    // Battle Royale's season level (Core-Backend #106): set to the start of a level, with its chase rewards.
+    function seasonLevel(a) {
+      const br = a.battleRoyale;
+      if (!br) return el("p", { class: "note", text: "Season level: the account gets a Battle Royale profile when they first play Battle Royale." });
+      const input = el("input", { class: "field num", type: "number", min: 1, max: br.maxLevel, value: br.level, "aria-label": "Season level" });
+      const set = () => {
+        const level = Number(input.value);
+        act(api(`/admin/api/accounts/${a.id}/battle-royale-level`, { level })).then((account) => setAccount(account, account && `${a.displayName} is now season level ${level}`));
+      };
+      return el("div", { class: "actions", style: "margin-bottom:10px" },
+        chip(`Season level ${fmt(br.level)} / ${fmt(br.maxLevel)}`, "sky"), input, btn("Set level", set, "primary small"));
     }
 
     function balance(currency) {

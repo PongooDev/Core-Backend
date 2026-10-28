@@ -232,3 +232,31 @@ test("what giveAllCosmetics gave stays once the panel gives the full locker", ()
   assert.equal(Object.keys(session.profile("athena").profile.items).length, total);
   assert.equal(removeFullLocker(session).cosmetics, total - 6);
 })));
+
+test("the admin panel sets an account's Battle Royale season level, with its chase rewards (Core-Backend #106)", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "SeasonLevel");
+    const setLevel = (level) => post(backend.port, `/admin/api/accounts/${player.accountId}/battle-royale-level`, undefined, { level });
+    // No athena profile yet: nothing to set.
+    assert.equal((await setLevel(20)).status, 400);
+
+    const revision = async () => (await command(backend.port, player, "QueryProfile", "athena")).body.profileRevision;
+    const beforeRvn = await revision();
+    const set = await setLevel(30);
+    assert.equal(set.status, 200);
+    assert.deepEqual(set.body.battleRoyale, { level: 30, xp: 0, maxLevel: set.body.battleRoyale.maxLevel });
+    const after = await athena(backend.port, player);
+    assert.ok((await revision()) > beforeRvn);
+    assert.equal(after.stats.attributes.level, 30);
+    assert.equal(after.stats.attributes.accountLevel, 30);
+    assert.equal(after.stats.attributes.xp, 0);
+    // Level 25's chase reward, the Mako glider.
+    assert.ok(Object.values(after.items).some((item) => /glider_warthog/i.test(item.templateId)));
+
+    for (const bad of [0, set.body.battleRoyale.maxLevel + 1, 2.5, "x"]) assert.equal((await setLevel(bad)).status, 400);
+    assert.equal((await setLevel(5)).body.battleRoyale.level, 5);
+  } finally {
+    backend.close();
+  }
+});

@@ -13,7 +13,7 @@ import { readGameData } from "../gamedata/read.js";
 import { recentLogs } from "../log.js";
 import { sessionSummary } from "../matchmaking/sessions.js";
 import { alertsRemaining, emptyAlertRecord, withQuotaSlots } from "../profiles/alerts.js";
-import { fullLockerState, grantFullLocker, removeFullLocker } from "../profiles/athena.js";
+import { fullLockerState, grantFullLocker, maxSeasonLevel, removeFullLocker, setSeasonLevel } from "../profiles/athena.js";
 import { levelRest, restBalance, restValue } from "../profiles/boosts.js";
 import { foundersEditionOf, foundersEditions, setFoundersEdition } from "../profiles/founders.js";
 import { findItem, grantItem, worldStacksNeeded } from "../profiles/items.js";
@@ -149,9 +149,16 @@ export function adminRoutes(context) {
         .filter((item) => !item.templateId.toLowerCase().startsWith("collectionbookpage:")),
       // Battle Royale's full locker (profiles/athena.js): what the account holds of every cosmetic and banner.
       locker: fullLockerState(loadIfExists(account.id, "athena"), profile),
+      // Battle Royale's season level (profiles/athena.js), once the account has an athena profile.
+      battleRoyale: battleRoyaleLevel(loadIfExists(account.id, "athena")),
       sessions: sessionsOf(account.id),
       profiles: profiles.ids(account.id)
     };
+  }
+
+  function battleRoyaleLevel(athena) {
+    const attributes = athena?.stats?.attributes;
+    return attributes ? { level: attributes.level ?? 1, xp: attributes.xp ?? 0, maxLevel: maxSeasonLevel() } : null;
   }
 
   // Runs a change on an account's profiles and answers with its new details. A player in the game gets the change as
@@ -367,6 +374,13 @@ export function adminRoutes(context) {
     for (const profileId of ["athena", "profile0"]) profiles.save(session.profile(profileId).profile);
     return result;
   });
+  // {level}: Battle Royale's season level (Core-Backend #106), at its start, with its chase rewards.
+  router.post("/admin/api/accounts/:accountId/battle-royale-level", change(({ req, res, session, account }) => {
+    const level = Number(req.body?.level);
+    if (!Number.isInteger(level) || level < 1 || level > maxSeasonLevel()) return invalid(res, `The season level must be 1 to ${maxSeasonLevel()}`);
+    if (!loadIfExists(account.id, "athena")) return invalid(res, "The account has no Battle Royale profile yet: it's made when they first play Battle Royale");
+    setSeasonLevel(session, level);
+  }));
   router.post("/admin/api/accounts/:accountId/locker/grant-all", lockerChange((session) => ({ granted: grantFullLocker(session) })));
   router.post("/admin/api/accounts/:accountId/locker/remove-granted", lockerChange((session) => ({ removed: removeFullLocker(session) })));
 
