@@ -132,6 +132,8 @@ test("the panel shows the server: overview, game sessions to end, logs and unans
 
     const page = await get(backend.port, "/admin");
     assert.match(page.body, /Core Admin/);
+    assert.match(page.body, /href="#\/shop" data-view="shop"/);
+    assert.match(page.body, /shop: showShop/);
   } finally {
     backend.close();
   }

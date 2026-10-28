@@ -1,8 +1,10 @@
+import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { currentBuild } from "../builds/context.js";
 import { athenaCosmetics } from "../gamedata/athena.js";
+import { isNonShopCosmetic } from "../profiles/athena.js";
 
 // Battle Royale's item shop (Core-Backend #69). 1.8's lobby Store tab is AthenaDirectAcquisitionScreen
 // (UFortDirectAcquisitionWidgetBase), whose StorefrontNames are ["BRWeeklyStorefront", "BRDailyStorefront"]: the first
@@ -28,6 +30,7 @@ import { athenaCosmetics } from "../gamedata/athena.js";
 // 2018 return; the reporter's 2017 footage on #69 shows 1,200 too), and Pink Flamingo from 3 to 9 December, 1,200 there
 // but 1,500 in November and on every other source (🟡: kept at 1,500). The shop replays that history in a 45-day cycle: day 0 is 30 October 2017, and each UTC day since
 // then shows the recorded day it falls on, modulo 45 (Core's choice). It changes at UTC midnight, as Epic's did.
+// Admins can also configure the shop via the admin panel (mode: "fnbr" | "random" | "custom", Core-Backend #69).
 const historyFile = path.join(path.dirname(fileURLToPath(import.meta.url)), "itemshop.json");
 const history = JSON.parse(fs.readFileSync(historyFile, "utf8")).days;
 const firstDay = Date.parse(`${history[0].date}T00:00:00Z`);
@@ -36,25 +39,181 @@ const dayMs = 24 * 60 * 60 * 1000;
 const firstBuild = 3724489;
 export const hasItemShop = (changelist = currentBuild()) => Number(changelist) >= firstBuild;
 
-// The recorded day the UTC day of now shows.
-export function shopDay(now = new Date()) {
-  const days = Math.floor((now.getTime() - firstDay) / dayMs);
+let shopConfigProvider = null;
+
+export function configureItemShop(provider) {
+  shopConfigProvider = typeof provider === "function" ? provider : () => provider;
+}
+
+export function currentShopConfig() {
+  return (shopConfigProvider ? shopConfigProvider() : null) ?? { mode: "fnbr" };
+}
+
+// Determines the cosmetic type label ("Outfit", "Harvesting Tool", "Glider")
+export function cosmeticType(cosmeticClass) {
+  if (cosmeticClass === "AthenaCharacterItemDefinition") return "Outfit";
+  if (cosmeticClass === "AthenaPickaxeItemDefinition") return "Harvesting Tool";
+  if (cosmeticClass === "AthenaGliderItemDefinition") return "Glider";
+  return "Cosmetic";
+}
+
+const rarityMap = {
+  Handmade: { code: "c", label: "Common" },
+  Ordinary: { code: "uc", label: "Uncommon" },
+  Sturdy: { code: "r", label: "Rare" },
+  Quality: { code: "vr", label: "Epic" },
+  Fine: { code: "sr", label: "Legendary" }
+};
+
+export function cosmeticRarity(rarityProp) {
+  return rarityMap[rarityProp] ?? { code: "uc", label: "Uncommon" };
+}
+
+export function defaultPriceFor(cosmetic) {
+  if (!cosmetic) return 800;
+  const isChar = cosmetic.class === "AthenaCharacterItemDefinition";
+  const { code } = cosmeticRarity(cosmetic.rarity);
+  if (isChar) {
+    if (code === "sr") return 2000;
+    if (code === "vr") return 1500;
+    if (code === "r") return 1200;
+    return 800;
+  }
+  if (code === "sr") return 1500;
+  if (code === "vr") return 1200;
+  if (code === "r") return 800;
+  return 500;
+}
+
+// Returns list of all eligible cosmetics in 1.8 that can appear in the item shop,
+// excluding starters, chase rewards, victory umbrellas and recruit outfits (Core-Backend #69).
+export function eligibleCosmetics() {
+  const cosmetics = athenaCosmetics();
+  const allowedClasses = [
+    "AthenaCharacterItemDefinition",
+    "AthenaPickaxeItemDefinition",
+    "AthenaGliderItemDefinition"
+  ];
+  return Object.entries(cosmetics)
+    .filter(([id, c]) => allowedClasses.includes(c.class) && c.rarity !== "Handmade" && !isNonShopCosmetic(id))
+    .map(([templateId, c]) => {
+      const { code, label } = cosmeticRarity(c.rarity);
+      return {
+        templateId,
+        name: c.name.trim(),
+        class: c.class,
+        type: cosmeticType(c.class),
+        rarity: label,
+        rarityCode: code,
+        defaultPrice: defaultPriceFor(c)
+      };
+    })
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+function createPrng(seedStr) {
+  let hash = crypto.createHash("sha256").update(String(seedStr)).digest();
+  let offset = 0;
+  return function nextFloat() {
+    if (offset + 4 > hash.length) {
+      hash = crypto.createHash("sha256").update(hash).digest();
+      offset = 0;
+    }
+    const val = hash.readUInt32BE(offset);
+    offset += 4;
+    return val / 0x100000000;
+  };
+}
+
+// Generate a deterministic randomized shop: 2 featured items (weekly), 6 daily items (daily)
+export function generateRandomShop(now = new Date(), overrideConfig = null) {
+  const eligible = eligibleCosmetics();
+  if (!eligible.length) return { featured: [], daily: [], generatedAt: now.toISOString() };
+
+  const config = overrideConfig ?? currentShopConfig();
+  const seed = config?.random?.seed ?? "core_shop_seed_0";
+  const rotationHour = Math.max(0, Math.min(23, Number(config?.rotationHour ?? 0)));
+  const weeklyDays = Math.max(1, Math.min(30, Number(config?.weeklyDurationDays ?? 7)));
+
+  // Daily offset adjusted for rotation hour
+  const adjustedTime = now.getTime() - rotationHour * 60 * 60 * 1000;
+  const dayKey = new Date(adjustedTime).toISOString().slice(0, 10);
+  const dayNumber = Math.floor(adjustedTime / dayMs);
+  const weekNumber = Math.floor((dayNumber + 4) / weeklyDays);
+
+  const characters = eligible.filter((i) => i.class === "AthenaCharacterItemDefinition");
+  const gear = eligible.filter((i) => i.class !== "AthenaCharacterItemDefinition");
+
+  const featured = [];
+  const used = new Set();
+
+  function pick(pool, rng) {
+    const available = pool.filter((item) => !used.has(item.templateId));
+    if (!available.length) return null;
+    const choice = available[Math.floor(rng() * available.length)];
+    used.add(choice.templateId);
+    return choice;
+  }
+
+  // 1. Featured items (2 items), seeded weekly
+  const featRng = createPrng(`${seed}:featured:${weekNumber}`);
+  const f1 = pick(characters, featRng) || pick(eligible, featRng);
+  if (f1) featured.push([f1.templateId, f1.defaultPrice]);
+  const f2 = pick(featRng() > 0.5 ? gear : characters, featRng) || pick(eligible, featRng);
+  if (f2) featured.push([f2.templateId, f2.defaultPrice]);
+
+  // 2. Daily items (6 items), seeded daily and distinct from featured
+  const dailyRng = createPrng(`${seed}:daily:${dayKey}`);
+  const daily = [];
+  for (let i = 0; i < 6; i++) {
+    const item = pick(eligible, dailyRng);
+    if (!item) break;
+    daily.push([item.templateId, item.defaultPrice]);
+  }
+
+  return {
+    featured,
+    daily,
+    generatedAt: now.toISOString()
+  };
+}
+
+// The recorded day the UTC day of now shows in fnbr history (adjusted for rotation hour).
+export function shopDay(now = new Date(), overrideConfig = null) {
+  const config = overrideConfig ?? currentShopConfig();
+  const rotationHour = Math.max(0, Math.min(23, Number(config?.rotationHour ?? 0)));
+  const adjustedTime = now.getTime() - rotationHour * 60 * 60 * 1000;
+  const days = Math.floor((adjustedTime - firstDay) / dayMs);
   return history[((days % history.length) + history.length) % history.length];
 }
 
-// When the shop next changes: the next UTC midnight.
-export function nextRotation(now = new Date()) {
-  return new Date(Math.floor(now.getTime() / dayMs) * dayMs + dayMs);
+// When the shop next changes: the next rotation hour UTC.
+export function nextRotation(now = new Date(), overrideConfig = null) {
+  const config = overrideConfig ?? currentShopConfig();
+  const rotationHour = Math.max(0, Math.min(23, Number(config?.rotationHour ?? 0)));
+  const todayRotation = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), rotationHour, 0, 0, 0));
+  if (now.getTime() < todayRotation.getTime()) return todayRotation;
+  return new Date(todayRotation.getTime() + dayMs);
 }
 
-// When the featured (weekly) items next change: the first UTC midnight from now whose recorded day features other items.
-// Epic's featured pair lasted a week (Sunday to Saturday from 5 November); the cycle's first and last weeks are shorter.
+// When the featured (weekly) items next change:
 const featuredOf = (day) => JSON.stringify(day.featured.map(([templateId]) => templateId));
-export function weeklyStoreEnd(now = new Date()) {
-  const today = featuredOf(shopDay(now));
+export function weeklyStoreEnd(now = new Date(), overrideConfig = null) {
+  const config = overrideConfig ?? currentShopConfig();
+  const weeklyDays = Math.max(1, Math.min(30, Number(config?.weeklyDurationDays ?? 7)));
+
+  if (config.mode === "custom" || config.mode === "random" || (config.weeklyDurationDays !== undefined && config.weeklyDurationDays !== null && config.weeklyDurationDays !== 7)) {
+    const midnight = Math.floor(now.getTime() / dayMs) * dayMs;
+    const dayNumber = Math.floor(now.getTime() / dayMs);
+    const daysIntoCycle = ((dayNumber + 4) % weeklyDays + weeklyDays) % weeklyDays;
+    const daysRemaining = weeklyDays - daysIntoCycle;
+    return new Date(midnight + (daysRemaining || weeklyDays) * dayMs);
+  }
+
+  const today = featuredOf(shopDay(now, config));
   const midnight = Math.floor(now.getTime() / dayMs) * dayMs;
   for (let days = 1; days < history.length; days++) {
-    if (featuredOf(shopDay(new Date(midnight + days * dayMs))) !== today) return new Date(midnight + days * dayMs);
+    if (featuredOf(shopDay(new Date(midnight + days * dayMs), config)) !== today) return new Date(midnight + days * dayMs);
   }
   return new Date(midnight + history.length * dayMs);
 }
@@ -62,13 +221,47 @@ export function weeklyStoreEnd(now = new Date()) {
 const offerIdOf = (templateId) => `core_br_${templateId.split(":")[1].toLowerCase()}`;
 
 // The day's offers by storefront, those the requesting build has the cosmetic for.
-export function itemShopOffers(now = new Date()) {
+export function itemShopOffers(now = new Date(), overrideConfig = null) {
   if (!hasItemShop()) return { BRWeeklyStorefront: [], BRDailyStorefront: [] };
   const cosmetics = athenaCosmetics();
-  const offers = (entries) => entries.filter(([templateId]) => cosmetics[templateId]).map(([templateId, price]) => ({
-    offerId: offerIdOf(templateId), templateId, title: cosmetics[templateId].name.trim(), currencyType: "MtxCurrency", currencySubType: "", price,
-    athena: true
-  }));
-  const day = shopDay(now);
-  return { BRWeeklyStorefront: offers(day.featured), BRDailyStorefront: offers(day.daily) };
+  const config = overrideConfig ?? currentShopConfig();
+
+  const toOffers = (entries) => entries
+    .filter(([templateId]) => cosmetics[templateId])
+    .map(([templateId, price]) => {
+      const cosmetic = cosmetics[templateId];
+      const validPrice = Number(price) > 0 ? Number(price) : defaultPriceFor(cosmetic);
+      return {
+        offerId: offerIdOf(templateId),
+        templateId,
+        title: cosmetic.name.trim(),
+        currencyType: "MtxCurrency",
+        currencySubType: "",
+        price: validPrice,
+        athena: true
+      };
+    });
+
+  if (config.mode === "custom" && config.custom) {
+    const feat = Array.isArray(config.custom.featured) ? config.custom.featured : [];
+    const daily = Array.isArray(config.custom.daily) ? config.custom.daily : [];
+    return {
+      BRWeeklyStorefront: toOffers(feat),
+      BRDailyStorefront: toOffers(daily)
+    };
+  }
+
+  if (config.mode === "random") {
+    const random = generateRandomShop(now, config);
+    return {
+      BRWeeklyStorefront: toOffers(random.featured),
+      BRDailyStorefront: toOffers(random.daily)
+    };
+  }
+
+  const day = shopDay(now, config);
+  return {
+    BRWeeklyStorefront: toOffers(day.featured),
+    BRDailyStorefront: toOffers(day.daily)
+  };
 }

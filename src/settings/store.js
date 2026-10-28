@@ -34,6 +34,21 @@ export function createSettingsStore(dataDir) {
           body: String(loaded.loginMessage.body ?? "")
         };
       }
+      if (loaded.itemShop && typeof loaded.itemShop === "object") {
+        settings.itemShop = {
+          mode: ["fnbr", "random", "custom"].includes(loaded.itemShop.mode) ? loaded.itemShop.mode : "fnbr",
+          rotationHour: Number.isInteger(loaded.itemShop.rotationHour) && loaded.itemShop.rotationHour >= 0 && loaded.itemShop.rotationHour <= 23 ? loaded.itemShop.rotationHour : 0,
+          weeklyDurationDays: Number.isInteger(loaded.itemShop.weeklyDurationDays) && loaded.itemShop.weeklyDurationDays >= 1 && loaded.itemShop.weeklyDurationDays <= 30 ? loaded.itemShop.weeklyDurationDays : 7,
+          custom: loaded.itemShop.custom && typeof loaded.itemShop.custom === "object" ? {
+            featured: Array.isArray(loaded.itemShop.custom.featured) ? loaded.itemShop.custom.featured : [],
+            daily: Array.isArray(loaded.itemShop.custom.daily) ? loaded.itemShop.custom.daily : []
+          } : undefined,
+          random: loaded.itemShop.random && typeof loaded.itemShop.random === "object" ? {
+            seed: String(loaded.itemShop.random.seed ?? "core_shop_seed_0"),
+            rerolledAt: loaded.itemShop.random.rerolledAt ? String(loaded.itemShop.random.rerolledAt) : undefined
+          } : undefined
+        };
+      }
     } catch {
       // Corrupt file falls back to defaults
     }
@@ -49,7 +64,8 @@ export function createSettingsStore(dataDir) {
         ...settings,
         allowedHostingIps: [...(settings.allowedHostingIps ?? defaults.allowedHostingIps)],
         battleRoyaleNews: settings.battleRoyaleNews ? { ...settings.battleRoyaleNews } : undefined,
-        loginMessage: settings.loginMessage ? { ...settings.loginMessage } : undefined
+        loginMessage: settings.loginMessage ? { ...settings.loginMessage } : undefined,
+        itemShop: settings.itemShop ? JSON.parse(JSON.stringify(settings.itemShop)) : { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 }
       };
     },
 
@@ -76,6 +92,32 @@ export function createSettingsStore(dataDir) {
         };
       } else if (partial.loginMessage === null) {
         delete settings.loginMessage;
+      }
+      if (partial.itemShop && typeof partial.itemShop === "object") {
+        const currentShop = settings.itemShop ?? { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 };
+        const mode = ["fnbr", "random", "custom"].includes(partial.itemShop.mode) ? partial.itemShop.mode : currentShop.mode;
+        const rotationHour = partial.itemShop.rotationHour !== undefined
+          ? (Number.isInteger(Number(partial.itemShop.rotationHour)) && Number(partial.itemShop.rotationHour) >= 0 && Number(partial.itemShop.rotationHour) <= 23 ? Number(partial.itemShop.rotationHour) : 0)
+          : (currentShop.rotationHour ?? 0);
+        const weeklyDurationDays = partial.itemShop.weeklyDurationDays !== undefined
+          ? (Number.isInteger(Number(partial.itemShop.weeklyDurationDays)) && Number(partial.itemShop.weeklyDurationDays) >= 1 && Number(partial.itemShop.weeklyDurationDays) <= 30 ? Number(partial.itemShop.weeklyDurationDays) : 7)
+          : (currentShop.weeklyDurationDays ?? 7);
+
+        settings.itemShop = {
+          mode,
+          rotationHour,
+          weeklyDurationDays,
+          custom: partial.itemShop.custom !== undefined ? (partial.itemShop.custom ? {
+            featured: Array.isArray(partial.itemShop.custom.featured) ? partial.itemShop.custom.featured : [],
+            daily: Array.isArray(partial.itemShop.custom.daily) ? partial.itemShop.custom.daily : []
+          } : undefined) : currentShop.custom,
+          random: partial.itemShop.random !== undefined ? (partial.itemShop.random ? {
+            seed: String(partial.itemShop.random.seed ?? "core_shop_seed_0"),
+            rerolledAt: partial.itemShop.random.rerolledAt ? String(partial.itemShop.random.rerolledAt) : new Date().toISOString()
+          } : undefined) : currentShop.random
+        };
+      } else if (partial.itemShop === null) {
+        delete settings.itemShop;
       }
       save();
       return this.get();

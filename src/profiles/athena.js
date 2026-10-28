@@ -69,8 +69,19 @@ const starters = ["AthenaGlider:defaultglider", "AthenaPickaxe:defaultpickaxe", 
 //   namespace, where Solo_Umbrella's has its package's). A glider slot holding one goes back to the default glider.
 // A locker that holds one loses it; nothing gives one.
 const randomCharacters = [1, 2, 3, 4, 5, 6, 7, 8].map((n) => `AthenaCharacter:cid_00${n}_athena_commando_${n <= 4 ? "f" : "m"}_default`);
-const unusedUmbrellas = ["AthenaGlider:duo_umbrella", "AthenaGlider:squad_umbrella"];
-const notLockerItems = [...randomCharacters, ...unusedUmbrellas];
+const unusedUmbrellas = [
+  "AthenaGlider:duo_umbrella",
+  "AthenaGlider:squad_umbrella",
+  "AthenaGlider:umbrella_bronze",
+  "AthenaGlider:umbrella_silver",
+  "AthenaGlider:umbrella_gold",
+  "AthenaGlider:umbrella_platinum"
+];
+const preseasonGliders = [
+  "AthenaGlider:preseasonglider",
+  "AthenaGlider:preseasonglider_elite"
+];
+const notLockerItems = [...randomCharacters, ...unusedUmbrellas, ...preseasonGliders];
 const isLockerItem = (templateId) => !notLockerItems.some((id) => id.toLowerCase() === String(templateId).toLowerCase());
 const heldNonLockerItems = (profile) => Object.entries(profile.items)
   .filter(([, item]) => !isLockerItem(item.templateId)).map(([itemId]) => itemId);
@@ -93,6 +104,22 @@ const migrated = (profile, name) => (profile.coreMigrations ?? []).includes(name
 // (services/fortnite/battleroyale.js). 1.8 has no winners question (none of 1.7.2's battleroyale/winners or recordwin
 // strings are left): its umbrella is a glider item the locker equips.
 const victoryUmbrellas = ["AthenaGlider:solo_umbrella", "AthenaGlider:founderumbrella"];
+
+// Non-shop items: cosmetics that are given at start, earned in-game (season chase rewards, victory umbrellas),
+// or never locker items (Recruit defaults, unused umbrellas). They are never sold in the item shop (Core-Backend #69).
+export const chaseRewardIds = () => seasonLevels().filter((entry) => entry.chaseReward).map((entry) => entry.chaseReward);
+
+export const nonShopCosmeticIds = () => [
+  ...starters,
+  ...chaseRewardIds(),
+  ...victoryUmbrellas,
+  ...unusedUmbrellas,
+  ...preseasonGliders,
+  ...randomCharacters
+];
+
+export const isNonShopCosmetic = (templateId) =>
+  nonShopCosmeticIds().some((id) => sameId(id, templateId));
 
 // The cosmetics the player has earned: the chase rewards of the season levels reached and, with a recorded win in solo,
 // duo or squad (settings.wonPlaylists, the stats: 1.7.2's recordwin; 1.8's own wins give theirs when the gameserver reports
