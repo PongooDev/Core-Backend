@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { inBuild } from "../src/builds/context.js";
 import { athenaCosmetics } from "../src/gamedata/athena.js";
-import { itemShopOffers, nextRotation, shopDay } from "../src/store/itemshop.js";
+import { itemShopOffers, nextRotation, shopDay, weeklyStoreEnd } from "../src/store/itemshop.js";
 import { post, send, startBackend, userLogin } from "./helpers.js";
 
 // Battle Royale's item shop (Core-Backend #69).
@@ -74,6 +74,45 @@ test("1.8's catalog has the day's Battle Royale storefronts, good until the next
 
     const cert = (await as("cert", backend.port, "GET", "/fortnite/api/storefront/v2/catalog", token)).body;
     assert.deepEqual(cert.storefronts.map((storefront) => storefront.name), ["CardPackStore", "CardPackStorePromo"]);
+  } finally {
+    backend.close();
+  }
+});
+
+test("the weekly countdown runs to when the featured items next change, from the 1.8 event calendar", async () => {
+  // The featured pair changes on the recorded days' Sundays (5, 12, 19, 26 November, 3 and 10 December 2017), and from
+  // the cycle's last day (13 December) back to its first (Halloween's troopers).
+  const end = (iso) => weeklyStoreEnd(new Date(iso)).toISOString();
+  assert.equal(end("2017-10-30T10:00:00Z"), "2017-11-05T00:00:00.000Z");
+  assert.equal(end("2017-11-04T23:59:59Z"), "2017-11-05T00:00:00.000Z");
+  assert.equal(end("2017-11-05T00:00:00Z"), "2017-11-12T00:00:00.000Z");
+  assert.equal(end("2017-12-10T00:00:00Z"), "2017-12-14T00:00:00.000Z");
+  // 2026-10-28 is the cycle's day 0 (30 October), so its first week runs to 3 November 2026.
+  assert.equal(end("2026-10-28T12:00:00Z"), "2026-11-03T00:00:00.000Z");
+  for (let n = 0; n < 90; n++) {
+    const now = new Date(Date.UTC(2026, 0, 1 + n, 12));
+    const ends = weeklyStoreEnd(now);
+    assert.ok(ends > now && ends.getTime() % 86400000 === 0, String(n));
+    const featured = (date) => shopDay(date).featured.map(([templateId]) => templateId).join();
+    assert.notEqual(featured(ends), featured(now), String(n));
+    assert.equal(featured(new Date(ends.getTime() - 1)), featured(now), String(n));
+  }
+
+  const backend = await startBackend();
+  try {
+    const { token } = await userLogin(backend.port, "Weekly18");
+    const now = Date.now();
+    const timeline = (await as("1.8", backend.port, "GET", "/fortnite/api/calendar/v1/timeline", token)).body;
+    const events = timeline.channels["client-events"];
+    const { weeklyStoreEnd: sent } = events.states[0].state;
+    assert.equal(sent, weeklyStoreEnd(new Date(timeline.currentTime)).toISOString());
+    assert.ok(Date.parse(sent) > now);
+    // Asked again by then at the latest, for the next week's end.
+    assert.ok(Date.parse(events.cacheExpire) <= Date.parse(sent));
+    assert.ok(Date.parse(events.cacheExpire) <= Date.parse(timeline.currentTime) + 3600000);
+
+    const cert = (await as("cert", backend.port, "GET", "/fortnite/api/calendar/v1/timeline", token)).body;
+    assert.deepEqual(cert.channels["client-events"].states[0].state, {});
   } finally {
     backend.close();
   }

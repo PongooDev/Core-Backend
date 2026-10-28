@@ -8,9 +8,11 @@ import { athenaCosmetics } from "../gamedata/athena.js";
 // (UFortDirectAcquisitionWidgetBase), whose StorefrontNames are ["BRWeeklyStorefront", "BRDailyStorefront"]: the first
 // storefront's offers become the large tiles (GenerateOfferWidget: LargeTile when the storefront is StorefrontNames[0]),
 // the other's the small ones, two rows of them. Its countdowns: the daily one is the catalog's expiration
-// (GetDailyStoreEndDate 0x2E7C840: the catalog's expiry less the server time); the weekly one comes from the MCP
-// profile, not the catalog (0x2E82B70). 1.7.2 has no Battle Royale store (no FortDirectAcquisition classes), nor does
-// anything before 1.8.
+// (GetDailyStoreEndDate 0x2E7C840: the catalog's expiry less the server time); the weekly one is the event calendar's
+// (GetWeeklyStoreEndDate 0x2E82B70: WeeklyStoreEnd, +0x18 of the client-events channel's FFortClientEventsState
+// {SeasonId, SeasonEnd, WeeklyStoreEnd} that sub_70EEC0 registers, less the server time; sub_70C170), so
+// services/fortnite/calendar.js sends weeklyStoreEnd. Without it the end is zero and the weekly countdown shows 0:00.
+// 1.7.2 has no Battle Royale store (no FortDirectAcquisition classes), nor does anything before 1.8.
 //
 // An offer is a FCatalogOffer whose first item grant is the cosmetic: the tile shows its LargePreviewImage, rarity and
 // name (no displayAssetPath: HasDisplayAsset is false) and its MtxCurrency price in V-Bucks. Offers carry no
@@ -42,6 +44,18 @@ export function shopDay(now = new Date()) {
 // When the shop next changes: the next UTC midnight.
 export function nextRotation(now = new Date()) {
   return new Date(Math.floor(now.getTime() / dayMs) * dayMs + dayMs);
+}
+
+// When the featured (weekly) items next change: the first UTC midnight from now whose recorded day features other items.
+// Epic's featured pair lasted a week (Sunday to Saturday from 5 November); the cycle's first and last weeks are shorter.
+const featuredOf = (day) => JSON.stringify(day.featured.map(([templateId]) => templateId));
+export function weeklyStoreEnd(now = new Date()) {
+  const today = featuredOf(shopDay(now));
+  const midnight = Math.floor(now.getTime() / dayMs) * dayMs;
+  for (let days = 1; days < history.length; days++) {
+    if (featuredOf(shopDay(new Date(midnight + days * dayMs))) !== today) return new Date(midnight + days * dayMs);
+  }
+  return new Date(midnight + history.length * dayMs);
 }
 
 const offerIdOf = (templateId) => `core_br_${templateId.split(":")[1].toLowerCase()}`;
