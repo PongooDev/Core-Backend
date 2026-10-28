@@ -1,3 +1,4 @@
+import { pageId } from "../collectionbook/pages.js";
 import { getQuest } from "../gamedata/quests.js";
 import { fortnitemares, isEventActive } from "./events.js";
 
@@ -28,4 +29,19 @@ export const candy = "AccountResource:eventcurrency_candy";
 // The requesting build's event quests, when the event runs there.
 export function eventQuests() {
   return isEventActive(fortnitemares) ? fortnitemaresQuests.filter((questId) => getQuest(questId)) : [];
+}
+
+// The event's collection book pages, the "Fortnitemares Items" category (CollectionCategoryTable Halloween2017): its
+// heroes (Skull Trooper Jonesy, Marine Corpse Ramirez...) and its survivors (the Monster 'Cosplayer' packs' husks,
+// trolls...), whose Super Rare section gives the Jack-O-Launcher.
+// The client lists a page only once its book profile holds the page item (collectionbook/pages.js; 1.8's
+// UFortCollectionBookPage init sub_4F7260 reads the row named by the item and nothing else), and nothing in 1.8's data
+// grants these: homebaseonboarding's hidden rewards unlock the 32 standard pages only, and no quest, card pack or
+// book reward names a PageSpecial_* page. 🟡 Epic's servers gave them while the event ran; Core gives them to every
+// book profile of a build that runs the event (profiles/setup.js), when the book first loads there.
+export const fortnitemaresPages = ["PageSpecial_Halloween2017_Heroes", "PageSpecial_Halloween2017_Workers"];
+
+// The requesting build's event pages, when the event runs there.
+export function eventBookPages() {
+  return isEventActive(fortnitemares) ? fortnitemaresPages.map(pageId).filter(Boolean) : [];
 }
