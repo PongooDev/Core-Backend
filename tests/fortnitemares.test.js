@@ -232,3 +232,44 @@ test("a won Hexsylvania mission gives its Candy", async () => {
     backend.close();
   }
 });
+
+test("1.8's collection book has the Fortnitemares pages, and their heroes and survivors slot; 1.7.2's book doesn't (#75)", async () => {
+  const backend = await startBackend();
+  try {
+    const route = ({ accountId }, command, profileId) => `/fortnite/api/game/v2/profile/${accountId}/client/${command}?profileId=${profileId}&rvn=-1`;
+    const query = async (changelist, player, profileId) => {
+      const response = await as(changelist, backend.port, "POST", route(player, "QueryProfile", profileId), player.token, {});
+      return response.body.profileChanges[0].profile;
+    };
+    const pages = (profile) => Object.values(profile.items).filter((item) => item.templateId.startsWith("CollectionBookPage:"))
+      .map((item) => item.templateId);
+    const halloween = ["CollectionBookPage:PageSpecial_Halloween2017_Heroes", "CollectionBookPage:PageSpecial_Halloween2017_Workers"];
+
+    const player = await userLogin(backend.port, "MaresBook");
+    assert.deepEqual(pages(await query(builds["1.8"], player, "collection_book_people0")), halloween);
+    assert.deepEqual(pages(await query(builds["1.8"], player, "collection_book_schematics0")), []);
+    assert.deepEqual(profileOf(await mcp(builds["1.8"], backend.port, player, "QueryProfile")).stats.attributes.collection_book.pages,
+      ["PageSpecial_Halloween2017_Heroes", "PageSpecial_Halloween2017_Workers"]);
+    // Loading the book again adds nothing.
+    assert.deepEqual(pages(await query(builds["1.8"], player, "collection_book_people0")), halloween);
+
+    // Skull Trooper Jonesy and a Monster 'Cosplayer' troll go in their pages' slots.
+    editProfile(backend, player.accountId, (profile) => {
+      profile.items.jonesy = { templateId: "Hero:hid_commando_gunheadshothw_vr_t01", attributes: { level: 1, squad_id: "", squad_slot_idx: -1 }, quantity: 1 };
+      profile.items.troll = { templateId: "Worker:worker_halloween_troll_sr_t01", attributes: { level: 1, squad_id: "", squad_slot_idx: -1 }, quantity: 1 };
+    });
+    for (const itemId of ["jonesy", "troll"]) {
+      const slotted = await as(builds["1.8"], backend.port, "POST", route(player, "SlotItemInCollectionBook", "profile0"), player.token, { itemId });
+      assert.equal(slotted.status, 200, itemId);
+    }
+    const book = await query(builds["1.8"], player, "collection_book_people0");
+    assert.equal(book.items.jonesy.templateId, "Hero:hid_commando_gunheadshothw_vr_t01");
+    assert.equal(book.items.troll.templateId, "Worker:worker_halloween_troll_sr_t01");
+
+    // 1.7.2 runs no event: its book gets no event page.
+    const other = await userLogin(backend.port, "MaresBook172");
+    assert.deepEqual(pages(await query(builds["1.7.2"], other, "collection_book_people0")), []);
+  } finally {
+    backend.close();
+  }
+});
