@@ -14,8 +14,9 @@ import { athenaCosmetics } from "../gamedata/athena.js";
 // services/fortnite/calendar.js sends weeklyStoreEnd. Without it the end is zero and the weekly countdown shows 0:00.
 // 1.7.2 has no Battle Royale store (no FortDirectAcquisition classes), nor does anything before 1.8.
 //
-// An offer is a FCatalogOffer whose first item grant is the cosmetic: the tile shows its LargePreviewImage, rarity and
-// name (no displayAssetPath: HasDisplayAsset is false) and its MtxCurrency price in V-Bucks. Offers carry no
+// An offer is a FCatalogOffer whose first item grant is the cosmetic: the tile shows its LargePreviewImage, rarity, name
+// and type (no displayAssetPath: HasDisplayAsset is false; no title, so the name and type are the item definition's:
+// store/catalog.js offerJson) and its MtxCurrency price in V-Bucks. The offer's title here is only for messages. Offers carry no
 // requirements: the client leaves out every offer whose requirements fail (0x3C52200 with the store's flags), where an
 // owned item should show as owned (UFortMcpContext::IsOwned 0x710D00, the offer's grants held in athena or profile0:
 // the tile's OwnedSwitcher; the details screen then shows "owned" and offers no purchase).

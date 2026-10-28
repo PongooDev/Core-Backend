@@ -73,8 +73,17 @@ const onSale = (offer) => !offer.event || (isEventActive(offer.event) && Boolean
 
 const allOffers = () => [...mtxOffers, ...eventOffers.filter(onSale), ...voucherOffers()];
 
+// An item shop offer has no title: 1.8's offer info then takes the tile's name, the type line under it and the details
+// screen's description from the first grant's item definition (UFortDirectAcquisitionOfferInfo GetName 0x2E2A1A0,
+// GetShortDescription 0x2E2DCD0, GetDescription 0x2E22CF0: the offer's own Title, ShortDescription and Description
+// unless Title is empty, then the definition's virtuals +0x230, +0x2A8 and +0x2B8; in UAthenaCharacterItemDefinition's
+// vtable 0x4164888 those are sub_5171C0 (GetDisplayName), sub_68C9C0 (ShortDescription, +0x70; the one
+// UFortItemDefinition::execGetShortDescription 0xB04430 calls) and sub_3CDA4C0 (Description, +0x88)). A cosmetic's
+// ShortDescription is its type ("Outfit", "Harvesting Tool", "Glider"), which AthenaDirectAcquisitionOfferWidget's
+// OfferSet puts in ShortDescriptionText under the name; all three come localized from the game's own text.
 function offerJson(offer, sortPriority) {
-  const { offerId, templateId, title, currencyType, currencySubType, price } = offer;
+  const { offerId, templateId, currencyType, currencySubType, price } = offer;
+  const title = offer.athena ? "" : offer.title;
   return {
     offerId,
     offerType: "StaticPrice",

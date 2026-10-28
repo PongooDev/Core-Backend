@@ -71,6 +71,12 @@ test("1.8's catalog has the day's Battle Royale storefronts, good until the next
     assert.deepEqual(offer.prices.map(({ currencyType, finalPrice }) => [currencyType, finalPrice]), [["MtxCurrency", BRDailyStorefront[0].price]]);
     // No requirements: the client would leave out an offer failing them, where an owned one shows as owned.
     assert.deepEqual(offer.requirements, []);
+    // No title or descriptions: the tile's name, its type line ("Outfit", "Harvesting Tool", "Glider") and the details
+    // screen's description then come from the cosmetic's item definition. The llama store's offers keep their titles.
+    for (const entry of [...front("BRWeeklyStorefront"), ...front("BRDailyStorefront")]) {
+      assert.deepEqual([entry.title, entry.shortDescription, entry.description], ["", "", ""], entry.offerId);
+    }
+    assert.equal(front("CardPackStore").find((entry) => entry.offerId === "core_cardpack_bronze").title, "Upgrade Llama");
 
     const cert = (await as("cert", backend.port, "GET", "/fortnite/api/storefront/v2/catalog", token)).body;
     assert.deepEqual(cert.storefronts.map((storefront) => storefront.name), ["CardPackStore", "CardPackStorePromo"]);
