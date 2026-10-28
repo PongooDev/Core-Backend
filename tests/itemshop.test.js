@@ -88,14 +88,22 @@ test("1.8's catalog has the day's Battle Royale storefronts, good until the next
 test("a featured offer shows its cosmetic's display asset, by object path, in every shop mode (Core-Backend #99)", async () => {
   const da = (name) => `/Game/Catalog/DisplayAssets/${name}.${name}`;
   const art = (offers) => offers.map(({ templateId, displayAssetPath }) => [templateId, displayAssetPath]);
-  // 1.8's Battle Royale display assets, from its paks (Catalog/DisplayAssets with BattleRoyale tile art), each one some
-  // shop cosmetic's; the founders tiles (DA_HappyPickAxe, DA_BoltOnPickaxe) aren't among them.
+  // 1.8's Battle Royale display assets, from its paks (Catalog/DisplayAssets with BattleRoyale tile art), each matched by
+  // the extractor to the cosmetic it shows, by name: the asset name (Glider_Voyager), an outfit's hero (HID_029_...), or the
+  // type and a word of the name (PickaxeHalloween is Reaper's HalloweenScythe, not Batsickle's SickleBatPickaxe). The
+  // founders tiles (DA_HappyPickAxe, DA_BoltOnPickaxe) aren't among them.
   const inOneEight = (fn) => inBuild("3724489", fn);
-  assert.deepEqual(inOneEight(() => athenaDisplayAssets()), ["DA_Featured_GliderPrismatic", "DA_Featured_GliderVoyager",
-    "DA_Featured_PickaxeFlamingo", "DA_Featured_PickaxeHalloween", "DA_Featured_SFemaleHID027", "DA_Featured_SFemaleHalloween",
-    "DA_Featured_SMaleHalloween"].map(da));
+  assert.deepEqual(inOneEight(() => athenaDisplayAssets()), {
+    "AthenaCharacter:cid_027_athena_commando_f": da("DA_Featured_SFemaleHID027"),
+    "AthenaCharacter:cid_029_athena_commando_f_halloween": da("DA_Featured_SFemaleHalloween"),
+    "AthenaCharacter:cid_030_athena_commando_m_halloween": da("DA_Featured_SMaleHalloween"),
+    "AthenaGlider:glider_prismatic": da("DA_Featured_GliderPrismatic"),
+    "AthenaGlider:glider_voyager": da("DA_Featured_GliderVoyager"),
+    "AthenaPickaxe:halloweenscythe": da("DA_Featured_PickaxeHalloween"),
+    "AthenaPickaxe:pickaxe_flamingo": da("DA_Featured_PickaxeFlamingo")
+  });
   const shown = Object.keys(athenaCosmetics()).map((templateId) => inOneEight(() => featuredDisplayAsset(templateId))).filter(Boolean);
-  assert.deepEqual(shown.sort(), inOneEight(() => athenaDisplayAssets()));
+  assert.deepEqual(shown.sort(), Object.values(inOneEight(() => athenaDisplayAssets())).sort());
   assert.equal(inOneEight(() => featuredDisplayAsset("AthenaPickaxe:happypickaxe")), "");
 
   // History: Halloween's troopers show their featured art; Reaper, on sale that day too, is a daily offer and keeps the

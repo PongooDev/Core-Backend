@@ -7,7 +7,7 @@ import { perBuild } from "./read.js";
 // they are read with Cert's data, and they need the season levels and challenges. A later build whose data differs
 // overlays it as usual.
 const data = perBuild((read) => {
-  const { cosmetics = {}, displayAssets = [], quests = {}, levels = [], objectiveStats = {} } = read("athena", {});
+  const { cosmetics = {}, displayAssets = {}, quests = {}, levels = [], objectiveStats = {} } = read("athena", {});
   return {
     cosmetics,
     displayAssets,
@@ -23,8 +23,8 @@ const data = perBuild((read) => {
 // templateId -> {class, name, rarity}.
 export const athenaCosmetics = () => data().cosmetics;
 
-// The item shop's display assets (FortMtxOfferData with Battle Royale tile art), by object path:
-// "/Game/Catalog/DisplayAssets/DA_Featured_GliderVoyager.DA_Featured_GliderVoyager".
+// The item shop's display assets (FortMtxOfferData with Battle Royale tile art) by the cosmetic the extractor matched
+// them to, as object paths: "AthenaGlider:glider_voyager" -> "/Game/Catalog/DisplayAssets/DA_Featured_GliderVoyager.DA_Featured_GliderVoyager".
 export const athenaDisplayAssets = () => data().displayAssets;
 
 export const getAthenaQuest = (questId) => data().quests[String(questId).toLowerCase()];

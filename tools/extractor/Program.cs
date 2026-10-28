@@ -908,6 +908,7 @@ File.WriteAllText(Path.Combine(output, "world.json"), JsonSerializer.Serialize(w
 var athenaCosmetics = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var athenaQuests = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var athenaLevels = new List<object>();
+var cosmeticKeys = new List<(string TemplateId, string Class, string AssetName, string? Hero)>();
 foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" && f.Path.StartsWith("FortniteGame/Content/Athena/Items/", StringComparison.OrdinalIgnoreCase)))
 {
     if (file.Path.Contains("/00_TestAssets/", StringComparison.OrdinalIgnoreCase)) continue;
@@ -926,17 +927,33 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         continue;
     }
     if (!ItemClasses.AthenaCosmetics.Contains(export.ExportType)) continue;
-    athenaCosmetics[assetTypes.TemplateId($"{gamePath}.{export.Name}", export.ExportType, false)!] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+    var cosmeticId = assetTypes.TemplateId($"{gamePath}.{export.Name}", export.ExportType, false)!;
+    athenaCosmetics[cosmeticId] = new SortedDictionary<string, object>(StringComparer.Ordinal)
     {
         ["class"] = export.ExportType,
         ["name"] = properties["DisplayName"]?["LocalizedString"]?.GetValue<string>() ?? export.Name,
         ["rarity"] = Enum(properties["Rarity"]) ?? "Ordinary"
     };
+    // An outfit's hero (HID_027_Athena_Commando_F): its featured tile art is named after it.
+    var hero = properties["HeroDefinition"]?["ObjectPath"]?.GetValue<string>()?.Split('/').Last().Split('.')[0];
+    cosmeticKeys.Add((cosmeticId, export.ExportType, export.Name, hero));
 }
 // The item shop's display assets: Catalog/DisplayAssets' FortMtxOfferData whose TileImage is Battle Royale art
-// (UI/Foundation/Textures/BattleRoyale; the others are Save the World's founders and V-Bucks tiles), by object path, as
-// an offer's displayAssetPath names one (src/store/itemshop.js).
-var athenaDisplayAssets = new SortedSet<string>(StringComparer.Ordinal);
+// (UI/Foundation/Textures/BattleRoyale; the others are Save the World's founders and V-Bucks tiles), by the cosmetic they
+// show, as the object path an offer's displayAssetPath names (src/store/itemshop.js). Nothing in either asset points to
+// the other, so a display asset is matched by its names, DA_Featured_<key> and its tile T-Featured-<key> or
+// T-AthenaSoldiers-<key>, compared without case or separators, the first rule with exactly one cosmetic winning:
+// - the key is the cosmetic's asset name (DA_Featured_GliderVoyager is Glider_Voyager; later builds' DA_Featured_CID_...);
+// - the key is an outfit's hero (T-AthenaSoldiers-HID-029-Athena-Commando-F-Halloween is CID_029's HID_029_...);
+// - the key is the cosmetic's type and a word of its asset name (PickaxeHalloween is HalloweenScythe, Reaper, the one
+//   pickaxe with "halloween" in it; Batsickle is SickleBatPickaxe).
+// A display asset no rule matches, or two that match one cosmetic, is left out and listed, for a new rule.
+static string Key(string name) => new string(name.Where(char.IsLetterOrDigit).ToArray()).ToLowerInvariant();
+static string WithoutPrefix(string name, params string[] prefixes) =>
+    prefixes.FirstOrDefault(p => name.StartsWith(p, StringComparison.OrdinalIgnoreCase)) is { } prefix ? name[prefix.Length..] : name;
+var athenaDisplayAssets = new SortedDictionary<string, string>(StringComparer.Ordinal);
+var unmatchedDisplayAssets = new List<string>();
+var displayAssetOwners = new Dictionary<string, string>(StringComparer.Ordinal);
 foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" && f.Path.StartsWith("FortniteGame/Content/Catalog/DisplayAssets/", StringComparison.OrdinalIgnoreCase)))
 {
     var gamePath = "/Game/" + file.PathWithoutExtension["FortniteGame/Content/".Length..];
@@ -946,7 +963,36 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     if (export is null) continue;
     var tile = JsonNode.Parse(JsonConvert.SerializeObject(export))!["Properties"]?["TileImage"]?["ResourceObject"]?["ObjectPath"]?.GetValue<string>();
     if (tile?.StartsWith("FortniteGame/Content/UI/Foundation/Textures/BattleRoyale/", StringComparison.OrdinalIgnoreCase) != true) continue;
-    athenaDisplayAssets.Add($"{gamePath}.{export.Name}");
+    var keys = new[]
+    {
+        Key(WithoutPrefix(export.Name, "DA_Featured_", "DA_")),
+        Key(WithoutPrefix(tile.Split('/').Last().Split('.')[0], "T-Featured-", "T-AthenaSoldiers-", "T-"))
+    }.Distinct().ToArray();
+    // A cosmetic class's type word: AthenaPickaxeItemDefinition's "pickaxe", AthenaCharacterItemDefinition's "character".
+    static string TypeWord(string cosmeticClass) => Key(cosmeticClass.Replace("ItemDefinition", "").Replace("Athena", ""));
+    Func<(string TemplateId, string Class, string AssetName, string? Hero), bool>[] rules =
+    [
+        c => keys.Contains(Key(c.AssetName)),
+        c => c.Hero is not null && keys.Contains(Key(c.Hero)),
+        c => keys.Any(k => k.StartsWith(TypeWord(c.Class)) && k.Length > TypeWord(c.Class).Length
+            && Key(c.AssetName).Contains(k[TypeWord(c.Class).Length..])),
+    ];
+    var match = rules.Select(rule => cosmeticKeys.Where(rule).ToList()).FirstOrDefault(found => found.Count == 1)?[0];
+    var objectPath = $"{gamePath}.{export.Name}";
+    if (match is null)
+    {
+        unmatchedDisplayAssets.Add(export.Name);
+    }
+    else if (displayAssetOwners.TryGetValue(match.Value.TemplateId, out var other))
+    {
+        athenaDisplayAssets.Remove(match.Value.TemplateId);
+        unmatchedDisplayAssets.Add($"{export.Name} and {other} (both {match.Value.TemplateId})");
+    }
+    else
+    {
+        displayAssetOwners[match.Value.TemplateId] = export.Name;
+        athenaDisplayAssets[match.Value.TemplateId] = objectPath;
+    }
 }
 if (provider.TryLoadPackage("FortniteGame/Content/Balance/AthenaGameData.uasset", out var athenaGameData))
 {
@@ -979,6 +1025,7 @@ File.WriteAllText(Path.Combine(output, "athena.json"), JsonSerializer.Serialize(
     ["objectiveStats"] = athenaStats
 }, options) + "\n");
 Console.WriteLine($"Battle Royale: {athenaCosmetics.Count} cosmetics, {athenaDisplayAssets.Count} display assets, {athenaQuests.Count} quests, {athenaLevels.Count} season levels");
+if (unmatchedDisplayAssets.Count > 0) Console.WriteLine($"Display assets matched to no one cosmetic: {string.Join(", ", unmatchedDisplayAssets)}");
 Console.WriteLine($"{zoneThemes.Count} zone themes, {missionGenerators.Count} mission generators, {difficulties.Count} mission difficulties");
 Console.WriteLine($"{characters.Count} characters, {cardPacks.Count} card packs, {nodes.Count} skill tree nodes, {squads.Count} squads, {objectiveStats.Count} objective stats");
 Console.WriteLine($"{quests.Count} quests, {items.Count} items and {dailyRewards.Count} daily reward schedules from {version["BranchName"]}-CL-{version["Changelist"]} into {output}");

@@ -228,27 +228,12 @@ export function weeklyStoreEnd(now = new Date(), overrideConfig = null) {
 
 const offerIdOf = (templateId) => `core_br_${templateId.split(":")[1].toLowerCase()}`;
 
-// The featured items' shop art. 1.8's display assets with Battle Royale tile art (gamedata/athena.json displayAssets,
-// tools/extractor) are DA_Featured_<name>, the cosmetic they show only in that name and in their textures
-// (UI/Foundation/Textures/BattleRoyale/FeaturedItems): an outfit's is T-AthenaSoldiers-<its HeroDefinition>; the others'
-// were matched by their art (T-Featured-PickaxeHalloween is Reaper's scythe, not Batsickle). Nothing names one for
-// any other cosmetic: their tiles keep the locker icon. Lucky's and Close Shave's DA_HappyPickAxe and DA_BoltOnPickaxe
-// are Save the World's founders tiles (T-Founders-Tile-Standard), not their art. Only the featured (weekly) storefront's
-// offers carry one, as the assets' name says; a daily tile shows the locker icon.
-const featuredDisplayAssets = {
-  "AthenaCharacter:cid_027_athena_commando_f": "DA_Featured_SFemaleHID027",
-  "AthenaCharacter:cid_029_athena_commando_f_halloween": "DA_Featured_SFemaleHalloween",
-  "AthenaCharacter:cid_030_athena_commando_m_halloween": "DA_Featured_SMaleHalloween",
-  "AthenaGlider:glider_prismatic": "DA_Featured_GliderPrismatic",
-  "AthenaGlider:glider_voyager": "DA_Featured_GliderVoyager",
-  "AthenaPickaxe:halloweenscythe": "DA_Featured_PickaxeHalloween",
-  "AthenaPickaxe:pickaxe_flamingo": "DA_Featured_PickaxeFlamingo"
-};
-
-// The display asset a featured offer of the cosmetic shows, by object path, if the requesting build has it; else "".
+// The featured items' shop art: the display asset (FortMtxOfferData with Battle Royale tile art) the extractor matched to
+// the cosmetic by its names (gamedata/athena.json displayAssets, tools/extractor), by object path, so each build's are
+// found without a list here. A cosmetic with none keeps the locker icon. Only the featured (weekly) storefront's offers
+// carry one, as the assets' names (DA_Featured_...) say; a daily tile shows the locker icon.
 export function featuredDisplayAsset(templateId) {
-  const name = featuredDisplayAssets[templateId];
-  return (name && athenaDisplayAssets().find((assetPath) => assetPath.endsWith(`/${name}.${name}`))) || "";
+  return athenaDisplayAssets()[templateId] ?? "";
 }
 
 // The day's offers by storefront, those the requesting build has the cosmetic for.
