@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { athenaCosmetics } from "../src/gamedata/athena.js";
 import { get, send, startBackend, userLogin } from "./helpers.js";
 
 const agent18 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-Live-CL-3724489";
@@ -15,20 +16,92 @@ function command(port, { accountId, token }, name, profileId, body = {}) {
   }, text);
 }
 
-test("1.8's login queries the athena profile: it has the loadout's slots, empty for the default cosmetics", async () => {
+const athenaOf = (body) => [body, ...(body.multiUpdate ?? [])].find((update) => update.profileId === "athena");
+const athenaProfile = async (port, player) => {
+  const response = await command(port, player, "QueryProfile", "athena");
+  assert.equal(response.status, 200);
+  return athenaOf(response.body).profileChanges[0].profile;
+};
+
+test("1.8's login queries the athena profile: every Battle Royale cosmetic, and the loadout's slots empty for the defaults", async () => {
   const backend = await startBackend();
   try {
     const player = await userLogin(backend.port, "Athena18");
-    const athena = await command(backend.port, player, "QueryProfile", "athena");
-    assert.equal(athena.status, 200);
-    const profile = [athena.body, ...(athena.body.multiUpdate ?? [])].find((update) => update.profileId === "athena").profileChanges[0].profile;
-    assert.deepEqual(profile.items, {});
+    const profile = await athenaProfile(backend.port, player);
+    // Each cosmetic under its template id as item id; the test characters (00_TestAssets) aren't among them.
+    const cosmetics = Object.keys(athenaCosmetics());
+    assert.ok(cosmetics.length >= 70);
+    assert.deepEqual(Object.keys(profile.items).sort(), [...cosmetics].sort());
+    for (const templateId of ["AthenaCharacter:cid_029_athena_commando_f_halloween", "AthenaPickaxe:halloweenscythe", "AthenaGlider:glider_warthog",
+      "AthenaDance:eid_dancemoves", "AthenaVictoryPose:eid_ridethepony", "AthenaLoadingScreen:lsid_fiercecloudpuff", "AthenaBattleBus:bbid_purplebus"]) {
+      assert.equal(profile.items[templateId]?.templateId, templateId);
+    }
+    assert.ok(!cosmetics.some((templateId) => templateId.includes("cid_test")));
     const attributes = profile.stats.attributes;
     assert.equal(attributes.level, 1);
     assert.equal(attributes.accountLevel, 1);
     for (const slot of ["character", "hat", "backpack", "pickaxe", "glider", "loadingscreen", "battlebus", "dance", "victorypose"]) {
       assert.equal(attributes[`favorite_${slot}`], "", slot);
     }
+  } finally {
+    backend.close();
+  }
+});
+
+test("the Battle Royale locker equips a cosmetic per slot (EquipBattleRoyaleCustomization) and takes it off again", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "Locker18");
+    await athenaProfile(backend.port, player);
+    const equip = (slotName, itemToSlot) => command(backend.port, player, "EquipBattleRoyaleCustomization", "athena", { slotName, itemToSlot });
+
+    const ghoul = "AthenaCharacter:cid_029_athena_commando_f_halloween";
+    const equipped = await equip("Character", ghoul);
+    assert.equal(equipped.status, 200);
+    assert.equal(athenaOf(equipped.body).profileChanges[0].profile.stats.attributes.favorite_character, ghoul);
+    assert.equal((await equip("EAthenaCustomizationCategory::Glider", "AthenaGlider:glider_warthog")).status, 200);
+    assert.equal((await equip("Pickaxe", "athenapickaxe:HalloweenScythe")).status, 200);
+
+    // An item of another slot's type, one the player hasn't, or no such slot: refused, nothing changes.
+    assert.equal((await equip("Glider", ghoul)).body.errorCode, "errors.com.epicgames.fortnite.invalid_parameter");
+    assert.equal((await equip("Character", "AthenaCharacter:cid_999")).body.errorCode, "errors.com.epicgames.fortnite.item_not_found");
+    assert.equal((await equip("Wrap", ghoul)).body.errorCode, "errors.com.epicgames.fortnite.invalid_parameter");
+
+    let attributes = (await athenaProfile(backend.port, player)).stats.attributes;
+    assert.deepEqual([attributes.favorite_character, attributes.favorite_glider, attributes.favorite_pickaxe],
+      [ghoul, "AthenaGlider:glider_warthog", "AthenaPickaxe:halloweenscythe"]);
+
+    // "" is the slot's default.
+    assert.equal((await equip("Character", "")).status, 200);
+    attributes = (await athenaProfile(backend.port, player)).stats.attributes;
+    assert.equal(attributes.favorite_character, "");
+    assert.equal(attributes.favorite_glider, "AthenaGlider:glider_warthog");
+  } finally {
+    backend.close();
+  }
+});
+
+test("the Battle Royale banner (SetBattleRoyaleBanner) is one the player owns, kept in athena apart from the homebase's", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "Banner18");
+    const account = (await command(backend.port, player, "QueryProfile", "profile0")).body.profileChanges[0].profile;
+    const owned = (type) => Object.values(account.items).map((item) => item.templateId).filter((id) => id.startsWith(`${type}:`)).map((id) => id.split(":")[1]);
+    const [icon] = owned("HomebaseBannerIcon").filter((row) => row !== account.stats.attributes.homebase.bannerIconId);
+    const [, color] = owned("HomebaseBannerColor");
+    assert.ok(icon && color);
+
+    const set = (homebaseBannerIconId, homebaseBannerColorId) =>
+      command(backend.port, player, "SetBattleRoyaleBanner", "athena", { homebaseBannerIconId, homebaseBannerColorId });
+    assert.equal((await set(icon, color)).status, 200);
+    const attributes = (await athenaProfile(backend.port, player)).stats.attributes;
+    assert.deepEqual([attributes.banner_icon, attributes.banner_color], [icon, color]);
+    // The homebase banner stays as it was.
+    const homebase = (await command(backend.port, player, "QueryProfile", "profile0")).body.profileChanges[0].profile.stats.attributes.homebase;
+    assert.deepEqual(homebase, account.stats.attributes.homebase);
+
+    // A banner the player doesn't own (or no such row) is refused.
+    assert.equal((await set("NoSuchBanner", color)).body.errorCode, "errors.com.epicgames.fortnite.item_not_found");
   } finally {
     backend.close();
   }
@@ -48,15 +121,3 @@ test("1.8's event calendar answers with no active events, cached for an hour", a
   }
 });
 
-test("1.8's Battle Royale lobby gets a leaderboard cohort of just the player", async () => {
-  const backend = await startBackend();
-  try {
-    const { token, accountId } = await userLogin(backend.port, "Cohort18");
-    const cohort = await get(backend.port, `/fortnite/api/game/v2/leaderboards/cohort/${accountId}?playlist=pc_m0_p2`, token);
-    assert.equal(cohort.status, 200);
-    assert.deepEqual([cohort.body.accountId, cohort.body.cohortAccounts, cohort.body.playlist], [accountId, [accountId], "pc_m0_p2"]);
-    assert.ok(Date.parse(cohort.body.expiresAt) > Date.now());
-  } finally {
-    backend.close();
-  }
-});

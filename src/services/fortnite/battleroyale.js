@@ -3,6 +3,9 @@ import { requireAuth } from "../../accounts/auth.js";
 import { isDedicatedServerToken } from "../../accounts/clients.js";
 import { log } from "../../log.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
+import { addSeasonXp, matchXp, recordMatchProgress } from "../../profiles/athena.js";
+import { openSession } from "../../profiles/session.js";
+import { notifyProfiles } from "../mcp/profile.js";
 
 // What a Battle Royale gameserver (1.7.2) tells the backend about its match's players, which Battle Royale's stats are
 // made from (src/stats/store.js, the stats screen: services/fortnite/stats.js).
@@ -19,10 +22,13 @@ import { sessionMembers } from "../../matchmaking/sessions.js";
 //   request 0x72E130): a win (br_placetop1) each.
 // - recordresults: Core's (CoreV2's server; the 1.7.2 server reports nothing else), POST {playlistId, results:
 //   [{accountId, place, kills, secondsAlive}]} when a team is out of the match or has won: its players' match, place,
-//   kills and time alive.
+//   kills and time alive. A player with a Battle Royale profile (1.8's athena) also gets the match's season XP and its
+//   placement and elimination challenge progress (profiles/athena.js), which reach their client as profile
+//   notifications.
 // The gameserver's own login records the players on a session it hosts, the DedicatedServer client (CoreV2) anyone's;
 // other players are skipped, so a player's own token can't award itself wins. Both records answer 204 whatever they kept.
-export function battleRoyaleRoutes({ tokens, accounts, sessions, stats }) {
+export function battleRoyaleRoutes(context) {
+  const { tokens, accounts, sessions, stats, profiles } = context;
   const router = express.Router();
   const auth = requireAuth(tokens);
 
@@ -65,6 +71,12 @@ export function battleRoyaleRoutes({ tokens, accounts, sessions, stats }) {
       }
       stats.recordResult(result.accountId, playlistId, { place, kills, secondsAlive });
       log("Battle Royale", `${result.accountId} placed ${place} in playlist ${playlistId} with ${kills} kills, ${secondsAlive} s alive`);
+      const session = openSession(profiles, result.accountId);
+      if (!session.hasProfile("athena")) continue;
+      recordMatchProgress(session, playlistId, { place, kills });
+      addSeasonXp(session, matchXp(playlistId, { place, kills, secondsAlive }));
+      session.commit();
+      notifyProfiles(context, session);
     }
     res.status(204).end();
   });

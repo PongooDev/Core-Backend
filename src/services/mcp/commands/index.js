@@ -6,6 +6,7 @@ import { claimLoginReward } from "./ClaimLoginReward.js";
 import { claimMissionAlertRewards } from "./ClaimMissionAlertRewards.js";
 import { claimQuestReward } from "./ClaimQuestReward.js";
 import { createOrUpgradeOutpostItem } from "./CreateOrUpgradeOutpostItem.js";
+import { equipBattleRoyaleCustomization } from "./EquipBattleRoyaleCustomization.js";
 import { clientQuestLogin } from "./ClientQuestLogin.js";
 import { claimCollectionBookPageRewards, claimCollectionBookRewards, convertSlottedItem, slotItemInCollectionBook, upgradeSlottedItem } from "./CollectionBook.js";
 import { fortRerollDailyQuest } from "./FortRerollDailyQuest.js";
@@ -22,6 +23,7 @@ import { purchaseHomebaseNode } from "./PurchaseHomebaseNode.js";
 import { queryProfile } from "./QueryProfile.js";
 import { abandonExpeditionCommand, collectExpeditionCommand, refreshExpeditions, startExpeditionCommand } from "./RefreshExpeditions.js";
 import { requestEventFlags } from "./RequestEventFlags.js";
+import { setBattleRoyaleBanner } from "./SetBattleRoyaleBanner.js";
 import { setDefaultHeroSquad } from "./SetDefaultHeroSquad.js";
 import { setGameplayStats } from "./SetGameplayStats.js";
 import { setHomebaseBanner } from "./SetHomebaseBanner.js";
@@ -52,6 +54,7 @@ export const clientCommands = {
   ConvertItem: convertItemCommand,
   ConvertSlottedItem: convertSlottedItem,
   CreateOrUpgradeOutpostItem: createOrUpgradeOutpostItem,
+  EquipBattleRoyaleCustomization: equipBattleRoyaleCustomization,
   FortRerollDailyQuest: fortRerollDailyQuest,
   GetMcpTimeForLogin: getMcpTimeForLogin,
   IncrementNamedCounterStat: incrementNamedCounterStat,
@@ -67,6 +70,7 @@ export const clientCommands = {
   RecycleItemBatch: recycleItemBatchCommand,
   RefreshExpeditions: refreshExpeditions,
   RequestEventFlags: requestEventFlags,
+  SetBattleRoyaleBanner: setBattleRoyaleBanner,
   SetDefaultHeroSquad: setDefaultHeroSquad,
   SetGameplayStats: setGameplayStats,
   SetHeroModeLoadout: setHeroModeLoadout,
