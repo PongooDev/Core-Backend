@@ -68,13 +68,13 @@ const cosmeticName = (templateId) => fromBuilds(() => named(Object.entries(athen
   .find(([id]) => id.toLowerCase() === templateId.toLowerCase())?.[1].name));
 
 // A schematic has no DisplayName of its own (1.8's only ones, the Jack-O-Launcher's, are its weapon's): the game shows
-// the name of what it crafts, its Result. In 1.8's paks 2,131 of the 2,135 schematics craft the world item named like
-// them (SID_X → WID_X or TID_X, Ammo_X → AmmoDataX); the others (SID_Floor_Track's gadget, an outpost and a Founders
-// tier mismatch, which crafts a same-named weapon) keep a name made from theirs.
+// the name of what it crafts, its Result. In 1.8's paks all but 2 of the 2,135 schematics craft the item named like
+// them (SID_X → WID_X or TID_X, Ammo_X → AmmoDataX, SID_AmmoDataRockets, Gadget_X); SID_OB_Assault_Auto_T03 (a common
+// assault rifle) and SID_Floor_Track (a gadget) keep a name made from theirs.
 function craftedName(name) {
-  if (name.startsWith("ammo_")) return gameName(`Ammo:ammodata${name.slice("ammo_".length)}`);
   const rest = name.replace(/^(sid|wid|tid)_/, "");
-  return gameName(`Weapon:wid_${rest}`) ?? gameName(`Trap:tid_${rest}`);
+  return [`Weapon:wid_${rest}`, `Trap:tid_${rest}`, `Ammo:ammodata${rest.replace(/^ammo_/, "")}`, `Ammo:${rest}`, `Gadget:${rest}`]
+    .map(gameName).find(Boolean);
 }
 
 // One description per template: an account view describes every item, and a big profile holds thousands of copies.
