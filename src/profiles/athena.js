@@ -60,14 +60,21 @@ const typeOf = (templateId) => templateId.split(":")[0].toLowerCase();
 const starters = ["AthenaGlider:defaultglider", "AthenaPickaxe:defaultpickaxe", "AthenaDance:eid_dancemoves",
   "AthenaLoadingScreen:lsid_defaultbg", "AthenaBattleBus:bbid_defaultbus", "AthenaGlider:founderglider"];
 
-// AthenaGameData's RandomCharacters, CID_001-008 (the "Recruit" outfits): an empty character slot plays one of them at
-// random, and they're never locker items one can pick (Core-Backend #77). A locker that held them loses them, and a
-// character slot holding one goes back to "" (random).
+// Cosmetics in the game data that are never locker items:
+// - AthenaGameData's RandomCharacters, CID_001-008 (the "Recruit" outfits): an empty character slot plays one of them at
+//   random, and they're never items one can pick (Core-Backend #77). A character slot holding one goes back to "".
+// - Duo_Umbrella ("Duo Victory Umbrella.") and Squad_Umbrella ("Squad Victory Umbrella."), Core-Backend #84: Epic never
+//   gave them, every win in every mode gave The Umbrella (Solo_Umbrella, below), and later builds' paks dropped both
+//   assets (the report; 1.8 is the last build Core has). 1.8's still have their descriptions unlocalized (no text
+//   namespace, where Solo_Umbrella's has its package's). A glider slot holding one goes back to the default glider.
+// A locker that holds one loses it; nothing gives one.
 const randomCharacters = [1, 2, 3, 4, 5, 6, 7, 8].map((n) => `AthenaCharacter:cid_00${n}_athena_commando_${n <= 4 ? "f" : "m"}_default`);
-const isRandomCharacter = (templateId) => randomCharacters.some((id) => id.toLowerCase() === String(templateId).toLowerCase());
-const heldRandomCharacters = (profile) => Object.entries(profile.items)
-  .filter(([, item]) => isRandomCharacter(item.templateId)).map(([itemId]) => itemId);
-const lockerCosmetics = () => Object.keys(athenaCosmetics()).filter((templateId) => !isRandomCharacter(templateId));
+const unusedUmbrellas = ["AthenaGlider:duo_umbrella", "AthenaGlider:squad_umbrella"];
+const notLockerItems = [...randomCharacters, ...unusedUmbrellas];
+const isLockerItem = (templateId) => !notLockerItems.some((id) => id.toLowerCase() === String(templateId).toLowerCase());
+const heldNonLockerItems = (profile) => Object.entries(profile.items)
+  .filter(([, item]) => !isLockerItem(item.templateId)).map(([itemId]) => itemId);
+const lockerCosmetics = () => Object.keys(athenaCosmetics()).filter(isLockerItem);
 
 // The build's template id for one of its cosmetics, as its game data spells it; undefined if it has none.
 function cosmeticId(templateId) {
@@ -79,23 +86,21 @@ const starterIds = () => starters.map(cosmeticId).filter(Boolean);
 const sameId = (a, b) => a.toLowerCase() === b.toLowerCase();
 const migrated = (profile, name) => (profile.coreMigrations ?? []).includes(name);
 
-// The victory umbrellas: a win in a playlist gives its umbrella (Solo_Umbrella "The Umbrella", "The fabled victory
-// umbrella."; Duo_Umbrella "Duo Victory Umbrella."; Squad_Umbrella) and the Founder's Umbrella ("Founder's exclusive!",
-// 1.7.2's founder_umbrella winner type; every Core account is a founder). 1.8 has no winners question (none of 1.7.2's
-// battleroyale/winners or recordwin strings are left): its umbrella is a glider item the locker equips. A playlist that
-// is none of the three gives The Umbrella (🟡).
-const umbrellas = { 2: "AthenaGlider:solo_umbrella", 10: "AthenaGlider:duo_umbrella", 9: "AthenaGlider:squad_umbrella" };
-const founderUmbrella = "AthenaGlider:founderumbrella";
-const victoryUmbrellas = (playlistId) => [umbrellas[playlistId] ?? umbrellas[2], founderUmbrella];
+// The victory umbrellas: a win in any mode (solo, duo, squad or another playlist) gives The Umbrella (Solo_Umbrella,
+// "The fabled victory umbrella."; Core-Backend #84) and the Founder's Umbrella ("Founder's exclusive!", 1.7.2's
+// founder_umbrella winner type; every Core account is a founder). 1.7.2 gives every winner the same "umbrella" too
+// (services/fortnite/battleroyale.js). 1.8 has no winners question (none of 1.7.2's battleroyale/winners or recordwin
+// strings are left): its umbrella is a glider item the locker equips.
+const victoryUmbrellas = ["AthenaGlider:solo_umbrella", "AthenaGlider:founderumbrella"];
 
-// The cosmetics the player has earned: the chase rewards of the season levels reached and the umbrellas of the
-// playlists with a recorded win (settings.wonPlaylists, the stats: 1.7.2's recordwin; 1.8's own wins give theirs when
-// the gameserver reports them, services/fortnite/battleroyale.js).
+// The cosmetics the player has earned: the chase rewards of the season levels reached and, with a recorded win in any
+// playlist (settings.wonPlaylists, the stats: 1.7.2's recordwin; 1.8's own wins give theirs when the gameserver reports
+// them, services/fortnite/battleroyale.js), the victory umbrellas.
 function earnedCosmetics(profile, settings) {
   const level = profile.stats.attributes.level ?? 1;
   const rewards = seasonLevels().filter((entry) => entry.level <= level && entry.chaseReward).map((entry) => entry.chaseReward);
   const won = settings.wonPlaylists?.(profile.accountId) ?? [];
-  return [...new Set([...rewards, ...won.flatMap(victoryUmbrellas)].map(cosmeticId).filter(Boolean))];
+  return [...new Set([...rewards, ...(won.length ? victoryUmbrellas : [])].map(cosmeticId).filter(Boolean))];
 }
 
 // profile.coreBlanketCosmetics (Core's, never sent to the client) lists what giveAllCosmetics put in the locker that the
@@ -110,7 +115,7 @@ export function athenaNeedsSetUp(profile, settings = {}) {
   return !migrated(profile, "athenaLocker") || missing(profile, starterIds()).length > 0
     || missing(profile, earnedCosmetics(profile, settings)).length > 0
     || (settings.giveAllCosmetics ? missing(profile, lockerCosmetics()).length > 0 : blanket(profile).length > 0)
-    || emptyDefaultSlots(profile).length > 0 || heldRandomCharacters(profile).length > 0;
+    || emptyDefaultSlots(profile).length > 0 || heldNonLockerItems(profile).length > 0;
 }
 
 function addCosmetic(tracker, templateId, seen) {
@@ -119,10 +124,10 @@ function addCosmetic(tracker, templateId, seen) {
 
 // A cosmetic the player now owns for good (bought or earned): added if the locker lacks it, and no longer the blanket
 // grant's if that gave it. Returns the grant ({profileId, itemId, templateId, quantity}), or null when the player
-// already had it or the build has no such cosmetic.
+// already had it or the build has no such locker cosmetic.
 export function grantCosmetic(session, templateId) {
   const id = cosmeticId(templateId);
-  if (!id) return null;
+  if (!id || !isLockerItem(id)) return null;
   const tracker = session.profile("athena");
   const { profile } = tracker;
   if (blanket(profile).some((held) => sameId(held, id))) profile.coreBlanketCosmetics = blanket(profile).filter((held) => !sameId(held, id));
@@ -134,7 +139,8 @@ export function grantCosmetic(session, templateId) {
 
 export const ownsCosmetic = (session, templateId) => Boolean(findItem(session.profile("athena").profile, templateId));
 
-// A slot holding an item that leaves the locker goes back to its default (the default glider and pickaxe, "" elsewhere).
+// A slot holding an item that leaves the locker goes back to its default (the default glider and pickaxe, "" elsewhere:
+// slotDefaults).
 function removeCosmetic(tracker, itemId) {
   tracker.removeItem(itemId);
   for (const [slot, [, stat]] of Object.entries(slots)) {
@@ -154,7 +160,7 @@ export function setUpAthena(session) {
   }
   for (const templateId of missing(profile, starterIds())) addCosmetic(tracker, templateId, true);
   for (const templateId of earnedCosmetics(profile, settings)) grantCosmetic(session, templateId);
-  for (const itemId of heldRandomCharacters(profile)) removeCosmetic(tracker, itemId);
+  for (const itemId of heldNonLockerItems(profile)) removeCosmetic(tracker, itemId);
   if (settings.giveAllCosmetics) {
     const given = missing(profile, lockerCosmetics());
     for (const templateId of given) addCosmetic(tracker, templateId, true);
@@ -172,8 +178,8 @@ export function setUpAthena(session) {
   }
 }
 
-// A win in a playlist (1.8's, reported by the gameserver): its victory umbrellas the player lacks.
-export const awardVictory = (session, playlistId) => victoryUmbrellas(playlistId).map((templateId) => grantCosmetic(session, templateId)).filter(Boolean);
+// A win in any playlist (1.8's, reported by the gameserver): the victory umbrellas the player lacks.
+export const awardVictory = (session) => victoryUmbrellas.map((templateId) => grantCosmetic(session, templateId)).filter(Boolean);
 
 // EquipBattleRoyaleCustomization {slotName, itemToSlot}: an item of the slot's type, or "" for its default.
 export function equipCustomization(session, slotName, itemToSlot) {

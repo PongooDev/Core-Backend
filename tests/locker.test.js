@@ -27,7 +27,8 @@ function command(port, { accountId, token }, name, profileId, body = {}) {
 const updateOf = (body, profileId) => [body, ...(body.multiUpdate ?? [])].find((update) => update.profileId === profileId);
 const athena = async (port, player) => updateOf((await command(port, player, "QueryProfile", "athena")).body, "athena").profileChanges[0].profile;
 
-test("a win gives 1.8 players its playlist's victory umbrella and the Founder's Umbrella, and only a win does", async () => {
+// Core-Backend #84: a win in any mode gives The Umbrella (Solo_Umbrella), never the Duo or Squad Umbrella.
+test("a win in any playlist gives 1.8 players The Umbrella and the Founder's Umbrella, and only a win does", async () => {
   const backend = await startBackend();
   try {
     const winner = await userLogin(backend.port, "Winner18");
@@ -41,16 +42,19 @@ test("a win gives 1.8 players its playlist's victory umbrella and the Founder's 
       { accountId: winner.accountId, place: 1, kills: 3, secondsAlive: 900 },
       { accountId: second.accountId, place: 2, kills: 0, secondsAlive: 800 }] });
     const items = (await athena(backend.port, winner)).items;
-    assert.ok(items["AthenaGlider:squad_umbrella"] && items["AthenaGlider:founderumbrella"]);
-    assert.ok(!items["AthenaGlider:solo_umbrella"] && !items["AthenaGlider:duo_umbrella"]);
-    assert.ok(!(await athena(backend.port, second)).items["AthenaGlider:squad_umbrella"]);
+    assert.ok(items["AthenaGlider:solo_umbrella"] && items["AthenaGlider:founderumbrella"]);
+    assert.ok(!items["AthenaGlider:squad_umbrella"] && !items["AthenaGlider:duo_umbrella"]);
+    assert.ok(!(await athena(backend.port, second)).items["AthenaGlider:solo_umbrella"]);
     assert.equal((await command(backend.port, winner, "EquipBattleRoyaleCustomization", "athena",
-      { slotName: "Glider", itemToSlot: "AthenaGlider:squad_umbrella" })).status, 200);
+      { slotName: "Glider", itemToSlot: "AthenaGlider:solo_umbrella" })).status, 200);
 
-    // A recorded win from before (1.7.2's recordwin, in the stats) gives its umbrella when the athena profile next loads.
+    // A recorded win from before (1.7.2's recordwin, in the stats), in duos too, gives The Umbrella when the athena
+    // profile next loads.
     const veteran = await userLogin(backend.port, "Veteran172");
-    await post(backend.port, "/fortnite/api/game/v2/battleroyale/recordwin", dedicated, { playlistId: 2, accountIds: [veteran.accountId] });
-    assert.ok((await athena(backend.port, veteran)).items["AthenaGlider:solo_umbrella"]);
+    await post(backend.port, "/fortnite/api/game/v2/battleroyale/recordwin", dedicated, { playlistId: 10, accountIds: [veteran.accountId] });
+    const veteranItems = (await athena(backend.port, veteran)).items;
+    assert.ok(veteranItems["AthenaGlider:solo_umbrella"] && veteranItems["AthenaGlider:founderumbrella"]);
+    assert.ok(!veteranItems["AthenaGlider:duo_umbrella"]);
   } finally {
     backend.close();
   }
@@ -74,8 +78,10 @@ test("season level 25 gives the Mako glider; giveAllCosmetics turned off again t
 
   // Everything, then a purchase and an equipped item.
   session = locker({ giveAllCosmetics: true });
-  // Every cosmetic but the 8 random Recruit outfits (#77).
-  assert.equal(Object.keys(session.profile("athena").profile.items).length, Object.keys(athenaCosmetics()).length - 8);
+  // Every cosmetic but the 8 random Recruit outfits (#77) and the Duo and Squad Umbrellas (#84).
+  const { items: given } = session.profile("athena").profile;
+  assert.equal(Object.keys(given).length, Object.keys(athenaCosmetics()).length - 10);
+  assert.ok(!given["AthenaGlider:duo_umbrella"] && !given["AthenaGlider:squad_umbrella"] && given["AthenaGlider:solo_umbrella"]);
   grantCosmetic(session, "AthenaPickaxe:halloweenscythe");
   session.profile("athena").setStat("favorite_character", "AthenaCharacter:cid_029_athena_commando_f_halloween");
   session.profile("athena").setStat("favorite_pickaxe", "AthenaPickaxe:halloweenscythe");
@@ -113,4 +119,27 @@ test("lockers made before #77, which got every cosmetic, keep only the starters 
   // Once: the next load changes nothing.
   const rvn = profile.rvn;
   assert.equal(openSession(createProfileStore(dataDir, { wonPlaylists: () => [2] }), accountId).profile("athena").profile.rvn, rvn);
+})));
+
+// Core-Backend #84: lockers given the Duo or Squad Umbrella (a duo or squad win before #84, or giveAllCosmetics) lose
+// them, once; a glider slot holding one goes back to the default glider.
+test("lockers lose the Duo and Squad Umbrellas, and a glider slot holding one gets the default glider", () => withStore((dataDir) => inBuild("3724489", () => {
+  const accountId = "duowinner";
+  const store = () => createProfileStore(dataDir, { wonPlaylists: (id) => (id === accountId ? [10, 9] : []) });
+  let session = openSession(store(), accountId);
+  const tracker = session.profile("athena");
+  for (const templateId of ["AthenaGlider:duo_umbrella", "AthenaGlider:squad_umbrella"]) {
+    tracker.addItem(templateId, { templateId, attributes: { level: 1, item_seen: 1, favorite: 0 }, quantity: 1 });
+  }
+  tracker.setStat("favorite_glider", "AthenaGlider:squad_umbrella");
+  session.commit();
+
+  session = openSession(store(), accountId);
+  const { items, stats, rvn } = session.profile("athena").profile;
+  assert.ok(!items["AthenaGlider:duo_umbrella"] && !items["AthenaGlider:squad_umbrella"]);
+  assert.ok(items["AthenaGlider:solo_umbrella"] && items["AthenaGlider:founderumbrella"]);
+  assert.equal(stats.attributes.favorite_glider, "AthenaGlider:defaultglider");
+  // Nothing gives them back: not a purchase or grant, and the next load changes nothing.
+  assert.equal(grantCosmetic(session, "AthenaGlider:duo_umbrella"), null);
+  assert.equal(openSession(store(), accountId).profile("athena").profile.rvn, rvn);
 })));

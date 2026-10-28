@@ -27,7 +27,8 @@ import { notifyProfiles } from "../mcp/profile.js";
 //   is the win too; without countWins (1.7.2, or a CoreV2 from before) recordwin counts it, so a win isn't counted
 //   twice. A player with a Battle Royale profile (1.8's athena) also gets the match's season XP and its placement and
 //   elimination challenge progress (profiles/athena.js), which reach their client as profile notifications, and for a
-//   win (place 1) the playlist's victory umbrella in the locker (Core-Backend #77): 1.8's umbrella is a glider item.
+//   win (place 1) in any playlist The Umbrella and the Founder's Umbrella in the locker (Core-Backend #77, #84): 1.8's
+//   umbrella is a glider item.
 // The gameserver's own login records the players on a session it hosts, the DedicatedServer client (CoreV2) anyone's;
 // other players are skipped, so a player's own token can't award itself wins. Both records answer 204 whatever they kept.
 export function battleRoyaleRoutes(context) {
@@ -82,7 +83,7 @@ export function battleRoyaleRoutes(context) {
       if (!session.hasProfile("athena")) continue;
       recordMatchProgress(session, playlistId, { place, kills });
       addSeasonXp(session, matchXp(playlistId, { place, kills, secondsAlive }));
-      if (place === 1) awardVictory(session, playlistId);
+      if (place === 1) awardVictory(session);
       session.commit();
       notifyProfiles(context, session);
     }
