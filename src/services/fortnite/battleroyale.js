@@ -21,11 +21,13 @@ import { notifyProfiles } from "../mcp/profile.js";
 // - recordwin: POST {playlistId, accountIds}, the winners at the end of the match (OnRecordWinnerComplete, 0x3F4950,
 //   request 0x72E130): a win (br_placetop1) each.
 // - recordresults: Core's (CoreV2's server; the 1.7.2 server reports nothing else), POST {playlistId, results:
-//   [{accountId, place, kills, secondsAlive}]} when a team is out of the match or has won: its players' match, place,
-//   kills and time alive. A player with a Battle Royale profile (1.8's athena) also gets the match's season XP and its
-//   placement and elimination challenge progress (profiles/athena.js), which reach their client as profile
-//   notifications, and for a win (place 1) the playlist's victory umbrella in the locker (Core-Backend #77): 1.8 has
-//   neither winners nor recordwin, its umbrella is a glider item.
+//   [{accountId, place, kills, secondsAlive}], countWins}, when a team is out of the match or has won: its players'
+//   match, place, kills and time alive. 1.8 has neither winners nor recordwin (Core-Backend #81: no
+//   "battleroyale/recordwin" in its exe), so CoreV2 sends countWins: true from a build without it and a place 1 there
+//   is the win too; without countWins (1.7.2, or a CoreV2 from before) recordwin counts it, so a win isn't counted
+//   twice. A player with a Battle Royale profile (1.8's athena) also gets the match's season XP and its placement and
+//   elimination challenge progress (profiles/athena.js), which reach their client as profile notifications, and for a
+//   win (place 1) the playlist's victory umbrella in the locker (Core-Backend #77): 1.8's umbrella is a glider item.
 // The gameserver's own login records the players on a session it hosts, the DedicatedServer client (CoreV2) anyone's;
 // other players are skipped, so a player's own token can't award itself wins. Both records answer 204 whatever they kept.
 export function battleRoyaleRoutes(context) {
@@ -63,6 +65,7 @@ export function battleRoyaleRoutes(context) {
   router.post("/fortnite/api/game/v2/battleroyale/recordresults", auth, (req, res) => {
     const playlistId = playlistOf(req.body);
     const results = Array.isArray(req.body?.results) && Number.isInteger(playlistId) && playlistId > 0 ? req.body.results : [];
+    const countWins = req.body?.countWins === true;
     for (const result of results) {
       const place = count(result?.place, 1000);
       const kills = count(result?.kills, 1000);
@@ -71,8 +74,10 @@ export function battleRoyaleRoutes(context) {
         log("Battle Royale", `Result skipped: ${JSON.stringify(result)}`);
         continue;
       }
-      stats.recordResult(result.accountId, playlistId, { place, kills, secondsAlive });
-      log("Battle Royale", `${result.accountId} placed ${place} in playlist ${playlistId} with ${kills} kills, ${secondsAlive} s alive`);
+      const win = countWins && place === 1;
+      stats.recordResult(result.accountId, playlistId, { place, kills, secondsAlive, win });
+      log("Battle Royale", `${result.accountId} placed ${place} in playlist ${playlistId} with ${kills} kills, ${secondsAlive} s alive`
+        + (win ? " (a win)" : ""));
       const session = openSession(profiles, result.accountId);
       if (!session.hasProfile("athena")) continue;
       recordMatchProgress(session, playlistId, { place, kills });
