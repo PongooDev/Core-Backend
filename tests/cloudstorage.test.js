@@ -118,6 +118,23 @@ test("a gameserver's own account lists, reads and writes the storm shield saves 
   }
 });
 
+test("the system hotfix turns off the client's cache of Battle Royale stats answers (Core #112)", async () => {
+  const backend = await startBackend();
+  try {
+    const token = await clientToken(backend.port);
+    const list = await get(backend.port, "/fortnite/api/cloudstorage/system", token);
+    const file = list.body.find(({ filename }) => filename === "DefaultGame.ini");
+    assert.ok(file);
+    const download = await raw(backend.port, "GET", `/fortnite/api/cloudstorage/system/${file.uniqueFilename}`, token);
+    assert.equal(download.status, 200);
+    assert.equal(crypto.createHash("sha1").update(download.body).digest("hex"), file.hash);
+    assert.deepEqual(download.body.toString("utf8").split("\r\n"),
+      ["[/Script/FortniteGame.FortGlobals]", "TimeBetweenLeaderboardRequestsMinutes=0", ""]);
+  } finally {
+    backend.close();
+  }
+});
+
 test("the system hotfix points the client's XMPP at the address and port it reached the backend on", async () => {
   const backend = await startBackend();
   try {
@@ -144,7 +161,7 @@ test("the system hotfix points the client's XMPP at the address and port it reac
       headers: { Host: host, "User-Agent": certUserAgent, Authorization: `bearer ${token}` } });
     assert.deepEqual(tunnelled.body, list.body);
 
-    const missing = await get(backend.port, "/fortnite/api/cloudstorage/system/DefaultGame.ini", token);
+    const missing = await get(backend.port, "/fortnite/api/cloudstorage/system/DefaultInput.ini", token);
     assert.equal(missing.status, 404);
     assert.equal(missing.body.errorCode, "errors.com.epicgames.cloudstorage.file_not_found");
   } finally {

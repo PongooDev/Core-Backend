@@ -17,6 +17,15 @@ const validFilename = /^[A-Za-z0-9._-]{1,128}$/;
 // public address it can reach this machine at: network.js reachableAddress). STOMP's service config takes Protocol
 // and Domain from [OnlineSubsystemMcp.StompServiceMcp] the same way (sub_3808800); its URL is
 // <Protocol>://<Domain>/stomp. Nothing is written on the player's PC.
+// DefaultGame.ini turns off the client's cache of stats answers (Core #112). The Battle Royale stats screen's query
+// (QueryPlayerStats, 1.7.2 0x72B700, 1.8 0x772F20) first looks its URL up in the MCP utils' response cache (1.7.2
+// 0x70C760, 1.8 0x750DF0), which drops the answers older than UFortGlobals::TimeBetweenLeaderboardRequestsMinutes
+// (+0x100) and answers from any other without a request. So a player who opened the screen before a match saw the
+// stats from before it afterwards ("Last Updated" then): in Core #112 the teammate who had looked never asked
+// again, the one who hadn't saw the match. Every answer is now older than 0 minutes. The hotfix reloads the config
+// of the objects of each [/Script/<Module>.<Class>] section's class (1.7.2 HotfixIniFile 0x3B10AF0), the game
+// singleton UFortGlobals among them; a build without the setting ignores it.
+const game = ["[/Script/FortniteGame.FortGlobals]", "TimeBetweenLeaderboardRequestsMinutes=0", ""].join("\r\n");
 const defaultNetwork = createNetwork();
 function systemFiles(req, network = defaultNetwork) {
   const address = network.reachableAddress(req);
@@ -25,7 +34,7 @@ function systemFiles(req, network = defaultNetwork) {
     "[OnlineSubsystemMcp.XMPP]", `ServerAddr=${address}`, `ServerPort=${port}`, "bUseSSL=false", "",
     "[OnlineSubsystemMcp.StompServiceMcp]", "Protocol=ws", `Domain=${address}:${port}`, ""
   ].join("\r\n");
-  return { "DefaultEngine.ini": Buffer.from(engine, "utf8") };
+  return { "DefaultEngine.ini": Buffer.from(engine, "utf8"), "DefaultGame.ini": Buffer.from(game, "utf8") };
 }
 
 // What the client reads per file (OnlineTitleFileMcp, sub_37C8D10): hash (SHA-1 hex, also its cache key), hash256,
