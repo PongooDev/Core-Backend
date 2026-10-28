@@ -2,6 +2,7 @@ import { fortnitemares, isEventActive } from "../events/events.js";
 import { candy } from "../events/fortnitemares.js";
 import { getCardPack, itemIds } from "../gamedata/items.js";
 import { perBuild } from "../gamedata/read.js";
+import { itemShopOffers } from "./itemshop.js";
 
 // The llama store. The client's store reads the CardPackStore and CardPackStorePromo storefronts (FortStorefront);
 // each offer is FCatalogOffer, its card pack art and featured items coming from metaAssetInfo FortCatalogMeta
@@ -90,7 +91,7 @@ function offerJson(offer, sortPriority) {
     shortDescription: "",
     description: "",
     appStoreId: "",
-    metaAssetInfo: { structName: "FortCatalogMeta", payload: { chaseItems: [], packDefinition: getCardPack(templateId)?.path ?? "" } },
+    metaAssetInfo: { structName: "FortCatalogMeta", payload: { chaseItems: [], packDefinition: offer.athena ? "" : getCardPack(templateId)?.path ?? "" } },
     displayAssetPath: "",
     itemGrants: [{ templateId, quantity: 1 }],
     requirements: [],
@@ -101,15 +102,21 @@ function offerJson(offer, sortPriority) {
 const holds = (profile, templateId) => Object.values(profile?.items ?? {})
   .some((item) => item.templateId.toLowerCase() === templateId.toLowerCase() && item.quantity > 0);
 
-// profile: the viewer's profile0, for the vouchers only shown to players who have one.
-export function storefronts(profile) {
+// profile: the viewer's profile0, for the vouchers only shown to players who have one. Battle Royale's storefronts
+// (store/itemshop.js) hold the day's offers in 1.8 and later, nothing before.
+export function storefronts(profile, now = new Date()) {
   const shown = allOffers().filter((offer) => offer.currencyType !== "GameItem" || offer.always
     || listedVouchers.some((voucher) => voucher.toLowerCase() === offer.currencySubType.toLowerCase())
     || holds(profile, offer.currencySubType));
+  const itemShop = Object.entries(itemShopOffers(now))
+    .map(([name, offers]) => ({ name, catalogEntries: offers.map((offer, index) => offerJson(offer, -index)) }));
   return [
     { name: "CardPackStore", catalogEntries: shown.map((offer, index) => offerJson(offer, -index)) },
-    { name: "CardPackStorePromo", catalogEntries: [] }
+    { name: "CardPackStorePromo", catalogEntries: [] },
+    ...itemShop.filter(({ catalogEntries }) => catalogEntries.length)
   ];
 }
 
-export const findOffer = (offerId) => allOffers().find((offer) => offer.offerId === offerId);
+// An offer on sale now: the llama store's, or one of the item shop's of the day.
+export const findOffer = (offerId, now = new Date()) => [...allOffers(), ...Object.values(itemShopOffers(now)).flat()]
+  .find((offer) => offer.offerId === offerId);
