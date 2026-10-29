@@ -20,8 +20,33 @@ const defaults = {
   // Storm Shield's when the zone loads and again while it runs.
   structureLimit: null,
   structureLimits: {},
+  // Who may use cheats on a Core gameserver (CoreV2 #138, services/fortnite/cheats.js): "everyone" (every player, as
+  // since CoreV2 #65), "admins" (only the accounts in cheatAccounts, by account id or display name) or "off". The
+  // gameserver asks for each player before it runs their "cheat" command, and again every 30 seconds.
+  cheats: "everyone",
+  cheatAccounts: [],
   allowedHostingIps: ["127.0.0.1", "::1"]
 };
+
+// Who may cheat: the modes, and how long one entry of cheatAccounts may be.
+export const cheatModes = ["everyone", "admins", "off"];
+const maxCheatAccount = 64;
+const cheatMode = (value) => (typeof value === "string" && cheatModes.includes(value.trim().toLowerCase()) ? value.trim().toLowerCase() : undefined);
+
+// cheatAccounts: account ids or display names, trimmed, without blanks or the same one twice (in any case); undefined
+// when it isn't a list.
+function cheatAccounts(list) {
+  if (!Array.isArray(list)) return undefined;
+  const seen = new Set();
+  const result = [];
+  for (const entry of list) {
+    const name = typeof entry === "string" ? entry.trim() : "";
+    if (!name || name.length > maxCheatAccount || seen.has(name.toLowerCase())) continue;
+    seen.add(name.toLowerCase());
+    result.push(name);
+  }
+  return result;
+}
 
 // The Storm Shields by their outpost item (UFortZoneTheme CloudSaveItemDefinition, OutpostCore_PvE_01..04).
 export const stormShields = {
@@ -74,6 +99,8 @@ export function createSettingsStore(dataDir) {
       for (const key of ["vbucksPerKill", "vbucksPerWin"]) settings[key] = rewardAmount(loaded[key]) ?? defaults[key];
       settings.structureLimit = structureLimitValue(loaded.structureLimit) ?? null;
       settings.structureLimits = structureLimits(loaded.structureLimits);
+      settings.cheats = cheatMode(loaded.cheats) ?? defaults.cheats;
+      settings.cheatAccounts = cheatAccounts(loaded.cheatAccounts) ?? [];
       if (Array.isArray(loaded.allowedHostingIps)) {
         settings.allowedHostingIps = [...loaded.allowedHostingIps];
       }
@@ -130,6 +157,7 @@ export function createSettingsStore(dataDir) {
         ...settings,
         allowedHostingIps: [...(settings.allowedHostingIps ?? defaults.allowedHostingIps)],
         structureLimits: { ...settings.structureLimits },
+        cheatAccounts: [...settings.cheatAccounts],
         battleRoyaleNews: settings.battleRoyaleNews ? { ...settings.battleRoyaleNews } : undefined,
         loginMessage: settings.loginMessage ? { ...settings.loginMessage } : undefined,
         subgameSelect: settings.subgameSelect ? JSON.parse(JSON.stringify(settings.subgameSelect)) : undefined,
@@ -155,6 +183,8 @@ export function createSettingsStore(dataDir) {
       const structureLimit = structureLimitValue(partial.structureLimit);
       if (partial.structureLimit !== undefined && structureLimit !== undefined) settings.structureLimit = structureLimit;
       settings.structureLimits = structureLimits(partial.structureLimits, settings.structureLimits);
+      settings.cheats = cheatMode(partial.cheats) ?? settings.cheats;
+      settings.cheatAccounts = cheatAccounts(partial.cheatAccounts) ?? settings.cheatAccounts;
       if (Array.isArray(partial.allowedHostingIps)) {
         settings.allowedHostingIps = [...new Set(partial.allowedHostingIps.filter((ip) => typeof ip === "string" && ip.trim()))];
       }

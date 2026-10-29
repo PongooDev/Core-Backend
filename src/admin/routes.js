@@ -675,6 +675,8 @@ export function adminRoutes(context) {
       vbucksPerWin: req.body?.vbucksPerWin,
       structureLimit: req.body?.structureLimit,
       structureLimits: req.body?.structureLimits,
+      cheats: req.body?.cheats,
+      cheatAccounts: req.body?.cheatAccounts,
       allowedHostingIps: req.body?.allowedHostingIps
     });
     const net = network?.settings?.() ?? {};

@@ -3278,7 +3278,7 @@
 
     /* ---------- settings ---------- */
     async function showSettings() {
-      const settings = await act(api("/admin/api/settings"));
+      const [settings, accountList] = await Promise.all([act(api("/admin/api/settings")), api("/admin/api/accounts").catch(() => [])]);
       if (!settings || state.view !== "settings") return;
 
       const save = async (changes, msg) => {
@@ -3404,6 +3404,64 @@
                 }, "primary"),
                 btn("Use the game's", () => save({ structureLimit: null, structureLimits: Object.fromEntries(shields.map(({ key }) => [key, null])) },
                   "Storm Shields use the game's structure limit"), "ghost")));
+          })()),
+
+        el("section", { class: "panel", style: "margin-top:16px" },
+          (() => {
+            const mode = settings.cheats ?? "everyone";
+            const allowedList = settings.cheatAccounts ?? [];
+            const players = (accountList ?? []).filter((account) => !account.isServer);
+            const accountOf = (entry) => {
+              const key = String(entry).toLowerCase();
+              return players.find((account) => account.id.toLowerCase() === key || account.displayName.toLowerCase() === key) ?? null;
+            };
+            const modes = [["everyone", "Every player"], ["admins", "Only the accounts below"], ["off", "Nobody"]];
+            const modeSelect = el("select", { class: "field", "aria-label": "Who may use cheats", style: "min-width:220px;",
+              onchange: (e) => save({ cheats: e.target.value }, `Cheats: ${modes.find(([value]) => value === e.target.value)?.[1] ?? e.target.value}`) },
+              modes.map(([value, label]) => el("option", { value, text: label, selected: value === mode })));
+
+            const nameInput = el("input", { class: "field", list: "cheat-account-names", placeholder: "Display name or account id", "aria-label": "Account allowed to cheat", style: "flex:1 1 240px;" });
+            const addBtn = btn("Allow account", () => {
+              const typed = nameInput.value.trim();
+              if (!typed) return toast("Enter a display name or account id", true);
+              const account = accountOf(typed);
+              if (allowedList.some((entry) => (account ? accountOf(entry)?.id === account.id : String(entry).toLowerCase() === typed.toLowerCase()))) {
+                return toast(`${account?.displayName ?? typed} may already cheat`, true);
+              }
+              save({ cheatAccounts: [...allowedList, account?.id ?? typed] }, `${account?.displayName ?? typed} may cheat when cheats are for the listed accounts`);
+            }, "primary");
+            nameInput.addEventListener("keydown", (e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                addBtn.click();
+              }
+            });
+
+            return [
+              el("div", { class: "panel-head", style: "margin-bottom:8px" },
+                el("div", { class: "actions" },
+                  el("h2", { text: "Cheats" }),
+                  mode === "everyone" ? chip("Every player", "warn") : mode === "admins" ? chip(`${allowedList.length} account${allowedList.length === 1 ? "" : "s"}`, "sky") : chip("Off"))),
+              el("p", { class: "note", text: "Who may use \"cheat\" commands on a Core V2 gameserver: the game's cheats and Core's own (corecheats, spawnactor, skin, disguise, and a command run on another player with /Name/). Anyone else is told cheats are off and nothing runs. A running gameserver picks up a change within 30 seconds." }),
+              el("div", { class: "actions", style: "margin-top:12px; align-items:center; gap:8px; flex-wrap:wrap;" },
+                el("span", { class: "muted", text: "Who may cheat" }), modeSelect),
+              el("div", { class: "muted", style: "margin-top:12px;", text: mode === "admins" ? "Accounts allowed to cheat:" : "Accounts allowed when cheats are for the listed accounts:" }),
+              el("div", { class: "actions", style: "margin-top:8px; gap:8px; flex-wrap:wrap;" },
+                allowedList.length ? allowedList.map((entry) => {
+                  const account = accountOf(entry);
+                  return el("span", {
+                    class: "chip sky removable",
+                    title: account ? `${account.displayName} (${account.id}): click to remove` : `No account has this name or id yet: click to remove`,
+                    style: "display:inline-flex; align-items:center; padding:4px 10px;",
+                    onclick: () => save({ cheatAccounts: allowedList.filter((other) => other !== entry) }, `${account?.displayName ?? entry} removed from the cheat accounts`)
+                  },
+                    el("span", { text: account?.displayName ?? entry }),
+                    el("span", { class: "remove-x", text: "✕" }));
+                }) : el("span", { class: "muted", text: "None yet." })),
+              el("div", { class: "actions", style: "margin-top:12px; align-items:center; width:100%" },
+                nameInput, addBtn,
+                el("datalist", { id: "cheat-account-names" }, players.map((account) => el("option", { value: account.displayName }))))
+            ];
           })()),
 
         el("section", { class: "panel", style: "margin-top:16px" },
