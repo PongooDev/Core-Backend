@@ -35,6 +35,7 @@ import { battleRoyaleBuilds, certBuild, versionOf } from "../builds/detect.js";
 import { eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, shopDay, weeklyStoreEnd } from "../store/itemshop.js";
 
 import { isServerAccountName, validatePassword } from "../accounts/password.js";
+import { EmailError } from "../accounts/store.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const panel = path.join(here, "panel.html");
@@ -85,6 +86,8 @@ export function adminRoutes(context) {
       id: account.id,
       displayName: account.displayName,
       email: account.email ?? null,
+      // The player's own email (#120), which they sign in with; email is the <name>@core.com the game sees.
+      contactEmail: account.contactEmail ?? null,
       created: account.created,
       lastLogin: account.lastLogin ?? null,
       level: profile?.stats.attributes.level ?? null,
@@ -213,7 +216,8 @@ export function adminRoutes(context) {
   router.get("/admin/api/accounts", (req, res) => {
     const query = String(req.query.search ?? "").trim().toLowerCase();
     const list = accounts.list()
-      .filter((account) => !query || account.displayName.toLowerCase().includes(query) || account.id.includes(query))
+      .filter((account) => !query || account.displayName.toLowerCase().includes(query) || account.id.includes(query)
+        || account.contactEmail?.includes(query))
       .map(summary);
     list.sort((a, b) => (b.lastLogin ?? b.created).localeCompare(a.lastLogin ?? a.created));
     res.json(list);
@@ -584,6 +588,21 @@ export function adminRoutes(context) {
     if (error) return invalid(res, error);
     await accounts.setPassword(account, newPassword);
     kick(account);
+    res.json(details(account));
+  });
+
+  // {email}: links the player's own email (#120), replacing any linked before; an empty one unlinks it.
+  router.post("/admin/api/accounts/:accountId/email", (req, res) => {
+    const account = accounts.get(req.params.accountId);
+    if (!account) return notFound(res, req.originalUrl);
+    if (isServerAccountName(account.displayName)) return invalid(res, "Dedicated server accounts don't sign in with an email");
+    try {
+      accounts.setContactEmail(account, String(req.body?.email ?? ""));
+    } catch (error) {
+      if (!(error instanceof EmailError)) throw error;
+      return sendError(res, error.taken ? 409 : 400,
+        error.taken ? "errors.com.epicgames.account.email_already_linked" : "errors.com.epicgames.common.invalid_parameter", error.message);
+    }
     res.json(details(account));
   });
 

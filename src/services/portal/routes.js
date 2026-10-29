@@ -1,7 +1,9 @@
 import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { isContactEmailLogin, validateEmail } from "../../accounts/email.js";
 import { isServerAccountName, validatePassword, validateUsername, verifyPassword } from "../../accounts/password.js";
+import { EmailError } from "../../accounts/store.js";
 import { sendError } from "../../errors.js";
 import { createRateLimiter } from "./ratelimit.js";
 
@@ -17,6 +19,39 @@ export function portalRoutes(context) {
   const changePasswordLimiter = createRateLimiter({ windowMs: 5 * 60 * 1000, max: 5 });
   const resetPasswordLimiter = createRateLimiter({ windowMs: 5 * 60 * 1000, max: 5 });
   const checkUsernameLimiter = createRateLimiter({ windowMs: 60 * 1000, max: 30 });
+  const accountLimiter = createRateLimiter({ windowMs: 5 * 60 * 1000, max: 10 });
+
+  const emailError = (res, error) => error.taken
+    ? sendError(res, 409, "errors.com.epicgames.account.email_already_linked", error.message)
+    : sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", error.message);
+
+  // The portal's sign-in: a name (or its <name>@core.com) or a linked email (#120), and the account's password. An
+  // email that matches nothing, an account without a password and a wrong password all answer alike, so the portal
+  // never tells anyone which addresses are linked. The account, or null once it has answered.
+  async function signIn(res, login, password, wrongPassword = "Your username and/or password are incorrect.") {
+    const account = accounts.findByLogin(login);
+    let refusal = null;
+    if (isContactEmailLogin(login)) {
+      if (!(account?.password && password && await verifyPassword(password, account.password))) {
+        refusal = [401, "errors.com.epicgames.account.invalid_account_credentials", "Your email and/or password are incorrect."];
+      }
+    } else if (!account) {
+      refusal = [404, "errors.com.epicgames.account.account_not_found", "Account not found."];
+    } else if (!account.password) {
+      refusal = [401, "errors.com.epicgames.account.authentication_failed",
+        "This account does not have a password configured. Please request a Password Reset Link from your host to set an initial password."];
+    } else if (!password) {
+      refusal = [400, "errors.com.epicgames.common.invalid_parameter", "Current password is required."];
+    } else if (!(await verifyPassword(password, account.password))) {
+      refusal = [401, "errors.com.epicgames.account.invalid_account_credentials", wrongPassword];
+    }
+    if (!refusal) return account;
+    sendError(res, ...refusal);
+    return null;
+  }
+
+  // What the portal shows a signed-in player of their own account: never anyone else's.
+  const ownAccount = (account) => ({ id: account.id, displayName: account.displayName, email: account.contactEmail ?? null });
 
   // Serve the registration and player portal page
   router.get("/register", (req, res) => res.sendFile(portalFile));
@@ -55,6 +90,8 @@ export function portalRoutes(context) {
 
     const username = String(req.body?.username ?? "").trim();
     const password = String(req.body?.password ?? "").trim();
+    // Optional (#120): the player's own email, to sign in with besides their name.
+    const email = String(req.body?.email ?? "").trim();
 
     if (isServerAccountName(username)) {
       return sendError(res, 400, "errors.com.epicgames.account.reserved_name",
@@ -71,13 +108,18 @@ export function portalRoutes(context) {
       return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", passwordError);
     }
 
+    if (email) {
+      const error = validateEmail(email);
+      if (error) return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", error);
+    }
+
     if (accounts.findByName(username)) {
       return sendError(res, 409, "errors.com.epicgames.account.account_already_exists",
         "An account with this username already exists.");
     }
 
     try {
-      const account = await accounts.createWithPassword(username, password);
+      const account = await accounts.createWithPassword(username, password, { email });
       if (!account) {
         return sendError(res, 500, "errors.com.epicgames.server.internal_error",
           "Failed to create account. Please try again.");
@@ -87,39 +129,24 @@ export function portalRoutes(context) {
         success: true,
         id: account.id,
         displayName: account.displayName,
+        email: account.contactEmail ?? null,
         created: account.created
       });
     } catch (err) {
+      if (err instanceof EmailError) return emailError(res, err);
       return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", err.message);
     }
   });
 
   // Change password / initial password setup
   router.post("/api/change-password", changePasswordLimiter, async (req, res) => {
-    const username = String(req.body?.username ?? "").trim();
+    // username: the name or the linked email.
+    const login = String(req.body?.username ?? "").trim();
     const currentPassword = String(req.body?.currentPassword ?? "").trim();
     const newPassword = String(req.body?.newPassword ?? "").trim();
 
-    const account = accounts.findByName(username);
-    if (!account) {
-      return sendError(res, 404, "errors.com.epicgames.account.account_not_found",
-        "Account not found.");
-    }
-
-    if (!account.password) {
-      return sendError(res, 401, "errors.com.epicgames.account.authentication_failed",
-        "This account does not have a password configured. Please request a Password Reset Link from your host to set an initial password.");
-    }
-
-    if (!currentPassword) {
-      return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter",
-        "Current password is required.");
-    }
-    const matched = await verifyPassword(currentPassword, account.password);
-    if (!matched) {
-      return sendError(res, 401, "errors.com.epicgames.account.invalid_account_credentials",
-        "Current password does not match.");
-    }
+    const account = await signIn(res, login, currentPassword, "Current password does not match.");
+    if (!account) return;
 
     const passwordError = validatePassword(newPassword);
     if (passwordError) {
@@ -133,6 +160,25 @@ export function portalRoutes(context) {
       success: true,
       message: "Password changed successfully. Existing sessions have been logged out."
     });
+  });
+
+  // {username (the name or the linked email), password}: the player's own account, with their email (#120).
+  router.post("/api/account", accountLimiter, async (req, res) => {
+    const account = await signIn(res, String(req.body?.username ?? "").trim(), String(req.body?.password ?? "").trim());
+    if (account) res.json(ownAccount(account));
+  });
+
+  // {username, password, email}: links the email to the account, replacing any linked before; an empty one unlinks it.
+  router.post("/api/account/email", accountLimiter, async (req, res) => {
+    const account = await signIn(res, String(req.body?.username ?? "").trim(), String(req.body?.password ?? "").trim());
+    if (!account) return;
+    try {
+      accounts.setContactEmail(account, String(req.body?.email ?? ""));
+    } catch (err) {
+      if (err instanceof EmailError) return emailError(res, err);
+      throw err;
+    }
+    res.json({ success: true, ...ownAccount(account) });
   });
 
   // Validate a password reset token

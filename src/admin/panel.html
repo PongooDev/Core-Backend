@@ -1819,12 +1819,13 @@
     }
 
     function roster() {
-      const search = el("input", { class: "field", type: "search", placeholder: "Search name or account id", "aria-label": "Search players", value: state.rosterSearch ?? "" });
+      const search = el("input", { class: "field", type: "search", placeholder: "Search name, email or account id", "aria-label": "Search players", value: state.rosterSearch ?? "" });
       const list = el("ul", { class: "list" });
       const render = () => {
         const query = search.value.trim().toLowerCase();
         state.rosterSearch = search.value;
-        const shown = state.accounts.filter((a) => !query || a.displayName.toLowerCase().includes(query) || a.id.includes(query));
+        const shown = state.accounts.filter((a) => !query || a.displayName.toLowerCase().includes(query) || a.id.includes(query)
+          || a.contactEmail?.includes(query));
         list.replaceChildren(...(shown.length ? shown.map((a) => el("li", {}, el("button", {
           type: "button", "aria-current": String(a.id === state.accountId),
           onclick: () => (location.hash = `#/players/${a.id}/${state.tab}`)
@@ -2311,6 +2312,23 @@
         })));
     }
 
+    // The player's own email (#120): they sign in with it, with their password, besides their name. The game itself only
+    // ever sees the account's <name>@core.com.
+    function emailPanel(a) {
+      const input = el("input", { class: "field", type: "email", placeholder: "name@example.com", value: a.contactEmail ?? "",
+        autocomplete: "off", "aria-label": "Email", style: "flex:1 1 260px" });
+      const save = () => post("email", { email: input.value.trim() }, input.value.trim() ? `Email linked to ${a.displayName}` : `Email unlinked from ${a.displayName}`);
+      input.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); save(); } });
+      return el("section", { class: "panel" }, el("h2", { text: "Email" }),
+        el("p", { class: "note", text: `The player can sign in with this email and their password instead of their name. Only an account with a password can. The game keeps seeing ${a.email ?? "its @core.com address"}.` }),
+        el("div", { class: "actions" },
+          a.contactEmail ? chip(a.contactEmail, "good") : chip("No email linked", "warn"),
+          !a.hasPassword && a.contactEmail ? chip("No password: email sign-in is off", "warn") : null),
+        el("div", { class: "actions", style: "margin-top:10px" }, input,
+          btn("Save", save, "primary small"),
+          a.contactEmail ? btn("Unlink", () => { input.value = ""; save(); }, "ghost small") : null));
+    }
+
     function accountTab(a) {
       const reason = el("input", { class: "field", placeholder: "Reason (shown when they try to log in)", style: "flex:1 1 260px" });
       const profileBoxes = ["profile0", "theater0", "outpost0", "collection_book_people0", "collection_book_schematics0"].map((profileId) =>
@@ -2342,6 +2360,7 @@
                 toast("Password Reset Link copied to clipboard!");
               }
             }, "ghost small") : null)),
+        a.isServer ? null : emailPanel(a),
         el("section", { class: "panel" }, el("h2", { text: "Profiles on disk" }),
           el("p", { class: "note", text: `Saved: ${a.profiles.join(", ") || "none yet"}. A reset deletes the chosen profiles; the next login makes them fresh, like a new account. The player is logged out first.` }),
           el("div", { class: "option-row" }, profileBoxes),

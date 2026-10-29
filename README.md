@@ -145,6 +145,13 @@ Your friend gets an account on your backend, named after their player name. Pass
 machines get is `GET /core/api/status` (`{"name":"Core-Backend","version":...}`), which the launcher uses to check
 the connection.
 
+A player can link their own email to their account: optionally when registering on the web portal (`/register`), later
+in its **Email** tab, or by the host in the admin panel's account view. They can then sign in with that email instead of
+their name, in the launcher, the game and the portal, always with their password: an account without a password can't
+sign in by email even when `requirePassword` is off. Emails are trimmed and compared case-insensitively, one account
+each, and none may be an `@core.com` address. The game itself still sees each account as `<name>@core.com`; the linked
+email is only shown to its owner on the portal and to the host in the admin panel.
+
 Gameserver addresses: a gameserver on your PC registers as `127.0.0.1`, which another PC can't use. A player on your
 PC gets that; a player on your network or VPN gets the address they reached the backend on; a player on the internet
 gets the public address when one is set, else the IP they connected to. The same goes for the XMPP address in the

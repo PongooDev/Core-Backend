@@ -2,6 +2,7 @@ import express from "express";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { isContactEmailLogin } from "../../accounts/email.js";
 import { createRateLimiter } from "../portal/ratelimit.js";
 
 const packageFile = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..", "package.json");
@@ -21,6 +22,10 @@ export function coreStatusRoutes(context = {}) {
   function getAuthInfo(req) {
     const config = context.settings?.get?.() ?? {};
     const baseRequirePassword = Boolean(config.requirePassword ?? false);
+    // An email sign-in (#120) always needs a password. Whether an account has the address isn't said: this answers anyone.
+    if (req.query.username && isContactEmailLogin(String(req.query.username))) {
+      return { requirePassword: baseRequirePassword, passwordRequired: true };
+    }
     const username = req.query.username ? String(req.query.username).split("@")[0].trim() : null;
 
     if (username && context.accounts) {

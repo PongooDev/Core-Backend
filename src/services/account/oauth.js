@@ -1,6 +1,7 @@
 import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
 import { dedicatedServerClient } from "../../accounts/clients.js";
+import { isContactEmailLogin } from "../../accounts/email.js";
 import { isLoopbackAddress, isServerAccountName, validatePassword, verifyPassword } from "../../accounts/password.js";
 import { sendError } from "../../errors.js";
 import { createFailureTracker } from "../portal/ratelimit.js";
@@ -54,7 +55,8 @@ export function oauthRoutes({ accounts, tokens, settings, resetTokens }) {
         return res.json(tokens.issueClient(clientId));
 
       case "password": {
-        const displayName = String(body.username ?? "").split("@")[0].trim();
+        const login = String(body.username ?? "").trim();
+        const displayName = login.split("@")[0].trim();
         if (!displayName) return invalidGrant(res, "A username is required");
 
         const config = settings?.get?.() ?? {};
@@ -62,8 +64,12 @@ export function oauthRoutes({ accounts, tokens, settings, resetTokens }) {
         const allowAutoRegistration = config.allowAutoRegistration ?? false;
         const allowedHostingIps = config.allowedHostingIps ?? ["127.0.0.1", "::1"];
 
-        let account = accounts.findByName(displayName);
-        const isServer = isServerAccountName(displayName);
+        // A linked contact email (#120) signs in to its account. Any other name@domain is the name before the @, as before:
+        // <name>@core.com is the address the game knows the account by.
+        const emailLogin = isContactEmailLogin(login);
+        const byEmail = emailLogin ? accounts.findByEmail(login) : null;
+        let account = byEmail ?? accounts.findByName(displayName);
+        const isServer = !byEmail && isServerAccountName(displayName);
 
         if (isServer) {
           // Dedicated servers: verify request comes from loopback, dedicatedServerClient, or whitelisted hosting IP
@@ -86,7 +92,17 @@ export function oauthRoutes({ accounts, tokens, settings, resetTokens }) {
             "Too many failed password attempts. Please wait a few minutes before trying again.");
         }
 
-        if (!account) {
+        // An email sign-in always needs the account's own password, whatever requirePassword says: an account without one
+        // (which a username and the launcher's "Core" reach when passwords aren't required) isn't reachable by its email.
+        // Either failure answers the same, so a guess learns nothing about the account.
+        if (byEmail && !(account.password && await verifyPassword(String(body.password ?? ""), account.password))) {
+          failureTracker.recordFailure(req);
+          return sendError(res, 400, "errors.com.epicgames.account.invalid_account_credentials",
+            "Your e-mail and/or password are incorrect. Please check them and try again.");
+        }
+
+        // An address no account has linked never makes an account: it is more likely a mistyped email than a new player.
+        if (!account && !emailLogin) {
           const plainPassword = String(body.password ?? "").trim();
           if (requirePassword) {
             const isValidPw = !validatePassword(plainPassword);
@@ -100,11 +116,10 @@ export function oauthRoutes({ accounts, tokens, settings, resetTokens }) {
           } else if (allowAutoRegistration) {
             account = accounts.getOrCreate(displayName);
           }
-
-          if (!account) {
-            return sendError(res, 400, "errors.com.epicgames.account.invalid_account_credentials",
-              "Your e-mail and/or password are incorrect, or the account does not exist. Please register on the web portal first.");
-          }
+        }
+        if (!account) {
+          return sendError(res, 400, "errors.com.epicgames.account.invalid_account_credentials",
+            "Your e-mail and/or password are incorrect, or the account does not exist. Please register on the web portal first.");
         }
 
         if (account.needsPasswordReset) {
@@ -112,8 +127,8 @@ export function oauthRoutes({ accounts, tokens, settings, resetTokens }) {
             "This account requires a password reset. Please request a Password Reset Link from your host.");
         }
 
-        // Accounts that have a password must always be verified regardless of requirePassword setting
-        if (account.password) {
+        // Accounts that have a password must always be verified regardless of requirePassword setting (an email sign-in's was, above)
+        if (account.password && !byEmail) {
           const plainPassword = String(body.password ?? "").trim();
           const matched = await verifyPassword(plainPassword, account.password);
           if (!matched) {
@@ -121,7 +136,7 @@ export function oauthRoutes({ accounts, tokens, settings, resetTokens }) {
             return sendError(res, 400, "errors.com.epicgames.account.invalid_account_credentials",
               "Your e-mail and/or password are incorrect. Please check them and try again.");
           }
-        } else if (requirePassword) {
+        } else if (!account.password && requirePassword) {
           // Passwordless accounts are only disallowed when requirePassword is on
           return sendError(res, 400, "errors.com.epicgames.account.invalid_account_credentials",
             "This account does not have a password configured and is admin-managed. Please request a Password Reset Link from your host.");
