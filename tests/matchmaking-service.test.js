@@ -2,8 +2,9 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import crypto from "node:crypto";
 import http from "node:http";
-import { bucketMatches, estimatedWaitSec, formTeams, parseBucket, teamSizeOf } from "../src/matchmaking/service.js";
-import { get, post, startBackend, userLogin } from "./helpers.js";
+import { bucketKey, bucketMatches, estimatedWaitSec, formTeams, parseBucket, serverRegion, teamSizeOf, withRegion } from "../src/matchmaking/service.js";
+import { regionOf } from "../src/matchmaking/regions.js";
+import { del, get, post, startBackend, userLogin } from "./helpers.js";
 
 // MatchmakingServiceClient's connection: a WebSocket with the ticket in its Authorization header, which the browser-style
 // WebSocket can't send. Server frames are unmasked text; client frames are masked.
@@ -237,6 +238,130 @@ test("AssignMatch's teams follow each party leader's Squad Fill choice (#78)", a
       [[id("PairLeader"), id("PairMate")]], [[id("Lone")]]]);
   } finally {
     for (const client of clients) client.close();
+    backend.close();
+  }
+});
+
+test("regions compare in any spelling: a server's -McpRegion against the client's selected region (#121)", () => {
+  assert.deepEqual(["NA", "nae", "NAW", " naC ", "OH", "EU", "gb", "OCE", "BR", "ASIA", "Test01", "TEST02", "ME", "xx", "NONE", "", undefined, "UND"].map(regionOf),
+    ["NA", "NA", "NA", "NA", "NA", "EU", "EU", "OCE", "BR", "ASIA", "ASIA", "ASIA", "ME", "XX", null, null, null, null]);
+  assert.ok(bucketMatches("3775276:0:nae:**", "3775276:0:NA:2"));
+  assert.ok(bucketMatches("858118782:0:NA:*", "858118782:0:NAW:10"));
+  assert.ok(!bucketMatches("858118782:0:NA:*", "858118782:0:EU:10"));
+  assert.ok(bucketMatches("858118782:0:NA:*", "858118782:0:EU:10", { anyRegion: true }));
+  // Any region, but still the same build and number of fields.
+  assert.ok(!bucketMatches("858118782:0:NA:*", "1:0:EU:10", { anyRegion: true }));
+  assert.ok(!bucketMatches("858118782:0:NA:*:*:*", "858118782:0:EU:10", { anyRegion: true }));
+  assert.ok(bucketMatches("858118782:0:NONE:*", "858118782:0:NONE:10"));
+  assert.equal(bucketKey("858118782:0:nae:10"), "858118782:0:NA:10");
+  assert.equal(bucketKey("858118782:0:EU:10", { anyRegion: true }), "858118782:0:*:10");
+  assert.equal(bucketKey("858118782:0::10"), "858118782:0:NONE:10");
+  assert.equal(withRegion("858118782:0:EU:10", "NA"), "858118782:0:NA:10");
+  assert.deepEqual([["1:0:NA:*", "1:0:NA:*:*:*"], ["1:0:*:**", "1:0:eu:*"], ["1:0:*:*"], []].map(serverRegion), ["NA", "eu", null, null]);
+});
+
+// A Battle Royale gameserver of build 858118782 in a region: its session, then its matchmaking connection, Registered.
+async function regionServer(backend, name, region) {
+  const server = await userLogin(backend.port, name);
+  const session = (await post(backend.port, "/fortnite/api/matchmaking/session", server.token, {
+    ownerId: server.accountId, ownerName: name, serverName: name, serverAddress: "127.0.0.1", serverPort: 7777,
+    maxPublicPlayers: 100, maxPrivatePlayers: 0, buildUniqueId: "858118782", attributes: { GAMEMODE_s: "FORTATHENA", REGION_s: region }
+  })).body;
+  const patterns = encodeURIComponent(`858118782:0:${region}:*,858118782:0:${region}:*:*:*`);
+  const ticket = await get(backend.port, `/fortnite/api/game/v2/matchmakingservice/ticket/session/${session.id}?bucketIds=${patterns}&minPlayers=1&maxPlayers=100`, server.token);
+  const connection = await matchmakingClient(backend.port, authorizationOf(ticket.body));
+  assert.equal(JSON.parse(await connection.next()).name, "Registered");
+  return { ...server, session, connection };
+}
+
+// A solo player queued for Duos in a region, past Connecting and Waiting.
+async function regionPlayer(backend, name, region) {
+  const player = await userLogin(backend.port, name);
+  const ticket = await get(backend.port, `/fortnite/api/game/v2/matchmakingservice/ticket/player/${player.accountId}?partyPlayerIds=${player.accountId}` +
+    `&bucketId=858118782:0:${region}:10&player.platform=Windows`, player.token);
+  const connection = await matchmakingClient(backend.port, authorizationOf(ticket.body));
+  for (let index = 0; index < 2; index++) await connection.next();
+  return { ...player, connection };
+}
+
+// The next message of a name, skipping the StatusUpdates before it.
+async function nextOf(connection, name) {
+  let message;
+  do message = JSON.parse(await connection.next()); while (message.name !== name);
+  return message;
+}
+
+test("players are matched in their own region, and in another when theirs has no server at all (#121)", async () => {
+  const backend = await startBackend({ matchmakingGatherMs: 200 });
+  const connections = [];
+  try {
+    const na = await regionServer(backend, "CoreServer1", "NA");
+    const eu = await regionServer(backend, "CoreServer2", "EU");
+    connections.push(na.connection, eu.connection);
+
+    // Each region's player goes to that region's server, whichever way the region is spelled.
+    const american = await regionPlayer(backend, "RegionNA", "nae");
+    const european = await regionPlayer(backend, "RegionEU", "EU");
+    connections.push(american.connection, european.connection);
+    const naAssign = await nextOf(na.connection, "AssignMatch");
+    const euAssign = await nextOf(eu.connection, "AssignMatch");
+    assert.deepEqual(naAssign.payload.teams, [[[american.accountId]]]);
+    assert.deepEqual(euAssign.payload.teams, [[[european.accountId]]]);
+    // AssignMatch names the server's own region, which its game mode takes as its MatchmakingRegionId.
+    assert.equal(naAssign.payload.bucketId, "858118782:0:NA:10");
+    for (const [server, assign] of [[na, naAssign], [eu, euAssign]]) {
+      server.connection.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: assign.payload.matchId, result: "ready" } }));
+    }
+    assert.equal((await nextOf(american.connection, "Play")).payload.sessionId, na.session.id);
+    assert.equal((await nextOf(european.connection, "Play")).payload.sessionId, eu.session.id);
+
+    // EU's server is in its match and comes back after it, so another European waits for it rather than taking NA's
+    // free server.
+    const nextNa = await regionServer(backend, "CoreServer3", "NA");
+    connections.push(nextNa.connection);
+    const waiter = await regionPlayer(backend, "RegionEUWaits", "EU");
+    connections.push(waiter.connection);
+    const queued = JSON.parse(await waiter.connection.next());
+    assert.deepEqual([queued.payload.state, queued.payload.queuedPlayers, queued.payload.estimatedWaitSec], ["Queued", 1, 0]);
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    // Once EU has no server at all (its match's session ended), the European plays on NA's server, in an NA match.
+    assert.equal((await del(backend.port, `/fortnite/api/matchmaking/session/${eu.session.id}`, eu.token)).status, 204);
+    const fallback = await nextOf(nextNa.connection, "AssignMatch");
+    assert.deepEqual(fallback.payload.teams, [[[waiter.accountId]]]);
+    assert.equal(fallback.payload.bucketId, "858118782:0:NA:10");
+    nextNa.connection.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: fallback.payload.matchId, result: "ready" } }));
+    // While it formed the European heard its queue's state and the time left.
+    let message;
+    const waits = [];
+    do {
+      message = JSON.parse(await waiter.connection.next());
+      if (message.payload.state === "Queued") waits.push(message.payload.estimatedWaitSec);
+    } while (message.payload.state !== "SessionAssignment");
+    assert.ok(waits.length > 1 && waits.at(-1) > 0, `ETAs ${waits}`);
+  } finally {
+    for (const connection of connections) connection.close();
+    backend.close();
+  }
+});
+
+test("a player from a region with no server shares a forming match with that server's region (#121)", async () => {
+  const backend = await startBackend({ matchmakingGatherMs: 400 });
+  const connections = [];
+  try {
+    const na = await regionServer(backend, "CoreServer1", "NA");
+    connections.push(na.connection);
+    const american = await regionPlayer(backend, "ShareNA", "NA");
+    const brazilian = await regionPlayer(backend, "ShareBR", "BR");
+    connections.push(american.connection, brazilian.connection);
+    // The Brazilian counts in the American's queue (a party of one each).
+    let message;
+    do message = JSON.parse(await brazilian.connection.next()); while (message.payload.state !== "Queued");
+    assert.equal(message.payload.queuedPlayers, 2);
+    const assign = await nextOf(na.connection, "AssignMatch");
+    assert.deepEqual(assign.payload.teams, [[[american.accountId], [brazilian.accountId]]]);
+    assert.equal(assign.payload.bucketId, "858118782:0:NA:10");
+  } finally {
+    for (const connection of connections) connection.close();
     backend.close();
   }
 });

@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { log } from "../log.js";
 import { acceptWebSocket } from "../stomp/websocket.js";
+import { regionName, regionOf } from "./regions.js";
 
 // Battle Royale's matchmaking service (MMS, from 1.7.2), both sides (Core-Docs Athena-Matchmaking-1.7.2.md and
 // Athena-Boot-1.7.2.md §1 C).
@@ -41,6 +42,30 @@ export function parseBucket(bucketId) {
   return { netcl: parts[0], region: parts[2] ?? "", playlistId: Number.isInteger(playlistId) ? playlistId : null, parts };
 }
 
+// The bucket with another region in its region field.
+export function withRegion(bucketId, region) {
+  const { parts } = parseBucket(bucketId);
+  if (parts.length > 2) parts[2] = region;
+  return parts.join(":");
+}
+
+// Which queue a bucket is: the same bucket in any spelling of its region ("1:0:nae:10" and "1:0:NA:10"), or with
+// anyRegion the same build and playlist in any region.
+export function bucketKey(bucketId, { anyRegion = false } = {}) {
+  const { parts } = parseBucket(bucketId);
+  if (parts.length > 2) parts[2] = anyRegion ? "*" : regionOf(parts[2]) ?? "NONE";
+  return parts.join(":");
+}
+
+// The region a server's patterns name, as the server spells it, or null when they take any region ("<netcl>:0:*:*").
+export function serverRegion(patterns) {
+  for (const pattern of patterns) {
+    const field = String(pattern).split(":")[2];
+    if (field !== undefined && field !== "*" && field !== "**") return field;
+  }
+  return null;
+}
+
 // The team size of a bucket's playlist, or null for one the server doesn't know.
 export const teamSizeOf = (bucketId) => teamSizes[parseBucket(bucketId).playlistId] ?? null;
 
@@ -74,13 +99,15 @@ export function formTeams(parties, teamSize) {
 // A server's bucket pattern ("858118782:0:NA:*") against a player's bucket ("858118782:0:NA:10"): field by field, "*"
 // matching anything, with the same number of fields. A last field of "**" matches whatever fields are left: 1.8's
 // servers register one pattern, "<netcl>:0:NA:**", where 1.7.2's registered "...:*" and "...:*:*:*" (Core-Backend #74:
-// 1.8 players were never matched).
-export function bucketMatches(pattern, bucketId) {
+// 1.8 players were never matched). The region field (the third) compares regions, so a server started with
+// -McpRegion=nae takes NA's players (regions.js); with anyRegion it takes any region's.
+export function bucketMatches(pattern, bucketId, { anyRegion = false } = {}) {
   const want = String(pattern).split(":");
   const have = String(bucketId).split(":");
   const rest = want.at(-1) === "**";
   const fields = rest ? want.slice(0, -1) : want;
-  return (rest ? have.length > fields.length : want.length === have.length) && fields.every((field, index) => field === "*" || field === have[index]);
+  const same = (field, index) => field === "*" || (index === 2 ? anyRegion || regionOf(field) === regionOf(have[index]) : field === have[index]);
+  return (rest ? have.length > fields.length : want.length === have.length) && fields.every(same);
 }
 
 // Queued's estimatedWaitSec, from the time left until a forming match is assigned. The client shows "N/A" for an ETA
@@ -107,7 +134,20 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
   const waiting = [];
   // Assigned matches by session id: {matchId, bucketId, assigned, parties}.
   const matches = new Map();
+  // Every server whose region counts as having a server, by session id: the registered ones and those hosting a match
+  // (they register again once it ends), until their session goes.
+  const hosts = new Map();
   const sockets = new Set();
+
+  // Whether a server registered for the bucket's build and region exists at all. When none does, nobody would ever
+  // take the bucket's players: they play in another region instead (Core-Backend #121).
+  function hasServerFor(bucketId) {
+    for (const [sessionId, host] of hosts) {
+      if (!sessions.get(sessionId)) hosts.delete(sessionId);
+      else if (host.patterns.some((pattern) => bucketMatches(pattern, bucketId))) return true;
+    }
+    return false;
+  }
 
   const sizeOf = (ticket) => Math.max(1, ticket.partyPlayerIds.length);
   // Whether a party fills its team with others. Only the party leader's ticket says (the others' have no
@@ -173,6 +213,16 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
       return true;
     }
 
+    // A party whose region has no server takes a match in any region, the bucket's build and playlist still matching.
+    const bucketId = party.ticket.bucketId;
+    const anyRegion = !hasServerFor(bucketId);
+    if (anyRegion !== Boolean(party.anyRegion)) {
+      party.anyRegion = anyRegion;
+      if (anyRegion) say(`No server is registered for ${regionName(regionOf(parseBucket(bucketId).region))} (bucket ${bucketId}): ` +
+        `${party.ticket.accountId} queues for a server in any region`);
+    }
+    const key = bucketKey(bucketId, { anyRegion });
+
     for (const server of servers) {
       const forming = server.forming;
       // The party's other members' tickets join the party already in the match.
@@ -181,29 +231,44 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
         same.members.push(party);
         return true;
       }
-      if (forming && forming.bucketId === party.ticket.bucketId && forming.players + party.size <= server.maxPlayers) {
+      if (forming && bucketKey(forming.bucketId, { anyRegion }) === key && forming.players + party.size <= server.maxPlayers) {
         forming.parties.push(party);
         forming.players += party.size;
+        if (anyRegion) say(`${party.ticket.accountId} joins match ${forming.matchId} in ${regionName(server.region)} (bucket ${forming.bucketId})`);
         if (forming.players >= server.maxPlayers) assign(server);
         return true;
       }
     }
     for (const server of servers) {
       if (server.forming || party.size > server.maxPlayers) continue;
-      if (!server.patterns.some((pattern) => bucketMatches(pattern, party.ticket.bucketId))) continue;
-      server.forming = { matchId: newId(), bucketId: party.ticket.bucketId, parties: [party], players: party.size, started: Date.now() };
+      if (!server.patterns.some((pattern) => bucketMatches(pattern, bucketId, { anyRegion }))) continue;
+      // The match is the server's region's: AssignMatch's bucketId names it as the server does (the server takes its
+      // MatchmakingRegionId from it, 1.7.2 0x6D78E0), and its region's players join it.
+      const matchBucket = server.regionField ? withRegion(bucketId, server.regionField) : bucketId;
+      server.forming = { matchId: newId(), bucketId: matchBucket, parties: [party], players: party.size, started: Date.now() };
       server.forming.timer = setTimeout(() => assign(server), gatherMs);
       server.forming.timer.unref?.();
-      say(`Match ${server.forming.matchId} forms on session ${server.sessionId} for bucket ${party.ticket.bucketId}`);
+      say(`Match ${server.forming.matchId} forms on session ${server.sessionId} for bucket ${matchBucket}` +
+        (matchBucket === bucketId ? "" : ` (${party.ticket.accountId} queued for ${bucketId})`));
       return true;
     }
     return false;
   }
 
-  // The parties still in the queue for a bucket: waiting for a server, or in a match that hasn't been assigned yet.
-  function queuedParties(bucketId) {
+  // Which queue a party is in: the match it is in until that match is assigned, else its own bucket's, with the
+  // bucket's region in any spelling.
+  function queueKey(party) {
+    for (const server of servers) {
+      const forming = server.forming;
+      if (forming && !forming.sent && forming.parties.includes(party)) return bucketKey(forming.bucketId);
+    }
+    return bucketKey(party.ticket.bucketId);
+  }
+
+  // The parties still in a queue: waiting for a server, or in a match that hasn't been assigned yet.
+  function queuedParties(key) {
     const forming = [...servers].flatMap((server) => (server.forming && !server.forming.sent ? server.forming.parties : []));
-    return [...waiting, ...forming].filter((party) => party.ticket.bucketId === bucketId && !party.ws.closed);
+    return [...waiting, ...forming].filter((party) => !party.ws.closed && queueKey(party) === key);
   }
 
   // How long until a party is sent to its match: the rest of its forming match's gather time, or 0 while it waits for a
@@ -216,10 +281,11 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
     return 0;
   }
 
-  // Queued {queuedPlayers, estimatedWaitSec}: everyone queued for the bucket, sent again to each of them whenever it
-  // changes, and every second while a match forms so the ETA counts down.
-  function announceQueue(bucketId) {
-    const parties = queuedParties(bucketId);
+  // Queued {queuedPlayers, estimatedWaitSec}: everyone in the queue (queueKey), sent again to each of them whenever it
+  // changes, and every second while a match forms so the ETA counts down. A party playing in another region hears the
+  // queue of the match it joined.
+  function announceQueue(key) {
+    const parties = queuedParties(key);
     // A party's members each queue with their own ticket: the party counts once.
     const queuedPlayers = [...new Map(parties.map((party) => [party.key, party.size])).values()].reduce((sum, size) => sum + size, 0);
     for (const party of parties) {
@@ -232,8 +298,10 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
   }
 
   const countdown = setInterval(() => {
-    const forming = new Set([...servers].filter((server) => server.forming && !server.forming.sent).map((server) => server.forming.bucketId));
-    for (const bucketId of forming) announceQueue(bucketId);
+    // A region whose last server went away (its session ended) sends its waiting parties elsewhere.
+    if (waiting.length) placeWaiting();
+    const forming = new Set([...servers].filter((server) => server.forming && !server.forming.sent).map((server) => bucketKey(server.forming.bucketId)));
+    for (const key of forming) announceQueue(key);
   }, 1000);
   countdown.unref?.();
 
@@ -241,10 +309,10 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
   function placeWaiting() {
     const placed = new Set();
     for (let index = 0; index < waiting.length;) {
-      if (place(waiting[index])) placed.add(waiting.splice(index, 1)[0].ticket.bucketId);
+      if (place(waiting[index])) placed.add(queueKey(waiting.splice(index, 1)[0]));
       else index++;
     }
-    for (const bucketId of placed) announceQueue(bucketId);
+    for (const key of placed) announceQueue(key);
   }
 
   function assign(server) {
@@ -269,10 +337,11 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
     if (payload.result !== "ready") {
       say(`Session ${server.sessionId} refused match ${forming.matchId} (${payload.result}); its parties queue again`);
       servers.delete(server);
+      hosts.delete(server.sessionId);
       server.ws.close(1000);
       waiting.unshift(...forming.parties);
       placeWaiting();
-      announceQueue(forming.bucketId);
+      for (const key of new Set(forming.parties.map(queueKey))) announceQueue(key);
       return;
     }
     servers.delete(server);
@@ -285,8 +354,11 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
   }
 
   function acceptPlayer(ws, ticket) {
-    const party = { ticket, ws, size: sizeOf(ticket), members: [], key: `${ticket.bucketId}|${[...ticket.partyPlayerIds].sort().join(",")}` };
+    // A party's members may have picked different regions: the party is the same in any of them.
+    const party = { ticket, ws, size: sizeOf(ticket), members: [],
+      key: `${bucketKey(ticket.bucketId, { anyRegion: true })}|${[...ticket.partyPlayerIds].sort().join(",")}` };
     ws.on("close", () => {
+      const queue = queueKey(party);
       ws.closed = true;
       const index = waiting.indexOf(party);
       if (index >= 0) waiting.splice(index, 1);
@@ -302,19 +374,22 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
       }
       if (!party.done) {
         say(`${ticket.accountId} left the queue for bucket ${ticket.bucketId}`);
-        announceQueue(ticket.bucketId);
+        announceQueue(queue);
       }
     });
     ws.send(status("Connecting"));
     ws.send(status("Waiting", { totalPlayers: party.size, connectedPlayers: party.size }));
     say(`${ticket.accountId} (party of ${party.size}) queued for bucket ${ticket.bucketId}`);
     if (!place(party)) waiting.push(party);
-    if (!party.done) announceQueue(ticket.bucketId);
+    if (!party.done) announceQueue(queueKey(party));
   }
 
   function acceptServer(ws, ticket) {
-    const server = { sessionId: ticket.sessionId, accountId: ticket.accountId, patterns: ticket.bucketIds, maxPlayers: ticket.maxPlayers, ws, forming: null };
+    const regionField = serverRegion(ticket.bucketIds);
+    const server = { sessionId: ticket.sessionId, accountId: ticket.accountId, patterns: ticket.bucketIds, maxPlayers: ticket.maxPlayers, ws,
+      forming: null, regionField, region: regionField === null ? "any region" : regionOf(regionField) };
     servers.add(server);
+    hosts.set(server.sessionId, server);
     ws.on("message", (data) => {
       let parsed;
       try {
@@ -327,6 +402,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
     ws.on("close", () => {
       ws.closed = true;
       if (!servers.delete(server)) return;
+      hosts.delete(server.sessionId);
       say(`Session ${server.sessionId} left the matchmaking service`);
       if (server.forming && !server.forming.sent) {
         clearTimeout(server.forming.timer);
@@ -336,7 +412,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
       placeWaiting();
     });
     ws.send(message("Registered", {}));
-    say(`Session ${server.sessionId} registered for ${server.patterns.join(", ")} (${server.maxPlayers} players)`);
+    say(`Session ${server.sessionId} registered for ${server.patterns.join(", ")} (${regionName(server.region)}, ${server.maxPlayers} players)`);
     placeWaiting();
   }
 
@@ -369,7 +445,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
       for (const ws of sockets) ws.close(1001);
     },
     // Core's: what the launcher and the admin panel can show.
-    state: () => ({ servers: [...servers].map(({ sessionId, maxPlayers, forming }) => ({ sessionId, maxPlayers, forming: forming?.matchId ?? null })),
+    state: () => ({ servers: [...servers].map(({ sessionId, maxPlayers, forming, region }) => ({ sessionId, region, maxPlayers, forming: forming?.matchId ?? null })),
       waiting: waiting.length, matches: [...matches].map(([sessionId, { matchId, bucketId }]) => ({ sessionId, matchId, bucketId })) })
   };
 }

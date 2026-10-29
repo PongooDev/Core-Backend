@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { log } from "../log.js";
 import { createNetwork, normalizeAddress } from "../network.js";
+import { regionOf } from "./regions.js";
 
 // Every key the client's session parser requires (OnlineSessionJsonMcp, sub_37F59F0): a session missing one is dropped
 // with "Unable to read session settings!". buildUniqueId is read as a string.
@@ -46,6 +47,10 @@ const distance = (session, { key, value }) => {
   return typeof actual === "number" && typeof value === "number" ? Math.abs(actual - value) : Infinity;
 };
 
+// The client searches with REGION_s EQUAL its region (GetRegionId, as Battle Royale's bucket: regions.js), the server
+// registers REGION_s as its -McpRegion= is spelled; both compare as regions.
+const regionKey = "REGION_s";
+
 // A criterion type the search doesn't know matches nothing, so the search can never find a session: logged once a type.
 const unknownTypes = new Set();
 function matches(session, { type, key, value }) {
@@ -58,6 +63,7 @@ function matches(session, { type, key, value }) {
     }
     return false;
   }
+  if (key === regionKey) return test(regionOf(session.attributes?.[key]), Array.isArray(value) ? value.map(regionOf) : regionOf(value));
   return test(session.attributes?.[key], value);
 }
 
@@ -220,11 +226,23 @@ export function createSessionStore() {
       return sessions.delete(id);
     },
 
+    // Whether a search asks for a region no server of its build is in at all: {region} (null for "NONE"), or null.
+    // Such a search leaves its region out, so the player plays in another region instead of finding nothing however
+    // long they wait (Core-Backend #121).
+    regionFallback(request) {
+      const wanted = (Array.isArray(request?.criteria) ? request.criteria : []).find(({ type, key }) => type === "EQUAL" && key === regionKey);
+      if (!wanted) return null;
+      const region = regionOf(wanted.value);
+      const sameBuild = (session) => request?.buildUniqueId === undefined || String(request.buildUniqueId) === session.buildUniqueId;
+      return live().some((session) => sameBuild(session) && regionOf(session.attributes?.[regionKey]) === region) ? null : { region };
+    },
+
     // matchMakingRequest: {criteria: [{type, key, value}], requireDedicated, maxCurrentPlayers, minCurrentPlayers,
     // openPlayersRequired, excludePlayers, buildUniqueId, maxResults}. Criteria keys are attribute keys like REGION_s.
     search(request) {
       const excluded = new Set((request?.excludePlayers ?? []).map(String));
-      const criteria = Array.isArray(request?.criteria) ? request.criteria : [];
+      const anyRegion = this.regionFallback(request) !== null;
+      const criteria = (Array.isArray(request?.criteria) ? request.criteria : []).filter(({ key }) => !(anyRegion && key === regionKey));
       const nearness = criteria.filter(({ type }) => type === "DISTANCE");
       const results = live().filter((session) => {
         if (request?.requireDedicated && !session.isDedicated) return false;

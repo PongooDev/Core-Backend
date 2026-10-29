@@ -3,6 +3,7 @@ import { requireAuth } from "../../accounts/auth.js";
 import { requireLoopback } from "../../admin/local.js";
 import { notFound } from "../../errors.js";
 import { log } from "../../log.js";
+import { regionName } from "../../matchmaking/regions.js";
 import { sessionJson, sessionSummary } from "../../matchmaking/sessions.js";
 
 // OnlineSubsystemMcp's session API, with the verbs the Cert build sends (FOnlineSessionMcp, Session-Plan §5): servers
@@ -41,7 +42,12 @@ export function sessionRoutes({ tokens, sessions, network, emptyServerWaitMs = d
   });
 
   router.post(`${base}/matchMakingRequest`, auth, (req, res) => {
-    const answer = (found) => res.json(found.map((session) => sessionJson(session, req, network)));
+    const answer = (found) => {
+      // A region with no server is searched for in every region (sessions.regionFallback).
+      const fallback = found.length > 0 && sessions.regionFallback(req.body);
+      if (fallback) log("Matchmaking", `No server is registered for ${regionName(fallback.region)}: found ${found.length} in other regions`);
+      res.json(found.map((session) => sessionJson(session, req, network)));
+    };
     const found = sessions.search(req.body);
     if (found.length > 0 || !wantsEmptyServer(req.body) || !(emptyServerWaitMs > 0)) return answer(found);
 

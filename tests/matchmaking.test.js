@@ -274,6 +274,30 @@ test("addresses are what the client's session reader parses, and remote clients 
   assert.equal(sessionJson(remoteServer, viewer("::ffff:192.168.1.30", "::ffff:192.168.1.10")).serverAddress, "192.168.1.40");
 });
 
+test("the mission search compares regions, and one for a region with no server at all finds another region's (#121)", () => {
+  const store = createSessionStore();
+  const inRegion = (region) => ({ ...emptyServer, attributes: { ...emptyServer.attributes, REGION_s: region } });
+  const searchIn = (region) => ({ ...clientSearch, criteria: [{ type: "EQUAL", key: "REGION_s", value: region }, ...clientSearch.criteria.slice(1)] });
+  const na = store.create(inRegion("nae"), "127.0.0.1", "CoreServer1");
+  // A server started with -McpRegion=nae is NA's; nothing but NA has a server, so EU's search finds it.
+  assert.deepEqual(store.search(clientSearch).map(({ id }) => id), [na.id]);
+  assert.equal(store.regionFallback(clientSearch), null);
+  assert.deepEqual(store.search(searchIn("EU")).map(({ id }) => id), [na.id]);
+  assert.deepEqual(store.regionFallback(searchIn("EU")), { region: "EU" });
+  assert.deepEqual(store.regionFallback(searchIn("NONE")), { region: null });
+  // With an EU server running, even a busy one, EU's search is EU's only.
+  const eu = store.create(inRegion("EU"), "127.0.0.1", "CoreServer2");
+  assert.deepEqual(store.search(searchIn("EU")).map(({ id }) => id), [eu.id]);
+  store.update(eu.id, { attributes: { ...eu.attributes, GAMEMODE_s: "FORTPVE" } });
+  assert.deepEqual(store.search(searchIn("EU")), []);
+  assert.equal(store.regionFallback(searchIn("EU")), null);
+  // Another build's EU server doesn't count.
+  assert.deepEqual(store.regionFallback({ ...searchIn("EU"), buildUniqueId: "1" }), { region: "EU" });
+  // The other operators compare regions too (these ask for no game mode, so the busy server matches).
+  assert.deepEqual(store.search({ ...clientSearch, criteria: [{ type: "IN", key: "REGION_s", value: ["eu", "OCE"] }] }).map(({ id }) => id), [eu.id]);
+  assert.deepEqual(store.search({ ...clientSearch, criteria: [{ type: "NOT_EQUAL", key: "REGION_s", value: "EU" }] }).map(({ id }) => id), [na.id]);
+});
+
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const timed = async (promise) => {
   const started = Date.now();
