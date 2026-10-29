@@ -3392,6 +3392,37 @@
           })()),
 
         el("section", { class: "panel", style: "margin-top:16px" },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" },
+            el("div", { class: "actions" },
+              el("h2", { text: "Battle Royale Matchmaking" }),
+              chip(`${settings.matchmakingGatherSeconds ?? 10} s to gather`, "sky"),
+              chip(settings.warmupSeconds ? `${settings.warmupSeconds} s warmup` : "Game's warmup", settings.warmupSeconds ? "good" : undefined),
+              settings.lateJoin ? chip("Late joining", "good") : chip("No late joining"))),
+          el("p", { class: "note", text: "Gather time: how long a match forming on a free gameserver waits for more parties after the first one readies up, which is the ETA the queue counts down. Warmup: how long players stay on the warmup island before the Battle Bus leaves (blank for the game's own). Late joining: while a match is still in its warmup, players who queue for the same playlist and region join it instead of waiting for a new one, until 15 seconds before the bus. Warmup and late joining need a Core V2 gameserver; a change reaches a running one within 30 seconds, before its warmup starts." }),
+          (() => {
+            const gather = el("input", { class: "field num", type: "number", min: 0, max: 300, value: settings.matchmakingGatherSeconds ?? 10, "aria-label": "Gather time in seconds" });
+            const warmup = el("input", { class: "field num", type: "number", min: 10, max: 1800, value: settings.warmupSeconds ?? "", placeholder: "Game's", "aria-label": "Warmup in seconds" });
+            return el("div", {},
+              el("div", { class: "actions", style: "margin-top:12px; align-items:center; gap:8px; flex-wrap:wrap;" },
+                el("span", { class: "muted", text: "Gather time (s)" }), gather,
+                el("span", { class: "muted", text: "Warmup (s)" }), warmup,
+                btn("Save times", () => {
+                  const gatherSeconds = Number(gather.value);
+                  const warmupSeconds = warmup.value.trim() === "" ? null : Number(warmup.value);
+                  if (!Number.isInteger(gatherSeconds) || gatherSeconds < 0 || gatherSeconds > 300) return toast("The gather time must be a whole number of seconds from 0 to 300", true);
+                  if (warmupSeconds !== null && (!Number.isInteger(warmupSeconds) || warmupSeconds < 10 || warmupSeconds > 1800)) {
+                    return toast("The warmup must be a whole number of seconds from 10 to 1800, or blank", true);
+                  }
+                  save({ matchmakingGatherSeconds: gatherSeconds, warmupSeconds },
+                    `Matchmaking: ${gatherSeconds} s to gather, ${warmupSeconds === null ? "the game's warmup" : `${warmupSeconds} s warmup`}`);
+                }, "primary")),
+              el("div", { class: "actions", style: "margin-top:12px; align-items:center; gap:8px;" },
+                el("span", { class: "muted", text: "Late joining during the warmup" }),
+                toggleSwitch(settings.lateJoin === true, (checked) =>
+                  save({ lateJoin: checked }, checked ? "Players can join a match during its warmup" : "Late joining turned off"))));
+          })()),
+
+        el("section", { class: "panel", style: "margin-top:16px" },
           (() => {
             const own = settings.structureLimits ?? {};
             const custom = settings.structureLimit || Object.keys(own).length;

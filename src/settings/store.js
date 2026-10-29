@@ -25,6 +25,13 @@ const defaults = {
   // gameserver asks for each player before it runs their "cheat" command, and again every 30 seconds.
   cheats: "everyone",
   cheatAccounts: [],
+  // Battle Royale's matchmaking waits (Core-Backend #122, matchmaking/service.js and services/matchmaking/warmup.js):
+  // how long a match forming on a free gameserver takes in more parties before it is assigned (the ETA the queue counts
+  // down), how long the warmup island lasts before the bus leaves on a CoreV2 gameserver (null: the game's own), and
+  // whether a match takes more parties during its warmup (late joining, CoreV2's gameserver opening it).
+  matchmakingGatherSeconds: 10,
+  warmupSeconds: null,
+  lateJoin: false,
   allowedHostingIps: ["127.0.0.1", "::1"]
 };
 
@@ -79,6 +86,21 @@ function structureLimits(limits, current = {}) {
   return result;
 }
 
+// The matchmaking waits: a gather time from 0 to maxGatherSeconds, a warmup from minWarmupSeconds to maxWarmupSeconds
+// or null for the game's own (blank clears it), undefined for anything else.
+export const maxGatherSeconds = 300;
+export const minWarmupSeconds = 10;
+export const maxWarmupSeconds = 1800;
+function gatherSeconds(value) {
+  const seconds = typeof value === "string" && value.trim() ? Number(value) : value;
+  return Number.isInteger(seconds) && seconds >= 0 && seconds <= maxGatherSeconds ? seconds : undefined;
+}
+function warmupSecondsValue(value) {
+  if (value === null || (typeof value === "string" && !value.trim())) return null;
+  const seconds = typeof value === "string" ? Number(value) : value;
+  return Number.isInteger(seconds) && seconds >= minWarmupSeconds && seconds <= maxWarmupSeconds ? seconds : undefined;
+}
+
 // A reward amount: a whole number of V-Bucks from 0 to maxReward, or undefined for anything else.
 const maxReward = 100000;
 function rewardAmount(value) {
@@ -101,6 +123,9 @@ export function createSettingsStore(dataDir) {
       settings.structureLimits = structureLimits(loaded.structureLimits);
       settings.cheats = cheatMode(loaded.cheats) ?? defaults.cheats;
       settings.cheatAccounts = cheatAccounts(loaded.cheatAccounts) ?? [];
+      settings.matchmakingGatherSeconds = gatherSeconds(loaded.matchmakingGatherSeconds) ?? defaults.matchmakingGatherSeconds;
+      settings.warmupSeconds = warmupSecondsValue(loaded.warmupSeconds) ?? null;
+      settings.lateJoin = loaded.lateJoin === true;
       if (Array.isArray(loaded.allowedHostingIps)) {
         settings.allowedHostingIps = [...loaded.allowedHostingIps];
       }
@@ -185,6 +210,10 @@ export function createSettingsStore(dataDir) {
       settings.structureLimits = structureLimits(partial.structureLimits, settings.structureLimits);
       settings.cheats = cheatMode(partial.cheats) ?? settings.cheats;
       settings.cheatAccounts = cheatAccounts(partial.cheatAccounts) ?? settings.cheatAccounts;
+      settings.matchmakingGatherSeconds = gatherSeconds(partial.matchmakingGatherSeconds) ?? settings.matchmakingGatherSeconds;
+      const warmup = warmupSecondsValue(partial.warmupSeconds);
+      if (partial.warmupSeconds !== undefined && warmup !== undefined) settings.warmupSeconds = warmup;
+      if (typeof partial.lateJoin === "boolean") settings.lateJoin = partial.lateJoin;
       if (Array.isArray(partial.allowedHostingIps)) {
         settings.allowedHostingIps = [...new Set(partial.allowedHostingIps.filter((ip) => typeof ip === "string" && ip.trim()))];
       }

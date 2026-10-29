@@ -23,7 +23,8 @@ import { regionName, regionOf } from "./regions.js";
 const ticketTypes = { player: "mms-player", session: "mms-session" };
 // How long a match on a registered server takes in more parties before it is assigned. Once assigned, the server's
 // match holds only those players (OnGivenMatchAssignment sets MaxPlayerCount to the beacon's reservations: "Match is
-// full" for anyone else), so friends who queue a few seconds apart still share a match.
+// full" for anyone else), so friends who queue a few seconds apart still share a match. The admin panel's Matchmaking
+// settings change it (matchmakingGatherSeconds, Core-Backend #122); the queue's ETA counts it down.
 export const defaultGatherMs = 10_000;
 // How long a party's other members (each with their own ticket) are sent after the first.
 const partyMemberMs = 2 * 60 * 1000;
@@ -35,6 +36,19 @@ const matchOptions = { "match.option.warmupRequiredPlayerCount": "1" };
 // GetMaxTeamInfoForPlaylist 0x79B690, the same): Solo 2 is 100 teams of 1, Duo 10 100 of 2, Squad 9 100 of 4. Playlists
 // 0 (1×4), 1 (2×5) and 99 (1×1) aren't Battle Royale's.
 const teamSizes = { 0: 4, 1: 5, 2: 1, 9: 4, 10: 2, 99: 1 };
+// Late joining (Core-Backend #122, the admin panel's Matchmaking settings). The servers' MMS client (1.9
+// MatchmakingServiceDedicatedServer 0x3BF2730) knows only Registered, AssignMatch and UnassignMatch, takes an
+// AssignMatch only while Registered, and leaves the service once its match is assigned (0x709370), so the protocol has
+// no way to add parties to a match. CoreV2's gameserver opens its match itself: during the warmup it raises the game
+// mode's MaxPlayerCount, gives each player who joins a team, and reports its players and the warmup's time left every
+// second (POST matchmakingservice/warmup, services/matchmaking/warmup.js). While it does, a party queuing for the
+// match's bucket is sent straight there. A party isn't sent once less than lateJoinMarginMs of the warmup is left: it
+// has to load the map before the bus leaves ("Match has started" after that, PreLogin 0x4319F0). A match whose server
+// stopped reporting for lateJoinStaleMs takes nobody; a party sent counts against the match's room until its players
+// connect, or for lateArrivalMs.
+const lateJoinMarginMs = 15_000;
+const lateJoinStaleMs = 5_000;
+const lateArrivalMs = 60_000;
 
 export function parseBucket(bucketId) {
   const parts = String(bucketId ?? "").split(":");
@@ -123,8 +137,14 @@ const message = (name, payload) => JSON.stringify({ name, payload });
 const status = (state, fields = {}) => message("StatusUpdate", { ...fields, state });
 const newId = () => crypto.randomUUID().replaceAll("-", "");
 
-export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet = false }) {
+// gatherMs: a number, or a function asked each time a match forms (the admin panel's setting). lateJoin: whether
+// matches in their warmup take more parties, asked each time.
+export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoin = () => false, quiet = false }) {
   const say = quiet ? () => {} : (text) => log("Matchmaking", text);
+  const gatherOf = () => {
+    const value = typeof gatherMs === "function" ? gatherMs() : gatherMs;
+    return Number.isFinite(value) && value >= 0 ? value : defaultGatherMs;
+  };
   const secret = crypto.randomBytes(32);
   const sign = (payload) => crypto.createHmac("sha256", secret).update(payload).digest("base64");
 
@@ -132,8 +152,11 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
   const servers = new Set();
   // Parties waiting for a server: {ticket, ws, size}.
   const waiting = [];
-  // Assigned matches by session id: {matchId, bucketId, assigned, parties}.
+  // Assigned matches by session id: {matchId, bucketId, assigned, parties, players, maxPlayers}.
   const matches = new Map();
+  // Matches in their warmup that take late parties, by session id: {matchId, bucketId, maxPlayers, players (the
+  // accounts connected, as the server reported them), heard, until, parties: [{key, players, size, sent}]}.
+  const lateJoins = new Map();
   // Every server whose region counts as having a server, by session id: the registered ones and those hosting a match
   // (they register again once it ends), until their session goes.
   const hosts = new Map();
@@ -223,6 +246,13 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
     }
     const key = bucketKey(bucketId, { anyRegion });
 
+    // A match still in its warmup takes the party, unless the party's other members are already in a forming match.
+    const late = ![...servers].some((server) => server.forming?.parties.some((entry) => entry.key === party.key)) && lateJoinFor(party, key, anyRegion);
+    if (late) {
+      joinLate(party, ...late);
+      return true;
+    }
+
     for (const server of servers) {
       const forming = server.forming;
       // The party's other members' tickets join the party already in the match.
@@ -245,8 +275,8 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
       // The match is the server's region's: AssignMatch's bucketId names it as the server does (the server takes its
       // MatchmakingRegionId from it, 1.7.2 0x6D78E0), and its region's players join it.
       const matchBucket = server.regionField ? withRegion(bucketId, server.regionField) : bucketId;
-      server.forming = { matchId: newId(), bucketId: matchBucket, parties: [party], players: party.size, started: Date.now() };
-      server.forming.timer = setTimeout(() => assign(server), gatherMs);
+      server.forming = { matchId: newId(), bucketId: matchBucket, parties: [party], players: party.size, started: Date.now(), gatherMs: gatherOf() };
+      server.forming.timer = setTimeout(() => assign(server), server.forming.gatherMs);
       server.forming.timer.unref?.();
       say(`Match ${server.forming.matchId} forms on session ${server.sessionId} for bucket ${matchBucket}` +
         (matchBucket === bucketId ? "" : ` (${party.ticket.accountId} queued for ${bucketId})`));
@@ -276,7 +306,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
   function remainingMs(party) {
     for (const server of servers) {
       const forming = server.forming;
-      if (forming && !forming.sent && forming.parties.includes(party)) return forming.started + gatherMs + playDelayMs - Date.now();
+      if (forming && !forming.sent && forming.parties.includes(party)) return forming.started + forming.gatherMs + playDelayMs - Date.now();
     }
     return 0;
   }
@@ -348,9 +378,78 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
     // The server starts the match on the socket's normal close (status 1000).
     server.ws.close(1000);
     matches.set(server.sessionId, { matchId: forming.matchId, bucketId: forming.bucketId, assigned: Date.now(),
-      parties: new Set(forming.parties.map((party) => party.key)) });
+      parties: new Set(forming.parties.map((party) => party.key)), players: new Set(forming.parties.flatMap((party) => party.ticket.partyPlayerIds)),
+      maxPlayers: server.maxPlayers });
     for (const party of forming.parties) play(party, server.sessionId, forming.matchId);
     placeWaiting();
+  }
+
+  // The match in its warmup a party goes to: the one its party's earlier member was sent to, else (late joining on) one
+  // for the party's queue with room and enough of its warmup left. [sessionId, open] or null.
+  function lateJoinFor(party, key, anyRegion) {
+    const now = Date.now();
+    for (const [sessionId, open] of lateJoins) {
+      if (!sessions.get(sessionId) || now - open.heard > lateJoinStaleMs) lateJoins.delete(sessionId);
+      else if (open.parties.some((entry) => entry.key === party.key)) return [sessionId, open];
+    }
+    if (!lateJoin()) return null;
+    for (const [sessionId, open] of lateJoins) {
+      const pending = open.parties.filter((entry) => now - entry.sent < lateArrivalMs).flatMap((entry) => entry.players).filter((id) => !open.players.has(id)).length;
+      if (open.until - now >= lateJoinMarginMs && bucketKey(open.bucketId, { anyRegion }) === key && open.players.size + pending + party.size <= open.maxPlayers) {
+        return [sessionId, open];
+      }
+    }
+    return null;
+  }
+
+  function joinLate(party, sessionId, open) {
+    if (open.parties.some((entry) => entry.key === party.key)) {
+      say(`${party.ticket.accountId} follows their party to match ${open.matchId} in its warmup (session ${sessionId})`);
+    } else {
+      open.parties.push({ key: party.key, players: [...party.ticket.partyPlayerIds], size: party.size, sent: Date.now() });
+      say(`${party.ticket.accountId} (party of ${party.size}) joins match ${open.matchId} in its warmup, ${Math.round((open.until - Date.now()) / 1000)} s left (session ${sessionId})`);
+    }
+    matches.get(sessionId)?.parties.add(party.key);
+    play(party, sessionId, open.matchId);
+  }
+
+  // The session of the match whose players these are: one taking late parties, else one this service assigned.
+  function matchSessionOf(accountIds) {
+    const ids = new Set(accountIds);
+    for (const [sessionId, open] of lateJoins) {
+      if ([...open.players, ...open.parties.flatMap((entry) => entry.players)].some((id) => ids.has(id))) return sessionId;
+    }
+    for (const [sessionId, match] of matches) {
+      if ([...match.players].some((id) => ids.has(id))) return sessionId;
+    }
+    return null;
+  }
+
+  // A Core gameserver's report during its match's warmup: the accounts connected to it, whether it takes late parties
+  // and how long its warmup has left. {sessionId, open, maxPlayers, parties: [[accountId]]} (the late parties sent there,
+  // for the server to keep each party on one team), or null for a match this service doesn't know.
+  function warmup({ accountIds, open, secondsLeft }) {
+    const sessionId = matchSessionOf(accountIds);
+    if (!sessionId || !sessions.get(sessionId)) return null;
+    const match = matches.get(sessionId);
+    let entry = lateJoins.get(sessionId);
+    if (!open || !lateJoin() || !(secondsLeft > 0)) {
+      if (lateJoins.delete(sessionId)) say(`Match ${entry.matchId} (session ${sessionId}) takes no more parties`);
+      return { sessionId, open: false, maxPlayers: entry?.maxPlayers ?? match?.maxPlayers ?? null, parties: entry?.parties.map((party) => party.players) ?? [] };
+    }
+    if (!entry) {
+      if (!match) return { sessionId, open: false, maxPlayers: null, parties: [] };
+      const session = sessions.get(sessionId);
+      entry = { matchId: match.matchId, bucketId: match.bucketId, maxPlayers: match.maxPlayers || session.maxPublicPlayers + session.maxPrivatePlayers, parties: [] };
+      lateJoins.set(sessionId, entry);
+      say(`Match ${entry.matchId} (session ${sessionId}, bucket ${entry.bucketId}) takes late parties during its warmup, up to ${entry.maxPlayers} players`);
+    }
+    const now = Date.now();
+    entry.players = new Set(accountIds);
+    entry.heard = now;
+    entry.until = now + secondsLeft * 1000;
+    placeWaiting();
+    return { sessionId, open: true, maxPlayers: entry.maxPlayers, parties: entry.parties.map((party) => party.players) };
   }
 
   function acceptPlayer(ws, ticket) {
@@ -440,12 +539,15 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, quiet =
     readTicket,
     isMatchmakingUpgrade: (req) => String(req.headers.authorization ?? "").startsWith("Epic-Signed "),
     handleUpgrade,
+    warmup,
     closeAll() {
       clearInterval(countdown);
       for (const ws of sockets) ws.close(1001);
     },
     // Core's: what the launcher and the admin panel can show.
     state: () => ({ servers: [...servers].map(({ sessionId, maxPlayers, forming, region }) => ({ sessionId, region, maxPlayers, forming: forming?.matchId ?? null })),
-      waiting: waiting.length, matches: [...matches].map(([sessionId, { matchId, bucketId }]) => ({ sessionId, matchId, bucketId })) })
+      waiting: waiting.length, matches: [...matches].map(([sessionId, { matchId, bucketId }]) => ({ sessionId, matchId, bucketId })),
+      lateJoin: [...lateJoins].map(([sessionId, { matchId, players, maxPlayers, until }]) => ({ sessionId, matchId, players: players.size, maxPlayers,
+        secondsLeft: Math.max(0, Math.round((until - Date.now()) / 1000)) })) })
   };
 }

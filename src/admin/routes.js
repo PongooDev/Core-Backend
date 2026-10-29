@@ -696,6 +696,9 @@ export function adminRoutes(context) {
       structureLimits: req.body?.structureLimits,
       cheats: req.body?.cheats,
       cheatAccounts: req.body?.cheatAccounts,
+      matchmakingGatherSeconds: req.body?.matchmakingGatherSeconds,
+      warmupSeconds: req.body?.warmupSeconds,
+      lateJoin: req.body?.lateJoin,
       allowedHostingIps: req.body?.allowedHostingIps
     });
     const net = network?.settings?.() ?? {};

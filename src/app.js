@@ -49,6 +49,7 @@ import { friendsRoutes } from "./services/friends/lists.js";
 import { lightswitchRoutes } from "./services/lightswitch/status.js";
 import { sessionRoutes } from "./services/matchmaking/sessions.js";
 import { ticketRoutes } from "./services/matchmaking/ticket.js";
+import { warmupRoutes } from "./services/matchmaking/warmup.js";
 import { profileRoutes } from "./services/mcp/profile.js";
 import { replayRoutes } from "./services/replay/replays.js";
 import { createStompService } from "./stomp/service.js";
@@ -64,7 +65,8 @@ export function createContext(config) {
   if (config.allowRegistration !== undefined) settings.update({ allowRegistration: config.allowRegistration });
   if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
   if (config.seasonalEvents !== undefined) settings.update({ seasonalEvents: config.seasonalEvents });
-  for (const key of ["battleRoyaleVbucks", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits", "cheats", "cheatAccounts"]) {
+  for (const key of ["battleRoyaleVbucks", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits", "cheats", "cheatAccounts",
+    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin"]) {
     if (config[key] !== undefined) settings.update({ [key]: config[key] });
   }
   const friends = createFriendStore(config.dataDir);
@@ -90,7 +92,9 @@ export function createContext(config) {
     primaryMissions: createPrimaryMissions(),
     heldScores: createHeldScores({ waitMs: config.earnScoreWaitMs }),
     sessions,
-    matchmaker: createMatchmaker({ sessions, gatherMs: config.matchmakingGatherMs, quiet: config.requestLog === false }),
+    // config.matchmakingGatherMs (the tests') wins over the admin panel's gather time.
+    matchmaker: createMatchmaker({ sessions, gatherMs: config.matchmakingGatherMs ?? (() => settings.get().matchmakingGatherSeconds * 1000),
+      lateJoin: () => settings.get().lateJoin === true, quiet: config.requestLog === false }),
     network: createNetwork(config),
     emptyServerWaitMs: config.emptyServerWaitMs,
     stomp: createStompService({ tokens, quiet: config.requestLog === false }),
@@ -138,6 +142,7 @@ export function createApp(config, context = createContext(config)) {
   app.use(receiptRoutes(context));
   app.use(sessionRoutes(context));
   app.use(ticketRoutes(context));
+  app.use(warmupRoutes(context));
   app.use(storefrontRoutes(context));
   app.use(chatRoutes(context));
   app.use(statsRoutes(context));

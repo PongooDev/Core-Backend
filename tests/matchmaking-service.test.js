@@ -1,10 +1,13 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import crypto from "node:crypto";
+import fs from "node:fs";
 import http from "node:http";
+import os from "node:os";
+import path from "node:path";
 import { bucketKey, bucketMatches, estimatedWaitSec, formTeams, parseBucket, serverRegion, teamSizeOf, withRegion } from "../src/matchmaking/service.js";
 import { regionOf } from "../src/matchmaking/regions.js";
-import { del, get, post, startBackend, userLogin } from "./helpers.js";
+import { dedicatedServerToken, del, get, post, startBackend, userLogin } from "./helpers.js";
 
 // MatchmakingServiceClient's connection: a WebSocket with the ticket in its Authorization header, which the browser-style
 // WebSocket can't send. Server frames are unmasked text; client frames are masked.
@@ -360,6 +363,154 @@ test("a player from a region with no server shares a forming match with that ser
     const assign = await nextOf(na.connection, "AssignMatch");
     assert.deepEqual(assign.payload.teams, [[[american.accountId], [brazilian.accountId]]]);
     assert.equal(assign.payload.bucketId, "858118782:0:NA:10");
+  } finally {
+    for (const connection of connections) connection.close();
+    backend.close();
+  }
+});
+
+// Core-Backend #122: the admin panel's matchmaking waits, and late joining during a CoreV2 gameserver's warmup
+// (services/matchmaking/warmup.js).
+const settingsOf = (backend, body) => (body === undefined ? get(backend.port, "/admin/api/settings") : post(backend.port, "/admin/api/settings", undefined, body));
+const reportWarmup = (backend, token, body) => post(backend.port, "/fortnite/api/game/v2/matchmakingservice/warmup", token, body);
+
+// A party queued for Duos in NA, past Connecting and Waiting: one member's ticket (party: the party's players).
+async function queueParty(backend, player, party = [player]) {
+  const ticket = await get(backend.port, `/fortnite/api/game/v2/matchmakingservice/ticket/player/${player.accountId}?partyPlayerIds=` +
+    `${party.map(({ accountId }) => accountId).join(",")}&bucketId=858118782:0:NA:10&player.platform=Windows`, player.token);
+  const connection = await matchmakingClient(backend.port, authorizationOf(ticket.body));
+  for (let index = 0; index < 2; index++) await connection.next();
+  return connection;
+}
+
+test("the gather time, warmup and late joining are settings, kept over a restart and set from config.json (#122)", async () => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-backend-mmwait-"));
+  let backend = await startBackend({ dataDir });
+  try {
+    let saved = (await settingsOf(backend)).body;
+    // Today's behaviour: 10 s to gather, the game's warmup, no late joining.
+    assert.deepEqual([saved.matchmakingGatherSeconds, saved.warmupSeconds, saved.lateJoin], [10, null, false]);
+    saved = (await settingsOf(backend, { matchmakingGatherSeconds: "25", warmupSeconds: 90, lateJoin: true })).body;
+    assert.deepEqual([saved.matchmakingGatherSeconds, saved.warmupSeconds, saved.lateJoin], [25, 90, true]);
+    // Out of range or not a whole number: ignored.
+    saved = (await settingsOf(backend, { matchmakingGatherSeconds: 301, warmupSeconds: 5, lateJoin: "yes" })).body;
+    assert.deepEqual([saved.matchmakingGatherSeconds, saved.warmupSeconds, saved.lateJoin], [25, 90, true]);
+    saved = (await settingsOf(backend, { matchmakingGatherSeconds: 1.5, warmupSeconds: 1801 })).body;
+    assert.deepEqual([saved.matchmakingGatherSeconds, saved.warmupSeconds], [25, 90]);
+    backend.close();
+    backend = await startBackend({ dataDir });
+    saved = (await settingsOf(backend)).body;
+    assert.deepEqual([saved.matchmakingGatherSeconds, saved.warmupSeconds, saved.lateJoin], [25, 90, true]);
+    // A blank warmup is the game's again.
+    saved = (await settingsOf(backend, { warmupSeconds: "" })).body;
+    assert.equal(saved.warmupSeconds, null);
+  } finally {
+    backend.close();
+  }
+
+  backend = await startBackend({ matchmakingGatherSeconds: 0, warmupSeconds: 45, lateJoin: true });
+  try {
+    const saved = (await settingsOf(backend)).body;
+    assert.deepEqual([saved.matchmakingGatherSeconds, saved.warmupSeconds, saved.lateJoin], [0, 45, true]);
+  } finally {
+    backend.close();
+  }
+});
+
+test("a match forms for the panel's gather time, which is the queue's ETA (#122)", async () => {
+  const backend = await startBackend();
+  const connections = [];
+  try {
+    await settingsOf(backend, { matchmakingGatherSeconds: 3 });
+    const na = await regionServer(backend, "CoreServer1", "NA");
+    connections.push(na.connection);
+    const player = await userLogin(backend.port, "GatherPlayer");
+    const started = Date.now();
+    const connection = await queueParty(backend, player);
+    connections.push(connection);
+    // 3 s to gather, and 1 s more before Play.
+    assert.equal(JSON.parse(await connection.next()).payload.estimatedWaitSec, 4);
+    await nextOf(na.connection, "AssignMatch");
+    const took = Date.now() - started;
+    assert.ok(took >= 2800 && took < 4500, `assigned after ${took} ms`);
+  } finally {
+    for (const connection of connections) connection.close();
+    backend.close();
+  }
+});
+
+test("only a gameserver reports its warmup, and hears the warmup time (#122)", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "WarmupPlayer");
+    assert.equal((await reportWarmup(backend, player.token, { phase: "Setup", accountIds: [] })).status, 403);
+    assert.equal((await reportWarmup(backend, undefined, { phase: "Setup" })).status, 401);
+    const token = await dedicatedServerToken(backend.port);
+    assert.deepEqual((await reportWarmup(backend, token, { phase: "Setup", accountIds: [] })).body,
+      { warmupSeconds: null, lateJoin: false, sessionId: null, open: false, maxPlayers: null, parties: [] });
+    await settingsOf(backend, { warmupSeconds: 120 });
+    assert.equal((await reportWarmup(backend, token, { phase: "Setup", accountIds: [] })).body.warmupSeconds, 120);
+  } finally {
+    backend.close();
+  }
+});
+
+test("with late joining on, a match in its warmup takes the parties that queue after it (#122)", async () => {
+  const backend = await startBackend({ matchmakingGatherMs: 200 });
+  const connections = [];
+  try {
+    const token = await dedicatedServerToken(backend.port);
+    const na = await regionServer(backend, "CoreServer1", "NA");
+    connections.push(na.connection);
+    const first = await userLogin(backend.port, "LateFirst");
+    connections.push(await queueParty(backend, first));
+    const assign = await nextOf(na.connection, "AssignMatch");
+    na.connection.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: assign.payload.matchId, result: "ready" } }));
+    assert.equal(await na.connection.next(), null);
+
+    // Off (the default), the server's report opens nothing, and a party that queues waits for a free server.
+    let answer = (await reportWarmup(backend, token, { phase: "Warmup", accountIds: [first.accountId], secondsLeft: 60 })).body;
+    assert.deepEqual([answer.sessionId, answer.open, answer.lateJoin], [na.session.id, false, false]);
+    const waiter = await userLogin(backend.port, "LateWaiter");
+    const waiting = await queueParty(backend, waiter);
+    connections.push(waiting);
+    assert.equal(JSON.parse(await waiting.next()).payload.state, "Queued");
+
+    // On, the match opens, and the waiting party is sent to it straight away.
+    await settingsOf(backend, { lateJoin: true });
+    answer = (await reportWarmup(backend, token, { phase: "Warmup", accountIds: [first.accountId], secondsLeft: 60 })).body;
+    assert.deepEqual([answer.sessionId, answer.open, answer.maxPlayers], [na.session.id, true, 100]);
+    const play = await nextOf(waiting, "Play");
+    assert.deepEqual([play.payload.sessionId, play.payload.matchId], [na.session.id, assign.payload.matchId]);
+
+    // A party's members, each with their own ticket, go together, the second even once late joining is off; the report
+    // names the parties sent, for the server's teams.
+    const leader = await userLogin(backend.port, "LateLeader");
+    const mate = await userLogin(backend.port, "LateMate");
+    const leaderConnection = await queueParty(backend, leader, [leader, mate]);
+    connections.push(leaderConnection);
+    assert.equal((await nextOf(leaderConnection, "Play")).payload.sessionId, na.session.id);
+    await settingsOf(backend, { lateJoin: false });
+    const mateConnection = await queueParty(backend, mate, [leader, mate]);
+    connections.push(mateConnection);
+    assert.equal((await nextOf(mateConnection, "Play")).payload.sessionId, na.session.id);
+    await settingsOf(backend, { lateJoin: true });
+    answer = (await reportWarmup(backend, token, { phase: "Warmup", accountIds: [first.accountId, waiter.accountId], secondsLeft: 50 })).body;
+    assert.deepEqual(answer.parties, [[waiter.accountId], [leader.accountId, mate.accountId]]);
+
+    // Too little of the warmup left to load in: a party waits for a new match.
+    await reportWarmup(backend, token, { phase: "Warmup", accountIds: [first.accountId, waiter.accountId, leader.accountId], secondsLeft: 10 });
+    const tooLate = await userLogin(backend.port, "LateTooLate");
+    const tooLateConnection = await queueParty(backend, tooLate);
+    connections.push(tooLateConnection);
+    assert.equal(JSON.parse(await tooLateConnection.next()).payload.state, "Queued");
+    // Once the bus has left the match takes nobody, even with time reported.
+    answer = (await reportWarmup(backend, token, { phase: "Aircraft", accountIds: [first.accountId], secondsLeft: 0 })).body;
+    assert.deepEqual([answer.sessionId, answer.open], [na.session.id, false]);
+    // The next free server takes the party that waited.
+    const next = await regionServer(backend, "CoreServer2", "NA");
+    connections.push(next.connection);
+    assert.deepEqual((await nextOf(next.connection, "AssignMatch")).payload.teams, [[[tooLate.accountId]]]);
   } finally {
     for (const connection of connections) connection.close();
     backend.close();
