@@ -13,6 +13,12 @@ import { getBuild, versionOf } from "../../builds/detect.js";
 // {title, body}. The host can set either in config.json: "battleRoyaleNews" / "loginMessage": {"title": ..., "body": ...};
 // "{version}" in either becomes the version of the build asking (its User-Agent's changelist), as the defaults show it
 // (Core-Backend #68: 1.8 said 1.7.2).
+// 1.9 (CL-3757339) reads the news box from an array instead (UCMSContext::GetLatestNews 0x2DF8480 → 0x2E147E0):
+// battleRoyaleNews.news.messages[], each {title, body, image} (0x2DDAA80), then the region_messages and
+// platform_messages entries' whole message the same way; it no longer reads news.message, so 1.9 showed an empty News
+// tab (Core-Backend #117). UFortAthenaNewsWidget (0x2EC3D60 → 0x2ED5C20) shows the first three, collapsing an empty
+// title or body and an image the CMS cache hasn't precached. Builds before 1.9 get news.message alone, as before; a
+// build Core doesn't know that is newer than 1.9 gets the array.
 // The mode select screen's descriptions next to Save the World and Battle Royale (0x3018C70 body, 0x301A360 title, both
 // through 0x30184B0) read subgameselectdata.{saveTheWorld | battleRoyale}.message {title, body} (Core-Backend #63);
 // saveTheWorldUnowned is for players without Save the World, whom Core doesn't have. The title is the short line in the
@@ -89,12 +95,25 @@ export function subgameSelectFor(changelist, configured = undefined) {
   };
 }
 
+// The first build that reads battleRoyaleNews.news.messages[] (Core-Backend #117).
+export const newsMessagesBuild = 3757339;
+
+const readsNewsMessages = (changelist) => /^\d+$/.test(changelist ?? "") && Number(changelist) >= newsMessagesBuild;
+
+export function battleRoyaleNewsFor(news, changelist) {
+  const message = messageOf(news, defaultBattleRoyaleNews, changelist);
+  if (readsNewsMessages(changelist)) {
+    return { news: { messages: [{ ...message, image: "" }], region_messages: [], platform_messages: [] } };
+  }
+  return { news: { message, region_messages: [], platform_messages: [] } };
+}
+
 export function contentPage(news = defaultBattleRoyaleNews, loginMessage = defaultLoginMessage, changelist = undefined, subgameSelect = undefined) {
   const page = {
     _title: "Fortnite Game",
     lastModified: "2026-10-27T16:30:00.000Z",
     _images_: [],
-    battleRoyaleNews: { news: { message: messageOf(news, defaultBattleRoyaleNews, changelist), region_messages: [], platform_messages: [] } },
+    battleRoyaleNews: battleRoyaleNewsFor(news, changelist),
     subgameselectdata: subgameSelectFor(changelist, subgameSelect)
   };
   if (loginMessage) {

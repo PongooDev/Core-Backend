@@ -158,3 +158,54 @@ test("config.json's loginMessageEnabled turns the login message off until the pa
     backend.close();
   }
 });
+
+test("1.9 gets the lobby news as battleRoyaleNews.news.messages[], earlier builds keep news.message, and the panel's text reaches both (#117)", async () => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-news-19-test-"));
+  const backend = await startBackend({ dataDir });
+  try {
+    // 1.9 (CL-3757339) reads news.messages[] ({title, body, image}) and no longer news.message.
+    const default19 = (await pageFor(backend.port, "3757339")).body.battleRoyaleNews.news;
+    assert.deepEqual(default19.messages, [{ title: "Battle Royale - 1.9", body: "Welcome to Battle Royale on Core!", image: "" }]);
+    assert.equal(default19.message, undefined);
+    assert.deepEqual(default19.region_messages, []);
+    assert.deepEqual(default19.platform_messages, []);
+    // A build newer than 1.9 that Core doesn't know reads the array too.
+    assert.equal((await pageFor(backend.port, "3790078")).body.battleRoyaleNews.news.messages[0].title, "Battle Royale - CL-3790078");
+
+    // Earlier builds are unchanged: news.message alone.
+    for (const [changelist, version] of [["3700114", "1.7.2"], ["3724489", "1.8"], ["3729133", "1.8.1"], ["3741772", "1.8.2"]]) {
+      const news = (await pageFor(backend.port, changelist)).body.battleRoyaleNews.news;
+      assert.deepEqual(news, {
+        message: { title: `Battle Royale - ${version}`, body: "Welcome to Battle Royale on Core!" },
+        region_messages: [],
+        platform_messages: []
+      });
+    }
+
+    // The admin panel's news text flows into both shapes.
+    await admin(backend, "/news", { battleRoyaleNews: { title: "Special Event {version}", body: "Double XP weekend!" } });
+    assert.deepEqual((await pageFor(backend.port, "3757339")).body.battleRoyaleNews.news.messages,
+      [{ title: "Special Event 1.9", body: "Double XP weekend!", image: "" }]);
+    assert.deepEqual((await pageFor(backend.port, "3741772")).body.battleRoyaleNews.news.message,
+      { title: "Special Event 1.8.2", body: "Double XP weekend!" });
+
+    // Resetting it brings 1.9 back to Core's default.
+    await admin(backend, "/news", { battleRoyaleNews: null });
+    assert.equal((await pageFor(backend.port, "3757339")).body.battleRoyaleNews.news.messages[0].title, "Battle Royale - 1.9");
+  } finally {
+    backend.close();
+    fs.rmSync(dataDir, { recursive: true, force: true });
+  }
+});
+
+test("config.json's battleRoyaleNews reaches 1.9's news.messages[] (#117)", async () => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-news-19-config-test-"));
+  const backend = await startBackend({ dataDir, battleRoyaleNews: { title: "Host news {version}", body: "From config.json" } });
+  try {
+    assert.deepEqual((await pageFor(backend.port, "3757339")).body.battleRoyaleNews.news.messages,
+      [{ title: "Host news 1.9", body: "From config.json", image: "" }]);
+  } finally {
+    backend.close();
+    fs.rmSync(dataDir, { recursive: true, force: true });
+  }
+});
