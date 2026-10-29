@@ -24,6 +24,8 @@ function matchmakingClient(port, authorization) {
       const waiters = [];
       let buffer = Buffer.alloc(0);
       let closed = false;
+      // The status of the service's close frame.
+      let closeCode = null;
       const deliver = (text) => (waiters.length ? waiters.shift()(text) : messages.push(text));
       const receive = (chunk) => {
         buffer = Buffer.concat([buffer, chunk]);
@@ -36,10 +38,13 @@ function matchmakingClient(port, authorization) {
             offset = 4;
           }
           if (buffer.length < offset + length) return;
-          const payload = buffer.subarray(offset, offset + length).toString("utf8");
+          const frame = buffer.subarray(offset, offset + length);
           buffer = buffer.subarray(offset + length);
-          if (opcode === 0x1) deliver(payload);
-          if (opcode === 0x8) closed = true;
+          if (opcode === 0x1) deliver(frame.toString("utf8"));
+          if (opcode === 0x8) {
+            closed = true;
+            closeCode = frame.length >= 2 ? frame.readUInt16BE(0) : null;
+          }
         }
       };
       // What the server sent with its handshake comes with the upgrade, not as data.
@@ -58,6 +63,7 @@ function matchmakingClient(port, authorization) {
       resolve({
         send,
         next: () => (messages.length ? Promise.resolve(messages.shift()) : closed ? Promise.resolve(null) : new Promise((done) => waiters.push(done))),
+        closeCode: () => closeCode,
         close: () => socket.destroy()
       });
     });
@@ -66,6 +72,65 @@ function matchmakingClient(port, authorization) {
 }
 
 const authorizationOf = ({ ticketType, payload, signature }) => `Epic-Signed ${ticketType} ${payload} ${signature}`;
+
+// The game client's MatchmakingServiceClient (1.9) as the state machine it is, to check the order of what the service
+// sends it. Connecting is taken only in ConnectingToService (0x3BEB160); Waiting in ConnectingToService or QueueFull,
+// to WaitingForParty, and in WaitingForParty (0x3BEC3E0); Queued for its own ticket in WaitingForParty or InQueue, to
+// InQueue (0x3BEB5E0); SessionAssignment in InQueue, InReadyCheck or InSessionAssignment, to InSessionAssignment
+// (0x3BEBEA0); Play only in InSessionAssignment (0x3BEB380). A close with 1000 in InSessionAssignment once Play named a
+// session is Finished, and the client joins that session (0x3BEC600). Anything else is an error: out of turn, the
+// client's MMS error 6, which the lobby shows as "Issue communicating with Matchmaking Service." (0x753C50).
+// Resolves with {state, sessionId, error, seen: the message names and states}.
+async function clientFlow(connection, ticketId) {
+  let state = "ConnectingToService";
+  let sessionId = null;
+  const seen = [];
+  const accepts = {
+    Connecting: { ConnectingToService: "ConnectingToService" },
+    Waiting: { ConnectingToService: "WaitingForParty", QueueFull: "WaitingForParty", WaitingForParty: "WaitingForParty" },
+    Queued: { WaitingForParty: "InQueue", InQueue: "InQueue" },
+    SessionAssignment: { InQueue: "InSessionAssignment", InReadyCheck: "InSessionAssignment", InSessionAssignment: "InSessionAssignment" },
+    Play: { InSessionAssignment: "InSessionAssignment" }
+  };
+  for (;;) {
+    const text = await connection.next();
+    if (text === null) {
+      if (connection.closeCode() === 1000 && state === "InSessionAssignment" && sessionId) return { state: "Finished", sessionId, error: null, seen };
+      return { state, sessionId, error: `closed with ${connection.closeCode()} in ${state}`, seen };
+    }
+    if (text === "pong") continue;
+    const { name, payload } = JSON.parse(text);
+    const step = name === "StatusUpdate" ? payload.state : name;
+    seen.push(step);
+    const next = accepts[step]?.[state];
+    if (!next) return { state, sessionId, error: `${step} in ${state}`, seen };
+    if (step === "Queued" && payload.ticketId !== ticketId) return { state, sessionId, error: `Queued for ticket ${payload.ticketId}`, seen };
+    if (step === "Play") sessionId = payload.sessionId;
+    state = next;
+  }
+}
+
+// A player's ticket and connection, with clientFlow following it from the start (party: the party's players).
+async function gameClient(backend, player, { party = [player], bucket = "858118782:0:NA:10" } = {}) {
+  const ticket = await get(backend.port, `/fortnite/api/game/v2/matchmakingservice/ticket/player/${player.accountId}?partyPlayerIds=` +
+    `${party.map(({ accountId }) => accountId).join(",")}&bucketId=${bucket}&player.platform=Windows`, player.token);
+  const connection = await matchmakingClient(backend.port, authorizationOf(ticket.body));
+  const { ticketId } = JSON.parse(Buffer.from(ticket.body.payload, "base64").toString("utf8"));
+  return { connection, flow: clientFlow(connection, ticketId) };
+}
+
+// What UFortMatchmakingV2 does with a finished assignment (Athena-Matchmaking-1.7.2.md step 9): finds the session by its
+// id, fetches the connection's key and joins it. Each must succeed, or the lobby shows an error.
+async function joinAssigned(backend, player, sessionId) {
+  const found = await get(backend.port, `/fortnite/api/matchmaking/session/${sessionId}`, player.token);
+  assert.equal(found.status, 200);
+  assert.equal(found.body.id, sessionId);
+  const key = await get(backend.port, `/fortnite/api/game/v2/matchmaking/account/${player.accountId}/session/${sessionId}`, player.token);
+  assert.equal(key.status, 200);
+  assert.ok(key.body.key);
+  assert.equal((await post(backend.port, `/fortnite/api/matchmaking/session/${sessionId}/join`, player.token, {})).status, 204);
+  return found.body;
+}
 
 test("a bucket names the playlist and region; a server's pattern takes any playlist of its build and region", () => {
   assert.equal(parseBucket("858118782:0:NA:10").playlistId, 10);
@@ -511,6 +576,56 @@ test("with late joining on, a match in its warmup takes the parties that queue a
     const next = await regionServer(backend, "CoreServer2", "NA");
     connections.push(next.connection);
     assert.deepEqual((await nextOf(next.connection, "AssignMatch")).payload.teams, [[[tooLate.accountId]]]);
+  } finally {
+    for (const connection of connections) connection.close();
+    backend.close();
+  }
+});
+
+test("a party sent to a match in its warmup is queued first, which its client needs to take the assignment, then finds and joins the session (#122)", async () => {
+  const backend = await startBackend({ matchmakingGatherMs: 200, lateJoin: true });
+  const connections = [];
+  try {
+    const token = await dedicatedServerToken(backend.port);
+    const na = await regionServer(backend, "CoreServer1", "NA");
+    connections.push(na.connection);
+    // The first player is assigned the normal way: queued, then the match forms and the server takes it.
+    const first = await userLogin(backend.port, "WarmupFirst");
+    const firstClient = await gameClient(backend, first);
+    connections.push(firstClient.connection);
+    const assign = await nextOf(na.connection, "AssignMatch");
+    na.connection.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: assign.payload.matchId, result: "ready" } }));
+    const firstFlow = await firstClient.flow;
+    assert.deepEqual([firstFlow.state, firstFlow.sessionId, firstFlow.error], ["Finished", na.session.id, null]);
+    await joinAssigned(backend, first, na.session.id);
+
+    // The server registers its player and starts its session, and is on its warmup island ("waiting for players 1:26").
+    await post(backend.port, `/fortnite/api/matchmaking/session/${na.session.id}/players`, na.token, { publicPlayers: [first.accountId], privatePlayers: [] });
+    assert.equal((await post(backend.port, `/fortnite/api/matchmaking/session/${na.session.id}/start`, na.token, {})).status, 204);
+    const answer = (await reportWarmup(backend, token, { phase: "Warmup", accountIds: [first.accountId], secondsLeft: 86 })).body;
+    assert.deepEqual([answer.sessionId, answer.open], [na.session.id, true]);
+
+    // A player who queues now is sent straight to it. Without Queued first, SessionAssignment found their client in
+    // WaitingForParty: "Error communicating with the matchmaking service".
+    const second = await userLogin(backend.port, "WarmupSecond");
+    const secondClient = await gameClient(backend, second);
+    connections.push(secondClient.connection);
+    const secondFlow = await secondClient.flow;
+    assert.deepEqual(secondFlow.seen, ["Connecting", "Waiting", "Queued", "SessionAssignment", "Play"]);
+    assert.deepEqual([secondFlow.state, secondFlow.sessionId, secondFlow.error], ["Finished", na.session.id, null]);
+    const session = await joinAssigned(backend, second, na.session.id);
+    assert.equal(session.started, true);
+
+    // A party's members, each with their own ticket: the second follows the first without queueing either.
+    const leader = await userLogin(backend.port, "WarmupLeader");
+    const mate = await userLogin(backend.port, "WarmupMate");
+    const leaderClient = await gameClient(backend, leader, { party: [leader, mate] });
+    connections.push(leaderClient.connection);
+    assert.equal((await leaderClient.flow).error, null);
+    const mateClient = await gameClient(backend, mate, { party: [leader, mate] });
+    connections.push(mateClient.connection);
+    const mateFlow = await mateClient.flow;
+    assert.deepEqual([mateFlow.state, mateFlow.sessionId, mateFlow.error], ["Finished", na.session.id, null]);
   } finally {
     for (const connection of connections) connection.close();
     backend.close();

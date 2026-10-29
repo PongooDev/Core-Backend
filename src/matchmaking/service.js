@@ -200,9 +200,18 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
 
   // The client keeps the session id from Play and joins it when the service closes the socket with 1000
   // (MatchmakingServiceClient HandleWebSocketConnectionClosed 0x3AB6530: InSessionAssignment with a session id → Finished).
+  // It takes SessionAssignment only once it is queued: in InQueue, InReadyCheck or InSessionAssignment (1.9
+  // HandleSessionAssignmentStatusUpdate 0x3BEBEA0). After Waiting alone it is WaitingForParty, and a SessionAssignment
+  // there is "Invalid state", MMS client error 6, which UFortMatchmakingV2 shows as "Issue communicating with
+  // Matchmaking Service." (0x753C50 maps it to MMSCommunicationIssue, 19). So a party sent on the spot, without having
+  // queued (late joining, or following its party's earlier member), hears Queued first (Core-Backend #122).
   function play(party, sessionId, matchId) {
     for (const member of [party, ...party.members]) {
       member.done = true;
+      if (!member.queued) {
+        member.queued = true;
+        member.ws.send(status("Queued", { ticketId: member.ticket.ticketId, queuedPlayers: party.size, estimatedWaitSec: estimatedWaitSec(playDelayMs), status: {} }));
+      }
       member.ws.send(status("SessionAssignment", { matchId }));
       setTimeout(() => {
         member.ws.send(message("Play", { matchId, sessionId, joinDelaySec: 1 }));
@@ -322,6 +331,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
       const wait = estimatedWaitSec(remainingMs(party));
       for (const member of [party, ...party.members]) {
         if (member.done || member.ws.closed) continue;
+        member.queued = true;
         member.ws.send(status("Queued", { ticketId: member.ticket.ticketId, queuedPlayers, estimatedWaitSec: wait, status: {} }));
       }
     }
