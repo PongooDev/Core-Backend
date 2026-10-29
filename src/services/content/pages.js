@@ -77,8 +77,10 @@ export function subgameSelectFor(changelist, configured = undefined) {
   const defaultBrTitle = titles?.battleRoyale ?? subgameSelectData.battleRoyale.message.title;
   const defaultBrBody = subgameSelectData.battleRoyale.message.body;
 
-  const stw = messageOf(configured?.saveTheWorld, { title: defaultStwTitle, body: defaultStwBody }, changelist);
-  const br = messageOf(configured?.battleRoyale, { title: defaultBrTitle, body: defaultBrBody }, changelist);
+  // A field left blank in the panel keeps the build's own text, so setting only a title doesn't empty the description.
+  const filled = (text) => (text ? { title: text.title || undefined, body: text.body || undefined } : undefined);
+  const stw = messageOf(filled(configured?.saveTheWorld), { title: defaultStwTitle, body: defaultStwBody }, changelist);
+  const br = messageOf(filled(configured?.battleRoyale), { title: defaultBrTitle, body: defaultBrBody }, changelist);
 
   return {
     saveTheWorld: { message: stw },

@@ -89,3 +89,11 @@ test("the login's waiting room has no queue (a PS4 client asks for it, #65)", as
     backend.close();
   }
 });
+
+test("a mode select text set in the panel keeps the build's own text for a field left blank (#113)", async () => {
+  const { subgameSelectFor } = await import("../src/services/content/pages.js");
+  const select = subgameSelectFor("3729133", { saveTheWorld: { title: "Custom", body: "" }, battleRoyale: null });
+  assert.equal(select.saveTheWorld.message.title, "Custom");
+  assert.equal(select.saveTheWorld.message.body, "Cooperative PvE storm-fighting adventure!");
+  assert.equal(select.battleRoyale.message.title, "New PVP!");
+});
