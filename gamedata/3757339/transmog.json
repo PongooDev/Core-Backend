@@ -1,0 +1,6859 @@
+{
+  "ConversionControl:cck_defender_core_consumable": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": 24,
+        "quantity": 5
+      },
+      {
+        "cost": 48,
+        "quantity": 10
+      },
+      {
+        "cost": 120,
+        "quantity": 25
+      },
+      {
+        "cost": 300,
+        "quantity": 50
+      },
+      {
+        "cost": 750,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_defender_core_consumable_c": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": 24,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 50
+      },
+      {
+        "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_defender_core_consumable_r": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": 120,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 50
+      },
+      {
+        "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_defender_core_consumable_sr": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 50
+      },
+      {
+        "cost": 750,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_defender_core_consumable_uc": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 48,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 50
+      },
+      {
+        "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_defender_core_consumable_vr": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": 300,
+        "quantity": 50
+      },
+      {
+        "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_defender_core_unlimited": {
+    "tiers": [
+      {
+        "cost": 24,
+        "quantity": 5
+      },
+      {
+        "cost": 48,
+        "quantity": 25
+      },
+      {
+        "cost": 120,
+        "quantity": 50
+      },
+      {
+        "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 250
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_defender_rare": {
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_defender_superrare": {
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": 200,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_defender_uncommon": {
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 12,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_defender_veryrare": {
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_hero_rare": {
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": 160,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 50
+      },
+      {
+        "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_hero_superrare": {
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 50
+      },
+      {
+        "cost": 1000,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_hero_uncommon": {
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 64,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 50
+      },
+      {
+        "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_hero_veryrare": {
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": 400,
+        "quantity": 50
+      },
+      {
+        "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_manager_rare": {
+    "lootTierGroup": "CCK_Expedition_Manager_Uncommon",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 50
+      },
+      {
+        "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_manager_superrare": {
+    "lootTierGroup": "CCK_Expedition_Manager_VeryRare",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 50
+      },
+      {
+        "cost": 500,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_manager_uncommon": {
+    "lootTierGroup": "CCK_Expedition_Manager_Common",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 50
+      },
+      {
+        "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_manager_unique": {
+    "lootTierGroup": "CCK_Expedition_Manager_SuperRare",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 50
+      },
+      {
+        "cost": 500,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_manager_veryrare": {
+    "lootTierGroup": "CCK_Expedition_Manager_Rare",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 50
+      },
+      {
+        "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_trap_common": {
+    "lootTierGroup": "CCK_Expedition_Traps_Common",
+    "tiers": [
+      {
+        "cost": 19,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_trap_rare": {
+    "lootTierGroup": "CCK_Expedition_Traps_Rare",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 96,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_trap_superrare": {
+    "lootTierGroup": "CCK_Expedition_Traps_SuperRare",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": 600,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_trap_uncommon": {
+    "lootTierGroup": "CCK_Expedition_Traps_Uncommon",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 38,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_trap_veryrare": {
+    "lootTierGroup": "CCK_Expedition_Traps_VeryRare",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": 240,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_weapon_common": {
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_weapon_rare": {
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_weapon_superrare": {
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_weapon_uncommon": {
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_weapon_veryrare": {
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_worker_common": {
+    "tiers": [
+      {
+        "cost": 6,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_worker_rare": {
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_worker_superrare": {
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": 200,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_worker_uncommon": {
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 12,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_expedition_worker_veryrare": {
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_hero_commando_consumable": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 64,
+        "quantity": 10
+      },
+      {
+        "cost": 160,
+        "quantity": 25
+      },
+      {
+        "cost": 400,
+        "quantity": 50
+      },
+      {
+        "cost": 1000,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_hero_constructor_consumable": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 64,
+        "quantity": 10
+      },
+      {
+        "cost": 160,
+        "quantity": 25
+      },
+      {
+        "cost": 400,
+        "quantity": 50
+      },
+      {
+        "cost": 1000,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_hero_core_consumable": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 64,
+        "quantity": 10
+      },
+      {
+        "cost": 160,
+        "quantity": 25
+      },
+      {
+        "cost": 400,
+        "quantity": 50
+      },
+      {
+        "cost": 1000,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_hero_core_consumable_r": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": 160,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 50
+      },
+      {
+        "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_hero_core_consumable_sr": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 50
+      },
+      {
+        "cost": 1000,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_hero_core_consumable_uc": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 64,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 50
+      },
+      {
+        "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_hero_core_consumable_vr": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": 400,
+        "quantity": 50
+      },
+      {
+        "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_hero_ninja_consumable": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 64,
+        "quantity": 10
+      },
+      {
+        "cost": 160,
+        "quantity": 25
+      },
+      {
+        "cost": 400,
+        "quantity": 50
+      },
+      {
+        "cost": 1000,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_hero_outlander_consumable": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 64,
+        "quantity": 10
+      },
+      {
+        "cost": 160,
+        "quantity": 25
+      },
+      {
+        "cost": 400,
+        "quantity": 50
+      },
+      {
+        "cost": 1000,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_manager_core_consumable": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 16,
+        "quantity": 10
+      },
+      {
+        "cost": 40,
+        "quantity": 25
+      },
+      {
+        "cost": 100,
+        "quantity": 50
+      },
+      {
+        "cost": 250,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_manager_core_consumable_c": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": 8,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 50
+      },
+      {
+        "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_manager_core_consumable_r": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": 40,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 50
+      },
+      {
+        "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_manager_core_consumable_sr": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 50
+      },
+      {
+        "cost": 250,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_manager_core_consumable_uc": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 16,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 50
+      },
+      {
+        "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_manager_core_consumable_vr": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": 100,
+        "quantity": 50
+      },
+      {
+        "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_axe_consumable": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_axe_consumable_c": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_axe_consumable_r": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_axe_consumable_sr": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_axe_consumable_uc": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_axe_consumable_vr": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_axe_unlimited": {
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 10
+      },
+      {
+        "cost": 32,
+        "quantity": 25
+      },
+      {
+        "cost": 80,
+        "quantity": 150
+      },
+      {
+        "cost": -1,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_blunt_consumable": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_blunt_unlimited": {
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 10
+      },
+      {
+        "cost": 32,
+        "quantity": 25
+      },
+      {
+        "cost": 80,
+        "quantity": 150
+      },
+      {
+        "cost": -1,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_club_consumable": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_club_consumable_c": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_club_consumable_r": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_club_consumable_sr": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_club_consumable_uc": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_club_consumable_vr": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_club_unlimited": {
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 10
+      },
+      {
+        "cost": 32,
+        "quantity": 25
+      },
+      {
+        "cost": 80,
+        "quantity": 150
+      },
+      {
+        "cost": -1,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_core_consumable": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_core_unlimited": {
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 10
+      },
+      {
+        "cost": 32,
+        "quantity": 25
+      },
+      {
+        "cost": 80,
+        "quantity": 150
+      },
+      {
+        "cost": -1,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_core_unlimited_vr": {
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 10
+      },
+      {
+        "cost": 32,
+        "quantity": 25
+      },
+      {
+        "cost": 80,
+        "quantity": 150
+      },
+      {
+        "cost": 200,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_edged_consumable": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_edged_unlimited": {
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 10
+      },
+      {
+        "cost": 32,
+        "quantity": 25
+      },
+      {
+        "cost": 80,
+        "quantity": 150
+      },
+      {
+        "cost": -1,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_piercing_consumable": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_piercing_unlimited": {
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 10
+      },
+      {
+        "cost": 32,
+        "quantity": 25
+      },
+      {
+        "cost": 80,
+        "quantity": 150
+      },
+      {
+        "cost": -1,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_scythe_consumable": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_scythe_consumable_c": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_scythe_consumable_r": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_scythe_consumable_sr": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_scythe_consumable_uc": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_scythe_consumable_vr": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_scythe_unlimited": {
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 10
+      },
+      {
+        "cost": 32,
+        "quantity": 25
+      },
+      {
+        "cost": 80,
+        "quantity": 150
+      },
+      {
+        "cost": -1,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_spear_consumable": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_spear_consumable_c": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_spear_consumable_r": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_spear_consumable_sr": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_spear_consumable_uc": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_spear_consumable_vr": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_spear_unlimited": {
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 10
+      },
+      {
+        "cost": 32,
+        "quantity": 25
+      },
+      {
+        "cost": 80,
+        "quantity": 150
+      },
+      {
+        "cost": -1,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_sword_consumable": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_sword_consumable_c": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_sword_consumable_r": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_sword_consumable_sr": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_sword_consumable_uc": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_sword_consumable_vr": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_sword_unlimited": {
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 10
+      },
+      {
+        "cost": 32,
+        "quantity": 25
+      },
+      {
+        "cost": 80,
+        "quantity": 150
+      },
+      {
+        "cost": -1,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_tool_consumable": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_tool_consumable_c": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_tool_consumable_r": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_tool_consumable_sr": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_tool_consumable_uc": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_tool_consumable_vr": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_melee_tool_unlimited": {
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 10
+      },
+      {
+        "cost": 32,
+        "quantity": 25
+      },
+      {
+        "cost": 80,
+        "quantity": 150
+      },
+      {
+        "cost": -1,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_assault_consumable": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_assault_consumable_c": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_assault_consumable_r": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_assault_consumable_sr": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_assault_consumable_uc": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_assault_consumable_vr": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_assault_unlimited": {
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 10
+      },
+      {
+        "cost": 32,
+        "quantity": 25
+      },
+      {
+        "cost": 80,
+        "quantity": 150
+      },
+      {
+        "cost": -1,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_core_consumable": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_core_unlimited": {
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 10
+      },
+      {
+        "cost": 32,
+        "quantity": 25
+      },
+      {
+        "cost": 80,
+        "quantity": 150
+      },
+      {
+        "cost": -1,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_core_unlimited_vr": {
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 10
+      },
+      {
+        "cost": 32,
+        "quantity": 25
+      },
+      {
+        "cost": 80,
+        "quantity": 150
+      },
+      {
+        "cost": 200,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_pistol_consumable": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_pistol_consumable_c": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_pistol_consumable_r": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_pistol_consumable_sr": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_pistol_consumable_uc": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_pistol_consumable_vr": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_pistol_unlimited": {
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 10
+      },
+      {
+        "cost": 32,
+        "quantity": 25
+      },
+      {
+        "cost": 80,
+        "quantity": 150
+      },
+      {
+        "cost": -1,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_shotgun_consumable": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_shotgun_consumable_c": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_shotgun_consumable_r": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_shotgun_consumable_sr": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_shotgun_consumable_uc": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_shotgun_consumable_vr": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_shotgun_unlimited": {
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 10
+      },
+      {
+        "cost": 32,
+        "quantity": 25
+      },
+      {
+        "cost": 80,
+        "quantity": 150
+      },
+      {
+        "cost": -1,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_sniper_consumable": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_sniper_consumable_c": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_sniper_consumable_r": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_sniper_consumable_sr": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_sniper_consumable_uc": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_sniper_consumable_vr": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_sniper_unlimited": {
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 10
+      },
+      {
+        "cost": 32,
+        "quantity": 25
+      },
+      {
+        "cost": 80,
+        "quantity": 150
+      },
+      {
+        "cost": -1,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_trap_core_consumable": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 18,
+        "quantity": 5
+      },
+      {
+        "cost": 37,
+        "quantity": 5
+      },
+      {
+        "cost": 93,
+        "quantity": 25
+      },
+      {
+        "cost": 232,
+        "quantity": 75
+      },
+      {
+        "cost": 582,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_trap_core_consumable_c": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 18,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_trap_core_consumable_r": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 93,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_trap_core_consumable_sr": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": 582,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_trap_core_consumable_uc": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 37,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_trap_core_consumable_vr": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": 232,
+        "quantity": 75
+      },
+      {
+        "cost": -1,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_trap_core_unlimited": {
+    "tiers": [
+      {
+        "cost": 18,
+        "quantity": 10
+      },
+      {
+        "cost": 37,
+        "quantity": 25
+      },
+      {
+        "cost": 93,
+        "quantity": 150
+      },
+      {
+        "cost": -1,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_weapon_core_consumable": {
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 5
+      },
+      {
+        "cost": 32,
+        "quantity": 5
+      },
+      {
+        "cost": 80,
+        "quantity": 25
+      },
+      {
+        "cost": 200,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_weapon_core_unlimited": {
+    "tiers": [
+      {
+        "cost": 16,
+        "quantity": 10
+      },
+      {
+        "cost": 32,
+        "quantity": 25
+      },
+      {
+        "cost": 80,
+        "quantity": 150
+      },
+      {
+        "cost": -1,
+        "quantity": 500
+      },
+      {
+        "cost": -1,
+        "quantity": 1500
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_worker_core_consumable": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": 6,
+        "quantity": 1
+      },
+      {
+        "cost": 12,
+        "quantity": 2
+      },
+      {
+        "cost": 30,
+        "quantity": 5
+      },
+      {
+        "cost": 76,
+        "quantity": 10
+      },
+      {
+        "cost": 190,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_worker_core_consumable_c": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": 6,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_worker_core_consumable_r": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": 30,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_worker_core_consumable_sr": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": 190,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_worker_core_consumable_uc": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": 12,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_worker_core_consumable_vr": {
+    "requiredItem": "AccountResource:peopleresource",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 1
+      },
+      {
+        "cost": -1,
+        "quantity": 2
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": 76,
+        "quantity": 10
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_worker_core_unlimited": {
+    "tiers": [
+      {
+        "cost": 6,
+        "quantity": 1
+      },
+      {
+        "cost": 12,
+        "quantity": 5
+      },
+      {
+        "cost": 30,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 50
+      },
+      {
+        "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_worker_core_unlimited_vr": {
+    "tiers": [
+      {
+        "cost": 6,
+        "quantity": 1
+      },
+      {
+        "cost": 12,
+        "quantity": 5
+      },
+      {
+        "cost": 30,
+        "quantity": 25
+      },
+      {
+        "cost": 76,
+        "quantity": 50
+      },
+      {
+        "cost": -1,
+        "quantity": 100
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_assault_auto_halloween_consumable_sr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Assault_Auto_Halloween_SR",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_assault_hydra_consumable_sr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Assault_Hydra",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_ranged_launcher_scavenger_consumable_sr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Ranged_Launcher_Scavenger",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  },
+  "ConversionControl:cck_weapon_scavenger_consumable_sr": {
+    "catalysts": [],
+    "consumed": true,
+    "lootTierGroup": "CCK_Weapon_Scavenger",
+    "requiredItem": "Token:collectionresource_nodegatetoken01",
+    "tiers": [
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 5
+      },
+      {
+        "cost": -1,
+        "quantity": 25
+      },
+      {
+        "cost": -1,
+        "quantity": 75
+      },
+      {
+        "cost": 500,
+        "quantity": 200
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      },
+      {
+        "cost": -1,
+        "quantity": 0
+      }
+    ]
+  }
+}

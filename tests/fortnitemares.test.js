@@ -37,10 +37,11 @@ function editProfile(backend, accountId, edit) {
   fs.writeFileSync(file, JSON.stringify(profile));
 }
 
-test("Fortnitemares runs on 1.8 to 1.8.2 only, and 1.8's own data has its content", () => {
+test("Fortnitemares runs on 1.8 to 1.9 only, and 1.8's own data has its content", () => {
   assert.deepEqual(activeEventFlags(builds["1.8"]), ["EventFlag.Fortnitemares"]);
   assert.deepEqual(activeEventFlags("3729133"), ["EventFlag.Fortnitemares"]);
   assert.deepEqual(activeEventFlags(builds["1.8.2"]), ["EventFlag.Fortnitemares"]);
+  assert.deepEqual(activeEventFlags("3757339"), ["EventFlag.Fortnitemares"]);
   for (const other of [builds.cert, "3541083", builds["1.7.2"], "3790078", "unknown", undefined]) assert.deepEqual(activeEventFlags(other), [], other);
 
   inBuild(builds["1.8"], () => {

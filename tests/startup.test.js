@@ -34,7 +34,7 @@ test("start-up checks answer the way the Cert client parses them", async () => {
       assert.equal(built.battleRoyaleNews.news.message.title, `Battle Royale - ${version}`);
       assert.equal(built.loginmessage.loginmessage.message.title, `v${version}`);
     }
-    assert.equal((await pageFor("3757339")).body.loginmessage.loginmessage.message.title, "CL-3757339");
+    assert.equal((await pageFor("3790078")).body.loginmessage.loginmessage.message.title, "CL-3790078");
     // The mode select screen's descriptions (#63).
     assert.equal(page.body.subgameselectdata.battleRoyale.message.title, "100 Player PvP");
     assert.equal(page.body.subgameselectdata.saveTheWorld.message.title, "Co-op PvE");

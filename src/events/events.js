@@ -5,14 +5,14 @@ import { currentBuild } from "../builds/context.js";
 // switched events on and off from its servers (its event flags and calendar), so which builds run one is Core's choice.
 //
 // Fortnitemares (Halloween 2017) shipped with 1.8 (CL-3724489) and ran through its patches 1.8.1 (CL-3729133) and
-// 1.8.2 (CL-3741772). Its content waits for EventFlag.Fortnitemares, the only event flag 1.8's paks add (1.7.2's are
+// 1.8.2 (CL-3741772), and 1.9 (CL-3757339), whose notes extend it to 29 November. Its content waits for EventFlag.Fortnitemares, the only event flag 1.8's paks add (1.7.2's are
 // EventFlag.FirstStorm and EventFlag.Horde): the front end's "View Event" button and the event's quest pages
 // (HomeScreenNextQuest UpdateButtonBasedOnEventStatus: BorderQuestMapToggle shows when the quest manager's
 // IsEventFlagActive("EventFlag.Fortnitemares") or the player holds ProtoEnableQuest).
 export const fortnitemares = "EventFlag.Fortnitemares";
 
 const events = [
-  { flag: fortnitemares, firstBuild: 3724489, lastBuild: 3741772 }
+  { flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 }
 ];
 
 // Whether the host runs the seasonal events (settings.seasonalEvents, the admin panel's Seasonal Events switch,
