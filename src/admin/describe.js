@@ -1,5 +1,5 @@
 import { inBuild } from "../builds/context.js";
-import { certBuild } from "../builds/detect.js";
+import { certBuild, versionOf } from "../builds/detect.js";
 import { athenaCosmetics } from "../gamedata/athena.js";
 import { bannerIds } from "../gamedata/banners.js";
 import { getNode, nodeIds } from "../gamedata/homebase.js";
@@ -114,12 +114,70 @@ function describe(templateId) {
   return { templateId, name: displayName, category: category(type, name), rarity, tier, maxLevel: info?.maxLevel ?? null, single: isSingleItem(templateId) };
 }
 
+// Every template some data build's game data has that the panel can give: items, quests, skill tree nodes, banners,
+// lower-cased id -> {templateId, build, builds}. Accounts are shared by every build, so the panel gives what any build
+// knows (Core-Backend #109: 1.8's Fortnitemares heroes, Hazard the 13th and Marine Corps Ramirez, weren't in Give, which
+// read Cert's data only). builds are the data builds that have it, oldest first; build is the one whose data a grant of
+// it uses: Cert's when Cert has it, as before, else the newest build's that has it (the order describeItem reads them
+// in). Made on first use.
+let templates;
+const byNumber = (a, b) => Number(a) - Number(b);
+function templateIndex() {
+  if (templates) return templates;
+  templates = new Map();
+  for (const build of [...dataBuilds].sort(byNumber)) {
+    inBuild(build, () => [...itemIds(), ...questIds().filter((id) => getQuest(id)).map((id) => `Quest:${id}`),
+      ...nodeIds().filter((id) => getNode(id)).map((id) => `HomebaseNode:${id.toLowerCase()}`), ...bannerIds()])
+      .forEach((templateId) => {
+        const key = templateId.toLowerCase();
+        if (!templates.has(key)) templates.set(key, { templateId, builds: [] });
+        templates.get(key).builds.push(build);
+      });
+  }
+  for (const entry of templates.values()) entry.build = entry.builds.includes(certBuild) ? certBuild : entry.builds.at(-1);
+  return templates;
+}
+
+// {templateId (as its build's data spells it), build, builds} for a template some build's data has, else undefined.
+export const knownTemplate = (templateId) => templateIndex().get(String(templateId).toLowerCase());
+
+// The builds that have a template, as the panel's chip says it: null when every build does, "1.8+" for 1.8 onwards,
+// "1.1–1.7.2" for a range that stops before the newest, else the versions one by one.
+function buildsLabel(builds) {
+  const all = [...dataBuilds].sort(byNumber);
+  if (builds.length === all.length) return null;
+  const first = all.indexOf(builds[0]);
+  const contiguous = builds.every((build, index) => all[first + index] === build);
+  const name = (build) => versionOf(build) ?? build;
+  if (!contiguous) return builds.map(name).join(", ");
+  if (builds.at(-1) === all.at(-1)) return `${name(builds[0])}+`;
+  return builds.length === 1 ? name(builds[0]) : `${name(builds[0])}–${name(builds.at(-1))}`;
+}
+
+// What the panel's Give section shows for a template: its description and the builds that have it.
+export const catalogEntry = (templateId) => {
+  const known = knownTemplate(templateId);
+  return { ...describeItem(known?.templateId ?? templateId), builds: known ? buildsLabel(known.builds) : null };
+};
+
+let worldTypes;
+// Whether a template type is the world inventory's (theater0): some build's data keeps items of it there, or the panel
+// files it with them.
+export function isWorldType(type) {
+  worldTypes ??= new Set([...templateIndex().values()]
+    .filter(({ templateId, build }) => inBuild(build, () => getItem(templateId))?.profile === "theater")
+    .map(({ templateId }) => templateId.split(":")[0].toLowerCase()));
+  const lower = String(type).toLowerCase();
+  return worldTypes.has(lower) || category(lower, "") === "world";
+}
+
 let catalog;
-// Everything the panel can give: items (not the never-persisted ones), quests, skill tree nodes, banners.
+// Everything the panel can give: every build's items (not the never-persisted ones, in the build a grant would use),
+// quests, skill tree nodes and banners.
 function allTemplates() {
-  catalog ??= [...itemIds().filter((templateId) => !getItem(templateId)?.neverPersisted), ...questIds().filter((id) => getQuest(id)).map((id) => `Quest:${id}`),
-    ...nodeIds().filter((id) => getNode(id)).map((id) => `HomebaseNode:${id.toLowerCase()}`), ...bannerIds()]
-    .map(describeItem);
+  catalog ??= [...templateIndex().values()]
+    .filter(({ templateId, build }) => !inBuild(build, () => getItem(templateId)?.neverPersisted))
+    .map(({ templateId }) => catalogEntry(templateId));
   return catalog;
 }
 

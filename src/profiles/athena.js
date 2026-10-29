@@ -154,9 +154,10 @@ function addCosmetic(tracker, templateId, seen) {
 
 // A cosmetic the player now owns for good (bought or earned): added if the locker lacks it, and no longer the blanket
 // grant's if that gave it. Returns the grant ({profileId, itemId, templateId, quantity}), or null when the player
-// already had it or the build has no such locker cosmetic.
-export function grantCosmetic(session, templateId) {
-  const id = cosmeticId(templateId);
+// already had it or the build has no such locker cosmetic. force (the admin panel's give by id, Core-Backend #109) gives
+// a template no build's data has as it is spelled.
+export function grantCosmetic(session, templateId, { force = false } = {}) {
+  const id = cosmeticId(templateId) ?? (force ? String(templateId) : undefined);
   if (!id || !isLockerItem(id)) return null;
   const tracker = session.profile("athena");
   const { profile } = tracker;

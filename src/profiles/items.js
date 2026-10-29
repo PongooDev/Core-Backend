@@ -161,6 +161,17 @@ export function heldOwnedOnce(session, templateId) {
   return itemId ? { profileId: "profile0", itemId, templateId: profile.items[itemId].templateId, quantity: 1 } : undefined;
 }
 
+// A template no build's game data has, given anyway from the admin panel (Core-Backend #109): one plain item of the
+// quantity asked for in profileId, with what every account item starts with there. There is no MaxStackSize or class
+// to go by, and the game may not know it. Returns the grant entry.
+export function grantPlainItem(session, profileId, templateId, quantity) {
+  const itemId = crypto.randomUUID();
+  const attributes = profileId === "profile0" ? { level: 1, item_seen: 0 } : {};
+  session.profile(profileId).addItem(itemId, { templateId, attributes, quantity });
+  log("Items", `${session.accountId} got ${quantity} ${templateId}, which no build's game data has, in ${profileId}`);
+  return { profileId, itemId, templateId, quantity };
+}
+
 // Returns what was granted, one entry per item that was added or topped up.
 export function grantItem(session, templateId, quantity, options = {}) {
   if (quantity <= 0) return [];

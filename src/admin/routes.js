@@ -9,7 +9,8 @@ import { notFound, sendError } from "../errors.js";
 import { getNode } from "../gamedata/homebase.js";
 import { getItem } from "../gamedata/items.js";
 import { getQuest } from "../gamedata/quests.js";
-import { readGameData } from "../gamedata/read.js";
+import { athenaCosmetics } from "../gamedata/athena.js";
+import { dataBuilds, readGameData } from "../gamedata/read.js";
 import { recentLogs } from "../log.js";
 import { sessionSummary } from "../matchmaking/sessions.js";
 import { alertsRemaining, emptyAlertRecord, withQuotaSlots } from "../profiles/alerts.js";
@@ -17,7 +18,7 @@ import { fullLockerState, grantCosmetic, grantFullLocker, lockerCosmeticId, lock
   setSeasonLevel } from "../profiles/athena.js";
 import { levelRest, restBalance, restValue } from "../profiles/boosts.js";
 import { foundersEditionOf, foundersEditions, setFoundersEdition } from "../profiles/founders.js";
-import { findItem, grantItem, worldStacksNeeded } from "../profiles/items.js";
+import { findItem, grantItem, grantPlainItem, worldStacksNeeded } from "../profiles/items.js";
 import { claimQuest, completeQuest, grant, skipTutorial } from "../profiles/progress.js";
 import { createOutpost, storedCloudSaveProfile } from "../profiles/outposts.js";
 import { questIdOf, tutorialCompleted } from "../profiles/quests.js";
@@ -25,11 +26,12 @@ import { openSession } from "../profiles/session.js";
 import { backpackState, inOverflow, vaultState, worldStackCap } from "../profiles/vault.js";
 import { maxLevel, xpForLevel } from "../profiles/xp.js";
 import { notifyProfiles } from "../services/mcp/profile.js";
-import { categories, currencies, describeCosmetics, describeItem, isSingleItem, searchCatalog, stormShields } from "./describe.js";
+import { catalogEntry, categories, currencies, describeCosmetics, describeItem, isSingleItem, isWorldType, knownTemplate, searchCatalog,
+  stormShields } from "./describe.js";
 import { requireLoopback, requirePanelRequest } from "./local.js";
 import { defaultBattleRoyaleNews, defaultLoginMessage } from "../services/content/pages.js";
 import { inBuild } from "../builds/context.js";
-import { battleRoyaleBuilds, versionOf } from "../builds/detect.js";
+import { battleRoyaleBuilds, certBuild, versionOf } from "../builds/detect.js";
 import { eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, shopDay, weeklyStoreEnd } from "../store/itemshop.js";
 
 import { isServerAccountName, validatePassword } from "../accounts/password.js";
@@ -232,30 +234,96 @@ export function adminRoutes(context) {
     res.json(searchCatalog("", "", Infinity).map((entry) => entry.templateId).sort());
   });
 
-  // Gives an item the normal way, so quests that wait on it move on too.
+  // Give by id (Core-Backend #109): what a template id the admin typed is. A Battle Royale cosmetic is the newest build's
+  // with Battle Royale that has it (it goes to the locker); anything else is known when some build's data has it.
+  // A template no build has is given only with force, as a plain item in the profile its type belongs in.
+  const templatePattern = /^[A-Za-z][A-Za-z0-9_]*:[^\s:]+$/;
+  const malformed = (res, templateId) => invalid(res, `${templateId ? `"${templateId}"` : "An empty id"} isn't a template id: write it as Type:name, e.g. Hero:hid_constructor_007hw_sr_t01`);
+  const isCosmeticType = (type) => type.toLowerCase().startsWith("athena");
+  // The newest build with Battle Royale whose locker has the cosmetic, and its id as that build spells it.
+  const lockerCosmeticOf = (templateId) => [...battleRoyaleBuilds].reverse()
+    .map((build) => ({ build, templateId: inBuild(build, () => lockerCosmeticId(templateId)) })).find((found) => found.templateId);
+  const anyCosmetic = (templateId) => battleRoyaleBuilds.some((build) => inBuild(build, () => Object.keys(athenaCosmetics())
+    .some((id) => id.toLowerCase() === templateId.toLowerCase())));
+  const forcedProfileId = (type) => (isCosmeticType(type) ? "athena" : isWorldType(type) ? "theater0" : "profile0");
+  // Collection book pages, from Cert's data when it has the page, else the newest build's that has it.
+  const pageBuild = (name) => [certBuild, ...dataBuilds.filter((build) => build !== certBuild).sort((a, b) => Number(b) - Number(a))]
+    .find((build) => inBuild(build, () => isBookPage(name)));
+
+  // ?templateId=: whether a grant knows the template ({known, item}: its catalog entry), or where force would put it
+  // ({known: false, profileId}). The panel asks before giving a template no build has.
+  router.get("/admin/api/catalog/lookup", (req, res) => {
+    const templateId = String(req.query.templateId ?? "").trim();
+    if (!templatePattern.test(templateId)) return malformed(res, templateId);
+    const [type, name] = templateId.split(":");
+    const other = (item) => res.json({ known: true, item: { templateId, name: templateId, category: "other", single: false, builds: null, ...item } });
+    if (isCosmeticType(type)) {
+      const cosmetic = lockerCosmeticOf(templateId);
+      if (cosmetic) {
+        const [described] = inBuild(cosmetic.build, () => describeCosmetics([cosmetic.templateId]));
+        const first = battleRoyaleBuilds.find((build) => inBuild(build, () => lockerCosmeticId(templateId)));
+        return other({ templateId: cosmetic.templateId, name: described.name, builds: `${versionOf(first)}+` });
+      }
+      if (anyCosmetic(templateId)) return other({});
+    } else if (type.toLowerCase() === "collectionbookpage") {
+      if (pageBuild(name)) return other({ name: `Collection book page ${name}` });
+      return invalid(res, `Unknown collection book page ${name}`);
+    } else if (knownTemplate(templateId)) {
+      return res.json({ known: true, item: catalogEntry(templateId) });
+    }
+    res.json({ known: false, templateId, profileId: forcedProfileId(type) });
+  });
+
+  // Gives an item the normal way, so quests that wait on it move on too. {templateId, quantity, force}: any template some
+  // build's data has, checked and given with that build's data (describe.js knownTemplate); with force, one none has.
   router.post("/admin/api/accounts/:accountId/grant", change(({ req, res, session }) => {
     const templateId = String(req.body?.templateId ?? "").trim();
     const quantity = Number(req.body?.quantity ?? 1);
+    const force = req.body?.force === true;
     if (!Number.isInteger(quantity) || quantity < 1 || quantity > 1_000_000) return invalid(res, "Quantity must be 1 to 1000000");
-    const [type, name = ""] = templateId.split(":");
-    const known = type.toLowerCase() === "quest" ? Boolean(getQuest(name))
-      : type.toLowerCase() === "homebasenode" ? Boolean(getNode(name))
-      : type.toLowerCase() === "collectionbookpage" ? isBookPage(name)
-      : Boolean(getItem(templateId) ?? bannerTemplateId(templateId));
-    if (!known) return invalid(res, `Unknown item ${templateId}`);
-    if (isSingleItem(templateId) && quantity > singleGrantCap) {
-      return invalid(res, `${describeItem(templateId).name} is kept one per item: give at most ${singleGrantCap} at a time`);
+    if (!templatePattern.test(templateId)) return malformed(res, templateId);
+    const [type, name] = templateId.split(":");
+    const unknown = () => invalid(res, `Unknown item ${templateId}: no build's game data has it, so the game may not know it. Give it with force to add it anyway`);
+
+    if (isCosmeticType(type)) {
+      const cosmetic = lockerCosmeticOf(templateId);
+      if (!cosmetic && anyCosmetic(templateId)) return invalid(res, `${templateId} is never a locker item`);
+      if (!cosmetic && !force) return unknown();
+      const given = inBuild(cosmetic?.build ?? battleRoyaleBuilds.at(-1), () => grantCosmetic(session, cosmetic?.templateId ?? templateId, { force: !cosmetic }));
+      return { granted: given ? 1 : 0 };
     }
-    // bNeverPersisted items (ability ammo, quest pickups) only exist in a zone; the game never saves one to a profile.
-    if (getItem(templateId)?.neverPersisted) return invalid(res, `${templateId} only exists in a zone and is never kept in a profile`);
-    // The world inventory holds at most 512 stacks (profiles/vault.js); past that the game keeps nothing.
-    if (getItem(templateId)?.profile === "theater") {
-      const theater = session.profile("theater0").profile;
-      const needed = worldStacksNeeded(theater, templateId, quantity);
-      const stacks = Object.keys(theater.items).length;
-      if (stacks + needed > worldStackCap) return invalid(res, `That needs ${needed} new backpack stacks; the backpack holds ${stacks} of at most ${worldStackCap}`);
+    if (type.toLowerCase() === "collectionbookpage") {
+      const build = pageBuild(name);
+      if (!build) return invalid(res, `Unknown collection book page ${name}`);
+      return inBuild(build, () => ({ granted: grant(session, templateId, quantity).length }));
     }
-    return { granted: grant(session, templateId, quantity).length };
+
+    const known = knownTemplate(templateId);
+    if (!known) {
+      if (!force) return unknown();
+      const profileId = forcedProfileId(type);
+      if (profileId === "theater0" && Object.keys(session.profile("theater0").profile.items).length >= worldStackCap) {
+        return invalid(res, `The backpack already holds ${worldStackCap} stacks, the most it can`);
+      }
+      return { granted: 1, forced: grantPlainItem(session, profileId, templateId, quantity) };
+    }
+    // The checks and the grant read the data of the build a grant of it uses (Cert's when Cert has it).
+    return inBuild(known.build, () => {
+      const info = getItem(known.templateId);
+      if (isSingleItem(known.templateId) && quantity > singleGrantCap) {
+        return invalid(res, `${describeItem(known.templateId).name} is kept one per item: give at most ${singleGrantCap} at a time`);
+      }
+      // bNeverPersisted items (ability ammo, quest pickups) only exist in a zone; the game never saves one to a profile.
+      if (info?.neverPersisted) return invalid(res, `${known.templateId} only exists in a zone and is never kept in a profile`);
+      // The world inventory holds at most 512 stacks (profiles/vault.js); past that the game keeps nothing.
+      if (info?.profile === "theater") {
+        const theater = session.profile("theater0").profile;
+        const needed = worldStacksNeeded(theater, known.templateId, quantity);
+        const stacks = Object.keys(theater.items).length;
+        if (stacks + needed > worldStackCap) return invalid(res, `That needs ${needed} new backpack stacks; the backpack holds ${stacks} of at most ${worldStackCap}`);
+      }
+      return { granted: grant(session, known.templateId, quantity).length };
+    });
   }));
 
   // {key, quantity}: sets one of the panel's balances (V-Bucks, skill points…) to exactly quantity.

@@ -2195,25 +2195,53 @@
       const picked = el("div", { class: "note" });
       // Single items (heroes, survivors, schematics, defenders, llamas...) are one profile item each: a grant of many is
       // capped by the backend (singleGrantCap) and asks first past singleGrantConfirm, since every one fills a vault slot.
+      // Whether to give amount of item: false (after saying why) when the backend would refuse it or the admin says no.
+      const amountOk = (item, amount) => {
+        if (!Number.isInteger(amount) || amount < 1) return toast("Enter a quantity of 1 or more", true), false;
+        if (item.single && c.cap && amount > c.cap) return toast(`${item.name} is kept one per item: give at most ${fmt(c.cap)} at a time`, true), false;
+        if (item.single && amount > (c.confirmAbove ?? 10)) {
+          const vault = a.vault ? `\n\nEach one is a separate item. The vault holds ${fmt(a.vault.count)} / ${fmt(a.vault.limit)}${a.vault.count + amount > a.vault.limit ? "; items past the limit go into overflow, where the game won't level, evolve or slot them" : ""}.` : "";
+          if (!confirm(`Add ${fmt(amount)} × ${item.name}?${vault}`)) return false;
+        }
+        return true;
+      };
       const giveButton = btn("Give", () => {
         if (!c.picked) return toast("Pick an item first", true);
         const amount = Number(quantity.value);
-        if (!Number.isInteger(amount) || amount < 1) return toast("Enter a quantity of 1 or more", true);
-        if (c.picked.single && c.cap && amount > c.cap) return toast(`${c.picked.name} is kept one per item: give at most ${fmt(c.cap)} at a time`, true);
-        if (c.picked.single && amount > (c.confirmAbove ?? 10)) {
-          const vault = a.vault ? `\n\nEach one is a separate item. The vault holds ${fmt(a.vault.count)} / ${fmt(a.vault.limit)}${a.vault.count + amount > a.vault.limit ? "; items past the limit go into overflow, where the game won't level, evolve or slot them" : ""}.` : "";
-          if (!confirm(`Add ${fmt(amount)} × ${c.picked.name}?${vault}`)) return;
-        }
+        if (!amountOk(c.picked, amount)) return;
         c.quantity = amount;
         post("grant", { templateId: c.picked.templateId, quantity: c.quantity }, `Gave ${fmt(c.quantity)} × ${c.picked.name}`);
       }, "primary");
+      // Give by template id (Core-Backend #109): anything a build's game data has is given as Any item gives it; an id no
+      // build has is given only after a warning, as a plain item (force).
+      const byId = el("input", { class: "field mono", type: "text", placeholder: "Type:name, e.g. Hero:hid_constructor_007hw_sr_t01", value: c.byId ?? "", spellcheck: "false", "aria-label": "Template id", style: "flex:1 1 320px" });
+      const byIdQuantity = el("input", { class: "field num", type: "number", min: 1, value: c.byIdQuantity ?? 1, "aria-label": "Quantity to give by id" });
+      const giveById = async () => {
+        const templateId = byId.value.trim();
+        const amount = Number(byIdQuantity.value);
+        c.byId = templateId;
+        if (!/^[A-Za-z][A-Za-z0-9_]*:[^\s:]+$/.test(templateId)) return toast("Write the id as Type:name, e.g. Hero:hid_constructor_007hw_sr_t01", true);
+        const found = await act(api(`/admin/api/catalog/lookup?templateId=${encodeURIComponent(templateId)}`));
+        if (!found) return;
+        if (found.known) {
+          if (!amountOk(found.item, amount)) return;
+          c.byIdQuantity = amount;
+          return post("grant", { templateId: found.item.templateId, quantity: amount }, `Gave ${fmt(amount)} × ${found.item.name}`);
+        }
+        if (!Number.isInteger(amount) || amount < 1) return toast("Enter a quantity of 1 or more", true);
+        if (!confirm(`No build's game data has ${templateId}, so the game may not know it: a client can ignore it, log errors or misbehave.\n\nGive ${fmt(amount)} anyway, as a plain item in ${found.profileId}?`)) return;
+        c.byIdQuantity = amount;
+        post("grant", { templateId, quantity: amount, force: true }, `Gave ${fmt(amount)} × ${templateId} (unknown to the game data)`);
+      };
+      byId.addEventListener("keydown", (event) => { if (event.key === "Enter") giveById(); });
       const renderResults = () => {
         picked.replaceChildren(...(c.picked ? ["Selected: ", itemName(c.picked)] : ["Pick an item below."]));
         results.replaceChildren(...(c.items.length ? c.items.map((item) => el("button", {
           type: "button", class: `card ${item.rarity}`, "aria-pressed": String(c.picked?.templateId === item.templateId),
           onclick: () => { c.picked = item; renderResults(); }
         }, el("div", { class: "k", text: kindLabel(item.category) }), el("div", { class: "t", text: item.name }),
-          el("div", { class: "s mono", text: item.templateId }))) : [el("div", { class: "empty", text: "Nothing found." })]));
+          el("div", { class: "s mono", text: item.templateId }),
+          item.builds ? el("div", { class: "s", style: "margin-top:8px" }, chip(item.builds, "sky")) : null)) : [el("div", { class: "empty", text: "Nothing found." })]));
       };
       let timer;
       const load = async () => {
@@ -2239,7 +2267,10 @@
         el("div", { class: "actions" }, search, category, quantity, giveButton),
         el("div", { style: "margin-top:10px" }, picked),
         results,
-        el("p", { class: "note", text: "Items are given the way the game gives them: llamas arrive unopened, quests start active, skill tree nodes unlock their perks, and quests waiting on an item move on." }));
+        el("p", { class: "note", text: "Items are given the way the game gives them: llamas arrive unopened, quests start active, skill tree nodes unlock their perks, and quests waiting on an item move on. Every build's items are listed; a chip names the builds that have an item when not all do (a build's client doesn't show items its own data lacks)." }),
+        el("h2", { style: "margin:22px 0 10px", text: "Give by id" }),
+        el("div", { class: "actions" }, byId, byIdQuantity, btn("Give", giveById, "primary")),
+        el("p", { class: "note", text: "Any template id, as Type:name. One some build's game data has is given as above; Battle Royale cosmetics (Athena…) go to the locker. Anything else asks first, then is added as it is: world items to the backpack, cosmetics to the locker, the rest to the account." }));
     }
 
     function quests(a) {
