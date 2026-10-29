@@ -2492,29 +2492,45 @@
       renderLogLines();
       await pullLogs();
       every(2000, pullLogs);
-    }
-
-    /* ---------- news ---------- */
+    }    /* ---------- news ---------- */
     async function showNews() {
       const data = await act(api("/admin/api/news"));
       if (!data || state.view !== "news") return;
 
-      const brNews = data.battleRoyaleNews || {};
-      const loginMsg = data.loginMessage || {};
+      const custom = data.custom || {};
+      const defaults = data.defaults || {};
 
-      const brTitle = el("input", { class: "field", value: brNews.title ?? "", placeholder: "e.g. Battle Royale - {version}", style: "width:100%" });
-      const brBody = el("textarea", { class: "field", rows: "3", placeholder: "Welcome to Battle Royale on Core!", style: "width:100%; resize:vertical; font-family:inherit; min-height:80px;" });
-      brBody.value = brNews.body ?? "";
+      // 1. Battle Royale Lobby News
+      const brCustom = custom.battleRoyaleNews;
+      const brDefault = defaults.battleRoyaleNews || { title: "Battle Royale - {version}", body: "Welcome to Battle Royale on Core!" };
+      const isBrCustom = Boolean(brCustom && (brCustom.title || brCustom.body));
+
+      const brTitle = el("input", {
+        class: "field",
+        value: brCustom?.title ?? "",
+        placeholder: `Default: ${brDefault.title}`,
+        style: "width:100%"
+      });
+      const brBody = el("textarea", {
+        class: "field",
+        rows: "3",
+        placeholder: `Default: ${brDefault.body}`,
+        style: "width:100%; resize:vertical; font-family:inherit; min-height:80px;"
+      });
+      brBody.value = brCustom?.body ?? "";
 
       const saveBrBtn = btn("Save Battle Royale News", async () => {
         const title = brTitle.value.trim();
         const body = brBody.value.trim();
-        await act(api("/admin/api/news", { battleRoyaleNews: { title, body } }), "Battle Royale news updated");
+        const payload = (title || body) ? { battleRoyaleNews: { title, body } } : { battleRoyaleNews: null };
+        await act(api("/admin/api/news", payload), payload.battleRoyaleNews ? "Battle Royale news updated" : "Battle Royale news reset to 1:1 default");
         showNews();
       }, "primary");
 
       const resetBrBtn = btn("Reset to Default", async () => {
-        await act(api("/admin/api/news", { battleRoyaleNews: null }), "Battle Royale news reset to default");
+        brTitle.value = "";
+        brBody.value = "";
+        await act(api("/admin/api/news", { battleRoyaleNews: null }), "Battle Royale news reset to 1:1 default");
         showNews();
       }, "ghost");
 
@@ -2525,19 +2541,37 @@
         }
       });
 
-      const loginTitle = el("input", { class: "field", value: loginMsg.title ?? "", placeholder: "e.g. v{version}", style: "width:100%" });
-      const loginBody = el("textarea", { class: "field", rows: "3", placeholder: "Welcome to Fortnite on Core!", style: "width:100%; resize:vertical; font-family:inherit; min-height:80px;" });
-      loginBody.value = loginMsg.body ?? "";
+      // 2. Login Screen Message
+      const loginCustom = custom.loginMessage;
+      const loginDefault = defaults.loginMessage || { title: "v{version}", body: "Welcome to Fortnite on Core!" };
+      const isLoginCustom = Boolean(loginCustom && (loginCustom.title || loginCustom.body));
+
+      const loginTitle = el("input", {
+        class: "field",
+        value: loginCustom?.title ?? "",
+        placeholder: `Default: ${loginDefault.title}`,
+        style: "width:100%"
+      });
+      const loginBody = el("textarea", {
+        class: "field",
+        rows: "3",
+        placeholder: `Default: ${loginDefault.body}`,
+        style: "width:100%; resize:vertical; font-family:inherit; min-height:80px;"
+      });
+      loginBody.value = loginCustom?.body ?? "";
 
       const saveLoginBtn = btn("Save Login Message", async () => {
         const title = loginTitle.value.trim();
         const body = loginBody.value.trim();
-        await act(api("/admin/api/news", { loginMessage: { title, body } }), "Login message updated");
+        const payload = (title || body) ? { loginMessage: { title, body } } : { loginMessage: null };
+        await act(api("/admin/api/news", payload), payload.loginMessage ? "Login message updated" : "Login message reset to 1:1 default");
         showNews();
       }, "primary");
 
       const resetLoginBtn = btn("Reset to Default", async () => {
-        await act(api("/admin/api/news", { loginMessage: null }), "Login message reset to default");
+        loginTitle.value = "";
+        loginBody.value = "";
+        await act(api("/admin/api/news", { loginMessage: null }), "Login message reset to 1:1 default");
         showNews();
       }, "ghost");
 
@@ -2548,18 +2582,102 @@
         }
       });
 
+      // 3. Mode Select: Save the World
+      const stwCustom = custom.subgameSelect?.saveTheWorld;
+      const stwDefault = defaults.subgameSelect?.saveTheWorld || { title: "Co-op PvE", body: "Cooperative PvE storm-fighting adventure!" };
+      const isStwCustom = Boolean(stwCustom && (stwCustom.title || stwCustom.body));
+
+      const stwTitle = el("input", {
+        class: "field",
+        value: stwCustom?.title ?? "",
+        placeholder: `Default: ${stwDefault.title} (adapts to build sale tag, e.g. "ON SALE NOW!")`,
+        style: "width:100%"
+      });
+      const stwBody = el("textarea", {
+        class: "field",
+        rows: "3",
+        placeholder: `Default: ${stwDefault.body}`,
+        style: "width:100%; resize:vertical; font-family:inherit; min-height:80px;"
+      });
+      stwBody.value = stwCustom?.body ?? "";
+
+      const saveStwBtn = btn("Save Save the World Text", async () => {
+        const title = stwTitle.value.trim();
+        const body = stwBody.value.trim();
+        const payload = (title || body) ? { subgameSelect: { saveTheWorld: { title, body } } } : { subgameSelect: { saveTheWorld: null } };
+        await act(api("/admin/api/news", payload), payload.subgameSelect.saveTheWorld ? "Save the World mode text updated" : "Save the World mode text reset to 1:1 default");
+        showNews();
+      }, "primary");
+
+      const resetStwBtn = btn("Reset to Default", async () => {
+        stwTitle.value = "";
+        stwBody.value = "";
+        await act(api("/admin/api/news", { subgameSelect: { saveTheWorld: null } }), "Save the World mode text reset to 1:1 default");
+        showNews();
+      }, "ghost");
+
+      stwTitle.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          saveStwBtn.click();
+        }
+      });
+
+      // 4. Mode Select: Battle Royale
+      const brModeCustom = custom.subgameSelect?.battleRoyale;
+      const brModeDefault = defaults.subgameSelect?.battleRoyale || { title: "100 Player PvP", body: "100 Player PvP Battle Royale.\n\nPvE progress does not affect Battle Royale." };
+      const isBrModeCustom = Boolean(brModeCustom && (brModeCustom.title || brModeCustom.body));
+
+      const brModeTitle = el("input", {
+        class: "field",
+        value: brModeCustom?.title ?? "",
+        placeholder: `Default: ${brModeDefault.title} (e.g. "New PVP!" on 1.8.1)`,
+        style: "width:100%"
+      });
+      const brModeBody = el("textarea", {
+        class: "field",
+        rows: "3",
+        placeholder: `Default: ${brModeDefault.body.replace(/\n/g, " ")}`,
+        style: "width:100%; resize:vertical; font-family:inherit; min-height:80px;"
+      });
+      brModeBody.value = brModeCustom?.body ?? "";
+
+      const saveBrModeBtn = btn("Save Battle Royale Text", async () => {
+        const title = brModeTitle.value.trim();
+        const body = brModeBody.value.trim();
+        const payload = (title || body) ? { subgameSelect: { battleRoyale: { title, body } } } : { subgameSelect: { battleRoyale: null } };
+        await act(api("/admin/api/news", payload), payload.subgameSelect.battleRoyale ? "Battle Royale mode text updated" : "Battle Royale mode text reset to 1:1 default");
+        showNews();
+      }, "primary");
+
+      const resetBrModeBtn = btn("Reset to Default", async () => {
+        brModeTitle.value = "";
+        brModeBody.value = "";
+        await act(api("/admin/api/news", { subgameSelect: { battleRoyale: null } }), "Battle Royale mode text reset to 1:1 default");
+        showNews();
+      }, "ghost");
+
+      brModeTitle.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          saveBrModeBtn.click();
+        }
+      });
+
       $("view").replaceChildren(
         el("div", { class: "view-head" },
           el("div", {},
             el("h1", { text: "News & Announcements" }),
-            el("div", { class: "muted", text: "Configure in-game announcements shown in the Battle Royale lobby and on the login screen." })),
+            el("div", { class: "muted", text: "Configure in-game announcements shown in the Battle Royale lobby, on the login screen, and on the mode select screen." })),
           el("div", { class: "actions" }, btn("Refresh", showNews, "ghost"))),
 
         el("section", { class: "panel" },
           el("div", { class: "panel-head" },
-            el("h2", { text: "Battle Royale Lobby News" }),
+            el("div", { style: "display:flex; align-items:center; gap:10px;" },
+              el("h2", { text: "Battle Royale Lobby News" }),
+              isBrCustom ? chip("Customized", "sky") : chip("Default (1:1)")),
             chip("AthenaNews", "sky")),
-          el("p", { class: "note", text: "Displayed in the Battle Royale lobby news box (1.7.2+). Use {version} to show the player's game version automatically." }),
+          el("p", { class: "note", text: "Displayed in the Battle Royale lobby news box (1.7.2+). Leave blank to use authentic 1:1 defaults. Use {version} to show the client's version automatically." }),
           el("div", { style: "display:flex; flex-direction:column; gap:12px; margin-top:14px;" },
             el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
               el("span", { text: "Title" }),
@@ -2573,9 +2691,11 @@
 
         el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head" },
-            el("h2", { text: "Login Screen Message" }),
+            el("div", { style: "display:flex; align-items:center; gap:10px;" },
+              el("h2", { text: "Login Screen Message" }),
+              isLoginCustom ? chip("Customized", "sky") : chip("Default (1:1)")),
             chip("Patch Notes", "sky")),
-          el("p", { class: "note", text: "Displayed in the message / patch notes widget on the game's start and login screen. Use {version} for the client version." }),
+          el("p", { class: "note", text: "Displayed in the message / patch notes widget on the game's start and login screen. Leave blank to use authentic 1:1 defaults. Use {version} for the client version." }),
           el("div", { style: "display:flex; flex-direction:column; gap:12px; margin-top:14px;" },
             el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
               el("span", { text: "Title" }),
@@ -2585,7 +2705,43 @@
               loginBody),
             el("div", { class: "actions", style: "margin-top:4px;" },
               saveLoginBtn,
-              resetLoginBtn)))
+              resetLoginBtn))),
+
+        el("section", { class: "panel", style: "margin-top:16px" },
+          el("div", { class: "panel-head" },
+            el("div", { style: "display:flex; align-items:center; gap:10px;" },
+              el("h2", { text: "Mode Select: Save the World" }),
+              isStwCustom ? chip("Customized", "sky") : chip("Default (1:1)")),
+            chip("SubgameSelect PvE", "sky")),
+          el("p", { class: "note", text: "Displayed on the mode select screen beside and under the Save the World button. Leave blank to adapt to authentic 1:1 sale tags for each detected build (e.g. \"ON SALE NOW!\" on 1.8)." }),
+          el("div", { style: "display:flex; flex-direction:column; gap:12px; margin-top:14px;" },
+            el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
+              el("span", { text: "Button Tag / Title" }),
+              stwTitle),
+            el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
+              el("span", { text: "Description Body" }),
+              stwBody),
+            el("div", { class: "actions", style: "margin-top:4px;" },
+              saveStwBtn,
+              resetStwBtn))),
+
+        el("section", { class: "panel", style: "margin-top:16px" },
+          el("div", { class: "panel-head" },
+            el("div", { style: "display:flex; align-items:center; gap:10px;" },
+              el("h2", { text: "Mode Select: Battle Royale" }),
+              isBrModeCustom ? chip("Customized", "sky") : chip("Default (1:1)")),
+            chip("SubgameSelect PvP", "sky")),
+          el("p", { class: "note", text: "Displayed on the mode select screen beside and under the Battle Royale button. Leave blank to adapt to authentic 1:1 tags for each detected build (e.g. \"New PVP!\" on 1.8.1)." }),
+          el("div", { style: "display:flex; flex-direction:column; gap:12px; margin-top:14px;" },
+            el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
+              el("span", { text: "Button Tag / Title" }),
+              brModeTitle),
+            el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
+              el("span", { text: "Description Body" }),
+              brModeBody),
+            el("div", { class: "actions", style: "margin-top:4px;" },
+              saveBrModeBtn,
+              resetBrModeBtn)))
       );
     }
 

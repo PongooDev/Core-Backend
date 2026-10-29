@@ -36,6 +36,17 @@ export const defaultLoginMessage = {
 
 const saveTheWorldSelect = { message: { title: "Co-op PvE", body: "Cooperative PvE storm-fighting adventure!" } };
 
+export const defaultSubgameSelect = {
+  saveTheWorld: {
+    title: "Co-op PvE",
+    body: "Cooperative PvE storm-fighting adventure!"
+  },
+  battleRoyale: {
+    title: "100 Player PvP",
+    body: "100 Player PvP Battle Royale.\n\nPvE progress does not affect Battle Royale."
+  }
+};
+
 export const subgameSelectData = {
   saveTheWorld: saveTheWorldSelect,
   saveTheWorldUnowned: saveTheWorldSelect,
@@ -50,13 +61,6 @@ const saleTitles = {
   3729133: { saveTheWorld: "40% OFF - LIMITED TIME!", battleRoyale: "New PVP!" },
   3741772: { battleRoyale: "New PVP!" }
 };
-const titled = (select, title) => (title ? { message: { ...select.message, title } } : select);
-export function subgameSelectFor(changelist) {
-  const titles = saleTitles[Number(changelist)];
-  if (!titles) return subgameSelectData;
-  const saveTheWorld = titled(saveTheWorldSelect, titles.saveTheWorld);
-  return { saveTheWorld, saveTheWorldUnowned: saveTheWorld, battleRoyale: titled(subgameSelectData.battleRoyale, titles.battleRoyale) };
-}
 
 // A build Core doesn't know shows its changelist ("CL-3757339", without the "v"), and a request naming none "Core".
 function messageOf(configured, fallback, changelist) {
@@ -66,14 +70,31 @@ function messageOf(configured, fallback, changelist) {
   return { title: text(configured?.title ?? fallback.title), body: text(configured?.body ?? fallback.body) };
 }
 
-export function contentPage(news = defaultBattleRoyaleNews, loginMessage = defaultLoginMessage, changelist = undefined) {
+export function subgameSelectFor(changelist, configured = undefined) {
+  const titles = saleTitles[Number(changelist)];
+  const defaultStwTitle = titles?.saveTheWorld ?? saveTheWorldSelect.message.title;
+  const defaultStwBody = saveTheWorldSelect.message.body;
+  const defaultBrTitle = titles?.battleRoyale ?? subgameSelectData.battleRoyale.message.title;
+  const defaultBrBody = subgameSelectData.battleRoyale.message.body;
+
+  const stw = messageOf(configured?.saveTheWorld, { title: defaultStwTitle, body: defaultStwBody }, changelist);
+  const br = messageOf(configured?.battleRoyale, { title: defaultBrTitle, body: defaultBrBody }, changelist);
+
+  return {
+    saveTheWorld: { message: stw },
+    saveTheWorldUnowned: { message: stw },
+    battleRoyale: { message: br }
+  };
+}
+
+export function contentPage(news = defaultBattleRoyaleNews, loginMessage = defaultLoginMessage, changelist = undefined, subgameSelect = undefined) {
   return {
     _title: "Fortnite Game",
     lastModified: "2026-10-27T16:30:00.000Z",
     _images_: [],
     battleRoyaleNews: { news: { message: messageOf(news, defaultBattleRoyaleNews, changelist), region_messages: [], platform_messages: [] } },
     loginmessage: { loginmessage: { message: messageOf(loginMessage, defaultLoginMessage, changelist) } },
-    subgameselectdata: subgameSelectFor(changelist)
+    subgameselectdata: subgameSelectFor(changelist, subgameSelect)
   };
 }
 
@@ -83,7 +104,8 @@ export function contentRoutes(context, config = {}) {
     const settings = context?.settings?.get?.() ?? {};
     const news = settings.battleRoyaleNews ?? config.battleRoyaleNews ?? defaultBattleRoyaleNews;
     const loginMessage = settings.loginMessage ?? config.loginMessage ?? defaultLoginMessage;
-    res.json(contentPage(news, loginMessage, getBuild(req)));
+    const subgameSelect = settings.subgameSelect ?? config.subgameSelect;
+    res.json(contentPage(news, loginMessage, getBuild(req), subgameSelect));
   });
 
   return router;

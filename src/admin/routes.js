@@ -29,7 +29,7 @@ import { notifyProfiles } from "../services/mcp/profile.js";
 import { catalogEntry, categories, currencies, describeCosmetics, describeItem, isSingleItem, isWorldType, knownTemplate, searchCatalog,
   stormShields } from "./describe.js";
 import { requireLoopback, requirePanelRequest } from "./local.js";
-import { defaultBattleRoyaleNews, defaultLoginMessage } from "../services/content/pages.js";
+import { defaultBattleRoyaleNews, defaultLoginMessage, defaultSubgameSelect } from "../services/content/pages.js";
 import { inBuild } from "../builds/context.js";
 import { battleRoyaleBuilds, certBuild, versionOf } from "../builds/detect.js";
 import { eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, shopDay, weeklyStoreEnd } from "../store/itemshop.js";
@@ -684,19 +684,35 @@ export function adminRoutes(context) {
     });
   });
 
-  // In-game news and login messages
-  router.get("/admin/api/news", (req, res) => {
+  function getNewsPayload() {
     const current = settings?.get?.() ?? {};
     const configNews = context.config?.battleRoyaleNews;
     const configLogin = context.config?.loginMessage;
-    res.json({
+    const configSubgame = context.config?.subgameSelect;
+
+    return {
+      custom: {
+        battleRoyaleNews: current.battleRoyaleNews ?? configNews ?? null,
+        loginMessage: current.loginMessage ?? configLogin ?? null,
+        subgameSelect: {
+          saveTheWorld: current.subgameSelect?.saveTheWorld ?? configSubgame?.saveTheWorld ?? null,
+          battleRoyale: current.subgameSelect?.battleRoyale ?? configSubgame?.battleRoyale ?? null
+        }
+      },
+      defaults: {
+        battleRoyaleNews: defaultBattleRoyaleNews,
+        loginMessage: defaultLoginMessage,
+        subgameSelect: defaultSubgameSelect
+      },
       battleRoyaleNews: current.battleRoyaleNews ?? configNews ?? defaultBattleRoyaleNews,
       loginMessage: current.loginMessage ?? configLogin ?? defaultLoginMessage,
-      defaults: {
-        battleRoyaleNews: configNews ?? defaultBattleRoyaleNews,
-        loginMessage: configLogin ?? defaultLoginMessage
-      }
-    });
+      subgameSelect: current.subgameSelect ?? configSubgame ?? defaultSubgameSelect
+    };
+  }
+
+  // In-game news, login messages, and mode select screen text
+  router.get("/admin/api/news", (req, res) => {
+    res.json(getNewsPayload());
   });
 
   function getShopPayload() {
@@ -867,33 +883,46 @@ export function adminRoutes(context) {
       if (req.body.battleRoyaleNews === null) {
         updates.battleRoyaleNews = null;
       } else if (typeof req.body.battleRoyaleNews === "object") {
-        updates.battleRoyaleNews = {
-          title: String(req.body.battleRoyaleNews.title ?? ""),
-          body: String(req.body.battleRoyaleNews.body ?? "")
-        };
+        const title = String(req.body.battleRoyaleNews.title ?? "").trim();
+        const body = String(req.body.battleRoyaleNews.body ?? "").trim();
+        updates.battleRoyaleNews = (title || body) ? { title, body } : null;
       }
     }
     if (req.body?.loginMessage !== undefined) {
       if (req.body.loginMessage === null) {
         updates.loginMessage = null;
       } else if (typeof req.body.loginMessage === "object") {
-        updates.loginMessage = {
-          title: String(req.body.loginMessage.title ?? ""),
-          body: String(req.body.loginMessage.body ?? "")
-        };
+        const title = String(req.body.loginMessage.title ?? "").trim();
+        const body = String(req.body.loginMessage.body ?? "").trim();
+        updates.loginMessage = (title || body) ? { title, body } : null;
       }
     }
-    const current = settings.update(updates);
-    const configNews = context.config?.battleRoyaleNews;
-    const configLogin = context.config?.loginMessage;
-    res.json({
-      battleRoyaleNews: current.battleRoyaleNews ?? configNews ?? defaultBattleRoyaleNews,
-      loginMessage: current.loginMessage ?? configLogin ?? defaultLoginMessage,
-      defaults: {
-        battleRoyaleNews: configNews ?? defaultBattleRoyaleNews,
-        loginMessage: configLogin ?? defaultLoginMessage
+    if (req.body?.subgameSelect !== undefined) {
+      if (req.body.subgameSelect === null) {
+        updates.subgameSelect = null;
+      } else if (typeof req.body.subgameSelect === "object") {
+        const currentSub = settings.get?.()?.subgameSelect ?? {};
+        const sanitizeSection = (val) => {
+          if (val === null) return null;
+          if (typeof val === "object") {
+            const title = String(val.title ?? "").trim();
+            const body = String(val.body ?? "").trim();
+            return (title || body) ? { title, body } : null;
+          }
+          return undefined;
+        };
+
+        const newStw = sanitizeSection(req.body.subgameSelect.saveTheWorld);
+        const newBr = sanitizeSection(req.body.subgameSelect.battleRoyale);
+
+        const stw = newStw !== undefined ? newStw : (currentSub.saveTheWorld ?? null);
+        const br = newBr !== undefined ? newBr : (currentSub.battleRoyale ?? null);
+
+        updates.subgameSelect = (stw || br) ? { saveTheWorld: stw, battleRoyale: br } : null;
       }
-    });
+    }
+    settings.update(updates);
+    res.json(getNewsPayload());
   });
 
   router.get("/admin/api/sessions", (req, res) => {
