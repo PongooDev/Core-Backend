@@ -689,8 +689,14 @@ export function adminRoutes(context) {
     const configNews = context.config?.battleRoyaleNews;
     const configLogin = context.config?.loginMessage;
     const configSubgame = context.config?.subgameSelect;
+    const loginMessageEnabled = (typeof current.loginMessageEnabled === "boolean")
+      ? current.loginMessageEnabled
+      : (typeof context.config?.loginMessageEnabled === "boolean"
+        ? context.config.loginMessageEnabled
+        : (context.config?.loginMessage !== false));
 
     return {
+      loginMessageEnabled,
       custom: {
         battleRoyaleNews: current.battleRoyaleNews ?? configNews ?? null,
         loginMessage: current.loginMessage ?? configLogin ?? null,
@@ -700,6 +706,7 @@ export function adminRoutes(context) {
         }
       },
       defaults: {
+        loginMessageEnabled: true,
         battleRoyaleNews: defaultBattleRoyaleNews,
         loginMessage: defaultLoginMessage,
         subgameSelect: defaultSubgameSelect
@@ -887,6 +894,11 @@ export function adminRoutes(context) {
         const body = String(req.body.battleRoyaleNews.body ?? "").trim();
         updates.battleRoyaleNews = (title || body) ? { title, body } : null;
       }
+    }
+    if (typeof req.body?.loginMessageEnabled === "boolean") {
+      updates.loginMessageEnabled = req.body.loginMessageEnabled;
+    } else if (req.body?.loginMessageEnabled === null) {
+      updates.loginMessageEnabled = null;
     }
     if (req.body?.loginMessage !== undefined) {
       if (req.body.loginMessage === null) {

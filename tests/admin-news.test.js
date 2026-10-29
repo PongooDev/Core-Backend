@@ -25,6 +25,8 @@ test("the admin news API views, updates, and resets in-game news, login messages
     // 1. Initial GET /admin/api/news returns custom as null (blank text boxes) and reference defaults
     const initial = await admin(backend, "/news");
     assert.equal(initial.status, 200);
+    assert.equal(initial.body.loginMessageEnabled, true);
+    assert.equal(initial.body.defaults.loginMessageEnabled, true);
     assert.equal(initial.body.custom.battleRoyaleNews, null);
     assert.equal(initial.body.custom.loginMessage, null);
     assert.equal(initial.body.custom.subgameSelect.saveTheWorld, null);
@@ -109,6 +111,34 @@ test("the admin news API views, updates, and resets in-game news, login messages
     const reset182 = (await pageFor(backend.port, "3741772")).body;
     assert.equal(reset182.subgameselectdata.saveTheWorld.message.title, "Co-op PvE");
     assert.equal(reset182.subgameselectdata.battleRoyale.message.title, "New PVP!");
+
+    // 6. Toggle login screen message off and on
+    const disabled = await admin(backend, "/news", { loginMessageEnabled: false });
+    assert.equal(disabled.status, 200);
+    assert.equal(disabled.body.loginMessageEnabled, false);
+
+    // When disabled, content page omits loginmessage completely
+    const disabledPage = (await pageFor(backend.port, "3724489")).body;
+    assert.equal(disabledPage.loginmessage, undefined);
+
+    // Updating custom text while disabled preserves custom text but keeps loginmessage omitted
+    await admin(backend, "/news", { loginMessage: { title: "Patch Notes {version}", body: "Disabled test notes" } });
+    const stillDisabledPage = (await pageFor(backend.port, "3724489")).body;
+    assert.equal(stillDisabledPage.loginmessage, undefined);
+
+    // Re-enabling restores the loginmessage with custom text immediately
+    const reEnabled = await admin(backend, "/news", { loginMessageEnabled: true });
+    assert.equal(reEnabled.status, 200);
+    assert.equal(reEnabled.body.loginMessageEnabled, true);
+
+    const reEnabledPage = (await pageFor(backend.port, "3724489")).body;
+    assert.equal(reEnabledPage.loginmessage.loginmessage.message.title, "Patch Notes 1.8");
+    assert.equal(reEnabledPage.loginmessage.loginmessage.message.body, "Disabled test notes");
+
+    // Resetting loginMessage to null restores 1:1 default text while staying enabled
+    await admin(backend, "/news", { loginMessage: null });
+    const finalPage = (await pageFor(backend.port, "3724489")).body;
+    assert.equal(finalPage.loginmessage.loginmessage.message.title, "v1.8");
   } finally {
     backend.close();
     fs.rmSync(dataDir, { recursive: true, force: true });

@@ -13,7 +13,8 @@ const defaults = {
   battleRoyaleVbucks: false,
   vbucksPerKill: 50,
   vbucksPerWin: 500,
-  allowedHostingIps: ["127.0.0.1", "::1"]
+  allowedHostingIps: ["127.0.0.1", "::1"],
+  loginMessageEnabled: true
 };
 
 // A reward amount: a whole number of V-Bucks from 0 to maxReward, or undefined for anything else.
@@ -32,6 +33,7 @@ export function createSettingsStore(dataDir) {
       const loaded = readJson(file);
       Object.assign(settings, loaded);
       if (typeof loaded.battleRoyaleVbucks !== "boolean") settings.battleRoyaleVbucks = defaults.battleRoyaleVbucks;
+      if (typeof loaded.loginMessageEnabled === "boolean") settings.loginMessageEnabled = loaded.loginMessageEnabled;
       for (const key of ["vbucksPerKill", "vbucksPerWin"]) settings[key] = rewardAmount(loaded[key]) ?? defaults[key];
       if (Array.isArray(loaded.allowedHostingIps)) {
         settings.allowedHostingIps = [...loaded.allowedHostingIps];
@@ -87,6 +89,7 @@ export function createSettingsStore(dataDir) {
     get() {
       return {
         ...settings,
+        loginMessageEnabled: settings.loginMessageEnabled !== false,
         allowedHostingIps: [...(settings.allowedHostingIps ?? defaults.allowedHostingIps)],
         battleRoyaleNews: settings.battleRoyaleNews ? { ...settings.battleRoyaleNews } : undefined,
         loginMessage: settings.loginMessage ? { ...settings.loginMessage } : undefined,
@@ -101,6 +104,11 @@ export function createSettingsStore(dataDir) {
       if (typeof partial.allowAutoRegistration === "boolean") settings.allowAutoRegistration = partial.allowAutoRegistration;
       if (typeof partial.seasonalEvents === "boolean") settings.seasonalEvents = partial.seasonalEvents;
       if (typeof partial.battleRoyaleVbucks === "boolean") settings.battleRoyaleVbucks = partial.battleRoyaleVbucks;
+      if (typeof partial.loginMessageEnabled === "boolean") {
+        settings.loginMessageEnabled = partial.loginMessageEnabled;
+      } else if (partial.loginMessageEnabled === null) {
+        delete settings.loginMessageEnabled;
+      }
       for (const key of ["vbucksPerKill", "vbucksPerWin"]) {
         const amount = rewardAmount(partial[key]);
         if (amount !== undefined) settings[key] = amount;

@@ -448,6 +448,11 @@
       outline: none;
     }
 
+    .field:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
     .field.num {
       width: 120px;
       text-align: right;
@@ -2499,6 +2504,7 @@
 
       const custom = data.custom || {};
       const defaults = data.defaults || {};
+      const loginMessageEnabled = data.loginMessageEnabled !== false;
 
       // 1. Battle Royale Lobby News
       const brCustom = custom.battleRoyaleNews;
@@ -2550,13 +2556,15 @@
         class: "field",
         value: loginCustom?.title ?? "",
         placeholder: `Default: ${loginDefault.title}`,
-        style: "width:100%"
+        style: "width:100%",
+        disabled: !loginMessageEnabled
       });
       const loginBody = el("textarea", {
         class: "field",
         rows: "3",
         placeholder: `Default: ${loginDefault.body}`,
-        style: "width:100%; resize:vertical; font-family:inherit; min-height:80px;"
+        style: "width:100%; resize:vertical; font-family:inherit; min-height:80px;",
+        disabled: !loginMessageEnabled
       });
       loginBody.value = loginCustom?.body ?? "";
 
@@ -2566,19 +2574,19 @@
         const payload = (title || body) ? { loginMessage: { title, body } } : { loginMessage: null };
         await act(api("/admin/api/news", payload), payload.loginMessage ? "Login message updated" : "Login message reset to 1:1 default");
         showNews();
-      }, "primary");
+      }, "primary", { disabled: !loginMessageEnabled });
 
       const resetLoginBtn = btn("Reset to Default", async () => {
         loginTitle.value = "";
         loginBody.value = "";
         await act(api("/admin/api/news", { loginMessage: null }), "Login message reset to 1:1 default");
         showNews();
-      }, "ghost");
+      }, "ghost", { disabled: !loginMessageEnabled });
 
       loginTitle.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           e.preventDefault();
-          saveLoginBtn.click();
+          if (loginMessageEnabled) saveLoginBtn.click();
         }
       });
 
@@ -2690,13 +2698,24 @@
               resetBrBtn))),
 
         el("section", { class: "panel", style: "margin-top:16px" },
-          el("div", { class: "panel-head" },
-            el("div", { style: "display:flex; align-items:center; gap:10px;" },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" },
+            el("div", { style: "display:flex; align-items:center; gap:10px; flex-wrap:wrap;" },
               el("h2", { text: "Login Screen Message" }),
-              isLoginCustom ? chip("Customized", "sky") : chip("Default (1:1)")),
-            chip("Patch Notes", "sky")),
-          el("p", { class: "note", text: "Displayed in the message / patch notes widget on the game's start and login screen. Leave blank to use authentic 1:1 defaults. Use {version} for the client version." }),
-          el("div", { style: "display:flex; flex-direction:column; gap:12px; margin-top:14px;" },
+              loginMessageEnabled
+                ? (isLoginCustom ? chip("Customized", "sky") : chip("Default (1:1)"))
+                : chip("Disabled", "warn"),
+              chip("Patch Notes", "sky")),
+            toggleSwitch(loginMessageEnabled, async (checked) => {
+              await act(api("/admin/api/news", { loginMessageEnabled: checked }), checked ? "Login screen message enabled" : "Login screen message disabled");
+              showNews();
+            })),
+          el("p", {
+            class: "note",
+            text: loginMessageEnabled
+              ? "Displayed in the message / patch notes widget on the game's start and login screen. Leave blank to use authentic 1:1 defaults. Use {version} for the client version."
+              : "Login screen message is disabled. The patch notes message box on the client's login screen will be omitted."
+          }),
+          el("div", { style: `display:flex; flex-direction:column; gap:12px; margin-top:14px;${loginMessageEnabled ? "" : " opacity:0.6;"}` },
             el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
               el("span", { text: "Title" }),
               loginTitle),
