@@ -45,7 +45,12 @@ test("start-up checks answer the way the Cert client parses them", async () => {
       assert.equal(selectData.saveTheWorld.message.body, "Cooperative PvE storm-fighting adventure!");
     }
     // 1.8.1 gets exactly 1.8's data: its tag is blue because its widget is, not because of the page (#103).
-    assert.deepEqual((await pageFor("3729133")).body.subgameselectdata, (await pageFor("3724489")).body.subgameselectdata);
+    // 1.8.1 has its own tags (#110).
+    const select181 = (await pageFor("3729133")).body.subgameselectdata;
+    assert.equal(select181.saveTheWorld.message.title, "40% OFF - LIMITED TIME!");
+    assert.equal(select181.saveTheWorldUnowned.message.title, "40% OFF - LIMITED TIME!");
+    assert.equal(select181.battleRoyale.message.title, "New PVP!");
+    assert.equal((await pageFor("3724489")).body.subgameselectdata.battleRoyale.message.title, "100 Player PvP");
     assert.equal((await pageFor("3700114")).body.subgameselectdata.saveTheWorld.message.title, "Co-op PvE");
   } finally {
     backend.close();

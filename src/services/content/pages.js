@@ -18,7 +18,7 @@ import { getBuild, versionOf } from "../../builds/detect.js";
 // saveTheWorldUnowned is for players without Save the World, whom Core doesn't have. The title is the short line in the
 // tag beside the Save the World button (SubgameSelectScreen InitializeShortDescriptions: PVEDescriptionText from
 // GetShortDescription(Campaign)), the body the longer description below. Save the World was discounted while 1.8 to
-// 1.8.2 were live (October and November 2017), and their tag said "ON SALE NOW - LIMITED TIME!" (Core-Backend #93);
+// 1.8.2 were live (October and November 2017), with a sale tag per build (saleTitles below; Core-Backend #93, #110);
 // other builds keep "Co-op PvE".
 // The tag's colour is cooked into the widget, not served: 1.8's PVEDescriptionBorder is a Border whose brush is the red
 // M-NPVP-Notification material (designer text "On sale!"), but 1.8.1 (CL-3729133) re-cooked it as a CommonBorder on
@@ -42,12 +42,20 @@ export const subgameSelectData = {
   battleRoyale: { message: { title: "100 Player PvP", body: "100 Player PvP Battle Royale.\n\nPvE progress does not affect Battle Royale." } }
 };
 
-const saleBuilds = { first: 3724489, last: 3741772 };
-const saveTheWorldOnSale = { message: { ...saveTheWorldSelect.message, title: "ON SALE NOW - LIMITED TIME!" } };
+// Each Fortnitemares build's own tags (Core-Backend #93, #110): 1.8's "ON SALE NOW - LIMITED TIME!", and 1.8.1's
+// "40% OFF - LIMITED TIME!" with Battle Royale's "New PVP!" (the reporter's 1.8.1 footage). 1.8.2 keeps 1.8's until
+// its own is known.
+const saleTitles = {
+  3724489: { saveTheWorld: "ON SALE NOW - LIMITED TIME!" },
+  3729133: { saveTheWorld: "40% OFF - LIMITED TIME!", battleRoyale: "New PVP!" },
+  3741772: { saveTheWorld: "ON SALE NOW - LIMITED TIME!" }
+};
+const titled = (select, title) => (title ? { message: { ...select.message, title } } : select);
 export function subgameSelectFor(changelist) {
-  const number = Number(changelist);
-  if (!(number >= saleBuilds.first && number <= saleBuilds.last)) return subgameSelectData;
-  return { ...subgameSelectData, saveTheWorld: saveTheWorldOnSale, saveTheWorldUnowned: saveTheWorldOnSale };
+  const titles = saleTitles[Number(changelist)];
+  if (!titles) return subgameSelectData;
+  const saveTheWorld = titled(saveTheWorldSelect, titles.saveTheWorld);
+  return { saveTheWorld, saveTheWorldUnowned: saveTheWorld, battleRoyale: titled(subgameSelectData.battleRoyale, titles.battleRoyale) };
 }
 
 // A build Core doesn't know shows its changelist ("CL-3757339", without the "v"), and a request naming none "Core".
