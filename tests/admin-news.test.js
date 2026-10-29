@@ -3,71 +3,114 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { get, post, startBackend } from "./helpers.js";
+import { get, post, send, startBackend } from "./helpers.js";
 
 const admin = (backend, path, body) => (body === undefined
   ? get(backend.port, `/admin/api${path}`)
   : post(backend.port, `/admin/api${path}`, undefined, body));
 
-test("the admin news API views, updates, and resets in-game news and login messages dynamically", async () => {
+const pageFor = (port, changelist) => send({
+  host: "127.0.0.1",
+  port,
+  method: "GET",
+  path: "/content/api/pages/fortnite-game",
+  headers: { "User-Agent": `Fortnite/++Fortnite+Release-Live-CL-${changelist} Windows/10.0.19045.1.768.64bit` }
+});
+
+test("the admin news API views, updates, and resets in-game news, login messages, and mode select text dynamically", async () => {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-news-test-"));
   const backend = await startBackend({ dataDir });
 
   try {
-    // 1. Initial GET /admin/api/news returns the defaults
+    // 1. Initial GET /admin/api/news returns custom as null (blank text boxes) and reference defaults
     const initial = await admin(backend, "/news");
     assert.equal(initial.status, 200);
-    assert.equal(initial.body.battleRoyaleNews.title, "Battle Royale - {version}");
-    assert.equal(initial.body.battleRoyaleNews.body, "Welcome to Battle Royale on Core!");
-    assert.equal(initial.body.loginMessage.title, "v{version}");
-    assert.equal(initial.body.loginMessage.body, "Welcome to Fortnite on Core!");
+    assert.equal(initial.body.custom.battleRoyaleNews, null);
+    assert.equal(initial.body.custom.loginMessage, null);
+    assert.equal(initial.body.custom.subgameSelect.saveTheWorld, null);
+    assert.equal(initial.body.custom.subgameSelect.battleRoyale, null);
 
-    // Initial content page request uses defaults
-    let page = await get(backend.port, "/content/api/pages/fortnite-game");
-    assert.equal(page.status, 200);
-    assert.equal(page.body.battleRoyaleNews.news.message.title, "Battle Royale - 1.1");
-    assert.equal(page.body.loginmessage.loginmessage.message.title, "v1.1");
+    assert.equal(initial.body.defaults.battleRoyaleNews.title, "Battle Royale - {version}");
+    assert.equal(initial.body.defaults.loginMessage.title, "v{version}");
+    assert.equal(initial.body.defaults.subgameSelect.saveTheWorld.title, "Co-op PvE");
+    assert.equal(initial.body.defaults.subgameSelect.battleRoyale.title, "100 Player PvP");
 
-    // 2. Update both news and login message via admin API
+    // 2. Default content page adapts 1:1 to the detected version
+    const default18 = (await pageFor(backend.port, "3724489")).body;
+    assert.equal(default18.subgameselectdata.saveTheWorld.message.title, "ON SALE NOW - LIMITED TIME!");
+    assert.equal(default18.subgameselectdata.battleRoyale.message.title, "100 Player PvP");
+    assert.equal(default18.battleRoyaleNews.news.message.title, "Battle Royale - 1.8");
+
+    const default181 = (await pageFor(backend.port, "3729133")).body;
+    assert.equal(default181.subgameselectdata.saveTheWorld.message.title, "40% OFF - LIMITED TIME!");
+    assert.equal(default181.subgameselectdata.battleRoyale.message.title, "New PVP!");
+    assert.equal(default181.battleRoyaleNews.news.message.title, "Battle Royale - 1.8.1");
+
+    const default182 = (await pageFor(backend.port, "3741772")).body;
+    assert.equal(default182.subgameselectdata.saveTheWorld.message.title, "Co-op PvE");
+    assert.equal(default182.subgameselectdata.battleRoyale.message.title, "New PVP!");
+
+    const default172 = (await pageFor(backend.port, "3700114")).body;
+    assert.equal(default172.subgameselectdata.saveTheWorld.message.title, "Co-op PvE");
+    assert.equal(default172.subgameselectdata.battleRoyale.message.title, "100 Player PvP");
+    assert.equal(default172.battleRoyaleNews.news.message.title, "Battle Royale - 1.7.2");
+
+    // 3. Update news, login message, and mode select text via admin API
     const updated = await admin(backend, "/news", {
       battleRoyaleNews: { title: "Special Event {version}", body: "Double XP weekend!" },
-      loginMessage: { title: "Server Announcement", body: "Maintenance tonight at midnight." }
+      loginMessage: { title: "Server Announcement", body: "Maintenance tonight at midnight." },
+      subgameSelect: {
+        saveTheWorld: { title: "CAMPAIGN BOOST", body: "Double Commander XP active!" },
+        battleRoyale: { title: "TOURNAMENT MODE", body: "Solo tournament lobbies now live." }
+      }
     });
     assert.equal(updated.status, 200);
-    assert.equal(updated.body.battleRoyaleNews.title, "Special Event {version}");
-    assert.equal(updated.body.battleRoyaleNews.body, "Double XP weekend!");
-    assert.equal(updated.body.loginMessage.title, "Server Announcement");
-    assert.equal(updated.body.loginMessage.body, "Maintenance tonight at midnight.");
+    assert.equal(updated.body.custom.battleRoyaleNews.title, "Special Event {version}");
+    assert.equal(updated.body.custom.battleRoyaleNews.body, "Double XP weekend!");
+    assert.equal(updated.body.custom.loginMessage.title, "Server Announcement");
+    assert.equal(updated.body.custom.loginMessage.body, "Maintenance tonight at midnight.");
+    assert.equal(updated.body.custom.subgameSelect.saveTheWorld.title, "CAMPAIGN BOOST");
+    assert.equal(updated.body.custom.subgameSelect.battleRoyale.title, "TOURNAMENT MODE");
 
-    // Verify GET /admin/api/news reflects the change
-    const fetched = await admin(backend, "/news");
-    assert.equal(fetched.body.battleRoyaleNews.title, "Special Event {version}");
-    assert.equal(fetched.body.battleRoyaleNews.body, "Double XP weekend!");
-    assert.equal(fetched.body.loginMessage.title, "Server Announcement");
-    assert.equal(fetched.body.loginMessage.body, "Maintenance tonight at midnight.");
+    // 4. Verify content API immediately serves the custom text across all builds
+    const custom18 = (await pageFor(backend.port, "3724489")).body;
+    assert.equal(custom18.battleRoyaleNews.news.message.title, "Special Event 1.8");
+    assert.equal(custom18.battleRoyaleNews.news.message.body, "Double XP weekend!");
+    assert.equal(custom18.loginmessage.loginmessage.message.title, "Server Announcement");
+    assert.equal(custom18.subgameselectdata.saveTheWorld.message.title, "CAMPAIGN BOOST");
+    assert.equal(custom18.subgameselectdata.saveTheWorld.message.body, "Double Commander XP active!");
+    assert.equal(custom18.subgameselectdata.battleRoyale.message.title, "TOURNAMENT MODE");
+    assert.equal(custom18.subgameselectdata.battleRoyale.message.body, "Solo tournament lobbies now live.");
 
-    // 3. Verify content API immediately reflects the updated messages without restart
-    page = await get(backend.port, "/content/api/pages/fortnite-game");
-    assert.equal(page.body.battleRoyaleNews.news.message.title, "Special Event 1.1");
-    assert.equal(page.body.battleRoyaleNews.news.message.body, "Double XP weekend!");
-    assert.equal(page.body.loginmessage.loginmessage.message.title, "Server Announcement");
-    assert.equal(page.body.loginmessage.loginmessage.message.body, "Maintenance tonight at midnight.");
-
-    // 4. Resetting to null restores the default values
+    // 5. Resetting to null clears custom state (blank text boxes) and restores 1:1 version adaptation
     const reset = await admin(backend, "/news", {
       battleRoyaleNews: null,
-      loginMessage: null
+      loginMessage: null,
+      subgameSelect: null
     });
     assert.equal(reset.status, 200);
-    assert.equal(reset.body.battleRoyaleNews.title, "Battle Royale - {version}");
-    assert.equal(reset.body.loginMessage.title, "v{version}");
+    assert.equal(reset.body.custom.battleRoyaleNews, null);
+    assert.equal(reset.body.custom.loginMessage, null);
+    assert.equal(reset.body.custom.subgameSelect.saveTheWorld, null);
+    assert.equal(reset.body.custom.subgameSelect.battleRoyale, null);
 
-    page = await get(backend.port, "/content/api/pages/fortnite-game");
-    assert.equal(page.body.battleRoyaleNews.news.message.title, "Battle Royale - 1.1");
-    assert.equal(page.body.loginmessage.loginmessage.message.title, "v1.1");
+    // 1.8 is back to its 1:1 sale tag
+    const reset18 = (await pageFor(backend.port, "3724489")).body;
+    assert.equal(reset18.subgameselectdata.saveTheWorld.message.title, "ON SALE NOW - LIMITED TIME!");
+    assert.equal(reset18.subgameselectdata.battleRoyale.message.title, "100 Player PvP");
+    assert.equal(reset18.battleRoyaleNews.news.message.title, "Battle Royale - 1.8");
+
+    // 1.8.1 is back to its 1:1 40% off and New PVP tags
+    const reset181 = (await pageFor(backend.port, "3729133")).body;
+    assert.equal(reset181.subgameselectdata.saveTheWorld.message.title, "40% OFF - LIMITED TIME!");
+    assert.equal(reset181.subgameselectdata.battleRoyale.message.title, "New PVP!");
+
+    // 1.8.2 is back to its 1:1 Co-op PvE and New PVP tags
+    const reset182 = (await pageFor(backend.port, "3741772")).body;
+    assert.equal(reset182.subgameselectdata.saveTheWorld.message.title, "Co-op PvE");
+    assert.equal(reset182.subgameselectdata.battleRoyale.message.title, "New PVP!");
   } finally {
     backend.close();
     fs.rmSync(dataDir, { recursive: true, force: true });
   }
 });
-

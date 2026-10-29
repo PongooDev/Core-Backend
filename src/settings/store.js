@@ -48,6 +48,17 @@ export function createSettingsStore(dataDir) {
           body: String(loaded.loginMessage.body ?? "")
         };
       }
+      if (loaded.subgameSelect && typeof loaded.subgameSelect === "object") {
+        const stw = loaded.subgameSelect.saveTheWorld && typeof loaded.subgameSelect.saveTheWorld === "object" ? {
+          title: String(loaded.subgameSelect.saveTheWorld.title ?? ""),
+          body: String(loaded.subgameSelect.saveTheWorld.body ?? "")
+        } : undefined;
+        const br = loaded.subgameSelect.battleRoyale && typeof loaded.subgameSelect.battleRoyale === "object" ? {
+          title: String(loaded.subgameSelect.battleRoyale.title ?? ""),
+          body: String(loaded.subgameSelect.battleRoyale.body ?? "")
+        } : undefined;
+        if (stw || br) settings.subgameSelect = { saveTheWorld: stw, battleRoyale: br };
+      }
       if (loaded.itemShop && typeof loaded.itemShop === "object") {
         settings.itemShop = {
           mode: ["fnbr", "random", "custom"].includes(loaded.itemShop.mode) ? loaded.itemShop.mode : "fnbr",
@@ -79,6 +90,7 @@ export function createSettingsStore(dataDir) {
         allowedHostingIps: [...(settings.allowedHostingIps ?? defaults.allowedHostingIps)],
         battleRoyaleNews: settings.battleRoyaleNews ? { ...settings.battleRoyaleNews } : undefined,
         loginMessage: settings.loginMessage ? { ...settings.loginMessage } : undefined,
+        subgameSelect: settings.subgameSelect ? JSON.parse(JSON.stringify(settings.subgameSelect)) : undefined,
         itemShop: settings.itemShop ? JSON.parse(JSON.stringify(settings.itemShop)) : { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 }
       };
     },
@@ -111,6 +123,28 @@ export function createSettingsStore(dataDir) {
         };
       } else if (partial.loginMessage === null) {
         delete settings.loginMessage;
+      }
+      if (partial.subgameSelect && typeof partial.subgameSelect === "object") {
+        const currentSub = settings.subgameSelect ?? {};
+        const stw = partial.subgameSelect.saveTheWorld !== undefined
+          ? (partial.subgameSelect.saveTheWorld && typeof partial.subgameSelect.saveTheWorld === "object" ? {
+            title: String(partial.subgameSelect.saveTheWorld.title ?? ""),
+            body: String(partial.subgameSelect.saveTheWorld.body ?? "")
+          } : undefined)
+          : currentSub.saveTheWorld;
+        const br = partial.subgameSelect.battleRoyale !== undefined
+          ? (partial.subgameSelect.battleRoyale && typeof partial.subgameSelect.battleRoyale === "object" ? {
+            title: String(partial.subgameSelect.battleRoyale.title ?? ""),
+            body: String(partial.subgameSelect.battleRoyale.body ?? "")
+          } : undefined)
+          : currentSub.battleRoyale;
+        if (stw || br) {
+          settings.subgameSelect = { saveTheWorld: stw, battleRoyale: br };
+        } else {
+          delete settings.subgameSelect;
+        }
+      } else if (partial.subgameSelect === null) {
+        delete settings.subgameSelect;
       }
       if (partial.itemShop && typeof partial.itemShop === "object") {
         const currentShop = settings.itemShop ?? { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 };
