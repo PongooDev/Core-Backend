@@ -39,7 +39,7 @@ test("start-up checks answer the way the Cert client parses them", async () => {
     assert.equal(page.body.subgameselectdata.battleRoyale.message.title, "100 Player PvP");
     assert.equal(page.body.subgameselectdata.saveTheWorld.message.title, "Co-op PvE");
     // 1.8's tag shows Save the World's sale (#93).
-    for (const changelist of ["3724489", "3741772"]) {
+    for (const changelist of ["3724489"]) {
       const selectData = (await pageFor(changelist)).body.subgameselectdata;
       assert.equal(selectData.saveTheWorld.message.title, "ON SALE NOW - LIMITED TIME!");
       assert.equal(selectData.saveTheWorld.message.body, "Cooperative PvE storm-fighting adventure!");
@@ -51,6 +51,9 @@ test("start-up checks answer the way the Cert client parses them", async () => {
     assert.equal(select181.saveTheWorldUnowned.message.title, "40% OFF - LIMITED TIME!");
     assert.equal(select181.battleRoyale.message.title, "New PVP!");
     assert.equal((await pageFor("3724489")).body.subgameselectdata.battleRoyale.message.title, "100 Player PvP");
+    // 1.8.2: the sale is over, Battle Royale is still new (#111).
+    const select182 = (await pageFor("3741772")).body.subgameselectdata;
+    assert.deepEqual([select182.saveTheWorld.message.title, select182.battleRoyale.message.title], ["Co-op PvE", "New PVP!"]);
     assert.equal((await pageFor("3700114")).body.subgameselectdata.saveTheWorld.message.title, "Co-op PvE");
   } finally {
     backend.close();

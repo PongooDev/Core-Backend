@@ -43,12 +43,12 @@ export const subgameSelectData = {
 };
 
 // Each Fortnitemares build's own tags (Core-Backend #93, #110): 1.8's "ON SALE NOW - LIMITED TIME!", and 1.8.1's
-// "40% OFF - LIMITED TIME!" with Battle Royale's "New PVP!" (the reporter's 1.8.1 footage). 1.8.2 keeps 1.8's until
-// its own is known.
+// "40% OFF - LIMITED TIME!" with Battle Royale's "New PVP!" (the reporter's 1.8.1 footage), and 1.8.2's plain "Co-op PvE"
+// (the sale over) with "New PVP!" (#111).
 const saleTitles = {
   3724489: { saveTheWorld: "ON SALE NOW - LIMITED TIME!" },
   3729133: { saveTheWorld: "40% OFF - LIMITED TIME!", battleRoyale: "New PVP!" },
-  3741772: { saveTheWorld: "ON SALE NOW - LIMITED TIME!" }
+  3741772: { battleRoyale: "New PVP!" }
 };
 const titled = (select, title) => (title ? { message: { ...select.message, title } } : select);
 export function subgameSelectFor(changelist) {
