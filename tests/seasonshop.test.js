@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { inBuild } from "../src/builds/context.js";
-import { athenaCosmetics } from "../src/gamedata/athena.js";
+import { athenaCosmetics, athenaDisplayAssets } from "../src/gamedata/athena.js";
 import { seasonEnd, weeklyStoreEnd } from "../src/store/itemshop.js";
 import { seasonShopOffers } from "../src/store/seasonshop.js";
 import { post, send, startBackend, userLogin } from "./helpers.js";
@@ -27,12 +27,13 @@ const vbucks = (profile) => Object.values(profile.items).filter((item) => /^curr
 const setVbucks = (port, accountId, quantity) => post(port, `/admin/api/accounts/${accountId}/currency`, undefined, { key: "vbucks", quantity });
 const setLevel = (port, accountId, level) => post(port, `/admin/api/accounts/${accountId}/battle-royale-level`, undefined, { level });
 
-// Season One's items, levels and prices: the glider and the pickaxe first (the two small tiles), then the outfits.
+// Season One's items, levels and prices, in level order (Core-Backend #112): Aerial Assault One and Aerial Assault
+// Trooper in the two small tiles, Renegade Raider and Raider's Revenge in the large ones.
 const seasonOne = [
   ["AthenaGlider:glider_id_001", 5, 500],
-  ["AthenaPickaxe:pickaxe_lockjaw", 35, 1500],
   ["AthenaCharacter:cid_017_athena_commando_m", 15, 1200],
-  ["AthenaCharacter:cid_028_athena_commando_f", 20, 1200]
+  ["AthenaCharacter:cid_028_athena_commando_f", 20, 1200],
+  ["AthenaPickaxe:pickaxe_lockjaw", 35, 1500]
 ];
 // Those the build's game data has (1.8.2's own data adds Aerial Assault One, the glider new in 1.8.2).
 const inData = (changelist) => inBuild(changelist, () => seasonOne.filter(([templateId]) => athenaCosmetics()[templateId]));
@@ -79,9 +80,15 @@ test("1.8.2's catalog has BRSeasonStorefront with each offer's season level, and
       // No requirements (an owned item shows as owned, where a failed requirement would hide it) and no title.
       assert.deepEqual([entry.requirements, entry.title, entry.shortDescription], [[], "", ""]);
     }
-    // The glider and the pickaxe take the small tiles with the locker icon; the outfits' large tiles their featured art
-    // when the build has one.
-    for (const entry of season.filter((offer) => !/^AthenaCharacter:/.test(offer.itemGrants[0].templateId))) assert.equal(entry.displayAssetPath, "");
+    // Every tile shows its Season Shop art, 1.8.2's display assets: DA_Featured_GliderMiG is Aerial Assault One's (its
+    // tile, T-Featured-Glider-001, is that glider), not Raptor's.
+    const da = (name) => `/Game/Catalog/DisplayAssets/${name}.${name}`;
+    assert.deepEqual(season.map((entry) => [entry.itemGrants[0].templateId, entry.displayAssetPath]), [
+      ["AthenaGlider:glider_id_001", da("DA_Featured_GliderMiG")],
+      ["AthenaCharacter:cid_017_athena_commando_m", da("DA_Featured_SMaleHID017")],
+      ["AthenaCharacter:cid_028_athena_commando_f", da("DA_Featured_SFemaleHID028")],
+      ["AthenaPickaxe:pickaxe_lockjaw", da("DA_Featured_PickaxeLockjaw")]]);
+    assert.equal(inBuild("3741772", () => athenaDisplayAssets()["AthenaGlider:glider_mig"]), undefined);
     // The item shop's offers carry no season level.
     for (const name of ["BRWeeklyStorefront", "BRDailyStorefront", "CardPackStore"]) {
       for (const entry of catalog.storefronts.find((storefront) => storefront.name === name).catalogEntries) assert.deepEqual(entry.metaInfo, [], entry.offerId);

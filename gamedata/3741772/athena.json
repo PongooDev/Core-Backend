@@ -18,7 +18,7 @@
   "displayAssets": {
     "AthenaCharacter:cid_017_athena_commando_m": "/Game/Catalog/DisplayAssets/DA_Featured_SMaleHID017.DA_Featured_SMaleHID017",
     "AthenaCharacter:cid_028_athena_commando_f": "/Game/Catalog/DisplayAssets/DA_Featured_SFemaleHID028.DA_Featured_SFemaleHID028",
-    "AthenaGlider:glider_mig": "/Game/Catalog/DisplayAssets/DA_Featured_GliderMiG.DA_Featured_GliderMiG",
+    "AthenaGlider:glider_id_001": "/Game/Catalog/DisplayAssets/DA_Featured_GliderMiG.DA_Featured_GliderMiG",
     "AthenaPickaxe:pickaxe_lockjaw": "/Game/Catalog/DisplayAssets/DA_Featured_PickaxeLockjaw.DA_Featured_PickaxeLockjaw"
   },
   "quests": {

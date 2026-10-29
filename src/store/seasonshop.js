@@ -25,24 +25,27 @@ import { featuredDisplayAsset } from "./itemshop.js";
 // Season One's items and levels are the patch notes'. The game data holds no prices (the display assets are art only);
 // these are what the 2017 Season Shop charged, per the Fortnite Wiki's item pages and the coverage of their 2024 return
 // to the OG Season Shop at the same prices: Aerial Assault One 500 V-Bucks, Aerial Assault Trooper and Renegade Raider
-// 1,200, Raider's Revenge 1,500 (🟡: not from the game). The glider and the pickaxe take the small tiles; the two outfits
-// take the large ones, with their featured art (DA_Featured_SMaleHID017, DA_Featured_SFemaleHID028).
+// 1,200, Raider's Revenge 1,500 (🟡: not from the game). They are in level order, as the 2017 shop laid them out
+// (Core-Backend #112's reference screenshot): Aerial Assault One and Aerial Assault Trooper in the two small tiles, top
+// to bottom, then Renegade Raider and Raider's Revenge in the large ones. Every one shows its featured art, the display
+// asset the extractor matched to it (DA_Featured_GliderMiG, whose tile T-Featured-Glider-001 is Aerial Assault One's
+// despite its name; DA_Featured_SMaleHID017, DA_Featured_SFemaleHID028, DA_Featured_PickaxeLockjaw).
 export const firstSeasonShopBuild = 3741772;
 export const hasSeasonShop = (changelist = currentBuild()) => Number(changelist) >= firstSeasonShopBuild;
 export const seasonStorefront = "BRSeasonStorefront";
 
 const seasonOne = [
   { templateId: "AthenaGlider:glider_id_001", seasonLevel: 5, price: 500 },
-  { templateId: "AthenaPickaxe:pickaxe_lockjaw", seasonLevel: 35, price: 1500 },
-  { templateId: "AthenaCharacter:cid_017_athena_commando_m", seasonLevel: 15, price: 1200, large: true },
-  { templateId: "AthenaCharacter:cid_028_athena_commando_f", seasonLevel: 20, price: 1200, large: true }
+  { templateId: "AthenaCharacter:cid_017_athena_commando_m", seasonLevel: 15, price: 1200 },
+  { templateId: "AthenaCharacter:cid_028_athena_commando_f", seasonLevel: 20, price: 1200 },
+  { templateId: "AthenaPickaxe:pickaxe_lockjaw", seasonLevel: 35, price: 1500 }
 ];
 
 // The Season Shop's offers, those the requesting build has the cosmetic for; none before 1.8.2.
 export function seasonShopOffers() {
   if (!hasSeasonShop()) return [];
   const cosmetics = athenaCosmetics();
-  return seasonOne.filter(({ templateId }) => cosmetics[templateId]).map(({ templateId, seasonLevel, price, large }) => ({
+  return seasonOne.filter(({ templateId }) => cosmetics[templateId]).map(({ templateId, seasonLevel, price }) => ({
     offerId: `core_season_${templateId.split(":")[1].toLowerCase()}`,
     templateId,
     title: cosmetics[templateId].name.trim(),
@@ -50,7 +53,7 @@ export function seasonShopOffers() {
     currencySubType: "",
     price,
     seasonLevel,
-    displayAssetPath: large ? featuredDisplayAsset(templateId) : "",
+    displayAssetPath: featuredDisplayAsset(templateId),
     athena: true
   }));
 }

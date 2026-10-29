@@ -908,7 +908,7 @@ File.WriteAllText(Path.Combine(output, "world.json"), JsonSerializer.Serialize(w
 var athenaCosmetics = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var athenaQuests = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var athenaLevels = new List<object>();
-var cosmeticKeys = new List<(string TemplateId, string Class, string AssetName, string? Hero)>();
+var cosmeticKeys = new List<(string TemplateId, string Class, string AssetName, string? Hero, string? Icon)>();
 foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" && f.Path.StartsWith("FortniteGame/Content/Athena/Items/", StringComparison.OrdinalIgnoreCase)))
 {
     if (file.Path.Contains("/00_TestAssets/", StringComparison.OrdinalIgnoreCase)) continue;
@@ -936,13 +936,20 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     };
     // An outfit's hero (HID_027_Athena_Commando_F): its featured tile art is named after it.
     var hero = properties["HeroDefinition"]?["ObjectPath"]?.GetValue<string>()?.Split('/').Last().Split('.')[0];
-    cosmeticKeys.Add((cosmeticId, export.ExportType, export.Name, hero));
+    // Its locker icon (LargePreviewImage, a soft path, else SmallPreviewImage): T-Icon-Glider-001-L is Glider_ID_001's,
+    // whose featured tile art is T-Featured-Glider-001.
+    var icon = (properties["LargePreviewImage"]?.GetValueKind() == JsonValueKind.String ? properties["LargePreviewImage"]!.GetValue<string>()
+        : properties["SmallPreviewImage"]?["ObjectPath"]?.GetValue<string>())?.Split('/').Last().Split('.')[0];
+    cosmeticKeys.Add((cosmeticId, export.ExportType, export.Name, hero, icon is null ? null : IconKey(icon)));
 }
 // The item shop's display assets: Catalog/DisplayAssets' FortMtxOfferData whose TileImage is Battle Royale art
 // (UI/Foundation/Textures/BattleRoyale; the others are Save the World's founders and V-Bucks tiles), by the cosmetic they
 // show, as the object path an offer's displayAssetPath names (src/store/itemshop.js). Nothing in either asset points to
 // the other, so a display asset is matched by its names, DA_Featured_<key> and its tile T-Featured-<key> or
 // T-AthenaSoldiers-<key>, compared without case or separators, the first rule with exactly one cosmetic winning:
+// - the tile is the cosmetic's locker icon's featured twin, T-Featured-<key> for T-Icon-<key>(-L): the art itself, so it
+//   comes first (1.8.2's DA_Featured_GliderMiG shows T-Featured-Glider-001, Aerial Assault One, Glider_ID_001's
+//   T-Icon-Glider-001-L, not Raptor's Glider_MiG camo);
 // - the key is the cosmetic's asset name (DA_Featured_GliderVoyager is Glider_Voyager; later builds' DA_Featured_CID_...);
 // - the key is an outfit's hero (T-AthenaSoldiers-HID-029-Athena-Commando-F-Halloween is CID_029's HID_029_...);
 // - the key is the cosmetic's type and a word of its asset name (PickaxeHalloween is HalloweenScythe, Reaper, the one
@@ -951,6 +958,12 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
 static string Key(string name) => new string(name.Where(char.IsLetterOrDigit).ToArray()).ToLowerInvariant();
 static string WithoutPrefix(string name, params string[] prefixes) =>
     prefixes.FirstOrDefault(p => name.StartsWith(p, StringComparison.OrdinalIgnoreCase)) is { } prefix ? name[prefix.Length..] : name;
+// A locker icon's name without its T-Icon- prefix and -L (large) suffix, as a key.
+static string IconKey(string icon)
+{
+    var name = WithoutPrefix(icon, "T-Icon-", "T-Icon_", "T-");
+    return Key(name.EndsWith("-L", StringComparison.OrdinalIgnoreCase) ? name[..^2] : name);
+}
 var athenaDisplayAssets = new SortedDictionary<string, string>(StringComparer.Ordinal);
 var unmatchedDisplayAssets = new List<string>();
 var displayAssetOwners = new Dictionary<string, string>(StringComparer.Ordinal);
@@ -963,15 +976,18 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     if (export is null) continue;
     var tile = JsonNode.Parse(JsonConvert.SerializeObject(export))!["Properties"]?["TileImage"]?["ResourceObject"]?["ObjectPath"]?.GetValue<string>();
     if (tile?.StartsWith("FortniteGame/Content/UI/Foundation/Textures/BattleRoyale/", StringComparison.OrdinalIgnoreCase) != true) continue;
+    var tileName = tile.Split('/').Last().Split('.')[0];
     var keys = new[]
     {
         Key(WithoutPrefix(export.Name, "DA_Featured_", "DA_")),
-        Key(WithoutPrefix(tile.Split('/').Last().Split('.')[0], "T-Featured-", "T-AthenaSoldiers-", "T-"))
+        Key(WithoutPrefix(tileName, "T-Featured-", "T-AthenaSoldiers-", "T-"))
     }.Distinct().ToArray();
+    var featuredKey = tileName.StartsWith("T-Featured-", StringComparison.OrdinalIgnoreCase) ? Key(tileName["T-Featured-".Length..]) : null;
     // A cosmetic class's type word: AthenaPickaxeItemDefinition's "pickaxe", AthenaCharacterItemDefinition's "character".
     static string TypeWord(string cosmeticClass) => Key(cosmeticClass.Replace("ItemDefinition", "").Replace("Athena", ""));
-    Func<(string TemplateId, string Class, string AssetName, string? Hero), bool>[] rules =
+    Func<(string TemplateId, string Class, string AssetName, string? Hero, string? Icon), bool>[] rules =
     [
+        c => featuredKey is not null && c.Icon == featuredKey,
         c => keys.Contains(Key(c.AssetName)),
         c => c.Hero is not null && keys.Contains(Key(c.Hero)),
         c => keys.Any(k => k.StartsWith(TypeWord(c.Class)) && k.Length > TypeWord(c.Class).Length
