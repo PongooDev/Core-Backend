@@ -12,7 +12,8 @@ import { difficultyOf, missionMeets, missionObjectives, questPath } from "./ques
 // theaters come from (tools/theaters) is from after the event, so this layout is Core's (🟡), built from what 1.8 ships
 // for it:
 // - zone themes: BP_ZT_TRV_HF (Zone_TRV_HForest_Castle), BP_ZT_TRV_HF_Castle and _CastleB (Zone_TRV_HForest_TwoTowers,
-//   _B) and BP_ZT_TRV_HF_Intro (Zone_TRV_HForest_Intro, the event's opening map);
+//   _B) and BP_ZT_TRV_HF_Intro (Zone_TRV_HForest_Intro, the event's opening map); Trap the Storm only on the maps
+//   with both of its trap sites (trapThemes below);
 // - missions: Explore the Mist (MissionGen_TRV_Landmark, TRV_Landmark: Stat.Mission.Primary.TRV.Landmark, the
 //   Opener's "Explore the mists of Hexsylvania"), the first Trap the Storm (MissionGen_1stTrapTheStorm, with its
 //   tutorial; TtS_Intro's objective), and Trap the Storm, Fight the Storm, Destroy the Encampments and Rescue the
@@ -50,10 +51,24 @@ const regions = [
 ];
 const fixedTiles = [
   { x: 2, y: 8, zoneTheme: zoneThemes.intro, generator: generators.landmark },
-  { x: 4, y: 8, zoneTheme: zoneThemes.forest, generator: generators.firstTrapTheStorm }
+  { x: 4, y: 8, zoneTheme: zoneThemes.castle, generator: generators.firstTrapTheStorm }
 ];
 const missionsPerRegion = 8;
 const spookyThemes = [zoneThemes.forest, zoneThemes.castle, zoneThemes.castleB];
+const regionGenerators = [generators.trapTheStorm, generators.gate, generators.encampments, generators.evacuate];
+
+// Trap the Storm (TrapTheStorm's MissionPlacementInfo, Mission_TrapTheStorm) has two storm traps: one at the castle
+// (TtS_CastleMissionPlacementQuery: a FortPlacementActor tagged Activities.Placement.LocationUnique.Castle) and one at
+// the mansion (TtS_MansionMissionPlacementQuery: LocationUnique.Mansion). Those placement actors are only in the 9x9
+// castle and mansion levels (TRV_HAF_9x9_Castle_0x, TRV_HAF_9x9_Mansion_0x). Zone_TRV_HForest_TwoTowers and _B have
+// both (their BG_TRV_HAF_Castle_Outer and BG_TRV_HAF_MansionOuter tiles), and so does Zone_TRV_HForest_Intro (both
+// LFs placed in the map), but Zone_TRV_HForest_Castle (BP_ZT_TRV_HF) has the castle only. There the mansion query found
+// nothing, the mission spawned the castle's trap alone and, once it was defended, sent the players to "Locate 2nd Storm
+// Trap Location" for a trap that wasn't on the map (CoreV2 #133). So the first Trap the Storm is on the castle theme,
+// and the region tiles of the forest theme roll every Hexsylvania mission but Trap the Storm (a tile's own weights).
+const trapThemes = new Set([zoneThemes.castle, zoneThemes.castleB, zoneThemes.intro]);
+const generatorsOn = (zoneTheme) => (trapThemes.has(zoneTheme) ? regionGenerators
+  : regionGenerators.filter((path) => path !== generators.trapTheStorm));
 
 const noRequirements = () => ({ commanderLevel: 0, personalPowerRating: 0, partyPowerRating: 0 });
 const row = (rowName) => ({ dataTable: difficultyTable, rowName });
@@ -63,7 +78,8 @@ const everyLanguage = (text) => Object.fromEntries(["de", "ru", "ko", "zh-hant",
 function tile(tileType, x, y, zoneTheme, overrides = {}) {
   return {
     tileType, zoneTheme, requirements: noRequirements(), linkedQuests: [], xCoordinate: x, yCoordinate: y,
-    missionWeightOverrides: overrides.generator ? [{ missionGenerator: overrides.generator, weight: 1 }] : [],
+    missionWeightOverrides: (overrides.generators ?? (overrides.generator ? [overrides.generator] : []))
+      .map((missionGenerator) => ({ missionGenerator, weight: 1 })),
     difficultyWeightOverrides: overrides.rowName ? [{ difficultyInfo: row(overrides.rowName), weight: 1 }] : [],
     canBeMissionAlert: tileType === "Normal", tileTags: { gameplayTags: [] }
   };
@@ -102,7 +118,9 @@ const layout = perBuild((read) => {
     for (let y = region.y; y < region.y + 4; y += 1) {
       for (let x = region.x; x < region.x + 5; x += 1) {
         const existing = byCell.get(`${x},${y}`);
-        indices.push(existing ?? add(tile("Normal", x, y, spookyThemes[(x + y + regionIndex) % spookyThemes.length])));
+        const zoneTheme = spookyThemes[(x + y + regionIndex) % spookyThemes.length];
+        const own = generatorsOn(zoneTheme);
+        indices.push(existing ?? add(tile("Normal", x, y, zoneTheme, own.length < regionGenerators.length ? { generators: own } : {})));
       }
     }
     const gate = region.gate && questPath(region.gate);
@@ -111,8 +129,7 @@ const layout = perBuild((read) => {
       regionTags: { gameplayTags: [] },
       tileIndices: indices,
       missionData: {
-        missionWeights: [generators.trapTheStorm, generators.gate, generators.encampments, generators.evacuate]
-          .map((missionGenerator) => ({ missionGenerator, weight: 1 })),
+        missionWeights: regionGenerators.map((missionGenerator) => ({ missionGenerator, weight: 1 })),
         difficultyWeights: region.rows.filter((rowName) => difficulties[rowName]).map((rowName) => ({ difficultyInfo: row(rowName), weight: 1 })),
         numMissionsAvailable: missionsPerRegion,
         numMissionsToChange: missionsPerRegion,

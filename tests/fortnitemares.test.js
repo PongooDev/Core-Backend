@@ -208,6 +208,21 @@ test("1.8's world info adds Hexsylvania: the Transylvania theater, its missions 
 
   const missions = info.missions.find((entry) => entry.theaterId === hexsylvaniaId).availableMissions;
   assert.ok(missions.length >= 30);
+
+  // Trap the Storm only runs on a map with both its castle and its mansion trap sites (TwoTowers, TwoTowers_B), never
+  // on Zone_TRV_HForest_Castle (BP_ZT_TRV_HF), whose missing mansion left the second trap off the map (CoreV2 #133).
+  // The forest theme's tiles still host the other missions.
+  const trapTheStorm = missions.filter((mission) => /MissionGen_(1st)?TrapTheStorm_C$/.test(mission.missionGenerator));
+  assert.ok(trapTheStorm.length);
+  for (const mission of trapTheStorm) {
+    assert.match(theater.tiles[mission.tileIndex].zoneTheme, /\/BP_ZT_TRV_HF_Castle(B)?\./, mission.missionGenerator);
+  }
+  const forest = theater.tiles.filter((tile) => tile.tileType === "Normal" && tile.zoneTheme.endsWith("/BP_ZT_TRV_HF.BP_ZT_TRV_HF_C"));
+  assert.ok(forest.length);
+  for (const tile of forest) {
+    assert.deepEqual(tile.missionWeightOverrides.map((entry) => entry.missionGenerator.split(".").pop()),
+      ["MissionGen_TRV_GateSingle_C", "MissionGen_TRV_DestroyTheEncampments_C", "MissionGen_EvacuateTheSurvivors_TRV_C"]);
+  }
   for (const mission of missions) {
     const candyReward = mission.missionRewards.items.filter((item) => item.itemType === candy);
     assert.equal(candyReward.length, 1, mission.missionGenerator);
