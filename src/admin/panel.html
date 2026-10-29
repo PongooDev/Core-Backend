@@ -2698,24 +2698,25 @@
               resetBrBtn))),
 
         el("section", { class: "panel", style: "margin-top:16px" },
-          el("div", { class: "panel-head", style: "margin-bottom:8px" },
-            el("div", { style: "display:flex; align-items:center; gap:10px; flex-wrap:wrap;" },
+          el("div", { class: "panel-head" },
+            el("div", { style: "display:flex; align-items:center; gap:10px;" },
               el("h2", { text: "Login Screen Message" }),
               loginMessageEnabled
                 ? (isLoginCustom ? chip("Customized", "sky") : chip("Default (1:1)"))
-                : chip("Disabled", "warn"),
-              chip("Patch Notes", "sky")),
-            toggleSwitch(loginMessageEnabled, async (checked) => {
-              await act(api("/admin/api/news", { loginMessageEnabled: checked }), checked ? "Login screen message enabled" : "Login screen message disabled");
-              showNews();
-            })),
+                : chip("Disabled", "warn")),
+            el("div", { style: "display:flex; align-items:center; gap:12px;" },
+              chip("Patch Notes", "sky"),
+              toggleSwitch(loginMessageEnabled, async (checked) => {
+                await act(api("/admin/api/news", { loginMessageEnabled: checked }), checked ? "Login screen message enabled" : "Login screen message disabled");
+                showNews();
+              }))),
           el("p", {
             class: "note",
             text: loginMessageEnabled
               ? "Displayed in the message / patch notes widget on the game's start and login screen. Leave blank to use authentic 1:1 defaults. Use {version} for the client version."
               : "Login screen message is disabled. The patch notes message box on the client's login screen will be omitted."
           }),
-          el("div", { style: `display:flex; flex-direction:column; gap:12px; margin-top:14px;${loginMessageEnabled ? "" : " opacity:0.6;"}` },
+          el("div", { style: "display:flex; flex-direction:column; gap:12px; margin-top:14px;" },
             el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
               el("span", { text: "Title" }),
               loginTitle),
