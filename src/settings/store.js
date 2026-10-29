@@ -13,8 +13,46 @@ const defaults = {
   battleRoyaleVbucks: false,
   vbucksPerKill: 50,
   vbucksPerWin: 500,
+  // Storm Shield structure limits (Core-Backend #115, services/fortnite/structurelimit.js): how many player-built
+  // pieces and traps a Storm Shield holds before building is refused (its game state's MaxPlayerStructures, 3000 in
+  // the game). structureLimit is every Storm Shield's (null: the game's own), and structureLimits holds a Storm
+  // Shield's own (stonewood, plankerton, cannyValley, twinePeaks), which wins over it. CoreV2's gameserver asks for its
+  // Storm Shield's when the zone loads and again while it runs.
+  structureLimit: null,
+  structureLimits: {},
   allowedHostingIps: ["127.0.0.1", "::1"]
 };
+
+// The Storm Shields by their outpost item (UFortZoneTheme CloudSaveItemDefinition, OutpostCore_PvE_01..04).
+export const stormShields = {
+  stonewood: "Outpost:outpostcore_pve_01",
+  plankerton: "Outpost:outpostcore_pve_02",
+  cannyValley: "Outpost:outpostcore_pve_03",
+  twinePeaks: "Outpost:outpostcore_pve_04"
+};
+
+// A structure limit: a whole number from 1 to maxStructureLimit, null for none (blank clears it), or undefined for
+// anything else.
+export const maxStructureLimit = 100000;
+function structureLimitValue(value) {
+  if (value === null || (typeof value === "string" && !value.trim())) return null;
+  const limit = typeof value === "string" ? Number(value) : value;
+  return Number.isInteger(limit) && limit >= 1 && limit <= maxStructureLimit ? limit : undefined;
+}
+
+// The Storm Shields' own limits in limits, over current: a valid one is set, null or blank removes it, anything else
+// (or a name that isn't a Storm Shield) is ignored.
+function structureLimits(limits, current = {}) {
+  const result = { ...current };
+  if (!limits || typeof limits !== "object" || Array.isArray(limits)) return result;
+  for (const name of Object.keys(stormShields)) {
+    if (!(name in limits)) continue;
+    const limit = structureLimitValue(limits[name]);
+    if (limit === null) delete result[name];
+    else if (limit !== undefined) result[name] = limit;
+  }
+  return result;
+}
 
 // A reward amount: a whole number of V-Bucks from 0 to maxReward, or undefined for anything else.
 const maxReward = 100000;
@@ -33,6 +71,8 @@ export function createSettingsStore(dataDir) {
       Object.assign(settings, loaded);
       if (typeof loaded.battleRoyaleVbucks !== "boolean") settings.battleRoyaleVbucks = defaults.battleRoyaleVbucks;
       for (const key of ["vbucksPerKill", "vbucksPerWin"]) settings[key] = rewardAmount(loaded[key]) ?? defaults[key];
+      settings.structureLimit = structureLimitValue(loaded.structureLimit) ?? null;
+      settings.structureLimits = structureLimits(loaded.structureLimits);
       if (Array.isArray(loaded.allowedHostingIps)) {
         settings.allowedHostingIps = [...loaded.allowedHostingIps];
       }
@@ -88,6 +128,7 @@ export function createSettingsStore(dataDir) {
       return {
         ...settings,
         allowedHostingIps: [...(settings.allowedHostingIps ?? defaults.allowedHostingIps)],
+        structureLimits: { ...settings.structureLimits },
         battleRoyaleNews: settings.battleRoyaleNews ? { ...settings.battleRoyaleNews } : undefined,
         loginMessage: settings.loginMessage ? { ...settings.loginMessage } : undefined,
         subgameSelect: settings.subgameSelect ? JSON.parse(JSON.stringify(settings.subgameSelect)) : undefined,
@@ -105,6 +146,9 @@ export function createSettingsStore(dataDir) {
         const amount = rewardAmount(partial[key]);
         if (amount !== undefined) settings[key] = amount;
       }
+      const structureLimit = structureLimitValue(partial.structureLimit);
+      if (partial.structureLimit !== undefined && structureLimit !== undefined) settings.structureLimit = structureLimit;
+      settings.structureLimits = structureLimits(partial.structureLimits, settings.structureLimits);
       if (Array.isArray(partial.allowedHostingIps)) {
         settings.allowedHostingIps = [...new Set(partial.allowedHostingIps.filter((ip) => typeof ip === "string" && ip.trim()))];
       }

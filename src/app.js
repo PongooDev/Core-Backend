@@ -34,6 +34,7 @@ import { chatRoutes, generalChatRooms } from "./services/fortnite/chat.js";
 import { battleRoyaleRoutes } from "./services/fortnite/battleroyale.js";
 import { feedbackRoutes } from "./services/fortnite/feedback.js";
 import { statsRoutes } from "./services/fortnite/stats.js";
+import { structureLimitRoutes } from "./services/fortnite/structurelimit.js";
 import { cloudStorageRoutes, userCloudStorageRoutes } from "./services/fortnite/cloudstorage.js";
 import { friendCodeRoutes } from "./services/fortnite/friendcodes.js";
 import { receiptRoutes } from "./services/fortnite/receipts.js";
@@ -62,7 +63,7 @@ export function createContext(config) {
   if (config.allowRegistration !== undefined) settings.update({ allowRegistration: config.allowRegistration });
   if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
   if (config.seasonalEvents !== undefined) settings.update({ seasonalEvents: config.seasonalEvents });
-  for (const key of ["battleRoyaleVbucks", "vbucksPerKill", "vbucksPerWin"]) {
+  for (const key of ["battleRoyaleVbucks", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits"]) {
     if (config[key] !== undefined) settings.update({ [key]: config[key] });
   }
   const friends = createFriendStore(config.dataDir);
@@ -131,6 +132,7 @@ export function createApp(config, context = createContext(config)) {
   app.use(accessRoutes(context));
   app.use(profileRoutes(context));
   app.use(worldRoutes(context));
+  app.use(structureLimitRoutes(context));
   app.use(receiptRoutes(context));
   app.use(sessionRoutes(context));
   app.use(ticketRoutes(context));

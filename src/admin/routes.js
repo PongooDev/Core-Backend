@@ -673,6 +673,8 @@ export function adminRoutes(context) {
       battleRoyaleVbucks: req.body?.battleRoyaleVbucks,
       vbucksPerKill: req.body?.vbucksPerKill,
       vbucksPerWin: req.body?.vbucksPerWin,
+      structureLimit: req.body?.structureLimit,
+      structureLimits: req.body?.structureLimits,
       allowedHostingIps: req.body?.allowedHostingIps
     });
     const net = network?.settings?.() ?? {};

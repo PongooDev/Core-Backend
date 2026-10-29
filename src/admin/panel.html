@@ -3353,6 +3353,40 @@
           })()),
 
         el("section", { class: "panel", style: "margin-top:16px" },
+          (() => {
+            const own = settings.structureLimits ?? {};
+            const custom = settings.structureLimit || Object.keys(own).length;
+            return el("div", { class: "panel-head", style: "margin-bottom:8px" },
+              el("div", { class: "actions" },
+                el("h2", { text: "Storm Shield Structure Limit" }),
+                custom ? chip("Custom", "good") : chip("Game's 3000")));
+          })(),
+          el("p", { class: "note", text: "How many builds and traps a Storm Shield holds before building is refused. Leave a box blank for the game's limit (3000); a Storm Shield's own limit wins over the one for all of them. A Storm Shield that is running picks up a change within 30 seconds, on a Core V2 gameserver." }),
+          (() => {
+            const limitInput = (value, label, placeholder) => el("input", { class: "field num", type: "number", min: 1, max: 100000, value: value ?? "", placeholder, "aria-label": label });
+            const all = limitInput(settings.structureLimit, "Structure limit for all Storm Shields", "3000");
+            const shields = [["stonewood", "Stonewood"], ["plankerton", "Plankerton"], ["cannyValley", "Canny Valley"], ["twinePeaks", "Twine Peaks"]]
+              .map(([key, name]) => ({ key, name, input: limitInput(settings.structureLimits?.[key], `Structure limit for ${name}`, String(settings.structureLimit ?? 3000)) }));
+            const value = (input) => (input.value.trim() === "" ? null : Number(input.value));
+            return el("div", {},
+              el("div", { class: "actions", style: "margin-top:12px; align-items:center; gap:8px; flex-wrap:wrap;" },
+                el("span", { class: "muted", text: "All Storm Shields" }), all),
+              el("div", { class: "actions", style: "margin-top:8px; align-items:center; gap:8px; flex-wrap:wrap;" },
+                ...shields.flatMap(({ name, input }) => [el("span", { class: "muted", text: name }), input])),
+              el("div", { class: "actions", style: "margin-top:12px; gap:8px;" },
+                btn("Save limits", () => {
+                  const limits = [all, ...shields.map(({ input }) => input)].map(value);
+                  if (!limits.every((limit) => limit === null || (Number.isInteger(limit) && limit >= 1 && limit <= 100000))) {
+                    return toast("Limits must be whole numbers from 1 to 100000, or blank", true);
+                  }
+                  const structureLimits = Object.fromEntries(shields.map(({ key }, index) => [key, limits[index + 1]]));
+                  save({ structureLimit: limits[0], structureLimits }, limits[0] ? `Storm Shield structure limit: ${limits[0]}` : "Storm Shield structure limits saved");
+                }, "primary"),
+                btn("Use the game's", () => save({ structureLimit: null, structureLimits: Object.fromEntries(shields.map(({ key }) => [key, null])) },
+                  "Storm Shields use the game's structure limit"), "ghost")));
+          })()),
+
+        el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head" },
             el("h2", { text: "Trusted Hosting IPs" }),
             chip("Dedicated Server Whitelist", "sky")),
