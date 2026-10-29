@@ -8,11 +8,12 @@ const defaults = {
   allowAutoRegistration: true,
   // Whether the seasonal events (events/events.js) run on the builds that shipped them (the admin panel's switch).
   seasonalEvents: true,
-  // V-Bucks for Battle Royale kills and wins (Core-Backend #100, services/fortnite/battleroyale.js): off unless turned on,
-  // then vbucksPerKill for each kill and vbucksPerWin for a win (place 1) in any Battle Royale playlist.
+  // V-Bucks for Battle Royale matches (Core-Backend #100, #124, services/fortnite/battleroyale.js): off unless turned on,
+  // then battleRoyaleRewards' amounts for each of solo, duos and squads (rewardModes): perKill for each kill, perWin
+  // for a win (place 1) and placements, [{top, vbucks}], of which a place gets the best one it is within, not their
+  // sum. Nothing by default.
   battleRoyaleVbucks: false,
-  vbucksPerKill: 50,
-  vbucksPerWin: 500,
+  battleRoyaleRewards: null,
   // Storm Shield structure limits (Core-Backend #115, services/fortnite/structurelimit.js): how many player-built
   // pieces and traps a Storm Shield holds before building is refused (its game state's MaxPlayerStructures, 3000 in
   // the game). structureLimit is every Storm Shield's (null: the game's own), and structureLimits holds a Storm
@@ -105,15 +106,65 @@ function warmupSecondsValue(value) {
 }
 
 // A reward amount: a whole number of V-Bucks from 0 to maxReward, or undefined for anything else.
-const maxReward = 100000;
+export const maxReward = 100000;
 function rewardAmount(value) {
   const amount = typeof value === "string" && value.trim() ? Number(value) : value;
   return Number.isInteger(amount) && amount >= 0 && amount <= maxReward ? amount : undefined;
 }
 
+// The Battle Royale modes that pay V-Bucks, by their playlist (the stats' main playlists, stats/store.js); a
+// limited-time playlist pays nothing. A placement tier is "top" places 1 to maxPlacementTop, at most
+// maxPlacementTiers of them a mode.
+export const rewardModes = { solo: 2, duos: 10, squads: 9 };
+export const maxPlacementTop = 100;
+export const maxPlacementTiers = 10;
+const noRewards = () => Object.fromEntries(Object.keys(rewardModes).map((mode) => [mode, { perKill: 0, perWin: 0, placements: [] }]));
+
+// A mode's placement tiers: whole places and amounts, one tier a place (the last given wins), from the best place
+// down, without the ones that pay nothing; undefined when it isn't a list or anything in it is out of range, so a
+// mistyped tier doesn't quietly drop.
+function placementTiers(list) {
+  if (!Array.isArray(list) || list.length > maxPlacementTiers) return undefined;
+  const tiers = new Map();
+  for (const tier of list) {
+    const top = typeof tier?.top === "string" && tier.top.trim() ? Number(tier.top) : tier?.top;
+    const vbucks = rewardAmount(tier?.vbucks);
+    if (!Number.isInteger(top) || top < 1 || top > maxPlacementTop || vbucks === undefined) return undefined;
+    tiers.set(top, vbucks);
+  }
+  return [...tiers].filter(([, vbucks]) => vbucks > 0).sort(([a], [b]) => a - b).map(([top, vbucks]) => ({ top, vbucks }));
+}
+
+// battleRoyaleRewards' amounts over current: each mode's perKill, perWin and placements are set when valid and kept
+// otherwise.
+function battleRoyaleRewards(rewards, current = noRewards()) {
+  const result = JSON.parse(JSON.stringify(current));
+  if (!rewards || typeof rewards !== "object" || Array.isArray(rewards)) return result;
+  for (const mode of Object.keys(rewardModes)) {
+    const given = rewards[mode];
+    if (!given || typeof given !== "object") continue;
+    for (const key of ["perKill", "perWin"]) result[mode][key] = rewardAmount(given[key]) ?? result[mode][key];
+    result[mode].placements = placementTiers(given.placements) ?? result[mode].placements;
+  }
+  return result;
+}
+
+// #100's amounts, one kill and win amount for every playlist (vbucksPerKill, vbucksPerWin), as the same for each mode:
+// what a settings.json from before #124 that had them on, or a config.json that still names them, means.
+function legacyRewards(source, current) {
+  const amounts = {};
+  for (const [key, name] of [["vbucksPerKill", "perKill"], ["vbucksPerWin", "perWin"]]) {
+    const amount = rewardAmount(source[key]);
+    if (amount !== undefined) amounts[name] = amount;
+  }
+  return Object.keys(amounts).length
+    ? battleRoyaleRewards(Object.fromEntries(Object.keys(rewardModes).map((mode) => [mode, amounts])), current)
+    : current;
+}
+
 export function createSettingsStore(dataDir) {
   const file = dataDir && path.join(dataDir, "settings.json");
-  const settings = { ...defaults, allowedHostingIps: [...defaults.allowedHostingIps] };
+  const settings = { ...defaults, allowedHostingIps: [...defaults.allowedHostingIps], battleRoyaleRewards: noRewards() };
 
   if (file && fs.existsSync(file)) {
     try {
@@ -121,7 +172,12 @@ export function createSettingsStore(dataDir) {
       Object.assign(settings, loaded);
       if (typeof loaded.battleRoyaleVbucks !== "boolean") settings.battleRoyaleVbucks = defaults.battleRoyaleVbucks;
       if (typeof loaded.loginMessageEnabled === "boolean") settings.loginMessageEnabled = loaded.loginMessageEnabled;
-      for (const key of ["vbucksPerKill", "vbucksPerWin"]) settings[key] = rewardAmount(loaded[key]) ?? defaults[key];
+      // Before #124 the amounts were #100's, which kept paying only where they were turned on.
+      settings.battleRoyaleRewards = loaded.battleRoyaleRewards && typeof loaded.battleRoyaleRewards === "object"
+        ? battleRoyaleRewards(loaded.battleRoyaleRewards)
+        : loaded.battleRoyaleVbucks === true ? legacyRewards(loaded, noRewards()) : noRewards();
+      delete settings.vbucksPerKill;
+      delete settings.vbucksPerWin;
       settings.structureLimit = structureLimitValue(loaded.structureLimit) ?? null;
       settings.structureLimits = structureLimits(loaded.structureLimits);
       settings.cheats = cheatMode(loaded.cheats) ?? defaults.cheats;
@@ -186,6 +242,7 @@ export function createSettingsStore(dataDir) {
         ...settings,
         allowedHostingIps: [...(settings.allowedHostingIps ?? defaults.allowedHostingIps)],
         structureLimits: { ...settings.structureLimits },
+        battleRoyaleRewards: JSON.parse(JSON.stringify(settings.battleRoyaleRewards)),
         cheatAccounts: [...settings.cheatAccounts],
         battleRoyaleNews: settings.battleRoyaleNews ? { ...settings.battleRoyaleNews } : undefined,
         loginMessage: settings.loginMessage ? { ...settings.loginMessage } : undefined,
@@ -205,10 +262,7 @@ export function createSettingsStore(dataDir) {
       } else if (partial.loginMessageEnabled === null) {
         delete settings.loginMessageEnabled;
       }
-      for (const key of ["vbucksPerKill", "vbucksPerWin"]) {
-        const amount = rewardAmount(partial[key]);
-        if (amount !== undefined) settings[key] = amount;
-      }
+      settings.battleRoyaleRewards = battleRoyaleRewards(partial.battleRoyaleRewards, legacyRewards(partial, settings.battleRoyaleRewards));
       const structureLimit = structureLimitValue(partial.structureLimit);
       if (partial.structureLimit !== undefined && structureLimit !== undefined) settings.structureLimit = structureLimit;
       settings.structureLimits = structureLimits(partial.structureLimits, settings.structureLimits);

@@ -6,6 +6,7 @@ import { sessionMembers } from "../../matchmaking/sessions.js";
 import { addSeasonXp, awardVictory, matchXp, recordMatchProgress } from "../../profiles/athena.js";
 import { grant } from "../../profiles/progress.js";
 import { openSession } from "../../profiles/session.js";
+import { rewardModes } from "../../settings/store.js";
 import { isMainPlaylist } from "../../stats/store.js";
 import { notifyProfiles } from "../mcp/profile.js";
 
@@ -31,11 +32,12 @@ import { notifyProfiles } from "../mcp/profile.js";
 //   elimination challenge progress (profiles/athena.js), which reach their client as profile notifications, and for a
 //   win (place 1) in solo, duo or squad The Umbrella and the Founder's Umbrella in the locker (Core-Backend #77, #84):
 //   1.8's umbrella is a glider item.
-//   With battleRoyaleVbucks on (Core-Backend #100, the admin panel's Settings), each result also pays V-Bucks:
-//   vbucksPerKill a kill and vbucksPerWin for a place 1, in any Battle Royale playlist and on either build (1.7.2's
-//   results have its winners' place 1 too, whatever recordwin says). They go to profile0, the balance the game shows, as
-//   Currency:mtxgiveaway, the way the admin panel's and the llamas' V-Bucks do. A result pays once per match: the report's
-//   matchId (CoreV2's, one id for the whole match) is kept in the player's profile0 with the V-Bucks it paid
+//   With battleRoyaleVbucks on (Core-Backend #100, #124, the admin panel's Settings), each result in solo, duos or
+//   squads also pays V-Bucks, from that mode's battleRoyaleRewards: perKill a kill, perWin for a place 1 (a team's
+//   every player, as CoreV2 places them all), and the best of its placement tiers the place is within (top 25 = 100
+//   and top 10 = 250 pay 250 for a 5th place, not 350), all three added up. A limited-time playlist pays nothing.
+//   They go to profile0, the balance the game shows, as Currency:mtxgiveaway, the way the admin panel's and the llamas'
+//   V-Bucks do. A result pays once per match: the report's matchId (CoreV2's, one id for the whole match) is kept in the player's profile0 with the V-Bucks it paid
 //   (coreBattleRoyaleRewards, Core's, never sent to the client), so a report sent again pays nothing; a report without
 //   one pays nothing either, as there is no telling it from a replay.
 // The gameserver's own login records the players on a session it hosts, the DedicatedServer client (CoreV2) anyone's;
@@ -46,11 +48,21 @@ import { notifyProfiles } from "../mcp/profile.js";
 const rewardedMatchMs = 30 * 24 * 60 * 60 * 1000;
 const matchIdPattern = /^[A-Za-z0-9_-]{1,64}$/;
 
+// What a result earns in its playlist's mode (settings.battleRoyaleRewards): its kills, its win and its best placement
+// tier; nothing in a playlist that isn't one of the modes.
+export function matchVbucks(rewards, playlistId, { place, kills }) {
+  const mode = Object.keys(rewardModes).find((name) => rewardModes[name] === Number(playlistId));
+  const amounts = mode && rewards?.[mode];
+  if (!amounts) return 0;
+  const placement = Math.max(0, ...(amounts.placements ?? []).filter(({ top }) => place <= top).map(({ vbucks }) => vbucks));
+  return kills * (amounts.perKill ?? 0) + (place === 1 ? amounts.perWin ?? 0 : 0) + placement;
+}
+
 // The V-Bucks a result pays (settings, battleRoyaleVbucks), granted into the session's profile0: 0 when off, when it
 // earns nothing, without a match id, or when this match already paid the player.
-function payMatchVbucks(session, settings, matchId, { kills, win }, now = new Date()) {
+function payMatchVbucks(session, settings, matchId, playlistId, result, now = new Date()) {
   if (settings.battleRoyaleVbucks !== true) return 0;
-  const amount = kills * (settings.vbucksPerKill ?? 0) + (win ? settings.vbucksPerWin ?? 0 : 0);
+  const amount = matchVbucks(settings.battleRoyaleRewards, playlistId, result);
   if (amount <= 0) return 0;
   if (!matchId) {
     log("Battle Royale", `No V-Bucks for ${session.accountId}: the result has no matchId, so a replay of it couldn't be told apart`);
@@ -120,7 +132,7 @@ export function battleRoyaleRoutes(context) {
       log("Battle Royale", `${result.accountId} placed ${place} in playlist ${playlistId} with ${kills} kills, ${secondsAlive} s alive`
         + (win ? " (a win)" : ""));
       const session = openSession(profiles, result.accountId);
-      const vbucks = payMatchVbucks(session, rewards, matchId, { kills, win: place === 1 });
+      const vbucks = payMatchVbucks(session, rewards, matchId, playlistId, { place, kills });
       if (vbucks) log("Battle Royale", `${result.accountId} earned ${vbucks} V-Bucks in match ${matchId}`);
       if (session.hasProfile("athena")) {
         recordMatchProgress(session, playlistId, { place, kills });

@@ -65,7 +65,7 @@ export function createContext(config) {
   if (config.allowRegistration !== undefined) settings.update({ allowRegistration: config.allowRegistration });
   if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
   if (config.seasonalEvents !== undefined) settings.update({ seasonalEvents: config.seasonalEvents });
-  for (const key of ["battleRoyaleVbucks", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits", "cheats", "cheatAccounts",
+  for (const key of ["battleRoyaleVbucks", "battleRoyaleRewards", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits", "cheats", "cheatAccounts",
     "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "regionFallback"]) {
     if (config[key] !== undefined) settings.update({ [key]: config[key] });
   }
