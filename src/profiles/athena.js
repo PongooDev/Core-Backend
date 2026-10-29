@@ -410,8 +410,19 @@ export function grantAthenaQuest(tracker, questId) {
   return itemId;
 }
 
-// A challenge done is claimed at once: Battle Royale's quest log has no rewards screen, its XP (AthenaSeasonalXP) goes
-// to the season level. The Archive's Battle Bucks were never given.
+// A challenge done waits, Completed, for the lobby's Collect Rewards (Core-Backend #114): its XP is held back until the
+// player collects it. Every build with Battle Royale's daily challenges has that button: 1.8, 1.8.1 and 1.8.2 all pack
+// Athena/UI/DailyQuests/DailyQuestsPanel, and 1.7.2 has no athena profile (services/mcp/profile.js) and no
+// EFortQuestType::AthenaDailyQuest, so no build is paid at once any more.
+//
+// DailyQuestsPanel_C::OnQuestsUpdated lists the athena quest manager's quests of EFortQuestType 0xB (AthenaDailyQuest)
+// that are Active (EFortQuestState 1) or Completed (2), with the objectives' counts (the checkmark), skips Claimed (3)
+// ones, and shows ClaimButton while one is Completed. The button calls ClaimNextCompletedQuestReward(0xB) (1.8.2
+// sub_871C00: the Completed quest of that type first in its order), which sends ClaimQuestReward {questId: the item id,
+// selectedRewardIndex: -1} for the athena profile (sub_871D10 → sub_871E70 → sub_9F7920, command qword_664D410 =
+// "ClaimQuestReward"). Once it succeeds (sub_88FDF0: OnQuestRewardClaimed) the panel claims the next one, until none is
+// Completed (OnNoQuestRewardsToClaim); a failed claim ends it too. claimAthenaQuest pays it and makes it Claimed, which
+// the panel hides; the next day's refresh clears it.
 function completeQuest(session, itemId) {
   const tracker = session.profile("athena");
   const item = tracker.profile.items[itemId];
@@ -419,9 +430,25 @@ function completeQuest(session, itemId) {
   for (const objective of quest.objectives) {
     if (item.attributes[`completion_${objective.name}`] !== objective.count) tracker.setItemAttribute(itemId, `completion_${objective.name}`, objective.count);
   }
+  tracker.setItemAttribute(itemId, "quest_state", "Completed");
+  tracker.setItemAttribute(itemId, "last_state_change_time", new Date().toISOString());
+  log("Battle Royale", `${session.accountId} completed ${questIdOf(item)}, waiting for Collect Rewards`);
+}
+
+// ClaimQuestReward on athena: a Completed challenge's rewards, its XP (AthenaSeasonalXP) to the season level and any
+// quest it leads to. The Archive's Battle Bucks were never given. One already Claimed gives nothing more.
+export function claimAthenaQuest(session, itemId) {
+  const tracker = session.profile("athena");
+  const item = tracker.profile.items[itemId];
+  const quest = item && athenaQuestOf(item);
+  if (!quest) throw new McpError("errors.com.epicgames.fortnite.item_not_found", `No challenge ${itemId}`);
+  if (item.attributes.quest_state === "Claimed") return;
+  if (item.attributes.quest_state !== "Completed") {
+    throw new McpError("errors.com.epicgames.fortnite.quest_not_completed", `Challenge ${itemId} is ${item.attributes.quest_state}`);
+  }
   tracker.setItemAttribute(itemId, "quest_state", "Claimed");
   tracker.setItemAttribute(itemId, "last_state_change_time", new Date().toISOString());
-  log("Battle Royale", `${session.accountId} completed ${questIdOf(item)}`);
+  log("Battle Royale", `${session.accountId} collected ${questIdOf(item)}`);
   for (const { templateId, quantity } of quest.rewards ?? []) {
     if (templateId.toLowerCase() === "accountresource:athenaseasonalxp") addSeasonXp(session, quantity);
     else if (typeOf(templateId) === "quest") grantAthenaQuest(tracker, templateId.split(":")[1]);
@@ -500,9 +527,10 @@ export function advanceAthenaObjectives(session, updates) {
 // MaxRerollsPerDay 1}. On the first quest login of each UTC day, claimed dailies are cleared, one new daily (one the
 // player doesn't hold, by the quests' weights) is added for every day since the last quest login while fewer than 3
 // are held, so a player away for three days finds three waiting (Core-Backend #92: Seasons 1 and 2 gave one a day and
-// kept them up to the cap), and the daily reroll is restored. A done daily stays, Claimed, until that next day: the quest
-// manager doesn't listen for a Completed or Claimed quest's objectives (EFortQuestState 2 and 3 skipped in
-// SendStatEventWithTags, 0x890AB7), so it can't be done twice.
+// kept them up to the cap), and the daily reroll is restored. A done daily stays: Completed, holding its slot, until it
+// is collected (Core-Backend #114), then Claimed until that next day. The quest manager doesn't listen for a Completed or
+// Claimed quest's objectives (EFortQuestState 2 and 3 skipped in SendStatEventWithTags, 0x890AB7), so it can't be done
+// twice.
 const maxOpen = 3;
 const rerollsPerDay = 1;
 const utcDay = (time) => Math.floor(time / 86_400_000);
