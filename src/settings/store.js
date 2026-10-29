@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { readJson, writeJson } from "../json-file.js";
+import { defaultHostingIps, hostingIp, hostingIps } from "../network.js";
 
 const defaults = {
   requirePassword: false,
@@ -36,7 +37,9 @@ const defaults = {
   warmupSeconds: null,
   lateJoin: false,
   regionFallback: true,
-  allowedHostingIps: ["127.0.0.1", "::1"]
+  // Trusted Hosting IPs (Core-Backend #125, network.js allowsHosting): other PCs whose gameservers may host for this
+  // backend, each an IP address. This PC (loopback) always may; nobody else unless listed.
+  allowedHostingIps: defaultHostingIps
 };
 
 // Who may cheat: the modes, and how long one entry of cheatAccounts may be.
@@ -186,9 +189,7 @@ export function createSettingsStore(dataDir) {
       settings.warmupSeconds = warmupSecondsValue(loaded.warmupSeconds) ?? null;
       settings.lateJoin = loaded.lateJoin === true;
       settings.regionFallback = loaded.regionFallback !== false;
-      if (Array.isArray(loaded.allowedHostingIps)) {
-        settings.allowedHostingIps = [...loaded.allowedHostingIps];
-      }
+      settings.allowedHostingIps = hostingIps(loaded.allowedHostingIps) ?? [...defaults.allowedHostingIps];
       if (loaded.battleRoyaleNews && typeof loaded.battleRoyaleNews === "object") {
         settings.battleRoyaleNews = {
           title: String(loaded.battleRoyaleNews.title ?? ""),
@@ -273,9 +274,7 @@ export function createSettingsStore(dataDir) {
       if (partial.warmupSeconds !== undefined && warmup !== undefined) settings.warmupSeconds = warmup;
       if (typeof partial.lateJoin === "boolean") settings.lateJoin = partial.lateJoin;
       if (typeof partial.regionFallback === "boolean") settings.regionFallback = partial.regionFallback;
-      if (Array.isArray(partial.allowedHostingIps)) {
-        settings.allowedHostingIps = [...new Set(partial.allowedHostingIps.filter((ip) => typeof ip === "string" && ip.trim()))];
-      }
+      settings.allowedHostingIps = hostingIps(partial.allowedHostingIps) ?? settings.allowedHostingIps;
       if (partial.battleRoyaleNews && typeof partial.battleRoyaleNews === "object") {
         settings.battleRoyaleNews = {
           title: String(partial.battleRoyaleNews.title ?? ""),
@@ -344,20 +343,19 @@ export function createSettingsStore(dataDir) {
       return this.get();
     },
 
+    // Adds one IP address to the Trusted Hosting IPs; anything else (or a full list) changes nothing.
     addHostingIp(ip) {
-      if (typeof ip !== "string" || !ip.trim()) return this.get();
-      const list = new Set(settings.allowedHostingIps ?? defaults.allowedHostingIps);
-      list.add(ip.trim());
-      settings.allowedHostingIps = [...list];
+      const address = hostingIp(ip);
+      if (!address) return this.get();
+      settings.allowedHostingIps = hostingIps([...(settings.allowedHostingIps ?? defaults.allowedHostingIps), address]);
       save();
       return this.get();
     },
 
     removeHostingIp(ip) {
       if (typeof ip !== "string") return this.get();
-      const trimmed = ip.trim();
-      const list = (settings.allowedHostingIps ?? defaults.allowedHostingIps).filter((item) => item !== trimmed);
-      settings.allowedHostingIps = list;
+      const address = hostingIp(ip) ?? ip.trim();
+      settings.allowedHostingIps = (settings.allowedHostingIps ?? defaults.allowedHostingIps).filter((item) => item !== address);
       save();
       return this.get();
     }

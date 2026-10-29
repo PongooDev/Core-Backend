@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { log } from "../log.js";
-import { createNetwork, normalizeAddress } from "../network.js";
+import { allowsHosting, createNetwork, isLoopback, normalizeAddress } from "../network.js";
 import { regionOf } from "./regions.js";
 
 // Every key the client's session parser requires (OnlineSessionJsonMcp, sub_37F59F0): a session missing one is dropped
@@ -74,12 +74,14 @@ export { isLoopback, normalizeAddress } from "../network.js";
 // say nothing about where the server is.
 const usable = (address) => address !== "" && address !== "0.0.0.0";
 
+// A session hosted on another PC (Core-Backend #125) keeps the address its connection came from: what the server writes
+// is its own idea of its address (127.0.0.1, or a private one behind its router), which nobody else could use.
 function apply(session, body) {
   for (const field of sessionFields) {
     if (body?.[field] === undefined) continue;
     if (field === "serverAddress") {
       const address = normalizeAddress(body.serverAddress);
-      if (usable(address)) session.serverAddress = address;
+      if (usable(address) && !session.remoteHost) session.serverAddress = address;
     } else {
       session[field] = body[field];
     }
@@ -126,8 +128,9 @@ export function createSessionStore({ regionFallback: fallsBack = () => true } = 
   return {
     // connectionAddress: where the create request came from, the server's address when its body names none.
     // hostAccountId: the account the create request was made with, the gameserver's own (the Cert server's body leaves
-    // ownerId empty).
-    create(body, connectionAddress = "", hostAccountId = "") {
+    // ownerId empty). remoteHost: the request came from another PC, a Trusted Hosting IP (Core-Backend #125), whose
+    // address the session is then handed out with, whatever its body says.
+    create(body, connectionAddress = "", hostAccountId = "", { remoteHost = false } = {}) {
       const session = {
         id: crypto.randomBytes(16).toString("hex"),
         ownerId: "", ownerName: "", serverName: "", serverAddress: "", serverPort: 0,
@@ -137,16 +140,23 @@ export function createSessionStore({ regionFallback: fallsBack = () => true } = 
         started: false,
         keys: {},
         zoneDifficulty: "",
-        hostAccountId: String(hostAccountId ?? "")
+        hostAccountId: String(hostAccountId ?? ""),
+        remoteHost: Boolean(remoteHost),
+        // Which PC hosts it: "local" for this one, else the other PC's address.
+        hostAddress: remoteHost ? normalizeAddress(connectionAddress) : "local"
       };
+      if (session.remoteHost) session.serverAddress = session.hostAddress;
       apply(session, body);
       if (!usable(session.serverAddress)) session.serverAddress = normalizeAddress(connectionAddress);
       countOpenSlots(session);
       touch(session);
-      // A gameserver account runs one server, which hosts one session: one it made before is from a server that has
-      // since exited (the launcher restarts a crashed one under the same account), and must not be matched any more.
+      // A gameserver account runs one server on a PC, which hosts one session: one it made there before is from a server
+      // that has since exited (the launcher restarts a crashed one under the same account), and must not be matched any
+      // more. Another PC's launcher names its servers the same way (CoreServer1, ...): its sessions are its own.
       if (session.hostAccountId) {
-        for (const [id, previous] of sessions) if (previous.hostAccountId === session.hostAccountId) sessions.delete(id);
+        for (const [id, previous] of sessions) {
+          if (previous.hostAccountId === session.hostAccountId && previous.hostAddress === session.hostAddress) sessions.delete(id);
+        }
       }
       sessions.set(session.id, session);
       changed();
@@ -302,10 +312,20 @@ export function createSessionStore({ regionFallback: fallsBack = () => true } = 
 // serverAddressFor: the address it reached the backend on, or for a player on the internet the configured
 // publicAddress or the IP it typed), the server being here.
 const defaultNetwork = createNetwork();
+// A session hosted on another PC (Core-Backend #125) is handed out with that PC's address as it is: this machine's
+// addresses would send the player to the wrong PC.
 export function sessionJson(session, viewer, network = defaultNetwork) {
-  const { keys, zoneDifficulty, hostAccountId, ...json } = session;
-  json.serverAddress = network.serverAddressFor(json.serverAddress, viewer);
+  const { keys, zoneDifficulty, hostAccountId, remoteHost, hostAddress, ...json } = session;
+  if (!remoteHost) json.serverAddress = network.serverAddressFor(json.serverAddress, viewer);
   return json;
+}
+
+// Whether a request may change a session, or take its matchmaking ticket: this PC may change any; another PC only the
+// sessions it registered itself, and only while it is still a Trusted Hosting IP. allowedHostingIps: the admin panel's.
+export function managesSession(session, req, allowedHostingIps) {
+  const address = req?.socket?.remoteAddress;
+  if (isLoopback(address)) return true;
+  return Boolean(session?.remoteHost) && session.hostAddress === normalizeAddress(address) && allowsHosting(address, allowedHostingIps);
 }
 
 // The launcher's view (Launcher-Plan "Game sessions"): who runs each session, who is in it and what it hosts.
@@ -317,6 +337,7 @@ export function sessionSummary(session) {
     serverName: session.serverName,
     serverAddress: session.serverAddress,
     serverPort: session.serverPort,
+    remoteHost: Boolean(session.remoteHost),
     gameMode: session.attributes?.GAMEMODE_s ?? "",
     region: session.attributes?.REGION_s ?? "",
     beaconPort: session.attributes?.BEACONPORT_i ?? 0,

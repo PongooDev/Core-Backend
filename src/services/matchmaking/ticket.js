@@ -2,12 +2,14 @@ import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
 import { notFound, sendError } from "../../errors.js";
 import { log } from "../../log.js";
+import { managesSession } from "../../matchmaking/sessions.js";
+import { defaultHostingIps } from "../../network.js";
 
 // Battle Royale's matchmaking tickets (src/matchmaking/service.js): a player's (MatchmakingServiceClient::ObtainTicket
 // 0x3AB6C40) and a gameserver's session's (MatchmakingServiceDedicatedServer ObtainTicket 0x3ABD0B0, sent through the
 // MCP service with the server's token). Their serviceUrl is this backend, whose WebSocket upgrades with an
 // Epic-Signed ticket are the matchmaking service's.
-export function ticketRoutes({ tokens, sessions, matchmaker }) {
+export function ticketRoutes({ tokens, sessions, matchmaker, settings }) {
   const router = express.Router();
   const base = "/fortnite/api/game/v2/matchmakingservice/ticket";
   const serviceUrl = (req) => `${req.socket.encrypted ? "wss" : "ws"}://${req.get("host")}`;
@@ -40,6 +42,10 @@ export function ticketRoutes({ tokens, sessions, matchmaker }) {
   router.get(`${base}/session/:sessionId`, requireAuth(tokens), (req, res) => {
     const session = sessions.get(req.params.sessionId);
     if (!session) return notFound(res, req.originalUrl);
+    // Only the PC hosting it: this one, or the Trusted Hosting IP that registered it (Core-Backend #125).
+    if (!managesSession(session, req, settings?.get?.().allowedHostingIps ?? defaultHostingIps)) {
+      return sendError(res, 403, "errors.com.epicgames.common.missing_permission", `Session ${session.id} isn't hosted from this IP address`);
+    }
     // The server asks through the MCP service with its client credentials token (no account), or its own account's.
     if (req.session.accountId && session.hostAccountId && session.hostAccountId !== req.session.accountId) {
       return sendError(res, 403, "errors.com.epicgames.common.missing_permission", `Session ${session.id} isn't this server's`);

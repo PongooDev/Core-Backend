@@ -2,8 +2,10 @@ import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
 import { dedicatedServerClient } from "../../accounts/clients.js";
 import { isContactEmailLogin } from "../../accounts/email.js";
-import { isLoopbackAddress, isServerAccountName, validatePassword, verifyPassword } from "../../accounts/password.js";
+import { isServerAccountName, validatePassword, verifyPassword } from "../../accounts/password.js";
 import { sendError } from "../../errors.js";
+import { log } from "../../log.js";
+import { allowsHosting, defaultHostingIps, normalizeAddress } from "../../network.js";
 import { createFailureTracker } from "../portal/ratelimit.js";
 
 function basicClient(req) {
@@ -23,18 +25,16 @@ function invalidGrant(res, message) {
   sendError(res, 400, "errors.com.epicgames.account.oauth.invalid_grant", message);
 }
 
-function isAuthorizedHostingRequest(req, client, allowedHostingIps = []) {
-  const remoteIp = req.ip || req.socket?.remoteAddress || "";
-  if (isLoopbackAddress(remoteIp)) return true;
-  if (client && client.clientId === dedicatedServerClient.id && client.secret === dedicatedServerClient.secret) {
-    return true;
-  }
-  const normalizedRemote = remoteIp.replace(/^::ffff:/, "");
-  return allowedHostingIps.some((entry) => {
-    if (typeof entry !== "string") return false;
-    const normalizedEntry = entry.trim().replace(/^::ffff:/, "");
-    return normalizedEntry === normalizedRemote;
-  });
+// A server account (CoreServer{n}, Server{n}) or the DedicatedServer client logs in without a password, and the
+// DedicatedServer client's token acts for any player: only for this PC and the Trusted Hosting IPs (Core-Backend #125,
+// network.js allowsHosting), by the connection's own address. The client's id and secret are no proof: they are in
+// Core's source and every gameserver's command line.
+const hostingAllowed = (req, settings) => allowsHosting(req.socket?.remoteAddress, settings?.get?.().allowedHostingIps ?? defaultHostingIps);
+
+function notHostingIp(res, req, what) {
+  log("Core", `Refused ${what} from ${normalizeAddress(req.socket?.remoteAddress)}: not this PC or a Trusted Hosting IP (admin panel, Settings)`);
+  sendError(res, 403, "errors.com.epicgames.account.oauth.unauthorized_client",
+    `This IP address is not authorized to ${what}. Add it to the admin panel's Trusted Hosting IPs to host from it.`);
 }
 
 export function oauthRoutes({ accounts, tokens, settings, resetTokens }) {
@@ -52,6 +52,7 @@ export function oauthRoutes({ accounts, tokens, settings, resetTokens }) {
     const body = req.body ?? {};
     switch (body.grant_type) {
       case "client_credentials":
+        if (clientId === dedicatedServerClient.id && !hostingAllowed(req, settings)) return notHostingIp(res, req, "take a dedicated server token");
         return res.json(tokens.issueClient(clientId));
 
       case "password": {
@@ -62,7 +63,6 @@ export function oauthRoutes({ accounts, tokens, settings, resetTokens }) {
         const config = settings?.get?.() ?? {};
         const requirePassword = config.requirePassword ?? true;
         const allowAutoRegistration = config.allowAutoRegistration ?? false;
-        const allowedHostingIps = config.allowedHostingIps ?? ["127.0.0.1", "::1"];
 
         // A linked contact email (#120) signs in to its account. Any other name@domain is the name before the @, as before:
         // <name>@core.com is the address the game knows the account by.
@@ -73,10 +73,7 @@ export function oauthRoutes({ accounts, tokens, settings, resetTokens }) {
 
         if (isServer) {
           // Dedicated servers: verify request comes from loopback, dedicatedServerClient, or whitelisted hosting IP
-          if (!isAuthorizedHostingRequest(req, client, allowedHostingIps)) {
-            return sendError(res, 403, "errors.com.epicgames.account.oauth.unauthorized_client",
-              "This IP address is not authorized to log in as a dedicated server account.");
-          }
+          if (!hostingAllowed(req, settings)) return notHostingIp(res, req, "log in as a dedicated server account");
           if (!account) {
             account = accounts.getOrCreate(displayName);
           }

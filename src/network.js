@@ -47,6 +47,38 @@ export function isPrivate(address) {
   return net.isIPv6(text) && /^(f[cd]|fe[89ab])/.test(text);
 }
 
+// Gameservers on other PCs (Core-Backend #125): the admin panel's Trusted Hosting IPs (settings allowedHostingIps) are
+// the other machines whose gameservers may log in to the server accounts, take DedicatedServer client tokens and
+// register sessions. This PC always may; another machine only when its IP is listed (and remote access is on, or
+// nothing outside this PC connects at all). The IP is always the connection's own (socket.remoteAddress): headers such
+// as X-Forwarded-For are the client's to write, and the backend is never behind a proxy that would set them.
+export const defaultHostingIps = ["127.0.0.1", "::1"];
+export const maxHostingIps = 64;
+
+// An entry of the list as it is kept: an IP address, IPv4-mapped IPv6 as IPv4 and IPv6 in its compressed form, or null
+// for anything else (a host name, a range, "0.0.0.0").
+export function hostingIp(value) {
+  if (typeof value !== "string") return null;
+  let text = value.trim().toLowerCase().replace(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/, "$1");
+  const version = net.isIP(text);
+  if (!version) return null;
+  if (version === 6) text = new URL(`http://[${text}]`).hostname.slice(1, -1);
+  return text === "0.0.0.0" || text === "::" ? null : text;
+}
+
+// The list kept from a saved or sent one: its IP addresses, each once, up to maxHostingIps; undefined when it isn't a list.
+export function hostingIps(list) {
+  if (!Array.isArray(list)) return undefined;
+  return [...new Set(list.map(hostingIp).filter(Boolean))].slice(0, maxHostingIps);
+}
+
+// Whether a connection from this address may host: this PC's own (loopback), or a listed IP.
+export function allowsHosting(remoteAddress, list = defaultHostingIps) {
+  if (isLoopback(remoteAddress)) return true;
+  const address = hostingIp(normalizeAddress(remoteAddress));
+  return address !== null && (hostingIps(list) ?? []).includes(address);
+}
+
 // A viewer on this PC, or on its network (LAN or VPN): it reached the backend directly, on an address it can use.
 const isNearby = (address) => isLoopback(address) || isPrivate(address);
 

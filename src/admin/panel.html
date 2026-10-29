@@ -3470,6 +3470,37 @@
           })()),
 
         el("section", { class: "panel", style: "margin-top:16px" },
+          el("div", { class: "panel-head" },
+            el("h2", { text: "Trusted Hosting IPs" }),
+            (() => {
+              const others = hostingList.filter((ip) => ip !== "127.0.0.1" && ip !== "::1").length;
+              return others ? chip(`${others} other PC${others === 1 ? "" : "s"}`, "good") : chip("This PC only");
+            })()),
+          el("p", { class: "note", text: "Gameservers on other PCs: list a PC's IP address here and its Core Launcher's gameservers can host for this backend, each in the region its launcher's Servers settings pick, and players are sent to that PC's IP. The IP is the one its connections reach this backend from (its public IP over the internet, or its LAN or VPN address), as the Logs show when one is refused. Only listed PCs may log in to the server accounts (CoreServer{n}, Server{n}), take the dedicated server token or register game sessions, and each can only change its own sessions. This PC is always allowed. It needs remote access on (Play with friends), and the other PC's game and beacon ports forwarded on its own router for players on the internet." }),
+          el("div", { class: "actions", style: "margin-top:12px; gap:8px; flex-wrap:wrap;" },
+            ...hostingList.map((ip) => {
+              const isRemovable = ip !== "127.0.0.1" && ip !== "::1";
+              return el("span", {
+                class: `chip sky${isRemovable ? " removable" : ""}`,
+                title: isRemovable ? `Click to remove ${ip}` : "Default loopback IP",
+                style: "display:inline-flex; align-items:center; padding:4px 10px;",
+                onclick: isRemovable ? async () => {
+                  await act(api(`/admin/api/settings/hosting-ips/${encodeURIComponent(ip)}`, {}, "DELETE"), `Removed ${ip}`);
+                  showSettings();
+                } : null
+              },
+                el("span", { text: ip, class: "mono" }),
+                isRemovable ? el("span", { class: "remove-x", text: "✕" }) : null
+              );
+            })
+          ),
+          el("div", { class: "actions", style: "margin-top:12px; align-items:center; width:100%" },
+            newIpInput,
+            addIpBtn
+          )
+        ),
+
+        el("section", { class: "panel", style: "margin-top:16px" },
           (() => {
             const own = settings.structureLimits ?? {};
             const custom = settings.structureLimit || Object.keys(own).length;
@@ -3560,34 +3591,6 @@
                 el("datalist", { id: "cheat-account-names" }, players.map((account) => el("option", { value: account.displayName }))))
             ];
           })()),
-
-        el("section", { class: "panel", style: "margin-top:16px" },
-          el("div", { class: "panel-head" },
-            el("h2", { text: "Trusted Hosting IPs" }),
-            chip("Dedicated Server Whitelist", "sky")),
-          el("p", { class: "note", text: "IP addresses permitted to authenticate passwordless server accounts (CoreServer{n} or Server{n}) for hosting matches. Loopback (127.0.0.1) is always allowed." }),
-          el("div", { class: "actions", style: "margin-top:12px; gap:8px; flex-wrap:wrap;" },
-            ...hostingList.map((ip) => {
-              const isRemovable = ip !== "127.0.0.1" && ip !== "::1";
-              return el("span", {
-                class: `chip sky${isRemovable ? " removable" : ""}`,
-                title: isRemovable ? `Click to remove ${ip}` : "Default loopback IP",
-                style: "display:inline-flex; align-items:center; padding:4px 10px;",
-                onclick: isRemovable ? async () => {
-                  await act(api(`/admin/api/settings/hosting-ips/${encodeURIComponent(ip)}`, {}, "DELETE"), `Removed ${ip}`);
-                  showSettings();
-                } : null
-              },
-                el("span", { text: ip, class: "mono" }),
-                isRemovable ? el("span", { class: "remove-x", text: "✕" }) : null
-              );
-            })
-          ),
-          el("div", { class: "actions", style: "margin-top:12px; align-items:center; width:100%" },
-            newIpInput,
-            addIpBtn
-          )
-        ),
 
         el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head" },

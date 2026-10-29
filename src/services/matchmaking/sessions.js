@@ -1,10 +1,10 @@
 import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
-import { requireLoopback } from "../../admin/local.js";
-import { notFound } from "../../errors.js";
+import { notFound, sendError } from "../../errors.js";
 import { log } from "../../log.js";
-import { regionName } from "../../matchmaking/regions.js";
-import { sessionJson, sessionSummary } from "../../matchmaking/sessions.js";
+import { regionName, regionOf } from "../../matchmaking/regions.js";
+import { managesSession, sessionJson, sessionSummary } from "../../matchmaking/sessions.js";
+import { allowsHosting, defaultHostingIps, isLoopback, normalizeAddress } from "../../network.js";
 
 // OnlineSubsystemMcp's session API, with the verbs the Cert build sends (FOnlineSessionMcp, Session-Plan §5): servers
 // create (POST), update (PUT), heartbeat every 30 s, start, stop (POST), register and unregister players (POST /
@@ -24,7 +24,16 @@ export const defaultEmptyServerWaitMs = 30_000;
 // sub_380C0E0); a search for an existing session to join is answered at once.
 const wantsEmptyServer = (search) => search?.maxCurrentPlayers === 0;
 
-export function sessionRoutes({ tokens, sessions, network, emptyServerWaitMs = defaultEmptyServerWaitMs }) {
+// Gameservers on other PCs (Core-Backend #125): only this PC and the admin panel's Trusted Hosting IPs register sessions,
+// by the connection's own address (never a header), and another PC changes only the sessions it registered.
+const hostingIps = (settings) => settings?.get?.().allowedHostingIps ?? defaultHostingIps;
+function notHosting(res, req, what) {
+  log("Matchmaking", `Refused to ${what} for ${normalizeAddress(req.socket.remoteAddress)}: not this PC or a Trusted Hosting IP (admin panel, Settings)`);
+  sendError(res, 403, "errors.com.epicgames.common.missing_permission",
+    `This IP address can't ${what}: add it to the admin panel's Trusted Hosting IPs to host from it`);
+}
+
+export function sessionRoutes({ tokens, sessions, network, settings, emptyServerWaitMs = defaultEmptyServerWaitMs }) {
   const router = express.Router();
   const base = "/fortnite/api/matchmaking/session";
   const auth = requireAuth(tokens);
@@ -33,11 +42,21 @@ export function sessionRoutes({ tokens, sessions, network, emptyServerWaitMs = d
     if (!session) return notFound(res, req.originalUrl);
     handler(session, req, res);
   };
+  // The server's own calls: update, heartbeat, start, stop, players, end.
+  const asHost = (handler) => withSession((session, req, res) => {
+    if (!managesSession(session, req, hostingIps(settings))) return notHosting(res, req, `change session ${session.id}`);
+    handler(session, req, res);
+  });
 
   // The Cert server's create body has no serverAddress (only with -UseLocalIPs), so it is where the request came from.
+  // A server on another PC is always where its request came from.
   router.post(base, auth, (req, res) => {
-    const session = sessions.create(req.body, req.socket.remoteAddress, req.session.accountId);
-    log("Matchmaking", `Session ${session.id} created by ${session.ownerName || session.ownerId || "a server"} at ${session.serverAddress}:${session.serverPort}`);
+    const address = req.socket.remoteAddress;
+    if (!allowsHosting(address, hostingIps(settings))) return notHosting(res, req, "register a game session");
+    const remoteHost = !isLoopback(address);
+    const session = sessions.create(req.body, address, req.session.accountId, { remoteHost });
+    log("Matchmaking", `Session ${session.id} created by ${session.ownerName || session.ownerId || "a server"} at ${session.serverAddress}:${session.serverPort}` +
+      (remoteHost ? ` (hosted on another PC, ${regionName(regionOf(session.attributes?.REGION_s))})` : ""));
     res.json(sessionJson(session, req, network));
   });
 
@@ -79,20 +98,20 @@ export function sessionRoutes({ tokens, sessions, network, emptyServerWaitMs = d
 
   router.route(`${base}/:sessionId`)
     .get(auth, withSession((session, req, res) => res.json(sessionJson(session, req, network))))
-    .put(auth, withSession((session, req, res) => res.json(sessionJson(sessions.update(session.id, req.body), req, network))))
-    .delete(auth, withSession((session, req, res) => {
+    .put(auth, asHost((session, req, res) => res.json(sessionJson(sessions.update(session.id, req.body), req, network))))
+    .delete(auth, asHost((session, req, res) => {
       sessions.remove(session.id);
       log("Matchmaking", `Session ${session.id} ended`);
       res.status(204).end();
     }));
 
-  router.post(`${base}/:sessionId/heartbeat`, auth, withSession((session, req, res) => {
+  router.post(`${base}/:sessionId/heartbeat`, auth, asHost((session, req, res) => {
     sessions.heartbeat(session.id);
     res.status(204).end();
   }));
 
   for (const [action, started] of [["start", true], ["stop", false]]) {
-    router.post(`${base}/:sessionId/${action}`, auth, withSession((session, req, res) => {
+    router.post(`${base}/:sessionId/${action}`, auth, asHost((session, req, res) => {
       sessions.setStarted(session.id, started);
       res.status(204).end();
     }));
@@ -107,8 +126,8 @@ export function sessionRoutes({ tokens, sessions, network, emptyServerWaitMs = d
     openPublicPlayers: session.openPublicPlayers, openPrivatePlayers: session.openPrivatePlayers
   });
   router.route(`${base}/:sessionId/players`)
-    .post(auth, withSession((session, req, res) => res.json(playerLists(sessions.addPlayers(session.id, req.body)))))
-    .delete(auth, withSession((session, req, res) => res.json(playerLists(sessions.removePlayers(session.id, req.body)))));
+    .post(auth, asHost((session, req, res) => res.json(playerLists(sessions.addPlayers(session.id, req.body)))))
+    .delete(auth, asHost((session, req, res) => res.json(playerLists(sessions.removePlayers(session.id, req.body)))));
 
   for (const action of ["join", "invite"]) {
     router.post(`${base}/:sessionId/${action}`, auth, withSession((session, req, res) => res.status(204).end()));
@@ -119,8 +138,10 @@ export function sessionRoutes({ tokens, sessions, network, emptyServerWaitMs = d
     res.json({ accountId: req.params.accountId, sessionId: session.id, key: sessions.key(session.id, req.params.accountId) });
   }));
 
-  // Core's: the launcher reads which servers are busy (owner = the server slot's account, players, game mode).
-  router.get("/core/api/sessions", requireLoopback, (req, res) => {
+  // Core's: the launcher reads which servers are busy (owner = the server slot's account, players, game mode). A launcher
+  // hosting on a Trusted Hosting IP may read it too.
+  router.get("/core/api/sessions", (req, res) => {
+    if (!allowsHosting(req.socket.remoteAddress, hostingIps(settings))) return notHosting(res, req, "list the game sessions");
     res.json(sessions.list().map(sessionSummary));
   });
 

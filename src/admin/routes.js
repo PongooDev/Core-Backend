@@ -13,6 +13,7 @@ import { athenaCosmetics } from "../gamedata/athena.js";
 import { dataBuilds, readGameData } from "../gamedata/read.js";
 import { recentLogs } from "../log.js";
 import { sessionSummary } from "../matchmaking/sessions.js";
+import { defaultHostingIps, hostingIp, maxHostingIps } from "../network.js";
 import { alertsRemaining, emptyAlertRecord, withQuotaSlots } from "../profiles/alerts.js";
 import { fullLockerState, grantCosmetic, grantFullLocker, lockerCosmeticId, lockerCosmetics, maxSeasonLevel, ownsCosmetic, removeFullLocker,
   setSeasonLevel } from "../profiles/athena.js";
@@ -646,14 +647,17 @@ export function adminRoutes(context) {
     });
   });
 
-  // Hosting IPs configuration (for dedicated server passwordless bypass)
+  // Trusted Hosting IPs (Core-Backend #125, network.js allowsHosting): the other PCs whose gameservers may host for this
+  // backend, by the IP their connections come from.
   const getHostingIps = (req, res) => {
     const current = settings?.get?.() ?? {};
-    res.json({ allowedHostingIps: current.allowedHostingIps ?? ["127.0.0.1", "::1"] });
+    res.json({ allowedHostingIps: current.allowedHostingIps ?? defaultHostingIps });
   };
   const addHostingIp = (req, res) => {
     const ip = String(req.body?.ip ?? "").trim();
     if (!ip) return invalid(res, "IP address is required");
+    if (!hostingIp(ip)) return invalid(res, `${ip.slice(0, 64)} isn't an IP address (an IPv4 address such as 203.0.113.10, or an IPv6 address)`);
+    if ((settings?.get?.().allowedHostingIps ?? []).length >= maxHostingIps) return invalid(res, `At most ${maxHostingIps} hosting IPs can be listed`);
     const updated = settings?.addHostingIp?.(ip) ?? settings?.get?.();
     res.json({ allowedHostingIps: updated.allowedHostingIps });
   };
@@ -684,6 +688,10 @@ export function adminRoutes(context) {
   // Update server settings
   router.post("/admin/api/settings", (req, res) => {
     if (!settings?.update) return invalid(res, "Settings store not available");
+    const hosts = req.body?.allowedHostingIps;
+    if (hosts !== undefined && (!Array.isArray(hosts) || hosts.length > maxHostingIps || !hosts.every(hostingIp))) {
+      return invalid(res, `allowedHostingIps must be a list of at most ${maxHostingIps} IP addresses`);
+    }
     const updated = settings.update({
       requirePassword: req.body?.requirePassword,
       allowRegistration: req.body?.allowRegistration,
