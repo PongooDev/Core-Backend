@@ -298,8 +298,8 @@ test("the admin panel gives single cosmetics of the chosen build, and refuses wh
     // The builds with Battle Royale, the newest the default (no build a player last played is recorded).
     let listed = await list();
     assert.equal(listed.status, 200);
-    assert.deepEqual(listed.body.builds, [{ build: "3724489", version: "1.8" }, { build: "3729133", version: "1.8.1" }, { build: "3741772", version: "1.8.2" }, { build: "3757339", version: "1.9" }]);
-    assert.deepEqual([listed.body.build, listed.body.version, listed.body.hasProfile], ["3757339", "1.9", false]);
+    assert.deepEqual(listed.body.builds, [{ build: "3724489", version: "1.8" }, { build: "3729133", version: "1.8.1" }, { build: "3741772", version: "1.8.2" }, { build: "3757339", version: "1.9" }, { build: "3775276", version: "1.9.1" }]);
+    assert.deepEqual([listed.body.build, listed.body.version, listed.body.hasProfile], ["3775276", "1.9.1", false]);
     for (const bad of ["3700114", "3532353", "nope"]) {
       assert.equal((await list(`?build=${bad}`)).status, 400, bad);
       assert.equal((await give({ build: bad, templateIds: ["AthenaPickaxe:halloweenscythe"] })).status, 400, bad);

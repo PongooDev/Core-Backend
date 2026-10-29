@@ -1,0 +1,420 @@
+{
+  "cosmetics": {
+    "AthenaCharacter:cid_017_athena_commando_m": {
+      "name": "Aerial Assault Trooper"
+    },
+    "AthenaCharacter:cid_028_athena_commando_f": {
+      "name": "Renegade Raider"
+    },
+    "AthenaPickaxe:pickaxe_lockjaw": {
+      "name": "Raider's Revenge"
+    },
+    "AthenaGlider:glider_id_001": {
+      "class": "AthenaGliderItemDefinition",
+      "name": "Aerial Assault One",
+      "rarity": "Ordinary"
+    }
+  },
+  "displayAssets": {
+    "AthenaCharacter:cid_017_athena_commando_m": "/Game/Catalog/DisplayAssets/DA_Featured_SMaleHID017.DA_Featured_SMaleHID017",
+    "AthenaCharacter:cid_028_athena_commando_f": "/Game/Catalog/DisplayAssets/DA_Featured_SFemaleHID028.DA_Featured_SFemaleHID028",
+    "AthenaGlider:glider_id_001": "/Game/Catalog/DisplayAssets/DA_Featured_GliderMiG.DA_Featured_GliderMiG",
+    "AthenaPickaxe:pickaxe_lockjaw": "/Game/Catalog/DisplayAssets/DA_Featured_PickaxeLockjaw.DA_Featured_PickaxeLockjaw",
+    "AthenaPickaxe:sicklebatpickaxe": "/Game/Catalog/DisplayAssets/DA_Featured_PickaxeSickleBat.DA_Featured_PickaxeSickleBat",
+    "AthenaPickaxe:happypickaxe": "/Game/Catalog/DisplayAssets/DA_HappyPickAxe.DA_HappyPickAxe",
+    "AthenaPickaxe:pickaxe_deathvalley": "/Game/Catalog/DisplayAssets/DA_Featured_PickaxeDeathValley.DA_Featured_PickaxeDeathValley"
+  },
+  "objectiveStats": {
+    "buildingedit_wood_wall": {
+      "condition": "",
+      "targetTags": "Building.Resource.Wood,Building.Type.Wall",
+      "templateId": "",
+      "type": "BuildingEdit"
+    },
+    "complete_athena_solo_top_10": {
+      "condition": "Athena.Rank <= 10",
+      "contextTags": "Athena.Playlist.Solo",
+      "targetTags": "",
+      "templateId": "",
+      "type": "AthenaRank"
+    },
+    "win_athena_duo": {
+      "condition": "Athena.Rank == 1",
+      "contextTags": "Athena.Playlist.Duo",
+      "targetTags": "",
+      "templateId": "",
+      "type": "AthenaRank"
+    },
+    "win_athena_match": {
+      "condition": "Athena.Rank == 1",
+      "contextTags": "Athena.Playlist",
+      "targetTags": "",
+      "templateId": "",
+      "type": "AthenaRank"
+    },
+    "win_athena_solo": {
+      "condition": "Athena.Rank == 1",
+      "contextTags": "Athena.Playlist.Solo",
+      "targetTags": "",
+      "templateId": "",
+      "type": "AthenaRank"
+    },
+    "win_athena_squad": {
+      "condition": "Athena.Rank == 1",
+      "contextTags": "Athena.Playlist.Squad",
+      "targetTags": "",
+      "templateId": "",
+      "type": "AthenaRank"
+    }
+  },
+  "quests": {
+    "athenadaily_duo_top12": {
+      "category": null
+    },
+    "athenadaily_outlive": {
+      "category": null
+    },
+    "athenadaily_outlive_duo": {
+      "category": null
+    },
+    "athenadaily_outlive_solo": {
+      "category": null
+    },
+    "athenadaily_outlive_squad": {
+      "category": null
+    },
+    "athenadaily_playmatches": {
+      "category": null,
+      "objectives": [
+        {
+          "count": 5,
+          "name": "daily_athena_play_matches_v2",
+          "stat": "complete_athena"
+        }
+      ]
+    },
+    "athenadailyquest_playereliminationpistols": {
+      "category": null,
+      "objectives": [
+        {
+          "count": 3,
+          "name": "athena_daily_kill_players_pistol_v2",
+          "stat": "killingblow_athena_player_pistol"
+        }
+      ]
+    },
+    "athenadailyquest_playereliminationshotguns": {
+      "category": null,
+      "objectives": [
+        {
+          "count": 4,
+          "name": "athena_daily_kill_players_shotgun_v2",
+          "stat": "killingblow_athena_player_shotgun"
+        }
+      ]
+    },
+    "athenadailyquest_playereliminationsmgs": {
+      "category": null,
+      "objectives": [
+        {
+          "count": 2,
+          "name": "athena_daily_kill_players_smg_v2",
+          "stat": "killingblow_athena_player_smg"
+        }
+      ]
+    },
+    "athenadailyquest_playereliminationsniperrifles": {
+      "category": null,
+      "objectives": [
+        {
+          "count": 1,
+          "name": "athena_daily_kill_players_sniper_v2",
+          "stat": "killingblow_athena_player_sniper"
+        }
+      ]
+    },
+    "battleprogram_testquest1": {
+      "rewards": [
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ]
+    },
+    "battleprogram_test2quest1": {
+      "objectives": [
+        {
+          "count": 50,
+          "name": "buildstructures",
+          "requirePrimaryMissionCompletion": true,
+          "stat": "build_any_structure"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "Athena"
+    },
+    "battleprogram_test2quest2": {
+      "objectives": [
+        {
+          "count": 10,
+          "name": "compendium_test1_edit_wood_wall",
+          "requirePrimaryMissionCompletion": true,
+          "stat": "buildingedit_wood_wall"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 100,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "Athena"
+    },
+    "battleprogram_test2quest3": {
+      "objectives": [
+        {
+          "count": 1,
+          "name": "compendium_test1_win_match",
+          "stat": "win_athena_match"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 2000,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "Athena"
+    },
+    "battleprogram_test2quest4": {
+      "objectives": [
+        {
+          "count": 1,
+          "name": "compendium_test1_win_match_solo",
+          "stat": "win_athena_solo"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 2000,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "Athena"
+    },
+    "battleprogram_test2quest5": {
+      "objectives": [
+        {
+          "count": 1,
+          "name": "compendium_test1_win_match_duo",
+          "stat": "win_athena_duo"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 2000,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "Athena"
+    },
+    "battleprogram_test2quest6": {
+      "objectives": [
+        {
+          "count": 1,
+          "name": "compendium_test1_win_match_squad",
+          "stat": "win_athena_squad"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 2000,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "Athena"
+    },
+    "battleprogram_test2quest7": {
+      "objectives": [
+        {
+          "count": 10,
+          "name": "compendium_test1_top_25_solo",
+          "stat": "complete_athena_solo_top_25"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "Athena"
+    },
+    "battleprogram_test2quest8": {
+      "objectives": [
+        {
+          "count": 10,
+          "name": "compendium_test1_top_10_solo",
+          "stat": "complete_athena_solo_top_10"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "Athena"
+    },
+    "battleprogram_test2quest9": {
+      "objectives": [
+        {
+          "count": 10,
+          "name": "compendium_test1_top_12_duo",
+          "stat": "complete_athena_duo_top_12"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "Athena"
+    },
+    "battleprogram_testquest2": {
+      "objectives": [
+        {
+          "count": 10,
+          "name": "compendium_test1_edit_wood_wall",
+          "requirePrimaryMissionCompletion": true,
+          "stat": "buildingedit_wood_wall"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 100,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "Athena"
+    },
+    "battleprogram_testquest3": {
+      "objectives": [
+        {
+          "count": 1,
+          "name": "compendium_test1_win_match",
+          "stat": "win_athena_match"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 2000,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "Athena"
+    },
+    "battleprogram_testquest4": {
+      "objectives": [
+        {
+          "count": 1,
+          "name": "compendium_test1_win_match_solo",
+          "stat": "win_athena_solo"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 2000,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "Athena"
+    },
+    "battleprogram_testquest5": {
+      "objectives": [
+        {
+          "count": 1,
+          "name": "compendium_test1_win_match_duo",
+          "stat": "win_athena_duo"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 2000,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "Athena"
+    },
+    "battleprogram_testquest6": {
+      "objectives": [
+        {
+          "count": 1,
+          "name": "compendium_test1_win_match_squad",
+          "stat": "win_athena_squad"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 2000,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "Athena"
+    },
+    "battleprogram_testquest7": {
+      "objectives": [
+        {
+          "count": 10,
+          "name": "compendium_test1_top_25_solo",
+          "stat": "complete_athena_solo_top_25"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "Athena"
+    },
+    "battleprogram_testquest8": {
+      "objectives": [
+        {
+          "count": 10,
+          "name": "compendium_test1_top_10_solo",
+          "stat": "complete_athena_solo_top_10"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "Athena"
+    },
+    "battleprogram_testquest9": {
+      "objectives": [
+        {
+          "count": 10,
+          "name": "compendium_test1_top_12_duo",
+          "stat": "complete_athena_duo_top_12"
+        }
+      ],
+      "rewards": [
+        {
+          "quantity": 500,
+          "templateId": "AccountResource:athenaseasonalxp"
+        }
+      ],
+      "type": "Athena"
+    }
+  }
+}

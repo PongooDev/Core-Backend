@@ -1,0 +1,7215 @@
+{
+  "cannyvalleyquest_filler_10_d1": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_triple_3",
+        "stat": "complete_gate_triple_3"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_10_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_triple_3_diff2",
+        "stat": "complete_gate_triple_3_diff2"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_10_d3": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_launchballoon_3_diff3",
+        "stat": "complete_launchballoon_3_diff3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_vr"
+      },
+      {
+        "quantity": 60000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_10_d4": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_triple_3_diff4",
+        "stat": "complete_gate_triple_3_diff4"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_10_d5": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_double_3_diff5",
+        "stat": "complete_gate_double_3_diff5"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_11_d1": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_launchballoon_3_diff1",
+        "stat": "complete_launchballoon_3_diff1"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_11_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_powerreactor_3_diff2",
+        "stat": "complete_powerreactor_3_diff2"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_11_d3": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_retrievedata_3_diff3",
+        "stat": "complete_retrievedata_3_diff3"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_11_d4": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_double_3_diff4",
+        "stat": "complete_gate_double_3_diff4"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_11_d5": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_3_diff5",
+        "stat": "complete_gate_3_diff5"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_manager_vr"
+      },
+      {
+        "quantity": 84000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_12_d2": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_launchballoon_3_diff2",
+        "stat": "complete_launchballoon_3_diff2"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_12_d3": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_powerreactor_3_diff3",
+        "stat": "complete_powerreactor_3_diff3"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_12_d4": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_evacuateshelter_3_diff4",
+        "stat": "complete_evacuateshelter_3_diff4"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_12_d5": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_delivergoods_3_diff5",
+        "stat": "complete_delivergoods_3_diff5"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_13_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_evacuateshelter_3_diff2",
+        "stat": "complete_evacuateshelter_3_diff2"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_13_d3": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_3_diff3",
+        "stat": "complete_gate_3_diff3"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_13_d4": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_launchballoon_3_diff4",
+        "stat": "complete_launchballoon_3_diff4"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_13_d5": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_launchballoon_3_diff5",
+        "stat": "complete_launchballoon_3_diff5"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_14_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_delivergoods_3_diff2",
+        "stat": "complete_delivergoods_3_diff2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_r"
+      },
+      {
+        "quantity": 54000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_14_d3": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_launchballoon_3_diff3",
+        "stat": "complete_launchballoon_3_diff3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_manager_r"
+      },
+      {
+        "quantity": 60000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_14_d4": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_retrievedata_3_diff4",
+        "stat": "complete_retrievedata_3_diff4"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_14_d5": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_retrievedata_3_diff5",
+        "stat": "complete_retrievedata_3_diff5"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_15_d3": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_gate_double_3_diff3",
+        "stat": "complete_gate_double_3_diff3"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_15_d4": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_evacuateshelter_3_diff4",
+        "stat": "complete_evacuateshelter_3_diff4"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_15_d5": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_triple_3_diff5",
+        "stat": "complete_gate_triple_3_diff5"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_16_d4": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_double_3_diff4",
+        "stat": "complete_gate_double_3_diff4"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_vr"
+      },
+      {
+        "quantity": 78000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_16_d5": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_double_3_diff5",
+        "stat": "complete_gate_double_3_diff5"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_17_d5": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_evacuateshelter_3_diff5",
+        "stat": "complete_evacuateshelter_3_diff5"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_1_d5": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_delivergoods_3_diff5",
+        "stat": "complete_delivergoods_3_diff5"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_2_d4": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_triple_3_diff4",
+        "stat": "complete_gate_triple_3_diff4"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_2_d5": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_vr"
+      },
+      {
+        "quantity": 84000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_3_d2": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_r"
+      },
+      {
+        "quantity": 54000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_4_d2": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_manager_r"
+      },
+      {
+        "quantity": 54000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_4_d3": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_manager_r"
+      },
+      {
+        "quantity": 60000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_5_d1": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_double_3",
+        "stat": "complete_gate_double_3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 5,
+        "templateId": "Ingredient:ingredient_ore_malachite"
+      },
+      {
+        "quantity": 2,
+        "templateId": "Ingredient:ingredient_rare_mechanism"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_5_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_triple_3_diff2",
+        "stat": "complete_gate_triple_3_diff2"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_5_d3": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_retrievedata_3_diff3",
+        "stat": "complete_retrievedata_3_diff3"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_5_d4": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_vr"
+      },
+      {
+        "quantity": 72000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_6_d1": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_evacuateshelter_3_diff1",
+        "stat": "complete_evacuateshelter_3_diff1"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_6_d2": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_launchballoon_3_diff2",
+        "stat": "complete_launchballoon_3_diff2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 5,
+        "templateId": "Ingredient:ingredient_ore_malachite"
+      },
+      {
+        "quantity": 3,
+        "templateId": "Ingredient:ingredient_rare_mechanism"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_6_d3": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_3_diff3",
+        "stat": "complete_gate_3_diff3"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_6_d5": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_manager_vr"
+      },
+      {
+        "quantity": 84000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_7_d1": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_launchballoon_3_diff1",
+        "stat": "complete_launchballoon_3_diff1"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_7_d2": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_gate_3_diff2",
+        "stat": "complete_gate_3_diff2"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_7_d3": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_retrievedata_3_diff3",
+        "stat": "complete_retrievedata_3_diff3"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_7_d4": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_3_diff4",
+        "stat": "complete_gate_3_diff4"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_7_d5": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_gate_triple_3_diff5",
+        "stat": "complete_gate_triple_3_diff5"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_8_d1": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_delivergoods_3_diff1",
+        "stat": "complete_delivergoods_3_diff1"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_r"
+      },
+      {
+        "quantity": 48000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_8_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_retrievedata_3_diff2",
+        "stat": "complete_retrievedata_3_diff2"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_8_d3": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_delivergoods_3_diff3",
+        "stat": "complete_delivergoods_3_diff3"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_8_d4": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_double_3_diff4",
+        "stat": "complete_gate_double_3_diff4"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_8_d5": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_3_diff5",
+        "stat": "complete_gate_3_diff5"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_vr"
+      },
+      {
+        "quantity": 90000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_9_d1": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_launchballoon_3_diff1",
+        "stat": "complete_launchballoon_3_diff1"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_9_d2": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_delivergoods_3_diff2",
+        "stat": "complete_delivergoods_3_diff2"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_9_d3": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_evacuateshelter_3_diff3",
+        "stat": "complete_evacuateshelter_3_diff3"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_9_d4": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_retrievedata_3_diff4",
+        "stat": "complete_retrievedata_3_diff4"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_manager_r"
+      },
+      {
+        "quantity": 72000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "cannyvalleyquest_filler_9_d5": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_evacuateshelter_3_diff5",
+        "stat": "complete_evacuateshelter_3_diff5"
+      }
+    ]
+  },
+  "cannyvalleyquest_side_2_d1": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_delivergoods_3_diff1",
+        "stat": "complete_delivergoods_3_diff1"
+      }
+    ]
+  },
+  "cannyvalleyquest_side_2_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_evacuateshelter_3_diff2",
+        "stat": "complete_evacuateshelter_3_diff2"
+      }
+    ]
+  },
+  "cannyvalleyquest_side_2_d3": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_triple_3_diff3",
+        "stat": "complete_gate_triple_3_diff3"
+      }
+    ]
+  },
+  "cannyvalleyquest_side_2_d4": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_launchballoon_3_diff4",
+        "stat": "complete_launchballoon_3_diff4"
+      }
+    ]
+  },
+  "cannyvalleyquest_side_2_d5": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_3_diff5",
+        "stat": "complete_gate_3_diff5"
+      }
+    ]
+  },
+  "cannyvalleyquest_side_3_d1": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_powerreactor_3_diff1",
+        "stat": "complete_powerreactor_3_diff1"
+      }
+    ]
+  },
+  "cannyvalleyquest_side_3_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_triple_3_diff2",
+        "stat": "complete_gate_triple_3_diff2"
+      }
+    ]
+  },
+  "cannyvalleyquest_side_3_d3": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_delivergoods_3_diff3",
+        "stat": "complete_delivergoods_3_diff3"
+      }
+    ]
+  },
+  "cannyvalleyquest_side_3_d4": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_powerreactor_3_diff4",
+        "stat": "complete_powerreactor_3_diff4"
+      }
+    ]
+  },
+  "cannyvalleyquest_side_3_d5": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_delivergoods_3_diff5",
+        "stat": "complete_delivergoods_3_diff5"
+      }
+    ]
+  },
+  "cannyvalleyquest_side_4_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_buildradargrid_3_diff2",
+        "stat": "complete_buildradargrid_3_diff2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_vr"
+      },
+      {
+        "quantity": 54000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "cannyvalleyquest_side_4_d3": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_evacuateshelter_3_diff3",
+        "stat": "complete_evacuateshelter_3_diff3"
+      }
+    ]
+  },
+  "cannyvalleyquest_side_4_d4": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_3_diff4",
+        "stat": "complete_gate_3_diff4"
+      }
+    ]
+  },
+  "cannyvalleyquest_side_4_d5": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_retrievedata_3_diff5",
+        "stat": "complete_retrievedata_3_diff5"
+      }
+    ]
+  },
+  "cannyvalleyquest_side_5_d5": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_delivergoods_3_diff5",
+        "stat": "complete_delivergoods_3_diff5"
+      }
+    ]
+  },
+  "challenge_collectionbook_1": {
+    "objectives": [
+      {
+        "count": 2,
+        "itemEvent": "HasLeveledUpCollectionBook",
+        "name": "collectionbook_levelup"
+      }
+    ]
+  },
+  "challenge_weaponupgrade_1": {
+    "rewards": [
+      {
+        "quantity": 3,
+        "templateId": "Ingredient:ingredient_ore_copper"
+      },
+      {
+        "quantity": 5,
+        "templateId": "Ingredient:ingredient_mechanical_parts_t01"
+      }
+    ]
+  },
+  "challenge_workertraining_1": {
+    "rewards": [
+      {
+        "quantity": 400,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "daily_alittlevanthatcould": {
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_dataretrieval": {
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_destroyarcademachines": {
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_destroybears": {
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_destroyfiretrucks": {
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_destroygnomes": {
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_destroypropanetanks": {
+    "objectives": [
+      {
+        "count": 10,
+        "name": "quest_reactive_destroypropane_v2",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_destroypropane"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_destroyseesaws": {
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_destroyserverracks": {
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_destroytransformers": {
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_destroytvs": {
+    "objectives": [
+      {
+        "count": 20,
+        "name": "quest_reactive_destroytv_v2",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_destroytv"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_gatecrasher": {
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_high_priority": {
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_huskextermination_anyhero": {
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_huskextermination_constructor": {
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_huskextermination_ninja": {
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_huskextermination_outlander": {
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_huskextermination_soldier": {
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_mission_specialist_cannyvalley": {
+    "rewards": [
+      {
+        "quantity": 75,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_mission_specialist_constructor": {
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_mission_specialist_ninja": {
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_mission_specialist_outlander": {
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_mission_specialist_plankerton": {
+    "rewards": [
+      {
+        "quantity": 60,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_mission_specialist_soldier": {
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_mission_specialist_stonewood": {
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_mission_specialist_twinepeaks": {
+    "rewards": [
+      {
+        "quantity": 100,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "daily_partyof50": {
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ]
+  },
+  "heroquest_constructor_3": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_uc"
+      },
+      {
+        "quantity": 1000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "heroquest_ninja_1": {
+    "objectives": [
+      {
+        "count": 20,
+        "name": "kill_husk_melee",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_husk_melee"
+      },
+      {
+        "count": 1,
+        "item": "HomebaseNode:t1_main_8991222d1",
+        "itemEvent": "HasItem",
+        "name": "unlock_skill_tree_ninja_leadership"
+      }
+    ]
+  },
+  "heroquest_ninjaleadership": {
+    "hiddenRewards": null,
+    "objectives": [
+      {
+        "count": 1,
+        "item": "HomebaseNode:t1_main_8991222d1",
+        "itemEvent": "HasItem",
+        "name": "unlock_skill_tree_ninja_leadership"
+      }
+    ]
+  },
+  "heroquest_outlander_1": {
+    "objectives": [
+      {
+        "count": 1,
+        "name": "complete_exploration_1_diff2",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "complete_exploration_1_diff2"
+      },
+      {
+        "count": 1,
+        "item": "HomebaseNode:t1_main_566bfea11",
+        "itemEvent": "HasItem",
+        "name": "unlock_skill_tree_outlander_leadership"
+      }
+    ]
+  },
+  "heroquest_outlanderleadership": {
+    "hiddenRewards": null,
+    "objectives": [
+      {
+        "count": 1,
+        "item": "HomebaseNode:t1_main_566bfea11",
+        "itemEvent": "HasItem",
+        "name": "unlock_skill_tree_outlander_leadership"
+      }
+    ]
+  },
+  "homebaseonboarding": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pageheroes_ninja"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pageheroes_outlander"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pageheroes_commando"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pageheroes_constructor"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pagepeople_defenders"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pagepeople_leads"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pagepeople_uniqueleads"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pagepeople_survivors"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pageranged_assault_weapons"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pageranged_shotgun_weapons"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:page_ranged_pistols_weapons"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pageranged_snipers_weapons"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pageranged_shotgun_weapons_crystal"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pageranged_assault_weapons_crystal"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:page_ranged_pistols_weapons_crystal"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pageranged_snipers_weapons_crystal"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pagetraps_wall"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pagetraps_ceiling"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pagetraps_floor"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pagemelee_swords_weapons"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pagemelee_swords_weapons_crystal"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pagemelee_axes_weapons"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pagemelee_axes_weapons_crystal"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pagemelee_scythes_weapons"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pagemelee_scythes_weapons_crystal"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pagemelee_clubs_weapons"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pagemelee_clubs_weapons_crystal"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pagemelee_spears_weapons"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pagemelee_spears_weapons_crystal"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pagemelee_tools_weapons"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pagemelee_tools_weapons_crystal"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CollectionBookPage:pageranged_explosive_weapons"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:outpostquest_t1_l1"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:homebaseonboardinggrantschematics"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_copperore"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:achievement_buildstructures"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:achievement_destroygnomes"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:achievement_savesurvivors"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:achievement_loottreasurechests"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:achievement_explorezones"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:achievement_killmistmonsters"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:achievement_playwithothers"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:homebasequest_unlockexpeditions"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:homebasequest_unlockresearch"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:heroquest_ninjaleadership"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:heroquest_outlanderleadership"
+      }
+    ]
+  },
+  "homebasequest_slotemtworker": {
+    "rewards": [
+      {
+        "quantity": 600,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "homebasequest_slotfireteamalphaworker": {
+    "rewards": null
+  },
+  "homebasequest_slotmissiondefender": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:stonewoodquest_treasuredfriends"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:heroquest_soldier_1"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:heroquest_constructor_1"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:heroquest_outlander_1"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:heroquest_ninja_1"
+      }
+    ]
+  },
+  "outpostquest_t1_l3": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:homebasequest_unlockmissiondefender"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:dailyquesttrigger"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:dailyquestpack"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:challenge_missionaccomplished_1"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:challenge_leavenoonebehind_1"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:challenge_holdthedoor_1"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_shielders"
+      }
+    ]
+  },
+  "plankertonquest_filler_10_d5": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_vr"
+      },
+      {
+        "quantity": 32000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "plankertonquest_filler_2_d3": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_r"
+      },
+      {
+        "quantity": 24000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "plankertonquest_filler_3_d1": {
+    "rewards": [
+      {
+        "quantity": 5,
+        "templateId": "Ingredient:ingredient_ore_silver"
+      },
+      {
+        "quantity": 2,
+        "templateId": "Ingredient:ingredient_rare_mechanism"
+      }
+    ]
+  },
+  "plankertonquest_filler_3_d4": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_manager_r"
+      },
+      {
+        "quantity": 28000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "plankertonquest_filler_4_d3": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_r"
+      },
+      {
+        "quantity": 24000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "plankertonquest_filler_4_d5": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_vr"
+      },
+      {
+        "quantity": 30000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "plankertonquest_filler_5_d2": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_r"
+      },
+      {
+        "quantity": 20000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "plankertonquest_filler_6_d4": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_vr"
+      },
+      {
+        "quantity": 30000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "plankertonquest_filler_8_d5": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_manager_r"
+      },
+      {
+        "quantity": 32000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "protoenablequest": {
+    "hidden": true
+  },
+  "reactivequest_blasters": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_r"
+      },
+      {
+        "quantity": 16000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "reactivequest_distresscalls": {
+    "rewards": [
+      {
+        "quantity": 3,
+        "templateId": "Ingredient:ingredient_ore_copper"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Ingredient:ingredient_rare_mechanism"
+      }
+    ]
+  },
+  "reactivequest_finddj": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_r"
+      },
+      {
+        "quantity": 16000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "reactivequest_findsurvivor": {
+    "rewards": null
+  },
+  "reactivequest_flingers": {
+    "rewards": [
+      {
+        "quantity": 5,
+        "templateId": "Ingredient:ingredient_ore_silver"
+      },
+      {
+        "quantity": 3,
+        "templateId": "Ingredient:ingredient_rare_mechanism"
+      }
+    ]
+  },
+  "reactivequest_goodpop": {
+    "rewards": [
+      {
+        "quantity": 8,
+        "templateId": "Ingredient:ingredient_ore_silver"
+      },
+      {
+        "quantity": 3,
+        "templateId": "Ingredient:ingredient_rare_mechanism"
+      }
+    ]
+  },
+  "reactivequest_knowyourenemy": {
+    "rewards": [
+      {
+        "quantity": 3,
+        "templateId": "Ingredient:ingredient_ore_copper"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Ingredient:ingredient_rare_mechanism"
+      }
+    ]
+  },
+  "reactivequest_lightninghusks": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_r"
+      },
+      {
+        "quantity": 28000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "reactivequest_medicaldata": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Worker:managerdoctor_r_t01"
+      },
+      {
+        "quantity": 4000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "reactivequest_medicalsupplies": {
+    "objectives": [
+      {
+        "count": 4,
+        "name": "quest_reactive_medicalsupplies",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_medicalsupplies"
+      }
+    ]
+  },
+  "reactivequest_riftdata": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_manager_uc"
+      },
+      {
+        "quantity": 20000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "reactivequest_supplyrun": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:stonewoodquest_filler_2_d5"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:challenge_herotraining_2"
+      }
+    ]
+  },
+  "reactivequest_survivorradios": {
+    "rewards": null
+  },
+  "stonewoodquest_filler_1_d2": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_uc"
+      },
+      {
+        "quantity": 1000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "stonewoodquest_filler_2_d4": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Hero:hid_constructor_hammertank_uc_t01"
+      },
+      {
+        "quantity": 500,
+        "templateId": "AccountResource:heroxp"
+      }
+    ]
+  },
+  "stonewoodquest_launchballoon_d1": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Schematic:sid_floor_health_c_t00"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Schematic:sid_edged_sword_medium_c_ore_t00"
+      },
+      {
+        "quantity": 150,
+        "templateId": "AccountResource:schematicxp"
+      }
+    ]
+  },
+  "stonewoodquest_launchrocket_d5": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:stonewoodquest_side_1_d5"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:outpostquest_t1_l7"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:outpostquest_t2_l1"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:challenge_weaponupgrade_2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Schematic:sid_floor_player_jump_pad"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Schematic:sid_floor_player_jump_pad_free_direction"
+      },
+      {
+        "quantity": 10,
+        "templateId": "AccountResource:reagent_c_t01"
+      }
+    ]
+  },
+  "testreactivequest_4": {
+    "objectives": [
+      {
+        "count": 1,
+        "name": "quest_reactive_test1",
+        "stat": "quest_reactive_test1"
+      },
+      {
+        "count": 10,
+        "name": "quest_reactive_test2",
+        "stat": "quest_reactive_test2"
+      },
+      {
+        "count": 2,
+        "name": "quest_reactive_test3",
+        "stat": "quest_reactive_test3"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_10_d1": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_4_diff1",
+        "stat": "complete_gate_4_diff1"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_10_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_powerreactor_4_diff2",
+        "stat": "complete_powerreactor_4_diff2"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_10_d3": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_gate_double_4_diff3",
+        "stat": "complete_gate_double_4_diff3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_vr"
+      },
+      {
+        "quantity": 136000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_10_d4": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_powerreactor_4_diff4",
+        "stat": "complete_powerreactor_4_diff4"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_manager_vr"
+      },
+      {
+        "quantity": 144000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_10_d5": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_evacuateshelter_4_diff5",
+        "stat": "complete_evacuateshelter_4_diff5"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_11_d1": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_launchballoon_4_diff1",
+        "stat": "complete_launchballoon_4_diff1"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_11_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_4_diff2",
+        "stat": "complete_gate_4_diff2"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_11_d3": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_powerreactor_4_diff3",
+        "stat": "complete_powerreactor_4_diff3"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_11_d4": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_evacuateshelter_4_diff4",
+        "stat": "complete_evacuateshelter_4_diff4"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_11_d5": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_retrievedata_4_diff5",
+        "stat": "complete_retrievedata_4_diff5"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_manager_vr"
+      },
+      {
+        "quantity": 152000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_12_d1": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_triple_4_diff1",
+        "stat": "complete_gate_triple_4_diff1"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_12_d2": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_delivergoods_4_diff2",
+        "stat": "complete_delivergoods_4_diff2"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_12_d3": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_delivergoods_4_diff3",
+        "stat": "complete_delivergoods_4_diff3"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_12_d4": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_gate_4_diff4",
+        "stat": "complete_gate_4_diff4"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_12_d5": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_triple_4_diff5",
+        "stat": "complete_gate_triple_4_diff5"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_13_d1": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_launchballoon_4_diff1",
+        "stat": "complete_launchballoon_4_diff1"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_13_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_4_diff2",
+        "stat": "complete_gate_4_diff2"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_13_d3": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_4_diff3",
+        "stat": "complete_gate_4_diff3"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_13_d4": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_retrievedata_4_diff4",
+        "stat": "complete_retrievedata_4_diff4"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_13_d5": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_gate_double_4_diff5",
+        "stat": "complete_gate_double_4_diff5"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_14_d1": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_retrievedata_4_diff1",
+        "stat": "complete_retrievedata_4_diff1"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_14_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_double_4_diff2",
+        "stat": "complete_gate_double_4_diff2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_r"
+      },
+      {
+        "quantity": 128000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_14_d3": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_double_4_diff3",
+        "stat": "complete_gate_double_4_diff3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_manager_r"
+      },
+      {
+        "quantity": 136000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_14_d4": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_delivergoods_4_diff4",
+        "stat": "complete_delivergoods_4_diff4"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_14_d5": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_delivergoods_4_diff5",
+        "stat": "complete_delivergoods_4_diff5"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_15_d1": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_gate_triple_4_diff1",
+        "stat": "complete_gate_triple_4_diff1"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_15_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_evacuateshelter_4_diff2",
+        "stat": "complete_evacuateshelter_4_diff2"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_15_d3": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_powerreactor_4_diff3",
+        "stat": "complete_powerreactor_4_diff3"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_15_d4": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_powerreactor_4_diff4",
+        "stat": "complete_powerreactor_4_diff4"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_15_d5": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_launchballoon_4_diff5",
+        "stat": "complete_launchballoon_4_diff5"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_16_d1": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_double_4_diff1",
+        "stat": "complete_gate_double_4_diff1"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_16_d2": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_retrievedata_4_diff2",
+        "stat": "complete_retrievedata_4_diff2"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_16_d3": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_4_diff3",
+        "stat": "complete_gate_4_diff3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 8,
+        "templateId": "Ingredient:ingredient_crystal_shadowshard"
+      },
+      {
+        "quantity": 3,
+        "templateId": "Ingredient:ingredient_rare_mechanism"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_16_d4": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_evacuateshelter_4_diff4",
+        "stat": "complete_evacuateshelter_4_diff4"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_vr"
+      },
+      {
+        "quantity": 148000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_16_d5": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_evacuateshelter_4_diff5",
+        "stat": "complete_evacuateshelter_4_diff5"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_17_d1": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_delivergoods_4_diff1",
+        "stat": "complete_delivergoods_4_diff1"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_17_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_launchballoon_4_diff2",
+        "stat": "complete_launchballoon_4_diff2"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_17_d3": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_retrievedata_4_diff3",
+        "stat": "complete_retrievedata_4_diff3"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_17_d4": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_double_4_diff4",
+        "stat": "complete_gate_double_4_diff4"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 8,
+        "templateId": "Ingredient:ingredient_crystal_shadowshard"
+      },
+      {
+        "quantity": 4,
+        "templateId": "Ingredient:ingredient_rare_mechanism"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_17_d5": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_retrievedata_4_diff5",
+        "stat": "complete_retrievedata_4_diff5"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_18_d1": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_4_diff1",
+        "stat": "complete_gate_4_diff1"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_18_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_4_diff2",
+        "stat": "complete_gate_4_diff2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_manager_r"
+      },
+      {
+        "quantity": 128000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_18_d3": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_delivergoods_4_diff3",
+        "stat": "complete_delivergoods_4_diff3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_vr"
+      },
+      {
+        "quantity": 136000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_18_d4": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_retrievedata_4_diff4",
+        "stat": "complete_retrievedata_4_diff4"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_manager_vr"
+      },
+      {
+        "quantity": 144000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_18_d5": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_powerreactor_4_diff5",
+        "stat": "complete_powerreactor_4_diff5"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 11,
+        "templateId": "Ingredient:ingredient_crystal_shadowshard"
+      },
+      {
+        "quantity": 5,
+        "templateId": "Ingredient:ingredient_rare_mechanism"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_19_d3": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_powerreactor_4_diff3",
+        "stat": "complete_powerreactor_4_diff3"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_19_d4": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_gate_triple_4_diff4",
+        "stat": "complete_gate_triple_4_diff4"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_19_d5": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_double_4_diff5",
+        "stat": "complete_gate_double_4_diff5"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_1_d1": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_gate_double_4_diff1",
+        "stat": "complete_gate_double_4_diff1"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_1_d2": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_evacuateshelter_4_diff2",
+        "stat": "complete_evacuateshelter_4_diff2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_manager_r"
+      },
+      {
+        "quantity": 128000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_1_d3": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_gate_double_4_diff3",
+        "stat": "complete_gate_double_4_diff3"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_1_d4": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_delivergoods_4_diff4",
+        "stat": "complete_delivergoods_4_diff4"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_1_d5": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_evacuateshelter_4_diff5",
+        "stat": "complete_evacuateshelter_4_diff5"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_20_d4": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_launchballoon_4_diff4",
+        "stat": "complete_launchballoon_4_diff4"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_20_d5": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_launchballoon_4_diff5",
+        "stat": "complete_launchballoon_4_diff5"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_2_d1": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_4_diff1",
+        "stat": "complete_gate_4_diff1"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_2_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_double_4_diff2",
+        "stat": "complete_gate_double_4_diff2"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_2_d3": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_4_diff3",
+        "stat": "complete_gate_4_diff3"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_2_d4": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_retrievedata_4_diff4",
+        "stat": "complete_retrievedata_4_diff4"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_2_d5": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_gate_triple_4_diff5",
+        "stat": "complete_gate_triple_4_diff5"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_vr"
+      },
+      {
+        "quantity": 152000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_3_d1": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_launchballoon_4_diff1",
+        "stat": "complete_launchballoon_4_diff1"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 5,
+        "templateId": "Ingredient:ingredient_ore_obsidian"
+      },
+      {
+        "quantity": 2,
+        "templateId": "Ingredient:ingredient_rare_mechanism"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_3_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_launchballoon_4_diff2",
+        "stat": "complete_launchballoon_4_diff2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_r"
+      },
+      {
+        "quantity": 128000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_3_d3": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_evacuateshelter_4_diff3",
+        "stat": "complete_evacuateshelter_4_diff3"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_3_d4": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_evacuateshelter_4_diff4",
+        "stat": "complete_evacuateshelter_4_diff4"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_3_d5": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_evacuateshelter_4_diff5",
+        "stat": "complete_evacuateshelter_4_diff5"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_4_d1": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_powerreactor_4_diff1",
+        "stat": "complete_powerreactor_4_diff1"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_4_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_double_4_diff2",
+        "stat": "complete_gate_double_4_diff2"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_4_d3": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_delivergoods_4_diff3",
+        "stat": "complete_delivergoods_4_diff3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_manager_r"
+      },
+      {
+        "quantity": 136000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_4_d4": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_gate_4_diff4",
+        "stat": "complete_gate_4_diff4"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_4_d5": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_gate_triple_4_diff5",
+        "stat": "complete_gate_triple_4_diff5"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_5_d1": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_delivergoods_4_diff1",
+        "stat": "complete_delivergoods_4_diff1"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_5_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_triple_4_diff2",
+        "stat": "complete_gate_triple_4_diff2"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_5_d3": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_4_diff3",
+        "stat": "complete_gate_4_diff3"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_5_d4": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_retrievedata_4_diff4",
+        "stat": "complete_retrievedata_4_diff4"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_vr"
+      },
+      {
+        "quantity": 144000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_5_d5": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_4_diff5",
+        "stat": "complete_gate_4_diff5"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_6_d1": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_powerreactor_4_diff1",
+        "stat": "complete_powerreactor_4_diff1"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_6_d2": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_retrievedata_4_diff2",
+        "stat": "complete_retrievedata_4_diff2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 5,
+        "templateId": "Ingredient:ingredient_ore_obsidian"
+      },
+      {
+        "quantity": 3,
+        "templateId": "Ingredient:ingredient_rare_mechanism"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_6_d3": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_launchballoon_4_diff3",
+        "stat": "complete_launchballoon_4_diff3"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_6_d4": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_launchballoon_4_diff4",
+        "stat": "complete_launchballoon_4_diff4"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_6_d5": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_powerreactor_4_diff5",
+        "stat": "complete_powerreactor_4_diff5"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_manager_vr"
+      },
+      {
+        "quantity": 152000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_7_d1": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_double_4_diff1",
+        "stat": "complete_gate_double_4_diff1"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_7_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_4_diff2",
+        "stat": "complete_gate_4_diff2"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_7_d3": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_delivergoods_4_diff3",
+        "stat": "complete_delivergoods_4_diff3"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_7_d4": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_triple_4_diff4",
+        "stat": "complete_gate_triple_4_diff4"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_7_d5": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_delivergoods_4_diff5",
+        "stat": "complete_delivergoods_4_diff5"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_8_d1": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_powerreactor_4_diff1",
+        "stat": "complete_powerreactor_4_diff1"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_r"
+      },
+      {
+        "quantity": 120000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_8_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_launchballoon_4_diff2",
+        "stat": "complete_launchballoon_4_diff2"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_8_d3": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_evacuateshelter_4_diff3",
+        "stat": "complete_evacuateshelter_4_diff3"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_8_d4": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_double_4_diff4",
+        "stat": "complete_gate_double_4_diff4"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_8_d5": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_launchballoon_4_diff5",
+        "stat": "complete_launchballoon_4_diff5"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_vr"
+      },
+      {
+        "quantity": 160000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_9_d1": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_gate_triple_4_diff1",
+        "stat": "complete_gate_triple_4_diff1"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_9_d2": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_gate_4_diff2",
+        "stat": "complete_gate_4_diff2"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_9_d3": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_launchballoon_4_diff3",
+        "stat": "complete_launchballoon_4_diff3"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_9_d4": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_retrievedata_4_diff4",
+        "stat": "complete_retrievedata_4_diff4"
+      }
+    ]
+  },
+  "twinepeaksquest_filler_9_d5": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_gate_double_4_diff5",
+        "stat": "complete_gate_double_4_diff5"
+      }
+    ]
+  },
+  "twinepeaksquest_side_1_d1": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_triple_4_diff1",
+        "stat": "complete_gate_triple_4_diff1"
+      }
+    ]
+  },
+  "twinepeaksquest_side_1_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_launchballoon_4_diff2",
+        "stat": "complete_launchballoon_4_diff2"
+      }
+    ]
+  },
+  "twinepeaksquest_side_1_d3": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_delivergoods_4_diff3",
+        "stat": "complete_delivergoods_4_diff3"
+      }
+    ]
+  },
+  "twinepeaksquest_side_1_d4": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_gate_triple_4_diff4",
+        "stat": "complete_gate_triple_4_diff4"
+      }
+    ]
+  },
+  "twinepeaksquest_side_1_d5": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_gate_double_4_diff5",
+        "stat": "complete_gate_double_4_diff5"
+      }
+    ]
+  },
+  "twinepeaksquest_side_2_d1": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_4_diff1",
+        "stat": "complete_gate_4_diff1"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_r"
+      },
+      {
+        "quantity": 120000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "twinepeaksquest_side_2_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_triple_4_diff2",
+        "stat": "complete_gate_triple_4_diff2"
+      }
+    ]
+  },
+  "twinepeaksquest_side_2_d3": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_4_diff3",
+        "stat": "complete_gate_4_diff3"
+      }
+    ]
+  },
+  "twinepeaksquest_side_2_d4": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_evacuateshelter_4_diff4",
+        "stat": "complete_evacuateshelter_4_diff4"
+      }
+    ]
+  },
+  "twinepeaksquest_side_2_d5": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_powerreactor_4_diff5",
+        "stat": "complete_powerreactor_4_diff5"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "ConversionControl:cck_worker_core_consumable"
+      },
+      {
+        "quantity": 160000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "twinepeaksquest_side_3_d1": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_buildradargrid_4_diff1",
+        "stat": "complete_buildradargrid_4_diff1"
+      }
+    ]
+  },
+  "twinepeaksquest_side_3_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_retrievedata_4_diff2",
+        "stat": "complete_retrievedata_4_diff2"
+      }
+    ]
+  },
+  "twinepeaksquest_side_3_d3": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_launchballoon_4_diff3",
+        "stat": "complete_launchballoon_4_diff3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_vr"
+      },
+      {
+        "quantity": 136000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "twinepeaksquest_side_3_d4": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_gate_4_diff4",
+        "stat": "complete_gate_4_diff4"
+      }
+    ]
+  },
+  "twinepeaksquest_side_3_d5": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_retrievedata_4_diff5",
+        "stat": "complete_retrievedata_4_diff5"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "ConversionControl:cck_manager_core_consumable"
+      },
+      {
+        "quantity": 160000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "twinepeaksquest_side_4_d2": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_powerreactor_4_diff2",
+        "stat": "complete_powerreactor_4_diff2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_worker_vr"
+      },
+      {
+        "quantity": 128000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ]
+  },
+  "twinepeaksquest_side_4_d3": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_4_diff3",
+        "stat": "complete_gate_4_diff3"
+      }
+    ]
+  },
+  "twinepeaksquest_side_4_d4": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_powerreactor_4_diff4",
+        "stat": "complete_powerreactor_4_diff4"
+      }
+    ]
+  },
+  "twinepeaksquest_side_4_d5": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_double_4_diff5",
+        "stat": "complete_gate_double_4_diff5"
+      }
+    ]
+  },
+  "twinepeaksquest_side_5_d5": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_gate_4_diff5",
+        "stat": "complete_gate_4_diff5"
+      }
+    ]
+  },
+  "twitchquest_reactive_1": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "AccountResource:voucher_basicpack"
+      }
+    ]
+  },
+  "twitchquest_reactive_10": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "AccountResource:voucher_basicpack"
+      }
+    ]
+  },
+  "twitchquest_reactive_11": {
+    "rewards": [
+      {
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      }
+    ]
+  },
+  "twitchquest_reactive_12": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "AccountResource:voucher_basicpack"
+      }
+    ]
+  },
+  "twitchquest_reactive_13": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "AccountResource:voucher_basicpack"
+      }
+    ]
+  },
+  "twitchquest_reactive_14": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "AccountResource:voucher_basicpack"
+      }
+    ]
+  },
+  "twitchquest_reactive_15": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "AccountResource:voucher_basicpack"
+      }
+    ]
+  },
+  "twitchquest_reactive_2": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "AccountResource:voucher_basicpack"
+      }
+    ]
+  },
+  "twitchquest_reactive_3": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "AccountResource:voucher_basicpack"
+      }
+    ]
+  },
+  "twitchquest_reactive_4": {
+    "rewards": [
+      {
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      }
+    ]
+  },
+  "twitchquest_reactive_5": {
+    "rewards": [
+      {
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      }
+    ]
+  },
+  "twitchquest_reactive_6": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "AccountResource:voucher_basicpack"
+      }
+    ]
+  },
+  "twitchquest_reactive_7": {
+    "objectives": [
+      {
+        "count": 15,
+        "item": "FortMissionInfo:blugloworlditemdata",
+        "itemEvent": "Collect",
+        "name": "quest_reactive_twitch_7",
+        "requirePrimaryMissionCompletion": true
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      }
+    ]
+  },
+  "twitchquest_reactive_8": {
+    "rewards": [
+      {
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      }
+    ]
+  },
+  "twitchquest_reactive_9": {
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "AccountResource:voucher_basicpack"
+      }
+    ]
+  },
+  "firststormquest_cannydiff_completestormzones": {
+    "objectives": [
+      {
+        "count": 10,
+        "name": "complete_stormzone_pve03",
+        "stat": "complete_stormzone_pve03"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 10,
+        "templateId": "AccountResource:reagent_c_t03"
+      }
+    ],
+    "type": "Optional"
+  },
+  "firststormquest_completestormzones": {
+    "objectives": [
+      {
+        "count": 10,
+        "name": "complete_stormzone",
+        "stat": "complete_stormzone"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 700,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "firststormquest_evolve_hydraulic": {
+    "objectives": [
+      {
+        "count": 1,
+        "name": "convert_any_hydraulic",
+        "stat": "convert_any_hydraulic"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 100,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ],
+    "type": "Optional"
+  },
+  "firststormquest_hydraulicstormllama": {
+    "objectives": [
+      {
+        "count": 1,
+        "item": "CardPack:cardpack_event_firststorm",
+        "itemEvent": "PurchaseCardPack",
+        "name": "purchase_cardpack_event_firststorm"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 500,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "firststormquest_killenragedhusks": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:firststormquest_killwallweakeninghusks"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1500,
+        "name": "kill_husk_enraged",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_husk_enraged"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_ranged_r"
+      }
+    ],
+    "type": "Optional"
+  },
+  "firststormquest_killexplodingdeathbursthusks": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:firststormquest_killfrenzieddeathbursthusks"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1500,
+        "name": "kill_husk_explodingdeathburst",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_husk_explodingdeathburst"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_defender_r"
+      }
+    ],
+    "type": "Optional"
+  },
+  "firststormquest_killfrenzieddeathbursthusks": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:firststormquest_killlifeleechattackhusks"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1500,
+        "name": "kill_husk_frenzieddeathburst_pve02",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_husk_frenzieddeathburst_pve02"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 5,
+        "templateId": "Ingredient:ingredient_rare_mechanism"
+      }
+    ],
+    "type": "Optional"
+  },
+  "firststormquest_killhealingdeathbursthusks": {
+    "objectives": [
+      {
+        "count": 1500,
+        "name": "kill_husk_healingdeathburst_pve03",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_husk_healingdeathburst_pve03"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 20,
+        "templateId": "AccountResource:reagent_c_t01"
+      }
+    ],
+    "type": "Optional"
+  },
+  "firststormquest_killhuskstraps": {
+    "objectives": [
+      {
+        "count": 1000,
+        "name": "kill_husk_trap_survivalmode",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_husk_trap_survivalmode"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_trap_vr"
+      }
+    ],
+    "type": "Optional"
+  },
+  "firststormquest_killlifeleechattackhusks": {
+    "objectives": [
+      {
+        "count": 1500,
+        "name": "kill_husk_lifeleechattacks_pve03",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_husk_lifeleechattacks_pve03"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 15,
+        "templateId": "AccountResource:reagent_c_t02"
+      }
+    ],
+    "type": "Optional"
+  },
+  "firststormquest_killmetalcorrosionhusks": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:firststormquest_cannydiff_completestormzones"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1500,
+        "name": "kill_husk_metalcorrosion_pve02",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_husk_metalcorrosion_pve02"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 2,
+        "templateId": "AccountResource:voucher_basicpack"
+      }
+    ],
+    "type": "Optional"
+  },
+  "firststormquest_killmistmonsters": {
+    "objectives": [
+      {
+        "count": 50,
+        "name": "kill_smasher_hydraulic",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_smasher_hydraulic"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ],
+    "type": "Optional"
+  },
+  "firststormquest_killquickenedhusks": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:firststormquest_killmetalcorrosionhusks"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1500,
+        "name": "kill_husk_quickened",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_husk_quickened"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_melee_r"
+      }
+    ],
+    "type": "Optional"
+  },
+  "firststormquest_killwallweakeninghusks": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:firststormquest_killhealingdeathbursthusks"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1500,
+        "name": "kill_husk_wallweakening_pve02",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_husk_wallweakening_pve02"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_manager_r"
+      }
+    ],
+    "type": "Optional"
+  },
+  "firststormquest_levelup_hydraulic": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:firststormquest_evolve_hydraulic"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "upgrade_any_hydraulic",
+        "stat": "upgrade_any_hydraulic"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 100,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_completemissions_1": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:halloweenquest_2017_trainhero"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 30,
+        "name": "halloween_completemissions_1",
+        "stat": "halloween_completemissions_1"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Hero:hid_outlander_zoneharvesthw_sr_t01"
+      }
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_completemissions_10": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:halloweenquest_2017_trainhero"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 30,
+        "name": "halloween_completemissions_10",
+        "stat": "halloween_completemissions_10"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Hero:hid_outlander_zoneharvesthw_sr_t01"
+      }
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_completemissions_11": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:halloweenquest_2017_trainhero"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 30,
+        "name": "halloween_completemissions_11",
+        "stat": "halloween_completemissions_11"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Hero:hid_outlander_zoneharvesthw_sr_t01"
+      }
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_completemissions_12": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:halloweenquest_2017_trainhero"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 30,
+        "name": "halloween_completemissions_12",
+        "stat": "halloween_completemissions_12"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Hero:hid_outlander_zoneharvesthw_sr_t01"
+      }
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_completemissions_13": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:halloweenquest_2017_trainhero"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 30,
+        "name": "halloween_completemissions_13",
+        "stat": "halloween_completemissions_13"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Hero:hid_outlander_zoneharvesthw_sr_t01"
+      }
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_completemissions_14": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:halloweenquest_2017_trainhero"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 30,
+        "name": "halloween_completemissions_14",
+        "stat": "halloween_completemissions_14"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Hero:hid_outlander_zoneharvesthw_sr_t01"
+      }
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_completemissions_2": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:halloweenquest_2017_trainhero"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 30,
+        "name": "halloween_completemissions_2",
+        "stat": "halloween_completemissions_2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Hero:hid_outlander_zoneharvesthw_sr_t01"
+      }
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_completemissions_3": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:halloweenquest_2017_trainhero"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 30,
+        "name": "halloween_completemissions_3",
+        "stat": "halloween_completemissions_3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Hero:hid_outlander_zoneharvesthw_sr_t01"
+      }
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_completemissions_4": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:halloweenquest_2017_trainhero"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 30,
+        "name": "halloween_completemissions_4",
+        "stat": "halloween_completemissions_4"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Hero:hid_outlander_zoneharvesthw_sr_t01"
+      }
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_completemissions_5": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:halloweenquest_2017_trainhero"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 30,
+        "name": "halloween_completemissions_5",
+        "stat": "halloween_completemissions_5"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Hero:hid_outlander_zoneharvesthw_sr_t01"
+      }
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_completemissions_6": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:halloweenquest_2017_trainhero"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 30,
+        "name": "halloween_completemissions_6",
+        "stat": "halloween_completemissions_6"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Hero:hid_outlander_zoneharvesthw_sr_t01"
+      }
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_completemissions_7": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:halloweenquest_2017_trainhero"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 30,
+        "name": "halloween_completemissions_7",
+        "stat": "halloween_completemissions_7"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Hero:hid_outlander_zoneharvesthw_sr_t01"
+      }
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_completemissions_8": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:halloweenquest_2017_trainhero"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 30,
+        "name": "halloween_completemissions_8",
+        "stat": "halloween_completemissions_8"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Hero:hid_outlander_zoneharvesthw_sr_t01"
+      }
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_completemissions_9": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:halloweenquest_2017_trainhero"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 30,
+        "name": "halloween_completemissions_9",
+        "stat": "halloween_completemissions_9"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Hero:hid_outlander_zoneharvesthw_sr_t01"
+      }
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_epicheroes": {
+    "objectives": [
+      {
+        "count": 1,
+        "item": "Quest:reactivequest_gathercollect_halloween_1",
+        "itemEvent": "HasCompletedQuest",
+        "name": "questcomplete_reactivequest_gathercollect_halloween_1"
+      }
+    ],
+    "selectableRewards": [
+      [
+        {
+          "quantity": 1,
+          "templateId": "Hero:hid_commando_gunheadshothw_vr_t01"
+        }
+      ],
+      [
+        {
+          "quantity": 1,
+          "templateId": "Hero:hid_constructor_basehyperhw_vr_t01"
+        }
+      ],
+      [
+        {
+          "quantity": 1,
+          "templateId": "Hero:hid_ninja_starsrainhw_vr_t01"
+        }
+      ],
+      [
+        {
+          "quantity": 1,
+          "templateId": "Hero:hid_outlander_zonepistolhw_vr_t01"
+        }
+      ]
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_hidden_1": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_gathercollect_halloween_1"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "item": "Quest:reactivequest_halloween_destroy_1",
+        "itemEvent": "HasCompletedQuest",
+        "name": "questcomplete_reactivequest_halloween_destroy_1"
+      },
+      {
+        "count": 1,
+        "item": "Quest:reactivequest_halloween_destroy_2",
+        "itemEvent": "HasCompletedQuest",
+        "name": "questcomplete_reactivequest_halloween_destroy_2"
+      }
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_hidden_2": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_halloween_fetch_2"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "item": "Quest:reactivequest_halloween_destroy_3",
+        "itemEvent": "HasCompletedQuest",
+        "name": "questcomplete_reactivequest_halloween_destroy_3"
+      },
+      {
+        "count": 1,
+        "item": "Quest:reactivequest_halloween_destroy_4",
+        "itemEvent": "HasCompletedQuest",
+        "name": "questcomplete_reactivequest_halloween_destroy_4"
+      }
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_hidden_3": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_halloween_fetch_3"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "item": "Quest:reactivequest_halloween_destroy_5",
+        "itemEvent": "HasCompletedQuest",
+        "name": "questcomplete_reactivequest_halloween_destroy_5"
+      },
+      {
+        "count": 1,
+        "item": "Quest:reactivequest_halloween_destroy_6",
+        "itemEvent": "HasCompletedQuest",
+        "name": "questcomplete_reactivequest_halloween_destroy_6"
+      }
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_hidden_4": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_gathercollect_halloween_3"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "item": "Quest:reactivequest_halloween_destroy_7",
+        "itemEvent": "HasCompletedQuest",
+        "name": "questcomplete_reactivequest_halloween_destroy_7"
+      },
+      {
+        "count": 1,
+        "item": "Quest:reactivequest_halloween_destroy_8",
+        "itemEvent": "HasCompletedQuest",
+        "name": "questcomplete_reactivequest_halloween_destroy_8"
+      }
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_hidden_5": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_gathercollect_halloween_4"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "item": "Quest:reactivequest_halloween_destroy_9",
+        "itemEvent": "HasCompletedQuest",
+        "name": "questcomplete_reactivequest_halloween_destroy_9"
+      },
+      {
+        "count": 1,
+        "item": "Quest:reactivequest_halloween_destroy_10",
+        "itemEvent": "HasCompletedQuest",
+        "name": "questcomplete_reactivequest_halloween_destroy_10"
+      }
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_hidden_6": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_findgothicruins"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_findcemetery"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "item": "Quest:reactivequest_findcastles",
+        "itemEvent": "HasCompletedQuest",
+        "name": "questcomplete_reactivequest_findcastles"
+      },
+      {
+        "count": 1,
+        "item": "Quest:reactivequest_findcatacombs",
+        "itemEvent": "HasCompletedQuest",
+        "name": "questcomplete_reactivequest_findcatacombs"
+      },
+      {
+        "count": 1,
+        "item": "Quest:reactivequest_findmansions",
+        "itemEvent": "HasCompletedQuest",
+        "name": "questcomplete_reactivequest_findmansions"
+      }
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_hidden_watchvideo": {
+    "hidden": true,
+    "objectives": [
+      {
+        "count": 1,
+        "name": "halloweenquest_2017_hidden_watchvideo",
+        "stat": "halloweenquest_2017_hidden_watchvideo"
+      }
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_killmistmonsters": {
+    "objectives": [
+      {
+        "count": 30,
+        "name": "kill_smasher_halloween_outlander",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_smasher_halloween_outlander"
+      }
+    ],
+    "selectableRewards": [
+      [
+        {
+          "quantity": 40,
+          "templateId": "AccountResource:reagent_c_t01"
+        }
+      ],
+      [
+        {
+          "quantity": 20,
+          "templateId": "AccountResource:reagent_c_t02"
+        }
+      ],
+      [
+        {
+          "quantity": 10,
+          "templateId": "AccountResource:reagent_c_t03"
+        }
+      ]
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_killpumpkinhusks": {
+    "objectives": [
+      {
+        "count": 300,
+        "name": "kill_husk_pumpkinhead",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_husk_pumpkinhead"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_candy"
+      }
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_legendaryheroes": {
+    "objectives": [
+      {
+        "count": 1,
+        "item": "Quest:reactivequest_halloween_fetch_5",
+        "itemEvent": "HasCompletedQuest",
+        "name": "questcomplete_reactivequest_halloween_fetch_5"
+      }
+    ],
+    "selectableRewards": [
+      [
+        {
+          "quantity": 1,
+          "templateId": "Hero:hid_commando_007hw_sr_t01"
+        }
+      ],
+      [
+        {
+          "quantity": 1,
+          "templateId": "Hero:hid_constructor_007hw_sr_t01"
+        }
+      ],
+      [
+        {
+          "quantity": 1,
+          "templateId": "Hero:hid_ninja_slashbreathhw_sr_t01"
+        }
+      ]
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_opener": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:halloweenquest_2017_tts_intro"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_halloween_killcollect_taker"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:halloweenquest_2017_killpumpkinhusks"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_findcastles"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_findcatacombs"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_findmansions"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_halloween_fetch_7"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:halloweenquest_2017_hidden_6"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "complete_trv_landmark",
+        "stat": "complete_trv_landmark"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_candy"
+      }
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_trainhero": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:halloweenquest_2017_killmistmonsters"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "upgrade_halloween_outlander",
+        "stat": "upgrade_halloween_outlander"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_melee_sword_sr"
+      }
+    ],
+    "type": "Optional"
+  },
+  "halloweenquest_2017_tts_intro": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_halloween_fetch_1"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "complete_trv_trapthestorm",
+        "stat": "complete_trv_trapthestorm"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_candy"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_buildbase": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_stonewood_1"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 10,
+        "name": "hordequest_buildbase",
+        "stat": "hordequest_buildbase"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 150,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_hordeunlock": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_buildbase"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "item": "HomebaseNode:t1_horde_99587fccd",
+        "itemEvent": "HasItem",
+        "name": "unlock_skill_tree_horde"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 100,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_canny_1": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_canny_2"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_canny_1",
+        "stat": "hordequest_progression_canny_1"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 300,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_canny_2": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_canny_3"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_canny_2",
+        "stat": "hordequest_progression_canny_2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 200,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      },
+      {
+        "quantity": 1,
+        "templateId": "ConversionControl:cck_weapon_scavenger_consumable_sr"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_canny_3": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_canny_4"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_canny_3",
+        "stat": "hordequest_progression_canny_3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 300,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_canny_4": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_canny_5"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_canny_4",
+        "stat": "hordequest_progression_canny_4"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 300,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_canny_5": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_twine_1"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_canny_5",
+        "stat": "hordequest_progression_canny_5"
+      },
+      {
+        "count": 1,
+        "item": "Quest:outpostquest_t4_l1",
+        "itemEvent": "HasCompletedQuest",
+        "name": "questcomplete_outpostquest_t4_l1"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_plankerton_1": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_plankerton_2"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_plankerton_1",
+        "stat": "hordequest_progression_plankerton_1"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_plankerton_2": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_plankerton_3"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_plankerton_2",
+        "stat": "hordequest_progression_plankerton_2"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_plankerton_3": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_plankerton_4"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_plankerton_3",
+        "stat": "hordequest_progression_plankerton_3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_plankerton_4": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_plankerton_5"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_plankerton_4",
+        "stat": "hordequest_progression_plankerton_4"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_plankerton_5": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_canny_1"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_plankerton_5",
+        "stat": "hordequest_progression_plankerton_5"
+      },
+      {
+        "count": 1,
+        "item": "Quest:outpostquest_t3_l1",
+        "itemEvent": "HasCompletedQuest",
+        "name": "questcomplete_outpostquest_t3_l1"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 150,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      },
+      {
+        "quantity": 1,
+        "templateId": "ConversionControl:cck_ranged_launcher_scavenger_consumable_sr"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_stonewood_1": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_stonewood_2"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_stonewood_1",
+        "stat": "hordequest_progression_stonewood_1"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_stonewood_2": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_stonewood_3"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_stonewood_2",
+        "stat": "hordequest_progression_stonewood_2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 350,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_stonewood_3": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_stonewood_4"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_stonewood_3",
+        "stat": "hordequest_progression_stonewood_3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_stonewood_4": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_plankerton_1"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_stonewood_4",
+        "stat": "hordequest_progression_stonewood_4"
+      },
+      {
+        "count": 1,
+        "item": "Quest:outpostquest_t2_l1",
+        "itemEvent": "HasCompletedQuest",
+        "name": "questcomplete_outpostquest_t2_l1"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_twine_1": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_twine_2"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_twine_1",
+        "stat": "hordequest_progression_twine_1"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 350,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_twine_10": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_twine_11"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_twine_10",
+        "stat": "hordequest_progression_twine_10"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 350,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_twine_11": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_twine_12"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_twine_11",
+        "stat": "hordequest_progression_twine_11"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 350,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_twine_12": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_twine_13"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_twine_12",
+        "stat": "hordequest_progression_twine_12"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 350,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_twine_13": {
+    "hidden": true,
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_twine_13",
+        "stat": "hordequest_progression_twine_13"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 350,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_twine_2": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_twine_3"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_twine_2",
+        "stat": "hordequest_progression_twine_2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 350,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_twine_3": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_twine_4"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_twine_3",
+        "stat": "hordequest_progression_twine_3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 350,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_twine_4": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_twine_5"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_twine_4",
+        "stat": "hordequest_progression_twine_4"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 350,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_twine_5": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_twine_6"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_twine_5",
+        "stat": "hordequest_progression_twine_5"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 350,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_twine_6": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_twine_7"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_twine_6",
+        "stat": "hordequest_progression_twine_6"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 350,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_twine_7": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_twine_8"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_twine_7",
+        "stat": "hordequest_progression_twine_7"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 350,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_twine_8": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_twine_9"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_twine_8",
+        "stat": "hordequest_progression_twine_8"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 350,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "hordequest_progression_twine_9": {
+    "hidden": true,
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:hordequest_progression_twine_10"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "hordequest_progression_twine_9",
+        "stat": "hordequest_progression_twine_9"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 350,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "monthrewardquest_getrewards": {
+    "objectives": [
+      {
+        "count": 1,
+        "item": "Quest:homebaseonboardingafteroutpost",
+        "itemEvent": "HasCompletedQuest",
+        "name": "questcomplete_homebaseonboardingafteroutpost"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 25,
+        "templateId": "Token:accountinventorybonus"
+      },
+      {
+        "quantity": 10,
+        "templateId": "Token:worldinventorybonus"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze_personnel_reward"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_bronze_weapons_reward"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_findcastles": {
+    "objectives": [
+      {
+        "count": 1,
+        "name": "quest_reactive_find_castle_1",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_find_castle_1"
+      },
+      {
+        "count": 1,
+        "name": "quest_reactive_find_castle_2",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_find_castle_2"
+      },
+      {
+        "count": 1,
+        "name": "quest_reactive_find_castle_3",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_find_castle_3"
+      },
+      {
+        "count": 1,
+        "name": "quest_reactive_find_castle_4",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_find_castle_4"
+      },
+      {
+        "count": 1,
+        "name": "quest_reactive_find_castle_5",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_find_castle_5"
+      },
+      {
+        "count": 1,
+        "name": "quest_reactive_find_castle_6",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_find_castle_6"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 750,
+        "templateId": "AccountResource:eventcurrency_candy"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_findcatacombs": {
+    "objectives": [
+      {
+        "count": 1,
+        "name": "quest_reactive_find_catacomb_1",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_find_catacomb_1"
+      },
+      {
+        "count": 1,
+        "name": "quest_reactive_find_catacomb_2",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_find_catacomb_2"
+      },
+      {
+        "count": 1,
+        "name": "quest_reactive_find_catacomb_3",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_find_catacomb_3"
+      },
+      {
+        "count": 1,
+        "name": "quest_reactive_find_catacomb_4",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_find_catacomb_4"
+      },
+      {
+        "count": 1,
+        "name": "quest_reactive_find_catacomb_5",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_find_catacomb_5"
+      },
+      {
+        "count": 1,
+        "name": "quest_reactive_find_catacomb_6",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_find_catacomb_6"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_candy"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_findcemetery": {
+    "objectives": [
+      {
+        "count": 4,
+        "name": "quest_reactive_find_cemeteries",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_find_cemeteries"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_candy"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_finddurrrburger": {
+    "objectives": [
+      {
+        "count": 1,
+        "name": "quest_reactive_find_durburger",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_find_durburger"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 150,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_findgothicruins": {
+    "objectives": [
+      {
+        "count": 6,
+        "name": "quest_reactive_find_gothic_ruins",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_find_gothic_ruins"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_candy"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_findmansions": {
+    "objectives": [
+      {
+        "count": 1,
+        "name": "quest_reactive_find_mansion_1",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_find_mansion_1"
+      },
+      {
+        "count": 1,
+        "name": "quest_reactive_find_mansion_2",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_find_mansion_2"
+      },
+      {
+        "count": 1,
+        "name": "quest_reactive_find_mansion_3",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_find_mansion_3"
+      },
+      {
+        "count": 1,
+        "name": "quest_reactive_find_mansion_4",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_find_mansion_4"
+      },
+      {
+        "count": 1,
+        "name": "quest_reactive_find_mansion_5",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_find_mansion_5"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 500,
+        "templateId": "AccountResource:eventcurrency_candy"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_gathercollect_halloween_1": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_halloween_destroy_3"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_halloween_destroy_4"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:halloweenquest_2017_hidden_2"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 20,
+        "name": "quest_reactive_gather_halloween_1",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_gather_halloween_1"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 20,
+        "templateId": "AccountResource:reagent_c_t01"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_gathercollect_halloween_2": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_halloween_destroy_5"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_halloween_destroy_6"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:halloweenquest_2017_hidden_3"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 25,
+        "name": "quest_reactive_gather_halloween_2",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_gather_halloween_2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_gathercollect_halloween_3": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_halloween_fetch_4"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 13,
+        "name": "quest_reactive_gather_halloween_3",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_gather_halloween_3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_gathercollect_halloween_4": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_gathercollect_halloween_5"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 12,
+        "name": "quest_reactive_gather_halloween_4",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_gather_halloween_4"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_candy"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_gathercollect_halloween_5": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_halloween_fetch_5"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 30,
+        "name": "quest_reactive_gather_halloween_5",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_gather_halloween_5"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_gathercollect_halloween_6": {
+    "objectives": [
+      {
+        "count": 10,
+        "name": "quest_reactive_gather_halloween_6",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_gather_halloween_6"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_gatherhydraulic_1": {
+    "objectives": [
+      {
+        "count": 40,
+        "name": "quest_reactive_gatherhydraulic_1",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_gatherhydraulic_1"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Weapon:wid_pistol_hydraulic_sr_ore_t01"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_gatherhydraulic_2": {
+    "objectives": [
+      {
+        "count": 20,
+        "name": "quest_reactive_gatherhydraulic_2",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_gatherhydraulic_2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Weapon:wid_assault_hydraulic_drum_sr_ore_t01"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_gatherhydraulic_3": {
+    "objectives": [
+      {
+        "count": 10,
+        "name": "quest_reactive_gatherhydraulic_3",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_gatherhydraulic_3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Weapon:wid_sniper_hydraulic_sr_ore_t01"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_halloween_destroy_1": {
+    "objectives": [
+      {
+        "count": 8,
+        "name": "quest_reactive_destroy_halloween_1",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_destroy_halloween_1"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_candy"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_halloween_destroy_10": {
+    "objectives": [
+      {
+        "count": 6,
+        "name": "quest_reactive_destroy_halloween_10",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_destroy_halloween_10"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_halloween_destroy_2": {
+    "objectives": [
+      {
+        "count": 10,
+        "name": "quest_reactive_destroy_halloween_2",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_destroy_halloween_2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_halloween_destroy_3": {
+    "objectives": [
+      {
+        "count": 10,
+        "name": "quest_reactive_destroy_halloween_3",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_destroy_halloween_3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_candy"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_halloween_destroy_4": {
+    "objectives": [
+      {
+        "count": 4,
+        "name": "quest_reactive_destroy_halloween_4",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_destroy_halloween_4"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_halloween_destroy_5": {
+    "objectives": [
+      {
+        "count": 12,
+        "name": "quest_reactive_destroy_halloween_5",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_destroy_halloween_5"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_candy"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_halloween_destroy_6": {
+    "objectives": [
+      {
+        "count": 12,
+        "name": "quest_reactive_destroy_halloween_6",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_destroy_halloween_6"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_halloween_destroy_7": {
+    "objectives": [
+      {
+        "count": 8,
+        "name": "quest_reactive_destroy_halloween_7",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_destroy_halloween_7"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_candy"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_halloween_destroy_8": {
+    "objectives": [
+      {
+        "count": 10,
+        "name": "quest_reactive_destroy_halloween_8",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_destroy_halloween_8"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_halloween_destroy_9": {
+    "objectives": [
+      {
+        "count": 24,
+        "name": "quest_reactive_destroy_halloween_9",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_destroy_halloween_9"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_candy"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_halloween_fetch_1": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_halloween_destroy_1"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_halloween_destroy_2"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:halloweenquest_2017_hidden_1"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 15,
+        "name": "quest_reactive_fetch_halloween_1",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_fetch_halloween_1"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_candy"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_halloween_fetch_2": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_gathercollect_halloween_2"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 10,
+        "name": "quest_reactive_fetch_halloween_2",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_fetch_halloween_2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_candy"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_halloween_fetch_3": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_halloween_destroy_7"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_halloween_destroy_8"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:halloweenquest_2017_hidden_4"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 6,
+        "name": "quest_reactive_fetch_halloween_3",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_fetch_halloween_3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_melee_scythe_vr"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_halloween_fetch_4": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_halloween_fetch_6"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 5,
+        "name": "quest_reactive_fetch_halloween_4",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_fetch_halloween_4"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_candy"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_halloween_fetch_5": {
+    "objectives": [
+      {
+        "count": 15,
+        "name": "quest_reactive_fetch_halloween_5",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_fetch_halloween_5"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "ConversionControl:cck_ranged_assault_auto_halloween_consumable_sr"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_halloween_fetch_6": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_halloween_destroy_9"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_halloween_destroy_10"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Quest:halloweenquest_2017_hidden_5"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "quest_reactive_fetch_halloween_6",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_fetch_halloween_6"
+      },
+      {
+        "count": 1,
+        "name": "quest_reactive_fetch_halloween_8",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_fetch_halloween_8"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_ranged_shotgun_vr"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_halloween_fetch_7": {
+    "objectives": [
+      {
+        "count": 5,
+        "name": "quest_reactive_fetch_halloween_7",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_fetch_halloween_7"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 100,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_halloween_killcollect_pumpkinhusks": {
+    "objectives": [
+      {
+        "count": 40,
+        "name": "quest_reactive_killpumpkinhusk_halloween",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_killpumpkinhusk_halloween"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 50,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_halloween_killcollect_taker": {
+    "objectives": [
+      {
+        "count": 15,
+        "name": "quest_reactive_killtaker_halloween",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_killtaker_halloween"
+      }
+    ],
+    "selectableRewards": [
+      [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:cardpack_trap_floor_freeze_vr"
+        }
+      ],
+      [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:cardpack_trap_ceiling_falling_vr"
+        }
+      ]
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_scavenger_1": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:reactivequest_scavenger_2"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 6,
+        "name": "quest_reactive_scavenger_1",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_scavenger_1"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 3,
+        "templateId": "Ingredient:ingredient_rare_powercell"
+      }
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_scavenger_2": {
+    "objectives": [
+      {
+        "count": 20,
+        "name": "quest_reactive_scavenger_2",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_scavenger_2"
+      }
+    ],
+    "selectableRewards": [
+      [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:cardpack_event_scavenger_melee_vr"
+        }
+      ],
+      [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:cardpack_event_scavenger_ranged_vr"
+        }
+      ]
+    ],
+    "type": "Optional"
+  },
+  "reactivequest_shielders": {
+    "objectives": [
+      {
+        "count": 20,
+        "name": "quest_reactive_shielders",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "quest_reactive_shielders"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 100,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ],
+    "type": "Optional"
+  },
+  "scavengerquest_completeexpeditions": {
+    "objectives": [
+      {
+        "count": 5,
+        "name": "collect_any_successful_expedition",
+        "stat": "collect_any_successful_expedition"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 100,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "scavengerquest_completestormzones": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:scavengerquest_completestormzones"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 2,
+        "name": "complete_stormzone",
+        "stat": "complete_stormzone"
+      }
+    ],
+    "selectableRewards": [
+      [
+        {
+          "quantity": 8,
+          "templateId": "AccountResource:reagent_c_t01"
+        }
+      ],
+      [
+        {
+          "quantity": 4,
+          "templateId": "AccountResource:reagent_c_t02"
+        }
+      ],
+      [
+        {
+          "quantity": 2,
+          "templateId": "AccountResource:reagent_c_t03"
+        }
+      ]
+    ],
+    "type": "TransientQuest"
+  },
+  "scavengerquest_evolve_scavenger": {
+    "objectives": [
+      {
+        "count": 1,
+        "name": "convert_any_scavenger",
+        "stat": "convert_any_scavenger"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "scavengerquest_killhusks_1": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:scavengerquest_killhusks_2"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 500,
+        "name": "kill_husk_scavenger_1_diff3",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_husk_scavenger_1_diff3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 200,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "scavengerquest_killhusks_10": {
+    "objectives": [
+      {
+        "count": 1500,
+        "name": "kill_husk_scavenger_3_diff2",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_husk_scavenger_3_diff2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 200,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "scavengerquest_killhusks_2": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:scavengerquest_killhusks_3"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 500,
+        "name": "kill_husk_scavenger_1_diff4",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_husk_scavenger_1_diff4"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 200,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "scavengerquest_killhusks_3": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:scavengerquest_killhusks_4"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 750,
+        "name": "kill_husk_scavenger_1_diff5",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_husk_scavenger_1_diff5"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 200,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "scavengerquest_killhusks_4": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:scavengerquest_killhusks_5"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 750,
+        "name": "kill_husk_scavenger_2",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_husk_scavenger_2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 200,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "scavengerquest_killhusks_5": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:scavengerquest_killhusks_6"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1000,
+        "name": "kill_husk_scavenger_2_diff2",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_husk_scavenger_2_diff2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 200,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "scavengerquest_killhusks_6": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:scavengerquest_killhusks_7"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1000,
+        "name": "kill_husk_scavenger_2_diff3",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_husk_scavenger_2_diff3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 200,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "scavengerquest_killhusks_7": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:scavengerquest_killhusks_8"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1250,
+        "name": "kill_husk_scavenger_2_diff4",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_husk_scavenger_2_diff4"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 200,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "scavengerquest_killhusks_8": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:scavengerquest_killhusks_9"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1250,
+        "name": "kill_husk_scavenger_2_diff5",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_husk_scavenger_2_diff5"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 200,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_defender_sr"
+      }
+    ],
+    "type": "Optional"
+  },
+  "scavengerquest_killhusks_9": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:scavengerquest_killhusks_10"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1500,
+        "name": "kill_husk_scavenger_3",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_husk_scavenger_3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 200,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "scavengerquest_levelup_collection_1": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:scavengerquest_levelup_collection_2"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 30,
+        "itemEvent": "HasLeveledUpCollectionBook",
+        "name": "collectionbook_levelup"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 100,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "scavengerquest_levelup_collection_2": {
+    "objectives": [
+      {
+        "count": 50,
+        "itemEvent": "HasLeveledUpCollectionBook",
+        "name": "collectionbook_levelup"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 500,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "scavengerquest_levelup_scavenger": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:scavengerquest_evolve_scavenger"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "upgrade_any_scavenger",
+        "stat": "upgrade_any_scavenger"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 100,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "scavengerquest_missionalert_constructor": {
+    "objectives": [
+      {
+        "count": 10,
+        "name": "complete_missionalert_construct",
+        "stat": "complete_missionalert_construct"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Hero:hid_constructor_011_vr_t01"
+      }
+    ],
+    "type": "Optional"
+  },
+  "scavengerquest_missionalert_ninja": {
+    "objectives": [
+      {
+        "count": 10,
+        "name": "complete_missionalert_ninja",
+        "stat": "complete_missionalert_ninja"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Hero:hid_ninja_011_vr_t01"
+      }
+    ],
+    "type": "Optional"
+  },
+  "scavengerquest_missionalert_outlander": {
+    "objectives": [
+      {
+        "count": 10,
+        "name": "complete_missionalert_outlander",
+        "stat": "complete_missionalert_outlander"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Hero:hid_outlander_011_vr_t01"
+      }
+    ],
+    "type": "Optional"
+  },
+  "scavengerquest_missionalert_soldier": {
+    "objectives": [
+      {
+        "count": 10,
+        "name": "complete_missionalert_soldier",
+        "stat": "complete_missionalert_soldier"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Hero:hid_commando_011_vr_t01"
+      }
+    ],
+    "type": "Optional"
+  },
+  "scavengerquest_purchasellama": {
+    "objectives": [
+      {
+        "count": 1,
+        "item": "CardPack:cardpack_event_scavenger",
+        "itemEvent": "PurchaseCardPack",
+        "name": "purchase_cardpack_event_scavenger"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 500,
+        "templateId": "AccountResource:eventcurrency_scavenger"
+      }
+    ],
+    "type": "Optional"
+  },
+  "survivalmodequest_14days_d1": {
+    "objectives": [
+      {
+        "count": 1,
+        "name": "complete_survivalmode_pve01",
+        "stat": "complete_survivalmode_pve01"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_stormzone_banners_stonewood"
+      },
+      {
+        "quantity": 1,
+        "templateId": "ConversionControl:cck_ranged_assault_hydra_consumable_sr"
+      }
+    ],
+    "type": "Optional"
+  },
+  "survivalmodequest_14days_d2": {
+    "objectives": [
+      {
+        "count": 1,
+        "name": "complete_survivalmode_pve02",
+        "stat": "complete_survivalmode_pve02"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_stormzone_banners_plankerton"
+      },
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_manager_sr"
+      }
+    ],
+    "type": "Optional"
+  },
+  "survivalmodequest_14days_d3": {
+    "objectives": [
+      {
+        "count": 1,
+        "name": "complete_survivalmode_pve03",
+        "stat": "complete_survivalmode_pve03"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_stormzone_banners_cannyvalley"
+      }
+    ],
+    "selectableRewards": [
+      [
+        {
+          "quantity": 1,
+          "templateId": "Hero:hid_commando_009_m_sr_t01"
+        }
+      ],
+      [
+        {
+          "quantity": 1,
+          "templateId": "Hero:hid_constructor_rushbase_f_sr_t01"
+        }
+      ],
+      [
+        {
+          "quantity": 1,
+          "templateId": "Hero:hid_outlander_010_m_sr_t01"
+        }
+      ],
+      [
+        {
+          "quantity": 1,
+          "templateId": "Hero:hid_ninja_010_f_sr_t01"
+        }
+      ]
+    ],
+    "type": "Optional"
+  },
+  "survivalmodequest_anymode": {
+    "objectives": [
+      {
+        "count": 1,
+        "name": "complete_survivalmode_any",
+        "stat": "complete_survivalmode_any"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 500,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "survivalmodequest_anymode_3missions": {
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_survivalmode_any",
+        "stat": "complete_survivalmode_any"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_hero_r"
+      }
+    ],
+    "type": "Optional"
+  },
+  "survivalmodequest_plankertondiff_7missions": {
+    "objectives": [
+      {
+        "count": 7,
+        "name": "complete_survivalmode_pve02_any",
+        "stat": "complete_survivalmode_pve02_any"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_manager_vr"
+      }
+    ],
+    "type": "Optional"
+  },
+  "foundersquest_getrewards_microsoft": {
+    "objectives": [
+      {
+        "count": 1,
+        "item": "Quest:homebaseonboardingafteroutpost",
+        "itemEvent": "HasCompletedQuest",
+        "name": "questcomplete_homebaseonboardingafteroutpost"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "Hero:hid_commando_xbox_r_t01"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Hero:hid_constructor_xbox_r_t01"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Hero:hid_ninja_xbox_r_t01"
+      },
+      {
+        "quantity": 1,
+        "templateId": "Hero:hid_outlander_xbox_r_t01"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_completeexplorezones": {
+    "objectives": [
+      {
+        "count": 1,
+        "item": "Quest:vindertechquest_explorezones_8",
+        "itemEvent": "HasCompletedQuest",
+        "name": "questcomplete_vindertechquest_explorezones_8"
+      }
+    ],
+    "selectableRewards": [
+      [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:cardpack_vindertech_assault_auto_sr"
+        }
+      ],
+      [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:cardpack_vindertech_shotgun_standard_sr"
+        }
+      ],
+      [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:cardpack_vindertech_sniper_standard_scope_sr"
+        }
+      ]
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_completesafes": {
+    "objectives": [
+      {
+        "count": 1,
+        "item": "Quest:vindertechquest_safes_8",
+        "itemEvent": "HasCompletedQuest",
+        "name": "questcomplete_vindertechquest_safes_8"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1000,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_completestorms": {
+    "objectives": [
+      {
+        "count": 1,
+        "item": "Quest:vindertechquest_completestorms_8",
+        "itemEvent": "HasCompletedQuest",
+        "name": "questcomplete_vindertechquest_completestorms_8"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 1,
+        "templateId": "CardPack:cardpack_vindertech_pistol_handcannon_sr"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_completestorms_1": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_completestorms_2"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_stormzone_1_diff3",
+        "stat": "complete_stormzone_1_diff3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 500,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_completestorms_2": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_completestorms_3"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_stormzone_1_diff4",
+        "stat": "complete_stormzone_1_diff4"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 500,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_completestorms_3": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_completestorms_4"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 4,
+        "name": "complete_stormzone_1_diff5",
+        "stat": "complete_stormzone_1_diff5"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 500,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_completestorms_4": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_completestorms_5"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 4,
+        "name": "complete_stormzone_2",
+        "stat": "complete_stormzone_2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 500,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_completestorms_5": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_completestorms_6"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 5,
+        "name": "complete_stormzone_2_diff2",
+        "stat": "complete_stormzone_2_diff2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 500,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_completestorms_6": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_completestorms_7"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 5,
+        "name": "complete_stormzone_2_diff3",
+        "stat": "complete_stormzone_2_diff3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 500,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_completestorms_7": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_completestorms_8"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 6,
+        "name": "complete_stormzone_2_diff4",
+        "stat": "complete_stormzone_2_diff4"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 500,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_completestorms_8": {
+    "objectives": [
+      {
+        "count": 6,
+        "name": "complete_stormzone_2_diff5",
+        "stat": "complete_stormzone_2_diff5"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 500,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_completestorms_melee": {
+    "objectives": [
+      {
+        "count": 10,
+        "name": "complete_stormzone_constructor",
+        "stat": "complete_stormzone_constructor"
+      }
+    ],
+    "selectableRewards": [
+      [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:cardpack_vindertech_edged_axe_vr"
+        }
+      ],
+      [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:cardpack_vindertech_edged_sword_medium_vr"
+        }
+      ]
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_completestorms_ranged": {
+    "objectives": [
+      {
+        "count": 10,
+        "name": "complete_stormzone_soldier",
+        "stat": "complete_stormzone_soldier"
+      }
+    ],
+    "selectableRewards": [
+      [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:cardpack_vindertech_assault_auto_vr"
+        }
+      ],
+      [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:cardpack_vindertech_shotgun_standard_vr"
+        }
+      ],
+      [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:cardpack_vindertech_sniper_standard_scope_vr"
+        }
+      ]
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_completetreasurechests": {
+    "objectives": [
+      {
+        "count": 1,
+        "item": "Quest:vindertechquest_treasurechests_8",
+        "itemEvent": "HasCompletedQuest",
+        "name": "questcomplete_vindertechquest_treasurechests_8"
+      }
+    ],
+    "selectableRewards": [
+      [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:cardpack_vindertech_edged_axe_sr"
+        }
+      ],
+      [
+        {
+          "quantity": 1,
+          "templateId": "CardPack:cardpack_vindertech_edged_sword_medium_sr"
+        }
+      ]
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_evolve_vindertech": {
+    "objectives": [
+      {
+        "count": 1,
+        "name": "convert_any_vindertech",
+        "stat": "convert_any_vindertech"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_explorezones_1": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_explorezones_2"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_exploration_1_diff3",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "complete_exploration_1_diff3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 2,
+        "templateId": "Ingredient:ingredient_rare_mechanism"
+      },
+      {
+        "quantity": 2000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_explorezones_2": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_explorezones_3"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 3,
+        "name": "complete_exploration_1_diff4",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "complete_exploration_1_diff4"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 2,
+        "templateId": "Ingredient:ingredient_rare_mechanism"
+      },
+      {
+        "quantity": 4000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_explorezones_3": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_explorezones_4"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 4,
+        "name": "complete_exploration_1_diff5",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "complete_exploration_1_diff5"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 2,
+        "templateId": "Ingredient:ingredient_rare_mechanism"
+      },
+      {
+        "quantity": 6000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_explorezones_4": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_explorezones_5"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 4,
+        "name": "complete_exploration_2",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "complete_exploration_2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 2,
+        "templateId": "Ingredient:ingredient_rare_mechanism"
+      },
+      {
+        "quantity": 16000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_explorezones_5": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_explorezones_6"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 5,
+        "name": "complete_exploration_2_diff2",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "complete_exploration_2_diff2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 2,
+        "templateId": "Ingredient:ingredient_rare_mechanism"
+      },
+      {
+        "quantity": 20000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_explorezones_6": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_explorezones_7"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 5,
+        "name": "complete_exploration_2_diff3",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "complete_exploration_2_diff3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 2,
+        "templateId": "Ingredient:ingredient_rare_mechanism"
+      },
+      {
+        "quantity": 24000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_explorezones_7": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_explorezones_8"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 6,
+        "name": "complete_exploration_2_diff4",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "complete_exploration_2_diff4"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 2,
+        "templateId": "Ingredient:ingredient_rare_mechanism"
+      },
+      {
+        "quantity": 28000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_explorezones_8": {
+    "objectives": [
+      {
+        "count": 6,
+        "name": "complete_exploration_2_diff5",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "complete_exploration_2_diff5"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 2,
+        "templateId": "Ingredient:ingredient_rare_mechanism"
+      },
+      {
+        "quantity": 30000,
+        "templateId": "AccountResource:personnelxp"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_killenragedhuskyhusks": {
+    "objectives": [
+      {
+        "count": 50,
+        "name": "kill_husk_enraged_husky",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_husk_enraged_husky"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_killquickenedpitchers": {
+    "objectives": [
+      {
+        "count": 50,
+        "name": "kill_husk_quickened_pitcher",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_husk_quickened_pitcher"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_killwallweakeninglobbers": {
+    "objectives": [
+      {
+        "count": 50,
+        "name": "kill_husk_wallweakening_lobber",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "kill_husk_wallweakening_lobber"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 500,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_levelup_vindertech": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_evolve_vindertech"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "upgrade_any_vindertech",
+        "stat": "upgrade_any_vindertech"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 100,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_safes_1": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_safes_2"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "interact_safe_pve01_diff3",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "interact_safe_pve01_diff3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 100,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_safes_2": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_safes_3"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "interact_safe_pve01_diff4",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "interact_safe_pve01_diff4"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 100,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_safes_3": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_safes_4"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "interact_safe_pve01_diff5",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "interact_safe_pve01_diff5"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 100,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_safes_4": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_safes_5"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 1,
+        "name": "interact_safe_pve02",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "interact_safe_pve02"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 100,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_safes_5": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_safes_6"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 2,
+        "name": "interact_safe_pve02_diff2",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "interact_safe_pve02_diff2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 100,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_safes_6": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_safes_7"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 2,
+        "name": "interact_safe_pve02_diff3",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "interact_safe_pve02_diff3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 100,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_safes_7": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_safes_8"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 2,
+        "name": "interact_safe_pve02_diff4",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "interact_safe_pve02_diff4"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 100,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_safes_8": {
+    "objectives": [
+      {
+        "count": 2,
+        "name": "interact_safe_pve02_diff5",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "interact_safe_pve02_diff5"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 100,
+        "templateId": "Currency:mtxgiveaway"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_treasurechests_1": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_treasurechests_2"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 3,
+        "name": "interact_treasurechest_pve01_diff3",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "interact_treasurechest_pve01_diff3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_treasurechests_2": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_treasurechests_3"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 3,
+        "name": "interact_treasurechest_pve01_diff4",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "interact_treasurechest_pve01_diff4"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_treasurechests_3": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_treasurechests_4"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 4,
+        "name": "interact_treasurechest_pve01_diff5",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "interact_treasurechest_pve01_diff5"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_treasurechests_4": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_treasurechests_5"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 4,
+        "name": "interact_treasurechest_pve02",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "interact_treasurechest_pve02"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_treasurechests_5": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_treasurechests_6"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 5,
+        "name": "interact_treasurechest_pve02_diff2",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "interact_treasurechest_pve02_diff2"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_treasurechests_6": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_treasurechests_7"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 5,
+        "name": "interact_treasurechest_pve02_diff3",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "interact_treasurechest_pve02_diff3"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_treasurechests_7": {
+    "hiddenRewards": [
+      {
+        "quantity": 1,
+        "templateId": "Quest:vindertechquest_treasurechests_8"
+      }
+    ],
+    "objectives": [
+      {
+        "count": 6,
+        "name": "interact_treasurechest_pve02_diff4",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "interact_treasurechest_pve02_diff4"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  },
+  "vindertechquest_treasurechests_8": {
+    "objectives": [
+      {
+        "count": 6,
+        "name": "interact_treasurechest_pve02_diff5",
+        "requirePrimaryMissionCompletion": true,
+        "stat": "interact_treasurechest_pve02_diff5"
+      }
+    ],
+    "rewards": [
+      {
+        "quantity": 250,
+        "templateId": "AccountResource:eventcurrency_stormzone"
+      }
+    ],
+    "type": "Optional"
+  }
+}
