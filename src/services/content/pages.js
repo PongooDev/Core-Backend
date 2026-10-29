@@ -90,14 +90,17 @@ export function subgameSelectFor(changelist, configured = undefined) {
 }
 
 export function contentPage(news = defaultBattleRoyaleNews, loginMessage = defaultLoginMessage, changelist = undefined, subgameSelect = undefined) {
-  return {
+  const page = {
     _title: "Fortnite Game",
     lastModified: "2026-10-27T16:30:00.000Z",
     _images_: [],
     battleRoyaleNews: { news: { message: messageOf(news, defaultBattleRoyaleNews, changelist), region_messages: [], platform_messages: [] } },
-    loginmessage: { loginmessage: { message: messageOf(loginMessage, defaultLoginMessage, changelist) } },
     subgameselectdata: subgameSelectFor(changelist, subgameSelect)
   };
+  if (loginMessage) {
+    page.loginmessage = { loginmessage: { message: messageOf(loginMessage, defaultLoginMessage, changelist) } };
+  }
+  return page;
 }
 
 export function contentRoutes(context, config = {}) {
@@ -105,7 +108,12 @@ export function contentRoutes(context, config = {}) {
   router.get("/content/api/pages/fortnite-game", (req, res) => {
     const settings = context?.settings?.get?.() ?? {};
     const news = settings.battleRoyaleNews ?? config.battleRoyaleNews ?? defaultBattleRoyaleNews;
-    const loginMessage = settings.loginMessage ?? config.loginMessage ?? defaultLoginMessage;
+    const loginMessageEnabled = (typeof settings.loginMessageEnabled === "boolean")
+      ? settings.loginMessageEnabled
+      : (typeof config.loginMessageEnabled === "boolean"
+        ? config.loginMessageEnabled
+        : (config.loginMessage !== false));
+    const loginMessage = loginMessageEnabled ? (settings.loginMessage ?? config.loginMessage ?? defaultLoginMessage) : null;
     const subgameSelect = settings.subgameSelect ?? config.subgameSelect;
     res.json(contentPage(news, loginMessage, getBuild(req), subgameSelect));
   });
