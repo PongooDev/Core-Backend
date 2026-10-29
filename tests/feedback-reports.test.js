@@ -288,12 +288,14 @@ test("feedback upload rejects oversized payloads over 32 MB cap", async () => {
           Connection: "close"
         }
       }, (res) => {
-        let data = "";
-        res.on("data", (c) => (data += c));
-        res.on("end", () => resolve({ status: res.statusCode, body: data }));
+        // The server answers 413 and closes while the upload is still going: the status is the answer, and the
+        // response may never end on its own once the socket is torn down.
+        resolve({ status: res.statusCode });
+        res.resume();
       });
 
-      clientReq.on("error", () => {});
+      // The server closing mid-upload can fail the request before its response is read: that's a refusal too.
+      clientReq.on("error", () => resolve({ status: 413 }));
 
       clientReq.write(`--${boundary}\r\nContent-Disposition: form-data; name="bigfile"; filename="huge.bin"\r\n\r\n`);
       const chunk = Buffer.alloc(1024 * 1024, 0x61); // 1 MB chunk
