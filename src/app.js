@@ -66,11 +66,13 @@ export function createContext(config) {
   if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
   if (config.seasonalEvents !== undefined) settings.update({ seasonalEvents: config.seasonalEvents });
   for (const key of ["battleRoyaleVbucks", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits", "cheats", "cheatAccounts",
-    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin"]) {
+    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "regionFallback"]) {
     if (config[key] !== undefined) settings.update({ [key]: config[key] });
   }
   const friends = createFriendStore(config.dataDir);
-  const sessions = createSessionStore();
+  // The admin panel's region fallback (Core-Backend #123): off, a player only plays in the region they picked.
+  const regionFallback = () => settings.get().regionFallback !== false;
+  const sessions = createSessionStore({ regionFallback });
   const stats = createStatsStore(config.dataDir);
   const reports = createReportStore(config.dataDir);
   return {
@@ -94,7 +96,7 @@ export function createContext(config) {
     sessions,
     // config.matchmakingGatherMs (the tests') wins over the admin panel's gather time.
     matchmaker: createMatchmaker({ sessions, gatherMs: config.matchmakingGatherMs ?? (() => settings.get().matchmakingGatherSeconds * 1000),
-      lateJoin: () => settings.get().lateJoin === true, quiet: config.requestLog === false }),
+      lateJoin: () => settings.get().lateJoin === true, regionFallback, quiet: config.requestLog === false }),
     network: createNetwork(config),
     emptyServerWaitMs: config.emptyServerWaitMs,
     stomp: createStompService({ tokens, quiet: config.requestLog === false }),

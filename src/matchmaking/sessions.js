@@ -103,8 +103,9 @@ function countOpenSlots(session) {
 }
 
 // Game sessions the gameservers register (OnlineSubsystemMcp's /api/matchmaking/session API), kept in memory:
-// a server re-registers after a backend restart.
-export function createSessionStore() {
+// a server re-registers after a backend restart. regionFallback: whether a search for a region with no server searches
+// every region (the admin panel's setting, asked each search; Core-Backend #123).
+export function createSessionStore({ regionFallback: fallsBack = () => true } = {}) {
   const sessions = new Map();
   // Called after every change a search can see (a session made, updated, filled, emptied or started).
   const watchers = new Set();
@@ -228,8 +229,10 @@ export function createSessionStore() {
 
     // Whether a search asks for a region no server of its build is in at all: {region} (null for "NONE"), or null.
     // Such a search leaves its region out, so the player plays in another region instead of finding nothing however
-    // long they wait (Core-Backend #121).
+    // long they wait (Core-Backend #121). With the fallback off it never does: the player finds only their region's
+    // servers (#123).
     regionFallback(request) {
+      if (!fallsBack()) return null;
       const wanted = (Array.isArray(request?.criteria) ? request.criteria : []).find(({ type, key }) => type === "EQUAL" && key === regionKey);
       if (!wanted) return null;
       const region = regionOf(wanted.value);

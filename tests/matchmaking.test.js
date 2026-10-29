@@ -298,6 +298,19 @@ test("the mission search compares regions, and one for a region with no server a
   assert.deepEqual(store.search({ ...clientSearch, criteria: [{ type: "NOT_EQUAL", key: "REGION_s", value: "EU" }] }).map(({ id }) => id), [na.id]);
 });
 
+test("with the region fallback off, the mission search finds only the region asked for (#123)", () => {
+  let fallback = false;
+  const store = createSessionStore({ regionFallback: () => fallback });
+  const searchIn = (region) => ({ ...clientSearch, criteria: [{ type: "EQUAL", key: "REGION_s", value: region }, ...clientSearch.criteria.slice(1)] });
+  const na = store.create({ ...emptyServer, attributes: { ...emptyServer.attributes, REGION_s: "NA" } }, "127.0.0.1", "CoreServer1");
+  assert.equal(store.regionFallback(searchIn("EU")), null);
+  assert.deepEqual(store.search(searchIn("EU")), []);
+  assert.deepEqual(store.search(searchIn("NA")).map(({ id }) => id), [na.id]);
+  // The setting is asked at each search.
+  fallback = true;
+  assert.deepEqual(store.search(searchIn("EU")).map(({ id }) => id), [na.id]);
+});
+
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const timed = async (promise) => {
   const started = Date.now();

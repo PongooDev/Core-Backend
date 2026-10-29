@@ -28,10 +28,13 @@ const defaults = {
   // Battle Royale's matchmaking waits (Core-Backend #122, matchmaking/service.js and services/matchmaking/warmup.js):
   // how long a match forming on a free gameserver takes in more parties before it is assigned (the ETA the queue counts
   // down), how long the warmup island lasts before the bus leaves on a CoreV2 gameserver (null: the game's own), and
-  // whether a match takes more parties during its warmup (late joining, CoreV2's gameserver opening it).
+  // whether a match takes more parties during its warmup (late joining, CoreV2's gameserver opening it). And whether a
+  // player whose region has no server at all plays in another region (Core-Backend #121) or waits for one of theirs
+  // (#123: off, matchmaking/service.js and the session search, matchmaking/sessions.js).
   matchmakingGatherSeconds: 10,
   warmupSeconds: null,
   lateJoin: false,
+  regionFallback: true,
   allowedHostingIps: ["127.0.0.1", "::1"]
 };
 
@@ -126,6 +129,7 @@ export function createSettingsStore(dataDir) {
       settings.matchmakingGatherSeconds = gatherSeconds(loaded.matchmakingGatherSeconds) ?? defaults.matchmakingGatherSeconds;
       settings.warmupSeconds = warmupSecondsValue(loaded.warmupSeconds) ?? null;
       settings.lateJoin = loaded.lateJoin === true;
+      settings.regionFallback = loaded.regionFallback !== false;
       if (Array.isArray(loaded.allowedHostingIps)) {
         settings.allowedHostingIps = [...loaded.allowedHostingIps];
       }
@@ -214,6 +218,7 @@ export function createSettingsStore(dataDir) {
       const warmup = warmupSecondsValue(partial.warmupSeconds);
       if (partial.warmupSeconds !== undefined && warmup !== undefined) settings.warmupSeconds = warmup;
       if (typeof partial.lateJoin === "boolean") settings.lateJoin = partial.lateJoin;
+      if (typeof partial.regionFallback === "boolean") settings.regionFallback = partial.regionFallback;
       if (Array.isArray(partial.allowedHostingIps)) {
         settings.allowedHostingIps = [...new Set(partial.allowedHostingIps.filter((ip) => typeof ip === "string" && ip.trim()))];
       }

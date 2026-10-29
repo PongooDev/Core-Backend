@@ -138,8 +138,9 @@ const status = (state, fields = {}) => message("StatusUpdate", { ...fields, stat
 const newId = () => crypto.randomUUID().replaceAll("-", "");
 
 // gatherMs: a number, or a function asked each time a match forms (the admin panel's setting). lateJoin: whether
-// matches in their warmup take more parties, asked each time.
-export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoin = () => false, quiet = false }) {
+// matches in their warmup take more parties, asked each time. regionFallback: whether a party whose region has no
+// server plays in another region (Core-Backend #121) or waits for one of its own (#123), asked each time.
+export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoin = () => false, regionFallback = () => true, quiet = false }) {
   const say = quiet ? () => {} : (text) => log("Matchmaking", text);
   const gatherOf = () => {
     const value = typeof gatherMs === "function" ? gatherMs() : gatherMs;
@@ -245,13 +246,16 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
       return true;
     }
 
-    // A party whose region has no server takes a match in any region, the bucket's build and playlist still matching.
+    // A party whose region has no server takes a match in any region, the bucket's build and playlist still matching,
+    // unless the fallback is off: then it waits for a server of its region, and only its region's matches take it.
     const bucketId = party.ticket.bucketId;
-    const anyRegion = !hasServerFor(bucketId);
-    if (anyRegion !== Boolean(party.anyRegion)) {
+    const noServer = !hasServerFor(bucketId);
+    const anyRegion = noServer && regionFallback();
+    if (noServer !== Boolean(party.noServer) || anyRegion !== Boolean(party.anyRegion)) {
+      party.noServer = noServer;
       party.anyRegion = anyRegion;
-      if (anyRegion) say(`No server is registered for ${regionName(regionOf(parseBucket(bucketId).region))} (bucket ${bucketId}): ` +
-        `${party.ticket.accountId} queues for a server in any region`);
+      if (noServer) say(`No server is registered for ${regionName(regionOf(parseBucket(bucketId).region))} (bucket ${bucketId}): ` +
+        `${party.ticket.accountId} ${anyRegion ? "queues for a server in any region" : "waits for one (the region fallback is off)"}`);
     }
     const key = bucketKey(bucketId, { anyRegion });
 

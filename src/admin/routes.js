@@ -699,6 +699,7 @@ export function adminRoutes(context) {
       matchmakingGatherSeconds: req.body?.matchmakingGatherSeconds,
       warmupSeconds: req.body?.warmupSeconds,
       lateJoin: req.body?.lateJoin,
+      regionFallback: req.body?.regionFallback,
       allowedHostingIps: req.body?.allowedHostingIps
     });
     const net = network?.settings?.() ?? {};

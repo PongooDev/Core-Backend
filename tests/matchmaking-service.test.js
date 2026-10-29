@@ -434,6 +434,46 @@ test("a player from a region with no server shares a forming match with that ser
   }
 });
 
+test("with the region fallback off, a player only matches in the region they picked (#123)", async () => {
+  const backend = await startBackend({ matchmakingGatherMs: 200, regionFallback: false });
+  const connections = [];
+  try {
+    const eu = await regionServer(backend, "CoreServer1", "EU");
+    connections.push(eu.connection);
+    // Brazil has no server: the Brazilian waits for one of Brazil's, with no ETA, rather than playing in Europe.
+    const brazilian = await regionPlayer(backend, "StrictBR", "BR");
+    connections.push(brazilian.connection);
+    const queued = JSON.parse(await brazilian.connection.next());
+    assert.deepEqual([queued.payload.state, queued.payload.queuedPlayers, queued.payload.estimatedWaitSec], ["Queued", 1, 0]);
+    // Europe's server takes a European, and not the Brazilian with them.
+    const european = await regionPlayer(backend, "StrictEU", "EU");
+    connections.push(european.connection);
+    const assign = await nextOf(eu.connection, "AssignMatch");
+    assert.deepEqual(assign.payload.teams, [[[european.accountId]]]);
+    eu.connection.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: assign.payload.matchId, result: "ready" } }));
+    assert.equal((await nextOf(european.connection, "Play")).payload.sessionId, eu.session.id);
+
+    // A Brazilian server takes them.
+    const br = await regionServer(backend, "CoreServer2", "BR");
+    connections.push(br.connection);
+    const brAssign = await nextOf(br.connection, "AssignMatch");
+    assert.deepEqual([brAssign.payload.teams, brAssign.payload.bucketId], [[[[brazilian.accountId]]], "858118782:0:BR:10"]);
+    br.connection.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: brAssign.payload.matchId, result: "ready" } }));
+    assert.equal((await nextOf(brazilian.connection, "Play")).payload.sessionId, br.session.id);
+
+    // Turned back on (the default), a region with no server falls back again, to any server free.
+    await settingsOf(backend, { regionFallback: true });
+    const next = await regionServer(backend, "CoreServer3", "EU");
+    connections.push(next.connection);
+    const asian = await regionPlayer(backend, "FallbackASIA", "ASIA");
+    connections.push(asian.connection);
+    assert.deepEqual((await nextOf(next.connection, "AssignMatch")).payload.teams, [[[asian.accountId]]]);
+  } finally {
+    for (const connection of connections) connection.close();
+    backend.close();
+  }
+});
+
 // Core-Backend #122: the admin panel's matchmaking waits, and late joining during a CoreV2 gameserver's warmup
 // (services/matchmaking/warmup.js).
 const settingsOf = (backend, body) => (body === undefined ? get(backend.port, "/admin/api/settings") : post(backend.port, "/admin/api/settings", undefined, body));
@@ -448,24 +488,24 @@ async function queueParty(backend, player, party = [player]) {
   return connection;
 }
 
-test("the gather time, warmup and late joining are settings, kept over a restart and set from config.json (#122)", async () => {
+test("the gather time, warmup, late joining and region fallback are settings, kept over a restart and set from config.json (#122, #123)", async () => {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-backend-mmwait-"));
   let backend = await startBackend({ dataDir });
   try {
     let saved = (await settingsOf(backend)).body;
-    // Today's behaviour: 10 s to gather, the game's warmup, no late joining.
-    assert.deepEqual([saved.matchmakingGatherSeconds, saved.warmupSeconds, saved.lateJoin], [10, null, false]);
-    saved = (await settingsOf(backend, { matchmakingGatherSeconds: "25", warmupSeconds: 90, lateJoin: true })).body;
-    assert.deepEqual([saved.matchmakingGatherSeconds, saved.warmupSeconds, saved.lateJoin], [25, 90, true]);
-    // Out of range or not a whole number: ignored.
-    saved = (await settingsOf(backend, { matchmakingGatherSeconds: 301, warmupSeconds: 5, lateJoin: "yes" })).body;
-    assert.deepEqual([saved.matchmakingGatherSeconds, saved.warmupSeconds, saved.lateJoin], [25, 90, true]);
+    // Today's behaviour: 10 s to gather, the game's warmup, no late joining, another region when theirs has no server.
+    assert.deepEqual([saved.matchmakingGatherSeconds, saved.warmupSeconds, saved.lateJoin, saved.regionFallback], [10, null, false, true]);
+    saved = (await settingsOf(backend, { matchmakingGatherSeconds: "25", warmupSeconds: 90, lateJoin: true, regionFallback: false })).body;
+    assert.deepEqual([saved.matchmakingGatherSeconds, saved.warmupSeconds, saved.lateJoin, saved.regionFallback], [25, 90, true, false]);
+    // Out of range, not a whole number or not a switch: ignored.
+    saved = (await settingsOf(backend, { matchmakingGatherSeconds: 301, warmupSeconds: 5, lateJoin: "yes", regionFallback: "yes" })).body;
+    assert.deepEqual([saved.matchmakingGatherSeconds, saved.warmupSeconds, saved.lateJoin, saved.regionFallback], [25, 90, true, false]);
     saved = (await settingsOf(backend, { matchmakingGatherSeconds: 1.5, warmupSeconds: 1801 })).body;
     assert.deepEqual([saved.matchmakingGatherSeconds, saved.warmupSeconds], [25, 90]);
     backend.close();
     backend = await startBackend({ dataDir });
     saved = (await settingsOf(backend)).body;
-    assert.deepEqual([saved.matchmakingGatherSeconds, saved.warmupSeconds, saved.lateJoin], [25, 90, true]);
+    assert.deepEqual([saved.matchmakingGatherSeconds, saved.warmupSeconds, saved.lateJoin, saved.regionFallback], [25, 90, true, false]);
     // A blank warmup is the game's again.
     saved = (await settingsOf(backend, { warmupSeconds: "" })).body;
     assert.equal(saved.warmupSeconds, null);
@@ -473,10 +513,10 @@ test("the gather time, warmup and late joining are settings, kept over a restart
     backend.close();
   }
 
-  backend = await startBackend({ matchmakingGatherSeconds: 0, warmupSeconds: 45, lateJoin: true });
+  backend = await startBackend({ matchmakingGatherSeconds: 0, warmupSeconds: 45, lateJoin: true, regionFallback: false });
   try {
     const saved = (await settingsOf(backend)).body;
-    assert.deepEqual([saved.matchmakingGatherSeconds, saved.warmupSeconds, saved.lateJoin], [0, 45, true]);
+    assert.deepEqual([saved.matchmakingGatherSeconds, saved.warmupSeconds, saved.lateJoin, saved.regionFallback], [0, 45, true, false]);
   } finally {
     backend.close();
   }
