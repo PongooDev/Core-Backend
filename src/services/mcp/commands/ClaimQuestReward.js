@@ -1,21 +1,26 @@
 import { getQuest } from "../../../gamedata/quests.js";
 import { McpError } from "../../../errors.js";
+import { claimAthenaQuest } from "../../../profiles/athena.js";
 import { lootEntry } from "../../../profiles/items.js";
 import { chooseHeroBundle, noteHeroBundleChoice } from "../../../profiles/founders.js";
 import { claimQuest } from "../../../profiles/progress.js";
 import { questIdOf } from "../../../profiles/quests.js";
 
 // questId is the quest item's id. The rewards screen sends this for Completed quests and builds its cards from loot.
-// Battle Royale's challenges (athena) are claimed as they are completed (profiles/athena.js), so a claim there has
-// nothing more to give.
+// On athena it is the Battle Royale lobby's Collect Rewards (Core-Backend #114, profiles/athena.js claimAthenaQuest):
+// the challenge's XP goes to the season level, which the lobby shows from the profile, so its loot lists no items.
 export function claimQuestReward({ req, session, notifications, profileId }) {
-  const tracker = session.profile(profileId === "athena" ? "athena" : "profile0");
   const questId = String(req.body?.questId ?? "");
+  const result = (items) => notifications.push({ type: "questClaim", primary: true, questId, loot: { tierGroupName: "", items } });
+  if (profileId === "athena") {
+    claimAthenaQuest(session, questId);
+    return result([]);
+  }
+
+  const tracker = session.profile("profile0");
   const item = tracker.profile.items[questId];
   if (!item || !questIdOf(item)) throw new McpError("errors.com.epicgames.fortnite.item_not_found", `No quest ${questId}`);
-
-  const result = (items) => notifications.push({ type: "questClaim", primary: true, questId, loot: { tierGroupName: "", items } });
-  if (item.attributes.quest_state === "Claimed" || profileId === "athena") return result([]);
+  if (item.attributes.quest_state === "Claimed") return result([]);
   if (item.attributes.quest_state !== "Completed") {
     throw new McpError("errors.com.epicgames.fortnite.quest_not_completed", `Quest ${questId} is ${item.attributes.quest_state}`);
   }

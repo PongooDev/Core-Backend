@@ -4,7 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { athenaDailyIds, getAthenaQuest, seasonLevels } from "../src/gamedata/athena.js";
-import { addSeasonXp, advanceAthenaObjectives, grantAthenaQuest, matchXp, recordMatchProgress, refreshAthenaDailies } from "../src/profiles/athena.js";
+import { addSeasonXp, advanceAthenaObjectives, claimAthenaQuest, grantAthenaQuest, matchXp, recordMatchProgress, refreshAthenaDailies } from "../src/profiles/athena.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
 import { dedicatedServerToken, post, send, startBackend, userLogin } from "./helpers.js";
@@ -154,20 +154,29 @@ test("1.8's daily challenges: one a day up to 3, claimed ones cleared the next d
   });
 });
 
-test("challenge progress: placements and eliminations from the match results, the rest from the gameserver; done ones pay XP", () => {
+test("challenge progress: placements and eliminations from the match results, the rest from the gameserver; done ones pay XP when collected", () => {
   withSession((session) => {
     const tracker = session.profile("athena");
     const ids = Object.fromEntries(["athenadaily_playmatches", "athenadaily_solo_top25", "athenadaily_squad_top6", "athenadailyquest_playerelimination",
       "athenadailyquest_playereliminationshotguns", "athenadaily_outlive_solo"].map((questId) => [questId, grantAthenaQuest(tracker, questId)]));
     const item = (questId) => tracker.profile.items[ids[questId]].attributes;
 
+    const level = () => [tracker.profile.stats.attributes.level ?? 1, tracker.profile.stats.attributes.xp ?? 0];
+    const collect = () => {
+      for (const [itemId, entry] of Object.entries(tracker.profile.items)) {
+        if (entry.attributes.quest_state === "Completed") claimAthenaQuest(session, itemId);
+      }
+    };
     recordMatchProgress(session, 2, { place: 20, kills: 4 });
-    assert.equal(item("athenadaily_solo_top25").quest_state, "Claimed");
+    assert.equal(item("athenadaily_solo_top25").quest_state, "Completed");
     assert.equal(item("athenadaily_squad_top6").completion_daily_athena_squad_top6_v2, 0, "another playlist's placement");
     assert.equal(item("athenadaily_playmatches").completion_daily_athena_play_matches_v2, 1);
     assert.equal(item("athenadailyquest_playerelimination").completion_athena_daily_kill_players_v2, 4);
+    assert.deepEqual(level(), [1, 0], "held back until it is collected");
+    collect();
+    assert.equal(item("athenadaily_solo_top25").quest_state, "Claimed");
     // 500 XP from the top 25 challenge: past levels 1 (100) and 2 (250).
-    assert.deepEqual([tracker.profile.stats.attributes.level, tracker.profile.stats.attributes.xp], [3, 150]);
+    assert.deepEqual(level(), [3, 150]);
 
     // The gameserver's quest updates: by weapon and players outlived count; placements and eliminations are counted
     // from the results above, so the server's own count of them is left out.
@@ -177,21 +186,24 @@ test("challenge progress: placements and eliminations from the match results, th
       { statName: "daily_athena_play_matches_v2", count: 1 },
       { statName: "athena_daily_kill_players_v2", count: 4 }
     ]);
-    assert.equal(item("athenadailyquest_playereliminationshotguns").quest_state, "Claimed");
+    assert.equal(item("athenadailyquest_playereliminationshotguns").quest_state, "Completed");
     assert.equal(item("athenadaily_outlive_solo").completion_daily_athena_outlive_solo_players, 40);
     assert.equal(item("athenadaily_playmatches").completion_daily_athena_play_matches_v2, 1);
     assert.equal(item("athenadailyquest_playerelimination").completion_athena_daily_kill_players_v2, 4);
 
     recordMatchProgress(session, 9, { place: 5, kills: 7 });
+    assert.equal(item("athenadaily_squad_top6").quest_state, "Completed");
+    assert.equal(item("athenadailyquest_playerelimination").quest_state, "Completed");
+    assert.deepEqual(level(), [3, 150]);
+    collect();
     assert.equal(item("athenadaily_squad_top6").quest_state, "Claimed");
-    assert.equal(item("athenadailyquest_playerelimination").quest_state, "Claimed");
     assert.equal(item("athenadailyquest_playerelimination").completion_athena_daily_kill_players_v2, 10);
     // 4 challenges at 500 XP: 2000, past levels 1-5 (1700), 300 into level 6.
-    assert.deepEqual([tracker.profile.stats.attributes.level, tracker.profile.stats.attributes.xp], [6, 300]);
+    assert.deepEqual(level(), [6, 300]);
   });
 });
 
-test("Search Chests (Core-Backend #92): five chests the gameserver reports, one per search, claim it and pay 500 XP once", () => {
+test("Search Chests (Core-Backend #92): five chests the gameserver reports, one per search, complete it and pay 500 XP once collected", () => {
   withSession((session) => {
     const tracker = session.profile("athena");
     const itemId = grantAthenaQuest(tracker, "athenadailyquest_interacttreasurechest");
@@ -199,12 +211,96 @@ test("Search Chests (Core-Backend #92): five chests the gameserver reports, one 
     for (let search = 0; search < 4; search++) advanceAthenaObjectives(session, chest);
     assert.equal(tracker.profile.items[itemId].attributes.quest_state, "Active");
     advanceAthenaObjectives(session, chest);
-    assert.equal(tracker.profile.items[itemId].attributes.quest_state, "Claimed");
+    assert.equal(tracker.profile.items[itemId].attributes.quest_state, "Completed");
     assert.equal(tracker.profile.items[itemId].attributes.completion_daily_athena_loot_chest, 5);
+    advanceAthenaObjectives(session, chest);
+    assert.equal(tracker.profile.items[itemId].attributes.completion_daily_athena_loot_chest, 5, "done: no more progress");
+    assert.equal(tracker.profile.stats.attributes.level ?? 1, 1);
+    claimAthenaQuest(session, itemId);
+    assert.equal(tracker.profile.items[itemId].attributes.quest_state, "Claimed");
     // From level 1 with 0 XP: level 1 takes 100 and level 2 250 (SeasonXpTable), so 500 is level 3 with 150.
     assert.deepEqual([tracker.profile.stats.attributes.level, tracker.profile.stats.attributes.xp], [3, 150]);
     advanceAthenaObjectives(session, chest);
-    assert.deepEqual([tracker.profile.stats.attributes.level, tracker.profile.stats.attributes.xp], [3, 150], "done: no more XP");
+    claimAthenaQuest(session, itemId);
+    assert.deepEqual([tracker.profile.stats.attributes.level, tracker.profile.stats.attributes.xp], [3, 150], "collected: no more XP");
+  });
+});
+
+// Core-Backend #114: 1.8 to 1.8.2's lobby lists a done daily, Completed, with its checkmark, and its Collect Rewards
+// button (DailyQuestsPanel ClaimButton → ClaimNextCompletedQuestReward) sends ClaimQuestReward on athena for each.
+test("a done daily waits, Completed, for Collect Rewards: ClaimQuestReward on athena pays its XP and hides it", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "Collect18");
+    await athena(backend.port, player);
+    const session = openSession(createProfileStore(backend.dataDir), player.accountId);
+    const chests = grantAthenaQuest(session.profile("athena"), "athenadailyquest_interacttreasurechest");
+    const open = grantAthenaQuest(session.profile("athena"), "athenadaily_playmatches");
+    session.commit();
+
+    const server = { accountId: player.accountId, token: await dedicatedServerToken(backend.port) };
+    const update = await command(backend.port, server, "UpdateQuests", "athena", { advance: [{ statName: "daily_athena_loot_chest", count: 5 }] }, "dedicated_server");
+    assert.equal(update.status, 200);
+    let profile = await athena(backend.port, player);
+    assert.equal(profile.items[chests].attributes.quest_state, "Completed", "kept in the list, with its checkmark");
+    assert.equal(profile.items[chests].attributes.completion_daily_athena_loot_chest, 5);
+    assert.deepEqual([profile.stats.attributes.level, profile.stats.attributes.xp], [1, 0], "its XP held back");
+
+    // An open one can't be collected.
+    const early = await command(backend.port, player, "ClaimQuestReward", "athena", { questId: open, selectedRewardIndex: -1 });
+    assert.equal(early.body.errorCode, "errors.com.epicgames.fortnite.quest_not_completed");
+
+    const claim = await command(backend.port, player, "ClaimQuestReward", "athena", { questId: chests, selectedRewardIndex: -1 });
+    assert.equal(claim.status, 200);
+    assert.deepEqual(claim.body.notifications.find((notification) => notification.type === "questClaim"),
+      { type: "questClaim", primary: true, questId: chests, loot: { tierGroupName: "", items: [] } });
+    // The claim's own response carries the athena profile with it Claimed (rvn -1: the whole profile).
+    assert.equal(athenaOf(claim.body).profileChanges[0].profile.items[chests].attributes.quest_state, "Claimed");
+    profile = await athena(backend.port, player);
+    assert.equal(profile.items[chests].attributes.quest_state, "Claimed", "Claimed: the panel hides it");
+    assert.deepEqual([profile.stats.attributes.level, profile.stats.attributes.xp], [3, 150], "500 XP: past levels 1 (100) and 2 (250)");
+
+    // The panel's next ClaimNextCompletedQuestReward finds none; a repeat pays nothing more.
+    assert.equal((await command(backend.port, player, "ClaimQuestReward", "athena", { questId: chests })).status, 200);
+    profile = await athena(backend.port, player);
+    assert.deepEqual([profile.stats.attributes.level, profile.stats.attributes.xp], [3, 150]);
+    assert.equal((await command(backend.port, player, "ClaimQuestReward", "athena", { questId: "nope" })).body.errorCode,
+      "errors.com.epicgames.fortnite.item_not_found");
+  } finally {
+    backend.close();
+  }
+});
+
+test("the daily refresh keeps a Completed daily until it is collected; it holds its slot, and a collected one is cleared the next day", () => {
+  withSession((session) => {
+    const tracker = session.profile("athena");
+    const day = (n, hour = 12) => new Date(Date.UTC(2026, 9, n, hour));
+    const quests = () => Object.entries(tracker.profile.items).filter(([, item]) => item.templateId.startsWith("Quest:"));
+    const state = (itemId) => tracker.profile.items[itemId]?.attributes.quest_state;
+    refreshAthenaDailies(session, day(1));
+    const [[done]] = quests();
+    const quest = getAthenaQuest(tracker.profile.items[done].templateId.split(":")[1]);
+    advanceAthenaObjectives(session, quest.objectives.map(({ name, count }) => ({ statName: name, count })));
+    recordMatchProgress(session, 2, { place: 1, kills: 50 });
+    recordMatchProgress(session, 10, { place: 1, kills: 50 });
+    recordMatchProgress(session, 9, { place: 1, kills: 50 });
+    assert.equal(state(done), "Completed");
+
+    // Two days on: one new one for each day, up to 3 held, the uncollected one among them.
+    refreshAthenaDailies(session, day(3));
+    assert.equal(state(done), "Completed", "not wiped");
+    assert.equal(quests().length, 3);
+    refreshAthenaDailies(session, day(4));
+    assert.equal(quests().length, 3, "it holds its slot");
+
+    claimAthenaQuest(session, done);
+    assert.equal(state(done), "Claimed");
+    assert.ok((tracker.profile.stats.attributes.xp ?? 0) > 0 || (tracker.profile.stats.attributes.level ?? 1) > 1);
+    refreshAthenaDailies(session, day(4, 20));
+    assert.equal(quests().length, 3, "collected today: kept, hidden, nothing new until tomorrow");
+    refreshAthenaDailies(session, day(5));
+    assert.equal(state(done), undefined, "cleared the next day");
+    assert.equal(quests().length, 3, "its slot given to a new one");
   });
 });
 
@@ -222,7 +318,7 @@ test("the gameserver's UpdateQuests, EndBattleRoyaleGame and ReportConsumableUse
       assert.equal(response.status, 200, name);
       assert.equal(athenaOf(response.body).profileId, "athena");
     }
-    // ClaimQuestReward and SetPinnedQuests from the Battle Royale lobby have nothing to do.
+    // SetPinnedQuests from the Battle Royale lobby has nothing to do.
     assert.equal((await command(backend.port, player, "SetPinnedQuests", "athena", { pinnedQuestIds: [] })).status, 200);
   } finally {
     backend.close();
