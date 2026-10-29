@@ -20,8 +20,7 @@ const defaults = {
   // Storm Shield's when the zone loads and again while it runs.
   structureLimit: null,
   structureLimits: {},
-  allowedHostingIps: ["127.0.0.1", "::1"],
-  loginMessageEnabled: true
+  allowedHostingIps: ["127.0.0.1", "::1"]
 };
 
 // The Storm Shields by their outpost item (UFortZoneTheme CloudSaveItemDefinition, OutpostCore_PvE_01..04).
@@ -129,7 +128,6 @@ export function createSettingsStore(dataDir) {
     get() {
       return {
         ...settings,
-        loginMessageEnabled: settings.loginMessageEnabled !== false,
         allowedHostingIps: [...(settings.allowedHostingIps ?? defaults.allowedHostingIps)],
         structureLimits: { ...settings.structureLimits },
         battleRoyaleNews: settings.battleRoyaleNews ? { ...settings.battleRoyaleNews } : undefined,

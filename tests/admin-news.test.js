@@ -144,3 +144,17 @@ test("the admin news API views, updates, and resets in-game news, login messages
     fs.rmSync(dataDir, { recursive: true, force: true });
   }
 });
+
+test("config.json's loginMessageEnabled turns the login message off until the panel says otherwise (#116)", async () => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-news-config-test-"));
+  const backend = await startBackend({ dataDir, loginMessageEnabled: false });
+  try {
+    assert.equal((await pageFor(backend.port, "3724489")).body.loginmessage, undefined);
+    assert.equal((await admin(backend, "/news")).body.loginMessageEnabled, false);
+    // The panel's choice wins over config.json's.
+    await admin(backend, "/news", { loginMessageEnabled: true });
+    assert.ok((await pageFor(backend.port, "3724489")).body.loginmessage);
+  } finally {
+    backend.close();
+  }
+});
