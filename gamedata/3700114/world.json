@@ -965,5 +965,32 @@
       "parent": "FortZoneTheme",
       "tileClass": "/Game/World/ZoneThemes/ZT_TheSuburbs/BP_Hex_TheSuburbs"
     }
+  },
+  "missionAlertCategories": {
+    "GeneralCategory": {
+      "category": "General",
+      "quota": 3,
+      "repeatable": false
+    },
+    "StormCategory": {
+      "category": "Storm",
+      "quota": 10,
+      "repeatable": false
+    },
+    "StormLowCategory": {
+      "category": "StormLow",
+      "quota": 4,
+      "repeatable": false
+    },
+    "HordeCategory": {
+      "category": "Horde",
+      "quota": 6,
+      "repeatable": true
+    },
+    "HalloweenCategory": {
+      "category": "Halloween",
+      "quota": 10,
+      "repeatable": true
+    }
   }
 }

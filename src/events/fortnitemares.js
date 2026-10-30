@@ -1,6 +1,7 @@
 import { pageId } from "../collectionbook/pages.js";
 import { getQuest } from "../gamedata/quests.js";
 import { fortnitemares, isEventActive } from "./events.js";
+import { mutantStormsEventQuests } from "./mutantstorms.js";
 
 // Fortnitemares (Halloween 2017, 1.8): what the event gives on top of its flag (events/events.js).
 
@@ -26,9 +27,9 @@ export const fortnitemaresQuests = [
 
 export const candy = "AccountResource:eventcurrency_candy";
 
-// The requesting build's event quests, when the event runs there.
+// The requesting build's event quests, when the event runs there (and the Mutant Storms', events/mutantstorms.js).
 export function eventQuests() {
-  return isEventActive(fortnitemares) ? fortnitemaresQuests.filter((questId) => getQuest(questId)) : [];
+  return [...(isEventActive(fortnitemares) ? fortnitemaresQuests.filter((questId) => getQuest(questId)) : []), ...mutantStormsEventQuests()];
 }
 
 // The event's collection book pages, the "Fortnitemares Items" category (CollectionCategoryTable Halloween2017): its

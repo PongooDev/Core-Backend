@@ -9,6 +9,25 @@ import { openSession } from "../../profiles/session.js";
 import { sessionMission } from "../mcp/commands/server.js";
 import { findMission, worldInfo } from "../../world/theaters.js";
 
+// The zone's alert, when it has one (the zone info's theaterMissionAlertId, Core-Backend #129): FFortZoneInstanceDetails'
+// MissionAlertRewards, ZoneModifiers and (1.7.2+) MissionAlertCategoryName. The gameserver applies them itself: its
+// AFortWorldManager HandleWorldQueryComplete (1.9 0x658980, 1.9.1 0x658810) hands the zone's details to the game state
+// (AFortGameStateZone vtable +0x860: 1.9 0x5CCE10, 1.9.1 0x5CCA80), which registers every ZoneModifiers item that is
+// a UFortGameplayModifierItemDefinition (its template id looked up, once per quantity) as an active gameplay modifier
+// (ActiveGameplayModifiers, what RegisterGameplayModifier adds to) and copies MissionAlertRewards' items into
+// MissionAlertRewards (the in-zone alert rewards). The zone's modifiers are the mission's and the alert's.
+function alertDetails(mission) {
+  const alert = mission.missionAlert;
+  const missionModifiers = mission.missionModifiers ?? { tierGroupName: "", items: [] };
+  return {
+    missionAlertRewards: alert?.missionAlertRewards ?? { tierGroupName: "", items: [] },
+    zoneModifiers: alert?.missionAlertModifiers?.items?.length
+      ? { tierGroupName: alert.missionAlertModifiers.tierGroupName, items: [...missionModifiers.items, ...alert.missionAlertModifiers.items] }
+      : missionModifiers,
+    missionAlertCategoryName: alert?.categoryName ?? ""
+  };
+}
+
 export function worldRoutes({ tokens, sessions, profiles }) {
   const router = express.Router();
 
@@ -28,7 +47,8 @@ export function worldRoutes({ tokens, sessions, profiles }) {
   // the session's zone starts at (sessions.setZoneDifficulty).
   router.post("/fortnite/api/game/v2/world/validate", requireAuth(tokens), (req, res) => {
     log("World", `validate for session ${req.query.sessionId ?? "(none)"}: ${JSON.stringify(req.body ?? {})}`);
-    const mission = findMission(req.body?.theaterMissionId) ?? sessionMission(sessions, String(req.query.sessionId ?? ""));
+    const mission = findMission(req.body?.theaterMissionId, new Date(), String(req.body?.theaterMissionAlertId ?? ""))
+      ?? sessionMission(sessions, String(req.query.sessionId ?? ""));
     if (!mission) {
       log("World", `validate: no mission ${req.body?.theaterMissionId ?? "(none)"} for session ${req.query.sessionId}`);
       return sendError(res, 404, "errors.com.epicgames.fortnite.mission_not_found", "That mission isn't available");
@@ -51,7 +71,7 @@ export function worldRoutes({ tokens, sessions, profiles }) {
       missionGenerator: mission.missionGenerator,
       zoneDifficultyInfo,
       missionRewards: mission.missionRewards,
-      zoneModifiers: mission.missionModifiers,
+      ...alertDetails(mission),
       tileIndex: mission.tileIndex
     });
   });

@@ -125,7 +125,9 @@ test("world/validate gives the gameserver the zone it posts, as FFortZoneInstanc
       missionGenerator: mission.missionGenerator,
       zoneDifficultyInfo: mission.missionDifficultyInfo,
       missionRewards: mission.missionRewards,
+      missionAlertRewards: { tierGroupName: "", items: [] },
       zoneModifiers: { tierGroupName: "", items: [] },
+      missionAlertCategoryName: "",
       tileIndex: mission.tileIndex
     });
     const unknown = await post(backend.port, "/fortnite/api/game/v2/world/validate?sessionId=abc", token, { ...zone, theaterMissionId: "nope" });

@@ -146,6 +146,7 @@
       "name": "MissionAlert_GeneralCategory_01",
       "onlyUsedForSpreading": false,
       "requiredEventFlag": "",
+      "spreadRowName": "",
       "zoneThemes": []
     },
     {
@@ -159,6 +160,7 @@
       "name": "MissionAlert_GeneralCategory_02",
       "onlyUsedForSpreading": false,
       "requiredEventFlag": "",
+      "spreadRowName": "",
       "zoneThemes": []
     },
     {
@@ -172,6 +174,7 @@
       "name": "MissionAlert_GeneralCategory_03",
       "onlyUsedForSpreading": false,
       "requiredEventFlag": "",
+      "spreadRowName": "",
       "zoneThemes": []
     },
     {
@@ -185,6 +188,7 @@
       "name": "MissionAlert_GeneralCategory_04",
       "onlyUsedForSpreading": false,
       "requiredEventFlag": "",
+      "spreadRowName": "",
       "zoneThemes": []
     },
     {
@@ -198,6 +202,7 @@
       "name": "MissionAlert_StormCategory_01",
       "onlyUsedForSpreading": false,
       "requiredEventFlag": "EventFlag.Vindertech",
+      "spreadRowName": "StonewoordStormSpread",
       "zoneThemes": []
     },
     {
@@ -211,6 +216,7 @@
       "name": "MissionAlert_StormCategory_02",
       "onlyUsedForSpreading": false,
       "requiredEventFlag": "EventFlag.Vindertech",
+      "spreadRowName": "PlankertonStormSpread",
       "zoneThemes": []
     },
     {
@@ -224,6 +230,7 @@
       "name": "MissionAlert_StormCategory_03",
       "onlyUsedForSpreading": false,
       "requiredEventFlag": "EventFlag.Vindertech",
+      "spreadRowName": "CannyStormSpread",
       "zoneThemes": []
     },
     {
@@ -237,6 +244,7 @@
       "name": "MissionAlert_StormCategory_04",
       "onlyUsedForSpreading": false,
       "requiredEventFlag": "EventFlag.Vindertech",
+      "spreadRowName": "TwineStormSpread",
       "zoneThemes": []
     },
     {
@@ -250,6 +258,7 @@
       "name": "MissionAlert_StormLowCategory_01",
       "onlyUsedForSpreading": false,
       "requiredEventFlag": "",
+      "spreadRowName": "",
       "zoneThemes": []
     },
     {
@@ -263,6 +272,7 @@
       "name": "MissionAlert_StormLowCategory_02",
       "onlyUsedForSpreading": false,
       "requiredEventFlag": "",
+      "spreadRowName": "",
       "zoneThemes": []
     },
     {
@@ -276,6 +286,7 @@
       "name": "MissionAlert_StormLowCategory_03",
       "onlyUsedForSpreading": false,
       "requiredEventFlag": "",
+      "spreadRowName": "",
       "zoneThemes": []
     },
     {
@@ -289,6 +300,7 @@
       "name": "MissionAlert_StormLowCategory_04",
       "onlyUsedForSpreading": false,
       "requiredEventFlag": "",
+      "spreadRowName": "",
       "zoneThemes": []
     },
     {
@@ -302,6 +314,7 @@
       "name": "MissionAlert_HordeCategory_01",
       "onlyUsedForSpreading": false,
       "requiredEventFlag": "EventFlag.Horde",
+      "spreadRowName": "",
       "zoneThemes": []
     },
     {
@@ -315,6 +328,7 @@
       "name": "MissionAlert_HalloweenCategory_01",
       "onlyUsedForSpreading": false,
       "requiredEventFlag": "",
+      "spreadRowName": "",
       "zoneThemes": []
     }
   ],
@@ -835,5 +849,62 @@
   },
   "theaterTags": [
     "Theater.MainProgression"
-  ]
+  ],
+  "missionAlertCategories": {
+    "GeneralCategory": {
+      "category": "General",
+      "quota": 3,
+      "repeatable": false
+    },
+    "StormCategory": {
+      "category": "Storm",
+      "quota": 10,
+      "repeatable": false
+    },
+    "StormLowCategory": {
+      "category": "StormLow",
+      "quota": 4,
+      "repeatable": false
+    },
+    "HordeCategory": {
+      "category": "Horde",
+      "quota": 6,
+      "repeatable": true
+    },
+    "HalloweenCategory": {
+      "category": "Halloween",
+      "quota": 10,
+      "repeatable": true
+    }
+  },
+  "missionAlertSpreads": {
+    "StonewoordStormSpread": {
+      "chanceToSpread": 0.25,
+      "maxNumTilesToSpreadTo": 1,
+      "missionAlertRowName": "MissionAlert_StormCategory_01",
+      "spreadInterval": 60,
+      "totalChancesToSpread": 3
+    },
+    "PlankertonStormSpread": {
+      "chanceToSpread": 0.5,
+      "maxNumTilesToSpreadTo": 2,
+      "missionAlertRowName": "MissionAlert_StormCategory_02",
+      "spreadInterval": 45,
+      "totalChancesToSpread": 3
+    },
+    "CannyStormSpread": {
+      "chanceToSpread": 0.66,
+      "maxNumTilesToSpreadTo": 2,
+      "missionAlertRowName": "MissionAlert_StormCategory_03",
+      "spreadInterval": 30,
+      "totalChancesToSpread": 3
+    },
+    "TwineStormSpread": {
+      "chanceToSpread": 0.75,
+      "maxNumTilesToSpreadTo": 2,
+      "missionAlertRowName": "MissionAlert_StormCategory_04",
+      "spreadInterval": 30,
+      "totalChancesToSpread": 3
+    }
+  }
 }

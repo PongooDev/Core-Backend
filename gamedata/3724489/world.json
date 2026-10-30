@@ -1158,5 +1158,32 @@
       ],
       "tileClass": "/Game/World/ZoneThemes/TestZoneThemes/Spooky/BP_Hex_TRV_HF_Castle"
     }
+  },
+  "missionAlertCategories": {
+    "GeneralCategory": {
+      "category": "General",
+      "quota": 3,
+      "repeatable": false
+    },
+    "StormCategory": {
+      "category": "Storm",
+      "quota": 10,
+      "repeatable": false
+    },
+    "StormLowCategory": {
+      "category": "StormLow",
+      "quota": 4,
+      "repeatable": false
+    },
+    "HordeCategory": {
+      "category": "Horde",
+      "quota": 6,
+      "repeatable": true
+    },
+    "HalloweenCategory": {
+      "category": "Halloween",
+      "quota": 10,
+      "repeatable": true
+    }
   }
 }

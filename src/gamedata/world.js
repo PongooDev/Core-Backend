@@ -1,7 +1,8 @@
 import { isEventActive } from "../events/events.js";
 import { perBuild } from "./read.js";
 
-const data = perBuild((read) => ({ difficulties: {}, missionAlerts: [], dailyMissionAlertQuota: 0, zoneThemes: {}, ...read("world", {}) }));
+const data = perBuild((read) => ({ difficulties: {}, missionAlerts: [], dailyMissionAlertQuota: 0, missionAlertCategories: {},
+  missionAlertSpreads: {}, zoneThemes: {}, ...read("world", {}) }));
 
 export function getDifficulty(rowName) {
   return data().difficulties[rowName];
@@ -19,7 +20,30 @@ export function missionAlertTier(rowName, category = "GeneralCategory") {
     && difficulty >= row.minimumDifficulty && difficulty <= row.maximumDifficulty);
 }
 
+// A MissionAlerts row by name.
+export function missionAlertRow(name) {
+  return data().missionAlerts.find((row) => row.name === name);
+}
+
 export const dailyMissionAlertQuota = () => data().dailyMissionAlertQuota;
+
+// From 1.7.2 an alert's category (a MissionAlertCategories row: GeneralCategory, StormCategory...) is an
+// EFortMissionAlertCategory with its own daily quota, and the profile keeps the claims of each category apart
+// (profiles/alerts.js). Cert and 1.2 have no categories: one quota (DailyMissionAlertQuota) for every alert.
+export const hasMissionAlertCategories = () => Object.keys(data().missionAlertCategories).length > 0;
+
+// {category, quota, repeatable} of a MissionAlertCategories row.
+export function missionAlertCategory(rowName) {
+  return data().missionAlertCategories[rowName];
+}
+
+export const missionAlertCategories = () => data().missionAlertCategories;
+
+// A MissionAlertSpreadDatas row (1.9.1's Mutant Storms): {chanceToSpread, totalChancesToSpread, maxNumTilesToSpreadTo,
+// spreadInterval (minutes), missionAlertRowName}.
+export function missionAlertSpread(name) {
+  return data().missionAlertSpreads[name];
+}
 
 // The outpost item a storm shield zone theme belongs to (its CloudSaveItemDefinition), if it is one.
 export function zoneOutpost(zoneTheme) {

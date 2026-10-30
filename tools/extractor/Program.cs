@@ -690,9 +690,41 @@ var missionAlerts = LoadRows(provider, gameData["Properties"]!["MissionAlerts"])
     ["zoneThemes"] = (entry.Value["AllowedZoneThemes"]?.AsArray() ?? []).Select(AssetPath).ToList(),
     ["missionGenerator"] = entry.Value["MissionGenerator"] is { } generator ? AssetPath(generator) : "",
     ["lootTierGroup"] = entry.Value["LootTierGroup"]?.GetValue<string>() ?? "",
-    ["lootTier"] = entry.Value["LootTier"]?.GetValue<int>() ?? 0
+    ["lootTier"] = entry.Value["LootTier"]?.GetValue<int>() ?? 0,
+    ["spreadRowName"] = entry.Value["SpreadRowName"]?.GetValue<string>() is { } spread && spread != "None" ? spread : ""
 }).ToList();
 var dailyMissionAlertQuota = gameData["Properties"]?["DailyMissionAlertQuota"]?.GetValue<int>() ?? 0;
+// From 1.7.2, MissionAlertCategories rows (FortMissionAlertCategoryData): the EFortMissionAlertCategory each category
+// is, its daily quota (the profile's mission_alert_redemption_record keeps one claim slot per quota for each category)
+// and whether an alert of it can be done again. MissionAlertSpreadDatas: how a storm alert spreads to nearby tiles.
+var missionAlertCategories = new SortedDictionary<string, object>(StringComparer.Ordinal);
+if (gameData["Properties"]?["MissionAlertCategories"] is { } categoryTable)
+{
+    foreach (var (name, row) in LoadRows(provider, categoryTable))
+    {
+        missionAlertCategories[name] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+        {
+            ["category"] = (row!["Category"]?.GetValue<string>() ?? "").Split("::").Last(),
+            ["quota"] = row["Quota"]?.GetValue<int>() ?? 0,
+            ["repeatable"] = row["MissionAlertRepeatable"]?.GetValue<bool>() ?? false
+        };
+    }
+}
+var missionAlertSpreads = new SortedDictionary<string, object>(StringComparer.Ordinal);
+if (gameData["Properties"]?["MissionAlertSpreadDatas"] is { } spreadTable)
+{
+    foreach (var (name, row) in LoadRows(provider, spreadTable))
+    {
+        missionAlertSpreads[name] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+        {
+            ["chanceToSpread"] = row!["ChanceToSpread"]?.GetValue<double>() ?? 0,
+            ["totalChancesToSpread"] = row["TotalChancesToSpread"]?.GetValue<int>() ?? 0,
+            ["maxNumTilesToSpreadTo"] = row["MaxNumTilesToSpreadTo"]?.GetValue<int>() ?? 0,
+            ["spreadInterval"] = row["SpreadInterval"]?.GetValue<double>() ?? 0,
+            ["missionAlertRowName"] = row["MissionAlertRowName"]?.GetValue<string>() ?? ""
+        };
+    }
+}
 
 // Item upgrades: XP per level by curve row (index = level), XP back for recycling at a level, and the MetaRecipes
 // (Evolve.* and Recycle.*: costs, results and the gameplay tags that unlock them).
@@ -896,7 +928,8 @@ var world = new SortedDictionary<string, object>(StringComparer.Ordinal)
 {
     ["zoneThemes"] = zoneThemes, ["missionGenerators"] = missionGenerators, ["primaryMissions"] = primaryMissions, ["questPaths"] = questPaths, ["difficulties"] = difficulties,
     ["mapPins"] = mapPins, ["globeSockets"] = globeSockets, ["missionAlerts"] = missionAlerts,
-    ["dailyMissionAlertQuota"] = dailyMissionAlertQuota
+    ["dailyMissionAlertQuota"] = dailyMissionAlertQuota, ["missionAlertCategories"] = missionAlertCategories,
+    ["missionAlertSpreads"] = missionAlertSpreads
 };
 if (theaterTags.Count > 0) world["theaterTags"] = theaterTags;
 File.WriteAllText(Path.Combine(output, "world.json"), JsonSerializer.Serialize(world, options) + "\n");

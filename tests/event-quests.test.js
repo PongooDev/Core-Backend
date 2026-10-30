@@ -75,7 +75,7 @@ test("1.9.1 takes the ended Fortnitemares' unfinished quests away and keeps the 
     const rvn = (await mcp(builds["1.9.1"], backend.port, player, "QueryProfile", -1)).body.profileRevision;
     const login = await mcp(builds["1.9.1"], backend.port, player, "ClientQuestLogin", rvn);
     assert.equal(login.status, 200);
-    assert.equal(login.body.notifications, undefined, "no event flags");
+    assert.deepEqual(login.body.notifications[0].eventFlags, ["EventFlag.Vindertech"], "the Mutant Storms' flag only");
     const after = questsOf(fullProfile(await mcp(builds["1.9.1"], backend.port, player, "QueryProfile", -1)));
     assert.deepEqual(halloween(after), ["halloweenquest_2017_opener"]);
     assert.equal(after.halloweenquest_2017_opener.state, "Claimed");

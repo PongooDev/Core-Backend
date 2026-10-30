@@ -11,8 +11,13 @@ import { currentBuild } from "../builds/context.js";
 // IsEventFlagActive("EventFlag.Fortnitemares") or the player holds ProtoEnableQuest).
 export const fortnitemares = "EventFlag.Fortnitemares";
 
+// The Mutant Storms (events/mutantstorms.js) came back with 1.9.1 (CL-3775276), whose notes end Fortnitemares and
+// return them; their content waits for EventFlag.Vindertech, the flag 1.9.1's StormCategory mission alerts require.
+export const mutantStorms = "EventFlag.Vindertech";
+
 const events = [
-  { flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 }
+  { flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
+  { flag: mutantStorms, firstBuild: 3775276, lastBuild: 3775276 }
 ];
 
 // Whether the host runs the seasonal events (settings.seasonalEvents, the admin panel's Seasonal Events switch,

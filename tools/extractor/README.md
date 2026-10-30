@@ -33,7 +33,8 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
 - `fabricator.json`: the storm shield fabricator's numbers (OutpostData's FabricatorBuildingData) and each world item's
   quantum goo values (the MCP template's static_disintegration_value and static_fabrication_value).
 - `world.json`: zone themes (tile class, valid difficulties), mission generators, their primary missions' MissionTags,
-  the mission difficulty rows, every quest's object path and, when the build defines any, its `Theater.*` gameplay tags
+  the mission difficulty rows, the mission alert rows (with their spread rows), from 1.7.2 the alert categories
+  (MissionAlertCategories: enum, quota, repeatable) and storm spreads (MissionAlertSpreadDatas), every quest's object path and, when the build defines any, its `Theater.*` gameplay tags
   (`Balance/GameplayTags`; 1.7.2's `Theater.MainProgression`).
 - `collectionbook.json`: the collection book's pages (book profile, sections, rewards), sections (slots, rewards),
   slots (allowed item templates, survivor personalities, XP weight row), the slot XP weights, the rarity factor curve

@@ -521,7 +521,12 @@ export function adminRoutes(context) {
   router.post("/admin/api/accounts/:accountId/mission-alerts/reset", change(({ session }) => {
     const tracker = session.profile("profile0");
     const record = withQuotaSlots(tracker.profile.stats.attributes.mission_alert_redemption_record ?? emptyAlertRecord());
-    tracker.setStat("mission_alert_redemption_record", { ...record, lastClaimTimes: emptyAlertRecord().lastClaimTimes, oldestClaimIndex: 0 });
+    // The per-category claims of 1.7.2 and later (profiles/alerts.js) too, whichever build's shape the record has.
+    const never = "0001-01-01T00:00:00.000Z";
+    const categories = record.lastClaimTimesMap && Object.fromEntries(Object.entries(record.lastClaimTimesMap).map(([category, claims]) =>
+      [category, { missionAlertGUIDs: (claims.missionAlertGUIDs ?? []).map(() => ""), lastClaimedTimes: (claims.lastClaimedTimes ?? []).map(() => never) }]));
+    tracker.setStat("mission_alert_redemption_record", { ...record, lastClaimTimes: emptyAlertRecord().lastClaimTimes, oldestClaimIndex: 0,
+      ...(categories && { lastClaimTimesMap: categories, oldestClaimIndexForCategory: (record.oldestClaimIndexForCategory ?? []).map(() => 0) }) });
   }));
 
   // Rest XP back to its cap.

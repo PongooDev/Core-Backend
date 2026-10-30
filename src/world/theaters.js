@@ -1,7 +1,10 @@
 import crypto from "node:crypto";
+import { isEventActive } from "../events/events.js";
 import { candy } from "../events/fortnitemares.js";
+import { mutantStorms, stormTickets } from "../events/mutantstorms.js";
+import { getItem } from "../gamedata/items.js";
 import { perBuild } from "../gamedata/read.js";
-import { getDifficulty, missionAlertTier } from "../gamedata/world.js";
+import { getDifficulty, missionAlertSpread, missionAlertTier } from "../gamedata/world.js";
 import { candyReward, hexsylvania, isHexsylvania } from "./hexsylvania.js";
 import { linkedQuests, questPath } from "./quests.js";
 
@@ -158,17 +161,62 @@ function rollMissions({ data, fixedMissions }, day, availableUntil) {
 // The storm alerts (StormLowCategory rows, MissionAlert_23-39: MissionAlert_Storm_T04 to T20, one tile difficulty each
 // from 8 to 40) are Core's too (🟡): no V-Bucks, the zone's reagents at the "high" size (T04-T05 Stonewood's, T06-T10
 // Plankerton's, T11-T15 Canny Valley's, T16-T20 Twine Peaks').
+//
+// 1.9.1 renamed the rows (MissionAlert_<Category>_0N) and gave its storm rows, StormLowCategory's and the Mutant Storms'
+// StormCategory (EventFlag.Vindertech), one loot tier group, MissionAlert_Storm, a row per zone (tile difficulty 5-11
+// Stonewood, 12-21 Plankerton, 22-31 Canny Valley, 32-50 Twine Peaks, named by the row's ModifierTierGroup). Core's
+// table had no such group, so 1.9.1 had no storm alerts and no storm swirls (Core-Backend #129). Its rewards (🟡 Core's):
+// the zone's reagents (high) and, while the Mutant Storms run, Storm Tickets (EventCurrency_StormZone), 10 per tile
+// difficulty: 1.9.1's notes say the Storm Tickets Mutant Storms give are the same on every hex of a difficulty.
 const halloweenAlerts = "Halloween2017_MissionAlert";
 const stormTier = (tier) => (tier <= 5 ? 1 : tier <= 10 ? 2 : tier <= 15 ? 3 : 4);
+const zones = ["Stonewood", "Plankerton", "CanneyValley", "TwinePeaks"];
+const zoneOfModifierGroup = (group) => Math.max(zones.findIndex((zone) => group?.endsWith(`_${zone}`)), 0) + 1;
+export const stormTicketsFor = (rowName) => Math.max(1, getDifficulty(rowName)?.difficulty ?? 1) * 10;
 const alertRewards = {
-  [halloweenAlerts]: [[candy, 100]],
-  MissionAlert_Proto_01: [["CardPack:zcp_mtx_boost50", 1], ["CardPack:zcp_reagent_c_t01_medium", 1]],
-  MissionAlert_Proto_02: [["CardPack:zcp_mtx_boost50", 1], ["CardPack:zcp_reagent_c_t02_medium", 1]],
-  MissionAlert_Proto_03: [["CardPack:zcp_mtx_boost100", 1], ["CardPack:zcp_reagent_c_t03_medium", 1]],
-  MissionAlert_Proto_04: [["CardPack:zcp_mtx_boost100", 1], ["CardPack:zcp_reagent_c_t04_medium", 1]],
+  [halloweenAlerts]: () => [[candy, 100]],
+  MissionAlert_Proto_01: () => [["CardPack:zcp_mtx_boost50", 1], ["CardPack:zcp_reagent_c_t01_medium", 1]],
+  MissionAlert_Proto_02: () => [["CardPack:zcp_mtx_boost50", 1], ["CardPack:zcp_reagent_c_t02_medium", 1]],
+  MissionAlert_Proto_03: () => [["CardPack:zcp_mtx_boost100", 1], ["CardPack:zcp_reagent_c_t03_medium", 1]],
+  MissionAlert_Proto_04: () => [["CardPack:zcp_mtx_boost100", 1], ["CardPack:zcp_reagent_c_t04_medium", 1]],
   ...Object.fromEntries(Array.from({ length: 17 }, (_, index) => index + 4).map((tier) =>
-    [`MissionAlert_Storm_T${String(tier).padStart(2, "0")}`, [[`CardPack:zcp_reagent_c_t0${stormTier(tier)}_high`, 1]]]))
+    [`MissionAlert_Storm_T${String(tier).padStart(2, "0")}`, () => [[`CardPack:zcp_reagent_c_t0${stormTier(tier)}_high`, 1]]])),
+  MissionAlert_Storm: (row, mission) => [
+    [`CardPack:zcp_reagent_c_t0${zoneOfModifierGroup(row.modifierTierGroup)}_high`, 1],
+    ...(isEventActive(mutantStorms) ? [[stormTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]] : [])
+  ]
 };
+
+const rewardsOf = (row, mission) => alertRewards[row.lootTierGroup](row, mission).map(([itemType, quantity]) => ({ itemType, quantity }));
+
+// An alert's modifiers (FFortAvailableMissionAlertData MissionAlertModifiers: the mission's modifiers on the map and,
+// through the zone's details, the zone's; see world/validate): the gameplay modifiers of its row's ModifierTierGroup.
+// The storm rows name STMZ.ZoneMods_<zone>, a group no shipped table has (Epic's servers rolled it), so the modifiers
+// are Core's (🟡): the storm mutations the storm events' quests hunt (FirstStorm's and 1.9.1's Vindertech quests
+// KillEnragedHusks, KillQuickenedPitchers, KillWallWeakeningLobbers, KillHealingDeathburstHusks,
+// KillExplodingDeathburstHusks, KillLifeLeechAttackHusks, KillMetalCorrosionHusks: the GM_* items whose tags their
+// objectives target), one in Stonewood, two in Plankerton and Canny Valley, three in Twine Peaks, picked per alert.
+const stormMutations = [
+  "GameplayModifier:gm_enemy_onlowhealth_enrage",
+  "GameplayModifier:gm_enemy_ondmgreceived_speedbuff",
+  "GameplayModifier:gm_enemy_onhitweakenbuildings",
+  "GameplayModifier:gm_enemy_ondeath_areaheal",
+  "GameplayModifier:gm_basehusk_ondeath_explode",
+  "GameplayModifier:gm_enemy_ondmgdealt_lifeleech",
+  "GameplayModifier:gm_basehusk_ondmgdealt_metalcorrosion"
+];
+const modifierCounts = [1, 2, 2, 3];
+const noLoot = () => ({ tierGroupName: "", items: [] });
+
+function alertModifiers(row, seed) {
+  if (!row.modifierTierGroup?.startsWith("STMZ.ZoneMods_")) return noLoot();
+  const known = stormMutations.filter((templateId) => getItem(templateId));
+  return {
+    tierGroupName: row.modifierTierGroup,
+    items: shuffled(known, `${seed}:modifiers`).slice(0, modifierCounts[zoneOfModifierGroup(row.modifierTierGroup) - 1])
+      .map((itemType) => ({ itemType, quantity: 1 }))
+  };
+}
 
 function alertFor(data, mission, category) {
   const tile = data.tiles[mission.tileIndex];
@@ -179,39 +227,101 @@ function alertFor(data, mission, category) {
   return tier;
 }
 
+const never = "0001-01-01T00:00:00.000Z";
+
+// FFortAvailableMissionAlertData. From 1.7.2 it also has SpreadDataName and RefreshSpreadAt (earlier clients skip them).
+function alertOn(mission, row, category, seed, availableUntil, spreadDataName = "") {
+  return {
+    categoryName: category,
+    spreadDataName,
+    missionAlertGuid: missionGuid(seed),
+    tileIndex: mission.tileIndex,
+    availableUntil,
+    refreshSpreadAt: never,
+    missionAlertRewards: { tierGroupName: row.lootTierGroup, items: rewardsOf(row, mission) },
+    missionAlertModifiers: alertModifiers(row, seed)
+  };
+}
+
+// A storm that spreads (1.9.1's Mutant Storms: their StormCategory rows name a MissionAlertSpreadDatas row) gets
+// TotalChancesToSpread chances, one every SpreadInterval minutes from the day's start, each spreading with
+// ChanceToSpread to up to MaxNumTilesToSpreadTo of the nearest missions that can carry its category: new storm alerts
+// that appear on the map as the day goes on, the storm's RefreshSpreadAt saying when it may next spread. This is Core's
+// reading of the rows (Epic's server did the spreading); every roll comes from the storm's seed and the time window,
+// so everyone sees the same storms.
+const nearbyTiles = 2.5;
+
+function spreadStorm(data, missions, storm, dayStart, now, taken, availableUntil) {
+  const spread = missionAlertSpread(storm.row.spreadRowName);
+  if (!spread || !(spread.spreadInterval > 0)) return { spreads: [], refreshAt: undefined };
+  const at = (chance) => new Date(dayStart.getTime() + chance * spread.spreadInterval * 60 * 1000);
+  const origin = data.tiles[storm.mission.tileIndex];
+  const distance = (mission) => Math.hypot(data.tiles[mission.tileIndex].xCoordinate - origin.xCoordinate,
+    data.tiles[mission.tileIndex].yCoordinate - origin.yCoordinate);
+  const spreads = [];
+  for (let chance = 1; chance <= spread.totalChancesToSpread; chance++) {
+    if (at(chance) > now) return { spreads, refreshAt: at(chance).toISOString() };
+    if (fraction(digest(`${storm.seed}:spread:${chance}`)) >= spread.chanceToSpread) continue;
+    const targets = missions
+      .filter((mission) => !taken.has(mission.missionGuid) && distance(mission) <= nearbyTiles && alertFor(data, mission, storm.category))
+      .sort((a, b) => distance(a) - distance(b)
+        || fraction(digest(`${storm.seed}:${a.missionGuid}`)) - fraction(digest(`${storm.seed}:${b.missionGuid}`)))
+      .slice(0, spread.maxNumTilesToSpreadTo);
+    targets.forEach((mission, index) => {
+      taken.add(mission.missionGuid);
+      spreads.push(alertOn(mission, alertFor(data, mission, storm.category), storm.category, `${storm.seed}:spread:${chance}:${index}`,
+        availableUntil));
+    });
+  }
+  return { spreads, refreshAt: undefined };
+}
+
 // Core's placement (the client's theater info would say how many, and none ships): each region gets one alert of each
 // category the theater has, on missions whose tile can carry one and whose difficulty has a row of that category, one
-// alert a mission. A main theater's are a general one (MissionAlert_1-4) and a storm one (StormLowCategory), Hexsylvania's
-// a Halloween one. The alert names its category (FFortAvailableMissionAlertData CategoryName), which the map tile looks
-// up in MissionAlertCategories (AFortTheaterMapTile::GetMissionAlertCategory, 1.8 0x8F3D40, the tile's alert's category
+// alert a mission. A main theater's are a general one (MissionAlert_1-4) and a storm one (StormLowCategory), and while
+// the Mutant Storms run (1.9.1) each of its zones gets a Mutant Storm (StormCategory) that spreads; Hexsylvania's are
+// Halloween ones. The alert
+// names its category (FFortAvailableMissionAlertData CategoryName), which the map tile looks up in
+// MissionAlertCategories (AFortTheaterMapTile::GetMissionAlertCategory, 1.8 0x8F3D40, the tile's alert's category
 // name): BP_Hex_PARENT's HandleMissionAlert shows every alert's indicator and, for Storm and StormLow, the storm swirl
 // (P_StormAffected) and its timer (Core-Backend #91). Without a name every alert was General.
-function rollAlerts({ data }, missions, day, availableUntil) {
+// Returns the alerts and when the theater's alerts next change (a storm's next spread, else the day's end).
+function rollAlerts({ data }, missions, day, dayStart, now, availableUntil) {
   const categories = isHexsylvania(data.uniqueId) ? ["HalloweenCategory"] : ["GeneralCategory", "StormLowCategory"];
-  return data.regions.flatMap((region, regionIndex) => {
-    const taken = new Set();
-    return categories.flatMap((category) => {
-      // The general alert keeps the seed alerts had before categories, so a day's alerts kept their guids.
-      const seed = `${data.uniqueId}:${day}:alert:${regionIndex}${category === "GeneralCategory" ? "" : `:${category}`}`;
-      const candidates = missions.filter((mission) => region.tileIndices.includes(mission.tileIndex) && !taken.has(mission.missionGuid)
-        && alertFor(data, mission, category));
-      if (!candidates.length) return [];
-      const [mission] = shuffled(candidates.map((candidate) => candidate.missionGuid), seed)
-        .map((guid) => candidates.find((candidate) => candidate.missionGuid === guid));
-      taken.add(mission.missionGuid);
-      const { lootTierGroup } = alertFor(data, mission, category);
-      return [{
-        categoryName: category,
-        missionAlertGuid: missionGuid(seed),
-        tileIndex: mission.tileIndex,
-        availableUntil,
-        missionAlertRewards: {
-          tierGroupName: lootTierGroup,
-          items: alertRewards[lootTierGroup].map(([itemType, quantity]) => ({ itemType, quantity }))
-        }
-      }];
-    });
-  });
+  const taken = new Set();
+  const storms = [];
+  const place = (category, seed, inScope) => {
+    const candidates = missions.filter((mission) => inScope(mission) && !taken.has(mission.missionGuid) && alertFor(data, mission, category));
+    if (!candidates.length) return [];
+    const [mission] = shuffled(candidates.map((candidate) => candidate.missionGuid), seed)
+      .map((guid) => candidates.find((candidate) => candidate.missionGuid === guid));
+    taken.add(mission.missionGuid);
+    const row = alertFor(data, mission, category);
+    const alert = alertOn(mission, row, category, seed, availableUntil, row.spreadRowName ?? "");
+    if (row.spreadRowName) storms.push({ alert, mission, row, seed, category });
+    return [alert];
+  };
+  // The general alert keeps the seed alerts had before categories, so a day's alerts kept their guids.
+  const alerts = data.regions.flatMap((region, regionIndex) => categories.flatMap((category) =>
+    place(category, `${data.uniqueId}:${day}:alert:${regionIndex}${category === "GeneralCategory" ? "" : `:${category}`}`,
+      (mission) => region.tileIndices.includes(mission.tileIndex))));
+  // A Mutant Storm starts in each of the theater's zones (one per StormCategory row its missions can carry, each row a
+  // zone and a spread) and spreads from there.
+  if (!isHexsylvania(data.uniqueId)) {
+    const rows = [...new Set(missions.map((mission) => alertFor(data, mission, "StormCategory")?.name).filter(Boolean))];
+    for (const name of rows) {
+      alerts.push(...place("StormCategory", `${data.uniqueId}:${day}:alert:storm:${name}`,
+        (mission) => alertFor(data, mission, "StormCategory")?.name === name));
+    }
+  }
+  let nextRefresh = availableUntil;
+  for (const storm of storms) {
+    const { spreads, refreshAt } = spreadStorm(data, missions, storm, dayStart, now, taken, availableUntil);
+    alerts.push(...spreads);
+    storm.alert.refreshSpreadAt = refreshAt ?? availableUntil;
+    if (refreshAt && refreshAt < nextRefresh) nextRefresh = refreshAt;
+  }
+  return { alerts, nextRefresh };
 }
 
 // FFortActiveTheaterInfo, the body of GET /fortnite/api/game/v2/world/info.
@@ -231,12 +341,16 @@ export function missionPackSource(missionPoints) {
 
 const wholePoints = (missionPoints) => (Number.isFinite(missionPoints) && missionPoints > 0 ? Math.floor(missionPoints) : 0);
 
+// Missions and alerts are the UTC day's; a Mutant Storm's spreads join its alerts as the day goes on, and the theater's
+// alerts' nextRefresh is the next spread, so the client asks again then.
 export function worldInfo(now = new Date()) {
   const day = now.toISOString().slice(0, 10);
+  const dayStart = new Date(`${day}T00:00:00.000Z`);
   const availableUntil = `${day}T23:59:59.999Z`;
   const event = hexsylvania();
   const theaters = event ? [...layout().theaters, event] : layout().theaters;
   const missions = theaters.map((theater) => rollMissions(theater, day, availableUntil));
+  const alerts = theaters.map((theater, index) => rollAlerts(theater, missions[index], day, dayStart, now, availableUntil));
   return {
     theaters: theaters.map((theater) => theater.data),
     missions: theaters.map((theater, index) => ({
@@ -246,8 +360,8 @@ export function worldInfo(now = new Date()) {
     })),
     missionAlerts: theaters.map((theater, index) => ({
       theaterId: theater.data.uniqueId,
-      availableMissionAlerts: rollAlerts(theater, missions[index], day, availableUntil),
-      nextRefresh: availableUntil
+      availableMissionAlerts: alerts[index].alerts,
+      nextRefresh: alerts[index].nextRefresh
     }))
   };
 }
@@ -267,7 +381,9 @@ export function atDifficulty(mission, rowName) {
 // before UTC midnight.
 export function findMission(missionGuid, now = new Date(), missionAlertGuid = "") {
   if (!missionGuid) return null;
-  for (const day of [now, new Date(now.getTime() - 24 * 60 * 60 * 1000)]) {
+  // Yesterday's as it ended, with all its storms' spreads.
+  const yesterday = new Date(Date.parse(`${now.toISOString().slice(0, 10)}T00:00:00.000Z`) - 1);
+  for (const day of [now, yesterday]) {
     const info = worldInfo(day);
     for (const [index, theater] of info.missions.entries()) {
       const found = theater.availableMissions.find((candidate) => candidate.missionGuid === missionGuid);

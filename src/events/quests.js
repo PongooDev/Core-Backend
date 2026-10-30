@@ -1,7 +1,8 @@
 import { perBuild } from "../gamedata/read.js";
 import { isDone, questIdOf } from "../profiles/quests.js";
-import { fortnitemares, isEventActive } from "./events.js";
+import { fortnitemares, isEventActive, mutantStorms } from "./events.js";
 import { fortnitemaresQuests } from "./fortnitemares.js";
+import { mutantStormsQuests } from "./mutantstorms.js";
 
 // An event's quests leave with it (Core-Backend #127). Epic's were limited time quests: each one's Category is the
 // event's row of QuestCategoryTable (LTE_Fortnitemares, "Event: Fortnitemares", for every quest in
@@ -13,7 +14,8 @@ import { fortnitemaresQuests } from "./fortnitemares.js";
 // reward choices), and the quests that grant one (the Vlad World variants, HalloweenQuest_2017_CompleteMissions_2-14,
 // which Core doesn't grant but whose hidden reward is the event's TrainHero), from the requesting build's quest data.
 // For 1.8 to 1.9.1's Fortnitemares that is the 56 quests of the LTE_Fortnitemares category.
-const questLines = [{ flag: fortnitemares, starting: fortnitemaresQuests }];
+// 1.9.1's Mutant Storms quest line is the Vindertech quests (LTE_Vindertech).
+const questLines = [{ flag: fortnitemares, starting: fortnitemaresQuests }, { flag: mutantStorms, starting: mutantStormsQuests }];
 
 const questRewards = (quest) => [...(quest?.rewards ?? []), ...(quest?.hiddenRewards ?? []), ...(quest?.selectableRewards ?? []).flat()]
   .filter((reward) => reward.templateId.toLowerCase().startsWith("quest:"))
