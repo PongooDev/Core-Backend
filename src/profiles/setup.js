@@ -11,6 +11,7 @@ import { athenaNeedsSetUp, setUpAthena } from "./athena.js";
 import { foundersNeedSetUp, setUpFounders } from "./founders.js";
 import { friendCodesNeedSetUp, setUpFriendCodes } from "./friendcodes.js";
 import { ownsNode } from "./homebase.js";
+import { lootLlamaVoucher, lootLlamaVoucherMissing } from "./lootllamas.js";
 import { tidyWorldStacks } from "./items.js";
 import { grant } from "./progress.js";
 import { findQuestItem } from "./quests.js";
@@ -59,6 +60,8 @@ import { levelStartXp, settleLevel } from "./xp.js";
 //   from (profiles/friendcodes.js, issue #35).
 // - Battle Royale's athena profile (1.8) holds the build's starter cosmetics and those the player earned, or every
 //   cosmetic when the host gives them all (giveAllCosmetics); the locker lists them (profiles/athena.js).
+// - The Mini Reward Llama voucher the "Loot Llamas" onboarding quest needs, when the account is on that step with no
+//   voucher or llama to open (profiles/lootllamas.js): the Loot tab otherwise shows nothing and the UI stays locked.
 // Profiles made before this, or left with no hero at all, get what they lack when they next load. So does a profile
 // whose lead slot is empty: its first hero in no squad takes it (heroes in other slots or on expeditions stay).
 const { defaultHero } = readGameData("newaccount", {});
@@ -96,7 +99,7 @@ export function needsSetUp(profile, settings = {}) {
   return startingQuests().some((questId) => !findQuestItem(profile, questId)) || Boolean(defaultHero && !heroes(profile).length)
     || Boolean(leadCandidate(profile)) || schematicMigrations.some(({ name }) => !migrated(profile, name)) || !migrated(profile, "levelXp")
     || collectorsNeedSetUp(profile) || expeditionsNeedSetUp(profile) || foundersNeedSetUp(profile, settings)
-    || friendCodesNeedSetUp(profile);
+    || friendCodesNeedSetUp(profile) || lootLlamaVoucherMissing(profile);
 }
 
 // theater0's world items granted before Core gave new ones their template's durability (profiles/items.js) get it, once;
@@ -168,4 +171,8 @@ export function setUpProfile(session, profileId = "profile0") {
   if (defaultHero && !heroes(profile).length) grant(session, defaultHero, 1);
   const lead = leadCandidate(profile);
   if (lead) assignToSquad(session, lead, leadSquad(profile), 0);
+  if (lootLlamaVoucherMissing(profile)) {
+    grant(session, lootLlamaVoucher, 1);
+    log("Profiles", `${session.accountId}: on the Loot Llamas step with no Mini Reward Llama to open, given one voucher`);
+  }
 }
