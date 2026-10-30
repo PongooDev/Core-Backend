@@ -13,7 +13,7 @@ export const certUserAgent = "game=Fortnite, engine=UE4, build=++Fortnite+Releas
 // session has had no EarnScore (earnScoreWaitMs, src/profiles/scores.js).
 export async function startBackend(config = {}) {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-backend-"));
-  const server = await createServer({ dataDir, requestLog: false, emptyServerWaitMs: 0, earnScoreWaitMs: 0, ...config });
+  const server = await createServer({ dataDir, requestLog: false, emptyServerWaitMs: 0, earnScoreWaitMs: 0, defaultFoundersAccess: true, ...config });
   server.listen(0, "127.0.0.1");
   await once(server, "listening");
 
@@ -92,8 +92,8 @@ export function get(port, path, token) {
   return send({ host: "127.0.0.1", port, path, headers });
 }
 
-export async function userLogin(port, username) {
-  const response = await requestToken(port, { grant_type: "password", username, password: "test" });
+export async function userLogin(port, username, password = "test") {
+  const response = await requestToken(port, { grant_type: "password", username, password });
   return { token: response.body.access_token, accountId: response.body.account_id };
 }
 

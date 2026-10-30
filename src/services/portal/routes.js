@@ -5,7 +5,16 @@ import { isContactEmailLogin, validateEmail } from "../../accounts/email.js";
 import { isServerAccountName, validatePassword, validateUsername, verifyPassword } from "../../accounts/password.js";
 import { EmailError } from "../../accounts/store.js";
 import { sendError } from "../../errors.js";
-import { createRateLimiter } from "./ratelimit.js";
+import { getItem } from "../../gamedata/items.js";
+import { grantCosmetic } from "../../profiles/athena.js";
+import { campaignAccessToken, foundersEditions, setFoundersEdition } from "../../profiles/founders.js";
+import { findItem, grantItem } from "../../profiles/items.js";
+import { grant } from "../../profiles/progress.js";
+import { openSession } from "../../profiles/session.js";
+import { notifyProfiles } from "../mcp/profile.js";
+import { createFailureTracker, createRateLimiter, getClientIp } from "./ratelimit.js";
+import { inBuild } from "../../builds/context.js";
+import { knownTemplate } from "../../admin/describe.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const portalFile = path.join(here, "portal.html");
@@ -20,6 +29,8 @@ export function portalRoutes(context) {
   const resetPasswordLimiter = createRateLimiter({ windowMs: 5 * 60 * 1000, max: 5 });
   const checkUsernameLimiter = createRateLimiter({ windowMs: 60 * 1000, max: 30 });
   const accountLimiter = createRateLimiter({ windowMs: 5 * 60 * 1000, max: 10 });
+  const redeemLimiter = createRateLimiter({ windowMs: 5 * 60 * 1000, max: 10, message: "Too many redemption attempts. Please wait a few minutes." });
+  const redeemFailureTracker = createFailureTracker({ windowMs: 15 * 60 * 1000, maxFailures: 5 });
 
   const emailError = (res, error) => error.taken
     ? sendError(res, 409, "errors.com.epicgames.account.email_already_linked", error.message)
@@ -56,6 +67,10 @@ export function portalRoutes(context) {
   // Serve the registration and player portal page
   router.get("/register", (req, res) => res.sendFile(portalFile));
   router.get("/portal", (req, res) => res.sendFile(portalFile));
+  router.get("/redeem", (req, res) => res.sendFile(portalFile));
+  router.get("/change-password", (req, res) => res.sendFile(portalFile));
+  router.get("/password", (req, res) => res.sendFile(portalFile));
+  router.get("/email", (req, res) => res.sendFile(portalFile));
   router.get("/reset-password", (req, res) => res.sendFile(portalFile));
 
   // Public status check for the portal
@@ -189,6 +204,96 @@ export function portalRoutes(context) {
       return res.status(400).json({ valid: false, error: "This password reset link is invalid or has expired." });
     }
     res.json({ valid: true, displayName: entry.displayName });
+  });
+
+  // Redeem promotional code or founder friend code
+  router.post("/api/redeem", redeemLimiter, async (req, res) => {
+    if (redeemFailureTracker.isBlocked(req)) {
+      return sendError(res, 429, "errors.com.epicgames.common.throttled", "Too many failed redemption attempts. Please wait 15 minutes before trying again.");
+    }
+
+    const login = String(req.body?.login ?? req.body?.username ?? "").trim();
+    const password = String(req.body?.password ?? "").trim();
+    const code = String(req.body?.code ?? "").trim();
+
+    if (!login) {
+      return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "Username or email is required.");
+    }
+    if (!code) {
+      return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "Redeem code is required.");
+    }
+
+    const account = await signIn(res, login, password);
+    if (!account) {
+      redeemFailureTracker.recordFailure(req);
+      return;
+    }
+    if (account.banned) {
+      return sendError(res, 403, "errors.com.epicgames.account.banned", "This account is banned and cannot redeem codes.");
+    }
+
+    if (!context.friendCodes?.redeem) {
+      return sendError(res, 500, "errors.com.epicgames.server.internal_error", "Code redemption service unavailable.");
+    }
+
+    try {
+      const { code: redeemedCode, rewards } = await context.friendCodes.redeem(code, account, getClientIp(req));
+      const session = openSession(context.profiles, account.id);
+      const grantedDetails = [];
+
+      if (rewards.vbucks > 0) {
+        grantItem(session, "Currency:MtxPurchased", rewards.vbucks);
+        grantedDetails.push(`${rewards.vbucks.toLocaleString()} V-Bucks`);
+      }
+
+      if (rewards.foundersEdition > 0) {
+        inBuild("3724489", () => setFoundersEdition(session, rewards.foundersEdition));
+        const editionName = foundersEditions[rewards.foundersEdition - 1]?.name || `Edition ${rewards.foundersEdition}`;
+        grantedDetails.push(`${editionName} Founder's Edition`);
+      }
+
+      if (rewards.campaignAccess && !findItem(session.profile("profile0").profile, campaignAccessToken)) {
+        inBuild("3724489", () => grant(session, campaignAccessToken, 1));
+        if (!grantedDetails.some((d) => d.includes("Founder's Edition"))) {
+          grantedDetails.push("Save the World Campaign Access");
+        }
+      }
+
+      if (Array.isArray(rewards.items)) {
+        for (const item of rewards.items) {
+          const templateId = String(item.templateId ?? "").trim();
+          const qty = Number(item.quantity) || 1;
+          if (!templateId) continue;
+          if (templateId.toLowerCase().startsWith("athena")) {
+            grantCosmetic(session, templateId);
+            grantedDetails.push(getItem(templateId)?.name || templateId);
+          } else {
+            const known = knownTemplate(templateId);
+            if (known) {
+              inBuild(known.build, () => grant(session, known.templateId, qty));
+            } else {
+              inBuild("3724489", () => grant(session, templateId, qty));
+            }
+            const name = getItem(templateId)?.name || templateId;
+            grantedDetails.push(qty > 1 ? `${name} (x${qty})` : name);
+          }
+        }
+      }
+
+      session.commit();
+      notifyProfiles(context, session);
+
+      res.json({
+        success: true,
+        code: redeemedCode,
+        rewards,
+        granted: grantedDetails,
+        message: `Successfully redeemed! Granted: ${grantedDetails.join(", ") || "Rewards applied to account."}`
+      });
+    } catch (err) {
+      redeemFailureTracker.recordFailure(req);
+      return sendError(res, 400, "errors.com.epicgames.redeem.error", err.message);
+    }
   });
 
   // Complete password reset via token

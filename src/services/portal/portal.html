@@ -66,9 +66,12 @@
   }
   
   .tabs {
-    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
     background: var(--field); padding: 4px; border-radius: var(--radius-sm);
     margin-bottom: 22px; border: 1px solid var(--line);
+  }
+  @media (max-width: 440px) {
+    .tabs { grid-template-columns: 1fr 1fr; }
   }
   .tab-btn {
     background: transparent; border: 0; padding: 9px 12px; color: var(--muted);
@@ -162,6 +165,7 @@
   <div class="card">
     <div class="tabs" id="portal-tabs">
       <button type="button" class="tab-btn active" id="tab-btn-register" onclick="switchTab('register')">Create Account</button>
+      <button type="button" class="tab-btn" id="tab-btn-redeem" onclick="switchTab('redeem')">Redeem Code</button>
       <button type="button" class="tab-btn" id="tab-btn-change" onclick="switchTab('change')">Password</button>
       <button type="button" class="tab-btn" id="tab-btn-email" onclick="switchTab('email')">Email</button>
     </div>
@@ -222,6 +226,53 @@
         Log in with your username and password in the game launcher.
       </div>
       <button type="button" class="btn-submit" onclick="resetRegisterForm()">Register Another Account</button>
+    </div>
+
+    <!-- Redeem Code Form -->
+    <form id="form-redeem" style="display:none" onsubmit="handleRedeem(event)">
+      <div class="helper" style="margin-bottom:14px; background:var(--surface-2); padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--line);">
+        Sign in with your account credentials to redeem a promotional or friend code. Granted items, V-Bucks, or Founder's access sync instantly to your game profile!
+      </div>
+
+      <div class="form-group">
+        <label for="rdm-username">Username or Email</label>
+        <div class="input-wrap">
+          <input type="text" id="rdm-username" class="field" placeholder="Your username or linked email" required autocomplete="username">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="rdm-password">Password</label>
+        <div class="input-wrap">
+          <input type="password" id="rdm-password" class="field" placeholder="Your account password" required autocomplete="current-password">
+          <button type="button" class="toggle-pw" onclick="togglePw('rdm-password', this)" title="Show/Hide Password" aria-label="Toggle password visibility">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="rdm-code">Redeem Code</label>
+        <div class="input-wrap">
+          <input type="text" id="rdm-code" class="field" placeholder="e.g. CORE-ABCD-1234" required autocomplete="off" style="font-family:var(--mono); text-transform:uppercase; letter-spacing:0.05em;">
+        </div>
+        <div class="helper">Enter your promotional code or Founder's friend invite code.</div>
+      </div>
+
+      <button type="submit" id="btn-rdm-submit" class="btn-submit">
+        <span>Redeem Code</span>
+      </button>
+    </form>
+
+    <!-- Redeem Success View -->
+    <div id="rdm-success" class="success-box">
+      <div class="success-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      </div>
+      <h2>Code Redeemed!</h2>
+      <p>Rewards successfully granted to <strong id="rdm-success-account" style="color:#fff"></strong>.</p>
+      <div class="info-snippet" id="rdm-success-details"></div>
+      <button type="button" class="btn-submit" onclick="resetRedeemForm()">Redeem Another Code</button>
     </div>
 
     <!-- Change Password Form -->
@@ -355,15 +406,20 @@ function clearAlert() {
   node.textContent = "";
 }
 
+let isStandalone = false;
+
 function switchTab(tab) {
   clearAlert();
-  for (const name of ["register", "change", "email"]) {
-    $("tab-btn-" + name).classList.toggle("active", name === tab);
-    $("form-" + name).style.display = name === tab ? "block" : "none";
+  for (const name of ["register", "redeem", "change", "email"]) {
+    const btn = $("tab-btn-" + name);
+    if (btn) btn.classList.toggle("active", name === tab);
+    const form = $("form-" + name);
+    if (form) form.style.display = name === tab ? "block" : "none";
   }
   $("form-reset").style.display = tab === "reset" ? "block" : "none";
   $("reg-success").classList.remove("show");
-  if (tab === "reset") $("portal-tabs").style.display = "none";
+  $("rdm-success").classList.remove("show");
+  if (isStandalone || tab === "reset") $("portal-tabs").style.display = "none";
 }
 
 function togglePw(inputId, btn) {
@@ -457,6 +513,69 @@ function resetRegisterForm() {
   $("reg-success").classList.remove("show");
   $("form-register").style.display = "block";
   clearAlert();
+}
+
+function resetRedeemForm() {
+  $("form-redeem").reset();
+  $("rdm-success").classList.remove("show");
+  $("form-redeem").style.display = "block";
+  clearAlert();
+}
+
+async function handleRedeem(e) {
+  e.preventDefault();
+  clearAlert();
+
+  const username = $("rdm-username").value.trim();
+  const password = $("rdm-password").value.trim();
+  const code = $("rdm-code").value.trim().toUpperCase();
+
+  if (!code) {
+    showAlert("Please enter a redemption code.", true);
+    return;
+  }
+
+  const btn = $("btn-rdm-submit");
+  btn.disabled = true;
+  btn.innerHTML = "<span>Redeeming…</span>";
+
+  try {
+    const res = await fetch("/api/redeem", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password, code })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.errorMessage || "Redemption failed.");
+    }
+
+    $("form-redeem").style.display = "none";
+    $("rdm-success-account").textContent = data.displayName || username;
+
+    const granted = [];
+    if (data.rewards) {
+      if (data.rewards.vbucks > 0) granted.push(`+${data.rewards.vbucks.toLocaleString()} V-Bucks`);
+      if (data.rewards.foundersTierName) granted.push(data.rewards.foundersTierName);
+      else if (data.rewards.foundersEdition > 0) granted.push(`Founder's Edition (Tier ${data.rewards.foundersEdition})`);
+      if (data.rewards.campaignAccess) granted.push("Save the World Campaign Access");
+      if (Array.isArray(data.rewards.items) && data.rewards.items.length > 0) {
+        for (const it of data.rewards.items) {
+          const qty = it.quantity && it.quantity > 1 ? ` (x${it.quantity})` : "";
+          granted.push(`${it.templateId || it.id}${qty}`);
+        }
+      }
+    }
+    $("rdm-success-details").innerHTML = granted.length > 0
+      ? "Granted:<br>• " + granted.join("<br>• ")
+      : (data.message || "Code successfully redeemed!");
+    $("rdm-success").classList.add("show");
+  } catch (err) {
+    showAlert(err.message, true);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = "<span>Redeem Code</span>";
+  }
 }
 
 async function handleChangePassword(e) {
@@ -583,9 +702,55 @@ async function handleResetPassword(e) {
   }
 }
 
-// Check for reset password token in query parameters
+// Determine portal route and standalone mode
+const path = window.location.pathname.toLowerCase().replace(/\/+$/, "") || "/";
 const params = new URLSearchParams(window.location.search);
 const resetTokenParam = params.get("token");
+const codeParam = params.get("code");
+const tabParam = params.get("tab");
+
+let initialTab = "register";
+
+if (path.endsWith("/redeem")) {
+  isStandalone = true;
+  initialTab = "redeem";
+  document.querySelector(".brand-header h1").textContent = "Redeem Code";
+  document.title = "Core — Redeem Code";
+} else if (path.endsWith("/register")) {
+  isStandalone = true;
+  initialTab = "register";
+  document.querySelector(".brand-header h1").textContent = "Create Account";
+  document.title = "Core — Create Account";
+} else if (path.endsWith("/change-password") || path.endsWith("/password")) {
+  isStandalone = true;
+  initialTab = "change";
+  document.querySelector(".brand-header h1").textContent = "Change Password";
+  document.title = "Core — Change Password";
+} else if (path.endsWith("/email")) {
+  isStandalone = true;
+  initialTab = "email";
+  document.querySelector(".brand-header h1").textContent = "Account Email";
+  document.title = "Core — Account Email";
+} else if (path.endsWith("/reset-password") || resetTokenParam) {
+  isStandalone = true;
+  initialTab = "reset";
+  document.querySelector(".brand-header h1").textContent = "Reset Password";
+  document.title = "Core — Reset Password";
+} else if (tabParam) {
+  initialTab = tabParam;
+}
+
+if (codeParam) {
+  const codeField = $("rdm-code");
+  if (codeField) codeField.value = codeParam.trim();
+  initialTab = "redeem";
+}
+
+switchTab(initialTab);
+if (isStandalone) {
+  $("portal-tabs").style.display = "none";
+}
+
 if (resetTokenParam) {
   activeResetToken = resetTokenParam.trim();
   switchTab("reset");

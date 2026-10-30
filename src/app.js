@@ -66,7 +66,7 @@ export function createContext(config) {
   if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
   if (config.seasonalEvents !== undefined) settings.update({ seasonalEvents: config.seasonalEvents });
   for (const key of ["battleRoyaleVbucks", "battleRoyaleRewards", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits", "cheats", "cheatAccounts",
-    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "regionFallback"]) {
+    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "regionFallback", "defaultFoundersAccess"]) {
     if (config[key] !== undefined) settings.update({ [key]: config[key] });
   }
   const friends = createFriendStore(config.dataDir);
@@ -86,6 +86,7 @@ export function createContext(config) {
     stats,
     profiles: createProfileStore(config.dataDir, {
       giveAllCosmetics: config.giveAllCosmetics === true,
+      defaultFoundersAccess: () => settings.get().defaultFoundersAccess === true,
       wonPlaylists: (accountId) => Object.entries(stats.playlists(accountId))
         .filter(([playlistId, playlist]) => isMainPlaylist(playlistId) && (playlist.placetop1 ?? 0) > 0).map(([playlistId]) => Number(playlistId))
     }),
