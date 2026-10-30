@@ -51,11 +51,26 @@ const otherHeroBundles = (chosen) => `foundersquest_herobundle_no${chosen}`;
 export const campaignAccessToken = "Token:campaignaccess";
 const campaignAccessMissing = (profile) => Boolean(getItem(campaignAccessToken)) && !findItem(profile, campaignAccessToken);
 
-export const foundersNeedSetUp = (profile) => !(profile.coreMigrations ?? []).includes(foundersMigration) || campaignAccessMissing(profile);
+export const foundersNeedSetUp = (profile, settings = {}) => {
+  const allow = typeof settings.defaultFoundersAccess === "function"
+    ? settings.defaultFoundersAccess()
+    : Boolean(settings.defaultFoundersAccess);
+  if (!allow) return false;
+  return !(profile.coreMigrations ?? []).includes(foundersMigration) || campaignAccessMissing(profile);
+};
 
 // Once per profile0: new accounts with their starting quests, older ones when they next load.
 export function setUpFounders(session) {
+  const allow = typeof session.settings?.defaultFoundersAccess === "function"
+    ? session.settings.defaultFoundersAccess()
+    : Boolean(session.settings?.defaultFoundersAccess);
   const { profile } = session.profile("profile0");
+  if (!allow) {
+    if (!(profile.coreMigrations ?? []).includes(foundersMigration)) {
+      profile.coreMigrations = [...(profile.coreMigrations ?? []), foundersMigration];
+    }
+    return;
+  }
   if (campaignAccessMissing(profile)) grant(session, campaignAccessToken, 1);
   if ((profile.coreMigrations ?? []).includes(foundersMigration)) return;
   for (const templateId of [foundersEdition.token, foundersEdition.quest]) {
@@ -121,6 +136,7 @@ export function setFoundersEdition(session, edition) {
     grant(session, templateId, 1);
     granted.push(templateId);
   };
+  if (campaignAccessMissing(profile)) give(campaignAccessToken);
   for (const step of foundersEditions.slice(current, edition)) {
     if (!findItem(profile, step.token)) give(step.token);
     if (!findQuestItem(profile, step.quest)) give(`Quest:${step.quest}`);

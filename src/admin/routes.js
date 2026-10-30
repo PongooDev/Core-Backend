@@ -33,7 +33,7 @@ import { requireLoopback, requirePanelRequest } from "./local.js";
 import { defaultBattleRoyaleNews, defaultLoginMessage, defaultSubgameSelect } from "../services/content/pages.js";
 import { inBuild } from "../builds/context.js";
 import { battleRoyaleBuilds, certBuild, versionOf } from "../builds/detect.js";
-import { eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, shopDay, weeklyStoreEnd } from "../store/itemshop.js";
+import { cosmeticRarity, cosmeticType, eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, shopDay, weeklyStoreEnd } from "../store/itemshop.js";
 
 import { isServerAccountName, validatePassword } from "../accounts/password.js";
 import { EmailError } from "../accounts/store.js";
@@ -696,6 +696,7 @@ export function adminRoutes(context) {
       requirePassword: req.body?.requirePassword,
       allowRegistration: req.body?.allowRegistration,
       allowAutoRegistration: req.body?.allowAutoRegistration,
+      defaultFoundersAccess: req.body?.defaultFoundersAccess,
       seasonalEvents: req.body?.seasonalEvents,
       battleRoyaleVbucks: req.body?.battleRoyaleVbucks,
       battleRoyaleRewards: req.body?.battleRoyaleRewards,
@@ -766,13 +767,30 @@ export function adminRoutes(context) {
 
     const mapOffer = (o) => {
       const match = cosmetics.find((c) => c.templateId.toLowerCase() === o.templateId.toLowerCase());
+      let name = o.title || match?.name;
+      let type = match?.type;
+      let rarity = match?.rarity;
+      let rarityCode = match?.rarityCode;
+      if (!match) {
+        const athenaMatch = inBuild(build, () => {
+          const allAthena = athenaCosmetics();
+          return Object.entries(allAthena).find(([id]) => id.toLowerCase() === o.templateId.toLowerCase())?.[1];
+        });
+        if (athenaMatch) {
+          name = name || athenaMatch.name?.trim();
+          type = type || cosmeticType(athenaMatch.class, o.templateId);
+          const r = cosmeticRarity(athenaMatch.rarity);
+          rarity = rarity || r.label;
+          rarityCode = rarityCode || r.code;
+        }
+      }
       return {
         templateId: o.templateId,
-        name: o.title || match?.name || o.templateId,
+        name: name || o.templateId,
         price: o.price,
-        type: match?.type ?? "Cosmetic",
-        rarity: match?.rarity ?? "Uncommon",
-        rarityCode: match?.rarityCode ?? "uc"
+        type: type ?? "Cosmetic",
+        rarity: rarity ?? "Uncommon",
+        rarityCode: rarityCode ?? "uc"
       };
     };
 
@@ -863,6 +881,91 @@ export function adminRoutes(context) {
       }
     });
     res.json(getShopPayload());
+  });
+
+  // Redeem Codes & Rewards (Promotional & Friend Codes)
+  router.get("/admin/api/codes", (req, res) => {
+    if (!context.friendCodes?.list) return res.json([]);
+    const folder = req.query.folder ? String(req.query.folder).trim() : null;
+    const type = req.query.type ? String(req.query.type).trim() : null;
+    if (type === "friend") {
+      return res.json(context.friendCodes.listPlayerFriendCodes());
+    }
+    if (type === "promotional" || folder) {
+      return res.json(context.friendCodes.listPromotionalCodes(folder));
+    }
+    res.json(context.friendCodes.list());
+  });
+
+  router.post("/admin/api/codes", (req, res) => {
+    if (!context.friendCodes?.create) return invalid(res, "Friend codes store not available");
+    try {
+      const created = context.friendCodes.create(req.body ?? {});
+      res.status(201).json(created);
+    } catch (err) {
+      return invalid(res, err.message);
+    }
+  });
+
+  router.delete("/admin/api/codes/:code", (req, res) => {
+    if (!context.friendCodes?.delete) return invalid(res, "Friend codes store not available");
+    const success = context.friendCodes.delete(req.params.code);
+    if (!success) return notFound(res, `Code "${req.params.code}" not found`);
+    res.json({ success: true, deleted: req.params.code });
+  });
+
+  // Code Folders
+  router.get("/admin/api/code-folders", (req, res) => {
+    if (!context.friendCodes?.listFolders) return res.json([]);
+    res.json(context.friendCodes.listFolders());
+  });
+
+  router.post("/admin/api/code-folders", (req, res) => {
+    if (!context.friendCodes?.createFolder) return invalid(res, "Friend codes store not available");
+    try {
+      const created = context.friendCodes.createFolder(req.body?.name, req.body?.slug);
+      res.status(201).json(created);
+    } catch (err) {
+      return invalid(res, err.message);
+    }
+  });
+
+  router.delete("/admin/api/code-folders/:slug", (req, res) => {
+    if (!context.friendCodes?.deleteFolder) return invalid(res, "Friend codes store not available");
+    try {
+      const deleted = context.friendCodes.deleteFolder(req.params.slug);
+      if (!deleted) return notFound(res, `Folder "${req.params.slug}" not found`);
+      res.json({ success: true, deleted: req.params.slug });
+    } catch (err) {
+      return invalid(res, err.message);
+    }
+  });
+
+  // Player Friend Codes
+  router.get("/admin/api/accounts/:accountId/friend-codes", (req, res) => {
+    const account = accounts.get(req.params.accountId);
+    if (!account) return notFound(res, req.originalUrl);
+    if (!context.friendCodes?.listForAccount) return res.json([]);
+    res.json(context.friendCodes.listForAccount(account.id));
+  });
+
+  router.post("/admin/api/accounts/:accountId/friend-codes", (req, res) => {
+    const account = accounts.get(req.params.accountId);
+    if (!account) return notFound(res, req.originalUrl);
+    if (!context.friendCodes?.issue) return invalid(res, "Friend codes store not available");
+    try {
+      const codeType = req.body?.codeType || "CodeToken:founderfriendinvite";
+      const issued = context.friendCodes.issue(account.id, codeType, "epic");
+      const details = context.friendCodes.get(issued.code);
+      res.status(201).json(details || issued);
+    } catch (err) {
+      return invalid(res, err.message);
+    }
+  });
+
+  router.get("/admin/api/friend-codes", (req, res) => {
+    if (!context.friendCodes?.listPlayerFriendCodes) return res.json([]);
+    res.json(context.friendCodes.listPlayerFriendCodes());
   });
 
   function resolveReportedPlayer(report) {

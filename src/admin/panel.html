@@ -655,6 +655,43 @@
       background: rgba(255, 202, 58, .14);
     }
 
+    .chip.c,
+    .chip.common {
+      color: var(--r-c);
+      background: color-mix(in srgb, var(--r-c) 16%, transparent);
+      border: 1px solid color-mix(in srgb, var(--r-c) 25%, transparent);
+    }
+
+    .chip.uc,
+    .chip.uncommon {
+      color: var(--r-uc);
+      background: color-mix(in srgb, var(--r-uc) 16%, transparent);
+      border: 1px solid color-mix(in srgb, var(--r-uc) 25%, transparent);
+    }
+
+    .chip.r,
+    .chip.rare {
+      color: var(--r-r);
+      background: color-mix(in srgb, var(--r-r) 16%, transparent);
+      border: 1px solid color-mix(in srgb, var(--r-r) 25%, transparent);
+    }
+
+    .chip.vr,
+    .chip.epic,
+    .chip.veryrare {
+      color: var(--r-vr);
+      background: color-mix(in srgb, var(--r-vr) 16%, transparent);
+      border: 1px solid color-mix(in srgb, var(--r-vr) 25%, transparent);
+    }
+
+    .chip.sr,
+    .chip.legendary,
+    .chip.superrare {
+      color: var(--r-sr);
+      background: color-mix(in srgb, var(--r-sr) 16%, transparent);
+      border: 1px solid color-mix(in srgb, var(--r-sr) 25%, transparent);
+    }
+
     .chip.removable {
       cursor: pointer;
       transition: background-color .15s, color .15s;
@@ -761,19 +798,30 @@
       flex: none;
     }
 
-    .rarity.uc {
+    .rarity.c,
+    .rarity.common {
+      background: var(--r-c);
+    }
+
+    .rarity.uc,
+    .rarity.uncommon {
       background: var(--r-uc);
     }
 
-    .rarity.r {
+    .rarity.r,
+    .rarity.rare {
       background: var(--r-r);
     }
 
-    .rarity.vr {
+    .rarity.vr,
+    .rarity.epic,
+    .rarity.veryrare {
       background: var(--r-vr);
     }
 
-    .rarity.sr {
+    .rarity.sr,
+    .rarity.legendary,
+    .rarity.superrare {
       background: var(--r-sr);
     }
 
@@ -1066,19 +1114,30 @@
       transform: translateY(-1px);
     }
 
-    .card.uc {
+    .card.c,
+    .card.common {
+      --rarity: var(--r-c);
+    }
+
+    .card.uc,
+    .card.uncommon {
       --rarity: var(--r-uc);
     }
 
-    .card.r {
+    .card.r,
+    .card.rare {
       --rarity: var(--r-r);
     }
 
-    .card.vr {
+    .card.vr,
+    .card.epic,
+    .card.veryrare {
       --rarity: var(--r-vr);
     }
 
-    .card.sr {
+    .card.sr,
+    .card.legendary,
+    .card.superrare {
       --rarity: var(--r-sr);
     }
 
@@ -1535,7 +1594,8 @@
     const state = {
       view: "dashboard", accounts: [], account: null, accountId: null, tab: "overview", inventoryProfile: "items",
       inventoryCategory: "", inventorySearch: "", inventoryPage: 0, inventoryGrouped: null, catalog: { search: "", category: "", items: [], categories: [], picked: null },
-      logs: [], logAfter: 0, logPaused: false, logFilter: "", logCategory: "", timers: []
+      logs: [], logAfter: 0, logPaused: false, logFilter: "", logCategory: "", timers: [],
+      codeCreator: { code: "", note: "", maxUses: 1, expiresAt: "", vbucks: 0, foundersEdition: 0, campaignAccess: false, items: [], showForm: false }
     };
 
     function el(tag, props = {}, ...children) {
@@ -1553,6 +1613,15 @@
     }
     const btn = (label, onclick, kind = "", extra = {}) => el("button", { type: "button", class: `btn ${kind}`, onclick, ...extra }, el("span", { text: label }));
     const chip = (label, kind = "") => el("span", { class: `chip ${kind}` }, el("span", { text: label }));
+    const toRarityCode = (rarity, code) => code || {
+      common: "c",
+      uncommon: "uc",
+      rare: "r",
+      epic: "vr",
+      veryrare: "vr",
+      legendary: "sr",
+      superrare: "sr"
+    }[String(rarity || "").toLowerCase().replace(/[^a-z]/g, "")] || "c";
     const toggleSwitch = (checked, onchange, disabled = false) => {
       const input = el("input", {
         type: "checkbox", checked: Boolean(checked), disabled: Boolean(disabled),
@@ -1598,6 +1667,209 @@
         toast(error.message, true);
         return null;
       }
+    }
+
+    function confirmModal(message, options = {}) {
+      return new Promise((resolve) => {
+        const title = options.title || "Confirm Action";
+        const confirmText = options.confirmText || "Confirm";
+        const confirmKind = options.confirmKind || "primary";
+        const cancelText = options.cancelText || "Cancel";
+
+        let settled = false;
+        function finish(val) {
+          if (settled) return;
+          settled = true;
+          window.removeEventListener("keydown", onKeyDown);
+          backdrop.classList.remove("show");
+          setTimeout(() => backdrop.remove(), 160);
+          resolve(val);
+        }
+
+        function onKeyDown(e) {
+          if (e.key === "Escape") {
+            e.preventDefault();
+            finish(false);
+          }
+        }
+
+        const cancelBtn = btn(cancelText, () => finish(false), "ghost");
+        const confirmBtn = btn(confirmText, () => finish(true), confirmKind);
+
+        const paragraphs = String(message).split(/\n+/).filter(Boolean);
+        const bodyEls = paragraphs.map((p) => el("p", { class: "note", style: "margin:8px 0; font-size:13px; line-height:1.5;", text: p }));
+
+        const dialog = el("div", { class: "modal-dialog", onclick: (e) => e.stopPropagation() },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" },
+            el("h2", { text: title }),
+            el("button", {
+              type: "button",
+              class: "btn ghost",
+              style: "min-height:28px; padding:0 8px; font-size:14px; border:none;",
+              text: "✕",
+              onclick: () => finish(false)
+            })),
+          ...bodyEls,
+          el("div", { class: "actions", style: "margin-top:20px;" },
+            cancelBtn,
+            confirmBtn
+          )
+        );
+
+        const backdrop = el("div", {
+          class: "modal-backdrop",
+          onclick: (e) => {
+            if (e.target === backdrop) finish(false);
+          }
+        }, dialog);
+
+        document.body.append(backdrop);
+        window.addEventListener("keydown", onKeyDown);
+        requestAnimationFrame(() => {
+          backdrop.classList.add("show");
+          confirmBtn.focus();
+        });
+      });
+    }
+
+    function promptModal(options = {}) {
+      return new Promise((resolve) => {
+        const title = options.title || "Input Required";
+        const message = options.message || "";
+        const defaultValue = options.defaultValue !== undefined ? String(options.defaultValue) : "";
+        const placeholder = options.placeholder || "";
+        const inputType = options.inputType || "text";
+        const confirmText = options.confirmText || "Submit";
+        const confirmKind = options.confirmKind || "primary";
+        const cancelText = options.cancelText || "Cancel";
+
+        let settled = false;
+        function finish(val) {
+          if (settled) return;
+          settled = true;
+          window.removeEventListener("keydown", onKeyDown);
+          backdrop.classList.remove("show");
+          setTimeout(() => backdrop.remove(), 160);
+          resolve(val);
+        }
+
+        const input = el("input", {
+          type: inputType,
+          class: "field",
+          value: defaultValue,
+          placeholder: placeholder,
+          style: "width:100%; margin-top:8px;"
+        });
+
+        function onKeyDown(e) {
+          if (e.key === "Escape") {
+            e.preventDefault();
+            finish(null);
+          } else if (e.key === "Enter") {
+            e.preventDefault();
+            finish(input.value);
+          }
+        }
+
+        const cancelBtn = btn(cancelText, () => finish(null), "ghost");
+        const confirmBtn = btn(confirmText, () => finish(input.value), confirmKind);
+
+        const paragraphs = String(message).split(/\n+/).filter(Boolean);
+        const bodyEls = paragraphs.map((p) => el("p", { class: "note", style: "margin:8px 0; font-size:13px; line-height:1.5;", text: p }));
+
+        const dialog = el("div", { class: "modal-dialog", onclick: (e) => e.stopPropagation() },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" },
+            el("h2", { text: title }),
+            el("button", {
+              type: "button",
+              class: "btn ghost",
+              style: "min-height:28px; padding:0 8px; font-size:14px; border:none;",
+              text: "✕",
+              onclick: () => finish(null)
+            })),
+          ...bodyEls,
+          el("div", { class: "field-wrap", style: "margin-top:12px; margin-bottom:16px;" },
+            input
+          ),
+          el("div", { class: "actions" },
+            cancelBtn,
+            confirmBtn
+          )
+        );
+
+        const backdrop = el("div", {
+          class: "modal-backdrop",
+          onclick: (e) => {
+            if (e.target === backdrop) finish(null);
+          }
+        }, dialog);
+
+        document.body.append(backdrop);
+        window.addEventListener("keydown", onKeyDown);
+        requestAnimationFrame(() => {
+          backdrop.classList.add("show");
+          input.focus();
+          if (input.select) input.select();
+        });
+      });
+    }
+
+    function alertModal(message, options = {}) {
+      return new Promise((resolve) => {
+        const title = options.title || "Notice";
+        const okText = options.okText || "OK";
+
+        let settled = false;
+        function finish() {
+          if (settled) return;
+          settled = true;
+          window.removeEventListener("keydown", onKeyDown);
+          backdrop.classList.remove("show");
+          setTimeout(() => backdrop.remove(), 160);
+          resolve();
+        }
+
+        function onKeyDown(e) {
+          if (e.key === "Escape" || e.key === "Enter") {
+            e.preventDefault();
+            finish();
+          }
+        }
+
+        const okBtn = btn(okText, finish, "primary");
+        const paragraphs = String(message).split(/\n+/).filter(Boolean);
+        const bodyEls = paragraphs.map((p) => el("p", { class: "note", style: "margin:8px 0; font-size:13px; line-height:1.5;", text: p }));
+
+        const dialog = el("div", { class: "modal-dialog", onclick: (e) => e.stopPropagation() },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" },
+            el("h2", { text: title }),
+            el("button", {
+              type: "button",
+              class: "btn ghost",
+              style: "min-height:28px; padding:0 8px; font-size:14px; border:none;",
+              text: "✕",
+              onclick: finish
+            })),
+          ...bodyEls,
+          el("div", { class: "actions", style: "margin-top:20px;" },
+            okBtn
+          )
+        );
+
+        const backdrop = el("div", {
+          class: "modal-backdrop",
+          onclick: (e) => {
+            if (e.target === backdrop) finish();
+          }
+        }, dialog);
+
+        document.body.append(backdrop);
+        window.addEventListener("keydown", onKeyDown);
+        requestAnimationFrame(() => {
+          backdrop.classList.add("show");
+          okBtn.focus();
+        });
+      });
     }
 
     function openPasswordModal(account, onSaved) {
@@ -1716,6 +1988,141 @@
       });
     }
 
+    function openNewFolderModal(onCreated) {
+      const existing = document.getElementById("folder-modal");
+      if (existing) existing.remove();
+
+      const nameInput = el("input", {
+        type: "text",
+        class: "field",
+        placeholder: "e.g. Stream Giveaways or VIP Rewards",
+        style: "width:100%;"
+      });
+
+      const slugInput = el("input", {
+        type: "text",
+        class: "field mono",
+        placeholder: "e.g. stream-giveaways",
+        style: "width:100%;"
+      });
+
+      const linkPreview = el("div", {
+        class: "note mono",
+        style: "font-size:12px; margin-top:6px; color:var(--blue);",
+        text: `${location.origin}/admin#/shop/`
+      });
+
+      const updateSlug = () => {
+        const val = nameInput.value.trim().toLowerCase().replace(/[^a-z0-9-_]/g, "-").replace(/-+/g, "-");
+        slugInput.value = val;
+        linkPreview.textContent = `${location.origin}/admin#/shop/${val || "<slug>"}`;
+      };
+
+      nameInput.addEventListener("input", updateSlug);
+
+      slugInput.addEventListener("input", () => {
+        const val = slugInput.value.trim().toLowerCase().replace(/[^a-z0-9-_]/g, "-").replace(/-+/g, "-");
+        linkPreview.textContent = `${location.origin}/admin#/shop/${val || "<slug>"}`;
+      });
+
+      const errorMsg = el("div", {
+        style: "color:var(--bad); font-size:12px; font-weight:600; margin-top:8px; display:none;"
+      });
+
+      function close() {
+        backdrop.classList.remove("show");
+        setTimeout(() => backdrop.remove(), 160);
+      }
+
+      async function submit() {
+        const name = nameInput.value.trim();
+        if (!name) {
+          errorMsg.textContent = "Please enter a folder name.";
+          errorMsg.style.display = "block";
+          nameInput.focus();
+          return;
+        }
+        let slug = slugInput.value.trim().toLowerCase().replace(/[^a-z0-9-_]/g, "-").replace(/-+/g, "-");
+        if (!slug) slug = name.toLowerCase().replace(/[^a-z0-9-_]/g, "-").replace(/-+/g, "-");
+        errorMsg.style.display = "none";
+        submitBtn.disabled = true;
+        submitBtn.firstChild.textContent = "Creating…";
+
+        const res = await act(api("/admin/api/code-folders", { name, slug }), `Folder "${name}" created!`);
+        if (res) {
+          close();
+          if (onCreated) onCreated(res);
+        } else {
+          submitBtn.disabled = false;
+          submitBtn.firstChild.textContent = "Create Folder";
+        }
+      }
+
+      const cancelBtn = btn("Cancel", close, "ghost");
+      const submitBtn = btn("Create Folder", submit, "primary");
+
+      nameInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          submit();
+        } else if (e.key === "Escape") {
+          e.preventDefault();
+          close();
+        }
+      });
+
+      slugInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          submit();
+        } else if (e.key === "Escape") {
+          e.preventDefault();
+          close();
+        }
+      });
+
+      const dialog = el("div", { class: "modal-dialog", onclick: (e) => e.stopPropagation() },
+        el("div", { class: "panel-head", style: "margin-bottom:8px" },
+          el("h2", { text: "Create Promotional Folder" }),
+          el("button", {
+            type: "button",
+            class: "btn ghost",
+            style: "min-height:28px; padding:0 8px; font-size:14px; border:none;",
+            text: "✕",
+            onclick: close
+          })),
+        el("p", { class: "note", text: "Create a custom folder to organize and filter your promotional codes with a direct URL hash." }),
+        el("div", { class: "field-wrap", style: "margin-bottom:12px;" },
+          el("label", { text: "Folder Name" }),
+          nameInput
+        ),
+        el("div", { class: "field-wrap" },
+          el("label", { text: "Direct URL Hash Slug" }),
+          slugInput,
+          linkPreview,
+          errorMsg
+        ),
+        el("div", { class: "actions", style: "margin-top:16px;" },
+          cancelBtn,
+          submitBtn
+        )
+      );
+
+      const backdrop = el("div", {
+        id: "folder-modal",
+        class: "modal-backdrop",
+        onclick: (e) => {
+          if (e.target === backdrop) close();
+        }
+      }, dialog);
+
+      document.body.append(backdrop);
+      requestAnimationFrame(() => {
+        backdrop.classList.add("show");
+        nameInput.focus();
+      });
+    }
+
     const relative = new Intl.RelativeTimeFormat(undefined, { numeric: "auto" });
     function ago(iso) {
       if (!iso) return "never";
@@ -1773,6 +2180,9 @@
         if (accountId && accountId !== state.accountId) { state.accountId = accountId; state.account = null; state.inventoryPage = 0; state.inventoryGrouped = null; }
         if (!accountId) { state.accountId = null; state.account = null; }
         if (tab) state.tab = tab;
+      }
+      if (state.view === "shop") {
+        state.shopFolder = accountId || "shop";
       }
       if (state.view === "reports") {
         state.reportId = accountId || null;
@@ -1865,8 +2275,11 @@
       if (!holder) return;
       const a = state.account;
       if (!a) {
-        holder.replaceChildren(el("section", { class: "panel" }, el("div", { class: "empty" }, el("h2", { text: "Pick a player" }),
-          el("p", { text: "Choose an account on the left to edit its currencies, items, quests, storm shields and access." }))));
+        holder.replaceChildren(
+          el("section", { class: "panel" }, el("div", { class: "empty" }, el("h2", { text: "Pick a player" }),
+            el("p", { text: "Choose an account on the left to edit its currencies, items, quests, storm shields and access." }))),
+          allFriendCodesPanel()
+        );
         return;
       }
       const tabs = [["overview", "Overview"], ["inventory", "Inventory", a.items.length + a.worldItems.length + a.storage.length], ["give", "Give"],
@@ -1938,9 +2351,13 @@
         el("div", { class: "actions" },
           chip(current ? `${current.name} Edition` : edition === null ? "Made at the next login" : "None", current ? "sky" : ""),
           select,
-          btn("Upgrade", () => {
+          btn("Upgrade", async () => {
             const chosen = editions.find((entry) => entry.edition === Number(select.value));
-            if (chosen && confirm(`Upgrade ${a.displayName} to the ${chosen.name} Edition? An edition can't be lowered again.`)) {
+            if (chosen && await confirmModal(`Upgrade ${a.displayName} to the ${chosen.name} Edition? An edition can't be lowered again.`, {
+              title: "Upgrade Founder's Edition",
+              confirmText: "Upgrade Edition",
+              confirmKind: "primary"
+            })) {
               post("founders", { edition: chosen.edition }, `${a.displayName} is now a ${chosen.name} Edition founder`);
             }
           }, "primary", { disabled: !higher.length })),
@@ -1960,13 +2377,21 @@
         el("div", { class: "actions" },
           chip(`${fmt(cosmetics.owned)} / ${fmt(cosmetics.total)} cosmetics`, cosmetics.owned >= cosmetics.total ? "good" : ""),
           chip(`${fmt(banners.owned)} / ${fmt(banners.total)} banners`, banners.owned >= banners.total ? "good" : ""),
-          btn(complete ? "Full locker owned" : "Grant full locker", () => {
-            if (confirm(`Give ${a.displayName} every Battle Royale cosmetic and banner they don't own yet?`)) {
+          btn(complete ? "Full locker owned" : "Grant full locker", async () => {
+            if (await confirmModal(`Give ${a.displayName} every Battle Royale cosmetic and banner they don't own yet?`, {
+              title: "Grant Full Locker",
+              confirmText: "Grant All",
+              confirmKind: "primary"
+            })) {
               run("grant-all", (account) => `Gave ${a.displayName} ${counts(account.granted)}`);
             }
           }, "primary", { disabled: complete }),
-          btn(`Remove granted${granted ? ` (${fmt(granted)})` : ""}`, () => {
-            if (confirm(`Take back the ${fmt(granted)} cosmetics and banners the full locker gave ${a.displayName}? What they bought or earned since stays.`)) {
+          btn(`Remove granted${granted ? ` (${fmt(granted)})` : ""}`, async () => {
+            if (await confirmModal(`Take back the ${fmt(granted)} cosmetics and banners the full locker gave ${a.displayName}? What they bought or earned since stays.`, {
+              title: "Remove Granted Cosmetics",
+              confirmText: "Take Back",
+              confirmKind: "danger"
+            })) {
               run("remove-granted", (account) => `Took back ${counts(account.removed)}`);
             }
           }, "danger", { disabled: !granted })),
@@ -2094,17 +2519,33 @@
             if (level !== "") body.level = Number(level);
             post("items/update", body, `${item.name} saved`);
           }, "ghost small"),
-          btn("Remove", () => confirm(`Remove ${item.name}?`) && post("items/remove", { profileId, itemId: item.itemId }, `${item.name} removed`), "danger small")) : null]
+          btn("Remove", async () => {
+            if (await confirmModal(`Remove ${item.name}?`, { title: "Remove Item", confirmText: "Remove", confirmKind: "danger" })) {
+              post("items/remove", { profileId, itemId: item.itemId }, `${item.name} removed`);
+            }
+          }, "danger small")) : null]
       ], shown, "No items match.");
       // Removes the copies of a template past the number to keep (the backend keeps items in a squad).
-      const removeCopies = (group) => {
-        const answer = prompt(`${group.name}: ${fmt(group.copies)} ${group.copies === 1 ? "copy" : "copies"}${group.squad ? `, ${fmt(group.squad)} in a squad (always kept)` : ""}. How many should the account keep?`, group.copies > 1 ? "1" : "0");
+      const removeCopies = async (group) => {
+        const answer = await promptModal({
+          title: `Keep Copies of ${group.name}`,
+          message: `${group.name}: ${fmt(group.copies)} ${group.copies === 1 ? "copy" : "copies"}${group.squad ? `, ${fmt(group.squad)} in a squad (always kept)` : ""}. How many should the account keep?`,
+          defaultValue: group.copies > 1 ? "1" : "0",
+          inputType: "number",
+          placeholder: "Number of copies to keep",
+          confirmText: "Continue",
+          confirmKind: "primary"
+        });
         if (answer === null) return;
         const keep = Number(answer);
         if (!Number.isInteger(keep) || keep < 0) return toast("Enter a whole number, 0 or more", true);
         const removing = Math.max(0, group.copies - Math.max(keep, group.squad));
         if (!removing) return toast(`Nothing to remove: ${group.name} has ${fmt(group.copies)}`);
-        if (!confirm(`Remove ${fmt(removing)} × ${group.name}? This can't be undone.`)) return;
+        if (!await confirmModal(`Remove ${fmt(removing)} × ${group.name}? This can't be undone.`, {
+          title: "Confirm Item Removal",
+          confirmText: "Remove Copies",
+          confirmKind: "danger"
+        })) return;
         act(api(`/admin/api/accounts/${a.id}/items/remove-template`, { profileId, templateId: group.templateId, keep }))
           .then((account) => setAccount(account, account && `Removed ${fmt(account.removed)} × ${group.name}${account.kept ? `, ${fmt(account.kept)} kept` : ""}`));
       };
@@ -2202,19 +2643,23 @@
       // Single items (heroes, survivors, schematics, defenders, llamas...) are one profile item each: a grant of many is
       // capped by the backend (singleGrantCap) and asks first past singleGrantConfirm, since every one fills a vault slot.
       // Whether to give amount of item: false (after saying why) when the backend would refuse it or the admin says no.
-      const amountOk = (item, amount) => {
+      const amountOk = async (item, amount) => {
         if (!Number.isInteger(amount) || amount < 1) return toast("Enter a quantity of 1 or more", true), false;
         if (item.single && c.cap && amount > c.cap) return toast(`${item.name} is kept one per item: give at most ${fmt(c.cap)} at a time`, true), false;
         if (item.single && amount > (c.confirmAbove ?? 10)) {
           const vault = a.vault ? `\n\nEach one is a separate item. The vault holds ${fmt(a.vault.count)} / ${fmt(a.vault.limit)}${a.vault.count + amount > a.vault.limit ? "; items past the limit go into overflow, where the game won't level, evolve or slot them" : ""}.` : "";
-          if (!confirm(`Add ${fmt(amount)} × ${item.name}?${vault}`)) return false;
+          if (!await confirmModal(`Add ${fmt(amount)} × ${item.name}?${vault}`, {
+            title: "Add Multiple Items",
+            confirmText: "Add Items",
+            confirmKind: "primary"
+          })) return false;
         }
         return true;
       };
-      const giveButton = btn("Give", () => {
+      const giveButton = btn("Give", async () => {
         if (!c.picked) return toast("Pick an item first", true);
         const amount = Number(quantity.value);
-        if (!amountOk(c.picked, amount)) return;
+        if (!await amountOk(c.picked, amount)) return;
         c.quantity = amount;
         post("grant", { templateId: c.picked.templateId, quantity: c.quantity }, `Gave ${fmt(c.quantity)} × ${c.picked.name}`);
       }, "primary");
@@ -2230,12 +2675,16 @@
         const found = await act(api(`/admin/api/catalog/lookup?templateId=${encodeURIComponent(templateId)}`));
         if (!found) return;
         if (found.known) {
-          if (!amountOk(found.item, amount)) return;
+          if (!await amountOk(found.item, amount)) return;
           c.byIdQuantity = amount;
           return post("grant", { templateId: found.item.templateId, quantity: amount }, `Gave ${fmt(amount)} × ${found.item.name}`);
         }
         if (!Number.isInteger(amount) || amount < 1) return toast("Enter a quantity of 1 or more", true);
-        if (!confirm(`No build's game data has ${templateId}, so the game may not know it: a client can ignore it, log errors or misbehave.\n\nGive ${fmt(amount)} anyway, as a plain item in ${found.profileId}?`)) return;
+        if (!await confirmModal(`No build's game data has ${templateId}, so the game may not know it: a client can ignore it, log errors or misbehave.\n\nGive ${fmt(amount)} anyway, as a plain item in ${found.profileId}?`, {
+          title: "Unknown Item Template",
+          confirmText: "Give Anyway",
+          confirmKind: "primary"
+        })) return;
         c.byIdQuantity = amount;
         post("grant", { templateId, quantity: amount, force: true }, `Gave ${fmt(amount)} × ${templateId} (unknown to the game data)`);
       };
@@ -2294,7 +2743,15 @@
           ["", (q) => el("div", { class: "actions" },
             q.state === "Active" ? btn("Complete", () => post("quests", { itemId: q.itemId, action: "complete" }, `${q.questId} completed`), "ghost small") : null,
             q.state !== "Claimed" ? btn("Claim", () => post("quests", { itemId: q.itemId, action: "claim" }, `${q.questId} claimed`), "ghost small") : null,
-            btn("Remove", () => confirm(`Remove quest ${q.questId}?`) && post("quests", { itemId: q.itemId, action: "remove" }, `${q.questId} removed`), "danger small"))]
+            btn("Remove", async () => {
+              if (await confirmModal(`Remove quest ${q.questId}?`, {
+                title: "Remove Quest",
+                confirmText: "Remove",
+                confirmKind: "danger"
+              })) {
+                post("quests", { itemId: q.itemId, action: "remove" }, `${q.questId} removed`);
+              }
+            }, "danger small"))]
         ], a.quests, "No quests yet."));
     }
 
@@ -2329,6 +2786,137 @@
           a.contactEmail ? btn("Unlink", () => { input.value = ""; save(); }, "ghost small") : null));
     }
 
+    function friendCodesPanel(a) {
+      const holder = el("div", { class: "note", style: "margin-top:10px;", text: "Loading friend codes…" });
+      const loadCodes = async () => {
+        const codes = await api(`/admin/api/accounts/${a.id}/friend-codes`).catch(() => []);
+        if (!codes.length) {
+          holder.replaceChildren(el("div", { class: "note", text: "No friend codes issued to this player yet." }));
+          return;
+        }
+        holder.replaceChildren(el("div", { class: "table-wrap", style: "margin-top:10px;" },
+          el("table", {},
+            el("thead", {},
+              el("tr", {},
+                el("th", { text: "Friend Code" }),
+                el("th", { text: "Created" }),
+                el("th", { text: "Status" }),
+                el("th", { text: "Actions" }))),
+            el("tbody", {},
+              codes.map((c) => {
+                const redeemer = c.redeemedBy && c.redeemedBy[0];
+                const isRedeemed = c.redeemedCount >= c.maxUses;
+                return el("tr", {},
+                  el("td", {},
+                    el("span", { class: "mono", style: "font-weight:700; color:#fff;", text: c.code })),
+                  el("td", { class: "muted", style: "font-size:12px;", text: ago(c.created) }),
+                  el("td", {},
+                    isRedeemed
+                      ? chip(redeemer ? `Redeemed by ${redeemer.displayName || redeemer.accountId}` : "Redeemed", "warn")
+                      : chip("Active", "good")),
+                  el("td", {},
+                    el("div", { class: "actions", style: "gap:6px;" },
+                      btn("Copy Code", () => {
+                        navigator.clipboard.writeText(c.code);
+                        toast(`Copied code ${c.code}`);
+                      }, "ghost small"),
+                      btn("Copy Link", () => {
+                        const url = `${location.origin}/redeem?code=${encodeURIComponent(c.code)}`;
+                        navigator.clipboard.writeText(url);
+                        toast("Redeem link copied!");
+                      }, "ghost small"),
+                      !isRedeemed ? btn("✕ Revoke", async () => {
+                        if (!await confirmModal(`Revoke friend code "${c.code}"?`, {
+                          title: "Revoke Friend Code",
+                          confirmText: "Revoke",
+                          confirmKind: "danger"
+                        })) return;
+                        const res = await act(api(`/admin/api/codes/${encodeURIComponent(c.code)}`, {}, "DELETE"), `Revoked ${c.code}`);
+                        if (res) loadCodes();
+                      }, "danger small") : null
+                    ))
+                );
+              })
+            ))
+        ));
+      };
+      loadCodes();
+
+      const issueBtn = btn("+ Issue Founder Friend Code", async () => {
+        const res = await act(api(`/admin/api/accounts/${a.id}/friend-codes`, {}), `Founder friend code issued for ${a.displayName}`);
+        if (res) loadCodes();
+      }, "primary small");
+
+      return el("section", { class: "panel" },
+        el("div", { class: "panel-head", style: "margin-bottom:8px;" },
+          el("h2", { text: "Founder's Friend Codes" }),
+          issueBtn),
+        el("p", { class: "note", text: "Invite friend codes belonging to this player. Redeeming a friend code at /redeem grants the recipient Campaign Access and the Standard Founder's Pack." }),
+        holder
+      );
+    }
+
+    function allFriendCodesPanel() {
+      const holder = el("div", { class: "note", style: "margin-top:10px;", text: "Loading server friend codes…" });
+      const loadCodes = async () => {
+        const codes = await api("/admin/api/friend-codes").catch(() => []);
+        if (!codes.length) {
+          holder.replaceChildren(el("div", { class: "note", text: "No player friend codes have been issued on the server yet." }));
+          return;
+        }
+        holder.replaceChildren(el("div", { class: "table-wrap", style: "margin-top:10px;" },
+          el("table", {},
+            el("thead", {},
+              el("tr", {},
+                el("th", { text: "Friend Code" }),
+                el("th", { text: "Owner / Issued To" }),
+                el("th", { text: "Created" }),
+                el("th", { text: "Status" }),
+                el("th", { text: "Actions" }))),
+            el("tbody", {},
+              codes.map((c) => {
+                const owner = state.accounts.find((acc) => acc.id === c.accountId || acc.id === c.createdBy);
+                const redeemer = c.redeemedBy && c.redeemedBy[0];
+                const isRedeemed = c.redeemedCount >= c.maxUses;
+                return el("tr", {},
+                  el("td", {},
+                    el("span", { class: "mono", style: "font-weight:700; color:#fff;", text: c.code })),
+                  el("td", {},
+                    owner
+                      ? el("a", { href: `#/players/${owner.id}/account`, text: owner.displayName, style: "color:var(--blue); font-weight:600;" })
+                      : el("span", { class: "muted", text: c.accountId || "—" })),
+                  el("td", { class: "muted", style: "font-size:12px;", text: ago(c.created) }),
+                  el("td", {},
+                    isRedeemed
+                      ? chip(redeemer ? `Redeemed by ${redeemer.displayName || redeemer.accountId}` : "Redeemed", "warn")
+                      : chip("Active", "good")),
+                  el("td", {},
+                    el("div", { class: "actions", style: "gap:6px;" },
+                      btn("Copy Code", () => {
+                        navigator.clipboard.writeText(c.code);
+                        toast(`Copied code ${c.code}`);
+                      }, "ghost small"),
+                      btn("Copy Link", () => {
+                        const url = `${location.origin}/redeem?code=${encodeURIComponent(c.code)}`;
+                        navigator.clipboard.writeText(url);
+                        toast("Redeem link copied!");
+                      }, "ghost small")
+                    ))
+                );
+              })
+            ))
+        ));
+      };
+      loadCodes();
+
+      return el("section", { class: "panel", style: "margin-top:16px;" },
+        el("div", { class: "panel-head", style: "margin-bottom:8px;" },
+          el("h2", { text: "All Player Friend Codes" })),
+        el("p", { class: "note", text: "Overview of all Founder's invite friend codes across players. Select a player on the left to issue or revoke their codes." }),
+        holder
+      );
+    }
+
     function accountTab(a) {
       const reason = el("input", { class: "field", placeholder: "Reason (shown when they try to log in)", style: "flex:1 1 260px" });
       const profileBoxes = ["profile0", "theater0", "outpost0", "collection_book_people0", "collection_book_schematics0"].map((profileId) =>
@@ -2339,7 +2927,15 @@
           el("p", { class: "note", text: "Kick revokes every token and closes XMPP and STOMP: the game drops to the login screen. A ban also refuses future logins." }),
           a.banned
             ? el("div", { class: "actions" }, chip(`Banned ${ago(a.banned.at)}${a.banned.reason ? ": " + a.banned.reason : ""}`, "bad"), btn("Unban", () => post("unban", {}, `${a.displayName} unbanned`), "primary"))
-            : el("div", { class: "actions" }, reason, btn("Ban", () => confirm(`Ban ${a.displayName}?`) && post("ban", { reason: reason.value }, `${a.displayName} banned`), "danger"),
+            : el("div", { class: "actions" }, reason, btn("Ban", async () => {
+                if (await confirmModal(`Ban ${a.displayName}?`, {
+                  title: "Ban Player",
+                  confirmText: "Ban Player",
+                  confirmKind: "danger"
+                })) {
+                  post("ban", { reason: reason.value }, `${a.displayName} banned`);
+                }
+              }, "danger"),
               btn("Kick", () => post("kick", {}, `${a.displayName} was logged out`), "ghost"))),
         el("section", { class: "panel" }, el("h2", { text: "Password" }),
           el("p", {
@@ -2361,16 +2957,31 @@
               }
             }, "ghost small") : null)),
         a.isServer ? null : emailPanel(a),
+        a.isServer ? null : friendCodesPanel(a),
         el("section", { class: "panel" }, el("h2", { text: "Profiles on disk" }),
           el("p", { class: "note", text: `Saved: ${a.profiles.join(", ") || "none yet"}. A reset deletes the chosen profiles; the next login makes them fresh, like a new account. The player is logged out first.` }),
           el("div", { class: "option-row" }, profileBoxes),
           el("div", { class: "actions" },
-            btn("Reset selected", () => {
+            btn("Reset selected", async () => {
               const chosen = profileBoxes.map((box) => box.querySelector("input")).filter((box) => box.checked).map((box) => box.value);
               if (!chosen.length) return toast("Tick at least one profile", true);
-              if (confirm(`Reset ${chosen.join(", ")} for ${a.displayName}? This can't be undone.`)) post("reset", { profiles: chosen }, "Profiles reset");
+              if (await confirmModal(`Reset ${chosen.join(", ")} for ${a.displayName}? This can't be undone.`, {
+                title: "Reset Selected Profiles",
+                confirmText: "Reset Profiles",
+                confirmKind: "danger"
+              })) {
+                post("reset", { profiles: chosen }, "Profiles reset");
+              }
             }, "danger"),
-            btn("Reset everything", () => confirm(`Wipe all of ${a.displayName}'s progress? This can't be undone.`) && post("reset", { profiles: "all" }, "Progress wiped"), "danger"))),
+            btn("Reset everything", async () => {
+              if (await confirmModal(`Wipe all of ${a.displayName}'s progress? This can't be undone.`, {
+                title: "Wipe All Progress",
+                confirmText: "Wipe Everything",
+                confirmKind: "danger"
+              })) {
+                post("reset", { profiles: "all" }, "Progress wiped");
+              }
+            }, "danger"))),
         el("section", { class: "panel danger-zone" }, el("h2", { text: "Delete account" }),
           el("p", { class: "note", text: "Removes the account, its profiles, friends and cloud saves. Logging in with the same name later makes a new, empty account." }),
           el("div", { class: "actions" }, confirmName, btn("Delete", async () => {
@@ -2394,7 +3005,11 @@
         ["State", (s) => chip(s.started ? "Started" : s.currentPlayers ? "Busy" : "Free", s.started ? "yellow" : s.currentPlayers ? "warn" : "good")],
         ["Heartbeat", (s) => ago(s.lastUpdated)],
         ...(withActions ? [["", (s) => btn("End", async () => {
-          if (!confirm(`End session ${s.serverName || s.id}? It leaves matchmaking; the server notices at its next heartbeat.`)) return;
+          if (!await confirmModal(`End session ${s.serverName || s.id}? It leaves matchmaking; the server notices at its next heartbeat.`, {
+            title: "End Game Session",
+            confirmText: "End Session",
+            confirmKind: "danger"
+          })) return;
           if (await act(api(`/admin/api/sessions/${s.id}/end`, {}), "Session ended")) showSessions();
         }, "danger small")]] : [])
       ], sessions, "No game sessions. Servers register when they start.");
@@ -2786,14 +3401,444 @@
 
     /* ---------- shop ---------- */
     async function showShop() {
-      const shop = await act(api("/admin/api/shop"));
+      const [shop, codes, folders] = await Promise.all([
+        act(api("/admin/api/shop")),
+        api("/admin/api/codes?type=promotional").catch(() => []),
+        api("/admin/api/code-folders").catch(() => [])
+      ]);
       if (!shop || state.view !== "shop") return;
 
       if (!state.customShop) {
         state.customShop = JSON.parse(JSON.stringify(shop.custom || { featured: [], daily: [] }));
       }
 
-      // General Shop Settings Section
+      const promoCodes = Array.isArray(codes) ? codes : [];
+      const folderList = Array.isArray(folders) && folders.length
+        ? folders
+        : [{ name: "Promotional", slug: "promotional" }];
+
+      const currentSub = state.shopFolder || "shop";
+      const activeCount = promoCodes.filter((c) => !c.isExpired && !c.isDepleted).length;
+      const archivedCount = promoCodes.filter((c) => c.isExpired || c.isDepleted).length;
+
+      // Top Subtabs for Store View
+      const storeTabs = [
+        { key: "shop", label: "Item Shop", hash: "#/shop" },
+        { key: "promotional", label: "Promotional", count: promoCodes.filter((c) => (c.folder || "promotional") === "promotional" && !c.isDepleted && !c.isExpired).length, hash: "#/shop/promotional" },
+        { key: "archived-codes", label: "Archived Codes", count: archivedCount, hash: "#/shop/archived-codes" },
+        ...folderList.filter((f) => f.slug !== "promotional").map((f) => ({
+          key: f.slug,
+          label: f.name,
+          count: promoCodes.filter((c) => (c.folder || "promotional") === f.slug && !c.isDepleted && !c.isExpired).length,
+          hash: `#/shop/${f.slug}`,
+          custom: true
+        }))
+      ];
+
+      const topSubtabs = el("div", {
+        style: "display:flex; justify-content:space-between; align-items:flex-end; border-bottom:1px solid var(--line); margin:16px 0 20px; gap:16px; flex-wrap:wrap;"
+      },
+        el("div", { class: "subtabs", role: "tablist", style: "border-bottom:none; margin:0; flex:1 1 auto; min-width:0;" },
+          storeTabs.map((t) => el("button", {
+            type: "button",
+            role: "tab",
+            "aria-selected": String(currentSub === t.key),
+            onclick: () => { location.hash = t.hash; }
+          },
+            el("span", { text: t.label }),
+            t.count !== undefined ? el("span", { class: "count", text: t.count }) : null,
+            t.custom ? el("span", {
+              class: "remove-x",
+              style: "margin-left:8px; opacity:0.6; cursor:pointer;",
+              title: `Delete folder "${t.label}"`,
+              onclick: async (e) => {
+                e.stopPropagation();
+                if (!await confirmModal(`Delete folder "${t.label}"? Codes in this folder will remain.`, {
+                  title: "Delete Folder",
+                  confirmText: "Delete Folder",
+                  confirmKind: "danger"
+                })) return;
+                await act(api(`/admin/api/code-folders/${encodeURIComponent(t.key)}`, {}, "DELETE"), `Deleted folder ${t.label}`);
+                location.hash = "#/shop/promotional";
+              }
+            }, "✕") : null
+          ))
+        ),
+        el("div", { class: "actions", style: "margin-bottom:6px; flex-shrink:0;" },
+          btn("+ New Folder", () => {
+            openNewFolderModal((res) => {
+              location.hash = `#/shop/${res.slug}`;
+              showShop();
+            });
+          }, "primary small")
+        )
+      );
+
+      // --- SECTION A: PROMOTIONAL & REWARD CODES MANAGER ---
+      let displayedCodes = [];
+      const isArchiveView = currentSub === "archived-codes";
+      if (isArchiveView) {
+        displayedCodes = promoCodes.filter((c) => c.isExpired || c.isDepleted);
+      } else if (currentSub === "all") {
+        displayedCodes = promoCodes;
+      } else if (currentSub !== "shop") {
+        displayedCodes = promoCodes.filter((c) => (c.folder || "promotional") === currentSub && !c.isDepleted && !c.isExpired);
+      }
+
+      const creator = state.codeCreator || (state.codeCreator = {
+        code: "", note: "", maxUses: 1, expiresAt: "", vbucks: 0, foundersEdition: 0, campaignAccess: false, items: [], showForm: false, folder: "promotional"
+      });
+
+      const codeInput = el("input", {
+        class: "field mono",
+        placeholder: "e.g. SUMMER-2024 or leave blank for random",
+        value: creator.code || "",
+        style: "flex:1 1 240px; text-transform:uppercase;",
+        oninput: (e) => { creator.code = e.target.value.toUpperCase(); }
+      });
+
+      const randomBtn = btn("Random", () => {
+        const chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+        const grp = () => Array.from({ length: 5 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
+        creator.code = `CORE-${grp()}-${grp()}`;
+        codeInput.value = creator.code;
+      }, "ghost small");
+
+      const noteInput = el("input", {
+        class: "field",
+        placeholder: "e.g. Stream giveaway, VIP reward, Event drop",
+        value: creator.note || "",
+        style: "flex:1 1 240px;",
+        oninput: (e) => { creator.note = e.target.value; }
+      });
+
+      const maxUsesInput = el("input", {
+        class: "field num",
+        type: "number",
+        min: "1",
+        max: "1000000",
+        value: String(creator.maxUses || 1),
+        style: "width:110px;",
+        oninput: (e) => { creator.maxUses = Math.max(1, parseInt(e.target.value, 10) || 1); }
+      });
+
+      const expiresInput = el("input", {
+        class: "field",
+        type: "datetime-local",
+        value: creator.expiresAt || "",
+        style: "min-width:200px;",
+        oninput: (e) => { creator.expiresAt = e.target.value; }
+      });
+
+      const setExpiryPreset = (hours) => {
+        if (hours === null) {
+          creator.expiresAt = "";
+        } else {
+          const d = new Date(Date.now() + hours * 3600 * 1000);
+          const pad = (n) => String(n).padStart(2, "0");
+          creator.expiresAt = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        }
+        expiresInput.value = creator.expiresAt;
+      };
+
+      const folderSelect = el("select", {
+        class: "field",
+        style: "min-width:180px;",
+        onchange: (e) => { creator.folder = e.target.value; }
+      },
+        folderList.map((f) => el("option", {
+          value: f.slug,
+          text: f.name,
+          selected: (creator.folder || (currentSub !== "shop" && currentSub !== "archived-codes" && currentSub !== "all" ? currentSub : "promotional")) === f.slug
+        }))
+      );
+
+      const vbucksInput = el("input", {
+        class: "field num",
+        type: "number",
+        min: "0",
+        max: "100000",
+        value: String(creator.vbucks || 0),
+        style: "width:110px;",
+        oninput: (e) => { creator.vbucks = Math.max(0, parseInt(e.target.value, 10) || 0); }
+      });
+
+      const foundersTiers = [
+        [0, "None (Standard account)"],
+        [1, "Tier 1 - Standard Founder's Pack"],
+        [2, "Tier 2 - Deluxe Founder's Pack"],
+        [3, "Tier 3 - Super Deluxe Founder's Pack"],
+        [4, "Tier 4 - Limited Edition Founder's Pack"],
+        [5, "Tier 5 - Ultimate Edition Founder's Pack"]
+      ];
+
+      const foundersSelect = el("select", {
+        class: "field",
+        style: "min-width:240px;",
+        onchange: (e) => {
+          creator.foundersEdition = parseInt(e.target.value, 10) || 0;
+          if (creator.foundersEdition >= 1) {
+            campaignCheck.checked = true;
+            creator.campaignAccess = true;
+          }
+        }
+      },
+        foundersTiers.map(([val, label]) => el("option", { value: String(val), text: label, selected: creator.foundersEdition === val }))
+      );
+
+      const campaignCheck = el("input", {
+        type: "checkbox",
+        checked: Boolean(creator.campaignAccess || creator.foundersEdition >= 1),
+        onchange: (e) => { creator.campaignAccess = e.target.checked; }
+      });
+
+      const itemsContainer = el("div", { class: "actions", style: "gap:6px; flex-wrap:wrap; margin-top:8px;" });
+
+      const renderItemChips = () => {
+        if (!creator.items || creator.items.length === 0) {
+          itemsContainer.replaceChildren(el("span", { class: "muted", style: "font-size:12px;", text: "No custom items added. Enter a template ID below to add cosmetics, schematics, heroes, or materials." }));
+          return;
+        }
+        itemsContainer.replaceChildren(
+          ...creator.items.map((it, idx) => el("span", {
+            class: "chip yellow removable",
+            style: "display:inline-flex; align-items:center; padding:4px 10px;",
+            title: "Click to remove item",
+            onclick: () => {
+              creator.items.splice(idx, 1);
+              renderItemChips();
+            }
+          },
+            el("span", { text: `${it.templateId}${it.quantity > 1 ? ` × ${fmt(it.quantity)}` : ""}` }),
+            el("span", { class: "remove-x", text: "✕" })
+          ))
+        );
+      };
+      renderItemChips();
+
+      const itemTidInput = el("input", {
+        class: "field mono",
+        placeholder: "Template ID (e.g. AthenaCharacter:cid_001_athena_commando_f_default or Ingredient:ore_copper)",
+        style: "flex:1 1 320px; font-size:12px;"
+      });
+
+      const itemQtyInput = el("input", {
+        class: "field tiny",
+        type: "number",
+        min: "1",
+        max: "100000",
+        value: "1",
+        placeholder: "Qty"
+      });
+
+      const addItemBtn = btn("Add Item", () => {
+        const tid = itemTidInput.value.trim();
+        if (!tid) return toast("Enter a template ID", true);
+        if (!/^[A-Za-z][A-Za-z0-9_]*:[^\s:]+$/.test(tid)) {
+          return toast("Template ID must be in format Type:name (e.g. AthenaCharacter:cid_...)", true);
+        }
+        const qty = Math.max(1, parseInt(itemQtyInput.value, 10) || 1);
+        creator.items.push({ templateId: tid, quantity: qty });
+        itemTidInput.value = "";
+        itemQtyInput.value = "1";
+        renderItemChips();
+      }, "ghost small");
+
+      itemTidInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          addItemBtn.click();
+        }
+      });
+
+      const createCodeBtn = btn("Generate Code", async () => {
+        const payload = {
+          code: creator.code.trim() || undefined,
+          note: creator.note.trim() || undefined,
+          folder: creator.folder || folderSelect.value || "promotional",
+          maxUses: creator.maxUses || 1,
+          expiresAt: creator.expiresAt ? new Date(creator.expiresAt).toISOString() : null,
+          vbucks: creator.vbucks || 0,
+          foundersEdition: creator.foundersEdition || 0,
+          campaignAccess: Boolean(creator.campaignAccess || creator.foundersEdition >= 1),
+          items: creator.items || []
+        };
+
+        const res = await act(api("/admin/api/codes", payload), "Redemption code created successfully!");
+        if (res) {
+          state.codeCreator = {
+            code: "", note: "", maxUses: 1, expiresAt: "", vbucks: 0, foundersEdition: 0, campaignAccess: false, items: [], showForm: false, folder: payload.folder
+          };
+          showShop();
+        }
+      }, "primary");
+
+      const creatorForm = el("div", {
+        style: `margin-top:16px; padding:18px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:${creator.showForm ? "block" : "none"};`
+      },
+        el("h3", { style: "margin:0 0 14px; font-size:15px; font-weight:700;", text: "Create Promotional / Reward Code" }),
+        el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:16px;" },
+          el("label", { style: "display:flex; flex-direction:column; gap:6px; font-size:12px; font-weight:600; color:var(--muted);" },
+            el("span", { text: "Code (Optional / Blank = Random)" }),
+            el("div", { style: "display:flex; gap:8px;" }, codeInput, randomBtn)),
+          el("label", { style: "display:flex; flex-direction:column; gap:6px; font-size:12px; font-weight:600; color:var(--muted);" },
+            el("span", { text: "Folder / Category" }),
+            folderSelect),
+          el("label", { style: "display:flex; flex-direction:column; gap:6px; font-size:12px; font-weight:600; color:var(--muted);" },
+            el("span", { text: "Description / Note" }),
+            noteInput),
+          el("label", { style: "display:flex; flex-direction:column; gap:6px; font-size:12px; font-weight:600; color:var(--muted);" },
+            el("span", { text: "Max Uses (Global Claim Limit)" }),
+            maxUsesInput),
+          el("label", { style: "display:flex; flex-direction:column; gap:6px; font-size:12px; font-weight:600; color:var(--muted);" },
+            el("span", { text: "Expiration / Time Limit" }),
+            expiresInput,
+            el("div", { class: "actions", style: "gap:4px; margin-top:4px;" },
+              btn("1h", () => setExpiryPreset(1), "ghost small"),
+              btn("24h", () => setExpiryPreset(24), "ghost small"),
+              btn("7d", () => setExpiryPreset(168), "ghost small"),
+              btn("30d", () => setExpiryPreset(720), "ghost small"),
+              btn("No Limit", () => setExpiryPreset(null), "ghost small")
+            ))
+        ),
+        el("div", { style: "margin-top:18px; padding-top:16px; border-top:1px solid var(--line);" },
+          el("h4", { style: "margin:0 0 12px; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--muted);", text: "Code Rewards" }),
+          el("div", { style: "display:flex; gap:20px; flex-wrap:wrap; align-items:flex-end;" },
+            el("label", { style: "display:flex; flex-direction:column; gap:6px; font-size:12px; font-weight:600; color:var(--muted);" },
+              el("span", { text: "V-Bucks Reward" }),
+              vbucksInput),
+            el("label", { style: "display:flex; flex-direction:column; gap:6px; font-size:12px; font-weight:600; color:var(--muted);" },
+              el("span", { text: "Founder's Edition Pack" }),
+              foundersSelect),
+            el("label", { class: "check", style: "padding-bottom:10px;" },
+              campaignCheck,
+              el("span", { text: "Save the World Campaign Access" }))
+          ),
+          el("div", { style: "margin-top:16px;" },
+            el("span", { style: "font-size:12px; font-weight:600; color:var(--muted); display:block; margin-bottom:6px;", text: "Bonus Items / Cosmetics / Schematics / Materials" }),
+            itemsContainer,
+            el("div", { style: "display:flex; gap:8px; margin-top:10px; align-items:center; flex-wrap:wrap;" },
+              itemTidInput, itemQtyInput, addItemBtn)
+          )
+        ),
+        el("div", { class: "actions", style: "margin-top:20px; justify-content:flex-end; gap:8px;" },
+          btn("Cancel", () => {
+            creator.showForm = false;
+            creatorForm.style.display = "none";
+            toggleFormBtn.textContent = "+ Create New Code";
+          }, "ghost"),
+          createCodeBtn
+        )
+      );
+
+      const toggleFormBtn = btn(creator.showForm ? "✕ Close Form" : "+ Create New Code", () => {
+        creator.showForm = !creator.showForm;
+        creatorForm.style.display = creator.showForm ? "block" : "none";
+        toggleFormBtn.textContent = creator.showForm ? "✕ Close Form" : "+ Create New Code";
+      }, creator.showForm ? "ghost" : "primary");
+
+      const tableBody = el("tbody");
+      if (displayedCodes.length === 0) {
+        tableBody.append(
+          el("tr", {},
+            el("td", { colspan: isArchiveView ? "9" : "8", class: "empty", style: "padding:28px;" },
+              el("div", { text: isArchiveView ? "No archived or redeemed codes." : "No active promotional codes in this folder." })))
+        );
+      } else {
+        for (const c of displayedCodes) {
+          const isExp = c.isExpired;
+          const isDep = c.isDepleted;
+          const statusChip = isExp ? chip("Expired", "bad")
+            : isDep ? chip("Redeemed", "warn")
+            : chip("Active", "good");
+
+          const row = el("tr", {},
+            el("td", {},
+              el("div", { style: "display:flex; align-items:center; gap:8px;" },
+                el("span", { class: "mono", style: "font-weight:700; color:#fff; font-size:13px;", text: c.code }),
+                btn("Copy", () => {
+                  navigator.clipboard.writeText(c.code);
+                  toast(`Copied code ${c.code}`);
+                }, "ghost small")
+              )),
+            el("td", {}, chip(c.folder || "promotional", "sky")),
+            el("td", { class: "wrap", style: "max-width:180px; font-size:12px; color:var(--muted);", text: c.note || (c.createdBy ? `By ${c.createdBy}` : "—") }),
+            el("td", {},
+              el("div", { style: "display:flex; gap:5px; flex-wrap:wrap; align-items:center;" },
+                c.rewards?.vbucks ? chip(`+${fmt(c.rewards.vbucks)} V-Bucks`, "sky") : null,
+                c.rewards?.foundersTierName ? chip(c.rewards.foundersTierName, "good") : null,
+                c.rewards?.campaignAccess && !c.rewards?.foundersTierName ? chip("Campaign Access", "good") : null,
+                ...(c.rewards?.items || []).map((it) =>
+                  chip(`${it.templateId}${it.quantity > 1 ? ` × ${fmt(it.quantity)}` : ""}`, "yellow")
+                ),
+                (!c.rewards?.vbucks && !c.rewards?.foundersEdition && !c.rewards?.campaignAccess && (!c.rewards?.items || c.rewards.items.length === 0))
+                  ? el("span", { class: "muted", style: "font-size:12px;", text: "Standard" }) : null
+              )),
+            el("td", { class: "num" }, el("span", { class: "mono", text: `${c.redeemedCount} / ${c.maxUses}` })),
+            isArchiveView ? el("td", { class: "wrap", style: "font-size:12px; color:var(--muted); max-width:180px;" },
+              (c.redeemedBy && c.redeemedBy.length)
+                ? c.redeemedBy.map((r) => r.displayName || r.accountId).join(", ")
+                : "—") : null,
+            el("td", {},
+              c.expiresAt
+                ? el("div", { style: "display:flex; flex-direction:column; gap:2px;" },
+                    chip(new Date(c.expiresAt).toLocaleString([], { dateStyle: "short", timeStyle: "short" }), isExp ? "bad" : "sky"),
+                    el("span", { style: "font-size:10px; color:var(--faint);", text: isExp ? "Expired" : "Valid until" }))
+                : el("span", { class: "muted", style: "font-size:12px;", text: "Never" })),
+            el("td", {}, statusChip),
+            el("td", {},
+              el("div", { class: "actions", style: "gap:6px;" },
+                btn("Copy Link", () => {
+                  const url = `${location.origin}/redeem?code=${encodeURIComponent(c.code)}`;
+                  navigator.clipboard.writeText(url);
+                  toast("Portal redeem link copied!");
+                }, "ghost small"),
+                btn("✕", async () => {
+                  if (!await confirmModal(`Delete code "${c.code}"?`, {
+                    title: "Delete Promotional Code",
+                    confirmText: "Delete Code",
+                    confirmKind: "danger"
+                  })) return;
+                  const res = await act(api(`/admin/api/codes/${encodeURIComponent(c.code)}`, {}, "DELETE"), `Deleted ${c.code}`);
+                  if (res) showShop();
+                }, "danger small", { title: `Delete ${c.code}` })
+              ))
+          );
+          tableBody.append(row);
+        }
+      }
+
+      const codesTable = el("div", { class: "table-wrap", style: "margin-top:12px;" },
+        el("table", {},
+          el("thead", {},
+            el("tr", {},
+              el("th", { text: "Code" }),
+              el("th", { text: "Folder" }),
+              el("th", { text: "Note / Creator" }),
+              el("th", { text: "Rewards" }),
+              el("th", { class: "num", text: "Claims" }),
+              isArchiveView ? el("th", { text: "Claimed By" }) : null,
+              el("th", { text: "Expiration" }),
+              el("th", { text: "Status" }),
+              el("th", { text: "Actions" }))),
+          tableBody));
+
+      const codesSection = el("section", { class: "panel" },
+        el("div", { class: "panel-head", style: "margin-bottom:6px;" },
+          el("div", { class: "actions" },
+            el("h2", { text: isArchiveView ? "Archived & Claimed Codes" : `${folderList.find((f) => f.slug === currentSub)?.name || "Promotional"} Codes` }),
+            chip(`${displayedCodes.length} Code${displayedCodes.length === 1 ? "" : "s"}`, "sky")),
+          el("div", { class: "actions" },
+            btn("Redeem Portal", () => window.open("/redeem", "_blank"), "ghost"),
+            !isArchiveView ? toggleFormBtn : null)),
+        el("p", { class: "note", style: "margin:0;", text: isArchiveView
+          ? "Codes that have reached their claim limit or have expired. Fully redeemed codes are archived here automatically."
+          : "Create promotional codes or share existing codes with players. Rewards sync directly to their profiles upon redemption at /redeem." }),
+        !isArchiveView ? creatorForm : null,
+        codesTable
+      );
+
+      // --- SECTION B: ITEM SHOP CONFIGURATION & LIVE PREVIEW ---
       const rotationHourSelect = el("select", { class: "field", style: "min-width:150px;" },
         Array.from({ length: 24 }, (_, i) => {
           const str = String(i).padStart(2, "0") + ":00 UTC";
@@ -2818,7 +3863,11 @@
       }, "primary");
 
       const resetAllBtn = btn("Reset to Defaults", async () => {
-        if (confirm("Reset the shop and timing settings back to factory defaults (Historical Season 1 shop, midnight rotation, 7-day weekly duration)?")) {
+        if (await confirmModal("Reset the shop and timing settings back to factory defaults (Historical Season 1 shop, midnight rotation, 7-day weekly duration)?", {
+          title: "Reset Shop Settings",
+          confirmText: "Reset to Defaults",
+          confirmKind: "danger"
+        })) {
           state.customShop = null;
           const res = await act(api("/admin/api/shop/reset", {}), "Shop settings reset to defaults");
           if (res) showShop();
@@ -2859,7 +3908,7 @@
         if (res) showShop();
       };
 
-      const modePicker = el("div", { class: "subtabs", role: "tablist" },
+      const modePicker = el("div", { class: "subtabs", role: "tablist", style: "margin:16px 0 20px;" },
         modeTabs.map(([key, label]) => el("button", {
           type: "button",
           role: "tab",
@@ -2869,277 +3918,383 @@
       );
 
       // Modal cosmetic picker
-      function openCosmeticPicker(onSelect) {
+      function openCosmeticPicker(onSelect, isFeatured = false) {
         let filterCategory = "";
         let searchQuery = "";
 
-        const searchInput = el("input", {
+        const existing = document.getElementById("cosmetic-picker-modal");
+        if (existing) existing.remove();
+
+        const allItems = shop.availableCosmetics || [];
+        let selectedItem = allItems[0] || null;
+
+        // Category filter
+        const categorySelect = el("select", {
           class: "field",
-          placeholder: "Search cosmetics by name...",
-          style: "width:100%;"
+          style: "width:130px; flex:none;",
+          onchange: (e) => {
+            filterCategory = e.target.value;
+            updateOptions();
+          }
+        },
+          el("option", { value: "", text: "All Types" }),
+          el("option", { value: "Outfit", text: "Outfits" }),
+          el("option", { value: "Glider", text: "Gliders" }),
+          el("option", { value: "Pickaxe", text: "Pickaxes" }),
+          el("option", { value: "Emote", text: "Emotes" })
+        );
+
+        // Search input
+        const searchInput = el("input", {
+          type: "search",
+          class: "field",
+          placeholder: "Search by name or ID…",
+          style: "flex:1 1 auto;",
+          oninput: (e) => {
+            searchQuery = e.target.value.trim().toLowerCase();
+            updateOptions();
+          }
         });
 
-        const listContainer = el("div", {
-          class: "grid",
-          style: "grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:14px; max-height:60vh; min-height:440px; overflow-y:auto; margin-top:14px; padding-right:4px;"
+        // Cosmetic select listbox
+        const itemSelect = el("select", {
+          class: "field",
+          size: 7,
+          style: "width:100%; font-family:var(--font); padding:4px 6px; line-height:1.5; font-size:13px;",
+          onchange: () => {
+            const chosen = allItems.find((c) => c.templateId === itemSelect.value);
+            if (chosen) selectCosmetic(chosen);
+          },
+          ondblclick: () => {
+            submit();
+          }
         });
 
-        const renderList = () => {
-          const query = searchQuery.trim().toLowerCase();
-          const items = (shop.availableCosmetics || []).filter((c) => {
+        // Price input
+        const priceInput = el("input", {
+          type: "number",
+          class: "field num",
+          min: "0",
+          max: "100000",
+          step: "50",
+          value: String(selectedItem?.defaultPrice ?? 1000),
+          style: "width:100%; font-size:14px;"
+        });
+
+        // Selected preview chip container
+        const previewContainer = el("div", {
+          style: "display:flex; align-items:center; gap:10px; margin-top:8px; padding:8px 12px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
+        });
+
+        function selectCosmetic(item) {
+          selectedItem = item;
+          const code = toRarityCode(item.rarity, item.rarityCode);
+          previewContainer.replaceChildren(
+            chip(item.rarity, code),
+            el("div", { style: "min-width:0; flex:1 1 auto;" },
+              el("strong", { style: "display:block; color:#fff; font-size:13px; line-height:1.2; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;", text: item.name }),
+              el("div", { class: "mono muted", style: "font-size:11px; margin-top:2px;", text: item.templateId })
+            ),
+            el("span", { class: "muted", style: "font-size:12px; flex:none;", text: `Default: ${fmt(item.defaultPrice)} V-B` })
+          );
+          priceInput.value = String(item.defaultPrice);
+          errorMsg.style.display = "none";
+        }
+
+        function updateOptions() {
+          const filtered = allItems.filter((c) => {
             if (filterCategory && c.type !== filterCategory) return false;
-            if (query && !c.name.toLowerCase().includes(query) && !c.templateId.toLowerCase().includes(query)) return false;
+            if (searchQuery && !c.name.toLowerCase().includes(searchQuery) && !c.templateId.toLowerCase().includes(searchQuery)) return false;
             return true;
           });
 
-          listContainer.replaceChildren(
-            ...items.map((c) => el("button", {
-              type: "button",
-              class: `card ${c.rarityCode}`,
-              style: "cursor:pointer; padding:16px 18px; min-height:115px; display:flex; flex-direction:column; justify-content:space-between;",
-              onclick: () => {
-                close();
-                onSelect(c);
-              }
-            },
-              el("div", {},
-                el("div", { class: "k", text: c.type }),
-                el("div", { class: "t", style: "font-weight:700; font-size:15px; line-height:1.3;", text: c.name }),
-                el("div", { class: "s mono", style: "font-size:11px; margin-top:4px;", text: c.templateId })),
-              el("div", { style: "display:flex; justify-content:space-between; align-items:center; margin-top:12px;" },
-                chip(c.rarity, c.rarityCode),
-                el("span", { class: "mono", style: "color:var(--amber); font-weight:700; font-size:13px;", text: `${fmt(c.defaultPrice)} V-Bucks` })
-              )
-            ))
+          itemSelect.replaceChildren(
+            ...filtered.map((c) => el("option", {
+              value: c.templateId,
+              text: `${c.name} (${c.type || "Cosmetic"}, ${c.rarity}) — ${fmt(c.defaultPrice)} V-Bucks`,
+              selected: selectedItem && c.templateId === selectedItem.templateId
+            }))
           );
-          if (!items.length) {
-            listContainer.replaceChildren(el("div", { class: "empty", text: "No cosmetics match." }));
-          }
-        };
 
-        searchInput.addEventListener("input", (e) => {
-          searchQuery = e.target.value;
-          renderList();
+          if (filtered.length > 0) {
+            if (!selectedItem || !filtered.some((c) => c.templateId === selectedItem.templateId)) {
+              selectCosmetic(filtered[0]);
+              itemSelect.value = filtered[0].templateId;
+            }
+          } else {
+            previewContainer.replaceChildren(
+              el("span", { class: "muted", style: "font-size:12px;", text: "No cosmetics match your search." })
+            );
+          }
+        }
+
+        const errorMsg = el("div", {
+          style: "color:var(--bad); font-size:12px; font-weight:600; margin-top:8px; display:none;"
         });
 
-        const categories = ["", "Outfit", "Harvesting Tool", "Glider"];
-        const filterChips = el("div", { class: "actions", style: "gap:6px; margin-top:10px;" },
-          categories.map((cat) => el("button", {
-            type: "button",
-            class: `chip ${filterCategory === cat ? "good" : ""}`,
-            style: "cursor:pointer; border:none; outline:none; box-shadow:none;",
-            onclick: () => {
-              filterCategory = cat;
-              renderList();
-              for (const btn of filterChips.children) {
-                btn.className = `chip ${btn.dataset.cat === filterCategory ? "good" : ""}`;
-              }
-            },
-            "data-cat": cat,
-            text: cat || "All"
-          }))
-        );
-
-        const close = () => {
+        function close() {
+          window.removeEventListener("keydown", onKeyDown);
           backdrop.classList.remove("show");
-          setTimeout(() => backdrop.remove(), 150);
-        };
+          setTimeout(() => backdrop.remove(), 160);
+        }
 
-        const dialog = el("div", { class: "modal-dialog", style: "max-width:960px; width:92vw; max-height:90vh; display:flex; flex-direction:column;", onclick: (e) => e.stopPropagation() },
-          el("div", { class: "panel-head", style: "margin-bottom:8px" },
-            el("h2", { text: "Choose a Cosmetic" }),
-            el("button", { type: "button", class: "btn ghost", style: "min-height:28px; padding:0 8px; border:none;", text: "✕", onclick: close })),
-          el("p", { class: "note", text: "Select an outfit, harvesting tool, or glider to add to the shop." }),
-          searchInput,
-          filterChips,
-          listContainer
+        function onKeyDown(e) {
+          if (e.key === "Escape") {
+            e.preventDefault();
+            close();
+          }
+        }
+
+        function submit() {
+          if (!selectedItem) {
+            errorMsg.textContent = "Please select a cosmetic from the list.";
+            errorMsg.style.display = "block";
+            return;
+          }
+          const price = Math.max(0, parseInt(priceInput.value, 10) || 0);
+          close();
+          onSelect(selectedItem, price);
+        }
+
+        const cancelBtn = btn("Cancel", close, "ghost");
+        const submitBtn = btn(isFeatured ? "Add to Featured" : "Add to Daily", submit, "primary");
+
+        searchInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            if (selectedItem) submit();
+          }
+        });
+
+        itemSelect.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            if (selectedItem) submit();
+          }
+        });
+
+        priceInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            submit();
+          }
+        });
+
+        const dialog = el("div", {
+          class: "modal-dialog",
+          style: "max-width:480px;",
+          onclick: (e) => e.stopPropagation()
+        },
+          el("div", { class: "panel-head", style: "margin-bottom:8px;" },
+            el("h2", { text: isFeatured ? "Choose a Cosmetic (Featured)" : "Choose a Cosmetic (Daily)" }),
+            el("button", {
+              type: "button",
+              class: "btn ghost",
+              style: "min-height:28px; padding:0 8px; font-size:14px; border:none;",
+              text: "✕",
+              onclick: close
+            })),
+          el("p", { class: "note", text: "Select a cosmetic item and specify its price in V-Bucks for the Battle Royale storefront." }),
+          el("div", { class: "field-wrap", style: "margin-bottom:12px;" },
+            el("label", { text: "Search & Filter Cosmetics" }),
+            el("div", { style: "display:flex; gap:8px; align-items:center;" },
+              categorySelect,
+              searchInput
+            )
+          ),
+          el("div", { class: "field-wrap", style: "margin-bottom:14px;" },
+            el("label", { text: "Select Cosmetic" }),
+            itemSelect,
+            previewContainer
+          ),
+          el("div", { class: "field-wrap", style: "margin-bottom:18px;" },
+            el("label", { text: "Price (V-Bucks)" }),
+            priceInput,
+            errorMsg
+          ),
+          el("div", { class: "actions" },
+            cancelBtn,
+            submitBtn
+          )
         );
 
         const backdrop = el("div", {
+          id: "cosmetic-picker-modal",
           class: "modal-backdrop",
-          onclick: (e) => { if (e.target === backdrop) close(); }
+          onclick: (e) => {
+            if (e.target === backdrop) close();
+          }
         }, dialog);
 
         document.body.append(backdrop);
+        window.addEventListener("keydown", onKeyDown);
         requestAnimationFrame(() => {
           backdrop.classList.add("show");
+          if (allItems.length > 0) {
+            selectCosmetic(allItems[0]);
+            updateOptions();
+          }
           searchInput.focus();
-          renderList();
         });
       }
 
-      // Mode-specific configuration section
+      // Mode configuration
       let configSection;
-
       if (activeMode === "fnbr") {
         configSection = el("section", { class: "panel" },
           el("div", { class: "panel-head" },
-            el("h2", { text: "Historical Rotation" })),
-          el("p", { class: "note", text: "Replaying Epic's authentic Season 1 shop (30 October – 13 December 2017) day-by-day in a 45-day cycle. Rotates automatically at the configured rotation time." }),
-          el("div", { class: "row", style: "margin-top:14px; gap:24px; align-items:center;" },
-            el("div", { style: "display:flex; flex-direction:column; gap:4px;" },
-              el("span", { class: "muted", style: "font-size:12px; font-weight:600;", text: "Recorded Date in Cycle" }),
-              el("span", { style: "font-size:16px; font-weight:700; color:var(--text);", text: shop.history?.date || "2017-10-30" })),
-            el("div", { style: "display:flex; flex-direction:column; gap:4px;" },
-              el("span", { class: "muted", style: "font-size:12px; font-weight:600;", text: "Cycle Duration" }),
-              el("span", { style: "font-size:16px; font-weight:700; color:var(--text);", text: "45 Days" }))
-          )
+            el("h2", { text: "Historical Item Shop (Season 1)" }),
+            chip("Active Mode", "good")),
+          el("p", { class: "note", text: "The item shop displays the authentic daily and weekly item shop offers from Fortnite Season 1 (matching 2017 rotation cycles)." }),
+          el("div", { class: "actions", style: "margin-top:14px;" },
+            btn("Randomize Once", async () => {
+              const res = await act(api("/admin/api/shop/randomize", {}), "Item shop randomized!");
+              if (res) showShop();
+            }, "primary small"),
+            btn("Switch to Custom Shop Builder", () => switchMode("custom"), "ghost small"))
         );
       } else if (activeMode === "random") {
         configSection = el("section", { class: "panel" },
           el("div", { class: "panel-head" },
-            el("h2", { text: "Randomized Rotation" })),
-          el("p", { class: "note", text: "Daily items rotate automatically every UTC day, and featured items rotate weekly, seeded so all players share the same shop with authentic rarity-based pricing." }),
+            el("h2", { text: "Randomized Item Shop" }),
+            chip("Active Mode", "good")),
+          el("p", { class: "note", text: "Offers rotate randomly every rotation cycle using the pool of available cosmetics from game data." }),
           el("div", { class: "actions", style: "margin-top:14px;" },
-            btn("Reroll Shop Now", async () => {
-              const res = await act(api("/admin/api/shop/randomize", {}), "Shop re-seeded with new items");
+            btn("Roll New Shop Now", async () => {
+              const res = await act(api("/admin/api/shop/randomize", {}), "New random shop generated!");
               if (res) showShop();
-            }, "primary"))
+            }, "primary small"),
+            btn("Switch to Custom Shop Builder", () => switchMode("custom"), "ghost small"))
         );
       } else {
-        // Custom Shop Builder
-        const custom = state.customShop;
+        // Custom Shop Builder Mode
+        const custom = state.customShop || { featured: [], daily: [] };
 
-        const renderCustomTile = (entry, index, isFeatured) => {
+        const renderItemRow = (entry, isFeatured, index) => {
           const [templateId, price] = entry;
-          const cosmetic = (shop.availableCosmetics || []).find((c) => c.templateId.toLowerCase() === templateId.toLowerCase()) || {
+          const found = (shop.availableCosmetics || []).find((c) => c.templateId.toLowerCase() === templateId.toLowerCase());
+          const cosmetic = found || {
             templateId,
             name: templateId.split(":")[1] || templateId,
-            type: "Cosmetic",
-            rarityCode: "uc"
+            rarity: "Common",
+            rarityCode: "c",
+            type: "Item"
           };
+          const code = toRarityCode(cosmetic.rarity, cosmetic.rarityCode);
 
           const priceInput = el("input", {
+            class: "field num",
             type: "number",
-            class: "field",
-            value: price,
             min: "0",
             max: "100000",
-            style: "width:100px; text-align:right;",
+            value: String(price ?? 1000),
+            style: "width:110px;",
             onchange: (e) => {
-              const val = Math.max(0, parseInt(e.target.value) || 0);
-              entry[1] = val;
+              const newPrice = Math.max(0, parseInt(e.target.value, 10) || 0);
+              entry[1] = newPrice;
             }
           });
 
           return el("div", {
-            class: `card ${cosmetic.rarityCode}`,
-            style: "padding:16px 18px; min-height:120px; display:flex; flex-direction:column; justify-content:space-between; gap:12px;"
+            class: `card ${code}`,
+            style: "display:flex; flex-direction:row; align-items:center; justify-content:space-between; gap:12px; padding:10px 14px; cursor:default;"
           },
-            el("div", { style: "display:flex; justify-content:space-between; align-items:flex-start; gap:8px;" },
-              el("div", { style: "min-width:0; flex:1;" },
-                el("div", { class: "t", style: "font-size:15px; font-weight:700; padding-right:0;", text: cosmetic.name }),
-                el("div", { class: "s mono", style: "font-size:11px; margin-top:4px;", text: cosmetic.templateId })),
-              el("div", { style: "display:flex; align-items:center; gap:8px; flex-shrink:0;" },
-                el("span", { class: "k", style: "position:static;", text: cosmetic.type }),
-                el("button", {
-                  type: "button",
-                  class: "btn ghost small",
-                  style: "border:none; color:var(--bad); min-height:24px; padding:0 8px; font-size:14px; line-height:1;",
-                  text: "✕",
-                  title: "Remove item",
-                  onclick: () => {
-                    if (isFeatured) custom.featured.splice(index, 1);
-                    else custom.daily.splice(index, 1);
-                    showShop();
-                  }
-                }))
-            ),
-            el("div", { style: "display:flex; justify-content:space-between; align-items:center; margin-top:auto;" },
-              el("span", { class: "muted", style: "font-size:13px; font-weight:500;", text: "V-Bucks:" }),
-              priceInput
-            )
+            el("div", { style: "display:flex; align-items:center; gap:12px; min-width:0;" },
+              chip(cosmetic.rarity, code),
+              el("div", { style: "min-width:0;" },
+                el("strong", { style: "display:block; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;", text: cosmetic.name }),
+                el("div", { class: "s mono", style: "font-size:11px; margin-top:2px;", text: cosmetic.templateId }))),
+            el("div", { class: "actions", style: "flex:none;" },
+              el("span", { class: "muted", style: "font-size:12px;", text: "Price:" }),
+              priceInput,
+              el("span", { class: "muted", style: "font-size:12px;", text: "V-Bucks" }),
+              btn("✕ Remove", () => {
+                if (isFeatured) custom.featured.splice(index, 1);
+                else custom.daily.splice(index, 1);
+                showShop();
+              }, "danger small"))
           );
         };
 
-        const featuredGrid = el("div", {
-          class: "grid",
-          style: "grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:14px; margin-top:14px;"
-        },
-          ...custom.featured.map((item, idx) => renderCustomTile(item, idx, true)),
-          custom.featured.length === 0 ? el("div", { class: "empty", text: "No featured items. Click 'Add Featured Item' below." }) : null
-        );
-
-        const dailyGrid = el("div", {
-          class: "grid",
-          style: "grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:14px; margin-top:14px;"
-        },
-          ...custom.daily.map((item, idx) => renderCustomTile(item, idx, false)),
-          custom.daily.length === 0 ? el("div", { class: "empty", text: "No daily items. Click 'Add Daily Item' below." }) : null
-        );
-
         const addFeaturedBtn = btn("+ Add Featured Item", () => {
-          openCosmeticPicker((c) => {
-            custom.featured.push([c.templateId, c.defaultPrice]);
+          openCosmeticPicker((c, price) => {
+            custom.featured.push([c.templateId, price ?? c.defaultPrice]);
             showShop();
-          });
+          }, true);
         }, "ghost small");
 
         const addDailyBtn = btn("+ Add Daily Item", () => {
-          openCosmeticPicker((c) => {
-            custom.daily.push([c.templateId, c.defaultPrice]);
+          openCosmeticPicker((c, price) => {
+            custom.daily.push([c.templateId, price ?? c.defaultPrice]);
             showShop();
-          });
+          }, false);
         }, "ghost small");
 
-        const saveCustomBtn = btn("Save Custom Shop", async () => {
-          const res = await act(api("/admin/api/shop", { mode: "custom", custom }), "Custom shop saved and activated");
+        const saveCustomBtn = btn("Apply Custom Shop Changes", async () => {
+          const res = await act(api("/admin/api/shop", { mode: "custom", custom }), "Custom shop updated and applied to game!");
           if (res) showShop();
         }, "primary");
 
-        const resetToFnbrBtn = btn("Reset to Default History", async () => {
-          if (confirm("Reset the shop back to the default Season 1 FNBR rotation?")) {
-            state.customShop = null;
-            const res = await act(api("/admin/api/shop/reset", {}), "Shop reset to default FNBR history");
-            if (res) showShop();
-          }
-        }, "ghost");
-
         configSection = el("section", { class: "panel" },
           el("div", { class: "panel-head" },
-            el("h2", { text: "Custom Shop Builder" })),
-          el("p", { class: "note", text: "Add and price custom Featured (BRWeeklyStorefront) and Daily (BRDailyStorefront) items. In-game players will see these offers immediately." }),
+            el("h2", { text: "Custom Shop Builder" }),
+            chip("Active Mode", "good")),
+          el("p", { class: "note", text: "Hand-pick which items appear in the Battle Royale Item Shop. Changes apply live to all connected players." }),
 
           el("div", { style: "margin-top:16px;" },
-            el("div", { style: "display:flex; justify-content:space-between; align-items:center;" },
-              el("h3", { text: `Featured Items (${custom.featured.length})`, style: "font-size:15px;" }),
+            el("div", { class: "panel-head", style: "margin-bottom:8px;" },
+              el("h3", { text: `Featured Items (${custom.featured.length})`, style: "font-size:15px; margin:0;" }),
               addFeaturedBtn),
-            featuredGrid),
+            el("div", { style: "display:flex; flex-direction:column; gap:8px;" },
+              ...custom.featured.map((item, i) => renderItemRow(item, true, i)),
+              custom.featured.length === 0 ? el("div", { class: "note", text: "No featured items selected yet." }) : null
+            )),
 
           el("div", { style: "margin-top:20px;" },
-            el("div", { style: "display:flex; justify-content:space-between; align-items:center;" },
-              el("h3", { text: `Daily Items (${custom.daily.length})`, style: "font-size:15px;" }),
+            el("div", { class: "panel-head", style: "margin-bottom:8px;" },
+              el("h3", { text: `Daily Items (${custom.daily.length})`, style: "font-size:15px; margin:0;" }),
               addDailyBtn),
-            dailyGrid),
+            el("div", { style: "display:flex; flex-direction:column; gap:8px;" },
+              ...custom.daily.map((item, i) => renderItemRow(item, false, i)),
+              custom.daily.length === 0 ? el("div", { class: "note", text: "No daily items selected yet." }) : null
+            )),
 
-          el("div", { class: "actions", style: "margin-top:20px; border-top:1px solid var(--line); padding-top:16px;" },
-            saveCustomBtn,
-            resetToFnbrBtn)
+          el("div", { class: "actions", style: "margin-top:20px; justify-content:flex-end;" },
+            saveCustomBtn)
         );
       }
 
-      // Live In-Game Shop Preview
+      // Live shop preview cards
       const liveFeatured = shop.currentShop?.featured || [];
       const liveDaily = shop.currentShop?.daily || [];
 
-      const renderPreviewCard = (o, isLarge) => el("div", {
-        class: `card ${o.rarityCode}`,
-        style: "display:flex; flex-direction:column; justify-content:space-between; padding:16px 18px; min-height:145px;"
-      },
-        el("div", {},
-          el("div", { class: "k", text: o.type }),
-          el("div", { class: "t", style: `font-size:${isLarge ? "17px" : "16px"}; font-weight:700;`, text: o.name }),
-          el("div", { class: "s mono", style: "font-size:11px; margin-top:4px;", text: o.templateId })),
-        el("div", { style: "display:flex; justify-content:space-between; align-items:center; margin-top:14px;" },
-          chip(o.rarity, o.rarityCode),
-          el("span", { class: "chip warn", style: "font-weight:700;", text: `${fmt(o.price)} V-Bucks` }))
-      );
+      const renderPreviewCard = (offer, isFeatured) => {
+        const o = offer.cosmetic || offer || {};
+        const code = toRarityCode(o.rarity, o.rarityCode);
+        const name = o.name || offer.name || offer.title || (offer.templateId ? offer.templateId.split(":")[1] : "Item");
+        const rarity = o.rarity || "Common";
+        const type = o.type || (isFeatured ? "Featured" : "Daily");
+        const templateId = o.templateId || offer.templateId || "Unknown";
 
-      const previewSection = el("section", { class: "panel", style: "margin-top:16px;" },
+        return el("div", {
+          class: `card ${code}`,
+          style: "display:flex; flex-direction:column; justify-content:space-between; min-height:140px; position:relative; overflow:hidden;"
+        },
+          el("div", {},
+            el("div", { class: "k", text: type }),
+            el("div", { class: "t", style: "font-size:16px;", text: name }),
+            el("div", { class: "s mono", text: templateId })),
+          el("div", { style: "display:flex; justify-content:space-between; align-items:center; margin-top:14px; border-top:1px solid var(--line); padding-top:8px;" },
+            chip(rarity, code),
+            el("span", { class: "chip sky", style: "font-weight:700;", text: `${fmt(offer.price)} V-Bucks` }))
+        );
+      };
+
+      const previewSection = el("section", { class: "panel", style: "margin-top:20px;" },
         el("div", { class: "panel-head" },
           el("h2", { text: "Live In-Game Shop Preview" }),
-          el("span", { class: "note", text: `Rotates in ${Math.max(0, Math.round((new Date(shop.nextRotation) - new Date()) / 3600000))}h` })),
-        el("p", { class: "note", text: "This is what players running 1.8+ currently see on the Store tab in the game lobby." }),
+          chip(`Rotates at ${shop.rotationHour ?? 0}:00 UTC`, "sky")),
+        el("p", { class: "note", text: "This is the current live shop displayed to players on 1.8+ in the Battle Royale Store tab." }),
 
         el("div", { style: "margin-top:14px;" },
           el("h3", { text: `Featured Items (${liveFeatured.length})`, style: "font-size:14px; margin-bottom:8px; color:var(--muted);" }),
@@ -3156,20 +4311,24 @@
           ))
       );
 
+      // Render the selected view cleanly!
       $("view").replaceChildren(
         el("div", { class: "view-head" },
           el("div", {},
-            el("h1", { text: "Item Shop" }),
-            el("div", { class: "muted", text: "Configure Battle Royale's Store tab (Athena Direct Acquisition) for 1.8+ builds." })),
+            el("h1", { text: currentSub === "shop" ? "Item Shop" : currentSub === "archived-codes" ? "Archived Codes" : `${folderList.find((f) => f.slug === currentSub)?.name || "Promotional"} Codes` }),
+            el("div", { class: "muted", text: currentSub === "shop"
+              ? "Configure Battle Royale's Store tab (Athena Direct Acquisition) for 1.8+ builds."
+              : currentSub === "archived-codes"
+              ? "Archived promotional codes that have been fully redeemed or have expired."
+              : "Manage promotional reward codes. Players redeem codes on the web portal to receive rewards." })),
           el("div", { class: "actions" },
             btn("Refresh", showShop, "ghost"))),
-        timingSettingsSection,
-        modePicker,
-        configSection,
-        previewSection
+        topSubtabs,
+        ...(currentSub === "shop"
+          ? [timingSettingsSection, modePicker, configSection, previewSection]
+          : [codesSection])
       );
     }
-
     /* ---------- reports ---------- */
     async function showReports() {
       if (state.reportId) {
@@ -3202,7 +4361,11 @@
               el("h1", { text: report.subject || "Report Details" })),
             el("div", { class: "actions" },
               btn("Delete Report", async () => {
-                if (confirm("Delete this report?")) {
+                if (await confirmModal("Delete this report?", {
+                  title: "Delete Report",
+                  confirmText: "Delete Report",
+                  confirmKind: "danger"
+                })) {
                   await act(api(`/admin/api/reports/${report.id}`, {}, "DELETE"), "Report deleted");
                   location.hash = "#/reports";
                 }
@@ -3360,6 +4523,19 @@
               toggleSwitch(settings.allowAutoRegistration, (checked) =>
                 save({ allowAutoRegistration: checked }, checked ? "In-game auto-creation enabled" : "In-game auto-creation disabled"))),
             el("p", { class: "note", text: "When enabled, logging in with an unknown name automatically creates a new account in-game with the provided password. Only dedicated server accounts (CoreServer{n} or Server{n}) can be created without a password." }))),
+
+        el("section", { class: "panel", style: "margin-top:16px" },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" },
+            el("div", { class: "actions" },
+              el("h2", { text: "Default Founder & Campaign Access" }),
+              settings.defaultFoundersAccess ? chip("Granted to New Accounts", "good") : chip("Disabled (Codes / Manual Only)", "warn")),
+            toggleSwitch(settings.defaultFoundersAccess === true, (checked) =>
+              save({ defaultFoundersAccess: checked }, checked ? "New accounts start with Founder & Campaign access" : "New accounts start with no Founder or Campaign access"))),
+          el("p", {
+            class: "note", text: settings.defaultFoundersAccess
+              ? "When enabled, newly registered accounts automatically receive Save the World Campaign Access and the Standard Founder's Pack. When disabled, accounts start with no access until granted manually or redeemed with a promotional/friend code."
+              : "Newly registered accounts start with no Founder's Edition or Campaign Access. Access can be unlocked by redeeming a valid promotional or friend code on the web portal, or granted by an admin."
+          })),
 
         el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
