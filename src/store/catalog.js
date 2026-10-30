@@ -1,3 +1,4 @@
+import { currentBuild } from "../builds/context.js";
 import { fortnitemares, isEventActive, mutantStorms } from "../events/events.js";
 import { candy } from "../events/fortnitemares.js";
 import { stormTickets } from "../events/mutantstorms.js";
@@ -17,9 +18,16 @@ import { seasonShopOffers, seasonStorefront } from "./seasonshop.js";
 // store turns into the llama it names. Voucher_BasicPack is MyTownData's VoucherItemDefinition and buys the Mini Reward
 // Llama (CardPack_Basic). The two vouchers rewards hand out always have their offer; any other voucher (founders,
 // generic) gets one while the player holds it.
+//
+// 1.10 (CL-3790078): "Multiple-in-one Upgrade Llamas now sell 25% off!" From 1.10 the store also has ten Upgrade Llamas in
+// one offer (one grant of 10, FCatalogItemGrant Quantity) for 375 V-Bucks, a quarter off ten singles. 🟡 Epic's
+// multi-llama offers were in its catalog, not the paks; the size of Core's is its choice.
 const mtxOffers = [
-  { offerId: "core_cardpack_bronze", templateId: "CardPack:cardpack_bronze", title: "Upgrade Llama", currencyType: "MtxCurrency", currencySubType: "", price: 50 }
+  { offerId: "core_cardpack_bronze", templateId: "CardPack:cardpack_bronze", title: "Upgrade Llama", currencyType: "MtxCurrency", currencySubType: "", price: 50 },
+  { offerId: "core_cardpack_bronze_x10", templateId: "CardPack:cardpack_bronze", quantity: 10, title: "10 Upgrade Llamas", currencyType: "MtxCurrency",
+    currencySubType: "", price: 375, firstBuild: 3790078 }
 ];
+const inThisBuild = (offer) => !offer.firstBuild || Number(currentBuild()) >= offer.firstBuild;
 const listedVouchers = ["AccountResource:voucher_basicpack", "AccountResource:voucher_cardpack_bronze"];
 
 // The llama a voucher buys: voucher_<name> → CardPack_<name> or <name> itself (voucher_cardpack_bronze), or the
@@ -83,7 +91,7 @@ const eventOffers = [
 // An event's offers are on sale while the requesting build runs the event and has their llama.
 const onSale = (offer) => !offer.event || (isEventActive(offer.event) && Boolean(getCardPack(offer.templateId)));
 
-const allOffers = () => [...mtxOffers, ...eventOffers.filter(onSale), ...voucherOffers()];
+const allOffers = () => [...mtxOffers.filter(inThisBuild), ...eventOffers.filter(onSale), ...voucherOffers()];
 
 // An item shop offer has no title: 1.8's offer info then takes the tile's name, the type line under it and the details
 // screen's description from the first grant's item definition (UFortDirectAcquisitionOfferInfo GetName 0x2E2A1A0,
@@ -115,7 +123,7 @@ function offerJson(offer, sortPriority) {
     appStoreId: "",
     metaAssetInfo: { structName: "FortCatalogMeta", payload: { chaseItems: [], packDefinition: offer.athena ? "" : getCardPack(templateId)?.path ?? "" } },
     displayAssetPath: offer.displayAssetPath ?? "",
-    itemGrants: [{ templateId, quantity: 1 }],
+    itemGrants: [{ templateId, quantity: offer.quantity ?? 1 }],
     requirements: [],
     denyItemTemplateIds: []
   };

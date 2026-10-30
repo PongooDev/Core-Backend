@@ -79,7 +79,9 @@ export function purchaseCatalogEntry({ req, session, notifications }) {
   }
   if (offer.currencyType === "GameItem") spendItem(tracker, offer.currencySubType, total);
   else spendMtx(tracker, total);
-  const items = grant(session, offer.templateId, purchaseQuantity, { packSource: "Store" }).map(lootEntry);
-  if (offer.templateId.toLowerCase().startsWith("cardpack:")) itemEvent(session, ["PurchaseCardPack"], offer.templateId, purchaseQuantity);
+  // An offer of several (1.10's ten Upgrade Llamas, store/catalog.js) grants its quantity for each one bought.
+  const count = purchaseQuantity * (offer.quantity ?? 1);
+  const items = grant(session, offer.templateId, count, { packSource: "Store" }).map(lootEntry);
+  if (offer.templateId.toLowerCase().startsWith("cardpack:")) itemEvent(session, ["PurchaseCardPack"], offer.templateId, count);
   notifications.push({ type: "CatalogPurchase", primary: true, lootResult: { items } });
 }

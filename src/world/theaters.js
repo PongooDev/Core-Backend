@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import { currentBuild } from "../builds/context.js";
 import { isEventActive } from "../events/events.js";
 import { candy } from "../events/fortnitemares.js";
 import { mutantStorms, stormTickets } from "../events/mutantstorms.js";
@@ -251,6 +252,15 @@ function alertOn(mission, row, category, seed, availableUntil, spreadDataName = 
 // so everyone sees the same storms.
 const nearbyTiles = 2.5;
 
+// 1.10 (CL-3790078) stopped the spreading: "Mutant Storm Mission Alerts no longer spread. Instead, the number of Mission
+// Alerts available at a time are set to a fixed target number. Stonewood: 5, Plankerton: 15, Canny Valley: 15, Twine
+// Peaks: 15. Mutant Storm Mission Alert quota remains unchanged at 10 per day." Its StormCategory rows still name their
+// spread rows (the targets were Epic's server's), so from 1.10 each zone's row (by its ModifierTierGroup, as the rewards)
+// gets its target of storms at the day's start and none spreads.
+const fixedStormsBuild = 3790078;
+const stormTargets = [5, 15, 15, 15];
+export const stormsSpread = (changelist = currentBuild()) => !(Number(changelist) >= fixedStormsBuild);
+
 function spreadStorm(data, missions, storm, dayStart, now, taken, availableUntil) {
   const spread = missionAlertSpread(storm.row.spreadRowName);
   if (!spread || !(spread.spreadInterval > 0)) return { spreads: [], refreshAt: undefined };
@@ -290,6 +300,7 @@ function rollAlerts({ data }, missions, day, dayStart, now, availableUntil) {
   const categories = isHexsylvania(data.uniqueId) ? ["HalloweenCategory"] : ["GeneralCategory", "StormLowCategory"];
   const taken = new Set();
   const storms = [];
+  const spreading = stormsSpread();
   const place = (category, seed, inScope) => {
     const candidates = missions.filter((mission) => inScope(mission) && !taken.has(mission.missionGuid) && alertFor(data, mission, category));
     if (!candidates.length) return [];
@@ -297,8 +308,9 @@ function rollAlerts({ data }, missions, day, dayStart, now, availableUntil) {
       .map((guid) => candidates.find((candidate) => candidate.missionGuid === guid));
     taken.add(mission.missionGuid);
     const row = alertFor(data, mission, category);
-    const alert = alertOn(mission, row, category, seed, availableUntil, row.spreadRowName ?? "");
-    if (row.spreadRowName) storms.push({ alert, mission, row, seed, category });
+    const spreadRow = spreading ? row.spreadRowName ?? "" : "";
+    const alert = alertOn(mission, row, category, seed, availableUntil, spreadRow);
+    if (spreadRow) storms.push({ alert, mission, row, seed, category });
     return [alert];
   };
   // The general alert keeps the seed alerts had before categories, so a day's alerts kept their guids.
@@ -306,12 +318,16 @@ function rollAlerts({ data }, missions, day, dayStart, now, availableUntil) {
     place(category, `${data.uniqueId}:${day}:alert:${regionIndex}${category === "GeneralCategory" ? "" : `:${category}`}`,
       (mission) => region.tileIndices.includes(mission.tileIndex))));
   // A Mutant Storm starts in each of the theater's zones (one per StormCategory row its missions can carry, each row a
-  // zone and a spread) and spreads from there.
+  // zone and a spread) and spreads from there; from 1.10 each zone has its fixed target of storms instead.
   if (!isHexsylvania(data.uniqueId)) {
-    const rows = [...new Set(missions.map((mission) => alertFor(data, mission, "StormCategory")?.name).filter(Boolean))];
-    for (const name of rows) {
-      alerts.push(...place("StormCategory", `${data.uniqueId}:${day}:alert:storm:${name}`,
-        (mission) => alertFor(data, mission, "StormCategory")?.name === name));
+    const rows = [...new Map(missions.map((mission) => alertFor(data, mission, "StormCategory")).filter(Boolean)
+      .map((row) => [row.name, row])).values()];
+    for (const row of rows) {
+      const count = spreading ? 1 : stormTargets[zoneOfModifierGroup(row.modifierTierGroup) - 1];
+      for (let index = 0; index < count; index++) {
+        alerts.push(...place("StormCategory", `${data.uniqueId}:${day}:alert:storm:${row.name}${index ? `:${index}` : ""}`,
+          (mission) => alertFor(data, mission, "StormCategory")?.name === row.name));
+      }
     }
   }
   let nextRefresh = availableUntil;
