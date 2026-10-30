@@ -119,7 +119,7 @@ export function createAccountStore(dataDir) {
         throw new Error("A non-empty password is required to create an account");
       }
       if (isServerAccountName(displayName)) {
-        throw new Error("Server account names (CoreServer{n} or Server{n}) cannot be created with a password");
+        throw new Error("Server account names (CoreServer{n}, Server{n} or CoreServer-<PC>-{n}) cannot be created with a password");
       }
       const contactEmail = email == null || !String(email).trim() ? null : checkedEmail(String(email), null);
       const account = {

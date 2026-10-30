@@ -15,9 +15,11 @@ export function isLoopbackAddress(ip) {
   return loopbackAddresses.has(ip) || ip.startsWith("127.") || ip === "::1" || ip === "localhost" || ip.endsWith("127.0.0.1");
 }
 
+// CoreServer{n} and Server{n}, and CoreServer-<PC>-{n}: the logins a launcher gives the servers it hosts on another PC
+// for a friend's backend (Core-Launcher #6), so they don't share accounts with the backend PC's own CoreServer{n}.
 export function isServerAccountName(name) {
   if (typeof name !== "string") return false;
-  return /^(?:CoreServer|Server)[_\s-]?\d+$/i.test(name.trim());
+  return /^(?:(?:CoreServer|Server)[_\s-]?\d+|CoreServer[_-][a-z0-9]{1,16}[_-]\d+)$/i.test(name.trim());
 }
 
 export function validatePassword(plain) {

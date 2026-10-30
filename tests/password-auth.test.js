@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { hashPassword, validatePassword, validateUsername, verifyPassword } from "../src/accounts/password.js";
+import { hashPassword, isServerAccountName, validatePassword, validateUsername, verifyPassword } from "../src/accounts/password.js";
 import { get, post, requestToken, send, startBackend } from "./helpers.js";
 
 test("password hashing and timing-safe verification", async () => {
@@ -23,6 +23,11 @@ test("username and password validation rules", () => {
   assert.ok(validateUsername("ab")); // too short
   assert.ok(validateUsername("a".repeat(25))); // too long
   assert.ok(validateUsername("Bad@User!")); // invalid characters
+
+  for (const name of ["CoreServer1", "Server 2", "coreserver_12", "CoreServer-DESKTOP7-1", "CoreServer_pc2_10"]) assert.ok(isServerAccountName(name), name);
+  for (const name of ["CoreServer", "CoreServerBob", "CoreServer-Bob", "Server-Bob-1", "CoreServer-a.b-1", "Bob-CoreServer-1"]) {
+    assert.equal(isServerAccountName(name), false, name);
+  }
 
   assert.equal(validatePassword("validPassword123"), null);
   assert.equal(validatePassword("  validPassword123  "), null);
@@ -312,6 +317,11 @@ test("dedicated server accounts, passwordless login, and hosting IP whitelist", 
     });
     assert.equal(serverWithPw.status, 200);
     assert.equal(serverWithPw.body.account_id, server1Login.body.account_id);
+
+    // Another PC's launcher names its servers CoreServer-<PC>-{n} (Core-Launcher #6): server accounts of their own
+    const remoteServer = await requestToken(backend.port, { grant_type: "password", username: "CoreServer-DESKTOP7-1" });
+    assert.equal(remoteServer.status, 200);
+    assert.notEqual(remoteServer.body.account_id, server1Login.body.account_id);
 
     // 2. Hosting IP management via Admin API (available under both /settings/hosting-ips and /sessions/hosting-ips)
     const hostingRes = await send({ host: "127.0.0.1", port: backend.port, path: "/admin/api/settings/hosting-ips" });

@@ -25,7 +25,7 @@ function invalidGrant(res, message) {
   sendError(res, 400, "errors.com.epicgames.account.oauth.invalid_grant", message);
 }
 
-// A server account (CoreServer{n}, Server{n}) or the DedicatedServer client logs in without a password, and the
+// A server account (CoreServer{n}, Server{n}, CoreServer-<PC>-{n}) or the DedicatedServer client logs in without a password, and the
 // DedicatedServer client's token acts for any player: only for this PC and the Trusted Hosting IPs (Core-Backend #125,
 // network.js allowsHosting), by the connection's own address. The client's id and secret are no proof: they are in
 // Core's source and every gameserver's command line.

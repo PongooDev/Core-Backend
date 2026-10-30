@@ -142,7 +142,7 @@ Friends on other PCs can log in to your backend and join your gameservers.
 friend's backend**, enter the address, **Test connection**, Save, and Play. Without the launcher, start the game with
 `-CoreBackend=http://<address>:<port>` (CoreRedirect.dll) and `-httpproxy=<address>:<port>`.
 
-Your friend gets an account on your backend, named after their player name. Password requirements can be toggled in the admin panel's **Settings** tab (`requirePassword`, disabled by default). Accounts that have a password configured are always verified regardless of `requirePassword`; when `requirePassword` is turned on, passwordless accounts cannot log in until an admin sets a password or issues a reset link. Auto-registration (`allowAutoRegistration`, enabled by default) creates an account for any new name on first login: when `requirePassword` is on, it creates an account for any new name if provided with a valid 8+ character password; when off, it creates a passwordless account with whatever password was sent (such as the launcher's `Core` default). Dedicated gameservers (`CoreServer{n}` / `Server{n}`) bypass password checks when connecting from your PC or from an IP in the **Trusted Hosting IPs** list in Settings ([Gameservers on other PCs](#gameservers-on-other-pcs)); from anywhere else those names, the `DedicatedServer` client's token and registering a game session are refused (players should not choose server names, as any login from loopback or a trusted hosting IP with those names is treated as a dedicated server). The admin panel and the launcher's `/core/api` routes still only answer on your PC (`GET /core/api/sessions` also on a trusted hosting IP); the one route other
+Your friend gets an account on your backend, named after their player name. Password requirements can be toggled in the admin panel's **Settings** tab (`requirePassword`, disabled by default). Accounts that have a password configured are always verified regardless of `requirePassword`; when `requirePassword` is turned on, passwordless accounts cannot log in until an admin sets a password or issues a reset link. Auto-registration (`allowAutoRegistration`, enabled by default) creates an account for any new name on first login: when `requirePassword` is on, it creates an account for any new name if provided with a valid 8+ character password; when off, it creates a passwordless account with whatever password was sent (such as the launcher's `Core` default). Dedicated gameservers (`CoreServer{n}` / `Server{n}` / `CoreServer-<PC>-{n}`) bypass password checks when connecting from your PC or from an IP in the **Trusted Hosting IPs** list in Settings ([Gameservers on other PCs](#gameservers-on-other-pcs)); from anywhere else those names, the `DedicatedServer` client's token and registering a game session are refused (players should not choose server names, as any login from loopback or a trusted hosting IP with those names is treated as a dedicated server). The admin panel and the launcher's `/core/api` routes still only answer on your PC (`GET /core/api/sessions` also on a trusted hosting IP); the one route other
 machines get is `GET /core/api/status` (`{"name":"Core-Backend","version":...}`), which the launcher uses to check
 the connection.
 
@@ -167,12 +167,12 @@ Another PC can host gameservers for your backend (Core-Backend #125), for more s
    network/VPN address on yours. A refused one shows in the Logs (`Refused ... from <ip>`). Only IP addresses are taken
    (IPv4 or IPv6, no host names or ranges), and the IP is always the connection's own, never a header. By default the
    list is your PC only, and nothing changes for gameservers on your PC.
-2. The other PC's gameservers log in to your backend (as `CoreServer{n}`, or the login its launcher's Servers settings
-   give) and register their sessions with the region they are started with (`-McpRegion=`, the launcher's Servers →
+2. The other PC's gameservers log in to your backend (Core Launcher 0.9.13 and later name them
+   `CoreServer-<its PC name>-{n}`, e.g. `CoreServer-DESKTOP7-1`, or the login its launcher's Servers settings give) and register their sessions with the region they are started with (`-McpRegion=`, the launcher's Servers →
    Region). Players are sent to that PC's IP, whatever address its gameserver writes, so for players on the internet
    it forwards its own game and beacon ports (UDP 7777 and 15000 and up). A trusted PC can change only the sessions it
-   registered, and a server account on it is a different server from the same account on your PC: give it a login of
-   its own anyway (e.g. `CoreServer10{n}`) if both PCs run servers, as both share the account otherwise.
+   registered, and a server account on it is a different server from the same account on your PC; with its own login
+   (`CoreServer-<PC>-{n}`, a PC name of up to 16 letters and digits) the two PCs' servers don't share accounts either.
 3. Remove the IP to stop it: its sessions can't heartbeat or take matches any more, and it can't log in as a server.
 
 ## Config options

@@ -83,7 +83,7 @@ export function portalRoutes(context) {
   router.get("/api/check-username", checkUsernameLimiter, (req, res) => {
     const username = String(req.query.username ?? "").trim();
     if (isServerAccountName(username)) {
-      return res.json({ available: false, error: "Server account names (CoreServer{n} or Server{n}) are reserved for dedicated servers" });
+      return res.json({ available: false, error: "Server account names (CoreServer{n}, Server{n} or CoreServer-<PC>-{n}) are reserved for dedicated servers" });
     }
     const error = validateUsername(username);
     if (error) return res.status(400).json({ available: false, error });
@@ -106,7 +106,7 @@ export function portalRoutes(context) {
 
     if (isServerAccountName(username)) {
       return sendError(res, 400, "errors.com.epicgames.account.reserved_name",
-        "Server account names (CoreServer{n} or Server{n}) are reserved for dedicated servers.");
+        "Server account names (CoreServer{n}, Server{n} or CoreServer-<PC>-{n}) are reserved for dedicated servers.");
     }
 
     const usernameError = validateUsername(username);
