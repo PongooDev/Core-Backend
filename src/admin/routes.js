@@ -37,6 +37,7 @@ import { cosmeticRarity, cosmeticType, eligibleCosmetics, generateRandomShop, it
 
 import { isServerAccountName, validatePassword } from "../accounts/password.js";
 import { EmailError } from "../accounts/store.js";
+import { rewardItem } from "../friendcodes/rewards.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const panel = path.join(here, "panel.html");
@@ -899,6 +900,10 @@ export function adminRoutes(context) {
 
   router.post("/admin/api/codes", (req, res) => {
     if (!context.friendCodes?.create) return invalid(res, "Friend codes store not available");
+    // A code promises only items some build has, so redeeming it can give them all.
+    const items = Array.isArray(req.body?.items) ? req.body.items : [];
+    const unknownItem = items.find((item) => item && typeof item.templateId === "string" && item.templateId.trim() && !rewardItem(item.templateId));
+    if (unknownItem) return invalid(res, `Unknown item ${unknownItem.templateId}: no build's game data has it (a cosmetic must be a locker item)`);
     try {
       const created = context.friendCodes.create(req.body ?? {});
       res.status(201).json(created);

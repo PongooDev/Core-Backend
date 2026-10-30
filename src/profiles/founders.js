@@ -64,13 +64,10 @@ export function setUpFounders(session) {
   const allow = typeof session.settings?.defaultFoundersAccess === "function"
     ? session.settings.defaultFoundersAccess()
     : Boolean(session.settings?.defaultFoundersAccess);
+  // Off (defaultFoundersAccess, Core-Backend #126): nothing is given, and nothing is noted either, so turning it back on
+  // gives every account the Standard Edition and campaign access alike, not just the access to those made meanwhile.
+  if (!allow) return;
   const { profile } = session.profile("profile0");
-  if (!allow) {
-    if (!(profile.coreMigrations ?? []).includes(foundersMigration)) {
-      profile.coreMigrations = [...(profile.coreMigrations ?? []), foundersMigration];
-    }
-    return;
-  }
   if (campaignAccessMissing(profile)) grant(session, campaignAccessToken, 1);
   if ((profile.coreMigrations ?? []).includes(foundersMigration)) return;
   for (const templateId of [foundersEdition.token, foundersEdition.quest]) {

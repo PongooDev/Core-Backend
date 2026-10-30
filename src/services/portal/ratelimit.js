@@ -1,13 +1,17 @@
 import { isLoopbackAddress } from "../../accounts/password.js";
 import { sendError } from "../../errors.js";
 
+// The address a limit counts: the connection's own. X-Forwarded-For is believed only from this PC (a tunnel or proxy
+// running here); from anyone else it is theirs to write, and "127.0.0.1" in it would exempt them from every limit
+// (Core-Backend #126 review).
 export function getClientIp(req) {
+  const peer = req.socket?.remoteAddress || req.ip || "";
   const forwarded = req.headers?.["x-forwarded-for"];
-  if (typeof forwarded === "string") {
+  if (typeof forwarded === "string" && isLoopbackAddress(peer)) {
     const first = forwarded.split(",")[0].trim();
     if (first) return first;
   }
-  return req.ip || req.socket?.remoteAddress || "";
+  return peer;
 }
 
 /**

@@ -137,8 +137,8 @@ test("promotional and friend codes creation, folders, archiving, and redemption"
       foundersEdition: 2, // Deluxe Founder's Pack
       campaignAccess: true,
       items: [
-        { templateId: "AthenaCharacter:cid_001_athena_commando_f_default", quantity: 1 },
-        { templateId: "Ingredient:ore_copper", quantity: 50 }
+        { templateId: "AthenaCharacter:cid_029_athena_commando_f_halloween", quantity: 1 },
+        { templateId: "Ingredient:ingredient_ore_copper", quantity: 50 }
       ]
     });
     assert.equal(createRes.status, 201);
@@ -184,6 +184,13 @@ test("promotional and friend codes creation, folders, archiving, and redemption"
     assert.equal(aliceRedeem.status, 200);
     assert.equal(aliceRedeem.body.success, true);
     assert.equal(aliceRedeem.body.rewards.vbucks, 1500);
+    // Everything the code gives is in Alice's profiles.
+    const alice = await userLogin(backend.port, "PlayerAlice", "AlicePassword123!");
+    const aliceItems = async (profileId) => Object.values((await queryProfile(backend.port, alice, profileId)).items).map((i) => i.templateId.toLowerCase());
+    assert.ok((await aliceItems("athena")).includes("athenacharacter:cid_029_athena_commando_f_halloween"));
+    assert.ok((await aliceItems("profile0")).includes("currency:mtxgiveaway"));
+    assert.ok((await aliceItems("profile0")).includes("token:founderspack_2"));
+    assert.ok(aliceRedeem.body.granted.some((line) => line.includes("1,500 V-Bucks")));
 
     // One-per-account: Alice cannot redeem again
     const aliceSecondTry = await redeem(backend, "PlayerAlice", "AlicePassword123!", "SUMMER-VB-2024");
@@ -253,4 +260,99 @@ test("concurrent redemptions on single-use code are mutex-protected against race
     await backend.close();
     fs.rmSync(dataDir, { recursive: true, force: true });
   }
+});
+
+// Core-Backend #126 review: what the merge's follow-up fixed.
+test("friend codes saved before #126 still list in game, in the panel, and redeem", async () => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-legacy-codes-"));
+  const backend = await startBackend({ dataDir });
+  try {
+    const owner = await post(backend.port, "/api/register", undefined, { username: "LegacyOwner", password: "Password123!" });
+    await post(backend.port, "/api/register", undefined, { username: "LegacyFriend", password: "Password123!" });
+    const code = "ABCDE-FGHJK-MNPQR-STUVW";
+    // The format #35 saved: no folders, no uses, no rewards.
+    fs.writeFileSync(path.join(dataDir, "friendcodes.json"), JSON.stringify({
+      codes: { [code]: { accountId: owner.body.id, codeType: "CodeToken:FounderFriendInvite", backend: "epic", created: "2026-01-01T00:00:00.000Z" } }
+    }));
+    await backend.close();
+    const reopened = await startBackend({ dataDir });
+    try {
+      const listed = await admin(reopened, `/accounts/${owner.body.id}/friend-codes`);
+      assert.deepEqual(listed.body.map((c) => [c.code, c.isFriendCode, c.redeemedCount, c.maxUses]), [[code, true, 0, 1]]);
+      const player = await userLogin(reopened.port, "LegacyOwner", "Password123!");
+      const inGame = await as("1.8", reopened.port, "GET", `/fortnite/api/game/v2/friendcodes/${owner.body.id}/epic`, player.token);
+      assert.deepEqual(inGame.body.map(({ codeId }) => codeId), [code]);
+
+      // Its owner can't use it; a friend gets the Standard Edition with it, once.
+      const own = await redeem(reopened, "LegacyOwner", "Password123!", code);
+      assert.equal(own.status, 400);
+      assert.match(own.body.errorMessage, /own friend code/);
+      const friend = await redeem(reopened, "LegacyFriend", "Password123!", code.toLowerCase());
+      assert.equal(friend.status, 200);
+      assert.equal(friend.body.rewards.foundersEdition, 1);
+      assert.deepEqual((await as("1.8", reopened.port, "GET", `/fortnite/api/game/v2/friendcodes/${owner.body.id}/epic`, player.token)).body, []);
+    } finally {
+      await reopened.close();
+    }
+  } finally {
+    fs.rmSync(dataDir, { recursive: true, force: true });
+  }
+});
+
+test("a code takes only real items and existing folders, and a deleted folder's codes move to Promotional", async () => {
+  const backend = await startBackend();
+  try {
+    const unknownItem = await admin(backend, "/codes", { code: "BAD-ITEM", items: [{ templateId: "AthenaCharacter:cid_999_athena_commando_f_notreal" }] });
+    assert.equal(unknownItem.status, 400);
+    const unknownFolder = await admin(backend, "/codes", { code: "BAD-FOLDER", folder: "nowhere" });
+    assert.equal(unknownFolder.status, 400);
+
+    assert.equal((await admin(backend, "/code-folders", { name: "Events" })).status, 201);
+    assert.equal((await admin(backend, "/codes", { code: "EVENT-ONE", folder: "events", vbucks: 100 })).status, 201);
+    assert.equal((await admin(backend, "/code-folders/events", undefined, "DELETE")).status, 200);
+    const promotional = await admin(backend, "/codes?folder=promotional");
+    assert.ok(promotional.body.some((c) => c.code === "EVENT-ONE"));
+  } finally {
+    await backend.close();
+  }
+});
+
+test("a redemption whose rewards fail leaves the code unused", async () => {
+  const { createFriendCodeStore } = await import("../src/friendcodes/store.js");
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-redeem-fail-"));
+  try {
+    const store = createFriendCodeStore(dataDir);
+    store.create({ code: "FAIL-ONCE", vbucks: 10 });
+    await assert.rejects(store.redeem("FAIL-ONCE", { id: "a1" }, "", () => { throw new Error("grant failed"); }), /grant failed/);
+    assert.equal(store.get("FAIL-ONCE").redeemedCount, 0);
+    const done = await store.redeem("FAIL-ONCE", { id: "a1" }, "", () => ["10 V-Bucks"]);
+    assert.deepEqual(done.applied, ["10 V-Bucks"]);
+    assert.equal(createFriendCodeStore(dataDir).get("FAIL-ONCE").redeemedCount, 1);
+  } finally {
+    fs.rmSync(dataDir, { recursive: true, force: true });
+  }
+});
+
+test("with Default Founder's Access turned back on, accounts made while it was off get the Standard Edition too", async () => {
+  const backend = await startBackend({ defaultFoundersAccess: false });
+  try {
+    await post(backend.port, "/api/register", undefined, { username: "MadeWhileOff", password: "Password123!" });
+    const player = await userLogin(backend.port, "MadeWhileOff", "Password123!");
+    const items = async () => Object.values((await queryProfile(backend.port, player, "profile0")).items).map((i) => i.templateId.toLowerCase());
+    assert.ok(!(await items()).includes("token:founderspack_1"));
+    assert.equal((await admin(backend, "/settings", { defaultFoundersAccess: true })).status, 200);
+    const after = await items();
+    assert.ok(after.includes("token:founderspack_1"));
+    assert.ok(after.includes("token:campaignaccess"));
+  } finally {
+    await backend.close();
+  }
+});
+
+test("X-Forwarded-For is believed only from this PC", async () => {
+  const { getClientIp } = await import("../src/services/portal/ratelimit.js");
+  const req = (remoteAddress, forwarded) => ({ socket: { remoteAddress }, headers: forwarded ? { "x-forwarded-for": forwarded } : {} });
+  assert.equal(getClientIp(req("127.0.0.1", "198.51.100.7, 10.0.0.1")), "198.51.100.7");
+  assert.equal(getClientIp(req("203.0.113.5", "127.0.0.1")), "203.0.113.5");
+  assert.equal(getClientIp(req("203.0.113.5")), "203.0.113.5");
 });

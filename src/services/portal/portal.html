@@ -553,22 +553,16 @@ async function handleRedeem(e) {
     $("form-redeem").style.display = "none";
     $("rdm-success-account").textContent = data.displayName || username;
 
-    const granted = [];
-    if (data.rewards) {
-      if (data.rewards.vbucks > 0) granted.push(`+${data.rewards.vbucks.toLocaleString()} V-Bucks`);
-      if (data.rewards.foundersTierName) granted.push(data.rewards.foundersTierName);
-      else if (data.rewards.foundersEdition > 0) granted.push(`Founder's Edition (Tier ${data.rewards.foundersEdition})`);
-      if (data.rewards.campaignAccess) granted.push("Save the World Campaign Access");
-      if (Array.isArray(data.rewards.items) && data.rewards.items.length > 0) {
-        for (const it of data.rewards.items) {
-          const qty = it.quantity && it.quantity > 1 ? ` (x${it.quantity})` : "";
-          granted.push(`${it.templateId || it.id}${qty}`);
-        }
-      }
+    // What the backend gave, as text: never markup (a reward's name comes from the code).
+    const granted = Array.isArray(data.granted) ? data.granted : [];
+    const details = $("rdm-success-details");
+    details.replaceChildren();
+    if (granted.length > 0) {
+      details.append("Granted:");
+      for (const line of granted) details.append(document.createElement("br"), `• ${line}`);
+    } else {
+      details.textContent = data.message || "Code successfully redeemed!";
     }
-    $("rdm-success-details").innerHTML = granted.length > 0
-      ? "Granted:<br>• " + granted.join("<br>• ")
-      : (data.message || "Code successfully redeemed!");
     $("rdm-success").classList.add("show");
   } catch (err) {
     showAlert(err.message, true);

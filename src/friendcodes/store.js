@@ -9,6 +9,9 @@ import { readJson, writeJson } from "../json-file.js";
 const alphabet = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
 export const codePattern = /^[A-HJKMNP-Z2-9]{5}(-[A-HJKMNP-Z2-9]{5}){3}$/;
 
+// A code that can't be redeemed (unknown, expired, used up, already redeemed by the account, or the account's own).
+export class RedeemError extends Error {}
+
 export function randomCode() {
   const group = () => Array.from({ length: 5 }, () => alphabet[crypto.randomInt(alphabet.length)]).join("");
   return [group(), group(), group(), group()].join("-");
@@ -153,6 +156,10 @@ export function createFriendCodeStore(dataDir) {
       const idx = list.findIndex((f) => (typeof f === "string" ? f : f.slug) === cleanSlug);
       if (idx === -1) return false;
       list.splice(idx, 1);
+      // Its codes stay, in Promotional, so the panel still lists them in a folder.
+      for (const entry of Object.values(load())) {
+        if (entry.folder === cleanSlug) entry.folder = "promotional";
+      }
       save();
       return true;
     },
@@ -219,14 +226,19 @@ export function createFriendCodeStore(dataDir) {
       }
 
       const note = typeof options.note === "string" ? options.note.trim().slice(0, 120) : "";
+      // Only a folder that exists: a code filed anywhere else would show in no folder of the panel.
       const folder = typeof options.folder === "string" && options.folder.trim() ? options.folder.trim().toLowerCase() : "promotional";
+      if (!loadFolders().some((f) => (typeof f === "string" ? f : f.slug) === folder)) {
+        throw new Error(`No folder "${folder}".`);
+      }
 
       const entry = {
         codeType: "custom",
         folder,
         backend: "epic",
         created: new Date().toISOString(),
-        createdBy: options.createdBy || "admin",
+        // Only the panel makes these codes; an account id here would list the code as that player's friend code.
+        createdBy: "admin",
         note,
         maxUses,
         redeemedCount: 0,
@@ -307,64 +319,49 @@ export function createFriendCodeStore(dataDir) {
         .map(([codeId, entry]) => ({ codeId, codeType: entry.codeType, dateCreated: entry.created }));
     },
 
-    // Atomic redemption execution
-    async redeem(codeStr, account, ip = "") {
-      if (!account || !account.id) throw new Error("Account required for redemption.");
-      if (account.banned) throw new Error("This account is banned and cannot redeem codes.");
+    // Redeems a code for the account: checks it, runs apply(rewards) (which gives them; Core-Backend #126) and only then
+    // records the redemption, so a code is never used up by a redemption that gave nothing. A refusal throws a
+    // RedeemError; whatever apply throws passes through with nothing recorded.
+    async redeem(codeStr, account, ip = "", apply = () => {}) {
+      if (!account || !account.id) throw new RedeemError("Account required for redemption.");
+      if (account.banned) throw new RedeemError("This account is banned and cannot redeem codes.");
 
       const cleanCode = String(codeStr ?? "").trim().toUpperCase();
-      if (!cleanCode) throw new Error("Code is required.");
+      if (!cleanCode) throw new RedeemError("Code is required.");
 
       return withLock(cleanCode, async () => {
-        const all = load();
         const found = findEntry(cleanCode);
-        if (!found) {
-          throw new Error("Invalid or expired code.");
-        }
+        if (!found) throw new RedeemError("Invalid or expired code.");
 
         const { key: code, entry } = found;
         const now = new Date();
+        if (entry.expiresAt && new Date(entry.expiresAt) <= now) throw new RedeemError("This promotional code has expired.");
 
-        // 1. Expiration check
-        if (entry.expiresAt && new Date(entry.expiresAt) <= now) {
-          throw new Error("This promotional code has expired.");
-        }
-
-        // 2. Max uses check
         const maxUses = entry.maxUses ?? 1;
         const currentCount = entry.redeemedCount ?? (Array.isArray(entry.redeemedBy) ? entry.redeemedBy.length : (entry.redeemedBy ? 1 : 0));
-        if (currentCount >= maxUses) {
-          throw new Error("This code has already been redeemed.");
-        }
+        if (currentCount >= maxUses) throw new RedeemError("This code has already been redeemed.");
 
-        // 3. One-per-account constraint
+        // A friend code is for a friend: the player it was issued to can't redeem it themselves.
+        if (isPlayerFriendCode(entry) && entry.accountId === account.id) throw new RedeemError("You can't redeem your own friend code.");
+
         const history = Array.isArray(entry.redeemedBy)
           ? entry.redeemedBy
           : (entry.redeemedBy ? [{ accountId: entry.redeemedBy }] : []);
-
-        if (history.some((r) => r.accountId === account.id)) {
-          throw new Error("You have already redeemed this code.");
-        }
+        if (history.some((r) => r.accountId === account.id)) throw new RedeemError("You have already redeemed this code.");
 
         const rewards = resolveRewards(entry);
+        const applied = await apply(rewards);
 
-        // Record redemption
-        const record = {
+        entry.redeemedBy = [...history, {
           accountId: account.id,
           displayName: account.displayName || account.id,
           ip: String(ip || ""),
           redeemedAt: now.toISOString()
-        };
-
-        entry.redeemedBy = [...history, record];
+        }];
         entry.redeemedCount = entry.redeemedBy.length;
         save();
 
-        return {
-          code,
-          rewards,
-          entry
-        };
+        return { code, rewards, applied };
       });
     }
   };

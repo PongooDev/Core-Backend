@@ -5,16 +5,12 @@ import { isContactEmailLogin, validateEmail } from "../../accounts/email.js";
 import { isServerAccountName, validatePassword, validateUsername, verifyPassword } from "../../accounts/password.js";
 import { EmailError } from "../../accounts/store.js";
 import { sendError } from "../../errors.js";
-import { getItem } from "../../gamedata/items.js";
-import { grantCosmetic } from "../../profiles/athena.js";
-import { campaignAccessToken, foundersEditions, setFoundersEdition } from "../../profiles/founders.js";
-import { findItem, grantItem } from "../../profiles/items.js";
-import { grant } from "../../profiles/progress.js";
+import { grantCodeRewards } from "../../friendcodes/rewards.js";
+import { RedeemError } from "../../friendcodes/store.js";
+import { log } from "../../log.js";
 import { openSession } from "../../profiles/session.js";
 import { notifyProfiles } from "../mcp/profile.js";
 import { createFailureTracker, createRateLimiter, getClientIp } from "./ratelimit.js";
-import { inBuild } from "../../builds/context.js";
-import { knownTemplate } from "../../admin/describe.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const portalFile = path.join(here, "portal.html");
@@ -237,60 +233,27 @@ export function portalRoutes(context) {
     }
 
     try {
-      const { code: redeemedCode, rewards } = await context.friendCodes.redeem(code, account, getClientIp(req));
-      const session = openSession(context.profiles, account.id);
-      const grantedDetails = [];
-
-      if (rewards.vbucks > 0) {
-        grantItem(session, "Currency:MtxPurchased", rewards.vbucks);
-        grantedDetails.push(`${rewards.vbucks.toLocaleString()} V-Bucks`);
-      }
-
-      if (rewards.foundersEdition > 0) {
-        inBuild("3724489", () => setFoundersEdition(session, rewards.foundersEdition));
-        const editionName = foundersEditions[rewards.foundersEdition - 1]?.name || `Edition ${rewards.foundersEdition}`;
-        grantedDetails.push(`${editionName} Founder's Edition`);
-      }
-
-      if (rewards.campaignAccess && !findItem(session.profile("profile0").profile, campaignAccessToken)) {
-        inBuild("3724489", () => grant(session, campaignAccessToken, 1));
-        if (!grantedDetails.some((d) => d.includes("Founder's Edition"))) {
-          grantedDetails.push("Save the World Campaign Access");
-        }
-      }
-
-      if (Array.isArray(rewards.items)) {
-        for (const item of rewards.items) {
-          const templateId = String(item.templateId ?? "").trim();
-          const qty = Number(item.quantity) || 1;
-          if (!templateId) continue;
-          if (templateId.toLowerCase().startsWith("athena")) {
-            grantCosmetic(session, templateId);
-            grantedDetails.push(getItem(templateId)?.name || templateId);
-          } else {
-            const known = knownTemplate(templateId);
-            if (known) {
-              inBuild(known.build, () => grant(session, known.templateId, qty));
-            } else {
-              inBuild("3724489", () => grant(session, templateId, qty));
-            }
-            const name = getItem(templateId)?.name || templateId;
-            grantedDetails.push(qty > 1 ? `${name} (x${qty})` : name);
-          }
-        }
-      }
-
-      session.commit();
-      notifyProfiles(context, session);
-
+      // The rewards are given and saved before the code counts the redemption; a failed grant leaves the code unused.
+      const { code: redeemedCode, rewards, applied: granted } = await context.friendCodes.redeem(code, account, getClientIp(req), (codeRewards) => {
+        const session = openSession(context.profiles, account.id);
+        const given = grantCodeRewards(session, codeRewards);
+        session.commit();
+        notifyProfiles(context, session);
+        return given;
+      });
       res.json({
         success: true,
         code: redeemedCode,
+        displayName: account.displayName,
         rewards,
-        granted: grantedDetails,
-        message: `Successfully redeemed! Granted: ${grantedDetails.join(", ") || "Rewards applied to account."}`
+        granted,
+        message: granted.length ? `Successfully redeemed! Granted: ${granted.join(", ")}` : "Code redeemed; the account already had everything it gives."
       });
     } catch (err) {
+      if (!(err instanceof RedeemError)) {
+        log("Portal", `Redeeming a code for ${account.id} failed: ${err.stack ?? err}`);
+        return sendError(res, 500, "errors.com.epicgames.server.internal_error", "The code's rewards couldn't be given; the code wasn't used.");
+      }
       redeemFailureTracker.recordFailure(req);
       return sendError(res, 400, "errors.com.epicgames.redeem.error", err.message);
     }
