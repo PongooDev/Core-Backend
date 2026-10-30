@@ -10,7 +10,7 @@ using JsonConvert = Newtonsoft.Json.JsonConvert;
 
 if (args.Length < 2)
 {
-    Console.Error.WriteLine("usage: extractor <build folder containing FortniteGame and Engine> <aes key> [output folder]");
+    Console.Error.WriteLine("usage: extractor <build folder containing FortniteGame and Engine> <aes key> [output folder] [version]");
     return 1;
 }
 
@@ -18,12 +18,30 @@ var buildRoot = args[0];
 var aesKey = args[1].StartsWith("0x") ? args[1] : "0x" + args[1];
 var output = args.Length > 2 ? args[2] : Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "gamedata"));
 
-var version = JsonNode.Parse(File.ReadAllText(Path.Combine(buildRoot, "Engine", "Build", "Build.version")))!;
+// Engine/Build/Build.version, or for a build that ships without it (1.10, CL 3790078) the version the client's
+// User-Agent gives, "4.19.0-3790078+++Fortnite+Release-Cert", as the fourth argument.
+var versionFile = Path.Combine(buildRoot, "Engine", "Build", "Build.version");
+JsonNode version;
+if (File.Exists(versionFile)) version = JsonNode.Parse(File.ReadAllText(versionFile))!;
+else if (args.Length > 3 && Regex.Match(args[3], @"^(\d+)\.(\d+)\.\d+-(\d+)\+(\+.+)$") is { Success: true } named)
+{
+    version = new JsonObject
+    {
+        ["MajorVersion"] = int.Parse(named.Groups[1].Value), ["MinorVersion"] = int.Parse(named.Groups[2].Value),
+        ["Changelist"] = int.Parse(named.Groups[3].Value), ["BranchName"] = named.Groups[4].Value
+    };
+}
+else
+{
+    Console.Error.WriteLine($"{versionFile} is missing: give the build's version (\"4.19.0-3790078+++Fortnite+Release-Cert\") as the fourth argument");
+    return 1;
+}
 var engine = $"{version["MajorVersion"]}.{version["MinorVersion"]}";
 var changelist = version["Changelist"]?.GetValue<int>() ?? 0;
 var game = engine switch
 {
     "4.16" => EGame.GAME_UE4_16,
+    "4.19" => EGame.GAME_UE4_19,
     _ => throw new NotSupportedException($"Engine {engine} is not mapped yet")
 };
 
@@ -179,7 +197,8 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         if (properties["LevelToSacrificeXpHandle"]?["RowName"]?.GetValue<string>() is { } recycleRow) item["recycleXp"] = recycleRow;
         if (properties["SacrificeRecipe"]?["RowName"]?.GetValue<string>() is { } recycleRecipe) item["recycleRecipe"] = recycleRecipe;
         var conversions = (properties["ConversionRecipes"] as JsonArray)?.Select(r => r?["RowName"]?.GetValue<string>()).OfType<string>().ToList() ?? [];
-        if (conversions.Count > 0) item["conversions"] = conversions;
+        // 1.10 (CL 3790078) clears the conversions of the heroes it retires to unset rows ("None").
+        if (conversions.Any(row => row != "None")) item["conversions"] = conversions;
         item["maxLevel"] = properties["MaxLevel"]?.GetValue<int>() ?? 1;
     }
 
@@ -611,7 +630,7 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     {
         if (!generated.Name.StartsWith("BP_ZT_", StringComparison.OrdinalIgnoreCase)) continue;
         var theme = new SortedDictionary<string, object>(StringComparer.Ordinal) { ["parent"] = parent };
-        if (props["TheaterMapTileClass"] is { } tile) theme["tileClass"] = AssetPath(tile);
+        if (props["TheaterMapTileClass"] is { } tile) theme["tileClass"] = AssetPath(tile).Split('.')[0]; // the package, as for primaryMission below
         if (props["ZoneName"]?["SourceString"]?.GetValue<string>() is { } zoneName) theme["name"] = zoneName;
         var validDifficulties = (props["DifficultyProperties"]?.AsArray() ?? [])
             .SelectMany(d => d!["ValidDifficulties"]?.AsArray() ?? [])
@@ -627,7 +646,8 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     else
     {
         var generator = new SortedDictionary<string, object>(StringComparer.Ordinal) { ["parent"] = parent };
-        if (props["PrimaryMissionInfo"] is { } primary) generator["primaryMission"] = AssetPath(primary);
+        // The mission's package: 4.16 gives the soft reference without its object name, 4.19 (1.10) with it.
+        if (props["PrimaryMissionInfo"] is { } primary) generator["primaryMission"] = AssetPath(primary).Split('.')[0];
         missionGenerators[classPath] = generator;
     }
 }

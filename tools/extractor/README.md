@@ -7,6 +7,12 @@ game data in `gamedata/`, which is committed so users never run this.
 dotnet run -c Release --project tools/extractor -- "<build folder with FortniteGame and Engine>" <aes key>
 ```
 
+The engine version and changelist come from the build's `Engine/Build/Build.version`. A build that ships without one
+(1.10, CL 3790078) takes them as a fourth argument, after the output folder, in its User-Agent's form:
+`4.19.0-3790078+++Fortnite+Release-Cert`. UE 4.16 and 4.19 builds are mapped. 4.19 writes soft references with their
+object name (`/Game/Path/Asset.Asset`); zone themes' tile classes and mission generators' primary missions are kept as
+packages, as 4.16 writes them, so overlays only hold the builds' own differences.
+
 - `quests.json`: every quest's type, objectives, rewards and prerequisites.
 - `items.json`: every item definition's class, the profile it lives in (`profile` for account items, `theater` for
   world items; from 1.7.2, CL 3700114, `metadata` for storm shields and deployable bases) and its stack limit (the asset's `MaxStackSize`, else the class constructor's default). World items of
