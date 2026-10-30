@@ -1,0 +1,2432 @@
+{
+  "values": {
+    "Weapon:wid_shotgun_auto_founders_vr_crystal_t04": {
+      "disintegration": 12670,
+      "fabrication": 38010
+    },
+    "Trap:tid_ceiling_electric_single_athena_r_t03": {
+      "disintegration": 525,
+      "fabrication": 1575
+    },
+    "Trap:tid_ceiling_falling_athena": {
+      "disintegration": 590,
+      "fabrication": 1770
+    },
+    "Trap:tid_ceiling_falling_r_t01": {
+      "disintegration": 190,
+      "fabrication": 570
+    },
+    "Trap:tid_ceiling_falling_r_t02": {
+      "disintegration": 390,
+      "fabrication": 1170
+    },
+    "Trap:tid_ceiling_falling_r_t03": {
+      "disintegration": 590,
+      "fabrication": 1770
+    },
+    "Trap:tid_ceiling_falling_r_t04": {
+      "disintegration": 790,
+      "fabrication": 2370
+    },
+    "Trap:tid_ceiling_falling_sr_t01": {
+      "disintegration": 235,
+      "fabrication": 705
+    },
+    "Trap:tid_ceiling_falling_sr_t02": {
+      "disintegration": 485,
+      "fabrication": 1455
+    },
+    "Trap:tid_ceiling_falling_sr_t03": {
+      "disintegration": 735,
+      "fabrication": 2205
+    },
+    "Trap:tid_ceiling_falling_sr_t04": {
+      "disintegration": 985,
+      "fabrication": 2955
+    },
+    "Trap:tid_ceiling_falling_sr_t05": {
+      "disintegration": 1235,
+      "fabrication": 3705
+    },
+    "Trap:tid_ceiling_falling_vr_t01": {
+      "disintegration": 225,
+      "fabrication": 675
+    },
+    "Trap:tid_ceiling_falling_vr_t02": {
+      "disintegration": 475,
+      "fabrication": 1425
+    },
+    "Trap:tid_ceiling_falling_vr_t03": {
+      "disintegration": 725,
+      "fabrication": 2175
+    },
+    "Trap:tid_ceiling_falling_vr_t04": {
+      "disintegration": 975,
+      "fabrication": 2925
+    },
+    "Trap:tid_ceiling_falling_vr_t05": {
+      "disintegration": 1225,
+      "fabrication": 3675
+    },
+    "Trap:tid_floor_freeze_r_t01": {
+      "disintegration": 220,
+      "fabrication": 660
+    },
+    "Trap:tid_floor_freeze_r_t02": {
+      "disintegration": 320,
+      "fabrication": 960
+    },
+    "Trap:tid_floor_freeze_r_t03": {
+      "disintegration": 420,
+      "fabrication": 1260
+    },
+    "Trap:tid_floor_freeze_r_t04": {
+      "disintegration": 520,
+      "fabrication": 1560
+    },
+    "Trap:tid_floor_freeze_sr_t01": {
+      "disintegration": 240,
+      "fabrication": 720
+    },
+    "Trap:tid_floor_freeze_sr_t02": {
+      "disintegration": 340,
+      "fabrication": 1020
+    },
+    "Trap:tid_floor_freeze_sr_t03": {
+      "disintegration": 440,
+      "fabrication": 1320
+    },
+    "Trap:tid_floor_freeze_sr_t04": {
+      "disintegration": 540,
+      "fabrication": 1620
+    },
+    "Trap:tid_floor_freeze_sr_t05": {
+      "disintegration": 640,
+      "fabrication": 1920
+    },
+    "Trap:tid_floor_freeze_vr_t01": {
+      "disintegration": 230,
+      "fabrication": 690
+    },
+    "Trap:tid_floor_freeze_vr_t02": {
+      "disintegration": 330,
+      "fabrication": 990
+    },
+    "Trap:tid_floor_freeze_vr_t03": {
+      "disintegration": 430,
+      "fabrication": 1290
+    },
+    "Trap:tid_floor_freeze_vr_t04": {
+      "disintegration": 530,
+      "fabrication": 1590
+    },
+    "Trap:tid_floor_freeze_vr_t05": {
+      "disintegration": 630,
+      "fabrication": 1890
+    },
+    "Trap:tid_floor_player_jump_pad_athena": {
+      "disintegration": 30,
+      "fabrication": 90
+    },
+    "Trap:tid_floor_player_jump_pad_free_direction_athena": {
+      "disintegration": 30,
+      "fabrication": 90
+    },
+    "Trap:tid_floor_spikes_athena_r_t03": {
+      "disintegration": 380,
+      "fabrication": 1140
+    },
+    "Trap:tid_wall_electric_athena_r_t03": {
+      "disintegration": 380,
+      "fabrication": 1140
+    },
+    "Weapon:wid_assault_auto_athena_c_ore_t02": {
+      "disintegration": 1740,
+      "fabrication": 5220
+    },
+    "Weapon:wid_assault_auto_athena_r_ore_t03": {
+      "disintegration": 1740,
+      "fabrication": 5220
+    },
+    "Weapon:wid_assault_auto_athena_uc_ore_t03": {
+      "disintegration": 1740,
+      "fabrication": 5220
+    },
+    "Weapon:wid_assault_autohigh_athena_sr_ore_t03": {
+      "disintegration": 12800,
+      "fabrication": 38400
+    },
+    "Weapon:wid_assault_autohigh_athena_vr_ore_t03": {
+      "disintegration": 12800,
+      "fabrication": 38400
+    },
+    "Weapon:wid_assault_hydraulic_drum_athena_sr_ore_t03": {
+      "disintegration": 4330,
+      "fabrication": 12990
+    },
+    "Weapon:wid_assault_hydraulic_drum_sr_crystal_t04": {
+      "disintegration": 17270,
+      "fabrication": 51810
+    },
+    "Weapon:wid_assault_hydraulic_drum_sr_crystal_t05": {
+      "disintegration": 7770,
+      "fabrication": 23310
+    },
+    "Weapon:wid_assault_hydraulic_drum_sr_ore_t01": {
+      "disintegration": 1990,
+      "fabrication": 5970
+    },
+    "Weapon:wid_assault_hydraulic_drum_sr_ore_t02": {
+      "disintegration": 8550,
+      "fabrication": 25650
+    },
+    "Weapon:wid_assault_hydraulic_drum_sr_ore_t03": {
+      "disintegration": 12800,
+      "fabrication": 38400
+    },
+    "Weapon:wid_assault_hydraulic_drum_sr_ore_t04": {
+      "disintegration": 17050,
+      "fabrication": 51150
+    },
+    "Weapon:wid_assault_hydraulic_drum_sr_ore_t05": {
+      "disintegration": 21300,
+      "fabrication": 63900
+    },
+    "Weapon:wid_assault_hydraulic_drum_vr_crystal_t04": {
+      "disintegration": 13200,
+      "fabrication": 39600
+    },
+    "Weapon:wid_assault_hydraulic_drum_vr_crystal_t05": {
+      "disintegration": 6400,
+      "fabrication": 19200
+    },
+    "Weapon:wid_assault_hydraulic_drum_vr_ore_t01": {
+      "disintegration": 1760,
+      "fabrication": 5280
+    },
+    "Weapon:wid_assault_hydraulic_drum_vr_ore_t02": {
+      "disintegration": 6640,
+      "fabrication": 19920
+    },
+    "Weapon:wid_assault_hydraulic_drum_vr_ore_t03": {
+      "disintegration": 9840,
+      "fabrication": 29520
+    },
+    "Weapon:wid_assault_hydraulic_drum_vr_ore_t04": {
+      "disintegration": 13040,
+      "fabrication": 39120
+    },
+    "Weapon:wid_assault_hydraulic_drum_vr_ore_t05": {
+      "disintegration": 16240,
+      "fabrication": 48720
+    },
+    "Weapon:wid_assault_scavenger_sr_crystal_t04": {
+      "disintegration": 12575,
+      "fabrication": 37725
+    },
+    "Weapon:wid_assault_scavenger_sr_crystal_t05": {
+      "disintegration": 5625,
+      "fabrication": 16875
+    },
+    "Weapon:wid_assault_scavenger_sr_ore_t01": {
+      "disintegration": 1545,
+      "fabrication": 4635
+    },
+    "Weapon:wid_assault_scavenger_sr_ore_t02": {
+      "disintegration": 6275,
+      "fabrication": 18825
+    },
+    "Weapon:wid_assault_scavenger_sr_ore_t03": {
+      "disintegration": 9325,
+      "fabrication": 27975
+    },
+    "Weapon:wid_assault_scavenger_sr_ore_t04": {
+      "disintegration": 12375,
+      "fabrication": 37125
+    },
+    "Weapon:wid_assault_scavenger_sr_ore_t05": {
+      "disintegration": 15425,
+      "fabrication": 46275
+    },
+    "Weapon:wid_assault_scavenger_vr_crystal_t04": {
+      "disintegration": 8830,
+      "fabrication": 26490
+    },
+    "Weapon:wid_assault_scavenger_vr_crystal_t05": {
+      "disintegration": 4730,
+      "fabrication": 14190
+    },
+    "Weapon:wid_assault_scavenger_vr_ore_t01": {
+      "disintegration": 1210,
+      "fabrication": 3630
+    },
+    "Weapon:wid_assault_scavenger_vr_ore_t02": {
+      "disintegration": 4410,
+      "fabrication": 13230
+    },
+    "Weapon:wid_assault_scavenger_vr_ore_t03": {
+      "disintegration": 6560,
+      "fabrication": 19680
+    },
+    "Weapon:wid_assault_scavenger_vr_ore_t04": {
+      "disintegration": 8710,
+      "fabrication": 26130
+    },
+    "Weapon:wid_assault_scavenger_vr_ore_t05": {
+      "disintegration": 10860,
+      "fabrication": 32580
+    },
+    "Weapon:wid_assault_semiauto_athena_c_ore_t02": {
+      "disintegration": 1740,
+      "fabrication": 5220
+    },
+    "Weapon:wid_assault_semiauto_athena_r_ore_t03": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_assault_semiauto_athena_uc_ore_t03": {
+      "disintegration": 4390,
+      "fabrication": 13170
+    },
+    "Weapon:wid_assault_singleshot_athena_sr_ore_t03": {
+      "disintegration": 4330,
+      "fabrication": 12990
+    },
+    "Weapon:wid_assault_surgical_athena_r_ore_t03": {
+      "disintegration": 4330,
+      "fabrication": 12990
+    },
+    "Weapon:wid_assault_surgical_athena_vr_ore_t03": {
+      "disintegration": 4330,
+      "fabrication": 12990
+    },
+    "Weapon:wid_blunt_hammer_hydraulic_sr_crystal_t04": {
+      "disintegration": 14220,
+      "fabrication": 42660
+    },
+    "Weapon:wid_blunt_hammer_hydraulic_sr_crystal_t05": {
+      "disintegration": 7720,
+      "fabrication": 23160
+    },
+    "Weapon:wid_blunt_hammer_hydraulic_sr_crystal_t06": {
+      "disintegration": 15690,
+      "fabrication": 47070
+    },
+    "Weapon:wid_blunt_hammer_hydraulic_sr_ore_t01": {
+      "disintegration": 1880,
+      "fabrication": 5640
+    },
+    "Weapon:wid_blunt_hammer_hydraulic_sr_ore_t02": {
+      "disintegration": 6760,
+      "fabrication": 20280
+    },
+    "Weapon:wid_blunt_hammer_hydraulic_sr_ore_t03": {
+      "disintegration": 9960,
+      "fabrication": 29880
+    },
+    "Weapon:wid_blunt_hammer_hydraulic_sr_ore_t04": {
+      "disintegration": 13160,
+      "fabrication": 39480
+    },
+    "Weapon:wid_blunt_hammer_hydraulic_sr_ore_t05": {
+      "disintegration": 16360,
+      "fabrication": 49080
+    },
+    "Weapon:wid_blunt_hammer_hydraulic_sr_ore_t06": {
+      "disintegration": 13870,
+      "fabrication": 41610
+    },
+    "Weapon:wid_blunt_hammer_hydraulic_vr_crystal_t04": {
+      "disintegration": 10190,
+      "fabrication": 30570
+    },
+    "Weapon:wid_blunt_hammer_hydraulic_vr_crystal_t05": {
+      "disintegration": 6390,
+      "fabrication": 19170
+    },
+    "Weapon:wid_blunt_hammer_hydraulic_vr_crystal_t06": {
+      "disintegration": 15690,
+      "fabrication": 47070
+    },
+    "Weapon:wid_blunt_hammer_hydraulic_vr_ore_t01": {
+      "disintegration": 1620,
+      "fabrication": 4860
+    },
+    "Weapon:wid_blunt_hammer_hydraulic_vr_ore_t02": {
+      "disintegration": 4820,
+      "fabrication": 14460
+    },
+    "Weapon:wid_blunt_hammer_hydraulic_vr_ore_t03": {
+      "disintegration": 6970,
+      "fabrication": 20910
+    },
+    "Weapon:wid_blunt_hammer_hydraulic_vr_ore_t04": {
+      "disintegration": 9120,
+      "fabrication": 27360
+    },
+    "Weapon:wid_blunt_hammer_hydraulic_vr_ore_t05": {
+      "disintegration": 11270,
+      "fabrication": 33810
+    },
+    "Weapon:wid_blunt_hammer_hydraulic_vr_ore_t06": {
+      "disintegration": 13870,
+      "fabrication": 41610
+    },
+    "Weapon:wid_blunt_scavenger_sr_crystal_t04": {
+      "disintegration": 12050,
+      "fabrication": 36150
+    },
+    "Weapon:wid_blunt_scavenger_sr_crystal_t05": {
+      "disintegration": 5050,
+      "fabrication": 15150
+    },
+    "Weapon:wid_blunt_scavenger_sr_crystal_t06": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_blunt_scavenger_sr_ore_t01": {
+      "disintegration": 1440,
+      "fabrication": 4320
+    },
+    "Weapon:wid_blunt_scavenger_sr_ore_t02": {
+      "disintegration": 6120,
+      "fabrication": 18360
+    },
+    "Weapon:wid_blunt_scavenger_sr_ore_t03": {
+      "disintegration": 9120,
+      "fabrication": 27360
+    },
+    "Weapon:wid_blunt_scavenger_sr_ore_t04": {
+      "disintegration": 12120,
+      "fabrication": 36360
+    },
+    "Weapon:wid_blunt_scavenger_sr_ore_t05": {
+      "disintegration": 15120,
+      "fabrication": 45360
+    },
+    "Weapon:wid_blunt_scavenger_sr_ore_t06": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_blunt_scavenger_vr_crystal_t04": {
+      "disintegration": 8250,
+      "fabrication": 24750
+    },
+    "Weapon:wid_blunt_scavenger_vr_crystal_t05": {
+      "disintegration": 4050,
+      "fabrication": 12150
+    },
+    "Weapon:wid_blunt_scavenger_vr_crystal_t06": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_blunt_scavenger_vr_ore_t01": {
+      "disintegration": 1080,
+      "fabrication": 3240
+    },
+    "Weapon:wid_blunt_scavenger_vr_ore_t02": {
+      "disintegration": 4180,
+      "fabrication": 12540
+    },
+    "Weapon:wid_blunt_scavenger_vr_ore_t03": {
+      "disintegration": 6230,
+      "fabrication": 18690
+    },
+    "Weapon:wid_blunt_scavenger_vr_ore_t04": {
+      "disintegration": 8280,
+      "fabrication": 24840
+    },
+    "Weapon:wid_blunt_scavenger_vr_ore_t05": {
+      "disintegration": 10330,
+      "fabrication": 30990
+    },
+    "Weapon:wid_blunt_scavenger_vr_ore_t06": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_edged_axe_scavenger_sr_crystal_t04": {
+      "disintegration": 12050,
+      "fabrication": 36150
+    },
+    "Weapon:wid_edged_axe_scavenger_sr_crystal_t05": {
+      "disintegration": 5050,
+      "fabrication": 15150
+    },
+    "Weapon:wid_edged_axe_scavenger_sr_crystal_t06": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_edged_axe_scavenger_sr_ore_t01": {
+      "disintegration": 1440,
+      "fabrication": 4320
+    },
+    "Weapon:wid_edged_axe_scavenger_sr_ore_t02": {
+      "disintegration": 6120,
+      "fabrication": 18360
+    },
+    "Weapon:wid_edged_axe_scavenger_sr_ore_t03": {
+      "disintegration": 9120,
+      "fabrication": 27360
+    },
+    "Weapon:wid_edged_axe_scavenger_sr_ore_t04": {
+      "disintegration": 12120,
+      "fabrication": 36360
+    },
+    "Weapon:wid_edged_axe_scavenger_sr_ore_t05": {
+      "disintegration": 15120,
+      "fabrication": 45360
+    },
+    "Weapon:wid_edged_axe_scavenger_sr_ore_t06": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_edged_axe_scavenger_vr_crystal_t04": {
+      "disintegration": 8250,
+      "fabrication": 24750
+    },
+    "Weapon:wid_edged_axe_scavenger_vr_crystal_t05": {
+      "disintegration": 4050,
+      "fabrication": 12150
+    },
+    "Weapon:wid_edged_axe_scavenger_vr_crystal_t06": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_edged_axe_scavenger_vr_ore_t01": {
+      "disintegration": 1080,
+      "fabrication": 3240
+    },
+    "Weapon:wid_edged_axe_scavenger_vr_ore_t02": {
+      "disintegration": 4180,
+      "fabrication": 12540
+    },
+    "Weapon:wid_edged_axe_scavenger_vr_ore_t03": {
+      "disintegration": 6230,
+      "fabrication": 18690
+    },
+    "Weapon:wid_edged_axe_scavenger_vr_ore_t04": {
+      "disintegration": 8280,
+      "fabrication": 24840
+    },
+    "Weapon:wid_edged_axe_scavenger_vr_ore_t05": {
+      "disintegration": 10330,
+      "fabrication": 30990
+    },
+    "Weapon:wid_edged_axe_scavenger_vr_ore_t06": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_edged_sword_hydraulic_sr_crystal_t04": {
+      "disintegration": 14220,
+      "fabrication": 42660
+    },
+    "Weapon:wid_edged_sword_hydraulic_sr_crystal_t05": {
+      "disintegration": 7720,
+      "fabrication": 23160
+    },
+    "Weapon:wid_edged_sword_hydraulic_vr_crystal_t04": {
+      "disintegration": 10190,
+      "fabrication": 30570
+    },
+    "Weapon:wid_edged_sword_hydraulic_vr_crystal_t05": {
+      "disintegration": 6390,
+      "fabrication": 19170
+    },
+    "Weapon:wid_launcher_grenade_athena_r_ore_t03": {
+      "disintegration": 3240,
+      "fabrication": 9720
+    },
+    "Weapon:wid_launcher_grenade_athena_sr_ore_t03": {
+      "disintegration": 3240,
+      "fabrication": 9720
+    },
+    "Weapon:wid_launcher_grenade_athena_vr_ore_t03": {
+      "disintegration": 3240,
+      "fabrication": 9720
+    },
+    "Weapon:wid_launcher_hydraulic_sr_crystal_t04": {
+      "disintegration": 5400,
+      "fabrication": 16200
+    },
+    "Weapon:wid_launcher_hydraulic_sr_crystal_t05": {
+      "disintegration": 6750,
+      "fabrication": 20250
+    },
+    "Weapon:wid_launcher_hydraulic_sr_crystal_t06": {
+      "disintegration": 8400,
+      "fabrication": 25200
+    },
+    "Weapon:wid_launcher_hydraulic_vr_crystal_t04": {
+      "disintegration": 4340,
+      "fabrication": 13020
+    },
+    "Weapon:wid_launcher_hydraulic_vr_crystal_t05": {
+      "disintegration": 5440,
+      "fabrication": 16320
+    },
+    "Weapon:wid_launcher_hydraulic_vr_crystal_t06": {
+      "disintegration": 6840,
+      "fabrication": 20520
+    },
+    "Weapon:wid_launcher_rocket_athena_r_ore_t03": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_launcher_rocket_athena_sr_ore_t03": {
+      "disintegration": 4050,
+      "fabrication": 12150
+    },
+    "Weapon:wid_launcher_rocket_athena_vr_ore_t03": {
+      "disintegration": 3240,
+      "fabrication": 9720
+    },
+    "Weapon:wid_launcher_scavenger_sr_ore_t01": {
+      "disintegration": 480,
+      "fabrication": 1440
+    },
+    "Weapon:wid_launcher_scavenger_sr_ore_t02": {
+      "disintegration": 1800,
+      "fabrication": 5400
+    },
+    "Weapon:wid_launcher_scavenger_sr_ore_t03": {
+      "disintegration": 2700,
+      "fabrication": 8100
+    },
+    "Weapon:wid_launcher_scavenger_sr_ore_t04": {
+      "disintegration": 3600,
+      "fabrication": 10800
+    },
+    "Weapon:wid_launcher_scavenger_sr_ore_t05": {
+      "disintegration": 4500,
+      "fabrication": 13500
+    },
+    "Weapon:wid_launcher_scavenger_sr_ore_t06": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_launcher_scavenger_vr_ore_t01": {
+      "disintegration": 400,
+      "fabrication": 1200
+    },
+    "Weapon:wid_launcher_scavenger_vr_ore_t02": {
+      "disintegration": 1260,
+      "fabrication": 3780
+    },
+    "Weapon:wid_launcher_scavenger_vr_ore_t03": {
+      "disintegration": 1910,
+      "fabrication": 5730
+    },
+    "Weapon:wid_launcher_scavenger_vr_ore_t04": {
+      "disintegration": 2560,
+      "fabrication": 7680
+    },
+    "Weapon:wid_launcher_scavenger_vr_ore_t05": {
+      "disintegration": 3210,
+      "fabrication": 9630
+    },
+    "Weapon:wid_launcher_scavenger_vr_ore_t06": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_piercing_spear_hydraulic_sr_crystal_t04": {
+      "disintegration": 14220,
+      "fabrication": 42660
+    },
+    "Weapon:wid_piercing_spear_hydraulic_sr_crystal_t05": {
+      "disintegration": 7720,
+      "fabrication": 23160
+    },
+    "Weapon:wid_piercing_spear_hydraulic_sr_crystal_t06": {
+      "disintegration": 15690,
+      "fabrication": 47070
+    },
+    "Weapon:wid_piercing_spear_hydraulic_sr_ore_t01": {
+      "disintegration": 1880,
+      "fabrication": 5640
+    },
+    "Weapon:wid_piercing_spear_hydraulic_sr_ore_t02": {
+      "disintegration": 6760,
+      "fabrication": 20280
+    },
+    "Weapon:wid_piercing_spear_hydraulic_sr_ore_t03": {
+      "disintegration": 9960,
+      "fabrication": 29880
+    },
+    "Weapon:wid_piercing_spear_hydraulic_sr_ore_t04": {
+      "disintegration": 13160,
+      "fabrication": 39480
+    },
+    "Weapon:wid_piercing_spear_hydraulic_sr_ore_t05": {
+      "disintegration": 16360,
+      "fabrication": 49080
+    },
+    "Weapon:wid_piercing_spear_hydraulic_sr_ore_t06": {
+      "disintegration": 13870,
+      "fabrication": 41610
+    },
+    "Weapon:wid_piercing_spear_hydraulic_vr_crystal_t04": {
+      "disintegration": 10190,
+      "fabrication": 30570
+    },
+    "Weapon:wid_piercing_spear_hydraulic_vr_crystal_t05": {
+      "disintegration": 6390,
+      "fabrication": 19170
+    },
+    "Weapon:wid_piercing_spear_hydraulic_vr_crystal_t06": {
+      "disintegration": 15690,
+      "fabrication": 47070
+    },
+    "Weapon:wid_piercing_spear_hydraulic_vr_ore_t01": {
+      "disintegration": 1620,
+      "fabrication": 4860
+    },
+    "Weapon:wid_piercing_spear_hydraulic_vr_ore_t02": {
+      "disintegration": 4820,
+      "fabrication": 14460
+    },
+    "Weapon:wid_piercing_spear_hydraulic_vr_ore_t03": {
+      "disintegration": 6970,
+      "fabrication": 20910
+    },
+    "Weapon:wid_piercing_spear_hydraulic_vr_ore_t04": {
+      "disintegration": 9120,
+      "fabrication": 27360
+    },
+    "Weapon:wid_piercing_spear_hydraulic_vr_ore_t05": {
+      "disintegration": 11270,
+      "fabrication": 33810
+    },
+    "Weapon:wid_piercing_spear_hydraulic_vr_ore_t06": {
+      "disintegration": 13870,
+      "fabrication": 41610
+    },
+    "Weapon:wid_piercing_spear_scavenger_sr_crystal_t04": {
+      "disintegration": 12050,
+      "fabrication": 36150
+    },
+    "Weapon:wid_piercing_spear_scavenger_sr_crystal_t05": {
+      "disintegration": 5050,
+      "fabrication": 15150
+    },
+    "Weapon:wid_piercing_spear_scavenger_sr_crystal_t06": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_piercing_spear_scavenger_sr_ore_t01": {
+      "disintegration": 1440,
+      "fabrication": 4320
+    },
+    "Weapon:wid_piercing_spear_scavenger_sr_ore_t02": {
+      "disintegration": 6120,
+      "fabrication": 18360
+    },
+    "Weapon:wid_piercing_spear_scavenger_sr_ore_t03": {
+      "disintegration": 9120,
+      "fabrication": 27360
+    },
+    "Weapon:wid_piercing_spear_scavenger_sr_ore_t04": {
+      "disintegration": 12120,
+      "fabrication": 36360
+    },
+    "Weapon:wid_piercing_spear_scavenger_sr_ore_t05": {
+      "disintegration": 15120,
+      "fabrication": 45360
+    },
+    "Weapon:wid_piercing_spear_scavenger_sr_ore_t06": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_piercing_spear_scavenger_vr_crystal_t04": {
+      "disintegration": 8250,
+      "fabrication": 24750
+    },
+    "Weapon:wid_piercing_spear_scavenger_vr_crystal_t05": {
+      "disintegration": 4050,
+      "fabrication": 12150
+    },
+    "Weapon:wid_piercing_spear_scavenger_vr_crystal_t06": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_piercing_spear_scavenger_vr_ore_t01": {
+      "disintegration": 1080,
+      "fabrication": 3240
+    },
+    "Weapon:wid_piercing_spear_scavenger_vr_ore_t02": {
+      "disintegration": 4180,
+      "fabrication": 12540
+    },
+    "Weapon:wid_piercing_spear_scavenger_vr_ore_t03": {
+      "disintegration": 6230,
+      "fabrication": 18690
+    },
+    "Weapon:wid_piercing_spear_scavenger_vr_ore_t04": {
+      "disintegration": 8280,
+      "fabrication": 24840
+    },
+    "Weapon:wid_piercing_spear_scavenger_vr_ore_t05": {
+      "disintegration": 10330,
+      "fabrication": 30990
+    },
+    "Weapon:wid_piercing_spear_scavenger_vr_ore_t06": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_pistol_autoheavy_athena_c_ore_t02": {
+      "disintegration": 6400,
+      "fabrication": 19200
+    },
+    "Weapon:wid_pistol_autoheavy_athena_r_ore_t03": {
+      "disintegration": 6400,
+      "fabrication": 19200
+    },
+    "Weapon:wid_pistol_autoheavy_athena_uc_ore_t03": {
+      "disintegration": 6400,
+      "fabrication": 19200
+    },
+    "Weapon:wid_pistol_gatling_athena_sr_ore_t03": {
+      "disintegration": 4330,
+      "fabrication": 12990
+    },
+    "Weapon:wid_pistol_hydraulic_sr_crystal_t04": {
+      "disintegration": 17270,
+      "fabrication": 51810
+    },
+    "Weapon:wid_pistol_hydraulic_sr_crystal_t05": {
+      "disintegration": 7770,
+      "fabrication": 23310
+    },
+    "Weapon:wid_pistol_hydraulic_vr_crystal_t04": {
+      "disintegration": 13200,
+      "fabrication": 39600
+    },
+    "Weapon:wid_pistol_hydraulic_vr_crystal_t05": {
+      "disintegration": 6400,
+      "fabrication": 19200
+    },
+    "Weapon:wid_pistol_scavenger_athena_r_ore_t03": {
+      "disintegration": 4330,
+      "fabrication": 12990
+    },
+    "Weapon:wid_pistol_scavenger_athena_uc_ore_t03": {
+      "disintegration": 4330,
+      "fabrication": 12990
+    },
+    "Weapon:wid_pistol_scavenger_athena_vr_ore_t03": {
+      "disintegration": 4330,
+      "fabrication": 12990
+    },
+    "Weapon:wid_pistol_scavenger_sr_crystal_t04": {
+      "disintegration": 12575,
+      "fabrication": 37725
+    },
+    "Weapon:wid_pistol_scavenger_sr_crystal_t05": {
+      "disintegration": 5625,
+      "fabrication": 16875
+    },
+    "Weapon:wid_pistol_scavenger_sr_ore_t01": {
+      "disintegration": 1545,
+      "fabrication": 4635
+    },
+    "Weapon:wid_pistol_scavenger_sr_ore_t02": {
+      "disintegration": 6275,
+      "fabrication": 18825
+    },
+    "Weapon:wid_pistol_scavenger_sr_ore_t03": {
+      "disintegration": 9325,
+      "fabrication": 27975
+    },
+    "Weapon:wid_pistol_scavenger_sr_ore_t04": {
+      "disintegration": 12375,
+      "fabrication": 37125
+    },
+    "Weapon:wid_pistol_scavenger_sr_ore_t05": {
+      "disintegration": 15425,
+      "fabrication": 46275
+    },
+    "Weapon:wid_pistol_scavenger_vr_crystal_t04": {
+      "disintegration": 8830,
+      "fabrication": 26490
+    },
+    "Weapon:wid_pistol_scavenger_vr_crystal_t05": {
+      "disintegration": 4730,
+      "fabrication": 14190
+    },
+    "Weapon:wid_pistol_scavenger_vr_ore_t01": {
+      "disintegration": 1210,
+      "fabrication": 3630
+    },
+    "Weapon:wid_pistol_scavenger_vr_ore_t02": {
+      "disintegration": 4410,
+      "fabrication": 13230
+    },
+    "Weapon:wid_pistol_scavenger_vr_ore_t03": {
+      "disintegration": 6560,
+      "fabrication": 19680
+    },
+    "Weapon:wid_pistol_scavenger_vr_ore_t04": {
+      "disintegration": 8710,
+      "fabrication": 26130
+    },
+    "Weapon:wid_pistol_scavenger_vr_ore_t05": {
+      "disintegration": 10860,
+      "fabrication": 32580
+    },
+    "Weapon:wid_pistol_semiauto_athena_c_ore_t02": {
+      "disintegration": 1740,
+      "fabrication": 5220
+    },
+    "Weapon:wid_pistol_semiauto_athena_r_ore_t03": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_pistol_semiauto_athena_uc_ore_t03": {
+      "disintegration": 4390,
+      "fabrication": 13170
+    },
+    "Weapon:wid_pistol_sixshooter_athena_c_ore_t02": {
+      "disintegration": 1740,
+      "fabrication": 5220
+    },
+    "Weapon:wid_pistol_sixshooter_athena_r_ore_t03": {
+      "disintegration": 6400,
+      "fabrication": 19200
+    },
+    "Weapon:wid_pistol_sixshooter_athena_uc_ore_t03": {
+      "disintegration": 4390,
+      "fabrication": 13170
+    },
+    "Weapon:wid_pistol_zapper_athena_sr_ore_t03": {
+      "disintegration": 4330,
+      "fabrication": 12990
+    },
+    "Weapon:wid_shotgun_break_scavenger_sr_crystal_t04": {
+      "disintegration": 12225,
+      "fabrication": 36675
+    },
+    "Weapon:wid_shotgun_break_scavenger_sr_crystal_t05": {
+      "disintegration": 5275,
+      "fabrication": 15825
+    },
+    "Weapon:wid_shotgun_break_scavenger_sr_ore_t01": {
+      "disintegration": 1465,
+      "fabrication": 4395
+    },
+    "Weapon:wid_shotgun_break_scavenger_sr_ore_t02": {
+      "disintegration": 6195,
+      "fabrication": 18585
+    },
+    "Weapon:wid_shotgun_break_scavenger_sr_ore_t03": {
+      "disintegration": 9245,
+      "fabrication": 27735
+    },
+    "Weapon:wid_shotgun_break_scavenger_sr_ore_t04": {
+      "disintegration": 12295,
+      "fabrication": 36885
+    },
+    "Weapon:wid_shotgun_break_scavenger_sr_ore_t05": {
+      "disintegration": 15345,
+      "fabrication": 46035
+    },
+    "Weapon:wid_shotgun_break_scavenger_vr_crystal_t04": {
+      "disintegration": 8600,
+      "fabrication": 25800
+    },
+    "Weapon:wid_shotgun_break_scavenger_vr_crystal_t05": {
+      "disintegration": 4500,
+      "fabrication": 13500
+    },
+    "Weapon:wid_shotgun_break_scavenger_vr_ore_t01": {
+      "disintegration": 1150,
+      "fabrication": 3450
+    },
+    "Weapon:wid_shotgun_break_scavenger_vr_ore_t02": {
+      "disintegration": 4350,
+      "fabrication": 13050
+    },
+    "Weapon:wid_shotgun_break_scavenger_vr_ore_t03": {
+      "disintegration": 6500,
+      "fabrication": 19500
+    },
+    "Weapon:wid_shotgun_break_scavenger_vr_ore_t04": {
+      "disintegration": 8650,
+      "fabrication": 25950
+    },
+    "Weapon:wid_shotgun_break_scavenger_vr_ore_t05": {
+      "disintegration": 10800,
+      "fabrication": 32400
+    },
+    "Weapon:wid_shotgun_hydraulic_sr_crystal_t04": {
+      "disintegration": 16820,
+      "fabrication": 50460
+    },
+    "Weapon:wid_shotgun_hydraulic_sr_crystal_t05": {
+      "disintegration": 7320,
+      "fabrication": 21960
+    },
+    "Weapon:wid_shotgun_hydraulic_sr_ore_t01": {
+      "disintegration": 1890,
+      "fabrication": 5670
+    },
+    "Weapon:wid_shotgun_hydraulic_sr_ore_t02": {
+      "disintegration": 8450,
+      "fabrication": 25350
+    },
+    "Weapon:wid_shotgun_hydraulic_sr_ore_t03": {
+      "disintegration": 12700,
+      "fabrication": 38100
+    },
+    "Weapon:wid_shotgun_hydraulic_sr_ore_t04": {
+      "disintegration": 16950,
+      "fabrication": 50850
+    },
+    "Weapon:wid_shotgun_hydraulic_sr_ore_t05": {
+      "disintegration": 21200,
+      "fabrication": 63600
+    },
+    "Weapon:wid_shotgun_hydraulic_vr_crystal_t04": {
+      "disintegration": 12870,
+      "fabrication": 38610
+    },
+    "Weapon:wid_shotgun_hydraulic_vr_crystal_t05": {
+      "disintegration": 6070,
+      "fabrication": 18210
+    },
+    "Weapon:wid_shotgun_hydraulic_vr_ore_t01": {
+      "disintegration": 1670,
+      "fabrication": 5010
+    },
+    "Weapon:wid_shotgun_hydraulic_vr_ore_t02": {
+      "disintegration": 6550,
+      "fabrication": 19650
+    },
+    "Weapon:wid_shotgun_hydraulic_vr_ore_t03": {
+      "disintegration": 9750,
+      "fabrication": 29250
+    },
+    "Weapon:wid_shotgun_hydraulic_vr_ore_t04": {
+      "disintegration": 12950,
+      "fabrication": 38850
+    },
+    "Weapon:wid_shotgun_hydraulic_vr_ore_t05": {
+      "disintegration": 16150,
+      "fabrication": 48450
+    },
+    "Weapon:wid_shotgun_semiauto_athena_r_ore_t03": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_shotgun_semiauto_athena_uc_ore_t03": {
+      "disintegration": 4330,
+      "fabrication": 12990
+    },
+    "Weapon:wid_shotgun_semiauto_athena_vr_ore_t03": {
+      "disintegration": 9750,
+      "fabrication": 29250
+    },
+    "Weapon:wid_shotgun_semiauto_scavenger_sr_crystal_t04": {
+      "disintegration": 12225,
+      "fabrication": 36675
+    },
+    "Weapon:wid_shotgun_semiauto_scavenger_sr_crystal_t05": {
+      "disintegration": 5275,
+      "fabrication": 15825
+    },
+    "Weapon:wid_shotgun_semiauto_scavenger_sr_ore_t01": {
+      "disintegration": 1465,
+      "fabrication": 4395
+    },
+    "Weapon:wid_shotgun_semiauto_scavenger_sr_ore_t02": {
+      "disintegration": 6195,
+      "fabrication": 18585
+    },
+    "Weapon:wid_shotgun_semiauto_scavenger_sr_ore_t03": {
+      "disintegration": 9245,
+      "fabrication": 27735
+    },
+    "Weapon:wid_shotgun_semiauto_scavenger_sr_ore_t04": {
+      "disintegration": 12295,
+      "fabrication": 36885
+    },
+    "Weapon:wid_shotgun_semiauto_scavenger_sr_ore_t05": {
+      "disintegration": 15345,
+      "fabrication": 46035
+    },
+    "Weapon:wid_shotgun_semiauto_scavenger_vr_crystal_t04": {
+      "disintegration": 8600,
+      "fabrication": 25800
+    },
+    "Weapon:wid_shotgun_semiauto_scavenger_vr_crystal_t05": {
+      "disintegration": 4500,
+      "fabrication": 13500
+    },
+    "Weapon:wid_shotgun_semiauto_scavenger_vr_ore_t01": {
+      "disintegration": 1150,
+      "fabrication": 3450
+    },
+    "Weapon:wid_shotgun_semiauto_scavenger_vr_ore_t02": {
+      "disintegration": 4350,
+      "fabrication": 13050
+    },
+    "Weapon:wid_shotgun_semiauto_scavenger_vr_ore_t03": {
+      "disintegration": 6500,
+      "fabrication": 19500
+    },
+    "Weapon:wid_shotgun_semiauto_scavenger_vr_ore_t04": {
+      "disintegration": 8650,
+      "fabrication": 25950
+    },
+    "Weapon:wid_shotgun_semiauto_scavenger_vr_ore_t05": {
+      "disintegration": 10800,
+      "fabrication": 32400
+    },
+    "Weapon:wid_shotgun_standard_athena_c_ore_t03": {
+      "disintegration": 4330,
+      "fabrication": 12990
+    },
+    "Weapon:wid_shotgun_standard_athena_uc_ore_t03": {
+      "disintegration": 4330,
+      "fabrication": 12990
+    },
+    "Weapon:wid_sniper_amr_athena_sr_ore_t03": {
+      "disintegration": 4330,
+      "fabrication": 12990
+    },
+    "Weapon:wid_sniper_boltaction_scope_athena_r_ore_t03": {
+      "disintegration": 6400,
+      "fabrication": 19200
+    },
+    "Weapon:wid_sniper_boltaction_scope_athena_sr_ore_t03": {
+      "disintegration": 6400,
+      "fabrication": 19200
+    },
+    "Weapon:wid_sniper_boltaction_scope_athena_vr_ore_t03": {
+      "disintegration": 6400,
+      "fabrication": 19200
+    },
+    "Weapon:wid_sniper_hydraulic_sr_crystal_t04": {
+      "disintegration": 17270,
+      "fabrication": 51810
+    },
+    "Weapon:wid_sniper_hydraulic_sr_crystal_t05": {
+      "disintegration": 7770,
+      "fabrication": 23310
+    },
+    "Weapon:wid_sniper_hydraulic_vr_crystal_t04": {
+      "disintegration": 13200,
+      "fabrication": 39600
+    },
+    "Weapon:wid_sniper_hydraulic_vr_crystal_t05": {
+      "disintegration": 6400,
+      "fabrication": 19200
+    },
+    "Weapon:wid_sniper_scavenger_sr_crystal_t04": {
+      "disintegration": 12575,
+      "fabrication": 37725
+    },
+    "Weapon:wid_sniper_scavenger_sr_crystal_t05": {
+      "disintegration": 5625,
+      "fabrication": 16875
+    },
+    "Weapon:wid_sniper_scavenger_sr_ore_t01": {
+      "disintegration": 1545,
+      "fabrication": 4635
+    },
+    "Weapon:wid_sniper_scavenger_sr_ore_t02": {
+      "disintegration": 6275,
+      "fabrication": 18825
+    },
+    "Weapon:wid_sniper_scavenger_sr_ore_t03": {
+      "disintegration": 9325,
+      "fabrication": 27975
+    },
+    "Weapon:wid_sniper_scavenger_sr_ore_t04": {
+      "disintegration": 12375,
+      "fabrication": 37125
+    },
+    "Weapon:wid_sniper_scavenger_sr_ore_t05": {
+      "disintegration": 15425,
+      "fabrication": 46275
+    },
+    "Weapon:wid_sniper_scavenger_vr_crystal_t04": {
+      "disintegration": 8830,
+      "fabrication": 26490
+    },
+    "Weapon:wid_sniper_scavenger_vr_crystal_t05": {
+      "disintegration": 4730,
+      "fabrication": 14190
+    },
+    "Weapon:wid_sniper_scavenger_vr_ore_t01": {
+      "disintegration": 1210,
+      "fabrication": 3630
+    },
+    "Weapon:wid_sniper_scavenger_vr_ore_t02": {
+      "disintegration": 4410,
+      "fabrication": 13230
+    },
+    "Weapon:wid_sniper_scavenger_vr_ore_t03": {
+      "disintegration": 6560,
+      "fabrication": 19680
+    },
+    "Weapon:wid_sniper_scavenger_vr_ore_t04": {
+      "disintegration": 8710,
+      "fabrication": 26130
+    },
+    "Weapon:wid_sniper_scavenger_vr_ore_t05": {
+      "disintegration": 10860,
+      "fabrication": 32580
+    },
+    "Weapon:wid_sniper_shredder_athena_sr_ore_t03": {
+      "disintegration": 4330,
+      "fabrication": 12990
+    },
+    "Weapon:wid_sniper_standard_scope_athena_sr_ore_t03": {
+      "disintegration": 12800,
+      "fabrication": 38400
+    },
+    "Weapon:wid_sniper_standard_scope_athena_vr_ore_t03": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_sniper_tripleshot_athena_sr_ore_t03": {
+      "disintegration": 4330,
+      "fabrication": 12990
+    },
+    "Trap:tid_floor_player_launch_pad_athena": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_assault_auto_halloween_sr_crystal_t04": {
+      "disintegration": 17270,
+      "fabrication": 51810
+    },
+    "Weapon:wid_assault_auto_halloween_sr_crystal_t05": {
+      "disintegration": 7770,
+      "fabrication": 23310
+    },
+    "Weapon:wid_assault_auto_vt_vr_crystal_t06": {
+      "disintegration": 16020,
+      "fabrication": 48060
+    },
+    "Trap:tid_floor_flamegrill_r_t01": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_assault_auto_vt_sr_crystal_t04": {
+      "disintegration": 14670,
+      "fabrication": 44010
+    },
+    "Weapon:wid_assault_auto_vt_sr_crystal_t05": {
+      "disintegration": 8170,
+      "fabrication": 24510
+    },
+    "Weapon:wid_assault_auto_vt_sr_crystal_t06": {
+      "disintegration": 22420,
+      "fabrication": 67260
+    },
+    "Weapon:wid_assault_auto_vt_sr_ore_t01": {
+      "disintegration": 2100,
+      "fabrication": 6300
+    },
+    "Weapon:wid_assault_auto_vt_sr_ore_t02": {
+      "disintegration": 6980,
+      "fabrication": 20940
+    },
+    "Weapon:wid_assault_auto_vt_sr_ore_t03": {
+      "disintegration": 10180,
+      "fabrication": 30540
+    },
+    "Weapon:wid_assault_auto_vt_sr_ore_t04": {
+      "disintegration": 13380,
+      "fabrication": 40140
+    },
+    "Weapon:wid_assault_auto_vt_sr_ore_t05": {
+      "disintegration": 16580,
+      "fabrication": 49740
+    },
+    "Weapon:wid_assault_auto_vt_sr_ore_t06": {
+      "disintegration": 20380,
+      "fabrication": 61140
+    },
+    "Weapon:wid_assault_auto_vt_vr_crystal_t04": {
+      "disintegration": 10520,
+      "fabrication": 31560
+    },
+    "Weapon:wid_assault_auto_vt_vr_crystal_t05": {
+      "disintegration": 6720,
+      "fabrication": 20160
+    },
+    "Weapon:wid_assault_auto_vt_vr_ore_t01": {
+      "disintegration": 1850,
+      "fabrication": 5550
+    },
+    "Weapon:wid_assault_auto_vt_vr_ore_t02": {
+      "disintegration": 5050,
+      "fabrication": 15150
+    },
+    "Weapon:wid_assault_auto_vt_vr_ore_t03": {
+      "disintegration": 7200,
+      "fabrication": 21600
+    },
+    "Weapon:wid_assault_auto_vt_vr_ore_t04": {
+      "disintegration": 9350,
+      "fabrication": 28050
+    },
+    "Weapon:wid_assault_auto_vt_vr_ore_t05": {
+      "disintegration": 11500,
+      "fabrication": 34500
+    },
+    "Weapon:wid_assault_auto_vt_vr_ore_t06": {
+      "disintegration": 14100,
+      "fabrication": 42300
+    },
+    "Weapon:wid_assault_ranged_athena_r_ore_t03": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_assault_ranged_athena_uc_ore_t03": {
+      "disintegration": 1740,
+      "fabrication": 5220
+    },
+    "Weapon:wid_assault_ranged_athena_vr_ore_t03": {
+      "disintegration": 4390,
+      "fabrication": 13170
+    },
+    "Weapon:wid_blunt_hammer_rocket_vt_sr_crystal_t04": {
+      "disintegration": 14220,
+      "fabrication": 42660
+    },
+    "Weapon:wid_blunt_hammer_rocket_vt_sr_crystal_t05": {
+      "disintegration": 7720,
+      "fabrication": 23160
+    },
+    "Weapon:wid_blunt_hammer_rocket_vt_sr_crystal_t06": {
+      "disintegration": 21970,
+      "fabrication": 65910
+    },
+    "Weapon:wid_blunt_hammer_rocket_vt_sr_ore_t01": {
+      "disintegration": 1880,
+      "fabrication": 5640
+    },
+    "Weapon:wid_blunt_hammer_rocket_vt_sr_ore_t02": {
+      "disintegration": 6760,
+      "fabrication": 20280
+    },
+    "Weapon:wid_blunt_hammer_rocket_vt_sr_ore_t03": {
+      "disintegration": 9960,
+      "fabrication": 29880
+    },
+    "Weapon:wid_blunt_hammer_rocket_vt_sr_ore_t04": {
+      "disintegration": 13160,
+      "fabrication": 39480
+    },
+    "Weapon:wid_blunt_hammer_rocket_vt_sr_ore_t05": {
+      "disintegration": 16360,
+      "fabrication": 49080
+    },
+    "Weapon:wid_blunt_hammer_rocket_vt_sr_ore_t06": {
+      "disintegration": 20160,
+      "fabrication": 60480
+    },
+    "Weapon:wid_blunt_hammer_rocket_vt_vr_crystal_t04": {
+      "disintegration": 10190,
+      "fabrication": 30570
+    },
+    "Weapon:wid_blunt_hammer_rocket_vt_vr_crystal_t05": {
+      "disintegration": 6390,
+      "fabrication": 19170
+    },
+    "Weapon:wid_blunt_hammer_rocket_vt_vr_crystal_t06": {
+      "disintegration": 15690,
+      "fabrication": 47070
+    },
+    "Weapon:wid_blunt_hammer_rocket_vt_vr_ore_t01": {
+      "disintegration": 1620,
+      "fabrication": 4860
+    },
+    "Weapon:wid_blunt_hammer_rocket_vt_vr_ore_t02": {
+      "disintegration": 4820,
+      "fabrication": 14460
+    },
+    "Weapon:wid_blunt_hammer_rocket_vt_vr_ore_t03": {
+      "disintegration": 6970,
+      "fabrication": 20910
+    },
+    "Weapon:wid_blunt_hammer_rocket_vt_vr_ore_t04": {
+      "disintegration": 9120,
+      "fabrication": 27360
+    },
+    "Weapon:wid_blunt_hammer_rocket_vt_vr_ore_t05": {
+      "disintegration": 11270,
+      "fabrication": 33810
+    },
+    "Weapon:wid_blunt_hammer_rocket_vt_vr_ore_t06": {
+      "disintegration": 13870,
+      "fabrication": 41610
+    },
+    "Weapon:wid_edged_axe_vt_sr_crystal_t04": {
+      "disintegration": 14220,
+      "fabrication": 42660
+    },
+    "Weapon:wid_edged_axe_vt_sr_crystal_t05": {
+      "disintegration": 7720,
+      "fabrication": 23160
+    },
+    "Weapon:wid_edged_axe_vt_sr_crystal_t06": {
+      "disintegration": 21970,
+      "fabrication": 65910
+    },
+    "Weapon:wid_edged_axe_vt_sr_ore_t01": {
+      "disintegration": 1880,
+      "fabrication": 5640
+    },
+    "Weapon:wid_edged_axe_vt_sr_ore_t02": {
+      "disintegration": 6760,
+      "fabrication": 20280
+    },
+    "Weapon:wid_edged_axe_vt_sr_ore_t03": {
+      "disintegration": 9960,
+      "fabrication": 29880
+    },
+    "Weapon:wid_edged_axe_vt_sr_ore_t04": {
+      "disintegration": 13160,
+      "fabrication": 39480
+    },
+    "Weapon:wid_edged_axe_vt_sr_ore_t05": {
+      "disintegration": 16360,
+      "fabrication": 49080
+    },
+    "Weapon:wid_edged_axe_vt_sr_ore_t06": {
+      "disintegration": 20160,
+      "fabrication": 60480
+    },
+    "Weapon:wid_edged_axe_vt_vr_crystal_t04": {
+      "disintegration": 10190,
+      "fabrication": 30570
+    },
+    "Weapon:wid_edged_axe_vt_vr_crystal_t05": {
+      "disintegration": 6390,
+      "fabrication": 19170
+    },
+    "Weapon:wid_edged_axe_vt_vr_crystal_t06": {
+      "disintegration": 15690,
+      "fabrication": 47070
+    },
+    "Weapon:wid_edged_axe_vt_vr_ore_t01": {
+      "disintegration": 1620,
+      "fabrication": 4860
+    },
+    "Weapon:wid_edged_axe_vt_vr_ore_t02": {
+      "disintegration": 4820,
+      "fabrication": 14460
+    },
+    "Weapon:wid_edged_axe_vt_vr_ore_t03": {
+      "disintegration": 6970,
+      "fabrication": 20910
+    },
+    "Weapon:wid_edged_axe_vt_vr_ore_t04": {
+      "disintegration": 9120,
+      "fabrication": 27360
+    },
+    "Weapon:wid_edged_axe_vt_vr_ore_t05": {
+      "disintegration": 11270,
+      "fabrication": 33810
+    },
+    "Weapon:wid_edged_axe_vt_vr_ore_t06": {
+      "disintegration": 13870,
+      "fabrication": 41610
+    },
+    "Weapon:wid_edged_sword_medium_vt_sr_crystal_t04": {
+      "disintegration": 14220,
+      "fabrication": 42660
+    },
+    "Weapon:wid_edged_sword_medium_vt_sr_crystal_t05": {
+      "disintegration": 7720,
+      "fabrication": 23160
+    },
+    "Weapon:wid_edged_sword_medium_vt_sr_crystal_t06": {
+      "disintegration": 21970,
+      "fabrication": 65910
+    },
+    "Weapon:wid_edged_sword_medium_vt_sr_ore_t01": {
+      "disintegration": 1880,
+      "fabrication": 5640
+    },
+    "Weapon:wid_edged_sword_medium_vt_sr_ore_t02": {
+      "disintegration": 6760,
+      "fabrication": 20280
+    },
+    "Weapon:wid_edged_sword_medium_vt_sr_ore_t03": {
+      "disintegration": 9960,
+      "fabrication": 29880
+    },
+    "Weapon:wid_edged_sword_medium_vt_sr_ore_t04": {
+      "disintegration": 13160,
+      "fabrication": 39480
+    },
+    "Weapon:wid_edged_sword_medium_vt_sr_ore_t05": {
+      "disintegration": 16360,
+      "fabrication": 49080
+    },
+    "Weapon:wid_edged_sword_medium_vt_sr_ore_t06": {
+      "disintegration": 20160,
+      "fabrication": 60480
+    },
+    "Weapon:wid_edged_sword_medium_vt_vr_crystal_t04": {
+      "disintegration": 10190,
+      "fabrication": 30570
+    },
+    "Weapon:wid_edged_sword_medium_vt_vr_crystal_t05": {
+      "disintegration": 6390,
+      "fabrication": 19170
+    },
+    "Weapon:wid_edged_sword_medium_vt_vr_crystal_t06": {
+      "disintegration": 15690,
+      "fabrication": 47070
+    },
+    "Weapon:wid_edged_sword_medium_vt_vr_ore_t01": {
+      "disintegration": 1620,
+      "fabrication": 4860
+    },
+    "Weapon:wid_edged_sword_medium_vt_vr_ore_t02": {
+      "disintegration": 4820,
+      "fabrication": 14460
+    },
+    "Weapon:wid_edged_sword_medium_vt_vr_ore_t03": {
+      "disintegration": 6970,
+      "fabrication": 20910
+    },
+    "Weapon:wid_edged_sword_medium_vt_vr_ore_t04": {
+      "disintegration": 9120,
+      "fabrication": 27360
+    },
+    "Weapon:wid_edged_sword_medium_vt_vr_ore_t05": {
+      "disintegration": 11270,
+      "fabrication": 33810
+    },
+    "Weapon:wid_edged_sword_medium_vt_vr_ore_t06": {
+      "disintegration": 13870,
+      "fabrication": 41610
+    },
+    "Weapon:wid_pistol_autoheavy_vt_sr_crystal_t04": {
+      "disintegration": 14670,
+      "fabrication": 44010
+    },
+    "Weapon:wid_pistol_autoheavy_vt_sr_crystal_t05": {
+      "disintegration": 8170,
+      "fabrication": 24510
+    },
+    "Weapon:wid_pistol_autoheavy_vt_sr_crystal_t06": {
+      "disintegration": 22420,
+      "fabrication": 67260
+    },
+    "Weapon:wid_pistol_autoheavy_vt_sr_ore_t01": {
+      "disintegration": 2100,
+      "fabrication": 6300
+    },
+    "Weapon:wid_pistol_autoheavy_vt_sr_ore_t02": {
+      "disintegration": 6980,
+      "fabrication": 20940
+    },
+    "Weapon:wid_pistol_autoheavy_vt_sr_ore_t03": {
+      "disintegration": 10180,
+      "fabrication": 30540
+    },
+    "Weapon:wid_pistol_autoheavy_vt_sr_ore_t04": {
+      "disintegration": 13380,
+      "fabrication": 40140
+    },
+    "Weapon:wid_pistol_autoheavy_vt_sr_ore_t05": {
+      "disintegration": 16580,
+      "fabrication": 49740
+    },
+    "Weapon:wid_pistol_autoheavy_vt_sr_ore_t06": {
+      "disintegration": 20380,
+      "fabrication": 61140
+    },
+    "Weapon:wid_pistol_autoheavy_vt_vr_crystal_t04": {
+      "disintegration": 10520,
+      "fabrication": 31560
+    },
+    "Weapon:wid_pistol_autoheavy_vt_vr_crystal_t05": {
+      "disintegration": 6720,
+      "fabrication": 20160
+    },
+    "Weapon:wid_pistol_autoheavy_vt_vr_crystal_t06": {
+      "disintegration": 16020,
+      "fabrication": 48060
+    },
+    "Weapon:wid_pistol_autoheavy_vt_vr_ore_t01": {
+      "disintegration": 1850,
+      "fabrication": 5550
+    },
+    "Weapon:wid_pistol_autoheavy_vt_vr_ore_t02": {
+      "disintegration": 5050,
+      "fabrication": 15150
+    },
+    "Weapon:wid_pistol_autoheavy_vt_vr_ore_t03": {
+      "disintegration": 7200,
+      "fabrication": 21600
+    },
+    "Weapon:wid_pistol_autoheavy_vt_vr_ore_t04": {
+      "disintegration": 9350,
+      "fabrication": 28050
+    },
+    "Weapon:wid_pistol_autoheavy_vt_vr_ore_t05": {
+      "disintegration": 11500,
+      "fabrication": 34500
+    },
+    "Weapon:wid_pistol_autoheavy_vt_vr_ore_t06": {
+      "disintegration": 14100,
+      "fabrication": 42300
+    },
+    "Weapon:wid_pistol_autoheavysuppressed_athena_c_ore_t02": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_pistol_autoheavysuppressed_athena_r_ore_t03": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_pistol_autoheavysuppressed_athena_uc_ore_t03": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_pistol_handcannon_semi_vt_sr_crystal_t04": {
+      "disintegration": 14670,
+      "fabrication": 44010
+    },
+    "Weapon:wid_pistol_handcannon_semi_vt_sr_crystal_t05": {
+      "disintegration": 8170,
+      "fabrication": 24510
+    },
+    "Weapon:wid_pistol_handcannon_semi_vt_sr_crystal_t06": {
+      "disintegration": 22420,
+      "fabrication": 67260
+    },
+    "Weapon:wid_pistol_handcannon_semi_vt_sr_ore_t01": {
+      "disintegration": 2100,
+      "fabrication": 6300
+    },
+    "Weapon:wid_pistol_handcannon_semi_vt_sr_ore_t02": {
+      "disintegration": 6980,
+      "fabrication": 20940
+    },
+    "Weapon:wid_pistol_handcannon_semi_vt_sr_ore_t03": {
+      "disintegration": 10180,
+      "fabrication": 30540
+    },
+    "Weapon:wid_pistol_handcannon_semi_vt_sr_ore_t04": {
+      "disintegration": 13380,
+      "fabrication": 40140
+    },
+    "Weapon:wid_pistol_handcannon_semi_vt_sr_ore_t05": {
+      "disintegration": 16580,
+      "fabrication": 49740
+    },
+    "Weapon:wid_pistol_handcannon_semi_vt_sr_ore_t06": {
+      "disintegration": 20380,
+      "fabrication": 61140
+    },
+    "Weapon:wid_pistol_handcannon_semi_vt_vr_crystal_t04": {
+      "disintegration": 10520,
+      "fabrication": 31560
+    },
+    "Weapon:wid_pistol_handcannon_semi_vt_vr_crystal_t05": {
+      "disintegration": 6720,
+      "fabrication": 20160
+    },
+    "Weapon:wid_pistol_handcannon_semi_vt_vr_crystal_t06": {
+      "disintegration": 16020,
+      "fabrication": 48060
+    },
+    "Weapon:wid_pistol_handcannon_semi_vt_vr_ore_t01": {
+      "disintegration": 1850,
+      "fabrication": 5550
+    },
+    "Weapon:wid_pistol_handcannon_semi_vt_vr_ore_t02": {
+      "disintegration": 5050,
+      "fabrication": 15150
+    },
+    "Weapon:wid_pistol_handcannon_semi_vt_vr_ore_t03": {
+      "disintegration": 7200,
+      "fabrication": 21600
+    },
+    "Weapon:wid_pistol_handcannon_semi_vt_vr_ore_t04": {
+      "disintegration": 9350,
+      "fabrication": 28050
+    },
+    "Weapon:wid_pistol_handcannon_semi_vt_vr_ore_t05": {
+      "disintegration": 11500,
+      "fabrication": 34500
+    },
+    "Weapon:wid_pistol_handcannon_semi_vt_vr_ore_t06": {
+      "disintegration": 14100,
+      "fabrication": 42300
+    },
+    "Weapon:wid_pistol_handcannon_vt_sr_crystal_t04": {
+      "disintegration": 14670,
+      "fabrication": 44010
+    },
+    "Weapon:wid_pistol_handcannon_vt_sr_crystal_t05": {
+      "disintegration": 8170,
+      "fabrication": 24510
+    },
+    "Weapon:wid_pistol_handcannon_vt_sr_crystal_t06": {
+      "disintegration": 22420,
+      "fabrication": 67260
+    },
+    "Weapon:wid_pistol_handcannon_vt_sr_ore_t01": {
+      "disintegration": 2100,
+      "fabrication": 6300
+    },
+    "Weapon:wid_pistol_handcannon_vt_sr_ore_t02": {
+      "disintegration": 6980,
+      "fabrication": 20940
+    },
+    "Weapon:wid_pistol_handcannon_vt_sr_ore_t03": {
+      "disintegration": 10180,
+      "fabrication": 30540
+    },
+    "Weapon:wid_pistol_handcannon_vt_sr_ore_t04": {
+      "disintegration": 13380,
+      "fabrication": 40140
+    },
+    "Weapon:wid_pistol_handcannon_vt_sr_ore_t05": {
+      "disintegration": 16580,
+      "fabrication": 49740
+    },
+    "Weapon:wid_pistol_handcannon_vt_sr_ore_t06": {
+      "disintegration": 20380,
+      "fabrication": 61140
+    },
+    "Weapon:wid_shotgun_standard_vt_sr_crystal_t04": {
+      "disintegration": 14220,
+      "fabrication": 42660
+    },
+    "Weapon:wid_shotgun_standard_vt_sr_crystal_t05": {
+      "disintegration": 7720,
+      "fabrication": 23160
+    },
+    "Weapon:wid_shotgun_standard_vt_sr_crystal_t06": {
+      "disintegration": 21970,
+      "fabrication": 65910
+    },
+    "Weapon:wid_shotgun_standard_vt_sr_ore_t01": {
+      "disintegration": 1880,
+      "fabrication": 5640
+    },
+    "Weapon:wid_shotgun_standard_vt_sr_ore_t02": {
+      "disintegration": 6760,
+      "fabrication": 20280
+    },
+    "Weapon:wid_shotgun_standard_vt_sr_ore_t03": {
+      "disintegration": 9960,
+      "fabrication": 29880
+    },
+    "Weapon:wid_shotgun_standard_vt_sr_ore_t04": {
+      "disintegration": 13160,
+      "fabrication": 39480
+    },
+    "Weapon:wid_shotgun_standard_vt_sr_ore_t05": {
+      "disintegration": 16360,
+      "fabrication": 49080
+    },
+    "Weapon:wid_shotgun_standard_vt_sr_ore_t06": {
+      "disintegration": 20160,
+      "fabrication": 60480
+    },
+    "Weapon:wid_shotgun_standard_vt_vr_crystal_t04": {
+      "disintegration": 10190,
+      "fabrication": 30570
+    },
+    "Weapon:wid_shotgun_standard_vt_vr_crystal_t05": {
+      "disintegration": 6390,
+      "fabrication": 19170
+    },
+    "Weapon:wid_shotgun_standard_vt_vr_crystal_t06": {
+      "disintegration": 15690,
+      "fabrication": 47070
+    },
+    "Weapon:wid_shotgun_standard_vt_vr_ore_t01": {
+      "disintegration": 1620,
+      "fabrication": 4860
+    },
+    "Weapon:wid_shotgun_standard_vt_vr_ore_t02": {
+      "disintegration": 4820,
+      "fabrication": 14460
+    },
+    "Weapon:wid_shotgun_standard_vt_vr_ore_t03": {
+      "disintegration": 6970,
+      "fabrication": 20910
+    },
+    "Weapon:wid_shotgun_standard_vt_vr_ore_t04": {
+      "disintegration": 9120,
+      "fabrication": 27360
+    },
+    "Weapon:wid_shotgun_standard_vt_vr_ore_t05": {
+      "disintegration": 11270,
+      "fabrication": 33810
+    },
+    "Weapon:wid_shotgun_standard_vt_vr_ore_t06": {
+      "disintegration": 13870,
+      "fabrication": 41610
+    },
+    "Weapon:wid_sniper_standard_scope_vt_sr_crystal_t04": {
+      "disintegration": 14670,
+      "fabrication": 44010
+    },
+    "Weapon:wid_sniper_standard_scope_vt_sr_crystal_t05": {
+      "disintegration": 8170,
+      "fabrication": 24510
+    },
+    "Weapon:wid_sniper_standard_scope_vt_sr_crystal_t06": {
+      "disintegration": 22420,
+      "fabrication": 67260
+    },
+    "Weapon:wid_sniper_standard_scope_vt_sr_ore_t01": {
+      "disintegration": 2100,
+      "fabrication": 6300
+    },
+    "Weapon:wid_sniper_standard_scope_vt_sr_ore_t02": {
+      "disintegration": 6980,
+      "fabrication": 20940
+    },
+    "Weapon:wid_sniper_standard_scope_vt_sr_ore_t03": {
+      "disintegration": 10180,
+      "fabrication": 30540
+    },
+    "Weapon:wid_sniper_standard_scope_vt_sr_ore_t04": {
+      "disintegration": 13380,
+      "fabrication": 40140
+    },
+    "Weapon:wid_sniper_standard_scope_vt_sr_ore_t05": {
+      "disintegration": 16580,
+      "fabrication": 49740
+    },
+    "Weapon:wid_sniper_standard_scope_vt_sr_ore_t06": {
+      "disintegration": 20380,
+      "fabrication": 61140
+    },
+    "Weapon:wid_sniper_standard_scope_vt_vr_crystal_t04": {
+      "disintegration": 10520,
+      "fabrication": 31560
+    },
+    "Weapon:wid_sniper_standard_scope_vt_vr_crystal_t05": {
+      "disintegration": 6720,
+      "fabrication": 20160
+    },
+    "Weapon:wid_sniper_standard_scope_vt_vr_crystal_t06": {
+      "disintegration": 16020,
+      "fabrication": 48060
+    },
+    "Weapon:wid_sniper_standard_scope_vt_vr_ore_t01": {
+      "disintegration": 1850,
+      "fabrication": 5550
+    },
+    "Weapon:wid_sniper_standard_scope_vt_vr_ore_t02": {
+      "disintegration": 5050,
+      "fabrication": 15150
+    },
+    "Weapon:wid_sniper_standard_scope_vt_vr_ore_t03": {
+      "disintegration": 7200,
+      "fabrication": 21600
+    },
+    "Weapon:wid_sniper_standard_scope_vt_vr_ore_t04": {
+      "disintegration": 9350,
+      "fabrication": 28050
+    },
+    "Weapon:wid_sniper_standard_scope_vt_vr_ore_t05": {
+      "disintegration": 11500,
+      "fabrication": 34500
+    },
+    "Weapon:wid_sniper_standard_scope_vt_vr_ore_t06": {
+      "disintegration": 14100,
+      "fabrication": 42300
+    },
+    "Trap:tid_ceiling_spikes_r_t01": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Trap:tid_wall_spikes_r_t01": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_assault_auto_athena_c_proj": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_assault_semiauto_athena_c_proj": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_assault_vacuumtube_sr_crystal_t04": {
+      "disintegration": 14670,
+      "fabrication": 44010
+    },
+    "Weapon:wid_assault_vacuumtube_sr_crystal_t05": {
+      "disintegration": 8170,
+      "fabrication": 24510
+    },
+    "Weapon:wid_assault_vacuumtube_sr_ore_t01": {
+      "disintegration": 2100,
+      "fabrication": 6300
+    },
+    "Weapon:wid_assault_vacuumtube_sr_ore_t02": {
+      "disintegration": 6980,
+      "fabrication": 20940
+    },
+    "Weapon:wid_assault_vacuumtube_sr_ore_t03": {
+      "disintegration": 10180,
+      "fabrication": 30540
+    },
+    "Weapon:wid_assault_vacuumtube_sr_ore_t04": {
+      "disintegration": 13380,
+      "fabrication": 40140
+    },
+    "Weapon:wid_assault_vacuumtube_sr_ore_t05": {
+      "disintegration": 16580,
+      "fabrication": 49740
+    },
+    "Weapon:wid_assault_vacuumtube_vr_crystal_t04": {
+      "disintegration": 10520,
+      "fabrication": 31560
+    },
+    "Weapon:wid_assault_vacuumtube_vr_crystal_t05": {
+      "disintegration": 6720,
+      "fabrication": 20160
+    },
+    "Weapon:wid_assault_vacuumtube_vr_ore_t01": {
+      "disintegration": 1850,
+      "fabrication": 5550
+    },
+    "Weapon:wid_assault_vacuumtube_vr_ore_t02": {
+      "disintegration": 5050,
+      "fabrication": 15150
+    },
+    "Weapon:wid_assault_vacuumtube_vr_ore_t03": {
+      "disintegration": 7200,
+      "fabrication": 21600
+    },
+    "Weapon:wid_assault_vacuumtube_vr_ore_t04": {
+      "disintegration": 9350,
+      "fabrication": 28050
+    },
+    "Weapon:wid_assault_vacuumtube_vr_ore_t05": {
+      "disintegration": 11500,
+      "fabrication": 34500
+    },
+    "Weapon:wid_edged_axe_heavy_vacuumtube_sr_crystal_t04": {
+      "disintegration": 16820,
+      "fabrication": 50460
+    },
+    "Weapon:wid_edged_axe_heavy_vacuumtube_sr_crystal_t05": {
+      "disintegration": 7320,
+      "fabrication": 21960
+    },
+    "Weapon:wid_edged_axe_heavy_vacuumtube_sr_ore_t01": {
+      "disintegration": 1890,
+      "fabrication": 5670
+    },
+    "Weapon:wid_edged_axe_heavy_vacuumtube_sr_ore_t02": {
+      "disintegration": 8450,
+      "fabrication": 25350
+    },
+    "Weapon:wid_edged_axe_heavy_vacuumtube_sr_ore_t03": {
+      "disintegration": 12700,
+      "fabrication": 38100
+    },
+    "Weapon:wid_edged_axe_heavy_vacuumtube_sr_ore_t04": {
+      "disintegration": 16950,
+      "fabrication": 50850
+    },
+    "Weapon:wid_edged_axe_heavy_vacuumtube_sr_ore_t05": {
+      "disintegration": 21200,
+      "fabrication": 63600
+    },
+    "Weapon:wid_edged_axe_heavy_vacuumtube_vr_crystal_t04": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_edged_axe_heavy_vacuumtube_vr_crystal_t05": {
+      "disintegration": 7320,
+      "fabrication": 21960
+    },
+    "Weapon:wid_edged_axe_heavy_vacuumtube_vr_ore_t01": {
+      "disintegration": 1890,
+      "fabrication": 5670
+    },
+    "Weapon:wid_edged_axe_heavy_vacuumtube_vr_ore_t02": {
+      "disintegration": 8450,
+      "fabrication": 25350
+    },
+    "Weapon:wid_edged_axe_heavy_vacuumtube_vr_ore_t03": {
+      "disintegration": 12700,
+      "fabrication": 38100
+    },
+    "Weapon:wid_edged_axe_heavy_vacuumtube_vr_ore_t04": {
+      "disintegration": 16950,
+      "fabrication": 50850
+    },
+    "Weapon:wid_edged_axe_heavy_vacuumtube_vr_ore_t05": {
+      "disintegration": 21200,
+      "fabrication": 63600
+    },
+    "Weapon:wid_edged_sword_medium_vacuumtube_sr_crystal_t04": {
+      "disintegration": 14220,
+      "fabrication": 42660
+    },
+    "Weapon:wid_edged_sword_medium_vacuumtube_sr_crystal_t05": {
+      "disintegration": 7720,
+      "fabrication": 23160
+    },
+    "Weapon:wid_edged_sword_medium_vacuumtube_sr_ore_t01": {
+      "disintegration": 1880,
+      "fabrication": 5640
+    },
+    "Weapon:wid_edged_sword_medium_vacuumtube_sr_ore_t02": {
+      "disintegration": 6760,
+      "fabrication": 20280
+    },
+    "Weapon:wid_edged_sword_medium_vacuumtube_sr_ore_t03": {
+      "disintegration": 9960,
+      "fabrication": 29880
+    },
+    "Weapon:wid_edged_sword_medium_vacuumtube_sr_ore_t04": {
+      "disintegration": 13160,
+      "fabrication": 39480
+    },
+    "Weapon:wid_edged_sword_medium_vacuumtube_sr_ore_t05": {
+      "disintegration": 16360,
+      "fabrication": 49080
+    },
+    "Weapon:wid_edged_sword_medium_vacuumtube_vr_crystal_t04": {
+      "disintegration": 14220,
+      "fabrication": 42660
+    },
+    "Weapon:wid_edged_sword_medium_vacuumtube_vr_crystal_t05": {
+      "disintegration": 7720,
+      "fabrication": 23160
+    },
+    "Weapon:wid_edged_sword_medium_vacuumtube_vr_ore_t01": {
+      "disintegration": 1880,
+      "fabrication": 5640
+    },
+    "Weapon:wid_edged_sword_medium_vacuumtube_vr_ore_t02": {
+      "disintegration": 6760,
+      "fabrication": 20280
+    },
+    "Weapon:wid_edged_sword_medium_vacuumtube_vr_ore_t03": {
+      "disintegration": 9960,
+      "fabrication": 29880
+    },
+    "Weapon:wid_edged_sword_medium_vacuumtube_vr_ore_t04": {
+      "disintegration": 13160,
+      "fabrication": 39480
+    },
+    "Weapon:wid_edged_sword_medium_vacuumtube_vr_ore_t05": {
+      "disintegration": 16360,
+      "fabrication": 49080
+    },
+    "Weapon:wid_launcher_vacuumtube_sr_ore_t01": {
+      "disintegration": 720,
+      "fabrication": 2160
+    },
+    "Weapon:wid_launcher_vacuumtube_sr_ore_t02": {
+      "disintegration": 2700,
+      "fabrication": 8100
+    },
+    "Weapon:wid_launcher_vacuumtube_sr_ore_t03": {
+      "disintegration": 4050,
+      "fabrication": 12150
+    },
+    "Weapon:wid_launcher_vacuumtube_sr_ore_t04": {
+      "disintegration": 5400,
+      "fabrication": 16200
+    },
+    "Weapon:wid_launcher_vacuumtube_sr_ore_t05": {
+      "disintegration": 6750,
+      "fabrication": 20250
+    },
+    "Weapon:wid_launcher_vacuumtube_vr_ore_t01": {
+      "disintegration": 620,
+      "fabrication": 1860
+    },
+    "Weapon:wid_launcher_vacuumtube_vr_ore_t02": {
+      "disintegration": 2140,
+      "fabrication": 6420
+    },
+    "Weapon:wid_launcher_vacuumtube_vr_ore_t03": {
+      "disintegration": 3240,
+      "fabrication": 9720
+    },
+    "Weapon:wid_launcher_vacuumtube_vr_ore_t04": {
+      "disintegration": 4340,
+      "fabrication": 13020
+    },
+    "Weapon:wid_launcher_vacuumtube_vr_ore_t05": {
+      "disintegration": 5440,
+      "fabrication": 16320
+    },
+    "Weapon:wid_launcher_wintergrenade_sr_ore_t01": {
+      "disintegration": 720,
+      "fabrication": 2160
+    },
+    "Weapon:wid_launcher_wintergrenade_sr_ore_t02": {
+      "disintegration": 2700,
+      "fabrication": 8100
+    },
+    "Weapon:wid_launcher_wintergrenade_sr_ore_t03": {
+      "disintegration": 4050,
+      "fabrication": 12150
+    },
+    "Weapon:wid_launcher_wintergrenade_sr_ore_t04": {
+      "disintegration": 5400,
+      "fabrication": 16200
+    },
+    "Weapon:wid_launcher_wintergrenade_sr_ore_t05": {
+      "disintegration": 6750,
+      "fabrication": 20250
+    },
+    "Weapon:wid_piercing_spear_vacuumtube_sr_crystal_t04": {
+      "disintegration": 14220,
+      "fabrication": 42660
+    },
+    "Weapon:wid_piercing_spear_vacuumtube_sr_crystal_t05": {
+      "disintegration": 7720,
+      "fabrication": 23160
+    },
+    "Weapon:wid_piercing_spear_vacuumtube_sr_ore_t01": {
+      "disintegration": 1880,
+      "fabrication": 5640
+    },
+    "Weapon:wid_piercing_spear_vacuumtube_sr_ore_t02": {
+      "disintegration": 6760,
+      "fabrication": 20280
+    },
+    "Weapon:wid_piercing_spear_vacuumtube_sr_ore_t03": {
+      "disintegration": 9960,
+      "fabrication": 29880
+    },
+    "Weapon:wid_piercing_spear_vacuumtube_sr_ore_t04": {
+      "disintegration": 13160,
+      "fabrication": 39480
+    },
+    "Weapon:wid_piercing_spear_vacuumtube_sr_ore_t05": {
+      "disintegration": 16360,
+      "fabrication": 49080
+    },
+    "Weapon:wid_piercing_spear_vacuumtube_vr_crystal_t04": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_piercing_spear_vacuumtube_vr_crystal_t05": {
+      "disintegration": 7720,
+      "fabrication": 23160
+    },
+    "Weapon:wid_piercing_spear_vacuumtube_vr_ore_t01": {
+      "disintegration": 1880,
+      "fabrication": 5640
+    },
+    "Weapon:wid_piercing_spear_vacuumtube_vr_ore_t02": {
+      "disintegration": 6760,
+      "fabrication": 20280
+    },
+    "Weapon:wid_piercing_spear_vacuumtube_vr_ore_t03": {
+      "disintegration": 9960,
+      "fabrication": 29880
+    },
+    "Weapon:wid_piercing_spear_vacuumtube_vr_ore_t04": {
+      "disintegration": 13160,
+      "fabrication": 39480
+    },
+    "Weapon:wid_piercing_spear_vacuumtube_vr_ore_t05": {
+      "disintegration": 16360,
+      "fabrication": 49080
+    },
+    "Weapon:wid_pistol_auto_vacuumtube_sr_crystal_t04": {
+      "disintegration": 14670,
+      "fabrication": 44010
+    },
+    "Weapon:wid_pistol_auto_vacuumtube_sr_crystal_t05": {
+      "disintegration": 8170,
+      "fabrication": 24510
+    },
+    "Weapon:wid_pistol_auto_vacuumtube_sr_ore_t01": {
+      "disintegration": 2100,
+      "fabrication": 6300
+    },
+    "Weapon:wid_pistol_auto_vacuumtube_sr_ore_t02": {
+      "disintegration": 6980,
+      "fabrication": 20940
+    },
+    "Weapon:wid_pistol_auto_vacuumtube_sr_ore_t03": {
+      "disintegration": 10180,
+      "fabrication": 30540
+    },
+    "Weapon:wid_pistol_auto_vacuumtube_sr_ore_t04": {
+      "disintegration": 13380,
+      "fabrication": 40140
+    },
+    "Weapon:wid_pistol_auto_vacuumtube_sr_ore_t05": {
+      "disintegration": 16580,
+      "fabrication": 49740
+    },
+    "Weapon:wid_pistol_auto_vacuumtube_vr_crystal_t04": {
+      "disintegration": 10520,
+      "fabrication": 31560
+    },
+    "Weapon:wid_pistol_auto_vacuumtube_vr_crystal_t05": {
+      "disintegration": 6720,
+      "fabrication": 20160
+    },
+    "Weapon:wid_pistol_auto_vacuumtube_vr_ore_t01": {
+      "disintegration": 1850,
+      "fabrication": 5550
+    },
+    "Weapon:wid_pistol_auto_vacuumtube_vr_ore_t02": {
+      "disintegration": 5050,
+      "fabrication": 15150
+    },
+    "Weapon:wid_pistol_auto_vacuumtube_vr_ore_t03": {
+      "disintegration": 7200,
+      "fabrication": 21600
+    },
+    "Weapon:wid_pistol_auto_vacuumtube_vr_ore_t04": {
+      "disintegration": 9350,
+      "fabrication": 28050
+    },
+    "Weapon:wid_pistol_auto_vacuumtube_vr_ore_t05": {
+      "disintegration": 11500,
+      "fabrication": 34500
+    },
+    "Weapon:wid_pistol_sixshooter_athena_c_proj": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_pistol_vacuumtube_revolver_sr_crystal_t04": {
+      "disintegration": 14670,
+      "fabrication": 44010
+    },
+    "Weapon:wid_pistol_vacuumtube_revolver_sr_crystal_t05": {
+      "disintegration": 8170,
+      "fabrication": 24510
+    },
+    "Weapon:wid_pistol_vacuumtube_revolver_sr_ore_t01": {
+      "disintegration": 2100,
+      "fabrication": 6300
+    },
+    "Weapon:wid_pistol_vacuumtube_revolver_sr_ore_t02": {
+      "disintegration": 6980,
+      "fabrication": 20940
+    },
+    "Weapon:wid_pistol_vacuumtube_revolver_sr_ore_t03": {
+      "disintegration": 10180,
+      "fabrication": 30540
+    },
+    "Weapon:wid_pistol_vacuumtube_revolver_sr_ore_t04": {
+      "disintegration": 13380,
+      "fabrication": 40140
+    },
+    "Weapon:wid_pistol_vacuumtube_revolver_sr_ore_t05": {
+      "disintegration": 16580,
+      "fabrication": 49740
+    },
+    "Weapon:wid_pistol_vacuumtube_revolver_vr_crystal_t04": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_pistol_vacuumtube_revolver_vr_crystal_t05": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_pistol_vacuumtube_revolver_vr_ore_t01": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_pistol_vacuumtube_revolver_vr_ore_t02": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_pistol_vacuumtube_revolver_vr_ore_t03": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_pistol_vacuumtube_revolver_vr_ore_t04": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_pistol_vacuumtube_revolver_vr_ore_t05": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_shotgun_vacuumtube_sr_crystal_t04": {
+      "disintegration": 16820,
+      "fabrication": 50460
+    },
+    "Weapon:wid_shotgun_vacuumtube_sr_crystal_t05": {
+      "disintegration": 7320,
+      "fabrication": 21960
+    },
+    "Weapon:wid_shotgun_vacuumtube_sr_ore_t01": {
+      "disintegration": 1890,
+      "fabrication": 5670
+    },
+    "Weapon:wid_shotgun_vacuumtube_sr_ore_t02": {
+      "disintegration": 8450,
+      "fabrication": 25350
+    },
+    "Weapon:wid_shotgun_vacuumtube_sr_ore_t03": {
+      "disintegration": 12700,
+      "fabrication": 38100
+    },
+    "Weapon:wid_shotgun_vacuumtube_sr_ore_t04": {
+      "disintegration": 16950,
+      "fabrication": 50850
+    },
+    "Weapon:wid_shotgun_vacuumtube_sr_ore_t05": {
+      "disintegration": 21200,
+      "fabrication": 63600
+    },
+    "Weapon:wid_shotgun_vacuumtube_vr_crystal_t04": {
+      "disintegration": 0,
+      "fabrication": 0
+    },
+    "Weapon:wid_shotgun_vacuumtube_vr_crystal_t05": {
+      "disintegration": 7320,
+      "fabrication": 21960
+    },
+    "Weapon:wid_shotgun_vacuumtube_vr_ore_t01": {
+      "disintegration": 1890,
+      "fabrication": 5670
+    },
+    "Weapon:wid_shotgun_vacuumtube_vr_ore_t02": {
+      "disintegration": 8450,
+      "fabrication": 25350
+    },
+    "Weapon:wid_shotgun_vacuumtube_vr_ore_t03": {
+      "disintegration": 12700,
+      "fabrication": 38100
+    },
+    "Weapon:wid_shotgun_vacuumtube_vr_ore_t04": {
+      "disintegration": 16950,
+      "fabrication": 50850
+    },
+    "Weapon:wid_shotgun_vacuumtube_vr_ore_t05": {
+      "disintegration": 21200,
+      "fabrication": 63600
+    },
+    "Weapon:wid_sniper_bbgun_sr_crystal_t04": {
+      "disintegration": 17270,
+      "fabrication": 51810
+    },
+    "Weapon:wid_sniper_bbgun_sr_crystal_t05": {
+      "disintegration": 7770,
+      "fabrication": 23310
+    },
+    "Weapon:wid_sniper_bbgun_sr_ore_t01": {
+      "disintegration": 1990,
+      "fabrication": 5970
+    },
+    "Weapon:wid_sniper_bbgun_sr_ore_t02": {
+      "disintegration": 8550,
+      "fabrication": 25650
+    },
+    "Weapon:wid_sniper_bbgun_sr_ore_t03": {
+      "disintegration": 12800,
+      "fabrication": 38400
+    },
+    "Weapon:wid_sniper_bbgun_sr_ore_t04": {
+      "disintegration": 17050,
+      "fabrication": 51150
+    },
+    "Weapon:wid_sniper_bbgun_sr_ore_t05": {
+      "disintegration": 21300,
+      "fabrication": 63900
+    },
+    "Weapon:wid_sniper_standard_winter_sr_crystal_t04": {
+      "disintegration": 17270,
+      "fabrication": 51810
+    },
+    "Weapon:wid_sniper_standard_winter_sr_crystal_t05": {
+      "disintegration": 7770,
+      "fabrication": 23310
+    },
+    "Weapon:wid_sniper_standard_winter_sr_ore_t01": {
+      "disintegration": 1990,
+      "fabrication": 5970
+    },
+    "Weapon:wid_sniper_standard_winter_sr_ore_t02": {
+      "disintegration": 8550,
+      "fabrication": 25650
+    },
+    "Weapon:wid_sniper_standard_winter_sr_ore_t03": {
+      "disintegration": 12800,
+      "fabrication": 38400
+    },
+    "Weapon:wid_sniper_standard_winter_sr_ore_t04": {
+      "disintegration": 17050,
+      "fabrication": 51150
+    },
+    "Weapon:wid_sniper_standard_winter_sr_ore_t05": {
+      "disintegration": 21300,
+      "fabrication": 63900
+    },
+    "Weapon:wid_sniper_vacuumtube_sr_crystal_t04": {
+      "disintegration": 17270,
+      "fabrication": 51810
+    },
+    "Weapon:wid_sniper_vacuumtube_sr_crystal_t05": {
+      "disintegration": 7770,
+      "fabrication": 23310
+    },
+    "Weapon:wid_sniper_vacuumtube_sr_ore_t01": {
+      "disintegration": 1990,
+      "fabrication": 5970
+    },
+    "Weapon:wid_sniper_vacuumtube_sr_ore_t02": {
+      "disintegration": 8550,
+      "fabrication": 25650
+    },
+    "Weapon:wid_sniper_vacuumtube_sr_ore_t03": {
+      "disintegration": 12800,
+      "fabrication": 38400
+    },
+    "Weapon:wid_sniper_vacuumtube_sr_ore_t04": {
+      "disintegration": 17050,
+      "fabrication": 51150
+    },
+    "Weapon:wid_sniper_vacuumtube_sr_ore_t05": {
+      "disintegration": 21300,
+      "fabrication": 63900
+    },
+    "Weapon:wid_sniper_vacuumtube_vr_crystal_t04": {
+      "disintegration": 17270,
+      "fabrication": 51810
+    },
+    "Weapon:wid_sniper_vacuumtube_vr_crystal_t05": {
+      "disintegration": 7770,
+      "fabrication": 23310
+    },
+    "Weapon:wid_sniper_vacuumtube_vr_ore_t01": {
+      "disintegration": 1990,
+      "fabrication": 5970
+    },
+    "Weapon:wid_sniper_vacuumtube_vr_ore_t02": {
+      "disintegration": 8550,
+      "fabrication": 25650
+    },
+    "Weapon:wid_sniper_vacuumtube_vr_ore_t03": {
+      "disintegration": 12800,
+      "fabrication": 38400
+    },
+    "Weapon:wid_sniper_vacuumtube_vr_ore_t04": {
+      "disintegration": 17050,
+      "fabrication": 51150
+    },
+    "Weapon:wid_sniper_vacuumtube_vr_ore_t05": {
+      "disintegration": 21300,
+      "fabrication": 63900
+    }
+  }
+}

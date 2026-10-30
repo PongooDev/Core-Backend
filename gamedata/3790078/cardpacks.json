@@ -1,0 +1,1018 @@
+{
+  "CardPack:cardpack_melee_tool_c": {
+    "description": "One random hardware melee weapon schematic.",
+    "displayName": "Common Hardware Schematic"
+  },
+  "CardPack:cardpack_melee_tool_r": {
+    "description": "One random hardware melee weapon schematic.",
+    "displayName": "Rare Hardware Schematic"
+  },
+  "CardPack:cardpack_melee_tool_sr": {
+    "description": "One random hardware melee weapon schematic.",
+    "displayName": "Legendary Hardware Schematic"
+  },
+  "CardPack:cardpack_melee_tool_uc": {
+    "description": "One random hardware melee weapon schematic.",
+    "displayName": "Uncommon Hardware Schematic"
+  },
+  "CardPack:cardpack_melee_tool_vr": {
+    "description": "One random hardware melee weapon schematic.",
+    "displayName": "Epic Hardware Schematic"
+  },
+  "CardPack:zcp_expedition_slot1": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expedition_slot2": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expedition_slot3": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expedition_slot4": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expedition_slot5": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_air_t02": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_air_t03": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_air_t04": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_choppingwood_t00": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_land_t01": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_land_t02": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_land_t03": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_land_t04": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_miningore_t00": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_sea_t01": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_sea_t02": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_sea_t03": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiongenerator_sea_t04": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiontest_resourcerun": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiontest_standardexpedition": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiontest_standardexpedition_time1": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiontest_standardexpedition_time2": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_expeditiontest_standardexpedition_time3": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:zcp_voucher_basicpack": {
+    "description": "Claim your free reward llama in the Loot tab."
+  },
+  "CardPack:cardpack_bronze_02x": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Double Llama",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze_02x",
+    "path": "/Game/Items/CardPacks/CardPack_Bronze_02x.CardPack_Bronze_02x",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_bronze_03x": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Triple Llama",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze_03x",
+    "path": "/Game/Items/CardPacks/CardPack_Bronze_03x.CardPack_Bronze_03x",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_bronze_04x": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Quadruple Llama",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze_04x",
+    "path": "/Game/Items/CardPacks/CardPack_Bronze_04x.CardPack_Bronze_04x",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_bronze_05x": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Fiver Llama",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze_05x",
+    "path": "/Game/Items/CardPacks/CardPack_Bronze_05x.CardPack_Bronze_05x",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_bronze_06x": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Six Pack Llama",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze_06x",
+    "path": "/Game/Items/CardPacks/CardPack_Bronze_06x.CardPack_Bronze_06x",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_bronze_07x": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Lucky 7 Llama",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze_07x",
+    "path": "/Game/Items/CardPacks/CardPack_Bronze_07x.CardPack_Bronze_07x",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_bronze_08x": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Octo-Llama",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze_08x",
+    "path": "/Game/Items/CardPacks/CardPack_Bronze_08x.CardPack_Bronze_08x",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_bronze_09x": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Niner Llama",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze_09x",
+    "path": "/Game/Items/CardPacks/CardPack_Bronze_09x.CardPack_Bronze_09x",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_bronze_10x": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "All The Llamas",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze_10x",
+    "path": "/Game/Items/CardPacks/CardPack_Bronze_10x.CardPack_Bronze_10x",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_bronze_personnel_reward": {
+    "autoOpenAsReward": false,
+    "choice": false,
+    "description": "Yes, it's a people delivery llama. Just make your purchase and move along. Contains at least 6 people. Somehow.",
+    "displayName": "People Llama",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze_Personnel",
+    "path": "/Game/Items/CardPacks/CardPack_Bronze_Personnel_Reward.CardPack_Bronze_Personnel_Reward",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_bronze_weapons_reward": {
+    "autoOpenAsReward": false,
+    "choice": false,
+    "description": "Full of useful stuff.",
+    "displayName": "Weapon Pack",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Bronze_Weapons",
+    "path": "/Game/Items/CardPacks/CardPack_Bronze_Weapons_Reward.CardPack_Bronze_Weapons_Reward",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_choice_hero_firststorm_sr": {
+    "autoOpenAsReward": true,
+    "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Legendary Item",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Hero_FirstStorm_SR",
+    "path": "/Game/Items/CardPacks/Events/Limited/CardPack_Choice_Hero_FirstStorm_SR.CardPack_Choice_Hero_FirstStorm_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_choice_hero_firststorm_vr": {
+    "autoOpenAsReward": true,
+    "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Epic Item",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Hero_FirstStorm_VR",
+    "path": "/Game/Items/CardPacks/Events/Limited/CardPack_Choice_Hero_FirstStorm_VR.CardPack_Choice_Hero_FirstStorm_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_choice_hero_halloween_sr": {
+    "autoOpenAsReward": true,
+    "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Legendary Item",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Hero_Halloween_SR",
+    "path": "/Game/Items/CardPacks/Events/Limited/CardPack_Choice_Hero_Halloween_SR.CardPack_Choice_Hero_Halloween_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_choice_hero_halloween_vr": {
+    "autoOpenAsReward": true,
+    "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Epic Item",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Hero_Halloween_VR",
+    "path": "/Game/Items/CardPacks/Events/Limited/CardPack_Choice_Hero_Halloween_VR.CardPack_Choice_Hero_Halloween_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_choice_hero_scavenger_sr": {
+    "autoOpenAsReward": true,
+    "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Legendary Item",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Hero_Scavenger_SR",
+    "path": "/Game/Items/CardPacks/Events/Limited/CardPack_Choice_Hero_Scavenger_SR.CardPack_Choice_Hero_Scavenger_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_choice_hero_scavenger_vr": {
+    "autoOpenAsReward": true,
+    "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Epic Item",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Hero_Scavenger_VR",
+    "path": "/Game/Items/CardPacks/Events/Limited/CardPack_Choice_Hero_Scavenger_VR.CardPack_Choice_Hero_Scavenger_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_choice_hydraulic_sr": {
+    "autoOpenAsReward": true,
+    "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Legendary Item",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Event_Hydraulic_SR",
+    "path": "/Game/Items/CardPacks/Events/Limited/CardPack_Choice_Hydraulic_SR.CardPack_Choice_Hydraulic_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_choice_hydraulic_vr": {
+    "autoOpenAsReward": true,
+    "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Epic Item",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Event_Hydraulic_VR",
+    "path": "/Game/Items/CardPacks/Events/Limited/CardPack_Choice_Hydraulic_VR.CardPack_Choice_Hydraulic_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_choice_scavenger_sr": {
+    "autoOpenAsReward": true,
+    "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Legendary Item",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Event_Scavenger_SR",
+    "path": "/Game/Items/CardPacks/Events/Limited/CardPack_Choice_Scavenger_SR.CardPack_Choice_Scavenger_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_choice_scavenger_vr": {
+    "autoOpenAsReward": true,
+    "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Epic Item",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Event_Scavenger_VR",
+    "path": "/Game/Items/CardPacks/Events/Limited/CardPack_Choice_Scavenger_VR.CardPack_Choice_Scavenger_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_defendershotgun_basic_f_vr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "A defender trained to fight with shotguns.",
+    "displayName": "Epic Shotgunner",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_DefenderShotgun_Basic_F_VR",
+    "path": "/Game/Items/CardPacks/Events/Scavenger/CardPack_DefenderShotgun_Basic_F_VR.CardPack_DefenderShotgun_Basic_F_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_defendersniper_basic_m_vr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "A defender trained to fight with sniper rifles.",
+    "displayName": "Epic Sniper",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_DefenderSniper_Basic_M_VR",
+    "path": "/Game/Items/CardPacks/Events/Scavenger/CardPack_DefenderSniper_Basic_M_VR.CardPack_DefenderSniper_Basic_M_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_event_2017_halloween": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Guarantees at least one Epic or better limited time Fortnitemares Survivor or Hero!",
+    "displayName": "Fortnitemares Llama",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Event_2017_Halloween",
+    "path": "/Game/Items/CardPacks/Events/Release/CardPack_Event_2017_Halloween.CardPack_Event_2017_Halloween",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_event_firststorm": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Guarantees at least one Epic or better limited time Hydraulic weapon or Hero!",
+    "displayName": "Storm Llama",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Event_2017_FirstStorm",
+    "path": "/Game/Items/CardPacks/Events/Release/CardPack_Event_FirstStorm.CardPack_Event_FirstStorm",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_event_scavenger": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Guarantees at least one Epic or better limited time Scavenger weapon or Hero!",
+    "displayName": "Scavenger Choice Llama",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Event_2017_Scavenger",
+    "path": "/Game/Items/CardPacks/Events/Release/CardPack_Event_Scavenger.CardPack_Event_Scavenger",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_event_scavenger_melee_vr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "One random Scavenger melee weapon schematic.",
+    "displayName": "Epic Scavenger Melee Weapon Schematic",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Event_Scavenger_Melee_VR",
+    "path": "/Game/Items/CardPacks/Events/Scavenger/CardPack_Event_Scavenger_Melee_VR.CardPack_Event_Scavenger_Melee_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_event_scavenger_ranged_vr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "One random Scavenger ranged weapon schematic.",
+    "displayName": "Epic Scavenger Ranged Weapon Schematic",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Event_Scavenger_Ranged_VR",
+    "path": "/Game/Items/CardPacks/Events/Scavenger/CardPack_Event_Scavenger_Ranged_VR.CardPack_Event_Scavenger_Ranged_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_halloweenworker_rare": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "A random Rare Monster 'Cosplayer'.",
+    "displayName": "Rare Monster 'Cosplayer'",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_CB_Halloween_2017_Worker_Rare",
+    "path": "/Game/Items/CardPacks/Events/Halloween2017/CardPack_HalloweenWorker_Rare.CardPack_HalloweenWorker_Rare",
+    "rarity": "Sturdy"
+  },
+  "CardPack:cardpack_halloweenworker_superrare": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "A random Legendary Monster 'Cosplayer'.",
+    "displayName": "Legendary Monster 'Cosplayer'",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_CB_Halloween_2017_Worker_SuperRare",
+    "path": "/Game/Items/CardPacks/Events/Halloween2017/CardPack_HalloweenWorker_SuperRare.CardPack_HalloweenWorker_SuperRare",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_halloweenworker_uncommon": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "A random Uncommon Monster 'Cosplayer'.",
+    "displayName": "Uncommon Monster 'Cosplayer'",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_CB_Halloween_2017_Worker_Uncommon",
+    "path": "/Game/Items/CardPacks/Events/Halloween2017/CardPack_HalloweenWorker_Uncommon.CardPack_HalloweenWorker_Uncommon",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_halloweenworker_veryrare": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "A random Epic Monster 'Cosplayer'.",
+    "displayName": "Epic Monster 'Cosplayer'",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_CB_Halloween_2017_Worker_VeryRare",
+    "path": "/Game/Items/CardPacks/Events/Halloween2017/CardPack_HalloweenWorker_VeryRare.CardPack_HalloweenWorker_VeryRare",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_ranged_launcher_halloween_sr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Explosive Weapon: Fires explosive pumpkins that damage and knockback groups of enemies in a moderate radius. Does not consume ammo, but has low durability.",
+    "displayName": "Jack-O-Launcher",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Ranged_Launcher_Halloween_SR",
+    "path": "/Game/Items/CardPacks/Events/Halloween2017/CardPack_Ranged_Launcher_Halloween_SR.CardPack_Ranged_Launcher_Halloween_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_stormzone_assault_hydra_sr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Assault Weapon: Hydraulic. A hybrid weapon that fires a tight cluster of pellets, with considerably more knockback than an assault rifle, but better range and more focused damage than a shotgun.",
+    "displayName": "Copper Hydra",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_StormZone_Assault_Hydra_SR",
+    "path": "/Game/Items/CardPacks/Events/StormZone/CardPack_StormZone_Assault_Hydra_SR.CardPack_StormZone_Assault_Hydra_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_stormzone_banners_cannyvalley": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "A set of exclusive homebase banners!",
+    "displayName": "Storm Event Banner",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Stormzone_Banners_CannyValley",
+    "path": "/Game/Items/CardPacks/Founders/CardPack_StormZone_Banners_CannyValley.CardPack_StormZone_Banners_CannyValley",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_stormzone_banners_plankerton": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "A set of exclusive homebase banners!",
+    "displayName": "Storm Event Banner",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Stormzone_Banners_Plankerton",
+    "path": "/Game/Items/CardPacks/Founders/CardPack_StormZone_Banners_Plankerton.CardPack_StormZone_Banners_Plankerton",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_stormzone_banners_stonewood": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "A set of exclusive homebase banners!",
+    "displayName": "Storm Event Banner",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Stormzone_Banners_Stonewood",
+    "path": "/Game/Items/CardPacks/Founders/CardPack_StormZone_Banners_Stonewood.CardPack_StormZone_Banners_Stonewood",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_trap_ceiling_falling_vr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Drops a payload of tires from up to 3 tiles high.",
+    "displayName": "Ceiling Drop Trap Schematic",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Trap_Ceiling_Falling_VR",
+    "path": "/Game/Items/CardPacks/GenericRewards/CardPack_Trap_Ceiling_Falling_VR.CardPack_Trap_Ceiling_Falling_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_trap_floor_freeze_vr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Freezes enemies in place for a short time, and makes them more vulnerable to damage.",
+    "displayName": "Floor Freeze Trap Schematic",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Trap_Floor_Freeze_VR",
+    "path": "/Game/Items/CardPacks/GenericRewards/CardPack_Trap_Floor_Freeze_VR.CardPack_Trap_Floor_Freeze_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:zcp_expedition_craftingrun_short_t00": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "A collection of Crafting Supplies gathered on an Expedition",
+    "displayName": "Crafting Supplies - Tiny",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_CraftingRun_Short_T00",
+    "path": "/Game/Items/CardPacks/Expeditions/ZCP_Expedition_CraftingRun_Short_T00.ZCP_Expedition_CraftingRun_Short_T00",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_supplyrun_short_t00": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Supplies gathered on the expedition.",
+    "displayName": "Supply Cache - Tiny",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "ZCP_SupplyRun_Short_T00",
+    "path": "/Game/Items/CardPacks/Expeditions/ZCP_SupplyRun_Short_T00.ZCP_SupplyRun_Short_T00",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_survival_t01": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Storm Coins and rare items based on how long you survive!",
+    "displayName": "Survival Rewards",
+    "displayRarityLevel": 0,
+    "lootTier": 1,
+    "lootTierGroup": "ZCP_Survival",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_Survival_T01.ZCP_Survival_T01",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_survival_t02": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Storm Coins and rare items based on how long you survive!",
+    "displayName": "Survival Rewards",
+    "displayRarityLevel": 0,
+    "lootTier": 2,
+    "lootTierGroup": "ZCP_Survival",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_Survival_T02.ZCP_Survival_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_survival_t03": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Storm Coins and rare items based on how long you survive!",
+    "displayName": "Survival Rewards",
+    "displayRarityLevel": 0,
+    "lootTier": 3,
+    "lootTierGroup": "ZCP_Survival",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_Survival_T03.ZCP_Survival_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:cardpack_choice_vindertech_sr": {
+    "autoOpenAsReward": true,
+    "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Legendary Item",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Event_Vindertech_SR",
+    "path": "/Game/Items/CardPacks/Events/Limited/CardPack_Choice_Vindertech_SR.CardPack_Choice_Vindertech_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_choice_vindertech_vr": {
+    "autoOpenAsReward": true,
+    "choice": true,
+    "description": "Choose one of two random items.",
+    "displayName": "Epic Item",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Choice_Event_Vindertech_VR",
+    "path": "/Game/Items/CardPacks/Events/Limited/CardPack_Choice_Vindertech_VR.CardPack_Choice_Vindertech_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_event_vindertech": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Guarantees at least one Epic or better limited time Vindertech weapon!",
+    "displayName": "VIndertech Llama",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Event_2017_Vindertech",
+    "path": "/Game/Items/CardPacks/Events/Release/CardPack_Event_Vindertech.CardPack_Event_Vindertech",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_vindertech_assault_auto_sr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Assault energy Vindertech.",
+    "displayName": "Vindertech Pulsar Schematic",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Vindertech_Assault_Auto_SR",
+    "path": "/Game/Items/CardPacks/Events/Vindertech/CardPack_Vindertech_Assault_Auto_SR.CardPack_Vindertech_Assault_Auto_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_vindertech_assault_auto_vr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Assault energy Vindertech.",
+    "displayName": "Vindertech Pulse Rifle Schematic",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Vindertech_Assault_Auto_VR",
+    "path": "/Game/Items/CardPacks/Events/Vindertech/CardPack_Vindertech_Assault_Auto_VR.CardPack_Vindertech_Assault_Auto_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_vindertech_blunt_hammer_rocket_sr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Hardware: High Tech. A rocket-powered hammer that delivers high knockback at a decent swing rate. Whirlwind Attack: Heavy attack that spins around several times damaging and knocking back nearby foes.",
+    "displayName": "Vindertech Slammer Schematic",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Vindertech_Blunt_Hammer_Rocket_SR",
+    "path": "/Game/Items/CardPacks/Events/Vindertech/CardPack_Vindertech_Blunt_Hammer_Rocket_SR.CardPack_Vindertech_Blunt_Hammer_Rocket_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_vindertech_blunt_hammer_rocket_vr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Hardware: High Tech. A rocket-powered hammer that delivers high knockback at a decent swing rate. Whirlwind Attack: Heavy attack that spins around several times damaging and knocking back nearby foes.",
+    "displayName": "Vindertech Rocket Hammer Schematic",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Vindertech_Blunt_Hammer_Rocket_VR",
+    "path": "/Game/Items/CardPacks/Events/Vindertech/CardPack_Vindertech_Blunt_Hammer_Rocket_VR.CardPack_Vindertech_Blunt_Hammer_Rocket_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_vindertech_edged_axe_sr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Axe: Heavy. Slow-swinging axe that deals high damage and knockback. Reduced durability, but much cheaper to craft. Up and Over: A two strike heavy attack that deals significant damage and knockback.",
+    "displayName": "Vindertech Sever Schematic",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Vindertech_Edged_Axe_SR",
+    "path": "/Game/Items/CardPacks/Events/Vindertech/CardPack_Vindertech_Edged_Axe_SR.CardPack_Vindertech_Edged_Axe_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_vindertech_edged_axe_vr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Axe: Heavy. Slow-swinging axe that deals high damage and knockback. Reduced durability, but much cheaper to craft. Up and Over: A two strike heavy attack that deals significant damage and knockback.",
+    "displayName": "Vindertech Axe Schematic",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Vindertech_Edged_Axe_VR",
+    "path": "/Game/Items/CardPacks/Events/Vindertech/CardPack_Vindertech_Edged_Axe_VR.CardPack_Vindertech_Edged_Axe_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_vindertech_edged_sword_medium_sr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Sword: Medium. Uses a fast attack speed to deal high sustained damage, with low knockback. Quad Chop: A series of heavy attacks that deal increased damage and knockback.",
+    "displayName": "Vindertech Slicer Schematic",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Vindertech_Edged_Sword_Medium_SR",
+    "path": "/Game/Items/CardPacks/Events/Vindertech/CardPack_Vindertech_Edged_Sword_Medium_SR.CardPack_Vindertech_Edged_Sword_Medium_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_vindertech_edged_sword_medium_vr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Sword: Medium. Uses a fast attack speed to deal high sustained damage, with low knockback. Quad Chop: A series of heavy attacks that deal increased damage and knockback.",
+    "displayName": "Vindertech Sword Schematic",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Vindertech_Edged_Sword_Medium_VR",
+    "path": "/Game/Items/CardPacks/Events/Vindertech/CardPack_Vindertech_Edged_Sword_Medium_VR.CardPack_Vindertech_Edged_Sword_Medium_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_vindertech_pistol_autoheavy_sr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Pistol: Machine Pistol. Fires at a very high rate, dealing great damage while consuming a lot of ammo. Good for run-and-gun combat, and accurate enough to fight at mid range when fired in short bursts.",
+    "displayName": "Vindertech Blazer Schematic",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Vindertech_Pistol_AutoHeavy_SR",
+    "path": "/Game/Items/CardPacks/Events/Vindertech/CardPack_Vindertech_Pistol_AutoHeavy_SR.CardPack_Vindertech_Pistol_AutoHeavy_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_vindertech_pistol_autoheavy_vr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Pistol: Machine Pistol. Fires at a very high rate, dealing great damage while consuming a lot of ammo. Good for run-and-gun combat, and accurate enough to fight at mid range when fired in short bursts.",
+    "displayName": "Vindertech Repeater Schematic",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Vindertech_Pistol_AutoHeavy_VR",
+    "path": "/Game/Items/CardPacks/Events/Vindertech/CardPack_Vindertech_Pistol_AutoHeavy_VR.CardPack_Vindertech_Pistol_AutoHeavy_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_vindertech_pistol_handcannon_semi_sr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Pistol: Semi-Automatic Handcannon. Fires large rounds that deal high damage and knock back targets. Good range, accuracy, rate of fire, and magazine size.",
+    "displayName": "Vindertech Burster Schematic",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Vindertech_Pistol_Handcannon_Semi_SR",
+    "path": "/Game/Items/CardPacks/Events/Vindertech/CardPack_Vindertech_Pistol_Handcannon_Semi_SR.CardPack_Vindertech_Pistol_Handcannon_Semi_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_vindertech_pistol_handcannon_semi_vr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Pistol: Semi-Automatic Handcannon. Fires large rounds that deal high damage and knock back targets. Good range, accuracy, rate of fire, and magazine size.",
+    "displayName": "Vindertech Burst Pistol Schematic",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Vindertech_Pistol_Handcannon_Semi_VR",
+    "path": "/Game/Items/CardPacks/Events/Vindertech/CardPack_Vindertech_Pistol_Handcannon_Semi_VR.CardPack_Vindertech_Pistol_Handcannon_Semi_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_vindertech_pistol_handcannon_sr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Pistol: Handcannon. Slow-firing revolver that fires powerful rounds that deal heavy damage and knock back targets. Accurate out to mid range.",
+    "displayName": "Vindertech Blaster Schematic",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Vindertech_Pistol_Handcannon_SR",
+    "path": "/Game/Items/CardPacks/Events/Vindertech/CardPack_Vindertech_Pistol_Handcannon_SR.CardPack_Vindertech_Pistol_Handcannon_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_vindertech_shotgun_standard_sr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Shotgun: Pump-Action. Deals high damage and knockback at a moderate fire rate. Short range and limited magazine size.",
+    "displayName": "Vindertech Disintegrator Schematic",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Vindertech_Shotgun_Standard_SR",
+    "path": "/Game/Items/CardPacks/Events/Vindertech/CardPack_Vindertech_Shotgun_Standard_SR.CardPack_Vindertech_Shotgun_Standard_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_vindertech_shotgun_standard_vr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Shotgun: Pump-Action. Deals high damage and knockback at a moderate fire rate. Short range and limited magazine size.",
+    "displayName": "Vindertech Scattergun Schematic",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Vindertech_Shotgun_Standard_VR",
+    "path": "/Game/Items/CardPacks/Events/Vindertech/CardPack_Vindertech_Shotgun_Standard_VR.CardPack_Vindertech_Shotgun_Standard_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:cardpack_vindertech_sniper_standard_scope_sr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Sniper Rifle: Semi-Automatic. A mid to long range rifle that deals good damage and can be fired quickly. Scoped for additional down sights accuracy.",
+    "displayName": "Vindertech Jolter Schematic",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Vindertech_Sniper_Standard_Scope_SR",
+    "path": "/Game/Items/CardPacks/Events/Vindertech/CardPack_Vindertech_Sniper_Standard_Scope_SR.CardPack_Vindertech_Sniper_Standard_Scope_SR",
+    "rarity": "Fine"
+  },
+  "CardPack:cardpack_vindertech_sniper_standard_scope_vr": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Sniper Rifle: Semi-Automatic. A mid to long range rifle that deals good damage and can be fired quickly. Scoped for additional down sights accuracy.",
+    "displayName": "Vindertech Sniper Rifle Schematic",
+    "displayRarityLevel": 0,
+    "lootTier": 0,
+    "lootTierGroup": "CardPack_Vindertech_Sniper_Standard_Scope_VR",
+    "path": "/Game/Items/CardPacks/Events/Vindertech/CardPack_Vindertech_Sniper_Standard_Scope_VR.CardPack_Vindertech_Sniper_Standard_Scope_VR",
+    "rarity": "Quality"
+  },
+  "CardPack:zcp_eventscaling_t01": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Special currency found throughout the world. Can be traded for items in the Event Store.",
+    "displayName": "Supply Boxes",
+    "displayRarityLevel": 0,
+    "lootTier": 1,
+    "lootTierGroup": "ZCP_EventScaling",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_EventScaling_T01.ZCP_EventScaling_T01",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_eventscaling_t02": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Special currency found throughout the world. Can be traded for items in the Event Store.",
+    "displayName": "Supply Boxes",
+    "displayRarityLevel": 0,
+    "lootTier": 2,
+    "lootTierGroup": "ZCP_EventScaling",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_EventScaling_T02.ZCP_EventScaling_T02",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_eventscaling_t03": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Special currency found throughout the world. Can be traded for items in the Event Store.",
+    "displayName": "Supply Boxes",
+    "displayRarityLevel": 0,
+    "lootTier": 3,
+    "lootTierGroup": "ZCP_EventScaling",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_EventScaling_T03.ZCP_EventScaling_T03",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_eventscaling_t04": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Special currency found throughout the world. Can be traded for items in the Event Store.",
+    "displayName": "Supply Boxes",
+    "displayRarityLevel": 0,
+    "lootTier": 4,
+    "lootTierGroup": "ZCP_EventScaling",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_EventScaling_T04.ZCP_EventScaling_T04",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_eventscaling_t05": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Special currency found throughout the world. Can be traded for items in the Event Store.",
+    "displayName": "Supply Boxes",
+    "displayRarityLevel": 0,
+    "lootTier": 5,
+    "lootTierGroup": "ZCP_EventScaling",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_EventScaling_T05.ZCP_EventScaling_T05",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_eventscaling_t06": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Special currency found throughout the world. Can be traded for items in the Event Store.",
+    "displayName": "Supply Boxes",
+    "displayRarityLevel": 0,
+    "lootTier": 6,
+    "lootTierGroup": "ZCP_EventScaling",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_EventScaling_T06.ZCP_EventScaling_T06",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_eventscaling_t07": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Special currency found throughout the world. Can be traded for items in the Event Store.",
+    "displayName": "Supply Boxes",
+    "displayRarityLevel": 0,
+    "lootTier": 7,
+    "lootTierGroup": "ZCP_EventScaling",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_EventScaling_T07.ZCP_EventScaling_T07",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_eventscaling_t08": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Special currency found throughout the world. Can be traded for items in the Event Store.",
+    "displayName": "Supply Boxes",
+    "displayRarityLevel": 0,
+    "lootTier": 8,
+    "lootTierGroup": "ZCP_EventScaling",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_EventScaling_T08.ZCP_EventScaling_T08",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_eventscaling_t09": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Special currency found throughout the world. Can be traded for items in the Event Store.",
+    "displayName": "Supply Boxes",
+    "displayRarityLevel": 0,
+    "lootTier": 9,
+    "lootTierGroup": "ZCP_EventScaling",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_EventScaling_T09.ZCP_EventScaling_T09",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_eventscaling_t10": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Special currency found throughout the world. Can be traded for items in the Event Store.",
+    "displayName": "Supply Boxes",
+    "displayRarityLevel": 0,
+    "lootTier": 10,
+    "lootTierGroup": "ZCP_EventScaling",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_EventScaling_T10.ZCP_EventScaling_T10",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_eventscaling_t11": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Special currency found throughout the world. Can be traded for items in the Event Store.",
+    "displayName": "Supply Boxes",
+    "displayRarityLevel": 0,
+    "lootTier": 11,
+    "lootTierGroup": "ZCP_EventScaling",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_EventScaling_T11.ZCP_EventScaling_T11",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_eventscaling_t12": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Special currency found throughout the world. Can be traded for items in the Event Store.",
+    "displayName": "Supply Boxes",
+    "displayRarityLevel": 0,
+    "lootTier": 12,
+    "lootTierGroup": "ZCP_EventScaling",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_EventScaling_T12.ZCP_EventScaling_T12",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_eventscaling_t13": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Special currency found throughout the world. Can be traded for items in the Event Store.",
+    "displayName": "Supply Boxes",
+    "displayRarityLevel": 0,
+    "lootTier": 13,
+    "lootTierGroup": "ZCP_EventScaling",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_EventScaling_T13.ZCP_EventScaling_T13",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_eventscaling_t14": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Special currency found throughout the world. Can be traded for items in the Event Store.",
+    "displayName": "Supply Boxes",
+    "displayRarityLevel": 0,
+    "lootTier": 14,
+    "lootTierGroup": "ZCP_EventScaling",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_EventScaling_T14.ZCP_EventScaling_T14",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_eventscaling_t15": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Special currency found throughout the world. Can be traded for items in the Event Store.",
+    "displayName": "Supply Boxes",
+    "displayRarityLevel": 0,
+    "lootTier": 15,
+    "lootTierGroup": "ZCP_EventScaling",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_EventScaling_T15.ZCP_EventScaling_T15",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_eventscaling_t16": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Special currency found throughout the world. Can be traded for items in the Event Store.",
+    "displayName": "Supply Boxes",
+    "displayRarityLevel": 0,
+    "lootTier": 16,
+    "lootTierGroup": "ZCP_EventScaling",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_EventScaling_T16.ZCP_EventScaling_T16",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_eventscaling_t17": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Special currency found throughout the world. Can be traded for items in the Event Store.",
+    "displayName": "Supply Boxes",
+    "displayRarityLevel": 0,
+    "lootTier": 17,
+    "lootTierGroup": "ZCP_EventScaling",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_EventScaling_T17.ZCP_EventScaling_T17",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_eventscaling_t18": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Special currency found throughout the world. Can be traded for items in the Event Store.",
+    "displayName": "Supply Boxes",
+    "displayRarityLevel": 0,
+    "lootTier": 18,
+    "lootTierGroup": "ZCP_EventScaling",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_EventScaling_T18.ZCP_EventScaling_T18",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_eventscaling_t19": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Special currency found throughout the world. Can be traded for items in the Event Store.",
+    "displayName": "Supply Boxes",
+    "displayRarityLevel": 0,
+    "lootTier": 19,
+    "lootTierGroup": "ZCP_EventScaling",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_EventScaling_T19.ZCP_EventScaling_T19",
+    "rarity": "Ordinary"
+  },
+  "CardPack:zcp_eventscaling_t20": {
+    "autoOpenAsReward": true,
+    "choice": false,
+    "description": "Special currency found throughout the world. Can be traded for items in the Event Store.",
+    "displayName": "Supply Boxes",
+    "displayRarityLevel": 0,
+    "lootTier": 20,
+    "lootTierGroup": "ZCP_EventScaling",
+    "path": "/Game/Items/CardPacks/ZoneRewards/ZCP_EventScaling_T20.ZCP_EventScaling_T20",
+    "rarity": "Ordinary"
+  }
+}

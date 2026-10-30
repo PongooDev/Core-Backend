@@ -13,12 +13,18 @@ export const fortnitemares = "EventFlag.Fortnitemares";
 
 // The Mutant Storms (events/mutantstorms.js) came back with 1.9.1 (CL-3775276), whose notes end Fortnitemares and
 // return them; their content waits for EventFlag.Vindertech, the flag 1.9.1's StormCategory mission alerts require.
-export const mutantStorms = "EventFlag.Vindertech";
+// 1.10 (CL-3790078) keeps them (its notes change how their alerts appear, world/theaters.js) under another flag: its
+// StormCategory rows require EventFlag.ActiveStorms, and no 1.10 data names EventFlag.Vindertech. So the event is
+// named apart from its flags (mutantStorms), each build running it under the flag its own data asks for.
+export const mutantStorms = "MutantStorms";
 
 const events = [
-  { flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
-  { flag: mutantStorms, firstBuild: 3775276, lastBuild: 3775276 }
+  { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
+  { name: mutantStorms, flag: "EventFlag.Vindertech", firstBuild: 3775276, lastBuild: 3775276 },
+  { name: mutantStorms, flag: "EventFlag.ActiveStorms", firstBuild: 3790078, lastBuild: 3790078 }
 ];
+
+const runsOn = (event, number) => number >= event.firstBuild && number <= event.lastBuild;
 
 // Whether the host runs the seasonal events (settings.seasonalEvents, the admin panel's Seasonal Events switch,
 // Core-Backend #66), for everything a request does. Switched off, no build runs one: no event flags, quests, theater or
@@ -31,17 +37,23 @@ export function activeEventFlags(changelist = currentBuild()) {
   if (eventsSetting.getStore() === false) return [];
   const number = Number(changelist);
   if (!Number.isInteger(number)) return [];
-  return events.filter((event) => number >= event.firstBuild && number <= event.lastBuild).map((event) => event.flag);
+  return events.filter((event) => runsOn(event, number)).map((event) => event.flag);
 }
 
-export const isEventActive = (flag, changelist = currentBuild()) => activeEventFlags(changelist).includes(flag);
+// Whether the requesting build runs an event, by its name (fortnitemares, mutantStorms) or by an event flag (a mission
+// alert row's RequiredEventFlag).
+export function isEventActive(nameOrFlag, changelist = currentBuild()) {
+  const flags = activeEventFlags(changelist);
+  return events.some((event) => flags.includes(event.flag) && runsOn(event, Number(changelist))
+    && (event.name === nameOrFlag || event.flag === nameOrFlag));
+}
 
 // Whether the requesting build comes after an event's last build: the event is over there for good (1.9.1's notes:
 // "The Fortnitemares event has ended"), whatever the Seasonal Events switch says.
-export function hasEventEnded(flag, changelist = currentBuild()) {
+export function hasEventEnded(name, changelist = currentBuild()) {
   const number = Number(changelist);
-  const event = events.find((candidate) => candidate.flag === flag);
-  return Boolean(event) && Number.isInteger(number) && number > event.lastBuild;
+  const runs = events.filter((candidate) => candidate.name === name || candidate.flag === name);
+  return runs.length > 0 && Number.isInteger(number) && number > Math.max(...runs.map((event) => event.lastBuild));
 }
 
 // When the client is told an event ends: never, as far as Core goes (FDateTime's largest day).

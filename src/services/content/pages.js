@@ -68,7 +68,7 @@ const saleTitles = {
   3741772: { battleRoyale: "New PVP!" }
 };
 
-// A build Core doesn't know shows its changelist ("CL-3790078", without the "v"), and a request naming none "Core".
+// A build Core doesn't know shows its changelist ("CL-3807424", without the "v"), and a request naming none "Core".
 function messageOf(configured, fallback, changelist) {
   const version = versionOf(changelist);
   const label = version ?? (/^\d+$/.test(changelist ?? "") ? `CL-${changelist}` : "Core");

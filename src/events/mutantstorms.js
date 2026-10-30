@@ -7,7 +7,9 @@ export { mutantStorms };
 // the storm and earn tickets from missions up to 10 times per day. New Event Quests specific to Mutant Storms have
 // been added." Its content waits for EventFlag.Vindertech: the StormCategory mission alerts (MissionAlert_StormCategory_01
 // to _04, RequiredEventFlag EventFlag.Vindertech, a quota of 10 a day in MissionAlertCategories, spreading by
-// MissionAlertSpreadDatas) and the Vindertech quests (category LTE_Vindertech). The flag is events.js's mutantStorms.
+// MissionAlertSpreadDatas) and the Vindertech quests (category LTE_Vindertech). 1.10 (CL-3790078) keeps the event, its
+// quests and llama, with its StormCategory rows requiring EventFlag.ActiveStorms instead and no spreading
+// (world/theaters.js). The event is events.js's mutantStorms, which names each build's flag.
 
 // Storm Tickets (EventCurrency_StormZone, bIsEventItem).
 export const stormTickets = "AccountResource:eventcurrency_stormzone";
