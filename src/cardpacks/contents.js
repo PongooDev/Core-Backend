@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import { bannerIds } from "../gamedata/banners.js";
 import { getCardPack } from "../gamedata/items.js";
-import { halloweenPool, hasItem, isKnownKind, namedSchematics, pool, rarities } from "./pools.js";
+import { halloweenPool, hasItem, isKnownKind, namedSchematics, pool, rarities, vindertechSchematics } from "./pools.js";
 
 // What a card pack holds. Epic decided pack contents on its servers and no loot table for them ships with the client,
 // so these rules are Core's design (chosen by the user), built from what the game data says about each pack: its loot
@@ -173,6 +173,25 @@ function fortnitemaresLlama() {
   return [...llama(llamas.cardpack_bronze), ...pickOne(halloweenPool(weighted([["worker", 50], ["hero", 50]]), rarity))];
 }
 
+// The Mutant Storms' packs (1.9.1), by their loot tier groups:
+// - the Vindertech Llama (CardPack_Event_Vindertech, group CardPack_Event_2017_Vindertech: "Guarantees at least one
+//   Epic or better limited time Vindertech weapon!"), sold for Storm Tickets (store/catalog.js): an Upgrade Llama's
+//   items and one Vindertech weapon schematic, Epic or (a quarter of the time) Legendary; the odds are Core's (🟡);
+// - the Vindertech weapon packs (CardPack_Vindertech_<weapon>_<VR|SR>: "Vindertech Pulse Rifle Schematic", group
+//   CardPack_Vindertech_Assault_Auto_VR) hold that weapon's schematic, SID_<weapon>_VT_<rarity>;
+// - the choice packs (CardPack_Choice_Vindertech_VR/_SR, group CardPack_Choice_Event_Vindertech_<rarity>: "Choose one
+//   of two random items.") offer two Vindertech weapons of the rarity (rollOptions).
+function vindertechLlama() {
+  return [...llama(llamas.cardpack_bronze), ...pickOne(vindertechSchematics(weighted([["vr", 75], ["sr", 25]])))];
+}
+
+function vindertechPack(group) {
+  const match = group.match(/^cardpack_vindertech_([a-z_]+)_(vr|sr)$/);
+  return match ? pickOne(vindertechSchematics(match[2], match[1].split("_"))) : undefined;
+}
+
+const vindertechChoice = (group) => /^cardpack_choice_event_vindertech_(vr|sr)$/.exec(group)?.[1];
+
 // A named pack's schematic, found by the words of its group ("CardPack_Quest_TrapWallDarts_UC" -> wall, darts) or of
 // its id ("cardpack_starter_sniper_boltaction_scope_r" -> sniper, boltaction, scope).
 function named(group, templateId, rarity) {
@@ -199,6 +218,9 @@ export function rollContents(templateId) {
 
   if (llamas[group]) return llama(llamas[group]);
   if (group === "cardpack_event_2017_halloween") return fortnitemaresLlama();
+  if (group === "cardpack_event_2017_vindertech") return vindertechLlama();
+  const vindertechWeapon = vindertechPack(group);
+  if (vindertechWeapon?.length) return vindertechWeapon;
   const cosplayer = /^cardpack_cb_halloween_2017_worker_([a-z]+)$/.exec(group);
   if (cosplayer && halloweenRarities[cosplayer[1]]) return pickOne(halloweenPool("worker", halloweenRarities[cosplayer[1]]));
   // By id: CardPack_Silver_Melee's group is CardPack_Gold_Melee in the data.
@@ -248,6 +270,8 @@ export function rollOptions(templateId) {
   if (!info) return [];
   const parts = info.lootTierGroup.toLowerCase().split("_");
   const rarity = rarities.includes(parts[parts.length - 1]) ? parts[parts.length - 1] : "r";
+  const vindertechRarity = vindertechChoice(info.lootTierGroup.toLowerCase());
+  if (vindertechRarity) return twoOptions(() => pickOne(vindertechSchematics(vindertechRarity))[0]);
   const kind = parts.map((part) => part.replace(/es$|s$/, "")).find((part) => part !== "cardpack" && isKnownKind(part));
   const options = [];
   const taken = new Set();
@@ -255,6 +279,17 @@ export function rollOptions(templateId) {
     const [choice] = kind ? pickOne(pool(kind, null, rarity)) : one(weighted(mixedKinds), null, rarity);
     if (!choice || taken.has(choice.templateId)) continue;
     taken.add(choice.templateId);
+    options.push({ itemType: choice.templateId, itemGuid: "", itemProfile: "profile0", quantity: 1, attributes: {} });
+  }
+  return options;
+}
+
+// Two different options from roll (one {templateId} or undefined per call), as rollOptions gives them.
+function twoOptions(roll) {
+  const options = [];
+  for (let attempt = 0; options.length < 2 && attempt < 20; attempt++) {
+    const choice = roll();
+    if (!choice || options.some((option) => option.itemType === choice.templateId)) continue;
     options.push({ itemType: choice.templateId, itemGuid: "", itemProfile: "profile0", quantity: 1, attributes: {} });
   }
   return options;

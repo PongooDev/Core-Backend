@@ -1,5 +1,6 @@
-import { fortnitemares, isEventActive } from "../events/events.js";
+import { fortnitemares, isEventActive, mutantStorms } from "../events/events.js";
 import { candy } from "../events/fortnitemares.js";
+import { stormTickets } from "../events/mutantstorms.js";
 import { getCardPack, itemIds } from "../gamedata/items.js";
 import { perBuild } from "../gamedata/read.js";
 import { itemShopOffers } from "./itemshop.js";
@@ -62,11 +63,21 @@ const voucherOffers = perBuild(() => itemIds()
 // widget (1.8 StoreRoot GetCustomStoreOfferCost: EventCurrency_Candy → 2) among the event packs (ShouldShowOffer: an
 // event item's offer shows with ShowEventPacks). It cost 500 Candy (the Fortnite wiki's Fortnitemares Llama, Core-Backend
 // #66).
+//
+// The Vindertech Llama (CardPack_Event_Vindertech, "Guarantees at least one Epic or better limited time Vindertech
+// weapon!") is bought with Storm Tickets (EventCurrency_StormZone, bIsEventItem, "Can be traded for special llamas"),
+// which the Mutant Storms' storm alerts give (world/theaters.js), while they run (1.9.1, events/events.js). 1.9.1's
+// StoreRoot has no Storm Ticket case in GetCustomStoreOfferCost (Voucher_BasicPack 1, Candy 2, Snowballs 4, Founders 5),
+// so the offer takes its default cost widget, 3, and shows among the event packs (ShouldShowOffer: an event item's
+// price → ShowEventPacks). No shipped data prices it; Core's price is 1,000 Storm Tickets (🟡: a few Twine Peaks storms,
+// ten Stonewood ones).
 const eventOffers = [
   { offerId: "core_event_founders_llama", templateId: "CardPack:cardpack_event_founders_nonexclusive", title: "Launch Event Llama",
     currencyType: "GameItem", currencySubType: "AccountResource:eventcurrency_founders", price: 100, always: true },
   { offerId: "core_event_fortnitemares_llama", templateId: "CardPack:cardpack_event_2017_halloween", title: "Fortnitemares Llama",
-    currencyType: "GameItem", currencySubType: candy, price: 500, always: true, event: fortnitemares }
+    currencyType: "GameItem", currencySubType: candy, price: 500, always: true, event: fortnitemares },
+  { offerId: "core_event_vindertech_llama", templateId: "CardPack:cardpack_event_vindertech", title: "Vindertech Llama",
+    currencyType: "GameItem", currencySubType: stormTickets, price: 1000, always: true, event: mutantStorms }
 ];
 
 // An event's offers are on sale while the requesting build runs the event and has their llama.

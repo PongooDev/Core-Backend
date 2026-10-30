@@ -36,5 +36,13 @@ export function activeEventFlags(changelist = currentBuild()) {
 
 export const isEventActive = (flag, changelist = currentBuild()) => activeEventFlags(changelist).includes(flag);
 
+// Whether the requesting build comes after an event's last build: the event is over there for good (1.9.1's notes:
+// "The Fortnitemares event has ended"), whatever the Seasonal Events switch says.
+export function hasEventEnded(flag, changelist = currentBuild()) {
+  const number = Number(changelist);
+  const event = events.find((candidate) => candidate.flag === flag);
+  return Boolean(event) && Number.isInteger(number) && number > event.lastBuild;
+}
+
 // When the client is told an event ends: never, as far as Core goes (FDateTime's largest day).
 export const eventsActiveUntil = "9999-12-31T23:59:59.999Z";

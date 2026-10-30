@@ -13,6 +13,9 @@ function describe(templateId) {
   return { templateId, type: type.toLowerCase(), tokens, rarity, tier };
 }
 
+// The Vindertech weapons' token (SID_Assault_Auto_VT_SR_Ore_T01: the weapon's words, VT, rarity, material, tier).
+const vindertech = "vt";
+
 const tagged = (tags, prefix) => tags.find((tag) => tag.toLowerCase().startsWith(prefix))?.toLowerCase().slice(prefix.length).split(".")[0];
 
 const data = perBuild((read) => {
@@ -22,9 +25,10 @@ const data = perBuild((read) => {
   const entries = [];
   for (const templateId of Object.keys(items)) {
     const item = describe(templateId);
-    // Founders, test and tutorial items only come from their own packs, and the Halloween event's (the "Husk"
-    // survivors, WorkerHalloween) from its event; tier 0 items are tutorial versions.
-    if (item.tokens.some((token) => ["founders", "test", "tutorial"].includes(token) || token.includes("halloween")) || item.tier === 0 || !item.rarity) continue;
+    // Founders, test and tutorial items only come from their own packs, the Halloween event's (the "Husk"
+    // survivors, WorkerHalloween) from its event, and the Mutant Storms' Vindertech weapons (SID_*_VT_*, "limited time
+    // Vindertech weapon") from the Vindertech packs; tier 0 items are tutorial versions.
+    if (item.tokens.some((token) => ["founders", "test", "tutorial", vindertech].includes(token) || token.includes("halloween")) || item.tier === 0 || !item.rarity) continue;
     const tags = characters.get(templateId.toLowerCase())?.tags ?? items[templateId].tags ?? [];
 
     if (item.type === "hero") entries.push({ ...item, kind: "hero", sub: tagged(tags, "homebase.class.is") });
@@ -105,6 +109,27 @@ export function halloweenPool(kind, rarity) {
     ? item.type === "worker" && item.tokens.some((token) => token.includes("halloween"))
     : item.type === "hero" && item.tokens.slice(1, -2).some((token) => token.endsWith("hw"))));
   for (const wanted of rarityOrder(rarities.includes(rarity) ? rarity : "r")) {
+    const atRarity = matching.filter((item) => item.rarity === wanted);
+    if (!atRarity.length) continue;
+    const lowest = Math.min(...atRarity.map((item) => item.tier));
+    return atRarity.filter((item) => item.tier === lowest).map((item) => item.templateId);
+  }
+  return [];
+}
+
+// The Mutant Storms' Vindertech weapon schematics (1.9.1: SID_<weapon>_VT_<VR|SR>_<Ore|Crystal>_T01-T06, the Vindertech
+// Pulse Rifle, Rocket Hammer, Axe, Sword, Repeater, Burst Pistol, Blaster, Scattergun and Sniper Rifle and their
+// Legendary versions) at a rarity (or the nearest there is), lowest tier. words, when given, is the weapon exactly
+// (assault, auto; pistol, handcannon, which is not pistol, handcannon, semi): a Vindertech pack's own weapon.
+export function vindertechSchematics(rarity, words) {
+  const matching = data().ids.map(describe).filter((item) => {
+    if (item.type !== "schematic" || item.tier === 0 || !item.rarity) return false;
+    const at = item.tokens.indexOf(vindertech);
+    if (at < 2 || item.tokens[at + 1] !== item.rarity) return false;
+    const weapon = item.tokens.slice(1, at);
+    return !words || (weapon.length === words.length && weapon.every((word, index) => word === words[index]));
+  });
+  for (const wanted of rarityOrder(rarities.includes(rarity) ? rarity : "vr")) {
     const atRarity = matching.filter((item) => item.rarity === wanted);
     if (!atRarity.length) continue;
     const lowest = Math.min(...atRarity.map((item) => item.tier));
