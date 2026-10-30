@@ -3,6 +3,7 @@ import { isChoicePack, rollOptions } from "../cardpacks/contents.js";
 import { unlockPage } from "../collectionbook/pages.js";
 import { bannerTemplateId } from "../gamedata/banners.js";
 import { getItem } from "../gamedata/items.js";
+import { isEndedEventQuest } from "../events/quests.js";
 import { log } from "../log.js";
 import { heroAttributes } from "./heroes.js";
 import { grantQuest } from "./quests.js";
@@ -177,6 +178,11 @@ export function grantItem(session, templateId, quantity, options = {}) {
   if (quantity <= 0) return [];
   const [type, name] = templateId.split(":");
   if (type.toLowerCase() === "quest") {
+    // An ended event's quests aren't given out (events/quests.js, Core-Backend #127).
+    if (isEndedEventQuest(name)) {
+      log("Items", `${session.accountId} wasn't given ${templateId}: its event isn't running`);
+      return [];
+    }
     const itemId = grantQuest(session.profile("profile0"), name);
     return itemId ? [{ profileId: "profile0", itemId, templateId, quantity: 1 }] : [];
   }

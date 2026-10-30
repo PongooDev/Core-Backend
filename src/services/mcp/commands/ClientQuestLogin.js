@@ -1,5 +1,6 @@
 import { activeEventFlags } from "../../../events/events.js";
 import { eventQuests } from "../../../events/fortnitemares.js";
+import { eventQuestsToRestore, removeEndedEventQuests } from "../../../events/quests.js";
 import { startingQuests } from "../../../gamedata/quests.js";
 import { athenaQuestLogin } from "../../../profiles/athena.js";
 import { refreshDailyQuests } from "../../../profiles/dailies.js";
@@ -16,12 +17,17 @@ import { eventFlagsNotification } from "./RequestEventFlags.js";
 // RequestEventFlags (sub_88C060, the command's only sender) for refreshTime. Without it the client never asks for the
 // flags, so a build that runs an event gets them in this response; the others' responses are as before.
 //
+// An ended event's unfinished quests leave the quest log here and in QueryProfile (events/quests.js, Core-Backend #127),
+// and one that runs again gives back the quests it took.
+//
 // On athena (1.8's Battle Royale quest log), its daily challenges (profiles/athena.js), with the event flags all the
 // same in case that quest manager is the one asking.
 export function clientQuestLogin({ session, notifications, profileId }) {
   if (profileId === "athena") athenaQuestLogin(session);
   else {
+    removeEndedEventQuests(session);
     for (const questId of [...startingQuests(), ...eventQuests()]) grant(session, `Quest:${questId}`, 1);
+    for (const questId of eventQuestsToRestore(session.profile("profile0").profile)) grant(session, `Quest:${questId}`, 1);
     refreshDailyQuests(session);
     refreshHeldItems(session);
   }
