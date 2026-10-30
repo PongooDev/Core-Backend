@@ -3,7 +3,7 @@ import path from "node:path";
 import { readJson, writeJson } from "../json-file.js";
 
 // Battle Royale's career stats (Core-Backend #59), one file per account (accounts/<id>/stats.json):
-//   {playlists: {<playlistId>: {placetop1, placetop<n>..., kills, matchesplayed, secondsplayed, lastmodified}},
+//   {playlists: {<playlistId>: {placetop1, placetop<n>..., kills, matchesplayed, secondsplayed, score, lastmodified}},
 //    days: {<YYYY-MM-DD>: {<playlistId>: {<stat>: count}}}}
 // days holds what each UTC day added, for 1.8's leaderboards, which rank by day, week and month as well as all time;
 // days older than the longest of those go.
@@ -35,14 +35,36 @@ export function windowStart(window, now = new Date()) {
   return "";
 }
 
+// The score of matches recorded before Core kept one (Core-Backend #128), from their counts the way a match's score
+// is worked out (profiles/athena.js matchXp): 5 a minute alive, 50 a kill, 300 a win, 100 a place within the playlist's
+// first placement below a win and 50 within its second. Minutes are counted over all the matches together, so it can
+// be a few minutes' worth above what the matches' own scores added up to.
+export function estimatedScore(playlistId, counts) {
+  const [first, second] = placements[playlistId] ?? [];
+  const wins = counts.placetop1 ?? 0;
+  const inFirst = first ? Math.max(0, (counts[`placetop${first}`] ?? 0) - wins) : 0;
+  const inSecond = second ? Math.max(0, (counts[`placetop${second}`] ?? 0) - inFirst - wins) : 0;
+  return Math.floor((counts.secondsplayed ?? 0) / 60) * 5 + (counts.kills ?? 0) * 50 + wins * 300 + inFirst * 100 + inSecond * 50;
+}
+
 export function createStatsStore(dataDir) {
   const cache = new Map();
   const file = (id) => path.join(dataDir, "accounts", id, "stats.json");
 
+  // Stats saved before score was recorded get it estimated, once (it is saved with the account's next match).
+  function withScores(byPlaylist) {
+    for (const [playlistId, counts] of Object.entries(byPlaylist)) {
+      if (counts.score === undefined && (counts.matchesplayed || counts.placetop1)) counts.score = estimatedScore(playlistId, counts);
+    }
+  }
+
   function load(id) {
     if (!cache.has(id)) {
       const saved = fs.existsSync(file(id)) ? readJson(file(id)) : {};
-      cache.set(id, { playlists: saved.playlists ?? {}, days: saved.days ?? {} });
+      const stats = { playlists: saved.playlists ?? {}, days: saved.days ?? {} };
+      withScores(stats.playlists);
+      for (const byPlaylist of Object.values(stats.days)) withScores(byPlaylist);
+      cache.set(id, stats);
     }
     return cache.get(id);
   }
@@ -105,9 +127,10 @@ export function createStatsStore(dataDir) {
     },
 
     // One match: its place counts toward the playlist's placements below a win, and with win (1.8, whose server has no
-    // recordwin) the win itself; otherwise recordWin counts it.
-    recordResult(accountId, playlistId, { place, kills, secondsAlive, win = false }, now = new Date()) {
-      const counts = { matchesplayed: 1, kills, secondsplayed: secondsAlive };
+    // recordwin) the win itself; otherwise recordWin counts it. score is the match's (br_score, the lobby leaderboards'
+    // Score tab).
+    recordResult(accountId, playlistId, { place, kills, secondsAlive, score = 0, win = false }, now = new Date()) {
+      const counts = { matchesplayed: 1, kills, secondsplayed: secondsAlive, score };
       if (win && place === 1) counts.placetop1 = 1;
       for (const top of placements[playlistId] ?? []) {
         if (place <= top) counts[`placetop${top}`] = 1;

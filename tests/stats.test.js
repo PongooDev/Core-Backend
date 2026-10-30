@@ -54,13 +54,13 @@ test("a duo's win, places, kills and time alive show on the Battle Royale stats 
 
     const leaderStats = {
       br_matchesplayed_pc_m0_p10: 2, br_kills_pc_m0_p10: 7, br_placetop5_pc_m0_p10: 2, br_placetop12_pc_m0_p10: 2,
-      br_placetop1_pc_m0_p10: 1, br_minutesplayed_pc_m0_p10: 30,
-      br_matchesplayed_pc_m0_p2: 1, br_kills_pc_m0_p2: 1, br_placetop25_pc_m0_p2: 1, br_minutesplayed_pc_m0_p2: 0
+      br_placetop1_pc_m0_p10: 1, br_minutesplayed_pc_m0_p10: 30, br_score_pc_m0_p10: 895,
+      br_matchesplayed_pc_m0_p2: 1, br_kills_pc_m0_p2: 1, br_placetop25_pc_m0_p2: 1, br_minutesplayed_pc_m0_p2: 0, br_score_pc_m0_p2: 100
     };
     assert.deepEqual(counts(await stats(backend, leader)), leaderStats);
     assert.deepEqual(counts(await stats(backend, follower)), {
       br_matchesplayed_pc_m0_p10: 2, br_kills_pc_m0_p10: 1, br_placetop5_pc_m0_p10: 2, br_placetop12_pc_m0_p10: 2,
-      br_placetop1_pc_m0_p10: 1, br_minutesplayed_pc_m0_p10: 25
+      br_placetop1_pc_m0_p10: 1, br_minutesplayed_pc_m0_p10: 25, br_score_pc_m0_p10: 570
     });
     const after = await stats(backend, leader);
     assert.ok(Math.abs(after.br_lastmodified_pc_m0_p2 - Date.now() / 1000) < 60);
@@ -108,10 +108,10 @@ test("only a gameserver records stats: its own login for its session's players, 
       null
     ] });
     assert.deepEqual(counts(await stats(backend, player)), {
-      br_matchesplayed_pc_m0_p2: 1, br_kills_pc_m0_p2: 4, br_placetop10_pc_m0_p2: 1, br_placetop25_pc_m0_p2: 1, br_minutesplayed_pc_m0_p2: 2
+      br_matchesplayed_pc_m0_p2: 1, br_kills_pc_m0_p2: 4, br_placetop10_pc_m0_p2: 1, br_placetop25_pc_m0_p2: 1, br_minutesplayed_pc_m0_p2: 2, br_score_pc_m0_p2: 310
     });
     assert.deepEqual(counts(await stats(backend, stranger)), {
-      br_matchesplayed_pc_m0_p9: 1, br_kills_pc_m0_p9: 3, br_placetop3_pc_m0_p9: 1, br_placetop6_pc_m0_p9: 1, br_minutesplayed_pc_m0_p9: 1
+      br_matchesplayed_pc_m0_p9: 1, br_kills_pc_m0_p9: 3, br_placetop3_pc_m0_p9: 1, br_placetop6_pc_m0_p9: 1, br_minutesplayed_pc_m0_p9: 1, br_score_pc_m0_p9: 255
     });
     assert.equal(fs.existsSync(path.join(backend.dataDir, "accounts", "00000000000000000000000000000000")), false);
   } finally {
@@ -160,17 +160,17 @@ test("1.8's results count their wins in solo, duo and squad, on top of what the 
     // one's kills, matches and minutes, the 1.7.2 match's included.
     assert.deepEqual(counts(await stats18(backend, player)), {
       br_placetop1_pc_m0_p2: 2, br_placetop10_pc_m0_p2: 2, br_placetop25_pc_m0_p2: 2, br_kills_pc_m0_p2: 7,
-      br_matchesplayed_pc_m0_p2: 2, br_minutesplayed_pc_m0_p2: 42,
+      br_matchesplayed_pc_m0_p2: 2, br_minutesplayed_pc_m0_p2: 42, br_score_pc_m0_p2: 1155,
       br_placetop5_pc_m0_p10: 1, br_placetop12_pc_m0_p10: 1, br_kills_pc_m0_p10: 2, br_matchesplayed_pc_m0_p10: 1,
-      br_minutesplayed_pc_m0_p10: 16,
+      br_minutesplayed_pc_m0_p10: 16, br_score_pc_m0_p10: 280,
       br_placetop1_pc_m0_p9: 1, br_placetop3_pc_m0_p9: 1, br_placetop6_pc_m0_p9: 1, br_kills_pc_m0_p9: 6,
-      br_matchesplayed_pc_m0_p9: 1, br_minutesplayed_pc_m0_p9: 25
+      br_matchesplayed_pc_m0_p9: 1, br_minutesplayed_pc_m0_p9: 25, br_score_pc_m0_p9: 725
     });
     assert.deepEqual(counts(await stats18(backend, mate)), {
       br_placetop5_pc_m0_p10: 1, br_placetop12_pc_m0_p10: 1, br_kills_pc_m0_p10: 0, br_matchesplayed_pc_m0_p10: 1,
-      br_minutesplayed_pc_m0_p10: 11,
+      br_minutesplayed_pc_m0_p10: 11, br_score_pc_m0_p10: 155,
       br_placetop1_pc_m0_p9: 1, br_placetop3_pc_m0_p9: 1, br_placetop6_pc_m0_p9: 2, br_kills_pc_m0_p9: 3,
-      br_matchesplayed_pc_m0_p9: 2, br_minutesplayed_pc_m0_p9: 35
+      br_matchesplayed_pc_m0_p9: 2, br_minutesplayed_pc_m0_p9: 35, br_score_pc_m0_p9: 675
     });
     // 1.7.2's screen reads the same stats.
     assert.deepEqual(counts(await stats(backend, player)), counts(await stats18(backend, player)));

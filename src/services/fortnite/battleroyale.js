@@ -28,7 +28,9 @@ import { notifyProfiles } from "../mcp/profile.js";
 //   players' match, place, kills and time alive. 1.8 has neither winners nor recordwin (Core-Backend #81: no
 //   "battleroyale/recordwin" in its exe), so CoreV2 sends countWins: true from a build without it and a place 1 there
 //   is the win too; without countWins (1.7.2, or a CoreV2 from before) recordwin counts it, so a win isn't counted
-//   twice. A player with a Battle Royale profile (1.8's athena) also gets the match's season XP and its placement and
+//   twice. Each result's score (br_score, the lobby leaderboards' Score tab, Core-Backend #128) is the result's own
+//   score when the server sends one, else what the match is worth in season XP (profiles/athena.js matchXp), as
+//   CoreV2 reports none. A player with a Battle Royale profile (1.8's athena) also gets the match's season XP and its placement and
 //   elimination challenge progress (profiles/athena.js), which reach their client as profile notifications, and for a
 //   win (place 1) in solo, duo or squad The Umbrella and the Founder's Umbrella in the locker (Core-Backend #77, #84):
 //   1.8's umbrella is a glider item.
@@ -128,9 +130,10 @@ export function battleRoyaleRoutes(context) {
         continue;
       }
       const win = countWins && place === 1;
-      stats.recordResult(result.accountId, playlistId, { place, kills, secondsAlive, win });
-      log("Battle Royale", `${result.accountId} placed ${place} in playlist ${playlistId} with ${kills} kills, ${secondsAlive} s alive`
-        + (win ? " (a win)" : ""));
+      const score = count(result.score, 1000000) ?? matchXp(playlistId, { place, kills, secondsAlive });
+      stats.recordResult(result.accountId, playlistId, { place, kills, secondsAlive, score, win });
+      log("Battle Royale", `${result.accountId} placed ${place} in playlist ${playlistId} with ${kills} kills, ${secondsAlive} s alive,`
+        + ` score ${score}` + (win ? " (a win)" : ""));
       const session = openSession(profiles, result.accountId);
       const vbucks = payMatchVbucks(session, rewards, matchId, playlistId, { place, kills });
       if (vbucks) log("Battle Royale", `${result.accountId} earned ${vbucks} V-Bucks in match ${matchId}`);
