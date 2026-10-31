@@ -1,6 +1,8 @@
 import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
 import { isDedicatedServerToken } from "../../accounts/clients.js";
+import { currentBuild, inBuild } from "../../builds/context.js";
+import { buildVersions } from "../../builds/detect.js";
 import { log } from "../../log.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
 import { addSeasonXp, awardVictory, matchXp, recordMatchProgress } from "../../profiles/athena.js";
@@ -35,10 +37,11 @@ import { currentBattlePassConfig } from "../../battlepass/season1.js";
 //   elimination challenge progress (profiles/athena.js), which reach their client as profile notifications, and for a
 //   win (place 1) in solo, duo or squad The Umbrella and the Founder's Umbrella in the locker (Core-Backend #77, #84):
 //   1.8's umbrella is a glider item.
-//   With battleRoyaleVbucks on (Core-Backend #100, #124, the admin panel's Settings), each result in solo, duos or
-//   squads also pays V-Bucks, from that mode's battleRoyaleRewards: perKill a kill, perWin for a place 1 (a team's
-//   every player, as CoreV2 places them all), and the best of its placement tiers the place is within (top 25 = 100
-//   and top 10 = 250 pay 250 for a 5th place, not 350), all three added up. A limited-time playlist pays nothing.
+//   With battleRoyaleVbucks on (Core-Backend #100, #124, the admin panel's Settings), each result in solo, duos,
+//   squads or 1.10's 50v50 also pays V-Bucks, from that mode's battleRoyaleRewards: perKill a kill, perWin for a place 1
+//   (a team's every player, as CoreV2 places them all), and the best of its placement tiers the place is within (top
+//   25 = 100 and top 10 = 250 pay 250 for a 5th place, not 350), all three added up. Another limited-time playlist
+//   pays nothing. A 50v50 result counts toward its event challenge (profiles/athena.js), not the victory umbrellas.
 //   They go to profile0, the balance the game shows, as Currency:mtxgiveaway, the way the admin panel's and the llamas'
 //   V-Bucks do. A result pays once per match: the report's matchId (CoreV2's, one id for the whole match) is kept in the player's profile0 with the V-Bucks it paid
 //   (coreBattleRoyaleRewards, Core's, never sent to the client), so a report sent again pays nothing; a report without
@@ -116,6 +119,14 @@ export function battleRoyaleRoutes(context) {
   });
 
   const count = (value, max) => (Number.isInteger(value) && value >= 0 ? Math.min(value, max) : null);
+  // The build of the match a player's result comes from: the one their session's gameserver named when it made the
+  // session (its own client's requests name it, matchmaking/sessions.js), the latest such session's. CoreV2's report names
+  // none (User-Agent "Core V2"), so its results are read with that build's game data, the quests the player holds there
+  // among them (1.10's 50v50 challenge, events/fiftyfifty.js, is in 1.10's data only); a report that names its build, or
+  // a player on no session, keeps the request's.
+  const matchBuild = (accountId) => (Object.hasOwn(buildVersions, currentBuild()) ? undefined : sessions.list()
+    .filter((session) => buildVersions[session.hostBuild] && sessionMembers(session).includes(accountId))
+    .sort((a, b) => Date.parse(b.lastUpdated) - Date.parse(a.lastUpdated))[0]?.hostBuild);
   router.post("/fortnite/api/game/v2/battleroyale/recordresults", auth, (req, res) => {
     const playlistId = playlistOf(req.body);
     const results = Array.isArray(req.body?.results) && Number.isInteger(playlistId) && playlistId > 0 ? req.body.results : [];
@@ -140,10 +151,15 @@ export function battleRoyaleRoutes(context) {
       const session = openSession(profiles, result.accountId);
       const vbucks = payMatchVbucks(session, rewards, matchId, playlistId, { place, kills });
       if (vbucks) log("Battle Royale", `${result.accountId} earned ${vbucks} V-Bucks in match ${matchId}`);
-      if (session.hasProfile("athena")) {
+      const progress = () => {
         recordMatchProgress(session, playlistId, { place, kills });
         addSeasonXp(session, earnedXp);
         if (place === 1 && isMainPlaylist(playlistId)) awardVictory(session);
+      };
+      if (session.hasProfile("athena")) {
+        const build = matchBuild(result.accountId);
+        if (build) inBuild(build, progress);
+        else progress();
       }
       session.commit();
       notifyProfiles(context, session);

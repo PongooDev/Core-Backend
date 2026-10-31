@@ -34,6 +34,9 @@ const aliases = {
 };
 const canonical = new Map(Object.entries(aliases).flatMap(([region, names]) => [[region, region], ...names.map((name) => [name, region])]));
 
+// Every region code Core knows, each region's own and its other spellings.
+export const regionCodes = () => [...canonical.keys()];
+
 // "NONE" is what GetRegionId answers without a region (a server started without -McpRegion, or a client whose QoS
 // found no region at all); 21.40 calls its hidden catch-all region UND (Undefined).
 const noRegion = new Set(["", "NONE", "UND"]);

@@ -112,3 +112,21 @@ test("the panel names items as the game does, later builds' items and schematics
     backend.close();
   }
 });
+
+test("the admin panel leaves Core's gameserver accounts out of its player lists (#137)", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "PanelPlayer");
+    const server = await userLogin(backend.port, "CoreServer1");
+    const listed = (await get(backend.port, "/admin/api/accounts")).body.map((account) => account.id);
+    assert.ok(listed.includes(player.accountId));
+    assert.ok(!listed.includes(server.accountId), "a gameserver isn't a player");
+
+    const overview = (await get(backend.port, "/admin/api/overview")).body;
+    assert.equal(overview.accounts, 1);
+    assert.ok(!overview.recentLogins.some((account) => account.id === server.accountId));
+    assert.equal((await get(backend.port, `/admin/api/accounts/${server.accountId}`)).status, 200, "still there by id");
+  } finally {
+    backend.close();
+  }
+});

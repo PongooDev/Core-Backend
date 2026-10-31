@@ -45,7 +45,8 @@ test("1.10's five daily discovery quests join the dailies", () => {
 });
 
 test("the Mutant Storms run on 1.10 under EventFlag.ActiveStorms, the flag its storm rows require", () => {
-  assert.deepEqual(activeEventFlags(v110), ["EventFlag.ActiveStorms"]);
+  // With 50v50's (fiftyfifty.test.js).
+  assert.deepEqual(activeEventFlags(v110), ["EventFlag.ActiveStorms", "EventFlag.BR.Allow50v50"]);
   assert.ok(isEventActive(mutantStorms, v110));
   assert.ok(isEventActive("EventFlag.ActiveStorms", v110));
   assert.ok(!isEventActive("EventFlag.Vindertech", v110));

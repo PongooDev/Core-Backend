@@ -80,3 +80,26 @@ test("BatchUpdatePlayer saves the backpack the way the server sends it", async (
     backend.close();
   }
 });
+
+test("1.10's BatchUpdatePlayers saves every player in the batch to their own theater and outpost", async () => {
+  const backend = await startBackend();
+  try {
+    const first = await userLogin(backend.port, "BatchOne");
+    const second = await userLogin(backend.port, "BatchTwo");
+    const server = await dedicatedServerToken(backend.port);
+    const wood = (itemId, quantity) => ({ ...emptyUpdate, addRequests: [{ itemId, templateId: "WorldItem:wooditemdata", quantity, attributes: {} }] });
+
+    const save = await post(backend.port, serverCommand(first.accountId, "BatchUpdatePlayers"), server, { updates: [
+      { accountId: first.accountId, theaterNum: 0, theaterItemUpdate: wood("0A1B2C3D-0000-0000-0000-000000000001", 10), outpostNum: 0, outpostItemUpdate: emptyUpdate, questObjectiveUpdates: [] },
+      { accountId: second.accountId, theaterNum: 0, theaterItemUpdate: wood("0A1B2C3D-0000-0000-0000-000000000002", 7), outpostNum: 0, outpostItemUpdate: wood("0A1B2C3D-0000-0000-0000-000000000003", 3), questObjectiveUpdates: [] }
+    ] });
+    assert.equal(save.status, 200);
+
+    const query = async (accountId, profileId) => (await post(backend.port, serverCommand(accountId, "QueryProfile", profileId), server, {})).body.profileChanges[0].profile.items;
+    assert.equal((await query(first.accountId, "theater0"))["0A1B2C3D-0000-0000-0000-000000000001"]?.quantity, 10);
+    assert.equal((await query(second.accountId, "theater0"))["0A1B2C3D-0000-0000-0000-000000000002"]?.quantity, 7, "the other player's own theater");
+    assert.equal((await query(second.accountId, "outpost0"))["0A1B2C3D-0000-0000-0000-000000000003"]?.quantity, 3);
+  } finally {
+    backend.close();
+  }
+});

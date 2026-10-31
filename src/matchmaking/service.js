@@ -32,10 +32,20 @@ const playDelayMs = 1000;
 // The server's warmup starts with its first player, the others join during it (WarmupRequiredPlayerCount, read by
 // OnGivenMatchAssignment 0x3F3CD0).
 const matchOptions = { "match.option.warmupRequiredPlayerCount": "1" };
-// Each playlist's team size, from the server's own table (1.7.2 ConfigureForMatchAssignment 0x751960, 1.8
-// GetMaxTeamInfoForPlaylist 0x79B690, the same): Solo 2 is 100 teams of 1, Duo 10 100 of 2, Squad 9 100 of 4. Playlists
-// 0 (1×4), 1 (2×5) and 99 (1×1) aren't Battle Royale's.
-const teamSizes = { 0: 4, 1: 5, 2: 1, 9: 4, 10: 2, 99: 1 };
+// Each playlist's teams, from the server's own table (1.7.2 ConfigureForMatchAssignment 0x751960, 1.8
+// GetMaxTeamInfoForPlaylist 0x79B690, 1.10 0x7EA1F0, the same for the playlists they share): MaxTeamCount teams of
+// MaxTeamSize players, in squads of up to MaxSquadSize (21.40's UFortPlaylist names them). Solo 2 is 100 teams of 1,
+// Duo 10 100 of 2, Squad 9 100 of 4, and 1.10's 50v50, 11, two teams of 50 in squads of 4. Playlists 0 (1×4), 1 (2×5) and
+// 99 (1×1) aren't Battle Royale's; 1.10's 12 to 15 (AthenaEvent1-4, 100×4) have no playlist asset and nothing queues them.
+const playlistTeams = {
+  0: { maxTeamCount: 1, maxTeamSize: 4, maxSquadSize: 4 },
+  1: { maxTeamCount: 2, maxTeamSize: 5, maxSquadSize: 5 },
+  2: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  9: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  10: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  11: { maxTeamCount: 2, maxTeamSize: 50, maxSquadSize: 4 },
+  99: { maxTeamCount: 1, maxTeamSize: 1, maxSquadSize: 1 }
+};
 // Late joining (Core-Backend #122, the admin panel's Matchmaking settings). The servers' MMS client (1.9
 // MatchmakingServiceDedicatedServer 0x3BF2730) knows only Registered, AssignMatch and UnassignMatch, takes an
 // AssignMatch only while Registered, and leaves the service once its match is assigned (0x709370), so the protocol has
@@ -80,34 +90,71 @@ export function serverRegion(patterns) {
   return null;
 }
 
-// The team size of a bucket's playlist, or null for one the server doesn't know.
-export const teamSizeOf = (bucketId) => teamSizes[parseBucket(bucketId).playlistId] ?? null;
+// The teams of a bucket's playlist ({maxTeamCount, maxTeamSize, maxSquadSize}), or null for one the server doesn't know.
+export const playlistTeamsOf = (bucketId) => playlistTeams[parseBucket(bucketId).playlistId] ?? null;
 
-// AssignMatch's teams ([team][party][accountId]) from a match's parties, [{players, fill}]: a party that fills
-// (player.option.fillTeam, the matchmaking panel's Squad Fill) shares a team with other such parties, biggest first so
-// the smaller ones fill the gaps; one that doesn't fill plays alone (Core-Backend #78). The server makes one beacon
-// reservation per party on its team's index (ConfigureForMatchAssignment sets the Manual team assignment method, so
-// GetTeamAssignment 0x391AD10 keeps it), and PickTeam 0x3F6500 gives a joining player their reservation's team ("PickTeam
-// for [%s] used beacon value [HumanPvP_Team1]" for team 0). A party bigger than a team is split into teams: no team
-// would have room for its reservation and the server would refuse the match.
-export function formTeams(parties, teamSize) {
-  if (!teamSize) return parties.map((party) => [party.players]);
-  const pieces = parties.flatMap((party) => {
-    const chunks = [];
-    for (let index = 0; index < party.players.length; index += teamSize) chunks.push(party.players.slice(index, index + teamSize));
-    return chunks.map((players) => ({ players, fill: party.fill }));
-  });
-  const teams = [];
-  for (const piece of pieces.sort((a, b) => b.players.length - a.players.length)) {
-    const team = piece.fill && teams.find((entry) => entry.fill && entry.players + piece.players.length <= teamSize);
-    if (team) {
-      team.parties.push(piece.players);
-      team.players += piece.players.length;
-    } else {
-      teams.push({ fill: piece.fill, parties: [piece.players], players: piece.players.length });
+// AssignMatch's teams ([team][party][accountId]) from a match's parties, [{players, fill}], or null when they don't fit
+// the playlist's teams. The server makes one beacon reservation per party, on team i % its team count for AssignMatch's
+// teams[i] (1.10 0x79CEE0, the team count the playlist's MaxTeamCount unless match.option.teamSplit says otherwise;
+// ConfigureForMatchAssignment sets the Manual team assignment method, so GetTeamAssignment 0x391AD10 keeps it), and
+// PickTeam 0x3F6500 gives a joining player their reservation's team ("PickTeam for [%s] used beacon value
+// [HumanPvP_Team1]" for team 0). The players of teams[i] share SquadId i + 1 (1.10 AFortGameSessionDedicated 0x71AC80,
+// the squad bar's). So AssignMatch's teams are squads:
+// - A party that fills (player.option.fillTeam, the matchmaking panel's Squad Fill) shares a squad with other such
+//   parties up to the playlist's MaxSquadSize, biggest first so the smaller ones fill the gaps; one that doesn't fill
+//   plays alone (Core-Backend #78). A party bigger than a squad is split, or no team would have room for it.
+// - Where a team is one squad (solo, duo, squad), each squad is a team of its own. Where a team holds several (50v50's
+//   two teams of 50, in squads of 4), every party shares its team, whatever its Squad Fill: each party, biggest first,
+//   goes to the team with the fewest players that has room for it (UPartyBeaconState's GetTeamAssignment, Smallest:
+//   the lowest such team on a tie), so the teams are as even as the parties allow, and each team's parties make its
+//   squads. The teams' squads then take turns in AssignMatch's teams, an empty team holding the place of a team that
+//   has run out of squads (the server skips it, 0x79CEE0).
+export function formTeams(parties, teams) {
+  if (!teams) return parties.map((party) => [party.players]);
+  const { maxTeamCount, maxTeamSize, maxSquadSize } = teams;
+  const squadsOf = (group) => {
+    const pieces = group.flatMap((party) => {
+      const chunks = [];
+      for (let index = 0; index < party.players.length; index += maxSquadSize) chunks.push(party.players.slice(index, index + maxSquadSize));
+      return chunks.map((players) => ({ players, fill: party.fill }));
+    });
+    const squads = [];
+    for (const piece of pieces.sort((a, b) => b.players.length - a.players.length)) {
+      const squad = piece.fill && squads.find((entry) => entry.fill && entry.players + piece.players.length <= maxSquadSize);
+      if (squad) {
+        squad.parties.push(piece.players);
+        squad.players += piece.players.length;
+      } else {
+        squads.push({ fill: piece.fill, parties: [piece.players], players: piece.players.length });
+      }
+    }
+    return squads;
+  };
+
+  const sides = Array.from({ length: maxTeamCount }, () => ({ players: 0, members: [], squads: [] }));
+  const roomFor = (size) => sides.filter((side) => side.players + size <= maxTeamSize)
+    .reduce((smallest, side) => (!smallest || side.players < smallest.players ? side : smallest), null);
+  if (maxTeamSize > maxSquadSize) {
+    for (const party of [...parties].sort((a, b) => b.players.length - a.players.length)) {
+      const side = roomFor(party.players.length);
+      if (!side) return null;
+      side.members.push(party);
+      side.players += party.players.length;
+    }
+    for (const side of sides) side.squads = squadsOf(side.members).map((squad) => squad.parties);
+  } else {
+    for (const squad of squadsOf(parties)) {
+      const side = roomFor(squad.players);
+      if (!side) return null;
+      side.squads.push(squad.parties);
+      side.players += squad.players;
     }
   }
-  return teams.map((team) => team.parties);
+  const rounds = Math.max(0, ...sides.map((side) => side.squads.length));
+  const result = [];
+  for (let round = 0; round < rounds; round++) for (const side of sides) result.push(side.squads[round] ?? []);
+  while (result.length && !result.at(-1).length) result.pop();
+  return result;
 }
 
 // A server's bucket pattern ("858118782:0:NA:*") against a player's bucket ("858118782:0:NA:10"): field by field, "*"
@@ -177,6 +224,8 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
   // Whether a party fills its team with others. Only the party leader's ticket says (the others' have no
   // player.option.fillTeam); without it the party fills, as the client asks for every playlist but Squads with No Fill.
   const fills = (party) => [party, ...party.members].map((member) => member.ticket.fillTeam).find((fill) => typeof fill === "boolean") ?? true;
+  // AssignMatch's teams for a match's parties, or null when the playlist's teams have no room for them all.
+  const teamsFor = (parties, bucketId) => formTeams(parties.map((party) => ({ players: party.ticket.partyPlayerIds, fill: fills(party) })), playlistTeamsOf(bucketId));
 
   function issueTicket(kind, fields) {
     const ticket = { ...fields, kind, ticketId: newId(), issued: Date.now() };
@@ -274,7 +323,8 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
         same.members.push(party);
         return true;
       }
-      if (forming && bucketKey(forming.bucketId, { anyRegion }) === key && forming.players + party.size <= server.maxPlayers) {
+      if (forming && bucketKey(forming.bucketId, { anyRegion }) === key && forming.players + party.size <= server.maxPlayers
+        && teamsFor([...forming.parties, party], forming.bucketId)) {
         forming.parties.push(party);
         forming.players += party.size;
         if (anyRegion) say(`${party.ticket.accountId} joins match ${forming.matchId} in ${regionName(server.region)} (bucket ${forming.bucketId})`);
@@ -369,7 +419,9 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
       return;
     }
     forming.sent = true;
-    const teams = formTeams(forming.parties.map((party) => ({ players: party.ticket.partyPlayerIds, fill: fills(party) })), teamSizeOf(forming.bucketId));
+    // The parties fitted the playlist's teams as they joined; should a member's Squad Fill choice, heard later, make them
+    // not fit, each party is a team of its own.
+    const teams = teamsFor(forming.parties, forming.bucketId) ?? forming.parties.map((party) => [party.ticket.partyPlayerIds]);
     say(`Assigning match ${forming.matchId} (${forming.players} players in ${teams.length} teams, bucket ${forming.bucketId}) to session ${server.sessionId}`);
     server.ws.send(message("AssignMatch", { matchId: forming.matchId, bucketId: forming.bucketId, matchOptions, teams }));
   }

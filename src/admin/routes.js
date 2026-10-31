@@ -331,8 +331,12 @@ export function adminRoutes(context) {
     }
   });
 
+  // Core's gameservers sign in as accounts too (CoreServer{n}, CoreServer-<PC>-{n}): they aren't players, so the panel's
+  // counts, online list, recent logins and account list leave them out (Core-Backend #137).
+  const isPlayer = (account) => !isServerAccountName(account.displayName);
+
   router.get("/admin/api/overview", (req, res) => {
-    const list = accounts.list();
+    const list = accounts.list().filter(isPlayer);
     res.json({
       ...backendVersion(),
       startedAt,
@@ -342,7 +346,8 @@ export function adminRoutes(context) {
       dataDir,
       accounts: list.length,
       banned: list.filter((account) => account.banned).length,
-      online: (xmpp?.onlineAccounts() ?? []).map(({ accountId, resources }) => ({ accountId, displayName: accounts.get(accountId)?.displayName ?? accountId, resources })),
+      online: (xmpp?.onlineAccounts() ?? []).map(({ accountId, resources }) => ({ accountId, displayName: accounts.get(accountId)?.displayName ?? accountId, resources }))
+        .filter(({ displayName }) => !isServerAccountName(displayName)),
       sessions: sessions.list().map(sessionSummary),
       recentLogins: list.filter((account) => account.lastLogin).sort((a, b) => b.lastLogin.localeCompare(a.lastLogin)).slice(0, 8).map(summary)
     });
@@ -351,6 +356,7 @@ export function adminRoutes(context) {
   router.get("/admin/api/accounts", (req, res) => {
     const query = String(req.query.search ?? "").trim().toLowerCase();
     const list = accounts.list()
+      .filter(isPlayer)
       .filter((account) => !query || account.displayName.toLowerCase().includes(query) || account.id.includes(query)
         || account.contactEmail?.includes(query))
       .map(summary);

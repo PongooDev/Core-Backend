@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { inBuild } from "../builds/context.js";
 import { McpError } from "../errors.js";
+import { athenaEventQuestsOf } from "../events/fiftyfifty.js";
 import { athenaCosmetics, athenaDailyIds, athenaObjectiveStat, dailyWeight, getAthenaQuest, seasonLevels } from "../gamedata/athena.js";
 import { bannerIds, bannerTemplateId } from "../gamedata/banners.js";
 import { dataBuilds } from "../gamedata/read.js";
@@ -474,7 +475,9 @@ function addProgress(session, itemId, objective, count) {
 // ones (AthenaRank: "play matches", "top 25 in solo") and eliminations with any weapon. The gameserver's quest manager
 // counts the rest (eliminations by weapon, chests and ammo boxes opened, players outlived) and sends them with
 // UpdateQuests; those two kinds are left out of what it sends, so a match counts once (🟡).
-const playlistTags = { 2: "athena.playlist.solo", 10: "athena.playlist.duo", 9: "athena.playlist.squad" };
+// The playlists' tags (PvPTags rows Athena.Playlist.Solo, .Duo, .Squad and 1.10's .FiftyFifty, which 50v50's
+// complete_athena_50v50 asks for).
+const playlistTags = { 2: "athena.playlist.solo", 10: "athena.playlist.duo", 9: "athena.playlist.squad", 11: "athena.playlist.fiftyfifty" };
 const tagMatches = (tags, tag) => !tags || tags.toLowerCase().split(",").map((one) => one.trim())
   .every((wanted) => tag === wanted || tag.startsWith(`${wanted}.`));
 
@@ -577,8 +580,25 @@ export function rerollAthenaDaily(session, itemId, notifications) {
   notifications.push({ type: "dailyQuestReroll", primary: true, newQuestId });
 }
 
+// The Battle Royale event quests (events/fiftyfifty.js) of the events the build runs, which the player gets once, and
+// those of the events it doesn't, which leave the quest log unless done (Completed or Claimed), as Save the World's do
+// (events/quests.js, Core-Backend #127).
+function settleAthenaEventQuests(session) {
+  const tracker = session.profile("athena");
+  const held = (questId) => Object.entries(tracker.profile.items).filter(([, item]) => questIdOf(item) === questId);
+  for (const questId of athenaEventQuestsOf({ running: false })) {
+    for (const [itemId, item] of held(questId)) {
+      if (item.attributes.quest_state === "Active") tracker.removeItem(itemId);
+    }
+  }
+  for (const questId of athenaEventQuestsOf({ running: true })) {
+    if (!held(questId).length && grantAthenaQuest(tracker, questId)) log("Battle Royale", `${session.accountId} got the event challenge ${questId}`);
+  }
+}
+
 // ClientQuestLogin / ServerQuestLogin on athena.
 export function athenaQuestLogin(session) {
   refreshAthenaDailies(session);
+  settleAthenaEventQuests(session);
   settleChaseRewards(session);
 }

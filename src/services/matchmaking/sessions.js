@@ -1,5 +1,6 @@
 import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
+import { currentBuild } from "../../builds/context.js";
 import { notFound, sendError } from "../../errors.js";
 import { log } from "../../log.js";
 import { regionName, regionOf } from "../../matchmaking/regions.js";
@@ -54,7 +55,7 @@ export function sessionRoutes({ tokens, sessions, network, settings, emptyServer
     const address = req.socket.remoteAddress;
     if (!allowsHosting(address, hostingIps(settings))) return notHosting(res, req, "register a game session");
     const remoteHost = !isLoopback(address);
-    const session = sessions.create(req.body, address, req.session.accountId, { remoteHost });
+    const session = sessions.create(req.body, address, req.session.accountId, { remoteHost, build: currentBuild() });
     log("Matchmaking", `Session ${session.id} created by ${session.ownerName || session.ownerId || "a server"} at ${session.serverAddress}:${session.serverPort}` +
       (remoteHost ? ` (hosted on another PC, ${regionName(regionOf(session.attributes?.REGION_s))})` : ""));
     res.json(sessionJson(session, req, network));
