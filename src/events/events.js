@@ -55,10 +55,13 @@ export function activeEventFlags(changelist = currentBuild()) {
   if (eventsSetting.getStore() === false) return [];
   const config = currentEventsConfig();
   if (config?.mode === "off") return [];
-  if (config?.mode === "force_fortnitemares") return [fortnitemares];
+  // Forcing a Save the World event leaves the build's Battle Royale 50v50 running (1.10).
+  const fiftyFiftyFlags = Number.isInteger(Number(changelist)) && runsOn(events.find((event) => event.name === fiftyFifty), Number(changelist))
+    ? [fiftyFifty] : [];
+  if (config?.mode === "force_fortnitemares") return [fortnitemares, ...fiftyFiftyFlags];
   if (config?.mode === "force_mutantstorms") {
     const num = Number(changelist);
-    if (num >= 3790078) return ["EventFlag.ActiveStorms"];
+    if (num >= 3790078) return ["EventFlag.ActiveStorms", ...fiftyFiftyFlags];
     if (Number.isInteger(num)) return ["EventFlag.Vindertech"];
     return ["EventFlag.Vindertech", "EventFlag.ActiveStorms"];
   }
@@ -76,6 +79,9 @@ export function isEventActive(nameOrFlag, changelist = currentBuild()) {
   if (eventsSetting.getStore() === false) return false;
   const config = currentEventsConfig();
   if (config?.mode === "off") return false;
+  if (nameOrFlag === fiftyFifty && (config?.mode === "force_fortnitemares" || config?.mode === "force_mutantstorms")) {
+    return activeEventFlags(changelist).includes(fiftyFifty);
+  }
   if (config?.mode === "force_fortnitemares") {
     return nameOrFlag === fortnitemares || nameOrFlag === "EventFlag.Fortnitemares";
   }
