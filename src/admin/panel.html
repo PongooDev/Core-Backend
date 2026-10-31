@@ -5016,7 +5016,7 @@
 
       const milestoneCards = el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:14px; margin-top:14px;" },
         ...form.milestones.map((m) => {
-          const badgeEl = chip(form.levelRequirementsEnabled ? `Level ${m.seasonLevel}` : "Unlocked (Level 1)", "accent");
+          const badgeEl = chip(form.levelRequirementsEnabled ? `Level ${m.seasonLevel}` : "Unlocked (Level 1)", form.levelRequirementsEnabled ? "accent" : "good");
           badgeEl.setAttribute("data-level-badge", "true");
 
           const levelInput = el("input", {
@@ -5025,12 +5025,14 @@
             min: "1",
             max: String(form.maxSeasonLevel),
             value: String(m.seasonLevel),
-            style: "width:85px;",
+            style: `width:85px; ${form.levelRequirementsEnabled ? "" : "opacity:0.5; cursor:not-allowed;"}`,
+            disabled: !form.levelRequirementsEnabled,
             oninput: (e) => {
               m.seasonLevel = Math.max(1, Math.min(form.maxSeasonLevel, parseInt(e.target.value, 10) || 1));
               if (form.levelRequirementsEnabled) badgeEl.textContent = `Level ${m.seasonLevel}`;
             }
           });
+          levelInput.setAttribute("data-level-input", "true");
 
           const priceInput = el("input", {
             class: "field num",
@@ -5065,13 +5067,23 @@
         })
       );
 
+      const ruleChip = chip(form.levelRequirementsEnabled ? "Level Locked" : "Unlocked (Level 1)", form.levelRequirementsEnabled ? "accent" : "good");
+
       const levelReqToggle = toggleSwitch(form.levelRequirementsEnabled, (checked) => {
         form.levelRequirementsEnabled = checked;
+        ruleChip.textContent = checked ? "Level Locked" : "Unlocked (Level 1)";
+        ruleChip.className = `chip ${checked ? "accent" : "good"}`;
         milestoneCards.querySelectorAll("[data-level-badge]").forEach((badge, idx) => {
           const m = form.milestones[idx];
           if (m) {
             badge.textContent = checked ? `Level ${m.seasonLevel}` : "Unlocked (Level 1)";
+            badge.className = `chip ${checked ? "accent" : "good"}`;
           }
+        });
+        milestoneCards.querySelectorAll("[data-level-input]").forEach((inp) => {
+          inp.disabled = !checked;
+          inp.style.opacity = checked ? "1" : "0.5";
+          inp.style.cursor = checked ? "text" : "not-allowed";
         });
       });
 
@@ -5120,17 +5132,16 @@
 
         // Quick Stats Row
         el("div", { class: "tiles" },
-          tile("Active Progression", "Season 1 (Season Shop)", "accent text"),
-          tile("Level Unlock Rule", form.levelRequirementsEnabled ? "Level Locked" : "Unlocked (Level 1)", form.levelRequirementsEnabled ? "accent text" : "text"),
           tile("Season 1 Clock", [seasonTimerEl, el("span", { class: "sub", text: `Ends ${seasonResetDate.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}` })]),
-          tile("Match XP Multiplier", `${form.xpMultiplier.toFixed(1)}×`, "text")),
+          tile("Match Season XP", `${form.xpMultiplier.toFixed(1)}×`, "text"),
+          tile("Catalog Milestones", `${form.milestones.length} Items`, "text")),
 
         // Section 1: Progression Rules & Match Leveling
         el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
             el("div", { class: "actions" },
               el("h2", { text: "Season 1 Progression & Leveling Rules" }),
-              form.levelRequirementsEnabled ? chip("Level Locked", "accent") : chip("Unlocked (Level 1)", "good")),
+              ruleChip),
             levelReqToggle),
           el("p", { class: "note", text: "Controls whether players must reach specific season levels in Battle Royale before Season Shop items become purchasable. Turning requirements off unlocks all catalog items at Level 1." }),
           el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px; margin-top:14px;" },
@@ -5159,15 +5170,7 @@
             chip(`${form.milestones.length} Items`, "accent")),
           el("p", { class: "note", text: "Items offered in Battle Royale's Season Shop (BRSeasonStorefront) from version 1.8.2+. Set custom level thresholds and V-Bucks prices per item." }),
           milestoneCards
-        ),
-
-        // Bottom Save Action Bar
-        el("div", { class: "actions", style: "margin-top:24px; padding:16px 20px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius); justify-content:space-between; align-items:center;" },
-          el("div", {},
-            el("div", { style: "font-weight:700; font-size:14px;", text: "Ready to apply Season 1 changes?" }),
-            el("div", { class: "muted", style: "font-size:12px;", text: "Saves unlock level requirements, milestone prices, and XP multipliers immediately." })),
-          el("div", { class: "actions" },
-            btn("Save Configuration", saveConfig, "primary")))
+        )
       );
     }
 
@@ -5220,20 +5223,10 @@
       const weeklyTimerEl = el("span", { style: "font-family:var(--mono); font-size:24px; font-weight:700; letter-spacing:-0.02em; display:inline-block;", text: formatDiff(weeklyTarget) });
       const seasonTimerEl = el("span", { style: "font-family:var(--mono); font-size:24px; font-weight:700; letter-spacing:-0.02em; display:inline-block;", text: formatDiff(seasonTarget) });
 
-      const dailySecTimerEl = el("div", { style: "font-family:var(--mono); font-size:22px; font-weight:800; color:var(--text); margin-bottom:4px;", text: formatDiff(dailyTarget) });
-      const weeklySecTimerEl = el("div", { style: "font-family:var(--mono); font-size:22px; font-weight:800; color:var(--text); margin-bottom:4px;", text: formatDiff(weeklyTarget) });
-      const seasonSecTimerEl = el("div", { style: "font-family:var(--mono); font-size:22px; font-weight:800; color:var(--text); margin-bottom:4px;", text: formatDiff(seasonTarget) });
-
       every(1000, () => {
-        const dDiff = formatDiff(dailyTarget);
-        const wDiff = formatDiff(weeklyTarget);
-        const sDiff = formatDiff(seasonTarget);
-        dailyTimerEl.textContent = dDiff;
-        weeklyTimerEl.textContent = wDiff;
-        seasonTimerEl.textContent = sDiff;
-        dailySecTimerEl.textContent = dDiff;
-        weeklySecTimerEl.textContent = wDiff;
-        seasonSecTimerEl.textContent = sDiff;
+        dailyTimerEl.textContent = formatDiff(dailyTarget);
+        weeklyTimerEl.textContent = formatDiff(weeklyTarget);
+        seasonTimerEl.textContent = formatDiff(seasonTarget);
       });
 
       const modeLabels = {
@@ -5471,7 +5464,6 @@
 
         // Quick Stats Row
         el("div", { class: "tiles" },
-          tile("Event Activation Mode", modeLabels[form.mode] || form.mode, form.mode !== "off" ? "accent text" : "text"),
           tile("Daily Store Reset", [dailyTimerEl, el("span", { class: "sub", text: `${dailyResetDate.toUTCString().slice(17, 22)} UTC (${dailyResetDate.toLocaleDateString(undefined, { month: "short", day: "numeric" })})` })]),
           tile("Weekly Store Reset", [weeklyTimerEl, el("span", { class: "sub", text: `${weeklyResetDate.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })} · ${weeklyResetDate.toUTCString().slice(17, 22)} UTC` })]),
           tile("Season 1 Clock", [seasonTimerEl, el("span", { class: "sub", text: `Ends ${seasonResetDate.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}` })])),
@@ -5590,7 +5582,7 @@
             el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
               el("div", {},
                 el("div", { class: "muted font-semibold", style: "font-size:12px; margin-bottom:4px;", text: "DAILY STORE ROTATION UTC HOUR" }),
-                dailySecTimerEl,
+                el("div", { style: "font-size:18px; font-weight:800; color:var(--text); margin-bottom:4px;", text: `${form.rotationHour}:00 UTC` }),
                 el("div", { class: "muted", style: "font-size:11px;", text: "Hour of UTC day when daily item shop offers and mission alerts rotate." })),
               el("div", { style: "margin-top:12px; display:flex; align-items:center; gap:8px;" },
                 rotationInput,
@@ -5599,7 +5591,7 @@
             el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
               el("div", {},
                 el("div", { class: "muted font-semibold", style: "font-size:12px; margin-bottom:4px;", text: "WEEKLY FEATURED DURATION (DAYS)" }),
-                weeklySecTimerEl,
+                el("div", { style: "font-size:18px; font-weight:800; color:var(--text); margin-bottom:4px;", text: `${form.weeklyDurationDays} Days` }),
                 el("div", { class: "muted", style: "font-size:11px;", text: "Duration of weekly featured shop items in days (Default 7 days)." })),
               el("div", { style: "margin-top:12px; display:flex; align-items:center; gap:8px;" },
                 weeklyDaysInput,
@@ -5608,7 +5600,7 @@
             el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
               el("div", {},
                 el("div", { class: "muted font-semibold", style: "font-size:12px; margin-bottom:4px;", text: "CUSTOM BATTLE ROYALE SEASON END" }),
-                seasonSecTimerEl,
+                el("div", { style: "font-size:18px; font-weight:800; color:var(--text); margin-bottom:4px;", text: form.customSeasonEnd ? "Custom Override" : "Standard Cycle" }),
                 el("div", { class: "muted", style: "font-size:11px;", text: "Override Season 1 countdown. Clear to use standard 45-day history cycle." })),
               el("div", { style: "margin-top:12px; display:flex; flex-direction:column; gap:6px;" },
                 customEndInput,
@@ -5626,15 +5618,7 @@
                 cacheMinsInput,
                 el("span", { class: "muted font-semibold", text: "minutes" })))
           )
-        ),
-
-        // Bottom Save Action Bar
-        el("div", { class: "actions", style: "margin-top:24px; padding:16px 20px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius); justify-content:space-between; align-items:center;" },
-          el("div", {},
-            el("div", { style: "font-weight:700; font-size:14px;", text: "Ready to apply event customization?" }),
-            el("div", { class: "muted", style: "font-size:12px;", text: "Saves activation modes, STW modifiers, and calendar timelines." })),
-          el("div", { class: "actions" },
-            btn("Save Event Configuration", saveConfig, "primary")))
+        )
       );
     }
 
