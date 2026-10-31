@@ -54,19 +54,21 @@ import { profileRoutes } from "./services/mcp/profile.js";
 import { replayRoutes } from "./services/replay/replays.js";
 import { createStompService } from "./stomp/service.js";
 import { createXmppService } from "./xmpp/service.js";
+import { createAdminAuthStore } from "./admin/auth.js";
 
 // What the HTTP routes and the XMPP service share.
 export function createContext(config) {
   const tokens = createTokenStore(config.dataDir);
   const accounts = createAccountStore(config.dataDir);
   const settings = createSettingsStore(config.dataDir);
+  const adminAuth = createAdminAuthStore(config.dataDir);
   configureItemShop(() => settings.get().itemShop);
   if (config.requirePassword !== undefined) settings.update({ requirePassword: config.requirePassword });
   if (config.allowRegistration !== undefined) settings.update({ allowRegistration: config.allowRegistration });
   if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
   if (config.seasonalEvents !== undefined) settings.update({ seasonalEvents: config.seasonalEvents });
   for (const key of ["battleRoyaleVbucks", "battleRoyaleRewards", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits", "cheats", "cheatAccounts",
-    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "regionFallback", "defaultFoundersAccess"]) {
+    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "regionFallback", "defaultFoundersAccess", "requireAdminAuth"]) {
     if (config[key] !== undefined) settings.update({ [key]: config[key] });
   }
   const friends = createFriendStore(config.dataDir);
@@ -79,6 +81,7 @@ export function createContext(config) {
     accounts,
     tokens,
     settings,
+    adminAuth,
     reports,
     resetTokens: createResetTokenStore(),
     friends,
