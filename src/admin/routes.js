@@ -29,8 +29,9 @@ import { maxLevel, xpForLevel } from "../profiles/xp.js";
 import { notifyProfiles } from "../services/mcp/profile.js";
 import { catalogEntry, categories, currencies, describeCosmetics, describeItem, isSingleItem, isWorldType, knownTemplate, searchCatalog,
   stormShields } from "./describe.js";
-import { requireLoopback, requirePanelRequest, createAdminNetworkGate, createPanelRequestGate, loopbackAddresses } from "./local.js";
-import { clearSessionCookie, createSessionCookie, extractAdminToken } from "./auth.js";
+import { createAdminGate } from "./local.js";
+import { clearSessionCookie, extractAdminToken } from "./auth.js";
+import { createRateLimiter, getClientIp } from "../services/portal/ratelimit.js";
 import { defaultBattleRoyaleNews, defaultLoginMessage, defaultSubgameSelect } from "../services/content/pages.js";
 import { inBuild } from "../builds/context.js";
 import { battleRoyaleBuilds, certBuild, versionOf } from "../builds/detect.js";
@@ -75,7 +76,9 @@ const sum = (profile, templates) => Object.values(profile?.items ?? {})
 export function adminRoutes(context) {
   const { accounts, profiles, tokens, sessions, xmpp, stomp, settings, network, dataDir, resetTokens, reports, adminAuth } = context;
   const router = express.Router();
-  router.use("/admin", createAdminNetworkGate(adminAuth), createPanelRequestGate(adminAuth));
+  router.use("/admin", createAdminGate({ adminAuth, settings }));
+  // Sign-in attempts from another device, on top of auth.js's per-credential lockout (this PC is exempt).
+  const loginLimiter = createRateLimiter({ windowMs: 15 * 60 * 1000, max: 20, message: "Too many sign-in attempts. Please wait a few minutes." });
 
   const loadIfExists = (accountId, profileId) => (profiles.exists(accountId, profileId) ? profiles.load(accountId, profileId) : null);
   const online = (accountId) => xmpp?.isOnline(accountId) ?? false;
@@ -199,101 +202,39 @@ export function adminRoutes(context) {
   // Browsers ask for this on any page; the panel has its own icon.
   router.get("/favicon.ico", (req, res) => res.status(204).end());
 
-  const isAuthActive = () => {
-    const s = settings?.get?.();
-    return Boolean(s && s.requireAdminAuth === true) && Boolean(adminAuth && adminAuth.hasUsers());
+  // Admin sign-in (Core-Backend #134). createAdminGate (local.js) has already let the request in: this PC always, and
+  // another device only with remote admin on and, past these sign-in routes, a session.
+  const remoteAdminOn = () => settings?.get?.().remoteAdmin === true && Boolean(adminAuth?.hasUsers());
+  const localOnly = (req, res) => {
+    if (req.adminLocal) return false;
+    sendError(res, 403, "errors.com.epicgames.common.missing_permission", "Admin credentials are managed on the backend's own PC");
+    return true;
   };
 
-  function requireAdminSession(req, res, next) {
-    const isLoopback = loopbackAddresses.has(req.socket.remoteAddress);
-    const token = extractAdminToken(req);
-    const validated = (adminAuth && token) ? adminAuth.validateSession(token, req.socket.remoteAddress) : null;
-    if (validated) {
-      req.adminUser = validated.user;
-      req.adminSession = validated.session;
-    } else if (isLoopback) {
-      req.adminUser = { id: "local", username: "Local", isLocal: true };
-    }
-
-    // If an explicit session token was provided but has been revoked / expired:
-    // Reject with 401 and clear the cookie even on loopback!
-    if (token && !validated) {
-      res.setHeader("Set-Cookie", clearSessionCookie());
-      return sendError(res, 401, "errors.com.epicgames.common.authentication.authentication_failed", "Admin session expired or revoked");
-    }
-
-    // Requests from 127.0.0.1 / loopback without an expired session token do not require a session
-    if (isLoopback) {
-      return next();
-    }
-    if (!isAuthActive()) {
-      return next();
-    }
-    if (!validated) {
-      return sendError(res, 401, "errors.com.epicgames.common.authentication.authentication_failed", "Admin authentication required");
-    }
-    next();
-  }
-
-  // Admin authentication endpoints
   router.get("/admin/api/auth/me", (req, res) => {
-    const isLoopback = loopbackAddresses.has(req.socket.remoteAddress);
-    const token = extractAdminToken(req);
-    const validated = (adminAuth && token) ? adminAuth.validateSession(token, req.socket.remoteAddress) : null;
-    const active = isAuthActive();
-    const hasUsers = adminAuth ? adminAuth.hasUsers() : false;
-
-    // If an explicit session token was provided but is invalid/revoked, notify client
-    if (token && !validated) {
-      res.setHeader("Set-Cookie", clearSessionCookie());
-      return res.json({
-        authenticated: false,
-        requireAuth: active || hasUsers,
-        hasUsers,
-        isLoopback,
-        user: null,
-        sessionExpired: true
-      });
-    }
-
-    if (validated) {
-      return res.json({
-        authenticated: true,
-        requireAuth: false,
-        hasUsers,
-        isLoopback,
-        user: validated.user
-      });
-    }
-
-    if (isLoopback) {
-      return res.json({
-        authenticated: true,
-        requireAuth: false,
-        hasUsers,
-        isLoopback: true,
-        user: hasUsers ? { username: "Local", isLocal: true } : null
-      });
-    }
-
+    const local = Boolean(req.adminLocal);
+    const signedIn = Boolean(req.adminSession);
     res.json({
-      authenticated: false,
-      requireAuth: active,
-      hasUsers,
-      isLoopback: false,
-      user: null
+      authenticated: local || signedIn,
+      requireAuth: !local && !signedIn,
+      hasUsers: adminAuth ? adminAuth.hasUsers() : false,
+      remoteAdmin: remoteAdminOn(),
+      isLoopback: local,
+      user: signedIn ? req.adminUser : (local ? { username: "Local", isLocal: true } : null),
+      // A cookie came but its session is gone (signed out elsewhere, password changed, or a backend restart).
+      sessionExpired: !local && !signedIn && Boolean(extractAdminToken(req))
     });
   });
 
-  router.post("/admin/api/auth/login", async (req, res) => {
+  router.post("/admin/api/auth/login", loginLimiter, async (req, res) => {
     const { username, password } = req.body ?? {};
-    if (!username || !password) {
+    if (typeof username !== "string" || typeof password !== "string" || !username || !password) {
       return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "Username and password are required");
     }
     if (!adminAuth) {
       return sendError(res, 500, "errors.com.epicgames.common.server_error", "Admin auth not configured");
     }
-    const result = await adminAuth.verifyCredentials(username, password, req.socket.remoteAddress);
+    const result = await adminAuth.verifyCredentials(username, password, getClientIp(req));
     if (!result.success) {
       if (result.lockedOut) {
         res.setHeader("Retry-After", String(result.retryAfter || 900));
@@ -309,72 +250,49 @@ export function adminRoutes(context) {
         ipMismatch: Boolean(result.ipMismatch)
       });
     }
+    // A new token on every sign-in, and the one the browser came with (if any) ends: no session fixation.
+    const previous = extractAdminToken(req);
+    if (previous) adminAuth.revokeSession(previous);
     const session = adminAuth.issueSession(result.user, req.socket.remoteAddress);
     res.setHeader("Set-Cookie", session.cookie);
-    res.json({
-      success: true,
-      token: session.token,
-      user: result.user
-    });
+    res.json({ success: true, token: session.token, user: result.user });
   });
 
+  // Signs this session's credential out everywhere. Only a valid session can do that: who to sign out is never taken
+  // from the body, or anyone who reaches the sign-in page could end every admin's sessions.
   router.post("/admin/api/auth/logout", (req, res) => {
     const token = extractAdminToken(req);
-    const bodyUserId = req.body?.userId;
-    const bodyUsername = req.body?.username;
-    if (adminAuth) {
-      let userIdToRevoke = bodyUserId;
-      if (token) {
-        const validated = adminAuth.validateSession(token, req.socket.remoteAddress);
-        if (validated?.user?.id) {
-          userIdToRevoke = validated.user.id;
-        }
-        adminAuth.revokeSession(token);
-      }
-      if (!userIdToRevoke && bodyUsername) {
-        const user = adminAuth.getUserByUsername(bodyUsername);
-        if (user?.id) userIdToRevoke = user.id;
-      }
-      if (userIdToRevoke) {
-        adminAuth.revokeUserSessions(userIdToRevoke);
-      } else {
-        for (const user of adminAuth.listUsers()) {
-          adminAuth.revokeUserSessions(user.id);
-        }
-      }
+    if (adminAuth && token) {
+      if (req.adminSession?.userId) adminAuth.revokeUserSessions(req.adminSession.userId);
+      adminAuth.revokeSession(token);
     }
     res.setHeader("Set-Cookie", clearSessionCookie());
     res.json({ success: true });
   });
 
-  // Admin user management endpoints
-  router.get("/admin/api/admin-users", requireAdminSession, (req, res) => {
-    if (!adminAuth) return res.json({ users: [] });
-    res.json({ users: adminAuth.listUsers() });
+  // Admin credentials: listed to any admin, changed only on this PC (a signed-in device may change its own password).
+  router.get("/admin/api/admin-users", (req, res) => {
+    res.json({ users: adminAuth ? adminAuth.listUsers() : [] });
   });
 
-  router.post("/admin/api/admin-users", (req, res, next) => {
-    if (adminAuth && !adminAuth.hasUsers()) return next();
-    return requireAdminSession(req, res, next);
-  }, async (req, res) => {
+  router.post("/admin/api/admin-users", async (req, res) => {
+    if (localOnly(req, res)) return;
     if (!adminAuth) return sendError(res, 500, "errors.com.epicgames.common.server_error", "Admin auth not configured");
     try {
       const { username, password, allowedIp } = req.body ?? {};
+      if (allowedIp !== undefined && allowedIp !== null && typeof allowedIp !== "string") throw new Error("Invalid IP address format");
       const user = await adminAuth.addUser({ username, password, allowedIp });
-      settings?.update?.({ requireAdminAuth: true });
-      const existingToken = extractAdminToken(req);
-      const existingValidation = adminAuth.validateSession(existingToken, req.socket.remoteAddress);
-      if (!existingValidation) {
-        const session = adminAuth.issueSession(user, req.socket.remoteAddress);
-        res.setHeader("Set-Cookie", session.cookie);
-      }
+      // A credential alone doesn't open the admin to other devices: remoteAdmin stays as the owner set it.
       res.status(201).json({ success: true, user });
     } catch (error) {
       return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", error.message);
     }
   });
 
-  router.post("/admin/api/admin-users/:id/password", requireAdminSession, async (req, res) => {
+  router.post("/admin/api/admin-users/:id/password", async (req, res) => {
+    if (!req.adminLocal && req.adminSession?.userId !== req.params.id) {
+      return sendError(res, 403, "errors.com.epicgames.common.missing_permission", "Another credential's password is changed on the backend's own PC");
+    }
     if (!adminAuth) return sendError(res, 500, "errors.com.epicgames.common.server_error", "Admin auth not configured");
     try {
       const { newPassword } = req.body ?? {};
@@ -385,10 +303,12 @@ export function adminRoutes(context) {
     }
   });
 
-  router.post("/admin/api/admin-users/:id/ip", requireAdminSession, (req, res) => {
+  router.post("/admin/api/admin-users/:id/ip", (req, res) => {
+    if (localOnly(req, res)) return;
     if (!adminAuth) return sendError(res, 500, "errors.com.epicgames.common.server_error", "Admin auth not configured");
     try {
       const { allowedIp } = req.body ?? {};
+      if (allowedIp !== undefined && allowedIp !== null && typeof allowedIp !== "string") throw new Error("Invalid IP address format");
       const user = adminAuth.updateAllowedIp(req.params.id, allowedIp);
       res.json({ success: true, user });
     } catch (error) {
@@ -396,24 +316,14 @@ export function adminRoutes(context) {
     }
   });
 
-  router.delete("/admin/api/admin-users/:id", requireAdminSession, (req, res) => {
+  router.delete("/admin/api/admin-users/:id", (req, res) => {
+    if (localOnly(req, res)) return;
     if (!adminAuth) return sendError(res, 500, "errors.com.epicgames.common.server_error", "Admin auth not configured");
     try {
-      const result = adminAuth.deleteUser(req.params.id);
-      if (!adminAuth.hasUsers()) {
-        settings?.update?.({ requireAdminAuth: false });
-      }
-      res.json(result);
+      res.json(adminAuth.deleteUser(req.params.id));
     } catch (error) {
       return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", error.message);
     }
-  });
-
-  // Protect all remaining /admin/api routes with requireAdminSession
-  router.use("/admin/api", (req, res, next) => {
-    if (req.path.startsWith("/auth/")) return next();
-    if (req.path === "/admin-users" && req.method === "POST" && adminAuth && !adminAuth.hasUsers()) return next();
-    return requireAdminSession(req, res, next);
   });
 
   router.get("/admin/api/overview", (req, res) => {
@@ -912,8 +822,11 @@ export function adminRoutes(context) {
   // Update server settings
   router.post("/admin/api/settings", (req, res) => {
     if (!settings?.update) return invalid(res, "Settings store not available");
-    if (req.body?.requireAdminAuth === true && adminAuth && !adminAuth.hasUsers()) {
-      return invalid(res, "Cannot require admin login before creating at least one admin credential");
+    if (req.body?.remoteAdmin !== undefined) {
+      // Opening the admin to other devices, or closing it, is this PC's call alone.
+      if (!req.adminLocal) return sendError(res, 403, "errors.com.epicgames.common.missing_permission", "Remote admin is switched on the backend's own PC");
+      if (typeof req.body.remoteAdmin !== "boolean") return invalid(res, "remoteAdmin must be true or false");
+      if (req.body.remoteAdmin && !adminAuth?.hasUsers()) return invalid(res, "Add an admin credential before allowing admin from other devices");
     }
     const hosts = req.body?.allowedHostingIps;
     if (hosts !== undefined && (!Array.isArray(hosts) || hosts.length > maxHostingIps || !hosts.every(hostingIp))) {
@@ -924,7 +837,7 @@ export function adminRoutes(context) {
       allowRegistration: req.body?.allowRegistration,
       allowAutoRegistration: req.body?.allowAutoRegistration,
       defaultFoundersAccess: req.body?.defaultFoundersAccess,
-      requireAdminAuth: req.body?.requireAdminAuth,
+      remoteAdmin: req.body?.remoteAdmin,
       seasonalEvents: req.body?.seasonalEvents,
       battleRoyaleVbucks: req.body?.battleRoyaleVbucks,
       battleRoyaleRewards: req.body?.battleRoyaleRewards,

@@ -10,6 +10,9 @@ import { once } from "node:events";
 
 async function startAuthBackend() {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-backend-"));
+  // Play with friends' remote access on, as a host's backend has it: other machines' connections get through to the admin's
+  // own gate (otherwise server.js drops them before any route).
+  fs.writeFileSync(path.join(dataDir, "network.json"), JSON.stringify({ remoteAccess: true }));
   const from = { address: "127.0.0.1" };
   const server = await createServer({ dataDir, requestLog: false, emptyServerWaitMs: 0, earnScoreWaitMs: 0, defaultFoundersAccess: true });
   server.prependListener("connection", (socket) => {
@@ -197,317 +200,227 @@ test("admin auth store: session issuance, per-request IP validation, and revocat
   }
 });
 
+// One request to the test backend, from whichever address backend.from says.
+function requester(backend) {
+  return (method, path, { body, cookie, bearer, host = "127.0.0.1", headers = {} } = {}) => send({
+    host: "127.0.0.1",
+    port: backend.port,
+    method,
+    path,
+    headers: {
+      Host: host,
+      ...(body !== undefined ? { "Content-Type": "application/json" } : {}),
+      ...(cookie ? { Cookie: cookie } : {}),
+      ...(bearer ? { Authorization: `Bearer ${bearer}` } : {}),
+      ...headers
+    }
+  }, body !== undefined ? JSON.stringify(body) : undefined);
+}
+
+const cookieOf = (response) => {
+  const header = [response.headers["set-cookie"]].flat().find((line) => line?.startsWith(`${ADMIN_COOKIE_NAME}=`));
+  return header ? `${ADMIN_COOKIE_NAME}=${parseCookies(header)[ADMIN_COOKIE_NAME]}` : null;
+};
+
 test("admin HTTP routes: login, session cookies, Bearer tokens, and route protection", async () => {
   const backend = await startAuthBackend();
+  const request = requester(backend);
   try {
-    const port = backend.port;
-
-    // 0. GET /admin serves HTML with login screen & admin-user-bar
-    const panelHtml = await send({
-      host: "127.0.0.1",
-      port,
-      method: "GET",
-      path: "/admin",
-      headers: { Host: "127.0.0.1" }
-    });
+    // The panel serves its login screen.
+    const panelHtml = await request("GET", "/admin");
     assert.equal(panelHtml.status, 200);
     assert.ok(panelHtml.body.includes("id=\"admin-login-screen\""));
     assert.ok(panelHtml.body.includes("id=\"admin-user-bar\""));
-    assert.ok(panelHtml.body.includes("Admin Menu Credentials"));
+    assert.ok(panelHtml.body.includes("Admin From Other Devices"));
 
-    // 1. Initial state: on 127.0.0.1, authenticated is true because loopback does not require a session
-    const meInitial = await send({
-      host: "127.0.0.1",
-      port,
-      method: "GET",
-      path: "/admin/api/auth/me",
-      headers: { Host: "127.0.0.1" }
-    });
+    // This PC is the admin without signing in.
+    const meInitial = await request("GET", "/admin/api/auth/me");
     assert.equal(meInitial.status, 200);
     assert.equal(meInitial.body.authenticated, true);
     assert.equal(meInitial.body.hasUsers, false);
     assert.equal(meInitial.body.isLoopback, true);
+    assert.equal(meInitial.body.remoteAdmin, false);
+    assert.equal((await request("GET", "/admin/api/overview")).status, 200);
 
-    // Overview is initially accessible before credentials are configured
-    const overviewInitial = await send({
-      host: "127.0.0.1",
-      port,
-      method: "GET",
-      path: "/admin/api/overview",
-      headers: { Host: "127.0.0.1" }
-    });
-    assert.equal(overviewInitial.status, 200);
-
-    // 1b. Reject enabling requireAdminAuth when 0 admin credentials exist
-    const enableWithoutUsers = await send({
-      host: "127.0.0.1",
-      port,
-      method: "POST",
-      path: "/admin/api/settings",
-      headers: { Host: "127.0.0.1", "Content-Type": "application/json" }
-    }, JSON.stringify({ requireAdminAuth: true }));
+    // Remote admin needs a credential first.
+    const enableWithoutUsers = await request("POST", "/admin/api/settings", { body: { remoteAdmin: true } });
     assert.equal(enableWithoutUsers.status, 400);
-    assert.ok(enableWithoutUsers.body.errorMessage.includes("Cannot require admin login before creating at least one admin credential"));
+    assert.match(enableWithoutUsers.body.errorMessage, /Add an admin credential/);
 
-    // 2. Create the first admin user
-    const createFirst = await send({
-      host: "127.0.0.1",
-      port,
-      method: "POST",
-      path: "/admin/api/admin-users",
-      headers: { Host: "127.0.0.1", "Content-Type": "application/json" }
-    }, JSON.stringify({ username: "superadmin", password: "MasterPassword123!", allowedIp: null }));
+    // The first credential, made on this PC: no session cookie (this PC needs none), and remote admin stays off.
+    const createFirst = await request("POST", "/admin/api/admin-users", { body: { username: "superadmin", password: "MasterPassword123!", allowedIp: null } });
     assert.equal(createFirst.status, 201);
     assert.equal(createFirst.body.user.username, "superadmin");
-    const initSetCookie = createFirst.headers["set-cookie"]?.[0] || createFirst.headers["set-cookie"];
-    assert.ok(initSetCookie.includes("core_admin_session="));
+    assert.equal(cookieOf(createFirst), null);
+    assert.equal(createFirst.body.user.hash, undefined);
+    assert.equal(createFirst.body.user.salt, undefined);
     const superadminId = createFirst.body.user.id;
+    assert.equal((await request("GET", "/admin/api/settings")).body.remoteAdmin, false);
+    assert.equal((await request("GET", "/admin/api/overview")).status, 200);
 
-    // 3. Accessed from 127.0.0.1: does NOT require a session even when admin credentials exist!
-    const overviewFromLocal = await send({
-      host: "127.0.0.1",
-      port,
-      method: "GET",
-      path: "/admin/api/overview",
-      headers: { Host: "127.0.0.1" }
-    });
-    assert.equal(overviewFromLocal.status, 200);
-
-    // 3b. Remote requests from 192.168.1.50 DO require a session and are rejected with 401 when unauthenticated
+    // With remote admin off, another device gets nothing, not even the sign-in.
     backend.from.address = "192.168.1.50";
-    const overviewBlocked = await send({
-      host: "127.0.0.1",
-      port,
-      method: "GET",
-      path: "/admin/api/overview",
-      headers: { Host: "127.0.0.1" }
-    });
-    assert.equal(overviewBlocked.status, 401);
+    assert.equal((await request("GET", "/admin/api/overview")).status, 403);
+    assert.equal((await request("GET", "/admin")).status, 403);
+    assert.equal((await request("POST", "/admin/api/auth/login", { body: { username: "superadmin", password: "MasterPassword123!" } })).status, 403);
 
-    // 4. Login with bad password -> 401
-    const loginFail = await send({
-      host: "127.0.0.1",
-      port,
-      method: "POST",
-      path: "/admin/api/auth/login",
-      headers: { Host: "127.0.0.1", "Content-Type": "application/json" }
-    }, JSON.stringify({ username: "superadmin", password: "WrongPassword" }));
+    // This PC switches remote admin on.
+    backend.from.address = "127.0.0.1";
+    const enable = await request("POST", "/admin/api/settings", { body: { remoteAdmin: true } });
+    assert.equal(enable.status, 200);
+    assert.equal(enable.body.remoteAdmin, true);
+
+    // Now another device reaches the sign-in, and nothing else without a session.
+    backend.from.address = "192.168.1.50";
+    assert.equal((await request("GET", "/admin")).status, 200);
+    assert.equal((await request("GET", "/admin/api/overview")).status, 401);
+    const meRemote = await request("GET", "/admin/api/auth/me");
+    assert.equal(meRemote.body.authenticated, false);
+    assert.equal(meRemote.body.requireAuth, true);
+
+    const loginFail = await request("POST", "/admin/api/auth/login", { body: { username: "superadmin", password: "WrongPassword" } });
     assert.equal(loginFail.status, 401);
+    assert.equal((await request("POST", "/admin/api/auth/login", { body: { username: { $ne: "" }, password: "x" } })).status, 400);
 
-    // 5. Login with correct password -> 200, sets HttpOnly cookie, returns token
-    const loginSuccess = await send({
-      host: "127.0.0.1",
-      port,
-      method: "POST",
-      path: "/admin/api/auth/login",
-      headers: { Host: "127.0.0.1", "Content-Type": "application/json" }
-    }, JSON.stringify({ username: "superadmin", password: "MasterPassword123!" }));
+    const loginSuccess = await request("POST", "/admin/api/auth/login", { body: { username: "superadmin", password: "MasterPassword123!" } });
     assert.equal(loginSuccess.status, 200);
     assert.equal(loginSuccess.body.success, true);
     assert.ok(loginSuccess.body.token);
-
-    const setCookie = loginSuccess.headers["set-cookie"]?.[0] || loginSuccess.headers["set-cookie"];
-    assert.ok(setCookie.includes("core_admin_session="));
+    const setCookie = [loginSuccess.headers["set-cookie"]].flat()[0];
     assert.ok(setCookie.includes("HttpOnly"));
     assert.ok(setCookie.includes("SameSite=Strict"));
+    const cookie = cookieOf(loginSuccess);
 
-    // Extract cookie value for request
-    const parsed = parseCookies(Array.isArray(setCookie) ? setCookie[0] : setCookie);
-    const sessionCookieHeader = `core_admin_session=${parsed.core_admin_session}`;
-
-    // 6. Access /admin/api/overview with cookie -> 200 OK
-    const overviewWithCookie = await send({
-      host: "127.0.0.1",
-      port,
-      method: "GET",
-      path: "/admin/api/overview",
-      headers: { Host: "127.0.0.1", Cookie: sessionCookieHeader }
-    });
-    assert.equal(overviewWithCookie.status, 200);
-
-    // 7. Access /admin/api/overview with Bearer token -> 200 OK
-    const overviewWithBearer = await send({
-      host: "127.0.0.1",
-      port,
-      method: "GET",
-      path: "/admin/api/overview",
-      headers: { Host: "127.0.0.1", Authorization: `Bearer ${loginSuccess.body.token}` }
-    });
-    assert.equal(overviewWithBearer.status, 200);
-
-    // 8. GET /admin/api/auth/me with session
-    const meAuth = await send({
-      host: "127.0.0.1",
-      port,
-      method: "GET",
-      path: "/admin/api/auth/me",
-      headers: { Host: "127.0.0.1", Cookie: sessionCookieHeader }
-    });
-    assert.equal(meAuth.status, 200);
+    assert.equal((await request("GET", "/admin/api/overview", { cookie })).status, 200);
+    assert.equal((await request("GET", "/admin/api/overview", { bearer: loginSuccess.body.token })).status, 200);
+    const meAuth = await request("GET", "/admin/api/auth/me", { cookie });
     assert.equal(meAuth.body.authenticated, true);
     assert.equal(meAuth.body.user.username, "superadmin");
 
-    // 8b. Toggle requireAdminAuth off and on
-    const disableAuth = await send({
-      host: "127.0.0.1",
-      port,
-      method: "POST",
-      path: "/admin/api/settings",
-      headers: { Host: "127.0.0.1", "Content-Type": "application/json", Cookie: sessionCookieHeader }
-    }, JSON.stringify({ requireAdminAuth: false }));
-    assert.equal(disableAuth.status, 200);
-    assert.equal(disableAuth.body.requireAdminAuth, false);
+    // A signed-in device still can't switch remote admin or manage credentials; it may change its own password.
+    assert.equal((await request("POST", "/admin/api/settings", { cookie, body: { remoteAdmin: false } })).status, 403);
+    assert.equal((await request("POST", "/admin/api/admin-users", { cookie, body: { username: "sneaky", password: "SneakyPassword1" } })).status, 403);
+    assert.equal((await request("DELETE", `/admin/api/admin-users/${superadminId}`, { cookie })).status, 403);
+    assert.equal((await request("POST", `/admin/api/admin-users/${superadminId}/ip`, { cookie, body: { allowedIp: null } })).status, 403);
+    assert.equal((await request("GET", "/admin/api/admin-users", { cookie })).body.users.length, 1);
 
-    const overviewUnauthWhenDisabled = await send({
-      host: "127.0.0.1",
-      port,
-      method: "GET",
-      path: "/admin/api/overview",
-      headers: { Host: "127.0.0.1" }
-    });
-    assert.equal(overviewUnauthWhenDisabled.status, 200);
-
-    const reenableAuth = await send({
-      host: "127.0.0.1",
-      port,
-      method: "POST",
-      path: "/admin/api/settings",
-      headers: { Host: "127.0.0.1", "Content-Type": "application/json", Cookie: sessionCookieHeader }
-    }, JSON.stringify({ requireAdminAuth: true }));
-    assert.equal(reenableAuth.status, 200);
-    assert.equal(reenableAuth.body.requireAdminAuth, true);
-
-    // 9. Add a second admin user with IP restriction via API
-    const addSecond = await send({
-      host: "127.0.0.1",
-      port,
-      method: "POST",
-      path: "/admin/api/admin-users",
-      headers: { Host: "127.0.0.1", "Content-Type": "application/json", Cookie: sessionCookieHeader }
-    }, JSON.stringify({ username: "lan_admin", password: "LanPassword123!", allowedIp: "192.168.1.99" }));
+    // This PC adds an IP-bound credential and manages it.
+    backend.from.address = "127.0.0.1";
+    const addSecond = await request("POST", "/admin/api/admin-users", { body: { username: "lan_admin", password: "LanPassword123!", allowedIp: "192.168.1.99" } });
     assert.equal(addSecond.status, 201);
     assert.equal(addSecond.body.user.allowedIp, "192.168.1.99");
     const lanAdminId = addSecond.body.user.id;
+    assert.equal((await request("GET", "/admin/api/admin-users")).body.users.length, 2);
+    const updateIp = await request("POST", `/admin/api/admin-users/${lanAdminId}/ip`, { body: { allowedIp: "10.0.0.88" } });
+    assert.equal(updateIp.status, 200);
+    assert.equal(updateIp.body.user.allowedIp, "10.0.0.88");
+    assert.equal((await request("POST", `/admin/api/admin-users/${lanAdminId}/password`, { body: { newPassword: "NewLanPassword123!" } })).status, 200);
 
-    // List admin users
-    const listRes = await send({
-      host: "127.0.0.1",
-      port,
-      method: "GET",
-      path: "/admin/api/admin-users",
-      headers: { Host: "127.0.0.1", Cookie: sessionCookieHeader }
-    });
-    assert.equal(listRes.status, 200);
-    assert.equal(listRes.body.users.length, 2);
+    // superadmin's device may not change lan_admin's password, only its own.
+    backend.from.address = "192.168.1.50";
+    assert.equal((await request("POST", `/admin/api/admin-users/${lanAdminId}/password`, { cookie, body: { newPassword: "Hijacked123456" } })).status, 403);
 
-    // Update IP for lan_admin via API
-    const updateIpRes = await send({
-      host: "127.0.0.1",
-      port,
-      method: "POST",
-      path: `/admin/api/admin-users/${lanAdminId}/ip`,
-      headers: { Host: "127.0.0.1", "Content-Type": "application/json", Cookie: sessionCookieHeader }
-    }, JSON.stringify({ allowedIp: "10.0.0.88" }));
-    assert.equal(updateIpRes.status, 200);
-    assert.equal(updateIpRes.body.user.allowedIp, "10.0.0.88");
-
-    // Update password for lan_admin via API
-    const updatePwRes = await send({
-      host: "127.0.0.1",
-      port,
-      method: "POST",
-      path: `/admin/api/admin-users/${lanAdminId}/password`,
-      headers: { Host: "127.0.0.1", "Content-Type": "application/json", Cookie: sessionCookieHeader }
-    }, JSON.stringify({ newPassword: "NewLanPassword123!" }));
-    assert.equal(updatePwRes.status, 200);
-
-    // Delete lan_admin via API
-    const deleteRes = await send({
-      host: "127.0.0.1",
-      port,
-      method: "DELETE",
-      path: `/admin/api/admin-users/${lanAdminId}`,
-      headers: { Host: "127.0.0.1", Cookie: sessionCookieHeader }
-    });
-    assert.equal(deleteRes.status, 200);
-    assert.equal(deleteRes.body.success, true);
-
-    // Cannot delete the only remaining admin
-    const deleteLastRes = await send({
-      host: "127.0.0.1",
-      port,
-      method: "DELETE",
-      path: `/admin/api/admin-users/${superadminId}`,
-      headers: { Host: "127.0.0.1", Cookie: sessionCookieHeader }
-    });
-    assert.equal(deleteLastRes.status, 400);
-
-    // 10. Logout -> clears session
-    const logoutRes = await send({
-      host: "127.0.0.1",
-      port,
-      method: "POST",
-      path: "/admin/api/auth/logout",
-      headers: { Host: "127.0.0.1", "Content-Type": "application/json", Cookie: sessionCookieHeader }
-    });
-    assert.equal(logoutRes.status, 200);
-
-    // Subsequent access with old cookie from remote returns 401
-    const overviewAfterLogout = await send({
-      host: "127.0.0.1",
-      port,
-      method: "GET",
-      path: "/admin/api/overview",
-      headers: { Host: "127.0.0.1", Cookie: sessionCookieHeader }
-    });
-    assert.equal(overviewAfterLogout.status, 401);
-
-    // But switching back to 127.0.0.1 without expired cookie: no session required, succeeds with 200!
     backend.from.address = "127.0.0.1";
-    const overviewLocalAfter = await send({
-      host: "127.0.0.1",
-      port,
-      method: "GET",
-      path: "/admin/api/overview",
-      headers: { Host: "127.0.0.1" }
-    });
-    assert.equal(overviewLocalAfter.status, 200);
+    assert.equal((await request("DELETE", `/admin/api/admin-users/${lanAdminId}`)).status, 200);
+    assert.equal((await request("DELETE", `/admin/api/admin-users/${superadminId}`)).status, 400);
 
-    // 11. Multi-device logout test: login on Device A and Device B
-    const loginDevA = await send({
-      host: "127.0.0.1",
-      port,
-      method: "POST",
-      path: "/admin/api/auth/login",
-      headers: { Host: "127.0.0.1", "Content-Type": "application/json" }
-    }, JSON.stringify({ username: "superadmin", password: "MasterPassword123!" }));
-    assert.equal(loginDevA.status, 200);
+    // Signing out ends the session; this PC is unaffected.
+    backend.from.address = "192.168.1.50";
+    assert.equal((await request("POST", "/admin/api/auth/logout", { cookie, body: {} })).status, 200);
+    assert.equal((await request("GET", "/admin/api/overview", { cookie })).status, 401);
+    backend.from.address = "127.0.0.1";
+    assert.equal((await request("GET", "/admin/api/overview")).status, 200);
+    // A stale cookie on this PC (a restart forgets sessions) doesn't lock the owner out.
+    assert.equal((await request("GET", "/admin/api/overview", { cookie })).status, 200);
 
-    const loginDevB = await send({
-      host: "127.0.0.1",
-      port,
-      method: "POST",
-      path: "/admin/api/auth/login",
-      headers: { Host: "127.0.0.1", "Content-Type": "application/json" }
-    }, JSON.stringify({ username: "superadmin", password: "MasterPassword123!" }));
-    assert.equal(loginDevB.status, 200);
+    // Signing out on one device signs the credential out on all of them.
+    backend.from.address = "192.168.1.50";
+    const loginA = await request("POST", "/admin/api/auth/login", { body: { username: "superadmin", password: "MasterPassword123!" } });
+    const loginB = await request("POST", "/admin/api/auth/login", { body: { username: "superadmin", password: "MasterPassword123!" } });
+    assert.notEqual(loginA.body.token, loginB.body.token);
+    assert.equal((await request("GET", "/admin/api/overview", { bearer: loginA.body.token })).status, 200);
+    assert.equal((await request("GET", "/admin/api/overview", { bearer: loginB.body.token })).status, 200);
+    await request("POST", "/admin/api/auth/logout", { bearer: loginA.body.token });
+    assert.equal((await request("GET", "/admin/api/overview", { bearer: loginB.body.token })).status, 401);
 
-    const tokenA = loginDevA.body.token;
-    const tokenB = loginDevB.body.token;
-    assert.notEqual(tokenA, tokenB);
+    // Switching remote admin off shuts other devices out again, sessions or not.
+    const loginC = await request("POST", "/admin/api/auth/login", { body: { username: "superadmin", password: "MasterPassword123!" } });
+    backend.from.address = "127.0.0.1";
+    assert.equal((await request("POST", "/admin/api/settings", { body: { remoteAdmin: false } })).status, 200);
+    backend.from.address = "192.168.1.50";
+    assert.equal((await request("GET", "/admin/api/overview", { bearer: loginC.body.token })).status, 403);
+    assert.equal((await request("GET", "/admin/api/overview")).status, 403);
+  } finally {
+    backend.close();
+  }
+});
 
-    // Both tokens valid
-    const checkA = await send({ host: "127.0.0.1", port, method: "GET", path: "/admin/api/overview", headers: { Host: "127.0.0.1", Authorization: `Bearer ${tokenA}` } });
-    assert.equal(checkA.status, 200);
-    const checkB = await send({ host: "127.0.0.1", port, method: "GET", path: "/admin/api/overview", headers: { Host: "127.0.0.1", Authorization: `Bearer ${tokenB}` } });
-    assert.equal(checkB.status, 200);
+test("admin HTTP routes: no way in for another device without a session", async () => {
+  const backend = await startAuthBackend();
+  const request = requester(backend);
+  try {
+    await request("POST", "/admin/api/admin-users", { body: { username: "owner", password: "OwnerPassword123" } });
+    await request("POST", "/admin/api/settings", { body: { remoteAdmin: true } });
 
-    // Sign out from Device A
-    await send({ host: "127.0.0.1", port, method: "POST", path: "/admin/api/auth/logout", headers: { Host: "127.0.0.1", Authorization: `Bearer ${tokenA}` } });
+    backend.from.address = "192.168.1.50";
+    // Every admin router: the Play with friends page's too (it has a router of its own, mounted first).
+    for (const [method, path, body] of [
+      ["GET", "/admin/api/network"],
+      ["POST", "/admin/api/network", { remoteAccess: true }],
+      ["GET", "/admin/api/settings"],
+      ["POST", "/admin/api/settings", { allowRegistration: true }],
+      ["GET", "/admin/api/accounts"],
+      ["GET", "/admin/api/admin-users"],
+      ["GET", "/ADMIN/API/OVERVIEW"],
+      ["GET", "/admin/api/overview/"],
+      ["GET", "/admin/api/auth/../overview"],
+      ["GET", "/admin/api/logs"]
+    ]) {
+      const response = await request(method, path, { body });
+      assert.equal(response.status, 401, `${method} ${path}`);
+    }
+    // Not even with a made-up token.
+    assert.equal((await request("GET", "/admin/api/network", { bearer: "0".repeat(64) })).status, 401);
 
-    // Device B's session is now revoked as well!
-    const checkBAfter = await send({ host: "127.0.0.1", port, method: "GET", path: "/admin/api/overview", headers: { Host: "127.0.0.1", Authorization: `Bearer ${tokenB}` } });
-    assert.equal(checkBAfter.status, 401);
+    // Signing out without a session signs nobody out.
+    const login = await request("POST", "/admin/api/auth/login", { body: { username: "owner", password: "OwnerPassword123" } });
+    assert.equal(login.status, 200);
+    await request("POST", "/admin/api/auth/logout", { body: { username: "owner" } });
+    await request("POST", "/admin/api/auth/logout", { body: {} });
+    assert.equal((await request("GET", "/admin/api/network", { bearer: login.body.token })).status, 200);
+
+    // Another site's page can't write through a signed-in browser.
+    const crossSite = await request("POST", "/admin/api/settings", { bearer: login.body.token, body: { allowRegistration: true }, headers: { Origin: "http://evil.example" } });
+    assert.equal(crossSite.status, 403);
+    // A hostname that isn't this backend's address (DNS rebinding) is refused.
+    assert.equal((await request("GET", "/admin/api/overview", { bearer: login.body.token, host: "evil.example" })).status, 403);
+
+    // An IP-bound credential works only from its device, and its sessions too.
+    backend.from.address = "127.0.0.1";
+    await request("POST", "/admin/api/admin-users", { body: { username: "bound", password: "BoundPassword123", allowedIp: "192.168.1.77" } });
+    backend.from.address = "192.168.1.50";
+    const wrongDevice = await request("POST", "/admin/api/auth/login", { body: { username: "bound", password: "BoundPassword123" } });
+    assert.equal(wrongDevice.status, 401);
+    assert.equal(wrongDevice.body.ipMismatch, true);
+    backend.from.address = "192.168.1.77";
+    const rightDevice = await request("POST", "/admin/api/auth/login", { body: { username: "bound", password: "BoundPassword123" } });
+    assert.equal(rightDevice.status, 200);
+    backend.from.address = "192.168.1.50";
+    assert.equal((await request("GET", "/admin/api/overview", { bearer: rightDevice.body.token })).status, 401);
+  } finally {
+    backend.close();
+  }
+});
+
+test("admin HTTP routes: the first credential can only be made on this PC", async () => {
+  const backend = await startAuthBackend();
+  const request = requester(backend);
+  try {
+    backend.from.address = "192.168.1.50";
+    assert.equal((await request("POST", "/admin/api/admin-users", { body: { username: "intruder", password: "IntruderPassword1" } })).status, 403);
+    assert.equal((await request("GET", "/admin/api/auth/me")).status, 403);
+    backend.from.address = "127.0.0.1";
+    assert.equal((await request("GET", "/admin/api/admin-users")).body.users.length, 0);
   } finally {
     backend.close();
   }

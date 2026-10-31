@@ -68,7 +68,7 @@ export function createContext(config) {
   if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
   if (config.seasonalEvents !== undefined) settings.update({ seasonalEvents: config.seasonalEvents });
   for (const key of ["battleRoyaleVbucks", "battleRoyaleRewards", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits", "cheats", "cheatAccounts",
-    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "regionFallback", "defaultFoundersAccess", "requireAdminAuth"]) {
+    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "regionFallback", "defaultFoundersAccess", "remoteAdmin"]) {
     if (config[key] !== undefined) settings.update({ [key]: config[key] });
   }
   const friends = createFriendStore(config.dataDir);

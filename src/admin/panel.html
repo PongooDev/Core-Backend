@@ -2089,6 +2089,8 @@
 
     /* ---------- admin auth modals & state ---------- */
     let currentAdmin = null;
+    // Whether this panel is open on the backend's own PC, which is always the admin and alone manages credentials.
+    let adminIsLocal = true;
     let lockoutTimer = null;
 
     function updateAdminUserBar(user) {
@@ -2096,7 +2098,7 @@
       const label = $("admin-username-label");
       const logoutBtn = $("admin-logout-btn");
       if (!bar || !label) return;
-      if (user && user.username) {
+      if (user && user.username && !user.isLocal) {
         label.textContent = user.username;
         if (logoutBtn) {
           logoutBtn.textContent = "Sign Out";
@@ -2213,10 +2215,6 @@
           try {
             const res = await api("/admin/api/admin-users", { username, password, allowedIp });
             toast(`Admin credential created for '${username}'`);
-            if (res.user) {
-              currentAdmin = res.user;
-              updateAdminUserBar(res.user);
-            }
             finish(res.user);
           } catch (err) {
             errorBanner.textContent = err.message || "Failed to create admin credential";
@@ -4998,24 +4996,24 @@
         el("section", { class: "panel" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
             el("div", { class: "actions", style: "gap:10px; align-items:center;" },
-              el("h2", { text: "Admin Menu Credentials" }),
-              (settings.requireAdminAuth && adminUsers.length > 0)
-                ? chip("Required", "good")
-                : (adminUsers.length === 0 ? chip("No Credentials Set", "warn") : chip("Disabled"))),
+              el("h2", { text: "Admin From Other Devices" }),
+              (settings.remoteAdmin && adminUsers.length > 0)
+                ? chip("On, sign-in required", "good")
+                : (adminUsers.length === 0 ? chip("This PC only") : chip("Off, this PC only"))),
             toggleSwitch(
-              Boolean(settings.requireAdminAuth && adminUsers.length > 0),
+              Boolean(settings.remoteAdmin && adminUsers.length > 0),
               (checked, e) => {
                 if (checked && adminUsers.length === 0) {
                   if (e && e.target) e.target.checked = false;
                   showSettings();
-                  return toast("Add at least one admin credential first before enabling admin login requirement", true);
+                  return toast("Add an admin credential before allowing admin from other devices", true);
                 }
-                save({ requireAdminAuth: checked }, checked ? "Admin login requirement enabled" : "Admin login requirement disabled");
+                save({ remoteAdmin: checked }, checked ? "Admin from other devices allowed (sign-in required)" : "Admin is this PC only");
               },
-              adminUsers.length === 0,
-              "Add at least one admin credential first before enabling admin login requirement"
+              adminUsers.length === 0 || !adminIsLocal,
+              !adminIsLocal ? "Only the backend's own PC can change this" : "Add an admin credential before allowing admin from other devices"
             )),
-          el("p", { class: "note", text: "Configure administrator credentials required to access this dashboard. Each credential can optionally be restricted to a specific client IP address." }),
+          el("p", { class: "note", text: "This PC always has the admin panel without signing in. Switch this on to let other devices sign in with an admin credential; a credential bound to an IP address works only from that device, and one without works from any device that can reach this backend. Credentials are managed on this PC." }),
 
           adminUsers.length ? table([
             ["Username", (u) => el("span", { class: "mono", style: "font-weight:600;", text: u.username })],
@@ -5023,15 +5021,15 @@
             ["Created", (u) => ago(u.created)],
             ["Last Login", (u) => u.lastLogin ? `${ago(u.lastLogin)} (${u.lastIp || "—"})` : el("span", { class: "muted", text: "Never" })],
             ["Actions", (u) => el("div", { class: "actions", style: "gap:6px;" },
-              btn("Change Password", async () => {
+              adminIsLocal || currentAdmin?.id === u.id ? btn("Change Password", async () => {
                 const changed = await changeAdminPasswordModal(u);
                 if (changed) showSettings();
-              }, "ghost"),
-              btn("Edit IP", async () => {
+              }, "ghost") : null,
+              !adminIsLocal ? null : btn("Edit IP", async () => {
                 const updated = await editAdminIpModal(u);
                 if (updated) showSettings();
               }, "ghost"),
-              adminUsers.length > 1 ? btn("✕ Remove", async () => {
+              adminIsLocal && adminUsers.length > 1 ? btn("✕ Remove", async () => {
                 const ok = await confirmModal(`Are you sure you want to remove admin credential "${u.username}"? Active sessions for this credential will be revoked immediately.`, {
                   title: "Remove Admin Credential",
                   confirmText: "Remove Credential",
@@ -5042,13 +5040,13 @@
                 showSettings();
               }, "danger") : null
             )]
-          ], adminUsers) : el("div", { class: "empty", style: "margin: 16px 0;", text: "No admin credentials created yet. Click '+ Add Admin Credential' below to secure this console." }),
+          ], adminUsers) : el("div", { class: "empty", style: "margin: 16px 0;", text: "No admin credentials yet. Add one to let other devices sign in to this panel." }),
 
-          el("div", { class: "actions", style: "margin-top:14px;" },
+          adminIsLocal ? el("div", { class: "actions", style: "margin-top:14px;" },
             btn("+ Add Admin Credential", async () => {
               const created = await addAdminCredentialModal();
               if (created) showSettings();
-            }, "primary"))
+            }, "primary")) : null
         ),
 
         el("section", { class: "panel" },
@@ -5388,7 +5386,6 @@
             return;
           }
 
-          sessionStorage.removeItem("admin_signed_out");
           currentAdmin = data.user;
           updateAdminUserBar(data.user);
           hideLoginScreen();
@@ -5428,24 +5425,21 @@
           await fetch("/admin/api/auth/logout", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId: currentAdmin?.id, username: currentAdmin?.username })
+            body: "{}"
           });
         } catch {}
-        sessionStorage.setItem("admin_signed_out", "1");
         currentAdmin = null;
         updateAdminUserBar(null);
+        if (adminIsLocal) return location.reload();
         showLoginScreen("You have been signed out.");
       });
     }
 
     async function initAuthAndStart() {
       try {
-        if (sessionStorage.getItem("admin_signed_out") === "1") {
-          showLoginScreen("You have been signed out.");
-          return;
-        }
         const res = await fetch("/admin/api/auth/me");
         const data = await res.json().catch(() => ({}));
+        adminIsLocal = data.isLoopback === true;
         if (data.sessionExpired) {
           currentAdmin = null;
           updateAdminUserBar(null);

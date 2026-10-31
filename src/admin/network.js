@@ -2,12 +2,12 @@ import express from "express";
 import { sendError } from "../errors.js";
 import { sessionSummary } from "../matchmaking/sessions.js";
 import { lanAddresses } from "../network.js";
-import { createAdminNetworkGate, createPanelRequestGate } from "./local.js";
+import { createAdminGate } from "./local.js";
 
 // The admin panel's "Play with friends" page: remote access, the public address, and what friends need.
-export function networkAdminRoutes({ network, sessions, adminAuth }) {
+export function networkAdminRoutes({ network, sessions, adminAuth, settings }) {
   const router = express.Router();
-  router.use("/admin/api/network", createAdminNetworkGate(adminAuth), createPanelRequestGate(adminAuth));
+  router.use("/admin/api/network", createAdminGate({ adminAuth, settings }));
 
   const describe = (req) => {
     const resolution = network.resolution();

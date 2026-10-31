@@ -41,7 +41,9 @@ const defaults = {
   // backend, each an IP address. This PC (loopback) always may; nobody else unless listed.
   allowedHostingIps: defaultHostingIps,
   defaultFoundersAccess: true,
-  requireAdminAuth: false
+  // Admin from other devices (Core-Backend #134, admin/local.js createAdminGate): off, the admin panel answers only this PC.
+  // On, a device an admin credential allows may sign in. Only this PC can switch it.
+  remoteAdmin: false
 };
 
 // Who may cheat: the modes, and how long one entry of cheatAccounts may be.
@@ -178,7 +180,7 @@ export function createSettingsStore(dataDir) {
       if (typeof loaded.battleRoyaleVbucks !== "boolean") settings.battleRoyaleVbucks = defaults.battleRoyaleVbucks;
       if (typeof loaded.loginMessageEnabled === "boolean") settings.loginMessageEnabled = loaded.loginMessageEnabled;
       if (typeof loaded.defaultFoundersAccess === "boolean") settings.defaultFoundersAccess = loaded.defaultFoundersAccess;
-      if (typeof loaded.requireAdminAuth === "boolean") settings.requireAdminAuth = loaded.requireAdminAuth;
+      if (typeof loaded.remoteAdmin === "boolean") settings.remoteAdmin = loaded.remoteAdmin;
       // Before #124 the amounts were #100's, which kept paying only where they were turned on.
       settings.battleRoyaleRewards = loaded.battleRoyaleRewards && typeof loaded.battleRoyaleRewards === "object"
         ? battleRoyaleRewards(loaded.battleRoyaleRewards)
@@ -246,7 +248,7 @@ export function createSettingsStore(dataDir) {
       return {
         ...settings,
         defaultFoundersAccess: settings.defaultFoundersAccess !== false,
-        requireAdminAuth: settings.requireAdminAuth === true,
+        remoteAdmin: settings.remoteAdmin === true,
         allowedHostingIps: [...(settings.allowedHostingIps ?? defaults.allowedHostingIps)],
         structureLimits: { ...settings.structureLimits },
         battleRoyaleRewards: JSON.parse(JSON.stringify(settings.battleRoyaleRewards)),
@@ -269,7 +271,7 @@ export function createSettingsStore(dataDir) {
         delete settings.defaultFoundersAccess;
       }
       if (typeof partial.battleRoyaleVbucks === "boolean") settings.battleRoyaleVbucks = partial.battleRoyaleVbucks;
-      if (typeof partial.requireAdminAuth === "boolean") settings.requireAdminAuth = partial.requireAdminAuth;
+      if (typeof partial.remoteAdmin === "boolean") settings.remoteAdmin = partial.remoteAdmin;
       if (typeof partial.loginMessageEnabled === "boolean") {
         settings.loginMessageEnabled = partial.loginMessageEnabled;
       } else if (partial.loginMessageEnabled === null) {
