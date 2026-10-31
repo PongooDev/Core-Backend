@@ -89,6 +89,54 @@ test("a failed or abandoned primary mission takes back the progress it made", as
   }
 });
 
+// Issue #133: "Plankies Go Home" (plankertonquest_filler_3_d3), "Smash 3 Anomalies in successful missions in a 28+
+// zone". Its objective complete_anomaly_2_diff3_v2 (stat row complete_anomaly_2_diff3: Complete,
+// Stat.Mission.Secondary.Anomaly, Zone.Difficulty >= 16) has bRequirePrimaryMissionCompletion, so like the real game an
+// anomaly smashed counts only once the zone's primary mission is won: the gameserver sends UpdateQuests the moment
+// CloseRift succeeds (the in-zone counter shows it), a won mission keeps it, a failed or left one takes it back.
+test("anomalies smashed count once the primary mission is won, and are lost with a failed or left one", async () => {
+  const anomalyQuest = "Quest:plankertonquest_filler_3_d3";
+  const [objective] = getQuest("plankertonquest_filler_3_d3").objectives;
+  assert.deepEqual([objective.name, objective.stat, objective.count, objective.requirePrimaryMissionCompletion],
+    ["complete_anomaly_2_diff3_v2", "complete_anomaly_2_diff3", 3, true]);
+  const backend = await startBackend();
+  try {
+    const { send, start, end, accountId } = await setup(backend, "Anomalies");
+    await post(backend.port, `/admin/api/accounts/${accountId}/grant`, undefined, { templateId: anomalyQuest, quantity: 1 });
+    const anomaly = [{ statName: "complete_anomaly_2_diff3_v2", count: 1 }];
+    const smashed = async () => {
+      const { profile } = (await send("QueryProfile", {})).body.profileChanges[0];
+      const { attributes } = Object.values(profile.items).find((item) => item.templateId === anomalyQuest);
+      return [attributes.completion_complete_anomaly_2_diff3_v2 ?? 0, attributes.quest_state];
+    };
+
+    // Smashed, then the mission failed.
+    await start();
+    await send("UpdateQuests", { advance: anomaly });
+    assert.deepEqual(await smashed(), [1, "Active"]);
+    await end("Failed");
+    assert.deepEqual(await smashed(), [0, "Active"]);
+
+    // Smashed, then left before the end: the next mission's start takes it back.
+    await start();
+    await send("UpdateQuests", { advance: anomaly });
+    await start();
+    assert.deepEqual(await smashed(), [0, "Active"]);
+    await end("Succeeded");
+
+    // Won missions keep theirs, and the third completes the quest when its mission is won.
+    for (let won = 1; won <= 3; won++) {
+      await start();
+      await send("UpdateQuests", { advance: anomaly });
+      assert.deepEqual(await smashed(), [won, "Active"]);
+      await end("Succeeded");
+    }
+    assert.notEqual((await smashed())[1], "Active");
+  } finally {
+    backend.close();
+  }
+});
+
 // The gameserver's earnScore handler (0x762AE0) adds an ExperienceDelta and finalizes the player's experience; the
 // results screen reads the XP once it's finalized (Results_CommanderXP.Initialize -> GetXpInfo). So at zone end the
 // first earnScore notification it gets has to carry the XP: CoreV2 sends EarnScore before EndPrimaryMission, whose own
