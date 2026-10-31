@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { fortnitemares, isEventActive } from "../events/events.js";
+import { currentEventsConfig, fortnitemares, isEventActive } from "../events/events.js";
 import { perBuild } from "../gamedata/read.js";
 import { difficultyOf, missionMeets, missionObjectives, questPath } from "./quests.js";
 
@@ -181,7 +181,17 @@ const layout = perBuild((read) => {
 export function hexsylvania() {
   if (!isEventActive(fortnitemares)) return null;
   const made = layout();
-  return made && structuredClone(made);
+  if (!made) return null;
+  const clone = structuredClone(made);
+  const config = currentEventsConfig();
+  if (config?.hexsylvaniaGates === "open") {
+    for (const region of clone.data.regions) {
+      if (region.requirements?.questDefinition) {
+        delete region.requirements.questDefinition;
+      }
+    }
+  }
+  return clone;
 }
 
 export const isHexsylvania = (theaterId) => theaterId === hexsylvaniaId;
@@ -191,5 +201,7 @@ export const isHexsylvania = (theaterId) => theaterId === hexsylvaniaId;
 // shows 50 Candy among its rewards (Core-Backend #66), so Core's (🟡) is 45 plus the zone's difficulty (50 in a 5 zone,
 // 85 in a 40 one), before the reward chest's level multiplies it.
 export function candyReward(rowName) {
-  return 45 + difficultyOf(rowName);
+  const base = 45 + difficultyOf(rowName);
+  const multiplier = currentEventsConfig()?.candyMultiplier ?? 1.0;
+  return Math.round(base * multiplier);
 }

@@ -1760,6 +1760,19 @@
             <line x1="3" y1="6" x2="21" y2="6" />
             <path d="M16 10a4 4 0 0 1-8 0" />
           </svg><span>Shop</span></a>
+        <a href="#/battlepass" data-view="battlepass"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="8" r="6" />
+            <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11" />
+          </svg><span>Battle Pass</span></a>
+        <a href="#/events" data-view="events"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+            <path d="m9 16 2 2 4-4" />
+          </svg><span>Events</span></a>
         <a href="#/logs" data-view="logs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="3" y="4" width="18" height="16" rx="2.5" />
@@ -1847,6 +1860,107 @@
       stormshields: "Storm shields", skilltree: "Skill tree", banners: "Banners", quests: "Quests", world: "Backpack and storage", other: "Other"
     };
     const kindLabel = (key) => kinds[key] ?? key;
+    const seasonSelector = (selected = "1", onchange) => el("div", { class: "season-picker", style: "display:inline-flex; align-items:center; gap:8px;" },
+      el("span", { class: "muted font-semibold", style: "font-size:12px; letter-spacing:0.02em; text-transform:uppercase;", text: "Season:" }),
+      el("select", {
+        class: "field font-semibold",
+        style: "font-size:13px; font-weight:700; padding:4px 10px; border-radius:var(--radius-sm); background:var(--surface-2); border:1px solid var(--line); color:var(--text); cursor:pointer;",
+        onchange: (e) => onchange?.(e.target.value)
+      },
+        el("option", { value: "1", text: "Season 1 (1.8 – 1.11)", selected: String(selected) === "1" })
+      )
+    );
+
+    const icon = (name, size = 16) => {
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("viewBox", "0 0 24 24");
+      svg.setAttribute("width", String(size));
+      svg.setAttribute("height", String(size));
+      svg.setAttribute("fill", "none");
+      svg.setAttribute("stroke", "currentColor");
+      svg.setAttribute("stroke-width", "1.8");
+      svg.setAttribute("stroke-linecap", "round");
+      svg.setAttribute("stroke-linejoin", "round");
+      svg.setAttribute("aria-hidden", "true");
+      svg.style.flexShrink = "0";
+
+      const iconPaths = {
+        castle: [
+          { tag: "path", d: "M22 20v-9H2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2Z" },
+          { tag: "path", d: "M18 11V4H6v7" },
+          { tag: "path", d: "M15 22v-4a3 3 0 0 0-6 0v4" },
+          { tag: "path", d: "M22 11V9M2 11V9M6 4V2M18 4V2M10 4V2M14 4V2" }
+        ],
+        coins: [
+          { tag: "circle", cx: "8", cy: "8", r: "6" },
+          { tag: "path", d: "M18.09 10.37A6 6 0 1 1 10.34 18" },
+          { tag: "path", d: "M7 6h1v4" }
+        ],
+        zap: [
+          { tag: "polygon", points: "13 2 3 14 12 14 11 22 21 10 12 10 13 2" }
+        ],
+        ticket: [
+          { tag: "path", d: "M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" },
+          { tag: "path", d: "M13 5v2M13 11v2M13 17v2" }
+        ],
+        package: [
+          { tag: "path", d: "m7.5 4.27 9 5.15" },
+          { tag: "path", d: "M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" },
+          { tag: "path", d: "m3.3 7 8.7 5 8.7-5" },
+          { tag: "path", d: "M12 22V12" }
+        ],
+        refresh: [
+          { tag: "path", d: "M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" },
+          { tag: "path", d: "M21 3v5h-5" },
+          { tag: "path", d: "M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" },
+          { tag: "path", d: "M8 16H3v5" }
+        ],
+        sliders: [
+          { tag: "line", x1: "4", x2: "4", y1: "21", y2: "14" },
+          { tag: "line", x1: "4", x2: "4", y1: "10", y2: "3" },
+          { tag: "line", x1: "12", x2: "12", y1: "21", y2: "12" },
+          { tag: "line", x1: "12", x2: "12", y1: "8", y2: "3" },
+          { tag: "line", x1: "20", x2: "20", y1: "21", y2: "16" },
+          { tag: "line", x1: "20", x2: "20", y1: "12", y2: "3" },
+          { tag: "line", x1: "1", x2: "7", y1: "14", y2: "14" },
+          { tag: "line", x1: "9", x2: "15", y1: "8", y2: "8" },
+          { tag: "line", x1: "17", x2: "23", y1: "16", y2: "16" }
+        ],
+        calendar: [
+          { tag: "rect", x: "3", y: "4", width: "18", height: "18", rx: "2", ry: "2" },
+          { tag: "line", x1: "16", x2: "16", y1: "2", y2: "6" },
+          { tag: "line", x1: "8", x2: "8", y1: "2", y2: "6" },
+          { tag: "line", x1: "3", x2: "21", y1: "10", y2: "10" }
+        ],
+        clock: [
+          { tag: "circle", cx: "12", cy: "12", r: "10" },
+          { tag: "polyline", points: "12 6 12 12 16 14" }
+        ],
+        award: [
+          { tag: "circle", cx: "12", cy: "8", r: "6" },
+          { tag: "path", d: "M15.477 12.89 17 22l-5-3-5 3 1.523-9.11" }
+        ],
+        lock: [
+          { tag: "rect", x: "3", y: "11", width: "18", height: "11", rx: "2", ry: "2" },
+          { tag: "path", d: "M7 11V7a5 5 0 0 1 10 0v4" }
+        ],
+        unlock: [
+          { tag: "rect", x: "3", y: "11", width: "18", height: "11", rx: "2", ry: "2" },
+          { tag: "path", d: "M7 11V7a5 5 0 0 1 9.9-1" }
+        ]
+      };
+
+      const elements = iconPaths[name] || [];
+      for (const item of elements) {
+        const elNode = document.createElementNS("http://www.w3.org/2000/svg", item.tag);
+        for (const [k, v] of Object.entries(item)) {
+          if (k !== "tag") elNode.setAttribute(k, v);
+        }
+        svg.appendChild(elNode);
+      }
+      return svg;
+    };
+
 
     async function api(path, body, method) {
       const options = body === undefined && !method ? undefined : {
@@ -2668,7 +2782,7 @@
       const [view = "dashboard", accountId, tab] = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
       for (const timer of state.timers) clearInterval(timer);
       state.timers = [];
-      const next = ["dashboard", "players", "sessions", "friends", "news", "shop", "reports", "logs", "settings"].includes(view) ? view : "dashboard";
+      const next = ["dashboard", "players", "sessions", "friends", "news", "shop", "battlepass", "events", "reports", "logs", "settings"].includes(view) ? view : "dashboard";
       if (next !== state.view || !$("view").childElementCount) $("view").replaceChildren(el("div", { class: "empty", text: "Loading…" }));
       state.view = next;
       for (const link of document.querySelectorAll("nav.nav a")) link.setAttribute("aria-current", link.dataset.view === state.view ? "page" : "false");
@@ -2683,7 +2797,7 @@
       if (state.view === "reports") {
         state.reportId = accountId || null;
       }
-      ({ dashboard: showDashboard, players: showPlayers, sessions: showSessions, friends: showFriends, news: showNews, shop: showShop, reports: showReports, logs: showLogs, settings: showSettings })[state.view]();
+      ({ dashboard: showDashboard, players: showPlayers, sessions: showSessions, friends: showFriends, news: showNews, shop: showShop, battlepass: showBattlePass, events: showEvents, reports: showReports, logs: showLogs, settings: showSettings })[state.view]();
     }
     window.addEventListener("hashchange", route);
     const every = (ms, fn) => state.timers.push(setInterval(fn, ms));
@@ -3634,6 +3748,7 @@
 
       const custom = data.custom || {};
       const defaults = data.defaults || {};
+      const battleRoyaleNewsEnabled = data.battleRoyaleNewsEnabled !== false;
       const loginMessageEnabled = data.loginMessageEnabled !== false;
 
       // 1. Battle Royale Lobby News
@@ -3645,13 +3760,15 @@
         class: "field",
         value: brCustom?.title ?? "",
         placeholder: `Default: ${brDefault.title}`,
-        style: "width:100%"
+        style: "width:100%",
+        disabled: !battleRoyaleNewsEnabled
       });
       const brBody = el("textarea", {
         class: "field",
         rows: "3",
         placeholder: `Default: ${brDefault.body}`,
-        style: "width:100%; resize:vertical; font-family:inherit; min-height:80px;"
+        style: "width:100%; resize:vertical; font-family:inherit; min-height:80px;",
+        disabled: !battleRoyaleNewsEnabled
       });
       brBody.value = brCustom?.body ?? "";
 
@@ -3661,19 +3778,19 @@
         const payload = (title || body) ? { battleRoyaleNews: { title, body } } : { battleRoyaleNews: null };
         await act(api("/admin/api/news", payload), payload.battleRoyaleNews ? "Battle Royale news updated" : "Battle Royale news reset to 1:1 default");
         showNews();
-      }, "primary");
+      }, "primary", { disabled: !battleRoyaleNewsEnabled });
 
       const resetBrBtn = btn("Reset to Default", async () => {
         brTitle.value = "";
         brBody.value = "";
         await act(api("/admin/api/news", { battleRoyaleNews: null }), "Battle Royale news reset to 1:1 default");
         showNews();
-      }, "ghost");
+      }, "ghost", { disabled: !battleRoyaleNewsEnabled });
 
       brTitle.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
           e.preventDefault();
-          saveBrBtn.click();
+          if (battleRoyaleNewsEnabled) saveBrBtn.click();
         }
       });
 
@@ -3813,9 +3930,21 @@
           el("div", { class: "panel-head" },
             el("div", { style: "display:flex; align-items:center; gap:10px;" },
               el("h2", { text: "Battle Royale Lobby News" }),
-              isBrCustom ? chip("Customized", "sky") : chip("Default (1:1)")),
-            chip("AthenaNews", "sky")),
-          el("p", { class: "note", text: "Displayed in the Battle Royale lobby news box (1.7.2+, and the News tab on 1.9). Leave blank to use authentic 1:1 defaults. Use {version} to show the client's version automatically." }),
+              battleRoyaleNewsEnabled
+                ? (isBrCustom ? chip("Customized", "sky") : chip("Default (1:1)"))
+                : chip("Disabled", "warn")),
+            el("div", { style: "display:flex; align-items:center; gap:12px;" },
+              chip("AthenaNews", "sky"),
+              toggleSwitch(battleRoyaleNewsEnabled, async (checked) => {
+                await act(api("/admin/api/news", { battleRoyaleNewsEnabled: checked }), checked ? "Battle Royale news enabled" : "Battle Royale news disabled");
+                showNews();
+              }))),
+          el("p", {
+            class: "note",
+            text: battleRoyaleNewsEnabled
+              ? "Displayed in the Battle Royale lobby news box (1.7.2+, and the News tab on 1.9). Leave blank to use authentic 1:1 defaults. Use {version} to show the client's version automatically."
+              : "Battle Royale lobby news is disabled. The news widget in the lobby (or News tab in 1.9+) will be hidden on connected clients."
+          }),
           el("div", { style: "display:flex; flex-direction:column; gap:12px; margin-top:14px;" },
             el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
               el("span", { text: "Title" }),
@@ -4825,6 +4954,690 @@
           : [codesSection])
       );
     }
+    /* ---------- battle pass (season 1) ---------- */
+    async function showBattlePass() {
+      const data = await act(api("/admin/api/battlepass/overview"));
+      if (!data || state.view !== "battlepass") return;
+
+      const cfg = data.config || {};
+      const form = {
+        levelRequirementsEnabled: cfg.levelRequirementsEnabled !== false,
+        xpMultiplier: Number(cfg.xpMultiplier ?? 1.0),
+        maxSeasonLevel: Number(cfg.maxSeasonLevel ?? 100),
+        milestones: (data.milestones || []).map((m) => ({
+          templateId: m.templateId,
+          name: m.name,
+          type: m.type,
+          rarity: m.rarity,
+          seasonLevel: Number(m.seasonLevel ?? 1),
+          price: Number(m.price ?? 0)
+        }))
+      };
+
+      const seasonTarget = new Date(data.seasonEnd).getTime();
+      const seasonResetDate = new Date(seasonTarget);
+
+      const formatDiff = (target) => {
+        const diff = target - Date.now();
+        if (diff <= 0) return "Rotating now…";
+        const totalSecs = Math.floor(diff / 1000);
+        const s = totalSecs % 60;
+        const totalMins = Math.floor(totalSecs / 60);
+        const m = totalMins % 60;
+        const totalHours = Math.floor(totalMins / 60);
+        const h = totalHours % 24;
+        const d = Math.floor(totalHours / 24);
+        if (d > 0) return `${d}d ${h}h ${m}m ${s}s`;
+        if (h > 0) return `${h}h ${m}m ${s}s`;
+        return `${m}m ${s}s`;
+      };
+
+      const seasonTimerEl = el("span", { style: "font-family:var(--mono); font-size:24px; font-weight:700; letter-spacing:-0.02em; display:inline-block;", text: formatDiff(seasonTarget) });
+
+      every(1000, () => {
+        seasonTimerEl.textContent = formatDiff(seasonTarget);
+      });
+
+      const saveConfig = async () => {
+        const payload = {
+          season: 1,
+          levelRequirementsEnabled: form.levelRequirementsEnabled,
+          xpMultiplier: form.xpMultiplier,
+          maxSeasonLevel: form.maxSeasonLevel,
+          milestones: form.milestones.map((m) => ({
+            templateId: m.templateId,
+            seasonLevel: m.seasonLevel,
+            price: m.price
+          }))
+        };
+        await act(api("/admin/api/battlepass/config", payload), "Battle Pass configuration saved");
+        showBattlePass();
+      };
+
+      const milestoneCards = el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:14px; margin-top:14px;" },
+        ...form.milestones.map((m) => {
+          const badgeEl = chip(form.levelRequirementsEnabled ? `Level ${m.seasonLevel}` : "Unlocked (Level 1)", "accent");
+          badgeEl.setAttribute("data-level-badge", "true");
+
+          const levelInput = el("input", {
+            class: "field num",
+            type: "number",
+            min: "1",
+            max: String(form.maxSeasonLevel),
+            value: String(m.seasonLevel),
+            style: "width:85px;",
+            oninput: (e) => {
+              m.seasonLevel = Math.max(1, Math.min(form.maxSeasonLevel, parseInt(e.target.value, 10) || 1));
+              if (form.levelRequirementsEnabled) badgeEl.textContent = `Level ${m.seasonLevel}`;
+            }
+          });
+
+          const priceInput = el("input", {
+            class: "field num",
+            type: "number",
+            min: "0",
+            max: "100000",
+            value: String(m.price),
+            style: "width:100px;",
+            oninput: (e) => {
+              m.price = Math.max(0, Math.min(100000, parseInt(e.target.value, 10) || 0));
+            }
+          });
+
+          return el("div", {
+            style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;"
+          },
+            el("div", {},
+              el("div", { style: "display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;" },
+                badgeEl,
+                el("span", { class: "muted font-semibold", style: "font-size:12px;", text: m.type })),
+              el("div", { style: "font-weight:700; font-size:15px;", text: m.name }),
+              el("div", { class: "mono muted", style: "font-size:11px; margin-top:4px;", text: m.templateId })),
+
+            el("div", { style: "margin-top:16px; border-top:1px solid var(--line); padding-top:12px; display:flex; flex-direction:column; gap:10px;" },
+              el("div", { style: "display:flex; justify-content:space-between; align-items:center;" },
+                el("span", { class: "muted font-semibold", style: "font-size:12px;", text: "Unlock Level" }),
+                levelInput),
+              el("div", { style: "display:flex; justify-content:space-between; align-items:center;" },
+                el("span", { class: "muted font-semibold", style: "font-size:12px;", text: "Price (V-Bucks)" }),
+                priceInput))
+          );
+        })
+      );
+
+      const levelReqToggle = toggleSwitch(form.levelRequirementsEnabled, (checked) => {
+        form.levelRequirementsEnabled = checked;
+        milestoneCards.querySelectorAll("[data-level-badge]").forEach((badge, idx) => {
+          const m = form.milestones[idx];
+          if (m) {
+            badge.textContent = checked ? `Level ${m.seasonLevel}` : "Unlocked (Level 1)";
+          }
+        });
+      });
+
+      const xpMultiplierInput = el("input", {
+        class: "field num",
+        type: "number",
+        step: "0.1",
+        min: "0.1",
+        max: "10.0",
+        value: String(form.xpMultiplier),
+        style: "width:100px;",
+        oninput: (e) => {
+          form.xpMultiplier = Math.max(0.1, Math.min(10.0, parseFloat(e.target.value) || 1.0));
+        }
+      });
+
+      const maxLevelInput = el("input", {
+        class: "field num",
+        type: "number",
+        min: "10",
+        max: "1000",
+        value: String(form.maxSeasonLevel),
+        style: "width:100px;",
+        oninput: (e) => {
+          form.maxSeasonLevel = Math.max(10, Math.min(1000, parseInt(e.target.value, 10) || 100));
+        }
+      });
+
+      $("view").replaceChildren(
+        // View Header
+        el("div", { class: "view-head" },
+          el("div", {},
+            el("div", { style: "display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:4px;" },
+              el("h1", { text: "Battle Pass & Progression", style: "margin:0;" }),
+              seasonSelector("1", () => showBattlePass())),
+            el("div", { class: "muted", text: "Configure Season 1 Season Shop unlock requirements, catalog item prices, and match leveling rates" })),
+          el("div", { class: "actions" },
+            btn("Save Configuration", saveConfig, "primary"),
+            btn("Reset Defaults", async () => {
+              if (await confirmModal("Reset Season 1 unlock levels and prices back to authentic 2017 defaults (500, 1200, 1200, 1500 V-Bucks)?", { title: "Reset Season 1 Defaults" })) {
+                await act(api("/admin/api/battlepass/actions/reset-defaults", {}), "Reset to Season 1 defaults");
+                showBattlePass();
+              }
+            }, "ghost"),
+            btn("Refresh", showBattlePass, "ghost"))),
+
+        // Quick Stats Row
+        el("div", { class: "tiles" },
+          tile("Active Progression", "Season 1 (Season Shop)", "accent text"),
+          tile("Level Unlock Rule", form.levelRequirementsEnabled ? "Level Locked" : "Unlocked (Level 1)", form.levelRequirementsEnabled ? "accent text" : "text"),
+          tile("Season 1 Clock", [seasonTimerEl, el("span", { class: "sub", text: `Ends ${seasonResetDate.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}` })]),
+          tile("Match XP Multiplier", `${form.xpMultiplier.toFixed(1)}×`, "text")),
+
+        // Section 1: Progression Rules & Match Leveling
+        el("section", { class: "panel", style: "margin-top:16px" },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" },
+            el("div", { class: "actions" },
+              el("h2", { text: "Season 1 Progression & Leveling Rules" }),
+              form.levelRequirementsEnabled ? chip("Level Locked", "accent") : chip("Unlocked (Level 1)", "good")),
+            levelReqToggle),
+          el("p", { class: "note", text: "Controls whether players must reach specific season levels in Battle Royale before Season Shop items become purchasable. Turning requirements off unlocks all catalog items at Level 1." }),
+          el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px; margin-top:14px;" },
+            el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
+              el("div", {},
+                el("div", { style: "display:flex; align-items:center; gap:8px; font-weight:700; font-size:14px;" }, icon("zap", 16), el("span", { text: "Match Season XP Multiplier" })),
+                el("div", { class: "muted", style: "font-size:12px; margin-top:4px; line-height:1.4;", text: "Multiplies season XP earned by players upon completing Battle Royale matches (Default 1.0x). Range: 0.1x to 10.0x." })),
+              el("div", { style: "margin-top:12px; display:flex; align-items:center; gap:8px;" },
+                xpMultiplierInput,
+                el("span", { class: "muted font-semibold", text: "× multiplier" }))),
+
+            el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
+              el("div", {},
+                el("div", { style: "display:flex; align-items:center; gap:8px; font-weight:700; font-size:14px;" }, icon("award", 16), el("span", { text: "Maximum Season Level Cap" })),
+                el("div", { class: "muted", style: "font-size:12px; margin-top:4px; line-height:1.4;", text: "Upper limit on player season level progression in Season 1 (Default 100)." })),
+              el("div", { style: "margin-top:12px; display:flex; align-items:center; gap:8px;" },
+                maxLevelInput,
+                el("span", { class: "muted font-semibold", text: "max level" })))
+          )
+        ),
+
+        // Section 2: Milestone Items
+        el("section", { class: "panel", style: "margin-top:16px" },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" },
+            el("h2", { text: "Season 1 Catalog Milestone Items" }),
+            chip(`${form.milestones.length} Items`, "accent")),
+          el("p", { class: "note", text: "Items offered in Battle Royale's Season Shop (BRSeasonStorefront) from version 1.8.2+. Set custom level thresholds and V-Bucks prices per item." }),
+          milestoneCards
+        ),
+
+        // Bottom Save Action Bar
+        el("div", { class: "actions", style: "margin-top:24px; padding:16px 20px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius); justify-content:space-between; align-items:center;" },
+          el("div", {},
+            el("div", { style: "font-weight:700; font-size:14px;", text: "Ready to apply Season 1 changes?" }),
+            el("div", { class: "muted", style: "font-size:12px;", text: "Saves unlock level requirements, milestone prices, and XP multipliers immediately." })),
+          el("div", { class: "actions" },
+            btn("Save Configuration", saveConfig, "primary")))
+      );
+    }
+
+    /* ---------- events & seasons ---------- */
+    async function showEvents() {
+      const data = await act(api("/admin/api/events/overview"));
+      if (!data || state.view !== "events") return;
+
+      const cfg = data.eventsConfig || {};
+
+      const form = {
+        mode: cfg.mode || "auto",
+        customFlags: Array.isArray(cfg.customFlags) ? [...cfg.customFlags] : [],
+        hexsylvaniaGates: cfg.hexsylvaniaGates || "standard",
+        candyMultiplier: Number(cfg.candyMultiplier ?? 1.0),
+        stormAlertQuota: Number(cfg.stormAlertQuota ?? 10),
+        stormTicketMultiplier: Number(cfg.stormTicketMultiplier ?? 1.0),
+        candyPerLlama: Number(cfg.candyPerLlama ?? 500),
+        autoConvertCandy: cfg.autoConvertCandy !== false,
+        rotationHour: Number(cfg.rotationHour ?? 0),
+        weeklyDurationDays: Number(cfg.weeklyDurationDays ?? 7),
+        customSeasonEnd: cfg.customSeasonEnd ? cfg.customSeasonEnd.slice(0, 16) : "",
+        calendarCacheMinutes: Number(cfg.calendarCacheMinutes ?? 60)
+      };
+
+      const dailyTarget = new Date(data.calendar.dailyStoreEnd).getTime();
+      const weeklyTarget = new Date(data.calendar.weeklyStoreEnd).getTime();
+      const seasonTarget = new Date(data.calendar.seasonEnd).getTime();
+
+      const formatDiff = (target) => {
+        const diff = target - Date.now();
+        if (diff <= 0) return "Rotating now…";
+        const totalSecs = Math.floor(diff / 1000);
+        const s = totalSecs % 60;
+        const totalMins = Math.floor(totalSecs / 60);
+        const m = totalMins % 60;
+        const totalHours = Math.floor(totalMins / 60);
+        const h = totalHours % 24;
+        const d = Math.floor(totalHours / 24);
+        if (d > 0) return `${d}d ${h}h ${m}m ${s}s`;
+        if (h > 0) return `${h}h ${m}m ${s}s`;
+        return `${m}m ${s}s`;
+      };
+
+      const dailyResetDate = new Date(dailyTarget);
+      const weeklyResetDate = new Date(weeklyTarget);
+      const seasonResetDate = new Date(seasonTarget);
+
+      const dailyTimerEl = el("span", { style: "font-family:var(--mono); font-size:24px; font-weight:700; letter-spacing:-0.02em; display:inline-block;", text: formatDiff(dailyTarget) });
+      const weeklyTimerEl = el("span", { style: "font-family:var(--mono); font-size:24px; font-weight:700; letter-spacing:-0.02em; display:inline-block;", text: formatDiff(weeklyTarget) });
+      const seasonTimerEl = el("span", { style: "font-family:var(--mono); font-size:24px; font-weight:700; letter-spacing:-0.02em; display:inline-block;", text: formatDiff(seasonTarget) });
+
+      const dailySecTimerEl = el("div", { style: "font-family:var(--mono); font-size:22px; font-weight:800; color:var(--text); margin-bottom:4px;", text: formatDiff(dailyTarget) });
+      const weeklySecTimerEl = el("div", { style: "font-family:var(--mono); font-size:22px; font-weight:800; color:var(--text); margin-bottom:4px;", text: formatDiff(weeklyTarget) });
+      const seasonSecTimerEl = el("div", { style: "font-family:var(--mono); font-size:22px; font-weight:800; color:var(--text); margin-bottom:4px;", text: formatDiff(seasonTarget) });
+
+      every(1000, () => {
+        const dDiff = formatDiff(dailyTarget);
+        const wDiff = formatDiff(weeklyTarget);
+        const sDiff = formatDiff(seasonTarget);
+        dailyTimerEl.textContent = dDiff;
+        weeklyTimerEl.textContent = wDiff;
+        seasonTimerEl.textContent = sDiff;
+        dailySecTimerEl.textContent = dDiff;
+        weeklySecTimerEl.textContent = wDiff;
+        seasonSecTimerEl.textContent = sDiff;
+      });
+
+      const modeLabels = {
+        auto: "Auto (Per-Build)",
+        force_fortnitemares: "Force Fortnitemares",
+        force_mutantstorms: "Force Mutant Storms",
+        custom: "Custom Flags",
+        off: "Disabled"
+      };
+
+      const saveConfig = async () => {
+        const payload = {
+          mode: form.mode,
+          customFlags: form.customFlags,
+          hexsylvaniaGates: form.hexsylvaniaGates,
+          candyMultiplier: form.candyMultiplier,
+          stormAlertQuota: form.stormAlertQuota,
+          stormTicketMultiplier: form.stormTicketMultiplier,
+          candyPerLlama: form.candyPerLlama,
+          autoConvertCandy: form.autoConvertCandy,
+          rotationHour: form.rotationHour,
+          weeklyDurationDays: form.weeklyDurationDays,
+          customSeasonEnd: form.customSeasonEnd ? new Date(form.customSeasonEnd).toISOString() : null,
+          calendarCacheMinutes: form.calendarCacheMinutes
+        };
+        await act(api("/admin/api/events/config", payload), "Event configuration saved");
+        showEvents();
+      };
+
+      // 1. Build compatibility matrix
+      const buildRows = data.sampleBuilds.map((b) => [
+        el("span", { class: "mono font-semibold", text: b.version }),
+        el("span", { class: "mono muted", text: b.cl ? `CL-${b.cl}` : "—" }),
+        el("span", { class: "font-semibold", text: b.event }),
+        b.flags.length
+          ? el("div", { style: "display:flex; gap:4px; flex-wrap:wrap;" }, b.flags.map((f) => chip(f, "accent")))
+          : el("span", { class: "muted", text: "None (Base game)" }),
+        el("span", { class: "muted", text: b.version.startsWith("1.8")
+          ? "Hexsylvania (4 tiers), 56 Halloween quests, Candy, Halloween Llamas"
+          : b.version.startsWith("1.9.1")
+          ? "StormCategory alerts (10/day), 15 Vindertech quests, Storm Tickets, 500 Candy conversion"
+          : b.version.startsWith("1.10")
+          ? "Fixed storm targets, Vindertech quests & Storm alerts"
+          : "Stonewood & Plankerton campaign, early storm alerts" })
+      ]);
+
+      const matrixTable = table([
+        ["Build Version", (r) => r[0]],
+        ["Changelist", (r) => r[1]],
+        ["Active Event", (r) => r[2]],
+        ["Broadcast Flags", (r) => r[3]],
+        ["Content Features", (r) => r[4]]
+      ], buildRows);
+
+      // Mode Selector Cards
+      const modeOptions = [
+        { id: "auto", title: "Auto (Per-Build)", desc: "Native event per build (1.8: Fortnitemares, 1.9.1: Vindertech, 1.10: ActiveStorms).", badge: "Recommended" },
+        { id: "force_fortnitemares", title: "Force Fortnitemares", desc: "Forces EventFlag.Fortnitemares & Hexsylvania across all connected client builds.", badge: "Halloween" },
+        { id: "force_mutantstorms", title: "Force Mutant Storms", desc: "Forces Mutant Storms, StormCategory alerts & Vindertech quests across all builds.", badge: "Storms" },
+        { id: "custom", title: "Custom Flags", desc: "Broadcast arbitrary event flags defined below to all client builds.", badge: "Custom" },
+        { id: "off", title: "Disabled", desc: "Deactivates all limited-time seasonal events (Base campaign mode only).", badge: "Off" }
+      ];
+
+      const customFlagsInput = el("input", {
+        class: "field",
+        type: "text",
+        style: "width:100%; margin-top:8px; font-family:var(--mono); font-size:12px;",
+        placeholder: "e.g. EventFlag.Fortnitemares, EventFlag.Vindertech, EventFlag.Custom",
+        value: form.customFlags.join(", "),
+        oninput: (e) => {
+          form.customFlags = e.target.value.split(",").map((s) => s.trim()).filter(Boolean);
+        }
+      });
+
+      const customFlagsContainer = el("div", {
+        style: `margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:${form.mode === "custom" ? "block" : "none"};`
+      },
+        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "Custom Broadcast Event Flags (comma-separated):" }),
+        el("div", { class: "muted", style: "font-size:12px; margin-bottom:6px;", text: "Enter the exact event flag names clients should receive in the client-events calendar and quest login." }),
+        customFlagsInput
+      );
+
+      const modeCards = el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; margin-top:12px;" },
+        ...modeOptions.map((opt) => {
+          const isSelected = form.mode === opt.id;
+          const card = el("div", {
+            style: `padding:12px 14px; background:${isSelected ? "var(--surface-2)" : "var(--surface)"}; border:2px solid ${isSelected ? "var(--blue)" : "var(--line)"}; border-radius:var(--radius-sm); cursor:pointer; transition:border-color .15s, background .15s;`,
+            onclick: () => {
+              form.mode = opt.id;
+              Array.from(modeCards.children).forEach((c, idx) => {
+                const sel = modeOptions[idx].id === form.mode;
+                c.style.borderColor = sel ? "var(--blue)" : "var(--line)";
+                c.style.background = sel ? "var(--surface-2)" : "var(--surface)";
+              });
+              customFlagsContainer.style.display = form.mode === "custom" ? "block" : "none";
+            }
+          },
+            el("div", { style: "display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;" },
+              el("span", { style: "font-weight:700; font-size:13px;", text: opt.title }),
+              chip(opt.badge, isSelected ? "accent" : "")),
+            el("div", { class: "muted", style: "font-size:11px; line-height:1.4;", text: opt.desc })
+          );
+          return card;
+        })
+      );
+
+      // Section 2: STW Modifiers & Gates Inputs
+      const gatesSelect = el("select", {
+        class: "field",
+        style: "width:100%;",
+        onchange: (e) => { form.hexsylvaniaGates = e.target.value; }
+      },
+        el("option", { value: "standard", text: "Standard Story Gates (Stonewood / Plankerton / Canny Launch the Rocket)", selected: form.hexsylvaniaGates === "standard" }),
+        el("option", { value: "open", text: "Open Access (All 4 Tiers Unlocked Immediately for Any PL)", selected: form.hexsylvaniaGates === "open" })
+      );
+
+      const candyMultInput = el("input", {
+        class: "field num",
+        type: "number",
+        step: "0.1",
+        min: "0.1",
+        max: "10.0",
+        value: String(form.candyMultiplier),
+        style: "width:100px;",
+        oninput: (e) => { form.candyMultiplier = Math.max(0.1, Math.min(10.0, parseFloat(e.target.value) || 1.0)); }
+      });
+
+      const quotaInput = el("input", {
+        class: "field num",
+        type: "number",
+        step: "1",
+        min: "1",
+        max: "999",
+        value: String(form.stormAlertQuota),
+        style: "width:100px;",
+        oninput: (e) => { form.stormAlertQuota = Math.max(1, Math.min(999, parseInt(e.target.value, 10) || 10)); }
+      });
+
+      const ticketMultInput = el("input", {
+        class: "field num",
+        type: "number",
+        step: "0.1",
+        min: "0.1",
+        max: "10.0",
+        value: String(form.stormTicketMultiplier),
+        style: "width:100px;",
+        oninput: (e) => { form.stormTicketMultiplier = Math.max(0.1, Math.min(10.0, parseFloat(e.target.value) || 1.0)); }
+      });
+
+      // Section 3: Currencies, Llamas & Quick Actions
+      const candyPerLlamaInput = el("input", {
+        class: "field num",
+        type: "number",
+        step: "50",
+        min: "100",
+        max: "5000",
+        value: String(form.candyPerLlama),
+        style: "width:110px;",
+        oninput: (e) => { form.candyPerLlama = Math.max(100, Math.min(5000, parseInt(e.target.value, 10) || 500)); }
+      });
+
+      const autoConvertToggle = toggleSwitch(form.autoConvertCandy, (checked) => {
+        form.autoConvertCandy = checked;
+      });
+
+      // Section 4: Calendar Timelines Inputs
+      const rotationInput = el("input", {
+        class: "field num",
+        type: "number",
+        min: "0",
+        max: "23",
+        value: String(form.rotationHour),
+        style: "width:90px;",
+        oninput: (e) => { form.rotationHour = Math.max(0, Math.min(23, parseInt(e.target.value, 10) || 0)); }
+      });
+
+      const weeklyDaysInput = el("input", {
+        class: "field num",
+        type: "number",
+        min: "1",
+        max: "30",
+        value: String(form.weeklyDurationDays),
+        style: "width:90px;",
+        oninput: (e) => { form.weeklyDurationDays = Math.max(1, Math.min(30, parseInt(e.target.value, 10) || 7)); }
+      });
+
+      const customEndInput = el("input", {
+        class: "field",
+        type: "datetime-local",
+        value: form.customSeasonEnd,
+        style: "min-width:210px;",
+        oninput: (e) => { form.customSeasonEnd = e.target.value; }
+      });
+
+      const cacheMinsInput = el("input", {
+        class: "field num",
+        type: "number",
+        min: "5",
+        max: "120",
+        value: String(form.calendarCacheMinutes),
+        style: "width:90px;",
+        oninput: (e) => { form.calendarCacheMinutes = Math.max(5, Math.min(120, parseInt(e.target.value, 10) || 60)); }
+      });
+
+            $("view").replaceChildren(
+        // View Header
+        el("div", { class: "view-head" },
+          el("div", {},
+            el("div", { style: "display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:4px;" },
+              el("h1", { text: "Events & Seasons", style: "margin:0;" }),
+              seasonSelector("1", () => showEvents())),
+            el("div", { class: "muted", text: "Customizable event activation, STW mission modifiers, and live calendar timelines" })),
+          el("div", { class: "actions" },
+            btn("Save Event Configuration", saveConfig, "primary"),
+            btn("Reset Defaults", async () => {
+              if (await confirmModal("Reset all event configuration back to system defaults?", { title: "Reset Event Defaults" })) {
+                await act(api("/admin/api/events/config", {
+                  mode: "auto",
+                  customFlags: [],
+                  hexsylvaniaGates: "standard",
+                  candyMultiplier: 1.0,
+                  stormAlertQuota: 10,
+                  stormTicketMultiplier: 1.0,
+                  candyPerLlama: 500,
+                  autoConvertCandy: true,
+                  rotationHour: 0,
+                  weeklyDurationDays: 7,
+                  customSeasonEnd: null,
+                  calendarCacheMinutes: 60
+                }), "Reset to default event settings");
+                showEvents();
+              }
+            }, "ghost"),
+            btn("Refresh", showEvents, "ghost"))),
+
+        // Quick Stats Row
+        el("div", { class: "tiles" },
+          tile("Event Activation Mode", modeLabels[form.mode] || form.mode, form.mode !== "off" ? "accent text" : "text"),
+          tile("Daily Store Reset", [dailyTimerEl, el("span", { class: "sub", text: `${dailyResetDate.toUTCString().slice(17, 22)} UTC (${dailyResetDate.toLocaleDateString(undefined, { month: "short", day: "numeric" })})` })]),
+          tile("Weekly Store Reset", [weeklyTimerEl, el("span", { class: "sub", text: `${weeklyResetDate.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })} · ${weeklyResetDate.toUTCString().slice(17, 22)} UTC` })]),
+          tile("Season 1 Clock", [seasonTimerEl, el("span", { class: "sub", text: `Ends ${seasonResetDate.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}` })])),
+
+        // Section 1: Activation Mode & Flags
+        el("section", { class: "panel", style: "margin-top:16px" },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" },
+            el("div", { class: "actions" },
+              el("h2", { text: "Seasonal Event Activation Mode" }),
+              chip(modeLabels[form.mode] || form.mode, form.mode !== "off" ? "good" : "warn"))),
+          el("p", { class: "note", text: "Select how Core activates limited-time seasonal events across your gameservers and connected clients. Changes are persisted and applied immediately." }),
+          modeCards,
+          customFlagsContainer,
+          el("div", { style: "margin-top:18px;" },
+            el("h3", { style: "font-size:14px; font-weight:700; margin-bottom:10px;", text: "Build-by-Build Event Compatibility Matrix" }),
+            matrixTable)
+        ),
+
+        // Section 2: Save the World Modifiers & Quest Gates
+        el("section", { class: "panel", style: "margin-top:16px" },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" },
+            el("h2", { text: "Save the World Modifiers & Story Gates" }),
+            chip("STW Campaign", "accent")),
+          el("p", { class: "note", text: "Customize mission difficulty bounds, quest unlocks, and currency drop rates across Hexsylvania and standard theaters." }),
+          el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px; margin-top:14px;" },
+            el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
+              el("div", {},
+                el("div", { style: "display:flex; align-items:center; gap:8px; font-weight:700; font-size:14px;" }, icon("castle", 16), el("span", { text: "Hexsylvania Story Quest Gates" })),
+                el("div", { class: "muted", style: "font-size:12px; margin-top:4px; line-height:1.4;", text: "Controls whether higher-difficulty Hexsylvania zones require Launch the Rocket story quest progression." })),
+              el("div", { style: "margin-top:12px;" }, gatesSelect)),
+
+            el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
+              el("div", {},
+                el("div", { style: "display:flex; align-items:center; gap:8px; font-weight:700; font-size:14px;" }, icon("coins", 16), el("span", { text: "Candy Reward Drop Multiplier" })),
+                el("div", { class: "muted", style: "font-size:12px; margin-top:4px; line-height:1.4;", text: "Multiplies mission completion Candy rewards (Base 45 + Power Level). Range: 0.1x to 10.0x." })),
+              el("div", { style: "margin-top:12px; display:flex; align-items:center; gap:8px;" },
+                candyMultInput,
+                el("span", { class: "muted font-semibold", text: "× multiplier" }))),
+
+            el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
+              el("div", {},
+                el("div", { style: "display:flex; align-items:center; gap:8px; font-weight:700; font-size:14px;" }, icon("zap", 16), el("span", { text: "Storm Category Daily Alert Quota" })),
+                el("div", { class: "muted", style: "font-size:12px; margin-top:4px; line-height:1.4;", text: "Daily quota of Storm Category mission alerts allowed per account before rewards stop (Default 10)." })),
+              el("div", { style: "margin-top:12px; display:flex; align-items:center; gap:8px;" },
+                quotaInput,
+                el("span", { class: "muted font-semibold", text: "alerts / day" }))),
+
+            el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
+              el("div", {},
+                el("div", { style: "display:flex; align-items:center; gap:8px; font-weight:700; font-size:14px;" }, icon("ticket", 16), el("span", { text: "Storm Ticket Drop Multiplier" })),
+                el("div", { class: "muted", style: "font-size:12px; margin-top:4px; line-height:1.4;", text: "Multiplies Storm Ticket rewards given by Mutant Storms (Base Difficulty × 10). Range: 0.1x to 10.0x." })),
+              el("div", { style: "margin-top:12px; display:flex; align-items:center; gap:8px;" },
+                ticketMultInput,
+                el("span", { class: "muted font-semibold", text: "× multiplier" })))
+          )
+        ),
+
+        // Section 3: Currencies, Llamas & Quick Actions
+        el("section", { class: "panel", style: "margin-top:16px" },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" },
+            el("h2", { text: "Currencies, Llamas & Quick Actions" }),
+            chip("Loot & Inventory", "good")),
+          el("p", { class: "note", text: "Configure event llama pricing and execute instant administrative batch operations across all player accounts." }),
+          el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px; margin-top:14px;" },
+            el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
+              el("div", {},
+                el("div", { style: "display:flex; align-items:center; gap:8px; font-weight:700; font-size:14px;" }, icon("package", 16), el("span", { text: "Candy Required per Fortnitemares Llama" })),
+                el("div", { class: "muted", style: "font-size:12px; margin-top:4px; line-height:1.4;", text: "Store purchase price and automatic conversion threshold (Default 500 Candy). Range: 100 to 5000." })),
+              el("div", { style: "margin-top:12px; display:flex; align-items:center; gap:8px;" },
+                candyPerLlamaInput,
+                el("span", { class: "muted font-semibold", text: "Candy" }))),
+
+            el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
+              el("div", { style: "display:flex; justify-content:space-between; align-items:center;" },
+                el("div", { style: "display:flex; align-items:center; gap:8px; font-weight:700; font-size:14px;" }, icon("refresh", 16), el("span", { text: "Automatic Leftover Candy Conversion" })),
+                autoConvertToggle),
+              el("div", { class: "muted", style: "font-size:12px; margin-top:8px; line-height:1.4;", text: "When enabled, players logging into 1.9.1+ with leftover Candy automatically convert full stacks into unopened Fortnitemares Llamas." })),
+
+            el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
+              el("div", {},
+                el("div", { style: "display:flex; align-items:center; gap:8px; font-weight:700; font-size:14px;" }, icon("sliders", 16), el("span", { text: "Administrative Batch Actions" })),
+                el("div", { class: "muted", style: "font-size:12px; margin-top:4px; line-height:1.4;", text: "Trigger instant batch conversions or reset alert claim limits across all player accounts." })),
+              el("div", { class: "actions", style: "margin-top:12px; gap:8px;" },
+                btn("Convert Candy Now", async () => {
+                  const ok = await confirmModal(`Convert unspent Halloween Candy into Fortnitemares Llamas for all registered accounts right now?\nEach ${form.candyPerLlama} Candy will grant 1 unopened Llama.`, {
+                    title: "Convert Candy Now",
+                    confirmText: "Convert Now",
+                    confirmKind: "primary"
+                  });
+                  if (!ok) return;
+                  const res = await act(api("/admin/api/events/actions/convert-candy", {}), "Candy conversion complete");
+                  if (res) toast(`Converted ${res.convertedProfiles} accounts, granted ${res.totalLlamasGranted} Fortnitemares Llamas!`);
+                  showEvents();
+                }, "ghost small"),
+                btn("Reset Daily Quotas Now", async () => {
+                  const ok = await confirmModal(`Reset today's mission alert claim records to 0 for all player profiles right now?\nThis restores every account's full daily alert quota immediately.`, {
+                    title: "Reset Alert Quotas Now",
+                    confirmText: "Reset All Quotas",
+                    confirmKind: "danger"
+                  });
+                  if (!ok) return;
+                  const res = await act(api("/admin/api/events/actions/reset-quotas", {}), "Mission alert quotas reset");
+                  if (res) toast(`Reset mission alert quotas for ${res.resetProfiles} accounts!`);
+                  showEvents();
+                }, "ghost small")))
+          )
+        ),
+
+        // Section 4: Calendar & Timelines
+        el("section", { class: "panel", style: "margin-top:16px" },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" },
+            el("h2", { text: "Live Calendar & Store Rotation Timelines" }),
+            chip(`Cache: ${form.calendarCacheMinutes}m`, "accent")),
+          el("p", { class: "note", text: "Governs the client-events channel (/fortnite/api/calendar/v1/timeline), storefront countdown timers, and rotation schedules." }),
+          el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:14px; margin-top:14px;" },
+            el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
+              el("div", {},
+                el("div", { class: "muted font-semibold", style: "font-size:12px; margin-bottom:4px;", text: "DAILY STORE ROTATION UTC HOUR" }),
+                dailySecTimerEl,
+                el("div", { class: "muted", style: "font-size:11px;", text: "Hour of UTC day when daily item shop offers and mission alerts rotate." })),
+              el("div", { style: "margin-top:12px; display:flex; align-items:center; gap:8px;" },
+                rotationInput,
+                el("span", { class: "muted font-semibold", text: ":00 UTC" }))),
+
+            el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
+              el("div", {},
+                el("div", { class: "muted font-semibold", style: "font-size:12px; margin-bottom:4px;", text: "WEEKLY FEATURED DURATION (DAYS)" }),
+                weeklySecTimerEl,
+                el("div", { class: "muted", style: "font-size:11px;", text: "Duration of weekly featured shop items in days (Default 7 days)." })),
+              el("div", { style: "margin-top:12px; display:flex; align-items:center; gap:8px;" },
+                weeklyDaysInput,
+                el("span", { class: "muted font-semibold", text: "days" }))),
+
+            el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
+              el("div", {},
+                el("div", { class: "muted font-semibold", style: "font-size:12px; margin-bottom:4px;", text: "CUSTOM BATTLE ROYALE SEASON END" }),
+                seasonSecTimerEl,
+                el("div", { class: "muted", style: "font-size:11px;", text: "Override Season 1 countdown. Clear to use standard 45-day history cycle." })),
+              el("div", { style: "margin-top:12px; display:flex; flex-direction:column; gap:6px;" },
+                customEndInput,
+                btn("Reset to 45-day Cycle", () => {
+                  form.customSeasonEnd = "";
+                  customEndInput.value = "";
+                }, "ghost small"))),
+
+            el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
+              el("div", {},
+                el("div", { class: "muted font-semibold", style: "font-size:12px; margin-bottom:4px;", text: "CALENDAR CLIENT CACHE DURATION" }),
+                el("div", { style: "font-size:18px; font-weight:800; color:var(--text); margin-bottom:4px;", text: `${form.calendarCacheMinutes} Minutes` }),
+                el("div", { class: "muted", style: "font-size:11px;", text: "Interval clients cache timeline before re-querying the backend." })),
+              el("div", { style: "margin-top:12px; display:flex; align-items:center; gap:8px;" },
+                cacheMinsInput,
+                el("span", { class: "muted font-semibold", text: "minutes" })))
+          )
+        ),
+
+        // Bottom Save Action Bar
+        el("div", { class: "actions", style: "margin-top:24px; padding:16px 20px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius); justify-content:space-between; align-items:center;" },
+          el("div", {},
+            el("div", { style: "font-weight:700; font-size:14px;", text: "Ready to apply event customization?" }),
+            el("div", { class: "muted", style: "font-size:12px;", text: "Saves activation modes, STW modifiers, and calendar timelines." })),
+          el("div", { class: "actions" },
+            btn("Save Event Configuration", saveConfig, "primary")))
+      );
+    }
+
     /* ---------- reports ---------- */
     async function showReports() {
       if (state.reportId) {
@@ -5096,12 +5909,9 @@
 
         el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
-            el("div", { class: "actions" },
-              el("h2", { text: "Seasonal Events" }),
-              settings.seasonalEvents !== false ? chip("Running", "good") : chip("Off")),
-            toggleSwitch(settings.seasonalEvents !== false, (checked) =>
-              save({ seasonalEvents: checked }, checked ? "Seasonal events turned on" : "Seasonal events turned off"))),
-          el("p", { class: "note", text: "Runs each build's own seasonal event, such as Fortnitemares on 1.8: its View Event page and quests, Hexsylvania on the map and its Candy llama. Players see the change the next time they log in." })),
+            el("h2", { text: "Seasonal Events & Timelines" })),
+          el("p", { class: "note", text: "Seasonal events, event flags, Hexsylvania theater, and live calendar countdowns have moved to their dedicated management view. Configure and monitor all seasonal content on the " },
+            el("a", { href: "#/events", class: "btn ghost", style: "display:inline-flex; align-items:center; gap:4px; margin-left:4px; padding:2px 8px; font-size:12px;", text: "Events Tab →" }))),
 
         el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },

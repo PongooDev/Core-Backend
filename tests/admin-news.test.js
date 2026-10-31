@@ -25,6 +25,8 @@ test("the admin news API views, updates, and resets in-game news, login messages
     // 1. Initial GET /admin/api/news returns custom as null (blank text boxes) and reference defaults
     const initial = await admin(backend, "/news");
     assert.equal(initial.status, 200);
+    assert.equal(initial.body.battleRoyaleNewsEnabled, true);
+    assert.equal(initial.body.defaults.battleRoyaleNewsEnabled, true);
     assert.equal(initial.body.loginMessageEnabled, true);
     assert.equal(initial.body.defaults.loginMessageEnabled, true);
     assert.equal(initial.body.custom.battleRoyaleNews, null);
@@ -139,6 +141,47 @@ test("the admin news API views, updates, and resets in-game news, login messages
     await admin(backend, "/news", { loginMessage: null });
     const finalPage = (await pageFor(backend.port, "3724489")).body;
     assert.equal(finalPage.loginmessage.loginmessage.message.title, "v1.8");
+
+    // 7. Toggle Battle Royale lobby news off and on
+    const newsDisabled = await admin(backend, "/news", { battleRoyaleNewsEnabled: false });
+    assert.equal(newsDisabled.status, 200);
+    assert.equal(newsDisabled.body.battleRoyaleNewsEnabled, false);
+
+    // Pre-1.9 (1.8): message is omitted when news is disabled
+    const disabled18Page = (await pageFor(backend.port, "3724489")).body;
+    assert.equal(disabled18Page.battleRoyaleNews.news.message, undefined);
+    assert.deepEqual(disabled18Page.battleRoyaleNews.news.region_messages, []);
+
+    // 1.9+: messages array is empty when news is disabled
+    const disabled19Page = (await pageFor(backend.port, "3757339")).body;
+    assert.deepEqual(disabled19Page.battleRoyaleNews.news.messages, []);
+
+    // Re-enabling restores the news
+    const newsReEnabled = await admin(backend, "/news", { battleRoyaleNewsEnabled: true });
+    assert.equal(newsReEnabled.status, 200);
+    assert.equal(newsReEnabled.body.battleRoyaleNewsEnabled, true);
+
+    const reEnabled18Page = (await pageFor(backend.port, "3724489")).body;
+    assert.equal(reEnabled18Page.battleRoyaleNews.news.message.title, "Battle Royale - 1.8");
+    const reEnabled19Page = (await pageFor(backend.port, "3757339")).body;
+    assert.equal(reEnabled19Page.battleRoyaleNews.news.messages[0].title, "Battle Royale - 1.9");
+  } finally {
+    backend.close();
+    fs.rmSync(dataDir, { recursive: true, force: true });
+  }
+});
+
+test("config.json's battleRoyaleNewsEnabled turns lobby news off until the panel says otherwise", async () => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-brnews-config-test-"));
+  const backend = await startBackend({ dataDir, battleRoyaleNewsEnabled: false });
+  try {
+    assert.equal((await pageFor(backend.port, "3724489")).body.battleRoyaleNews.news.message, undefined);
+    assert.deepEqual((await pageFor(backend.port, "3757339")).body.battleRoyaleNews.news.messages, []);
+    assert.equal((await admin(backend, "/news")).body.battleRoyaleNewsEnabled, false);
+    // The panel's choice wins over config.json's.
+    await admin(backend, "/news", { battleRoyaleNewsEnabled: true });
+    assert.ok((await pageFor(backend.port, "3724489")).body.battleRoyaleNews.news.message);
+    assert.equal((await pageFor(backend.port, "3757339")).body.battleRoyaleNews.news.messages.length, 1);
   } finally {
     backend.close();
     fs.rmSync(dataDir, { recursive: true, force: true });

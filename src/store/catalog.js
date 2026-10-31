@@ -1,5 +1,5 @@
 import { currentBuild } from "../builds/context.js";
-import { fortnitemares, isEventActive, mutantStorms } from "../events/events.js";
+import { currentEventsConfig, fortnitemares, isEventActive, mutantStorms } from "../events/events.js";
 import { candy } from "../events/fortnitemares.js";
 import { stormTickets } from "../events/mutantstorms.js";
 import { getCardPack, itemIds } from "../gamedata/items.js";
@@ -91,7 +91,14 @@ const eventOffers = [
 // An event's offers are on sale while the requesting build runs the event and has their llama.
 const onSale = (offer) => !offer.event || (isEventActive(offer.event) && Boolean(getCardPack(offer.templateId)));
 
-const allOffers = () => [...mtxOffers.filter(inThisBuild), ...eventOffers.filter(onSale), ...voucherOffers()];
+const allOffers = () => {
+  const customCandy = currentEventsConfig()?.candyPerLlama ?? 500;
+  return [
+    ...mtxOffers.filter(inThisBuild),
+    ...eventOffers.filter(onSale).map((offer) => (offer.offerId === "core_event_fortnitemares_llama" ? { ...offer, price: customCandy } : offer)),
+    ...voucherOffers()
+  ];
+};
 
 // An item shop offer has no title: 1.8's offer info then takes the tile's name, the type line under it and the details
 // screen's description from the first grant's item definition (UFortDirectAcquisitionOfferInfo GetName 0x2E2A1A0,

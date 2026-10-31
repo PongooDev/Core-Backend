@@ -1,6 +1,6 @@
 import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
-import { activeEventFlags, eventsActiveUntil } from "../../events/events.js";
+import { activeEventFlags, currentEventsConfig, eventsActiveUntil } from "../../events/events.js";
 import { hasItemShop, seasonEnd, weeklyStoreEnd } from "../../store/itemshop.js";
 import { hasSeasonShop } from "../../store/seasonshop.js";
 
@@ -25,7 +25,8 @@ export function calendarRoutes({ tokens }) {
     const now = new Date();
     const weeklyEnd = hasItemShop() ? weeklyStoreEnd(now) : undefined;
     const seasonEnds = hasSeasonShop() ? seasonEnd(now) : undefined;
-    const cacheExpire = new Date(Math.min(now.getTime() + calendarCacheMinutes * 60000, weeklyEnd?.getTime() ?? Infinity,
+    const cacheMinutes = Math.max(5, Math.min(120, Number(currentEventsConfig()?.calendarCacheMinutes ?? calendarCacheMinutes)));
+    const cacheExpire = new Date(Math.min(now.getTime() + cacheMinutes * 60000, weeklyEnd?.getTime() ?? Infinity,
       seasonEnds?.getTime() ?? Infinity)).toISOString();
     const activeEvents = activeEventFlags().map((eventName) => ({ eventName, activeUntil: eventsActiveUntil }));
     const state = {
@@ -37,7 +38,7 @@ export function calendarRoutes({ tokens }) {
         "client-events": { states: [{ validFrom: "2017-01-01T00:00:00.000Z", activeEvents, state }], cacheExpire }
       },
       eventsTimeOffsetHrs: 0,
-      cacheIntervalMins: calendarCacheMinutes,
+      cacheIntervalMins: cacheMinutes,
       currentTime: now.toISOString()
     });
   });

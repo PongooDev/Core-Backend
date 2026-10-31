@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { currentBuild } from "../builds/context.js";
+import { currentEventsConfig } from "../events/events.js";
 import { athenaCosmetics, athenaDisplayAssets } from "../gamedata/athena.js";
 import { isNonShopCosmetic } from "../profiles/athena.js";
 
@@ -251,6 +252,11 @@ export function weeklyStoreEnd(now = new Date(), overrideConfig = null) {
 // that stretch of Season 1 again and ends when the season did, the shop then starting over (Core's choice, in every
 // shop mode).
 export function seasonEnd(now = new Date(), overrideConfig = null) {
+  const custom = overrideConfig?.customSeasonEnd ?? currentEventsConfig()?.customSeasonEnd;
+  if (custom) {
+    const parsed = new Date(custom);
+    if (!isNaN(parsed.getTime())) return parsed;
+  }
   const config = overrideConfig ?? currentShopConfig();
   const rotationMs = Math.max(0, Math.min(23, Number(config?.rotationHour ?? 0))) * 60 * 60 * 1000;
   const days = Math.floor((now.getTime() - rotationMs - firstDay) / dayMs);
