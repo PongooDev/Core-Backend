@@ -111,6 +111,21 @@ function describeChanges(profileId, counts, request) {
     + (counts.skipped ? ` skipped ${counts.skipped}` : "") + (added ? ` [${added}]` : "");
 }
 
+// One player's part of a world save: its theater and outpost item changes and its quest progress.
+function updatePlayer(command, accountId, session, theaterTracker, outpostTracker, update, context) {
+  const theater = applyChanges(theaterTracker, update?.theaterItemUpdate);
+  const outpost = applyChanges(outpostTracker, update?.outpostItemUpdate);
+  const quests = Array.isArray(update?.questObjectiveUpdates) ? update.questObjectiveUpdates.length : 0;
+  advance(session, update?.questObjectiveUpdates, context.primaryMissions.held(accountId));
+  log("MCP", `${command} for ${accountId}: ${describeChanges(theaterTracker.profile.profileId, theater, update?.theaterItemUpdate)}; `
+    + `${describeChanges(outpostTracker.profile.profileId, outpost, update?.outpostItemUpdate)}; quest updates ${quests}`);
+}
+
+// An FUniqueNetIdRepl as the server's JSON writes it: the id's string.
+function netIdString(netId) {
+  return typeof netId === "string" ? netId : typeof netId?.id === "string" ? netId.id : "";
+}
+
 const accepted = () => {};
 
 // For the part of a batch that mustn't undo the rest: a refusal is logged instead.
@@ -282,12 +297,44 @@ export const serverCommands = {
   // The player's world inventory as the server left it (theater0), the storm shield's (outpost0), and quest progress.
   BatchUpdatePlayer({ req, session, tracker, profileId, context }) {
     if (!profileId.startsWith("theater")) throw new McpError("errors.com.epicgames.modules.profiles.invalid_command", "BatchUpdatePlayer is a theater profile command");
-    const theater = applyChanges(tracker, req.body?.theaterItemUpdate);
-    const outpost = applyChanges(session.profile("outpost0"), req.body?.outpostItemUpdate);
-    const quests = Array.isArray(req.body?.questObjectiveUpdates) ? req.body.questObjectiveUpdates.length : 0;
-    advance(session, req.body?.questObjectiveUpdates, context.primaryMissions.held(req.params.accountId));
-    log("MCP", `${req.params.command} for ${req.params.accountId}: ${describeChanges(profileId, theater, req.body?.theaterItemUpdate)}; `
-      + `${describeChanges("outpost0", outpost, req.body?.outpostItemUpdate)}; quest updates ${quests}`);
+    updatePlayer(req.params.command, req.params.accountId, session, tracker, session.profile("outpost0"), req.body, context);
+  },
+
+  // 1.10's save, for every player the server writes at once (UFortMcpProfileWorld::BatchUpdatePlayers, which replaced
+  // BatchUpdatePlayer): {updates: [FFortBatchUpdatePlayer_Update {accountId, theaterNum, theaterItemUpdate, outpostNum,
+  // outpostItemUpdate, questObjectiveUpdates}]}, sent through one player's theater profile.
+  BatchUpdatePlayers({ req, profileId, sessionFor, context }) {
+    if (!profileId.startsWith("theater")) throw new McpError("errors.com.epicgames.modules.profiles.invalid_command", "BatchUpdatePlayers is a theater profile command");
+    for (const update of Array.isArray(req.body?.updates) ? req.body.updates : []) {
+      const accountId = netIdString(update?.accountId) || req.params.accountId;
+      const player = sessionFor(accountId);
+      if (!player) {
+        log("MCP", `${req.params.command}: unknown account ${accountId}, skipped`);
+        continue;
+      }
+      const theaterNum = Number.isInteger(update.theaterNum) ? update.theaterNum : 0;
+      const outpostNum = Number.isInteger(update.outpostNum) ? update.outpostNum : 0;
+      updatePlayer(req.params.command, accountId, player, player.profile(`theater${theaterNum}`), player.profile(`outpost${outpostNum}`), update, context);
+    }
+  },
+
+  // BatchUpdatePlayers from a storm shield, with the core's buildings and build saves: {updates, outpostId, outpostInfo,
+  // cloudSaveInfo}. The core is the requesting player's.
+  BatchUpdatePlayers_Outpost(context) {
+    serverCommands.BatchUpdatePlayers(context);
+    const { outpostId, outpostInfo, cloudSaveInfo } = context.req.body ?? {};
+    keepGoing("BatchUpdatePlayers_Outpost", () => saveOutpost(context.session, outpostId, outpostInfo, cloudSaveInfo));
+  },
+
+  // BatchUpdatePlayers with each deployable base's build saves: {updates, deployableBaseUpdates:
+  // [FFortBatchUpdatePlayer_DeployableBaseUpdate {accountId, deployableBaseItemId, cloudSaveInfo}]}.
+  BatchUpdatePlayers_DeployableBase(context) {
+    serverCommands.BatchUpdatePlayers(context);
+    const { req, sessionFor } = context;
+    for (const update of Array.isArray(req.body?.deployableBaseUpdates) ? req.body.deployableBaseUpdates : []) {
+      const player = sessionFor(netIdString(update?.accountId) || req.params.accountId);
+      if (player) keepGoing("BatchUpdatePlayers_DeployableBase", () => saveDeployableBase(player, update.deployableBaseItemId, update.cloudSaveInfo));
+    }
   },
 
   // The same from a storm shield, with the core's buildings and build saves: {outpostId, outpostInfo, cloudSaveInfo}.
