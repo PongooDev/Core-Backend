@@ -129,8 +129,9 @@ export function createSessionStore({ regionFallback: fallsBack = () => true } = 
     // connectionAddress: where the create request came from, the server's address when its body names none.
     // hostAccountId: the account the create request was made with, the gameserver's own (the Cert server's body leaves
     // ownerId empty). remoteHost: the request came from another PC, a Trusted Hosting IP (Core-Backend #125), whose
-    // address the session is then handed out with, whatever its body says.
-    create(body, connectionAddress = "", hostAccountId = "", { remoteHost = false } = {}) {
+    // address the session is then handed out with, whatever its body says. build: the changelist the create request's
+    // User-Agent names, the gameserver's own build (its OnlineSubsystemMcp's requests name it).
+    create(body, connectionAddress = "", hostAccountId = "", { remoteHost = false, build = "" } = {}) {
       const session = {
         id: crypto.randomBytes(16).toString("hex"),
         ownerId: "", ownerName: "", serverName: "", serverAddress: "", serverPort: 0,
@@ -143,7 +144,8 @@ export function createSessionStore({ regionFallback: fallsBack = () => true } = 
         hostAccountId: String(hostAccountId ?? ""),
         remoteHost: Boolean(remoteHost),
         // Which PC hosts it: "local" for this one, else the other PC's address.
-        hostAddress: remoteHost ? normalizeAddress(connectionAddress) : "local"
+        hostAddress: remoteHost ? normalizeAddress(connectionAddress) : "local",
+        hostBuild: String(build ?? "")
       };
       if (session.remoteHost) session.serverAddress = session.hostAddress;
       apply(session, body);
@@ -315,7 +317,7 @@ const defaultNetwork = createNetwork();
 // A session hosted on another PC (Core-Backend #125) is handed out with that PC's address as it is: this machine's
 // addresses would send the player to the wrong PC.
 export function sessionJson(session, viewer, network = defaultNetwork) {
-  const { keys, zoneDifficulty, hostAccountId, remoteHost, hostAddress, ...json } = session;
+  const { keys, zoneDifficulty, hostAccountId, remoteHost, hostAddress, hostBuild, ...json } = session;
   if (!remoteHost) json.serverAddress = network.serverAddressFor(json.serverAddress, viewer);
   return json;
 }

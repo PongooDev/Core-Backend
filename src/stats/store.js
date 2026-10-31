@@ -15,6 +15,7 @@ import { readJson, writeJson } from "../json-file.js";
 
 // The places each playlist's stats count besides wins (Balance/DataTables/LeaderboardStats, the stats screen's tabs):
 // solo top 10 and 25, duo top 5 and 12, squad top 3 and 6. A place counts toward every one it is within, a win too.
+// 1.10's table has no 50v50 (playlist 11) rows: its matches count their wins, kills, time and score, shown nowhere.
 export const placements = { 2: [10, 25], 10: [5, 12], 9: [3, 6] };
 
 // The main modes, solo, duo and squad (the playlists above): only their wins give the victory umbrellas (Core-Backend

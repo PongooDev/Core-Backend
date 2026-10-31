@@ -44,7 +44,7 @@ test("Fortnitemares runs on 1.8 to 1.9 only, and 1.8's own data has its content"
   assert.deepEqual(activeEventFlags("3757339"), ["EventFlag.Fortnitemares"]);
   // 1.9.1 ended it, with Mutant Storms back (events/mutantstorms.js), which 1.10 keeps under EventFlag.ActiveStorms.
   assert.deepEqual(activeEventFlags("3775276"), ["EventFlag.Vindertech"]);
-  assert.deepEqual(activeEventFlags("3790078"), ["EventFlag.ActiveStorms"]);
+  assert.deepEqual(activeEventFlags("3790078"), ["EventFlag.ActiveStorms", "EventFlag.BR.Allow50v50"]);
   for (const other of [builds.cert, "3541083", builds["1.7.2"], "3807424", "unknown", undefined]) assert.deepEqual(activeEventFlags(other), [], other);
 
   inBuild(builds["1.8"], () => {

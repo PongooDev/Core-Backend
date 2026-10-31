@@ -5,7 +5,7 @@ import fs from "node:fs";
 import http from "node:http";
 import os from "node:os";
 import path from "node:path";
-import { bucketKey, bucketMatches, estimatedWaitSec, formTeams, parseBucket, serverRegion, teamSizeOf, withRegion } from "../src/matchmaking/service.js";
+import { bucketKey, bucketMatches, estimatedWaitSec, formTeams, parseBucket, playlistTeamsOf, serverRegion, withRegion } from "../src/matchmaking/service.js";
 import { regionOf } from "../src/matchmaking/regions.js";
 import { dedicatedServerToken, del, get, post, startBackend, userLogin } from "./helpers.js";
 
@@ -146,21 +146,22 @@ test("a bucket names the playlist and region; a server's pattern takes any playl
 });
 
 test("parties that fill share teams up to the playlist's team size; the others play alone (#78)", () => {
-  assert.deepEqual(["858118782:0:NA:2", "858118782:0:NA:10", "858118782:0:NA:9", "1944448041:0:NA:9:1:0", "858118782:0:NA:7", ""].map(teamSizeOf),
-    [1, 2, 4, 4, null, null]);
+  assert.deepEqual(["858118782:0:NA:2", "858118782:0:NA:10", "858118782:0:NA:9", "1944448041:0:NA:9:1:0", "858118782:0:NA:7", ""]
+    .map((bucketId) => playlistTeamsOf(bucketId)?.maxTeamSize ?? null), [1, 2, 4, 4, null, null]);
   const party = (fill, ...players) => ({ players, fill });
+  const teams = (size) => ({ maxTeamCount: 100, maxTeamSize: size, maxSquadSize: size });
   // Squads: biggest first, so a solo tops up the three and two duos pair up; No Fill parties stay alone, and so does a
   // solo left with no team that has room.
   assert.deepEqual(formTeams([party(true, "a"), party(true, "b", "c"), party(false, "d"), party(true, "e", "f", "g"), party(true, "h"),
-    party(true, "i", "j"), party(false, "k", "l")], 4),
+    party(true, "i", "j"), party(false, "k", "l")], teams(4)),
   [[["e", "f", "g"], ["a"]], [["b", "c"], ["i", "j"]], [["k", "l"]], [["d"]], [["h"]]]);
   // Duos pair up two solos that fill; Solo is a team each; an unknown playlist keeps each party a team.
-  assert.deepEqual(formTeams([party(true, "a"), party(false, "b"), party(true, "c")], 2), [[["a"], ["c"]], [["b"]]]);
-  assert.deepEqual(formTeams([party(true, "a"), party(true, "b")], 1), [[["a"]], [["b"]]]);
+  assert.deepEqual(formTeams([party(true, "a"), party(false, "b"), party(true, "c")], teams(2)), [[["a"], ["c"]], [["b"]]]);
+  assert.deepEqual(formTeams([party(true, "a"), party(true, "b")], teams(1)), [[["a"]], [["b"]]]);
   assert.deepEqual(formTeams([party(true, "a"), party(true, "b", "c")], null), [[["a"]], [["b", "c"]]]);
   // A party bigger than a team is split, or the server would have no team with room for its reservation.
-  assert.deepEqual(formTeams([party(true, "a", "b", "c"), party(true, "d")], 2), [[["a", "b"]], [["c"], ["d"]]]);
-  assert.deepEqual(formTeams([party(false, "a", "b", "c"), party(true, "d")], 2), [[["a", "b"]], [["c"]], [["d"]]]);
+  assert.deepEqual(formTeams([party(true, "a", "b", "c"), party(true, "d")], teams(2)), [[["a", "b"]], [["c"], ["d"]]]);
+  assert.deepEqual(formTeams([party(false, "a", "b", "c"), party(true, "d")], teams(2)), [[["a", "b"]], [["c"]], [["d"]]]);
 });
 
 test("the ETA is whole seconds, never a whole minute (the client shows N/A for those), and 0 when unknown", () => {
@@ -304,6 +305,47 @@ test("AssignMatch's teams follow each party leader's Squad Fill choice (#78)", a
     // The duo takes both solos that fill; the pair and the lone player stay on their own.
     assert.deepEqual(assign.payload.teams, [[[id("DuoLeader"), id("DuoMate")], [id("Solo")], [id("Filler")]],
       [[id("PairLeader"), id("PairMate")]], [[id("Lone")]]]);
+  } finally {
+    for (const client of clients) client.close();
+    backend.close();
+  }
+});
+
+// Core-Backend #135: 1.10's 50v50 (playlist 11) is two teams of 50: AssignMatch's teams[i] goes to team i % 2.
+test("a 50v50 match's parties are shared out over its two teams, a No Fill party in a squad of its own", async () => {
+  const backend = await startBackend({ matchmakingGatherMs: 200 });
+  const clients = [];
+  try {
+    const players = {};
+    for (const name of ["Trio1", "Trio2", "Trio3", "Solo", "Lone", "Filler"]) players[name] = await userLogin(backend.port, `Fifty${name}`);
+    const server = await userLogin(backend.port, "CoreServer1");
+    const bucket = "3790078:0:NA:11";
+    const id = (name) => players[name].accountId;
+    const queue = async (name, party, fill) => {
+      const ticket = await get(backend.port, `/fortnite/api/game/v2/matchmakingservice/ticket/player/${id(name)}?partyPlayerIds=${party.map(id).join(",")}` +
+        `&bucketId=${bucket}&player.platform=Windows&player.option.fillTeam=${fill}`, players[name].token);
+      const client = await matchmakingClient(backend.port, authorizationOf(ticket.body));
+      for (let index = 0; index < 3; index++) await client.next();
+      clients.push(client);
+    };
+    await queue("Trio1", ["Trio1", "Trio2", "Trio3"], true);
+    await queue("Solo", ["Solo"], true);
+    await queue("Lone", ["Lone"], false);
+    await queue("Filler", ["Filler"], true);
+
+    const session = (await post(backend.port, "/fortnite/api/matchmaking/session", server.token, {
+      ownerId: server.accountId, ownerName: "CoreServer1", serverName: "Core-1", serverAddress: "127.0.0.1", serverPort: 7777,
+      maxPublicPlayers: 100, maxPrivatePlayers: 0, buildUniqueId: "3790078", attributes: { GAMEMODE_s: "FORTATHENA", REGION_s: "NA" }
+    })).body;
+    const gameserver = await matchmakingClient(backend.port, authorizationOf((await get(backend.port,
+      `/fortnite/api/game/v2/matchmakingservice/ticket/session/${session.id}?bucketIds=${encodeURIComponent("3790078:0:NA:**")}&minPlayers=1&maxPlayers=100`,
+      server.token)).body));
+    clients.push(gameserver);
+    assert.equal(JSON.parse(await gameserver.next()).name, "Registered");
+    const assign = JSON.parse(await gameserver.next());
+    assert.equal(assign.name, "AssignMatch");
+    // The trio on team 0; the solos on team 1, the two that fill in one squad and the one that doesn't in its own.
+    assert.deepEqual(assign.payload.teams, [[[id("Trio1"), id("Trio2"), id("Trio3")]], [[id("Solo")], [id("Filler")]], [], [[id("Lone")]]]);
   } finally {
     for (const client of clients) client.close();
     backend.close();

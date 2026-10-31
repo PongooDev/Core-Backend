@@ -5110,9 +5110,9 @@
               settings.battleRoyaleVbucks ? chip("On", "good") : chip("Off")),
             toggleSwitch(settings.battleRoyaleVbucks === true, (checked) =>
               save({ battleRoyaleVbucks: checked }, checked ? "Battle Royale V-Bucks rewards turned on" : "Battle Royale V-Bucks rewards turned off"))),
-          el("p", { class: "note", text: "Pays V-Bucks in solo, duos and squads when the match's gameserver reports a player's result: an amount for every kill, one for a win, and one for the placement. A player gets the best placement reward they qualify for, not the sum: with top 25 = 100 and top 10 = 250, a 5th place earns 250, not 350, and a 20th place 100. Kill, win and placement rewards add up. Each match pays a player once; limited-time playlists pay nothing. Leave a box at 0 for no reward." }),
+          el("p", { class: "note", text: "Pays V-Bucks in solo, duos, squads and 50v50 when the match's gameserver reports a player's result: an amount for every kill, one for a win, and one for the placement. A player gets the best placement reward they qualify for, not the sum: with top 25 = 100 and top 10 = 250, a 5th place earns 250, not 350, and a 20th place 100. Kill, win and placement rewards add up. Each match pays a player once; other limited-time playlists pay nothing. 50v50's two teams place 1st and 2nd. Leave a box at 0 for no reward." }),
           (() => {
-            const modes = [["solo", "Solo"], ["duos", "Duos"], ["squads", "Squads"]];
+            const modes = [["solo", "Solo"], ["duos", "Duos"], ["squads", "Squads"], ["fiftyFifty", "50v50"]];
             const rewards = settings.battleRoyaleRewards ?? {};
             const amountInput = (value, label) => el("input", { class: "field num", type: "number", min: 0, max: 100000, value: value ?? 0, "aria-label": label });
             const columns = modes.map(([key, name]) => {
@@ -5148,7 +5148,7 @@
             });
             const whole = (value, min, max) => Number.isInteger(value) && value >= min && value <= max;
             return el("div", {},
-              el("div", { class: "grid cols-3", style: "margin-top:12px" }, columns.map(({ panel }) => panel)),
+              el("div", { class: "grid cols-2", style: "margin-top:12px" }, columns.map(({ panel }) => panel)),
               el("div", { class: "actions", style: "margin-top:12px; gap:8px;" },
                 btn("Save rewards", () => {
                   const battleRoyaleRewards = {};

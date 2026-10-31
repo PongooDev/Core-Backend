@@ -10,7 +10,7 @@ const defaults = {
   // Whether the seasonal events (events/events.js) run on the builds that shipped them (the admin panel's switch).
   seasonalEvents: true,
   // V-Bucks for Battle Royale matches (Core-Backend #100, #124, services/fortnite/battleroyale.js): off unless turned on,
-  // then battleRoyaleRewards' amounts for each of solo, duos and squads (rewardModes): perKill for each kill, perWin
+  // then battleRoyaleRewards' amounts for each of solo, duos, squads and 50v50 (rewardModes): perKill for each kill, perWin
   // for a win (place 1) and placements, [{top, vbucks}], of which a place gets the best one it is within, not their
   // sum. Nothing by default.
   battleRoyaleVbucks: false,
@@ -119,10 +119,10 @@ function rewardAmount(value) {
   return Number.isInteger(amount) && amount >= 0 && amount <= maxReward ? amount : undefined;
 }
 
-// The Battle Royale modes that pay V-Bucks, by their playlist (the stats' main playlists, stats/store.js); a
-// limited-time playlist pays nothing. A placement tier is "top" places 1 to maxPlacementTop, at most
-// maxPlacementTiers of them a mode.
-export const rewardModes = { solo: 2, duos: 10, squads: 9 };
+// The Battle Royale modes that pay V-Bucks, by their playlist: the stats' main playlists (stats/store.js) and 1.10's
+// 50v50 (events/fiftyfifty.js), whose two teams place 1st and 2nd; no other playlist pays. A placement tier is "top"
+// places 1 to maxPlacementTop, at most maxPlacementTiers of them a mode.
+export const rewardModes = { solo: 2, duos: 10, squads: 9, fiftyFifty: 11 };
 export const maxPlacementTop = 100;
 export const maxPlacementTiers = 10;
 const noRewards = () => Object.fromEntries(Object.keys(rewardModes).map((mode) => [mode, { perKill: 0, perWin: 0, placements: [] }]));

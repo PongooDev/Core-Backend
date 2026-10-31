@@ -18,10 +18,18 @@ export const fortnitemares = "EventFlag.Fortnitemares";
 // named apart from its flags (mutantStorms), each build running it under the flag its own data asks for.
 export const mutantStorms = "MutantStorms";
 
+// Battle Royale's 50v50 (events/fiftyfifty.js), the limited-time playlist 1.10 (CL-3790078) shipped: its
+// BR_Playlist_50v50 (AthenaCustomPlaylistEvent, PlaylistId 11) requires EventFlag.BR.Allow50v50, and its quest
+// (Athena/Items/Quests/Events/Winter2017_50v50) is the event's. 1.9 and 1.9.1 have the playlist's code but no asset or
+// quest, and their DefaultGame.ini turns the queue off (UFortGameInstance bBattleRoyaleFiftyFiftyQueueEnabled=false);
+// 1.10's turns it on and leaves the rest to the calendar (UFortGlobals b50v50CalenderEventEnabled=true).
+export const fiftyFifty = "EventFlag.BR.Allow50v50";
+
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
   { name: mutantStorms, flag: "EventFlag.Vindertech", firstBuild: 3775276, lastBuild: 3775276 },
-  { name: mutantStorms, flag: "EventFlag.ActiveStorms", firstBuild: 3790078, lastBuild: 3790078 }
+  { name: mutantStorms, flag: "EventFlag.ActiveStorms", firstBuild: 3790078, lastBuild: 3790078 },
+  { name: fiftyFifty, flag: fiftyFifty, firstBuild: 3790078, lastBuild: 3790078 }
 ];
 
 const runsOn = (event, number) => number >= event.firstBuild && number <= event.lastBuild;

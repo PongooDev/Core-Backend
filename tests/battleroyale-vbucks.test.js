@@ -7,7 +7,7 @@ import { createFrameParser, encodeFrame } from "../src/stomp/service.js";
 import { matchVbucks } from "../src/services/fortnite/battleroyale.js";
 import { dedicatedServerToken, get, post, startBackend, userLogin } from "./helpers.js";
 
-// Core-Backend #100, #124: V-Bucks for Battle Royale kills, wins and placements in solo, duos and squads, off unless the
+// Core-Backend #100, #124: V-Bucks for Battle Royale kills, wins and placements in solo, duos, squads and 1.10's 50v50 (#135), off unless the
 // admin turns them on, paid once a match.
 const settings = (backend, body) => (body === undefined
   ? get(backend.port, "/admin/api/settings")
@@ -21,12 +21,13 @@ const vbucks = (profile) => Object.values(profile.items)
 const balance = async (backend, player) => vbucks((await queryProfile(backend, player)).profileChanges[0].profile);
 
 const none = { perKill: 0, perWin: 0, placements: [] };
-const noRewards = { solo: none, duos: none, squads: none };
+const noRewards = { solo: none, duos: none, squads: none, fiftyFifty: none };
 // The issue's example amounts.
 const example = {
   solo: { perKill: 10, perWin: 100, placements: [{ top: 10, vbucks: 100 }, { top: 25, vbucks: 250 }] },
   duos: { perKill: 20, perWin: 200, placements: [{ top: 5, vbucks: 50 }, { top: 12, vbucks: 120 }] },
-  squads: { perKill: 40, perWin: 400, placements: [{ top: 3, vbucks: 30 }, { top: 6, vbucks: 60 }] }
+  squads: { perKill: 40, perWin: 400, placements: [{ top: 3, vbucks: 30 }, { top: 6, vbucks: 60 }] },
+  fiftyFifty: { perKill: 5, perWin: 500, placements: [] }
 };
 
 // What CoreV2 sends when a team is out or has won, with its match's id.
@@ -178,6 +179,9 @@ test("a placement pays its best tier, not their sum, and kills, a win and the pl
   assert.equal(matchVbucks(reversed, 2, { place: 20, kills: 0 }), 100);
   assert.equal(matchVbucks(example, 9, { place: 1, kills: 2 }), 2 * 40 + 400 + 60);
   assert.equal(matchVbucks(example, 50, { place: 1, kills: 2 }), 0, "a limited-time playlist");
+  // 50v50's two teams place 1st and 2nd (#135).
+  assert.equal(matchVbucks(example, 11, { place: 1, kills: 4 }), 4 * 5 + 500);
+  assert.equal(matchVbucks(example, 11, { place: 2, kills: 4 }), 4 * 5);
 });
 
 test("config.json can turn the rewards on and set their amounts, #100's one amount for every mode too", async () => {
@@ -186,7 +190,7 @@ test("config.json can turn the rewards on and set their amounts, #100's one amou
     const player = await userLogin(backend.port, "RewardsConfig");
     const current = (await settings(backend)).body;
     assert.equal(current.battleRoyaleVbucks, true);
-    for (const mode of ["solo", "duos", "squads"]) assert.deepEqual(current.battleRoyaleRewards[mode], { perKill: 25, perWin: 1000, placements: [] });
+    for (const mode of ["solo", "duos", "squads", "fiftyFifty"]) assert.deepEqual(current.battleRoyaleRewards[mode], { perKill: 25, perWin: 1000, placements: [] });
     const before = await balance(backend, player);
     await results(backend, await dedicatedServerToken(backend.port), { playlistId: 9, matchId: "squads-1", results: [{ accountId: player.accountId, place: 1, kills: 2, secondsAlive: 600 }] });
     assert.equal(await balance(backend, player), before + 1050);
@@ -206,7 +210,7 @@ test("a settings.json from before per-mode rewards keeps #100's amounts where th
     try {
       const current = (await settings(backend)).body;
       assert.equal(current.battleRoyaleVbucks, on);
-      assert.deepEqual(current.battleRoyaleRewards, { solo: expected, duos: expected, squads: expected });
+      assert.deepEqual(current.battleRoyaleRewards, { solo: expected, duos: expected, squads: expected, fiftyFifty: expected });
       assert.equal("vbucksPerKill" in current, false);
     } finally {
       backend.close();
