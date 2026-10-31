@@ -541,7 +541,13 @@
 
     .switch input:disabled+.slider {
       opacity: .4;
-      cursor: default;
+      cursor: not-allowed;
+    }
+
+    .switch.disabled,
+    .switch.disabled .slider {
+      cursor: not-allowed;
+      opacity: .4;
     }
 
     /* Stat tiles */
@@ -1514,10 +1520,195 @@
         padding: 16px;
       }
     }
+
+    /* Admin Login Screen & User Badge */
+    .login-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--surface);
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      padding: 32px;
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.6);
+      animation: loginFadeIn 0.2s ease-out;
+    }
+
+    @keyframes loginFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .login-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .login-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 20px;
+      font-weight: 800;
+      font-family: var(--display);
+      letter-spacing: 0.02em;
+    }
+
+    .login-brand .mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-brand .word span {
+      color: var(--muted);
+      font-weight: 600;
+      margin-left: 5px;
+    }
+
+    .login-desc {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 0 0 20px 0;
+    }
+
+    .login-error {
+      background: rgba(239, 68, 68, 0.14);
+      border: 1px solid rgba(239, 68, 68, 0.38);
+      color: #fca5a5;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+
+    .login-form-group {
+      margin-bottom: 14px;
+    }
+
+    .login-form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .pw-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .pw-toggle-btn {
+      position: absolute;
+      right: 8px;
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 4px;
+      user-select: none;
+    }
+
+    .pw-toggle-btn:hover {
+      color: var(--text);
+      background: var(--surface-2);
+    }
+
+    .login-submit {
+      width: 100%;
+      margin-top: 18px;
+      height: 42px;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .admin-user-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      margin: 0;
+      gap: 8px;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    .admin-user-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+
+
   </style>
 </head>
 
 <body>
+  <div id="admin-login-screen" class="login-screen" style="display: none;">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="login-brand">
+          <span class="mark" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff"
+              stroke-width="2.8" stroke-linecap="round">
+              <path d="M17 7.5a6.5 6.5 0 1 0 0 9" />
+            </svg></span>
+          <span class="word">Core<span>Admin</span></span>
+        </div>
+        <button type="button" id="login-close-btn" class="btn ghost" style="display:none; min-height:28px; padding:0 8px; font-size:14px; border:none;" title="Close" onclick="hideLoginScreen()">✕</button>
+      </div>
+      <p class="login-desc">Sign in with an authorized administrator credential to access this management dashboard.</p>
+      <form id="admin-login-form">
+        <div id="login-error-banner" class="login-error" style="display: none;"></div>
+        <div class="login-form-group">
+          <label for="login-username">Admin Username</label>
+          <input type="text" id="login-username" class="field" autocomplete="username" required placeholder="Username" spellcheck="false" style="width:100%;">
+        </div>
+        <div class="login-form-group">
+          <label for="login-password">Password</label>
+          <div class="pw-wrapper">
+            <input type="password" id="login-password" class="field" autocomplete="current-password" required placeholder="••••••••" style="width:100%; padding-right:56px;">
+            <button type="button" id="login-toggle-pw" class="pw-toggle-btn" tabindex="-1">Show</button>
+          </div>
+        </div>
+        <button type="submit" id="login-submit-btn" class="btn btn-primary login-submit">Sign In to Dashboard</button>
+      </form>
+    </div>
+  </div>
   <div class="shell">
     <aside class="sidebar">
       <a class="brand" href="#/dashboard" aria-label="Core Admin home">
@@ -1583,6 +1774,12 @@
       </nav>
       <div class="server" title="Backend status"><span class="pulse" id="pulse"></span><span
           id="server-line">Connecting…</span></div>
+      <div id="admin-user-bar" class="admin-user-bar" style="display: none;">
+        <div class="admin-user-badge">
+          <span id="admin-username-label" class="mono font-semibold">Local</span>
+        </div>
+        <button type="button" id="admin-logout-btn" class="btn btn-ghost" style="min-height:24px; padding:0 8px; font-size:12px; border:none;" title="Sign out of admin console">Sign Out</button>
+      </div>
     </aside>
     <main id="view" aria-live="polite"></main>
   </div>
@@ -1622,13 +1819,26 @@
       legendary: "sr",
       superrare: "sr"
     }[String(rarity || "").toLowerCase().replace(/[^a-z]/g, "")] || "c";
-    const toggleSwitch = (checked, onchange, disabled = false) => {
+    const toggleSwitch = (checked, onchange, disabled = false, disabledNotice = "") => {
       const input = el("input", {
-        type: "checkbox", checked: Boolean(checked), disabled: Boolean(disabled),
-        onchange: (e) => onchange(e.target.checked)
+        type: "checkbox",
+        checked: Boolean(checked),
+        disabled: Boolean(disabled),
+        onchange: (e) => onchange(e.target.checked, e)
       });
       const slider = el("span", { class: "slider" });
-      return el("label", { class: "switch" }, input, slider);
+      const label = el("label", {
+        class: `switch${disabled ? " disabled" : ""}`,
+        title: disabled && disabledNotice ? disabledNotice : ""
+      }, input, slider);
+      if (disabled) {
+        label.onclick = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (disabledNotice) toast(disabledNotice, true);
+        };
+      }
+      return label;
     };
     const fmt = (number) => Number(number ?? 0).toLocaleString();
     const kinds = {
@@ -1646,7 +1856,12 @@
       };
       const response = await fetch(path, options);
       const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data.errorMessage ?? `${response.status} ${response.statusText}`);
+      if (!response.ok) {
+        if (response.status === 401 && !path.startsWith("/admin/api/auth/")) {
+          handleUnauthorized();
+        }
+        throw new Error(data.errorMessage ?? `${response.status} ${response.statusText}`);
+      }
       return data;
     }
 
@@ -1869,6 +2084,289 @@
           backdrop.classList.add("show");
           okBtn.focus();
         });
+      });
+    }
+
+    /* ---------- admin auth modals & state ---------- */
+    let currentAdmin = null;
+    let lockoutTimer = null;
+
+    function updateAdminUserBar(user) {
+      const bar = $("admin-user-bar");
+      const label = $("admin-username-label");
+      const logoutBtn = $("admin-logout-btn");
+      if (!bar || !label) return;
+      if (user && user.username) {
+        label.textContent = user.username;
+        if (logoutBtn) {
+          logoutBtn.textContent = "Sign Out";
+          logoutBtn.title = "Sign out of admin console";
+        }
+        bar.style.display = "flex";
+      } else {
+        bar.style.display = "none";
+      }
+    }
+
+    function showLoginScreen(notice, canClose = false) {
+      const screen = $("admin-login-screen");
+      const err = $("login-error-banner");
+      const closeBtn = $("login-close-btn");
+      if (!screen) return;
+      screen.style.display = "flex";
+      if (closeBtn) {
+        closeBtn.style.display = canClose ? "inline-flex" : "none";
+      }
+      if (notice && err) {
+        err.textContent = notice;
+        err.style.display = "block";
+      } else if (err) {
+        err.style.display = "none";
+      }
+      const uInput = $("login-username");
+      if (uInput) setTimeout(() => uInput.focus(), 60);
+    }
+
+    function hideLoginScreen() {
+      const screen = $("admin-login-screen");
+      if (screen) screen.style.display = "none";
+      const err = $("login-error-banner");
+      if (err) err.style.display = "none";
+      const pw = $("login-password");
+      if (pw) pw.value = "";
+    }
+
+    function handleUnauthorized() {
+      currentAdmin = null;
+      updateAdminUserBar(null);
+      showLoginScreen("Session expired. Please sign in again.");
+    }
+
+    function startLockoutCountdown(seconds) {
+      const banner = $("login-error-banner");
+      const btnNode = $("login-submit-btn");
+      if (!banner || !btnNode) return;
+      let remaining = seconds;
+      btnNode.disabled = true;
+      clearInterval(lockoutTimer);
+      lockoutTimer = setInterval(() => {
+        remaining--;
+        if (remaining <= 0) {
+          clearInterval(lockoutTimer);
+          banner.style.display = "none";
+          btnNode.disabled = false;
+          btnNode.textContent = "Sign In to Dashboard";
+        } else {
+          banner.textContent = `Too many failed attempts. Please wait ${remaining} seconds before trying again.`;
+          btnNode.textContent = `Locked (${remaining}s)`;
+        }
+      }, 1000);
+    }
+
+    function addAdminCredentialModal() {
+      return new Promise((resolve) => {
+        let settled = false;
+        function finish(val) {
+          if (settled) return;
+          settled = true;
+          window.removeEventListener("keydown", onKeyDown);
+          backdrop.classList.remove("show");
+          setTimeout(() => backdrop.remove(), 160);
+          resolve(val);
+        }
+        function onKeyDown(e) {
+          if (e.key === "Escape") { e.preventDefault(); finish(null); }
+        }
+
+        const userInput = el("input", { class: "field", placeholder: "e.g. admin or ops_lead", autocomplete: "off", spellcheck: "false", style: "width:100%;" });
+        const pwInput = el("input", { type: "password", class: "field", placeholder: "At least 8 characters", style: "width:100%; padding-right:56px;" });
+        const pwToggle = el("button", { type: "button", class: "pw-toggle-btn", text: "Show", onclick: () => {
+          const isPw = pwInput.type === "password";
+          pwInput.type = isPw ? "text" : "password";
+          pwToggle.textContent = isPw ? "Hide" : "Show";
+        }});
+        const pwWrapper = el("div", { class: "pw-wrapper", style: "width:100%;" }, pwInput, pwToggle);
+        const ipInput = el("input", { class: "field", placeholder: "e.g. 192.168.1.50 (optional)", style: "width:100%; font-family:var(--mono);" });
+        const errorBanner = el("div", { class: "login-error", style: "display:none; margin-bottom:12px;" });
+
+        const cancelBtn = btn("Cancel", () => finish(null), "ghost");
+        const submitBtn = btn("Create Credential", async () => {
+          const username = userInput.value.trim();
+          const password = pwInput.value;
+          const allowedIp = ipInput.value.trim() || null;
+
+          if (!username) {
+            errorBanner.textContent = "Please enter an admin username.";
+            errorBanner.style.display = "block";
+            userInput.focus();
+            return;
+          }
+          if (!password || password.length < 8) {
+            errorBanner.textContent = "Password must be at least 8 characters long.";
+            errorBanner.style.display = "block";
+            pwInput.focus();
+            return;
+          }
+
+          submitBtn.disabled = true;
+          if (submitBtn.firstChild) submitBtn.firstChild.textContent = "Creating…";
+          try {
+            const res = await api("/admin/api/admin-users", { username, password, allowedIp });
+            toast(`Admin credential created for '${username}'`);
+            if (res.user) {
+              currentAdmin = res.user;
+              updateAdminUserBar(res.user);
+            }
+            finish(res.user);
+          } catch (err) {
+            errorBanner.textContent = err.message || "Failed to create admin credential";
+            errorBanner.style.display = "block";
+            submitBtn.disabled = false;
+            if (submitBtn.firstChild) submitBtn.firstChild.textContent = "Create Credential";
+          }
+        }, "primary");
+
+        const dialog = el("div", { class: "modal-dialog", style: "max-width: 480px;", onclick: (e) => e.stopPropagation() },
+          el("div", { class: "panel-head", style: "margin-bottom:8px;" },
+            el("h2", { text: "Add Admin Credential" }),
+            el("button", { type: "button", class: "btn ghost", style: "min-height:28px; padding:0 8px; font-size:14px; border:none;", text: "✕", onclick: () => finish(null) })),
+          el("p", { class: "note", text: "Create an administrator account for this admin console. You can optionally restrict access to a specific device IP address." }),
+          errorBanner,
+          el("div", { style: "display:flex; flex-direction:column; gap:12px; margin-top:12px;" },
+            el("div", {},
+              el("label", { class: "muted", style: "display:block; font-size:12px; font-weight:600; margin-bottom:4px;", text: "Admin Username" }),
+              userInput),
+            el("div", {},
+              el("label", { class: "muted", style: "display:block; font-size:12px; font-weight:600; margin-bottom:4px;", text: "Password" }),
+              pwWrapper),
+            el("div", {},
+              el("label", { class: "muted", style: "display:block; font-size:12px; font-weight:600; margin-bottom:4px;", text: "IP Restriction (Optional)" }),
+              ipInput,
+              el("p", { class: "note", style: "margin-top:4px; font-size:12px;", text: "Only connections from this IP will be permitted for this user. Leave empty to allow logging in from any authorized IP." }))
+          ),
+          el("div", { class: "actions", style: "margin-top:20px;" }, cancelBtn, submitBtn)
+        );
+
+        const backdrop = el("div", { class: "modal-backdrop", onclick: (e) => { if (e.target === backdrop) finish(null); } }, dialog);
+        document.body.append(backdrop);
+        window.addEventListener("keydown", onKeyDown);
+        requestAnimationFrame(() => { backdrop.classList.add("show"); userInput.focus(); });
+      });
+    }
+
+    function changeAdminPasswordModal(user) {
+      return new Promise((resolve) => {
+        let settled = false;
+        function finish(val) {
+          if (settled) return;
+          settled = true;
+          window.removeEventListener("keydown", onKeyDown);
+          backdrop.classList.remove("show");
+          setTimeout(() => backdrop.remove(), 160);
+          resolve(val);
+        }
+        function onKeyDown(e) { if (e.key === "Escape") { e.preventDefault(); finish(false); } }
+
+        const pwInput = el("input", { type: "password", class: "field", placeholder: "New password (at least 8 characters)", style: "width:100%; padding-right:56px;" });
+        const pwToggle = el("button", { type: "button", class: "pw-toggle-btn", text: "Show", onclick: () => {
+          const isPw = pwInput.type === "password";
+          pwInput.type = isPw ? "text" : "password";
+          pwToggle.textContent = isPw ? "Hide" : "Show";
+        }});
+        const pwWrapper = el("div", { class: "pw-wrapper", style: "width:100%;" }, pwInput, pwToggle);
+        const errorBanner = el("div", { class: "login-error", style: "display:none; margin-bottom:12px;" });
+
+        const cancelBtn = btn("Cancel", () => finish(false), "ghost");
+        const submitBtn = btn("Update Password", async () => {
+          const newPassword = pwInput.value;
+          if (!newPassword || newPassword.length < 8) {
+            errorBanner.textContent = "Password must be at least 8 characters long.";
+            errorBanner.style.display = "block";
+            pwInput.focus();
+            return;
+          }
+          submitBtn.disabled = true;
+          if (submitBtn.firstChild) submitBtn.firstChild.textContent = "Updating…";
+          try {
+            await api(`/admin/api/admin-users/${user.id}/password`, { newPassword });
+            toast(`Password updated for '${user.username}'. Any active sessions were revoked.`);
+            finish(true);
+          } catch (err) {
+            errorBanner.textContent = err.message || "Failed to update password";
+            errorBanner.style.display = "block";
+            submitBtn.disabled = false;
+            if (submitBtn.firstChild) submitBtn.firstChild.textContent = "Update Password";
+          }
+        }, "primary");
+
+        const dialog = el("div", { class: "modal-dialog", style: "max-width: 440px;", onclick: (e) => e.stopPropagation() },
+          el("div", { class: "panel-head", style: "margin-bottom:8px;" },
+            el("h2", { text: `Change Password: ${user.username}` }),
+            el("button", { type: "button", class: "btn ghost", style: "min-height:28px; padding:0 8px; font-size:14px; border:none;", text: "✕", onclick: () => finish(false) })),
+          el("p", { class: "note", text: `Set a new password for ${user.username}. This will immediately invalidate existing sessions for this credential.` }),
+          errorBanner,
+          el("div", { style: "margin-top:12px;" },
+            el("label", { class: "muted", style: "display:block; font-size:12px; font-weight:600; margin-bottom:4px;", text: "New Password" }),
+            pwWrapper),
+          el("div", { class: "actions", style: "margin-top:20px;" }, cancelBtn, submitBtn)
+        );
+
+        const backdrop = el("div", { class: "modal-backdrop", onclick: (e) => { if (e.target === backdrop) finish(false); } }, dialog);
+        document.body.append(backdrop);
+        window.addEventListener("keydown", onKeyDown);
+        requestAnimationFrame(() => { backdrop.classList.add("show"); pwInput.focus(); });
+      });
+    }
+
+    function editAdminIpModal(user) {
+      return new Promise((resolve) => {
+        let settled = false;
+        function finish(val) {
+          if (settled) return;
+          settled = true;
+          window.removeEventListener("keydown", onKeyDown);
+          backdrop.classList.remove("show");
+          setTimeout(() => backdrop.remove(), 160);
+          resolve(val);
+        }
+        function onKeyDown(e) { if (e.key === "Escape") { e.preventDefault(); finish(false); } }
+
+        const ipInput = el("input", { class: "field", value: user.allowedIp || "", placeholder: "e.g. 192.168.1.50 or leave blank", style: "width:100%; font-family:var(--mono);" });
+        const errorBanner = el("div", { class: "login-error", style: "display:none; margin-bottom:12px;" });
+
+        const cancelBtn = btn("Cancel", () => finish(false), "ghost");
+        const submitBtn = btn("Save IP Restriction", async () => {
+          const allowedIp = ipInput.value.trim() || null;
+          submitBtn.disabled = true;
+          if (submitBtn.firstChild) submitBtn.firstChild.textContent = "Saving…";
+          try {
+            await api(`/admin/api/admin-users/${user.id}/ip`, { allowedIp });
+            toast(`IP restriction updated for '${user.username}'`);
+            finish(true);
+          } catch (err) {
+            errorBanner.textContent = err.message || "Failed to update IP restriction";
+            errorBanner.style.display = "block";
+            submitBtn.disabled = false;
+            if (submitBtn.firstChild) submitBtn.firstChild.textContent = "Save IP Restriction";
+          }
+        }, "primary");
+
+        const dialog = el("div", { class: "modal-dialog", style: "max-width: 440px;", onclick: (e) => e.stopPropagation() },
+          el("div", { class: "panel-head", style: "margin-bottom:8px;" },
+            el("h2", { text: `Edit IP Restriction: ${user.username}` }),
+            el("button", { type: "button", class: "btn ghost", style: "min-height:28px; padding:0 8px; font-size:14px; border:none;", text: "✕", onclick: () => finish(false) })),
+          el("p", { class: "note", text: `Specify an IPv4 or IPv6 address to restrict ${user.username} to that device only. Leave blank to remove restriction.` }),
+          errorBanner,
+          el("div", { style: "margin-top:12px;" },
+            el("label", { class: "muted", style: "display:block; font-size:12px; font-weight:600; margin-bottom:4px;", text: "Allowed IP Address" }),
+            ipInput),
+          el("div", { class: "actions", style: "margin-top:20px;" }, cancelBtn, submitBtn)
+        );
+
+        const backdrop = el("div", { class: "modal-backdrop", onclick: (e) => { if (e.target === backdrop) finish(false); } }, dialog);
+        document.body.append(backdrop);
+        window.addEventListener("keydown", onKeyDown);
+        requestAnimationFrame(() => { backdrop.classList.add("show"); ipInput.focus(); });
       });
     }
 
@@ -4460,7 +4958,12 @@
 
     /* ---------- settings ---------- */
     async function showSettings() {
-      const [settings, accountList] = await Promise.all([act(api("/admin/api/settings")), api("/admin/api/accounts").catch(() => [])]);
+      const [settings, accountList, adminUsersData] = await Promise.all([
+        act(api("/admin/api/settings")),
+        api("/admin/api/accounts").catch(() => []),
+        api("/admin/api/admin-users").catch(() => ({ users: [] }))
+      ]);
+      const adminUsers = adminUsersData?.users || [];
       if (!settings || state.view !== "settings") return;
 
       const save = async (changes, msg) => {
@@ -4491,6 +4994,62 @@
             el("h1", { text: "Server Settings" }),
             el("div", { class: "muted", text: "Configure authentication, password requirements, hosting IP whitelists, and the player web portal." })),
           el("div", { class: "actions" }, btn("Refresh", showSettings, "ghost"))),
+
+        el("section", { class: "panel" },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" },
+            el("div", { class: "actions", style: "gap:10px; align-items:center;" },
+              el("h2", { text: "Admin Menu Credentials" }),
+              (settings.requireAdminAuth && adminUsers.length > 0)
+                ? chip("Required", "good")
+                : (adminUsers.length === 0 ? chip("No Credentials Set", "warn") : chip("Disabled"))),
+            toggleSwitch(
+              Boolean(settings.requireAdminAuth && adminUsers.length > 0),
+              (checked, e) => {
+                if (checked && adminUsers.length === 0) {
+                  if (e && e.target) e.target.checked = false;
+                  showSettings();
+                  return toast("Add at least one admin credential first before enabling admin login requirement", true);
+                }
+                save({ requireAdminAuth: checked }, checked ? "Admin login requirement enabled" : "Admin login requirement disabled");
+              },
+              adminUsers.length === 0,
+              "Add at least one admin credential first before enabling admin login requirement"
+            )),
+          el("p", { class: "note", text: "Configure administrator credentials required to access this dashboard. Each credential can optionally be restricted to a specific client IP address." }),
+
+          adminUsers.length ? table([
+            ["Username", (u) => el("span", { class: "mono", style: "font-weight:600;", text: u.username })],
+            ["IP Restriction", (u) => u.allowedIp ? el("span", { class: "chip sky", text: u.allowedIp }) : el("span", { class: "chip", text: "Any IP" })],
+            ["Created", (u) => ago(u.created)],
+            ["Last Login", (u) => u.lastLogin ? `${ago(u.lastLogin)} (${u.lastIp || "—"})` : el("span", { class: "muted", text: "Never" })],
+            ["Actions", (u) => el("div", { class: "actions", style: "gap:6px;" },
+              btn("Change Password", async () => {
+                const changed = await changeAdminPasswordModal(u);
+                if (changed) showSettings();
+              }, "ghost"),
+              btn("Edit IP", async () => {
+                const updated = await editAdminIpModal(u);
+                if (updated) showSettings();
+              }, "ghost"),
+              adminUsers.length > 1 ? btn("✕ Remove", async () => {
+                const ok = await confirmModal(`Are you sure you want to remove admin credential "${u.username}"? Active sessions for this credential will be revoked immediately.`, {
+                  title: "Remove Admin Credential",
+                  confirmText: "Remove Credential",
+                  confirmKind: "danger"
+                });
+                if (!ok) return;
+                await act(api(`/admin/api/admin-users/${u.id}`, undefined, "DELETE"), `Removed ${u.username}`);
+                showSettings();
+              }, "danger") : null
+            )]
+          ], adminUsers) : el("div", { class: "empty", style: "margin: 16px 0;", text: "No admin credentials created yet. Click '+ Add Admin Credential' below to secure this console." }),
+
+          el("div", { class: "actions", style: "margin-top:14px;" },
+            btn("+ Add Admin Credential", async () => {
+              const created = await addAdminCredentialModal();
+              if (created) showSettings();
+            }, "primary"))
+        ),
 
         el("section", { class: "panel" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
@@ -4794,9 +5353,127 @@
         $("server-line").textContent = `${location.host} · not answering`;
       }
     }
+    /* ---------- login form & sidebar events ---------- */
+    const loginForm = $("admin-login-form");
+    if (loginForm) {
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const username = $("login-username").value.trim();
+        const password = $("login-password").value;
+        const errorBanner = $("login-error-banner");
+        const submitBtn = $("login-submit-btn");
+
+        if (!username || !password) return;
+
+        errorBanner.style.display = "none";
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Signing In…";
+
+        try {
+          const res = await fetch("/admin/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+          });
+          const data = await res.json().catch(() => ({}));
+
+          if (!res.ok) {
+            errorBanner.textContent = data.errorMessage || "Invalid username or password";
+            errorBanner.style.display = "block";
+            if (res.status === 429) {
+              startLockoutCountdown(data.retryAfter || 900);
+            }
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Sign In to Dashboard";
+            return;
+          }
+
+          sessionStorage.removeItem("admin_signed_out");
+          currentAdmin = data.user;
+          updateAdminUserBar(data.user);
+          hideLoginScreen();
+          toast(`Signed in as ${data.user.username}`);
+          route();
+          heartbeat();
+        } catch (err) {
+          errorBanner.textContent = err.message || "Failed to connect to server";
+          errorBanner.style.display = "block";
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Sign In to Dashboard";
+        }
+      });
+    }
+
+    const togglePwBtn = $("login-toggle-pw");
+    if (togglePwBtn) {
+      togglePwBtn.addEventListener("click", () => {
+        const pwInput = $("login-password");
+        const isPw = pwInput.type === "password";
+        pwInput.type = isPw ? "text" : "password";
+        togglePwBtn.textContent = isPw ? "Hide" : "Show";
+      });
+    }
+
+    const logoutBtn = $("admin-logout-btn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", async () => {
+        const ok = await confirmModal("Are you sure you want to log out of the admin console?", {
+          title: "Sign Out",
+          confirmText: "Sign Out",
+          confirmKind: "danger"
+        });
+        if (!ok) return;
+        try {
+          await fetch("/admin/api/auth/logout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId: currentAdmin?.id, username: currentAdmin?.username })
+          });
+        } catch {}
+        sessionStorage.setItem("admin_signed_out", "1");
+        currentAdmin = null;
+        updateAdminUserBar(null);
+        showLoginScreen("You have been signed out.");
+      });
+    }
+
+    async function initAuthAndStart() {
+      try {
+        if (sessionStorage.getItem("admin_signed_out") === "1") {
+          showLoginScreen("You have been signed out.");
+          return;
+        }
+        const res = await fetch("/admin/api/auth/me");
+        const data = await res.json().catch(() => ({}));
+        if (data.sessionExpired) {
+          currentAdmin = null;
+          updateAdminUserBar(null);
+          showLoginScreen("Session expired. Please sign in again.");
+          return;
+        }
+        if (data.authenticated) {
+          currentAdmin = data.user;
+          updateAdminUserBar(data.user);
+          hideLoginScreen();
+          route();
+          heartbeat();
+        } else if (data.requireAuth) {
+          showLoginScreen();
+        } else {
+          hideLoginScreen();
+          updateAdminUserBar(null);
+          route();
+          heartbeat();
+        }
+      } catch {
+        route();
+        heartbeat();
+      }
+    }
+
     setInterval(heartbeat, 10000);
-    heartbeat();
-    route();
+    initAuthAndStart();
   </script>
 </body>
 
