@@ -35,7 +35,12 @@ import { createRateLimiter, getClientIp } from "../services/portal/ratelimit.js"
 import { defaultBattleRoyaleNews, defaultLoginMessage, defaultSubgameSelect } from "../services/content/pages.js";
 import { inBuild } from "../builds/context.js";
 import { battleRoyaleBuilds, certBuild, versionOf } from "../builds/detect.js";
-import { cosmeticRarity, cosmeticType, eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, shopDay, weeklyStoreEnd } from "../store/itemshop.js";
+import { cosmeticRarity, cosmeticType, eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, seasonEnd, shopDay, weeklyStoreEnd } from "../store/itemshop.js";
+import { activeEventFlags, fortnitemares, mutantStorms } from "../events/events.js";
+import { convertLeftoverCandy } from "../events/candyllamas.js";
+import { defaultEvents } from "../settings/store.js";
+import { calendarCacheMinutes } from "../services/fortnite/calendar.js";
+import { defaultBattlePass, enrichedMilestones } from "../battlepass/season1.js";
 
 import { isServerAccountName, validatePassword } from "../accounts/password.js";
 import { EmailError } from "../accounts/store.js";
@@ -871,6 +876,11 @@ export function adminRoutes(context) {
     const configNews = context.config?.battleRoyaleNews;
     const configLogin = context.config?.loginMessage;
     const configSubgame = context.config?.subgameSelect;
+    const battleRoyaleNewsEnabled = (typeof current.battleRoyaleNewsEnabled === "boolean")
+      ? current.battleRoyaleNewsEnabled
+      : (typeof context.config?.battleRoyaleNewsEnabled === "boolean"
+        ? context.config.battleRoyaleNewsEnabled
+        : (context.config?.battleRoyaleNews !== false));
     const loginMessageEnabled = (typeof current.loginMessageEnabled === "boolean")
       ? current.loginMessageEnabled
       : (typeof context.config?.loginMessageEnabled === "boolean"
@@ -878,6 +888,7 @@ export function adminRoutes(context) {
         : (context.config?.loginMessage !== false));
 
     return {
+      battleRoyaleNewsEnabled,
       loginMessageEnabled,
       custom: {
         battleRoyaleNews: current.battleRoyaleNews ?? configNews ?? null,
@@ -888,6 +899,7 @@ export function adminRoutes(context) {
         }
       },
       defaults: {
+        battleRoyaleNewsEnabled: true,
         loginMessageEnabled: true,
         battleRoyaleNews: defaultBattleRoyaleNews,
         loginMessage: defaultLoginMessage,
@@ -964,6 +976,189 @@ export function adminRoutes(context) {
       availableCosmetics: cosmetics
     };
   }
+
+  router.get("/admin/api/events/overview", (req, res) => {
+    const now = new Date();
+    const s = settings?.get?.() ?? {};
+    const eventsConfig = s.events ?? defaultEvents;
+    const seasonalEventsEnabled = s.seasonalEvents !== false && eventsConfig.mode !== "off";
+    const shopConfig = s.itemShop ?? { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 };
+
+    const builds = [
+      { version: "1.7.2", cl: 3532353, event: "Base Campaign" },
+      { version: "1.8 – 1.9", cl: 3724489, event: "Fortnitemares" },
+      { version: "1.9.1", cl: 3775276, event: "Mutant Storms" },
+      { version: "1.10", cl: 3790078, event: "Mutant Storms" }
+    ];
+
+    const sampleBuilds = builds.map((b) => ({
+      ...b,
+      flags: inBuild(String(b.cl), () => activeEventFlags())
+    }));
+
+    const weeklyEnd = weeklyStoreEnd(now, shopConfig);
+    const seasonEnds = seasonEnd(now, shopConfig);
+    const dailyEnd = nextRotation(now, shopConfig);
+
+    res.json({
+      season: 1,
+      seasonName: "Season 1 (1.8 – 1.11)",
+      availableSeasons: [
+        { id: 1, name: "Season 1 (1.8 – 1.11)", range: "1.8 – 1.11", active: true }
+      ],
+      seasonalEvents: seasonalEventsEnabled,
+      activeFlags: activeEventFlags(),
+      sampleBuilds,
+      calendar: {
+        weeklyStoreEnd: weeklyEnd.toISOString(),
+        seasonEnd: seasonEnds.toISOString(),
+        dailyStoreEnd: dailyEnd.toISOString(),
+        cacheIntervalMins: eventsConfig.calendarCacheMinutes ?? calendarCacheMinutes,
+        currentTime: now.toISOString()
+      },
+      eventsConfig,
+      events: [
+        {
+          id: "fortnitemares",
+          name: "Fortnitemares",
+          subtitle: "Halloween 2017 Event",
+          buildRange: "1.8 – 1.9 (CL 3724489 – 3757339)",
+          flags: ["EventFlag.Fortnitemares"],
+          theater: "Hexsylvania",
+          theaterZones: [
+            { name: "Hexsylvania Start", power: "5+", gate: "None" },
+            { name: "Hexsylvania Normal", power: "15+", gate: eventsConfig.hexsylvaniaGates === "open" ? "None (Open Access)" : "Launch the Rocket (Stonewood)" },
+            { name: "Hexsylvania Hard", power: "23+", gate: eventsConfig.hexsylvaniaGates === "open" ? "None (Open Access)" : "Launch the Rocket (Plankerton)" },
+            { name: "Hexsylvania Nightmare", power: "34+", gate: eventsConfig.hexsylvaniaGates === "open" ? "None (Open Access)" : "Launch the Rocket (Canny Valley)" }
+          ],
+          currency: "Candy (AccountResource:eventcurrency_candy)",
+          llama: `Fortnitemares Llama (CardPack_Event_2017_Halloween, ${eventsConfig.candyPerLlama ?? 500} Candy)`,
+          questsCount: 56,
+          bookPages: ["Halloween2017_Heroes", "Halloween2017_Workers"]
+        },
+        {
+          id: "mutantstorms",
+          name: "Mutant Storms",
+          subtitle: "Storm Category Mission Alerts & Vindertech",
+          buildRange: "1.9.1 & 1.10 (CL 3775276 – 3790078)",
+          flags: ["EventFlag.Vindertech (1.9.1)", "EventFlag.ActiveStorms (1.10)"],
+          theater: "Standard Zones with Storm Modifiers",
+          alertsQuota: `${eventsConfig.stormAlertQuota ?? 10} storm category mission alerts per day`,
+          currency: "Storm Tickets (AccountResource:eventcurrency_stormzone)",
+          llama: "Vindertech Weapons & Storm Llama",
+          questsCount: 15,
+          leftoverConversion: `${eventsConfig.candyPerLlama ?? 500} unspent Candy converts to 1 Fortnitemares Llama on 1.9.1+ load`
+        }
+      ]
+    });
+  });
+
+  router.post("/admin/api/events/config", (req, res) => {
+    if (typeof req.body !== "object" || req.body === null) {
+      return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "Invalid events configuration body");
+    }
+    const updated = settings.update({ events: req.body });
+    res.json({ success: true, events: updated.events });
+  });
+
+  router.post("/admin/api/events/actions/convert-candy", (req, res) => {
+    const list = accounts.list();
+    let convertedProfiles = 0;
+    let totalLlamasGranted = 0;
+    const currentEvents = settings?.get?.().events;
+    const perLlama = currentEvents?.candyPerLlama ?? 500;
+
+    inBuild("3775276", () => {
+      for (const account of list) {
+        try {
+          const session = openSession(profiles, account.id);
+          const granted = convertLeftoverCandy(session, true);
+          if (granted && granted.length > 0) {
+            session.commit();
+            notifyProfiles(context, session);
+            convertedProfiles += 1;
+            const grantedCount = granted.reduce((sum, item) => sum + (item.quantity ?? 1), 0);
+            totalLlamasGranted += grantedCount;
+          }
+        } catch (err) {
+          // Continue with other accounts
+        }
+      }
+    });
+
+    res.json({ success: true, convertedProfiles, totalLlamasGranted, candyPerLlama: perLlama });
+  });
+
+  router.post("/admin/api/events/actions/reset-quotas", (req, res) => {
+    const list = accounts.list();
+    let resetProfiles = 0;
+    const never = "0001-01-01T00:00:00.000Z";
+
+    for (const account of list) {
+      try {
+        const session = openSession(profiles, account.id);
+        const tracker = session.profile("profile0");
+        if (tracker && tracker.profile) {
+          const record = withQuotaSlots(tracker.profile.stats?.attributes?.mission_alert_redemption_record ?? emptyAlertRecord());
+          const categories = record.lastClaimTimesMap && Object.fromEntries(Object.entries(record.lastClaimTimesMap).map(([category, claims]) =>
+            [category, { missionAlertGUIDs: (claims.missionAlertGUIDs ?? []).map(() => ""), lastClaimedTimes: (claims.lastClaimedTimes ?? []).map(() => never) }]));
+          tracker.setStat("mission_alert_redemption_record", {
+            ...record,
+            lastClaimTimes: emptyAlertRecord().lastClaimTimes,
+            oldestClaimIndex: 0,
+            ...(categories && { lastClaimTimesMap: categories, oldestClaimIndexForCategory: (record.oldestClaimIndexForCategory ?? []).map(() => 0) })
+          });
+          session.commit();
+          notifyProfiles(context, session);
+          resetProfiles += 1;
+        }
+      } catch (err) {
+        // Continue with other accounts
+      }
+    }
+
+    res.json({ success: true, resetProfiles });
+  });
+
+  router.get("/admin/api/battlepass/overview", (req, res) => {
+    const s = settings?.get?.() ?? {};
+    const bpConfig = s.battlepass ?? defaultBattlePass;
+    const now = new Date();
+    const shopConfig = s.itemShop ?? { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 };
+    const seasonEnds = seasonEnd(now, shopConfig);
+
+    res.json({
+      season: 1,
+      seasonName: "Season 1 (1.8 – 1.11)",
+      availableSeasons: [
+        { id: 1, name: "Season 1 (1.8 – 1.11)", range: "1.8 – 1.11", active: true }
+      ],
+      seasonEnd: seasonEnds.toISOString(),
+      config: bpConfig,
+      milestones: enrichedMilestones(bpConfig)
+    });
+  });
+
+  router.post("/admin/api/battlepass/config", (req, res) => {
+    if (typeof req.body !== "object" || req.body === null) {
+      return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "Invalid battle pass configuration body");
+    }
+    const updated = settings.update({ battlepass: req.body });
+    res.json({
+      success: true,
+      config: updated.battlepass,
+      milestones: enrichedMilestones(updated.battlepass)
+    });
+  });
+
+  router.post("/admin/api/battlepass/actions/reset-defaults", (req, res) => {
+    const updated = settings.update({ battlepass: defaultBattlePass });
+    res.json({
+      success: true,
+      config: updated.battlepass,
+      milestones: enrichedMilestones(updated.battlepass)
+    });
+  });
 
   router.get("/admin/api/shop", (req, res) => {
     res.json(getShopPayload());
@@ -1174,6 +1369,11 @@ export function adminRoutes(context) {
   router.post("/admin/api/news", (req, res) => {
     if (!settings?.update) return invalid(res, "Settings store not available");
     const updates = {};
+    if (typeof req.body?.battleRoyaleNewsEnabled === "boolean") {
+      updates.battleRoyaleNewsEnabled = req.body.battleRoyaleNewsEnabled;
+    } else if (req.body?.battleRoyaleNewsEnabled === null) {
+      updates.battleRoyaleNewsEnabled = null;
+    }
     if (req.body?.battleRoyaleNews !== undefined) {
       if (req.body.battleRoyaleNews === null) {
         updates.battleRoyaleNews = null;

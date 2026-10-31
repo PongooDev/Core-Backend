@@ -5,7 +5,8 @@ import { createSettingsStore } from "./settings/store.js";
 import { createReportStore } from "./reports/store.js";
 import { configureItemShop } from "./store/itemshop.js";
 import { requestBuild } from "./builds/context.js";
-import { seasonalEvents } from "./events/events.js";
+import { configureEvents, seasonalEvents } from "./events/events.js";
+import { configureBattlePass } from "./battlepass/season1.js";
 import { createFriendStore } from "./friends/store.js";
 import { createFriendCodeStore } from "./friendcodes/store.js";
 import { networkAdminRoutes } from "./admin/network.js";
@@ -63,12 +64,14 @@ export function createContext(config) {
   const settings = createSettingsStore(config.dataDir);
   const adminAuth = createAdminAuthStore(config.dataDir);
   configureItemShop(() => settings.get().itemShop);
+  configureEvents(() => settings.get().events);
+  configureBattlePass(() => settings.get().battlepass);
   if (config.requirePassword !== undefined) settings.update({ requirePassword: config.requirePassword });
   if (config.allowRegistration !== undefined) settings.update({ allowRegistration: config.allowRegistration });
   if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
   if (config.seasonalEvents !== undefined) settings.update({ seasonalEvents: config.seasonalEvents });
   for (const key of ["battleRoyaleVbucks", "battleRoyaleRewards", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits", "cheats", "cheatAccounts",
-    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "regionFallback", "defaultFoundersAccess", "remoteAdmin"]) {
+    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "regionFallback", "defaultFoundersAccess", "remoteAdmin", "events", "battlepass"]) {
     if (config[key] !== undefined) settings.update({ [key]: config[key] });
   }
   const friends = createFriendStore(config.dataDir);

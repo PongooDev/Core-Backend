@@ -1,4 +1,4 @@
-import { isEventActive } from "../events/events.js";
+import { currentEventsConfig, isEventActive } from "../events/events.js";
 import { perBuild } from "./read.js";
 
 const data = perBuild((read) => ({ difficulties: {}, missionAlerts: [], dailyMissionAlertQuota: 0, missionAlertCategories: {},
@@ -34,10 +34,28 @@ export const hasMissionAlertCategories = () => Object.keys(data().missionAlertCa
 
 // {category, quota, repeatable} of a MissionAlertCategories row.
 export function missionAlertCategory(rowName) {
-  return data().missionAlertCategories[rowName];
+  const cat = data().missionAlertCategories[rowName];
+  if (!cat) return undefined;
+  if (rowName === "StormCategory") {
+    const customQuota = currentEventsConfig()?.stormAlertQuota;
+    if (Number.isInteger(customQuota) && customQuota >= 1) {
+      return { ...cat, quota: customQuota };
+    }
+  }
+  return cat;
 }
 
-export const missionAlertCategories = () => data().missionAlertCategories;
+export function missionAlertCategories() {
+  const all = data().missionAlertCategories;
+  const customQuota = currentEventsConfig()?.stormAlertQuota;
+  if (Number.isInteger(customQuota) && customQuota >= 1 && all.StormCategory) {
+    return {
+      ...all,
+      StormCategory: { ...all.StormCategory, quota: customQuota }
+    };
+  }
+  return all;
+}
 
 // A MissionAlertSpreadDatas row (1.9.1's Mutant Storms): {chanceToSpread, totalChancesToSpread, maxNumTilesToSpreadTo,
 // spreadInterval (minutes), missionAlertRowName}.

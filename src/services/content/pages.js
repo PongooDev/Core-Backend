@@ -101,6 +101,12 @@ export const newsMessagesBuild = 3757339;
 const readsNewsMessages = (changelist) => /^\d+$/.test(changelist ?? "") && Number(changelist) >= newsMessagesBuild;
 
 export function battleRoyaleNewsFor(news, changelist) {
+  if (!news) {
+    if (readsNewsMessages(changelist)) {
+      return { news: { messages: [], region_messages: [], platform_messages: [] } };
+    }
+    return { news: { region_messages: [], platform_messages: [] } };
+  }
   const message = messageOf(news, defaultBattleRoyaleNews, changelist);
   if (readsNewsMessages(changelist)) {
     return { news: { messages: [{ ...message, image: "" }], region_messages: [], platform_messages: [] } };
@@ -126,7 +132,12 @@ export function contentRoutes(context, config = {}) {
   const router = express.Router();
   router.get("/content/api/pages/fortnite-game", (req, res) => {
     const settings = context?.settings?.get?.() ?? {};
-    const news = settings.battleRoyaleNews ?? config.battleRoyaleNews ?? defaultBattleRoyaleNews;
+    const brNewsEnabled = (typeof settings.battleRoyaleNewsEnabled === "boolean")
+      ? settings.battleRoyaleNewsEnabled
+      : (typeof config.battleRoyaleNewsEnabled === "boolean"
+        ? config.battleRoyaleNewsEnabled
+        : (config.battleRoyaleNews !== false));
+    const news = brNewsEnabled ? (settings.battleRoyaleNews ?? config.battleRoyaleNews ?? defaultBattleRoyaleNews) : null;
     const loginMessageEnabled = (typeof settings.loginMessageEnabled === "boolean")
       ? settings.loginMessageEnabled
       : (typeof config.loginMessageEnabled === "boolean"

@@ -1,6 +1,7 @@
 import { currentBuild } from "../builds/context.js";
 import { athenaCosmetics } from "../gamedata/athena.js";
 import { featuredDisplayAsset } from "./itemshop.js";
+import { currentBattlePassConfig, defaultMilestones } from "../battlepass/season1.js";
 
 // Battle Royale's Season Shop, from 1.8.2 (CL-3741772): "Unlock the ability to purchase new items as you level up each
 // season!" The lobby's Season Shop tab is AthenaSeasonDirectAcquisitionScreen (UFortDirectAcquisitionWidgetBase), whose
@@ -45,14 +46,20 @@ const seasonOne = [
 export function seasonShopOffers() {
   if (!hasSeasonShop()) return [];
   const cosmetics = athenaCosmetics();
-  return seasonOne.filter(({ templateId }) => cosmetics[templateId]).map(({ templateId, seasonLevel, price }) => ({
+  const bpConfig = currentBattlePassConfig();
+  const milestones = Array.isArray(bpConfig.milestones) && bpConfig.milestones.length > 0
+    ? bpConfig.milestones
+    : defaultMilestones;
+  const requireLevel = bpConfig.levelRequirementsEnabled !== false;
+
+  return milestones.filter(({ templateId }) => cosmetics[templateId]).map(({ templateId, seasonLevel, price }) => ({
     offerId: `core_season_${templateId.split(":")[1].toLowerCase()}`,
     templateId,
     title: cosmetics[templateId].name.trim(),
     currencyType: "MtxCurrency",
     currencySubType: "",
-    price,
-    seasonLevel,
+    price: Number.isInteger(price) ? price : 0,
+    seasonLevel: requireLevel ? seasonLevel : 1,
     displayAssetPath: featuredDisplayAsset(templateId),
     athena: true
   }));

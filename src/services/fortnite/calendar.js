@@ -1,7 +1,7 @@
 import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
 import { currentBuild } from "../../builds/context.js";
-import { activeEventFlags, eventsActiveUntil, isEventActive } from "../../events/events.js";
+import { activeEventFlags, currentEventsConfig, eventsActiveUntil, isEventActive } from "../../events/events.js";
 import { fiftyFifty, fiftyFiftyRegions } from "../../events/fiftyfifty.js";
 import { hasItemShop, seasonEnd, weeklyStoreEnd } from "../../store/itemshop.js";
 import { hasSeasonShop } from "../../store/seasonshop.js";
@@ -36,7 +36,8 @@ export function calendarRoutes({ tokens }) {
     const now = new Date();
     const weeklyEnd = hasItemShop() ? weeklyStoreEnd(now) : undefined;
     const seasonEnds = hasSeasonShop() ? seasonEnd(now) : undefined;
-    const cacheExpire = new Date(Math.min(now.getTime() + calendarCacheMinutes * 60000, weeklyEnd?.getTime() ?? Infinity,
+    const cacheMinutes = Math.max(5, Math.min(120, Number(currentEventsConfig()?.calendarCacheMinutes ?? calendarCacheMinutes)));
+    const cacheExpire = new Date(Math.min(now.getTime() + cacheMinutes * 60000, weeklyEnd?.getTime() ?? Infinity,
       seasonEnds?.getTime() ?? Infinity)).toISOString();
     const seasonal = Number(currentBuild()) >= seasonalEventManagerBuild;
     const flags = activeEventFlags();
@@ -55,7 +56,7 @@ export function calendarRoutes({ tokens }) {
           : {})
       },
       eventsTimeOffsetHrs: 0,
-      cacheIntervalMins: calendarCacheMinutes,
+      cacheIntervalMins: cacheMinutes,
       currentTime: now.toISOString()
     });
   });

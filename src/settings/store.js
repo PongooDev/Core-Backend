@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { readJson, writeJson } from "../json-file.js";
 import { defaultHostingIps, hostingIp, hostingIps } from "../network.js";
+import { defaultBattlePass, sanitizeBattlePass } from "../battlepass/season1.js";
 
 const defaults = {
   requirePassword: false,
@@ -43,8 +44,105 @@ const defaults = {
   defaultFoundersAccess: true,
   // Admin from other devices (Core-Backend #134, admin/local.js createAdminGate): off, the admin panel answers only this PC.
   // On, a device an admin credential allows may sign in. Only this PC can switch it.
-  remoteAdmin: false
+  remoteAdmin: false,
+  // Full customizable events configuration (Core-Backend #66, #129, events/events.js)
+  events: {
+    mode: "auto", // "auto" | "force_fortnitemares" | "force_mutantstorms" | "custom" | "off"
+    customFlags: [],
+    hexsylvaniaGates: "standard", // "standard" | "open"
+    candyMultiplier: 1.0,
+    stormAlertQuota: 10,
+    stormTicketMultiplier: 1.0,
+    candyPerLlama: 500,
+    autoConvertCandy: true,
+    rotationHour: 0,
+    weeklyDurationDays: 7,
+    customSeasonEnd: null,
+    calendarCacheMinutes: 60
+  },
+  battlepass: defaultBattlePass
 };
+
+export const defaultEvents = defaults.events;
+
+export const eventModes = ["auto", "force_fortnitemares", "force_mutantstorms", "custom", "off"];
+
+function sanitizeEvents(input, current = defaults.events) {
+  if (!input || typeof input !== "object" || Array.isArray(input)) return JSON.parse(JSON.stringify(current));
+  const result = JSON.parse(JSON.stringify(current));
+
+  if (typeof input.mode === "string" && eventModes.includes(input.mode.trim().toLowerCase())) {
+    result.mode = input.mode.trim().toLowerCase();
+  }
+
+  if (Array.isArray(input.customFlags)) {
+    const seen = new Set();
+    const flags = [];
+    for (const flag of input.customFlags) {
+      const trimmed = typeof flag === "string" ? flag.trim() : "";
+      if (trimmed && trimmed.length <= 64 && !seen.has(trimmed.toLowerCase())) {
+        seen.add(trimmed.toLowerCase());
+        flags.push(trimmed);
+      }
+    }
+    result.customFlags = flags;
+  }
+
+  if (typeof input.hexsylvaniaGates === "string") {
+    const gateMode = input.hexsylvaniaGates.trim().toLowerCase();
+    if (gateMode === "standard" || gateMode === "open") result.hexsylvaniaGates = gateMode;
+  }
+
+  if (input.candyMultiplier !== undefined) {
+    const num = Number(input.candyMultiplier);
+    if (!isNaN(num) && num >= 0.1 && num <= 10.0) result.candyMultiplier = Math.round(num * 100) / 100;
+  }
+
+  if (input.stormAlertQuota !== undefined) {
+    const num = Number(input.stormAlertQuota);
+    if (Number.isInteger(num) && num >= 1 && num <= 999) result.stormAlertQuota = num;
+  }
+
+  if (input.stormTicketMultiplier !== undefined) {
+    const num = Number(input.stormTicketMultiplier);
+    if (!isNaN(num) && num >= 0.1 && num <= 10.0) result.stormTicketMultiplier = Math.round(num * 100) / 100;
+  }
+
+  if (input.candyPerLlama !== undefined) {
+    const num = Number(input.candyPerLlama);
+    if (Number.isInteger(num) && num >= 100 && num <= 5000) result.candyPerLlama = num;
+  }
+
+  if (typeof input.autoConvertCandy === "boolean") {
+    result.autoConvertCandy = input.autoConvertCandy;
+  }
+
+  if (input.rotationHour !== undefined) {
+    const num = Number(input.rotationHour);
+    if (Number.isInteger(num) && num >= 0 && num <= 23) result.rotationHour = num;
+  }
+
+  if (input.weeklyDurationDays !== undefined) {
+    const num = Number(input.weeklyDurationDays);
+    if (Number.isInteger(num) && num >= 1 && num <= 30) result.weeklyDurationDays = num;
+  }
+
+  if (input.customSeasonEnd !== undefined) {
+    if (input.customSeasonEnd === null || input.customSeasonEnd === "") {
+      result.customSeasonEnd = null;
+    } else if (typeof input.customSeasonEnd === "string") {
+      const parsed = Date.parse(input.customSeasonEnd);
+      if (!isNaN(parsed)) result.customSeasonEnd = new Date(parsed).toISOString();
+    }
+  }
+
+  if (input.calendarCacheMinutes !== undefined) {
+    const num = Number(input.calendarCacheMinutes);
+    if (Number.isInteger(num) && num >= 5 && num <= 120) result.calendarCacheMinutes = num;
+  }
+
+  return result;
+}
 
 // Who may cheat: the modes, and how long one entry of cheatAccounts may be.
 export const cheatModes = ["everyone", "admins", "off"];
@@ -171,13 +269,20 @@ function legacyRewards(source, current) {
 
 export function createSettingsStore(dataDir) {
   const file = dataDir && path.join(dataDir, "settings.json");
-  const settings = { ...defaults, allowedHostingIps: [...defaults.allowedHostingIps], battleRoyaleRewards: noRewards() };
+  const settings = {
+    ...defaults,
+    allowedHostingIps: [...defaults.allowedHostingIps],
+    battleRoyaleRewards: noRewards(),
+    events: JSON.parse(JSON.stringify(defaults.events)),
+    battlepass: JSON.parse(JSON.stringify(defaults.battlepass))
+  };
 
   if (file && fs.existsSync(file)) {
     try {
       const loaded = readJson(file);
       Object.assign(settings, loaded);
       if (typeof loaded.battleRoyaleVbucks !== "boolean") settings.battleRoyaleVbucks = defaults.battleRoyaleVbucks;
+      if (typeof loaded.battleRoyaleNewsEnabled === "boolean") settings.battleRoyaleNewsEnabled = loaded.battleRoyaleNewsEnabled;
       if (typeof loaded.loginMessageEnabled === "boolean") settings.loginMessageEnabled = loaded.loginMessageEnabled;
       if (typeof loaded.defaultFoundersAccess === "boolean") settings.defaultFoundersAccess = loaded.defaultFoundersAccess;
       if (typeof loaded.remoteAdmin === "boolean") settings.remoteAdmin = loaded.remoteAdmin;
@@ -234,6 +339,11 @@ export function createSettingsStore(dataDir) {
           } : undefined
         };
       }
+      settings.events = sanitizeEvents(loaded.events, defaults.events);
+      settings.battlepass = sanitizeBattlePass(loaded.battlepass, defaults.battlepass);
+      if (loaded.seasonalEvents === false && !loaded.events?.mode) {
+        settings.events.mode = "off";
+      }
     } catch {
       // Corrupt file falls back to defaults
     }
@@ -253,10 +363,13 @@ export function createSettingsStore(dataDir) {
         structureLimits: { ...settings.structureLimits },
         battleRoyaleRewards: JSON.parse(JSON.stringify(settings.battleRoyaleRewards)),
         cheatAccounts: [...settings.cheatAccounts],
+        battleRoyaleNewsEnabled: typeof settings.battleRoyaleNewsEnabled === "boolean" ? settings.battleRoyaleNewsEnabled : undefined,
         battleRoyaleNews: settings.battleRoyaleNews ? { ...settings.battleRoyaleNews } : undefined,
         loginMessage: settings.loginMessage ? { ...settings.loginMessage } : undefined,
         subgameSelect: settings.subgameSelect ? JSON.parse(JSON.stringify(settings.subgameSelect)) : undefined,
-        itemShop: settings.itemShop ? JSON.parse(JSON.stringify(settings.itemShop)) : { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 }
+        itemShop: settings.itemShop ? JSON.parse(JSON.stringify(settings.itemShop)) : { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 },
+        events: JSON.parse(JSON.stringify(settings.events ?? defaults.events)),
+        battlepass: JSON.parse(JSON.stringify(settings.battlepass ?? defaults.battlepass))
       };
     },
 
@@ -264,7 +377,25 @@ export function createSettingsStore(dataDir) {
       if (typeof partial.requirePassword === "boolean") settings.requirePassword = partial.requirePassword;
       if (typeof partial.allowRegistration === "boolean") settings.allowRegistration = partial.allowRegistration;
       if (typeof partial.allowAutoRegistration === "boolean") settings.allowAutoRegistration = partial.allowAutoRegistration;
-      if (typeof partial.seasonalEvents === "boolean") settings.seasonalEvents = partial.seasonalEvents;
+      if (partial.battlepass && typeof partial.battlepass === "object") {
+        settings.battlepass = sanitizeBattlePass(partial.battlepass, settings.battlepass ?? defaults.battlepass);
+      }
+      if (partial.events && typeof partial.events === "object") {
+        settings.events = sanitizeEvents(partial.events, settings.events ?? defaults.events);
+        settings.seasonalEvents = settings.events.mode !== "off";
+        if (settings.itemShop) {
+          if (settings.events.rotationHour !== undefined) settings.itemShop.rotationHour = settings.events.rotationHour;
+          if (settings.events.weeklyDurationDays !== undefined) settings.itemShop.weeklyDurationDays = settings.events.weeklyDurationDays;
+        }
+      }
+      if (typeof partial.seasonalEvents === "boolean") {
+        settings.seasonalEvents = partial.seasonalEvents;
+        if (!partial.events) {
+          settings.events = settings.events ?? JSON.parse(JSON.stringify(defaults.events));
+          if (partial.seasonalEvents === false && settings.events.mode !== "off") settings.events.mode = "off";
+          else if (partial.seasonalEvents === true && settings.events.mode === "off") settings.events.mode = "auto";
+        }
+      }
       if (typeof partial.defaultFoundersAccess === "boolean") {
         settings.defaultFoundersAccess = partial.defaultFoundersAccess;
       } else if (partial.defaultFoundersAccess === null) {
@@ -272,6 +403,11 @@ export function createSettingsStore(dataDir) {
       }
       if (typeof partial.battleRoyaleVbucks === "boolean") settings.battleRoyaleVbucks = partial.battleRoyaleVbucks;
       if (typeof partial.remoteAdmin === "boolean") settings.remoteAdmin = partial.remoteAdmin;
+      if (typeof partial.battleRoyaleNewsEnabled === "boolean") {
+        settings.battleRoyaleNewsEnabled = partial.battleRoyaleNewsEnabled;
+      } else if (partial.battleRoyaleNewsEnabled === null) {
+        delete settings.battleRoyaleNewsEnabled;
+      }
       if (typeof partial.loginMessageEnabled === "boolean") {
         settings.loginMessageEnabled = partial.loginMessageEnabled;
       } else if (partial.loginMessageEnabled === null) {

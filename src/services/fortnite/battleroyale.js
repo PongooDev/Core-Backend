@@ -11,6 +11,7 @@ import { openSession } from "../../profiles/session.js";
 import { rewardModes } from "../../settings/store.js";
 import { isMainPlaylist } from "../../stats/store.js";
 import { notifyProfiles } from "../mcp/profile.js";
+import { currentBattlePassConfig } from "../../battlepass/season1.js";
 
 // What a Battle Royale gameserver (1.7.2) tells the backend about its match's players, which Battle Royale's stats are
 // made from (src/stats/store.js, the stats screen: services/fortnite/stats.js).
@@ -141,7 +142,9 @@ export function battleRoyaleRoutes(context) {
         continue;
       }
       const win = countWins && place === 1;
-      const score = count(result.score, 1000000) ?? matchXp(playlistId, { place, kills, secondsAlive });
+      const bpMultiplier = currentBattlePassConfig()?.xpMultiplier ?? 1.0;
+      const earnedXp = Math.floor(matchXp(playlistId, { place, kills, secondsAlive }) * bpMultiplier);
+      const score = count(result.score, 1000000) ?? earnedXp;
       stats.recordResult(result.accountId, playlistId, { place, kills, secondsAlive, score, win });
       log("Battle Royale", `${result.accountId} placed ${place} in playlist ${playlistId} with ${kills} kills, ${secondsAlive} s alive,`
         + ` score ${score}` + (win ? " (a win)" : ""));
@@ -150,7 +153,7 @@ export function battleRoyaleRoutes(context) {
       if (vbucks) log("Battle Royale", `${result.accountId} earned ${vbucks} V-Bucks in match ${matchId}`);
       const progress = () => {
         recordMatchProgress(session, playlistId, { place, kills });
-        addSeasonXp(session, matchXp(playlistId, { place, kills, secondsAlive }));
+        addSeasonXp(session, earnedXp);
         if (place === 1 && isMainPlaylist(playlistId)) awardVictory(session);
       };
       if (session.hasProfile("athena")) {

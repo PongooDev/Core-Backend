@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { currentBuild } from "../builds/context.js";
-import { isEventActive } from "../events/events.js";
+import { currentEventsConfig, isEventActive } from "../events/events.js";
 import { candy } from "../events/fortnitemares.js";
 import { mutantStorms, stormTickets } from "../events/mutantstorms.js";
 import { getItem } from "../gamedata/items.js";
@@ -173,7 +173,11 @@ const halloweenAlerts = "Halloween2017_MissionAlert";
 const stormTier = (tier) => (tier <= 5 ? 1 : tier <= 10 ? 2 : tier <= 15 ? 3 : 4);
 const zones = ["Stonewood", "Plankerton", "CanneyValley", "TwinePeaks"];
 const zoneOfModifierGroup = (group) => Math.max(zones.findIndex((zone) => group?.endsWith(`_${zone}`)), 0) + 1;
-export const stormTicketsFor = (rowName) => Math.max(1, getDifficulty(rowName)?.difficulty ?? 1) * 10;
+export const stormTicketsFor = (rowName) => {
+  const base = Math.max(1, getDifficulty(rowName)?.difficulty ?? 1) * 10;
+  const multiplier = currentEventsConfig()?.stormTicketMultiplier ?? 1.0;
+  return Math.round(base * multiplier);
+};
 const alertRewards = {
   [halloweenAlerts]: () => [[candy, 100]],
   MissionAlert_Proto_01: () => [["CardPack:zcp_mtx_boost50", 1], ["CardPack:zcp_reagent_c_t01_medium", 1]],

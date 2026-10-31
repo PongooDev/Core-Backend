@@ -1,7 +1,7 @@
 import { getCardPack, itemIds } from "../gamedata/items.js";
 import { log } from "../log.js";
 import { grantItem } from "../profiles/items.js";
-import { fortnitemares, hasEventEnded } from "./events.js";
+import { currentEventsConfig, fortnitemares, hasEventEnded } from "./events.js";
 import { candy } from "./fortnitemares.js";
 
 // 1.9.1's notes: "The Fortnitemares event has ended and Mutant Storms have returned! For every 500 unspent Halloween
@@ -21,16 +21,20 @@ const candyStacks = (profile) => Object.entries(profile.items)
   .filter(([, item]) => item.templateId.toLowerCase() === candy.toLowerCase() && item.quantity > 0);
 
 // Returns the llamas granted (grantItem entries), none when there is nothing to convert.
-export function convertLeftoverCandy(session) {
-  if (!hasEventEnded(fortnitemares) || !getCardPack(halloweenLlama)) return [];
+export function convertLeftoverCandy(session, force = false) {
+  const config = currentEventsConfig();
+  if (!force && config?.autoConvertCandy === false) return [];
+  if (!force && !hasEventEnded(fortnitemares)) return [];
+  if (!getCardPack(halloweenLlama)) return [];
   if (!itemIds().some((templateId) => templateId.toLowerCase() === candy.toLowerCase())) return [];
   const tracker = session.profile("profile0");
   const stacks = candyStacks(tracker.profile);
   const total = stacks.reduce((sum, [, item]) => sum + item.quantity, 0);
-  const llamas = Math.floor(total / candyPerLlama);
+  const perLlama = config?.candyPerLlama ?? candyPerLlama;
+  const llamas = Math.floor(total / perLlama);
   if (llamas < 1) return [];
 
-  let toSpend = llamas * candyPerLlama;
+  let toSpend = llamas * perLlama;
   for (const [itemId, item] of stacks) {
     if (toSpend <= 0) break;
     const spent = Math.min(item.quantity, toSpend);
@@ -39,6 +43,6 @@ export function convertLeftoverCandy(session) {
     else tracker.removeItem(itemId);
   }
   const granted = grantItem(session, halloweenLlama, llamas, { packSource: "Store" });
-  log("Events", `${session.accountId}'s ${llamas * candyPerLlama} unspent Candy became ${llamas} Fortnitemares Llama(s)`);
+  log("Events", `${session.accountId}'s ${llamas * perLlama} unspent Candy became ${llamas} Fortnitemares Llama(s)`);
   return granted;
 }
