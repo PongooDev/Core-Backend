@@ -39,9 +39,13 @@ function describeAuth(header) {
   return `${scheme} ${Buffer.from(value, "base64").toString("utf8").split(":")[0]}:<redacted>`;
 }
 
+const secretFields = ["password", "newPassword", "oldPassword", "currentPassword"];
+
 function redact(body) {
-  if (!body || typeof body !== "object" || !("password" in body)) return body;
-  return { ...body, password: "<redacted>" };
+  if (!body || typeof body !== "object" || !secretFields.some((field) => field in body)) return body;
+  const copy = { ...body };
+  for (const field of secretFields) if (field in copy) copy[field] = "<redacted>";
+  return copy;
 }
 
 export function recordUnknown(dataDir, req, kind = "route") {

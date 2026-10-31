@@ -19,9 +19,17 @@ const DUMMY_HASH = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852
 
 export function normalizeIp(ip) {
   if (!ip || typeof ip !== "string") return "";
-  let trimmed = ip.trim();
-  if (trimmed.startsWith("::ffff:")) trimmed = trimmed.slice(7);
+  let trimmed = ip.trim().toLowerCase();
+  if (trimmed.startsWith("::ffff:") && net.isIPv4(trimmed.slice(7))) trimmed = trimmed.slice(7);
   if (trimmed === "::1" || trimmed === "localhost") return "127.0.0.1";
+  // One spelling per IPv6 address (fe80:0:0::1 and FE80::1 are the same device), so a binding matches however it was typed.
+  if (net.isIPv6(trimmed)) {
+    try {
+      return new URL(`http://[${trimmed}]/`).hostname.slice(1, -1);
+    } catch {
+      return trimmed;
+    }
+  }
   return trimmed;
 }
 
@@ -138,6 +146,7 @@ export function createAdminAuthStore(dataDir) {
     const normIp = normalizeIp(clientIp);
     const userKey = username ? username.trim().toLowerCase() : "";
     const keys = [normIp, `${normIp}:${userKey}`];
+    if (rateLimits.size > 1000) sweepRateLimits(now);
 
     for (const key of keys) {
       if (!key) continue;
@@ -151,6 +160,13 @@ export function createAdminAuthStore(dataDir) {
         record.lockedUntil = now + LOCKOUT_DURATION_MS;
       }
       rateLimits.set(key, record);
+    }
+  }
+
+  // Forget finished windows and lockouts, so failed logins from many addresses can't grow the map without end.
+  function sweepRateLimits(now) {
+    for (const [key, record] of rateLimits.entries()) {
+      if (record.resetAt <= now && !(record.lockedUntil > now)) rateLimits.delete(key);
     }
   }
 
@@ -286,9 +302,12 @@ export function createAdminAuthStore(dataDir) {
     },
 
     async verifyCredentials(username, password, clientIp) {
+      if (typeof username !== "string" || typeof password !== "string") {
+        return { success: false, error: "Invalid username or password" };
+      }
       const rateCheck = checkRateLimit(clientIp, username);
       if (rateCheck.locked) {
-        log("AdminAuth", `Rate limit lockout for attempt from ${normalizeIp(clientIp)} (user: ${username})`);
+        log("AdminAuth", `Rate limit lockout for attempt from ${normalizeIp(clientIp)}`);
         return {
           success: false,
           error: `Too many failed attempts. Please wait ${rateCheck.retryAfter} seconds before trying again.`,
@@ -303,14 +322,14 @@ export function createAdminAuthStore(dataDir) {
         // Perform dummy scrypt calculation to resist timing attack
         await verifyPassword(password, { salt: DUMMY_SALT, hash: DUMMY_HASH });
         recordFailedAttempt(clientIp, username);
-        log("AdminAuth", `Failed login attempt: unknown username '${username}' from ${normalizeIp(clientIp)}`);
+        log("AdminAuth", `Failed login attempt: unknown username from ${normalizeIp(clientIp)}`);
         return { success: false, error: "Invalid username or password" };
       }
 
       const validPassword = await verifyPassword(password, user);
       if (!validPassword) {
         recordFailedAttempt(clientIp, username);
-        log("AdminAuth", `Failed login attempt: incorrect password for '${username}' from ${normalizeIp(clientIp)}`);
+        log("AdminAuth", `Failed login attempt: incorrect password for '${user.username}' from ${normalizeIp(clientIp)}`);
         return { success: false, error: "Invalid username or password" };
       }
 
@@ -320,7 +339,7 @@ export function createAdminAuthStore(dataDir) {
         const normAllowed = normalizeIp(user.allowedIp);
         if (normClient !== normAllowed) {
           recordFailedAttempt(clientIp, username);
-          log("AdminAuth", `Failed login attempt: IP restriction mismatch for '${username}' (expected: ${normAllowed}, got: ${normClient})`);
+          log("AdminAuth", `Failed login attempt: IP restriction mismatch for '${user.username}' (expected: ${normAllowed}, got: ${normClient})`);
           return {
             success: false,
             error: "Access denied from this IP address for this credential",
@@ -405,9 +424,11 @@ export function createAdminAuthStore(dataDir) {
       return count;
     },
 
+    // Whether some credential may sign in from this address. Only consulted once remote admin is switched on (the
+    // remoteAdmin setting, local.js createAdminGate): a credential alone never opens the admin to other devices.
     isIpPermitted(clientIp) {
       const normClient = normalizeIp(clientIp);
-      // Loopback is always permitted on network level
+      if (!normClient) return false;
       if (isLoopbackAddress(normClient) || normClient === "127.0.0.1") return true;
 
       const users = loadUsers();
