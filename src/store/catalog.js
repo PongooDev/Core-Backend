@@ -5,6 +5,7 @@ import { stormTickets } from "../events/mutantstorms.js";
 import { holidayLlama, snowflakeTickets } from "../events/winter2017.js";
 import { getCardPack, itemIds } from "../gamedata/items.js";
 import { perBuild } from "../gamedata/read.js";
+import { eventStoreOffers } from "./eventstore.js";
 import { itemShopOffers } from "./itemshop.js";
 import { seasonShopOffers, seasonStorefront } from "./seasonshop.js";
 
@@ -119,14 +120,17 @@ const allOffers = () => {
 // OfferSet puts in ShortDescriptionText under the name; all three come localized from the game's own text.
 function offerJson(offer, sortPriority) {
   const { offerId, templateId, currencyType, currencySubType, price } = offer;
-  const title = offer.athena ? "" : offer.title;
+  const title = offer.athena || offer.stwEventStore ? "" : offer.title;
   return {
     offerId,
     offerType: "StaticPrice",
     prices: [{ currencyType, currencySubType, regularPrice: price, finalPrice: price, saleType: "NotOnSale",
       saleExpiration: "9999-12-31T23:59:59.999Z" }],
-    // A Season Shop offer's season level (store/seasonshop.js).
-    metaInfo: offer.seasonLevel ? [{ key: "season_level", value: String(offer.seasonLevel) }] : [],
+    // A Season Shop offer's season level (store/seasonshop.js); an Event Store offer's purchase limit and the tracker
+    // that counts it (store/eventstore.js).
+    metaInfo: offer.seasonLevel ? [{ key: "season_level", value: String(offer.seasonLevel) }]
+      : offer.eventLimit ? [{ key: "EventLimit", value: String(offer.eventLimit) }, { key: "PurchaseLimitingEventId", value: offer.purchaseLimitingEventId }]
+        : [],
     dailyLimit: -1,
     weeklyLimit: -1,
     categories: [],
@@ -150,7 +154,7 @@ const holds = (profile, templateId) => Object.values(profile?.items ?? {})
 
 // profile: the viewer's profile0, for the vouchers only shown to players who have one. Battle Royale's storefronts
 // (store/itemshop.js) hold the day's offers in 1.8 and later, nothing before; its Season Shop (store/seasonshop.js) is
-// 1.8.2's and later.
+// 1.8.2's and later. Save the World's Event Store (store/eventstore.js) is 1.11's, while Survive the Holidays runs.
 export function storefronts(profile, now = new Date()) {
   const shown = allOffers().filter((offer) => offer.currencyType !== "GameItem" || offer.always
     || listedVouchers.some((voucher) => voucher.toLowerCase() === offer.currencySubType.toLowerCase())
@@ -158,13 +162,15 @@ export function storefronts(profile, now = new Date()) {
   const itemShop = Object.entries(itemShopOffers(now))
     .map(([name, offers]) => ({ name, catalogEntries: offers.map((offer, index) => offerJson(offer, -index)) }));
   const seasonShop = { name: seasonStorefront, catalogEntries: seasonShopOffers().map((offer, index) => offerJson(offer, -index)) };
+  const eventStore = Object.entries(eventStoreOffers(now))
+    .map(([name, offers]) => ({ name, catalogEntries: offers.map((offer, index) => offerJson(offer, -index)) }));
   return [
     { name: "CardPackStore", catalogEntries: shown.map((offer, index) => offerJson(offer, -index)) },
     { name: "CardPackStorePromo", catalogEntries: [] },
-    ...[...itemShop, seasonShop].filter(({ catalogEntries }) => catalogEntries.length)
+    ...[...itemShop, seasonShop, ...eventStore].filter(({ catalogEntries }) => catalogEntries.length)
   ];
 }
 
-// An offer on sale now: the llama store's, one of the item shop's of the day, or the Season Shop's.
-export const findOffer = (offerId, now = new Date()) => [...allOffers(), ...Object.values(itemShopOffers(now)).flat(), ...seasonShopOffers()]
-  .find((offer) => offer.offerId === offerId);
+// An offer on sale now: the llama store's, one of the item shop's of the day, the Season Shop's or the Event Store's.
+export const findOffer = (offerId, now = new Date()) => [...allOffers(), ...Object.values(itemShopOffers(now)).flat(), ...seasonShopOffers(),
+  ...Object.values(eventStoreOffers(now)).flat()].find((offer) => offer.offerId === offerId);

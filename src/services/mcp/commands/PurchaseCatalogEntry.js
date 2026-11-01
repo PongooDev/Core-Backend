@@ -3,6 +3,7 @@ import { grantCosmetic, ownsCosmetic } from "../../../profiles/athena.js";
 import { lootEntry } from "../../../profiles/items.js";
 import { grant, itemEvent } from "../../../profiles/progress.js";
 import { findOffer } from "../../../store/catalog.js";
+import { eventPurchases, recordEventPurchase } from "../../../store/eventstore.js";
 
 // V-Bucks are spread over these stacks; the cheapest kinds go first.
 const mtxCurrencies = ["Currency:mtxcomplimentary", "Currency:mtxgiveaway", "Currency:mtxpurchasebonus", "Currency:mtxpurchased"];
@@ -77,8 +78,17 @@ export function purchaseCatalogEntry({ req, session, notifications }) {
     notifications.push({ type: "CatalogPurchase", primary: true, lootResult: { items: [lootEntry(item)] } });
     return;
   }
+  // An Event Store offer (store/eventstore.js) sells as many as its limit, counted in the account's tracker.
+  if (offer.eventLimit) {
+    const bought = eventPurchases(tracker.profile, offer);
+    if (bought + purchaseQuantity > offer.eventLimit) {
+      throw new McpError("errors.com.epicgames.modules.gamesubcatalog.purchase_not_allowed",
+        `${offerId} sells ${offer.eventLimit} and you have bought ${bought}`);
+    }
+  }
   if (offer.currencyType === "GameItem") spendItem(tracker, offer.currencySubType, total);
   else spendMtx(tracker, total);
+  if (offer.eventLimit) recordEventPurchase(tracker, offer, purchaseQuantity);
   // An offer of several (1.10's ten Upgrade Llamas, store/catalog.js) grants its quantity for each one bought.
   const count = purchaseQuantity * (offer.quantity ?? 1);
   const items = grant(session, offer.templateId, count, { packSource: "Store" }).map(lootEntry);
