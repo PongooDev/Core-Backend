@@ -3,6 +3,7 @@ import { requireAuth } from "../../accounts/auth.js";
 import { currentBuild } from "../../builds/context.js";
 import { activeEventFlags, currentEventsConfig, eventsActiveUntil, isEventActive } from "../../events/events.js";
 import { fiftyFifty, fiftyFiftyRegions } from "../../events/fiftyfifty.js";
+import { regionCodes } from "../../matchmaking/regions.js";
 import { hasItemShop, seasonEnd, weeklyStoreEnd } from "../../store/itemshop.js";
 import { hasSeasonShop } from "../../store/seasonshop.js";
 
@@ -29,7 +30,7 @@ import { hasSeasonShop } from "../../store/seasonshop.js";
 export const calendarCacheMinutes = 60;
 const seasonalEventManagerBuild = 3790078;
 
-export function calendarRoutes({ tokens }) {
+export function calendarRoutes({ tokens, settings }) {
   const router = express.Router();
 
   router.get("/fortnite/api/calendar/v1/timeline", requireAuth(tokens), (req, res) => {
@@ -51,9 +52,16 @@ export function calendarRoutes({ tokens }) {
     res.json({
       channels: {
         "client-events": { states: [{ validFrom, activeEvents, state }], cacheExpire },
-        ...(isEventActive(fiftyFifty)
-          ? { "client-matchmaking": { states: [{ validFrom, activeEvents: [], state: { region: fiftyFiftyRegions() } }], cacheExpire } }
-          : {})
+        ...((() => {
+          const modes = settings?.get?.().matchmakingModes;
+          const duosEnabled = modes ? modes.duo !== false : true;
+          const fiftyFiftyEnabled = isEventActive(fiftyFifty) && (modes ? modes.fiftyFifty !== false : true);
+          if (isEventActive(fiftyFifty) || !duosEnabled || (modes && modes.fiftyFifty === false)) {
+            const region = Object.fromEntries(regionCodes().map((r) => [r, { bDuosEnabled: duosEnabled, bFiftyFiftyEnabled: fiftyFiftyEnabled }]));
+            return { "client-matchmaking": { states: [{ validFrom, activeEvents: [], state: { region } }], cacheExpire } };
+          }
+          return {};
+        })())
       },
       eventsTimeOffsetHrs: 0,
       cacheIntervalMins: cacheMinutes,

@@ -187,7 +187,7 @@ const newId = () => crypto.randomUUID().replaceAll("-", "");
 // gatherMs: a number, or a function asked each time a match forms (the admin panel's setting). lateJoin: whether
 // matches in their warmup take more parties, asked each time. regionFallback: whether a party whose region has no
 // server plays in another region (Core-Backend #121) or waits for one of its own (#123), asked each time.
-export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoin = () => false, regionFallback = () => true, quiet = false }) {
+export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoin = () => false, regionFallback = () => true, serverLimits = () => ({}), matchmakingModes = () => ({}), quiet = false }) {
   const say = quiet ? () => {} : (text) => log("Matchmaking", text);
   const gatherOf = () => {
     const value = typeof gatherMs === "function" ? gatherMs() : gatherMs;
@@ -208,6 +208,40 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
   // Every server whose region counts as having a server, by session id: the registered ones and those hosting a match
   // (they register again once it ends), until their session goes.
   const hosts = new Map();
+  const modeByPlaylist = { 2: "solo", 10: "duo", 9: "squad", 11: "fiftyFifty" };
+
+  function activeServersCount(region, mode) {
+    let count = 0;
+    const canRegion = regionOf(region);
+    for (const match of matches.values()) {
+      const bucket = parseBucket(match.bucketId);
+      if (regionOf(bucket.region) === canRegion && modeByPlaylist[bucket.playlistId] === mode) {
+        count++;
+      }
+    }
+    for (const server of servers) {
+      if (server.forming) {
+        const bucket = parseBucket(server.forming.bucketId);
+        if (regionOf(bucket.region || server.region) === canRegion && modeByPlaylist[bucket.playlistId] === mode) {
+          count++;
+        }
+      }
+    }
+    return count;
+  }
+
+  function allowsServerAssignment(region, playlistId) {
+    const limits = typeof serverLimits === "function" ? serverLimits() : serverLimits;
+    if (!limits) return true;
+    const mode = modeByPlaylist[playlistId];
+    if (!mode) return true;
+    const canRegion = regionOf(region) || "NA";
+    const regionLim = limits[canRegion];
+    if (!regionLim) return true;
+    const limit = Number(regionLim[mode]);
+    if (!Number.isInteger(limit) || limit <= 0) return true;
+    return activeServersCount(canRegion, mode) < limit;
+  }
   const sockets = new Set();
 
   // Whether a server registered for the bucket's build and region exists at all. When none does, nobody would ever
@@ -338,6 +372,8 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
       // The match is the server's region's: AssignMatch's bucketId names it as the server does (the server takes its
       // MatchmakingRegionId from it, 1.7.2 0x6D78E0), and its region's players join it.
       const matchBucket = server.regionField ? withRegion(bucketId, server.regionField) : bucketId;
+      const bucket = parseBucket(matchBucket);
+      if (!allowsServerAssignment(server.regionField || bucket.region, bucket.playlistId)) continue;
       server.forming = { matchId: newId(), bucketId: matchBucket, parties: [party], players: party.size, started: Date.now(), gatherMs: gatherOf() };
       server.forming.timer = setTimeout(() => assign(server), server.forming.gatherMs);
       server.forming.timer.unref?.();

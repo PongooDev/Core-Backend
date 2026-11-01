@@ -60,8 +60,53 @@ const defaults = {
     customSeasonEnd: null,
     calendarCacheMinutes: 60
   },
-  battlepass: defaultBattlePass
+  battlepass: defaultBattlePass,
+  matchmakingModes: {
+    solo: true,
+    duo: true,
+    squad: true,
+    fiftyFifty: true
+  },
+  serverLimits: {
+    NA: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0 },
+    EU: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0 },
+    OCE: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0 },
+    BR: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0 },
+    ASIA: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0 }
+  }
 };
+
+export const defaultMatchmakingModes = defaults.matchmakingModes;
+export const defaultServerLimits = defaults.serverLimits;
+
+export function sanitizeMatchmakingModes(input, current = defaultMatchmakingModes) {
+  if (!input || typeof input !== "object" || Array.isArray(input)) return JSON.parse(JSON.stringify(current));
+  return {
+    solo: typeof input.solo === "boolean" ? input.solo : (current.solo !== false),
+    duo: typeof input.duo === "boolean" ? input.duo : (current.duo !== false),
+    squad: typeof input.squad === "boolean" ? input.squad : (current.squad !== false),
+    fiftyFifty: typeof input.fiftyFifty === "boolean" ? input.fiftyFifty : (current.fiftyFifty !== false)
+  };
+}
+
+export function sanitizeServerLimits(input, current = defaultServerLimits) {
+  if (!input || typeof input !== "object" || Array.isArray(input)) return JSON.parse(JSON.stringify(current));
+  const result = JSON.parse(JSON.stringify(current));
+  const regions = ["NA", "EU", "OCE", "BR", "ASIA"];
+  const modes = ["solo", "duo", "squad", "fiftyFifty"];
+  for (const r of regions) {
+    if (input[r] && typeof input[r] === "object" && !Array.isArray(input[r])) {
+      result[r] = result[r] || { solo: 0, duo: 0, squad: 0, fiftyFifty: 0 };
+      for (const m of modes) {
+        if (input[r][m] !== undefined) {
+          const val = Number(input[r][m]);
+          result[r][m] = (Number.isInteger(val) && val >= 0 && val <= 1000) ? val : 0;
+        }
+      }
+    }
+  }
+  return result;
+}
 
 export const defaultEvents = defaults.events;
 
@@ -274,7 +319,9 @@ export function createSettingsStore(dataDir) {
     allowedHostingIps: [...defaults.allowedHostingIps],
     battleRoyaleRewards: noRewards(),
     events: JSON.parse(JSON.stringify(defaults.events)),
-    battlepass: JSON.parse(JSON.stringify(defaults.battlepass))
+    battlepass: JSON.parse(JSON.stringify(defaults.battlepass)),
+    matchmakingModes: JSON.parse(JSON.stringify(defaults.matchmakingModes)),
+    serverLimits: JSON.parse(JSON.stringify(defaults.serverLimits))
   };
 
   if (file && fs.existsSync(file)) {
@@ -286,6 +333,12 @@ export function createSettingsStore(dataDir) {
       if (typeof loaded.loginMessageEnabled === "boolean") settings.loginMessageEnabled = loaded.loginMessageEnabled;
       if (typeof loaded.defaultFoundersAccess === "boolean") settings.defaultFoundersAccess = loaded.defaultFoundersAccess;
       if (typeof loaded.remoteAdmin === "boolean") settings.remoteAdmin = loaded.remoteAdmin;
+      if (loaded.matchmakingModes && typeof loaded.matchmakingModes === "object") {
+        settings.matchmakingModes = sanitizeMatchmakingModes(loaded.matchmakingModes, defaults.matchmakingModes);
+      }
+      if (loaded.serverLimits && typeof loaded.serverLimits === "object") {
+        settings.serverLimits = sanitizeServerLimits(loaded.serverLimits, defaults.serverLimits);
+      }
       // Before #124 the amounts were #100's, which kept paying only where they were turned on.
       settings.battleRoyaleRewards = loaded.battleRoyaleRewards && typeof loaded.battleRoyaleRewards === "object"
         ? battleRoyaleRewards(loaded.battleRoyaleRewards)
@@ -424,6 +477,12 @@ export function createSettingsStore(dataDir) {
       if (partial.warmupSeconds !== undefined && warmup !== undefined) settings.warmupSeconds = warmup;
       if (typeof partial.lateJoin === "boolean") settings.lateJoin = partial.lateJoin;
       if (typeof partial.regionFallback === "boolean") settings.regionFallback = partial.regionFallback;
+      if (partial.matchmakingModes && typeof partial.matchmakingModes === "object") {
+        settings.matchmakingModes = sanitizeMatchmakingModes(partial.matchmakingModes, settings.matchmakingModes);
+      }
+      if (partial.serverLimits && typeof partial.serverLimits === "object") {
+        settings.serverLimits = sanitizeServerLimits(partial.serverLimits, settings.serverLimits);
+      }
       settings.allowedHostingIps = hostingIps(partial.allowedHostingIps) ?? settings.allowedHostingIps;
       if (partial.battleRoyaleNews && typeof partial.battleRoyaleNews === "object") {
         settings.battleRoyaleNews = {
