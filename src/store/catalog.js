@@ -1,7 +1,8 @@
 import { currentBuild } from "../builds/context.js";
-import { currentEventsConfig, fortnitemares, isEventActive, mutantStorms } from "../events/events.js";
+import { currentEventsConfig, fortnitemares, isEventActive, mutantStorms, winter2017 } from "../events/events.js";
 import { candy } from "../events/fortnitemares.js";
 import { stormTickets } from "../events/mutantstorms.js";
+import { holidayLlama, snowflakeTickets } from "../events/winter2017.js";
 import { getCardPack, itemIds } from "../gamedata/items.js";
 import { perBuild } from "../gamedata/read.js";
 import { itemShopOffers } from "./itemshop.js";
@@ -79,13 +80,21 @@ const voucherOffers = perBuild(() => itemIds()
 // so the offer takes its default cost widget, 3, and shows among the event packs (ShouldShowOffer: an event item's
 // price → ShowEventPacks). No shipped data prices it; Core's price is 1,000 Storm Tickets (🟡: a few Twine Peaks storms,
 // ten Stonewood ones).
+//
+// The Holiday Survival Llama (CardPack_Event_2017_Winter, "Guarantees at least one Epic or better limited time Vacuum
+// Tube weapon or Hero!") is bought with Snowflake Tickets (EventCurrency_Snowballs, bIsEventItem), which Survive the
+// Holidays' Mini-Boss alerts and quests give, while it runs (1.11, events/winter2017.js): "Holiday Survival Llamas are
+// available for purchase (1000 Snowflake Tickets.)" StoreRoot's GetCustomStoreOfferCost has had a Snowballs cost widget
+// (4) since 1.9.1, so the offer shows that price among the event packs.
 const eventOffers = [
   { offerId: "core_event_founders_llama", templateId: "CardPack:cardpack_event_founders_nonexclusive", title: "Launch Event Llama",
     currencyType: "GameItem", currencySubType: "AccountResource:eventcurrency_founders", price: 100, always: true },
   { offerId: "core_event_fortnitemares_llama", templateId: "CardPack:cardpack_event_2017_halloween", title: "Fortnitemares Llama",
     currencyType: "GameItem", currencySubType: candy, price: 500, always: true, event: fortnitemares },
   { offerId: "core_event_vindertech_llama", templateId: "CardPack:cardpack_event_vindertech", title: "Vindertech Llama",
-    currencyType: "GameItem", currencySubType: stormTickets, price: 1000, always: true, event: mutantStorms }
+    currencyType: "GameItem", currencySubType: stormTickets, price: 1000, always: true, event: mutantStorms },
+  { offerId: "core_event_winter_llama", templateId: holidayLlama, title: "Holiday Survival Llama",
+    currencyType: "GameItem", currencySubType: snowflakeTickets, price: 1000, always: true, event: winter2017 }
 ];
 
 // An event's offers are on sale while the requesting build runs the event and has their llama.

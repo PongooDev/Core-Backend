@@ -3,6 +3,7 @@ import { currentBuild } from "../builds/context.js";
 import { currentEventsConfig, isEventActive } from "../events/events.js";
 import { candy } from "../events/fortnitemares.js";
 import { mutantStorms, stormTickets } from "../events/mutantstorms.js";
+import { snowflakeTickets } from "../events/winter2017.js";
 import { getItem } from "../gamedata/items.js";
 import { perBuild } from "../gamedata/read.js";
 import { getDifficulty, missionAlertSpread, missionAlertTier } from "../gamedata/world.js";
@@ -169,10 +170,22 @@ function rollMissions({ data, fixedMissions }, day, availableUntil) {
 // table had no such group, so 1.9.1 had no storm alerts and no storm swirls (Core-Backend #129). Its rewards (🟡 Core's):
 // the zone's reagents (high) and, while the Mutant Storms run, Storm Tickets (EventCurrency_StormZone), 10 per tile
 // difficulty: 1.9.1's notes say the Storm Tickets Mutant Storms give are the same on every hex of a difficulty.
+//
+// 1.11 (CL-3807424) gives StormLowCategory its own group, MissionAlert_StormLow (EventFlag.PassiveStorms): the storms
+// left on the map once the Mutant Storms end, "to provide evolution materials, these do not reward event tickets", so
+// the zone's reagents (high) alone. Its Survive the Holidays' Mini-Boss alerts (MiniBossCategory, MissionAlert_MiniBoss,
+// EventFlag.Winter2017, a row per zone by tile difficulty as the storm rows) "reward event tickets": Snowflake Tickets
+// (EventCurrency_Snowballs), 10 per tile difficulty as the Mutant Storms' (🟡 Core's), and the zone's reagents (high).
+// Its Survive the Storm alerts (Survival3Day/7DayCategory) go on the Survival theater's missions, which Core's theaters
+// (gamedata/theaters.json) don't have, so they have no rewards here and are never placed.
 const halloweenAlerts = "Halloween2017_MissionAlert";
 const stormTier = (tier) => (tier <= 5 ? 1 : tier <= 10 ? 2 : tier <= 15 ? 3 : 4);
 const zones = ["Stonewood", "Plankerton", "CanneyValley", "TwinePeaks"];
 const zoneOfModifierGroup = (group) => Math.max(zones.findIndex((zone) => group?.endsWith(`_${zone}`)), 0) + 1;
+// A row's zone: its STMZ.ZoneMods_<zone> group, else (1.11's Mini-Boss rows, MinibossTG.EnablePrimaryMission) the zone
+// its lowest tile difficulty is in (5 Stonewood, 12 Plankerton, 22 Canny Valley, 32 Twine Peaks).
+const zoneOfRow = (row) => (row.modifierTierGroup?.startsWith("STMZ.ZoneMods_") ? zoneOfModifierGroup(row.modifierTierGroup)
+  : row.minimumDifficulty >= 32 ? 4 : row.minimumDifficulty >= 22 ? 3 : row.minimumDifficulty >= 12 ? 2 : 1);
 export const stormTicketsFor = (rowName) => {
   const base = Math.max(1, getDifficulty(rowName)?.difficulty ?? 1) * 10;
   const multiplier = currentEventsConfig()?.stormTicketMultiplier ?? 1.0;
@@ -189,6 +202,11 @@ const alertRewards = {
   MissionAlert_Storm: (row, mission) => [
     [`CardPack:zcp_reagent_c_t0${zoneOfModifierGroup(row.modifierTierGroup)}_high`, 1],
     ...(isEventActive(mutantStorms) ? [[stormTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]] : [])
+  ],
+  MissionAlert_StormLow: (row) => [[`CardPack:zcp_reagent_c_t0${zoneOfRow(row)}_high`, 1]],
+  MissionAlert_MiniBoss: (row, mission) => [
+    [`CardPack:zcp_reagent_c_t0${zoneOfRow(row)}_high`, 1],
+    [snowflakeTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]
   ]
 };
 
@@ -212,8 +230,15 @@ const stormMutations = [
 ];
 const modifierCounts = [1, 2, 2, 3];
 const noLoot = () => ({ tierGroupName: "", items: [] });
+// 1.11's Mini-Boss rows name MinibossTG.EnablePrimaryMission, whose one gameplay modifier is
+// MiniBossEnablePrimaryMissionItem (GameplayModifier:minibossenableprimarymissionitem): what brings the Mini-Boss into
+// the mission.
+const miniBossModifier = "GameplayModifier:minibossenableprimarymissionitem";
 
 function alertModifiers(row, seed) {
+  if (row.modifierTierGroup?.startsWith("MinibossTG.") && getItem(miniBossModifier)) {
+    return { tierGroupName: row.modifierTierGroup, items: [{ itemType: miniBossModifier, quantity: 1 }] };
+  }
   if (!row.modifierTierGroup?.startsWith("STMZ.ZoneMods_")) return noLoot();
   const known = stormMutations.filter((templateId) => getItem(templateId));
   return {
@@ -293,15 +318,16 @@ function spreadStorm(data, missions, storm, dayStart, now, taken, availableUntil
 // Core's placement (the client's theater info would say how many, and none ships): each region gets one alert of each
 // category the theater has, on missions whose tile can carry one and whose difficulty has a row of that category, one
 // alert a mission. A main theater's are a general one (MissionAlert_1-4) and a storm one (StormLowCategory), and while
-// the Mutant Storms run (1.9.1) each of its zones gets a Mutant Storm (StormCategory) that spreads; Hexsylvania's are
-// Halloween ones. The alert
+// the Mutant Storms run (1.9.1) each of its zones gets a Mutant Storm (StormCategory) that spreads; while Survive the
+// Holidays runs (1.11) each region also gets a Mini-Boss one (MiniBossCategory); Hexsylvania's are Halloween ones. The
+// alert
 // names its category (FFortAvailableMissionAlertData CategoryName), which the map tile looks up in
 // MissionAlertCategories (AFortTheaterMapTile::GetMissionAlertCategory, 1.8 0x8F3D40, the tile's alert's category
 // name): BP_Hex_PARENT's HandleMissionAlert shows every alert's indicator and, for Storm and StormLow, the storm swirl
 // (P_StormAffected) and its timer (Core-Backend #91). Without a name every alert was General.
 // Returns the alerts and when the theater's alerts next change (a storm's next spread, else the day's end).
 function rollAlerts({ data }, missions, day, dayStart, now, availableUntil) {
-  const categories = isHexsylvania(data.uniqueId) ? ["HalloweenCategory"] : ["GeneralCategory", "StormLowCategory"];
+  const categories = isHexsylvania(data.uniqueId) ? ["HalloweenCategory"] : ["GeneralCategory", "StormLowCategory", "MiniBossCategory"];
   const taken = new Set();
   const storms = [];
   const spreading = stormsSpread();

@@ -989,7 +989,8 @@ export function adminRoutes(context) {
       { version: "1.7.2", cl: 3532353, event: "Base Campaign" },
       { version: "1.8 – 1.9", cl: 3724489, event: "Fortnitemares" },
       { version: "1.9.1", cl: 3775276, event: "Mutant Storms" },
-      { version: "1.10", cl: 3790078, event: "Mutant Storms" }
+      { version: "1.10", cl: 3790078, event: "Mutant Storms" },
+      { version: "1.11", cl: 3807424, event: "Survive the Holidays" }
     ];
 
     const sampleBuilds = builds.map((b) => ({
@@ -1049,6 +1050,19 @@ export function adminRoutes(context) {
           llama: "Vindertech Weapons & Storm Llama",
           questsCount: 15,
           leftoverConversion: `${eventsConfig.candyPerLlama ?? 500} unspent Candy converts to 1 Fortnitemares Llama on 1.9.1+ load`
+        },
+        {
+          id: "winter2017",
+          name: "Survive the Holidays",
+          subtitle: "Mini-Boss Mission Alerts & Holiday Survival",
+          buildRange: "1.11 (CL 3807424)",
+          flags: ["EventFlag.Winter2017", "EventFlag.PassiveStorms"],
+          theater: "Standard Zones with Mini-Boss Alerts",
+          alertsQuota: "10 Mini-Boss mission alerts and 4 storms (no tickets) per day",
+          currency: "Snowflake Tickets (AccountResource:eventcurrency_snowballs)",
+          llama: "Holiday Survival Llama (CardPack_Event_2017_Winter, 1000 Snowflake Tickets)",
+          questsCount: 26,
+          leftoverConversion: "1000 unspent Storm Tickets convert to 1 Vindertech Llama on 1.11 load"
         }
       ]
     });
