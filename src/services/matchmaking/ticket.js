@@ -2,6 +2,7 @@ import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
 import { notFound, sendError } from "../../errors.js";
 import { log } from "../../log.js";
+import { parseBucket } from "../../matchmaking/service.js";
 import { managesSession } from "../../matchmaking/sessions.js";
 import { defaultHostingIps } from "../../network.js";
 
@@ -19,6 +20,14 @@ export function ticketRoutes({ tokens, sessions, matchmaker, settings }) {
     const { accountId } = req.params;
     if (req.session.accountId !== accountId) {
       return sendError(res, 403, "errors.com.epicgames.common.missing_permission", `Can't matchmake for ${accountId}`);
+    }
+    const bucketId = String(req.query.bucketId ?? "");
+    const { playlistId } = parseBucket(bucketId);
+    const modeByPlaylist = { 2: "solo", 10: "duo", 9: "squad", 11: "fiftyFifty" };
+    const mode = modeByPlaylist[playlistId];
+    const modes = settings?.get?.().matchmakingModes;
+    if (mode && modes && modes[mode] === false) {
+      return sendError(res, 400, "errors.com.epicgames.fortnite.matchmaking_disabled", `Matchmaking for ${mode} is currently disabled`);
     }
     const partyPlayerIds = list(req.query.partyPlayerIds);
     // player.option.fillTeam: the party leader's client sends "false" for Squads with Squad Fill on No Fill

@@ -71,7 +71,7 @@ export function createContext(config) {
   if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
   if (config.seasonalEvents !== undefined) settings.update({ seasonalEvents: config.seasonalEvents });
   for (const key of ["battleRoyaleVbucks", "battleRoyaleRewards", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits", "cheats", "cheatAccounts",
-    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "regionFallback", "defaultFoundersAccess", "remoteAdmin", "events", "battlepass"]) {
+    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "regionFallback", "defaultFoundersAccess", "remoteAdmin", "events", "battlepass", "matchmakingModes", "serverLimits"]) {
     if (config[key] !== undefined) settings.update({ [key]: config[key] });
   }
   const friends = createFriendStore(config.dataDir);
@@ -103,7 +103,7 @@ export function createContext(config) {
     sessions,
     // config.matchmakingGatherMs (the tests') wins over the admin panel's gather time.
     matchmaker: createMatchmaker({ sessions, gatherMs: config.matchmakingGatherMs ?? (() => settings.get().matchmakingGatherSeconds * 1000),
-      lateJoin: () => settings.get().lateJoin === true, regionFallback, quiet: config.requestLog === false }),
+      lateJoin: () => settings.get().lateJoin === true, regionFallback, serverLimits: () => settings.get().serverLimits, matchmakingModes: () => settings.get().matchmakingModes, quiet: config.requestLog === false }),
     network: createNetwork(config),
     emptyServerWaitMs: config.emptyServerWaitMs,
     stomp: createStompService({ tokens, quiet: config.requestLog === false }),

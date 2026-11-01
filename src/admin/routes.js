@@ -38,7 +38,7 @@ import { battleRoyaleBuilds, certBuild, versionOf } from "../builds/detect.js";
 import { cosmeticRarity, cosmeticType, eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, seasonEnd, shopDay, weeklyStoreEnd } from "../store/itemshop.js";
 import { activeEventFlags, fortnitemares, mutantStorms } from "../events/events.js";
 import { convertLeftoverCandy } from "../events/candyllamas.js";
-import { defaultEvents } from "../settings/store.js";
+import { defaultEvents, defaultMatchmakingModes, defaultServerLimits } from "../settings/store.js";
 import { calendarCacheMinutes } from "../services/fortnite/calendar.js";
 import { defaultBattlePass, enrichedMilestones } from "../battlepass/season1.js";
 
@@ -79,7 +79,7 @@ const sum = (profile, templates) => Object.values(profile?.items ?? {})
   .reduce((total, item) => total + item.quantity, 0);
 
 export function adminRoutes(context) {
-  const { accounts, profiles, tokens, sessions, xmpp, stomp, settings, network, dataDir, resetTokens, reports, adminAuth } = context;
+  const { accounts, profiles, tokens, sessions, matchmaker, xmpp, stomp, settings, network, dataDir, resetTokens, reports, adminAuth } = context;
   const router = express.Router();
   router.use("/admin", createAdminGate({ adminAuth, settings }));
   // Sign-in attempts from another device, on top of auth.js's per-credential lockout (this PC is exempt).
@@ -1158,6 +1158,147 @@ export function adminRoutes(context) {
       config: updated.battlepass,
       milestones: enrichedMilestones(updated.battlepass)
     });
+  });
+
+  function getMatchmakingPayload() {
+    const s = settings?.get?.() ?? {};
+    const modes = s.matchmakingModes ?? defaultMatchmakingModes;
+    const serverLimits = s.serverLimits ?? defaultServerLimits;
+    const sessionList = (sessions?.list?.() ?? []).map((session) => sessionSummary(session));
+
+    const regions = ["NA", "EU", "OCE", "BR", "ASIA"];
+    const modeKeys = ["solo", "duo", "squad", "fiftyFifty"];
+    const serverCounts = {};
+    for (const r of regions) {
+      serverCounts[r] = { solo: 0, duo: 0, squad: 0, fiftyFifty: 0 };
+      for (const m of modeKeys) {
+        if (matchmaker?.activeServersCount) {
+          serverCounts[r][m] = matchmaker.activeServersCount(r, m);
+        }
+      }
+    }
+
+    const playlists = [
+      {
+        id: "solo",
+        name: "Solo",
+        playlistId: 2,
+        code: "Playlist_DefaultSolo",
+        teamCount: 100,
+        teamSize: 1,
+        squadSize: 1,
+        maxPlayers: 100,
+        enabled: modes.solo !== false,
+        description: "100 solo combatants drop into Battle Royale. Last player standing wins."
+      },
+      {
+        id: "duo",
+        name: "Duos",
+        playlistId: 10,
+        code: "Playlist_DefaultDuo",
+        teamCount: 100,
+        teamSize: 2,
+        squadSize: 2,
+        maxPlayers: 100,
+        enabled: modes.duo !== false,
+        description: "Teams of two drop into Battle Royale. Supports fill and no-fill squad options."
+      },
+      {
+        id: "squad",
+        name: "Squads",
+        playlistId: 9,
+        code: "Playlist_DefaultSquad",
+        teamCount: 100,
+        teamSize: 4,
+        squadSize: 4,
+        maxPlayers: 100,
+        enabled: modes.squad !== false,
+        description: "Squads of up to four players battle for the Victory Royale."
+      },
+      {
+        id: "fiftyFifty",
+        name: "50v50",
+        playlistId: 11,
+        code: "Playlist_50v50",
+        teamCount: 2,
+        teamSize: 50,
+        squadSize: 4,
+        maxPlayers: 100,
+        enabled: modes.fiftyFifty !== false,
+        description: "Limited-time mode from 1.10: two massive teams of 50 clash in an all-out war."
+      }
+    ];
+
+    return {
+      modes,
+      serverLimits,
+      serverCounts,
+      timing: {
+        gatherSeconds: s.matchmakingGatherSeconds ?? 10,
+        warmupSeconds: s.warmupSeconds ?? null,
+        lateJoin: s.lateJoin === true,
+        regionFallback: s.regionFallback !== false
+      },
+      rewards: {
+        enabled: s.battleRoyaleVbucks === true,
+        modes: s.battleRoyaleRewards ?? {}
+      },
+      playlists,
+      sessions: sessionList
+    };
+  }
+
+  router.get("/admin/api/matchmaking/overview", (req, res) => {
+    res.json(getMatchmakingPayload());
+  });
+
+  router.post("/admin/api/matchmaking/config", (req, res) => {
+    if (typeof req.body !== "object" || req.body === null) {
+      return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "Invalid matchmaking configuration body");
+    }
+    const update = {};
+    if (req.body.modes && typeof req.body.modes === "object") {
+      update.matchmakingModes = req.body.modes;
+    }
+    if (req.body.serverLimits && typeof req.body.serverLimits === "object") {
+      update.serverLimits = req.body.serverLimits;
+    }
+    if (req.body.timing && typeof req.body.timing === "object") {
+      if (req.body.timing.gatherSeconds !== undefined) {
+        const g = Number(req.body.timing.gatherSeconds);
+        if (Number.isInteger(g) && g >= 0 && g <= 300) update.matchmakingGatherSeconds = g;
+      }
+      if (req.body.timing.warmupSeconds !== undefined) {
+        if (req.body.timing.warmupSeconds === null || req.body.timing.warmupSeconds === "") {
+          update.warmupSeconds = null;
+        } else {
+          const w = Number(req.body.timing.warmupSeconds);
+          if (Number.isInteger(w) && w >= 10 && w <= 1800) update.warmupSeconds = w;
+        }
+      }
+      if (typeof req.body.timing.lateJoin === "boolean") update.lateJoin = req.body.timing.lateJoin;
+      if (typeof req.body.timing.regionFallback === "boolean") update.regionFallback = req.body.timing.regionFallback;
+    }
+    if (req.body.rewards && typeof req.body.rewards === "object") {
+      if (typeof req.body.rewards.enabled === "boolean") update.battleRoyaleVbucks = req.body.rewards.enabled;
+      if (req.body.rewards.modes && typeof req.body.rewards.modes === "object") {
+        update.battleRoyaleRewards = req.body.rewards.modes;
+      }
+    }
+    settings.update(update);
+    res.json({ success: true, ...getMatchmakingPayload() });
+  });
+
+  router.post("/admin/api/matchmaking/actions/reset-defaults", (req, res) => {
+    settings.update({
+      matchmakingModes: defaultMatchmakingModes,
+      serverLimits: defaultServerLimits,
+      matchmakingGatherSeconds: 10,
+      warmupSeconds: null,
+      lateJoin: false,
+      regionFallback: true
+    });
+    res.json({ success: true, ...getMatchmakingPayload() });
   });
 
   router.get("/admin/api/shop", (req, res) => {
