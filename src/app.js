@@ -16,6 +16,7 @@ import { createProfileLocks } from "./profiles/locks.js";
 import { createMailbox } from "./profiles/mailbox.js";
 import { createPrimaryMissions } from "./profiles/missions.js";
 import { createHeldScores } from "./profiles/scores.js";
+import { ownsSaveTheWorld } from "./profiles/founders.js";
 import { createProfileStore } from "./profiles/store.js";
 import { requestLog, unknownRoute } from "./log.js";
 import { createMatchmaker } from "./matchmaking/service.js";
@@ -80,6 +81,16 @@ export function createContext(config) {
   const sessions = createSessionStore({ regionFallback });
   const stats = createStatsStore(config.dataDir);
   const reports = createReportStore(config.dataDir);
+  const profiles = createProfileStore(config.dataDir, {
+    giveAllCosmetics: config.giveAllCosmetics === true,
+    defaultFoundersAccess: () => settings.get().defaultFoundersAccess === true,
+    wonPlaylists: (accountId) => Object.entries(stats.playlists(accountId))
+      .filter(([playlistId, playlist]) => isMainPlaylist(playlistId) && (playlist.placetop1 ?? 0) > 0).map(([playlistId]) => Number(playlistId)),
+    // Whether the account owns Save the World (Core-Backend #84): with defaultFoundersAccess on every profile0 is given
+    // the founder's pack when it next loads (profiles/founders.js), so every account does; otherwise those holding one.
+    ownsSaveTheWorld: (accountId) => settings.get().defaultFoundersAccess === true
+      || (profiles.exists(accountId, "profile0") && ownsSaveTheWorld(profiles.load(accountId, "profile0")))
+  });
   return {
     accounts,
     tokens,
@@ -90,12 +101,7 @@ export function createContext(config) {
     friends,
     friendCodes: createFriendCodeStore(config.dataDir),
     stats,
-    profiles: createProfileStore(config.dataDir, {
-      giveAllCosmetics: config.giveAllCosmetics === true,
-      defaultFoundersAccess: () => settings.get().defaultFoundersAccess === true,
-      wonPlaylists: (accountId) => Object.entries(stats.playlists(accountId))
-        .filter(([playlistId, playlist]) => isMainPlaylist(playlistId) && (playlist.placetop1 ?? 0) > 0).map(([playlistId]) => Number(playlistId))
-    }),
+    profiles,
     mailbox: createMailbox(),
     locks: createProfileLocks(),
     primaryMissions: createPrimaryMissions(),

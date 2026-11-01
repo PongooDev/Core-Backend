@@ -175,12 +175,12 @@ test("1.8's results count their wins in solo, duo and squad, on top of what the 
     // 1.7.2's screen reads the same stats.
     assert.deepEqual(counts(await stats(backend, player)), counts(await stats18(backend, player)));
 
-    // The wins count on 1.8's leaderboards and for the 1.7.2 umbrella too.
+    // The wins count on 1.8's leaderboards and for the 1.7.2 umbrella too (a founder's, as test accounts are founders).
     const wins = await post(backend.port, "/fortnite/api/leaderboards/type/global/stat/br_placetop1_pc_m0_p9/window/alltime?ownertype=1", player.token);
     assert.deepEqual(wins.body.entries.map(({ accountId, value }) => [accountId, value]).sort(),
       [[player.accountId, 1], [mate.accountId, 1]].sort());
     const winners = await post(backend.port, "/fortnite/api/game/v2/battleroyale/winners", dedicated, { playlistId: 2, accountIds: [mate.accountId] });
-    assert.deepEqual(winners.body.winners, [{ accountId: mate.accountId, umbrellaType: "umbrella" }]);
+    assert.deepEqual(winners.body.winners, [{ accountId: mate.accountId, umbrellaType: "founder_umbrella" }]);
   } finally {
     backend.close();
   }
@@ -205,9 +205,10 @@ test("1.7.2's results without countWins never count a win themselves: its record
 });
 
 // Core #97: 1.7.2 gives a player who has won (in any playlist) Season 1's umbrella instead of the stock glider, from
-// what the backend answers when the server asks who in its match has won before (battleroyale/winners).
+// what the backend answers when the server asks who in its match has won before (battleroyale/winners). Core-Backend #84:
+// only an account without Save the World gets "umbrella" and the stock glider (founders: the test below).
 test("a Battle Royale winner glides on the umbrella from the next match, everyone else on the stock glider", async () => {
-  const backend = await startBackend();
+  const backend = await startBackend({ defaultFoundersAccess: false });
   try {
     const winner = await userLogin(backend.port, "UmbrellaWinner");
     const loser = await userLogin(backend.port, "UmbrellaLoser");
@@ -225,6 +226,28 @@ test("a Battle Royale winner glides on the umbrella from the next match, everyon
     });
     assert.deepEqual(await ask(undefined), { playlistId: 2, winners: [] });
     assert.equal(fs.existsSync(path.join(backend.dataDir, "accounts", "00000000000000000000000000000000")), false);
+  } finally {
+    backend.close();
+  }
+});
+
+// Core-Backend #84: 1.7.2's four gliders. Without Save the World the stock glider, or "umbrella" (The Umbrella) after a
+// win; owning it (a founder's pack, here given from the admin panel) "founder_glider", or "founder_umbrella" after a win.
+test("1.7.2 gives founders the Founder's Glider, or the Founder's Umbrella once they've won", async () => {
+  const backend = await startBackend({ defaultFoundersAccess: false });
+  try {
+    const player = await userLogin(backend.port, "NoSaveTheWorld");
+    const founder = await userLogin(backend.port, "OwnsSaveTheWorld");
+    assert.equal((await post(backend.port, `/admin/api/accounts/${founder.accountId}/founders`, undefined, { edition: 1 })).status, 200);
+    const server = await hostedMatch(backend, player, founder);
+    const ask = async () => (await post(backend.port, "/fortnite/api/game/v2/battleroyale/winners", server.token,
+      { playlistId: 2, accountIds: [player.accountId, founder.accountId] })).body.winners;
+
+    assert.deepEqual(await ask(), [{ accountId: founder.accountId, umbrellaType: "founder_glider" }]);
+    await post(backend.port, "/fortnite/api/game/v2/battleroyale/recordwin", server.token, { playlistId: 9, accountIds: [player.accountId, founder.accountId] });
+    assert.deepEqual(await ask(), [
+      { accountId: player.accountId, umbrellaType: "umbrella" },
+      { accountId: founder.accountId, umbrellaType: "founder_umbrella" }]);
   } finally {
     backend.close();
   }

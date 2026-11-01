@@ -251,9 +251,10 @@ test("a party's tickets wait for a registered server, which gets the match and s
     assert.ok(waits.at(-1) > 0, `ETAs ${waits}`);
     late.close();
 
-    // The server asks who has won before when its match is assigned, and records the winners at its end.
+    // The server asks who has won before when its match is assigned (nobody: the leader, a founder as test accounts are,
+    // glides on the Founder's Glider, Core-Backend #84), and records the winners at its end.
     const winners = await post(backend.port, "/fortnite/api/game/v2/battleroyale/winners", server.token, { playlistId: 10, accountIds: [leader.accountId] });
-    assert.deepEqual(winners.body, { playlistId: 10, winners: [] });
+    assert.deepEqual(winners.body, { playlistId: 10, winners: [{ accountId: leader.accountId, umbrellaType: "founder_glider" }] });
     assert.equal((await post(backend.port, "/fortnite/api/game/v2/battleroyale/recordwin", server.token, { playlistId: 10, accountIds: [leader.accountId] })).status, 204);
 
     const refused = await matchmakingClient(backend.port, authorizationOf({ ...ticket.body, signature: "AAAA" }));

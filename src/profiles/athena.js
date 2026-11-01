@@ -58,11 +58,14 @@ const typeOf = (templateId) => templateId.split(":")[0].toLowerCase();
 // (store/itemshop.js), earned (season level chase rewards, victory umbrellas) or, when the host turns giveAllCosmetics on
 // (config.json), all given at once.
 // The starters: the default glider and pickaxe the empty slots hold (above); AthenaGameData's FallbackDance
-// (EID_DanceMoves); the default loading screen and battle bus; and the Founder's Glider: Core's accounts are all founders
-// (profiles/founders.js), and 1.7.2's winners answer had a founder_glider type for founders
-// (services/fortnite/battleroyale.js), which 1.8 made this item (🟡 who Epic granted it to is inferred from that).
+// (EID_DanceMoves); the default loading screen and battle bus; and for an account that owns Save the World (a founder,
+// settings.ownsSaveTheWorld, profiles/founders.js) the Founder's Glider in place of the Glider, as 1.7.2's winners answer
+// had a founder_glider type for founders (services/fortnite/battleroyale.js), which 1.8 made this item (Core-Backend
+// #84). The default glider stays everyone's: it is what an empty glider slot holds.
 const starters = ["AthenaGlider:defaultglider", "AthenaPickaxe:defaultpickaxe", "AthenaDance:eid_dancemoves",
-  "AthenaLoadingScreen:lsid_defaultbg", "AthenaBattleBus:bbid_defaultbus", "AthenaGlider:founderglider"];
+  "AthenaLoadingScreen:lsid_defaultbg", "AthenaBattleBus:bbid_defaultbus"];
+const founderStarters = ["AthenaGlider:founderglider"];
+const ownsSaveTheWorld = (accountId, settings = {}) => settings.ownsSaveTheWorld?.(accountId) === true;
 
 // Cosmetics in the game data that are never locker items:
 // - AthenaGameData's RandomCharacters, CID_001-008 (the "Recruit" outfits): an empty character slot plays one of them at
@@ -96,17 +99,22 @@ export function lockerCosmeticId(templateId) {
   return id && isLockerItem(id) ? id : undefined;
 }
 
-const starterIds = () => starters.map(cosmeticId).filter(Boolean);
+// The account's starters; without an account, everyone's and the founders' alike.
+const starterIds = (profile, settings) => [...starters, ...(!profile || ownsSaveTheWorld(profile.accountId, settings) ? founderStarters : [])]
+  .map(cosmeticId).filter(Boolean);
 const sameId = (a, b) => a.toLowerCase() === b.toLowerCase();
 const migrated = (profile, name) => (profile.coreMigrations ?? []).includes(name);
 
 // The victory umbrellas: a win in a main mode (solo, duo or squad, stats/store.js isMainPlaylist; not a limited-time
-// playlist) gives The Umbrella (Solo_Umbrella,
-// "The fabled victory umbrella."; Core-Backend #84) and the Founder's Umbrella ("Founder's exclusive!", 1.7.2's
-// founder_umbrella winner type; every Core account is a founder). 1.7.2 gives every winner the same "umbrella" too
-// (services/fortnite/battleroyale.js). 1.8 has no winners question (none of 1.7.2's battleroyale/winners or recordwin
-// strings are left): its umbrella is a glider item the locker equips.
-const victoryUmbrellas = ["AthenaGlider:solo_umbrella", "AthenaGlider:founderumbrella"];
+// playlist) gives The Umbrella (Solo_Umbrella, "The fabled victory umbrella."; Core-Backend #84), or to an account that
+// owns Save the World the Founder's Umbrella ("Founder's exclusive!") in its place, as 1.7.2's winners answer gives
+// winners "umbrella" or "founder_umbrella" (services/fortnite/battleroyale.js). 1.8 has no winners question (none of
+// 1.7.2's battleroyale/winners or recordwin strings are left): its umbrella is a glider item the locker equips. An
+// umbrella already in a locker stays.
+const victoryUmbrella = "AthenaGlider:solo_umbrella";
+const founderVictoryUmbrella = "AthenaGlider:founderumbrella";
+const victoryUmbrellas = [victoryUmbrella, founderVictoryUmbrella];
+const victoryUmbrellaOf = (accountId, settings) => (ownsSaveTheWorld(accountId, settings) ? founderVictoryUmbrella : victoryUmbrella);
 
 // Non-shop items: cosmetics that are given at start, earned in-game (season chase rewards, victory umbrellas),
 // or never locker items (Recruit defaults, unused umbrellas). They are never sold in the item shop (Core-Backend #69).
@@ -114,6 +122,7 @@ export const chaseRewardIds = () => seasonLevels().filter((entry) => entry.chase
 
 export const nonShopCosmeticIds = () => [
   ...starters,
+  ...founderStarters,
   ...chaseRewardIds(),
   ...victoryUmbrellas,
   ...unusedUmbrellas,
@@ -126,12 +135,12 @@ export const isNonShopCosmetic = (templateId) =>
 
 // The cosmetics the player has earned: the chase rewards of the season levels reached and, with a recorded win in solo,
 // duo or squad (settings.wonPlaylists, the stats: 1.7.2's recordwin; 1.8's own wins give theirs when the gameserver reports
-// them, services/fortnite/battleroyale.js), the victory umbrellas.
+// them, services/fortnite/battleroyale.js), the account's victory umbrella.
 function earnedCosmetics(profile, settings) {
   const level = profile.stats.attributes.level ?? 1;
   const rewards = seasonLevels().filter((entry) => entry.level <= level && entry.chaseReward).map((entry) => entry.chaseReward);
   const won = settings.wonPlaylists?.(profile.accountId) ?? [];
-  return [...new Set([...rewards, ...(won.length ? victoryUmbrellas : [])].map(cosmeticId).filter(Boolean))];
+  return [...new Set([...rewards, ...(won.length ? [victoryUmbrellaOf(profile.accountId, settings)] : [])].map(cosmeticId).filter(Boolean))];
 }
 
 // profile.coreBlanketCosmetics (Core's, never sent to the client) lists what giveAllCosmetics put in the locker that the
@@ -143,7 +152,7 @@ const blanket = (profile) => profile.coreBlanketCosmetics ?? [];
 const missing = (profile, templateIds) => templateIds.filter((templateId) => !findItem(profile, templateId));
 
 export function athenaNeedsSetUp(profile, settings = {}) {
-  return !migrated(profile, "athenaLocker") || missing(profile, starterIds()).length > 0
+  return !migrated(profile, "athenaLocker") || missing(profile, starterIds(profile, settings)).length > 0
     || missing(profile, earnedCosmetics(profile, settings)).length > 0
     || (settings.giveAllCosmetics ? missing(profile, lockerCosmetics()).length > 0 : blanket(profile).length > 0)
     || emptyDefaultSlots(profile).length > 0 || heldNonLockerItems(profile).length > 0;
@@ -191,7 +200,7 @@ export function setUpAthena(session) {
     profile.coreBlanketCosmetics = [...new Set([...blanket(profile), ...held])];
     profile.coreMigrations = [...(profile.coreMigrations ?? []), "athenaLocker"];
   }
-  for (const templateId of missing(profile, starterIds())) addCosmetic(tracker, templateId, true);
+  for (const templateId of missing(profile, starterIds(profile, settings))) addCosmetic(tracker, templateId, true);
   for (const templateId of earnedCosmetics(profile, settings)) grantCosmetic(session, templateId);
   for (const itemId of heldNonLockerItems(profile)) removeCosmetic(tracker, itemId);
   if (settings.giveAllCosmetics) {
@@ -307,8 +316,17 @@ export function removeFullLocker(session) {
   return { cosmetics, banners: removed.length };
 }
 
-// A win in any playlist (1.8's, reported by the gameserver): the victory umbrellas the player lacks.
-export const awardVictory = (session) => victoryUmbrellas.map((templateId) => grantCosmetic(session, templateId)).filter(Boolean);
+// A win in solo, duo or squad (1.8's, reported by the gameserver): the player's victory umbrella, if they lack it.
+export const awardVictory = (session) => [grantCosmetic(session, victoryUmbrellaOf(session.accountId, session.settings))].filter(Boolean);
+
+// The glider 1.7.2's winners answer gives a player (services/fortnite/battleroyale.js, Core-Backend #84): "umbrella" for
+// a win in solo, duo or squad, "founder_umbrella" for one by an account that owns Save the World, "founder_glider" for
+// such an account without a win, and nothing (the stock glider) for anyone else.
+export function umbrellaTypeOf(accountId, hasWon, settings) {
+  const founder = ownsSaveTheWorld(accountId, settings);
+  if (hasWon) return founder ? "founder_umbrella" : "umbrella";
+  return founder ? "founder_glider" : null;
+}
 
 // EquipBattleRoyaleCustomization {slotName, itemToSlot}: an item of the slot's type, or "" for its default.
 export function equipCustomization(session, slotName, itemToSlot) {

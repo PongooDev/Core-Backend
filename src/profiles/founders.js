@@ -76,6 +76,11 @@ export function setUpFounders(session) {
   profile.coreMigrations = [...(profile.coreMigrations ?? []), foundersMigration];
 }
 
+// Whether the account owns Save the World: a founder's pack edition, or campaign access (the token that came with one;
+// the admin panel's rewards give it alone). Battle Royale's founders glide on the Founder's Glider and win the Founder's
+// Umbrella instead of the Glider and The Umbrella (Core-Backend #84, profiles/athena.js).
+export const ownsSaveTheWorld = (profile) => foundersEditionOf(profile) >= 1 || Boolean(findItem(profile, campaignAccessToken));
+
 // The highest edition whose token the account holds (0 for none).
 export function foundersEditionOf(profile) {
   return Math.max(0, ...foundersEditions.filter(({ token }) => findItem(profile, token)).map(({ edition }) => edition));

@@ -5,7 +5,7 @@ import { currentBuild, inBuild } from "../../builds/context.js";
 import { buildVersions } from "../../builds/detect.js";
 import { log } from "../../log.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
-import { addSeasonXp, awardVictory, matchXp, recordMatchProgress } from "../../profiles/athena.js";
+import { addSeasonXp, awardVictory, matchXp, recordMatchProgress, umbrellaTypeOf } from "../../profiles/athena.js";
 import { grant } from "../../profiles/progress.js";
 import { openSession } from "../../profiles/session.js";
 import { rewardModes } from "../../settings/store.js";
@@ -22,8 +22,9 @@ import { currentBattlePassConfig } from "../../battlepass/season1.js";
 //   (with AFortPlayerStateAthena::bHasWonAGame), "founder_umbrella" FounderUmbrella, "founder_glider" FounderGlider,
 //   anything else or no entry the StockGlider. 1.7.2 has no glider items; this answer is the only thing that picks one.
 //   Season 1's Victory Umbrella (Core #97): every player with a win in solo, duo or squad gets "umbrella", from the match
-//   after it (the question is asked once, at assignment); the founder types go unused 🟡 (who Epic gave them wasn't
-//   looked at, and every Core account is a founder).
+//   after it (the question is asked once, at assignment). An account that owns Save the World (a founder,
+//   profiles/founders.js) gets "founder_umbrella" for a win instead and "founder_glider" without one (Core-Backend #84,
+//   profiles/athena.js umbrellaTypeOf); anyone else without a win isn't listed.
 // - recordwin: POST {playlistId, accountIds}, the winners at the end of the match (OnRecordWinnerComplete, 0x3F4950,
 //   request 0x72E130): a win (br_placetop1) each.
 // - recordresults: Core's (CoreV2's server; the 1.7.2 server reports nothing else), POST {playlistId, results:
@@ -35,7 +36,7 @@ import { currentBattlePassConfig } from "../../battlepass/season1.js";
 //   score when the server sends one, else what the match is worth in season XP (profiles/athena.js matchXp), as
 //   CoreV2 reports none. A player with a Battle Royale profile (1.8's athena) also gets the match's season XP and its placement and
 //   elimination challenge progress (profiles/athena.js), which reach their client as profile notifications, and for a
-//   win (place 1) in solo, duo or squad The Umbrella and the Founder's Umbrella in the locker (Core-Backend #77, #84):
+//   win (place 1) in solo, duo or squad The Umbrella, or a founder the Founder's Umbrella, in the locker (Core-Backend #77, #84):
 //   1.8's umbrella is a glider item.
 //   With battleRoyaleVbucks on (Core-Backend #100, #124, the admin panel's Settings), each result in solo, duos,
 //   squads or 1.10's 50v50 also pays V-Bucks, from that mode's battleRoyaleRewards: perKill a kill, perWin for a place 1
@@ -101,9 +102,10 @@ export function battleRoyaleRoutes(context) {
 
   router.post("/fortnite/api/game/v2/battleroyale/winners", auth, (req, res) => {
     const accountIds = Array.isArray(req.body?.accountIds) ? req.body.accountIds : [];
-    const winners = accountIds.filter((accountId) => typeof accountId === "string" && accounts.get(accountId) && stats.hasWon(accountId))
-      .map((accountId) => ({ accountId, umbrellaType: "umbrella" }));
-    log("Battle Royale", `Umbrella for ${winners.map(({ accountId }) => accountId).join(", ") || "nobody"} of ${accountIds.length} players`);
+    const winners = accountIds.filter((accountId) => typeof accountId === "string" && accounts.get(accountId))
+      .map((accountId) => ({ accountId, umbrellaType: umbrellaTypeOf(accountId, stats.hasWon(accountId), profiles.settings) }))
+      .filter(({ umbrellaType }) => umbrellaType);
+    log("Battle Royale", `Gliders for ${winners.map(({ accountId, umbrellaType }) => `${accountId} (${umbrellaType})`).join(", ") || "nobody"} of ${accountIds.length} players`);
     res.json({ playlistId: playlistOf(req.body), winners });
   });
 
