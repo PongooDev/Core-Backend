@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import { log } from "../log.js";
 import { acceptWebSocket } from "../stomp/websocket.js";
-import { regionName, regionOf } from "./regions.js";
+import { regionName, regionOf, servedRegions } from "./regions.js";
 
 // Battle Royale's matchmaking service (MMS, from 1.7.2), both sides (Core-Docs Athena-Matchmaking-1.7.2.md and
 // Athena-Boot-1.7.2.md §1 C).
@@ -186,8 +186,9 @@ const newId = () => crypto.randomUUID().replaceAll("-", "");
 
 // gatherMs: a number, or a function asked each time a match forms (the admin panel's setting). lateJoin: whether
 // matches in their warmup take more parties, asked each time. regionFallback: whether a party whose region has no
-// server plays in another region (Core-Backend #121) or waits for one of its own (#123), asked each time.
-export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoin = () => false, regionFallback = () => true, serverLimits = () => ({}), matchmakingModes = () => ({}), quiet = false }) {
+// server plays in another region (Core-Backend #121) or waits for one of its own (#123), asked each time. serverRegions:
+// the admin panel's server regions (#142, regions.js servedRegions), asked each time.
+export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoin = () => false, regionFallback = () => true, serverRegions = () => [], serverLimits = () => ({}), matchmakingModes = () => ({}), quiet = false }) {
   const say = quiet ? () => {} : (text) => log("Matchmaking", text);
   const gatherOf = () => {
     const value = typeof gatherMs === "function" ? gatherMs() : gatherMs;
@@ -244,12 +245,21 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
   }
   const sockets = new Set();
 
+  // A party's bucket as a server sees it: in the server's own region when the server takes the bucket's region
+  // (Core-Backend #142: with EU and NA the server regions, an EU server takes NA's players into its EU matches).
+  function inServerRegion(server, bucketId) {
+    if (server.regionField === null) return bucketId;
+    const takes = servedRegions(server.region, serverRegions()).has(regionOf(parseBucket(bucketId).region));
+    return takes ? withRegion(bucketId, server.regionField) : bucketId;
+  }
+  const takesBucket = (server, bucketId, options) => server.patterns.some((pattern) => bucketMatches(pattern, inServerRegion(server, bucketId), options));
+
   // Whether a server registered for the bucket's build and region exists at all. When none does, nobody would ever
   // take the bucket's players: they play in another region instead (Core-Backend #121).
   function hasServerFor(bucketId) {
     for (const [sessionId, host] of hosts) {
       if (!sessions.get(sessionId)) hosts.delete(sessionId);
-      else if (host.patterns.some((pattern) => bucketMatches(pattern, bucketId))) return true;
+      else if (takesBucket(host, bucketId)) return true;
     }
     return false;
   }
@@ -357,7 +367,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
         same.members.push(party);
         return true;
       }
-      if (forming && bucketKey(forming.bucketId, { anyRegion }) === key && forming.players + party.size <= server.maxPlayers
+      if (forming && bucketKey(forming.bucketId, { anyRegion }) === bucketKey(inServerRegion(server, bucketId), { anyRegion }) && forming.players + party.size <= server.maxPlayers
         && teamsFor([...forming.parties, party], forming.bucketId)) {
         forming.parties.push(party);
         forming.players += party.size;
@@ -368,7 +378,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     }
     for (const server of servers) {
       if (server.forming || party.size > server.maxPlayers) continue;
-      if (!server.patterns.some((pattern) => bucketMatches(pattern, bucketId, { anyRegion }))) continue;
+      if (!takesBucket(server, bucketId, { anyRegion })) continue;
       // The match is the server's region's: AssignMatch's bucketId names it as the server does (the server takes its
       // MatchmakingRegionId from it, 1.7.2 0x6D78E0), and its region's players join it.
       const matchBucket = server.regionField ? withRegion(bucketId, server.regionField) : bucketId;
@@ -497,7 +507,10 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     if (!lateJoin()) return null;
     for (const [sessionId, open] of lateJoins) {
       const pending = open.parties.filter((entry) => now - entry.sent < lateArrivalMs).flatMap((entry) => entry.players).filter((id) => !open.players.has(id)).length;
-      if (open.until - now >= lateJoinMarginMs && bucketKey(open.bucketId, { anyRegion }) === key && open.players.size + pending + party.size <= open.maxPlayers) {
+      // The match's server (a host until its session goes) takes its server regions' parties (Core-Backend #142).
+      const host = hosts.get(sessionId);
+      const wanted = host ? bucketKey(inServerRegion(host, party.ticket.bucketId), { anyRegion }) : key;
+      if (open.until - now >= lateJoinMarginMs && bucketKey(open.bucketId, { anyRegion }) === wanted && open.players.size + pending + party.size <= open.maxPlayers) {
         return [sessionId, open];
       }
     }

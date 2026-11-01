@@ -860,6 +860,7 @@ export function adminRoutes(context) {
       warmupSeconds: req.body?.warmupSeconds,
       lateJoin: req.body?.lateJoin,
       regionFallback: req.body?.regionFallback,
+      serverRegions: req.body?.serverRegions,
       allowedHostingIps: req.body?.allowedHostingIps
     });
     const net = network?.settings?.() ?? {};
@@ -1233,6 +1234,7 @@ export function adminRoutes(context) {
       modes,
       serverLimits,
       serverCounts,
+      serverRegions: s.serverRegions ?? [],
       timing: {
         gatherSeconds: s.matchmakingGatherSeconds ?? 10,
         warmupSeconds: s.warmupSeconds ?? null,
@@ -1263,6 +1265,7 @@ export function adminRoutes(context) {
     if (req.body.serverLimits && typeof req.body.serverLimits === "object") {
       update.serverLimits = req.body.serverLimits;
     }
+    if (req.body.serverRegions !== undefined) update.serverRegions = req.body.serverRegions;
     if (req.body.timing && typeof req.body.timing === "object") {
       if (req.body.timing.gatherSeconds !== undefined) {
         const g = Number(req.body.timing.gatherSeconds);
@@ -1296,7 +1299,8 @@ export function adminRoutes(context) {
       matchmakingGatherSeconds: 10,
       warmupSeconds: null,
       lateJoin: false,
-      regionFallback: true
+      regionFallback: true,
+      serverRegions: []
     });
     res.json({ success: true, ...getMatchmakingPayload() });
   });

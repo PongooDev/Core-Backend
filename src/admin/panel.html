@@ -3638,6 +3638,7 @@
       const form = {
         modes: { ...data.modes },
         serverLimits: JSON.parse(JSON.stringify(data.serverLimits || {})),
+        serverRegions: [...(data.serverRegions || [])],
         timing: { ...data.timing },
         rewards: JSON.parse(JSON.stringify(data.rewards || { enabled: false, modes: {} }))
       };
@@ -3926,6 +3927,20 @@
         form.timing.regionFallback = checked;
       });
 
+      // The server regions (Core-Backend #142): a server in one of them takes all of their players.
+      const serverRegionChecks = el("div", { style: "display:flex; flex-wrap:wrap; gap:8px 16px;" },
+        ...regions.map((r) => el("label", { class: "check" },
+          el("input", {
+            type: "checkbox",
+            value: r,
+            checked: form.serverRegions.includes(r),
+            "aria-label": `Servers host for ${regionLabels[r] || r}`,
+            onchange: (e) => {
+              form.serverRegions = e.target.checked ? [...new Set([...form.serverRegions, r])] : form.serverRegions.filter((code) => code !== r);
+            }
+          }),
+          el("span", { text: regionLabels[r] || r }))));
+
       // --- Section 4 Master Toggle ---
       const rewardsChip = chip(form.rewards.enabled ? "Active" : "Disabled", form.rewards.enabled ? "good" : "warn");
       const rewardsMasterToggle = toggleSwitch(form.rewards.enabled === true, (checked) => {
@@ -4023,7 +4038,13 @@
                 el("div", { class: "sub", text: "When a player's selected region has no servers registered, automatically routes them to another region with available servers." })),
               el("div", { style: "margin-top:16px; display:flex; justify-content:space-between; align-items:center; gap:12px; padding-top:12px; border-top:1px solid var(--line);" },
                 el("span", { class: "muted font-semibold", text: "Region Fallback" }),
-                regionFallbackToggle)))),
+                regionFallbackToggle)),
+            el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius); display:flex; flex-direction:column; justify-content:space-between;" },
+              el("div", {},
+                el("div", { style: "font-weight:700; margin-bottom:4px;", text: "Server Regions" }),
+                el("div", { class: "sub", text: "Players queuing in any region ticked here play on the servers of any other region ticked here. A server still registers one region, its -McpRegion (Core Launcher → Settings → Servers → Region), and each match plays in it; tick that region too. With none or one ticked, each server only takes its own region's players." })),
+              el("div", { style: "margin-top:16px; padding-top:12px; border-top:1px solid var(--line);" },
+                serverRegionChecks)))),
 
         // Section 4: Battle Royale V-Bucks Rewards
         el("section", { class: "panel", style: "margin-top:16px" },

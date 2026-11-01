@@ -311,6 +311,31 @@ test("with the region fallback off, the mission search finds only the region ask
   assert.deepEqual(store.search(searchIn("EU")).map(({ id }) => id), [na.id]);
 });
 
+test("a server in one of the server regions is found by the mission search of any of them (#142)", () => {
+  let regions = ["EU", "nae"];
+  let fallback = false;
+  const store = createSessionStore({ regionFallback: () => fallback, serverRegions: () => regions });
+  const searchIn = (region) => ({ ...clientSearch, criteria: [{ type: "EQUAL", key: "REGION_s", value: region }, ...clientSearch.criteria.slice(1)] });
+  const eu = store.create({ ...emptyServer, attributes: { ...emptyServer.attributes, REGION_s: "EU" } }, "127.0.0.1", "CoreServer1");
+  // NA is a server region and EU's server is in one: NA's search finds it, and NA counts as having a server.
+  assert.deepEqual(store.search(searchIn("NA")).map(({ id }) => id), [eu.id]);
+  assert.deepEqual(store.search(searchIn("EU")).map(({ id }) => id), [eu.id]);
+  assert.deepEqual(store.search({ ...clientSearch, criteria: [{ type: "IN", key: "REGION_s", value: ["NAW", "OCE"] }] }).map(({ id }) => id), [eu.id]);
+  // OCE isn't one: with the fallback off it finds nothing; on, it falls back as before.
+  assert.deepEqual(store.search(searchIn("OCE")), []);
+  fallback = true;
+  assert.equal(store.regionFallback(searchIn("NA")), null);
+  assert.deepEqual(store.regionFallback(searchIn("OCE")), { region: "OCE" });
+  assert.deepEqual(store.search(searchIn("OCE")).map(({ id }) => id), [eu.id]);
+  // A server whose own region isn't one of them takes only its own; the setting is asked at each search.
+  fallback = false;
+  regions = ["NA", "OCE"];
+  assert.deepEqual(store.search(searchIn("NA")), []);
+  regions = [];
+  assert.deepEqual(store.search(searchIn("NA")), []);
+  assert.deepEqual(store.search(searchIn("EU")).map(({ id }) => id), [eu.id]);
+});
+
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const timed = async (promise) => {
   const started = Date.now();

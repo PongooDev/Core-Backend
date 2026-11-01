@@ -3,6 +3,7 @@ import path from "node:path";
 import { readJson, writeJson } from "../json-file.js";
 import { defaultHostingIps, hostingIp, hostingIps } from "../network.js";
 import { defaultBattlePass, sanitizeBattlePass } from "../battlepass/season1.js";
+import { regionList } from "../matchmaking/regions.js";
 
 const defaults = {
   requirePassword: false,
@@ -38,6 +39,10 @@ const defaults = {
   warmupSeconds: null,
   lateJoin: false,
   regionFallback: true,
+  // The server regions (Core-Backend #142, matchmaking/regions.js servedRegions): a server whose region (its -McpRegion)
+  // is one of these takes the players of all of them, each match still in its own region. [] (or one region): every
+  // server takes only its own region's. A single region's code, as a string, is taken as that one region.
+  serverRegions: [],
   // Trusted Hosting IPs (Core-Backend #125, network.js allowsHosting): other PCs whose gameservers may host for this
   // backend, each an IP address. This PC (loopback) always may; nobody else unless listed.
   allowedHostingIps: defaultHostingIps,
@@ -353,6 +358,8 @@ export function createSettingsStore(dataDir) {
       settings.warmupSeconds = warmupSecondsValue(loaded.warmupSeconds) ?? null;
       settings.lateJoin = loaded.lateJoin === true;
       settings.regionFallback = loaded.regionFallback !== false;
+      settings.serverRegions = regionList(loaded.serverRegions ?? loaded.serverRegion) ?? [];
+      delete settings.serverRegion;
       settings.allowedHostingIps = hostingIps(loaded.allowedHostingIps) ?? [...defaults.allowedHostingIps];
       if (loaded.battleRoyaleNews && typeof loaded.battleRoyaleNews === "object") {
         settings.battleRoyaleNews = {
@@ -477,6 +484,7 @@ export function createSettingsStore(dataDir) {
       if (partial.warmupSeconds !== undefined && warmup !== undefined) settings.warmupSeconds = warmup;
       if (typeof partial.lateJoin === "boolean") settings.lateJoin = partial.lateJoin;
       if (typeof partial.regionFallback === "boolean") settings.regionFallback = partial.regionFallback;
+      settings.serverRegions = regionList(partial.serverRegions ?? partial.serverRegion) ?? settings.serverRegions;
       if (partial.matchmakingModes && typeof partial.matchmakingModes === "object") {
         settings.matchmakingModes = sanitizeMatchmakingModes(partial.matchmakingModes, settings.matchmakingModes);
       }

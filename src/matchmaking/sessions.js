@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import { log } from "../log.js";
 import { allowsHosting, createNetwork, isLoopback, normalizeAddress } from "../network.js";
-import { regionOf } from "./regions.js";
+import { regionOf, servedRegions } from "./regions.js";
 
 // Every key the client's session parser requires (OnlineSessionJsonMcp, sub_37F59F0): a session missing one is dropped
 // with "Unable to read session settings!". buildUniqueId is read as a string.
@@ -48,12 +48,13 @@ const distance = (session, { key, value }) => {
 };
 
 // The client searches with REGION_s EQUAL its region (GetRegionId, as Battle Royale's bucket: regions.js), the server
-// registers REGION_s as its -McpRegion= is spelled; both compare as regions.
+// registers REGION_s as its -McpRegion= is spelled; both compare as regions. A region the session's server takes
+// (served, the admin panel's server regions: Core-Backend #142) counts as the session's own.
 const regionKey = "REGION_s";
 
 // A criterion type the search doesn't know matches nothing, so the search can never find a session: logged once a type.
 const unknownTypes = new Set();
-function matches(session, { type, key, value }) {
+function matches(session, { type, key, value }, served = (region) => new Set([region])) {
   if (type === "DISTANCE") return true;
   const test = compare[type];
   if (!test) {
@@ -63,7 +64,12 @@ function matches(session, { type, key, value }) {
     }
     return false;
   }
-  if (key === regionKey) return test(regionOf(session.attributes?.[key]), Array.isArray(value) ? value.map(regionOf) : regionOf(value));
+  if (key === regionKey) {
+    const own = regionOf(session.attributes?.[key]);
+    const takes = served(own);
+    const asked = (code) => (takes.has(regionOf(code)) ? own : regionOf(code));
+    return test(own, Array.isArray(value) ? value.map(asked) : asked(value));
+  }
   return test(session.attributes?.[key], value);
 }
 
@@ -106,9 +112,11 @@ function countOpenSlots(session) {
 
 // Game sessions the gameservers register (OnlineSubsystemMcp's /api/matchmaking/session API), kept in memory:
 // a server re-registers after a backend restart. regionFallback: whether a search for a region with no server searches
-// every region (the admin panel's setting, asked each search; Core-Backend #123).
-export function createSessionStore({ regionFallback: fallsBack = () => true } = {}) {
+// every region (the admin panel's setting, asked each search; Core-Backend #123). serverRegions: the admin panel's
+// server regions, asked each search (#142).
+export function createSessionStore({ regionFallback: fallsBack = () => true, serverRegions = () => [] } = {}) {
   const sessions = new Map();
+  const served = (region) => servedRegions(region, serverRegions());
   // Called after every change a search can see (a session made, updated, filled, emptied or started).
   const watchers = new Set();
   const changed = () => {
@@ -249,7 +257,7 @@ export function createSessionStore({ regionFallback: fallsBack = () => true } = 
       if (!wanted) return null;
       const region = regionOf(wanted.value);
       const sameBuild = (session) => request?.buildUniqueId === undefined || String(request.buildUniqueId) === session.buildUniqueId;
-      return live().some((session) => sameBuild(session) && regionOf(session.attributes?.[regionKey]) === region) ? null : { region };
+      return live().some((session) => sameBuild(session) && served(regionOf(session.attributes?.[regionKey])).has(region)) ? null : { region };
     },
 
     // matchMakingRequest: {criteria: [{type, key, value}], requireDedicated, maxCurrentPlayers, minCurrentPlayers,
@@ -267,7 +275,7 @@ export function createSessionStore({ regionFallback: fallsBack = () => true } = 
         if (Number.isFinite(request?.minCurrentPlayers) && current < request.minCurrentPlayers) return false;
         if (Number.isFinite(request?.openPlayersRequired) && session.openPublicPlayers < request.openPlayersRequired) return false;
         if (players(session).some((id) => excluded.has(id))) return false;
-        return criteria.every((criterion) => matches(session, criterion));
+        return criteria.every((criterion) => matches(session, criterion, served));
       });
       // The DISTANCE criteria first, in the order sent; then the most recently heard from: a server that stopped
       // heartbeating may be gone (its session is only dropped after staleAfterMs), and the client joins the first one

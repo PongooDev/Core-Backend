@@ -6,7 +6,7 @@ import http from "node:http";
 import os from "node:os";
 import path from "node:path";
 import { bucketKey, bucketMatches, estimatedWaitSec, formTeams, parseBucket, playlistTeamsOf, serverRegion, withRegion } from "../src/matchmaking/service.js";
-import { regionOf } from "../src/matchmaking/regions.js";
+import { regionList, regionOf, servedRegions } from "../src/matchmaking/regions.js";
 import { dedicatedServerToken, del, get, post, startBackend, userLogin } from "./helpers.js";
 
 // MatchmakingServiceClient's connection: a WebSocket with the ticket in its Authorization header, which the browser-style
@@ -514,6 +514,82 @@ test("with the region fallback off, a player only matches in the region they pic
   } finally {
     for (const connection of connections) connection.close();
     backend.close();
+  }
+});
+
+// Core-Backend #142: the admin panel's server regions.
+test("a server in one of the server regions takes all of their players; any other server only its own region's (#142)", () => {
+  assert.deepEqual(regionList(["eu", "NAW", "EU", "xx", 5, "NONE"]), ["EU", "NA"]);
+  // One region's code, as a string, is that region; anything else is no list at all.
+  assert.deepEqual([regionList("gb"), regionList(""), regionList([]), regionList(5), regionList(null)], [["EU"], [], [], undefined, undefined]);
+  assert.deepEqual([...servedRegions("eu", ["EU", "NA"])], ["EU", "NA"]);
+  assert.deepEqual([...servedRegions("OCE", ["EU", "NA"])], ["OCE"]);
+  assert.deepEqual([...servedRegions("NA", [])], ["NA"]);
+  assert.deepEqual([...servedRegions("NONE", ["EU", "NA"])], [null]);
+});
+
+test("with EU and NA the server regions, EU's server takes NA's players into its EU matches, within EU's server quotas (#142)", async () => {
+  const backend = await startBackend({ matchmakingGatherMs: 300, regionFallback: false, serverRegions: ["EU", "NA"] });
+  const connections = [];
+  try {
+    const eu = await regionServer(backend, "CoreServer1", "EU");
+    connections.push(eu.connection);
+    // NA has a server now (EU's): the American and the European share its match, which plays in EU.
+    const american = await regionPlayer(backend, "MultiNA", "nae");
+    const european = await regionPlayer(backend, "MultiEU", "EU");
+    connections.push(american.connection, european.connection);
+    const assign = await nextOf(eu.connection, "AssignMatch");
+    assert.deepEqual(assign.payload.teams, [[[american.accountId], [european.accountId]]]);
+    assert.equal(assign.payload.bucketId, "858118782:0:EU:10");
+    eu.connection.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: assign.payload.matchId, result: "ready" } }));
+    assert.equal((await nextOf(american.connection, "Play")).payload.sessionId, eu.session.id);
+    assert.equal((await nextOf(european.connection, "Play")).payload.sessionId, eu.session.id);
+
+    // EU's Duos quota of 1 is full with that match: another EU server waits, and so does the next American.
+    await post(backend.port, "/admin/api/matchmaking/config", undefined, { serverLimits: { EU: { duo: 1 } } });
+    const next = await regionServer(backend, "CoreServer2", "EU");
+    connections.push(next.connection);
+    const waiter = await regionPlayer(backend, "MultiNAWaits", "NA");
+    // OCE isn't a server region and the fallback is off: the Australian waits for an OCE server.
+    const australian = await regionPlayer(backend, "MultiOCE", "OCE");
+    connections.push(waiter.connection, australian.connection);
+    for (const player of [waiter, australian]) {
+      const queued = JSON.parse(await player.connection.next());
+      assert.deepEqual([queued.payload.state, queued.payload.estimatedWaitSec], ["Queued", 0]);
+    }
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    // Room for a second EU match: the American gets it, still in EU, and the Australian keeps waiting.
+    await post(backend.port, "/admin/api/matchmaking/config", undefined, { serverLimits: { EU: { duo: 2 } } });
+    const second = await nextOf(next.connection, "AssignMatch");
+    assert.deepEqual([second.payload.teams, second.payload.bucketId], [[[[waiter.accountId]]], "858118782:0:EU:10"]);
+  } finally {
+    for (const connection of connections) connection.close();
+    backend.close();
+  }
+});
+
+test("the server regions are a setting, kept over a restart, and a single region's code still reads as that region (#142)", async () => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-backend-regions-"));
+  fs.writeFileSync(path.join(dataDir, "settings.json"), JSON.stringify({ serverRegion: "eu" }));
+  let backend = await startBackend({ dataDir });
+  try {
+    let saved = (await settingsOf(backend)).body;
+    assert.deepEqual([saved.serverRegions, saved.serverRegion], [["EU"], undefined]);
+    saved = (await settingsOf(backend, { serverRegions: ["NAW", "eu", "nowhere"] })).body;
+    assert.deepEqual(saved.serverRegions, ["NA", "EU"]);
+    // Not a list or a region: ignored.
+    saved = (await settingsOf(backend, { serverRegions: 5 })).body;
+    assert.deepEqual(saved.serverRegions, ["NA", "EU"]);
+    // The matchmaking tab shows and sets them, and its defaults clear them.
+    assert.deepEqual((await get(backend.port, "/admin/api/matchmaking/overview")).body.serverRegions, ["NA", "EU"]);
+    assert.deepEqual((await post(backend.port, "/admin/api/matchmaking/config", undefined, { serverRegions: ["OCE", "BR"] })).body.serverRegions, ["OCE", "BR"]);
+    backend.close();
+    backend = await startBackend({ dataDir });
+    assert.deepEqual((await settingsOf(backend)).body.serverRegions, ["OCE", "BR"]);
+    assert.deepEqual((await post(backend.port, "/admin/api/matchmaking/actions/reset-defaults", undefined, {})).body.serverRegions, []);
+  } finally {
+    backend.close();
+    fs.rmSync(dataDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   }
 });
 

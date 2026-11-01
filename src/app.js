@@ -72,13 +72,15 @@ export function createContext(config) {
   if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
   if (config.seasonalEvents !== undefined) settings.update({ seasonalEvents: config.seasonalEvents });
   for (const key of ["battleRoyaleVbucks", "battleRoyaleRewards", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits", "cheats", "cheatAccounts",
-    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "regionFallback", "defaultFoundersAccess", "remoteAdmin", "events", "battlepass", "matchmakingModes", "serverLimits"]) {
+    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "regionFallback", "serverRegions", "defaultFoundersAccess", "remoteAdmin", "events", "battlepass", "matchmakingModes", "serverLimits"]) {
     if (config[key] !== undefined) settings.update({ [key]: config[key] });
   }
   const friends = createFriendStore(config.dataDir);
   // The admin panel's region fallback (Core-Backend #123): off, a player only plays in the region they picked.
   const regionFallback = () => settings.get().regionFallback !== false;
-  const sessions = createSessionStore({ regionFallback });
+  // Its server regions (#142): a server in one of them takes all of their players.
+  const serverRegions = () => settings.get().serverRegions ?? [];
+  const sessions = createSessionStore({ regionFallback, serverRegions });
   const stats = createStatsStore(config.dataDir);
   const reports = createReportStore(config.dataDir);
   const profiles = createProfileStore(config.dataDir, {
@@ -109,7 +111,7 @@ export function createContext(config) {
     sessions,
     // config.matchmakingGatherMs (the tests') wins over the admin panel's gather time.
     matchmaker: createMatchmaker({ sessions, gatherMs: config.matchmakingGatherMs ?? (() => settings.get().matchmakingGatherSeconds * 1000),
-      lateJoin: () => settings.get().lateJoin === true, regionFallback, serverLimits: () => settings.get().serverLimits, matchmakingModes: () => settings.get().matchmakingModes, quiet: config.requestLog === false }),
+      lateJoin: () => settings.get().lateJoin === true, regionFallback, serverRegions, serverLimits: () => settings.get().serverLimits, matchmakingModes: () => settings.get().matchmakingModes, quiet: config.requestLog === false }),
     network: createNetwork(config),
     emptyServerWaitMs: config.emptyServerWaitMs,
     stomp: createStompService({ tokens, quiet: config.requestLog === false }),

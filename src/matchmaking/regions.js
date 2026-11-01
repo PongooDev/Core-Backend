@@ -50,3 +50,20 @@ export function regionOf(code) {
 
 // For logs: "EU", or "no region".
 export const regionName = (region) => region ?? "no region";
+
+// The admin panel's server regions (Core-Backend #142): the regions Core's servers host for, canonical and each once,
+// from a list or one region's code (as the setting was first named), [] for none, or undefined for neither. Only the
+// regions the client's list offers (aliases) count.
+export function regionList(value) {
+  if (typeof value !== "string" && !Array.isArray(value)) return undefined;
+  const regions = (Array.isArray(value) ? value : [value]).map((code) => (typeof code === "string" ? regionOf(code) : null));
+  return [...new Set(regions.filter((region) => Object.hasOwn(aliases, region ?? "")))];
+}
+
+// The regions a server takes players from (Core-Backend #142): with its own region among the server regions, every one
+// of them, else only its own. A server still registers one region (its -McpRegion) and plays each match in it.
+export function servedRegions(region, selected) {
+  const own = regionOf(region);
+  const regions = regionList(selected) ?? [];
+  return new Set(own !== null && regions.includes(own) ? regions : [own]);
+}
