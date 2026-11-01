@@ -51,7 +51,8 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   without the test characters: class, display name, rarity), the item shop's display assets (`Catalog/DisplayAssets`
   FortMtxOfferData with Battle Royale tile art, by the cosmetic each shows, matched by name: see `Program.cs`), its quests (`Athena/Items/Quests`, as in `quests.json` plus
   their category and weight), the season levels (AthenaGameData's `SeasonXpLevelsTable`) and the objective stat rows those
-  quests count. Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
+  quests count. From 1.11 (CL 3807424, Season 2) AthenaGameData names no season levels table; the levels are the newest
+  season's (`Athena/Items/Seasons/AthenaSeason<n>`'s SeasonXpCurve). Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `research.json`: the resource collectors (research points): each CollectedResource template's payout and the
   homebase attributes its rate, capacity and wallet cap come from, what each skill tree node adds to those attributes

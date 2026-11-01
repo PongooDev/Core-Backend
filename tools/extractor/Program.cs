@@ -1066,7 +1066,14 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
 if (provider.TryLoadPackage("FortniteGame/Content/Balance/AthenaGameData.uasset", out var athenaGameData))
 {
     var athenaData = JsonNode.Parse(JsonConvert.SerializeObject(athenaGameData.GetExports().First(e => e.ExportType == "AthenaGameData")))!["Properties"];
-    foreach (var (_, row) in LoadRows(provider, athenaData!["SeasonXpLevelsTable"]).OrderBy(r => r.Value!["Level"]!.GetValue<int>()))
+    // 1.11 (CL 3807424, Season 2) takes AthenaGameData's SeasonXpLevelsTable out: each season's AthenaSeasonItemDefinition
+    // (Athena/Items/Seasons/AthenaSeason<n>) names its own SeasonXpCurve, so the newest season's levels are taken.
+    var seasonXpTable = athenaData!["SeasonXpLevelsTable"] ?? provider.Files.Values
+        .Where(f => f.Extension == "uasset" && Regex.IsMatch(f.Path, @"^FortniteGame/Content/Athena/Items/Seasons/AthenaSeason\d+\.uasset$", RegexOptions.IgnoreCase))
+        .OrderByDescending(f => int.Parse(Regex.Match(f.Path, @"(\d+)\.uasset$").Groups[1].Value))
+        .Select(f => LoadExport(provider, f.Path, "AthenaSeasonItemDefinition")["Properties"]?["SeasonXpCurve"])
+        .FirstOrDefault(curve => curve is not null);
+    foreach (var (_, row) in LoadRows(provider, seasonXpTable).OrderBy(r => r.Value!["Level"]!.GetValue<int>()))
     {
         var level = new SortedDictionary<string, object>(StringComparer.Ordinal)
         {
