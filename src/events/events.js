@@ -22,14 +22,29 @@ export const mutantStorms = "MutantStorms";
 // BR_Playlist_50v50 (AthenaCustomPlaylistEvent, PlaylistId 11) requires EventFlag.BR.Allow50v50, and its quest
 // (Athena/Items/Quests/Events/Winter2017_50v50) is the event's. 1.9 and 1.9.1 have the playlist's code but no asset or
 // quest, and their DefaultGame.ini turns the queue off (UFortGameInstance bBattleRoyaleFiftyFiftyQueueEnabled=false);
-// 1.10's turns it on and leaves the rest to the calendar (UFortGlobals b50v50CalenderEventEnabled=true).
+// 1.10's turns it on and leaves the rest to the calendar (UFortGlobals b50v50CalenderEventEnabled=true). 1.11
+// (CL-3807424) keeps its quest, and its notes fix 50v50's screen ("Improved visibility of the number of players remaining
+// on each team in 50v50 mode"), so it runs there too.
 export const fiftyFifty = "EventFlag.BR.Allow50v50";
+
+// Survive the Holidays (events/winter2017.js), Save the World's winter event 1.11 (CL-3807424) shipped: "The Fortnite
+// Guide to Holiday Survival is here!" Its content waits for EventFlag.Winter2017, the flag 1.11's MiniBossCategory and
+// Survival3Day/7DayCategory mission alerts require. Its notes end the Mutant Storms ("With the end of the Mutant Storms
+// event, every 1,000 unspent Storm Tickets will be converted to a storm llama", events/stormllamas.js) and keep storms on
+// the map without tickets ("Note that while Mutant Storms are also present on the map to provide evolution materials,
+// these do not reward event tickets", "You can now complete up to four Mutant Storms per day"): 1.11's StormLowCategory
+// rows (quota 4) require EventFlag.PassiveStorms, its StormCategory rows still EventFlag.ActiveStorms, which it doesn't
+// run.
+export const winter2017 = "EventFlag.Winter2017";
+export const passiveStorms = "EventFlag.PassiveStorms";
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
   { name: mutantStorms, flag: "EventFlag.Vindertech", firstBuild: 3775276, lastBuild: 3775276 },
   { name: mutantStorms, flag: "EventFlag.ActiveStorms", firstBuild: 3790078, lastBuild: 3790078 },
-  { name: fiftyFifty, flag: fiftyFifty, firstBuild: 3790078, lastBuild: 3790078 }
+  { name: fiftyFifty, flag: fiftyFifty, firstBuild: 3790078, lastBuild: 3807424 },
+  { name: winter2017, flag: winter2017, firstBuild: 3807424, lastBuild: 3807424 },
+  { name: passiveStorms, flag: passiveStorms, firstBuild: 3807424, lastBuild: 3807424 }
 ];
 
 const runsOn = (event, number) => number >= event.firstBuild && number <= event.lastBuild;
@@ -55,7 +70,7 @@ export function activeEventFlags(changelist = currentBuild()) {
   if (eventsSetting.getStore() === false) return [];
   const config = currentEventsConfig();
   if (config?.mode === "off") return [];
-  // Forcing a Save the World event leaves the build's Battle Royale 50v50 running (1.10).
+  // Forcing a Save the World event leaves the build's Battle Royale 50v50 running (1.10, 1.11).
   const fiftyFiftyFlags = Number.isInteger(Number(changelist)) && runsOn(events.find((event) => event.name === fiftyFifty), Number(changelist))
     ? [fiftyFifty] : [];
   if (config?.mode === "force_fortnitemares") return [fortnitemares, ...fiftyFiftyFlags];

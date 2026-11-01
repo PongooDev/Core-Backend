@@ -33,7 +33,9 @@ test("50v50 runs on 1.10 as the event its flag names; 1.9.1 has neither the even
   assert.ok(isEventActive(fiftyFifty, v110));
   assert.ok(activeEventFlags(v110).includes(fiftyFifty));
   assert.ok(!activeEventFlags(v191).includes(fiftyFifty));
-  assert.ok(hasEventEnded(fiftyFifty, "3807424"));
+  // 1.11 keeps it (events.js).
+  assert.ok(isEventActive(fiftyFifty, "3807424"));
+  assert.ok(hasEventEnded(fiftyFifty, "3841827"));
   // Play 50v50 Matches: three matches of playlist 11's tag for 1000 season XP, 1.10's data only.
   inBuild(v110, () => {
     assert.deepEqual(athenaEventQuestsOf({ running: true }), [quest]);
