@@ -3936,7 +3936,9 @@
             checked: form.serverRegions.includes(r),
             "aria-label": `Servers host for ${regionLabels[r] || r}`,
             onchange: (e) => {
-              form.serverRegions = e.target.checked ? [...new Set([...form.serverRegions, r])] : form.serverRegions.filter((code) => code !== r);
+              // In the list's order: the launcher's servers take the first (Core-Launcher #8).
+              const ticked = e.target.checked ? [...form.serverRegions, r] : form.serverRegions.filter((code) => code !== r);
+              form.serverRegions = regions.filter((code) => ticked.includes(code));
             }
           }),
           el("span", { text: regionLabels[r] || r }))));
@@ -4042,7 +4044,7 @@
             el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius); display:flex; flex-direction:column; justify-content:space-between;" },
               el("div", {},
                 el("div", { style: "font-weight:700; margin-bottom:4px;", text: "Server Regions" }),
-                el("div", { class: "sub", text: "Players queuing in any region ticked here play on the servers of any other region ticked here. A server still registers one region, its -McpRegion (Core Launcher → Settings → Servers → Region), and each match plays in it; tick that region too. With none or one ticked, each server only takes its own region's players." })),
+                el("div", { class: "sub", text: "Players queuing in any region ticked here play on the servers of any other region ticked here. A server still registers one region, its -McpRegion, and each match plays in it: Core Launcher's servers take the first region ticked here, in this list's order (NA when none is), when they start, unless their build's server arguments name another. With none or one ticked, each server only takes its own region's players." })),
               el("div", { style: "margin-top:16px; padding-top:12px; border-top:1px solid var(--line);" },
                 serverRegionChecks)))),
 

@@ -10,7 +10,9 @@ const version = JSON.parse(fs.readFileSync(packageFile, "utf8")).version;
 
 // Core's: whether this is a Core-Backend and which version, without logging in. The launcher checks a friend's backend
 // with it before starting the game ("Join a friend"). It is the one /core/api route other machines get (when remote
-// access is on): the rest is for the launcher on this PC.
+// access is on): the rest is for the launcher on this PC. It also names the admin panel's Server Regions (#142, nothing
+// else of the settings): a launcher hosting servers for this backend, on this PC or a friend's, gives them the first as
+// their -McpRegion (Core-Launcher #8).
 export function coreStatusRoutes(context = {}) {
   const router = express.Router();
   const authRequirementsLimiter = createRateLimiter({
@@ -51,7 +53,7 @@ export function coreStatusRoutes(context = {}) {
     }
     next();
   }, (req, res) => {
-    const base = { name: "Core-Backend", version };
+    const base = { name: "Core-Backend", version, serverRegions: [...(context.settings?.get?.().serverRegions ?? [])] };
     if (req.query.username !== undefined || req.query.auth !== undefined) {
       return res.json({
         ...base,

@@ -166,7 +166,8 @@ test("other machines are let in only while remote access is on, and dropped when
   try {
     const port = await listen(server, server.network, 0);
     const status = await fetch(`http://${lan}:${port}/core/api/status`);
-    assert.deepEqual(await status.json(), { name: "Core-Backend", version: JSON.parse(fs.readFileSync("package.json", "utf8")).version });
+    // With the Server Regions, which a launcher hosting for this backend from another PC gives its servers (Core-Launcher #8).
+    assert.deepEqual(await status.json(), { name: "Core-Backend", version: JSON.parse(fs.readFileSync("package.json", "utf8")).version, serverRegions: [] });
     // The admin panel and the launcher's API stay on this PC.
     assert.equal((await fetch(`http://${lan}:${port}/admin/api/network`)).status, 403);
     assert.equal((await fetch(`http://${lan}:${port}/core/api/sessions`)).status, 403);

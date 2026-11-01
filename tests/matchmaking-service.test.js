@@ -586,6 +586,10 @@ test("the server regions are a setting, kept over a restart, and a single region
     backend.close();
     backend = await startBackend({ dataDir });
     assert.deepEqual((await settingsOf(backend)).body.serverRegions, ["OCE", "BR"]);
+    // The status route, which needs no login, names them for the launcher's servers (Core-Launcher #8), and no other setting.
+    const status = (await get(backend.port, "/core/api/status")).body;
+    assert.deepEqual(Object.keys(status).sort(), ["name", "serverRegions", "version"]);
+    assert.deepEqual(status.serverRegions, ["OCE", "BR"]);
     assert.deepEqual((await post(backend.port, "/admin/api/matchmaking/actions/reset-defaults", undefined, {})).body.serverRegions, []);
   } finally {
     backend.close();

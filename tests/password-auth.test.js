@@ -449,6 +449,8 @@ test("status route tells the launcher whether a password is required globally or
     assert.equal(plainStatus.status, 200);
     assert.equal(plainStatus.body.name, "Core-Backend");
     assert.ok(plainStatus.body.version);
+    // The admin panel's Server Regions (#142), the launcher's servers' -McpRegion (Core-Launcher #8): none ticked yet.
+    assert.deepEqual(plainStatus.body.serverRegions, []);
 
     // With auth=1 or via /core/api/auth-requirements, it tells the launcher the requirements
     const globalStatus = await get(backend.port, "/core/api/status?auth=1");
