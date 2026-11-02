@@ -3,6 +3,7 @@ import path from "node:path";
 import { readJson, writeJson } from "../json-file.js";
 import { defaultHostingIps, hostingIp, hostingIps } from "../network.js";
 import { defaultBattlePass, sanitizeBattlePass } from "../battlepass/season1.js";
+import { defaultContentUpdates, sanitizeContentUpdates } from "../events/contentupdates.js";
 import { regionList } from "../matchmaking/regions.js";
 
 const defaults = {
@@ -66,7 +67,10 @@ const defaults = {
     // Each season's replay start, its day 1 ("YYYY-MM-DD", store/itemshop.js seasonStart): Season 2's is set the first
     // day the backend serves it; null is the default start.
     seasonStarts: { 1: null, 2: null },
-    calendarCacheMinutes: 60
+    calendarCacheMinutes: 60,
+    // Season 2's content updates (events/contentupdates.js): "season" by their dates on its replay, or "all"; and
+    // per-update "on" / "off" overrides.
+    contentUpdates: defaultContentUpdates
   },
   battlepass: defaultBattlePass,
   matchmakingModes: {
@@ -196,6 +200,10 @@ function sanitizeEvents(input, current = defaults.events) {
       if (value === null || value === "") result.seasonStarts[season] = null;
       else if (typeof value === "string" && !isNaN(Date.parse(value))) result.seasonStarts[season] = new Date(Date.parse(value)).toISOString().slice(0, 10);
     }
+  }
+
+  if (input.contentUpdates !== undefined) {
+    result.contentUpdates = sanitizeContentUpdates(input.contentUpdates, result.contentUpdates ?? defaultContentUpdates);
   }
 
   if (input.calendarCacheMinutes !== undefined) {

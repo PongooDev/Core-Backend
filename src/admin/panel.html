@@ -5671,7 +5671,8 @@
         weeklyDurationDays: Number(cfg.weeklyDurationDays ?? 7),
         customSeasonEnd: cfg.customSeasonEnd ? cfg.customSeasonEnd.slice(0, 16) : "",
         seasonStarts: { 1: cfg.seasonStarts?.[1] || "", 2: cfg.seasonStarts?.[2] || "" },
-        calendarCacheMinutes: Number(cfg.calendarCacheMinutes ?? 60)
+        calendarCacheMinutes: Number(cfg.calendarCacheMinutes ?? 60),
+        contentUpdates: { mode: cfg.contentUpdates?.mode || "season", overrides: { ...(cfg.contentUpdates?.overrides ?? {}) } }
       };
 
       const dailyTarget = new Date(data.calendar.dailyStoreEnd).getTime();
@@ -5729,7 +5730,12 @@
           weeklyDurationDays: form.weeklyDurationDays,
           customSeasonEnd: form.customSeasonEnd ? new Date(form.customSeasonEnd).toISOString() : null,
           seasonStarts: { 1: form.seasonStarts[1] || null, 2: form.seasonStarts[2] || null },
-          calendarCacheMinutes: form.calendarCacheMinutes
+          calendarCacheMinutes: form.calendarCacheMinutes,
+          contentUpdates: {
+            mode: form.contentUpdates.mode,
+            // Every update is sent, "auto" clearing an override.
+            overrides: Object.fromEntries((data.contentUpdates?.builds?.[0]?.updates ?? []).map((u) => [u.id, form.contentUpdates.overrides[u.id] || "auto"]))
+          }
         };
         await act(api("/admin/api/events/config", payload), "Event configuration saved");
         showEvents();
@@ -5923,6 +5929,37 @@
             seasonStartInputs[season].value = "";
           }, "ghost small")));
 
+      // Season 2's content updates (Core-Backend #156): Epic's loot hotfixes, by the season's dates on 1.11 or all at once,
+      // each one forced on or off if wanted; 2.1 always has them.
+      const content = data.contentUpdates ?? { builds: [] };
+      const [content111, content21] = content.builds;
+      const updateWhy = { season: "by date", all: "all on", on: "forced on", off: "forced off", shipped: "always (2.1)" };
+      const contentModeSelect = el("select", { class: "field", onchange: (e) => { form.contentUpdates.mode = e.target.value; } },
+        el("option", { value: "season", text: "Follow the season's dates", selected: form.contentUpdates.mode === "season" }),
+        el("option", { value: "all", text: "Everything on", selected: form.contentUpdates.mode === "all" }));
+      const contentRow = (update) => {
+        const on21 = content21?.updates.find((u) => u.id === update.id);
+        return el("div", { style: "display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:8px 0; border-top:1px solid var(--line);" },
+          el("div", { style: "min-width:260px; flex:1;" },
+            el("div", { class: "font-semibold", text: update.name }),
+            el("div", { class: "muted", style: "font-size:11px;", text: `Epic: ${new Date(update.at).toUTCString().slice(5, 22)} UTC` })),
+          chip(`1.11: ${update.on ? "in" : "not yet"} (${updateWhy[update.why] || update.why})`, update.on ? "good" : "warn"),
+          on21 ? chip(`2.1: ${on21.on ? "in" : "out"}`, on21.on ? "good" : "warn") : null,
+          el("select", { class: "field", onchange: (e) => { form.contentUpdates.overrides[update.id] = e.target.value; } },
+            ...[["auto", "Auto"], ["on", "Force on"], ["off", "Force off"]].map(([value, text]) =>
+              el("option", { value, text, selected: (form.contentUpdates.overrides[update.id] || "auto") === value }))));
+      };
+      const contentSection = el("section", { class: "panel", style: "margin-top:16px" },
+        el("div", { class: "panel-head", style: "margin-bottom:8px" },
+          el("div", { class: "actions" }, el("h2", { text: "Season 2 Content Updates" }), contentModeSelect)),
+        el("p", { class: "note", text: `Epic's loot hotfixes of Season 2, served to 1.11 and 2.1 clients and gameservers in DefaultGame.ini's [AssetHotfix]. On 1.11 they follow Season 2's replay (day 1 = 14 Dec 2017; today stands for ${content.seasonDate ? new Date(content.seasonDate).toUTCString().slice(5, 22) : "—"} UTC) or are all on; 2.1 always has all of them and its Cozy Campfire. A gameserver takes them when it starts.` }),
+        ...(content111?.updates ?? []).map(contentRow),
+        ...(content21?.updates ?? []).filter((u) => !(content111?.updates ?? []).some((o) => o.id === u.id)).map((u) =>
+          el("div", { style: "display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:8px 0; border-top:1px solid var(--line);" },
+            el("div", { style: "min-width:260px; flex:1;" }, el("div", { class: "font-semibold", text: u.name }),
+              el("div", { class: "muted", style: "font-size:11px;", text: "2.1's own" })),
+            chip(`2.1: ${u.on ? "in" : "out"}`, u.on ? "good" : "warn"))));
+
       const cacheMinsInput = el("input", {
         class: "field num",
         type: "number",
@@ -5958,7 +5995,8 @@
                   weeklyDurationDays: 7,
                   customSeasonEnd: null,
                   seasonStarts: { 1: null, 2: null },
-                  calendarCacheMinutes: 60
+                  calendarCacheMinutes: 60,
+                  contentUpdates: { mode: "season", overrides: Object.fromEntries((data.contentUpdates?.builds?.[0]?.updates ?? []).map((u) => [u.id, "auto"])) }
                 }), "Reset to default event settings");
                 showEvents();
               }
@@ -5970,6 +6008,8 @@
           tile("Daily Store Reset", [dailyTimerEl, el("span", { class: "sub", text: `${dailyResetDate.toUTCString().slice(17, 22)} UTC (${dailyResetDate.toLocaleDateString(undefined, { month: "short", day: "numeric" })})` })]),
           tile("Weekly Store Reset", [weeklyTimerEl, el("span", { class: "sub", text: `${weeklyResetDate.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })} · ${weeklyResetDate.toUTCString().slice(17, 22)} UTC` })]),
           tile("Season 1 Clock", [seasonTimerEl, el("span", { class: "sub", text: `Ends ${seasonResetDate.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}` })])),
+
+        contentSection,
 
         // Section 1: Activation Mode & Flags
         el("section", { class: "panel", style: "margin-top:16px" },

@@ -324,7 +324,18 @@ export function seasonEnd(now = new Date(), overrideConfig = null, season = seas
   return new Date(firstDay + (cycle + 1) * history.length * dayMs + rotationMs);
 }
 
-const offerIdOf = (templateId) => `core_br_${templateId.split(":")[1].toLowerCase()}`;
+// The moment of Epic's season now stands for on the season's replay (UTC, from seasonStart at the rotation hour, cycling
+// with the shop's history): Season 2's day 1 is 14 December 2017, so day 6 at 13:00 is 19 December 2017 13:00 GMT. The
+// content updates of a season run on it (events/contentupdates.js).
+export function seasonMoment(now = new Date(), overrideConfig = null, season = seasonOfBuild()) {
+  const config = overrideConfig ?? currentShopConfig();
+  const { days: history, firstDay: historyFirstDay } = historyOf(season);
+  const cycle = history.length * dayMs;
+  const elapsed = now.getTime() - rotationMsOf(config) - seasonStart(season, now, config);
+  return new Date(historyFirstDay + ((elapsed % cycle) + cycle) % cycle);
+}
+
+const offerIdOf = (templateId) =>`core_br_${templateId.split(":")[1].toLowerCase()}`;
 
 // The featured items' shop art: the display asset (FortMtxOfferData with Battle Royale tile art) the extractor matched to
 // the cosmetic by its names (gamedata/athena.json displayAssets, tools/extractor), by object path, so each build's are

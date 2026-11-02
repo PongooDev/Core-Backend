@@ -35,7 +35,8 @@ import { createRateLimiter, getClientIp } from "../services/portal/ratelimit.js"
 import { defaultBattleRoyaleNews, defaultLoginMessage, defaultSubgameSelect } from "../services/content/pages.js";
 import { inBuild } from "../builds/context.js";
 import { battleRoyaleBuilds, certBuild, seasonName, seasonVersions, versionOf } from "../builds/detect.js";
-import { cosmeticRarity, cosmeticType, eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, seasonEnd, seasonStart, shopDay, weeklyStoreEnd, withoutSeasonStartRecording } from "../store/itemshop.js";
+import { contentUpdateStates, defaultContentUpdates } from "../events/contentupdates.js";
+import { cosmeticRarity, cosmeticType, eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, seasonEnd, seasonMoment, seasonStart, shopDay, weeklyStoreEnd, withoutSeasonStartRecording } from "../store/itemshop.js";
 import { activeEventFlags, fortnitemares, mutantStorms } from "../events/events.js";
 import { convertLeftoverCandy } from "../events/candyllamas.js";
 import { defaultEvents, defaultMatchmakingModes, defaultServerLimits } from "../settings/store.js";
@@ -1020,11 +1021,22 @@ export function adminRoutes(context) {
       shopDay: shopDay(now, shopConfig, season).date
     }])));
 
+    // Season 2's content updates (events/contentupdates.js): each one's state on 1.11 and on 2.1, without starting the
+    // season.
+    const contentUpdates = withoutSeasonStartRecording(() => ({
+      config: eventsConfig.contentUpdates ?? defaultContentUpdates,
+      seasonDate: inBuild("3807424", () => seasonMoment(now, shopConfig, 2).toISOString()),
+      builds: [["1.11", "3807424"], ["2.1", "3825894"]].map(([version, cl]) => ({
+        version, cl: Number(cl), updates: inBuild(cl, () => contentUpdateStates(now, eventsConfig.contentUpdates))
+      }))
+    }));
+
     res.json({
       season: 1,
       seasonName: seasonName(1),
       availableSeasons,
       seasonalEvents: seasonalEventsEnabled,
+      contentUpdates,
       activeFlags: activeEventFlags(),
       sampleBuilds,
       calendar: {

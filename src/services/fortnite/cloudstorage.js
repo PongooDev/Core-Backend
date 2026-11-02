@@ -6,6 +6,7 @@ import { requireAuth, requireOwnAccount } from "../../accounts/auth.js";
 import { isDedicatedServerToken } from "../../accounts/clients.js";
 import { getBuild } from "../../builds/detect.js";
 import { sendError } from "../../errors.js";
+import { lootHotfixSection } from "../../events/contentupdates.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
 import { createNetwork } from "../../network.js";
 
@@ -38,6 +39,10 @@ const validFilename = /^[A-Za-z0-9._-]{1,128}$/;
 const freshStatsBuild = 3729133;
 const gameFile = (minutes) => ["[/Script/FortniteGame.FortGlobals]", `TimeBetweenLeaderboardRequestsMinutes=${minutes}`, ""].join("\r\n");
 const statsAnswerMinutes = (changelist) => (Number(changelist) >= freshStatsBuild ? 1 : 0);
+// Season 2's content updates (events/contentupdates.js, Core-Backend #156) come last, as an [AssetHotfix] section that
+// replaces the Battle Royale loot tables with the updated ones, as Epic's hotfixes did: on 1.11 those in by the season's
+// date (or all, as the admin panel chooses), on 2.1 all of them and its Cozy Campfire. It is the gameserver's copy of
+// the tables that drops the loot, so the server has to take this file too, before its match places any.
 const defaultNetwork = createNetwork();
 function systemFiles(req, network = defaultNetwork) {
   const address = network.reachableAddress(req);
@@ -46,7 +51,7 @@ function systemFiles(req, network = defaultNetwork) {
     "[OnlineSubsystemMcp.XMPP]", `ServerAddr=${address}`, `ServerPort=${port}`, "bUseSSL=false", "",
     "[OnlineSubsystemMcp.StompServiceMcp]", "Protocol=ws", `Domain=${address}:${port}`, ""
   ].join("\r\n");
-  const game = gameFile(statsAnswerMinutes(getBuild(req)));
+  const game = gameFile(statsAnswerMinutes(getBuild(req))) + lootHotfixSection();
   return { "DefaultEngine.ini": Buffer.from(engine, "utf8"), "DefaultGame.ini": Buffer.from(game, "utf8") };
 }
 
