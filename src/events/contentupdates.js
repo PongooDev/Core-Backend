@@ -14,6 +14,13 @@ import { currentEventsConfig } from "./events.js";
 // from chests; and its own: the Scoped AR out of supply drops, "Removed the Scoped AR from Supply Drops"), so it gets
 // no [AssetHotfix], which would put Core's weights over Epic's.
 //
+// 2.3 (CL-3847564) ships 2.2's tables unchanged, the Chug Jug (Athena_SuperMedkit) among the consumables at weight 0
+// (WorldList.AthenaConsumables.06 on the floor, WorldList.AthenaHighConsumables.06 in chests and supply drops), and its
+// notes release it: "Chug Jug is a new consumable that releases with this patch. It is a Legendary item and can only be
+// found in chests or supply drops. Max stack is 1." So 2.3 takes that one hotfix, always (it shipped with the patch, as
+// 2.1's Cozy Campfire): the chests' and supply drops' row at 0.2 (🟡 Core's: half the Slurp Juice's 0.4, a legendary
+// rarer than the epic), the floor's left at 0, its stack (Count) 1 as shipped.
+//
 // Epic's updates (the Fortnite Wiki's Season 2 pages and Epic's notes on them):
 // - 19 December 2017, 13:00 GMT, the Small Shield Potion update: the Small Shield Potion ("Drops in stacks of 3", "found in
 //   floor loot, treasure chests, and supply drops") and the trap usability update ("The Spike Trap, Wall Zapper, and
@@ -36,6 +43,7 @@ const tiers = "/Game/Items/Datatables/AthenaLootTierData_Client.AthenaLootTierDa
 const season2 = 3807424;
 const build21 = 3825894;
 const build22 = 3841827;
+const build23 = 3847564;
 
 export const contentUpdates = [
   { id: "smallShieldPotion", name: "Small Shield Potion and the Damage Trap", at: "2017-12-19T13:00:00Z", firstBuild: season2, rows: [
@@ -60,6 +68,9 @@ export const contentUpdates = [
   ] },
   { id: "cozyCampfire", name: "Cozy Campfire", at: "2018-01-10T00:00:00Z", firstBuild: build21, rows: [
     [packages, "WorldList.AthenaTraps.02", { Weight: 0.5 }]
+  ] },
+  { id: "chugJug", name: "Chug Jug", at: "2018-01-25T00:00:00Z", firstBuild: build23, rows: [
+    [packages, "WorldList.AthenaHighConsumables.06", { Weight: 0.2 }]
   ] }
 ];
 export const contentUpdateIds = contentUpdates.map(({ id }) => id);
@@ -92,10 +103,12 @@ const configOf = (config) => sanitizeContentUpdates(config ?? currentEventsConfi
 // The updates the requesting build has, and whether each is in now: [{id, name, at, on, why}].
 export function contentUpdateStates(now = new Date(), config = null, build = currentBuild()) {
   const number = Number(build);
-  if (!(number >= season2) || number >= build22 || athenaSeason()?.seasonNumber !== 2) return [];
+  if (!(number >= season2) || athenaSeason()?.seasonNumber !== 2) return [];
   const { mode, overrides } = configOf(config);
   const moment = number >= build21 ? null : seasonMoment(now, null, 2);
-  return contentUpdates.filter((update) => number >= update.firstBuild).map((update) => {
+  // From 2.2 a build's own tables have the updates before it in; only its own patch's are left (2.3's Chug Jug).
+  const inTables = (update) => number >= build22 && update.firstBuild <= build22;
+  return contentUpdates.filter((update) => number >= update.firstBuild && !inTables(update)).map((update) => {
     const shipped = number >= build21;
     const why = shipped ? "shipped" : overrides[update.id] ?? (mode === "all" ? "all" : "season");
     const on = shipped || why === "on" || why === "all" || (why === "season" && moment.getTime() >= Date.parse(update.at));

@@ -1,4 +1,5 @@
 import { currentEventsConfig, isEventActive } from "../events/events.js";
+import { miniBossesStay } from "../events/mutantstorms.js";
 import { perBuild } from "./read.js";
 
 const data = perBuild((read) => ({ difficulties: {}, missionAlerts: [], dailyMissionAlertQuota: 0, missionAlertCategories: {},
@@ -12,13 +13,23 @@ export function getDifficulty(rowName) {
 // StormLowCategory, HordeCategory, HalloweenCategory) a mission of this difficulty can carry an alert from, if any.
 // Rows for an event flag Core doesn't run (EventFlag.FirstStorm's Storm rows, EventFlag.Horde's) and rows only used to
 // spread storms are left out.
+// 2.3's Mini-Boss rows still require EventFlag.Winter2017, which 2.3 doesn't run, but its notes keep them through the
+// storms' return (events/mutantstorms.js miniBossesStay): Epic's servers placed the alerts, so Core reads the rows as
+// on while those storms run.
 export function missionAlertTier(rowName, category = "GeneralCategory") {
   const difficulty = data().difficulties[rowName]?.difficulty;
   if (difficulty === undefined) return undefined;
+  const flagOn = (row) => !row.requiredEventFlag || isEventActive(row.requiredEventFlag)
+    || ((row.category ?? "GeneralCategory") === miniBossCategory && miniBossesStay());
   return data().missionAlerts.find((row) => (row.category ?? "GeneralCategory") === category && !row.onlyUsedForSpreading
-    && (!row.requiredEventFlag || isEventActive(row.requiredEventFlag))
-    && difficulty >= row.minimumDifficulty && difficulty <= row.maximumDifficulty);
+    && flagOn(row) && difficulty >= row.minimumDifficulty && difficulty <= row.maximumDifficulty);
 }
+
+// 2.3's Mini-Boss quota: "Quota: 3 per day" (its data's MiniBossCategory row still says Survive the Holidays' 10; the
+// quota was Epic's hotfix), while its storms run.
+const miniBossCategory = "MiniBossCategory";
+const stormsMiniBossQuota = 3;
+const withMiniBossQuota = (rowName, cat) => (rowName === miniBossCategory && miniBossesStay() ? { ...cat, quota: stormsMiniBossQuota } : cat);
 
 // A MissionAlerts row by name.
 export function missionAlertRow(name) {
@@ -43,19 +54,20 @@ export function missionAlertCategory(rowName) {
       return { ...cat, quota: customQuota };
     }
   }
-  return cat;
+  return withMiniBossQuota(rowName, cat);
 }
 
 export function missionAlertCategories() {
   const all = data().missionAlertCategories;
   const customQuota = currentEventsConfig()?.stormAlertQuota;
+  const quotas = all[miniBossCategory] ? { ...all, [miniBossCategory]: withMiniBossQuota(miniBossCategory, all[miniBossCategory]) } : all;
   if (Number.isInteger(customQuota) && customQuota >= 1 && all.StormCategory) {
     return {
-      ...all,
+      ...quotas,
       StormCategory: { ...all.StormCategory, quota: customQuota }
     };
   }
-  return all;
+  return quotas;
 }
 
 // A MissionAlertSpreadDatas row (1.9.1's Mutant Storms): {chanceToSpread, totalChancesToSpread, maxNumTilesToSpreadTo,

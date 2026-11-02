@@ -1060,7 +1060,8 @@ export function adminRoutes(context) {
       { version: "1.10", cl: 3790078, event: "Mutant Storms" },
       { version: "1.11", cl: 3807424, event: "Survive the Holidays" },
       { version: "2.1", cl: 3825894, event: "Survive the Holidays" },
-      { version: "2.2", cl: 3841827, event: "Survive the Holidays" }
+      { version: "2.2", cl: 3841827, event: "Survive the Holidays" },
+      { version: "2.3", cl: 3847564, event: "Mutant Storms" }
     ];
 
     const sampleBuilds = builds.map((b) => ({
@@ -1081,11 +1082,11 @@ export function adminRoutes(context) {
     }])));
 
     // Season 2's content updates (events/contentupdates.js): each one's state on 1.11 and on 2.1, without starting the
-    // season. 2.2 ships them in its own loot tables, so it takes none.
+    // season. 2.2 ships them in its own loot tables, so it takes none; 2.3 takes its own, the Chug Jug.
     const contentUpdates = withoutSeasonStartRecording(() => ({
       config: eventsConfig.contentUpdates ?? defaultContentUpdates,
       seasonDate: inBuild("3807424", () => seasonMoment(now, shopConfig, 2).toISOString()),
-      builds: [["1.11", "3807424"], ["2.1", "3825894"]].map(([version, cl]) => ({
+      builds: [["1.11", "3807424"], ["2.1", "3825894"], ["2.3", "3847564"]].map(([version, cl]) => ({
         version, cl: Number(cl), updates: inBuild(cl, () => contentUpdateStates(now, eventsConfig.contentUpdates))
       }))
     }));
@@ -1130,12 +1131,12 @@ export function adminRoutes(context) {
           id: "mutantstorms",
           name: "Mutant Storms",
           subtitle: "Storm Category Mission Alerts & Vindertech",
-          buildRange: "1.9.1 & 1.10 (CL 3775276 – 3790078)",
-          flags: ["EventFlag.Vindertech (1.9.1)", "EventFlag.ActiveStorms (1.10)"],
+          buildRange: "1.9.1 & 1.10 (CL 3775276 – 3790078), and 2.3 (CL 3847564)",
+          flags: ["EventFlag.Vindertech (1.9.1)", "EventFlag.ActiveStorms (1.10, 2.3)"],
           theater: "Standard Zones with Storm Modifiers",
           alertsQuota: `${eventsConfig.stormAlertQuota ?? 10} storm category mission alerts per day`,
           currency: "Storm Tickets (AccountResource:eventcurrency_stormzone)",
-          llama: "Vindertech Weapons & Storm Llama",
+          llama: "Vindertech Llama (1.9.1, 1.10); Storm Llama, Hydraulic weapons and storm heroes (2.3)",
           questsCount: 15,
           leftoverConversion: `${eventsConfig.candyPerLlama ?? 500} unspent Candy converts to 1 Fortnitemares Llama on 1.9.1+ load`
         },

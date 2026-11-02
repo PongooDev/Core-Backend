@@ -194,7 +194,8 @@ test("DefaultGame.ini ends with the loot hotfix for 2.1, and for 1.11 by the adm
     assert.deepEqual(overview.config, { mode: "all", overrides: { boogieBomb: "off" } });
     assert.deepEqual(overview.builds.map(({ version, updates }) => [version, updates.map(({ id, on: isOn, why }) => `${id}:${isOn}:${why}`)]), [
       ["1.11", ["smallShieldPotion:true:all", "boogieBomb:false:off", "suppressedPistol:true:all"]],
-      ["2.1", ["smallShieldPotion:true:shipped", "boogieBomb:true:shipped", "suppressedPistol:true:shipped", "cozyCampfire:true:shipped"]]
+      ["2.1", ["smallShieldPotion:true:shipped", "boogieBomb:true:shipped", "suppressedPistol:true:shipped", "cozyCampfire:true:shipped"]],
+      ["2.3", ["chugJug:true:shipped"]]
     ]);
     assert.ok((await get(backend.port, "/admin")).body.includes("Season 2 Content Updates"));
   } finally {

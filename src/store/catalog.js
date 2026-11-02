@@ -1,8 +1,8 @@
 import { anyBattlePassOffer, battlePassOffers } from "../battlepass/season2.js";
 import { currentBuild } from "../builds/context.js";
-import { currentEventsConfig, fortnitemares, isEventActive, mutantStorms, winter2017 } from "../events/events.js";
+import { currentEventsConfig, fortnitemares, isEventActive, mutantStorms, mutantStorms2018, winter2017 } from "../events/events.js";
 import { candy } from "../events/fortnitemares.js";
-import { stormTickets } from "../events/mutantstorms.js";
+import { stormLlama2018, stormTickets } from "../events/mutantstorms.js";
 import { holidayLlama, snowflakeTickets } from "../events/winter2017.js";
 import { getCardPack, itemIds } from "../gamedata/items.js";
 import { perBuild } from "../gamedata/read.js";
@@ -88,6 +88,11 @@ const voucherOffers = perBuild(() => itemIds()
 // Holidays' Mini-Boss alerts and quests give, while it runs (1.11, events/winter2017.js): "Holiday Survival Llamas are
 // available for purchase (1000 Snowflake Tickets.)" StoreRoot's GetCustomStoreOfferCost has had a Snowballs cost widget
 // (4) since 1.9.1, so the offer shows that price among the event packs.
+//
+// The Storm Llama (CardPack_Event_FirstStorm, "Guarantees at least one Epic or better limited time Hydraulic weapon or
+// Hero!") is bought with Storm Tickets while 2.3's storms run (events/mutantstorms.js mutantStorms2018): "Hydraulic
+// Weapons and Storm Zone Heroes have returned, and are available in the Storm Llamas." At the Vindertech Llama's 1,000
+// Storm Tickets (🟡), with the same default cost widget.
 const eventOffers = [
   { offerId: "core_event_founders_llama", templateId: "CardPack:cardpack_event_founders_nonexclusive", title: "Launch Event Llama",
     currencyType: "GameItem", currencySubType: "AccountResource:eventcurrency_founders", price: 100, always: true },
@@ -96,7 +101,9 @@ const eventOffers = [
   { offerId: "core_event_vindertech_llama", templateId: "CardPack:cardpack_event_vindertech", title: "Vindertech Llama",
     currencyType: "GameItem", currencySubType: stormTickets, price: 1000, always: true, event: mutantStorms },
   { offerId: "core_event_winter_llama", templateId: holidayLlama, title: "Holiday Survival Llama",
-    currencyType: "GameItem", currencySubType: snowflakeTickets, price: 1000, always: true, event: winter2017 }
+    currencyType: "GameItem", currencySubType: snowflakeTickets, price: 1000, always: true, event: winter2017 },
+  { offerId: "core_event_storm_llama", templateId: stormLlama2018, title: "Storm Llama",
+    currencyType: "GameItem", currencySubType: stormTickets, price: 1000, always: true, event: mutantStorms2018 }
 ];
 
 // An event's offers are on sale while the requesting build runs the event and has their llama.
@@ -163,7 +170,7 @@ const holds = (profile, templateId) => Object.values(profile?.items ?? {})
 
 // profile: the viewer's profile0, for the vouchers only shown to players who have one. Battle Royale's storefronts
 // (store/itemshop.js) hold the day's offers in 1.8 and later, nothing before; its Season Shop (store/seasonshop.js) is
-// 1.8.2's and later. Save the World's Event Store (store/eventstore.js) is 1.11's, while Survive the Holidays runs. The
+// 1.8.2's and later. Save the World's Event Store (store/eventstore.js) is 1.11's, while Survive the Holidays runs (and 2.3's storms). The
 // Battle Pass's storefront (battlepass/season2.js) is 1.11's; athena, the viewer's athena profile, leaves out a pass
 // they own.
 export function storefronts(profile, now = new Date(), { athena } = {}) {

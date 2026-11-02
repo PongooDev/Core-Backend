@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { isEventActive, winter2017 } from "../events/events.js";
+import { isEventActive, mutantStorms2018, winter2017 } from "../events/events.js";
 import { getItem } from "../gamedata/items.js";
 import { nextReplayOf, weeklyStoreEnd } from "./itemshop.js";
 
@@ -122,8 +122,28 @@ const dailyCoinPicks = [
   { pool: coreTraps.map((name) => `Schematic:sid_${name}_sr_t01`), price: 700, limit: 1, currency: dailyCoins }
 ];
 
-// The store is open while the requesting build runs Survive the Holidays and its data has Seasonal Gold.
-export const hasEventStore = () => isEventActive(winter2017) && Boolean(getItem(seasonalGold));
+// 2.3 (CL-3847564) keeps the store through the storms' return (events/mutantstorms.js): "Put it towards those evolution
+// materials in the Event Store with weekly rotating items", "Event Store has been updated! The Legendary Hydra Transform
+// Key is available in the Event Store! The Event Store also offers Legendary Constructor BASE Hype", and "All missions
+// will continue to award Seasonal Gold, and Daily Quests will continue to award Daily Coins. Seasonal Gold will reset
+// once the Spring Event starts". So on 2.3 its event items are those two (Hydra Assault Weapon Transform Schematic,
+// ConversionControl:CCK_Ranged_Assault_Hydra_Consumable_SR, at a legendary schematic's 1,680; BASE Hype,
+// HID_Constructor_RushBase_F_SR, at a legendary hero's 2,800; one each, 🟡), counted by trackers of their own event
+// (MutantStorms2018.*), the weekly section as before. The storms ran until 2.5 turned their tickets into llamas
+// (events/stormllamas.js; 13 February 2018), which the event items count down to (🟡: the hour is Core's).
+const stormsEventItems = [
+  { templateId: "ConversionControl:cck_ranged_assault_hydra_consumable_sr", price: 1680, limit: 1 },
+  { templateId: "Hero:hid_constructor_rushbase_f_sr_t01", price: 2800, limit: 1 }
+];
+export const mutantStorms2018End = "2018-02-13T00:00:00.000Z";
+const storms2018 = () => !isEventActive(winter2017) && isEventActive(mutantStorms2018);
+const eventItemsNow = () => (storms2018() ? stormsEventItems : eventItems);
+export const eventStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWSpecialEventStoreFront" : eventStoreInstance);
+export const weeklyStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWRotationalEventStorefront" : weeklyStoreInstance);
+
+// The store is open while the requesting build runs Survive the Holidays (or 2.3's storms) and its data has Seasonal
+// Gold.
+export const hasEventStore = () => (isEventActive(winter2017) || isEventActive(mutantStorms2018)) && Boolean(getItem(seasonalGold));
 
 const has = ({ templateId }) => Boolean(getItem(templateId));
 const nameOf = (templateId) => templateId.split(":")[1].toLowerCase();
@@ -134,7 +154,7 @@ export const winter2017End = "2018-01-25T00:00:00.000Z";
 // The calendar's Event Store countdowns, none while it is closed.
 export function eventStoreEnds(now = new Date()) {
   if (!hasEventStore()) return {};
-  return { stwEventStoreEnd: nextReplayOf(winter2017End, now), stwWeeklyStoreEnd: weeklyStoreEnd(now) };
+  return { stwEventStoreEnd: nextReplayOf(storms2018() ? mutantStorms2018End : winter2017End, now), stwWeeklyStoreEnd: weeklyStoreEnd(now) };
 }
 
 // The week the weekly items are for: the day their countdown (the calendar's stwWeeklyStoreEnd) ends, e.g. "20261104".
@@ -148,7 +168,7 @@ function weekRandom(week, index) {
 // The week's picks, from the items the requesting build has: one from each pick's pool, and two resources.
 function weeklyItems(week) {
   const picks = weeklyPicks.map(({ pool, price, limit }, index) => {
-    const offered = pool.filter((templateId) => getItem(templateId) && !eventItems.some((item) => item.templateId === templateId));
+    const offered = pool.filter((templateId) => getItem(templateId) && !eventItemsNow().some((item) => item.templateId === templateId));
     return offered.length ? { templateId: offered[Math.floor(weekRandom(week, index) * offered.length)], price, limit } : undefined;
   }).filter(Boolean);
   const resources = weeklyResources.filter(has);
@@ -183,8 +203,8 @@ export function eventStoreOffers(now = new Date()) {
   const week = storeWeek(now);
   const offerName = (item) => `${nameOf(item.templateId)}${item.quantity > 1 ? `_x${item.quantity}` : ""}${item.currency === dailyCoins ? "_dailycoins" : ""}`;
   return {
-    [eventStorefront]: eventItems.filter(has).map((item) => toOffer(`core_stw_event_${offerName(item)}`, eventStoreInstance)(item)),
-    [weeklyStorefront]: weeklyItems(week).map((item) => toOffer(`core_stw_weekly_${week}_${offerName(item)}`, weeklyStoreInstance)(item))
+    [eventStorefront]: eventItemsNow().filter(has).map((item) => toOffer(`core_stw_event_${offerName(item)}`, eventStoreInstanceNow())(item)),
+    [weeklyStorefront]: weeklyItems(week).map((item) => toOffer(`core_stw_weekly_${week}_${offerName(item)}`, weeklyStoreInstanceNow())(item))
   };
 }
 
@@ -197,7 +217,8 @@ const trackerOf = (profile, instance) => Object.entries(profile.items).find(([, 
 export function ensureEventPurchaseTrackers(tracker, now = new Date()) {
   if (!hasEventStore()) return {};
   const ids = {};
-  for (const instance of [eventStoreInstance, weeklyStoreInstance]) {
+  const weeklyInstance = weeklyStoreInstanceNow();
+  for (const instance of [eventStoreInstanceNow(), weeklyInstance]) {
     const found = trackerOf(tracker.profile, instance);
     if (found) {
       ids[instance] = found[0];
@@ -211,7 +232,7 @@ export function ensureEventPurchaseTrackers(tracker, now = new Date()) {
     });
     ids[instance] = itemId;
   }
-  const weeklyId = ids[weeklyStoreInstance];
+  const weeklyId = ids[weeklyInstance];
   const purchases = tracker.profile.items[weeklyId].attributes.event_purchases ?? {};
   const thisWeek = `core_stw_weekly_${storeWeek(now)}_`;
   const kept = Object.fromEntries(Object.entries(purchases).filter(([offerId]) => offerId.startsWith(thisWeek)));

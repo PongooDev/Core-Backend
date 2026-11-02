@@ -2,8 +2,8 @@ import crypto from "node:crypto";
 import { currentBuild } from "../builds/context.js";
 import { currentEventsConfig, isEventActive } from "../events/events.js";
 import { candy } from "../events/fortnitemares.js";
-import { mutantStorms, stormTickets } from "../events/mutantstorms.js";
-import { snowflakeTickets } from "../events/winter2017.js";
+import { miniBossesStay, mutantStorms, mutantStorms2018, stormTickets } from "../events/mutantstorms.js";
+import { snowflakeTickets, winter2017 } from "../events/winter2017.js";
 import { getItem } from "../gamedata/items.js";
 import { perBuild } from "../gamedata/read.js";
 import { getDifficulty, missionAlertSpread, missionAlertTier } from "../gamedata/world.js";
@@ -185,6 +185,15 @@ function rollMissions({ data, fixedMissions }, day, availableUntil) {
 // Core-Backend #172), 3 Day alerts on 3 Day missions and 7 Day ones on 7 Day missions. They "reward event tickets" too:
 // Snowflake Tickets, 10 per tile difficulty as the Mini-Boss ones for a 3 Day alert and twice that for a 7 Day one
 // (🟡 Core's).
+//
+// 2.3 (CL-3847564) brings the Mutant Storms back (events/mutantstorms.js mutantStorms2018): its StormCategory rows
+// (EventFlag.ActiveStorms) give Storm Tickets again, "Up to 5 Mutant Storms ... in Stonewood, and up to 25 Active Storms
+// ... in Plankerton, Canny Valley, and Twine Peaks" (each zone's fixed target, as 1.10's, 🟡: read as each zone's), and
+// its ticketless StormLow ones stop (events/events.js). Its Mini-Boss alerts stay without Survive the Holidays: "These
+// Mini-boss alerts have replaced the old generic Mission Alerts", "Up to 3 of these Mini-Boss mission alerts can appear
+// in Stonewood at a time and up to 6 at a time in Plankerton, Canny and Twine" and "reward a wide array of items": no
+// General alerts there, each zone's Mini-Boss row placed up to its target, and no Snowflake Tickets (the event is over),
+// the General alerts' V-Bucks in their place beside the zone's reagents (🟡 Core's).
 const halloweenAlerts = "Halloween2017_MissionAlert";
 const stormTier = (tier) => (tier <= 5 ? 1 : tier <= 10 ? 2 : tier <= 15 ? 3 : 4);
 const zones = ["Stonewood", "Plankerton", "CanneyValley", "TwinePeaks"];
@@ -208,14 +217,15 @@ const alertRewards = {
     [`MissionAlert_Storm_T${String(tier).padStart(2, "0")}`, () => [[`CardPack:zcp_reagent_c_t0${stormTier(tier)}_high`, 1]]])),
   MissionAlert_Storm: (row, mission) => [
     [`CardPack:zcp_reagent_c_t0${zoneOfModifierGroup(row.modifierTierGroup)}_high`, 1],
-    ...(isEventActive(mutantStorms) ? [[stormTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]] : [])
+    ...(isEventActive(mutantStorms) || isEventActive(mutantStorms2018) ? [[stormTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]] : [])
   ],
   MissionAlert_StormLow: (row) => [[`CardPack:zcp_reagent_c_t0${zoneOfRow(row)}_high`, 1]],
   MissionAlert_Survival3Day: (row, mission) => [[snowflakeTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]],
   MissionAlert_Survival7Day: (row, mission) => [[snowflakeTickets, 2 * stormTicketsFor(mission.missionDifficultyInfo.rowName)]],
   MissionAlert_MiniBoss: (row, mission) => [
     [`CardPack:zcp_reagent_c_t0${zoneOfRow(row)}_high`, 1],
-    [snowflakeTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]
+    ...(isEventActive(winter2017) ? [[snowflakeTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]]
+      : [[`CardPack:zcp_mtx_boost${zoneOfRow(row) <= 2 ? 50 : 100}`, 1]])
   ]
 };
 
@@ -298,6 +308,9 @@ const nearbyTiles = 2.5;
 // gets its target of storms at the day's start and none spreads.
 const fixedStormsBuild = 3790078;
 const stormTargets = [5, 15, 15, 15];
+// 2.3's storms and Mini-Bosses, by zone (see alertRewards above).
+const stormTargets2018 = [5, 25, 25, 25];
+const miniBossTargets2018 = [3, 6, 6, 6];
 export const stormsSpread = (changelist = currentBuild()) => !(Number(changelist) >= fixedStormsBuild);
 
 function spreadStorm(data, missions, storm, dayStart, now, taken, availableUntil) {
@@ -336,9 +349,10 @@ function spreadStorm(data, missions, storm, dayStart, now, taken, availableUntil
 // (P_StormAffected) and its timer (Core-Backend #91). Without a name every alert was General.
 // Returns the alerts and when the theater's alerts next change (a storm's next spread, else the day's end).
 function rollAlerts({ data }, missions, day, dayStart, now, availableUntil) {
+  const stormsMiniBosses = miniBossesStay();
   const categories = isHexsylvania(data.uniqueId) ? ["HalloweenCategory"]
     : isSurvival(data.uniqueId) ? ["Survival3DayCategory", "Survival7DayCategory"]
-      : ["GeneralCategory", "StormLowCategory", "MiniBossCategory"];
+      : stormsMiniBosses ? ["StormLowCategory"] : ["GeneralCategory", "StormLowCategory", "MiniBossCategory"];
   const taken = new Set();
   const storms = [];
   const spreading = stormsSpread();
@@ -363,11 +377,23 @@ function rollAlerts({ data }, missions, day, dayStart, now, availableUntil) {
   if (!isHexsylvania(data.uniqueId) && !isSurvival(data.uniqueId)) {
     const rows = [...new Map(missions.map((mission) => alertFor(data, mission, "StormCategory")).filter(Boolean)
       .map((row) => [row.name, row])).values()];
+    const targets = isEventActive(mutantStorms2018) ? stormTargets2018 : stormTargets;
     for (const row of rows) {
-      const count = spreading ? 1 : stormTargets[zoneOfModifierGroup(row.modifierTierGroup) - 1];
+      const count = spreading ? 1 : targets[zoneOfModifierGroup(row.modifierTierGroup) - 1];
       for (let index = 0; index < count; index++) {
         alerts.push(...place("StormCategory", `${data.uniqueId}:${day}:alert:storm:${row.name}${index ? `:${index}` : ""}`,
           (mission) => alertFor(data, mission, "StormCategory")?.name === row.name));
+      }
+    }
+    // 2.3's Mini-Bosses: each zone's row up to its target, in place of the general alerts.
+    if (stormsMiniBosses) {
+      const bossRows = [...new Map(missions.map((mission) => alertFor(data, mission, "MiniBossCategory")).filter(Boolean)
+        .map((row) => [row.name, row])).values()];
+      for (const row of bossRows) {
+        for (let index = 0; index < miniBossTargets2018[zoneOfRow(row) - 1]; index++) {
+          alerts.push(...place("MiniBossCategory", `${data.uniqueId}:${day}:alert:miniboss:${row.name}${index ? `:${index}` : ""}`,
+            (mission) => alertFor(data, mission, "MiniBossCategory")?.name === row.name));
+        }
       }
     }
   }

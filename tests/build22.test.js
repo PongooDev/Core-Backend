@@ -59,7 +59,7 @@ const withStore = (fn) => {
 test("2.2 is known by its version and plays on its own game data: 2.1's with 2.2's changes", () => {
   assert.equal(versionOf(v22), "2.2");
   assert.equal(dataBuild(v22), v22);
-  assert.equal(battleRoyaleBuilds.at(-1), v22);
+  assert.ok(battleRoyaleBuilds.includes(v22));
   // Its two new emoticons; every other cosmetic and display asset is 2.1's.
   const added = inBuild(v22, () => Object.keys(athenaCosmetics())).filter((id) => !inBuild(v21, athenaCosmetics)[id]);
   assert.deepEqual(added.sort(), ["AthenaDance:emoji_bobwhat", "AthenaDance:emoji_marybobbins"]);
@@ -85,7 +85,8 @@ test("2.2 is still Season 2: 2.1's levels, Battle Pass tiers and season clock, a
   assert.equal(season.seasonNumber, 2);
   const old = inBuild(v21, athenaSeason);
   for (const key of ["numBookLevels", "bookLevels", "storefront", "bookFreeRewards"]) assert.deepEqual(season[key], old[key], key);
-  assert.equal(buildOfSeason(2), v22);
+  // Season 2's newest data is 2.3's since (build23.test.js).
+  assert.equal(buildOfSeason(2), "3847564");
   const now = new Date("2026-11-02T12:00:00Z");
   assert.equal(inBuild(v22, () => seasonEnd(now, { rotationHour: 0 })).toISOString(), inBuild(v111, () => seasonEnd(now, { rotationHour: 0 })).toISOString());
   const config = { mode: "custom", custom: { featured: [["AthenaGlider:glider_prismatic", 800]], daily: [["AthenaPickaxe:skiicepickaxe", 800]] } };

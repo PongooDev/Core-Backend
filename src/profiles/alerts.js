@@ -42,6 +42,7 @@ const legacyFields = () => ({
   oldestClaimIndex: 0
 });
 
+// 2.3 (CL-3847564) keeps 2.2's: its MissionAlertCategories rows are 2.2's, CategoryRowName and all.
 const claimDataBuild = 3841827;
 const keyedByRow = () => Number(currentBuild()) >= claimDataBuild;
 
@@ -123,10 +124,15 @@ const overADayOld = (now) => (time) => Date.parse(time) <= now.getTime() - day;
 // Alerts left today: Cert's single quota, or (from 1.7.2) a category's, by its MissionAlertCategories row or enum name.
 export function alertsRemaining(record, now = new Date(), categoryName = "GeneralCategory") {
   if (!hasMissionAlertCategories()) return (record.lastClaimTimes ?? []).filter(overADayOld(now)).length;
-  const category = missionAlertCategory(categoryName)?.category ?? categoryName;
-  const map = keyedByRow() ? record.claimDataMap : record.lastClaimTimesMap;
-  return (map?.[category]?.lastClaimedTimes ?? []).filter(overADayOld(now)).length;
+  const row = missionAlertCategory(categoryName);
+  const category = row?.category ?? categoryName;
+  if (keyedByRow()) return quotaSlots(record.claimDataMap?.[category]?.lastClaimedTimes ?? [], row?.quota).filter(overADayOld(now)).length;
+  return (record.lastClaimTimesMap?.[category]?.lastClaimedTimes ?? []).filter(overADayOld(now)).length;
 }
+
+// A category's claim slots within its quota today: a record keeps the most slots any build's quota gave it (2.2's ten
+// Mini-Boss ones), and 2.3's three are its first three (gamedata/world.js).
+const quotaSlots = (times, quota) => (Number.isInteger(quota) && quota > 0 && quota < times.length ? times.slice(0, quota) : times);
 
 // The record with today's claims undone, in every shape it holds (the admin panel's mission alert resets).
 export function clearedAlertRecord(record) {
@@ -186,15 +192,16 @@ export function completeMissionAlert(session, theaterId, alert, now = new Date()
   if (keyedByRow()) {
     const claims = record.claimDataMap[category];
     if (!repeatable && claims.missionAlertGuids.includes(alert.missionAlertGuid)) return false;
-    if (!claims.lastClaimedTimes.some(overADayOld(now))) return false;
-    const slot = claimSlot(claims.lastClaimedTimes, claims.nextClaimIndex, now);
+    const open = quotaSlots(claims.lastClaimedTimes, categoryRow.quota);
+    if (!open.some(overADayOld(now))) return false;
+    const slot = claimSlot(open, claims.nextClaimIndex, now);
     const missionAlertGuids = [...claims.missionAlertGuids];
     const lastClaimedTimes = [...claims.lastClaimedTimes];
     missionAlertGuids[slot] = alert.missionAlertGuid;
     lastClaimedTimes[slot] = now.toISOString();
     tracker.setStat("mission_alert_redemption_record", {
       ...record,
-      claimDataMap: { ...record.claimDataMap, [category]: { missionAlertGuids, lastClaimedTimes, nextClaimIndex: (slot + 1) % lastClaimedTimes.length } },
+      claimDataMap: { ...record.claimDataMap, [category]: { missionAlertGuids, lastClaimedTimes, nextClaimIndex: (slot + 1) % open.length } },
       pendingMissionAlertRewards: rewards
     });
     return true;

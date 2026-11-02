@@ -67,12 +67,24 @@ export const supplyDropGift = "EventFlag.SupplyDropGift";
 // player holds ProtoEnableQuest, and the button opens Winter2017_QuestMapWidget (the event's quest map, with
 // WinterEvent2017QuestMapTile's WinterQuest_2017 side quests). Survive the Holidays outlived 2.2: Epic's 2.3.0 notes
 // (24 January 2018) say "The Save the World Winter event ends on January 25", so 2.2 showed the tile all its life.
+//
+// 2.3 (CL-3847564, 25 January 2018) ends Survive the Holidays: "The Save the World Winter event ends on January 25" and
+// "As the snow from Survive the Holidays melts, the Mutant Storms return!" Its data is 2.2's (the same mission alert
+// rows, quests, llamas and playlists: what changed was Epic's servers'), so the return is the storms its StormCategory
+// rows wait for, EventFlag.ActiveStorms (1.10's flag), under an event of its own, mutantStorms2018
+// (events/mutantstorms.js): "Hydraulic Weapons and Storm Zone Heroes have returned, and are available in the Storm
+// Llamas", the first storms' Hydraulic quests and Storm Llama rather than 1.9.1's Vindertech ones. Survive the Holidays
+// and its ticketless storms (EventFlag.PassiveStorms, "storms on the map without tickets" while no Mutant Storms ran)
+// stop at 2.2 (🟡: 2.3's notes name no ticketless storms), so 2.3's Snowflake Tickets become Holiday Survival Llamas
+// (events/winter2017.js). 50v50 stays: 2.3's BR_Playlist_50v50 and its quest are 2.2's, and its notes end no playlist.
+export const mutantStorms2018 = "MutantStorms2018";
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
   { name: mutantStorms, flag: "EventFlag.Vindertech", firstBuild: 3775276, lastBuild: 3775276 },
   { name: mutantStorms, flag: "EventFlag.ActiveStorms", firstBuild: 3790078, lastBuild: 3790078 },
-  { name: fiftyFifty, flag: fiftyFifty, firstBuild: 3790078, lastBuild: 3841827 },
+  { name: mutantStorms2018, flag: "EventFlag.ActiveStorms", firstBuild: 3847564, lastBuild: 3847564 },
+  { name: fiftyFifty, flag: fiftyFifty, firstBuild: 3790078, lastBuild: 3847564 },
   { name: winter2017, flag: winter2017, firstBuild: 3807424, lastBuild: 3841827 },
   { name: passiveStorms, flag: passiveStorms, firstBuild: 3807424, lastBuild: 3841827 },
   { name: lobbyWinterDecor, flag: lobbyWinterDecor, firstBuild: 3807424, lastBuild: 3825894 },
@@ -103,7 +115,7 @@ export function activeEventFlags(changelist = currentBuild()) {
   if (eventsSetting.getStore() === false) return [];
   const config = currentEventsConfig();
   if (config?.mode === "off") return [];
-  // Forcing a Save the World event leaves the build's Battle Royale 50v50 running (1.10 to 2.2).
+  // Forcing a Save the World event leaves the build's Battle Royale 50v50 running (1.10 to 2.3).
   const fiftyFiftyFlags = Number.isInteger(Number(changelist)) && runsOn(events.find((event) => event.name === fiftyFifty), Number(changelist))
     ? [fiftyFifty] : [];
   if (config?.mode === "force_fortnitemares") return [fortnitemares, ...fiftyFiftyFlags];

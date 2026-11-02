@@ -89,7 +89,9 @@ const seasonOffers = () => {
 // (1,500 struck through) from 14 to 24 January and from 15 to 20 February 2018 (the Fortnite Wiki's Item Shop History
 // pages), so Season 2's replay features it on those days (store/itemshop.js), on a build whose data has the token. Epic's
 // grant was the token, which its servers turned into the tiers; Core gives the ten tiers at once, as ten of the tier
-// offer would, and they need no Battle Pass, as the tiers don't.
+// offer would, and they need no Battle Pass, as the tiers don't. 2.3 (CL-3847564) keeps the token and the sale, and its
+// notes fix it: "Players can no longer purchase the Battle Pass x10 Tier bundle when at or above Battle Pass tier 65";
+// Core sells no tiers past the last (PurchaseCatalogEntry: ten tiers need ten left), which already holds at tier 61.
 export const starSaleToken = "Token:athenabattlepassstarsale_s2";
 const starSaleTiers = 10;
 const starSaleDays = [["2018-01-14", "2018-01-24"], ["2018-02-15", "2018-02-20"]];

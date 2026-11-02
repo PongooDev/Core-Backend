@@ -1,8 +1,8 @@
 import { perBuild } from "../gamedata/read.js";
 import { isDone, questIdOf } from "../profiles/quests.js";
-import { fortnitemares, isEventActive, mutantStorms, winter2017 } from "./events.js";
+import { fortnitemares, isEventActive, mutantStorms, mutantStorms2018, winter2017 } from "./events.js";
 import { fortnitemaresQuests } from "./fortnitemares.js";
-import { mutantStormsQuests } from "./mutantstorms.js";
+import { mutantStorms2018Quests, mutantStormsQuests } from "./mutantstorms.js";
 import { winterQuests } from "./winter2017.js";
 
 // An event's quests leave with it (Core-Backend #127). Epic's were limited time quests: each one's Category is the
@@ -16,9 +16,10 @@ import { winterQuests } from "./winter2017.js";
 // which Core doesn't grant but whose hidden reward is the event's TrainHero), from the requesting build's quest data.
 // For 1.8 to 1.9.1's Fortnitemares that is the 56 quests of the LTE_Fortnitemares category.
 // 1.9.1's Mutant Storms quest line is the Vindertech quests (LTE_Vindertech); 1.11's Survive the Holidays' the winter
-// quests (WinterQuest_2017_*).
+// quests (WinterQuest_2017_*); 2.3's storms' the FirstStorm quests and the repeatable Mini-Boss quest, which so stays
+// on 2.3 when the rest of the winter line goes.
 const questLines = [{ flag: fortnitemares, starting: fortnitemaresQuests }, { flag: mutantStorms, starting: mutantStormsQuests },
-  { flag: winter2017, starting: winterQuests }];
+  { flag: winter2017, starting: winterQuests }, { flag: mutantStorms2018, starting: mutantStorms2018Quests }];
 
 const questRewards = (quest) => [...(quest?.rewards ?? []), ...(quest?.hiddenRewards ?? []), ...(quest?.selectableRewards ?? []).flat()]
   .filter((reward) => reward.templateId.toLowerCase().startsWith("quest:"))

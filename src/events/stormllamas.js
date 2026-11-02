@@ -1,5 +1,5 @@
 import { convertLeftover } from "./candyllamas.js";
-import { currentEventsConfig, hasEventEnded, isEventActive, mutantStorms } from "./events.js";
+import { currentEventsConfig, hasEventEnded, isEventActive, mutantStorms, mutantStorms2018 } from "./events.js";
 import { stormTickets } from "./mutantstorms.js";
 
 // 1.11's notes: "With the end of the Mutant Storms event, every 1,000 unspent Storm Tickets will be converted to a storm
@@ -16,13 +16,14 @@ export const stormTicketsPerLlama = 1000;
 export const stormLlama = "CardPack:cardpack_event_vindertech";
 
 // The Mutant Storms' (1.9.1 to 1.10) end of event conversion. Not while the admin panel runs the event anyway (its
-// Vindertech Llama offer is then on sale).
+// Vindertech Llama offer is then on sale), nor on 2.3, where the storms are back and Storm Tickets buy its Storm Llama
+// (events.js mutantStorms2018): there they are the event's currency again.
 export const stormConversion = {
   run: "MutantStorms2017",
   due: () => {
     const cfg = currentEventsConfig();
     return cfg?.autoConvertStormTickets !== false && cfg?.autoConvertCandy !== false && hasEventEnded(mutantStorms)
-      && !isEventActive(mutantStorms);
+      && !isEventActive(mutantStorms) && !isEventActive(mutantStorms2018);
   },
   options: () => ({ currency: stormTickets, perLlama: stormTicketsPerLlama, llama: stormLlama, label: "Storm Tickets",
     llamaName: "Vindertech Llama" })
