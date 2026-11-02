@@ -730,6 +730,9 @@ var dailyMissionAlertQuota = gameData["Properties"]?["DailyMissionAlertQuota"]?.
 // From 1.7.2, MissionAlertCategories rows (FortMissionAlertCategoryData): the EFortMissionAlertCategory each category
 // is, its daily quota (the profile's mission_alert_redemption_record keeps one claim slot per quota for each category)
 // and whether an alert of it can be done again. MissionAlertSpreadDatas: how a storm alert spreads to nearby tiles.
+// 2.2 (CL 3841827) drops the enum: its rows name themselves (CategoryRowName, an FName) and the record's claims are keyed
+// by that name (FFortMissionAlertRecord ClaimDataMap, TMap<FString, FFortMissionAlertClaimData>), so `category` is the
+// row's CategoryRowName there: what the record is keyed by, either way.
 var missionAlertCategories = new SortedDictionary<string, object>(StringComparer.Ordinal);
 if (gameData["Properties"]?["MissionAlertCategories"] is { } categoryTable)
 {
@@ -737,7 +740,8 @@ if (gameData["Properties"]?["MissionAlertCategories"] is { } categoryTable)
     {
         missionAlertCategories[name] = new SortedDictionary<string, object>(StringComparer.Ordinal)
         {
-            ["category"] = (row!["Category"]?.GetValue<string>() ?? "").Split("::").Last(),
+            ["category"] = row!["Category"]?.GetValue<string>() is { } category ? category.Split("::").Last()
+                : row["CategoryRowName"]?.GetValue<string>() is { } rowName && rowName != "None" ? rowName : "",
             ["quota"] = row["Quota"]?.GetValue<int>() ?? 0,
             ["repeatable"] = row["MissionAlertRepeatable"]?.GetValue<bool>() ?? false
         };

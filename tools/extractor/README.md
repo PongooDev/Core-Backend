@@ -44,7 +44,7 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   quantum goo values (the MCP template's static_disintegration_value and static_fabrication_value).
 - `world.json`: zone themes (tile class, valid difficulties), mission generators, their primary missions' MissionTags,
   the mission difficulty rows, the mission alert rows (with their spread rows), from 1.7.2 the alert categories
-  (MissionAlertCategories: enum, quota, repeatable) and storm spreads (MissionAlertSpreadDatas), every quest's object path and, when the build defines any, its `Theater.*` gameplay tags
+  (MissionAlertCategories: enum, from 2.2, CL 3841827, the row's CategoryRowName; quota, repeatable) and storm spreads (MissionAlertSpreadDatas), every quest's object path and, when the build defines any, its `Theater.*` gameplay tags
   (`Balance/GameplayTags`; 1.7.2's `Theater.MainProgression`).
 - `collectionbook.json`: the collection book's pages (book profile, sections, rewards), sections (slots, rewards),
   slots (allowed item templates, survivor personalities, XP weight row), the slot XP weights, the rarity factor curve
@@ -62,7 +62,7 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   (AthenaEmojiItemDefinition) are cosmetics too. `loot` holds Battle Royale's loot tables whole (DefaultGameData's
   `AthenaLootTierData_Client` and `AthenaLootPackages_Client`), by object path, each row with every property in the form
   `UDataTable::CreateTableFromJSONString` reads back (soft object paths as path strings), for the content updates the
-  backend serves as `[AssetHotfix]` rows; only 1.11's and 2.1's overlays carry it so far. Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
+  backend serves as `[AssetHotfix]` rows; only 1.11's, 2.1's and 2.2's overlays carry it so far (2.2's has Season 2's content updates in already). Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `research.json`: the resource collectors (research points): each CollectedResource template's payout and the
   homebase attributes its rate, capacity and wallet cap come from, what each skill tree node adds to those attributes
