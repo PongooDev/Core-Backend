@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import { isEventActive, winter2017 } from "../events/events.js";
 import { getItem } from "../gamedata/items.js";
-import { weeklyStoreEnd } from "./itemshop.js";
+import { nextReplayOf, weeklyStoreEnd } from "./itemshop.js";
 
 // Save the World's Event Store, from 1.11 (CL-3807424): "A new store with items you can purchase using in-game
 // currency! Play any mission and earn Seasonal Gold. Use this currency to snag some seasonal items or see what the
@@ -9,8 +9,19 @@ import { weeklyStoreEnd } from "./itemshop.js";
 // (UFortDirectAcquisitionWidgetBase), whose StorefrontNames are ["STWSpecialEventStoreFront",
 // "STWRotationalEventStorefront"]. Its GenerateOfferWidget puts an offer of the first storefront in the left list,
 // EVENT ITEMS (TileViewEventItems), and every other offer in the right one, WEEKLY ITEMS (TileViewWeeklyItems). The left
-// list counts down to GetSeasonStoreEndDate and the right one to GetWeeklyStoreEndDate: the calendar's seasonEnd and
-// weeklyStoreEnd (services/fortnite/calendar.js), so the weekly items change when that countdown ends.
+// list counts down to GetSeasonStoreEndDate and the right one to GetWeeklyStoreEndDate.
+//
+// Those two getters (UFortDirectAcquisitionWidgetBase::GetSeasonStoreEndDate / GetWeeklyStoreEndDate) read the
+// calendar's client-events state by game mode (1.11 0x8016A0 / 0x8016D0, 2.1 sub_804F20 / sub_804F50, 2.2 sub_7E4020 /
+// sub_7E4050, each passed the same Battle Royale flag): Battle Royale's seasonEnd and weeklyStoreEnd, Save the World's
+// stwEventStoreEnd (FFortClientEventsState +0x168) and stwWeeklyStoreEnd (+0x170). Without those both headers showed
+// 0:00 (Core-Backend #169). The calendar sends them while the store is open (eventStoreEnds):
+// - stwEventStoreEnd, EVENT ITEMS: Survive the Holidays' end, on Season 2's replay (store/itemshop.js nextReplayOf):
+//   "The Save the World winter event has been extended until January 24" (2.2.0's notes), "ends on January 25"
+//   (2.3.0's), so the end of 24 January 2018 (🟡: the hour is Core's). Once the replay passes it, it counts to the
+//   next cycle's, when the replay comes round to it again.
+// - stwWeeklyStoreEnd, WEEKLY ITEMS: the weekly rotation's end, the item shop's weeklyStoreEnd that storeWeek keys the
+//   week's offers by, so the items change when it reaches 0:00.
 //
 // An offer's "N left" is its purchase limit less what the account bought (1.11 0x7FF7A1C0AC00): the offer's metaInfo
 // "EventLimit" (none, or 0, is no limit), and the EventPurchaseTracker:generic_instance item (FortEventPurchaseTrackerItem,
@@ -117,7 +128,16 @@ export const hasEventStore = () => isEventActive(winter2017) && Boolean(getItem(
 const has = ({ templateId }) => Boolean(getItem(templateId));
 const nameOf = (templateId) => templateId.split(":")[1].toLowerCase();
 
-// The week the weekly items are for: the day their countdown (the calendar's weeklyStoreEnd) ends, e.g. "20261104".
+// Survive the Holidays' end on Epic's clock.
+export const winter2017End = "2018-01-25T00:00:00.000Z";
+
+// The calendar's Event Store countdowns, none while it is closed.
+export function eventStoreEnds(now = new Date()) {
+  if (!hasEventStore()) return {};
+  return { stwEventStoreEnd: nextReplayOf(winter2017End, now), stwWeeklyStoreEnd: weeklyStoreEnd(now) };
+}
+
+// The week the weekly items are for: the day their countdown (the calendar's stwWeeklyStoreEnd) ends, e.g. "20261104".
 export const storeWeek = (now = new Date()) => weeklyStoreEnd(now).toISOString().slice(0, 10).replaceAll("-", "");
 
 // A number from 0 to 1 for each of a week's picks, the same every time for that week.

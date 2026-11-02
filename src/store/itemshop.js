@@ -350,6 +350,15 @@ export function seasonMoment(now = new Date(), overrideConfig = null, season = s
   return new Date(historyFirstDay + ((elapsed % cycle) + cycle) % cycle);
 }
 
+// When the season's replay next stands at a moment of Epic's season (a Date or ms, UTC): the countdown to something that
+// happened on that day of the season, e.g. an event's end (store/eventstore.js). Never now: a moment just passed comes
+// round again a cycle later.
+export function nextReplayOf(moment, now = new Date(), overrideConfig = null, season = seasonOfBuild()) {
+  const cycle = historyOf(season).days.length * dayMs;
+  const ahead = ((new Date(moment).getTime() - seasonMoment(now, overrideConfig, season).getTime()) % cycle + cycle) % cycle;
+  return new Date(now.getTime() + (ahead || cycle));
+}
+
 const offerIdOf = (templateId) =>`core_br_${templateId.split(":")[1].toLowerCase()}`;
 
 // The featured items' shop art: the display asset (FortMtxOfferData with Battle Royale tile art) the extractor matched to

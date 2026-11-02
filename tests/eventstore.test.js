@@ -6,7 +6,8 @@ import { inBuild } from "../src/builds/context.js";
 import { trackChanges } from "../src/profiles/changes.js";
 import { storefronts } from "../src/store/catalog.js";
 import { dailyCoins, ensureEventPurchaseTrackers, eventPurchaseTracker, eventStorefront, eventStoreInstance, seasonalGold, storeWeek,
-  weeklyStoreInstance, weeklyStorefront } from "../src/store/eventstore.js";
+  weeklyStoreInstance, weeklyStorefront, winter2017End } from "../src/store/eventstore.js";
+import { nextReplayOf } from "../src/store/itemshop.js";
 import { send, startBackend, userLogin } from "./helpers.js";
 
 // 1.11's Event Store (Core-Backend #144): the Loot tab's Event page, EventStoreRoot, whose StorefrontNames are
@@ -89,7 +90,45 @@ test("a new week takes the past weeks' purchases out of the weekly tracker and k
   assert.deepEqual(tracker.profile.items[ids[eventStoreInstance]].attributes.event_purchases, { core_stw_event_hid_ninja_013_sr_t01: 1 });
 }));
 
+test("Survive the Holidays' end comes round on Season 2's replay: 25 January 2018, then again a cycle later", () => inBuild(v111, () => {
+  // Season 2's replay from 2 November 2026 (day 1, 14 December 2017): 25 January 2018 is its day 43.
+  const config = { mode: "fnbr", seasonStarts: { 2: "2026-11-02" } };
+  const day = 24 * 60 * 60 * 1000;
+  const start = Date.parse("2026-11-02T00:00:00Z");
+  const end = (now) => nextReplayOf(winter2017End, new Date(now), config).toISOString();
+  assert.equal(end(start + 3 * 60 * 60 * 1000), new Date(start + 42 * day).toISOString());
+  assert.equal(end(start + 41 * day), new Date(start + 42 * day).toISOString());
+  // Past it, the next cycle's (Season 2's 70 days).
+  assert.equal(end(start + 42 * day), new Date(start + 112 * day).toISOString());
+  assert.equal(end(start + 50 * day), new Date(start + 112 * day).toISOString());
+}));
+
 const agent = (changelist) => `game=Fortnite, engine=UE4, build=++Fortnite+Release-Cert-CL-${changelist}`;
+
+test("the calendar gives 1.11, 2.1 and 2.2 the Event Store's countdowns: the event's end and the weekly rotation's", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "EventStoreCountdown");
+    const state = async (changelist) => (await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/fortnite/api/calendar/v1/timeline",
+      headers: { "User-Agent": agent(changelist), Authorization: `bearer ${player.token}` } })).body;
+    for (const changelist of [v111, "3825894", "3841827"]) {
+      const timeline = await state(changelist);
+      const now = Date.parse(timeline.currentTime);
+      const { stwEventStoreEnd, stwWeeklyStoreEnd, weeklyStoreEnd } = timeline.channels["client-events"].states[0].state;
+      const event = Date.parse(stwEventStoreEnd);
+      assert.ok(event > now && event <= now + 70 * 24 * 60 * 60 * 1000, `${changelist} ${stwEventStoreEnd}`);
+      assert.equal(stwWeeklyStoreEnd, weeklyStoreEnd, changelist);
+      assert.equal(stwWeeklyStoreEnd.slice(0, 10).replaceAll("-", ""), inBuild(changelist, () => storeWeek(new Date(now))));
+      assert.ok(Date.parse(timeline.channels["client-events"].cacheExpire) <= Math.min(event, Date.parse(stwWeeklyStoreEnd)));
+    }
+    // 1.10 has no Event Store.
+    const state110 = (await state(v110)).channels["client-events"].states[0].state;
+    assert.equal(state110.stwEventStoreEnd, undefined);
+    assert.equal(state110.stwWeeklyStoreEnd, undefined);
+  } finally {
+    backend.close();
+  }
+});
 const mcp = (changelist, port, { accountId, token }, name, body = {}) => {
   const text = JSON.stringify(body);
   return send({ host: "127.0.0.1", port, method: "POST", path: `/fortnite/api/game/v2/profile/${accountId}/client/${name}?profileId=profile0&rvn=-1`,

@@ -4,6 +4,7 @@ import { currentBuild } from "../../builds/context.js";
 import { activeEventFlags, currentEventsConfig, eventsActiveUntil, isEventActive } from "../../events/events.js";
 import { fiftyFifty, fiftyFiftyRegions } from "../../events/fiftyfifty.js";
 import { regionCodes } from "../../matchmaking/regions.js";
+import { eventStoreEnds } from "../../store/eventstore.js";
 import { hasItemShop, seasonEnd, weeklyStoreEnd } from "../../store/itemshop.js";
 import { hasSeasonShop } from "../../store/seasonshop.js";
 import { athenaSeason } from "../../gamedata/athena.js";
@@ -35,7 +36,8 @@ import { seasonTemplateId } from "../../profiles/seasons.js";
 // SeasonTemplateId (+0x148), SeasonEnd, WeeklyStoreEnd, StwEventStoreEnd, StwWeeklyStoreEnd}. Its season is Season 2
 // (gamedata AthenaSeason2, profiles/seasons.js): seasonNumber 2, seasonTemplateId "AthenaSeason:athenaseason2", and its
 // Battle Pass tab counts down to seasonEnd (AthenaSeasonTab: GetSeasonStoreEndDate). Its event flags turn the winter
-// lobby on (EventFlag.LobbyWinterDecor, events/events.js).
+// lobby on (EventFlag.LobbyWinterDecor, events/events.js). Save the World's Event Store (1.11 to 2.2) counts down to
+// stwEventStoreEnd and stwWeeklyStoreEnd (store/eventstore.js).
 export const calendarCacheMinutes = 60;
 const seasonalEventManagerBuild = 3790078;
 
@@ -47,9 +49,10 @@ export function calendarRoutes({ tokens, settings }) {
     const weeklyEnd = hasItemShop() ? weeklyStoreEnd(now) : undefined;
     const season = athenaSeason();
     const seasonEnds = hasSeasonShop() || season ? seasonEnd(now) : undefined;
+    const stwEnds = eventStoreEnds(now);
     const cacheMinutes = Math.max(5, Math.min(120, Number(currentEventsConfig()?.calendarCacheMinutes ?? calendarCacheMinutes)));
     const cacheExpire = new Date(Math.min(now.getTime() + cacheMinutes * 60000, weeklyEnd?.getTime() ?? Infinity,
-      seasonEnds?.getTime() ?? Infinity)).toISOString();
+      seasonEnds?.getTime() ?? Infinity, ...Object.values(stwEnds).map((end) => end.getTime()))).toISOString();
     const seasonal = Number(currentBuild()) >= seasonalEventManagerBuild;
     const flags = activeEventFlags();
     const activeEvents = flags.map((flag) => ({ [seasonal ? "eventType" : "eventName"]: flag, activeUntil: eventsActiveUntil }));
@@ -57,7 +60,8 @@ export function calendarRoutes({ tokens, settings }) {
       ...(seasonal ? { activeEventFlags: flags } : {}),
       ...(season ? { seasonNumber: season.seasonNumber, seasonTemplateId: seasonTemplateId() } : {}),
       ...(seasonEnds ? { seasonEnd: seasonEnds.toISOString() } : {}),
-      ...(weeklyEnd ? { weeklyStoreEnd: weeklyEnd.toISOString() } : {})
+      ...(weeklyEnd ? { weeklyStoreEnd: weeklyEnd.toISOString() } : {}),
+      ...Object.fromEntries(Object.entries(stwEnds).map(([name, end]) => [name, end.toISOString()]))
     };
     const validFrom = "2017-01-01T00:00:00.000Z";
     res.json({
