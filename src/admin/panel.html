@@ -5212,7 +5212,14 @@
           }))
         );
 
+        const onKeyDown = (e) => {
+          if (e.key === "Escape") {
+            e.preventDefault();
+            close();
+          }
+        };
         const close = () => {
+          window.removeEventListener("keydown", onKeyDown);
           backdrop.classList.remove("show");
           setTimeout(() => backdrop.remove(), 150);
         };
@@ -5234,6 +5241,7 @@
         }, dialog);
 
         document.body.append(backdrop);
+        window.addEventListener("keydown", onKeyDown);
         requestAnimationFrame(() => {
           backdrop.classList.add("show");
           searchInput.focus();
@@ -5264,7 +5272,7 @@
           el("p", { class: "note", text: "Offers rotate randomly every rotation cycle using the pool of available cosmetics from game data." }),
           el("div", { class: "actions", style: "margin-top:14px;" },
             btn("Roll New Shop Now", async () => {
-              const res = await act(api("/admin/api/shop/randomize", {}), "New random shop generated!");
+              const res = await act(api("/admin/api/shop/randomize", { season: currentShopSeason }), "New random shop generated!");
               if (res) showShop();
             }, "primary small"),
             btn("Switch to Custom Shop Builder", () => switchMode("custom"), "ghost small"))
@@ -5422,8 +5430,8 @@
             el("div", {},
               el("h1", { text: "Item Shop", style: "margin:0 0 4px;" }),
               el("div", { class: "muted", text: currentShopSeason === "2"
-                ? "Configure Battle Royale's Store tab (Athena Direct Acquisition) for Season 2 (1.11 – 2.5)."
-                : "Configure Battle Royale's Store tab (Athena Direct Acquisition) for Season 1 (1.8 – 1.10)." })),
+                ? "Configure Battle Royale's Store tab (Athena Direct Acquisition) for Season 2 (1.11 – 2.5). The mode, timing and custom shop are shared by both seasons; the history and cosmetics shown are this season's."
+                : "Configure Battle Royale's Store tab (Athena Direct Acquisition) for Season 1 (1.8 – 1.10). The mode, timing and custom shop are shared by both seasons; the history and cosmetics shown are this season's." })),
             el("div", { class: "actions" },
               btn("Refresh", showShop, "ghost"))),
           timingSettingsSection,
@@ -5561,7 +5569,7 @@
         const h = totalHours % 24;
         const d = Math.floor(totalHours / 24);
         if (d > 0) return `${d}d ${h}h ${m}m ${s}s`;
-        if (h > 0) return `${h}h ${m}s`;
+        if (h > 0) return `${h}h ${m}m ${s}s`;
         return `${m}m ${s}s`;
       };
 

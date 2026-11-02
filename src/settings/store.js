@@ -56,7 +56,7 @@ const defaults = {
   remoteAdmin: false,
   // Full customizable events configuration (Core-Backend #66, #129, events/events.js)
   events: {
-    mode: "auto", // "auto" | "force_fortnitemares" | "force_mutantstorms" | "custom" | "off"
+    mode: "auto", // "auto" | "force_fortnitemares" | "force_mutantstorms" | "force_winter2017" | "custom" | "off"
     customFlags: [],
     hexsylvaniaGates: "standard", // "standard" | "open"
     candyMultiplier: 1.0,
@@ -64,10 +64,6 @@ const defaults = {
     stormTicketMultiplier: 1.0,
     candyPerLlama: 500,
     autoConvertCandy: true,
-    winterGates: "standard", // "standard" | "open"
-    miniBossAlertQuota: 10,
-    passiveStormQuota: 4,
-    snowflakeMultiplier: 1.0,
     snowflakePerLlama: 1000,
     autoConvertStormTickets: true,
     rotationHour: 0,
@@ -181,26 +177,6 @@ function sanitizeEvents(input, current = defaults.events) {
 
   if (typeof input.autoConvertCandy === "boolean") {
     result.autoConvertCandy = input.autoConvertCandy;
-  }
-
-  if (typeof input.winterGates === "string") {
-    const gateMode = input.winterGates.trim().toLowerCase();
-    if (gateMode === "standard" || gateMode === "open") result.winterGates = gateMode;
-  }
-
-  if (input.miniBossAlertQuota !== undefined) {
-    const num = Number(input.miniBossAlertQuota);
-    if (Number.isInteger(num) && num >= 1 && num <= 999) result.miniBossAlertQuota = num;
-  }
-
-  if (input.passiveStormQuota !== undefined) {
-    const num = Number(input.passiveStormQuota);
-    if (Number.isInteger(num) && num >= 1 && num <= 99) result.passiveStormQuota = num;
-  }
-
-  if (input.snowflakeMultiplier !== undefined) {
-    const num = Number(input.snowflakeMultiplier);
-    if (!isNaN(num) && num >= 0.1 && num <= 10.0) result.snowflakeMultiplier = Math.round(num * 100) / 100;
   }
 
   if (input.snowflakePerLlama !== undefined) {

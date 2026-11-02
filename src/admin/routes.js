@@ -1126,7 +1126,7 @@ export function adminRoutes(context) {
           buildRange: "1.11 & 2.1 (CL 3807424 – 3825894)",
           flags: ["EventFlag.Winter2017", "EventFlag.PassiveStorms"],
           theater: "Standard Zones with Mini-Boss Alerts",
-          alertsQuota: `${eventsConfig.miniBossAlertQuota ?? 10} Mini-Boss mission alerts and ${eventsConfig.passiveStormQuota ?? 4} storms (no tickets) per day`,
+          alertsQuota: "10 Mini-Boss mission alerts and 4 storms (no tickets) per day",
           currency: "Snowflake Tickets (AccountResource:eventcurrency_snowballs)",
           llama: `Holiday Survival Llama (CardPack_Event_2017_Winter, ${eventsConfig.snowflakePerLlama ?? 1000} Snowflake Tickets)`,
           questsCount: 26,

@@ -203,19 +203,11 @@ test("admin events full customization: mode overrides, STW modifiers, calendar, 
     // 5. Winterfest / Season 2 Customization & force_winter2017 mode
     const winterConfigRes = await admin(backend, "/events/config", {
       mode: "force_winter2017",
-      winterGates: "open",
-      miniBossAlertQuota: 15,
-      passiveStormQuota: 6,
-      snowflakeMultiplier: 2.5,
       snowflakePerLlama: 1500,
       autoConvertStormTickets: true
     });
     assert.equal(winterConfigRes.status, 200);
     assert.equal(winterConfigRes.body.events.mode, "force_winter2017");
-    assert.equal(winterConfigRes.body.events.winterGates, "open");
-    assert.equal(winterConfigRes.body.events.miniBossAlertQuota, 15);
-    assert.equal(winterConfigRes.body.events.passiveStormQuota, 6);
-    assert.equal(winterConfigRes.body.events.snowflakeMultiplier, 2.5);
     assert.equal(winterConfigRes.body.events.snowflakePerLlama, 1500);
 
     const s2Overview = await admin(backend, "/events/overview?season=2");
@@ -230,7 +222,7 @@ test("admin events full customization: mode overrides, STW modifiers, calendar, 
 
     const winterOverviewEntry = s2Overview.body.events.find((e) => e.id === "winter2017");
     assert.ok(winterOverviewEntry);
-    assert.ok(winterOverviewEntry.alertsQuota.includes("15 Mini-Boss"));
+    assert.ok(winterOverviewEntry.alertsQuota.includes("10 Mini-Boss"));
     assert.ok(winterOverviewEntry.llama.includes("1500 Snowflake Tickets"));
   } finally {
     backend.close();
