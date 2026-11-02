@@ -42,10 +42,12 @@ export const passiveStorms = "EventFlag.PassiveStorms";
 // 1.11's LobbyBG_Winter (Items/Events/Shared, LobbyBackgroundTakeoverEvent) puts the lobby in Frontend_Lobby_Winter while
 // its RequiredEventTag, EventFlag.LobbyWinterDecor, is on, as LobbyBG_Halloween did with EventFlag.LobbyHalloweenDecor;
 // the seasonal event manager takes its flags from the calendar's client-events state (services/fortnite/calendar.js).
-// 1.11's other Battle Royale winter events (BR_Decor_WinterBus's EventFlag.WinterBattleBus, BR_Decor_SupplyDropGift's
-// EventFlag.SupplyDropGift and BR_Winter_CandyCaneGuns' EventFlag.BR.CandyCaneGuns) change the match, which is the
-// gameserver's, and are left off (🟡: nothing found says when Epic ran them).
+// The holiday Battle Bus (BR_Decor_WinterBus's EventFlag.WinterBattleBus) flew all through Season 2's Winterfest, as
+// players' 1.11 matches show (CoreV2 #176); the gameserver takes its flags from the same calendar. 1.11's other Battle
+// Royale winter events (BR_Decor_SupplyDropGift's EventFlag.SupplyDropGift and BR_Winter_CandyCaneGuns'
+// EventFlag.BR.CandyCaneGuns) change the match and are left off (🟡: nothing found says when Epic ran them).
 export const lobbyWinterDecor = "EventFlag.LobbyWinterDecor";
+export const winterBattleBus = "EventFlag.WinterBattleBus";
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
@@ -54,7 +56,8 @@ const events = [
   { name: fiftyFifty, flag: fiftyFifty, firstBuild: 3790078, lastBuild: 3807424 },
   { name: winter2017, flag: winter2017, firstBuild: 3807424, lastBuild: 3807424 },
   { name: passiveStorms, flag: passiveStorms, firstBuild: 3807424, lastBuild: 3807424 },
-  { name: lobbyWinterDecor, flag: lobbyWinterDecor, firstBuild: 3807424, lastBuild: 3807424 }
+  { name: lobbyWinterDecor, flag: lobbyWinterDecor, firstBuild: 3807424, lastBuild: 3807424 },
+  { name: winterBattleBus, flag: winterBattleBus, firstBuild: 3807424, lastBuild: 3807424 }
 ];
 
 const runsOn = (event, number) => number >= event.firstBuild && number <= event.lastBuild;
