@@ -238,6 +238,71 @@ test("a Core gameserver's 2.1 and 1.11 results are Season 2's, read back by 2.1'
   }
 });
 
+// Core-Backend #168: a 1.11 solo match, reported the way CoreV2's 1.11 server reports it, read back through the requests
+// 1.11's leaderboard screen sends (AthenaLeaderboardScreenBase, the 2.1 IDB's sub_2041BF0, sub_2042090 and sub_206FAC0,
+// the same screen as 1.11's): the cohort "pc_m0_p2" (the solo row, EFortAthenaPlaylist::AthenaSolo, sub_2052860 "%s_m0_p%d"),
+// then, Friends Only off, a group board POSTed with the cohort's ids as a JSON array for the Score, Placed Top 25 and
+// Placed Top 10 tabs, and a global board (page 0 of 50) for Global Wins, bIsGlobal in LeaderboardAndStatUIData. Each is
+// window weekly (sub_79AB20(1), always) and named "GameplayStat.<tag>.pc.m0.p2" less "GameplayStat.", dots to
+// underscores, lowercase (sub_2054720, sub_2E4E450): br_score_pc_m0_p2, br_placetop25_pc_m0_p2, br_placetop10_pc_m0_p2,
+// br_placetop1_pc_m0_p2.
+test("a 1.11 solo match from a Core gameserver shows on 1.11's Score, Placed Top 25, Placed Top 10 and Global Wins boards", async () => {
+  const backend = await startBackend();
+  try {
+    const v111 = "3807424";
+    const coreV2 = (urlPath, token, body) => {
+      const text = JSON.stringify(body);
+      return send({ host: "127.0.0.1", port: backend.port, method: "POST", path: urlPath, headers: { "User-Agent": "Core V2",
+        Authorization: `bearer ${token}`, "Content-Type": "application/json", "Content-Length": Buffer.byteLength(text) } }, text);
+    };
+    const [winner, fifth, idle] = [await userLogin(backend.port, "Normani111"), await userLogin(backend.port, "Fifth111"),
+      await userLogin(backend.port, "Idle111")];
+    for (const player of [winner, fifth, idle]) {
+      await as(v111, backend.port, `/fortnite/api/game/v2/profile/${player.accountId}/client/QueryProfile?profileId=athena&rvn=-1`, player.token, {});
+    }
+    // The 1.11 gameserver's session, its players registered.
+    const server = await userLogin(backend.port, "CoreServer1");
+    const session = (await as(v111, backend.port, "/fortnite/api/matchmaking/session", server.token, {
+      ownerId: server.accountId, ownerName: "CoreServer1", serverName: "Core-1", serverAddress: "127.0.0.1", serverPort: 7777,
+      maxPublicPlayers: 100, maxPrivatePlayers: 0, buildUniqueId: "1", attributes: { GAMEMODE_s: "FORTATHENA", REGION_s: "NA" }
+    })).body;
+    await as(v111, backend.port, `/fortnite/api/matchmaking/session/${session.id}/players`, server.token,
+      { publicPlayers: [winner.accountId, fifth.accountId], privatePlayers: [] });
+    // CoreV2's report (FortGameModeAthena.cpp CheckMatchResults): no score of its own, so each is the match's season XP;
+    // a score the server sends is taken as sent.
+    const dedicated = await dedicatedServerToken(backend.port);
+    assert.equal((await coreV2("/fortnite/api/game/v2/battleroyale/recordresults", dedicated, { playlistId: 2, countWins: true,
+      matchId: "M168", results: [
+        { accountId: fifth.accountId, place: 5, kills: 1, secondsAlive: 600, score: 420 },
+        { accountId: winner.accountId, place: 1, kills: 4, secondsAlive: 1260 }
+      ] })).status, 204);
+
+    // The cohort, the player's own first.
+    const cohort = (await as(v111, backend.port, `/fortnite/api/game/v2/leaderboards/cohort/${idle.accountId}?playlist=pc_m0_p2`, idle.token)).body;
+    assert.equal(cohort.playlist, "pc_m0_p2");
+    assert.deepEqual(new Set(cohort.cohortAccounts), new Set([idle.accountId, winner.accountId, fifth.accountId]));
+    const board = async (type, statName, body, query = "") => {
+      const response = await as(v111, backend.port, `/fortnite/api/leaderboards/type/${type}/stat/${statName}/window/weekly?ownertype=1${query}`,
+        idle.token, body);
+      assert.equal(response.status, 200);
+      assert.deepEqual([response.body.statName, response.body.statWindow], [statName, "weekly"]);
+      return response.body.entries.map(({ accountId, value, rank }) => [accountId, value, rank]);
+    };
+    // Score: 21 minutes, 4 kills and the win, 105 + 200 + 300; the 5th place's own 420.
+    assert.deepEqual(await board("group", "br_score_pc_m0_p2", cohort.cohortAccounts),
+      [[winner.accountId, 605, 1], [fifth.accountId, 420, 2], [idle.accountId, 0, 3]]);
+    assert.deepEqual((await board("group", "br_placetop25_pc_m0_p2", cohort.cohortAccounts)).map(([, value]) => value), [1, 1, 0]);
+    assert.deepEqual((await board("group", "br_placetop10_pc_m0_p2", cohort.cohortAccounts)).map(([, value]) => value), [1, 1, 0]);
+    assert.deepEqual(await board("global", "br_placetop1_pc_m0_p2", [], "&pageNumber=0&itemsPerPage=50"), [[winner.accountId, 1, 1]]);
+    // The player's own row, asked for by the winner: theirs.
+    const own = await as(v111, backend.port, "/fortnite/api/leaderboards/type/group/stat/br_score_pc_m0_p2/window/weekly?ownertype=1",
+      winner.token, [winner.accountId]);
+    assert.deepEqual(own.body.entries, [{ accountId: winner.accountId, value: 605, rank: 1 }]);
+  } finally {
+    backend.close();
+  }
+});
+
 test("a season's stats are its own matches; Season 1's are the career's less the later seasons'", () => {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-backend-seasons-"));
   try {
