@@ -16,6 +16,7 @@ import { issueFriendCode } from "./IssueFriendCode.js";
 import { setHeroModeLoadout, setModeLoadout } from "./Loadouts.js";
 import { markItemSeen } from "./MarkItemSeen.js";
 import { markNewQuestNotificationSent } from "./MarkNewQuestNotificationSent.js";
+import { modifyQuickbar } from "./ModifyQuickbar.js";
 import { openCardPack } from "./OpenCardPack.js";
 import { openCardPackBatch } from "./OpenCardPackBatch.js";
 import { purchaseCatalogEntry } from "./PurchaseCatalogEntry.js";
@@ -61,6 +62,7 @@ export const clientCommands = {
   IssueFriendCode: issueFriendCode,
   MarkItemSeen: markItemSeen,
   MarkNewQuestNotificationSent: markNewQuestNotificationSent,
+  ModifyQuickbar: modifyQuickbar,
   OpenCardPack: openCardPack,
   OpenCardPackBatch: openCardPackBatch,
   PurchaseCatalogEntry: purchaseCatalogEntry,
