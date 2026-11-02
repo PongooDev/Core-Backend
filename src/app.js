@@ -87,8 +87,7 @@ export function createContext(config) {
   const profiles = createProfileStore(config.dataDir, {
     giveAllCosmetics: config.giveAllCosmetics === true,
     defaultFoundersAccess: () => settings.get().defaultFoundersAccess === true,
-    wonPlaylists: (accountId) => Object.entries(stats.playlists(accountId))
-      .filter(([playlistId, playlist]) => isMainPlaylist(playlistId) && (playlist.placetop1 ?? 0) > 0).map(([playlistId]) => Number(playlistId)),
+    wonSeasons: (accountId) => stats.wonSeasons(accountId),
     // The account's recorded wins in solo, duo and squad, for a season's past_seasons record (profiles/seasons.js).
     winCount: (accountId) => Object.entries(stats.playlists(accountId))
       .filter(([playlistId]) => isMainPlaylist(playlistId)).reduce((sum, [, playlist]) => sum + (playlist.placetop1 ?? 0), 0),

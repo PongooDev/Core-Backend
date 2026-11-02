@@ -161,6 +161,13 @@ export function createStatsStore(dataDir) {
     hasWon: (accountId) => Object.entries(load(accountId).playlists)
       .some(([playlistId, playlist]) => isMainPlaylist(playlistId) && (playlist.placetop1 ?? 0) > 0),
 
+    // The seasons with a win in solo, duo or squad, each season's victory umbrella's (profiles/athena.js, Core-Backend #157).
+    wonSeasons(accountId) {
+      const seasons = [firstSeason, ...Object.keys(load(accountId).seasons).map(Number)];
+      return seasons.filter((season) => Object.entries(windowed(accountId, "alltime", new Date(), season))
+        .some(([playlistId, counts]) => isMainPlaylist(playlistId) && (counts.placetop1 ?? 0) > 0));
+    },
+
     windowed,
 
     // A stat of a playlist in a window (and a season, when one is given), 0 when none was recorded.

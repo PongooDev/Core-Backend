@@ -121,7 +121,7 @@ test("lockers made before #77, which got every cosmetic, keep only the starters 
       favorite_victorypose: "AthenaVictoryPose:eid_ridethepony" } } }));
 
   // Wins in solo were recorded for the account (the stats).
-  const session = openSession(createProfileStore(dataDir, { wonPlaylists: () => [2] }), accountId);
+  const session = openSession(createProfileStore(dataDir, { wonSeasons: () => [1] }), accountId);
   const { profile } = session.profile("athena");
   const held = Object.keys(profile.items).sort();
   assert.deepEqual(held, ["AthenaBattleBus:bbid_defaultbus", "AthenaDance:eid_dancemoves", "AthenaGlider:defaultglider",
@@ -133,14 +133,14 @@ test("lockers made before #77, which got every cosmetic, keep only the starters 
     attributes.favorite_victorypose], ["AthenaGlider:defaultglider", "AthenaPickaxe:defaultpickaxe", "", "AthenaDance:eid_dancemoves", ""]);
   // Once: the next load changes nothing.
   const rvn = profile.rvn;
-  assert.equal(openSession(createProfileStore(dataDir, { wonPlaylists: () => [2] }), accountId).profile("athena").profile.rvn, rvn);
+  assert.equal(openSession(createProfileStore(dataDir, { wonSeasons: () => [1] }), accountId).profile("athena").profile.rvn, rvn);
 })));
 
 // Core-Backend #84: lockers given the Duo or Squad Umbrella (a duo or squad win before #84, or giveAllCosmetics) lose
 // them, once; a glider slot holding one goes back to the default glider.
 test("lockers lose the Duo and Squad Umbrellas, and a glider slot holding one gets the default glider", () => withStore((dataDir) => inBuild("3724489", () => {
   const accountId = "duowinner";
-  const store = () => createProfileStore(dataDir, { wonPlaylists: (id) => (id === accountId ? [10, 9] : []) });
+  const store = () => createProfileStore(dataDir, { wonSeasons: (id) => (id === accountId ? [1] : []) });
   let session = openSession(store(), accountId);
   const tracker = session.profile("athena");
   for (const templateId of ["AthenaGlider:duo_umbrella", "AthenaGlider:squad_umbrella"]) {
