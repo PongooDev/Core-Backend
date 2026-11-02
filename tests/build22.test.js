@@ -15,9 +15,12 @@ import { missionAlertCategories } from "../src/gamedata/world.js";
 import { assignmentBucket, showsMatchStart } from "../src/matchmaking/service.js";
 import { alertsRemaining, clearedAlertRecord, completeMissionAlert, emptyAlertRecord } from "../src/profiles/alerts.js";
 import { advanceAthenaObjectives, grantAthenaQuest } from "../src/profiles/athena.js";
+import { findItem } from "../src/profiles/items.js";
+import { grant } from "../src/profiles/progress.js";
 import { buildOfSeason } from "../src/profiles/seasons.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
+import { earnScore, levelStartXp, xpForLevel } from "../src/profiles/xp.js";
 import { hasEventStore } from "../src/store/eventstore.js";
 import { itemShopOffers, seasonEnd } from "../src/store/itemshop.js";
 
@@ -135,3 +138,39 @@ test("a challenge completed in 2.2 collects the Completed ones of its category, 
   assert.equal(tracker.profile.items[chests].attributes.quest_state, "Claimed");
   assert.equal(tracker.profile.items[ammo].attributes.quest_state, "Completed");
 })));
+
+test("2.2's Commander XP is ten times 2.1's, and an account's converts on the build of the other scale", () => withStore((store) => {
+  assert.equal(inBuild(v21, () => xpForLevel(1)), 1_000_000);
+  assert.equal(inBuild(v22, () => xpForLevel(1)), 10_000_000);
+  assert.equal(inBuild(v22, () => levelStartXp(3)), 20_000_000);
+  assert.equal(inBuild(v21, () => levelStartXp(3)), 2_000_000);
+
+  const stateOn = (build) => inBuild(build, () => {
+    const session = openSession(store, "commander");
+    const { profile } = session.profile("profile0");
+    const rest = profile.items[findItem(profile, "Quota:restxp")].attributes;
+    return { xp: profile.stats.attributes.xp, boost: profile.items[findItem(profile, "Token:xpboost")]?.quantity,
+      rest: rest.current_value, cap: rest.max_quota, scale: profile.coreXpScale ?? 1 };
+  });
+  inBuild(v21, () => {
+    const session = openSession(store, "commander");
+    session.profile("profile0").setStat("xp", 123_456);
+    grant(session, "Token:xpboost", 1000);
+    session.commit();
+  });
+  const before = stateOn(v21);
+  const after = stateOn(v22);
+  // The rest XP left, up to the level row's cap on 2.2 (19,637,889 at level 1, 2.1's 1,963,789).
+  assert.deepEqual([after.xp, after.boost, after.cap, after.scale], [1_234_560, 10_000, 19_637_889, 10]);
+  assert.equal(after.rest, Math.min(before.rest * 10, after.cap));
+  // Back on 2.1 the account is as it was.
+  assert.deepEqual(stateOn(v21), before);
+
+  // A match's XP: 1,000,000 score is 612,901 XP on 2.1, ten times that on 2.2.
+  const base = (build) => inBuild(build, () => {
+    const session = openSession(store, `score-${build}`);
+    return earnScore(session, 1_000_000).baseXPEarned;
+  });
+  assert.equal(base(v21), 612_901);
+  assert.equal(base(v22), 6_129_010);
+}));

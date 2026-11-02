@@ -16,7 +16,7 @@ import { tidyWorldStacks } from "./items.js";
 import { grant } from "./progress.js";
 import { findQuestItem } from "./quests.js";
 import { assignToSquad, characterType } from "./squads.js";
-import { levelStartXp, settleLevel } from "./xp.js";
+import { levelStartXp, settleLevel, switchXpScale, xpScaleNeedsSwitch } from "./xp.js";
 
 // What a new profile0 starts with that takes the game's rules to add, so the account's first login looks like any
 // later one:
@@ -98,6 +98,7 @@ export function needsSetUp(profile, settings = {}) {
   if (profile.profileId !== "profile0") return false;
   return startingQuests().some((questId) => !findQuestItem(profile, questId)) || Boolean(defaultHero && !heroes(profile).length)
     || Boolean(leadCandidate(profile)) || schematicMigrations.some(({ name }) => !migrated(profile, name)) || !migrated(profile, "levelXp")
+    || xpScaleNeedsSwitch(profile)
     || collectorsNeedSetUp(profile) || expeditionsNeedSetUp(profile) || foundersNeedSetUp(profile, settings)
     || friendCodesNeedSetUp(profile) || lootLlamaVoucherMissing(profile);
 }
@@ -159,6 +160,8 @@ export function setUpProfile(session, profileId = "profile0") {
     for (const templateId of missingSchematics(profile, schematics)) grant(session, templateId, 1);
     profile.coreMigrations = [...(profile.coreMigrations ?? []), name];
   }
+  // The build's Commander XP scale first (2.2's, profiles/xp.js), so a total from before levelXp is read in it.
+  switchXpScale(session);
   if (!migrated(profile, "levelXp")) {
     const { level = 1, xp = 0 } = profile.stats.attributes;
     const inLevel = Math.max(0, xp - levelStartXp(level));

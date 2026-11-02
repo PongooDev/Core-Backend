@@ -19,8 +19,8 @@ const levels = perBuild((read) => read("accountlevels", []));
 const levelData = (level) => levels().find((entry) => entry.level === level) ?? levels()[0] ?? {};
 export const xpBonus = { criticalMatch: 0.2, personalBoost: 0.3, groupBoost: 0.05, groupBuffMultiplier: 2, rest: 1 };
 
-const restTemplate = "Quota:restxp";
-const boostTemplate = "Token:xpboost";
+export const restTemplate = "Quota:restxp";
+export const boostTemplate = "Token:xpboost";
 
 export function restQuotaAttributes(level, now = new Date()) {
   const info = getItem(restTemplate) ?? {};

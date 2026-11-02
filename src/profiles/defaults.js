@@ -3,6 +3,7 @@ import { isChoicePack, rollOptions } from "../cardpacks/contents.js";
 import { starterBanners } from "../gamedata/banners.js";
 import { emptyAlertRecord, withQuotaSlots } from "./alerts.js";
 import { restQuotaAttributes } from "./boosts.js";
+import { commanderXpScale } from "./xp.js";
 import { fillHeroAttributes } from "./heroes.js";
 import { isMtxCurrency, mtxPlatform } from "./items.js";
 import { fillWorkerAttributes } from "./workers.js";
@@ -69,6 +70,10 @@ export function defaultStats(profileId) {
 
 export function addMissingStats(profile) {
   let added = false;
+  // A new profile0 starts in the requesting build's Commander XP scale (profiles/xp.js): its rest XP is that build's.
+  if (profile.profileId === "profile0" && !Object.keys(profile.stats.attributes).length && commanderXpScale() !== 1) {
+    profile.coreXpScale = commanderXpScale();
+  }
   for (const [name, value] of Object.entries(defaultStats(profile.profileId))) {
     if (!(name in profile.stats.attributes)) {
       profile.stats.attributes[name] = value;
