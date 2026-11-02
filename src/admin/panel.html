@@ -1867,7 +1867,8 @@
         style: "font-size:13px; font-weight:700; padding:4px 10px; border-radius:var(--radius-sm); background:var(--surface-2); border:1px solid var(--line); color:var(--text); cursor:pointer;",
         onchange: (e) => onchange?.(e.target.value)
       },
-        el("option", { value: "1", text: "Season 1 (1.8 – 1.11)", selected: String(selected) === "1" })
+        el("option", { value: "1", text: "Season 1 (1.8 – 1.10)", selected: String(selected) === "1" }),
+        el("option", { value: "2", text: "Season 2 (1.11)", selected: String(selected) === "2" })
       )
     );
 
@@ -5383,8 +5384,55 @@
           : [codesSection])
       );
     }
-    /* ---------- battle pass (season 1) ---------- */
+    /* ---------- battle pass (season 1's Season Shop, season 2's Battle Pass) ---------- */
+    const pickSeason = (season) => { state.battlePassSeason = String(season); showBattlePass(); };
+
+    // Season 2 (1.11): the Battle Pass and bundle prices, and the tiers' rewards from 1.11's data.
+    async function showSeasonTwoPass() {
+      const data = await act(api("/admin/api/battlepass/overview?season=2"));
+      if (!data || state.view !== "battlepass") return;
+      const cfg = data.config || {};
+      const form = { battlePassPrice: Number(cfg.battlePassPrice ?? 950), bundlePrice: Number(cfg.bundlePrice ?? 2800) };
+      const priceInput = (key) => el("input", {
+        class: "field num", type: "number", min: "0", max: "100000", value: String(form[key]), style: "width:110px;",
+        oninput: (e) => { form[key] = Math.max(0, Math.min(100000, parseInt(e.target.value, 10) || 0)); }
+      });
+      const rewardList = (rewards) => rewards.length
+        ? el("span", {}, rewards.map((r) => (r.quantity > 1 ? `${r.quantity}× ${r.name}` : r.name)).join(", "))
+        : el("span", { class: "muted", text: "—" });
+      const tiers = data.tiers || [];
+      $("view").replaceChildren(
+        el("div", { class: "view-head" },
+          el("div", {},
+            el("div", { style: "display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:4px;" },
+              el("h1", { text: "Battle Pass & Progression", style: "margin:0;" }),
+              seasonSelector("2", pickSeason)),
+            el("div", { class: "muted", text: "Season 2's Battle Pass (1.11): its V-Bucks prices and the rewards of its tiers" })),
+          el("div", { class: "actions" },
+            btn("Save Prices", async () => {
+              await act(api("/admin/api/battlepass/config", { season2: { ...form } }), "Season 2 Battle Pass prices saved");
+              showBattlePass();
+            }, "primary"),
+            btn("Refresh", showBattlePass, "ghost"))),
+        el("div", { class: "tiles" },
+          tile("Battle Pass", `${form.battlePassPrice} V-Bucks`, "text"),
+          tile("Battle Pass Bundle", `${form.bundlePrice} V-Bucks (+${cfg.bundleTiers ?? 25} tiers)`, "text"),
+          tile("Tier", `${cfg.tierPrice ?? 150} V-Bucks`, "text"),
+          tile("Tiers", String(tiers.length), "text")),
+        el("section", { class: "panel", style: "margin-top:16px" },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" }, el("h2", { text: "Prices" })),
+          el("p", { class: "note", text: "The Battle Pass and the Battle Pass Bundle (the pass and 25 tiers) are sold in the BRSeason2 storefront; Epic charged 950 and 2,800 V-Bucks. A tier costs 150 V-Bucks: 1.11's tier screen shows that price itself." }),
+          el("div", { style: "display:flex; gap:24px; flex-wrap:wrap; margin-top:12px;" },
+            el("label", { style: "display:flex; align-items:center; gap:8px;" }, el("span", { class: "muted font-semibold", text: "Battle Pass" }), priceInput("battlePassPrice")),
+            el("label", { style: "display:flex; align-items:center; gap:8px;" }, el("span", { class: "muted font-semibold", text: "Bundle" }), priceInput("bundlePrice")))),
+        el("section", { class: "panel", style: "margin-top:16px" },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" }, el("h2", { text: "Tier Rewards" }), chip(`${tiers.length} tiers`, "accent")),
+          el("p", { class: "note", text: "From 1.11's AthenaSeason2: the free rewards every player gets and the Battle Pass rewards, given as each tier is reached. Battle Stars (10 a tier) come from season levels and challenges." }),
+          table([["Tier", (t) => String(t.tier), "mono"], ["Free", (t) => rewardList(t.free)], ["Battle Pass", (t) => rewardList(t.paid)]], tiers)));
+    }
+
     async function showBattlePass() {
+      if (state.battlePassSeason === "2") return showSeasonTwoPass();
       const data = await act(api("/admin/api/battlepass/overview"));
       if (!data || state.view !== "battlepass") return;
 
@@ -5547,7 +5595,7 @@
           el("div", {},
             el("div", { style: "display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:4px;" },
               el("h1", { text: "Battle Pass & Progression", style: "margin:0;" }),
-              seasonSelector("1", () => showBattlePass())),
+              seasonSelector("1", pickSeason)),
             el("div", { class: "muted", text: "Configure Season 1 Season Shop unlock requirements, catalog item prices, and match leveling rates" })),
           el("div", { class: "actions" },
             btn("Save Configuration", saveConfig, "primary"),

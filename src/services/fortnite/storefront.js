@@ -1,5 +1,6 @@
 import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
+import { athenaSeason } from "../../gamedata/athena.js";
 import { openSession } from "../../profiles/session.js";
 import { storefronts } from "../../store/catalog.js";
 import { nextRotation } from "../../store/itemshop.js";
@@ -13,11 +14,14 @@ export function storefrontRoutes({ tokens, profiles }) {
 
   router.get("/fortnite/api/storefront/v2/catalog", requireAuth(tokens), (req, res) => {
     const now = new Date();
+    const session = req.session.accountId ? openSession(profiles, req.session.accountId) : undefined;
+    // The Battle Pass storefront leaves out a pass the player owns (battlepass/season2.js).
+    const athena = session && athenaSeason() && session.hasProfile("athena") ? session.profile("athena").profile : undefined;
     res.json({
       refreshIntervalHrs,
       dailyPurchaseHrs: 24,
       expiration: nextRotation(now).toISOString(),
-      storefronts: storefronts(req.session.accountId ? openSession(profiles, req.session.accountId).profile("profile0").profile : undefined, now)
+      storefronts: storefronts(session?.profile("profile0").profile, now, { athena })
     });
   });
 

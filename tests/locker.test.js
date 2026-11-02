@@ -252,7 +252,7 @@ test("the admin panel sets an account's Battle Royale season level, with its cha
     const beforeRvn = await revision();
     const set = await setLevel(30);
     assert.equal(set.status, 200);
-    assert.deepEqual(set.body.battleRoyale, { level: 30, xp: 0, maxLevel: set.body.battleRoyale.maxLevel });
+    assert.deepEqual(set.body.battleRoyale, { level: 30, xp: 0, maxLevel: set.body.battleRoyale.maxLevel, season: 1 });
     const after = await athena(backend.port, player);
     assert.ok((await revision()) > beforeRvn);
     assert.equal(after.stats.attributes.level, 30);

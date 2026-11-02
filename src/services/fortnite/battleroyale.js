@@ -6,6 +6,7 @@ import { buildVersions } from "../../builds/detect.js";
 import { log } from "../../log.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
 import { addSeasonXp, awardVictory, matchXp, recordMatchProgress, umbrellaTypeOf } from "../../profiles/athena.js";
+import { boostedMatchXp, inProfileSeason } from "../../profiles/seasons.js";
 import { grant } from "../../profiles/progress.js";
 import { openSession } from "../../profiles/session.js";
 import { rewardModes } from "../../settings/store.js";
@@ -155,13 +156,15 @@ export function battleRoyaleRoutes(context) {
       if (vbucks) log("Battle Royale", `${result.accountId} earned ${vbucks} V-Bucks in match ${matchId}`);
       const progress = () => {
         recordMatchProgress(session, playlistId, { place, kills });
-        addSeasonXp(session, earnedXp);
+        // 1.11's Battle Pass adds its match XP boost (profiles/seasons.js).
+        addSeasonXp(session, boostedMatchXp(session, earnedXp));
         if (place === 1 && isMainPlaylist(playlistId)) awardVictory(session);
       };
       if (session.hasProfile("athena")) {
         const build = matchBuild(result.accountId);
         if (build) inBuild(build, progress);
-        else progress();
+        // A report naming no build is read in the season the player's profile is in (profiles/seasons.js).
+        else inProfileSeason(session.profile("athena").profile, progress);
       }
       session.commit();
       notifyProfiles(context, session);

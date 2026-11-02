@@ -2,7 +2,8 @@ import crypto from "node:crypto";
 import { inBuild } from "../builds/context.js";
 import { McpError } from "../errors.js";
 import { athenaEventQuestsOf } from "../events/fiftyfifty.js";
-import { athenaCosmetics, athenaDailyIds, athenaObjectiveStat, dailyWeight, getAthenaQuest, seasonLevels } from "../gamedata/athena.js";
+import { currentBuild } from "../builds/context.js";
+import { athenaCosmetics, athenaDailyIds, athenaObjectiveStat, athenaSeason, dailyWeight, getAthenaQuest, seasonLevels } from "../gamedata/athena.js";
 import { bannerIds, bannerTemplateId } from "../gamedata/banners.js";
 import { dataBuilds } from "../gamedata/read.js";
 import { log } from "../log.js";
@@ -10,6 +11,7 @@ import { placements } from "../stats/store.js";
 import { defaultBanner } from "./defaults.js";
 import { findItem } from "./items.js";
 import { grant } from "./progress.js";
+import { accountLevelOf, addBookXp, namesAthenaBuild, seasonNeedsSwitch, settleSeasonRewards, switchSeason } from "./seasons.js";
 
 // Battle Royale's profile from 1.8, athena (UFortMcpProfileAthena, a quest profile): its cosmetics, the loadout the
 // locker equips, the banner, the season level and the daily challenges.
@@ -120,8 +122,13 @@ const victoryUmbrellaOf = (accountId, settings) => (ownsSaveTheWorld(accountId, 
 // or never locker items (Recruit defaults, unused umbrellas). They are never sold in the item shop (Core-Backend #69).
 export const chaseRewardIds = () => seasonLevels().filter((entry) => entry.chaseReward).map((entry) => entry.chaseReward);
 
+// The Battle Pass's cosmetics (1.11's Season 2, profiles/seasons.js): earned, never sold.
+const battlePassCosmeticIds = () => [...(athenaSeason()?.bookFreeRewards ?? []), ...(athenaSeason()?.bookPaidRewards ?? [])]
+  .flatMap(({ rewards }) => rewards.map(({ templateId }) => templateId)).filter((templateId) => templateId.toLowerCase().startsWith("athena"));
+
 export const nonShopCosmeticIds = () => [
   ...starters,
+  ...battlePassCosmeticIds(),
   ...founderStarters,
   ...chaseRewardIds(),
   ...victoryUmbrellas,
@@ -155,7 +162,8 @@ export function athenaNeedsSetUp(profile, settings = {}) {
   return !migrated(profile, "athenaLocker") || missing(profile, starterIds(profile, settings)).length > 0
     || missing(profile, earnedCosmetics(profile, settings)).length > 0
     || (settings.giveAllCosmetics ? missing(profile, lockerCosmetics()).length > 0 : blanket(profile).length > 0)
-    || emptyDefaultSlots(profile).length > 0 || heldNonLockerItems(profile).length > 0;
+    || emptyDefaultSlots(profile).length > 0 || heldNonLockerItems(profile).length > 0
+    || seasonNeedsSwitch(profile) || danceSlotsNeedSettling(profile);
 }
 
 function addCosmetic(tracker, templateId, seen) {
@@ -186,7 +194,10 @@ export const ownsCosmetic = (session, templateId) => Boolean(findItem(session.pr
 function removeCosmetic(tracker, itemId) {
   tracker.removeItem(itemId);
   for (const [slot, [, stat]] of Object.entries(slots)) {
-    if (sameId(String(tracker.profile.stats.attributes[stat] ?? ""), itemId)) tracker.setStat(stat, defaultItemId(tracker.profile, slot));
+    const held = tracker.profile.stats.attributes[stat];
+    if (Array.isArray(held)) {
+      if (held.some((id) => sameId(String(id ?? ""), itemId))) tracker.setStat(stat, held.map((id) => (sameId(String(id ?? ""), itemId) ? "" : id)));
+    } else if (sameId(String(held ?? ""), itemId)) tracker.setStat(stat, defaultItemId(tracker.profile, slot));
   }
 }
 
@@ -218,6 +229,8 @@ export function setUpAthena(session) {
   for (const slot of emptyDefaultSlots(profile)) {
     tracker.setStat(slots[slot][1], defaultItemId(profile, slot));
   }
+  if (seasonNeedsSwitch(profile)) switchSeason(session);
+  if (danceSlotsNeedSettling(profile)) settleDanceSlots(tracker);
 }
 
 // The full locker (Core-Backend #97), from the admin panel: every locker cosmetic and every banner the account lacks.
@@ -328,8 +341,40 @@ export function umbrellaTypeOf(accountId, hasWon, settings) {
   return founder ? "founder_glider" : null;
 }
 
-// EquipBattleRoyaleCustomization {slotName, itemToSlot}: an item of the slot's type, or "" for its default.
-export function equipCustomization(session, slotName, itemToSlot) {
+// 1.11's (CL-3807424) locker has six emote slots (Emote 1 to Emote 6): EquipBattleRoyaleCustomization's indexWithinSlot
+// (UFortMcpProfileAthena::EquipBattleRoyaleCustomization(SlotName, ItemToSlot, indexWithinSlot)) names the one, and the
+// loadout's emotes are a list (FFortAthenaLoadout Dances, a TArray<UAthenaDanceItemDefinition*>), so favorite_dance is
+// the six emotes' ids, "" for an empty slot, as Epic's athena profiles kept it from Season 2 on. 1.8 to 1.10 keep the one
+// emote as a string; their slot is the first. Accounts are shared by every build, so while such a build has the profile
+// the other five wait in profile.coreDances (Core's, never sent) and come back with 1.11 (Core-Backend #145: an emote
+// equipped in 1.11 didn't stay, the profile giving its client a string where it reads a list). Only a request naming a
+// build settles it (the admin panel's and CoreV2's name none).
+const firstDanceSlotsBuild = 3807424;
+export const danceSlotCount = 6;
+const hasDanceSlots = () => Number(currentBuild()) >= firstDanceSlotsBuild;
+
+function danceSlotsNeedSettling(profile) {
+  if (!namesAthenaBuild()) return false;
+  const dances = profile.stats.attributes.favorite_dance;
+  return hasDanceSlots() ? !Array.isArray(dances) || dances.length !== danceSlotCount : Array.isArray(dances);
+}
+
+function settleDanceSlots(tracker) {
+  const { profile } = tracker;
+  const dances = profile.stats.attributes.favorite_dance;
+  if (hasDanceSlots()) {
+    const kept = Array.isArray(dances) ? dances : [typeof dances === "string" ? dances : "", ...(profile.coreDances ?? []).slice(1)];
+    tracker.setStat("favorite_dance", Array.from({ length: danceSlotCount }, (_, index) => (typeof kept[index] === "string" ? kept[index] : "")));
+    delete profile.coreDances;
+  } else {
+    profile.coreDances = dances;
+    tracker.setStat("favorite_dance", typeof dances[0] === "string" ? dances[0] : "");
+  }
+}
+
+// EquipBattleRoyaleCustomization {slotName, itemToSlot, indexWithinSlot}: an item of the slot's type, or "" for its
+// default; in 1.11's emote slots, at indexWithinSlot (0 to 5; another index is the first slot).
+export function equipCustomization(session, slotName, itemToSlot, indexWithinSlot = 0) {
   const tracker = session.profile("athena");
   const slot = slotOf(slotName);
   if (!slot) throw new McpError("errors.com.epicgames.fortnite.invalid_parameter", `No locker slot ${slotName}`);
@@ -344,49 +389,67 @@ export function equipCustomization(session, slotName, itemToSlot) {
       throw new McpError("errors.com.epicgames.fortnite.invalid_parameter", `${item.templateId} doesn't go in the ${slot} slot`);
     }
   }
-  if (tracker.profile.stats.attributes[stat] !== itemId) tracker.setStat(stat, itemId);
+  const held = tracker.profile.stats.attributes[stat];
+  if (Array.isArray(held)) {
+    const index = Number.isInteger(indexWithinSlot) && indexWithinSlot >= 0 && indexWithinSlot < held.length ? indexWithinSlot : 0;
+    if (held[index] !== itemId) tracker.setStat(stat, held.map((id, at) => (at === index ? itemId : id)));
+  } else if (held !== itemId) tracker.setStat(stat, itemId);
 }
 
 // The season level. The lobby (1.8's sub_707030) shows level, xp against the level's XpToNextLevel (so xp is the XP
 // into the level, as in profile0) and accountLevel. A level's chase reward (ChaseRewardTemplateId: the BRSeason01
 // banner at 10, the Mako glider at 25) is the player's once they reach it. accountLevel was Epic's count of levels over
-// every season; 1.8 is the first, so it is the level (🟡). XP past the last level's bar is dropped.
+// every season: in Season 1 the level (🟡), in 1.11's Season 2 the level and past_seasons' levels (profiles/seasons.js).
+// XP past the last level's bar is dropped. In Season 2 each level reached gives its Battle Stars, and they the Battle
+// Pass's tiers (settleSeasonRewards).
 export function addSeasonXp(session, amount) {
   const levels = seasonLevels();
   if (!levels.length || !(amount > 0)) return;
   const tracker = session.profile("athena");
   const { attributes } = tracker.profile.stats;
   const last = levels[levels.length - 1];
-  let level = Math.min(Math.max(1, attributes.level ?? 1), last.level);
+  const top = maxSeasonLevel();
+  let level = Math.min(Math.max(1, attributes.level ?? 1), top);
   let xp = (attributes.xp ?? 0) + Math.floor(amount);
-  for (let row = levels.find((entry) => entry.level === level); row && level < last.level && xp >= row.xpToNextLevel;
+  for (let row = levels.find((entry) => entry.level === level); row && level < top && xp >= row.xpToNextLevel;
     row = levels.find((entry) => entry.level === level)) {
     xp -= row.xpToNextLevel;
     level += 1;
   }
-  if (level === last.level) xp = Math.min(xp, last.xpToNextLevel);
+  // Season 2's last level (NumSeasonLevels, 100) is one past its XP table's last row, and keeps no XP.
+  if (athenaSeason()) {
+    if (level >= top) xp = 0;
+  } else if (level === last.level) xp = Math.min(xp, last.xpToNextLevel);
   if (attributes.xp !== xp) tracker.setStat("xp", xp);
   if (attributes.level !== level) {
     log("Battle Royale", `${session.accountId} reached season level ${level}`);
     tracker.setStat("level", level);
   }
-  if (attributes.accountLevel !== level) tracker.setStat("accountLevel", level);
+  const accountLevel = accountLevelOf(tracker.profile, level);
+  if (attributes.accountLevel !== accountLevel) tracker.setStat("accountLevel", accountLevel);
   settleChaseRewards(session);
+  settleSeasonRewards(session, seasonFunctions);
 }
 
 // The season level an admin sets (Core-Backend #106): the start of that level (no XP into it) and its chase rewards up to
 // it. Going down takes nothing back, as XP only ever moved the level up. The level a 1.8 lobby can show, 1 to the last
 // season level.
-export const maxSeasonLevel = () => seasonLevels().reduce((max, entry) => Math.max(max, entry.level), 1);
+export const maxSeasonLevel = () => athenaSeason()?.numSeasonLevels ?? seasonLevels().reduce((max, entry) => Math.max(max, entry.level), 1);
 export function setSeasonLevel(session, level) {
   const tracker = session.profile("athena");
   const { attributes } = tracker.profile.stats;
   if (attributes.level !== level) tracker.setStat("level", level);
   if (attributes.xp !== 0) tracker.setStat("xp", 0);
-  if (attributes.accountLevel !== level) tracker.setStat("accountLevel", level);
+  const accountLevel = accountLevelOf(tracker.profile, level);
+  if (attributes.accountLevel !== accountLevel) tracker.setStat("accountLevel", accountLevel);
   log("Battle Royale", `${session.accountId} set to season level ${level} from the admin panel`);
   settleChaseRewards(session);
+  settleSeasonRewards(session, seasonFunctions);
 }
+
+// What profiles/seasons.js gives season rewards with.
+const seasonFunctions = { addSeasonXp, grantCosmetic, grantAthenaQuest };
+export const seasonRewardFunctions = () => seasonFunctions;
 
 // The chase rewards of the levels reached that the player lacks: banners go to profile0, where the banner editor finds
 // them, cosmetics to the locker. One the build's data doesn't have waits for a build that has it.
@@ -470,6 +533,8 @@ export function claimAthenaQuest(session, itemId) {
   log("Battle Royale", `${session.accountId} collected ${questIdOf(item)}`);
   for (const { templateId, quantity } of quest.rewards ?? []) {
     if (templateId.toLowerCase() === "accountresource:athenaseasonalxp") addSeasonXp(session, quantity);
+    // Battle Stars (1.11's challenges give 5 or 10), to the Battle Pass (profiles/seasons.js).
+    else if (templateId.toLowerCase() === "accountresource:athenaseasonalbp") addBookXp(session, quantity, seasonFunctions);
     else if (typeOf(templateId) === "quest") grantAthenaQuest(tracker, templateId.split(":")[1]);
   }
 }

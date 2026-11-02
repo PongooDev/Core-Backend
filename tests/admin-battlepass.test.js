@@ -23,13 +23,13 @@ test("admin battle pass tab: overview, custom milestones, level bypass, and rese
     assert.ok(panelHtml.body.includes('data-view="battlepass"'));
     assert.ok(panelHtml.body.includes("Battle Pass"));
     assert.ok(panelHtml.body.includes('"battlepass"'));
-    assert.ok(panelHtml.body.includes("Season 1 (1.8 – 1.11)"));
+    assert.ok(panelHtml.body.includes("Season 1 (1.8 – 1.10)"));
 
     // 2. GET /admin/api/battlepass/overview returns Season 1 2017 defaults
     const overviewRes = await admin(backend, "/battlepass/overview");
     assert.equal(overviewRes.status, 200);
     assert.equal(overviewRes.body.season, 1);
-    assert.equal(overviewRes.body.seasonName, "Season 1 (1.8 – 1.11)");
+    assert.equal(overviewRes.body.seasonName, "Season 1 (1.8 – 1.10)");
     assert.ok(overviewRes.body.seasonEnd);
 
     const cfg = overviewRes.body.config;

@@ -1,5 +1,7 @@
 import { McpError } from "../../../errors.js";
-import { grantCosmetic, ownsCosmetic } from "../../../profiles/athena.js";
+import { bundleTiers } from "../../../battlepass/season2.js";
+import { grantCosmetic, ownsCosmetic, seasonRewardFunctions } from "../../../profiles/athena.js";
+import { buyBattlePass, buyTiers, tiersLeft } from "../../../profiles/seasons.js";
 import { lootEntry } from "../../../profiles/items.js";
 import { grant, itemEvent } from "../../../profiles/progress.js";
 import { findOffer } from "../../../store/catalog.js";
@@ -58,6 +60,30 @@ export function purchaseCatalogEntry({ req, session, notifications }) {
   }
 
   const tracker = session.profile("profile0");
+  // A Battle Pass offer (battlepass/season2.js): the pass, the pass with 25 tiers, or tiers, one a purchase quantity
+  // (1.11's tier modal buys 1 to 10). Paid in profile0's V-Bucks; the pass's stats and the rewards of the tiers reached go
+  // to the athena profile (profiles/seasons.js), the cosmetics among them to the locker.
+  if (offer.battlePass) {
+    const athena = session.profile("athena").profile;
+    const owns = athena.stats.attributes.book_purchased === true;
+    if (offer.battlePass !== "tier" && purchaseQuantity !== 1) {
+      throw new McpError("errors.com.epicgames.common.invalid_parameter", `Can't buy ${purchaseQuantity} of ${offer.title}`);
+    }
+    if (offer.battlePass !== "tier" && owns) {
+      throw new McpError("errors.com.epicgames.modules.gamesubcatalog.purchase_not_allowed", "You already own the Battle Pass");
+    }
+    const tiers = offer.battlePass === "tier" ? purchaseQuantity : offer.battlePass === "bundle" ? bundleTiers : 0;
+    if (tiers > tiersLeft(athena)) {
+      throw new McpError("errors.com.epicgames.modules.gamesubcatalog.purchase_not_allowed",
+        `Only ${tiersLeft(athena)} Battle Pass tiers are left to buy`);
+    }
+    spendMtx(tracker, total);
+    const items = [];
+    if (offer.battlePass !== "tier") items.push(...buyBattlePass(session, seasonRewardFunctions()));
+    if (tiers) items.push(...buyTiers(session, tiers, seasonRewardFunctions()));
+    notifications.push({ type: "CatalogPurchase", primary: true, lootResult: { items: items.map(lootEntry) } });
+    return;
+  }
   // An item shop offer (store/itemshop.js) is a Battle Royale cosmetic, owned or not: one the player has isn't sold
   // again and costs nothing (the client shows it as owned and offers no purchase). It is paid in profile0's V-Bucks,
   // the balance 1.8's store shows, and goes to the athena profile's locker.

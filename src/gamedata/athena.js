@@ -7,9 +7,10 @@ import { perBuild } from "./read.js";
 // they are read with Cert's data, and they need the season levels and challenges. A later build whose data differs
 // overlays it as usual.
 const data = perBuild((read) => {
-  const { cosmetics = {}, displayAssets = {}, quests = {}, levels = [], objectiveStats = {} } = read("athena", {});
+  const { cosmetics = {}, displayAssets = {}, quests = {}, levels = [], objectiveStats = {}, season } = read("athena", {});
   return {
     cosmetics,
+    season,
     displayAssets,
     quests,
     levels: [...levels].sort((a, b) => a.level - b.level),
@@ -38,3 +39,11 @@ export const dailyWeight = (questId) => getAthenaQuest(questId)?.weight ?? 1;
 export const seasonLevels = () => data().levels;
 
 export const athenaObjectiveStat = (stat) => data().objectiveStats[String(stat).toLowerCase()];
+
+// The season's Battle Pass, from 1.11 (CL-3807424, Season 2; tools/extractor): AthenaSeason2 (UAthenaSeasonItemDefinition)
+// {seasonNumber, numSeasonLevels, numBookLevels, storefront, bookLevels: [{level, xpToNextLevel, xpTotal}] (BookXpCurve,
+// the Battle Stars each tier takes), seasonRewards, bookFreeRewards, bookPaidRewards: [{level, rewards: [{templateId,
+// quantity}]}] (SeasonXpScheduleFree: what reaching a season level gives; BookXpScheduleFree / BookXpSchedulePaid: what
+// reaching a tier gives the free pass and the Battle Pass)}. Undefined for 1.8 to 1.10, Season 1's builds, whose
+// AthenaGameData names the season levels itself and which have no Battle Pass.
+export const athenaSeason = () => data().season;

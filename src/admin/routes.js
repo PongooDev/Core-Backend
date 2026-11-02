@@ -41,6 +41,8 @@ import { convertLeftoverCandy } from "../events/candyllamas.js";
 import { defaultEvents, defaultMatchmakingModes, defaultServerLimits } from "../settings/store.js";
 import { calendarCacheMinutes } from "../services/fortnite/calendar.js";
 import { defaultBattlePass, enrichedMilestones } from "../battlepass/season1.js";
+import { bundleTiers, seasonTiers, seasonTwoConfig, tierPrice } from "../battlepass/season2.js";
+import { buildOfSeason, inProfileSeason, profileSeason } from "../profiles/seasons.js";
 
 import { isServerAccountName, validatePassword } from "../accounts/password.js";
 import { EmailError } from "../accounts/store.js";
@@ -174,9 +176,14 @@ export function adminRoutes(context) {
     };
   }
 
+  // The season the profile is in (1.11's Season 2 with its Battle Pass, profiles/seasons.js), with that season's cap.
   function battleRoyaleLevel(athena) {
     const attributes = athena?.stats?.attributes;
-    return attributes ? { level: attributes.level ?? 1, xp: attributes.xp ?? 0, maxLevel: maxSeasonLevel() } : null;
+    if (!attributes) return null;
+    return {
+      level: attributes.level ?? 1, xp: attributes.xp ?? 0, maxLevel: inProfileSeason(athena, maxSeasonLevel), season: profileSeason(athena),
+      ...(profileSeason(athena) > 1 ? { bookLevel: attributes.book_level ?? 1, bookXp: attributes.book_xp ?? 0, bookPurchased: attributes.book_purchased === true } : {})
+    };
   }
 
   // Runs a change on an account's profiles and answers with its new details. A player in the game gets the change as
@@ -590,11 +597,14 @@ export function adminRoutes(context) {
     return result;
   });
   // {level}: Battle Royale's season level (Core-Backend #106), at its start, with its chase rewards.
+  // The level is the season's the profile is in (profiles/seasons.js), its rewards that season's.
   router.post("/admin/api/accounts/:accountId/battle-royale-level", change(({ req, res, session, account }) => {
     const level = Number(req.body?.level);
-    if (!Number.isInteger(level) || level < 1 || level > maxSeasonLevel()) return invalid(res, `The season level must be 1 to ${maxSeasonLevel()}`);
-    if (!loadIfExists(account.id, "athena")) return invalid(res, "The account has no Battle Royale profile yet: it's made when they first play Battle Royale");
-    setSeasonLevel(session, level);
+    const athena = loadIfExists(account.id, "athena");
+    if (!athena) return invalid(res, "The account has no Battle Royale profile yet: it's made when they first play Battle Royale");
+    const top = inProfileSeason(athena, maxSeasonLevel);
+    if (!Number.isInteger(level) || level < 1 || level > top) return invalid(res, `The season level must be 1 to ${top}`);
+    inProfileSeason(athena, () => setSeasonLevel(session, level));
   }));
   router.post("/admin/api/accounts/:accountId/locker/grant-all", lockerChange((session) => ({ granted: grantFullLocker(session) })));
   router.post("/admin/api/accounts/:accountId/locker/remove-granted", lockerChange((session) => ({ removed: removeFullLocker(session) })));
@@ -1004,10 +1014,8 @@ export function adminRoutes(context) {
 
     res.json({
       season: 1,
-      seasonName: "Season 1 (1.8 – 1.11)",
-      availableSeasons: [
-        { id: 1, name: "Season 1 (1.8 – 1.11)", range: "1.8 – 1.11", active: true }
-      ],
+      seasonName: "Season 1 (1.8 – 1.10)",
+      availableSeasons,
       seasonalEvents: seasonalEventsEnabled,
       activeFlags: activeEventFlags(),
       sampleBuilds,
@@ -1135,6 +1143,11 @@ export function adminRoutes(context) {
     res.json({ success: true, resetProfiles });
   });
 
+  // ?season=2: 1.11's Battle Pass (battlepass/season2.js): its prices and its tiers' rewards, from 1.11's data.
+  const availableSeasons = [
+    { id: 1, name: "Season 1 (1.8 – 1.10)", range: "1.8 – 1.10", active: true },
+    { id: 2, name: "Season 2 (1.11)", range: "1.11", active: true }
+  ];
   router.get("/admin/api/battlepass/overview", (req, res) => {
     const s = settings?.get?.() ?? {};
     const bpConfig = s.battlepass ?? defaultBattlePass;
@@ -1142,12 +1155,20 @@ export function adminRoutes(context) {
     const shopConfig = s.itemShop ?? { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 };
     const seasonEnds = seasonEnd(now, shopConfig);
 
+    if (String(req.query.season) === "2") {
+      return res.json(inBuild(buildOfSeason(2), () => ({
+        season: 2,
+        seasonName: "Season 2 (1.11)",
+        availableSeasons,
+        seasonEnd: seasonEnds.toISOString(),
+        config: { ...seasonTwoConfig(), tierPrice, bundleTiers, xpMultiplier: bpConfig.xpMultiplier ?? 1 },
+        tiers: seasonTiers()
+      })));
+    }
     res.json({
       season: 1,
-      seasonName: "Season 1 (1.8 – 1.11)",
-      availableSeasons: [
-        { id: 1, name: "Season 1 (1.8 – 1.11)", range: "1.8 – 1.11", active: true }
-      ],
+      seasonName: "Season 1 (1.8 – 1.10)",
+      availableSeasons,
       seasonEnd: seasonEnds.toISOString(),
       config: bpConfig,
       milestones: enrichedMilestones(bpConfig)

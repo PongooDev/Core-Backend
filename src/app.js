@@ -88,6 +88,9 @@ export function createContext(config) {
     defaultFoundersAccess: () => settings.get().defaultFoundersAccess === true,
     wonPlaylists: (accountId) => Object.entries(stats.playlists(accountId))
       .filter(([playlistId, playlist]) => isMainPlaylist(playlistId) && (playlist.placetop1 ?? 0) > 0).map(([playlistId]) => Number(playlistId)),
+    // The account's recorded wins in solo, duo and squad, for a season's past_seasons record (profiles/seasons.js).
+    winCount: (accountId) => Object.entries(stats.playlists(accountId))
+      .filter(([playlistId]) => isMainPlaylist(playlistId)).reduce((sum, [, playlist]) => sum + (playlist.placetop1 ?? 0), 0),
     // Whether the account owns Save the World (Core-Backend #84): with defaultFoundersAccess on every profile0 is given
     // the founder's pack when it next loads (profiles/founders.js), so every account does; otherwise those holding one.
     ownsSaveTheWorld: (accountId) => settings.get().defaultFoundersAccess === true

@@ -1,4 +1,5 @@
 import { athenaCosmetics } from "../gamedata/athena.js";
+import { sanitizeSeasonTwo } from "./season2.js";
 
 export const defaultMilestones = [
   { templateId: "AthenaGlider:glider_id_001", name: "Aerial Assault One", type: "Glider", seasonLevel: 5, price: 500 },
@@ -43,6 +44,9 @@ export function sanitizeBattlePass(input, current = defaultBattlePass) {
       result.maxSeasonLevel = num;
     }
   }
+
+  // Season 2's Battle Pass prices (1.11, battlepass/season2.js).
+  if (input.season2 !== undefined) result.season2 = sanitizeSeasonTwo(input.season2, result.season2);
 
   if (Array.isArray(input.milestones)) {
     const sanitized = [];

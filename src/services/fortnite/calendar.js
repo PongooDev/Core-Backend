@@ -6,6 +6,8 @@ import { fiftyFifty, fiftyFiftyRegions } from "../../events/fiftyfifty.js";
 import { regionCodes } from "../../matchmaking/regions.js";
 import { hasItemShop, seasonEnd, weeklyStoreEnd } from "../../store/itemshop.js";
 import { hasSeasonShop } from "../../store/seasonshop.js";
+import { athenaSeason } from "../../gamedata/athena.js";
+import { seasonTemplateId } from "../../profiles/seasons.js";
 
 // 1.8's event calendar (ScheduledEvents' FCalendarDownload): {currentTime, channels: {<channel>: FEventsTimeline
 // {cacheExpire, states: [FEventChannelState {validFrom, activeEvents: [{eventName, activeUntil}], state}]}}}. The
@@ -27,6 +29,12 @@ import { hasSeasonShop } from "../../store/seasonshop.js";
 // the hotfix's EventFlagsForcedOnByHotfix less ...OffByHotfix), BR_Playlist_50v50's EventFlag.BR.Allow50v50 among them.
 // Its client-matchmaking channel (FFortMatchmakingEventsState) switches 50v50's queue on by region while that event runs
 // (events/fiftyfifty.js).
+//
+// 1.11 (CL-3807424) adds the season to the client-events state: FFortClientEventsState {SeasonNumber (+0x140),
+// SeasonTemplateId (+0x148), SeasonEnd, WeeklyStoreEnd, StwEventStoreEnd, StwWeeklyStoreEnd}. Its season is Season 2
+// (gamedata AthenaSeason2, profiles/seasons.js): seasonNumber 2, seasonTemplateId "AthenaSeason:athenaseason2", and its
+// Battle Pass tab counts down to seasonEnd (AthenaSeasonTab: GetSeasonStoreEndDate). Its event flags turn the winter
+// lobby on (EventFlag.LobbyWinterDecor, events/events.js).
 export const calendarCacheMinutes = 60;
 const seasonalEventManagerBuild = 3790078;
 
@@ -36,7 +44,8 @@ export function calendarRoutes({ tokens, settings }) {
   router.get("/fortnite/api/calendar/v1/timeline", requireAuth(tokens), (req, res) => {
     const now = new Date();
     const weeklyEnd = hasItemShop() ? weeklyStoreEnd(now) : undefined;
-    const seasonEnds = hasSeasonShop() ? seasonEnd(now) : undefined;
+    const season = athenaSeason();
+    const seasonEnds = hasSeasonShop() || season ? seasonEnd(now) : undefined;
     const cacheMinutes = Math.max(5, Math.min(120, Number(currentEventsConfig()?.calendarCacheMinutes ?? calendarCacheMinutes)));
     const cacheExpire = new Date(Math.min(now.getTime() + cacheMinutes * 60000, weeklyEnd?.getTime() ?? Infinity,
       seasonEnds?.getTime() ?? Infinity)).toISOString();
@@ -45,6 +54,7 @@ export function calendarRoutes({ tokens, settings }) {
     const activeEvents = flags.map((flag) => ({ [seasonal ? "eventType" : "eventName"]: flag, activeUntil: eventsActiveUntil }));
     const state = {
       ...(seasonal ? { activeEventFlags: flags } : {}),
+      ...(season ? { seasonNumber: season.seasonNumber, seasonTemplateId: seasonTemplateId() } : {}),
       ...(seasonEnds ? { seasonEnd: seasonEnds.toISOString() } : {}),
       ...(weeklyEnd ? { weeklyStoreEnd: weeklyEnd.toISOString() } : {})
     };

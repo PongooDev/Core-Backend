@@ -21,13 +21,13 @@ test("admin events tab: overview API, live countdowns, compatibility matrix, and
     assert.ok(panelHtml.body.includes('data-view="events"'));
     assert.ok(panelHtml.body.includes('Events & Seasons'));
     assert.ok(panelHtml.body.includes('Events Tab →'));
-    assert.ok(panelHtml.body.includes("Season 1 (1.8 – 1.11)"));
+    assert.ok(panelHtml.body.includes("Season 1 (1.8 – 1.10)"));
 
     // 2. GET /admin/api/events/overview returns events, live calendar, and matrix
     const res = await admin(backend, "/events/overview");
     assert.equal(res.status, 200);
     assert.equal(res.body.season, 1);
-    assert.equal(res.body.seasonName, "Season 1 (1.8 – 1.11)");
+    assert.equal(res.body.seasonName, "Season 1 (1.8 – 1.10)");
     assert.equal(typeof res.body.seasonalEvents, "boolean");
     assert.ok(Array.isArray(res.body.activeFlags));
     assert.ok(Array.isArray(res.body.sampleBuilds));

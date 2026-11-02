@@ -1,3 +1,4 @@
+import { anyBattlePassOffer, battlePassOffers } from "../battlepass/season2.js";
 import { currentBuild } from "../builds/context.js";
 import { currentEventsConfig, fortnitemares, isEventActive, mutantStorms, winter2017 } from "../events/events.js";
 import { candy } from "../events/fortnitemares.js";
@@ -123,6 +124,8 @@ function offerJson(offer, sortPriority) {
   const title = offer.athena || offer.stwEventStore ? "" : offer.title;
   return {
     offerId,
+    // A Battle Pass offer's (battlepass/season2.js), as Epic's catalog named its offers.
+    ...(offer.devName ? { devName: offer.devName } : {}),
     offerType: "StaticPrice",
     prices: [{ currencyType, currencySubType, regularPrice: price, finalPrice: price, saleType: "NotOnSale",
       saleExpiration: "9999-12-31T23:59:59.999Z" }],
@@ -138,12 +141,12 @@ function offerJson(offer, sortPriority) {
     catalogGroupPriority: 0,
     sortPriority,
     title,
-    shortDescription: "",
-    description: "",
+    shortDescription: offer.shortDescription ?? "",
+    description: offer.description ?? "",
     appStoreId: "",
-    metaAssetInfo: { structName: "FortCatalogMeta", payload: { chaseItems: [], packDefinition: offer.athena ? "" : getCardPack(templateId)?.path ?? "" } },
+    metaAssetInfo: { structName: "FortCatalogMeta", payload: { chaseItems: [], packDefinition: offer.athena || offer.battlePass ? "" : getCardPack(templateId)?.path ?? "" } },
     displayAssetPath: offer.displayAssetPath ?? "",
-    itemGrants: [{ templateId, quantity: offer.quantity ?? 1 }],
+    itemGrants: offer.itemGrants ?? [{ templateId, quantity: offer.quantity ?? 1 }],
     requirements: [],
     denyItemTemplateIds: []
   };
@@ -154,8 +157,10 @@ const holds = (profile, templateId) => Object.values(profile?.items ?? {})
 
 // profile: the viewer's profile0, for the vouchers only shown to players who have one. Battle Royale's storefronts
 // (store/itemshop.js) hold the day's offers in 1.8 and later, nothing before; its Season Shop (store/seasonshop.js) is
-// 1.8.2's and later. Save the World's Event Store (store/eventstore.js) is 1.11's, while Survive the Holidays runs.
-export function storefronts(profile, now = new Date()) {
+// 1.8.2's and later. Save the World's Event Store (store/eventstore.js) is 1.11's, while Survive the Holidays runs. The
+// Battle Pass's storefront (battlepass/season2.js) is 1.11's; athena, the viewer's athena profile, leaves out a pass
+// they own.
+export function storefronts(profile, now = new Date(), { athena } = {}) {
   const shown = allOffers().filter((offer) => offer.currencyType !== "GameItem" || offer.always
     || listedVouchers.some((voucher) => voucher.toLowerCase() === offer.currencySubType.toLowerCase())
     || holds(profile, offer.currencySubType));
@@ -164,13 +169,16 @@ export function storefronts(profile, now = new Date()) {
   const seasonShop = { name: seasonStorefront, catalogEntries: seasonShopOffers().map((offer, index) => offerJson(offer, -index)) };
   const eventStore = Object.entries(eventStoreOffers(now))
     .map(([name, offers]) => ({ name, catalogEntries: offers.map((offer, index) => offerJson(offer, -index)) }));
+  const passOffers = battlePassOffers({ ownsPass: athena?.stats.attributes.book_purchased === true });
+  const battlePass = passOffers.length ? [{ name: passOffers[0].storefront, catalogEntries: passOffers.map((offer, index) => offerJson(offer, -index)) }] : [];
   return [
     { name: "CardPackStore", catalogEntries: shown.map((offer, index) => offerJson(offer, -index)) },
     { name: "CardPackStorePromo", catalogEntries: [] },
-    ...[...itemShop, seasonShop, ...eventStore].filter(({ catalogEntries }) => catalogEntries.length)
+    ...[...itemShop, seasonShop, ...eventStore, ...battlePass].filter(({ catalogEntries }) => catalogEntries.length)
   ];
 }
 
-// An offer on sale now: the llama store's, one of the item shop's of the day, the Season Shop's or the Event Store's.
+// An offer on sale now: the llama store's, one of the item shop's of the day, the Season Shop's, the Event Store's or the
+// Battle Pass's.
 export const findOffer = (offerId, now = new Date()) => [...allOffers(), ...Object.values(itemShopOffers(now)).flat(), ...seasonShopOffers(),
-  ...Object.values(eventStoreOffers(now)).flat()].find((offer) => offer.offerId === offerId);
+  ...Object.values(eventStoreOffers(now)).flat()].find((offer) => offer.offerId === offerId) ?? anyBattlePassOffer(offerId);
