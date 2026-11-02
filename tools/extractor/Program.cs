@@ -1025,7 +1025,8 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     cosmeticKeys.Add((cosmeticId, export.ExportType, export.Name, hero, icon is null ? null : IconKey(icon), displayName));
 }
 // The item shop's display assets: Catalog/DisplayAssets' FortMtxOfferData whose TileImage is Battle Royale art
-// (UI/Foundation/Textures/BattleRoyale; the others are Save the World's founders and V-Bucks tiles), by the cosmetic they
+// (UI/Foundation/Textures/BattleRoyale, or the locker icons of the emotes' DA_EID_<name>, UI/Foundation/Textures/Icons; the
+// others are Save the World's founders and V-Bucks tiles), by the cosmetic they
 // show, as the object path an offer's displayAssetPath names (src/store/itemshop.js). Nothing in either asset points to
 // the other, so a display asset is matched by its names, DA_Featured_<key> and its tile T-Featured-<key> or
 // T-AthenaSoldiers-<key>, compared without case or separators, the first rule with exactly one cosmetic winning:
@@ -1041,6 +1042,9 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
 //   isn't Pickaxe_ID_011 (it is Pickaxe_ID_019_Heart's, Tat Axe, whose locker icon is T-Icon-Pickaxes-SK-Pickaxe-11-L);
 // - the key is the cosmetic's type and its display name (2.1's DA_Featured_PickaxeCliffhanger, tile
 //   T-Featured-PickaxeCliffhanger, is SkiIcePickaxe, "Cliffhanger").
+// Not every shop cosmetic has a display asset: 2.2's paks have none for Tracker, Desperado and the other Season 1 outfits
+// whose art is their hero's locker icon (HID 009 to 016, 018, 021 to 023, 025), nor for most gliders (Raptor's Glider_MiG,
+// Hot Rod...) and a few pickaxes; those keep the locker icon (Core-Backend #183).
 // A display asset no rule matches, or two that match one cosmetic, is left out and listed, for a new rule.
 static string Key(string name) => new string(name.Where(char.IsLetterOrDigit).ToArray()).ToLowerInvariant();
 static string WithoutPrefix(string name, params string[] prefixes) =>
@@ -1068,14 +1072,18 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     var export = package.GetExports().FirstOrDefault(e => e.ExportType == "FortMtxOfferData" && e.Name.Equals(assetName, StringComparison.OrdinalIgnoreCase));
     if (export is null) continue;
     var tile = JsonNode.Parse(JsonConvert.SerializeObject(export))!["Properties"]?["TileImage"]?["ResourceObject"]?["ObjectPath"]?.GetValue<string>();
-    if (tile?.StartsWith("FortniteGame/Content/UI/Foundation/Textures/BattleRoyale/", StringComparison.OrdinalIgnoreCase) != true) continue;
+    if (tile is null || !(tile.StartsWith("FortniteGame/Content/UI/Foundation/Textures/BattleRoyale/", StringComparison.OrdinalIgnoreCase)
+        || tile.StartsWith("FortniteGame/Content/UI/Foundation/Textures/Icons/", StringComparison.OrdinalIgnoreCase))) continue;
     var tileName = tile.Split('/').Last().Split('.')[0];
     var keys = new[]
     {
         Key(WithoutPrefix(export.Name, "DA_Featured_", "DA_")),
         Key(WithoutPrefix(tileName, "T-Featured-", "T-AthenaSoldiers-", "T-"))
     }.Distinct().ToArray();
-    var featuredKey = tileName.StartsWith("T-Featured-", StringComparison.OrdinalIgnoreCase) ? Key(tileName["T-Featured-".Length..]) : null;
+    // The tile as a locker icon's key: a featured tile is the featured twin of a locker icon, an icon tile (the emotes'
+    // DA_EID_Dab, T-Icon-Emotes-E-Dab-L) is the locker icon itself.
+    var featuredKey = tileName.StartsWith("T-Featured-", StringComparison.OrdinalIgnoreCase) ? Key(tileName["T-Featured-".Length..])
+        : tileName.StartsWith("T-Icon-", StringComparison.OrdinalIgnoreCase) ? IconKey(tileName) : null;
     // A cosmetic class's type word: AthenaPickaxeItemDefinition's "pickaxe", AthenaCharacterItemDefinition's "character".
     static string TypeWord(string cosmeticClass) => Key(cosmeticClass.Replace("ItemDefinition", "").Replace("Athena", ""));
     Func<(string TemplateId, string Class, string AssetName, string? Hero, string? Icon, string DisplayName), bool>[] rules =
