@@ -190,6 +190,14 @@ test("the system hotfix points the client's XMPP at the address and port it reac
       headers: { Host: host, "User-Agent": certUserAgent, Authorization: `bearer ${token}` } });
     assert.deepEqual(tunnelled.body, list.body);
 
+    // Through a TLS-terminating reverse proxy on https://core.example.com (Core #197): STOMP on wss:// there, XMPP on
+    // the backend's own port at that host.
+    const proxied = await send({ host: "127.0.0.1", port: backend.port, path: `/fortnite/api/cloudstorage/system/${file.uniqueFilename}`,
+      headers: { "User-Agent": certUserAgent, Authorization: `bearer ${token}`, "X-Forwarded-Proto": "https", "X-Forwarded-Host": "core.example.com" } });
+    assert.deepEqual(proxied.body.toString("utf8").split("\r\n"),
+      ["[OnlineSubsystemMcp.XMPP]", "ServerAddr=core.example.com", `ServerPort=${backend.port}`, "bUseSSL=false", "",
+        "[OnlineSubsystemMcp.StompServiceMcp]", "Protocol=wss", "Domain=core.example.com", ""]);
+
     const missing = await get(backend.port, "/fortnite/api/cloudstorage/system/DefaultInput.ini", token);
     assert.equal(missing.status, 404);
     assert.equal(missing.body.errorCode, "errors.com.epicgames.cloudstorage.file_not_found");

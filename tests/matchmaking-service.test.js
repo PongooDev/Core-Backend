@@ -7,7 +7,7 @@ import os from "node:os";
 import path from "node:path";
 import { assignmentBucket, bucketKey, bucketMatches, estimatedWaitSec, formTeams, parseBucket, playlistTeamsOf, serverRegion, showsMatchStart, withRegion } from "../src/matchmaking/service.js";
 import { regionList, regionOf, servedRegions } from "../src/matchmaking/regions.js";
-import { dedicatedServerToken, del, get, post, send, startBackend, userLogin } from "./helpers.js";
+import { certUserAgent, dedicatedServerToken, del, get, post, send, startBackend, userLogin } from "./helpers.js";
 
 // MatchmakingServiceClient's connection: a WebSocket with the ticket in its Authorization header, which the browser-style
 // WebSocket can't send. Server frames are unmasked text; client frames are masked.
@@ -260,6 +260,22 @@ test("a party's tickets wait for a registered server, which gets the match and s
     const refused = await matchmakingClient(backend.port, authorizationOf({ ...ticket.body, signature: "AAAA" }));
     assert.equal(JSON.parse(await refused.next()).name, "Error");
     assert.equal(await refused.next(), null);
+  } finally {
+    backend.close();
+  }
+});
+
+test("behind an https reverse proxy a ticket's serviceUrl is wss:// on the proxy's host (Core #197)", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "MmsProxied");
+    const ticketOf = (headers) => send({ host: "127.0.0.1", port: backend.port,
+      path: `/fortnite/api/game/v2/matchmakingservice/ticket/player/${player.accountId}?bucketId=858118782:0:NA:2&player.platform=Windows`,
+      headers: { "User-Agent": certUserAgent, Authorization: `bearer ${player.token}`, ...headers } });
+    const proxied = await ticketOf({ "X-Forwarded-Proto": "https", "X-Forwarded-Host": "core.example.com" });
+    assert.equal(proxied.status, 200);
+    assert.equal(proxied.body.serviceUrl, "wss://core.example.com");
+    assert.equal((await ticketOf({ Host: "core.example.com:5595" })).body.serviceUrl, "ws://core.example.com:5595");
   } finally {
     backend.close();
   }

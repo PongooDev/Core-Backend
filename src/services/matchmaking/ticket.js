@@ -6,16 +6,20 @@ import { notFound, sendError } from "../../errors.js";
 import { log } from "../../log.js";
 import { parseBucket } from "../../matchmaking/service.js";
 import { managesSession } from "../../matchmaking/sessions.js";
-import { defaultHostingIps } from "../../network.js";
+import { defaultHostingIps, httpsProxied } from "../../network.js";
 
 // Battle Royale's matchmaking tickets (src/matchmaking/service.js): a player's (MatchmakingServiceClient::ObtainTicket
 // 0x3AB6C40) and a gameserver's session's (MatchmakingServiceDedicatedServer ObtainTicket 0x3ABD0B0, sent through the
 // MCP service with the server's token). Their serviceUrl is this backend, whose WebSocket upgrades with an
-// Epic-Signed ticket are the matchmaking service's.
+// Epic-Signed ticket are the matchmaking service's. Behind a TLS-terminating reverse proxy (X-Forwarded-Proto: https,
+// Core #197) it is wss:// on the host the client used, which the proxy hands back to this backend's WebSocket.
 export function ticketRoutes({ tokens, sessions, matchmaker, settings }) {
   const router = express.Router();
   const base = "/fortnite/api/game/v2/matchmakingservice/ticket";
-  const serviceUrl = (req) => `${req.socket.encrypted ? "wss" : "ws"}://${req.get("host")}`;
+  const serviceUrl = (req) => {
+    const proxied = httpsProxied(req);
+    return proxied ? `wss://${proxied.host}` : `${req.socket.encrypted ? "wss" : "ws"}://${req.get("host")}`;
+  };
   const list = (value) => String(value ?? "").split(",").filter(Boolean);
 
   router.get(`${base}/player/:accountId`, requireAuth(tokens), (req, res) => {

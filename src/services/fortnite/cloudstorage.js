@@ -8,7 +8,7 @@ import { getBuild } from "../../builds/detect.js";
 import { sendError } from "../../errors.js";
 import { lootHotfixSection } from "../../events/contentupdates.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
-import { createNetwork } from "../../network.js";
+import { createNetwork, httpsProxied } from "../../network.js";
 
 const validFilename = /^[A-Za-z0-9._-]{1,128}$/;
 
@@ -19,6 +19,9 @@ const validFilename = /^[A-Za-z0-9._-]{1,128}$/;
 // public address it can reach this machine at: network.js reachableAddress). STOMP's service config takes Protocol
 // and Domain from [OnlineSubsystemMcp.StompServiceMcp] the same way (sub_3808800); its URL is
 // <Protocol>://<Domain>/stomp. Nothing is written on the player's PC.
+// Behind a TLS-terminating reverse proxy (X-Forwarded-Proto: https, Core #197) STOMP is wss:// on the host the client
+// used, which the proxy hands back to this backend. XMPP is a plain TCP stream no HTTP proxy carries, so it stays on
+// this backend's own port, at publicAddress, else the proxy's host name (network.js reachableAddress).
 // DefaultGame.ini turns off the client's cache of stats answers (Core #112). The Battle Royale stats screen's query
 // (QueryPlayerStats, 1.7.2 0x72B700, 1.8 0x772F20) first looks its URL up in the MCP utils' response cache (1.7.2
 // 0x70C760, 1.8 0x750DF0), which drops the answers older than UFortGlobals::TimeBetweenLeaderboardRequestsMinutes
@@ -47,9 +50,10 @@ const defaultNetwork = createNetwork();
 function systemFiles(req, network = defaultNetwork) {
   const address = network.reachableAddress(req);
   const port = req.socket.localPort;
+  const proxied = httpsProxied(req);
   const engine = [
     "[OnlineSubsystemMcp.XMPP]", `ServerAddr=${address}`, `ServerPort=${port}`, "bUseSSL=false", "",
-    "[OnlineSubsystemMcp.StompServiceMcp]", "Protocol=ws", `Domain=${address}:${port}`, ""
+    "[OnlineSubsystemMcp.StompServiceMcp]", `Protocol=${proxied ? "wss" : "ws"}`, `Domain=${proxied ? proxied.host : `${address}:${port}`}`, ""
   ].join("\r\n");
   const game = gameFile(statsAnswerMinutes(getBuild(req))) + lootHotfixSection();
   return { "DefaultEngine.ini": Buffer.from(engine, "utf8"), "DefaultGame.ini": Buffer.from(game, "utf8") };

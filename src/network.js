@@ -100,6 +100,23 @@ export function validateNetwork(values, source) {
   }
 }
 
+// A request a TLS-terminating reverse proxy (Caddy, nginx, a Cloudflare tunnel and the like) forwarded from an https://
+// backend address, as its X-Forwarded-Proto says (Core #197, Core-Launcher #9): { host, hostname } of the address the
+// client used (X-Forwarded-Host, else Host), or null for any other request. The headers are the client's to write,
+// but all they change is the addresses that client itself is handed back (wss:// and the proxy's host).
+export function httpsProxied(req) {
+  const first = (name) => String(req?.headers?.[name] ?? "").split(",")[0].trim();
+  if (first("x-forwarded-proto").toLowerCase() !== "https") return null;
+  const host = first("x-forwarded-host") || first("host");
+  let hostname = "";
+  try {
+    hostname = new URL(`https://${host}`).hostname.replace(/^\[(.*)\]$/, "$1");
+  } catch {
+    return null;
+  }
+  return host && hostname ? { host, hostname } : null;
+}
+
 // The IPv4 address in a Host header ("1.2.3.4:5595"), which is the address a client using the redirect typed in.
 function hostHeaderAddress(req) {
   const host = String(req?.headers?.host ?? "").replace(/:\d+$/, "");
@@ -185,9 +202,14 @@ export function createNetwork(config = {}) {
 
     // Which address of this machine the requester should use: the one it reached the backend on when it is on this PC or
     // its network; for a player on the internet, publicAddress, else the IP it typed (the Host header the redirect
-    // sends), else the local address.
+    // sends), else the local address. A request an https reverse proxy forwarded comes from the proxy (often this PC), so
+    // its player is handed publicAddress, else the host name it used for the backend.
     reachableAddress(req) {
       const local = normalizeAddress(req?.socket?.localAddress);
+      const proxied = httpsProxied(req);
+      if (proxied && proxied.hostname.toLowerCase() !== "localhost" && !isLoopback(proxied.hostname)) {
+        return resolved.address ?? normalizeAddress(proxied.hostname);
+      }
       if (isNearby(req?.socket?.remoteAddress)) return local;
       return resolved.address ?? hostHeaderAddress(req) ?? local;
     },

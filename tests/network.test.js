@@ -7,7 +7,7 @@ import path from "node:path";
 import { loadConfig } from "../src/config.js";
 import { listen } from "../src/listen.js";
 import { createSessionStore, sessionJson } from "../src/matchmaking/sessions.js";
-import { createNetwork, isPrivate, lanAddresses, validPublicAddress } from "../src/network.js";
+import { createNetwork, httpsProxied, isPrivate, lanAddresses, validPublicAddress } from "../src/network.js";
 import { createServer } from "../src/server.js";
 import { get, post, startBackend } from "./helpers.js";
 
@@ -73,6 +73,23 @@ test("XMPP is pointed at the address each player can reach this machine at", () 
   assert.equal(network.reachableAddress(viewer("198.51.100.20", "192.168.1.10", "203.0.113.99:5595")), "203.0.113.7");
   assert.equal(createNetwork().reachableAddress(viewer("198.51.100.20", "192.168.1.10", "203.0.113.99:5595")), "203.0.113.99");
   assert.equal(createNetwork().reachableAddress(viewer("198.51.100.20", "192.168.1.10")), "192.168.1.10");
+});
+
+test("a request an https reverse proxy forwarded is answered with the proxy's host (Core #197)", () => {
+  const proxied = (headers) => ({ socket: { remoteAddress: "::ffff:127.0.0.1", localAddress: "::ffff:127.0.0.1" }, headers });
+  assert.deepEqual(httpsProxied(proxied({ host: "core.example.com", "x-forwarded-proto": "https" })), { host: "core.example.com", hostname: "core.example.com" });
+  assert.deepEqual(httpsProxied(proxied({ host: "127.0.0.1:5595", "x-forwarded-proto": "https, http", "x-forwarded-host": "core.example.com:8443" })),
+    { host: "core.example.com:8443", hostname: "core.example.com" });
+  assert.equal(httpsProxied(proxied({ host: "core.example.com", "x-forwarded-proto": "http" })), null);
+  assert.equal(httpsProxied(proxied({ host: "core.example.com" })), null);
+  assert.equal(httpsProxied(proxied({ "x-forwarded-proto": "https" })), null);
+
+  // XMPP: publicAddress when set, else the host name the player used; a proxy on this PC isn't where players are.
+  const forwarded = proxied({ host: "127.0.0.1:5595", "x-forwarded-proto": "https", "x-forwarded-host": "core.example.com" });
+  assert.equal(createNetwork().reachableAddress(forwarded), "core.example.com");
+  assert.equal(createNetwork({ publicAddress: "203.0.113.7" }).reachableAddress(forwarded), "203.0.113.7");
+  assert.equal(createNetwork().reachableAddress(proxied({ host: "localhost:8443", "x-forwarded-proto": "https" })), "127.0.0.1");
+  assert.equal(createNetwork().reachableAddress(proxied({ host: "127.0.0.1:5595" })), "127.0.0.1");
 });
 
 test("a public host name is looked up, as the client wants an IP", async () => {

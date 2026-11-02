@@ -13,7 +13,7 @@ import { athenaCosmetics } from "../gamedata/athena.js";
 import { dataBuilds, readGameData } from "../gamedata/read.js";
 import { recentLogs } from "../log.js";
 import { sessionSummary } from "../matchmaking/sessions.js";
-import { defaultHostingIps, hostingIp, maxHostingIps } from "../network.js";
+import { defaultHostingIps, hostingIp, httpsProxied, maxHostingIps } from "../network.js";
 import { alertsRemaining, clearedAlertRecord, emptyAlertRecord, withQuotaSlots } from "../profiles/alerts.js";
 import { fullLockerState, grantCosmetic, grantFullLocker, grantShopCosmetics, lockerCosmeticId, lockerCosmetics, maxSeasonLevel, ownsCosmetic, removeFullLocker, removeLockerCosmetic,
   setSeasonLevel } from "../profiles/athena.js";
@@ -810,6 +810,9 @@ export function adminRoutes(context) {
     const port = network?.listening?.port || req.socket?.localPort || 5595;
     const protocol = req.protocol || "http";
 
+    // Behind an https reverse proxy the portal is where the proxy serves it.
+    const proxied = httpsProxied(req);
+    if (proxied) return `https://${proxied.host}/register`;
     const publicHost = net.publicAddress ? (res.address || net.publicAddress) : (res.address || null);
     if (publicHost) {
       return `${protocol}://${publicHost}:${port}/register`;
@@ -823,6 +826,8 @@ export function adminRoutes(context) {
     const port = network?.listening?.port || req.socket?.localPort || 5595;
     const protocol = req.protocol || "http";
 
+    const proxied = httpsProxied(req);
+    if (proxied) return `https://${proxied.host}/reset-password?token=${token}`;
     const publicHost = net.publicAddress ? (res.address || net.publicAddress) : (res.address || null);
     if (publicHost) {
       return `${protocol}://${publicHost}:${port}/reset-password?token=${token}`;
