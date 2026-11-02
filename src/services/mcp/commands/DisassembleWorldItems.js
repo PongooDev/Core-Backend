@@ -42,8 +42,8 @@ export function disassemblyResults(item) {
   return results.map(({ templateId, quantity }) => ({ templateId, quantity: Math.max(0, Math.trunc(f(Math.max(quantity, 0) * percent))) }));
 }
 
-// The quickbar slots (ModifyQuickbar's FGuid text) that held a recycled item are emptied.
-function unslot(tracker, itemIds) {
+// The quickbar slots (ModifyQuickbar's FGuid text) that held an item that left the backpack are emptied.
+export function unslot(tracker, itemIds) {
   const loadout = tracker.profile.stats.attributes.player_loadout;
   if (!loadout) return;
   const gone = new Set(itemIds.map((itemId) => itemId.replace(/-/g, "").toUpperCase()));

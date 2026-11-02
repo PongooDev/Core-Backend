@@ -42,6 +42,16 @@ function attribute(profile, name) {
 export const vaultLimit = (profile) => attribute(profile, "InventorySizeBonus") + heldQuantity(profile, "Token:AccountInventoryBonus");
 export const backpackLimit = (profile) => attribute(profile, "WorldInventorySizeBonus") + heldQuantity(profile, "Token:WorldInventoryBonus");
 
+// The storm shield's storage (outpost0) in the front end, 2.1's UFortInventoryContext capacity (sub_6B20B0) and count
+// (sub_6B2640) for the storage vault: limit = (int) StorageInventorySizeBonus (the skill tree's storage nodes, +5
+// each), no token; count = every item the outpost profile holds (sub_2E6ECA0, the profile's item map), whatever its
+// definition or quantity. UFortOutpostFunctionLibrary::GetStorageVaultCapacity (sub_803530) reads the same attribute.
+export const storageLimit = (profile) => attribute(profile, "StorageInventorySizeBonus");
+
+export function storageState(outpost, profile0) {
+  return { count: Object.keys(outpost.items).length, limit: storageLimit(profile0) };
+}
+
 export const isLimited = (item) => Boolean(getItem(item.templateId)?.inventorySizeLimited);
 export const inOverflow = (item) => Boolean(item?.attributes?.inventory_overflow_date);
 

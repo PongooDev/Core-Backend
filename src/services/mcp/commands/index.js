@@ -35,6 +35,7 @@ import { setItemFavoriteStatus } from "./SetItemFavoriteStatus.js";
 import { setMtxPlatform } from "./SetMtxPlatform.js";
 import { setPinnedQuests } from "./SetPinnedQuests.js";
 import { skipTutorial } from "./SkipTutorial.js";
+import { storageTransfer } from "./StorageTransfer.js";
 import { transmogItem } from "./TransmogItem.js";
 import { unassignAllSquads } from "./UnassignAllSquads.js";
 import { updateQuestClientObjectives } from "./UpdateQuestClientObjectives.js";
@@ -90,6 +91,7 @@ export const clientCommands = {
   TwitchUpdateBroadcasterRegistration: () => {},
   SlotItemInCollectionBook: slotItemInCollectionBook,
   StartExpedition: startExpeditionCommand,
+  StorageTransfer: storageTransfer,
   TransmogItem: transmogItem,
   UnassignAllSquads: unassignAllSquads,
   UpdateQuestClientObjectives: updateQuestClientObjectives,
