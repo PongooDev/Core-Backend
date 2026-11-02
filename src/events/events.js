@@ -43,11 +43,13 @@ export const passiveStorms = "EventFlag.PassiveStorms";
 // its RequiredEventTag, EventFlag.LobbyWinterDecor, is on, as LobbyBG_Halloween did with EventFlag.LobbyHalloweenDecor;
 // the seasonal event manager takes its flags from the calendar's client-events state (services/fortnite/calendar.js).
 // The holiday Battle Bus (BR_Decor_WinterBus's EventFlag.WinterBattleBus) flew all through Season 2's Winterfest, as
-// players' 1.11 matches show (CoreV2 #176); the gameserver takes its flags from the same calendar. 1.11's other Battle
-// Royale winter events (BR_Decor_SupplyDropGift's EventFlag.SupplyDropGift and BR_Winter_CandyCaneGuns'
-// EventFlag.BR.CandyCaneGuns) change the match and are left off (🟡: nothing found says when Epic ran them).
+// players' 1.11 matches show (CoreV2 #176); the gameserver takes its flags from the same calendar. Its supply drops came
+// down gift-wrapped too (BR_Decor_SupplyDropGift's EventFlag.SupplyDropGift, CoreV2 #176). The last winter event,
+// BR_Winter_CandyCaneGuns' EventFlag.BR.CandyCaneGuns, changes the match's weapons and is left off (🟡: nothing found
+// says when Epic ran it).
 export const lobbyWinterDecor = "EventFlag.LobbyWinterDecor";
 export const winterBattleBus = "EventFlag.WinterBattleBus";
+export const supplyDropGift = "EventFlag.SupplyDropGift";
 
 // 2.1 (CL-3825894, 10 January 2018) keeps all of 1.11's events: its data has the same mission alerts, quests, event
 // items and playlists, and its notes end none of them. The next update ended them: 2.2.0's notes end the Battle Royale
@@ -62,7 +64,8 @@ const events = [
   { name: winter2017, flag: winter2017, firstBuild: 3807424, lastBuild: 3825894 },
   { name: passiveStorms, flag: passiveStorms, firstBuild: 3807424, lastBuild: 3825894 },
   { name: lobbyWinterDecor, flag: lobbyWinterDecor, firstBuild: 3807424, lastBuild: 3825894 },
-  { name: winterBattleBus, flag: winterBattleBus, firstBuild: 3807424, lastBuild: 3825894 }
+  { name: winterBattleBus, flag: winterBattleBus, firstBuild: 3807424, lastBuild: 3825894 },
+  { name: supplyDropGift, flag: supplyDropGift, firstBuild: 3807424, lastBuild: 3825894 }
 ];
 
 const runsOn = (event, number) => number >= event.firstBuild && number <= event.lastBuild;
@@ -99,7 +102,7 @@ export function activeEventFlags(changelist = currentBuild()) {
     return ["EventFlag.Vindertech", "EventFlag.ActiveStorms"];
   }
   if (config?.mode === "force_winter2017") {
-    return [winter2017, passiveStorms, lobbyWinterDecor, winterBattleBus, ...fiftyFiftyFlags];
+    return [winter2017, passiveStorms, lobbyWinterDecor, winterBattleBus, supplyDropGift, ...fiftyFiftyFlags];
   }
   if (config?.mode === "custom") {
     return Array.isArray(config.customFlags) ? config.customFlags : [];
@@ -128,7 +131,8 @@ export function isEventActive(nameOrFlag, changelist = currentBuild()) {
     return nameOrFlag === winter2017 || nameOrFlag === "EventFlag.Winter2017"
       || nameOrFlag === passiveStorms || nameOrFlag === "EventFlag.PassiveStorms"
       || nameOrFlag === lobbyWinterDecor || nameOrFlag === "EventFlag.LobbyWinterDecor"
-      || nameOrFlag === winterBattleBus || nameOrFlag === "EventFlag.WinterBattleBus";
+      || nameOrFlag === winterBattleBus || nameOrFlag === "EventFlag.WinterBattleBus"
+      || nameOrFlag === supplyDropGift || nameOrFlag === "EventFlag.SupplyDropGift";
   }
   if (config?.mode === "custom") {
     const flags = Array.isArray(config.customFlags) ? config.customFlags : [];

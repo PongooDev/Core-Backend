@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { inBuild } from "../src/builds/context.js";
 import { battleRoyaleBuilds, versionOf } from "../src/builds/detect.js";
-import { activeEventFlags, hasEventEnded, isEventActive, lobbyWinterDecor, passiveStorms, winter2017, winterBattleBus } from "../src/events/events.js";
+import { activeEventFlags, hasEventEnded, isEventActive, lobbyWinterDecor, passiveStorms, supplyDropGift, winter2017, winterBattleBus } from "../src/events/events.js";
 import { holidayLlama, winterEventQuests } from "../src/events/winter2017.js";
 import { athenaCosmetics, athenaDisplayAssets, athenaSeason } from "../src/gamedata/athena.js";
 import { getCardPack, getItem } from "../src/gamedata/items.js";
@@ -72,8 +72,8 @@ test("2.1 is still Season 2: 1.11's Battle Pass, season clock and shop", () => {
 });
 
 test("2.1 keeps 1.11's events: Survive the Holidays, ticketless storms, the winter lobby and bus, and 50v50", () => {
-  assert.deepEqual(activeEventFlags(v21), ["EventFlag.BR.Allow50v50", winter2017, passiveStorms, lobbyWinterDecor, winterBattleBus]);
-  for (const flag of [winter2017, passiveStorms, lobbyWinterDecor, winterBattleBus]) {
+  assert.deepEqual(activeEventFlags(v21), ["EventFlag.BR.Allow50v50", winter2017, passiveStorms, lobbyWinterDecor, winterBattleBus, supplyDropGift]);
+  for (const flag of [winter2017, passiveStorms, lobbyWinterDecor, winterBattleBus, supplyDropGift]) {
     assert.ok(isEventActive(flag, v21), flag);
     assert.ok(!hasEventEnded(flag, v21), flag);
     // 2.2.0 ended them.

@@ -47,7 +47,7 @@ test("1.11 is known by its version and plays on its own game data", () => {
 });
 
 test("1.11 runs Survive the Holidays under EventFlag.Winter2017, ends the Mutant Storms and keeps storms without tickets", () => {
-  assert.deepEqual(activeEventFlags(v111), ["EventFlag.BR.Allow50v50", winter2017, passiveStorms, lobbyWinterDecor, "EventFlag.WinterBattleBus"]);
+  assert.deepEqual(activeEventFlags(v111), ["EventFlag.BR.Allow50v50", winter2017, passiveStorms, lobbyWinterDecor, "EventFlag.WinterBattleBus", "EventFlag.SupplyDropGift"]);
   assert.ok(isEventActive(winter2017, v111) && isEventActive(passiveStorms, v111));
   assert.ok(!isEventActive(mutantStorms, v111) && !isEventActive("EventFlag.ActiveStorms", v111));
   assert.ok(hasEventEnded(mutantStorms, v111));
