@@ -28,7 +28,18 @@ import { weeklyStoreEnd } from "./itemshop.js";
 // survivor 700, legendary hero 2,800, legendary schematic 1,680, epic schematic 600, ten Pure Drops of Rain 50, ten
 // Lightning in a Bottle 100, ten Eyes of the Storm 150, ten Storm Shards 200, five Legendary Flux 75). Which other items
 // the event and the weeks sold is Core's choice (🟡).
+//
+// The weekly section also sells for Daily Coins (Core-Backend #173). 1.11's notes: "These items can be purchased with new
+// currencies: Seasonal Gold and Daily Coins ... Daily Coins are earned by completing Daily Quests", 100 a daily quest
+// (1.11's dailies). Daily Coins are AccountResource:specialcurrency_daily (SpecialCurrency_Daily, "Special currency used
+// to purchase items from the Event Store"), and EventStoreRoot's Update Currency (1.11 to 2.2) shows its balance
+// (TextDailyCoin) beside Seasonal Gold's (TextGoldBar). Epic's Daily Coin offers were a week's legendary schematics for
+// 700 each: 8.00's notes move "Daily Coin offers from the Weekly Store" from 700 Daily Coins to 1,680 Gold (a legendary
+// schematic's Gold price), and the issue's screenshot of a later store shows a legendary weapon (Copper Socket Slugger)
+// and a legendary trap (Healing Pad) for 700 each. So every week a legendary weapon and a legendary trap schematic sell
+// for 700 Daily Coins, one of each; which ones 1.11 to 2.2's weeks sold isn't recorded, so the picks are Core's (🟡).
 export const seasonalGold = "AccountResource:eventcurrency_scaling";
+export const dailyCoins = "AccountResource:specialcurrency_daily";
 export const eventStorefront = "STWSpecialEventStoreFront";
 export const weeklyStorefront = "STWRotationalEventStorefront";
 export const eventPurchaseTracker = "EventPurchaseTracker:generic_instance";
@@ -83,11 +94,21 @@ const coreWeapons = [
   "sniper_auto", "sniper_boltaction_scope", "sniper_hydraulic", "sniper_shredder", "sniper_standard_scope",
   "sniper_standard", "sniper_tripleshot"
 ];
+// The core traps: no holiday (falling ceiling, freeze) ones.
+const coreTraps = [
+  "ceiling_electric_aoe", "ceiling_electric_single", "ceiling_gas", "floor_health", "floor_launcher", "floor_spikes",
+  "floor_spikes_wood", "floor_ward", "wall_darts", "wall_electric", "wall_launcher", "wall_light", "wall_wood_spikes"
+];
 const weeklyPicks = [
   { pool: coreHeroes.map((name) => `Hero:hid_${name}_sr_t01`), price: 2800, limit: 1 },
   { pool: coreWeapons.map((name) => `Schematic:sid_${name}_sr_ore_t01`), price: 1680, limit: 1 },
   { pool: coreWeapons.map((name) => `Schematic:sid_${name}_vr_ore_t01`), price: 600, limit: 1 },
   { pool: coreHeroes.map((name) => `Hero:hid_${name}_r_t01`), price: 400, limit: 1 }
+];
+// The week's Daily Coin offers, while the build's data has Daily Coins.
+const dailyCoinPicks = [
+  { pool: coreWeapons.map((name) => `Schematic:sid_${name}_sr_ore_t01`), price: 700, limit: 1, currency: dailyCoins },
+  { pool: coreTraps.map((name) => `Schematic:sid_${name}_sr_t01`), price: 700, limit: 1, currency: dailyCoins }
 ];
 
 // The store is open while the requesting build runs Survive the Holidays and its data has Seasonal Gold.
@@ -114,16 +135,22 @@ function weeklyItems(week) {
   const first = Math.floor(weekRandom(week, weeklyPicks.length) * resources.length);
   const second = (first + 1 + Math.floor(weekRandom(week, weeklyPicks.length + 1) * (resources.length - 1))) % resources.length;
   const chosen = resources.length > 1 ? [resources[first], resources[second]] : resources;
-  return [...picks.slice(0, 3), ...chosen, ...weeklyStaples.filter(has), ...picks.slice(3)];
+  // The Daily Coin picks, never the week's Seasonal Gold schematic.
+  const coinPicks = getItem(dailyCoins) ? dailyCoinPicks.map(({ pool, ...offer }, index) => {
+    const offered = pool.filter((templateId) => getItem(templateId) && !picks.some((pick) => pick.templateId === templateId));
+    return offered.length
+      ? { ...offer, templateId: offered[Math.floor(weekRandom(week, weeklyPicks.length + 2 + index) * offered.length)] } : undefined;
+  }).filter(Boolean) : [];
+  return [...coinPicks, ...picks.slice(0, 3), ...chosen, ...weeklyStaples.filter(has), ...picks.slice(3)];
 }
 
-const toOffer = (offerId, instance) => ({ templateId, quantity = 1, price, limit }) => ({
+const toOffer = (offerId, instance) => ({ templateId, quantity = 1, price, limit, currency = seasonalGold }) => ({
   offerId,
   templateId,
   quantity,
   title: "",
   currencyType: "GameItem",
-  currencySubType: seasonalGold,
+  currencySubType: currency,
   price,
   eventLimit: limit,
   purchaseLimitingEventId: instance,
@@ -134,7 +161,7 @@ const toOffer = (offerId, instance) => ({ templateId, quantity = 1, price, limit
 export function eventStoreOffers(now = new Date()) {
   if (!hasEventStore()) return { [eventStorefront]: [], [weeklyStorefront]: [] };
   const week = storeWeek(now);
-  const offerName = (item) => `${nameOf(item.templateId)}${item.quantity > 1 ? `_x${item.quantity}` : ""}`;
+  const offerName = (item) => `${nameOf(item.templateId)}${item.quantity > 1 ? `_x${item.quantity}` : ""}${item.currency === dailyCoins ? "_dailycoins" : ""}`;
   return {
     [eventStorefront]: eventItems.filter(has).map((item) => toOffer(`core_stw_event_${offerName(item)}`, eventStoreInstance)(item)),
     [weeklyStorefront]: weeklyItems(week).map((item) => toOffer(`core_stw_weekly_${week}_${offerName(item)}`, weeklyStoreInstance)(item))

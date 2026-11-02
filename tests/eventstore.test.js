@@ -5,7 +5,7 @@ import path from "node:path";
 import { inBuild } from "../src/builds/context.js";
 import { trackChanges } from "../src/profiles/changes.js";
 import { storefronts } from "../src/store/catalog.js";
-import { ensureEventPurchaseTrackers, eventPurchaseTracker, eventStorefront, eventStoreInstance, seasonalGold, storeWeek,
+import { dailyCoins, ensureEventPurchaseTrackers, eventPurchaseTracker, eventStorefront, eventStoreInstance, seasonalGold, storeWeek,
   weeklyStoreInstance, weeklyStorefront } from "../src/store/eventstore.js";
 import { send, startBackend, userLogin } from "./helpers.js";
 
@@ -45,9 +45,9 @@ test("1.11's Weekly Items are the same all week and change with the weekly count
   assert.deepEqual(ids(weekly(monday)), ids(weekly(sameWeek)));
   assert.notDeepEqual(ids(weekly(monday)), ids(weekly(nextWeek)));
   const entries = weekly(monday);
-  assert.equal(entries.length, 9);
+  assert.equal(entries.length, 11);
   for (const entry of entries) {
-    assert.equal(entry.prices[0].currencySubType, seasonalGold);
+    assert.ok([seasonalGold, dailyCoins].includes(entry.prices[0].currencySubType));
     assert.equal(meta(entry).PurchaseLimitingEventId, weeklyStoreInstance);
     assert.ok(entry.offerId.includes(inBuild(v111, () => storeWeek(monday))), entry.offerId);
   }
@@ -59,6 +59,18 @@ test("1.11's Weekly Items are the same all week and change with the weekly count
   // A rare hero for 400 and a legendary one for 2,800.
   assert.ok(entries.some((entry) => /^Hero:hid_.*_r_t01$/.test(grantOf(entry).templateId) && entry.prices[0].finalPrice === 400));
   assert.ok(entries.some((entry) => /^Hero:hid_.*_sr_t01$/.test(grantOf(entry).templateId) && entry.prices[0].finalPrice === 2800));
+  // For Daily Coins (Core-Backend #173): a legendary weapon and a legendary trap schematic, 700 each, one of each.
+  const coins = entries.filter((entry) => entry.prices[0].currencySubType === dailyCoins);
+  assert.equal(coins.length, 2);
+  assert.ok(coins.every((entry) => entry.prices[0].finalPrice === 700 && meta(entry).EventLimit === "1"));
+  assert.match(grantOf(coins[0]).templateId, /^Schematic:sid_.*_sr_ore_t01$/);
+  assert.match(grantOf(coins[1]).templateId, /^Schematic:sid_(floor|wall|ceiling)_.*_sr_t01$/);
+  const goldSchematic = entries.find((entry) => entry.prices[0].finalPrice === 1680);
+  assert.notEqual(grantOf(goldSchematic).templateId, grantOf(coins[0]).templateId);
+  // 2.1 and 2.2 sell them too, while Survive the Holidays runs.
+  for (const changelist of ["3825894", "3841827"]) {
+    assert.equal(entriesOf(changelist, weeklyStorefront, monday).filter((entry) => entry.prices[0].currencySubType === dailyCoins).length, 2);
+  }
 });
 
 test("a new week takes the past weeks' purchases out of the weekly tracker and keeps the event's", () => inBuild(v111, () => {
@@ -119,6 +131,32 @@ test("1.11's Event Store sells for Seasonal Gold up to each offer's limit, count
     const after = profileOf(await mcp(v111, backend.port, player, "QueryProfile"));
     assert.equal(held(after, seasonalGold), 5000 - 2 * 1680);
     assert.equal(held(after, "Schematic:sid_edged_sword_light_sr_ore_t01"), 2);
+  } finally {
+    backend.close();
+  }
+});
+
+test("the weekly Daily Coin offers sell for Daily Coins, once each (Core-Backend #173)", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "DailyCoins");
+    await mcp(v111, backend.port, player, "QueryProfile");
+    const file = path.join(backend.dataDir, "accounts", player.accountId, "profiles", "profile0.json");
+    const saved = JSON.parse(fs.readFileSync(file, "utf8"));
+    saved.items.core_test_coins = { templateId: dailyCoins, attributes: {}, quantity: 1000 };
+    fs.writeFileSync(file, JSON.stringify(saved));
+
+    const offer = entriesOf(v111, weeklyStorefront).find((entry) => entry.prices[0].currencySubType === dailyCoins);
+    const buy = (currencySubType) => mcp(v111, backend.port, player, "PurchaseCatalogEntry", { offerId: offer.offerId, purchaseQuantity: 1,
+      currency: "GameItem", currencySubType, expectedPrice: 700 });
+    // Not for Seasonal Gold.
+    assert.equal((await buy(seasonalGold)).body.errorCode, "errors.com.epicgames.common.invalid_parameter");
+    const bought = await buy(dailyCoins);
+    assert.equal(bought.status, 200, JSON.stringify(bought.body));
+    assert.equal(held(profileOf(bought), dailyCoins), 300);
+    assert.equal(held(profileOf(bought), grantOf(offer).templateId), 1);
+    // One left: none.
+    assert.equal((await buy(dailyCoins)).body.errorCode, "errors.com.epicgames.modules.gamesubcatalog.purchase_not_allowed");
   } finally {
     backend.close();
   }
