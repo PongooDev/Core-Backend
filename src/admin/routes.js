@@ -34,7 +34,7 @@ import { clearSessionCookie, extractAdminToken } from "./auth.js";
 import { createRateLimiter, getClientIp } from "../services/portal/ratelimit.js";
 import { defaultBattleRoyaleNews, defaultLoginMessage, defaultSubgameSelect } from "../services/content/pages.js";
 import { inBuild } from "../builds/context.js";
-import { battleRoyaleBuilds, certBuild, versionOf } from "../builds/detect.js";
+import { battleRoyaleBuilds, certBuild, seasonName, seasonVersions, versionOf } from "../builds/detect.js";
 import { cosmeticRarity, cosmeticType, eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, seasonEnd, seasonStart, shopDay, weeklyStoreEnd, withoutSeasonStartRecording } from "../store/itemshop.js";
 import { activeEventFlags, fortnitemares, mutantStorms } from "../events/events.js";
 import { convertLeftoverCandy } from "../events/candyllamas.js";
@@ -1022,7 +1022,7 @@ export function adminRoutes(context) {
 
     res.json({
       season: 1,
-      seasonName: "Season 1 (1.8 – 1.10)",
+      seasonName: seasonName(1),
       availableSeasons,
       seasonalEvents: seasonalEventsEnabled,
       activeFlags: activeEventFlags(),
@@ -1154,10 +1154,8 @@ export function adminRoutes(context) {
 
   // ?season=2: Season 2's Battle Pass (1.11 and 2.1, battlepass/season2.js): its prices and its tiers' rewards, from the
   // season's newest data (profiles/seasons.js buildOfSeason).
-  const availableSeasons = [
-    { id: 1, name: "Season 1 (1.8 – 1.10)", range: "1.8 – 1.10", active: true },
-    { id: 2, name: "Season 2 (1.11 – 2.1)", range: "1.11 – 2.1", active: true }
-  ];
+  // Each season's name by its versions (builds/detect.js battleRoyaleSeasons): Season 2 is 1.11 to 2.5.
+  const availableSeasons = [1, 2].map((id) => ({ id, name: seasonName(id), range: seasonVersions(id), active: true }));
   router.get("/admin/api/battlepass/overview", (req, res) => {
     const s = settings?.get?.() ?? {};
     const bpConfig = s.battlepass ?? defaultBattlePass;
@@ -1168,7 +1166,7 @@ export function adminRoutes(context) {
     if (String(req.query.season) === "2") {
       return res.json(inBuild(buildOfSeason(2), () => ({
         season: 2,
-        seasonName: "Season 2 (1.11 – 2.1)",
+        seasonName: seasonName(2),
         availableSeasons,
         seasonEnd: seasonEnds(2),
         config: { ...seasonTwoConfig(), tierPrice, bundleTiers, xpMultiplier: bpConfig.xpMultiplier ?? 1 },
@@ -1177,7 +1175,7 @@ export function adminRoutes(context) {
     }
     res.json({
       season: 1,
-      seasonName: "Season 1 (1.8 – 1.10)",
+      seasonName: seasonName(1),
       availableSeasons,
       seasonEnd: seasonEnds(1),
       config: bpConfig,

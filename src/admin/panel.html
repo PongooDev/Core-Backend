@@ -1868,7 +1868,7 @@
         onchange: (e) => onchange?.(e.target.value)
       },
         el("option", { value: "1", text: "Season 1 (1.8 – 1.10)", selected: String(selected) === "1" }),
-        el("option", { value: "2", text: "Season 2 (1.11 – 2.1)", selected: String(selected) === "2" })
+        el("option", { value: "2", text: "Season 2 (1.11 – 2.5)", selected: String(selected) === "2" })
       )
     );
 
@@ -5407,7 +5407,7 @@
             el("div", { style: "display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:4px;" },
               el("h1", { text: "Battle Pass & Progression", style: "margin:0;" }),
               seasonSelector("2", pickSeason)),
-            el("div", { class: "muted", text: "Season 2's Battle Pass (1.11 – 2.1): its V-Bucks prices and the rewards of its tiers" })),
+            el("div", { class: "muted", text: "Season 2's Battle Pass (1.11 – 2.5): its V-Bucks prices and the rewards of its tiers" })),
           el("div", { class: "actions" },
             btn("Save Prices", async () => {
               await act(api("/admin/api/battlepass/config", { season2: { ...form } }), "Season 2 Battle Pass prices saved");
@@ -6118,7 +6118,7 @@
                 el("div", { class: "muted", style: "font-size:11px;", text: "The day each season's shop and countdown start from, then replay in order and start over when the season ends. Reset Season 2 to start it again on the next day it is served; reset Season 1 to its original clock." })),
               el("div", { style: "margin-top:12px; display:flex; flex-direction:column; gap:10px;" },
                 seasonStartRow(1, "Season 1 (1.8 – 1.10)"),
-                seasonStartRow(2, "Season 2 (1.11 – 2.1)"))),
+                seasonStartRow(2, "Season 2 (1.11 – 2.5)"))),
 
             el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
               el("div", {},

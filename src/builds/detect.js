@@ -11,6 +11,21 @@ export const versionOf = (changelist) => buildVersions[changelist] ?? null;
 export const battleRoyaleBuilds = Object.keys(buildVersions).filter((changelist) => Number(changelist) >= 3724489)
   .sort((a, b) => Number(a) - Number(b));
 
+// Battle Royale's seasons by the versions Epic shipped in them (Core-Backend #156): Season 1 was 1.8 to 1.10 here (its
+// athena profile's first build to its last), Season 2 1.11 (14 December 2017) to 2.5 (13 February 2018; 3.0 began Season
+// 3 on 22 February). This names a season's whole range, not the builds Core plays: of Season 2, Core knows 1.11 and 2.1
+// (buildVersions), and a later 2.x build plays on 2.1's data (src/gamedata/read.js), whose AthenaSeason2 makes it Season 2.
+export const battleRoyaleSeasons = [
+  { season: 1, firstVersion: "1.8", lastVersion: "1.10" },
+  { season: 2, firstVersion: "1.11", lastVersion: "2.5" }
+];
+// "Season 2 (1.11 – 2.5)", "1.11 – 2.5".
+export const seasonVersions = (season) => {
+  const known = battleRoyaleSeasons.find((entry) => entry.season === Number(season));
+  return known ? `${known.firstVersion} – ${known.lastVersion}` : "";
+};
+export const seasonName = (season) => `Season ${season} (${seasonVersions(season)})`;
+
 // The changelist a request's User-Agent names: "build=++Fortnite+Release-Cert-CL-3541083" (services, the gameserver
 // too) or "version=4.16.0-3541083+++Fortnite+Release-Cert" (CMS, datarouter).
 export function getBuild(req) {

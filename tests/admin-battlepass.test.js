@@ -126,3 +126,25 @@ test("admin battle pass tab: overview, custom milestones, level bypass, and rese
   }
 });
 
+// Core-Backend #156: Season 2 lasted from 1.11 to 2.5. Core plays 1.11 and 2.1; a later 2.x build takes 2.1's data, and
+// with it Season 2, without being a known build.
+test("the admin panel names Season 2 by its whole range, 1.11 – 2.5, and a later 2.x build plays in Season 2", async () => {
+  const { battleRoyaleSeasons, seasonName, versionOf } = await import("../src/builds/detect.js");
+  const { athenaSeason } = await import("../src/gamedata/athena.js");
+  assert.deepEqual(battleRoyaleSeasons.map(({ season }) => seasonName(season)), ["Season 1 (1.8 – 1.10)", "Season 2 (1.11 – 2.5)"]);
+  const later2x = "3850000";
+  assert.equal(versionOf(later2x), null);
+  assert.equal(inBuild(later2x, () => athenaSeason()?.seasonNumber), 2);
+
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-admin-battlepass-range-"));
+  const backend = await startBackend({ dataDir });
+  try {
+    assert.ok((await get(backend.port, "/admin")).body.includes("Season 2 (1.11 – 2.5)"));
+    const overview = await admin(backend, "/battlepass/overview?season=2");
+    assert.equal(overview.body.seasonName, "Season 2 (1.11 – 2.5)");
+    assert.deepEqual(overview.body.availableSeasons.map(({ range }) => range), ["1.8 – 1.10", "1.11 – 2.5"]);
+  } finally {
+    await backend.close();
+  }
+});
+
