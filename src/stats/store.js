@@ -4,9 +4,13 @@ import { readJson, writeJson } from "../json-file.js";
 
 // Battle Royale's career stats (Core-Backend #59), one file per account (accounts/<id>/stats.json):
 //   {playlists: {<playlistId>: {placetop1, placetop<n>..., kills, matchesplayed, secondsplayed, score, lastmodified}},
-//    days: {<YYYY-MM-DD>: {<playlistId>: {<stat>: count}}}}
+//    days: {<YYYY-MM-DD>: {<playlistId>: {<stat>: count}}},
+//    seasons: {<season>: {playlists, days}}}
 // days holds what each UTC day added, for 1.8's leaderboards, which rank by day, week and month as well as all time;
-// days older than the longest of those go.
+// days older than the longest of those go. playlists and days are the career's, every season's matches; seasons holds
+// the matches of each season after the first (1.11's Season 2 on, Core-Backend #151) again, so a season's leaderboards
+// rank its own matches: Season 1's are the career's less the later seasons', which keeps the matches recorded before
+// seasons were (all of them Season 1's) in Season 1.
 // Epic's stats service kept them from what its gameservers reported. The 1.7.2 server reports only its winners
 // (battleroyale/recordwin, its RecordUserStatsUrl /api/stats/bulk has no caller), and 1.8's nothing at all (no
 // recordwin), so Core's server reports every player's place, kills and time alive when their team is out or wins
@@ -36,6 +40,20 @@ export function windowStart(window, now = new Date()) {
   return "";
 }
 
+// When a window next starts again, as a Date (alltime never does: null).
+export function windowEnd(window, now = new Date()) {
+  const start = windowStart(window, now);
+  if (!start) return null;
+  const end = new Date(`${start}T00:00:00Z`);
+  if (window === "daily") end.setUTCDate(end.getUTCDate() + 1);
+  if (window === "weekly") end.setUTCDate(end.getUTCDate() + 7);
+  if (window === "monthly") end.setUTCMonth(end.getUTCMonth() + 1);
+  return end;
+}
+
+// Battle Royale's first season, 1.8 to 1.10's (profiles/seasons.js).
+export const firstSeason = 1;
+
 // The score of matches recorded before Core kept one (Core-Backend #128), from their counts the way a match's score
 // is worked out (profiles/athena.js matchXp): 5 a minute alive, 50 a kill, 300 a win, 100 a place within the playlist's
 // first placement below a win and 50 within its second. Minutes are counted over all the matches together, so it can
@@ -62,7 +80,7 @@ export function createStatsStore(dataDir) {
   function load(id) {
     if (!cache.has(id)) {
       const saved = fs.existsSync(file(id)) ? readJson(file(id)) : {};
-      const stats = { playlists: saved.playlists ?? {}, days: saved.days ?? {} };
+      const stats = { playlists: saved.playlists ?? {}, days: saved.days ?? {}, seasons: saved.seasons ?? {} };
       withScores(stats.playlists);
       for (const byPlaylist of Object.values(stats.days)) withScores(byPlaylist);
       cache.set(id, stats);
@@ -72,17 +90,23 @@ export function createStatsStore(dataDir) {
 
   const add = (counts, stat, amount) => { counts[stat] = (counts[stat] ?? 0) + amount; };
 
-  function change(accountId, playlistId, counts, now = new Date()) {
-    const stats = load(accountId);
-    const playlist = (stats.playlists[playlistId] ??= {});
-    const day = ((stats.days[dayOf(now)] ??= {})[playlistId] ??= {});
+  // Counts added to a record ({playlists, days}): the career's, or a later season's.
+  function addTo(record, playlistId, counts, now) {
+    const playlist = (record.playlists[playlistId] ??= {});
+    const day = ((record.days[dayOf(now)] ??= {})[playlistId] ??= {});
     for (const [stat, amount] of Object.entries(counts)) {
       add(playlist, stat, amount);
       add(day, stat, amount);
     }
     playlist.lastmodified = Math.floor(now.getTime() / 1000);
     const oldest = dayOf(new Date(now.getTime() - keptDays * 86400000));
-    for (const date of Object.keys(stats.days)) if (date < oldest) delete stats.days[date];
+    for (const date of Object.keys(record.days)) if (date < oldest) delete record.days[date];
+  }
+
+  function change(accountId, playlistId, counts, now = new Date(), season = firstSeason) {
+    const stats = load(accountId);
+    addTo(stats, playlistId, counts, now);
+    if (season > firstSeason) addTo((stats.seasons[season] ??= { playlists: {}, days: {} }), playlistId, counts, now);
     writeJson(file(accountId), stats);
   }
 
@@ -92,10 +116,9 @@ export function createStatsStore(dataDir) {
     return stat === "lastmodified" ? 0 : counts?.[stat] ?? 0;
   }
 
-  // {<playlistId>: {<stat>: value}} in a window: alltime is the career's (playlists), the others add up the days from
-  // the window's start (without lastmodified).
-  function windowed(accountId, window, now = new Date()) {
-    const { playlists, days } = load(accountId);
+  // {<playlistId>: {<stat>: value}} of a record in a window: alltime is all of it (playlists), the others add up the days
+  // from the window's start (without lastmodified).
+  function inWindow({ playlists, days }, window, now) {
     if (window === "alltime") return structuredClone(playlists);
     const start = windowStart(window, now);
     const counts = {};
@@ -108,9 +131,31 @@ export function createStatsStore(dataDir) {
     return counts;
   }
 
+  // The same in a season, when one is given: a later season's own, Season 1's the career's less the later seasons'.
+  function windowed(accountId, window, now = new Date(), season = undefined) {
+    const stats = load(accountId);
+    if (season === undefined) return inWindow(stats, window, now);
+    if (season > firstSeason) return stats.seasons[season] ? inWindow(stats.seasons[season], window, now) : {};
+    const counts = inWindow(stats, window, now);
+    for (const later of Object.values(stats.seasons)) {
+      for (const [playlistId, laterCounts] of Object.entries(inWindow(later, window, now))) {
+        for (const [name, amount] of Object.entries(laterCounts)) {
+          if (name !== "lastmodified" && counts[playlistId]) add(counts[playlistId], name, -amount);
+        }
+      }
+    }
+    return counts;
+  }
+
   return {
     // {<playlistId>: {<stat>: value}} for every playlist the account has played.
     playlists: (accountId) => structuredClone(load(accountId).playlists),
+
+    // Whether the account played a playlist (a match or a win recorded), in a season when one is given.
+    played(accountId, playlistId, season = undefined) {
+      const counts = windowed(accountId, "alltime", new Date(), season)[playlistId];
+      return (counts?.matchesplayed ?? 0) > 0 || (counts?.placetop1 ?? 0) > 0;
+    },
 
     // A win in solo, duo or squad (Battle Royale's umbrella, services/fortnite/battleroyale.js).
     hasWon: (accountId) => Object.entries(load(accountId).playlists)
@@ -118,25 +163,27 @@ export function createStatsStore(dataDir) {
 
     windowed,
 
-    // A stat of a playlist in a window, 0 when none was recorded.
-    stat(accountId, playlistId, stat, window, now = new Date()) {
-      return value(windowed(accountId, window, now)[playlistId], stat);
+    // A stat of a playlist in a window (and a season, when one is given), 0 when none was recorded.
+    stat(accountId, playlistId, stat, window, now = new Date(), season = undefined) {
+      return value(windowed(accountId, window, now, season)[playlistId], stat);
     },
 
-    recordWin(accountId, playlistId, now = new Date()) {
-      change(accountId, playlistId, { placetop1: 1 }, now);
+    // A win, in the season it was won in (Season 1 when none is given).
+    recordWin(accountId, playlistId, now = new Date(), season = firstSeason) {
+      change(accountId, playlistId, { placetop1: 1 }, now, season);
     },
 
     // One match: its place counts toward the playlist's placements below a win, and with win (1.8, whose server has no
     // recordwin) the win itself; otherwise recordWin counts it. score is the match's (br_score, the lobby leaderboards'
-    // Score tab).
-    recordResult(accountId, playlistId, { place, kills, secondsAlive, score = 0, win = false }, now = new Date()) {
+    // Score tab). season is the match's (Season 1 when none is given).
+    recordResult(accountId, playlistId, { place, kills, secondsAlive, score = 0, win = false, season = firstSeason }, now = new Date()) {
       const counts = { matchesplayed: 1, kills, secondsplayed: secondsAlive, score };
       if (win && place === 1) counts.placetop1 = 1;
       for (const top of placements[playlistId] ?? []) {
         if (place <= top) counts[`placetop${top}`] = 1;
       }
-      change(accountId, playlistId, counts, now);
+      change(accountId, playlistId, counts, now, season);
     }
   };
 }
+

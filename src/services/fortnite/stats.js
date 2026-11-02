@@ -1,6 +1,7 @@
 import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
-import { windows } from "../../stats/store.js";
+import { seasonNumber } from "../../profiles/seasons.js";
+import { windowEnd, windows } from "../../stats/store.js";
 
 // The playlists Battle Royale's stats screen shows (Balance/DataTables/LeaderboardStats: "<stat>_pc_m0_p<n>"): solo,
 // duo and squad. The client's platform is always pc.
@@ -34,20 +35,27 @@ export function statsRoutes({ tokens, stats, accounts }) {
     }));
   });
 
-  // A playlist's players on this backend: the accounts with a match recorded in it.
-  const playedIn = (playlistId) => accounts.list().map(({ id }) => id).filter((id) => stats.playlists(id)[playlistId]);
+  // The leaderboards rank the season of the build asking (Core-Backend #151): 1.11's Season 2 its own matches, from
+  // nothing, and 1.8 to 1.10's Season 1 theirs (src/stats/store.js), as each season's level is its own
+  // (profiles/seasons.js). The stats screen's are the career's.
+  // A playlist's players in the season on this backend: the accounts with a match recorded in it.
+  const playedIn = (playlistId, season) => accounts.list().map(({ id }) => id).filter((id) => stats.played(id, playlistId, season));
 
   // 1.8's Battle Royale lobby asks for the player's leaderboard cohort, the accounts its group leaderboards rank them
-  // among ({accountId, cohortAccounts, expiresAt, playlist}, read by 1.8 sub_74DAD0; playlist "pc_m0_p<id>"). Epic's
-  // were about 100 players like them; Core's (🟡) are the player and up to 99 others who played the playlist here, the
-  // most matches first, for an hour.
+  // among ({accountId, cohortAccounts, expiresAt, playlist}, read by 1.8 sub_74DAD0, 1.11 0x76F3B1 with expiresAt at
+  // +0x68; playlist "pc_m0_p<id>"). Epic's were about 100 players like them; Core's (🟡) are the player and up to 99
+  // others who played the playlist here this season, the most matches first. The client keeps a cohort until it
+  // expires, and the leaderboard screen's "Leaderboards reset in" counts down to then (🟡: Core's cohort of an hour
+  // showed "49 Minutes", Core-Backend #151), so it expires when the weekly window starts again, as the week it ranks.
   router.get("/fortnite/api/game/v2/leaderboards/cohort/:accountId", requireAuth(tokens), (req, res) => {
     const { accountId } = req.params;
     const playlist = String(req.query.playlist ?? "");
     const playlistId = /_p(\d+)$/.exec(playlist)?.[1];
-    const others = playlistId ? playedIn(playlistId).filter((id) => id !== accountId) : [];
-    others.sort((a, b) => stats.stat(b, playlistId, "matchesplayed", "alltime") - stats.stat(a, playlistId, "matchesplayed", "alltime"));
-    const expiresAt = new Date(Date.now() + 3600000).toISOString();
+    const season = seasonNumber();
+    const others = playlistId ? playedIn(playlistId, season).filter((id) => id !== accountId) : [];
+    const matches = (id) => stats.stat(id, playlistId, "matchesplayed", "alltime", new Date(), season);
+    others.sort((a, b) => matches(b) - matches(a));
+    const expiresAt = windowEnd("weekly").toISOString();
     res.json({ accountId, cohortAccounts: [accountId, ...others.slice(0, 99)], expiresAt, playlist });
   });
 
@@ -56,21 +64,24 @@ export function statsRoutes({ tokens, stats, accounts }) {
   // filter's list 🟡); a global one pages with &pageNumber=&itemsPerPage=. The answer (sub_74E120) is {statName,
   // statWindow, entries: [{accountId, value, rank}]}, from what Core recorded (src/stats/store.js) in the window: a
   // stat named as on the stats screen, br_<stat>_pc_m0_p<playlist>. A group ranks every account asked for that exists,
-  // 0 when it has nothing (asked for none, the player's cohort); a global board ranks those with more than 0. Equal
-  // values share a rank.
+  // 0 when it has nothing (asked for none, the player's cohort); a global board ranks those with more than 0. Each
+  // entry's rank is its place on the board, 1, 2, 3 down the list (🟡: Epic's boards were sorted lists; a rank shared by
+  // equal values put a board of 0s all at rank 1, Core-Backend #151), equal values in account order.
   const leaderboard = (req, res) => {
     const { type, stat: statName, window } = req.params;
     const [, stat, playlistId] = /^br_([a-z0-9]+)_pc_m0_p(\d+)$/.exec(statName) ?? [];
     if (!windows.includes(window)) return res.json({ statName, statWindow: window, entries: [] });
+    const season = seasonNumber();
     const asked = Array.isArray(req.body) ? req.body : Array.isArray(req.body?.accountIds) ? req.body.accountIds : [];
-    const group = asked.length ? asked : [req.session.accountId, ...(playlistId ? playedIn(playlistId) : [])];
+    const group = asked.length ? asked : [req.session.accountId, ...(playlistId ? playedIn(playlistId, season) : [])];
     const ids = type === "group"
       ? [...new Set(group.filter((id) => typeof id === "string" && accounts.get(id)))]
       : accounts.list().map(({ id }) => id);
-    let entries = stat ? ids.map((accountId) => ({ accountId, value: stats.stat(accountId, playlistId, stat, window) })) : [];
+    const now = new Date();
+    let entries = stat ? ids.map((accountId) => ({ accountId, value: stats.stat(accountId, playlistId, stat, window, now, season) })) : [];
     if (type !== "group") entries = entries.filter(({ value }) => value > 0);
     entries.sort((a, b) => b.value - a.value || a.accountId.localeCompare(b.accountId));
-    for (const entry of entries) entry.rank = 1 + entries.filter((other) => other.value > entry.value).length;
+    entries.forEach((entry, index) => { entry.rank = index + 1; });
     if (type !== "group") {
       const page = Math.max(0, Number.parseInt(req.query.pageNumber, 10) || 0);
       const size = Math.min(Math.max(1, Number.parseInt(req.query.itemsPerPage, 10) || 50), 1000);

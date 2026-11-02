@@ -6,7 +6,7 @@ import { buildVersions } from "../../builds/detect.js";
 import { log } from "../../log.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
 import { addSeasonXp, awardVictory, matchXp, recordMatchProgress, umbrellaTypeOf } from "../../profiles/athena.js";
-import { boostedMatchXp, inProfileSeason } from "../../profiles/seasons.js";
+import { boostedMatchXp, inProfileSeason, namesAthenaBuild, profileSeason, seasonNumber } from "../../profiles/seasons.js";
 import { grant } from "../../profiles/progress.js";
 import { openSession } from "../../profiles/session.js";
 import { rewardModes } from "../../settings/store.js";
@@ -115,7 +115,7 @@ export function battleRoyaleRoutes(context) {
     const accountIds = Array.isArray(req.body?.accountIds) ? req.body.accountIds : [];
     const winners = Number.isInteger(playlistId) && playlistId > 0 ? accountIds.filter((accountId) => recordable(req, accountId)) : [];
     // A 1.7.2 win also unlocks 1.8's umbrellas, the next time the player's athena profile loads (profiles/athena.js).
-    for (const accountId of winners) stats.recordWin(accountId, playlistId);
+    for (const accountId of winners) stats.recordWin(accountId, playlistId, new Date(), seasonNumber());
     log("Battle Royale", `Win recorded in playlist ${playlistId} for ${winners.join(", ") || "nobody"}`
       + (winners.length < accountIds.length ? ` (${accountIds.length - winners.length} not on a session of this server)` : ""));
     res.status(204).end();
@@ -130,6 +130,14 @@ export function battleRoyaleRoutes(context) {
   const matchBuild = (accountId) => (Object.hasOwn(buildVersions, currentBuild()) ? undefined : sessions.list()
     .filter((session) => buildVersions[session.hostBuild] && sessionMembers(session).includes(accountId))
     .sort((a, b) => Date.parse(b.lastUpdated) - Date.parse(a.lastUpdated))[0]?.hostBuild);
+  // The season of the match a player's result comes from, for its leaderboards (Core-Backend #151): its build's (1.11's
+  // Season 2, 1.8 to 1.10's Season 1), else the request's when it names a Battle Royale build, else the season the
+  // player's profile is in, as the result's progress is read (profiles/seasons.js).
+  const matchSeason = (session, build) => {
+    if (build) return inBuild(build, seasonNumber);
+    if (namesAthenaBuild() || !session.hasProfile("athena")) return seasonNumber();
+    return profileSeason(session.profile("athena").profile);
+  };
   router.post("/fortnite/api/game/v2/battleroyale/recordresults", auth, (req, res) => {
     const playlistId = playlistOf(req.body);
     const results = Array.isArray(req.body?.results) && Number.isInteger(playlistId) && playlistId > 0 ? req.body.results : [];
@@ -148,10 +156,12 @@ export function battleRoyaleRoutes(context) {
       const bpMultiplier = currentBattlePassConfig()?.xpMultiplier ?? 1.0;
       const earnedXp = Math.floor(matchXp(playlistId, { place, kills, secondsAlive }) * bpMultiplier);
       const score = count(result.score, 1000000) ?? earnedXp;
-      stats.recordResult(result.accountId, playlistId, { place, kills, secondsAlive, score, win });
-      log("Battle Royale", `${result.accountId} placed ${place} in playlist ${playlistId} with ${kills} kills, ${secondsAlive} s alive,`
-        + ` score ${score}` + (win ? " (a win)" : ""));
       const session = openSession(profiles, result.accountId);
+      const build = matchBuild(result.accountId);
+      const season = matchSeason(session, build);
+      stats.recordResult(result.accountId, playlistId, { place, kills, secondsAlive, score, win, season });
+      log("Battle Royale", `${result.accountId} placed ${place} in playlist ${playlistId} with ${kills} kills, ${secondsAlive} s alive,`
+        + ` score ${score}` + (win ? " (a win)" : "") + ` in Season ${season}`);
       const vbucks = payMatchVbucks(session, rewards, matchId, playlistId, { place, kills });
       if (vbucks) log("Battle Royale", `${result.accountId} earned ${vbucks} V-Bucks in match ${matchId}`);
       const progress = () => {
@@ -161,7 +171,6 @@ export function battleRoyaleRoutes(context) {
         if (place === 1 && isMainPlaylist(playlistId)) awardVictory(session);
       };
       if (session.hasProfile("athena")) {
-        const build = matchBuild(result.accountId);
         if (build) inBuild(build, progress);
         // A report naming no build is read in the season the player's profile is in (profiles/seasons.js).
         else inProfileSeason(session.profile("athena").profile, progress);

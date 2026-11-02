@@ -3,8 +3,8 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { createStatsStore, windowStart } from "../src/stats/store.js";
-import { dedicatedServerToken, get, post, startBackend, userLogin } from "./helpers.js";
+import { createStatsStore, windowEnd, windowStart } from "../src/stats/store.js";
+import { dedicatedServerToken, get, post, send, startBackend, userLogin } from "./helpers.js";
 
 // 1.8's Battle Royale leaderboards (Core-Backend #71, #73), from the stats Core records.
 const record = (port, token, playlistId, results) => post(port, "/fortnite/api/game/v2/battleroyale/recordresults", token, { playlistId, results });
@@ -40,8 +40,10 @@ test("1.8's leaderboards rank the accounts asked for by what Core recorded, in t
     assert.equal(top10.status, 200);
     assert.deepEqual([top10.body.statName, top10.body.statWindow], ["br_placetop10_pc_m0_p2", "weekly"]);
     const byAccount = Object.fromEntries(top10.body.entries.map(({ accountId, value, rank }) => [accountId, [value, rank]]));
-    assert.deepEqual(byAccount, { [bee.accountId]: [2, 1], [ace.accountId]: [1, 2], [cee.accountId]: [1, 2], [idle.accountId]: [0, 4] });
-    assert.deepEqual(top10.body.entries.map(({ rank }) => rank), [1, 2, 2, 4]);
+    // Ranks go down the list, equal values in account order.
+    const [tiedFirst, tiedSecond] = [ace.accountId, cee.accountId].sort();
+    assert.deepEqual(byAccount, { [bee.accountId]: [2, 1], [tiedFirst]: [1, 2], [tiedSecond]: [1, 3], [idle.accountId]: [0, 4] });
+    assert.deepEqual(top10.body.entries.map(({ rank }) => rank), [1, 2, 3, 4]);
 
     const wins = (await board("br_placetop1_pc_m0_p2", "alltime", [ace.accountId, bee.accountId])).body.entries;
     assert.deepEqual(wins.map(({ accountId, value, rank }) => [accountId, value, rank]), [[ace.accountId, 1, 1], [bee.accountId, 0, 2]]);
@@ -117,6 +119,85 @@ test("the leaderboards' Score tab ranks each player's match scores in the playli
     assert.equal(career.body.find(({ name }) => name === "br_score_pc_m0_p9")?.value, 550);
   } finally {
     backend.close();
+  }
+});
+
+// Core-Backend #151: 1.11's leaderboards are Season 2's, from nothing, and 1.8 to 1.10's still Season 1's; the cohort lasts
+// until the week the boards rank is over, which the screen counts down to as "Leaderboards reset in".
+const agentOf = (build) => `game=Fortnite, engine=UE4, build=++Fortnite+Release-Cert-CL-${build}`;
+function as(build, port, urlPath, token, body) {
+  const text = body === undefined ? undefined : JSON.stringify(body);
+  const headers = { "User-Agent": agentOf(build), Authorization: `bearer ${token}` };
+  if (text !== undefined) Object.assign(headers, { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(text) });
+  return send({ host: "127.0.0.1", port, method: text === undefined ? "GET" : "POST", path: urlPath, headers }, text);
+}
+
+test("1.11's leaderboards rank Season 2's matches and 1.10's Season 1's", async () => {
+  const backend = await startBackend();
+  try {
+    const [ace, bee, cee] = [await userLogin(backend.port, "AceS2"), await userLogin(backend.port, "BeeS2"), await userLogin(backend.port, "CeeS2")];
+    const dedicated = await dedicatedServerToken(backend.port);
+    const report = (build, results) => as(build, backend.port, "/fortnite/api/game/v2/battleroyale/recordresults", dedicated,
+      { playlistId: 9, countWins: true, results });
+    // Season 1 (1.10): Ace wins with 4 kills; Season 2 (1.11): Bee wins, Cee is 5th.
+    assert.equal((await report("3790078", [{ accountId: ace.accountId, place: 1, kills: 4, secondsAlive: 1200 }])).status, 204);
+    assert.equal((await report("3807424", [
+      { accountId: bee.accountId, place: 1, kills: 2, secondsAlive: 1300 },
+      { accountId: cee.accountId, place: 5, kills: 1, secondsAlive: 900 }
+    ])).status, 204);
+
+    const ids = [ace.accountId, bee.accountId, cee.accountId];
+    const board = async (build, statName, window) => (await as(build, backend.port,
+      `/fortnite/api/leaderboards/type/group/stat/${statName}/window/${window}?ownertype=1`, ace.token, ids)).body.entries
+      .map(({ accountId, value, rank }) => [accountId, value, rank]);
+    assert.deepEqual(await board("3807424", "br_placetop1_pc_m0_p9", "weekly"),
+      [[bee.accountId, 1, 1], ...[ace.accountId, cee.accountId].sort().map((id, index) => [id, 0, index + 2])]);
+    assert.deepEqual((await board("3807424", "br_kills_pc_m0_p9", "alltime")).slice(0, 2), [[bee.accountId, 2, 1], [cee.accountId, 1, 2]]);
+    assert.deepEqual((await board("3790078", "br_kills_pc_m0_p9", "alltime"))[0], [ace.accountId, 4, 1]);
+    assert.deepEqual((await board("3790078", "br_placetop3_pc_m0_p9", "daily")).map(([, value]) => value), [1, 0, 0]);
+
+    // A global board has those with something in the season; the cohort, those who played it.
+    const global = await as("3807424", backend.port, "/fortnite/api/leaderboards/type/global/stat/br_placetop6_pc_m0_p9/window/alltime?ownertype=1", ace.token, []);
+    assert.deepEqual(global.body.entries.map(({ accountId }) => accountId).sort(), [bee.accountId, cee.accountId].sort());
+    const cohort = (await as("3807424", backend.port, `/fortnite/api/game/v2/leaderboards/cohort/${ace.accountId}?playlist=pc_m0_p9`, ace.token)).body;
+    assert.deepEqual(new Set(cohort.cohortAccounts), new Set(ids));
+    const oldCohort = (await as("3790078", backend.port, `/fortnite/api/game/v2/leaderboards/cohort/${bee.accountId}?playlist=pc_m0_p9`, bee.token)).body;
+    assert.deepEqual(oldCohort.cohortAccounts, [bee.accountId, ace.accountId]);
+    // It expires when the week starts again: Monday, 00:00 UTC.
+    assert.equal(cohort.expiresAt, windowEnd("weekly").toISOString());
+    assert.equal(new Date(cohort.expiresAt).getUTCDay(), 1);
+
+    // The stats screen is the career's, every season's.
+    const career = await as("3807424", backend.port, `/fortnite/api/stats/accountId/${ace.accountId}/bulk/window/alltime`, ace.token);
+    assert.equal(career.body.find(({ name }) => name === "br_kills_pc_m0_p9")?.value, 4);
+  } finally {
+    backend.close();
+  }
+});
+
+test("a season's stats are its own matches; Season 1's are the career's less the later seasons'", () => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-backend-seasons-"));
+  try {
+    const stats = createStatsStore(dataDir);
+    const now = new Date("2026-11-04T12:00:00Z");
+    stats.recordResult("seasons", 2, { place: 1, kills: 3, secondsAlive: 600, win: true }, new Date("2026-11-02T10:00:00Z"));
+    stats.recordResult("seasons", 2, { place: 7, kills: 2, secondsAlive: 300, season: 2 }, new Date("2026-11-03T10:00:00Z"));
+    stats.recordWin("seasons", 2, new Date("2026-11-04T10:00:00Z"), 2);
+    assert.deepEqual([undefined, 1, 2].map((season) => stats.stat("seasons", 2, "kills", "alltime", now, season)), [5, 3, 2]);
+    assert.deepEqual([undefined, 1, 2].map((season) => stats.stat("seasons", 2, "placetop1", "weekly", now, season)), [2, 1, 1]);
+    assert.deepEqual([undefined, 1, 2].map((season) => stats.stat("seasons", 2, "placetop10", "daily", now, season)), [0, 0, 0]);
+    assert.equal(stats.stat("seasons", 2, "minutesplayed", "alltime", now, 2), 5);
+    assert.deepEqual([stats.played("seasons", 2, 2), stats.played("seasons", 10, 2), stats.played("other", 2, 1)], [true, false, false]);
+    // A season with nothing is nothing; it is saved, and read back.
+    assert.equal(stats.stat("seasons", 2, "kills", "alltime", now, 3), 0);
+    assert.equal(createStatsStore(dataDir).stat("seasons", 2, "kills", "alltime", now, 2), 2);
+    // The windows end when they start again.
+    const at = new Date("2026-11-02T00:48:00Z");
+    assert.deepEqual(["daily", "weekly", "monthly"].map((window) => windowEnd(window, at).toISOString()),
+      ["2026-11-03T00:00:00.000Z", "2026-11-09T00:00:00.000Z", "2026-12-01T00:00:00.000Z"]);
+    assert.equal(windowEnd("alltime", at), null);
+  } finally {
+    fs.rmSync(dataDir, { recursive: true, force: true });
   }
 });
 
