@@ -41,6 +41,8 @@ export function ticketRoutes({ tokens, sessions, matchmaker, settings }) {
       bucketId: String(req.query.bucketId ?? ""),
       platform: String(req.query["player.platform"] ?? ""),
       fillTeam: fill === "true" ? true : fill === "false" ? false : null,
+      // The client's build (its User-Agent's changelist): 1.7.2 to 2.4.2's show the match start countdown (#160).
+      build: Number(currentBuild()) || null,
       serviceUrl: serviceUrl(req)
     });
     const fills = ticket.fillTeam === null ? "" : ticket.fillTeam ? ", fill" : ", no fill";
