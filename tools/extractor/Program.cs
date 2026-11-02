@@ -1168,12 +1168,33 @@ foreach (var quest in athenaQuests.Values.Cast<SortedDictionary<string, object>>
         if (objective.TryGetValue("stat", out var stat) && objectiveStats.TryGetValue((string)stat, out var row)) athenaStats[(string)stat] = row;
     }
 }
+// Battle Royale's loot tables (DefaultGameData's LootTierDataTables and LootPackageDataTables under /Athena:
+// AthenaLootTierData_Client, AthenaLootPackages_Client), whole, by object path, every row with every property, in the
+// form UDataTable::CreateTableFromJSONString reads back: soft object paths as their path string ("None" for none), the
+// rest as the asset has it. The backend serves Epic's content updates as [AssetHotfix] rows built from these
+// (src/events/contentupdates.js); the hotfix replaces a table whole, so it needs all of it.
+var athenaLoot = new SortedDictionary<string, object>(StringComparer.Ordinal);
+static JsonNode? ImportForm(JsonNode? value) => value switch
+{
+    JsonObject o when o.Count == 2 && o["AssetPathName"] is not null && o["SubPathString"] is not null => JsonValue.Create(o["AssetPathName"]!.GetValue<string>()),
+    JsonObject o => new JsonObject(o.Select(p => KeyValuePair.Create(p.Key, ImportForm(p.Value)))),
+    JsonArray a => new JsonArray(a.Select(ImportForm).ToArray()),
+    _ => value?.DeepClone()
+};
+foreach (var reference in (gameData["Properties"]?["LootTierDataTables"]?.AsArray() ?? []).Concat(gameData["Properties"]?["LootPackageDataTables"]?.AsArray() ?? []))
+{
+    var tablePath = AssetPath(reference);
+    if (!tablePath.StartsWith("/Game/Items/Datatables/Athena", StringComparison.OrdinalIgnoreCase)) continue;
+    var rows = LoadRows(provider, reference);
+    athenaLoot[ObjectPath(tablePath)] = new JsonObject(rows.Select(r => KeyValuePair.Create(r.Key, ImportForm(r.Value))));
+}
 var athenaFile = new SortedDictionary<string, object>(StringComparer.Ordinal)
 {
     ["cosmetics"] = athenaCosmetics, ["displayAssets"] = athenaDisplayAssets, ["quests"] = athenaQuests, ["levels"] = athenaLevels,
     ["objectiveStats"] = athenaStats
 };
 if (athenaSeason is not null) athenaFile["season"] = athenaSeason;
+if (athenaLoot.Count > 0) athenaFile["loot"] = athenaLoot;
 File.WriteAllText(Path.Combine(output, "athena.json"), JsonSerializer.Serialize(athenaFile, options) + "\n");
 Console.WriteLine($"Battle Royale: {athenaCosmetics.Count} cosmetics, {athenaDisplayAssets.Count} display assets, {athenaQuests.Count} quests, {athenaLevels.Count} season levels");
 if (unmatchedDisplayAssets.Count > 0) Console.WriteLine($"Display assets matched to no one cosmetic: {string.Join(", ", unmatchedDisplayAssets)}");
