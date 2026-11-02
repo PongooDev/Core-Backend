@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { createStatsStore, windowEnd, windowStart } from "../src/stats/store.js";
+import { createStatsStore, windowEnd, windowStart, windows } from "../src/stats/store.js";
 import { dedicatedServerToken, get, post, send, startBackend, userLogin } from "./helpers.js";
 
 // 1.8's Battle Royale leaderboards (Core-Backend #71, #73), from the stats Core records.
@@ -170,6 +170,69 @@ test("1.11's leaderboards rank Season 2's matches and 1.10's Season 1's", async 
     // The stats screen is the career's, every season's.
     const career = await as("3807424", backend.port, `/fortnite/api/stats/accountId/${ace.accountId}/bulk/window/alltime`, ace.token);
     assert.equal(career.body.find(({ name }) => name === "br_kills_pc_m0_p9")?.value, 4);
+  } finally {
+    backend.close();
+  }
+});
+
+// Core-Backend #151 again: CoreV2's own reports name no build (User-Agent "Core V2"), so a match's season comes from the
+// session its player is on (the gameserver's build), else the season the player's profile is in. 2.1 is Season 2 too.
+test("a Core gameserver's 2.1 and 1.11 results are Season 2's, read back by 2.1's and 1.11's cohort and boards", async () => {
+  const backend = await startBackend();
+  try {
+    const coreV2 = (urlPath, token, body) => {
+      const text = JSON.stringify(body);
+      return send({ host: "127.0.0.1", port: backend.port, method: "POST", path: urlPath, headers: { "User-Agent": "Core V2",
+        Authorization: `bearer ${token}`, "Content-Type": "application/json", "Content-Length": Buffer.byteLength(text) } }, text);
+    };
+    const athena = (build, { accountId, token }) =>
+      as(build, backend.port, `/fortnite/api/game/v2/profile/${accountId}/client/QueryProfile?profileId=athena&rvn=-1`, token, {});
+    const [solo, duo, late, old] = [await userLogin(backend.port, "SoloS2"), await userLogin(backend.port, "DuoS2"),
+      await userLogin(backend.port, "LateS2"), await userLogin(backend.port, "OldS1")];
+    for (const player of [solo, duo]) await athena("3825894", player);
+    await athena("3807424", late);
+    await athena("3790078", old);
+
+    // A 2.1 gameserver's session with Solo and Duo on it.
+    const server = await userLogin(backend.port, "CoreServer1");
+    const session = (await as("3825894", backend.port, "/fortnite/api/matchmaking/session", server.token, {
+      ownerId: server.accountId, ownerName: "CoreServer1", serverName: "Core-1", serverAddress: "127.0.0.1", serverPort: 7777,
+      maxPublicPlayers: 100, maxPrivatePlayers: 0, buildUniqueId: "1", attributes: { GAMEMODE_s: "FORTATHENA", REGION_s: "NA" }
+    })).body;
+    await as("3825894", backend.port, `/fortnite/api/matchmaking/session/${session.id}/players`, server.token,
+      { publicPlayers: [solo.accountId, duo.accountId], privatePlayers: [] });
+    const dedicated = await dedicatedServerToken(backend.port);
+    const report = (playlistId, results) => coreV2("/fortnite/api/game/v2/battleroyale/recordresults", dedicated,
+      { playlistId, matchId: `m${playlistId}`, countWins: true, results });
+    assert.equal((await report(2, [
+      { accountId: solo.accountId, place: 1, kills: 3, secondsAlive: 1000 },
+      { accountId: duo.accountId, place: 7, kills: 1, secondsAlive: 600 }
+    ])).status, 204);
+    // On no session: the season their profile is in, Season 2 for 1.11's player and Season 1 for 1.10's.
+    assert.equal((await report(2, [{ accountId: late.accountId, place: 2, kills: 2, secondsAlive: 900 }])).status, 204);
+    assert.equal((await report(2, [{ accountId: old.accountId, place: 1, kills: 9, secondsAlive: 1500 }])).status, 204);
+
+    // 2.1's lobby: the solo cohort is the player and the others who played solo this season, not Season 1's Old.
+    for (const build of ["3825894", "3807424"]) {
+      const cohort = (await as(build, backend.port, `/fortnite/api/game/v2/leaderboards/cohort/${solo.accountId}?playlist=pc_m0_p2`, solo.token)).body;
+      assert.equal(cohort.cohortAccounts[0], solo.accountId);
+      assert.deepEqual(new Set(cohort.cohortAccounts), new Set([solo.accountId, duo.accountId, late.accountId]), build);
+      const board = async (statName, window) => (await as(build, backend.port,
+        `/fortnite/api/leaderboards/type/group/stat/${statName}/window/${window}?ownertype=1`, solo.token, cohort.cohortAccounts)).body;
+      for (const window of windows) {
+        const wins = await board("br_placetop1_pc_m0_p2", window);
+        assert.equal(wins.statWindow, window);
+        assert.deepEqual(wins.entries[0], { accountId: solo.accountId, value: 1, rank: 1 }, `${build} ${window}`);
+        assert.deepEqual((await board("br_kills_pc_m0_p2", window)).entries.map(({ accountId, value }) => [accountId, value]),
+          [[solo.accountId, 3], [late.accountId, 2], [duo.accountId, 1]], `${build} ${window}`);
+      }
+      // The Score tab: a match's score is its season XP when the server sends none (1000 s, 3 kills, a win: 80 + 150 + 300).
+      assert.deepEqual((await board("br_score_pc_m0_p2", "weekly")).entries[0], { accountId: solo.accountId, value: 530, rank: 1 });
+    }
+    // 1.10's boards are Season 1's: Old's win, and nothing of Season 2's.
+    const s1 = (await as("3790078", backend.port, "/fortnite/api/leaderboards/type/group/stat/br_kills_pc_m0_p2/window/weekly?ownertype=1",
+      old.token, [old.accountId, solo.accountId])).body.entries;
+    assert.deepEqual(s1.map(({ accountId, value }) => [accountId, value]), [[old.accountId, 9], [solo.accountId, 0]]);
   } finally {
     backend.close();
   }
