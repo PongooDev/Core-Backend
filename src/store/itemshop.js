@@ -38,9 +38,24 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // but 1,500 in November and on every other source (🟡: kept at 1,500). The shop replays that history in a 45-day cycle: day 0 is 30 October 2017, and each UTC day since
 // then shows the recorded day it falls on, modulo 45 (Core's choice). It changes at UTC midnight, as Epic's did.
 // Admins can also configure the shop via the admin panel (mode: "fnbr" | "random" | "custom", Core-Backend #69).
-const historyFile = path.join(path.dirname(fileURLToPath(import.meta.url)), "itemshop.json");
-const history = JSON.parse(fs.readFileSync(historyFile, "utf8")).days;
-const firstDay = Date.parse(`${history[0].date}T00:00:00Z`);
+//
+// 1.11 is Season 2, and has its own shop (Core-Backend #150): Epic's of Season 2, day by day from its first day, 14
+// December 2017, to its last, 21 February 2018 (itemshop-season2.json), replayed the same way in a 70-day cycle from 14
+// December 2017. Its items and prices are the Fortnite Wiki's Item Shop History pages' (what the shop charged that day;
+// fnbr.co's per-day pages show today's prices, e.g. Brite Bomber 1,800 where it was 1,200), with fnbr.co's list
+// checked against it; where the two lists differ (14 and 31 December, 31 January) the wiki's is kept, and 8 February,
+// changed during the day, is its first shop ("Part 1"). The wiki has Half Shell at 1,200 on 11 January, 800 on every
+// other day and on fnbr.co (🟡: kept at 800). The season ran into the 2.x builds, so their new cosmetics (Alpine Ace,
+// Mogul Master, Love Ranger, Cuddle Team Leader, Wukong, Chomp Jr., ...) are left out, as are Battle Pass Tiers; on the
+// days Epic featured only those, the featured section is empty. A build's season is its athena data's seasonNumber,
+// Season 1 without one.
+const readHistory = (file) => {
+  const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;
+  return { days, firstDay: Date.parse(`${days[0].date}T00:00:00Z`) };
+};
+const seasonHistories = { 1: readHistory("itemshop.json"), 2: readHistory("itemshop-season2.json") };
+export const seasonOfBuild = () => athenaSeason()?.seasonNumber ?? 1;
+const historyOf = (season) => seasonHistories[season] ?? seasonHistories[1];
 const dayMs = 24 * 60 * 60 * 1000;
 
 const firstBuild = 3724489;
@@ -205,8 +220,9 @@ export function generateRandomShop(now = new Date(), overrideConfig = null) {
   };
 }
 
-// The recorded day the UTC day of now shows in fnbr history (adjusted for rotation hour).
-export function shopDay(now = new Date(), overrideConfig = null) {
+// The recorded day the UTC day of now shows in the season's history (adjusted for rotation hour).
+export function shopDay(now = new Date(), overrideConfig = null, season = seasonOfBuild()) {
+  const { days: history, firstDay } = historyOf(season);
   const config = overrideConfig ?? currentShopConfig();
   const rotationHour = Math.max(0, Math.min(23, Number(config?.rotationHour ?? 0)));
   const adjustedTime = now.getTime() - rotationHour * 60 * 60 * 1000;
@@ -228,7 +244,7 @@ export function nextRotation(now = new Date(), overrideConfig = null) {
 // last weeks are shorter); in random and custom mode, the end of the weeklyDurationDays-day period generateRandomShop
 // seeds the featured pair by.
 const featuredOf = (day) => JSON.stringify(day.featured.map(([templateId]) => templateId));
-export function weeklyStoreEnd(now = new Date(), overrideConfig = null) {
+export function weeklyStoreEnd(now = new Date(), overrideConfig = null, season = seasonOfBuild()) {
   const config = overrideConfig ?? currentShopConfig();
   const rotationMs = Math.max(0, Math.min(23, Number(config?.rotationHour ?? 0))) * 60 * 60 * 1000;
   const dayNumber = Math.floor((now.getTime() - rotationMs) / dayMs);
@@ -240,27 +256,22 @@ export function weeklyStoreEnd(now = new Date(), overrideConfig = null) {
     return dayStart((weekNumber + 1) * weeklyDays - 4);
   }
 
-  const today = featuredOf(shopDay(now, config));
+  const { days: history } = historyOf(season);
+  const today = featuredOf(shopDay(now, config, season));
   for (let days = 1; days < history.length; days++) {
-    if (featuredOf(shopDay(dayStart(dayNumber + days), config)) !== today) return dayStart(dayNumber + days);
+    if (featuredOf(shopDay(dayStart(dayNumber + days), config, season)) !== today) return dayStart(dayNumber + days);
   }
   return dayStart(dayNumber + history.length);
 }
 
 // When the season ends, for the Season Shop's and 1.11's Battle Pass tab's countdowns (store/seasonshop.js,
 // services/fortnite/calendar.js): the end of the build's season on Epic's own schedule, replayed on the shop's clock
-// (UTC days at the rotation hour) and starting over when it ends (Core-Backend #149, Core's choice: each cycle is the
-// season again at its original length, so the countdown reads as it did on that day of the season, then resets, as the
-// shop's replay does). Season 1 (1.8 to 1.10) is the history's 45 days, 30 October to its last day, 13 December 2017
-// (the season began on 25 October, before the shop's first recorded day; it starts with the shop here so that the two
-// cycles are one and start over together). Season 2 (1.11) ran from 14 December 2017 to its last day, 21 February 2018
-// (Season 3 launched on 22 February): 70 days, its first cycle starting on the shop's day 45, when Season 1's ends.
-// An admin's customSeasonEnd overrides both, in every shop mode.
-const seasonSchedules = {
-  1: { start: "2017-10-30", end: "2017-12-14" },
-  2: { start: "2017-12-14", end: "2018-02-22" }
-};
-export const seasonOfBuild = () => athenaSeason()?.seasonNumber ?? 1;
+// (UTC days at the rotation hour), which is the end of the season's shop history's cycle, so that the countdown and the
+// shop start over together (Core-Backend #149, Core's choice: each cycle is the season again at its original length, so
+// the countdown reads as it did on that day of the season, then resets, as the shop's replay does). Season 1 (1.8 to
+// 1.10) is its history's 45 days, 30 October to its last day, 13 December 2017 (the season began on 25 October, before
+// the shop's first recorded day). Season 2 (1.11) ran from 14 December 2017 to its last day, 21 February 2018 (Season 3
+// launched on 22 February): 70 days. An admin's customSeasonEnd overrides both, in every shop mode.
 export function seasonEnd(now = new Date(), overrideConfig = null, season = seasonOfBuild()) {
   const custom = overrideConfig?.customSeasonEnd ?? currentEventsConfig()?.customSeasonEnd;
   if (custom) {
@@ -269,12 +280,10 @@ export function seasonEnd(now = new Date(), overrideConfig = null, season = seas
   }
   const config = overrideConfig ?? currentShopConfig();
   const rotationMs = Math.max(0, Math.min(23, Number(config?.rotationHour ?? 0))) * 60 * 60 * 1000;
-  const schedule = seasonSchedules[season] ?? seasonSchedules[1];
-  const start = Date.parse(`${schedule.start}T00:00:00Z`);
-  const length = (Date.parse(`${schedule.end}T00:00:00Z`) - start) / dayMs;
-  const days = Math.floor((now.getTime() - rotationMs - start) / dayMs);
-  const cycle = Math.floor(days / length);
-  return new Date(start + (cycle + 1) * length * dayMs + rotationMs);
+  const { days: history, firstDay } = historyOf(season);
+  const days = Math.floor((now.getTime() - rotationMs - firstDay) / dayMs);
+  const cycle = Math.floor(days / history.length);
+  return new Date(firstDay + (cycle + 1) * history.length * dayMs + rotationMs);
 }
 
 const offerIdOf = (templateId) => `core_br_${templateId.split(":")[1].toLowerCase()}`;

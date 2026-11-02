@@ -7,7 +7,7 @@ import { inBuild } from "../src/builds/context.js";
 import { tierOfferId } from "../src/battlepass/season2.js";
 import { athenaCosmetics, athenaDisplayAssets, athenaSeason } from "../src/gamedata/athena.js";
 import { storefronts } from "../src/store/catalog.js";
-import { itemShopOffers, seasonEnd } from "../src/store/itemshop.js";
+import { itemShopOffers, seasonEnd, shopDay, weeklyStoreEnd } from "../src/store/itemshop.js";
 import { get, post, send, startBackend, userLogin } from "./helpers.js";
 
 // Core-Backend #145: 1.11 (CL-3807424) is Season 2, with its own season level, a Battle Pass, the winter lobby, six
@@ -81,6 +81,45 @@ test("1.11's item shop gives its daily offers their display assets; 1.10's daily
   const daily = (build) => inBuild(build, () => itemShopOffers(new Date(), config).BRDailyStorefront[0].displayAssetPath);
   assert.equal(daily(v111), "/Game/Catalog/DisplayAssets/DA_Featured_SFemaleHID024.DA_Featured_SFemaleHID024");
   assert.equal(daily(v110), "");
+});
+
+// Core-Backend #150: 1.11 replays Season 2's own shop, 14 December 2017 to 21 February 2018, in a 70-day cycle; 1.10
+// keeps Season 1's.
+test("1.11's item shop replays Season 2's, from 14 December 2017 in a 70-day cycle; 1.10 keeps Season 1's", () => {
+  const history = JSON.parse(fs.readFileSync(new URL("../src/store/itemshop-season2.json", import.meta.url), "utf8")).days;
+  assert.equal(history.length, 70);
+  history.forEach(({ date }, n) => assert.equal(date, new Date(Date.UTC(2017, 11, 14 + n)).toISOString().slice(0, 10)));
+  inBuild(v111, () => {
+    const cosmetics = athenaCosmetics();
+    for (const { featured, daily } of history) for (const [templateId, price] of [...featured, ...daily]) assert.ok(cosmetics[templateId] && price > 0, templateId);
+  });
+
+  const day = (iso, build) => inBuild(build, () => shopDay(new Date(iso)).date);
+  assert.equal(day("2017-12-14T00:00:00Z", v111), "2017-12-14");
+  assert.equal(day("2018-02-21T23:59:59Z", v111), "2018-02-21");
+  assert.equal(day("2018-02-22T00:00:00Z", v111), "2017-12-14");
+  assert.equal(day("2026-11-02T12:00:00Z", v111), "2018-01-08");
+  assert.equal(day("2026-11-02T12:00:00Z", v110), "2017-11-04");
+
+  // Christmas Eve 2017: Crackshot and Candy Axe featured, at their 2017 prices.
+  const offers = (iso, build) => inBuild(build, () => itemShopOffers(new Date(iso), { mode: "fnbr" }));
+  const christmas = offers("2017-12-24T12:00:00Z", v111);
+  assert.deepEqual(christmas.BRWeeklyStorefront.map(({ templateId, price }) => [templateId, price]),
+    [["AthenaCharacter:cid_050_athena_commando_m_holidaynutcracker", 2000], ["AthenaPickaxe:pickaxe_id_015_holidaycandycane", 1500]]);
+  assert.equal(christmas.BRDailyStorefront.length, 4);
+  assert.ok(!offers("2017-12-24T12:00:00Z", v110).BRWeeklyStorefront.some(({ templateId }) => templateId.includes("holidaynutcracker")));
+  // Brite Bomber was 1,200 in Season 2 (fnbr.co shows today's 1,800).
+  assert.deepEqual(offers("2017-12-15T12:00:00Z", v111).BRDailyStorefront.find(({ title }) => title === "Brite Bomber")?.price, 1200);
+
+  // The featured pair changes on 17, 24 and 31 December, and the countdowns agree with the build's season.
+  const weekly = (iso, build) => inBuild(build, () => weeklyStoreEnd(new Date(iso)).toISOString());
+  assert.equal(weekly("2017-12-17T12:00:00Z", v111), "2017-12-24T00:00:00.000Z");
+  assert.equal(weekly("2017-12-24T12:00:00Z", v111), "2017-12-31T00:00:00.000Z");
+  assert.equal(inBuild(v111, () => seasonEnd(new Date("2017-12-24T12:00:00Z")).toISOString()), "2018-02-22T00:00:00.000Z");
+  for (let n = 0; n < 140; n++) {
+    const now = new Date(Date.UTC(2026, 0, 1 + n, 12));
+    inBuild(v111, () => assert.ok(weeklyStoreEnd(now) > now && weeklyStoreEnd(now) <= seasonEnd(now), String(n)));
+  }
 });
 
 test("1.11's catalog sells the Battle Pass, the bundle and tiers in BRSeason2; an owned pass leaves it", () => {

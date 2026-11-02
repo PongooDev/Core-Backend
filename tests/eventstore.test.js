@@ -38,7 +38,7 @@ test("1.11's Event Items are Survive the Holidays' offers for Seasonal Gold, eac
 
 test("1.11's Weekly Items are the same all week and change with the weekly countdown", () => {
   const monday = new Date("2026-11-02T12:00:00Z");
-  const sameWeek = new Date(new Date(storeWeek(monday).replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3T00:00:00Z")).getTime() - 60 * 60 * 1000);
+  const sameWeek = new Date(new Date(inBuild(v111, () => storeWeek(monday)).replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3T00:00:00Z")).getTime() - 60 * 60 * 1000);
   const nextWeek = new Date(monday.getTime() + 7 * 24 * 60 * 60 * 1000);
   const weekly = (now) => entriesOf(v111, weeklyStorefront, now);
   const ids = (entries) => entries.map(({ offerId }) => offerId);
@@ -49,7 +49,7 @@ test("1.11's Weekly Items are the same all week and change with the weekly count
   for (const entry of entries) {
     assert.equal(entry.prices[0].currencySubType, seasonalGold);
     assert.equal(meta(entry).PurchaseLimitingEventId, weeklyStoreInstance);
-    assert.ok(entry.offerId.includes(storeWeek(monday)), entry.offerId);
+    assert.ok(entry.offerId.includes(inBuild(v111, () => storeWeek(monday))), entry.offerId);
   }
   const offered = (templateId) => entries.find((entry) => grantOf(entry).templateId === templateId);
   // Every week: a Survivor for 250 (2 left), ten Epic Flux for 75 (5 left), ten Rare Flux for 30 (10 left).
