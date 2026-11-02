@@ -99,7 +99,10 @@ test("the quest login's removals reach the client as itemRemoved changes, with t
     const unfinished = halloween(before).filter((questId) => before[questId].state === "Active");
     const { profileRevision } = (await mcp(builds["1.9"], backend.port, player, "QueryProfile", -1)).body;
     const login = await mcp(builds["1.9.1"], backend.port, player, "ClientQuestLogin", profileRevision);
-    const removed = login.body.profileChanges.filter((change) => change.changeType === "itemRemoved").map((change) => change.itemId);
+    // (The Opener's Candy, under a llama's worth, goes with the event too: Core-Backend #174.)
+    const questIds = new Set(Object.values(before).map(({ itemId }) => itemId));
+    const removed = login.body.profileChanges.filter((change) => change.changeType === "itemRemoved" && questIds.has(change.itemId))
+      .map((change) => change.itemId);
     assert.deepEqual(removed.sort(), unfinished.map((questId) => before[questId].itemId).sort());
     const pins = login.body.profileChanges.find((change) => change.changeType === "statModified" && change.name === "client_settings");
     assert.deepEqual(pins.value.pinnedQuestInstances, []);

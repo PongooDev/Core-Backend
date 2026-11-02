@@ -1,5 +1,5 @@
 import { getQuest } from "../gamedata/quests.js";
-import { isEventActive, winter2017 } from "./events.js";
+import { currentEventsConfig, hasEventEnded, isEventActive, winter2017 } from "./events.js";
 
 export { winter2017 };
 
@@ -15,6 +15,19 @@ export { winter2017 };
 // store/catalog.js).
 export const snowflakeTickets = "AccountResource:eventcurrency_snowballs";
 export const holidayLlama = "CardPack:cardpack_event_2017_winter";
+
+// 2.3.0's notes (25 January 2018) end it: "For every 1,000 unspent Snowflake tickets, a Holiday Survival Llama will
+// automatically be granted and can be found in the Loot Tab. All remaining tickets will be lost." So the first time an
+// account loads on a build past 2.2 (CL-3841827, events.js) whose data still has the llama, each 1,000 Snowflake Tickets
+// become an unopened Holiday Survival Llama and the rest go (events/leftovers.js, Core-Backend #174). No build Core
+// knows is past it yet: this waits for 2.3. The rate is the Holiday Survival Llama's price, the admin panel's
+// snowflakePerLlama (1,000 by default, as 1.11's notes price it).
+export const snowflakeConversion = {
+  run: "Winter2017",
+  due: () => currentEventsConfig()?.autoConvertCandy !== false && hasEventEnded(winter2017) && !isEventActive(winter2017),
+  options: () => ({ currency: snowflakeTickets, perLlama: currentEventsConfig()?.snowflakePerLlama ?? 1000, llama: holidayLlama,
+    label: "Snowflake Tickets", llamaName: "Holiday Survival Llama" })
+};
 
 // The event's quests nothing in the game data grants (Epic's servers handed them out), granted at quest login while it
 // runs: Ray's questline (Reactive_Fetch_Radios, whose hidden rewards lead through the decorations, gifts and trees to

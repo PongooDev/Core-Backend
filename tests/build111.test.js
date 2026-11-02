@@ -7,7 +7,7 @@ import { versionOf } from "../src/builds/detect.js";
 import { activeEventFlags, hasEventEnded, isEventActive, lobbyWinterDecor, mutantStorms, passiveStorms, winter2017 } from "../src/events/events.js";
 import { stormTickets } from "../src/events/mutantstorms.js";
 import { stormLlama } from "../src/events/stormllamas.js";
-import { holidayLlama, snowflakeTickets, winterEventQuests } from "../src/events/winter2017.js";
+import { holidayLlama, snowflakeConversion, snowflakeTickets, winterEventQuests } from "../src/events/winter2017.js";
 import { athenaCosmetics, getAthenaQuest } from "../src/gamedata/athena.js";
 import { getCardPack, getItem } from "../src/gamedata/items.js";
 import { getQuest } from "../src/gamedata/quests.js";
@@ -106,7 +106,7 @@ test("1.11 sells the Holiday Survival Llama for 1000 Snowflake Tickets, and no l
   assert.ok(!offers(v111).some(({ offerId }) => offerId === "core_event_vindertech_llama"));
 });
 
-test("on 1.11 every 1,000 unspent Storm Tickets become a Vindertech Llama; 1.10 keeps them", async () => {
+test("on 1.11 every 1,000 unspent Storm Tickets become a Vindertech Llama and the rest are lost, once; 1.10 keeps them", async () => {
   const backend = await startBackend();
   try {
     const player = await userLogin(backend.port, "StormLlamas");
@@ -118,8 +118,39 @@ test("on 1.11 every 1,000 unspent Storm Tickets become a Vindertech Llama; 1.10 
 
     const before = profileOf(await mcp(v110, backend.port, player, "QueryProfile"));
     assert.deepEqual([held(before, stormTickets), held(before, stormLlama)], [2500, 0]);
+    // "All other unspent tickets will be lost after this event is over."
     const after = profileOf(await mcp(v111, backend.port, player, "QueryProfile"));
-    assert.deepEqual([held(after, stormTickets), held(after, stormLlama)], [500, 2]);
+    assert.deepEqual([held(after, stormTickets), held(after, stormLlama)], [0, 2]);
+
+    // Once per account: tickets earned afterwards (on 1.10) stay on 1.11.
+    const saved = JSON.parse(fs.readFileSync(file, "utf8"));
+    saved.items.core_test_tickets_2 = { templateId: stormTickets, attributes: {}, quantity: 1500 };
+    fs.writeFileSync(file, JSON.stringify(saved));
+    const again = profileOf(await mcp(v111, backend.port, player, "QueryProfile"));
+    assert.deepEqual([held(again, stormTickets), held(again, stormLlama)], [1500, 2]);
+  } finally {
+    backend.close();
+  }
+});
+
+test("Survive the Holidays' Snowflake Tickets wait while it runs: 1.11 to 2.2 keep them", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "Snowflakes");
+    await mcp(v111, backend.port, player, "QueryProfile");
+    const file = path.join(backend.dataDir, "accounts", player.accountId, "profiles", "profile0.json");
+    const profile = JSON.parse(fs.readFileSync(file, "utf8"));
+    profile.items.core_test_snowflakes = { templateId: snowflakeTickets, attributes: {}, quantity: 2500 };
+    fs.writeFileSync(file, JSON.stringify(profile));
+    for (const changelist of [v111, "3825894", "3841827"]) {
+      const loaded = profileOf(await mcp(changelist, backend.port, player, "QueryProfile"));
+      assert.deepEqual([held(loaded, snowflakeTickets), held(loaded, holidayLlama)], [2500, 0], changelist);
+    }
+    // 2.3 ends it: "For every 1,000 unspent Snowflake tickets, a Holiday Survival Llama ... All remaining tickets will be
+    // lost." The conversion is due on a build past 2.2, at 1,000 a llama.
+    assert.equal(inBuild("3841827", () => snowflakeConversion.due()), false);
+    assert.equal(inBuild("3850000", () => snowflakeConversion.due()), true);
+    assert.equal(inBuild("3850000", () => snowflakeConversion.options().perLlama), 1000);
   } finally {
     backend.close();
   }

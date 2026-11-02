@@ -135,7 +135,7 @@ test("1.9.1's llama store sells the Vindertech Llama for Storm Tickets; other bu
   }
 });
 
-test("1.9.1 turns each 500 unspent Candy into a Fortnitemares Llama in the loot tab, once; 1.9 keeps the Candy", async () => {
+test("1.9.1 turns each 500 unspent Candy into a Fortnitemares Llama in the loot tab and drops the rest, once; 1.9 keeps the Candy", async () => {
   const backend = await startBackend();
   try {
     const player = await userLogin(backend.port, "Candy191");
@@ -150,26 +150,21 @@ test("1.9.1 turns each 500 unspent Candy into a Fortnitemares Llama in the loot 
     assert.equal(held(profile, candy), 1320);
     assert.equal(held(profile, halloweenLlama), 0);
 
+    // The first load on 1.9.1: two llamas, and the 320 left over go with the event (Core-Backend #174).
     profile = profileOf(await mcp(builds["1.9.1"], backend.port, player, "QueryProfile"));
-    assert.equal(held(profile, candy), 320);
+    assert.equal(held(profile, candy), 0);
     assert.equal(held(profile, halloweenLlama), 2);
     const llamas = Object.values(profile.items).filter((item) => item.templateId === halloweenLlama);
     assert.ok(llamas.every((item) => item.attributes.pack_source === "Store"), "opened from the loot tab");
 
-    // Again: the 320 left over isn't enough for another.
-    await mcp(builds["1.9.1"], backend.port, player, "ClientQuestLogin");
-    profile = profileOf(await mcp(builds["1.9.1"], backend.port, player, "QueryProfile"));
-    assert.equal(held(profile, candy), 320);
-    assert.equal(held(profile, halloweenLlama), 2);
-
-    // The ClientQuestLogin converts too.
+    // Only once: Candy the account holds later stays.
     editProfile(backend, player.accountId, (account) => {
-      account.items["candy-c"] = { templateId: candy, attributes: { level: 1, item_seen: 0 }, quantity: 180 };
+      account.items["candy-c"] = { templateId: candy, attributes: { level: 1, item_seen: 0 }, quantity: 680 };
     });
     await mcp(builds["1.9.1"], backend.port, player, "ClientQuestLogin");
-    profile = profileOf(await mcp(builds["1.9"], backend.port, player, "QueryProfile"));
-    assert.equal(held(profile, candy), 0);
-    assert.equal(held(profile, halloweenLlama), 3);
+    profile = profileOf(await mcp(builds["1.9.1"], backend.port, player, "QueryProfile"));
+    assert.equal(held(profile, candy), 680);
+    assert.equal(held(profile, halloweenLlama), 2);
   } finally {
     backend.close();
   }

@@ -1,7 +1,6 @@
 import { activeEventFlags } from "../../../events/events.js";
-import { convertLeftoverCandy } from "../../../events/candyllamas.js";
-import { convertLeftoverStormTickets } from "../../../events/stormllamas.js";
 import { eventQuests } from "../../../events/fortnitemares.js";
+import { convertEventLeftovers } from "../../../events/leftovers.js";
 import { eventQuestsToRestore, removeEndedEventQuests } from "../../../events/quests.js";
 import { startingQuests } from "../../../gamedata/quests.js";
 import { athenaQuestLogin } from "../../../profiles/athena.js";
@@ -20,9 +19,8 @@ import { eventFlagsNotification } from "./RequestEventFlags.js";
 // flags, so a build that runs an event gets them in this response; the others' responses are as before.
 //
 // An ended event's unfinished quests leave the quest log here and in QueryProfile (events/quests.js, Core-Backend #127),
-// and one that runs again gives back the quests it took. Past Fortnitemares, unspent Candy becomes Fortnitemares Llamas
-// (events/candyllamas.js, #129), and past the Mutant Storms (1.11) unspent Storm Tickets Vindertech Llamas
-// (events/stormllamas.js).
+// and one that runs again gives back the quests it took. An ended event's unspent tickets become its llamas, once
+// (events/leftovers.js, #129, #174).
 //
 // On athena (1.8's Battle Royale quest log), its daily challenges (profiles/athena.js), with the event flags all the
 // same in case that quest manager is the one asking.
@@ -30,8 +28,7 @@ export function clientQuestLogin({ session, notifications, profileId }) {
   if (profileId === "athena") athenaQuestLogin(session);
   else {
     removeEndedEventQuests(session);
-    convertLeftoverCandy(session);
-    convertLeftoverStormTickets(session);
+    convertEventLeftovers(session);
     for (const questId of [...startingQuests(), ...eventQuests()]) grant(session, `Quest:${questId}`, 1);
     for (const questId of eventQuestsToRestore(session.profile("profile0").profile)) grant(session, `Quest:${questId}`, 1);
     refreshDailyQuests(session);
