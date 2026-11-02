@@ -3,7 +3,7 @@ import { createAccountStore } from "./accounts/store.js";
 import { createResetTokenStore } from "./accounts/reset-tokens.js";
 import { createSettingsStore } from "./settings/store.js";
 import { createReportStore } from "./reports/store.js";
-import { configureItemShop } from "./store/itemshop.js";
+import { configureItemShop, configureSeasonStarts } from "./store/itemshop.js";
 import { requestBuild } from "./builds/context.js";
 import { configureEvents, seasonalEvents } from "./events/events.js";
 import { configureBattlePass } from "./battlepass/season1.js";
@@ -66,6 +66,7 @@ export function createContext(config) {
   const adminAuth = createAdminAuthStore(config.dataDir);
   configureItemShop(() => settings.get().itemShop);
   configureEvents(() => settings.get().events);
+  configureSeasonStarts((season, date) => settings.recordSeasonStart(season, date));
   configureBattlePass(() => settings.get().battlepass);
   if (config.requirePassword !== undefined) settings.update({ requirePassword: config.requirePassword });
   if (config.allowRegistration !== undefined) settings.update({ allowRegistration: config.allowRegistration });

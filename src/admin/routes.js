@@ -35,7 +35,7 @@ import { createRateLimiter, getClientIp } from "../services/portal/ratelimit.js"
 import { defaultBattleRoyaleNews, defaultLoginMessage, defaultSubgameSelect } from "../services/content/pages.js";
 import { inBuild } from "../builds/context.js";
 import { battleRoyaleBuilds, certBuild, versionOf } from "../builds/detect.js";
-import { cosmeticRarity, cosmeticType, eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, seasonEnd, shopDay, weeklyStoreEnd } from "../store/itemshop.js";
+import { cosmeticRarity, cosmeticType, eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, seasonEnd, seasonStart, shopDay, weeklyStoreEnd, withoutSeasonStartRecording } from "../store/itemshop.js";
 import { activeEventFlags, fortnitemares, mutantStorms } from "../events/events.js";
 import { convertLeftoverCandy } from "../events/candyllamas.js";
 import { defaultEvents, defaultMatchmakingModes, defaultServerLimits } from "../settings/store.js";
@@ -1011,6 +1011,13 @@ export function adminRoutes(context) {
     const weeklyEnd = weeklyStoreEnd(now, shopConfig);
     const seasonEnds = seasonEnd(now, shopConfig, 1);
     const dailyEnd = nextRotation(now, shopConfig);
+    // Each season's replay: its day 1 and its end; Season 2 not served yet shows as starting today.
+    const seasonClocks = withoutSeasonStartRecording(() => Object.fromEntries([1, 2].map((season) => [season, {
+      start: new Date(seasonStart(season, now, shopConfig)).toISOString().slice(0, 10),
+      started: Boolean(eventsConfig.seasonStarts?.[season]) || season === 1,
+      end: seasonEnd(now, shopConfig, season).toISOString(),
+      shopDay: shopDay(now, shopConfig, season).date
+    }])));
 
     res.json({
       season: 1,
@@ -1023,6 +1030,7 @@ export function adminRoutes(context) {
         weeklyStoreEnd: weeklyEnd.toISOString(),
         seasonEnd: seasonEnds.toISOString(),
         dailyStoreEnd: dailyEnd.toISOString(),
+        seasons: seasonClocks,
         cacheIntervalMins: eventsConfig.calendarCacheMinutes ?? calendarCacheMinutes,
         currentTime: now.toISOString()
       },
@@ -1153,7 +1161,7 @@ export function adminRoutes(context) {
     const bpConfig = s.battlepass ?? defaultBattlePass;
     const now = new Date();
     const shopConfig = s.itemShop ?? { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 };
-    const seasonEnds = (season) => seasonEnd(now, shopConfig, season).toISOString();
+    const seasonEnds = (season) => withoutSeasonStartRecording(() => seasonEnd(now, shopConfig, season).toISOString());
 
     if (String(req.query.season) === "2") {
       return res.json(inBuild(buildOfSeason(2), () => ({

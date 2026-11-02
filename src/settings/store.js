@@ -63,6 +63,9 @@ const defaults = {
     rotationHour: 0,
     weeklyDurationDays: 7,
     customSeasonEnd: null,
+    // Each season's replay start, its day 1 ("YYYY-MM-DD", store/itemshop.js seasonStart): Season 2's is set the first
+    // day the backend serves it; null is the default start.
+    seasonStarts: { 1: null, 2: null },
     calendarCacheMinutes: 60
   },
   battlepass: defaultBattlePass,
@@ -183,6 +186,15 @@ function sanitizeEvents(input, current = defaults.events) {
     } else if (typeof input.customSeasonEnd === "string") {
       const parsed = Date.parse(input.customSeasonEnd);
       if (!isNaN(parsed)) result.customSeasonEnd = new Date(parsed).toISOString();
+    }
+  }
+
+  if (input.seasonStarts && typeof input.seasonStarts === "object" && !Array.isArray(input.seasonStarts)) {
+    result.seasonStarts = { 1: null, 2: null, ...(result.seasonStarts ?? {}) };
+    for (const season of ["1", "2"]) {
+      const value = input.seasonStarts[season];
+      if (value === null || value === "") result.seasonStarts[season] = null;
+      else if (typeof value === "string" && !isNaN(Date.parse(value))) result.seasonStarts[season] = new Date(Date.parse(value)).toISOString().slice(0, 10);
     }
   }
 
@@ -575,6 +587,13 @@ export function createSettingsStore(dataDir) {
       settings.allowedHostingIps = (settings.allowedHostingIps ?? defaults.allowedHostingIps).filter((item) => item !== address);
       save();
       return this.get();
+    },
+
+    // Keeps the day a season's replay started (store/itemshop.js seasonStart), touching nothing else in events.
+    recordSeasonStart(season, date) {
+      const events = settings.events ?? JSON.parse(JSON.stringify(defaults.events));
+      settings.events = { ...events, seasonStarts: sanitizeEvents({ seasonStarts: { [season]: date } }, events).seasonStarts };
+      save();
     }
   };
 }

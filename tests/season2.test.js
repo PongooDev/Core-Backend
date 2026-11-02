@@ -7,7 +7,7 @@ import { inBuild } from "../src/builds/context.js";
 import { tierOfferId } from "../src/battlepass/season2.js";
 import { athenaCosmetics, athenaDisplayAssets, athenaSeason } from "../src/gamedata/athena.js";
 import { storefronts } from "../src/store/catalog.js";
-import { itemShopOffers, seasonEnd, shopDay, weeklyStoreEnd } from "../src/store/itemshop.js";
+import { itemShopOffers, seasonEnd, seasonStart, shopDay, weeklyStoreEnd } from "../src/store/itemshop.js";
 import { dedicatedServerToken, get, post, send, startBackend, userLogin } from "./helpers.js";
 
 // Core-Backend #145: 1.11 (CL-3807424) is Season 2, with its own season level, a Battle Pass, the winter lobby, six
@@ -94,7 +94,9 @@ test("1.11's item shop replays Season 2's, from 14 December 2017 in a 70-day cyc
     for (const { featured, daily } of history) for (const [templateId, price] of [...featured, ...daily]) assert.ok(cosmetics[templateId] && price > 0, templateId);
   });
 
-  const day = (iso, build) => inBuild(build, () => shopDay(new Date(iso)).date);
+  // Season 2 started on its real first day (the anchor's own tests are below).
+  const s2 = { mode: "fnbr", seasonStarts: { 2: "2017-12-14" } };
+  const day = (iso, build) => inBuild(build, () => shopDay(new Date(iso), s2).date);
   assert.equal(day("2017-12-14T00:00:00Z", v111), "2017-12-14");
   assert.equal(day("2018-02-21T23:59:59Z", v111), "2018-02-21");
   assert.equal(day("2018-02-22T00:00:00Z", v111), "2017-12-14");
@@ -102,7 +104,7 @@ test("1.11's item shop replays Season 2's, from 14 December 2017 in a 70-day cyc
   assert.equal(day("2026-11-02T12:00:00Z", v110), "2017-11-04");
 
   // Christmas Eve 2017: Crackshot and Candy Axe featured, at their 2017 prices.
-  const offers = (iso, build) => inBuild(build, () => itemShopOffers(new Date(iso), { mode: "fnbr" }));
+  const offers = (iso, build) => inBuild(build, () => itemShopOffers(new Date(iso), s2));
   const christmas = offers("2017-12-24T12:00:00Z", v111);
   assert.deepEqual(christmas.BRWeeklyStorefront.map(({ templateId, price }) => [templateId, price]),
     [["AthenaCharacter:cid_050_athena_commando_m_holidaynutcracker", 2000], ["AthenaPickaxe:pickaxe_id_015_holidaycandycane", 1500]]);
@@ -112,13 +114,74 @@ test("1.11's item shop replays Season 2's, from 14 December 2017 in a 70-day cyc
   assert.deepEqual(offers("2017-12-15T12:00:00Z", v111).BRDailyStorefront.find(({ title }) => title === "Brite Bomber")?.price, 1200);
 
   // The featured pair changes on 17, 24 and 31 December, and the countdowns agree with the build's season.
-  const weekly = (iso, build) => inBuild(build, () => weeklyStoreEnd(new Date(iso)).toISOString());
+  const weekly = (iso, build) => inBuild(build, () => weeklyStoreEnd(new Date(iso), s2).toISOString());
   assert.equal(weekly("2017-12-17T12:00:00Z", v111), "2017-12-24T00:00:00.000Z");
   assert.equal(weekly("2017-12-24T12:00:00Z", v111), "2017-12-31T00:00:00.000Z");
-  assert.equal(inBuild(v111, () => seasonEnd(new Date("2017-12-24T12:00:00Z")).toISOString()), "2018-02-22T00:00:00.000Z");
+  assert.equal(inBuild(v111, () => seasonEnd(new Date("2017-12-24T12:00:00Z"), s2).toISOString()), "2018-02-22T00:00:00.000Z");
   for (let n = 0; n < 140; n++) {
     const now = new Date(Date.UTC(2026, 0, 1 + n, 12));
-    inBuild(v111, () => assert.ok(weeklyStoreEnd(now) > now && weeklyStoreEnd(now) <= seasonEnd(now), String(n)));
+    inBuild(v111, () => assert.ok(weeklyStoreEnd(now, s2) > now && weeklyStoreEnd(now, s2) <= seasonEnd(now, s2), String(n)));
+  }
+});
+
+// Core-Backend #150 (follow-up): Season 2 starts on its first shop, 14 December 2017's, the day the backend first serves
+// it, kept in the settings; an admin can set or reset each season's start. Season 1 keeps its clock.
+test("Season 2 starts on 14 December's shop the day it is first served, keeps that start, and an admin can move it", async () => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-season2-start-"));
+  const dayMs = 86400000;
+  const today = () => new Date(Math.floor(Date.now() / dayMs) * dayMs).toISOString().slice(0, 10);
+  const settingsOf = () => JSON.parse(fs.readFileSync(path.join(dataDir, "settings.json"), "utf8")).events.seasonStarts;
+  let backend = await startBackend({ dataDir });
+  try {
+    const player = await userLogin(backend.port, "seasonstart");
+    // The admin panel shows Season 2 as starting today, without starting it.
+    const overview = await admin(backend.port, "/events/overview");
+    assert.deepEqual([overview.body.calendar.seasons[2].start, overview.body.calendar.seasons[2].started, overview.body.calendar.seasons[2].shopDay], [today(), false, "2017-12-14"]);
+    assert.equal(overview.body.calendar.seasons[1].shopDay, inBuild(v110, () => shopDay(new Date(), { mode: "fnbr" })).date);
+    assert.equal((await admin(backend.port, "/battlepass/overview?season=2")).body.seasonEnd, new Date(Date.parse(`${today()}T00:00:00Z`) + 70 * dayMs).toISOString());
+    assert.equal(settingsOf()[2], null);
+
+    // 1.11's first calendar starts it: day 1 is today, 14 December's shop, and the countdown is the full 70 days.
+    const calendar = await as(v111, backend.port, "GET", "/fortnite/api/calendar/v1/timeline", player.token);
+    const state = calendar.body.channels["client-events"].states[0].state;
+    assert.equal(settingsOf()[2], today());
+    assert.equal(state.seasonEnd, new Date(Date.parse(`${today()}T00:00:00Z`) + 70 * dayMs).toISOString());
+    inBuild(v111, () => {
+      const offers = itemShopOffers(new Date());
+      assert.deepEqual(offers.BRWeeklyStorefront.map(({ templateId }) => templateId), ["AthenaGlider:glider_prismatic", "AthenaCharacter:cid_020_athena_commando_m"]);
+      assert.equal(shopDay(new Date(Date.now() + 10 * dayMs)).date, "2017-12-24");
+      assert.equal(shopDay(new Date(Date.now() + 70 * dayMs)).date, "2017-12-14");
+      // The Event Store's weekly rotation and the Battle Pass countdown run on the same clock.
+      assert.equal(state.weeklyStoreEnd, weeklyStoreEnd(new Date()).toISOString());
+      assert.equal(weeklyStoreEnd(new Date()).toISOString(), new Date(Date.parse(`${today()}T00:00:00Z`) + dayMs).toISOString());
+    });
+    // Season 1 keeps its clock and has no start recorded.
+    assert.equal(settingsOf()[1], null);
+    assert.equal(inBuild(v110, () => shopDay(new Date("2026-11-02T12:00:00Z")).date), "2017-11-04");
+
+    // It persists across a restart.
+    await backend.close();
+    backend = await startBackend({ dataDir });
+    assert.equal(inBuild(v111, () => seasonStart()), Date.parse(`${today()}T00:00:00Z`));
+
+    // An admin sets each season's start, next to the custom season end, which still overrides the countdown.
+    assert.equal((await admin(backend.port, "/events/config", { seasonStarts: { 1: "2026-10-01", 2: "2026-10-01" } })).status, 200);
+    assert.deepEqual(settingsOf(), { 1: "2026-10-01", 2: "2026-10-01" });
+    assert.equal(inBuild(v111, () => shopDay(new Date("2026-10-11T12:00:00Z")).date), "2017-12-24");
+    assert.equal(inBuild(v110, () => shopDay(new Date("2026-10-11T12:00:00Z")).date), "2017-11-09");
+    assert.equal(inBuild(v111, () => seasonEnd(new Date("2026-10-11T12:00:00Z")).toISOString()), "2026-12-10T00:00:00.000Z");
+    await admin(backend.port, "/events/config", { customSeasonEnd: "2029-01-01T00:00:00Z" });
+    assert.equal(inBuild(v111, () => seasonEnd(new Date()).toISOString()), "2029-01-01T00:00:00.000Z");
+    await admin(backend.port, "/events/config", { customSeasonEnd: null });
+
+    // Resetting Season 2 starts it again the next day it is served; resetting Season 1 gives back its clock.
+    await admin(backend.port, "/events/config", { seasonStarts: { 1: null, 2: null } });
+    assert.deepEqual(settingsOf(), { 1: null, 2: null });
+    assert.equal(inBuild(v110, () => shopDay(new Date("2026-11-02T12:00:00Z")).date), "2017-11-04");
+    assert.equal(inBuild(v111, () => shopDay(new Date()).date), "2017-12-14");
+    assert.equal(settingsOf()[2], today());
+  } finally {
+    await backend.close();
   }
 });
 

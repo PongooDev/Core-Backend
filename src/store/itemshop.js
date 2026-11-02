@@ -40,8 +40,8 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // Admins can also configure the shop via the admin panel (mode: "fnbr" | "random" | "custom", Core-Backend #69).
 //
 // 1.11 is Season 2, and has its own shop (Core-Backend #150): Epic's of Season 2, day by day from its first day, 14
-// December 2017, to its last, 21 February 2018 (itemshop-season2.json), replayed the same way in a 70-day cycle from 14
-// December 2017. Its items and prices are the Fortnite Wiki's Item Shop History pages' (what the shop charged that day;
+// December 2017, to its last, 21 February 2018 (itemshop-season2.json), replayed the same way in a 70-day cycle, but from
+// its own start (seasonStart below), so that it opens on 14 December's shop and plays forward in order. Its items and prices are the Fortnite Wiki's Item Shop History pages' (what the shop charged that day;
 // fnbr.co's per-day pages show today's prices, e.g. Brite Bomber 1,800 where it was 1,200), with fnbr.co's list
 // checked against it; where the two lists differ (14 and 31 December, 31 January) the wiki's is kept, and 8 February,
 // changed during the day, is its first shop ("Part 1"). The wiki has Half Shell at 1,200 on 11 January, 800 on every
@@ -57,6 +57,42 @@ const seasonHistories = { 1: readHistory("itemshop.json"), 2: readHistory("items
 export const seasonOfBuild = () => athenaSeason()?.seasonNumber ?? 1;
 const historyOf = (season) => seasonHistories[season] ?? seasonHistories[1];
 const dayMs = 24 * 60 * 60 * 1000;
+const rotationMsOf = (config) => Math.max(0, Math.min(23, Number(config?.rotationHour ?? 0))) * 60 * 60 * 1000;
+
+// The UTC day (at the rotation hour) a season's replay starts on, its day 1: the admin's seasonStarts[season] (events
+// config, "YYYY-MM-DD") if set. Without one, Season 2 starts on the day the backend first serves it, which is then kept
+// in the settings (configureSeasonStarts' recorder), so that 1.11's shop opens on Season 2's first shop and its countdown
+// shows the season's full 70 days, as the reporter asked on #150; resetting it in the admin panel starts it again on the
+// next day it is served. Season 1 keeps its history's own first day, 30 October 2017, on the shared clock (Core's
+// choice: its replay and countdown have run that way since the shop was added, every running server is somewhere in its
+// cycle, and re-anchoring it would jump their shops and countdowns), unless an admin sets its start too. With no
+// recorder (no settings store), Season 2 also keeps its history's first day.
+const anchoredSeasons = [2];
+let seasonStartRecorder = null;
+let recordSeasonStarts = true;
+export function configureSeasonStarts(recorder) {
+  seasonStartRecorder = typeof recorder === "function" ? recorder : null;
+}
+// The admin panel's previews: a season not started yet shows as starting today, without starting it.
+export function withoutSeasonStartRecording(fn) {
+  const was = recordSeasonStarts;
+  recordSeasonStarts = false;
+  try {
+    return fn();
+  } finally {
+    recordSeasonStarts = was;
+  }
+}
+export function seasonStart(season = seasonOfBuild(), now = new Date(), overrideConfig = null) {
+  const config = overrideConfig ?? currentShopConfig();
+  const set = config?.seasonStarts?.[season] ?? currentEventsConfig()?.seasonStarts?.[season];
+  const parsed = set ? Date.parse(`${String(set).slice(0, 10)}T00:00:00Z`) : NaN;
+  if (!isNaN(parsed)) return parsed;
+  if (!anchoredSeasons.includes(Number(season)) || !seasonStartRecorder) return historyOf(season).firstDay;
+  const today = Math.floor((now.getTime() - rotationMsOf(config)) / dayMs) * dayMs;
+  if (recordSeasonStarts) seasonStartRecorder(Number(season), new Date(today).toISOString().slice(0, 10));
+  return today;
+}
 
 const firstBuild = 3724489;
 export const hasItemShop = (changelist = currentBuild()) => Number(changelist) >= firstBuild;
@@ -222,8 +258,9 @@ export function generateRandomShop(now = new Date(), overrideConfig = null) {
 
 // The recorded day the UTC day of now shows in the season's history (adjusted for rotation hour).
 export function shopDay(now = new Date(), overrideConfig = null, season = seasonOfBuild()) {
-  const { days: history, firstDay } = historyOf(season);
+  const { days: history } = historyOf(season);
   const config = overrideConfig ?? currentShopConfig();
+  const firstDay = seasonStart(season, now, config);
   const rotationHour = Math.max(0, Math.min(23, Number(config?.rotationHour ?? 0)));
   const adjustedTime = now.getTime() - rotationHour * 60 * 60 * 1000;
   const days = Math.floor((adjustedTime - firstDay) / dayMs);
@@ -266,7 +303,7 @@ export function weeklyStoreEnd(now = new Date(), overrideConfig = null, season =
 
 // When the season ends, for the Season Shop's and 1.11's Battle Pass tab's countdowns (store/seasonshop.js,
 // services/fortnite/calendar.js): the end of the build's season on Epic's own schedule, replayed on the shop's clock
-// (UTC days at the rotation hour), which is the end of the season's shop history's cycle, so that the countdown and the
+// (UTC days at the rotation hour, from seasonStart), which is the end of the season's shop history's cycle, so that the countdown and the
 // shop start over together (Core-Backend #149, Core's choice: each cycle is the season again at its original length, so
 // the countdown reads as it did on that day of the season, then resets, as the shop's replay does). Season 1 (1.8 to
 // 1.10) is its history's 45 days, 30 October to its last day, 13 December 2017 (the season began on 25 October, before
@@ -280,7 +317,8 @@ export function seasonEnd(now = new Date(), overrideConfig = null, season = seas
   }
   const config = overrideConfig ?? currentShopConfig();
   const rotationMs = Math.max(0, Math.min(23, Number(config?.rotationHour ?? 0))) * 60 * 60 * 1000;
-  const { days: history, firstDay } = historyOf(season);
+  const { days: history } = historyOf(season);
+  const firstDay = seasonStart(season, now, config);
   const days = Math.floor((now.getTime() - rotationMs - firstDay) / dayMs);
   const cycle = Math.floor(days / history.length);
   return new Date(firstDay + (cycle + 1) * history.length * dayMs + rotationMs);

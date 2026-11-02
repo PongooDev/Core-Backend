@@ -5670,6 +5670,7 @@
         rotationHour: Number(cfg.rotationHour ?? 0),
         weeklyDurationDays: Number(cfg.weeklyDurationDays ?? 7),
         customSeasonEnd: cfg.customSeasonEnd ? cfg.customSeasonEnd.slice(0, 16) : "",
+        seasonStarts: { 1: cfg.seasonStarts?.[1] || "", 2: cfg.seasonStarts?.[2] || "" },
         calendarCacheMinutes: Number(cfg.calendarCacheMinutes ?? 60)
       };
 
@@ -5727,6 +5728,7 @@
           rotationHour: form.rotationHour,
           weeklyDurationDays: form.weeklyDurationDays,
           customSeasonEnd: form.customSeasonEnd ? new Date(form.customSeasonEnd).toISOString() : null,
+          seasonStarts: { 1: form.seasonStarts[1] || null, 2: form.seasonStarts[2] || null },
           calendarCacheMinutes: form.calendarCacheMinutes
         };
         await act(api("/admin/api/events/config", payload), "Event configuration saved");
@@ -5900,6 +5902,27 @@
         oninput: (e) => { form.customSeasonEnd = e.target.value; }
       });
 
+      // Each season's replay start (day 1): a date, or empty for the default (Season 1: 30 October 2017's clock;
+      // Season 2: the first day the backend serves it).
+      const seasonStartInputs = Object.fromEntries([1, 2].map((season) => [season, el("input", {
+        class: "field",
+        type: "date",
+        value: form.seasonStarts[season],
+        style: "min-width:160px;",
+        oninput: (e) => { form.seasonStarts[season] = e.target.value; }
+      })]));
+      const seasonClock = (season) => data.calendar.seasons?.[season];
+      const seasonStartRow = (season, label) => el("div", { style: "display:flex; flex-direction:column; gap:4px;" },
+        el("div", { class: "muted font-semibold", style: "font-size:11px;", text: seasonClock(season)
+          ? `${label}: day 1 ${seasonClock(season).start}${seasonClock(season).started ? "" : " (not started yet)"}, today ${seasonClock(season).shopDay}'s shop, ends ${new Date(seasonClock(season).end).toLocaleDateString()}`
+          : label }),
+        el("div", { style: "display:flex; align-items:center; gap:6px; flex-wrap:wrap;" },
+          seasonStartInputs[season],
+          btn("Reset", () => {
+            form.seasonStarts[season] = "";
+            seasonStartInputs[season].value = "";
+          }, "ghost small")));
+
       const cacheMinsInput = el("input", {
         class: "field num",
         type: "number",
@@ -5934,6 +5957,7 @@
                   rotationHour: 0,
                   weeklyDurationDays: 7,
                   customSeasonEnd: null,
+                  seasonStarts: { 1: null, 2: null },
                   calendarCacheMinutes: 60
                 }), "Reset to default event settings");
                 showEvents();
@@ -6080,13 +6104,21 @@
               el("div", {},
                 el("div", { class: "muted font-semibold", style: "font-size:12px; margin-bottom:4px;", text: "CUSTOM BATTLE ROYALE SEASON END" }),
                 el("div", { style: "font-size:18px; font-weight:800; color:var(--text); margin-bottom:4px;", text: form.customSeasonEnd ? "Custom Override" : "Standard Cycle" }),
-                el("div", { class: "muted", style: "font-size:11px;", text: "Override Season 1 countdown. Clear to use standard 45-day history cycle." })),
+                el("div", { class: "muted", style: "font-size:11px;", text: "Overrides every season's countdown. Clear to use each season's own cycle (Season 1: 45 days, Season 2: 70 days)." })),
               el("div", { style: "margin-top:12px; display:flex; flex-direction:column; gap:6px;" },
                 customEndInput,
-                btn("Reset to 45-day Cycle", () => {
+                btn("Reset to Season Cycle", () => {
                   form.customSeasonEnd = "";
                   customEndInput.value = "";
                 }, "ghost small"))),
+
+            el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
+              el("div", {},
+                el("div", { class: "muted font-semibold", style: "font-size:12px; margin-bottom:4px;", text: "SEASON START (DAY 1)" }),
+                el("div", { class: "muted", style: "font-size:11px;", text: "The day each season's shop and countdown start from, then replay in order and start over when the season ends. Reset Season 2 to start it again on the next day it is served; reset Season 1 to its original clock." })),
+              el("div", { style: "margin-top:12px; display:flex; flex-direction:column; gap:10px;" },
+                seasonStartRow(1, "Season 1 (1.8 – 1.10)"),
+                seasonStartRow(2, "Season 2 (1.11)"))),
 
             el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
               el("div", {},
