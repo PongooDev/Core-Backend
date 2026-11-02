@@ -163,7 +163,8 @@ const layout = perBuild((read) => {
         theaterImage: "/Game/UI/Icons/Icon-Halloween-DirectAcquisition/Icon-Halloween-DirectAcquisition.Icon-Halloween-DirectAcquisition",
         // The Fortnitemares Llama's PackColor.
         theaterColorInfo: { bUseDifficultyToDetermineColor: false, color: { specifiedColor: { r: 1, g: 0.464813, b: 0.063542, a: 1 }, colorUseRule: "UseColor_Specified" } },
-        // A globe socket no other theater uses (WM_Globe's StaticMeshSockets).
+        // A globe socket no main theater uses (WM_Globe's StaticMeshSockets): Survive the Storm's (world/survival.js), whose
+        // event never runs alongside Fortnitemares.
         socket: "Survival_Mode",
         missionAlertRequirements: noRequirements()
       },

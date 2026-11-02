@@ -9,6 +9,7 @@ import { perBuild } from "../gamedata/read.js";
 import { getDifficulty, missionAlertSpread, missionAlertTier } from "../gamedata/world.js";
 import { candyReward, hexsylvania, isHexsylvania } from "./hexsylvania.js";
 import { linkedQuests, questPath } from "./quests.js";
+import { isSurvival, survivalAlertGenerators, survivalReward, survivalTheater } from "./survival.js";
 
 // The story opens each later theater: the client's TheaterSelect shows "Requires completing quest: {Quest}" for
 // RuntimeInfo.Requirements.QuestDefinition and only enables Select once AFortPlayerController::IsRequirementsMet
@@ -104,13 +105,16 @@ function shuffled(list, seed) {
 // missions carried in Epic's world info (tools/theaters/import.mjs), so missions of one difficulty mostly show its XP
 // packs and now and then materials, as Epic's did. A group seen on one mission only (storm shields, the tutorial) keeps
 // that mission's packs.
-// A Hexsylvania mission (world/hexsylvania.js) also gives Candy, which world info shows with its other rewards.
+// A Hexsylvania mission (world/hexsylvania.js) also gives Candy, which world info shows with its other rewards. A Survive
+// the Storm mission's group (Mission_Select_Survival_T0<n>) is in no world info: it gives its Survival Rewards pack.
 function missionRewards(seed, tierGroupName, theaterId, rowName) {
   const { count = 0, pool = [] } = layout().rewards[tierGroupName] ?? {};
   const drawn = pool.reduce((total, reward) => total + reward.weight, 0);
   const items = drawn <= count ? pool.flatMap(({ itemType, quantity, weight }) => Array(weight).fill({ itemType, quantity }))
     : Array.from({ length: count }, (_, index) => weighted(pool, `${seed}:reward:${index}`));
   if (isHexsylvania(theaterId)) items.push({ itemType: candy, quantity: candyReward(rowName) });
+  const survival = isSurvival(theaterId) && survivalReward(tierGroupName);
+  if (survival) items.push(survival);
   return { tierGroupName, items: items.map(({ itemType, quantity }) => ({ itemType, quantity })) };
 }
 
@@ -176,8 +180,11 @@ function rollMissions({ data, fixedMissions }, day, availableUntil) {
 // the zone's reagents (high) alone. Its Survive the Holidays' Mini-Boss alerts (MiniBossCategory, MissionAlert_MiniBoss,
 // EventFlag.Winter2017, a row per zone by tile difficulty as the storm rows) "reward event tickets": Snowflake Tickets
 // (EventCurrency_Snowballs), 10 per tile difficulty as the Mutant Storms' (🟡 Core's), and the zone's reagents (high).
-// Its Survive the Storm alerts (Survival3Day/7DayCategory) go on the Survival theater's missions, which Core's theaters
-// (gamedata/theaters.json) don't have, so they have no rewards here and are never placed.
+// Its Survive the Storm alerts (Survival3DayCategory, MissionAlert_Survival3Day; Survival7DayCategory,
+// MissionAlert_Survival7Day; EventFlag.Winter2017) go on the Survive the Storm theater's missions (world/survival.js,
+// Core-Backend #172), 3 Day alerts on 3 Day missions and 7 Day ones on 7 Day missions. They "reward event tickets" too:
+// Snowflake Tickets, 10 per tile difficulty as the Mini-Boss ones for a 3 Day alert and twice that for a 7 Day one
+// (🟡 Core's).
 const halloweenAlerts = "Halloween2017_MissionAlert";
 const stormTier = (tier) => (tier <= 5 ? 1 : tier <= 10 ? 2 : tier <= 15 ? 3 : 4);
 const zones = ["Stonewood", "Plankerton", "CanneyValley", "TwinePeaks"];
@@ -204,6 +211,8 @@ const alertRewards = {
     ...(isEventActive(mutantStorms) ? [[stormTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]] : [])
   ],
   MissionAlert_StormLow: (row) => [[`CardPack:zcp_reagent_c_t0${zoneOfRow(row)}_high`, 1]],
+  MissionAlert_Survival3Day: (row, mission) => [[snowflakeTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]],
+  MissionAlert_Survival7Day: (row, mission) => [[snowflakeTickets, 2 * stormTicketsFor(mission.missionDifficultyInfo.rowName)]],
   MissionAlert_MiniBoss: (row, mission) => [
     [`CardPack:zcp_reagent_c_t0${zoneOfRow(row)}_high`, 1],
     [snowflakeTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]
@@ -254,6 +263,7 @@ function alertFor(data, mission, category) {
   if (!tile?.canBeMissionAlert || !tier || !alertRewards[tier.lootTierGroup]) return undefined;
   if (tier.zoneThemes.length && !tier.zoneThemes.includes(tile.zoneTheme)) return undefined;
   if (tier.missionGenerator && tier.missionGenerator !== mission.missionGenerator) return undefined;
+  if (survivalAlertGenerators[category] && survivalAlertGenerators[category] !== mission.missionGenerator) return undefined;
   return tier;
 }
 
@@ -319,15 +329,16 @@ function spreadStorm(data, missions, storm, dayStart, now, taken, availableUntil
 // category the theater has, on missions whose tile can carry one and whose difficulty has a row of that category, one
 // alert a mission. A main theater's are a general one (MissionAlert_1-4) and a storm one (StormLowCategory), and while
 // the Mutant Storms run (1.9.1) each of its zones gets a Mutant Storm (StormCategory) that spreads; while Survive the
-// Holidays runs (1.11) each region also gets a Mini-Boss one (MiniBossCategory); Hexsylvania's are Halloween ones. The
-// alert
-// names its category (FFortAvailableMissionAlertData CategoryName), which the map tile looks up in
-// MissionAlertCategories (AFortTheaterMapTile::GetMissionAlertCategory, 1.8 0x8F3D40, the tile's alert's category
+// Holidays runs (1.11) each region also gets a Mini-Boss one (MiniBossCategory); Hexsylvania's are Halloween ones, and
+// each Survive the Storm region gets a 3 Day and a 7 Day one. The alert names its category
+// (FFortAvailableMissionAlertData CategoryName), which the map tile looks up in MissionAlertCategories (AFortTheaterMapTile::GetMissionAlertCategory, 1.8 0x8F3D40, the tile's alert's category
 // name): BP_Hex_PARENT's HandleMissionAlert shows every alert's indicator and, for Storm and StormLow, the storm swirl
 // (P_StormAffected) and its timer (Core-Backend #91). Without a name every alert was General.
 // Returns the alerts and when the theater's alerts next change (a storm's next spread, else the day's end).
 function rollAlerts({ data }, missions, day, dayStart, now, availableUntil) {
-  const categories = isHexsylvania(data.uniqueId) ? ["HalloweenCategory"] : ["GeneralCategory", "StormLowCategory", "MiniBossCategory"];
+  const categories = isHexsylvania(data.uniqueId) ? ["HalloweenCategory"]
+    : isSurvival(data.uniqueId) ? ["Survival3DayCategory", "Survival7DayCategory"]
+      : ["GeneralCategory", "StormLowCategory", "MiniBossCategory"];
   const taken = new Set();
   const storms = [];
   const spreading = stormsSpread();
@@ -349,7 +360,7 @@ function rollAlerts({ data }, missions, day, dayStart, now, availableUntil) {
       (mission) => region.tileIndices.includes(mission.tileIndex))));
   // A Mutant Storm starts in each of the theater's zones (one per StormCategory row its missions can carry, each row a
   // zone and a spread) and spreads from there; from 1.10 each zone has its fixed target of storms instead.
-  if (!isHexsylvania(data.uniqueId)) {
+  if (!isHexsylvania(data.uniqueId) && !isSurvival(data.uniqueId)) {
     const rows = [...new Map(missions.map((mission) => alertFor(data, mission, "StormCategory")).filter(Boolean)
       .map((row) => [row.name, row])).values()];
     for (const row of rows) {
@@ -393,8 +404,7 @@ export function worldInfo(now = new Date()) {
   const day = now.toISOString().slice(0, 10);
   const dayStart = new Date(`${day}T00:00:00.000Z`);
   const availableUntil = `${day}T23:59:59.999Z`;
-  const event = hexsylvania();
-  const theaters = event ? [...layout().theaters, event] : layout().theaters;
+  const theaters = [...layout().theaters, ...[hexsylvania(), survivalTheater()].filter(Boolean)];
   const missions = theaters.map((theater) => rollMissions(theater, day, availableUntil));
   const alerts = theaters.map((theater, index) => rollAlerts(theater, missions[index], day, dayStart, now, availableUntil));
   return {

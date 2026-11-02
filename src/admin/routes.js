@@ -1145,8 +1145,13 @@ export function adminRoutes(context) {
           subtitle: "Mini-Boss Mission Alerts & Holiday Survival",
           buildRange: "1.11 – 2.2 (CL 3807424 – 3841827)",
           flags: ["EventFlag.Winter2017", "EventFlag.PassiveStorms"],
-          theater: "Standard Zones with Mini-Boss Alerts",
-          alertsQuota: "10 Mini-Boss mission alerts and 4 storms (no tickets) per day",
+          theater: "Survive the Storm, and Standard Zones with Mini-Boss Alerts",
+          theaterZones: [
+            { name: "Survive the Storm Start", power: "15", gate: "None" },
+            { name: "Survive the Storm Normal", power: "40", gate: "Launch the Rocket (Stonewood)" },
+            { name: "Survive the Storm Hard", power: "70", gate: "Launch the Rocket (Plankerton)" }
+          ],
+          alertsQuota: "10 Mini-Boss mission alerts, 3 Survive the Storm 3 Day and 1 7 Day alerts, and 4 storms (no tickets) per day",
           currency: "Snowflake Tickets (AccountResource:eventcurrency_snowballs)",
           llama: `Holiday Survival Llama (CardPack_Event_2017_Winter, ${eventsConfig.snowflakePerLlama ?? 1000} Snowflake Tickets)`,
           questsCount: 26,

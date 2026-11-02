@@ -90,6 +90,14 @@ function zoneReward(group, templateId, info) {
   if (expedition) return expedition;
   match = group.match(/^zcp_rareexpedition_(heroes|weapons|managers|traps)/);
   if (match) return one({ heroes: "hero", weapons: "ranged", managers: "manager", traps: "trap" }[match[1]], null, info.rarityCode);
+  // "Survival Rewards" (ZCP_Survival_T01-T03, a Survive the Storm mission's: world/survival.js), "Storm Coins and rare
+  // items based on how long you survive!" How long a team survived is the gameserver's to know and no item is Storm
+  // Coins, so this is Core's (🟡): hero, survivor and schematic XP at twice the pack's tier as a level, and one rare,
+  // epic or legendary schematic by tier.
+  if (group === "zcp_survival") {
+    const tier = Math.min(Math.max(zoneLevel(templateId, info), 1), 3);
+    return [...Object.values(xp).flatMap((id) => resource(id, xpByLevel[tier * 2])), ...one("schematic", null, ["r", "vr", "sr"][tier - 1])];
+  }
   return [];
 }
 
