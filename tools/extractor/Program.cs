@@ -961,6 +961,7 @@ File.WriteAllText(Path.Combine(output, "world.json"), JsonSerializer.Serialize(w
 var athenaCosmetics = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var athenaQuests = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var athenaLevels = new List<object>();
+SortedDictionary<string, object>? athenaSeason = null;
 var cosmeticKeys = new List<(string TemplateId, string Class, string AssetName, string? Hero, string? Icon)>();
 foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" && f.Path.StartsWith("FortniteGame/Content/Athena/Items/", StringComparison.OrdinalIgnoreCase)))
 {
@@ -1003,14 +1004,23 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
 // - the tile is the cosmetic's locker icon's featured twin, T-Featured-<key> for T-Icon-<key>(-L): the art itself, so it
 //   comes first (1.8.2's DA_Featured_GliderMiG shows T-Featured-Glider-001, Aerial Assault One, Glider_ID_001's
 //   T-Icon-Glider-001-L, not Raptor's Glider_MiG camo);
-// - the key is the cosmetic's asset name (DA_Featured_GliderVoyager is Glider_Voyager; later builds' DA_Featured_CID_...);
-// - the key is an outfit's hero (T-AthenaSoldiers-HID-029-Athena-Commando-F-Halloween is CID_029's HID_029_...);
+// - the key is the cosmetic's asset name (DA_Featured_GliderVoyager is Glider_Voyager; later builds' DA_Featured_CID_...),
+//   then the same with the numbers' leading zeros dropped (1.11's DA_Featured_Pickaxe_ID_11_Medieval is Pickaxe_ID_011_Medieval);
+// - the key is an outfit's hero (T-AthenaSoldiers-HID-029-Athena-Commando-F-Halloween is CID_029's HID_029_...), then
+//   names the hero's number (1.11's DA_Featured_SMaleHID050, tile T-AthenaSoldiers-HID-050-M, is HID_050's Crackshot);
 // - the key is the cosmetic's type and a word of its asset name (PickaxeHalloween is HalloweenScythe, Reaper, the one
-//   pickaxe with "halloween" in it; Batsickle is SickleBatPickaxe).
+//   pickaxe with "halloween" in it; Batsickle is SickleBatPickaxe). A word, not a number: 1.11's tile T-Featured-Pickaxe-11
+//   isn't Pickaxe_ID_011 (it is Pickaxe_ID_019_Heart's, Tat Axe, whose locker icon is T-Icon-Pickaxes-SK-Pickaxe-11-L).
 // A display asset no rule matches, or two that match one cosmetic, is left out and listed, for a new rule.
 static string Key(string name) => new string(name.Where(char.IsLetterOrDigit).ToArray()).ToLowerInvariant();
 static string WithoutPrefix(string name, params string[] prefixes) =>
     prefixes.FirstOrDefault(p => name.StartsWith(p, StringComparison.OrdinalIgnoreCase)) is { } prefix ? name[prefix.Length..] : name;
+// A key with its numbers' leading zeros dropped: 1.11's DA_Featured_Pickaxe_ID_11_Medieval is Pickaxe_ID_011_Medieval
+// (Axecalibur; its tile, T-Featured-Pickaxe-20, is the featured twin of its locker icon T-Icon-Pickaxes-SK-Pickaxe-20-L).
+static string Unpadded(string key) => Regex.Replace(key, @"(?<!\d)0+(?=\d)", "");
+// The hero number in a name: an outfit's hero HID_024_Athena_Commando_F, 1.11's DA_Featured_SFemaleHID024 and its tile
+// T-AthenaSoldiers-HID-024-Athena-Commando-F-L (Recon Specialist) all have 024.
+static string? HeroNumber(string? name) => name is null ? null : Regex.Match(Key(name), @"hid(\d{3})") is { Success: true } m ? m.Groups[1].Value : null;
 // A locker icon's name without its T-Icon- prefix and -L (large) suffix, as a key.
 static string IconKey(string icon)
 {
@@ -1042,9 +1052,11 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     [
         c => featuredKey is not null && c.Icon == featuredKey,
         c => keys.Contains(Key(c.AssetName)),
+        c => keys.Select(Unpadded).Contains(Unpadded(Key(c.AssetName))),
         c => c.Hero is not null && keys.Contains(Key(c.Hero)),
+        c => HeroNumber(c.Hero) is { } number && keys.Any(k => HeroNumber(k) == number),
         c => keys.Any(k => k.StartsWith(TypeWord(c.Class)) && k.Length > TypeWord(c.Class).Length
-            && Key(c.AssetName).Contains(k[TypeWord(c.Class).Length..])),
+            && k[TypeWord(c.Class).Length..].Any(char.IsLetter) && Key(c.AssetName).Contains(k[TypeWord(c.Class).Length..])),
     ];
     var match = rules.Select(rule => cosmeticKeys.Where(rule).ToList()).FirstOrDefault(found => found.Count == 1)?[0];
     var objectPath = $"{gamePath}.{export.Name}";
@@ -1068,11 +1080,45 @@ if (provider.TryLoadPackage("FortniteGame/Content/Balance/AthenaGameData.uasset"
     var athenaData = JsonNode.Parse(JsonConvert.SerializeObject(athenaGameData.GetExports().First(e => e.ExportType == "AthenaGameData")))!["Properties"];
     // 1.11 (CL 3807424, Season 2) takes AthenaGameData's SeasonXpLevelsTable out: each season's AthenaSeasonItemDefinition
     // (Athena/Items/Seasons/AthenaSeason<n>) names its own SeasonXpCurve, so the newest season's levels are taken.
-    var seasonXpTable = athenaData!["SeasonXpLevelsTable"] ?? provider.Files.Values
+    var newestSeason = athenaData!["SeasonXpLevelsTable"] is not null ? null : provider.Files.Values
         .Where(f => f.Extension == "uasset" && Regex.IsMatch(f.Path, @"^FortniteGame/Content/Athena/Items/Seasons/AthenaSeason\d+\.uasset$", RegexOptions.IgnoreCase))
         .OrderByDescending(f => int.Parse(Regex.Match(f.Path, @"(\d+)\.uasset$").Groups[1].Value))
-        .Select(f => LoadExport(provider, f.Path, "AthenaSeasonItemDefinition")["Properties"]?["SeasonXpCurve"])
-        .FirstOrDefault(curve => curve is not null);
+        .Select(f => LoadExport(provider, f.Path, "AthenaSeasonItemDefinition")["Properties"])
+        .FirstOrDefault(properties => properties?["SeasonXpCurve"] is not null);
+    var seasonXpTable = athenaData["SeasonXpLevelsTable"] ?? newestSeason?["SeasonXpCurve"];
+    // That season's Battle Pass (UAthenaSeasonItemDefinition): its number, level and tier counts, the storefront its
+    // offers are in, the tiers' Battle Stars (BookXpCurve, FAthenaLevelUpData rows) and the reward schedules
+    // (FAthenaRewardSchedule {Levels: [{Rewards: [FAthenaRewardItemReference {ItemDefinition, TemplateId, Quantity}]}]},
+    // indexed by level): what each season level gives (SeasonXpScheduleFree: Battle Stars) and each tier gives the free
+    // pass (BookXpScheduleFree) and the Battle Pass (BookXpSchedulePaid). Levels with nothing are left out.
+    if (newestSeason is not null)
+    {
+        List<object> Schedule(JsonNode? schedule) => (schedule?["Levels"]?.AsArray() ?? []).Select((level, index) => (level, index))
+            .Select(entry => (entry.index, rewards: (entry.level?["Rewards"]?.AsArray() ?? []).Select(reward => new SortedDictionary<string, object>(StringComparer.Ordinal)
+            {
+                ["templateId"] = reward!["TemplateId"]?.GetValue<string>() is { Length: > 0 } templateId ? templateId : assetTypes.TemplateId(ObjectPath(AssetPath(reward["ItemDefinition"]))),
+                ["quantity"] = reward["Quantity"]?.GetValue<int>() ?? 1
+            }).Where(reward => (string)reward["templateId"] is not ("" or "None")).ToList()))
+            .Where(entry => entry.rewards.Count > 0)
+            .Select(entry => (object)new SortedDictionary<string, object>(StringComparer.Ordinal) { ["level"] = entry.index, ["rewards"] = entry.rewards })
+            .ToList();
+        athenaSeason = new SortedDictionary<string, object>(StringComparer.Ordinal)
+        {
+            ["seasonNumber"] = newestSeason["SeasonNumber"]!.GetValue<int>(),
+            ["numSeasonLevels"] = newestSeason["NumSeasonLevels"]!.GetValue<int>(),
+            ["numBookLevels"] = newestSeason["NumBookLevels"]!.GetValue<int>(),
+            ["storefront"] = newestSeason["SeasonStorefront"]?.GetValue<string>() ?? "",
+            ["bookLevels"] = LoadRows(provider, newestSeason["BookXpCurve"]).OrderBy(r => r.Value!["Level"]!.GetValue<int>())
+                .Select(r => (object)new SortedDictionary<string, object>(StringComparer.Ordinal)
+                {
+                    ["level"] = r.Value!["Level"]!.GetValue<int>(), ["xpToNextLevel"] = r.Value["XpToNextLevel"]!.GetValue<int>(),
+                    ["xpTotal"] = r.Value["XpTotal"]!.GetValue<int>()
+                }).ToList(),
+            ["seasonRewards"] = Schedule(newestSeason["SeasonXpScheduleFree"]),
+            ["bookFreeRewards"] = Schedule(newestSeason["BookXpScheduleFree"]),
+            ["bookPaidRewards"] = Schedule(newestSeason["BookXpSchedulePaid"])
+        };
+    }
     foreach (var (_, row) in LoadRows(provider, seasonXpTable).OrderBy(r => r.Value!["Level"]!.GetValue<int>()))
     {
         var level = new SortedDictionary<string, object>(StringComparer.Ordinal)
@@ -1095,11 +1141,13 @@ foreach (var quest in athenaQuests.Values.Cast<SortedDictionary<string, object>>
         if (objective.TryGetValue("stat", out var stat) && objectiveStats.TryGetValue((string)stat, out var row)) athenaStats[(string)stat] = row;
     }
 }
-File.WriteAllText(Path.Combine(output, "athena.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal)
+var athenaFile = new SortedDictionary<string, object>(StringComparer.Ordinal)
 {
     ["cosmetics"] = athenaCosmetics, ["displayAssets"] = athenaDisplayAssets, ["quests"] = athenaQuests, ["levels"] = athenaLevels,
     ["objectiveStats"] = athenaStats
-}, options) + "\n");
+};
+if (athenaSeason is not null) athenaFile["season"] = athenaSeason;
+File.WriteAllText(Path.Combine(output, "athena.json"), JsonSerializer.Serialize(athenaFile, options) + "\n");
 Console.WriteLine($"Battle Royale: {athenaCosmetics.Count} cosmetics, {athenaDisplayAssets.Count} display assets, {athenaQuests.Count} quests, {athenaLevels.Count} season levels");
 if (unmatchedDisplayAssets.Count > 0) Console.WriteLine($"Display assets matched to no one cosmetic: {string.Join(", ", unmatchedDisplayAssets)}");
 Console.WriteLine($"{zoneThemes.Count} zone themes, {missionGenerators.Count} mission generators, {difficulties.Count} mission difficulties");
@@ -1227,7 +1275,10 @@ static class ItemClasses
     [
         "AthenaCharacterItemDefinition", "AthenaHatItemDefinition", "AthenaBackpackItemDefinition", "AthenaPickaxeItemDefinition",
         "AthenaGliderItemDefinition", "AthenaLoadingScreenItemDefinition", "AthenaBattleBusItemDefinition", "AthenaDanceItemDefinition",
-        "AthenaConsumableEmoteItemDefinition", "AthenaVictoryPoseItemDefinition"
+        "AthenaConsumableEmoteItemDefinition", "AthenaVictoryPoseItemDefinition",
+        // 1.11's emoticons (Athena/Items/Cosmetics/Dances/Emoji, UAthenaEmojiItemDefinition: UAthenaDanceItemDefinition),
+        // AthenaDance items that go in the emote slots.
+        "AthenaEmojiItemDefinition"
     ];
 
     private static readonly Dictionary<string, string> Parents = new()
