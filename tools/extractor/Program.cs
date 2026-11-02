@@ -285,6 +285,19 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     if (profile == "theater" && (properties?["bHasDisintegrationValue"]?.GetValue<bool>() ?? ItemClasses.HasDisintegrationValue(export.ExportType)))
         disintegrationItems[templateId] = (properties?["bUsesCraftingRecipeToGetDisintegrationValue"]?.GetValue<bool>() ?? ItemClasses.UsesCraftingRecipeForDisintegration(export.ExportType),
             properties?["FabricationValueOverride"]?.GetValue<int>() ?? -1);
+    // Recycling a world item in the backpack (UFortWorldItemDefinition::GetDisassemblyResults, 1.11 sub_6D8910): its
+    // DisassembleRecipe row (DisassembleRecipes) and the share of the recipe's results it gives back at no and at full
+    // durability, DisassembleDurabilityDegradeMin/MaxLootPercent (the class constructor's 0.2 and 0.8, sub_6CB730).
+    if (profile == "theater" && properties?["DisassembleRecipe"]?["RowName"]?.GetValue<string>() is { } disassembleRow and not "None")
+    {
+        var item = (SortedDictionary<string, object>)items[templateId];
+        item["disassembleRecipe"] = disassembleRow;
+        item["disassembleLootPercent"] = new List<double>
+        {
+            Math.Round(properties["DisassembleDurabilityDegradeMinLootPercent"]?.GetValue<double>() ?? 0.2, 6),
+            Math.Round(properties["DisassembleDurabilityDegradeMaxLootPercent"]?.GetValue<double>() ?? 0.8, 6)
+        };
+    }
     if (export.ExportType == "FortSchematicItemDefinition" && properties?["Result"] is { } schematicResult
         && AssetPath(schematicResult) is { Length: > 0 } resultPath and not "None"
         && properties["CraftingRequirements"] is { } craftingRequirements && craftingRequirements["RowName"]?.GetValue<string>() is { } craftingRow and not "None"
@@ -772,6 +785,15 @@ foreach (var (id, row) in LoadRows(provider, JsonValue.Create("/Game/Items/Datat
         ["catalysts"] = Strings(row["RequiredCatalysts"])
     };
 }
+// The DisassembleRecipes rows world items name (what recycling one in the backpack gives back, at full value).
+var disassembleRecipes = new SortedDictionary<string, object>(StringComparer.Ordinal);
+if (provider.TryLoadPackage("FortniteGame/Content/Items/Datatables/DisassembleRecipes.uasset", out _))
+{
+    var named = items.Values.OfType<SortedDictionary<string, object>>()
+        .Select(item => item.GetValueOrDefault("disassembleRecipe") as string).OfType<string>().ToHashSet(StringComparer.Ordinal);
+    foreach (var (id, row) in LoadRows(provider, JsonValue.Create("/Game/Items/Datatables/DisassembleRecipes.DisassembleRecipes")))
+        if (named.Contains(id)) disassembleRecipes[id] = Items(row!["RecipeResults"], assetTypes);
+}
 var upgrades = new SortedDictionary<string, object>(StringComparer.Ordinal)
 {
     ["levelCosts"] = Curves(provider, "FortniteGame/Content/Balance/DataTables/XPAccountItemLevels.uasset"),
@@ -779,6 +801,7 @@ var upgrades = new SortedDictionary<string, object>(StringComparer.Ordinal)
     ["ratings"] = Curves(provider, "FortniteGame/Content/Items/Datatables/BaseItemRating.uasset"),
     ["recipes"] = recipes
 };
+if (disassembleRecipes.Count > 0) upgrades["disassembleRecipes"] = disassembleRecipes;
 
 // The expedition board: each slot (unlocked by its tag on the skill tree) and its generator, and the recipes.
 var expeditionRecipes = new SortedDictionary<string, object>(StringComparer.Ordinal);

@@ -24,6 +24,10 @@ packages, as 4.16 writes them, so overlays only hold the builds' own differences
   `FortNeverPersistItemDefinition`, backpacks and emotes) carry `neverPersisted: true`. Items that count toward the
   account vault or backpack limit (`bInventorySizeLimited` on the asset, else the class constructor's) carry
   `inventorySizeLimited: true`.
+  World items with a `DisassembleRecipe` (what the backpack's recycle, 1.11's DisassembleWorldItems, gives back) carry
+  its row (`disassembleRecipe`) and `disassembleLootPercent`, [DisassembleDurabilityDegradeMinLootPercent,
+  DisassembleDurabilityDegradeMaxLootPercent] (the constructor's 0.2 and 0.8 when unset); `upgrades.json` holds those
+  rows' results as `disassembleRecipes`.
   Badges carry their MCP template's static_cardpack_reward (`cardPackReward`, BadgeCardPackReward) and
   static_item_rewards (`itemRewards`, ItemRewards {templateId, quantity}).
 
