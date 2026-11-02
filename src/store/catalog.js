@@ -127,8 +127,9 @@ function offerJson(offer, sortPriority) {
     // A Battle Pass offer's (battlepass/season2.js), as Epic's catalog named its offers.
     ...(offer.devName ? { devName: offer.devName } : {}),
     offerType: "StaticPrice",
-    prices: [{ currencyType, currencySubType, regularPrice: price, finalPrice: price, saleType: "NotOnSale",
-      saleExpiration: "9999-12-31T23:59:59.999Z" }],
+    // An offer with a regularPrice above its price shows it struck through (the Battle Pass's 1,800, Epic's PercentOff).
+    prices: [{ currencyType, currencySubType, regularPrice: offer.regularPrice ?? price, finalPrice: price,
+      saleType: (offer.regularPrice ?? price) > price ? "PercentOff" : "NotOnSale", saleExpiration: "9999-12-31T23:59:59.999Z" }],
     // A Season Shop offer's season level (store/seasonshop.js); an Event Store offer's purchase limit and the tracker
     // that counts it (store/eventstore.js).
     metaInfo: offer.seasonLevel ? [{ key: "season_level", value: String(offer.seasonLevel) }]

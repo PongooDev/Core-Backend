@@ -4,7 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { inBuild } from "../src/builds/context.js";
-import { tierOfferId } from "../src/battlepass/season2.js";
+import { battlePassOfferId, tierOfferId } from "../src/battlepass/season2.js";
 import { athenaCosmetics, athenaDisplayAssets, athenaSeason } from "../src/gamedata/athena.js";
 import { storefronts } from "../src/store/catalog.js";
 import { itemShopOffers, seasonEnd, seasonStart, shopDay, weeklyStoreEnd } from "../src/store/itemshop.js";
@@ -192,8 +192,20 @@ test("1.11's catalog sells the Battle Pass, the bundle and tiers in BRSeason2; a
   const season = front(v111);
   const [pass, bundle, tier] = season.catalogEntries;
   assert.equal(pass.title, "Battle Pass");
+  assert.equal(pass.offerId, "C3BA14F04F4D56FC1D490F8011B56553");
   assert.equal(pass.devName, "BR.Season2.BattlePass.01");
   assert.equal(pass.prices[0].finalPrice, 950);
+  // Core-Backend #156: Epic's purchase screen, its texts and the struck-through 1,800.
+  assert.equal(pass.shortDescription, "Season 2");
+  assert.ok(pass.description.startsWith("Season 2: Dec 14 - Feb 20\r\n\r\nInstantly get these items valued at over 2000 V-Bucks.\r\n  • Blue Squire Outfit"));
+  assert.ok(pass.description.includes("  • Extra Battle Pass Daily Challenge\r\n"));
+  assert.ok(pass.description.endsWith("  • 13 2D Emotes\r\n  • and more!"));
+  assert.deepEqual([pass.prices[0].regularPrice, pass.prices[0].saleType], [1800, "PercentOff"]);
+  assert.equal(bundle.title, "Battle Bundle");
+  assert.equal(bundle.shortDescription, "Battle pass + 25 tiers!");
+  assert.ok(bundle.description.includes("  • Royale Knight Outfit"));
+  assert.deepEqual([bundle.prices[0].regularPrice, bundle.prices[0].saleType], [2800, "NotOnSale"]);
+  assert.deepEqual([tier.title, tier.description], ["Battle Pass Level", "Get great rewards now!"]);
   assert.equal(pass.displayAssetPath, "/Game/Catalog/DisplayAssets/DA_BR_Season2_BattlePass.DA_BR_Season2_BattlePass");
   assert.deepEqual(pass.itemGrants, []);
   assert.equal(bundle.prices[0].finalPrice, 2800);
@@ -340,7 +352,7 @@ test("buying the Battle Pass and tiers in 1.11 gives the pass's rewards for ever
   const buy = (offerId, purchaseQuantity = 1, price) => command(backend.port, player, "PurchaseCatalogEntry", "profile0",
     { offerId, purchaseQuantity, currency: "MtxCurrency", currencySubType: "", expectedPrice: price });
 
-  const bought = await buy("core_br_season2_battlepass", 1, 950);
+  const bought = await buy(battlePassOfferId, 1, 950);
   assert.equal(bought.status, 200, JSON.stringify(bought.body));
   const athena = await profileOf(backend.port, player, "athena");
   assert.equal(athena.stats.attributes.book_purchased, true);
@@ -348,7 +360,7 @@ test("buying the Battle Pass and tiers in 1.11 gives the pass's rewards for ever
   assert.equal(athena.stats.attributes.season_friend_match_boost, 10);
   assert.ok(holds(athena, "AthenaCharacter:cid_032_athena_commando_m_medieval"));
   assert.equal(vbucks(await profileOf(backend.port, player, "profile0")), 4050);
-  assert.equal((await buy("core_br_season2_battlepass", 1, 950)).status, 400);
+  assert.equal((await buy(battlePassOfferId, 1, 950)).status, 400);
 
   // Three tiers: tier 2's boost, tier 3's banner, tier 4's 100 V-Bucks.
   const tiers = await buy(tierOfferId, 3, 450);
