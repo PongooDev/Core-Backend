@@ -182,6 +182,8 @@ function giveReward(session, { templateId, quantity }, athena) {
     const questId = id.split(":")[1];
     const held = Object.values(tracker.profile.items).some((item) => item.templateId.toLowerCase() === id);
     if (!held) athena.grantAthenaQuest(tracker, questId);
+    // The Battle Pass's trigger brings its first daily challenge at once, without waiting for the next quest login.
+    athena.settleBattlePassDaily?.(session);
     return [];
   }
   if (id.startsWith("athena")) {

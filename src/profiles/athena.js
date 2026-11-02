@@ -3,7 +3,7 @@ import { inBuild } from "../builds/context.js";
 import { McpError } from "../errors.js";
 import { athenaEventQuestsOf } from "../events/fiftyfifty.js";
 import { currentBuild } from "../builds/context.js";
-import { athenaCosmetics, athenaDailyIds, athenaObjectiveStat, athenaSeason, dailyWeight, getAthenaQuest, seasonLevels } from "../gamedata/athena.js";
+import { athenaBattlePassDailyIds, athenaCosmetics, athenaDailyIds, athenaObjectiveStat, athenaSeason, dailyWeight, getAthenaQuest, seasonLevels } from "../gamedata/athena.js";
 import { bannerIds, bannerTemplateId } from "../gamedata/banners.js";
 import { dataBuilds } from "../gamedata/read.js";
 import { log } from "../log.js";
@@ -448,7 +448,7 @@ export function setSeasonLevel(session, level) {
 }
 
 // What profiles/seasons.js gives season rewards with.
-const seasonFunctions = { addSeasonXp, grantCosmetic, grantAthenaQuest };
+const seasonFunctions = { addSeasonXp, grantCosmetic, grantAthenaQuest, settleBattlePassDaily };
 export const seasonRewardFunctions = () => seasonFunctions;
 
 // The chase rewards of the levels reached that the player lacks: banners go to profile0, where the banner editor finds
@@ -643,9 +643,9 @@ const utcDay = (time) => Math.floor(time / 86_400_000);
 const heldDailies = (tracker) => Object.entries(tracker.profile.items)
   .filter(([, item]) => athenaQuestOf(item)?.type === "AthenaDailyQuest");
 
-function newDaily(tracker) {
-  const held = new Set(heldDailies(tracker).map(([, item]) => questIdOf(item)));
-  const choices = athenaDailyIds().filter((id) => !held.has(id) && dailyWeight(id) > 0);
+function newDaily(tracker, held = heldDailies(tracker), ids = athenaDailyIds()) {
+  const heldIds = new Set(held.map(([, item]) => questIdOf(item)));
+  const choices = ids.filter((id) => !heldIds.has(id) && dailyWeight(id) > 0);
   const total = choices.reduce((sum, id) => sum + dailyWeight(id), 0);
   let roll = (crypto.randomInt(1_000_000) / 1_000_000) * total;
   const chosen = choices.find((id) => (roll -= dailyWeight(id)) < 0) ?? choices[choices.length - 1];
@@ -667,11 +667,14 @@ export function refreshAthenaDailies(session, now = new Date()) {
   tracker.setStat("quest_manager", { ...manager, dailyLoginInterval: now.toISOString(), dailyQuestRerolls: rerollsPerDay });
 }
 
-// FortRerollDailyQuest {questId} on athena: an open daily for another, once a day.
+// FortRerollDailyQuest {questId} on athena: an open daily for another, once a day. A Battle Pass daily is rerolled from
+// its own pack, once a day too.
 export function rerollAthenaDaily(session, itemId, notifications) {
   const tracker = session.profile("athena");
   const item = typeof itemId === "string" && tracker.profile.items[itemId];
-  if (!item || athenaQuestOf(item)?.type !== "AthenaDailyQuest" || item.attributes.quest_state !== "Active") {
+  const type = item && athenaQuestOf(item)?.type;
+  if (type === "AthenaBattlePassQuest" && item.attributes.quest_state === "Active") return rerollBattlePassDaily(session, itemId, notifications);
+  if (!item || type !== "AthenaDailyQuest" || item.attributes.quest_state !== "Active") {
     throw new McpError("errors.com.epicgames.fortnite.item_not_found", `No open daily challenge ${itemId}`);
   }
   const manager = tracker.profile.stats.attributes.quest_manager ?? {};
@@ -680,6 +683,51 @@ export function rerollAthenaDaily(session, itemId, notifications) {
   if (!newQuestId) throw new McpError("errors.com.epicgames.fortnite.item_not_found", "No other daily challenge to give");
   tracker.removeItem(itemId);
   tracker.setStat("quest_manager", { ...manager, dailyQuestRerolls: manager.dailyQuestRerolls - 1 });
+  notifications.push({ type: "dailyQuestReroll", primary: true, newQuestId });
+}
+
+// The Battle Pass's daily challenge (Season 2, 1.11 and 2.1; Core-Backend #156): "Extra Battle Pass Daily Challenge", one
+// of the pass's tier 1 rewards. Tier 1's Battle Pass rewards give Quest:athena_battlepass_questtrigger
+// (profiles/seasons.js), whose reward is the hidden Athena_BattlePass_QuestPack, which is
+// UFortGameData::QuestPackInfos' athenaBattlePassQuestInfo {DefaultQuestPack Athena_BattlePass_QuestPack,
+// MaxActiveDailyQuests 1, MaxRerollsPerDay 1, DaysToKeepCompletedQuests 2, MaxUnclaimedQuests 1}: one challenge of
+// EFortQuestType::AthenaBattlePassQuest (0xD) a day, chosen by the quests' weights from Athena/Items/Quests/BattlePass
+// (category BR_BattlePass, "Play Matches" 0/7, 500 XP and 5 Battle Stars each). 1.11's DailyQuestsPanel lists those in
+// BattlePassList, apart from the daily challenges, under the yellow "BATTLE PASS" header with the tier, as the issue's
+// screenshot shows. As with the other dailies, on the first quest login of each UTC day a collected (Claimed) one goes and
+// a new one comes while none is held; a done one keeps its slot until it is collected. The day and the reroll are kept
+// in profile.coreBattlePassDaily (Core's, never sent): the athena profile's quest_manager has one reroll count, the daily
+// challenges'. A build without the quests (1.8 to 1.10) or a player without the trigger gets none.
+const battlePassTrigger = "athena_battlepass_questtrigger";
+const heldBattlePassDailies = (tracker) => Object.entries(tracker.profile.items)
+  .filter(([, item]) => athenaQuestOf(item)?.type === "AthenaBattlePassQuest");
+const ownsBattlePassChallenges = (tracker) => Boolean(getAthenaQuest(battlePassTrigger))
+  && Object.values(tracker.profile.items).some((item) => questIdOf(item) === battlePassTrigger);
+
+export function settleBattlePassDaily(session, now = new Date()) {
+  const tracker = session.profile("athena");
+  if (!ownsBattlePassChallenges(tracker) || !athenaBattlePassDailyIds().length) return;
+  const today = utcDay(now.getTime());
+  const state = tracker.profile.coreBattlePassDaily ?? {};
+  if (state.day === today) return;
+  for (const [itemId, item] of heldBattlePassDailies(tracker)) {
+    if (item.attributes.quest_state === "Claimed") tracker.removeItem(itemId);
+  }
+  if (!heldBattlePassDailies(tracker).length) {
+    const itemId = newDaily(tracker, heldBattlePassDailies(tracker), athenaBattlePassDailyIds());
+    if (itemId) log("Battle Royale", `${session.accountId} got the Battle Pass daily challenge ${questIdOf(tracker.profile.items[itemId])}`);
+  }
+  tracker.profile.coreBattlePassDaily = { day: today, rerolls: rerollsPerDay };
+}
+
+function rerollBattlePassDaily(session, itemId, notifications) {
+  const tracker = session.profile("athena");
+  const state = tracker.profile.coreBattlePassDaily ?? {};
+  if (!(state.rerolls > 0)) throw new McpError("errors.com.epicgames.fortnite.no_rerolls_remaining", "No Battle Pass challenge rerolls left today");
+  const newQuestId = newDaily(tracker, heldBattlePassDailies(tracker), athenaBattlePassDailyIds());
+  if (!newQuestId) throw new McpError("errors.com.epicgames.fortnite.item_not_found", "No other Battle Pass challenge to give");
+  tracker.removeItem(itemId);
+  tracker.profile.coreBattlePassDaily = { ...state, rerolls: state.rerolls - 1 };
   notifications.push({ type: "dailyQuestReroll", primary: true, newQuestId });
 }
 
@@ -702,6 +750,7 @@ function settleAthenaEventQuests(session) {
 // ClientQuestLogin / ServerQuestLogin on athena.
 export function athenaQuestLogin(session) {
   refreshAthenaDailies(session);
+  settleBattlePassDaily(session);
   settleAthenaEventQuests(session);
   settleChaseRewards(session);
 }
