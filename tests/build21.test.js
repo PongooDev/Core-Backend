@@ -11,7 +11,10 @@ import { athenaCosmetics, athenaDisplayAssets, athenaSeason } from "../src/gamed
 import { getCardPack, getItem } from "../src/gamedata/items.js";
 import { dataBuild } from "../src/gamedata/read.js";
 import { assignmentBucket } from "../src/matchmaking/service.js";
+import { advanceAthenaObjectives, grantAthenaQuest } from "../src/profiles/athena.js";
 import { buildOfSeason } from "../src/profiles/seasons.js";
+import { openSession } from "../src/profiles/session.js";
+import { createProfileStore } from "../src/profiles/store.js";
 import { hasEventStore } from "../src/store/eventstore.js";
 import { itemShopOffers, seasonEnd } from "../src/store/itemshop.js";
 import { dedicatedServerToken, send, startBackend, userLogin } from "./helpers.js";
@@ -114,4 +117,31 @@ test("1.11 and 2.1 share one Season 2 profile: its level and XP, and six emote s
   } finally {
     await backend.close();
   }
+});
+
+// 2.1's notes: "Daily challenge rewards are automatically collected if another challenge is completed in the same
+// category" (profiles/athena.js).
+test("a challenge completed in 2.1 collects the Completed ones of its category; 1.11 leaves them for Collect Rewards", () => {
+  const run = (build) => inBuild(build, () => {
+    const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-build21-collect-"));
+    try {
+      const session = openSession(createProfileStore(dataDir), "collector");
+      const tracker = session.profile("athena");
+      const chests = grantAthenaQuest(tracker, "athenadailyquest_interacttreasurechest");
+      const pass = grantAthenaQuest(tracker, "athena_battlepass_outlive_solo");
+      const ammo = grantAthenaQuest(tracker, "athenadailyquest_interactammocrate");
+      advanceAthenaObjectives(session, [{ statName: "athena_battlepass_outlive_solo_players", count: 150 }]);
+      advanceAthenaObjectives(session, [{ statName: "daily_athena_loot_chest_v2", count: 7 }]);
+      const progress = () => (tracker.profile.stats.attributes.level ?? 1) * 1_000_000 + (tracker.profile.stats.attributes.xp ?? 0);
+      const before = progress();
+      advanceAthenaObjectives(session, [{ statName: "athena_daily_loot_ammobox_v2", count: 7 }]);
+      const state = (itemId) => tracker.profile.items[itemId].attributes.quest_state;
+      return { chests: state(chests), pass: state(pass), ammo: state(ammo), paid: progress() > before };
+    } finally {
+      fs.rmSync(dataDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+    }
+  });
+  // The daily done before is collected and paid; the Battle Pass challenge, another category, and the one just done wait.
+  assert.deepEqual(run(v21), { chests: "Claimed", pass: "Completed", ammo: "Completed", paid: true });
+  assert.deepEqual(run(v111), { chests: "Completed", pass: "Completed", ammo: "Completed", paid: false });
 });

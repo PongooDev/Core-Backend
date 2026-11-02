@@ -515,6 +515,26 @@ function completeQuest(session, itemId) {
   tracker.setItemAttribute(itemId, "quest_state", "Completed");
   tracker.setItemAttribute(itemId, "last_state_change_time", new Date().toISOString());
   log("Battle Royale", `${session.accountId} completed ${questIdOf(item)}, waiting for Collect Rewards`);
+  collectEarlierRewards(session, itemId, quest);
+}
+
+// 2.1 (CL-3825894): "Daily challenge rewards are automatically collected if another challenge is completed in the same
+// category. For instance, if you complete a Battle Pass daily challenge but do not "collect" the reward, the reward will
+// automatically be collected upon completing the next Battle Pass daily challenge." 2.1's panel is 1.11's: its
+// DailyQuestsPanel lists the challenges by EFortQuestType in three categories (AthenaDailyQuest 0xB in DailyQuestList,
+// AthenaEvent 0xC in EventQuestList, AthenaBattlePassQuest 0xD in BattlePassList) and claims only from its button, so the
+// collecting was Epic's servers': a challenge completing in 2.1 or later collects the Completed ones of its category
+// before it, which then show as Claimed. The one just completed waits for Collect Rewards as before.
+const autoCollectBuild = 3825894;
+const collectedCategories = ["AthenaDailyQuest", "AthenaEvent", "AthenaBattlePassQuest"];
+function collectEarlierRewards(session, itemId, quest) {
+  if (!(Number(currentBuild()) >= autoCollectBuild) || !collectedCategories.includes(quest.type)) return;
+  const tracker = session.profile("athena");
+  for (const [otherId, other] of Object.entries(tracker.profile.items)) {
+    if (otherId === itemId || other.attributes.quest_state !== "Completed" || athenaQuestOf(other)?.type !== quest.type) continue;
+    log("Battle Royale", `${session.accountId}: ${questIdOf(other)} collected on completing ${questIdOf(tracker.profile.items[itemId])} (2.1)`);
+    claimAthenaQuest(session, otherId);
+  }
 }
 
 // ClaimQuestReward on athena: a Completed challenge's rewards, its XP (AthenaSeasonalXP) to the season level and any
