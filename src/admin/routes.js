@@ -15,7 +15,7 @@ import { recentLogs } from "../log.js";
 import { sessionSummary } from "../matchmaking/sessions.js";
 import { defaultHostingIps, hostingIp, maxHostingIps } from "../network.js";
 import { alertsRemaining, emptyAlertRecord, withQuotaSlots } from "../profiles/alerts.js";
-import { fullLockerState, grantCosmetic, grantFullLocker, lockerCosmeticId, lockerCosmetics, maxSeasonLevel, ownsCosmetic, removeFullLocker, removeLockerCosmetic,
+import { fullLockerState, grantCosmetic, grantFullLocker, grantShopCosmetics, lockerCosmeticId, lockerCosmetics, maxSeasonLevel, ownsCosmetic, removeFullLocker, removeLockerCosmetic,
   setSeasonLevel } from "../profiles/athena.js";
 import { levelRest, restBalance, restValue } from "../profiles/boosts.js";
 import { foundersEditionOf, foundersEditions, setFoundersEdition } from "../profiles/founders.js";
@@ -36,7 +36,7 @@ import { defaultBattleRoyaleNews, defaultLoginMessage, defaultSubgameSelect } fr
 import { inBuild } from "../builds/context.js";
 import { battleRoyaleBuilds, certBuild, seasonName, seasonVersions, versionOf } from "../builds/detect.js";
 import { contentUpdateStates, defaultContentUpdates } from "../events/contentupdates.js";
-import { cosmeticRarity, cosmeticType, eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, seasonEnd, seasonMoment, seasonStart, shopDay, weeklyStoreEnd, withoutSeasonStartRecording } from "../store/itemshop.js";
+import { cosmeticRarity, cosmeticType, eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, seasonEnd, seasonMoment, seasonStart, shopDay, soldCosmeticIds, weeklyStoreEnd, withoutSeasonStartRecording } from "../store/itemshop.js";
 import { activeEventFlags, fortnitemares, mutantStorms } from "../events/events.js";
 import { convertLeftoverCandy } from "../events/candyllamas.js";
 import { convertLeftoverStormTickets } from "../events/stormllamas.js";
@@ -664,6 +664,17 @@ export function adminRoutes(context) {
       }
       return { cosmeticGrant: { build, version, granted, alreadyOwned } };
     });
+  }));
+
+  // Give all item shop cosmetics (Core-Backend #163): every cosmetic the item shop has sold (each season's history and the
+  // custom shop's lists, store/itemshop.js soldCosmeticIds) that is a locker cosmetic in any build's data, as the full
+  // locker gives (accounts are shared by every build), not the build picked above. Given as the full locker's are, so
+  // Remove granted takes them back (Remove selected takes any one). What only Core's bookkeeping noted is saved even when
+  // no item changed.
+  router.post("/admin/api/accounts/:accountId/cosmetics/grant-shop", change(({ session }) => {
+    const shopGrant = grantShopCosmetics(session, soldCosmeticIds(settings?.get?.()?.itemShop));
+    profiles.save(session.profile("athena").profile);
+    return { shopGrant };
   }));
 
   // {build, templateIds}: takes those of the build's cosmetics the account owns out of its locker (Core-Backend #159), the

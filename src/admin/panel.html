@@ -3089,7 +3089,7 @@
             }
           }, "primary", { disabled: complete }),
           btn(`Remove granted${granted ? ` (${fmt(granted)})` : ""}`, async () => {
-            if (await confirmModal(`Take back the ${fmt(granted)} cosmetics and banners the full locker gave ${a.displayName}? What they bought or earned since stays.`, {
+            if (await confirmModal(`Take back the ${fmt(granted)} cosmetics and banners the full locker and Give all item shop cosmetics gave ${a.displayName}? What they bought or earned since stays.`, {
               title: "Remove Granted Cosmetics",
               confirmText: "Take Back",
               confirmKind: "danger"
@@ -3147,6 +3147,23 @@
           setAccount(account, message);
         });
       }, "danger");
+      // Core-Backend #163: every cosmetic the item shop has sold (both seasons' histories and the custom shop's lists) that
+      // any build has, given as the full locker gives, so Remove granted takes them back.
+      const shopButton = btn("Give all item shop cosmetics", async () => {
+        if (!await confirmModal(`Give ${a.displayName} every cosmetic the item shop has sold (Season 1's and Season 2's shops and the custom shop) that they don't own yet? Battle Pass and victory items aren't included. Remove granted takes them back.`, {
+          title: "Give Item Shop Cosmetics",
+          confirmText: "Give All",
+          confirmKind: "primary"
+        })) return;
+        act(api(`/admin/api/accounts/${a.id}/cosmetics/grant-shop`, {})).then((account) => {
+          if (!account) return;
+          const { granted, alreadyOwned, total } = account.shopGrant;
+          c.data = null;
+          setAccount(account, granted
+            ? `Gave ${a.displayName} ${fmt(granted)} item shop cosmetic${granted === 1 ? "" : "s"}${alreadyOwned ? ` (${fmt(alreadyOwned)} of the ${fmt(total)} already owned)` : ""}`
+            : `Nothing given: ${a.displayName} already owns all ${fmt(total)} item shop cosmetics`);
+        });
+      }, "primary");
       const clearButton = btn("Clear", () => { c.picked.clear(); render(); }, "ghost small");
       const options = (select, list, chosen) => select.replaceChildren(...list.map(([value, label]) => el("option", { value, text: label, selected: value === chosen })));
       function render() {
@@ -3188,10 +3205,10 @@
       if (c.data) render(); else load();
       return el("div", { style: "margin-top:16px" },
         el("h3", { text: "Give cosmetics" }),
-        el("div", { class: "actions", style: "margin-top:8px" }, buildSelect, typeSelect, search, giveButton, removeButton, clearButton),
+        el("div", { class: "actions", style: "margin-top:8px" }, buildSelect, typeSelect, search, giveButton, removeButton, clearButton, shopButton),
         el("div", { style: "margin-top:10px" }, summary),
         results,
-        el("p", { class: "note", text: "Only the chosen build's cosmetics are listed and given. Pick one or more; a cosmetic the account already owns is left as it is. Given cosmetics are the player's for good (Remove granted keeps them), and a player in the game gets them at once. Remove selected takes owned ones out of the locker, putting equipped ones back to the default; starter cosmetics (the default glider, pickaxe, emote, loading screen and bus, the Founder's Glider) and earned ones (season level rewards, victory umbrellas) stay, as they'd come back." }));
+        el("p", { class: "note", text: "Only the chosen build's cosmetics are listed and given. Pick one or more; a cosmetic the account already owns is left as it is. Given cosmetics are the player's for good (Remove granted keeps them), and a player in the game gets them at once. Remove selected takes owned ones out of the locker, putting equipped ones back to the default; starter cosmetics (the default glider, pickaxe, emote, loading screen and bus, the Founder's Glider) and earned ones (season level rewards, victory umbrellas) stay, as they'd come back. Give all item shop cosmetics gives every cosmetic Season 1's and Season 2's item shops sold, and those on the custom shop's lists, from every build (not only the chosen one), as the full locker does: Remove granted takes them back." }));
     }
 
     // Battle Royale's season level (Core-Backend #106): set to the start of a level, with its chase rewards.

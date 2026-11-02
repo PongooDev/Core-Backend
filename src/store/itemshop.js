@@ -107,6 +107,20 @@ export function currentShopConfig() {
   return (shopConfigProvider ? shopConfigProvider() : null) ?? { mode: "fnbr" };
 }
 
+// Every cosmetic the item shop has sold (Core-Backend #163, the admin panel's Give all item shop cosmetics), each template
+// id once: history, what each season's history sold (Season 1's itemshop.json, Season 2's itemshop-season2.json), featured
+// and daily; custom, what the admin's custom shop lists (config.custom, kept whichever mode is on). Not the random shop's
+// picks (any eligible cosmetic, never a record of a sale) nor the Season Shop's level-locked items (store/seasonshop.js).
+export function soldCosmeticIds(config = currentShopConfig()) {
+  const listed = (...lists) => [...new Map(lists.flatMap((list) => (Array.isArray(list) ? list : []))
+    .map((entry) => (Array.isArray(entry) ? entry[0] : entry)).filter((id) => typeof id === "string" && id.trim())
+    .map((id) => [id.trim().toLowerCase(), id.trim()])).values()];
+  return {
+    history: listed(...Object.values(seasonHistories).flatMap(({ days }) => days.flatMap((day) => [day.featured, day.daily]))),
+    custom: listed(config?.custom?.featured, config?.custom?.daily)
+  };
+}
+
 // The type a cosmetic's tile and the admin panel show ("Outfit", "Harvesting Tool", "Glider"…), by its item definition
 // class, in the locker's order. A class not listed is named from its template type (AthenaFoo:… → "Foo").
 const cosmeticTypes = {

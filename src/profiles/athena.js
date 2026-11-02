@@ -314,13 +314,14 @@ export function fullLockerState(athena, account) {
   };
 }
 
-// Returns how many cosmetics and banners were added.
-export function grantFullLocker(session) {
+// The panel's cosmetics of templateIds that the account lacks, noted as the panel's (coreGrantedCosmetics) for Remove
+// granted to take back; what the blanket grant gave becomes the panel's. Returns how many were added.
+function grantPanelCosmetics(session, templateIds) {
   const tracker = session.profile("athena");
   const { profile } = tracker;
   let cosmetics = 0;
   const given = [];
-  for (const templateId of inEveryBuild(lockerCosmetics)) {
+  for (const templateId of templateIds) {
     const fromBlanket = blanket(profile).some((held) => sameId(held, templateId));
     const held = findItem(profile, templateId);
     if (held && !fromBlanket) continue;
@@ -332,6 +333,39 @@ export function grantFullLocker(session) {
     given.push(templateId);
   }
   profile.coreGrantedCosmetics = [...adminGranted(profile), ...given];
+  return cosmetics;
+}
+
+// The item shop's cosmetics (Core-Backend #163), of what it sold ({history, custom}, store/itemshop.js soldCosmeticIds):
+// those that are locker cosmetics in any build's data, as the full locker counts them (an account is shared by every
+// build; a consumable emote or a placeholder never is, #161), less what no build's shop sells (nonShopCosmeticIds in each
+// build's season: starters, Battle Pass rewards, victory umbrellas, season level rewards). A season level reward the
+// histories show sold stays, as it was Epic's sale: Season 2's shop sold Season 1's level 24 reward, the Warthog.
+// Each once, as the first build to have it spells it.
+export function shopLockerCosmetics({ history = [], custom = [] }) {
+  const lower = (ids) => new Set(ids.map((id) => String(id).toLowerCase()));
+  const recorded = lower(history);
+  const levelRewards = lower(dataBuilds.flatMap((build) => inBuild(build, chaseRewardIds)));
+  const notSold = lower(dataBuilds.flatMap((build) => inBuild(build, nonShopCosmeticIds)));
+  const listed = lower(custom);
+  const sold = (id) => (recorded.has(id) || listed.has(id))
+    && (!notSold.has(id) || (recorded.has(id) && levelRewards.has(id)));
+  return inEveryBuild(lockerCosmetics).filter((id) => sold(id.toLowerCase()));
+}
+
+// The admin panel's Give all item shop cosmetics (Core-Backend #163): every shop cosmetic (shopLockerCosmetics) the
+// account lacks, given as the full locker gives, so Remove granted takes them back. Returns how many were added, how many
+// the account already owned, and how many the shop sold.
+export function grantShopCosmetics(session, soldIds) {
+  const cosmetics = shopLockerCosmetics(soldIds);
+  const granted = grantPanelCosmetics(session, cosmetics);
+  log("Battle Royale", `${session.accountId} was given the item shop's cosmetics: ${granted} of ${cosmetics.length}`);
+  return { granted, alreadyOwned: cosmetics.length - granted, total: cosmetics.length };
+}
+
+// Returns how many cosmetics and banners were added.
+export function grantFullLocker(session) {
+  const cosmetics = grantPanelCosmetics(session, inEveryBuild(lockerCosmetics));
 
   const account = session.profile("profile0");
   const banners = inEveryBuild(bannerIds).filter((templateId) => !findItem(account.profile, templateId));
