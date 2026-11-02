@@ -1,6 +1,6 @@
 import { currentBuild, inBuild } from "../builds/context.js";
 import { certBuild } from "../builds/detect.js";
-import { athenaSeason } from "../gamedata/athena.js";
+import { athenaSeason, seasonLevels } from "../gamedata/athena.js";
 import { bannerTemplateId } from "../gamedata/banners.js";
 import { buildGameData, dataBuilds } from "../gamedata/read.js";
 import { log } from "../log.js";
@@ -26,7 +26,13 @@ import { grant } from "./progress.js";
 //
 // Accounts are shared by every build, so a profile holds the season of the build that last opened it: a build of another
 // season puts the season's stats aside (profile.coreSeasons, Core's, never sent) and takes up its own, so Season 1's
-// level is still there for 1.8 to 1.10, and Season 2's for 1.11.
+// level is still there for 1.8 to 1.10, and Season 2's for 1.11. A match's XP goes to the season of the match's build
+// (takeUpSeason), whichever lobby opened the profile last.
+//
+// Season 1's profile has no season_num, past_seasons or Battle Pass stats, as before Season 2 (Core-Backend #152). 1.10
+// already reads season_num, and its season getters (sub_441460: the stat, 0 when missing, against the client-events
+// state's SeasonNumber) give level 1 and no XP when the two differ. 1.10's calendar names no season (SeasonNumber 0), so
+// a season_num of 1 hid Season 1's level: "Season 1, LEVEL 1, 0 / 100".
 
 const firstSeason = 1;
 export const seasonNumber = () => athenaSeason()?.seasonNumber ?? firstSeason;
@@ -39,6 +45,11 @@ const seasonStats = (season) => (season > firstSeason
 const freshStats = (season) => (season > firstSeason
   ? { level: 1, xp: 0, book_level: 1, book_xp: 0, book_purchased: false, season_match_boost: 0, season_friend_match_boost: 0 }
   : { level: 1, xp: 0 });
+// What a Season 1 profile doesn't hold: the stats only later seasons have (their values wait in profile.coreSeasons).
+const laterSeasonStats = ["season_num", "past_seasons",
+  ...seasonStats(firstSeason + 1).filter((name) => !seasonStats(firstSeason).includes(name))];
+const strayStats = (profile) => (profileSeason(profile) === firstSeason
+  ? laterSeasonStats.filter((name) => Object.hasOwn(profile.stats.attributes, name)) : []);
 
 export const profileSeason = (profile) => profile.stats.attributes.season_num ?? firstSeason;
 // Only a Battle Royale client or gameserver's request (one naming a build with an athena profile, 1.8 on) switches the
@@ -46,7 +57,8 @@ export const profileSeason = (profile) => profile.stats.attributes.season_num ??
 // (inProfileSeason).
 const firstAthenaBuild = 3724489;
 export const namesAthenaBuild = () => Number(currentBuild()) >= firstAthenaBuild;
-export const seasonNeedsSwitch = (profile) => namesAthenaBuild() && profileSeason(profile) !== seasonNumber();
+export const seasonNeedsSwitch = (profile) => (namesAthenaBuild() && profileSeason(profile) !== seasonNumber())
+  || strayStats(profile).length > 0;
 
 // The newest data build of a season, for work on a profile outside a request of its build: Season 1's is Cert's (whose
 // athena data is 1.8's, what such work always read).
@@ -59,11 +71,10 @@ export function buildOfSeason(season) {
 // fn run with the game data of the profile's season, when the request names no build of its own.
 export const inProfileSeason = (profile, fn) => (namesAthenaBuild() ? fn() : inBuild(buildOfSeason(profileSeason(profile)), fn));
 
-// Season 1's XP table (AthenaGameData's SeasonXpLevelsTable; the committed gamedata/athena.json is 1.8's), for the total
-// XP of a Season 1 record.
-const seasonOneLevels = () => buildGameData(certBuild, "athena", {}).levels ?? [];
+// A season's XP table (Season 1's AthenaGameData SeasonXpLevelsTable, the committed gamedata/athena.json being 1.8's; a
+// later season's SeasonXpCurve), for the total XP of the season's record.
 function totalXp(season, { level = 1, xp = 0 }) {
-  const levels = season === firstSeason ? seasonOneLevels() : season === seasonNumber() ? athenaSeason()?.levels ?? [] : [];
+  const levels = inBuild(buildOfSeason(season), seasonLevels) ?? [];
   return (levels.find((entry) => entry.level === level)?.xpTotal ?? 0) + xp;
 }
 
@@ -94,8 +105,8 @@ export function switchSeason(session) {
   const { profile } = tracker;
   const { attributes } = profile.stats;
   const from = profileSeason(profile);
-  const to = seasonNumber();
-  if (from === to) return;
+  const to = namesAthenaBuild() ? seasonNumber() : from;
+  if (from === to) return settleStrayStats(session);
   const kept = profile.coreSeasons ?? {};
   const previous = kept[from] ?? {};
   const aside = Object.fromEntries(seasonStats(from).map((name) => [name, attributes[name] ?? freshStats(from)[name]]));
@@ -108,17 +119,35 @@ export function switchSeason(session) {
   for (const name of seasonStats(to)) {
     if (attributes[name] !== taken[name]) tracker.setStat(name, taken[name]);
   }
-  tracker.setStat("season_num", to);
-  // The seasons before this one that were played (a record with any progress).
-  const past = Object.entries(kept).map(([season, stats]) => [Number(season), stats])
-    .filter(([season, stats]) => season < to && ((stats.level ?? 1) > 1 || (stats.xp ?? 0) > 0 || stats.book_purchased))
-    .sort(([a], [b]) => a - b)
-    .map(([season, stats]) => pastSeason(season, stats, stats.numWins ?? 0));
-  if (past.length || attributes.past_seasons) tracker.setStat("past_seasons", past);
+  if (to > firstSeason) {
+    tracker.setStat("season_num", to);
+    // The seasons before this one that were played (a record with any progress).
+    const past = Object.entries(kept).map(([season, stats]) => [Number(season), stats])
+      .filter(([season, stats]) => season < to && ((stats.level ?? 1) > 1 || (stats.xp ?? 0) > 0 || stats.book_purchased))
+      .sort(([a], [b]) => a - b)
+      .map(([season, stats]) => pastSeason(season, stats, stats.numWins ?? 0));
+    if (past.length || attributes.past_seasons) tracker.setStat("past_seasons", past);
+  } else {
+    for (const name of laterSeasonStats) if (Object.hasOwn(attributes, name)) tracker.removeStat(name);
+  }
   const accountLevel = accountLevelOf(profile, taken.level);
   if (attributes.accountLevel !== accountLevel) tracker.setStat("accountLevel", accountLevel);
   log("Battle Royale", `${session.accountId} moved from Season ${from} to Season ${to}: season level ${taken.level}`
     + (to > firstSeason ? `, Battle Pass tier ${taken.book_level}${taken.book_purchased ? " (bought)" : ""}` : ""));
+}
+
+// A Season 1 profile's stats of later seasons go: those of one switched back before #152 (season_num 1, which hid the
+// level from 1.10, an empty past_seasons, the Battle Pass's stats), whose values are already in profile.coreSeasons.
+function settleStrayStats(session) {
+  const tracker = session.profile("athena");
+  const stray = strayStats(tracker.profile);
+  for (const name of stray) tracker.removeStat(name);
+  if (stray.length) log("Battle Royale", `${session.accountId}: Season 1's profile no longer holds ${stray.join(", ")}`);
+}
+
+// A match's season: the profile takes up the season of the match's build, so its XP and challenges count there.
+export function takeUpSeason(session) {
+  if (seasonNeedsSwitch(session.profile("athena").profile)) switchSeason(session);
 }
 
 // What the season's rewards have given so far (profile.coreSeasonRewards, Core's): {<season>: {seasonLevel, free, paid}},

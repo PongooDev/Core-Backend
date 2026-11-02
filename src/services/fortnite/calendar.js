@@ -30,7 +30,8 @@ import { seasonTemplateId } from "../../profiles/seasons.js";
 // Its client-matchmaking channel (FFortMatchmakingEventsState) switches 50v50's queue on by region while that event runs
 // (events/fiftyfifty.js).
 //
-// 1.11 (CL-3807424) adds the season to the client-events state: FFortClientEventsState {SeasonNumber (+0x140),
+// 1.11 (CL-3807424) sends the season in the client-events state (1.10 has the field and gets none, as its profile has no
+// season_num: profiles/seasons.js): FFortClientEventsState {SeasonNumber (+0x140),
 // SeasonTemplateId (+0x148), SeasonEnd, WeeklyStoreEnd, StwEventStoreEnd, StwWeeklyStoreEnd}. Its season is Season 2
 // (gamedata AthenaSeason2, profiles/seasons.js): seasonNumber 2, seasonTemplateId "AthenaSeason:athenaseason2", and its
 // Battle Pass tab counts down to seasonEnd (AthenaSeasonTab: GetSeasonStoreEndDate). Its event flags turn the winter

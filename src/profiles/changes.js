@@ -44,6 +44,12 @@ export function trackChanges(profile) {
     setStat(name, value) {
       profile.stats.attributes[name] = value;
       changes.push({ changeType: "statModified", name, value });
+    },
+
+    // The delta says null for a stat that's gone.
+    removeStat(name) {
+      delete profile.stats.attributes[name];
+      changes.push({ changeType: "statModified", name, value: null });
     }
   };
 }

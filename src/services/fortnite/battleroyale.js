@@ -6,7 +6,7 @@ import { buildVersions } from "../../builds/detect.js";
 import { log } from "../../log.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
 import { addSeasonXp, awardVictory, matchXp, recordMatchProgress, umbrellaTypeOf } from "../../profiles/athena.js";
-import { boostedMatchXp, inProfileSeason, namesAthenaBuild, profileSeason, seasonNumber } from "../../profiles/seasons.js";
+import { boostedMatchXp, inProfileSeason, namesAthenaBuild, profileSeason, seasonNumber, takeUpSeason } from "../../profiles/seasons.js";
 import { grant } from "../../profiles/progress.js";
 import { openSession } from "../../profiles/session.js";
 import { rewardModes } from "../../settings/store.js";
@@ -165,6 +165,8 @@ export function battleRoyaleRoutes(context) {
       const vbucks = payMatchVbucks(session, rewards, matchId, playlistId, { place, kills });
       if (vbucks) log("Battle Royale", `${result.accountId} earned ${vbucks} V-Bucks in match ${matchId}`);
       const progress = () => {
+        // The match's XP and challenges count in its build's season, whichever lobby opened the profile last.
+        takeUpSeason(session);
         recordMatchProgress(session, playlistId, { place, kills });
         // 1.11's Battle Pass adds its match XP boost (profiles/seasons.js).
         addSeasonXp(session, boostedMatchXp(session, earnedXp));

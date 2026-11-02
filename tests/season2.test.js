@@ -8,7 +8,7 @@ import { tierOfferId } from "../src/battlepass/season2.js";
 import { athenaCosmetics, athenaDisplayAssets, athenaSeason } from "../src/gamedata/athena.js";
 import { storefronts } from "../src/store/catalog.js";
 import { itemShopOffers, seasonEnd, shopDay, weeklyStoreEnd } from "../src/store/itemshop.js";
-import { get, post, send, startBackend, userLogin } from "./helpers.js";
+import { dedicatedServerToken, get, post, send, startBackend, userLogin } from "./helpers.js";
 
 // Core-Backend #145: 1.11 (CL-3807424) is Season 2, with its own season level, a Battle Pass, the winter lobby, six
 // emote slots and the item shop's display assets.
@@ -39,7 +39,7 @@ async function withPlayer(run) {
   const backend = await startBackend({ dataDir });
   try {
     const player = await userLogin(backend.port, "season2");
-    await run(backend, player);
+    await run(backend, player, dataDir);
   } finally {
     await backend.close();
   }
@@ -191,8 +191,82 @@ test("Season 2 starts at level 1 and keeps Season 1's level in past_seasons; 1.1
 
   const seasonOne = (await profileOf(backend.port, player, "athena", v110)).stats.attributes;
   assert.equal(seasonOne.level, 23);
-  assert.equal(seasonOne.season_num, 1);
+  // 1.10 compares season_num with its calendar's SeasonNumber, which it isn't sent: Season 1's profile has none (#152).
+  assert.equal(seasonOne.season_num, undefined);
   assert.equal((await profileOf(backend.port, player, "athena")).stats.attributes.level, 12);
+}));
+
+// Core-Backend #152: 1.10's level getters give level 1 and no XP when the profile's season_num isn't its calendar's
+// SeasonNumber (none), so Season 1's profile holds no season_num, past_seasons or Battle Pass stats.
+const seasonOneOnly = (attributes) => ["season_num", "past_seasons", "book_level", "book_xp", "book_purchased",
+  "season_match_boost", "season_friend_match_boost"].filter((name) => Object.hasOwn(attributes, name));
+const report = (backend, token, build, accountId, place) => as(build, backend.port, "POST", "/fortnite/api/game/v2/battleroyale/recordresults", token,
+  { playlistId: 2, matchId: `season-${build}-${Math.random().toString(16).slice(2, 10)}`, countWins: true,
+    results: [{ accountId, place, kills: 5, secondsAlive: 1200 }] });
+
+test("switching between 1.10 and 1.11 keeps each season's own level, and each match's XP goes to its build's season", () => withPlayer(async (backend, player) => {
+  const dedicated = await dedicatedServerToken(backend.port);
+  const levelOf = async (build) => (await profileOf(backend.port, player, "athena", build)).stats.attributes;
+  await levelOf(v110);
+  for (let match = 0; match < 3; match++) await report(backend, dedicated, v110, player.accountId, 1);
+  const seasonOne = await levelOf(v110);
+  assert.ok(seasonOne.level > 1);
+  assert.deepEqual(seasonOneOnly(seasonOne), []);
+
+  let seasonTwo = await levelOf(v111);
+  assert.equal(seasonTwo.level, 1);
+  await report(backend, dedicated, v111, player.accountId, 1);
+  seasonTwo = await levelOf(v111);
+  assert.ok(seasonTwo.level > 1);
+  assert.equal(seasonTwo.past_seasons[0].seasonLevel, seasonOne.level);
+
+  for (let round = 0; round < 3; round++) {
+    const one = await levelOf(v110);
+    assert.equal(one.level, seasonOne.level);
+    assert.equal(one.xp, seasonOne.xp);
+    assert.equal(one.accountLevel, seasonOne.level);
+    assert.deepEqual(seasonOneOnly(one), []);
+    const two = await levelOf(v111);
+    assert.equal(two.season_num, 2);
+    assert.equal(two.level, seasonTwo.level);
+    assert.equal(two.xp, seasonTwo.xp);
+    assert.equal(two.accountLevel, seasonTwo.level + seasonOne.level);
+  }
+
+  // A 1.10 match reported while the profile is in Season 2 (1.11's lobby opened it last) counts in Season 1, and the
+  // other way round.
+  await report(backend, dedicated, v110, player.accountId, 1);
+  const moreOne = await levelOf(v110);
+  assert.ok(moreOne.level * 1000 + moreOne.xp > seasonOne.level * 1000 + seasonOne.xp);
+  await report(backend, dedicated, v111, player.accountId, 1);
+  const moreTwo = await levelOf(v111);
+  assert.ok(moreTwo.level * 1000 + moreTwo.xp > seasonTwo.level * 1000 + seasonTwo.xp);
+  assert.equal(moreTwo.past_seasons[0].seasonLevel, moreOne.level);
+  assert.equal((await levelOf(v110)).level, moreOne.level);
+}));
+
+test("a Season 1 profile switched back before #152 loses season_num and the Battle Pass stats, and keeps its level", () => withPlayer(async (backend, player, dataDir) => {
+  await profileOf(backend.port, player, "athena", v110);
+  await admin(backend.port, `/accounts/${player.accountId}/battle-royale-level`, { level: 17 });
+  await profileOf(backend.port, player, "athena");
+  await admin(backend.port, `/accounts/${player.accountId}/battle-royale-level`, { level: 6 });
+  const { book_level: tier, book_xp: stars } = (await profileOf(backend.port, player, "athena")).stats.attributes;
+  // What the switch back to Season 1 left before #152.
+  const file = path.join(dataDir, "accounts", player.accountId, "profiles", "athena.json");
+  await profileOf(backend.port, player, "athena", v110);
+  const saved = JSON.parse(fs.readFileSync(file, "utf8"));
+  Object.assign(saved.stats.attributes, { season_num: 1, past_seasons: [], book_level: tier, book_xp: stars, book_purchased: false,
+    season_match_boost: 0, season_friend_match_boost: 0 });
+  fs.writeFileSync(file, JSON.stringify(saved));
+
+  const repaired = (await profileOf(backend.port, player, "athena", v110)).stats.attributes;
+  assert.equal(repaired.level, 17);
+  assert.deepEqual(seasonOneOnly(repaired), []);
+  const seasonTwo = (await profileOf(backend.port, player, "athena")).stats.attributes;
+  assert.equal(seasonTwo.level, 6);
+  assert.equal(seasonTwo.book_level, tier);
+  assert.equal(seasonTwo.book_xp, stars);
+  assert.equal(seasonTwo.past_seasons[0].seasonLevel, 17);
 }));
 
 test("buying the Battle Pass and tiers in 1.11 gives the pass's rewards for every tier reached", () => withPlayer(async (backend, player) => {
