@@ -117,6 +117,27 @@ export function halloweenPool(kind, rarity) {
   return [];
 }
 
+// The first storms' items, the Storm Llama's (CardPack_Event_FirstStorm, cardpacks/contents.js) at a rarity (or the
+// nearest there is), lowest tier: kind "schematic", the Hydraulic weapons (SID_<weapon>_Hydraulic_<rarity>_Ore_T01-T06:
+// the Hydraulic sword, launcher, pistol, sniper and assault drum, and the Hydra, SID_Assault_Hydra_SR, tagged
+// Weapon.Hydraulic as they are); kind "hero", the Storm Zone heroes. No shipped data names those; they are the heroes the
+// First Storm's update brought (1.7.2's data has them, Cert's and 1.2's don't): Centurion Hawk, Raider Headhunter,
+// Machinist Harper, BASE Hype, Deadly Blade Crash, Energy Thief Mari, Trailblaster A.C. and Gunblazer Southie (🟡).
+const stormZoneHeroes = ["commando_009_m", "commando_011", "constructor_011", "constructor_rushbase_f", "ninja_010_f", "ninja_011",
+  "outlander_010_m", "outlander_011"];
+export function stormZonePool(kind, rarity) {
+  const matching = data().ids.map(describe).filter((item) => item.tier > 0 && item.rarity && (kind === "hero"
+    ? item.type === "hero" && stormZoneHeroes.includes(item.tokens.slice(1, -2).join("_"))
+    : item.type === "schematic" && (item.tokens.includes("hydraulic") || item.tokens.includes("hydra"))));
+  for (const wanted of rarityOrder(rarities.includes(rarity) ? rarity : "vr")) {
+    const atRarity = matching.filter((item) => item.rarity === wanted);
+    if (!atRarity.length) continue;
+    const lowest = Math.min(...atRarity.map((item) => item.tier));
+    return atRarity.filter((item) => item.tier === lowest).map((item) => item.templateId);
+  }
+  return [];
+}
+
 // The Mutant Storms' Vindertech weapon schematics (1.9.1: SID_<weapon>_VT_<VR|SR>_<Ore|Crystal>_T01-T06, the Vindertech
 // Pulse Rifle, Rocket Hammer, Axe, Sword, Repeater, Burst Pistol, Blaster, Scattergun and Sniper Rifle and their
 // Legendary versions) at a rarity (or the nearest there is), lowest tier. words, when given, is the weapon exactly

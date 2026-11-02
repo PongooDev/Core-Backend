@@ -74,10 +74,11 @@ test("1.10's Mutant Storms don't spread: each zone has its fixed target of storm
     const storms = mutant(early);
     assert.ok(storms.every(({ spreadDataName }) => spreadDataName === ""));
     assert.ok(storms.every(({ missionAlertRewards }) => missionAlertRewards.items.some(({ itemType }) => itemType === stormTickets)));
-    // Per zone, by its row's modifier group: Stonewood 5, Plankerton, Canny Valley and Twine Peaks 15 each.
-    const byZone = {};
-    for (const storm of storms) byZone[storm.missionAlertModifiers.tierGroupName] = (byZone[storm.missionAlertModifiers.tierGroupName] ?? 0) + 1;
-    assert.deepEqual(byZone, { "STMZ.ZoneMods_Stonewood": 5, "STMZ.ZoneMods_Plankerton": 15, "STMZ.ZoneMods_CanneyValley": 15, "STMZ.ZoneMods_TwinePeaks": 15 });
+    // Per zone, the map's theaters: Stonewood 5, Plankerton, Canny Valley and Twine Peaks 15 each.
+    const byTheater = {};
+    for (const storm of storms) byTheater[storm.theaterId] = (byTheater[storm.theaterId] ?? 0) + 1;
+    assert.deepEqual(byTheater, { "33A2311D4AE64B361CCE27BC9F313C8B": 5, D477605B4FA48648107B649CE97FCF27: 15,
+      E6ECBD064B153234656CB4BDE6743870: 15, D9A801C5444D1C74D1B7DAB5C7C12C5B: 15 });
     // One alert a mission.
     assert.equal(new Set(alertsOf(early).map(({ theaterId, tileIndex }) => `${theaterId}:${tileIndex}`)).size, alertsOf(early).length);
   });

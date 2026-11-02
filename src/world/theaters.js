@@ -7,6 +7,7 @@ import { snowflakeTickets, winter2017 } from "../events/winter2017.js";
 import { getItem } from "../gamedata/items.js";
 import { perBuild } from "../gamedata/read.js";
 import { getDifficulty, missionAlertSpread, missionAlertTier } from "../gamedata/world.js";
+import { hasEventStore } from "../store/eventstore.js";
 import { candyReward, hexsylvania, isHexsylvania } from "./hexsylvania.js";
 import { linkedQuests, questPath } from "./quests.js";
 import { isSurvival, survivalAlertGenerators, survivalReward, survivalTheater } from "./survival.js";
@@ -53,6 +54,20 @@ function zoneGate(region) {
 const mainProgression = "Theater.MainProgression";
 const isMainTheater = (data) => data.runtimeInfo.theaterType === "Standard" &&
   (data.runtimeInfo.theaterTags?.gameplayTags ?? []).some(({ tagName }) => /^Stat\.Theater\.PvE0\d$/.test(tagName));
+// A main theater's zone, 1 (Stonewood, Stat.Theater.PvE01) to 4 (Twine Peaks); 0 for any other theater.
+const theaterZone = (data) => Number((data.runtimeInfo.theaterTags?.gameplayTags ?? [])
+  .map(({ tagName }) => /^Stat\.Theater\.PvE0(\d)$/.exec(tagName)?.[1]).find(Boolean) ?? 0);
+
+// 2.3's "Mini-boss Alerts can now be played in higher-difficulty missions that you have not unlocked yet." The client
+// reads that per theater: FFortTheaterRuntimeData MissionAlertCategoryRequirements, an array of
+// FFortMissionAlertRuntimeData {MissionAlertCategoryName (an FName from 2.2), bRespectTileRequirements, bAllowQuickplay}
+// (2.3's SDK), the tile's region requirements (the zone gates above) being what a category with bRespectTileRequirements
+// off skips (🟡: read from the field names, the check is native). Epic's world info sends the same entry shape
+// ({"missionAlertCategoryName": "Survival3DayCategory", "bRespectTileRequirements": true, "bAllowQuickplay": true}). So
+// while 2.3's storms keep the Mini-Bosses, each main theater sends MiniBossCategory with bRespectTileRequirements false.
+const miniBossesUnlocked = [{ missionAlertCategoryName: "MiniBossCategory", bRespectTileRequirements: false, bAllowQuickplay: true }];
+const withAlertCategoryRequirements = (data) => (theaterZone(data) && miniBossesStay()
+  ? { ...data, runtimeInfo: { ...data.runtimeInfo, missionAlertCategoryRequirements: miniBossesUnlocked } } : data);
 
 const layout = perBuild((read) => {
   const { theaters = [], rewards = {} } = read("theaters", {});
@@ -115,7 +130,23 @@ function missionRewards(seed, tierGroupName, theaterId, rowName) {
   if (isHexsylvania(theaterId)) items.push({ itemType: candy, quantity: candyReward(rowName) });
   const survival = isSurvival(theaterId) && survivalReward(tierGroupName);
   if (survival) items.push(survival);
+  const gold = seasonalGoldPack(tierGroupName);
+  if (gold) items.push({ itemType: gold, quantity: 1 });
   return { tierGroupName, items: items.map(({ itemType, quantity }) => ({ itemType, quantity })) };
+}
+
+// Seasonal Gold from every mission while the Event Store is open (1.11 to 2.3, store/eventstore.js): 1.11's "Play any
+// mission and earn Seasonal Gold", 2.3's "All missions will continue to award Seasonal Gold". The game's own pack for it
+// is ZCP_EventScaling_T01-T20 ("Seasonal Gold", "Special currency found throughout the world. Can be traded for items in
+// the Event Store."), one a mission tier as the XP packs: Mission_Select_T<nn> takes T<nn>, a storm shield defense
+// (Outpost_Select_Theater<n>) its zone's last tier (T05, T10, T15, T20). How much it holds is cardpacks/contents.js's.
+function seasonalGoldPack(tierGroupName) {
+  if (!hasEventStore()) return undefined;
+  const mission = /^Mission_Select_T(\d\d)$/.exec(tierGroupName)?.[1];
+  const outpost = /^Outpost_Select_Theater(\d)$/.exec(tierGroupName)?.[1];
+  const tier = mission ?? (outpost ? String(5 * Number(outpost)).padStart(2, "0") : undefined);
+  const templateId = tier && `CardPack:zcp_eventscaling_t${tier}`;
+  return templateId && getItem(templateId) ? templateId : undefined;
 }
 
 function mission(seed, theaterId, tileIndex, missionGenerator, missionDifficultyInfo, tierGroupName, availableUntil) {
@@ -191,9 +222,12 @@ function rollMissions({ data, fixedMissions }, day, availableUntil) {
 // ... in Plankerton, Canny Valley, and Twine Peaks" (each zone's fixed target, as 1.10's, 🟡: read as each zone's), and
 // its ticketless StormLow ones stop (events/events.js). Its Mini-Boss alerts stay without Survive the Holidays: "These
 // Mini-boss alerts have replaced the old generic Mission Alerts", "Up to 3 of these Mini-Boss mission alerts can appear
-// in Stonewood at a time and up to 6 at a time in Plankerton, Canny and Twine" and "reward a wide array of items": no
-// General alerts there, each zone's Mini-Boss row placed up to its target, and no Snowflake Tickets (the event is over),
-// the General alerts' V-Bucks in their place beside the zone's reagents (🟡 Core's).
+// in Stonewood at a time and up to 6 at a time in Plankerton, Canny and Twine": no General alerts there, each theater's
+// Mini-Bosses placed up to its target, and no Snowflake Tickets (the event is over). "Mini-boss Alerts reward a wide
+// array of items, including transform keys, schematics, survivors, and more!" No shipped table has their loot tier group
+// (MissionAlert_MiniBoss), so beside the zone's reagents and the General alerts' V-Bucks each gives one item rolled from
+// the alert's seed (miniBossItems): a transform key, a weapon or trap schematic, a survivor, a hero or a defender, Rare in
+// Stonewood, Epic in Plankerton and Canny Valley, Legendary in Twine Peaks (🟡 the odds and rarities are Core's).
 const halloweenAlerts = "Halloween2017_MissionAlert";
 const stormTier = (tier) => (tier <= 5 ? 1 : tier <= 10 ? 2 : tier <= 15 ? 3 : 4);
 const zones = ["Stonewood", "Plankerton", "CanneyValley", "TwinePeaks"];
@@ -222,14 +256,36 @@ const alertRewards = {
   MissionAlert_StormLow: (row) => [[`CardPack:zcp_reagent_c_t0${zoneOfRow(row)}_high`, 1]],
   MissionAlert_Survival3Day: (row, mission) => [[snowflakeTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]],
   MissionAlert_Survival7Day: (row, mission) => [[snowflakeTickets, 2 * stormTicketsFor(mission.missionDifficultyInfo.rowName)]],
-  MissionAlert_MiniBoss: (row, mission) => [
+  MissionAlert_MiniBoss: (row, mission, seed) => [
     [`CardPack:zcp_reagent_c_t0${zoneOfRow(row)}_high`, 1],
     ...(isEventActive(winter2017) ? [[snowflakeTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]]
-      : [[`CardPack:zcp_mtx_boost${zoneOfRow(row) <= 2 ? 50 : 100}`, 1]])
+      : [[`CardPack:zcp_mtx_boost${zoneOfRow(row) <= 2 ? 50 : 100}`, 1], ...(miniBossesStay() ? miniBossItem(zoneOfRow(row), seed) : [])])
   ]
 };
 
-const rewardsOf = (row, mission) => alertRewards[row.lootTierGroup](row, mission).map(([itemType, quantity]) => ({ itemType, quantity }));
+// 2.3's Mini-Boss items (see above), by kind: the core transform keys (CCK_<kind>_Consumable_<rarity>, "<Kind> Transform
+// Schematic"), the generic schematic, survivor, hero and defender packs (CardPack_Ranged/Melee/Trap/Worker/Hero/
+// Defender_<rarity>, "One random ...").
+const miniBossRarities = ["r", "vr", "vr", "sr"];
+const transformKeys = ["hero_core", "worker_core", "manager_core", "defender_core", "trap_core", "ranged_assault", "ranged_pistol",
+  "ranged_shotgun", "ranged_sniper", "melee_sword", "melee_axe", "melee_club", "melee_scythe", "melee_spear", "melee_tool"];
+const miniBossKinds = [
+  { weight: 30, items: (rarity) => transformKeys.map((key) => `ConversionControl:cck_${key}_consumable_${rarity}`) },
+  { weight: 30, items: (rarity) => ["ranged", "melee", "trap"].map((kind) => `CardPack:cardpack_${kind}_${rarity}`) },
+  { weight: 25, items: (rarity) => [`CardPack:cardpack_worker_${rarity}`] },
+  { weight: 10, items: (rarity) => [`CardPack:cardpack_hero_${rarity}`] },
+  { weight: 5, items: (rarity) => [`CardPack:cardpack_defender_${rarity}`] }
+];
+export function miniBossItem(zone, seed) {
+  const rarity = miniBossRarities[zone - 1] ?? "r";
+  const kinds = miniBossKinds.map((kind) => ({ ...kind, items: kind.items(rarity).filter((templateId) => getItem(templateId)) }))
+    .filter((kind) => kind.items.length);
+  if (!kinds.length) return [];
+  const { items } = weighted(kinds, `${seed}:item`);
+  return [[items[Math.floor(fraction(digest(`${seed}:item:pick`)) * items.length)], 1]];
+}
+
+const rewardsOf = (row, mission, seed) => alertRewards[row.lootTierGroup](row, mission, seed).map(([itemType, quantity]) => ({ itemType, quantity }));
 
 // An alert's modifiers (FFortAvailableMissionAlertData MissionAlertModifiers: the mission's modifiers on the map and,
 // through the zone's details, the zone's; see world/validate): the gameplay modifiers of its row's ModifierTierGroup.
@@ -288,7 +344,7 @@ function alertOn(mission, row, category, seed, availableUntil, spreadDataName = 
     tileIndex: mission.tileIndex,
     availableUntil,
     refreshSpreadAt: never,
-    missionAlertRewards: { tierGroupName: row.lootTierGroup, items: rewardsOf(row, mission) },
+    missionAlertRewards: { tierGroupName: row.lootTierGroup, items: rewardsOf(row, mission, seed) },
     missionAlertModifiers: alertModifiers(row, seed)
   };
 }
@@ -304,11 +360,14 @@ const nearbyTiles = 2.5;
 // 1.10 (CL-3790078) stopped the spreading: "Mutant Storm Mission Alerts no longer spread. Instead, the number of Mission
 // Alerts available at a time are set to a fixed target number. Stonewood: 5, Plankerton: 15, Canny Valley: 15, Twine
 // Peaks: 15. Mutant Storm Mission Alert quota remains unchanged at 10 per day." Its StormCategory rows still name their
-// spread rows (the targets were Epic's server's), so from 1.10 each zone's row (by its ModifierTierGroup, as the rewards)
-// gets its target of storms at the day's start and none spreads.
+// spread rows (the targets were Epic's server's), so from 1.10 each zone gets its target of storms at the day's start
+// and none spreads. A zone there is a theater, the map's Stonewood to Twine Peaks (its Stat.Theater.PvE0<n> tag,
+// theaterZone): a theater's missions run into the next zone's difficulties (Stonewood's last regions are Plankerton's
+// rows), so a target per row put more than the notes' storms on a map, 7 in Stonewood and 28 in Plankerton on 2.3. The
+// storms go on any of the theater's missions a StormCategory row fits, each with that row's rewards.
 const fixedStormsBuild = 3790078;
 const stormTargets = [5, 15, 15, 15];
-// 2.3's storms and Mini-Bosses, by zone (see alertRewards above).
+// 2.3's storms and Mini-Bosses, by theater (see alertRewards above).
 const stormTargets2018 = [5, 25, 25, 25];
 const miniBossTargets2018 = [3, 6, 6, 6];
 export const stormsSpread = (changelist = currentBuild()) => !(Number(changelist) >= fixedStormsBuild);
@@ -373,27 +432,27 @@ function rollAlerts({ data }, missions, day, dayStart, now, availableUntil) {
     place(category, `${data.uniqueId}:${day}:alert:${regionIndex}${category === "GeneralCategory" ? "" : `:${category}`}`,
       (mission) => region.tileIndices.includes(mission.tileIndex))));
   // A Mutant Storm starts in each of the theater's zones (one per StormCategory row its missions can carry, each row a
-  // zone and a spread) and spreads from there; from 1.10 each zone has its fixed target of storms instead.
+  // zone and a spread) and spreads from there; from 1.10 each theater has its fixed target of storms instead.
   if (!isHexsylvania(data.uniqueId) && !isSurvival(data.uniqueId)) {
-    const rows = [...new Map(missions.map((mission) => alertFor(data, mission, "StormCategory")).filter(Boolean)
-      .map((row) => [row.name, row])).values()];
-    const targets = isEventActive(mutantStorms2018) ? stormTargets2018 : stormTargets;
-    for (const row of rows) {
-      const count = spreading ? 1 : targets[zoneOfModifierGroup(row.modifierTierGroup) - 1];
-      for (let index = 0; index < count; index++) {
-        alerts.push(...place("StormCategory", `${data.uniqueId}:${day}:alert:storm:${row.name}${index ? `:${index}` : ""}`,
+    const zone = theaterZone(data);
+    const anyRow = (category) => (mission) => Boolean(alertFor(data, mission, category));
+    if (spreading) {
+      const rows = [...new Map(missions.map((mission) => alertFor(data, mission, "StormCategory")).filter(Boolean)
+        .map((row) => [row.name, row])).values()];
+      for (const row of rows) {
+        alerts.push(...place("StormCategory", `${data.uniqueId}:${day}:alert:storm:${row.name}`,
           (mission) => alertFor(data, mission, "StormCategory")?.name === row.name));
       }
+    } else if (zone) {
+      const target = (isEventActive(mutantStorms2018) ? stormTargets2018 : stormTargets)[zone - 1];
+      for (let index = 0; index < target; index++) {
+        alerts.push(...place("StormCategory", `${data.uniqueId}:${day}:alert:storm:${index}`, anyRow("StormCategory")));
+      }
     }
-    // 2.3's Mini-Bosses: each zone's row up to its target, in place of the general alerts.
-    if (stormsMiniBosses) {
-      const bossRows = [...new Map(missions.map((mission) => alertFor(data, mission, "MiniBossCategory")).filter(Boolean)
-        .map((row) => [row.name, row])).values()];
-      for (const row of bossRows) {
-        for (let index = 0; index < miniBossTargets2018[zoneOfRow(row) - 1]; index++) {
-          alerts.push(...place("MiniBossCategory", `${data.uniqueId}:${day}:alert:miniboss:${row.name}${index ? `:${index}` : ""}`,
-            (mission) => alertFor(data, mission, "MiniBossCategory")?.name === row.name));
-        }
+    // 2.3's Mini-Bosses: the theater's target, in place of the general alerts.
+    if (stormsMiniBosses && zone) {
+      for (let index = 0; index < miniBossTargets2018[zone - 1]; index++) {
+        alerts.push(...place("MiniBossCategory", `${data.uniqueId}:${day}:alert:miniboss:${index}`, anyRow("MiniBossCategory")));
       }
     }
   }
@@ -434,7 +493,7 @@ export function worldInfo(now = new Date()) {
   const missions = theaters.map((theater) => rollMissions(theater, day, availableUntil));
   const alerts = theaters.map((theater, index) => rollAlerts(theater, missions[index], day, dayStart, now, availableUntil));
   return {
-    theaters: theaters.map((theater) => theater.data),
+    theaters: theaters.map((theater) => withAlertCategoryRequirements(theater.data)),
     missions: theaters.map((theater, index) => ({
       theaterId: theater.data.uniqueId,
       availableMissions: missions[index],

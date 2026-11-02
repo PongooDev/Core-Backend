@@ -1,3 +1,4 @@
+import { getItem } from "../gamedata/items.js";
 import { getQuest } from "../gamedata/quests.js";
 import { isEventActive, mutantStorms, mutantStorms2018 } from "./events.js";
 
@@ -78,6 +79,16 @@ export const stormLlama2018 = "CardPack:cardpack_event_firststorm";
 // The requesting build's quests of the storms' return, when it runs there.
 export function mutantStorms2018EventQuests() {
   return isEventActive(mutantStorms2018) ? mutantStorms2018Quests.filter((questId) => getQuest(questId)) : [];
+}
+
+// "Purchased upgrade Llamas award Storm Tickets" (2.3): an Upgrade Llama (CardPack_Bronze, store/catalog.js's
+// core_cardpack_bronze offers, one or ten) bought while 2.3's storms run also gives Storm Tickets, 100 a llama (🟡 Core's:
+// Epic's catalog held the amount; ten llamas, 500 V-Bucks, buy a Storm Llama). Returns how many for count llamas, 0 for
+// any other offer.
+export const ticketsPerUpgradeLlama = 100;
+export function upgradeLlamaTickets(offer, count) {
+  const upgradeLlama = offer.currencyType === "MtxCurrency" && offer.templateId.toLowerCase() === "cardpack:cardpack_bronze";
+  return upgradeLlama && isEventActive(mutantStorms2018) && getItem(stormTickets) ? ticketsPerUpgradeLlama * count : 0;
 }
 
 // Whether the requesting build's Mini-Boss alerts run without Survive the Holidays (2.3's storms).

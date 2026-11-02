@@ -94,6 +94,12 @@ const events = [
 
 const runsOn = (event, number) => number >= event.firstBuild && number <= event.lastBuild;
 
+// The storms a build runs when the admin panel forces the Mutant Storms (or a custom EventFlag.ActiveStorms): 2.3's
+// return (mutantStorms2018: the Hydraulic quests, the Storm Llama, the Mini-Bosses and the Event Store) from 2.3
+// (CL-3847564), whose data has no Vindertech quests or llama, else 1.9.1's Vindertech storms (mutantStorms).
+const storms2018Build = 3847564;
+const forcedStorms = (changelist) => (Number(changelist) >= storms2018Build ? mutantStorms2018 : mutantStorms);
+
 let eventsConfigProvider = null;
 
 export function configureEvents(provider) {
@@ -149,7 +155,7 @@ export function isEventActive(nameOrFlag, changelist = currentBuild()) {
     return nameOrFlag === fortnitemares || nameOrFlag === "EventFlag.Fortnitemares";
   }
   if (config?.mode === "force_mutantstorms") {
-    return nameOrFlag === mutantStorms || nameOrFlag === "EventFlag.Vindertech" || nameOrFlag === "EventFlag.ActiveStorms";
+    return nameOrFlag === forcedStorms(changelist) || nameOrFlag === "EventFlag.Vindertech" || nameOrFlag === "EventFlag.ActiveStorms";
   }
   if (config?.mode === "force_winter2017") {
     return nameOrFlag === winter2017 || nameOrFlag === "EventFlag.Winter2017"
@@ -162,7 +168,7 @@ export function isEventActive(nameOrFlag, changelist = currentBuild()) {
     const flags = Array.isArray(config.customFlags) ? config.customFlags : [];
     if (flags.includes(nameOrFlag)) return true;
     if (nameOrFlag === fortnitemares && flags.includes(fortnitemares)) return true;
-    if (nameOrFlag === mutantStorms && (flags.includes("EventFlag.Vindertech") || flags.includes("EventFlag.ActiveStorms"))) return true;
+    if (nameOrFlag === forcedStorms(changelist) && (flags.includes("EventFlag.Vindertech") || flags.includes("EventFlag.ActiveStorms"))) return true;
     return false;
   }
   const flags = activeEventFlags(changelist);

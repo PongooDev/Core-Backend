@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import { bannerIds } from "../gamedata/banners.js";
 import { getCardPack } from "../gamedata/items.js";
-import { halloweenPool, hasItem, isKnownKind, namedSchematics, pool, rarities, vindertechSchematics } from "./pools.js";
+import { halloweenPool, hasItem, isKnownKind, namedSchematics, pool, rarities, stormZonePool, vindertechSchematics } from "./pools.js";
 
 // What a card pack holds. Epic decided pack contents on its servers and no loot table for them ships with the client,
 // so these rules are Core's design (chosen by the user), built from what the game data says about each pack: its loot
@@ -84,6 +84,10 @@ function zoneReward(group, templateId, info) {
   if (group === "zcp_rescued") return resource("AccountResource:peopleresource", rescuedPeople(info));
   if (group === "zcp_neighborhoodcurrency_noscale") return resource("Token:neighborhoodcurrency", 10);
   if (group === "zcp_snowballs_noscale") return resource("AccountResource:eventcurrency_snowballs", 10);
+  // "Seasonal Gold" (ZCP_EventScaling_T01-T20, every mission's while the Event Store is open, world/theaters.js): Seasonal
+  // Gold (AccountResource:EventCurrency_Scaling), 5 a tier (🟡 Core's: Epic rolled it on its servers), so 5 for a T01
+  // mission's pack and 100 for a T20's, times the mission's loot level as its other packs.
+  if (group === "zcp_eventscaling") return resource("AccountResource:eventcurrency_scaling", 5 * Math.max(info.lootTier || 1, 1));
   match = group.match(/^zcp_tutorial_(hero|melee|ranged|trap)$/);
   if (match) return one(match[1], null, "uc");
   const expedition = expeditionReward(group, resource);
@@ -193,6 +197,17 @@ function vindertechLlama() {
   return [...llama(llamas.cardpack_bronze), ...pickOne(vindertechSchematics(weighted([["vr", 75], ["sr", 25]])))];
 }
 
+// The Storm Llama (CardPack_Event_FirstStorm, group CardPack_Event_2017_FirstStorm: "Guarantees at least one Epic or
+// better limited time Hydraulic weapon or Hero!"), sold for Storm Tickets while 2.3's storms run (store/catalog.js):
+// "Hydraulic Weapons and Storm Zone Heroes have returned, and are available in the Storm Llamas during this event", and
+// "The Event Store also offers Legendary Constructor BASE Hype. The Event Storm Llama also has a chance of awarding this
+// hero." An Upgrade Llama's items and one Hydraulic weapon schematic or Storm Zone hero (stormZonePool), Epic or (a
+// quarter of the time) Legendary, half and half; the odds are Core's (🟡).
+function stormLlama() {
+  const rarity = weighted([["vr", 75], ["sr", 25]]);
+  return [...llama(llamas.cardpack_bronze), ...pickOne(stormZonePool(weighted([["schematic", 50], ["hero", 50]]), rarity))];
+}
+
 function vindertechPack(group) {
   const match = group.match(/^cardpack_vindertech_([a-z_]+)_(vr|sr)$/);
   return match ? pickOne(vindertechSchematics(match[2], match[1].split("_"))) : undefined;
@@ -227,6 +242,7 @@ export function rollContents(templateId) {
   if (llamas[group]) return llama(llamas[group]);
   if (group === "cardpack_event_2017_halloween") return fortnitemaresLlama();
   if (group === "cardpack_event_2017_vindertech") return vindertechLlama();
+  if (group === "cardpack_event_2017_firststorm") return stormLlama();
   const vindertechWeapon = vindertechPack(group);
   if (vindertechWeapon?.length) return vindertechWeapon;
   const cosplayer = /^cardpack_cb_halloween_2017_worker_([a-z]+)$/.exec(group);
