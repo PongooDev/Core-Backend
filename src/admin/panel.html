@@ -5711,9 +5711,12 @@
         contentUpdates: { mode: cfg.contentUpdates?.mode || "season", overrides: { ...(cfg.contentUpdates?.overrides ?? {}) } }
       };
 
+      // The season the page shows (Core-Backend #156): its clock, its Season Start row and, for Season 2, its content
+      // updates. The rest is every season's.
+      const season = state.eventsSeason === "2" ? "2" : "1";
       const dailyTarget = new Date(data.calendar.dailyStoreEnd).getTime();
       const weeklyTarget = new Date(data.calendar.weeklyStoreEnd).getTime();
-      const seasonTarget = new Date(data.calendar.seasonEnd).getTime();
+      const seasonTarget = new Date((season === "2" ? data.calendar.seasons?.[2]?.end : null) ?? data.calendar.seasonEnd).getTime();
 
       const formatDiff = (target) => {
         const diff = target - Date.now();
@@ -5985,7 +5988,7 @@
             ...[["auto", "Auto"], ["on", "Force on"], ["off", "Force off"]].map(([value, text]) =>
               el("option", { value, text, selected: (form.contentUpdates.overrides[update.id] || "auto") === value }))));
       };
-      const contentSection = el("section", { class: "panel", style: "margin-top:16px" },
+      const contentSection = season !== "2" ? null : el("section", { class: "panel", style: "margin-top:16px" },
         el("div", { class: "panel-head", style: "margin-bottom:8px" },
           el("div", { class: "actions" }, el("h2", { text: "Season 2 Content Updates" }), contentModeSelect)),
         el("p", { class: "note", text: `Epic's loot hotfixes of Season 2, served to 1.11 and 2.1 clients and gameservers in DefaultGame.ini's [AssetHotfix]. On 1.11 they follow Season 2's replay (day 1 = 14 Dec 2017; today stands for ${content.seasonDate ? new Date(content.seasonDate).toUTCString().slice(5, 22) : "—"} UTC) or are all on; 2.1 always has all of them and its Cozy Campfire. A gameserver takes them when it starts.` }),
@@ -6012,7 +6015,7 @@
           el("div", {},
             el("div", { style: "display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:4px;" },
               el("h1", { text: "Events & Seasons", style: "margin:0;" }),
-              seasonSelector("1", () => showEvents())),
+              seasonSelector(season, (picked) => { state.eventsSeason = String(picked); showEvents(); })),
             el("div", { class: "muted", text: "Customizable event activation, STW mission modifiers, and live calendar timelines" })),
           el("div", { class: "actions" },
             btn("Save Event Configuration", saveConfig, "primary"),
@@ -6043,7 +6046,7 @@
         el("div", { class: "tiles" },
           tile("Daily Store Reset", [dailyTimerEl, el("span", { class: "sub", text: `${dailyResetDate.toUTCString().slice(17, 22)} UTC (${dailyResetDate.toLocaleDateString(undefined, { month: "short", day: "numeric" })})` })]),
           tile("Weekly Store Reset", [weeklyTimerEl, el("span", { class: "sub", text: `${weeklyResetDate.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })} · ${weeklyResetDate.toUTCString().slice(17, 22)} UTC` })]),
-          tile("Season 1 Clock", [seasonTimerEl, el("span", { class: "sub", text: `Ends ${seasonResetDate.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}` })])),
+          tile(`Season ${season} Clock`, [seasonTimerEl, el("span", { class: "sub", text: `Ends ${seasonResetDate.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}` })])),
 
         contentSection,
 
@@ -6191,10 +6194,11 @@
             el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
               el("div", {},
                 el("div", { class: "muted font-semibold", style: "font-size:12px; margin-bottom:4px;", text: "SEASON START (DAY 1)" }),
-                el("div", { class: "muted", style: "font-size:11px;", text: "The day each season's shop and countdown start from, then replay in order and start over when the season ends. Reset Season 2 to start it again on the next day it is served; reset Season 1 to its original clock." })),
+                el("div", { class: "muted", style: "font-size:11px;", text: season === "2"
+                  ? "The day Season 2's shop and countdown start from, then replay in order and start over when the season ends. Reset it to start it again on the next day it is served."
+                  : "The day Season 1's shop and countdown start from, then replay in order and start over when the season ends. Reset it to its original clock." })),
               el("div", { style: "margin-top:12px; display:flex; flex-direction:column; gap:10px;" },
-                seasonStartRow(1, "Season 1 (1.8 – 1.10)"),
-                seasonStartRow(2, "Season 2 (1.11 – 2.5)"))),
+                season === "2" ? seasonStartRow(2, "Season 2 (1.11 – 2.5)") : seasonStartRow(1, "Season 1 (1.8 – 1.10)"))),
 
             el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
               el("div", {},

@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import vm from "node:vm";
 import { get, post, send, startBackend, userLogin } from "./helpers.js";
 
 const admin = (backend, urlPath, body) => (body === undefined
@@ -165,6 +166,25 @@ test("admin events full customization: mode overrides, STW modifiers, calendar, 
     assert.equal(resetRes.status, 200);
     assert.equal(resetRes.body.success, true);
     assert.ok(resetRes.body.resetProfiles >= 1);
+  } finally {
+    backend.close();
+  }
+});
+
+// Core-Backend #156: the Events page's season picker stayed on Season 1 (it reloaded the page with Season 1 picked), and
+// Season 2's content updates card showed under it. The page now keeps the season picked, and shows its clock, its
+// Season Start row and, for Season 2 only, the content updates.
+test("the admin panel's script parses, and the Events page shows the season picked", async () => {
+  const backend = await startBackend();
+  try {
+    const html = (await get(backend.port, "/admin")).body;
+    const script = html.slice(html.indexOf("<script>") + "<script>".length, html.lastIndexOf("</script>"));
+    assert.doesNotThrow(() => new vm.Script(script, { filename: "panel.html" }));
+    const events = script.slice(script.indexOf("async function showEvents()"), script.indexOf("/* ---------- reports ---------- */"));
+    assert.match(events, /const season = state\.eventsSeason === "2" \? "2" : "1";/);
+    assert.match(events, /seasonSelector\(season, \(picked\) => \{ state\.eventsSeason = String\(picked\); showEvents\(\); \}\)/);
+    assert.match(events, /const contentSection = season !== "2" \? null : el\("section"/);
+    assert.ok(!events.includes('seasonSelector("1"'));
   } finally {
     backend.close();
   }
