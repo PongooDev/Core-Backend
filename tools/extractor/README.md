@@ -62,7 +62,8 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   (AthenaEmojiItemDefinition) are cosmetics too. `loot` holds Battle Royale's loot tables whole (DefaultGameData's
   `AthenaLootTierData_Client` and `AthenaLootPackages_Client`), by object path, each row with every property in the form
   `UDataTable::CreateTableFromJSONString` reads back (soft object paths as path strings), for the content updates the
-  backend serves as `[AssetHotfix]` rows; only 1.11's, 2.1's and 2.2's overlays carry it so far (2.2's has Season 2's content updates in already). Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
+  backend serves as `[AssetHotfix]` rows; only 1.11's, 2.1's, 2.2's and 2.3's overlays carry it so far (2.2's has Season 2's content updates in already; 2.3's
+  is 2.2's, the Chug Jug at weight 0). Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `research.json`: the resource collectors (research points): each CollectedResource template's payout and the
   homebase attributes its rate, capacity and wallet cap come from, what each skill tree node adds to those attributes
