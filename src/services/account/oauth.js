@@ -3,6 +3,8 @@ import { requireAuth } from "../../accounts/auth.js";
 import { dedicatedServerClient } from "../../accounts/clients.js";
 import { isContactEmailLogin } from "../../accounts/email.js";
 import { isServerAccountName, validatePassword, verifyPassword } from "../../accounts/password.js";
+import { allowsBuild, buildName, buildNotAllowed } from "../../builds/allowed.js";
+import { currentBuild } from "../../builds/context.js";
 import { sendError } from "../../errors.js";
 import { log } from "../../log.js";
 import { allowsHosting, defaultHostingIps, normalizeAddress } from "../../network.js";
@@ -35,6 +37,19 @@ function notHostingIp(res, req, what) {
   log("Core", `Refused ${what} from ${normalizeAddress(req.socket?.remoteAddress)}: not this PC or a Trusted Hosting IP (admin panel, Settings)`);
   sendError(res, 403, "errors.com.epicgames.account.oauth.unauthorized_client",
     `This IP address is not authorized to ${what}. Add it to the admin panel's Trusted Hosting IPs to host from it.`);
+}
+
+// The admin panel's allowed builds (Core-Backend #164, builds/allowed.js): a player's login from another build is refused
+// (and its refresh), for any build whose patch check (services/fortnite/version.js) let it get this far. The game shows
+// "Unable to login to Fortnite servers. Please try again later." Its client token is still given, as the patch check
+// needs one to be told HARD_UPDATE, and gameservers (their accounts, the DedicatedServer client) log in from any build.
+function refusesBuild(res, settings, login) {
+  const allowedBuilds = settings?.get?.().allowedBuilds ?? null;
+  const changelist = currentBuild();
+  if (allowsBuild(allowedBuilds, changelist)) return false;
+  log("Core", `Refused ${login}'s login on Fortnite ${buildName(changelist)}: not an allowed build (admin panel, Settings)`);
+  buildNotAllowed(res, allowedBuilds, changelist);
+  return true;
 }
 
 export function oauthRoutes({ accounts, tokens, settings, resetTokens }) {
@@ -82,6 +97,8 @@ export function oauthRoutes({ accounts, tokens, settings, resetTokens }) {
           accounts.recordLogin(account);
           return res.json(tokens.issueUser(clientId, account, "password"));
         }
+
+        if (refusesBuild(res, settings, displayName)) return;
 
         // Regular player account: check IP failure tracker
         if (failureTracker.isBlocked(req)) {
@@ -149,6 +166,7 @@ export function oauthRoutes({ accounts, tokens, settings, resetTokens }) {
         const entry = tokens.useRefreshToken(String(body.refresh_token ?? ""));
         const account = entry && accounts.get(entry.accountId);
         if (!account) return invalidGrant(res, "Invalid or expired refresh token");
+        if (!isServerAccountName(account.displayName) && refusesBuild(res, settings, account.displayName)) return;
         if (account.banned) return banned(res, account);
         return res.json(tokens.issueUser(clientId, account, "refresh_token"));
       }

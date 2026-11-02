@@ -6566,6 +6566,42 @@
               : "Passwords are not checked: any player connecting to your backend can log in with any name and password."
           })),
 
+        // Allowed builds (Core-Backend #164): which Fortnite builds may play on this backend.
+        el("section", { class: "panel", style: "margin-top:16px" },
+          (() => {
+            const builds = settings.knownBuilds ?? [];
+            const allowed = settings.allowedBuilds ?? null;
+            const isAllowed = (changelist) => !allowed || allowed.includes(changelist);
+            const label = (build) => build.version ? `${build.version} (CL-${build.changelist})` : "Other builds (ones Core doesn't know)";
+            const checks = builds.map((build) => el("label", { class: "check" },
+              el("input", {
+                type: "checkbox",
+                value: build.changelist,
+                checked: isAllowed(build.changelist),
+                "aria-label": `Allow ${label(build)}`,
+                onchange: (e) => {
+                  const ticked = builds.filter((other) => (other.changelist === build.changelist ? e.target.checked : isAllowed(other.changelist)));
+                  if (!ticked.length) {
+                    e.target.checked = true;
+                    return toast("Allow at least one build", true);
+                  }
+                  save({ allowedBuilds: ticked.length === builds.length ? null : ticked.map((other) => other.changelist) },
+                    `${label(build)} ${e.target.checked ? "allowed" : "refused"}`);
+                }
+              }),
+              el("span", { text: label(build) })));
+            const count = builds.filter((build) => isAllowed(build.changelist)).length;
+            return [
+              el("div", { class: "panel-head", style: "margin-bottom:8px" },
+                el("div", { class: "actions" },
+                  el("h2", { text: "Allowed Builds" }),
+                  allowed ? chip(`${count} of ${builds.length}`, "warn") : chip("Every build", "good")),
+                allowed ? btn("Allow every build", () => save({ allowedBuilds: null }, "Every build allowed"), "ghost") : null),
+              el("p", { class: "note", text: "The Fortnite builds players may use on this backend. A build that isn't ticked is told an update is required when it starts (\"Update Required: You have required updates pending.\"), its logins are refused (\"Unable to login to Fortnite servers. Please try again later.\") and so are its matchmaking tickets. Gameservers host on any build. A change applies to the next login; players already in keep playing until they queue for a match or log in again." }),
+              el("div", { style: "display:flex; flex-wrap:wrap; gap:8px 16px; margin-top:12px;" }, ...checks)
+            ];
+          })()),
+
         el("div", { class: "grid cols-2", style: "margin-top:16px" },
           el("section", { class: "panel" },
             el("div", { class: "panel-head", style: "margin-bottom:8px" },

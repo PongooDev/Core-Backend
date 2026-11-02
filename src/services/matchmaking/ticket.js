@@ -1,5 +1,6 @@
 import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
+import { allowsBuild, buildName, buildNotAllowed } from "../../builds/allowed.js";
 import { currentBuild } from "../../builds/context.js";
 import { notFound, sendError } from "../../errors.js";
 import { log } from "../../log.js";
@@ -21,6 +22,13 @@ export function ticketRoutes({ tokens, sessions, matchmaker, settings }) {
     const { accountId } = req.params;
     if (req.session.accountId !== accountId) {
       return sendError(res, 403, "errors.com.epicgames.common.missing_permission", `Can't matchmake for ${accountId}`);
+    }
+    // The admin panel's allowed builds (Core-Backend #164), behind the version check and the login: a player still in
+    // the game when their build stopped being allowed can't queue. A gameserver's session ticket (below) is exempt.
+    const allowedBuilds = settings?.get?.().allowedBuilds ?? null;
+    if (!allowsBuild(allowedBuilds, currentBuild())) {
+      log("Matchmaking", `Refused ${accountId}'s ticket on Fortnite ${buildName(currentBuild())}: not an allowed build (admin panel, Settings)`);
+      return buildNotAllowed(res, allowedBuilds, currentBuild());
     }
     const bucketId = String(req.query.bucketId ?? "");
     const { playlistId } = parseBucket(bucketId);

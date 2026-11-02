@@ -5,6 +5,7 @@ import { defaultHostingIps, hostingIp, hostingIps } from "../network.js";
 import { defaultBattlePass, sanitizeBattlePass } from "../battlepass/season1.js";
 import { defaultContentUpdates, sanitizeContentUpdates } from "../events/contentupdates.js";
 import { regionList } from "../matchmaking/regions.js";
+import { allowedBuildList } from "../builds/allowed.js";
 
 const defaults = {
   requirePassword: false,
@@ -50,6 +51,10 @@ const defaults = {
   // Trusted Hosting IPs (Core-Backend #125, network.js allowsHosting): other PCs whose gameservers may host for this
   // backend, each an IP address. This PC (loopback) always may; nobody else unless listed.
   allowedHostingIps: defaultHostingIps,
+  // The builds that may use this backend (Core-Backend #164, builds/allowed.js): null for all of them, else their
+  // changelists and "other" for builds Core doesn't know. A refused build's version check answers HARD_UPDATE, and its
+  // logins and matchmaking tickets are refused; gameservers are exempt.
+  allowedBuilds: null,
   defaultFoundersAccess: true,
   // Admin from other devices (Core-Backend #134, admin/local.js createAdminGate): off, the admin panel answers only this PC.
   // On, a device an admin credential allows may sign in. Only this PC can switch it.
@@ -396,6 +401,7 @@ export function createSettingsStore(dataDir) {
       settings.serverRegions = regionList(loaded.serverRegions ?? loaded.serverRegion) ?? [];
       delete settings.serverRegion;
       settings.allowedHostingIps = hostingIps(loaded.allowedHostingIps) ?? [...defaults.allowedHostingIps];
+      settings.allowedBuilds = allowedBuildList(loaded.allowedBuilds) ?? null;
       if (loaded.battleRoyaleNews && typeof loaded.battleRoyaleNews === "object") {
         settings.battleRoyaleNews = {
           title: String(loaded.battleRoyaleNews.title ?? ""),
@@ -455,6 +461,7 @@ export function createSettingsStore(dataDir) {
         defaultFoundersAccess: settings.defaultFoundersAccess !== false,
         remoteAdmin: settings.remoteAdmin === true,
         allowedHostingIps: [...(settings.allowedHostingIps ?? defaults.allowedHostingIps)],
+        allowedBuilds: settings.allowedBuilds ? [...settings.allowedBuilds] : null,
         structureLimits: { ...settings.structureLimits },
         battleRoyaleRewards: JSON.parse(JSON.stringify(settings.battleRoyaleRewards)),
         cheatAccounts: [...settings.cheatAccounts],
@@ -528,6 +535,8 @@ export function createSettingsStore(dataDir) {
         settings.serverLimits = sanitizeServerLimits(partial.serverLimits, settings.serverLimits);
       }
       settings.allowedHostingIps = hostingIps(partial.allowedHostingIps) ?? settings.allowedHostingIps;
+      const builds = allowedBuildList(partial.allowedBuilds);
+      if (partial.allowedBuilds !== undefined && builds !== undefined) settings.allowedBuilds = builds;
       if (partial.battleRoyaleNews && typeof partial.battleRoyaleNews === "object") {
         settings.battleRoyaleNews = {
           title: String(partial.battleRoyaleNews.title ?? ""),

@@ -34,7 +34,8 @@ import { clearSessionCookie, extractAdminToken } from "./auth.js";
 import { createRateLimiter, getClientIp } from "../services/portal/ratelimit.js";
 import { defaultBattleRoyaleNews, defaultLoginMessage, defaultSubgameSelect } from "../services/content/pages.js";
 import { inBuild } from "../builds/context.js";
-import { battleRoyaleBuilds, certBuild, seasonName, seasonVersions, versionOf } from "../builds/detect.js";
+import { allowedBuildList, otherBuilds } from "../builds/allowed.js";
+import { battleRoyaleBuilds, buildVersions, certBuild, seasonName, seasonVersions, versionOf } from "../builds/detect.js";
 import { contentUpdateStates, defaultContentUpdates } from "../events/contentupdates.js";
 import { cosmeticRarity, cosmeticType, eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, seasonEnd, seasonMoment, seasonStart, shopDay, soldCosmeticIds, weeklyStoreEnd, withoutSeasonStartRecording } from "../store/itemshop.js";
 import { activeEventFlags, fortnitemares, mutantStorms } from "../events/events.js";
@@ -873,6 +874,10 @@ export function adminRoutes(context) {
   router.delete("/admin/api/sessions/hosting-ips/:ip", removeHostingIp);
   router.delete("/admin/api/settings/hosting-ips/:ip", removeHostingIp);
 
+  // The builds the Allowed Builds card offers (Core-Backend #164): Core's known ones, oldest first, then other builds.
+  const knownBuilds = () => [...Object.entries(buildVersions).map(([changelist, version]) => ({ changelist, version })),
+    { changelist: otherBuilds, version: null }];
+
   // Get current server settings
   router.get("/admin/api/settings", (req, res) => {
     const current = settings?.get?.() ?? {};
@@ -880,6 +885,7 @@ export function adminRoutes(context) {
     const resInfo = network?.resolution?.() ?? {};
     res.json({
       ...current,
+      knownBuilds: knownBuilds(),
       publicAddress: net.publicAddress ? (resInfo.address || net.publicAddress) : (resInfo.address || null),
       portalUrl: portalUrl(req)
     });
@@ -897,6 +903,9 @@ export function adminRoutes(context) {
     const hosts = req.body?.allowedHostingIps;
     if (hosts !== undefined && (!Array.isArray(hosts) || hosts.length > maxHostingIps || !hosts.every(hostingIp))) {
       return invalid(res, `allowedHostingIps must be a list of at most ${maxHostingIps} IP addresses`);
+    }
+    if (req.body?.allowedBuilds !== undefined && allowedBuildList(req.body.allowedBuilds) === undefined) {
+      return invalid(res, "allowedBuilds must be null (every build) or a list of at least one build Core knows, by changelist or version, or \"other\"");
     }
     const updated = settings.update({
       requirePassword: req.body?.requirePassword,
@@ -917,12 +926,14 @@ export function adminRoutes(context) {
       regionFallback: req.body?.regionFallback,
       matchStartCountdown: req.body?.matchStartCountdown,
       serverRegions: req.body?.serverRegions,
-      allowedHostingIps: req.body?.allowedHostingIps
+      allowedHostingIps: req.body?.allowedHostingIps,
+      allowedBuilds: req.body?.allowedBuilds
     });
     const net = network?.settings?.() ?? {};
     const resInfo = network?.resolution?.() ?? {};
     res.json({
       ...updated,
+      knownBuilds: knownBuilds(),
       publicAddress: net.publicAddress ? (resInfo.address || net.publicAddress) : (resInfo.address || null),
       portalUrl: portalUrl(req)
     });
