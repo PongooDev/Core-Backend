@@ -7,7 +7,7 @@ import { inBuild } from "../src/builds/context.js";
 import { tierOfferId } from "../src/battlepass/season2.js";
 import { athenaCosmetics, athenaDisplayAssets, athenaSeason } from "../src/gamedata/athena.js";
 import { storefronts } from "../src/store/catalog.js";
-import { itemShopOffers } from "../src/store/itemshop.js";
+import { itemShopOffers, seasonEnd } from "../src/store/itemshop.js";
 import { get, post, send, startBackend, userLogin } from "./helpers.js";
 
 // Core-Backend #145: 1.11 (CL-3807424) is Season 2, with its own season level, a Battle Pass, the winter lobby, six
@@ -109,7 +109,8 @@ test("1.11's calendar names Season 2 and turns the winter lobby on; 1.10's doesn
     const winter = await calendar(v111);
     assert.equal(winter.state.seasonNumber, 2);
     assert.equal(winter.state.seasonTemplateId, "AthenaSeason:athenaseason2");
-    assert.ok(winter.state.seasonEnd);
+    const now = new Date(Date.parse((await as(v111, backend.port, "GET", "/fortnite/api/calendar/v1/timeline", player.token)).body.currentTime));
+    assert.equal(winter.state.seasonEnd, seasonEnd(now, null, 2).toISOString());
     assert.ok(winter.state.activeEventFlags.includes("EventFlag.LobbyWinterDecor"));
     assert.ok(winter.activeEvents.some(({ eventType }) => eventType === "EventFlag.LobbyWinterDecor"));
     const autumn = await calendar(v110);
@@ -204,6 +205,8 @@ test("the admin panel's Battle Pass tab shows Season 2's tiers and sets its pric
   assert.equal(overview.body.tiers[0].paid.find(({ templateId }) => templateId.startsWith("AthenaCharacter")).name, "Blue Squire");
   assert.deepEqual([overview.body.config.battlePassPrice, overview.body.config.bundlePrice, overview.body.config.tierPrice], [950, 2800, 150]);
   assert.equal((await admin(backend.port, "/battlepass/overview")).body.season, 1);
+  assert.equal(overview.body.seasonEnd, seasonEnd(new Date(), null, 2).toISOString());
+  assert.equal((await admin(backend.port, "/battlepass/overview")).body.seasonEnd, seasonEnd(new Date(), null, 1).toISOString());
 
   assert.equal((await admin(backend.port, "/battlepass/config", { season2: { battlePassPrice: 500, bundlePrice: -5 } })).status, 200);
   assert.equal((await admin(backend.port, "/battlepass/overview?season=2")).body.config.battlePassPrice, 500);

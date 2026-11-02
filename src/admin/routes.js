@@ -1009,7 +1009,7 @@ export function adminRoutes(context) {
     }));
 
     const weeklyEnd = weeklyStoreEnd(now, shopConfig);
-    const seasonEnds = seasonEnd(now, shopConfig);
+    const seasonEnds = seasonEnd(now, shopConfig, 1);
     const dailyEnd = nextRotation(now, shopConfig);
 
     res.json({
@@ -1153,14 +1153,14 @@ export function adminRoutes(context) {
     const bpConfig = s.battlepass ?? defaultBattlePass;
     const now = new Date();
     const shopConfig = s.itemShop ?? { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 };
-    const seasonEnds = seasonEnd(now, shopConfig);
+    const seasonEnds = (season) => seasonEnd(now, shopConfig, season).toISOString();
 
     if (String(req.query.season) === "2") {
       return res.json(inBuild(buildOfSeason(2), () => ({
         season: 2,
         seasonName: "Season 2 (1.11)",
         availableSeasons,
-        seasonEnd: seasonEnds.toISOString(),
+        seasonEnd: seasonEnds(2),
         config: { ...seasonTwoConfig(), tierPrice, bundleTiers, xpMultiplier: bpConfig.xpMultiplier ?? 1 },
         tiers: seasonTiers()
       })));
@@ -1169,7 +1169,7 @@ export function adminRoutes(context) {
       season: 1,
       seasonName: "Season 1 (1.8 – 1.10)",
       availableSeasons,
-      seasonEnd: seasonEnds.toISOString(),
+      seasonEnd: seasonEnds(1),
       config: bpConfig,
       milestones: enrichedMilestones(bpConfig)
     });

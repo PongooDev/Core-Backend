@@ -65,6 +65,28 @@ test("the season countdown runs to the end of the shop's 45-day cycle, Season 1'
   }
 });
 
+// Core-Backend #149: 1.11's Battle Pass tab counts down to Season 2's end on Epic's schedule (14 December 2017 to
+// 21 February 2018, 70 days), on the shop's clock, then starts over; 1.8 to 1.10 keep Season 1's.
+test("the season countdown follows the build's season: Season 2's 70 days for 1.11, then it starts over", () => {
+  const end = (iso, season, config = null) => seasonEnd(new Date(iso), config, season).toISOString();
+  assert.equal(end("2017-12-14T00:00:00Z", 2), "2018-02-22T00:00:00.000Z");
+  assert.equal(end("2018-02-21T23:59:59Z", 2), "2018-02-22T00:00:00.000Z");
+  assert.equal(end("2018-02-22T00:00:00Z", 2), "2018-05-03T00:00:00.000Z");
+  assert.equal(end("2026-11-02T12:00:00Z", 2), "2026-12-17T00:00:00.000Z");
+  assert.equal(end("2026-11-02T12:00:00Z", 2, { mode: "fnbr", rotationHour: 6 }), "2026-12-17T06:00:00.000Z");
+  assert.equal(end("2026-11-02T12:00:00Z", 1), "2026-12-12T00:00:00.000Z");
+  assert.equal(end("2026-11-02T12:00:00Z", 2, { customSeasonEnd: "2029-01-01T00:00:00Z" }), "2029-01-01T00:00:00.000Z");
+  for (let n = 0; n < 140; n++) {
+    const now = new Date(Date.UTC(2026, 0, 1 + n, 12));
+    const days = (seasonEnd(now, null, 2) - now) / 86400000;
+    assert.ok(days > 0 && days <= 70, String(n));
+  }
+  assert.equal(inBuild("3807424", () => seasonEnd(new Date("2026-11-02T12:00:00Z"))).toISOString(), "2026-12-17T00:00:00.000Z");
+  for (const changelist of ["3724489", "3790078"]) {
+    assert.equal(inBuild(changelist, () => seasonEnd(new Date("2026-11-02T12:00:00Z"))).toISOString(), "2026-12-12T00:00:00.000Z");
+  }
+});
+
 test("1.8.2's catalog has BRSeasonStorefront with each offer's season level, and its calendar the season's end", async () => {
   const backend = await startBackend();
   try {

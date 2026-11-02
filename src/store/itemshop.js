@@ -4,7 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { currentBuild } from "../builds/context.js";
 import { currentEventsConfig } from "../events/events.js";
-import { athenaCosmetics, athenaDisplayAssets } from "../gamedata/athena.js";
+import { athenaCosmetics, athenaDisplayAssets, athenaSeason } from "../gamedata/athena.js";
 import { isNonShopCosmetic } from "../profiles/athena.js";
 
 // Battle Royale's item shop (Core-Backend #69). 1.8's lobby Store tab is AthenaDirectAcquisitionScreen
@@ -247,11 +247,21 @@ export function weeklyStoreEnd(now = new Date(), overrideConfig = null) {
   return dayStart(dayNumber + history.length);
 }
 
-// When the season ends, for the Season Shop's countdown (store/seasonshop.js): the end of the history's 45-day cycle, at
-// the rotation hour. The history is Season 1's shop from 30 October to its last day, 13 December 2017, so each cycle is
-// that stretch of Season 1 again and ends when the season did, the shop then starting over (Core's choice, in every
-// shop mode).
-export function seasonEnd(now = new Date(), overrideConfig = null) {
+// When the season ends, for the Season Shop's and 1.11's Battle Pass tab's countdowns (store/seasonshop.js,
+// services/fortnite/calendar.js): the end of the build's season on Epic's own schedule, replayed on the shop's clock
+// (UTC days at the rotation hour) and starting over when it ends (Core-Backend #149, Core's choice: each cycle is the
+// season again at its original length, so the countdown reads as it did on that day of the season, then resets, as the
+// shop's replay does). Season 1 (1.8 to 1.10) is the history's 45 days, 30 October to its last day, 13 December 2017
+// (the season began on 25 October, before the shop's first recorded day; it starts with the shop here so that the two
+// cycles are one and start over together). Season 2 (1.11) ran from 14 December 2017 to its last day, 21 February 2018
+// (Season 3 launched on 22 February): 70 days, its first cycle starting on the shop's day 45, when Season 1's ends.
+// An admin's customSeasonEnd overrides both, in every shop mode.
+const seasonSchedules = {
+  1: { start: "2017-10-30", end: "2017-12-14" },
+  2: { start: "2017-12-14", end: "2018-02-22" }
+};
+export const seasonOfBuild = () => athenaSeason()?.seasonNumber ?? 1;
+export function seasonEnd(now = new Date(), overrideConfig = null, season = seasonOfBuild()) {
   const custom = overrideConfig?.customSeasonEnd ?? currentEventsConfig()?.customSeasonEnd;
   if (custom) {
     const parsed = new Date(custom);
@@ -259,9 +269,12 @@ export function seasonEnd(now = new Date(), overrideConfig = null) {
   }
   const config = overrideConfig ?? currentShopConfig();
   const rotationMs = Math.max(0, Math.min(23, Number(config?.rotationHour ?? 0))) * 60 * 60 * 1000;
-  const days = Math.floor((now.getTime() - rotationMs - firstDay) / dayMs);
-  const cycle = Math.floor(days / history.length);
-  return new Date(firstDay + (cycle + 1) * history.length * dayMs + rotationMs);
+  const schedule = seasonSchedules[season] ?? seasonSchedules[1];
+  const start = Date.parse(`${schedule.start}T00:00:00Z`);
+  const length = (Date.parse(`${schedule.end}T00:00:00Z`) - start) / dayMs;
+  const days = Math.floor((now.getTime() - rotationMs - start) / dayMs);
+  const cycle = Math.floor(days / length);
+  return new Date(start + (cycle + 1) * length * dayMs + rotationMs);
 }
 
 const offerIdOf = (templateId) => `core_br_${templateId.split(":")[1].toLowerCase()}`;
