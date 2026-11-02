@@ -23,12 +23,28 @@ import { createProfileStore } from "../src/profiles/store.js";
 import { earnScore, levelStartXp, xpForLevel } from "../src/profiles/xp.js";
 import { hasEventStore } from "../src/store/eventstore.js";
 import { itemShopOffers, seasonEnd } from "../src/store/itemshop.js";
+import { dedicatedServerToken, post, send, startBackend, userLogin } from "./helpers.js";
 
 // Fortnite 2.2 (++Fortnite+Release-Cert-CL-3841827, UE 4.19, 18 January 2018): its own game data and version, still
 // Season 2 with 1.11 and 2.1, Save the World's winter event without Battle Royale's, and what its notes and data change.
 const v22 = "3841827";
 const v21 = "3825894";
 const v111 = "3807424";
+const agents = {
+  [v22]: "game=Fortnite, engine=UE4, build=++Fortnite+Release-Cert-CL-3841827",
+  [v21]: "game=Fortnite, engine=UE4, build=++Fortnite+Release-Cert-CL-3825894"
+};
+const as = (build, port, method, urlPath, token, body) => {
+  const text = body === undefined ? undefined : JSON.stringify(body);
+  const headers = { "User-Agent": agents[build], Authorization: `bearer ${token}` };
+  if (text !== undefined) Object.assign(headers, { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(text) });
+  return send({ host: "127.0.0.1", port, method, path: urlPath, headers }, text);
+};
+const command = (port, { accountId, token }, name, profileId, body, build) =>
+  as(build, port, "POST", `/fortnite/api/game/v2/profile/${accountId}/client/${name}?profileId=${profileId}&rvn=-1`, token, body ?? {});
+const updateOf = (body, profileId) => [body, ...(body.multiUpdate ?? [])].find((update) => update.profileId === profileId);
+const profileOf = async (port, player, profileId, build) =>
+  updateOf((await command(port, player, "QueryProfile", profileId, {}, build)).body, profileId).profileChanges[0].profile;
 const withStore = (fn) => {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-build22-"));
   try {
@@ -174,3 +190,38 @@ test("2.2's Commander XP is ten times 2.1's, and an account's converts on the bu
   assert.equal(base(v21), 612_901);
   assert.equal(base(v22), 6_129_010);
 }));
+
+test("2.2's \"Play matches with a friend\" counts a match whose squad had a friend in it; 1.11, 2.1 and 2.2 share Season 2's profile", async () => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-build22-test-"));
+  const backend = await startBackend({ dataDir });
+  try {
+    const [one, two, three] = await Promise.all(["friend22a", "friend22b", "friend22c"].map((name) => userLogin(backend.port, name)));
+    const friendsUrl = (id, other) => `/friends/api/public/friends/${id}/${other}`;
+    assert.equal((await post(backend.port, friendsUrl(one.accountId, two.accountId), one.token)).status, 204);
+    assert.equal((await post(backend.port, friendsUrl(two.accountId, one.accountId), two.token)).status, 204);
+    for (const player of [one, three]) {
+      await profileOf(backend.port, player, "athena", v22);
+      const session = openSession(createProfileStore(dataDir), player.accountId);
+      inBuild(v22, () => grantAthenaQuest(session.profile("athena"), "athenadaily_friend"));
+      session.commit();
+    }
+    const dedicated = await dedicatedServerToken(backend.port);
+    // A duo: one and two together (second), three with someone not their friend (fifth).
+    assert.equal((await as(v22, backend.port, "POST", "/fortnite/api/game/v2/battleroyale/recordresults", dedicated, { playlistId: 10, matchId: "build22-friends",
+      results: [{ accountId: one.accountId, place: 2, kills: 0, secondsAlive: 900 }, { accountId: two.accountId, place: 2, kills: 0, secondsAlive: 900 },
+        { accountId: three.accountId, place: 5, kills: 0, secondsAlive: 600 }] })).status, 204);
+    const friendQuest = async (player) => Object.values((await profileOf(backend.port, player, "athena", v22)).items)
+      .find((item) => item.templateId === "Quest:athenadaily_friend");
+    assert.equal((await friendQuest(one)).attributes.quest_state, "Completed");
+    assert.equal((await friendQuest(three)).attributes.completion_daily_athena_friend ?? 0, 0);
+
+    // One Season 2: a 2.1 lobby finds 2.2's level, and six emote slots.
+    const two22 = (await profileOf(backend.port, one, "athena", v22)).stats.attributes;
+    const two21 = (await profileOf(backend.port, one, "athena", v21)).stats.attributes;
+    assert.deepEqual([two21.season_num, two21.level, two21.xp], [2, two22.level, two22.xp]);
+    assert.equal((await command(backend.port, one, "EquipBattleRoyaleCustomization", "athena", { slotName: "Dance", itemToSlot: "", indexWithinSlot: 5 }, v22)).status, 200);
+    assert.equal((await profileOf(backend.port, one, "athena", v22)).stats.attributes.favorite_dance.length, 6);
+  } finally {
+    await backend.close();
+  }
+});

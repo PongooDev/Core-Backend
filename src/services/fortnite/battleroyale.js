@@ -139,6 +139,15 @@ export function battleRoyaleRoutes(context) {
     if (namesAthenaBuild() || !session.hasProfile("athena")) return seasonNumber();
     return profileSeason(session.profile("athena").profile);
   };
+  // The player's friends in their squad, for 2.2's "Play matches with a friend" (profiles/athena.js): the report names no
+  // teams, but a team's players share its place (CoreV2 gives those who left before it was out the team's), so in a
+  // playlist of teams, the others of the report with the player's place are their squad (🟡).
+  const soloPlaylist = 2;
+  const squadFriendsOf = (playlistId, results, accountId, place) => {
+    if (playlistId === soloPlaylist || !context.friends) return 0;
+    const friends = new Set(context.friends.accepted(accountId));
+    return results.filter((other) => other?.accountId !== accountId && other?.place === place && friends.has(other.accountId)).length;
+  };
   router.post("/fortnite/api/game/v2/battleroyale/recordresults", auth, (req, res) => {
     const playlistId = playlistOf(req.body);
     const results = Array.isArray(req.body?.results) && Number.isInteger(playlistId) && playlistId > 0 ? req.body.results : [];
@@ -168,7 +177,7 @@ export function battleRoyaleRoutes(context) {
       const progress = () => {
         // The match's XP and challenges count in its build's season, whichever lobby opened the profile last.
         takeUpSeason(session);
-        recordMatchProgress(session, playlistId, { place, kills });
+        recordMatchProgress(session, playlistId, { place, kills, squadFriends: squadFriendsOf(playlistId, results, result.accountId, place) });
         // 1.11's Battle Pass adds its match XP boost (profiles/seasons.js).
         addSeasonXp(session, boostedMatchXp(session, earnedXp));
         if (place === 1 && isMainPlaylist(playlistId)) awardVictory(session);

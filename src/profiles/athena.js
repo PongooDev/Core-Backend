@@ -434,7 +434,7 @@ export function umbrellaTypeOf(accountId, hasWon, settings) {
   return founder ? "founder_glider" : null;
 }
 
-// From 1.11 (CL-3807424; 2.1 too) the locker has six emote slots (Emote 1 to Emote 6): EquipBattleRoyaleCustomization's indexWithinSlot
+// From 1.11 (CL-3807424; 2.1 and 2.2 too) the locker has six emote slots (Emote 1 to Emote 6): EquipBattleRoyaleCustomization's indexWithinSlot
 // (UFortMcpProfileAthena::EquipBattleRoyaleCustomization(SlotName, ItemToSlot, indexWithinSlot)) names the one, and the
 // loadout's emotes are a list (FFortAthenaLoadout Dances, a TArray<UAthenaDanceItemDefinition*>), so favorite_dance is
 // the six emotes' ids, "" for an empty slot, as Epic's athena profiles kept it from Season 2 on. 1.8 to 1.10 keep the one
@@ -682,20 +682,25 @@ function countedFromResults(stat) {
   return row?.type === "AthenaRank" || (row?.type === "Kill" && row.sourceTags === "Homebase.Class");
 }
 
-function rankMet(condition, place) {
-  const match = /Athena\.Rank\s*(<=|==|>=|<|>)\s*(\d+)/i.exec(condition ?? "");
+// An AthenaRank row's condition: the match's place (Athena.Rank <=25) or, from 2.2's "Play matches with a friend"
+// (AthenaDaily_Friend's complete_athena_friend, SquadFriend.Count > 0), how many of the player's friends were in their
+// squad (squadFriends, battleroyale/recordresults).
+const conditionValues = { "athena.rank": "place", "squadfriend.count": "squadFriends" };
+function conditionMet(condition, values) {
+  const match = /(Athena\.Rank|SquadFriend\.Count)\s*(<=|==|>=|<|>)\s*(\d+)/i.exec(condition ?? "");
   if (!match) return true;
-  const target = Number(match[2]);
-  return { "<=": place <= target, "==": place === target, ">=": place >= target, "<": place < target, ">": place > target }[match[1]];
+  const value = values[conditionValues[match[1].toLowerCase()]] ?? 0;
+  const target = Number(match[3]);
+  return { "<=": value <= target, "==": value === target, ">=": value >= target, "<": value < target, ">": value > target }[match[2]];
 }
 
-export function recordMatchProgress(session, playlistId, { place, kills }) {
+export function recordMatchProgress(session, playlistId, { place, kills, squadFriends = 0 }) {
   const tag = playlistTags[playlistId] ?? "athena.playlist";
   for (const { itemId, quest } of activeQuests(session.profile("athena"))) {
     for (const objective of quest.objectives) {
       const row = countedFromResults(objective.stat) && athenaObjectiveStat(objective.stat);
       if (!row || !tagMatches(row.contextTags, tag)) continue;
-      const count = row.type === "AthenaRank" ? (rankMet(row.condition, place) ? 1 : 0) : kills;
+      const count = row.type === "AthenaRank" ? (conditionMet(row.condition, { place, squadFriends }) ? 1 : 0) : kills;
       if (count > 0 && session.profile("athena").profile.items[itemId]?.attributes.quest_state === "Active") addProgress(session, itemId, objective, count);
     }
   }
