@@ -71,7 +71,8 @@ export function parseBucket(bucketId) {
 // <GameId>:<AppId>:<BuildId>:<HotfixVersion>:<RegionId>:<PlaylistId>[:<GroupId>:<PoolId>:<SplitId>]. Given the players'
 // own four ("<netcl>:0:<region>:<playlistId>"), it kept its PlaylistId of -1 ("HandleAssignMatchMessage invalid playlist
 // id -1"), so every match started on the server's own playlist: a 50v50 queue played a solo match. 1.10 and earlier read
-// the four fields as they are. GameId and AppId are only logged; the region the server keeps is field 4.
+// the four fields as they are. GameId and AppId are only logged; the region the server keeps is field 4. Later builds
+// (2.1, CL-3825894) take the six fields too.
 export const sixFieldAssignBuild = 3807424;
 const assignGameId = "Fortnite";
 const assignAppId = "Fortnite";

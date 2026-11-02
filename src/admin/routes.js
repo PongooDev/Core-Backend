@@ -1000,7 +1000,8 @@ export function adminRoutes(context) {
       { version: "1.8 – 1.9", cl: 3724489, event: "Fortnitemares" },
       { version: "1.9.1", cl: 3775276, event: "Mutant Storms" },
       { version: "1.10", cl: 3790078, event: "Mutant Storms" },
-      { version: "1.11", cl: 3807424, event: "Survive the Holidays" }
+      { version: "1.11", cl: 3807424, event: "Survive the Holidays" },
+      { version: "2.1", cl: 3825894, event: "Survive the Holidays" }
     ];
 
     const sampleBuilds = builds.map((b) => ({
@@ -1071,14 +1072,14 @@ export function adminRoutes(context) {
           id: "winter2017",
           name: "Survive the Holidays",
           subtitle: "Mini-Boss Mission Alerts & Holiday Survival",
-          buildRange: "1.11 (CL 3807424)",
+          buildRange: "1.11 & 2.1 (CL 3807424 – 3825894)",
           flags: ["EventFlag.Winter2017", "EventFlag.PassiveStorms"],
           theater: "Standard Zones with Mini-Boss Alerts",
           alertsQuota: "10 Mini-Boss mission alerts and 4 storms (no tickets) per day",
           currency: "Snowflake Tickets (AccountResource:eventcurrency_snowballs)",
           llama: "Holiday Survival Llama (CardPack_Event_2017_Winter, 1000 Snowflake Tickets)",
           questsCount: 26,
-          leftoverConversion: "1000 unspent Storm Tickets convert to 1 Vindertech Llama on 1.11 load"
+          leftoverConversion: "1000 unspent Storm Tickets convert to 1 Vindertech Llama on 1.11+ load"
         }
       ]
     });
@@ -1151,10 +1152,11 @@ export function adminRoutes(context) {
     res.json({ success: true, resetProfiles });
   });
 
-  // ?season=2: 1.11's Battle Pass (battlepass/season2.js): its prices and its tiers' rewards, from 1.11's data.
+  // ?season=2: Season 2's Battle Pass (1.11 and 2.1, battlepass/season2.js): its prices and its tiers' rewards, from the
+  // season's newest data (profiles/seasons.js buildOfSeason).
   const availableSeasons = [
     { id: 1, name: "Season 1 (1.8 – 1.10)", range: "1.8 – 1.10", active: true },
-    { id: 2, name: "Season 2 (1.11)", range: "1.11", active: true }
+    { id: 2, name: "Season 2 (1.11 – 2.1)", range: "1.11 – 2.1", active: true }
   ];
   router.get("/admin/api/battlepass/overview", (req, res) => {
     const s = settings?.get?.() ?? {};
@@ -1166,7 +1168,7 @@ export function adminRoutes(context) {
     if (String(req.query.season) === "2") {
       return res.json(inBuild(buildOfSeason(2), () => ({
         season: 2,
-        seasonName: "Season 2 (1.11)",
+        seasonName: "Season 2 (1.11 – 2.1)",
         availableSeasons,
         seasonEnd: seasonEnds(2),
         config: { ...seasonTwoConfig(), tierPrice, bundleTiers, xpMultiplier: bpConfig.xpMultiplier ?? 1 },

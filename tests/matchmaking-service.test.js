@@ -357,6 +357,8 @@ test("a 50v50 match's parties are shared out over its two teams, a No Fill party
 // Region:Playlist); given the players' four it kept playlist -1 and played 50v50 queues as solo matches.
 test("a 1.11 server's AssignMatch names 50v50's playlist in its six-field bucket; 1.10's keeps the players' four", async () => {
   assert.equal(assignmentBucket("3807424:0:NA:11", "3807424"), "Fortnite:Fortnite:3807424:0:NA:11");
+  // 2.1 (CL-3825894) as 1.11.
+  assert.equal(assignmentBucket("3825894:0:NA:11", "3825894"), "Fortnite:Fortnite:3825894:0:NA:11");
   assert.equal(assignmentBucket("3790078:0:NA:11", "3790078"), "3790078:0:NA:11");
   assert.equal(assignmentBucket("858118782:0:NA:2", null), "858118782:0:NA:2");
   const agentOf = (build) => `game=Fortnite, engine=UE4, build=++Fortnite+Release-Cert-CL-${build}`;

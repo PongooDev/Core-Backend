@@ -8,7 +8,8 @@ import { findItem } from "./items.js";
 import { grant } from "./progress.js";
 
 // Battle Royale's seasons (Core-Backend #145). 1.8 to 1.10 are Season 1; 1.11 (CL-3807424) is Season 2, which starts every
-// player again at level 1 with a Battle Pass, as Epic's did when Season 1 ended on 13 December 2017.
+// player again at level 1 with a Battle Pass, as Epic's did when Season 1 ended on 13 December 2017. 2.1 (CL-3825894, 10
+// January 2018) is still Season 2: its AthenaSeason2 is 1.11's, so the two share one Season 2 level and Battle Pass.
 //
 // 1.11's athena profile stats (the client's UFortMcpProfileAthena reads them by name: season_num, level, xp,
 // accountLevel, book_level, book_xp, book_purchased, season_match_boost, season_friend_match_boost, lifetime_wins):

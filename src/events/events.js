@@ -49,15 +49,20 @@ export const passiveStorms = "EventFlag.PassiveStorms";
 export const lobbyWinterDecor = "EventFlag.LobbyWinterDecor";
 export const winterBattleBus = "EventFlag.WinterBattleBus";
 
+// 2.1 (CL-3825894, 10 January 2018) keeps all of 1.11's events: its data has the same mission alerts, quests, event
+// items and playlists, and its notes end none of them. The next update ended them: 2.2.0's notes end the Battle Royale
+// Winter event on 18 January (and remove "the winter theme from the pre-game lobby"), and "The Save the World winter
+// event has been extended until January 24".
+
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
   { name: mutantStorms, flag: "EventFlag.Vindertech", firstBuild: 3775276, lastBuild: 3775276 },
   { name: mutantStorms, flag: "EventFlag.ActiveStorms", firstBuild: 3790078, lastBuild: 3790078 },
-  { name: fiftyFifty, flag: fiftyFifty, firstBuild: 3790078, lastBuild: 3807424 },
-  { name: winter2017, flag: winter2017, firstBuild: 3807424, lastBuild: 3807424 },
-  { name: passiveStorms, flag: passiveStorms, firstBuild: 3807424, lastBuild: 3807424 },
-  { name: lobbyWinterDecor, flag: lobbyWinterDecor, firstBuild: 3807424, lastBuild: 3807424 },
-  { name: winterBattleBus, flag: winterBattleBus, firstBuild: 3807424, lastBuild: 3807424 }
+  { name: fiftyFifty, flag: fiftyFifty, firstBuild: 3790078, lastBuild: 3825894 },
+  { name: winter2017, flag: winter2017, firstBuild: 3807424, lastBuild: 3825894 },
+  { name: passiveStorms, flag: passiveStorms, firstBuild: 3807424, lastBuild: 3825894 },
+  { name: lobbyWinterDecor, flag: lobbyWinterDecor, firstBuild: 3807424, lastBuild: 3825894 },
+  { name: winterBattleBus, flag: winterBattleBus, firstBuild: 3807424, lastBuild: 3825894 }
 ];
 
 const runsOn = (event, number) => number >= event.firstBuild && number <= event.lastBuild;
@@ -83,7 +88,7 @@ export function activeEventFlags(changelist = currentBuild()) {
   if (eventsSetting.getStore() === false) return [];
   const config = currentEventsConfig();
   if (config?.mode === "off") return [];
-  // Forcing a Save the World event leaves the build's Battle Royale 50v50 running (1.10, 1.11).
+  // Forcing a Save the World event leaves the build's Battle Royale 50v50 running (1.10 to 2.1).
   const fiftyFiftyFlags = Number.isInteger(Number(changelist)) && runsOn(events.find((event) => event.name === fiftyFifty), Number(changelist))
     ? [fiftyFifty] : [];
   if (config?.mode === "force_fortnitemares") return [fortnitemares, ...fiftyFiftyFlags];
