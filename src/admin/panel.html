@@ -1805,6 +1805,7 @@
       view: "dashboard", accounts: [], account: null, accountId: null, tab: "overview", inventoryProfile: "items",
       inventoryCategory: "", inventorySearch: "", inventoryPage: 0, inventoryGrouped: null, catalog: { search: "", category: "", items: [], categories: [], picked: null },
       logs: [], logAfter: 0, logPaused: false, logFilter: "", logCategory: "", timers: [],
+      eventsSeason: null, battlePassSeason: null, shopSeason: null,
       codeCreator: { code: "", note: "", maxUses: 1, expiresAt: "", vbucks: 0, foundersEdition: 0, campaignAccess: false, items: [], showForm: false }
     };
 
@@ -1860,16 +1861,69 @@
       stormshields: "Storm shields", skilltree: "Skill tree", banners: "Banners", quests: "Quests", world: "Backpack and storage", other: "Other"
     };
     const kindLabel = (key) => kinds[key] ?? key;
-    const seasonSelector = (selected = "1", onchange) => el("div", { class: "season-picker", style: "display:inline-flex; align-items:center; gap:8px;" },
-      el("span", { class: "muted font-semibold", style: "font-size:12px; letter-spacing:0.02em; text-transform:uppercase;", text: "Season:" }),
-      el("select", {
-        class: "field font-semibold",
-        style: "font-size:13px; font-weight:700; padding:4px 10px; border-radius:var(--radius-sm); background:var(--surface-2); border:1px solid var(--line); color:var(--text); cursor:pointer;",
-        onchange: (e) => onchange?.(e.target.value)
+    const seasonBreadcrumb = (parentHash, parentLabel, currentSeasonLabel) => el("div", {
+      class: "season-breadcrumb",
+      style: "display:flex; align-items:center; gap:8px; margin-bottom:14px;"
+    },
+      el("a", {
+        href: parentHash,
+        class: "btn ghost small",
+        style: "display:inline-flex; align-items:center; gap:6px; padding:4px 10px; font-weight:600; text-decoration:none;"
+      }, icon("chevron-left", 14), el("span", { text: parentLabel })),
+      el("span", { class: "muted", style: "font-size:12px;" }, "/"),
+      el("span", { class: "font-semibold text-accent", style: "font-size:12px;" }, currentSeasonLabel)
+    );
+
+    const seasonHubCards = (cards) => el("div", {
+      class: "season-cards-list",
+      style: "display:flex; flex-direction:column; gap:12px; margin:16px 0 24px;"
+    },
+      cards.map((c) => el("div", {
+        class: "season-card",
+        role: "button",
+        tabindex: "0",
+        style: "display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 20px; border-radius:var(--radius-sm); cursor:pointer; background:var(--surface); border:1px solid var(--line); transition:all .15s ease; user-select:none;",
+        onmouseenter: (e) => {
+          e.currentTarget.style.borderColor = "var(--accent, var(--blue))";
+          e.currentTarget.style.background = "var(--surface-2)";
+          const arrow = e.currentTarget.querySelector(".season-card-arrow");
+          if (arrow) arrow.style.color = "var(--accent, var(--blue))";
+        },
+        onmouseleave: (e) => {
+          e.currentTarget.style.borderColor = "var(--line)";
+          e.currentTarget.style.background = "var(--surface)";
+          const arrow = e.currentTarget.querySelector(".season-card-arrow");
+          if (arrow) arrow.style.color = "var(--muted)";
+        },
+        onclick: () => {
+          location.hash = c.hash;
+        },
+        onkeydown: (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            location.hash = c.hash;
+          }
+        }
       },
-        el("option", { value: "1", text: "Season 1 (1.8 – 1.10)", selected: String(selected) === "1" }),
-        el("option", { value: "2", text: "Season 2 (1.11 – 2.5)", selected: String(selected) === "2" })
-      )
+        el("div", { style: "min-width:0;" },
+          el("div", {
+            style: "font-size:15px; font-weight:700; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;",
+            text: c.title
+          }),
+          c.desc ? el("div", {
+            class: "muted",
+            style: "font-size:13px; margin-top:3px; line-height:1.4;",
+            text: c.desc
+          }) : null
+        ),
+        el("div", { style: "display:flex; align-items:center; gap:12px; flex-shrink:0;" },
+          c.badge ? chip(c.badge, "ghost") : null,
+          el("span", {
+            class: "season-card-arrow",
+            style: "display:inline-flex; align-items:center; color:var(--muted); transition:color .15s ease;"
+          }, icon("chevron-right", 18))
+        )
+      ))
     );
 
     const icon = (name, size = 16) => {
@@ -1886,6 +1940,12 @@
       svg.style.flexShrink = "0";
 
       const iconPaths = {
+        "chevron-right": [
+          { tag: "path", d: "m9 18 6-6-6-6" }
+        ],
+        "chevron-left": [
+          { tag: "path", d: "m15 18-6-6 6-6" }
+        ],
         castle: [
           { tag: "path", d: "M22 20v-9H2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2Z" },
           { tag: "path", d: "M18 11V4H6v7" },
@@ -2794,7 +2854,37 @@
         if (tab) state.tab = tab;
       }
       if (state.view === "shop") {
-        state.shopFolder = accountId || "shop";
+        if (accountId === "season1" || accountId === "1") {
+          state.shopSeason = "1";
+          state.shopFolder = "shop";
+        } else if (accountId === "season2" || accountId === "2") {
+          state.shopSeason = "2";
+          state.shopFolder = "shop";
+        } else if (accountId && accountId !== "shop") {
+          state.shopFolder = accountId;
+          state.shopSeason = null;
+        } else {
+          state.shopFolder = "shop";
+          state.shopSeason = null;
+        }
+      }
+      if (state.view === "battlepass") {
+        if (accountId === "season1" || accountId === "1") {
+          state.battlePassSeason = "1";
+        } else if (accountId === "season2" || accountId === "2") {
+          state.battlePassSeason = "2";
+        } else {
+          state.battlePassSeason = null;
+        }
+      }
+      if (state.view === "events") {
+        if (accountId === "season1" || accountId === "1") {
+          state.eventsSeason = "1";
+        } else if (accountId === "season2" || accountId === "2") {
+          state.eventsSeason = "2";
+        } else {
+          state.eventsSeason = null;
+        }
       }
       if (state.view === "reports") {
         state.reportId = accountId || null;
@@ -4491,9 +4581,19 @@
     }
 
     /* ---------- shop ---------- */
+    const pickShopSeason = (season) => {
+      state.shopSeason = String(season);
+      if (location.hash !== `#/shop/season${season}`) {
+        location.hash = `#/shop/season${season}`;
+      } else {
+        showShop();
+      }
+    };
+
     async function showShop() {
+      const currentShopSeason = state.shopSeason === "2" ? "2" : "1";
       const [shop, codes, folders] = await Promise.all([
-        act(api("/admin/api/shop")),
+        act(api(`/admin/api/shop?season=${currentShopSeason}`)),
         api("/admin/api/codes?type=promotional").catch(() => []),
         api("/admin/api/code-folders").catch(() => [])
       ]);
@@ -4564,6 +4664,32 @@
           }, "primary small")
         )
       );
+
+      if (currentSub === "shop" && !state.shopSeason) {
+        // Item Shop Hub: display rectangular season cards (no options underneath)
+        $("view").replaceChildren(
+          el("div", { class: "view-head" },
+            el("div", {},
+              el("h1", { text: "Item Shop", style: "margin:0 0 4px;" }),
+              el("div", { class: "muted", text: "Configure Battle Royale's Store tab (Athena Direct Acquisition) by season, or manage promotional reward codes." })),
+            el("div", { class: "actions" },
+              btn("Refresh", showShop, "ghost"))),
+          topSubtabs,
+          seasonHubCards([
+            {
+              title: "Season 1: Item Shop (1.8 – 1.10)",
+              badge: "45 Days",
+              hash: "#/shop/season1"
+            },
+            {
+              title: "Season 2: Item Shop (1.11 – 2.5)",
+              badge: "70 Days",
+              hash: "#/shop/season2"
+            }
+          ])
+        );
+        return;
+      }
 
       // --- SECTION A: PROMOTIONAL & REWARD CODES MANAGER ---
       let displayedCodes = [];
@@ -4949,7 +5075,7 @@
       const saveTimingBtn = btn("Save Timing Settings", async () => {
         const h = parseInt(rotationHourSelect.value, 10);
         const d = Math.max(1, Math.min(30, parseInt(weeklyDurationInput.value, 10) || 7));
-        const res = await act(api("/admin/api/shop", { rotationHour: h, weeklyDurationDays: d }), "Shop timing settings saved");
+        const res = await act(api("/admin/api/shop", { season: currentShopSeason, rotationHour: h, weeklyDurationDays: d }), "Shop timing settings saved");
         if (res) showShop();
       }, "primary");
 
@@ -4960,7 +5086,7 @@
           confirmKind: "danger"
         })) {
           state.customShop = null;
-          const res = await act(api("/admin/api/shop/reset", {}), "Shop settings reset to defaults");
+          const res = await act(api("/admin/api/shop/reset", { season: currentShopSeason }), "Shop settings reset to defaults");
           if (res) showShop();
         }
       }, "ghost");
@@ -4993,7 +5119,7 @@
 
       const switchMode = async (newMode) => {
         if (newMode === activeMode) return;
-        const payload = { mode: newMode };
+        const payload = { season: currentShopSeason, mode: newMode };
         if (newMode === "custom") payload.custom = state.customShop;
         const res = await act(api("/admin/api/shop", payload), `Switched to ${newMode === "fnbr" ? "FNBR history" : newMode === "random" ? "randomized" : "custom"} shop`);
         if (res) showShop();
@@ -5008,224 +5134,110 @@
         }, el("span", { text: label })))
       );
 
-      // Modal cosmetic picker
-      function openCosmeticPicker(onSelect, isFeatured = false) {
+      // Modal cosmetic picker with colored cards
+      function openCosmeticPicker(onSelect) {
         let filterCategory = "";
         let searchQuery = "";
 
         const existing = document.getElementById("cosmetic-picker-modal");
         if (existing) existing.remove();
 
-        const allItems = shop.availableCosmetics || [];
-        let selectedItem = allItems[0] || null;
-
-        // Category filter
-        const categorySelect = el("select", {
-          class: "field",
-          style: "width:130px; flex:none;",
-          onchange: (e) => {
-            filterCategory = e.target.value;
-            updateOptions();
-          }
-        },
-          el("option", { value: "", text: "All Types" }),
-          el("option", { value: "Outfit", text: "Outfits" }),
-          el("option", { value: "Glider", text: "Gliders" }),
-          el("option", { value: "Pickaxe", text: "Pickaxes" }),
-          el("option", { value: "Emote", text: "Emotes" })
-        );
-
-        // Search input
         const searchInput = el("input", {
-          type: "search",
           class: "field",
-          placeholder: "Search by name or ID…",
-          style: "flex:1 1 auto;",
-          oninput: (e) => {
-            searchQuery = e.target.value.trim().toLowerCase();
-            updateOptions();
-          }
+          placeholder: "Search cosmetics by name or ID…",
+          style: "width:100%;"
         });
 
-        // Cosmetic select listbox
-        const itemSelect = el("select", {
-          class: "field",
-          size: 7,
-          style: "width:100%; font-family:var(--font); padding:4px 6px; line-height:1.5; font-size:13px;",
-          onchange: () => {
-            const chosen = allItems.find((c) => c.templateId === itemSelect.value);
-            if (chosen) selectCosmetic(chosen);
-          },
-          ondblclick: () => {
-            submit();
-          }
+        const listContainer = el("div", {
+          class: "grid",
+          style: "grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:14px; max-height:60vh; min-height:360px; overflow-y:auto; margin-top:14px; padding-right:4px;"
         });
 
-        // Price input
-        const priceInput = el("input", {
-          type: "number",
-          class: "field num",
-          min: "0",
-          max: "100000",
-          step: "50",
-          value: String(selectedItem?.defaultPrice ?? 1000),
-          style: "width:100%; font-size:14px;"
-        });
-
-        // Selected preview chip container
-        const previewContainer = el("div", {
-          style: "display:flex; align-items:center; gap:10px; margin-top:8px; padding:8px 12px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
-        });
-
-        function selectCosmetic(item) {
-          selectedItem = item;
-          const code = toRarityCode(item.rarity, item.rarityCode);
-          previewContainer.replaceChildren(
-            chip(item.rarity, code),
-            el("div", { style: "min-width:0; flex:1 1 auto;" },
-              el("strong", { style: "display:block; color:#fff; font-size:13px; line-height:1.2; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;", text: item.name }),
-              el("div", { class: "mono muted", style: "font-size:11px; margin-top:2px;", text: item.templateId })
-            ),
-            el("span", { class: "muted", style: "font-size:12px; flex:none;", text: `Default: ${fmt(item.defaultPrice)} V-B` })
-          );
-          priceInput.value = String(item.defaultPrice);
-          errorMsg.style.display = "none";
-        }
-
-        function updateOptions() {
-          const filtered = allItems.filter((c) => {
+        const renderList = () => {
+          const query = searchQuery.trim().toLowerCase();
+          const items = (shop.availableCosmetics || []).filter((c) => {
             if (filterCategory && c.type !== filterCategory) return false;
-            if (searchQuery && !c.name.toLowerCase().includes(searchQuery) && !c.templateId.toLowerCase().includes(searchQuery)) return false;
+            if (query && !c.name.toLowerCase().includes(query) && !c.templateId.toLowerCase().includes(query)) return false;
             return true;
           });
 
-          itemSelect.replaceChildren(
-            ...filtered.map((c) => el("option", {
-              value: c.templateId,
-              text: `${c.name} (${c.type || "Cosmetic"}, ${c.rarity}) — ${fmt(c.defaultPrice)} V-Bucks`,
-              selected: selectedItem && c.templateId === selectedItem.templateId
-            }))
+          listContainer.replaceChildren(
+            ...items.map((c) => {
+              const code = c.rarityCode || toRarityCode(c.rarity, c.rarityCode);
+              return el("button", {
+                type: "button",
+                class: `card ${code}`,
+                style: "cursor:pointer; padding:16px 18px; min-height:115px; display:flex; flex-direction:column; justify-content:space-between; text-align:left; background:var(--surface-2);",
+                onclick: () => {
+                  close();
+                  onSelect(c, c.defaultPrice);
+                }
+              },
+                el("div", {},
+                  el("div", { class: "k", text: c.type || "Cosmetic" }),
+                  el("div", { class: "t", style: "font-weight:700; font-size:15px; line-height:1.3; color:#fff;", text: c.name }),
+                  el("div", { class: "s mono muted", style: "font-size:11px; margin-top:4px;", text: c.templateId })),
+                el("div", { style: "display:flex; justify-content:space-between; align-items:center; margin-top:12px; border-top:1px solid var(--line); padding-top:8px;" },
+                  chip(c.rarity, code),
+                  el("span", { class: "mono", style: "color:var(--amber); font-weight:700; font-size:13px;", text: `${fmt(c.defaultPrice)} V-Bucks` })
+                )
+              );
+            })
           );
-
-          if (filtered.length > 0) {
-            if (!selectedItem || !filtered.some((c) => c.templateId === selectedItem.templateId)) {
-              selectCosmetic(filtered[0]);
-              itemSelect.value = filtered[0].templateId;
-            }
-          } else {
-            previewContainer.replaceChildren(
-              el("span", { class: "muted", style: "font-size:12px;", text: "No cosmetics match your search." })
-            );
+          if (!items.length) {
+            listContainer.replaceChildren(el("div", { class: "empty", text: "No cosmetics match." }));
           }
-        }
+        };
 
-        const errorMsg = el("div", {
-          style: "color:var(--bad); font-size:12px; font-weight:600; margin-top:8px; display:none;"
+        searchInput.addEventListener("input", (e) => {
+          searchQuery = e.target.value;
+          renderList();
         });
 
-        function close() {
-          window.removeEventListener("keydown", onKeyDown);
+        const categories = ["", ...Array.from(new Set((shop.availableCosmetics || []).map((c) => c.type).filter(Boolean)))];
+        const filterChips = el("div", { class: "actions", style: "gap:6px; margin-top:10px; flex-wrap:wrap;" },
+          categories.map((cat) => el("button", {
+            type: "button",
+            class: `chip ${filterCategory === cat ? "good" : ""}`,
+            style: "cursor:pointer; border:none; outline:none; box-shadow:none;",
+            onclick: () => {
+              filterCategory = cat;
+              renderList();
+              for (const b of filterChips.children) {
+                b.className = `chip ${b.dataset.cat === filterCategory ? "good" : ""}`;
+              }
+            },
+            "data-cat": cat,
+            text: cat || "All"
+          }))
+        );
+
+        const close = () => {
           backdrop.classList.remove("show");
-          setTimeout(() => backdrop.remove(), 160);
-        }
+          setTimeout(() => backdrop.remove(), 150);
+        };
 
-        function onKeyDown(e) {
-          if (e.key === "Escape") {
-            e.preventDefault();
-            close();
-          }
-        }
-
-        function submit() {
-          if (!selectedItem) {
-            errorMsg.textContent = "Please select a cosmetic from the list.";
-            errorMsg.style.display = "block";
-            return;
-          }
-          const price = Math.max(0, parseInt(priceInput.value, 10) || 0);
-          close();
-          onSelect(selectedItem, price);
-        }
-
-        const cancelBtn = btn("Cancel", close, "ghost");
-        const submitBtn = btn(isFeatured ? "Add to Featured" : "Add to Daily", submit, "primary");
-
-        searchInput.addEventListener("keydown", (e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            if (selectedItem) submit();
-          }
-        });
-
-        itemSelect.addEventListener("keydown", (e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            if (selectedItem) submit();
-          }
-        });
-
-        priceInput.addEventListener("keydown", (e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            submit();
-          }
-        });
-
-        const dialog = el("div", {
-          class: "modal-dialog",
-          style: "max-width:480px;",
-          onclick: (e) => e.stopPropagation()
-        },
+        const dialog = el("div", { class: "modal-dialog", style: "max-width:960px; width:92vw; max-height:90vh; display:flex; flex-direction:column;", onclick: (e) => e.stopPropagation() },
           el("div", { class: "panel-head", style: "margin-bottom:8px;" },
-            el("h2", { text: isFeatured ? "Choose a Cosmetic (Featured)" : "Choose a Cosmetic (Daily)" }),
-            el("button", {
-              type: "button",
-              class: "btn ghost",
-              style: "min-height:28px; padding:0 8px; font-size:14px; border:none;",
-              text: "✕",
-              onclick: close
-            })),
-          el("p", { class: "note", text: "Select a cosmetic item and specify its price in V-Bucks for the Battle Royale storefront." }),
-          el("div", { class: "field-wrap", style: "margin-bottom:12px;" },
-            el("label", { text: "Search & Filter Cosmetics" }),
-            el("div", { style: "display:flex; gap:8px; align-items:center;" },
-              categorySelect,
-              searchInput
-            )
-          ),
-          el("div", { class: "field-wrap", style: "margin-bottom:14px;" },
-            el("label", { text: "Select Cosmetic" }),
-            itemSelect,
-            previewContainer
-          ),
-          el("div", { class: "field-wrap", style: "margin-bottom:18px;" },
-            el("label", { text: "Price (V-Bucks)" }),
-            priceInput,
-            errorMsg
-          ),
-          el("div", { class: "actions" },
-            cancelBtn,
-            submitBtn
-          )
+            el("h2", { text: "Choose a Cosmetic" }),
+            el("button", { type: "button", class: "btn ghost", style: "min-height:28px; padding:0 8px; border:none;", text: "✕", onclick: close })),
+          el("p", { class: "note", text: "Select a cosmetic item to add to the shop." }),
+          searchInput,
+          filterChips,
+          listContainer
         );
 
         const backdrop = el("div", {
           id: "cosmetic-picker-modal",
           class: "modal-backdrop",
-          onclick: (e) => {
-            if (e.target === backdrop) close();
-          }
+          onclick: (e) => { if (e.target === backdrop) close(); }
         }, dialog);
 
         document.body.append(backdrop);
-        window.addEventListener("keydown", onKeyDown);
         requestAnimationFrame(() => {
           backdrop.classList.add("show");
-          if (allItems.length > 0) {
-            selectCosmetic(allItems[0]);
-            updateOptions();
-          }
           searchInput.focus();
+          renderList();
         });
       }
 
@@ -5234,12 +5246,12 @@
       if (activeMode === "fnbr") {
         configSection = el("section", { class: "panel" },
           el("div", { class: "panel-head" },
-            el("h2", { text: "Historical Item Shop (Season 1)" }),
+            el("h2", { text: `Historical Item Shop (Season ${currentShopSeason})` }),
             chip("Active Mode", "good")),
-          el("p", { class: "note", text: "The item shop displays the authentic daily and weekly item shop offers from Fortnite Season 1 (matching 2017 rotation cycles)." }),
+          el("p", { class: "note", text: `The item shop displays the authentic daily and weekly item shop offers from Fortnite Season ${currentShopSeason} (${currentShopSeason === "2" ? "70" : "45"}-day rotation cycle).` }),
           el("div", { class: "actions", style: "margin-top:14px;" },
             btn("Randomize Once", async () => {
-              const res = await act(api("/admin/api/shop/randomize", {}), "Item shop randomized!");
+              const res = await act(api("/admin/api/shop/randomize", { season: currentShopSeason }), "Item shop randomized!");
               if (res) showShop();
             }, "primary small"),
             btn("Switch to Custom Shop Builder", () => switchMode("custom"), "ghost small"))
@@ -5322,7 +5334,7 @@
         }, "ghost small");
 
         const saveCustomBtn = btn("Apply Custom Shop Changes", async () => {
-          const res = await act(api("/admin/api/shop", { mode: "custom", custom }), "Custom shop updated and applied to game!");
+          const res = await act(api("/admin/api/shop", { season: currentShopSeason, mode: "custom", custom }), "Custom shop updated and applied to game!");
           if (res) showShop();
         }, "primary");
 
@@ -5383,9 +5395,9 @@
 
       const previewSection = el("section", { class: "panel", style: "margin-top:20px;" },
         el("div", { class: "panel-head" },
-          el("h2", { text: "Live In-Game Shop Preview" }),
+          el("h2", { text: `Live In-Game Shop Preview (Season ${currentShopSeason})` }),
           chip(`Rotates at ${shop.rotationHour ?? 0}:00 UTC`, "sky")),
-        el("p", { class: "note", text: "This is the current live shop displayed to players on 1.8+ in the Battle Royale Store tab." }),
+        el("p", { class: "note", text: `This is the current live shop displayed to players on ${currentShopSeason === "2" ? "1.11+" : "1.8+"} in the Battle Royale Store tab.` }),
 
         el("div", { style: "margin-top:14px;" },
           el("h3", { text: `Featured Items (${liveFeatured.length})`, style: "font-size:14px; margin-bottom:8px; color:var(--muted);" }),
@@ -5403,25 +5415,47 @@
       );
 
       // Render the selected view cleanly!
-      $("view").replaceChildren(
-        el("div", { class: "view-head" },
-          el("div", {},
-            el("h1", { text: currentSub === "shop" ? "Item Shop" : currentSub === "archived-codes" ? "Archived Codes" : `${folderList.find((f) => f.slug === currentSub)?.name || "Promotional"} Codes` }),
-            el("div", { class: "muted", text: currentSub === "shop"
-              ? "Configure Battle Royale's Store tab (Athena Direct Acquisition) for 1.8+ builds."
-              : currentSub === "archived-codes"
-              ? "Archived promotional codes that have been fully redeemed or have expired."
-              : "Manage promotional reward codes. Players redeem codes on the web portal to receive rewards." })),
-          el("div", { class: "actions" },
-            btn("Refresh", showShop, "ghost"))),
-        topSubtabs,
-        ...(currentSub === "shop"
-          ? [timingSettingsSection, modePicker, configSection, previewSection]
-          : [codesSection])
-      );
+      if (currentSub === "shop") {
+        $("view").replaceChildren(
+          seasonBreadcrumb("#/shop", "Item Shop", currentShopSeason === "2" ? "Season 2 (1.11 – 2.5)" : "Season 1 (1.8 – 1.10)"),
+          el("div", { class: "view-head" },
+            el("div", {},
+              el("h1", { text: "Item Shop", style: "margin:0 0 4px;" }),
+              el("div", { class: "muted", text: currentShopSeason === "2"
+                ? "Configure Battle Royale's Store tab (Athena Direct Acquisition) for Season 2 (1.11 – 2.5)."
+                : "Configure Battle Royale's Store tab (Athena Direct Acquisition) for Season 1 (1.8 – 1.10)." })),
+            el("div", { class: "actions" },
+              btn("Refresh", showShop, "ghost"))),
+          timingSettingsSection,
+          modePicker,
+          configSection,
+          previewSection
+        );
+      } else {
+        $("view").replaceChildren(
+          el("div", { class: "view-head" },
+            el("div", {},
+              el("h1", { text: currentSub === "archived-codes" ? "Archived Codes" : `${folderList.find((f) => f.slug === currentSub)?.name || "Promotional"} Codes`, style: "margin:0 0 4px;" }),
+              el("div", { class: "muted", text: currentSub === "archived-codes"
+                ? "Archived promotional codes that have been fully redeemed or have expired."
+                : "Manage promotional reward codes. Players redeem codes on the web portal to receive rewards." })),
+            el("div", { class: "actions" },
+              btn("Refresh", showShop, "ghost"))),
+          topSubtabs,
+          codesSection
+        );
+      }
     }
+
     /* ---------- battle pass (season 1's Season Shop, season 2's Battle Pass) ---------- */
-    const pickSeason = (season) => { state.battlePassSeason = String(season); showBattlePass(); };
+    const pickSeason = (season) => {
+      state.battlePassSeason = String(season);
+      if (location.hash !== `#/battlepass/season${season}`) {
+        location.hash = `#/battlepass/season${season}`;
+      } else {
+        showBattlePass();
+      }
+    };
 
     // Season 2 (1.11): the Battle Pass and bundle prices, and the tiers' rewards from 1.11's data.
     async function showSeasonTwoPass() {
@@ -5438,11 +5472,10 @@
         : el("span", { class: "muted", text: "—" });
       const tiers = data.tiers || [];
       $("view").replaceChildren(
+        seasonBreadcrumb("#/battlepass", "Battle Pass", "Season 2 (1.11 – 2.5)"),
         el("div", { class: "view-head" },
           el("div", {},
-            el("div", { style: "display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:4px;" },
-              el("h1", { text: "Battle Pass & Progression", style: "margin:0;" }),
-              seasonSelector("2", pickSeason)),
+            el("h1", { text: "Battle Pass & Progression", style: "margin:0 0 4px;" }),
             el("div", { class: "muted", text: "Season 2's Battle Pass (1.11 – 2.5): its V-Bucks prices and the rewards of its tiers" })),
           el("div", { class: "actions" },
             btn("Save Prices", async () => {
@@ -5468,6 +5501,33 @@
     }
 
     async function showBattlePass() {
+      if (!state.battlePassSeason) {
+        // Battle Pass Hub: display rectangular cards only (no options underneath)
+        $("view").replaceChildren(
+          el("div", { class: "view-head" },
+            el("div", {},
+              el("h1", { text: "Battle Pass & Progression", style: "margin:0 0 4px;" }),
+              el("div", { class: "muted", text: "Select a season to configure Battle Pass tiers, Season Shop unlocks, and progression mechanics." })),
+            el("div", { class: "actions" },
+              btn("Refresh", showBattlePass, "ghost"))),
+          seasonHubCards([
+            {
+              title: "Season 1: Season Shop (1.8 – 1.10)",
+              desc: "Configure Season Shop unlock levels, cosmetic pricing, and match XP multipliers",
+              badge: "Season Shop",
+              hash: "#/battlepass/season1"
+            },
+            {
+              title: "Season 2: Battle Pass (1.11 – 2.5)",
+              desc: "Configure 70 tiers of free and premium rewards, pass pricing (950 V-Bucks), and bundle pricing (2,800 V-Bucks)",
+              badge: "70 Tiers",
+              hash: "#/battlepass/season2"
+            }
+          ])
+        );
+        return;
+      }
+
       if (state.battlePassSeason === "2") return showSeasonTwoPass();
       const data = await act(api("/admin/api/battlepass/overview"));
       if (!data || state.view !== "battlepass") return;
@@ -5501,7 +5561,7 @@
         const h = totalHours % 24;
         const d = Math.floor(totalHours / 24);
         if (d > 0) return `${d}d ${h}h ${m}m ${s}s`;
-        if (h > 0) return `${h}h ${m}m ${s}s`;
+        if (h > 0) return `${h}h ${m}s`;
         return `${m}m ${s}s`;
       };
 
@@ -5626,12 +5686,11 @@
       });
 
       $("view").replaceChildren(
+        seasonBreadcrumb("#/battlepass", "Battle Pass", "Season 1 (1.8 – 1.10)"),
         // View Header
         el("div", { class: "view-head" },
           el("div", {},
-            el("div", { style: "display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:4px;" },
-              el("h1", { text: "Battle Pass & Progression", style: "margin:0;" }),
-              seasonSelector("1", pickSeason)),
+            el("h1", { text: "Battle Pass & Progression", style: "margin:0 0 4px;" }),
             el("div", { class: "muted", text: "Configure Season 1 Season Shop unlock requirements, catalog item prices, and match leveling rates" })),
           el("div", { class: "actions" },
             btn("Save Configuration", saveConfig, "primary"),
@@ -5686,11 +5745,73 @@
         )
       );
     }
-
     /* ---------- events & seasons ---------- */
+    const pickEventsSeason = (season) => {
+      state.eventsSeason = String(season);
+      if (location.hash !== `#/events/season${season}`) {
+        location.hash = `#/events/season${season}`;
+      } else {
+        showEvents();
+      }
+    };
+
     async function showEvents() {
       const data = await act(api("/admin/api/events/overview"));
       if (!data || state.view !== "events") return;
+
+      const buildRows = data.sampleBuilds.map((b) => [
+        el("span", { class: "mono font-semibold", text: b.version }),
+        el("span", { class: "mono muted", text: b.cl ? `CL-${b.cl}` : "—" }),
+        el("span", { class: "font-semibold", text: b.event }),
+        b.flags.length
+          ? el("div", { style: "display:flex; gap:4px; flex-wrap:wrap;" }, b.flags.map((f) => chip(f, "accent")))
+          : el("span", { class: "muted", text: "None (Base game)" }),
+        el("span", { class: "muted", text: b.version.startsWith("1.8")
+          ? "Hexsylvania (4 tiers), 56 Halloween quests, Candy, Halloween Llamas"
+          : b.version.startsWith("1.9.1")
+          ? "StormCategory alerts (10/day), 15 Vindertech quests, Storm Tickets, 500 Candy conversion"
+          : b.version.startsWith("1.10")
+          ? "Fixed storm targets, Vindertech quests & Storm alerts"
+          : b.version.startsWith("1.11") || b.version.startsWith("2.1")
+          ? "Mini-Boss alerts (10/day), winter quests, Snowflake Tickets, Holiday Survival Llamas, Storm Ticket conversion"
+          : "Stonewood & Plankerton campaign, early storm alerts" })
+      ]);
+
+      const matrixTable = table([
+        ["Build Version", (r) => r[0]],
+        ["Changelist", (r) => r[1]],
+        ["Active Event", (r) => r[2]],
+        ["Broadcast Flags", (r) => r[3]],
+        ["Content Features", (r) => r[4]]
+      ], buildRows);
+
+      if (!state.eventsSeason) {
+        // Events Hub: display rectangular cards only (no options underneath)
+        $("view").replaceChildren(
+          el("div", { class: "view-head" },
+            el("div", {},
+              el("h1", { text: "Events & Seasons", style: "margin:0 0 4px;" }),
+              el("div", { class: "muted", text: "Select a season to configure limited-time events, Save the World modifiers, and seasonal economies." })),
+            el("div", { class: "actions" },
+              btn("Refresh", showEvents, "ghost"))),
+
+          seasonHubCards([
+            {
+              title: "Season 1 (1.8 – 1.10)",
+              desc: "Fortnitemares Halloween event, Hexsylvania theater, Candy currency, Mutant Storms & 45-day calendar cycle",
+              badge: "45 Days",
+              hash: "#/events/season1"
+            },
+            {
+              title: "Season 2 (1.11 – 2.5)",
+              desc: "Survive the Holidays Winterfest, Snowflake tickets, Mini-Boss alerts, Event Store & 70-day calendar cycle",
+              badge: "70 Days",
+              hash: "#/events/season2"
+            }
+          ])
+        );
+        return;
+      }
 
       const cfg = data.eventsConfig || {};
 
@@ -5711,8 +5832,7 @@
         contentUpdates: { mode: cfg.contentUpdates?.mode || "season", overrides: { ...(cfg.contentUpdates?.overrides ?? {}) } }
       };
 
-      // The season the page shows (Core-Backend #156): its clock, its Season Start row and, for Season 2, its content
-      // updates. The rest is every season's.
+      // The season the page shows: its clock, its Season Start row and, for Season 2, its content updates.
       const season = state.eventsSeason === "2" ? "2" : "1";
       const dailyTarget = new Date(data.calendar.dailyStoreEnd).getTime();
       const weeklyTarget = new Date(data.calendar.weeklyStoreEnd).getTime();
@@ -5751,6 +5871,7 @@
         auto: "Auto (Per-Build)",
         force_fortnitemares: "Force Fortnitemares",
         force_mutantstorms: "Force Mutant Storms",
+        force_winter2017: "Force Survive the Holidays",
         custom: "Custom Flags",
         off: "Disabled"
       };
@@ -5772,7 +5893,6 @@
           calendarCacheMinutes: form.calendarCacheMinutes,
           contentUpdates: {
             mode: form.contentUpdates.mode,
-            // Every update is sent, "auto" clearing an override.
             overrides: Object.fromEntries((data.contentUpdates?.builds?.[0]?.updates ?? []).map((u) => [u.id, form.contentUpdates.overrides[u.id] || "auto"]))
           }
         };
@@ -5780,38 +5900,12 @@
         showEvents();
       };
 
-      // 1. Build compatibility matrix
-      const buildRows = data.sampleBuilds.map((b) => [
-        el("span", { class: "mono font-semibold", text: b.version }),
-        el("span", { class: "mono muted", text: b.cl ? `CL-${b.cl}` : "—" }),
-        el("span", { class: "font-semibold", text: b.event }),
-        b.flags.length
-          ? el("div", { style: "display:flex; gap:4px; flex-wrap:wrap;" }, b.flags.map((f) => chip(f, "accent")))
-          : el("span", { class: "muted", text: "None (Base game)" }),
-        el("span", { class: "muted", text: b.version.startsWith("1.8")
-          ? "Hexsylvania (4 tiers), 56 Halloween quests, Candy, Halloween Llamas"
-          : b.version.startsWith("1.9.1")
-          ? "StormCategory alerts (10/day), 15 Vindertech quests, Storm Tickets, 500 Candy conversion"
-          : b.version.startsWith("1.10")
-          ? "Fixed storm targets, Vindertech quests & Storm alerts"
-          : b.version.startsWith("1.11") || b.version.startsWith("2.1")
-          ? "Mini-Boss alerts (10/day), winter quests, Snowflake Tickets, Holiday Survival Llamas, Storm Ticket conversion"
-          : "Stonewood & Plankerton campaign, early storm alerts" })
-      ]);
-
-      const matrixTable = table([
-        ["Build Version", (r) => r[0]],
-        ["Changelist", (r) => r[1]],
-        ["Active Event", (r) => r[2]],
-        ["Broadcast Flags", (r) => r[3]],
-        ["Content Features", (r) => r[4]]
-      ], buildRows);
-
       // Mode Selector Cards
       const modeOptions = [
         { id: "auto", title: "Auto (Per-Build)", desc: "Native event per build (1.8: Fortnitemares, 1.9.1: Vindertech, 1.10: ActiveStorms).", badge: "Recommended" },
         { id: "force_fortnitemares", title: "Force Fortnitemares", desc: "Forces EventFlag.Fortnitemares & Hexsylvania across all connected client builds.", badge: "Halloween" },
         { id: "force_mutantstorms", title: "Force Mutant Storms", desc: "Forces Mutant Storms, StormCategory alerts & Vindertech quests across all builds.", badge: "Storms" },
+        { id: "force_winter2017", title: "Force Survive the Holidays", desc: "Forces Winterfest, Mini-Boss alerts & Holiday Survival across all builds.", badge: "Winterfest" },
         { id: "custom", title: "Custom Flags", desc: "Broadcast arbitrary event flags defined below to all client builds.", badge: "Custom" },
         { id: "off", title: "Disabled", desc: "Deactivates all limited-time seasonal events (Base campaign mode only).", badge: "Off" }
       ];
@@ -5947,29 +6041,27 @@
         oninput: (e) => { form.customSeasonEnd = e.target.value; }
       });
 
-      // Each season's replay start (day 1): a date, or empty for the default (Season 1: 30 October 2017's clock;
-      // Season 2: the first day the backend serves it).
-      const seasonStartInputs = Object.fromEntries([1, 2].map((season) => [season, el("input", {
+      // Each season's replay start (day 1): a date, or empty for the default
+      const seasonStartInputs = Object.fromEntries([1, 2].map((s) => [s, el("input", {
         class: "field",
         type: "date",
-        value: form.seasonStarts[season],
+        value: form.seasonStarts[s],
         style: "min-width:160px;",
-        oninput: (e) => { form.seasonStarts[season] = e.target.value; }
+        oninput: (e) => { form.seasonStarts[s] = e.target.value; }
       })]));
-      const seasonClock = (season) => data.calendar.seasons?.[season];
-      const seasonStartRow = (season, label) => el("div", { style: "display:flex; flex-direction:column; gap:4px;" },
-        el("div", { class: "muted font-semibold", style: "font-size:11px;", text: seasonClock(season)
-          ? `${label}: day 1 ${seasonClock(season).start}${seasonClock(season).started ? "" : " (not started yet)"}, today ${seasonClock(season).shopDay}'s shop, ends ${new Date(seasonClock(season).end).toLocaleDateString()}`
+      const seasonClock = (s) => data.calendar.seasons?.[s];
+      const seasonStartRow = (s, label) => el("div", { style: "display:flex; flex-direction:column; gap:4px;" },
+        el("div", { class: "muted font-semibold", style: "font-size:11px;", text: seasonClock(s)
+          ? `${label}: day 1 ${seasonClock(s).start}${seasonClock(s).started ? "" : " (not started yet)"}, today ${seasonClock(s).shopDay}'s shop, ends ${new Date(seasonClock(s).end).toLocaleDateString()}`
           : label }),
         el("div", { style: "display:flex; align-items:center; gap:6px; flex-wrap:wrap;" },
-          seasonStartInputs[season],
+          seasonStartInputs[s],
           btn("Reset", () => {
-            form.seasonStarts[season] = "";
-            seasonStartInputs[season].value = "";
+            form.seasonStarts[s] = "";
+            seasonStartInputs[s].value = "";
           }, "ghost small")));
 
-      // Season 2's content updates (Core-Backend #156): Epic's loot hotfixes, by the season's dates on 1.11 or all at once,
-      // each one forced on or off if wanted; 2.1 always has them.
+      // Season 2's content updates
       const content = data.contentUpdates ?? { builds: [] };
       const [content111, content21] = content.builds;
       const updateWhy = { season: "by date", all: "all on", on: "forced on", off: "forced off", shipped: "always (2.1)" };
@@ -6009,13 +6101,12 @@
         oninput: (e) => { form.calendarCacheMinutes = Math.max(5, Math.min(120, parseInt(e.target.value, 10) || 60)); }
       });
 
-            $("view").replaceChildren(
+      $("view").replaceChildren(
+        seasonBreadcrumb("#/events", "Events & Seasons", season === "2" ? "Season 2 (1.11 – 2.5)" : "Season 1 (1.8 – 1.10)"),
         // View Header
         el("div", { class: "view-head" },
           el("div", {},
-            el("div", { style: "display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:4px;" },
-              el("h1", { text: "Events & Seasons", style: "margin:0;" }),
-              seasonSelector(season, (picked) => { state.eventsSeason = String(picked); showEvents(); })),
+            el("h1", { text: season === "2" ? "Events & Seasons: Season 2 (1.11 – 2.5)" : "Events & Seasons: Season 1 (1.8 – 1.10)", style: "margin:0 0 4px;" }),
             el("div", { class: "muted", text: "Customizable event activation, STW mission modifiers, and live calendar timelines" })),
           el("div", { class: "actions" },
             btn("Save Event Configuration", saveConfig, "primary"),
@@ -6048,7 +6139,7 @@
           tile("Weekly Store Reset", [weeklyTimerEl, el("span", { class: "sub", text: `${weeklyResetDate.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })} · ${weeklyResetDate.toUTCString().slice(17, 22)} UTC` })]),
           tile(`Season ${season} Clock`, [seasonTimerEl, el("span", { class: "sub", text: `Ends ${seasonResetDate.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}` })])),
 
-        contentSection,
+        ...(contentSection ? [contentSection] : []),
 
         // Section 1: Activation Mode & Flags
         el("section", { class: "panel", style: "margin-top:16px" },
@@ -6088,7 +6179,7 @@
             el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
               el("div", {},
                 el("div", { style: "display:flex; align-items:center; gap:8px; font-weight:700; font-size:14px;" }, icon("zap", 16), el("span", { text: "Storm Category Daily Alert Quota" })),
-                el("div", { class: "muted", style: "font-size:12px; margin-top:4px; line-height:1.4;", text: "Daily quota of Storm Category mission alerts allowed per account before rewards stop (Default 10)." })),
+                el("div", { class: "muted", style: "font-size:12px; margin-top:4px; line-height:1.4;", text: "Daily quota of Storm Category mission alerts allowed per account before rewards stop (Default 10 alerts/day)." })),
               el("div", { style: "margin-top:12px; display:flex; align-items:center; gap:8px;" },
                 quotaInput,
                 el("span", { class: "muted font-semibold", text: "alerts / day" }))),
@@ -6096,7 +6187,7 @@
             el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
               el("div", {},
                 el("div", { style: "display:flex; align-items:center; gap:8px; font-weight:700; font-size:14px;" }, icon("ticket", 16), el("span", { text: "Storm Ticket Drop Multiplier" })),
-                el("div", { class: "muted", style: "font-size:12px; margin-top:4px; line-height:1.4;", text: "Multiplies Storm Ticket rewards given by Mutant Storms (Base Difficulty × 10). Range: 0.1x to 10.0x." })),
+                el("div", { class: "muted", style: "font-size:12px; margin-top:4px; line-height:1.4;", text: "Multiplier applied to all Storm Ticket rewards in 1.9.1+ missions (Default 1.0x)." })),
               el("div", { style: "margin-top:12px; display:flex; align-items:center; gap:8px;" },
                 ticketMultInput,
                 el("span", { class: "muted font-semibold", text: "× multiplier" })))
@@ -6106,9 +6197,9 @@
         // Section 3: Currencies, Llamas & Quick Actions
         el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
-            el("h2", { text: "Currencies, Llamas & Quick Actions" }),
-            chip("Loot & Inventory", "good")),
-          el("p", { class: "note", text: "Configure event llama pricing and execute instant administrative batch operations across all player accounts." }),
+            el("h2", { text: "Seasonal Currencies & Event Llamas" }),
+            chip("Event Economy", "accent")),
+          el("p", { class: "note", text: "Configure event currency pricing, conversion thresholds, and trigger administrative batch actions." }),
           el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px; margin-top:14px;" },
             el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
               el("div", {},
@@ -6141,7 +6232,7 @@
                   showEvents();
                 }, "ghost small"),
                 btn("Reset Daily Quotas Now", async () => {
-                  const ok = await confirmModal(`Reset today's mission alert claim records to 0 for all player profiles right now?\nThis restores every account's full daily alert quota immediately.`, {
+                  const ok = await confirmModal("Reset today's mission alert claim records to 0 for all player profiles right now?\nThis restores every account's full daily alert quota immediately.", {
                     title: "Reset Alert Quotas Now",
                     confirmText: "Reset All Quotas",
                     confirmKind: "danger"
@@ -6154,12 +6245,13 @@
           )
         ),
 
-        // Section 4: Calendar & Timelines
+        // Section 4: Live Calendar & Shop Rotation Timelines
         el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
-            el("h2", { text: "Live Calendar & Store Rotation Timelines" }),
-            chip(`Cache: ${form.calendarCacheMinutes}m`, "accent")),
-          el("p", { class: "note", text: "Governs the client-events channel (/fortnite/api/calendar/v1/timeline), storefront countdown timers, and rotation schedules." }),
+            el("h2", { text: "Live Calendar & Shop Rotation Timelines" }),
+            chip("Calendar System", "accent")),
+          el("p", { class: "note", text: "Configure global reset hours, weekly durations, and seasonal start times. Changes apply immediately to player clients upon next calendar request." }),
+
           el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:14px; margin-top:14px;" },
             el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
               el("div", {},
@@ -6212,7 +6304,6 @@
         )
       );
     }
-
     /* ---------- reports ---------- */
     async function showReports() {
       if (state.reportId) {

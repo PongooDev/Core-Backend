@@ -39,6 +39,7 @@ import { contentUpdateStates, defaultContentUpdates } from "../events/contentupd
 import { cosmeticRarity, cosmeticType, eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, seasonEnd, seasonMoment, seasonStart, shopDay, weeklyStoreEnd, withoutSeasonStartRecording } from "../store/itemshop.js";
 import { activeEventFlags, fortnitemares, mutantStorms } from "../events/events.js";
 import { convertLeftoverCandy } from "../events/candyllamas.js";
+import { convertLeftoverStormTickets } from "../events/stormllamas.js";
 import { defaultEvents, defaultMatchmakingModes, defaultServerLimits } from "../settings/store.js";
 import { calendarCacheMinutes } from "../services/fortnite/calendar.js";
 import { defaultBattlePass, enrichedMilestones } from "../battlepass/season1.js";
@@ -961,13 +962,14 @@ export function adminRoutes(context) {
     res.json(getNewsPayload());
   });
 
-  function getShopPayload() {
+  function getShopPayload(requestedSeason = 1) {
     const now = new Date();
     const config = settings?.get?.()?.itemShop ?? { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 };
-    const build = "3724489";
-    const offers = inBuild(build, () => itemShopOffers(now, config));
+    const s = Number(requestedSeason) === 2 ? 2 : 1;
+    const build = s === 2 ? "3807424" : "3724489";
+    const offers = inBuild(build, () => itemShopOffers(now, config, s));
     const cosmetics = inBuild(build, () => eligibleCosmetics());
-    const currentDay = shopDay(now, config);
+    const currentDay = shopDay(now, config, s);
 
     const mapOffer = (o) => {
       const match = cosmetics.find((c) => c.templateId.toLowerCase() === o.templateId.toLowerCase());
@@ -999,6 +1001,8 @@ export function adminRoutes(context) {
     };
 
     return {
+      season: s,
+      seasonName: seasonName(s),
       mode: config.mode || "fnbr",
       rotationHour: config.rotationHour ?? 0,
       weeklyDurationDays: config.weeklyDurationDays ?? 7,
@@ -1017,7 +1021,8 @@ export function adminRoutes(context) {
       },
       random: config.random ?? null,
       nextRotation: nextRotation(now, config).toISOString(),
-      weeklyStoreEnd: weeklyStoreEnd(now, config).toISOString(),
+      weeklyStoreEnd: weeklyStoreEnd(now, config, s).toISOString(),
+      seasonEnd: seasonEnd(now, config, s).toISOString(),
       availableCosmetics: cosmetics
     };
   }
@@ -1044,7 +1049,8 @@ export function adminRoutes(context) {
     }));
 
     const weeklyEnd = weeklyStoreEnd(now, shopConfig);
-    const seasonEnds = seasonEnd(now, shopConfig, 1);
+    const reqSeason = String(req.query.season) === "2" ? 2 : 1;
+    const seasonEnds = seasonEnd(now, shopConfig, reqSeason);
     const dailyEnd = nextRotation(now, shopConfig);
     // Each season's replay: its day 1 and its end; Season 2 not served yet shows as starting today.
     const seasonClocks = withoutSeasonStartRecording(() => Object.fromEntries([1, 2].map((season) => [season, {
@@ -1065,8 +1071,8 @@ export function adminRoutes(context) {
     }));
 
     res.json({
-      season: 1,
-      seasonName: seasonName(1),
+      season: reqSeason,
+      seasonName: seasonName(reqSeason),
       availableSeasons,
       seasonalEvents: seasonalEventsEnabled,
       contentUpdates,
@@ -1120,9 +1126,9 @@ export function adminRoutes(context) {
           buildRange: "1.11 & 2.1 (CL 3807424 – 3825894)",
           flags: ["EventFlag.Winter2017", "EventFlag.PassiveStorms"],
           theater: "Standard Zones with Mini-Boss Alerts",
-          alertsQuota: "10 Mini-Boss mission alerts and 4 storms (no tickets) per day",
+          alertsQuota: `${eventsConfig.miniBossAlertQuota ?? 10} Mini-Boss mission alerts and ${eventsConfig.passiveStormQuota ?? 4} storms (no tickets) per day`,
           currency: "Snowflake Tickets (AccountResource:eventcurrency_snowballs)",
-          llama: "Holiday Survival Llama (CardPack_Event_2017_Winter, 1000 Snowflake Tickets)",
+          llama: `Holiday Survival Llama (CardPack_Event_2017_Winter, ${eventsConfig.snowflakePerLlama ?? 1000} Snowflake Tickets)`,
           questsCount: 26,
           leftoverConversion: "1000 unspent Storm Tickets convert to 1 Vindertech Llama on 1.11+ load"
         }
@@ -1136,6 +1142,32 @@ export function adminRoutes(context) {
     }
     const updated = settings.update({ events: req.body });
     res.json({ success: true, events: updated.events });
+  });
+
+    router.post("/admin/api/events/actions/convert-storm-tickets", (req, res) => {
+    const list = accounts.list();
+    let convertedProfiles = 0;
+    let totalLlamasGranted = 0;
+
+    inBuild("3807424", () => {
+      for (const account of list) {
+        try {
+          const session = openSession(profiles, account.id);
+          const granted = convertLeftoverStormTickets(session, true);
+          if (granted && granted.length > 0) {
+            session.commit();
+            notifyProfiles(context, session);
+            convertedProfiles += 1;
+            const grantedCount = granted.reduce((sum, item) => sum + (item.quantity ?? 1), 0);
+            totalLlamasGranted += grantedCount;
+          }
+        } catch (err) {
+          // Continue with other accounts
+        }
+      }
+    });
+
+    res.json({ success: true, convertedProfiles, totalLlamasGranted, ticketsPerLlama: 1000 });
   });
 
   router.post("/admin/api/events/actions/convert-candy", (req, res) => {
@@ -1397,7 +1429,8 @@ export function adminRoutes(context) {
   });
 
   router.get("/admin/api/shop", (req, res) => {
-    res.json(getShopPayload());
+    const s = String(req.query.season) === "2" ? 2 : 1;
+    res.json(getShopPayload(s));
   });
 
   router.post("/admin/api/shop", (req, res) => {
@@ -1429,7 +1462,8 @@ export function adminRoutes(context) {
     }
 
     settings.update({ itemShop: update });
-    res.json(getShopPayload());
+    const s = String(req.query.season || req.body?.season) === "2" ? 2 : 1;
+    res.json(getShopPayload(s));
   });
 
   router.post("/admin/api/shop/randomize", (req, res) => {
@@ -1444,7 +1478,8 @@ export function adminRoutes(context) {
         }
       }
     });
-    res.json(getShopPayload());
+    const s = String(req.query.season || req.body?.season) === "2" ? 2 : 1;
+    res.json(getShopPayload(s));
   });
 
   router.post("/admin/api/shop/reset", (req, res) => {
@@ -1458,7 +1493,8 @@ export function adminRoutes(context) {
         random: null
       }
     });
-    res.json(getShopPayload());
+    const s = String(req.query.season || req.body?.season) === "2" ? 2 : 1;
+    res.json(getShopPayload(s));
   });
 
   // Redeem Codes & Rewards (Promotional & Friend Codes)

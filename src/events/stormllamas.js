@@ -16,7 +16,8 @@ export const stormLlama = "CardPack:cardpack_event_vindertech";
 
 // Returns the llamas granted (grantItem entries), none when there is nothing to convert.
 export function convertLeftoverStormTickets(session, force = false) {
-  if (!force && currentEventsConfig()?.autoConvertCandy === false) return [];
+  const cfg = currentEventsConfig();
+  if (!force && (cfg?.autoConvertStormTickets === false || cfg?.autoConvertCandy === false)) return [];
   // Not while the admin panel runs the event anyway (its Vindertech Llama offer is then on sale).
   if (!force && (!hasEventEnded(mutantStorms) || isEventActive(mutantStorms))) return [];
   return convertLeftover(session, { currency: stormTickets, perLlama: stormTicketsPerLlama, llama: stormLlama, label: "Storm Tickets",
