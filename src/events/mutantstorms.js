@@ -61,7 +61,7 @@ export function mutantStormsEventQuests() {
 // it runs: the first of each FirstStorm chain (KillEnragedHusks, KillExplodingDeathburstHusks and KillQuickenedHusks
 // lead to the rest; LevelUp_Hydraulic to Evolve_Hydraulic) and the ones nothing grants. HydraulicStormLlama counts a
 // stat no 2.3 objective row has, so it is left out (🟡).
-export const mutantStorms2018Quests = [
+const firstStormQuests2018 = [
   "firststormquest_completestormzones",
   "firststormquest_killenragedhusks",
   "firststormquest_killexplodingdeathbursthusks",
@@ -72,16 +72,40 @@ export const mutantStorms2018Quests = [
   "winterquest_2017_killminibosses_repeatable"
 ];
 
+// 2.4 (CL-3858292) ships the storms' own quest line, Quests/Events/MutantStorms2018 (MutantStormsQuest_2018_*: Storm
+// Tickets and V-Bucks for the storm zones and the storm mutations' hunts, a trap pack for trap kills, a Storm Zone hero
+// for Hydraulic Smasher kills, 500 Storm Tickets for buying a Storm Llama), and its own repeatable Mini-Boss quest
+// (MutantStormsQuest_2018_KillMiniBosses_Repeatable, 50 Seasonal Gold). So on 2.4 those are the event quests, in place
+// of the FirstStorm and winter ones: the first of each chain (CompleteStormZones_1; KillEnragedHusks_1,
+// KillExplodingDeathburstHusks_1 and KillQuickenedHusks_1 lead to the other hunts) and the ones nothing grants.
+// HydraulicStormLlama counts PurchaseCardPack of CardPack_Event_FirstStorm, which buying the Storm Llama fires
+// (PurchaseCatalogEntry).
+const mutantStormsQuests2018 = [
+  "mutantstormsquest_2018_completestormzones_1",
+  "mutantstormsquest_2018_killenragedhusks_1",
+  "mutantstormsquest_2018_killexplodingdeathbursthusks_1",
+  "mutantstormsquest_2018_killquickenedhusks_1",
+  "mutantstormsquest_2018_killhuskstraps",
+  "mutantstormsquest_2018_killmistmonsters",
+  "mutantstormsquest_2018_hydraulicstormllama",
+  "mutantstormsquest_2018_killminibosses_repeatable"
+];
+
+// Every quest the storms' return starts on any build (events/quests.js takes the line from these).
+export const mutantStorms2018Quests = [...firstStormQuests2018, ...mutantStormsQuests2018];
+
 // The Storm Llama they buy: CardPack_Event_FirstStorm ("Storm Llama", "Guarantees at least one Epic or better limited
 // time Hydraulic weapon or Hero!"), store/catalog.js.
 export const stormLlama2018 = "CardPack:cardpack_event_firststorm";
 
 // The requesting build's quests of the storms' return, when it runs there.
 export function mutantStorms2018EventQuests() {
-  return isEventActive(mutantStorms2018) ? mutantStorms2018Quests.filter((questId) => getQuest(questId)) : [];
+  if (!isEventActive(mutantStorms2018)) return [];
+  const own = mutantStormsQuests2018.filter((questId) => getQuest(questId));
+  return own.length ? own : firstStormQuests2018.filter((questId) => getQuest(questId));
 }
 
-// "Purchased upgrade Llamas award Storm Tickets" (2.3): an Upgrade Llama (CardPack_Bronze, store/catalog.js's
+// "Purchased upgrade Llamas award Storm Tickets" (2.3, and 2.4's storms): an Upgrade Llama (CardPack_Bronze, store/catalog.js's
 // core_cardpack_bronze offers, one or ten) bought while 2.3's storms run also gives Storm Tickets, 100 a llama (🟡 Core's:
 // Epic's catalog held the amount; ten llamas, 500 V-Bucks, buy a Storm Llama). Returns how many for count llamas, 0 for
 // any other offer.
@@ -91,5 +115,5 @@ export function upgradeLlamaTickets(offer, count) {
   return upgradeLlama && isEventActive(mutantStorms2018) && getItem(stormTickets) ? ticketsPerUpgradeLlama * count : 0;
 }
 
-// Whether the requesting build's Mini-Boss alerts run without Survive the Holidays (2.3's storms).
+// Whether the requesting build's Mini-Boss alerts run without Survive the Holidays (2.3's and 2.4's storms).
 export const miniBossesStay = () => isEventActive(mutantStorms2018);

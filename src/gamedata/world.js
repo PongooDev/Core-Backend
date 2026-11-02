@@ -15,7 +15,7 @@ export function getDifficulty(rowName) {
 // spread storms are left out.
 // 2.3's Mini-Boss rows still require EventFlag.Winter2017, which 2.3 doesn't run, but its notes keep them through the
 // storms' return (events/mutantstorms.js miniBossesStay): Epic's servers placed the alerts, so Core reads the rows as
-// on while those storms run.
+// on while those storms run. 2.4's wait for EventFlag.ActiveMiniBosses, which its storms run (events/events.js).
 export function missionAlertTier(rowName, category = "GeneralCategory") {
   const difficulty = data().difficulties[rowName]?.difficulty;
   if (difficulty === undefined) return undefined;
@@ -26,7 +26,7 @@ export function missionAlertTier(rowName, category = "GeneralCategory") {
 }
 
 // 2.3's Mini-Boss quota: "Quota: 3 per day" (its data's MiniBossCategory row still says Survive the Holidays' 10; the
-// quota was Epic's hotfix), while its storms run.
+// quota was Epic's hotfix), while its storms run. 2.4's row still says 10 (its General row says 3), so 2.4 keeps it.
 const miniBossCategory = "MiniBossCategory";
 const stormsMiniBossQuota = 3;
 const withMiniBossQuota = (rowName, cat) => (rowName === miniBossCategory && miniBossesStay() ? { ...cat, quota: stormsMiniBossQuota } : cat);

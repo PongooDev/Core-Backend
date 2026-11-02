@@ -11,7 +11,7 @@ import { grant } from "./progress.js";
 // player again at level 1 with a Battle Pass, as Epic's did when Season 1 ended on 13 December 2017. 2.1 (CL-3825894, 10
 // January 2018) is still Season 2: its AthenaSeason2 is 1.11's, so the two share one Season 2 level and Battle Pass, and
 // so does 2.2 (CL-3841827, 18 January 2018), whose AthenaSeason2 only adds the Season 3 head start to tier 2, and 2.3
-// (CL-3847564, 25 January 2018), whose AthenaSeason2 is 2.2's.
+// (CL-3847564, 25 January 2018) and 2.4 (CL-3858292, 31 January 2018), whose AthenaSeason2 is 2.2's.
 //
 // 1.11's athena profile stats (the client's UFortMcpProfileAthena reads them by name: season_num, level, xp,
 // accountLevel, book_level, book_xp, book_purchased, season_match_boost, season_friend_match_boost, lifetime_wins):

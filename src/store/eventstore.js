@@ -131,6 +131,11 @@ const dailyCoinPicks = [
 // HID_Constructor_RushBase_F_SR, at a legendary hero's 2,800; one each, 🟡), counted by trackers of their own event
 // (MutantStorms2018.*), the weekly section as before. The storms ran until 2.5 turned their tickets into llamas
 // (events/stormllamas.js; 13 February 2018), which the event items count down to (🟡: the hour is Core's).
+//
+// 2.4 (CL-3858292) keeps the store and its two event items (2.4's data names the key "Hydra Transform Key"). Its notes
+// add one: "The Cozy Campfire trap schematic is available through the Event Store", but 2.4's paks have no Save the
+// World Cozy Campfire (no schematic or trap item but Battle Royale's TID_Floor_Player_Campfire_Athena), so there is
+// nothing to sell and the store leaves it out.
 const stormsEventItems = [
   { templateId: "ConversionControl:cck_ranged_assault_hydra_consumable_sr", price: 1680, limit: 1 },
   { templateId: "Hero:hid_constructor_rushbase_f_sr_t01", price: 2800, limit: 1 }
@@ -141,7 +146,7 @@ const eventItemsNow = () => (storms2018() ? stormsEventItems : eventItems);
 export const eventStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWSpecialEventStoreFront" : eventStoreInstance);
 export const weeklyStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWRotationalEventStorefront" : weeklyStoreInstance);
 
-// The store is open while the requesting build runs Survive the Holidays (or 2.3's storms) and its data has Seasonal
+// The store is open while the requesting build runs Survive the Holidays (or 2.3's and 2.4's storms) and its data has Seasonal
 // Gold.
 export const hasEventStore = () => (isEventActive(winter2017) || isEventActive(mutantStorms2018)) && Boolean(getItem(seasonalGold));
 

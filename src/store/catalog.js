@@ -24,7 +24,9 @@ import { seasonShopOffers, seasonStorefront } from "./seasonshop.js";
 //
 // 1.10 (CL-3790078): "Multiple-in-one Upgrade Llamas now sell 25% off!" From 1.10 the store also has ten Upgrade Llamas in
 // one offer (one grant of 10, FCatalogItemGrant Quantity) for 375 V-Bucks, a quarter off ten singles. 🟡 Epic's
-// multi-llama offers were in its catalog, not the paks; the size of Core's is its choice.
+// multi-llama offers were in its catalog, not the paks; the size of Core's is its choice. 2.4's notes take four of Epic's
+// out of the store ("Removed a few llamas from the store rotation: Double Llama, Fiver Llama, Six Pack Llama, Niner
+// Llama"; their CardPack_Bronze_02x/05x/06x/09x are still in 2.4's data): Core never sold them, so nothing changes.
 const mtxOffers = [
   { offerId: "core_cardpack_bronze", templateId: "CardPack:cardpack_bronze", title: "Upgrade Llama", currencyType: "MtxCurrency", currencySubType: "", price: 50 },
   { offerId: "core_cardpack_bronze_x10", templateId: "CardPack:cardpack_bronze", quantity: 10, title: "10 Upgrade Llamas", currencyType: "MtxCurrency",
@@ -170,7 +172,7 @@ const holds = (profile, templateId) => Object.values(profile?.items ?? {})
 
 // profile: the viewer's profile0, for the vouchers only shown to players who have one. Battle Royale's storefronts
 // (store/itemshop.js) hold the day's offers in 1.8 and later, nothing before; its Season Shop (store/seasonshop.js) is
-// 1.8.2's and later. Save the World's Event Store (store/eventstore.js) is 1.11's, while Survive the Holidays runs (and 2.3's storms). The
+// 1.8.2's and later. Save the World's Event Store (store/eventstore.js) is 1.11's, while Survive the Holidays runs (and 2.3's and 2.4's storms). The
 // Battle Pass's storefront (battlepass/season2.js) is 1.11's; athena, the viewer's athena profile, leaves out a pass
 // they own.
 export function storefronts(profile, now = new Date(), { athena } = {}) {

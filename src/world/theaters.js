@@ -64,7 +64,7 @@ const theaterZone = (data) => Number((data.runtimeInfo.theaterTags?.gameplayTags
 // (2.3's SDK), the tile's region requirements (the zone gates above) being what a category with bRespectTileRequirements
 // off skips (🟡: read from the field names, the check is native). Epic's world info sends the same entry shape
 // ({"missionAlertCategoryName": "Survival3DayCategory", "bRespectTileRequirements": true, "bAllowQuickplay": true}). So
-// while 2.3's storms keep the Mini-Bosses, each main theater sends MiniBossCategory with bRespectTileRequirements false.
+// while 2.3's storms keep the Mini-Bosses (2.4's too), each main theater sends MiniBossCategory with bRespectTileRequirements false.
 const miniBossesUnlocked = [{ missionAlertCategoryName: "MiniBossCategory", bRespectTileRequirements: false, bAllowQuickplay: true }];
 const withAlertCategoryRequirements = (data) => (theaterZone(data) && miniBossesStay()
   ? { ...data, runtimeInfo: { ...data.runtimeInfo, missionAlertCategoryRequirements: miniBossesUnlocked } } : data);
@@ -135,7 +135,7 @@ function missionRewards(seed, tierGroupName, theaterId, rowName) {
   return { tierGroupName, items: items.map(({ itemType, quantity }) => ({ itemType, quantity })) };
 }
 
-// Seasonal Gold from every mission while the Event Store is open (1.11 to 2.3, store/eventstore.js): 1.11's "Play any
+// Seasonal Gold from every mission while the Event Store is open (1.11 to 2.4, store/eventstore.js): 1.11's "Play any
 // mission and earn Seasonal Gold", 2.3's "All missions will continue to award Seasonal Gold". The game's own pack for it
 // is ZCP_EventScaling_T01-T20 ("Seasonal Gold", "Special currency found throughout the world. Can be traded for items in
 // the Event Store."), one a mission tier as the XP packs: Mission_Select_T<nn> takes T<nn>, a storm shield defense
@@ -228,6 +228,10 @@ function rollMissions({ data, fixedMissions }, day, availableUntil) {
 // (MissionAlert_MiniBoss), so beside the zone's reagents and the General alerts' V-Bucks each gives one item rolled from
 // the alert's seed (miniBossItems): a transform key, a weapon or trap schematic, a survivor, a hero or a defender, Rare in
 // Stonewood, Epic in Plankerton and Canny Valley, Legendary in Twine Peaks (🟡 the odds and rarities are Core's).
+//
+// 2.4 (CL-3858292) runs the same storms and Mini-Bosses (events/events.js): its Mini-Boss rows wait for
+// EventFlag.ActiveMiniBosses, which its storms run, and its notes change neither the targets nor the rewards, so its map
+// is 2.3's.
 const halloweenAlerts = "Halloween2017_MissionAlert";
 const stormTier = (tier) => (tier <= 5 ? 1 : tier <= 10 ? 2 : tier <= 15 ? 3 : 4);
 const zones = ["Stonewood", "Plankerton", "CanneyValley", "TwinePeaks"];
@@ -367,7 +371,7 @@ const nearbyTiles = 2.5;
 // storms go on any of the theater's missions a StormCategory row fits, each with that row's rewards.
 const fixedStormsBuild = 3790078;
 const stormTargets = [5, 15, 15, 15];
-// 2.3's storms and Mini-Bosses, by theater (see alertRewards above).
+// 2.3's (and 2.4's) storms and Mini-Bosses, by theater (see alertRewards above).
 const stormTargets2018 = [5, 25, 25, 25];
 const miniBossTargets2018 = [3, 6, 6, 6];
 export const stormsSpread = (changelist = currentBuild()) => !(Number(changelist) >= fixedStormsBuild);

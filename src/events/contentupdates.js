@@ -21,6 +21,19 @@ import { currentEventsConfig } from "./events.js";
 // 2.1's Cozy Campfire): the chests' and supply drops' row at 0.2 (🟡 Core's: half the Slurp Juice's 0.4, a legendary
 // rarer than the epic), the floor's left at 0, its stack (Count) 1 as shipped.
 //
+// 2.4 (CL-3858292) ships 2.3's tables with the Chug Jug in (the chests' and supply drops' row at 0.2, as Core's hotfix
+// had it), so it needs that hotfix no more, and its notes bring two of their own:
+// - "Minigun: Found in Chests and Supply drops". 2.4's tables have it at weight 0: WID_Assault_LMG_Athena_VR/SR_Ore_T03
+//   in the SMG list (WorldList.AthenaLoot.Weapon.SMG.10 and .11, which chests, Loot_AthenaTreasure_06, and the floor
+//   share) and a supply drop of its own (Loot_AthenaSupplyDrop_02, WorldPKG.AthenaSupplyDrop.Weapon.SMG, the Legendary
+//   one). Core's weights (🟡): the Epic at 0.025 (the Epic Tactical SMG's), the Legendary at a quarter of that, 0.00625
+//   (as the Suppressed Pistol's Legendary to its Epic), and the supply drop at 1 (the Assault Rifle drop's). With the
+//   floor sharing the chests' list, it shows up on the floor too.
+// - "Suppressed Pistol: Reduced drop chances of Epic variant by 20%. Reduced drop chances of Legendary variant by 33%."
+//   2.4's rows are still 2.3's (WorldList.AthenaLoot.Weapon.Handgun.04/.05 on the floor, SuppressedHandgun.01/.02 from
+//   chests: 0.075 and 0.01875), so 2.4 takes the cut: 0.06 and 0.0125625.
+// Both shipped with the patch, so 2.4 always has them.
+//
 // Epic's updates (the Fortnite Wiki's Season 2 pages and Epic's notes on them):
 // - 19 December 2017, 13:00 GMT, the Small Shield Potion update: the Small Shield Potion ("Drops in stacks of 3", "found in
 //   floor loot, treasure chests, and supply drops") and the trap usability update ("The Spike Trap, Wall Zapper, and
@@ -44,6 +57,7 @@ const season2 = 3807424;
 const build21 = 3825894;
 const build22 = 3841827;
 const build23 = 3847564;
+const build24 = 3858292;
 
 export const contentUpdates = [
   { id: "smallShieldPotion", name: "Small Shield Potion and the Damage Trap", at: "2017-12-19T13:00:00Z", firstBuild: season2, rows: [
@@ -69,8 +83,19 @@ export const contentUpdates = [
   { id: "cozyCampfire", name: "Cozy Campfire", at: "2018-01-10T00:00:00Z", firstBuild: build21, rows: [
     [packages, "WorldList.AthenaTraps.02", { Weight: 0.5 }]
   ] },
-  { id: "chugJug", name: "Chug Jug", at: "2018-01-25T00:00:00Z", firstBuild: build23, rows: [
+  { id: "chugJug", name: "Chug Jug", at: "2018-01-25T00:00:00Z", firstBuild: build23, inTablesFrom: build24, rows: [
     [packages, "WorldList.AthenaHighConsumables.06", { Weight: 0.2 }]
+  ] },
+  { id: "minigun", name: "Minigun", at: "2018-01-31T00:00:00Z", firstBuild: build24, rows: [
+    [packages, "WorldList.AthenaLoot.Weapon.SMG.10", { Weight: 0.025 }],
+    [packages, "WorldList.AthenaLoot.Weapon.SMG.11", { Weight: 0.00625 }],
+    [tiers, "Loot_AthenaSupplyDrop_02", { Weight: 1 }]
+  ] },
+  { id: "suppressedPistolNerf", name: "Suppressed Pistol drop chances", at: "2018-01-31T00:00:00Z", firstBuild: build24, rows: [
+    [packages, "WorldList.AthenaLoot.Weapon.Handgun.04", { Weight: 0.06 }],
+    [packages, "WorldList.AthenaLoot.Weapon.Handgun.05", { Weight: 0.0125625 }],
+    [packages, "WorldList.AthenaLoot.Weapon.SuppressedHandgun.01", { Weight: 0.06 }],
+    [packages, "WorldList.AthenaLoot.Weapon.SuppressedHandgun.02", { Weight: 0.0125625 }]
   ] }
 ];
 export const contentUpdateIds = contentUpdates.map(({ id }) => id);
@@ -106,8 +131,9 @@ export function contentUpdateStates(now = new Date(), config = null, build = cur
   if (!(number >= season2) || athenaSeason()?.seasonNumber !== 2) return [];
   const { mode, overrides } = configOf(config);
   const moment = number >= build21 ? null : seasonMoment(now, null, 2);
-  // From 2.2 a build's own tables have the updates before it in; only its own patch's are left (2.3's Chug Jug).
-  const inTables = (update) => number >= build22 && update.firstBuild <= build22;
+  // From 2.2 a build's own tables have the updates before it in; only its own patch's are left (2.3's Chug Jug, which
+  // 2.4's tables have in; 2.4's Minigun and Suppressed Pistol cut).
+  const inTables = (update) => number >= (update.inTablesFrom ?? (update.firstBuild <= build22 ? build22 : Infinity));
   return contentUpdates.filter((update) => number >= update.firstBuild && !inTables(update)).map((update) => {
     const shipped = number >= build21;
     const why = shipped ? "shipped" : overrides[update.id] ?? (mode === "all" ? "all" : "season");

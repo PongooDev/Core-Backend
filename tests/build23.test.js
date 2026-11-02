@@ -53,7 +53,7 @@ const now = new Date("2026-11-02T12:00:00Z");
 test("2.3 is known by its version and plays on its own game data, which is 2.2's", () => {
   assert.equal(versionOf(v23), "2.3");
   assert.equal(dataBuild(v23), v23);
-  assert.equal(battleRoyaleBuilds.at(-1), v23);
+  assert.ok(battleRoyaleBuilds.includes(v23));
   assert.deepEqual(inBuild(v23, athenaCosmetics), inBuild(v22, athenaCosmetics));
   assert.deepEqual(inBuild(v23, athenaDisplayAssets), inBuild(v22, athenaDisplayAssets));
   assert.deepEqual(inBuild(v23, athenaLootTables), inBuild(v22, athenaLootTables));
@@ -67,7 +67,8 @@ test("2.3 is still Season 2 with 1.11 to 2.2: its Battle Pass, clock, shop and t
   const season = inBuild(v23, athenaSeason);
   assert.equal(season.seasonNumber, 2);
   assert.deepEqual(season, inBuild(v22, athenaSeason));
-  assert.equal(buildOfSeason(2), v23);
+  // Season 2's newest data is 2.4's since (build24.test.js).
+  assert.equal(buildOfSeason(2), "3858292");
   assert.equal(inBuild(v23, () => seasonEnd(now, { rotationHour: 0 })).toISOString(), inBuild(v111, () => seasonEnd(now, { rotationHour: 0 })).toISOString());
   const config = { mode: "custom", custom: { featured: [["AthenaGlider:glider_prismatic", 800]], daily: [["AthenaPickaxe:skiicepickaxe", 800]] } };
   assert.deepEqual(inBuild(v23, () => itemShopOffers(now, config)), inBuild(v22, () => itemShopOffers(now, config)));

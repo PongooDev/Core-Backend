@@ -77,14 +77,27 @@ export const supplyDropGift = "EventFlag.SupplyDropGift";
 // and its ticketless storms (EventFlag.PassiveStorms, "storms on the map without tickets" while no Mutant Storms ran)
 // stop at 2.2 (🟡: 2.3's notes name no ticketless storms), so 2.3's Snowflake Tickets become Holiday Survival Llamas
 // (events/winter2017.js). 50v50 stays: 2.3's BR_Playlist_50v50 and its quest are 2.2's, and its notes end no playlist.
+//
+// 2.4 (CL-3858292, 31 January 2018) runs the same storms: its notes end no event and start none (no Valentine's or
+// Lunar New Year: those were 2.5's, and 2.4's data has no flag, quest or llama for them), and its data writes down what
+// Epic's servers did on 2.3. Its StormCategory rows are 2.3's (EventFlag.ActiveStorms); its Mini-Boss rows
+// (MiniBossCategory, MissionAlert_MiniBoss) wait for a flag of their own, EventFlag.ActiveMiniBosses, in place of
+// EventFlag.Winter2017; and its storms have quests of their own (Quests/Events/MutantStorms2018, events/mutantstorms.js).
+// So 2.4 runs mutantStorms2018 on both flags. Its General rows now carry the Mini-Boss modifier (MinibossTG) behind
+// EventFlag.PassiveMiniBosses, but a General alert is no Mini-Boss one to the game (its category's tag is
+// Stat.MissionAlert.General, not the Stat.MissionAlert.MiniBoss the Mini-Boss quest counts, nor MissionAlert.Visual.
+// Miniboss), and 2.3's notes say the Mini-Boss alerts replaced the generic ones, so that flag stays off (🟡 Core's
+// choice). 50v50 stays: 2.4's BR_Playlist_50v50 and quest are 2.3's, and its notes end no playlist.
 export const mutantStorms2018 = "MutantStorms2018";
+export const activeMiniBosses = "EventFlag.ActiveMiniBosses";
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
   { name: mutantStorms, flag: "EventFlag.Vindertech", firstBuild: 3775276, lastBuild: 3775276 },
   { name: mutantStorms, flag: "EventFlag.ActiveStorms", firstBuild: 3790078, lastBuild: 3790078 },
-  { name: mutantStorms2018, flag: "EventFlag.ActiveStorms", firstBuild: 3847564, lastBuild: 3847564 },
-  { name: fiftyFifty, flag: fiftyFifty, firstBuild: 3790078, lastBuild: 3847564 },
+  { name: mutantStorms2018, flag: "EventFlag.ActiveStorms", firstBuild: 3847564, lastBuild: 3858292 },
+  { name: mutantStorms2018, flag: activeMiniBosses, firstBuild: 3858292, lastBuild: 3858292 },
+  { name: fiftyFifty, flag: fiftyFifty, firstBuild: 3790078, lastBuild: 3858292 },
   { name: winter2017, flag: winter2017, firstBuild: 3807424, lastBuild: 3841827 },
   { name: passiveStorms, flag: passiveStorms, firstBuild: 3807424, lastBuild: 3841827 },
   { name: lobbyWinterDecor, flag: lobbyWinterDecor, firstBuild: 3807424, lastBuild: 3825894 },
@@ -96,9 +109,12 @@ const runsOn = (event, number) => number >= event.firstBuild && number <= event.
 
 // The storms a build runs when the admin panel forces the Mutant Storms (or a custom EventFlag.ActiveStorms): 2.3's
 // return (mutantStorms2018: the Hydraulic quests, the Storm Llama, the Mini-Bosses and the Event Store) from 2.3
-// (CL-3847564), whose data has no Vindertech quests or llama, else 1.9.1's Vindertech storms (mutantStorms).
+// (CL-3847564), whose data has no Vindertech quests or llama, else 1.9.1's Vindertech storms (mutantStorms). From 2.4
+// (CL-3858292) the Mini-Bosses have their flag too.
 const storms2018Build = 3847564;
+const miniBossFlagBuild = 3858292;
 const forcedStorms = (changelist) => (Number(changelist) >= storms2018Build ? mutantStorms2018 : mutantStorms);
+const forcedMiniBosses = (changelist) => Number(changelist) >= miniBossFlagBuild;
 
 let eventsConfigProvider = null;
 
@@ -121,13 +137,13 @@ export function activeEventFlags(changelist = currentBuild()) {
   if (eventsSetting.getStore() === false) return [];
   const config = currentEventsConfig();
   if (config?.mode === "off") return [];
-  // Forcing a Save the World event leaves the build's Battle Royale 50v50 running (1.10 to 2.3).
+  // Forcing a Save the World event leaves the build's Battle Royale 50v50 running (1.10 to 2.4).
   const fiftyFiftyFlags = Number.isInteger(Number(changelist)) && runsOn(events.find((event) => event.name === fiftyFifty), Number(changelist))
     ? [fiftyFifty] : [];
   if (config?.mode === "force_fortnitemares") return [fortnitemares, ...fiftyFiftyFlags];
   if (config?.mode === "force_mutantstorms") {
     const num = Number(changelist);
-    if (num >= 3790078) return ["EventFlag.ActiveStorms", ...fiftyFiftyFlags];
+    if (num >= 3790078) return ["EventFlag.ActiveStorms", ...(forcedMiniBosses(num) ? [activeMiniBosses] : []), ...fiftyFiftyFlags];
     if (Number.isInteger(num)) return ["EventFlag.Vindertech"];
     return ["EventFlag.Vindertech", "EventFlag.ActiveStorms"];
   }
@@ -155,7 +171,8 @@ export function isEventActive(nameOrFlag, changelist = currentBuild()) {
     return nameOrFlag === fortnitemares || nameOrFlag === "EventFlag.Fortnitemares";
   }
   if (config?.mode === "force_mutantstorms") {
-    return nameOrFlag === forcedStorms(changelist) || nameOrFlag === "EventFlag.Vindertech" || nameOrFlag === "EventFlag.ActiveStorms";
+    return nameOrFlag === forcedStorms(changelist) || nameOrFlag === "EventFlag.Vindertech" || nameOrFlag === "EventFlag.ActiveStorms"
+      || (nameOrFlag === activeMiniBosses && forcedMiniBosses(changelist));
   }
   if (config?.mode === "force_winter2017") {
     return nameOrFlag === winter2017 || nameOrFlag === "EventFlag.Winter2017"

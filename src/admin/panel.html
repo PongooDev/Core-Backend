@@ -5816,7 +5816,7 @@
           ? "Fixed storm targets, Vindertech quests & Storm alerts"
           : b.version.startsWith("1.11") || b.version.startsWith("2.1") || b.version.startsWith("2.2")
           ? "Mini-Boss alerts (10/day), winter quests, Snowflake Tickets, Holiday Survival Llamas, Storm Ticket conversion"
-          : b.version.startsWith("2.3")
+          : b.version.startsWith("2.3") || b.version.startsWith("2.4")
           ? "Mutant Storms return: Storm alerts (10/day), Mini-Boss alerts (3/day), Hydraulic quests, Storm Llamas, Snowflake conversion"
           : "Stonewood & Plankerton campaign, early storm alerts" })
       ]);
@@ -6107,7 +6107,7 @@
 
       // Season 2's content updates
       const content = data.contentUpdates ?? { builds: [] };
-      const [content111, content21, content23] = content.builds;
+      const [content111, content21, content23, content24] = content.builds;
       const updateWhy = { season: "by date", all: "all on", on: "forced on", off: "forced off", shipped: "always (2.1)" };
       const contentModeSelect = el("select", { class: "field", onchange: (e) => { form.contentUpdates.mode = e.target.value; } },
         el("option", { value: "season", text: "Follow the season's dates", selected: form.contentUpdates.mode === "season" }),
@@ -6127,7 +6127,7 @@
       const contentSection = season !== "2" ? null : el("section", { class: "panel", style: "margin-top:16px" },
         el("div", { class: "panel-head", style: "margin-bottom:8px" },
           el("div", { class: "actions" }, el("h2", { text: "Season 2 Content Updates" }), contentModeSelect)),
-        el("p", { class: "note", text: `Epic's loot hotfixes of Season 2, served to 1.11 and 2.1 clients and gameservers in DefaultGame.ini's [AssetHotfix]. On 1.11 they follow Season 2's replay (day 1 = 14 Dec 2017; today stands for ${content.seasonDate ? new Date(content.seasonDate).toUTCString().slice(5, 22) : "—"} UTC) or are all on; 2.1 always has all of them and its Cozy Campfire; 2.2 ships them in its own loot tables and needs none; 2.3 always has its Chug Jug. A gameserver takes them when it starts.` }),
+        el("p", { class: "note", text: `Epic's loot hotfixes of Season 2, served to 1.11 and 2.1 clients and gameservers in DefaultGame.ini's [AssetHotfix]. On 1.11 they follow Season 2's replay (day 1 = 14 Dec 2017; today stands for ${content.seasonDate ? new Date(content.seasonDate).toUTCString().slice(5, 22) : "—"} UTC) or are all on; 2.1 always has all of them and its Cozy Campfire; 2.2 ships them in its own loot tables and needs none; 2.3 always has its Chug Jug (2.4 ships it in); 2.4 always has its Minigun and Suppressed Pistol cut. A gameserver takes them when it starts.` }),
         ...(content111?.updates ?? []).map(contentRow),
         ...(content21?.updates ?? []).filter((u) => !(content111?.updates ?? []).some((o) => o.id === u.id)).map((u) =>
           el("div", { style: "display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:8px 0; border-top:1px solid var(--line);" },
@@ -6138,7 +6138,12 @@
           el("div", { style: "display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:8px 0; border-top:1px solid var(--line);" },
             el("div", { style: "min-width:260px; flex:1;" }, el("div", { class: "font-semibold", text: u.name }),
               el("div", { class: "muted", style: "font-size:11px;", text: "2.3's own" })),
-            chip(`2.3: ${u.on ? "in" : "out"}`, u.on ? "good" : "warn"))));
+            chip(`2.3: ${u.on ? "in" : "out"}`, u.on ? "good" : "warn"))),
+        ...(content24?.updates ?? []).map((u) =>
+          el("div", { style: "display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:8px 0; border-top:1px solid var(--line);" },
+            el("div", { style: "min-width:260px; flex:1;" }, el("div", { class: "font-semibold", text: u.name }),
+              el("div", { class: "muted", style: "font-size:11px;", text: "2.4's own" })),
+            chip(`2.4: ${u.on ? "in" : "out"}`, u.on ? "good" : "warn"))));
 
       const cacheMinsInput = el("input", {
         class: "field num",
