@@ -268,11 +268,22 @@ const offerIdOf = (templateId) => `core_br_${templateId.split(":")[1].toLowerCas
 
 // The featured items' shop art: the display asset (FortMtxOfferData with Battle Royale tile art) the extractor matched to
 // the cosmetic by its names (gamedata/athena.json displayAssets, tools/extractor), by object path, so each build's are
-// found without a list here. A cosmetic with none keeps the locker icon. Only the featured (weekly) storefront's offers
-// carry one, as the assets' names (DA_Featured_...) say; a daily tile shows the locker icon.
+// found without a list here. A cosmetic with none keeps the locker icon. Up to 1.10 only the featured (weekly)
+// storefront's offers carry one, as the assets' names (DA_Featured_...) say; a daily tile shows the locker icon.
 export function featuredDisplayAsset(templateId) {
   return athenaDisplayAssets()[templateId] ?? "";
 }
+
+// From 1.11 (CL-3807424) every offer carries its display asset, the daily ones too (Core-Backend #145: "Item shop
+// cosmetics dont show the shop display version of their icons"). 1.11's paks have one for nearly every outfit, glider
+// and pickaxe the shop sells (Catalog/DisplayAssets: DA_Featured_SMaleHID0xx and DA_Featured_SFemaleHID0xx for the
+// outfits, DA_Featured_Glider_ID_0xx and DA_Featured_Pickaxe_ID_xx), where 1.8's had them for a few featured items; the
+// offer widget shows a display asset's TileImage wherever the offer has one (HasDisplayAsset, GetTileImage), and the rest
+// keep the locker icon. The extractor matches them by name and art (tools/extractor): 1.11's DA_Featured_Pickaxe_ID_11_Medieval
+// (tile T-Featured-Pickaxe-20, the twin of its locker icon T-Icon-Pickaxes-SK-Pickaxe-20-L) is Axecalibur's, and
+// DA_Featured_Pickaxe_ID_19_Heart (T-Featured-Pickaxe-11) Tat Axe's. 1.8 to 1.10 keep the daily tiles' locker icons.
+const firstDailyDisplayAssetsBuild = 3807424;
+const dailyDisplayAssets = () => Number(currentBuild()) >= firstDailyDisplayAssetsBuild;
 
 // The day's offers by storefront, those the requesting build has the cosmetic for.
 export function itemShopOffers(now = new Date(), overrideConfig = null) {
@@ -292,7 +303,7 @@ export function itemShopOffers(now = new Date(), overrideConfig = null) {
         currencyType: "MtxCurrency",
         currencySubType: "",
         price: validPrice,
-        displayAssetPath: featured ? featuredDisplayAsset(templateId) : "",
+        displayAssetPath: featured || dailyDisplayAssets() ? featuredDisplayAsset(templateId) : "",
         athena: true
       };
     });
