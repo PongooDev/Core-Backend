@@ -7,7 +7,7 @@ import { athenaBattlePassDailyIds, athenaCosmetics, athenaDailyIds, athenaObject
 import { bannerIds, bannerTemplateId } from "../gamedata/banners.js";
 import { dataBuilds } from "../gamedata/read.js";
 import { log } from "../log.js";
-import { firstSeason, placements } from "../stats/store.js";
+import { placements } from "../stats/store.js";
 import { defaultBanner } from "./defaults.js";
 import { findItem } from "./items.js";
 import { grant } from "./progress.js";
@@ -107,25 +107,21 @@ const starterIds = (profile, settings) => [...starters, ...(!profile || ownsSave
 const sameId = (a, b) => a.toLowerCase() === b.toLowerCase();
 const migrated = (profile, name) => (profile.coreMigrations ?? []).includes(name);
 
-// The victory umbrellas: a win in a main mode (solo, duo or squad, stats/store.js isMainPlaylist; not a limited-time
-// playlist) gives The Umbrella (Solo_Umbrella, "The fabled victory umbrella."; Core-Backend #84), or to an account that
-// owns Save the World the Founder's Umbrella ("Founder's exclusive!") in its place, as 1.7.2's winners answer gives
-// winners "umbrella" or "founder_umbrella" (services/fortnite/battleroyale.js). 1.8 has no winners question (none of
-// 1.7.2's battleroyale/winners or recordwin strings are left): its umbrella is a glider item the locker equips. An
-// umbrella already in a locker stays.
-// Each season had its own victory umbrella, given for a win in that season (Core-Backend #157): Season 1's The Umbrella,
-// Season 2's Snowflake (Umbrella_Snowflake, in 1.11's and 2.1's data). A season's umbrella isn't earned once the season
-// is over. The Founder's Umbrella is no season's: a founder's win in any season gives it. In Season 1 a founder's win
-// gave it in place of The Umbrella (#84); from Season 2 a founder's win gives the season's umbrella too, as every
-// winner's did (🟡: from the wiki's accounts of Epic's umbrellas, not Epic's code).
-const seasonVictoryUmbrellas = { 1: "AthenaGlider:solo_umbrella", 2: "AthenaGlider:umbrella_snowflake" };
+// The victory umbrellas (Core-Backend #84, #157): a win in a main mode (solo, duo or squad, stats/store.js isMainPlaylist;
+// not a limited-time playlist) gives The Umbrella (Solo_Umbrella, "The fabled victory umbrella."), for an account's first
+// win in any season, and a first win in a season from Season 2 gives that season's own umbrella too: Season 2's Snowflake
+// (Umbrella_Snowflake, in 1.11's and 2.1's data). Season 1 has none beyond The Umbrella, and a season's umbrella isn't
+// earned in another season. An account that owns Save the World also gets the Founder's Umbrella ("Founder's exclusive!")
+// for a win in any season. 1.7.2's winners answer has one glider a player: "founder_umbrella" for such an account's win,
+// "umbrella" for anyone else's (services/fortnite/battleroyale.js, umbrellaTypeOf); the locker's umbrellas come the next
+// time the account's athena profile loads. 1.8 has no winners question (none of 1.7.2's battleroyale/winners or recordwin
+// strings are left): its umbrella is a glider item the locker equips. An umbrella already in a locker stays.
+const victoryUmbrella = "AthenaGlider:solo_umbrella";
+const seasonVictoryUmbrellas = { 2: "AthenaGlider:umbrella_snowflake" };
 const founderVictoryUmbrella = "AthenaGlider:founderumbrella";
-const victoryUmbrellas = [...Object.values(seasonVictoryUmbrellas), founderVictoryUmbrella];
-function victoryUmbrellasOf(accountId, settings, season) {
-  const seasonal = seasonVictoryUmbrellas[season] ? [seasonVictoryUmbrellas[season]] : [];
-  if (!ownsSaveTheWorld(accountId, settings)) return seasonal;
-  return season === firstSeason ? [founderVictoryUmbrella] : [...seasonal, founderVictoryUmbrella];
-}
+const victoryUmbrellas = [victoryUmbrella, ...Object.values(seasonVictoryUmbrellas), founderVictoryUmbrella];
+const victoryUmbrellasOf = (accountId, settings, season) => [victoryUmbrella, seasonVictoryUmbrellas[season],
+  ownsSaveTheWorld(accountId, settings) ? founderVictoryUmbrella : undefined].filter(Boolean);
 
 // Non-shop items: cosmetics that are given at start, earned in-game (season chase rewards, victory umbrellas),
 // or never locker items (Recruit defaults, unused umbrellas). They are never sold in the item shop (Core-Backend #69).
@@ -151,7 +147,7 @@ export const isNonShopCosmetic = (templateId) =>
 
 // The cosmetics the player has earned: the chase rewards of the season levels reached and, for each season with a
 // recorded win in solo, duo or squad (settings.wonSeasons, the stats: 1.7.2's recordwin; 1.8's own wins give theirs when
-// the gameserver reports them, services/fortnite/battleroyale.js), the account's victory umbrellas of that season.
+// the gameserver reports them, services/fortnite/battleroyale.js), the victory umbrellas a win in that season gives.
 function earnedCosmetics(profile, settings) {
   const level = profile.stats.attributes.level ?? 1;
   const rewards = seasonLevels().filter((entry) => entry.level <= level && entry.chaseReward).map((entry) => entry.chaseReward);
@@ -368,8 +364,8 @@ export function removeFullLocker(session) {
   return { cosmetics, banners: removed.length };
 }
 
-// A win in solo, duo or squad (1.8's on, reported by the gameserver), run in the match's build: the player's victory
-// umbrellas of its season, those they lack.
+// A win in solo, duo or squad (1.8's on, reported by the gameserver), run in the match's build: the victory umbrellas a
+// win in its season gives, those the player lacks.
 export const awardVictory = (session) => victoryUmbrellasOf(session.accountId, session.settings, seasonNumber())
   .map((templateId) => grantCosmetic(session, templateId)).filter(Boolean);
 

@@ -37,9 +37,9 @@ import { currentBattlePassConfig } from "../../battlepass/season1.js";
 //   score when the server sends one, else what the match is worth in season XP (profiles/athena.js matchXp), as
 //   CoreV2 reports none. A player with a Battle Royale profile (1.8's athena) also gets the match's season XP and its placement and
 //   elimination challenge progress (profiles/athena.js), which reach their client as profile notifications, and for a
-//   win (place 1) in solo, duo or squad the match's season's victory umbrellas in the locker (Core-Backend #77, #84, #157):
-//   Season 1's The Umbrella, or a founder's Founder's Umbrella; Season 2's Snowflake, and a founder's Founder's Umbrella
-//   too. 1.8's umbrella is a glider item.
+//   win (place 1) in solo, duo or squad the victory umbrellas it lacks in the locker (Core-Backend #77, #84, #157): The
+//   Umbrella in any season, the match's season's own umbrella (Season 2's Snowflake), and a founder's Founder's Umbrella.
+//   1.8's umbrella is a glider item.
 //   With battleRoyaleVbucks on (Core-Backend #100, #124, the admin panel's Settings), each result in solo, duos,
 //   squads or 1.10's 50v50 also pays V-Bucks, from that mode's battleRoyaleRewards: perKill a kill, perWin for a place 1
 //   (a team's every player, as CoreV2 places them all), and the best of its placement tiers the place is within (top

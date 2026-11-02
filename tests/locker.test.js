@@ -29,9 +29,9 @@ function command(port, { accountId, token }, name, profileId, body = {}) {
 const updateOf = (body, profileId) => [body, ...(body.multiUpdate ?? [])].find((update) => update.profileId === profileId);
 const athena = async (port, player) => updateOf((await command(port, player, "QueryProfile", "athena")).body, "athena").profileChanges[0].profile;
 
-// Core-Backend #84: a win in solo, duo or squad gives a founder (an account that owns Save the World, as every test account
-// does with defaultFoundersAccess on) the Founder's Umbrella in place of The Umbrella, never the Duo or Squad Umbrella.
-test("a win in a main playlist gives 1.8 founders the Founder's Umbrella, and only a win does", async () => {
+// Core-Backend #84, #157: a win in solo, duo or squad gives The Umbrella and, to a founder (an account that owns Save the
+// World, as every test account does with defaultFoundersAccess on), the Founder's Umbrella too, never the Duo or Squad Umbrella.
+test("a win in a main playlist gives 1.8 founders The Umbrella and the Founder's Umbrella, and only a win does", async () => {
   const backend = await startBackend();
   try {
     const winner = await userLogin(backend.port, "Winner18");
@@ -45,18 +45,18 @@ test("a win in a main playlist gives 1.8 founders the Founder's Umbrella, and on
       { accountId: winner.accountId, place: 1, kills: 3, secondsAlive: 900 },
       { accountId: second.accountId, place: 2, kills: 0, secondsAlive: 800 }] });
     const items = (await athena(backend.port, winner)).items;
-    assert.ok(items["AthenaGlider:founderumbrella"] && !items["AthenaGlider:solo_umbrella"]);
+    assert.ok(items["AthenaGlider:founderumbrella"] && items["AthenaGlider:solo_umbrella"]);
     assert.ok(!items["AthenaGlider:squad_umbrella"] && !items["AthenaGlider:duo_umbrella"]);
     assert.ok(!(await athena(backend.port, second)).items["AthenaGlider:founderumbrella"]);
     assert.equal((await command(backend.port, winner, "EquipBattleRoyaleCustomization", "athena",
       { slotName: "Glider", itemToSlot: "AthenaGlider:founderumbrella" })).status, 200);
 
-    // A recorded win from before (1.7.2's recordwin, in the stats), in duos too, gives the Founder's Umbrella when the athena
+    // A recorded win from before (1.7.2's recordwin, in the stats), in duos too, gives both umbrellas when the athena
     // profile next loads.
     const veteran = await userLogin(backend.port, "Veteran172");
     await post(backend.port, "/fortnite/api/game/v2/battleroyale/recordwin", dedicated, { playlistId: 10, accountIds: [veteran.accountId] });
     const veteranItems = (await athena(backend.port, veteran)).items;
-    assert.ok(veteranItems["AthenaGlider:founderumbrella"] && !veteranItems["AthenaGlider:solo_umbrella"]);
+    assert.ok(veteranItems["AthenaGlider:founderumbrella"] && veteranItems["AthenaGlider:solo_umbrella"]);
     assert.ok(!veteranItems["AthenaGlider:duo_umbrella"]);
 
     // A win in a limited-time playlist (neither solo, duo nor squad) gives no umbrella, reported or recorded
@@ -212,11 +212,11 @@ test("the admin panel gives the full locker and takes back only what it gave", a
 
     const removed = await admin("remove-granted");
     assert.equal(removed.status, 200);
-    assert.deepEqual(removed.body.removed, { cosmetics: given.body.granted.cosmetics - 1, banners: given.body.granted.banners });
+    assert.deepEqual(removed.body.removed, { cosmetics: given.body.granted.cosmetics - 2, banners: given.body.granted.banners });
     assert.equal(removed.body.locker.granted, 0);
     const after = await athena(backend.port, player);
     assert.deepEqual(Object.keys(after.items).filter((id) => !id.startsWith("Quest:") && after.items[id].templateId === id).sort(),
-      [...starters, "AthenaGlider:founderumbrella"].sort());
+      [...starters, "AthenaGlider:founderumbrella", "AthenaGlider:solo_umbrella"].sort());
     assert.equal(after.stats.attributes.favorite_glider, "AthenaGlider:defaultglider");
     assert.equal(after.stats.attributes.banner_icon, "StandardBanner1");
     assert.ok(!Object.values((await account()).items).some((item) => item.templateId === icon));
@@ -389,7 +389,7 @@ test("the admin panel gives single cosmetics of the chosen build, and refuses wh
 });
 
 // Core-Backend #84: 1.8's locker. An account without Save the World starts with the Glider only and wins The Umbrella;
-// one that owns it (a founder's pack) also starts with the Founder's Glider and wins the Founder's Umbrella instead.
+// one that owns it (a founder's pack) also starts with the Founder's Glider and wins the Founder's Umbrella too (#157).
 test("1.8 gives the Founder's Glider and Umbrella only to accounts that own Save the World", async () => {
   const backend = await startBackend({ defaultFoundersAccess: false });
   try {
@@ -408,7 +408,7 @@ test("1.8 gives the Founder's Glider and Umbrella only to accounts that own Save
     const won = (await athena(backend.port, player)).items;
     assert.ok(won["AthenaGlider:solo_umbrella"] && !won["AthenaGlider:founderumbrella"] && !won["AthenaGlider:founderglider"]);
     const founderWon = (await athena(backend.port, founder)).items;
-    assert.ok(founderWon["AthenaGlider:founderumbrella"] && !founderWon["AthenaGlider:solo_umbrella"]);
+    assert.ok(founderWon["AthenaGlider:founderumbrella"] && founderWon["AthenaGlider:solo_umbrella"]);
   } finally {
     backend.close();
   }

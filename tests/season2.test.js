@@ -411,13 +411,13 @@ test("the admin panel's Battle Pass tab shows Season 2's tiers and sets its pric
   assert.equal(catalog.storefronts.find(({ name }) => name === "BRSeason2").catalogEntries[0].prices[0].finalPrice, 500);
 }));
 
-// Core-Backend #157: each season had its own victory umbrella, Season 2's Snowflake. A win in Season 2 (1.11, 2.1)
-// gives it, once; a founder's gives the Founder's Umbrella too. Season 1's builds keep #84's umbrellas.
+// Core-Backend #157: an account's first win in any season gives The Umbrella, and a first win in Season 2 (1.11, 2.1)
+// gives its own Snowflake too, once; a founder's win gives the Founder's Umbrella as well. A Season 1 win gives no Snowflake.
 const snowflake = "AthenaGlider:umbrella_snowflake";
 const theUmbrella = "AthenaGlider:solo_umbrella";
 const founderUmbrella = "AthenaGlider:founderumbrella";
 
-test("a win in Season 2 gives its Snowflake umbrella once, and a founder's the Founder's Umbrella too", () => withPlayer(async (backend, player) => {
+test("a win in Season 2 gives The Umbrella and its Snowflake once, and a founder's the Founder's Umbrella too", () => withPlayer(async (backend, player) => {
   const dedicated = await dedicatedServerToken(backend.port);
   const report = (build, accountId, place, playlistId = 2) => as(build, backend.port, "POST", "/fortnite/api/game/v2/battleroyale/recordresults", dedicated,
     { playlistId, matchId: `umbrella-${Math.random().toString(16).slice(2, 10)}`, countWins: true,
@@ -428,45 +428,48 @@ test("a win in Season 2 gives its Snowflake umbrella once, and a founder's the F
   await report(v111, player.accountId, 2);
   await report(v111, player.accountId, 1, 35);
   let athena = await profileOf(backend.port, player, "athena");
-  assert.ok(!holds(athena, snowflake) && !holds(athena, founderUmbrella));
+  assert.ok(!holds(athena, snowflake) && !holds(athena, founderUmbrella) && !holds(athena, theUmbrella));
 
-  // A duos win: Snowflake and, as test accounts own Save the World, the Founder's Umbrella; not Season 1's The Umbrella.
+  // A duos win: The Umbrella, Snowflake and, as test accounts own Save the World, the Founder's Umbrella.
   await report(v111, player.accountId, 1, 10);
   athena = await profileOf(backend.port, player, "athena");
-  assert.ok(holds(athena, snowflake) && holds(athena, founderUmbrella) && !holds(athena, theUmbrella));
+  assert.ok(holds(athena, snowflake) && holds(athena, founderUmbrella) && holds(athena, theUmbrella));
   assert.equal((await command(backend.port, player, "EquipBattleRoyaleCustomization", "athena", { slotName: "Glider", itemToSlot: snowflake })).status, 200);
   // Once: another win adds nothing.
   const count = Object.keys(athena.items).length;
   await report(v111, player.accountId, 1);
   assert.equal(Object.keys((await profileOf(backend.port, player, "athena")).items).length, count);
 
-  // A 1.10 (Season 1) win gives no Snowflake, and its 1.11 lobby doesn't either: the win was Season 1's.
+  // A 1.10 (Season 1) win gives The Umbrella and no Snowflake, and its 1.11 lobby doesn't either: the win was Season 1's.
   const veteran = await userLogin(backend.port, "season1winner");
   await profileOf(backend.port, veteran, "athena", v110);
   await report(v110, veteran.accountId, 1);
   const season1 = await profileOf(backend.port, veteran, "athena", v110);
-  assert.ok(holds(season1, founderUmbrella) && !holds(season1, theUmbrella) && !holds(season1, snowflake));
+  assert.ok(holds(season1, founderUmbrella) && holds(season1, theUmbrella) && !holds(season1, snowflake));
   assert.ok(!holds(await profileOf(backend.port, veteran, "athena", v111), snowflake));
 }));
 
-test("each season's wins give that season's umbrella; without Save the World, Season 1's is The Umbrella", () => {
+test("any win gives The Umbrella, a season's wins that season's own umbrella, and a founder's the Founder's Umbrella", () => {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-season2-umbrella-"));
   try {
     const locker = (accountId, wonSeasons, founder) => openSession(createProfileStore(dataDir, {
       wonSeasons: () => wonSeasons, ownsSaveTheWorld: () => founder }), accountId).profile("athena").profile;
     const umbrellasOf = (profile) => [theUmbrella, founderUmbrella, snowflake].filter((id) => holds(profile, id));
     inBuild(v111, () => {
-      assert.deepEqual(umbrellasOf(locker("s2", [2], false)), [snowflake]);
+      assert.deepEqual(umbrellasOf(locker("s2", [2], false)), [theUmbrella, snowflake]);
       assert.deepEqual(umbrellasOf(locker("s1", [1], false)), [theUmbrella]);
       assert.deepEqual(umbrellasOf(locker("both", [1, 2], false)), [theUmbrella, snowflake]);
-      assert.deepEqual(umbrellasOf(locker("founder2", [2], true)), [founderUmbrella, snowflake]);
-      assert.deepEqual(umbrellasOf(locker("founder1", [1], true)), [founderUmbrella]);
+      assert.deepEqual(umbrellasOf(locker("founder2", [2], true)), [theUmbrella, founderUmbrella, snowflake]);
+      assert.deepEqual(umbrellasOf(locker("founder1", [1], true)), [theUmbrella, founderUmbrella]);
       assert.deepEqual(umbrellasOf(locker("none", [], true)), []);
+      // A locker made before its wins were recorded (or before #157's rule) is fixed up the next time it loads.
+      assert.deepEqual(umbrellasOf(locker("fixup", [], false)), []);
+      assert.deepEqual(umbrellasOf(locker("fixup", [1, 2], false)), [theUmbrella, snowflake]);
       // Earned, never sold.
       assert.ok(isNonShopCosmetic(snowflake));
     });
-    // 1.10's data has no Snowflake: a Season 2 win shows nothing there.
-    inBuild(v110, () => assert.deepEqual(umbrellasOf(locker("s2on110", [2], false)), []));
+    // 1.10's data has no Snowflake: a Season 2 win shows only The Umbrella there.
+    inBuild(v110, () => assert.deepEqual(umbrellasOf(locker("s2on110", [2], false)), [theUmbrella]));
   } finally {
     fs.rmSync(dataDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   }
