@@ -29,6 +29,14 @@ test("admin events tab: overview API, live countdowns, compatibility matrix, and
     assert.equal(res.status, 200);
     assert.equal(res.body.season, 1);
     assert.equal(res.body.seasonName, "Season 1 (1.8 – 1.10)");
+
+    // 2b. GET /admin/api/events/overview?season=2 returns Season 2 details and countdown
+    const s2Res = await admin(backend, "/events/overview?season=2");
+    assert.equal(s2Res.status, 200);
+    assert.equal(s2Res.body.season, 2);
+    assert.equal(s2Res.body.seasonName, "Season 2 (1.11 – 2.5)");
+    assert.ok(s2Res.body.calendar.seasonEnd);
+    assert.notEqual(s2Res.body.calendar.seasonEnd, res.body.calendar.seasonEnd);
     assert.equal(typeof res.body.seasonalEvents, "boolean");
     assert.ok(Array.isArray(res.body.activeFlags));
     assert.ok(Array.isArray(res.body.sampleBuilds));
@@ -166,6 +174,64 @@ test("admin events full customization: mode overrides, STW modifiers, calendar, 
     assert.equal(resetRes.status, 200);
     assert.equal(resetRes.body.success, true);
     assert.ok(resetRes.body.resetProfiles >= 1);
+
+    // 4. Quick Actions: Convert Storm Tickets Now
+    const stormPlayer = await userLogin(backend.port, "StormHoarder");
+    const stormAccountId = stormPlayer.accountId;
+
+    // Grant 1500 Storm Tickets to profile0
+    await admin(backend, `/accounts/${stormAccountId}/grant`, {
+      templateId: "AccountResource:eventcurrency_stormzone",
+      quantity: 1500
+    });
+
+    const convertStormRes = await admin(backend, "/events/actions/convert-storm-tickets", {});
+    assert.equal(convertStormRes.status, 200);
+    assert.equal(convertStormRes.body.success, true);
+    assert.ok(convertStormRes.body.convertedProfiles >= 1);
+    assert.ok(convertStormRes.body.totalLlamasGranted >= 1);
+    assert.equal(convertStormRes.body.ticketsPerLlama, 1000);
+
+    const stormDetails = await admin(backend, `/accounts/${stormAccountId}`);
+    const stormItems = stormDetails.body.items;
+    const remainingStorm = stormItems.find((i) => i.templateId.toLowerCase() === "accountresource:eventcurrency_stormzone");
+    assert.ok(remainingStorm);
+    assert.equal(remainingStorm.quantity, 500);
+    const vindertechLlamas = stormItems.filter((i) => i.templateId.toLowerCase() === "cardpack:cardpack_event_vindertech");
+    assert.ok(vindertechLlamas.length >= 1);
+
+    // 5. Winterfest / Season 2 Customization & force_winter2017 mode
+    const winterConfigRes = await admin(backend, "/events/config", {
+      mode: "force_winter2017",
+      winterGates: "open",
+      miniBossAlertQuota: 15,
+      passiveStormQuota: 6,
+      snowflakeMultiplier: 2.5,
+      snowflakePerLlama: 1500,
+      autoConvertStormTickets: true
+    });
+    assert.equal(winterConfigRes.status, 200);
+    assert.equal(winterConfigRes.body.events.mode, "force_winter2017");
+    assert.equal(winterConfigRes.body.events.winterGates, "open");
+    assert.equal(winterConfigRes.body.events.miniBossAlertQuota, 15);
+    assert.equal(winterConfigRes.body.events.passiveStormQuota, 6);
+    assert.equal(winterConfigRes.body.events.snowflakeMultiplier, 2.5);
+    assert.equal(winterConfigRes.body.events.snowflakePerLlama, 1500);
+
+    const s2Overview = await admin(backend, "/events/overview?season=2");
+    assert.equal(s2Overview.status, 200);
+    assert.equal(s2Overview.body.season, 2);
+    assert.equal(s2Overview.body.seasonName, "Season 2 (1.11 – 2.5)");
+    assert.equal(s2Overview.body.eventsConfig.mode, "force_winter2017");
+    assert.ok(s2Overview.body.activeFlags.includes("EventFlag.Winter2017"));
+    assert.ok(s2Overview.body.activeFlags.includes("EventFlag.PassiveStorms"));
+    assert.ok(s2Overview.body.activeFlags.includes("EventFlag.LobbyWinterDecor"));
+    assert.ok(s2Overview.body.activeFlags.includes("EventFlag.WinterBattleBus"));
+
+    const winterOverviewEntry = s2Overview.body.events.find((e) => e.id === "winter2017");
+    assert.ok(winterOverviewEntry);
+    assert.ok(winterOverviewEntry.alertsQuota.includes("15 Mini-Boss"));
+    assert.ok(winterOverviewEntry.llama.includes("1500 Snowflake Tickets"));
   } finally {
     backend.close();
   }
@@ -174,7 +240,7 @@ test("admin events full customization: mode overrides, STW modifiers, calendar, 
 // Core-Backend #156: the Events page's season picker stayed on Season 1 (it reloaded the page with Season 1 picked), and
 // Season 2's content updates card showed under it. The page now keeps the season picked, and shows its clock, its
 // Season Start row and, for Season 2 only, the content updates.
-test("the admin panel's script parses, and the Events page shows the season picked", async () => {
+test("the admin panel's script parses, and the Events page shows the season picked with dedicated pages", async () => {
   const backend = await startBackend();
   try {
     const html = (await get(backend.port, "/admin")).body;
@@ -182,9 +248,9 @@ test("the admin panel's script parses, and the Events page shows the season pick
     assert.doesNotThrow(() => new vm.Script(script, { filename: "panel.html" }));
     const events = script.slice(script.indexOf("async function showEvents()"), script.indexOf("/* ---------- reports ---------- */"));
     assert.match(events, /const season = state\.eventsSeason === "2" \? "2" : "1";/);
-    assert.match(events, /seasonSelector\(season, \(picked\) => \{ state\.eventsSeason = String\(picked\); showEvents\(\); \}\)/);
+    assert.match(events, /seasonBreadcrumb\(["']#\/events["']/);
     assert.match(events, /const contentSection = season !== "2" \? null : el\("section"/);
-    assert.ok(!events.includes('seasonSelector("1"'));
+    assert.ok(!events.includes("seasonSelector"));
   } finally {
     backend.close();
   }

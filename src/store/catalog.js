@@ -104,9 +104,14 @@ const onSale = (offer) => !offer.event || (isEventActive(offer.event) && Boolean
 
 const allOffers = () => {
   const customCandy = currentEventsConfig()?.candyPerLlama ?? 500;
+  const customSnowflake = currentEventsConfig()?.snowflakePerLlama ?? 1000;
   return [
     ...mtxOffers.filter(inThisBuild),
-    ...eventOffers.filter(onSale).map((offer) => (offer.offerId === "core_event_fortnitemares_llama" ? { ...offer, price: customCandy } : offer)),
+    ...eventOffers.filter(onSale).map((offer) => {
+      if (offer.offerId === "core_event_fortnitemares_llama") return { ...offer, price: customCandy };
+      if (offer.offerId === "core_event_winter_llama") return { ...offer, price: customSnowflake };
+      return offer;
+    }),
     ...voucherOffers()
   ];
 };

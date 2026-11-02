@@ -98,6 +98,9 @@ export function activeEventFlags(changelist = currentBuild()) {
     if (Number.isInteger(num)) return ["EventFlag.Vindertech"];
     return ["EventFlag.Vindertech", "EventFlag.ActiveStorms"];
   }
+  if (config?.mode === "force_winter2017") {
+    return [winter2017, passiveStorms, lobbyWinterDecor, winterBattleBus, ...fiftyFiftyFlags];
+  }
   if (config?.mode === "custom") {
     return Array.isArray(config.customFlags) ? config.customFlags : [];
   }
@@ -112,7 +115,7 @@ export function isEventActive(nameOrFlag, changelist = currentBuild()) {
   if (eventsSetting.getStore() === false) return false;
   const config = currentEventsConfig();
   if (config?.mode === "off") return false;
-  if (nameOrFlag === fiftyFifty && (config?.mode === "force_fortnitemares" || config?.mode === "force_mutantstorms")) {
+  if (nameOrFlag === fiftyFifty && (config?.mode === "force_fortnitemares" || config?.mode === "force_mutantstorms" || config?.mode === "force_winter2017")) {
     return activeEventFlags(changelist).includes(fiftyFifty);
   }
   if (config?.mode === "force_fortnitemares") {
@@ -120,6 +123,12 @@ export function isEventActive(nameOrFlag, changelist = currentBuild()) {
   }
   if (config?.mode === "force_mutantstorms") {
     return nameOrFlag === mutantStorms || nameOrFlag === "EventFlag.Vindertech" || nameOrFlag === "EventFlag.ActiveStorms";
+  }
+  if (config?.mode === "force_winter2017") {
+    return nameOrFlag === winter2017 || nameOrFlag === "EventFlag.Winter2017"
+      || nameOrFlag === passiveStorms || nameOrFlag === "EventFlag.PassiveStorms"
+      || nameOrFlag === lobbyWinterDecor || nameOrFlag === "EventFlag.LobbyWinterDecor"
+      || nameOrFlag === winterBattleBus || nameOrFlag === "EventFlag.WinterBattleBus";
   }
   if (config?.mode === "custom") {
     const flags = Array.isArray(config.customFlags) ? config.customFlags : [];
@@ -138,6 +147,7 @@ export function isEventActive(nameOrFlag, changelist = currentBuild()) {
 export function hasEventEnded(name, changelist = currentBuild()) {
   const config = currentEventsConfig();
   if (config?.mode === "force_fortnitemares" && (name === fortnitemares || name === "EventFlag.Fortnitemares")) return false;
+  if (config?.mode === "force_winter2017" && (name === winter2017 || name === "EventFlag.Winter2017")) return false;
   const number = Number(changelist);
   const runs = events.filter((candidate) => candidate.name === name || candidate.flag === name);
   return runs.length > 0 && Number.isInteger(number) && number > Math.max(...runs.map((event) => event.lastBuild));

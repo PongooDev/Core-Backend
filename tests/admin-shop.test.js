@@ -166,3 +166,35 @@ test("the weekly countdown ends when the random shop's featured pair changes, at
   assert.notEqual(featured(end), featured(now));
   assert.equal(weeklyStoreEnd(new Date("2026-11-01T04:59:59Z"), config).toISOString(), end.toISOString());
 });
+
+test("admin shop API separates Season 1 and Season 2 catalog and historical rotation", async () => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-admin-shop-seasons-test-"));
+  const backend = await startBackend({ dataDir });
+
+  try {
+    const s1Shop = await admin(backend, "/shop?season=1");
+    assert.equal(s1Shop.status, 200);
+    assert.equal(s1Shop.body.season, 1);
+    assert.equal(s1Shop.body.seasonName, "Season 1 (1.8 – 1.10)");
+    assert.ok(s1Shop.body.currentShop.featured.length >= 2);
+    assert.ok(s1Shop.body.currentShop.daily.length >= 4);
+
+    const s2Shop = await admin(backend, "/shop?season=2");
+    assert.equal(s2Shop.status, 200);
+    assert.equal(s2Shop.body.season, 2);
+    assert.equal(s2Shop.body.seasonName, "Season 2 (1.11 – 2.5)");
+    assert.ok(s2Shop.body.currentShop.featured.length >= 2);
+    assert.ok(s2Shop.body.currentShop.daily.length >= 4);
+
+    // Verify Season 2 cosmetics pool contains Season 2 items (76 vs 41)
+    assert.equal(s1Shop.body.availableCosmetics.length, 41);
+    assert.equal(s2Shop.body.availableCosmetics.length, 76);
+    assert.ok(s2Shop.body.availableCosmetics.some((c) => c.templateId.toLowerCase().includes("pickaxe_id_015_holidaycandycane")));
+
+    // Season 1 and Season 2 have different season countdown targets
+    assert.notEqual(s1Shop.body.seasonEnd, s2Shop.body.seasonEnd);
+  } finally {
+    backend.close();
+    fs.rmSync(dataDir, { recursive: true, force: true });
+  }
+});
