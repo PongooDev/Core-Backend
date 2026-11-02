@@ -3035,6 +3035,28 @@
           setAccount(account, message);
         });
       }, "primary");
+      // Core-Backend #159: the picked cosmetics out of the locker. Starters and earned ones (season level rewards, victory
+      // umbrellas) would come back, so the backend keeps them and says why.
+      const removeButton = btn("Remove selected", async () => {
+        const picked = [...c.picked.values()];
+        if (!picked.length) return toast("Pick one or more cosmetics first", true);
+        const names = (ids) => ids.map((id) => c.picked.get(id)?.name ?? id).join(", ");
+        if (!await confirmModal(`Remove ${names(picked.map((item) => item.templateId))} from ${a.displayName}'s locker? Equipped ones go back to the default. Starter cosmetics and ones they earned stay, as they'd come back.`, {
+          title: "Remove Cosmetics",
+          confirmText: "Remove",
+          confirmKind: "danger"
+        })) return;
+        act(api(`/admin/api/accounts/${a.id}/cosmetics/remove`, { build: c.build, templateIds: picked.map((item) => item.templateId) })).then((account) => {
+          if (!account) return;
+          const { removed, notOwned, kept, version } = account.cosmeticRemoval;
+          const message = [removed.length ? `Removed ${names(removed)} from ${a.displayName} (${version})` : "Nothing removed",
+            kept.length ? `kept ${kept.map(({ templateId, reason }) => `${names([templateId])} (${reason})`).join(", ")}` : null,
+            notOwned.length ? `not owned: ${names(notOwned)}` : null].filter(Boolean).join("; ");
+          c.picked.clear();
+          c.data = null;
+          setAccount(account, message);
+        });
+      }, "danger");
       const clearButton = btn("Clear", () => { c.picked.clear(); render(); }, "ghost small");
       const options = (select, list, chosen) => select.replaceChildren(...list.map(([value, label]) => el("option", { value, text: label, selected: value === chosen })));
       function render() {
@@ -3044,6 +3066,8 @@
         options(typeSelect, [["", "Every type"], ...data.types.map((type) => [type, type])], c.type);
         giveButton.querySelector("span").textContent = c.picked.size ? `Give selected (${c.picked.size})` : "Give selected";
         giveButton.disabled = !c.picked.size;
+        removeButton.querySelector("span").textContent = c.picked.size ? `Remove selected (${c.picked.size})` : "Remove selected";
+        removeButton.disabled = !c.picked.size;
         clearButton.disabled = !c.picked.size;
         summary.replaceChildren(`${fmt(data.owned)} / ${fmt(data.total)} of ${data.version}'s cosmetics owned`,
           data.hasProfile ? "" : " · no Battle Royale profile yet: a grant makes it, with the starter cosmetics",
@@ -3074,10 +3098,10 @@
       if (c.data) render(); else load();
       return el("div", { style: "margin-top:16px" },
         el("h3", { text: "Give cosmetics" }),
-        el("div", { class: "actions", style: "margin-top:8px" }, buildSelect, typeSelect, search, giveButton, clearButton),
+        el("div", { class: "actions", style: "margin-top:8px" }, buildSelect, typeSelect, search, giveButton, removeButton, clearButton),
         el("div", { style: "margin-top:10px" }, summary),
         results,
-        el("p", { class: "note", text: "Only the chosen build's cosmetics are listed and given. Pick one or more; a cosmetic the account already owns is left as it is. Given cosmetics are the player's for good (Remove granted keeps them), and a player in the game gets them at once." }));
+        el("p", { class: "note", text: "Only the chosen build's cosmetics are listed and given. Pick one or more; a cosmetic the account already owns is left as it is. Given cosmetics are the player's for good (Remove granted keeps them), and a player in the game gets them at once. Remove selected takes owned ones out of the locker, putting equipped ones back to the default; starter cosmetics (the default glider, pickaxe, emote, loading screen and bus, the Founder's Glider) and earned ones (season level rewards, victory umbrellas) stay, as they'd come back." }));
     }
 
     // Battle Royale's season level (Core-Backend #106): set to the start of a level, with its chase rewards.

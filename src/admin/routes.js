@@ -15,7 +15,7 @@ import { recentLogs } from "../log.js";
 import { sessionSummary } from "../matchmaking/sessions.js";
 import { defaultHostingIps, hostingIp, maxHostingIps } from "../network.js";
 import { alertsRemaining, emptyAlertRecord, withQuotaSlots } from "../profiles/alerts.js";
-import { fullLockerState, grantCosmetic, grantFullLocker, lockerCosmeticId, lockerCosmetics, maxSeasonLevel, ownsCosmetic, removeFullLocker,
+import { fullLockerState, grantCosmetic, grantFullLocker, lockerCosmeticId, lockerCosmetics, maxSeasonLevel, ownsCosmetic, removeFullLocker, removeLockerCosmetic,
   setSeasonLevel } from "../profiles/athena.js";
 import { levelRest, restBalance, restValue } from "../profiles/boosts.js";
 import { foundersEditionOf, foundersEditions, setFoundersEdition } from "../profiles/founders.js";
@@ -662,6 +662,38 @@ export function adminRoutes(context) {
         else if (grantCosmetic(session, templateId)) granted.push(templateId);
       }
       return { cosmeticGrant: { build, version, granted, alreadyOwned } };
+    });
+  }));
+
+  // {build, templateIds}: takes those of the build's cosmetics the account owns out of its locker (Core-Backend #159), the
+  // slots showing one back to their default (profiles/athena.js removeLockerCosmetic). A starter or an earned cosmetic
+  // would come back, so it stays and the answer says why; with giveAllCosmetics on every one would, so none is taken.
+  router.post("/admin/api/accounts/:accountId/cosmetics/remove", change(({ req, res, session }) => {
+    const build = cosmeticBuild(req.body?.build);
+    if (!build) return notBattleRoyaleBuild(res, req.body?.build);
+    const version = versionOf(build);
+    const requested = (Array.isArray(req.body?.templateIds) ? req.body.templateIds : [req.body?.templateId])
+      .map((templateId) => (typeof templateId === "string" ? templateId.trim() : "")).filter(Boolean);
+    if (!requested.length || requested.length > 1000) return invalid(res, "Pick 1 to 1000 cosmetics to remove");
+    const unknown = requested.filter((templateId) => !inBuild(build, () => lockerCosmeticId(templateId)));
+    if (unknown.length) return invalid(res, `${version} has no locker cosmetic ${unknown.join(", ")}: remove only cosmetics that build has`);
+    if (!session.hasProfile("athena")) return invalid(res, "The account has no Battle Royale profile yet, so it owns no cosmetics to remove");
+    if (session.settings?.giveAllCosmetics) {
+      return invalid(res, "giveAllCosmetics is on (config.json): every cosmetic is given back to every account, so none can be removed");
+    }
+    return inBuild(build, () => {
+      const removed = [];
+      const notOwned = [];
+      const kept = [];
+      for (const templateId of new Set(requested.map(lockerCosmeticId))) {
+        const result = removeLockerCosmetic(session, templateId);
+        if (result.removed) removed.push(templateId);
+        else if (result.kept) kept.push({ templateId, reason: result.kept });
+        else notOwned.push(templateId);
+      }
+      // What only Core's bookkeeping noted (the full locker's and the blanket grant's lists) is saved even when no item changed.
+      profiles.save(session.profile("athena").profile);
+      return { cosmeticRemoval: { build, version, removed, notOwned, kept } };
     });
   }));
 

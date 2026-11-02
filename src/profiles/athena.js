@@ -208,6 +208,36 @@ function removeCosmetic(tracker, itemId) {
       if (held.some((id) => sameId(String(id ?? ""), itemId))) tracker.setStat(stat, held.map((id) => (sameId(String(id ?? ""), itemId) ? "" : id)));
     } else if (sameId(String(held ?? ""), itemId)) tracker.setStat(stat, defaultItemId(tracker.profile, slot));
   }
+  // 1.11's other five emote slots, waiting while a 1.8 to 1.10 build has the profile (settleDanceSlots), don't bring it back.
+  const { profile } = tracker;
+  if (Array.isArray(profile.coreDances)) profile.coreDances = profile.coreDances.map((id) => (sameId(String(id ?? ""), itemId) ? "" : id));
+}
+
+// Why a cosmetic the panel would take out of a locker stays (Core-Backend #159): the starters and what the player has
+// earned (season level rewards reached, victory umbrellas of recorded wins) are given back the next time the profile is
+// set up, so taking them is refused. null for one that can go.
+function keptCosmeticReason(profile, settings, templateId) {
+  if (starterIds(profile, settings).some((id) => sameId(id, templateId))) return "a starter cosmetic every account is given back";
+  if (!earnedCosmetics(profile, settings).some((id) => sameId(id, templateId))) return null;
+  return chaseRewardIds().some((id) => sameId(id, templateId)) ? "a season level reward the account has reached" : "a victory umbrella of a recorded win";
+}
+
+// The admin panel's Remove selected (Core-Backend #159): a cosmetic leaves the locker, with what it held (its attributes
+// and variants are the item's), and the slots showing it go back to their default as when the full locker is taken back
+// (removeCosmetic). It is no longer the panel's or the blanket grant's to take back either. Returns { removed: true },
+// { kept: reason } for one that would come back, or { removed: false } for one the account doesn't own.
+export function removeLockerCosmetic(session, templateId) {
+  const tracker = session.profile("athena");
+  const { profile } = tracker;
+  const itemId = findItem(profile, templateId);
+  if (!itemId) return { removed: false };
+  const kept = keptCosmeticReason(profile, session.settings ?? {}, profile.items[itemId].templateId);
+  if (kept) return { kept };
+  removeCosmetic(tracker, itemId);
+  profile.coreBlanketCosmetics = blanket(profile).filter((held) => !sameId(held, templateId));
+  profile.coreGrantedCosmetics = adminGranted(profile).filter((held) => !sameId(held, templateId));
+  log("Battle Royale", `${session.accountId} lost ${templateId} from the admin panel`);
+  return { removed: true };
 }
 
 export function setUpAthena(session) {
