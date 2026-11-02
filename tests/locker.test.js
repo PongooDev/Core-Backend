@@ -93,9 +93,11 @@ test("season level 25 gives the Mako glider; giveAllCosmetics turned off again t
 
   // Everything, then a purchase and an equipped item.
   session = locker({ giveAllCosmetics: true });
-  // Every cosmetic but the 8 random Recruit outfits (#77) and the Duo and Squad Umbrellas (#84).
+  // Every cosmetic but the 8 random Recruit outfits (#77), the Duo and Squad Umbrellas (#84) and the GUN SHOW consumable
+  // emote (#161).
   const { items: given } = session.profile("athena").profile;
-  assert.equal(Object.keys(given).length, Object.keys(athenaCosmetics()).length - 10);
+  assert.equal(Object.keys(given).length, Object.keys(athenaCosmetics()).length - 11);
+  assert.ok(!given["AthenaConsumableEmote:eid_gunshow"]);
   assert.ok(!given["AthenaGlider:duo_umbrella"] && !given["AthenaGlider:squad_umbrella"] && given["AthenaGlider:solo_umbrella"]);
   grantCosmetic(session, "AthenaPickaxe:halloweenscythe");
   session.profile("athena").setStat("favorite_character", "AthenaCharacter:cid_029_athena_commando_f_halloween");
@@ -172,7 +174,7 @@ test("the admin panel gives the full locker and takes back only what it gave", a
     // The full locker gives every build's cosmetics: the newest build's are all of them (1.8.2 adds Aerial Assault One,
     // 1.10 the Winter Bus, 1.11 Season 2's).
     const lockerIds = inBuild("3807424", () => Object.keys(athenaCosmetics()))
-      .filter((id) => !/cid_00\d_athena_commando_\w_default|duo_umbrella|squad_umbrella/i.test(id));
+      .filter((id) => !/cid_00\d_athena_commando_\w_default|duo_umbrella|squad_umbrella|eid_gunshow|emoji_placeholder/i.test(id));
     const bannerRows = inBuild("3724489", bannerIds);
     const icon = bannerRows.find((id) => /^HomebaseBannerIcon:FounderTier/.test(id));
     assert.ok(icon && !Object.values((await account()).items).some((item) => item.templateId === icon));
@@ -238,6 +240,48 @@ test("what giveAllCosmetics gave stays once the panel gives the full locker", ()
   session = locker({});
   assert.equal(Object.keys(session.profile("athena").profile.items).length, total);
   assert.equal(removeFullLocker(session).cosmetics, total - 6);
+})));
+
+// Core-Backend #161: the full locker gave Cert's EID_GunShow, a consumable emote no one was given, which 1.11's emote
+// wheel showed as "GUN SHOW (x1)", and 1.11's Emoji_Placeholder. Neither is a locker item: the full locker leaves them
+// out, a locker that holds one loses it, and Remove granted takes it.
+test("the full locker leaves out the GUN SHOW consumable emote and the placeholder emoticon, and lockers lose them", () => withStore((dataDir) => inBuild("3807424", () => {
+  const unreleased = ["AthenaConsumableEmote:eid_gunshow", "AthenaDance:emoji_placeholder"];
+  for (const id of unreleased) assert.ok(athenaCosmetics()[id], id);
+  // Every other 1.11 and 2.1 cosmetic is a cosmetic of a locker type with a name.
+  for (const build of ["3807424", "3825894"]) {
+    for (const [id, cosmetic] of inBuild(build, () => Object.entries(athenaCosmetics()))) {
+      if (unreleased.includes(id) || !cosmetic.class) continue;
+      assert.ok(cosmetic.class !== "AthenaConsumableEmoteItemDefinition" && !/placeholder/i.test(cosmetic.name), id);
+    }
+  }
+
+  const locker = () => openSession(createProfileStore(dataDir), "gunshow");
+  let session = locker();
+  grantFullLocker(session);
+  let { items } = session.profile("athena").profile;
+  for (const id of unreleased) assert.ok(!items[id], id);
+  assert.ok(items["AthenaDance:eid_flex"], "1.11's own Gun Show emote stays");
+  assert.equal(grantCosmetic(session, "AthenaConsumableEmote:eid_gunshow"), null);
+
+  // An account the full locker gave them before: equipped, and in the panel's list to take back.
+  const tracker = session.profile("athena");
+  for (const id of unreleased) tracker.addItem(id, { templateId: id, attributes: { level: 1, item_seen: 1, favorite: 0 }, quantity: 1 });
+  tracker.setStat("favorite_consumableemote", "AthenaConsumableEmote:eid_gunshow");
+  tracker.profile.coreGrantedCosmetics.push(...unreleased);
+  const held = Object.keys(tracker.profile.items).length;
+  assert.equal(removeFullLocker(session).cosmetics, held - 6);
+  ({ items } = session.profile("athena").profile);
+  for (const id of unreleased) assert.ok(!items[id], id);
+  assert.equal(session.profile("athena").profile.stats.attributes.favorite_consumableemote, "");
+  session.commit();
+
+  // Held without the panel's list (giveAllCosmetics, or given by id): gone the next time the profile loads.
+  session = locker();
+  session.profile("athena").addItem(unreleased[0], { templateId: unreleased[0], attributes: { level: 1, item_seen: 1, favorite: 0 }, quantity: 1 });
+  session.commit();
+  createProfileStore(dataDir).save(session.profile("athena").profile);
+  assert.ok(!locker().profile("athena").profile.items[unreleased[0]]);
 })));
 
 test("the admin panel sets an account's Battle Royale season level, with its chase rewards (Core-Backend #106)", async () => {
@@ -312,7 +356,7 @@ test("the admin panel gives single cosmetics of the chosen build, and refuses wh
     // unused umbrellas.
     listed = await list("?build=3724489");
     const lockerIds = inBuild("3724489", () => Object.keys(athenaCosmetics()))
-      .filter((id) => !/cid_00\d_athena_commando_\w_default|duo_umbrella|squad_umbrella/i.test(id));
+      .filter((id) => !/cid_00\d_athena_commando_\w_default|duo_umbrella|squad_umbrella|eid_gunshow|emoji_placeholder/i.test(id));
     assert.deepEqual([listed.body.build, listed.body.total, listed.body.matches], ["3724489", lockerIds.length, lockerIds.length]);
     assert.deepEqual(listed.body.items.map((item) => item.templateId).sort(), [...lockerIds].sort());
     const byId = (body, templateId) => body.items.find((item) => item.templateId === templateId);

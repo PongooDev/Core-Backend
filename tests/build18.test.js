@@ -51,7 +51,7 @@ test("1.8's login queries the athena profile: the starter cosmetics, the default
   }
 });
 
-test("with giveAllCosmetics on, the locker holds every Battle Royale cosmetic of the build but the random Recruits and unused umbrellas", async () => {
+test("with giveAllCosmetics on, the locker holds every Battle Royale cosmetic of the build but the random Recruits, unused umbrellas and GUN SHOW", async () => {
   const backend = await startBackend({ giveAllCosmetics: true });
   try {
     const profile = await athenaProfile(backend.port, await userLogin(backend.port, "AllCosmetics18"));
@@ -63,8 +63,9 @@ test("with giveAllCosmetics on, the locker holds every Battle Royale cosmetic of
     const recruit = (templateId) => /cid_00[1-8]_athena_commando_[fm]_default$/.test(templateId);
     assert.equal(cosmetics.filter(recruit).length, 8);
     // Nor are the Duo and Squad Umbrellas, which Epic never gave (#84).
-    const unused = (templateId) => ["AthenaGlider:duo_umbrella", "AthenaGlider:squad_umbrella"].includes(templateId);
-    assert.equal(cosmetics.filter(unused).length, 2);
+    // Nor is the GUN SHOW consumable emote, which no one was given (#161).
+    const unused = (templateId) => ["AthenaGlider:duo_umbrella", "AthenaGlider:squad_umbrella", "AthenaConsumableEmote:eid_gunshow"].includes(templateId);
+    assert.equal(cosmetics.filter(unused).length, 3);
     assert.deepEqual(Object.keys(profile.items).sort(), cosmetics.filter((templateId) => !recruit(templateId) && !unused(templateId)).sort());
     for (const templateId of ["AthenaCharacter:cid_029_athena_commando_f_halloween", "AthenaPickaxe:halloweenscythe", "AthenaGlider:glider_warthog",
       "AthenaVictoryPose:eid_ridethepony", "AthenaLoadingScreen:lsid_fiercecloudpuff", "AthenaBattleBus:bbid_purplebus"]) {

@@ -76,14 +76,31 @@ const ownsSaveTheWorld = (accountId, settings = {}) => settings.ownsSaveTheWorld
 //   gave them, every win in every mode gave The Umbrella (Solo_Umbrella, below), and later builds' paks dropped both
 //   assets (the report; 1.8 is the last build Core has). 1.8's still have their descriptions unlocalized (no text
 //   namespace, where Solo_Umbrella's has its package's). A glider slot holding one goes back to the default glider.
+// - What the data shows Epic never gave (Core-Backend #161), in any build's data (neverGiven, below).
 // A locker that holds one loses it; nothing gives one.
 const randomCharacters = [1, 2, 3, 4, 5, 6, 7, 8].map((n) => `AthenaCharacter:cid_00${n}_athena_commando_${n <= 4 ? "f" : "m"}_default`);
 const unusedUmbrellas = ["AthenaGlider:duo_umbrella", "AthenaGlider:squad_umbrella"];
 const notLockerItems = [...randomCharacters, ...unusedUmbrellas];
+
+// The cosmetics whose definition says they were never anyone's (Core-Backend #161):
+// - a consumable emote (AthenaConsumableEmoteItemDefinition): an item with a count that playing it uses up, not a
+//   cosmetic. The only one, Cert's EID_GunShow ("GUN SHOW"), is in every build's data and was never given; 1.11's and
+//   2.1's emote wheel shows a held one in its own slot, as "GUN SHOW (x1)".
+// - a placeholder (its display name "Placeholder"): 1.11's and 2.1's Emoji_Placeholder, the stand-in emoticon.
+const neverGiven = (cosmetic) => cosmetic?.class === "AthenaConsumableEmoteItemDefinition"
+  || String(cosmetic?.name ?? "").trim().toLowerCase() === "placeholder";
+// Their template ids in any build's data, lower-cased: a profile is shared by every build. Made on first use.
+let neverGivenIds;
+const neverGivenTemplate = (templateId) => {
+  neverGivenIds ??= new Set(dataBuilds.flatMap((build) => inBuild(build, () => Object.entries(athenaCosmetics())))
+    .filter(([, cosmetic]) => neverGiven(cosmetic)).map(([id]) => id.toLowerCase()));
+  return neverGivenIds.has(String(templateId).toLowerCase());
+};
 // Locker items the shop never sold (Core-Backend #95): the tiered umbrellas and the preseason gliders.
 const notShopGliders = ["AthenaGlider:umbrella_bronze", "AthenaGlider:umbrella_silver", "AthenaGlider:umbrella_gold",
   "AthenaGlider:umbrella_platinum", "AthenaGlider:preseasonglider", "AthenaGlider:preseasonglider_elite"];
-const isLockerItem = (templateId) => !notLockerItems.some((id) => id.toLowerCase() === String(templateId).toLowerCase());
+const isLockerItem = (templateId) => !notLockerItems.some((id) => id.toLowerCase() === String(templateId).toLowerCase())
+  && !neverGivenTemplate(templateId);
 const heldNonLockerItems = (profile) => Object.entries(profile.items)
   .filter(([, item]) => !isLockerItem(item.templateId)).map(([itemId]) => itemId);
 // The build's locker cosmetics, as its game data spells them.
@@ -334,6 +351,11 @@ export function removeFullLocker(session) {
   for (const templateId of adminGranted(profile)) {
     const itemId = findItem(profile, templateId);
     if (!itemId || keep.some((id) => sameId(id, templateId))) continue;
+    removeCosmetic(tracker, itemId);
+    cosmetics += 1;
+  }
+  // What is never a locker item goes too, however it came (Core-Backend #161: the full locker gave EID_GunShow).
+  for (const itemId of heldNonLockerItems(profile)) {
     removeCosmetic(tracker, itemId);
     cosmetics += 1;
   }
