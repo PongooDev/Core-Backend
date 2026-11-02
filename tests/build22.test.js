@@ -103,6 +103,27 @@ test("2.2 runs Save the World's winter event and 50v50, and ends Battle Royale's
   assert.ok(inBuild(v22, hasEventStore));
 });
 
+// The home screen's winter "View Event" tile (HomeScreenNextQuest's BorderQuestMapToggle) shows while
+// EventFlag.Winter2017 is on; Survive the Holidays ran to 25 January 2018 (2.3.0's notes), past all of 2.2's life.
+test("2.2's home screen keeps Survive the Holidays' View Event tile: its flag is on, Battle Royale's winter flags are off", () => {
+  assert.ok(activeEventFlags(v22).includes(winter2017));
+  assert.ok(!activeEventFlags(v22).some((flag) => [lobbyWinterDecor, winterBattleBus, supplyDropGift].includes(flag)));
+});
+
+// 2.2's SubgameSelectScreen empties the Save the World tag itself for players who own Save the World
+// (InitializeShortDescriptions: CanPlay(Campaign) → PVEDescriptionTextNormal = GetEmptyText); the page still carries
+// the text, which 2.2 shows players without Save the World, and 1.11 and 2.1 show everyone.
+test("2.2's mode select page carries Save the World's and Battle Royale's text as 1.11's and 2.1's do", async () => {
+  const { contentPage } = await import("../src/services/content/pages.js");
+  for (const build of [v111, v21, v22]) {
+    const select = contentPage(undefined, undefined, build).subgameselectdata;
+    for (const key of ["saveTheWorld", "saveTheWorldUnowned"]) {
+      assert.deepEqual(select[key].message, { title: "Co-op PvE", body: "Cooperative PvE storm-fighting adventure!" }, `${build} ${key}`);
+    }
+    assert.equal(select.battleRoyale.message.title, "100 Player PvP", build);
+  }
+});
+
 test("2.2 takes 1.11's Season 2 rules: AssignMatch's six fields, the match start countdown", () => {
   assert.equal(assignmentBucket(`${v22}:0:NA:11`, v22), `Fortnite:Fortnite:${v22}:0:NA:11`);
   assert.ok(showsMatchStart(v22));

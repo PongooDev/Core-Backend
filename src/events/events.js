@@ -62,6 +62,11 @@ export const supplyDropGift = "EventFlag.SupplyDropGift";
 // holiday Battle Bus or gift-wrapped supply drops ("Thank you all for being a part of our 2017 Battle Royale Winter
 // event!"). 50v50 stays: 2.2's BR_Playlist_50v50 still waits for EventFlag.BR.Allow50v50, its quest
 // (AthenaEvent_FiftyFifty_PlayMatches) is still there, and its notes end only the winter event.
+// The Save the World home screen's winter "View Event" tile is this event's: 2.2's HomeScreenNextQuest
+// (UpdateButtonBasedOnEventStatus) shows BorderQuestMapToggle while IsEventFlagActive("EventFlag.Winter2017") or the
+// player holds ProtoEnableQuest, and the button opens Winter2017_QuestMapWidget (the event's quest map, with
+// WinterEvent2017QuestMapTile's WinterQuest_2017 side quests). Survive the Holidays outlived 2.2: Epic's 2.3.0 notes
+// (24 January 2018) say "The Save the World Winter event ends on January 25", so 2.2 showed the tile all its life.
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },

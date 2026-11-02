@@ -30,6 +30,13 @@ import { getBuild, versionOf } from "../../builds/detect.js";
 // M-NPVP-Notification material (designer text "On sale!"), but 1.8.1 (CL-3729133) re-cooked it as a CommonBorder on
 // M-Gradient-Backing, the same blue strip as PVPDescriptionBorder, and doesn't ship M-NPVP-Notification at all. Its
 // blueprint only sets the tag's text, so no field here can make 1.8.1's tag red (Core-Backend #103).
+// 2.2 (CL-3841827) empties the Save the World tag for players who own Save the World, whatever this page says: its
+// InitializeShortDescriptions still sets PVEDescriptionTextNormal to GetShortDescription(Campaign), then, when the
+// FortGlobalUIContext's CanPlay(Campaign) is true, shows SwitcherStW's first slot and sets PVEDescriptionTextNormal to
+// GetEmptyText. Only players without Save the World see the tag's text (or its sale slot). 2.1 (CL-3825894) and older
+// have no such branch and show the text to everyone. Every Core account owns Save the World, so on 2.2 the tag is the
+// empty strip its blueprint cooks (PVEDescriptionBorderNormal: M-Gradient-Backing, 32x6 padding), as Epic's 2.2 showed
+// owners. Battle Royale's tag and the description below the buttons (GetFullDescription) are read as before.
 export const defaultBattleRoyaleNews = {
   title: "Battle Royale - {version}",
   body: "Welcome to Battle Royale on Core!"
