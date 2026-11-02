@@ -44,6 +44,8 @@ const defaults = {
   // 1.7.2 to 2.4.2's match start countdown (Core-Backend #160, matchmaking/service.js showsMatchStart): while a match
   // forms, the matchmaking panel shows "Match starting in 0:25... / Players Connected: 4", as Epic's service had it.
   matchStartCountdown: true,
+  // The seconds the countdown adds for a forming match's players to reach the island from Play (#167): 0 to 120.
+  matchStartBufferSeconds: 25,
   // The server regions (Core-Backend #142, matchmaking/regions.js servedRegions): a server whose region (its -McpRegion)
   // is one of these takes the players of all of them, each match still in its own region. [] (or one region): every
   // server takes only its own region's. A single region's code, as a string, is taken as that one region.
@@ -293,6 +295,11 @@ function gatherSeconds(value) {
   const seconds = typeof value === "string" && value.trim() ? Number(value) : value;
   return Number.isInteger(seconds) && seconds >= 0 && seconds <= maxGatherSeconds ? seconds : undefined;
 }
+export const maxMatchStartBufferSeconds = 120;
+function matchStartBufferValue(value) {
+  const seconds = typeof value === "string" && value.trim() ? Number(value) : value;
+  return Number.isInteger(seconds) && seconds >= 0 && seconds <= maxMatchStartBufferSeconds ? seconds : undefined;
+}
 function warmupSecondsValue(value) {
   if (value === null || (typeof value === "string" && !value.trim())) return null;
   const seconds = typeof value === "string" ? Number(value) : value;
@@ -398,6 +405,7 @@ export function createSettingsStore(dataDir) {
       settings.lateJoin = loaded.lateJoin === true;
       settings.regionFallback = loaded.regionFallback !== false;
       settings.matchStartCountdown = loaded.matchStartCountdown !== false;
+      settings.matchStartBufferSeconds = matchStartBufferValue(loaded.matchStartBufferSeconds) ?? defaults.matchStartBufferSeconds;
       settings.serverRegions = regionList(loaded.serverRegions ?? loaded.serverRegion) ?? [];
       delete settings.serverRegion;
       settings.allowedHostingIps = hostingIps(loaded.allowedHostingIps) ?? [...defaults.allowedHostingIps];
@@ -527,6 +535,7 @@ export function createSettingsStore(dataDir) {
       if (typeof partial.lateJoin === "boolean") settings.lateJoin = partial.lateJoin;
       if (typeof partial.regionFallback === "boolean") settings.regionFallback = partial.regionFallback;
       if (typeof partial.matchStartCountdown === "boolean") settings.matchStartCountdown = partial.matchStartCountdown;
+      settings.matchStartBufferSeconds = matchStartBufferValue(partial.matchStartBufferSeconds) ?? settings.matchStartBufferSeconds;
       settings.serverRegions = regionList(partial.serverRegions ?? partial.serverRegion) ?? settings.serverRegions;
       if (partial.matchmakingModes && typeof partial.matchmakingModes === "object") {
         settings.matchmakingModes = sanitizeMatchmakingModes(partial.matchmakingModes, settings.matchmakingModes);

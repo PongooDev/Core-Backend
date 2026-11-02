@@ -921,6 +921,7 @@ export function adminRoutes(context) {
       lateJoin: req.body?.lateJoin,
       regionFallback: req.body?.regionFallback,
       matchStartCountdown: req.body?.matchStartCountdown,
+      matchStartBufferSeconds: req.body?.matchStartBufferSeconds,
       serverRegions: req.body?.serverRegions,
       allowedHostingIps: req.body?.allowedHostingIps,
       allowedBuilds: req.body?.allowedBuilds
@@ -1371,7 +1372,8 @@ export function adminRoutes(context) {
         warmupSeconds: s.warmupSeconds ?? null,
         lateJoin: s.lateJoin === true,
         regionFallback: s.regionFallback !== false,
-        matchStartCountdown: s.matchStartCountdown !== false
+        matchStartCountdown: s.matchStartCountdown !== false,
+        matchStartBufferSeconds: s.matchStartBufferSeconds ?? 25
       },
       rewards: {
         enabled: s.battleRoyaleVbucks === true,
@@ -1414,6 +1416,7 @@ export function adminRoutes(context) {
       if (typeof req.body.timing.lateJoin === "boolean") update.lateJoin = req.body.timing.lateJoin;
       if (typeof req.body.timing.regionFallback === "boolean") update.regionFallback = req.body.timing.regionFallback;
       if (typeof req.body.timing.matchStartCountdown === "boolean") update.matchStartCountdown = req.body.timing.matchStartCountdown;
+      if (req.body.timing.matchStartBufferSeconds !== undefined) update.matchStartBufferSeconds = req.body.timing.matchStartBufferSeconds;
     }
     if (req.body.rewards && typeof req.body.rewards === "object") {
       if (typeof req.body.rewards.enabled === "boolean") update.battleRoyaleVbucks = req.body.rewards.enabled;
@@ -1434,6 +1437,7 @@ export function adminRoutes(context) {
       lateJoin: false,
       regionFallback: true,
       matchStartCountdown: true,
+      matchStartBufferSeconds: 25,
       serverRegions: []
     });
     res.json({ success: true, ...getMatchmakingPayload() });

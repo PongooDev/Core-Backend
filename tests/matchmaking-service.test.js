@@ -875,10 +875,11 @@ test("1.7.2 to 2.4.2's players in a forming match hear its players and the count
     const newer = await userLogin(backend.port, "StartNewer");
     const oldConnection = await queueOnBuild(backend, old, 3700114);
     connections.push(oldConnection);
-    // 5 s to gather and 1 s to Play, then the early countdown (15 s) once the match's players are in (late joining off).
+    // 5 s to gather and 1 s to Play, 25 s to reach the island (#167), then the early countdown (15 s) once the match's
+    // players are in (late joining off).
     let queued = JSON.parse(await oldConnection.next());
     assert.equal(queued.payload.state, "Queued");
-    assert.deepEqual(startOf(queued), ["1", "21"]);
+    assert.deepEqual(startOf(queued), ["1", "46"]);
     assert.equal(queued.payload.estimatedWaitSec, 6);
 
     // A 2.5 player joins the match: theirs is the queue as before; the 1.7.2 player's players connected count them.
@@ -888,7 +889,13 @@ test("1.7.2 to 2.4.2's players in a forming match hear its players and the count
     assert.equal(newerQueued.payload.state, "Queued");
     assert.deepEqual(newerQueued.payload.status, {});
     do queued = JSON.parse(await oldConnection.next()); while (startOf(queued)[0] !== "2");
-    assert.ok(Number(startOf(queued)[1]) <= 21, startOf(queued)[1]);
+    assert.ok(Number(startOf(queued)[1]) <= 46, startOf(queued)[1]);
+
+    // The panel's buffer (#167): 0 leaves the gather time and the early countdown alone.
+    await settingsOf(backend, { matchStartBufferSeconds: 0 });
+    assert.equal((await settingsOf(backend)).body.matchStartBufferSeconds, 0);
+    do queued = JSON.parse(await oldConnection.next()); while (Number(startOf(queued)[1]) > 21);
+    assert.ok(Number(startOf(queued)[1]) >= 15, startOf(queued)[1]);
 
     // Off, 1.7.2's queue is as before.
     await settingsOf(backend, { matchStartCountdown: false });
@@ -914,17 +921,18 @@ test("with late joining on, the countdown runs to the warmup's end: the panel's 
     const first = await userLogin(backend.port, "StartFirst");
     const firstConnection = await queueOnBuild(backend, first, 3825894);
     connections.push(firstConnection);
-    assert.deepEqual(startOf(JSON.parse(await firstConnection.next())), ["1", "64"]);
-    // The game's length (no panel length) isn't known until a server reports its warmup: the gather time alone.
+    // 3 s to gather, 1 s to Play, 25 s to reach the island (#167) and the panel's 60 s warmup.
+    assert.deepEqual(startOf(JSON.parse(await firstConnection.next())), ["1", "89"]);
+    // The game's length (no panel length) isn't known until a server reports its warmup: the gather time and the buffer.
     await settingsOf(backend, { warmupSeconds: null });
     let queued;
-    do queued = JSON.parse(await firstConnection.next()); while (Number(startOf(queued)[1]) > 4);
+    do queued = JSON.parse(await firstConnection.next()); while (Number(startOf(queued)[1]) > 29);
     const assign = await nextOf(na.connection, "AssignMatch");
     na.connection.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: assign.payload.matchId, result: "ready" } }));
     assert.equal((await nextOf(firstConnection, "Play")).payload.sessionId, na.session.id);
 
     // On its island (the game's 90 s warmup, 40 s left): a party that queues now hears the warmup's time left and the
-    // match's players, itself among them, before it is sent.
+    // match's players, itself among them, before it is sent: the time left is the island's own, with no buffer (#167).
     await reportWarmup(backend, token, { phase: "Warmup", accountIds: [first.accountId], secondsLeft: 90 });
     await reportWarmup(backend, token, { phase: "Warmup", accountIds: [first.accountId], secondsLeft: 40 });
     const second = await userLogin(backend.port, "StartSecond");
@@ -937,14 +945,14 @@ test("with late joining on, the countdown runs to the warmup's end: the panel's 
     assert.equal(JSON.parse(await secondConnection.next()).payload.state, "SessionAssignment");
     assert.equal((await nextOf(secondConnection, "Play")).payload.sessionId, na.session.id);
 
-    // The next match, on the game's length its build's servers reported: 90 s after the gather time.
+    // The next match, on the game's length its build's servers reported: 90 s after the gather time and the buffer.
     await reportWarmup(backend, token, { phase: "Aircraft", accountIds: [first.accountId], secondsLeft: 0 });
     const next = await regionServer(backend, "CoreServer2", "NA");
     connections.push(next.connection);
     const third = await userLogin(backend.port, "StartThird");
     const thirdConnection = await queueOnBuild(backend, third, 3790078);
     connections.push(thirdConnection);
-    assert.deepEqual(startOf(JSON.parse(await thirdConnection.next())), ["1", "94"]);
+    assert.deepEqual(startOf(JSON.parse(await thirdConnection.next())), ["1", "119"]);
   } finally {
     for (const connection of connections) connection.close();
     backend.close();

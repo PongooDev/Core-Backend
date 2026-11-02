@@ -77,6 +77,12 @@ export const showsMatchStart = (build) => Number(build) >= firstMatchStartBuild 
 // shortens to it once the match's assigned players are all in (CoreV2 ApplyWarmupLength), which for a match that has
 // just formed is as soon as they load in.
 const earlyCountdownSec = 15;
+// How long a forming match's players take to reach its warmup once they are sent (Core-Backend #167): the reporter
+// measured a steady 25 s from Play (the panel leaving "Waiting for server") to the gameserver's warmup timer starting,
+// the client travelling and loading the map. A forming match's countdown adds it before the warmup, so that it reads
+// what the island's timer does when they land; a running warmup's time left (late joining) is already real and doesn't.
+// The admin panel's Match Start Buffer sets it (settings matchStartBufferSeconds).
+export const defaultMatchStartBufferSec = 25;
 
 export function parseBucket(bucketId) {
   const parts = String(bucketId ?? "").split(":");
@@ -220,10 +226,10 @@ const newId = () => crypto.randomUUID().replaceAll("-", "");
 // matches in their warmup take more parties, asked each time. regionFallback: whether a party whose region has no
 // server plays in another region (Core-Backend #121) or waits for one of its own (#123), asked each time. serverRegions:
 // the admin panel's server regions (#142, regions.js servedRegions), asked each time. matchStartCountdown: whether 1.7.2
-// to 2.4.2's players see the match start countdown (#160), and warmupSeconds the panel's warmup length (null: the
-// game's), both asked each time.
+// to 2.4.2's players see the match start countdown (#160), warmupSeconds the panel's warmup length (null: the
+// game's), and matchStartBuffer the seconds from Play to the warmup starting that it adds (#167), all asked each time.
 export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoin = () => false, regionFallback = () => true, serverRegions = () => [], serverLimits = () => ({}), matchmakingModes = () => ({}),
-  matchStartCountdown = () => false, warmupSeconds = () => null, quiet = false }) {
+  matchStartCountdown = () => false, warmupSeconds = () => null, matchStartBuffer = () => defaultMatchStartBufferSec, quiet = false }) {
   const say = quiet ? () => {} : (text) => log("Matchmaking", text);
   const gatherOf = () => {
     const value = typeof gatherMs === "function" ? gatherMs() : gatherMs;
@@ -257,6 +263,11 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     const length = Number.isInteger(panel) && panel > 0 ? panel : gameWarmups.get(parseBucket(bucketId).netcl) ?? null;
     if (!lateJoin()) return Math.min(earlyCountdownSec, length ?? earlyCountdownSec);
     return length;
+  }
+  // The seconds from Play to the warmup's timer starting (#167): the panel's, or 25.
+  function bufferAfterSend() {
+    const value = matchStartBuffer();
+    return Number.isInteger(value) && value >= 0 ? value : defaultMatchStartBufferSec;
   }
 
   // Queued's status for a member (#160): the match start countdown and the players connected, for a client that shows
@@ -479,7 +490,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
   // Queued {queuedPlayers, estimatedWaitSec}: everyone in the queue (queueKey), sent again to each of them whenever it
   // changes, and every second while a match forms so the ETA counts down. A party playing in another region hears the
   // queue of the match it joined. A party in a forming match also hears its countdown (#160): the match's players, and
-  // how long until its bus leaves, the time until they are sent and the warmup after it.
+  // how long until its bus leaves, the time until they are sent, their trip to the island (#167) and the warmup after it.
   function announceQueue(key) {
     const parties = queuedParties(key);
     // A party's members each queue with their own ticket: the party counts once.
@@ -488,7 +499,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
       const remaining = remainingMs(party);
       const wait = estimatedWaitSec(remaining);
       const forming = formingOf(party);
-      const start = forming ? { players: forming.players, delaySec: Math.ceil(Math.max(0, remaining) / 1000) + (warmupAfterSend(forming.bucketId) ?? 0) } : null;
+      const start = forming ? { players: forming.players, delaySec: Math.ceil(Math.max(0, remaining) / 1000) + bufferAfterSend() + (warmupAfterSend(forming.bucketId) ?? 0) } : null;
       for (const member of [party, ...party.members]) {
         if (member.done || member.ws.closed) continue;
         member.queued = true;

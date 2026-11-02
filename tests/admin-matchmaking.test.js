@@ -58,6 +58,7 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
     assert.equal(ov.timing.lateJoin, false);
     assert.equal(ov.timing.regionFallback, true);
     assert.equal(ov.timing.matchStartCountdown, true);
+    assert.equal(ov.timing.matchStartBufferSeconds, 25);
 
     // Regional server limits default to 0 (unlimited)
     assert.ok(ov.serverLimits);
@@ -86,7 +87,8 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
         warmupSeconds: 60,
         lateJoin: true,
         regionFallback: false,
-        matchStartCountdown: false
+        matchStartCountdown: false,
+        matchStartBufferSeconds: 30
       },
       rewards: {
         enabled: true,
@@ -105,6 +107,10 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
     assert.equal(updateRes.body.timing.lateJoin, true);
     assert.equal(updateRes.body.timing.regionFallback, false);
     assert.equal(updateRes.body.timing.matchStartCountdown, false);
+    assert.equal(updateRes.body.timing.matchStartBufferSeconds, 30);
+    // Out of range (0 to 120) leaves it as it was.
+    const badBuffer = await admin(backend, "/matchmaking/config", { timing: { matchStartBufferSeconds: 500 } });
+    assert.equal(badBuffer.body.timing.matchStartBufferSeconds, 30);
     assert.equal(updateRes.body.rewards.enabled, true);
 
     // 5. Player ticket for disabled Solo mode is rejected with error 400
@@ -139,6 +145,7 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
     assert.equal(resetRes.body.timing.lateJoin, false);
     assert.equal(resetRes.body.timing.regionFallback, true);
     assert.equal(resetRes.body.timing.matchStartCountdown, true);
+    assert.equal(resetRes.body.timing.matchStartBufferSeconds, 25);
     assert.equal(resetRes.body.serverLimits.NA.solo, 0);
 
     // Re-verify Solo ticket succeeds after reset

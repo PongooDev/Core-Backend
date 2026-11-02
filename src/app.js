@@ -73,7 +73,7 @@ export function createContext(config) {
   if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
   if (config.seasonalEvents !== undefined) settings.update({ seasonalEvents: config.seasonalEvents });
   for (const key of ["battleRoyaleVbucks", "battleRoyaleRewards", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits", "cheats", "cheatAccounts",
-    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "regionFallback", "matchStartCountdown", "serverRegions", "allowedBuilds", "defaultFoundersAccess", "remoteAdmin", "events", "battlepass", "matchmakingModes", "serverLimits"]) {
+    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "regionFallback", "matchStartCountdown", "matchStartBufferSeconds", "serverRegions", "allowedBuilds", "defaultFoundersAccess", "remoteAdmin", "events", "battlepass", "matchmakingModes", "serverLimits"]) {
     if (config[key] !== undefined) settings.update({ [key]: config[key] });
   }
   const friends = createFriendStore(config.dataDir);
@@ -115,7 +115,8 @@ export function createContext(config) {
     // config.matchmakingGatherMs (the tests') wins over the admin panel's gather time.
     matchmaker: createMatchmaker({ sessions, gatherMs: config.matchmakingGatherMs ?? (() => settings.get().matchmakingGatherSeconds * 1000),
       lateJoin: () => settings.get().lateJoin === true, regionFallback,
-      matchStartCountdown: () => settings.get().matchStartCountdown !== false, warmupSeconds: () => settings.get().warmupSeconds ?? null, serverRegions, serverLimits: () => settings.get().serverLimits, matchmakingModes: () => settings.get().matchmakingModes, quiet: config.requestLog === false }),
+      matchStartCountdown: () => settings.get().matchStartCountdown !== false, warmupSeconds: () => settings.get().warmupSeconds ?? null,
+      matchStartBuffer: () => settings.get().matchStartBufferSeconds, serverRegions, serverLimits: () => settings.get().serverLimits, matchmakingModes: () => settings.get().matchmakingModes, quiet: config.requestLog === false }),
     network: createNetwork(config),
     emptyServerWaitMs: config.emptyServerWaitMs,
     stomp: createStompService({ tokens, quiet: config.requestLog === false }),

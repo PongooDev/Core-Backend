@@ -4063,6 +4063,19 @@
       const matchStartToggle = toggleSwitch(form.timing.matchStartCountdown !== false, (checked) => {
         form.timing.matchStartCountdown = checked;
       });
+      // The seconds it adds for the trip from Play to the warmup's timer starting (Core-Backend #167).
+      const matchStartBufferInput = el("input", {
+        class: "field num",
+        type: "number",
+        min: 0,
+        max: 120,
+        value: form.timing.matchStartBufferSeconds ?? 25,
+        "aria-label": "Match start buffer in seconds",
+        oninput: (e) => {
+          const v = parseInt(e.target.value, 10);
+          form.timing.matchStartBufferSeconds = Number.isFinite(v) ? Math.max(0, Math.min(120, v)) : 25;
+        }
+      });
 
       // The server regions (Core-Backend #142): a server in one of them takes all of their players.
       const serverRegionChecks = el("div", { style: "display:flex; flex-wrap:wrap; gap:8px 16px;" },
@@ -4181,10 +4194,14 @@
             el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius); display:flex; flex-direction:column; justify-content:space-between;" },
               el("div", {},
                 el("div", { style: "font-weight:700; margin-bottom:4px;", text: "Match Start Countdown (1.7.2 – 2.4.2)" }),
-                el("div", { class: "sub", text: "While a match forms, players on 1.7.2 to 2.4.2 see \"Match starting in 0:25... Players Connected: 4\" instead of the queue's ETA, counting down to when the bus leaves (the gather time plus the warmup), as Epic's matchmaking did before 2.5. 2.5 and later always show the queue." })),
+                el("div", { class: "sub", text: "While a match forms, players on 1.7.2 to 2.4.2 see \"Match starting in 0:25... Players Connected: 4\" instead of the queue's ETA, counting down to when the bus leaves (the gather time, the buffer, then the warmup), as Epic's matchmaking did before 2.5. 2.5 and later always show the queue." })),
               el("div", { style: "margin-top:16px; display:flex; justify-content:space-between; align-items:center; gap:12px; padding-top:12px; border-top:1px solid var(--line);" },
                 el("span", { class: "muted font-semibold", text: "Show Countdown" }),
-                matchStartToggle)),
+                matchStartToggle),
+              el("div", { class: "sub", style: "margin-top:12px;", text: "Buffer: the time from the match being found to the warmup's timer starting on the island, while players travel and load (about 25 seconds)." }),
+              el("div", { style: "margin-top:8px; display:flex; align-items:center; gap:8px;" },
+                matchStartBufferInput,
+                el("span", { class: "muted font-semibold", text: "seconds (0 – 120)" }))),
             el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius); display:flex; flex-direction:column; justify-content:space-between;" },
               el("div", {},
                 el("div", { style: "font-weight:700; margin-bottom:4px;", text: "Server Regions" }),
