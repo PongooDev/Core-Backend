@@ -962,7 +962,7 @@ var athenaCosmetics = new SortedDictionary<string, object>(StringComparer.Ordina
 var athenaQuests = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var athenaLevels = new List<object>();
 SortedDictionary<string, object>? athenaSeason = null;
-var cosmeticKeys = new List<(string TemplateId, string Class, string AssetName, string? Hero, string? Icon)>();
+var cosmeticKeys = new List<(string TemplateId, string Class, string AssetName, string? Hero, string? Icon, string DisplayName)>();
 foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" && f.Path.StartsWith("FortniteGame/Content/Athena/Items/", StringComparison.OrdinalIgnoreCase)))
 {
     if (file.Path.Contains("/00_TestAssets/", StringComparison.OrdinalIgnoreCase)) continue;
@@ -982,10 +982,11 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     }
     if (!ItemClasses.AthenaCosmetics.Contains(export.ExportType)) continue;
     var cosmeticId = assetTypes.TemplateId($"{gamePath}.{export.Name}", export.ExportType, false)!;
+    var displayName = properties["DisplayName"]?["LocalizedString"]?.GetValue<string>() ?? export.Name;
     athenaCosmetics[cosmeticId] = new SortedDictionary<string, object>(StringComparer.Ordinal)
     {
         ["class"] = export.ExportType,
-        ["name"] = properties["DisplayName"]?["LocalizedString"]?.GetValue<string>() ?? export.Name,
+        ["name"] = displayName,
         ["rarity"] = Enum(properties["Rarity"]) ?? "Ordinary"
     };
     // An outfit's hero (HID_027_Athena_Commando_F): its featured tile art is named after it.
@@ -994,7 +995,7 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     // whose featured tile art is T-Featured-Glider-001.
     var icon = (properties["LargePreviewImage"]?.GetValueKind() == JsonValueKind.String ? properties["LargePreviewImage"]!.GetValue<string>()
         : properties["SmallPreviewImage"]?["ObjectPath"]?.GetValue<string>())?.Split('/').Last().Split('.')[0];
-    cosmeticKeys.Add((cosmeticId, export.ExportType, export.Name, hero, icon is null ? null : IconKey(icon)));
+    cosmeticKeys.Add((cosmeticId, export.ExportType, export.Name, hero, icon is null ? null : IconKey(icon), displayName));
 }
 // The item shop's display assets: Catalog/DisplayAssets' FortMtxOfferData whose TileImage is Battle Royale art
 // (UI/Foundation/Textures/BattleRoyale; the others are Save the World's founders and V-Bucks tiles), by the cosmetic they
@@ -1010,7 +1011,9 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
 //   names the hero's number (1.11's DA_Featured_SMaleHID050, tile T-AthenaSoldiers-HID-050-M, is HID_050's Crackshot);
 // - the key is the cosmetic's type and a word of its asset name (PickaxeHalloween is HalloweenScythe, Reaper, the one
 //   pickaxe with "halloween" in it; Batsickle is SickleBatPickaxe). A word, not a number: 1.11's tile T-Featured-Pickaxe-11
-//   isn't Pickaxe_ID_011 (it is Pickaxe_ID_019_Heart's, Tat Axe, whose locker icon is T-Icon-Pickaxes-SK-Pickaxe-11-L).
+//   isn't Pickaxe_ID_011 (it is Pickaxe_ID_019_Heart's, Tat Axe, whose locker icon is T-Icon-Pickaxes-SK-Pickaxe-11-L);
+// - the key is the cosmetic's type and its display name (2.1's DA_Featured_PickaxeCliffhanger, tile
+//   T-Featured-PickaxeCliffhanger, is SkiIcePickaxe, "Cliffhanger").
 // A display asset no rule matches, or two that match one cosmetic, is left out and listed, for a new rule.
 static string Key(string name) => new string(name.Where(char.IsLetterOrDigit).ToArray()).ToLowerInvariant();
 static string WithoutPrefix(string name, params string[] prefixes) =>
@@ -1048,7 +1051,7 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     var featuredKey = tileName.StartsWith("T-Featured-", StringComparison.OrdinalIgnoreCase) ? Key(tileName["T-Featured-".Length..]) : null;
     // A cosmetic class's type word: AthenaPickaxeItemDefinition's "pickaxe", AthenaCharacterItemDefinition's "character".
     static string TypeWord(string cosmeticClass) => Key(cosmeticClass.Replace("ItemDefinition", "").Replace("Athena", ""));
-    Func<(string TemplateId, string Class, string AssetName, string? Hero, string? Icon), bool>[] rules =
+    Func<(string TemplateId, string Class, string AssetName, string? Hero, string? Icon, string DisplayName), bool>[] rules =
     [
         c => featuredKey is not null && c.Icon == featuredKey,
         c => keys.Contains(Key(c.AssetName)),
@@ -1057,6 +1060,7 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         c => HeroNumber(c.Hero) is { } number && keys.Any(k => HeroNumber(k) == number),
         c => keys.Any(k => k.StartsWith(TypeWord(c.Class)) && k.Length > TypeWord(c.Class).Length
             && k[TypeWord(c.Class).Length..].Any(char.IsLetter) && Key(c.AssetName).Contains(k[TypeWord(c.Class).Length..])),
+        c => keys.Contains(TypeWord(c.Class) + Key(c.DisplayName)),
     ];
     var match = rules.Select(rule => cosmeticKeys.Where(rule).ToList()).FirstOrDefault(found => found.Count == 1)?[0];
     var objectPath = $"{gamePath}.{export.Name}";

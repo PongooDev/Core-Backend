@@ -496,7 +496,8 @@
     "AthenaPickaxe:pickaxe_id_021_megalodon": "/Game/Catalog/DisplayAssets/DA_Featured_Pickaxe_ID_21_Megalodon.DA_Featured_Pickaxe_ID_21_Megalodon",
     "AthenaPickaxe:pickaxe_id_022_holidaygiftwrap": "/Game/Catalog/DisplayAssets/DA_Featured_Pickaxe_ID_22_HolidayGiftWrap.DA_Featured_Pickaxe_ID_22_HolidayGiftWrap",
     "AthenaPickaxe:pickaxe_lockjaw": "/Game/Catalog/DisplayAssets/DA_Featured_PickaxeLockjaw.DA_Featured_PickaxeLockjaw",
-    "AthenaPickaxe:sicklebatpickaxe": "/Game/Catalog/DisplayAssets/DA_Featured_PickaxeSickleBat.DA_Featured_PickaxeSickleBat"
+    "AthenaPickaxe:sicklebatpickaxe": "/Game/Catalog/DisplayAssets/DA_Featured_PickaxeSickleBat.DA_Featured_PickaxeSickleBat",
+    "AthenaPickaxe:skiicepickaxe": "/Game/Catalog/DisplayAssets/DA_Featured_PickaxeCliffhanger.DA_Featured_PickaxeCliffhanger"
   },
   "levels": [
     {

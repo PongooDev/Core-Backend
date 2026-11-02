@@ -69,6 +69,8 @@ test("1.11's game data has Season 2's Battle Pass, its emoticons and its shop di
   assert.equal(asset("AthenaPickaxe:pickaxe_id_020_keg"), "DA_Featured_Pickaxe_ID_20_Keg");
   assert.equal(asset("AthenaCharacter:cid_050_athena_commando_m_holidaynutcracker"), "DA_Featured_SMaleHID050");
   assert.equal(asset("AthenaCharacter:cid_024_athena_commando_f"), "DA_Featured_SFemaleHID024");
+  // DA_Featured_PickaxeCliffhanger is SkiIcePickaxe's, "Cliffhanger" (by its type and display name).
+  assert.equal(asset("AthenaPickaxe:skiicepickaxe"), "DA_Featured_PickaxeCliffhanger");
 }));
 
 test("1.10 has no Battle Pass, and keeps its display assets", () => inBuild(v110, () => {
