@@ -46,7 +46,7 @@ test("a duo's win, places, kills and time alive show on the Battle Royale stats 
     assert.equal((await record({ playlistId: 10, results: [
       { accountId: leader.accountId, place: 4, kills: 2, secondsAlive: 700 },
       { accountId: follower.accountId, place: 4, kills: 0, secondsAlive: 400 }
-    ] })).status, 204);
+    ] })).status, 200);
     assert.equal((await post(backend.port, "/fortnite/api/game/v2/battleroyale/recordwin", server.token, { playlistId: 10, accountIds: [leader.accountId, follower.accountId] })).status, 204);
     await record({ playlistId: 10, results: [{ accountId: leader.accountId, place: 1, kills: 5, secondsAlive: 1100 }, { accountId: follower.accountId, place: 1, kills: 1, secondsAlive: 1100 }] });
     // A solo match of the leader's: its own playlist.

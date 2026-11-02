@@ -140,11 +140,11 @@ test("1.11's leaderboards rank Season 2's matches and 1.10's Season 1's", async 
     const report = (build, results) => as(build, backend.port, "/fortnite/api/game/v2/battleroyale/recordresults", dedicated,
       { playlistId: 9, countWins: true, results });
     // Season 1 (1.10): Ace wins with 4 kills; Season 2 (1.11): Bee wins, Cee is 5th.
-    assert.equal((await report("3790078", [{ accountId: ace.accountId, place: 1, kills: 4, secondsAlive: 1200 }])).status, 204);
+    assert.equal((await report("3790078", [{ accountId: ace.accountId, place: 1, kills: 4, secondsAlive: 1200 }])).status, 200);
     assert.equal((await report("3807424", [
       { accountId: bee.accountId, place: 1, kills: 2, secondsAlive: 1300 },
       { accountId: cee.accountId, place: 5, kills: 1, secondsAlive: 900 }
-    ])).status, 204);
+    ])).status, 200);
 
     const ids = [ace.accountId, bee.accountId, cee.accountId];
     const board = async (build, statName, window) => (await as(build, backend.port,
@@ -207,10 +207,10 @@ test("a Core gameserver's 2.1 and 1.11 results are Season 2's, read back by 2.1'
     assert.equal((await report(2, [
       { accountId: solo.accountId, place: 1, kills: 3, secondsAlive: 1000 },
       { accountId: duo.accountId, place: 7, kills: 1, secondsAlive: 600 }
-    ])).status, 204);
+    ])).status, 200);
     // On no session: the season their profile is in, Season 2 for 1.11's player and Season 1 for 1.10's.
-    assert.equal((await report(2, [{ accountId: late.accountId, place: 2, kills: 2, secondsAlive: 900 }])).status, 204);
-    assert.equal((await report(2, [{ accountId: old.accountId, place: 1, kills: 9, secondsAlive: 1500 }])).status, 204);
+    assert.equal((await report(2, [{ accountId: late.accountId, place: 2, kills: 2, secondsAlive: 900 }])).status, 200);
+    assert.equal((await report(2, [{ accountId: old.accountId, place: 1, kills: 9, secondsAlive: 1500 }])).status, 200);
 
     // 2.1's lobby: the solo cohort is the player and the others who played solo this season, not Season 1's Old.
     for (const build of ["3825894", "3807424"]) {
@@ -275,7 +275,7 @@ test("a 1.11 solo match from a Core gameserver shows on 1.11's Score, Placed Top
       matchId: "M168", results: [
         { accountId: fifth.accountId, place: 5, kills: 1, secondsAlive: 600, score: 420 },
         { accountId: winner.accountId, place: 1, kills: 4, secondsAlive: 1260 }
-      ] })).status, 204);
+      ] })).status, 200);
 
     // The cohort, the player's own first.
     const cohort = (await as(v111, backend.port, `/fortnite/api/game/v2/leaderboards/cohort/${idle.accountId}?playlist=pc_m0_p2`, idle.token)).body;

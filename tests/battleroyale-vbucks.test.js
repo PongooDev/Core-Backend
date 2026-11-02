@@ -67,7 +67,7 @@ test("Battle Royale V-Bucks rewards are off and zero by default: a match's kills
     const before = await balance(backend, player);
     assert.equal((await results(backend, await dedicatedServerToken(backend.port), {
       playlistId: 2, matchId: "match-off", results: [{ accountId: player.accountId, place: 1, kills: 6, secondsAlive: 900 }]
-    })).status, 204);
+    })).status, 200);
     assert.equal(await balance(backend, player), before);
     // Turned on with nothing set, still nothing.
     await settings(backend, { battleRoyaleVbucks: true });
@@ -163,7 +163,7 @@ test("only a gameserver's report pays: a player's own token earns nothing", asyn
     const player = await userLogin(backend.port, "RewardsCheater");
     await settings(backend, { battleRoyaleVbucks: true, battleRoyaleRewards: example });
     const before = await balance(backend, player);
-    assert.equal((await results(backend, player.token, { playlistId: 2, matchId: "self", results: [{ accountId: player.accountId, place: 1, kills: 99, secondsAlive: 60 }] })).status, 204);
+    assert.equal((await results(backend, player.token, { playlistId: 2, matchId: "self", results: [{ accountId: player.accountId, place: 1, kills: 99, secondsAlive: 60 }] })).status, 200);
     assert.equal(await balance(backend, player), before);
   } finally {
     backend.close();

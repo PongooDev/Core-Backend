@@ -261,7 +261,7 @@ test("2.2's \"Play matches with a friend\" counts a match whose squad had a frie
     // A duo: one and two together (second), three with someone not their friend (fifth).
     assert.equal((await as(v22, backend.port, "POST", "/fortnite/api/game/v2/battleroyale/recordresults", dedicated, { playlistId: 10, matchId: "build22-friends",
       results: [{ accountId: one.accountId, place: 2, kills: 0, secondsAlive: 900 }, { accountId: two.accountId, place: 2, kills: 0, secondsAlive: 900 },
-        { accountId: three.accountId, place: 5, kills: 0, secondsAlive: 600 }] })).status, 204);
+        { accountId: three.accountId, place: 5, kills: 0, secondsAlive: 600 }] })).status, 200);
     const friendQuest = async (player) => Object.values((await profileOf(backend.port, player, "athena", v22)).items)
       .find((item) => item.templateId === "Quest:athenadaily_friend");
     assert.equal((await friendQuest(one)).attributes.quest_state, "Completed");

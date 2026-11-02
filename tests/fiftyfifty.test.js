@@ -139,7 +139,7 @@ test("1.10's quest login gives Play 50v50 Matches; three 50v50 results from a Co
     const dedicated = await dedicatedServerToken(backend.port);
     const report = (playlistId, matchId, place) => as("Core V2", backend.port, "POST", "/fortnite/api/game/v2/battleroyale/recordresults", dedicated,
       { playlistId, matchId, countWins: true, results: [{ accountId: player.accountId, place, kills: 0, secondsAlive: 30 }] });
-    assert.equal((await report(2, "solo1", 30)).status, 204);
+    assert.equal((await report(2, "solo1", 30)).status, 200);
     assert.equal((await athenaProfile(v110, backend.port, player)).items[itemId].attributes.completion_athena_event_fiftyfifty_play_matches, 0,
       "a solo match isn't a 50v50 one");
     await report(11, "fifty1", 2);

@@ -5,7 +5,8 @@ import { currentBuild, inBuild } from "../../builds/context.js";
 import { buildVersions } from "../../builds/detect.js";
 import { log } from "../../log.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
-import { addSeasonXp, awardVictory, matchXp, recordMatchProgress, umbrellaTypeOf } from "../../profiles/athena.js";
+import { athenaSeason, seasonLevels } from "../../gamedata/athena.js";
+import { addSeasonXp, awardVictory, matchXp, matchXpAwards, recordMatchProgress, umbrellaTypeOf } from "../../profiles/athena.js";
 import { boostedMatchXp, inProfileSeason, namesAthenaBuild, profileSeason, seasonNumber, takeUpSeason } from "../../profiles/seasons.js";
 import { grant } from "../../profiles/progress.js";
 import { openSession } from "../../profiles/session.js";
@@ -39,7 +40,9 @@ import { currentBattlePassConfig } from "../../battlepass/season1.js";
 //   elimination challenge progress (profiles/athena.js), which reach their client as profile notifications, and for a
 //   win (place 1) in solo, duo or squad the victory umbrellas it lacks in the locker (Core-Backend #77, #84, #157): The
 //   Umbrella in any season, the match's season's own umbrella (Season 2's Snowflake), and a founder's Founder's Umbrella.
-//   1.8's umbrella is a glider item.
+//   1.8's umbrella is a glider item. It is answered {results: [{accountId, levelsGained, bookLevelsGained,
+//   totalSeasonXpGained, totalBookXpGained, xpMultipliers, rewards}]}, what each player with an athena profile was given
+//   (rewardResult), which CoreV2 shows on their end-of-match screen (CoreV2 #192).
 //   With battleRoyaleVbucks on (Core-Backend #100, #124, the admin panel's Settings), each result in solo, duos,
 //   squads or 1.10's 50v50 also pays V-Bucks, from that mode's battleRoyaleRewards: perKill a kill, perWin for a place 1
 //   (a team's every player, as CoreV2 places them all), and the best of its placement tiers the place is within (top
@@ -50,7 +53,7 @@ import { currentBattlePassConfig } from "../../battlepass/season1.js";
 //   (coreBattleRoyaleRewards, Core's, never sent to the client), so a report sent again pays nothing; a report without
 //   one pays nothing either, as there is no telling it from a replay.
 // The gameserver's own login records the players on a session it hosts, the DedicatedServer client (CoreV2) anyone's;
-// other players are skipped, so a player's own token can't award itself wins. Both records answer 204 whatever they kept.
+// other players are skipped, so a player's own token can't award itself wins. recordwin answers 204 whatever it kept.
 
 // How long a paid match is remembered. CoreV2 reports a player once a match, when their team is out or has won; a
 // replay of a report weeks later isn't something a gameserver does.
@@ -88,6 +91,36 @@ function payMatchVbucks(session, settings, matchId, playlistId, result, now = ne
   // Saved with the V-Bucks, in the same profile write.
   account.coreBattleRoyaleRewards = { ...paid, [matchId]: { vbucks: amount, at: now.toISOString() } };
   return amount;
+}
+
+// A player's season progress, as totals: the season XP and Battle Stars over the levels and tiers reached.
+const xpTotalOf = (levels, level, xp) => (levels?.find((entry) => entry.level === level)?.xpTotal ?? 0) + (xp ?? 0);
+function progressOf(session) {
+  const { attributes } = session.profile("athena").profile.stats;
+  const level = attributes.level ?? 1;
+  const tier = attributes.book_level ?? 1;
+  return { level, tier, xp: xpTotalOf(seasonLevels(), level, attributes.xp), stars: xpTotalOf(athenaSeason()?.bookLevels, tier, attributes.book_xp) };
+}
+
+// What the match gave the player, in the form of the rewards Epic's MCP answered EndBattleRoyaleGame with
+// (FAthenaRewardResult, 1.11 on): the levels and tiers gained, the season XP and Battle Stars, the Battle Pass's match XP
+// boost (an FAthenaMatchXpMultiplierGroup of EAthenaMatchXpMultiplierSource 1, "Battle Pass Bonus", its percent) and the
+// XP by what earned it (FAthenaAwardGroup: rewardSource, score and seasonXp). CoreV2's server sends it to the player's
+// end-of-match screen (ClientSendEndBattleRoyaleMatchForPlayer), whose XP bar plays the groups, then the boost, from the
+// level the client's athena profile had (UAthenaPlayerMatchReport::InitialLevelInfo), and writes the totals.
+const selfMultiplierSource = 1;
+function rewardResult(session, accountId, before, awards, seasonXp) {
+  const after = progressOf(session);
+  const boost = athenaSeason() ? session.profile("athena").profile.stats.attributes.season_match_boost ?? 0 : 0;
+  return {
+    accountId,
+    levelsGained: Math.max(0, after.level - before.level),
+    bookLevelsGained: Math.max(0, after.tier - before.tier),
+    totalSeasonXpGained: seasonXp,
+    totalBookXpGained: Math.max(0, after.stars - before.stars),
+    xpMultipliers: boost > 0 ? [{ source: selfMultiplierSource, amount: boost }] : [],
+    rewards: awards.map(({ rewardSource, xp }) => ({ rewardSource, score: xp, seasonXp: xp, bookXp: 0 }))
+  };
 }
 
 export function battleRoyaleRoutes(context) {
@@ -154,6 +187,7 @@ export function battleRoyaleRoutes(context) {
     const countWins = req.body?.countWins === true;
     const matchId = typeof req.body?.matchId === "string" && matchIdPattern.test(req.body.matchId) ? req.body.matchId : null;
     const rewards = context.settings?.get?.() ?? {};
+    const answered = [];
     for (const result of results) {
       const place = count(result?.place, 1000);
       const kills = count(result?.kills, 1000);
@@ -177,10 +211,13 @@ export function battleRoyaleRoutes(context) {
       const progress = () => {
         // The match's XP and challenges count in its build's season, whichever lobby opened the profile last.
         takeUpSeason(session);
+        const before = progressOf(session);
         recordMatchProgress(session, playlistId, { place, kills, squadFriends: squadFriendsOf(playlistId, results, result.accountId, place) });
         // 1.11's Battle Pass adds its match XP boost (profiles/seasons.js).
-        addSeasonXp(session, boostedMatchXp(session, earnedXp));
+        const seasonXp = boostedMatchXp(session, earnedXp);
+        addSeasonXp(session, seasonXp);
         if (place === 1 && isMainPlaylist(playlistId)) awardVictory(session);
+        answered.push(rewardResult(session, result.accountId, before, matchXpAwards(playlistId, { place, kills, secondsAlive }), seasonXp));
       };
       if (session.hasProfile("athena")) {
         if (build) inBuild(build, progress);
@@ -190,7 +227,7 @@ export function battleRoyaleRoutes(context) {
       session.commit();
       notifyProfiles(context, session);
     }
-    res.status(204).end();
+    res.json({ results: answered });
   });
 
   return router;

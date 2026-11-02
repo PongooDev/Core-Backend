@@ -449,6 +449,37 @@ test("a win in Season 2 gives The Umbrella and its Snowflake once, and a founder
   assert.ok(!holds(await profileOf(backend.port, veteran, "athena", v111), snowflake));
 }));
 
+// CoreV2 #192: the end-of-match screen showed no XP (Total XP 0), as the server sent it no rewards. recordresults answers
+// each player's FAthenaRewardResult: the XP by what earned it, the Battle Pass's boost, and the levels, tiers, XP and
+// Battle Stars gained, for the server to send on.
+test("recordresults answers what each player's match gave, as the end-of-match screen shows it", () => withPlayer(async (backend, player) => {
+  const dedicated = await dedicatedServerToken(backend.port);
+  await profileOf(backend.port, player, "athena");
+  // Solo, 2nd, 3 kills, 10 minutes: 50 survival, 150 kills, 100 placement (top 10).
+  const answer = await as(v111, backend.port, "POST", "/fortnite/api/game/v2/battleroyale/recordresults", dedicated,
+    { playlistId: 2, matchId: "rewards-1", results: [{ accountId: player.accountId, place: 2, kills: 3, secondsAlive: 600 }] });
+  assert.equal(answer.status, 200);
+  const [result] = answer.body.results;
+  assert.equal(result.accountId, player.accountId);
+  assert.deepEqual(result.rewards, [
+    { rewardSource: 1, score: 50, seasonXp: 50, bookXp: 0 },
+    { rewardSource: 3, score: 150, seasonXp: 150, bookXp: 0 },
+    { rewardSource: 4, score: 100, seasonXp: 100, bookXp: 0 }]);
+  assert.equal(result.totalSeasonXpGained, 300);
+  assert.deepEqual(result.xpMultipliers, []);
+  // Level 1 (100 XP) and level 2 (250) take 350: 300 is one level up, with that level's Battle Stars.
+  const athena = (await profileOf(backend.port, player, "athena")).stats.attributes;
+  assert.equal(result.levelsGained, athena.level - 1);
+  assert.equal(result.levelsGained, 1);
+  assert.ok(result.totalBookXpGained > 0);
+  assert.equal(result.bookLevelsGained, athena.book_level - 1);
+
+  // An unknown account is skipped and answered nothing for.
+  const none = await as(v111, backend.port, "POST", "/fortnite/api/game/v2/battleroyale/recordresults", dedicated,
+    { playlistId: 2, matchId: "rewards-2", results: [{ accountId: "0".repeat(32), place: 2, kills: 0, secondsAlive: 60 }] });
+  assert.deepEqual([none.status, none.body.results], [200, []]);
+}));
+
 test("any win gives The Umbrella, a season's wins that season's own umbrella, and a founder's the Founder's Umbrella", () => {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-season2-umbrella-"));
   try {

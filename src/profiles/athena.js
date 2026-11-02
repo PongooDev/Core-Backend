@@ -558,10 +558,21 @@ export function settleChaseRewards(session) {
 // What a match is worth (🟡 Core's: 1.8's server reports no XP and the formula was Epic's backend's): 5 per minute
 // alive, 50 per elimination, 300 for a win, 100 within the playlist's first placement (solo top 10, duo top 5, squad
 // top 3) and 50 within its second (top 25, 12, 6).
-export function matchXp(playlistId, { place, kills, secondsAlive }) {
+export function matchXp(playlistId, result) {
+  return matchXpAwards(playlistId, result).reduce((sum, { xp }) => sum + xp, 0);
+}
+
+// The same XP by what earned it, as the end-of-match screen lists it (1.11's FAthenaAwardGroup, ERewardSource):
+// MinutesPlayed "Survival Time", TeamKills "Kills" and Placement, each with its XP; the ones that earned none are left out.
+export const rewardSources = { MinutesPlayed: 1, TeamKills: 3, Placement: 4 };
+export function matchXpAwards(playlistId, { place, kills, secondsAlive }) {
   const [first, second] = placements[playlistId] ?? [];
   const placement = place === 1 ? 300 : place <= first ? 100 : place <= second ? 50 : 0;
-  return Math.floor(secondsAlive / 60) * 5 + kills * 50 + placement;
+  return [
+    { rewardSource: rewardSources.MinutesPlayed, xp: Math.floor(secondsAlive / 60) * 5 },
+    { rewardSource: rewardSources.TeamKills, xp: kills * 50 },
+    { rewardSource: rewardSources.Placement, xp: placement }
+  ].filter(({ xp }) => xp > 0);
 }
 
 // Quests (the daily challenges): quest items in athena, as in profile0 (quest_state, completion_<objective>).
