@@ -1,5 +1,6 @@
 import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
+import { currentBuild } from "../../builds/context.js";
 import { notFound, sendError } from "../../errors.js";
 import { log } from "../../log.js";
 import { parseBucket } from "../../matchmaking/service.js";
@@ -65,6 +66,8 @@ export function ticketRoutes({ tokens, sessions, matchmaker, settings }) {
       accountId: req.session.accountId,
       bucketIds: list(req.query.bucketIds),
       maxPlayers: Number.isInteger(maxPlayers) && maxPlayers > 0 ? maxPlayers : session.maxPublicPlayers,
+      // The server's build (its User-Agent's changelist), which decides AssignMatch's bucket format.
+      build: currentBuild() ?? null,
       serviceUrl: serviceUrl(req)
     });
     res.json(response);

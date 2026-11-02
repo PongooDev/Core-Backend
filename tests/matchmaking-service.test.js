@@ -5,9 +5,9 @@ import fs from "node:fs";
 import http from "node:http";
 import os from "node:os";
 import path from "node:path";
-import { bucketKey, bucketMatches, estimatedWaitSec, formTeams, parseBucket, playlistTeamsOf, serverRegion, withRegion } from "../src/matchmaking/service.js";
+import { assignmentBucket, bucketKey, bucketMatches, estimatedWaitSec, formTeams, parseBucket, playlistTeamsOf, serverRegion, withRegion } from "../src/matchmaking/service.js";
 import { regionList, regionOf, servedRegions } from "../src/matchmaking/regions.js";
-import { dedicatedServerToken, del, get, post, startBackend, userLogin } from "./helpers.js";
+import { dedicatedServerToken, del, get, post, send, startBackend, userLogin } from "./helpers.js";
 
 // MatchmakingServiceClient's connection: a WebSocket with the ticket in its Authorization header, which the browser-style
 // WebSocket can't send. Server frames are unmasked text; client frames are masked.
@@ -350,6 +350,54 @@ test("a 50v50 match's parties are shared out over its two teams, a No Fill party
   } finally {
     for (const client of clients) client.close();
     backend.close();
+  }
+});
+
+// Core-Backend #153: 1.11's server reads AssignMatch's bucket only with six fields (GameId:AppId:BuildId:Hotfix:
+// Region:Playlist); given the players' four it kept playlist -1 and played 50v50 queues as solo matches.
+test("a 1.11 server's AssignMatch names 50v50's playlist in its six-field bucket; 1.10's keeps the players' four", async () => {
+  assert.equal(assignmentBucket("3807424:0:NA:11", "3807424"), "Fortnite:Fortnite:3807424:0:NA:11");
+  assert.equal(assignmentBucket("3790078:0:NA:11", "3790078"), "3790078:0:NA:11");
+  assert.equal(assignmentBucket("858118782:0:NA:2", null), "858118782:0:NA:2");
+  const agentOf = (build) => `game=Fortnite, engine=UE4, build=++Fortnite+Release-Cert-CL-${build}`;
+  const as = (build, port, urlPath, token, method = "GET", body) => {
+    const text = body === undefined ? undefined : JSON.stringify(body);
+    const headers = { "User-Agent": agentOf(build), Authorization: `bearer ${token}` };
+    if (text !== undefined) Object.assign(headers, { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(text) });
+    return send({ host: "127.0.0.1", port, method, path: urlPath, headers }, text);
+  };
+  for (const build of ["3807424", "3790078"]) {
+    const backend = await startBackend({ matchmakingGatherMs: 100 });
+    const clients = [];
+    try {
+      const player = await userLogin(backend.port, `Fifty${build}`);
+      const server = await userLogin(backend.port, `CoreServer${build}`);
+      const bucket = `${build}:0:NA:11`;
+      const ticket = await as(build, backend.port, `/fortnite/api/game/v2/matchmakingservice/ticket/player/${player.accountId}?partyPlayerIds=${player.accountId}` +
+        `&bucketId=${bucket}&player.platform=Windows&player.option.fillTeam=true`, player.token);
+      const client = await matchmakingClient(backend.port, authorizationOf(ticket.body));
+      clients.push(client);
+      const session = (await as(build, backend.port, "/fortnite/api/matchmaking/session", server.token, "POST", {
+        ownerId: server.accountId, ownerName: "Core", serverName: "Core-1", serverAddress: "127.0.0.1", serverPort: 7777,
+        maxPublicPlayers: 100, maxPrivatePlayers: 0, buildUniqueId: build, attributes: { GAMEMODE_s: "FORTATHENA", REGION_s: "NA" }
+      })).body;
+      const gameserver = await matchmakingClient(backend.port, authorizationOf((await as(build, backend.port,
+        `/fortnite/api/game/v2/matchmakingservice/ticket/session/${session.id}?bucketIds=${encodeURIComponent(`${build}:0:NA:**`)}&minPlayers=1&maxPlayers=100`,
+        server.token)).body));
+      clients.push(gameserver);
+      assert.equal(JSON.parse(await gameserver.next()).name, "Registered");
+      const assign = JSON.parse(await gameserver.next());
+      assert.equal(assign.name, "AssignMatch");
+      assert.equal(assign.payload.bucketId, build === "3807424" ? `Fortnite:Fortnite:${bucket}` : bucket);
+      // 1.11's HandleAssignMatchMessage: PlaylistId is field 5, RegionId field 4.
+      const fields = assign.payload.bucketId.split(":");
+      assert.equal(Number(fields[build === "3807424" ? 5 : 3]), 11);
+      assert.equal(fields[build === "3807424" ? 4 : 2], "NA");
+      assert.equal(assign.payload.teams.length, 1);
+    } finally {
+      for (const client of clients) client.close();
+      backend.close();
+    }
   }
 });
 

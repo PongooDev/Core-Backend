@@ -66,6 +66,19 @@ export function parseBucket(bucketId) {
   return { netcl: parts[0], region: parts[2] ?? "", playlistId: Number.isInteger(playlistId) ? playlistId : null, parts };
 }
 
+// AssignMatch's bucketId as the server reads it (Core-Backend #153). 1.11's (CL-3807424) MMS server
+// (HandleAssignMatchMessage, dump 0x2CBF4E0) splits it on ":" and reads it only with six fields or more:
+// <GameId>:<AppId>:<BuildId>:<HotfixVersion>:<RegionId>:<PlaylistId>[:<GroupId>:<PoolId>:<SplitId>]. Given the players'
+// own four ("<netcl>:0:<region>:<playlistId>"), it kept its PlaylistId of -1 ("HandleAssignMatchMessage invalid playlist
+// id -1"), so every match started on the server's own playlist: a 50v50 queue played a solo match. 1.10 and earlier read
+// the four fields as they are. GameId and AppId are only logged; the region the server keeps is field 4.
+export const sixFieldAssignBuild = 3807424;
+const assignGameId = "Fortnite";
+const assignAppId = "Fortnite";
+export function assignmentBucket(bucketId, build) {
+  return Number(build) >= sixFieldAssignBuild ? `${assignGameId}:${assignAppId}:${bucketId}` : bucketId;
+}
+
 // The bucket with another region in its region field.
 export function withRegion(bucketId, region) {
   const { parts } = parseBucket(bucketId);
@@ -469,7 +482,8 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     // not fit, each party is a team of its own.
     const teams = teamsFor(forming.parties, forming.bucketId) ?? forming.parties.map((party) => [party.ticket.partyPlayerIds]);
     say(`Assigning match ${forming.matchId} (${forming.players} players in ${teams.length} teams, bucket ${forming.bucketId}) to session ${server.sessionId}`);
-    server.ws.send(message("AssignMatch", { matchId: forming.matchId, bucketId: forming.bucketId, matchOptions, teams }));
+    // In the format of the server's build, the one its session ticket was asked from (a netcl isn't always a changelist).
+    server.ws.send(message("AssignMatch", { matchId: forming.matchId, bucketId: assignmentBucket(forming.bucketId, server.build), matchOptions, teams }));
   }
 
   function onAssignResult(server, payload) {
@@ -601,7 +615,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
   function acceptServer(ws, ticket) {
     const regionField = serverRegion(ticket.bucketIds);
     const server = { sessionId: ticket.sessionId, accountId: ticket.accountId, patterns: ticket.bucketIds, maxPlayers: ticket.maxPlayers, ws,
-      forming: null, regionField, region: regionField === null ? "any region" : regionOf(regionField) };
+      build: Number(ticket.build) || null, forming: null, regionField, region: regionField === null ? "any region" : regionOf(regionField) };
     servers.add(server);
     hosts.set(server.sessionId, server);
     ws.on("message", (data) => {
