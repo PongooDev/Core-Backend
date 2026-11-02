@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { starSaleOffer, starSaleToken } from "../src/battlepass/season2.js";
 import { inBuild } from "../src/builds/context.js";
 import { battleRoyaleBuilds, versionOf } from "../src/builds/detect.js";
 import { contentUpdateStates, lootHotfixSection } from "../src/events/contentupdates.js";
@@ -21,8 +22,9 @@ import { buildOfSeason } from "../src/profiles/seasons.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
 import { earnScore, levelStartXp, xpForLevel } from "../src/profiles/xp.js";
+import { purchaseCatalogEntry } from "../src/services/mcp/commands/PurchaseCatalogEntry.js";
 import { hasEventStore } from "../src/store/eventstore.js";
-import { itemShopOffers, seasonEnd } from "../src/store/itemshop.js";
+import { configureItemShop, itemShopOffers, seasonEnd } from "../src/store/itemshop.js";
 import { dedicatedServerToken, post, send, startBackend, userLogin } from "./helpers.js";
 
 // Fortnite 2.2 (++Fortnite+Release-Cert-CL-3841827, UE 4.19, 18 January 2018): its own game data and version, still
@@ -69,7 +71,8 @@ test("2.2 is known by its version and plays on its own game data: 2.1's with 2.2
   // The Battle Pass's "free 5 tier head start in Season 3" and the tier sale's token.
   assert.deepEqual(inBuild(v22, athenaSeason).bookPaidRewards.find(({ level }) => level === 2).rewards.at(-1),
     { quantity: 5, templateId: "Token:athenanextseasontierboost" });
-  assert.ok(inBuild(v22, () => getItem("Token:athenabattlepassstarsale_s2")));
+  assert.ok(inBuild(v22, () => getItem(starSaleToken)));
+  assert.equal(inBuild(v21, () => getItem(starSaleToken)), undefined);
   // Survive the Holidays' llama is still sold (the Save the World winter event runs on).
   assert.deepEqual(inBuild(v22, () => getCardPack(holidayLlama)), inBuild(v21, () => getCardPack(holidayLlama)));
   // Mission alert categories name themselves: 2.2 has no EFortMissionAlertCategory.
@@ -189,6 +192,34 @@ test("2.2's Commander XP is ten times 2.1's, and an account's converts on the bu
   });
   assert.equal(base(v21), 612_901);
   assert.equal(base(v22), 6_129_010);
+}));
+
+test("2.2's tier sale is featured on its days: ten tiers for six tiers' V-Bucks", () => withStore((store) => {
+  const config = { mode: "fnbr", seasonStarts: { 2: "2017-12-14" } };
+  const featured = (build, date) => inBuild(build, () => itemShopOffers(new Date(`${date}T10:00:00Z`), config).BRWeeklyStorefront);
+  const sale = featured(v22, "2018-01-18").find((offer) => offer.templateId === starSaleToken);
+  assert.deepEqual([sale.price, sale.regularPrice, sale.tiers, sale.displayAssetPath],
+    [900, 1500, 10, "/Game/Catalog/DisplayAssets/DA_Featured_AthenaBattlePassStarSale_S2.DA_Featured_AthenaBattlePassStarSale_S2"]);
+  assert.ok(!featured(v22, "2018-01-30").some((offer) => offer.templateId === starSaleToken));
+  assert.ok(featured(v22, "2018-02-16").some((offer) => offer.templateId === starSaleToken));
+  assert.ok(!featured(v21, "2018-01-18").some((offer) => offer.templateId === starSaleToken), "2.1 has no token");
+  assert.equal(inBuild(v21, () => starSaleOffer("2018-01-18")), null);
+
+  // Bought on its day, it gives ten tiers.
+  const today = new Date();
+  const start = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()) - 35 * 86_400_000).toISOString().slice(0, 10);
+  configureItemShop({ mode: "fnbr", seasonStarts: { 2: start } });
+  inBuild(v22, () => {
+    const session = openSession(store, "starsale");
+    grant(session, "Currency:mtxpurchased", 1000);
+    const notifications = [];
+    purchaseCatalogEntry({ req: { body: { offerId: sale.offerId, purchaseQuantity: 1, currency: "MtxCurrency", expectedPrice: 900 } }, session, notifications });
+    assert.equal(session.profile("athena").profile.stats.attributes.book_level, 11);
+    assert.equal(notifications[0].type, "CatalogPurchase");
+    const vbucks = session.profile("profile0").profile.items[findItem(session.profile("profile0").profile, "Currency:mtxpurchased")].quantity;
+    assert.equal(vbucks, 100);
+  });
+  configureItemShop(null);
 }));
 
 test("2.2's \"Play matches with a friend\" counts a match whose squad had a friend in it; 1.11, 2.1 and 2.2 share Season 2's profile", async () => {

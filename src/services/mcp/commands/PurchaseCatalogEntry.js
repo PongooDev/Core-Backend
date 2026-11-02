@@ -61,18 +61,18 @@ export function purchaseCatalogEntry({ req, session, notifications }) {
 
   const tracker = session.profile("profile0");
   // A Battle Pass offer (battlepass/season2.js): the pass, the pass with 25 tiers, or tiers, one a purchase quantity
-  // (1.11's tier modal buys 1 to 10). Paid in profile0's V-Bucks; the pass's stats and the rewards of the tiers reached go
+  // (1.11's tier modal buys 1 to 10), or 2.2's tier sale, its ten tiers at once. Paid in profile0's V-Bucks; the pass's stats and the rewards of the tiers reached go
   // to the athena profile (profiles/seasons.js), the cosmetics among them to the locker.
   if (offer.battlePass) {
     const athena = session.profile("athena").profile;
     const owns = athena.stats.attributes.book_purchased === true;
-    if (offer.battlePass !== "tier" && purchaseQuantity !== 1) {
+    if ((offer.battlePass !== "tier" || offer.tiers) && purchaseQuantity !== 1) {
       throw new McpError("errors.com.epicgames.common.invalid_parameter", `Can't buy ${purchaseQuantity} of ${offer.title}`);
     }
     if (offer.battlePass !== "tier" && owns) {
       throw new McpError("errors.com.epicgames.modules.gamesubcatalog.purchase_not_allowed", "You already own the Battle Pass");
     }
-    const tiers = offer.battlePass === "tier" ? purchaseQuantity : offer.battlePass === "bundle" ? bundleTiers : 0;
+    const tiers = offer.battlePass === "tier" ? purchaseQuantity * (offer.tiers ?? 1) : offer.battlePass === "bundle" ? bundleTiers : 0;
     if (tiers > tiersLeft(athena)) {
       throw new McpError("errors.com.epicgames.modules.gamesubcatalog.purchase_not_allowed",
         `Only ${tiersLeft(athena)} Battle Pass tiers are left to buy`);

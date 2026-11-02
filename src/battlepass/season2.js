@@ -82,6 +82,34 @@ const seasonOffers = () => {
   ];
 };
 
+// 2.2's (CL-3841827) tier sale: "Buy ten Battle Pass tiers for the price of six with this special bundle in the store.
+// On sale now for a limited time!" 2.2's paks add its item, Token:AthenaBattlePassStarSale_S2 ("Battle Pass Tiers", "10
+// tiers (100 stars)", "In celebration of the map update, a special limited time offer on 10 tiers (100 stars) to advance
+// your Battle Pass"), and its tile, DA_Featured_AthenaBattlePassStarSale_S2. Epic's item shop featured it for 900 V-Bucks
+// (1,500 struck through) from 14 to 24 January and from 15 to 20 February 2018 (the Fortnite Wiki's Item Shop History
+// pages), so Season 2's replay features it on those days (store/itemshop.js), on a build whose data has the token. Epic's
+// grant was the token, which its servers turned into the tiers; Core gives the ten tiers at once, as ten of the tier
+// offer would, and they need no Battle Pass, as the tiers don't.
+export const starSaleToken = "Token:athenabattlepassstarsale_s2";
+const starSaleTiers = 10;
+const starSaleDays = [["2018-01-14", "2018-01-24"], ["2018-02-15", "2018-02-20"]];
+
+// The sale's offer on a day of Season 2's history ("2018-01-18"), or null.
+export function starSaleOffer(date) {
+  const season = athenaSeason();
+  const token = getItem(starSaleToken);
+  if (!season || !token || !starSaleDays.some(([first, last]) => date >= first && date <= last)) return null;
+  return {
+    offerId: `core_br_season${season.seasonNumber}_starsale`, devName: `BR.Season${season.seasonNumber}.TierSale.01`, templateId: starSaleToken,
+    battlePass: "tier", tiers: starSaleTiers, currencyType: "MtxCurrency", currencySubType: "",
+    title: "Battle Pass Tiers", shortDescription: `${starSaleTiers} tiers (${starSaleTiers * 10} stars)`,
+    description: `In celebration of the map update, a special limited time offer on ${starSaleTiers} tiers (${starSaleTiers * 10} stars) to advance your Battle Pass`,
+    price: 6 * tierPrice, regularPrice: starSaleTiers * tierPrice,
+    displayAssetPath: "/Game/Catalog/DisplayAssets/DA_Featured_AthenaBattlePassStarSale_S2.DA_Featured_AthenaBattlePassStarSale_S2",
+    itemGrants: [{ templateId: starSaleToken, quantity: 1 }]
+  };
+}
+
 // The season's storefront offers for a player (ownsPass: their book_purchased): the pass and bundle until it is bought,
 // the tiers always.
 export const battlePassOffers = ({ ownsPass = false } = {}) => seasonOffers()
