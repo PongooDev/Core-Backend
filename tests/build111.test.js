@@ -4,7 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { inBuild } from "../src/builds/context.js";
 import { versionOf } from "../src/builds/detect.js";
-import { activeEventFlags, hasEventEnded, isEventActive, mutantStorms, passiveStorms, winter2017 } from "../src/events/events.js";
+import { activeEventFlags, hasEventEnded, isEventActive, lobbyWinterDecor, mutantStorms, passiveStorms, winter2017 } from "../src/events/events.js";
 import { stormTickets } from "../src/events/mutantstorms.js";
 import { stormLlama } from "../src/events/stormllamas.js";
 import { holidayLlama, snowflakeTickets, winterEventQuests } from "../src/events/winter2017.js";
@@ -47,7 +47,7 @@ test("1.11 is known by its version and plays on its own game data", () => {
 });
 
 test("1.11 runs Survive the Holidays under EventFlag.Winter2017, ends the Mutant Storms and keeps storms without tickets", () => {
-  assert.deepEqual(activeEventFlags(v111), ["EventFlag.BR.Allow50v50", winter2017, passiveStorms]);
+  assert.deepEqual(activeEventFlags(v111), ["EventFlag.BR.Allow50v50", winter2017, passiveStorms, lobbyWinterDecor]);
   assert.ok(isEventActive(winter2017, v111) && isEventActive(passiveStorms, v111));
   assert.ok(!isEventActive(mutantStorms, v111) && !isEventActive("EventFlag.ActiveStorms", v111));
   assert.ok(hasEventEnded(mutantStorms, v111));

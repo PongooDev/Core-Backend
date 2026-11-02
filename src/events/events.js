@@ -38,13 +38,23 @@ export const fiftyFifty = "EventFlag.BR.Allow50v50";
 export const winter2017 = "EventFlag.Winter2017";
 export const passiveStorms = "EventFlag.PassiveStorms";
 
+// Battle Royale's winter lobby (1.11, CL-3807424; Core-Backend #145: "Battle royal does not have the winter background").
+// 1.11's LobbyBG_Winter (Items/Events/Shared, LobbyBackgroundTakeoverEvent) puts the lobby in Frontend_Lobby_Winter while
+// its RequiredEventTag, EventFlag.LobbyWinterDecor, is on, as LobbyBG_Halloween did with EventFlag.LobbyHalloweenDecor;
+// the seasonal event manager takes its flags from the calendar's client-events state (services/fortnite/calendar.js).
+// 1.11's other Battle Royale winter events (BR_Decor_WinterBus's EventFlag.WinterBattleBus, BR_Decor_SupplyDropGift's
+// EventFlag.SupplyDropGift and BR_Winter_CandyCaneGuns' EventFlag.BR.CandyCaneGuns) change the match, which is the
+// gameserver's, and are left off (🟡: nothing found says when Epic ran them).
+export const lobbyWinterDecor = "EventFlag.LobbyWinterDecor";
+
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
   { name: mutantStorms, flag: "EventFlag.Vindertech", firstBuild: 3775276, lastBuild: 3775276 },
   { name: mutantStorms, flag: "EventFlag.ActiveStorms", firstBuild: 3790078, lastBuild: 3790078 },
   { name: fiftyFifty, flag: fiftyFifty, firstBuild: 3790078, lastBuild: 3807424 },
   { name: winter2017, flag: winter2017, firstBuild: 3807424, lastBuild: 3807424 },
-  { name: passiveStorms, flag: passiveStorms, firstBuild: 3807424, lastBuild: 3807424 }
+  { name: passiveStorms, flag: passiveStorms, firstBuild: 3807424, lastBuild: 3807424 },
+  { name: lobbyWinterDecor, flag: lobbyWinterDecor, firstBuild: 3807424, lastBuild: 3807424 }
 ];
 
 const runsOn = (event, number) => number >= event.firstBuild && number <= event.lastBuild;

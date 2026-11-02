@@ -45,8 +45,8 @@ test("Fortnitemares runs on 1.8 to 1.9 only, and 1.8's own data has its content"
   // 1.9.1 ended it, with Mutant Storms back (events/mutantstorms.js), which 1.10 keeps under EventFlag.ActiveStorms.
   assert.deepEqual(activeEventFlags("3775276"), ["EventFlag.Vindertech"]);
   assert.deepEqual(activeEventFlags("3790078"), ["EventFlag.ActiveStorms", "EventFlag.BR.Allow50v50"]);
-  // 1.11 ends them, running Survive the Holidays with storms that give no tickets (build111.test.js), and 50v50.
-  assert.deepEqual(activeEventFlags("3807424"), ["EventFlag.BR.Allow50v50", "EventFlag.Winter2017", "EventFlag.PassiveStorms"]);
+  // 1.11 ends them, running Survive the Holidays with storms that give no tickets (build111.test.js), 50v50 and the winter lobby.
+  assert.deepEqual(activeEventFlags("3807424"), ["EventFlag.BR.Allow50v50", "EventFlag.Winter2017", "EventFlag.PassiveStorms", "EventFlag.LobbyWinterDecor"]);
   for (const other of [builds.cert, "3541083", builds["1.7.2"], "3841827", "unknown", undefined]) assert.deepEqual(activeEventFlags(other), [], other);
 
   inBuild(builds["1.8"], () => {
