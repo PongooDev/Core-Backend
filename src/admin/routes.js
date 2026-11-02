@@ -14,7 +14,7 @@ import { dataBuilds, readGameData } from "../gamedata/read.js";
 import { recentLogs } from "../log.js";
 import { sessionSummary } from "../matchmaking/sessions.js";
 import { defaultHostingIps, hostingIp, maxHostingIps } from "../network.js";
-import { alertsRemaining, emptyAlertRecord, withQuotaSlots } from "../profiles/alerts.js";
+import { alertsRemaining, clearedAlertRecord, emptyAlertRecord, withQuotaSlots } from "../profiles/alerts.js";
 import { fullLockerState, grantCosmetic, grantFullLocker, grantShopCosmetics, lockerCosmeticId, lockerCosmetics, maxSeasonLevel, ownsCosmetic, removeFullLocker, removeLockerCosmetic,
   setSeasonLevel } from "../profiles/athena.js";
 import { levelRest, restBalance, restValue } from "../profiles/boosts.js";
@@ -716,12 +716,8 @@ export function adminRoutes(context) {
   router.post("/admin/api/accounts/:accountId/mission-alerts/reset", change(({ session }) => {
     const tracker = session.profile("profile0");
     const record = withQuotaSlots(tracker.profile.stats.attributes.mission_alert_redemption_record ?? emptyAlertRecord());
-    // The per-category claims of 1.7.2 and later (profiles/alerts.js) too, whichever build's shape the record has.
-    const never = "0001-01-01T00:00:00.000Z";
-    const categories = record.lastClaimTimesMap && Object.fromEntries(Object.entries(record.lastClaimTimesMap).map(([category, claims]) =>
-      [category, { missionAlertGUIDs: (claims.missionAlertGUIDs ?? []).map(() => ""), lastClaimedTimes: (claims.lastClaimedTimes ?? []).map(() => never) }]));
-    tracker.setStat("mission_alert_redemption_record", { ...record, lastClaimTimes: emptyAlertRecord().lastClaimTimes, oldestClaimIndex: 0,
-      ...(categories && { lastClaimTimesMap: categories, oldestClaimIndexForCategory: (record.oldestClaimIndexForCategory ?? []).map(() => 0) }) });
+    // The per-category claims of 1.7.2 and later and 2.2's (profiles/alerts.js) too, whichever builds' shapes the record has.
+    tracker.setStat("mission_alert_redemption_record", clearedAlertRecord(record));
   }));
 
   // Rest XP back to its cap.
@@ -1062,7 +1058,8 @@ export function adminRoutes(context) {
       { version: "1.9.1", cl: 3775276, event: "Mutant Storms" },
       { version: "1.10", cl: 3790078, event: "Mutant Storms" },
       { version: "1.11", cl: 3807424, event: "Survive the Holidays" },
-      { version: "2.1", cl: 3825894, event: "Survive the Holidays" }
+      { version: "2.1", cl: 3825894, event: "Survive the Holidays" },
+      { version: "2.2", cl: 3841827, event: "Survive the Holidays" }
     ];
 
     const sampleBuilds = builds.map((b) => ({
@@ -1083,7 +1080,7 @@ export function adminRoutes(context) {
     }])));
 
     // Season 2's content updates (events/contentupdates.js): each one's state on 1.11 and on 2.1, without starting the
-    // season.
+    // season. 2.2 ships them in its own loot tables, so it takes none.
     const contentUpdates = withoutSeasonStartRecording(() => ({
       config: eventsConfig.contentUpdates ?? defaultContentUpdates,
       seasonDate: inBuild("3807424", () => seasonMoment(now, shopConfig, 2).toISOString()),
@@ -1145,7 +1142,7 @@ export function adminRoutes(context) {
           id: "winter2017",
           name: "Survive the Holidays",
           subtitle: "Mini-Boss Mission Alerts & Holiday Survival",
-          buildRange: "1.11 & 2.1 (CL 3807424 – 3825894)",
+          buildRange: "1.11 – 2.2 (CL 3807424 – 3841827)",
           flags: ["EventFlag.Winter2017", "EventFlag.PassiveStorms"],
           theater: "Standard Zones with Mini-Boss Alerts",
           alertsQuota: "10 Mini-Boss mission alerts and 4 storms (no tickets) per day",
@@ -1223,7 +1220,6 @@ export function adminRoutes(context) {
   router.post("/admin/api/events/actions/reset-quotas", (req, res) => {
     const list = accounts.list();
     let resetProfiles = 0;
-    const never = "0001-01-01T00:00:00.000Z";
 
     for (const account of list) {
       try {
@@ -1231,14 +1227,7 @@ export function adminRoutes(context) {
         const tracker = session.profile("profile0");
         if (tracker && tracker.profile) {
           const record = withQuotaSlots(tracker.profile.stats?.attributes?.mission_alert_redemption_record ?? emptyAlertRecord());
-          const categories = record.lastClaimTimesMap && Object.fromEntries(Object.entries(record.lastClaimTimesMap).map(([category, claims]) =>
-            [category, { missionAlertGUIDs: (claims.missionAlertGUIDs ?? []).map(() => ""), lastClaimedTimes: (claims.lastClaimedTimes ?? []).map(() => never) }]));
-          tracker.setStat("mission_alert_redemption_record", {
-            ...record,
-            lastClaimTimes: emptyAlertRecord().lastClaimTimes,
-            oldestClaimIndex: 0,
-            ...(categories && { lastClaimTimesMap: categories, oldestClaimIndexForCategory: (record.oldestClaimIndexForCategory ?? []).map(() => 0) })
-          });
+          tracker.setStat("mission_alert_redemption_record", clearedAlertRecord(record));
           session.commit();
           notifyProfiles(context, session);
           resetProfiles += 1;

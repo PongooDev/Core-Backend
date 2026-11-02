@@ -55,14 +55,21 @@ export const supplyDropGift = "EventFlag.SupplyDropGift";
 // items and playlists, and its notes end none of them. The next update ended them: 2.2.0's notes end the Battle Royale
 // Winter event on 18 January (and remove "the winter theme from the pre-game lobby"), and "The Save the World winter
 // event has been extended until January 24".
+//
+// 2.2 (CL-3841827, 18 January 2018) so runs Save the World's half: Survive the Holidays (its MiniBoss and Survival
+// alerts still require EventFlag.Winter2017, its Event Store and Holiday Survival Llamas are 1.11's) and the ticketless
+// storms (its StormLowCategory rows still require EventFlag.PassiveStorms), but not Battle Royale's: no winter lobby,
+// holiday Battle Bus or gift-wrapped supply drops ("Thank you all for being a part of our 2017 Battle Royale Winter
+// event!"). 50v50 stays: 2.2's BR_Playlist_50v50 still waits for EventFlag.BR.Allow50v50, its quest
+// (AthenaEvent_FiftyFifty_PlayMatches) is still there, and its notes end only the winter event.
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
   { name: mutantStorms, flag: "EventFlag.Vindertech", firstBuild: 3775276, lastBuild: 3775276 },
   { name: mutantStorms, flag: "EventFlag.ActiveStorms", firstBuild: 3790078, lastBuild: 3790078 },
-  { name: fiftyFifty, flag: fiftyFifty, firstBuild: 3790078, lastBuild: 3825894 },
-  { name: winter2017, flag: winter2017, firstBuild: 3807424, lastBuild: 3825894 },
-  { name: passiveStorms, flag: passiveStorms, firstBuild: 3807424, lastBuild: 3825894 },
+  { name: fiftyFifty, flag: fiftyFifty, firstBuild: 3790078, lastBuild: 3841827 },
+  { name: winter2017, flag: winter2017, firstBuild: 3807424, lastBuild: 3841827 },
+  { name: passiveStorms, flag: passiveStorms, firstBuild: 3807424, lastBuild: 3841827 },
   { name: lobbyWinterDecor, flag: lobbyWinterDecor, firstBuild: 3807424, lastBuild: 3825894 },
   { name: winterBattleBus, flag: winterBattleBus, firstBuild: 3807424, lastBuild: 3825894 },
   { name: supplyDropGift, flag: supplyDropGift, firstBuild: 3807424, lastBuild: 3825894 }
@@ -91,7 +98,7 @@ export function activeEventFlags(changelist = currentBuild()) {
   if (eventsSetting.getStore() === false) return [];
   const config = currentEventsConfig();
   if (config?.mode === "off") return [];
-  // Forcing a Save the World event leaves the build's Battle Royale 50v50 running (1.10 to 2.1).
+  // Forcing a Save the World event leaves the build's Battle Royale 50v50 running (1.10 to 2.2).
   const fiftyFiftyFlags = Number.isInteger(Number(changelist)) && runsOn(events.find((event) => event.name === fiftyFifty), Number(changelist))
     ? [fiftyFifty] : [];
   if (config?.mode === "force_fortnitemares") return [fortnitemares, ...fiftyFiftyFlags];

@@ -42,7 +42,7 @@ const profileOf = async (port, player, profileId, build) =>
 test("2.1 is known by its version and plays on its own game data: 1.11's with 2.1's changes", () => {
   assert.equal(versionOf(v21), "2.1");
   assert.equal(dataBuild(v21), v21);
-  assert.equal(battleRoyaleBuilds.at(-1), v21);
+  assert.ok(battleRoyaleBuilds.includes(v21));
   // "Changed the Boogie Bomb rarity to blue/rare".
   assert.equal(inBuild(v21, () => getItem("Weapon:athena_dancegrenade").rarity), "Sturdy");
   assert.equal(inBuild(v111, () => getItem("Weapon:athena_dancegrenade").rarity), "Ordinary");
@@ -60,7 +60,8 @@ test("2.1 is still Season 2: 1.11's Battle Pass, season clock and shop", () => {
   const season = inBuild(v21, athenaSeason);
   assert.equal(season.seasonNumber, 2);
   assert.deepEqual(season, inBuild(v111, athenaSeason));
-  assert.equal(buildOfSeason(2), v21);
+  // Season 2's newest data is 2.2's since (build22.test.js).
+  assert.equal(buildOfSeason(2), "3841827");
   const now = new Date("2026-11-02T12:00:00Z");
   assert.equal(inBuild(v21, () => seasonEnd(now, { rotationHour: 0 })).toISOString(), inBuild(v111, () => seasonEnd(now, { rotationHour: 0 })).toISOString());
   const config = { mode: "custom", custom: { featured: [["AthenaGlider:glider_prismatic", 800]], daily: [["AthenaPickaxe:skiicepickaxe", 800]] } };
@@ -76,9 +77,10 @@ test("2.1 keeps 1.11's events: Survive the Holidays, ticketless storms, the wint
   for (const flag of [winter2017, passiveStorms, lobbyWinterDecor, winterBattleBus, supplyDropGift]) {
     assert.ok(isEventActive(flag, v21), flag);
     assert.ok(!hasEventEnded(flag, v21), flag);
-    // 2.2.0 ended them.
-    assert.ok(hasEventEnded(flag, "3841827"), flag);
   }
+  // 2.2.0 ended Battle Royale's (build22.test.js); Save the World's ran on.
+  for (const flag of [lobbyWinterDecor, winterBattleBus, supplyDropGift]) assert.ok(hasEventEnded(flag, "3841827"), flag);
+  for (const flag of [winter2017, passiveStorms]) assert.ok(!hasEventEnded(flag, "3841827"), flag);
   assert.deepEqual(inBuild(v21, winterEventQuests), inBuild(v111, winterEventQuests));
   assert.ok(inBuild(v21, hasEventStore));
 });

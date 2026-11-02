@@ -29,7 +29,8 @@ export const dailyMissionAlertQuota = () => data().dailyMissionAlertQuota;
 
 // From 1.7.2 an alert's category (a MissionAlertCategories row: GeneralCategory, StormCategory...) is an
 // EFortMissionAlertCategory with its own daily quota, and the profile keeps the claims of each category apart
-// (profiles/alerts.js). Cert and 1.2 have no categories: one quota (DailyMissionAlertQuota) for every alert.
+// (profiles/alerts.js). Cert and 1.2 have no categories: one quota (DailyMissionAlertQuota) for every alert. 2.2 has no
+// enum: its category is the row's own name (CategoryRowName), which its record keys the claims by.
 export const hasMissionAlertCategories = () => Object.keys(data().missionAlertCategories).length > 0;
 
 // {category, quota, repeatable} of a MissionAlertCategories row.

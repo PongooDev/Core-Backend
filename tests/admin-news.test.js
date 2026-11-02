@@ -212,12 +212,13 @@ test("1.9 gets the lobby news as battleRoyaleNews.news.messages[], earlier build
     assert.equal(default19.message, undefined);
     assert.deepEqual(default19.region_messages, []);
     assert.deepEqual(default19.platform_messages, []);
-    // 1.10 (CL-3790078), 1.11 (CL-3807424) and 2.1 (CL-3825894) read the array too, under their own versions (#131), and so does a newer
+    // 1.10 (CL-3790078), 1.11 (CL-3807424), 2.1 (CL-3825894) and 2.2 (CL-3841827) read the array too, under their own versions (#131), and so does a newer
     // build Core doesn't know.
     assert.equal((await pageFor(backend.port, "3790078")).body.battleRoyaleNews.news.messages[0].title, "Battle Royale - 1.10");
     assert.equal((await pageFor(backend.port, "3807424")).body.battleRoyaleNews.news.messages[0].title, "Battle Royale - 1.11");
     assert.equal((await pageFor(backend.port, "3825894")).body.battleRoyaleNews.news.messages[0].title, "Battle Royale - 2.1");
-    assert.equal((await pageFor(backend.port, "3841827")).body.battleRoyaleNews.news.messages[0].title, "Battle Royale - CL-3841827");
+    assert.equal((await pageFor(backend.port, "3841827")).body.battleRoyaleNews.news.messages[0].title, "Battle Royale - 2.2");
+    assert.equal((await pageFor(backend.port, "3870737")).body.battleRoyaleNews.news.messages[0].title, "Battle Royale - CL-3870737");
 
     // Earlier builds are unchanged: news.message alone.
     for (const [changelist, version] of [["3700114", "1.7.2"], ["3724489", "1.8"], ["3729133", "1.8.1"], ["3741772", "1.8.2"]]) {

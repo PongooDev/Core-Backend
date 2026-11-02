@@ -7,7 +7,12 @@ import { currentEventsConfig } from "./events.js";
 // will be no downtime, and no update required." Each was a hotfix to the loot tables the build already had, as 1.11's
 // own data shows: its AthenaLootPackages_Client ships the Small Shield Potion, the Boogie Bomb, the Suppressed Pistol, the
 // Damage Trap (TID_ContextTrap_Athena) and the Cozy Campfire at weight 0, and the old traps on. 2.1 (CL-3825894) ships the
-// same tables (the Boogie Bomb's stack aside), so its loot needs the same hotfixes, and its own Cozy Campfire too.
+// same tables (the Boogie Bomb's stack aside), so its loot needs the same hotfixes, and its own Cozy Campfire too. 2.2
+// (CL-3841827) needs none: its own tables have them all in, at Epic's weights (the Small Shield Potion at 1, the Damage
+// Trap at 4.5 with the old traps and jump pads at 0, the Launch Pad at 0.5, the Cozy Campfire at 0.5, the Boogie Bomb at
+// 0.3 among the chests' and supply drops' consumables, the Suppressed Pistol at 0.075 and 0.01875 on the floor and 0.1
+// from chests; and its own: the Scoped AR out of supply drops, "Removed the Scoped AR from Supply Drops"), so it gets
+// no [AssetHotfix], which would put Core's weights over Epic's.
 //
 // Epic's updates (the Fortnite Wiki's Season 2 pages and Epic's notes on them):
 // - 19 December 2017, 13:00 GMT, the Small Shield Potion update: the Small Shield Potion ("Drops in stacks of 3", "found in
@@ -30,6 +35,7 @@ const packages = "/Game/Items/Datatables/AthenaLootPackages_Client.AthenaLootPac
 const tiers = "/Game/Items/Datatables/AthenaLootTierData_Client.AthenaLootTierData_Client";
 const season2 = 3807424;
 const build21 = 3825894;
+const build22 = 3841827;
 
 export const contentUpdates = [
   { id: "smallShieldPotion", name: "Small Shield Potion and the Damage Trap", at: "2017-12-19T13:00:00Z", firstBuild: season2, rows: [
@@ -62,8 +68,8 @@ export const contentUpdateIds = contentUpdates.map(({ id }) => id);
 // (store/itemshop.js seasonMoment: day 1 is 14 December 2017, so the Small Shield Potion comes on day 6 at 13:00 UTC past
 // the rotation hour, and all three are in from day 20 to the season's end; the replay starting over takes them out again,
 // as the shop starts over), or "all", every one in from day 1; overrides {<id>: "on" | "off"} turn one on or off whatever
-// the mode. They are 1.11's: 2.1 shipped after all three and with its campfire, so a 2.1 or later build has all of them,
-// always.
+// the mode. They are 1.11's: 2.1 shipped after all three and with its campfire, so 2.1 has all of them,
+// always (and 2.2 has them in its own tables).
 export const contentUpdateModes = ["season", "all"];
 export const defaultContentUpdates = { mode: "season", overrides: {} };
 
@@ -86,7 +92,7 @@ const configOf = (config) => sanitizeContentUpdates(config ?? currentEventsConfi
 // The updates the requesting build has, and whether each is in now: [{id, name, at, on, why}].
 export function contentUpdateStates(now = new Date(), config = null, build = currentBuild()) {
   const number = Number(build);
-  if (!(number >= season2) || athenaSeason()?.seasonNumber !== 2) return [];
+  if (!(number >= season2) || number >= build22 || athenaSeason()?.seasonNumber !== 2) return [];
   const { mode, overrides } = configOf(config);
   const moment = number >= build21 ? null : seasonMoment(now, null, 2);
   return contentUpdates.filter((update) => number >= update.firstBuild).map((update) => {
