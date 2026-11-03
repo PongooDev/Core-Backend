@@ -1408,7 +1408,7 @@ export function adminRoutes(context) {
         id: "shootingTest",
         name: "Shooting Test #1",
         playlistId: 15,
-        code: "AthenaEvent4",
+        code: "AthenaEvent1",
         teamCount: 100,
         teamSize: 1,
         squadSize: 1,

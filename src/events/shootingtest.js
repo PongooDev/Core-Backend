@@ -2,16 +2,18 @@ import { buildGameData } from "../gamedata/read.js";
 
 // Shooting Test #1 (Core-Backend #189), Battle Royale's limited-time playlist of 2 February 2018: "This alternative
 // gameplay test modifies weapon accuracy for a more precise aim" (MissionGen_AthenaEvent4_ShootingTest's
-// AthenaLTMConfig). It isn't a playlist asset: 2.4 (CL-3858292) to 2.5 (CL-3889387) ship it as the lobby's fourth event
-// queue, EFortAthenaPlaylist::AthenaEvent4, MCP playlist 15 (Athena_GameMode's PlaylistDataTables number Event1 to 8
-// 12 to 19, Sneaky Silencers 12 ... Blitz 19; 15 is the one without loot tables of its own), and its gameplay is native.
-// Epic ran it from its servers, with nothing in a patch:
-// - The calendar turned the queue on. UFortGlobalUIContext::IsEvent4QueueEnabled (2.4.2 0x20BA120) is UFortGameInstance's
-//   bBattleRoyaleEvent4QueueEnabled (true in 2.4's to 2.5's DefaultGame.ini), the player's region not in its
-//   RegionsWithBattleRoyaleEvent4QueueDisabled, and, with the seasonal event manager there, "Event4" (0x20B3770 names
+// AthenaLTMConfig). It isn't a playlist asset: 2.4 (CL-3858292) to 2.5 (CL-3889387) ship it as the lobby's first event
+// queue, EFortAthenaPlaylist::AthenaEvent1, whose tile is AthenaMatchmakingPlay's Event1MissionGen,
+// MissionGen_AthenaEvent4_ShootingTest, and whose ticket is MCP playlist 15 (the matchmaking button's switch, 2.4.2
+// 0x20FBC90: AthenaEvent1 15; events/ltms.js, Core-Backend #195; 15 is the PlaylistDataTables entry without loot tables
+// of its own), and its gameplay is native. Epic ran it from its servers, with nothing in a patch:
+// - The calendar turned the queue on. UFortGlobalUIContext::IsEvent1QueueEnabled (2.4.2 0x20B9790) is UFortGameInstance's
+//   bBattleRoyaleEvent1QueueEnabled (true in 2.4's to 2.5's DefaultGame.ini), the player's region not in its
+//   RegionsWithBattleRoyaleEvent1QueueDisabled, and, with the seasonal event manager there, "Event1" (0x20B3770 names
 //   AthenaEvent1-8 Event1-8) in the region's FFortMatchmakingRegionState EventFlagsForcedOn and not in its
-//   EventFlagsForcedOff; or UFortGlobals' bEvent4ForceEnabled (false). The region state is the calendar's
-//   client-matchmaking channel (services/fortnite/calendar.js), so the LTM tile shows while that lists Event4.
+//   EventFlagsForcedOff; or UFortGlobals' bEvent1ForceEnabled (false). The region state is the calendar's
+//   client-matchmaking channel (services/fortnite/calendar.js), so the LTM tile shows while that lists Event1. (Event4
+//   shows Lotsa Loot's "Luxurious Loot" tile.)
 // - A ranged weapon in playlist 15 reads its stats from the player pawn's tables (2.4.2 0x9AFC00, 2.4 0x99D0F0: the
 //   game state's CurrentPlaylistId == 15): with UFortGlobals' bShootingTest3Enabled (false in the paks) from
 //   PlayerPawn_Athena's PrototypeShootingModelPerfectAimWhenTargetingMinSpread, AthenaRangedWeapons_ShootingModel3, with
@@ -33,7 +35,7 @@ import { buildGameData } from "../gamedata/read.js";
 // its original dates do (events/ltms.js: 2 to 12 February 2018, on 2.4 and 2.4.2).
 export const shootingTestMode = "shootingTest";
 export const shootingTestPlaylist = 15;
-export const shootingTestEventFlag = "Event4";
+export const shootingTestEventFlag = "Event1";
 const firstBuild = 3858292;
 const soloBuild = 3870737;
 const lastBuild = 3889387;

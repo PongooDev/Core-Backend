@@ -3,13 +3,24 @@ import { nextReplayOf, seasonMoment } from "../store/itemshop.js";
 
 // Battle Royale's limited-time modes of Seasons 1 and 2 (Core-Backend #190), and when they run.
 //
-// From 1.11 (CL-3807424) to 2.5 (CL-3889387) the lobby has eight event queues, EFortAthenaPlaylist::AthenaEvent1 to 8,
-// MCP playlists 12 to 19. Each one's tile is its mission generator (the matchmaking widget's Event<N>MissionGen):
-// 1.11's and 2.1's World/MissionGens/TestMissionGens, 2.3's on World/MissionGens/Athena, MissionGen_AthenaEvent1_
-// SneakySilencers, _AthenaEvent2_Explosives ("High Explosives"), _AthenaEvent3_SpeedyCircles, _AthenaEvent4_ShootingTest,
-// _AthenaEvent5_Skies, _AthenaEvent6_Loot, _AthenaEvent7_Snipers ("Sniper Shootout": "Ready, aim, fire! Sniper Rifles
-// only.") and _AthenaEvent8. None is a playlist asset; Epic ran them from its servers, as it ran Shooting Test #1
-// (events/shootingtest.js):
+// From 1.11 (CL-3807424) to 2.5 (CL-3889387) the lobby has eight event queues, EFortAthenaPlaylist::AthenaEvent1 to 8
+// (enum 4 to 11), each turned on by the event flag "Event1" to "Event8" (2.4.2 0x20B3770 names them). The queue's
+// number is not its mission generator's (Core-Backend #195):
+// - Its tile is the matchmaking widget's Event<N>MissionGen (AthenaMatchmakingPlay's defaults, the same in 2.1, 2.3,
+//   2.4.2 and 2.5; Athena_Matchmaking_GameModeButton's SetMissionGenData picks it by the queue, ConfigButtonWithMissionGen
+//   shows its MissionDescription; 1.11's paks aren't at hand, so its tiles are taken to be 2.1's): Event1
+//   MissionGen_AthenaEvent4_ShootingTest ("Shooting Test #1"), Event2
+//   _AthenaEvent2_Explosives ("High Explosives"), Event3 _AthenaEvent3_SpeedyCircles, Event4 _AthenaEvent6_Loot
+//   ("Luxurious Loot"), Event5 _AthenaEvent1_SneakySilencers, Event6 _AthenaEvent5_Skies, Event7 _AthenaEvent7_Snipers
+//   ("Sniper Shootout": "Ready, aim, fire! Sniper Rifles only.") and Event8 _AthenaEvent8 ("Blitz"). 2.1's are on
+//   World/MissionGens/TestMissionGens, 2.3's on World/MissionGens/Athena.
+// - Its ticket's playlist is the matchmaking button's switch (2.3 0x20E8C60, 2.4.2 0x20FBC90, 2.5 0xD48260; 1.11 the
+//   same immediates in the same order, 0x21645FE): AthenaEvent1 15, 2 13, 3 14, 4 17, 5 12, 6 16, 7 18, 8 19. So each
+//   tile queues its own playlist (Shooting Test #1 15, Sneaky Silencers 12, Lotsa Loot 17), and the playlist picks its
+//   own PlaylistDataTables entry; only the flag that shows the tile isn't the asset's number.
+// - Its quest is AthenaEvent<N>_PlayMatches, the queue's number (counted by complete_athena_event_<N>, context
+//   Athena.Playlist.Event.<N>): Shooting Test #1's is athenaevent1, Sneaky Silencers' athenaevent5.
+// None is a playlist asset; Epic ran them from its servers, as it ran Shooting Test #1 (events/shootingtest.js):
 // - The queue: UFortGameInstance's bBattleRoyaleEvent<N>QueueEnabled is true in 2.1's to 2.5's DefaultGame.ini (and
 //   UFortGlobals' bEvent<N>ForceEnabled false), so the tile shows while the player's region's FFortMatchmakingRegionState
 //   (the calendar's client-matchmaking channel, services/fortnite/calendar.js) lists "Event<N>" in EventFlagsForcedOn.
@@ -29,10 +40,10 @@ import { nextReplayOf, seasonMoment } from "../store/itemshop.js";
 // - High Explosives (Event2, 13): 1.11's notes, "This Limited Time event is available on Dec 28 and ends on Jan 2":
 //   "Weapons are limited to only … Snowball Launchers, Rocket Launchers and all types of Grenades. Traps are disabled."
 //   "There will be no downtime, and no update required."
-// - Sneaky Silencers (Event1, 12): 1.11's 1/1 hotfix notes, "available January 5 and ends on January 8".
+// - Sneaky Silencers (Event5, 12): 1.11's 1/1 hotfix notes, "available January 5 and ends on January 8".
 // - Sniper Shootout (Event7, 18): "introduced on January 29th 2018" ("the only available weapons are Sniper Rifles"), to
 //   2 February, through 2.3 (25 January) and 2.4 (31 January).
-// - Shooting Test #1 (Event4, 15): 2 to 12 February 2018, 2.4 and 2.4.2 (2.5 shipped on 13 February).
+// - Shooting Test #1 (Event1, 15): 2 to 12 February 2018, 2.4 and 2.4.2 (2.5 shipped on 13 February).
 //
 // The admin panel's Matchmaking tab turns each on by hand (matchmakingModes, off by default but 50v50), or, with
 // "Original dates" on (settings ltmOriginalDates), runs each only in its original window on the season's replay
@@ -41,7 +52,8 @@ import { nextReplayOf, seasonMoment } from "../store/itemshop.js";
 //
 // Each event queue has its quest in 1.11's to 2.5's data, Athena/Items/Quests/Events/AthenaEvent<N>_PlayMatches (type
 // AthenaEvent, category BREvent): three matches for 1000 season XP, counted by complete_athena_event_<N> (AthenaRank,
-// context Athena.Playlist.Event.<N>, which CoreV2's gameserver gives playlists 12 to 19). Epic handed them out while the
+// context Athena.Playlist.Event.<N>, N the queue's number: eventQueueOfPlaylist, which profiles/athena.js counts the
+// match results by). Epic handed them out while the
 // LTM ran, as it did 50v50's (events/fiftyfifty.js; 2.4's notes: "Players will receive quests for “Blitz Mode” LTM"), so
 // the quest login gives the player each LTM's quest while the build's lobby offers it, and takes an unfinished one away
 // once it doesn't (athenaEventQuestsOf).
@@ -53,9 +65,9 @@ import { nextReplayOf, seasonMoment } from "../store/itemshop.js";
 // - Speedy Storm (Event3, 14): MissionGen_AthenaEvent3_SpeedyCircles ("Speedy Storms"), Athena/Events/FasterRings'
 //   game data only: the storm waits 30 s before each circle (the default's 200, 150, 120, 120, 90 and 90), the loot is
 //   the normal one.
-// - Take To The Skies (Event5, 16): MissionGen_AthenaEvent5_Skies ("Take to the Skies"), Athena/Events/TakeToTheSkies'
+// - Take To The Skies (Event6, 16): MissionGen_AthenaEvent5_Skies ("Take to the Skies"), Athena/Events/TakeToTheSkies'
 //   loot tiers and packages (Launch Pads among the floor loot).
-// - Lotsa Loot (Event6, 17): MissionGen_AthenaEvent6_Loot ("Luxurious Loot" on its tile), Athena/Events/LotsaLoot's
+// - Lotsa Loot (Event4, 17): MissionGen_AthenaEvent6_Loot ("Luxurious Loot" on its tile), Athena/Events/LotsaLoot's
 //   loot tiers and game data.
 // - Blitz (Event8, 19), from 2.4.2 only (2.4's has no entry 19 and no Athena/Events/Blitz): MissionGen_AthenaEvent8
 //   ("Blitz"), Athena/Events/Blitz' loot tiers, packages, game data (a 140000 starting storm radius, not 185000) and
@@ -76,22 +88,22 @@ export const ltms = [
   { id: "highExplosives", quest: "athenaevent2_playmatches", name: "High Explosives", playlistId: 13, eventFlag: "Event2", builds: [build111, build25], seasons: [2],
     original: { builds: [build111, build111], start: "2017-12-28", end: "2018-01-03" },
     teams: "100 Teams × 4", description: "Rocket Launchers, Snowball Launchers and grenades only; no traps (Athena/Events/RocketsAndGrenades loot)." },
-  { id: "sneakySilencers", quest: "athenaevent1_playmatches", name: "Sneaky Silencers", playlistId: 12, eventFlag: "Event1", builds: [build111, build25], seasons: [2],
+  { id: "sneakySilencers", quest: "athenaevent5_playmatches", name: "Sneaky Silencers", playlistId: 12, eventFlag: "Event5", builds: [build111, build25], seasons: [2],
     original: { builds: [build111, build111], start: "2018-01-05", end: "2018-01-09" },
     teams: "100 Teams × 4", description: "Silenced weapons only (Athena/Events/SneakySilencers loot)." },
   { id: "sniperShootout", quest: "athenaevent7_playmatches", name: "Sniper Shootout", playlistId: 18, eventFlag: "Event7", builds: [build111, build25], seasons: [2],
     original: { builds: [build23, build24], start: "2018-01-29", end: "2018-02-03" },
     teams: "100 Teams × 4", description: "Ready, aim, fire! Sniper Rifles only (Athena/Events/SnipersOnly loot)." },
-  { id: "shootingTest", quest: "athenaevent4_playmatches", name: "Shooting Test #1", playlistId: 15, eventFlag: "Event4", builds: [build24, build25], seasons: [2],
+  { id: "shootingTest", quest: "athenaevent1_playmatches", name: "Shooting Test #1", playlistId: 15, eventFlag: "Event1", builds: [build24, build25], seasons: [2],
     original: { builds: [build24, build242], start: "2018-02-02", end: "2018-02-13" },
     teams: "100 Teams × 1 (2.4: × 4)", description: "Weapon accuracy for a more precise aim: first-shot accuracy, headshot and fall-off changes." },
   { id: "speedyStorm", quest: "athenaevent3_playmatches", name: "Speedy Storm", playlistId: 14, eventFlag: "Event3", builds: [build21, build25], seasons: [2],
     original: null,
     teams: "100 Teams × 4", description: "The storm waits 30 s between circles, not 90 to 200 (Athena/Events/FasterRings game data); the normal loot." },
-  { id: "takeToTheSkies", quest: "athenaevent5_playmatches", name: "Take To The Skies", playlistId: 16, eventFlag: "Event5", builds: [build21, build25], seasons: [2],
+  { id: "takeToTheSkies", quest: "athenaevent6_playmatches", name: "Take To The Skies", playlistId: 16, eventFlag: "Event6", builds: [build21, build25], seasons: [2],
     original: null,
     teams: "100 Teams × 4", description: "Loot with Launch Pads on the floor (Athena/Events/TakeToTheSkies loot)." },
-  { id: "lotsaLoot", quest: "athenaevent6_playmatches", name: "Lotsa Loot", playlistId: 17, eventFlag: "Event6", builds: [build21, build25], seasons: [2],
+  { id: "lotsaLoot", quest: "athenaevent4_playmatches", name: "Lotsa Loot", playlistId: 17, eventFlag: "Event4", builds: [build21, build25], seasons: [2],
     original: null,
     teams: "100 Teams × 4", description: "More loot (Athena/Events/LotsaLoot loot tiers and game data); its lobby tile reads \"Luxurious Loot\"." },
   { id: "blitz", quest: "athenaevent8_playmatches", name: "Blitz", playlistId: 19, eventFlag: "Event8", builds: [build242, build25], seasons: [2],
@@ -101,6 +113,11 @@ export const ltms = [
 export const ltmIds = ltms.map(({ id }) => id);
 const byId = new Map(ltms.map((ltm) => [ltm.id, ltm]));
 export const ltmOfPlaylist = (playlistId) => ltms.find((ltm) => ltm.playlistId === Number(playlistId)) ?? null;
+// The event queue's number of each event playlist ({12: 5, 13: 2, 14: 3, 15: 1, 16: 6, 17: 4, 18: 7, 19: 8}): the
+// matchmaking button's AthenaEvent<N> → playlist switch read backwards, so the N of the playlist's
+// Athena.Playlist.Event.<N> and complete_athena_event_<N>.
+export const eventQueueOfPlaylist = Object.fromEntries(ltms.filter((ltm) => ltm.eventFlag)
+  .map((ltm) => [ltm.playlistId, Number(ltm.eventFlag.slice("Event".length))]));
 
 const inRange = ([first, last], build) => Number(build) >= first && Number(build) <= last;
 const seasonOf = (build) => (Number(build) >= build111 ? 2 : 1);

@@ -38,7 +38,7 @@ const matchOptions = { "match.option.warmupRequiredPlayerCount": "1" };
 // GetMaxTeamInfoForPlaylist 0x79B690, 1.10 0x7EA1F0, the same for the playlists they share): MaxTeamCount teams of
 // MaxTeamSize players, in squads of up to MaxSquadSize (21.40's UFortPlaylist names them). Solo 2 is 100 teams of 1,
 // Duo 10 100 of 2, Squad 9 100 of 4, and 1.10's 50v50, 11, two teams of 50 in squads of 4. Playlists 0 (1×4), 1 (2×5) and
-// 99 (1×1) aren't Battle Royale's; 1.10's 12 to 15 (AthenaEvent1-4, 100×4) have no playlist asset and nothing queues them
+// 99 (1×1) aren't Battle Royale's; 1.10's 12 to 15 (100×4) have no playlist asset and nothing queues them
 // there. From 1.11 the lobby queues the event playlists while the calendar offers them (events/ltms.js): 12 Sneaky
 // Silencers, 13 High Explosives, 14 Speedy Storm, 16 Take To The Skies, 17 Lotsa Loot, 18 Sniper Shootout and 19 Blitz
 // keep the server's 100 teams of 4 (2.4.2 0x7F3790 gives 12 to 19 that), and 15, Shooting Test #1, is the build's

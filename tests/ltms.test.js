@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { hasLtm, inOriginalWindow, ltmEventFlags, ltmModes, ltmOn, ltmSchedule } from "../src/events/ltms.js";
+import { eventQueueOfPlaylist, hasLtm, inOriginalWindow, ltmEventFlags, ltmModes, ltmOn, ltms, ltmSchedule } from "../src/events/ltms.js";
 import { playlistTeamsOf } from "../src/matchmaking/service.js";
 import { dedicatedServerToken, post, send, startBackend, userLogin } from "./helpers.js";
 
@@ -45,10 +45,24 @@ test("the event queues' LTMs are 1.11's to 2.5's, squads, and off by hand until 
   assert.equal(ltmOn("fiftyFifty", v110, { matchmakingModes: {} }), true);
   assert.equal(ltmOn("fiftyFifty", v110, { matchmakingModes: { fiftyFifty: false } }), false);
   assert.deepEqual(ltmEventFlags(v24, { matchmakingModes: { sniperShootout: true, shootingTest: true, highExplosives: true } }),
-    ["Event2", "Event7", "Event4"]);
+    ["Event2", "Event7", "Event1"]);
   for (const playlist of [12, 13, 18]) {
     assert.deepEqual(playlistTeamsOf(`${v23}:0:NA:${playlist}`), { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 });
   }
+});
+
+// Core-Backend #195: each LTM forces the queue whose tile is its own (AthenaMatchmakingPlay's Event<N>MissionGen) and
+// whose ticket is its own playlist (2.3 0x20E8C60, 2.4.2 0x20FBC90, 2.5 0xD48260); its quest is the queue's.
+test("each LTM's event flag shows its own tile and queues its own playlist, and its quest is that queue's", () => {
+  const expected = { shootingTest: ["Event1", 15], highExplosives: ["Event2", 13], speedyStorm: ["Event3", 14], lotsaLoot: ["Event4", 17],
+    sneakySilencers: ["Event5", 12], takeToTheSkies: ["Event6", 16], sniperShootout: ["Event7", 18], blitz: ["Event8", 19] };
+  for (const [id, [flag, playlist]] of Object.entries(expected)) {
+    const ltm = ltms.find((one) => one.id === id);
+    assert.deepEqual([ltm.eventFlag, ltm.playlistId], [flag, playlist], id);
+    assert.equal(ltm.quest, `athenaevent${flag.slice(5)}_playmatches`, id);
+    assert.deepEqual(ltmEventFlags(v25, { matchmakingModes: { [id]: true } }), [flag], id);
+  }
+  assert.deepEqual(eventQueueOfPlaylist, { 12: 5, 13: 2, 14: 3, 15: 1, 16: 6, 17: 4, 18: 7, 19: 8 });
 });
 
 test("original dates: each LTM runs only in its window on its season's replay, on the builds Epic ran it on", () => {
@@ -75,7 +89,7 @@ test("original dates: each LTM runs only in its window on its season's replay, o
   assert.equal(ltmOn("sniperShootout", v23, dated, at("2018-02-05")), false);
   assert.equal(ltmOn("fiftyFifty", v24, dated, at("2018-01-30")), false);
   assert.equal(ltmModes(v23, dated, at("2018-01-30")).solo, true);
-  assert.deepEqual(ltmEventFlags(v24, dated, at("2018-02-02")), ["Event7", "Event4"]);
+  assert.deepEqual(ltmEventFlags(v24, dated, at("2018-02-02")), ["Event7", "Event1"]);
   assert.equal(ltmOn("sniperShootout", v23, { ...dated, ltmOriginalDates: false }, at("2018-01-30")), false);
 
   const schedule = ltmSchedule(dated, at("2018-01-30"));
@@ -88,7 +102,7 @@ test("original dates: each LTM runs only in its window on its season's replay, o
 
 // Core-Backend #191: the event queues Epic never ran in Seasons 1 and 2.
 test("Speedy Storm, Take To The Skies, Lotsa Loot and Blitz: their builds, squads, off by default, no original dates", () => {
-  const queues = { speedyStorm: ["Event3", 14], takeToTheSkies: ["Event5", 16], lotsaLoot: ["Event6", 17], blitz: ["Event8", 19] };
+  const queues = { speedyStorm: ["Event3", 14], takeToTheSkies: ["Event6", 16], lotsaLoot: ["Event4", 17], blitz: ["Event8", 19] };
   for (const [id, [flag, playlist]] of Object.entries(queues)) {
     const from = id === "blitz" ? v242 : v21;
     assert.deepEqual([v111, v21, v23, v24, v242, v25, "3901517"].map((build) => hasLtm(id, build)),
@@ -122,7 +136,7 @@ test("the admin panel's switches and original dates offer the LTMs through the c
 
     // By hand.
     await post(backend.port, "/admin/api/matchmaking/config", undefined, { modes: { sneakySilencers: true } });
-    assert.deepEqual((await regionState(v23, backend.port, player.token)).EU.EventFlagsForcedOn, ["Event1"]);
+    assert.deepEqual((await regionState(v23, backend.port, player.token)).EU.EventFlagsForcedOn, ["Event5"]);
     assert.equal((await ticket(v23, backend.port, player, 12)).status, 200);
     assert.equal((await ticket(v23, backend.port, player, 18)).status, 400);
 
@@ -159,16 +173,16 @@ test("each LTM's event quest is given while its lobby offers it, counts its play
     };
     await athenaProfile(v23, backend.port, player);
     let profile = await login(v23);
-    for (const quest of ["athenaevent1_playmatches", "athenaevent2_playmatches", "athenaevent4_playmatches", "athenaevent7_playmatches"]) {
+    for (const quest of ["athenaevent1_playmatches", "athenaevent2_playmatches", "athenaevent5_playmatches", "athenaevent7_playmatches"]) {
       assert.equal(questItems(profile, quest).length, 0, quest);
     }
 
     await post(backend.port, "/admin/api/matchmaking/config", undefined, { modes: { sniperShootout: true, sneakySilencers: true, shootingTest: true } });
     profile = await login(v23);
     assert.equal(questItems(profile, "athenaevent7_playmatches").length, 1);
-    assert.equal(questItems(profile, "athenaevent1_playmatches").length, 1);
+    assert.equal(questItems(profile, "athenaevent5_playmatches").length, 1);
     // 2.3 has no Shooting Test #1, so no quest for it; given once only.
-    assert.equal(questItems(profile, "athenaevent4_playmatches").length, 0);
+    assert.equal(questItems(profile, "athenaevent1_playmatches").length, 0);
     assert.equal(questItems(await login(v23), "athenaevent7_playmatches").length, 1);
     const [[sniperId]] = questItems(profile, "athenaevent7_playmatches");
 
@@ -189,8 +203,8 @@ test("each LTM's event quest is given while its lobby offers it, counts its play
     profile = await athenaProfile(v23, backend.port, player);
     assert.equal(progress(profile.items, sniperId), 3);
     assert.equal(profile.items[sniperId].attributes.quest_state, "Completed");
-    const [[silentId, silent]] = questItems(profile, "athenaevent1_playmatches");
-    assert.equal(silent.attributes.completion_athena_event_1_play_matches, 1);
+    const [[silentId, silent]] = questItems(profile, "athenaevent5_playmatches");
+    assert.equal(silent.attributes.completion_athena_event_5_play_matches, 1);
 
     // Turned off: the unfinished Sneaky Silencers quest leaves, the completed Sniper Shootout one stays.
     await post(backend.port, "/admin/api/matchmaking/config", undefined, { modes: { sniperShootout: false, sneakySilencers: false } });

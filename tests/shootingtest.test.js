@@ -4,7 +4,7 @@ import { hasShootingTest, shootingTestHotfixTables, shootingTestOn, shootingTest
 import { formTeams, playlistTeamsOf } from "../src/matchmaking/service.js";
 import { post, send, startBackend, userLogin } from "./helpers.js";
 
-// Core-Backend #189: Shooting Test #1, the lobby's AthenaEvent4 queue, MCP playlist 15 (events/shootingtest.js).
+// Core-Backend #189: Shooting Test #1, the lobby's AthenaEvent1 queue, MCP playlist 15 (events/shootingtest.js).
 const v23 = "3847564";
 const v24 = "3858292";
 const v242 = "3870737";
@@ -81,11 +81,11 @@ test("the hotfix files turn bShootingTest3Enabled on for 2.4 to 2.5 and carry th
   }
 });
 
-test("the admin panel's toggle offers it through the calendar (Event4 forced on) and lets its tickets through", async () => {
+test("the admin panel's toggle offers it through the calendar (Event1 forced on) and lets its tickets through", async () => {
   const backend = await startBackend();
   try {
     const player = await userLogin(backend.port, "ShootingPlayer");
-    // Off: no Event4, and its tickets are refused.
+    // Off: no Event1, and its tickets are refused.
     for (const changelist of [v24, v242, v25]) {
       const regions = await regionState(changelist, backend.port, player.token);
       assert.equal(regions?.NA?.EventFlagsForcedOn, undefined, changelist);
@@ -97,7 +97,7 @@ test("the admin panel's toggle offers it through the calendar (Event4 forced on)
     assert.equal((await setModes(backend, { shootingTest: true })).body.modes.shootingTest, true);
     for (const changelist of [v24, v242, v25]) {
       const regions = await regionState(changelist, backend.port, player.token);
-      for (const region of ["NA", "EU", "OCE", "BR", "ASIA"]) assert.deepEqual(regions[region].EventFlagsForcedOn, ["Event4"], `${changelist} ${region}`);
+      for (const region of ["NA", "EU", "OCE", "BR", "ASIA"]) assert.deepEqual(regions[region].EventFlagsForcedOn, ["Event1"], `${changelist} ${region}`);
     }
     assert.equal((await ticket(v242, backend.port, player, 15)).status, 200);
     // 2.3 has no such queue.
