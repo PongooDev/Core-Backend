@@ -1,0 +1,4337 @@
+[
+  {
+    "boostXpPerConsumable": 4609818,
+    "displayMultiplier": 0.005,
+    "level": 1,
+    "restXpCap": 19637889,
+    "restXpRechargeRate": 16365,
+    "rewards": [],
+    "xp": 0
+  },
+  {
+    "boostXpPerConsumable": 4609818,
+    "displayMultiplier": 0.005,
+    "level": 2,
+    "restXpCap": 19637889,
+    "restXpRechargeRate": 16365,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4609818,
+    "displayMultiplier": 0.0055,
+    "level": 3,
+    "restXpCap": 19637889,
+    "restXpRechargeRate": 16365,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4609818,
+    "displayMultiplier": 0.006,
+    "level": 4,
+    "restXpCap": 21423152,
+    "restXpRechargeRate": 17853,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4609818,
+    "displayMultiplier": 0.008285,
+    "level": 5,
+    "restXpCap": 18205735,
+    "restXpRechargeRate": 15171,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4609818,
+    "displayMultiplier": 0.00938,
+    "level": 6,
+    "restXpCap": 18651998,
+    "restXpRechargeRate": 15543,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4609818,
+    "displayMultiplier": 0.010082,
+    "level": 7,
+    "restXpCap": 19920436,
+    "restXpRechargeRate": 16600,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4609818,
+    "displayMultiplier": 0.010784,
+    "level": 8,
+    "restXpCap": 21189928,
+    "restXpRechargeRate": 17658,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4609818,
+    "displayMultiplier": 0.011486,
+    "level": 9,
+    "restXpCap": 22459688,
+    "restXpRechargeRate": 18716,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4609818,
+    "displayMultiplier": 0.0125475,
+    "level": 10,
+    "restXpCap": 23049092,
+    "restXpRechargeRate": 19208,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4601080,
+    "displayMultiplier": 0.01327,
+    "level": 11,
+    "restXpCap": 23005398,
+    "restXpRechargeRate": 19171,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4593116,
+    "displayMultiplier": 0.0139925,
+    "level": 12,
+    "restXpCap": 22965579,
+    "restXpRechargeRate": 19138,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4585761,
+    "displayMultiplier": 0.014716,
+    "level": 13,
+    "restXpCap": 22928803,
+    "restXpRechargeRate": 19107,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4579061,
+    "displayMultiplier": 0.015439,
+    "level": 14,
+    "restXpCap": 22895305,
+    "restXpRechargeRate": 19079,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4572801,
+    "displayMultiplier": 0.016163,
+    "level": 15,
+    "restXpCap": 22864005,
+    "restXpRechargeRate": 19053,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4566977,
+    "displayMultiplier": 0.016887,
+    "level": 16,
+    "restXpCap": 22834887,
+    "restXpRechargeRate": 19029,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4561482,
+    "displayMultiplier": 0.017612,
+    "level": 17,
+    "restXpCap": 22807410,
+    "restXpRechargeRate": 19006,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4556365,
+    "displayMultiplier": 0.018337,
+    "level": 18,
+    "restXpCap": 22781826,
+    "restXpRechargeRate": 18985,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4551468,
+    "displayMultiplier": 0.019063,
+    "level": 19,
+    "restXpCap": 22757339,
+    "restXpRechargeRate": 18964,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4546893,
+    "displayMultiplier": 0.0197885,
+    "level": 20,
+    "restXpCap": 22734463,
+    "restXpRechargeRate": 18945,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4542534,
+    "displayMultiplier": 0.020515,
+    "level": 21,
+    "restXpCap": 22712669,
+    "restXpRechargeRate": 18927,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4538391,
+    "displayMultiplier": 0.021242,
+    "level": 22,
+    "restXpCap": 22691953,
+    "restXpRechargeRate": 18910,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4534461,
+    "displayMultiplier": 0.021969,
+    "level": 23,
+    "restXpCap": 22672307,
+    "restXpRechargeRate": 18894,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4530590,
+    "displayMultiplier": 0.022697,
+    "level": 24,
+    "restXpCap": 22652952,
+    "restXpRechargeRate": 18877,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4527035,
+    "displayMultiplier": 0.0234245,
+    "level": 25,
+    "restXpCap": 22635176,
+    "restXpRechargeRate": 18863,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4523537,
+    "displayMultiplier": 0.024153,
+    "level": 26,
+    "restXpCap": 22617684,
+    "restXpRechargeRate": 18848,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4520146,
+    "displayMultiplier": 0.0248825,
+    "level": 27,
+    "restXpCap": 22600732,
+    "restXpRechargeRate": 18834,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4517018,
+    "displayMultiplier": 0.025611,
+    "level": 28,
+    "restXpCap": 22585088,
+    "restXpRechargeRate": 18821,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4513842,
+    "displayMultiplier": 0.026341,
+    "level": 29,
+    "restXpCap": 22569209,
+    "restXpRechargeRate": 18808,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4510875,
+    "displayMultiplier": 0.0270705,
+    "level": 30,
+    "restXpCap": 22554374,
+    "restXpRechargeRate": 18795,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4507963,
+    "displayMultiplier": 0.027801,
+    "level": 31,
+    "restXpCap": 22539815,
+    "restXpRechargeRate": 18783,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4505157,
+    "displayMultiplier": 0.0285315,
+    "level": 32,
+    "restXpCap": 22525784,
+    "restXpRechargeRate": 18771,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4502507,
+    "displayMultiplier": 0.029262,
+    "level": 33,
+    "restXpCap": 22512534,
+    "restXpRechargeRate": 18760,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4499860,
+    "displayMultiplier": 0.0299935,
+    "level": 34,
+    "restXpCap": 22499301,
+    "restXpRechargeRate": 18749,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4497318,
+    "displayMultiplier": 0.030725,
+    "level": 35,
+    "restXpCap": 22486590,
+    "restXpRechargeRate": 18739,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4494880,
+    "displayMultiplier": 0.0314565,
+    "level": 36,
+    "restXpCap": 22474402,
+    "restXpRechargeRate": 18729,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4492445,
+    "displayMultiplier": 0.032189,
+    "level": 37,
+    "restXpCap": 22462227,
+    "restXpRechargeRate": 18719,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4490114,
+    "displayMultiplier": 0.032921,
+    "level": 38,
+    "restXpCap": 22450571,
+    "restXpRechargeRate": 18709,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4487887,
+    "displayMultiplier": 0.0336535,
+    "level": 39,
+    "restXpCap": 22439434,
+    "restXpRechargeRate": 18700,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4485661,
+    "displayMultiplier": 0.0343865,
+    "level": 40,
+    "restXpCap": 22428307,
+    "restXpRechargeRate": 18690,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4483489,
+    "displayMultiplier": 0.03512,
+    "level": 41,
+    "restXpCap": 22417445,
+    "restXpRechargeRate": 18681,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4481369,
+    "displayMultiplier": 0.0358535,
+    "level": 42,
+    "restXpCap": 22406844,
+    "restXpRechargeRate": 18672,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4479301,
+    "displayMultiplier": 0.0365875,
+    "level": 43,
+    "restXpCap": 22396506,
+    "restXpRechargeRate": 18664,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4477387,
+    "displayMultiplier": 0.037321,
+    "level": 44,
+    "restXpCap": 22386933,
+    "restXpRechargeRate": 18656,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4475373,
+    "displayMultiplier": 0.038056,
+    "level": 45,
+    "restXpCap": 22376865,
+    "restXpRechargeRate": 18647,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4473512,
+    "displayMultiplier": 0.03879,
+    "level": 46,
+    "restXpCap": 22367560,
+    "restXpRechargeRate": 18640,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4471602,
+    "displayMultiplier": 0.039525,
+    "level": 47,
+    "restXpCap": 22358012,
+    "restXpRechargeRate": 18632,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4469795,
+    "displayMultiplier": 0.04026,
+    "level": 48,
+    "restXpCap": 22348974,
+    "restXpRechargeRate": 18624,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4467989,
+    "displayMultiplier": 0.0409955,
+    "level": 49,
+    "restXpCap": 22339943,
+    "restXpRechargeRate": 18617,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4466284,
+    "displayMultiplier": 0.041731,
+    "level": 50,
+    "restXpCap": 22331420,
+    "restXpRechargeRate": 18610,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4464581,
+    "displayMultiplier": 0.0424665,
+    "level": 51,
+    "restXpCap": 22322904,
+    "restXpRechargeRate": 18602,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4462929,
+    "displayMultiplier": 0.043202,
+    "level": 52,
+    "restXpCap": 22314645,
+    "restXpRechargeRate": 18596,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4461278,
+    "displayMultiplier": 0.0439385,
+    "level": 53,
+    "restXpCap": 22306392,
+    "restXpRechargeRate": 18589,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 1
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4459679,
+    "displayMultiplier": 0.044675,
+    "level": 54,
+    "restXpCap": 22298394,
+    "restXpRechargeRate": 18582,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4458031,
+    "displayMultiplier": 0.045412,
+    "level": 55,
+    "restXpCap": 22290153,
+    "restXpRechargeRate": 18575,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4354161,
+    "displayMultiplier": 0.0472335,
+    "level": 56,
+    "restXpCap": 21770803,
+    "restXpRechargeRate": 18142,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4352685,
+    "displayMultiplier": 0.047988,
+    "level": 57,
+    "restXpCap": 21763423,
+    "restXpRechargeRate": 18136,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4351210,
+    "displayMultiplier": 0.0487425,
+    "level": 58,
+    "restXpCap": 21756048,
+    "restXpRechargeRate": 18130,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4349878,
+    "displayMultiplier": 0.0494965,
+    "level": 59,
+    "restXpCap": 21749391,
+    "restXpRechargeRate": 18124,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4348500,
+    "displayMultiplier": 0.050251,
+    "level": 60,
+    "restXpCap": 21742501,
+    "restXpRechargeRate": 18119,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4347123,
+    "displayMultiplier": 0.051006,
+    "level": 61,
+    "restXpCap": 21735615,
+    "restXpRechargeRate": 18113,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4239799,
+    "displayMultiplier": 0.053055,
+    "level": 62,
+    "restXpCap": 21198995,
+    "restXpRechargeRate": 17666,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4137677,
+    "displayMultiplier": 0.055141,
+    "level": 63,
+    "restXpCap": 20688385,
+    "restXpRechargeRate": 17240,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 4040482,
+    "displayMultiplier": 0.057263,
+    "level": 64,
+    "restXpCap": 20202409,
+    "restXpRechargeRate": 16835,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 3947662,
+    "displayMultiplier": 0.0594235,
+    "level": 65,
+    "restXpCap": 19738309,
+    "restXpRechargeRate": 16449,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 3859010,
+    "displayMultiplier": 0.061621,
+    "level": 66,
+    "restXpCap": 19295049,
+    "restXpRechargeRate": 16079,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 3774254,
+    "displayMultiplier": 0.0638565,
+    "level": 67,
+    "restXpCap": 18871269,
+    "restXpRechargeRate": 15726,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 3693065,
+    "displayMultiplier": 0.0661305,
+    "level": 68,
+    "restXpCap": 18465323,
+    "restXpRechargeRate": 15388,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 3615338,
+    "displayMultiplier": 0.068441,
+    "level": 69,
+    "restXpCap": 18076688,
+    "restXpRechargeRate": 15064,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 3540745,
+    "displayMultiplier": 0.0707905,
+    "level": 70,
+    "restXpCap": 17703724,
+    "restXpRechargeRate": 14753,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 3469174,
+    "displayMultiplier": 0.073177,
+    "level": 71,
+    "restXpCap": 17345869,
+    "restXpRechargeRate": 14455,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 3400410,
+    "displayMultiplier": 0.075602,
+    "level": 72,
+    "restXpCap": 17002049,
+    "restXpRechargeRate": 14168,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 3334291,
+    "displayMultiplier": 0.078065,
+    "level": 73,
+    "restXpCap": 16671455,
+    "restXpRechargeRate": 13893,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 3270668,
+    "displayMultiplier": 0.080566,
+    "level": 74,
+    "restXpCap": 16353338,
+    "restXpRechargeRate": 13628,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 3209436,
+    "displayMultiplier": 0.0831045,
+    "level": 75,
+    "restXpCap": 16047179,
+    "restXpRechargeRate": 13373,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 3150431,
+    "displayMultiplier": 0.085681,
+    "level": 76,
+    "restXpCap": 15752154,
+    "restXpRechargeRate": 13127,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 3093533,
+    "displayMultiplier": 0.0882955,
+    "level": 77,
+    "restXpCap": 15467667,
+    "restXpRechargeRate": 12890,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 3038633,
+    "displayMultiplier": 0.0909485,
+    "level": 78,
+    "restXpCap": 15193164,
+    "restXpRechargeRate": 12661,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2985690,
+    "displayMultiplier": 0.0936375,
+    "level": 79,
+    "restXpCap": 14928452,
+    "restXpRechargeRate": 12440,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2934479,
+    "displayMultiplier": 0.0963665,
+    "level": 80,
+    "restXpCap": 14672396,
+    "restXpRechargeRate": 12227,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2885006,
+    "displayMultiplier": 0.099133,
+    "level": 81,
+    "restXpCap": 14425032,
+    "restXpRechargeRate": 12021,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2837187,
+    "displayMultiplier": 0.1019365,
+    "level": 82,
+    "restXpCap": 14185934,
+    "restXpRechargeRate": 11822,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2790910,
+    "displayMultiplier": 0.104778,
+    "level": 83,
+    "restXpCap": 13954550,
+    "restXpRechargeRate": 11629,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2746103,
+    "displayMultiplier": 0.107658,
+    "level": 84,
+    "restXpCap": 13730513,
+    "restXpRechargeRate": 11442,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2702695,
+    "displayMultiplier": 0.110576,
+    "level": 85,
+    "restXpCap": 13513477,
+    "restXpRechargeRate": 11261,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2660624,
+    "displayMultiplier": 0.113532,
+    "level": 86,
+    "restXpCap": 13303121,
+    "restXpRechargeRate": 11086,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2619828,
+    "displayMultiplier": 0.1165265,
+    "level": 87,
+    "restXpCap": 13099140,
+    "restXpRechargeRate": 10916,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2580250,
+    "displayMultiplier": 0.1195595,
+    "level": 88,
+    "restXpCap": 12901248,
+    "restXpRechargeRate": 10751,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2541891,
+    "displayMultiplier": 0.122628,
+    "level": 89,
+    "restXpCap": 12709454,
+    "restXpRechargeRate": 10591,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2504590,
+    "displayMultiplier": 0.1257375,
+    "level": 90,
+    "restXpCap": 12522948,
+    "restXpRechargeRate": 10436,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2468381,
+    "displayMultiplier": 0.1288835,
+    "level": 91,
+    "restXpCap": 12341905,
+    "restXpRechargeRate": 10285,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2433219,
+    "displayMultiplier": 0.1320665,
+    "level": 92,
+    "restXpCap": 12166095,
+    "restXpRechargeRate": 10138,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2399034,
+    "displayMultiplier": 0.135288,
+    "level": 93,
+    "restXpCap": 11995170,
+    "restXpRechargeRate": 9996,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2365760,
+    "displayMultiplier": 0.138549,
+    "level": 94,
+    "restXpCap": 11828799,
+    "restXpRechargeRate": 9857,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2333410,
+    "displayMultiplier": 0.141847,
+    "level": 95,
+    "restXpCap": 11667052,
+    "restXpRechargeRate": 9723,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2301924,
+    "displayMultiplier": 0.1451835,
+    "level": 96,
+    "restXpCap": 11509619,
+    "restXpRechargeRate": 9591,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2271266,
+    "displayMultiplier": 0.148558,
+    "level": 97,
+    "restXpCap": 11356330,
+    "restXpRechargeRate": 9464,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2241404,
+    "displayMultiplier": 0.151971,
+    "level": 98,
+    "restXpCap": 11207022,
+    "restXpRechargeRate": 9339,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2212333,
+    "displayMultiplier": 0.1554205,
+    "level": 99,
+    "restXpCap": 11061664,
+    "restXpRechargeRate": 9218,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2183974,
+    "displayMultiplier": 0.15891,
+    "level": 100,
+    "restXpCap": 10919868,
+    "restXpRechargeRate": 9100,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2156347,
+    "displayMultiplier": 0.162436,
+    "level": 101,
+    "restXpCap": 10781734,
+    "restXpRechargeRate": 8985,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2129402,
+    "displayMultiplier": 0.1660005,
+    "level": 102,
+    "restXpCap": 10647011,
+    "restXpRechargeRate": 8873,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2103115,
+    "displayMultiplier": 0.1696035,
+    "level": 103,
+    "restXpCap": 10515574,
+    "restXpRechargeRate": 8763,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2077461,
+    "displayMultiplier": 0.1732445,
+    "level": 104,
+    "restXpCap": 10387306,
+    "restXpRechargeRate": 8656,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2052418,
+    "displayMultiplier": 0.176924,
+    "level": 105,
+    "restXpCap": 10262091,
+    "restXpRechargeRate": 8552,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2027987,
+    "displayMultiplier": 0.18064,
+    "level": 106,
+    "restXpCap": 10139934,
+    "restXpRechargeRate": 8450,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 2004102,
+    "displayMultiplier": 0.1843965,
+    "level": 107,
+    "restXpCap": 10020509,
+    "restXpRechargeRate": 8350,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1980787,
+    "displayMultiplier": 0.188189,
+    "level": 108,
+    "restXpCap": 9903937,
+    "restXpRechargeRate": 8253,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1957982,
+    "displayMultiplier": 0.1920225,
+    "level": 109,
+    "restXpCap": 9789908,
+    "restXpRechargeRate": 8158,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1935731,
+    "displayMultiplier": 0.19589,
+    "level": 110,
+    "restXpCap": 9678653,
+    "restXpRechargeRate": 8066,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1913932,
+    "displayMultiplier": 0.1998,
+    "level": 111,
+    "restXpCap": 9569662,
+    "restXpRechargeRate": 7975,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1892655,
+    "displayMultiplier": 0.203744,
+    "level": 112,
+    "restXpCap": 9463273,
+    "restXpRechargeRate": 7886,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1871819,
+    "displayMultiplier": 0.2077285,
+    "level": 113,
+    "restXpCap": 9359095,
+    "restXpRechargeRate": 7799,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1851432,
+    "displayMultiplier": 0.2117515,
+    "level": 114,
+    "restXpCap": 9257158,
+    "restXpRechargeRate": 7714,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1831478,
+    "displayMultiplier": 0.215813,
+    "level": 115,
+    "restXpCap": 9157390,
+    "restXpRechargeRate": 7631,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1811964,
+    "displayMultiplier": 0.219911,
+    "level": 116,
+    "restXpCap": 9059821,
+    "restXpRechargeRate": 7550,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1792857,
+    "displayMultiplier": 0.224047,
+    "level": 117,
+    "restXpCap": 8964285,
+    "restXpRechargeRate": 7470,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1774144,
+    "displayMultiplier": 0.2282215,
+    "level": 118,
+    "restXpCap": 8870719,
+    "restXpRechargeRate": 7392,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1755794,
+    "displayMultiplier": 0.232437,
+    "level": 119,
+    "restXpCap": 8778968,
+    "restXpRechargeRate": 7316,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1737852,
+    "displayMultiplier": 0.2366855,
+    "level": 120,
+    "restXpCap": 8689258,
+    "restXpRechargeRate": 7241,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1720250,
+    "displayMultiplier": 0.2409755,
+    "level": 121,
+    "restXpCap": 8601251,
+    "restXpRechargeRate": 7168,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1702997,
+    "displayMultiplier": 0.2453035,
+    "level": 122,
+    "restXpCap": 8514986,
+    "restXpRechargeRate": 7096,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1686101,
+    "displayMultiplier": 0.2496675,
+    "level": 123,
+    "restXpCap": 8430504,
+    "restXpRechargeRate": 7025,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1669514,
+    "displayMultiplier": 0.254073,
+    "level": 124,
+    "restXpCap": 8347572,
+    "restXpRechargeRate": 6956,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1653247,
+    "displayMultiplier": 0.2585165,
+    "level": 125,
+    "restXpCap": 8266236,
+    "restXpRechargeRate": 6889,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1637290,
+    "displayMultiplier": 0.262999,
+    "level": 126,
+    "restXpCap": 8186449,
+    "restXpRechargeRate": 6822,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1621651,
+    "displayMultiplier": 0.267517,
+    "level": 127,
+    "restXpCap": 8108255,
+    "restXpRechargeRate": 6757,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1606322,
+    "displayMultiplier": 0.27207,
+    "level": 128,
+    "restXpCap": 8031610,
+    "restXpRechargeRate": 6693,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1591242,
+    "displayMultiplier": 0.276668,
+    "level": 129,
+    "restXpCap": 7956212,
+    "restXpRechargeRate": 6630,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1576457,
+    "displayMultiplier": 0.281301,
+    "level": 130,
+    "restXpCap": 7882284,
+    "restXpRechargeRate": 6569,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1561940,
+    "displayMultiplier": 0.285973,
+    "level": 131,
+    "restXpCap": 7809700,
+    "restXpRechargeRate": 6508,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1547685,
+    "displayMultiplier": 0.2906835,
+    "level": 132,
+    "restXpCap": 7738423,
+    "restXpRechargeRate": 6449,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1533684,
+    "displayMultiplier": 0.295432,
+    "level": 133,
+    "restXpCap": 7668420,
+    "restXpRechargeRate": 6390,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 2
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1486263,
+    "displayMultiplier": 0.3070205,
+    "level": 134,
+    "restXpCap": 7431315,
+    "restXpRechargeRate": 6193,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1473070,
+    "displayMultiplier": 0.3119515,
+    "level": 135,
+    "restXpCap": 7365351,
+    "restXpRechargeRate": 6138,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1460092,
+    "displayMultiplier": 0.3169255,
+    "level": 136,
+    "restXpCap": 7300458,
+    "restXpRechargeRate": 6084,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1447337,
+    "displayMultiplier": 0.3219385,
+    "level": 137,
+    "restXpCap": 7236683,
+    "restXpRechargeRate": 6031,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1434830,
+    "displayMultiplier": 0.3269845,
+    "level": 138,
+    "restXpCap": 7174150,
+    "restXpRechargeRate": 5978,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1422506,
+    "displayMultiplier": 0.3320765,
+    "level": 139,
+    "restXpCap": 7112528,
+    "restXpRechargeRate": 5927,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1410388,
+    "displayMultiplier": 0.337208,
+    "level": 140,
+    "restXpCap": 7051941,
+    "restXpRechargeRate": 5877,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1398502,
+    "displayMultiplier": 0.3423715,
+    "level": 141,
+    "restXpCap": 6992511,
+    "restXpRechargeRate": 5827,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1386784,
+    "displayMultiplier": 0.347582,
+    "level": 142,
+    "restXpCap": 6933918,
+    "restXpRechargeRate": 5778,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1375286,
+    "displayMultiplier": 0.3528245,
+    "level": 143,
+    "restXpCap": 6876430,
+    "restXpRechargeRate": 5730,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1363947,
+    "displayMultiplier": 0.3581135,
+    "level": 144,
+    "restXpCap": 6819734,
+    "restXpRechargeRate": 5683,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1352819,
+    "displayMultiplier": 0.3634345,
+    "level": 145,
+    "restXpCap": 6764094,
+    "restXpRechargeRate": 5637,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1341841,
+    "displayMultiplier": 0.368803,
+    "level": 146,
+    "restXpCap": 6709204,
+    "restXpRechargeRate": 5591,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1331065,
+    "displayMultiplier": 0.374203,
+    "level": 147,
+    "restXpCap": 6655326,
+    "restXpRechargeRate": 5546,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1320445,
+    "displayMultiplier": 0.379646,
+    "level": 148,
+    "restXpCap": 6602226,
+    "restXpRechargeRate": 5502,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1309991,
+    "displayMultiplier": 0.3851285,
+    "level": 149,
+    "restXpCap": 6549956,
+    "restXpRechargeRate": 5458,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1299836,
+    "displayMultiplier": 0.3906095,
+    "level": 150,
+    "restXpCap": 6499181,
+    "restXpRechargeRate": 5416,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1289838,
+    "displayMultiplier": 0.396129,
+    "level": 151,
+    "restXpCap": 6449188,
+    "restXpRechargeRate": 5374,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1279991,
+    "displayMultiplier": 0.401687,
+    "level": 152,
+    "restXpCap": 6399957,
+    "restXpRechargeRate": 5333,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1270295,
+    "displayMultiplier": 0.407283,
+    "level": 153,
+    "restXpCap": 6351473,
+    "restXpRechargeRate": 5293,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1260743,
+    "displayMultiplier": 0.412917,
+    "level": 154,
+    "restXpCap": 6303717,
+    "restXpRechargeRate": 5253,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1251335,
+    "displayMultiplier": 0.41859,
+    "level": 155,
+    "restXpCap": 6256675,
+    "restXpRechargeRate": 5214,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1242066,
+    "displayMultiplier": 0.424301,
+    "level": 156,
+    "restXpCap": 6210329,
+    "restXpRechargeRate": 5175,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1232933,
+    "displayMultiplier": 0.43005,
+    "level": 157,
+    "restXpCap": 6164665,
+    "restXpRechargeRate": 5137,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1223933,
+    "displayMultiplier": 0.435838,
+    "level": 158,
+    "restXpCap": 6119667,
+    "restXpRechargeRate": 5100,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1215064,
+    "displayMultiplier": 0.441664,
+    "level": 159,
+    "restXpCap": 6075322,
+    "restXpRechargeRate": 5063,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1206323,
+    "displayMultiplier": 0.447528,
+    "level": 160,
+    "restXpCap": 6031614,
+    "restXpRechargeRate": 5026,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1197706,
+    "displayMultiplier": 0.453431,
+    "level": 161,
+    "restXpCap": 5988531,
+    "restXpRechargeRate": 4990,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1189212,
+    "displayMultiplier": 0.459372,
+    "level": 162,
+    "restXpCap": 5946060,
+    "restXpRechargeRate": 4955,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1180837,
+    "displayMultiplier": 0.465351,
+    "level": 163,
+    "restXpCap": 5904186,
+    "restXpRechargeRate": 4920,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1172580,
+    "displayMultiplier": 0.4713685,
+    "level": 164,
+    "restXpCap": 5862898,
+    "restXpRechargeRate": 4886,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1164437,
+    "displayMultiplier": 0.4774245,
+    "level": 165,
+    "restXpCap": 5822183,
+    "restXpRechargeRate": 4852,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1156406,
+    "displayMultiplier": 0.483519,
+    "level": 166,
+    "restXpCap": 5782030,
+    "restXpRechargeRate": 4818,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1148485,
+    "displayMultiplier": 0.4896515,
+    "level": 167,
+    "restXpCap": 5742427,
+    "restXpRechargeRate": 4785,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1140673,
+    "displayMultiplier": 0.4958225,
+    "level": 168,
+    "restXpCap": 5703363,
+    "restXpRechargeRate": 4753,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1132965,
+    "displayMultiplier": 0.502032,
+    "level": 169,
+    "restXpCap": 5664827,
+    "restXpRechargeRate": 4721,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1125362,
+    "displayMultiplier": 0.5082795,
+    "level": 170,
+    "restXpCap": 5626808,
+    "restXpRechargeRate": 4689,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1117859,
+    "displayMultiplier": 0.5145655,
+    "level": 171,
+    "restXpCap": 5589296,
+    "restXpRechargeRate": 4658,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1110456,
+    "displayMultiplier": 0.5208895,
+    "level": 172,
+    "restXpCap": 5552281,
+    "restXpRechargeRate": 4627,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1103151,
+    "displayMultiplier": 0.527252,
+    "level": 173,
+    "restXpCap": 5515753,
+    "restXpRechargeRate": 4596,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1095940,
+    "displayMultiplier": 0.533653,
+    "level": 174,
+    "restXpCap": 5479702,
+    "restXpRechargeRate": 4566,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1088824,
+    "displayMultiplier": 0.5400925,
+    "level": 175,
+    "restXpCap": 5444119,
+    "restXpRechargeRate": 4537,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1081799,
+    "displayMultiplier": 0.54657,
+    "level": 176,
+    "restXpCap": 5408996,
+    "restXpRechargeRate": 4507,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1074865,
+    "displayMultiplier": 0.553086,
+    "level": 177,
+    "restXpCap": 5374323,
+    "restXpRechargeRate": 4479,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1068018,
+    "displayMultiplier": 0.55964,
+    "level": 178,
+    "restXpCap": 5340092,
+    "restXpRechargeRate": 4450,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1061259,
+    "displayMultiplier": 0.5662325,
+    "level": 179,
+    "restXpCap": 5306294,
+    "restXpRechargeRate": 4422,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1054584,
+    "displayMultiplier": 0.5728635,
+    "level": 180,
+    "restXpCap": 5272921,
+    "restXpRechargeRate": 4394,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1047993,
+    "displayMultiplier": 0.579533,
+    "level": 181,
+    "restXpCap": 5239965,
+    "restXpRechargeRate": 4367,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1041484,
+    "displayMultiplier": 0.5862405,
+    "level": 182,
+    "restXpCap": 5207419,
+    "restXpRechargeRate": 4340,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1035055,
+    "displayMultiplier": 0.5929865,
+    "level": 183,
+    "restXpCap": 5175274,
+    "restXpRechargeRate": 4313,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1028705,
+    "displayMultiplier": 0.5997705,
+    "level": 184,
+    "restXpCap": 5143524,
+    "restXpRechargeRate": 4286,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1022432,
+    "displayMultiplier": 0.606593,
+    "level": 185,
+    "restXpCap": 5112161,
+    "restXpRechargeRate": 4260,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1016236,
+    "displayMultiplier": 0.613454,
+    "level": 186,
+    "restXpCap": 5081178,
+    "restXpRechargeRate": 4234,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1010114,
+    "displayMultiplier": 0.620353,
+    "level": 187,
+    "restXpCap": 5050569,
+    "restXpRechargeRate": 4209,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 1004065,
+    "displayMultiplier": 0.6272905,
+    "level": 188,
+    "restXpCap": 5020326,
+    "restXpRechargeRate": 4184,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 998089,
+    "displayMultiplier": 0.6342665,
+    "level": 189,
+    "restXpCap": 4990443,
+    "restXpRechargeRate": 4159,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 992183,
+    "displayMultiplier": 0.6412805,
+    "level": 190,
+    "restXpCap": 4960914,
+    "restXpRechargeRate": 4134,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 986346,
+    "displayMultiplier": 0.648333,
+    "level": 191,
+    "restXpCap": 4931732,
+    "restXpRechargeRate": 4110,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 980578,
+    "displayMultiplier": 0.655424,
+    "level": 192,
+    "restXpCap": 4902891,
+    "restXpRechargeRate": 4086,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 974877,
+    "displayMultiplier": 0.662553,
+    "level": 193,
+    "restXpCap": 4874386,
+    "restXpRechargeRate": 4062,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 969242,
+    "displayMultiplier": 0.6697205,
+    "level": 194,
+    "restXpCap": 4846210,
+    "restXpRechargeRate": 4039,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 963672,
+    "displayMultiplier": 0.6769265,
+    "level": 195,
+    "restXpCap": 4818359,
+    "restXpRechargeRate": 4015,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 958165,
+    "displayMultiplier": 0.6841705,
+    "level": 196,
+    "restXpCap": 4790825,
+    "restXpRechargeRate": 3992,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 952721,
+    "displayMultiplier": 0.691453,
+    "level": 197,
+    "restXpCap": 4763604,
+    "restXpRechargeRate": 3970,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 947338,
+    "displayMultiplier": 0.698774,
+    "level": 198,
+    "restXpCap": 4736691,
+    "restXpRechargeRate": 3947,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 942016,
+    "displayMultiplier": 0.706133,
+    "level": 199,
+    "restXpCap": 4710081,
+    "restXpRechargeRate": 3925,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 936754,
+    "displayMultiplier": 0.7135305,
+    "level": 200,
+    "restXpCap": 4683768,
+    "restXpRechargeRate": 3903,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 931549,
+    "displayMultiplier": 0.7209665,
+    "level": 201,
+    "restXpCap": 4657747,
+    "restXpRechargeRate": 3881,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 926403,
+    "displayMultiplier": 0.7284405,
+    "level": 202,
+    "restXpCap": 4632013,
+    "restXpRechargeRate": 3860,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 921313,
+    "displayMultiplier": 0.735953,
+    "level": 203,
+    "restXpCap": 4606563,
+    "restXpRechargeRate": 3839,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 916278,
+    "displayMultiplier": 0.743504,
+    "level": 204,
+    "restXpCap": 4581390,
+    "restXpRechargeRate": 3818,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 911298,
+    "displayMultiplier": 0.751093,
+    "level": 205,
+    "restXpCap": 4556491,
+    "restXpRechargeRate": 3797,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 906372,
+    "displayMultiplier": 0.7587205,
+    "level": 206,
+    "restXpCap": 4531862,
+    "restXpRechargeRate": 3777,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 901499,
+    "displayMultiplier": 0.766386,
+    "level": 207,
+    "restXpCap": 4507497,
+    "restXpRechargeRate": 3756,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 896678,
+    "displayMultiplier": 0.7740905,
+    "level": 208,
+    "restXpCap": 4483392,
+    "restXpRechargeRate": 3736,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 891909,
+    "displayMultiplier": 0.7818325,
+    "level": 209,
+    "restXpCap": 4459545,
+    "restXpRechargeRate": 3716,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 887190,
+    "displayMultiplier": 0.7896135,
+    "level": 210,
+    "restXpCap": 4435949,
+    "restXpRechargeRate": 3697,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 882520,
+    "displayMultiplier": 0.7974325,
+    "level": 211,
+    "restXpCap": 4412602,
+    "restXpRechargeRate": 3677,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 877900,
+    "displayMultiplier": 0.80529,
+    "level": 212,
+    "restXpCap": 4389499,
+    "restXpRechargeRate": 3658,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 873327,
+    "displayMultiplier": 0.813186,
+    "level": 213,
+    "restXpCap": 4366637,
+    "restXpRechargeRate": 3639,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 868802,
+    "displayMultiplier": 0.82112,
+    "level": 214,
+    "restXpCap": 4344012,
+    "restXpRechargeRate": 3620,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864324,
+    "displayMultiplier": 0.8290925,
+    "level": 215,
+    "restXpCap": 4321621,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.8329385,
+    "level": 216,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.836657,
+    "level": 217,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.8403755,
+    "level": 218,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.8440935,
+    "level": 219,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.847812,
+    "level": 220,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.8515305,
+    "level": 221,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.855249,
+    "level": 222,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.8589675,
+    "level": 223,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.862686,
+    "level": 224,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.8664045,
+    "level": 225,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.870123,
+    "level": 226,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.8738415,
+    "level": 227,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.87756,
+    "level": 228,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.8812785,
+    "level": 229,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.884997,
+    "level": 230,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.8887155,
+    "level": 231,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.892434,
+    "level": 232,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.8961525,
+    "level": 233,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.899871,
+    "level": 234,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.9035895,
+    "level": 235,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.907308,
+    "level": 236,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.9110265,
+    "level": 237,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.9147445,
+    "level": 238,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.918463,
+    "level": 239,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.9221815,
+    "level": 240,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.9259,
+    "level": 241,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.9296185,
+    "level": 242,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.933337,
+    "level": 243,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.9370555,
+    "level": 244,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.940774,
+    "level": 245,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.9444925,
+    "level": 246,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.948211,
+    "level": 247,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.9519295,
+    "level": 248,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.955648,
+    "level": 249,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.9593665,
+    "level": 250,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.963085,
+    "level": 251,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.9668035,
+    "level": 252,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.970522,
+    "level": 253,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.9742405,
+    "level": 254,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.977959,
+    "level": 255,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.9816775,
+    "level": 256,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.985396,
+    "level": 257,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.989114,
+    "level": 258,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.9928325,
+    "level": 259,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 0.996551,
+    "level": 260,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.0002695,
+    "level": 261,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.003988,
+    "level": 262,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.0077065,
+    "level": 263,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.011425,
+    "level": 264,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.0151435,
+    "level": 265,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 3
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.018862,
+    "level": 266,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.0225805,
+    "level": 267,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.026299,
+    "level": 268,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.0300175,
+    "level": 269,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.033736,
+    "level": 270,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.0374545,
+    "level": 271,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.041173,
+    "level": 272,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.0448915,
+    "level": 273,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.04861,
+    "level": 274,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.0523285,
+    "level": 275,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.056047,
+    "level": 276,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.0597655,
+    "level": 277,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.0634835,
+    "level": 278,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.067202,
+    "level": 279,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.0709205,
+    "level": 280,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.074639,
+    "level": 281,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.0783575,
+    "level": 282,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.082076,
+    "level": 283,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.0857944,
+    "level": 284,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.089513,
+    "level": 285,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.0932316,
+    "level": 286,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.09695,
+    "level": 287,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.1006685,
+    "level": 288,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.104387,
+    "level": 289,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.1081055,
+    "level": 290,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.111824,
+    "level": 291,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.1155425,
+    "level": 292,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.119261,
+    "level": 293,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.1229795,
+    "level": 294,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.126698,
+    "level": 295,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.1304165,
+    "level": 296,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.1341345,
+    "level": 297,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.137853,
+    "level": 298,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.1415715,
+    "level": 299,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.14529,
+    "level": 300,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.1490085,
+    "level": 301,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.152727,
+    "level": 302,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.1564455,
+    "level": 303,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.160164,
+    "level": 304,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.1638825,
+    "level": 305,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.167601,
+    "level": 306,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.1713195,
+    "level": 307,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.175038,
+    "level": 308,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.1787565,
+    "level": 309,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  },
+  {
+    "boostXpPerConsumable": 864191,
+    "displayMultiplier": 1.182475,
+    "level": 310,
+    "restXpCap": 4320956,
+    "restXpRechargeRate": 3601,
+    "rewards": [
+      {
+        "asset": "HomebasePoints",
+        "quantity": 4
+      }
+    ],
+    "xp": 10000000
+  }
+]

@@ -15,7 +15,7 @@ packages, as 4.16 writes them, so overlays only hold the builds' own differences
 
 - `quests.json`: every quest's type, objectives, rewards and prerequisites.
 - `items.json`: every item definition's class, the profile it lives in (`profile` for account items, `theater` for
-  world items; from 1.7.2, CL 3700114, `metadata` for storm shields and deployable bases) and its stack limit (the asset's `MaxStackSize`, else the class constructor's default). World items of
+  world items; from 1.7.2, CL 3700114, `metadata` for storm shields and deployable bases; 3.0's Hoverboard, a FortPersonalVehicleItemDefinition, is an account item) and its stack limit (the asset's `MaxStackSize`, else the class constructor's default). World items of
   weapon definitions (weapons, traps, building pieces) that have durability (`bItemHasDurability`, unless the asset
   turns it off) carry `maxDurability`, the MCP template's static_max_durability: GetMaxDurability at level 0, from the
   definition's `WeaponStatHandle` row (`BaseLevel`, `DurabilityScale`) and its `WeaponDurabilityRarity` row
@@ -62,20 +62,33 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   number, level and tier counts, storefront, the tiers' Battle Stars (BookXpCurve) and the rewards of each season level
   (SeasonXpScheduleFree) and tier (BookXpScheduleFree, BookXpSchedulePaid) as template ids. A season that names an
   earlier season's curves is passed over: 2.5 (CL 3889387, still Season 2) ships AthenaSeason3 ahead of Season 3, with
-  AthenaSeason2's Athena_Season2_XP and _BP and a copy of its schedules. 1.11's emoticons
+  AthenaSeason2's Athena_Season2_XP and _BP and a copy of its schedules; 3.0 (CL 3901517) ships the real one, with
+  Athena_Season3_XP and _BP, which is its season. From 3.0 the season also names its challenges, and `season` adds them
+  when it does: `challengeSchedulesAlwaysShown` (Season3_Challenge_Schedule, the Battle Pass's weekly challenges),
+  `challengeSchedulePaid` when set (unset in 3.0), `firstWinRewards` (SeasonFirstWinRewards: the Paper Parasol) and
+  `battlePassLevelOfferId`. `challengeSchedules` (UFortChallengeBundleScheduleDefinition: its CategoryID and bundles, each
+  with its UnlockType and UnlockValue) and `challengeBundles` (UFortChallengeBundleItemDefinition: its quests and whether
+  each comes with the bundle, CompletionThreshold, CompletionRewards and VisualStyle) hold the schedules the season
+  grants, by its tiers' rewards (ChallengeBundleSchedule:season3_tier_2_schedule, _tier_100_) or by name, and their
+  bundles. Those bundles' quests (AthenaChallengeBundleQuest) carry `objectiveCompletionCount` when only some of their
+  objectives are needed (ObjectiveCompletionCount: 10 of Quest_BR_Land_Locations_Different's 18), and their objectives'
+  stat rows are 3.0's own Athena/Items/Quests/AthenaObjectiveStatTable's where ObjectiveStatTable has none. A fresh 2.5
+  extraction still matches the committed one file for file. 1.11's emoticons
   (AthenaEmojiItemDefinition) are cosmetics too. `loot` holds Battle Royale's loot tables whole (DefaultGameData's
   `AthenaLootTierData_Client` and `AthenaLootPackages_Client`), by object path, each row with every property in the form
   `UDataTable::CreateTableFromJSONString` reads back (soft object paths as path strings), for the content updates the
-  backend serves as `[AssetHotfix]` rows; only 1.11's, 2.1's, 2.2's, 2.3's, 2.4's, 2.4.2's and 2.5's overlays carry it so far (2.2's has Season 2's content updates in already; 2.3's
+  backend serves as `[AssetHotfix]` rows; only 1.11's, 2.1's, 2.2's, 2.3's, 2.4's, 2.4.2's, 2.5's and 3.0's overlays carry it so far (2.2's has Season 2's content updates in already; 2.3's
   is 2.2's, the Chug Jug at weight 0; 2.4's has the Chug Jug in and the Minigun at weight 0; 2.4.2's has the Minigun in, in
   a list of its own, and the Suppressed Pistol's cut, but no Crossbow; 2.5's has the Crossbow in a list of its own and its
-  notes' Impulse Grenade, vaulted SMG and Medium-ammo Revolver). `shootingModel` holds the weapon stats table Shooting
+  notes' Impulse Grenade, vaulted SMG and Medium-ammo Revolver; 3.0's has the Hand Cannon in, Loot_AthenaFloorLoot_11 at
+  0.07 and Loot_AthenaTreasure_07 at 0.08, and its notes' pistol changes). `shootingModel` holds the weapon stats table Shooting
   Test #1 plays (PlayerPawn_Athena's PrototypeShootingModelPerfectAimWhenTargetingMinSpread, AthenaRangedWeapons_ShootingModel3)
   for the builds that have one, `{table, rows}` in the same import form, object references as their object path and none
-  as `"None"`; only 2.4.2's and 2.5's overlays carry it, for the hotfixes that bring 2.4's and 2.4.2's tables to the next
+  as `"None"`; only 2.4.2's, 2.5's and 3.0's overlays carry it, for the hotfixes that bring 2.4's and 2.4.2's tables to the next
   build's (`src/events/shootingtest.js`). 2.4 ships no
   `Build.version` either: its fourth argument is `4.19.0-3858292+++Fortnite+Release-Cert`, and 2.4.2's
-  `4.19.0-3870737+++Fortnite+Release-Next`, and 2.5's `4.20.0-3889387+++Fortnite+Release-2.5`. Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
+  `4.19.0-3870737+++Fortnite+Release-Next`, and 2.5's `4.20.0-3889387+++Fortnite+Release-2.5`, and 3.0's
+  `4.20.0-3901517+++Fortnite+Release-3.0.0`. Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `research.json`: the resource collectors (research points): each CollectedResource template's payout and the
   homebase attributes its rate, capacity and wallet cap come from, what each skill tree node adds to those attributes

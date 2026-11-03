@@ -609,21 +609,31 @@ foreach (var (id, row) in LoadRows(provider, manager["HomebaseSquadDataTable"]))
     };
 }
 
-var objectiveStats = new SortedDictionary<string, object>(StringComparer.Ordinal);
-foreach (var (id, row) in LoadRows(provider, JsonValue.Create("/Game/Quests/ObjectiveStatTable.ObjectiveStatTable")))
+// Objective stat rows ({type, targetTags, condition, templateId, sourceTags, contextTags}) by row name.
+SortedDictionary<string, object> ObjectiveStatRows(string table)
 {
-    var stat = new SortedDictionary<string, object>(StringComparer.Ordinal)
+    var stats = new SortedDictionary<string, object>(StringComparer.Ordinal);
+    foreach (var (id, row) in LoadRows(provider, JsonValue.Create(table)))
     {
-        ["type"] = Enum(row!["Type"]) ?? "",
-        ["targetTags"] = row["TargetTags"]?.GetValue<string>() ?? "",
-        ["condition"] = row["Condition"]?.GetValue<string>() ?? "",
-        ["templateId"] = row["TemplateId"]?.GetValue<string>() ?? ""
-    };
-    // Who did it (Class.IsCommando, Stat.Source.OnCriticalMission) and where (Stat.Theater.PvE02), when the row says.
-    if (row["SourceTags"]?.GetValue<string>().Trim() is { Length: > 0 } sourceTags) stat["sourceTags"] = sourceTags;
-    if (row["ContextTags"]?.GetValue<string>().Trim() is { Length: > 0 } contextTags) stat["contextTags"] = contextTags;
-    objectiveStats[id.ToLowerInvariant()] = stat;
+        var stat = new SortedDictionary<string, object>(StringComparer.Ordinal)
+        {
+            ["type"] = Enum(row!["Type"]) ?? "",
+            ["targetTags"] = row["TargetTags"]?.GetValue<string>() ?? "",
+            ["condition"] = row["Condition"]?.GetValue<string>() ?? "",
+            ["templateId"] = row["TemplateId"]?.GetValue<string>() ?? ""
+        };
+        // Who did it (Class.IsCommando, Stat.Source.OnCriticalMission) and where (Stat.Theater.PvE02), when the row says.
+        if (row["SourceTags"]?.GetValue<string>().Trim() is { Length: > 0 } sourceTags) stat["sourceTags"] = sourceTags;
+        if (row["ContextTags"]?.GetValue<string>().Trim() is { Length: > 0 } contextTags) stat["contextTags"] = contextTags;
+        stats[id.ToLowerInvariant()] = stat;
+    }
+    return stats;
 }
+var objectiveStats = ObjectiveStatRows("/Game/Quests/ObjectiveStatTable.ObjectiveStatTable");
+// 3.0 (CL 3901517) adds Battle Royale's own table, Athena/Items/Quests/AthenaObjectiveStatTable, which its challenge
+// bundles' quests count most of their objectives by (land_location_*, damage_athena_player_*, visit_location_*).
+var athenaObjectiveStats = provider.Files.ContainsKey("FortniteGame/Content/Athena/Items/Quests/AthenaObjectiveStatTable.uasset")
+    ? ObjectiveStatRows("/Game/Athena/Items/Quests/AthenaObjectiveStatTable.AthenaObjectiveStatTable") : [];
 
 // Pieces a theater is built from: zone themes (map tiles), mission generators and mission difficulty rows.
 var zoneThemes = new SortedDictionary<string, object>(StringComparer.Ordinal);
@@ -992,6 +1002,8 @@ var athenaCosmetics = new SortedDictionary<string, object>(StringComparer.Ordina
 var athenaQuests = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var athenaLevels = new List<object>();
 SortedDictionary<string, object>? athenaSeason = null;
+var challengeSchedules = new SortedDictionary<string, object>(StringComparer.Ordinal);
+var challengeBundles = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var cosmeticKeys = new List<(string TemplateId, string Class, string AssetName, string? Hero, string? Icon, string DisplayName)>();
 foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" && f.Path.StartsWith("FortniteGame/Content/Athena/Items/", StringComparison.OrdinalIgnoreCase)))
 {
@@ -1007,7 +1019,42 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         var quest = (SortedDictionary<string, object>)Quest(properties, assetTypes);
         if (properties["Category"]?["RowName"]?.GetValue<string>() is { } category and not "None") quest["category"] = category;
         if (properties["Weight"]?.GetValue<float>() is float weight) quest["weight"] = weight;
+        // 3.0's (CL 3901517) challenge bundles' quests (EFortQuestType::AthenaChallengeBundleQuest) can be done by some of
+        // their objectives: "Land at different named locations" lists all 18 and is done at ObjectiveCompletionCount.
+        if ((string)quest["type"] == "AthenaChallengeBundleQuest" && properties["ObjectiveCompletionCount"]?.GetValue<int>() is int completionCount and > 0)
+            quest["objectiveCompletionCount"] = completionCount;
         athenaQuests[export.Name.ToLowerInvariant()] = quest;
+        continue;
+    }
+    // 3.0's (CL 3901517, Season 3) challenges: UFortChallengeBundleScheduleDefinition (Athena/Items/ChallengeBundleSchedules)
+    // and UFortChallengeBundleItemDefinition (Athena/Items/ChallengeBundles), written below when the season grants any.
+    if (export.ExportType == "FortChallengeBundleScheduleDefinition")
+    {
+        challengeSchedules[export.Name.ToLowerInvariant()] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+        {
+            ["category"] = properties["CategoryID"]?.GetValue<string>() ?? "",
+            ["bundles"] = (properties["ScheduleEntries"]?.AsArray() ?? []).Select(entry => (object)new SortedDictionary<string, object>(StringComparer.Ordinal)
+            {
+                ["bundle"] = AssetName(AssetPath(entry!["ChallengeBundle"])).ToLowerInvariant(),
+                ["unlockType"] = Enum(entry["UnlockType"]) ?? "OnScheduleGranted",
+                ["unlockValue"] = entry["UnlockValue"]?.GetValue<int>() ?? 0
+            }).ToList()
+        };
+        continue;
+    }
+    if (export.ExportType == "FortChallengeBundleItemDefinition")
+    {
+        challengeBundles[export.Name.ToLowerInvariant()] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+        {
+            ["quests"] = (properties["QuestInfos"]?.AsArray() ?? []).Select(info => (object)new SortedDictionary<string, object>(StringComparer.Ordinal)
+            {
+                ["quest"] = AssetName(AssetPath(info!["QuestDefinition"])).ToLowerInvariant(),
+                ["grantWithBundle"] = info["bGrantWithBundle"]?.GetValue<bool>() ?? false
+            }).ToList(),
+            ["completionThreshold"] = properties["CompletionThreshold"]?.GetValue<int>() ?? 0,
+            ["completionRewards"] = RewardList(properties["CompletionRewards"]?["Rewards"], assetTypes),
+            ["visualStyle"] = Enum(properties["VisualStyle"]) ?? ""
+        };
         continue;
     }
     if (!ItemClasses.AthenaCosmetics.Contains(export.ExportType)) continue;
@@ -1170,6 +1217,20 @@ if (provider.TryLoadPackage("FortniteGame/Content/Balance/AthenaGameData.uasset"
             ["bookFreeRewards"] = Schedule(newestSeason["BookXpScheduleFree"]),
             ["bookPaidRewards"] = Schedule(newestSeason["BookXpSchedulePaid"])
         };
+        // From 3.0 (CL 3901517, Season 3) the season names its challenges: the schedules the challenges tab always shows
+        // (ChallengeSchedulesAlwaysShown: Season3_Challenge_Schedule, the Battle Pass's weekly challenges), the Battle Pass's
+        // own schedule when set (ChallengeSchedulePaid, unset in 3.0), what a first win in the season gives
+        // (SeasonFirstWinRewards: the Paper Parasol) and the tier offer (BattlePassLevelOfferID). Only such a season takes
+        // them (2.5's AthenaSeason2 has no ChallengeSchedulesAlwaysShown), so earlier seasons extract as before.
+        static string ObjectName(JsonNode reference) => reference["ObjectPath"]!.GetValue<string>().Split('/').Last().Split('.')[0].ToLowerInvariant();
+        var shownSchedules = (newestSeason["ChallengeSchedulesAlwaysShown"]?.AsArray() ?? []).OfType<JsonObject>().Select(ObjectName).ToList();
+        if (shownSchedules.Count > 0)
+        {
+            athenaSeason["challengeSchedulesAlwaysShown"] = shownSchedules;
+            if (newestSeason["ChallengeSchedulePaid"] is JsonObject paidSchedule) athenaSeason["challengeSchedulePaid"] = ObjectName(paidSchedule);
+            athenaSeason["firstWinRewards"] = RewardList(newestSeason["SeasonFirstWinRewards"]?["Rewards"], assetTypes);
+            athenaSeason["battlePassLevelOfferId"] = newestSeason["BattlePassLevelOfferID"]?.GetValue<string>() ?? "";
+        }
     }
     foreach (var (_, row) in LoadRows(provider, seasonXpTable).OrderBy(r => r.Value!["Level"]!.GetValue<int>()))
     {
@@ -1190,7 +1251,8 @@ foreach (var quest in athenaQuests.Values.Cast<SortedDictionary<string, object>>
 {
     foreach (var objective in (List<SortedDictionary<string, object>>)quest["objectives"])
     {
-        if (objective.TryGetValue("stat", out var stat) && objectiveStats.TryGetValue((string)stat, out var row)) athenaStats[(string)stat] = row;
+        if (objective.TryGetValue("stat", out var stat) && (objectiveStats.TryGetValue((string)stat, out var row) || athenaObjectiveStats.TryGetValue((string)stat, out row)))
+            athenaStats[(string)stat] = row;
     }
 }
 // Battle Royale's loot tables (DefaultGameData's LootTierDataTables and LootPackageDataTables under /Athena:
@@ -1246,6 +1308,31 @@ var athenaFile = new SortedDictionary<string, object>(StringComparer.Ordinal)
     ["objectiveStats"] = athenaStats
 };
 if (athenaSeason is not null) athenaFile["season"] = athenaSeason;
+// The challenge schedules the season grants (its rewards and the ones it names) and their bundles: 3.0's.
+if (athenaSeason is not null && athenaSeason.ContainsKey("challengeSchedulesAlwaysShown"))
+{
+    var granted = ((List<object>)athenaSeason["bookFreeRewards"]).Concat((List<object>)athenaSeason["bookPaidRewards"])
+        .SelectMany(level => (List<SortedDictionary<string, object>>)((SortedDictionary<string, object>)level)["rewards"])
+        .Select(reward => (string)reward["templateId"])
+        .Where(templateId => templateId.StartsWith("ChallengeBundleSchedule:", StringComparison.OrdinalIgnoreCase))
+        .Select(templateId => templateId.Split(':')[1].ToLowerInvariant())
+        .Concat((List<string>)athenaSeason["challengeSchedulesAlwaysShown"])
+        .Concat(athenaSeason.TryGetValue("challengeSchedulePaid", out var paid) ? [(string)paid] : Array.Empty<string>())
+        .Where(challengeSchedules.ContainsKey).Distinct().ToList();
+    var grantedSchedules = new SortedDictionary<string, object>(StringComparer.Ordinal);
+    var bundles = new SortedDictionary<string, object>(StringComparer.Ordinal);
+    foreach (var id in granted)
+    {
+        grantedSchedules[id] = challengeSchedules[id];
+        foreach (var entry in (List<object>)((SortedDictionary<string, object>)challengeSchedules[id])["bundles"])
+        {
+            var bundle = (string)((SortedDictionary<string, object>)entry)["bundle"];
+            if (challengeBundles.TryGetValue(bundle, out var definition)) bundles[bundle] = definition;
+        }
+    }
+    athenaFile["challengeSchedules"] = grantedSchedules;
+    athenaFile["challengeBundles"] = bundles;
+}
 if (athenaLoot.Count > 0) athenaFile["loot"] = athenaLoot;
 if (shootingModel is not null) athenaFile["shootingModel"] = shootingModel;
 File.WriteAllText(Path.Combine(output, "athena.json"), JsonSerializer.Serialize(athenaFile, options) + "\n");
@@ -1353,6 +1440,15 @@ static void AddItems(IDictionary<string, object> target, string key, JsonNode? i
     if (list.Count > 0) target[key] = list;
 }
 
+// FAthenaRewardItemReference {ItemDefinition, TemplateId, Quantity} as {templateId, quantity}: the TemplateId when set,
+// else the item definition's.
+static List<object> RewardList(JsonNode? rewards, AssetTypes assetTypes) => (rewards?.AsArray() ?? [])
+    .Select(reward => new SortedDictionary<string, object>(StringComparer.Ordinal)
+    {
+        ["templateId"] = reward!["TemplateId"]?.GetValue<string>() is { Length: > 0 } templateId ? templateId : assetTypes.TemplateId(ObjectPath(AssetPath(reward["ItemDefinition"]))),
+        ["quantity"] = reward["Quantity"]?.GetValue<int>() ?? 1
+    }).Where(reward => (string)reward["templateId"] is not ("" or "None")).Cast<object>().ToList();
+
 static List<SortedDictionary<string, object>> Items(JsonNode? items, AssetTypes assetTypes) =>
     (items?.AsArray() ?? []).Select(i => new SortedDictionary<string, object>
     {
@@ -1407,6 +1503,8 @@ static class ItemClasses
         ["FortQuestItemDefinition"] = "FortAccountItemDefinition",
         ["FortQuotaItemDefinition"] = "FortAccountItemDefinition",
         ["FortTokenType"] = "FortAccountItemDefinition",
+        // 3.0's (CL 3901517) Hoverboard, PersonalVehicle:VID_Hoverboard (the Hoverboard questline's reward).
+        ["FortPersonalVehicleItemDefinition"] = "FortAccountItemDefinition",
         ["FortAccountBuffCreditItemDefinition"] = "FortConsumableAccountItemDefinition",
         ["FortSchematicItemDefinition"] = "FortAlterableItemDefinition",
         ["FortWorkerType"] = "FortCharacterType",
