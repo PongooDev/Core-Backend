@@ -69,7 +69,11 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   backend serves as `[AssetHotfix]` rows; only 1.11's, 2.1's, 2.2's, 2.3's, 2.4's, 2.4.2's and 2.5's overlays carry it so far (2.2's has Season 2's content updates in already; 2.3's
   is 2.2's, the Chug Jug at weight 0; 2.4's has the Chug Jug in and the Minigun at weight 0; 2.4.2's has the Minigun in, in
   a list of its own, and the Suppressed Pistol's cut, but no Crossbow; 2.5's has the Crossbow in a list of its own and its
-  notes' Impulse Grenade, vaulted SMG and Medium-ammo Revolver). 2.4 ships no
+  notes' Impulse Grenade, vaulted SMG and Medium-ammo Revolver). `shootingModel` holds the weapon stats table Shooting
+  Test #1 plays (PlayerPawn_Athena's PrototypeShootingModelPerfectAimWhenTargetingMinSpread, AthenaRangedWeapons_ShootingModel3)
+  for the builds that have one, `{table, rows}` in the same import form, object references as their object path and none
+  as `"None"`; only 2.4.2's and 2.5's overlays carry it, for the hotfixes that bring 2.4's and 2.4.2's tables to the next
+  build's (`src/events/shootingtest.js`). 2.4 ships no
   `Build.version` either: its fourth argument is `4.19.0-3858292+++Fortnite+Release-Cert`, and 2.4.2's
   `4.19.0-3870737+++Fortnite+Release-Next`, and 2.5's `4.20.0-3889387+++Fortnite+Release-2.5`. Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).

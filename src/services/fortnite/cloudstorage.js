@@ -7,6 +7,7 @@ import { isDedicatedServerToken } from "../../accounts/clients.js";
 import { getBuild } from "../../builds/detect.js";
 import { sendError } from "../../errors.js";
 import { lootHotfixSection } from "../../events/contentupdates.js";
+import { shootingTestGlobals, shootingTestHotfixTables } from "../../events/shootingtest.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
 import { createNetwork, httpsProxied } from "../../network.js";
 
@@ -40,7 +41,9 @@ const validFilename = /^[A-Za-z0-9._-]{1,128}$/;
 // fails every answer. From 1.8.1 on an answer is kept for a minute: one asked for again within a minute of the last
 // comes from the cache, and a match ends more than a minute after the lobby the player last looked from.
 const freshStatsBuild = 3729133;
-const gameFile = (minutes) => ["[/Script/FortniteGame.FortGlobals]", `TimeBetweenLeaderboardRequestsMinutes=${minutes}`, ""].join("\r\n");
+// Shooting Test #1's builds (2.4 to 2.5, events/shootingtest.js) also get its UFortGlobals setting, and its weapon stats
+// table in the [AssetHotfix] section.
+const gameFile = (minutes, globals = []) => ["[/Script/FortniteGame.FortGlobals]", `TimeBetweenLeaderboardRequestsMinutes=${minutes}`, ...globals, ""].join("\r\n");
 const statsAnswerMinutes = (changelist) => (Number(changelist) >= freshStatsBuild ? 1 : 0);
 // Season 2's content updates (events/contentupdates.js, Core-Backend #156) come last, as an [AssetHotfix] section that
 // replaces the Battle Royale loot tables with the updated ones, as Epic's hotfixes did: on 1.11 those in by the season's
@@ -63,7 +66,9 @@ function systemFiles(req, network = defaultNetwork) {
     "[OnlineSubsystemMcp.XMPP]", `ServerAddr=${address}`, `ServerPort=${port}`, "bUseSSL=false", "",
     "[OnlineSubsystemMcp.StompServiceMcp]", `Protocol=${proxied ? "wss" : "ws"}`, `Domain=${proxied ? proxied.host : `${address}:${port}`}`, ""
   ].join("\r\n");
-  const game = gameFile(statsAnswerMinutes(getBuild(req))) + customKeySection(getBuild(req)) + lootHotfixSection();
+  const build = getBuild(req);
+  const game = gameFile(statsAnswerMinutes(build), shootingTestGlobals(build)) + customKeySection(build)
+    + lootHotfixSection(new Date(), null, shootingTestHotfixTables(build));
   return { "DefaultEngine.ini": Buffer.from(engine, "utf8"), "DefaultGame.ini": Buffer.from(game, "utf8") };
 }
 

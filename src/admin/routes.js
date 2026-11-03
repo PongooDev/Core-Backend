@@ -1340,10 +1340,10 @@ export function adminRoutes(context) {
     const sessionList = (sessions?.list?.() ?? []).map((session) => sessionSummary(session));
 
     const regions = ["NA", "EU", "OCE", "BR", "ASIA"];
-    const modeKeys = ["solo", "duo", "squad", "fiftyFifty"];
+    const modeKeys = ["solo", "duo", "squad", "fiftyFifty", "shootingTest"];
     const serverCounts = {};
     for (const r of regions) {
-      serverCounts[r] = { solo: 0, duo: 0, squad: 0, fiftyFifty: 0 };
+      serverCounts[r] = { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0 };
       for (const m of modeKeys) {
         if (matchmaker?.activeServersCount) {
           serverCounts[r][m] = matchmaker.activeServersCount(r, m);
@@ -1399,6 +1399,18 @@ export function adminRoutes(context) {
         maxPlayers: 100,
         enabled: modes.fiftyFifty !== false,
         description: "Limited-time mode from 1.10: two massive teams of 50 clash in an all-out war."
+      },
+      {
+        id: "shootingTest",
+        name: "Shooting Test #1",
+        playlistId: 15,
+        code: "AthenaEvent4",
+        teamCount: 100,
+        teamSize: 1,
+        squadSize: 1,
+        maxPlayers: 100,
+        enabled: modes.shootingTest === true,
+        description: "Limited-time mode of 2.4 to 2.5: weapon accuracy for a more precise aim (first-shot accuracy, less headshot damage, damage fall-off). Solo from 2.4.2, squads on 2.4. Off by default."
       }
     ];
 

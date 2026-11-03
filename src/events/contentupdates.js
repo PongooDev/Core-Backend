@@ -206,14 +206,18 @@ export function updatedLootTables(now = new Date(), config = null) {
 // to come last: HotfixIniFile stops looking for classes to reload at "[AssetHotfix]". The config merge reads the file a
 // line at a time (FParse::LineExtended), where a JSON string's contents count as outside quotes, so a value holding a
 // brace, a bar, "//" or a backslash would be cut; none of the tables' does, and one that did is left out. Empty when
-// nothing is in.
-export function lootHotfixSection(now = new Date(), config = null) {
-  const lines = [];
-  for (const [table, rows] of Object.entries(updatedLootTables(now, config))) {
-    const unsafe = rows.some((row) => Object.values(row).some((value) => typeof value === "string" && /[{}|\\]|\/\//.test(value)));
-    if (unsafe) continue;
-    const json = JSON.stringify(rows).replace(/\\/g, "\\\\").replace(/"/g, "\\\"");
-    lines.push(`+DataTable=("${table}","${json}")`);
-  }
+// nothing is in. Other tables Epic hotfixed the same way (more: [{table, rows}], Shooting Test #1's weapon stats,
+// events/shootingtest.js) share the section.
+export function lootHotfixSection(now = new Date(), config = null, more = []) {
+  const tables = [...Object.entries(updatedLootTables(now, config)).map(([table, rows]) => ({ table, rows })), ...more];
+  const lines = tables.map(({ table, rows }) => dataTableHotfixLine(table, rows)).filter(Boolean);
   return lines.length ? ["[AssetHotfix]", ...lines, ""].join("\r\n") : "";
+}
+
+// A table's [AssetHotfix] line, its rows [{Name, ...row}], or null for one whose values the config merge would cut.
+export function dataTableHotfixLine(table, rows) {
+  const unsafe = rows.some((row) => Object.values(row).some((value) => typeof value === "string" && /[{}|\\]|\/\//.test(value)));
+  if (unsafe) return null;
+  const json = JSON.stringify(rows).replace(/\\/g, "\\\\").replace(/"/g, "\\\"");
+  return `+DataTable=("${table}","${json}")`;
 }

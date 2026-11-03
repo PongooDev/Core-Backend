@@ -89,14 +89,16 @@ const defaults = {
     solo: true,
     duo: true,
     squad: true,
-    fiftyFifty: true
+    fiftyFifty: true,
+    // Shooting Test #1 (2.4 to 2.5, events/shootingtest.js): off until an admin turns it on.
+    shootingTest: false
   },
   serverLimits: {
-    NA: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0 },
-    EU: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0 },
-    OCE: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0 },
-    BR: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0 },
-    ASIA: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0 }
+    NA: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0 },
+    EU: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0 },
+    OCE: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0 },
+    BR: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0 },
+    ASIA: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0 }
   }
 };
 
@@ -109,7 +111,8 @@ export function sanitizeMatchmakingModes(input, current = defaultMatchmakingMode
     solo: typeof input.solo === "boolean" ? input.solo : (current.solo !== false),
     duo: typeof input.duo === "boolean" ? input.duo : (current.duo !== false),
     squad: typeof input.squad === "boolean" ? input.squad : (current.squad !== false),
-    fiftyFifty: typeof input.fiftyFifty === "boolean" ? input.fiftyFifty : (current.fiftyFifty !== false)
+    fiftyFifty: typeof input.fiftyFifty === "boolean" ? input.fiftyFifty : (current.fiftyFifty !== false),
+    shootingTest: typeof input.shootingTest === "boolean" ? input.shootingTest : (current.shootingTest === true)
   };
 }
 
@@ -117,10 +120,10 @@ export function sanitizeServerLimits(input, current = defaultServerLimits) {
   if (!input || typeof input !== "object" || Array.isArray(input)) return JSON.parse(JSON.stringify(current));
   const result = JSON.parse(JSON.stringify(current));
   const regions = ["NA", "EU", "OCE", "BR", "ASIA"];
-  const modes = ["solo", "duo", "squad", "fiftyFifty"];
+  const modes = ["solo", "duo", "squad", "fiftyFifty", "shootingTest"];
   for (const r of regions) {
     if (input[r] && typeof input[r] === "object" && !Array.isArray(input[r])) {
-      result[r] = result[r] || { solo: 0, duo: 0, squad: 0, fiftyFifty: 0 };
+      result[r] = result[r] || { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0 };
       for (const m of modes) {
         if (input[r][m] !== undefined) {
           const val = Number(input[r][m]);

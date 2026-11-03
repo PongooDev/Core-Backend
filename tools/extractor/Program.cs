@@ -1213,6 +1213,33 @@ foreach (var reference in (gameData["Properties"]?["LootTierDataTables"]?.AsArra
     var rows = LoadRows(provider, reference);
     athenaLoot[ObjectPath(tablePath)] = new JsonObject(rows.Select(r => KeyValuePair.Create(r.Key, ImportForm(r.Value))));
 }
+// Shooting Test #1's weapon stats (2.4 to 2.5, src/events/shootingtest.js): the table PlayerPawn_Athena's
+// PrototypeShootingModelPerfectAimWhenTargetingMinSpread names (AthenaRangedWeapons_ShootingModel3), which a ranged
+// weapon reads its stats from in playlist 15 while UFortGlobals' bShootingTest3Enabled is set. Whole, by object path,
+// in the import form: object references (Durability's WeaponDurabilityRarity) as their object path and no reference as
+// "None", which CreateTableFromJSONString reads back.
+static JsonNode? ImportReference(JsonNode? value) => value switch
+{
+    null => JsonValue.Create("None"),
+    JsonObject o when o.Count == 2 && o["ObjectName"] is not null && o["ObjectPath"] is not null =>
+        JsonValue.Create(GamePath(o["ObjectPath"]!.GetValue<string>())),
+    JsonObject o => new JsonObject(o.Select(p => KeyValuePair.Create(p.Key, ImportReference(p.Value)))),
+    _ => ImportForm(value)
+};
+SortedDictionary<string, object>? shootingModel = null;
+if (provider.TryLoadPackage("FortniteGame/Content/Athena/PlayerPawn_Athena.uasset", out var pawnPackage))
+{
+    var pawn = JsonNode.Parse(JsonConvert.SerializeObject(pawnPackage.GetExports().First(e => e.Name == "Default__PlayerPawn_Athena_C")))!;
+    if (pawn["Properties"]?["PrototypeShootingModelPerfectAimWhenTargetingMinSpread"] is JsonObject reference)
+    {
+        var rows = LoadRows(provider, reference);
+        shootingModel = new SortedDictionary<string, object>(StringComparer.Ordinal)
+        {
+            ["table"] = GamePath(reference["ObjectPath"]!.GetValue<string>()),
+            ["rows"] = new JsonObject(rows.Select(r => KeyValuePair.Create(r.Key, ImportReference(r.Value))))
+        };
+    }
+}
 var athenaFile = new SortedDictionary<string, object>(StringComparer.Ordinal)
 {
     ["cosmetics"] = athenaCosmetics, ["displayAssets"] = athenaDisplayAssets, ["quests"] = athenaQuests, ["levels"] = athenaLevels,
@@ -1220,6 +1247,7 @@ var athenaFile = new SortedDictionary<string, object>(StringComparer.Ordinal)
 };
 if (athenaSeason is not null) athenaFile["season"] = athenaSeason;
 if (athenaLoot.Count > 0) athenaFile["loot"] = athenaLoot;
+if (shootingModel is not null) athenaFile["shootingModel"] = shootingModel;
 File.WriteAllText(Path.Combine(output, "athena.json"), JsonSerializer.Serialize(athenaFile, options) + "\n");
 Console.WriteLine($"Battle Royale: {athenaCosmetics.Count} cosmetics, {athenaDisplayAssets.Count} display assets, {athenaQuests.Count} quests, {athenaLevels.Count} season levels");
 if (unmatchedDisplayAssets.Count > 0) Console.WriteLine($"Display assets matched to no one cosmetic: {string.Join(", ", unmatchedDisplayAssets)}");

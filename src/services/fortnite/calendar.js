@@ -3,6 +3,7 @@ import { requireAuth } from "../../accounts/auth.js";
 import { currentBuild } from "../../builds/context.js";
 import { activeEventFlags, currentEventsConfig, eventsActiveUntil, isEventActive } from "../../events/events.js";
 import { fiftyFifty, fiftyFiftyRegions } from "../../events/fiftyfifty.js";
+import { shootingTestOn, shootingTestRegionState } from "../../events/shootingtest.js";
 import { regionCodes } from "../../matchmaking/regions.js";
 import { eventStoreEnds } from "../../store/eventstore.js";
 import { hasItemShop, seasonEnd, weeklyStoreEnd } from "../../store/itemshop.js";
@@ -29,7 +30,8 @@ import { seasonTemplateId } from "../../profiles/seasons.js";
 // its event items on (0x7E02C0: these, plus the player's region's EventFlagsForcedOn less its EventFlagsForcedOff, plus
 // the hotfix's EventFlagsForcedOnByHotfix less ...OffByHotfix), BR_Playlist_50v50's EventFlag.BR.Allow50v50 among them.
 // Its client-matchmaking channel (FFortMatchmakingEventsState) switches 50v50's queue on by region while that event runs
-// (events/fiftyfifty.js).
+// (events/fiftyfifty.js), and on 2.4 to 2.5 Shooting Test #1's while the admin panel has it on (EventFlagsForcedOn
+// Event4, events/shootingtest.js).
 //
 // 1.11 (CL-3807424) sends the season in the client-events state (1.10 has the field and gets none, as its profile has no
 // season_num: profiles/seasons.js): FFortClientEventsState {SeasonNumber (+0x140),
@@ -71,8 +73,10 @@ export function calendarRoutes({ tokens, settings }) {
           const modes = settings?.get?.().matchmakingModes;
           const duosEnabled = modes ? modes.duo !== false : true;
           const fiftyFiftyEnabled = isEventActive(fiftyFifty) && (modes ? modes.fiftyFifty !== false : true);
-          if (isEventActive(fiftyFifty) || !duosEnabled || (modes && modes.fiftyFifty === false)) {
-            const region = Object.fromEntries(regionCodes().map((r) => [r, { bDuosEnabled: duosEnabled, bFiftyFiftyEnabled: fiftyFiftyEnabled }]));
+          const shootingTest = shootingTestOn(currentBuild(), modes);
+          if (isEventActive(fiftyFifty) || !duosEnabled || (modes && modes.fiftyFifty === false) || shootingTest) {
+            const region = Object.fromEntries(regionCodes().map((r) => [r, { bDuosEnabled: duosEnabled, bFiftyFiftyEnabled: fiftyFiftyEnabled,
+              ...(shootingTest ? shootingTestRegionState() : {}) }]));
             return { "client-matchmaking": { states: [{ validFrom, activeEvents: [], state: { region } }], cacheExpire } };
           }
           return {};

@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import { shootingTestMode, shootingTestPlaylist, shootingTestTeams } from "../events/shootingtest.js";
 import { log } from "../log.js";
 import { acceptWebSocket } from "../stomp/websocket.js";
 import { regionName, regionOf, servedRegions } from "./regions.js";
@@ -36,7 +37,8 @@ const matchOptions = { "match.option.warmupRequiredPlayerCount": "1" };
 // GetMaxTeamInfoForPlaylist 0x79B690, 1.10 0x7EA1F0, the same for the playlists they share): MaxTeamCount teams of
 // MaxTeamSize players, in squads of up to MaxSquadSize (21.40's UFortPlaylist names them). Solo 2 is 100 teams of 1,
 // Duo 10 100 of 2, Squad 9 100 of 4, and 1.10's 50v50, 11, two teams of 50 in squads of 4. Playlists 0 (1×4), 1 (2×5) and
-// 99 (1×1) aren't Battle Royale's; 1.10's 12 to 15 (AthenaEvent1-4, 100×4) have no playlist asset and nothing queues them.
+// 99 (1×1) aren't Battle Royale's; 1.10's 12 to 15 (AthenaEvent1-4, 100×4) have no playlist asset and nothing queues them
+// there. 2.4's to 2.5's lobby queues 15, Shooting Test #1, while the calendar offers it (playlistTeamsOf).
 const playlistTeams = {
   0: { maxTeamCount: 1, maxTeamSize: 4, maxSquadSize: 4 },
   1: { maxTeamCount: 2, maxTeamSize: 5, maxSquadSize: 5 },
@@ -144,7 +146,13 @@ export function serverRegion(patterns) {
 }
 
 // The teams of a bucket's playlist ({maxTeamCount, maxTeamSize, maxSquadSize}), or null for one the server doesn't know.
-export const playlistTeamsOf = (bucketId) => playlistTeams[parseBucket(bucketId).playlistId] ?? null;
+// Shooting Test #1's (15, 2.4 to 2.5) are the build's (events/shootingtest.js: solo from 2.4.2, where the servers' table
+// still has 100 teams of 4), the build being the parties' changelist (their tickets'); without one, 2.4.2's.
+export const playlistTeamsOf = (bucketId, build = null) => {
+  const { playlistId } = parseBucket(bucketId);
+  if (playlistId === shootingTestPlaylist) return shootingTestTeams(build ?? 3870737);
+  return playlistTeams[playlistId] ?? null;
+};
 
 // AssignMatch's teams ([team][party][accountId]) from a match's parties, [{players, fill}], or null when they don't fit
 // the playlist's teams. The server makes one beacon reservation per party, on team i % its team count for AssignMatch's
@@ -265,7 +273,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
   // Every server whose region counts as having a server, by session id: the registered ones and those hosting a match
   // (they register again once it ends), until their session goes.
   const hosts = new Map();
-  const modeByPlaylist = { 2: "solo", 10: "duo", 9: "squad", 11: "fiftyFifty" };
+  const modeByPlaylist = { 2: "solo", 10: "duo", 9: "squad", 11: "fiftyFifty", [shootingTestPlaylist]: shootingTestMode };
   // The game's own warmup length by the build (the bucket's netcl) of the servers that reported one: the most time left
   // a warmup report gave while the panel left the length to the game (#160).
   const gameWarmups = new Map();
@@ -350,7 +358,8 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
   // player.option.fillTeam); without it the party fills, as the client asks for every playlist but Squads with No Fill.
   const fills = (party) => [party, ...party.members].map((member) => member.ticket.fillTeam).find((fill) => typeof fill === "boolean") ?? true;
   // AssignMatch's teams for a match's parties, or null when the playlist's teams have no room for them all.
-  const teamsFor = (parties, bucketId) => formTeams(parties.map((party) => ({ players: party.ticket.partyPlayerIds, fill: fills(party) })), playlistTeamsOf(bucketId));
+  const teamsFor = (parties, bucketId) => formTeams(parties.map((party) => ({ players: party.ticket.partyPlayerIds, fill: fills(party) })),
+    playlistTeamsOf(bucketId, parties.find((party) => party.ticket.build)?.ticket.build ?? null));
 
   function issueTicket(kind, fields) {
     const ticket = { ...fields, kind, ticketId: newId(), issued: Date.now() };

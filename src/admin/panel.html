@@ -3803,7 +3803,8 @@
         { id: "solo", name: "Solo", playlistId: 2, code: "Playlist_DefaultSolo", teams: "100 Teams × 1" },
         { id: "duo", name: "Duos", playlistId: 10, code: "Playlist_DefaultDuo", teams: "100 Teams × 2" },
         { id: "squad", name: "Squads", playlistId: 9, code: "Playlist_DefaultSquad", teams: "100 Teams × 4" },
-        { id: "fiftyFifty", name: "50v50", playlistId: 11, code: "Playlist_50v50", teams: "2 Teams × 50" }
+        { id: "fiftyFifty", name: "50v50", playlistId: 11, code: "Playlist_50v50", teams: "2 Teams × 50" },
+        { id: "shootingTest", name: "Shooting Test #1", playlistId: 15, code: "AthenaEvent4 · 2.4 to 2.5", teams: "100 Teams × 1 (2.4: × 4)" }
       ];
 
       const rewardModesList = [
@@ -3819,19 +3820,19 @@
       const rewardsGridBox = el("div", { class: "grid cols-2", style: "margin-top:14px;" });
 
       // Live Stats Tiles Elements
-      const activeModesTileVal = el("span", { text: `${Object.values(form.modes).filter(Boolean).length} / 4 Online` });
+      const activeModesTileVal = el("span", { text: `${Object.values(form.modes).filter(Boolean).length} / ${modeKeys.length} Online` });
       const liveSessionsTileVal = el("span", { text: fmt(data.sessions.length) });
       const freeServersTileVal = el("span", { text: fmt(data.sessions.filter((s) => s.gameMode === "FORTEMPTY" && !s.currentPlayers).length) });
       const inGamePlayersTileVal = el("span", { text: fmt(data.sessions.reduce((tot, s) => tot + (s.currentPlayers || 0), 0)) });
-      const headerModesChip = chip(`${Object.values(form.modes).filter(Boolean).length}/4 Modes Online`, Object.values(form.modes).filter(Boolean).length > 0 ? "good" : "warn");
+      const headerModesChip = chip(`${Object.values(form.modes).filter(Boolean).length}/${modeKeys.length} Modes Online`, Object.values(form.modes).filter(Boolean).length > 0 ? "good" : "warn");
       const headerServersChip = chip(`${data.sessions.length} Live Servers`, "sky");
       const sectionModesChip = chip(`${Object.values(form.modes).filter(Boolean).length} Active`, "accent");
       const sectionSessionsChip = chip(`${data.sessions.length} Registered`, "accent");
 
       function updateActiveModesIndicators() {
         const count = Object.values(form.modes).filter(Boolean).length;
-        activeModesTileVal.textContent = `${count} / 4 Online`;
-        headerModesChip.textContent = `${count}/4 Modes Online`;
+        activeModesTileVal.textContent = `${count} / ${modeKeys.length} Online`;
+        headerModesChip.textContent = `${count}/${modeKeys.length} Modes Online`;
         headerModesChip.className = `chip ${count > 0 ? "good" : "warn"}`;
         sectionModesChip.textContent = `${count} Active`;
       }
@@ -3851,8 +3852,8 @@
         }
 
         const serverLimitRows = regions.map((r) => {
-          form.serverLimits[r] = form.serverLimits[r] || { solo: 0, duo: 0, squad: 0, fiftyFifty: 0 };
-          const counts = (data.serverCounts && data.serverCounts[r]) || { solo: 0, duo: 0, squad: 0, fiftyFifty: 0 };
+          form.serverLimits[r] = form.serverLimits[r] || { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0 };
+          const counts = (data.serverCounts && data.serverCounts[r]) || { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0 };
 
           const modeInputs = activeModes.map((m) => {
             const currentLimit = form.serverLimits[r][m.id] || 0;
