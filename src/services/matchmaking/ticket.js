@@ -13,7 +13,9 @@ import { defaultHostingIps, httpsProxied } from "../../network.js";
 // MCP service with the server's token). Their serviceUrl is this backend, whose WebSocket upgrades with an
 // Epic-Signed ticket are the matchmaking service's. Behind a TLS-terminating reverse proxy (X-Forwarded-Proto: https,
 // Core #197) it is wss:// on the host the client used, which the proxy hands back to this backend's WebSocket.
-export function ticketRoutes({ tokens, sessions, matchmaker, settings }) {
+const customKeyLength = { min: 4, max: 16 };
+
+export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings }) {
   const router = express.Router();
   const base = "/fortnite/api/game/v2/matchmakingservice/ticket";
   const serviceUrl = (req) => {
@@ -47,18 +49,31 @@ export function ticketRoutes({ tokens, sessions, matchmaker, settings }) {
     // (FFortPartyRepState::bSquadFill) and "true" otherwise (1.7.2 0x2E68050, 1.8 0x2EACF10); the other members' tickets
     // leave it out.
     const fill = req.query["player.option.fillTeam"];
+    // player.option.customKey: the lobby's custom matchmaking key (Core-Backend #186, matchmaking/service.js), sent only
+    // when it isn't empty. Epic's ticket service refused a key outside 4 to 16 characters with invalid_custom_match_key,
+    // which the lobby shows as "Custom matchmaking key must be between 4 and 16 characters long." (2.4 0x20DFD40).
+    const customKey = String(req.query["player.option.customKey"] ?? "");
+    if (customKey && (customKey.length < customKeyLength.min || customKey.length > customKeyLength.max)) {
+      return sendError(res, 400, "errors.com.epicgames.fortnite.invalid_custom_match_key",
+        `Custom matchmaking key must be between ${customKeyLength.min} and ${customKeyLength.max} characters long.`);
+    }
+    const party = partyPlayerIds.length ? partyPlayerIds : [accountId];
     const { ticket, response } = matchmaker.playerTicket({
       accountId,
-      partyPlayerIds: partyPlayerIds.length ? partyPlayerIds : [accountId],
+      partyPlayerIds: party,
       bucketId: String(req.query.bucketId ?? ""),
       platform: String(req.query["player.platform"] ?? ""),
       fillTeam: fill === "true" ? true : fill === "false" ? false : null,
+      customKey: customKey || null,
+      // Whether the party may open a key: one of its players has the admin panel's Custom Matchmaking permission.
+      customKeyHost: Boolean(customKey) && party.some((id) => accounts?.get(id)?.customMatchmaking === true),
       // The client's build (its User-Agent's changelist): 1.7.2 to 2.4.2's show the match start countdown (#160).
       build: Number(currentBuild()) || null,
       serviceUrl: serviceUrl(req)
     });
     const fills = ticket.fillTeam === null ? "" : ticket.fillTeam ? ", fill" : ", no fill";
-    log("Matchmaking", `Ticket for ${accountId}, party of ${ticket.partyPlayerIds.length}${fills}, bucket ${ticket.bucketId}`);
+    const keyed = ticket.customKey ? `, custom key ${ticket.customKey}${ticket.customKeyHost ? "" : " (not allowed to open it)"}` : "";
+    log("Matchmaking", `Ticket for ${accountId}, party of ${ticket.partyPlayerIds.length}${fills}, bucket ${ticket.bucketId}${keyed}`);
     res.json(response);
   });
 

@@ -46,6 +46,14 @@ const statsAnswerMinutes = (changelist) => (Number(changelist) >= freshStatsBuil
 // replaces the Battle Royale loot tables with the updated ones, as Epic's hotfixes did: on 1.11 those in by the season's
 // date (or all, as the admin panel chooses), on 2.1 all of them and its Cozy Campfire. It is the gameserver's copy of
 // the tables that drops the loot, so the server has to take this file too, before its match places any.
+// Custom matchmaking keys (Core-Backend #186, matchmaking/service.js) are Battle Royale's from 2.4 (CL-3858292) on: the
+// lobby shows its Custom Matchmaking Key action while UFortMatchmakingV2's bCustomKeyEnabled is set (2.4 0x7390E0 reads
+// +0x4C), and only then does the ticket carry the key (0x756340). This file comes before login, with no account, so it
+// can't tell players apart: every 2.4 and later player sees the action, as on Epic's 2.4, and the matchmaking service
+// decides whose key opens a match.
+const customKeyBuild = 3858292;
+const customKeySection = (changelist) => (Number(changelist) >= customKeyBuild
+  ? ["[/Script/FortniteGame.FortMatchmakingV2]", "bCustomKeyEnabled=true", ""].join("\r\n") : "");
 const defaultNetwork = createNetwork();
 function systemFiles(req, network = defaultNetwork) {
   const address = network.reachableAddress(req);
@@ -55,7 +63,7 @@ function systemFiles(req, network = defaultNetwork) {
     "[OnlineSubsystemMcp.XMPP]", `ServerAddr=${address}`, `ServerPort=${port}`, "bUseSSL=false", "",
     "[OnlineSubsystemMcp.StompServiceMcp]", `Protocol=${proxied ? "wss" : "ws"}`, `Domain=${proxied ? proxied.host : `${address}:${port}`}`, ""
   ].join("\r\n");
-  const game = gameFile(statsAnswerMinutes(getBuild(req))) + lootHotfixSection();
+  const game = gameFile(statsAnswerMinutes(getBuild(req))) + customKeySection(getBuild(req)) + lootHotfixSection();
   return { "DefaultEngine.ini": Buffer.from(engine, "utf8"), "DefaultGame.ini": Buffer.from(game, "utf8") };
 }
 

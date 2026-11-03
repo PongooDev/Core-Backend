@@ -160,6 +160,14 @@ export function createAccountStore(dataDir) {
       save(account);
     },
 
+    // The admin panel's Custom Matchmaking permission (Core-Backend #186): whether the player's party may open a custom
+    // matchmaking key (matchmaking/service.js).
+    setCustomMatchmaking(account, allowed) {
+      if (allowed) account.customMatchmaking = true;
+      else delete account.customMatchmaking;
+      save(account);
+    },
+
     // The account and everything saved for it (profiles, friends, cloud storage).
     remove(account) {
       byId.delete(account.id);

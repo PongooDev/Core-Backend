@@ -111,6 +111,8 @@ export function adminRoutes(context) {
       tutorialCompleted: profile ? tutorialCompleted(profile) : false,
       online: online(account.id),
       banned: account.banned ?? null,
+      // The Custom Matchmaking permission (#186): the player's party may open a custom matchmaking key.
+      customMatchmaking: account.customMatchmaking === true,
       hasPassword: Boolean(account.password),
       isServer: isServerAccountName(account.displayName)
     };
@@ -760,6 +762,15 @@ export function adminRoutes(context) {
     res.json(details(account));
   });
 
+  // {allowed}: grants or takes back the Custom Matchmaking permission (Core-Backend #186, matchmaking/service.js).
+  router.post("/admin/api/accounts/:accountId/custom-matchmaking", (req, res) => {
+    const account = accounts.get(req.params.accountId);
+    if (!account) return notFound(res, req.originalUrl);
+    if (typeof req.body?.allowed !== "boolean") return invalid(res, "allowed must be true or false");
+    accounts.setCustomMatchmaking(account, req.body.allowed);
+    res.json(details(account));
+  });
+
   router.post("/admin/api/accounts/:accountId/unban", (req, res) => {
     const account = accounts.get(req.params.accountId);
     if (!account) return notFound(res, req.originalUrl);
@@ -1395,6 +1406,9 @@ export function adminRoutes(context) {
         modes: s.battleRoyaleRewards ?? {}
       },
       playlists,
+      // The players with the Custom Matchmaking permission (#186).
+      customMatchmaking: accounts.list().filter((account) => account.customMatchmaking === true)
+        .map(({ id, displayName }) => ({ id, displayName })).sort((a, b) => a.displayName.localeCompare(b.displayName)),
       sessions: sessionList
     };
   }

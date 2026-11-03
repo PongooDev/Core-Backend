@@ -26,6 +26,8 @@ function matchmakingClient(port, authorization) {
       let closed = false;
       // The status of the service's close frame.
       let closeCode = null;
+      // Its reason: the error code the client reports (#186).
+      let closeReason = null;
       const deliver = (text) => (waiters.length ? waiters.shift()(text) : messages.push(text));
       const receive = (chunk) => {
         buffer = Buffer.concat([buffer, chunk]);
@@ -44,6 +46,7 @@ function matchmakingClient(port, authorization) {
           if (opcode === 0x8) {
             closed = true;
             closeCode = frame.length >= 2 ? frame.readUInt16BE(0) : null;
+            closeReason = frame.subarray(2).toString("utf8");
           }
         }
       };
@@ -64,6 +67,7 @@ function matchmakingClient(port, authorization) {
         send,
         next: () => (messages.length ? Promise.resolve(messages.shift()) : closed ? Promise.resolve(null) : new Promise((done) => waiters.push(done))),
         closeCode: () => closeCode,
+        closeReason: () => closeReason,
         close: () => socket.destroy()
       });
     });
@@ -971,6 +975,82 @@ test("with late joining on, the countdown runs to the warmup's end: the panel's 
     assert.deepEqual(startOf(JSON.parse(await thirdConnection.next())), ["1", "119"]);
   } finally {
     for (const connection of connections) connection.close();
+    backend.close();
+  }
+});
+
+// Core-Backend #186: the lobby's custom matchmaking key (player.option.customKey), from 2.4.
+async function queueWithKey(backend, player, customKey, party = [player]) {
+  const ticket = await get(backend.port, `/fortnite/api/game/v2/matchmakingservice/ticket/player/${player.accountId}?partyPlayerIds=` +
+    `${party.map(({ accountId }) => accountId).join(",")}&bucketId=858118782:0:NA:10&player.platform=Windows` +
+    (customKey ? `&player.option.customKey=${encodeURIComponent(customKey)}` : ""), player.token);
+  if (ticket.status !== 200) return { ticket };
+  return { ticket, connection: await matchmakingClient(backend.port, authorizationOf(ticket.body)) };
+}
+const allowCustomKeys = (backend, player, allowed = true) => post(backend.port, `/admin/api/accounts/${player.accountId}/custom-matchmaking`, undefined, { allowed });
+
+test("a custom key outside 4 to 16 characters is refused at the ticket, as Epic's service did (#186)", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "ShortKey");
+    for (const key of ["abc", "x".repeat(17)]) {
+      const { ticket } = await queueWithKey(backend, player, key);
+      assert.equal(ticket.status, 400);
+      assert.equal(ticket.body.errorCode, "errors.com.epicgames.fortnite.invalid_custom_match_key");
+    }
+  } finally {
+    backend.close();
+  }
+});
+
+test("players with the same custom key share a match of their own; a key no allowed player opened is not supported (#186)", async () => {
+  const backend = await startBackend({ matchmakingGatherMs: 600 });
+  const connections = [];
+  try {
+    const first = await regionServer(backend, "CoreServer1", "NA");
+    const second = await regionServer(backend, "CoreServer2", "NA");
+    connections.push(first.connection, second.connection);
+    const host = await userLogin(backend.port, "KeyHost");
+    const guest = await userLogin(backend.port, "KeyGuest");
+    const stranger = await userLogin(backend.port, "KeyStranger");
+    const publicPlayer = await userLogin(backend.port, "PublicPlayer");
+
+    // Without the permission nobody opens a key: the service closes the connection with the client's error code.
+    const early = await queueWithKey(backend, guest, "CoreKey1");
+    connections.push(early.connection);
+    assert.equal(await early.connection.next(), null);
+    assert.deepEqual([early.connection.closeCode(), early.connection.closeReason()], [4000, "match.custom_key_not_supported"]);
+
+    // The admin panel's permission, shown on the player and in the Matchmaking tab.
+    const granted = await allowCustomKeys(backend, host);
+    assert.equal(granted.body.customMatchmaking, true);
+    assert.deepEqual((await get(backend.port, "/admin/api/matchmaking/overview")).body.customMatchmaking.map(({ displayName }) => displayName), ["KeyHost"]);
+
+    const opened = await queueWithKey(backend, host, "CoreKey1");
+    const joined = await queueWithKey(backend, guest, "CoreKey1");
+    const refused = await queueWithKey(backend, stranger, "OtherKey");
+    const unkeyed = await queueWithKey(backend, publicPlayer, null);
+    connections.push(opened.connection, joined.connection, refused.connection, unkeyed.connection);
+    assert.equal(await refused.connection.next(), null);
+    assert.equal(refused.connection.closeReason(), "match.custom_key_not_supported");
+
+    // The keyed match and the public one form on different servers, each with only its own players.
+    const assigns = [await nextOf(first.connection, "AssignMatch"), await nextOf(second.connection, "AssignMatch")];
+    const keyed = assigns.find((assign) => assign.payload.matchOptions["match.option.customKey"]);
+    const open = assigns.find((assign) => !assign.payload.matchOptions["match.option.customKey"]);
+    assert.ok(keyed && open);
+    assert.equal(keyed.payload.matchOptions["match.option.customKey"], "CoreKey1");
+    assert.deepEqual(keyed.payload.teams.flat(2).sort(), [host.accountId, guest.accountId].sort());
+    assert.deepEqual(open.payload.teams.flat(2), [publicPlayer.accountId]);
+
+    // Revoked, the player's key is no longer opened.
+    assert.equal((await allowCustomKeys(backend, host, false)).body.customMatchmaking, false);
+    const after = await queueWithKey(backend, host, "CoreKey2");
+    connections.push(after.connection);
+    assert.equal(await after.connection.next(), null);
+    assert.equal(after.connection.closeReason(), "match.custom_key_not_supported");
+  } finally {
+    for (const connection of connections) connection?.close();
     backend.close();
   }
 });

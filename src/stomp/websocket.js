@@ -48,10 +48,14 @@ export function acceptWebSocket(req, socket, head, { protocols = [], maxMessage 
 
   ws.protocol = protocol;
   ws.send = (data) => write(typeof data === "string" ? opcodes.text : opcodes.binary, Buffer.isBuffer(data) ? data : Buffer.from(data));
-  ws.close = (code = 1000) => {
+  // reason: the close frame's text, which the matchmaking service's client reports as its error code (the custom
+  // matchmaking key's "match.custom_key_not_supported", Core-Backend #186).
+  ws.close = (code = 1000, reason = "") => {
     if (closed) return;
-    const payload = Buffer.alloc(2);
+    const text = Buffer.from(String(reason), "utf8").subarray(0, 123);
+    const payload = Buffer.alloc(2 + text.length);
     payload.writeUInt16BE(code);
+    text.copy(payload, 2);
     write(opcodes.close, payload);
     closed = true;
     socket.end();

@@ -3680,6 +3680,13 @@
                 }
               }, "danger"),
               btn("Kick", () => post("kick", {}, `${a.displayName} was logged out`), "ghost"))),
+        el("section", { class: "panel" }, el("h2", { text: "Custom Matchmaking" }),
+          el("p", { class: "note", text: "Lets this player open a custom matchmaking key (the Battle Royale lobby's Custom Matchmaking Key, 2.4 and later). Players who queue with the same key share a match of their own. Anyone can join a key while an allowed player's match for it is queued or forming; any other key is refused with \"Custom matchmaking key is not supported\"." }),
+          el("div", { class: "actions" },
+            a.customMatchmaking ? chip("Allowed", "good") : chip("Not allowed", "warn"),
+            a.customMatchmaking
+              ? btn("Revoke", () => post("custom-matchmaking", { allowed: false }, `${a.displayName} can no longer open custom matchmaking keys`), "ghost")
+              : btn("Grant", () => post("custom-matchmaking", { allowed: true }, `${a.displayName} can open custom matchmaking keys`), "primary"))),
         el("section", { class: "panel" }, el("h2", { text: "Password" }),
           el("p", {
             class: "note", text: a.isServer
@@ -4209,6 +4216,9 @@
               el("div", { style: "margin-top:16px; padding-top:12px; border-top:1px solid var(--line);" },
                 serverRegionChecks)))),
 
+        // Custom matchmaking keys (Core-Backend #186)
+        customMatchmakingSection(data.customMatchmaking || []),
+
         // Section 4: Battle Royale V-Bucks Rewards
         el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
@@ -4230,6 +4240,34 @@
       );
 
       if (!state.timers.length) every(5000, pollLiveSessions);
+    }
+
+    // The players allowed to open custom matchmaking keys (Core-Backend #186), granted or revoked per player.
+    function customMatchmakingSection(players) {
+      const nameInput = el("input", { class: "field", placeholder: "Player name", style: "flex:1 1 220px" });
+      const setAllowed = async (id, allowed, message) => {
+        if (await act(api(`/admin/api/accounts/${id}/custom-matchmaking`, { allowed }), message)) showMatchmaking();
+      };
+      const grant = async () => {
+        const name = nameInput.value.trim();
+        if (!name) return;
+        const found = await act(api(`/admin/api/accounts?search=${encodeURIComponent(name)}`));
+        const account = (found || []).find((entry) => entry.displayName.toLowerCase() === name.toLowerCase());
+        if (!account) return toast(`No player named ${name}`);
+        setAllowed(account.id, true, `${account.displayName} can open custom matchmaking keys`);
+      };
+      return el("section", { class: "panel", style: "margin-top:16px" },
+        el("div", { class: "panel-head", style: "margin-bottom:8px" },
+          el("div", { class: "actions" },
+            el("h2", { text: "Custom Matchmaking Keys" }),
+            chip(`${players.length} Allowed`, "accent"))),
+        el("p", { class: "note", text: "From 2.4 the Battle Royale lobby has a Custom Matchmaking Key. Players who queue with the same key share a match of their own, kept apart from public matchmaking and within the server limits above. Only the players listed here can open a key; once one of them queues with it, anyone with the key can join until the match leaves. Any other key is refused with \"Custom matchmaking key is not supported\"." }),
+        el("div", { class: "actions", style: "margin-top:10px" }, nameInput, btn("Grant", grant, "primary")),
+        el("div", { class: "actions", style: "margin-top:12px; flex-wrap:wrap;" },
+          ...(players.length ? players.map((player) => el("span", { class: "actions", style: "gap:6px" },
+            chip(player.displayName, "sky"),
+            btn("Revoke", () => setAllowed(player.id, false, `${player.displayName} can no longer open custom matchmaking keys`), "ghost small")))
+            : [el("span", { class: "muted", text: "No players are allowed yet." })])));
     }
 
     /* ---------- play with friends ---------- */

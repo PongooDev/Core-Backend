@@ -164,6 +164,25 @@ test("the system hotfix keeps stats answers for a minute from 1.8.1 on, and for 
   }
 });
 
+// Core-Backend #186: from 2.4 (CL-3858292) the lobby's Custom Matchmaking Key shows, and the ticket carries the key, only
+// with UFortMatchmakingV2's bCustomKeyEnabled.
+test("the system hotfix turns on the custom matchmaking key from 2.4 on (#186)", async () => {
+  const backend = await startBackend();
+  try {
+    const token = await clientToken(backend.port);
+    for (const [build, enabled] of Object.entries({ "++Fortnite+Release-Cert-CL-3847564": false, "++Fortnite+Release-Cert-CL-3858292": true,
+      "++Fortnite+Release-Next-CL-3870737": true })) {
+      const agent = `game=Fortnite, engine=UE4, build=${build}`;
+      const download = await raw(backend.port, "GET", "/fortnite/api/cloudstorage/system/DefaultGame.ini", token, undefined, agent);
+      const lines = download.body.toString("utf8").split("\r\n");
+      const section = lines.indexOf("[/Script/FortniteGame.FortMatchmakingV2]");
+      assert.equal(section >= 0 && lines[section + 1] === "bCustomKeyEnabled=true", enabled, build);
+    }
+  } finally {
+    backend.close();
+  }
+});
+
 test("the system hotfix points the client's XMPP at the address and port it reached the backend on", async () => {
   const backend = await startBackend();
   try {

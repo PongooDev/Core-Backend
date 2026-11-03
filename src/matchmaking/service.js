@@ -73,6 +73,21 @@ const lateArrivalMs = 60_000;
 export const firstMatchStartBuild = 3700114;
 export const lastMatchStartBuild = 3870737;
 export const showsMatchStart = (build) => Number(build) >= firstMatchStartBuild && Number(build) <= lastMatchStartBuild;
+
+// Custom matchmaking keys (Core-Backend #186). With UFortMatchmakingV2's bCustomKeyEnabled (config; it shows the
+// Battle Royale lobby's Custom Matchmaking Key action, AthenaLobby RefreshInput) a player's ticket request carries the
+// key they typed as player.option.customKey, each party member's alike (2.4 StartFollowerMatchmaking 0x756340 adds it
+// when the key isn't empty). Players with the same key share a match of their own, apart from everyone else's, and its
+// AssignMatch tells the server so (match.option.customKey: 2.4's OnGivenMatchAssignment 0x4210A0 flags a match whose key
+// isn't empty). Who may use a key is the backend's to say: a party with a player the admin panel allows
+// (ticket.customKeyHost) opens one; anyone may then queue with that key while its match waits for a server, forms or
+// (late joining on) is in its warmup. Any other key the service turns away by closing the connection with the error
+// code as the close reason (MatchmakingServiceClient HandleWebSocketConnectionClosed 0x29CDC00 reports any close but
+// Play's as an error with that text), which the lobby shows as "Custom matchmaking key is not supported" (0x20D93C0).
+export const customKeyNotSupported = "match.custom_key_not_supported";
+const customKeyRefusedCode = 4000;
+// Which queue a bucket and key are: the bucket's (bucketKey), apart for each key.
+export const queueOf = (bucketId, customKey = null) => bucketKey(bucketId) + (customKey ? `|key:${customKey}` : "");
 // The game's early countdown (WarmupEarlyCountdownDuration, 15 s): with late joining off, a CoreV2 gameserver's warmup
 // shortens to it once the match's assigned players are all in (CoreV2 ApplyWarmupLength), which for a match that has
 // just formed is as soon as they load in.
@@ -435,7 +450,8 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
         same.members.push(party);
         return true;
       }
-      if (forming && bucketKey(forming.bucketId, { anyRegion }) === bucketKey(inServerRegion(server, bucketId), { anyRegion }) && forming.players + party.size <= server.maxPlayers
+      if (forming && forming.customKey === party.customKey && bucketKey(forming.bucketId, { anyRegion }) === bucketKey(inServerRegion(server, bucketId), { anyRegion })
+        && forming.players + party.size <= server.maxPlayers
         && teamsFor([...forming.parties, party], forming.bucketId)) {
         forming.parties.push(party);
         forming.players += party.size;
@@ -452,11 +468,11 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
       const matchBucket = server.regionField ? withRegion(bucketId, server.regionField) : bucketId;
       const bucket = parseBucket(matchBucket);
       if (!allowsServerAssignment(server.regionField || bucket.region, bucket.playlistId)) continue;
-      server.forming = { matchId: newId(), bucketId: matchBucket, parties: [party], players: party.size, started: Date.now(), gatherMs: gatherOf() };
+      server.forming = { matchId: newId(), bucketId: matchBucket, customKey: party.customKey, parties: [party], players: party.size, started: Date.now(), gatherMs: gatherOf() };
       server.forming.timer = setTimeout(() => assign(server), server.forming.gatherMs);
       server.forming.timer.unref?.();
       say(`Match ${server.forming.matchId} forms on session ${server.sessionId} for bucket ${matchBucket}` +
-        (matchBucket === bucketId ? "" : ` (${party.ticket.accountId} queued for ${bucketId})`));
+        (party.customKey ? `, custom key ${party.customKey}` : "") + (matchBucket === bucketId ? "" : ` (${party.ticket.accountId} queued for ${bucketId})`));
       return true;
     }
     return false;
@@ -467,9 +483,9 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
   function queueKey(party) {
     for (const server of servers) {
       const forming = server.forming;
-      if (forming && !forming.sent && forming.parties.includes(party)) return bucketKey(forming.bucketId);
+      if (forming && !forming.sent && forming.parties.includes(party)) return queueOf(forming.bucketId, forming.customKey);
     }
-    return bucketKey(party.ticket.bucketId);
+    return queueOf(party.ticket.bucketId, party.customKey);
   }
 
   // The parties still in a queue: waiting for a server, or in a match that hasn't been assigned yet.
@@ -512,7 +528,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
   const countdown = setInterval(() => {
     // A region whose last server went away (its session ended) sends its waiting parties elsewhere.
     if (waiting.length) placeWaiting();
-    const forming = new Set([...servers].filter((server) => server.forming && !server.forming.sent).map((server) => bucketKey(server.forming.bucketId)));
+    const forming = new Set([...servers].filter((server) => server.forming && !server.forming.sent).map((server) => queueOf(server.forming.bucketId, server.forming.customKey)));
     for (const key of forming) announceQueue(key);
   }, 1000);
   countdown.unref?.();
@@ -542,7 +558,8 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     const teams = teamsFor(forming.parties, forming.bucketId) ?? forming.parties.map((party) => [party.ticket.partyPlayerIds]);
     say(`Assigning match ${forming.matchId} (${forming.players} players in ${teams.length} teams, bucket ${forming.bucketId}) to session ${server.sessionId}`);
     // In the format of the server's build, the one its session ticket was asked from (a netcl isn't always a changelist).
-    server.ws.send(message("AssignMatch", { matchId: forming.matchId, bucketId: assignmentBucket(forming.bucketId, server.build), matchOptions, teams }));
+    const options = forming.customKey ? { ...matchOptions, "match.option.customKey": forming.customKey } : matchOptions;
+    server.ws.send(message("AssignMatch", { matchId: forming.matchId, bucketId: assignmentBucket(forming.bucketId, server.build), matchOptions: options, teams }));
   }
 
   function onAssignResult(server, payload) {
@@ -562,7 +579,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     servers.delete(server);
     // The server starts the match on the socket's normal close (status 1000).
     server.ws.close(1000);
-    matches.set(server.sessionId, { matchId: forming.matchId, bucketId: forming.bucketId, assigned: Date.now(),
+    matches.set(server.sessionId, { matchId: forming.matchId, bucketId: forming.bucketId, customKey: forming.customKey ?? null, assigned: Date.now(),
       parties: new Set(forming.parties.map((party) => party.key)), players: new Set(forming.parties.flatMap((party) => party.ticket.partyPlayerIds)),
       maxPlayers: server.maxPlayers });
     for (const party of forming.parties) play(party, server.sessionId, forming.matchId);
@@ -586,7 +603,8 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
       // The match's server (a host until its session goes) takes its server regions' parties (Core-Backend #142).
       const host = hosts.get(sessionId);
       const wanted = host ? bucketKey(inServerRegion(host, party.ticket.bucketId), { anyRegion }) : key;
-      if (open.until - now >= lateJoinMarginMs && bucketKey(open.bucketId, { anyRegion }) === wanted && open.players.size + pending + party.size <= open.maxPlayers) {
+      if (open.until - now >= lateJoinMarginMs && (open.customKey ?? null) === party.customKey && bucketKey(open.bucketId, { anyRegion }) === wanted
+        && open.players.size + pending + party.size <= open.maxPlayers) {
         return [sessionId, open];
       }
     }
@@ -640,7 +658,8 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     if (!entry) {
       if (!match) return { sessionId, open: false, maxPlayers: null, parties: [] };
       const session = sessions.get(sessionId);
-      entry = { matchId: match.matchId, bucketId: match.bucketId, maxPlayers: match.maxPlayers || session.maxPublicPlayers + session.maxPrivatePlayers, parties: [] };
+      entry = { matchId: match.matchId, bucketId: match.bucketId, customKey: match.customKey ?? null, maxPlayers: match.maxPlayers || session.maxPublicPlayers + session.maxPrivatePlayers,
+        parties: [] };
       lateJoins.set(sessionId, entry);
       say(`Match ${entry.matchId} (session ${sessionId}, bucket ${entry.bucketId}) takes late parties during its warmup, up to ${entry.maxPlayers} players`);
     }
@@ -652,10 +671,25 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     return { sessionId, open: true, maxPlayers: entry.maxPlayers, parties: entry.parties.map((party) => party.players) };
   }
 
+  // Whether a custom key is open (#186): a party allowed to use keys queues with it, waiting for a server or in its forming
+  // match, or its match takes late parties during its warmup.
+  function keyOpen(customKey) {
+    const forming = [...servers].flatMap((server) => (server.forming && !server.forming.sent ? server.forming.parties : []));
+    if ([...waiting, ...forming].some((party) => !party.ws.closed && party.customKey === customKey && party.ticket.customKeyHost)) return true;
+    const now = Date.now();
+    return lateJoin() && [...lateJoins].some(([sessionId, open]) => open.customKey === customKey && sessions.get(sessionId)
+      && now - open.heard <= lateJoinStaleMs && open.until - now >= lateJoinMarginMs);
+  }
+
   function acceptPlayer(ws, ticket) {
+    if (ticket.customKey && !ticket.customKeyHost && !keyOpen(ticket.customKey)) {
+      say(`${ticket.accountId} queued with custom key ${ticket.customKey}, which no allowed player has opened: refused (${customKeyNotSupported})`);
+      return ws.close(customKeyRefusedCode, customKeyNotSupported);
+    }
     // A party's members may have picked different regions: the party is the same in any of them.
     const party = { ticket, ws, size: sizeOf(ticket), members: [],
-      key: `${bucketKey(ticket.bucketId, { anyRegion: true })}|${[...ticket.partyPlayerIds].sort().join(",")}` };
+      key: `${bucketKey(ticket.bucketId, { anyRegion: true })}|${[...ticket.partyPlayerIds].sort().join(",")}|${ticket.customKey ?? ""}`,
+      customKey: ticket.customKey || null };
     ws.on("close", () => {
       const queue = queueKey(party);
       ws.closed = true;
@@ -678,7 +712,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     });
     ws.send(status("Connecting"));
     ws.send(status("Waiting", { totalPlayers: party.size, connectedPlayers: party.size }));
-    say(`${ticket.accountId} (party of ${party.size}) queued for bucket ${ticket.bucketId}`);
+    say(`${ticket.accountId} (party of ${party.size}) queued for bucket ${ticket.bucketId}${party.customKey ? ` with custom key ${party.customKey}` : ""}`);
     if (!place(party)) waiting.push(party);
     if (!party.done) announceQueue(queueKey(party));
   }
@@ -746,7 +780,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     },
     // Core's: what the launcher and the admin panel can show.
     state: () => ({ servers: [...servers].map(({ sessionId, maxPlayers, forming, region }) => ({ sessionId, region, maxPlayers, forming: forming?.matchId ?? null })),
-      waiting: waiting.length, matches: [...matches].map(([sessionId, { matchId, bucketId }]) => ({ sessionId, matchId, bucketId })),
+      waiting: waiting.length, matches: [...matches].map(([sessionId, { matchId, bucketId, customKey }]) => ({ sessionId, matchId, bucketId, customKey })),
       lateJoin: [...lateJoins].map(([sessionId, { matchId, players, maxPlayers, until }]) => ({ sessionId, matchId, players: players.size, maxPlayers,
         secondsLeft: Math.max(0, Math.round((until - Date.now()) / 1000)) })) })
   };
