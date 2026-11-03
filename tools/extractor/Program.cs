@@ -42,6 +42,7 @@ var game = engine switch
 {
     "4.16" => EGame.GAME_UE4_16,
     "4.19" => EGame.GAME_UE4_19,
+    "4.20" => EGame.GAME_UE4_20,
     _ => throw new NotSupportedException($"Engine {engine} is not mapped yet")
 };
 
@@ -1121,11 +1122,21 @@ if (provider.TryLoadPackage("FortniteGame/Content/Balance/AthenaGameData.uasset"
     var athenaData = JsonNode.Parse(JsonConvert.SerializeObject(athenaGameData.GetExports().First(e => e.ExportType == "AthenaGameData")))!["Properties"];
     // 1.11 (CL 3807424, Season 2) takes AthenaGameData's SeasonXpLevelsTable out: each season's AthenaSeasonItemDefinition
     // (Athena/Items/Seasons/AthenaSeason<n>) names its own SeasonXpCurve, so the newest season's levels are taken.
-    var newestSeason = athenaData!["SeasonXpLevelsTable"] is not null ? null : provider.Files.Values
+    // 2.5 (CL 3889387, still Season 2) ships AthenaSeason3 ahead of its season: it names AthenaSeason2's SeasonXpCurve and
+    // BookXpCurve (Athena_Season2_XP, Athena_Season2_BP) and copies its reward schedules, with SeasonNumber 3 and the
+    // BRSeason3 storefront. A season whose curves an earlier season already names is such a stand-in, not the build's
+    // season, so the newest season with curves of its own is taken; earlier builds have no stand-in.
+    var seasons = athenaData!["SeasonXpLevelsTable"] is not null ? [] : provider.Files.Values
         .Where(f => f.Extension == "uasset" && Regex.IsMatch(f.Path, @"^FortniteGame/Content/Athena/Items/Seasons/AthenaSeason\d+\.uasset$", RegexOptions.IgnoreCase))
         .OrderByDescending(f => int.Parse(Regex.Match(f.Path, @"(\d+)\.uasset$").Groups[1].Value))
         .Select(f => LoadExport(provider, f.Path, "AthenaSeasonItemDefinition")["Properties"])
-        .FirstOrDefault(properties => properties?["SeasonXpCurve"] is not null);
+        .Where(properties => properties?["SeasonXpCurve"] is not null)
+        .ToList();
+    string SeasonCurves(JsonNode season) => $"{season["SeasonXpCurve"]?["ObjectPath"]}|{season["BookXpCurve"]?["ObjectPath"]}";
+    var newestSeason = seasons.Select((season, index) => (season, index))
+        .Where(entry => !seasons.Skip(entry.index + 1).Any(earlier => SeasonCurves(earlier!) == SeasonCurves(entry.season!)))
+        .Select(entry => entry.season)
+        .FirstOrDefault();
     var seasonXpTable = athenaData["SeasonXpLevelsTable"] ?? newestSeason?["SeasonXpCurve"];
     // That season's Battle Pass (UAthenaSeasonItemDefinition): its number, level and tier counts, the storefront its
     // offers are in, the tiers' Battle Stars (BookXpCurve, FAthenaLevelUpData rows) and the reward schedules
