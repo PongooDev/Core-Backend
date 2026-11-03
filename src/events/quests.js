@@ -17,7 +17,7 @@ import { winterQuests } from "./winter2017.js";
 // For 1.8 to 1.9.1's Fortnitemares that is the 56 quests of the LTE_Fortnitemares category.
 // 1.9.1's Mutant Storms quest line is the Vindertech quests (LTE_Vindertech); 1.11's Survive the Holidays' the winter
 // quests (WinterQuest_2017_*); 2.3's storms' the FirstStorm quests and the repeatable Mini-Boss quest, which so stays
-// on 2.3 when the rest of the winter line goes; 2.4's its own MutantStormsQuest_2018 line.
+// on 2.3 when the rest of the winter line goes; 2.4's (and 2.4.2's) its own MutantStormsQuest_2018 line.
 const questLines = [{ flag: fortnitemares, starting: fortnitemaresQuests }, { flag: mutantStorms, starting: mutantStormsQuests },
   { flag: winter2017, starting: winterQuests }, { flag: mutantStorms2018, starting: mutantStorms2018Quests }];
 

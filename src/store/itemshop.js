@@ -40,7 +40,7 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // then shows the recorded day it falls on, modulo 45 (Core's choice). It changes at UTC midnight, as Epic's did.
 // Admins can also configure the shop via the admin panel (mode: "fnbr" | "random" | "custom", Core-Backend #69).
 //
-// 1.11, 2.1, 2.2, 2.3 and 2.4 are Season 2, and have its own shop (Core-Backend #150): Epic's of Season 2, day by day from its first day, 14
+// 1.11, 2.1, 2.2, 2.3, 2.4 and 2.4.2 are Season 2, and have its own shop (Core-Backend #150): Epic's of Season 2, day by day from its first day, 14
 // December 2017, to its last, 21 February 2018 (itemshop-season2.json), replayed the same way in a 70-day cycle, but from
 // its own start (seasonStart below), so that it opens on 14 December's shop and plays forward in order. Its items and prices are the Fortnite Wiki's Item Shop History pages' (what the shop charged that day;
 // fnbr.co's per-day pages show today's prices, e.g. Brite Bomber 1,800 where it was 1,200), with fnbr.co's list
@@ -322,7 +322,7 @@ export function weeklyStoreEnd(now = new Date(), overrideConfig = null, season =
 // shop start over together (Core-Backend #149, Core's choice: each cycle is the season again at its original length, so
 // the countdown reads as it did on that day of the season, then resets, as the shop's replay does). Season 1 (1.8 to
 // 1.10) is its history's 45 days, 30 October to its last day, 13 December 2017 (the season began on 25 October, before
-// the shop's first recorded day). Season 2 (1.11 to 2.4) ran from 14 December 2017 to its last day, 21 February 2018 (Season 3
+// the shop's first recorded day). Season 2 (1.11 to 2.4.2) ran from 14 December 2017 to its last day, 21 February 2018 (Season 3
 // launched on 22 February): 70 days. An admin's customSeasonEnd overrides both, in every shop mode.
 export function seasonEnd(now = new Date(), overrideConfig = null, season = seasonOfBuild()) {
   const custom = overrideConfig?.customSeasonEnd ?? currentEventsConfig()?.customSeasonEnd;
@@ -369,7 +369,7 @@ export function featuredDisplayAsset(templateId) {
   return athenaDisplayAssets()[templateId] ?? "";
 }
 
-// From 1.11 (CL-3807424; 2.1 to 2.4 too) every offer carries its display asset, the daily ones too (Core-Backend #145: "Item shop
+// From 1.11 (CL-3807424; 2.1 to 2.4.2 too) every offer carries its display asset, the daily ones too (Core-Backend #145: "Item shop
 // cosmetics dont show the shop display version of their icons"). 1.11's paks have one for nearly every outfit, glider
 // and pickaxe the shop sells (Catalog/DisplayAssets: DA_Featured_SMaleHID0xx and DA_Featured_SFemaleHID0xx for the
 // outfits, DA_Featured_Glider_ID_0xx and DA_Featured_Pickaxe_ID_xx), where 1.8's had them for a few featured items; the

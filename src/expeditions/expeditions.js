@@ -51,7 +51,11 @@ function candidates(generator) {
   const match = generator.match(/^ZCP_ExpeditionGenerator_([A-Za-z]+)_T(\d\d)$/);
   if (!match) return [];
   const [, kind, tier] = match;
-  if (tier === "00") return Object.keys(data().expeditions).filter((id) => id.toLowerCase() === `expedition:expedition_${kind.toLowerCase()}_t00`);
+  // A tier 0 generator offers its own kind's: MiningOre's Expedition_MiningOre_T00; from 2.4.2 (CL-3870737) PeopleRun's
+  // Expedition_PeopleRun_Short_T00 and _Medium_T00 (its slot, Expedition.Generation.PeopleRun, is the first skill tree
+  // node's).
+  const own = `expedition:expedition_${kind.toLowerCase()}_`;
+  if (tier === "00") return Object.keys(data().expeditions).filter((id) => id.toLowerCase().startsWith(own) && id.toLowerCase().endsWith("_t00"));
   return Object.keys(data().expeditions).filter((id) => {
     const lower = id.toLowerCase();
     return !lower.includes("test") && lower.endsWith(`_t${tier}`) && vehicleOf(data().recipes[data().expeditions[id].recipe]) === kind;

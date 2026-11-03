@@ -30,9 +30,20 @@ import { currentEventsConfig } from "./events.js";
 //   (as the Suppressed Pistol's Legendary to its Epic), and the supply drop at 1 (the Assault Rifle drop's). With the
 //   floor sharing the chests' list, it shows up on the floor too.
 // - "Suppressed Pistol: Reduced drop chances of Epic variant by 20%. Reduced drop chances of Legendary variant by 33%."
-//   2.4's rows are still 2.3's (WorldList.AthenaLoot.Weapon.Handgun.04/.05 on the floor, SuppressedHandgun.01/.02 from
-//   chests: 0.075 and 0.01875), so 2.4 takes the cut: 0.06 and 0.0125625.
+//   2.4's rows are still 2.3's (SuppressedHandgun.01/.02 from chests: 0.075 and 0.01875), so 2.4 takes the cut as Epic's
+//   2.4.2 tables write it down: 0.06 and 0.012, on the chests' rows only (the floor's WorldList.AthenaLoot.Weapon.
+//   Handgun.04/.05 stay at 0.075 and 0.01875 in 2.4.2's).
 // Both shipped with the patch, so 2.4 always has them.
+//
+// 2.4.2 (CL-3870737) ships both in its tables, the Minigun in a list of its own (WorldList.AthenaLoot.Weapon.LMG, the
+// Epic at 0.6 and the Legendary at 0.3; chests call it through Loot_AthenaTreasure_06 at 0.08, the floor's
+// Loot_AthenaFloorLoot_10 at 0, its supply drop at 1), so it needs neither, and its notes bring one of their own:
+// - "Crossbow: ... Found from floor loot and treasure chests. This weapon comes in both Rare and Epic variants." 2.4.2
+//   has its items (WID_Sniper_Crossbow_Athena_R_Ore_T03_2, WID_Sniper_Crossbow_Athena_VR_Ore_T03) but no row for them in
+//   any table, so the update adds two rows to the Sniper list the floor (Loot_AthenaFloorLoot_07) and chests
+//   (Loot_AthenaTreasure_03) share: WorldList.AthenaLoot.Weapon.Sniper.06 and .07, each a copy of the row before it with
+//   the Crossbow in. Core's weights (🟡): the Rare at 1, half the Rare Bolt-Action Sniper's 2, the Epic at 0.25, the Epic
+//   Bolt-Action's. It shipped with the patch, so 2.4.2 always has it.
 //
 // Epic's updates (the Fortnite Wiki's Season 2 pages and Epic's notes on them):
 // - 19 December 2017, 13:00 GMT, the Small Shield Potion update: the Small Shield Potion ("Drops in stacks of 3", "found in
@@ -58,6 +69,7 @@ const build21 = 3825894;
 const build22 = 3841827;
 const build23 = 3847564;
 const build24 = 3858292;
+const build242 = 3870737;
 
 export const contentUpdates = [
   { id: "smallShieldPotion", name: "Small Shield Potion and the Damage Trap", at: "2017-12-19T13:00:00Z", firstBuild: season2, rows: [
@@ -86,16 +98,27 @@ export const contentUpdates = [
   { id: "chugJug", name: "Chug Jug", at: "2018-01-25T00:00:00Z", firstBuild: build23, inTablesFrom: build24, rows: [
     [packages, "WorldList.AthenaHighConsumables.06", { Weight: 0.2 }]
   ] },
-  { id: "minigun", name: "Minigun", at: "2018-01-31T00:00:00Z", firstBuild: build24, rows: [
+  { id: "minigun", name: "Minigun", at: "2018-01-31T00:00:00Z", firstBuild: build24, inTablesFrom: build242, rows: [
     [packages, "WorldList.AthenaLoot.Weapon.SMG.10", { Weight: 0.025 }],
     [packages, "WorldList.AthenaLoot.Weapon.SMG.11", { Weight: 0.00625 }],
     [tiers, "Loot_AthenaSupplyDrop_02", { Weight: 1 }]
   ] },
-  { id: "suppressedPistolNerf", name: "Suppressed Pistol drop chances", at: "2018-01-31T00:00:00Z", firstBuild: build24, rows: [
-    [packages, "WorldList.AthenaLoot.Weapon.Handgun.04", { Weight: 0.06 }],
-    [packages, "WorldList.AthenaLoot.Weapon.Handgun.05", { Weight: 0.0125625 }],
+  { id: "suppressedPistolNerf", name: "Suppressed Pistol drop chances", at: "2018-01-31T00:00:00Z", firstBuild: build24, inTablesFrom: build242, rows: [
     [packages, "WorldList.AthenaLoot.Weapon.SuppressedHandgun.01", { Weight: 0.06 }],
-    [packages, "WorldList.AthenaLoot.Weapon.SuppressedHandgun.02", { Weight: 0.0125625 }]
+    [packages, "WorldList.AthenaLoot.Weapon.SuppressedHandgun.02", { Weight: 0.012 }]
+  ] },
+  // A row the shipped table lacks is added after the row "after" names, as a copy of it with the update's values.
+  { id: "crossbow", name: "Crossbow", at: "2018-02-08T00:00:00Z", firstBuild: build242, rows: [
+    [packages, "WorldList.AthenaLoot.Weapon.Sniper.06", {
+      Weight: 1,
+      ItemDefinition: "/Game/Athena/Items/Weapons/WID_Sniper_Crossbow_Athena_R_Ore_T03_2.WID_Sniper_Crossbow_Athena_R_Ore_T03_2",
+      Annotation: ";List:WorldList.AthenaLoot.Weapon.Sniper.C0;Item:WID.Sniper.Crossbow.Athena.R.Ore.T03.2"
+    }, { after: "WorldList.AthenaLoot.Weapon.Sniper.05" }],
+    [packages, "WorldList.AthenaLoot.Weapon.Sniper.07", {
+      Weight: 0.25,
+      ItemDefinition: "/Game/Athena/Items/Weapons/WID_Sniper_Crossbow_Athena_VR_Ore_T03.WID_Sniper_Crossbow_Athena_VR_Ore_T03",
+      Annotation: ";List:WorldList.AthenaLoot.Weapon.Sniper.C0;Item:WID.Sniper.Crossbow.Athena.VR.Ore.T03"
+    }, { after: "WorldList.AthenaLoot.Weapon.Sniper.06" }]
   ] }
 ];
 export const contentUpdateIds = contentUpdates.map(({ id }) => id);
@@ -132,7 +155,7 @@ export function contentUpdateStates(now = new Date(), config = null, build = cur
   const { mode, overrides } = configOf(config);
   const moment = number >= build21 ? null : seasonMoment(now, null, 2);
   // From 2.2 a build's own tables have the updates before it in; only its own patch's are left (2.3's Chug Jug, which
-  // 2.4's tables have in; 2.4's Minigun and Suppressed Pistol cut).
+  // 2.4's tables have in; 2.4's Minigun and Suppressed Pistol cut, which 2.4.2's have in; 2.4.2's Crossbow).
   const inTables = (update) => number >= (update.inTablesFrom ?? (update.firstBuild <= build22 ? build22 : Infinity));
   return contentUpdates.filter((update) => number >= update.firstBuild && !inTables(update)).map((update) => {
     const shipped = number >= build21;
@@ -149,10 +172,17 @@ export function updatedLootTables(now = new Date(), config = null) {
   const on = new Set(contentUpdateStates(now, config).filter((state) => state.on).map((state) => state.id));
   const changed = {};
   for (const update of contentUpdates.filter((candidate) => on.has(candidate.id))) {
-    for (const [table, row, values] of update.rows) {
-      if (!shipped[table]?.[row]) continue;
-      changed[table] ??= structuredClone(shipped[table]);
-      Object.assign(changed[table][row], values);
+    for (const [table, row, values, { after } = {}] of update.rows) {
+      const rows = changed[table] ?? shipped[table];
+      if (rows?.[row]) {
+        changed[table] ??= structuredClone(shipped[table]);
+        Object.assign(changed[table][row], values);
+      } else if (after && rows?.[after]) {
+        // A new row, after the one it copies.
+        const added = { ...structuredClone(rows[after]), ...values };
+        changed[table] = Object.fromEntries(Object.entries(changed[table] ?? structuredClone(shipped[table]))
+          .flatMap((entry) => (entry[0] === after ? [entry, [row, added]] : [entry])));
+      }
     }
   }
   return Object.fromEntries(Object.entries(changed).map(([table, rows]) => [table, Object.entries(rows).map(([Name, row]) => ({ Name, ...row }))]));

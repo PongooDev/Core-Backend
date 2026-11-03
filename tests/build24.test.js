@@ -51,7 +51,7 @@ const tiers = "/Game/Items/Datatables/AthenaLootTierData_Client.AthenaLootTierDa
 test("2.4 is known by its version and plays on its own game data", () => {
   assert.equal(versionOf(v24), "2.4");
   assert.equal(dataBuild(v24), v24);
-  assert.equal(battleRoyaleBuilds.at(-1), v24);
+  assert.ok(battleRoyaleBuilds.includes(v24));
   // The same cosmetics and display assets as 2.3; the Hydra's schematics and the Minigun in its items.
   assert.deepEqual(inBuild(v24, athenaCosmetics), inBuild(v23, athenaCosmetics));
   assert.deepEqual(inBuild(v24, athenaDisplayAssets), inBuild(v23, athenaDisplayAssets));
@@ -68,7 +68,8 @@ test("2.4 is still Season 2 with 1.11 to 2.3: its Battle Pass, clock, shop and t
   const season = inBuild(v24, athenaSeason);
   assert.equal(season.seasonNumber, 2);
   assert.deepEqual(season, inBuild(v23, athenaSeason));
-  assert.equal(buildOfSeason(2), v24);
+  // Season 2's newest data is 2.4.2's since (build242.test.js).
+  assert.equal(buildOfSeason(2), "3870737");
   assert.equal(inBuild(v24, () => seasonEnd(now, { rotationHour: 0 })).toISOString(), inBuild(v111, () => seasonEnd(now, { rotationHour: 0 })).toISOString());
   const config = { mode: "custom", custom: { featured: [["AthenaGlider:glider_prismatic", 800]], daily: [["AthenaPickaxe:skiicepickaxe", 800]] } };
   assert.deepEqual(inBuild(v24, () => itemShopOffers(now, config)), inBuild(v23, () => itemShopOffers(now, config)));
@@ -171,12 +172,11 @@ test("2.4's loot: the Chug Jug shipped in, the Minigun and the Suppressed Pistol
   assert.equal(loot["WorldList.AthenaLoot.Weapon.SMG.10"].Weight, 0.025);
   assert.equal(loot["WorldList.AthenaLoot.Weapon.SMG.11"].Weight, 0.00625);
   assert.equal(rows(tiers)["Loot_AthenaSupplyDrop_02"].Weight, 1);
-  for (const row of ["WorldList.AthenaLoot.Weapon.Handgun.04", "WorldList.AthenaLoot.Weapon.SuppressedHandgun.01"]) {
-    assert.equal(loot[row].Weight, shipped[packages][row].Weight * 0.8, row);
-  }
-  for (const row of ["WorldList.AthenaLoot.Weapon.Handgun.05", "WorldList.AthenaLoot.Weapon.SuppressedHandgun.02"]) {
-    assert.equal(loot[row].Weight, 0.0125625, row);
-  }
+  // The chests' rows take the cut as 2.4.2's tables have it; the floor's stay.
+  assert.equal(loot["WorldList.AthenaLoot.Weapon.SuppressedHandgun.01"].Weight, 0.06);
+  assert.equal(loot["WorldList.AthenaLoot.Weapon.SuppressedHandgun.02"].Weight, 0.012);
+  assert.equal(loot["WorldList.AthenaLoot.Weapon.Handgun.04"].Weight, 0.075);
+  assert.equal(loot["WorldList.AthenaLoot.Weapon.Handgun.05"].Weight, 0.01875);
   assert.equal(loot["WorldList.AthenaHighConsumables.06"].Weight, 0.2, "the Chug Jug as shipped");
   assert.ok(inBuild(v24, () => lootHotfixSection(now)).startsWith("[AssetHotfix]"));
   // 2.3 still takes the Chug Jug alone.

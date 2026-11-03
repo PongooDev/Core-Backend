@@ -136,9 +136,14 @@ const dailyCoinPicks = [
 // add one: "The Cozy Campfire trap schematic is available through the Event Store", but 2.4's paks have no Save the
 // World Cozy Campfire (no schematic or trap item but Battle Royale's TID_Floor_Player_Campfire_Athena), so there is
 // nothing to sell and the store leaves it out.
+//
+// 2.4.2 (CL-3870737) has it: SID_Floor_Campfire_R/VR/SR (TID_Floor_Campfire, "Cozy Campfire"). So on 2.4.2 the store
+// sells the Legendary one, SID_Floor_Campfire_SR_T01, at a legendary schematic's 1,680, one each (🟡: the rarity and
+// price are Core's; the notes name neither). A build without it (2.3, 2.4) leaves it out, as every offer its data lacks.
 const stormsEventItems = [
   { templateId: "ConversionControl:cck_ranged_assault_hydra_consumable_sr", price: 1680, limit: 1 },
-  { templateId: "Hero:hid_constructor_rushbase_f_sr_t01", price: 2800, limit: 1 }
+  { templateId: "Hero:hid_constructor_rushbase_f_sr_t01", price: 2800, limit: 1 },
+  { templateId: "Schematic:sid_floor_campfire_sr_t01", price: 1680, limit: 1 }
 ];
 export const mutantStorms2018End = "2018-02-13T00:00:00.000Z";
 const storms2018 = () => !isEventActive(winter2017) && isEventActive(mutantStorms2018);
@@ -146,7 +151,7 @@ const eventItemsNow = () => (storms2018() ? stormsEventItems : eventItems);
 export const eventStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWSpecialEventStoreFront" : eventStoreInstance);
 export const weeklyStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWRotationalEventStorefront" : weeklyStoreInstance);
 
-// The store is open while the requesting build runs Survive the Holidays (or 2.3's and 2.4's storms) and its data has Seasonal
+// The store is open while the requesting build runs Survive the Holidays (or 2.3's to 2.4.2's storms) and its data has Seasonal
 // Gold.
 export const hasEventStore = () => (isEventActive(winter2017) || isEventActive(mutantStorms2018)) && Boolean(getItem(seasonalGold));
 

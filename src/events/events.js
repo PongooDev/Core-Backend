@@ -88,6 +88,20 @@ export const supplyDropGift = "EventFlag.SupplyDropGift";
 // Stat.MissionAlert.General, not the Stat.MissionAlert.MiniBoss the Mini-Boss quest counts, nor MissionAlert.Visual.
 // Miniboss), and 2.3's notes say the Mini-Boss alerts replaced the generic ones, so that flag stays off (🟡 Core's
 // choice). 50v50 stays: 2.4's BR_Playlist_50v50 and quest are 2.3's, and its notes end no playlist.
+//
+// 2.4.2 (CL-3870737, 8 February 2018) runs on as 2.4 did: its notes end no event and start none ("For our Save the World
+// fans, our new Valentines themed quest starts next week!": the Valentine's event is 2.5's, "Upcoming Releases: Patch
+// 2.5.0 - Valentine's Event"), and its data keeps 2.4's flags (its StormCategory rows on EventFlag.ActiveStorms, its
+// Mini-Boss rows on EventFlag.ActiveMiniBosses), the storms' quests and the 50v50 playlist. Its data already has the
+// Valentine's quests (LoveQuest_2018_Reactive_*) and spring's (SpringQuest_2018_*), but no flag or quest line starts
+// them, and its notes don't, so they stay off.
+//
+// 2.4.2 (CL-3870737, 8 February 2018) runs on as 2.4 did: its notes end no event and start none ("For our Save the World
+// fans, our new Valentines themed quest starts next week!": the Valentine's event is 2.5's, "Upcoming Releases: Patch
+// 2.5.0 - Valentine's Event"), and its data keeps 2.4's flags (its StormCategory rows on EventFlag.ActiveStorms, its
+// Mini-Boss rows on EventFlag.ActiveMiniBosses), the storms' quests and the 50v50 playlist. Its data already has the
+// Valentine's quests (LoveQuest_2018_Reactive_*) and spring's (SpringQuest_2018_*), but no flag or quest line starts
+// them, and its notes don't, so they stay off.
 export const mutantStorms2018 = "MutantStorms2018";
 export const activeMiniBosses = "EventFlag.ActiveMiniBosses";
 
@@ -95,9 +109,9 @@ const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
   { name: mutantStorms, flag: "EventFlag.Vindertech", firstBuild: 3775276, lastBuild: 3775276 },
   { name: mutantStorms, flag: "EventFlag.ActiveStorms", firstBuild: 3790078, lastBuild: 3790078 },
-  { name: mutantStorms2018, flag: "EventFlag.ActiveStorms", firstBuild: 3847564, lastBuild: 3858292 },
-  { name: mutantStorms2018, flag: activeMiniBosses, firstBuild: 3858292, lastBuild: 3858292 },
-  { name: fiftyFifty, flag: fiftyFifty, firstBuild: 3790078, lastBuild: 3858292 },
+  { name: mutantStorms2018, flag: "EventFlag.ActiveStorms", firstBuild: 3847564, lastBuild: 3870737 },
+  { name: mutantStorms2018, flag: activeMiniBosses, firstBuild: 3858292, lastBuild: 3870737 },
+  { name: fiftyFifty, flag: fiftyFifty, firstBuild: 3790078, lastBuild: 3870737 },
   { name: winter2017, flag: winter2017, firstBuild: 3807424, lastBuild: 3841827 },
   { name: passiveStorms, flag: passiveStorms, firstBuild: 3807424, lastBuild: 3841827 },
   { name: lobbyWinterDecor, flag: lobbyWinterDecor, firstBuild: 3807424, lastBuild: 3825894 },
@@ -137,7 +151,7 @@ export function activeEventFlags(changelist = currentBuild()) {
   if (eventsSetting.getStore() === false) return [];
   const config = currentEventsConfig();
   if (config?.mode === "off") return [];
-  // Forcing a Save the World event leaves the build's Battle Royale 50v50 running (1.10 to 2.4).
+  // Forcing a Save the World event leaves the build's Battle Royale 50v50 running (1.10 to 2.4.2).
   const fiftyFiftyFlags = Number.isInteger(Number(changelist)) && runsOn(events.find((event) => event.name === fiftyFifty), Number(changelist))
     ? [fiftyFifty] : [];
   if (config?.mode === "force_fortnitemares") return [fortnitemares, ...fiftyFiftyFlags];

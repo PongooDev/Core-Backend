@@ -67,8 +67,8 @@ test("2.3 is still Season 2 with 1.11 to 2.2: its Battle Pass, clock, shop and t
   const season = inBuild(v23, athenaSeason);
   assert.equal(season.seasonNumber, 2);
   assert.deepEqual(season, inBuild(v22, athenaSeason));
-  // Season 2's newest data is 2.4's since (build24.test.js).
-  assert.equal(buildOfSeason(2), "3858292");
+  // Season 2's newest data is 2.4.2's since (build242.test.js).
+  assert.equal(buildOfSeason(2), "3870737");
   assert.equal(inBuild(v23, () => seasonEnd(now, { rotationHour: 0 })).toISOString(), inBuild(v111, () => seasonEnd(now, { rotationHour: 0 })).toISOString());
   const config = { mode: "custom", custom: { featured: [["AthenaGlider:glider_prismatic", 800]], daily: [["AthenaPickaxe:skiicepickaxe", 800]] } };
   assert.deepEqual(inBuild(v23, () => itemShopOffers(now, config)), inBuild(v22, () => itemShopOffers(now, config)));

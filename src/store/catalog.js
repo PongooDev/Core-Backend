@@ -172,7 +172,7 @@ const holds = (profile, templateId) => Object.values(profile?.items ?? {})
 
 // profile: the viewer's profile0, for the vouchers only shown to players who have one. Battle Royale's storefronts
 // (store/itemshop.js) hold the day's offers in 1.8 and later, nothing before; its Season Shop (store/seasonshop.js) is
-// 1.8.2's and later. Save the World's Event Store (store/eventstore.js) is 1.11's, while Survive the Holidays runs (and 2.3's and 2.4's storms). The
+// 1.8.2's and later. Save the World's Event Store (store/eventstore.js) is 1.11's, while Survive the Holidays runs (and 2.3's to 2.4.2's storms). The
 // Battle Pass's storefront (battlepass/season2.js) is 1.11's; athena, the viewer's athena profile, leaves out a pass
 // they own.
 export function storefronts(profile, now = new Date(), { athena } = {}) {
