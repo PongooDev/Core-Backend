@@ -1,4 +1,5 @@
 import { McpError } from "../errors.js";
+import { getItem } from "../gamedata/items.js";
 import { lootEntry } from "../profiles/items.js";
 import { grant, itemEvent, refreshHeldItems } from "../profiles/progress.js";
 import { itemRating } from "../profiles/rating.js";
@@ -7,17 +8,38 @@ import { bookData, findPageItem, isUnlocked, pageId, refreshPage, slotFor, slott
 
 export { bookProfiles, isBookPage } from "./pages.js";
 
-// The book's XP is what the client works out (UFortCollectionBookManager::CalculateBookXp sub_466FC0): for every page
-// it has a page item for, for every section, the rounded sum of its slots' XP, each
+// The book's XP is what the client works out (UFortCollectionBookManager::CalculateBookXp sub_466FC0; 2.4's
+// sub_4F3710): for every page it has a page item for, for every section, the rounded sum of its slots' XP, each
 //   ConstantWeight + level x ItemLevelWeight + RarityFactor(rarity) x RarityWeight + rating x ItemRatingWeight
-// (FortCollectionBookSlotData.cpp). Its level is the higher of the XP's level and profile0's
+// (FortCollectionBookSlotData.cpp, 2.4's sub_5292E0). Its level is the higher of the XP's level and profile0's
 // collection_book.maxBookXpLevelAchieved (sub_4671F0); levels (CollectionBookXPLevelData) are claimed one at a time.
-const rarities = ["c", "uc", "r", "vr", "sr"];
-const rarityIndex = (templateId) => {
+//
+// The rarity is the item definition's GetRarity (UFortItem::GetRarity, 2.4's sub_6C3F40 → vtable +0x280): the
+// definition's Rarity (UFortItemDefinition::GetRarity sub_6C3F70), and for a schematic its result item's
+// (UFortSchematicItemDefinition::GetRarity sub_6C3FC0 → GetResultWorldItemDefinition). The template's rarity token is
+// not it: lead survivors are a rarity above theirs (managerdoctor_sr is Elegant, workerbasic_sr Fine) and mythic
+// heroes are Elegant, so reading the token gave them too little XP. The client then offered a level the backend
+// refused ("The book has X of Y XP", Core-Backend #194).
+const rarityNames = ["Handmade", "Ordinary", "Sturdy", "Quality", "Fine", "Elegant", "Masterwork", "Epic", "Badass", "Legendary"];
+const rarityTokens = ["c", "uc", "r", "vr", "sr"];
+const tokenRarity = (templateId) => {
   const tokens = templateId.split(":")[1].toLowerCase().split("_");
-  const rarity = [...tokens].reverse().find((token) => rarities.includes(token));
-  return rarity ? rarities.indexOf(rarity) : 0;
+  const rarity = [...tokens].reverse().find((token) => rarityTokens.includes(token));
+  return rarity ? rarityTokens.indexOf(rarity) : 0;
 };
+const definitionRarity = (definition) => rarityNames.indexOf(definition?.rarity ?? "");
+
+// 🟡 The game data holds no schematic's Result, so its result is found by name (sid_X crafts wid_X or tid_X), and a
+// schematic whose result isn't found takes its token's rarity, which every result found by name shares.
+function rarityIndex(templateId) {
+  const definition = getItem(templateId);
+  if (definition?.class === "FortSchematicItemDefinition") {
+    const name = templateId.split(":")[1].replace(/^sid_/i, "");
+    const result = getItem(`Weapon:wid_${name}`) ?? getItem(`Trap:tid_${name}`);
+    return result && definitionRarity(result) >= 0 ? definitionRarity(result) : tokenRarity(templateId);
+  }
+  return definitionRarity(definition) >= 0 ? definitionRarity(definition) : tokenRarity(templateId);
+}
 
 const fail = (message) => {
   throw new McpError("errors.com.epicgames.fortnite.collection_book_slot_failed", message);
@@ -28,7 +50,8 @@ export function slotXp(item) {
   const weight = weights[slots[slotFor(item)]?.weight] ?? weights.Default;
   if (!weight) return 0;
   return weight.constant + (item.attributes.level ?? 1) * weight.level
-    + (rarityFactor[rarityIndex(item.templateId)] ?? 0) * weight.rarity + itemRating(item) * weight.rating;
+    + (rarityFactor[Math.min(rarityIndex(item.templateId), rarityFactor.length - 1)] ?? 0) * weight.rarity
+    + itemRating(item) * weight.rating;
 }
 
 export function bookXp(session) {

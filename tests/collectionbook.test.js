@@ -4,6 +4,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { slotXp } from "../src/collectionbook/book.js";
 import { slotFor } from "../src/collectionbook/pages.js";
+import { getItem } from "../src/gamedata/items.js";
+import { itemRating } from "../src/profiles/rating.js";
 import { recyclingRefunds } from "../src/profiles/upgrades.js";
 import { post, startBackend, userLogin } from "./helpers.js";
 
@@ -25,6 +27,19 @@ test("a slotted item's XP follows the client's formula", () => {
   const xp = slotXp(hero);
   assert.ok(xp > 3500 + 25 * 64, `${xp}`);
   assert.equal((xp - 3500 - 25 * 64) % 325, 0);
+});
+
+test("a slotted item's rarity is its definition's, not its template's (#194)", () => {
+  const level1 = (templateId) => ({ templateId, attributes: { level: 1, personality: "Homebase.Worker.Personality.IsCurious" } });
+  const rating = (templateId, weight) => itemRating(level1(templateId)) * weight;
+  // A legendary lead survivor's definition is Elegant (factor 875), a rarity above its sr token's Fine (625).
+  assert.equal(getItem("Worker:managerdoctor_sr_kingsly_t01").rarity, "Elegant");
+  assert.equal(slotXp(level1("Worker:managerdoctor_sr_kingsly_t01")), 100 + 875 * 16 + rating("Worker:managerdoctor_sr_kingsly_t01", 250));
+  // A legendary survivor's is Fine, as its token says.
+  assert.equal(slotXp(level1("Worker:workerbasic_sr_t01")), 250 + 625 * 16 + rating("Worker:workerbasic_sr_t01", 150));
+  // A schematic takes its result's rarity (wid_..._vr is Quality), not its own definition's (Sturdy).
+  assert.equal(getItem("Schematic:sid_assault_auto_vr_crystal_t04").rarity, "Sturdy");
+  assert.equal(slotXp(level1("Schematic:sid_assault_auto_vr_crystal_t04")), 300 + 125 * 36 + rating("Schematic:sid_assault_auto_vr_crystal_t04", 150));
 });
 
 test("survivors go in the slot of their personality", () => {
