@@ -36,6 +36,8 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
 - `dailyrewards.json`: the daily login reward schedules from `DefaultGameData` (from 1.7.2, the
   `DailyRewardScheduleDefinitions` asset it points to), rows in lookup order.
 - `homebasenodes.json`, `squads.json`: the skill tree (nodes, pages) and squads from the homebase manager.
+- `banners.json`: the banner icon and color rows by category, from the homebase manager's HomebaseBannerIconData and
+  HomebaseBannerColorData; 2.4.2 (CL 3870737) moved them to DefaultGameData (BannerIconData, BannerColorData).
 - `characters.json`: gameplay tags, required tags and manager flags of heroes, survivors and defenders.
 - `cardpacks.json`: each card pack's loot tier group, tier, choice flag and display level.
 - `objectivestats.json`: the quest objective stat table (type, target tags, condition, and source and context tags
@@ -62,9 +64,11 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   (AthenaEmojiItemDefinition) are cosmetics too. `loot` holds Battle Royale's loot tables whole (DefaultGameData's
   `AthenaLootTierData_Client` and `AthenaLootPackages_Client`), by object path, each row with every property in the form
   `UDataTable::CreateTableFromJSONString` reads back (soft object paths as path strings), for the content updates the
-  backend serves as `[AssetHotfix]` rows; only 1.11's, 2.1's, 2.2's, 2.3's and 2.4's overlays carry it so far (2.2's has Season 2's content updates in already; 2.3's
-  is 2.2's, the Chug Jug at weight 0; 2.4's has the Chug Jug in and the Minigun at weight 0). 2.4 ships no
-  `Build.version` either: its fourth argument is `4.19.0-3858292+++Fortnite+Release-Cert`. Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
+  backend serves as `[AssetHotfix]` rows; only 1.11's, 2.1's, 2.2's, 2.3's, 2.4's and 2.4.2's overlays carry it so far (2.2's has Season 2's content updates in already; 2.3's
+  is 2.2's, the Chug Jug at weight 0; 2.4's has the Chug Jug in and the Minigun at weight 0; 2.4.2's has the Minigun in, in
+  a list of its own, and the Suppressed Pistol's cut, but no Crossbow). 2.4 ships no
+  `Build.version` either: its fourth argument is `4.19.0-3858292+++Fortnite+Release-Cert`, and 2.4.2's
+  `4.19.0-3870737+++Fortnite+Release-Next`. Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `research.json`: the resource collectors (research points): each CollectedResource template's payout and the
   homebase attributes its rate, capacity and wallet cap come from, what each skill tree node adds to those attributes

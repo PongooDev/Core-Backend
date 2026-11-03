@@ -452,13 +452,15 @@ var workerData = new SortedDictionary<string, object>(StringComparer.Ordinal)
 var manager = LoadExport(provider, gameData["Properties"]!["HomebaseManager"], "FortHomebaseManager")["Properties"]!;
 
 // Banners: the editor lists the profile0 items HomebaseBannerIcon:<row> and HomebaseBannerColor:<row> the player owns
-// (UFortBannerUtilities::GetBannerIconsForCategory), by the rows' categories.
+// (UFortBannerUtilities::GetBannerIconsForCategory), by the rows' categories. 2.4.2 (CL 3870737) moved the tables from
+// the homebase manager (HomebaseBannerIconData, HomebaseBannerColorData) to DefaultGameData (UFortGameData
+// BannerIconData, BannerColorData).
 SortedDictionary<string, string> BannerRows(JsonObject rows) =>
     new(rows.ToDictionary(r => r.Key, r => r.Value!["CategoryRowName"]?.GetValue<string>() ?? ""), StringComparer.Ordinal);
 var banners = new SortedDictionary<string, object>(StringComparer.Ordinal)
 {
-    ["icons"] = BannerRows(LoadRows(provider, manager["HomebaseBannerIconData"])),
-    ["colors"] = BannerRows(LoadRows(provider, manager["HomebaseBannerColorData"]))
+    ["icons"] = BannerRows(LoadRows(provider, manager["HomebaseBannerIconData"] ?? gameData["Properties"]!["BannerIconData"])),
+    ["colors"] = BannerRows(LoadRows(provider, manager["HomebaseBannerColorData"] ?? gameData["Properties"]!["BannerColorData"]))
 };
 var nodes = new SortedDictionary<string, object>(StringComparer.Ordinal);
 // What a node unlocks are the gameplay tags its effect rows grant (HomebaseNodeGameplayEffectDataTable
