@@ -33,6 +33,7 @@ import { createAdminGate } from "./local.js";
 import { clearSessionCookie, extractAdminToken } from "./auth.js";
 import { createRateLimiter, getClientIp } from "../services/portal/ratelimit.js";
 import { defaultBattleRoyaleNews, defaultLoginMessage, defaultSubgameSelect } from "../services/content/pages.js";
+import { maxNewsImageBytes, maxNewsImagePixels, newsImageValue, pruneNewsImages, saveNewsImage } from "../services/content/images.js";
 import { inBuild } from "../builds/context.js";
 import { allowedBuildList, otherBuilds } from "../builds/allowed.js";
 import { battleRoyaleBuilds, battleRoyaleSeasons, buildVersions, certBuild, seasonName, seasonVersions, versionOf } from "../builds/detect.js";
@@ -1781,7 +1782,10 @@ export function adminRoutes(context) {
       } else if (typeof req.body.battleRoyaleNews === "object") {
         const title = String(req.body.battleRoyaleNews.title ?? "").trim();
         const body = String(req.body.battleRoyaleNews.body ?? "").trim();
-        updates.battleRoyaleNews = (title || body) ? { title, body } : null;
+        // The picture 1.9+ shows with the message (#215): an http(s) URL, or an upload from /admin/api/news/image.
+        const image = newsImageValue(req.body.battleRoyaleNews.image, dataDir);
+        if (image === null) return invalid(res, "The image must be an http:// or https:// URL, or an uploaded image");
+        updates.battleRoyaleNews = (title || body || image) ? { title, body, image } : null;
       }
     }
     if (typeof req.body?.loginMessageEnabled === "boolean") {
@@ -1823,7 +1827,19 @@ export function adminRoutes(context) {
       }
     }
     settings.update(updates);
+    if (updates.battleRoyaleNews !== undefined) pruneNewsImages(dataDir, [settings.get?.()?.battleRoyaleNews?.image]);
     res.json(getNewsPayload());
+  });
+
+  // Uploads a picture for the lobby news (#215) as JSON { data: base64 } (admin writes are JSON, admin/local.js), with
+  // its own body limit (app.js leaves this path to it). Returns { image }, the value to save as battleRoyaleNews.image;
+  // it is served at /content/api/news-images/ (services/content/images.js).
+  router.post("/admin/api/news/image", express.json({ limit: Math.ceil(maxNewsImageBytes * 4 / 3) + 4096 }), (req, res) => {
+    const text = String(req.body?.data ?? "").replace(/^data:image\/[a-z+.-]+;base64,/i, "");
+    if (!text || !/^[A-Za-z0-9+/]+={0,2}$/.test(text)) return invalid(res, "Send the image as base64 in data");
+    const saved = saveNewsImage(dataDir, Buffer.from(text, "base64"));
+    if (saved.error) return invalid(res, saved.error);
+    res.json({ ...saved, maxBytes: maxNewsImageBytes, maxPixels: maxNewsImagePixels });
   });
 
   router.get("/admin/api/sessions", (req, res) => {

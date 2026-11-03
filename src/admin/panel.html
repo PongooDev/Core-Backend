@@ -4472,7 +4472,7 @@
       // 1. Battle Royale Lobby News
       const brCustom = custom.battleRoyaleNews;
       const brDefault = defaults.battleRoyaleNews || { title: "Battle Royale - {version}", body: "Welcome to Battle Royale on Core!" };
-      const isBrCustom = Boolean(brCustom && (brCustom.title || brCustom.body));
+      const isBrCustom = Boolean(brCustom && (brCustom.title || brCustom.body || brCustom.image));
 
       const brTitle = el("input", {
         class: "field",
@@ -4490,10 +4490,55 @@
       });
       brBody.value = brCustom?.body ?? "";
 
+      // The news picture (1.9+, Core-Backend #215): a URL, or a PNG/JPEG uploaded to the backend, which serves it to the game.
+      const brImage = el("input", {
+        class: "field",
+        value: brCustom?.image ?? "",
+        placeholder: "https://... or upload a PNG/JPEG (1024x512 works best)",
+        style: "width:100%",
+        disabled: !battleRoyaleNewsEnabled
+      });
+      const brPreview = el("img", { alt: "", style: "display:none; max-width:320px; max-height:160px; border-radius:8px; border:1px solid var(--line, #333); object-fit:contain;" });
+      const showPreview = () => {
+        const value = brImage.value.trim();
+        brPreview.style.display = value ? "block" : "none";
+        if (value) brPreview.src = value;
+        else brPreview.removeAttribute("src");
+      };
+      brPreview.addEventListener("error", () => (brPreview.style.display = "none"));
+      brImage.addEventListener("change", showPreview);
+      showPreview();
+      const brFile = el("input", { type: "file", accept: "image/png,image/jpeg", style: "display:none" });
+      brFile.addEventListener("change", async () => {
+        const file = brFile.files?.[0];
+        brFile.value = "";
+        if (!file) return;
+        if (file.size > 4 * 1024 * 1024) return toast("The image is over 4 MB", true);
+        const data = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result).replace(/^data:[^,]*,/, ""));
+          reader.onerror = () => reject(reader.error);
+          reader.readAsDataURL(file);
+        }).catch(() => null);
+        if (!data) return toast("Couldn't read the image", true);
+        const uploaded = await act(api("/admin/api/news/image", { data }));
+        if (!uploaded?.image) return;
+        brImage.value = uploaded.image;
+        showPreview();
+        saveBrBtn.click();
+      });
+      const uploadBrImageBtn = btn("Upload Image", () => brFile.click(), "ghost", { disabled: !battleRoyaleNewsEnabled });
+      const removeBrImageBtn = btn("Remove Image", () => {
+        brImage.value = "";
+        showPreview();
+        saveBrBtn.click();
+      }, "ghost", { disabled: !battleRoyaleNewsEnabled || !brCustom?.image });
+
       const saveBrBtn = btn("Save Battle Royale News", async () => {
         const title = brTitle.value.trim();
         const body = brBody.value.trim();
-        const payload = (title || body) ? { battleRoyaleNews: { title, body } } : { battleRoyaleNews: null };
+        const image = brImage.value.trim();
+        const payload = (title || body || image) ? { battleRoyaleNews: { title, body, image } } : { battleRoyaleNews: null };
         await act(api("/admin/api/news", payload), payload.battleRoyaleNews ? "Battle Royale news updated" : "Battle Royale news reset to 1:1 default");
         showNews();
       }, "primary", { disabled: !battleRoyaleNewsEnabled });
@@ -4501,6 +4546,7 @@
       const resetBrBtn = btn("Reset to Default", async () => {
         brTitle.value = "";
         brBody.value = "";
+        brImage.value = "";
         await act(api("/admin/api/news", { battleRoyaleNews: null }), "Battle Royale news reset to 1:1 default");
         showNews();
       }, "ghost", { disabled: !battleRoyaleNewsEnabled });
@@ -4660,7 +4706,7 @@
           el("p", {
             class: "note",
             text: battleRoyaleNewsEnabled
-              ? "Displayed in the Battle Royale lobby news box (1.7.2+, and the News tab on 1.9). Leave blank to use authentic 1:1 defaults. Use {version} to show the client's version automatically."
+              ? "Displayed in the Battle Royale lobby news box (1.7.2+, and the News tab on 1.9). Leave blank to use authentic 1:1 defaults. Use {version} to show the client's version automatically. The image shows on 1.9 and later only."
               : "Battle Royale lobby news is disabled. The news widget in the lobby (or News tab in 1.9+) will be hidden on connected clients."
           }),
           el("div", { style: "display:flex; flex-direction:column; gap:12px; margin-top:14px;" },
@@ -4670,6 +4716,15 @@
             el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
               el("span", { text: "Body" }),
               brBody),
+            el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
+              el("span", { text: "Image (1.9+)" }),
+              brImage),
+            el("div", { style: "display:flex; align-items:center; gap:10px; flex-wrap:wrap;" },
+              uploadBrImageBtn,
+              removeBrImageBtn,
+              brFile,
+              el("span", { class: "muted", text: "PNG or JPEG, up to 4 MB and 2.5 million pixels." })),
+            brPreview,
             el("div", { class: "actions", style: "margin-top:4px;" },
               saveBrBtn,
               resetBrBtn))),

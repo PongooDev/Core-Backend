@@ -445,7 +445,8 @@ export function createSettingsStore(dataDir) {
       if (loaded.battleRoyaleNews && typeof loaded.battleRoyaleNews === "object") {
         settings.battleRoyaleNews = {
           title: String(loaded.battleRoyaleNews.title ?? ""),
-          body: String(loaded.battleRoyaleNews.body ?? "")
+          body: String(loaded.battleRoyaleNews.body ?? ""),
+          image: String(loaded.battleRoyaleNews.image ?? "")
         };
       }
       if (loaded.loginMessage && typeof loaded.loginMessage === "object") {
@@ -583,7 +584,8 @@ export function createSettingsStore(dataDir) {
       if (partial.battleRoyaleNews && typeof partial.battleRoyaleNews === "object") {
         settings.battleRoyaleNews = {
           title: String(partial.battleRoyaleNews.title ?? ""),
-          body: String(partial.battleRoyaleNews.body ?? "")
+          body: String(partial.battleRoyaleNews.body ?? ""),
+          image: String(partial.battleRoyaleNews.image ?? "")
         };
       } else if (partial.battleRoyaleNews === null) {
         delete settings.battleRoyaleNews;

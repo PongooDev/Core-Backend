@@ -147,7 +147,9 @@ export function createApp(config, context = createContext(config)) {
   if (config.requestLog !== false) app.use(requestLog);
   app.use(userCloudStorageRoutes(context));
   app.use(replayRoutes(context));
-  app.use(express.json());
+  // The admin panel's news image upload (#215) reads its larger body itself, after the admin gate (admin/routes.js).
+  const json = express.json();
+  app.use((req, res, next) => (req.path === "/admin/api/news/image" ? next() : json(req, res, next)));
   app.use(express.urlencoded({ extended: false }));
 
   app.use(portalRoutes(context));

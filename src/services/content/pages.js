@@ -1,5 +1,6 @@
 import express from "express";
 import { getBuild, versionOf } from "../../builds/detect.js";
+import { newsImageOrigin, newsImagePath, newsImageUrl, serveNewsImage } from "./images.js";
 
 // The EpicContentService page ([EpicContentService] in DefaultGame.ini), fetched before login. The CMS cache
 // (CMSURLCache.cpp, sub_3620130) needs a JSON object, reads lastModified as an ISO 8601 date ("Invalid last modified
@@ -19,6 +20,10 @@ import { getBuild, versionOf } from "../../builds/detect.js";
 // tab (Core-Backend #117). UFortAthenaNewsWidget (0x2EC3D60 → 0x2ED5C20) shows the first three, collapsing an empty
 // title or body and an image the CMS cache hasn't precached. Builds before 1.9 get news.message alone, as before; a
 // build Core doesn't know that is newer than 1.9 gets the array.
+// The message's image (Core-Backend #215) is the admin panel's "image": another site's picture URL, or an upload the
+// backend serves itself (images.js), handed out on the address the client asked for this page on. It is listed in
+// _images_ too, which the CMS cache keeps. Builds before 1.9 have no image in their news box and get none. The login
+// message and Save the World's survivalmessage read title and body alone (1.9: 0x3121F55, 0x2FE6908), so they have none.
 // The mode select screen's descriptions next to Save the World and Battle Royale (0x3018C70 body, 0x301A360 title, both
 // through 0x30184B0) read subgameselectdata.{saveTheWorld | battleRoyale}.message {title, body} (Core-Backend #63);
 // saveTheWorldUnowned is for players without Save the World, whom Core doesn't have. The title is the short line in the
@@ -107,7 +112,7 @@ export const newsMessagesBuild = 3757339;
 
 const readsNewsMessages = (changelist) => /^\d+$/.test(changelist ?? "") && Number(changelist) >= newsMessagesBuild;
 
-export function battleRoyaleNewsFor(news, changelist) {
+export function battleRoyaleNewsFor(news, changelist, imageOrigin = undefined) {
   if (!news) {
     if (readsNewsMessages(changelist)) {
       return { news: { messages: [], region_messages: [], platform_messages: [] } };
@@ -116,17 +121,20 @@ export function battleRoyaleNewsFor(news, changelist) {
   }
   const message = messageOf(news, defaultBattleRoyaleNews, changelist);
   if (readsNewsMessages(changelist)) {
-    return { news: { messages: [{ ...message, image: "" }], region_messages: [], platform_messages: [] } };
+    const image = newsImageUrl(news.image, imageOrigin);
+    return { news: { messages: [{ ...message, image }], region_messages: [], platform_messages: [] } };
   }
   return { news: { message, region_messages: [], platform_messages: [] } };
 }
 
-export function contentPage(news = defaultBattleRoyaleNews, loginMessage = defaultLoginMessage, changelist = undefined, subgameSelect = undefined) {
+export function contentPage(news = defaultBattleRoyaleNews, loginMessage = defaultLoginMessage, changelist = undefined, subgameSelect = undefined,
+  imageOrigin = undefined) {
+  const battleRoyaleNews = battleRoyaleNewsFor(news, changelist, imageOrigin);
   const page = {
     _title: "Fortnite Game",
     lastModified: "2026-10-27T16:30:00.000Z",
-    _images_: [],
-    battleRoyaleNews: battleRoyaleNewsFor(news, changelist),
+    _images_: (battleRoyaleNews.news.messages ?? []).map((message) => message.image).filter(Boolean),
+    battleRoyaleNews,
     subgameselectdata: subgameSelectFor(changelist, subgameSelect)
   };
   if (loginMessage) {
@@ -152,8 +160,9 @@ export function contentRoutes(context, config = {}) {
         : (config.loginMessage !== false));
     const loginMessage = loginMessageEnabled ? (settings.loginMessage ?? config.loginMessage ?? defaultLoginMessage) : null;
     const subgameSelect = settings.subgameSelect ?? config.subgameSelect;
-    res.json(contentPage(news, loginMessage, getBuild(req), subgameSelect));
+    res.json(contentPage(news, loginMessage, getBuild(req), subgameSelect, newsImageOrigin(req)));
   });
+  router.get(`${newsImagePath}/:name`, serveNewsImage(context?.dataDir ?? config.dataDir));
 
   return router;
 }

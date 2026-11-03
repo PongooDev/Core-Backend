@@ -258,3 +258,125 @@ test("config.json's battleRoyaleNews reaches 1.9's news.messages[] (#117)", asyn
     fs.rmSync(dataDir, { recursive: true, force: true });
   }
 });
+
+// A PNG and a JPEG of a given size: the store reads the size from the file's own header (services/content/images.js).
+function png(width, height) {
+  const chunk = (type, data) => {
+    const length = Buffer.alloc(4);
+    length.writeUInt32BE(data.length);
+    return Buffer.concat([length, Buffer.from(type, "latin1"), data, Buffer.alloc(4)]);
+  };
+  const header = Buffer.alloc(13);
+  header.writeUInt32BE(width, 0);
+  header.writeUInt32BE(height, 4);
+  header[8] = 8;
+  header[9] = 2;
+  return Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), chunk("IHDR", header), chunk("IDAT", Buffer.alloc(8)),
+    chunk("IEND", Buffer.alloc(0))]);
+}
+
+function jpeg(width, height) {
+  const app0 = Buffer.from([0xff, 0xe0, 0x00, 0x10, 0x4a, 0x46, 0x49, 0x46, 0x00, 0x01, 0x01, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00]);
+  const sof = Buffer.from([0xff, 0xc0, 0x00, 0x11, 0x08, height >> 8, height & 255, width >> 8, width & 255, 0x03, 1, 0x22, 0, 2, 0x11, 1, 3, 0x11, 1]);
+  return Buffer.concat([Buffer.from([0xff, 0xd8]), app0, sof, Buffer.from([0xff, 0xd9])]);
+}
+
+const upload = (backend, data) => admin(backend, "/news/image", { data: data.toString("base64") });
+
+test("the panel's lobby news image reaches 1.9+ as a URL on the address the client asked on, and builds before 1.9 are unchanged (#215)", async () => {
+  const backend = await startBackend();
+  try {
+    // An uploaded PNG is stored under the data folder, named by its content.
+    const picture = png(1024, 512);
+    const uploaded = await upload(backend, picture);
+    assert.equal(uploaded.status, 200);
+    assert.match(uploaded.body.image, /^\/content\/api\/news-images\/[0-9a-f]{32}\.png$/);
+    const name = uploaded.body.image.split("/").pop();
+    assert.ok(fs.existsSync(path.join(backend.dataDir, "news-images", name)));
+
+    const saved = await admin(backend, "/news", { battleRoyaleNews: { title: "Season {version}", body: "New map!", image: uploaded.body.image } });
+    assert.equal(saved.status, 200);
+    assert.equal(saved.body.custom.battleRoyaleNews.image, uploaded.body.image);
+
+    // 1.9 gets the full URL on the host it asked on, and the CMS cache's _images_ list keeps it.
+    const url = `http://127.0.0.1:${backend.port}${uploaded.body.image}`;
+    const page19 = (await pageFor(backend.port, "3757339")).body;
+    assert.deepEqual(page19.battleRoyaleNews.news.messages, [{ title: "Season 1.9", body: "New map!", image: url }]);
+    assert.deepEqual(page19._images_, [url]);
+    assert.equal((await pageFor(backend.port, "3901517")).body.battleRoyaleNews.news.messages[0].image, url);
+
+    // The game can download it from there.
+    const served = await fetch(url);
+    assert.equal(served.status, 200);
+    assert.equal(served.headers.get("content-type"), "image/png");
+    assert.equal(served.headers.get("x-content-type-options"), "nosniff");
+    assert.ok(Buffer.from(await served.arrayBuffer()).equals(picture));
+
+    // Behind an https reverse proxy, the proxy's address.
+    const proxied = await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/content/api/pages/fortnite-game",
+      headers: { "User-Agent": "Fortnite/++Fortnite+Release-Live-CL-3757339 Windows/10.0.19045.1.768.64bit", "X-Forwarded-Proto": "https",
+        "X-Forwarded-Host": "core.example.com" } });
+    assert.equal(proxied.body.battleRoyaleNews.news.messages[0].image, `https://core.example.com${uploaded.body.image}`);
+
+    // Builds before 1.9 have no image in their news box: news.message and _images_ are as before.
+    const page18 = (await pageFor(backend.port, "3741772")).body;
+    assert.deepEqual(page18.battleRoyaleNews.news.message, { title: "Season 1.8.2", body: "New map!" });
+    assert.deepEqual(page18._images_, []);
+
+    // Another site's picture is handed out as it is; replacing the upload deletes it.
+    const external = "https://cdn2.unrealengine.com/Fortnite/news/BR04_MOTD_Shield-1024x512.jpg";
+    assert.equal((await admin(backend, "/news", { battleRoyaleNews: { title: "", body: "", image: external } })).status, 200);
+    assert.equal((await pageFor(backend.port, "3757339")).body.battleRoyaleNews.news.messages[0].image, external);
+    assert.deepEqual((await pageFor(backend.port, "3757339")).body._images_, [external]);
+    assert.equal(fs.existsSync(path.join(backend.dataDir, "news-images", name)), false);
+    assert.equal((await fetch(url)).status, 404);
+
+    // A JPEG works too; resetting the news drops its image.
+    const uploadedJpeg = await upload(backend, jpeg(1920, 1080));
+    assert.equal(uploadedJpeg.status, 200);
+    assert.match(uploadedJpeg.body.image, /\.jpg$/);
+    await admin(backend, "/news", { battleRoyaleNews: { title: "JPEG", body: "", image: uploadedJpeg.body.image } });
+    assert.equal((await fetch(`http://127.0.0.1:${backend.port}${uploadedJpeg.body.image}`)).headers.get("content-type"), "image/jpeg");
+    await admin(backend, "/news", { battleRoyaleNews: null });
+    assert.equal((await pageFor(backend.port, "3757339")).body.battleRoyaleNews.news.messages[0].image, "");
+    assert.deepEqual((await pageFor(backend.port, "3757339")).body._images_, []);
+    assert.deepEqual(fs.readdirSync(path.join(backend.dataDir, "news-images")), []);
+  } finally {
+    backend.close();
+  }
+});
+
+test("news image uploads take only PNG and JPEG within the size limits, and only admin-panel writes (#215)", async () => {
+  const backend = await startBackend();
+  try {
+    const rejected = async (data, pattern) => {
+      const response = await upload(backend, data);
+      assert.equal(response.status, 400);
+      assert.match(response.body.errorMessage, pattern);
+    };
+    await rejected(Buffer.from("GIF89a\x01\x00\x01\x00\x00\x00\x00;" + "x".repeat(32), "latin1"), /PNG and JPEG/);
+    await rejected(Buffer.from("<html><script>alert(1)</script></html>".repeat(4)), /PNG and JPEG/);
+    await rejected(png(4096, 4096), /pixels/);
+    await rejected(Buffer.concat([png(16, 16), Buffer.alloc(4 * 1024 * 1024)]), /over 4 MB/);
+    assert.equal((await admin(backend, "/news/image", { data: "not base64!" })).status, 400);
+    assert.equal(fs.existsSync(path.join(backend.dataDir, "news-images")), false);
+
+    // Admin writes must be JSON (admin/local.js), so another site can't post an upload.
+    const form = await send({ host: "127.0.0.1", port: backend.port, method: "POST", path: "/admin/api/news/image",
+      headers: { "Content-Type": "image/png" } }, png(16, 16));
+    assert.equal(form.status, 415);
+
+    // The news only takes an http(s) URL or one of the backend's own uploads, so no other file can be named.
+    for (const image of ["javascript:alert(1)", "file:///C:/Windows/win.ini", "/content/api/news-images/../settings.json",
+      "/content/api/news-images/00000000000000000000000000000000.png", "../../settings.json"]) {
+      const response = await admin(backend, "/news", { battleRoyaleNews: { title: "x", body: "", image } });
+      assert.equal(response.status, 400, image);
+    }
+    // The image route serves the store's own names alone.
+    for (const name of ["..%2fsettings.json", "..%5Csettings.json", "settings.json", "00000000000000000000000000000000.gif"]) {
+      assert.equal((await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: `/content/api/news-images/${name}` })).status, 404, name);
+    }
+  } finally {
+    backend.close();
+  }
+});
