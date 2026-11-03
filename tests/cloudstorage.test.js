@@ -183,6 +183,30 @@ test("the system hotfix turns on the custom matchmaking key from 2.4 on (#186)",
   }
 });
 
+// 3.0's lobby queues past AthenaEvent8 have no event flag (GetStringNameOfEventPlaylist, 0x2719BE0): UFortGlobals'
+// bEvent<N>ForceEnabled turns each on (IsEvent_X_ForceEnabled, 0xBBBE60).
+test("the system hotfix forces on 3.0's LTM queues past AthenaEvent8 that are on, and no others", async () => {
+  const backend = await startBackend();
+  try {
+    const token = await clientToken(backend.port);
+    await post(backend.port, "/admin/api/matchmaking/config", undefined, { modes: { solidGold: true, shotguns: true, sneakySilencers: true } });
+    const lines = async (build) => (await raw(backend.port, "GET", "/fortnite/api/cloudstorage/system/DefaultGame.ini", token, undefined,
+      `game=Fortnite, engine=UE4, build=${build}`)).body.toString("utf8").split("\r\n");
+    const v30 = await lines("++Fortnite+Release-3.0.0-CL-3901517");
+    const globals = v30.indexOf("[/Script/FortniteGame.FortGlobals]");
+    assert.deepEqual(v30.slice(globals + 2, globals + 4), ["bEvent27ForceEnabled=true", "bEvent31ForceEnabled=true"]);
+    const instance = v30.indexOf("[/Script/FortniteGame.FortGameInstance]");
+    assert.deepEqual(v30.slice(instance + 1, instance + 3),
+      ["!RegionsWithBattleRoyaleEvent27QueueDisabled=ClearArray", "!RegionsWithBattleRoyaleEvent31QueueDisabled=ClearArray"]);
+    // Sneaky Silencers' queue is AthenaEvent5, forced on by the calendar's region state; 2.5 has none of 3.0's queues.
+    assert.ok(!v30.some((line) => /bEvent5ForceEnabled/.test(line)));
+    const v25 = await lines("++Fortnite+Release-2.5-CL-3889387");
+    assert.ok(!v25.some((line) => /ForceEnabled|FortGameInstance/.test(line)));
+  } finally {
+    backend.close();
+  }
+});
+
 test("the system hotfix points the client's XMPP at the address and port it reached the backend on", async () => {
   const backend = await startBackend();
   try {

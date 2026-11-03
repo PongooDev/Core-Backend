@@ -7,6 +7,7 @@ import { isDedicatedServerToken } from "../../accounts/clients.js";
 import { getBuild } from "../../builds/detect.js";
 import { sendError } from "../../errors.js";
 import { lootHotfixSection } from "../../events/contentupdates.js";
+import { ltmForcedQueues } from "../../events/ltms.js";
 import { shootingTestGlobals, shootingTestHotfixTables } from "../../events/shootingtest.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
 import { createNetwork, httpsProxied } from "../../network.js";
@@ -57,6 +58,15 @@ const statsAnswerMinutes = (changelist) => (Number(changelist) >= freshStatsBuil
 const customKeyBuild = 3858292;
 const customKeySection = (changelist) => (Number(changelist) >= customKeyBuild
   ? ["[/Script/FortniteGame.FortMatchmakingV2]", "bCustomKeyEnabled=true", ""].join("\r\n") : "");
+// 3.0's lobby queues past AthenaEvent8 (events/ltms.js) have no event flag a region state could force on: UFortGlobals'
+// bEvent<N>ForceEnabled turns each on (UFortGameInstance::IsEvent_X_ForceEnabled, 3.0 0xBBBE60), unless the player's
+// region is in UFortGameInstance's RegionsWithBattleRoyaleEvent<N>QueueDisabled, which is cleared for it. The client
+// takes this file at start-up, so a mode turned on or off shows once the game restarts.
+const forcedQueueGlobals = (changelist) => ltmForcedQueues(changelist).map((queue) => `bEvent${queue}ForceEnabled=true`);
+function forcedQueueSection(changelist) {
+  const queues = ltmForcedQueues(changelist);
+  return queues.length ? ["[/Script/FortniteGame.FortGameInstance]", ...queues.map((queue) => `!RegionsWithBattleRoyaleEvent${queue}QueueDisabled=ClearArray`), ""].join("\r\n") : "";
+}
 const defaultNetwork = createNetwork();
 function systemFiles(req, network = defaultNetwork) {
   const address = network.reachableAddress(req);
@@ -67,7 +77,8 @@ function systemFiles(req, network = defaultNetwork) {
     "[OnlineSubsystemMcp.StompServiceMcp]", `Protocol=${proxied ? "wss" : "ws"}`, `Domain=${proxied ? proxied.host : `${address}:${port}`}`, ""
   ].join("\r\n");
   const build = getBuild(req);
-  const game = gameFile(statsAnswerMinutes(build), shootingTestGlobals(build)) + customKeySection(build)
+  const game = gameFile(statsAnswerMinutes(build), [...shootingTestGlobals(build), ...forcedQueueGlobals(build)]) + customKeySection(build)
+    + forcedQueueSection(build)
     + lootHotfixSection(new Date(), null, shootingTestHotfixTables(build));
   return { "DefaultEngine.ini": Buffer.from(engine, "utf8"), "DefaultGame.ini": Buffer.from(game, "utf8") };
 }

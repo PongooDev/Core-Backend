@@ -78,13 +78,22 @@ import { nextReplayOf, seasonMoment } from "../store/itemshop.js";
 // FAthenaPlaylistDataTableSet is now only FortAthenaPlaylistClass, and Athena_GameMode's PlaylistDataTables lists the
 // classes whose CDO's PlaylistId the server matches, each with its own LocName, loot tables, game data, resource rates,
 // teams (MaxTeamCount, MaxTeamSize, MaxPartySize), AthenaPlaylistTag and PlaylistMissionGen; anything else plays
-// DefaultFortAthenaPlaylistClass, Playlist_Default (solo). The lobby's queues are still the event queues
-// (EFortAthenaPlaylist AthenaEvent1 to 8, then AthenaEvent22 to 54 and AthenaPlatoon; DefaultGame.ini's
-// bBattleRoyaleEvent<N>QueueEnabled, now 1 to 40), shown while the region state's EventFlagsForcedOn lists "Event<N>"
-// (🟡: 3.0's new queues are taken to be named as the first eight). AthenaMatchmakingPlay's Event1 to 8 tiles are 2.5's
-// (Event1 still Shooting Test #1's), and Event22 to 54 are MissionGen_AthenaEvent22 to 54, each queue N's tile its
-// playlist N's PlaylistMissionGen (🟡: the button's queue → playlist switch past AthenaEvent8 isn't read; N is taken
-// to queue playlist N). So on 3.0:
+// DefaultFortAthenaPlaylistClass, Playlist_Default (solo). The lobby's queues are still the event queues, as the 3.0
+// client has them:
+// - EFortAthenaPlaylist is AthenaEvent1 to 8 (4 to 11), AthenaPlatoon (12), then AthenaEvent21 to 54 (13 to 46). The
+//   button's queue → playlist switch (3.0 0xD660F0) and its inverse (0xD662F0) keep the first eight's playlists (Event1
+//   15, 2 13, 3 14, 4 17, 5 12, 6 16, 7 18, 8 19) and give AthenaPlatoon 20 and AthenaEvent<N> playlist N from 21 on.
+// - AthenaMatchmakingPlay's PlaylistChange shows the tiles of IsFiftyFiftyQueueEnabled, IsEvent1 to 8QueueEnabled,
+//   IsPlatoonQueueEnabled and then IsPlaylistQueueEnabled(22) to (54); its Event1 to 8 tiles are 2.5's (Event1 still
+//   Shooting Test #1's), Event22 to 54 MissionGen_AthenaEvent22 to 54 (each playlist N's PlaylistMissionGen).
+// - UFortGlobalUIContext's queue check (0x27213E0) takes a playlist id: on when -OverridePlaylistId names it or its class
+//   is bAlwaysAvailableInFrontEnd; else, unless the player's region is in RegionsWithBattleRoyaleEvent<N>QueueDisabled,
+//   (UFortGameInstance's bBattleRoyaleEvent<N>QueueEnabled (0xB360F0) and the region state's EventFlagsForcedOn holding
+//   its event flag and EventFlagsForcedOff not) or UFortGlobals' bEvent<N>ForceEnabled (UFortGameInstance::
+//   IsEvent_X_ForceEnabled, 0xBBBE60). The event flag is GetStringNameOfEventPlaylist's (0x2719BE0), which names only
+//   AthenaEvent1 to 8 ("Event1" to "Event8"): queue 22's and on are an empty name, so no region flag ("Event22", as this
+//   file had it, matches nothing) can single one out. Each is turned on by its own bEvent<N>ForceEnabled, which the
+//   backend's DefaultGame.ini hotfix sets (services/fortnite/cloudstorage.js, ltmForcedQueues). So on 3.0:
 // - Sneaky Silencers (12), High Explosives (13), Speedy Storm (14, "Faster Rings"), Take To The Skies (16, now 100 teams
 //   of 2), Lotsa Loot (17), Sniper Shootout (18, "Snipers Only") and Blitz (19) run on, their classes in the list.
 // - 50v50 (11) and Shooting Test #1 (15) end with 2.5: no class in 3.0's list has their PlaylistId, so a 3.0 server would
@@ -92,7 +101,8 @@ import { nextReplayOf, seasonMoment } from "../store/itemshop.js";
 // - 3.0's new playlists with a lobby tile (PlaylistMissionGen) run by hand: 5x20 (22, five teams of 20, bIsLargeTeamGame),
 //   High Jump (23, solo), Use It & Lose It (25), Steady Storm (26, solo, the storm from the warmup), Solid Gold (27),
 //   Sky Supply (30, solo) and Shotguns (31), the event queue N playing playlist N (Playlist_5x20's PlaylistId 22,
-//   MissionGen_AthenaEvent22, AthenaPlaylistTag Athena.Playlist.Event.22). Epic first ran them later in Season 3 (🟡: no
+//   MissionGen_AthenaEvent22, AthenaPlaylistTag Athena.Playlist.Event.22; their quests count complete_athena_event_<N>,
+//   context Athena.Playlist.Event.<N>). Epic first ran them later in Season 3 (🟡: no
 //   original dates; Original dates leaves them off). Builder's Paradise (28), Low Grav (29) and Playground (35, "for
 //   testing stuffs") have classes but no tile, so they are left out. Solid Gold, Sky Supply and Shotguns have their quests
 //   (AthenaEvent27/30/31_PlayMatches), 5x20 AthenaEvent22_PlayMatches.
@@ -111,60 +121,59 @@ export const ltms = [
   { id: "fiftyFifty", name: "50v50", playlistId: 11, eventFlag: null, builds: [build110, build25], seasons: [1, 2], defaultOn: true,
     original: { builds: [build110, build111], start: "2017-12-08", end: "2017-12-19" },
     teams: "2 Teams × 50", description: "Two teams of 50, each from its own Battle Bus." },
-  { id: "highExplosives", quest: "athenaevent2_playmatches", name: "High Explosives", playlistId: 13, eventFlag: "Event2", builds: [build111, build30], seasons: [2, 3],
+  { id: "highExplosives", quest: "athenaevent2_playmatches", name: "High Explosives", playlistId: 13, queue: 2, eventFlag: "Event2", builds: [build111, build30], seasons: [2, 3],
     original: { builds: [build111, build111], start: "2017-12-28", end: "2018-01-03" },
     teams: "100 Teams × 4", description: "Rocket Launchers, Snowball Launchers and grenades only; no traps (Athena/Events/RocketsAndGrenades loot)." },
-  { id: "sneakySilencers", quest: "athenaevent5_playmatches", name: "Sneaky Silencers", playlistId: 12, eventFlag: "Event5", builds: [build111, build30], seasons: [2, 3],
+  { id: "sneakySilencers", quest: "athenaevent5_playmatches", name: "Sneaky Silencers", playlistId: 12, queue: 5, eventFlag: "Event5", builds: [build111, build30], seasons: [2, 3],
     original: { builds: [build111, build111], start: "2018-01-05", end: "2018-01-09" },
     teams: "100 Teams × 4", description: "Silenced weapons only (Athena/Events/SneakySilencers loot)." },
-  { id: "sniperShootout", quest: "athenaevent7_playmatches", name: "Sniper Shootout", playlistId: 18, eventFlag: "Event7", builds: [build111, build30], seasons: [2, 3],
+  { id: "sniperShootout", quest: "athenaevent7_playmatches", name: "Sniper Shootout", playlistId: 18, queue: 7, eventFlag: "Event7", builds: [build111, build30], seasons: [2, 3],
     original: { builds: [build23, build24], start: "2018-01-29", end: "2018-02-03" },
     teams: "100 Teams × 4", description: "Ready, aim, fire! Sniper Rifles only (Athena/Events/SnipersOnly loot)." },
-  { id: "shootingTest", quest: "athenaevent1_playmatches", name: "Shooting Test #1", playlistId: 15, eventFlag: "Event1", builds: [build24, build25], seasons: [2],
+  { id: "shootingTest", quest: "athenaevent1_playmatches", name: "Shooting Test #1", playlistId: 15, queue: 1, eventFlag: "Event1", builds: [build24, build25], seasons: [2],
     original: { builds: [build24, build242], start: "2018-02-02", end: "2018-02-13" },
     teams: "100 Teams × 1 (2.4: × 4)", description: "Weapon accuracy for a more precise aim: first-shot accuracy, headshot and fall-off changes." },
-  { id: "speedyStorm", quest: "athenaevent3_playmatches", name: "Speedy Storm", playlistId: 14, eventFlag: "Event3", builds: [build21, build30], seasons: [2, 3],
+  { id: "speedyStorm", quest: "athenaevent3_playmatches", name: "Speedy Storm", playlistId: 14, queue: 3, eventFlag: "Event3", builds: [build21, build30], seasons: [2, 3],
     original: null,
     teams: "100 Teams × 4", description: "The storm waits 30 s between circles, not 90 to 200 (Athena/Events/FasterRings game data); the normal loot." },
-  { id: "takeToTheSkies", quest: "athenaevent6_playmatches", name: "Take To The Skies", playlistId: 16, eventFlag: "Event6", builds: [build21, build30], seasons: [2, 3],
+  { id: "takeToTheSkies", quest: "athenaevent6_playmatches", name: "Take To The Skies", playlistId: 16, queue: 6, eventFlag: "Event6", builds: [build21, build30], seasons: [2, 3],
     original: null,
     teams: "100 Teams × 4 (3.0: × 2)", description: "Loot with Launch Pads on the floor (Athena/Events/TakeToTheSkies loot)." },
-  { id: "lotsaLoot", quest: "athenaevent4_playmatches", name: "Lotsa Loot", playlistId: 17, eventFlag: "Event4", builds: [build21, build30], seasons: [2, 3],
+  { id: "lotsaLoot", quest: "athenaevent4_playmatches", name: "Lotsa Loot", playlistId: 17, queue: 4, eventFlag: "Event4", builds: [build21, build30], seasons: [2, 3],
     original: null,
     teams: "100 Teams × 4", description: "More loot (Athena/Events/LotsaLoot loot tiers and game data); its lobby tile reads \"Luxurious Loot\"." },
-  { id: "blitz", quest: "athenaevent8_playmatches", name: "Blitz", playlistId: 19, eventFlag: "Event8", builds: [build242, build30], seasons: [2, 3],
+  { id: "blitz", quest: "athenaevent8_playmatches", name: "Blitz", playlistId: 19, queue: 8, eventFlag: "Event8", builds: [build242, build30], seasons: [2, 3],
     original: null,
     teams: "100 Teams × 4", description: "Shorter matches: a smaller first storm circle, its own loot and resource rates (Athena/Events/Blitz tables)." },
-  { id: "fiveByTwenty", quest: "athenaevent22_playmatches", name: "5x20", playlistId: 22, eventFlag: "Event22", builds: [build30, build30], seasons: [3],
+  { id: "fiveByTwenty", quest: "athenaevent22_playmatches", name: "5x20", playlistId: 22, queue: 22, eventFlag: null, builds: [build30, build30], seasons: [3],
     original: null,
     teams: "5 Teams × 20", description: "Five teams of twenty (Playlist_5x20, a large team game with its own game data)." },
-  { id: "highJump", name: "High Jump", playlistId: 23, eventFlag: "Event23", builds: [build30, build30], seasons: [3],
+  { id: "highJump", name: "High Jump", playlistId: 23, queue: 23, eventFlag: null, builds: [build30, build30], seasons: [3],
     original: null,
     teams: "100 Teams × 1", description: "Solo (Playlist_HighJump, no tables of its own)." },
-  { id: "useItOrLoseIt", name: "Use It & Lose It", playlistId: 25, eventFlag: "Event25", builds: [build30, build30], seasons: [3],
+  { id: "useItOrLoseIt", name: "Use It & Lose It", playlistId: 25, queue: 25, eventFlag: null, builds: [build30, build30], seasons: [3],
     original: null,
     teams: "100 Teams × 4", description: "Its own loot and game data (Athena/Events/UseIt tables)." },
-  { id: "steadyStorm", name: "Steady Storm", playlistId: 26, eventFlag: "Event26", builds: [build30, build30], seasons: [3],
+  { id: "steadyStorm", name: "Steady Storm", playlistId: 26, queue: 26, eventFlag: null, builds: [build30, build30], seasons: [3],
     original: null,
     teams: "100 Teams × 1", description: "Solo; the storm closes from the warmup on (Athena/Events/SteadyStorm game data)." },
-  { id: "solidGold", quest: "athenaevent27_playmatches", name: "Solid Gold", playlistId: 27, eventFlag: "Event27", builds: [build30, build30], seasons: [3],
+  { id: "solidGold", quest: "athenaevent27_playmatches", name: "Solid Gold", playlistId: 27, queue: 27, eventFlag: null, builds: [build30, build30], seasons: [3],
     original: null,
     teams: "100 Teams × 4", description: "Its own loot tables and resource rates (Athena/Events/SolidGold tables)." },
-  { id: "skySupply", quest: "athenaevent30_playmatches", name: "Sky Supply", playlistId: 30, eventFlag: "Event30", builds: [build30, build30], seasons: [3],
+  { id: "skySupply", quest: "athenaevent30_playmatches", name: "Sky Supply", playlistId: 30, queue: 30, eventFlag: null, builds: [build30, build30], seasons: [3],
     original: null,
     teams: "100 Teams × 1", description: "Solo, with its own loot and game data (Athena/Events/SkySupply tables)." },
-  { id: "shotguns", quest: "athenaevent31_playmatches", name: "Shotguns", playlistId: 31, eventFlag: "Event31", builds: [build30, build30], seasons: [3],
+  { id: "shotguns", quest: "athenaevent31_playmatches", name: "Shotguns", playlistId: 31, queue: 31, eventFlag: null, builds: [build30, build30], seasons: [3],
     original: null,
     teams: "100 Teams × 4", description: "Shotguns only (Athena/Events/Shotguns tables)." }
 ];
 export const ltmIds = ltms.map(({ id }) => id);
 const byId = new Map(ltms.map((ltm) => [ltm.id, ltm]));
 export const ltmOfPlaylist = (playlistId) => ltms.find((ltm) => ltm.playlistId === Number(playlistId)) ?? null;
-// The event queue's number of each event playlist ({12: 5, 13: 2, 14: 3, 15: 1, 16: 6, 17: 4, 18: 7, 19: 8}): the
-// matchmaking button's AthenaEvent<N> → playlist switch read backwards, so the N of the playlist's
+// The event queue's number of each event playlist ({12: 5, 13: 2, 14: 3, 15: 1, 16: 6, 17: 4, 18: 7, 19: 8}, and 3.0's
+// N: N from 22 on): the matchmaking button's AthenaEvent<N> → playlist switch read backwards, so the N of the playlist's
 // Athena.Playlist.Event.<N> and complete_athena_event_<N>.
-export const eventQueueOfPlaylist = Object.fromEntries(ltms.filter((ltm) => ltm.eventFlag)
-  .map((ltm) => [ltm.playlistId, Number(ltm.eventFlag.slice("Event".length))]));
+export const eventQueueOfPlaylist = Object.fromEntries(ltms.filter((ltm) => ltm.queue).map((ltm) => [ltm.playlistId, ltm.queue]));
 
 const inRange = ([first, last], build) => Number(build) >= first && Number(build) <= last;
 const seasonOf = (build) => (Number(build) >= build30 ? 3 : Number(build) >= build111 ? 2 : 1);
@@ -207,6 +216,11 @@ export function ltmOn(id, build, settingsValue = settingsProvider(), now = new D
 export const ltmEventFlags = (build, settingsValue, now = new Date()) =>
   ltms.filter((ltm) => ltm.eventFlag && ltmOn(ltm.id, build, settingsValue, now)).map((ltm) => ltm.eventFlag);
 
+// The event queues past AthenaEvent8 the build's lobby offers now (3.0's), which have no event flag: the DefaultGame.ini
+// hotfix sets their UFortGlobals bEvent<N>ForceEnabled.
+export const ltmForcedQueues = (build, settingsValue = settingsProvider(), now = new Date()) =>
+  ltms.filter((ltm) => ltm.queue && !ltm.eventFlag && ltmOn(ltm.id, build, settingsValue, now)).map((ltm) => ltm.queue);
+
 // The event quests of the LTMs the requesting build offers now (running) or doesn't (events/fiftyfifty.js
 // athenaEventQuestsOf).
 export const ltmQuests = ({ running }, build = currentBuild(), now = new Date()) =>
@@ -237,6 +251,7 @@ export function ltmSchedule(settingsValue, now = new Date()) {
       name: ltm.name,
       playlistId: ltm.playlistId,
       eventFlag: ltm.eventFlag,
+      queue: ltm.queue ?? null,
       seasons: ltm.seasons,
       builds: buildRange(ltm.builds),
       teams: ltm.teams,

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { eventQueueOfPlaylist, hasLtm, inOriginalWindow, ltmEventFlags, ltmModes, ltmOn, ltms, ltmSchedule } from "../src/events/ltms.js";
+import { eventQueueOfPlaylist, hasLtm, inOriginalWindow, ltmEventFlags, ltmForcedQueues, ltmModes, ltmOn, ltms, ltmSchedule } from "../src/events/ltms.js";
 import { playlistTeamsOf } from "../src/matchmaking/service.js";
 import { dedicatedServerToken, post, send, startBackend, userLogin } from "./helpers.js";
 
@@ -134,17 +134,21 @@ test("3.0's LTMs are its playlist classes: no 50v50 or Shooting Test, duo Skies,
   for (const id of ["fiftyFifty", "shootingTest"]) assert.deepEqual([v25, v30].map((build) => hasLtm(id, build)), [true, false], id);
   assert.deepEqual(playlistTeamsOf(`${v30}:0:NA:16`, v30), { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 });
   assert.deepEqual(playlistTeamsOf(`${v25}:0:NA:16`, v25), { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 });
-  const added = { fiveByTwenty: [22, "Event22", { maxTeamCount: 5, maxTeamSize: 20, maxSquadSize: 4 }],
-    highJump: [23, "Event23", { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 }],
-    useItOrLoseIt: [25, "Event25", { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }],
-    steadyStorm: [26, "Event26", { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 }],
-    solidGold: [27, "Event27", { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }],
-    skySupply: [30, "Event30", { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 }],
-    shotguns: [31, "Event31", { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }] };
-  for (const [id, [playlist, flag, teams]] of Object.entries(added)) {
+  const added = { fiveByTwenty: [22, { maxTeamCount: 5, maxTeamSize: 20, maxSquadSize: 4 }],
+    highJump: [23, { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 }],
+    useItOrLoseIt: [25, { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }],
+    steadyStorm: [26, { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 }],
+    solidGold: [27, { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }],
+    skySupply: [30, { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 }],
+    shotguns: [31, { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }] };
+  for (const [id, [playlist, teams]] of Object.entries(added)) {
     assert.deepEqual([v25, v30].map((build) => hasLtm(id, build)), [false, true], id);
     assert.equal(ltmOn(id, v30, { matchmakingModes: {} }), false, id);
-    assert.deepEqual(ltmEventFlags(v30, { matchmakingModes: { [id]: true } }), [flag], id);
+    // 3.0's queues past AthenaEvent8 have no event flag (GetStringNameOfEventPlaylist, 0x2719BE0): each is forced on by
+    // UFortGlobals' bEvent<N>ForceEnabled, N its playlist (the button's switch, 0xD660F0).
+    assert.deepEqual(ltmEventFlags(v30, { matchmakingModes: { [id]: true } }), [], id);
+    assert.deepEqual(ltmForcedQueues(v30, { matchmakingModes: { [id]: true } }), [playlist], id);
+    assert.equal(eventQueueOfPlaylist[playlist], playlist, id);
     assert.deepEqual(playlistTeamsOf(`${v30}:0:NA:${playlist}`, v30), teams, id);
     const listed = ltmSchedule({}).list.find((ltm) => ltm.id === id);
     assert.deepEqual([listed.seasons, listed.builds, listed.original], [[3], "3.0", null], id);
