@@ -116,3 +116,25 @@ export function addPageItem(session, id) {
 }
 
 export const isUnlocked = (session, id) => Boolean(findPageItem(session.profile(bookData().pages[id].profile), id));
+
+// The special pages nothing in the data grants (homebaseonboarding's hidden rewards unlock the standard pages only; no
+// quest, card pack or book reward names a PageSpecial_* page) and no running event gives (events/fortnitemares.js,
+// events/winter2017.js): Epic's servers gave them when their items arrived, and accounts kept them. Each is given to
+// every book profile of a build whose data has the page (profiles/setup.js), when the book first loads there:
+// - the first Storm Zone's (from 1.7.2's data, the first with a book): the Hydraulic weapons, ore and crystal
+//   ("Storm Zone Items", CollectionCategoryTable HydraulicWeapons), and the Storm Zone heroes;
+// - the Scavenger weapons, ore and crystal, and the Scavenger heroes ("Scavenger Items", from 1.7.2's data);
+// - the Vindertech weapons, ranged and melee, ore and crystal ("Vindertech", StormZone2: from 1.9's data, which
+//   already has their schematics, ahead of 1.9.1's Mutant Storms);
+// - Spring It On!'s Lunar New Year: its Dragon weapons, ore and crystal, and its heroes (2.5's data: "Each Llama will
+//   contain a Lunar New Years Hero, or a Dragon weapon").
+export const specialPages = [
+  "PageSpecial_Hydraulic", "PageSpecial_Hydraulic_Crystal", "PageSpecial_StormZone_Heroes",
+  "PageSpecial_Scavenger", "PageSpecial_Scavenger_Crystal", "PageSpecial_Scavenger_Heroes",
+  "PageSpecial_Weapons_Ranged_StormZone2", "PageSpecial_Weapons_Ranged_StormZone2_Crystal",
+  "PageSpecial_Weapons_Melee_StormZone2", "PageSpecial_Weapons_Melee_StormZone2_Crystal",
+  "PageSpecial_Weapons_ChineseNewYear2018", "PageSpecial_Weapons_Crystal_ChineseNewYear2018", "PageSpecial_ChineseNewYear2018_Heroes"
+];
+
+// The requesting build's special pages, where its data has them.
+export const specialBookPages = () => specialPages.map(pageId).filter(Boolean);

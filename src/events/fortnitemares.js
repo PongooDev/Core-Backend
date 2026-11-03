@@ -1,4 +1,4 @@
-import { pageId } from "../collectionbook/pages.js";
+import { pageId, specialBookPages } from "../collectionbook/pages.js";
 import { getQuest } from "../gamedata/quests.js";
 import { fortnitemares, isEventActive } from "./events.js";
 import { mutantStorms2018EventQuests, mutantStormsEventQuests } from "./mutantstorms.js";
@@ -46,8 +46,8 @@ export function eventQuests() {
 // book profile of a build that runs the event (profiles/setup.js), when the book first loads there.
 export const fortnitemaresPages = ["PageSpecial_Halloween2017_Heroes", "PageSpecial_Halloween2017_Workers"];
 
-// The requesting build's event pages: Fortnitemares' when the event runs there, and Survive the Holidays' wherever the
-// data has them (events/winter2017.js).
+// The requesting build's special pages: Fortnitemares' when the event runs there, and Survive the Holidays'
+// (events/winter2017.js) and the rest nothing grants (collectionbook/pages.js) wherever the data has them.
 export function eventBookPages() {
-  return [...(isEventActive(fortnitemares) ? fortnitemaresPages.map(pageId).filter(Boolean) : []), ...winterBookPages()];
+  return [...(isEventActive(fortnitemares) ? fortnitemaresPages.map(pageId).filter(Boolean) : []), ...winterBookPages(), ...specialBookPages()];
 }

@@ -21,7 +21,7 @@ test("1.11 and later books have the Vacuum Tube weapons' and holiday heroes' pag
   try {
     const query = async (changelist, player, profileId) =>
       (await as(changelist, backend.port, route(player, "QueryProfile", profileId), player.token, {})).body.profileChanges[0].profile;
-    const pages = (profile) => Object.values(profile.items).filter((item) => item.templateId.startsWith("CollectionBookPage:"))
+    const pages = (profile) => Object.values(profile.items).filter((item) => item.templateId.includes("Winter2017"))
       .map((item) => item.templateId).sort();
 
     for (const build of ["1.11", "2.4", "2.5"]) {

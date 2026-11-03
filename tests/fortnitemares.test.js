@@ -290,15 +290,16 @@ test("1.8's collection book has the Fortnitemares pages, and their heroes and su
       const response = await as(changelist, backend.port, "POST", route(player, "QueryProfile", profileId), player.token, {});
       return response.body.profileChanges[0].profile;
     };
-    const pages = (profile) => Object.values(profile.items).filter((item) => item.templateId.startsWith("CollectionBookPage:"))
+    // The Fortnitemares pages (the special pages nothing grants come wherever the data has them, collectionbook.test.js).
+    const pages = (profile) => Object.values(profile.items).filter((item) => item.templateId.startsWith("CollectionBookPage:PageSpecial_Halloween2017"))
       .map((item) => item.templateId);
     const halloween = ["CollectionBookPage:PageSpecial_Halloween2017_Heroes", "CollectionBookPage:PageSpecial_Halloween2017_Workers"];
 
     const player = await userLogin(backend.port, "MaresBook");
     assert.deepEqual(pages(await query(builds["1.8"], player, "collection_book_people0")), halloween);
     assert.deepEqual(pages(await query(builds["1.8"], player, "collection_book_schematics0")), []);
-    assert.deepEqual(profileOf(await mcp(builds["1.8"], backend.port, player, "QueryProfile")).stats.attributes.collection_book.pages,
-      ["PageSpecial_Halloween2017_Heroes", "PageSpecial_Halloween2017_Workers"]);
+    assert.deepEqual(profileOf(await mcp(builds["1.8"], backend.port, player, "QueryProfile")).stats.attributes.collection_book.pages
+      .filter((id) => id.startsWith("PageSpecial_Halloween2017")), ["PageSpecial_Halloween2017_Heroes", "PageSpecial_Halloween2017_Workers"]);
     // Loading the book again adds nothing.
     assert.deepEqual(pages(await query(builds["1.8"], player, "collection_book_people0")), halloween);
 
