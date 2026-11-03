@@ -184,7 +184,7 @@ test("2.5 turns each 1,000 Storm Tickets into a Storm Llama and up to 3,000 Seas
 }));
 
 // The Crossbow, Minigun, Chug Jug, Impulse Grenade, SMG and Revolver changes of 2.5's notes are in its tables.
-test("2.5's loot ships its notes' changes and 2.4.2's Crossbow, so it takes no content update", () => {
+test("2.5's loot ships its notes' changes and the Crossbow, so it takes no content update", () => {
   const shipped = inBuild(v25, athenaLootTables);
   assert.equal(shipped[packages]["WorldList.AthenaLoot.Weapon.Crossbow.01"].Weight, 1);
   assert.equal(shipped[packages]["WorldList.AthenaLoot.Weapon.Crossbow.02"].Weight, 0.25);
@@ -196,6 +196,6 @@ test("2.5's loot ships its notes' changes and 2.4.2's Crossbow, so it takes no c
   for (const row of ["01", "02", "03"]) assert.equal(shipped[packages][`WorldList.AthenaLoot.Weapon.SMG.${row}`].Weight, 0, row);
   assert.deepEqual(inBuild(v25, () => contentUpdateStates(now, { mode: "season" })), []);
   assert.deepEqual(inBuild(v25, () => updatedLootTables(now)), {});
-  // 2.4.2 still takes its Crossbow.
-  assert.deepEqual(inBuild(v242, () => contentUpdateStates(now, { mode: "season" })).map(({ id }) => id), ["crossbow"]);
+  // 2.4.2 takes none: its paks lack the Crossbow (build242.test.js).
+  assert.deepEqual(inBuild(v242, () => contentUpdateStates(now, { mode: "season" })), []);
 });

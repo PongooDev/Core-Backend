@@ -23,8 +23,9 @@ import { buildGameData } from "../gamedata/read.js";
 //   2.4.2's notes' changes, which 2.4.2's ShootingModel2 doesn't ("Shotgun headshot
 //   damage increased to 200% (was 150%)", "Scoped Assault Rifle is now 100% accurate when zoomed in": SpreadDownsights
 //   0, "Scoped Assault Rifle no longer has damage fall-off"). So 2.4.2 played ShootingModel3: bShootingTest3Enabled was
-//   on. Each build gets the hotfix that brings its table to the next build's ([AssetHotfix], the table whole, with
-//   2.5's Crossbow rows for 2.4.2's Crossbow), and bShootingTest3Enabled.
+//   on. Each build gets the hotfix that brings its table to the next build's ([AssetHotfix], the table whole; 2.5's
+//   Crossbow rows come along unused, as 2.4.2's Crossbow items read the Bolt-Action Sniper's rows and drop from no
+//   loot table, events/contentupdates.js), and bShootingTest3Enabled.
 // - "The Shooting Test #1 Limited-Time Mode has been switched to Solo only" (2.4.2's notes). The servers' own team table
 //   still makes 15 a squads playlist (GetMaxTeamInfoForPlaylist, 2.4.2 0x7F3790, 2.5 0xD49FA0: 100 teams of 4), so the
 //   matchmaking service made the teams: from 2.4.2 each player is a team of their own, as in Solo; 2.4's are squads.

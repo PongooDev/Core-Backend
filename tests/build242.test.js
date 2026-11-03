@@ -23,7 +23,7 @@ import { worldInfo } from "../src/world/theaters.js";
 
 // Fortnite 2.4.2 (++Fortnite+Release-Next-CL-3870737, UE 4.19, 8 February 2018): its own game data (2.4's with the
 // Minigun and the Suppressed Pistol's cut in its tables, the Crossbow's items, Alpine Ace, the Cozy Campfire trap and the
-// People Run and Trap Run expeditions) and version, still Season 2, 2.4's storms running on, and its notes' Crossbow.
+// People Run and Trap Run expeditions) and version, still Season 2, and 2.4's storms running on.
 const v242 = "3870737";
 const v24 = "3858292";
 const v111 = "3807424";
@@ -87,33 +87,19 @@ test("2.4.2's Event Store sells the Cozy Campfire 2.4's notes name; 2.4's, witho
   assert.deepEqual(special(v24), ["ConversionControl:cck_ranged_assault_hydra_consumable_sr", "Hero:hid_constructor_rushbase_f_sr_t01"]);
 });
 
-// "Crossbow: ... Found from floor loot and treasure chests. This weapon comes in both Rare and Epic variants."
-test("2.4.2's loot: the Minigun and the Suppressed Pistol's cut shipped in, the Crossbow as a hotfix of its own", () => {
+// "Crossbow: ... Found from floor loot and treasure chests." 2.4.2's paks have only the Wiki's unused early Crossbow (the
+// Bolt-Action Sniper's stats and Heavy Bullets), so its loot stays as shipped; 2.5 ships the real one in its tables.
+test("2.4.2's loot: the Minigun and the Suppressed Pistol's cut shipped in, and no Crossbow", () => {
   const shipped = inBuild(v242, athenaLootTables);
   assert.equal(shipped[packages]["WorldList.AthenaLoot.Weapon.LMG.01"].Weight, 0.6);
   assert.equal(shipped[packages]["WorldList.AthenaLoot.Weapon.SMG.10"], undefined);
   assert.equal(shipped[packages]["WorldList.AthenaLoot.Weapon.SuppressedHandgun.02"].Weight, 0.012);
   assert.equal(shipped[tiers]["Loot_AthenaSupplyDrop_02"].Weight, 1);
   assert.ok(!JSON.stringify(shipped).includes("Crossbow"));
-  assert.deepEqual(inBuild(v242, () => contentUpdateStates(now, { mode: "season" })).map(({ id, on, why }) => [id, on, why]), [["crossbow", true, "shipped"]]);
-
-  const updated = inBuild(v242, () => updatedLootTables(now));
-  assert.deepEqual(Object.keys(updated), [packages]);
-  const names = updated[packages].map(({ Name }) => Name);
-  const at = names.indexOf("WorldList.AthenaLoot.Weapon.Sniper.05");
-  assert.deepEqual(names.slice(at, at + 3), ["WorldList.AthenaLoot.Weapon.Sniper.05", "WorldList.AthenaLoot.Weapon.Sniper.06", "WorldList.AthenaLoot.Weapon.Sniper.07"]);
-  assert.equal(names.length, Object.keys(shipped[packages]).length + 2);
-  const rows = Object.fromEntries(updated[packages].map(({ Name, ...row }) => [Name, row]));
-  assert.deepEqual(rows["WorldList.AthenaLoot.Weapon.Sniper.06"], { ...shipped[packages]["WorldList.AthenaLoot.Weapon.Sniper.05"], Weight: 1,
-    ItemDefinition: "/Game/Athena/Items/Weapons/WID_Sniper_Crossbow_Athena_R_Ore_T03_2.WID_Sniper_Crossbow_Athena_R_Ore_T03_2",
-    Annotation: ";List:WorldList.AthenaLoot.Weapon.Sniper.C0;Item:WID.Sniper.Crossbow.Athena.R.Ore.T03.2" });
-  assert.equal(rows["WorldList.AthenaLoot.Weapon.Sniper.07"].Weight, 0.25);
-  assert.match(rows["WorldList.AthenaLoot.Weapon.Sniper.07"].ItemDefinition, /WID_Sniper_Crossbow_Athena_VR_Ore_T03$/);
-  assert.equal(rows["WorldList.AthenaLoot.Weapon.Sniper.07"].LootPackageID, "WorldList.AthenaLoot.Weapon.Sniper");
-  const section = inBuild(v242, () => lootHotfixSection(now));
-  assert.ok(section.startsWith("[AssetHotfix]"));
-  assert.ok(section.includes("WID_Sniper_Crossbow_Athena_VR_Ore_T03"));
-  // 2.4 still takes its own two, and no Crossbow.
+  assert.deepEqual(inBuild(v242, () => contentUpdateStates(now, { mode: "season" })), []);
+  assert.deepEqual(inBuild(v242, () => updatedLootTables(now)), {});
+  assert.equal(inBuild(v242, () => lootHotfixSection(now)), "");
+  // 2.4 still takes its own two.
   assert.deepEqual(inBuild(v24, () => contentUpdateStates(now, { mode: "season" })).map(({ id }) => id), ["minigun", "suppressedPistolNerf"]);
 });
 

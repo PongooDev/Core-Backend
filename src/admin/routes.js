@@ -1102,12 +1102,12 @@ export function adminRoutes(context) {
 
     // Season 2's content updates (events/contentupdates.js): each one's state on 1.11 and on 2.1, without starting the
     // season. 2.2 ships them in its own loot tables, so it takes none; 2.3 takes its own, the Chug Jug,
-    // and 2.4 its own, the Minigun and the Suppressed Pistol's cut (its tables have the Chug Jug in), and 2.4.2 its own,
-    // the Crossbow (its tables have 2.4's in). 2.5's tables have every one in, so it takes none.
+    // and 2.4 its own, the Minigun and the Suppressed Pistol's cut (its tables have the Chug Jug in). 2.4.2's tables have
+    // 2.4's in and its paks lack its notes' Crossbow, and 2.5's tables have every one and the Crossbow in, so they take none.
     const contentUpdates = withoutSeasonStartRecording(() => ({
       config: eventsConfig.contentUpdates ?? defaultContentUpdates,
       seasonDate: inBuild("3807424", () => seasonMoment(now, shopConfig, 2).toISOString()),
-      builds: [["1.11", "3807424"], ["2.1", "3825894"], ["2.3", "3847564"], ["2.4", "3858292"], ["2.4.2", "3870737"]].map(([version, cl]) => ({
+      builds: [["1.11", "3807424"], ["2.1", "3825894"], ["2.3", "3847564"], ["2.4", "3858292"]].map(([version, cl]) => ({
         version, cl: Number(cl), updates: inBuild(cl, () => contentUpdateStates(now, eventsConfig.contentUpdates))
       }))
     }));

@@ -196,8 +196,7 @@ test("DefaultGame.ini ends with the loot hotfix for 2.1, and for 1.11 by the adm
       ["1.11", ["smallShieldPotion:true:all", "boogieBomb:false:off", "suppressedPistol:true:all"]],
       ["2.1", ["smallShieldPotion:true:shipped", "boogieBomb:true:shipped", "suppressedPistol:true:shipped", "cozyCampfire:true:shipped"]],
       ["2.3", ["chugJug:true:shipped"]],
-      ["2.4", ["minigun:true:shipped", "suppressedPistolNerf:true:shipped"]],
-      ["2.4.2", ["crossbow:true:shipped"]]
+      ["2.4", ["minigun:true:shipped", "suppressedPistolNerf:true:shipped"]]
     ]);
     assert.ok((await get(backend.port, "/admin")).body.includes("Season 2 Content Updates"));
   } finally {
