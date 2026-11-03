@@ -138,6 +138,20 @@ test("Season 3's challenges: the pass's schedule unlocks a week at a time, its q
   assert.equal(itemsOf(tracker, "ChallengeBundleSchedule").length, 2);
 }));
 
+// Core-Backend #214: the gameserver sends these as UpdateQuests (CoreV2 c02db34: AthenaOutlive when another player is
+// out, RevivePlayer to the teammate who revived; Interact for a chest), none of them counted from the match results.
+test("Season 3's outlive, revive and chest challenges move with the gameserver's UpdateQuests", () => withSession("outlive30", (session) => {
+  const tracker = session.profile("athena");
+  const outlive = grantAthenaQuest(tracker, "quest_br_outlive");
+  const chests = grantAthenaQuest(tracker, "quest_br_interact_chests_location_pleasantpark");
+  advanceAthenaObjectives(session, [{ statName: "battlepass_athena_outlive_players", count: 37 },
+    { statName: "battlepass_interact_athena_treasurechest_pleasantpark", count: 2 }]);
+  assert.equal(tracker.profile.items[outlive].attributes.completion_battlepass_athena_outlive_players, 37);
+  assert.equal(tracker.profile.items[chests].attributes.completion_battlepass_interact_athena_treasurechest_pleasantpark, 2);
+  recordMatchProgress(session, 2, { place: 1, kills: 3 });
+  assert.equal(tracker.profile.items[outlive].attributes.completion_battlepass_athena_outlive_players, 37);
+}));
+
 test("Land at different named locations is done at 10 of its 18 objectives", () => withSession("landing30", (session) => {
   assert.equal(inBuild(v30, () => getAthenaQuest("quest_br_land_locations_different")).objectiveCompletionCount, 10);
 }));
