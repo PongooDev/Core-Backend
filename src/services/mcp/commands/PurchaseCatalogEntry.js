@@ -7,6 +7,7 @@ import { grant, itemEvent } from "../../../profiles/progress.js";
 import { findOffer } from "../../../store/catalog.js";
 import { eventPurchases, recordEventPurchase } from "../../../store/eventstore.js";
 import { stormTickets, upgradeLlamaTickets } from "../../../events/mutantstorms.js";
+import { firecrackerTickets, upgradeLlamaFirecrackers } from "../../../events/spring2018.js";
 
 // V-Bucks are spread over these stacks; the cheapest kinds go first.
 const mtxCurrencies = ["Currency:mtxcomplimentary", "Currency:mtxgiveaway", "Currency:mtxpurchasebonus", "Currency:mtxpurchased"];
@@ -122,5 +123,7 @@ export function purchaseCatalogEntry({ req, session, notifications }) {
   if (offer.templateId.toLowerCase().startsWith("cardpack:")) itemEvent(session, ["PurchaseCardPack"], offer.templateId, count);
   const tickets = upgradeLlamaTickets(offer, count);
   if (tickets) items.push(...grant(session, stormTickets, tickets).map(lootEntry));
+  const firecrackers = upgradeLlamaFirecrackers(offer, count);
+  if (firecrackers) items.push(...grant(session, firecrackerTickets, firecrackers).map(lootEntry));
   notifications.push({ type: "CatalogPurchase", primary: true, lootResult: { items } });
 }

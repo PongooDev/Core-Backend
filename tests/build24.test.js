@@ -68,8 +68,8 @@ test("2.4 is still Season 2 with 1.11 to 2.3: its Battle Pass, clock, shop and t
   const season = inBuild(v24, athenaSeason);
   assert.equal(season.seasonNumber, 2);
   assert.deepEqual(season, inBuild(v23, athenaSeason));
-  // Season 2's newest data is 2.4.2's since (build242.test.js).
-  assert.equal(buildOfSeason(2), "3870737");
+  // Season 2's newest data is 2.5's since (build25.test.js).
+  assert.equal(buildOfSeason(2), "3889387");
   assert.equal(inBuild(v24, () => seasonEnd(now, { rotationHour: 0 })).toISOString(), inBuild(v111, () => seasonEnd(now, { rotationHour: 0 })).toISOString());
   const config = { mode: "custom", custom: { featured: [["AthenaGlider:glider_prismatic", 800]], daily: [["AthenaPickaxe:skiicepickaxe", 800]] } };
   assert.deepEqual(inBuild(v24, () => itemShopOffers(now, config)), inBuild(v23, () => itemShopOffers(now, config)));
@@ -90,7 +90,9 @@ test("2.4 runs the Mutant Storms and Mini-Bosses on, on its own flags, with 50v5
   assert.ok(isEventActive(mutantStorms2018, v24));
   assert.ok(!isEventActive("EventFlag.PassiveMiniBosses", v24));
   assert.ok(!isEventActive(mutantStorms, v24));
-  for (const event of [winter2017, passiveStorms]) assert.ok(hasEventEnded(event, v24), event);
+  for (const event of [winter2017, passiveStorms]) assert.ok(!isEventActive(event, v24), event);
+  // Survive the Holidays is over for good; the ticketless storms come back with 2.5 (build25.test.js).
+  assert.ok(hasEventEnded(winter2017, v24));
   // The storms' own quest line, in place of the FirstStorm and winter quests.
   assert.deepEqual(inBuild(v24, eventQuests), ["mutantstormsquest_2018_completestormzones_1", "mutantstormsquest_2018_killenragedhusks_1",
     "mutantstormsquest_2018_killexplodingdeathbursthusks_1", "mutantstormsquest_2018_killquickenedhusks_1", "mutantstormsquest_2018_killhuskstraps",

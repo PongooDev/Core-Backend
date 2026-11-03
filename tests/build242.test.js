@@ -34,7 +34,7 @@ const tiers = "/Game/Items/Datatables/AthenaLootTierData_Client.AthenaLootTierDa
 test("2.4.2 is known by its version and plays on its own game data", () => {
   assert.equal(versionOf(v242), "2.4.2");
   assert.equal(dataBuild(v242), v242);
-  assert.equal(battleRoyaleBuilds.at(-1), v242);
+  assert.ok(battleRoyaleBuilds.includes(v242));
   const cosmetics = inBuild(v242, athenaCosmetics);
   assert.equal(cosmetics["AthenaCharacter:cid_053_athena_commando_m_skidude"].name, "Alpine Ace");
   assert.equal(inBuild(v24, athenaCosmetics)["AthenaCharacter:cid_053_athena_commando_m_skidude"], undefined);
@@ -49,7 +49,8 @@ test("2.4.2 is still Season 2 with 1.11 to 2.4: its Battle Pass, clock, shop and
   const season = inBuild(v242, athenaSeason);
   assert.equal(season.seasonNumber, 2);
   assert.deepEqual(season, inBuild(v24, athenaSeason));
-  assert.equal(buildOfSeason(2), v242);
+  // Season 2's newest data is 2.5's since (build25.test.js).
+  assert.equal(buildOfSeason(2), "3889387");
   assert.equal(inBuild(v242, () => seasonEnd(now, { rotationHour: 0 })).toISOString(), inBuild(v111, () => seasonEnd(now, { rotationHour: 0 })).toISOString());
   const config = { mode: "custom", custom: { featured: [["AthenaGlider:glider_prismatic", 800]], daily: [["AthenaPickaxe:skiicepickaxe", 800]] } };
   assert.deepEqual(inBuild(v242, () => itemShopOffers(now, config)), inBuild(v24, () => itemShopOffers(now, config)));
@@ -67,7 +68,9 @@ test("2.4.2 takes the Season 2 rules: AssignMatch's six fields, the match start 
 test("2.4.2 runs 2.4's storms, Mini-Bosses and 50v50 on, and not the Valentine's quests its data already has", () => {
   assert.deepEqual(activeEventFlags(v242), ["EventFlag.ActiveStorms", activeMiniBosses, fiftyFifty]);
   assert.ok(isEventActive(mutantStorms2018, v242));
-  for (const event of [winter2017, passiveStorms]) assert.ok(hasEventEnded(event, v242), event);
+  for (const event of [winter2017, passiveStorms]) assert.ok(!isEventActive(event, v242), event);
+  // Survive the Holidays is over for good; the ticketless storms come back with 2.5 (build25.test.js).
+  assert.ok(hasEventEnded(winter2017, v242));
   assert.deepEqual(inBuild(v242, eventQuests), inBuild(v24, eventQuests));
   assert.ok(inBuild(v242, eventQuests).every((questId) => !questId.startsWith("lovequest")));
   assert.equal(inBuild(v242, () => missionAlertRow("MissionAlert_MiniBossCategory_01").requiredEventFlag), activeMiniBosses);

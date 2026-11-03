@@ -1079,7 +1079,8 @@ export function adminRoutes(context) {
       { version: "2.2", cl: 3841827, event: "Survive the Holidays" },
       { version: "2.3", cl: 3847564, event: "Mutant Storms" },
       { version: "2.4", cl: 3858292, event: "Mutant Storms" },
-      { version: "2.4.2", cl: 3870737, event: "Mutant Storms" }
+      { version: "2.4.2", cl: 3870737, event: "Mutant Storms" },
+      { version: "2.5", cl: 3889387, event: "Spring It On!" }
     ];
 
     const sampleBuilds = builds.map((b) => ({
@@ -1102,7 +1103,7 @@ export function adminRoutes(context) {
     // Season 2's content updates (events/contentupdates.js): each one's state on 1.11 and on 2.1, without starting the
     // season. 2.2 ships them in its own loot tables, so it takes none; 2.3 takes its own, the Chug Jug,
     // and 2.4 its own, the Minigun and the Suppressed Pistol's cut (its tables have the Chug Jug in), and 2.4.2 its own,
-    // the Crossbow (its tables have 2.4's in).
+    // the Crossbow (its tables have 2.4's in). 2.5's tables have every one in, so it takes none.
     const contentUpdates = withoutSeasonStartRecording(() => ({
       config: eventsConfig.contentUpdates ?? defaultContentUpdates,
       seasonDate: inBuild("3807424", () => seasonMoment(now, shopConfig, 2).toISOString()),
@@ -1177,6 +1178,19 @@ export function adminRoutes(context) {
           llama: `Holiday Survival Llama (CardPack_Event_2017_Winter, ${eventsConfig.snowflakePerLlama ?? 1000} Snowflake Tickets)`,
           questsCount: 26,
           leftoverConversion: "1000 unspent Storm Tickets convert to 1 Vindertech Llama on 1.11+ load"
+        },
+        {
+          id: "spring2018",
+          name: "Spring It On!",
+          subtitle: "Valentine's & Lunar New Year Quests, Passive Storms & Mini-Bosses",
+          buildRange: "2.5 (CL 3889387)",
+          flags: ["EventFlag.Spring2018Valentines", "EventFlag.Spring2018Phase1", "EventFlag.PassiveStorms", "EventFlag.PassiveMiniBosses"],
+          theater: "Standard Zones with passive storm and Mini-Boss alerts",
+          alertsQuota: "3 Mini-Boss (General) mission alerts and 4 storms (no tickets) per day",
+          currency: "Firecracker Tickets (AccountResource:eventcurrency_spring), Spring It On! Gold in the Event Store",
+          llama: "Spring Llama (CardPack_Event_2018_Spring, 1000 Firecracker Tickets)",
+          questsCount: 19,
+          leftoverConversion: "1000 unspent Storm Tickets convert to 1 Storm Llama, and up to 3000 Seasonal Gold to Firecracker Tickets (3 to 1), on 2.5 load"
         }
       ]
     });

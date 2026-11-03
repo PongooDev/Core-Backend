@@ -67,8 +67,8 @@ test("2.3 is still Season 2 with 1.11 to 2.2: its Battle Pass, clock, shop and t
   const season = inBuild(v23, athenaSeason);
   assert.equal(season.seasonNumber, 2);
   assert.deepEqual(season, inBuild(v22, athenaSeason));
-  // Season 2's newest data is 2.4.2's since (build242.test.js).
-  assert.equal(buildOfSeason(2), "3870737");
+  // Season 2's newest data is 2.5's since (build25.test.js).
+  assert.equal(buildOfSeason(2), "3889387");
   assert.equal(inBuild(v23, () => seasonEnd(now, { rotationHour: 0 })).toISOString(), inBuild(v111, () => seasonEnd(now, { rotationHour: 0 })).toISOString());
   const config = { mode: "custom", custom: { featured: [["AthenaGlider:glider_prismatic", 800]], daily: [["AthenaPickaxe:skiicepickaxe", 800]] } };
   assert.deepEqual(inBuild(v23, () => itemShopOffers(now, config)), inBuild(v22, () => itemShopOffers(now, config)));
@@ -94,10 +94,9 @@ test("2.3 takes the Season 2 rules from 1.11 and 2.2: AssignMatch's six fields, 
 test("2.3 ends Survive the Holidays and brings the Mutant Storms back, with 50v50 still on", () => {
   assert.deepEqual(activeEventFlags(v23), ["EventFlag.ActiveStorms", fiftyFifty]);
   assert.ok(isEventActive(mutantStorms2018, v23));
-  for (const event of [winter2017, passiveStorms]) {
-    assert.ok(!isEventActive(event, v23), event);
-    assert.ok(hasEventEnded(event, v23), event);
-  }
+  for (const event of [winter2017, passiveStorms]) assert.ok(!isEventActive(event, v23), event);
+  // Survive the Holidays is over for good; the ticketless storms come back with 2.5 (build25.test.js).
+  assert.ok(hasEventEnded(winter2017, v23));
   // The Vindertech storms aren't these: their quests and llama stay over.
   assert.ok(!isEventActive(mutantStorms, v23));
   assert.ok(!isEventActive(mutantStorms2018, v22));

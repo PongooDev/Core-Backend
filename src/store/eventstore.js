@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { isEventActive, mutantStorms2018, winter2017 } from "../events/events.js";
+import { isEventActive, mutantStorms2018, spring2018, winter2017 } from "../events/events.js";
 import { getItem } from "../gamedata/items.js";
 import { nextReplayOf, weeklyStoreEnd } from "./itemshop.js";
 
@@ -146,14 +146,34 @@ const stormsEventItems = [
   { templateId: "Schematic:sid_floor_campfire_sr_t01", price: 1680, limit: 1 }
 ];
 export const mutantStorms2018End = "2018-02-13T00:00:00.000Z";
+//
+// 2.5 (CL-3889387) keeps it for Spring It On! (events/spring2018.js), its gold now "Spring It On! Gold" ("Sprint It On!
+// Gold" in 2.5's data, the notes' known issue): "New, Spring it On!-themed items will appear in the store throughout the
+// event. Event store Items will appear, and remain available for purchase until the end of Spring It On!. Weekly store
+// items will only be available for the week in which they appear." Its one named item is "Heartbreaker Crossbow ...
+// Available in the Event Store for Seasonal Gold" (SID_Sniper_Crossbow_SR_Ore_T01, "Heartbreaker"). Beside it the store
+// sells 2.5's other Valentine's items no quest or llama gives, Snuggle Specialist Sarah (HID_Ninja_009_F_Valentine_SR)
+// and the Flame Grill Floor Trap (SID_Floor_FlameGrill_SR_T01), at a legendary hero's 2,800 and a legendary schematic's
+// 1,680, one each (🟡: the picks and prices are Core's). Its trackers are the event's own (Spring2018.*). The event items
+// count down to Season 2's last day (🟡: 2.5 was played until 3.0, 22 February 2018; the event ran on into Season 3).
+const springEventItems = [
+  { templateId: "Schematic:sid_sniper_crossbow_sr_ore_t01", price: 1680, limit: 1 },
+  { templateId: "Hero:hid_ninja_009_f_valentine_sr_t01", price: 2800, limit: 1 },
+  { templateId: "Schematic:sid_floor_flamegrill_sr_t01", price: 1680, limit: 1 }
+];
+export const spring2018End = "2018-02-22T00:00:00.000Z";
 const storms2018 = () => !isEventActive(winter2017) && isEventActive(mutantStorms2018);
-const eventItemsNow = () => (storms2018() ? stormsEventItems : eventItems);
-export const eventStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWSpecialEventStoreFront" : eventStoreInstance);
-export const weeklyStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWRotationalEventStorefront" : weeklyStoreInstance);
+const springNow = () => !isEventActive(winter2017) && !storms2018() && isEventActive(spring2018);
+const eventItemsNow = () => (storms2018() ? stormsEventItems : springNow() ? springEventItems : eventItems);
+export const eventStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWSpecialEventStoreFront"
+  : springNow() ? "Spring2018.STWSpecialEventStoreFront" : eventStoreInstance);
+export const weeklyStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWRotationalEventStorefront"
+  : springNow() ? "Spring2018.STWRotationalEventStorefront" : weeklyStoreInstance);
 
-// The store is open while the requesting build runs Survive the Holidays (or 2.3's to 2.4.2's storms) and its data has Seasonal
-// Gold.
-export const hasEventStore = () => (isEventActive(winter2017) || isEventActive(mutantStorms2018)) && Boolean(getItem(seasonalGold));
+// The store is open while the requesting build runs Survive the Holidays (or 2.3's to 2.4.2's storms, or 2.5's Spring It
+// On!) and its data has Seasonal Gold.
+export const hasEventStore = () => (isEventActive(winter2017) || isEventActive(mutantStorms2018) || isEventActive(spring2018))
+  && Boolean(getItem(seasonalGold));
 
 const has = ({ templateId }) => Boolean(getItem(templateId));
 const nameOf = (templateId) => templateId.split(":")[1].toLowerCase();
@@ -164,7 +184,8 @@ export const winter2017End = "2018-01-25T00:00:00.000Z";
 // The calendar's Event Store countdowns, none while it is closed.
 export function eventStoreEnds(now = new Date()) {
   if (!hasEventStore()) return {};
-  return { stwEventStoreEnd: nextReplayOf(storms2018() ? mutantStorms2018End : winter2017End, now), stwWeeklyStoreEnd: weeklyStoreEnd(now) };
+  const end = storms2018() ? mutantStorms2018End : springNow() ? spring2018End : winter2017End;
+  return { stwEventStoreEnd: nextReplayOf(end, now), stwWeeklyStoreEnd: weeklyStoreEnd(now) };
 }
 
 // The week the weekly items are for: the day their countdown (the calendar's stwWeeklyStoreEnd) ends, e.g. "20261104".

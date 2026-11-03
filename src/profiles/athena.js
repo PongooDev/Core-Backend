@@ -434,7 +434,7 @@ export function umbrellaTypeOf(accountId, hasWon, settings) {
   return founder ? "founder_glider" : null;
 }
 
-// From 1.11 (CL-3807424; 2.1 to 2.4.2 too) the locker has six emote slots (Emote 1 to Emote 6): EquipBattleRoyaleCustomization's indexWithinSlot
+// From 1.11 (CL-3807424; 2.1 to 2.5 too) the locker has six emote slots (Emote 1 to Emote 6): EquipBattleRoyaleCustomization's indexWithinSlot
 // (UFortMcpProfileAthena::EquipBattleRoyaleCustomization(SlotName, ItemToSlot, indexWithinSlot)) names the one, and the
 // loadout's emotes are a list (FFortAthenaLoadout Dances, a TArray<UAthenaDanceItemDefinition*>), so favorite_dance is
 // the six emotes' ids, "" for an empty slot, as Epic's athena profiles kept it from Season 2 on. 1.8 to 1.10 keep the one

@@ -85,8 +85,8 @@ test("2.2 is still Season 2: 2.1's levels, Battle Pass tiers and season clock, a
   assert.equal(season.seasonNumber, 2);
   const old = inBuild(v21, athenaSeason);
   for (const key of ["numBookLevels", "bookLevels", "storefront", "bookFreeRewards"]) assert.deepEqual(season[key], old[key], key);
-  // Season 2's newest data is 2.4.2's since (build242.test.js).
-  assert.equal(buildOfSeason(2), "3870737");
+  // Season 2's newest data is 2.5's since (build25.test.js).
+  assert.equal(buildOfSeason(2), "3889387");
   const now = new Date("2026-11-02T12:00:00Z");
   assert.equal(inBuild(v22, () => seasonEnd(now, { rotationHour: 0 })).toISOString(), inBuild(v111, () => seasonEnd(now, { rotationHour: 0 })).toISOString());
   const config = { mode: "custom", custom: { featured: [["AthenaGlider:glider_prismatic", 800]], daily: [["AthenaPickaxe:skiicepickaxe", 800]] } };

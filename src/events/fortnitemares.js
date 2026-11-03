@@ -2,6 +2,7 @@ import { pageId } from "../collectionbook/pages.js";
 import { getQuest } from "../gamedata/quests.js";
 import { fortnitemares, isEventActive } from "./events.js";
 import { mutantStorms2018EventQuests, mutantStormsEventQuests } from "./mutantstorms.js";
+import { springEventQuests } from "./spring2018.js";
 import { winterEventQuests } from "./winter2017.js";
 
 // Fortnitemares (Halloween 2017, 1.8): what the event gives on top of its flag (events/events.js).
@@ -29,10 +30,10 @@ export const fortnitemaresQuests = [
 export const candy = "AccountResource:eventcurrency_candy";
 
 // The requesting build's event quests, when the event runs there (and the Mutant Storms' and their 2.3 return's,
-// events/mutantstorms.js, and Survive the Holidays', events/winter2017.js).
+// events/mutantstorms.js, Survive the Holidays', events/winter2017.js, and Spring It On!'s, events/spring2018.js).
 export function eventQuests() {
   return [...(isEventActive(fortnitemares) ? fortnitemaresQuests.filter((questId) => getQuest(questId)) : []), ...mutantStormsEventQuests(),
-    ...winterEventQuests(), ...mutantStorms2018EventQuests()];
+    ...winterEventQuests(), ...mutantStorms2018EventQuests(), ...springEventQuests()];
 }
 
 // The event's collection book pages, the "Fortnitemares Items" category (CollectionCategoryTable Halloween2017): its

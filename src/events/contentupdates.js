@@ -45,6 +45,16 @@ import { currentEventsConfig } from "./events.js";
 //   the Crossbow in. Core's weights (🟡): the Rare at 1, half the Rare Bolt-Action Sniper's 2, the Epic at 0.25, the Epic
 //   Bolt-Action's. It shipped with the patch, so 2.4.2 always has it.
 //
+// 2.5 (CL-3889387) ships it and its own notes' loot changes in its tables, so it needs no update: the Crossbow in a list
+// of its own (WorldList.AthenaLoot.Weapon.Crossbow, WID_Sniper_Crossbow_Athena_R_Ore_T03 at 1 and _VR_Ore_T03 at 0.25;
+// chests at 0.1 through Loot_AthenaTreasure_06, the floor's Loot_AthenaFloorLoot_10 at 0.1; 2.4.2's _R_Ore_T03_2 is
+// gone), "Minigun drop chance decreased by 12.5%" (chests' Loot_AthenaTreasure_02 at 0.07, was 0.08), "Chug Jug drop
+// chance decreased by 15%" (WorldList.AthenaHighConsumables.06 at 0.17, was 0.2), the Impulse Grenade "Found in Treasure
+// Chests and Supply Drops only" (Athena_KnockGrenade, x3, at 0.3 in WorldList.AthenaHighConsumables, which chests and
+// supply drops call, 0 in the floor's WorldList.AthenaConsumables), "The Common/Uncommon/Rare SMG is rotating out"
+// (WorldList.AthenaLoot.Weapon.SMG.01-.03 at 0) and "Revolver now uses Medium ammo" (WorldPKG.AthenaLoot.Weapon.Revolver,
+// WorldList.AthenaLoot.Ammo.MediumRevolver).
+//
 // Epic's updates (the Fortnite Wiki's Season 2 pages and Epic's notes on them):
 // - 19 December 2017, 13:00 GMT, the Small Shield Potion update: the Small Shield Potion ("Drops in stacks of 3", "found in
 //   floor loot, treasure chests, and supply drops") and the trap usability update ("The Spike Trap, Wall Zapper, and
@@ -70,6 +80,7 @@ const build22 = 3841827;
 const build23 = 3847564;
 const build24 = 3858292;
 const build242 = 3870737;
+const build25 = 3889387;
 
 export const contentUpdates = [
   { id: "smallShieldPotion", name: "Small Shield Potion and the Damage Trap", at: "2017-12-19T13:00:00Z", firstBuild: season2, rows: [
@@ -108,7 +119,7 @@ export const contentUpdates = [
     [packages, "WorldList.AthenaLoot.Weapon.SuppressedHandgun.02", { Weight: 0.012 }]
   ] },
   // A row the shipped table lacks is added after the row "after" names, as a copy of it with the update's values.
-  { id: "crossbow", name: "Crossbow", at: "2018-02-08T00:00:00Z", firstBuild: build242, rows: [
+  { id: "crossbow", name: "Crossbow", at: "2018-02-08T00:00:00Z", firstBuild: build242, inTablesFrom: build25, rows: [
     [packages, "WorldList.AthenaLoot.Weapon.Sniper.06", {
       Weight: 1,
       ItemDefinition: "/Game/Athena/Items/Weapons/WID_Sniper_Crossbow_Athena_R_Ore_T03_2.WID_Sniper_Crossbow_Athena_R_Ore_T03_2",
@@ -155,7 +166,8 @@ export function contentUpdateStates(now = new Date(), config = null, build = cur
   const { mode, overrides } = configOf(config);
   const moment = number >= build21 ? null : seasonMoment(now, null, 2);
   // From 2.2 a build's own tables have the updates before it in; only its own patch's are left (2.3's Chug Jug, which
-  // 2.4's tables have in; 2.4's Minigun and Suppressed Pistol cut, which 2.4.2's have in; 2.4.2's Crossbow).
+  // 2.4's tables have in; 2.4's Minigun and Suppressed Pistol cut, which 2.4.2's have in; 2.4.2's Crossbow, which 2.5's
+  // have in).
   const inTables = (update) => number >= (update.inTablesFrom ?? (update.firstBuild <= build22 ? build22 : Infinity));
   return contentUpdates.filter((update) => number >= update.firstBuild && !inTables(update)).map((update) => {
     const shipped = number >= build21;

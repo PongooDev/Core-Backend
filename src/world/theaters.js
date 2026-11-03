@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { currentBuild } from "../builds/context.js";
-import { currentEventsConfig, isEventActive } from "../events/events.js";
+import { currentEventsConfig, isEventActive, passiveMiniBosses } from "../events/events.js";
 import { candy } from "../events/fortnitemares.js";
 import { miniBossesStay, mutantStorms, mutantStorms2018, stormTickets } from "../events/mutantstorms.js";
 import { snowflakeTickets, winter2017 } from "../events/winter2017.js";
@@ -135,7 +135,7 @@ function missionRewards(seed, tierGroupName, theaterId, rowName) {
   return { tierGroupName, items: items.map(({ itemType, quantity }) => ({ itemType, quantity })) };
 }
 
-// Seasonal Gold from every mission while the Event Store is open (1.11 to 2.4.2, store/eventstore.js): 1.11's "Play any
+// Seasonal Gold from every mission while the Event Store is open (1.11 to 2.5, store/eventstore.js): 1.11's "Play any
 // mission and earn Seasonal Gold", 2.3's "All missions will continue to award Seasonal Gold". The game's own pack for it
 // is ZCP_EventScaling_T01-T20 ("Seasonal Gold", "Special currency found throughout the world. Can be traded for items in
 // the Event Store."), one a mission tier as the XP packs: Mission_Select_T<nn> takes T<nn>, a storm shield defense
@@ -232,6 +232,13 @@ function rollMissions({ data, fixedMissions }, day, availableUntil) {
 // 2.4 (CL-3858292) runs the same storms and Mini-Bosses (events/events.js): its Mini-Boss rows wait for
 // EventFlag.ActiveMiniBosses, which its storms run, and its notes change neither the targets nor the rewards, so its map
 // is 2.3's. So is 2.4.2's (CL-3870737): its mission alert rows are 2.4's and its notes leave the storms alone.
+//
+// 2.5 (CL-3889387) ends them (events/events.js): "Both have returned to their lower "passive" levels of activity, and
+// neither awards event tickets. Up to 3 Mutant Storms in Stonewood, 10 in other locations. | Quota: 4 per day. Up to 3
+// Miniboss Alerts in Stonewood, 6 in other locations. | Quota: 3 per day." Its storms are its StormLowCategory rows
+// (EventFlag.PassiveStorms, quota 4, the zone's reagents), its Mini-Bosses its General rows (EventFlag.PassiveMiniBosses,
+// quota 3, the Mini-Boss modifier on the General alerts' V-Bucks and reagents), each theater placing up to its target of
+// each, as 2.3's targets were read (passiveStormTargets, passiveMiniBossTargets).
 const halloweenAlerts = "Halloween2017_MissionAlert";
 const stormTier = (tier) => (tier <= 5 ? 1 : tier <= 10 ? 2 : tier <= 15 ? 3 : 4);
 const zones = ["Stonewood", "Plankerton", "CanneyValley", "TwinePeaks"];
@@ -374,6 +381,9 @@ const stormTargets = [5, 15, 15, 15];
 // 2.3's (and 2.4's and 2.4.2's) storms and Mini-Bosses, by theater (see alertRewards above).
 const stormTargets2018 = [5, 25, 25, 25];
 const miniBossTargets2018 = [3, 6, 6, 6];
+// 2.5's passive storms and Mini-Bosses, by theater.
+const passiveStormTargets = [3, 10, 10, 10];
+const passiveMiniBossTargets = [3, 6, 6, 6];
 export const stormsSpread = (changelist = currentBuild()) => !(Number(changelist) >= fixedStormsBuild);
 
 function spreadStorm(data, missions, storm, dayStart, now, taken, availableUntil) {
@@ -413,9 +423,10 @@ function spreadStorm(data, missions, storm, dayStart, now, taken, availableUntil
 // Returns the alerts and when the theater's alerts next change (a storm's next spread, else the day's end).
 function rollAlerts({ data }, missions, day, dayStart, now, availableUntil) {
   const stormsMiniBosses = miniBossesStay();
+  const passive = isEventActive(passiveMiniBosses);
   const categories = isHexsylvania(data.uniqueId) ? ["HalloweenCategory"]
     : isSurvival(data.uniqueId) ? ["Survival3DayCategory", "Survival7DayCategory"]
-      : stormsMiniBosses ? ["StormLowCategory"] : ["GeneralCategory", "StormLowCategory", "MiniBossCategory"];
+      : stormsMiniBosses ? ["StormLowCategory"] : passive ? [] : ["GeneralCategory", "StormLowCategory", "MiniBossCategory"];
   const taken = new Set();
   const storms = [];
   const spreading = stormsSpread();
@@ -457,6 +468,15 @@ function rollAlerts({ data }, missions, day, dayStart, now, availableUntil) {
     if (stormsMiniBosses && zone) {
       for (let index = 0; index < miniBossTargets2018[zone - 1]; index++) {
         alerts.push(...place("MiniBossCategory", `${data.uniqueId}:${day}:alert:miniboss:${index}`, anyRow("MiniBossCategory")));
+      }
+    }
+    // 2.5's passive storms and Mini-Bosses (General alerts with the Mini-Boss modifier): the theater's targets.
+    if (passive && zone) {
+      for (let index = 0; index < passiveStormTargets[zone - 1]; index++) {
+        alerts.push(...place("StormLowCategory", `${data.uniqueId}:${day}:alert:passivestorm:${index}`, anyRow("StormLowCategory")));
+      }
+      for (let index = 0; index < passiveMiniBossTargets[zone - 1]; index++) {
+        alerts.push(...place("GeneralCategory", `${data.uniqueId}:${day}:alert:passiveminiboss:${index}`, anyRow("GeneralCategory")));
       }
     }
   }

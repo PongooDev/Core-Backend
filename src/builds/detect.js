@@ -3,7 +3,7 @@
 export const certBuild = "3532353";
 
 // The Fortnite version players call each build Core knows (as Core-Launcher's KnownBuilds), for what the client shows.
-export const buildVersions = { 3532353: "1.1", 3541083: "1.2", 3700114: "1.7.2", 3724489: "1.8", 3729133: "1.8.1", 3741772: "1.8.2", 3757339: "1.9", 3775276: "1.9.1", 3790078: "1.10", 3807424: "1.11", 3825894: "2.1", 3841827: "2.2", 3847564: "2.3", 3858292: "2.4", 3870737: "2.4.2" };
+export const buildVersions = { 3532353: "1.1", 3541083: "1.2", 3700114: "1.7.2", 3724489: "1.8", 3729133: "1.8.1", 3741772: "1.8.2", 3757339: "1.9", 3775276: "1.9.1", 3790078: "1.10", 3807424: "1.11", 3825894: "2.1", 3841827: "2.2", 3847564: "2.3", 3858292: "2.4", 3870737: "2.4.2", 3889387: "2.5" };
 
 export const versionOf = (changelist) => buildVersions[changelist] ?? null;
 
@@ -14,7 +14,8 @@ export const battleRoyaleBuilds = Object.keys(buildVersions).filter((changelist)
 // Battle Royale's seasons by the versions Epic shipped in them (Core-Backend #156): Season 1 was 1.8 to 1.10 here (its
 // athena profile's first build to its last), Season 2 1.11 (14 December 2017) to 2.5 (13 February 2018; 3.0 began Season
 // 3 on 22 February). This names a season's whole range, not the builds Core plays: of Season 2, Core knows 1.11, 2.1, 2.2,
-// 2.3, 2.4 and 2.4.2 (buildVersions), and a later 2.x build plays on 2.4.2's data (src/gamedata/read.js), whose AthenaSeason2 makes it Season 2.
+// 2.3, 2.4, 2.4.2 and 2.5 (buildVersions), Season 2's last. 2.5's data has an AthenaSeason3 ahead of its season, a copy
+// of AthenaSeason2's tables, which the extractor passes over (tools/extractor), so its season is AthenaSeason2's.
 export const battleRoyaleSeasons = [
   { season: 1, firstVersion: "1.8", lastVersion: "1.10" },
   { season: 2, firstVersion: "1.11", lastVersion: "2.5" }
