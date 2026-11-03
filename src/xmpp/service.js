@@ -63,7 +63,9 @@ export function createXmppService({ tokens, contactsOf = () => [], publicRooms =
   const online = new Map(); // accountId -> Map(resource -> connection)
   const connections = new Set();
   const serverRooms = new Set(publicRooms.map((name) => name.toLowerCase()));
-  const rooms = createRooms({ reply, replyError, stanzaError, isPublic: (name) => serverRooms.has(name.toLowerCase()) });
+  const leaveWaiters = new Set(); // checks run after anyone leaves a room
+  const rooms = createRooms({ reply, replyError, stanzaError, isPublic: (name) => serverRooms.has(name.toLowerCase()),
+    onLeave: () => { for (const check of [...leaveWaiters]) check(); } });
 
   const resourcesOf = (accountId) => [...(online.get(accountId)?.values() ?? [])];
 
@@ -285,6 +287,22 @@ export function createXmppService({ tokens, contactsOf = () => [], publicRooms =
       for (const connection of resourcesOf(accountId)) connection.close("policy-violation");
     },
     roomOccupants: (name) => rooms.occupants(name),
+    // Resolves once none of an account's connections is in these rooms (names before @muc.): true when it had to wait
+    // for a leave, false when it wasn't in them or timeoutMs passed first.
+    leftRooms(accountId, names, timeoutMs) {
+      const inside = () => resourcesOf(accountId).some((connection) => names.some((name) => rooms.isIn(connection, name)));
+      if (!inside()) return Promise.resolve(false);
+      return new Promise((resolve) => {
+        const done = (left) => {
+          clearTimeout(timer);
+          leaveWaiters.delete(check);
+          resolve(left);
+        };
+        const check = () => { if (!inside()) done(true); };
+        const timer = setTimeout(() => done(false), timeoutMs);
+        leaveWaiters.add(check);
+      });
+    },
 
     // A service notification, as Epic's friends service sent them: a message from xmpp-admin@<domain> whose body is
     // {type, payload, timestamp} (read by XmppMessagesJingle; FOnlineFriendsMcp only takes them from xmpp-admin).

@@ -14,7 +14,8 @@ const ns = {
   discoItems: "http://jabber.org/protocol/disco#items"
 };
 
-export function createRooms({ reply, replyError, stanzaError, isPublic = () => false }) {
+// onLeave(connection, room) runs after an occupant has left a room (by presence, a new nick or disconnecting).
+export function createRooms({ reply, replyError, stanzaError, isPublic = () => false, onLeave = () => {} }) {
   const rooms = new Map();
   const key = (target) => `${target.local.toLowerCase()}@${target.domain.toLowerCase()}`;
 
@@ -39,10 +40,12 @@ export function createRooms({ reply, replyError, stanzaError, isPublic = () => f
 
   function leave(room, occupant) {
     room.occupants.delete(occupant.nick);
+    occupant.connection.rooms.delete(room.key);
     for (const other of [...room.occupants.values(), occupant]) {
       other.connection.send(occupantPresence(room, occupant, other.connection.jid, other === occupant ? [110] : [], "unavailable"));
     }
     if (!room.occupants.size) rooms.delete(room.key);
+    onLeave(occupant.connection, room);
   }
 
   function join(connection, presence, target) {
@@ -96,10 +99,7 @@ export function createRooms({ reply, replyError, stanzaError, isPublic = () => f
       if (type === "unavailable") {
         const room = rooms.get(key(target));
         const occupant = room && occupantOf(room, connection);
-        if (occupant) {
-          leave(room, occupant);
-          connection.rooms.delete(room.key);
-        }
+        if (occupant) leave(room, occupant);
         return;
       }
       if (type) return;
@@ -153,12 +153,17 @@ export function createRooms({ reply, replyError, stanzaError, isPublic = () => f
     },
 
     leaveAll(connection) {
-      for (const roomKey of connection.rooms) {
+      for (const roomKey of [...connection.rooms]) {
         const room = rooms.get(roomKey);
         const occupant = room && occupantOf(room, connection);
         if (occupant) leave(room, occupant);
       }
       connection.rooms.clear();
+    },
+
+    // Whether a connection is in a room, by its name on any muc domain.
+    isIn(connection, name) {
+      return [...connection.rooms].some((roomKey) => roomKey.startsWith(`${name.toLowerCase()}@`));
     },
 
     // How many are in a room, by its name on any muc domain.

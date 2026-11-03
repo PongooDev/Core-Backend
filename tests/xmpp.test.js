@@ -5,14 +5,14 @@ import http from "node:http";
 import net from "node:net";
 import { createStreamParser } from "../src/xmpp/xml.js";
 import { createXmppService } from "../src/xmpp/service.js";
-import { certUserAgent, send, startBackend, userLogin } from "./helpers.js";
+import { certUserAgent, post, send, startBackend, userLogin } from "./helpers.js";
 import { domain, login } from "./xmpp-client.js";
 
 // The service on its own server, with made-up tokens and a friends list.
 async function startXmpp(contacts = {}) {
   const sessions = Object.fromEntries(["alice", "bob", "carol"].map((id) => [`token-${id}`, { accountId: id }]));
   const xmpp = createXmppService({ tokens: { find: (token) => sessions[token] ?? null }, contactsOf: (id) => contacts[id] ?? [],
-    publicRooms: ["Global"], quiet: true });
+    publicRooms: ["Global", "GlobalBattleRoyale", "Founders"], quiet: true });
   const server = net.createServer((socket) => xmpp.handle(socket));
   server.listen(0, "127.0.0.1");
   await once(server, "listening");
@@ -316,5 +316,75 @@ test("a party joined in a zone stays as the clients made it: the backend sends n
     assert.equal(xmpp.xmpp.roomOccupants(`party-${partyId.toLowerCase()}`), 2);
   } finally {
     xmpp.close();
+  }
+});
+
+test("a general chat room can be left and joined again, and each join gets its own presence back", async () => {
+  const xmpp = await startXmpp();
+  const status = (presence) => presence.child("x", "http://jabber.org/protocol/muc#user").elements
+    .filter((element) => element.name === "status").map((element) => element.attrs.code);
+  try {
+    const alice = await xmpp.login("alice");
+    for (const room of [`GlobalBattleRoyale@muc.${domain}`, `Global@muc.${domain}`, `GlobalBattleRoyale@muc.${domain}`]) {
+      // As the client does it: the room name in lower case, the nick its account id.
+      const jid = `${room.toLowerCase()}/alice`;
+      alice.client.send(`<presence to="${jid}"><x xmlns="http://jabber.org/protocol/muc"/></presence>`);
+      const joined = await alice.client.next((stanza) => stanza.name === "presence");
+      assert.deepEqual([joined.attrs.from, joined.attrs.type, status(joined)], [jid, undefined, ["110"]]);
+      alice.client.send(`<presence to="${jid}" type="unavailable"/>`);
+      const left = await alice.client.next((stanza) => stanza.name === "presence");
+      assert.deepEqual([left.attrs.from, left.attrs.type, status(left)], [jid, "unavailable", ["110"]]);
+    }
+    assert.equal(xmpp.xmpp.roomOccupants("global") + xmpp.xmpp.roomOccupants("globalbattleroyale"), 0);
+  } finally {
+    xmpp.close();
+  }
+});
+
+// Core-Backend #198: from Battle Royale's lobby to Save the World, the client leaves GlobalBattleRoyale and asks for
+// Save the World's rooms in the same frame, and only joins the answer's room once the leave has completed. An answer
+// that beat the leave left Global on "Joining general chat".
+test("switching sub game, the rooms are only recommended once the old global room is left", async () => {
+  const backend = await startBackend();
+  try {
+    const { accountId, token } = await userLogin(backend.port, "ChatSwitch");
+    const { client } = await login(backend.port, accountId, token);
+    const ask = (subGame) => post(backend.port, `/fortnite/api/game/v2/chat/${accountId}/recommendGeneralChatRooms/${subGame}/pc`, token, {});
+
+    // Not in a global room yet: answered at once.
+    let started = Date.now();
+    const athena = await ask("Athena");
+    assert.deepEqual(athena.body.globalChatRooms.map((room) => room.roomName), ["GlobalBattleRoyale"]);
+    assert.ok(Date.now() - started < 500);
+    const brRoom = `globalbattleroyale@muc.${domain}/${accountId}`;
+    client.send(`<presence to="${brRoom}"><x xmlns="http://jabber.org/protocol/muc"/></presence>`);
+    assert.equal((await client.next((stanza) => stanza.name === "presence")).attrs.from, brRoom);
+
+    // The request arrives before the leave: no answer until the leave, and a moment after it.
+    let answered = 0;
+    const campaign = ask("Campaign").then((response) => { answered = Date.now(); return response; });
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    assert.equal(answered, 0);
+    client.send(`<presence to="${brRoom}" type="unavailable"/>`);
+    const left = await client.next((stanza) => stanza.name === "presence");
+    const leftAt = Date.now();
+    assert.equal(left.attrs.type, "unavailable");
+    const response = await campaign;
+    assert.ok(answered - leftAt >= 500, `answered ${answered - leftAt} ms after the leave`);
+    assert.deepEqual(response.body.globalChatRooms.map((room) => room.roomName), ["Global"]);
+
+    // The recommended room then joins.
+    const stwRoom = `global@muc.${domain}/${accountId}`;
+    client.send(`<presence to="${stwRoom}"><x xmlns="http://jabber.org/protocol/muc"/></presence>`);
+    const joined = await client.next((stanza) => stanza.name === "presence");
+    assert.deepEqual([joined.attrs.from, joined.attrs.type], [stwRoom, undefined]);
+
+    // A client that never leaves still gets its answer, after the wait runs out.
+    started = Date.now();
+    assert.equal((await ask("Athena")).status, 200);
+    assert.ok(Date.now() - started >= 2500);
+    client.close();
+  } finally {
+    backend.close();
   }
 });
