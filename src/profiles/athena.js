@@ -11,6 +11,7 @@ import { dataBuilds } from "../gamedata/read.js";
 import { log } from "../log.js";
 import { placements } from "../stats/store.js";
 import { defaultBanner } from "./defaults.js";
+import { heldGiftBoxes, moveAthenaGiftBoxes } from "./giftboxes.js";
 import { findItem } from "./items.js";
 import { grant } from "./progress.js";
 import { countBundleQuest, grantChallengeSchedule as grantSchedule, settleChallengeSchedules } from "./challenges.js";
@@ -198,7 +199,7 @@ export function athenaNeedsSetUp(profile, settings = {}) {
     || missing(profile, earnedCosmetics(profile, settings)).length > 0
     || (settings.giveAllCosmetics ? missing(profile, lockerCosmetics()).length > 0 : blanket(profile).length > 0)
     || emptyDefaultSlots(profile).length > 0 || heldNonLockerItems(profile).length > 0
-    || seasonNeedsSwitch(profile) || danceSlotsNeedSettling(profile);
+    || seasonNeedsSwitch(profile) || danceSlotsNeedSettling(profile) || heldGiftBoxes(profile).length > 0;
 }
 
 function addCosmetic(tracker, templateId, seen) {
@@ -301,6 +302,8 @@ export function setUpAthena(session) {
   }
   if (seasonNeedsSwitch(profile)) switchSeason(session);
   if (danceSlotsNeedSettling(profile)) settleDanceSlots(tracker);
+  // Gift boxes are profile0's (profiles/giftboxes.js, Core-Backend #212).
+  moveAthenaGiftBoxes(session);
 }
 
 // The full locker (Core-Backend #97), from the admin panel: every locker cosmetic and every banner the account lacks.

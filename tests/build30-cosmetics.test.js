@@ -70,7 +70,8 @@ test("3.0's tiers reached through Battle Stars come in a GiftBox:GB_BattlePass; 
       setUpAthena(session);
       takeUpSeason(session);
       addBookXp(session, 50, seasonRewardFunctions());
-      const boxes = giftBoxes(session.profile("athena").profile);
+      const boxes = giftBoxes(session.profile("profile0").profile);
+      assert.equal(giftBoxes(session.profile("athena").profile).length, 0, "gift boxes are profile0's (#212)");
       if (build === v25) return assert.equal(boxes.length, 0);
       assert.equal(session.profile("athena").profile.stats.attributes.book_level, 6);
       assert.equal(boxes.length, 1);
@@ -91,7 +92,7 @@ test("3.0's Battle Pass Promise: a Season 2 pass's Free Tiers token becomes 5 ti
     const athena = session.profile("athena").profile;
     assert.equal(athena.stats.attributes.book_level, 6);
     assert.equal(findItem(session.profile("profile0").profile, "Token:athenanextseasontierboost"), undefined);
-    const promise = giftBoxes(athena).find((item) => item.templateId === "GiftBox:gb_battlepasspromise");
+    const promise = giftBoxes(session.profile("profile0").profile).find((item) => item.templateId === "GiftBox:gb_battlepasspromise");
     assert.deepEqual(promise.attributes.lootList.map(({ itemType, quantity }) => [itemType, quantity]), [["AccountResource:athenaseasonalbp", 50]]);
     athenaQuestLogin(session);
     assert.equal(athena.stats.attributes.book_level, 6, "once a season");
@@ -109,6 +110,23 @@ test("3.0's Battle Pass Promise: a Season 2 pass's Free Tiers token becomes 5 ti
     takeUpSeason(none);
     athenaQuestLogin(none);
     assert.equal(none.profile("athena").profile.stats.attributes.book_level, 1);
+  });
+}));
+
+test("a gift box left in the athena profile moves to profile0, where 3.0 looks for them (#212)", () => withStore((store) => {
+  inBuild(v30, () => {
+    const session = openSession(store, "oldbox");
+    session.profile("profile0");
+    setUpAthena(session);
+    const box = { templateId: "GiftBox:gb_battlepass", attributes: { fromAccountId: "", lootList: [], params: {}, giftedOn: "2026-11-03T20:30:00.000Z" }, quantity: 1 };
+    session.profile("athena").addItem("old-box", box);
+    session.commit();
+    assert.equal(athenaNeedsSetUp(store.load("oldbox", "athena")), true);
+
+    const next = openSession(store, "oldbox");
+    assert.equal(next.profile("athena").profile.items["old-box"], undefined);
+    assert.deepEqual(next.profile("profile0").profile.items["old-box"], box);
+    assert.equal(athenaNeedsSetUp(next.profile("athena").profile), false);
   });
 }));
 

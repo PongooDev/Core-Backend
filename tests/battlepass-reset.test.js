@@ -17,6 +17,7 @@ function command(port, { accountId, token }, name, profileId, body = {}, agent =
 }
 const profileOf = (body, profileId) => [body, ...(body.multiUpdate ?? [])].find((update) => update.profileId === profileId);
 const athena = async (port, player, agent) => profileOf((await command(port, player, "QueryProfile", "athena", {}, agent)).body, "athena").profileChanges[0].profile;
+const account = async (port, player, agent) => profileOf((await command(port, player, "QueryProfile", "profile0", {}, agent)).body, "profile0").profileChanges[0].profile;
 const vbucks = async (port, player) => {
   const { body } = await get(port, `/admin/api/accounts/${player.accountId}`);
   return body.currencies.find((currency) => currency.key === "vbucks").quantity;
@@ -36,8 +37,10 @@ test("3.0's Battle Pass purchase gives a GiftBox:GB_BattlePass of its rewards, w
         { offerId, purchaseQuantity: 1, currency: "MtxCurrency", expectedPrice: 950 }, agent);
       assert.equal(bought.status, 200, JSON.stringify(bought.body));
       assert.equal(bought.body.notifications[0].type, "CatalogPurchase");
-      const profile = await athena(backend.port, player, agent);
-      const boxes = Object.entries(profile.items).filter(([, item]) => item.templateId.toLowerCase().startsWith("giftbox:"));
+      // In profile0, the only profile 3.0's frontend looks in for gift boxes (#212).
+      const giftBoxesOf = (profile) => Object.entries(profile.items).filter(([, item]) => item.templateId.toLowerCase().startsWith("giftbox:"));
+      assert.equal(giftBoxesOf(await athena(backend.port, player, agent)).length, 0);
+      const boxes = giftBoxesOf(await account(backend.port, player, agent));
       if (agent === agent25) {
         assert.equal(boxes.length, 0);
         continue;
@@ -49,9 +52,9 @@ test("3.0's Battle Pass purchase gives a GiftBox:GB_BattlePass of its rewards, w
       // The Mission Specialist in it is what plays the client's "Battle Pass UPGRADED!" animation.
       assert.ok(box.attributes.lootList.some((loot) => loot.itemType === mission && loot.itemProfile === "athena"));
       assert.deepEqual(box.attributes.lootList, bought.body.notifications[0].lootResult.items);
-      const removed = await command(backend.port, player, "RemoveGiftBox", "athena", { giftBoxItemId: boxId });
+      const removed = await command(backend.port, player, "RemoveGiftBox", "profile0", { giftBoxItemId: boxId });
       assert.equal(removed.status, 200);
-      assert.equal((await athena(backend.port, player)).items[boxId], undefined);
+      assert.equal((await account(backend.port, player)).items[boxId], undefined);
     }
   } finally {
     backend.close();
@@ -95,7 +98,7 @@ test("the admin panel resets a season's Battle Pass to before it was bought, tak
       attributes.season_friend_match_boost], [false, 1, 0, 0, 0]);
     assert.equal(attributes.level, 1, "the season XP the tiers gave is taken back");
     assert.ok(!held(profile, mission));
-    assert.ok(!Object.values(profile.items).some((item) => item.templateId.toLowerCase().startsWith("giftbox:")));
+    assert.ok(!Object.values((await account(backend.port, player)).items).some((item) => item.templateId.toLowerCase().startsWith("giftbox:")));
     // The season's own weekly challenges stay: every player has them.
     assert.ok(held(profile, "ChallengeBundleSchedule:season3_challenge_schedule") || !held(profile, "ChallengeBundleSchedule:season3_tier_100_schedule"));
     assert.equal(await vbucks(backend.port, player), 5000);

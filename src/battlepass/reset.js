@@ -147,7 +147,8 @@ export function resetBattlePass(session, season) {
       result.challenges += 1;
     }
 
-    for (const [itemId, item] of heldGiftBoxes(profile)) if (sameId(item.templateId, battlePassGiftBox)) tracker.removeItem(itemId);
+    // Its unopened gift boxes, profile0's (profiles/giftboxes.js).
+    for (const [itemId, item] of heldGiftBoxes(account.profile)) if (sameId(item.templateId, battlePassGiftBox)) account.removeItem(itemId);
 
     // The pass's stats, and the season XP its tiers gave.
     result.seasonXpTaken = rewards.filter(({ templateId }) => sameId(templateId, "AccountResource:athenaseasonalxp"))
