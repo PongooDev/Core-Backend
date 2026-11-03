@@ -4,7 +4,7 @@ import { isEventActive, spring2018 } from "./events.js";
 
 export { spring2018 };
 
-// Spring It On! (2.5, CL-3889387; events.js spring2018), Save the World's spring event: "Spring It On! begins with a tale
+// Spring It On! (2.5, CL-3889387, and 3.0, CL-3901517, its Luck Explosion chapter; events.js spring2018), Save the World's spring event: "Spring It On! begins with a tale
 // of love in a storm-ridden world", "Firecracker Tickets ... Used to purchase Spring Llamas from the Loot tab", "Updated
 // Loot Llamas to award Firecracker Tickets for the duration of the event", "Spring Llama is available in the Loot tab and
 // costs 1000 Firecracker Tickets to purchase. Each Llama will contain a Lunar New Years Hero, or a Dragon weapon", and

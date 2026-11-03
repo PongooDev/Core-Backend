@@ -13,7 +13,9 @@ import { grant } from "./progress.js";
 // so does 2.2 (CL-3841827, 18 January 2018), whose AthenaSeason2 only adds the Season 3 head start to tier 2, and 2.3
 // (CL-3847564, 25 January 2018), 2.4 (CL-3858292, 31 January 2018), 2.4.2 (CL-3870737, 8 February 2018) and 2.5
 // (CL-3889387, 13 February 2018), whose AthenaSeason2 is 2.2's (2.5's AthenaSeason3, a copy of it ahead of Season 3,
-// isn't its season: tools/extractor).
+// isn't its season: tools/extractor). 3.0 (CL-3901517, 21 February 2018) is Season 3, AthenaSeason3 with its own XP
+// table (Athena_Season3_XP) and Battle Pass (100 tiers, Athena_Season3_BP), so it puts Season 2 aside as 1.11 put Season
+// 1; its pass's challenges are weekly bundles (profiles/challenges.js).
 //
 // 1.11's athena profile stats (the client's UFortMcpProfileAthena reads them by name: season_num, level, xp,
 // accountLevel, book_level, book_xp, book_purchased, season_match_boost, season_friend_match_boost, lifetime_wins):
@@ -190,12 +192,15 @@ function giveReward(session, { templateId, quantity }, athena) {
     athena.settleBattlePassDaily?.(session);
     return [];
   }
+  // Season 3's challenges (profiles/challenges.js): the schedule, which gives its bundles as they unlock.
+  if (id.startsWith("challengebundleschedule:")) return athena.grantChallengeSchedule?.(session, templateId), [];
   if (id.startsWith("athena")) {
     const item = athena.grantCosmetic(session, templateId);
     return item ? [item] : [];
   }
   return grant(session, templateId, quantity);
 }
+export const giveSeasonReward = giveReward;
 
 // Gives what the season level, the tier and (once bought) the Battle Pass have reached and not yet given. athena: the
 // locker and season XP functions (profiles/athena.js), passed in so the two modules don't import each other.

@@ -9,7 +9,7 @@ import { allowedBuildList } from "../builds/allowed.js";
 
 // The Battle Royale modes a region's server limits (serverLimits) count, each 0 (no limit) by default.
 const limitModes = ["solo", "duo", "squad", "fiftyFifty", "shootingTest", "highExplosives", "sneakySilencers", "sniperShootout",
-  "speedyStorm", "takeToTheSkies", "lotsaLoot", "blitz"];
+  "speedyStorm", "takeToTheSkies", "lotsaLoot", "blitz", "fiveByTwenty", "highJump", "useItOrLoseIt", "steadyStorm", "solidGold", "skySupply", "shotguns"];
 const noLimits = () => Object.fromEntries(limitModes.map((mode) => [mode, 0]));
 
 const defaults = {
@@ -82,8 +82,8 @@ const defaults = {
     weeklyDurationDays: 7,
     customSeasonEnd: null,
     // Each season's replay start, its day 1 ("YYYY-MM-DD", store/itemshop.js seasonStart): Season 2's is set the first
-    // day the backend serves it; null is the default start.
-    seasonStarts: { 1: null, 2: null },
+    // day the backend serves it, and Season 3's; null is the default start.
+    seasonStarts: { 1: null, 2: null, 3: null },
     calendarCacheMinutes: 60,
     // Season 2's content updates (events/contentupdates.js): "season" by their dates on its replay, or "all"; and
     // per-update "on" / "off" overrides.
@@ -105,7 +105,15 @@ const defaults = {
     speedyStorm: false,
     takeToTheSkies: false,
     lotsaLoot: false,
-    blitz: false
+    blitz: false,
+    // 3.0's new playlists (Season 3), off too.
+    fiveByTwenty: false,
+    highJump: false,
+    useItOrLoseIt: false,
+    steadyStorm: false,
+    solidGold: false,
+    skySupply: false,
+    shotguns: false
   },
   // The LTMs' original dates (Core-Backend #190, events/ltms.js): on, each runs only in its original window on the
   // season's replay and on the builds Epic ran it on, whatever matchmakingModes says of it.
@@ -127,7 +135,8 @@ export function sanitizeMatchmakingModes(input, current = defaultMatchmakingMode
     highExplosives: typeof input.highExplosives === "boolean" ? input.highExplosives : (current.highExplosives === true),
     sneakySilencers: typeof input.sneakySilencers === "boolean" ? input.sneakySilencers : (current.sneakySilencers === true),
     sniperShootout: typeof input.sniperShootout === "boolean" ? input.sniperShootout : (current.sniperShootout === true),
-    ...Object.fromEntries(["speedyStorm", "takeToTheSkies", "lotsaLoot", "blitz"].map((id) =>
+    ...Object.fromEntries(["speedyStorm", "takeToTheSkies", "lotsaLoot", "blitz", "fiveByTwenty", "highJump", "useItOrLoseIt", "steadyStorm", "solidGold",
+      "skySupply", "shotguns"].map((id) =>
       [id, typeof input[id] === "boolean" ? input[id] : (current[id] === true)]))
   };
 }
@@ -233,8 +242,8 @@ function sanitizeEvents(input, current = defaults.events) {
   }
 
   if (input.seasonStarts && typeof input.seasonStarts === "object" && !Array.isArray(input.seasonStarts)) {
-    result.seasonStarts = { 1: null, 2: null, ...(result.seasonStarts ?? {}) };
-    for (const season of ["1", "2"]) {
+    result.seasonStarts = { 1: null, 2: null, 3: null, ...(result.seasonStarts ?? {}) };
+    for (const season of ["1", "2", "3"]) {
       const value = input.seasonStarts[season];
       if (value === null || value === "") result.seasonStarts[season] = null;
       else if (typeof value === "string" && !isNaN(Date.parse(value))) result.seasonStarts[season] = new Date(Date.parse(value)).toISOString().slice(0, 10);

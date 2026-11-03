@@ -12,6 +12,7 @@ const v23 = "3847564";
 const v24 = "3858292";
 const v242 = "3870737";
 const v25 = "3889387";
+const v30 = "3901517";
 const at = (date) => new Date(`${date}T12:00:00Z`);
 
 function as(agent, port, method, urlPath, token, body) {
@@ -33,10 +34,10 @@ const regionState = async (changelist, port, token) =>
 const ticket = (changelist, port, { accountId, token }, playlist) =>
   as(changelist, port, "GET", `/fortnite/api/game/v2/matchmakingservice/ticket/player/${accountId}?bucketId=${changelist}:0:NA:${playlist}`, token);
 
-test("the event queues' LTMs are 1.11's to 2.5's, squads, and off by hand until turned on", () => {
+test("the event queues' LTMs are 1.11's to 3.0's, squads, and off by hand until turned on", () => {
   for (const id of ["highExplosives", "sneakySilencers", "sniperShootout"]) {
-    assert.deepEqual([v110, v111, v21, v23, v24, v242, v25, "3901517"].map((build) => hasLtm(id, build)),
-      [false, true, true, true, true, true, true, false], id);
+    assert.deepEqual([v110, v111, v21, v23, v24, v242, v25, v30, "3915963"].map((build) => hasLtm(id, build)),
+      [false, true, true, true, true, true, true, true, false], id);
   }
   assert.equal(ltmOn("sniperShootout", v23, { matchmakingModes: {} }), false);
   assert.equal(ltmOn("sniperShootout", v23, { matchmakingModes: { sniperShootout: true } }), true);
@@ -62,7 +63,9 @@ test("each LTM's event flag shows its own tile and queues its own playlist, and 
     assert.equal(ltm.quest, `athenaevent${flag.slice(5)}_playmatches`, id);
     assert.deepEqual(ltmEventFlags(v25, { matchmakingModes: { [id]: true } }), [flag], id);
   }
-  assert.deepEqual(eventQueueOfPlaylist, { 12: 5, 13: 2, 14: 3, 15: 1, 16: 6, 17: 4, 18: 7, 19: 8 });
+  assert.deepEqual(eventQueueOfPlaylist, { 12: 5, 13: 2, 14: 3, 15: 1, 16: 6, 17: 4, 18: 7, 19: 8,
+    // 3.0's queues 22 on: AthenaMatchmakingPlay's Event<N>MissionGen is MissionGen_AthenaEvent<N>, and Playlist_5x20 (22) names it.
+    22: 22, 23: 23, 25: 25, 26: 26, 27: 27, 30: 30, 31: 31 });
 });
 
 test("original dates: each LTM runs only in its window on its season's replay, on the builds Epic ran it on", () => {
@@ -96,7 +99,7 @@ test("original dates: each LTM runs only in its window on its season's replay, o
   const sniper = schedule.list.find((ltm) => ltm.id === "sniperShootout");
   assert.equal(schedule.originalDates, true);
   assert.deepEqual(sniper.original, { builds: "2.3 to 2.4", start: "2018-01-29", end: "2018-02-03", last: "2018-02-02" });
-  assert.deepEqual(sniper.inWindow, { 2: true });
+  assert.deepEqual(sniper.inWindow, { 2: true, 3: false });
   assert.deepEqual(schedule.list.find((ltm) => ltm.id === "fiftyFifty").seasons, [1, 2]);
 });
 
@@ -105,8 +108,8 @@ test("Speedy Storm, Take To The Skies, Lotsa Loot and Blitz: their builds, squad
   const queues = { speedyStorm: ["Event3", 14], takeToTheSkies: ["Event6", 16], lotsaLoot: ["Event4", 17], blitz: ["Event8", 19] };
   for (const [id, [flag, playlist]] of Object.entries(queues)) {
     const from = id === "blitz" ? v242 : v21;
-    assert.deepEqual([v111, v21, v23, v24, v242, v25, "3901517"].map((build) => hasLtm(id, build)),
-      [v111, v21, v23, v24, v242, v25].map((build) => Number(build) >= Number(from)).concat(false), id);
+    assert.deepEqual([v111, v21, v23, v24, v242, v25, v30, "3915963"].map((build) => hasLtm(id, build)),
+      [v111, v21, v23, v24, v242, v25, v30].map((build) => Number(build) >= Number(from)).concat(false), id);
     assert.equal(ltmOn(id, v25, { matchmakingModes: {} }), false, id);
     assert.equal(ltmOn(id, v25, { matchmakingModes: { [id]: true } }), true, id);
     assert.deepEqual(ltmEventFlags(v25, { matchmakingModes: { [id]: true } }), [flag], id);
@@ -118,11 +121,34 @@ test("Speedy Storm, Take To The Skies, Lotsa Loot and Blitz: their builds, squad
     }
     const listed = ltmSchedule({ matchmakingModes: { [id]: true } }, at("2018-01-30")).list.find((ltm) => ltm.id === id);
     assert.equal(listed.original, null, id);
-    assert.deepEqual(listed.inWindow, { 2: false }, id);
+    assert.deepEqual(listed.inWindow, { 2: false, 3: false }, id);
     assert.equal(listed.enabled, true, id);
   }
   assert.equal(hasLtm("blitz", v24), false);
-  assert.equal(ltmSchedule({}).list.find((ltm) => ltm.id === "speedyStorm").builds, "2.1 to 2.5");
+  assert.equal(ltmSchedule({}).list.find((ltm) => ltm.id === "speedyStorm").builds, "2.1 to 3.0");
+});
+
+// 3.0 (CL-3901517): every mode is a playlist class in Athena_GameMode's PlaylistDataTables. 50v50 (11) and Shooting Test
+// #1 (15) have none and end with 2.5; Take To The Skies is duos; 3.0's new playlists with a lobby tile run by hand.
+test("3.0's LTMs are its playlist classes: no 50v50 or Shooting Test, duo Skies, and its new playlists by hand", () => {
+  for (const id of ["fiftyFifty", "shootingTest"]) assert.deepEqual([v25, v30].map((build) => hasLtm(id, build)), [true, false], id);
+  assert.deepEqual(playlistTeamsOf(`${v30}:0:NA:16`, v30), { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 });
+  assert.deepEqual(playlistTeamsOf(`${v25}:0:NA:16`, v25), { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 });
+  const added = { fiveByTwenty: [22, "Event22", { maxTeamCount: 5, maxTeamSize: 20, maxSquadSize: 4 }],
+    highJump: [23, "Event23", { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 }],
+    useItOrLoseIt: [25, "Event25", { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }],
+    steadyStorm: [26, "Event26", { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 }],
+    solidGold: [27, "Event27", { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }],
+    skySupply: [30, "Event30", { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 }],
+    shotguns: [31, "Event31", { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }] };
+  for (const [id, [playlist, flag, teams]] of Object.entries(added)) {
+    assert.deepEqual([v25, v30].map((build) => hasLtm(id, build)), [false, true], id);
+    assert.equal(ltmOn(id, v30, { matchmakingModes: {} }), false, id);
+    assert.deepEqual(ltmEventFlags(v30, { matchmakingModes: { [id]: true } }), [flag], id);
+    assert.deepEqual(playlistTeamsOf(`${v30}:0:NA:${playlist}`, v30), teams, id);
+    const listed = ltmSchedule({}).list.find((ltm) => ltm.id === id);
+    assert.deepEqual([listed.seasons, listed.builds, listed.original], [[3], "3.0", null], id);
+  }
 });
 
 test("the admin panel's switches and original dates offer the LTMs through the calendar and let their tickets through", async () => {

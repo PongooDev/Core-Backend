@@ -239,7 +239,7 @@ test("the admin panel's script parses, and the Events page shows the season pick
     const script = html.slice(html.indexOf("<script>") + "<script>".length, html.lastIndexOf("</script>"));
     assert.doesNotThrow(() => new vm.Script(script, { filename: "panel.html" }));
     const events = script.slice(script.indexOf("async function showEvents()"), script.indexOf("/* ---------- reports ---------- */"));
-    assert.match(events, /const season = state\.eventsSeason === "2" \? "2" : "1";/);
+    assert.match(events, /const season = seasonOf\(state\.eventsSeason\)\.id;/);
     assert.match(events, /seasonBreadcrumb\(["']#\/events["']/);
     assert.match(events, /const contentSection = season !== "2" \? null : el\("section"/);
     assert.ok(!events.includes("seasonSelector"));

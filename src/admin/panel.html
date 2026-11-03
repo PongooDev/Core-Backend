@@ -1861,6 +1861,14 @@
       stormshields: "Storm shields", skilltree: "Skill tree", banners: "Banners", quests: "Quests", world: "Backpack and storage", other: "Other"
     };
     const kindLabel = (key) => kinds[key] ?? key;
+    // The Battle Royale seasons the pages cover (builds/detect.js battleRoyaleSeasons): label, shop build and cycle length.
+    const SEASONS = [
+      { id: "1", label: "Season 1 (1.8 – 1.10)", from: "1.8+", days: 45 },
+      { id: "2", label: "Season 2 (1.11 – 2.5)", from: "1.11+", days: 70 },
+      { id: "3", label: "Season 3 (3.0 – 3.6)", from: "3.0+", days: 68 }
+    ];
+    const seasonOf = (id) => SEASONS.find((entry) => entry.id === String(id)) ?? SEASONS[0];
+    const seasonRoute = (accountId) => SEASONS.find((entry) => accountId === `season${entry.id}` || accountId === entry.id)?.id ?? null;
     const seasonBreadcrumb = (parentHash, parentLabel, currentSeasonLabel) => el("div", {
       class: "season-breadcrumb",
       style: "display:flex; align-items:center; gap:8px; margin-bottom:14px;"
@@ -2854,11 +2862,8 @@
         if (tab) state.tab = tab;
       }
       if (state.view === "shop") {
-        if (accountId === "season1" || accountId === "1") {
-          state.shopSeason = "1";
-          state.shopFolder = "shop";
-        } else if (accountId === "season2" || accountId === "2") {
-          state.shopSeason = "2";
+        if (seasonRoute(accountId)) {
+          state.shopSeason = seasonRoute(accountId);
           state.shopFolder = "shop";
         } else if (accountId && accountId !== "shop") {
           state.shopFolder = accountId;
@@ -2869,22 +2874,10 @@
         }
       }
       if (state.view === "battlepass") {
-        if (accountId === "season1" || accountId === "1") {
-          state.battlePassSeason = "1";
-        } else if (accountId === "season2" || accountId === "2") {
-          state.battlePassSeason = "2";
-        } else {
-          state.battlePassSeason = null;
-        }
+        state.battlePassSeason = seasonRoute(accountId);
       }
       if (state.view === "events") {
-        if (accountId === "season1" || accountId === "1") {
-          state.eventsSeason = "1";
-        } else if (accountId === "season2" || accountId === "2") {
-          state.eventsSeason = "2";
-        } else {
-          state.eventsSeason = null;
-        }
+        state.eventsSeason = seasonRoute(accountId);
       }
       if (state.view === "reports") {
         state.reportId = accountId || null;
@@ -3150,7 +3143,7 @@
       // Core-Backend #163: every cosmetic the item shop has sold (both seasons' histories and the custom shop's lists) that
       // any build has, given as the full locker gives, so Remove granted takes them back.
       const shopButton = btn("Give all item shop cosmetics", async () => {
-        if (!await confirmModal(`Give ${a.displayName} every cosmetic the item shop has sold (Season 1's and Season 2's shops and the custom shop) that they don't own yet? Battle Pass and victory items aren't included. Remove granted takes them back.`, {
+        if (!await confirmModal(`Give ${a.displayName} every cosmetic the item shop has sold (Season 1's, Season 2's and Season 3's shops and the custom shop) that they don't own yet? Battle Pass and victory items aren't included. Remove granted takes them back.`, {
           title: "Give Item Shop Cosmetics",
           confirmText: "Give All",
           confirmKind: "primary"
@@ -3208,7 +3201,7 @@
         el("div", { class: "actions", style: "margin-top:8px" }, buildSelect, typeSelect, search, giveButton, removeButton, clearButton, shopButton),
         el("div", { style: "margin-top:10px" }, summary),
         results,
-        el("p", { class: "note", text: "Only the chosen build's cosmetics are listed and given. Pick one or more; a cosmetic the account already owns is left as it is. Given cosmetics are the player's for good (Remove granted keeps them), and a player in the game gets them at once. Remove selected takes owned ones out of the locker, putting equipped ones back to the default; starter cosmetics (the default glider, pickaxe, emote, loading screen and bus, the Founder's Glider) and earned ones (season level rewards, victory umbrellas) stay, as they'd come back. Give all item shop cosmetics gives every cosmetic Season 1's and Season 2's item shops sold, and those on the custom shop's lists, from every build (not only the chosen one), as the full locker does: Remove granted takes them back." }));
+        el("p", { class: "note", text: "Only the chosen build's cosmetics are listed and given. Pick one or more; a cosmetic the account already owns is left as it is. Given cosmetics are the player's for good (Remove granted keeps them), and a player in the game gets them at once. Remove selected takes owned ones out of the locker, putting equipped ones back to the default; starter cosmetics (the default glider, pickaxe, emote, loading screen and bus, the Founder's Glider) and earned ones (season level rewards, victory umbrellas) stay, as they'd come back. Give all item shop cosmetics gives every cosmetic Season 1's, Season 2's and Season 3's item shops sold, and those on the custom shop's lists, from every build (not only the chosen one), as the full locker does: Remove granted takes them back." }));
     }
 
     // Battle Royale's season level (Core-Backend #106): set to the start of a level, with its chase rewards.
@@ -4009,7 +4002,7 @@
 
       // --- Section 1: Battle Royale Game Modes, by season (Core-Backend #191): solo, duos and squads, then the season's
       // limited-time modes, each on by hand or, with Original dates on, by its dates ---
-      let ltmSeason = state.matchmakingSeason === "1" ? "1" : "2";
+      let ltmSeason = SEASONS.some((entry) => entry.id === state.matchmakingSeason) ? state.matchmakingSeason : "2";
       const fmtDay = (d) => new Date(d.length === 10 ? `${d}T00:00:00Z` : d).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
       const modeCardsBox = el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:14px; margin-top:14px;" });
       const modeCard = (name, statusChip, lines, toggle) => el("div", {
@@ -4077,7 +4070,7 @@
         renderServerLimitsTable();
       });
       // The season tabs only redraw the cards, so unsaved switches stay.
-      const ltmSeasonButtons = [["1", "Season 1 (1.8 – 1.10)"], ["2", "Season 2 (1.11 – 2.5)"]].map(([key, label]) => {
+      const ltmSeasonButtons = SEASONS.map(({ id: key, label }) => {
         const button = el("button", {
           type: "button", "aria-pressed": String(ltmSeason === key),
           onclick: () => {
@@ -4735,7 +4728,7 @@
     };
 
     async function showShop() {
-      const currentShopSeason = state.shopSeason === "2" ? "2" : "1";
+      const currentShopSeason = seasonOf(state.shopSeason).id;
       const [shop, codes, folders] = await Promise.all([
         act(api(`/admin/api/shop?season=${currentShopSeason}`)),
         api("/admin/api/codes?type=promotional").catch(() => []),
@@ -4829,6 +4822,11 @@
               title: "Season 2: Item Shop (1.11 – 2.5)",
               badge: "70 Days",
               hash: "#/shop/season2"
+            },
+            {
+              title: "Season 3: Item Shop (3.0 – 3.6)",
+              badge: "68 Days",
+              hash: "#/shop/season3"
             }
           ])
         );
@@ -5400,7 +5398,7 @@
           el("div", { class: "panel-head" },
             el("h2", { text: `Historical Item Shop (Season ${currentShopSeason})` }),
             chip("Active Mode", "good")),
-          el("p", { class: "note", text: `The item shop displays the authentic daily and weekly item shop offers from Fortnite Season ${currentShopSeason} (${currentShopSeason === "2" ? "70" : "45"}-day rotation cycle).` }),
+          el("p", { class: "note", text: `The item shop displays the authentic daily and weekly item shop offers from Fortnite Season ${currentShopSeason} (${seasonOf(currentShopSeason).days}-day rotation cycle).` }),
           el("div", { class: "actions", style: "margin-top:14px;" },
             btn("Randomize Once", async () => {
               const res = await act(api("/admin/api/shop/randomize", { season: currentShopSeason }), "Item shop randomized!");
@@ -5549,7 +5547,7 @@
         el("div", { class: "panel-head" },
           el("h2", { text: `Live In-Game Shop Preview (Season ${currentShopSeason})` }),
           chip(`Rotates at ${shop.rotationHour ?? 0}:00 UTC`, "sky")),
-        el("p", { class: "note", text: `This is the current live shop displayed to players on ${currentShopSeason === "2" ? "1.11+" : "1.8+"} in the Battle Royale Store tab.` }),
+        el("p", { class: "note", text: `This is the current live shop displayed to players on ${seasonOf(currentShopSeason).from} in the Battle Royale Store tab.` }),
 
         el("div", { style: "margin-top:14px;" },
           el("h3", { text: `Featured Items (${liveFeatured.length})`, style: "font-size:14px; margin-bottom:8px; color:var(--muted);" }),
@@ -5569,13 +5567,11 @@
       // Render the selected view cleanly!
       if (currentSub === "shop") {
         $("view").replaceChildren(
-          seasonBreadcrumb("#/shop", "Item Shop", currentShopSeason === "2" ? "Season 2 (1.11 – 2.5)" : "Season 1 (1.8 – 1.10)"),
+          seasonBreadcrumb("#/shop", "Item Shop", seasonOf(currentShopSeason).label),
           el("div", { class: "view-head" },
             el("div", {},
               el("h1", { text: "Item Shop", style: "margin:0 0 4px;" }),
-              el("div", { class: "muted", text: currentShopSeason === "2"
-                ? "Configure Battle Royale's Store tab (Athena Direct Acquisition) for Season 2 (1.11 – 2.5). The mode, timing and custom shop are shared by both seasons; the history and cosmetics shown are this season's."
-                : "Configure Battle Royale's Store tab (Athena Direct Acquisition) for Season 1 (1.8 – 1.10). The mode, timing and custom shop are shared by both seasons; the history and cosmetics shown are this season's." })),
+              el("div", { class: "muted", text: `Configure Battle Royale's Store tab (Athena Direct Acquisition) for ${seasonOf(currentShopSeason).label}. The mode, timing and custom shop are shared by every season; the history and cosmetics shown are this season's.` })),
             el("div", { class: "actions" },
               btn("Refresh", showShop, "ghost"))),
           timingSettingsSection,
@@ -5609,9 +5605,10 @@
       }
     };
 
-    // Season 2 (1.11): the Battle Pass and bundle prices, and the tiers' rewards from 1.11's data.
-    async function showSeasonTwoPass() {
-      const data = await act(api("/admin/api/battlepass/overview?season=2"));
+    // Season 2 (1.11) and Season 3 (3.0): the Battle Pass and bundle prices, and the tiers' rewards from the season's data.
+    async function showSeasonPass(season) {
+      const seasonLabel = seasonOf(season).label;
+      const data = await act(api(`/admin/api/battlepass/overview?season=${season}`));
       if (!data || state.view !== "battlepass") return;
       const cfg = data.config || {};
       const form = { battlePassPrice: Number(cfg.battlePassPrice ?? 950), bundlePrice: Number(cfg.bundlePrice ?? 2800) };
@@ -5624,14 +5621,14 @@
         : el("span", { class: "muted", text: "—" });
       const tiers = data.tiers || [];
       $("view").replaceChildren(
-        seasonBreadcrumb("#/battlepass", "Battle Pass", "Season 2 (1.11 – 2.5)"),
+        seasonBreadcrumb("#/battlepass", "Battle Pass", seasonLabel),
         el("div", { class: "view-head" },
           el("div", {},
             el("h1", { text: "Battle Pass & Progression", style: "margin:0 0 4px;" }),
-            el("div", { class: "muted", text: "Season 2's Battle Pass (1.11 – 2.5): its V-Bucks prices and the rewards of its tiers" })),
+            el("div", { class: "muted", text: `Season ${season}'s Battle Pass (${seasonLabel.slice(10, -1)}): its V-Bucks prices and the rewards of its tiers` })),
           el("div", { class: "actions" },
             btn("Save Prices", async () => {
-              await act(api("/admin/api/battlepass/config", { season2: { ...form } }), "Season 2 Battle Pass prices saved");
+              await act(api("/admin/api/battlepass/config", { [`season${season}`]: { ...form } }), `Season ${season} Battle Pass prices saved`);
               showBattlePass();
             }, "primary"),
             btn("Refresh", showBattlePass, "ghost"))),
@@ -5642,13 +5639,15 @@
           tile("Tiers", String(tiers.length), "text")),
         el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" }, el("h2", { text: "Prices" })),
-          el("p", { class: "note", text: "The Battle Pass and the Battle Pass Bundle (the pass and 25 tiers) are sold in the BRSeason2 storefront; Epic charged 950 and 2,800 V-Bucks. A tier costs 150 V-Bucks: 1.11's tier screen shows that price itself." }),
+          el("p", { class: "note", text: `The Battle Pass and the Battle Pass Bundle (the pass and 25 tiers) are sold in the BRSeason${season} storefront; Epic charged 950 and 2,800 V-Bucks. A tier costs 150 V-Bucks: the tier screen shows that price itself.` }),
           el("div", { style: "display:flex; gap:24px; flex-wrap:wrap; margin-top:12px;" },
             el("label", { style: "display:flex; align-items:center; gap:8px;" }, el("span", { class: "muted font-semibold", text: "Battle Pass" }), priceInput("battlePassPrice")),
             el("label", { style: "display:flex; align-items:center; gap:8px;" }, el("span", { class: "muted font-semibold", text: "Bundle" }), priceInput("bundlePrice")))),
         el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" }, el("h2", { text: "Tier Rewards" }), chip(`${tiers.length} tiers`, "accent")),
-          el("p", { class: "note", text: "From 1.11's AthenaSeason2: the free rewards every player gets and the Battle Pass rewards, given as each tier is reached. Battle Stars (10 a tier) come from season levels and challenges." }),
+          el("p", { class: "note", text: season === "3"
+            ? "From 3.0's AthenaSeason3 (100 tiers): the free rewards every player gets and the Battle Pass rewards, given as each tier is reached. Battle Stars (10 a tier) come from season levels and challenges. The Battle Pass's tier 1 gives the weekly challenges instead of a daily one."
+            : "From 1.11's AthenaSeason2: the free rewards every player gets and the Battle Pass rewards, given as each tier is reached. Battle Stars (10 a tier) come from season levels and challenges." }),
           table([["Tier", (t) => String(t.tier), "mono"], ["Free", (t) => rewardList(t.free)], ["Battle Pass", (t) => rewardList(t.paid)]], tiers)));
     }
 
@@ -5674,13 +5673,19 @@
               desc: "Configure 70 tiers of free and premium rewards, pass pricing (950 V-Bucks), and bundle pricing (2,800 V-Bucks)",
               badge: "70 Tiers",
               hash: "#/battlepass/season2"
+            },
+            {
+              title: "Season 3: Battle Pass (3.0 – 3.6)",
+              desc: "Configure 100 tiers of free and premium rewards, pass pricing (950 V-Bucks), and bundle pricing (2,800 V-Bucks)",
+              badge: "100 Tiers",
+              hash: "#/battlepass/season3"
             }
           ])
         );
         return;
       }
 
-      if (state.battlePassSeason === "2") return showSeasonTwoPass();
+      if (state.battlePassSeason === "2" || state.battlePassSeason === "3") return showSeasonPass(state.battlePassSeason);
       const data = await act(api("/admin/api/battlepass/overview"));
       if (!data || state.view !== "battlepass") return;
 
@@ -5926,6 +5931,8 @@
           ? "Fixed storm targets, Vindertech quests & Storm alerts"
           : b.version.startsWith("1.11") || b.version.startsWith("2.1") || b.version.startsWith("2.2")
           ? "Mini-Boss alerts (10/day), winter quests, Snowflake Tickets, Holiday Survival Llamas, Storm Ticket conversion"
+          : b.version.startsWith("3.0") || b.version.startsWith("2.5")
+          ? "Spring It On!: Valentine's & Lunar New Year quests, Firecracker Tickets, passive storms and Mini-Boss alerts"
           : b.version.startsWith("2.3") || b.version.startsWith("2.4")
           ? "Mutant Storms return: Storm alerts (10/day), Mini-Boss alerts (3/day), Hydraulic quests, Storm Llamas, Snowflake conversion"
           : "Stonewood & Plankerton campaign, early storm alerts" })
@@ -5961,6 +5968,12 @@
               desc: "Survive the Holidays Winterfest, Snowflake tickets, Mini-Boss alerts, Event Store & 70-day calendar cycle",
               badge: "70 Days",
               hash: "#/events/season2"
+            },
+            {
+              title: "Season 3 (3.0 – 3.6)",
+              desc: "Spring It On! continues (Luck Explosion), Firecracker tickets, passive storms & Mini-Boss alerts & 68-day calendar cycle",
+              badge: "68 Days",
+              hash: "#/events/season3"
             }
           ])
         );
@@ -5981,16 +5994,16 @@
         rotationHour: Number(cfg.rotationHour ?? 0),
         weeklyDurationDays: Number(cfg.weeklyDurationDays ?? 7),
         customSeasonEnd: cfg.customSeasonEnd ? cfg.customSeasonEnd.slice(0, 16) : "",
-        seasonStarts: { 1: cfg.seasonStarts?.[1] || "", 2: cfg.seasonStarts?.[2] || "" },
+        seasonStarts: Object.fromEntries(SEASONS.map(({ id }) => [id, cfg.seasonStarts?.[id] || ""])),
         calendarCacheMinutes: Number(cfg.calendarCacheMinutes ?? 60),
         contentUpdates: { mode: cfg.contentUpdates?.mode || "season", overrides: { ...(cfg.contentUpdates?.overrides ?? {}) } }
       };
 
       // The season the page shows: its clock, its Season Start row and, for Season 2, its content updates.
-      const season = state.eventsSeason === "2" ? "2" : "1";
+      const season = seasonOf(state.eventsSeason).id;
       const dailyTarget = new Date(data.calendar.dailyStoreEnd).getTime();
       const weeklyTarget = new Date(data.calendar.weeklyStoreEnd).getTime();
-      const seasonTarget = new Date((season === "2" ? data.calendar.seasons?.[2]?.end : null) ?? data.calendar.seasonEnd).getTime();
+      const seasonTarget = new Date((season !== "1" ? data.calendar.seasons?.[season]?.end : null) ?? data.calendar.seasonEnd).getTime();
 
       const formatDiff = (target) => {
         const diff = target - Date.now();
@@ -6043,7 +6056,7 @@
           rotationHour: form.rotationHour,
           weeklyDurationDays: form.weeklyDurationDays,
           customSeasonEnd: form.customSeasonEnd ? new Date(form.customSeasonEnd).toISOString() : null,
-          seasonStarts: { 1: form.seasonStarts[1] || null, 2: form.seasonStarts[2] || null },
+          seasonStarts: Object.fromEntries(SEASONS.map(({ id }) => [id, form.seasonStarts[id] || null])),
           calendarCacheMinutes: form.calendarCacheMinutes,
           contentUpdates: {
             mode: form.contentUpdates.mode,
@@ -6196,7 +6209,7 @@
       });
 
       // Each season's replay start (day 1): a date, or empty for the default
-      const seasonStartInputs = Object.fromEntries([1, 2].map((s) => [s, el("input", {
+      const seasonStartInputs = Object.fromEntries(SEASONS.map(({ id: s }) => [s, el("input", {
         class: "field",
         type: "date",
         value: form.seasonStarts[s],
@@ -6266,11 +6279,11 @@
       });
 
       $("view").replaceChildren(
-        seasonBreadcrumb("#/events", "Events & Seasons", season === "2" ? "Season 2 (1.11 – 2.5)" : "Season 1 (1.8 – 1.10)"),
+        seasonBreadcrumb("#/events", "Events & Seasons", seasonOf(season).label),
         // View Header
         el("div", { class: "view-head" },
           el("div", {},
-            el("h1", { text: season === "2" ? "Events & Seasons: Season 2 (1.11 – 2.5)" : "Events & Seasons: Season 1 (1.8 – 1.10)", style: "margin:0 0 4px;" }),
+            el("h1", { text: `Events & Seasons: ${seasonOf(season).label}`, style: "margin:0 0 4px;" }),
             el("div", { class: "muted", text: "Customizable event activation, STW mission modifiers, and live calendar timelines" })),
           el("div", { class: "actions" },
             btn("Save Event Configuration", saveConfig, "primary"),
@@ -6288,7 +6301,7 @@
                   rotationHour: 0,
                   weeklyDurationDays: 7,
                   customSeasonEnd: null,
-                  seasonStarts: { 1: null, 2: null },
+                  seasonStarts: Object.fromEntries(SEASONS.map(({ id }) => [id, null])),
                   calendarCacheMinutes: 60,
                   contentUpdates: { mode: "season", overrides: Object.fromEntries((data.contentUpdates?.builds?.[0]?.updates ?? []).map((u) => [u.id, "auto"])) }
                 }), "Reset to default event settings");
@@ -6439,7 +6452,7 @@
               el("div", {},
                 el("div", { class: "muted font-semibold", style: "font-size:12px; margin-bottom:4px;", text: "CUSTOM BATTLE ROYALE SEASON END" }),
                 el("div", { style: "font-size:18px; font-weight:800; color:var(--text); margin-bottom:4px;", text: form.customSeasonEnd ? "Custom Override" : "Standard Cycle" }),
-                el("div", { class: "muted", style: "font-size:11px;", text: "Overrides every season's countdown. Clear to use each season's own cycle (Season 1: 45 days, Season 2: 70 days)." })),
+                el("div", { class: "muted", style: "font-size:11px;", text: "Overrides every season's countdown. Clear to use each season's own cycle (Season 1: 45 days, Season 2: 70 days, Season 3: 68 days)." })),
               el("div", { style: "margin-top:12px; display:flex; flex-direction:column; gap:6px;" },
                 customEndInput,
                 btn("Reset to Season Cycle", () => {
@@ -6450,11 +6463,11 @@
             el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
               el("div", {},
                 el("div", { class: "muted font-semibold", style: "font-size:12px; margin-bottom:4px;", text: "SEASON START (DAY 1)" }),
-                el("div", { class: "muted", style: "font-size:11px;", text: season === "2"
-                  ? "The day Season 2's shop and countdown start from, then replay in order and start over when the season ends. Reset it to start it again on the next day it is served."
+                el("div", { class: "muted", style: "font-size:11px;", text: season !== "1"
+                  ? `The day Season ${season}'s shop and countdown start from, then replay in order and start over when the season ends. Reset it to start it again on the next day it is served.`
                   : "The day Season 1's shop and countdown start from, then replay in order and start over when the season ends. Reset it to its original clock." })),
               el("div", { style: "margin-top:12px; display:flex; flex-direction:column; gap:10px;" },
-                season === "2" ? seasonStartRow(2, "Season 2 (1.11 – 2.5)") : seasonStartRow(1, "Season 1 (1.8 – 1.10)"))),
+                seasonStartRow(season, seasonOf(season).label))),
 
             el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
               el("div", {},

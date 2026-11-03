@@ -54,7 +54,7 @@ const withStore = (fn) => {
 test("2.5 is known by its version and plays on its own game data", () => {
   assert.equal(versionOf(v25), "2.5");
   assert.equal(dataBuild(v25), v25);
-  assert.equal(battleRoyaleBuilds.at(-1), v25);
+  assert.ok(battleRoyaleBuilds.includes(v25));
   const cosmetics = inBuild(v25, athenaCosmetics);
   assert.ok(cosmetics["AthenaCharacter:cid_070_athena_commando_m_cupid"]);
   assert.ok(cosmetics["AthenaDance:eid_truelove"]);

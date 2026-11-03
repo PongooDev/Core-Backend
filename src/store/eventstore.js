@@ -161,7 +161,13 @@ const springEventItems = [
   { templateId: "Hero:hid_ninja_009_f_valentine_sr_t01", price: 2800, limit: 1 },
   { templateId: "Schematic:sid_floor_flamegrill_sr_t01", price: 1680, limit: 1 }
 ];
+// On 3.0 (CL-3901517, Season 3) the same moment is Season 3's first day, so the event items count down to the end of
+// Season 3's replay (🟡: Spring It On! ran on to 3.5; Core's countdown is the season's).
 export const spring2018End = "2018-02-22T00:00:00.000Z";
+// 3.0's notes: "The Bald Eagle Hand Cannon is now available in the Weekly Store. This is the highest-damage hand cannon
+// yet!" (SID_Pistol_HandCannon_DE_SR_Ore_T01, new in 3.0's data): every week, at a legendary schematic's 1,680 Seasonal
+// Gold, one (🟡: Epic's price and limit aren't recorded), on a build whose data has it.
+const weeklyFeatured = [{ templateId: "Schematic:sid_pistol_handcannon_de_sr_ore_t01", price: 1680, limit: 1 }];
 const storms2018 = () => !isEventActive(winter2017) && isEventActive(mutantStorms2018);
 const springNow = () => !isEventActive(winter2017) && !storms2018() && isEventActive(spring2018);
 const eventItemsNow = () => (storms2018() ? stormsEventItems : springNow() ? springEventItems : eventItems);
@@ -212,7 +218,7 @@ function weeklyItems(week) {
     return offered.length
       ? { ...offer, templateId: offered[Math.floor(weekRandom(week, weeklyPicks.length + 2 + index) * offered.length)] } : undefined;
   }).filter(Boolean) : [];
-  return [...coinPicks, ...picks.slice(0, 3), ...chosen, ...weeklyStaples.filter(has), ...picks.slice(3)];
+  return [...weeklyFeatured.filter(has), ...coinPicks, ...picks.slice(0, 3), ...chosen, ...weeklyStaples.filter(has), ...picks.slice(3)];
 }
 
 const toOffer = (offerId, instance) => ({ templateId, quantity = 1, price, limit, currency = seasonalGold }) => ({

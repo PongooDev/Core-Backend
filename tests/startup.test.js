@@ -40,7 +40,7 @@ test("start-up checks answer the way the Cert client parses them", async () => {
     assert.equal((await pageFor("3841827")).body.loginmessage.loginmessage.message.title, "v2.2");
     assert.equal((await pageFor("3870737")).body.loginmessage.loginmessage.message.title, "v2.4.2");
     assert.equal((await pageFor("3889387")).body.loginmessage.loginmessage.message.title, "v2.5");
-    assert.equal((await pageFor("3901517")).body.loginmessage.loginmessage.message.title, "CL-3901517");
+    assert.equal((await pageFor("3901517")).body.loginmessage.loginmessage.message.title, "v3.0");
     // The mode select screen's descriptions (#63).
     assert.equal(page.body.subgameselectdata.battleRoyale.message.title, "100 Player PvP");
     assert.equal(page.body.subgameselectdata.saveTheWorld.message.title, "Co-op PvE");

@@ -35,7 +35,7 @@ import { createRateLimiter, getClientIp } from "../services/portal/ratelimit.js"
 import { defaultBattleRoyaleNews, defaultLoginMessage, defaultSubgameSelect } from "../services/content/pages.js";
 import { inBuild } from "../builds/context.js";
 import { allowedBuildList, otherBuilds } from "../builds/allowed.js";
-import { battleRoyaleBuilds, buildVersions, certBuild, seasonName, seasonVersions, versionOf } from "../builds/detect.js";
+import { battleRoyaleBuilds, battleRoyaleSeasons, buildVersions, certBuild, seasonName, seasonVersions, versionOf } from "../builds/detect.js";
 import { contentUpdateStates, defaultContentUpdates } from "../events/contentupdates.js";
 import { cosmeticRarity, cosmeticType, eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, seasonEnd, seasonMoment, seasonStart, shopDay, soldCosmeticIds, weeklyStoreEnd, withoutSeasonStartRecording } from "../store/itemshop.js";
 import { activeEventFlags, fortnitemares, mutantStorms } from "../events/events.js";
@@ -45,7 +45,7 @@ import { convertLeftoverStormTickets } from "../events/stormllamas.js";
 import { defaultEvents, defaultMatchmakingModes, defaultServerLimits } from "../settings/store.js";
 import { calendarCacheMinutes } from "../services/fortnite/calendar.js";
 import { defaultBattlePass, enrichedMilestones } from "../battlepass/season1.js";
-import { bundleTiers, seasonTiers, seasonTwoConfig, tierPrice } from "../battlepass/season2.js";
+import { bundleTiers, seasonPassConfig, seasonTiers, tierPrice } from "../battlepass/season2.js";
 import { buildOfSeason, inProfileSeason, profileSeason } from "../profiles/seasons.js";
 
 import { isServerAccountName, validatePassword } from "../accounts/password.js";
@@ -998,11 +998,14 @@ export function adminRoutes(context) {
     res.json(getNewsPayload());
   });
 
+  // A requested season (?season=): one of the Battle Royale seasons, else Season 1.
+  const requestedSeasonOf = (value) => battleRoyaleSeasons.find((entry) => String(entry.season) === String(value))?.season ?? 1;
+
   function getShopPayload(requestedSeason = 1) {
     const now = new Date();
     const config = settings?.get?.()?.itemShop ?? { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 };
-    const s = Number(requestedSeason) === 2 ? 2 : 1;
-    const build = s === 2 ? "3807424" : "3724489";
+    const s = requestedSeasonOf(requestedSeason);
+    const build = { 1: "3724489", 2: "3807424", 3: "3901517" }[s];
     const offers = inBuild(build, () => itemShopOffers(now, config, s));
     const cosmetics = inBuild(build, () => eligibleCosmetics());
     const currentDay = shopDay(now, config, s);
@@ -1081,7 +1084,8 @@ export function adminRoutes(context) {
       { version: "2.3", cl: 3847564, event: "Mutant Storms" },
       { version: "2.4", cl: 3858292, event: "Mutant Storms" },
       { version: "2.4.2", cl: 3870737, event: "Mutant Storms" },
-      { version: "2.5", cl: 3889387, event: "Spring It On!" }
+      { version: "2.5", cl: 3889387, event: "Spring It On!" },
+      { version: "3.0", cl: 3901517, event: "Spring It On!" }
     ];
 
     const sampleBuilds = builds.map((b) => ({
@@ -1090,11 +1094,11 @@ export function adminRoutes(context) {
     }));
 
     const weeklyEnd = weeklyStoreEnd(now, shopConfig);
-    const reqSeason = String(req.query.season) === "2" ? 2 : 1;
+    const reqSeason = requestedSeasonOf(req.query.season);
     const seasonEnds = seasonEnd(now, shopConfig, reqSeason);
     const dailyEnd = nextRotation(now, shopConfig);
-    // Each season's replay: its day 1 and its end; Season 2 not served yet shows as starting today.
-    const seasonClocks = withoutSeasonStartRecording(() => Object.fromEntries([1, 2].map((season) => [season, {
+    // Each season's replay: its day 1 and its end; a season not served yet shows as starting today.
+    const seasonClocks = withoutSeasonStartRecording(() => Object.fromEntries(battleRoyaleSeasons.map(({ season }) => season).map((season) => [season, {
       start: new Date(seasonStart(season, now, shopConfig)).toISOString().slice(0, 10),
       started: Boolean(eventsConfig.seasonStarts?.[season]) || season === 1,
       end: seasonEnd(now, shopConfig, season).toISOString(),
@@ -1183,8 +1187,8 @@ export function adminRoutes(context) {
         {
           id: "spring2018",
           name: "Spring It On!",
-          subtitle: "Valentine's & Lunar New Year Quests, Passive Storms & Mini-Bosses",
-          buildRange: "2.5 (CL 3889387)",
+          subtitle: "Valentine's & Lunar New Year Quests, Passive Storms & Mini-Bosses; continues in 3.0 (Luck Explosion)",
+          buildRange: "2.5 – 3.0 (CL 3889387 – 3901517)",
           flags: ["EventFlag.Spring2018Valentines", "EventFlag.Spring2018Phase1", "EventFlag.PassiveStorms", "EventFlag.PassiveMiniBosses"],
           theater: "Standard Zones with passive storm and Mini-Boss alerts",
           alertsQuota: "3 Mini-Boss (General) mission alerts and 4 storms (no tickets) per day",
@@ -1282,10 +1286,10 @@ export function adminRoutes(context) {
     res.json({ success: true, resetProfiles });
   });
 
-  // ?season=2: Season 2's Battle Pass (1.11 and 2.1, battlepass/season2.js): its prices and its tiers' rewards, from the
+  // ?season=2|3: Season 2's Battle Pass (1.11 and 2.1) or Season 3's (3.0), battlepass/season2.js: its prices and its tiers' rewards, from the
   // season's newest data (profiles/seasons.js buildOfSeason).
-  // Each season's name by its versions (builds/detect.js battleRoyaleSeasons): Season 2 is 1.11 to 2.5.
-  const availableSeasons = [1, 2].map((id) => ({ id, name: seasonName(id), range: seasonVersions(id), active: true }));
+  // Each season's name by its versions (builds/detect.js battleRoyaleSeasons): Season 2 is 1.11 to 2.5, Season 3 is 3.0 to 3.6.
+  const availableSeasons = battleRoyaleSeasons.map(({ season: id }) => ({ id, name: seasonName(id), range: seasonVersions(id), active: true }));
   router.get("/admin/api/battlepass/overview", (req, res) => {
     const s = settings?.get?.() ?? {};
     const bpConfig = s.battlepass ?? defaultBattlePass;
@@ -1293,13 +1297,14 @@ export function adminRoutes(context) {
     const shopConfig = s.itemShop ?? { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 };
     const seasonEnds = (season) => withoutSeasonStartRecording(() => seasonEnd(now, shopConfig, season).toISOString());
 
-    if (String(req.query.season) === "2") {
-      return res.json(inBuild(buildOfSeason(2), () => ({
-        season: 2,
-        seasonName: seasonName(2),
+    const passSeason = requestedSeasonOf(req.query.season);
+    if (passSeason >= 2) {
+      return res.json(inBuild(buildOfSeason(passSeason), () => ({
+        season: passSeason,
+        seasonName: seasonName(passSeason),
         availableSeasons,
-        seasonEnd: seasonEnds(2),
-        config: { ...seasonTwoConfig(), tierPrice, bundleTiers, xpMultiplier: bpConfig.xpMultiplier ?? 1 },
+        seasonEnd: seasonEnds(passSeason),
+        config: { ...seasonPassConfig(passSeason), tierPrice, bundleTiers, xpMultiplier: bpConfig.xpMultiplier ?? 1 },
         tiers: seasonTiers()
       })));
     }
@@ -1519,7 +1524,7 @@ export function adminRoutes(context) {
   });
 
   router.get("/admin/api/shop", (req, res) => {
-    const s = String(req.query.season) === "2" ? 2 : 1;
+    const s = requestedSeasonOf(req.query.season);
     res.json(getShopPayload(s));
   });
 
@@ -1552,7 +1557,7 @@ export function adminRoutes(context) {
     }
 
     settings.update({ itemShop: update });
-    const s = String(req.query.season || req.body?.season) === "2" ? 2 : 1;
+    const s = requestedSeasonOf(req.query.season || req.body?.season);
     res.json(getShopPayload(s));
   });
 
@@ -1568,7 +1573,7 @@ export function adminRoutes(context) {
         }
       }
     });
-    const s = String(req.query.season || req.body?.season) === "2" ? 2 : 1;
+    const s = requestedSeasonOf(req.query.season || req.body?.season);
     res.json(getShopPayload(s));
   });
 
@@ -1583,7 +1588,7 @@ export function adminRoutes(context) {
         random: null
       }
     });
-    const s = String(req.query.season || req.body?.season) === "2" ? 2 : 1;
+    const s = requestedSeasonOf(req.query.season || req.body?.season);
     res.json(getShopPayload(s));
   });
 

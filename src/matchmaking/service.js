@@ -59,6 +59,21 @@ const playlistTeams = {
   19: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
   99: { maxTeamCount: 1, maxTeamSize: 1, maxSquadSize: 1 }
 };
+// From 3.0 (CL-3901517) a playlist's teams are its playlist class's (events/ltms.js): MaxTeamCount, MaxTeamSize and
+// MaxPartySize of Athena/Events/<mode>/Playlist_*. Where they differ from the table above: Take To The Skies (16) is
+// duos, and 3.0's new playlists, 5x20 (22: 5 × 20 in parties of 4), High Jump (23), Use It & Lose It (25), Steady Storm
+// (26), Solid Gold (27), Sky Supply (30) and Shotguns (31).
+const playlistTeamsFrom30 = {
+  16: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  22: { maxTeamCount: 5, maxTeamSize: 20, maxSquadSize: 4 },
+  23: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  25: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  26: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  27: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  30: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  31: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }
+};
+const playlistClassBuild = 3901517;
 // Late joining (Core-Backend #122, the admin panel's Matchmaking settings). The servers' MMS client (1.9
 // MatchmakingServiceDedicatedServer 0x3BF2730) knows only Registered, AssignMatch and UnassignMatch, takes an
 // AssignMatch only while Registered, and leaves the service once its match is assigned (0x709370), so the protocol has
@@ -124,7 +139,10 @@ export function parseBucket(bucketId) {
 // own four ("<netcl>:0:<region>:<playlistId>"), it kept its PlaylistId of -1 ("HandleAssignMatchMessage invalid playlist
 // id -1"), so every match started on the server's own playlist: a 50v50 queue played a solo match. 1.10 and earlier read
 // the four fields as they are. GameId and AppId are only logged; the region the server keeps is field 4. Later builds
-// (2.1, CL-3825894; 2.2, CL-3841827; 2.3, CL-3847564; 2.4, CL-3858292; 2.4.2, CL-3870737) take the six fields too.
+// (2.1, CL-3825894; 2.2, CL-3841827; 2.3, CL-3847564; 2.4, CL-3858292; 2.4.2, CL-3870737) take the six fields too, and
+// so does 3.0 (CL-3901517): its dump keeps the ticket paths (ticket/player/`id?partyPlayerIds=&bucketId=,
+// ticket/session/`id?bucketIds=), "Epic-Signed %s %s %s", the player.option and match.option keys, ticket.status.* and
+// HandleAssignMatchMessage's six-field "GameId: %s AppId %s BuildId: %d HotfixVersion: %d RegionId: %s PlaylistId: %d".
 export const sixFieldAssignBuild = 3807424;
 const assignGameId = "Fortnite";
 const assignAppId = "Fortnite";
@@ -162,6 +180,7 @@ export function serverRegion(patterns) {
 export const playlistTeamsOf = (bucketId, build = null) => {
   const { playlistId } = parseBucket(bucketId);
   if (playlistId === shootingTestPlaylist) return shootingTestTeams(build ?? 3870737);
+  if (Number(build) >= playlistClassBuild && playlistTeamsFrom30[playlistId]) return playlistTeamsFrom30[playlistId];
   return playlistTeams[playlistId] ?? null;
 };
 

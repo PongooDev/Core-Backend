@@ -7,7 +7,7 @@ import { lockerCosmetics } from "../src/profiles/athena.js";
 import { soldCosmeticIds } from "../src/store/itemshop.js";
 import { get, post, send, startBackend, userLogin } from "./helpers.js";
 
-// Core-Backend #163: the admin panel's Give all item shop cosmetics: every cosmetic Season 1's and Season 2's shops sold,
+// Core-Backend #163: the admin panel's Give all item shop cosmetics: every cosmetic Season 1's, Season 2's and Season 3's shops sold,
 // and the custom shop's, that any build has, given as the full locker gives, so Remove granted takes them back.
 const agent111 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-Cert-CL-3807424";
 
@@ -32,8 +32,8 @@ test("Give all item shop cosmetics gives what the shops sold, not earned items, 
     // The custom shop lists one cosmetic no history sold, and a Battle Pass reward and a victory umbrella, never sold.
     const battlePass = inBuild("3807424", () => athenaSeason().bookPaidRewards.flatMap(({ rewards }) => rewards)
       .map(({ templateId }) => templateId).find((id) => id.toLowerCase().startsWith("athenacharacter:")));
-    const custom = Object.keys(inBuild("3807424", athenaCosmetics)).find((id) => id.toLowerCase().startsWith("athenapickaxe:")
-      && !sold.has(id.toLowerCase()) && anyBuild.has(id.toLowerCase()) && !/default|lockjaw|district|medieval|teslacoil/i.test(id));
+    const custom = Object.keys(inBuild("3807424", athenaCosmetics)).find((id) => id.toLowerCase().startsWith("athenadance:emoji_")
+      && !sold.has(id.toLowerCase()) && anyBuild.has(id.toLowerCase()));
     assert.ok(battlePass && custom);
     const saved = await post(backend.port, "/admin/api/shop", undefined,
       { mode: "fnbr", custom: { featured: [[custom, 1500], [battlePass, 1500]], daily: [["AthenaGlider:solo_umbrella", 500], ["AthenaDance:eid_gunshow", 100]] } });

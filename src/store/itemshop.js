@@ -48,15 +48,24 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // changed during the day, is its first shop ("Part 1"). The wiki has Half Shell at 1,200 on 11 January, 800 on every
 // other day and on fnbr.co (🟡: kept at 800). The season ran into the 2.x builds, so their new cosmetics (Alpine Ace,
 // Mogul Master, Love Ranger, Cuddle Team Leader, Wukong, Chomp Jr., ...) are left out, as are Battle Pass Tiers; on the
-// days Epic featured only those, the featured section is empty. A build's season is its athena data's seasonNumber,
-// Season 1 without one.
+// days Epic featured only those, the featured section is empty.
+//
+// 3.0 is Season 3, and has its own shop: Epic's of Season 3, day by day from its first day, 22 February 2018, to its
+// last, 30 April 2018 (itemshop-season3.json), replayed in a 68-day cycle from its own start, as Season 2's. Its items
+// and prices are the Fortnite Wiki's Item Shop History pages' alone (🟡: fnbr.co wasn't checked against it), each item
+// of a cycling tile listed, but of Alpine Ace and Mogul Master only the base outfits, not their country styles (🟡). The
+// season ran on to 3.6, so the later 3.x cosmetics (Rex, Burnout, Sgt. Green Clover, Battle Hound, Raven...) and
+// Battle Pass Tiers are left out. A build's season is its athena data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;
   return { days, firstDay: Date.parse(`${days[0].date}T00:00:00Z`) };
 };
-const seasonHistories = { 1: readHistory("itemshop.json"), 2: readHistory("itemshop-season2.json") };
+const seasonHistories = { 1: readHistory("itemshop.json"), 2: readHistory("itemshop-season2.json"),
+  3: readHistory("itemshop-season3.json") };
 export const seasonOfBuild = () => athenaSeason()?.seasonNumber ?? 1;
 const historyOf = (season) => seasonHistories[season] ?? seasonHistories[1];
+// The first day of a season's history (ms, UTC): Season 3's is 22 February 2018, Epic's first day of the season.
+export const seasonHistoryStart = (season) => historyOf(season).firstDay;
 const dayMs = 24 * 60 * 60 * 1000;
 const rotationMsOf = (config) => Math.max(0, Math.min(23, Number(config?.rotationHour ?? 0))) * 60 * 60 * 1000;
 
@@ -67,8 +76,9 @@ const rotationMsOf = (config) => Math.max(0, Math.min(23, Number(config?.rotatio
 // next day it is served. Season 1 keeps its history's own first day, 30 October 2017, on the shared clock (Core's
 // choice: its replay and countdown have run that way since the shop was added, every running server is somewhere in its
 // cycle, and re-anchoring it would jump their shops and countdowns), unless an admin sets its start too. With no
-// recorder (no settings store), Season 2 also keeps its history's first day.
-const anchoredSeasons = [2];
+// recorder (no settings store), Season 2 also keeps its history's first day. Season 3 starts the same way, on the day
+// 3.0 is first served.
+const anchoredSeasons = [2, 3];
 let seasonStartRecorder = null;
 let recordSeasonStarts = true;
 export function configureSeasonStarts(recorder) {
@@ -323,7 +333,8 @@ export function weeklyStoreEnd(now = new Date(), overrideConfig = null, season =
 // the countdown reads as it did on that day of the season, then resets, as the shop's replay does). Season 1 (1.8 to
 // 1.10) is its history's 45 days, 30 October to its last day, 13 December 2017 (the season began on 25 October, before
 // the shop's first recorded day). Season 2 (1.11 to 2.5) ran from 14 December 2017 to its last day, 21 February 2018 (Season 3
-// launched on 22 February): 70 days. An admin's customSeasonEnd overrides both, in every shop mode.
+// launched on 22 February): 70 days. Season 3 (3.0 on) ran from 22 February to its last day, 30 April 2018 (Season 4
+// launched on 1 May): 68 days. An admin's customSeasonEnd overrides them all, in every shop mode.
 export function seasonEnd(now = new Date(), overrideConfig = null, season = seasonOfBuild()) {
   const custom = overrideConfig?.customSeasonEnd ?? currentEventsConfig()?.customSeasonEnd;
   if (custom) {
@@ -369,7 +380,7 @@ export function featuredDisplayAsset(templateId) {
   return athenaDisplayAssets()[templateId] ?? "";
 }
 
-// From 1.11 (CL-3807424; 2.1 to 2.5 too) every offer carries its display asset, the daily ones too (Core-Backend #145: "Item shop
+// From 1.11 (CL-3807424; 2.1 to 3.0 too) every offer carries its display asset, the daily ones too (Core-Backend #145: "Item shop
 // cosmetics dont show the shop display version of their icons"). 1.11's paks have one for nearly every outfit, glider
 // and pickaxe the shop sells (Catalog/DisplayAssets: DA_Featured_SMaleHID0xx and DA_Featured_SFemaleHID0xx for the
 // outfits, DA_Featured_Glider_ID_0xx and DA_Featured_Pickaxe_ID_xx), where 1.8's had them for a few featured items; the

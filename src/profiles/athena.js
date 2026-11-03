@@ -12,7 +12,8 @@ import { placements } from "../stats/store.js";
 import { defaultBanner } from "./defaults.js";
 import { findItem } from "./items.js";
 import { grant } from "./progress.js";
-import { accountLevelOf, addBookXp, namesAthenaBuild, seasonNeedsSwitch, seasonNumber, settleSeasonRewards, switchSeason } from "./seasons.js";
+import { countBundleQuest, grantChallengeSchedule as grantSchedule, settleChallengeSchedules } from "./challenges.js";
+import { accountLevelOf, addBookXp, giveSeasonReward, namesAthenaBuild, seasonNeedsSwitch, seasonNumber, settleSeasonRewards, switchSeason } from "./seasons.js";
 
 // Battle Royale's profile from 1.8, athena (UFortMcpProfileAthena, a quest profile): its cosmetics, the loadout the
 // locker equips, the banner, the season level and the daily challenges.
@@ -135,7 +136,8 @@ const migrated = (profile, name) => (profile.coreMigrations ?? []).includes(name
 // time the account's athena profile loads. 1.8 has no winners question (none of 1.7.2's battleroyale/winners or recordwin
 // strings are left): its umbrella is a glider item the locker equips. An umbrella already in a locker stays.
 const victoryUmbrella = "AthenaGlider:solo_umbrella";
-const seasonVictoryUmbrellas = { 2: "AthenaGlider:umbrella_snowflake" };
+// Season 3's is the Paper Parasol (Umbrella_PaperParasol), 3.0's AthenaSeason3 SeasonFirstWinRewards.
+const seasonVictoryUmbrellas = { 2: "AthenaGlider:umbrella_snowflake", 3: "AthenaGlider:umbrella_paperparasol" };
 const founderVictoryUmbrella = "AthenaGlider:founderumbrella";
 const victoryUmbrellas = [victoryUmbrella, ...Object.values(seasonVictoryUmbrellas), founderVictoryUmbrella];
 const victoryUmbrellasOf = (accountId, settings, season) => [victoryUmbrella, seasonVictoryUmbrellas[season],
@@ -435,7 +437,7 @@ export function umbrellaTypeOf(accountId, hasWon, settings) {
   return founder ? "founder_glider" : null;
 }
 
-// From 1.11 (CL-3807424; 2.1 to 2.5 too) the locker has six emote slots (Emote 1 to Emote 6): EquipBattleRoyaleCustomization's indexWithinSlot
+// From 1.11 (CL-3807424; 2.1 to 3.0 too) the locker has six emote slots (Emote 1 to Emote 6): EquipBattleRoyaleCustomization's indexWithinSlot
 // (UFortMcpProfileAthena::EquipBattleRoyaleCustomization(SlotName, ItemToSlot, indexWithinSlot)) names the one, and the
 // loadout's emotes are a list (FFortAthenaLoadout Dances, a TArray<UAthenaDanceItemDefinition*>), so favorite_dance is
 // the six emotes' ids, "" for an empty slot, as Epic's athena profiles kept it from Season 2 on. 1.8 to 1.10 keep the one
@@ -523,6 +525,7 @@ export function addSeasonXp(session, amount) {
   if (attributes.accountLevel !== accountLevel) tracker.setStat("accountLevel", accountLevel);
   settleChaseRewards(session);
   settleSeasonRewards(session, seasonFunctions);
+  settleLevelObjectives(session);
 }
 
 // The season level an admin sets (Core-Backend #106): the start of that level (no XP into it) and its chase rewards up to
@@ -542,7 +545,8 @@ export function setSeasonLevel(session, level) {
 }
 
 // What profiles/seasons.js gives season rewards with.
-const seasonFunctions = { addSeasonXp, grantCosmetic, grantAthenaQuest, settleBattlePassDaily };
+const seasonFunctions = { addSeasonXp, grantCosmetic, grantAthenaQuest, settleBattlePassDaily,
+  grantChallengeSchedule: (session, templateId) => grantSchedule(session, templateId, seasonFunctions) };
 export const seasonRewardFunctions = () => seasonFunctions;
 
 // The chase rewards of the levels reached that the player lacks: banners go to profile0, where the banner editor finds
@@ -619,6 +623,15 @@ function completeQuest(session, itemId) {
   }
   tracker.setItemAttribute(itemId, "quest_state", "Completed");
   tracker.setItemAttribute(itemId, "last_state_change_time", new Date().toISOString());
+  // Season 3's challenges (AthenaChallengeBundleQuest, profiles/challenges.js) have no Collect Rewards: 3.0's challenges
+  // tab lists their bundles' quests and no claim, so their Battle Stars are paid as they complete, and their bundle
+  // counts them.
+  if (quest.type === "AthenaChallengeBundleQuest") {
+    log("Battle Royale", `${session.accountId} completed the challenge ${questIdOf(item)}`);
+    claimAthenaQuest(session, itemId);
+    countBundleQuest(session, itemId, (rewardSession, reward) => giveSeasonReward(rewardSession, reward, seasonFunctions));
+    return;
+  }
   log("Battle Royale", `${session.accountId} completed ${questIdOf(item)}, waiting for Collect Rewards`);
   collectEarlierRewards(session, itemId, quest);
 }
@@ -676,7 +689,22 @@ function addProgress(session, itemId, objective, count) {
     log("Battle Royale", `${session.accountId}: ${questIdOf(item)} ${objective.name} ${value}/${objective.count}`);
   }
   const quest = athenaQuestOf(item);
-  if (quest.objectives.every((other) => (item.attributes[`completion_${other.name}`] ?? 0) >= other.count)) completeQuest(session, itemId);
+  // A quest of 3.0's challenges may be done by some of its objectives (objectiveCompletionCount: Land at different named
+  // locations, 10 of 18).
+  const done = quest.objectives.filter((other) => (item.attributes[`completion_${other.name}`] ?? 0) >= other.count).length;
+  if (done >= (quest.objectiveCompletionCount ?? quest.objectives.length) && item.attributes.quest_state === "Active") completeQuest(session, itemId);
+}
+
+// Objectives that count the season level (3.0's Quest_BR_LevelUp_SeasonLevel_25 and _50: ItemEvent
+// HasLeveledUpAthenaSeason, "Reach Season Level 25"): the level reached, up to the count.
+function settleLevelObjectives(session) {
+  const level = session.profile("athena").profile.stats.attributes.level ?? 1;
+  for (const { itemId, item, quest } of activeQuests(session.profile("athena"))) {
+    for (const objective of quest.objectives.filter((candidate) => candidate.itemEvent === "HasLeveledUpAthenaSeason")) {
+      const count = Math.min(level, objective.count) - (item.attributes[`completion_${objective.name}`] ?? 0);
+      if (count > 0 && session.profile("athena").profile.items[itemId]?.attributes.quest_state === "Active") addProgress(session, itemId, objective, count);
+    }
+  }
 }
 
 // Objectives Core counts from the match results the gameserver reports (battleroyale/recordresults): the placement
@@ -696,7 +724,9 @@ const tagMatches = (tags, tag) => !tags || tags.toLowerCase().split(",").map((on
 
 function countedFromResults(stat) {
   const row = stat && athenaObjectiveStat(stat);
-  return row?.type === "AthenaRank" || (row?.type === "Kill" && row.sourceTags === "Homebase.Class");
+  // A kill row with a condition is a kill somewhere (3.0's challenges: "Source.Tags HasTag Athena.Location.POI.FatalFields
+  // || ..."), which the match results can't tell, so the gameserver counts it.
+  return row?.type === "AthenaRank" || (row?.type === "Kill" && row.sourceTags === "Homebase.Class" && !row.condition);
 }
 
 // An AthenaRank row's condition: the match's place (Athena.Rank <=25) or, from 2.2's "Play matches with a friend"
@@ -816,7 +846,9 @@ export function rerollAthenaDaily(session, itemId, notifications) {
 const battlePassTrigger = "athena_battlepass_questtrigger";
 const heldBattlePassDailies = (tracker) => Object.entries(tracker.profile.items)
   .filter(([, item]) => athenaQuestOf(item)?.type === "AthenaBattlePassQuest");
-const ownsBattlePassChallenges = (tracker) => Boolean(getAthenaQuest(battlePassTrigger))
+// Season 3 (3.0) has weekly challenges in its place (profiles/challenges.js): its pass gives no trigger, and a Season 2
+// trigger still in the profile brings no daily there.
+const ownsBattlePassChallenges = (tracker) => Boolean(getAthenaQuest(battlePassTrigger)) && !athenaSeason()?.challengeSchedulesAlwaysShown
   && Object.values(tracker.profile.items).some((item) => questIdOf(item) === battlePassTrigger);
 
 export function settleBattlePassDaily(session, now = new Date()) {
@@ -866,6 +898,8 @@ function settleAthenaEventQuests(session) {
 export function athenaQuestLogin(session) {
   refreshAthenaDailies(session);
   settleBattlePassDaily(session);
+  settleChallengeSchedules(session, seasonFunctions);
+  settleLevelObjectives(session);
   settleAthenaEventQuests(session);
   settleChaseRewards(session);
 }

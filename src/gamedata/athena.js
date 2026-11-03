@@ -7,7 +7,8 @@ import { perBuild } from "./read.js";
 // they are read with Cert's data, and they need the season levels and challenges. A later build whose data differs
 // overlays it as usual.
 const data = perBuild((read) => {
-  const { cosmetics = {}, displayAssets = {}, quests = {}, levels = [], objectiveStats = {}, season, loot = {} } = read("athena", {});
+  const { cosmetics = {}, displayAssets = {}, quests = {}, levels = [], objectiveStats = {}, season, loot = {}, challengeSchedules = {},
+    challengeBundles = {} } = read("athena", {});
   return {
     cosmetics,
     season,
@@ -21,7 +22,9 @@ const data = perBuild((read) => {
     // From 1.11 (Season 2), the Battle Pass's daily challenges (EFortQuestType::AthenaBattlePassQuest,
     // Athena/Items/Quests/BattlePass), one a day for its owners besides the three above.
     battlePassDailies: Object.keys(quests).filter((id) => quests[id].type === "AthenaBattlePassQuest"),
-    loot
+    loot,
+    challengeSchedules,
+    challengeBundles
   };
 });
 
@@ -58,3 +61,9 @@ export const athenaSeason = () => data().season;
 // {<row name>: {<property>: value}}, ...}, every property in the form UDataTable::CreateTableFromJSONString reads. Only
 // the builds whose data was extracted with them have them (1.11 and 2.1); the others get {}.
 export const athenaLootTables = () => data().loot;
+
+// Season 3's challenges (3.0, tools/extractor; profiles/challenges.js), by id: the schedules the season grants
+// ({category, bundles: [{bundle, unlockType, unlockValue}]}) and their bundles ({quests: [{quest, grantWithBundle}],
+// completionThreshold, completionRewards, visualStyle}). Empty for earlier builds.
+export const athenaChallengeSchedules = () => data().challengeSchedules;
+export const athenaChallengeBundles = () => data().challengeBundles;

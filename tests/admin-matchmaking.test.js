@@ -28,13 +28,14 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
 
     // Modes default to all true
     assert.deepEqual(ov.modes, { solo: true, duo: true, squad: true, fiftyFifty: true, shootingTest: false, highExplosives: false, sneakySilencers: false, sniperShootout: false,
-      speedyStorm: false, takeToTheSkies: false, lotsaLoot: false, blitz: false });
+      speedyStorm: false, takeToTheSkies: false, lotsaLoot: false, blitz: false, fiveByTwenty: false, highJump: false, useItOrLoseIt: false, steadyStorm: false,
+      solidGold: false, skySupply: false, shotguns: false });
 
-    // 8 Battle Royale playlists: the 4 canonical ones, Shooting Test #1 and the other event queues (#190)
-    assert.equal(ov.playlists.length, 12);
+    // 19 Battle Royale playlists: the 4 canonical ones, Shooting Test #1, the other event queues (#190) and 3.0's new ones
+    assert.equal(ov.playlists.length, 19);
     assert.equal(ov.ltms.originalDates, false);
     assert.deepEqual(ov.ltms.list.map((ltm) => ltm.id), ["fiftyFifty", "highExplosives", "sneakySilencers", "sniperShootout", "shootingTest",
-      "speedyStorm", "takeToTheSkies", "lotsaLoot", "blitz"]);
+      "speedyStorm", "takeToTheSkies", "lotsaLoot", "blitz", "fiveByTwenty", "highJump", "useItOrLoseIt", "steadyStorm", "solidGold", "skySupply", "shotguns"]);
     const soloPl = ov.playlists.find((p) => p.id === "solo");
     assert.ok(soloPl);
     assert.equal(soloPl.playlistId, 2);
@@ -68,7 +69,7 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
     assert.ok(ov.serverLimits);
     for (const r of ["NA", "EU", "OCE", "BR", "ASIA"]) {
       assert.deepEqual(ov.serverLimits[r], { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0, highExplosives: 0, sneakySilencers: 0, sniperShootout: 0,
-        speedyStorm: 0, takeToTheSkies: 0, lotsaLoot: 0, blitz: 0 });
+        speedyStorm: 0, takeToTheSkies: 0, lotsaLoot: 0, blitz: 0, fiveByTwenty: 0, highJump: 0, useItOrLoseIt: 0, steadyStorm: 0, solidGold: 0, skySupply: 0, shotguns: 0 });
     }
 
     // Sessions array is returned
@@ -145,7 +146,8 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
     assert.equal(resetRes.status, 200);
     assert.equal(resetRes.body.success, true);
     assert.deepEqual(resetRes.body.modes, { solo: true, duo: true, squad: true, fiftyFifty: true, shootingTest: false, highExplosives: false, sneakySilencers: false, sniperShootout: false,
-      speedyStorm: false, takeToTheSkies: false, lotsaLoot: false, blitz: false });
+      speedyStorm: false, takeToTheSkies: false, lotsaLoot: false, blitz: false, fiveByTwenty: false, highJump: false, useItOrLoseIt: false, steadyStorm: false,
+      solidGold: false, skySupply: false, shotguns: false });
     assert.equal(resetRes.body.timing.gatherSeconds, 10);
     assert.equal(resetRes.body.timing.warmupSeconds, null);
     assert.equal(resetRes.body.timing.lateJoin, false);
