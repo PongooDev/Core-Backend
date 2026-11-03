@@ -6,6 +6,7 @@ import { claimLoginReward } from "./ClaimLoginReward.js";
 import { claimMissionAlertRewards } from "./ClaimMissionAlertRewards.js";
 import { claimQuestReward } from "./ClaimQuestReward.js";
 import { createOrUpgradeOutpostItem } from "./CreateOrUpgradeOutpostItem.js";
+import { destroyWorldItems } from "./DestroyWorldItems.js";
 import { disassembleWorldItems } from "./DisassembleWorldItems.js";
 import { equipBattleRoyaleCustomization } from "./EquipBattleRoyaleCustomization.js";
 import { clientQuestLogin } from "./ClientQuestLogin.js";
@@ -57,6 +58,7 @@ export const clientCommands = {
   ConvertItem: convertItemCommand,
   ConvertSlottedItem: convertSlottedItem,
   CreateOrUpgradeOutpostItem: createOrUpgradeOutpostItem,
+  DestroyWorldItems: destroyWorldItems,
   DisassembleWorldItems: disassembleWorldItems,
   EquipBattleRoyaleCustomization: equipBattleRoyaleCustomization,
   FortRerollDailyQuest: fortRerollDailyQuest,
