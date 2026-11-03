@@ -1,3 +1,4 @@
+import { pageId } from "../collectionbook/pages.js";
 import { getQuest } from "../gamedata/quests.js";
 import { currentEventsConfig, hasEventEnded, isEventActive, winter2017 } from "./events.js";
 
@@ -54,3 +55,17 @@ export const winterQuests = [
 export function winterEventQuests() {
   return isEventActive(winter2017) ? winterQuests.filter((questId) => getQuest(questId)) : [];
 }
+
+// The event's collection book pages, the "Winter Event" category (CollectionCategoryTable WinterEvent2017): the Vacuum
+// Tube weapons, ranged and melee, ore and crystal (PageSpecial_Weapons_Ranged/Melee_Winter2017[_Crystal]), and its
+// holiday heroes (PageSpecial_Winter2017_Heroes). The client lists a page only once its book profile holds the page item
+// (collectionbook/pages.js), and nothing in the data grants these (homebaseonboarding unlocks the standard pages only;
+// no quest, card pack or book reward names a PageSpecial_* page), so the Vacuum Tube weapons had no page to go in.
+// 🟡 Epic's servers gave them when the event began and accounts kept them after; the weapons stay (schematics, and 2.4's
+// and 2.5's data still has the pages), so Core gives them to every book profile of a build whose data has them
+// (profiles/setup.js), event or not, when the book first loads there.
+export const winterPages = ["PageSpecial_Weapons_Ranged_Winter2017", "PageSpecial_Weapons_Ranged_Winter2017_Crystal",
+  "PageSpecial_Weapons_Melee_Winter2017", "PageSpecial_Weapons_Melee_Winter2017_Crystal", "PageSpecial_Winter2017_Heroes"];
+
+// The requesting build's Survive the Holidays pages, where its data has them.
+export const winterBookPages = () => winterPages.map(pageId).filter(Boolean);

@@ -3,7 +3,7 @@ import { getQuest } from "../gamedata/quests.js";
 import { fortnitemares, isEventActive } from "./events.js";
 import { mutantStorms2018EventQuests, mutantStormsEventQuests } from "./mutantstorms.js";
 import { springEventQuests } from "./spring2018.js";
-import { winterEventQuests } from "./winter2017.js";
+import { winterBookPages, winterEventQuests } from "./winter2017.js";
 
 // Fortnitemares (Halloween 2017, 1.8): what the event gives on top of its flag (events/events.js).
 
@@ -46,7 +46,8 @@ export function eventQuests() {
 // book profile of a build that runs the event (profiles/setup.js), when the book first loads there.
 export const fortnitemaresPages = ["PageSpecial_Halloween2017_Heroes", "PageSpecial_Halloween2017_Workers"];
 
-// The requesting build's event pages, when the event runs there.
+// The requesting build's event pages: Fortnitemares' when the event runs there, and Survive the Holidays' wherever the
+// data has them (events/winter2017.js).
 export function eventBookPages() {
-  return isEventActive(fortnitemares) ? fortnitemaresPages.map(pageId).filter(Boolean) : [];
+  return [...(isEventActive(fortnitemares) ? fortnitemaresPages.map(pageId).filter(Boolean) : []), ...winterBookPages()];
 }
