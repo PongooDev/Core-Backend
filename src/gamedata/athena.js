@@ -1,4 +1,4 @@
-import { perBuild } from "./read.js";
+import { activeBuild, buildGameData, dataBuilds, perBuild } from "./read.js";
 
 // Battle Royale's game data (gamedata/athena.json, tools/extractor): its cosmetics, the item shop's display assets, its
 // quests, season levels and the objective stat rows its quests count. 1.8 (CL-3724489) is the first build with an athena
@@ -28,8 +28,44 @@ const data = perBuild((read) => {
   };
 });
 
-// templateId -> {class, name, rarity}.
+// templateId -> {class, name, rarity}; an outfit whose hero wears a back bling built in also has backpackParts, and a
+// back bling its CharacterParts as parts (tools/extractor).
 export const athenaCosmetics = () => data().cosmetics;
+
+// The back blings 3.0 (CL-3901517) split off outfits (Core-Backend #203): outfit templateId -> the back bling
+// (AthenaBackpack template id) of the requesting build that took the place of the back bling the outfit wore built in on
+// an earlier build and no longer does on this one. The outfits are the game data's: those whose hero wore a Backpack part
+// on an earlier build (2.5's HS_032_Athena_Commando_M_Medieval wore Male_Commando_10) and doesn't on this one. Their back
+// bling is the one wearing that same part (3.0's BID_001_BlueSquire wears Male_Commando_10). 3.0 remade three parts,
+// though: the Ski Dudes' and Ski Girls' back blings share the Ski Dudes' Male_Commando_13 (the Ski Girls wore
+// Female_Commando_08) and Raptor's wears Male_Commando_UR01_ATH (Raptor wore Male_Commando_UR01). Where the part names
+// no one back bling, the back bling is the one whose asset name (BID_<n>_<name>) the outfit's asset or display name holds,
+// the longest such name: BID_014_SkiGirl for CID_061_Athena_Commando_F_SkiGirl, BID_015_SkiGirl_USA for its _USA,
+// BID_005_Raptor for "Raptor". Empty for builds with no such back bling.
+const nameKey = (text) => String(text).toLowerCase().replace(/[^a-z0-9]/g, "");
+const splitBackpacks = perBuild((read) => {
+  const { cosmetics = {} } = read("athena", {});
+  const backpacks = Object.entries(cosmetics).filter(([, cosmetic]) => cosmetic.parts?.length)
+    .map(([id, cosmetic]) => ({ id, parts: cosmetic.parts, key: nameKey(id.split(":")[1].replace(/^bid_\d+_/, "")) }));
+  const result = {};
+  if (!backpacks.length) return result;
+  const earlier = dataBuilds.filter((build) => Number(build) < Number(activeBuild()));
+  for (const build of earlier) {
+    for (const [outfit, cosmetic] of Object.entries(buildGameData(build, "athena", {}).cosmetics ?? {})) {
+      const worn = new Set(cosmetics[outfit]?.backpackParts ?? []);
+      const split = (cosmetic.backpackParts ?? []).filter((part) => !worn.has(part));
+      if (!split.length || result[outfit.toLowerCase()]) continue;
+      const byPart = backpacks.filter((backpack) => backpack.parts.some((part) => split.includes(part)));
+      const names = [nameKey(outfit.split(":")[1]), nameKey(cosmetics[outfit]?.name ?? cosmetic.name ?? "")];
+      const byName = (byPart.length ? byPart : backpacks).filter((backpack) => names.some((name) => name.includes(backpack.key)))
+        .sort((a, b) => b.key.length - a.key.length);
+      const backpack = byPart.length === 1 ? byPart[0] : byName[0];
+      if (backpack) result[outfit.toLowerCase()] = backpack.id;
+    }
+  }
+  return result;
+});
+export const splitOffBackpacks = (outfitId) => [splitBackpacks()[String(outfitId).toLowerCase()]].filter(Boolean);
 
 // The item shop's display assets (FortMtxOfferData with Battle Royale tile art) by the cosmetic the extractor matched
 // them to, as object paths: "AthenaGlider:glider_voyager" -> "/Game/Catalog/DisplayAssets/DA_Featured_GliderVoyager.DA_Featured_GliderVoyager".

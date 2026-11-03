@@ -12,26 +12,41 @@
       "name": "Renegade Raider"
     },
     "AthenaCharacter:cid_031_athena_commando_m_retro": {
+      "backpackParts": [
+        "male_commando_ur01"
+      ],
       "class": "AthenaCharacterItemDefinition",
       "name": "Raptor",
       "rarity": "Fine"
     },
     "AthenaCharacter:cid_032_athena_commando_m_medieval": {
+      "backpackParts": [
+        "male_commando_10"
+      ],
       "class": "AthenaCharacterItemDefinition",
       "name": "Blue Squire",
       "rarity": "Sturdy"
     },
     "AthenaCharacter:cid_033_athena_commando_f_medieval": {
+      "backpackParts": [
+        "male_commando_10_female"
+      ],
       "class": "AthenaCharacterItemDefinition",
       "name": "Royale Knight",
       "rarity": "Sturdy"
     },
     "AthenaCharacter:cid_034_athena_commando_f_medieval": {
+      "backpackParts": [
+        "male_commando_blackknight_v01"
+      ],
       "class": "AthenaCharacterItemDefinition",
       "name": "Red Knight",
       "rarity": "Fine"
     },
     "AthenaCharacter:cid_035_athena_commando_m_medieval": {
+      "backpackParts": [
+        "male_commando_blackknight"
+      ],
       "class": "AthenaCharacterItemDefinition",
       "name": "Black Knight",
       "rarity": "Fine"
@@ -122,91 +137,145 @@
       "rarity": "Sturdy"
     },
     "AthenaCharacter:cid_053_athena_commando_m_skidude": {
+      "backpackParts": [
+        "male_commando_13"
+      ],
       "class": "AthenaCharacterItemDefinition",
       "name": "Alpine Ace",
       "rarity": "Quality"
     },
     "AthenaCharacter:cid_054_athena_commando_m_skidude_usa": {
+      "backpackParts": [
+        "male_commando_13_usa"
+      ],
       "class": "AthenaCharacterItemDefinition",
       "name": "Alpine Ace (USA)",
       "rarity": "Quality"
     },
     "AthenaCharacter:cid_055_athena_commando_m_skidude_can": {
+      "backpackParts": [
+        "male_commando_13_can"
+      ],
       "class": "AthenaCharacterItemDefinition",
       "name": "Alpine Ace (CAN)",
       "rarity": "Quality"
     },
     "AthenaCharacter:cid_056_athena_commando_m_skidude_gbr": {
+      "backpackParts": [
+        "male_commando_13_gbr"
+      ],
       "class": "AthenaCharacterItemDefinition",
       "name": "Alpine Ace (GBR)",
       "rarity": "Quality"
     },
     "AthenaCharacter:cid_057_athena_commando_m_skidude_fra": {
+      "backpackParts": [
+        "male_commando_13_fra"
+      ],
       "class": "AthenaCharacterItemDefinition",
       "name": "Alpine Ace (FRA)",
       "rarity": "Quality"
     },
     "AthenaCharacter:cid_058_athena_commando_m_skidude_ger": {
+      "backpackParts": [
+        "male_commando_13_ger"
+      ],
       "class": "AthenaCharacterItemDefinition",
       "name": "Alpine Ace (GER)",
       "rarity": "Quality"
     },
     "AthenaCharacter:cid_059_athena_commando_m_skidude_chn": {
+      "backpackParts": [
+        "male_commando_13_chn"
+      ],
       "class": "AthenaCharacterItemDefinition",
       "name": "Alpine Ace (CHN)",
       "rarity": "Quality"
     },
     "AthenaCharacter:cid_060_athena_commando_m_skidude_kor": {
+      "backpackParts": [
+        "male_commando_13_kor"
+      ],
       "class": "AthenaCharacterItemDefinition",
       "name": "Alpine Ace (KOR)",
       "rarity": "Quality"
     },
     "AthenaCharacter:cid_061_athena_commando_f_skigirl": {
+      "backpackParts": [
+        "female_commando_08"
+      ],
       "class": "AthenaCharacterItemDefinition",
       "name": "Mogul Master",
       "rarity": "Quality"
     },
     "AthenaCharacter:cid_062_athena_commando_f_skigirl_usa": {
+      "backpackParts": [
+        "female_commando_08_usa"
+      ],
       "class": "AthenaCharacterItemDefinition",
       "name": "Mogul Master (USA)",
       "rarity": "Quality"
     },
     "AthenaCharacter:cid_063_athena_commando_f_skigirl_can": {
+      "backpackParts": [
+        "female_commando_08_can"
+      ],
       "class": "AthenaCharacterItemDefinition",
       "name": "Mogul Master (CAN)",
       "rarity": "Quality"
     },
     "AthenaCharacter:cid_064_athena_commando_f_skigirl_gbr": {
+      "backpackParts": [
+        "female_commando_08_gbr"
+      ],
       "class": "AthenaCharacterItemDefinition",
       "name": "Mogul Master (GBR)",
       "rarity": "Quality"
     },
     "AthenaCharacter:cid_065_athena_commando_f_skigirl_fra": {
+      "backpackParts": [
+        "female_commando_08_fra"
+      ],
       "class": "AthenaCharacterItemDefinition",
       "name": "Mogul Master (FRA)",
       "rarity": "Quality"
     },
     "AthenaCharacter:cid_066_athena_commando_f_skigirl_ger": {
+      "backpackParts": [
+        "female_commando_08_ger"
+      ],
       "class": "AthenaCharacterItemDefinition",
       "name": "Mogul Master (GER)",
       "rarity": "Quality"
     },
     "AthenaCharacter:cid_067_athena_commando_f_skigirl_chn": {
+      "backpackParts": [
+        "female_commando_08_chn"
+      ],
       "class": "AthenaCharacterItemDefinition",
       "name": "Mogul Master (CHN)",
       "rarity": "Quality"
     },
     "AthenaCharacter:cid_068_athena_commando_f_skigirl_kor": {
+      "backpackParts": [
+        "female_commando_08_kor"
+      ],
       "class": "AthenaCharacterItemDefinition",
       "name": "Mogul Master (KOR)",
       "rarity": "Quality"
     },
     "AthenaCharacter:cid_069_athena_commando_f_pinkbear": {
+      "backpackParts": [
+        "female_commando_br039"
+      ],
       "class": "AthenaCharacterItemDefinition",
       "name": "Cuddle Team Leader",
       "rarity": "Fine"
     },
     "AthenaCharacter:cid_070_athena_commando_m_cupid": {
+      "backpackParts": [
+        "male_commando_cupid_backpack"
+      ],
       "class": "AthenaCharacterItemDefinition",
       "name": "Love Ranger",
       "rarity": "Fine"

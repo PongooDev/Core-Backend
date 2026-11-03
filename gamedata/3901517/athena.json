@@ -509,146 +509,233 @@
     "AthenaBackpack:bid_001_bluesquire": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Squire Shield",
+      "parts": [
+        "male_commando_10"
+      ],
       "rarity": "Sturdy"
     },
     "AthenaBackpack:bid_002_royaleknight": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Royale Shield",
+      "parts": [
+        "male_commando_10_female"
+      ],
       "rarity": "Sturdy"
     },
     "AthenaBackpack:bid_003_redknight": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Red Shield",
+      "parts": [
+        "male_commando_blackknight_v01"
+      ],
       "rarity": "Fine"
     },
     "AthenaBackpack:bid_004_blackknight": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Black Shield",
+      "parts": [
+        "male_commando_blackknight"
+      ],
       "rarity": "Fine"
     },
     "AthenaBackpack:bid_005_raptor": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Raptor Satchel",
+      "parts": [
+        "male_commando_ur01_ath"
+      ],
       "rarity": "Fine"
     },
     "AthenaBackpack:bid_006_skidude": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Alpine Accessories",
+      "parts": [
+        "male_commando_13"
+      ],
       "rarity": "Quality"
     },
     "AthenaBackpack:bid_007_skidude_usa": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Alpine Accessories (USA)",
+      "parts": [
+        "male_commando_13_usa"
+      ],
       "rarity": "Quality"
     },
     "AthenaBackpack:bid_008_skidude_can": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Alpine Accessories (CAN)",
+      "parts": [
+        "male_commando_13_can"
+      ],
       "rarity": "Quality"
     },
     "AthenaBackpack:bid_009_skidude_gbr": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Alpine Accessories (GBR)",
+      "parts": [
+        "male_commando_13_gbr"
+      ],
       "rarity": "Quality"
     },
     "AthenaBackpack:bid_010_skidude_fra": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Alpine Accessories (FRA)",
+      "parts": [
+        "male_commando_13_fra"
+      ],
       "rarity": "Quality"
     },
     "AthenaBackpack:bid_011_skidude_ger": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Alpine Accessories (GER)",
+      "parts": [
+        "male_commando_13_ger"
+      ],
       "rarity": "Quality"
     },
     "AthenaBackpack:bid_012_skidude_chn": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Alpine Accessories (CHN)",
+      "parts": [
+        "male_commando_13_chn"
+      ],
       "rarity": "Quality"
     },
     "AthenaBackpack:bid_013_skidude_kor": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Alpine Accessories (KOR)",
+      "parts": [
+        "male_commando_13_kor"
+      ],
       "rarity": "Quality"
     },
     "AthenaBackpack:bid_014_skigirl": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Mogul Ski Bag",
+      "parts": [
+        "male_commando_13"
+      ],
       "rarity": "Quality"
     },
     "AthenaBackpack:bid_015_skigirl_usa": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Mogul Ski Bag (USA)",
+      "parts": [
+        "male_commando_13_usa"
+      ],
       "rarity": "Quality"
     },
     "AthenaBackpack:bid_016_skigirl_can": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Mogul Ski Bag (CAN)",
+      "parts": [
+        "male_commando_13_can"
+      ],
       "rarity": "Quality"
     },
     "AthenaBackpack:bid_017_skigirl_gbr": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Mogul Ski Bag (GBR)",
+      "parts": [
+        "male_commando_13_gbr"
+      ],
       "rarity": "Quality"
     },
     "AthenaBackpack:bid_018_skigirl_fra": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Mogul Ski Bag (FRA)",
+      "parts": [
+        "male_commando_13_fra"
+      ],
       "rarity": "Quality"
     },
     "AthenaBackpack:bid_019_skigirl_ger": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Mogul Ski Bag (GER)",
+      "parts": [
+        "male_commando_13_ger"
+      ],
       "rarity": "Quality"
     },
     "AthenaBackpack:bid_020_skigirl_chn": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Mogul Ski Bag (CHN)",
+      "parts": [
+        "male_commando_13_chn"
+      ],
       "rarity": "Quality"
     },
     "AthenaBackpack:bid_021_skigirl_kor": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Mogul Ski Bag (KOR)",
+      "parts": [
+        "male_commando_13_kor"
+      ],
       "rarity": "Quality"
     },
     "AthenaBackpack:bid_022_cupid": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Love Wings",
+      "parts": [
+        "male_commando_cupid_backpack"
+      ],
       "rarity": "Fine"
     },
     "AthenaBackpack:bid_023_pinkbear": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Cuddle Bow",
+      "parts": [
+        "female_commando_br039"
+      ],
       "rarity": "Fine"
     },
     "AthenaBackpack:bid_024_space": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Astro",
+      "parts": [
+        "cp_backpack_space"
+      ],
       "rarity": "Quality"
     },
     "AthenaBackpack:bid_025_tactical": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Precision",
+      "parts": [
+        "cp_backpack_tactical"
+      ],
       "rarity": "Sturdy"
     },
     "AthenaBackpack:bid_026_brite": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Brite Bag",
+      "parts": [
+        "cp_backpack_brite"
+      ],
       "rarity": "Sturdy"
     },
     "AthenaBackpack:bid_027_scavenger": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Rust Bucket",
+      "parts": [
+        "cp_backpack_scavenger"
+      ],
       "rarity": "Quality"
     },
     "AthenaBackpack:bid_028_spaceblack": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Dark Matter",
+      "parts": [
+        "cp_backpack_spaceblack"
+      ],
       "rarity": "Fine"
     },
     "AthenaBackpack:bid_029_retrogrey": {
       "class": "AthenaBackpackItemDefinition",
       "name": "Backup Plan",
+      "parts": [
+        "cp_backpack_retrogrey"
+      ],
       "rarity": "Fine"
     },
     "AthenaBattleBus:bbid_winterbus": {
@@ -1597,6 +1684,36 @@
     },
     "AthenaPickaxe:pickaxe_lockjaw": {
       "name": "Raider's Revenge"
+    },
+    "AthenaSkyDiveContrail:defaultcontrail": {
+      "class": "AthenaSkyDiveContrailItemDefinition",
+      "name": "DefaultContrail",
+      "rarity": "Ordinary"
+    },
+    "AthenaSkyDiveContrail:trails_id_001_disco": {
+      "class": "AthenaSkyDiveContrailItemDefinition",
+      "name": "All-Star",
+      "rarity": "Sturdy"
+    },
+    "AthenaSkyDiveContrail:trails_id_002_rainbow": {
+      "class": "AthenaSkyDiveContrailItemDefinition",
+      "name": "Rainbow",
+      "rarity": "Sturdy"
+    },
+    "AthenaSkyDiveContrail:trails_id_003_fire": {
+      "class": "AthenaSkyDiveContrailItemDefinition",
+      "name": "Flames",
+      "rarity": "Sturdy"
+    },
+    "AthenaSkyDiveContrail:trails_id_004_bluestreak": {
+      "class": "AthenaSkyDiveContrailItemDefinition",
+      "name": "Ultramarine",
+      "rarity": "Sturdy"
+    },
+    "AthenaSkyDiveContrail:trails_id_005_bubbles": {
+      "class": "AthenaSkyDiveContrailItemDefinition",
+      "name": "Bubbles",
+      "rarity": "Sturdy"
     }
   },
   "displayAssets": {

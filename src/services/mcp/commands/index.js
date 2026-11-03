@@ -1,6 +1,7 @@
 import { activateConsumable } from "./ActivateConsumable.js";
 import { assignWorkerToSquad } from "./AssignWorkerToSquad.js";
 import { assignWorkerToSquadBatch } from "./AssignWorkerToSquadBatch.js";
+import { bulkEquipBattleRoyaleCustomization } from "./BulkEquipBattleRoyaleCustomization.js";
 import { claimCollectedResources } from "./ClaimCollectedResources.js";
 import { claimLoginReward } from "./ClaimLoginReward.js";
 import { claimMissionAlertRewards } from "./ClaimMissionAlertRewards.js";
@@ -49,6 +50,7 @@ export const clientCommands = {
   ActivateConsumable: activateConsumable,
   AssignWorkerToSquad: assignWorkerToSquad,
   AssignWorkerToSquadBatch: assignWorkerToSquadBatch,
+  BulkEquipBattleRoyaleCustomization: bulkEquipBattleRoyaleCustomization,
   ClaimCollectionBookPageRewards: claimCollectionBookPageRewards,
   ClaimCollectionBookRewards: claimCollectionBookRewards,
   ClaimCollectedResources: claimCollectedResources,

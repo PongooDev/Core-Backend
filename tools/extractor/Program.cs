@@ -1086,8 +1086,18 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         ["name"] = displayName,
         ["rarity"] = Enum(properties["Rarity"]) ?? "Ordinary"
     };
+    // The back bling parts (CustomCharacterPart, CharacterPartType Backpack) an outfit wears built in, through its hero's
+    // specializations (FortHeroSpecialization CharacterParts), and a back bling's own CharacterParts, as part names: 3.0
+    // (CL 3901517) took 2.5's built-in back blings off their outfits (HS_032's Male_Commando_10) and made them back blings
+    // of their own (BID_001_BlueSquire wears Male_Commando_10), which owners of the outfit were given (Core-Backend #203).
+    if (export.ExportType == "AthenaCharacterItemDefinition" && properties["HeroDefinition"] is { } heroReference
+        && BuiltInBackpackParts(provider, heroReference) is { Count: > 0 } builtIn)
+        ((SortedDictionary<string, object>)athenaCosmetics[cosmeticId])["backpackParts"] = builtIn;
+    if (export.ExportType == "AthenaBackpackItemDefinition" && (properties["CharacterParts"] as JsonArray)?.Count > 0)
+        ((SortedDictionary<string, object>)athenaCosmetics[cosmeticId])["parts"] = properties["CharacterParts"]!.AsArray()
+            .Where(part => part is not null).Select(part => AssetName(PackageFile(part)[..^".uasset".Length]).ToLowerInvariant()).ToList();
     // An outfit's hero (HID_027_Athena_Commando_F): its featured tile art is named after it.
-    var hero = properties["HeroDefinition"]?["ObjectPath"]?.GetValue<string>()?.Split('/').Last().Split('.')[0];
+    var hero =properties["HeroDefinition"]?["ObjectPath"]?.GetValue<string>()?.Split('/').Last().Split('.')[0];
     // Its locker icon (LargePreviewImage, a soft path, else SmallPreviewImage): T-Icon-Glider-001-L is Glider_ID_001's,
     // whose featured tile art is T-Featured-Glider-001.
     var icon = (properties["LargePreviewImage"]?.GetValueKind() == JsonValueKind.String ? properties["LargePreviewImage"]!.GetValue<string>()
@@ -1439,6 +1449,29 @@ static string PackageFile(JsonNode? reference)
     return path + ".uasset";
 }
 
+// The Backpack-type parts (EFortCustomPartType::Backpack) of a hero's specializations, as lower-case part names.
+static List<string> BuiltInBackpackParts(DefaultFileProvider provider, JsonNode heroReference)
+{
+    var parts = new SortedSet<string>(StringComparer.Ordinal);
+    JsonNode? Properties(JsonNode? reference)
+    {
+        if (reference is null || !provider.TryLoadPackage(PackageFile(reference), out var package)) return null;
+        // The asset itself, not its subobjects (a backpack part's CustomCharacterBackpackData comes first).
+        var name = AssetName(PackageFile(reference)[..^".uasset".Length]);
+        var export = package.GetExports().FirstOrDefault(e => e.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+        return export is null ? null : JsonNode.Parse(JsonConvert.SerializeObject(export))!["Properties"];
+    }
+    foreach (var specialization in (Properties(heroReference)?["Specializations"] as JsonArray) ?? [])
+    {
+        foreach (var part in (Properties(specialization)?["CharacterParts"] as JsonArray) ?? [])
+        {
+            if (part is null || Enum(Properties(part)?["CharacterPartType"]) != "Backpack") continue;
+            parts.Add(AssetName(PackageFile(part)[..^".uasset".Length]).ToLowerInvariant());
+        }
+    }
+    return [.. parts];
+}
+
 static JsonNode LoadExport(DefaultFileProvider provider, JsonNode? reference, string type)
 {
     var file = PackageFile(reference);
@@ -1495,7 +1528,10 @@ static class ItemClasses
         "AthenaConsumableEmoteItemDefinition", "AthenaVictoryPoseItemDefinition",
         // 1.11's emoticons (Athena/Items/Cosmetics/Dances/Emoji, UAthenaEmojiItemDefinition: UAthenaDanceItemDefinition),
         // AthenaDance items that go in the emote slots.
-        "AthenaEmojiItemDefinition"
+        "AthenaEmojiItemDefinition",
+        // 3.0's (CL 3901517) contrails (Athena/Items/Cosmetics/Contrails, EAthenaCustomizationCategory::SkyDiveContrail),
+        // which its Battle Pass gives.
+        "AthenaSkyDiveContrailItemDefinition"
     ];
 
     private static readonly Dictionary<string, string> Parents = new()

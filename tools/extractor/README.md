@@ -59,7 +59,10 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
 - `inventory.json`: what each skill tree node and account buff adds to the item limits (FortHomebaseSet
   `InventorySizeBonus` for the account vault, `WorldInventorySizeBonus` for the backpack, `StorageInventorySizeBonus`).
 - `athena.json`: Battle Royale's, from 1.8 (CL 3724489; empty for earlier builds): its cosmetics (`Athena/Items/Cosmetics`
-  without the test characters: class, display name, rarity), the item shop's display assets (`Catalog/DisplayAssets`
+  without the test characters: class, display name, rarity; an outfit whose hero's specializations wear a back bling built
+  in has `backpackParts`, those parts' names, and a back bling its own CharacterParts as `parts`, the link 3.0 (CL 3901517)
+  broke when it made 2.5's built-in back blings items of their own; 3.0's contrails, AthenaSkyDiveContrailItemDefinition, are
+  cosmetics too), the item shop's display assets (`Catalog/DisplayAssets`
   FortMtxOfferData with Battle Royale tile art or, for the emotes, their locker icon, by the cosmetic each shows, matched by name: see `Program.cs`), its quests (`Athena/Items/Quests`, as in `quests.json` plus
   their category and weight), the season levels (AthenaGameData's `SeasonXpLevelsTable`) and the objective stat rows those
   quests count. From 1.11 (CL 3807424, Season 2) AthenaGameData names no season levels table; the levels are the newest

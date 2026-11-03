@@ -4,7 +4,8 @@ import { McpError } from "../errors.js";
 import { athenaEventQuestsOf } from "../events/fiftyfifty.js";
 import { eventQueueOfPlaylist } from "../events/ltms.js";
 import { currentBuild } from "../builds/context.js";
-import { athenaBattlePassDailyIds, athenaCosmetics, athenaDailyIds, athenaObjectiveStat, athenaSeason, dailyWeight, getAthenaQuest, seasonLevels } from "../gamedata/athena.js";
+import { athenaBattlePassDailyIds, athenaCosmetics, athenaDailyIds, athenaObjectiveStat, athenaSeason, dailyWeight, getAthenaQuest, seasonLevels,
+  splitOffBackpacks } from "../gamedata/athena.js";
 import { bannerIds, bannerTemplateId } from "../gamedata/banners.js";
 import { dataBuilds } from "../gamedata/read.js";
 import { log } from "../log.js";
@@ -31,7 +32,9 @@ const slots = {
   BattleBus: ["AthenaBattleBus", "favorite_battlebus"],
   Dance: ["AthenaDance", "favorite_dance"],
   ConsumableEmote: ["AthenaConsumableEmote", "favorite_consumableemote"],
-  VictoryPose: ["AthenaVictoryPose", "favorite_victorypose"]
+  VictoryPose: ["AthenaVictoryPose", "favorite_victorypose"],
+  // 3.0's (CL-3901517) contrails (EAthenaCustomizationCategory::SkyDiveContrail, favorite_skydivecontrail).
+  SkyDiveContrail: ["AthenaSkyDiveContrail", "favorite_skydivecontrail"]
 };
 const slotOrder = ["None", ...Object.keys(slots)];
 
@@ -183,8 +186,15 @@ function earnedCosmetics(profile, settings) {
 const blanket = (profile) => profile.coreBlanketCosmetics ?? [];
 const missing = (profile, templateIds) => templateIds.filter((templateId) => !findItem(profile, templateId));
 
+// The back blings 3.0 split off outfits the locker holds (Core-Backend #203, gamedata/athena.js splitOffBackpacks), which
+// Epic gave the outfits' owners: those the locker lacks. However the outfit came (bought on an older build too).
+const missingSplitBackpacks = (profile) => [...new Set(Object.values(profile.items)
+  .filter((item) => typeOf(item.templateId) === "athenacharacter")
+  .flatMap((item) => splitOffBackpacks(item.templateId)))].filter((templateId) => !findItem(profile, templateId));
+
 export function athenaNeedsSetUp(profile, settings = {}) {
   return !migrated(profile, "athenaLocker") || missing(profile, starterIds(profile, settings)).length > 0
+    || missingSplitBackpacks(profile).length > 0
     || missing(profile, earnedCosmetics(profile, settings)).length > 0
     || (settings.giveAllCosmetics ? missing(profile, lockerCosmetics()).length > 0 : blanket(profile).length > 0)
     || emptyDefaultSlots(profile).length > 0 || heldNonLockerItems(profile).length > 0
@@ -209,6 +219,8 @@ export function grantCosmetic(session, templateId, { force = false } = {}) {
   if (findItem(profile, id)) return null;
   addCosmetic(tracker, id, false);
   log("Battle Royale", `${session.accountId} got ${id}`);
+  // An outfit whose back bling 3.0 made an item of its own brings that back bling (Core-Backend #203).
+  for (const backpack of splitOffBackpacks(id)) grantCosmetic(session, backpack);
   return { profileId: "athena", itemId: id, templateId: id, quantity: 1 };
 }
 
@@ -234,6 +246,8 @@ function removeCosmetic(tracker, itemId) {
 // set up, so taking them is refused. null for one that can go.
 function keptCosmeticReason(profile, settings, templateId) {
   if (starterIds(profile, settings).some((id) => sameId(id, templateId))) return "a starter cosmetic every account is given back";
+  if (Object.values(profile.items).some((item) => typeOf(item.templateId) === "athenacharacter"
+    && splitOffBackpacks(item.templateId).some((id) => sameId(id, templateId)))) return "the back bling of an outfit the account owns";
   if (!earnedCosmetics(profile, settings).some((id) => sameId(id, templateId))) return null;
   return chaseRewardIds().some((id) => sameId(id, templateId)) ? "a season level reward the account has reached" : "a victory umbrella of a recorded win";
 }
@@ -269,6 +283,7 @@ export function setUpAthena(session) {
   for (const templateId of missing(profile, starterIds(profile, settings))) addCosmetic(tracker, templateId, true);
   for (const templateId of earnedCosmetics(profile, settings)) grantCosmetic(session, templateId);
   for (const itemId of heldNonLockerItems(profile)) removeCosmetic(tracker, itemId);
+  for (const templateId of missingSplitBackpacks(profile)) grantCosmetic(session, templateId);
   if (settings.giveAllCosmetics) {
     const given = missing(profile, lockerCosmetics());
     for (const templateId of given) addCosmetic(tracker, templateId, true);
