@@ -40,6 +40,7 @@ import { contentUpdateStates, defaultContentUpdates } from "../events/contentupd
 import { cosmeticRarity, cosmeticType, eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, seasonEnd, seasonMoment, seasonStart, shopDay, soldCosmeticIds, weeklyStoreEnd, withoutSeasonStartRecording } from "../store/itemshop.js";
 import { activeEventFlags, fortnitemares, mutantStorms } from "../events/events.js";
 import { convertLeftoverCandy } from "../events/candyllamas.js";
+import { ltmIds, ltmSchedule, ltms } from "../events/ltms.js";
 import { convertLeftoverStormTickets } from "../events/stormllamas.js";
 import { defaultEvents, defaultMatchmakingModes, defaultServerLimits } from "../settings/store.js";
 import { calendarCacheMinutes } from "../services/fortnite/calendar.js";
@@ -1340,10 +1341,10 @@ export function adminRoutes(context) {
     const sessionList = (sessions?.list?.() ?? []).map((session) => sessionSummary(session));
 
     const regions = ["NA", "EU", "OCE", "BR", "ASIA"];
-    const modeKeys = ["solo", "duo", "squad", "fiftyFifty", "shootingTest"];
+    const modeKeys = ["solo", "duo", "squad", ...ltmIds];
     const serverCounts = {};
     for (const r of regions) {
-      serverCounts[r] = { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0 };
+      serverCounts[r] = Object.fromEntries(modeKeys.map((m) => [m, 0]));
       for (const m of modeKeys) {
         if (matchmaker?.activeServersCount) {
           serverCounts[r][m] = matchmaker.activeServersCount(r, m);
@@ -1388,6 +1389,7 @@ export function adminRoutes(context) {
         enabled: modes.squad !== false,
         description: "Squads of up to four players battle for the Victory Royale."
       },
+      // The limited-time modes (events/ltms.js): 50v50, then the lobby's event queues.
       {
         id: "fiftyFifty",
         name: "50v50",
@@ -1411,7 +1413,19 @@ export function adminRoutes(context) {
         maxPlayers: 100,
         enabled: modes.shootingTest === true,
         description: "Limited-time mode of 2.4 to 2.5: weapon accuracy for a more precise aim (first-shot accuracy, less headshot damage, damage fall-off). Solo from 2.4.2, squads on 2.4. Off by default."
-      }
+      },
+      ...ltms.filter((ltm) => ltm.id !== "fiftyFifty" && ltm.id !== "shootingTest").map((ltm) => ({
+        id: ltm.id,
+        name: ltm.name,
+        playlistId: ltm.playlistId,
+        code: `Athena${ltm.eventFlag}`,
+        teamCount: 100,
+        teamSize: 4,
+        squadSize: 4,
+        maxPlayers: 100,
+        enabled: modes[ltm.id] === true,
+        description: `Limited-time mode of 1.11 to 2.5: ${ltm.description} Off by default.`
+      }))
     ];
 
     return {
@@ -1432,6 +1446,8 @@ export function adminRoutes(context) {
         modes: s.battleRoyaleRewards ?? {}
       },
       playlists,
+      // The LTMs by season, their original dates and whether those hold now (Core-Backend #190).
+      ltms: withoutSeasonStartRecording(() => ltmSchedule(s, new Date())),
       // The players with the Custom Matchmaking permission (#186).
       customMatchmaking: accounts.list().filter((account) => account.customMatchmaking === true)
         .map(({ id, displayName }) => ({ id, displayName })).sort((a, b) => a.displayName.localeCompare(b.displayName)),
@@ -1455,6 +1471,7 @@ export function adminRoutes(context) {
       update.serverLimits = req.body.serverLimits;
     }
     if (req.body.serverRegions !== undefined) update.serverRegions = req.body.serverRegions;
+    if (typeof req.body.ltmOriginalDates === "boolean") update.ltmOriginalDates = req.body.ltmOriginalDates;
     if (req.body.timing && typeof req.body.timing === "object") {
       if (req.body.timing.gatherSeconds !== undefined) {
         const g = Number(req.body.timing.gatherSeconds);
@@ -1486,6 +1503,7 @@ export function adminRoutes(context) {
   router.post("/admin/api/matchmaking/actions/reset-defaults", (req, res) => {
     settings.update({
       matchmakingModes: defaultMatchmakingModes,
+      ltmOriginalDates: false,
       serverLimits: defaultServerLimits,
       matchmakingGatherSeconds: 10,
       warmupSeconds: null,

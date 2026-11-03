@@ -3,7 +3,7 @@ import { requireAuth } from "../../accounts/auth.js";
 import { currentBuild } from "../../builds/context.js";
 import { activeEventFlags, currentEventsConfig, eventsActiveUntil, isEventActive } from "../../events/events.js";
 import { fiftyFifty, fiftyFiftyRegions } from "../../events/fiftyfifty.js";
-import { shootingTestOn, shootingTestRegionState } from "../../events/shootingtest.js";
+import { ltmEventFlags, ltmModes, nextLtmChange } from "../../events/ltms.js";
 import { regionCodes } from "../../matchmaking/regions.js";
 import { eventStoreEnds } from "../../store/eventstore.js";
 import { hasItemShop, seasonEnd, weeklyStoreEnd } from "../../store/itemshop.js";
@@ -30,8 +30,9 @@ import { seasonTemplateId } from "../../profiles/seasons.js";
 // its event items on (0x7E02C0: these, plus the player's region's EventFlagsForcedOn less its EventFlagsForcedOff, plus
 // the hotfix's EventFlagsForcedOnByHotfix less ...OffByHotfix), BR_Playlist_50v50's EventFlag.BR.Allow50v50 among them.
 // Its client-matchmaking channel (FFortMatchmakingEventsState) switches 50v50's queue on by region while that event runs
-// (events/fiftyfifty.js), and on 2.4 to 2.5 Shooting Test #1's while the admin panel has it on (EventFlagsForcedOn
-// Event4, events/shootingtest.js).
+// (events/fiftyfifty.js), and from 1.11 the lobby's event queues (EventFlagsForcedOn Event1 to Event8: Sneaky
+// Silencers, High Explosives, Shooting Test #1, Sniper Shootout) while the admin panel has them on, by hand or by their
+// original dates (events/ltms.js). With the dates on, the calendar is good no later than the next LTM's start or end.
 //
 // 1.11 (CL-3807424) sends the season in the client-events state (1.10 has the field and gets none, as its profile has no
 // season_num: profiles/seasons.js): FFortClientEventsState {SeasonNumber (+0x140),
@@ -53,8 +54,9 @@ export function calendarRoutes({ tokens, settings }) {
     const seasonEnds = hasSeasonShop() || season ? seasonEnd(now) : undefined;
     const stwEnds = eventStoreEnds(now);
     const cacheMinutes = Math.max(5, Math.min(120, Number(currentEventsConfig()?.calendarCacheMinutes ?? calendarCacheMinutes)));
+    const ltmChange = nextLtmChange(currentBuild(), settings?.get?.(), now);
     const cacheExpire = new Date(Math.min(now.getTime() + cacheMinutes * 60000, weeklyEnd?.getTime() ?? Infinity,
-      seasonEnds?.getTime() ?? Infinity, ...Object.values(stwEnds).map((end) => end.getTime()))).toISOString();
+      seasonEnds?.getTime() ?? Infinity, ltmChange?.getTime() ?? Infinity, ...Object.values(stwEnds).map((end) => end.getTime()))).toISOString();
     const seasonal = Number(currentBuild()) >= seasonalEventManagerBuild;
     const flags = activeEventFlags();
     const activeEvents = flags.map((flag) => ({ [seasonal ? "eventType" : "eventName"]: flag, activeUntil: eventsActiveUntil }));
@@ -70,13 +72,13 @@ export function calendarRoutes({ tokens, settings }) {
       channels: {
         "client-events": { states: [{ validFrom, activeEvents, state }], cacheExpire },
         ...((() => {
-          const modes = settings?.get?.().matchmakingModes;
+          const modes = ltmModes(currentBuild(), settings?.get?.(), now);
           const duosEnabled = modes ? modes.duo !== false : true;
           const fiftyFiftyEnabled = isEventActive(fiftyFifty) && (modes ? modes.fiftyFifty !== false : true);
-          const shootingTest = shootingTestOn(currentBuild(), modes);
-          if (isEventActive(fiftyFifty) || !duosEnabled || (modes && modes.fiftyFifty === false) || shootingTest) {
+          const eventFlags = ltmEventFlags(currentBuild(), settings?.get?.(), now);
+          if (isEventActive(fiftyFifty) || !duosEnabled || (modes && modes.fiftyFifty === false) || eventFlags.length) {
             const region = Object.fromEntries(regionCodes().map((r) => [r, { bDuosEnabled: duosEnabled, bFiftyFiftyEnabled: fiftyFiftyEnabled,
-              ...(shootingTest ? shootingTestRegionState() : {}) }]));
+              ...(eventFlags.length ? { EventFlagsForcedOn: eventFlags } : {}) }]));
             return { "client-matchmaking": { states: [{ validFrom, activeEvents: [], state: { region } }], cacheExpire } };
           }
           return {};

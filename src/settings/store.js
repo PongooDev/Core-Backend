@@ -90,15 +90,22 @@ const defaults = {
     duo: true,
     squad: true,
     fiftyFifty: true,
-    // Shooting Test #1 (2.4 to 2.5, events/shootingtest.js): off until an admin turns it on.
-    shootingTest: false
+    // The event queues' limited-time modes (events/ltms.js; Shooting Test #1, events/shootingtest.js): off until an admin
+    // turns them on.
+    shootingTest: false,
+    highExplosives: false,
+    sneakySilencers: false,
+    sniperShootout: false
   },
+  // The LTMs' original dates (Core-Backend #190, events/ltms.js): on, each runs only in its original window on the
+  // season's replay and on the builds Epic ran it on, whatever matchmakingModes says of it.
+  ltmOriginalDates: false,
   serverLimits: {
-    NA: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0 },
-    EU: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0 },
-    OCE: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0 },
-    BR: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0 },
-    ASIA: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0 }
+    NA: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0, highExplosives: 0, sneakySilencers: 0, sniperShootout: 0 },
+    EU: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0, highExplosives: 0, sneakySilencers: 0, sniperShootout: 0 },
+    OCE: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0, highExplosives: 0, sneakySilencers: 0, sniperShootout: 0 },
+    BR: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0, highExplosives: 0, sneakySilencers: 0, sniperShootout: 0 },
+    ASIA: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0, highExplosives: 0, sneakySilencers: 0, sniperShootout: 0 }
   }
 };
 
@@ -112,7 +119,10 @@ export function sanitizeMatchmakingModes(input, current = defaultMatchmakingMode
     duo: typeof input.duo === "boolean" ? input.duo : (current.duo !== false),
     squad: typeof input.squad === "boolean" ? input.squad : (current.squad !== false),
     fiftyFifty: typeof input.fiftyFifty === "boolean" ? input.fiftyFifty : (current.fiftyFifty !== false),
-    shootingTest: typeof input.shootingTest === "boolean" ? input.shootingTest : (current.shootingTest === true)
+    shootingTest: typeof input.shootingTest === "boolean" ? input.shootingTest : (current.shootingTest === true),
+    highExplosives: typeof input.highExplosives === "boolean" ? input.highExplosives : (current.highExplosives === true),
+    sneakySilencers: typeof input.sneakySilencers === "boolean" ? input.sneakySilencers : (current.sneakySilencers === true),
+    sniperShootout: typeof input.sniperShootout === "boolean" ? input.sniperShootout : (current.sniperShootout === true)
   };
 }
 
@@ -120,10 +130,10 @@ export function sanitizeServerLimits(input, current = defaultServerLimits) {
   if (!input || typeof input !== "object" || Array.isArray(input)) return JSON.parse(JSON.stringify(current));
   const result = JSON.parse(JSON.stringify(current));
   const regions = ["NA", "EU", "OCE", "BR", "ASIA"];
-  const modes = ["solo", "duo", "squad", "fiftyFifty", "shootingTest"];
+  const modes = ["solo", "duo", "squad", "fiftyFifty", "shootingTest", "highExplosives", "sneakySilencers", "sniperShootout"];
   for (const r of regions) {
     if (input[r] && typeof input[r] === "object" && !Array.isArray(input[r])) {
-      result[r] = result[r] || { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0 };
+      result[r] = result[r] || { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0, highExplosives: 0, sneakySilencers: 0, sniperShootout: 0 };
       for (const m of modes) {
         if (input[r][m] !== undefined) {
           const val = Number(input[r][m]);
@@ -387,6 +397,7 @@ export function createSettingsStore(dataDir) {
       if (typeof loaded.loginMessageEnabled === "boolean") settings.loginMessageEnabled = loaded.loginMessageEnabled;
       if (typeof loaded.defaultFoundersAccess === "boolean") settings.defaultFoundersAccess = loaded.defaultFoundersAccess;
       if (typeof loaded.remoteAdmin === "boolean") settings.remoteAdmin = loaded.remoteAdmin;
+      if (typeof loaded.ltmOriginalDates !== "boolean") settings.ltmOriginalDates = defaults.ltmOriginalDates;
       if (loaded.matchmakingModes && typeof loaded.matchmakingModes === "object") {
         settings.matchmakingModes = sanitizeMatchmakingModes(loaded.matchmakingModes, defaults.matchmakingModes);
       }
@@ -536,6 +547,7 @@ export function createSettingsStore(dataDir) {
       const warmup = warmupSecondsValue(partial.warmupSeconds);
       if (partial.warmupSeconds !== undefined && warmup !== undefined) settings.warmupSeconds = warmup;
       if (typeof partial.lateJoin === "boolean") settings.lateJoin = partial.lateJoin;
+      if (typeof partial.ltmOriginalDates === "boolean") settings.ltmOriginalDates = partial.ltmOriginalDates;
       if (typeof partial.regionFallback === "boolean") settings.regionFallback = partial.regionFallback;
       if (typeof partial.matchStartCountdown === "boolean") settings.matchStartCountdown = partial.matchStartCountdown;
       settings.matchStartBufferSeconds = matchStartBufferValue(partial.matchStartBufferSeconds) ?? settings.matchStartBufferSeconds;

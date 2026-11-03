@@ -29,7 +29,8 @@ import { buildGameData } from "../gamedata/read.js";
 // - "The Shooting Test #1 Limited-Time Mode has been switched to Solo only" (2.4.2's notes). The servers' own team table
 //   still makes 15 a squads playlist (GetMaxTeamInfoForPlaylist, 2.4.2 0x7F3790, 2.5 0xD49FA0: 100 teams of 4), so the
 //   matchmaking service made the teams: from 2.4.2 each player is a team of their own, as in Solo; 2.4's are squads.
-// The admin panel's Matchmaking tab turns it on (matchmakingModes.shootingTest, off by default, as Epic's LTMs ended).
+// The admin panel's Matchmaking tab turns it on (matchmakingModes.shootingTest, off by default, as Epic's LTMs ended), or
+// its original dates do (events/ltms.js: 2 to 12 February 2018, on 2.4 and 2.4.2).
 export const shootingTestMode = "shootingTest";
 export const shootingTestPlaylist = 15;
 export const shootingTestEventFlag = "Event4";

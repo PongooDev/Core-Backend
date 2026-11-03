@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
-import { shootingTestMode, shootingTestPlaylist, shootingTestTeams } from "../events/shootingtest.js";
+import { ltms } from "../events/ltms.js";
+import { shootingTestPlaylist, shootingTestTeams } from "../events/shootingtest.js";
 import { log } from "../log.js";
 import { acceptWebSocket } from "../stomp/websocket.js";
 import { regionName, regionOf, servedRegions } from "./regions.js";
@@ -38,7 +39,9 @@ const matchOptions = { "match.option.warmupRequiredPlayerCount": "1" };
 // MaxTeamSize players, in squads of up to MaxSquadSize (21.40's UFortPlaylist names them). Solo 2 is 100 teams of 1,
 // Duo 10 100 of 2, Squad 9 100 of 4, and 1.10's 50v50, 11, two teams of 50 in squads of 4. Playlists 0 (1×4), 1 (2×5) and
 // 99 (1×1) aren't Battle Royale's; 1.10's 12 to 15 (AthenaEvent1-4, 100×4) have no playlist asset and nothing queues them
-// there. 2.4's to 2.5's lobby queues 15, Shooting Test #1, while the calendar offers it (playlistTeamsOf).
+// there. From 1.11 the lobby queues the event playlists while the calendar offers them (events/ltms.js): 12 Sneaky
+// Silencers, 13 High Explosives and 18 Sniper Shootout keep the server's 100 teams of 4 (2.4.2 0x7F3790 gives 12 to 19
+// that), and 15, Shooting Test #1, is the build's (playlistTeamsOf).
 const playlistTeams = {
   0: { maxTeamCount: 1, maxTeamSize: 4, maxSquadSize: 4 },
   1: { maxTeamCount: 2, maxTeamSize: 5, maxSquadSize: 5 },
@@ -46,6 +49,9 @@ const playlistTeams = {
   9: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
   10: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
   11: { maxTeamCount: 2, maxTeamSize: 50, maxSquadSize: 4 },
+  12: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  13: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  18: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
   99: { maxTeamCount: 1, maxTeamSize: 1, maxSquadSize: 1 }
 };
 // Late joining (Core-Backend #122, the admin panel's Matchmaking settings). The servers' MMS client (1.9
@@ -273,7 +279,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
   // Every server whose region counts as having a server, by session id: the registered ones and those hosting a match
   // (they register again once it ends), until their session goes.
   const hosts = new Map();
-  const modeByPlaylist = { 2: "solo", 10: "duo", 9: "squad", 11: "fiftyFifty", [shootingTestPlaylist]: shootingTestMode };
+  const modeByPlaylist = { 2: "solo", 10: "duo", 9: "squad", ...Object.fromEntries(ltms.map(({ playlistId, id }) => [playlistId, id])) };
   // The game's own warmup length by the build (the bucket's netcl) of the servers that reported one: the most time left
   // a warmup report gave while the panel left the length to the game (#160).
   const gameWarmups = new Map();

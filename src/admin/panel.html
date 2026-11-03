@@ -3779,7 +3779,8 @@
         serverLimits: JSON.parse(JSON.stringify(data.serverLimits || {})),
         serverRegions: [...(data.serverRegions || [])],
         timing: { ...data.timing },
-        rewards: JSON.parse(JSON.stringify(data.rewards || { enabled: false, modes: {} }))
+        rewards: JSON.parse(JSON.stringify(data.rewards || { enabled: false, modes: {} })),
+        ltmOriginalDates: data.ltms?.originalDates === true
       };
 
       const saveConfig = async () => {
@@ -3804,8 +3805,16 @@
         { id: "duo", name: "Duos", playlistId: 10, code: "Playlist_DefaultDuo", teams: "100 Teams × 2" },
         { id: "squad", name: "Squads", playlistId: 9, code: "Playlist_DefaultSquad", teams: "100 Teams × 4" },
         { id: "fiftyFifty", name: "50v50", playlistId: 11, code: "Playlist_50v50", teams: "2 Teams × 50" },
-        { id: "shootingTest", name: "Shooting Test #1", playlistId: 15, code: "AthenaEvent4 · 2.4 to 2.5", teams: "100 Teams × 1 (2.4: × 4)" }
+        { id: "shootingTest", name: "Shooting Test #1", playlistId: 15, code: "AthenaEvent4 · 2.4 to 2.5", teams: "100 Teams × 1 (2.4: × 4)" },
+        { id: "highExplosives", name: "High Explosives", playlistId: 13, code: "AthenaEvent2 · 1.11 to 2.5", teams: "100 Teams × 4" },
+        { id: "sneakySilencers", name: "Sneaky Silencers", playlistId: 12, code: "AthenaEvent1 · 1.11 to 2.5", teams: "100 Teams × 4" },
+        { id: "sniperShootout", name: "Sniper Shootout", playlistId: 18, code: "AthenaEvent7 · 1.11 to 2.5", teams: "100 Teams × 4" }
       ];
+      // The limited-time modes (Core-Backend #190): listed by season below the core modes, on by hand or by their
+      // original dates.
+      const ltmList = data.ltms?.list || [];
+      const isLtm = (id) => ltmList.some((l) => l.id === id);
+      const coreModes = modeKeys.filter((m) => !isLtm(m.id));
 
       const rewardModesList = [
         { rewardKey: "solo", modeKey: "solo", name: "Solo" },
@@ -3839,7 +3848,8 @@
 
       // --- Render Section 2: Server Limits (Only showing active/ON modes) ---
       function renderServerLimitsTable() {
-        const activeModes = modeKeys.filter((m) => form.modes[m.id] !== false);
+        // With the original dates on, every LTM may come on, so each keeps its quota.
+        const activeModes = modeKeys.filter((m) => form.modes[m.id] !== false || (form.ltmOriginalDates && isLtm(m.id)));
         if (!activeModes.length) {
           serverLimitsTableBox.replaceChildren(
             el("div", {
@@ -3852,8 +3862,8 @@
         }
 
         const serverLimitRows = regions.map((r) => {
-          form.serverLimits[r] = form.serverLimits[r] || { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0 };
-          const counts = (data.serverCounts && data.serverCounts[r]) || { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0 };
+          form.serverLimits[r] = form.serverLimits[r] || Object.fromEntries(modeKeys.map((m) => [m.id, 0]));
+          const counts = (data.serverCounts && data.serverCounts[r]) || {};
 
           const modeInputs = activeModes.map((m) => {
             const currentLimit = form.serverLimits[r][m.id] || 0;
@@ -4001,7 +4011,7 @@
 
       // --- Section 1: Gamemode Availability Cards ---
       const modeCards = el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:14px; margin-top:14px;" },
-        ...modeKeys.map((m) => {
+        ...coreModes.map((m) => {
           const isEnabled = form.modes[m.id] !== false;
           const statusChip = chip(isEnabled ? "Enabled" : "Disabled", isEnabled ? "good" : "warn");
           const toggle = toggleSwitch(isEnabled, (checked) => {
@@ -4027,6 +4037,55 @@
               toggle));
         })
       );
+
+      // --- Section 1b: Limited-Time Modes, by season ---
+      const ltmSeason = state.matchmakingSeason === "1" ? "1" : "2";
+      const fmtDay = (d) => new Date(d.length === 10 ? `${d}T00:00:00Z` : d).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+      const ltmCardsBox = el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:14px; margin-top:14px;" });
+      function renderLtmCards() {
+        const shown = ltmList.filter((l) => l.seasons.includes(Number(ltmSeason)));
+        ltmCardsBox.replaceChildren(...shown.map((l) => {
+          const inWindow = l.inWindow?.[ltmSeason] === true;
+          const byHand = l.id === "fiftyFifty" ? form.modes[l.id] !== false : form.modes[l.id] === true;
+          const isEnabled = form.ltmOriginalDates ? inWindow : byHand;
+          const statusChip = chip(form.ltmOriginalDates ? (inWindow ? "In its dates" : "Out of its dates") : (isEnabled ? "Enabled" : "Disabled"), isEnabled ? "good" : "warn");
+          const toggle = toggleSwitch(byHand, (checked) => {
+            form.modes[l.id] = checked;
+            statusChip.textContent = checked ? "Enabled" : "Disabled";
+            statusChip.className = `chip ${checked ? "good" : "warn"}`;
+            updateActiveModesIndicators();
+            renderServerLimitsTable();
+            renderRewardColumns();
+          }, form.ltmOriginalDates, "Original dates is on: this LTM follows its dates.");
+          return el("div", {
+            style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius); display:flex; flex-direction:column; justify-content:space-between; gap:12px;"
+          },
+            el("div", {},
+              el("div", { style: "display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;" },
+                el("div", { style: "font-weight:700; font-size:16px;", text: l.name }),
+                statusChip),
+              el("div", { class: "mono muted", style: "font-size:12px; margin-bottom:4px;", text: `Playlist ${l.playlistId}${l.eventFlag ? ` · Athena${l.eventFlag}` : ""} · ${l.builds}` }),
+              el("div", { class: "sub", style: "font-size:12px; margin-bottom:4px;", text: l.teams }),
+              el("div", { class: "sub", style: "font-size:12px; margin-bottom:4px;", text: l.description }),
+              el("div", { class: "muted", style: "font-size:12px;", text: `Original dates: ${fmtDay(l.original.start)} – ${fmtDay(l.original.last)} on ${l.original.builds}` })),
+            el("div", { style: "display:flex; justify-content:space-between; align-items:center; padding-top:8px; border-top:1px solid var(--line);" },
+              el("span", { class: "muted font-semibold", style: "font-size:12px;", text: "Queue Availability" }),
+              toggle));
+        }));
+      }
+      const ltmModeChip = chip(form.ltmOriginalDates ? "Original dates" : "By hand", "accent");
+      const originalDatesToggle = toggleSwitch(form.ltmOriginalDates, (checked) => {
+        form.ltmOriginalDates = checked;
+        ltmModeChip.textContent = checked ? "Original dates" : "By hand";
+        renderLtmCards();
+        renderServerLimitsTable();
+      });
+      const ltmSeasonTabs = el("div", { class: "filters", style: "margin-top:12px;" }, [["1", "Season 1 (1.8 – 1.10)"], ["2", "Season 2 (1.11 – 2.5)"]].map(([key, label]) => el("button", {
+        type: "button", "aria-pressed": String(ltmSeason === key),
+        onclick: () => { state.matchmakingSeason = key; showMatchmaking(); }
+      }, el("span", { text: label }))));
+      const replayDay = data.ltms?.seasonMoments?.[ltmSeason];
+      renderLtmCards();
 
       // Initial render for Quotas and Rewards
       renderServerLimitsTable();
@@ -4159,6 +4218,21 @@
               sectionModesChip)),
           el("p", { class: "note", text: "Controls whether each game mode is open for matchmaking. Toggling a mode OFF blocks players from queuing (returning errors.com.epicgames.fortnite.matchmaking_disabled) and updates the calendar matchmaking channel to reflect availability in the game lobby." }),
           modeCards),
+
+        // Section 1b: Limited-Time Modes
+        el("section", { class: "panel", style: "margin-top:16px" },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" },
+            el("div", { class: "actions" },
+              el("h2", { text: "Limited-Time Modes" }),
+              ltmModeChip)),
+          el("p", { class: "note", text: "Each LTM runs only on the builds whose game data has it. By hand, turn each one on or off here. With Original dates on, each LTM runs only during the days Epic ran it, on the season replay clock (Events & Seasons), and only on the builds Epic ran it on; the switches below are then ignored." }),
+          el("div", { style: "display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 16px; margin-top:12px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius);" },
+            el("div", {},
+              el("div", { class: "font-semibold", text: "Original dates" }),
+              el("div", { class: "muted", style: "font-size:12px;", text: replayDay ? `Season ${ltmSeason} replay day: ${fmtDay(replayDay)}` : "" })),
+            originalDatesToggle),
+          ltmSeasonTabs,
+          ltmCardsBox),
 
         // Section 2: Regional Server Allocation Limits
         el("section", { class: "panel", style: "margin-top:16px" },

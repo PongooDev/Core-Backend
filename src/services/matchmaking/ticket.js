@@ -3,7 +3,7 @@ import { requireAuth } from "../../accounts/auth.js";
 import { allowsBuild, buildName, buildNotAllowed } from "../../builds/allowed.js";
 import { currentBuild } from "../../builds/context.js";
 import { notFound, sendError } from "../../errors.js";
-import { shootingTestMode, shootingTestOn, shootingTestPlaylist } from "../../events/shootingtest.js";
+import { ltmModes, ltmOfPlaylist, ltmOn } from "../../events/ltms.js";
 import { log } from "../../log.js";
 import { parseBucket } from "../../matchmaking/service.js";
 import { managesSession } from "../../matchmaking/sessions.js";
@@ -39,11 +39,13 @@ export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings 
     }
     const bucketId = String(req.query.bucketId ?? "");
     const { playlistId } = parseBucket(bucketId);
-    const modeByPlaylist = { 2: "solo", 10: "duo", 9: "squad", 11: "fiftyFifty", [shootingTestPlaylist]: shootingTestMode };
-    const mode = modeByPlaylist[playlistId];
-    const modes = settings?.get?.().matchmakingModes;
-    // Shooting Test #1 queues only while the build's lobby offers it (events/shootingtest.js): off unless turned on.
-    const off = mode === shootingTestMode ? !shootingTestOn(currentBuild(), modes) : modes && modes[mode] === false;
+    const ltm = ltmOfPlaylist(playlistId);
+    const mode = { 2: "solo", 10: "duo", 9: "squad" }[playlistId] ?? ltm?.id;
+    const settingsValue = settings?.get?.();
+    const modes = ltmModes(currentBuild(), settingsValue);
+    // The event queues' LTMs (Shooting Test #1, Sniper Shootout, ...) queue only while the build's lobby offers them
+    // (events/ltms.js): off unless turned on, by hand or by their original dates. 50v50 stays on unless turned off.
+    const off = ltm && !ltm.defaultOn ? !ltmOn(ltm.id, currentBuild(), settingsValue) : modes && modes[mode] === false;
     if (mode && off) {
       return sendError(res, 400, "errors.com.epicgames.fortnite.matchmaking_disabled", `Matchmaking for ${mode} is currently disabled`);
     }

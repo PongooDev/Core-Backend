@@ -27,10 +27,12 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
     const ov = overviewRes.body;
 
     // Modes default to all true
-    assert.deepEqual(ov.modes, { solo: true, duo: true, squad: true, fiftyFifty: true, shootingTest: false });
+    assert.deepEqual(ov.modes, { solo: true, duo: true, squad: true, fiftyFifty: true, shootingTest: false, highExplosives: false, sneakySilencers: false, sniperShootout: false });
 
-    // 5 Battle Royale playlists: the 4 canonical ones and Shooting Test #1
-    assert.equal(ov.playlists.length, 5);
+    // 8 Battle Royale playlists: the 4 canonical ones, Shooting Test #1 and the other event queues (#190)
+    assert.equal(ov.playlists.length, 8);
+    assert.equal(ov.ltms.originalDates, false);
+    assert.deepEqual(ov.ltms.list.map((ltm) => ltm.id), ["fiftyFifty", "highExplosives", "sneakySilencers", "sniperShootout", "shootingTest"]);
     const soloPl = ov.playlists.find((p) => p.id === "solo");
     assert.ok(soloPl);
     assert.equal(soloPl.playlistId, 2);
@@ -63,7 +65,7 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
     // Regional server limits default to 0 (unlimited)
     assert.ok(ov.serverLimits);
     for (const r of ["NA", "EU", "OCE", "BR", "ASIA"]) {
-      assert.deepEqual(ov.serverLimits[r], { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0 });
+      assert.deepEqual(ov.serverLimits[r], { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0, highExplosives: 0, sneakySilencers: 0, sniperShootout: 0 });
     }
 
     // Sessions array is returned
@@ -139,7 +141,7 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
     const resetRes = await admin(backend, "/matchmaking/actions/reset-defaults", {});
     assert.equal(resetRes.status, 200);
     assert.equal(resetRes.body.success, true);
-    assert.deepEqual(resetRes.body.modes, { solo: true, duo: true, squad: true, fiftyFifty: true, shootingTest: false });
+    assert.deepEqual(resetRes.body.modes, { solo: true, duo: true, squad: true, fiftyFifty: true, shootingTest: false, highExplosives: false, sneakySilencers: false, sniperShootout: false });
     assert.equal(resetRes.body.timing.gatherSeconds, 10);
     assert.equal(resetRes.body.timing.warmupSeconds, null);
     assert.equal(resetRes.body.timing.lateJoin, false);
