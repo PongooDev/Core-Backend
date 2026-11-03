@@ -683,8 +683,10 @@ function addProgress(session, itemId, objective, count) {
 // counts the rest (eliminations by weapon, chests and ammo boxes opened, players outlived) and sends them with
 // UpdateQuests; those two kinds are left out of what it sends, so a match counts once (🟡).
 // The playlists' tags (PvPTags rows Athena.Playlist.Solo, .Duo, .Squad and 1.10's .FiftyFifty, which 50v50's
-// complete_athena_50v50 asks for).
-const playlistTags = { 2: "athena.playlist.solo", 10: "athena.playlist.duo", 9: "athena.playlist.squad", 11: "athena.playlist.fiftyfifty" };
+// complete_athena_50v50 asks for), and from 1.11 the event queues', 12 to 19 Athena.Playlist.Event.1 to .8, which the LTMs'
+// complete_athena_event_<N> ask for (events/ltms.js; CoreV2's gameserver gives its matches the same tags).
+const playlistTags = { 2: "athena.playlist.solo", 10: "athena.playlist.duo", 9: "athena.playlist.squad", 11: "athena.playlist.fiftyfifty",
+  ...Object.fromEntries([1, 2, 3, 4, 5, 6, 7, 8].map((event) => [11 + event, `athena.playlist.event.${event}`])) };
 const tagMatches = (tags, tag) => !tags || tags.toLowerCase().split(",").map((one) => one.trim())
   .every((wanted) => tag === wanted || tag.startsWith(`${wanted}.`));
 

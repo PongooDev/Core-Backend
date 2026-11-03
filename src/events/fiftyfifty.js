@@ -1,6 +1,7 @@
 import { getAthenaQuest } from "../gamedata/athena.js";
 import { regionCodes } from "../matchmaking/regions.js";
 import { fiftyFifty, isEventActive } from "./events.js";
+import { ltmQuests } from "./ltms.js";
 
 export { fiftyFifty };
 
@@ -28,10 +29,11 @@ export const fiftyFiftyQuests = ["athenaevent_fiftyfifty_playmatches"];
 const athenaEventQuests = [{ name: fiftyFifty, quests: fiftyFiftyQuests }];
 
 // The requesting build's Battle Royale event quests its data has, of the events it runs now (granted at quest login)
-// or of those it doesn't (whose unfinished quests leave the quest log, as Save the World's do, events/quests.js).
+// or of those it doesn't (whose unfinished quests leave the quest log, as Save the World's do, events/quests.js), the
+// event queues' LTMs' (events/ltms.js) with them.
 export function athenaEventQuestsOf({ running }) {
-  return athenaEventQuests.filter(({ name }) => isEventActive(name) === running)
-    .flatMap(({ quests }) => quests).filter((questId) => getAthenaQuest(questId));
+  return [...athenaEventQuests.filter(({ name }) => isEventActive(name) === running).flatMap(({ quests }) => quests), ...ltmQuests({ running })]
+    .filter((questId) => getAthenaQuest(questId));
 }
 
 // The calendar's client-matchmaking state while 50v50 runs: every region with it on, duos staying on as the struct's

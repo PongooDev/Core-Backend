@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { hasLtm, inOriginalWindow, ltmEventFlags, ltmModes, ltmOn, ltmSchedule } from "../src/events/ltms.js";
 import { playlistTeamsOf } from "../src/matchmaking/service.js";
-import { post, send, startBackend, userLogin } from "./helpers.js";
+import { dedicatedServerToken, post, send, startBackend, userLogin } from "./helpers.js";
 
 // Core-Backend #190: the limited-time modes and their original dates (events/ltms.js).
 const v110 = "3790078";
@@ -14,11 +14,20 @@ const v242 = "3870737";
 const v25 = "3889387";
 const at = (date) => new Date(`${date}T12:00:00Z`);
 
-function as(changelist, port, method, urlPath, token) {
-  const headers = { "User-Agent": `game=Fortnite, engine=UE4, build=++Fortnite+Release-Cert-CL-${changelist}` };
+function as(agent, port, method, urlPath, token, body) {
+  const text = body === undefined ? undefined : JSON.stringify(body);
+  const headers = { "User-Agent": /^\d+$/.test(agent) ? `game=Fortnite, engine=UE4, build=++Fortnite+Release-Cert-CL-${agent}` : agent };
   if (token) headers.Authorization = `bearer ${token}`;
-  return send({ host: "127.0.0.1", port, method, path: urlPath, headers });
+  if (text !== undefined) Object.assign(headers, { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(text) });
+  return send({ host: "127.0.0.1", port, method, path: urlPath, headers }, text);
 }
+const athena = (changelist, port, { accountId, token }, name, body = {}) =>
+  as(changelist, port, "POST", `/fortnite/api/game/v2/profile/${accountId}/client/${name}?profileId=athena&rvn=-1`, token, body);
+const athenaProfile = async (changelist, port, player) => {
+  const { body } = await athena(changelist, port, player, "QueryProfile");
+  return [body, ...(body.multiUpdate ?? [])].find((update) => update.profileId === "athena").profileChanges[0].profile;
+};
+const questItems = (profile, quest) => Object.entries(profile.items).filter(([, item]) => item.templateId === `Quest:${quest}`);
 const regionState = async (changelist, port, token) =>
   (await as(changelist, port, "GET", "/fortnite/api/calendar/v1/timeline", token)).body.channels["client-matchmaking"]?.states[0].state.region;
 const ticket = (changelist, port, { accountId, token }, playlist) =>
@@ -110,6 +119,59 @@ test("the admin panel's switches and original dates offer the LTMs through the c
 
     const reset = (await post(backend.port, "/admin/api/matchmaking/actions/reset-defaults", undefined, {})).body;
     assert.equal(reset.ltms.originalDates, false);
+  } finally {
+    backend.close();
+  }
+});
+
+test("each LTM's event quest is given while its lobby offers it, counts its playlist's matches, and leaves unfinished once it ends", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "LtmQuests");
+    const login = async (changelist) => {
+      await athena(changelist, backend.port, player, "ClientQuestLogin");
+      return athenaProfile(changelist, backend.port, player);
+    };
+    await athenaProfile(v23, backend.port, player);
+    let profile = await login(v23);
+    for (const quest of ["athenaevent1_playmatches", "athenaevent2_playmatches", "athenaevent4_playmatches", "athenaevent7_playmatches"]) {
+      assert.equal(questItems(profile, quest).length, 0, quest);
+    }
+
+    await post(backend.port, "/admin/api/matchmaking/config", undefined, { modes: { sniperShootout: true, sneakySilencers: true, shootingTest: true } });
+    profile = await login(v23);
+    assert.equal(questItems(profile, "athenaevent7_playmatches").length, 1);
+    assert.equal(questItems(profile, "athenaevent1_playmatches").length, 1);
+    // 2.3 has no Shooting Test #1, so no quest for it; given once only.
+    assert.equal(questItems(profile, "athenaevent4_playmatches").length, 0);
+    assert.equal(questItems(await login(v23), "athenaevent7_playmatches").length, 1);
+    const [[sniperId]] = questItems(profile, "athenaevent7_playmatches");
+
+    // Three Sniper Shootout matches (playlist 18, Athena.Playlist.Event.7) reported by a Core gameserver complete it.
+    const server = await userLogin(backend.port, "LtmServer");
+    const session = (await as(v23, backend.port, "POST", "/fortnite/api/matchmaking/session", server.token, {
+      ownerId: server.accountId, ownerName: "LtmServer", serverName: "Core-1", serverAddress: "127.0.0.1", serverPort: 7777,
+      maxPublicPlayers: 100, maxPrivatePlayers: 0, buildUniqueId: "1", attributes: { GAMEMODE_s: "FORTATHENA", REGION_s: "NA" }
+    })).body;
+    await as(v23, backend.port, "POST", `/fortnite/api/matchmaking/session/${session.id}/players`, server.token, { publicPlayers: [player.accountId], privatePlayers: [] });
+    const dedicated = await dedicatedServerToken(backend.port);
+    const report = (playlistId, matchId) => as("Core V2", backend.port, "POST", "/fortnite/api/game/v2/battleroyale/recordresults", dedicated,
+      { playlistId, matchId, countWins: true, results: [{ accountId: player.accountId, place: 40, kills: 0, secondsAlive: 30 }] });
+    await report(12, "silent1");
+    const progress = (items, itemId) => items[itemId].attributes.completion_athena_event_7_play_matches;
+    assert.equal(progress((await athenaProfile(v23, backend.port, player)).items, sniperId), 0, "a Sneaky Silencers match isn't a Sniper Shootout one");
+    for (const matchId of ["snipe1", "snipe2", "snipe3"]) await report(18, matchId);
+    profile = await athenaProfile(v23, backend.port, player);
+    assert.equal(progress(profile.items, sniperId), 3);
+    assert.equal(profile.items[sniperId].attributes.quest_state, "Completed");
+    const [[silentId, silent]] = questItems(profile, "athenaevent1_playmatches");
+    assert.equal(silent.attributes.completion_athena_event_1_play_matches, 1);
+
+    // Turned off: the unfinished Sneaky Silencers quest leaves, the completed Sniper Shootout one stays.
+    await post(backend.port, "/admin/api/matchmaking/config", undefined, { modes: { sniperShootout: false, sneakySilencers: false } });
+    profile = await login(v23);
+    assert.equal(profile.items[silentId], undefined);
+    assert.equal(profile.items[sniperId].attributes.quest_state, "Completed");
   } finally {
     backend.close();
   }

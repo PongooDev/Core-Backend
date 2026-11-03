@@ -1,3 +1,4 @@
+import { currentBuild } from "../builds/context.js";
 import { nextReplayOf, seasonMoment } from "../store/itemshop.js";
 
 // Battle Royale's limited-time modes of Seasons 1 and 2 (Core-Backend #190), and when they run.
@@ -37,6 +38,14 @@ import { nextReplayOf, seasonMoment } from "../store/itemshop.js";
 // "Original dates" on (settings ltmOriginalDates), runs each only in its original window on the season's replay
 // (store/itemshop.js seasonMoment: Season 1's on 1.8 to 1.10, Season 2's from 1.11) and only on the builds Epic ran it
 // on. Each window is whole UTC days of Epic's calendar, its end the day after its last.
+//
+// Each event queue has its quest in 1.11's to 2.5's data, Athena/Items/Quests/Events/AthenaEvent<N>_PlayMatches (type
+// AthenaEvent, category BREvent): three matches for 1000 season XP, counted by complete_athena_event_<N> (AthenaRank,
+// context Athena.Playlist.Event.<N>, which CoreV2's gameserver gives playlists 12 to 19). Epic handed them out while the
+// LTM ran, as it did 50v50's (events/fiftyfifty.js; 2.4's notes: "Players will receive quests for “Blitz Mode” LTM"), so
+// the quest login gives the player each LTM's quest while the build's lobby offers it, and takes an unfinished one away
+// once it doesn't (athenaEventQuestsOf). The queues Core runs no LTM on (Event3 Speedy Storm, 5 Take To The Skies, 6
+// Lotsa Loot, 8) give none.
 const build110 = 3790078;
 const build111 = 3807424;
 const build23 = 3847564;
@@ -48,16 +57,16 @@ export const ltms = [
   { id: "fiftyFifty", name: "50v50", playlistId: 11, eventFlag: null, builds: [build110, build25], seasons: [1, 2], defaultOn: true,
     original: { builds: [build110, build111], start: "2017-12-08", end: "2017-12-19" },
     teams: "2 Teams × 50", description: "Two teams of 50, each from its own Battle Bus." },
-  { id: "highExplosives", name: "High Explosives", playlistId: 13, eventFlag: "Event2", builds: [build111, build25], seasons: [2],
+  { id: "highExplosives", quest: "athenaevent2_playmatches", name: "High Explosives", playlistId: 13, eventFlag: "Event2", builds: [build111, build25], seasons: [2],
     original: { builds: [build111, build111], start: "2017-12-28", end: "2018-01-03" },
     teams: "100 Teams × 4", description: "Rocket Launchers, Snowball Launchers and grenades only; no traps (Athena/Events/RocketsAndGrenades loot)." },
-  { id: "sneakySilencers", name: "Sneaky Silencers", playlistId: 12, eventFlag: "Event1", builds: [build111, build25], seasons: [2],
+  { id: "sneakySilencers", quest: "athenaevent1_playmatches", name: "Sneaky Silencers", playlistId: 12, eventFlag: "Event1", builds: [build111, build25], seasons: [2],
     original: { builds: [build111, build111], start: "2018-01-05", end: "2018-01-09" },
     teams: "100 Teams × 4", description: "Silenced weapons only (Athena/Events/SneakySilencers loot)." },
-  { id: "sniperShootout", name: "Sniper Shootout", playlistId: 18, eventFlag: "Event7", builds: [build111, build25], seasons: [2],
+  { id: "sniperShootout", quest: "athenaevent7_playmatches", name: "Sniper Shootout", playlistId: 18, eventFlag: "Event7", builds: [build111, build25], seasons: [2],
     original: { builds: [build23, build24], start: "2018-01-29", end: "2018-02-03" },
     teams: "100 Teams × 4", description: "Ready, aim, fire! Sniper Rifles only (Athena/Events/SnipersOnly loot)." },
-  { id: "shootingTest", name: "Shooting Test #1", playlistId: 15, eventFlag: "Event4", builds: [build24, build25], seasons: [2],
+  { id: "shootingTest", quest: "athenaevent4_playmatches", name: "Shooting Test #1", playlistId: 15, eventFlag: "Event4", builds: [build24, build25], seasons: [2],
     original: { builds: [build24, build242], start: "2018-02-02", end: "2018-02-13" },
     teams: "100 Teams × 1 (2.4: × 4)", description: "Weapon accuracy for a more precise aim: first-shot accuracy, headshot and fall-off changes." }
 ];
@@ -88,8 +97,14 @@ export function ltmModes(build, settingsValue, now = new Date()) {
   return { ...(modes ?? {}), ...Object.fromEntries(ltms.map(({ id }) => [id, inOriginalWindow(id, build, now)])) };
 }
 
+// The settings store's value, for work that has none at hand (the quest login).
+let settingsProvider = () => undefined;
+export function configureLtms(provider) {
+  settingsProvider = typeof provider === "function" ? provider : () => provider;
+}
+
 // Whether the build's lobby offers the LTM now.
-export function ltmOn(id, build, settingsValue, now = new Date()) {
+export function ltmOn(id, build, settingsValue = settingsProvider(), now = new Date()) {
   const ltm = byId.get(id);
   if (!ltm || !hasLtm(id, build)) return false;
   const modes = ltmModes(build, settingsValue, now);
@@ -99,6 +114,11 @@ export function ltmOn(id, build, settingsValue, now = new Date()) {
 // The event queues the build's lobby offers now (the region state's EventFlagsForcedOn).
 export const ltmEventFlags = (build, settingsValue, now = new Date()) =>
   ltms.filter((ltm) => ltm.eventFlag && ltmOn(ltm.id, build, settingsValue, now)).map((ltm) => ltm.eventFlag);
+
+// The event quests of the LTMs the requesting build offers now (running) or doesn't (events/fiftyfifty.js
+// athenaEventQuestsOf).
+export const ltmQuests = ({ running }, build = currentBuild(), now = new Date()) =>
+  ltms.filter((ltm) => ltm.quest && ltmOn(ltm.id, build, settingsProvider(), now) === running).map((ltm) => ltm.quest);
 
 // When an LTM next starts or ends on the build's replay while Original dates is on (for the calendar's cacheExpire), or
 // null.
