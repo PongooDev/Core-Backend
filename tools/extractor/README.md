@@ -28,6 +28,11 @@ packages, as 4.16 writes them, so overlays only hold the builds' own differences
   its row (`disassembleRecipe`) and `disassembleLootPercent`, [DisassembleDurabilityDegradeMinLootPercent,
   DisassembleDurabilityDegradeMaxLootPercent] (the constructor's 0.2 and 0.8 when unset); `upgrades.json` holds those
   rows' results as `disassembleRecipes`.
+  Schematics with a `CraftingRecipe` row (CraftingRecipes_New: what the backpack's Craft, 1.11's CraftWorldItem, costs
+  and makes) carry it as `craftingRecipe`; `upgrades.json` holds those rows (costs, results, catalysts) as
+  `craftingRecipes`. Account items with an `UpgradeRarityRecipeHandle` (from 1.10: the MetaRecipes row Flux's
+  UpgradeItemRarity uses) carry it as `rarityUpgrade`. Only 2.1's and later overlays have these so far (Cert's
+  committed files, 1.10's and 1.11's overlays predate them).
   Badges carry their MCP template's static_cardpack_reward (`cardPackReward`, BadgeCardPackReward) and
   static_item_rewards (`itemRewards`, ItemRewards {templateId, quantity}).
 

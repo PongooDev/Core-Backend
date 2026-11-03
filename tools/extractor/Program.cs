@@ -102,6 +102,7 @@ var unmapped = new SortedSet<string>(StringComparer.Ordinal);
 var accountBuffEffects = new SortedDictionary<string, List<string>>(StringComparer.Ordinal);
 var disintegrationItems = new SortedDictionary<string, (bool FromRecipe, int FabricationOverride)>(StringComparer.Ordinal);
 var schematicRecipes = new Dictionary<string, (int Produced, List<(string TemplateId, int Count)> Costs)>(StringComparer.Ordinal);
+var craftingRecipes = new SortedDictionary<string, object>(StringComparer.Ordinal);
 foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" && assetTypes.IsItemPath(f.Path)))
 {
     var gamePath = "/Game/" + file.PathWithoutExtension["FortniteGame/Content/".Length..];
@@ -200,6 +201,9 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         var conversions = (properties["ConversionRecipes"] as JsonArray)?.Select(r => r?["RowName"]?.GetValue<string>()).OfType<string>().ToList() ?? [];
         // 1.10 (CL 3790078) clears the conversions of the heroes it retires to unset rows ("None").
         if (conversions.Any(row => row != "None")) item["conversions"] = conversions;
+        // From 1.10 (CL 3790078), the MetaRecipes row that raises the item's rarity (UpgradeRarityRecipeHandle,
+        // UFortAccountItemDefinition::GetUpgradeRarityRecipe; UpgradeItemRarity).
+        if (properties["UpgradeRarityRecipeHandle"]?["RowName"]?.GetValue<string>() is { } rarityRow and not "None") item["rarityUpgrade"] = rarityRow;
         item["maxLevel"] = properties["MaxLevel"]?.GetValue<int>() ?? 1;
     }
 
@@ -305,6 +309,21 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         && TableRows(craftingRequirements["DataTable"])[craftingRow] is { } craftingRequirementsRow)
         schematicRecipes.TryAdd(assetTypes.TemplateId(resultPath), (properties["QuantityProduced"]?.GetValue<int>() ?? 1,
             (craftingRequirementsRow["Requirements"]?.AsArray() ?? []).Select(r => (assetTypes.TemplateId(GamePath(r!["ItemDefinition"]!["ObjectPath"]!.GetValue<string>())), r["Count"]?.GetValue<int>() ?? 0)).ToList()));
+    // Later schematics name a CraftingRecipe row (CraftingRecipes_New, FRecipe): what crafting one costs and makes
+    // (UFortSchematicItemDefinition::GetRecipe, GetResultWorldItemDefinition, GetQuantityProduced), as the Save the
+    // World backpack's CraftWorldItem crafts it from 1.11 (CL 3807424). upgrades.json holds the rows as craftingRecipes.
+    if (export.ExportType == "FortSchematicItemDefinition" && properties?["CraftingRecipe"] is { } craftingRecipe
+        && craftingRecipe["RowName"]?.GetValue<string>() is { } recipeRow and not "None"
+        && TableRows(craftingRecipe["DataTable"])[recipeRow] is { } craftingRecipeRow)
+    {
+        ((SortedDictionary<string, object>)items[templateId])["craftingRecipe"] = recipeRow;
+        craftingRecipes.TryAdd(recipeRow, new SortedDictionary<string, object>(StringComparer.Ordinal)
+        {
+            ["costs"] = Items(craftingRecipeRow["RecipeCosts"], assetTypes),
+            ["results"] = Items(craftingRecipeRow["RecipeResults"], assetTypes),
+            ["catalysts"] = Strings(craftingRecipeRow["RequiredCatalysts"])
+        });
+    }
 
     if (export.ExportType == "FortCardPackItemDefinition")
     {
@@ -819,6 +838,7 @@ var upgrades = new SortedDictionary<string, object>(StringComparer.Ordinal)
     ["recipes"] = recipes
 };
 if (disassembleRecipes.Count > 0) upgrades["disassembleRecipes"] = disassembleRecipes;
+if (craftingRecipes.Count > 0) upgrades["craftingRecipes"] = craftingRecipes;
 
 // The expedition board: each slot (unlocked by its tag on the skill tree) and its generator, and the recipes.
 var expeditionRecipes = new SortedDictionary<string, object>(StringComparer.Ordinal);

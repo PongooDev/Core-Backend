@@ -267,12 +267,13 @@ export function refreshHeldItems(session) {
   for (const { itemId } of activeQuests(session.profile("profile0"))) refreshQuest(session, itemId);
 }
 
-// UpgradeItem / ConvertItem (and the collection book's UpgradeSlottedItem / ConvertSlottedItem) on an account item:
-// each Upgrade and HasUpgraded stat (or HasConverted) the item matches after the change counts once, as do objectives
-// with the Upgrade (Convert) item event naming the item's template.
+// UpgradeItem / ConvertItem / UpgradeItemRarity (and the collection book's UpgradeSlottedItem / ConvertSlottedItem) on
+// an account item: each Upgrade and HasUpgraded stat (HasConverted; UpgradeRarity and HasUpgradedRarity) the item
+// matches after the change counts once, as do objectives with the Upgrade (Convert, UpgradeRarity) item event naming
+// the item's template.
 export function itemChanged(session, change, item, templateId = item.templateId) {
   const tracker = session.profile("profile0");
-  const types = change === "Upgrade" ? ["Upgrade", "HasUpgraded"] : ["HasConverted"];
+  const types = { Upgrade: ["Upgrade", "HasUpgraded"], UpgradeRarity: ["UpgradeRarity", "HasUpgradedRarity"] }[change] ?? ["HasConverted"];
   for (const { itemId, item: questItem, quest } of activeQuests(tracker)) {
     for (const objective of quest.objectives) {
       const stat = objective.stat && getObjectiveStat(objective.stat);

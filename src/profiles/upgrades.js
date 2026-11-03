@@ -94,6 +94,48 @@ export function convertItem(session, itemId, conversionIndex, profileId = "profi
   return { templateId: result.templateId, itemId, profileId, quantity: 1 };
 }
 
+// UFortAccountItem::GetLevelRelativeCostForRarityUpgrade (2.5 vslot 0x270, sub_C25720): the XP the item's levels cost
+// at the new rarity less what they cost at its own, each the sum of the definition's XPAccountItemLevels row from
+// level 1 to the one below the item's (sub_C1B640, a float total truncated at every step). Undefined (the client's -1)
+// when the result levels with another XP type.
+export function levelRelativeRarityCost(item, info, resultInfo) {
+  if (!resultInfo || xpResource[info.class] !== xpResource[resultInfo.class]) return undefined;
+  const f = Math.fround;
+  const levelsCost = (row) => {
+    const curve = upgradeData().levelCosts[row] ?? [];
+    let total = 0;
+    for (let level = 1; level < (item.attributes?.level ?? 1); level++) total = Math.trunc(f(f(curve[level] ?? 0) + f(total)));
+    return total;
+  };
+  return Math.trunc(f(levelsCost(resultInfo.levelCost) - levelsCost(info.levelCost)));
+}
+
+// UpgradeItemRarity {targetItemId}, from 1.10 (CL 3790078; UFortMcpProfileAccount::UpgradeItemRarity): Flux raises an
+// account item's rarity. The item's UpgradeRarityRecipeHandle names a MetaRecipes row (EvolveRarity.*) with one result,
+// the same item a rarity up; 2.5's rows are its notes' reworked costs ("more Training Manuals and evolution materials
+// ... depending on the star level of the Hero"), 2.4.2's the early ones. The checks are the client's
+// UFortAccountItem::CanUpgradeItemRarity (2.5 vslot 0x280, sub_C1C260; EItemEvolutionRestrictionReason):
+// NoRarityUpgrade without a one-result row, VaultOverflow for an item in the vault overflow, MissingCatalyst without
+// the row's RequiredCatalysts on the skill tree (Unlocks.RarityUpgrade.Hero.*), MissingCosts short of a cost or of the
+// level-relative XP. The item keeps its id, level and the rest of its attributes. Returns it as a grant entry.
+// 🟡 Epic's service isn't in the client: the error codes are Core's.
+export function upgradeItemRarity(session, itemId) {
+  const tracker = session.profile("profile0");
+  const { item, info } = accountItem(tracker, itemId);
+  const recipe = upgradeData().recipes[info.rarityUpgrade];
+  if (!recipe || recipe.results.length !== 1) fail(`${item.templateId} has no rarity upgrade`);
+  if (inOverflow(item)) fail(`${item.templateId} is in the vault overflow and can't be evolved`);
+  if (!hasUnlocked(tracker.profile, recipe.catalysts)) locked(recipe.catalysts);
+  const [result] = recipe.results;
+  const xp = levelRelativeRarityCost(item, info, getItem(result.templateId));
+  pay(tracker, xp > 0 ? [...recipe.costs, { templateId: xpResource[info.class], quantity: xp }] : recipe.costs);
+  const attributes = { ...item.attributes, item_seen: 0 };
+  tracker.removeItem(itemId);
+  tracker.addItem(itemId, { templateId: result.templateId, attributes, quantity: 1 });
+  itemChanged(session, "UpgradeRarity", tracker.profile.items[itemId], item.templateId);
+  return { templateId: result.templateId, itemId, profileId: "profile0", quantity: 1 };
+}
+
 export function recycleItem(session, itemId) {
   const tracker = session.profile("profile0");
   const { item, info } = accountItem(tracker, itemId);

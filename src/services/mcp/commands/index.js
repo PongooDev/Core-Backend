@@ -5,6 +5,7 @@ import { claimCollectedResources } from "./ClaimCollectedResources.js";
 import { claimLoginReward } from "./ClaimLoginReward.js";
 import { claimMissionAlertRewards } from "./ClaimMissionAlertRewards.js";
 import { claimQuestReward } from "./ClaimQuestReward.js";
+import { craftWorldItem } from "./CraftWorldItem.js";
 import { createOrUpgradeOutpostItem } from "./CreateOrUpgradeOutpostItem.js";
 import { destroyWorldItems } from "./DestroyWorldItems.js";
 import { disassembleWorldItems } from "./DisassembleWorldItems.js";
@@ -40,7 +41,7 @@ import { storageTransfer } from "./StorageTransfer.js";
 import { transmogItem } from "./TransmogItem.js";
 import { unassignAllSquads } from "./UnassignAllSquads.js";
 import { updateQuestClientObjectives } from "./UpdateQuestClientObjectives.js";
-import { convertItemCommand, recycleItemBatchCommand, recycleItemCommand, upgradeItemCommand } from "./Upgrades.js";
+import { convertItemCommand, recycleItemBatchCommand, recycleItemCommand, upgradeItemCommand, upgradeItemRarityCommand } from "./Upgrades.js";
 
 export const clientCommands = {
   AbandonExpedition: abandonExpeditionCommand,
@@ -57,6 +58,7 @@ export const clientCommands = {
   CollectExpedition: collectExpeditionCommand,
   ConvertItem: convertItemCommand,
   ConvertSlottedItem: convertSlottedItem,
+  CraftWorldItem: craftWorldItem,
   CreateOrUpgradeOutpostItem: createOrUpgradeOutpostItem,
   DestroyWorldItems: destroyWorldItems,
   DisassembleWorldItems: disassembleWorldItems,
@@ -98,6 +100,7 @@ export const clientCommands = {
   UnassignAllSquads: unassignAllSquads,
   UpdateQuestClientObjectives: updateQuestClientObjectives,
   UpgradeItem: upgradeItemCommand,
+  UpgradeItemRarity: upgradeItemRarityCommand,
   UpgradeSlottedItem: upgradeSlottedItem
 };
 

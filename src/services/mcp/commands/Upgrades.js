@@ -1,5 +1,5 @@
 import { lootEntry } from "../../../profiles/items.js";
-import { convertItem, recycleItem, upgradeItem } from "../../../profiles/upgrades.js";
+import { convertItem, recycleItem, upgradeItem, upgradeItemRarity } from "../../../profiles/upgrades.js";
 
 export function upgradeItemCommand({ req, session }) {
   upgradeItem(session, req.body?.targetItemId);
@@ -15,6 +15,14 @@ export const conversionResult = (evolved) =>
 
 export function convertItemCommand({ req, session, notifications }) {
   notifications.push(conversionResult(convertItem(session, req.body?.targetItemId, req.body?.conversionIndex ?? 0)));
+}
+
+// The client's rarity upgrade callback (2.5's sub_CC5C60, from UFortMcpContext::UpgradeItemRarity) reads the primary
+// notification as FFortUpgradeItemRarityNotification {itemsGranted: [FMcpLootEntry]}, finds each item by itemGuid and
+// broadcasts OnRarityUpgraded with them, as the evolve callback does. The type string is never compared.
+export function upgradeItemRarityCommand({ req, session, notifications }) {
+  const upgraded = upgradeItemRarity(session, req.body?.targetItemId);
+  notifications.push({ type: "upgradeItemRarity", primary: true, itemsGranted: [lootEntry(upgraded)] });
 }
 
 export function recycleItemCommand({ req, session }) {
