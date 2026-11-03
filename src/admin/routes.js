@@ -46,6 +46,7 @@ import { defaultEvents, defaultMatchmakingModes, defaultServerLimits } from "../
 import { calendarCacheMinutes } from "../services/fortnite/calendar.js";
 import { defaultBattlePass, enrichedMilestones } from "../battlepass/season1.js";
 import { bundleTiers, seasonPassConfig, seasonTiers, tierPrice } from "../battlepass/season2.js";
+import { battlePassSeasons, resetBattlePass } from "../battlepass/reset.js";
 import { buildOfSeason, inProfileSeason, profileSeason } from "../profiles/seasons.js";
 
 import { isServerAccountName, validatePassword } from "../accounts/password.js";
@@ -188,7 +189,14 @@ export function adminRoutes(context) {
     if (!attributes) return null;
     return {
       level: attributes.level ?? 1, xp: attributes.xp ?? 0, maxLevel: inProfileSeason(athena, maxSeasonLevel), season: profileSeason(athena),
-      ...(profileSeason(athena) > 1 ? { bookLevel: attributes.book_level ?? 1, bookXp: attributes.book_xp ?? 0, bookPurchased: attributes.book_purchased === true } : {})
+      ...(profileSeason(athena) > 1 ? { bookLevel: attributes.book_level ?? 1, bookXp: attributes.book_xp ?? 0, bookPurchased: attributes.book_purchased === true } : {}),
+      // Each season's Battle Pass, for its reset (Core-Backend #201): the profile's season's from its stats, the others'
+      // from their records, and the V-Bucks paid Core for it that a reset refunds.
+      battlePasses: battlePassSeasons().map((season) => {
+        const record = season === profileSeason(athena) ? attributes : athena.coreSeasons?.[season] ?? {};
+        const paid = Object.values(athena.coreBattlePassSpend?.[String(season)] ?? {}).reduce((sum, amount) => sum + amount, 0);
+        return { season, tier: record.book_level ?? 1, purchased: record.book_purchased === true, paid };
+      })
     };
   }
 
@@ -611,6 +619,20 @@ export function adminRoutes(context) {
     const top = inProfileSeason(athena, maxSeasonLevel);
     if (!Number.isInteger(level) || level < 1 || level > top) return invalid(res, `The season level must be 1 to ${top}`);
     inProfileSeason(athena, () => setSeasonLevel(session, level));
+  }));
+  // {season}: the season's Battle Pass back to before the player bought it (Core-Backend #201, battlepass/reset.js), the
+  // profile's own season when none is named. Answers with what was taken back and refunded.
+  router.post("/admin/api/accounts/:accountId/battle-pass/reset", change(({ req, res, session, account }) => {
+    const athena = loadIfExists(account.id, "athena");
+    if (!athena) return invalid(res, "The account has no Battle Royale profile yet: it's made when they first play Battle Royale");
+    const season = req.body?.season === undefined || req.body?.season === "" ? profileSeason(athena) : Number(req.body.season);
+    if (!battlePassSeasons().includes(season)) {
+      return invalid(res, `Season ${req.body?.season ?? season} has no Battle Pass: pick one of ${battlePassSeasons().join(", ")}`);
+    }
+    const battlePassReset = resetBattlePass(session, season);
+    // What only Core's bookkeeping holds (the season records, the rewards given, the purchases) is saved even when no item changed.
+    for (const profileId of ["athena", "profile0"]) profiles.save(session.profile(profileId).profile);
+    return { battlePassReset };
   }));
   router.post("/admin/api/accounts/:accountId/locker/grant-all", lockerChange((session) => ({ granted: grantFullLocker(session) })));
   router.post("/admin/api/accounts/:accountId/locker/remove-granted", lockerChange((session) => ({ removed: removeFullLocker(session) })));

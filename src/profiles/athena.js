@@ -13,7 +13,7 @@ import { defaultBanner } from "./defaults.js";
 import { findItem } from "./items.js";
 import { grant } from "./progress.js";
 import { countBundleQuest, grantChallengeSchedule as grantSchedule, settleChallengeSchedules } from "./challenges.js";
-import { accountLevelOf, addBookXp, giveSeasonReward, namesAthenaBuild, seasonNeedsSwitch, seasonNumber, settleSeasonRewards, switchSeason } from "./seasons.js";
+import { accountLevelOf, addBookXp, giveSeasonReward, namesAthenaBuild, seasonNeedsSwitch, seasonNumber, settleSeasonPromise, settleSeasonRewards, switchSeason } from "./seasons.js";
 
 // Battle Royale's profile from 1.8, athena (UFortMcpProfileAthena, a quest profile): its cosmetics, the loadout the
 // locker equips, the banner, the season level and the daily challenges.
@@ -902,4 +902,5 @@ export function athenaQuestLogin(session) {
   settleLevelObjectives(session);
   settleAthenaEventQuests(session);
   settleChaseRewards(session);
+  settleSeasonPromise(session, seasonFunctions);
 }

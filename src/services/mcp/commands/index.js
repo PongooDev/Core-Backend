@@ -27,6 +27,7 @@ import { purchaseHomebaseNode } from "./PurchaseHomebaseNode.js";
 import { queryProfile } from "./QueryProfile.js";
 import { abandonExpeditionCommand, collectExpeditionCommand, refreshExpeditions, startExpeditionCommand } from "./RefreshExpeditions.js";
 import { requestEventFlags } from "./RequestEventFlags.js";
+import { removeGiftBox } from "./RemoveGiftBox.js";
 import { setBattleRoyaleBanner } from "./SetBattleRoyaleBanner.js";
 import { setDefaultHeroSquad } from "./SetDefaultHeroSquad.js";
 import { setGameplayStats } from "./SetGameplayStats.js";
@@ -78,6 +79,7 @@ export const clientCommands = {
   RecycleItem: recycleItemCommand,
   RecycleItemBatch: recycleItemBatchCommand,
   RefreshExpeditions: refreshExpeditions,
+  RemoveGiftBox: removeGiftBox,
   RequestEventFlags: requestEventFlags,
   SetBattleRoyaleBanner: setBattleRoyaleBanner,
   SetDefaultHeroSquad: setDefaultHeroSquad,

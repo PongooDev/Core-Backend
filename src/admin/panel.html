@@ -3214,7 +3214,32 @@
         act(api(`/admin/api/accounts/${a.id}/battle-royale-level`, { level })).then((account) => setAccount(account, account && `${a.displayName} is now season level ${level}`));
       };
       return el("div", { class: "actions", style: "margin-bottom:10px" },
-        chip(`Season level ${fmt(br.level)} / ${fmt(br.maxLevel)}`, "sky"), input, btn("Set level", set, "primary small"));
+        chip(`Season level ${fmt(br.level)} / ${fmt(br.maxLevel)}`, "sky"), input, btn("Set level", set, "primary small"),
+        battlePassReset(a));
+    }
+
+    // A season's Battle Pass back to before the player bought it (Core-Backend #201): the season picker lists the seasons
+    // with a pass, the profile's own first.
+    function battlePassReset(a) {
+      const passes = a.battleRoyale?.battlePasses ?? [];
+      if (!passes.length) return null;
+      const own = passes.find((pass) => pass.season === a.battleRoyale.season) ?? passes.at(-1);
+      const select = el("select", { class: "field", "aria-label": "Battle Pass season" },
+        passes.map((pass) => el("option", { value: pass.season, text: `Season ${pass.season}: tier ${pass.tier}${pass.purchased ? ", bought" : ""}`, selected: pass === own })));
+      const reset = async () => {
+        const pass = passes.find((entry) => entry.season === Number(select.value));
+        const refund = pass.paid ? ` The ${fmt(pass.paid)} V-Bucks they paid for it are refunded.` : " Nothing is refunded: no V-Bucks paid for it are on record.";
+        if (!(await confirmModal(`Reset ${a.displayName}'s Season ${pass.season} Battle Pass to before they bought it? Its tiers, Battle Stars and boosts start over, and the cosmetics, banners, V-Bucks and season XP its tiers gave are taken back.${refund}`, {
+          title: "Reset Battle Pass",
+          confirmText: "Reset",
+          confirmKind: "danger"
+        }))) return;
+        act(api(`/admin/api/accounts/${a.id}/battle-pass/reset`, { season: pass.season })).then((account) => {
+          const done = account?.battlePassReset;
+          setAccount(account, done && `Season ${done.season} Battle Pass reset: ${fmt(done.cosmetics.length)} cosmetics and ${fmt(done.banners.length)} banners taken back, ${fmt(done.refunded)} V-Bucks refunded; now tier ${fmt(done.tierNow)}`);
+        });
+      };
+      return [select, btn("Reset Battle Pass", reset, "danger small")];
     }
 
     function balance(currency) {

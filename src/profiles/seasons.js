@@ -5,6 +5,7 @@ import { bannerTemplateId } from "../gamedata/banners.js";
 import { buildGameData, dataBuilds } from "../gamedata/read.js";
 import { log } from "../log.js";
 import { findItem } from "./items.js";
+import { battlePassGiftBox, giveGiftBox } from "./giftboxes.js";
 import { grant } from "./progress.js";
 
 // Battle Royale's seasons (Core-Backend #145). 1.8 to 1.10 are Season 1; 1.11 (CL-3807424) is Season 2, which starts every
@@ -202,35 +203,50 @@ function giveReward(session, { templateId, quantity }, athena) {
 }
 export const giveSeasonReward = giveReward;
 
+// What the outermost settleSeasonRewards running has given so far, the nested ones' too (a reward's Battle Stars or
+// season XP settle again inside it), or null when none runs.
+let settling = null;
+
 // Gives what the season level, the tier and (once bought) the Battle Pass have reached and not yet given. athena: the
-// locker and season XP functions (profiles/athena.js), passed in so the two modules don't import each other.
-export function settleSeasonRewards(session, athena) {
+// locker and season XP functions (profiles/athena.js), passed in so the two modules don't import each other. The
+// outermost call returns every item it and the calls inside it gave and, on 3.0, puts them in a GiftBox:GB_BattlePass
+// (profiles/giftboxes.js), the client's "{Number} items have been unlocked!" screen of the tiers reached (Core-Backend
+// #205), unless giftBox is false (a purchase makes its own, PurchaseCatalogEntry.js; the admin panel's reset makes none).
+export function settleSeasonRewards(session, athena, { giftBox = true } = {}) {
   const season = athenaSeason();
   if (!season || profileSeason(session.profile("athena").profile) !== season.seasonNumber) return [];
   const { profile } = session.profile("athena");
   const given = givenSoFar(profile);
-  const loot = [];
-  // A reward can move the level or tier on (season XP, Battle Stars), so it goes round until nothing is left to give.
-  for (let round = 0; round < 1000; round++) {
-    const { attributes } = profile.stats;
-    const level = attributes.level ?? 1;
-    const tier = attributes.book_level ?? 1;
-    const rewards = [];
-    if (level > given.seasonLevel) {
-      rewards.push(...rewardsUpTo(season.seasonRewards, given.seasonLevel, level));
-      given.seasonLevel = level;
+  const outer = settling === null;
+  if (outer) settling = [];
+  const loot = settling;
+  try {
+    // A reward can move the level or tier on (season XP, Battle Stars), so it goes round until nothing is left to give.
+    for (let round = 0; round < 1000; round++) {
+      const { attributes } = profile.stats;
+      const level = attributes.level ?? 1;
+      const tier = attributes.book_level ?? 1;
+      const rewards = [];
+      if (level > given.seasonLevel) {
+        rewards.push(...rewardsUpTo(season.seasonRewards, given.seasonLevel, level));
+        given.seasonLevel = level;
+      }
+      if (tier > given.free) {
+        rewards.push(...rewardsUpTo(season.bookFreeRewards, given.free, tier));
+        given.free = tier;
+      }
+      if (attributes.book_purchased === true && tier > given.paid) {
+        rewards.push(...rewardsUpTo(season.bookPaidRewards, given.paid, tier));
+        given.paid = tier;
+      }
+      if (!rewards.length) break;
+      for (const reward of rewards) loot.push(...giveReward(session, reward, athena));
     }
-    if (tier > given.free) {
-      rewards.push(...rewardsUpTo(season.bookFreeRewards, given.free, tier));
-      given.free = tier;
-    }
-    if (attributes.book_purchased === true && tier > given.paid) {
-      rewards.push(...rewardsUpTo(season.bookPaidRewards, given.paid, tier));
-      given.paid = tier;
-    }
-    if (!rewards.length) break;
-    for (const reward of rewards) loot.push(...giveReward(session, reward, athena));
+  } finally {
+    if (outer) settling = null;
   }
+  if (!outer) return [];
+  if (giftBox) giveGiftBox(session, battlePassGiftBox, loot);
   return loot;
 }
 
@@ -256,6 +272,39 @@ export function addBookXp(session, stars, athena) {
   settleSeasonRewards(session, athena);
 }
 
+// The Battle Pass Promise (Core-Backend #206): "As a special thanks for buying the Season 2 Battle Pass, you'll start
+// Season 3 off with 5 free tiers". From 2.2 (CL-3841827) AthenaSeason2's tier 2 Battle Pass reward is
+// Token:AthenaNextSeasonTierBoost x5 ("Free Tiers", a profile0 token), and 3.0 (CL-3901517) has GiftBox:GB_BattlePassPromise,
+// whose header (ItemReceivedBattlePassPromiseHeader) is that screen. In a season after the token's, the tokens the
+// account holds become that many tiers' Battle Stars (BookXpCurve from tier 1: 5 tiers, 50 stars), shown in the promise
+// box, once a season. A pass bought on 1.11 or 2.1, whose data had no token yet, counts as the token the newest data of
+// its season gives at tier 2 (🟡 Core's: Epic gave every Season 2 pass owner the tiers).
+const nextSeasonTierBoost = "Token:athenanextseasontierboost";
+const promiseGiftBox = "GiftBox:gb_battlepasspromise";
+const sameTemplate = (a, b) => String(a).toLowerCase() === String(b).toLowerCase();
+export function settleSeasonPromise(session, athena) {
+  const season = athenaSeason();
+  const { profile } = session.profile("athena");
+  if (!season || profileSeason(profile) !== season.seasonNumber) return;
+  const key = String(season.seasonNumber);
+  if ((profile.coreSeasonPromises ?? []).includes(key)) return;
+  const account = session.profile("profile0");
+  const tokens = Object.entries(account.profile.items).filter(([, item]) => sameTemplate(item.templateId, nextSeasonTierBoost));
+  let tiers = tokens.reduce((sum, [, item]) => sum + item.quantity, 0);
+  const previous = season.seasonNumber - 1;
+  if (!tiers && profile.coreSeasons?.[previous]?.book_purchased === true) {
+    tiers = inBuild(buildOfSeason(previous), () => (athenaSeason()?.bookPaidRewards ?? []).flatMap(({ rewards }) => rewards)
+      .filter(({ templateId }) => sameTemplate(templateId, nextSeasonTierBoost)).reduce((sum, { quantity }) => sum + quantity, 0));
+  }
+  if (!tiers) return;
+  for (const [itemId] of tokens) account.removeItem(itemId);
+  profile.coreSeasonPromises = [...(profile.coreSeasonPromises ?? []), key];
+  const stars = season.bookLevels.filter(({ level }) => level >= 1 && level < 1 + tiers).reduce((sum, { xpToNextLevel }) => sum + xpToNextLevel, 0);
+  log("Battle Royale", `${session.accountId} starts Season ${key} with ${tiers} free tiers (${stars} Battle Stars) for the Season ${previous} Battle Pass`);
+  giveGiftBox(session, promiseGiftBox, [{ profileId: "athena", itemId: "AccountResource:athenaseasonalbp", templateId: "AccountResource:athenaseasonalbp", quantity: stars }]);
+  addBookXp(session, stars, athena);
+}
+
 // The season's last tier, and how many tiers a player at a tier can still buy.
 export const lastTier = () => athenaSeason()?.numBookLevels ?? 0;
 export const tiersLeft = (profile) => Math.max(0, lastTier() - (profile.stats.attributes.book_level ?? 1));
@@ -265,7 +314,17 @@ export function buyBattlePass(session, athena) {
   const tracker = session.profile("athena");
   tracker.setStat("book_purchased", true);
   log("Battle Royale", `${session.accountId} bought the Season ${seasonNumber()} Battle Pass`);
-  return settleSeasonRewards(session, athena);
+  return settleSeasonRewards(session, athena, { giftBox: false });
+}
+
+// The V-Bucks the account paid Core for the season's Battle Pass offers (the pass, the bundle and tiers), kept as
+// profile.coreBattlePassSpend (Core's, never sent): {<season>: {<currency templateId>: amount}}, what the admin panel's
+// Battle Pass reset refunds (Core-Backend #201). spent: what the purchase took of each kind.
+export function recordBattlePassSpend(session, spent) {
+  const { profile } = session.profile("athena");
+  profile.coreBattlePassSpend ??= {};
+  const record = (profile.coreBattlePassSpend[String(seasonNumber())] ??= {});
+  for (const [templateId, amount] of Object.entries(spent ?? {})) record[templateId] = (record[templateId] ?? 0) + amount;
 }
 
 // Tiers bought: the tier moves on and keeps its Battle Stars ("Your current progress will be applied to the next tier"),
@@ -276,7 +335,7 @@ export function buyTiers(session, count, athena) {
   tracker.setStat("book_level", tier);
   if (tier >= lastTier() && tracker.profile.stats.attributes.book_xp) tracker.setStat("book_xp", 0);
   log("Battle Royale", `${session.accountId} bought ${count} Battle Pass tier${count === 1 ? "" : "s"}, to tier ${tier}`);
-  return settleSeasonRewards(session, athena);
+  return settleSeasonRewards(session, athena, { giftBox: false });
 }
 
 // A match's season XP with the Battle Pass's match XP boost (season_match_boost percent) in a season that has one.
