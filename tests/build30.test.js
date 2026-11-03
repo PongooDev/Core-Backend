@@ -18,6 +18,9 @@ import { dataBuild } from "../src/gamedata/read.js";
 import { assignmentBucket, showsMatchStart } from "../src/matchmaking/service.js";
 import { advanceAthenaObjectives, athenaQuestLogin, awardVictory, grantAthenaQuest, recordMatchProgress, seasonRewardFunctions, settleBattlePassDaily } from "../src/profiles/athena.js";
 import { challengeSeasonBegin, configureChallenges } from "../src/profiles/challenges.js";
+import { claimQuest, completeQuest, grant } from "../src/profiles/progress.js";
+import { findQuestItem } from "../src/profiles/quests.js";
+import { clientQuestLogin } from "../src/services/mcp/commands/ClientQuestLogin.js";
 import { buildOfSeason, buyBattlePass, buyTiers, takeUpSeason } from "../src/profiles/seasons.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
@@ -175,6 +178,49 @@ test("3.0 runs the passive storms and Mini-Bosses and Spring It On!'s Luck Explo
   // The Hoverboard: Stonewood's SSD 5 quest leads to its questline.
   assert.ok(inBuild(v30, () => getQuest("outpostquest_t1_l5")).rewards.concat(inBuild(v30, () => getQuest("outpostquest_t1_l5")).hiddenRewards ?? [])
     .some(({ templateId }) => templateId.toLowerCase() === "quest:stonewoodquest_reactive_fetch_hoverboard"));
+});
+
+// Core-Backend #210: SSD 5 claimed on 2.5 (whose quest has no Hoverboard) gets the questline at 3.0's quest login, and
+// SSD 5 claimed on 3.0 grants it as before. The questline's reward is the Hoverboard, a profile0 item.
+test("3.0 gives the Hoverboard questline to accounts past Stonewood's SSD 5", () => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-hoverboard-"));
+  const hoverboardQuest = "stonewoodquest_reactive_fetch_hoverboard";
+  try {
+    const store = createProfileStore(dataDir);
+    const claimSsd5 = (session) => {
+      grant(session, "Quest:outpostquest_t1_l5", 1);
+      const itemId = findQuestItem(session.profile("profile0").profile, "outpostquest_t1_l5");
+      completeQuest(session, itemId);
+      claimQuest(session, itemId);
+    };
+    inBuild(v25, () => {
+      const session = openSession(store, "hover25");
+      claimSsd5(session);
+      assert.equal(findQuestItem(session.profile("profile0").profile, hoverboardQuest), undefined);
+      clientQuestLogin({ session, notifications: [], profileId: "profile0" });
+      assert.equal(findQuestItem(session.profile("profile0").profile, hoverboardQuest), undefined);
+      session.commit();
+    });
+    inBuild(v30, () => {
+      const session = openSession(store, "hover25");
+      const { profile } = session.profile("profile0");
+      clientQuestLogin({ session, notifications: [], profileId: "profile0" });
+      const itemId = findQuestItem(profile, hoverboardQuest);
+      assert.equal(profile.items[itemId]?.attributes.quest_state, "Active");
+      clientQuestLogin({ session, notifications: [], profileId: "profile0" });
+      assert.equal(Object.values(profile.items).filter((item) => item.templateId === `Quest:${hoverboardQuest}`).length, 1);
+      completeQuest(session, itemId);
+      claimQuest(session, itemId);
+      assert.ok(Object.values(profile.items).some((item) => item.templateId === "PersonalVehicle:vid_hoverboard"));
+      assert.equal(profile.items[findQuestItem(profile, "stonewoodquest_ability_hoverboard")].attributes.quest_state, "Active");
+
+      const fresh = openSession(store, "hover30");
+      claimSsd5(fresh);
+      assert.equal(fresh.profile("profile0").profile.items[findQuestItem(fresh.profile("profile0").profile, hoverboardQuest)].attributes.quest_state, "Active");
+    });
+  } finally {
+    fs.rmSync(dataDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+  }
 });
 
 // "The Bald Eagle Hand Cannon is now available in the Weekly Store."

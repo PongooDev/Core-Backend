@@ -2,7 +2,9 @@ import crypto from "node:crypto";
 import { McpError } from "../errors.js";
 import { cloudSaveProfile, getItem } from "../gamedata/items.js";
 import { log } from "../log.js";
+import { getQuest } from "../gamedata/quests.js";
 import { findItem, profileIdOf } from "./items.js";
+import { questIdOf } from "./quests.js";
 
 // Storm shields are account items (UFortOutpostItem: a UFortCloudSaveItem with outpost_core_info
 // {placedBuildings: [{buildingTag, placedTag}], accountsWithEditPermission} and cloud_save_info {saveCount,
@@ -101,6 +103,25 @@ export function expandStormShield(session, questId) {
   const itemId = findItem(tracker.profile, info.templateId);
   const level = Math.min(Number(leg), info.maxLevel ?? 10);
   if (level > (tracker.profile.items[itemId].attributes.level ?? 0)) tracker.setItemAttribute(itemId, "level", level);
+}
+
+// The quests a claimed Storm Shield Defense quest grants (its rewards and hidden rewards) that the account doesn't hold,
+// for ClientQuestLogin to grant (Core-Backend #210). A build's data can add one to a defense players already finished:
+// 3.0's OutpostQuest_T1_L5 (Stonewood's SSD 5) gains StonewoodQuest_Reactive_Fetch_Hoverboard, the Hoverboard's
+// questline, which a claim made on an earlier build never granted. Epic's players past that defense got it with the
+// update 🟡; here they get it at their next quest login. Reward choices are left out: which one was taken isn't kept.
+export function missedStormShieldQuests(profile) {
+  const held = new Set(Object.values(profile.items).map(questIdOf).filter(Boolean));
+  const missed = new Set();
+  for (const item of Object.values(profile.items)) {
+    const quest = item.attributes?.quest_state === "Claimed" && getQuest(questIdOf(item) ?? "");
+    if (!quest?.expandsStormShield) continue;
+    for (const { templateId } of [...(quest.rewards ?? []), ...(quest.hiddenRewards ?? [])]) {
+      const [type, questId] = templateId.toLowerCase().split(":");
+      if (type === "quest" && !held.has(questId) && getQuest(questId)) missed.add(questId);
+    }
+  }
+  return [...missed];
 }
 
 // The storm shield defense a player is up to: world info lists each theater's storm shield at its first defense
