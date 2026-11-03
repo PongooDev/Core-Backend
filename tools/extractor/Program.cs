@@ -1043,6 +1043,10 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         // their objectives: "Land at different named locations" lists all 18 and is done at ObjectiveCompletionCount.
         if ((string)quest["type"] == "AthenaChallengeBundleQuest" && properties["ObjectiveCompletionCount"]?.GetValue<int>() is int completionCount and > 0)
             quest["objectiveCompletionCount"] = completionCount;
+        // 3.0's "in a single match" challenges (bAthenaMustCompleteInSingleMatch): the server's quest manager keeps no
+        // progress of theirs from a match that didn't complete them (UFortQuestManager::UpdateStatsForSingleMatchQuests).
+        if (properties["bAthenaMustCompleteInSingleMatch"]?.GetValue<bool>() == true)
+            quest["singleMatch"] = true;
         athenaQuests[export.Name.ToLowerInvariant()] = quest;
         continue;
     }

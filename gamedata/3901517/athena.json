@@ -11587,6 +11587,7 @@
           "templateId": "AccountResource:athenaseasonalxp"
         }
       ],
+      "singleMatch": true,
       "type": "AthenaChallengeBundleQuest"
     },
     "quest_br_damage_smg": {
@@ -12216,6 +12217,7 @@
           "templateId": "AccountResource:athenaseasonalxp"
         }
       ],
+      "singleMatch": true,
       "type": "AthenaChallengeBundleQuest"
     },
     "quest_br_eliminate_suppressedweapon": {
@@ -12432,6 +12434,7 @@
           "templateId": "AccountResource:athenaseasonalbp"
         }
       ],
+      "singleMatch": true,
       "type": "AthenaChallengeBundleQuest"
     },
     "quest_br_interact_chests_location_anarchyacres": {
@@ -12774,6 +12777,7 @@
           "templateId": "AccountResource:athenaseasonalxp"
         }
       ],
+      "singleMatch": true,
       "type": "AthenaChallengeBundleQuest"
     },
     "quest_br_interact_gnaughtygnomes": {
@@ -13657,6 +13661,7 @@
           "templateId": "AccountResource:athenaseasonalbp"
         }
       ],
+      "singleMatch": true,
       "type": "AthenaChallengeBundleQuest"
     },
     "quest_br_visit_icecreamtrucks_different": {
@@ -13927,6 +13932,7 @@
           "templateId": "AccountResource:athenaseasonalbp"
         }
       ],
+      "singleMatch": true,
       "type": "AthenaChallengeBundleQuest"
     },
     "quest_eliminate_suppressedweapon": {

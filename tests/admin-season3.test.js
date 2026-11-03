@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { get, startBackend } from "./helpers.js";
+import { get, post, startBackend } from "./helpers.js";
 
 test("admin panel: Season 3's battle pass, item shop and events clock", async () => {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-admin-season3-test-"));
@@ -18,6 +18,13 @@ test("admin panel: Season 3's battle pass, item shop and events clock", async ()
     assert.equal(pass.body.config.battlePassPrice, 950);
     assert.equal(pass.body.config.bundlePrice, 2800);
     assert.deepEqual(pass.body.availableSeasons.map((s) => s.id), [1, 2, 3]);
+
+    // Core-Backend #207: every week of the weekly challenges at once.
+    assert.equal(pass.body.challengesAllUnlocked, false);
+    assert.equal((await post(backend.port, "/admin/api/battlepass/challenges", undefined, { allUnlocked: "yes" })).status, 400);
+    assert.equal((await post(backend.port, "/admin/api/battlepass/challenges", undefined, { allUnlocked: true })).body.challengesAllUnlocked, true);
+    assert.equal((await get(backend.port, "/admin/api/battlepass/overview?season=3")).body.challengesAllUnlocked, true);
+    assert.equal((await get(backend.port, "/admin/api/battlepass/overview?season=2")).body.challengesAllUnlocked, undefined);
 
     const shop = await get(backend.port, "/admin/api/shop?season=3");
     assert.equal(shop.status, 200);

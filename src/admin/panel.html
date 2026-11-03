@@ -3830,7 +3830,7 @@
       const isLtm = (id) => Boolean(ltmOf(id));
       const coreModes = [...modeKeys];
       modeKeys.push(...ltmList.map((l) => ({ id: l.id, name: l.name, playlistId: l.playlistId, teams: l.teams,
-        code: `${l.eventFlag ? `Athena${l.eventFlag}` : "Playlist_50v50"} · ${l.builds}` })));
+        code: `${l.queue ? `AthenaEvent${l.queue}` : "Playlist_50v50"} · ${l.builds}` })));
 
       const rewardModesList = [
         { rewardKey: "solo", modeKey: "solo", name: "Solo" },
@@ -4073,7 +4073,7 @@
         }, form.ltmOriginalDates, l.original ? "Original dates is on: this LTM follows its dates."
           : "Original dates is on: Epic never ran this LTM in Seasons 1 and 2, so it stays off.");
         return modeCard(l.name, statusChip, [
-          el("div", { class: "mono muted", style: "font-size:12px; margin-bottom:4px;", text: `Playlist ${l.playlistId}${l.eventFlag ? ` · Athena${l.eventFlag}` : ""} · ${l.builds}` }),
+          el("div", { class: "mono muted", style: "font-size:12px; margin-bottom:4px;", text: `Playlist ${l.playlistId}${l.queue ? ` · AthenaEvent${l.queue}` : ""} · ${l.builds}` }),
           el("div", { class: "sub", style: "font-size:12px; margin-bottom:4px;", text: l.teams }),
           el("div", { class: "sub", style: "font-size:12px; margin-bottom:4px;", text: l.description }),
           el("div", { class: "muted", style: "font-size:12px;", text: l.original
@@ -5668,6 +5668,16 @@
           el("div", { style: "display:flex; gap:24px; flex-wrap:wrap; margin-top:12px;" },
             el("label", { style: "display:flex; align-items:center; gap:8px;" }, el("span", { class: "muted font-semibold", text: "Battle Pass" }), priceInput("battlePassPrice")),
             el("label", { style: "display:flex; align-items:center; gap:8px;" }, el("span", { class: "muted font-semibold", text: "Bundle" }), priceInput("bundlePrice")))),
+        ...(season === "3" ? [el("section", { class: "panel", style: "margin-top:16px" },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" }, el("h2", { text: "Weekly Challenges" }),
+            chip(data.challengesAllUnlocked ? "All unlocked" : "Season 3's dates", data.challengesAllUnlocked ? "accent" : "")),
+          el("p", { class: "note", text: "Each week unlocks on its day of Season 3, on the season's replay: Week 1 on 22 February 2018, Week 2 a week later, up to Week 9 on 19 April. The challenges tab counts down to the locked weeks. Unlock all gives every week now; players get them at their next login." }),
+          el("div", { class: "actions", style: "margin-top:12px" },
+            btn(data.challengesAllUnlocked ? "Unlock by Season 3's dates" : "Unlock all weeks now", async () => {
+              await act(api("/admin/api/battlepass/challenges", { allUnlocked: !data.challengesAllUnlocked }),
+                data.challengesAllUnlocked ? "Weekly challenges unlock by their dates" : "Every week of the weekly challenges is unlocked");
+              showBattlePass();
+            }, data.challengesAllUnlocked ? "ghost" : "primary")))] : []),
         el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" }, el("h2", { text: "Tier Rewards" }), chip(`${tiers.length} tiers`, "accent")),
           el("p", { class: "note", text: season === "3"

@@ -7,6 +7,7 @@ import { configureItemShop, configureSeasonStarts } from "./store/itemshop.js";
 import { requestBuild } from "./builds/context.js";
 import { configureEvents, seasonalEvents } from "./events/events.js";
 import { configureLtms } from "./events/ltms.js";
+import { configureChallenges } from "./profiles/challenges.js";
 import { configureBattlePass } from "./battlepass/season1.js";
 import { createFriendStore } from "./friends/store.js";
 import { createFriendCodeStore } from "./friendcodes/store.js";
@@ -68,6 +69,7 @@ export function createContext(config) {
   configureItemShop(() => settings.get().itemShop);
   configureEvents(() => settings.get().events);
   configureLtms(() => settings.get());
+  configureChallenges(() => settings.get());
   configureSeasonStarts((season, date) => settings.recordSeasonStart(season, date));
   configureBattlePass(() => settings.get().battlepass);
   if (config.requirePassword !== undefined) settings.update({ requirePassword: config.requirePassword });

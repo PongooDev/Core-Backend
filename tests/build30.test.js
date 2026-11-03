@@ -16,7 +16,8 @@ import { getItem } from "../src/gamedata/items.js";
 import { getQuest } from "../src/gamedata/quests.js";
 import { dataBuild } from "../src/gamedata/read.js";
 import { assignmentBucket, showsMatchStart } from "../src/matchmaking/service.js";
-import { advanceAthenaObjectives, athenaQuestLogin, awardVictory, seasonRewardFunctions, settleBattlePassDaily } from "../src/profiles/athena.js";
+import { advanceAthenaObjectives, athenaQuestLogin, awardVictory, grantAthenaQuest, recordMatchProgress, seasonRewardFunctions, settleBattlePassDaily } from "../src/profiles/athena.js";
+import { challengeSeasonBegin, configureChallenges } from "../src/profiles/challenges.js";
 import { buildOfSeason, buyBattlePass, buyTiers, takeUpSeason } from "../src/profiles/seasons.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
@@ -138,6 +139,25 @@ test("Land at different named locations is done at 10 of its 18 objectives", () 
   assert.equal(inBuild(v30, () => getAthenaQuest("quest_br_land_locations_different")).objectiveCompletionCount, 10);
 }));
 
+// bAthenaMustCompleteInSingleMatch (UFortQuestManager::UpdateStatsForSingleMatchQuests, 3.0 0xED1EC0): a match that
+// doesn't complete the challenge keeps none of its progress.
+test("Season 3's single-match challenges count only a match that completes them, and Athena.Kills is the match's eliminations", () => withSession("single30", (session) => {
+  const tracker = session.profile("athena");
+  assert.deepEqual(["quest_br_eliminate_singel_match_elemeinations", "quest_br_damage_singlematch", "quest_br_damage"]
+    .map((id) => inBuild(v30, () => getAthenaQuest(id)).singleMatch === true), [true, true, false]);
+  const fivePlayers = grantAthenaQuest(tracker, "quest_br_eliminate_singel_match_elemeinations");
+  const withAKill = grantAthenaQuest(tracker, "quest_br_play_min1elimination");
+  const count = (itemId, objective) => tracker.profile.items[itemId].attributes[`completion_${objective}`] ?? 0;
+  recordMatchProgress(session, 9, { place: 10, kills: 4 });
+  assert.equal(count(fivePlayers, "killingblow_athena_player_singlematch"), 0);
+  assert.equal(count(withAKill, "battlepass_complete_athena_with_killingblow"), 1);
+  recordMatchProgress(session, 9, { place: 30, kills: 0 });
+  assert.equal(count(withAKill, "battlepass_complete_athena_with_killingblow"), 1);
+  recordMatchProgress(session, 2, { place: 1, kills: 6 });
+  assert.equal(tracker.profile.items[fivePlayers].attributes.quest_state === "Active" ? count(fivePlayers, "killingblow_athena_player_singlematch") : 5, 5);
+  assert.notEqual(tracker.profile.items[fivePlayers].attributes.quest_state, "Active");
+}));
+
 test("a Season 3 win gives the Paper Parasol", () => withSession("win30", (session) => {
   const granted = awardVictory(session).map(({ templateId }) => templateId);
   assert.ok(granted.includes("AthenaGlider:umbrella_paperparasol"), granted.join());
@@ -179,3 +199,20 @@ test("3.0 takes AssignMatch's six fields and no match start countdown", () => {
   assert.equal(assignmentBucket(`${v30}:0:NA:2`, v30), `Fortnite:Fortnite:${v30}:0:NA:2`);
   assert.ok(!showsMatchStart(v30));
 });
+
+// Core-Backend #207: the challenges tab counts down to a locked week from the calendar's seasonBegin (3.0 0x26E0410,
+// 0x9AE190), and the admin panel can give every week at once.
+test("Season 3's calendar names the season's start for the locked weeks, and every week can be unlocked at once", () => withSession("unlockall30", (session) => {
+  const begin = inBuild(v30, () => challengeSeasonBegin(now));
+  assert.ok(Date.parse(begin) <= now.getTime() && Date.parse(begin) > now.getTime() - 70 * dayMs);
+  assert.equal(inBuild(v25, () => challengeSeasonBegin(now)), null);
+  const tracker = session.profile("athena");
+  try {
+    configureChallenges({ challengesAllUnlocked: true });
+    buyBattlePass(session, seasonRewardFunctions());
+    const weeks = itemsOf(tracker, "ChallengeBundle").map(([, item]) => item.templateId.toLowerCase());
+    for (let week = 1; week <= 9; week++) assert.ok(weeks.includes(`challengebundle:s3_week${week}_questbundle`), `week ${week}`);
+  } finally {
+    configureChallenges(undefined);
+  }
+}));

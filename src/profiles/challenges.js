@@ -37,7 +37,25 @@ function replayDays(now) {
   return { days: Math.max(0, Math.floor(into / dayMs)), epoch: new Date(now.getTime() - into).toISOString() };
 }
 
-const unlocked = (entry, days) => entry.unlockType !== "DaysSinceEventStart" || days >= entry.unlockValue;
+// The season's start for the client's countdowns to the locked weeks (Core-Backend #207): the calendar's client-events
+// state's seasonBegin (FFortClientEventsState::SeasonBegin, +0x158). 3.0's challenges tab shows a week that isn't in the
+// profile yet as UFortChallengeBundleInfo::IsUnlocked's (0x26E0410) "Unlocks in {0}" (FortChallengeBundleInfo_
+// TimeLeftBeforeUnlock): its DaysSinceEventStart UnlockValue in days less the time since SeasonBegin (0x9AE190: the
+// calendar's now less SeasonBegin), so without one every week read "Unlocks in" nothing. It is the replay's day 1, as
+// unlock_epoch is: Season 3 began on 22 February 2018 and its weeks unlocked on the Thursdays after (Week 2 on 1 March
+// to Week 9 on 19 April, 3.0's Season3_Challenge_Schedule's 7 to 56 days), so on the replay each week shows the day it
+// came out. Null for a build without challenge schedules.
+export const challengeSeasonBegin = (now = new Date()) => (Object.keys(athenaChallengeSchedules()).length ? replayDays(now).epoch : null);
+
+// The admin panel's "Unlock all weekly challenges now" (settings challengesAllUnlocked, Core-Backend #207): every week of
+// the schedules a player holds is given at once, whatever the replay's day.
+let settingsProvider = () => undefined;
+export function configureChallenges(provider) {
+  settingsProvider = typeof provider === "function" ? provider : () => provider;
+}
+export const challengesAllUnlocked = (settingsValue = settingsProvider()) => settingsValue?.challengesAllUnlocked === true;
+
+const unlocked = (entry, days) => entry.unlockType !== "DaysSinceEventStart" || days >= entry.unlockValue || challengesAllUnlocked();
 
 function grantBundle(session, scheduleItemId, bundleId, athena) {
   const tracker = session.profile("athena");

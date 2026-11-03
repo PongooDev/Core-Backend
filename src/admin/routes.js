@@ -1327,7 +1327,9 @@ export function adminRoutes(context) {
         availableSeasons,
         seasonEnd: seasonEnds(passSeason),
         config: { ...seasonPassConfig(passSeason), tierPrice, bundleTiers, xpMultiplier: bpConfig.xpMultiplier ?? 1 },
-        tiers: seasonTiers()
+        tiers: seasonTiers(),
+        // Season 3's weekly challenges: whether every week is given at once (Core-Backend #207, profiles/challenges.js).
+        ...(passSeason >= 3 ? { challengesAllUnlocked: s.challengesAllUnlocked === true } : {})
       })));
     }
     res.json({
@@ -1350,6 +1352,16 @@ export function adminRoutes(context) {
       config: updated.battlepass,
       milestones: enrichedMilestones(updated.battlepass)
     });
+  });
+
+  // {allUnlocked}: Season 3's weekly challenges all at once, or a week at a time on the season's replay (Core-Backend #207).
+  // A player gets the weeks at their next quest login.
+  router.post("/admin/api/battlepass/challenges", (req, res) => {
+    if (typeof req.body?.allUnlocked !== "boolean") {
+      return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "allUnlocked must be true or false");
+    }
+    const updated = settings.update({ challengesAllUnlocked: req.body.allUnlocked });
+    res.json({ success: true, challengesAllUnlocked: updated.challengesAllUnlocked });
   });
 
   router.post("/admin/api/battlepass/actions/reset-defaults", (req, res) => {
@@ -1448,7 +1460,7 @@ export function adminRoutes(context) {
         id: ltm.id,
         name: ltm.name,
         playlistId: ltm.playlistId,
-        code: `Athena${ltm.eventFlag}`,
+        code: `AthenaEvent${ltm.queue}`,
         teamCount: 100,
         teamSize: 4,
         squadSize: 4,

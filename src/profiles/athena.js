@@ -746,23 +746,32 @@ function countedFromResults(stat) {
 
 // An AthenaRank row's condition: the match's place (Athena.Rank <=25) or, from 2.2's "Play matches with a friend"
 // (AthenaDaily_Friend's complete_athena_friend, SquadFriend.Count > 0), how many of the player's friends were in their
-// squad (squadFriends, battleroyale/recordresults).
-const conditionValues = { "athena.rank": "place", "squadfriend.count": "squadFriends" };
+// squad (squadFriends, battleroyale/recordresults), or from 3.0's "Play matches with at least 1 elimination"
+// (complete_athena_with_a_killingblow, Athena.Kills >= 1) the player's eliminations. 3.0's server builds the same
+// variables for a condition (0xE6EE10: Athena.Rank, Athena.Kills and SquadFriend.Count from the player state's Place,
+// KillScore and friends in the squad).
+const conditionValues = { "athena.rank": "place", "athena.kills": "kills", "squadfriend.count": "squadFriends" };
 function conditionMet(condition, values) {
-  const match = /(Athena\.Rank|SquadFriend\.Count)\s*(<=|==|>=|<|>)\s*(\d+)/i.exec(condition ?? "");
+  const match = /(Athena\.Rank|Athena\.Kills|SquadFriend\.Count)\s*(<=|==|>=|<|>)\s*(\d+)/i.exec(condition ?? "");
   if (!match) return true;
   const value = values[conditionValues[match[1].toLowerCase()]] ?? 0;
   const target = Number(match[3]);
   return { "<=": value <= target, "==": value === target, ">=": value >= target, "<": value < target, ">": value > target }[match[2]];
 }
 
+// 3.0's "in a single match" challenges (singleMatch, bAthenaMustCompleteInSingleMatch: "Eliminate 5 players in a single
+// match") keep a match's progress only when the match completes them: the server's quest manager clears the rest
+// (UFortQuestManager::UpdateStatsForSingleMatchQuests, 3.0 0xED1EC0, before its progress is saved). The gameserver holds
+// theirs back the same way (CoreV2), and those counted from the match results here count only a match that reaches the
+// objective's count.
 export function recordMatchProgress(session, playlistId, { place, kills, squadFriends = 0 }) {
   const tag = playlistTagOf(playlistId);
   for (const { itemId, quest } of activeQuests(session.profile("athena"))) {
     for (const objective of quest.objectives) {
       const row = countedFromResults(objective.stat) && athenaObjectiveStat(objective.stat);
       if (!row || !tagMatches(row.contextTags, tag)) continue;
-      const count = row.type === "AthenaRank" ? (conditionMet(row.condition, { place, squadFriends }) ? 1 : 0) : kills;
+      let count = row.type === "AthenaRank" ? (conditionMet(row.condition, { place, kills, squadFriends }) ? 1 : 0) : kills;
+      if (quest.singleMatch && count < objective.count) count = 0;
       if (count > 0 && session.profile("athena").profile.items[itemId]?.attributes.quest_state === "Active") addProgress(session, itemId, objective, count);
     }
   }
