@@ -238,7 +238,10 @@ function rollMissions({ data, fixedMissions }, day, availableUntil) {
 // Miniboss Alerts in Stonewood, 6 in other locations. | Quota: 3 per day." Its storms are its StormLowCategory rows
 // (EventFlag.PassiveStorms, quota 4, the zone's reagents), its Mini-Bosses its General rows (EventFlag.PassiveMiniBosses,
 // quota 3, the Mini-Boss modifier on the General alerts' V-Bucks and reagents), each theater placing up to its target of
-// each, as 2.3's targets were read (passiveStormTargets, passiveMiniBossTargets).
+// each, as 2.3's targets were read (passiveStormTargets, passiveMiniBossTargets). The quotas are the data's, not Core's:
+// 2.5's and 3.0's MissionAlertCategories give StormLowCategory Quota 4 and GeneralCategory Quota 3, the General row
+// tagged Stat.MissionAlert.MiniBoss and MissionAlert.Visual.Miniboss (profiles/alerts.js enforces them). The targets are
+// the notes' (Epic's servers placed the alerts). Like 2.3 to 2.4.2's storms, they are placed once a UTC day.
 const halloweenAlerts = "Halloween2017_MissionAlert";
 const stormTier = (tier) => (tier <= 5 ? 1 : tier <= 10 ? 2 : tier <= 15 ? 3 : 4);
 const zones = ["Stonewood", "Plankerton", "CanneyValley", "TwinePeaks"];

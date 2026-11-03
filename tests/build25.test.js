@@ -20,6 +20,7 @@ import { getItem } from "../src/gamedata/items.js";
 import { dataBuild } from "../src/gamedata/read.js";
 import { missionAlertCategory } from "../src/gamedata/world.js";
 import { assignmentBucket, showsMatchStart } from "../src/matchmaking/service.js";
+import { completeMissionAlert } from "../src/profiles/alerts.js";
 import { findItem } from "../src/profiles/items.js";
 import { grant } from "../src/profiles/progress.js";
 import { buildOfSeason } from "../src/profiles/seasons.js";
@@ -122,6 +123,25 @@ test("2.5's map holds up to 3 passive storms in Stonewood and 10 elsewhere, and 
   assert.equal(missionAlertCategory("StormLowCategory").quota, 4);
   assert.equal(missionAlertCategory("GeneralCategory").quota, 3);
 }));
+
+// The quotas are 2.5's and 3.0's MissionAlertCategories rows (StormLowCategory Quota 4; GeneralCategory Quota 3, tagged
+// Stat.MissionAlert.MiniBoss and MissionAlert.Visual.Miniboss): a player's alert rewards stop at 4 storms and 3
+// Mini-Bosses a day, and none of them is an event ticket.
+for (const build of [v25, "3901517"]) {
+  test(`${build}'s storm and Mini-Boss alerts reward up to 4 and 3 a day, with no event tickets`, () => withStore((store) => inBuild(build, () => {
+    const info = worldInfo(now);
+    const alerts = info.missionAlerts.flatMap(({ theaterId, availableMissionAlerts }) =>
+      availableMissionAlerts.map((alert) => ({ theaterId, alert })));
+    const tickets = [stormTickets, firecrackerTickets, "AccountResource:eventcurrency_snowballs"];
+    assert.ok(alerts.every(({ alert }) => alert.missionAlertRewards.items.every(({ itemType }) => !tickets.includes(itemType))));
+    const session = openSession(store, `quota${build}`);
+    for (const [category, quota] of [["StormLowCategory", 4], ["GeneralCategory", 3]]) {
+      const ofCategory = alerts.filter(({ alert }) => alert.categoryName === category);
+      const done = ofCategory.slice(0, quota + 1).map(({ theaterId, alert }) => completeMissionAlert(session, theaterId, alert, now));
+      assert.deepEqual(done, [...Array(quota).fill(true), false], category);
+    }
+  })));
+}
 
 test("2.5 sells the Spring Llama for 1,000 Firecracker Tickets, no Storm Llama, and Upgrade Llamas give Firecracker Tickets", () => withStore((store) => {
   const llama = inBuild(v25, () => findOffer("core_event_spring_llama", now));
