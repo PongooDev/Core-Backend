@@ -40,8 +40,9 @@ const matchOptions = { "match.option.warmupRequiredPlayerCount": "1" };
 // Duo 10 100 of 2, Squad 9 100 of 4, and 1.10's 50v50, 11, two teams of 50 in squads of 4. Playlists 0 (1×4), 1 (2×5) and
 // 99 (1×1) aren't Battle Royale's; 1.10's 12 to 15 (AthenaEvent1-4, 100×4) have no playlist asset and nothing queues them
 // there. From 1.11 the lobby queues the event playlists while the calendar offers them (events/ltms.js): 12 Sneaky
-// Silencers, 13 High Explosives and 18 Sniper Shootout keep the server's 100 teams of 4 (2.4.2 0x7F3790 gives 12 to 19
-// that), and 15, Shooting Test #1, is the build's (playlistTeamsOf).
+// Silencers, 13 High Explosives, 14 Speedy Storm, 16 Take To The Skies, 17 Lotsa Loot, 18 Sniper Shootout and 19 Blitz
+// keep the server's 100 teams of 4 (2.4.2 0x7F3790 gives 12 to 19 that), and 15, Shooting Test #1, is the build's
+// (playlistTeamsOf).
 const playlistTeams = {
   0: { maxTeamCount: 1, maxTeamSize: 4, maxSquadSize: 4 },
   1: { maxTeamCount: 2, maxTeamSize: 5, maxSquadSize: 5 },
@@ -51,7 +52,11 @@ const playlistTeams = {
   11: { maxTeamCount: 2, maxTeamSize: 50, maxSquadSize: 4 },
   12: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
   13: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  14: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  16: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  17: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
   18: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  19: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
   99: { maxTeamCount: 1, maxTeamSize: 1, maxSquadSize: 1 }
 };
 // Late joining (Core-Backend #122, the admin panel's Matchmaking settings). The servers' MMS client (1.9

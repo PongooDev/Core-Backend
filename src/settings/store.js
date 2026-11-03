@@ -7,6 +7,11 @@ import { defaultContentUpdates, sanitizeContentUpdates } from "../events/content
 import { regionList } from "../matchmaking/regions.js";
 import { allowedBuildList } from "../builds/allowed.js";
 
+// The Battle Royale modes a region's server limits (serverLimits) count, each 0 (no limit) by default.
+const limitModes = ["solo", "duo", "squad", "fiftyFifty", "shootingTest", "highExplosives", "sneakySilencers", "sniperShootout",
+  "speedyStorm", "takeToTheSkies", "lotsaLoot", "blitz"];
+const noLimits = () => Object.fromEntries(limitModes.map((mode) => [mode, 0]));
+
 const defaults = {
   requirePassword: false,
   allowRegistration: true,
@@ -95,18 +100,17 @@ const defaults = {
     shootingTest: false,
     highExplosives: false,
     sneakySilencers: false,
-    sniperShootout: false
+    sniperShootout: false,
+    // The event queues Epic never ran in Seasons 1 and 2 (Core-Backend #191), off too.
+    speedyStorm: false,
+    takeToTheSkies: false,
+    lotsaLoot: false,
+    blitz: false
   },
   // The LTMs' original dates (Core-Backend #190, events/ltms.js): on, each runs only in its original window on the
   // season's replay and on the builds Epic ran it on, whatever matchmakingModes says of it.
   ltmOriginalDates: false,
-  serverLimits: {
-    NA: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0, highExplosives: 0, sneakySilencers: 0, sniperShootout: 0 },
-    EU: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0, highExplosives: 0, sneakySilencers: 0, sniperShootout: 0 },
-    OCE: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0, highExplosives: 0, sneakySilencers: 0, sniperShootout: 0 },
-    BR: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0, highExplosives: 0, sneakySilencers: 0, sniperShootout: 0 },
-    ASIA: { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0, highExplosives: 0, sneakySilencers: 0, sniperShootout: 0 }
-  }
+  serverLimits: { NA: noLimits(), EU: noLimits(), OCE: noLimits(), BR: noLimits(), ASIA: noLimits() }
 };
 
 export const defaultMatchmakingModes = defaults.matchmakingModes;
@@ -122,7 +126,9 @@ export function sanitizeMatchmakingModes(input, current = defaultMatchmakingMode
     shootingTest: typeof input.shootingTest === "boolean" ? input.shootingTest : (current.shootingTest === true),
     highExplosives: typeof input.highExplosives === "boolean" ? input.highExplosives : (current.highExplosives === true),
     sneakySilencers: typeof input.sneakySilencers === "boolean" ? input.sneakySilencers : (current.sneakySilencers === true),
-    sniperShootout: typeof input.sniperShootout === "boolean" ? input.sniperShootout : (current.sniperShootout === true)
+    sniperShootout: typeof input.sniperShootout === "boolean" ? input.sniperShootout : (current.sniperShootout === true),
+    ...Object.fromEntries(["speedyStorm", "takeToTheSkies", "lotsaLoot", "blitz"].map((id) =>
+      [id, typeof input[id] === "boolean" ? input[id] : (current[id] === true)]))
   };
 }
 
@@ -130,11 +136,10 @@ export function sanitizeServerLimits(input, current = defaultServerLimits) {
   if (!input || typeof input !== "object" || Array.isArray(input)) return JSON.parse(JSON.stringify(current));
   const result = JSON.parse(JSON.stringify(current));
   const regions = ["NA", "EU", "OCE", "BR", "ASIA"];
-  const modes = ["solo", "duo", "squad", "fiftyFifty", "shootingTest", "highExplosives", "sneakySilencers", "sniperShootout"];
   for (const r of regions) {
     if (input[r] && typeof input[r] === "object" && !Array.isArray(input[r])) {
-      result[r] = result[r] || { solo: 0, duo: 0, squad: 0, fiftyFifty: 0, shootingTest: 0, highExplosives: 0, sneakySilencers: 0, sniperShootout: 0 };
-      for (const m of modes) {
+      result[r] = result[r] || noLimits();
+      for (const m of limitModes) {
         if (input[r][m] !== undefined) {
           const val = Number(input[r][m]);
           result[r][m] = (Number.isInteger(val) && val >= 0 && val <= 1000) ? val : 0;

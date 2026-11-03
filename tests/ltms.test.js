@@ -86,6 +86,31 @@ test("original dates: each LTM runs only in its window on its season's replay, o
   assert.deepEqual(schedule.list.find((ltm) => ltm.id === "fiftyFifty").seasons, [1, 2]);
 });
 
+// Core-Backend #191: the event queues Epic never ran in Seasons 1 and 2.
+test("Speedy Storm, Take To The Skies, Lotsa Loot and Blitz: their builds, squads, off by default, no original dates", () => {
+  const queues = { speedyStorm: ["Event3", 14], takeToTheSkies: ["Event5", 16], lotsaLoot: ["Event6", 17], blitz: ["Event8", 19] };
+  for (const [id, [flag, playlist]] of Object.entries(queues)) {
+    const from = id === "blitz" ? v242 : v21;
+    assert.deepEqual([v111, v21, v23, v24, v242, v25, "3901517"].map((build) => hasLtm(id, build)),
+      [v111, v21, v23, v24, v242, v25].map((build) => Number(build) >= Number(from)).concat(false), id);
+    assert.equal(ltmOn(id, v25, { matchmakingModes: {} }), false, id);
+    assert.equal(ltmOn(id, v25, { matchmakingModes: { [id]: true } }), true, id);
+    assert.deepEqual(ltmEventFlags(v25, { matchmakingModes: { [id]: true } }), [flag], id);
+    assert.deepEqual(playlistTeamsOf(`${v25}:0:NA:${playlist}`), { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }, id);
+    // With Original dates on they stay off, whatever their switch and the day.
+    for (const day of ["2017-12-28", "2018-01-30", "2018-02-10", "2018-03-20"]) {
+      assert.equal(inOriginalWindow(id, v25, at(day)), false, `${id} ${day}`);
+      assert.equal(ltmOn(id, v25, { ltmOriginalDates: true, matchmakingModes: { [id]: true } }, at(day)), false, `${id} ${day}`);
+    }
+    const listed = ltmSchedule({ matchmakingModes: { [id]: true } }, at("2018-01-30")).list.find((ltm) => ltm.id === id);
+    assert.equal(listed.original, null, id);
+    assert.deepEqual(listed.inWindow, { 2: false }, id);
+    assert.equal(listed.enabled, true, id);
+  }
+  assert.equal(hasLtm("blitz", v24), false);
+  assert.equal(ltmSchedule({}).list.find((ltm) => ltm.id === "speedyStorm").builds, "2.1 to 2.5");
+});
+
 test("the admin panel's switches and original dates offer the LTMs through the calendar and let their tickets through", async () => {
   // Season 2's replay standing at 30 January 2018: its day 1 is 47 days ago.
   const start = new Date(Date.now() - 47 * 86400000).toISOString().slice(0, 10);

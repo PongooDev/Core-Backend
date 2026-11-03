@@ -40,7 +40,7 @@ import { contentUpdateStates, defaultContentUpdates } from "../events/contentupd
 import { cosmeticRarity, cosmeticType, eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, seasonEnd, seasonMoment, seasonStart, shopDay, soldCosmeticIds, weeklyStoreEnd, withoutSeasonStartRecording } from "../store/itemshop.js";
 import { activeEventFlags, fortnitemares, mutantStorms } from "../events/events.js";
 import { convertLeftoverCandy } from "../events/candyllamas.js";
-import { ltmIds, ltmSchedule, ltms } from "../events/ltms.js";
+import { ltmIds, ltmSchedule } from "../events/ltms.js";
 import { convertLeftoverStormTickets } from "../events/stormllamas.js";
 import { defaultEvents, defaultMatchmakingModes, defaultServerLimits } from "../settings/store.js";
 import { calendarCacheMinutes } from "../services/fortnite/calendar.js";
@@ -1339,6 +1339,8 @@ export function adminRoutes(context) {
     const modes = s.matchmakingModes ?? defaultMatchmakingModes;
     const serverLimits = s.serverLimits ?? defaultServerLimits;
     const sessionList = (sessions?.list?.() ?? []).map((session) => sessionSummary(session));
+    // The LTMs by season, their original dates and whether those hold now (Core-Backend #190, #191).
+    const schedule = withoutSeasonStartRecording(() => ltmSchedule(s, new Date()));
 
     const regions = ["NA", "EU", "OCE", "BR", "ASIA"];
     const modeKeys = ["solo", "duo", "squad", ...ltmIds];
@@ -1414,7 +1416,8 @@ export function adminRoutes(context) {
         enabled: modes.shootingTest === true,
         description: "Limited-time mode of 2.4 to 2.5: weapon accuracy for a more precise aim (first-shot accuracy, less headshot damage, damage fall-off). Solo from 2.4.2, squads on 2.4. Off by default."
       },
-      ...ltms.filter((ltm) => ltm.id !== "fiftyFifty" && ltm.id !== "shootingTest").map((ltm) => ({
+      // The other event queues (Core-Backend #190, #191), squads of the builds whose data has them.
+      ...schedule.list.filter((ltm) => ltm.id !== "fiftyFifty" && ltm.id !== "shootingTest").map((ltm) => ({
         id: ltm.id,
         name: ltm.name,
         playlistId: ltm.playlistId,
@@ -1424,7 +1427,7 @@ export function adminRoutes(context) {
         squadSize: 4,
         maxPlayers: 100,
         enabled: modes[ltm.id] === true,
-        description: `Limited-time mode of 1.11 to 2.5: ${ltm.description} Off by default.`
+        description: `Limited-time mode of ${ltm.builds}: ${ltm.description} Off by default.`
       }))
     ];
 
@@ -1446,8 +1449,7 @@ export function adminRoutes(context) {
         modes: s.battleRoyaleRewards ?? {}
       },
       playlists,
-      // The LTMs by season, their original dates and whether those hold now (Core-Backend #190).
-      ltms: withoutSeasonStartRecording(() => ltmSchedule(s, new Date())),
+      ltms: schedule,
       // The players with the Custom Matchmaking permission (#186).
       customMatchmaking: accounts.list().filter((account) => account.customMatchmaking === true)
         .map(({ id, displayName }) => ({ id, displayName })).sort((a, b) => a.displayName.localeCompare(b.displayName)),
