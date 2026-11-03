@@ -4,6 +4,7 @@ import { isDedicatedServerToken } from "../../accounts/clients.js";
 import { sendError } from "../../errors.js";
 import { zoneOutpost } from "../../gamedata/world.js";
 import { log } from "../../log.js";
+import { difficultyIncreaseMissionRewards } from "../../profiles/difficultyincrease.js";
 import { outpostDifficulty } from "../../profiles/outposts.js";
 import { openSession } from "../../profiles/session.js";
 import { sessionMission } from "../mcp/commands/server.js";
@@ -71,6 +72,8 @@ export function worldRoutes({ tokens, sessions, profiles }) {
       missionGenerator: mission.missionGenerator,
       zoneDifficultyInfo,
       missionRewards: mission.missionRewards,
+      // 3.0's FFortZoneInstanceDetails carries what each BluGlo Difficulty Pylon tier gives (older builds ignore it).
+      difficultyIncreaseMissionRewards: difficultyIncreaseMissionRewards(mission.missionRewards),
       ...alertDetails(mission),
       tileIndex: mission.tileIndex
     });

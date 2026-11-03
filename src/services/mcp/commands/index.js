@@ -3,6 +3,7 @@ import { assignWorkerToSquad } from "./AssignWorkerToSquad.js";
 import { assignWorkerToSquadBatch } from "./AssignWorkerToSquadBatch.js";
 import { bulkEquipBattleRoyaleCustomization } from "./BulkEquipBattleRoyaleCustomization.js";
 import { claimCollectedResources } from "./ClaimCollectedResources.js";
+import { claimDifficultyIncreaseRewards } from "./ClaimDifficultyIncreaseRewards.js";
 import { claimLoginReward } from "./ClaimLoginReward.js";
 import { claimMissionAlertRewards } from "./ClaimMissionAlertRewards.js";
 import { claimQuestReward } from "./ClaimQuestReward.js";
@@ -54,6 +55,7 @@ export const clientCommands = {
   ClaimCollectionBookPageRewards: claimCollectionBookPageRewards,
   ClaimCollectionBookRewards: claimCollectionBookRewards,
   ClaimCollectedResources: claimCollectedResources,
+  ClaimDifficultyIncreaseRewards: claimDifficultyIncreaseRewards,
   ClaimLoginReward: claimLoginReward,
   ClaimMissionAlertRewards: claimMissionAlertRewards,
   ClaimQuestReward: claimQuestReward,

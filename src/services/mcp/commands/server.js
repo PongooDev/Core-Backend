@@ -3,6 +3,7 @@ import { McpError } from "../../../errors.js";
 import { log } from "../../../log.js";
 import { getDifficulty } from "../../../gamedata/world.js";
 import { completeMissionAlert } from "../../../profiles/alerts.js";
+import { addDifficultyIncreaseRewards } from "../../../profiles/difficultyincrease.js";
 import { advanceAthenaObjectives } from "../../../profiles/athena.js";
 import { grantBadgeRewards } from "../../../profiles/badges.js";
 import { abortDisintegration, depositPostResources, disintegrateItems, fabricateItem } from "../../../profiles/fabricator.js";
@@ -235,8 +236,11 @@ export const serverCommands = {
   // The reward chest's level (missionLootLevel, from numMissionPoints) multiplies the mission's rewards 🟡: how Epic scaled
   // them by chest level was its server's data, which didn't ship, so a level 4 chest gives four times a level 1's
   // (Core-Backend #53).
+  // difficultyIncreaseTier (3.0's EndPrimaryMission; the BluGlo Difficulty Pylon's AFortGameStateZone
+  // DifficultyIncreaseRewardTier, 0 when it wasn't used) puts that tier's rewards in the player's pending difficulty
+  // increase rewards when the mission succeeded (profiles/difficultyincrease.js).
   EndPrimaryMission({ req, session, context, notifications }) {
-    const { advance: updates, missionStatus, matchmakingSessionId, missionName, earnedBadgeData, numMissionPoints } = req.body ?? {};
+    const { advance: updates, missionStatus, matchmakingSessionId, missionName, earnedBadgeData, numMissionPoints, difficultyIncreaseTier } = req.body ?? {};
     const held = context.primaryMissions.end(req.params.accountId) ?? heldProgress();
     advance(session, updates, held);
     if (!context.heldScores?.hasEarnScore(req.params.accountId)) notifications.push({ type: "earnScore", primary: false, ...noXpEarned });
@@ -256,6 +260,11 @@ export const serverCommands = {
     log("MCP", `EndPrimaryMission: ${missionName} rewards at loot level ${lootLevel} (${Number(numMissionPoints) || 0} mission points)`);
     for (const { itemType, quantity } of mission.missionRewards.items) grant(session, itemType, quantity * lootLevel, { packSource });
     if (mission.missionAlert) completeMissionAlert(session, mission.theaterId, mission.missionAlert);
+    const raised = addDifficultyIncreaseRewards(session, Number(difficultyIncreaseTier), mission.missionRewards);
+    if (raised) {
+      log("MCP", `EndPrimaryMission: difficulty increase tier ${raised.difficultyIncreaseTier} rewards pending (${raised.difficultyIncreaseMissionRewards.items
+        .map(({ itemType, quantity }) => `${itemType} x${quantity}`).join(", ") || "none"})`);
+    }
   },
 
   // One call for every player in the match: [{accountId, totalScore, bCriticalMatchBonus}] (FAccountIdAndScore).

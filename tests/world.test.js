@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readGameData } from "../src/gamedata/read.js";
+import { difficultyIncreaseMissionRewards } from "../src/profiles/difficultyincrease.js";
 import { missionMeets, missionObjectives } from "../src/world/quests.js";
 import { worldInfo } from "../src/world/theaters.js";
 import { clientToken, get, post, startBackend, userLogin } from "./helpers.js";
@@ -125,6 +126,7 @@ test("world/validate gives the gameserver the zone it posts, as FFortZoneInstanc
       missionGenerator: mission.missionGenerator,
       zoneDifficultyInfo: mission.missionDifficultyInfo,
       missionRewards: mission.missionRewards,
+      difficultyIncreaseMissionRewards: difficultyIncreaseMissionRewards(mission.missionRewards),
       missionAlertRewards: { tierGroupName: "", items: [] },
       zoneModifiers: { tierGroupName: "", items: [] },
       missionAlertCategoryName: "",
