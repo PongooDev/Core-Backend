@@ -4,7 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { createFrameParser, encodeFrame } from "../src/stomp/service.js";
-import { matchVbucks } from "../src/services/fortnite/battleroyale.js";
+import { matchVbucks, questKillsOf } from "../src/services/fortnite/battleroyale.js";
 import { dedicatedServerToken, get, post, startBackend, userLogin } from "./helpers.js";
 
 // Core-Backend #100, #124: V-Bucks for Battle Royale kills, wins and placements in solo, duos, squads and 1.10's 50v50 (#135), off unless the
@@ -217,4 +217,12 @@ test("a settings.json from before per-mode rewards keeps #100's amounts where th
       fs.rmSync(dataDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
     }
   }
+});
+
+test("player bot eliminations (CoreV2 #233) leave the kill challenges only with the setting off", () => {
+  assert.equal(questKillsOf({ bots: { eliminationsCountForQuests: true } }, 5, 3), 5);
+  assert.equal(questKillsOf({}, 5, 3), 5, "on by default");
+  assert.equal(questKillsOf({ bots: { eliminationsCountForQuests: false } }, 5, 3), 2);
+  assert.equal(questKillsOf({ bots: { eliminationsCountForQuests: false } }, 2, 9), 0, "never below 0");
+  assert.equal(questKillsOf({ bots: { eliminationsCountForQuests: false } }, 4, undefined), 4, "a report without botKills");
 });

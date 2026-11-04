@@ -30,7 +30,7 @@ import { currentBattlePassConfig } from "../../battlepass/season1.js";
 // - recordwin: POST {playlistId, accountIds}, the winners at the end of the match (OnRecordWinnerComplete, 0x3F4950,
 //   request 0x72E130): a win (br_placetop1) each.
 // - recordresults: Core's (CoreV2's server; the 1.7.2 server reports nothing else), POST {playlistId, results:
-//   [{accountId, place, kills, secondsAlive}], countWins, matchId}, when a team is out of the match or has won: its
+//   [{accountId, place, kills, botKills, secondsAlive}], countWins, matchId}, when a team is out of the match or has won: its
 //   players' match, place, kills and time alive. 1.8 has neither winners nor recordwin (Core-Backend #81: no
 //   "battleroyale/recordwin" in its exe), so CoreV2 sends countWins: true from a build without it and a place 1 there
 //   is the win too; without countWins (1.7.2, or a CoreV2 from before) recordwin counts it, so a win isn't counted
@@ -59,6 +59,15 @@ import { currentBattlePassConfig } from "../../battlepass/season1.js";
 // replay of a report weeks later isn't something a gameserver does.
 const rewardedMatchMs = 30 * 24 * 60 * 60 * 1000;
 const matchIdPattern = /^[A-Za-z0-9_-]{1,64}$/;
+
+// The kills a result's challenges count: the player bots among them (CoreV2 #233's botKills) are left out when the admin
+// panel's "bot eliminations count for quests" is off (settings.bots.eliminationsCountForQuests); stats, XP and V-Bucks
+// keep every kill.
+export function questKillsOf(settings, kills, botKills) {
+  if (settings?.bots?.eliminationsCountForQuests !== false) return kills;
+  const bots = Number.isInteger(botKills) && botKills > 0 ? Math.min(botKills, kills) : 0;
+  return kills - bots;
+}
 
 // What a result earns in its playlist's mode (settings.battleRoyaleRewards): its kills, its win and its best placement
 // tier; nothing in a playlist that isn't one of the modes.
@@ -192,6 +201,7 @@ export function battleRoyaleRoutes(context) {
       const place = count(result?.place, 1000);
       const kills = count(result?.kills, 1000);
       const secondsAlive = count(result?.secondsAlive, 24 * 60 * 60);
+      const questKills = kills === null ? null : questKillsOf(rewards, kills, result?.botKills);
       if (!place || kills === null || secondsAlive === null || !recordable(req, result.accountId)) {
         log("Battle Royale", `Result skipped: ${JSON.stringify(result)}`);
         continue;
@@ -212,7 +222,7 @@ export function battleRoyaleRoutes(context) {
         // The match's XP and challenges count in its build's season, whichever lobby opened the profile last.
         takeUpSeason(session);
         const before = progressOf(session);
-        recordMatchProgress(session, playlistId, { place, kills, squadFriends: squadFriendsOf(playlistId, results, result.accountId, place) });
+        recordMatchProgress(session, playlistId, { place, kills: questKills, squadFriends: squadFriendsOf(playlistId, results, result.accountId, place) });
         // 1.11's Battle Pass adds its match XP boost (profiles/seasons.js).
         const seasonXp = boostedMatchXp(session, earnedXp);
         addSeasonXp(session, seasonXp);
