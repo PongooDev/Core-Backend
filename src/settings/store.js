@@ -4,7 +4,8 @@ import { readJson, writeJson } from "../json-file.js";
 import { defaultHostingIps, hostingIp, hostingIps } from "../network.js";
 import { defaultBattlePass, sanitizeBattlePass } from "../battlepass/season1.js";
 import { defaultContentUpdates, sanitizeContentUpdates } from "../events/contentupdates.js";
-import { regionList } from "../matchmaking/regions.js";
+import { regionHostingIps, regionList } from "../matchmaking/regions.js";
+import { customMatchServers } from "../matchmaking/custom-servers.js";
 import { allowedBuildList } from "../builds/allowed.js";
 
 // The Battle Royale modes a region's server limits (serverLimits) count, each 0 (no limit) by default.
@@ -65,6 +66,14 @@ const defaults = {
   // Trusted Hosting IPs (Core-Backend #125, network.js allowsHosting): other PCs whose gameservers may host for this
   // backend, each an IP address. This PC (loopback) always may; nobody else unless listed.
   allowedHostingIps: defaultHostingIps,
+  // Each region's hosting IPs (Core-Backend #227, matchmaking/regions.js regionAllowsAddress): { EU: ["203.0.113.0/24"] },
+  // the IPs and CIDR ranges a gameserver hosting for the region must come from. A region left out takes any IP.
+  regionHostingIps: {},
+  // Custom matchmaking servers (#227, matchmaking/custom-servers.js): [{ address, keys, accounts }], gameservers kept for
+  // custom matchmaking keys' matches and never used for public ones. customMatchFallback: whether a custom match with
+  // servers of its own plays on a public server when none of its own is free (off: it waits for one).
+  customMatchServers: [],
+  customMatchFallback: false,
   // The builds that may use this backend (Core-Backend #164, builds/allowed.js): null for all of them, else their
   // changelists and "other" for builds Core doesn't know. A refused build's version check answers HARD_UPDATE, and its
   // logins and matchmaking tickets are refused; gameservers are exempt.
@@ -498,6 +507,9 @@ export function createSettingsStore(dataDir) {
       settings.serverRegions = regionList(loaded.serverRegions ?? loaded.serverRegion) ?? [];
       delete settings.serverRegion;
       settings.allowedHostingIps = hostingIps(loaded.allowedHostingIps) ?? [...defaults.allowedHostingIps];
+      settings.regionHostingIps = regionHostingIps(loaded.regionHostingIps) ?? {};
+      settings.customMatchServers = customMatchServers(loaded.customMatchServers) ?? [];
+      settings.customMatchFallback = loaded.customMatchFallback === true;
       settings.allowedBuilds = allowedBuildList(loaded.allowedBuilds) ?? null;
       if (loaded.battleRoyaleNews && typeof loaded.battleRoyaleNews === "object") {
         settings.battleRoyaleNews = {
@@ -559,6 +571,9 @@ export function createSettingsStore(dataDir) {
         defaultFoundersAccess: settings.defaultFoundersAccess !== false,
         remoteAdmin: settings.remoteAdmin === true,
         allowedHostingIps: [...(settings.allowedHostingIps ?? defaults.allowedHostingIps)],
+        regionHostingIps: JSON.parse(JSON.stringify(settings.regionHostingIps ?? {})),
+        customMatchServers: JSON.parse(JSON.stringify(settings.customMatchServers ?? [])),
+        customMatchFallback: settings.customMatchFallback === true,
         allowedBuilds: settings.allowedBuilds ? [...settings.allowedBuilds] : null,
         structureLimits: { ...settings.structureLimits },
         battleRoyaleRewards: JSON.parse(JSON.stringify(settings.battleRoyaleRewards)),
@@ -640,6 +655,9 @@ export function createSettingsStore(dataDir) {
         settings.serverLimits = sanitizeServerLimits(partial.serverLimits, settings.serverLimits);
       }
       settings.allowedHostingIps = hostingIps(partial.allowedHostingIps) ?? settings.allowedHostingIps;
+      settings.regionHostingIps = regionHostingIps(partial.regionHostingIps) ?? settings.regionHostingIps;
+      settings.customMatchServers = customMatchServers(partial.customMatchServers) ?? settings.customMatchServers;
+      if (typeof partial.customMatchFallback === "boolean") settings.customMatchFallback = partial.customMatchFallback;
       const builds = allowedBuildList(partial.allowedBuilds);
       if (partial.allowedBuilds !== undefined && builds !== undefined) settings.allowedBuilds = builds;
       if (partial.battleRoyaleNews && typeof partial.battleRoyaleNews === "object") {

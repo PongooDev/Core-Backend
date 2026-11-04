@@ -1072,3 +1072,138 @@ test("the warmup answer carries the player bots to add when Force player AIs is 
     backend.close();
   }
 });
+
+// Core-Backend #227: each region's hosting IPs and the custom matchmaking servers. The backend's reverse proxy mode
+// stands in for gameservers on other IPs: each request names its server's IP in X-Forwarded-For.
+const mmConfig = (backend, body) => post(backend.port, "/admin/api/matchmaking/config", undefined, body);
+const behindProxy = (backend, on) => post(backend.port, "/admin/api/network", undefined, { behindProxy: on });
+function proxied(backend, method, path, token, ip, body) {
+  const headers = { "User-Agent": certUserAgent, Authorization: `bearer ${token}` };
+  if (ip) headers["X-Forwarded-For"] = ip;
+  if (body !== undefined) headers["Content-Type"] = "application/json";
+  return send({ host: "127.0.0.1", port: backend.port, method, path, headers }, body === undefined ? undefined : JSON.stringify(body));
+}
+const sessionBody = (server, name, region) => ({ ownerId: server.accountId, ownerName: name, serverName: name, serverAddress: "127.0.0.1", serverPort: 7777,
+  maxPublicPlayers: 100, maxPrivatePlayers: 0, buildUniqueId: "858118782", attributes: { GAMEMODE_s: "FORTATHENA", REGION_s: region } });
+// A Battle Royale server at ip (none: this PC) in a region, registered with the matchmaking service.
+async function serverAt(backend, name, region, ip) {
+  const server = await userLogin(backend.port, name);
+  const created = await proxied(backend, "POST", "/fortnite/api/matchmaking/session", server.token, ip, sessionBody(server, name, region));
+  assert.equal(created.status, 200, JSON.stringify(created.body));
+  const patterns = encodeURIComponent(`858118782:0:${region}:*,858118782:0:${region}:*:*:*`);
+  const ticket = await proxied(backend, "GET", `/fortnite/api/game/v2/matchmakingservice/ticket/session/${created.body.id}?bucketIds=${patterns}&minPlayers=1&maxPlayers=100`, server.token, ip);
+  assert.equal(ticket.status, 200, JSON.stringify(ticket.body));
+  const connection = await matchmakingClient(backend.port, authorizationOf(ticket.body));
+  assert.equal(JSON.parse(await connection.next()).name, "Registered");
+  return { ...server, session: created.body, connection };
+}
+
+test("a region's hosting IPs: a server from another IP is refused for it, through the proxy only in proxy mode (#227)", async () => {
+  const backend = await startBackend();
+  try {
+    // Anything but IP addresses and CIDR ranges, or an unknown region, is refused.
+    assert.equal((await mmConfig(backend, { regionHostingIps: { EU: ["eu.example.com"] } })).status, 400);
+    assert.equal((await mmConfig(backend, { regionHostingIps: { MARS: ["203.0.113.0/24"] } })).status, 400);
+    assert.equal((await mmConfig(backend, { regionHostingIps: { EU: "203.0.113.0/24" } })).status, 400);
+    const saved = await mmConfig(backend, { regionHostingIps: { EU: ["203.0.113.0/24"] } });
+    assert.equal(saved.status, 200);
+    assert.deepEqual(saved.body.regionHostingIps, { EU: ["203.0.113.0/24"] });
+
+    // This PC (127.0.0.1) isn't one of EU's: its EU server is refused, its NA one (no IPs listed) isn't.
+    const local = await userLogin(backend.port, "CoreServer1");
+    const refused = await proxied(backend, "POST", "/fortnite/api/matchmaking/session", local.token, null, sessionBody(local, "CoreServer1", "gb"));
+    assert.equal(refused.status, 403);
+    assert.match(refused.body.errorMessage, /can't host for EU/);
+    // The header is the client's to write while the backend isn't behind a proxy: it changes nothing.
+    assert.equal((await proxied(backend, "POST", "/fortnite/api/matchmaking/session", local.token, "203.0.113.5", sessionBody(local, "CoreServer1", "EU"))).status, 403);
+    const na = await proxied(backend, "POST", "/fortnite/api/matchmaking/session", local.token, null, sessionBody(local, "CoreServer1", "NA"));
+    assert.equal(na.status, 200);
+    // Moved to EU, it is refused too.
+    const moved = await proxied(backend, "PUT", `/fortnite/api/matchmaking/session/${na.body.id}`, local.token, null, { attributes: { REGION_s: "EU" } });
+    assert.equal(moved.status, 403);
+
+    // Behind a proxy, the IP the proxy names: a Trusted Hosting IP in EU's range hosts for EU, one outside it doesn't.
+    assert.equal((await behindProxy(backend, true)).body.behindProxy, true);
+    await settingsOf(backend, { allowedHostingIps: ["127.0.0.1", "::1", "203.0.113.5", "198.51.100.9"] });
+    const eu = await serverAt(backend, "CoreServer2", "EU", "203.0.113.5");
+    eu.connection.close();
+    const outsider = await userLogin(backend.port, "CoreServer3");
+    assert.equal((await proxied(backend, "POST", "/fortnite/api/matchmaking/session", outsider.token, "198.51.100.9", sessionBody(outsider, "CoreServer3", "EU"))).status, 403);
+
+    // A region's IPs listed after its server registered: its matchmaking ticket is refused.
+    await mmConfig(backend, { regionHostingIps: { EU: ["203.0.113.0/24"], NA: ["192.0.2.0/24"] } });
+    const patterns = encodeURIComponent("858118782:0:NA:*");
+    const ticket = await proxied(backend, "GET", `/fortnite/api/game/v2/matchmakingservice/ticket/session/${na.body.id}?bucketIds=${patterns}&minPlayers=1&maxPlayers=100`, local.token, null);
+    assert.equal(ticket.status, 403);
+    // Emptied, a region takes any IP again.
+    await mmConfig(backend, { regionHostingIps: {} });
+    assert.equal((await proxied(backend, "POST", "/fortnite/api/matchmaking/session", outsider.token, "198.51.100.9", sessionBody(outsider, "CoreServer3", "EU"))).status, 200);
+  } finally {
+    backend.close();
+  }
+});
+
+test("custom matchmaking servers take only custom matches, their own first, public servers only with the fallback (#227)", async () => {
+  const backend = await startBackend({ matchmakingGatherMs: 300 });
+  const connections = [];
+  try {
+    await behindProxy(backend, true);
+    await settingsOf(backend, { allowedHostingIps: ["127.0.0.1", "::1", "203.0.113.5", "198.51.100.9"] });
+    const host = await userLogin(backend.port, "KeptHost");
+    await allowCustomKeys(backend, host);
+    assert.match((await mmConfig(backend, { customMatchServers: [{ address: "203.0.113.5", keys: ["abc"] }] })).body.errorMessage, /between 4 and 16/);
+    assert.match((await mmConfig(backend, { customMatchServers: [{ address: "203.0.113.5", accounts: ["NoSuchPlayer"] }] })).body.errorMessage, /No player named/);
+    const saved = await mmConfig(backend, { customMatchServers: [{ address: "203.0.113.5", keys: ["CoreKey1"], accounts: ["KeptHost"] }] });
+    assert.deepEqual(saved.body.customMatchServers, [{ address: "203.0.113.5", keys: ["CoreKey1"], accounts: [{ id: host.accountId, displayName: "KeptHost" }] }]);
+    assert.equal(saved.body.customMatchFallback, false);
+
+    // The public server registers first, so it comes first in the service's list.
+    const open = await serverAt(backend, "CoreServer1", "NA", "198.51.100.9");
+    const kept = await serverAt(backend, "CoreServer2", "NA", "203.0.113.5");
+    connections.push(open.connection, kept.connection);
+
+    // The custom match goes to its own server, and the public one never does.
+    const publicPlayer = await userLogin(backend.port, "OpenPlayer");
+    const unkeyed = await queueWithKey(backend, publicPlayer, null);
+    connections.push(unkeyed.connection);
+    assert.deepEqual((await nextOf(open.connection, "AssignMatch")).payload.teams.flat(2), [publicPlayer.accountId]);
+    const keyed = await queueWithKey(backend, host, "CoreKey1");
+    connections.push(keyed.connection);
+    const assign = await nextOf(kept.connection, "AssignMatch");
+    assert.equal(assign.payload.matchOptions["match.option.customKey"], "CoreKey1");
+    kept.connection.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: assign.payload.matchId, result: "ready" } }));
+    assert.equal((await nextOf(keyed.connection, "Play")).payload.sessionId, kept.session.id);
+
+    // Its server busy, a match of its key waits for it (no fallback), while one of a key with no server of its own takes a
+    // public server. The host's other key: the entry takes its matches too (the host is listed), so a second public
+    // server is needed to see it.
+    const spare = await serverAt(backend, "CoreServer3", "NA", "198.51.100.9");
+    connections.push(spare.connection);
+    await mmConfig(backend, { customMatchServers: [{ address: "203.0.113.5", keys: ["CoreKey1"] }] });
+    // Another host: the first's own ticket would follow its party to its earlier match.
+    const second = await userLogin(backend.port, "KeptHost2");
+    await allowCustomKeys(backend, second);
+    const waiting = await queueWithKey(backend, second, "CoreKey1");
+    connections.push(waiting.connection);
+    const other = await queueWithKey(backend, host, "OtherKey");
+    connections.push(other.connection);
+    const otherAssign = await nextOf(spare.connection, "AssignMatch");
+    assert.equal(otherAssign.payload.matchOptions["match.option.customKey"], "OtherKey");
+    spare.connection.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: otherAssign.payload.matchId, result: "ready" } }));
+    assert.equal((await nextOf(other.connection, "Play")).payload.sessionId, spare.session.id);
+
+    // CoreKey1's match is still waiting; with the fallback on it takes a public server.
+    const free = await serverAt(backend, "CoreServer4", "NA", "198.51.100.9");
+    connections.push(free.connection);
+    const pending = nextOf(free.connection, "AssignMatch");
+    const quiet = await Promise.race([pending, new Promise((resolve) => setTimeout(() => resolve(null), 1500))]);
+    assert.equal(quiet, null);
+    assert.equal((await mmConfig(backend, { customMatchFallback: true })).body.customMatchFallback, true);
+    const fallback = await pending;
+    assert.equal(fallback.payload.matchOptions["match.option.customKey"], "CoreKey1");
+    assert.deepEqual(fallback.payload.teams.flat(2), [second.accountId]);
+  } finally {
+    for (const connection of connections) connection?.close();
+    backend.close();
+  }
+});

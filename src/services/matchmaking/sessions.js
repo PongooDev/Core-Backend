@@ -3,9 +3,9 @@ import { requireAuth } from "../../accounts/auth.js";
 import { currentBuild } from "../../builds/context.js";
 import { notFound, sendError } from "../../errors.js";
 import { log } from "../../log.js";
-import { regionName, regionOf } from "../../matchmaking/regions.js";
+import { regionAllowsAddress, regionName, regionOf } from "../../matchmaking/regions.js";
 import { managesSession, sessionJson, sessionSummary } from "../../matchmaking/sessions.js";
-import { allowsHosting, defaultHostingIps, isLoopback, normalizeAddress } from "../../network.js";
+import { allowsHosting, defaultHostingIps, isLoopback, normalizeAddress, requestAddress } from "../../network.js";
 
 // OnlineSubsystemMcp's session API, with the verbs the Cert build sends (FOnlineSessionMcp, Session-Plan §5): servers
 // create (POST), update (PUT), heartbeat every 30 s, start, stop (POST), register and unregister players (POST /
@@ -29,9 +29,22 @@ const wantsEmptyServer = (search) => search?.maxCurrentPlayers === 0;
 // by the connection's own address (never a header), and another PC changes only the sessions it registered.
 const hostingIps = (settings) => settings?.get?.().allowedHostingIps ?? defaultHostingIps;
 function notHosting(res, req, what) {
-  log("Matchmaking", `Refused to ${what} for ${normalizeAddress(req.socket.remoteAddress)}: not this PC or a Trusted Hosting IP (admin panel, Settings)`);
+  log("Matchmaking", `Refused to ${what} for ${requestAddress(req)}: not this PC or a Trusted Hosting IP (admin panel, Settings)`);
   sendError(res, 403, "errors.com.epicgames.common.missing_permission",
     `This IP address can't ${what}: add it to the admin panel's Trusted Hosting IPs to host from it`);
+}
+
+// Each region's hosting IPs (Core-Backend #227): a session whose REGION_s is a region with IPs listed (admin panel,
+// Matchmaking, Server Regions) is only registered, or moved to that region, from one of them.
+const regionIps = (settings) => settings?.get?.().regionHostingIps ?? {};
+const regionRefused = (settings, body, address) => {
+  const region = body?.attributes?.REGION_s;
+  return region !== undefined && !regionAllowsAddress(region, address, regionIps(settings)) ? regionOf(region) : null;
+};
+export function notRegionHost(res, address, region, what) {
+  log("Matchmaking", `Refused to ${what} for ${normalizeAddress(address)} in ${region}: not one of ${region}'s hosting IPs (admin panel, Matchmaking, Server Regions)`);
+  sendError(res, 403, "errors.com.epicgames.common.missing_permission",
+    `This IP address can't host for ${region}: add it to ${region}'s hosting IPs in the admin panel's Server Regions to host from it`);
 }
 
 export function sessionRoutes({ tokens, sessions, network, settings, emptyServerWaitMs = defaultEmptyServerWaitMs }) {
@@ -52,8 +65,10 @@ export function sessionRoutes({ tokens, sessions, network, settings, emptyServer
   // The Cert server's create body has no serverAddress (only with -UseLocalIPs), so it is where the request came from.
   // A server on another PC is always where its request came from.
   router.post(base, auth, (req, res) => {
-    const address = req.socket.remoteAddress;
+    const address = requestAddress(req);
     if (!allowsHosting(address, hostingIps(settings))) return notHosting(res, req, "register a game session");
+    const refusedRegion = regionRefused(settings, req.body, address);
+    if (refusedRegion) return notRegionHost(res, address, refusedRegion, "register a game session");
     const remoteHost = !isLoopback(address);
     const session = sessions.create(req.body, address, req.session.accountId, { remoteHost, build: currentBuild() });
     log("Matchmaking", `Session ${session.id} created by ${session.ownerName || session.ownerId || "a server"} at ${session.serverAddress}:${session.serverPort}` +
@@ -99,7 +114,12 @@ export function sessionRoutes({ tokens, sessions, network, settings, emptyServer
 
   router.route(`${base}/:sessionId`)
     .get(auth, withSession((session, req, res) => res.json(sessionJson(session, req, network))))
-    .put(auth, asHost((session, req, res) => res.json(sessionJson(sessions.update(session.id, req.body), req, network))))
+    .put(auth, asHost((session, req, res) => {
+      // The session's server is where it was registered from (sourceAddress), whoever sends the update.
+      const refused = regionRefused(settings, req.body, session.sourceAddress ?? requestAddress(req));
+      if (refused) return notRegionHost(res, session.sourceAddress ?? requestAddress(req), refused, `move session ${session.id}`);
+      res.json(sessionJson(sessions.update(session.id, req.body), req, network));
+    }))
     .delete(auth, asHost((session, req, res) => {
       sessions.remove(session.id);
       log("Matchmaking", `Session ${session.id} ended`);
@@ -142,7 +162,7 @@ export function sessionRoutes({ tokens, sessions, network, settings, emptyServer
   // Core's: the launcher reads which servers are busy (owner = the server slot's account, players, game mode). A launcher
   // hosting on a Trusted Hosting IP may read it too.
   router.get("/core/api/sessions", (req, res) => {
-    if (!allowsHosting(req.socket.remoteAddress, hostingIps(settings))) return notHosting(res, req, "list the game sessions");
+    if (!allowsHosting(requestAddress(req), hostingIps(settings))) return notHosting(res, req, "list the game sessions");
     res.json(sessions.list().map(sessionSummary));
   });
 

@@ -13,7 +13,9 @@ import { athenaCosmetics } from "../gamedata/athena.js";
 import { dataBuilds, readGameData } from "../gamedata/read.js";
 import { recentLogs } from "../log.js";
 import { sessionSummary } from "../matchmaking/sessions.js";
-import { defaultHostingIps, hostingIp, httpsProxied, maxHostingIps } from "../network.js";
+import { defaultHostingIps, hostingIp, httpsProxied, invalidIpRanges, maxHostingIps, maxIpRanges } from "../network.js";
+import { customServerProblem, maxCustomServers } from "../matchmaking/custom-servers.js";
+import { regionList } from "../matchmaking/regions.js";
 import { alertsRemaining, clearedAlertRecord, emptyAlertRecord, withQuotaSlots } from "../profiles/alerts.js";
 import { fullLockerState, grantCosmetic, grantFullLocker, grantShopCosmetics, lockerCosmeticId, lockerCosmetics, maxSeasonLevel, ownsCosmetic, removeFullLocker, removeLockerCosmetic,
   setSeasonLevel } from "../profiles/athena.js";
@@ -1525,6 +1527,11 @@ export function adminRoutes(context) {
       serverLimits,
       serverCounts,
       serverRegions: s.serverRegions ?? [],
+      // Each region's hosting IPs and the custom matchmaking servers (#227), their accounts with their names.
+      regionHostingIps: s.regionHostingIps ?? {},
+      customMatchServers: (s.customMatchServers ?? []).map((entry) => ({ ...entry,
+        accounts: entry.accounts.map((id) => ({ id, displayName: accounts.get(id)?.displayName ?? id })) })),
+      customMatchFallback: s.customMatchFallback === true,
       timing: {
         gatherSeconds: s.matchmakingGatherSeconds ?? 10,
         warmupSeconds: s.warmupSeconds ?? null,
@@ -1564,6 +1571,39 @@ export function adminRoutes(context) {
       update.serverLimits = req.body.serverLimits;
     }
     if (req.body.serverRegions !== undefined) update.serverRegions = req.body.serverRegions;
+    // Each region's hosting IPs (#227): { NA: ["203.0.113.0/24"] }, every entry an IP address or CIDR range.
+    if (req.body.regionHostingIps !== undefined) {
+      const value = req.body.regionHostingIps;
+      if (!value || typeof value !== "object" || Array.isArray(value)) return invalid(res, "regionHostingIps must map regions to lists of IP addresses or CIDR ranges");
+      for (const [region, list] of Object.entries(value)) {
+        if (!regionList(region)?.length) return invalid(res, `Unknown region ${region}`);
+        if (!Array.isArray(list)) return invalid(res, `${region}'s hosting IPs must be a list`);
+        if (list.length > maxIpRanges) return invalid(res, `At most ${maxIpRanges} hosting IPs can be listed for ${region}`);
+        const bad = invalidIpRanges(list);
+        if (bad.length) return invalid(res, `Not an IP address or CIDR range (${region}): ${bad.map(String).join(", ")}`);
+      }
+      update.regionHostingIps = value;
+    }
+    // The custom matchmaking servers (#227): [{ address, keys, accounts }], accounts by id or display name.
+    if (req.body.customMatchServers !== undefined) {
+      const list = req.body.customMatchServers;
+      if (!Array.isArray(list)) return invalid(res, "customMatchServers must be a list");
+      if (list.length > maxCustomServers) return invalid(res, `At most ${maxCustomServers} custom matchmaking servers can be listed`);
+      const entries = [];
+      for (const entry of list) {
+        const problem = customServerProblem(entry);
+        if (problem) return invalid(res, problem);
+        const ids = [];
+        for (const name of Array.isArray(entry?.accounts) ? entry.accounts : []) {
+          const account = typeof name === "string" ? accounts.get(name) ?? accounts.findByName(name) : null;
+          if (!account) return invalid(res, `No player named ${String(name)}`);
+          ids.push(account.id);
+        }
+        entries.push({ address: typeof entry === "string" ? entry : entry.address, keys: Array.isArray(entry?.keys) ? entry.keys : [], accounts: ids });
+      }
+      update.customMatchServers = entries;
+    }
+    if (typeof req.body.customMatchFallback === "boolean") update.customMatchFallback = req.body.customMatchFallback;
     if (typeof req.body.ltmOriginalDates === "boolean") update.ltmOriginalDates = req.body.ltmOriginalDates;
     if (req.body.timing && typeof req.body.timing === "object") {
       if (req.body.timing.gatherSeconds !== undefined) {

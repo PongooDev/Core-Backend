@@ -1,7 +1,8 @@
 import crypto from "node:crypto";
 import { log } from "../log.js";
-import { allowsHosting, createNetwork, isLoopback, normalizeAddress } from "../network.js";
-import { regionOf, servedRegions } from "./regions.js";
+import { allowsHosting, createNetwork, isLoopback, normalizeAddress, requestAddress } from "../network.js";
+import { reservationsOf } from "./custom-servers.js";
+import { regionAllowsAddress, regionOf, servedRegions } from "./regions.js";
 
 // Every key the client's session parser requires (OnlineSessionJsonMcp, sub_37F59F0): a session missing one is dropped
 // with "Unable to read session settings!". buildUniqueId is read as a string.
@@ -114,9 +115,14 @@ function countOpenSlots(session) {
 // a server re-registers after a backend restart. regionFallback: whether a search for a region with no server searches
 // every region (the admin panel's setting, asked each search; Core-Backend #123). serverRegions: the admin panel's
 // server regions, asked each search (#142).
-export function createSessionStore({ regionFallback: fallsBack = () => true, serverRegions = () => [] } = {}) {
+// regionHostingIps and customServers (Core-Backend #227): the admin panel's, asked each search. A search finds neither a
+// session whose server's IP isn't one of its region's hosting IPs (listed after it registered) nor one on a custom
+// matchmaking server, which never takes public players.
+export function createSessionStore({ regionFallback: fallsBack = () => true, serverRegions = () => [], regionHostingIps = () => ({}), customServers = () => [] } = {}) {
   const sessions = new Map();
   const served = (region) => servedRegions(region, serverRegions());
+  const searchable = (session) => regionAllowsAddress(session.attributes?.[regionKey], session.sourceAddress, regionHostingIps())
+    && reservationsOf(session.sourceAddress, customServers()).length === 0;
   // Called after every change a search can see (a session made, updated, filled, emptied or started).
   const watchers = new Set();
   const changed = () => {
@@ -153,6 +159,9 @@ export function createSessionStore({ regionFallback: fallsBack = () => true, ser
         remoteHost: Boolean(remoteHost),
         // Which PC hosts it: "local" for this one, else the other PC's address.
         hostAddress: remoteHost ? normalizeAddress(connectionAddress) : "local",
+        // The IP the create request came from, this PC's too (127.0.0.1): what the admin panel's region hosting IPs and
+        // custom matchmaking servers are matched against (Core-Backend #227).
+        sourceAddress: normalizeAddress(connectionAddress),
         hostBuild: String(build ?? "")
       };
       if (session.remoteHost) session.serverAddress = session.hostAddress;
@@ -257,7 +266,7 @@ export function createSessionStore({ regionFallback: fallsBack = () => true, ser
       if (!wanted) return null;
       const region = regionOf(wanted.value);
       const sameBuild = (session) => request?.buildUniqueId === undefined || String(request.buildUniqueId) === session.buildUniqueId;
-      return live().some((session) => sameBuild(session) && served(regionOf(session.attributes?.[regionKey])).has(region)) ? null : { region };
+      return live().some((session) => sameBuild(session) && searchable(session) && served(regionOf(session.attributes?.[regionKey])).has(region)) ? null : { region };
     },
 
     // matchMakingRequest: {criteria: [{type, key, value}], requireDedicated, maxCurrentPlayers, minCurrentPlayers,
@@ -269,6 +278,7 @@ export function createSessionStore({ regionFallback: fallsBack = () => true, ser
       const nearness = criteria.filter(({ type }) => type === "DISTANCE");
       const results = live().filter((session) => {
         if (request?.requireDedicated && !session.isDedicated) return false;
+        if (!searchable(session)) return false;
         if (request?.buildUniqueId !== undefined && String(request.buildUniqueId) !== session.buildUniqueId) return false;
         const current = currentPlayers(session);
         if (Number.isFinite(request?.maxCurrentPlayers) && current > request.maxCurrentPlayers) return false;
@@ -325,15 +335,16 @@ const defaultNetwork = createNetwork();
 // A session hosted on another PC (Core-Backend #125) is handed out with that PC's address as it is: this machine's
 // addresses would send the player to the wrong PC.
 export function sessionJson(session, viewer, network = defaultNetwork) {
-  const { keys, zoneDifficulty, hostAccountId, remoteHost, hostAddress, hostBuild, ...json } = session;
+  const { keys, zoneDifficulty, hostAccountId, remoteHost, hostAddress, hostBuild, sourceAddress, ...json } = session;
   if (!remoteHost) json.serverAddress = network.serverAddressFor(json.serverAddress, viewer);
   return json;
 }
 
 // Whether a request may change a session, or take its matchmaking ticket: this PC may change any; another PC only the
 // sessions it registered itself, and only while it is still a Trusted Hosting IP. allowedHostingIps: the admin panel's.
+// The address is the request's (network.js requestAddress: through the reverse proxy only in proxy mode).
 export function managesSession(session, req, allowedHostingIps) {
-  const address = req?.socket?.remoteAddress;
+  const address = requestAddress(req);
   if (isLoopback(address)) return true;
   return Boolean(session?.remoteHost) && session.hostAddress === normalizeAddress(address) && allowsHosting(address, allowedHostingIps);
 }

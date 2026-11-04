@@ -5,9 +5,11 @@ import { currentBuild } from "../../builds/context.js";
 import { notFound, sendError } from "../../errors.js";
 import { ltmModes, ltmOfPlaylist, ltmOn } from "../../events/ltms.js";
 import { log } from "../../log.js";
-import { parseBucket } from "../../matchmaking/service.js";
+import { regionAllowsAddress, regionOf } from "../../matchmaking/regions.js";
+import { parseBucket, serverRegion } from "../../matchmaking/service.js";
 import { managesSession } from "../../matchmaking/sessions.js";
-import { defaultHostingIps, httpsProxied } from "../../network.js";
+import { defaultHostingIps, httpsProxied, requestAddress } from "../../network.js";
+import { notRegionHost } from "./sessions.js";
 
 // Battle Royale's matchmaking tickets (src/matchmaking/service.js): a player's (MatchmakingServiceClient::ObtainTicket
 // 0x3AB6C40) and a gameserver's session's (MatchmakingServiceDedicatedServer ObtainTicket 0x3ABD0B0, sent through the
@@ -94,11 +96,18 @@ export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings 
     if (req.session.accountId && session.hostAccountId && session.hostAccountId !== req.session.accountId) {
       return sendError(res, 403, "errors.com.epicgames.common.missing_permission", `Session ${session.id} isn't this server's`);
     }
+    // Its region's hosting IPs (Core-Backend #227): a server registers for its region (-McpRegion) from one of them only.
+    const bucketIds = list(req.query.bucketIds);
+    const region = serverRegion(bucketIds);
+    const address = session.sourceAddress ?? requestAddress(req);
+    if (region !== null && !regionAllowsAddress(region, address, settings?.get?.().regionHostingIps ?? {})) {
+      return notRegionHost(res, address, regionOf(region), `register session ${session.id} for matchmaking`);
+    }
     const maxPlayers = Number(req.query.maxPlayers);
     const { response } = matchmaker.sessionTicket({
       sessionId: session.id,
       accountId: req.session.accountId,
-      bucketIds: list(req.query.bucketIds),
+      bucketIds,
       maxPlayers: Number.isInteger(maxPlayers) && maxPlayers > 0 ? maxPlayers : session.maxPublicPlayers,
       // The server's build (its User-Agent's changelist), which decides AssignMatch's bucket format.
       build: currentBuild() ?? null,

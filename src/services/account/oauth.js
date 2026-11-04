@@ -7,7 +7,7 @@ import { allowsBuild, buildName, buildNotAllowed } from "../../builds/allowed.js
 import { currentBuild } from "../../builds/context.js";
 import { sendError } from "../../errors.js";
 import { log } from "../../log.js";
-import { allowsHosting, defaultHostingIps, normalizeAddress } from "../../network.js";
+import { allowsHosting, defaultHostingIps, requestAddress } from "../../network.js";
 import { createFailureTracker } from "../portal/ratelimit.js";
 
 function basicClient(req) {
@@ -29,12 +29,12 @@ function invalidGrant(res, message) {
 
 // A server account (CoreServer{n}, Server{n}, CoreServer-<PC>-{n}) or the DedicatedServer client logs in without a password, and the
 // DedicatedServer client's token acts for any player: only for this PC and the Trusted Hosting IPs (Core-Backend #125,
-// network.js allowsHosting), by the connection's own address. The client's id and secret are no proof: they are in
+// network.js allowsHosting), by the request's address (requestAddress). The client's id and secret are no proof: they are in
 // Core's source and every gameserver's command line.
-const hostingAllowed = (req, settings) => allowsHosting(req.socket?.remoteAddress, settings?.get?.().allowedHostingIps ?? defaultHostingIps);
+const hostingAllowed = (req, settings) => allowsHosting(requestAddress(req), settings?.get?.().allowedHostingIps ?? defaultHostingIps);
 
 function notHostingIp(res, req, what) {
-  log("Core", `Refused ${what} from ${normalizeAddress(req.socket?.remoteAddress)}: not this PC or a Trusted Hosting IP (admin panel, Settings)`);
+  log("Core", `Refused ${what} from ${requestAddress(req)}: not this PC or a Trusted Hosting IP (admin panel, Settings)`);
   sendError(res, 403, "errors.com.epicgames.account.oauth.unauthorized_client",
     `This IP address is not authorized to ${what}. Add it to the admin panel's Trusted Hosting IPs to host from it.`);
 }

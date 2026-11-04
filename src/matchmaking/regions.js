@@ -1,3 +1,5 @@
+import { inIpRanges, ipRanges } from "../network.js";
+
 // Matchmaking regions (Core-Backend #121). Addresses are 1.9's (CL-3757339) unless another build is named.
 //
 // Both sides name their region with UQosRegionManager::GetRegionId (0x3C07430): its ForceRegionId when set, else the
@@ -41,7 +43,7 @@ export const regionCodes = () => [...canonical.keys()];
 // found no region at all); 21.40 calls its hidden catch-all region UND (Undefined).
 const noRegion = new Set(["", "NONE", "UND"]);
 
-// A region's canonical code ("nae" → "NA"), any code Core doesn't know upper-cased as it is, or null for no region.
+// A region's canonical code ("nae" â†’ "NA"), any code Core doesn't know upper-cased as it is, or null for no region.
 export function regionOf(code) {
   const name = String(code ?? "").trim().toUpperCase();
   if (noRegion.has(name)) return null;
@@ -66,4 +68,28 @@ export function servedRegions(region, selected) {
   const own = regionOf(region);
   const regions = regionList(selected) ?? [];
   return new Set(own !== null && regions.includes(own) ? regions : [own]);
+}
+
+// Each region's hosting IPs (Core-Backend #227): the IPs and CIDR ranges a gameserver hosting for the region must come
+// from, so an EU server can't run on an NA IP and the other way round. A region with none takes servers from any IP.
+// The setting kept from a saved or sent one: { NA: ["203.0.113.0/24"], ... }, canonical regions only, each with its
+// ranges (network.js ipRanges); undefined when it isn't an object.
+export function regionHostingIps(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return undefined;
+  const kept = {};
+  for (const [code, list] of Object.entries(value)) {
+    const region = regionOf(code);
+    const ranges = ipRanges(list);
+    if (!Object.hasOwn(aliases, region ?? "") || !ranges?.length) continue;
+    kept[region] = ipRanges([...(kept[region] ?? []), ...ranges]);
+  }
+  return kept;
+}
+
+// Whether a gameserver at this address may host for the region (any spelling): yes for a region with no hosting IPs
+// listed, and for no region at all ("NONE"), else only from a listed IP or range.
+export function regionAllowsAddress(region, address, hostingIps = {}) {
+  const own = regionOf(region);
+  const list = own === null ? null : hostingIps?.[own];
+  return !Array.isArray(list) || list.length === 0 || inIpRanges(address, list);
 }

@@ -3834,6 +3834,11 @@
         modes: { ...data.modes },
         serverLimits: JSON.parse(JSON.stringify(data.serverLimits || {})),
         serverRegions: [...(data.serverRegions || [])],
+        // Each region's hosting IPs and the custom matchmaking servers (Core-Backend #227), players by name.
+        regionHostingIps: JSON.parse(JSON.stringify(data.regionHostingIps || {})),
+        customMatchServers: (data.customMatchServers || []).map((entry) => ({ address: entry.address, keys: [...entry.keys],
+          accounts: entry.accounts.map((account) => account.displayName) })),
+        customMatchFallback: data.customMatchFallback === true,
         timing: { ...data.timing },
         bots: { ...data.bots },
         rewards: JSON.parse(JSON.stringify(data.rewards || { enabled: false, modes: {} })),
@@ -4386,8 +4391,13 @@
               el("div", { style: "margin-top:16px; padding-top:12px; border-top:1px solid var(--line);" },
                 serverRegionChecks)))),
 
+        // Each region's hosting IPs (Core-Backend #227)
+        regionHostingIpsSection(form, regions, regionLabels),
+
         // Custom matchmaking keys (Core-Backend #186)
         customMatchmakingSection(data.customMatchmaking || []),
+        // Servers kept for them (Core-Backend #227)
+        customServersSection(form),
 
         // Section 4: Battle Royale V-Bucks Rewards
         el("section", { class: "panel", style: "margin-top:16px" },
@@ -4410,6 +4420,71 @@
       );
 
       if (!state.timers.length) every(5000, pollLiveSessions);
+    }
+
+    // A list typed one entry a line, or separated by commas or spaces.
+    const splitList = (text) => String(text || "").split(/[\s,]+/).map((entry) => entry.trim()).filter(Boolean);
+
+    // Each region's hosting IPs (Core-Backend #227): the IPs and CIDR ranges its gameservers must register from. Saved with
+    // the page's Save Matchmaking Config.
+    function regionHostingIpsSection(form, regions, regionLabels) {
+      const rows = regions.map((r) => {
+        const box = el("textarea", {
+          class: "field mono", rows: 2, style: "width:100%; min-height:44px; resize:vertical;",
+          placeholder: "Any IP (e.g. 203.0.113.7 or 203.0.113.0/24)",
+          "aria-label": `Hosting IPs for ${regionLabels[r] || r}`,
+          oninput: (e) => {
+            const list = splitList(e.target.value);
+            if (list.length) form.regionHostingIps[r] = list;
+            else delete form.regionHostingIps[r];
+          }
+        });
+        box.value = (form.regionHostingIps[r] || []).join("\n");
+        return el("div", { style: "display:grid; grid-template-columns:minmax(140px, 200px) 1fr; gap:12px; align-items:start; margin-top:10px;" },
+          el("div", { class: "font-semibold", style: "padding-top:8px;", text: regionLabels[r] || r }), box);
+      });
+      return el("section", { class: "panel", style: "margin-top:16px" },
+        el("div", { class: "panel-head", style: "margin-bottom:8px" },
+          el("div", { class: "actions" },
+            el("h2", { text: "Region Hosting IPs" }),
+            chip(`${Object.keys(form.regionHostingIps).length} Restricted`, "accent"))),
+        el("p", { class: "note", text: "The IPs a region's gameservers must come from, so an EU server can't run on an NA IP and the other way round. One IP address or CIDR range (203.0.113.0/24) a line. A region left empty takes servers from any IP. A server whose IP isn't listed for its region (its -McpRegion) is refused when it registers, and the log says why. This PC's own servers come from 127.0.0.1: list it to host a restricted region here. Behind a reverse proxy, turn on Behind a reverse proxy under Play with friends so the servers' real IPs are seen. Saved with Save Matchmaking Config." }),
+        ...rows);
+    }
+
+    // The custom matchmaking servers (Core-Backend #227): gameservers kept for custom key matches, never used for public
+    // ones. Saved with the page's Save Matchmaking Config.
+    function customServersSection(form) {
+      const list = el("div", {});
+      const fallback = toggleSwitch(form.customMatchFallback === true, (checked) => { form.customMatchFallback = checked; });
+      const field = (entry, key, placeholder, label, isList) => {
+        const input = el("input", {
+          class: `field${key === "address" ? " mono" : ""}`, placeholder, "aria-label": label, style: "flex:1 1 180px",
+          oninput: (e) => { entry[key] = isList ? splitList(e.target.value) : e.target.value.trim(); }
+        });
+        input.value = isList ? entry[key].join(", ") : entry[key];
+        return input;
+      };
+      const render = () => list.replaceChildren(...(form.customMatchServers.length
+        ? form.customMatchServers.map((entry, index) => el("div", { class: "actions", style: "margin-top:10px; flex-wrap:wrap; gap:8px;" },
+          field(entry, "address", "Server IP or range (203.0.113.7)", "Custom matchmaking server IP", false),
+          field(entry, "keys", "Keys (any when empty)", "Custom matchmaking keys this server takes", true),
+          field(entry, "accounts", "Players (any when empty)", "Players whose keys this server takes", true),
+          btn("Remove", () => { form.customMatchServers.splice(index, 1); render(); }, "ghost small")))
+        : [el("span", { class: "muted", text: "No custom matchmaking servers: custom matches play on the public servers." })]));
+      render();
+      return el("section", { class: "panel", style: "margin-top:16px" },
+        el("div", { class: "panel-head", style: "margin-bottom:8px" },
+          el("div", { class: "actions" },
+            el("h2", { text: "Custom Matchmaking Servers" }),
+            chip(`${form.customMatchServers.length} Kept`, "accent"))),
+        el("p", { class: "note", text: "Gameservers kept for custom matchmaking keys, so a custom matchmaking host can have dedicated servers of their own. A server whose IP is listed here never takes public matches. Each one takes the custom matches of the keys listed with it, or the keys opened by the players listed with it, or every custom match when both are empty. Keys and players are separated by commas. A custom match with servers of its own plays only on them, unless the fallback below lets it use a public server when none of its own is free; a custom match with no server of its own plays on the public servers. Saved with Save Matchmaking Config." }),
+        list,
+        el("div", { class: "actions", style: "margin-top:12px" },
+          btn("Add server", () => { form.customMatchServers.push({ address: "", keys: [], accounts: [] }); render(); }, "ghost")),
+        el("div", { style: "margin-top:16px; display:flex; justify-content:space-between; align-items:center; gap:12px; padding-top:12px; border-top:1px solid var(--line);" },
+          el("span", { class: "muted font-semibold", text: "Fall back to public servers when no custom server is free" }),
+          fallback));
     }
 
     // The players allowed to open custom matchmaking keys (Core-Backend #186), granted or revoked per player.
@@ -4488,6 +4563,14 @@
           el("div", { class: "actions", style: "margin-top:12px" }, publicInput,
             btn("Save", () => save({ publicAddress: publicInput.value }, publicInput.value.trim() ? `Public address set to ${publicInput.value.trim()}` : "Public address cleared"), "primary", { disabled: fixed("publicAddress") })),
           fixed("publicAddress") ? el("p", { class: "note", text: "Set on the backend's command line (--public-address)." }) : null),
+        // Core-Backend #227: whose IP a request is, behind a reverse proxy.
+        el("section", { class: "panel" },
+          el("div", { class: "panel-head" }, el("h2", { text: "Behind a reverse proxy" }), network.behindProxy ? chip("On", "good") : chip("Off")),
+          el("p", { class: "note", text: "Turn on only when players and gameservers reach this backend through a reverse proxy (Caddy, nginx, a Cloudflare tunnel) running on this PC or your network. Each request from the proxy is then taken to come from the IP the proxy writes in X-Forwarded-For, which the Trusted Hosting IPs and the Matchmaking tab's Region Hosting IPs and Custom Matchmaking Servers are checked against. Off, the header is ignored, so nobody can claim another IP with it." }),
+          el("div", { class: "actions", style: "margin-top:12px" },
+            btn(network.behindProxy ? "Turn off" : "Turn on",
+              () => save({ behindProxy: !network.behindProxy }, network.behindProxy ? "No longer behind a reverse proxy" : "Behind a reverse proxy"),
+              network.behindProxy ? "danger" : "primary"))),
         el("div", { class: "grid cols-2", style: "margin-top:16px" },
           el("section", { class: "panel" }, el("div", { class: "panel-head" }, el("h2", { text: "What friends enter" })),
             el("p", { class: "note", text: "In Core Launcher: Settings → Backend → A friend's backend, then this address. They need the same Fortnite build as you." }),

@@ -28,7 +28,7 @@ export function networkAdminRoutes({ network, sessions, adminAuth, settings }) {
 
   router.post("/admin/api/network", (req, res) => {
     try {
-      network.update({ remoteAccess: req.body?.remoteAccess, publicAddress: req.body?.publicAddress });
+      network.update({ remoteAccess: req.body?.remoteAccess, publicAddress: req.body?.publicAddress, behindProxy: req.body?.behindProxy });
     } catch (error) {
       return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", error.message);
     }

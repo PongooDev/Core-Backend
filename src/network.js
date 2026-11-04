@@ -12,12 +12,14 @@ import { log } from "./log.js";
 // outside this PC can reach it. On, it listens on every interface (or on listenAddress), so friends can connect.
 // publicAddress: the address friends on the internet reach this machine at (its public IP, or a host name such as a
 // dynamic DNS name), handed out in place of the gameservers' loopback or private addresses and as the XMPP address.
+// behindProxy (default false): the backend sits behind a reverse proxy (Caddy, nginx, a tunnel) on this PC or its
+// network, which writes the connecting IP in X-Forwarded-For (clientAddress, Core-Backend #227).
 //
 // Precedence: the command line, then what the admin panel saved (data/network.json, kept with the accounts so it
 // survives the launcher's updates), then config.json, then the defaults.
-export const networkKeys = ["remoteAccess", "listenAddress", "publicAddress"];
-const panelKeys = ["remoteAccess", "publicAddress"];
-const defaults = { remoteAccess: false, listenAddress: "", publicAddress: "" };
+export const networkKeys = ["remoteAccess", "listenAddress", "publicAddress", "behindProxy"];
+const panelKeys = ["remoteAccess", "publicAddress", "behindProxy"];
+const defaults = { remoteAccess: false, listenAddress: "", publicAddress: "", behindProxy: false };
 const resolveEveryMs = 5 * 60 * 1000;
 
 // The client's session reader (sub_37F5010) parses serverAddress as an IP and only maps 0:0:0:0:0:0:0:1 itself
@@ -50,8 +52,8 @@ export function isPrivate(address) {
 // Gameservers on other PCs (Core-Backend #125): the admin panel's Trusted Hosting IPs (settings allowedHostingIps) are
 // the other machines whose gameservers may log in to the server accounts, take DedicatedServer client tokens and
 // register sessions. This PC always may; another machine only when its IP is listed (and remote access is on, or
-// nothing outside this PC connects at all). The IP is always the connection's own (socket.remoteAddress): headers such
-// as X-Forwarded-For are the client's to write, and the backend is never behind a proxy that would set them.
+// nothing outside this PC connects at all). The IP is the connection's own (socket.remoteAddress), or with behindProxy on
+// the one the proxy wrote (clientAddress): otherwise headers such as X-Forwarded-For are the client's to write.
 export const defaultHostingIps = ["127.0.0.1", "::1"];
 export const maxHostingIps = 64;
 
@@ -98,7 +100,64 @@ export function validateNetwork(values, source) {
   if (values.publicAddress !== undefined && !validPublicAddress(values.publicAddress)) {
     throw new Error(`${source}: publicAddress must be an IP address or a host name`);
   }
+  if (values.behindProxy !== undefined && typeof values.behindProxy !== "boolean") throw new Error(`${source}: behindProxy must be true or false`);
 }
+
+// IP ranges (Core-Backend #227): the admin panel's per-region hosting IPs and custom matchmaking servers. An entry is an
+// IP address or a CIDR range ("203.0.113.0/24", "2001:db8::/32"), kept as hostingIp writes the address ("1.2.3.4",
+// "1.2.3.0/24"; a whole-length prefix is the address alone); null for anything else.
+export const maxIpRanges = 64;
+export function ipRange(value) {
+  if (typeof value !== "string") return null;
+  const [address, prefix, extra] = value.trim().split("/");
+  if (extra !== undefined) return null;
+  const ip = hostingIp(address) ?? (prefix !== undefined && /^(0\.0\.0\.0|::)$/.test(address.trim()) ? address.trim() : null);
+  if (ip === null) return null;
+  if (prefix === undefined) return ip;
+  const bits = net.isIPv4(ip) ? 32 : 128;
+  if (!/^\d{1,3}$/.test(prefix) || Number(prefix) > bits) return null;
+  return Number(prefix) === bits ? ip : `${ip}/${Number(prefix)}`;
+}
+
+// The list kept from a saved or sent one: each range once, up to maxIpRanges; undefined when it isn't a list.
+export function ipRanges(list) {
+  if (!Array.isArray(list)) return undefined;
+  return [...new Set(list.map(ipRange).filter(Boolean))].slice(0, maxIpRanges);
+}
+
+// The entries of a sent list that aren't IP addresses or ranges, for the admin panel's error.
+export const invalidIpRanges = (list) => (Array.isArray(list) ? list.filter((entry) => ipRange(entry) === null) : []);
+
+// Whether an address is in one of the ranges.
+export function inIpRanges(address, list) {
+  const ip = hostingIp(normalizeAddress(address));
+  if (ip === null || !Array.isArray(list)) return false;
+  const blocks = new net.BlockList();
+  for (const entry of list) {
+    const range = ipRange(entry);
+    if (range === null) continue;
+    const [base, prefix] = range.split("/");
+    const type = net.isIPv4(base) ? "ipv4" : "ipv6";
+    if (prefix === undefined) blocks.addAddress(base, type);
+    else blocks.addSubnet(base, Number(prefix), type);
+  }
+  return blocks.check(ip, net.isIPv4(ip) ? "ipv4" : "ipv6");
+}
+
+// The IP a request came from (Core-Backend #227): the connection's own; with behindProxy on and the connection from the
+// proxy (this PC or its network), the last address in X-Forwarded-For, the one the proxy itself added (those before it
+// are the client's to write). With behindProxy off the header is never read, so nobody can claim another IP with it.
+export function clientAddress(req, behindProxy = false) {
+  const peer = normalizeAddress(req?.socket?.remoteAddress);
+  if (!behindProxy || !(isLoopback(peer) || isPrivate(peer))) return peer;
+  const header = req?.headers?.["x-forwarded-for"];
+  const entries = (Array.isArray(header) ? header.join(",") : String(header ?? "")).split(",").map((entry) => entry.trim()).filter(Boolean);
+  const last = entries.at(-1)?.replace(/^\[(.*)\](:\d+)?$/, "$1").replace(/^(\d+\.\d+\.\d+\.\d+):\d+$/, "$1");
+  return last && net.isIP(last) ? normalizeAddress(last) : peer;
+}
+
+// The address a route works with: the one app.js worked out for the request (clientAddress), else the connection's own.
+export const requestAddress = (req) => req?.clientAddress ?? normalizeAddress(req?.socket?.remoteAddress);
 
 // A request a TLS-terminating reverse proxy (Caddy, nginx, a Cloudflare tunnel and the like) forwarded from an https://
 // backend address, as its X-Forwarded-Proto says (Core #197, Core-Launcher #9): { host, hostname } of the address the
@@ -149,6 +208,7 @@ export function createNetwork(config = {}) {
   for (const key of panelKeys) if (saved[key] !== undefined && !fixed.has(key)) settings[key] = saved[key];
   settings.publicAddress = String(settings.publicAddress ?? "").trim();
   settings.listenAddress = String(settings.listenAddress ?? "").trim();
+  settings.behindProxy = settings.behindProxy === true;
 
   const listeners = new Set();
   let resolved = { name: "", address: null, error: null };
@@ -193,6 +253,9 @@ export function createNetwork(config = {}) {
     // The host to listen on: undefined listens on every interface, as Node does with no host (dual-stack where it can).
     bindAddress: () => (settings.remoteAccess ? settings.listenAddress || undefined : "127.0.0.1"),
 
+    // The IP a request came from: through the reverse proxy when behindProxy is on (clientAddress).
+    clientAddress: (req) => clientAddress(req, settings.behindProxy === true),
+
     // Whether a connection from this address is let in.
     allows: (remoteAddress) => settings.remoteAccess || isLoopback(remoteAddress),
 
@@ -228,7 +291,7 @@ export function createNetwork(config = {}) {
       return loopbackServer ? normalizeAddress(socket.localAddress) : serverAddress;
     },
 
-    // Saves the admin panel's changes (remoteAccess, publicAddress) to data/network.json and applies them.
+    // Saves the admin panel's changes (remoteAccess, publicAddress, behindProxy) to data/network.json and applies them.
     update(changes) {
       const next = {};
       for (const key of panelKeys) {
@@ -245,6 +308,10 @@ export function createNetwork(config = {}) {
         writeJson(file, stored);
       }
       if (before.publicAddress !== settings.publicAddress) schedule();
+      if (before.behindProxy !== settings.behindProxy) {
+        log("Network", settings.behindProxy ? "Behind a reverse proxy: a connection from this PC or its network is from the IP in its X-Forwarded-For"
+          : "Not behind a reverse proxy: X-Forwarded-For is ignored");
+      }
       if (before.remoteAccess !== settings.remoteAccess || before.publicAddress !== settings.publicAddress) {
         log("Network", `Remote access ${settings.remoteAccess ? "on" : "off"}${settings.publicAddress ? `, public address ${settings.publicAddress}` : ""}`);
         for (const listener of [...listeners]) listener(network.settings(), before);

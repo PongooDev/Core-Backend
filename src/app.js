@@ -78,7 +78,7 @@ export function createContext(config) {
   if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
   if (config.seasonalEvents !== undefined) settings.update({ seasonalEvents: config.seasonalEvents });
   for (const key of ["battleRoyaleVbucks", "battleRoyaleRewards", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits", "cheats", "cheatAccounts",
-    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "bots", "regionFallback", "vbuckPacks", "matchStartCountdown", "matchStartBufferSeconds", "serverRegions", "allowedBuilds", "defaultFoundersAccess", "remoteAdmin", "events", "battlepass", "matchmakingModes", "ltmOriginalDates", "serverLimits"]) {
+    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "bots", "regionFallback", "vbuckPacks", "matchStartCountdown", "matchStartBufferSeconds", "serverRegions", "allowedBuilds", "defaultFoundersAccess", "remoteAdmin", "events", "battlepass", "matchmakingModes", "ltmOriginalDates", "serverLimits", "regionHostingIps", "customMatchServers", "customMatchFallback"]) {
     if (config[key] !== undefined) settings.update({ [key]: config[key] });
   }
   const friends = createFriendStore(config.dataDir);
@@ -86,7 +86,10 @@ export function createContext(config) {
   const regionFallback = () => settings.get().regionFallback !== false;
   // Its server regions (#142): a server in one of them takes all of their players.
   const serverRegions = () => settings.get().serverRegions ?? [];
-  const sessions = createSessionStore({ regionFallback, serverRegions });
+  // Each region's hosting IPs and the custom matchmaking servers (#227).
+  const regionHostingIps = () => settings.get().regionHostingIps ?? {};
+  const customServers = () => settings.get().customMatchServers ?? [];
+  const sessions = createSessionStore({ regionFallback, serverRegions, regionHostingIps, customServers });
   const stats = createStatsStore(config.dataDir);
   const reports = createReportStore(config.dataDir);
   const profiles = createProfileStore(config.dataDir, {
@@ -121,7 +124,8 @@ export function createContext(config) {
     matchmaker: createMatchmaker({ sessions, gatherMs: config.matchmakingGatherMs ?? (() => settings.get().matchmakingGatherSeconds * 1000),
       lateJoin: () => settings.get().lateJoin === true, regionFallback,
       matchStartCountdown: () => settings.get().matchStartCountdown !== false, warmupSeconds: () => settings.get().warmupSeconds ?? null,
-      matchStartBuffer: () => settings.get().matchStartBufferSeconds, serverRegions, serverLimits: () => settings.get().serverLimits, matchmakingModes: () => settings.get().matchmakingModes, quiet: config.requestLog === false }),
+      matchStartBuffer: () => settings.get().matchStartBufferSeconds, serverRegions, serverLimits: () => settings.get().serverLimits, matchmakingModes: () => settings.get().matchmakingModes,
+      regionHostingIps, customServers, customFallback: () => settings.get().customMatchFallback === true, quiet: config.requestLog === false }),
     network: createNetwork(config),
     emptyServerWaitMs: config.emptyServerWaitMs,
     stomp: createStompService({ tokens, quiet: config.requestLog === false }),
@@ -142,6 +146,12 @@ export function createApp(config, context = createContext(config)) {
   app.disable("x-powered-by");
 
   app.use(originForm);
+  // The IP each request came from, through the reverse proxy only when the admin panel says the backend is behind one
+  // (network.js clientAddress, Core-Backend #227).
+  app.use((req, res, next) => {
+    if (context.network?.clientAddress) req.clientAddress = context.network.clientAddress(req);
+    next();
+  });
   // Everything a request does uses its build's game data (src/builds/context.js, src/gamedata/read.js).
   app.use(requestBuild);
   app.use(seasonalEvents(() => context.settings.get().seasonalEvents !== false));

@@ -3,7 +3,8 @@ import { ltms } from "../events/ltms.js";
 import { shootingTestPlaylist, shootingTestTeams } from "../events/shootingtest.js";
 import { log } from "../log.js";
 import { acceptWebSocket } from "../stomp/websocket.js";
-import { regionName, regionOf, servedRegions } from "./regions.js";
+import { hasCustomServers, reservationsOf, serverTakes } from "./custom-servers.js";
+import { regionAllowsAddress, regionName, regionOf, servedRegions } from "./regions.js";
 
 // Battle Royale's matchmaking service (MMS, from 1.7.2), both sides (Core-Docs Athena-Matchmaking-1.7.2.md and
 // Athena-Boot-1.7.2.md §1 C).
@@ -287,8 +288,12 @@ const newId = () => crypto.randomUUID().replaceAll("-", "");
 // the admin panel's server regions (#142, regions.js servedRegions), asked each time. matchStartCountdown: whether 1.7.2
 // to 2.4.2's players see the match start countdown (#160), warmupSeconds the panel's warmup length (null: the
 // game's), and matchStartBuffer the seconds from Play to the warmup starting that it adds (#167), all asked each time.
+// regionHostingIps, customServers and customFallback (#227): each region's hosting IPs (regions.js regionAllowsAddress),
+// the custom matchmaking servers (custom-servers.js) and whether a custom match with servers of its own may play on a
+// public one, all asked each time. A server's IP is the one its session was registered from (sessions.js sourceAddress).
 export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoin = () => false, regionFallback = () => true, serverRegions = () => [], serverLimits = () => ({}), matchmakingModes = () => ({}),
-  matchStartCountdown = () => false, warmupSeconds = () => null, matchStartBuffer = () => defaultMatchStartBufferSec, quiet = false }) {
+  matchStartCountdown = () => false, warmupSeconds = () => null, matchStartBuffer = () => defaultMatchStartBufferSec,
+  regionHostingIps = () => ({}), customServers = () => [], customFallback = () => false, quiet = false }) {
   const say = quiet ? () => {} : (text) => log("Matchmaking", text);
   const gatherOf = () => {
     const value = typeof gatherMs === "function" ? gatherMs() : gatherMs;
@@ -379,12 +384,26 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
   }
   const takesBucket = (server, bucketId, options) => server.patterns.some((pattern) => bucketMatches(pattern, inServerRegion(server, bucketId), options));
 
-  // Whether a server registered for the bucket's build and region exists at all. When none does, nobody would ever
-  // take the bucket's players: they play in another region instead (Core-Backend #121).
-  function hasServerFor(bucketId) {
+  // Custom matchmaking servers (#227): whether a server is one, and whether a party's custom match has servers of its own.
+  const reserved = (server) => reservationsOf(server.address, customServers()).length > 0;
+  const hasOwnServers = (party) => hasCustomServers(party.customKey, party.ticket.partyPlayerIds, customServers());
+  // Whether a server may host a party's match in the bucket: it takes the bucket, its IP is one of the match's region's
+  // hosting IPs, and it is a public server for a public match, or for a custom match one kept for it (a public one only
+  // when no custom server is kept for the match, or the fallback lets it).
+  function canHost(server, party, bucketId, options) {
+    if (!takesBucket(server, bucketId, options)) return false;
+    const matchBucket = server.regionField ? withRegion(bucketId, server.regionField) : bucketId;
+    if (!regionAllowsAddress(parseBucket(matchBucket).region, server.address, regionHostingIps())) return false;
+    if (!serverTakes(server.address, { customKey: party.customKey, players: party.ticket.partyPlayerIds }, customServers())) return false;
+    return !party.customKey || reserved(server) || !hasOwnServers(party) || customFallback();
+  }
+
+  // Whether a server registered for the bucket's build and region, that may host the party's match, exists at all. When
+  // none does, nobody would ever take the bucket's players: they play in another region instead (Core-Backend #121).
+  function hasServerFor(bucketId, party) {
     for (const [sessionId, host] of hosts) {
       if (!sessions.get(sessionId)) hosts.delete(sessionId);
-      else if (takesBucket(host, bucketId)) return true;
+      else if (canHost(host, party, bucketId)) return true;
     }
     return false;
   }
@@ -470,7 +489,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     // A party whose region has no server takes a match in any region, the bucket's build and playlist still matching,
     // unless the fallback is off: then it waits for a server of its region, and only its region's matches take it.
     const bucketId = party.ticket.bucketId;
-    const noServer = !hasServerFor(bucketId);
+    const noServer = !hasServerFor(bucketId, party);
     const anyRegion = noServer && regionFallback();
     if (noServer !== Boolean(party.noServer) || anyRegion !== Boolean(party.anyRegion)) {
       party.noServer = noServer;
@@ -505,9 +524,11 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
         return true;
       }
     }
-    for (const server of servers) {
+    // A custom match takes a server kept for custom matches first (#227).
+    const free = party.customKey ? [...servers].sort((a, b) => reserved(b) - reserved(a)) : servers;
+    for (const server of free) {
       if (server.forming || party.size > server.maxPlayers) continue;
-      if (!takesBucket(server, bucketId, { anyRegion })) continue;
+      if (!canHost(server, party, bucketId, { anyRegion })) continue;
       // The match is the server's region's: AssignMatch's bucketId names it as the server does (the server takes its
       // MatchmakingRegionId from it, 1.7.2 0x6D78E0), and its region's players join it.
       const matchBucket = server.regionField ? withRegion(bucketId, server.regionField) : bucketId;
@@ -765,7 +786,15 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
   function acceptServer(ws, ticket) {
     const regionField = serverRegion(ticket.bucketIds);
     const server = { sessionId: ticket.sessionId, accountId: ticket.accountId, patterns: ticket.bucketIds, maxPlayers: ticket.maxPlayers, ws,
-      build: Number(ticket.build) || null, forming: null, regionField, region: regionField === null ? "any region" : regionOf(regionField) };
+      build: Number(ticket.build) || null, forming: null, regionField, region: regionField === null ? "any region" : regionOf(regionField),
+      // The IP its session was registered from (#227).
+      address: sessions.get(ticket.sessionId)?.sourceAddress ?? "" };
+    // Its region's hosting IPs (#227), checked again here as the admin panel may have changed them since its ticket.
+    if (regionField !== null && !regionAllowsAddress(regionField, server.address, regionHostingIps())) {
+      say(`Refused session ${server.sessionId} for ${server.region}: ${server.address || "its IP"} isn't one of ${server.region}'s hosting IPs (admin panel, Matchmaking, Server Regions)`);
+      ws.send(message("Error", { errorCode: "errors.com.epicgames.common.missing_permission" }));
+      return ws.close(1008);
+    }
     servers.add(server);
     hosts.set(server.sessionId, server);
     ws.on("message", (data) => {
@@ -790,7 +819,8 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
       placeWaiting();
     });
     ws.send(message("Registered", {}));
-    say(`Session ${server.sessionId} registered for ${server.patterns.join(", ")} (${regionName(server.region)}, ${server.maxPlayers} players)`);
+    say(`Session ${server.sessionId} registered for ${server.patterns.join(", ")} (${regionName(server.region)}, ${server.maxPlayers} players)` +
+      (reserved(server) ? `, a custom matchmaking server (${server.address})` : ""));
     placeWaiting();
   }
 

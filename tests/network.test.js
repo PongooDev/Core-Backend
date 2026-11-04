@@ -107,7 +107,7 @@ test("remote access is off by default; the panel's choice is saved in the data f
   const dataDir = tempDir();
   try {
     const network = createNetwork({ dataDir });
-    assert.deepEqual(network.settings(), { remoteAccess: false, listenAddress: "", publicAddress: "" });
+    assert.deepEqual(network.settings(), { remoteAccess: false, listenAddress: "", publicAddress: "", behindProxy: false });
     assert.equal(network.bindAddress(), "127.0.0.1");
     assert.equal(network.allows("::ffff:127.0.0.1"), true);
     assert.equal(network.allows("::ffff:192.168.1.30"), false);
@@ -118,14 +118,14 @@ test("remote access is off by default; the panel's choice is saved in the data f
     assert.equal(changes, 1);
     assert.equal(network.bindAddress(), undefined, "every interface");
     assert.equal(network.allows("::ffff:192.168.1.30"), true);
-    assert.deepEqual(JSON.parse(fs.readFileSync(path.join(dataDir, "network.json"), "utf8")), { remoteAccess: true, publicAddress: "203.0.113.7" });
+    assert.deepEqual(JSON.parse(fs.readFileSync(path.join(dataDir, "network.json"), "utf8")), { remoteAccess: true, publicAddress: "203.0.113.7", behindProxy: false });
     assert.throws(() => network.update({ remoteAccess: "yes" }), /true or false/);
     assert.throws(() => network.update({ publicAddress: "http://x/" }), /IP address or a host name/);
 
     // The saved file beats config.json, and the command line beats both.
     assert.deepEqual(createNetwork({ dataDir, remoteAccess: false }).settings().remoteAccess, true);
     const fixed = createNetwork({ dataDir, remoteAccess: false, listenAddress: "192.168.1.10", fromCommandLine: ["remoteAccess"] });
-    assert.deepEqual(fixed.settings(), { remoteAccess: false, listenAddress: "192.168.1.10", publicAddress: "203.0.113.7" });
+    assert.deepEqual(fixed.settings(), { remoteAccess: false, listenAddress: "192.168.1.10", publicAddress: "203.0.113.7", behindProxy: false });
     assert.throws(() => fixed.update({ remoteAccess: true }), /command line/);
     assert.equal(createNetwork({ dataDir, remoteAccess: true, listenAddress: "192.168.1.10" }).bindAddress(), "192.168.1.10");
   } finally {
@@ -221,7 +221,7 @@ test("the admin panel reads and changes the network settings; the status route n
     assert.equal(network.remoteAccess, true);
     assert.equal(network.publicAddress, "203.0.113.7");
     assert.equal(network.publicIp, "203.0.113.7");
-    assert.deepEqual(JSON.parse(fs.readFileSync(path.join(backend.dataDir, "network.json"), "utf8")), { remoteAccess: true, publicAddress: "203.0.113.7" });
+    assert.deepEqual(JSON.parse(fs.readFileSync(path.join(backend.dataDir, "network.json"), "utf8")), { remoteAccess: true, publicAddress: "203.0.113.7", behindProxy: false });
 
     const refused = await post(backend.port, "/admin/api/network", undefined, { publicAddress: "not a host" });
     assert.equal(refused.status, 400);
