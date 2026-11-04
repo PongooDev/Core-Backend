@@ -85,18 +85,20 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   (AthenaEmojiItemDefinition) are cosmetics too. `loot` holds Battle Royale's loot tables whole (DefaultGameData's
   `AthenaLootTierData_Client` and `AthenaLootPackages_Client`), by object path, each row with every property in the form
   `UDataTable::CreateTableFromJSONString` reads back (soft object paths as path strings), for the content updates the
-  backend serves as `[AssetHotfix]` rows; only 1.11's, 2.1's, 2.2's, 2.3's, 2.4's, 2.4.2's, 2.5's and 3.0's overlays carry it so far (2.2's has Season 2's content updates in already; 2.3's
+  backend serves as `[AssetHotfix]` rows; only 1.11's, 2.1's, 2.2's, 2.3's, 2.4's, 2.4.2's, 2.5's, 3.0's and 3.1's overlays carry it so far (2.2's has Season 2's content updates in already; 2.3's
   is 2.2's, the Chug Jug at weight 0; 2.4's has the Chug Jug in and the Minigun at weight 0; 2.4.2's has the Minigun in, in
   a list of its own, and the Suppressed Pistol's cut, but no Crossbow; 2.5's has the Crossbow in a list of its own and its
   notes' Impulse Grenade, vaulted SMG and Medium-ammo Revolver; 3.0's has the Hand Cannon in, Loot_AthenaFloorLoot_11 at
-  0.07 and Loot_AthenaTreasure_07 at 0.08, and its notes' pistol changes). `shootingModel` holds the weapon stats table Shooting
+  0.07 and Loot_AthenaTreasure_07 at 0.08, and its notes' pistol changes; 3.1's has its notes' Hunting Rifle,
+  WID_Sniper_NoScope_Athena_UC/R_Ore_T03, and drop rate changes in). `shootingModel` holds the weapon stats table Shooting
   Test #1 plays (PlayerPawn_Athena's PrototypeShootingModelPerfectAimWhenTargetingMinSpread, AthenaRangedWeapons_ShootingModel3)
   for the builds that have one, `{table, rows}` in the same import form, object references as their object path and none
-  as `"None"`; only 2.4.2's, 2.5's and 3.0's overlays carry it, for the hotfixes that bring 2.4's and 2.4.2's tables to the next
+  as `"None"`; only 2.4.2's, 2.5's, 3.0's and 3.1's overlays carry it, for the hotfixes that bring 2.4's and 2.4.2's tables to the next
   build's (`src/events/shootingtest.js`). 2.4 ships no
   `Build.version` either: its fourth argument is `4.19.0-3858292+++Fortnite+Release-Cert`, and 2.4.2's
   `4.19.0-3870737+++Fortnite+Release-Next`, and 2.5's `4.20.0-3889387+++Fortnite+Release-2.5`, and 3.0's
-  `4.20.0-3901517+++Fortnite+Release-3.0.0`. Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
+  `4.20.0-3901517+++Fortnite+Release-3.0.0`, and 3.1's `4.20.0-3915963+++Fortnite+Release-3.1` (3.1 needed no extractor
+  change). Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `research.json`: the resource collectors (research points): each CollectedResource template's payout and the
   homebase attributes its rate, capacity and wallet cap come from, what each skill tree node adds to those attributes
