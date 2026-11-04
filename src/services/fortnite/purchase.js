@@ -86,13 +86,20 @@ export function purchaseRoutes(context) {
   }
 
   // The catalog service's prices for the Store tab's offers (QueryOffersById, store/currency.js): each id asked for that
-  // is one of the asking account's packs, by id. Epic's catalog service is <host>/catalog/api/...
+  // this backend signed, by id. Epic's catalog service is <host>/catalog/api/...
+  //
+  // The catalog service is an MCP client service: its requests go out with the game's client_credentials token, not the
+  // player's (FOnlineCatalogServiceMcp's ProcessRequest, 3.2 0x3B6270, queues them "for client=<client id>",
+  // 0x4A1470), so the token names no account. The signed id is the proof of the account it was offered to. An id
+  // left out of the answer gets no price: the catalog helper drops an offer's catalog RealMoney price and adds back only
+  // the one the catalog service gave (3.2 0x7D9350), and the Store tab lists only offers with a RealMoney price
+  // (UFortMcpContext::ListMtxPackages' 0xD53780), so without it the tab said "no offers available" (Core-Backend #239).
   const bulkOffers = (req, res) => {
     const ids = [req.query.id ?? []].flat().map(String).slice(0, 50);
     const offers = {};
     for (const id of ids) {
       const parsed = parseAppStoreId(id);
-      if (parsed && parsed.accountId === req.session.accountId) offers[id] = catalogServiceOffer(id, parsed);
+      if (parsed) offers[id] = catalogServiceOffer(id, parsed);
     }
     res.json(offers);
   };

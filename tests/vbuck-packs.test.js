@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { certUserAgent, post, send, startBackend, userLogin } from "./helpers.js";
+import { certUserAgent, clientToken, post, send, startBackend, userLogin } from "./helpers.js";
 
 // The Store tab's V-Bucks packs (Core-Backend #223, store/currency.js, services/fortnite/purchase.js).
 const agent31 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-3.1-CL-3915963";
@@ -20,7 +20,7 @@ function complete(port, purchaseId, headers = {}) {
 }
 const purchaseIdOf = (html) => /name="purchaseId" value="([^"]+)"/.exec(html)?.[1];
 
-test("the Store tab sells four V-Bucks packs from 1.8, each priced by the catalog service for its own account", async () => {
+test("the Store tab sells four V-Bucks packs from 1.8, each priced by the catalog service", async () => {
   const backend = await startBackend();
   try {
     const player = await userLogin(backend.port, "PackBuyer");
@@ -38,18 +38,45 @@ test("the Store tab sells four V-Bucks packs from 1.8, each priced by the catalo
     // Not before 1.8, whose lobby has no Store tab.
     assert.equal(currencyOf(await catalog(backend.port, player.token, certUserAgent)), undefined);
 
-    // The catalog service prices the account's own app store ids, and no one else's.
+    // The catalog service prices the app store ids this backend signed, and no made-up or tampered ones.
     const ids = store.catalogEntries.map((offer) => offer.appStoreId[1]);
-    const query = `/catalog/api/shared/bulk/offers?${ids.map((id) => `id=${id}`).join("&")}&returnItemDetails=false`;
+    const query = `/catalog/api/shared/bulk/offers?${ids.map((id) => `id=${id}`).join("&")}&returnItemDetails=false&locale=en-US`;
     const priced = (await as(backend.port, query, player.token)).body;
     assert.deepEqual(Object.values(priced).map((offer) => [offer.price, offer.currencyCode]), [[999, "USD"], [2499, "USD"], [5999, "USD"], [9999, "USD"]]);
     assert.equal(priced[ids[1]].id, ids[1]);
-    assert.deepEqual((await as(backend.port, query, other.token)).body, {});
+    const forged = [ids[0].replace(/.$/, (c) => (c === "A" ? "B" : "A")), ids[0].replace(player.accountId, other.accountId), "core_mtx_1000"];
+    assert.deepEqual((await as(backend.port, `/catalog/api/shared/bulk/offers?${forged.map((id) => `id=${id}`).join("&")}`, player.token)).body, {});
+    assert.equal((await as(backend.port, query)).status, 401);
 
     // The admin panel turns them off.
     assert.equal((await post(backend.port, "/admin/api/settings", undefined, { vbuckPacks: false })).body.vbuckPacks, false);
     assert.equal(currencyOf(await catalog(backend.port, player.token)), undefined);
     assert.equal((await send({ host: "127.0.0.1", port: backend.port, path: "/admin/api/shop" })).body.vbuckPacks, false);
+  } finally {
+    backend.close();
+  }
+});
+
+// Core-Backend #239: the client's catalog service asks with the game's client_credentials token, which names no account
+// (FOnlineCatalogServiceMcp queues its requests per client). Answered with {}, the packs had no price and the Store tab
+// listed none, on every build from 1.8.
+test("the catalog service prices the packs for the game's client token, on every build from 1.8 to 3.2", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "ClientPriced");
+    const client = await clientToken(backend.port);
+    for (const build of ["Release-1.8-CL-3724489", "Release-2.5-CL-3889387", "Release-3.0-CL-3901517", "Release-3.2-CL-3935073"]) {
+      const userAgent = `game=Fortnite, engine=UE4, build=++Fortnite+${build}`;
+      const store = currencyOf(await catalog(backend.port, player.token, userAgent));
+      assert.equal(store.catalogEntries.length, 4, build);
+      const ids = store.catalogEntries.map((offer) => offer.appStoreId[1]);
+      const query = `/catalog/api/shared/bulk/offers?${ids.map((id) => `id=${id}`).join("&")}&returnItemDetails=false&locale=en-US`;
+      const answer = await as(backend.port, query, client, userAgent);
+      assert.equal(answer.status, 200, build);
+      assert.deepEqual(Object.keys(answer.body), ids, build);
+      assert.deepEqual(Object.values(answer.body).map((offer) => [offer.id, offer.namespace, offer.price, offer.currencyCode]),
+        ids.map((id, index) => [id, "fn", [999, 2499, 5999, 9999][index], "USD"]), build);
+    }
   } finally {
     backend.close();
   }
