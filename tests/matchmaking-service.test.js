@@ -168,6 +168,40 @@ test("parties that fill share teams up to the playlist's team size; the others p
   assert.deepEqual(formTeams([party(false, "a", "b", "c"), party(true, "d")], teams(2)), [[["a", "b"]], [["c"]], [["d"]]]);
 });
 
+// CoreV2 #238: from 3.1 AssignMatch's teams[i] is the beacon's team i, its squads in match.option.squads.
+test("from 3.1 AssignMatch's teams are the playlist's teams, their squads in match.option.squads", () => {
+  const party = (fill, ...players) => ({ players, fill });
+  const fiveByTwenty = playlistTeamsOf("3935073:0:NA:22", 3935073);
+  assert.deepEqual(fiveByTwenty, { maxTeamCount: 5, maxTeamSize: 20, maxSquadSize: 4 });
+  const parties = [party(true, "a", "b", "c"), party(true, "d"), party(false, "e"), party(true, "f", "g"), party(true, "h", "i", "j", "k"),
+    party(true, "l"), party(true, "m", "n"), party(true, "o", "p", "q", "r"), party(false, "s")];
+  // Before 3.1 the teams' squads take turns (the server puts teams[i] on team i % 5): seven squads in ten places, so
+  // teams[5] and on would be teams of their own on 3.1's and 3.2's servers.
+  const squads = formTeams(parties, fiveByTwenty);
+  assert.equal(squads.length, 10);
+  assert.equal(squads.squads, undefined);
+  // From 3.1 one entry per team, squad by squad, and each team's squads as counts of its parties: the biggest party
+  // first to the team with the fewest players; a party that fills tops up a squad of its team, one that doesn't plays
+  // in its own.
+  const teams = formTeams(parties, fiveByTwenty, { teamsAreSquads: false });
+  assert.deepEqual([...teams], [
+    [["h", "i", "j", "k"]],
+    [["o", "p", "q", "r"]],
+    [["a", "b", "c"], ["l"]],
+    [["f", "g"], ["d"], ["s"]],
+    [["m", "n"], ["e"]]
+  ]);
+  assert.equal(teams.squads, "1;1;2;2,1;1,1");
+  assert.equal(teams.flat(2).length, parties.flatMap((entry) => entry.players).length);
+  // Empty teams after the last are left out; teams of one squad (solo, duo, squad) need no option.
+  const two = formTeams([party(true, "a"), party(true, "b")], fiveByTwenty, { teamsAreSquads: false });
+  assert.deepEqual([...two], [[["a"]], [["b"]]]);
+  assert.equal(two.squads, "1;1");
+  const solo = formTeams([party(true, "a"), party(true, "b")], playlistTeamsOf("3935073:0:NA:2", 3935073), { teamsAreSquads: false });
+  assert.deepEqual([...solo], [[["a"]], [["b"]]]);
+  assert.equal(solo.squads, null);
+});
+
 test("the ETA is whole seconds, never a whole minute (the client shows N/A for those), and 0 when unknown", () => {
   assert.deepEqual([0, -5, NaN, 1, 9200, 60000, 59001, 120000].map(estimatedWaitSec), [0, 0, 0, 1, 10, 61, 60 + 1, 121]);
 });

@@ -78,6 +78,8 @@ const playlistTeamsFrom30 = {
   31: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }
 };
 const playlistClassBuild = 3901517;
+// From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).
+export const teamSquadsOptionBuild = 3915963;
 // Late joining (Core-Backend #122, the admin panel's Matchmaking settings). The servers' MMS client (1.9
 // MatchmakingServiceDedicatedServer 0x3BF2730) knows only Registered, AssignMatch and UnassignMatch, takes an
 // AssignMatch only while Registered, and leaves the service once its match is assigned (0x709370), so the protocol has
@@ -208,7 +210,14 @@ export const playlistTeamsOf = (bucketId, build = null) => {
 //   the lowest such team on a tie), so the teams are as even as the parties allow, and each team's parties make its
 //   squads. The teams' squads then take turns in AssignMatch's teams, an empty team holding the place of a team that
 //   has run out of squads (the server skips it, 0x79CEE0).
-export function formTeams(parties, teams) {
+// From 3.1 (CL-3915963) AssignMatch's teams[i] is the beacon's team i itself, with no modulo (3.1 0xD6CB50, 3.2
+// 0xD81D20: each party's reservation has TeamNum i, and the Manual GetTeamAssignment, 3.2 0x326780, returns it however
+// many teams the playlist has; 3.0's 0xD337A0 still takes i % the team count), and the squads within a team come from
+// match.option.squads (3.2 AFortGameSessionDedicated 0xCFE660): one ";"-separated entry per team, each the ","-separated
+// counts of the team's parties that make each of its squads, in order. The squads count up from 1 across the teams;
+// without the option each team is one squad (SquadId i + 1). With teamsAreSquads false the result is that: one entry per
+// team (its parties, squad by squad) and the option on its `squads` property (null where a team is one squad).
+export function formTeams(parties, teams, { teamsAreSquads = true } = {}) {
   if (!teams) return parties.map((party) => [party.players]);
   const { maxTeamCount, maxTeamSize, maxSquadSize } = teams;
   const squadsOf = (group) => {
@@ -249,7 +258,17 @@ export function formTeams(parties, teams) {
       side.players += squad.players;
     }
   }
-  const rounds = Math.max(0, ...sides.map((side) => side.squads.length));
+  if (!teamsAreSquads) {
+    // Each team's parties, squad by squad, and the parties of each of its squads ("0" for an empty team, so the
+    // server's split, which drops empty entries, keeps every team's place).
+    const result = sides.map((side) => side.squads.flat());
+    while (result.length && !result.at(-1).length) result.pop();
+    result.squads = maxTeamSize > maxSquadSize
+      ? sides.slice(0, result.length).map((side) => (side.squads.length ? side.squads.map((squad) => squad.length).join(",") : "0")).join(";")
+      : null;
+    return result;
+  }
+  const rounds =Math.max(0, ...sides.map((side) => side.squads.length));
   const result = [];
   for (let round = 0; round < rounds; round++) for (const side of sides) result.push(side.squads[round] ?? []);
   while (result.length && !result.at(-1).length) result.pop();
@@ -415,8 +434,12 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
   // player.option.fillTeam); without it the party fills, as the client asks for every playlist but Squads with No Fill.
   const fills = (party) => [party, ...party.members].map((member) => member.ticket.fillTeam).find((fill) => typeof fill === "boolean") ?? true;
   // AssignMatch's teams for a match's parties, or null when the playlist's teams have no room for them all.
-  const teamsFor = (parties, bucketId) => formTeams(parties.map((party) => ({ players: party.ticket.partyPlayerIds, fill: fills(party) })),
-    playlistTeamsOf(bucketId, parties.find((party) => party.ticket.build)?.ticket.build ?? null));
+  // In the format of the server's build when it is known (formTeams: teams of squads before 3.1, the beacon's teams from).
+  const teamsFor = (parties, bucketId, serverBuild = null) => {
+    const build = parties.find((party) => party.ticket.build)?.ticket.build ?? null;
+    return formTeams(parties.map((party) => ({ players: party.ticket.partyPlayerIds, fill: fills(party) })), playlistTeamsOf(bucketId, build),
+      { teamsAreSquads: Number(serverBuild ?? build) < teamSquadsOptionBuild });
+  };
 
   function issueTicket(kind, fields) {
     const ticket = { ...fields, kind, ticketId: newId(), issued: Date.now() };
@@ -623,10 +646,11 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     forming.sent = true;
     // The parties fitted the playlist's teams as they joined; should a member's Squad Fill choice, heard later, make them
     // not fit, each party is a team of its own.
-    const teams = teamsFor(forming.parties, forming.bucketId) ?? forming.parties.map((party) => [party.ticket.partyPlayerIds]);
+    const teams = teamsFor(forming.parties, forming.bucketId, server.build) ?? forming.parties.map((party) => [party.ticket.partyPlayerIds]);
     say(`Assigning match ${forming.matchId} (${forming.players} players in ${teams.length} teams, bucket ${forming.bucketId}) to session ${server.sessionId}`);
     // In the format of the server's build, the one its session ticket was asked from (a netcl isn't always a changelist).
-    const options = forming.customKey ? { ...matchOptions, "match.option.customKey": forming.customKey } : matchOptions;
+    const options = { ...matchOptions, ...(forming.customKey ? { "match.option.customKey": forming.customKey } : {}),
+      ...(teams.squads ? { "match.option.squads": teams.squads } : {}) };
     server.ws.send(message("AssignMatch", { matchId: forming.matchId, bucketId: assignmentBucket(forming.bucketId, server.build), matchOptions: options, teams }));
   }
 
