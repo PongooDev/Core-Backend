@@ -110,7 +110,10 @@ export function purchaseCatalogEntry({ req, session, notifications }) {
     }
     spendMtx(tracker, total);
     const item = grantCosmetic(session, offer.templateId);
-    notifications.push({ type: "CatalogPurchase", primary: true, lootResult: { items: [lootEntry(item)] } });
+    // An outfit sold with its back bling (store/itemshop.js bundledBackBlings) gives that too, unless it is owned.
+    const extras = (offer.itemGrants ?? []).slice(1).filter(({ templateId }) => !ownsCosmetic(session, templateId))
+      .map(({ templateId }) => grantCosmetic(session, templateId)).filter(Boolean);
+    notifications.push({ type: "CatalogPurchase", primary: true, lootResult: { items: [item, ...extras].map(lootEntry) } });
     return;
   }
   // An Event Store offer (store/eventstore.js) sells as many as its limit, counted in the account's tracker.

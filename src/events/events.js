@@ -120,12 +120,22 @@ export const supplyDropGift = "EventFlag.SupplyDropGift";
 // 3.0). 3.0's data extends the chapter (Reactive_Fountains between the lanterns and the Firework Clusters, then
 // EvolveDragonWeapon, KillHusksDragonWeapon and KillMistMonstersDragonWeapon), reached through the quests 2.5's line
 // already grants. 50v50 ends with 2.5: 3.0's Athena_GameMode has no playlist class for playlist 11 (events/ltms.js).
+//
+// 3.1 (CL-3915963, 28 February 2018) runs on as 3.0 (its alert rows and categories are 3.0's) and adds Spring It On!'s
+// next chapter: "'Spring it On!' continues, adding new questline 'Brave Beginnings'. ... Join the brave survivor on her
+// mission to join in the battle against the storm as a defender." 3.1's Spring2018_QuestMapWidget (RefreshPagesEnabled)
+// shows Brave Beginnings' pages (Spring2018_MapPage_03a, _03b, "Spring It On! - Brave Beginnings") from
+// EventFlag.Spring2018Phase2, which also keeps Love Storm's and Luck Explosion's (pages 0 to 5), so 3.1 runs Phase2 too.
+// Page 03a's first tile is SpringQuest_2018_Reactive_RescueVal, Val's line, which Core already grants from 2.5
+// (events/spring2018.js; 🟡: before its notes' 3.1), so the chapter needs no new quest. Phase3 (Luck of the Storm) and
+// Phase4 (The Dreaded Clusterhusk) stay off: nothing in 3.1's notes starts them.
 export const mutantStorms2018 = "MutantStorms2018";
 export const activeMiniBosses = "EventFlag.ActiveMiniBosses";
 export const passiveMiniBosses = "EventFlag.PassiveMiniBosses";
 export const spring2018 = "Spring2018";
 export const spring2018Valentines = "EventFlag.Spring2018Valentines";
 export const spring2018Phase1 = "EventFlag.Spring2018Phase1";
+export const spring2018Phase2 = "EventFlag.Spring2018Phase2";
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
@@ -136,10 +146,11 @@ const events = [
   { name: fiftyFifty, flag: fiftyFifty, firstBuild: 3790078, lastBuild: 3889387 },
   { name: winter2017, flag: winter2017, firstBuild: 3807424, lastBuild: 3841827 },
   { name: passiveStorms, flag: passiveStorms, firstBuild: 3807424, lastBuild: 3841827 },
-  { name: passiveStorms, flag: passiveStorms, firstBuild: 3889387, lastBuild: 3901517 },
-  { name: passiveMiniBosses, flag: passiveMiniBosses, firstBuild: 3889387, lastBuild: 3901517 },
-  { name: spring2018, flag: spring2018Valentines, firstBuild: 3889387, lastBuild: 3901517 },
-  { name: spring2018, flag: spring2018Phase1, firstBuild: 3889387, lastBuild: 3901517 },
+  { name: passiveStorms, flag: passiveStorms, firstBuild: 3889387, lastBuild: 3915963 },
+  { name: passiveMiniBosses, flag: passiveMiniBosses, firstBuild: 3889387, lastBuild: 3915963 },
+  { name: spring2018, flag: spring2018Valentines, firstBuild: 3889387, lastBuild: 3915963 },
+  { name: spring2018, flag: spring2018Phase1, firstBuild: 3889387, lastBuild: 3915963 },
+  { name: spring2018, flag: spring2018Phase2, firstBuild: 3915963, lastBuild: 3915963 },
   { name: lobbyWinterDecor, flag: lobbyWinterDecor, firstBuild: 3807424, lastBuild: 3825894 },
   { name: winterBattleBus, flag: winterBattleBus, firstBuild: 3807424, lastBuild: 3825894 },
   { name: supplyDropGift, flag: supplyDropGift, firstBuild: 3807424, lastBuild: 3825894 }

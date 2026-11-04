@@ -62,8 +62,11 @@ const playlistTeams = {
 // From 3.0 (CL-3901517) a playlist's teams are its playlist class's (events/ltms.js): MaxTeamCount, MaxTeamSize and
 // MaxPartySize of Athena/Events/<mode>/Playlist_*. Where they differ from the table above: Take To The Skies (16) is
 // duos, and 3.0's new playlists, 5x20 (22: 5 × 20 in parties of 4), High Jump (23), Use It & Lose It (25), Steady Storm
-// (26), Solid Gold (27), Sky Supply (30) and Shotguns (31).
+// (26), Solid Gold (27), Sky Supply (30) and Shotguns (31); and 3.1's (CL-3915963) Blitz children, Playlist_Blitz_Child_Solo
+// (36: 100 × 1) and _Duo (37: 100 × 2), whose MaxTeamCount is Blitz's.
 const playlistTeamsFrom30 = {
+  36: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  37: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
   16: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
   22: { maxTeamCount: 5, maxTeamSize: 20, maxSquadSize: 4 },
   23: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
@@ -143,6 +146,9 @@ export function parseBucket(bucketId) {
 // so does 3.0 (CL-3901517): its dump keeps the ticket paths (ticket/player/`id?partyPlayerIds=&bucketId=,
 // ticket/session/`id?bucketIds=), "Epic-Signed %s %s %s", the player.option and match.option keys, ticket.status.* and
 // HandleAssignMatchMessage's six-field "GameId: %s AppId %s BuildId: %d HotfixVersion: %d RegionId: %s PlaylistId: %d".
+// 3.1 (CL-3915963) keeps every one of them, ticket.status.numNeeded, numQueued and matchStartDelay and the Queued
+// status's queuedPlayers and estimatedWaitSec, SessionAssignment's matchId and the Play message's sessionId and
+// joinDelaySec included (its dump), so it is 3.0's format.
 export const sixFieldAssignBuild = 3807424;
 const assignGameId = "Fortnite";
 const assignAppId = "Fortnite";

@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import { currentBuild } from "../builds/context.js";
 import { isEventActive, mutantStorms2018, spring2018, winter2017 } from "../events/events.js";
 import { getItem } from "../gamedata/items.js";
 import { nextReplayOf, weeklyStoreEnd } from "./itemshop.js";
@@ -167,7 +168,16 @@ export const spring2018End = "2018-02-22T00:00:00.000Z";
 // 3.0's notes: "The Bald Eagle Hand Cannon is now available in the Weekly Store. This is the highest-damage hand cannon
 // yet!" (SID_Pistol_HandCannon_DE_SR_Ore_T01, new in 3.0's data): every week, at a legendary schematic's 1,680 Seasonal
 // Gold, one (🟡: Epic's price and limit aren't recorded), on a build whose data has it.
-const weeklyFeatured = [{ templateId: "Schematic:sid_pistol_handcannon_de_sr_ore_t01", price: 1680, limit: 1 }];
+// 3.1's (CL-3915963): "DragonFire shotgun is now available in the Weekly Store! Shoots a cone of fiery death, damaging all
+// husks in the area. Heavy auto-shotgun, with a slower rate of fire and smaller magazine size." That is the Spring Llama's
+// Dragon heavy shotgun, SID_Shotgun_Dragon_Drum_SR_Ore_T01 (2.5's data on), in the Bald Eagle's place on 3.1 and later
+// (🟡: the notes don't say the Bald Eagle left; Core features one item a week, the build's newest), at the same price
+// and limit.
+const weeklyFeaturedByBuild = [
+  { firstBuild: 3915963, items: [{ templateId: "Schematic:sid_shotgun_dragon_drum_sr_ore_t01", price: 1680, limit: 1 }] },
+  { firstBuild: 3901517, items: [{ templateId: "Schematic:sid_pistol_handcannon_de_sr_ore_t01", price: 1680, limit: 1 }] }
+];
+const weeklyFeatured = () => weeklyFeaturedByBuild.find(({ firstBuild }) => Number(currentBuild()) >= firstBuild)?.items ?? [];
 const storms2018 = () => !isEventActive(winter2017) && isEventActive(mutantStorms2018);
 const springNow = () => !isEventActive(winter2017) && !storms2018() && isEventActive(spring2018);
 const eventItemsNow = () => (storms2018() ? stormsEventItems : springNow() ? springEventItems : eventItems);
@@ -218,7 +228,7 @@ function weeklyItems(week) {
     return offered.length
       ? { ...offer, templateId: offered[Math.floor(weekRandom(week, weeklyPicks.length + 2 + index) * offered.length)] } : undefined;
   }).filter(Boolean) : [];
-  return [...weeklyFeatured.filter(has), ...coinPicks, ...picks.slice(0, 3), ...chosen, ...weeklyStaples.filter(has), ...picks.slice(3)];
+  return [...weeklyFeatured().filter(has), ...coinPicks, ...picks.slice(0, 3), ...chosen, ...weeklyStaples.filter(has), ...picks.slice(3)];
 }
 
 const toOffer = (offerId, instance) => ({ templateId, quantity = 1, price, limit, currency = seasonalGold }) => ({

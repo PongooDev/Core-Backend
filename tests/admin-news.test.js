@@ -219,7 +219,8 @@ test("1.9 gets the lobby news as battleRoyaleNews.news.messages[], earlier build
     assert.equal((await pageFor(backend.port, "3825894")).body.battleRoyaleNews.news.messages[0].title, "Battle Royale - 2.1");
     assert.equal((await pageFor(backend.port, "3841827")).body.battleRoyaleNews.news.messages[0].title, "Battle Royale - 2.2");
     assert.equal((await pageFor(backend.port, "3901517")).body.battleRoyaleNews.news.messages[0].title, "Battle Royale - 3.0");
-    assert.equal((await pageFor(backend.port, "3915963")).body.battleRoyaleNews.news.messages[0].title, "Battle Royale - CL-3915963");
+    assert.equal((await pageFor(backend.port, "3915963")).body.battleRoyaleNews.news.messages[0].title, "Battle Royale - 3.1");
+    assert.equal((await pageFor(backend.port, "3999999")).body.battleRoyaleNews.news.messages[0].title, "Battle Royale - CL-3999999");
 
     // Earlier builds are unchanged: news.message alone.
     for (const [changelist, version] of [["3700114", "1.7.2"], ["3724489", "1.8"], ["3729133", "1.8.1"], ["3741772", "1.8.2"]]) {

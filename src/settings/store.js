@@ -9,7 +9,8 @@ import { allowedBuildList } from "../builds/allowed.js";
 
 // The Battle Royale modes a region's server limits (serverLimits) count, each 0 (no limit) by default.
 const limitModes = ["solo", "duo", "squad", "fiftyFifty", "shootingTest", "highExplosives", "sneakySilencers", "sniperShootout",
-  "speedyStorm", "takeToTheSkies", "lotsaLoot", "blitz", "fiveByTwenty", "highJump", "useItOrLoseIt", "steadyStorm", "solidGold", "skySupply", "shotguns"];
+  "speedyStorm", "takeToTheSkies", "lotsaLoot", "blitz", "fiveByTwenty", "highJump", "useItOrLoseIt", "steadyStorm", "solidGold", "skySupply", "shotguns",
+  "blitzSolo", "blitzDuo"];
 const noLimits = () => Object.fromEntries(limitModes.map((mode) => [mode, 0]));
 
 const defaults = {
@@ -116,7 +117,10 @@ const defaults = {
     steadyStorm: false,
     solidGold: false,
     skySupply: false,
-    shotguns: false
+    shotguns: false,
+    // 3.1's Blitz children (Blitz Solo and Duo), off too.
+    blitzSolo: false,
+    blitzDuo: false
   },
   // The LTMs' original dates (Core-Backend #190, events/ltms.js): on, each runs only in its original window on the
   // season's replay and on the builds Epic ran it on, whatever matchmakingModes says of it.
@@ -146,7 +150,7 @@ export function sanitizeMatchmakingModes(input, current = defaultMatchmakingMode
     sneakySilencers: typeof input.sneakySilencers === "boolean" ? input.sneakySilencers : (current.sneakySilencers === true),
     sniperShootout: typeof input.sniperShootout === "boolean" ? input.sniperShootout : (current.sniperShootout === true),
     ...Object.fromEntries(["speedyStorm", "takeToTheSkies", "lotsaLoot", "blitz", "fiveByTwenty", "highJump", "useItOrLoseIt", "steadyStorm", "solidGold",
-      "skySupply", "shotguns"].map((id) =>
+      "skySupply", "shotguns", "blitzSolo", "blitzDuo"].map((id) =>
       [id, typeof input[id] === "boolean" ? input[id] : (current[id] === true)]))
   };
 }

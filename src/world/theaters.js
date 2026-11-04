@@ -122,20 +122,22 @@ function shuffled(list, seed) {
 // that mission's packs.
 // A Hexsylvania mission (world/hexsylvania.js) also gives Candy, which world info shows with its other rewards. A Survive
 // the Storm mission's group (Mission_Select_Survival_T0<n>) is in no world info: it gives its Survival Rewards pack.
-function missionRewards(seed, tierGroupName, theaterId, rowName) {
-  const { count = 0, pool = [] } = layout().rewards[tierGroupName] ?? {};
+// A group mission (groupMissions) draws from its solo tier's pool (soloTierGroup) twice over.
+function missionRewards(seed, tierGroupName, theaterId, rowName, soloTierGroup = null) {
+  const { count: soloCount = 0, pool = [] } = layout().rewards[soloTierGroup ?? tierGroupName] ?? {};
+  const count = soloTierGroup ? 2 * soloCount : soloCount;
   const drawn = pool.reduce((total, reward) => total + reward.weight, 0);
-  const items = drawn <= count ? pool.flatMap(({ itemType, quantity, weight }) => Array(weight).fill({ itemType, quantity }))
+  const items = drawn <= count ? pool.flatMap(({ itemType, quantity, weight }) => Array(weight * (soloTierGroup ? 2 : 1)).fill({ itemType, quantity }))
     : Array.from({ length: count }, (_, index) => weighted(pool, `${seed}:reward:${index}`));
   if (isHexsylvania(theaterId)) items.push({ itemType: candy, quantity: candyReward(rowName) });
   const survival = isSurvival(theaterId) && survivalReward(tierGroupName);
   if (survival) items.push(survival);
-  const gold = seasonalGoldPack(tierGroupName);
+  const gold = seasonalGoldPack(soloTierGroup ?? tierGroupName);
   if (gold) items.push({ itemType: gold, quantity: 1 });
   return { tierGroupName, items: items.map(({ itemType, quantity }) => ({ itemType, quantity })) };
 }
 
-// Seasonal Gold from every mission while the Event Store is open (1.11 to 3.0, store/eventstore.js): 1.11's "Play any
+// Seasonal Gold from every mission while the Event Store is open (1.11 to 3.1, store/eventstore.js): 1.11's "Play any
 // mission and earn Seasonal Gold", 2.3's "All missions will continue to award Seasonal Gold". The game's own pack for it
 // is ZCP_EventScaling_T01-T20 ("Seasonal Gold", "Special currency found throughout the world. Can be traded for items in
 // the Event Store."), one a mission tier as the XP packs: Mission_Select_T<nn> takes T<nn>, a storm shield defense
@@ -149,10 +151,10 @@ function seasonalGoldPack(tierGroupName) {
   return templateId && getItem(templateId) ? templateId : undefined;
 }
 
-function mission(seed, theaterId, tileIndex, missionGenerator, missionDifficultyInfo, tierGroupName, availableUntil) {
+function mission(seed, theaterId, tileIndex, missionGenerator, missionDifficultyInfo, tierGroupName, availableUntil, soloTierGroup = null) {
   return {
     missionGuid: missionGuid(seed),
-    missionRewards: missionRewards(seed, tierGroupName, theaterId, missionDifficultyInfo.rowName),
+    missionRewards: missionRewards(seed, tierGroupName, theaterId, missionDifficultyInfo.rowName, soloTierGroup),
     missionModifiers: { tierGroupName: "", items: [] },
     missionGenerator,
     missionDifficultyInfo,
@@ -160,6 +162,22 @@ function mission(seed, theaterId, tileIndex, missionGenerator, missionDifficulty
     availableUntil
   };
 }
+
+// 3.1's (CL-3915963) group missions: "We have added new group missions to all theaters. Currently the mission is 'Fight
+// the Storm' with encounters designed for 4 players. These missions allow 4 extra Defenders to be used. Rewards for group
+// missions should be roughly double, except for Spring It On! Gold (the latter remains unchanged)." Its data has the
+// mission, MissionGen_1Gate_Group (GroupGate_Single, a child of Stonewood's MissionGen_1Gate), and its difficulty rows,
+// Theater_<Start|Normal|Hard|Nightmare>_Group_Zone<1-5> ("<power> - 4 Players", loot tier groups Mission_Select_Group_T01
+// to T20), which no world info Core has places (tools/theaters is 2.x's). So, on a build whose data has them (🟡 Core's
+// layout): each main theater region that rolls missions also hosts one group mission a day, on one more of its Normal
+// tiles, at the group row of the difficulty it rolls (Theater_Normal_Zone3 → Theater_Normal_Group_Zone3), its rewards
+// twice the solo tier's draw (the group tiers have no world info pool) and its Seasonal Gold the solo tier's.
+const groupGenerator = "/Game/World/MissionGens/MissionGen_1Gate_Group.MissionGen_1Gate_Group_C";
+const groupMissions = perBuild((read) => Boolean(read("world", {}).missionGenerators?.[groupGenerator]));
+const groupRowOf = (rowName) => {
+  const match = /^Theater_(Start|Normal|Hard|Nightmare)_Zone(\d)$/.exec(rowName ?? "");
+  return match ? `Theater_${match[1]}_Group_Zone${match[2]}` : null;
+};
 
 // As in Epic's data: every AlwaysActive tile hosts a mission, and each region adds numMissionsAvailable missions on
 // its Normal tiles. A tile's own weights override the region's.
@@ -172,7 +190,21 @@ function rollMissions({ data, fixedMissions }, day, availableUntil) {
     if (!missionData.numMissionsAvailable) return;
     const seed = `${data.uniqueId}:${day}:region:${regionIndex}`;
     const ofType = (type) => region.tileIndices.filter((index) => data.tiles[index].tileType === type);
-    const normal = shuffled(ofType("Normal"), seed).slice(0, missionData.numMissionsAvailable);
+    const shuffledNormal = shuffled(ofType("Normal"), seed);
+    const normal = shuffledNormal.slice(0, missionData.numMissionsAvailable);
+    const groupTile = theaterZone(data) && groupMissions() ? shuffledNormal[missionData.numMissionsAvailable] : undefined;
+    if (groupTile !== undefined) {
+      const tile = data.tiles[groupTile];
+      const difficulties = tile.difficultyWeightOverrides?.length ? tile.difficultyWeightOverrides : missionData.difficultyWeights ?? [];
+      const tileSeed = `${seed}:group:${groupTile}`;
+      const solo = difficulties.length ? weighted(difficulties, `${tileSeed}:difficulty`).difficultyInfo : null;
+      const groupRow = groupRowOf(solo?.rowName);
+      const group = groupRow && getDifficulty(groupRow);
+      if (group) {
+        missions.push(mission(tileSeed, data.uniqueId, groupTile, groupGenerator, { ...solo, rowName: groupRow },
+          group.lootTierGroup ?? "", availableUntil, getDifficulty(solo.rowName)?.lootTierGroup ?? ""));
+      }
+    }
     for (const tileIndex of [...ofType("AlwaysActive"), ...normal]) {
       const tile = data.tiles[tileIndex];
       const generators = tile.missionWeightOverrides?.length ? tile.missionWeightOverrides : missionData.missionWeights ?? [];

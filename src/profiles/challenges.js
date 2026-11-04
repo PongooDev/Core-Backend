@@ -8,7 +8,8 @@ import { seasonHistoryStart, seasonMoment } from "../store/itemshop.js";
 // schedules: ChallengeBundleSchedule:Season3_Challenge_Schedule with the Battle Pass (tier 1), Season3_Tier_2_Schedule
 // at free tier 2 and Season3_Tier_100_Schedule at tier 100. A schedule (UFortChallengeBundleScheduleDefinition) unlocks
 // its bundles by its entries' UnlockType: OnScheduleGranted at once, DaysSinceEventStart (Week 2 to 9, 7 to 56 days)
-// once that many days of the season have passed. A bundle (UFortChallengeBundleItemDefinition) brings its quests
+// once that many days of the season have passed. 3.1 (CL-3915963) adds Week 10 (S3_Week10_QuestBundle, 63 days: 26
+// April on the replay) and a sixth quest to Week 9 (topUpBundle); its other weeks are 3.0's. A bundle (UFortChallengeBundleItemDefinition) brings its quests
 // (AthenaChallengeBundleQuest, bGrantWithBundle) and, once CompletionThreshold of them are done, its CompletionRewards
 // (4,000 season XP a week; Tier 100's the Carbide glider, Glider_ID_017_Assassin).
 //
@@ -155,6 +156,32 @@ function grantBundle(session, scheduleItemId, bundleId, athena) {
   return bundleItemId;
 }
 
+// A bundle given on an earlier build whose data had fewer of its quests gets the ones the requesting build's data adds
+// (🟡 Core's: 3.1, CL-3915963, adds Quest_BR_Damage_Enemy_Buildings to S3_Week9_QuestBundle, which 3.0 gave with five
+// quests; a 3.1 player who had week 9 on 3.0 gets the sixth at their next login). Quests the bundle held stay.
+function topUpBundle(session, bundleItemId, bundleId, athena) {
+  const tracker = session.profile("athena");
+  const bundle = athenaChallengeBundles()[bundleId];
+  const bundleItem = tracker.profile.items[bundleItemId];
+  if (!bundle || !bundleItem) return;
+  const questIds = [...(bundleItem.attributes.grantedquestinstanceids ?? [])];
+  const heldQuests = new Set(questIds.map((id) => idOf(tracker.profile.items[id]?.templateId)).filter(Boolean));
+  const added = [];
+  for (const { quest, grantWithBundle } of bundle.quests) {
+    if (!grantWithBundle || heldQuests.has(quest) || !getAthenaQuest(quest)) continue;
+    const questItemId = athena.grantAthenaQuest(tracker, quest);
+    if (!questItemId) continue;
+    tracker.setItemAttribute(questItemId, "challenge_bundle_id", bundleItemId);
+    tracker.setItemAttribute(questItemId, "challenge_linked_quest_given", "");
+    tracker.setItemAttribute(questItemId, "challenge_linked_quest_parent", "");
+    added.push(questItemId);
+  }
+  if (!added.length) return;
+  tracker.setItemAttribute(bundleItemId, "grantedquestinstanceids", [...questIds, ...added]);
+  tracker.setItemAttribute(bundleItemId, "num_granted_bundle_quests", questIds.length + added.length);
+  log("Battle Royale", `${session.accountId} got ${added.length} more of ${bundleId}'s challenges`);
+}
+
 // Gives the schedules' bundles that have unlocked (the weekly schedule's by the admin's settings, weekPlan), and keeps
 // their unlock_epoch on the calendar's seasonBegin.
 export function settleChallengeSchedules(session, athena, now = new Date()) {
@@ -169,7 +196,9 @@ export function settleChallengeSchedules(session, athena, now = new Date()) {
     const granted = [...(item.attributes.granted_bundles ?? [])];
     for (const entry of schedule.bundles) {
       const open = isWeekly(schedule) ? weekOpen.get(entry.bundle) === true : !bySeasonDays(entry);
-      if (!open || heldBundle(tracker.profile, entry.bundle)) continue;
+      const held = heldBundle(tracker.profile, entry.bundle);
+      if (held) topUpBundle(session, held[0], entry.bundle, athena);
+      if (!open || held) continue;
       const bundleItemId = grantBundle(session, scheduleItemId, entry.bundle, athena);
       if (bundleItemId) granted.push(bundleItemId);
     }

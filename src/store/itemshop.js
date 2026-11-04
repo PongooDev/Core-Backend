@@ -56,8 +56,10 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // of a cycling tile listed, Alpine Ace's and Mogul Master's country styles too, the items of one tile marked as such
 // (tileOf below: 3.0 shows them in one tile, cycling, as Epic's did; Core-Backend #217). Season 2's history has no such
 // tile: none of its wiki tiles held two of the cosmetics it lists, so its shops are as they were. The
-// season ran on to 3.6, so the later 3.x cosmetics (Rex, Burnout, Sgt. Green Clover, Battle Hound, Raven...) and
-// Battle Pass Tiers are left out. A build's season is its athena data's seasonNumber, Season 1 without one.
+// season ran on to 3.6: 3.1's (CL-3915963) cosmetics are in on the days Epic sold them (Rex, Burnout, Radiant and
+// Brilliant Striker, Empire Axe, Pick Squeak, Tactical Spade, Make It Rain, Flippin' Sexy, Reanimated; a build sees only
+// those its data has, so 3.0's shop is as it was), the later ones (Sgt. Green Clover, Battle Hound, Raven...) and Battle
+// Pass Tiers are left out. A build's season is its athena data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;
   return { days, firstDay: Date.parse(`${days[0].date}T00:00:00Z`) };
@@ -408,6 +410,11 @@ const tileOf = (tile) => {
   return { ...(number > 0 ? { category: `Panel ${String(number).padStart(2, "0")}` } : {}), ...(banner ? { banner } : {}) };
 };
 
+// Outfits Epic's shop sold with a back bling of their own (3.1, CL-3915963: Rex, CID_093_Athena_Commando_M_Dinosaur, "Comes
+// with the Scaly Back Bling", BID_031_Dinosaur). The outfit's hero wears no back bling part, so the pairing is the
+// catalog's, which isn't in the paks (🟡: from the Fortnite Wiki's Rex page); the offer grants both, as Epic's did.
+export const bundledBackBlings = { "AthenaCharacter:cid_093_athena_commando_m_dinosaur": "AthenaBackpack:bid_031_dinosaur" };
+
 // The day's offers by storefront, those the requesting build has the cosmetic for.
 export function itemShopOffers(now = new Date(), overrideConfig = null) {
   if (!hasItemShop()) return { BRWeeklyStorefront: [], BRDailyStorefront: [] };
@@ -419,7 +426,9 @@ export function itemShopOffers(now = new Date(), overrideConfig = null) {
     .map(([templateId, price, tile]) => {
       const cosmetic = cosmetics[templateId];
       const validPrice = Number(price) > 0 ? Number(price) : defaultPriceFor(cosmetic);
+      const backBling = bundledBackBlings[templateId];
       return {
+        ...(backBling && cosmetics[backBling] ? { itemGrants: [{ templateId, quantity: 1 }, { templateId: backBling, quantity: 1 }] } : {}),
         offerId: offerIdOf(templateId),
         templateId,
         title: cosmetic.name.trim(),
