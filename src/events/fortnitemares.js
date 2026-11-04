@@ -2,7 +2,7 @@ import { pageId, specialBookPages } from "../collectionbook/pages.js";
 import { getQuest } from "../gamedata/quests.js";
 import { fortnitemares, isEventActive } from "./events.js";
 import { mutantStorms2018EventQuests, mutantStormsEventQuests } from "./mutantstorms.js";
-import { springEventQuests } from "./spring2018.js";
+import { springBookPages, springEventQuests } from "./spring2018.js";
 import { winterBookPages, winterEventQuests } from "./winter2017.js";
 
 // Fortnitemares (Halloween 2017, 1.8): what the event gives on top of its flag (events/events.js).
@@ -47,7 +47,8 @@ export function eventQuests() {
 export const fortnitemaresPages = ["PageSpecial_Halloween2017_Heroes", "PageSpecial_Halloween2017_Workers"];
 
 // The requesting build's special pages: Fortnitemares' when the event runs there, and Survive the Holidays'
-// (events/winter2017.js) and the rest nothing grants (collectionbook/pages.js) wherever the data has them.
+// (events/winter2017.js) and the rest nothing grants (collectionbook/pages.js) wherever the data has them, and Luck of the
+// Storm's (events/spring2018.js) while it runs.
 export function eventBookPages() {
-  return [...(isEventActive(fortnitemares) ? fortnitemaresPages.map(pageId).filter(Boolean) : []), ...winterBookPages(), ...specialBookPages()];
+  return [...(isEventActive(fortnitemares) ? fortnitemaresPages.map(pageId).filter(Boolean) : []), ...winterBookPages(), ...springBookPages(), ...specialBookPages()];
 }

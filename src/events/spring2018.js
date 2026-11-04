@@ -1,3 +1,4 @@
+import { pageId } from "../collectionbook/pages.js";
 import { getItem } from "../gamedata/items.js";
 import { getQuest } from "../gamedata/quests.js";
 import { isEventActive, spring2018, spring2018Phase3 } from "./events.js";
@@ -38,6 +39,17 @@ export const springQuests = [
 // gnomes and the Pub quest), granted while EventFlag.Spring2018Phase3 runs (🟡: Epic's servers started it; Core grants it
 // at quest login like the other chapters' first quests).
 export const luckOfTheStormQuests = ["springquest_2018_reactive_potsofgold"];
+
+// Luck of the Storm's collection book page, the "Spring It On!" category's People page (PageSpecial_SpringItOn2018_People,
+// Section_People_Spring_1: the three St. Patrick's heroes and the Leprechaun survivor). Its row is in 3.2's and 3.3's data
+// alike, but the client lists a page only once its book profile holds the page item (collectionbook/pages.js) and nothing in
+// the data grants it, so the section stayed out of the book next to the Lunar New Year pages (#241).
+// 🟡 Epic's servers gave it when the chapter began (3.3); Core gives it to every book profile while EventFlag.Spring2018Phase3
+// runs (profiles/setup.js), when the book first loads there. The page stays after the chapter.
+export const luckOfTheStormPages = ["PageSpecial_SpringItOn2018_People"];
+
+// The requesting build's Spring It On! collection book pages, where its data has them and the chapter runs.
+export const springBookPages = () => (isEventActive(spring2018Phase3) ? luckOfTheStormPages.map(pageId).filter(Boolean) : []);
 
 // The requesting build's Spring It On! quests, when the event runs there.
 export function springEventQuests() {
