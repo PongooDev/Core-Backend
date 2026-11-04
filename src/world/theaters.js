@@ -3,6 +3,7 @@ import { currentBuild } from "../builds/context.js";
 import { currentEventsConfig, isEventActive, passiveMiniBosses } from "../events/events.js";
 import { candy } from "../events/fortnitemares.js";
 import { miniBossesStay, mutantStorms, mutantStorms2018, stormTickets } from "../events/mutantstorms.js";
+import { firecrackerTickets } from "../events/spring2018.js";
 import { snowflakeTickets, winter2017 } from "../events/winter2017.js";
 import { getItem } from "../gamedata/items.js";
 import { perBuild } from "../gamedata/read.js";
@@ -172,18 +173,72 @@ function mission(seed, theaterId, tileIndex, missionGenerator, missionDifficulty
 // layout): each main theater region that rolls missions also hosts one group mission a day, on one more of its Normal
 // tiles, at the group row of the difficulty it rolls (Theater_Normal_Zone3 → Theater_Normal_Group_Zone3), its rewards
 // twice the solo tier's draw (the group tiers have no world info pool) and its Seasonal Gold the solo tier's.
+//
+// 3.2 (CL-3935073): "Group Missions now include Fight the Storm Category 1, 2, 3 and 4, Retrieve the Data, Ride the
+// Lightning, Evacuate the Shelter, Repair the Shelter and Deliver the Bomb. Which missions a player sees depends on their
+// progression." Its data adds a group generator for each: MissionGen_2Gates_Group, _3Gates_Group and _4Gates_Group
+// (GroupGate_Double, _Triple, _Quadruple), MissionGen_RetrieveTheData_Group (GroupRetrieveTheData),
+// MissionGen_RideTheLightning_Group (LaunchTheBalloon/GroupRideTheStorm), and Plankerton's MissionGen_EtShelter_Group,
+// MissionGen_RtS_Group and MissionGen_DtB_Group (children of MissionGen_T2_EtShelter, MissionGen_T2_RtS and
+// _MissionGen_T2_PARENT); the 1Gate, Retrieve the Data and Ride the Lightning ones have _PVE02on children whose secondary
+// missions are Plankerton's and on (BluGlo_Nodes_PVE_02). No world info Core has places them, so progression is the map's
+// (🟡 Core's reading): a group mission is the group kind of a mission its region rolls (the region's weights, so
+// Stonewood's are Category 1 and 2, Plankerton's add the shelters and bombs, Twine Peaks' Category 3 and 4), the _PVE02on
+// one outside Stonewood, and every region waits for its zone's Storm Shield Defense quest (zoneGate above), which is
+// the notes' "Group Missions now require Storm Shield Defense quest progression to unlock". Stonewood's regions have no
+// Normal tiles (all AlwaysActive), so 3.1 placed none there; from 3.2 a region without a spare Normal tile gives one of
+// its AlwaysActive tiles that no story quest links to over to its group mission (🟡 Core's).
 const groupGenerator = "/Game/World/MissionGens/MissionGen_1Gate_Group.MissionGen_1Gate_Group_C";
 const groupMissions = perBuild((read) => Boolean(read("world", {}).missionGenerators?.[groupGenerator]));
 const groupRowOf = (rowName) => {
   const match = /^Theater_(Start|Normal|Hard|Nightmare)_Zone(\d)$/.exec(rowName ?? "");
   return match ? `Theater_${match[1]}_Group_Zone${match[2]}` : null;
 };
+// A solo generator's kind, by its class name's parts (MissionGen_T2_R5_RtS_C, MissionGen_T1_HT_Cat1FtS_C), and the
+// group generator of that kind.
+const groupKinds = [
+  [["1Gate", "Cat1FtS"], "MissionGen_1Gate_Group"],
+  [["2Gates", "Cat2FtS"], "MissionGen_2Gates_Group"],
+  [["3Gates"], "MissionGen_3Gates_Group"],
+  [["4Gates"], "MissionGen_4Gates_Group"],
+  [["RtD", "RetrieveTheData"], "MissionGen_RetrieveTheData_Group"],
+  [["RtL", "LtB", "LaunchTheBalloon"], "MissionGen_RideTheLightning_Group"],
+  [["EtShelter"], "MissionGen_EtShelter_Group"],
+  [["RtS"], "MissionGen_RtS_Group"],
+  [["DtB"], "MissionGen_DtB_Group"]
+];
+// 3.2's group generators by class name (MissionGen_RtS_Group_C → its path), from the build's data; none before 3.2.
+const groupGenerators = perBuild((read) => {
+  const paths = Object.keys(read("world", {}).missionGenerators ?? {});
+  if (!paths.some((path) => path.endsWith(".MissionGen_RetrieveTheData_Group_C"))) return new Map();
+  return new Map(paths.filter((path) => /_Group(_PVE02on)?_C$/.test(path)).map((path) => [path.split(".").pop(), path]));
+});
+export const groupMissionTypes = () => groupGenerators().size > 0;
+export const isGroupMission = (missionGenerator) => /\/MissionGen_[^/]*_Group(_PVE02on)?\.[^/]*$/.test(missionGenerator ?? "");
+function groupGeneratorOf(missionGenerator, zone) {
+  const parts = (missionGenerator.split(".").pop() ?? "").replace(/^MissionGen_|_C$/g, "").split("_");
+  if (parts.includes("Tutorial") || parts.includes("NoSecondary")) return undefined;
+  const kind = groupKinds.find(([names]) => names.some((name) => parts.includes(name)));
+  if (!kind) return undefined;
+  return (zone > 1 && groupGenerators().get(`${kind[1]}_PVE02on_C`)) || groupGenerators().get(`${kind[1]}_C`);
+}
+// The group generators a tile's region rolls (3.2), weighted as their solo kinds; 3.1's one generator before.
+function groupGeneratorsFor(generators, zone) {
+  if (!groupMissionTypes()) return [{ missionGenerator: groupGenerator, weight: 1 }];
+  const weights = new Map();
+  for (const { missionGenerator, weight = 1 } of generators) {
+    const group = groupGeneratorOf(missionGenerator, zone);
+    if (group) weights.set(group, (weights.get(group) ?? 0) + weight);
+  }
+  return [...weights].map(([missionGenerator, weight]) => ({ missionGenerator, weight }));
+}
 
 // As in Epic's data: every AlwaysActive tile hosts a mission, and each region adds numMissionsAvailable missions on
 // its Normal tiles. A tile's own weights override the region's.
 function rollMissions({ data, fixedMissions }, day, availableUntil) {
   const missions = fixedMissions.map((fixed) => mission(`${data.uniqueId}:${day}:fixed:${fixed.tileIndex}`, data.uniqueId, fixed.tileIndex,
     fixed.missionGenerator, fixed.missionDifficultyInfo, fixed.tierGroupName, availableUntil));
+  const zone = theaterZone(data);
 
   data.regions.forEach((region, regionIndex) => {
     const missionData = region.missionData ?? {};
@@ -192,20 +247,28 @@ function rollMissions({ data, fixedMissions }, day, availableUntil) {
     const ofType = (type) => region.tileIndices.filter((index) => data.tiles[index].tileType === type);
     const shuffledNormal = shuffled(ofType("Normal"), seed);
     const normal = shuffledNormal.slice(0, missionData.numMissionsAvailable);
-    const groupTile = theaterZone(data) && groupMissions() ? shuffledNormal[missionData.numMissionsAvailable] : undefined;
+    const spareAlwaysActive = () => shuffled(ofType("AlwaysActive").filter((index) => !data.tiles[index].linkedQuests?.length), `${seed}:group`)[0];
+    const groupTile = zone && groupMissions()
+      ? shuffledNormal[missionData.numMissionsAvailable] ?? (groupMissionTypes() ? spareAlwaysActive() : undefined) : undefined;
+    let grouped = false;
     if (groupTile !== undefined) {
       const tile = data.tiles[groupTile];
       const difficulties = tile.difficultyWeightOverrides?.length ? tile.difficultyWeightOverrides : missionData.difficultyWeights ?? [];
+      const generators = groupGeneratorsFor(tile.missionWeightOverrides?.length ? tile.missionWeightOverrides : missionData.missionWeights ?? [], zone);
       const tileSeed = `${seed}:group:${groupTile}`;
       const solo = difficulties.length ? weighted(difficulties, `${tileSeed}:difficulty`).difficultyInfo : null;
       const groupRow = groupRowOf(solo?.rowName);
       const group = groupRow && getDifficulty(groupRow);
-      if (group) {
-        missions.push(mission(tileSeed, data.uniqueId, groupTile, groupGenerator, { ...solo, rowName: groupRow },
+      if (group && generators.length) {
+        // 3.1's one generator keeps its seeds.
+        const { missionGenerator } = generators.length === 1 ? generators[0] : weighted(generators, `${tileSeed}:generator`);
+        missions.push(mission(tileSeed, data.uniqueId, groupTile, missionGenerator, { ...solo, rowName: groupRow },
           group.lootTierGroup ?? "", availableUntil, getDifficulty(solo.rowName)?.lootTierGroup ?? ""));
+        grouped = true;
       }
     }
     for (const tileIndex of [...ofType("AlwaysActive"), ...normal]) {
+      if (grouped && tileIndex === groupTile) continue;
       const tile = data.tiles[tileIndex];
       const generators = tile.missionWeightOverrides?.length ? tile.missionWeightOverrides : missionData.missionWeights ?? [];
       const difficulties = tile.difficultyWeightOverrides?.length ? tile.difficultyWeightOverrides : missionData.difficultyWeights ?? [];
@@ -275,6 +338,7 @@ function rollMissions({ data, fixedMissions }, day, availableUntil) {
 // tagged Stat.MissionAlert.MiniBoss and MissionAlert.Visual.Miniboss (profiles/alerts.js enforces them). The targets are
 // the notes' (Epic's servers placed the alerts). Like 2.3 to 2.4.2's storms, they are placed once a UTC day.
 const halloweenAlerts = "Halloween2017_MissionAlert";
+const groupCategory = "GroupMissionCategory";
 const stormTier = (tier) => (tier <= 5 ? 1 : tier <= 10 ? 2 : tier <= 15 ? 3 : 4);
 const zones = ["Stonewood", "Plankerton", "CanneyValley", "TwinePeaks"];
 const zoneOfModifierGroup = (group) => Math.max(zones.findIndex((zone) => group?.endsWith(`_${zone}`)), 0) + 1;
@@ -287,6 +351,12 @@ export const stormTicketsFor = (rowName) => {
   const multiplier = currentEventsConfig()?.stormTicketMultiplier ?? 1.0;
   return Math.round(base * multiplier);
 };
+// 3.2's group mission alerts (GroupMissionCategory rows, loot tier group MissionAlert_GroupMission, see
+// rollAlerts): "every Group Mission now has a Mission Alert that awards Firecracker Tickets. The ticket amount scales
+// with difficulty." No shipped table has the group, so the amount is Core's (🟡): 10 Firecracker Tickets
+// (AccountResource:eventcurrency_spring) per tile difficulty of the group row, as the event tickets of the storm and
+// Mini-Boss alerts (Theater_Normal_Group_Zone1, difficulty 12: 120; Theater_Nightmare_Group_Zone5, 40: 400).
+export const groupTicketsFor = (rowName) => Math.max(1, getDifficulty(rowName)?.difficulty ?? 1) * 10;
 const alertRewards = {
   [halloweenAlerts]: () => [[candy, 100]],
   MissionAlert_Proto_01: () => [["CardPack:zcp_mtx_boost50", 1], ["CardPack:zcp_reagent_c_t01_medium", 1]],
@@ -300,6 +370,7 @@ const alertRewards = {
     ...(isEventActive(mutantStorms) || isEventActive(mutantStorms2018) ? [[stormTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]] : [])
   ],
   MissionAlert_StormLow: (row) => [[`CardPack:zcp_reagent_c_t0${zoneOfRow(row)}_high`, 1]],
+  MissionAlert_GroupMission: (row, mission) => [[firecrackerTickets, groupTicketsFor(mission.missionDifficultyInfo.rowName)]],
   MissionAlert_Survival3Day: (row, mission) => [[snowflakeTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]],
   MissionAlert_Survival7Day: (row, mission) => [[snowflakeTickets, 2 * stormTicketsFor(mission.missionDifficultyInfo.rowName)]],
   MissionAlert_MiniBoss: (row, mission, seed) => [
@@ -372,7 +443,8 @@ function alertModifiers(row, seed) {
 function alertFor(data, mission, category) {
   const tile = data.tiles[mission.tileIndex];
   const tier = missionAlertTier(mission.missionDifficultyInfo.rowName, category);
-  if (!tile?.canBeMissionAlert || !tier || !alertRewards[tier.lootTierGroup]) return undefined;
+  // "Every Group Mission now has a Mission Alert": a group alert goes on its mission's tile whatever the tile says.
+  if (!(tile?.canBeMissionAlert || (tile && category === groupCategory)) || !tier || !alertRewards[tier.lootTierGroup]) return undefined;
   if (tier.zoneThemes.length && !tier.zoneThemes.includes(tile.zoneTheme)) return undefined;
   if (tier.missionGenerator && tier.missionGenerator !== mission.missionGenerator) return undefined;
   if (survivalAlertGenerators[category] && survivalAlertGenerators[category] !== mission.missionGenerator) return undefined;
@@ -477,10 +549,18 @@ function rollAlerts({ data }, missions, day, dayStart, now, availableUntil) {
     if (spreadRow) storms.push({ alert, mission, row, seed, category });
     return [alert];
   };
+  // 3.2's group alerts first, one on every group mission a GroupMissionCategory row fits (tile difficulty 5 and up;
+  // EventFlag.GroupMission): the category's Quota of 10 and MissionAlertRepeatable are profiles/alerts.js's.
+  const groupAlerts = isHexsylvania(data.uniqueId) || isSurvival(data.uniqueId) ? [] : missions
+    .filter((mission) => isGroupMission(mission.missionGenerator) && alertFor(data, mission, groupCategory))
+    .map((mission) => {
+      taken.add(mission.missionGuid);
+      return alertOn(mission, alertFor(data, mission, groupCategory), groupCategory, `${mission.missionGuid}:alert:${groupCategory}`, availableUntil);
+    });
   // The general alert keeps the seed alerts had before categories, so a day's alerts kept their guids.
-  const alerts = data.regions.flatMap((region, regionIndex) => categories.flatMap((category) =>
+  const alerts = [...groupAlerts, ...data.regions.flatMap((region, regionIndex) => categories.flatMap((category) =>
     place(category, `${data.uniqueId}:${day}:alert:${regionIndex}${category === "GeneralCategory" ? "" : `:${category}`}`,
-      (mission) => region.tileIndices.includes(mission.tileIndex))));
+      (mission) => region.tileIndices.includes(mission.tileIndex))))];
   // A Mutant Storm starts in each of the theater's zones (one per StormCategory row its missions can carry, each row a
   // zone and a spread) and spreads from there; from 1.10 each theater has its fixed target of storms instead.
   if (!isHexsylvania(data.uniqueId) && !isSurvival(data.uniqueId)) {

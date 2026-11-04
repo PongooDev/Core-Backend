@@ -136,6 +136,11 @@ export const spring2018 = "Spring2018";
 export const spring2018Valentines = "EventFlag.Spring2018Valentines";
 export const spring2018Phase1 = "EventFlag.Spring2018Phase1";
 export const spring2018Phase2 = "EventFlag.Spring2018Phase2";
+// 3.2 (CL-3935073): "Every Group Mission now has a Mission Alert that awards Firecracker Tickets." 3.2's MissionAlerts
+// adds MissionAlert_GroupMissionCategory_01-04 (category GroupMissionCategory, loot tier group MissionAlert_GroupMission,
+// tile difficulty 5-11, 12-21, 22-31, 32-50), which require EventFlag.GroupMission; 3.1's data has no such row or flag
+// (world/theaters.js places them).
+export const groupMission = "EventFlag.GroupMission";
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
@@ -151,6 +156,7 @@ const events = [
   { name: spring2018, flag: spring2018Valentines, firstBuild: 3889387, lastBuild: 3935073 },
   { name: spring2018, flag: spring2018Phase1, firstBuild: 3889387, lastBuild: 3935073 },
   { name: spring2018, flag: spring2018Phase2, firstBuild: 3915963, lastBuild: 3935073 },
+  { name: groupMission, flag: groupMission, firstBuild: 3935073, lastBuild: 3935073 },
   { name: lobbyWinterDecor, flag: lobbyWinterDecor, firstBuild: 3807424, lastBuild: 3825894 },
   { name: winterBattleBus, flag: winterBattleBus, firstBuild: 3807424, lastBuild: 3825894 },
   { name: supplyDropGift, flag: supplyDropGift, firstBuild: 3807424, lastBuild: 3825894 }

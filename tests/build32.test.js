@@ -8,11 +8,16 @@ import { allowedBuildList, buildChoices } from "../src/builds/allowed.js";
 import { inBuild } from "../src/builds/context.js";
 import { versionOf } from "../src/builds/detect.js";
 import { contentUpdateStates, updatedLootTables } from "../src/events/contentupdates.js";
-import { activeEventFlags, passiveMiniBosses, passiveStorms, spring2018Phase1, spring2018Phase2, spring2018Valentines } from "../src/events/events.js";
+import { activeEventFlags, groupMission, passiveMiniBosses, passiveStorms, spring2018Phase1, spring2018Phase2, spring2018Valentines } from "../src/events/events.js";
+import { firecrackerTickets } from "../src/events/spring2018.js";
+import { getDifficulty } from "../src/gamedata/world.js";
+import { alertsRemaining, claimMissionAlertRewards, completeMissionAlert } from "../src/profiles/alerts.js";
+import { trackChanges } from "../src/profiles/changes.js";
+import { defaultStats } from "../src/profiles/defaults.js";
 import { hasLtm, ltmQuests } from "../src/events/ltms.js";
 import { athenaChallengeBundles, athenaCosmetics, athenaSeason, getAthenaQuest } from "../src/gamedata/athena.js";
 import { getQuest } from "../src/gamedata/quests.js";
-import { dataBuild } from "../src/gamedata/read.js";
+import { buildGameData, dataBuild } from "../src/gamedata/read.js";
 import { assignmentBucket, playlistTeamsOf, showsMatchStart } from "../src/matchmaking/service.js";
 import { challengeWeekCount } from "../src/profiles/challenges.js";
 import { buildOfSeason } from "../src/profiles/seasons.js";
@@ -105,7 +110,8 @@ test("buying Power Chord gives Six String too", () => {
 });
 
 test("3.2 runs 3.1's Spring It On! flags, features the DragonFire and adds Wukong to the Event Store", () => {
-  assert.deepEqual(activeEventFlags(v32), [passiveStorms, passiveMiniBosses, spring2018Valentines, spring2018Phase1, spring2018Phase2]);
+  assert.deepEqual(activeEventFlags(v32), [passiveStorms, passiveMiniBosses, spring2018Valentines, spring2018Phase1, spring2018Phase2, groupMission]);
+  assert.ok(!activeEventFlags(v31).includes(groupMission));
   const store = (build, front) => inBuild(build, () => eventStoreOffers(now))[front].map(({ templateId }) => templateId);
   assert.equal(store(v32, "STWRotationalEventStorefront")[0], "Schematic:sid_shotgun_dragon_drum_sr_ore_t01");
   assert.ok(store(v32, "STWSpecialEventStoreFront").includes("Hero:hid_commando_014_wukong_sr_t01"));
@@ -120,9 +126,105 @@ test("3.2's quests: the Boost Pad goes with the Hoverboard, the St. Patrick's he
   assert.equal(pub.selectableRewards.length, 3);
 });
 
-test("3.2 keeps the group missions of 3.1", () => {
-  const missions = inBuild(v32, () => worldInfo(now)).missions.flatMap((theater) => theater.availableMissions);
-  assert.ok(missions.filter((mission) => mission.missionGenerator.includes("MissionGen_1Gate_Group")).length >= 4);
+const groupMissionsOf = (build) => {
+  const info = inBuild(build, () => worldInfo(now));
+  return info.missions.flatMap(({ theaterId, availableMissions }, index) => availableMissions
+    .filter((mission) => /_Group(_PVE02on)?_C$/.test(mission.missionGenerator))
+    .map((mission) => ({ ...mission, theaterId, data: info.theaters[index], alerts: info.missionAlerts[index].availableMissionAlerts })));
+};
+const stonewood = "33A2311D4AE64B361CCE27BC9F313C8B";
+function memorySession() {
+  const trackers = {};
+  return {
+    profile(profileId) {
+      trackers[profileId] ??= trackChanges({ profileId, stats: { attributes: defaultStats(profileId) }, items: {} });
+      return trackers[profileId];
+    }
+  };
+}
+
+test("3.2's group missions (#230): the region's kinds from the data's group generators, _PVE02on past Stonewood, Stonewood too", () => {
+  const generators = Object.keys(buildGameData(v32, "world", {}).missionGenerators);
+  const groups = groupMissionsOf(v32);
+  for (const mission of groups) {
+    assert.ok(generators.includes(mission.missionGenerator), mission.missionGenerator);
+    assert.match(mission.missionDifficultyInfo.rowName, /^Theater_(Start|Normal|Hard|Nightmare)_Group_Zone\d$/);
+    assert.equal(mission.missionGenerator.includes("_PVE02on"), mission.theaterId !== stonewood && /(1Gate|RetrieveTheData|RideTheLightning)_Group/.test(mission.missionGenerator));
+    assert.equal(groups.filter((other) => other.theaterId === mission.theaterId && other.tileIndex === mission.tileIndex).length, 1, "one mission a tile");
+  }
+  assert.ok(groups.some((mission) => mission.theaterId === stonewood), "Stonewood hosts group missions from 3.2");
+  assert.ok(new Set(groups.map((mission) => mission.missionGenerator.split(".").pop())).size > 2, "more than Fight the Storm");
+  // Over a few days every kind the notes name turns up.
+  const kinds = new Set();
+  for (let day = 0; day < 14; day++) {
+    const info = inBuild(v32, () => worldInfo(new Date(now.getTime() + day * 24 * 60 * 60 * 1000)));
+    for (const { availableMissions } of info.missions) {
+      for (const { missionGenerator } of availableMissions) {
+        const kind = /MissionGen_(\w+?)_Group/.exec(missionGenerator)?.[1];
+        if (kind) kinds.add(kind);
+      }
+    }
+  }
+  assert.deepEqual([...kinds].sort(), ["1Gate", "2Gates", "3Gates", "4Gates", "DtB", "EtShelter", "RetrieveTheData", "RideTheLightning", "RtS"]);
+  // 3.1's stay its one Fight the Storm, none in Stonewood.
+  const old = groupMissionsOf(v31);
+  assert.ok(old.length >= 4);
+  assert.ok(old.every((mission) => mission.missionGenerator.endsWith("MissionGen_1Gate_Group_C") && mission.theaterId !== stonewood));
+  assert.ok(old.every((mission) => !mission.alerts.some(({ categoryName }) => categoryName === "GroupMissionCategory")));
+});
+
+test("3.2's group missions wait for their zone's Storm Shield Defense quest (#230)", () => {
+  for (const mission of groupMissionsOf(v32)) {
+    const region = mission.data.regions.find((candidate) => candidate.tileIndices.includes(mission.tileIndex));
+    assert.match(region.requirements.questDefinition ?? "", /\/Game\/Quests\/Outpost\/OutpostQuest_T\d_L\d\./);
+  }
+});
+
+test("3.2's group missions carry a GroupMissionCategory alert of Firecracker Tickets scaled by difficulty (#230)", () => {
+  const groups = groupMissionsOf(v32);
+  let withAlert = 0;
+  for (const mission of groups) {
+    const alert = mission.alerts.find(({ tileIndex }) => tileIndex === mission.tileIndex);
+    const difficulty = inBuild(v32, () => getDifficulty(mission.missionDifficultyInfo.rowName)).difficulty;
+    if (difficulty < 5) {
+      assert.ok(!alert || alert.categoryName !== "GroupMissionCategory", "no GroupMissionCategory row below tile difficulty 5");
+      continue;
+    }
+    withAlert++;
+    assert.equal(alert.categoryName, "GroupMissionCategory");
+    assert.deepEqual(alert.missionAlertRewards, {
+      tierGroupName: "MissionAlert_GroupMission", items: [{ itemType: firecrackerTickets, quantity: 10 * difficulty }]
+    });
+  }
+  assert.ok(withAlert >= 8);
+  // Only group missions carry them.
+  const info = inBuild(v32, () => worldInfo(now));
+  info.missionAlerts.forEach(({ availableMissionAlerts }, index) => {
+    for (const { categoryName, tileIndex } of availableMissionAlerts.filter(({ categoryName }) => categoryName === "GroupMissionCategory")) {
+      assert.match(info.missions[index].availableMissions.find((mission) => mission.tileIndex === tileIndex).missionGenerator, /_Group/, categoryName);
+    }
+  });
+});
+
+test("3.2's group alerts: the same one again and again, 10 a day, the tickets through ClaimMissionAlertRewards (#230)", () => {
+  inBuild(v32, () => {
+    const session = memorySession();
+    const mission = groupMissionsOf(v32).find((candidate) => candidate.alerts.some(({ tileIndex }) => tileIndex === candidate.tileIndex));
+    const alert = mission.alerts.find(({ tileIndex }) => tileIndex === mission.tileIndex);
+    const quantity = alert.missionAlertRewards.items[0].quantity;
+    for (let count = 0; count < 10; count++) assert.ok(completeMissionAlert(session, mission.theaterId, alert, now), `claim ${count + 1}`);
+    assert.ok(!completeMissionAlert(session, mission.theaterId, alert, now), "the 11th waits a day");
+    const record = session.profile("profile0").profile.stats.attributes.mission_alert_redemption_record;
+    assert.equal(record.claimDataMap.GroupMissionCategory.lastClaimedTimes.length, 10);
+    assert.equal(alertsRemaining(record, now, "GroupMissionCategory"), 0);
+    assert.equal(alertsRemaining(record, new Date(now.getTime() + 25 * 60 * 60 * 1000), "GroupMissionCategory"), 10);
+    const notifications = [];
+    claimMissionAlertRewards(session, notifications);
+    const tickets = Object.values(session.profile("profile0").profile.items).filter(({ templateId }) => templateId === firecrackerTickets)
+      .reduce((total, item) => total + item.quantity, 0);
+    assert.equal(tickets, 10 * quantity);
+    assert.equal(notifications[0].type, "missionAlertComplete");
+  });
 });
 
 test("3.2's LTMs: 3.1's run on, Use It & Lose It gets its quest, no queue is added", () => {
