@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { eventQueueOfPlaylist, hasLtm, inOriginalWindow, ltmEventFlags, ltmForcedQueues, ltmModes, ltmOn, ltms, ltmSchedule } from "../src/events/ltms.js";
+import { athenaPlaylistOfQueue, eventQueueOfPlaylist, hasLtm, inOriginalWindow, ltmEventFlags, ltmForcedQueues, ltmModes, ltmNewMode, ltmOn, ltmQuests, ltms,
+  ltmSchedule } from "../src/events/ltms.js";
 import { playlistTeamsOf } from "../src/matchmaking/service.js";
 import { dedicatedServerToken, post, send, startBackend, userLogin } from "./helpers.js";
 
@@ -13,6 +14,8 @@ const v24 = "3858292";
 const v242 = "3870737";
 const v25 = "3889387";
 const v30 = "3901517";
+const v31 = "3915963";
+const v32 = "3935073";
 const at = (date) => new Date(`${date}T12:00:00Z`);
 
 function as(agent, port, method, urlPath, token, body) {
@@ -243,6 +246,39 @@ test("each LTM's event quest is given while its lobby offers it, counts its play
     profile = await login(v23);
     assert.equal(profile.items[silentId], undefined);
     assert.equal(profile.items[sniperId].attributes.quest_state, "Completed");
+  } finally {
+    backend.close();
+  }
+});
+
+// Core-Backend #237: Teams of 20 (Playlist_5x20, queue 22) is 3.2's new mode. Its lobby's "New Mode Available!" banner
+// (AthenaMatchmakingPlay's CB_LTM_Bang) shows while an LTM queue is on, and the lobby opens on LastSelectedPlaylist.
+test("Teams of 20 is 3.2's new mode: on there whatever its switch, by hand on 3.0 and 3.1 (#237)", async () => {
+  for (const settings of [{ matchmakingModes: {} }, { matchmakingModes: { fiveByTwenty: false } }, { ltmOriginalDates: true, matchmakingModes: {} }]) {
+    assert.equal(ltmOn("fiveByTwenty", v32, settings, at("2018-01-30")), true);
+    assert.deepEqual(ltmForcedQueues(v32, settings, at("2018-01-30")), [22]);
+    assert.equal(ltmNewMode(v32, settings)?.id, "fiveByTwenty");
+    for (const build of [v30, v31]) {
+      assert.equal(ltmOn("fiveByTwenty", build, settings), false, build);
+      assert.equal(ltmNewMode(build, settings), null, build);
+    }
+  }
+  assert.equal(ltmOn("fiveByTwenty", v31, { matchmakingModes: { fiveByTwenty: true } }), true);
+  // Only Teams of 20 is a build's new mode; 3.2's other LTMs stay by hand.
+  assert.deepEqual(ltms.filter((ltm) => ltm.newIn).map((ltm) => ltm.id), ["fiveByTwenty"]);
+  assert.deepEqual(ltmForcedQueues(v32, { matchmakingModes: { shotguns: true } }), [22, 31]);
+  assert.ok(ltmQuests({ running: true }, v32).includes("athenaevent22_playmatches"));
+  // EFortAthenaPlaylist (3.2's SDK): AthenaEvent1 4, AthenaEvent8 11, AthenaPlatoon 12, AthenaEvent21 13, AthenaEvent22 14.
+  assert.deepEqual([1, 8, 20, 21, 22, 54].map(athenaPlaylistOfQueue), [4, 11, 12, 13, 14, 46]);
+  const listed = (id) => ltmSchedule({ matchmakingModes: {} }).list.find((ltm) => ltm.id === id);
+  assert.equal(listed("fiveByTwenty").newIn, "3.2");
+  assert.equal(listed("shotguns").newIn, null);
+
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "TeamsOf20");
+    assert.equal((await ticket(v32, backend.port, player, 22)).status, 200);
+    assert.equal((await ticket(v31, backend.port, player, 22)).status, 400);
   } finally {
     backend.close();
   }

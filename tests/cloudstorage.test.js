@@ -283,6 +283,33 @@ test("the system hotfix forces on 3.0's LTM queues past AthenaEvent8 that are on
   }
 });
 
+// Core-Backend #237: 3.2's lobby opens on UFortGameUserSettings' LastSelectedPlaylist (0x279E970), so its new mode, Teams of
+// 20 (AthenaEvent22, 14), is set there by DefaultGameUserSettings.ini; no other build gets the file.
+test("the system hotfix opens 3.2's lobby on Teams of 20, its new mode, and no other build's (#237)", async () => {
+  const backend = await startBackend();
+  try {
+    const token = await clientToken(backend.port);
+    const agent = (build) => `game=Fortnite, engine=UE4, build=${build}`;
+    const v32 = "++Fortnite+Release-3.2-CL-3935073";
+    const files = async (build) => JSON.parse((await raw(backend.port, "GET", "/fortnite/api/cloudstorage/system", token, undefined, agent(build))).body)
+      .map(({ filename }) => filename);
+    assert.deepEqual(await files(v32), ["DefaultEngine.ini", "DefaultGame.ini", "DefaultGameUserSettings.ini"]);
+    const download = await raw(backend.port, "GET", "/fortnite/api/cloudstorage/system/DefaultGameUserSettings.ini", token, undefined, agent(v32));
+    assert.equal(download.body.toString("utf8"), "[/Script/FortniteGame.FortGameUserSettings]\r\nLastSelectedPlaylist=14\r\n");
+    // Its queue is forced on too, which shows the lobby's "New Mode Available!" banner.
+    const game = (await raw(backend.port, "GET", "/fortnite/api/cloudstorage/system/DefaultGame.ini", token, undefined, agent(v32)))
+      .body.toString("utf8").split("\r\n");
+    assert.ok(game.includes("bEvent22ForceEnabled=true"));
+    for (const build of ["++Fortnite+Release-3.1-CL-3915963", "++Fortnite+Release-3.0.0-CL-3901517", "++Fortnite+Release-2.5-CL-3889387"]) {
+      assert.deepEqual(await files(build), ["DefaultEngine.ini", "DefaultGame.ini"], build);
+      const missing = await raw(backend.port, "GET", "/fortnite/api/cloudstorage/system/DefaultGameUserSettings.ini", token, undefined, agent(build));
+      assert.equal(missing.status, 404, build);
+    }
+  } finally {
+    backend.close();
+  }
+});
+
 test("the system hotfix points the client's XMPP at the address and port it reached the backend on", async () => {
   const backend = await startBackend();
   try {

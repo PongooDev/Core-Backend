@@ -122,6 +122,20 @@ import { nextReplayOf, seasonMoment } from "../store/itemshop.js";
 // Playlist_5x20, five teams of 20, which 3.0 and 3.1 already shipped), so every queue runs on. Its data adds Use It & Lose
 // It's quest (AthenaEvent25_PlayMatches, complete_athena_event_25). Teams of 20's own notes (60 s first wait, six circles,
 // more chests and ammo boxes, five supply drops) are in the playlist's game data.
+//
+// A build's new mode (Core-Backend #237): Teams of 20 is 3.2's ("New Mode Available!" over TEAMS OF 20 in the lobby).
+// The lobby's banner is AthenaMatchmakingPlay's CB_LTM_Bang (a Border-Bang over CommonTextBlock_72, "New Mode
+// Available!", collapsed by default), which RefreshBang shows while CheckForLTMBangs finds an LTM queue on: 50v50,
+// AthenaEvent1 to 8, Platoon, or IsPlaylistQueueEnabled(22) to (54) (UFortGlobalUIContext, 3.2 0x273BD20's check), so
+// it shows whenever any LTM is on. The mode the lobby opens on is native: the matchmaking widget's construct (3.2
+// 0x279E970) takes UFortGameUserSettings' LastSelectedPlaylist (+0x218, 0x27966A0; the GameUserSettings.ini config, not
+// the player's ClientSettings.Sav), and Solo (Squad where only squads queue, 0x27931E0) if that queue isn't on
+// (0x278BF50), then sets it as the party's playlist (0x27A7360 -> 0xD9DBD0). No calendar, content page or playlist flag
+// picks it, so the system hotfix sets LastSelectedPlaylist (services/fortnite/cloudstorage.js): each start-up opens the
+// lobby on the new mode while it is on, and the player's own choice holds until the game restarts. So a build's new mode
+// (newIn) is on there by default, whatever its switch, and its lobby opens on it; its switch still turns it on for the
+// builds that shipped it unannounced (3.0 and 3.1's Playlist_5x20). Original dates keeps it on too: Epic ran it from
+// the build's release. Only Teams of 20 has one; 1.10's 50v50 is on by default already (defaultOn).
 const build110 = 3790078;
 const build111 = 3807424;
 const build21 = 3825894;
@@ -161,7 +175,7 @@ export const ltms = [
   { id: "blitz", quest: "athenaevent8_playmatches", name: "Blitz", playlistId: 19, queue: 8, eventFlag: "Event8", builds: [build242, build32], seasons: [2, 3],
     original: null,
     teams: "100 Teams × 4", description: "Shorter matches: a smaller first storm circle, its own loot and resource rates (Athena/Events/Blitz tables)." },
-  { id: "fiveByTwenty", quest: "athenaevent22_playmatches", name: "5x20", playlistId: 22, queue: 22, eventFlag: null, builds: [build30, build32], seasons: [3],
+  { id: "fiveByTwenty", quest: "athenaevent22_playmatches", name: "5x20", playlistId: 22, queue: 22, eventFlag: null, builds: [build30, build32], seasons: [3], newIn: build32,
     original: null,
     teams: "5 Teams × 20", description: "Five teams of twenty (Playlist_5x20, a large team game with its own game data)." },
   { id: "highJump", quest: "athenaevent23_playmatches", name: "High Jump", playlistId: 23, queue: 23, eventFlag: null, builds: [build30, build32], seasons: [3],
@@ -226,10 +240,11 @@ export function configureLtms(provider) {
   settingsProvider = typeof provider === "function" ? provider : () => provider;
 }
 
-// Whether the build's lobby offers the LTM now.
+// Whether the build's lobby offers the LTM now: always on the build it is new in.
 export function ltmOn(id, build, settingsValue = settingsProvider(), now = new Date()) {
   const ltm = byId.get(id);
   if (!ltm || !hasLtm(id, build)) return false;
+  if (ltm.newIn === Number(build)) return true;
   const modes = ltmModes(build, settingsValue, now);
   return ltm.defaultOn ? modes?.[id] !== false : modes?.[id] === true;
 }
@@ -242,6 +257,14 @@ export const ltmEventFlags = (build, settingsValue, now = new Date()) =>
 // hotfix sets their UFortGlobals bEvent<N>ForceEnabled.
 export const ltmForcedQueues = (build, settingsValue = settingsProvider(), now = new Date()) =>
   ltms.filter((ltm) => ltm.queue && !ltm.eventFlag && ltmOn(ltm.id, build, settingsValue, now)).map((ltm) => ltm.queue);
+
+// The lobby's EFortAthenaPlaylist of an event queue (UFortGameUserSettings' LastSelectedPlaylist): AthenaEvent1 to 8
+// are 4 to 11, AthenaPlatoon 12 and AthenaEvent21 to 54 13 to 46 (3.2's SDK).
+export const athenaPlaylistOfQueue = (queue) => (queue <= 8 ? queue + 3 : queue === 20 ? 12 : queue - 8);
+
+// The build's new mode while its lobby offers it (the LTM), or null.
+export const ltmNewMode = (build, settingsValue = settingsProvider(), now = new Date()) =>
+  ltms.find((ltm) => ltm.newIn === Number(build) && ltmOn(ltm.id, build, settingsValue, now)) ?? null;
 
 // The event quests of the LTMs the requesting build offers now (running) or doesn't (events/fiftyfifty.js
 // athenaEventQuestsOf).
@@ -284,6 +307,8 @@ export function ltmSchedule(settingsValue, now = new Date()) {
       teams: ltm.teams,
       description: ltm.description,
       enabled: ltm.defaultOn ? modes[ltm.id] !== false : modes[ltm.id] === true,
+      // The build it is new in, where it is on whatever its switch (null for none).
+      newIn: versions[ltm.newIn] ?? null,
       // null for an LTM with no original window here (no window: off while Original dates is on).
       original: ltm.original && { builds: buildRange(ltm.original.builds), start: ltm.original.start, end: ltm.original.end,
         last: new Date(day(ltm.original.end) - 86400000).toISOString().slice(0, 10) },

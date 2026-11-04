@@ -4120,6 +4120,8 @@
           el("div", { class: "mono muted", style: "font-size:12px; margin-bottom:4px;", text: `Playlist ${l.playlistId}${l.queue ? ` · AthenaEvent${l.queue}` : ""} · ${l.builds}` }),
           el("div", { class: "sub", style: "font-size:12px; margin-bottom:4px;", text: l.teams }),
           el("div", { class: "sub", style: "font-size:12px; margin-bottom:4px;", text: l.description }),
+          ...(l.newIn ? [el("div", { class: "sub", style: "font-size:12px; margin-bottom:4px;",
+            text: `${l.newIn}'s new mode: always on there, the mode its lobby opens on, under "New Mode Available!". This switch is for its other builds.` })] : []),
           el("div", { class: "muted", style: "font-size:12px;", text: l.original
             ? `Original dates: ${fmtDay(l.original.start)} – ${fmtDay(l.original.last)} on ${l.original.builds}`
             : "Original dates: none. Epic never ran it in Seasons 1 and 2, so it stays off while Original dates is on." })], toggle);

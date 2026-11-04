@@ -7,7 +7,7 @@ import { isDedicatedServerToken } from "../../accounts/clients.js";
 import { getBuild } from "../../builds/detect.js";
 import { sendError } from "../../errors.js";
 import { lootHotfixSection } from "../../events/contentupdates.js";
-import { ltmForcedQueues } from "../../events/ltms.js";
+import { athenaPlaylistOfQueue, ltmForcedQueues, ltmNewMode } from "../../events/ltms.js";
 import { shootingTestGlobals, shootingTestHotfixTables } from "../../events/shootingtest.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
 import { createNetwork, httpsProxied } from "../../network.js";
@@ -72,6 +72,18 @@ function forcedQueueSection(changelist) {
 // [EpicPurchaseFlow] Prod= (services/fortnite/purchase.js); the flow reads it when the front end registers for it
 // (UFortMcpContext::RegisterForEpicPurchasingDisplay, 3.1 0xD496C0, from the game ini), in the front end, so after this
 // file came in (🟡: not seen in a running client).
+// A build's new mode (events/ltms.js ltmNewMode, Core-Backend #237: Teams of 20 on 3.2) is the mode its lobby opens on.
+// The matchmaking widget takes it from UFortGameUserSettings' LastSelectedPlaylist (3.2 0x279E970), its EFortAthenaPlaylist
+// (AthenaEvent22, 14), so DefaultGameUserSettings.ini sets it: the hotfix merges it into the config whose name ends in
+// GameUserSettings.ini (3.2 0x5E62D0, the player's Saved/Config GameUserSettings.ini) and reloads the
+// [/Script/FortniteGame.FortGameUserSettings] objects (HotfixIniFile, 0x5E7190); Fortnite's WantsHotfixProcessing
+// (0xD145B0) takes every Default*.ini. It comes at start-up, before the lobby, so each start opens on the new mode, and the
+// player's own pick holds until the game restarts. No other build gets the file.
+function newModeFiles(changelist) {
+  const ltm = ltmNewMode(changelist);
+  return ltm ? { "DefaultGameUserSettings.ini": Buffer.from(["[/Script/FortniteGame.FortGameUserSettings]",
+    `LastSelectedPlaylist=${athenaPlaylistOfQueue(ltm.queue)}`, ""].join("\r\n"), "utf8") } : {};
+}
 const defaultNetwork = createNetwork();
 function systemFiles(req, network = defaultNetwork, settings = null) {
   const address = network.reachableAddress(req);
@@ -86,7 +98,7 @@ function systemFiles(req, network = defaultNetwork, settings = null) {
     + forcedQueueSection(build)
     + purchaseFlowSection(req, network, { build, enabled: settings?.get?.()?.vbuckPacks !== false })
     + lootHotfixSection(new Date(), null, shootingTestHotfixTables(build));
-  return { "DefaultEngine.ini": Buffer.from(engine, "utf8"), "DefaultGame.ini": Buffer.from(game, "utf8") };
+  return { "DefaultEngine.ini": Buffer.from(engine, "utf8"), "DefaultGame.ini": Buffer.from(game, "utf8"), ...newModeFiles(build) };
 }
 
 // What the client reads per file (OnlineTitleFileMcp, sub_37C8D10): hash (SHA-1 hex, also its cache key), hash256,
