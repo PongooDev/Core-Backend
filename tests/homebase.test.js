@@ -109,6 +109,25 @@ test("SetHomebaseMeta, SetGameplayStats and SetMtxPlatform store what the client
   }
 });
 
+test("ClaimImportFriendsReward (3.2's Facebook link) answers a normal profile response without changes (#232)", async () => {
+  const backend = await startBackend();
+  try {
+    const { token, accountId } = await userLogin(backend.port, "CoreTest");
+    for (const profileId of ["profile0", "athena"]) {
+      const base = `/fortnite/api/game/v2/profile/${accountId}/client`;
+      const queried = await post(backend.port, `${base}/QueryProfile?profileId=${profileId}&rvn=-1`, token, {});
+      const claimed = await post(backend.port, `${base}/ClaimImportFriendsReward?profileId=${profileId}&rvn=${queried.body.profileRevision}`, token, {});
+      assert.equal(claimed.status, 200);
+      assert.equal(claimed.body.profileId, profileId);
+      assert.deepEqual(claimed.body.profileChanges, []);
+      assert.deepEqual(claimed.body.notifications ?? [], []);
+      assert.equal(claimed.body.profileRevision, queried.body.profileRevision);
+    }
+  } finally {
+    backend.close();
+  }
+});
+
 test("SetModeLoadout and SetHeroModeLoadout keep gadget loadouts by name, for the account and for a hero", async () => {
   const backend = await startBackend();
   try {
