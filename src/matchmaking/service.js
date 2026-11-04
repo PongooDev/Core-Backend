@@ -205,11 +205,14 @@ export const playlistTeamsOf = (bucketId, build = null) => {
 //   parties up to the playlist's MaxSquadSize, biggest first so the smaller ones fill the gaps; one that doesn't fill
 //   plays alone (Core-Backend #78). A party bigger than a squad is split, or no team would have room for it.
 // - Where a team is one squad (solo, duo, squad), each squad is a team of its own. Where a team holds several (50v50's
-//   two teams of 50, in squads of 4), every party shares its team, whatever its Squad Fill: each party, biggest first,
-//   goes to the team with the fewest players that has room for it (UPartyBeaconState's GetTeamAssignment, Smallest:
-//   the lowest such team on a tie), so the teams are as even as the parties allow, and each team's parties make its
-//   squads. The teams' squads then take turns in AssignMatch's teams, an empty team holding the place of a team that
-//   has run out of squads (the server skips it, 0x79CEE0).
+//   two teams of 50 and Teams of 20's five teams of 20, in squads of 4), every party shares its team, whatever its Squad
+//   Fill, with the team with the fewest players that has room (UPartyBeaconState's GetTeamAssignment, Smallest: the
+//   lowest such team on a tie), so the teams are as even as the parties allow. 50v50's two sides take each party, biggest
+//   first, and each side's parties make its squads: two solos face each other (#135). Teams of 20's squads are made
+//   first, from all the match's parties as above, and each squad, biggest first, takes a team: parties that fill share a
+//   squad, and so a team, as in squads (CoreV2 #242: two solos on Fill were each put alone in a squad on a team of their
+//   own). The teams' squads then take turns in AssignMatch's teams, an empty team holding the place of a team that has
+//   run out of squads (the server skips it, 0x79CEE0).
 // From 3.1 (CL-3915963) AssignMatch's teams[i] is the beacon's team i itself, with no modulo (3.1 0xD6CB50, 3.2
 // 0xD81D20: each party's reservation has TeamNum i, and the Manual GetTeamAssignment, 3.2 0x326780, returns it however
 // many teams the playlist has; 3.0's 0xD337A0 still takes i % the team count), and the squads within a team come from
@@ -242,7 +245,7 @@ export function formTeams(parties, teams, { teamsAreSquads = true } = {}) {
   const sides = Array.from({ length: maxTeamCount }, () => ({ players: 0, members: [], squads: [] }));
   const roomFor = (size) => sides.filter((side) => side.players + size <= maxTeamSize)
     .reduce((smallest, side) => (!smallest || side.players < smallest.players ? side : smallest), null);
-  if (maxTeamSize > maxSquadSize) {
+  if (maxTeamSize > maxSquadSize && maxTeamCount <= 2) {
     for (const party of [...parties].sort((a, b) => b.players.length - a.players.length)) {
       const side = roomFor(party.players.length);
       if (!side) return null;
@@ -251,7 +254,10 @@ export function formTeams(parties, teams, { teamsAreSquads = true } = {}) {
     }
     for (const side of sides) side.squads = squadsOf(side.members).map((squad) => squad.parties);
   } else {
-    for (const squad of squadsOf(parties)) {
+    const squads = squadsOf(parties);
+    // A team of several squads takes the biggest squads first, so the teams come out as even as the squads allow.
+    if (maxTeamSize > maxSquadSize) squads.sort((a, b) => b.players - a.players);
+    for (const squad of squads) {
       const side = roomFor(squad.players);
       if (!side) return null;
       side.squads.push(squad.parties);

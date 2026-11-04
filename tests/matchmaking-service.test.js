@@ -175,28 +175,33 @@ test("from 3.1 AssignMatch's teams are the playlist's teams, their squads in mat
   assert.deepEqual(fiveByTwenty, { maxTeamCount: 5, maxTeamSize: 20, maxSquadSize: 4 });
   const parties = [party(true, "a", "b", "c"), party(true, "d"), party(false, "e"), party(true, "f", "g"), party(true, "h", "i", "j", "k"),
     party(true, "l"), party(true, "m", "n"), party(true, "o", "p", "q", "r"), party(false, "s")];
-  // Before 3.1 the teams' squads take turns (the server puts teams[i] on team i % 5): seven squads in ten places, so
+  // Before 3.1 the teams' squads take turns (the server puts teams[i] on team i % 5): seven squads in fifteen places, so
   // teams[5] and on would be teams of their own on 3.1's and 3.2's servers.
   const squads = formTeams(parties, fiveByTwenty);
-  assert.equal(squads.length, 10);
+  assert.equal(squads.length, 15);
   assert.equal(squads.squads, undefined);
-  // From 3.1 one entry per team, squad by squad, and each team's squads as counts of its parties: the biggest party
-  // first to the team with the fewest players; a party that fills tops up a squad of its team, one that doesn't plays
-  // in its own.
+  // From 3.1 one entry per team, squad by squad, and each team's squads as counts of its parties. The squads are made
+  // first, as in squads (CoreV2 #242): a party that fills tops up a squad with room, biggest party first, one that
+  // doesn't plays in its own; then the biggest squad first to the team with the fewest players.
   const teams = formTeams(parties, fiveByTwenty, { teamsAreSquads: false });
   assert.deepEqual([...teams], [
     [["h", "i", "j", "k"]],
     [["o", "p", "q", "r"]],
-    [["a", "b", "c"], ["l"]],
-    [["f", "g"], ["d"], ["s"]],
-    [["m", "n"], ["e"]]
+    [["a", "b", "c"], ["d"]],
+    [["f", "g"], ["m", "n"]],
+    [["e"], ["l"], ["s"]]
   ]);
-  assert.equal(teams.squads, "1;1;2;2,1;1,1");
+  assert.equal(teams.squads, "1;1;2;2;1,1,1");
   assert.equal(teams.flat(2).length, parties.flatMap((entry) => entry.players).length);
-  // Empty teams after the last are left out; teams of one squad (solo, duo, squad) need no option.
+  // Two solos on Fill share a squad, so a team (#242: they were put on two teams, each alone in a squad); empty teams
+  // after the last are left out. Two that don't fill each have a squad, on teams of their own.
   const two = formTeams([party(true, "a"), party(true, "b")], fiveByTwenty, { teamsAreSquads: false });
-  assert.deepEqual([...two], [[["a"]], [["b"]]]);
-  assert.equal(two.squads, "1;1");
+  assert.deepEqual([...two], [[["a"], ["b"]]]);
+  assert.equal(two.squads, "2");
+  const alone = formTeams([party(false, "a"), party(false, "b")], fiveByTwenty, { teamsAreSquads: false });
+  assert.deepEqual([...alone], [[["a"]], [["b"]]]);
+  assert.equal(alone.squads, "1;1");
+  // Teams of one squad (solo, duo, squad) need no option.
   const solo = formTeams([party(true, "a"), party(true, "b")], playlistTeamsOf("3935073:0:NA:2", 3935073), { teamsAreSquads: false });
   assert.deepEqual([...solo], [[["a"]], [["b"]]]);
   assert.equal(solo.squads, null);
@@ -788,7 +793,7 @@ test("only a gameserver reports its warmup, and hears the warmup time (#122)", a
     assert.equal((await reportWarmup(backend, undefined, { phase: "Setup" })).status, 401);
     const token = await dedicatedServerToken(backend.port);
     assert.deepEqual((await reportWarmup(backend, token, { phase: "Setup", accountIds: [] })).body,
-      { warmupSeconds: null, lateJoin: false, sessionId: null, open: false, maxPlayers: null, parties: [], bots: null });
+      { warmupSeconds: null, lateJoin: false, sessionId: null, open: false, maxPlayers: null, parties: [], noFill: [], bots: null });
     await settingsOf(backend, { warmupSeconds: 120 });
     assert.equal((await reportWarmup(backend, token, { phase: "Setup", accountIds: [] })).body.warmupSeconds, 120);
   } finally {

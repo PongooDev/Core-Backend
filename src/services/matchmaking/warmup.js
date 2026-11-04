@@ -6,13 +6,16 @@ import { sendError } from "../../errors.js";
 // Core's: a CoreV2 Battle Royale gameserver's warmup (Core-Backend #122, the admin panel's Matchmaking settings).
 //   POST /fortnite/api/game/v2/matchmakingservice/warmup
 //   {phase: "Setup"|"Warmup"|"Aircraft"|..., accountIds: [the players connected], secondsLeft: <the warmup's>}
-//   -> {warmupSeconds, lateJoin, sessionId, open, maxPlayers, parties: [[accountId]], bots}
+//   -> {warmupSeconds, lateJoin, sessionId, open, maxPlayers, parties: [[accountId]], noFill: [accountId], bots}
 // The server asks from its world's start, every 30 seconds until its warmup begins, then every second until the bus
 // leaves, and once more after. warmupSeconds (null: the game's own) is how long its warmup lasts: the game mode's
 // WarmupCountdownDuration, which the game has from its config and no match option sets (1.9's OnGivenMatchAssignment
 // 0x42D2B0 reads only match.option.warmupRequiredPlayerCount). With lateJoin on and the phase Warmup, the matchmaking
 // service sends parties queuing for the match's bucket to it (open), up to maxPlayers, and parties lists the ones it
-// sent, for the server to give each party one team. The match is found by its players (matchmaking/service.js).
+// sent, for the server to give each party one team. noFill is the match's players whose party doesn't fill (the party
+// leader's player.option.fillTeam false): in a team of several squads (Teams of 20, CoreV2 #242) the server puts a late
+// player who fills in a squad of players with room, and one who doesn't in a squad of their own. The match is found by
+// its players (matchmaking/service.js).
 // bots (CoreV2 #233) is the player bots to add, {count, level, health, shield, quests, fights, teams, noFill}, when the
 // admin panel's Force player AIs is on and its count is above 0, or its "Fill players' teams with bots" is on, else null.
 // count is the bots on teams of their own (0 with Force player AIs off), the requested one as is: the gameserver applies
@@ -46,6 +49,7 @@ export function warmupRoutes({ tokens, sessions, settings, matchmaker }) {
       open: match?.open ?? false,
       maxPlayers: match?.maxPlayers ?? null,
       parties: match?.parties ?? [],
+      noFill: match?.noFill ?? [],
       bots: forced || teams
         ? { count: forced ? bots.count : 0, level: bots.level, health: bots.startingHealth, shield: bots.startingShield, quests: bots.eliminationsCountForQuests,
           fights: bots.botFightChance ?? 30, teams, noFill: match?.noFill ?? [] }
