@@ -155,10 +155,13 @@ function offerJson(offer, sortPriority) {
     // that counts it (store/eventstore.js).
     metaInfo: offer.seasonLevel ? [{ key: "season_level", value: String(offer.seasonLevel) }]
       : offer.eventLimit ? [{ key: "EventLimit", value: String(offer.eventLimit) }, { key: "PurchaseLimitingEventId", value: offer.purchaseLimitingEventId }]
-        : [],
+        // An item shop offer's tile callout (store/itemshop.js tileOf).
+        : offer.banner ? [{ key: "BannerOverride", value: offer.banner }]
+          : [],
     dailyLimit: -1,
     weeklyLimit: -1,
-    categories: [],
+    // An item shop offer's tile, shared with the other offers of its category (store/itemshop.js tileOf).
+    categories: offer.category ? [offer.category] : [],
     catalogGroup: "",
     catalogGroupPriority: 0,
     sortPriority,

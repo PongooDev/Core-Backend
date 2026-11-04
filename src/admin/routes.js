@@ -1583,7 +1583,15 @@ export function adminRoutes(context) {
         if (!Array.isArray(list)) return [];
         return list
           .filter((item) => Array.isArray(item) && typeof item[0] === "string" && item[0].trim())
-          .map(([templateId, price]) => [templateId.trim(), Math.max(0, Math.floor(Number(price) || 800))]);
+          .map(([templateId, price, tile]) => {
+            // A history day's tile ({tile, banner}, store/itemshop.js tileOf) carries over into a custom shop seeded from it.
+            const kept = tile && typeof tile === "object" ? {
+              ...(Math.floor(Number(tile.tile)) > 0 ? { tile: Math.floor(Number(tile.tile)) } : {}),
+              ...(typeof tile.banner === "string" && /^[A-Za-z]+$/.test(tile.banner) ? { banner: tile.banner } : {})
+            } : {};
+            const entry = [templateId.trim(), Math.max(0, Math.floor(Number(price) || 800))];
+            return Object.keys(kept).length ? [...entry, kept] : entry;
+          });
       };
       update.custom = {
         featured: sanitizeList(req.body.custom.featured),

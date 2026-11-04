@@ -5528,6 +5528,25 @@
             }
           });
 
+          // Offers with the same tile number share one tile in the shop (2.4.2 and later cycle through them; Core-Backend #217).
+          const tileInput = el("input", {
+            class: "field num",
+            type: "number",
+            min: "0",
+            max: "99",
+            placeholder: "—",
+            title: "Items with the same tile number share one shop tile (2.4.2 and later)",
+            value: entry[2]?.tile ? String(entry[2].tile) : "",
+            style: "width:64px;",
+            onchange: (e) => {
+              const tile = Math.max(0, Math.min(99, parseInt(e.target.value, 10) || 0));
+              const { tile: _old, ...rest } = entry[2] || {};
+              const meta = tile ? { ...rest, tile } : rest;
+              if (Object.keys(meta).length) entry[2] = meta;
+              else entry.length = 2;
+            }
+          });
+
           return el("div", {
             class: `card ${code}`,
             style: "display:flex; flex-direction:row; align-items:center; justify-content:space-between; gap:12px; padding:10px 14px; cursor:default;"
@@ -5538,6 +5557,8 @@
                 el("strong", { style: "display:block; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;", text: cosmetic.name }),
                 el("div", { class: "s mono", style: "font-size:11px; margin-top:2px;", text: cosmetic.templateId }))),
             el("div", { class: "actions", style: "flex:none;" },
+              el("span", { class: "muted", style: "font-size:12px;", text: "Tile:" }),
+              tileInput,
               el("span", { class: "muted", style: "font-size:12px;", text: "Price:" }),
               priceInput,
               el("span", { class: "muted", style: "font-size:12px;", text: "V-Bucks" }),

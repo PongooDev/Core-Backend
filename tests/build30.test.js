@@ -25,7 +25,8 @@ import { buildOfSeason, buyBattlePass, buyTiers, takeUpSeason } from "../src/pro
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
 import { eventStoreOffers } from "../src/store/eventstore.js";
-import { itemShopOffers, seasonEnd, seasonStart, shopDay } from "../src/store/itemshop.js";
+import { storefronts } from "../src/store/catalog.js";
+import { configureItemShop, itemShopOffers, seasonEnd, seasonStart, shopDay } from "../src/store/itemshop.js";
 
 // Fortnite 3.0 (++Fortnite+Release-3.0.0-CL-3901517, UE 4.20, 21 February 2018): Season 3's first build. Its own data
 // (gamedata/3901517), Season 3's level, Battle Pass, weekly challenges, shop and umbrella, Spring It On!'s Luck Explosion,
@@ -78,8 +79,52 @@ test("Season 3's shop replays Epic's 68 days from 22 February 2018, and its seas
   assert.equal(shopDay(new Date(now.getTime() + 68 * dayMs), config, 3).date, "2018-02-22");
   assert.equal(seasonEnd(now, config, 3).toISOString(), new Date(Date.parse("2026-11-03T00:00:00Z") + 68 * dayMs).toISOString());
   const day1 = itemShopOffers(now, { mode: "fnbr", ...config });
+  // Alpine Ace and Mogul Master with their country styles, each outfit's eight in one tile (Core-Backend #217).
+  const styles = ["", "_usa", "_can", "_gbr", "_fra", "_ger", "_chn", "_kor"];
   assert.deepEqual(day1.BRWeeklyStorefront.map(({ templateId }) => templateId),
-    ["AthenaCharacter:cid_053_athena_commando_m_skidude", "AthenaCharacter:cid_061_athena_commando_f_skigirl"]);
+    [...styles.map((style, i) => `AthenaCharacter:cid_${String(53 + i).padStart(3, "0")}_athena_commando_m_skidude${style}`),
+      ...styles.map((style, i) => `AthenaCharacter:cid_${String(61 + i).padStart(3, "0")}_athena_commando_f_skigirl${style}`)]);
+}));
+
+// Core-Backend #217: Epic's Season 3 shop put several items in one tile, cycling through them ("1 of 8"), as 3.0's
+// AthenaDirectAcquisitionScreen does for the offers of one category (FCatalogOffer Categories[0]); the tile's callout is
+// the offers' BannerOverride.
+test("Season 3's shop puts a tile's items in one category, with its callout as their BannerOverride (Core-Backend #217)", () => inBuild(v30, () => {
+  const config = { mode: "fnbr", rotationHour: 0, seasonStarts: { 3: "2026-11-03" } };
+  const entriesOn = (offset) => {
+    const fronts = storefronts(null, new Date(now.getTime() + offset * dayMs));
+    return Object.fromEntries(["BRWeeklyStorefront", "BRDailyStorefront"]
+      .map((name) => [name, fronts.find((front) => front.name === name)?.catalogEntries ?? []]));
+  };
+  configureItemShop(config);
+  try {
+    const day1 = entriesOn(0);
+    const featured = day1.BRWeeklyStorefront;
+    assert.equal(featured.length, 16);
+    assert.deepEqual([...new Set(featured.map(({ categories }) => categories.join()))], ["Panel 01", "Panel 02"]);
+    assert.deepEqual(featured[0].categories, ["Panel 01"]);
+    assert.deepEqual(featured[8].categories, ["Panel 02"]);
+    assert.ok(featured.every(({ metaInfo }) => metaInfo.some(({ key, value }) => key === "BannerOverride" && value === "PickYourStyle")));
+    // The daily items are tiles of their own.
+    assert.ok(day1.BRDailyStorefront.length && day1.BRDailyStorefront.every(({ categories, metaInfo }) => !categories.length && !metaInfo.length));
+    // 27 February: Dragon Axe, Wukong, Crimson Scout and Scarlet Defender in one tile, Royale Dragon on its own.
+    const day6 = entriesOn(5).BRWeeklyStorefront;
+    assert.deepEqual(day6.map(({ itemGrants, categories }) => [itemGrants[0].templateId.split(":")[1], categories.join()]), [
+      ["pickaxe_id_025_dragon", "Panel 01"], ["cid_071_athena_commando_m_wukong", "Panel 01"],
+      ["cid_086_athena_commando_m_redsilk", "Panel 01"], ["cid_087_athena_commando_f_redsilk", "Panel 01"],
+      ["glider_id_014_dragon", ""]]);
+    // A custom shop keeps the tiles an admin gives its items.
+    configureItemShop({ ...config, mode: "custom", custom: { featured: [["AthenaCharacter:cid_053_athena_commando_m_skidude", 1500, { tile: 3, banner: "CollectTheSet" }],
+      ["AthenaCharacter:cid_061_athena_commando_f_skigirl", 1500, { tile: 3 }]], daily: [] } });
+    const custom = entriesOn(0).BRWeeklyStorefront;
+    assert.deepEqual(custom.map(({ categories }) => categories), [["Panel 03"], ["Panel 03"]]);
+    assert.deepEqual(custom.map(({ metaInfo }) => metaInfo.length), [1, 0]);
+  } finally {
+    configureItemShop(null);
+  }
+  // Season 2's history has no shared tiles: 2.5's shop is as it was.
+  assert.ok(inBuild(v25, () => storefronts(null, now)).filter(({ name }) => name.startsWith("BR"))
+    .every(({ catalogEntries }) => catalogEntries.every(({ categories }) => !categories.length)));
 }));
 
 test("Season 3's Battle Pass: its offers in BRSeason3, its tier offer by either id, and the tier rewards", () => withSession("pass30", (session) => {

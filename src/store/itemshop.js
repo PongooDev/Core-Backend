@@ -53,7 +53,9 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // 3.0 is Season 3, and has its own shop: Epic's of Season 3, day by day from its first day, 22 February 2018, to its
 // last, 30 April 2018 (itemshop-season3.json), replayed in a 68-day cycle from its own start, as Season 2's. Its items
 // and prices are the Fortnite Wiki's Item Shop History pages' alone (🟡: fnbr.co wasn't checked against it), each item
-// of a cycling tile listed, but of Alpine Ace and Mogul Master only the base outfits, not their country styles (🟡). The
+// of a cycling tile listed, Alpine Ace's and Mogul Master's country styles too, the items of one tile marked as such
+// (tileOf below: 3.0 shows them in one tile, cycling, as Epic's did; Core-Backend #217). Season 2's history has no such
+// tile: none of its wiki tiles held two of the cosmetics it lists, so its shops are as they were. The
 // season ran on to 3.6, so the later 3.x cosmetics (Rex, Burnout, Sgt. Green Clover, Battle Hound, Raven...) and
 // Battle Pass Tiers are left out. A build's season is its athena data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {
@@ -391,6 +393,27 @@ export function featuredDisplayAsset(templateId) {
 const firstDailyDisplayAssetsBuild = 3807424;
 const dailyDisplayAssets = () => Number(currentBuild()) >= firstDailyDisplayAssetsBuild;
 
+// A shop entry's tile ({tile, banner}, its third element: itemshop-season3.json, an admin's custom shop): the items of
+// one tile share an offer category, and its callout is the offers' BannerOverride (store/catalog.js offerJson). From
+// 2.4.2 (CL-3870737; 2.5 and 3.0 too) the shop puts the offers of one category in one tile: AthenaDirectAcquisitionScreen's
+// GenerateOfferWidget takes the offer's GetFortStoreOfferCategory (0x28F7620 in 3.0 → sub_2746FE0: the FCatalogOffer's
+// Categories[0], +0x88) and, when a tile of that category was made already (its CategorizedOfferWidgets map, both
+// storefronts' tiles together), adds the offer to that tile (UFortDirectAcquisitionOfferWidgetBase::AddOffer, its
+// GroupedOffers) instead of making a new one. A tile of two or more offers shows "{Num} of {Count}" and moves on to the
+// next offer every 3 seconds (AthenaDirectAcquisitionOfferWidget's OfferCarousel timer), and its details screen pages
+// through them (SetPagedItems), as Epic's tiles cycled through Alpine Ace's country styles in Season 3 (Core-Backend #217).
+// The banner is GetBannerOverrideTag (0x28F7100 → sub_27435D0: the offer's metaInfo "BannerOverride", 0x7BCA80 matching
+// keys case-insensitively), a key of AthenaDirectAcquisitionOffer_SpecialBanner's BannerOverrides (PickYourStyle "Pick
+// Your Style!", CollectTheSet "Collect the Set!", Back "It's Back!"...). The client before 2.4.2 has neither (no
+// GroupedOffers nor GetBannerOverrideTag in its FortniteUI), so it makes each offer its own tile, as before. The category
+// names a tile by its number of the day, "Panel 01" (🟡: as Epic's catalogs named theirs), so the numbers are the day's,
+// featured and daily together.
+const tileOf = (tile) => {
+  const number = Math.floor(Number(tile?.tile));
+  const banner = typeof tile?.banner === "string" && /^[A-Za-z]+$/.test(tile.banner) ? tile.banner : "";
+  return { ...(number > 0 ? { category: `Panel ${String(number).padStart(2, "0")}` } : {}), ...(banner ? { banner } : {}) };
+};
+
 // The day's offers by storefront, those the requesting build has the cosmetic for.
 export function itemShopOffers(now = new Date(), overrideConfig = null) {
   if (!hasItemShop()) return { BRWeeklyStorefront: [], BRDailyStorefront: [] };
@@ -399,7 +422,7 @@ export function itemShopOffers(now = new Date(), overrideConfig = null) {
 
   const toOffers = (entries, featured = false) => entries
     .filter(([templateId]) => cosmetics[templateId])
-    .map(([templateId, price]) => {
+    .map(([templateId, price, tile]) => {
       const cosmetic = cosmetics[templateId];
       const validPrice = Number(price) > 0 ? Number(price) : defaultPriceFor(cosmetic);
       return {
@@ -410,7 +433,8 @@ export function itemShopOffers(now = new Date(), overrideConfig = null) {
         currencySubType: "",
         price: validPrice,
         displayAssetPath: featured || dailyDisplayAssets() ? featuredDisplayAsset(templateId) : "",
-        athena: true
+        athena: true,
+        ...tileOf(tile)
       };
     });
 
