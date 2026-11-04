@@ -47,6 +47,16 @@ export const defaultBattleRoyaleNews = {
   body: "Welcome to Battle Royale on Core!"
 };
 
+// Save the World's "New Updates" popup (the message of the day) read nothing on any build, so it showed its header and art
+// with no text (Core-Backend #234): the page had no survivalmessage and no savetheworldnews. Every client from 1.x to 3.2
+// reads survivalmessage.overrideablemessage.message {title, body} (3.2's strings: "survivalmessage", "overrideablemessage",
+// "message", "title", "body"); 2.5 and later also name "savetheworldnews", which Epic serves as news.messages[], each
+// {title, body, image, hidden}. Core serves both, from the host's "saveTheWorldNews": {"title": ..., "body": ...} or this.
+export const defaultSaveTheWorldNews = {
+  title: "Welcome to Save the World",
+  body: "Welcome, Commander, to Save the World on Core!"
+};
+
 export const defaultLoginMessage = {
   title: "v{version}",
   body: "Welcome to Fortnite on Core!"
@@ -127,15 +137,39 @@ export function battleRoyaleNewsFor(news, changelist, imageOrigin = undefined) {
   return { news: { message, region_messages: [], platform_messages: [] } };
 }
 
+export function saveTheWorldNewsFor(configured, changelist) {
+  const message = messageOf(configured, defaultSaveTheWorldNews, changelist);
+  return {
+    survivalmessage: {
+      _title: "survivalmessage",
+      overrideablemessage: { _type: "CommonUI Simple Message", message: { _type: "CommonUI Simple Message Base", ...message } },
+      _activeDate: "2017-08-25T20:35:56.304Z",
+      lastModified: "2026-10-27T16:30:00.000Z",
+      _locale: "en-US",
+      _templateName: "FortniteGameMOTD"
+    },
+    savetheworldnews: {
+      _title: "SaveTheWorldNews",
+      news: { _type: "Save The World News", messages: [{ _type: "CommonUI Simple Message Base", ...message, hidden: false, spotlight: false }] },
+      alwaysShow: false,
+      _activeDate: "2017-08-25T20:35:56.304Z",
+      lastModified: "2026-10-27T16:30:00.000Z",
+      _locale: "en-US",
+      _templateName: "FortniteGameMOTD"
+    }
+  };
+}
+
 export function contentPage(news = defaultBattleRoyaleNews, loginMessage = defaultLoginMessage, changelist = undefined, subgameSelect = undefined,
-  imageOrigin = undefined) {
+  imageOrigin = undefined, saveTheWorldNews = undefined) {
   const battleRoyaleNews = battleRoyaleNewsFor(news, changelist, imageOrigin);
   const page = {
     _title: "Fortnite Game",
     lastModified: "2026-10-27T16:30:00.000Z",
     _images_: (battleRoyaleNews.news.messages ?? []).map((message) => message.image).filter(Boolean),
     battleRoyaleNews,
-    subgameselectdata: subgameSelectFor(changelist, subgameSelect)
+    subgameselectdata: subgameSelectFor(changelist, subgameSelect),
+    ...saveTheWorldNewsFor(saveTheWorldNews, changelist)
   };
   if (loginMessage) {
     page.loginmessage = { loginmessage: { message: messageOf(loginMessage, defaultLoginMessage, changelist) } };
@@ -160,7 +194,7 @@ export function contentRoutes(context, config = {}) {
         : (config.loginMessage !== false));
     const loginMessage = loginMessageEnabled ? (settings.loginMessage ?? config.loginMessage ?? defaultLoginMessage) : null;
     const subgameSelect = settings.subgameSelect ?? config.subgameSelect;
-    res.json(contentPage(news, loginMessage, getBuild(req), subgameSelect, newsImageOrigin(req)));
+    res.json(contentPage(news, loginMessage, getBuild(req), subgameSelect, newsImageOrigin(req), settings.saveTheWorldNews ?? config.saveTheWorldNews));
   });
   router.get(`${newsImagePath}/:name`, serveNewsImage(context?.dataDir ?? config.dataDir));
 
