@@ -83,7 +83,17 @@ export const dailyWeight = (questId) => getAthenaQuest(questId)?.weight ?? 1;
 // SeasonXpTable (FAthenaLevelUpData): [{level, xpToNextLevel, xpTotal, chaseReward?}], by level.
 export const seasonLevels = () => data().levels;
 
-export const athenaObjectiveStat = (stat) => data().objectiveStats[String(stat).toLowerCase()];
+// Rows Epic corrected in the next build, given as that build has them (Core-Backend #221). 3.0's (CL-3901517)
+// complete_athena_with_a_killingblow, the Tier 100 challenges' "Play matches with at least one elimination", has the
+// squad rows' ContextTags (Athena.Playlist.Squad, as complete_athena_squad_top_3 beside it), so only a squad match
+// counted, though the challenge names no mode; 3.1's AthenaObjectiveStatTable has Athena.Playlist, any match.
+const correctedStats = { complete_athena_with_a_killingblow: { "athena.playlist.squad": "Athena.Playlist" } };
+export function athenaObjectiveStat(stat) {
+  const name = String(stat).toLowerCase();
+  const row = data().objectiveStats[name];
+  const contextTags = row && correctedStats[name]?.[String(row.contextTags).toLowerCase()];
+  return contextTags ? { ...row, contextTags } : row;
+}
 
 // The season's Battle Pass, from 1.11 (CL-3807424, Season 2; tools/extractor): AthenaSeason2 (UAthenaSeasonItemDefinition)
 // {seasonNumber, numSeasonLevels, numBookLevels, storefront, bookLevels: [{level, xpToNextLevel, xpTotal}] (BookXpCurve,

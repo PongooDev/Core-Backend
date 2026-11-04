@@ -11,7 +11,7 @@ import { contentUpdateStates, updatedLootTables } from "../src/events/contentupd
 import { activeEventFlags, fiftyFifty, isEventActive, passiveMiniBosses, passiveStorms, spring2018, spring2018Phase1,
   spring2018Valentines } from "../src/events/events.js";
 import { eventQuests } from "../src/events/fortnitemares.js";
-import { athenaChallengeBundles, athenaChallengeSchedules, athenaCosmetics, athenaLootTables, athenaSeason, getAthenaQuest } from "../src/gamedata/athena.js";
+import { athenaChallengeBundles, athenaChallengeSchedules, athenaCosmetics, athenaLootTables, athenaObjectiveStat, athenaSeason, getAthenaQuest } from "../src/gamedata/athena.js";
 import { getItem } from "../src/gamedata/items.js";
 import { getQuest } from "../src/gamedata/quests.js";
 import { dataBuild } from "../src/gamedata/read.js";
@@ -218,6 +218,14 @@ test("Season 3's single-match challenges count only a match that completes them,
   recordMatchProgress(session, 2, { place: 1, kills: 6 });
   assert.equal(tracker.profile.items[fivePlayers].attributes.quest_state === "Active" ? count(fivePlayers, "killingblow_athena_player_singlematch") : 5, 5);
   assert.notEqual(tracker.profile.items[fivePlayers].attributes.quest_state, "Active");
+  // Core-Backend #221: a solo or duo match with an elimination counts too (3.1's row, Athena.Playlist), a win as well.
+  assert.equal(count(withAKill, "battlepass_complete_athena_with_killingblow"), 2);
+  recordMatchProgress(session, 10, { place: 1, kills: 1 });
+  assert.equal(count(withAKill, "battlepass_complete_athena_with_killingblow"), 3);
+  recordMatchProgress(session, 2, { place: 1, kills: 0 });
+  assert.equal(count(withAKill, "battlepass_complete_athena_with_killingblow"), 3);
+  assert.equal(inBuild(v30, () => athenaObjectiveStat("complete_athena_with_a_killingblow")).contextTags, "Athena.Playlist");
+  assert.equal(inBuild(v30, () => athenaObjectiveStat("complete_athena_squad_top_3")).contextTags, "Athena.Playlist.Squad");
 }));
 
 test("a Season 3 win gives the Paper Parasol", () => withSession("win30", (session) => {
