@@ -23,7 +23,7 @@ test("the build is the changelist a request's User-Agent names; builds without t
   const agent = (value) => ({ get: () => value });
   assert.equal(getBuild(agent(agent12)), build12);
   assert.equal(getBuild(agent("game=FortniteGame, engine=UE4, version=4.16.0-3541083+++Fortnite+Release-Cert, platform=Windows")), build12);
-  assert.deepEqual(dataBuilds, [certBuild, build12, "3700114", "3724489", "3729133", "3741772", "3757339", "3775276", "3790078", "3807424", "3825894", "3841827", "3847564", "3858292", "3870737", "3889387", "3901517", "3915963"]);
+  assert.deepEqual(dataBuilds, [certBuild, build12, "3700114", "3724489", "3729133", "3741772", "3757339", "3775276", "3790078", "3807424", "3825894", "3841827", "3847564", "3858292", "3870737", "3889387", "3901517", "3915963", "3935073"]);
   assert.equal(dataBuild(build12), build12);
   for (const other of [certBuild, "unknown", "3500000", undefined]) assert.equal(dataBuild(other), certBuild);
   // A build without its own data takes the closest earlier one's: a build after 3.1 (3.2) would play on 3.1's, 1.7.3 on 1.7.2's.
@@ -41,8 +41,8 @@ test("the build is the changelist a request's User-Agent names; builds without t
   assert.equal(dataBuild("3870737"), "3870737");
   assert.equal(dataBuild("3889387"), "3889387");
   assert.equal(dataBuild("3901517"), "3901517");
-  assert.equal(dataBuild("3915963"), "3915963");
-  assert.equal(dataBuild("3930000"), "3915963");
+  assert.equal(dataBuild("3935073"), "3935073");
+  assert.equal(dataBuild("3950000"), "3935073");
   assert.equal(dataBuild("3710000"), "3700114");
   assert.equal(dataBuild("3600000"), build12);
   assert.equal(activeBuild(), certBuild, "outside a request");

@@ -85,7 +85,7 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   (AthenaEmojiItemDefinition) are cosmetics too. `loot` holds Battle Royale's loot tables whole (DefaultGameData's
   `AthenaLootTierData_Client` and `AthenaLootPackages_Client`), by object path, each row with every property in the form
   `UDataTable::CreateTableFromJSONString` reads back (soft object paths as path strings), for the content updates the
-  backend serves as `[AssetHotfix]` rows; only 1.11's, 2.1's, 2.2's, 2.3's, 2.4's, 2.4.2's, 2.5's, 3.0's and 3.1's overlays carry it so far (2.2's has Season 2's content updates in already; 2.3's
+  backend serves as `[AssetHotfix]` rows; only 1.11's, 2.1's, 2.2's, 2.3's, 2.4's, 2.4.2's, 2.5's, 3.0's, 3.1's and 3.2's overlays carry it so far (2.2's has Season 2's content updates in already; 2.3's
   is 2.2's, the Chug Jug at weight 0; 2.4's has the Chug Jug in and the Minigun at weight 0; 2.4.2's has the Minigun in, in
   a list of its own, and the Suppressed Pistol's cut, but no Crossbow; 2.5's has the Crossbow in a list of its own and its
   notes' Impulse Grenade, vaulted SMG and Medium-ammo Revolver; 3.0's has the Hand Cannon in, Loot_AthenaFloorLoot_11 at
@@ -98,7 +98,9 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   `Build.version` either: its fourth argument is `4.19.0-3858292+++Fortnite+Release-Cert`, and 2.4.2's
   `4.19.0-3870737+++Fortnite+Release-Next`, and 2.5's `4.20.0-3889387+++Fortnite+Release-2.5`, and 3.0's
   `4.20.0-3901517+++Fortnite+Release-3.0.0`, and 3.1's `4.20.0-3915963+++Fortnite+Release-3.1` (3.1 needed no extractor
-  change). Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
+  change), and 3.2's `4.20.0-3935073+++Fortnite+Release-3.2` (its only extractor change: the Athena cosmetic `Dev_TestAsset`
+  test character is left out like 00_TestAssets; the extraction finds no shooting model in 3.2's PlayerPawn_Athena, so its overlay has
+  no `shootingModel`). Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `research.json`: the resource collectors (research points): each CollectedResource template's payout and the
   homebase attributes its rate, capacity and wallet cap come from, what each skill tree node adds to those attributes

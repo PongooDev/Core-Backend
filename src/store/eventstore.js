@@ -180,7 +180,13 @@ const weeklyFeaturedByBuild = [
 const weeklyFeatured = () => weeklyFeaturedByBuild.find(({ firstBuild }) => Number(currentBuild()) >= firstBuild)?.items ?? [];
 const storms2018 = () => !isEventActive(winter2017) && isEventActive(mutantStorms2018);
 const springNow = () => !isEventActive(winter2017) && !storms2018() && isEventActive(spring2018);
-const eventItemsNow = () => (storms2018() ? stormsEventItems : springNow() ? springEventItems : eventItems);
+// 3.2's (CL-3935073) notes: "Wukong is available in the Event Store. This is the Mythic version of the Lunar New Year
+// 'Berserker' soldier." (HID_Commando_014_Wukong_SR_T01, in 3.1's data already): a hero at a legendary hero's 2,800, one
+// (🟡: Epic's price and limit aren't recorded), on 3.2 and later.
+const wukongFirstBuild = 3935073;
+const springItemsNow = () => (Number(currentBuild()) >= wukongFirstBuild
+  ? [...springEventItems, { templateId: "Hero:hid_commando_014_wukong_sr_t01", price: 2800, limit: 1 }] : springEventItems);
+const eventItemsNow = () => (storms2018() ? stormsEventItems : springNow() ? springItemsNow() : eventItems);
 export const eventStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWSpecialEventStoreFront"
   : springNow() ? "Spring2018.STWSpecialEventStoreFront" : eventStoreInstance);
 export const weeklyStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWRotationalEventStorefront"

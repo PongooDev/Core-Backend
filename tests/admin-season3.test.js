@@ -61,6 +61,7 @@ test("admin panel: Season 3's battle pass, item shop and events clock", async ()
     assert.equal(events.body.calendar.seasons[3].start.length, 10);
     assert.ok(events.body.sampleBuilds.some((b) => b.cl === 3901517));
     assert.ok(events.body.sampleBuilds.find((b) => b.cl === 3915963).flags.includes("EventFlag.Spring2018Phase2"));
+    assert.ok(events.body.sampleBuilds.find((b) => b.cl === 3935073).flags.includes("EventFlag.Spring2018Phase2"));
   } finally {
     backend.close();
   }

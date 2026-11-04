@@ -149,7 +149,8 @@ export function parseBucket(bucketId) {
 // HandleAssignMatchMessage's six-field "GameId: %s AppId %s BuildId: %d HotfixVersion: %d RegionId: %s PlaylistId: %d".
 // 3.1 (CL-3915963) keeps every one of them, ticket.status.numNeeded, numQueued and matchStartDelay and the Queued
 // status's queuedPlayers and estimatedWaitSec, SessionAssignment's matchId and the Play message's sessionId and
-// joinDelaySec included (its dump), so it is 3.0's format.
+// joinDelaySec included (its dump), so it is 3.0's format. 3.2 (CL-3935073) takes it as 3.1's (🟡: its client hasn't been
+// dumped for this; its notes change no matchmaking).
 export const sixFieldAssignBuild = 3807424;
 const assignGameId = "Fortnite";
 const assignAppId = "Fortnite";

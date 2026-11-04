@@ -34,10 +34,10 @@ const regionState = async (changelist, port, token) =>
 const ticket = (changelist, port, { accountId, token }, playlist) =>
   as(changelist, port, "GET", `/fortnite/api/game/v2/matchmakingservice/ticket/player/${accountId}?bucketId=${changelist}:0:NA:${playlist}`, token);
 
-test("the event queues' LTMs are 1.11's to 3.1's, squads, and off by hand until turned on", () => {
+test("the event queues' LTMs are 1.11's to 3.2's, squads, and off by hand until turned on", () => {
   for (const id of ["highExplosives", "sneakySilencers", "sniperShootout"]) {
-    assert.deepEqual([v110, v111, v21, v23, v24, v242, v25, v30, "3915963", "3930000"].map((build) => hasLtm(id, build)),
-      [false, true, true, true, true, true, true, true, true, false], id);
+    assert.deepEqual([v110, v111, v21, v23, v24, v242, v25, v30, "3915963", "3935073", "3950000"].map((build) => hasLtm(id, build)),
+      [false, true, true, true, true, true, true, true, true, true, false], id);
   }
   assert.equal(ltmOn("sniperShootout", v23, { matchmakingModes: {} }), false);
   assert.equal(ltmOn("sniperShootout", v23, { matchmakingModes: { sniperShootout: true } }), true);
@@ -110,8 +110,8 @@ test("Speedy Storm, Take To The Skies, Lotsa Loot and Blitz: their builds, squad
   const queues = { speedyStorm: ["Event3", 14], takeToTheSkies: ["Event6", 16], lotsaLoot: ["Event4", 17], blitz: ["Event8", 19] };
   for (const [id, [flag, playlist]] of Object.entries(queues)) {
     const from = id === "blitz" ? v242 : v21;
-    assert.deepEqual([v111, v21, v23, v24, v242, v25, v30, "3915963", "3930000"].map((build) => hasLtm(id, build)),
-      [v111, v21, v23, v24, v242, v25, v30, "3915963"].map((build) => Number(build) >= Number(from)).concat(false), id);
+    assert.deepEqual([v111, v21, v23, v24, v242, v25, v30, "3915963", "3935073", "3950000"].map((build) => hasLtm(id, build)),
+      [v111, v21, v23, v24, v242, v25, v30, "3915963", "3935073"].map((build) => Number(build) >= Number(from)).concat(false), id);
     assert.equal(ltmOn(id, v25, { matchmakingModes: {} }), false, id);
     assert.equal(ltmOn(id, v25, { matchmakingModes: { [id]: true } }), true, id);
     assert.deepEqual(ltmEventFlags(v25, { matchmakingModes: { [id]: true } }), [flag], id);
@@ -127,7 +127,7 @@ test("Speedy Storm, Take To The Skies, Lotsa Loot and Blitz: their builds, squad
     assert.equal(listed.enabled, true, id);
   }
   assert.equal(hasLtm("blitz", v24), false);
-  assert.equal(ltmSchedule({}).list.find((ltm) => ltm.id === "speedyStorm").builds, "2.1 to 3.1");
+  assert.equal(ltmSchedule({}).list.find((ltm) => ltm.id === "speedyStorm").builds, "2.1 to 3.2");
 });
 
 // 3.0 (CL-3901517): every mode is a playlist class in Athena_GameMode's PlaylistDataTables. 50v50 (11) and Shooting Test
@@ -153,7 +153,7 @@ test("3.0's LTMs are its playlist classes: no 50v50 or Shooting Test, duo Skies,
     assert.equal(eventQueueOfPlaylist[playlist], playlist, id);
     assert.deepEqual(playlistTeamsOf(`${v30}:0:NA:${playlist}`, v30), teams, id);
     const listed = ltmSchedule({}).list.find((ltm) => ltm.id === id);
-    assert.deepEqual([listed.seasons, listed.builds, listed.original], [[3], "3.0 to 3.1", null], id);
+    assert.deepEqual([listed.seasons, listed.builds, listed.original], [[3], "3.0 to 3.2", null], id);
   }
 });
 

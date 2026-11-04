@@ -137,7 +137,7 @@ function missionRewards(seed, tierGroupName, theaterId, rowName, soloTierGroup =
   return { tierGroupName, items: items.map(({ itemType, quantity }) => ({ itemType, quantity })) };
 }
 
-// Seasonal Gold from every mission while the Event Store is open (1.11 to 3.1, store/eventstore.js): 1.11's "Play any
+// Seasonal Gold from every mission while the Event Store is open (1.11 to 3.2, store/eventstore.js): 1.11's "Play any
 // mission and earn Seasonal Gold", 2.3's "All missions will continue to award Seasonal Gold". The game's own pack for it
 // is ZCP_EventScaling_T01-T20 ("Seasonal Gold", "Special currency found throughout the world. Can be traded for items in
 // the Event Store."), one a mission tier as the XP packs: Mission_Select_T<nn> takes T<nn>, a storm shield defense

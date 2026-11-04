@@ -56,9 +56,10 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // of a cycling tile listed, Alpine Ace's and Mogul Master's country styles too, the items of one tile marked as such
 // (tileOf below: 3.0 shows them in one tile, cycling, as Epic's did; Core-Backend #217). Season 2's history has no such
 // tile: none of its wiki tiles held two of the cosmetics it lists, so its shops are as they were. The
-// season ran on to 3.6: 3.1's (CL-3915963) cosmetics are in on the days Epic sold them (Rex, Burnout, Radiant and
+// season ran on to 3.6: 3.2's (CL-3935073: Power Chord, Sgt. Green Clover, Highland Warrior, Battle Hound, their gliders,
+// pickaxes and emotes) and 3.1's (CL-3915963) cosmetics are in on the days Epic sold them (Rex, Burnout, Radiant and
 // Brilliant Striker, Empire Axe, Pick Squeak, Tactical Spade, Make It Rain, Flippin' Sexy, Reanimated; a build sees only
-// those its data has, so 3.0's shop is as it was), the later ones (Sgt. Green Clover, Battle Hound, Raven...) and Battle
+// those its data has, so 3.0's shop is as it was), the later ones (Raven, Leviathan...) and Battle
 // Pass Tiers are left out. A build's season is its athena data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;
@@ -413,7 +414,13 @@ const tileOf = (tile) => {
 // Outfits Epic's shop sold with a back bling of their own (3.1, CL-3915963: Rex, CID_093_Athena_Commando_M_Dinosaur, "Comes
 // with the Scaly Back Bling", BID_031_Dinosaur). The outfit's hero wears no back bling part, so the pairing is the
 // catalog's, which isn't in the paks (🟡: from the Fortnite Wiki's Rex page); the offer grants both, as Epic's did.
-export const bundledBackBlings = { "AthenaCharacter:cid_093_athena_commando_m_dinosaur": "AthenaBackpack:bid_031_dinosaur" };
+// 3.2 (CL-3935073) adds Power Chord with Six String (BID_034_RockerPunk) and Highland Warrior with Buckler (BID_035_Scathach), as the
+// wiki's pages name them ("bundled_with"); Battle Hound's Crested Cape is not in 3.2's paks.
+export const bundledBackBlings = {
+  "AthenaCharacter:cid_093_athena_commando_m_dinosaur": "AthenaBackpack:bid_031_dinosaur",
+  "AthenaCharacter:cid_097_athena_commando_f_rockerpunk": "AthenaBackpack:bid_034_rockerpunk",
+  "AthenaCharacter:cid_099_athena_commando_f_scathach": "AthenaBackpack:bid_035_scathach"
+};
 
 // The day's offers by storefront, those the requesting build has the cosmetic for. Never a cosmetic the shop doesn't sell
 // (profiles/athena.js isNonShopCosmetic): any season's Battle Pass rewards, chase rewards, umbrellas, starters

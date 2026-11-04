@@ -1027,7 +1027,8 @@ var challengeBundles = new SortedDictionary<string, object>(StringComparer.Ordin
 var cosmeticKeys = new List<(string TemplateId, string Class, string AssetName, string? Hero, string? Icon, string DisplayName)>();
 foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" && f.Path.StartsWith("FortniteGame/Content/Athena/Items/", StringComparison.OrdinalIgnoreCase)))
 {
-    if (file.Path.Contains("/00_TestAssets/", StringComparison.OrdinalIgnoreCase)) continue;
+    // The test characters: 00_TestAssets, and from 3.2 (CL-3935073) Characters/Dev_TestAsset.
+    if (file.Path.Contains("/00_TestAssets/", StringComparison.OrdinalIgnoreCase) || file.Path.Contains("/Dev_TestAsset.", StringComparison.OrdinalIgnoreCase)) continue;
     var gamePath = "/Game/" + file.PathWithoutExtension["FortniteGame/Content/".Length..];
     var assetName = gamePath.Split('/').Last();
     if (!provider.TryLoadPackage(file, out var package)) continue;
