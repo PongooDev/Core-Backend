@@ -42,7 +42,7 @@ export function warmupRoutes({ tokens, sessions, settings, matchmaker }) {
       maxPlayers: match?.maxPlayers ?? null,
       parties: match?.parties ?? [],
       bots: bots?.forcePlayerAIs === true && bots.count > 0
-        ? { count: bots.count, level: bots.level, health: bots.startingHealth, shield: bots.startingShield, quests: bots.eliminationsCountForQuests }
+        ? { count: bots.count, level: bots.level, health: bots.startingHealth, shield: bots.startingShield, quests: bots.eliminationsCountForQuests, fights: bots.botFightChance ?? 30 }
         : null
     });
   });

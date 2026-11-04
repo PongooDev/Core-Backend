@@ -4211,6 +4211,7 @@
       const botLevelInput = botNumber("level", 1, 10, "Bot level");
       const botHealthInput = botNumber("startingHealth", 1, 100, "Bot starting health");
       const botShieldInput = botNumber("startingShield", 0, 100, "Bot starting shield");
+      const botFightInput = botNumber("botFightChance", 0, 100, "Bot vs bot fight chance in percent");
       const botRow = (title, input, range) => el("div", { style: "margin-top:12px;" },
         el("div", { class: "muted font-semibold", style: "margin-bottom:4px;", text: title }),
         el("div", { style: "display:flex; align-items:center; gap:8px;" }, input, el("span", { class: "muted font-semibold", text: range })));
@@ -4363,6 +4364,7 @@
               botRow("Bot level (aim and reaction skill)", botLevelInput, "level (1 – 10)"),
               botRow("Starting health", botHealthInput, "health (1 – 100)"),
               botRow("Starting shield", botShieldInput, "shield (0 – 100)"),
+              botRow("Bot vs bot fight chance (%)", botFightInput, "% (0 – 100), doubled when 10 or fewer bots are left"),
               el("div", { style: "margin-top:12px; display:flex; justify-content:space-between; align-items:center; gap:12px;" },
                 el("span", { class: "muted font-semibold", text: "Bot eliminations count for quests" }),
                 botsQuestsToggle)),

@@ -53,7 +53,7 @@ const defaults = {
   regionFallback: true,
   // Battle Royale player bots (CoreV2 #233): Core's backport of Epic's player bots, for builds without native ones (every
   // build before 8.30). Off by default.
-  bots: { forcePlayerAIs: false, count: 0, level: 5, startingHealth: 100, startingShield: 0, eliminationsCountForQuests: true },
+  bots: { forcePlayerAIs: false, count: 0, level: 5, startingHealth: 100, startingShield: 0, eliminationsCountForQuests: true, botFightChance: 30 },
   // 1.7.2 to 2.4.2's match start countdown (Core-Backend #160, matchmaking/service.js showsMatchStart): while a match
   // forms, the matchmaking panel shows "Match starting in 0:25... / Players Connected: 4", as Epic's service had it.
   matchStartCountdown: true,
@@ -392,7 +392,9 @@ function botsValue(value, base) {
     level: botInteger(given.level, 1, 10, base.level),
     startingHealth: botInteger(given.startingHealth, 1, 100, base.startingHealth),
     startingShield: botInteger(given.startingShield, 0, 100, base.startingShield),
-    eliminationsCountForQuests: typeof given.eliminationsCountForQuests === "boolean" ? given.eliminationsCountForQuests : base.eliminationsCountForQuests
+    eliminationsCountForQuests: typeof given.eliminationsCountForQuests === "boolean" ? given.eliminationsCountForQuests : base.eliminationsCountForQuests,
+    // The percent chance a bot takes on another bot it sees (CoreV2 #233); the gameserver doubles it late in a match.
+    botFightChance: botInteger(given.botFightChance, 0, 100, base.botFightChance)
   };
 }
 function warmupSecondsValue(value) {

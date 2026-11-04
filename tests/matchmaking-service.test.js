@@ -1061,8 +1061,8 @@ test("the warmup answer carries the player bots to add when Force player AIs is 
     const token = await dedicatedServerToken(backend.port);
     const ask = async () => (await reportWarmup(backend, token, { phase: "Setup", accountIds: [] })).body.bots;
     assert.equal(await ask(), null);
-    await settingsOf(backend, { bots: { forcePlayerAIs: true, count: 30, level: 7, startingHealth: 80, startingShield: 20, eliminationsCountForQuests: false } });
-    assert.deepEqual(await ask(), { count: 30, level: 7, health: 80, shield: 20, quests: false });
+    await settingsOf(backend, { bots: { forcePlayerAIs: true, count: 30, level: 7, startingHealth: 80, startingShield: 20, eliminationsCountForQuests: false, botFightChance: 55 } });
+    assert.deepEqual(await ask(), { count: 30, level: 7, health: 80, shield: 20, quests: false, fights: 55 });
     // On with no bots asked for, and off with a count, send none.
     await settingsOf(backend, { bots: { count: 0 } });
     assert.equal(await ask(), null);
