@@ -249,6 +249,27 @@ test("1.9 gets the lobby news as battleRoyaleNews.news.messages[], earlier build
   }
 });
 
+test("3.2's User-Agent (the engine version alone) still names its build: the news array and the version text (#231)", async () => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-news-32-test-"));
+  const backend = await startBackend({ dataDir });
+  try {
+    // UE 4.20's default HTTP User-Agent, "%s/%s %s/%s": no "CL-" and no "version=".
+    const page = (await send({
+      host: "127.0.0.1",
+      port: backend.port,
+      method: "GET",
+      path: "/content/api/pages/fortnite-game",
+      headers: { "User-Agent": "Fortnite/4.20.0-3935073+++Fortnite+Release-3.2 Windows/10.0.17134.1.256.64bit" }
+    })).body;
+    assert.deepEqual(page.battleRoyaleNews.news.messages, [{ title: "Battle Royale - 3.2", body: "Welcome to Battle Royale on Core!", image: "" }]);
+    assert.equal(page.battleRoyaleNews.news.message, undefined);
+    assert.equal(page.loginmessage.loginmessage.message.title, "v3.2");
+  } finally {
+    backend.close();
+    fs.rmSync(dataDir, { recursive: true, force: true });
+  }
+});
+
 test("config.json's battleRoyaleNews reaches 1.9's news.messages[] (#117)", async () => {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-news-19-config-test-"));
   const backend = await startBackend({ dataDir, battleRoyaleNews: { title: "Host news {version}", body: "From config.json" } });

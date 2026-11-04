@@ -32,9 +32,12 @@ export const seasonVersions = (season) => {
 export const seasonName = (season) => `Season ${season} (${seasonVersions(season)})`;
 
 // The changelist a request's User-Agent names: "build=++Fortnite+Release-Cert-CL-3541083" (services, the gameserver
-// too) or "version=4.16.0-3541083+++Fortnite+Release-Cert" (CMS, datarouter).
+// too) or "version=4.16.0-3541083+++Fortnite+Release-Cert" (CMS, datarouter). 3.2 (UE 4.20's default HTTP User-Agent,
+// "%s/%s %s/%s": project, build version, platform, OS) names it by the engine version alone, "Fortnite/4.20.0-3935073
+// +++Fortnite+Release-3.2 Windows/10.0.17134.1.256.64bit", with neither "CL-" nor "version=" (Core-Backend #231: the
+// news and login message read "Core", the build unknown).
 export function getBuild(req) {
   const agent = req.get("user-agent") ?? "";
-  const match = /CL-(\d+)/.exec(agent) ?? /version=\d+\.\d+\.\d+-(\d+)/.exec(agent);
+  const match = /CL-(\d+)/.exec(agent) ?? /version=\d+\.\d+\.\d+-(\d+)/.exec(agent) ?? /\/\d+\.\d+\.\d+-(\d+)\+\+\+/.exec(agent);
   return match ? match[1] : "unknown";
 }

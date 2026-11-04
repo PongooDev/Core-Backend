@@ -23,6 +23,9 @@ test("the build is the changelist a request's User-Agent names; builds without t
   const agent = (value) => ({ get: () => value });
   assert.equal(getBuild(agent(agent12)), build12);
   assert.equal(getBuild(agent("game=FortniteGame, engine=UE4, version=4.16.0-3541083+++Fortnite+Release-Cert, platform=Windows")), build12);
+  // 3.2's default HTTP User-Agent (UE 4.20, "%s/%s %s/%s") has the engine version alone (#231).
+  assert.equal(getBuild(agent("Fortnite/4.20.0-3935073+++Fortnite+Release-3.2 Windows/10.0.17134.1.256.64bit")), "3935073");
+  assert.equal(getBuild(agent("Fortnite/Windows")), "unknown");
   assert.deepEqual(dataBuilds, [certBuild, build12, "3700114", "3724489", "3729133", "3741772", "3757339", "3775276", "3790078", "3807424", "3825894", "3841827", "3847564", "3858292", "3870737", "3889387", "3901517", "3915963", "3935073"]);
   assert.equal(dataBuild(build12), build12);
   for (const other of [certBuild, "unknown", "3500000", undefined]) assert.equal(dataBuild(other), certBuild);
