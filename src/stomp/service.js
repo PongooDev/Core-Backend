@@ -11,6 +11,14 @@ import { acceptWebSocket } from "./websocket.js";
 const protocols = ["v12.stomp", "v11.stomp", "v10.stomp"];
 const versions = ["1.2", "1.1", "1.0"];
 
+// A profile notification for a client that isn't subscribed to its profile topic at that moment (between the game and
+// the lobby, a reconnect) waits for its next subscription: the client applies a delta only when its revision follows
+// the client's, so a V-Bucks reward the match report paid then would otherwise never reach the lobby (Core-Backend
+// #236). They are kept in order, a few and for a while; a client that has queried the profile since ignores the old ones.
+const pendingLimit = 50;
+const pendingMs = 60 * 60 * 1000;
+const profileTopic = (accountId) => `/topic/fn/profile/${accountId}/`.toLowerCase();
+
 // STOMP 1.1+ header escaping (CONNECT and CONNECTED frames are never escaped).
 const escape = (value) => String(value).replace(/\\/g, "\\\\").replace(/\r/g, "\\r").replace(/\n/g, "\\n").replace(/:/g, "\\c");
 const unescape = (value) => value.replace(/\\([\\rnc])/g, (match, char) => ({ "\\": "\\", r: "\r", n: "\n", c: ":" })[char]);
@@ -58,6 +66,22 @@ export function createFrameParser(onFrame) {
 export function createStompService({ tokens, quiet = false }) {
   const say = quiet ? () => {} : (message) => log("STOMP", message);
   const connections = new Set();
+  const pending = new Map();
+
+  function sendMessage({ ws }, id, destination, text) {
+    ws.send(encodeFrame("MESSAGE", { subscription: id, "message-id": crypto.randomUUID(), destination,
+      "content-type": "application/json", "content-length": Buffer.byteLength(text) }, text));
+  }
+
+  // The notifications an account missed, to its new subscription to its profile topic.
+  function deliverPending(connection, id, destination) {
+    const accountId = connection.session?.accountId;
+    if (!accountId || !destination.toLowerCase().startsWith(profileTopic(accountId))) return;
+    const missed = (pending.get(accountId) ?? []).filter(({ at }) => Date.now() - at < pendingMs);
+    pending.delete(accountId);
+    for (const { text } of missed) sendMessage(connection, id, destination, text);
+    if (missed.length) say(`${connection.who} was sent ${missed.length} profile notification(s) it missed`);
+  }
 
   function handleUpgrade(req, socket, head) {
     const ws = acceptWebSocket(req, socket, head, { protocols });
@@ -90,6 +114,9 @@ export function createStompService({ tokens, quiet = false }) {
       if (command === "SUBSCRIBE") {
         if (!headers.id || !headers.destination) return fail("SUBSCRIBE needs id and destination");
         connection.subscriptions.set(headers.id, headers.destination);
+        if (headers.receipt) send("RECEIPT", { "receipt-id": headers.receipt });
+        deliverPending(connection, headers.id, headers.destination);
+        return;
       } else if (command === "UNSUBSCRIBE") {
         connection.subscriptions.delete(headers.id);
       } else if (command === "DISCONNECT") {
@@ -134,15 +161,20 @@ export function createStompService({ tokens, quiet = false }) {
     // /topic/fn/profile/<accountId>/<app> whatever the app name's case.
     publishProfile(accountId, body) {
       const text = JSON.stringify(body);
-      const prefix = `/topic/fn/profile/${accountId}/`.toLowerCase();
-      for (const { ws, session, subscriptions } of connections) {
-        if (session?.accountId !== accountId) continue;
-        for (const [id, destination] of subscriptions) {
+      const prefix = profileTopic(accountId);
+      let sent = 0;
+      for (const connection of connections) {
+        if (connection.session?.accountId !== accountId) continue;
+        for (const [id, destination] of connection.subscriptions) {
           if (!destination.toLowerCase().startsWith(prefix)) continue;
-          ws.send(encodeFrame("MESSAGE", { subscription: id, "message-id": crypto.randomUUID(), destination,
-            "content-type": "application/json", "content-length": Buffer.byteLength(text) }, text));
+          sendMessage(connection, id, destination, text);
+          sent++;
         }
       }
+      if (sent) return;
+      const now = Date.now();
+      const missed = (pending.get(accountId) ?? []).filter(({ at }) => now - at < pendingMs);
+      pending.set(accountId, [...missed, { text, at: now }].slice(-pendingLimit));
     },
 
     // Ends an account's STOMP connections (kick, ban).

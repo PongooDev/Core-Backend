@@ -108,6 +108,8 @@ test("what the gameserver changes reaches the player's client as MCP profile not
       return client;
     };
     const own = await connect(player);
+    // The grant above came while nobody was subscribed: it waits for the subscription (Core-Backend #236).
+    assert.equal(JSON.parse((await own.next()).body).type, "profile/profile0/update");
     const snooper = await connect(other);
     const dedicated = await dedicatedServerToken(backend.port);
     const route = `/fortnite/api/game/v2/profile/${player.accountId}/dedicated_server/UpdateQuests?profileId=profile0&rvn=-1`;

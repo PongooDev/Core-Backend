@@ -226,3 +226,35 @@ test("player bot eliminations (CoreV2 #233) leave the kill challenges only with 
   assert.equal(questKillsOf({ bots: { eliminationsCountForQuests: false } }, 2, 9), 0, "never below 0");
   assert.equal(questKillsOf({ bots: { eliminationsCountForQuests: false } }, 4, undefined), 4, "a report without botKills");
 });
+
+// Core-Backend #236: a player whose client isn't subscribed to its profile topic when the match is reported (still loading
+// back to the lobby, a dropped connection) got the V-Bucks, but no notification, and the lobby kept its old balance.
+test("V-Bucks paid while the player's client isn't subscribed reach it when it subscribes, in order", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "RewardsAway");
+    const dedicated = await dedicatedServerToken(backend.port);
+    const query = await queryProfile(backend, player);
+    await settings(backend, { battleRoyaleVbucks: true, battleRoyaleRewards: example });
+    await results(backend, dedicated, { playlistId: 2, matchId: "away-1", results: [{ accountId: player.accountId, place: 20, kills: 2, secondsAlive: 300 }] });
+    await results(backend, dedicated, { playlistId: 2, matchId: "away-2", results: [{ accountId: player.accountId, place: 20, kills: 3, secondsAlive: 300 }] });
+
+    const client = await stompClient(backend.port);
+    client.send("CONNECT", { "accept-version": "1.2", login: player.accountId, passcode: player.token });
+    await client.next();
+    client.send("SUBSCRIBE", { id: "mcp-0-nil", destination: `/topic/fn/profile/${player.accountId}/fortnite`, receipt: "r" });
+    const frames = [await client.next(), await client.next(), await client.next()];
+    assert.equal(frames[0].command, "RECEIPT");
+    const start = query.profileRevision;
+    assert.deepEqual(frames.slice(1).map(({ body }) => JSON.parse(body).revision), [start + 1, start + 2], "each delta follows the one before it");
+    assert.equal(frames[1].headers.subscription, "mcp-0-nil");
+
+    // Delivered once: a later change reaches the subscription alone.
+    await results(backend, dedicated, { playlistId: 2, matchId: "away-3", results: [{ accountId: player.accountId, place: 20, kills: 1, secondsAlive: 300 }] });
+    assert.equal(JSON.parse((await client.next()).body).revision, start + 3);
+    client.ws.close();
+    await client.closed;
+  } finally {
+    backend.close();
+  }
+});

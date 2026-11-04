@@ -101,7 +101,9 @@ test("the admin panel removes single cosmetics, resets the slots showing them, a
           { templateId: "AthenaDance:EID_DanceMoves", reason: "a starter cosmetic every account is given back" }]
           .map(({ templateId, reason }) => ({ templateId: ids.find((id) => id.toLowerCase() === templateId.toLowerCase()), reason }))
       });
-      const notification = JSON.parse((await client.next()).body);
+      // The changes made while nobody was subscribed (the gives and equips above) reach the subscription first (#236).
+      let notification = JSON.parse((await client.next()).body);
+      while (!notification.changes.some((change) => change.changeType === "itemRemoved")) notification = JSON.parse((await client.next()).body);
       assert.equal(notification.type, "profile/athena/update");
       // As with give, the notification leaves out templates foreign to the build it's made for (gamedata/templates.js).
       assert.deepEqual(notification.changes.filter((change) => change.changeType === "itemRemoved").map((change) => change.itemId).sort(),
