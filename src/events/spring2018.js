@@ -1,6 +1,6 @@
 import { getItem } from "../gamedata/items.js";
 import { getQuest } from "../gamedata/quests.js";
-import { isEventActive, spring2018 } from "./events.js";
+import { isEventActive, spring2018, spring2018Phase3 } from "./events.js";
 
 export { spring2018 };
 
@@ -33,10 +33,17 @@ export const springQuests = [
   "springquest_2018_reactive_rescueval",
   "springquest_2018_reactive_fireworks"
 ];
+// 3.3's (CL-3942182) Luck of the Storm: "Uncover treacherous treasures, track mythical creatures..." starts at the pots of gold
+// (SpringQuest_2018_Reactive_PotsOfGold, 7 pots, hidden reward the clovers quest, then the Leprechaun traps, the garden
+// gnomes and the Pub quest), granted while EventFlag.Spring2018Phase3 runs (🟡: Epic's servers started it; Core grants it
+// at quest login like the other chapters' first quests).
+export const luckOfTheStormQuests = ["springquest_2018_reactive_potsofgold"];
 
 // The requesting build's Spring It On! quests, when the event runs there.
 export function springEventQuests() {
-  return isEventActive(spring2018) ? springQuests.filter((questId) => getQuest(questId)) : [];
+  if (!isEventActive(spring2018)) return [];
+  const started = [...springQuests, ...(isEventActive(spring2018Phase3) ? luckOfTheStormQuests : [])];
+  return started.filter((questId) => getQuest(questId));
 }
 
 // "Updated Loot Llamas to award Firecracker Tickets for the duration of the event": an Upgrade Llama (CardPack_Bronze,

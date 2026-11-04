@@ -56,7 +56,7 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // of a cycling tile listed, Alpine Ace's and Mogul Master's country styles too, the items of one tile marked as such
 // (tileOf below: 3.0 shows them in one tile, cycling, as Epic's did; Core-Backend #217). Season 2's history has no such
 // tile: none of its wiki tiles held two of the cosmetics it lists, so its shops are as they were. The
-// season ran on to 3.6: 3.2's (CL-3935073: Power Chord, Sgt. Green Clover, Highland Warrior, Battle Hound, their gliders,
+// season ran on to 3.6 (3.3, CL-3942182, adds no cosmetic: only the rarity of three of 3.2's): 3.2's (CL-3935073: Power Chord, Sgt. Green Clover, Highland Warrior, Battle Hound, their gliders,
 // pickaxes and emotes) and 3.1's (CL-3915963) cosmetics are in on the days Epic sold them (Rex, Burnout, Radiant and
 // Brilliant Striker, Empire Axe, Pick Squeak, Tactical Spade, Make It Rain, Flippin' Sexy, Reanimated; a build sees only
 // those its data has, so 3.0's shop is as it was), the later ones (Raven, Leviathan...) and Battle

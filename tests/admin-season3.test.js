@@ -62,6 +62,9 @@ test("admin panel: Season 3's battle pass, item shop and events clock", async ()
     assert.ok(events.body.sampleBuilds.some((b) => b.cl === 3901517));
     assert.ok(events.body.sampleBuilds.find((b) => b.cl === 3915963).flags.includes("EventFlag.Spring2018Phase2"));
     assert.ok(events.body.sampleBuilds.find((b) => b.cl === 3935073).flags.includes("EventFlag.Spring2018Phase2"));
+    const v33 = events.body.sampleBuilds.find((b) => b.cl === 3942182);
+    assert.ok(v33.flags.includes("EventFlag.Spring2018Phase3") && v33.flags.includes("EventFlag.GroupMission"));
+    assert.ok(!events.body.sampleBuilds.find((b) => b.cl === 3935073).flags.includes("EventFlag.Spring2018Phase3"));
   } finally {
     backend.close();
   }

@@ -3,7 +3,7 @@ import { isDone, questIdOf } from "../profiles/quests.js";
 import { fortnitemares, isEventActive, mutantStorms, mutantStorms2018, spring2018, winter2017 } from "./events.js";
 import { fortnitemaresQuests } from "./fortnitemares.js";
 import { mutantStorms2018Quests, mutantStormsQuests } from "./mutantstorms.js";
-import { springQuests } from "./spring2018.js";
+import { luckOfTheStormQuests, springQuests } from "./spring2018.js";
 import { winterQuests } from "./winter2017.js";
 
 // An event's quests leave with it (Core-Backend #127). Epic's were limited time quests: each one's Category is the
@@ -22,7 +22,7 @@ import { winterQuests } from "./winter2017.js";
 // On! the LoveQuest_2018 and SpringQuest_2018 chains it starts.
 const questLines = [{ flag: fortnitemares, starting: fortnitemaresQuests }, { flag: mutantStorms, starting: mutantStormsQuests },
   { flag: winter2017, starting: winterQuests }, { flag: mutantStorms2018, starting: mutantStorms2018Quests },
-  { flag: spring2018, starting: springQuests }];
+  { flag: spring2018, starting: [...springQuests, ...luckOfTheStormQuests] }];
 
 const questRewards = (quest) => [...(quest?.rewards ?? []), ...(quest?.hiddenRewards ?? []), ...(quest?.selectableRewards ?? []).flat()]
   .filter((reward) => reward.templateId.toLowerCase().startsWith("quest:"))

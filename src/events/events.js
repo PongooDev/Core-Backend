@@ -136,6 +136,13 @@ export const spring2018 = "Spring2018";
 export const spring2018Valentines = "EventFlag.Spring2018Valentines";
 export const spring2018Phase1 = "EventFlag.Spring2018Phase1";
 export const spring2018Phase2 = "EventFlag.Spring2018Phase2";
+// 3.3 (CL-3942182, 15 March 2018): "Next chapter of Spring it On! unlocks - 'Luck of the Storm'." The quest map shows Luck of
+// the Storm's pages from EventFlag.Spring2018Phase3 (3.0's RefreshPagesEnabled, with Phase1, Phase2 and Phase4), so 3.3 runs
+// Phase3 too, and Spring It On! (Phase1, Phase2, the passive storms and Mini-Bosses, group missions) runs on as 3.2's. Its
+// line starts at SpringQuest_2018_Reactive_PotsOfGold (events/spring2018.js), which leads through the clovers and the
+// Leprechaun traps to the Pub quest (an Epic Leprechaun survivor and a choice of three Legendary St. Patrick's heroes, in
+// 3.2's data already). Phase4 (The Dreaded Clusterhusk) stays off: nothing in 3.3's notes starts it.
+export const spring2018Phase3 = "EventFlag.Spring2018Phase3";
 // 3.2 (CL-3935073): "Every Group Mission now has a Mission Alert that awards Firecracker Tickets." 3.2's MissionAlerts
 // adds MissionAlert_GroupMissionCategory_01-04 (category GroupMissionCategory, loot tier group MissionAlert_GroupMission,
 // tile difficulty 5-11, 12-21, 22-31, 32-50), which require EventFlag.GroupMission; 3.1's data has no such row or flag
@@ -151,12 +158,13 @@ const events = [
   { name: fiftyFifty, flag: fiftyFifty, firstBuild: 3790078, lastBuild: 3889387 },
   { name: winter2017, flag: winter2017, firstBuild: 3807424, lastBuild: 3841827 },
   { name: passiveStorms, flag: passiveStorms, firstBuild: 3807424, lastBuild: 3841827 },
-  { name: passiveStorms, flag: passiveStorms, firstBuild: 3889387, lastBuild: 3935073 },
-  { name: passiveMiniBosses, flag: passiveMiniBosses, firstBuild: 3889387, lastBuild: 3935073 },
-  { name: spring2018, flag: spring2018Valentines, firstBuild: 3889387, lastBuild: 3935073 },
-  { name: spring2018, flag: spring2018Phase1, firstBuild: 3889387, lastBuild: 3935073 },
-  { name: spring2018, flag: spring2018Phase2, firstBuild: 3915963, lastBuild: 3935073 },
-  { name: groupMission, flag: groupMission, firstBuild: 3935073, lastBuild: 3935073 },
+  { name: passiveStorms, flag: passiveStorms, firstBuild: 3889387, lastBuild: 3942182 },
+  { name: passiveMiniBosses, flag: passiveMiniBosses, firstBuild: 3889387, lastBuild: 3942182 },
+  { name: spring2018, flag: spring2018Valentines, firstBuild: 3889387, lastBuild: 3942182 },
+  { name: spring2018, flag: spring2018Phase1, firstBuild: 3889387, lastBuild: 3942182 },
+  { name: spring2018, flag: spring2018Phase2, firstBuild: 3915963, lastBuild: 3942182 },
+  { name: groupMission, flag: groupMission, firstBuild: 3935073, lastBuild: 3942182 },
+  { name: spring2018, flag: spring2018Phase3, firstBuild: 3942182, lastBuild: 3942182 },
   { name: lobbyWinterDecor, flag: lobbyWinterDecor, firstBuild: 3807424, lastBuild: 3825894 },
   { name: winterBattleBus, flag: winterBattleBus, firstBuild: 3807424, lastBuild: 3825894 },
   { name: supplyDropGift, flag: supplyDropGift, firstBuild: 3807424, lastBuild: 3825894 }

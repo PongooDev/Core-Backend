@@ -221,6 +221,7 @@ test("1.9 gets the lobby news as battleRoyaleNews.news.messages[], earlier build
     assert.equal((await pageFor(backend.port, "3901517")).body.battleRoyaleNews.news.messages[0].title, "Battle Royale - 3.0");
     assert.equal((await pageFor(backend.port, "3915963")).body.battleRoyaleNews.news.messages[0].title, "Battle Royale - 3.1");
     assert.equal((await pageFor(backend.port, "3935073")).body.battleRoyaleNews.news.messages[0].title, "Battle Royale - 3.2");
+    assert.equal((await pageFor(backend.port, "3942182")).body.battleRoyaleNews.news.messages[0].title, "Battle Royale - 3.3");
     assert.equal((await pageFor(backend.port, "3999999")).body.battleRoyaleNews.news.messages[0].title, "Battle Royale - CL-3999999");
 
     // Earlier builds are unchanged: news.message alone.

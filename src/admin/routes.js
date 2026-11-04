@@ -1045,8 +1045,8 @@ export function adminRoutes(context) {
     const now = new Date();
     const config = settings?.get?.()?.itemShop ?? { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 };
     const s = requestedSeasonOf(requestedSeason);
-    // Season 3's shop as 3.2 (its newest data) sells it: 3.0's cosmetics, 3.1's and 3.2's.
-    const build = { 1: "3724489", 2: "3807424", 3: "3935073" }[s];
+    // Season 3's shop as 3.3 (its newest data) sells it: 3.0's cosmetics, 3.1's and 3.2's (3.3 adds none).
+    const build = { 1: "3724489", 2: "3807424", 3: "3942182" }[s];
     const offers = inBuild(build, () => itemShopOffers(now, config, s));
     const cosmetics = inBuild(build, () => eligibleCosmetics());
     const currentDay = shopDay(now, config, s);
@@ -1130,7 +1130,8 @@ export function adminRoutes(context) {
       { version: "2.5", cl: 3889387, event: "Spring It On!" },
       { version: "3.0", cl: 3901517, event: "Spring It On!" },
       { version: "3.1", cl: 3915963, event: "Spring It On!" },
-      { version: "3.2", cl: 3935073, event: "Spring It On!" }
+      { version: "3.2", cl: 3935073, event: "Spring It On!" },
+      { version: "3.3", cl: 3942182, event: "Spring It On!" }
     ];
 
     const sampleBuilds = builds.map((b) => ({
@@ -1232,9 +1233,9 @@ export function adminRoutes(context) {
         {
           id: "spring2018",
           name: "Spring It On!",
-          subtitle: "Valentine's & Lunar New Year Quests, Passive Storms & Mini-Bosses; continues in 3.0 (Luck Explosion), 3.1 (Brave Beginnings) and 3.2",
-          buildRange: "2.5 – 3.2 (CL 3889387 – 3935073)",
-          flags: ["EventFlag.Spring2018Valentines", "EventFlag.Spring2018Phase1", "EventFlag.Spring2018Phase2 (3.1)", "EventFlag.PassiveStorms", "EventFlag.PassiveMiniBosses"],
+          subtitle: "Valentine's & Lunar New Year Quests, Passive Storms & Mini-Bosses; continues in 3.0 (Luck Explosion), 3.1 (Brave Beginnings), 3.2 and 3.3 (Luck of the Storm)",
+          buildRange: "2.5 – 3.3 (CL 3889387 – 3942182)",
+          flags: ["EventFlag.Spring2018Valentines", "EventFlag.Spring2018Phase1", "EventFlag.Spring2018Phase2 (3.1)", "EventFlag.Spring2018Phase3 (3.3)", "EventFlag.PassiveStorms", "EventFlag.PassiveMiniBosses"],
           theater: "Standard Zones with passive storm and Mini-Boss alerts",
           alertsQuota: "3 Mini-Boss (General) mission alerts and 4 storms (no tickets) per day",
           currency: "Firecracker Tickets (AccountResource:eventcurrency_spring), Spring It On! Gold in the Event Store",

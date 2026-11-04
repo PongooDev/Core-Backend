@@ -42,7 +42,7 @@ const legacyFields = () => ({
   oldestClaimIndex: 0
 });
 
-// 2.3 (CL-3847564), 2.4 (CL-3858292), 2.4.2 (CL-3870737), 2.5 (CL-3889387), 3.0 (CL-3901517), 3.1 (CL-3915963) and 3.2 (CL-3935073) keep 2.2's: their MissionAlertCategories rows are 2.2's, CategoryRowName and all.
+// 2.3 (CL-3847564), 2.4 (CL-3858292), 2.4.2 (CL-3870737), 2.5 (CL-3889387), 3.0 (CL-3901517), 3.1 (CL-3915963), 3.2 (CL-3935073) and 3.3 (CL-3942182) keep 2.2's: their MissionAlertCategories rows are 2.2's, CategoryRowName and all.
 const claimDataBuild = 3841827;
 const keyedByRow = () => Number(currentBuild()) >= claimDataBuild;
 

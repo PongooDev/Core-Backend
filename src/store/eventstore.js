@@ -187,6 +187,9 @@ const springNow = () => !isEventActive(winter2017) && !storms2018() && isEventAc
 // until the end of Spring It On!", counted to the end of the Season 3 replay's cycle (spring2018End; 🟡: the event ran on to
 // 3.5, and Core's clock is the season's, rolling over as the shop's replay does). 3.2's calendar request carries the build
 // as the engine version alone (builds/detect.js), which Core read as no build, so the store had no countdown (#233).
+// 3.3's (CL-3942182) notes: "Shamrock Reclaimer Outlander is available in the Event Store." That hero is in no pak of 3.3
+// (no Shamrock or Reclaimer item in its items or characters: Epic delivered it with a content update), so the store has
+// nothing to sell and leaves it out, as every offer a build's data lacks (🟡: add it with its template id when a build has it).
 const wukongFirstBuild = 3935073;
 const springItemsNow = () => (Number(currentBuild()) >= wukongFirstBuild
   ? [...springEventItems, { templateId: "Hero:hid_commando_014_wukong_sr_t01", price: 2800, limit: 1 }] : springEventItems);
