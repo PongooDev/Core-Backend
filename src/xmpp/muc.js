@@ -56,7 +56,18 @@ export function createRooms({ reply, replyError, stanzaError, isPublic = () => f
       rooms.set(room.key, room);
     }
 
-    const existing = room.occupants.get(target.resource);
+    let existing = room.occupants.get(target.resource);
+    let takenOver;
+    // The same account on another connection (a stream the client left behind, say when it switched sub game) isn't a
+    // nick conflict: the room moves its nick to the new connection, as XEP-0045 7.2.9 has a service do for one user. A
+    // client whose join was refused here had the Global tab on "Currently unavailable" (Core-Backend #235).
+    if (existing && existing.connection !== connection && existing.connection.accountId
+      && existing.connection.accountId === connection.accountId) {
+      takenOver = existing;
+      leave(room, existing);
+      rooms.set(room.key, room);
+      existing = undefined;
+    }
     if (existing && existing.connection !== connection) {
       if (!room.occupants.size) rooms.delete(room.key);
       return connection.send(stanzaError(presence, "cancel", "conflict"));
@@ -79,8 +90,8 @@ export function createRooms({ reply, replyError, stanzaError, isPublic = () => f
 
     const occupant = {
       connection, nick: target.resource, presence,
-      affiliation: previous?.affiliation ?? (created ? "owner" : "none"),
-      role: previous?.role ?? (created ? "moderator" : "participant")
+      affiliation: (previous ?? takenOver)?.affiliation ?? (created ? "owner" : "none"),
+      role: (previous ?? takenOver)?.role ?? (created ? "moderator" : "participant")
     };
     for (const other of room.occupants.values()) {
       connection.send(occupantPresence(room, other, connection.jid));

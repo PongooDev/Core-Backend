@@ -433,3 +433,37 @@ test("switching sub game, a leave that arrives before the request still holds th
     backend.close();
   }
 });
+
+// Core-Backend #235: Battle Royale's lobby, Save the World, and back to Battle Royale's lobby. A stream the client left
+// behind still held its nick in GlobalBattleRoyale, so joining it again from the new stream was refused as a nick
+// conflict and the Global tab stayed on "Currently unavailable". The same account takes its nick over instead.
+test("a public room moves an account's nick to its new connection instead of refusing it", async () => {
+  const xmpp = await startXmpp();
+  const room = `globalbattleroyale@muc.${domain}`;
+  try {
+    const first = await xmpp.login("alice", "one");
+    first.client.send(`<presence to="${room}/alice"><x xmlns="http://jabber.org/protocol/muc"/></presence>`);
+    assert.equal((await first.client.next((stanza) => stanza.name === "presence")).attrs.from, `${room}/alice`);
+
+    const second = await xmpp.login("alice", "two");
+    second.client.send(`<presence to="${room}/alice"><x xmlns="http://jabber.org/protocol/muc"/></presence>`);
+    const joined = await second.client.next((stanza) => stanza.name === "presence");
+    assert.deepEqual([joined.attrs.from, joined.attrs.type], [`${room}/alice`, undefined]);
+    assert.equal(xmpp.xmpp.roomOccupants("globalbattleroyale"), 1);
+
+    // The new connection leaves cleanly.
+    second.client.send(`<presence to="${room}/alice" type="unavailable"/>`);
+    assert.equal((await second.client.next((stanza) => stanza.name === "presence")).attrs.type, "unavailable");
+    assert.equal(xmpp.xmpp.roomOccupants("globalbattleroyale"), 0);
+
+    // Another account still can't take the nick.
+    const third = await xmpp.login("alice", "three");
+    third.client.send(`<presence to="${room}/alice"><x xmlns="http://jabber.org/protocol/muc"/></presence>`);
+    await third.client.next((stanza) => stanza.name === "presence");
+    const bob = await xmpp.login("bob");
+    bob.client.send(`<presence to="${room}/alice"/>`);
+    assert.equal((await bob.client.next((stanza) => stanza.name === "presence")).attrs.type, "error");
+  } finally {
+    xmpp.close();
+  }
+});
