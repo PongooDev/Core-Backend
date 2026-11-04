@@ -326,6 +326,15 @@ test("AssignMatch's teams follow each party leader's Squad Fill choice (#78)", a
     // The duo takes both solos that fill; the pair and the lone player stay on their own.
     assert.deepEqual(assign.payload.teams, [[[id("DuoLeader"), id("DuoMate")], [id("Solo")], [id("Filler")]],
       [[id("PairLeader"), id("PairMate")]], [[id("Lone")]]]);
+
+    // CoreV2 #233: the warmup answer names the players whose party doesn't fill (a member's ticket without the option
+    // follows its leader's), so "Fill players' teams with bots" leaves their teams alone.
+    gameserver.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: assign.payload.matchId, result: "ready" } }));
+    assert.equal(await gameserver.next(), null);
+    await settingsOf(backend, { bots: { fillPlayerTeams: true } });
+    const token = await dedicatedServerToken(backend.port);
+    const bots = (await reportWarmup(backend, token, { phase: "Warmup", accountIds: [id("Solo")], secondsLeft: 60 })).body.bots;
+    assert.deepEqual([bots.count, bots.teams, [...bots.noFill].sort()], [0, true, [id("Lone"), id("PairLeader"), id("PairMate")].sort()]);
   } finally {
     for (const client of clients) client.close();
     backend.close();
@@ -1055,14 +1064,20 @@ test("players with the same custom key share a match of their own; a key no allo
   }
 });
 
-test("the warmup answer carries the player bots to add when Force player AIs is on (CoreV2 #233)", async () => {
+test("the warmup answer carries the player bots to add when Force player AIs or Fill players' teams is on (CoreV2 #233)", async () => {
   const backend = await startBackend();
   try {
     const token = await dedicatedServerToken(backend.port);
     const ask = async () => (await reportWarmup(backend, token, { phase: "Setup", accountIds: [] })).body.bots;
     assert.equal(await ask(), null);
     await settingsOf(backend, { bots: { forcePlayerAIs: true, count: 30, level: 7, startingHealth: 80, startingShield: 20, eliminationsCountForQuests: false, botFightChance: 55 } });
-    assert.deepEqual(await ask(), { count: 30, level: 7, health: 80, shield: 20, quests: false, fights: 55 });
+    assert.deepEqual(await ask(), { count: 30, level: 7, health: 80, shield: 20, quests: false, fights: 55, teams: false, noFill: [] });
+    // Fill players' teams works without Force player AIs: no bots on teams of their own then.
+    await settingsOf(backend, { bots: { fillPlayerTeams: true } });
+    assert.deepEqual(await ask(), { count: 30, level: 7, health: 80, shield: 20, quests: false, fights: 55, teams: true, noFill: [] });
+    await settingsOf(backend, { bots: { forcePlayerAIs: false } });
+    assert.deepEqual(await ask(), { count: 0, level: 7, health: 80, shield: 20, quests: false, fights: 55, teams: true, noFill: [] });
+    await settingsOf(backend, { bots: { forcePlayerAIs: true, fillPlayerTeams: false } });
     // On with no bots asked for, and off with a count, send none.
     await settingsOf(backend, { bots: { count: 0 } });
     assert.equal(await ask(), null);

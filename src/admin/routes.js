@@ -1647,7 +1647,7 @@ export function adminRoutes(context) {
       regionFallback: true,
       matchStartCountdown: true,
       matchStartBufferSeconds: 25,
-      bots: { forcePlayerAIs: false, count: 0, level: 5, startingHealth: 100, startingShield: 0, eliminationsCountForQuests: true, botFightChance: 30 },
+      bots: { forcePlayerAIs: false, count: 0, level: 5, startingHealth: 100, startingShield: 0, eliminationsCountForQuests: true, botFightChance: 30, fillPlayerTeams: false },
       serverRegions: []
     });
     res.json({ success: true, ...getMatchmakingPayload() });

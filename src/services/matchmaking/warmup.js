@@ -13,9 +13,12 @@ import { sendError } from "../../errors.js";
 // 0x42D2B0 reads only match.option.warmupRequiredPlayerCount). With lateJoin on and the phase Warmup, the matchmaking
 // service sends parties queuing for the match's bucket to it (open), up to maxPlayers, and parties lists the ones it
 // sent, for the server to give each party one team. The match is found by its players (matchmaking/service.js).
-// bots (CoreV2 #233) is the player bots to add, {count, level, health, shield, quests}, when the admin panel's Force
-// player AIs is on and its count is above 0, else null. The count is the requested one as is: the gameserver applies the
-// cap itself (bots = min(count, match capacity - connected players), re-checked before the bus leaves).
+// bots (CoreV2 #233) is the player bots to add, {count, level, health, shield, quests, fights, teams, noFill}, when the
+// admin panel's Force player AIs is on and its count is above 0, or its "Fill players' teams with bots" is on, else null.
+// count is the bots on teams of their own (0 with Force player AIs off), the requested one as is: the gameserver applies
+// the cap itself (bots = min(count, match capacity - connected players - bots on players' teams), re-checked before the
+// bus leaves). teams: whether bots fill the empty places on players' teams in duos and squads; noFill: the match's
+// players whose party doesn't fill (the party leader's player.option.fillTeam false), whose teams get none.
 // Only the DedicatedServer client (CoreV2's requests) or a gameserver account hosting a session may ask.
 const maxAccountIds = 200;
 
@@ -34,6 +37,8 @@ export function warmupRoutes({ tokens, sessions, settings, matchmaker }) {
     const open = lateJoin && req.body?.phase === "Warmup" && Number.isFinite(secondsLeft) && secondsLeft > 0;
     const match = accountIds.length ? matchmaker.warmup({ accountIds, open, secondsLeft }) : null;
     const bots = current.bots;
+    const forced = bots?.forcePlayerAIs === true && bots.count > 0;
+    const teams = bots?.fillPlayerTeams === true;
     res.json({
       warmupSeconds: current.warmupSeconds ?? null,
       lateJoin,
@@ -41,8 +46,9 @@ export function warmupRoutes({ tokens, sessions, settings, matchmaker }) {
       open: match?.open ?? false,
       maxPlayers: match?.maxPlayers ?? null,
       parties: match?.parties ?? [],
-      bots: bots?.forcePlayerAIs === true && bots.count > 0
-        ? { count: bots.count, level: bots.level, health: bots.startingHealth, shield: bots.startingShield, quests: bots.eliminationsCountForQuests, fights: bots.botFightChance ?? 30 }
+      bots: forced || teams
+        ? { count: forced ? bots.count : 0, level: bots.level, health: bots.startingHealth, shield: bots.startingShield, quests: bots.eliminationsCountForQuests,
+          fights: bots.botFightChance ?? 30, teams, noFill: match?.noFill ?? [] }
         : null
     });
   });

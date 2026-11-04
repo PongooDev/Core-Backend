@@ -307,7 +307,8 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
   const servers = new Set();
   // Parties waiting for a server: {ticket, ws, size}.
   const waiting = [];
-  // Assigned matches by session id: {matchId, bucketId, assigned, parties, players, maxPlayers}.
+  // Assigned matches by session id: {matchId, bucketId, assigned, parties, players, noFill, maxPlayers}. noFill: the
+  // players whose party doesn't fill (Squad Fill on No Fill), late parties' too, whose teams get no bots (CoreV2 #233).
   const matches = new Map();
   // Matches in their warmup that take late parties, by session id: {matchId, bucketId, maxPlayers, players (the
   // accounts connected, as the server reported them), heard, until, parties: [{key, players, size, sent}]}.
@@ -648,7 +649,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     server.ws.close(1000);
     matches.set(server.sessionId, { matchId: forming.matchId, bucketId: forming.bucketId, customKey: forming.customKey ?? null, assigned: Date.now(),
       parties: new Set(forming.parties.map((party) => party.key)), players: new Set(forming.parties.flatMap((party) => party.ticket.partyPlayerIds)),
-      maxPlayers: server.maxPlayers });
+      noFill: new Set(forming.parties.filter((party) => !fills(party)).flatMap((party) => party.ticket.partyPlayerIds)), maxPlayers: server.maxPlayers });
     for (const party of forming.parties) play(party, server.sessionId, forming.matchId);
     placeWaiting();
   }
@@ -686,6 +687,9 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
       say(`${party.ticket.accountId} (party of ${party.size}) joins match ${open.matchId} in its warmup, ${Math.round((open.until - Date.now()) / 1000)} s left (session ${sessionId})`);
     }
     matches.get(sessionId)?.parties.add(party.key);
+    if (!fills(party)) {
+      for (const id of party.ticket.partyPlayerIds) matches.get(sessionId)?.noFill?.add(id);
+    }
     // Its countdown is the warmup's time left, as the server reported it: what the island's timer shows as it loads in
     // (#160). Its players connected are the match's and those on their way, this party among them.
     const now = Date.now();
@@ -706,12 +710,14 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
 
   // A Core gameserver's report during its match's warmup: the accounts connected to it, whether it takes late parties
   // and how long its warmup has left. {sessionId, open, maxPlayers, parties: [[accountId]]} (the late parties sent there,
-  // for the server to keep each party on one team), or null for a match this service doesn't know.
+  // for the server to keep each party on one team, and noFill: the match's players whose party doesn't fill, CoreV2 #233),
+  // or null for a match this service doesn't know.
   function warmup({ accountIds, open, secondsLeft }) {
     const sessionId = matchSessionOf(accountIds);
     if (!sessionId || !sessions.get(sessionId)) return null;
     const match = matches.get(sessionId);
     let entry = lateJoins.get(sessionId);
+    const noFill = [...(match?.noFill ?? [])];
     // The game's warmup length, for the countdowns of the next matches on servers of this build (#160).
     const reportedBucket = match?.bucketId ?? entry?.bucketId;
     if (reportedBucket && warmupSeconds() === null && secondsLeft > 0) {
@@ -720,10 +726,10 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     }
     if (!open || !lateJoin() || !(secondsLeft > 0)) {
       if (lateJoins.delete(sessionId)) say(`Match ${entry.matchId} (session ${sessionId}) takes no more parties`);
-      return { sessionId, open: false, maxPlayers: entry?.maxPlayers ?? match?.maxPlayers ?? null, parties: entry?.parties.map((party) => party.players) ?? [] };
+      return { sessionId, open: false, maxPlayers: entry?.maxPlayers ?? match?.maxPlayers ?? null, parties: entry?.parties.map((party) => party.players) ?? [], noFill };
     }
     if (!entry) {
-      if (!match) return { sessionId, open: false, maxPlayers: null, parties: [] };
+      if (!match) return { sessionId, open: false, maxPlayers: null, parties: [], noFill };
       const session = sessions.get(sessionId);
       entry = { matchId: match.matchId, bucketId: match.bucketId, customKey: match.customKey ?? null, maxPlayers: match.maxPlayers || session.maxPublicPlayers + session.maxPrivatePlayers,
         parties: [] };
@@ -735,7 +741,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     entry.heard = now;
     entry.until = now + secondsLeft * 1000;
     placeWaiting();
-    return { sessionId, open: true, maxPlayers: entry.maxPlayers, parties: entry.parties.map((party) => party.players) };
+    return { sessionId, open: true, maxPlayers: entry.maxPlayers, parties: entry.parties.map((party) => party.players), noFill };
   }
 
   // Whether a custom key is open (#186): a party allowed to use keys queues with it, waiting for a server or in its forming
