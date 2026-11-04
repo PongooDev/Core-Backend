@@ -20,7 +20,8 @@ import { seasonHistoryStart, seasonMoment } from "../store/itemshop.js";
 //   challenge_bundle_schedule_id, num_progress_quests_completed, xp, favorite};
 // - each quest's challenge_bundle_id, its bundle's item id.
 // Days count on Season 3's replay (store/itemshop.js seasonMoment: day 1 is 22 February 2018), and unlock_epoch is the
-// replay's day 1, so the challenges tab's "unlocks in" countdowns read as the replay's. A bundle once given stays when the
+// replay's day 1, so the challenges tab's "unlocks in" countdowns read as the replay's, unless the admin picks other
+// unlock dates (#219, weekPlan). A bundle once given stays when the
 // replay starts over. The quests are done as Epic's were, their Battle Stars paid at once (athena.js completeQuest).
 const dayMs = 24 * 60 * 60 * 1000;
 const typeOf = (templateId) => String(templateId).split(":")[0].toLowerCase();
@@ -41,21 +42,90 @@ function replayDays(now) {
 // state's seasonBegin (FFortClientEventsState::SeasonBegin, +0x158). 3.0's challenges tab shows a week that isn't in the
 // profile yet as UFortChallengeBundleInfo::IsUnlocked's (0x26E0410) "Unlocks in {0}" (FortChallengeBundleInfo_
 // TimeLeftBeforeUnlock): its DaysSinceEventStart UnlockValue in days less the time since SeasonBegin (0x9AE190: the
-// calendar's now less SeasonBegin), so without one every week read "Unlocks in" nothing. It is the replay's day 1, as
-// unlock_epoch is: Season 3 began on 22 February 2018 and its weeks unlocked on the Thursdays after (Week 2 on 1 March
-// to Week 9 on 19 April, 3.0's Season3_Challenge_Schedule's 7 to 56 days), so on the replay each week shows the day it
-// came out. Null for a build without challenge schedules.
-export const challengeSeasonBegin = (now = new Date()) => (Object.keys(athenaChallengeSchedules()).length ? replayDays(now).epoch : null);
+// calendar's now less SeasonBegin), so without one every week read "Unlocks in" nothing. By the original dates it is the
+// replay's day 1: Season 3 began on 22 February 2018 and its weeks unlocked on the Thursdays after (Week 2 on 1 March to
+// Week 9 on 19 April, 3.0's Season3_Challenge_Schedule's 7 to 56 days), so on the replay each week shows the day it came
+// out. The admin's other unlock modes move it (weekPlan). The schedules' unlock_epoch is the same. Null for a build
+// without challenge schedules.
+export const challengeSeasonBegin = (now = new Date()) => (Object.keys(athenaChallengeSchedules()).length ? weekPlan(now).begin : null);
 
-// The admin panel's "Unlock all weekly challenges now" (settings challengesAllUnlocked, Core-Backend #207): every week of
-// the schedules a player holds is given at once, whatever the replay's day.
+// The admin panel's weekly challenge settings (Core-Backend #207, #219), settings challengeUnlock.season<N>:
+// - mode "original": each week on its day of the season's replay (the schedule's DaysSinceEventStart);
+// - mode "interval": Week 1 on startDate ("YYYY-MM-DD", 00:00 UTC), each next week intervalDays later;
+// - mode "manual": the first manualWeeks weeks, now;
+// - weeksAvailable: the weeks past it stay locked whatever the mode.
+// "Unlock all weeks now" is manual with every week. Before #219 it was settings challengesAllUnlocked, still read for a
+// season without settings of its own. A player gets the weeks at their next login (settleChallengeSchedules).
 let settingsProvider = () => undefined;
 export function configureChallenges(provider) {
   settingsProvider = typeof provider === "function" ? provider : () => provider;
 }
-export const challengesAllUnlocked = (settingsValue = settingsProvider()) => settingsValue?.challengesAllUnlocked === true;
+export const challengeModes = ["original", "interval", "manual"];
 
-const unlocked = (entry, days) => entry.unlockType !== "DaysSinceEventStart" || days >= entry.unlockValue || challengesAllUnlocked();
+const bySeasonDays = (entry) => entry.unlockType === "DaysSinceEventStart";
+const isWeekly = (schedule) => schedule.bundles.some(bySeasonDays);
+// The season's weekly schedule's bundles (Season3_Challenge_Schedule: the one unlocking by days), Week 1 first.
+function weeklyEntries() {
+  const schedule = Object.values(athenaChallengeSchedules()).find(isWeekly);
+  const value = (entry) => (bySeasonDays(entry) ? entry.unlockValue : 0);
+  return schedule ? [...schedule.bundles].sort((a, b) => value(a) - value(b)) : [];
+}
+export const challengeWeekCount = () => weeklyEntries().length;
+
+const dateOnly = (value) => (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(`${value}T00:00:00Z`)) ? value : null);
+const whole = (value, low, high, fallback) => (Number.isInteger(value) ? Math.min(high, Math.max(low, value)) : fallback);
+
+// The running season's settings, filled in and held to its weeks.
+export function challengeUnlock(settingsValue = settingsProvider(), now = new Date()) {
+  const total = challengeWeekCount();
+  const saved = settingsValue?.challengeUnlock?.[`season${athenaSeason()?.seasonNumber ?? 1}`];
+  const base = saved ?? (settingsValue?.challengesAllUnlocked === true ? { mode: "manual", manualWeeks: total } : {});
+  return {
+    mode: challengeModes.includes(base.mode) ? base.mode : "original",
+    startDate: dateOnly(base.startDate) ?? replayDays(now).epoch.slice(0, 10),
+    intervalDays: whole(base.intervalDays, 1, 60, 7),
+    manualWeeks: whole(base.manualWeeks, 0, total, total),
+    weeksAvailable: whole(base.weeksAvailable, 1, Math.max(1, total), total),
+    totalWeeks: total
+  };
+}
+export const challengesAllUnlocked = (settingsValue = settingsProvider()) => {
+  const settings = challengeUnlock(settingsValue);
+  return settings.mode === "manual" && settings.manualWeeks >= settings.totalWeeks && settings.weeksAvailable >= settings.totalWeeks;
+};
+
+// Which weeks are unlocked now, when each unlocks (null: no date), and the seasonBegin the client counts down from.
+// The client puts a week at seasonBegin plus its UnlockValue (7 days a week), so seasonBegin is set for the next locked
+// week to read right: by the original dates and every 7 days that is every week; any other interval gets the next week
+// right and the weeks after it read 7 days apart; manual has no dates, its next locked week reads a week from today.
+// changes: when seasonBegin next moves, for the calendar's cacheExpire.
+export function weekPlan(now = new Date(), settingsValue = settingsProvider()) {
+  const settings = challengeUnlock(settingsValue, now);
+  const entries = weeklyEntries();
+  const { days, epoch } = replayDays(now);
+  const valueOf = (i) => (entries[i] && bySeasonDays(entries[i]) ? entries[i].unlockValue : 0);
+  const start = Date.parse(`${settings.startDate}T00:00:00Z`);
+  const today = Math.floor(now.getTime() / dayMs) * dayMs;
+  const weeks = entries.map((entry, i) => {
+    const at = i >= settings.weeksAvailable ? null
+      : settings.mode === "original" ? Date.parse(epoch) + valueOf(i) * dayMs
+        : settings.mode === "interval" ? start + i * settings.intervalDays * dayMs : null;
+    const open = i < settings.weeksAvailable && (settings.mode === "manual" ? i < settings.manualWeeks
+      : settings.mode === "interval" ? now.getTime() >= at : !bySeasonDays(entry) || days >= entry.unlockValue);
+    return { week: i + 1, bundle: entry.bundle, unlocked: open, unlocksAt: at === null ? null : new Date(at).toISOString() };
+  });
+  const next = weeks.findIndex((week) => !week.unlocked && week.week <= settings.weeksAvailable);
+  let begin = epoch;
+  if (settings.mode === "interval") {
+    const anchor = next >= 0 ? next : Math.max(0, Math.min(settings.weeksAvailable, entries.length) - 1);
+    begin = new Date(start + anchor * settings.intervalDays * dayMs - valueOf(anchor) * dayMs).toISOString();
+  } else if (settings.mode === "manual") {
+    begin = new Date(next >= 0 ? today + 7 * dayMs - valueOf(next) * dayMs : today - valueOf(entries.length - 1) * dayMs).toISOString();
+  }
+  const changes = next < 0 || settings.mode === "original" ? null
+    : settings.mode === "interval" ? new Date(weeks[next].unlocksAt) : new Date(today + dayMs);
+  return { ...settings, weeks, begin, changes };
+}
 
 function grantBundle(session, scheduleItemId, bundleId, athena) {
   const tracker = session.profile("athena");
@@ -85,18 +155,21 @@ function grantBundle(session, scheduleItemId, bundleId, athena) {
   return bundleItemId;
 }
 
-// Gives the schedules' bundles that have unlocked, and keeps their unlock_epoch on the replay's day 1.
+// Gives the schedules' bundles that have unlocked (the weekly schedule's by the admin's settings, weekPlan), and keeps
+// their unlock_epoch on the calendar's seasonBegin.
 export function settleChallengeSchedules(session, athena, now = new Date()) {
   const schedules = athenaChallengeSchedules();
   const tracker = session.profile("athena");
+  const plan = weekPlan(now);
+  const weekOpen = new Map(plan.weeks.map((week) => [week.bundle, week.unlocked]));
   for (const [scheduleItemId, item] of heldOf(tracker.profile, "challengebundleschedule")) {
     const schedule = schedules[idOf(item.templateId)];
     if (!schedule) continue;
-    const { days, epoch } = replayDays(now);
-    if (item.attributes.unlock_epoch !== epoch) tracker.setItemAttribute(scheduleItemId, "unlock_epoch", epoch);
+    if (item.attributes.unlock_epoch !== plan.begin) tracker.setItemAttribute(scheduleItemId, "unlock_epoch", plan.begin);
     const granted = [...(item.attributes.granted_bundles ?? [])];
     for (const entry of schedule.bundles) {
-      if (!unlocked(entry, days) || heldBundle(tracker.profile, entry.bundle)) continue;
+      const open = isWeekly(schedule) ? weekOpen.get(entry.bundle) === true : !bySeasonDays(entry);
+      if (!open || heldBundle(tracker.profile, entry.bundle)) continue;
       const bundleItemId = grantBundle(session, scheduleItemId, entry.bundle, athena);
       if (bundleItemId) granted.push(bundleItemId);
     }

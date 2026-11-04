@@ -17,7 +17,7 @@ import { getQuest } from "../src/gamedata/quests.js";
 import { dataBuild } from "../src/gamedata/read.js";
 import { assignmentBucket, showsMatchStart } from "../src/matchmaking/service.js";
 import { advanceAthenaObjectives, athenaQuestLogin, awardVictory, grantAthenaQuest, recordMatchProgress, seasonRewardFunctions, settleBattlePassDaily } from "../src/profiles/athena.js";
-import { challengeSeasonBegin, configureChallenges } from "../src/profiles/challenges.js";
+import { challengeSeasonBegin, challengesAllUnlocked, challengeWeekCount, configureChallenges, settleChallengeSchedules, weekPlan } from "../src/profiles/challenges.js";
 import { claimQuest, completeQuest, grant } from "../src/profiles/progress.js";
 import { findQuestItem } from "../src/profiles/quests.js";
 import { clientQuestLogin } from "../src/services/mcp/commands/ClientQuestLogin.js";
@@ -317,6 +317,61 @@ test("Season 3's calendar names the season's start for the locked weeks, and eve
     buyBattlePass(session, seasonRewardFunctions());
     const weeks = itemsOf(tracker, "ChallengeBundle").map(([, item]) => item.templateId.toLowerCase());
     for (let week = 1; week <= 9; week++) assert.ok(weeks.includes(`challengebundle:s3_week${week}_questbundle`), `week ${week}`);
+  } finally {
+    configureChallenges(undefined);
+  }
+}));
+
+// Core-Backend #219: the admin's unlock modes and the weeks available, and the seasonBegin the client counts down from.
+test("Season 3's weekly challenges unlock by the admin's mode and cap, and seasonBegin follows them", () => withSession("unlockmodes30", (session) => {
+  const season = (settings) => ({ challengeUnlock: { season3: settings } });
+  const openWeeks = (plan) => plan.weeks.filter((week) => week.unlocked).map((week) => week.week);
+  try {
+    inBuild(v30, () => {
+      assert.equal(challengeWeekCount(), 9);
+      // Original dates: seasonBegin is the replay's day 1, each week 7 days on.
+      const original = weekPlan(now, {});
+      assert.equal(original.mode, "original");
+      assert.equal(original.begin, challengeSeasonBegin(now));
+      assert.equal(Date.parse(original.weeks[8].unlocksAt) - Date.parse(original.begin), 56 * dayMs);
+      assert.equal(weekPlan(now, season({ weeksAvailable: 3 })).weeks.filter((w) => w.unlocksAt).length, 3);
+
+      // Every 7 days from a start date: seasonBegin is the start date, so every countdown is exact.
+      const weekly = weekPlan(now, season({ mode: "interval", startDate: "2026-10-20", intervalDays: 7 }));
+      assert.deepEqual(openWeeks(weekly), [1, 2, 3]);
+      assert.equal(weekly.begin, "2026-10-20T00:00:00.000Z");
+      assert.equal(weekly.changes.toISOString(), "2026-11-10T00:00:00.000Z");
+      // Every 3 days: the next locked week reads right (begin + its 7 days a week).
+      const fast = weekPlan(now, season({ mode: "interval", startDate: "2026-10-28", intervalDays: 3 }));
+      assert.deepEqual(openWeeks(fast), [1, 2, 3]);
+      assert.equal(fast.weeks[3].unlocksAt, "2026-11-06T00:00:00.000Z");
+      assert.equal(Date.parse(fast.begin) + 21 * dayMs, Date.parse(fast.weeks[3].unlocksAt));
+      // Not yet started: nothing unlocked, Week 1 counts down from the start.
+      assert.deepEqual(openWeeks(weekPlan(now, season({ mode: "interval", startDate: "2026-12-01" }))), []);
+      // The cap holds in every mode.
+      assert.deepEqual(openWeeks(weekPlan(now, season({ mode: "interval", startDate: "2026-01-01", weeksAvailable: 4 }))), [1, 2, 3, 4]);
+      assert.equal(weekPlan(now, season({ mode: "interval", startDate: "2026-01-01", weeksAvailable: 4 })).weeks[4].unlocksAt, null);
+
+      // Manual: the first weeks, no dates; the next locked week reads a week from today.
+      const manual = weekPlan(now, season({ mode: "manual", manualWeeks: 5, weeksAvailable: 9 }));
+      assert.deepEqual(openWeeks(manual), [1, 2, 3, 4, 5]);
+      assert.equal(Date.parse(manual.begin) + 35 * dayMs, Date.parse("2026-11-10T00:00:00Z"));
+      assert.deepEqual(openWeeks(weekPlan(now, season({ mode: "manual", manualWeeks: 9, weeksAvailable: 2 }))), [1, 2]);
+      assert.ok(challengesAllUnlocked(season({ mode: "manual", manualWeeks: 9 })));
+      assert.ok(!challengesAllUnlocked(season({ mode: "manual", manualWeeks: 9, weeksAvailable: 8 })));
+    });
+
+    // A player gets the unlocked weeks at their next login, and the schedule's unlock_epoch is the calendar's seasonBegin.
+    configureChallenges(season({ mode: "manual", manualWeeks: 2 }));
+    buyBattlePass(session, seasonRewardFunctions());
+    const tracker = session.profile("athena");
+    const weeks = () => itemsOf(tracker, "ChallengeBundle").map(([, item]) => item.templateId.toLowerCase()).filter((id) => id.includes("_week"));
+    assert.deepEqual(weeks().sort(), ["challengebundle:s3_week1_questbundle", "challengebundle:s3_week2_questbundle"]);
+    configureChallenges(season({ mode: "manual", manualWeeks: 4 }));
+    settleChallengeSchedules(session, seasonRewardFunctions(), now);
+    assert.equal(weeks().length, 4);
+    const [, schedule] = itemsOf(tracker, "ChallengeBundleSchedule").find(([, item]) => item.templateId.toLowerCase().endsWith("season3_challenge_schedule"));
+    assert.equal(schedule.attributes.unlock_epoch, challengeSeasonBegin(now));
   } finally {
     configureChallenges(undefined);
   }

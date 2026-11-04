@@ -121,6 +121,10 @@ const defaults = {
   // Season 3's weekly challenges all at once (Core-Backend #207, profiles/challenges.js), not a week at a time on the
   // season's replay.
   challengesAllUnlocked: false,
+  // How each season's weekly challenges unlock (Core-Backend #219, profiles/challenges.js challengeUnlock), by season:
+  // {season3: {mode: "original" | "interval" | "manual", startDate, intervalDays, manualWeeks, weeksAvailable}}. A
+  // season without one keeps its original dates (or challengesAllUnlocked).
+  challengeUnlock: {},
   serverLimits: { NA: noLimits(), EU: noLimits(), OCE: noLimits(), BR: noLimits(), ASIA: noLimits() }
 };
 
@@ -296,6 +300,29 @@ export const stormShields = {
 // A structure limit: a whole number from 1 to maxStructureLimit, null for none (blank clears it), or undefined for
 // anything else.
 export const maxStructureLimit = 100000;
+// challengeUnlock's seasons (Core-Backend #219): each given season's settings over its current ones. The weeks are held
+// to the season's own count where they're used (profiles/challenges.js challengeUnlock).
+const challengeModeNames = ["original", "interval", "manual"];
+function challengeUnlockValue(input, current = {}) {
+  if (!input || typeof input !== "object") return current;
+  const result = { ...current };
+  for (const [key, value] of Object.entries(input)) {
+    if (!/^season\d+$/.test(key) || !value || typeof value !== "object") continue;
+    const entry = { ...(current[key] ?? {}) };
+    if (challengeModeNames.includes(value.mode)) entry.mode = value.mode;
+    if (typeof value.startDate === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value.startDate) && !Number.isNaN(Date.parse(`${value.startDate}T00:00:00Z`))) entry.startDate = value.startDate;
+    const whole = (name, low, high) => {
+      const num = Number(value[name]);
+      if (value[name] !== undefined && value[name] !== null && Number.isInteger(num) && num >= low && num <= high) entry[name] = num;
+    };
+    whole("intervalDays", 1, 60);
+    whole("manualWeeks", 0, 52);
+    whole("weeksAvailable", 1, 52);
+    result[key] = entry;
+  }
+  return result;
+}
+
 function structureLimitValue(value) {
   if (value === null || (typeof value === "string" && !value.trim())) return null;
   const limit = typeof value === "string" ? Number(value) : value;
@@ -416,6 +443,7 @@ export function createSettingsStore(dataDir) {
       if (typeof loaded.remoteAdmin === "boolean") settings.remoteAdmin = loaded.remoteAdmin;
       if (typeof loaded.ltmOriginalDates !== "boolean") settings.ltmOriginalDates = defaults.ltmOriginalDates;
       if (typeof loaded.challengesAllUnlocked !== "boolean") settings.challengesAllUnlocked = defaults.challengesAllUnlocked;
+      settings.challengeUnlock = challengeUnlockValue(loaded.challengeUnlock, {});
       if (loaded.matchmakingModes && typeof loaded.matchmakingModes === "object") {
         settings.matchmakingModes = sanitizeMatchmakingModes(loaded.matchmakingModes, defaults.matchmakingModes);
       }
@@ -512,7 +540,8 @@ export function createSettingsStore(dataDir) {
         subgameSelect: settings.subgameSelect ? JSON.parse(JSON.stringify(settings.subgameSelect)) : undefined,
         itemShop: settings.itemShop ? JSON.parse(JSON.stringify(settings.itemShop)) : { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 },
         events: JSON.parse(JSON.stringify(settings.events ?? defaults.events)),
-        battlepass: JSON.parse(JSON.stringify(settings.battlepass ?? defaults.battlepass))
+        battlepass: JSON.parse(JSON.stringify(settings.battlepass ?? defaults.battlepass)),
+        challengeUnlock: JSON.parse(JSON.stringify(settings.challengeUnlock ?? {}))
       };
     },
 
@@ -568,6 +597,7 @@ export function createSettingsStore(dataDir) {
       if (typeof partial.lateJoin === "boolean") settings.lateJoin = partial.lateJoin;
       if (typeof partial.ltmOriginalDates === "boolean") settings.ltmOriginalDates = partial.ltmOriginalDates;
       if (typeof partial.challengesAllUnlocked === "boolean") settings.challengesAllUnlocked = partial.challengesAllUnlocked;
+      settings.challengeUnlock = challengeUnlockValue(partial.challengeUnlock, settings.challengeUnlock ?? {});
       if (typeof partial.regionFallback === "boolean") settings.regionFallback = partial.regionFallback;
       if (typeof partial.matchStartCountdown === "boolean") settings.matchStartCountdown = partial.matchStartCountdown;
       settings.matchStartBufferSeconds = matchStartBufferValue(partial.matchStartBufferSeconds) ?? settings.matchStartBufferSeconds;

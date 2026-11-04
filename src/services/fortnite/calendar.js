@@ -9,7 +9,7 @@ import { eventStoreEnds } from "../../store/eventstore.js";
 import { hasItemShop, seasonEnd, weeklyStoreEnd } from "../../store/itemshop.js";
 import { hasSeasonShop } from "../../store/seasonshop.js";
 import { athenaSeason } from "../../gamedata/athena.js";
-import { challengeSeasonBegin } from "../../profiles/challenges.js";
+import { challengeSeasonBegin, weekPlan } from "../../profiles/challenges.js";
 import { seasonTemplateId } from "../../profiles/seasons.js";
 
 // 1.8's event calendar (ScheduledEvents' FCalendarDownload): {currentTime, channels: {<channel>: FEventsTimeline
@@ -56,10 +56,11 @@ export function calendarRoutes({ tokens, settings }) {
     const stwEnds = eventStoreEnds(now);
     // From 3.0, the season's start, which the challenges tab counts the locked weeks from (profiles/challenges.js).
     const seasonBegin = challengeSeasonBegin(now);
+    const challengeChange = seasonBegin ? weekPlan(now).changes : null;
     const cacheMinutes = Math.max(5, Math.min(120, Number(currentEventsConfig()?.calendarCacheMinutes ?? calendarCacheMinutes)));
     const ltmChange = nextLtmChange(currentBuild(), settings?.get?.(), now);
     const cacheExpire = new Date(Math.min(now.getTime() + cacheMinutes * 60000, weeklyEnd?.getTime() ?? Infinity,
-      seasonEnds?.getTime() ?? Infinity, ltmChange?.getTime() ?? Infinity, ...Object.values(stwEnds).map((end) => end.getTime()))).toISOString();
+      seasonEnds?.getTime() ?? Infinity, ltmChange?.getTime() ?? Infinity, challengeChange?.getTime() ?? Infinity, ...Object.values(stwEnds).map((end) => end.getTime()))).toISOString();
     const seasonal = Number(currentBuild()) >= seasonalEventManagerBuild;
     const flags = activeEventFlags();
     const activeEvents = flags.map((flag) => ({ [seasonal ? "eventType" : "eventName"]: flag, activeUntil: eventsActiveUntil }));

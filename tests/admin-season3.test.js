@@ -25,6 +25,29 @@ test("admin panel: Season 3's battle pass, item shop and events clock", async ()
     assert.equal((await post(backend.port, "/admin/api/battlepass/challenges", undefined, { allUnlocked: true })).body.challengesAllUnlocked, true);
     assert.equal((await get(backend.port, "/admin/api/battlepass/overview?season=3")).body.challengesAllUnlocked, true);
     assert.equal((await get(backend.port, "/admin/api/battlepass/overview?season=2")).body.challengesAllUnlocked, undefined);
+    assert.equal((await get(backend.port, "/admin/api/battlepass/overview?season=2")).body.challenges, undefined);
+
+    // Core-Backend #219: unlock modes and the weeks available. "Unlock all" is manual with every week.
+    let challenges = (await get(backend.port, "/admin/api/battlepass/overview?season=3")).body.challenges;
+    assert.equal(challenges.mode, "manual");
+    assert.equal(challenges.manualWeeks, 9);
+    assert.equal(challenges.weeks.length, 9);
+    assert.equal((await post(backend.port, "/admin/api/battlepass/challenges", undefined, { season: 2, mode: "original" })).status, 400);
+    assert.equal((await post(backend.port, "/admin/api/battlepass/challenges", undefined, { mode: "weekly" })).status, 400);
+    assert.equal((await post(backend.port, "/admin/api/battlepass/challenges", undefined, { mode: "interval" })).status, 400);
+    assert.equal((await post(backend.port, "/admin/api/battlepass/challenges", undefined, { mode: "manual", weeksAvailable: 10 })).status, 400);
+    const saved = await post(backend.port, "/admin/api/battlepass/challenges", undefined,
+      { season: 3, mode: "interval", startDate: "2026-01-01", intervalDays: 3, weeksAvailable: 5 });
+    assert.equal(saved.status, 200);
+    assert.equal(saved.body.challengesAllUnlocked, false);
+    challenges = (await get(backend.port, "/admin/api/battlepass/overview?season=3")).body.challenges;
+    assert.equal(challenges.mode, "interval");
+    assert.equal(challenges.startDate, "2026-01-01");
+    assert.equal(challenges.intervalDays, 3);
+    assert.equal(challenges.weeksAvailable, 5);
+    assert.equal(challenges.weeks[1].unlocksAt, "2026-01-04T00:00:00.000Z");
+    assert.equal(challenges.weeks[5].unlocksAt, null);
+    assert.equal((await post(backend.port, "/admin/api/battlepass/challenges", undefined, { allUnlocked: false })).body.challenges.mode, "original");
 
     const shop = await get(backend.port, "/admin/api/shop?season=3");
     assert.equal(shop.status, 200);

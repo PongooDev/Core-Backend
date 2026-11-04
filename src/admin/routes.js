@@ -49,6 +49,7 @@ import { defaultBattlePass, enrichedMilestones } from "../battlepass/season1.js"
 import { bundleTiers, seasonPassConfig, seasonTiers, tierPrice } from "../battlepass/season2.js";
 import { battlePassSeasons, resetBattlePass } from "../battlepass/reset.js";
 import { buildOfSeason, inProfileSeason, profileSeason } from "../profiles/seasons.js";
+import { challengeModes, challengesAllUnlocked, challengeWeekCount, weekPlan } from "../profiles/challenges.js";
 
 import { isServerAccountName, validatePassword } from "../accounts/password.js";
 import { EmailError } from "../accounts/store.js";
@@ -1340,8 +1341,9 @@ export function adminRoutes(context) {
         seasonEnd: seasonEnds(passSeason),
         config: { ...seasonPassConfig(passSeason), tierPrice, bundleTiers, xpMultiplier: bpConfig.xpMultiplier ?? 1 },
         tiers: seasonTiers(),
-        // Season 3's weekly challenges: whether every week is given at once (Core-Backend #207, profiles/challenges.js).
-        ...(passSeason >= 3 ? { challengesAllUnlocked: s.challengesAllUnlocked === true } : {})
+        // The season's weekly challenges (Core-Backend #207, #219, profiles/challenges.js): how they unlock and each week's
+        // date, for a season with weekly bundles (Season 3; Season 2's were dailies and the pass).
+        ...(challengeWeekCount() ? { challengesAllUnlocked: challengesAllUnlocked(s), challenges: withoutSeasonStartRecording(() => weekPlan(now, s)) } : {})
       })));
     }
     res.json({
@@ -1366,14 +1368,44 @@ export function adminRoutes(context) {
     });
   });
 
-  // {allUnlocked}: Season 3's weekly challenges all at once, or a week at a time on the season's replay (Core-Backend #207).
-  // A player gets the weeks at their next quest login.
+  // How a season's weekly challenges unlock (Core-Backend #207, #219, profiles/challenges.js): {season (default 3), mode
+  // "original" | "interval" | "manual", startDate "YYYY-MM-DD", intervalDays 1-60, manualWeeks, weeksAvailable}, or
+  // {allUnlocked}: true is "Unlock all weeks now" (manual, every week), false the original dates. A player gets the weeks
+  // at their next login.
   router.post("/admin/api/battlepass/challenges", (req, res) => {
-    if (typeof req.body?.allUnlocked !== "boolean") {
-      return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "allUnlocked must be true or false");
-    }
-    const updated = settings.update({ challengesAllUnlocked: req.body.allUnlocked });
-    res.json({ success: true, challengesAllUnlocked: updated.challengesAllUnlocked });
+    const body = req.body ?? {};
+    const season = requestedSeasonOf(body.season ?? 3);
+    const invalid = (message) => sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", message);
+    return inBuild(buildOfSeason(season), () => {
+      const total = challengeWeekCount();
+      if (!total) return invalid(`${seasonName(season)} has no weekly challenges`);
+      let entry;
+      if (body.allUnlocked !== undefined) {
+        if (typeof body.allUnlocked !== "boolean") return invalid("allUnlocked must be true or false");
+        entry = body.allUnlocked ? { mode: "manual", manualWeeks: total, weeksAvailable: total } : { mode: "original" };
+      } else {
+        if (!challengeModes.includes(body.mode)) return invalid(`mode must be one of ${challengeModes.join(", ")}`);
+        entry = { mode: body.mode };
+        if (body.mode === "interval") {
+          if (typeof body.startDate !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(body.startDate) || Number.isNaN(Date.parse(`${body.startDate}T00:00:00Z`))) {
+            return invalid("startDate must be a date, YYYY-MM-DD");
+          }
+          entry.startDate = body.startDate;
+        }
+        const whole = (name, low, high) => {
+          if (body[name] === undefined) return true;
+          const num = Number(body[name]);
+          if (!Number.isInteger(num) || num < low || num > high) return false;
+          entry[name] = num;
+          return true;
+        };
+        if (!whole("intervalDays", 1, 60)) return invalid("intervalDays must be 1 to 60");
+        if (!whole("manualWeeks", 0, total)) return invalid(`manualWeeks must be 0 to ${total}`);
+        if (!whole("weeksAvailable", 1, total)) return invalid(`weeksAvailable must be 1 to ${total}`);
+      }
+      const updated = settings.update({ challengesAllUnlocked: false, challengeUnlock: { [`season${season}`]: entry } });
+      res.json({ success: true, challengesAllUnlocked: challengesAllUnlocked(updated), challenges: withoutSeasonStartRecording(() => weekPlan(new Date(), updated)) });
+    });
   });
 
   router.post("/admin/api/battlepass/actions/reset-defaults", (req, res) => {

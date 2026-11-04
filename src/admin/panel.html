@@ -5744,6 +5744,66 @@
       }
     };
 
+    // A season's weekly challenges (Core-Backend #207, #219, profiles/challenges.js): how they unlock (the original dates,
+    // every N days from a start date, or manual), how many weeks are available, and each week's date.
+    function weeklyChallengesPanel(season, data) {
+      const plan = data.challenges;
+      const total = plan.totalWeeks;
+      const form = { mode: plan.mode, startDate: plan.startDate, intervalDays: plan.intervalDays, manualWeeks: plan.manualWeeks, weeksAvailable: plan.weeksAvailable };
+      const modeLabels = { original: "Original dates", interval: "Every N days from a start date", manual: "Manual" };
+      const help = {
+        original: `Each week unlocks on its day of Season ${season}, on the season's replay: Week 1 on the replay's first day, each next week 7 days later (22 February to 19 April 2018 for Season 3). The challenges tab's countdowns are exact.`,
+        interval: "Week 1 unlocks at 00:00 UTC on the start date, each next week the chosen number of days later. With 7 days every countdown in the challenges tab is exact. With another interval only the next locked week's countdown is exact: the game counts every week 7 days apart from the season's start, so the weeks after it show 7 days apart.",
+        manual: "The first weeks you set are unlocked now; the others stay locked until you raise the number. Manual has no unlock dates, so the challenges tab can't show a real countdown: it shows the next locked week a week from today."
+      };
+      const dateText = (iso) => new Date(iso).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+      const numberInput = (key, min, max) => el("input", {
+        class: "field num", type: "number", min: String(min), max: String(max), value: String(form[key]), style: "width:90px;",
+        oninput: (e) => { form[key] = Math.max(min, Math.min(max, parseInt(e.target.value, 10) || min)); }
+      });
+      const helpNote = el("p", { class: "note", style: "margin-top:8px", text: help[form.mode] });
+      const field = (label, input) => el("label", { style: "display:flex; align-items:center; gap:8px;" }, el("span", { class: "muted font-semibold", text: label }), input);
+      const startField = field("Start date (UTC)", el("input", { class: "field", type: "date", value: form.startDate, oninput: (e) => { form.startDate = e.target.value; } }));
+      const intervalField = field("Every (days)", numberInput("intervalDays", 1, 60));
+      const manualField = field("Weeks unlocked now", numberInput("manualWeeks", 0, total));
+      const showMode = () => {
+        startField.style.display = intervalField.style.display = form.mode === "interval" ? "flex" : "none";
+        manualField.style.display = form.mode === "manual" ? "flex" : "none";
+        helpNote.textContent = help[form.mode];
+      };
+      const modeSelect = el("select", { class: "field", "aria-label": "Unlock mode", onchange: (e) => { form.mode = e.target.value; showMode(); } },
+        Object.entries(modeLabels).map(([value, label]) => el("option", { value, text: label, selected: value === form.mode })));
+      showMode();
+      const save = async (body, message) => {
+        const res = await act(api("/admin/api/battlepass/challenges", { season: Number(season), ...body }), message);
+        if (res) showBattlePass();
+      };
+      const status = (week) => {
+        if (week.unlocked) return chip("Unlocked", "accent");
+        if (week.week > plan.weeksAvailable) return chip("Not available");
+        return chip("Locked");
+      };
+      const unlocks = (week) => (week.unlocked ? "—" : week.unlocksAt ? dateText(week.unlocksAt) : week.week > plan.weeksAvailable ? "Never (past the weeks available)" : "When you raise the number");
+      return el("section", { class: "panel", style: "margin-top:16px" },
+        el("div", { class: "panel-head", style: "margin-bottom:8px" }, el("h2", { text: "Weekly Challenges" }),
+          chip(data.challengesAllUnlocked ? "All unlocked" : `${modeLabels[plan.mode]} · ${plan.weeks.filter((w) => w.unlocked).length} of ${total} unlocked`, data.challengesAllUnlocked ? "accent" : "")),
+        el("p", { class: "note", text: `Choose when Season ${season}'s ${total} weeks of challenges unlock and how many are available. Changes reach a player at their next login. "Unlock all weeks now" sets Manual with every week available and unlocked.` }),
+        el("div", { style: "display:flex; gap:24px; flex-wrap:wrap; align-items:center; margin-top:12px;" },
+          field("Unlock mode", modeSelect), startField, intervalField, manualField,
+          field("Weeks available", numberInput("weeksAvailable", 1, total))),
+        helpNote,
+        el("p", { class: "note", style: "margin-top:4px", text: `Weeks past "Weeks available" stay locked in every mode. The challenges tab still lists them as locked (its list of weeks comes from the game files), and with dates it still counts down to them, but they don't unlock.` }),
+        el("div", { class: "actions", style: "margin-top:12px" },
+          btn("Save", () => {
+            if (form.mode === "interval" && !/^\d{4}-\d{2}-\d{2}$/.test(form.startDate || "")) return toast("Pick a start date", true);
+            return save({ ...form }, "Weekly challenge settings saved");
+          }, "primary"),
+          btn("Unlock all weeks now", () => save({ allUnlocked: true }, "Every week of the weekly challenges is unlocked"), data.challengesAllUnlocked ? "ghost" : ""),
+          btn("Back to original dates", () => save({ allUnlocked: false }, "Weekly challenges unlock by their original dates"), "ghost")),
+        el("div", { style: "margin-top:12px" },
+          table([["Week", (w) => String(w.week), "mono"], ["Status", status], ["Unlocks", (w) => unlocks(w)]], plan.weeks)));
+    }
+
     // Season 2 (1.11) and Season 3 (3.0): the Battle Pass and bundle prices, and the tiers' rewards from the season's data.
     async function showSeasonPass(season) {
       const seasonLabel = seasonOf(season).label;
@@ -5782,16 +5842,7 @@
           el("div", { style: "display:flex; gap:24px; flex-wrap:wrap; margin-top:12px;" },
             el("label", { style: "display:flex; align-items:center; gap:8px;" }, el("span", { class: "muted font-semibold", text: "Battle Pass" }), priceInput("battlePassPrice")),
             el("label", { style: "display:flex; align-items:center; gap:8px;" }, el("span", { class: "muted font-semibold", text: "Bundle" }), priceInput("bundlePrice")))),
-        ...(season === "3" ? [el("section", { class: "panel", style: "margin-top:16px" },
-          el("div", { class: "panel-head", style: "margin-bottom:8px" }, el("h2", { text: "Weekly Challenges" }),
-            chip(data.challengesAllUnlocked ? "All unlocked" : "Season 3's dates", data.challengesAllUnlocked ? "accent" : "")),
-          el("p", { class: "note", text: "Each week unlocks on its day of Season 3, on the season's replay: Week 1 on 22 February 2018, Week 2 a week later, up to Week 9 on 19 April. The challenges tab counts down to the locked weeks. Unlock all gives every week now; players get them at their next login." }),
-          el("div", { class: "actions", style: "margin-top:12px" },
-            btn(data.challengesAllUnlocked ? "Unlock by Season 3's dates" : "Unlock all weeks now", async () => {
-              await act(api("/admin/api/battlepass/challenges", { allUnlocked: !data.challengesAllUnlocked }),
-                data.challengesAllUnlocked ? "Weekly challenges unlock by their dates" : "Every week of the weekly challenges is unlocked");
-              showBattlePass();
-            }, data.challengesAllUnlocked ? "ghost" : "primary")))] : []),
+        ...(data.challenges ? [weeklyChallengesPanel(season, data)] : []),
         el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" }, el("h2", { text: "Tier Rewards" }), chip(`${tiers.length} tiers`, "accent")),
           el("p", { class: "note", text: season === "3"
