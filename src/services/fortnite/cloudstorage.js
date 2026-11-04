@@ -138,7 +138,7 @@ export function userCloudStorageRoutes({ tokens, accounts, sessions, dataDir }) 
   }
 
   function checkFilename(req, res, next) {
-    if (!validFilename.test(req.params.filename) || req.params.filename.startsWith(".")) {
+    if (!validFilename.test(req.params.filename) || req.params.filename.startsWith(".") || req.params.filename.endsWith(".tmp")) {
       return sendError(res, 400, "errors.com.epicgames.cloudstorage.invalid_filename", "Invalid file name");
     }
     req.file = path.join(folder(req.params.accountId), req.params.filename);
@@ -147,12 +147,24 @@ export function userCloudStorageRoutes({ tokens, accounts, sessions, dataDir }) 
 
   router.use(base, requireAuth(tokens));
 
+  // The game's settings (UFortClientSettingsRecord: key bindings, the HUD's shown elements such as the net stats,
+  // HUD.TopLeft.NetDebugUI, the controller platform and input presets, Core-Backend #228) are its ClientSettings.Sav
+  // here. The client's listing parser (OnlineUserCloudMcp, 3.1 0x477120) takes hash, filename and length, and with a
+  // hash equal to its cached copy's it uses that copy instead of downloading. Epic's listing also names the file's
+  // uniqueFilename, hash256, contentType, upload time, storage and owner, which this gives too.
   router.get(base, requireOwnerOrHost, (req, res) => {
     const dir = folder(req.params.accountId);
-    const files = fs.existsSync(dir) ? fs.readdirSync(dir).filter((name) => validFilename.test(name)) : [];
+    const files = fs.existsSync(dir) ? fs.readdirSync(dir).filter((name) => validFilename.test(name) && !name.endsWith(".tmp")) : [];
     res.json(files.map((filename) => {
-      const data = fs.readFileSync(path.join(dir, filename));
-      return { filename, hash: crypto.createHash("sha1").update(data).digest("hex"), length: data.length };
+      const file = path.join(dir, filename);
+      const data = fs.readFileSync(file);
+      return {
+        ...header(filename, data),
+        contentType: "application/octet-stream",
+        uploaded: fs.statSync(file).mtime.toISOString(),
+        storageType: "S3",
+        accountId: req.params.accountId
+      };
     }));
   });
 
