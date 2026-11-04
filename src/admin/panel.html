@@ -7126,6 +7126,15 @@
 
         el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
+            el("div", { class: "actions" },
+              el("h2", { text: "Twitch Prime Pack for Season 3 Players" }),
+              settings.twitchPrimePack ? chip("Given", "good") : chip("Off")),
+            toggleSwitch(settings.twitchPrimePack === true, (checked) =>
+              save({ twitchPrimePack: checked }, checked ? "Season 3 players get the Twitch Prime pack" : "The Twitch Prime pack is off"))),
+          el("p", { class: "note", text: "When enabled, a player whose locker loads on a Season 3 build (3.0 and later) is given Twitch Prime Pack #1's Sub Commander outfit and Slipstream glider, if they lack them. Its four sprays aren't in Season 3's builds, so they are not given. Turning it off doesn't take back what was given." })),
+
+        el("section", { class: "panel", style: "margin-top:16px" },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" },
             el("h2", { text: "Seasonal Events & Timelines" })),
           el("p", { class: "note", text: "Seasonal events, event flags, Hexsylvania theater, and live calendar countdowns have moved to their dedicated management view. Configure and monitor all seasonal content on the " },
             el("a", { href: "#/events", class: "btn ghost", style: "display:inline-flex; align-items:center; gap:4px; margin-left:4px; padding:2px 8px; font-size:12px;", text: "Events Tab →" }))),

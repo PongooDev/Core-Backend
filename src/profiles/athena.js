@@ -209,9 +209,18 @@ const missingSplitBackpacks = (profile) => [...new Set(Object.values(profile.ite
   .filter((item) => typeOf(item.templateId) === "athenacharacter")
   .flatMap((item) => splitOffBackpacks(item.templateId)))].filter((templateId) => !findItem(profile, templateId));
 
+// Season 3's Twitch Prime pack (Core-Backend #229, the admin panel's setting twitchPrimePack): Twitch Prime Pack #1's Sub
+// Commander outfit and Slipstream glider, given on a Season 3 build (3.0 and later) when the host turns it on. Its four
+// sprays (#1, the fuzzball, the llama and the skull) aren't in 3.0's or 3.1's paks (no SPID assets), so they are left
+// out. Given if missing, and not taken back when the setting goes off. [] when it is off or the build isn't Season 3's.
+const twitchPrimePack = ["AthenaCharacter:cid_085_athena_commando_m_twitch", "AthenaGlider:glider_id_018_twitch"];
+export const twitchPrimeCosmetics = (settings = {}) => namesAthenaBuild() && seasonNumber() === 3 && settings.twitchPrimePack?.() === true
+  ? twitchPrimePack.map(cosmeticId).filter(Boolean) : [];
+
 export function athenaNeedsSetUp(profile, settings = {}) {
   return !migrated(profile, "athenaLocker") || missing(profile, starterIds(profile, settings)).length > 0
     || missingSplitBackpacks(profile).length > 0
+    || missing(profile, twitchPrimeCosmetics(settings)).length > 0
     || missing(profile, earnedCosmetics(profile, settings)).length > 0
     || (settings.giveAllCosmetics ? missing(profile, lockerCosmetics()).length > 0 : blanket(profile).length > 0)
     || emptyDefaultSlots(profile).length > 0 || heldNonLockerItems(profile).length > 0
@@ -301,6 +310,7 @@ export function setUpAthena(session) {
   for (const templateId of earnedCosmetics(profile, settings)) grantCosmetic(session, templateId);
   for (const itemId of heldNonLockerItems(profile)) removeCosmetic(tracker, itemId);
   for (const templateId of missingSplitBackpacks(profile)) grantCosmetic(session, templateId);
+  for (const templateId of twitchPrimeCosmetics(settings)) grantCosmetic(session, templateId);
   if (settings.giveAllCosmetics) {
     const given = missing(profile, lockerCosmetics());
     for (const templateId of given) addCosmetic(tracker, templateId, true);

@@ -78,7 +78,7 @@ export function createContext(config) {
   if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
   if (config.seasonalEvents !== undefined) settings.update({ seasonalEvents: config.seasonalEvents });
   for (const key of ["battleRoyaleVbucks", "battleRoyaleRewards", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits", "cheats", "cheatAccounts",
-    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "bots", "regionFallback", "vbuckPacks", "matchStartCountdown", "matchStartBufferSeconds", "serverRegions", "allowedBuilds", "defaultFoundersAccess", "remoteAdmin", "events", "battlepass", "matchmakingModes", "ltmOriginalDates", "serverLimits", "regionHostingIps", "customMatchServers", "customMatchFallback"]) {
+    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "bots", "regionFallback", "vbuckPacks", "twitchPrimePack", "matchStartCountdown", "matchStartBufferSeconds", "serverRegions", "allowedBuilds", "defaultFoundersAccess", "remoteAdmin", "events", "battlepass", "matchmakingModes", "ltmOriginalDates", "serverLimits", "regionHostingIps", "customMatchServers", "customMatchFallback"]) {
     if (config[key] !== undefined) settings.update({ [key]: config[key] });
   }
   const friends = createFriendStore(config.dataDir);
@@ -96,6 +96,8 @@ export function createContext(config) {
     giveAllCosmetics: config.giveAllCosmetics === true,
     defaultFoundersAccess: () => settings.get().defaultFoundersAccess === true,
     wonSeasons: (accountId) => stats.wonSeasons(accountId),
+    // The admin panel's Twitch Prime pack for Season 3 players (Core-Backend #229, profiles/athena.js).
+    twitchPrimePack: () => settings.get().twitchPrimePack === true,
     // The account's recorded wins in solo, duo and squad, for a season's past_seasons record (profiles/seasons.js).
     winCount: (accountId) => Object.entries(stats.playlists(accountId))
       .filter(([playlistId]) => isMainPlaylist(playlistId)).reduce((sum, [, playlist]) => sum + (playlist.placetop1 ?? 0), 0),

@@ -59,6 +59,9 @@ const defaults = {
   matchStartCountdown: true,
   // The seconds the countdown adds for a forming match's players to reach the island from Play (#167): 0 to 120.
   matchStartBufferSeconds: 25,
+  // Season 3's Twitch Prime pack (Core-Backend #229, profiles/athena.js twitchPrimeCosmetics): the Sub Commander outfit and
+  // the Slipstream glider, given to a player whose athena profile loads on a 3.x build. Off by default.
+  twitchPrimePack: false,
   // The server regions (Core-Backend #142, matchmaking/regions.js servedRegions): a server whose region (its -McpRegion)
   // is one of these takes the players of all of them, each match still in its own region. [] (or one region): every
   // server takes only its own region's. A single region's code, as a string, is taken as that one region.
@@ -502,6 +505,7 @@ export function createSettingsStore(dataDir) {
       settings.bots = botsValue(loaded.bots, defaults.bots);
       settings.regionFallback = loaded.regionFallback !== false;
       settings.vbuckPacks = loaded.vbuckPacks !== false;
+      settings.twitchPrimePack = loaded.twitchPrimePack === true;
       settings.matchStartCountdown = loaded.matchStartCountdown !== false;
       settings.matchStartBufferSeconds = matchStartBufferValue(loaded.matchStartBufferSeconds) ?? defaults.matchStartBufferSeconds;
       settings.serverRegions = regionList(loaded.serverRegions ?? loaded.serverRegion) ?? [];
@@ -645,6 +649,7 @@ export function createSettingsStore(dataDir) {
       settings.challengeUnlock = challengeUnlockValue(partial.challengeUnlock, settings.challengeUnlock ?? {});
       if (typeof partial.regionFallback === "boolean") settings.regionFallback = partial.regionFallback;
       if (typeof partial.vbuckPacks === "boolean") settings.vbuckPacks = partial.vbuckPacks;
+      if (typeof partial.twitchPrimePack === "boolean") settings.twitchPrimePack = partial.twitchPrimePack;
       if (typeof partial.matchStartCountdown === "boolean") settings.matchStartCountdown = partial.matchStartCountdown;
       settings.matchStartBufferSeconds = matchStartBufferValue(partial.matchStartBufferSeconds) ?? settings.matchStartBufferSeconds;
       settings.serverRegions = regionList(partial.serverRegions ?? partial.serverRegion) ?? settings.serverRegions;

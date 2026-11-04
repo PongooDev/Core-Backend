@@ -976,6 +976,7 @@ export function adminRoutes(context) {
       bots: req.body?.bots,
       regionFallback: req.body?.regionFallback,
       vbuckPacks: req.body?.vbuckPacks,
+      twitchPrimePack: req.body?.twitchPrimePack,
       matchStartCountdown: req.body?.matchStartCountdown,
       matchStartBufferSeconds: req.body?.matchStartBufferSeconds,
       serverRegions: req.body?.serverRegions,

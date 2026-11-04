@@ -4,7 +4,8 @@ import { readJson, writeJson } from "../json-file.js";
 import { addMissingItems, addMissingStats, upgradeItems } from "./defaults.js";
 
 // settings: what the host chose that changes what profiles hold, read when a profile is set up (profiles/setup.js):
-// giveAllCosmetics (config.json) and wonSeasons(accountId), the seasons the account has a recorded win in solo, duo or squad in.
+// giveAllCosmetics (config.json), wonSeasons(accountId), the seasons the account has a recorded win in solo, duo or squad in,
+// and twitchPrimePack(), whether Season 3's Twitch Prime pack is given (the admin panel's switch).
 export function createProfileStore(dataDir, settings = {}) {
   const file = (accountId, profileId) => path.join(dataDir, "accounts", accountId, "profiles", `${profileId}.json`);
 
