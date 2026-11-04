@@ -44,6 +44,7 @@ import { storageTransfer } from "./StorageTransfer.js";
 import { transmogItem } from "./TransmogItem.js";
 import { unassignAllSquads } from "./UnassignAllSquads.js";
 import { updateQuestClientObjectives } from "./UpdateQuestClientObjectives.js";
+import { verifyRealMoneyPurchase } from "./VerifyRealMoneyPurchase.js";
 import { convertItemCommand, recycleItemBatchCommand, recycleItemCommand, upgradeItemCommand, upgradeItemRarityCommand } from "./Upgrades.js";
 
 export const clientCommands = {
@@ -107,7 +108,8 @@ export const clientCommands = {
   UpdateQuestClientObjectives: updateQuestClientObjectives,
   UpgradeItem: upgradeItemCommand,
   UpgradeItemRarity: upgradeItemRarityCommand,
-  UpgradeSlottedItem: upgradeSlottedItem
+  UpgradeSlottedItem: upgradeSlottedItem,
+  VerifyRealMoneyPurchase: verifyRealMoneyPurchase
 };
 
 export const adminCommands = {

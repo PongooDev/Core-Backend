@@ -42,6 +42,7 @@ import { structureLimitRoutes } from "./services/fortnite/structurelimit.js";
 import { cheatRoutes } from "./services/fortnite/cheats.js";
 import { cloudStorageRoutes, userCloudStorageRoutes } from "./services/fortnite/cloudstorage.js";
 import { friendCodeRoutes } from "./services/fortnite/friendcodes.js";
+import { purchaseRoutes } from "./services/fortnite/purchase.js";
 import { receiptRoutes } from "./services/fortnite/receipts.js";
 import { storefrontRoutes } from "./services/fortnite/storefront.js";
 import { twitchRoutes } from "./services/fortnite/twitch.js";
@@ -77,7 +78,7 @@ export function createContext(config) {
   if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
   if (config.seasonalEvents !== undefined) settings.update({ seasonalEvents: config.seasonalEvents });
   for (const key of ["battleRoyaleVbucks", "battleRoyaleRewards", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits", "cheats", "cheatAccounts",
-    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "bots", "regionFallback", "matchStartCountdown", "matchStartBufferSeconds", "serverRegions", "allowedBuilds", "defaultFoundersAccess", "remoteAdmin", "events", "battlepass", "matchmakingModes", "ltmOriginalDates", "serverLimits"]) {
+    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "bots", "regionFallback", "vbuckPacks", "matchStartCountdown", "matchStartBufferSeconds", "serverRegions", "allowedBuilds", "defaultFoundersAccess", "remoteAdmin", "events", "battlepass", "matchmakingModes", "ltmOriginalDates", "serverLimits"]) {
     if (config[key] !== undefined) settings.update({ [key]: config[key] });
   }
   const friends = createFriendStore(config.dataDir);
@@ -172,6 +173,7 @@ export function createApp(config, context = createContext(config)) {
   app.use(ticketRoutes(context));
   app.use(warmupRoutes(context));
   app.use(storefrontRoutes(context));
+  app.use(purchaseRoutes(context));
   app.use(chatRoutes(context));
   app.use(statsRoutes(context));
   app.use(feedbackRoutes(context));

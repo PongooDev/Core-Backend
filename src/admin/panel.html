@@ -5411,6 +5411,16 @@
         )
       );
 
+      // The Store tab's V-Bucks packs (Core-Backend #223): a simulated real-money purchase that gives the pack's V-Bucks.
+      const vbuckPacksSection = el("section", { class: "panel" },
+        el("div", { class: "panel-head", style: "margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; gap:12px;" },
+          el("h2", { text: "Store Tab V-Bucks Packs" }),
+          toggleSwitch(shop.vbuckPacks !== false, async (checked) => {
+            const res = await act(api("/admin/api/settings", { vbuckPacks: checked }), checked ? "V-Bucks packs are on" : "V-Bucks packs are off");
+            if (res) showShop();
+          })),
+        el("p", { class: "note", style: "margin:0;", text: "From 1.8, the Store tab sells Epic's four V-Bucks packs (1,000, 2,800, 7,500 and 13,500). Buying one opens a page with a Complete purchase button that gives the V-Bucks for free, as a simulated real-money purchase. Turn this off to hide the packs." }));
+
       const activeMode = shop.mode || "fnbr";
 
       const modeTabs = [
@@ -5756,6 +5766,7 @@
             el("div", { class: "actions" },
               btn("Refresh", showShop, "ghost"))),
           timingSettingsSection,
+          vbuckPacksSection,
           modePicker,
           configSection,
           previewSection

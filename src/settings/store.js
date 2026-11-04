@@ -25,6 +25,9 @@ const defaults = {
   // sum. Nothing by default.
   battleRoyaleVbucks: false,
   battleRoyaleRewards: null,
+  // The Store tab's V-Bucks packs (Core-Backend #223, store/currency.js): a simulated real-money purchase that gives the
+  // pack's V-Bucks for free. On by default: the issue asked for them, and the admin panel can already give any amount.
+  vbuckPacks: true,
   // Storm Shield structure limits (Core-Backend #115, services/fortnite/structurelimit.js): how many player-built
   // pieces and traps a Storm Shield holds before building is refused (its game state's MaxPlayerStructures, 3000 in
   // the game). structureLimit is every Storm Shield's (null: the game's own), and structureLimits holds a Storm
@@ -489,6 +492,7 @@ export function createSettingsStore(dataDir) {
       settings.lateJoin = loaded.lateJoin === true;
       settings.bots = botsValue(loaded.bots, defaults.bots);
       settings.regionFallback = loaded.regionFallback !== false;
+      settings.vbuckPacks = loaded.vbuckPacks !== false;
       settings.matchStartCountdown = loaded.matchStartCountdown !== false;
       settings.matchStartBufferSeconds = matchStartBufferValue(loaded.matchStartBufferSeconds) ?? defaults.matchStartBufferSeconds;
       settings.serverRegions = regionList(loaded.serverRegions ?? loaded.serverRegion) ?? [];
@@ -625,6 +629,7 @@ export function createSettingsStore(dataDir) {
       if (typeof partial.challengesAllUnlocked === "boolean") settings.challengesAllUnlocked = partial.challengesAllUnlocked;
       settings.challengeUnlock = challengeUnlockValue(partial.challengeUnlock, settings.challengeUnlock ?? {});
       if (typeof partial.regionFallback === "boolean") settings.regionFallback = partial.regionFallback;
+      if (typeof partial.vbuckPacks === "boolean") settings.vbuckPacks = partial.vbuckPacks;
       if (typeof partial.matchStartCountdown === "boolean") settings.matchStartCountdown = partial.matchStartCountdown;
       settings.matchStartBufferSeconds = matchStartBufferValue(partial.matchStartBufferSeconds) ?? settings.matchStartBufferSeconds;
       settings.serverRegions = regionList(partial.serverRegions ?? partial.serverRegion) ?? settings.serverRegions;

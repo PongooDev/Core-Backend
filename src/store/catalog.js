@@ -7,6 +7,7 @@ import { firecrackerTickets, springLlama } from "../events/spring2018.js";
 import { holidayLlama, snowflakeTickets } from "../events/winter2017.js";
 import { getCardPack, itemIds } from "../gamedata/items.js";
 import { perBuild } from "../gamedata/read.js";
+import { currencyOffers, currencyStorefront } from "./currency.js";
 import { eventStoreOffers } from "./eventstore.js";
 import { itemShopOffers } from "./itemshop.js";
 import { seasonShopOffers, seasonStorefront } from "./seasonshop.js";
@@ -157,7 +158,9 @@ function offerJson(offer, sortPriority) {
       : offer.eventLimit ? [{ key: "EventLimit", value: String(offer.eventLimit) }, { key: "PurchaseLimitingEventId", value: offer.purchaseLimitingEventId }]
         // An item shop offer's tile callout (store/itemshop.js tileOf).
         : offer.banner ? [{ key: "BannerOverride", value: offer.banner }]
-          : [],
+          // A V-Bucks pack's amounts (store/currency.js).
+          : offer.metaInfo ? Object.entries(offer.metaInfo).map(([key, value]) => ({ key, value }))
+            : [],
     dailyLimit: -1,
     weeklyLimit: -1,
     // An item shop offer's tile, shared with the other offers of its category (store/itemshop.js tileOf).
@@ -168,8 +171,9 @@ function offerJson(offer, sortPriority) {
     title,
     shortDescription: offer.shortDescription ?? "",
     description: offer.description ?? "",
-    appStoreId: "",
-    metaAssetInfo: { structName: "FortCatalogMeta", payload: { chaseItems: [], packDefinition: offer.athena || offer.battlePass ? "" : getCardPack(templateId)?.path ?? "" } },
+    // A real-money offer's id at each app store (EAppStore order; store/currency.js).
+    appStoreId: offer.appStoreId ?? "",
+    metaAssetInfo: { structName: "FortCatalogMeta", payload: { chaseItems: [], packDefinition: offer.athena || offer.battlePass || offer.realMoney ? "" : getCardPack(templateId)?.path ?? "" } },
     displayAssetPath: offer.displayAssetPath ?? "",
     itemGrants: offer.itemGrants ?? [{ templateId, quantity: offer.quantity ?? 1 }],
     requirements: [],
@@ -185,7 +189,7 @@ const holds = (profile, templateId) => Object.values(profile?.items ?? {})
 // 1.8.2's and later. Save the World's Event Store (store/eventstore.js) is 1.11's, while Survive the Holidays runs (and 2.3's to 2.4.2's storms, and 2.5's Spring It On!). The
 // Battle Pass's storefront (battlepass/season2.js) is 1.11's; athena, the viewer's athena profile, leaves out a pass
 // they own.
-export function storefronts(profile, now = new Date(), { athena } = {}) {
+export function storefronts(profile, now = new Date(), { athena, accountId, vbuckPacks = false } = {}) {
   const shown = allOffers().filter((offer) => offer.currencyType !== "GameItem" || offer.always
     || listedVouchers.some((voucher) => voucher.toLowerCase() === offer.currencySubType.toLowerCase())
     || holds(profile, offer.currencySubType));
@@ -196,10 +200,12 @@ export function storefronts(profile, now = new Date(), { athena } = {}) {
     .map(([name, offers]) => ({ name, catalogEntries: offers.map((offer, index) => offerJson(offer, -index)) }));
   const passOffers = battlePassOffers({ ownsPass: athena?.stats.attributes.book_purchased === true });
   const battlePass = passOffers.length ? [{ name: passOffers[0].storefront, catalogEntries: passOffers.map((offer, index) => offerJson(offer, -index)) }] : [];
+  // The Store tab's V-Bucks packs, while the admin panel has them on (store/currency.js).
+  const currency = { name: currencyStorefront, catalogEntries: (vbuckPacks ? currencyOffers(accountId) : []).map((offer, index) => offerJson(offer, -index)) };
   return [
     { name: "CardPackStore", catalogEntries: shown.map((offer, index) => offerJson(offer, -index)) },
     { name: "CardPackStorePromo", catalogEntries: [] },
-    ...[...itemShop, seasonShop, ...eventStore, ...battlePass].filter(({ catalogEntries }) => catalogEntries.length)
+    ...[...itemShop, seasonShop, ...eventStore, ...battlePass, currency].filter(({ catalogEntries }) => catalogEntries.length)
   ];
 }
 

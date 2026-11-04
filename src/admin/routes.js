@@ -973,6 +973,7 @@ export function adminRoutes(context) {
       lateJoin: req.body?.lateJoin,
       bots: req.body?.bots,
       regionFallback: req.body?.regionFallback,
+      vbuckPacks: req.body?.vbuckPacks,
       matchStartCountdown: req.body?.matchStartCountdown,
       matchStartBufferSeconds: req.body?.matchStartBufferSeconds,
       serverRegions: req.body?.serverRegions,
@@ -1082,6 +1083,8 @@ export function adminRoutes(context) {
       mode: config.mode || "fnbr",
       rotationHour: config.rotationHour ?? 0,
       weeklyDurationDays: config.weeklyDurationDays ?? 7,
+      // The Store tab's V-Bucks packs (store/currency.js), switched with /admin/api/settings.
+      vbuckPacks: settings?.get?.()?.vbuckPacks !== false,
       currentShop: {
         featured: offers.BRWeeklyStorefront.map(mapOffer),
         daily: offers.BRDailyStorefront.map(mapOffer)

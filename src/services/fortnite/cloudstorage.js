@@ -11,6 +11,7 @@ import { ltmForcedQueues } from "../../events/ltms.js";
 import { shootingTestGlobals, shootingTestHotfixTables } from "../../events/shootingtest.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
 import { createNetwork, httpsProxied } from "../../network.js";
+import { purchaseFlowSection } from "./purchase.js";
 
 const validFilename = /^[A-Za-z0-9._-]{1,128}$/;
 
@@ -67,8 +68,12 @@ function forcedQueueSection(changelist) {
   const queues = ltmForcedQueues(changelist);
   return queues.length ? ["[/Script/FortniteGame.FortGameInstance]", ...queues.map((queue) => `!RegionsWithBattleRoyaleEvent${queue}QueueDisabled=ClearArray`), ""].join("\r\n") : "";
 }
+// The Store tab's V-Bucks packs (Core-Backend #223) buy through the purchase flow, whose page is the game config's
+// [EpicPurchaseFlow] Prod= (services/fortnite/purchase.js); the flow reads it when the front end registers for it
+// (UFortMcpContext::RegisterForEpicPurchasingDisplay, 3.1 0xD496C0, from the game ini), in the front end, so after this
+// file came in (🟡: not seen in a running client).
 const defaultNetwork = createNetwork();
-function systemFiles(req, network = defaultNetwork) {
+function systemFiles(req, network = defaultNetwork, settings = null) {
   const address = network.reachableAddress(req);
   const port = req.socket.localPort;
   const proxied = httpsProxied(req);
@@ -79,6 +84,7 @@ function systemFiles(req, network = defaultNetwork) {
   const build = getBuild(req);
   const game = gameFile(statsAnswerMinutes(build), [...shootingTestGlobals(build), ...forcedQueueGlobals(build)]) + customKeySection(build)
     + forcedQueueSection(build)
+    + purchaseFlowSection(req, network, { build, enabled: settings?.get?.()?.vbuckPacks !== false })
     + lootHotfixSection(new Date(), null, shootingTestHotfixTables(build));
   return { "DefaultEngine.ini": Buffer.from(engine, "utf8"), "DefaultGame.ini": Buffer.from(game, "utf8") };
 }
@@ -93,15 +99,15 @@ const header = (filename, data) => ({
   length: data.length
 });
 
-export function cloudStorageRoutes({ tokens, network }) {
+export function cloudStorageRoutes({ tokens, network, settings }) {
   const router = express.Router();
 
   router.get("/fortnite/api/cloudstorage/system", requireAuth(tokens), (req, res) => {
-    res.json(Object.entries(systemFiles(req, network)).map(([filename, data]) => header(filename, data)));
+    res.json(Object.entries(systemFiles(req, network, settings)).map(([filename, data]) => header(filename, data)));
   });
 
   router.get("/fortnite/api/cloudstorage/system/:filename", requireAuth(tokens), (req, res) => {
-    const data = systemFiles(req, network)[req.params.filename];
+    const data = systemFiles(req, network, settings)[req.params.filename];
     if (!data) return sendError(res, 404, "errors.com.epicgames.cloudstorage.file_not_found", `${req.params.filename} not found`);
     res.type("application/octet-stream").send(data);
   });

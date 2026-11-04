@@ -9,7 +9,7 @@ import { nextRotation } from "../../store/itemshop.js";
 // counts its daily items down to the expiration (GetDailyStoreEndDate 0x2E7C840).
 const refreshIntervalHrs = 24;
 
-export function storefrontRoutes({ tokens, profiles }) {
+export function storefrontRoutes({ tokens, profiles, settings }) {
   const router = express.Router();
 
   router.get("/fortnite/api/storefront/v2/catalog", requireAuth(tokens), (req, res) => {
@@ -21,7 +21,9 @@ export function storefrontRoutes({ tokens, profiles }) {
       refreshIntervalHrs,
       dailyPurchaseHrs: 24,
       expiration: nextRotation(now).toISOString(),
-      storefronts: storefronts(session?.profile("profile0").profile, now, { athena })
+      // The Store tab's V-Bucks packs are the account's own (store/currency.js), while the admin panel has them on.
+      storefronts: storefronts(session?.profile("profile0").profile, now,
+        { athena, accountId: req.session.accountId, vbuckPacks: settings?.get?.()?.vbuckPacks !== false })
     });
   });
 
