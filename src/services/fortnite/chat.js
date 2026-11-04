@@ -15,14 +15,18 @@ const maxMembersCount = 1000;
 // (GlobalBattleRoyale -> Global) and back. Epic's chat service answered over the internet; here the answer can win.
 // So it waits for the leave (which the client sends with the request), then a moment longer for the client to handle
 // it, before answering. The Founders room is the same in both sub games and isn't left.
+// Core-Backend #225: the leave and the request travel separately (3.1: sub_D2FE90 -> sub_D36AB0 sends the leave with
+// sub_D390B0, then the request with sub_D457A0), so the leave can also arrive first. The client still has to handle
+// its result, and an answer sent at once could beat it just the same (sub_D388D0 then skips the Global tab silently).
+// So the moment after the leave counts from the leave itself, whether it came before or after the request.
 const leftRoomsTimeoutMs = 3000;
 const afterLeaveMs = 1000;
 
 async function afterGlobalRoomLeft(xmpp, accountId) {
   const globalRooms = [generalChatRooms.global, generalChatRooms.athena];
-  if (await xmpp.leftRooms(accountId, globalRooms, leftRoomsTimeoutMs)) {
-    await new Promise((resolve) => setTimeout(resolve, afterLeaveMs));
-  }
+  await xmpp.leftRooms(accountId, globalRooms, leftRoomsTimeoutMs);
+  const wait = xmpp.lastLeftRoom(accountId, globalRooms) + afterLeaveMs - Date.now();
+  if (wait > 0) await new Promise((resolve) => setTimeout(resolve, wait));
 }
 
 export function chatRoutes({ tokens, xmpp }) {

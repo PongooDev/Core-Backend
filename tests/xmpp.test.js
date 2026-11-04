@@ -388,3 +388,48 @@ test("switching sub game, the rooms are only recommended once the old global roo
     backend.close();
   }
 });
+
+// Core-Backend #225: 3.1, Battle Royale's lobby to Save the World. The leave reached the backend before the request,
+// so it answered at once, before the client had handled its leave, and Global stayed on "Joining general chat".
+test("switching sub game, a leave that arrives before the request still holds the answer a moment", async () => {
+  const backend = await startBackend();
+  try {
+    const { accountId, token } = await userLogin(backend.port, "ChatLeaveFirst");
+    const { client } = await login(backend.port, accountId, token);
+    const ask = (subGame) => post(backend.port, `/fortnite/api/game/v2/chat/${accountId}/recommendGeneralChatRooms/${subGame}/pc`, token, {});
+
+    const brRoom = `globalbattleroyale@muc.${domain}/${accountId}`;
+    client.send(`<presence to="${brRoom}"><x xmlns="http://jabber.org/protocol/muc"/></presence>`);
+    assert.equal((await client.next((stanza) => stanza.name === "presence")).attrs.from, brRoom);
+
+    // A presence change in the lobby keeps the room.
+    client.send(`<presence to="${brRoom}"><show>away</show><x xmlns="http://jabber.org/protocol/muc"/></presence>`);
+    const update = await client.next((stanza) => stanza.name === "presence");
+    assert.deepEqual([update.attrs.from, update.attrs.type], [brRoom, undefined]);
+
+    // The leave first, then the request.
+    client.send(`<presence to="${brRoom}" type="unavailable"/>`);
+    const left = await client.next((stanza) => stanza.name === "presence");
+    const leftAt = Date.now();
+    assert.equal(left.attrs.type, "unavailable");
+    const response = await ask("Campaign");
+    const answered = Date.now();
+    assert.ok(answered - leftAt >= 900, `answered ${answered - leftAt} ms after the leave`);
+    assert.ok(answered - leftAt < 2500, `answered ${answered - leftAt} ms after the leave`);
+    assert.deepEqual(response.body.globalChatRooms.map((room) => room.roomName), ["Global"]);
+
+    // Long after a leave, and not in a global room: answered at once.
+    const stwRoom = `global@muc.${domain}/${accountId}`;
+    client.send(`<presence to="${stwRoom}"><x xmlns="http://jabber.org/protocol/muc"/></presence>`);
+    assert.equal((await client.next((stanza) => stanza.name === "presence")).attrs.from, stwRoom);
+    client.send(`<presence to="${stwRoom}" type="unavailable"/>`);
+    await client.next((stanza) => stanza.name === "presence");
+    await new Promise((resolve) => setTimeout(resolve, 1100));
+    const started = Date.now();
+    assert.equal((await ask("Athena")).status, 200);
+    assert.ok(Date.now() - started < 500);
+    client.close();
+  } finally {
+    backend.close();
+  }
+});

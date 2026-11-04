@@ -64,8 +64,17 @@ export function createXmppService({ tokens, contactsOf = () => [], publicRooms =
   const connections = new Set();
   const serverRooms = new Set(publicRooms.map((name) => name.toLowerCase()));
   const leaveWaiters = new Set(); // checks run after anyone leaves a room
+  const serverRoomLeaves = new Map(); // accountId -> Map(server room name -> when it last left it)
+  const roomName = (room) => room.key.slice(0, room.key.indexOf("@"));
   const rooms = createRooms({ reply, replyError, stanzaError, isPublic: (name) => serverRooms.has(name.toLowerCase()),
-    onLeave: () => { for (const check of [...leaveWaiters]) check(); } });
+    onLeave: (connection, room) => {
+      if (serverRooms.has(roomName(room)) && connection.accountId) {
+        let leaves = serverRoomLeaves.get(connection.accountId);
+        if (!leaves) serverRoomLeaves.set(connection.accountId, (leaves = new Map()));
+        leaves.set(roomName(room), Date.now());
+      }
+      for (const check of [...leaveWaiters]) check();
+    } });
 
   const resourcesOf = (accountId) => [...(online.get(accountId)?.values() ?? [])];
 
@@ -269,7 +278,10 @@ export function createXmppService({ tokens, contactsOf = () => [], publicRooms =
       const resources = online.get(connection.accountId);
       if (resources?.get(connection.resource) === connection) {
         resources.delete(connection.resource);
-        if (!resources.size) online.delete(connection.accountId);
+        if (!resources.size) {
+          online.delete(connection.accountId);
+          serverRoomLeaves.delete(connection.accountId);
+        }
       }
       say(`${connection.accountId} disconnected (${connection.resource})`);
     });
@@ -302,6 +314,11 @@ export function createXmppService({ tokens, contactsOf = () => [], publicRooms =
         const timer = setTimeout(() => done(false), timeoutMs);
         leaveWaiters.add(check);
       });
+    },
+    // When an account last left one of these server rooms (names before @muc.), or -Infinity if it hasn't while online.
+    lastLeftRoom(accountId, names) {
+      const leaves = serverRoomLeaves.get(accountId);
+      return Math.max(-Infinity, ...names.map((name) => leaves?.get(name.toLowerCase()) ?? -Infinity));
     },
 
     // A service notification, as Epic's friends service sent them: a message from xmpp-admin@<domain> whose body is
