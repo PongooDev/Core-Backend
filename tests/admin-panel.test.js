@@ -66,6 +66,34 @@ test("the panel searches accounts and edits balances, level, items, quests and s
   }
 });
 
+// Core-Backend #216: every quest the account holds, the tutorial's and the claimed ones too, by the game's name, with the
+// date it was completed.
+test("the panel lists every quest, the tutorial's and the claimed ones, by the game's name", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "QuestLister");
+    await profileOf(backend, player);
+    let details = (await admin(backend, `/accounts/${player.accountId}/grant`, { templateId: "Quest:outpostquest_t1_l2", quantity: 1 })).body;
+    const tutorial = details.quests.filter((entry) => entry.tutorial);
+    assert.ok(tutorial.length, "the tutorial's quests are listed");
+    assert.ok(tutorial.every((entry) => entry.type === "Onboarding"));
+    assert.equal(details.quests[0].tutorial, true, "tutorial quests first");
+    const quest = details.quests.find((entry) => entry.questId === "outpostquest_t1_l2");
+    assert.equal(quest.name, "Homebase Storm Shield Defense 2");
+    assert.equal(quest.state, "Active");
+    details = (await admin(backend, `/accounts/${player.accountId}/quests`, { itemId: quest.itemId, action: "claim" })).body;
+    const claimed = details.quests.find((entry) => entry.itemId === quest.itemId);
+    assert.equal(claimed.state, "Claimed");
+    assert.ok(Math.abs(Date.parse(claimed.stateChanged) - Date.now()) < 60000, "claimed just now");
+    // Skipping the tutorial keeps its quests, now done.
+    details = (await admin(backend, `/accounts/${player.accountId}/skip-tutorial`, {})).body;
+    assert.ok(details.quests.filter((entry) => entry.tutorial).every((entry) => ["Completed", "Claimed"].includes(entry.state)));
+    assert.ok(details.quests.some((entry) => entry.questId === "homebaseonboarding" && entry.name === "(Hidden) Onboarding"));
+  } finally {
+    await backend.close();
+  }
+});
+
 test("kick, ban, reset and delete control an account's access and progress", async () => {
   const backend = await startBackend();
   try {

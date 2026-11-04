@@ -8,7 +8,7 @@ import { bannerTemplateId } from "../gamedata/banners.js";
 import { notFound, sendError } from "../errors.js";
 import { getNode } from "../gamedata/homebase.js";
 import { getItem } from "../gamedata/items.js";
-import { getQuest } from "../gamedata/quests.js";
+import { getQuest, questName } from "../gamedata/quests.js";
 import { athenaCosmetics } from "../gamedata/athena.js";
 import { dataBuilds, readGameData } from "../gamedata/read.js";
 import { recentLogs } from "../log.js";
@@ -134,14 +134,25 @@ export function adminRoutes(context) {
     const profile = loadIfExists(account.id, "profile0");
     const stats = profile?.stats.attributes ?? {};
     const level = stats.level ?? 1;
+    // Every quest profile0 holds, whatever its state: the tutorial's (Onboarding) and the completed and claimed ones too,
+    // which stay in the profile (Core-Backend #216; only a claimed daily quest leaves it, at the next day's rollover, as
+    // Epic's did). Its name is the game's (gamedata questnames), its date the last state change (quest_state's
+    // last_state_change_time: for a Completed or Claimed quest, when it got there).
+    const stateOrder = { Active: 0, Completed: 1, Claimed: 2 };
     const quests = Object.entries(profile?.items ?? {})
       .filter(([, item]) => questIdOf(item))
       .map(([itemId, item]) => {
-        const quest = getQuest(questIdOf(item));
+        const questId = questIdOf(item);
+        const quest = getQuest(questId);
         const objectives = (quest?.objectives ?? []).map(({ name, count }) => ({ name, count, progress: item.attributes[`completion_${name}`] ?? 0 }));
-        return { itemId, questId: questIdOf(item), type: quest?.type ?? null, state: item.attributes.quest_state, objectives };
+        return {
+          itemId, questId, name: questName(questId) ?? null, type: quest?.type ?? null, state: item.attributes.quest_state,
+          tutorial: quest?.type === "Onboarding", hidden: quest?.hidden === true, stateChanged: item.attributes.last_state_change_time ?? null,
+          objectives
+        };
       })
-      .sort((a, b) => (a.type === "Onboarding" ? 0 : 1) - (b.type === "Onboarding" ? 0 : 1) || a.questId.localeCompare(b.questId));
+      .sort((a, b) => Number(b.tutorial) - Number(a.tutorial) || (stateOrder[a.state] ?? 3) - (stateOrder[b.state] ?? 3)
+        || (a.name ?? a.questId).localeCompare(b.name ?? b.questId));
     const record = stats.mission_alert_redemption_record;
     const restItem = profile && Object.values(profile.items).find((item) => item.templateId.toLowerCase() === "quota:restxp");
     const items = inventory(profile);

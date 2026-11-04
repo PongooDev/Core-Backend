@@ -1,4 +1,4 @@
-import { perBuild } from "./read.js";
+import { perBuild, readGameData } from "./read.js";
 
 const data = perBuild((read) => {
   const quests = read("quests", {});
@@ -29,3 +29,9 @@ export function getQuest(id) {
 export function questIds() {
   return Object.keys(data().quests);
 }
+
+// A quest's name as the game shows it (its DisplayName), for the admin panel (Core-Backend #216): gamedata/questnames.json
+// (tools/questnames), 3.0's names, else 2.5's; the same for every build. Some are Epic's own hidden ones ("(Hidden)
+// Onboarding"); 1.7.2's Halloween scavenger quests have none.
+const questNames = readGameData("questnames", {});
+export const questName = (id) => questNames[String(id).toLowerCase()]?.trim() || undefined;

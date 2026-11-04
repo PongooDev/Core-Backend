@@ -1803,6 +1803,7 @@
     const $ = (id) => document.getElementById(id);
     const state = {
       view: "dashboard", accounts: [], account: null, accountId: null, tab: "overview", inventoryProfile: "items",
+      questSearch: "", questState: "", questType: "",
       inventoryCategory: "", inventorySearch: "", inventoryPage: 0, inventoryGrouped: null, catalog: { search: "", category: "", items: [], categories: [], picked: null },
       logs: [], logAfter: 0, logPaused: false, logFilter: "", logCategory: "", timers: [],
       eventsSeason: null, battlePassSeason: null, shopSeason: null,
@@ -2857,7 +2858,7 @@
       state.view = next;
       for (const link of document.querySelectorAll("nav.nav a")) link.setAttribute("aria-current", link.dataset.view === state.view ? "page" : "false");
       if (state.view === "players") {
-        if (accountId && accountId !== state.accountId) { state.accountId = accountId; state.account = null; state.inventoryPage = 0; state.inventoryGrouped = null; }
+        if (accountId && accountId !== state.accountId) { state.accountId = accountId; state.account = null; state.inventoryPage = 0; state.inventoryGrouped = null; state.questSearch = ""; }
         if (!accountId) { state.accountId = null; state.account = null; }
         if (tab) state.tab = tab;
       }
@@ -3489,31 +3490,68 @@
         el("p", { class: "note", text: "Any template id, as Type:name. One some build's game data has is given as above; Battle Royale cosmetics (Athena…) go to the locker. Anything else asks first, then is added as it is: world items to the backpack, cosmetics to the locker, the rest to the account." }));
     }
 
+    // Every quest the account holds (Core-Backend #216): the tutorial's, the active ones and the completed and claimed ones,
+    // by the game's name, with a search and state and type filters.
     function quests(a) {
       const stateChip = (questState) => chip(questState ?? "—", { Claimed: "good", Completed: "sky", Active: "yellow" }[questState] ?? "");
-      const progress = (q) => q.objectives.map((o) => `${o.progress}/${o.count}`).join(" · ") || "—";
-      return el("div", {},
-        el("div", { class: "actions", style: "margin-bottom:12px" },
-          btn(a.tutorialCompleted ? "Tutorial done" : "Skip tutorial", () => post("skip-tutorial", {}, "Tutorial skipped"), "primary", { disabled: a.tutorialCompleted }),
-          el("span", { class: "note", text: "Add a quest from Give (kind: Quests)." })),
-        table([
-          ["Quest", (q) => el("span", { class: "mono", text: q.questId })],
-          ["Type", (q) => q.type ?? "—"],
+      const typeLabel = (q) => q.tutorial ? "Tutorial" : ({ DailyQuest: "Daily", Task: "Task", Optional: "Optional", SurvivorQuest: "Survivor",
+        TransientQuest: "Transient", StreamBroadcaster: "Stream", StreamSubscriber: "Stream", StreamViewer: "Stream" }[q.type] ?? q.type ?? "Unknown");
+      const objectiveName = (name) => name.replace(/_/g, " ");
+      const progress = (q) => q.objectives.length ? el("div", {}, q.objectives.map((o) => el("div", {
+        class: "s", title: o.name, style: "white-space:nowrap",
+        text: `${q.objectives.length > 1 ? `${objectiveName(o.name)}: ` : ""}${fmt(Math.min(o.progress, o.count))}/${fmt(o.count)}`
+      }))) : "—";
+      const when = (q) => q.stateChanged ? el("span", { title: new Date(q.stateChanged).toLocaleString(), text: new Date(q.stateChanged).toLocaleDateString() }) : "—";
+      const done = (q) => q.state === "Completed" || q.state === "Claimed";
+      const search = el("input", { class: "field", type: "search", placeholder: "Search quests by name or id", value: state.questSearch, style: "flex:1 1 260px" });
+      const rows = el("div");
+      const shownCount = el("span", { class: "note" });
+      const states = ["Active", "Completed", "Claimed"];
+      const types = [...new Set(a.quests.map(typeLabel))];
+      const filterButtons = (key, options, count) => el("div", { class: "filters" },
+        el("button", { type: "button", "aria-pressed": String(!state[key]), onclick: () => { state[key] = ""; renderPlayer(); } }, el("span", { text: `All · ${fmt(a.quests.length)}` })),
+        options.map((option) => el("button", {
+          type: "button", "aria-pressed": String(state[key] === option), onclick: () => { state[key] = option; renderPlayer(); }
+        }, el("span", { text: `${option} · ${fmt(count(option))}` }))));
+      const render = () => {
+        state.questSearch = search.value;
+        const query = search.value.trim().toLowerCase();
+        const matching = a.quests.filter((q) => (!state.questState || q.state === state.questState)
+          && (!state.questType || typeLabel(q) === state.questType)
+          && (!query || (q.name ?? "").toLowerCase().includes(query) || q.questId.includes(query)));
+        shownCount.textContent = `${fmt(matching.length)} of ${fmt(a.quests.length)} quests`;
+        rows.replaceChildren(table([
+          ["Quest", (q) => el("div", { style: "min-width:200px" }, el("div", {}, el("strong", { text: q.name ?? q.questId }), q.hidden ? " " : null, q.hidden ? chip("Hidden") : null),
+            el("div", { class: "s mono", style: "font-size:11px; margin-top:2px;", text: q.questId }))],
+          ["Type", typeLabel],
           ["State", (q) => stateChip(q.state)],
           ["Progress", progress],
+          ["Completed", (q) => done(q) ? when(q) : "—"],
           ["", (q) => el("div", { class: "actions" },
-            q.state === "Active" ? btn("Complete", () => post("quests", { itemId: q.itemId, action: "complete" }, `${q.questId} completed`), "ghost small") : null,
-            q.state !== "Claimed" ? btn("Claim", () => post("quests", { itemId: q.itemId, action: "claim" }, `${q.questId} claimed`), "ghost small") : null,
+            q.state === "Active" ? btn("Complete", () => post("quests", { itemId: q.itemId, action: "complete" }, `${q.name ?? q.questId} completed`), "ghost small") : null,
+            q.state !== "Claimed" ? btn("Claim", () => post("quests", { itemId: q.itemId, action: "claim" }, `${q.name ?? q.questId} claimed`), "ghost small") : null,
             btn("Remove", async () => {
-              if (await confirmModal(`Remove quest ${q.questId}?`, {
+              if (await confirmModal(`Remove quest ${q.name ?? q.questId}?`, {
                 title: "Remove Quest",
                 confirmText: "Remove",
                 confirmKind: "danger"
               })) {
-                post("quests", { itemId: q.itemId, action: "remove" }, `${q.questId} removed`);
+                post("quests", { itemId: q.itemId, action: "remove" }, `${q.name ?? q.questId} removed`);
               }
             }, "danger small"))]
-        ], a.quests, "No quests yet."));
+        ], matching, a.quests.length ? "No quests match." : "No quests yet."));
+      };
+      search.addEventListener("input", render);
+      render();
+      return el("div", {},
+        el("div", { class: "actions", style: "margin-bottom:12px" },
+          btn(a.tutorialCompleted ? "Tutorial done" : "Skip tutorial", () => post("skip-tutorial", {}, "Tutorial skipped"), "primary", { disabled: a.tutorialCompleted }),
+          el("span", { class: "note", text: "Add a quest from Give (kind: Quests)." })),
+        filterButtons("questState", states, (option) => a.quests.filter((q) => q.state === option).length),
+        filterButtons("questType", types, (option) => a.quests.filter((q) => typeLabel(q) === option).length),
+        el("div", { class: "actions", style: "margin:10px 0" }, search, shownCount),
+        rows,
+        el("p", { class: "note", text: "Every quest the account holds, the tutorial's and the completed and claimed ones too. Completed is when the quest last changed state (for a claimed quest, when it was claimed). Claimed daily quests leave the account at the next day's rollover, as in the game." }));
     }
 
     function shields(a) {
