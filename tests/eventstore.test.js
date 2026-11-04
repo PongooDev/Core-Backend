@@ -129,6 +129,28 @@ test("the calendar gives 1.11, 2.1 and 2.2 the Event Store's countdowns: the eve
     backend.close();
   }
 });
+test("3.2's Event Store counts down: its calendar request names the build by the engine version alone (#233)", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "EventStoreCountdown32");
+    // UE 4.20's default HTTP User-Agent ("%s/%s %s/%s"), which the calendar is fetched with: no "CL-", no "version=".
+    const timeline = (await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/fortnite/api/calendar/v1/timeline",
+      headers: { "User-Agent": "Fortnite/4.20.0-3935073+++Fortnite+Release-3.2 Windows/10.0.17134.1.256.64bit", Authorization: `bearer ${player.token}` } })).body;
+    const now = Date.parse(timeline.currentTime);
+    const { stwEventStoreEnd, stwWeeklyStoreEnd, weeklyStoreEnd } = timeline.channels["client-events"].states[0].state;
+    // The event items count to the end of Spring It On!'s replay on Season 3's clock (68 days), the weekly ones to the rotation's.
+    const event = Date.parse(stwEventStoreEnd);
+    assert.ok(event > now && event <= now + 68 * 24 * 60 * 60 * 1000, stwEventStoreEnd);
+    assert.equal(stwWeeklyStoreEnd, weeklyStoreEnd);
+    assert.ok(Date.parse(timeline.channels["client-events"].cacheExpire) <= Math.min(event, Date.parse(stwWeeklyStoreEnd)));
+    // The store itself: Spring It On!'s event items, Wukong among them, for Seasonal Gold.
+    const wukong = entriesOf("3935073", eventStorefront).find((entry) => grantOf(entry).templateId === "Hero:hid_commando_014_wukong_sr_t01");
+    assert.deepEqual([wukong.prices[0].currencySubType, wukong.prices[0].finalPrice], [seasonalGold, 2800]);
+  } finally {
+    backend.close();
+  }
+});
+
 const mcp = (changelist, port, { accountId, token }, name, body = {}) => {
   const text = JSON.stringify(body);
   return send({ host: "127.0.0.1", port, method: "POST", path: `/fortnite/api/game/v2/profile/${accountId}/client/${name}?profileId=profile0&rvn=-1`,

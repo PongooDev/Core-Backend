@@ -183,6 +183,10 @@ const springNow = () => !isEventActive(winter2017) && !storms2018() && isEventAc
 // 3.2's (CL-3935073) notes: "Wukong is available in the Event Store. This is the Mythic version of the Lunar New Year
 // 'Berserker' soldier." (HID_Commando_014_Wukong_SR_T01, in 3.1's data already): a hero at a legendary hero's 2,800, one
 // (🟡: Epic's price and limit aren't recorded), on 3.2 and later.
+// The countdown (stwEventStoreEnd) on 3.2 is the one 3.0 and 3.1 have: Spring It On!'s items "remain available for purchase
+// until the end of Spring It On!", counted to the end of the Season 3 replay's cycle (spring2018End; 🟡: the event ran on to
+// 3.5, and Core's clock is the season's, rolling over as the shop's replay does). 3.2's calendar request carries the build
+// as the engine version alone (builds/detect.js), which Core read as no build, so the store had no countdown (#233).
 const wukongFirstBuild = 3935073;
 const springItemsNow = () => (Number(currentBuild()) >= wukongFirstBuild
   ? [...springEventItems, { templateId: "Hero:hid_commando_014_wukong_sr_t01", price: 2800, limit: 1 }] : springEventItems);
