@@ -82,11 +82,14 @@ test("1.10 has no Battle Pass, and keeps its display assets", () => inBuild(v110
   assert.equal(athenaDisplayAssets()["AthenaPickaxe:pickaxe_id_011_medieval"], undefined);
 }));
 
-test("1.11's item shop gives its daily offers their display assets; 1.10's daily tiles keep the locker icon", () => {
-  const config = { mode: "custom", custom: { featured: [], daily: [["AthenaCharacter:cid_024_athena_commando_f", 1200]] } };
-  const daily = (build) => inBuild(build, () => itemShopOffers(new Date(), config).BRDailyStorefront[0].displayAssetPath);
-  assert.equal(daily(v111), "/Game/Catalog/DisplayAssets/DA_Featured_SFemaleHID024.DA_Featured_SFemaleHID024");
-  assert.equal(daily(v110), "");
+test("Season 2's daily tiles keep the locker icon, as 1.10's do; only the featured offers carry a display asset (#220)", () => {
+  const cid = "AthenaCharacter:cid_024_athena_commando_f";
+  const shop = (build, side) => inBuild(build, () => itemShopOffers(new Date(), { mode: "custom",
+    custom: side === "daily" ? { featured: [], daily: [[cid, 1200]] } : { featured: [[cid, 1200]], daily: [] } }));
+  assert.equal(shop(v111, "daily").BRDailyStorefront[0].displayAssetPath, "");
+  assert.equal(shop(v110, "daily").BRDailyStorefront[0].displayAssetPath, "");
+  assert.equal(shop(v111, "featured").BRWeeklyStorefront[0].displayAssetPath,
+    "/Game/Catalog/DisplayAssets/DA_Featured_SFemaleHID024.DA_Featured_SFemaleHID024");
 });
 
 // Core-Backend #150: 1.11 replays Season 2's own shop, 14 December 2017 to 21 February 2018, in a 70-day cycle; 1.10

@@ -67,9 +67,8 @@ test("2.1 is still Season 2: 1.11's Battle Pass, season clock and shop", () => {
   const config = { mode: "custom", custom: { featured: [["AthenaGlider:glider_prismatic", 800]], daily: [["AthenaPickaxe:skiicepickaxe", 800]] } };
   const offers = (build) => inBuild(build, () => itemShopOffers(now, config));
   assert.deepEqual(offers(v21), offers(v111));
-  // Its daily offers carry their display assets too.
-  assert.equal(offers(v21).BRDailyStorefront[0].displayAssetPath,
-    "/Game/Catalog/DisplayAssets/DA_Featured_PickaxeCliffhanger.DA_Featured_PickaxeCliffhanger");
+  // Its daily offers keep the locker icon (Core-Backend #220): no display asset, which only the featured ones carry.
+  assert.equal(offers(v21).BRDailyStorefront[0].displayAssetPath, "");
 });
 
 test("2.1 keeps 1.11's events: Survive the Holidays, ticketless storms, the winter lobby and bus, and 50v50", () => {

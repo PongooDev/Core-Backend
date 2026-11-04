@@ -376,22 +376,16 @@ const offerIdOf = (templateId) =>`core_br_${templateId.split(":")[1].toLowerCase
 
 // The featured items' shop art: the display asset (FortMtxOfferData with Battle Royale tile art) the extractor matched to
 // the cosmetic by its names (gamedata/athena.json displayAssets, tools/extractor), by object path, so each build's are
-// found without a list here. A cosmetic with none keeps the locker icon. Up to 1.10 only the featured (weekly)
-// storefront's offers carry one, as the assets' names (DA_Featured_...) say; a daily tile shows the locker icon.
+// found without a list here. A cosmetic with none keeps the locker icon. Only the featured (weekly) storefront's offers
+// carry one, as the assets' names (DA_Featured_...) say, in every build (Core-Backend #220): the offer widget
+// (AthenaDirectAcquisitionOfferWidget's OfferSet, 2.5's and 3.0's alike) shows a display asset's TileImage on any tile
+// that has one (HasDisplayAsset, GetTileImage), and otherwise loads the item's LargePreviewImage, its locker icon. The
+// TileImage is the featured tile's tall art (UpdateStyle_Sizing: a LargeTile is 384x608, a daily one 256x292), so a
+// daily tile given one showed the weekly art cropped, where Epic's daily tiles showed the locker icon. 1.11 to 3.0 gave
+// the daily offers theirs too (Core-Backend #145), which #220 undid.
 export function featuredDisplayAsset(templateId) {
   return athenaDisplayAssets()[templateId] ?? "";
 }
-
-// From 1.11 (CL-3807424; 2.1 to 3.0 too) every offer carries its display asset, the daily ones too (Core-Backend #145: "Item shop
-// cosmetics dont show the shop display version of their icons"). 1.11's paks have one for nearly every outfit, glider
-// and pickaxe the shop sells (Catalog/DisplayAssets: DA_Featured_SMaleHID0xx and DA_Featured_SFemaleHID0xx for the
-// outfits, DA_Featured_Glider_ID_0xx and DA_Featured_Pickaxe_ID_xx), where 1.8's had them for a few featured items; the
-// offer widget shows a display asset's TileImage wherever the offer has one (HasDisplayAsset, GetTileImage), and the rest
-// keep the locker icon. The extractor matches them by name and art (tools/extractor): 1.11's DA_Featured_Pickaxe_ID_11_Medieval
-// (tile T-Featured-Pickaxe-20, the twin of its locker icon T-Icon-Pickaxes-SK-Pickaxe-20-L) is Axecalibur's, and
-// DA_Featured_Pickaxe_ID_19_Heart (T-Featured-Pickaxe-11) Tat Axe's. 1.8 to 1.10 keep the daily tiles' locker icons.
-const firstDailyDisplayAssetsBuild = 3807424;
-const dailyDisplayAssets = () => Number(currentBuild()) >= firstDailyDisplayAssetsBuild;
 
 // A shop entry's tile ({tile, banner}, its third element: itemshop-season3.json, an admin's custom shop): the items of
 // one tile share an offer category, and its callout is the offers' BannerOverride (store/catalog.js offerJson). From
@@ -432,7 +426,7 @@ export function itemShopOffers(now = new Date(), overrideConfig = null) {
         currencyType: "MtxCurrency",
         currencySubType: "",
         price: validPrice,
-        displayAssetPath: featured || dailyDisplayAssets() ? featuredDisplayAsset(templateId) : "",
+        displayAssetPath: featured ? featuredDisplayAsset(templateId) : "",
         athena: true,
         ...tileOf(tile)
       };
