@@ -198,3 +198,23 @@ test("admin shop API separates Season 1 and Season 2 catalog and historical rota
     fs.rmSync(dataDir, { recursive: true, force: true });
   }
 });
+
+// Core-Backend #222: no shop sells a Battle Pass reward of any season, whichever list names it.
+test("the item shop never sells a Battle Pass reward, of any season", () => {
+  const blackKnight = "AthenaCharacter:cid_035_athena_commando_m_medieval"; // Season 2, tier 70
+  const highOctane = "AthenaGlider:glider_id_017_assassin"; // Season 3, the Tier 100 challenges
+  inBuild("3915963", () => {
+    assert.ok(isNonShopCosmetic(blackKnight), "a 3.1 shop must not sell Season 2's Black Knight");
+    assert.ok(isNonShopCosmetic(highOctane));
+    assert.ok(!isNonShopCosmetic("AthenaCharacter:cid_093_athena_commando_m_dinosaur"), "Rex was sold");
+    assert.ok(!eligibleCosmetics().some(({ templateId }) => templateId === blackKnight));
+    for (let day = 0; day < 120; day++) {
+      const shop = generateRandomShop(new Date(Date.UTC(2026, 0, 1) + day * 86400000), { mode: "random" });
+      for (const [templateId] of [...shop.featured, ...shop.daily]) assert.ok(!isNonShopCosmetic(templateId), templateId);
+    }
+    const custom = itemShopOffers(new Date(), { mode: "custom", custom: { featured: [[blackKnight, 2000], [highOctane, 1200]],
+      daily: [["AthenaCharacter:cid_093_athena_commando_m_dinosaur", 1500]] } });
+    assert.deepEqual(custom.BRWeeklyStorefront, []);
+    assert.equal(custom.BRDailyStorefront.length, 1);
+  });
+});

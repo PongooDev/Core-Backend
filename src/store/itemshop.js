@@ -415,14 +415,16 @@ const tileOf = (tile) => {
 // catalog's, which isn't in the paks (🟡: from the Fortnite Wiki's Rex page); the offer grants both, as Epic's did.
 export const bundledBackBlings = { "AthenaCharacter:cid_093_athena_commando_m_dinosaur": "AthenaBackpack:bid_031_dinosaur" };
 
-// The day's offers by storefront, those the requesting build has the cosmetic for.
+// The day's offers by storefront, those the requesting build has the cosmetic for. Never a cosmetic the shop doesn't sell
+// (profiles/athena.js isNonShopCosmetic): any season's Battle Pass rewards, chase rewards, umbrellas, starters
+// (Core-Backend #222), whichever list names it: the season's history, the random shop or the admin's custom shop.
 export function itemShopOffers(now = new Date(), overrideConfig = null) {
   if (!hasItemShop()) return { BRWeeklyStorefront: [], BRDailyStorefront: [] };
   const cosmetics = athenaCosmetics();
   const config = overrideConfig ?? currentShopConfig();
 
   const toOffers = (entries, featured = false) => entries
-    .filter(([templateId]) => cosmetics[templateId])
+    .filter(([templateId]) => cosmetics[templateId] && !isNonShopCosmetic(templateId))
     .map(([templateId, price, tile]) => {
       const cosmetic = cosmetics[templateId];
       const validPrice = Number(price) > 0 ? Number(price) : defaultPriceFor(cosmetic);

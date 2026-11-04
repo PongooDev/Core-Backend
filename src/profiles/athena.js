@@ -4,7 +4,7 @@ import { McpError } from "../errors.js";
 import { athenaEventQuestsOf } from "../events/fiftyfifty.js";
 import { eventQueueOfPlaylist } from "../events/ltms.js";
 import { currentBuild } from "../builds/context.js";
-import { athenaBattlePassDailyIds, athenaCosmetics, athenaDailyIds, athenaObjectiveStat, athenaSeason, dailyWeight, getAthenaQuest, seasonLevels,
+import { athenaBattlePassDailyIds, athenaChallengeBundles, athenaCosmetics, athenaDailyIds, athenaObjectiveStat, athenaSeason, dailyWeight, getAthenaQuest, seasonLevels,
   splitOffBackpacks } from "../gamedata/athena.js";
 import { bannerIds, bannerTemplateId } from "../gamedata/banners.js";
 import { dataBuilds } from "../gamedata/read.js";
@@ -151,9 +151,25 @@ const victoryUmbrellasOf = (accountId, settings, season) => [victoryUmbrella, se
 // or never locker items (Recruit defaults, unused umbrellas). They are never sold in the item shop (Core-Backend #69).
 export const chaseRewardIds = () => seasonLevels().filter((entry) => entry.chaseReward).map((entry) => entry.chaseReward);
 
-// The Battle Pass's cosmetics (1.11's Season 2, profiles/seasons.js): earned, never sold.
-const battlePassCosmeticIds = () => [...(athenaSeason()?.bookFreeRewards ?? []), ...(athenaSeason()?.bookPaidRewards ?? [])]
-  .flatMap(({ rewards }) => rewards.map(({ templateId }) => templateId)).filter((templateId) => templateId.toLowerCase().startsWith("athena"));
+// The Battle Pass's cosmetics (from 1.11's Season 2, profiles/seasons.js): earned, never sold, in every season's shop
+// (Core-Backend #222). Every season's, from every build's data (a 3.1 shop must not sell Season 2's Black Knight, which
+// 3.1's data still has but whose AthenaSeason3 no longer lists): the season's tier rewards, free and paid
+// (BookXpScheduleFree / BookXpSchedulePaid), its level rewards (SeasonXpScheduleFree), its first-win rewards and its
+// challenge bundles' completion rewards (3.0's s3_tier_100_questbundle gives High Octane). Made on first use.
+let battlePassIds;
+const seasonCosmetics = () => {
+  const season = athenaSeason();
+  const bundles = Object.values(athenaChallengeBundles() ?? {}).map((bundle) => ({ rewards: bundle.completionRewards ?? [] }));
+  return [...(season?.bookFreeRewards ?? []), ...(season?.bookPaidRewards ?? []), ...(season?.seasonRewards ?? []),
+    { rewards: season?.firstWinRewards ?? [] }, ...bundles]
+    .flatMap(({ rewards }) => (rewards ?? []).map((reward) => reward?.templateId)).filter((templateId) => typeof templateId === "string")
+    .filter((templateId) => templateId.toLowerCase().startsWith("athena"));
+};
+export const battlePassCosmeticIds = () => {
+  battlePassIds ??= [...new Map(dataBuilds.flatMap((build) => inBuild(build, seasonCosmetics))
+    .map((templateId) => [templateId.toLowerCase(), templateId])).values()];
+  return battlePassIds;
+};
 
 export const nonShopCosmeticIds = () => [
   ...starters,
@@ -166,8 +182,8 @@ export const nonShopCosmeticIds = () => [
   ...randomCharacters
 ];
 
-export const isNonShopCosmetic = (templateId) =>
-  nonShopCosmeticIds().some((id) => sameId(id, templateId));
+export const isNonShopCosmetic = (templateId) => typeof templateId === "string"
+  && nonShopCosmeticIds().some((id) => sameId(id, templateId));
 
 // The cosmetics the player has earned: the chase rewards of the season levels reached and, for each season with a
 // recorded win in solo, duo or squad (settings.wonSeasons, the stats: 1.7.2's recordwin; 1.8's own wins give theirs when
