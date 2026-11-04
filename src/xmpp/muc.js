@@ -15,9 +15,13 @@ const ns = {
 };
 
 // onLeave(connection, room) runs after an occupant has left a room (by presence, a new nick or disconnecting).
-export function createRooms({ reply, replyError, stanzaError, isPublic = () => false, onLeave = () => {} }) {
+// log(message) gets a line for each join and leave: room, nick, account and what came of it.
+export function createRooms({ reply, replyError, stanzaError, isPublic = () => false, onLeave = () => {}, log = () => {} }) {
   const rooms = new Map();
   const key = (target) => `${target.local.toLowerCase()}@${target.domain.toLowerCase()}`;
+
+  const note = (action, room, nick, connection, result) =>
+    log(`MUC ${action} ${room.jid.slice(0, room.jid.indexOf("@"))} as ${nick} (${connection.accountId}): ${result}`);
 
   function occupantOf(room, connection) {
     for (const occupant of room.occupants.values()) if (occupant.connection === connection) return occupant;
@@ -38,7 +42,8 @@ export function createRooms({ reply, replyError, stanzaError, isPublic = () => f
         codes.map((code) => xml("status", { code: String(code) }))));
   }
 
-  function leave(room, occupant) {
+  function leave(room, occupant, why = "left") {
+    note("leave", room, occupant.nick, occupant.connection, why);
     room.occupants.delete(occupant.nick);
     occupant.connection.rooms.delete(room.key);
     for (const other of [...room.occupants.values(), occupant]) {
@@ -58,22 +63,25 @@ export function createRooms({ reply, replyError, stanzaError, isPublic = () => f
 
     let existing = room.occupants.get(target.resource);
     let takenOver;
-    // The same account on another connection (a stream the client left behind, say when it switched sub game) isn't a
-    // nick conflict: the room moves its nick to the new connection, as XEP-0045 7.2.9 has a service do for one user. A
-    // client whose join was refused here had the Global tab on "Currently unavailable" (Core-Backend #235).
+    // The same account on another connection (a stream it reconnected on before the old one was seen to drop) isn't a
+    // nick conflict: the room moves its nick to the new connection, as XEP-0045 7.2.9 has a service do for one user.
+    // (Core-Backend #235 took this for the cause of Global's "Currently unavailable"; that was the client's own Battle
+    // Royale setting, #238 and services/fortnite/cloudstorage.js. The client keeps one stream across sub games.)
     if (existing && existing.connection !== connection && existing.connection.accountId
       && existing.connection.accountId === connection.accountId) {
       takenOver = existing;
-      leave(room, existing);
+      leave(room, existing, "taken over by a new connection");
       rooms.set(room.key, room);
       existing = undefined;
     }
     if (existing && existing.connection !== connection) {
       if (!room.occupants.size) rooms.delete(room.key);
+      note("join", room, target.resource, connection, "refused, nick taken");
       return connection.send(stanzaError(presence, "cancel", "conflict"));
     }
     if (existing) {
       // Already in: this is a presence change, which everyone sees.
+      note("join", room, existing.nick, connection, "already in, presence updated");
       existing.presence = presence;
       for (const other of room.occupants.values()) {
         other.connection.send(occupantPresence(room, existing, other.connection.jid, other === existing ? [110] : []));
@@ -84,7 +92,7 @@ export function createRooms({ reply, replyError, stanzaError, isPublic = () => f
     // A second nick from the same connection replaces the first and keeps its affiliation.
     const previous = occupantOf(room, connection);
     if (previous) {
-      leave(room, previous);
+      leave(room, previous, "new nick");
       rooms.set(room.key, room);
     }
 
@@ -100,6 +108,7 @@ export function createRooms({ reply, replyError, stanzaError, isPublic = () => f
     room.occupants.set(occupant.nick, occupant);
     connection.rooms.add(room.key);
     connection.send(occupantPresence(room, occupant, connection.jid, created ? [110, 201] : [110]));
+    note("join", room, occupant.nick, connection, `joined (${room.occupants.size} in)`);
   }
 
   return {
@@ -111,6 +120,7 @@ export function createRooms({ reply, replyError, stanzaError, isPublic = () => f
         const room = rooms.get(key(target));
         const occupant = room && occupantOf(room, connection);
         if (occupant) leave(room, occupant);
+        else log(`MUC leave ${target.local} as ${target.resource} (${connection.accountId}): not in it`);
         return;
       }
       if (type) return;
@@ -167,7 +177,7 @@ export function createRooms({ reply, replyError, stanzaError, isPublic = () => f
       for (const roomKey of [...connection.rooms]) {
         const room = rooms.get(roomKey);
         const occupant = room && occupantOf(room, connection);
-        if (occupant) leave(room, occupant);
+        if (occupant) leave(room, occupant, "disconnected");
       }
       connection.rooms.clear();
     },

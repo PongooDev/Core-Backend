@@ -66,7 +66,7 @@ export function createXmppService({ tokens, contactsOf = () => [], publicRooms =
   const leaveWaiters = new Set(); // checks run after anyone leaves a room
   const serverRoomLeaves = new Map(); // accountId -> Map(server room name -> when it last left it)
   const roomName = (room) => room.key.slice(0, room.key.indexOf("@"));
-  const rooms = createRooms({ reply, replyError, stanzaError, isPublic: (name) => serverRooms.has(name.toLowerCase()),
+  const rooms = createRooms({ reply, replyError, stanzaError, isPublic: (name) => serverRooms.has(name.toLowerCase()), log: say,
     onLeave: (connection, room) => {
       if (serverRooms.has(roomName(room)) && connection.accountId) {
         let leaves = serverRoomLeaves.get(connection.accountId);

@@ -4,6 +4,9 @@ import crypto from "node:crypto";
 import http from "node:http";
 import { certUserAgent, clientToken, dedicatedServerToken, del, get, openTunnel, post, request, send, startBackend, userLogin } from "./helpers.js";
 
+// Battle Royale's global chat (Core-Backend #238), in every build's DefaultGame.ini.
+const athenaGlobalChat = ["[/Script/FortniteGame.FortOnlineAccount]", "bIsAthenaGlobalChatEnabled=true"];
+
 function raw(port, method, path, token, body, userAgent = certUserAgent) {
   return new Promise((resolve, reject) => {
     const req = http.request({
@@ -203,7 +206,7 @@ test("the system hotfix turns off the client's cache of Battle Royale stats answ
     assert.equal(download.status, 200);
     assert.equal(crypto.createHash("sha1").update(download.body).digest("hex"), file.hash);
     assert.deepEqual(download.body.toString("utf8").split("\r\n"),
-      ["[/Script/FortniteGame.FortGlobals]", "TimeBetweenLeaderboardRequestsMinutes=0", ""]);
+      ["[/Script/FortniteGame.FortGlobals]", "TimeBetweenLeaderboardRequestsMinutes=0", ...athenaGlobalChat, ""]);
   } finally {
     backend.close();
   }
@@ -233,7 +236,7 @@ test("the system hotfix keeps stats answers for a minute from 1.8.1 on, and for 
       // From 1.8 the Store tab's purchase flow page follows (Core-Backend #223, services/fortnite/purchase.js).
       const purchaseFlow = Number(build.split("-CL-")[1]) >= 3724489 ? ["[EpicPurchaseFlow]", `Prod=http:///127.0.0.1:${backend.port}/purchase`] : [];
       assert.deepEqual(download.body.toString("utf8").split("\r\n"),
-        ["[/Script/FortniteGame.FortGlobals]", `TimeBetweenLeaderboardRequestsMinutes=${minutes}`, ...purchaseFlow, ""], build);
+        ["[/Script/FortniteGame.FortGlobals]", `TimeBetweenLeaderboardRequestsMinutes=${minutes}`, ...athenaGlobalChat, ...purchaseFlow, ""], build);
     }
   } finally {
     backend.close();
@@ -347,6 +350,24 @@ test("the system hotfix points the client's XMPP at the address and port it reac
     const missing = await get(backend.port, "/fortnite/api/cloudstorage/system/DefaultInput.ini", token);
     assert.equal(missing.status, 404);
     assert.equal(missing.body.errorCode, "errors.com.epicgames.cloudstorage.file_not_found");
+  } finally {
+    backend.close();
+  }
+});
+
+// Core-Backend #238: entering Battle Royale, the client asks for global chat rooms only with UFortOnlineAccount's
+// bIsAthenaGlobalChatEnabled (3.2 0xD4C450), false in the shipped DefaultGame.ini of 2.5 to 3.2. Builds without it ignore it.
+test("the system hotfix turns on Battle Royale's global chat", async () => {
+  const backend = await startBackend();
+  try {
+    const token = await clientToken(backend.port);
+    for (const build of ["++Fortnite+Release-Cert-CL-3532353", "++Fortnite+Release-1.7.2-CL-3700114", "++Fortnite+Release-3.0.0-CL-3901517",
+      "++Fortnite+Release-3.1-CL-3915963", "++Fortnite+Release-3.2-CL-3935073"]) {
+      const lines = (await raw(backend.port, "GET", "/fortnite/api/cloudstorage/system/DefaultGame.ini", token, undefined,
+        `game=Fortnite, engine=UE4, build=${build}`)).body.toString("utf8").split("\r\n");
+      const section = lines.indexOf("[/Script/FortniteGame.FortOnlineAccount]");
+      assert.equal(lines[section + 1], "bIsAthenaGlobalChatEnabled=true", build);
+    }
   } finally {
     backend.close();
   }

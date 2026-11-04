@@ -52,6 +52,8 @@ export function chatRoutes({ tokens, xmpp }) {
   // enters (sub_7191F0) and its handler (sub_7147B0) treats an empty founderChatRooms with bIsFounderChatDisabled as
   // "founder chat is currently disabled in the backend", which the Founders tab shows as "Currently unavailable."
   // (Core-Backend #62: it only worked once Save the World had joined the Founders room).
+  // Entering Athena the client only asks with bIsAthenaGlobalChatEnabled, which the system hotfix turns on
+  // (services/fortnite/cloudstorage.js, Core-Backend #238); its login asks once as sub game "[NoMode]" (3.2 0xC4B520).
   router.post("/fortnite/api/game/v2/chat/:accountId/recommendGeneralChatRooms/:subGame/:platform", requireAuth(tokens), requireOwnAccount, async (req, res) => {
     await afterGlobalRoomLeft(xmpp, req.params.accountId);
     const athena = req.params.subGame.toLowerCase() === "athena";

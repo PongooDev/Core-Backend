@@ -84,6 +84,14 @@ function newModeFiles(changelist) {
   return ltm ? { "DefaultGameUserSettings.ini": Buffer.from(["[/Script/FortniteGame.FortGameUserSettings]",
     `LastSelectedPlaylist=${athenaPlaylistOfQueue(ltm.queue)}`, ""].join("\r\n"), "utf8") } : {};
 }
+// Battle Royale's global chat (Core-Backend #238). The client asks for a sub game's general chat rooms whenever it
+// enters one (3.2: UFortOnlineAccount 0xD45940 -> 0xD4C450), first leaving its global room (0xD4E380). For Athena it
+// asks only while UFortOnlineAccount's bIsAthenaGlobalChatEnabled (+0x8EB) is set; otherwise it marks the Global tab
+// disabled ("Currently unavailable.", 0x734810) and asks for nothing. The shipped DefaultGame.ini has it false (2.5, 3.0,
+// 3.1 and 3.2), so only a room from before the first switch (the login's request, as sub game "[NoMode]") ever showed in
+// Battle Royale: Battle Royale, Save the World and back left Global unavailable. Core gives Battle Royale its own room
+// (services/fortnite/chat.js). A build without the setting ignores it.
+const chatSection = ["[/Script/FortniteGame.FortOnlineAccount]", "bIsAthenaGlobalChatEnabled=true", ""].join("\r\n");
 const defaultNetwork = createNetwork();
 function systemFiles(req, network = defaultNetwork, settings = null) {
   const address = network.reachableAddress(req);
@@ -95,7 +103,7 @@ function systemFiles(req, network = defaultNetwork, settings = null) {
   ].join("\r\n");
   const build = getBuild(req);
   const game = gameFile(statsAnswerMinutes(build), [...shootingTestGlobals(build), ...forcedQueueGlobals(build)]) + customKeySection(build)
-    + forcedQueueSection(build)
+    + forcedQueueSection(build) + chatSection
     + purchaseFlowSection(req, network, { build, enabled: settings?.get?.()?.vbuckPacks !== false })
     + lootHotfixSection(new Date(), null, shootingTestHotfixTables(build));
   return { "DefaultEngine.ini": Buffer.from(engine, "utf8"), "DefaultGame.ini": Buffer.from(game, "utf8"), ...newModeFiles(build) };

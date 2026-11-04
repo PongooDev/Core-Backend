@@ -434,9 +434,8 @@ test("switching sub game, a leave that arrives before the request still holds th
   }
 });
 
-// Core-Backend #235: Battle Royale's lobby, Save the World, and back to Battle Royale's lobby. A stream the client left
-// behind still held its nick in GlobalBattleRoyale, so joining it again from the new stream was refused as a nick
-// conflict and the Global tab stayed on "Currently unavailable". The same account takes its nick over instead.
+// A stream the client reconnected on before the old one was seen to drop: the same account takes its nick over instead
+// of being refused as a nick conflict. (Core-Backend #235 blamed this for Global's "Currently unavailable"; #238 below.)
 test("a public room moves an account's nick to its new connection instead of refusing it", async () => {
   const xmpp = await startXmpp();
   const room = `globalbattleroyale@muc.${domain}`;
@@ -465,5 +464,57 @@ test("a public room moves an account's nick to its new connection instead of ref
     assert.equal((await bob.client.next((stanza) => stanza.name === "presence")).attrs.type, "error");
   } finally {
     xmpp.close();
+  }
+});
+
+// Core-Backend #238: 3.2, Battle Royale's lobby, Save the World and back. The client keeps one stream. Entering a sub
+// game (UFortOnlineAccount 0xD45940 -> 0xD4C450) it leaves its global room (0xD4E380: an ExitRoom, 0x2604C90, presence
+// unavailable to the room), asks for the sub game's rooms (0xD5AA30) and joins the answer's room (0xD4DBA0 ->
+// JoinPublicRoom 0x260D630), whose self-presence is the join. For Athena it asks only while bIsAthenaGlobalChatEnabled
+// is set, which 3.2's DefaultGame.ini has false; otherwise the Global tab is "Currently unavailable." (0x734810). The
+// login asks once as sub game "[NoMode]" (0xC4B520): Battle Royale's lobby had that room until the first switch.
+// Replayed with the setting as the client has it once the system hotfix is merged.
+test("3.2 keeps global chat through Battle Royale, Save the World and back to Battle Royale", async () => {
+  const backend = await startBackend();
+  const status = (presence) => presence.child("x", "http://jabber.org/protocol/muc#user").elements
+    .filter((element) => element.name === "status").map((element) => element.attrs.code);
+  try {
+    const { accountId, token } = await userLogin(backend.port, "ChatRoundTrip");
+    const hotfix = (await send({ host: "127.0.0.1", port: backend.port, path: "/fortnite/api/cloudstorage/system/DefaultGame.ini",
+      headers: { "User-Agent": "game=Fortnite, engine=UE4, build=++Fortnite+Release-3.2-CL-3935073", Authorization: `bearer ${token}` } }))
+      .body.toString("utf8").split("\r\n");
+    const section = hotfix.indexOf("[/Script/FortniteGame.FortOnlineAccount]");
+    const athenaGlobalChat = section !== -1 && hotfix[section + 1] === "bIsAthenaGlobalChatEnabled=true";
+
+    const { client } = await login(backend.port, accountId, token);
+    let tab; // the Global tab: its room, or what it shows instead
+    async function enter(subGame) {
+      if (tab?.jid) {
+        client.send(`<presence to="${tab.jid}" type="unavailable"/>`);
+        const left = await client.next((stanza) => stanza.name === "presence");
+        assert.deepEqual([left.attrs.from, left.attrs.type, status(left)], [tab.jid, "unavailable", ["110"]]);
+      }
+      if (subGame === "Athena" && !athenaGlobalChat) {
+        tab = "Currently unavailable.";
+        return;
+      }
+      const answer = await post(backend.port, `/fortnite/api/game/v2/chat/${accountId}/recommendGeneralChatRooms/${subGame}/pc`, token, {});
+      const name = answer.body.globalChatRooms[0].roomName;
+      const jid = `${name.toLowerCase()}@muc.${domain}/${accountId}`;
+      client.send(`<presence to="${jid}"><x xmlns="http://jabber.org/protocol/muc"/></presence>`);
+      const joined = await client.next((stanza) => stanza.name === "presence");
+      assert.deepEqual([joined.attrs.from, joined.attrs.type, status(joined)], [jid, undefined, ["110"]]);
+      tab = { name, jid };
+    }
+
+    await enter("[NoMode]");
+    assert.equal(tab.name, "Global");
+    for (const subGame of ["Athena", "Campaign", "Athena"]) {
+      await enter(subGame);
+      assert.equal(tab.name, subGame === "Athena" ? "GlobalBattleRoyale" : "Global", `${subGame}: the Global tab shows ${tab}`);
+    }
+    client.close();
+  } finally {
+    backend.close();
   }
 });
