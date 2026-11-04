@@ -163,3 +163,30 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
     backend.close();
   }
 });
+
+test("the player bots settings: defaults, sanitizing, the config round-trip and reset (CoreV2 #233)", async () => {
+  const backend = await startBackend();
+  try {
+    const defaults = { forcePlayerAIs: false, count: 0, level: 5, startingHealth: 100, startingShield: 0, eliminationsCountForQuests: true };
+    assert.deepEqual((await admin(backend, "/matchmaking/overview")).body.bots, defaults);
+
+    let res = await admin(backend, "/matchmaking/config", { bots: { forcePlayerAIs: true, count: 40, level: 8, startingHealth: 50, startingShield: 25, eliminationsCountForQuests: false } });
+    assert.equal(res.status, 200);
+    assert.deepEqual(res.body.bots, { forcePlayerAIs: true, count: 40, level: 8, startingHealth: 50, startingShield: 25, eliminationsCountForQuests: false });
+    assert.deepEqual((await admin(backend, "/matchmaking/overview")).body.bots, res.body.bots);
+
+    // Invalid fields keep their value; a partial update merges.
+    res = await admin(backend, "/matchmaking/config", { bots: { count: 101, level: 0, startingHealth: 0, startingShield: -1, forcePlayerAIs: "yes", eliminationsCountForQuests: 1 } });
+    assert.deepEqual(res.body.bots, { forcePlayerAIs: true, count: 40, level: 8, startingHealth: 50, startingShield: 25, eliminationsCountForQuests: false });
+    res = await admin(backend, "/matchmaking/config", { bots: { count: 12, level: 1.5 } });
+    assert.deepEqual(res.body.bots, { forcePlayerAIs: true, count: 12, level: 8, startingHealth: 50, startingShield: 25, eliminationsCountForQuests: false });
+    // The bounds are inclusive.
+    res = await admin(backend, "/matchmaking/config", { bots: { count: 100, level: 10, startingHealth: 1, startingShield: 100 } });
+    assert.deepEqual([res.body.bots.count, res.body.bots.level, res.body.bots.startingHealth, res.body.bots.startingShield], [100, 10, 1, 100]);
+
+    res = await admin(backend, "/matchmaking/actions/reset-defaults", {});
+    assert.deepEqual(res.body.bots, defaults);
+  } finally {
+    backend.close();
+  }
+});

@@ -6,13 +6,16 @@ import { sendError } from "../../errors.js";
 // Core's: a CoreV2 Battle Royale gameserver's warmup (Core-Backend #122, the admin panel's Matchmaking settings).
 //   POST /fortnite/api/game/v2/matchmakingservice/warmup
 //   {phase: "Setup"|"Warmup"|"Aircraft"|..., accountIds: [the players connected], secondsLeft: <the warmup's>}
-//   -> {warmupSeconds, lateJoin, sessionId, open, maxPlayers, parties: [[accountId]]}
+//   -> {warmupSeconds, lateJoin, sessionId, open, maxPlayers, parties: [[accountId]], bots}
 // The server asks from its world's start, every 30 seconds until its warmup begins, then every second until the bus
 // leaves, and once more after. warmupSeconds (null: the game's own) is how long its warmup lasts: the game mode's
 // WarmupCountdownDuration, which the game has from its config and no match option sets (1.9's OnGivenMatchAssignment
 // 0x42D2B0 reads only match.option.warmupRequiredPlayerCount). With lateJoin on and the phase Warmup, the matchmaking
 // service sends parties queuing for the match's bucket to it (open), up to maxPlayers, and parties lists the ones it
 // sent, for the server to give each party one team. The match is found by its players (matchmaking/service.js).
+// bots (CoreV2 #233) is the player bots to add, {count, level, health, shield, quests}, when the admin panel's Force
+// player AIs is on and its count is above 0, else null. The count is the requested one as is: the gameserver applies the
+// cap itself (bots = min(count, match capacity - connected players), re-checked before the bus leaves).
 // Only the DedicatedServer client (CoreV2's requests) or a gameserver account hosting a session may ask.
 const maxAccountIds = 200;
 
@@ -30,13 +33,17 @@ export function warmupRoutes({ tokens, sessions, settings, matchmaker }) {
     const lateJoin = current.lateJoin === true;
     const open = lateJoin && req.body?.phase === "Warmup" && Number.isFinite(secondsLeft) && secondsLeft > 0;
     const match = accountIds.length ? matchmaker.warmup({ accountIds, open, secondsLeft }) : null;
+    const bots = current.bots;
     res.json({
       warmupSeconds: current.warmupSeconds ?? null,
       lateJoin,
       sessionId: match?.sessionId ?? null,
       open: match?.open ?? false,
       maxPlayers: match?.maxPlayers ?? null,
-      parties: match?.parties ?? []
+      parties: match?.parties ?? [],
+      bots: bots?.forcePlayerAIs === true && bots.count > 0
+        ? { count: bots.count, level: bots.level, health: bots.startingHealth, shield: bots.startingShield, quests: bots.eliminationsCountForQuests }
+        : null
     });
   });
 

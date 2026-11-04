@@ -46,6 +46,9 @@ const defaults = {
   warmupSeconds: null,
   lateJoin: false,
   regionFallback: true,
+  // Battle Royale player bots (CoreV2 #233): Core's backport of Epic's player bots, for builds without native ones (every
+  // build before 8.30). Off by default.
+  bots: { forcePlayerAIs: false, count: 0, level: 5, startingHealth: 100, startingShield: 0, eliminationsCountForQuests: true },
   // 1.7.2 to 2.4.2's match start countdown (Core-Backend #160, matchmaking/service.js showsMatchStart): while a match
   // forms, the matchmaking panel shows "Match starting in 0:25... / Players Connected: 4", as Epic's service had it.
   matchStartCountdown: true,
@@ -357,6 +360,22 @@ function matchStartBufferValue(value) {
   const seconds = typeof value === "string" && value.trim() ? Number(value) : value;
   return Number.isInteger(seconds) && seconds >= 0 && seconds <= maxMatchStartBufferSeconds ? seconds : undefined;
 }
+// The player bots (CoreV2 #233): each field on its own, an invalid one keeping its previous value (base).
+function botInteger(value, min, max, base) {
+  const number = typeof value === "string" && value.trim() ? Number(value) : value;
+  return Number.isInteger(number) && number >= min && number <= max ? number : base;
+}
+function botsValue(value, base) {
+  const given = value && typeof value === "object" && !Array.isArray(value) ? value : {};
+  return {
+    forcePlayerAIs: typeof given.forcePlayerAIs === "boolean" ? given.forcePlayerAIs : base.forcePlayerAIs,
+    count: botInteger(given.count, 0, 100, base.count),
+    level: botInteger(given.level, 1, 10, base.level),
+    startingHealth: botInteger(given.startingHealth, 1, 100, base.startingHealth),
+    startingShield: botInteger(given.startingShield, 0, 100, base.startingShield),
+    eliminationsCountForQuests: typeof given.eliminationsCountForQuests === "boolean" ? given.eliminationsCountForQuests : base.eliminationsCountForQuests
+  };
+}
 function warmupSecondsValue(value) {
   if (value === null || (typeof value === "string" && !value.trim())) return null;
   const seconds = typeof value === "string" ? Number(value) : value;
@@ -429,7 +448,8 @@ export function createSettingsStore(dataDir) {
     events: JSON.parse(JSON.stringify(defaults.events)),
     battlepass: JSON.parse(JSON.stringify(defaults.battlepass)),
     matchmakingModes: JSON.parse(JSON.stringify(defaults.matchmakingModes)),
-    serverLimits: JSON.parse(JSON.stringify(defaults.serverLimits))
+    serverLimits: JSON.parse(JSON.stringify(defaults.serverLimits)),
+    bots: { ...defaults.bots }
   };
 
   if (file && fs.existsSync(file)) {
@@ -463,6 +483,7 @@ export function createSettingsStore(dataDir) {
       settings.matchmakingGatherSeconds = gatherSeconds(loaded.matchmakingGatherSeconds) ?? defaults.matchmakingGatherSeconds;
       settings.warmupSeconds = warmupSecondsValue(loaded.warmupSeconds) ?? null;
       settings.lateJoin = loaded.lateJoin === true;
+      settings.bots = botsValue(loaded.bots, defaults.bots);
       settings.regionFallback = loaded.regionFallback !== false;
       settings.matchStartCountdown = loaded.matchStartCountdown !== false;
       settings.matchStartBufferSeconds = matchStartBufferValue(loaded.matchStartBufferSeconds) ?? defaults.matchStartBufferSeconds;
@@ -595,6 +616,7 @@ export function createSettingsStore(dataDir) {
       const warmup = warmupSecondsValue(partial.warmupSeconds);
       if (partial.warmupSeconds !== undefined && warmup !== undefined) settings.warmupSeconds = warmup;
       if (typeof partial.lateJoin === "boolean") settings.lateJoin = partial.lateJoin;
+      if (partial.bots !== undefined) settings.bots = botsValue(partial.bots, settings.bots);
       if (typeof partial.ltmOriginalDates === "boolean") settings.ltmOriginalDates = partial.ltmOriginalDates;
       if (typeof partial.challengesAllUnlocked === "boolean") settings.challengesAllUnlocked = partial.challengesAllUnlocked;
       settings.challengeUnlock = challengeUnlockValue(partial.challengeUnlock, settings.challengeUnlock ?? {});

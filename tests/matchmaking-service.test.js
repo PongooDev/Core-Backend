@@ -745,7 +745,7 @@ test("only a gameserver reports its warmup, and hears the warmup time (#122)", a
     assert.equal((await reportWarmup(backend, undefined, { phase: "Setup" })).status, 401);
     const token = await dedicatedServerToken(backend.port);
     assert.deepEqual((await reportWarmup(backend, token, { phase: "Setup", accountIds: [] })).body,
-      { warmupSeconds: null, lateJoin: false, sessionId: null, open: false, maxPlayers: null, parties: [] });
+      { warmupSeconds: null, lateJoin: false, sessionId: null, open: false, maxPlayers: null, parties: [], bots: null });
     await settingsOf(backend, { warmupSeconds: 120 });
     assert.equal((await reportWarmup(backend, token, { phase: "Setup", accountIds: [] })).body.warmupSeconds, 120);
   } finally {
@@ -1051,6 +1051,24 @@ test("players with the same custom key share a match of their own; a key no allo
     assert.equal(after.connection.closeReason(), "match.custom_key_not_supported");
   } finally {
     for (const connection of connections) connection?.close();
+    backend.close();
+  }
+});
+
+test("the warmup answer carries the player bots to add when Force player AIs is on (CoreV2 #233)", async () => {
+  const backend = await startBackend();
+  try {
+    const token = await dedicatedServerToken(backend.port);
+    const ask = async () => (await reportWarmup(backend, token, { phase: "Setup", accountIds: [] })).body.bots;
+    assert.equal(await ask(), null);
+    await settingsOf(backend, { bots: { forcePlayerAIs: true, count: 30, level: 7, startingHealth: 80, startingShield: 20, eliminationsCountForQuests: false } });
+    assert.deepEqual(await ask(), { count: 30, level: 7, health: 80, shield: 20, quests: false });
+    // On with no bots asked for, and off with a count, send none.
+    await settingsOf(backend, { bots: { count: 0 } });
+    assert.equal(await ask(), null);
+    await settingsOf(backend, { bots: { count: 30, forcePlayerAIs: false } });
+    assert.equal(await ask(), null);
+  } finally {
     backend.close();
   }
 });

@@ -3835,6 +3835,7 @@
         serverLimits: JSON.parse(JSON.stringify(data.serverLimits || {})),
         serverRegions: [...(data.serverRegions || [])],
         timing: { ...data.timing },
+        bots: { ...data.bots },
         rewards: JSON.parse(JSON.stringify(data.rewards || { enabled: false, modes: {} })),
         ltmOriginalDates: data.ltms?.originalDates === true
       };
@@ -4182,6 +4183,33 @@
         form.timing.lateJoin = checked;
       });
 
+      // Battle Royale player bots (CoreV2 #233).
+      const botsToggle = toggleSwitch(form.bots.forcePlayerAIs === true, (checked) => {
+        form.bots.forcePlayerAIs = checked;
+      });
+      const botsQuestsToggle = toggleSwitch(form.bots.eliminationsCountForQuests !== false, (checked) => {
+        form.bots.eliminationsCountForQuests = checked;
+      });
+      const botNumber = (key, min, max, label) => el("input", {
+        class: "field num",
+        type: "number",
+        min,
+        max,
+        value: form.bots[key],
+        "aria-label": label,
+        oninput: (e) => {
+          const v = parseInt(e.target.value, 10);
+          form.bots[key] = Number.isFinite(v) ? Math.max(min, Math.min(max, v)) : min;
+        }
+      });
+      const botCountInput = botNumber("count", 0, 100, "Bot count");
+      const botLevelInput = botNumber("level", 1, 10, "Bot level");
+      const botHealthInput = botNumber("startingHealth", 1, 100, "Bot starting health");
+      const botShieldInput = botNumber("startingShield", 0, 100, "Bot starting shield");
+      const botRow = (title, input, range) => el("div", { style: "margin-top:12px;" },
+        el("div", { class: "muted font-semibold", style: "margin-bottom:4px;", text: title }),
+        el("div", { style: "display:flex; align-items:center; gap:8px;" }, input, el("span", { class: "muted font-semibold", text: range })));
+
       const regionFallbackToggle = toggleSwitch(form.timing.regionFallback !== false, (checked) => {
         form.timing.regionFallback = checked;
       });
@@ -4319,6 +4347,20 @@
               el("div", { style: "margin-top:16px; display:flex; justify-content:space-between; align-items:center; gap:12px; padding-top:12px; border-top:1px solid var(--line);" },
                 el("span", { class: "muted font-semibold", text: "Allow Late Joining" }),
                 lateJoinToggle)),
+            el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius); display:flex; flex-direction:column; justify-content:space-between;" },
+              el("div", {},
+                el("div", { style: "font-weight:700; margin-bottom:4px;", text: "Player bots" }),
+                el("div", { class: "sub", text: "Core's backport of Epic's player bots, for builds without native bots (every build before 8.30). Bots fill the match up to its size, minus the real players, and join during the warmup." })),
+              el("div", { style: "margin-top:16px; display:flex; justify-content:space-between; align-items:center; gap:12px; padding-top:12px; border-top:1px solid var(--line);" },
+                el("span", { class: "muted font-semibold", text: "Force player AIs" }),
+                botsToggle),
+              botRow("Bot count", botCountInput, "bots (0 – 100)"),
+              botRow("Bot level (aim and reaction skill)", botLevelInput, "level (1 – 10)"),
+              botRow("Starting health", botHealthInput, "health (1 – 100)"),
+              botRow("Starting shield", botShieldInput, "shield (0 – 100)"),
+              el("div", { style: "margin-top:12px; display:flex; justify-content:space-between; align-items:center; gap:12px;" },
+                el("span", { class: "muted font-semibold", text: "Bot eliminations count for quests" }),
+                botsQuestsToggle)),
             el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius); display:flex; flex-direction:column; justify-content:space-between;" },
               el("div", {},
                 el("div", { style: "font-weight:700; margin-bottom:4px;", text: "Cross-Region Fallback" }),

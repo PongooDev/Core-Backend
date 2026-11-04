@@ -971,6 +971,7 @@ export function adminRoutes(context) {
       matchmakingGatherSeconds: req.body?.matchmakingGatherSeconds,
       warmupSeconds: req.body?.warmupSeconds,
       lateJoin: req.body?.lateJoin,
+      bots: req.body?.bots,
       regionFallback: req.body?.regionFallback,
       matchStartCountdown: req.body?.matchStartCountdown,
       matchStartBufferSeconds: req.body?.matchStartBufferSeconds,
@@ -1527,6 +1528,8 @@ export function adminRoutes(context) {
         matchStartCountdown: s.matchStartCountdown !== false,
         matchStartBufferSeconds: s.matchStartBufferSeconds ?? 25
       },
+      // The player bots (CoreV2 #233).
+      bots: { ...s.bots },
       rewards: {
         enabled: s.battleRoyaleVbucks === true,
         modes: s.battleRoyaleRewards ?? {}
@@ -1575,6 +1578,7 @@ export function adminRoutes(context) {
       if (typeof req.body.timing.matchStartCountdown === "boolean") update.matchStartCountdown = req.body.timing.matchStartCountdown;
       if (req.body.timing.matchStartBufferSeconds !== undefined) update.matchStartBufferSeconds = req.body.timing.matchStartBufferSeconds;
     }
+    if (req.body.bots && typeof req.body.bots === "object") update.bots = req.body.bots;
     if (req.body.rewards && typeof req.body.rewards === "object") {
       if (typeof req.body.rewards.enabled === "boolean") update.battleRoyaleVbucks = req.body.rewards.enabled;
       if (req.body.rewards.modes && typeof req.body.rewards.modes === "object") {
@@ -1596,6 +1600,7 @@ export function adminRoutes(context) {
       regionFallback: true,
       matchStartCountdown: true,
       matchStartBufferSeconds: 25,
+      bots: { forcePlayerAIs: false, count: 0, level: 5, startingHealth: 100, startingShield: 0, eliminationsCountForQuests: true },
       serverRegions: []
     });
     res.json({ success: true, ...getMatchmakingPayload() });
