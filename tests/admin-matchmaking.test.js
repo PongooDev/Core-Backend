@@ -65,7 +65,7 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
 
     // Timing defaults
     assert.equal(ov.timing.gatherSeconds, 10);
-    assert.equal(ov.timing.warmupSeconds, null);
+    assert.equal(ov.timing.warmupSeconds, 120);
     assert.equal(ov.timing.lateJoin, false);
     assert.equal(ov.timing.regionFallback, true);
     assert.equal(ov.timing.matchStartCountdown, true);
@@ -157,7 +157,7 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       highExplosivesSquads: false, sniperShootoutSolo: false, sniperShootoutDuos: false, sniperShootoutSquads: false, skySupplyDuos: false,
       skySupplySquads: false, solidGoldSolo: false, impactSolo: false, impactDuos: false, impactSquads: false });
     assert.equal(resetRes.body.timing.gatherSeconds, 10);
-    assert.equal(resetRes.body.timing.warmupSeconds, null);
+    assert.equal(resetRes.body.timing.warmupSeconds, 120);
     assert.equal(resetRes.body.timing.lateJoin, false);
     assert.equal(resetRes.body.timing.regionFallback, true);
     assert.equal(resetRes.body.timing.matchStartCountdown, true);

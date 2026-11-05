@@ -45,7 +45,7 @@ import { activeEventFlags, fortnitemares, mutantStorms } from "../events/events.
 import { convertLeftoverCandy } from "../events/candyllamas.js";
 import { ltmIds, ltmSchedule } from "../events/ltms.js";
 import { convertLeftoverStormTickets } from "../events/stormllamas.js";
-import { defaultEvents, defaultMatchmakingModes, defaultServerLimits } from "../settings/store.js";
+import { defaultEvents, defaultMatchmakingModes, defaultServerLimits, defaultWarmupSeconds } from "../settings/store.js";
 import { calendarCacheMinutes } from "../services/fortnite/calendar.js";
 import { defaultBattlePass, enrichedMilestones } from "../battlepass/season1.js";
 import { bundleTiers, seasonPassConfig, seasonTiers, tierPrice } from "../battlepass/season2.js";
@@ -1664,7 +1664,7 @@ export function adminRoutes(context) {
       ltmOriginalDates: false,
       serverLimits: defaultServerLimits,
       matchmakingGatherSeconds: 10,
-      warmupSeconds: null,
+      warmupSeconds: defaultWarmupSeconds,
       lateJoin: false,
       regionFallback: true,
       matchStartCountdown: true,

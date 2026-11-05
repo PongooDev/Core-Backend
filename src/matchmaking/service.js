@@ -334,11 +334,12 @@ const newId = () => crypto.randomUUID().replaceAll("-", "");
 // the admin panel's server regions (#142, regions.js servedRegions), asked each time. matchStartCountdown: whether 1.7.2
 // to 2.4.2's players see the match start countdown (#160), warmupSeconds the panel's warmup length (null: the
 // game's), and matchStartBuffer the seconds from Play to the warmup starting that it adds (#167), all asked each time.
-// regionHostingIps, customServers and customFallback (#227): each region's hosting IPs (regions.js regionAllowsAddress),
+// playerBots: whether the admin panel's player bots are on (CoreV2 #256: the gameserver then keeps its warmup in full),
+// asked each time. regionHostingIps, customServers and customFallback (#227): each region's hosting IPs (regions.js regionAllowsAddress),
 // the custom matchmaking servers (custom-servers.js) and whether a custom match with servers of its own may play on a
 // public one, all asked each time. A server's IP is the one its session was registered from (sessions.js sourceAddress).
 export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoin = () => false, regionFallback = () => true, serverRegions = () => [], serverLimits = () => ({}), matchmakingModes = () => ({}),
-  matchStartCountdown = () => false, warmupSeconds = () => null, matchStartBuffer = () => defaultMatchStartBufferSec,
+  matchStartCountdown = () => false, warmupSeconds = () => null, matchStartBuffer = () => defaultMatchStartBufferSec, playerBots = () => false,
   regionHostingIps = () => ({}), customServers = () => [], customFallback = () => false, quiet = false }) {
   const say = quiet ? () => {} : (text) => log("Matchmaking", text);
   const gatherOf = () => {
@@ -368,11 +369,12 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
 
   // How long after a match's players are sent its bus leaves, as a CoreV2 gameserver runs the warmup (#160): with late
   // joining off the early countdown, as the match's players are all in once they load; on, the whole warmup, the panel's
-  // length or the game's as its servers reported it. null when that isn't known yet.
+  // length or the game's as its servers reported it. With player bots on the whole warmup too (CoreV2 #256: the bots come
+  // in over it, so the gameserver doesn't shorten it). null when that isn't known yet.
   function warmupAfterSend(bucketId) {
     const panel = warmupSeconds();
     const length = Number.isInteger(panel) && panel > 0 ? panel : gameWarmups.get(parseBucket(bucketId).netcl) ?? null;
-    if (!lateJoin()) return Math.min(earlyCountdownSec, length ?? earlyCountdownSec);
+    if (!lateJoin() && !playerBots()) return Math.min(earlyCountdownSec, length ?? earlyCountdownSec);
     return length;
   }
   // The seconds from Play to the warmup's timer starting (#167): the panel's, or 25.

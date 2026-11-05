@@ -50,9 +50,12 @@ const defaults = {
   // down), how long the warmup island lasts before the bus leaves on a CoreV2 gameserver (null: the game's own), and
   // whether a match takes more parties during its warmup (late joining, CoreV2's gameserver opening it). And whether a
   // player whose region has no server at all plays in another region (Core-Backend #121) or waits for one of theirs
-  // (#123: off, matchmaking/service.js and the session search, matchmaking/sessions.js).
+  // (#123: off, matchmaking/service.js and the session search, matchmaking/sessions.js). The warmup is 120 s by default
+  // (CoreV2 #256): the gameserver brings player bots in one at a time, at most one every 0.5 s, up to 20 s before the
+  // bus, so a full lobby of 99 bots needs about 50 s of it once the first player is on the island, with room to spare.
+  // A settings file keeps the length it saved (null too: the game's).
   matchmakingGatherSeconds: 10,
-  warmupSeconds: null,
+  warmupSeconds: 120,
   lateJoin: false,
   regionFallback: true,
   // Battle Royale player bots (CoreV2 #233): Core's backport of Epic's player bots, for builds without native ones (every
@@ -160,6 +163,7 @@ const defaults = {
 
 export const defaultMatchmakingModes = defaults.matchmakingModes;
 export const defaultServerLimits = defaults.serverLimits;
+export const defaultWarmupSeconds = defaults.warmupSeconds;
 
 export function sanitizeMatchmakingModes(input, current = defaultMatchmakingModes) {
   if (!input || typeof input !== "object" || Array.isArray(input)) return JSON.parse(JSON.stringify(current));
@@ -512,7 +516,9 @@ export function createSettingsStore(dataDir) {
       settings.cheats = cheatMode(loaded.cheats) ?? defaults.cheats;
       settings.cheatAccounts = cheatAccounts(loaded.cheatAccounts) ?? [];
       settings.matchmakingGatherSeconds = gatherSeconds(loaded.matchmakingGatherSeconds) ?? defaults.matchmakingGatherSeconds;
-      settings.warmupSeconds = warmupSecondsValue(loaded.warmupSeconds) ?? null;
+      // A blank (null) length saved stays the game's; one missing or out of range is the default.
+      const warmup = warmupSecondsValue(loaded.warmupSeconds);
+      settings.warmupSeconds = warmup === undefined ? defaults.warmupSeconds : warmup;
       settings.lateJoin = loaded.lateJoin === true;
       settings.bots = botsValue(loaded.bots, defaults.bots);
       settings.regionFallback = loaded.regionFallback !== false;

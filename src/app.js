@@ -126,7 +126,10 @@ export function createContext(config) {
     matchmaker: createMatchmaker({ sessions, gatherMs: config.matchmakingGatherMs ?? (() => settings.get().matchmakingGatherSeconds * 1000),
       lateJoin: () => settings.get().lateJoin === true, regionFallback,
       matchStartCountdown: () => settings.get().matchStartCountdown !== false, warmupSeconds: () => settings.get().warmupSeconds ?? null,
-      matchStartBuffer: () => settings.get().matchStartBufferSeconds, serverRegions, serverLimits: () => settings.get().serverLimits, matchmakingModes: () => settings.get().matchmakingModes,
+      matchStartBuffer: () => settings.get().matchStartBufferSeconds,
+      // Bots on, as the warmup answer sends them (services/matchmaking/warmup.js).
+      playerBots: () => { const bots = settings.get().bots; return (bots?.forcePlayerAIs === true && bots.count > 0) || bots?.fillPlayerTeams === true; },
+      serverRegions, serverLimits: () => settings.get().serverLimits, matchmakingModes: () => settings.get().matchmakingModes,
       regionHostingIps, customServers, customFallback: () => settings.get().customMatchFallback === true, quiet: config.requestLog === false }),
     network: createNetwork(config),
     emptyServerWaitMs: config.emptyServerWaitMs,

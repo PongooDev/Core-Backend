@@ -734,8 +734,9 @@ test("the gather time, warmup, late joining and region fallback are settings, ke
   let backend = await startBackend({ dataDir });
   try {
     let saved = (await settingsOf(backend)).body;
-    // Today's behaviour: 10 s to gather, the game's warmup, no late joining, another region when theirs has no server.
-    assert.deepEqual([saved.matchmakingGatherSeconds, saved.warmupSeconds, saved.lateJoin, saved.regionFallback], [10, null, false, true]);
+    // Today's behaviour: 10 s to gather, a 120 s warmup (CoreV2 #256), no late joining, another region when theirs has
+    // no server.
+    assert.deepEqual([saved.matchmakingGatherSeconds, saved.warmupSeconds, saved.lateJoin, saved.regionFallback], [10, 120, false, true]);
     saved = (await settingsOf(backend, { matchmakingGatherSeconds: "25", warmupSeconds: 90, lateJoin: true, regionFallback: false })).body;
     assert.deepEqual([saved.matchmakingGatherSeconds, saved.warmupSeconds, saved.lateJoin, saved.regionFallback], [25, 90, true, false]);
     // Out of range, not a whole number or not a switch: ignored.
@@ -758,6 +759,30 @@ test("the gather time, warmup, late joining and region fallback are settings, ke
   try {
     const saved = (await settingsOf(backend)).body;
     assert.deepEqual([saved.matchmakingGatherSeconds, saved.warmupSeconds, saved.lateJoin, saved.regionFallback], [0, 45, true, false]);
+  } finally {
+    backend.close();
+  }
+});
+
+test("the warmup is 120 s by default, and a saved settings file keeps its own length, the game's too (CoreV2 #256)", async () => {
+  // Saved before the default changed: the game's (null) and a length of its own are kept; a file without one, or with
+  // one out of range, gets the default.
+  for (const [saved, expected] of [[{ warmupSeconds: null }, null], [{ warmupSeconds: 45 }, 45], [{}, 120], [{ warmupSeconds: 5 }, 120]]) {
+    const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-backend-warmup-default-"));
+    fs.writeFileSync(path.join(dataDir, "settings.json"), JSON.stringify({ matchmakingGatherSeconds: 10, ...saved }));
+    const backend = await startBackend({ dataDir });
+    try {
+      assert.equal((await settingsOf(backend)).body.warmupSeconds, expected, JSON.stringify(saved));
+    } finally {
+      backend.close();
+    }
+  }
+  // A new install has the default; a blank length is the game's.
+  const backend = await startBackend({ dataDir: fs.mkdtempSync(path.join(os.tmpdir(), "core-backend-warmup-default-")) });
+  try {
+    assert.equal((await settingsOf(backend)).body.warmupSeconds, 120);
+    await settingsOf(backend, { warmupSeconds: null });
+    assert.equal((await settingsOf(backend)).body.warmupSeconds, null);
   } finally {
     backend.close();
   }
@@ -793,9 +818,11 @@ test("only a gameserver reports its warmup, and hears the warmup time (#122)", a
     assert.equal((await reportWarmup(backend, undefined, { phase: "Setup" })).status, 401);
     const token = await dedicatedServerToken(backend.port);
     assert.deepEqual((await reportWarmup(backend, token, { phase: "Setup", accountIds: [] })).body,
-      { warmupSeconds: null, lateJoin: false, sessionId: null, open: false, maxPlayers: null, parties: [], noFill: [], bots: null });
-    await settingsOf(backend, { warmupSeconds: 120 });
-    assert.equal((await reportWarmup(backend, token, { phase: "Setup", accountIds: [] })).body.warmupSeconds, 120);
+      { warmupSeconds: 120, lateJoin: false, sessionId: null, open: false, maxPlayers: null, parties: [], noFill: [], bots: null });
+    await settingsOf(backend, { warmupSeconds: 300 });
+    assert.equal((await reportWarmup(backend, token, { phase: "Setup", accountIds: [] })).body.warmupSeconds, 300);
+    await settingsOf(backend, { warmupSeconds: "" });
+    assert.equal((await reportWarmup(backend, token, { phase: "Setup", accountIds: [] })).body.warmupSeconds, null);
   } finally {
     backend.close();
   }
@@ -972,6 +999,29 @@ test("1.7.2 to 2.4.2's players in a forming match hear its players and the count
     assert.equal(queued.payload.state, "Queued");
     assert.deepEqual(queued.payload.status, {});
     await nextOf(na.connection, "AssignMatch");
+  } finally {
+    for (const connection of connections) connection.close();
+    backend.close();
+  }
+});
+
+test("with player bots on, the countdown runs to the warmup's end, which the gameserver keeps in full for them (CoreV2 #256)", async () => {
+  const backend = await startBackend();
+  const connections = [];
+  try {
+    await settingsOf(backend, { matchmakingGatherSeconds: 5, bots: { forcePlayerAIs: true, count: 50 } });
+    const na = await regionServer(backend, "CoreServer1", "NA");
+    connections.push(na.connection);
+    const player = await userLogin(backend.port, "StartBots");
+    const connection = await queueOnBuild(backend, player, 3700114);
+    connections.push(connection);
+    // 5 s to gather, 1 s to Play, 25 s to reach the island (#167) and the default 120 s warmup, not the early countdown.
+    assert.deepEqual(startOf(JSON.parse(await connection.next())), ["1", "151"]);
+    // Bots off again: the early countdown (late joining off).
+    await settingsOf(backend, { bots: { forcePlayerAIs: false } });
+    let queued;
+    do queued = JSON.parse(await connection.next()); while (Number(startOf(queued)[1]) > 46);
+    assert.ok(Number(startOf(queued)[1]) >= 40, startOf(queued)[1]);
   } finally {
     for (const connection of connections) connection.close();
     backend.close();
