@@ -196,11 +196,16 @@ const springNow = () => !isEventActive(winter2017) && !storms2018() && (isEventA
 // 3.4's notes (no 3.4 build is at hand; 3.5.1, CL-4000805, is the first whose data has the hero): "Rabbit Raider Jonesy,
 // Legendary reskin of the Soldier's Raider subclass, has been added to the Event Store" (HID_Commando_011_M_Easter_SR_T01),
 // at a legendary hero's 2,800, one (🟡: Epic's price and limit aren't recorded), on 3.5.1 and later.
+// 3.5.2's (CL-4008490) Content Update v3.50: "Neon Weapons - Mercury LMG (Save the World) This energy machinegun has a
+// massive magazine ... Find it in the Event Store." The Mercury LMG (SID_Assault_NeonGlow_LMG_SR_Ore_T01, in 3.5.1's data
+// already) at a legendary schematic's 1,680, one (🟡: Epic's price and limit aren't recorded), on 3.5.2 and later.
 const wukongFirstBuild = 3935073;
 const rabbitRaiderFirstBuild = 4000805;
+const mercuryLmgFirstBuild = 4008490;
 const springItemsNow = () => [...springEventItems,
   ...(Number(currentBuild()) >= wukongFirstBuild ? [{ templateId: "Hero:hid_commando_014_wukong_sr_t01", price: 2800, limit: 1 }] : []),
-  ...(Number(currentBuild()) >= rabbitRaiderFirstBuild ? [{ templateId: "Hero:hid_commando_011_m_easter_sr_t01", price: 2800, limit: 1 }] : [])];
+  ...(Number(currentBuild()) >= rabbitRaiderFirstBuild ? [{ templateId: "Hero:hid_commando_011_m_easter_sr_t01", price: 2800, limit: 1 }] : []),
+  ...(Number(currentBuild()) >= mercuryLmgFirstBuild ? [{ templateId: "Schematic:sid_assault_neonglow_lmg_sr_ore_t01", price: 1680, limit: 1 }] : [])];
 const eventItemsNow = () => (storms2018() ? stormsEventItems : springNow() ? springItemsNow() : eventItems);
 export const eventStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWSpecialEventStoreFront"
   : springNow() ? "Spring2018.STWSpecialEventStoreFront" : eventStoreInstance);

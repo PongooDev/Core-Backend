@@ -147,7 +147,7 @@ const defaults = {
     // 3.1's Blitz children (Blitz Solo and Duo), off too.
     blitzSolo: false,
     blitzDuo: false,
-    // 3.5.1's own playlists (FortPlaylistAthena assets), off too but 50v50 v2, 3.5.1's new mode, which is on there whatever
+    // 3.5.1's own playlists (FortPlaylistAthena assets), off too but 50v50 v2, 3.5.1's and 3.5.2's new mode, on there whatever
     // its switch.
     ...Object.fromEntries(playlistAssetLtms.map((id) => [id, false]))
   },

@@ -161,7 +161,7 @@ test("3.0's LTMs are its playlist classes: no 50v50 or Shooting Test, duo Skies,
     const listed = ltmSchedule({}).list.find((ltm) => ltm.id === id);
     // Teams of 20, Solid Gold and Sky Supply have 3.5.1 playlists too (Playlist_5x20, _SolidGold_Squads, _SkySupply).
     assert.deepEqual([listed.seasons, listed.builds, listed.original],
-      [[3], ["fiveByTwenty", "solidGold", "skySupply"].includes(id) ? "3.0 to 3.5.1" : "3.0 to 3.3", null], id);
+      [[3], ["fiveByTwenty", "solidGold", "skySupply"].includes(id) ? "3.0 to 3.5.2" : "3.0 to 3.3", null], id);
   }
 });
 

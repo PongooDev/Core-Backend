@@ -58,6 +58,16 @@ import { currentEventsConfig } from "./events.js";
 // (WorldList.AthenaLoot.Weapon.SMG.01-.03 at 0) and "Revolver now uses Medium ammo" (WorldPKG.AthenaLoot.Weapon.Revolver,
 // WorldList.AthenaLoot.Ammo.MediumRevolver).
 //
+// 3.5.2 (CL-4008490, Season 3) is Content Update v3.50's build: "Light Machine Gun added. Rare and Epic rarities. Can be
+// found in Floor Loot, Treasure Chests, and Vending Machines." Its tables (3.5.1's, unchanged) ship it at weight 0:
+// WID_Assault_LMGSAW_Athena_R/VR_Ore_T03 in WorldList.AthenaLoot.Weapon.AssaultAuto (.08, .09), which the floor
+// (Loot_AthenaFloorLoot_09) and chests (Loot_AthenaTreasure_05) call, in the vending machines' Rare and Epic medium-ammo
+// lists (WorldList.AthenaLoot.VendingMachine.Weapons.Rare.Medium.05, Epic.Medium.03) and in the supply drops' Assault
+// list (WorldList.AthenaSupplyDrop.Weapon.Assault.03), which the notes don't name and so stays at 0. Core's weights (🟡):
+// the Rare at 0.1 and the Epic at 0.0375, the Rare and Epic Burst Assault Rifle's in the same list, and 1 in the vending
+// lists, as every other row there. It shipped with the build's update, so 3.5.2 always has it; 3.5.1, a week earlier,
+// doesn't.
+//
 // Epic's updates (the Fortnite Wiki's Season 2 pages and Epic's notes on them):
 // - 19 December 2017, 13:00 GMT, the Small Shield Potion update: the Small Shield Potion ("Drops in stacks of 3", "found in
 //   floor loot, treasure chests, and supply drops") and the trap usability update ("The Spike Trap, Wall Zapper, and
@@ -83,6 +93,7 @@ const build22 = 3841827;
 const build23 = 3847564;
 const build24 = 3858292;
 const build242 = 3870737;
+const build352 = 4008490;
 
 export const contentUpdates = [
   { id: "smallShieldPotion", name: "Small Shield Potion and the Damage Trap", at: "2017-12-19T13:00:00Z", firstBuild: season2, rows: [
@@ -119,6 +130,12 @@ export const contentUpdates = [
   { id: "suppressedPistolNerf", name: "Suppressed Pistol drop chances", at: "2018-01-31T00:00:00Z", firstBuild: build24, inTablesFrom: build242, rows: [
     [packages, "WorldList.AthenaLoot.Weapon.SuppressedHandgun.01", { Weight: 0.06 }],
     [packages, "WorldList.AthenaLoot.Weapon.SuppressedHandgun.02", { Weight: 0.012 }]
+  ] },
+  { id: "lightMachineGun", name: "Light Machine Gun", at: "2018-04-19T00:00:00Z", firstBuild: build352, rows: [
+    [packages, "WorldList.AthenaLoot.Weapon.AssaultAuto.08", { Weight: 0.1 }],
+    [packages, "WorldList.AthenaLoot.Weapon.AssaultAuto.09", { Weight: 0.0375 }],
+    [packages, "WorldList.AthenaLoot.VendingMachine.Weapons.Rare.Medium.05", { Weight: 1 }],
+    [packages, "WorldList.AthenaLoot.VendingMachine.Weapons.Epic.Medium.03", { Weight: 1 }]
   ] }
 ];
 export const contentUpdateIds = contentUpdates.map(({ id }) => id);
@@ -151,7 +168,8 @@ const configOf = (config) => sanitizeContentUpdates(config ?? currentEventsConfi
 // The updates the requesting build has, and whether each is in now: [{id, name, at, on, why}].
 export function contentUpdateStates(now = new Date(), config = null, build = currentBuild()) {
   const number = Number(build);
-  if (!(number >= season2) || athenaSeason()?.seasonNumber !== 2) return [];
+  // Season 2's and, from 3.5.2, Season 3's (the Light Machine Gun).
+  if (!(number >= season2) || !(athenaSeason()?.seasonNumber >= 2)) return [];
   const { mode, overrides } = configOf(config);
   const moment = number >= build21 ? null : seasonMoment(now, null, 2);
   // From 2.2 a build's own tables have the updates before it in; only its own patch's are left (2.3's Chug Jug, which

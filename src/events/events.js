@@ -167,8 +167,13 @@ export const groupMission = "EventFlag.GroupMission";
 // The passive Mini-Bosses (General rows, EventFlag.PassiveMiniBosses) run on: 3.5's notes keep Mini-Boss alerts ("can no
 // longer be selected if you have not unlocked the mission"). The event's quests, llama and book pages are
 // events/storm2018.js's.
+// 3.5.2 (CL-4008490, 19 April 2018) is that later update: Content Update v3.50's "Into the Storm: Encore (Save the World)
+// Venture into the storm with Lars ... unlock your choice of one of the new Cyberpunk Heroes". Its paks hold 3.5.1's data
+// (the Encore's quests, StormQuest_2018_Hidden_1 to Landmark_Observe, were in 3.5.1's already), so it runs all of 3.5.1's
+// flags and Storm2018Phase2 too, which shows the event map's Encore pages.
 export const storm2018 = "Storm2018";
 export const storm2018Phase1 = "EventFlag.Storm2018Phase1";
+export const storm2018Phase2 = "EventFlag.Storm2018Phase2";
 export const surviveTheStorm = "EventFlag.SurviveTheStorm";
 export const activeStorms = "EventFlag.ActiveStorms";
 
@@ -188,10 +193,11 @@ const events = [
   { name: spring2018, flag: spring2018Phase2, firstBuild: 3915963, lastBuild: 3942182 },
   { name: groupMission, flag: groupMission, firstBuild: 3935073, lastBuild: 3942182 },
   { name: spring2018, flag: spring2018Phase3, firstBuild: 3942182, lastBuild: 3942182 },
-  { name: passiveMiniBosses, flag: passiveMiniBosses, firstBuild: 4000805, lastBuild: 4000805 },
-  { name: storm2018, flag: activeStorms, firstBuild: 4000805, lastBuild: 4000805 },
-  { name: storm2018, flag: surviveTheStorm, firstBuild: 4000805, lastBuild: 4000805 },
-  { name: storm2018, flag: storm2018Phase1, firstBuild: 4000805, lastBuild: 4000805 },
+  { name: passiveMiniBosses, flag: passiveMiniBosses, firstBuild: 4000805, lastBuild: 4008490 },
+  { name: storm2018, flag: activeStorms, firstBuild: 4000805, lastBuild: 4008490 },
+  { name: storm2018, flag: surviveTheStorm, firstBuild: 4000805, lastBuild: 4008490 },
+  { name: storm2018, flag: storm2018Phase1, firstBuild: 4000805, lastBuild: 4008490 },
+  { name: storm2018, flag: storm2018Phase2, firstBuild: 4008490, lastBuild: 4008490 },
   { name: lobbyWinterDecor, flag: lobbyWinterDecor, firstBuild: 3807424, lastBuild: 3825894 },
   { name: winterBattleBus, flag: winterBattleBus, firstBuild: 3807424, lastBuild: 3825894 },
   { name: supplyDropGift, flag: supplyDropGift, firstBuild: 3807424, lastBuild: 3825894 }
