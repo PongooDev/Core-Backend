@@ -12,7 +12,8 @@ import { notifyProfiles } from "../mcp/profile.js";
 // The Store tab's simulated real-money purchases (Core-Backend #223, store/currency.js): the catalog service's prices
 // for the V-Bucks packs, the purchase flow's page, and its one-click "Complete purchase".
 
-// Where the purchase flow opens ([EpicPurchaseFlow] Prod= in the DefaultGame.ini hotfix, services/fortnite/cloudstorage.js):
+// Where the purchase flow should open ([EpicPurchaseFlow] Prod= in the DefaultGame.ini hotfix, services/fortnite/cloudstorage.js,
+// which the flow reads before the hotfix arrives and never again, so the game keeps Epic's URL: Core-Backend #244):
 // this backend as the client reached it, "<scheme>:///<host>/purchase". Before loading it the flow sets the player's
 // access token as a cookie on the page's domain, which it takes from this address by dropping "https://www",
 // "http://www", "https://" and "http://" and cutting at the first "/" (3.1 0x6A6880); a domain with a port

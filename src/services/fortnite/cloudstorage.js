@@ -75,9 +75,14 @@ function forcedQueueSection(changelist) {
     ...playlists.map((name) => `+PlaylistOverrides=(PlaylistName=${name},bEnabled=true)`), ""].join("\r\n");
 }
 // The Store tab's V-Bucks packs (Core-Backend #223) buy through the purchase flow, whose page is the game config's
-// [EpicPurchaseFlow] Prod= (services/fortnite/purchase.js); the flow reads it when the front end registers for it
-// (UFortMcpContext::RegisterForEpicPurchasingDisplay, 3.1 0xD496C0, from the game ini), in the front end, so after this
-// file came in (🟡: not seen in a running client).
+// [EpicPurchaseFlow] Prod= (services/fortnite/purchase.js; the key is the MCP environment, "Prod" without -epicenv). This
+// file's copy never reaches the flow (Core-Backend #244): UFortMcpContext::RegisterForEpicPurchasingDisplay (3.1 0xD496C0)
+// reads the game ini once, the first time it is called (it returns early once its flow, +0x408, exists), and the caller is
+// the root UIManager widget's Construct (BindDelegates), on the first frame of the front end, while the hotfix check only
+// starts on the next frame and waits on the client login and version check. So the flow keeps the shipped DefaultGame.ini
+// URL (https://launcher-website-prod07.ol.epicgames.com/purchase, seen in a 3.1 log), whatever this file says. The section
+// stays, harmless, for the day something sets the value before the front end (only a config the game loads at start-up,
+// such as the player's Saved/Config/WindowsClient/Game.ini, would).
 // A build's new mode (events/ltms.js ltmNewMode, Core-Backend #237: Teams of 20 on 3.2) is the mode its lobby opens on.
 // The matchmaking widget takes it from UFortGameUserSettings' LastSelectedPlaylist (3.2 0x279E970), its EFortAthenaPlaylist
 // (AthenaEvent22, 14), so DefaultGameUserSettings.ini sets it: the hotfix merges it into the config whose name ends in
