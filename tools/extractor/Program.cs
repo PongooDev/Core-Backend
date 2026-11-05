@@ -10,7 +10,7 @@ using JsonConvert = Newtonsoft.Json.JsonConvert;
 
 if (args.Length < 2)
 {
-    Console.Error.WriteLine("usage: extractor <build folder containing FortniteGame and Engine> <aes key> [output folder] [version]");
+    Console.Error.WriteLine("usage: extractor <build folder containing FortniteGame and Engine> <aes key> [output folder] [version] [earlier build's extraction folder]");
     return 1;
 }
 
@@ -699,13 +699,27 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
 
 // The primary missions the generators run, with their MissionTags: the Stat.Mission.Primary.* tags that quest objectives
 // (ObjectiveStatTable TargetTags) count a won mission by.
+// 3.6 (CL-4019403) cooks most FortMissionInfo assets out of the client's paks (server-only, as 1.10's AIDirector): its
+// generators still name them, so an earlier build's world.json (a fifth argument: its extraction folder) gives the tags of
+// the missions these paks lack.
 var primaryMissions = new SortedDictionary<string, object>(StringComparer.Ordinal);
+var earlierPrimaryMissions = args.Length > 4 && File.Exists(Path.Combine(args[4], "world.json"))
+    ? JsonNode.Parse(File.ReadAllText(Path.Combine(args[4], "world.json")))?["primaryMissions"] as JsonObject : null;
+var missionsFromEarlier = new List<string>();
 foreach (var missionPath in missionGenerators.Values.Cast<SortedDictionary<string, object>>()
     .Select(generator => generator.TryGetValue("primaryMission", out var primary) ? primary as string : null)
     .OfType<string>().Distinct())
 {
     var packagePath = "FortniteGame/Content/" + missionPath["/Game/".Length..].Split('.')[0] + ".uasset";
-    if (!provider.TryLoadPackage(packagePath, out var missionPackage)) continue;
+    if (!provider.TryLoadPackage(packagePath, out var missionPackage))
+    {
+        if (earlierPrimaryMissions?[missionPath]?["tags"] is JsonArray earlierTags)
+        {
+            primaryMissions[missionPath] = new SortedDictionary<string, object>(StringComparer.Ordinal) { ["tags"] = earlierTags.Select(tag => tag!.GetValue<string>()).ToList() };
+            missionsFromEarlier.Add(missionPath);
+        }
+        continue;
+    }
     var info = missionPackage.GetExports().FirstOrDefault(e => e.ExportType == "FortMissionInfo");
     if (info is null) continue;
     var infoProps = JsonNode.Parse(JsonConvert.SerializeObject(info))!["Properties"] ?? new JsonObject();
@@ -1024,13 +1038,14 @@ var athenaLevels = new List<object>();
 SortedDictionary<string, object>? athenaSeason = null;
 var challengeSchedules = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var challengeBundles = new SortedDictionary<string, object>(StringComparer.Ordinal);
-var testCosmetics = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "DynamicsTestGlider", "Glider_ProxyTest", "Glider_TestStaticParts", "Pickaxe_ID_zzz_StatDebugger" };
+var testCosmetics = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "DynamicsTestGlider", "Glider_ProxyTest", "Glider_TestStaticParts", "Pickaxe_ID_zzz_StatDebugger", "Dev_Test_Pickaxe_StatDebugger" };
 var cosmeticKeys = new List<(string TemplateId, string Class, string AssetName, string? Hero, string? Icon, string DisplayName)>();
 foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" && f.Path.StartsWith("FortniteGame/Content/Athena/Items/", StringComparison.OrdinalIgnoreCase)))
 {
     // The test characters: 00_TestAssets, and from 3.2 (CL-3935073) Characters/Dev_TestAsset. 3.5 (CL-4000805) adds test
     // gliders (DynamicsTestGlider, Glider_ProxyTest, Glider_TestStaticParts: "Glider", Handmade) and a debug harvesting tool
-    // (Pickaxe_ID_zzz_StatDebugger, "Use to debug in-match progressive cosmetics", bNeverPersisted), left out the same way.
+    // (Pickaxe_ID_zzz_StatDebugger, "Use to debug in-match progressive cosmetics", bNeverPersisted), left out the same way;
+    // 3.6 (CL-4019403) renames that tool Dev_Test_Pickaxe_StatDebugger.
     if (file.Path.Contains("/00_TestAssets/", StringComparison.OrdinalIgnoreCase) || file.Path.Contains("/Dev_TestAsset.", StringComparison.OrdinalIgnoreCase)) continue;
     if (testCosmetics.Contains(Path.GetFileNameWithoutExtension(file.Path))) continue;
     var gamePath = "/Game/" + file.PathWithoutExtension["FortniteGame/Content/".Length..];
@@ -1378,6 +1393,7 @@ File.WriteAllText(Path.Combine(output, "athena.json"), JsonSerializer.Serialize(
 Console.WriteLine($"Battle Royale: {athenaCosmetics.Count} cosmetics, {athenaDisplayAssets.Count} display assets, {athenaQuests.Count} quests, {athenaLevels.Count} season levels");
 if (unmatchedDisplayAssets.Count > 0) Console.WriteLine($"Display assets matched to no one cosmetic: {string.Join(", ", unmatchedDisplayAssets)}");
 Console.WriteLine($"{zoneThemes.Count} zone themes, {missionGenerators.Count} mission generators, {difficulties.Count} mission difficulties");
+if (missionsFromEarlier.Count > 0) Console.WriteLine($"{missionsFromEarlier.Count} of {primaryMissions.Count} primary missions' tags from the earlier build's world.json (their FortMissionInfo isn't in these paks)");
 Console.WriteLine($"{characters.Count} characters, {cardPacks.Count} card packs, {nodes.Count} skill tree nodes, {squads.Count} squads, {objectiveStats.Count} objective stats");
 Console.WriteLine($"{quests.Count} quests, {items.Count} items and {dailyRewards.Count} daily reward schedules from {version["BranchName"]}-CL-{version["Changelist"]} into {output}");
 if (unmapped.Count > 0) Console.WriteLine($"Skipped item classes with no known profile: {string.Join(", ", unmapped)}");

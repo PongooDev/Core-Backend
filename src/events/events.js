@@ -171,6 +171,14 @@ export const groupMission = "EventFlag.GroupMission";
 // Venture into the storm with Lars ... unlock your choice of one of the new Cyberpunk Heroes". Its paks hold 3.5.1's data
 // (the Encore's quests, StormQuest_2018_Hidden_1 to Landmark_Observe, were in 3.5.1's already), so it runs all of 3.5.1's
 // flags and Storm2018Phase2 too, which shows the event map's Encore pages.
+// 3.6 (CL-4019403, 24 April 2018) runs on as 3.5.2: Into the Storm ran from 11 April to 1 May (the Fortnite Wiki's Into the
+// Storm), and 3.6's paks name the same Save the World flags as 3.5.2's, no new one (every EventFlag.* in 3.6's paks:
+// MissionAlerts' ActiveMiniBosses, ActiveStorms, Fortnitemares, GroupMission, Horde, PassiveMiniBosses, PassiveStorms and
+// SurviveTheStorm; IntoTheStorm2018_QuestMapWidget's, its tile's and HomeScreenNextQuest's Storm2018Phase1 and Phase2;
+// Items/Events' BR.Allow50v50, BR.CandyCaneGuns, BR.DisallowDuo/Solo/Squad, LobbyHalloweenDecor, LobbyWinterDecor and
+// SupplyDropGift; CCNodePages' Horde. The exe names none: its strings are the manager's, ActiveEventFlags,
+// IsEventFlagActive, EventFlagsForcedOn). Season 3's sky and map (the comet, the TVs' static, the meteors) wait for no
+// flag: events/meteorstrike.js.
 export const storm2018 = "Storm2018";
 export const storm2018Phase1 = "EventFlag.Storm2018Phase1";
 export const storm2018Phase2 = "EventFlag.Storm2018Phase2";
@@ -193,11 +201,11 @@ const events = [
   { name: spring2018, flag: spring2018Phase2, firstBuild: 3915963, lastBuild: 3942182 },
   { name: groupMission, flag: groupMission, firstBuild: 3935073, lastBuild: 3942182 },
   { name: spring2018, flag: spring2018Phase3, firstBuild: 3942182, lastBuild: 3942182 },
-  { name: passiveMiniBosses, flag: passiveMiniBosses, firstBuild: 4000805, lastBuild: 4008490 },
-  { name: storm2018, flag: activeStorms, firstBuild: 4000805, lastBuild: 4008490 },
-  { name: storm2018, flag: surviveTheStorm, firstBuild: 4000805, lastBuild: 4008490 },
-  { name: storm2018, flag: storm2018Phase1, firstBuild: 4000805, lastBuild: 4008490 },
-  { name: storm2018, flag: storm2018Phase2, firstBuild: 4008490, lastBuild: 4008490 },
+  { name: passiveMiniBosses, flag: passiveMiniBosses, firstBuild: 4000805, lastBuild: 4019403 },
+  { name: storm2018, flag: activeStorms, firstBuild: 4000805, lastBuild: 4019403 },
+  { name: storm2018, flag: surviveTheStorm, firstBuild: 4000805, lastBuild: 4019403 },
+  { name: storm2018, flag: storm2018Phase1, firstBuild: 4000805, lastBuild: 4019403 },
+  { name: storm2018, flag: storm2018Phase2, firstBuild: 4008490, lastBuild: 4019403 },
   { name: lobbyWinterDecor, flag: lobbyWinterDecor, firstBuild: 3807424, lastBuild: 3825894 },
   { name: winterBattleBus, flag: winterBattleBus, firstBuild: 3807424, lastBuild: 3825894 },
   { name: supplyDropGift, flag: supplyDropGift, firstBuild: 3807424, lastBuild: 3825894 }
@@ -229,6 +237,9 @@ export function currentEventsConfig() {
 // event offers. Work that no request started runs them.
 const eventsSetting = new AsyncLocalStorage();
 export const seasonalEvents = (enabled) => (req, res, next) => eventsSetting.run(enabled(), next);
+
+// Whether the seasonal events run for this request at all: the Seasonal Events switch and the events mode (not "off").
+export const seasonalEventsOn = () => eventsSetting.getStore() !== false && currentEventsConfig()?.mode !== "off";
 
 // The event flags the requesting build runs (none outside a request).
 export function activeEventFlags(changelist = currentBuild()) {

@@ -4,6 +4,7 @@ import { readJson, writeJson } from "../json-file.js";
 import { defaultHostingIps, hostingIp, hostingIps } from "../network.js";
 import { defaultBattlePass, sanitizeBattlePass } from "../battlepass/season1.js";
 import { defaultContentUpdates, sanitizeContentUpdates } from "../events/contentupdates.js";
+import { defaultMeteorStrikePhase, sanitizeMeteorStrike } from "../events/meteorstrike.js";
 import { regionHostingIps, regionList } from "../matchmaking/regions.js";
 import { customMatchServers } from "../matchmaking/custom-servers.js";
 import { allowedBuildList } from "../builds/allowed.js";
@@ -117,7 +118,9 @@ const defaults = {
     calendarCacheMinutes: 60,
     // Season 2's content updates (events/contentupdates.js): "season" by their dates on its replay, or "all"; and
     // per-update "on" / "off" overrides.
-    contentUpdates: defaultContentUpdates
+    contentUpdates: defaultContentUpdates,
+    // 3.6's Season 3 finale (events/meteorstrike.js): "none", "broadcast", "meteors" or "impact".
+    meteorStrike: defaultMeteorStrikePhase
   },
   battlepass: defaultBattlePass,
   matchmakingModes: {
@@ -302,6 +305,8 @@ function sanitizeEvents(input, current = defaults.events) {
     const num = Number(input.calendarCacheMinutes);
     if (Number.isInteger(num) && num >= 5 && num <= 120) result.calendarCacheMinutes = num;
   }
+
+  if (input.meteorStrike !== undefined) result.meteorStrike = sanitizeMeteorStrike(input.meteorStrike, result.meteorStrike ?? defaultMeteorStrikePhase);
 
   return result;
 }

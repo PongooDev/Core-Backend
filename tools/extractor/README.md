@@ -104,7 +104,12 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   `Build.version` either), and 3.5.1's `4.20.0-4000805+++Fortnite+Release-3.5` (its only extractor change: its test gliders,
   DynamicsTestGlider, Glider_ProxyTest and Glider_TestStaticParts, and the debug harvesting tool Pickaxe_ID_zzz_StatDebugger are
   left out like the test characters; its locker's Random entries, CID_Random and the rest, are kept), and 3.5.2's `4.20.0-4008490+++Fortnite+Release-3.5` (no extractor change: its extraction is
-  3.5.1's byte for byte, so it has no overlay of its own and plays on `gamedata/4000805`). Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
+  3.5.1's byte for byte, so it has no overlay of its own and plays on `gamedata/4000805`), and 3.6's
+  `4.20.0-4019403+++Fortnite+Release-3.6` (two extractor changes: its debug harvesting tool, renamed
+  Dev_Test_Pickaxe_StatDebugger, is left out as 3.5's; and its client paks no longer ship most mission infos (48 of the 57
+  FortMissionInfo assets its generators name: Gate_Single, DeadDrop, the Survivals... are cooked server-only), so a fifth
+  argument, an earlier build's extraction folder (3.5.1's full data: Cert's files with `gamedata/4000805` applied), gives
+  `world.json` those missions' tags; the extractor prints how many it took). Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `research.json`: the resource collectors (research points): each CollectedResource template's payout and the
   homebase attributes its rate, capacity and wallet cap come from, what each skill tree node adds to those attributes

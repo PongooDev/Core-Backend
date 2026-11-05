@@ -6406,7 +6406,8 @@
         customSeasonEnd: cfg.customSeasonEnd ? cfg.customSeasonEnd.slice(0, 16) : "",
         seasonStarts: Object.fromEntries(SEASONS.map(({ id }) => [id, cfg.seasonStarts?.[id] || ""])),
         calendarCacheMinutes: Number(cfg.calendarCacheMinutes ?? 60),
-        contentUpdates: { mode: cfg.contentUpdates?.mode || "season", overrides: { ...(cfg.contentUpdates?.overrides ?? {}) } }
+        contentUpdates: { mode: cfg.contentUpdates?.mode || "season", overrides: { ...(cfg.contentUpdates?.overrides ?? {}) } },
+        meteorStrike: cfg.meteorStrike || "meteors"
       };
 
       // The season the page shows: its clock, its Season Start row and, for Season 2, its content updates.
@@ -6471,7 +6472,8 @@
           contentUpdates: {
             mode: form.contentUpdates.mode,
             overrides: Object.fromEntries((data.contentUpdates?.builds?.[0]?.updates ?? []).map((u) => [u.id, form.contentUpdates.overrides[u.id] || "auto"]))
-          }
+          },
+          meteorStrike: form.meteorStrike
         };
         await act(api("/admin/api/events/config", payload), "Event configuration saved");
         showEvents();
@@ -6504,6 +6506,22 @@
         el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "Custom Broadcast Event Flags (comma-separated):" }),
         el("div", { class: "muted", style: "font-size:12px; margin-bottom:6px;", text: "Enter the exact event flag names clients should receive in the client-events calendar and quest login." }),
         customFlagsInput
+      );
+
+      // 3.6's Season 3 finale (events/meteorstrike.js): the AthenaGameData rows its DefaultGame.ini hotfix sets.
+      const meteorStrikeOptions = [
+        ["none", "None: the comet and its shooting stars only"],
+        ["broadcast", "Broadcast: TVs show static, skybox audio"],
+        ["meteors", "Meteors: and meteors (level 1)"],
+        ["impact", "Impact: and meteors at their most (level 2)"]
+      ];
+      const meteorStrikeContainer = el("div", {
+        style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
+      },
+        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "3.6 Meteor Strike phase (Battle Royale):" }),
+        el("div", { class: "muted", style: "font-size:12px; margin-bottom:6px;", text: "Season 3's last week, set by the hotfix on 3.6 (no event flag drives it). The comet's position is the gameserver's clock: at its closest on any date after 30 April 2018. Restart the game and the server after a change." }),
+        el("select", { class: "field", "aria-label": "3.6 Meteor Strike phase", onchange: (e) => { form.meteorStrike = e.target.value; } },
+          ...meteorStrikeOptions.map(([value, text]) => el("option", { value, text, selected: form.meteorStrike === value })))
       );
 
       const modeCards = el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; margin-top:12px;" },
@@ -6713,7 +6731,8 @@
                   customSeasonEnd: null,
                   seasonStarts: Object.fromEntries(SEASONS.map(({ id }) => [id, null])),
                   calendarCacheMinutes: 60,
-                  contentUpdates: { mode: "season", overrides: Object.fromEntries((data.contentUpdates?.builds?.[0]?.updates ?? []).map((u) => [u.id, "auto"])) }
+                  contentUpdates: { mode: "season", overrides: Object.fromEntries((data.contentUpdates?.builds?.[0]?.updates ?? []).map((u) => [u.id, "auto"])) },
+                  meteorStrike: "meteors"
                 }), "Reset to default event settings");
                 showEvents();
               }
@@ -6737,6 +6756,7 @@
           el("p", { class: "note", text: "Select how Core activates limited-time seasonal events across your gameservers and connected clients. Changes are persisted and applied immediately." }),
           modeCards,
           customFlagsContainer,
+          meteorStrikeContainer,
           el("div", { style: "margin-top:18px;" },
             el("h3", { style: "font-size:14px; font-weight:700; margin-bottom:10px;", text: "Build-by-Build Event Compatibility Matrix" }),
             matrixTable)

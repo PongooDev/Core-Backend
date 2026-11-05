@@ -28,7 +28,7 @@ test("3.1.1 is known by its version, Season 3, and plays on 3.1's game data", ()
   assert.equal(allowedBuildList(["3.1"]).join(), v31);
   assert.deepEqual(inBuild(v311, athenaSeason), inBuild(v31, athenaSeason));
   assert.deepEqual(inBuild(v311, athenaCosmetics), inBuild(v31, athenaCosmetics));
-  assert.equal(buildOfSeason(3), "4000805", "Season 3's newest data is 3.5.1's (build351.test.js)");
+  assert.equal(buildOfSeason(3), "4019403", "Season 3's newest data is 3.6's (build36.test.js)");
   assert.match(seasonName(3), /3\.0/);
 });
 

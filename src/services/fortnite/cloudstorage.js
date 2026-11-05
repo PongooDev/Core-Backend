@@ -8,6 +8,7 @@ import { getBuild } from "../../builds/detect.js";
 import { sendError } from "../../errors.js";
 import { lootHotfixSection } from "../../events/contentupdates.js";
 import { lastSelectedPlaylistOf, ltmForcedQueues, ltmNewMode, ltmPlaylistOverrides } from "../../events/ltms.js";
+import { meteorStrikeRows } from "../../events/meteorstrike.js";
 import { shootingTestGlobals, shootingTestHotfixTables } from "../../events/shootingtest.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
 import { createNetwork, httpsProxied } from "../../network.js";
@@ -50,7 +51,9 @@ const statsAnswerMinutes = (changelist) => (Number(changelist) >= freshStatsBuil
 // Season 2's content updates (events/contentupdates.js, Core-Backend #156) come last, as an [AssetHotfix] section that
 // replaces the Battle Royale loot tables with the updated ones, as Epic's hotfixes did: on 1.11 those in by the season's
 // date (or all, as the admin panel chooses), on 2.1 all of them and its Cozy Campfire. It is the gameserver's copy of
-// the tables that drops the loot, so the server has to take this file too, before its match places any.
+// the tables that drops the loot, so the server has to take this file too, before its match places any. 3.6's Season 3
+// finale (events/meteorstrike.js: the TVs' static, the skybox audio, the meteors) shares the section, as AthenaGameData
+// RowUpdates, for the client (the TVs, the audio) and the server (the meteors) alike.
 // Custom matchmaking keys (Core-Backend #186, matchmaking/service.js) are Battle Royale's from 2.4 (CL-3858292) on: the
 // lobby shows its Custom Matchmaking Key action while UFortMatchmakingV2's bCustomKeyEnabled is set (2.4 0x7390E0 reads
 // +0x4C), and only then does the ticket carry the key (0x756340). This file comes before login, with no account, so it
@@ -136,7 +139,7 @@ function systemFiles(req, network = defaultNetwork, settings = null) {
   const game = gameFile(statsAnswerMinutes(build), [...shootingTestGlobals(build), ...forcedQueueGlobals(build)]) + customKeySection(build)
     + forcedQueueSection(build) + chatSection
     + purchaseFlowSection(req, network, { build, enabled: settings?.get?.()?.vbuckPacks !== false })
-    + lootHotfixSection(new Date(), null, shootingTestHotfixTables(build));
+    + lootHotfixSection(new Date(), null, shootingTestHotfixTables(build), meteorStrikeRows(build), build);
   return { "DefaultEngine.ini": Buffer.from(engine, "utf8"), "DefaultGame.ini": Buffer.from(game, "utf8"), ...newModeFiles(build),
     ...runtimeOptionsFiles(build) };
 }

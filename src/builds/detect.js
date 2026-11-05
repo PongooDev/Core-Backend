@@ -3,7 +3,7 @@
 export const certBuild = "3532353";
 
 // The Fortnite version players call each build Core knows (as Core-Launcher's KnownBuilds), for what the client shows.
-export const buildVersions = { 3532353: "1.1", 3541083: "1.2", 3700114: "1.7.2", 3724489: "1.8", 3729133: "1.8.1", 3741772: "1.8.2", 3757339: "1.9", 3775276: "1.9.1", 3790078: "1.10", 3807424: "1.11", 3825894: "2.1", 3841827: "2.2", 3847564: "2.3", 3858292: "2.4", 3870737: "2.4.2", 3889387: "2.5", 3901517: "3.0", 3915963: "3.1", 3917250: "3.1.1", 3935073: "3.2", 3942182: "3.3", 4000805: "3.5.1", 4008490: "3.5.2" };
+export const buildVersions = { 3532353: "1.1", 3541083: "1.2", 3700114: "1.7.2", 3724489: "1.8", 3729133: "1.8.1", 3741772: "1.8.2", 3757339: "1.9", 3775276: "1.9.1", 3790078: "1.10", 3807424: "1.11", 3825894: "2.1", 3841827: "2.2", 3847564: "2.3", 3858292: "2.4", 3870737: "2.4.2", 3889387: "2.5", 3901517: "3.0", 3915963: "3.1", 3917250: "3.1.1", 3935073: "3.2", 3942182: "3.3", 4000805: "3.5.1", 4008490: "3.5.2", 4019403: "3.6" };
 
 export const versionOf = (changelist) => buildVersions[changelist] ?? null;
 
@@ -20,7 +20,9 @@ export const battleRoyaleBuilds = Object.keys(buildVersions).filter((changelist)
 // AthenaSeason3 has its own curves (Athena_Season3_XP and _BP), so it is the season's, and 3.1 (28 February 2018), whose
 // AthenaSeason3 is 3.0's (the same levels and Battle Pass; its weekly challenges gain a tenth week), to 3.5.1 (CL-4000805,
 // ++Fortnite+Release-3.5, 11 April 2018), whose AthenaSeason3 is still 3.0's, and 3.5.2 (CL-4008490, the content update of
-// 19 April 2018), whose paks give the extractor 3.5.1's data byte for byte, so it plays on gamedata/4000805. Core knows no 3.4 (no 3.4 build is at hand):
+// 19 April 2018), whose paks give the extractor 3.5.1's data byte for byte, so it plays on gamedata/4000805, and 3.6 (CL-4019403,
+// ++Fortnite+Release-3.6, 24 April 2018, the season's last update), whose AthenaSeason3 is still 3.0's and whose own data
+// is gamedata/4019403. Core knows no 3.4 (no 3.4 build is at hand):
 // a 3.4 client would play on 3.3's data, the closest earlier build that has its own (src/gamedata/read.js).
 export const battleRoyaleSeasons = [
   { season: 1, firstVersion: "1.8", lastVersion: "1.10" },

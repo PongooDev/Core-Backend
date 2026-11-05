@@ -1046,8 +1046,8 @@ export function adminRoutes(context) {
     const now = new Date();
     const config = settings?.get?.()?.itemShop ?? { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 };
     const s = requestedSeasonOf(requestedSeason);
-    // Season 3's shop as 3.5.1's data (its newest; 3.5.2 plays on it) sells it: 3.0's cosmetics, 3.1's, 3.2's (3.3 adds none) and 3.4's and 3.5's.
-    const build = { 1: "3724489", 2: "3807424", 3: "4000805" }[s];
+    // Season 3's shop as 3.6's data (its newest) sells it: 3.0's cosmetics, 3.1's, 3.2's (3.3 adds none), 3.4's, 3.5's and 3.6's.
+    const build = { 1: "3724489", 2: "3807424", 3: "4019403" }[s];
     const offers = inBuild(build, () => itemShopOffers(now, config, s));
     const cosmetics = inBuild(build, () => eligibleCosmetics());
     const currentDay = shopDay(now, config, s);
@@ -1136,7 +1136,8 @@ export function adminRoutes(context) {
       { version: "3.2", cl: 3935073, event: "Spring It On!" },
       { version: "3.3", cl: 3942182, event: "Spring It On!" },
       { version: "3.5.1", cl: 4000805, event: "Into the Storm" },
-      { version: "3.5.2", cl: 4008490, event: "Into the Storm" }
+      { version: "3.5.2", cl: 4008490, event: "Into the Storm" },
+      { version: "3.6", cl: 4019403, event: "Into the Storm" }
     ];
 
     const sampleBuilds = builds.map((b) => ({
@@ -1159,7 +1160,7 @@ export function adminRoutes(context) {
     // Season 2's content updates (events/contentupdates.js): each one's state on 1.11 and on 2.1, without starting the
     // season. 2.2 ships them in its own loot tables, so it takes none; 2.3 takes its own, the Chug Jug,
     // and 2.4 its own, the Minigun and the Suppressed Pistol's cut (its tables have the Chug Jug in). 2.4.2's tables have
-    // 2.4's in and its paks lack its notes' Crossbow, and 2.5's tables have every one and the Crossbow in, so they take none. 3.5.2 takes Content Update v3.50's Light Machine Gun.
+    // 2.4's in and its paks lack its notes' Crossbow, and 2.5's tables have every one and the Crossbow in, so they take none. 3.5.2 takes Content Update v3.50's Light Machine Gun, which 3.6's tables have in.
     const contentUpdates = withoutSeasonStartRecording(() => ({
       config: eventsConfig.contentUpdates ?? defaultContentUpdates,
       seasonDate: inBuild("3807424", () => seasonMoment(now, shopConfig, 2).toISOString()),
@@ -1251,9 +1252,9 @@ export function adminRoutes(context) {
         {
           id: "storm2018",
           name: "Into the Storm",
-          subtitle: "Into the Storm: Opening Act, Survive the Storm's return and active Mutant Storms; Spring It On!'s Event Store runs on; Into the Storm: Encore and the Mercury LMG in 3.5.2",
-          buildRange: "3.5.1 – 3.5.2 (CL 4000805 – 4008490)",
-          flags: ["EventFlag.Storm2018Phase1", "EventFlag.Storm2018Phase2 (3.5.2)", "EventFlag.SurviveTheStorm", "EventFlag.ActiveStorms", "EventFlag.PassiveMiniBosses"],
+          subtitle: "Into the Storm: Opening Act, Survive the Storm's return and active Mutant Storms; Spring It On!'s Event Store runs on; Into the Storm: Encore and the Mercury LMG in 3.5.2; the Noble Launcher in 3.6",
+          buildRange: "3.5.1 – 3.6 (CL 4000805 – 4019403)",
+          flags: ["EventFlag.Storm2018Phase1", "EventFlag.Storm2018Phase2 (3.5.2, 3.6)", "EventFlag.SurviveTheStorm", "EventFlag.ActiveStorms", "EventFlag.PassiveMiniBosses"],
           theater: "Standard Zones with Mutant Storm and Mini-Boss alerts, plus the Survive the Storm theater",
           theaterRegions: [
             { name: "Survive the Storm Start", power: "15", gate: "None" },
@@ -1264,7 +1265,7 @@ export function adminRoutes(context) {
           currency: "Storm Tickets (AccountResource:eventcurrency_stormzone), Spring It On! Gold in the Event Store",
           llama: "Into the Storm Llama (CardPack_Event_2018_Storm, 1000 Storm Tickets)",
           questsCount: 8,
-          leftoverConversion: "Firecracker Tickets convert to Spring Llamas (1 per 1000, and 1 for what is left over) on 3.5.1 or 3.5.2 load"
+          leftoverConversion: "Firecracker Tickets convert to Spring Llamas (1 per 1000, and 1 for what is left over) on 3.5.1, 3.5.2 or 3.6 load"
         }
       ]
     });

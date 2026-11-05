@@ -202,10 +202,16 @@ const springNow = () => !isEventActive(winter2017) && !storms2018() && (isEventA
 const wukongFirstBuild = 3935073;
 const rabbitRaiderFirstBuild = 4000805;
 const mercuryLmgFirstBuild = 4008490;
+// 3.6's (CL-4019403) notes: "Noble Launcher added. NOTE: This will be available on April 25 at 8pm ET." The Fortnite Wiki's
+// Into the Storm lists it among the Event Store's weapons (with the Mercury LMG): SID_Explosive_Launcher_NeonGlow_SR_Ore_T01
+// ("Noble Launcher Schematic" in 3.6's card pack, in 3.5.1's data already) at a legendary schematic's 1,680, one (🟡: Epic's
+// price and limit aren't recorded), on 3.6 and later.
+const nobleLauncherFirstBuild = 4019403;
 const springItemsNow = () => [...springEventItems,
   ...(Number(currentBuild()) >= wukongFirstBuild ? [{ templateId: "Hero:hid_commando_014_wukong_sr_t01", price: 2800, limit: 1 }] : []),
   ...(Number(currentBuild()) >= rabbitRaiderFirstBuild ? [{ templateId: "Hero:hid_commando_011_m_easter_sr_t01", price: 2800, limit: 1 }] : []),
-  ...(Number(currentBuild()) >= mercuryLmgFirstBuild ? [{ templateId: "Schematic:sid_assault_neonglow_lmg_sr_ore_t01", price: 1680, limit: 1 }] : [])];
+  ...(Number(currentBuild()) >= mercuryLmgFirstBuild ? [{ templateId: "Schematic:sid_assault_neonglow_lmg_sr_ore_t01", price: 1680, limit: 1 }] : []),
+  ...(Number(currentBuild()) >= nobleLauncherFirstBuild ? [{ templateId: "Schematic:sid_explosive_launcher_neonglow_sr_ore_t01", price: 1680, limit: 1 }] : [])];
 const eventItemsNow = () => (storms2018() ? stormsEventItems : springNow() ? springItemsNow() : eventItems);
 export const eventStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWSpecialEventStoreFront"
   : springNow() ? "Spring2018.STWSpecialEventStoreFront" : eventStoreInstance);

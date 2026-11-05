@@ -35,7 +35,7 @@ test("3.5.2 is known by its version and plays on 3.5.1's data, Season 3's", () =
   assert.equal(allowedBuildList(["3.5.2"]).join(), v352);
   assert.deepEqual(inBuild(v352, athenaSeason), inBuild(v351, athenaSeason));
   assert.deepEqual(Object.keys(inBuild(v352, athenaCosmetics)), Object.keys(inBuild(v351, athenaCosmetics)));
-  assert.equal(buildOfSeason(3), v351, "Season 3's newest data is still 3.5.1's");
+  assert.equal(buildOfSeason(3), "4019403", "Season 3's newest data is 3.6's, not 3.5.2's");
 });
 
 test("3.5.2 runs Into the Storm with the Encore: 3.5.1's flags and Storm2018Phase2", () => {
@@ -76,7 +76,7 @@ test("3.5.2's lobby: 3.5.1's playlists, 50v50 v2 its new mode too", () => {
   assert.equal(ltmOfPlaylist(23, v352).id, "highExplosivesSolo");
   const listed = ltmSchedule({}, now).list;
   assert.equal(listed.find(({ id }) => id === "fiftyFiftyV2").newIn, "3.5.1 and 3.5.2");
-  assert.equal(listed.find(({ id }) => id === "fiftyFiftyV2").builds, "3.5.1 to 3.5.2");
+  assert.equal(listed.find(({ id }) => id === "fiftyFiftyV2").builds, "3.5.1 to 3.6");
   assert.deepEqual(playlistTeamsOf(`${v352}:0:NA:50`, v352), { maxTeamCount: 2, maxTeamSize: 50, maxSquadSize: 4 });
   assert.equal(assignmentBucket(`${v352}:0:NA:2`, v352), `Fortnite:Fortnite:${v352}:0:NA:2`);
 });
@@ -89,13 +89,15 @@ test("3.5.2 serves the Light Machine Gun's loot hotfix, always; 3.5.1 and 3.3 ge
   assert.equal(shipped["WorldList.AthenaLoot.Weapon.AssaultAuto.08"].Weight, 0);
   const rows = inBuild(v352, () => updatedLootTables(now))[packages];
   const weight = (name) => rows.find((row) => row.Name === name).Weight;
-  assert.equal(weight("WorldList.AthenaLoot.Weapon.AssaultAuto.08"), 0.1);
-  assert.equal(weight("WorldList.AthenaLoot.Weapon.AssaultAuto.09"), 0.0375);
+  // Epic's weights, as 3.6's tables ship them.
+  assert.equal(weight("WorldList.AthenaLoot.Weapon.AssaultAuto.08"), 0.075);
+  assert.equal(weight("WorldList.AthenaLoot.Weapon.AssaultAuto.09"), 0.0275);
   assert.equal(weight("WorldList.AthenaLoot.VendingMachine.Weapons.Rare.Medium.05"), 1);
   assert.equal(weight("WorldList.AthenaLoot.VendingMachine.Weapons.Epic.Medium.03"), 1);
   assert.equal(weight("WorldList.AthenaSupplyDrop.Weapon.Assault.03"), 0, "the notes keep it out of supply drops");
   const section = inBuild(v352, () => lootHotfixSection(now));
-  assert.ok(section.startsWith("[AssetHotfix]\r\n+DataTable=(\"/Game/Items/Datatables/AthenaLootPackages_Client.AthenaLootPackages_Client\",\""));
+  // UE 4.20's RowUpdate form (build36.test.js has the lines).
+  assert.ok(section.startsWith("[AssetHotfix]\r\n+DataTable=/Game/Items/Datatables/AthenaLootPackages_Client.AthenaLootPackages_Client;RowUpdate;"));
   assert.equal(inBuild(v351, () => lootHotfixSection(now)), "");
 });
 

@@ -63,10 +63,14 @@ import { currentEventsConfig } from "./events.js";
 // WID_Assault_LMGSAW_Athena_R/VR_Ore_T03 in WorldList.AthenaLoot.Weapon.AssaultAuto (.08, .09), which the floor
 // (Loot_AthenaFloorLoot_09) and chests (Loot_AthenaTreasure_05) call, in the vending machines' Rare and Epic medium-ammo
 // lists (WorldList.AthenaLoot.VendingMachine.Weapons.Rare.Medium.05, Epic.Medium.03) and in the supply drops' Assault
-// list (WorldList.AthenaSupplyDrop.Weapon.Assault.03), which the notes don't name and so stays at 0. Core's weights (🟡):
-// the Rare at 0.1 and the Epic at 0.0375, the Rare and Epic Burst Assault Rifle's in the same list, and 1 in the vending
-// lists, as every other row there. It shipped with the build's update, so 3.5.2 always has it; 3.5.1, a week earlier,
-// doesn't.
+// list (WorldList.AthenaSupplyDrop.Weapon.Assault.03), which the notes don't name and so stays at 0. Its weights are
+// Epic's as 3.6 (CL-4019403, 24 April 2018) ships them in its own tables: the Rare at 0.075 and the Epic at 0.0275, 1 in
+// the vending lists (the supply drop row still 0). It shipped with the build's update, so 3.5.2 always has it; 3.5.1, a
+// week earlier, doesn't, and 3.6 has it in its tables (inTablesFrom), so takes none.
+//
+// 3.6's own notes change no loot the backend owns: its tables have the Clinger (Athena_StickyGrenade, "Floor Loot, Supply
+// Drops, Supply Llamas, and Treasure Chests": WorldList.AthenaConsumables.14 at 0.25, AthenaHighConsumables.14 at 0.5) and
+// the Remote Explosives' chest cut ("~40%": AthenaHighConsumables.09, 0.5 to 0.3) in, so it takes no content update.
 //
 // Epic's updates (the Fortnite Wiki's Season 2 pages and Epic's notes on them):
 // - 19 December 2017, 13:00 GMT, the Small Shield Potion update: the Small Shield Potion ("Drops in stacks of 3", "found in
@@ -94,6 +98,11 @@ const build23 = 3847564;
 const build24 = 3858292;
 const build242 = 3870737;
 const build352 = 4008490;
+const build36 = 4019403;
+// The first UE 4.20 build (2.5): its hotfix manager takes [AssetHotfix] lines as "<asset>;RowUpdate;<row>;<column>;<value>"
+// or "<asset>;TableUpdate;<json>" ("Expected a hotfix type of RowUpdate with 5 tokens or TableUpdate with 3 tokens.", in
+// 2.5's and 3.6's exes), not 4.19's "(\"<asset>\",\"<json>\")".
+export const rowUpdateBuild = 3889387;
 
 export const contentUpdates = [
   { id: "smallShieldPotion", name: "Small Shield Potion and the Damage Trap", at: "2017-12-19T13:00:00Z", firstBuild: season2, rows: [
@@ -131,9 +140,9 @@ export const contentUpdates = [
     [packages, "WorldList.AthenaLoot.Weapon.SuppressedHandgun.01", { Weight: 0.06 }],
     [packages, "WorldList.AthenaLoot.Weapon.SuppressedHandgun.02", { Weight: 0.012 }]
   ] },
-  { id: "lightMachineGun", name: "Light Machine Gun", at: "2018-04-19T00:00:00Z", firstBuild: build352, rows: [
-    [packages, "WorldList.AthenaLoot.Weapon.AssaultAuto.08", { Weight: 0.1 }],
-    [packages, "WorldList.AthenaLoot.Weapon.AssaultAuto.09", { Weight: 0.0375 }],
+  { id: "lightMachineGun", name: "Light Machine Gun", at: "2018-04-19T00:00:00Z", firstBuild: build352, inTablesFrom: build36, rows: [
+    [packages, "WorldList.AthenaLoot.Weapon.AssaultAuto.08", { Weight: 0.075 }],
+    [packages, "WorldList.AthenaLoot.Weapon.AssaultAuto.09", { Weight: 0.0275 }],
     [packages, "WorldList.AthenaLoot.VendingMachine.Weapons.Rare.Medium.05", { Weight: 1 }],
     [packages, "WorldList.AthenaLoot.VendingMachine.Weapons.Epic.Medium.03", { Weight: 1 }]
   ] }
@@ -206,12 +215,35 @@ export function updatedLootTables(now = new Date(), config = null) {
 // line at a time (FParse::LineExtended), where a JSON string's contents count as outside quotes, so a value holding a
 // brace, a bar, "//" or a backslash would be cut; none of the tables' does, and one that did is left out. Empty when
 // nothing is in. Other tables Epic hotfixed the same way (more: [{table, rows}], Shooting Test #1's weapon stats,
-// events/shootingtest.js) share the section.
-export function lootHotfixSection(now = new Date(), config = null, more = []) {
-  const tables = [...Object.entries(updatedLootTables(now, config)).map(([table, rows]) => ({ table, rows })), ...more];
-  const lines = tables.map(({ table, rows }) => dataTableHotfixLine(table, rows)).filter(Boolean);
+// events/shootingtest.js) share the section. From 2.5 (UE 4.20, rowUpdateBuild) the updates are RowUpdate lines, one a
+// changed value, "+DataTable=<asset>;RowUpdate;<row>;<column>;<value>", as Epic's 4.20 hotfixes set them (the whole-table
+// form would need TableUpdate, whose ";"-split tokens the rows' Annotation strings break); curve rows ([{table, row, column,
+// value}], Season 3's finale, events/meteorstrike.js) are "+CurveTable=<asset>;RowUpdate;<row>;<time>;<value>".
+export function lootHotfixSection(now = new Date(), config = null, more = [], curveRows = [], build = currentBuild()) {
+  const updates = Number(build) >= rowUpdateBuild
+    ? contentUpdateRowLines(now, config)
+    : Object.entries(updatedLootTables(now, config)).map(([table, rows]) => dataTableHotfixLine(table, rows));
+  const lines = [...updates, ...more.map(({ table, rows }) => dataTableHotfixLine(table, rows)), ...curveRows.map(curveRowHotfixLine)]
+    .filter(Boolean);
   return lines.length ? ["[AssetHotfix]", ...lines, ""].join("\r\n") : "";
 }
+
+// The updates that are in as 4.20 RowUpdate lines, a row's value once (the last update's), rows the build's tables have.
+function contentUpdateRowLines(now, config) {
+  const shipped = athenaLootTables();
+  const on = new Set(contentUpdateStates(now, config).filter((state) => state.on).map((state) => state.id));
+  const values = new Map();
+  for (const update of contentUpdates.filter((candidate) => on.has(candidate.id))) {
+    for (const [table, row, changes] of update.rows) {
+      if (!shipped[table]?.[row]) continue;
+      for (const [column, value] of Object.entries(changes)) values.set(`${table};RowUpdate;${row};${column}`, value);
+    }
+  }
+  return [...values].map(([key, value]) => `+DataTable=${key};${value}`);
+}
+
+// A curve table row's [AssetHotfix] RowUpdate line (UE 4.20).
+export const curveRowHotfixLine = ({ table, row, column, value }) => `+CurveTable=${table};RowUpdate;${row};${column};${value}`;
 
 // A table's [AssetHotfix] line, its rows [{Name, ...row}], or null for one whose values the config merge would cut.
 export function dataTableHotfixLine(table, rows) {

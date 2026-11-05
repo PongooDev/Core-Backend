@@ -61,8 +61,9 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // Brilliant Striker, Empire Axe, Pick Squeak, Tactical Spade, Make It Rain, Flippin' Sexy, Reanimated; a build sees only
 // those its data has, so 3.0's shop is as it was), and so are 3.5.1's (CL-4000805: 3.4's and 3.5's Raven, Rabbit Raider,
 // Bunny Brawler, Dark Vanguard, Leviathan, Tricera Ops, Tomatohead, Cipher, Midnight Ops, Whiplash, their gliders,
-// pickaxes and emotes, from 30 March); the ones no build Core has (Steelsight, Brite Gunner...) and Battle Pass Tiers are
-// left out. A build's season is its athena data's seasonNumber, Season 1 without one.
+// pickaxes and emotes, from 30 March), and 3.6's (CL-4019403: Steelsight with Steelcast, Brite Gunner with Brite Bag,
+// Global Axe, Squat Kick and Tidy, from 27 April); Battle Pass Tiers are left out. A build's season is its athena data's
+// seasonNumber, Season 1 without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;
   return { days, firstDay: Date.parse(`${days[0].date}T00:00:00Z`) };
@@ -421,6 +422,8 @@ const tileOf = (tile) => {
 // 3.5's, as the wiki's pages name them: Raven's Iron Cage, Rabbit Raider's Hard Boiled, Bunny Brawler's Eggshell, Dark
 // Vanguard's Dark Void, Leviathan's Fish Tank, Tricera Ops' Hatchling and Tomatohead's Special Delivery, and Royale Flags
 // (BID_040_Wukong, "bundled_with Wukong", from 28 March 2018) with 2.5's Wukong, on builds whose data has the back bling.
+// 3.6 (CL-4019403) adds Steelsight's Steelcast (BID_044_Robo) and Brite Gunner's Brite Bag (BID_026_Brite, in the data
+// since Season 2), as the wiki's pages name them.
 export const bundledBackBlings = {
   "AthenaCharacter:cid_093_athena_commando_m_dinosaur": "AthenaBackpack:bid_031_dinosaur",
   "AthenaCharacter:cid_097_athena_commando_f_rockerpunk": "AthenaBackpack:bid_034_rockerpunk",
@@ -432,7 +435,9 @@ export const bundledBackBlings = {
   "AthenaCharacter:cid_107_athena_commando_f_pajamaparty": "AthenaBackpack:bid_041_pajamaparty",
   "AthenaCharacter:cid_108_athena_commando_m_fishhead": "AthenaBackpack:bid_042_fishhead",
   "AthenaCharacter:cid_109_athena_commando_m_pizza": "AthenaBackpack:bid_043_pizza",
-  "AthenaCharacter:cid_071_athena_commando_m_wukong": "AthenaBackpack:bid_040_wukong"
+  "AthenaCharacter:cid_071_athena_commando_m_wukong": "AthenaBackpack:bid_040_wukong",
+  "AthenaCharacter:cid_111_athena_commando_f_robo": "AthenaBackpack:bid_044_robo",
+  "AthenaCharacter:cid_112_athena_commando_m_brite": "AthenaBackpack:bid_026_brite"
 };
 
 // The day's offers by storefront, those the requesting build has the cosmetic for. Never a cosmetic the shop doesn't sell
