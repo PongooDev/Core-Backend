@@ -245,9 +245,11 @@ export const ltms = [
     original: null,
     teams: "100 Teams × 2", description: "Blitz in duos (Playlist_Blitz_Child_Duo, Blitz's tables); its matches count Blitz's challenge." },
   // 3.5.1's own playlists (above): data assets with no event queue, turned on by PlaylistOverrides.
-  // Not 3.5.1's new mode for now: 50v50 is paused (Core-Backend #135), and as the forced default the lobby opened on it
-  // and players sat on its loading screen (CoreV2 #262). It follows its admin switch, off by default, like the others.
-  { id: "fiftyFiftyV2", name: "50v50 v2", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build351, build351], seasons: [3],
+  // 50v50 v2 is 3.5.1's new mode: on there whatever its switch, and its lobby opens on it. 7049afd took it out while
+  // 3.5.1's matches sat on the loading screen, but every mode did that: the server crashed as the first player spawned
+  // (CoreV2 #262: its POI volumes had no brush component, fixed in CoreV2 b1c4fb9). The game runs the mode from its
+  // playlist (CoreV2 #260): a bus for each team, the final circle, its storm, supply drops, loot and bleed-out.
+  { id: "fiftyFiftyV2", name: "50v50 v2", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build351, build351], seasons: [3], newIn: build351,
     original: null,
     teams: "2 Teams × 50", description: "Two teams of 50 players, massive forts (Playlist_50v50: its own loot, game data and resource rates)." },
   { id: "highExplosivesSolo", name: "High Explosives v2 (Solo)", playlistId: 23, playlistName: "Playlist_HighExplosives_Solo", eventFlag: null, builds: [build351, build351], seasons: [3],
