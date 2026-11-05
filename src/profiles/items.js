@@ -41,6 +41,7 @@ const unassigned = {
 
 // V-Bucks count only with platform "Epic": the client's balance (sub_68A110) adds up Currency:MtxPurchased,
 // MtxPurchaseBonus, MtxGiveaway and MtxComplimentary items whose platform attribute is exactly "Epic" (sub_A4ED0).
+// 3.5 counts by wallet instead, and its common_core shows them as Shared (profiles/common.js).
 const mtxCurrencies = new Set(["currency:mtxpurchased", "currency:mtxpurchasebonus", "currency:mtxgiveaway", "currency:mtxcomplimentary"]);
 export const mtxPlatform = "Epic";
 export const isMtxCurrency = (templateId) => mtxCurrencies.has(templateId.toLowerCase());

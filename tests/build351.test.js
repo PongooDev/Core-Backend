@@ -24,7 +24,8 @@ import { getQuest } from "../src/gamedata/quests.js";
 import { buildGameData, dataBuild } from "../src/gamedata/read.js";
 import { assignmentBucket, playlistTeamsOf, showsMatchStart } from "../src/matchmaking/service.js";
 import { challengeWeekCount } from "../src/profiles/challenges.js";
-import { isAccountView, itemView, noteClientBuild } from "../src/profiles/common.js";
+import { changeTemplate, trackChanges } from "../src/profiles/changes.js";
+import { isAccountView, itemView, noteClientBuild, viewChanges, viewProfile } from "../src/profiles/common.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
 import { buildOfSeason } from "../src/profiles/seasons.js";
@@ -313,6 +314,61 @@ test("3.5.1's V-Bucks are common_core's, and a change brings only the view it is
   } finally {
     backend.close();
   }
+});
+
+// Core-Backend #247: 3.5.1 sets its MTX platform to EpicPC at login and logged out on "Unknown platform EpicPC". 3.5
+// counts the V-Bucks items whose platform is Shared or the account's wallet (EpicPC, or EpicPCKorea; 3.5.1 0xDFA5E0),
+// so common_core shows Core's "Epic" ones as Shared; profile0 keeps them "Epic" for the builds before.
+const spendable351 = (profile, wallet = "EpicPC") => Object.values(profile.items)
+  .filter((item) => /^currency:mtx/i.test(item.templateId) && ["Shared", wallet].includes(item.attributes.platform))
+  .reduce((sum, item) => sum + item.quantity, 0);
+
+test("3.5.1 sets EpicPC and its other MTX platforms, and its V-Bucks count for its wallet; 3.3's stay Epic", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "EpicPC351");
+    const login = (await mcp(backend, player, agent351, "QueryProfile", "common_core")).body;
+    const platform = await mcp(backend, player, agent351, "SetMtxPlatform", "common_core", { newPlatform: "EpicPC" }, login.profileRevision);
+    assert.equal(platform.status, 200);
+    assert.deepEqual(platform.body.profileChanges, [{ changeType: "statModified", name: "current_mtx_platform", value: "EpicPC" }]);
+    for (const newPlatform of ["Shared", "EpicPCKorea", "IOSAppStore", "EpicAndroid", "Live", "EpicPC"]) {
+      assert.equal((await mcp(backend, player, agent351, "SetMtxPlatform", "common_core", { newPlatform })).status, 200, newPlatform);
+    }
+    assert.equal((await mcp(backend, player, agent351, "SetMtxPlatform", "common_core", { newPlatform: "Steam" })).status, 400);
+
+    assert.equal((await setVbucks(backend, player, 1200)).status, 200);
+    const core = fullOf((await mcp(backend, player, agent351, "QueryProfile", "common_core")).body);
+    assert.equal(core.stats.attributes.current_mtx_platform, "EpicPC");
+    assert.equal(spendable351(core), 1200);
+    assert.equal(spendable351(core, "EpicPCKorea"), 1200);
+
+    // 3.3 (and every build before 3.5) is served profile0 as saved: the same V-Bucks, tagged Epic, once each.
+    const profile0 = fullOf((await mcp(backend, player, agent33, "QueryProfile", "profile0")).body);
+    const currency = Object.values(profile0.items).filter((item) => /^currency:mtx/i.test(item.templateId));
+    assert.equal(mtx(profile0), 1200);
+    assert.ok(currency.every((item) => item.attributes.platform === "Epic"));
+  } finally {
+    backend.close();
+  }
+});
+
+test("V-Bucks given while a 3.5.1 client holds its common_core come in its delta as Shared, and stay Epic in profile0", () => {
+  const item = { templateId: "Currency:MtxGiveaway", attributes: { platform: "Epic" }, quantity: 300 };
+  const profile = { stats: { attributes: {} }, items: { held: structuredClone(item) } };
+  const tracker = trackChanges(profile);
+  tracker.addItem("given", structuredClone(item));
+  tracker.setItemAttribute("held", "platform", "Epic");
+  tracker.setQuantity("held", 500);
+  const changes = viewChanges(tracker.changes, "common_core", profile, changeTemplate);
+  assert.deepEqual(changes.map((change) => change.changeType), ["itemAdded", "itemAttrChanged", "itemQuantityChanged"]);
+  assert.equal(changes[0].item.attributes.platform, "Shared");
+  assert.equal(changes[1].attributeValue, "Shared");
+  assert.equal(changes[2].quantity, 500);
+  assert.equal(profile.items.given.attributes.platform, "Epic");
+  assert.equal(profile.items.held.attributes.platform, "Epic");
+  const view = viewProfile({ version: "", wipeNumber: 1, stats: profile.stats, items: profile.items }, "common_core");
+  assert.equal(spendable351(view), 800);
+  assert.equal(profile.items.given.attributes.platform, "Epic");
 });
 
 test("an account that played 3.3 has the same V-Bucks, banners and homebase on 3.5.1, and the other way round", async () => {

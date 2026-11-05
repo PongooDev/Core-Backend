@@ -1,6 +1,9 @@
 import { McpError } from "../../../errors.js";
 
-const platforms = ["Epic", "PSN", "Live"]; // EFortMtxPlatform
+// EFortMtxPlatform, as the newest build Core knows has it: Epic, PSN and Live from the first builds, Shared by 3.3, and
+// 3.5's EpicPC, EpicPCKorea, IOSAppStore and EpicAndroid (3.5.1's names, 0xC78900). 3.5.1 sets EpicPC at login and gave
+// up on "Unknown platform EpicPC" (Core-Backend #247). A build never sends a value its own enum doesn't have.
+const platforms = ["Epic", "PSN", "Live", "Shared", "EpicPC", "EpicPCKorea", "IOSAppStore", "EpicAndroid"];
 
 export function setMtxPlatform({ req, session }) {
   const platform = req.body?.newPlatform;

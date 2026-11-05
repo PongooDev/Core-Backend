@@ -103,6 +103,8 @@ test("SetHomebaseMeta, SetGameplayStats and SetMtxPlatform store what the client
 
     await post(backend.port, command(accountId, "SetMtxPlatform"), token, { newPlatform: "PSN" });
     assert.equal((await stats()).current_mtx_platform, "PSN");
+    await post(backend.port, command(accountId, "SetMtxPlatform"), token, { newPlatform: "Shared" });
+    assert.equal((await stats()).current_mtx_platform, "Shared");
     assert.equal((await post(backend.port, command(accountId, "SetMtxPlatform"), token, { newPlatform: "Steam" })).status, 400);
   } finally {
     backend.close();

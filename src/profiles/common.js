@@ -1,4 +1,5 @@
 import { currentBuild } from "../builds/context.js";
+import { isMtxCurrency } from "./items.js";
 
 // 3.5 (3.5.1, CL-4000805, the first build after 3.3 that Core knows: there is no 3.4) splits profile0 three ways.
 // Its UFortRegisteredPlayerInfo holds CommonPublicProfile, CommonCoreProfile, AccountProfile (UFortMcpProfileCampaign),
@@ -75,12 +76,32 @@ const publicStats = (homebase = {}) => ({
   homebase_name: homebase.townName ?? ""
 });
 
+// 3.5 counts V-Bucks by wallet, not by "Epic". UFortMcpProfile::GetMtxBalance (3.5.1 0xDA0590, the profiles' vtable
+// +0x240) sums the Currency:Mtx* items (0xD845F0, the templates at 0x4535BF0) whose platform attribute (EFortMtxPlatform
+// by name, 0xDA9E50) is spendable (0xDFA5E0, on UFortMtxWallets' default object): Shared always, the account's own
+// wallet (EpicPC, or EpicPCKorea for an MCP account whose country is KR, 0xDF9A70), and the platforms the config's
+// SharedWallets lists for that wallet; it logs the rest as "not-spendable MTX" and leaves them out. current_mtx_platform
+// plays no part. Core tags its V-Bucks "Epic", what the builds before 3.5 count (profiles/items.js), so common_core
+// shows them as Shared, which 3.5 counts whatever the wallet and the config: profile0 keeps them as they are for every
+// other build, once each.
+const mtxWallet = "Shared";
+const walletItem = (item) => (isMtxCurrency(item.templateId) ? { ...item, attributes: { ...item.attributes, platform: mtxWallet } } : item);
+
 // One view's part of profile0 as fullProfile gives it: {version, wipeNumber, stats, items}.
 export function viewProfile({ version, wipeNumber, stats, items }, viewId) {
   if (viewId === "common_public") return { version, wipeNumber, stats: { attributes: publicStats(stats.attributes.homebase) }, items: {} };
   const attributes = Object.fromEntries(Object.entries(stats.attributes).filter(([name]) => statView(name) === viewId));
-  const viewItems = Object.fromEntries(Object.entries(items).filter(([, item]) => itemView(item.templateId) === viewId));
+  const viewItems = Object.fromEntries(Object.entries(items).filter(([, item]) => itemView(item.templateId) === viewId)
+    .map(([itemId, item]) => [itemId, walletItem(item)]));
   return { version, wipeNumber, stats: { attributes }, items: viewItems };
+}
+
+// A change of a V-Bucks item as common_core shows it (above).
+function walletChange(change, templateId) {
+  if (!isMtxCurrency(String(templateId ?? ""))) return change;
+  if (change.changeType === "itemAdded") return { ...change, item: walletItem(change.item) };
+  if (change.changeType === "itemAttrChanged" && change.attributeName === "platform") return { ...change, attributeValue: mtxWallet };
+  return change;
 }
 
 // One view's part of profile0's changes (templateOf: the item a change is about). A change of the homebase stat is
@@ -93,7 +114,7 @@ export function viewChanges(changes, viewId, profile, templateOf) {
         if (change.name !== "homebase" || out.length) continue;
         for (const [name, value] of Object.entries(publicStats(profile.stats.attributes.homebase))) out.push({ changeType: "statModified", name, value });
       } else if (statView(change.name) === viewId) out.push(change);
-    } else if (viewId !== "common_public" && itemView(templateOf(change)) === viewId) out.push(change);
+    } else if (viewId !== "common_public" && itemView(templateOf(change)) === viewId) out.push(walletChange(change, templateOf(change)));
   }
   return out;
 }
