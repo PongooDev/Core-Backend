@@ -158,7 +158,7 @@ export function oauthRoutes({ accounts, tokens, settings, resetTokens }) {
 
         failureTracker.clear(req);
         if (account.banned) return banned(res, account);
-        accounts.recordLogin(account);
+        accounts.recordLogin(account, currentBuild());
         return res.json(tokens.issueUser(clientId, account, "password"));
       }
 
@@ -168,6 +168,7 @@ export function oauthRoutes({ accounts, tokens, settings, resetTokens }) {
         if (!account) return invalidGrant(res, "Invalid or expired refresh token");
         if (!isServerAccountName(account.displayName) && refusesBuild(res, settings, account.displayName)) return;
         if (account.banned) return banned(res, account);
+        if (!isServerAccountName(account.displayName)) accounts.recordBuild(account, currentBuild());
         return res.json(tokens.issueUser(clientId, account, "refresh_token"));
       }
 

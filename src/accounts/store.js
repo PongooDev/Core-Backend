@@ -18,6 +18,8 @@ export class EmailError extends Error {
   }
 }
 
+const isChangelist = (build) => /^\d+$/.test(String(build ?? ""));
+
 export function createAccountStore(dataDir) {
   const dir = path.join(dataDir, "accounts");
   const byId = new Map();
@@ -148,8 +150,18 @@ export function createAccountStore(dataDir) {
       save(account);
     },
 
-    recordLogin(account) {
+    // build: the changelist of the client that logged in, kept as the build the account last played (the portal's My
+    // account page reads the account's profiles as that build does).
+    recordLogin(account, build) {
       account.lastLogin = new Date().toISOString();
+      if (isChangelist(build)) account.lastBuild = String(build);
+      save(account);
+    },
+
+    // The build of a client that refreshed its token: the account is still playing it.
+    recordBuild(account, build) {
+      if (!isChangelist(build) || account.lastBuild === String(build)) return;
+      account.lastBuild = String(build);
       save(account);
     },
 

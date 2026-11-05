@@ -44,6 +44,7 @@
     padding: 32px 16px; -webkit-font-smoothing: antialiased;
   }
   .container { width: 100%; max-width: 480px; margin: 0 auto; }
+  .container.wide { max-width: 760px; }
   
   .brand-header {
     display: flex; align-items: center; justify-content: center; gap: 14px;
@@ -66,7 +67,7 @@
   }
   
   .tabs {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px;
     background: var(--field); padding: 4px; border-radius: var(--radius-sm);
     margin-bottom: 22px; border: 1px solid var(--line);
   }
@@ -74,7 +75,7 @@
     .tabs { grid-template-columns: 1fr 1fr; }
   }
   .tab-btn {
-    background: transparent; border: 0; padding: 9px 12px; color: var(--muted);
+    background: transparent; border: 0; padding: 9px 6px; color: var(--muted);
     font-size: 13px; font-weight: 600; border-radius: 6px; cursor: pointer;
     transition: all 0.15s ease;
   }
@@ -150,6 +151,30 @@
     margin-bottom: 18px; color: #a9d5ff; word-break: break-all;
   }
 
+  /* My account (#249) */
+  .acct-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+  .acct-head h2 { font-family: var(--display); font-size: 28px; margin: 0; text-transform: uppercase; word-break: break-word; }
+  .acct-sub { color: var(--muted); font-size: 12px; margin-bottom: 18px; }
+  .acct-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; margin-bottom: 18px; }
+  .stat { background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 12px 14px; }
+  .stat .k { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .stat .v { font-family: var(--display); font-size: 30px; font-weight: 700; line-height: 1.15; }
+  .stat .n { font-size: 12px; color: var(--muted); }
+  .acct-section { margin-bottom: 20px; }
+  .acct-section h3 { font-family: var(--display); font-size: 20px; margin: 0 0 8px; text-transform: uppercase; letter-spacing: 0.03em; }
+  .acct-section h4 { font-size: 12px; margin: 12px 0 6px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .row { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); font-size: 13px; }
+  .row .meta { color: var(--muted); font-size: 12px; text-align: right; }
+  .row.done .name { color: var(--good); }
+  .bar { grid-column: 1 / -1; height: 5px; background: var(--field); border-radius: 3px; overflow: hidden; }
+  .bar > i { display: block; height: 100%; background: var(--blue); }
+  .row.done .bar > i { background: var(--good); }
+  .empty { color: var(--faint); font-size: 13px; }
+  .pill { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; background: var(--blue-soft); color: #a9d5ff; }
+  table.matches { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.matches th, table.matches td { text-align: right; padding: 6px 8px; border-top: 1px solid var(--line); }
+  table.matches th:first-child, table.matches td:first-child { text-align: left; }
+  table.matches th { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; border-top: 0; }
 </style>
 </head>
 <body>
@@ -168,6 +193,7 @@
       <button type="button" class="tab-btn" id="tab-btn-redeem" onclick="switchTab('redeem')">Redeem Code</button>
       <button type="button" class="tab-btn" id="tab-btn-change" onclick="switchTab('change')">Password</button>
       <button type="button" class="tab-btn" id="tab-btn-email" onclick="switchTab('email')">Email</button>
+      <button type="button" class="tab-btn" id="tab-btn-account" onclick="switchTab('account')">My Account</button>
     </div>
 
     <div id="alert-msg" class="alert"></div>
@@ -352,6 +378,35 @@
       </button>
     </form>
 
+    <!-- My account (#249): the player's own account, read-only -->
+    <form id="form-account" style="display:none" onsubmit="handleAccount(event)">
+      <div class="helper" style="margin-bottom:14px; background:var(--surface-2); padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--line);">
+        Sign in to see your own V-Bucks, levels, challenges, the item shop and what you own, as the build you last played shows them.
+      </div>
+
+      <div class="form-group">
+        <label for="acc-username">Username or Email</label>
+        <div class="input-wrap">
+          <input type="text" id="acc-username" class="field" placeholder="Your username or linked email" required autocomplete="username">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="acc-password">Password</label>
+        <div class="input-wrap">
+          <input type="password" id="acc-password" class="field" placeholder="Your password" required autocomplete="current-password">
+          <button type="button" class="toggle-pw" onclick="togglePw('acc-password', this)" title="Show/Hide Password" aria-label="Toggle password visibility">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" id="btn-acc-submit" class="btn-submit">
+        <span>Show My Account</span>
+      </button>
+    </form>
+    <div id="account-view" style="display:none"></div>
+
     <!-- Reset Password Token Form -->
     <form id="form-reset" style="display:none" onsubmit="handleResetPassword(event)">
       <div class="form-group">
@@ -410,13 +465,14 @@ let isStandalone = false;
 
 function switchTab(tab) {
   clearAlert();
-  for (const name of ["register", "redeem", "change", "email"]) {
+  for (const name of ["register", "redeem", "change", "email", "account"]) {
     const btn = $("tab-btn-" + name);
     if (btn) btn.classList.toggle("active", name === tab);
     const form = $("form-" + name);
     if (form) form.style.display = name === tab ? "block" : "none";
   }
   $("form-reset").style.display = tab === "reset" ? "block" : "none";
+  signOutAccount();
   $("reg-success").classList.remove("show");
   $("rdm-success").classList.remove("show");
   if (isStandalone || tab === "reset") $("portal-tabs").style.display = "none";
@@ -654,6 +710,195 @@ async function handleEmail(e) {
   }
 }
 
+// My account (#249): the page is built from the answer with textContent only, so nothing a player or the host named
+// (display names, item titles) is ever read as markup.
+function el(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+const num = (value) => Number(value).toLocaleString("en-US");
+
+function statBox(label, value, note) {
+  const box = el("div", "stat");
+  box.append(el("div", "k", label), el("div", "v", value));
+  if (note) box.append(el("div", "n", note));
+  return box;
+}
+
+function section(title) {
+  const node = el("div", "acct-section");
+  node.append(el("h3", "", title));
+  return node;
+}
+
+function progressRow(name, progress, target, meta, done) {
+  const row = el("div", "row" + (done ? " done" : ""));
+  row.append(el("span", "name", name), el("span", "meta", meta));
+  const bar = el("div", "bar");
+  const fill = el("i");
+  fill.style.width = (target > 0 ? Math.min(100, Math.round(progress / target * 100)) : done ? 100 : 0) + "%";
+  bar.append(fill);
+  row.append(bar);
+  return row;
+}
+
+function challengeRow(quest) {
+  const reward = quest.rewards ? [quest.rewards.xp ? num(quest.rewards.xp) + " XP" : "", quest.rewards.stars ? quest.rewards.stars + " stars" : ""].filter(Boolean).join(", ") : "";
+  const meta = (quest.done ? "Completed" : num(quest.progress) + " / " + num(quest.target)) + (reward ? " · " + reward : "");
+  return progressRow(quest.name, quest.progress, quest.target, meta, quest.done);
+}
+
+function listOrEmpty(parent, rows, emptyText) {
+  if (rows.length) parent.append(...rows);
+  else parent.append(el("div", "empty", emptyText));
+}
+
+function renderAccount(data) {
+  const view = $("account-view");
+  view.replaceChildren();
+
+  const head = el("div", "acct-head");
+  head.append(el("h2", "", data.displayName));
+  const build = data.build.version ? "Build " + data.build.version + (data.build.lastPlayed ? "" : " (not played yet)") : "";
+  head.append(el("span", "pill", build));
+  view.append(head, el("div", "acct-sub", "Read-only. This is your account as the game keeps it."));
+
+  const top = el("div", "acct-grid");
+  const mtx = data.vbucks;
+  const parts = [["purchased", mtx.purchased], ["bonus", mtx.bonus], ["giveaway", mtx.giveaway], ["complimentary", mtx.complimentary]]
+    .filter(([, amount]) => amount > 0).map(([label, amount]) => num(amount) + " " + label).join(", ");
+  top.append(statBox("V-Bucks", num(mtx.total), parts));
+  if (data.battleRoyale) {
+    const br = data.battleRoyale;
+    top.append(statBox("Battle Royale level", br.level + " / " + br.maxLevel,
+      br.xpToNextLevel === null ? "Season " + br.season + ", max level" : num(br.xp) + " / " + num(br.xpToNextLevel) + " XP · Season " + br.season));
+    if (br.battlePass) {
+      top.append(statBox("Battle Pass tier", br.battlePass.tier + (br.battlePass.maxTier ? " / " + br.battlePass.maxTier : ""),
+        (br.battlePass.purchased ? "Purchased" : "Free tiers") + " · " + num(br.battlePass.stars) + " stars into the tier"));
+    }
+  }
+  if (data.saveTheWorld) {
+    const stw = data.saveTheWorld;
+    top.append(statBox("Commander level", stw.level + " / " + stw.maxLevel,
+      stw.xpForLevel === null ? "Max level" : num(stw.xp) + " / " + num(stw.xpForLevel) + " XP"));
+  }
+  view.append(top);
+
+  if (data.challenges) {
+    const ch = data.challenges;
+    const sec = section("Battle Royale challenges");
+    sec.append(el("div", "acct-sub", num(ch.completed) + " completed"));
+    for (const bundle of ch.weekly) {
+      sec.append(el("h4", "", bundle.name + " · " + bundle.completed + (bundle.threshold ? " / " + bundle.threshold + " to the reward" : " done")));
+      listOrEmpty(sec, bundle.challenges.map(challengeRow), "No challenges.");
+    }
+    if (ch.daily.length || !ch.weekly.length) {
+      sec.append(el("h4", "", "Daily"));
+      listOrEmpty(sec, ch.daily.map(challengeRow), "No daily challenges right now.");
+    }
+    if (ch.other.length) {
+      sec.append(el("h4", "", "Other"));
+      sec.append(...ch.other.map(challengeRow));
+    }
+    view.append(sec);
+  }
+
+  if (data.saveTheWorld) {
+    const stw = data.saveTheWorld;
+    const sec = section("Save the World quests");
+    sec.append(el("div", "acct-sub", num(stw.questsClaimed) + " claimed · " + num(stw.items.heroes) + " heroes, " + num(stw.items.survivors) + " survivors, "
+      + num(stw.items.schematics) + " schematics, " + num(stw.items.defenders) + " defenders"));
+    listOrEmpty(sec, stw.quests.map(challengeRow), "No quests in progress.");
+    view.append(sec);
+  }
+
+  if (data.shop) {
+    const sec = section("Item shop");
+    sec.append(el("div", "acct-sub", "Changes " + new Date(data.shop.refreshes).toLocaleString()));
+    for (const [title, offers] of [["Featured", data.shop.featured], ["Daily", data.shop.daily]]) {
+      if (!offers.length) continue;
+      sec.append(el("h4", "", title));
+      for (const offer of offers) {
+        const row = el("div", "row");
+        row.append(el("span", "name", offer.title), el("span", "meta", offer.owned ? "Owned" : num(offer.price) + " V-Bucks"));
+        sec.append(row);
+      }
+    }
+    view.append(sec);
+  }
+
+  const locker = section("Locker");
+  const kinds = data.locker.cosmetics.map((kind) => {
+    const row = el("div", "row");
+    row.append(el("span", "name", kind.label), el("span", "meta", num(kind.owned) + " / " + num(kind.total)));
+    return row;
+  });
+  const banners = el("div", "row");
+  banners.append(el("span", "name", "Banners"), el("span", "meta", num(data.locker.banners)));
+  locker.append(...kinds, banners);
+  view.append(locker);
+
+  const matches = section("Matches");
+  if (data.matches) {
+    const table = el("table", "matches");
+    const headRow = el("tr");
+    for (const label of ["Playlist", "Matches", "Wins", "Kills", "Minutes", "Score"]) headRow.append(el("th", "", label));
+    table.append(headRow);
+    for (const row of [...data.matches.playlists, { name: "Total", ...data.matches.totals }]) {
+      const tr = el("tr");
+      for (const value of [row.name, row.matches, row.wins, row.kills, row.minutes, row.score]) tr.append(el("td", "", typeof value === "number" ? num(value) : value));
+      table.append(tr);
+    }
+    matches.append(table);
+  } else {
+    matches.append(el("div", "empty", "No matches recorded yet."));
+  }
+  view.append(matches);
+
+  const out = el("button", "btn-submit", "Sign Out");
+  out.type = "button";
+  out.style.background = "var(--surface-3)";
+  out.addEventListener("click", () => switchTab("account"));
+  view.append(out);
+}
+
+// Leaves the account view: it is cleared, the password with it, and the sign-in form is what the tab shows again.
+function signOutAccount() {
+  $("account-view").style.display = "none";
+  $("account-view").replaceChildren();
+  $("acc-password").value = "";
+  document.querySelector(".container").classList.remove("wide");
+}
+
+async function handleAccount(e) {
+  e.preventDefault();
+  clearAlert();
+  const btn = $("btn-acc-submit");
+  btn.disabled = true;
+  btn.innerHTML = "<span>Loading…</span>";
+  try {
+    const res = await fetch("/api/account/details", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: $("acc-username").value.trim(), password: $("acc-password").value.trim() })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.errorMessage || "Request failed.");
+    $("acc-password").value = "";
+    $("form-account").style.display = "none";
+    renderAccount(data);
+    $("account-view").style.display = "block";
+    document.querySelector(".container").classList.add("wide");
+  } catch (err) {
+    showAlert(err.message, true);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = "<span>Show My Account</span>";
+  }
+}
+
 let activeResetToken = null;
 
 async function handleResetPassword(e) {
@@ -725,6 +970,11 @@ if (path.endsWith("/redeem")) {
   initialTab = "email";
   document.querySelector(".brand-header h1").textContent = "Account Email";
   document.title = "Core — Account Email";
+} else if (path.endsWith("/my-account")) {
+  isStandalone = true;
+  initialTab = "account";
+  document.querySelector(".brand-header h1").textContent = "My Account";
+  document.title = "Core — My Account";
 } else if (path.endsWith("/reset-password") || resetTokenParam) {
   isStandalone = true;
   initialTab = "reset";

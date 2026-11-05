@@ -167,6 +167,12 @@ sign in by email even when `requirePassword` is off. Emails are trimmed and comp
 each, and none may be an `@core.com` address. The game itself still sees each account as `<name>@core.com`; the linked
 email is only shown to its owner on the portal and to the host in the admin panel.
 
+The portal's **My Account** tab (`/portal?tab=account`, or `/my-account`) shows a player their own account, read-only,
+after the same username-or-email and password sign-in: their V-Bucks (counted as the client counts them), Battle Royale
+level and Battle Pass tier, Save the World commander level and quests, the daily and weekly challenges with their progress,
+the item shop, a locker summary and their match stats, from the profiles as the build they last played reads them (the
+build of their last login). It never shows another account, a token or the email.
+
 Gameserver addresses: a gameserver on your PC registers as `127.0.0.1`, which another PC can't use. A player on your
 PC gets that; a player on your network or VPN gets the address they reached the backend on; a player on the internet
 gets the public address when one is set, else the IP they connected to. The same goes for the XMPP address in the

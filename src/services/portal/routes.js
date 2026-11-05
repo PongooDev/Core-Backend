@@ -10,6 +10,7 @@ import { RedeemError } from "../../friendcodes/store.js";
 import { log } from "../../log.js";
 import { openSession } from "../../profiles/session.js";
 import { notifyProfiles } from "../mcp/profile.js";
+import { accountSummary } from "./myaccount.js";
 import { createFailureTracker, createRateLimiter, getClientIp } from "./ratelimit.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -67,6 +68,7 @@ export function portalRoutes(context) {
   router.get("/change-password", (req, res) => res.sendFile(portalFile));
   router.get("/password", (req, res) => res.sendFile(portalFile));
   router.get("/email", (req, res) => res.sendFile(portalFile));
+  router.get("/my-account", (req, res) => res.sendFile(portalFile));
   router.get("/reset-password", (req, res) => res.sendFile(portalFile));
 
   // Public status check for the portal
@@ -177,6 +179,15 @@ export function portalRoutes(context) {
   router.post("/api/account", accountLimiter, async (req, res) => {
     const account = await signIn(res, String(req.body?.username ?? "").trim(), String(req.body?.password ?? "").trim());
     if (account) res.json(ownAccount(account));
+  });
+
+  // {username (the name or the linked email), password}: the player's own account as the game keeps it, read-only (#249):
+  // V-Bucks, levels, challenges, the item shop and what the account holds (myaccount.js). Only ever the signed-in account's.
+  router.post("/api/account/details", accountLimiter, async (req, res) => {
+    const account = await signIn(res, String(req.body?.username ?? "").trim(), String(req.body?.password ?? "").trim());
+    if (!account) return;
+    if (account.banned) return sendError(res, 403, "errors.com.epicgames.account.banned", "This account is banned.");
+    res.json(accountSummary(context, account));
   });
 
   // {username, password, email}: links the email to the account, replacing any linked before; an empty one unlinks it.
