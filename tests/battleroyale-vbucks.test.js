@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { createFrameParser, encodeFrame } from "../src/stomp/service.js";
 import { matchVbucks, questKillsOf } from "../src/services/fortnite/battleroyale.js";
-import { dedicatedServerToken, get, post, startBackend, userLogin } from "./helpers.js";
+import { dedicatedServerToken, get, post, send, startBackend, userLogin } from "./helpers.js";
 
 // Core-Backend #100, #124: V-Bucks for Battle Royale kills, wins and placements in solo, duos, squads and 1.10's 50v50 (#135), off unless the
 // admin turns them on, paid once a match.
@@ -254,6 +254,42 @@ test("V-Bucks paid while the player's client isn't subscribed reach it when it s
     assert.equal(JSON.parse((await client.next()).body).revision, start + 3);
     client.ws.close();
     await client.closed;
+  } finally {
+    backend.close();
+  }
+});
+
+// Core-Backend #236: in Battle Royale the client neither subscribes to its profile topic nor asks for profile0 after a
+// match, only for athena (QueryProfile, ClientQuestLogin). The match's V-Bucks, paid into profile0, now come along with
+// the athena query, whole, once profile0 has changed since the client was sent it.
+test("a match's V-Bucks reach a Battle Royale client that only asks for athena after the match", async () => {
+  const backend = await startBackend();
+  try {
+    const agent30 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-3.0-CL-3901517";
+    const player = await userLogin(backend.port, "RewardsLobby");
+    const command = (name, profileId, rvn) => send({ host: "127.0.0.1", port: backend.port, method: "POST",
+      path: `/fortnite/api/game/v2/profile/${player.accountId}/client/${name}?profileId=${profileId}&rvn=${rvn}`,
+      headers: { "User-Agent": agent30, Authorization: `bearer ${player.token}`, "Content-Type": "application/json", "Content-Length": 2 } }, "{}");
+    const profile0Of = (body) => [body, ...(body.multiUpdate ?? [])].find((update) => update.profileId === "profile0");
+    const dedicated = await dedicatedServerToken(backend.port);
+    await settings(backend, { battleRoyaleVbucks: true, battleRoyaleRewards: example });
+
+    // The login: profile0, then athena, which needs nothing more.
+    const login = (await command("QueryProfile", "profile0", -1)).body;
+    const before = vbucks(login.profileChanges[0].profile);
+    const athena = (await command("QueryProfile", "athena", -1)).body;
+    assert.equal(profile0Of(athena), undefined);
+
+    await results(backend, dedicated, { playlistId: 2, matchId: "lobby-1", results: [{ accountId: player.accountId, place: 1, kills: 2, secondsAlive: 900 }] });
+    // Back in the lobby: athena's query brings the new profile0 along.
+    const after = (await command("QueryProfile", "athena", athena.profileRevision)).body;
+    const update = profile0Of(after);
+    assert.ok(update, "profile0 comes with athena");
+    assert.equal(update.profileChanges[0].changeType, "fullProfileUpdate");
+    assert.ok(update.profileRevision > login.profileRevision);
+    assert.equal(vbucks(update.profileChanges[0].profile), before + 2 * 10 + 100 + 250);
+    // Sent once: the next athena command doesn't repeat it.
+    assert.equal(profile0Of((await command("ClientQuestLogin", "athena", after.profileRevision)).body), undefined);
   } finally {
     backend.close();
   }

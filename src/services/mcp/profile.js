@@ -67,8 +67,30 @@ function withoutQuests(update) {
 
 // companions(profileId): the account's other profiles that go along whole (session.response). logReads logs who read
 // whose profile0, which tells a party's two sides apart.
+// A Battle Royale client never hears of what the gameserver changes in its profile0. Its V-Bucks are profile0's
+// (UFortMcpContext::GetLocalAccountInfo, 3.0 0xCDC8F0: MtxBalance is profile0's GetMtxBalance, 0xD2F140), and a match's
+// V-Bucks are paid into profile0 (services/fortnite/battleroyale.js), but in Battle Royale the client neither subscribes
+// to its STOMP profile topic (it connects to STOMP on entering Save the World) nor asks for profile0 after a match: it
+// queries athena alone (QueryProfile, ClientQuestLogin). So the lobby kept the balance it logged in with, 0 for a
+// Battle Royale player, until the game was restarted (Core-Backend #236). A client command on another profile now
+// brings profile0 along, whole, in its multiUpdate when it has changed since the client was last sent it; the client
+// applies a multiUpdate to its profiles by profileId (1.8 sub_3C3D970). A client subscribed to its profile topic (Save
+// the World) gets profile0's changes as notifications, so it isn't sent it again.
+//
+// sent: accountId -> the profile0 revision last sent to that account's client, in a response or a multiUpdate.
+function profile0CatchUp(sent, session, profileId, stomp) {
+  if (profileId === "profile0" || !session.hasProfile("profile0") || stomp?.hasProfileSubscription?.(session.accountId)) return [];
+  const known = sent.get(session.accountId);
+  return known === undefined || session.profile("profile0").profile.rvn > known ? ["profile0"] : [];
+}
+
+function noteProfile0Sent(sent, accountId, result) {
+  const update = [result, ...(result.multiUpdate ?? [])].find(({ profileId }) => profileId === "profile0");
+  if (update) sent.set(accountId, update.profileRevision);
+}
+
 function runCommand(commands, context, {
-  deliverMail = false, deliverScores = false, locks = null, notify = false, companions = () => [], logReads = false
+  deliverMail = false, deliverScores = false, locks = null, notify = false, companions = () => [], logReads = false, catchUp = null
 } = {}) {
   const { profiles, dataDir } = context;
   return (req, res) => {
@@ -114,7 +136,9 @@ function runCommand(commands, context, {
     if (deliverScores) notifications.unshift(...(context.heldScores?.take(req.params.accountId) ?? []));
 
     const whole = companions(profileId);
-    const result = session.response(profileId, Number(req.query.rvn ?? -1), notifications, whole);
+    const caughtUp = catchUp ? profile0CatchUp(catchUp, session, profileId, context.stomp) : [];
+    const result = session.response(profileId, Number(req.query.rvn ?? -1), notifications, [...whole, ...caughtUp]);
+    if (catchUp) noteProfile0Sent(catchUp, req.params.accountId, result);
     const companionUpdates = (result.multiUpdate ?? []).filter((update) => whole.includes(update.profileId));
     for (const update of companionUpdates) withoutQuests(update);
     if (logReads && profileId === "profile0") {
@@ -151,7 +175,7 @@ export function profileRoutes(context) {
   const router = express.Router();
 
   router.post("/fortnite/api/game/v2/profile/:accountId/client/:command",
-    requireAuth(context.tokens), requireOwnAccount, runCommand(clientCommands, context, { deliverMail: true }));
+    requireAuth(context.tokens), requireOwnAccount, runCommand(clientCommands, context, { deliverMail: true, catchUp: new Map() }));
 
   // Other accounts' profiles (a party member's banner, power and heroes; from 1.8 their athena with profile0), read only.
   router.post("/fortnite/api/game/v2/profile/:accountId/public/:command",

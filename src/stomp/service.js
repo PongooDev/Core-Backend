@@ -177,6 +177,13 @@ export function createStompService({ tokens, quiet = false }) {
       pending.set(accountId, [...missed, { text, at: now }].slice(-pendingLimit));
     },
 
+    // Whether one of the account's connections is subscribed to its profile topic (and so gets its profile notifications).
+    hasProfileSubscription(accountId) {
+      const prefix = profileTopic(accountId);
+      return [...connections].some((connection) => connection.session?.accountId === accountId
+        && [...connection.subscriptions.values()].some((destination) => destination.toLowerCase().startsWith(prefix)));
+    },
+
     // Ends an account's STOMP connections (kick, ban).
     kick(accountId) {
       for (const { ws, session } of connections) if (session?.accountId === accountId) ws.close(1008);
