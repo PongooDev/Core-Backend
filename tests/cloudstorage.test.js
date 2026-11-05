@@ -286,18 +286,19 @@ test("the system hotfix forces on 3.0's LTM queues past AthenaEvent8 that are on
   }
 });
 
-// 3.5.1 (CL-4000805): its modes are FortPlaylistAthena assets, turned on by UFortGameInstance's PlaylistOverrides, and its
-// lobby opens on 50v50 v2 by the playlist's name (events/ltms.js).
-test("the system hotfix turns 3.5.1's playlists on by name and opens its lobby on 50v50 v2", async () => {
+// 3.5.1 (CL-4000805): its modes are FortPlaylistAthena assets, turned on by UFortGameInstance's PlaylistOverrides. 50v50 v2
+// is no longer its forced new mode while 50v50 is paused (CoreV2 #262), so with nothing switched on the lobby isn't pushed
+// onto it and no playlist is overridden.
+test("the system hotfix leaves 3.5.1's lobby on its own mode while 50v50 v2 is off", async () => {
   const backend = await startBackend();
   try {
     const token = await clientToken(backend.port);
     const agent = "Fortnite/4.20.0-4000805+++Fortnite+Release-3.5 Windows/10.0.17134.1.256.64bit";
     const settings = await raw(backend.port, "GET", "/fortnite/api/cloudstorage/system/DefaultGameUserSettings.ini", token, undefined, agent);
-    assert.equal(settings.body.toString("utf8"), "[/Script/FortniteGame.FortGameUserSettings]\r\nLastSelectedPlaylist=Playlist_50v50\r\n");
+    assert.equal(settings.status, 404, "no new mode, so no LastSelectedPlaylist pushed");
     const game = (await raw(backend.port, "GET", "/fortnite/api/cloudstorage/system/DefaultGame.ini", token, undefined, agent))
       .body.toString("utf8").split("\r\n");
-    assert.ok(game.includes("+PlaylistOverrides=(PlaylistName=Playlist_50v50,bEnabled=true)"));
+    assert.ok(!game.includes("+PlaylistOverrides=(PlaylistName=Playlist_50v50,bEnabled=true)"));
     assert.ok(!game.some((line) => /ForceEnabled|RegionsWithBattleRoyaleEvent/.test(line)));
   } finally {
     backend.close();

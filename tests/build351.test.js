@@ -194,11 +194,13 @@ test("3.5.1's LTMs: its playlist assets, 50v50 v2 its new mode, by PlaylistOverr
   }
   assert.ok(!hasLtm("fiftyFiftyV2", v33));
   const none = { matchmakingModes: {} };
-  assert.equal(ltmNewMode(v351, none)?.id, "fiftyFiftyV2");
-  assert.equal(ltmOn("fiftyFiftyV2", v351, { matchmakingModes: { fiftyFiftyV2: false } }), true, "on whatever its switch");
-  assert.equal(lastSelectedPlaylistOf(ltmNewMode(v351, none), v351), "Playlist_50v50");
-  assert.deepEqual(ltmPlaylistOverrides(v351, none), ["Playlist_50v50"]);
-  assert.deepEqual(ltmPlaylistOverrides(v351, { matchmakingModes: { blitz: true, solidGoldSolo: true } }), ["Playlist_Blitz_Squad", "Playlist_50v50", "Playlist_SolidGold_Solo"]);
+  // 50v50 is paused, so 50v50 v2 is no new mode: it follows its switch, off by default (CoreV2 #262).
+  assert.equal(ltmNewMode(v351, none), null);
+  assert.equal(ltmOn("fiftyFiftyV2", v351, { matchmakingModes: { fiftyFiftyV2: false } }), false);
+  assert.equal(ltmOn("fiftyFiftyV2", v351, { matchmakingModes: { fiftyFiftyV2: true } }), true);
+  assert.deepEqual(ltmPlaylistOverrides(v351, none), []);
+  assert.deepEqual(ltmPlaylistOverrides(v351, { matchmakingModes: { fiftyFiftyV2: true } }), ["Playlist_50v50"]);
+  assert.deepEqual(ltmPlaylistOverrides(v351, { matchmakingModes: { blitz: true, solidGoldSolo: true } }), ["Playlist_Blitz_Squad", "Playlist_SolidGold_Solo"]);
   assert.deepEqual(ltmPlaylistOverrides(v33, { matchmakingModes: { blitz: true } }), []);
   assert.deepEqual(ltmForcedQueues(v351, { matchmakingModes: { fiveByTwenty: true } }), []);
   assert.deepEqual(ltmEventFlags(v351, { matchmakingModes: { blitz: true } }), []);
@@ -209,7 +211,7 @@ test("3.5.1's LTMs: its playlist assets, 50v50 v2 its new mode, by PlaylistOverr
   // A 3.5.1 playlist's matches count Athena.Playlist.Event.<PlaylistId>, Blitz Squads' Event.8.
   assert.deepEqual([19, 36, 37, 26, 50].map((id) => eventTagOfPlaylist(id, v351)), [8, 36, 37, 26, 50]);
   assert.deepEqual([19, 36, 37].map((id) => eventTagOfPlaylist(id, v33)), [8, 8, 8]);
-  // With nothing turned on, only 50v50 v2 runs there, and it counts no event quest (its own counts Athena.Playlist.FiftyFifty).
+  // With nothing turned on no LTM runs there, so no event quest is counted.
   assert.deepEqual(ltmQuests({ running: true }, v351), []);
 });
 
