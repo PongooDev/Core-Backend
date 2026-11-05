@@ -27,6 +27,8 @@ import { isMtxCurrency } from "./items.js";
 // it was, and the same account can go back and forth. Each view has its own revision (profile0's coreViews, never sent),
 // counted from the changes that are its, so a client's copy of one is only replaced when that one changed.
 const lastProfile0Build = 3942182;
+// 3.6 (CL-4019403), the first build with self-service returns (store/refunds.js refundsBuild).
+const refundsBuild = 4019403;
 
 export const accountViews = ["campaign", "common_core", "common_public"];
 export const isAccountView = (profileId) => accountViews.includes(profileId);
@@ -91,6 +93,11 @@ const walletItem = (item) => (isMtxCurrency(item.templateId) ? { ...item, attrib
 export function viewProfile({ version, wipeNumber, stats, items }, viewId) {
   if (viewId === "common_public") return { version, wipeNumber, stats: { attributes: publicStats(stats.attributes.homebase) }, items: {} };
   const attributes = Object.fromEntries(Object.entries(stats.attributes).filter(([name]) => statView(name) === viewId));
+  // 3.6's purchase history (store/refunds.js) reads mtx_purchase_history's refundCredits as the returns left: an account
+  // that has bought nothing since has its three.
+  if (viewId === "common_core" && !attributes.mtx_purchase_history && Number(currentBuild()) >= refundsBuild) {
+    attributes.mtx_purchase_history = { purchases: [], refundCredits: 3, refundsUsed: 0 };
+  }
   const viewItems = Object.fromEntries(Object.entries(items).filter(([, item]) => itemView(item.templateId) === viewId)
     .map(([itemId, item]) => [itemId, walletItem(item)]));
   return { version, wipeNumber, stats: { attributes }, items: viewItems };

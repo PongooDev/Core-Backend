@@ -267,6 +267,15 @@ function removeCosmetic(tracker, itemId) {
   if (Array.isArray(profile.coreDances)) profile.coreDances = profile.coreDances.map((id) => (sameId(String(id ?? ""), itemId) ? "" : id));
 }
 
+// A cosmetic leaving the locker by its item id or template id (3.6's returns, store/refunds.js): whether it was there.
+export function removeCosmeticItem(session, idOrTemplate) {
+  const tracker = session.profile("athena");
+  const itemId = tracker.profile.items[idOrTemplate] ? idOrTemplate : findItem(tracker.profile, idOrTemplate);
+  if (!itemId) return false;
+  removeCosmetic(tracker, itemId);
+  return true;
+}
+
 // Why a cosmetic the panel would take out of a locker stays (Core-Backend #159): the starters and what the player has
 // earned (season level rewards reached, victory umbrellas of recorded wins) are given back the next time the profile is
 // set up, so taking them is refused. null for one that can go.

@@ -28,6 +28,7 @@ import { openCardPackBatch } from "./OpenCardPackBatch.js";
 import { purchaseCatalogEntry } from "./PurchaseCatalogEntry.js";
 import { purchaseHomebaseNode } from "./PurchaseHomebaseNode.js";
 import { queryProfile } from "./QueryProfile.js";
+import { refundMtxPurchase } from "./RefundMtxPurchase.js";
 import { abandonExpeditionCommand, collectExpeditionCommand, refreshExpeditions, startExpeditionCommand } from "./RefreshExpeditions.js";
 import { requestEventFlags } from "./RequestEventFlags.js";
 import { removeGiftBox } from "./RemoveGiftBox.js";
@@ -87,6 +88,7 @@ export const clientCommands = {
   RecycleItem: recycleItemCommand,
   RecycleItemBatch: recycleItemBatchCommand,
   RefreshExpeditions: refreshExpeditions,
+  RefundMtxPurchase: refundMtxPurchase,
   RemoveGiftBox: removeGiftBox,
   RequestEventFlags: requestEventFlags,
   SetBattleRoyaleBanner: setBattleRoyaleBanner,

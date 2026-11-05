@@ -6,6 +6,7 @@ import { buyBattlePass, buyTiers, recordBattlePassSpend, tiersLeft } from "../..
 import { lootEntry } from "../../../profiles/items.js";
 import { grant, itemEvent } from "../../../profiles/progress.js";
 import { findOffer } from "../../../store/catalog.js";
+import { hasRefunds, recordPurchase } from "../../../store/refunds.js";
 import { eventPurchases, recordEventPurchase } from "../../../store/eventstore.js";
 import { stormTickets, upgradeLlamaTickets } from "../../../events/mutantstorms.js";
 import { firecrackerTickets, upgradeLlamaFirecrackers } from "../../../events/spring2018.js";
@@ -108,12 +109,21 @@ export function purchaseCatalogEntry({ req, session, notifications }) {
       throw new McpError("errors.com.epicgames.modules.gamesubcatalog.purchase_not_allowed",
         `${offer.title} unlocks at season level ${offer.seasonLevel}, and you are level ${level}`);
     }
-    spendMtx(tracker, total);
+    const spent = spendMtx(tracker, total);
+    const before = new Set(Object.keys(session.profile("athena").profile.items));
     const item = grantCosmetic(session, offer.templateId);
     // An outfit sold with its back bling (store/itemshop.js bundledBackBlings) gives that too, unless it is owned.
     const extras = (offer.itemGrants ?? []).slice(1).filter(({ templateId }) => !ownsCosmetic(session, templateId))
       .map(({ templateId }) => grantCosmetic(session, templateId)).filter(Boolean);
-    notifications.push({ type: "CatalogPurchase", primary: true, lootResult: { items: [item, ...extras].map(lootEntry) } });
+    const loot = [item, ...extras].filter(Boolean).map(lootEntry);
+    notifications.push({ type: "CatalogPurchase", primary: true, lootResult: { items: loot } });
+    // From 3.6 the item shop's cosmetics can be returned (store/refunds.js): the purchase is recorded with every locker item
+    // it added (an outfit's split-off back bling too) and the V-Bucks it took. The Season Shop's (1.8.2) aren't.
+    if (hasRefunds() && !offer.seasonLevel) {
+      const added = Object.entries(session.profile("athena").profile.items).filter(([itemId]) => !before.has(itemId))
+        .map(([itemId, held]) => lootEntry({ profileId: "athena", itemId, templateId: held.templateId, quantity: held.quantity ?? 1 }));
+      recordPurchase(tracker, { offerId, lootResult: added.length ? added : loot, totalMtxPaid: total, spent });
+    }
     return;
   }
   // An Event Store offer (store/eventstore.js) sells as many as its limit, counted in the account's tracker.
