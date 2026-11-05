@@ -106,6 +106,18 @@ export function purchaseRoutes(context) {
   router.get("/catalog/api/shared/bulk/offers", requireAuth(tokens), bulkOffers);
   router.get("/api/shared/bulk/offers", requireAuth(tokens), bulkOffers);
 
+  // The price engine's promotions for those offers (IOnlinePriceEngineService::QueryOfferPromotions, POST
+  // <priceengine>/api/shared/offers/price, 3.3 0x4B60A0): {lineOffers: [{offerId, price, appliedRules}]}, each a sale on
+  // one of the offers. Core runs no sales, so none. The catalog service's offer query only completes once the price
+  // engine has answered, and passes on its success (3.3 0x3BC9F0 -> the query's delegate); the catalog helper counts a
+  // failed price check as a failed catalog refresh ("Unable to complete price check", 0x80D6C0) and sets the next one 30
+  // seconds on (0x80E220), and a 304 to that refresh never moves it again: once the packs had a price (#239), the 404
+  // here left the catalog out of date for good, and the Event Store refreshed it every time its timer ticked
+  // (Core-Backend #242).
+  const offerPromotions = (req, res) => res.json({ lineOffers: [] });
+  router.post("/priceengine/api/shared/offers/price", requireAuth(tokens), offerPromotions);
+  router.post("/api/shared/offers/price", requireAuth(tokens), offerPromotions);
+
   // The purchase flow's page: ?showNavigation=true&namespace=fn&offers=<app store id>&analyticsSessionId=...
   router.get("/purchase", (req, res) => {
     const parsed = parseAppStoreId(req.query.offers);
