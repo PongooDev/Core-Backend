@@ -103,7 +103,8 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   no `shootingModel`), and 3.3's `4.20.0-3942182+++Fortnite+Release-3.3` (no extractor change; its build folder has no
   `Build.version` either), and 3.5.1's `4.20.0-4000805+++Fortnite+Release-3.5` (its only extractor change: its test gliders,
   DynamicsTestGlider, Glider_ProxyTest and Glider_TestStaticParts, and the debug harvesting tool Pickaxe_ID_zzz_StatDebugger are
-  left out like the test characters; its locker's Random entries, CID_Random and the rest, are kept). Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
+  left out like the test characters; its locker's Random entries, CID_Random and the rest, are kept), and 3.5.2's `4.20.0-4008490+++Fortnite+Release-3.5` (no extractor change: its extraction is
+  3.5.1's byte for byte, so it has no overlay of its own and plays on `gamedata/4000805`). Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `research.json`: the resource collectors (research points): each CollectedResource template's payout and the
   homebase attributes its rate, capacity and wallet cap come from, what each skill tree node adds to those attributes
