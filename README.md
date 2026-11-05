@@ -17,8 +17,8 @@ This repository does NOT include Fortnite game files, a launcher, a redirect, or
 
 | Status | Fortnite versions |
 | --- | --- |
-| Full support ✅ | 1.1 – 3.5.1 |
-| In development 🚧 | 3.5.2 |
+| Full support ✅ | 1.1 – 3.5.2 |
+| In development 🚧 | 3.6 |
 
 Core-Backend follows Core V2: one build at a time, each build fully working before the next, skipping builds nobody has a copy of. Full support is always one range: every build from the first version to the last one listed. Fortnite 3.4 is not supported: nobody has a copy of it, so the range skips it.
 
@@ -49,7 +49,8 @@ Core-Backend follows Core V2: one build at a time, each build fully working befo
 | 3.2 | Release-3.2 CL-3935073 (UE 4.20) | Full support ✅ |
 | 3.3 | Release-3.3 CL-3942182 (UE 4.20) | Full support ✅ |
 | 3.5.1 | Release-3.5 CL-4000805 (UE 4.20) | Full support ✅ |
-| 3.5.2 | Release-3.5 CL-4008490 (UE 4.20) | In development 🚧 |
+| 3.5.2 | Release-3.5 CL-4008490 (UE 4.20) | Full support ✅ |
+| 3.6 | Release-3.6 CL-4019403 (UE 4.20) | In development 🚧 |
 
 </details>
 
