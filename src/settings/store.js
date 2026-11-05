@@ -33,6 +33,9 @@ const defaults = {
   // The Store tab's V-Bucks packs (Core-Backend #223, store/currency.js): a simulated real-money purchase that gives the
   // pack's V-Bucks for free. On by default: the issue asked for them, and the admin panel can already give any amount.
   vbuckPacks: true,
+  // How those offers are paid (Core-Backend #248, services/fortnite/purchase.js): "free", the purchase page's Complete purchase
+  // button, or "code", a purchase code (store/purchasecodes.js) the page asks for and the admin panel hands out.
+  purchaseMode: "free",
   // Storm Shield structure limits (Core-Backend #115, services/fortnite/structurelimit.js): how many player-built
   // pieces and traps a Storm Shield holds before building is refused (its game state's MaxPlayerStructures, 3000 in
   // the game). structureLimit is every Storm Shield's (null: the game's own), and structureLimits holds a Storm
@@ -523,6 +526,7 @@ export function createSettingsStore(dataDir) {
       settings.bots = botsValue(loaded.bots, defaults.bots);
       settings.regionFallback = loaded.regionFallback !== false;
       settings.vbuckPacks = loaded.vbuckPacks !== false;
+      settings.purchaseMode = loaded.purchaseMode === "code" ? "code" : "free";
       settings.twitchPrimePack = loaded.twitchPrimePack === true;
       settings.matchStartCountdown = loaded.matchStartCountdown !== false;
       settings.matchStartBufferSeconds = matchStartBufferValue(loaded.matchStartBufferSeconds) ?? defaults.matchStartBufferSeconds;
@@ -667,6 +671,7 @@ export function createSettingsStore(dataDir) {
       settings.challengeUnlock = challengeUnlockValue(partial.challengeUnlock, settings.challengeUnlock ?? {});
       if (typeof partial.regionFallback === "boolean") settings.regionFallback = partial.regionFallback;
       if (typeof partial.vbuckPacks === "boolean") settings.vbuckPacks = partial.vbuckPacks;
+      if (partial.purchaseMode === "free" || partial.purchaseMode === "code") settings.purchaseMode = partial.purchaseMode;
       if (typeof partial.twitchPrimePack === "boolean") settings.twitchPrimePack = partial.twitchPrimePack;
       if (typeof partial.matchStartCountdown === "boolean") settings.matchStartCountdown = partial.matchStartCountdown;
       settings.matchStartBufferSeconds = matchStartBufferValue(partial.matchStartBufferSeconds) ?? settings.matchStartBufferSeconds;

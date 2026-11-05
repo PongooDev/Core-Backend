@@ -976,6 +976,7 @@ export function adminRoutes(context) {
       bots: req.body?.bots,
       regionFallback: req.body?.regionFallback,
       vbuckPacks: req.body?.vbuckPacks,
+      purchaseMode: req.body?.purchaseMode,
       twitchPrimePack: req.body?.twitchPrimePack,
       matchStartCountdown: req.body?.matchStartCountdown,
       matchStartBufferSeconds: req.body?.matchStartBufferSeconds,
@@ -1088,6 +1089,7 @@ export function adminRoutes(context) {
       weeklyDurationDays: config.weeklyDurationDays ?? 7,
       // The Store tab's V-Bucks packs (store/currency.js), switched with /admin/api/settings.
       vbuckPacks: settings?.get?.()?.vbuckPacks !== false,
+      purchaseMode: settings?.get?.()?.purchaseMode === "code" ? "code" : "free",
       currentShop: {
         featured: offers.BRWeeklyStorefront.map(mapOffer),
         daily: offers.BRDailyStorefront.map(mapOffer)
@@ -1785,6 +1787,28 @@ export function adminRoutes(context) {
     const success = context.friendCodes.delete(req.params.code);
     if (!success) return notFound(res, `Code "${req.params.code}" not found`);
     res.json({ success: true, deleted: req.params.code });
+  });
+
+  // Purchase codes (Core-Backend #248, store/purchasecodes.js): what the Store tab's purchase page asks for while the
+  // admin panel's purchaseMode is "code". The code's text is in the answer to its creation only.
+  router.get("/admin/api/purchase-codes", (req, res) => res.json(context.purchaseCodes.list()));
+
+  router.post("/admin/api/purchase-codes", (req, res) => {
+    const count = req.body?.count === undefined ? 1 : Number(req.body.count);
+    if (!Number.isInteger(count) || count < 1 || count > 100) return invalid(res, "Count must be a whole number from 1 to 100.");
+    if (count > 1 && req.body?.code) return invalid(res, "Typed codes are made one at a time.");
+    try {
+      const created = Array.from({ length: count }, () => context.purchaseCodes.create(req.body ?? {}));
+      res.status(201).json(count === 1 ? created[0] : { codes: created });
+    } catch (err) {
+      return invalid(res, err.message);
+    }
+  });
+
+  router.post("/admin/api/purchase-codes/:id/revoke", (req, res) => {
+    const revoked = context.purchaseCodes.revoke(req.params.id);
+    if (!revoked) return notFound(res, "No such purchase code");
+    res.json(revoked);
   });
 
   // Code Folders

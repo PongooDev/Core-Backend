@@ -6,6 +6,7 @@ import { log } from "../../log.js";
 import { httpsProxied, requestHost } from "../../network.js";
 import { openSession } from "../../profiles/session.js";
 import { catalogServiceOffer, grantRealMoneyOffer, hasCurrencyStore, parseAppStoreId, purchaseCount } from "../../store/currency.js";
+import { codeProblems } from "../../store/purchasecodes.js";
 import { notifyProfiles } from "../mcp/profile.js";
 
 // The Store tab's simulated real-money purchases (Core-Backend #223, store/currency.js): the catalog service's prices
@@ -40,6 +41,13 @@ export function purchaseFlowSection(req, network, { build, enabled }) {
 
 const pageMinutes = 15;
 const maxPending = 1000;
+
+// A purchase code is tried against the account and the address that sent it: this many wrong codes in the window lock
+// the account (or the address) out of trying more until it is over (Core-Backend #248). The address's limit is higher as
+// a tunnelled or shared connection puts many players behind one.
+const attemptWindowMs = 15 * 60_000;
+const accountAttempts = 5;
+const addressAttempts = 30;
 
 function cookies(req) {
   return Object.fromEntries(String(req.get("cookie") ?? "").split(";").map((part) => part.trim().split("="))
@@ -77,6 +85,7 @@ function page(res, status, title, body, nonce = crypto.randomBytes(16).toString(
 body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0b1a33;color:#fff;font:16px/1.4 Arial,Helvetica,sans-serif}
 main{width:min(440px,90vw);background:#13294d;border-radius:8px;padding:28px;text-align:center;box-shadow:0 8px 30px #0008}
 h1{font-size:22px;margin:0 0 6px}p{margin:8px 0;color:#c9d6ea}.price{font-size:28px;font-weight:bold;color:#ffd84a;margin:14px 0}
+input{box-sizing:border-box;width:100%;padding:12px;margin:0 0 10px;border:2px solid #2d4a7a;border-radius:6px;background:#0b1a33;color:#fff;font-size:18px;text-align:center;letter-spacing:1px;text-transform:uppercase}
 button{width:100%;padding:14px;border:0;border-radius:6px;background:#ffd84a;color:#13294d;font-size:18px;font-weight:bold;cursor:pointer}
 button[disabled]{opacity:.6;cursor:default}.note{font-size:13px;color:#8fa5c7}.error{color:#ff8a8a}
 </style></head><body><main>${body}</main></body></html>`);
@@ -89,6 +98,22 @@ export function purchaseRoutes(context) {
   const router = express.Router();
   const pending = new Map();
   const enabled = () => settings?.get?.()?.vbuckPacks !== false;
+  // Whether the admin panel has purchases need a code (purchaseMode "code", store/purchasecodes.js) rather than the free button.
+  const needsCode = () => settings?.get?.()?.purchaseMode === "code";
+
+  // Wrong codes tried, by account and by address: key -> { count, resetAt }.
+  const wrongCodes = new Map();
+  const attemptKeys = (req, accountId) => [[`account:${accountId}`, accountAttempts], [`address:${req.socket.remoteAddress}`, addressAttempts]];
+  const lockedOut = (keys, now) => keys.map(([key, max]) => ({ record: wrongCodes.get(key), max }))
+    .filter(({ record, max }) => record && record.resetAt > now && record.count >= max).map(({ record }) => record.resetAt).sort((a, b) => b - a)[0];
+  function wrongCode(keys, now) {
+    if (wrongCodes.size > 1000) for (const [key, record] of wrongCodes) if (record.resetAt <= now) wrongCodes.delete(key);
+    for (const [key] of keys) {
+      const record = wrongCodes.get(key);
+      if (!record || record.resetAt <= now) wrongCodes.set(key, { count: 1, resetAt: now + attemptWindowMs });
+      else record.count += 1;
+    }
+  }
 
   // An offer of one purchase per account (the Starter Pack) the account has bought.
   const alreadyBought = ({ offer, accountId }) => Boolean(offer.oncePerAccount)
@@ -146,19 +171,27 @@ export function purchaseRoutes(context) {
     pending.set(purchaseId, { accountId: parsed.accountId, offerId: parsed.offer.offerId, appStoreId: req.query.offers, expires: now + pageMinutes * 60_000 });
     const nonce = crypto.randomBytes(16).toString("base64");
     const { offer } = parsed;
-    page(res, 200, "Complete purchase", `<h1>${escapeHtml(offer.title)}</h1>
-<p>${escapeHtml(accounts.get(parsed.accountId).displayName ?? "")}</p>
-<div class="price"><s>${escapeHtml(dollars(offer.price, offer.currencyCode))}</s> FREE</div>
+    // With purchases needing a code the page asks for one, and has no free button.
+    const byCode = needsCode();
+    const purchase = byCode
+      ? `<div class="price">${escapeHtml(dollars(offer.price, offer.currencyCode))}</div>
+<form id="buy" method="post" action="/purchase/complete"><input type="hidden" name="purchaseId" value="${purchaseId}"><input id="code" name="code" type="text" maxlength="64" autocomplete="off" spellcheck="false" placeholder="Enter your code" required><button id="go" type="submit">Redeem code</button></form>
+<p class="note" id="status">Enter a promo code to get this offer.</p>`
+      : `<div class="price"><s>${escapeHtml(dollars(offer.price, offer.currencyCode))}</s> FREE</div>
 <form id="buy" method="post" action="/purchase/complete"><input type="hidden" name="purchaseId" value="${purchaseId}"><button id="go" type="submit">Complete purchase</button></form>
-<p class="note" id="status">A simulated purchase: no money changes hands.</p>
+<p class="note" id="status">A simulated purchase: no money changes hands.</p>`;
+    page(res, 200, byCode ? "Redeem code" : "Complete purchase", `<h1>${escapeHtml(offer.title)}</h1>
+<p>${escapeHtml(accounts.get(parsed.accountId).displayName ?? "")}</p>
+${purchase}
 <script nonce="${nonce}">
 (function () {
-  var form = document.getElementById("buy"), go = document.getElementById("go"), status = document.getElementById("status");
+  var form = document.getElementById("buy"), go = document.getElementById("go"), status = document.getElementById("status"), code = document.getElementById("code");
   var bridge = window.ue && window.ue.purchaseflow;
   form.addEventListener("submit", function (event) {
     event.preventDefault();
     go.disabled = true;
-    status.textContent = "Completing your purchase...";
+    status.className = "note";
+    status.textContent = code ? "Checking your code..." : "Completing your purchase...";
     var request = new XMLHttpRequest();
     request.open("POST", "/purchase/complete");
     request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -168,6 +201,7 @@ export function purchaseRoutes(context) {
       if (request.status !== 200 || !answer || !answer.receipt) {
         status.textContent = (answer && answer.errorMessage) || "The purchase failed.";
         status.className = "note error";
+        if (code) go.disabled = false;
         return;
       }
       status.textContent = "Done! Your V-Bucks are in your account.";
@@ -177,7 +211,7 @@ export function purchaseRoutes(context) {
       }
     };
     request.onerror = function () { status.textContent = "The purchase failed."; status.className = "note error"; go.disabled = false; };
-    request.send("purchaseId=" + encodeURIComponent(form.purchaseId.value));
+    request.send("purchaseId=" + encodeURIComponent(form.purchaseId.value) + (code ? "&code=" + encodeURIComponent(code.value) : ""));
   });
 })();
 </script>`, nonce);
@@ -197,7 +231,9 @@ export function purchaseRoutes(context) {
     }
     const purchaseId = String(req.body?.purchaseId ?? "");
     const entry = pending.get(purchaseId);
-    pending.delete(purchaseId);
+    // A wrong code leaves the page to try again; anything else, and the free button, uses it up.
+    const byCode = needsCode();
+    if (!byCode) pending.delete(purchaseId);
     if (!entry || entry.expires <= Date.now()) {
       return sendError(res, 400, "errors.com.epicgames.purchase.expired", "This purchase page has expired. Close it and buy again from the Store.");
     }
@@ -214,12 +250,40 @@ export function purchaseRoutes(context) {
       return sendError(res, 409, "errors.com.epicgames.purchase.already_owned", "This offer can be bought once per account");
     }
 
+    // Paid by a code (Core-Backend #248): rate limited per account and address, claimed (atomically, store/purchasecodes.js)
+    // before the grant, and given back if the grant fails.
+    let claimed = null;
+    if (byCode) {
+      const code = String(req.body?.code ?? "").trim().slice(0, 100);
+      if (!code) return sendError(res, 400, "errors.com.epicgames.purchase.code_required", "Enter a code to get this offer.");
+      const now = Date.now();
+      const keys = attemptKeys(req, entry.accountId);
+      const until = lockedOut(keys, now);
+      if (until) {
+        res.set("Retry-After", String(Math.ceil((until - now) / 1000)));
+        return sendError(res, 429, "errors.com.epicgames.common.throttled", `Too many wrong codes. Try again in ${Math.ceil((until - now) / 60_000)} minutes.`);
+      }
+      const result = context.purchaseCodes.claim(code, { offerId: parsed.offer.offerId, accountId: entry.accountId, now });
+      if (result.problem) {
+        wrongCode(keys, now);
+        return sendError(res, 400, "errors.com.epicgames.purchase.invalid_code", codeProblems[result.problem]);
+      }
+      claimed = result.id;
+      pending.delete(purchaseId);
+    }
+
     const transactionId = crypto.randomUUID().replaceAll("-", "").toUpperCase();
     const session = openSession(profiles, entry.accountId);
-    const granted = grantRealMoneyOffer(session, parsed.offer, transactionId);
-    session.commit();
+    let granted;
+    try {
+      granted = grantRealMoneyOffer(session, parsed.offer, transactionId);
+      session.commit();
+    } catch (error) {
+      if (claimed) context.purchaseCodes.release(claimed, entry.accountId);
+      throw error;
+    }
     notifyProfiles(context, session);
-    log("Store", `${entry.accountId} bought ${parsed.offer.offerId} (${granted.map(({ templateId, quantity }) => `${quantity} ${templateId}`).join(", ")}), transaction ${transactionId}`);
+    log("Store", `${entry.accountId} bought ${parsed.offer.offerId}${claimed ? ` with a code (${claimed})` : ""} (${granted.map(({ templateId, quantity }) => `${quantity} ${templateId}`).join(", ")}), transaction ${transactionId}`);
     // The purchase flow's receipt (FPurchaseFlowReceiptParam): the client checks it out and sends it to MCP
     // (VerifyRealMoneyPurchase), which has nothing left to give.
     res.set("Cache-Control", "no-store").json({

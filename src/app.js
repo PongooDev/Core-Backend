@@ -11,6 +11,7 @@ import { configureChallenges } from "./profiles/challenges.js";
 import { configureBattlePass } from "./battlepass/season1.js";
 import { createFriendStore } from "./friends/store.js";
 import { createFriendCodeStore } from "./friendcodes/store.js";
+import { createPurchaseCodeStore } from "./store/purchasecodes.js";
 import { networkAdminRoutes } from "./admin/network.js";
 import { adminRoutes } from "./admin/routes.js";
 import { createTokenStore } from "./accounts/tokens.js";
@@ -78,7 +79,7 @@ export function createContext(config) {
   if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
   if (config.seasonalEvents !== undefined) settings.update({ seasonalEvents: config.seasonalEvents });
   for (const key of ["battleRoyaleVbucks", "battleRoyaleRewards", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits", "cheats", "cheatAccounts",
-    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "bots", "regionFallback", "vbuckPacks", "twitchPrimePack", "matchStartCountdown", "matchStartBufferSeconds", "serverRegions", "allowedBuilds", "defaultFoundersAccess", "remoteAdmin", "events", "battlepass", "matchmakingModes", "ltmOriginalDates", "serverLimits", "regionHostingIps", "customMatchServers", "customMatchFallback"]) {
+    "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "bots", "regionFallback", "vbuckPacks", "purchaseMode", "twitchPrimePack", "matchStartCountdown", "matchStartBufferSeconds", "serverRegions", "allowedBuilds", "defaultFoundersAccess", "remoteAdmin", "events", "battlepass", "matchmakingModes", "ltmOriginalDates", "serverLimits", "regionHostingIps", "customMatchServers", "customMatchFallback"]) {
     if (config[key] !== undefined) settings.update({ [key]: config[key] });
   }
   const friends = createFriendStore(config.dataDir);
@@ -115,6 +116,7 @@ export function createContext(config) {
     resetTokens: createResetTokenStore(),
     friends,
     friendCodes: createFriendCodeStore(config.dataDir),
+    purchaseCodes: createPurchaseCodeStore(config.dataDir),
     stats,
     profiles,
     mailbox: createMailbox(),

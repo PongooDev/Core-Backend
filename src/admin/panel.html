@@ -5516,6 +5516,63 @@
           })),
         el("p", { class: "note", style: "margin:0;", text: "From 1.8, the Store tab sells Epic's four V-Bucks packs (1,000, 2,800, 7,500 and 13,500). Buying one opens a page with a Complete purchase button that gives the V-Bucks for free, as a simulated real-money purchase. On Season 3 builds it also sells the Battle Royale Starter Pack (Rogue Agent outfit, Catalyst back bling and 600 V-Bucks, once per account). Turn this off to hide the packs." }));
 
+      // How the packs are paid (Core-Backend #248): free, or with a purchase code (store/purchasecodes.js) made here.
+      const purchaseCodeOffers = [["any", "Any offer"], ["core_mtx_1000", "1,000 V-Bucks pack"], ["core_mtx_2800", "2,800 V-Bucks pack"],
+        ["core_mtx_7500", "7,500 V-Bucks pack"], ["core_mtx_13500", "13,500 V-Bucks pack"], ["core_starter_br_s3", "Battle Royale Starter Pack"]];
+      const purchaseOfferName = (offerId) => (purchaseCodeOffers.find(([id]) => id === offerId) ?? [offerId, offerId])[1];
+      const purchaseCodeList = el("div", { style: "margin-top:14px;" });
+      const purchaseNewCode = el("div", { style: "margin-top:10px;" });
+      const purchaseCodeInput = el("input", { class: "field", placeholder: "Code (blank: a random one)", maxlength: "64", style: "width:220px;" });
+      const purchaseCodeOffer = el("select", { class: "field" }, purchaseCodeOffers.map(([id, name]) => el("option", { value: id, text: name })));
+      const purchaseCodeUses = el("input", { type: "number", class: "field", min: "1", max: "1000000", value: "1", style: "width:90px;" });
+      const purchaseCodeCount = el("input", { type: "number", class: "field", min: "1", max: "100", value: "1", style: "width:80px;" });
+      const purchaseCodeExpiry = el("input", { type: "datetime-local", class: "field" });
+      const purchaseCodeRepeat = el("input", { type: "checkbox" });
+      const purchaseLabelled = (text, input) => el("label", { style: "display:flex; flex-direction:column; gap:6px; font-size:12px; font-weight:600; color:var(--muted);" }, el("span", { text }), input);
+      const purchaseShowCodes = async () => {
+        const list = await api("/admin/api/purchase-codes").catch(() => []);
+        purchaseCodeList.replaceChildren(list.length === 0 ? el("p", { class: "note", text: "No purchase codes yet." }) : el("div", { class: "table-wrap" }, el("table", {},
+          el("thead", {}, el("tr", {}, ["Code", "Offer", "Uses", "Per account", "Expires", "Status", ""].map((text) => el("th", { text })))),
+          el("tbody", {}, list.map((code) => el("tr", {},
+            el("td", { text: `…${code.hint}` }),
+            el("td", { text: purchaseOfferName(code.offerId) }),
+            el("td", { text: `${code.usedCount} / ${code.maxUses}`, title: code.uses.map((use) => `${use.accountId} ${use.at}`).join("\n") }),
+            el("td", { text: code.multiplePerAccount ? "Repeatable" : "Once" }),
+            el("td", { text: code.expiresAt ? new Date(code.expiresAt).toLocaleString() : "Never" }),
+            el("td", {}, chip(code.status.replace("_", " "), code.status === "active" ? "good" : "")),
+            el("td", {}, code.status === "revoked" ? null : btn("Revoke", async () => {
+              if (!await confirmModal(`Revoke the code ending ${code.hint}? It can't be used again.`, { confirmText: "Revoke", confirmKind: "danger" })) return;
+              if (await act(api(`/admin/api/purchase-codes/${code.id}/revoke`, {}), "Code revoked")) purchaseShowCodes();
+            }, "ghost"))))))));
+      };
+      const purchaseMakeCodes = btn("Create code", async () => {
+        const body = { code: purchaseCodeInput.value.trim() || undefined, offerId: purchaseCodeOffer.value, maxUses: Number(purchaseCodeUses.value) || 1,
+          multiplePerAccount: purchaseCodeRepeat.checked, expiresAt: purchaseCodeExpiry.value ? new Date(purchaseCodeExpiry.value).toISOString() : undefined, count: Number(purchaseCodeCount.value) || 1 };
+        const made = await act(api("/admin/api/purchase-codes", body), "Code created");
+        if (!made) return;
+        const codes = made.codes ?? [made];
+        purchaseCodeInput.value = "";
+        purchaseNewCode.replaceChildren(el("p", { class: "note", text: "Copy these now: a code isn't shown again after this." }),
+          el("pre", { style: "user-select:all; margin:6px 0;", text: codes.map((code) => code.code).join("\n") }));
+        purchaseShowCodes();
+      });
+      purchaseShowCodes();
+      const purchaseCodesSection = el("section", { class: "panel" },
+        el("div", { class: "panel-head", style: "margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; gap:12px;" },
+          el("h2", { text: "Purchases need a code" }),
+          toggleSwitch(shop.purchaseMode === "code", async (checked) => {
+            const res = await act(api("/admin/api/settings", { purchaseMode: checked ? "code" : "free" }), checked ? "Purchases need a code" : "Purchases are free");
+            if (res) showShop();
+          })),
+        el("p", { class: "note", style: "margin:0;", text: "Off, the purchase page has a Complete purchase button that gives the offer for free. On, it asks for a promo code instead and gives the offer only for a valid one (wrong codes are rate limited). A code is for one offer or any, has a number of uses, may be used by an account once or repeatedly, and may expire." }),
+        el("div", { style: "display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap; margin-top:12px;" },
+          purchaseLabelled("Code", purchaseCodeInput), purchaseLabelled("Offer", purchaseCodeOffer), purchaseLabelled("Uses", purchaseCodeUses), purchaseLabelled("How many", purchaseCodeCount),
+          purchaseLabelled("Expires", purchaseCodeExpiry),
+          el("label", { style: "display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:var(--muted); padding-bottom:10px;" }, purchaseCodeRepeat, el("span", { text: "An account may use it more than once" })),
+          purchaseMakeCodes),
+        purchaseNewCode,
+        purchaseCodeList);
+
       const activeMode = shop.mode || "fnbr";
 
       const modeTabs = [
@@ -5862,6 +5919,7 @@
               btn("Refresh", showShop, "ghost"))),
           timingSettingsSection,
           vbuckPacksSection,
+          purchaseCodesSection,
           modePicker,
           configSection,
           previewSection
