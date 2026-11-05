@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { clientToken, get, requestToken, send, startBackend, userLogin } from "./helpers.js";
 import { redactUrl } from "../src/log.js";
-import { purchaseQuery } from "../src/services/fortnite/purchase.js";
+import { exchangeQuery, purchaseQuery } from "../src/services/fortnite/purchase.js";
 
 // Core-Backend #248: the purchase flow's cookie is always Secure, which CEF won't set for an http:// page, so the flow
 // signs its page in with an exchange code (FOnlineIdentityMcp::GenerateAuthRedirectUrl) and opens
@@ -139,4 +139,12 @@ test("exchange codes stay out of the log", () => {
   assert.equal(redactUrl("/purchase?offers=a"), "/purchase?offers=a");
   assert.equal(purchaseQuery("http:///127.0.0.1:5595/purchase?offers=a").get("offers"), "a");
   assert.equal(purchaseQuery("http://127.0.0.1:5595/other"), null);
+});
+
+// Core-Backend #250: 3.5.2's purchase flow reached "Unknown page" with a redirectUrl purchaseQuery didn't take.
+test("the sign-in takes the offer from any redirectUrl, or from beside it", () => {
+  assert.equal(exchangeQuery({ exchangeCode: "c", redirectUrl: "http:/127.0.0.1:5595/purchase?offers=a" }).get("offers"), "a");
+  assert.equal(exchangeQuery({ exchangeCode: "c", redirectUrl: "https://launcher-website-prod07.ol.epicgames.com/purchase?showNavigation=true", namespace: "fn", offers: "b" }).get("offers"), "b");
+  assert.equal(exchangeQuery({ exchangeCode: "c", redirectUrl: "http:///127.0.0.1:5595/purchase?offers=a&namespace=fn" }).get("namespace"), "fn");
+  assert.equal(exchangeQuery({ exchangeCode: "c", redirectUrl: "http:///127.0.0.1:5595/purchase" }), null);
 });

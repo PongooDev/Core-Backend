@@ -59,6 +59,22 @@ export function purchaseQuery(redirectUrl) {
   if (!/^https?:\/{2,3}[^/?#\\]+\/purchase\/?$/i.test(base)) return null;
   return new URLSearchParams(queryAt < 0 ? "" : url.slice(queryAt + 1));
 }
+
+// The page query an /exchange request carries (Core-Backend #250: on 3.5.2 a purchase reached "Unknown page", its
+// redirectUrl not the purchase URL purchaseQuery takes). The redirect only ever goes to this backend's own /purchase,
+// so any redirectUrl will do: its query, plus the page's parameters that came loose beside it (an unencoded redirectUrl
+// splits at its first "&"). Null only without an offer to buy, and the redirectUrl is logged for that.
+export function exchangeQuery(params) {
+  const query = purchaseQuery(params.redirectUrl) ?? new URLSearchParams(String(params.redirectUrl ?? "").split("#")[0].split("?")[1] ?? "");
+  for (const [name, value] of Object.entries(params)) {
+    if (name !== "exchangeCode" && name !== "redirectUrl" && typeof value === "string" && !query.has(name)) query.append(name, value);
+  }
+  if (!query.get("offers")) {
+    log("Purchase", `the purchase flow's sign-in names no offer to buy (redirectUrl ${JSON.stringify(String(params.redirectUrl ?? "").slice(0, 300))})`);
+    return null;
+  }
+  return query;
+}
 const maxPending = 1000;
 
 // A purchase code is tried against the account and the address that sent it: this many wrong codes in the window lock
@@ -241,7 +257,7 @@ ${purchase}
   // (cookieAccount), and the browser goes on to this backend's own /purchase with the flow's query (its offers): never to
   // another site, whatever redirectUrl names.
   router.get("/exchange", (req, res) => {
-    const query = purchaseQuery(req.query.redirectUrl);
+    const query = exchangeQuery(req.query);
     const entry = context.exchangeCodes?.redeem(String(req.query.exchangeCode ?? ""));
     const account = entry && accounts.get(entry.accountId);
     if (!query) return page(res, 400, "Unknown page", "<h1>Unknown page</h1><p class=\"error\">Close this window and open the Store again.</p>");
