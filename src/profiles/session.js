@@ -1,14 +1,34 @@
-import { fullProfile, trackChanges, visibleChanges } from "./changes.js";
+import { changeTemplate, fullProfile, trackChanges, visibleChanges } from "./changes.js";
+import { accountViews, isAccountView, usesCommonProfiles, viewChanges, viewProfile, viewRevision } from "./common.js";
 import { needsSetUp, setUpProfile } from "./setup.js";
 import { settleVault } from "./vault.js";
+
+// The profile Core saves a profile id's data in: 3.5's campaign, common_core and common_public are views of profile0
+// (profiles/common.js).
+export const storedProfileId = (profileId) => (isAccountView(profileId) ? "profile0" : profileId);
 
 // One command's view of an account's profiles: loads each on first use and saves the changed ones together.
 export function openSession(profiles, accountId, { setUp = true } = {}) {
   const opened = new Map();
 
+  // profile0's changes that are one view's.
+  const changesOf = (tracker, viewId) => viewChanges(visibleChanges(tracker.changes), viewId, tracker.profile, changeTemplate);
+
   function update(profileId, clientRevision) {
-    const { baseRevision, tracker } = opened.get(profileId);
+    const { baseRevision, viewBases, tracker } = opened.get(storedProfileId(profileId));
     const { profile } = tracker;
+    if (isAccountView(profileId)) {
+      const base = viewBases[profileId];
+      return {
+        profileRevision: viewRevision(profile, profileId).rvn,
+        profileId,
+        profileChangesBaseRevision: base,
+        profileChanges: clientRevision === base
+          ? changesOf(tracker, profileId)
+          : [{ changeType: "fullProfileUpdate", profile: viewProfile(fullProfile(profile), profileId) }],
+        profileCommandRevision: viewRevision(profile, profileId).commandRevision
+      };
+    }
     return {
       profileRevision: profile.rvn,
       profileId,
@@ -20,6 +40,12 @@ export function openSession(profiles, accountId, { setUp = true } = {}) {
     };
   }
 
+  // The ids the client knows profile0's changes by: the views that have some on 3.5 and later, profile0 before.
+  const changedIds = (profileId, tracker) => {
+    if (profileId !== "profile0" || !usesCommonProfiles(accountId)) return tracker.changes.length ? [profileId] : [];
+    return accountViews.filter((viewId) => changesOf(tracker, viewId).length);
+  };
+
   return {
     accountId,
 
@@ -28,10 +54,12 @@ export function openSession(profiles, accountId, { setUp = true } = {}) {
 
     // Whether the account has the profile, without making it.
     hasProfile(profileId) {
-      return opened.has(profileId) || profiles.exists(accountId, profileId);
+      const stored = storedProfileId(profileId);
+      return opened.has(stored) || profiles.exists(accountId, stored);
     },
 
-    profile(profileId) {
+    profile(requestedId) {
+      const profileId = storedProfileId(requestedId);
       if (!opened.has(profileId)) {
         const created = !profiles.exists(accountId, profileId);
         let profile = profiles.load(accountId, profileId);
@@ -45,15 +73,36 @@ export function openSession(profiles, accountId, { setUp = true } = {}) {
           profiles.save(setup.profile(profileId).profile);
           profile = profiles.load(accountId, profileId);
         }
-        opened.set(profileId, { baseRevision: profile.rvn, tracker: trackChanges(profile) });
+        const viewBases = profileId === "profile0"
+          ? Object.fromEntries(accountViews.map((viewId) => [viewId, viewRevision(profile, viewId).rvn]))
+          : null;
+        opened.set(profileId, { baseRevision: profile.rvn, viewBases, tracker: trackChanges(profile) });
       }
       return opened.get(profileId).tracker;
     },
 
+    // The revision the client last had of a profile when this command began, its view's for campaign, common_core
+    // and common_public.
+    revision(profileId) {
+      const { profile } = this.profile(profileId);
+      return isAccountView(profileId) ? viewRevision(profile, profileId).rvn : profile.rvn;
+    },
+
     commit({ newRevision = true } = {}) {
       // A change to profile0 can fill or free the vault: its overflow follows (profiles/vault.js).
-      const account = opened.get("profile0")?.tracker;
-      if (account?.changes.length) settleVault(account);
+      const account = opened.get("profile0");
+      if (account?.tracker.changes.length) {
+        settleVault(account.tracker);
+        // Whatever build asks, each of 3.5's views of profile0 counts the changes that are its (profiles/common.js), so
+        // a 3.5 client's copy stays right while its account plays on an earlier build too.
+        const { profile } = account.tracker;
+        const views = Object.fromEntries(accountViews.map((viewId) => {
+          const { rvn, commandRevision } = profile.coreViews?.[viewId] ?? { rvn: account.viewBases[viewId], commandRevision: profile.commandRevision };
+          const changed = newRevision && changesOf(account.tracker, viewId).length > 0;
+          return [viewId, { rvn: rvn + (changed ? 1 : 0), commandRevision: commandRevision + (changed ? 1 : 0) }];
+        }));
+        profile.coreViews = views;
+      }
       for (const { tracker } of opened.values()) {
         if (!tracker.changes.length) continue;
         if (newRevision) {
@@ -66,8 +115,15 @@ export function openSession(profiles, accountId, { setUp = true } = {}) {
 
     // The profiles this command changed, as MCP's profile notifications carry them (FProfileUpdateNotification).
     changedProfiles() {
-      return [...opened].filter(([, { tracker }]) => tracker.changes.length).map(([profileId, { tracker }]) => ({
-        profileId, changes: visibleChanges(tracker.changes), revision: tracker.profile.rvn, commandRevision: tracker.profile.commandRevision
+      return [...opened].flatMap(([storedId, { tracker }]) => changedIds(storedId, tracker).map((profileId) => {
+        const view = isAccountView(profileId);
+        const { rvn, commandRevision } = view ? viewRevision(tracker.profile, profileId) : tracker.profile;
+        return {
+          profileId,
+          changes: view ? changesOf(tracker, profileId) : visibleChanges(tracker.changes),
+          revision: rvn,
+          commandRevision
+        };
       }));
     },
 
@@ -76,8 +132,9 @@ export function openSession(profiles, accountId, { setUp = true } = {}) {
     response(profileId, clientRevision, notifications = [], whole = []) {
       const result = { ...update(profileId, clientRevision), serverTime: new Date().toISOString() };
       const others = [...opened]
-        .filter(([id, { tracker }]) => id !== profileId && tracker.changes.length)
-        .map(([id, { baseRevision }]) => update(id, baseRevision));
+        .flatMap(([storedId, { tracker }]) => changedIds(storedId, tracker))
+        .filter((id) => id !== profileId)
+        .map((id) => update(id, isAccountView(id) ? opened.get("profile0").viewBases[id] : opened.get(id).baseRevision));
       for (const id of whole) {
         if (id === profileId || others.some((other) => other.profileId === id) || !this.hasProfile(id)) continue;
         this.profile(id);

@@ -1,5 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import { battlePassOffers } from "../src/battlepass/season2.js";
 import { allowedBuildList, buildChoices } from "../src/builds/allowed.js";
 import { inBuild } from "../src/builds/context.js";
@@ -21,11 +24,15 @@ import { getQuest } from "../src/gamedata/quests.js";
 import { buildGameData, dataBuild } from "../src/gamedata/read.js";
 import { assignmentBucket, playlistTeamsOf, showsMatchStart } from "../src/matchmaking/service.js";
 import { challengeWeekCount } from "../src/profiles/challenges.js";
+import { isAccountView, itemView, noteClientBuild } from "../src/profiles/common.js";
+import { openSession } from "../src/profiles/session.js";
+import { createProfileStore } from "../src/profiles/store.js";
 import { buildOfSeason } from "../src/profiles/seasons.js";
 import { findOffer } from "../src/store/catalog.js";
 import { eventStoreEnds, eventStoreInstanceNow, eventStoreOffers, hasEventStore } from "../src/store/eventstore.js";
 import { itemShopOffers } from "../src/store/itemshop.js";
 import { worldInfo } from "../src/world/theaters.js";
+import { post, send, startBackend, userLogin } from "./helpers.js";
 
 // Fortnite 3.5.1 (++Fortnite+Release-3.5-CL-4000805, UE 4.20, 11 April 2018): Season 3, on its own data
 // (gamedata/4000805), sharing 3.0's Battle Pass, clock and leaderboards. Core has no 3.4.
@@ -217,4 +224,171 @@ test("3.5.1's playlist teams are its assets': 50v50 v2's two sides of 50, High E
 test("3.5.1 takes AssignMatch's six fields and no match start countdown", () => {
   assert.equal(assignmentBucket(`${v351}:0:NA:2`, v351), `Fortnite:Fortnite:${v351}:0:NA:2`);
   assert.ok(!showsMatchStart(v351));
+});
+
+// 3.5's profiles (profiles/common.js): no profile0, but campaign, common_core and common_public, Core's views of it.
+const agent351 = "Fortnite/4.20.0-4000805+++Fortnite+Release-3.5 Windows/10.0.17134.1.256.64bit";
+const agent33 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-3.3-CL-3942182";
+const mcp = (backend, player, userAgent, command, profileId, body = {}, rvn = -1) => {
+  const text = JSON.stringify(body);
+  return send({ host: "127.0.0.1", port: backend.port, method: "POST",
+    path: `/fortnite/api/game/v2/profile/${player.accountId}/client/${command}?profileId=${profileId}&rvn=${rvn}`,
+    headers: { "User-Agent": userAgent, Authorization: `bearer ${player.token}`, "Content-Type": "application/json", "Content-Length": Buffer.byteLength(text) } }, text);
+};
+const fullOf = (body) => body.profileChanges[0].profile;
+const mtx = (profile) => Object.values(profile.items).filter((item) => /^currency:mtx/i.test(item.templateId))
+  .reduce((sum, item) => sum + item.quantity, 0);
+const ofType = (profile, type) => Object.values(profile.items).filter((item) => item.templateId.toLowerCase().startsWith(`${type.toLowerCase()}:`));
+const setVbucks = (backend, player, quantity) => post(backend.port, `/admin/api/accounts/${player.accountId}/currency`, undefined, { key: "vbucks", quantity });
+
+test("3.5.1 asks for common_core and common_public and gets them; profile0 is 3.3's and earlier builds' only", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "Profiles351");
+    for (const profileId of ["common_public", "common_core", "campaign", "athena", "metadata"]) {
+      const response = await mcp(backend, player, agent351, "QueryProfile", profileId);
+      assert.equal(response.status, 200, profileId);
+      assert.equal(response.body.profileId, profileId);
+      assert.equal(response.body.profileChanges[0].changeType, "fullProfileUpdate");
+    }
+    const profile0 = await mcp(backend, player, agent351, "QueryProfile", "profile0");
+    assert.equal(profile0.status, 400);
+    assert.equal(profile0.body.errorCode, "errors.com.epicgames.modules.profiles.invalid_profile_id");
+    for (const profileId of ["common_core", "common_public", "campaign"]) {
+      assert.equal((await mcp(backend, player, agent33, "QueryProfile", profileId)).status, 400, `3.3 has no ${profileId}`);
+    }
+
+    // Each holds its part of the account: common_public the three stats other players read, common_core the account's
+    // banners and platform, campaign Save the World's (quests, heroes, rest XP, the homebase).
+    const pub = fullOf((await mcp(backend, player, agent351, "QueryProfile", "common_public")).body);
+    assert.deepEqual(Object.keys(pub.stats.attributes).sort(), ["banner_color", "banner_icon", "homebase_name"]);
+    assert.deepEqual(pub.items, {});
+    const core = fullOf((await mcp(backend, player, agent351, "QueryProfile", "common_core")).body);
+    assert.ok(ofType(core, "HomebaseBannerIcon").length && ofType(core, "HomebaseBannerColor").length);
+    assert.equal(core.stats.attributes.current_mtx_platform, "Epic");
+    assert.ok(Object.values(core.items).every((item) => itemView(item.templateId) === "common_core"));
+    const campaign = fullOf((await mcp(backend, player, agent351, "QueryProfile", "campaign")).body);
+    assert.ok(ofType(campaign, "Quest").length && ofType(campaign, "Quota").length);
+    assert.equal(ofType(campaign, "HomebaseBannerIcon").length, 0);
+    assert.equal(campaign.stats.attributes.current_mtx_platform, undefined);
+    assert.ok(campaign.stats.attributes.homebase);
+    assert.equal(itemView("Token:campaignaccess"), "common_core");
+    assert.equal(itemView("Token:homebasepoints"), "campaign");
+    assert.equal(itemView("GiftBox:gb_battlepass"), "common_core");
+  } finally {
+    backend.close();
+  }
+});
+
+test("3.5.1's V-Bucks are common_core's, and a change brings only the view it is in, by that view's revision", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "Vbucks351");
+    const login = (await mcp(backend, player, agent351, "QueryProfile", "common_core")).body;
+    assert.equal((await setVbucks(backend, player, 1500)).status, 200);
+    assert.equal(mtx(fullOf((await mcp(backend, player, agent351, "QueryProfile", "common_core")).body)), 1500);
+    const campaignLogin = (await mcp(backend, player, agent351, "QueryProfile", "campaign")).body;
+    assert.equal(mtx(fullOf(campaignLogin)), 0);
+
+    // A command on common_core from its revision gets its delta, a revision on; campaign's revision stays.
+    const core = (await mcp(backend, player, agent351, "QueryProfile", "common_core")).body;
+    const platform = (await mcp(backend, player, agent351, "SetMtxPlatform", "common_core", { newPlatform: "PSN" }, core.profileRevision)).body;
+    assert.equal(platform.profileChangesBaseRevision, core.profileRevision);
+    assert.equal(platform.profileRevision, core.profileRevision + 1);
+    assert.deepEqual(platform.profileChanges, [{ changeType: "statModified", name: "current_mtx_platform", value: "PSN" }]);
+    assert.equal(platform.multiUpdate, undefined, "nothing of campaign changed");
+    const campaign = (await mcp(backend, player, agent351, "QueryProfile", "campaign", {}, campaignLogin.profileRevision)).body;
+    assert.equal(campaign.profileRevision, campaignLogin.profileRevision);
+    assert.deepEqual(campaign.profileChanges, []);
+    assert.ok(core.profileRevision > login.profileRevision);
+
+    // In Battle Royale the client asks for athena alone after a match (#236): the V-Bucks come along as common_core,
+    // never as profile0.
+    await mcp(backend, player, agent351, "QueryProfile", "athena");
+    assert.equal((await setVbucks(backend, player, 2000)).status, 200);
+    const athena = (await mcp(backend, player, agent351, "QueryProfile", "athena")).body;
+    const ids = (athena.multiUpdate ?? []).map(({ profileId }) => profileId);
+    assert.deepEqual(ids, ["common_core"]);
+    assert.equal(mtx(fullOf(athena.multiUpdate[0])), 2000);
+  } finally {
+    backend.close();
+  }
+});
+
+test("an account that played 3.3 has the same V-Bucks, banners and homebase on 3.5.1, and the other way round", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "Carried33");
+    const on33 = fullOf((await mcp(backend, player, agent33, "QueryProfile", "profile0")).body);
+    const [icon] = ofType(on33, "HomebaseBannerIcon").map(({ templateId }) => templateId.split(":")[1]);
+    const [, color] = ofType(on33, "HomebaseBannerColor").map(({ templateId }) => templateId.split(":")[1]);
+    assert.equal((await mcp(backend, player, agent33, "SetHomebaseName", "profile0", { homebaseName: "Fort Pongo" })).status, 200);
+    assert.equal((await mcp(backend, player, agent33, "SetHomebaseBanner", "profile0", { homebaseBannerIconId: icon, homebaseBannerColorId: color })).status, 200);
+    await setVbucks(backend, player, 950);
+    const before = fullOf((await mcp(backend, player, agent33, "QueryProfile", "profile0")).body);
+
+    const pub = fullOf((await mcp(backend, player, agent351, "QueryProfile", "common_public")).body);
+    assert.deepEqual(pub.stats.attributes, { banner_icon: icon, banner_color: color, homebase_name: "Fort Pongo" });
+    const core = fullOf((await mcp(backend, player, agent351, "QueryProfile", "common_core")).body);
+    assert.equal(mtx(core), 950);
+    assert.deepEqual(ofType(core, "HomebaseBannerIcon").map(({ templateId }) => templateId).sort(),
+      ofType(before, "HomebaseBannerIcon").map(({ templateId }) => templateId).sort());
+    const campaign = fullOf((await mcp(backend, player, agent351, "QueryProfile", "campaign")).body);
+    assert.equal(Object.keys(campaign.items).length + Object.keys(core.items).length, Object.keys(before.items).length, "every item is in one view");
+
+    // 3.5.1's homebase name is common_public's command, and its change is that view's three stats.
+    const renamed = (await mcp(backend, player, agent351, "SetHomebaseName", "common_public", { homebaseName: "Storm Base" })).body;
+    assert.equal(renamed.profileId, "common_public");
+    assert.equal(fullOf(renamed).stats.attributes.homebase_name, "Storm Base");
+    const pubNow = (await mcp(backend, player, agent351, "QueryProfile", "common_public")).body;
+    const named = (await mcp(backend, player, agent351, "SetHomebaseName", "common_public", { homebaseName: "Storm Base 2" }, pubNow.profileRevision)).body;
+    assert.deepEqual(named.profileChanges.find(({ name }) => name === "homebase_name"), { changeType: "statModified", name: "homebase_name", value: "Storm Base 2" });
+    assert.ok((named.multiUpdate ?? []).some(({ profileId }) => profileId === "campaign"), "campaign's homebase follows");
+
+    // Back on 3.3, profile0 is all of it.
+    const back = fullOf((await mcp(backend, player, agent33, "QueryProfile", "profile0")).body);
+    assert.equal(back.stats.attributes.homebase.townName, "Storm Base 2");
+    assert.equal(mtx(back), 950);
+  } finally {
+    backend.close();
+  }
+});
+
+test("3.3 still uses profile0: its responses name no 3.5 profile", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "Still33");
+    const login = (await mcp(backend, player, agent33, "QueryProfile", "profile0")).body;
+    assert.equal(login.profileId, "profile0");
+    const athena = (await mcp(backend, player, agent33, "QueryProfile", "athena")).body;
+    await setVbucks(backend, player, 300);
+    const after = (await mcp(backend, player, agent33, "QueryProfile", "athena", {}, athena.profileRevision)).body;
+    assert.deepEqual((after.multiUpdate ?? []).map(({ profileId }) => profileId), ["profile0"]);
+    const quests = (await mcp(backend, player, agent33, "ClientQuestLogin", "profile0", {}, login.profileRevision)).body;
+    assert.ok([quests, ...(quests.multiUpdate ?? [])].every(({ profileId }) => !isAccountView(profileId)));
+  } finally {
+    backend.close();
+  }
+});
+
+test("profile notifications name 3.5's views for an account whose client is 3.5.1", () => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-backend-views-"));
+  try {
+    const profiles = createProfileStore(dataDir);
+    noteClientBuild("viewer351", v351);
+    noteClientBuild("viewer33", v33);
+    const changed = (accountId) => {
+      const session = openSession(profiles, accountId);
+      session.profile("profile0");
+      session.commit();
+      const next = openSession(profiles, accountId);
+      next.profile("profile0").setStat("current_mtx_platform", "Live");
+      next.commit();
+      return next.changedProfiles().map(({ profileId, changes }) => [profileId, changes.length]);
+    };
+    assert.deepEqual(changed("viewer351"), [["common_core", 1]]);
+    assert.deepEqual(changed("viewer33"), [["profile0", 1]]);
+  } finally {
+    fs.rmSync(dataDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+  }
 });

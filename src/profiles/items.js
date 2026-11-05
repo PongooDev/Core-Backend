@@ -5,6 +5,7 @@ import { bannerTemplateId } from "../gamedata/banners.js";
 import { getItem } from "../gamedata/items.js";
 import { isEndedEventQuest } from "../events/quests.js";
 import { log } from "../log.js";
+import { wireItemProfile } from "./common.js";
 import { heroAttributes } from "./heroes.js";
 import { grantQuest } from "./quests.js";
 import { settleBackpack, worldStackCap } from "./vault.js";
@@ -145,7 +146,10 @@ export function tidyWorldStacks(tracker) {
   return counts;
 }
 
-export const lootEntry = ({ templateId, itemId, profileId, quantity }) => ({ itemType: templateId, itemGuid: itemId, itemProfile: profileId, quantity });
+// From 3.5 an item in profile0 is in campaign or common_core (profiles/common.js).
+export const lootEntry = ({ templateId, itemId, profileId, quantity }) => ({
+  itemType: templateId, itemGuid: itemId, itemProfile: wireItemProfile(profileId, templateId), quantity
+});
 
 // A skill tree node or a banner is owned or not: the template id the account holds one under, or undefined for any
 // other template.

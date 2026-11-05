@@ -9,7 +9,8 @@ import { lootEntry } from "./items.js";
 // (sub_CDD120), which looks only among the items of type GiftBox (sub_D2F340) of the account profile,
 // UFortMcpProfileAccount (the player controller's +0x2280), the class that also holds the RemoveGiftBox command; a box in
 // athena is never seen. The frontend then sends RemoveGiftBox {giftBoxItemId} for the box, to profile0, and shows the
-// screen once that succeeds (OnGiftBoxRemoved bSuccess).
+// screen once that succeeds (OnGiftBoxRemoved bSuccess). From 3.5 the boxes are common_core's (FortGiftBoxItem's
+// static_profile_type, 3.5.1 0xCE52F0), which Core serves from profile0 (profiles/common.js).
 // The box's template (UFortGiftBoxItemDefinition) names the screen's header: GiftBox:GB_BattlePass's is
 // ItemReceivedBattlePassHeader, "{Number} items have been unlocked!" over the box's items. 3.0's FortGiftBoxItem keeps
 // {lootList: [{itemType, itemGuid, itemProfile, quantity}], fromAccountId, giftedOn, params} (sub_C547F0), and the screen

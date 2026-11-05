@@ -65,6 +65,9 @@ export function fullProfile({ version, wipeNumber, stats, items }, isHidden = is
   return { version, wipeNumber, stats, items };
 }
 
+// The template of the item a change is about (undefined for a stat's).
+export const changeTemplate = (change) => changeTemplates.get(change);
+
 export function visibleChanges(changes, isHidden = isForeignTemplate) {
   return changes.filter((change) => !(changeTemplates.has(change) && isHidden(changeTemplates.get(change))));
 }

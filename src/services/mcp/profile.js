@@ -4,10 +4,11 @@ import { requireLoopback } from "../../admin/local.js";
 import { currentBuild } from "../../builds/context.js";
 import { McpError, sendError } from "../../errors.js";
 import { log, recordUnknown } from "../../log.js";
+import { mtxProfileId, noteClientBuild, usesCommonProfiles } from "../../profiles/common.js";
 import { isKnownProfile } from "../../profiles/ids.js";
 import { lockTimeout } from "../../profiles/locks.js";
 import { settleCloudSaves } from "../../profiles/outposts.js";
-import { openSession } from "../../profiles/session.js";
+import { openSession, storedProfileId } from "../../profiles/session.js";
 import { adminCommands, clientCommands } from "./commands/index.js";
 import { publicCommands, serverCommands } from "./commands/server.js";
 
@@ -50,11 +51,13 @@ export function notifyProfiles(context, session) {
 // just cleared to (ClearBannerState), so it kept the banner it last drew: the viewer's own. The client applies a
 // response's multiUpdate to the group's profiles by profileId (sub_3C3D970), so another player's profile0 now brings
 // their athena along: its stats and cosmetics, the loadout's (sub_41B610 reads banner_icon, banner_color and the
-// favorite_* items), without their challenges.
+// favorite_* items), without their challenges. From 3.5 a party member's first query is common_public (3.5.1's
+// SynchronizeProfile 0xC86520 queries it for every player, campaign only out of Battle Royale), which brings athena.
 const firstAthenaBuild = 3724489;
+const publicProfileId = () => (usesCommonProfiles() ? "common_public" : "profile0");
 
 function publicCompanions(profileId) {
-  return profileId === "profile0" && Number(currentBuild()) >= firstAthenaBuild ? ["athena"] : [];
+  return profileId === publicProfileId() && Number(currentBuild()) >= firstAthenaBuild ? ["athena"] : [];
 }
 
 function withoutQuests(update) {
@@ -77,20 +80,27 @@ function withoutQuests(update) {
 // applies a multiUpdate to its profiles by profileId (1.8 sub_3C3D970). A client subscribed to its profile topic (Save
 // the World) gets profile0's changes as notifications, so it isn't sent it again.
 //
-// sent: accountId -> the profile0 revision last sent to that account's client, in a response or a multiUpdate.
-function profile0CatchUp(sent, session, profileId, stomp) {
-  if (profileId === "profile0" || !session.hasProfile("profile0") || stomp?.hasProfileSubscription?.(session.accountId)) return [];
+// From 3.5 the V-Bucks are common_core's (profiles/common.js), Core's view of profile0, and that is the one brought
+// along, by its own revision.
+//
+// sent: accountId -> the revision of the V-Bucks' profile last sent to that account's client, in a response or a
+// multiUpdate.
+function mtxCatchUp(sent, session, profileId, stomp) {
+  const mtxProfile = mtxProfileId(session.accountId);
+  if (profileId === mtxProfile || !session.hasProfile(mtxProfile) || stomp?.hasProfileSubscription?.(session.accountId)) return [];
   const known = sent.get(session.accountId);
-  return known === undefined || session.profile("profile0").profile.rvn > known ? ["profile0"] : [];
+  return known === undefined || session.revision(mtxProfile) > known ? [mtxProfile] : [];
 }
 
-function noteProfile0Sent(sent, accountId, result) {
-  const update = [result, ...(result.multiUpdate ?? [])].find(({ profileId }) => profileId === "profile0");
+function noteMtxSent(sent, accountId, result) {
+  const mtxProfile = mtxProfileId(accountId);
+  const update = [result, ...(result.multiUpdate ?? [])].find(({ profileId }) => profileId === mtxProfile);
   if (update) sent.set(accountId, update.profileRevision);
 }
 
 function runCommand(commands, context, {
-  deliverMail = false, deliverScores = false, locks = null, notify = false, companions = () => [], logReads = false, catchUp = null
+  deliverMail = false, deliverScores = false, locks = null, notify = false, companions = () => [], logReads = false, catchUp = null,
+  ownClient = false
 } = {}) {
   const { profiles, dataDir } = context;
   return (req, res) => {
@@ -107,9 +117,15 @@ function runCommand(commands, context, {
       return sendError(res, 400, "errors.com.epicgames.fortnite.operation_not_found", `Unknown command ${req.params.command}`);
     }
 
+    if (ownClient) noteClientBuild(req.params.accountId, currentBuild());
     const session = openSession(profiles, req.params.accountId);
+    // 3.5's campaign, common_core and common_public are kept in profile0 (profiles/common.js). To the commands a command
+    // on campaign is profile0's, by which they tell Save the World's profile; common_core and common_public keep their
+    // own ids.
+    const storedId = storedProfileId(profileId);
+    const commandProfileId = profileId === "campaign" ? storedId : profileId;
     // Storm shields go where the requesting build's client looks for them: profile0, or metadata from 1.7.2.
-    if (profileId === "profile0" || profileId === "metadata") settleCloudSaves(session);
+    if (storedId === "profile0" || profileId === "metadata") settleCloudSaves(session);
     const tracker = session.profile(profileId);
     const notifications = [];
     // Some server commands change several players at once (EarnScore); each other player gets their own session.
@@ -122,7 +138,7 @@ function runCommand(commands, context, {
     };
 
     try {
-      command({ req, profile: tracker.profile, tracker, session, notifications, profileId, sessionFor, context });
+      command({ req, profile: tracker.profile, tracker, session, notifications, profileId: commandProfileId, sessionFor, context });
     } catch (error) {
       if (error instanceof McpError) return sendError(res, 400, error.errorCode, error.message);
       throw error;
@@ -136,12 +152,12 @@ function runCommand(commands, context, {
     if (deliverScores) notifications.unshift(...(context.heldScores?.take(req.params.accountId) ?? []));
 
     const whole = companions(profileId);
-    const caughtUp = catchUp ? profile0CatchUp(catchUp, session, profileId, context.stomp) : [];
+    const caughtUp = catchUp ? mtxCatchUp(catchUp, session, profileId, context.stomp) : [];
     const result = session.response(profileId, Number(req.query.rvn ?? -1), notifications, [...whole, ...caughtUp]);
-    if (catchUp) noteProfile0Sent(catchUp, req.params.accountId, result);
+    if (catchUp) noteMtxSent(catchUp, req.params.accountId, result);
     const companionUpdates = (result.multiUpdate ?? []).filter((update) => whole.includes(update.profileId));
     for (const update of companionUpdates) withoutQuests(update);
-    if (logReads && profileId === "profile0") {
+    if (logReads && profileId === publicProfileId()) {
       const sent = [profileId, ...companionUpdates.map((update) => update.profileId)];
       log("MCP", `${req.session.accountId ?? req.session.clientId} reads ${req.params.accountId}'s ${sent.join(" and ")}`);
     }
@@ -175,7 +191,7 @@ export function profileRoutes(context) {
   const router = express.Router();
 
   router.post("/fortnite/api/game/v2/profile/:accountId/client/:command",
-    requireAuth(context.tokens), requireOwnAccount, runCommand(clientCommands, context, { deliverMail: true, catchUp: new Map() }));
+    requireAuth(context.tokens), requireOwnAccount, runCommand(clientCommands, context, { deliverMail: true, catchUp: new Map(), ownClient: true }));
 
   // Other accounts' profiles (a party member's banner, power and heroes; from 1.8 their athena with profile0), read only.
   router.post("/fortnite/api/game/v2/profile/:accountId/public/:command",

@@ -40,6 +40,7 @@ import { setHomebaseName } from "./SetHomebaseName.js";
 import { setItemFavoriteStatus } from "./SetItemFavoriteStatus.js";
 import { setMtxPlatform } from "./SetMtxPlatform.js";
 import { setPinnedQuests } from "./SetPinnedQuests.js";
+import { setReceiveGiftsEnabled } from "./SetReceiveGiftsEnabled.js";
 import { skipTutorial } from "./SkipTutorial.js";
 import { storageTransfer } from "./StorageTransfer.js";
 import { transmogItem } from "./TransmogItem.js";
@@ -99,6 +100,7 @@ export const clientCommands = {
   SetModeLoadout: setModeLoadout,
   SetMtxPlatform: setMtxPlatform,
   SetPinnedQuests: setPinnedQuests,
+  SetReceiveGiftsEnabled: setReceiveGiftsEnabled,
   SkipTutorial: skipTutorial,
   // Twitch broadcaster links aren't kept.
   TwitchUpdateBroadcasterRegistration: () => {},
