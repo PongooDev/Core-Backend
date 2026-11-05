@@ -3,7 +3,7 @@ import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
 import { sendError } from "../../errors.js";
 import { log } from "../../log.js";
-import { httpsProxied } from "../../network.js";
+import { httpsProxied, requestHost } from "../../network.js";
 import { openSession } from "../../profiles/session.js";
 import { catalogServiceOffer, grantRealMoneyOffer, hasCurrencyStore, parseAppStoreId } from "../../store/currency.js";
 import { notifyProfiles } from "../mcp/profile.js";
@@ -18,9 +18,18 @@ import { notifyProfiles } from "../mcp/profile.js";
 // ("127.0.0.1:5595") is no cookie domain, and the flow gives up on the purchase when the cookie can't be set (it falls
 // back to Epic's single sign-on, 0x6A7F10). With the third slash the domain comes out empty, a cookie for the page's own
 // host, and the browser reads "http:///127.0.0.1:5595/purchase" as http://127.0.0.1:5595/purchase.
+//
+// The host is the one the game used for this config (the Host header, network.js requestHost): the purchase flow's
+// browser is CEF, which goes straight to the address (neither CoreRedirect nor -httpproxy carries it, 3.3 has no CEF
+// proxy switch), so it has to be one the player's PC reaches this backend at. The backend's own view (reachableAddress
+// and the socket's local port) gave a remote player this PC's network address when no public address was set and the
+// backend was entered by name, 127.0.0.1 behind a tunnel on this PC, and 5595 behind a forwarded or tunnelled port of
+// another number: the browser never reached the page, and the Store sat on a black screen with a spinner
+// (Core-Backend #244). Those stay for a request without a usable Host (an Epic host the -httpproxy carried as is).
 export function purchaseFlowUrl(req, network) {
   const proxied = httpsProxied(req);
-  return proxied ? `https:///${proxied.host}/purchase` : `http:///${network.reachableAddress(req)}:${req.socket.localPort}/purchase`;
+  if (proxied) return `https:///${proxied.host}/purchase`;
+  return `http:///${requestHost(req) ?? `${network.reachableAddress(req)}:${req.socket.localPort}`}/purchase`;
 }
 
 // The game config's [EpicPurchaseFlow] section, for builds with the Store tab while the packs are on.

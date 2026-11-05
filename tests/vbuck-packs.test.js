@@ -96,6 +96,40 @@ test("the game config points the purchase flow at this backend, from 1.8, while 
   }
 });
 
+// Core-Backend #244: the purchase flow's browser (CEF) goes straight to the page's address, so the page is at the address
+// the game reached the backend at (its Host header), not this PC's own view of itself: a name, a VPN address, a
+// forwarded or tunnelled port of another number.
+test("the purchase flow's page is at the backend address the game used, on 1.8 to 3.3", async () => {
+  const backend = await startBackend();
+  try {
+    const { token } = await userLogin(backend.port, "RemoteBuyer");
+    const prod = async (userAgent, host) => /\[EpicPurchaseFlow\]\r\nProd=(.*)\r\n/
+      .exec((await as(backend.port, "/fortnite/api/cloudstorage/system/DefaultGame.ini", token, userAgent, host ? { Host: host } : {})).body)?.[1];
+    for (const build of ["Release-1.8-CL-3724489", "Release-2.5-CL-3889387", "Release-3.2-CL-3935073", "Release-3.3-CL-3942182"]) {
+      const userAgent = `game=Fortnite, engine=UE4, build=++Fortnite+${build}`;
+      assert.equal(await prod(userAgent), `http:///127.0.0.1:${backend.port}/purchase`, build);
+      assert.equal(await prod(userAgent, "play.example.com:40123"), "http:///play.example.com:40123/purchase", build);
+      assert.equal(await prod(userAgent, "26.14.3.9:5595"), "http:///26.14.3.9:5595/purchase", build);
+      assert.equal(await prod(userAgent, "[::1]:5595"), "http:///[::1]:5595/purchase", build);
+      // An Epic host (the -httpproxy carried the request as is), or a Host that is no host and port, keeps the backend's own.
+      assert.equal(await prod(userAgent, "fortnite-public-service-prod11.ol.epicgames.com"), `http:///127.0.0.1:${backend.port}/purchase`, build);
+      assert.equal(await prod(userAgent, "a b;c=d"), `http:///127.0.0.1:${backend.port}/purchase`, build);
+    }
+
+    // The page, and its Complete purchase, answer for that address.
+    const player = await userLogin(backend.port, "RemotePageBuyer");
+    const appStoreId = currencyOf(await catalog(backend.port, player.token)).catalogEntries[0].appStoreId[1];
+    const page = await as(backend.port, `/purchase?showNavigation=true&namespace=fn&offers=${appStoreId}&analyticsSessionId=x`, undefined, agent31,
+      { Host: "play.example.com:40123" });
+    assert.equal(page.status, 200);
+    const done = await complete(backend.port, purchaseIdOf(page.body), { Host: "play.example.com:40123", Origin: "http://play.example.com:40123" });
+    assert.equal(done.status, 200);
+    assert.equal(done.body.receipt.TransactionState, "Purchased");
+  } finally {
+    backend.close();
+  }
+});
+
 test("Complete purchase gives the pack's V-Bucks once, to the account it was offered to, from the page only", async () => {
   const backend = await startBackend();
   try {

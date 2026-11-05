@@ -182,6 +182,23 @@ function hostHeaderAddress(req) {
   return net.isIPv4(host) && !isLoopback(host) && host !== "0.0.0.0" ? host : null;
 }
 
+// The backend's address as the client wrote it for this request: its Host header ("1.2.3.4:5595", "[::1]:5595",
+// "play.example.com:40123"), which CoreRedirect takes from the launcher's backend address, so it is one the client
+// reaches this backend at, whatever the network between (a host name, a VPN, a forwarded or tunnelled port). Null
+// without one, for one that isn't a plain host and port, and for an Epic host (a request the -httpproxy carried as is).
+export function requestHost(req) {
+  const host = String(req?.headers?.host ?? "").trim();
+  if (!host || !/^(\[[0-9a-fA-F:.]+\]|[A-Za-z0-9.-]+)(:\d{1,5})?$/.test(host)) return null;
+  let hostname;
+  try {
+    hostname = new URL(`http://${host}`).hostname.toLowerCase();
+  } catch {
+    return null;
+  }
+  if (hostname === "0.0.0.0" || /(^|\.)epicgames\.(com|net)\.?$/.test(hostname)) return null;
+  return host;
+}
+
 // This PC's addresses on its networks, for the admin panel ("friends on your network use ...").
 export function lanAddresses() {
   return Object.values(os.networkInterfaces()).flat()
