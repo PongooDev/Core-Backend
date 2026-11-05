@@ -149,6 +149,7 @@ const build242 = 3870737;
 const build25 = 3889387;
 const build30 = 3901517;
 const build31 = 3915963;
+const build311 = 3917250;
 const build32 = 3935073;
 const build33 = 3942182;
 
@@ -293,7 +294,7 @@ export function nextLtmChange(build, settingsValue, now = new Date()) {
 
 // The admin panel's list (its Battle Royale Game Modes, after solo, duos and squads): each LTM with its window and
 // builds, whether it is on by hand, and whether its window holds each season's replay now.
-const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build32]: "3.2", [build33]: "3.3" };
+const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build311]: "3.1.1", [build32]: "3.2", [build33]: "3.3" };
 const buildRange = ([first, last]) => (first === last ? versions[first] : `${versions[first]} to ${versions[last]}`);
 export function ltmSchedule(settingsValue, now = new Date()) {
   const modes = settingsValue?.matchmakingModes ?? {};

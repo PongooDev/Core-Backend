@@ -45,6 +45,7 @@ Core-Backend follows Core V2: one build at a time, each build fully working befo
 | 2.5 | Release-2.5 CL-3889387 (UE 4.20) | Full support ✅ |
 | 3.0 | Release-3.0.0 CL-3901517 (UE 4.20) | Full support ✅ |
 | 3.1 | Release-3.1 CL-3915963 (UE 4.20) | Full support ✅ |
+| 3.1.1 | Release-3.1 CL-3917250 (UE 4.20) | Full support ✅ |
 | 3.2 | Release-3.2 CL-3935073 (UE 4.20) | Full support ✅ |
 | 3.3 | Release-3.3 CL-3942182 (UE 4.20) | In development 🚧 |
 

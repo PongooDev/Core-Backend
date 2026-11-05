@@ -1130,6 +1130,7 @@ export function adminRoutes(context) {
       { version: "2.5", cl: 3889387, event: "Spring It On!" },
       { version: "3.0", cl: 3901517, event: "Spring It On!" },
       { version: "3.1", cl: 3915963, event: "Spring It On!" },
+      { version: "3.1.1", cl: 3917250, event: "Spring It On!" },
       { version: "3.2", cl: 3935073, event: "Spring It On!" },
       { version: "3.3", cl: 3942182, event: "Spring It On!" }
     ];
