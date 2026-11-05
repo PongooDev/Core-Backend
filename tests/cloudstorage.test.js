@@ -304,6 +304,33 @@ test("the system hotfix turns 3.5.1's playlists on by name and opens its lobby o
   }
 });
 
+// Core-Backend #251: 3.5's replays. The client records each match to its own Saved/Demos folder, and records it only while
+// UFortRuntimeOptions' replay switches are on, so 3.5.1 and later get DefaultRuntimeOptions.ini turning all three on; no
+// earlier build has them, nor gets the file.
+test("the system hotfix turns on 3.5's replay browser and recording, and no earlier build's (#251)", async () => {
+  const backend = await startBackend();
+  try {
+    const token = await clientToken(backend.port);
+    const agent = (build) => `game=Fortnite, engine=UE4, build=${build}`;
+    const files = async (build) => JSON.parse((await raw(backend.port, "GET", "/fortnite/api/cloudstorage/system", token, undefined, agent(build))).body)
+      .map(({ filename }) => filename);
+    for (const build of ["++Fortnite+Release-3.5-CL-4000805", "++Fortnite+Release-3.5-CL-4008490"]) {
+      assert.ok((await files(build)).includes("DefaultRuntimeOptions.ini"), build);
+      const download = await raw(backend.port, "GET", "/fortnite/api/cloudstorage/system/DefaultRuntimeOptions.ini", token, undefined, agent(build));
+      assert.equal(download.status, 200, build);
+      assert.deepEqual(download.body.toString("utf8").split("\r\n"), ["[/Script/FortniteGame.FortRuntimeOptions]",
+        "bEnableReplayBrowser=true", "bEnableReplayRecording=true", "bEnableLargeTeamReplayRecording=true", ""], build);
+    }
+    for (const build of ["++Fortnite+Release-3.3-CL-3942182", "++Fortnite+Release-3.2-CL-3935073", "++Fortnite+Release-1.8-CL-3724489"]) {
+      assert.ok(!(await files(build)).includes("DefaultRuntimeOptions.ini"), build);
+      const missing = await raw(backend.port, "GET", "/fortnite/api/cloudstorage/system/DefaultRuntimeOptions.ini", token, undefined, agent(build));
+      assert.equal(missing.status, 404, build);
+    }
+  } finally {
+    backend.close();
+  }
+});
+
 // Core-Backend #237: 3.2's lobby opens on UFortGameUserSettings' LastSelectedPlaylist (0x279E970), so its new mode, Teams of
 // 20 (AthenaEvent22, 14), is set there by DefaultGameUserSettings.ini; no other build gets the file.
 test("the system hotfix opens 3.2's lobby on Teams of 20, its new mode, and no other build's (#237)", async () => {

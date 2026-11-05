@@ -104,6 +104,25 @@ function newModeFiles(changelist) {
 // Battle Royale: Battle Royale, Save the World and back left Global unavailable. Core gives Battle Royale its own room
 // (services/fortnite/chat.js). A build without the setting ignores it.
 const chatSection = ["[/Script/FortniteGame.FortOnlineAccount]", "bIsAthenaGlobalChatEnabled=true", ""].join("\r\n");
+// Battle Royale replays (Core-Backend #251), Season 3.5's: the client records each match itself, to its Saved/Demos folder
+// (FLocalFileNetworkReplayStreamer, UnsavedReplay-<date>.replay), and the Career tab's Replays screen lists that folder; no
+// service is asked. UFortRuntimeOptions (config RuntimeOptions, GetDefault: 3.5.2 0x105DD40) holds the game's three replay
+// switches: bEnableReplayBrowser (+0x98) shows the Replays tab (0x29106E0), and bEnableReplayRecording (+0x99) and
+// bEnableLargeTeamReplayRecording (+0x9A) gate the automatic recording (Fort.AutomaticClientReplayRecordingBR, 3.5.2
+// 0xA35D90; 3.5.1 0xA321F0): a match records when the cvar is on, +0x99 is, the player's own Record Replays setting
+// (UFortClientSettingsRecord bReplayRecordingEnabled, +0x4C7, on by default) is, and, in a large team game
+// (AFortGameStateAthena bIsLargeTeamGame, +0x1580: 50v50), +0x9A and the player's Record Large Team Replays setting
+// (bLargeTeamReplayRecordingEnabled, +0x4C8, off by default) are too. The constructor (0x105CCA0) sets +0x99 and +0x9A but
+// not +0x98, and the shipped DefaultRuntimeOptions.ini can change any of them. This file turns all three on, as the hotfix
+// reloads the config of the objects of each section's class (the CDO GetDefault reads among them); the player's two
+// settings stay the player's (🟡: not seen in a running client). Replays from another build stay unplayable, which no file
+// changes: the screen (AthenaReplayBrowserTab) won't play a row marked old or corrupt (RowData.IsOld, bIsCorrupt), and a
+// replay in a newer engine's format (file version 7, where 3.5's is 3) can't be read at all.
+const replaysBuild = 4000805;
+const runtimeOptionsFiles = (changelist) => (Number(changelist) >= replaysBuild ? {
+  "DefaultRuntimeOptions.ini": Buffer.from(["[/Script/FortniteGame.FortRuntimeOptions]", "bEnableReplayBrowser=true",
+    "bEnableReplayRecording=true", "bEnableLargeTeamReplayRecording=true", ""].join("\r\n"), "utf8")
+} : {});
 const defaultNetwork = createNetwork();
 function systemFiles(req, network = defaultNetwork, settings = null) {
   const address = network.reachableAddress(req);
@@ -118,7 +137,8 @@ function systemFiles(req, network = defaultNetwork, settings = null) {
     + forcedQueueSection(build) + chatSection
     + purchaseFlowSection(req, network, { build, enabled: settings?.get?.()?.vbuckPacks !== false })
     + lootHotfixSection(new Date(), null, shootingTestHotfixTables(build));
-  return { "DefaultEngine.ini": Buffer.from(engine, "utf8"), "DefaultGame.ini": Buffer.from(game, "utf8"), ...newModeFiles(build) };
+  return { "DefaultEngine.ini": Buffer.from(engine, "utf8"), "DefaultGame.ini": Buffer.from(game, "utf8"), ...newModeFiles(build),
+    ...runtimeOptionsFiles(build) };
 }
 
 // What the client reads per file (OnlineTitleFileMcp, sub_37C8D10): hash (SHA-1 hex, also its cache key), hash256,
