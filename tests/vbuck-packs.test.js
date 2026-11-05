@@ -27,7 +27,7 @@ test("the Store tab sells four V-Bucks packs from 1.8, each priced by the catalo
     const other = await userLogin(backend.port, "OtherBuyer");
     const store = currencyOf(await catalog(backend.port, player.token));
     assert.deepEqual(store.catalogEntries.map((offer) => offer.metaInfo.map(({ key, value }) => `${key}=${value}`).join(",")),
-      ["MtxQuantity=1000,MtxBonus=0", "MtxQuantity=2800,MtxBonus=300", "MtxQuantity=7500,MtxBonus=1500", "MtxQuantity=13500,MtxBonus=3500"]);
+      ["MtxQuantity=1000,MtxBonus=0", "MtxQuantity=2800,MtxBonus=300", "MtxQuantity=7500,MtxBonus=1500", "MtxQuantity=13500,MtxBonus=3500", "MtxQuantity=600,MtxBonus=100"]);
     const [first] = store.catalogEntries;
     assert.equal(first.prices[0].currencyType, "RealMoney");
     assert.equal(first.displayAssetPath, "/Game/Catalog/DisplayAssets/DA_MtxPack1000.DA_MtxPack1000");
@@ -42,7 +42,7 @@ test("the Store tab sells four V-Bucks packs from 1.8, each priced by the catalo
     const ids = store.catalogEntries.map((offer) => offer.appStoreId[1]);
     const query = `/catalog/api/shared/bulk/offers?${ids.map((id) => `id=${id}`).join("&")}&returnItemDetails=false&locale=en-US`;
     const priced = (await as(backend.port, query, player.token)).body;
-    assert.deepEqual(Object.values(priced).map((offer) => [offer.price, offer.currencyCode]), [[999, "USD"], [2499, "USD"], [5999, "USD"], [9999, "USD"]]);
+    assert.deepEqual(Object.values(priced).map((offer) => [offer.price, offer.currencyCode]), [[999, "USD"], [2499, "USD"], [5999, "USD"], [9999, "USD"], [499, "USD"]]);
     assert.equal(priced[ids[1]].id, ids[1]);
     const forged = [ids[0].replace(/.$/, (c) => (c === "A" ? "B" : "A")), ids[0].replace(player.accountId, other.accountId), "core_mtx_1000"];
     assert.deepEqual((await as(backend.port, `/catalog/api/shared/bulk/offers?${forged.map((id) => `id=${id}`).join("&")}`, player.token)).body, {});
@@ -68,14 +68,16 @@ test("the catalog service prices the packs for the game's client token, on every
     for (const build of ["Release-1.8-CL-3724489", "Release-2.5-CL-3889387", "Release-3.0-CL-3901517", "Release-3.2-CL-3935073"]) {
       const userAgent = `game=Fortnite, engine=UE4, build=++Fortnite+${build}`;
       const store = currencyOf(await catalog(backend.port, player.token, userAgent));
-      assert.equal(store.catalogEntries.length, 4, build);
+      // The Battle Royale Starter Pack is Season 3's, from 3.1 (#248).
+      const prices = build.startsWith("Release-3.2") ? [999, 2499, 5999, 9999, 499] : [999, 2499, 5999, 9999];
+      assert.equal(store.catalogEntries.length, prices.length, build);
       const ids = store.catalogEntries.map((offer) => offer.appStoreId[1]);
       const query = `/catalog/api/shared/bulk/offers?${ids.map((id) => `id=${id}`).join("&")}&returnItemDetails=false&locale=en-US`;
       const answer = await as(backend.port, query, client, userAgent);
       assert.equal(answer.status, 200, build);
       assert.deepEqual(Object.keys(answer.body), ids, build);
       assert.deepEqual(Object.values(answer.body).map((offer) => [offer.id, offer.namespace, offer.price, offer.currencyCode]),
-        ids.map((id, index) => [id, "fn", [999, 2499, 5999, 9999][index], "USD"]), build);
+        ids.map((id, index) => [id, "fn", prices[index], "USD"]), build);
     }
   } finally {
     backend.close();
@@ -182,6 +184,106 @@ test("Complete purchase gives the pack's V-Bucks once, to the account it was off
     await post(backend.port, "/admin/api/settings", undefined, { vbuckPacks: false });
     assert.equal((await open(appStoreId)).status, 403);
     assert.equal((await complete(backend.port, last)).status, 403);
+  } finally {
+    backend.close();
+  }
+});
+
+// Core-Backend #248: the Battle Royale Starter Pack, a Season 3 real-money offer (store/currency.js).
+const agent30 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-3.0-CL-3901517";
+const agent351 = "Fortnite/4.20.0-4000805+++Fortnite+Release-3.5 Windows/10.0.17134.1.256.64bit";
+const starterOf = (body) => currencyOf(body)?.catalogEntries.find((offer) => offer.offerId === "core_starter_br_s3");
+const query = (port, accountId, token, profileId, userAgent) => send({ host: "127.0.0.1", port, method: "POST",
+  path: `/fortnite/api/game/v2/profile/${accountId}/client/QueryProfile?profileId=${profileId}&rvn=-1`,
+  headers: { "User-Agent": userAgent, Authorization: `bearer ${token}`, "Content-Type": "application/json", "Content-Length": 2 } }, "{}")
+  .then((response) => response.body.profileChanges[0].profile);
+const owned = (profile, prefix) => Object.values(profile.items).filter((item) => item.templateId.toLowerCase().startsWith(prefix.toLowerCase()));
+const open = (port, id, userAgent) => as(port, `/purchase?showNavigation=true&namespace=fn&offers=${id}&analyticsSessionId=x`, undefined, userAgent);
+
+test("the Starter Pack is in the Store tab on Season 3 builds only", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "StarterShopper");
+    for (const [build, userAgent] of [["3.1", agent31], ["3.1.1", "game=Fortnite, engine=UE4, build=++Fortnite+Release-3.1-CL-3917250"],
+      ["3.2", "game=Fortnite, engine=UE4, build=++Fortnite+Release-3.2-CL-3935073"], ["3.3", "game=Fortnite, engine=UE4, build=++Fortnite+Release-3.3-CL-3942182"],
+      ["3.5.1", agent351]]) {
+      const offer = starterOf(await catalog(backend.port, player.token, userAgent));
+      assert.ok(offer, build);
+      assert.equal(offer.title, "Battle Royale Starter Pack", build);
+      assert.equal(offer.prices[0].currencyType, "RealMoney", build);
+      assert.ok(offer.appStoreId[1].startsWith(`core_starter_br_s3.${player.accountId}.`), build);
+      assert.deepEqual(offer.metaInfo.map(({ key, value }) => `${key}=${value}`), ["MtxQuantity=600", "MtxBonus=100"], build);
+    }
+    // Not before Season 3 (1.8, 2.5), nor on 3.0, whose paks lack the Rogue Agent.
+    for (const build of ["Release-1.8-CL-3724489", "Release-2.5-CL-3889387"]) {
+      assert.equal(starterOf(await catalog(backend.port, player.token, `game=Fortnite, engine=UE4, build=++Fortnite+${build}`)), undefined, build);
+    }
+    assert.equal(starterOf(await catalog(backend.port, player.token, agent30)), undefined);
+
+    // The catalog service prices it, $4.99.
+    const id = starterOf(await catalog(backend.port, player.token, agent31)).appStoreId[1];
+    const priced = (await as(backend.port, `/catalog/api/shared/bulk/offers?id=${id}&returnItemDetails=false`, await clientToken(backend.port))).body;
+    assert.deepEqual([priced[id].price, priced[id].currencyCode, priced[id].title], [499, "USD", "Battle Royale Starter Pack"]);
+
+    // The packs' admin setting turns it off too.
+    await post(backend.port, "/admin/api/settings", undefined, { vbuckPacks: false });
+    assert.equal(starterOf(await catalog(backend.port, player.token, agent31)), undefined);
+  } finally {
+    backend.close();
+  }
+});
+
+test("buying the Starter Pack gives the Rogue Agent, the Catalyst and 600 V-Bucks once, and it can't be bought twice", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "StarterBuyer");
+    const id = starterOf(await catalog(backend.port, player.token, agent31)).appStoreId[1];
+    const page = await open(backend.port, id, agent31);
+    assert.equal(page.status, 200);
+    assert.match(page.body, /Battle Royale Starter Pack/);
+    const second = purchaseIdOf((await open(backend.port, id, agent31)).body);
+
+    const done = await complete(backend.port, purchaseIdOf(page.body));
+    assert.equal(done.status, 200);
+    assert.equal(done.body.receipt.TransactionState, "Purchased");
+    const athena = await query(backend.port, player.accountId, player.token, "athena", agent31);
+    assert.equal(owned(athena, "AthenaCharacter:CID_090_Athena_Commando_M_Tactical").length, 1);
+    assert.equal(owned(athena, "AthenaBackpack:BID_030_TacticalRogue").length, 1);
+    const profile = await profile0(backend.port, player);
+    assert.equal(vbucks(profile, "Currency:MtxPurchased"), 500);
+    assert.equal(vbucks(profile, "Currency:MtxPurchaseBonus"), 100);
+    assert.deepEqual(profile.stats.attributes.in_app_purchases.fulfillmentCounts, { core_starter_br_s3: 1 });
+
+    // Gone from the Store tab; its page and a second Complete purchase (opened before) are refused, and nothing more is given.
+    assert.equal(starterOf(await catalog(backend.port, player.token, agent31)), undefined);
+    assert.equal((await open(backend.port, id, agent31)).status, 409);
+    assert.equal((await complete(backend.port, second)).status, 409);
+    assert.equal(vbucks(await profile0(backend.port, player), "Currency:MtxPurchased"), 500);
+
+    // Another account still has it.
+    const other = await userLogin(backend.port, "StarterOther");
+    assert.ok(starterOf(await catalog(backend.port, other.token, agent31)));
+  } finally {
+    backend.close();
+  }
+});
+
+test("the Starter Pack works on 3.5.1, whose V-Bucks are common_core's", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "Starter351");
+    const id = starterOf(await catalog(backend.port, player.token, agent351)).appStoreId[1];
+    const done = await complete(backend.port, purchaseIdOf((await open(backend.port, id, agent351)).body));
+    assert.equal(done.status, 200);
+    const core = await query(backend.port, player.accountId, player.token, "common_core", agent351);
+    assert.equal(vbucks(core, "Currency:MtxPurchased"), 500);
+    assert.equal(vbucks(core, "Currency:MtxPurchaseBonus"), 100);
+    assert.deepEqual(core.stats.attributes.in_app_purchases.fulfillmentCounts, { core_starter_br_s3: 1 });
+    const athena = await query(backend.port, player.accountId, player.token, "athena", agent351);
+    assert.equal(owned(athena, "AthenaCharacter:CID_090_Athena_Commando_M_Tactical").length, 1);
+    assert.equal(owned(athena, "AthenaBackpack:BID_030_TacticalRogue").length, 1);
+    assert.equal(starterOf(await catalog(backend.port, player.token, agent351)), undefined);
+    assert.equal((await open(backend.port, id, agent351)).status, 409);
   } finally {
     backend.close();
   }

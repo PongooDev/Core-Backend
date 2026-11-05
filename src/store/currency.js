@@ -1,6 +1,8 @@
 import crypto from "node:crypto";
-import { currentBuild } from "../builds/context.js";
+import { currentBuild, inBuild } from "../builds/context.js";
+import { grantCosmetic, lockerCosmeticId } from "../profiles/athena.js";
 import { grantItem } from "../profiles/items.js";
+import { buildOfSeason, namesAthenaBuild, seasonNumber } from "../profiles/seasons.js";
 
 // The Store tab's V-Bucks packs (Core-Backend #223): Epic's four real-money packs, which a player "buys" in a simulated
 // purchase that gives the pack's V-Bucks for nothing. From 1.8 the lobby's Store tab is StoreMain_Root
@@ -31,6 +33,12 @@ import { grantItem } from "../profiles/items.js";
 // Each pack gives its V-Bucks as Epic's did: the base amount as Currency:MtxPurchased, the bonus as
 // Currency:MtxPurchaseBonus. Prices are Epic's in US dollars (cents), from the screenshot. More real-money offers (the
 // Starter Packs) are entries of the same list, with their own grants.
+//
+// The Battle Royale Starter Pack (Core-Backend #248) is Season 3's: the Rogue Agent outfit (CID_090_Athena_Commando_M_Tactical)
+// and the Catalyst back bling (BID_030_TacticalRogue) with 600 V-Bucks (500 + 100 bonus) for $4.99, one per account. It is
+// offered only on a Season 3 build whose cosmetics have both (3.1 on: 3.0's paks lack them), through the same purchase flow.
+// Its art is the Rogue Agent's featured display asset (no starter pack display asset is in the paks). Its cosmetics go to
+// the athena profile, its V-Bucks to profile0 (common_core on 3.5.1) like the packs'.
 export const currencyStorefront = "CurrencyStorefront";
 const firstBuild = 3724489;
 const displayAsset = (name) => `/Game/Catalog/DisplayAssets/${name}.${name}`;
@@ -46,14 +54,24 @@ const pack = (total, bonus, price) => ({
   grants: [{ templateId: "Currency:MtxPurchased", quantity: total - bonus }, { templateId: "Currency:MtxPurchaseBonus", quantity: bonus }]
     .filter(({ quantity }) => quantity > 0)
 });
-export const realMoneyOffers = [pack(1000, 0, 999), pack(2800, 300, 2499), pack(7500, 1500, 5999), pack(13500, 3500, 9999)];
+const starterPack = {
+  ...pack(600, 100, 499),
+  offerId: "core_starter_br_s3",
+  title: "Battle Royale Starter Pack",
+  description: "Rogue Agent outfit, Catalyst back bling and 600 V-Bucks",
+  displayAssetPath: displayAsset("DA_Featured_CID_090_Athena_Commando_M_Tactical"),
+  season: 3,
+  oncePerAccount: true,
+  cosmetics: ["AthenaCharacter:CID_090_Athena_Commando_M_Tactical", "AthenaBackpack:BID_030_TacticalRogue"]
+};
+export const realMoneyOffers = [pack(1000, 0, 999), pack(2800, 300, 2499), pack(7500, 1500, 5999), pack(13500, 3500, 9999), starterPack];
 
 export const hasCurrencyStore = (changelist = currentBuild()) => Number(changelist) >= firstBuild;
 export const findRealMoneyOffer = (offerId) => realMoneyOffers.find((offer) => offer.offerId === offerId);
 
 const key = crypto.randomBytes(32);
 const signature = (offerId, accountId) => crypto.createHmac("sha256", key).update(`${offerId}\n${accountId}`).digest("base64url").slice(0, 32);
-const tokenPattern = /^(core_mtx_\d+)\.([A-Za-z0-9-]{1,64})\.([A-Za-z0-9_-]{32})$/;
+const tokenPattern = /^(core_[a-z0-9_]+)\.([A-Za-z0-9-]{1,64})\.([A-Za-z0-9_-]{32})$/;
 
 // The offer's app store id for an account: "<offerId>.<accountId>.<signature>", URL-safe as it goes into the purchase
 // page's address unescaped ("&offers=%s").
@@ -70,10 +88,20 @@ export function parseAppStoreId(appStoreId) {
   return { offer, accountId };
 }
 
+// How many times the account's profile0 has had the offer fulfilled (its in_app_purchases).
+export const purchaseCount = (profile0, offerId) => profile0?.stats?.attributes?.in_app_purchases?.fulfillmentCounts?.[offerId] ?? 0;
+
+// Whether the offer is on sale to the account on the requesting build: a season's offer only on that season's builds that
+// have its cosmetics, a one-per-account offer until it is bought.
+export const isOffered = (offer, profile0) => (!offer.season || (namesAthenaBuild() && seasonNumber() === offer.season))
+  && (offer.cosmetics ?? []).every((templateId) => lockerCosmeticId(templateId))
+  && !(offer.oncePerAccount && purchaseCount(profile0, offer.offerId) > 0);
+
 // The CurrencyStorefront's offers for the account (store/catalog.js offerJson); none before 1.8 or without an account.
-export function currencyOffers(accountId) {
+// profile0: the account's, for the offers it can buy once.
+export function currencyOffers(accountId, profile0) {
   if (!hasCurrencyStore() || !accountId) return [];
-  return realMoneyOffers.map((offer) => ({
+  return realMoneyOffers.filter((offer) => isOffered(offer, profile0)).map((offer) => ({
     offerId: offer.offerId,
     devName: offer.title,
     templateId: "",
@@ -115,6 +143,15 @@ export function catalogServiceOffer(appStoreId, { offer }) {
 // how many times each offer was fulfilled). Returns what was granted.
 export function grantRealMoneyOffer(session, offer, transactionId) {
   const granted = offer.grants.flatMap(({ templateId, quantity }) => grantItem(session, templateId, quantity));
+  // Cosmetics go to the athena profile, as the offer's season's newest build spells them (the purchase page has no build).
+  if (offer.cosmetics) {
+    inBuild(buildOfSeason(offer.season), () => {
+      for (const templateId of offer.cosmetics) {
+        const item = grantCosmetic(session, templateId);
+        if (item) granted.push(item);
+      }
+    });
+  }
   const tracker = session.profile("profile0");
   const current = tracker.profile.stats.attributes.in_app_purchases ?? {};
   const fulfillmentCounts = { ...(current.fulfillmentCounts ?? {}) };

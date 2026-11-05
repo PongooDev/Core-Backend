@@ -207,7 +207,7 @@ export function storefronts(profile, now = new Date(), { athena, accountId, vbuc
   const passOffers = battlePassOffers({ ownsPass: athena?.stats.attributes.book_purchased === true });
   const battlePass = passOffers.length ? [{ name: passOffers[0].storefront, catalogEntries: passOffers.map((offer, index) => offerJson(offer, -index)) }] : [];
   // The Store tab's V-Bucks packs, while the admin panel has them on (store/currency.js).
-  const currency = { name: currencyStorefront, catalogEntries: (vbuckPacks ? currencyOffers(accountId) : []).map((offer, index) => offerJson(offer, -index)) };
+  const currency = { name: currencyStorefront, catalogEntries: (vbuckPacks ? currencyOffers(accountId, profile) : []).map((offer, index) => offerJson(offer, -index)) };
   return [
     { name: "CardPackStore", catalogEntries: shown.map((offer, index) => offerJson(offer, -index)) },
     { name: "CardPackStorePromo", catalogEntries: [] },
