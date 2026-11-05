@@ -13,13 +13,21 @@ import { notifyProfiles } from "../mcp/profile.js";
 // for the V-Bucks packs, the purchase flow's page, and its one-click "Complete purchase".
 
 // Where the purchase flow should open ([EpicPurchaseFlow] Prod= in the DefaultGame.ini hotfix, services/fortnite/cloudstorage.js,
-// which the flow reads before the hotfix arrives and never again, so the game keeps Epic's URL: Core-Backend #244):
-// this backend as the client reached it, "<scheme>:///<host>/purchase". Before loading it the flow sets the player's
-// access token as a cookie on the page's domain, which it takes from this address by dropping "https://www",
-// "http://www", "https://" and "http://" and cutting at the first "/" (3.1 0x6A6880); a domain with a port
-// ("127.0.0.1:5595") is no cookie domain, and the flow gives up on the purchase when the cookie can't be set (it falls
-// back to Epic's single sign-on, 0x6A7F10). With the third slash the domain comes out empty, a cookie for the page's own
-// host, and the browser reads "http:///127.0.0.1:5595/purchase" as http://127.0.0.1:5595/purchase.
+// which the flow reads before the hotfix arrives and never again, so the launcher writes it to the build's
+// NoRedist\DefaultGame.ini: Core-Backend #244): this backend as the client reached it, "<scheme>:///<host>/purchase".
+//
+// Before loading it the flow (3.5.1 0x6B2B50, 3.1 0x6A6880) tries to set the player's access token as a cookie
+// (EPIC_BEARER_TOKEN, 0x6B0AE0) through CEF, for the domain it takes from this address by dropping "https://www",
+// "http://www", "https://" and "http://" and cutting at the first "/". With the third slash the domain comes out empty, a
+// cookie for the page's own host, and CEF reads "http:///127.0.0.1:5595/purchase" as http://127.0.0.1:5595/purchase.
+// But the cookie is always Secure (FCookie bSecure = 1, 3.5.1 0x6B362B, 3.1 0x6A7352, 3.5.2 0x6B567B), which CEF refuses
+// to set for an http:// page, so on a plain-http backend the cookie never sets: "Unable to use purchase flow auth,
+// falling back to SSO" (0x6AD180). The single sign-on (0x6B4210 -> FOnlineIdentityMcp::GenerateAuthRedirectUrl,
+// 0x3AAFD0) asks GET /account/api/oauth/exchange for an exchange code (services/account/oauth.js), then opens
+// <Protocol>://<RedirectUrl>/exchange?exchangeCode=<code>&redirectUrl=<this address, URL-encoded> (0x3AB800, the
+// template from 0x37ABC0), with Protocol and RedirectUrl from [OnlineSubsystemMcp.OnlineIdentityMcp] (0x4EEE00), which
+// the launcher points at this backend too. Without the exchange code (Core-Backend #248, a 404 here) the flow failed:
+// "Unable to generate SSO URL for user", and the Store showed "A PROBLEM OCCURRED". /exchange below signs the page in.
 //
 // The host is the one the game used for this config (the Host header, network.js requestHost): the purchase flow's
 // browser is CEF, which goes straight to the address (neither CoreRedirect nor -httpproxy carries it, 3.3 has no CEF
@@ -41,6 +49,16 @@ export function purchaseFlowSection(req, network, { build, enabled }) {
 }
 
 const pageMinutes = 15;
+
+// The query of the purchase flow's page an /exchange redirectUrl names ("http:///127.0.0.1:5595/purchase?offers=...",
+// any host: the page is always this backend's own), or null for any other URL.
+export function purchaseQuery(redirectUrl) {
+  const url = String(redirectUrl ?? "").split("#")[0];
+  const queryAt = url.indexOf("?");
+  const base = queryAt < 0 ? url : url.slice(0, queryAt);
+  if (!/^https?:\/{2,3}[^/?#\\]+\/purchase\/?$/i.test(base)) return null;
+  return new URLSearchParams(queryAt < 0 ? "" : url.slice(queryAt + 1));
+}
 const maxPending = 1000;
 
 // A purchase code is tried against the account and the address that sent it: this many wrong codes in the window lock
@@ -216,6 +234,26 @@ ${purchase}
   });
 })();
 </script>`, nonce);
+  });
+
+  // The purchase flow's single sign-on (GenerateAuthRedirectUrl, above purchaseFlowUrl): the exchange code signs the page
+  // in. The code is used up, a page-long access token for its account (no refresh token) goes in the cookie the page reads
+  // (cookieAccount), and the browser goes on to this backend's own /purchase with the flow's query (its offers): never to
+  // another site, whatever redirectUrl names.
+  router.get("/exchange", (req, res) => {
+    const query = purchaseQuery(req.query.redirectUrl);
+    const entry = context.exchangeCodes?.redeem(String(req.query.exchangeCode ?? ""));
+    const account = entry && accounts.get(entry.accountId);
+    if (!query) return page(res, 400, "Unknown page", "<h1>Unknown page</h1><p class=\"error\">Close this window and open the Store again.</p>");
+    if (!account || account.banned) {
+      return page(res, 400, "Sign-in expired", "<h1>Sign-in expired</h1><p class=\"error\">Close this window and open the Store again.</p>");
+    }
+    const { access_token: token } = tokens.issueAccess(entry.clientId, account, "exchange_code", pageMinutes * 60);
+    const secure = httpsProxied(req) ? "; Secure" : "";
+    securityHeaders(res, crypto.randomBytes(16).toString("base64"));
+    res.set("Set-Cookie", `EPIC_BEARER_TOKEN=${token}; Path=/purchase; Max-Age=${pageMinutes * 60}; HttpOnly; SameSite=Lax${secure}`);
+    const search = query.toString();
+    res.redirect(302, `/purchase${search ? `?${search}` : ""}`);
   });
 
   // "Complete purchase": only for the page's own origin (no other site can post it: the browser's Origin, or its

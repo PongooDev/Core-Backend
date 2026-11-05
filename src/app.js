@@ -1,5 +1,6 @@
 import express from "express";
 import { createAccountStore } from "./accounts/store.js";
+import { createExchangeCodeStore } from "./accounts/exchange-codes.js";
 import { createResetTokenStore } from "./accounts/reset-tokens.js";
 import { createSettingsStore } from "./settings/store.js";
 import { createReportStore } from "./reports/store.js";
@@ -114,6 +115,7 @@ export function createContext(config) {
     adminAuth,
     reports,
     resetTokens: createResetTokenStore(),
+    exchangeCodes: createExchangeCodeStore(),
     friends,
     friendCodes: createFriendCodeStore(config.dataDir),
     purchaseCodes: createPurchaseCodeStore(config.dataDir),

@@ -21,10 +21,16 @@ export function recentLogs(after = 0, limit = 500) {
   return lines.slice(Math.max(0, lines.length - limit));
 }
 
+// A request's path and query for the log, without the purchase flow's exchange code (/exchange?exchangeCode=...,
+// services/fortnite/purchase.js), which signs its account in until used.
+export function redactUrl(url) {
+  return String(url).replace(/([?&](?:exchangeCode|exchange_code)=)[^&#]*/gi, "$1<redacted>");
+}
+
 export function requestLog(req, res, next) {
   // The admin panel polls its own API; its reads would drown out the game's requests.
   if (req.method === "GET" && req.originalUrl.startsWith("/admin/api/")) return next();
-  res.on("finish", () => log("HTTP", `${res.statusCode} ${req.method} ${req.get("host") ?? ""}${req.originalUrl}`));
+  res.on("finish", () => log("HTTP", `${res.statusCode} ${req.method} ${req.get("host") ?? ""}${redactUrl(req.originalUrl)}`));
   next();
 }
 
@@ -39,7 +45,7 @@ function describeAuth(header) {
   return `${scheme} ${Buffer.from(value, "base64").toString("utf8").split(":")[0]}:<redacted>`;
 }
 
-const secretFields = ["password", "newPassword", "oldPassword", "currentPassword"];
+const secretFields = ["password", "newPassword", "oldPassword", "currentPassword", "exchange_code"];
 
 function redact(body) {
   if (!body || typeof body !== "object" || !secretFields.some((field) => field in body)) return body;
@@ -58,7 +64,7 @@ export function recordUnknown(dataDir, req, kind = "route") {
     method: req.method,
     host: req.get("host"),
     path: normalizePath(req.path),
-    url: req.originalUrl,
+    url: redactUrl(req.originalUrl),
     query: req.query,
     headers: {
       authorization: describeAuth(req.get("authorization")),

@@ -28,26 +28,26 @@ export function createTokenStore(dataDir) {
     if (file) writeJson(file, { access: [...access.values()], refresh: [...refresh.values()] });
   }
 
-  function issue(clientId, account, grantType) {
+  function issue(clientId, account, grantType, { lifetime = accessLifetime, withRefresh = true } = {}) {
     const now = Date.now();
     const session = {
       token: newToken(),
       clientId,
       accountId: account?.id,
       grantType,
-      expiresAt: now + accessLifetime * 1000
+      expiresAt: now + lifetime * 1000
     };
     access.set(session.token, session);
 
     const response = {
       access_token: session.token,
-      expires_in: accessLifetime,
+      expires_in: lifetime,
       expires_at: new Date(session.expiresAt).toISOString(),
       token_type: "bearer",
       client_id: clientId
     };
 
-    if (account) {
+    if (account && withRefresh) {
       const refreshToken = { token: newToken(), clientId, accountId: account.id, expiresAt: now + refreshLifetime * 1000 };
       refresh.set(refreshToken.token, refreshToken);
       Object.assign(response, {
@@ -69,6 +69,12 @@ export function createTokenStore(dataDir) {
 
     issueUser(clientId, account, grantType) {
       return issue(clientId, account, grantType);
+    },
+
+    // An access token alone, without a refresh token, for lifetime seconds: the purchase flow's page cookie
+    // (services/fortnite/purchase.js /exchange).
+    issueAccess(clientId, account, grantType, lifetime) {
+      return issue(clientId, account, grantType, { lifetime, withRefresh: false });
     },
 
     useRefreshToken(token) {

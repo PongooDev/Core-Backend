@@ -52,7 +52,7 @@ function refusesBuild(res, settings, login) {
   return true;
 }
 
-export function oauthRoutes({ accounts, tokens, settings, resetTokens }) {
+export function oauthRoutes({ accounts, tokens, settings, resetTokens, exchangeCodes }) {
   const router = express.Router();
   const failureTracker = createFailureTracker({ windowMs: 5 * 60 * 1000, maxFailures: 10 });
 
@@ -172,6 +172,20 @@ export function oauthRoutes({ accounts, tokens, settings, resetTokens }) {
         return res.json(tokens.issueUser(clientId, account, "refresh_token"));
       }
 
+      // An exchange code (GET /account/api/oauth/exchange, below): once, within its five minutes, for its account.
+      case "exchange_code": {
+        const entry = exchangeCodes?.redeem(String(body.exchange_code ?? ""));
+        const account = entry && accounts.get(entry.accountId);
+        if (!account) {
+          return sendError(res, 400, "errors.com.epicgames.account.oauth.exchange_code_not_found",
+            "Sorry the exchange code you supplied was not found. It is possible that it was no longer valid");
+        }
+        if (!isServerAccountName(account.displayName) && refusesBuild(res, settings, account.displayName)) return;
+        if (account.banned) return banned(res, account);
+        if (!isServerAccountName(account.displayName)) accounts.recordBuild(account, currentBuild());
+        return res.json(tokens.issueUser(clientId, account, "exchange_code"));
+      }
+
       default:
         return sendError(res, 400, "errors.com.epicgames.account.oauth.unsupported_grant_type",
           `Unsupported grant type: ${body.grant_type}`);
@@ -181,6 +195,19 @@ export function oauthRoutes({ accounts, tokens, settings, resetTokens }) {
   // The client checks its token here every minute; a 401 makes it refresh, and a refused refresh logs it out.
   router.get("/account/api/oauth/verify", requireAuth(tokens), (req, res) => {
     res.json(tokens.verify(req.session));
+  });
+
+  // An exchange code for the token's account (FOnlineIdentityMcp's GenerateExchangeCode, 3.5.1 0x3AB800, which reads
+  // code, expiresInSeconds, creatingClientId and consumingClientId, 0x4086B0). The purchase flow asks for one when it
+  // can't set its cookie, and opens <Protocol>://<RedirectUrl>/exchange?exchangeCode=<code>&redirectUrl=<its page>
+  // (services/fortnite/purchase.js). A client token names no account, so it gets none.
+  router.get("/account/api/oauth/exchange", requireAuth(tokens), (req, res) => {
+    const account = req.session.accountId && accounts.get(req.session.accountId);
+    if (!account) {
+      return sendError(res, 403, "errors.com.epicgames.common.missing_permission", "An exchange code needs an account's token");
+    }
+    if (account.banned) return banned(res, account);
+    res.set("Cache-Control", "no-store").json(exchangeCodes.issue(req.session));
   });
 
   router.delete("/account/api/oauth/sessions/kill", requireAuth(tokens), (req, res) => {
