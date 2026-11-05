@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import { inBuild } from "../builds/context.js";
 import { McpError } from "../errors.js";
 import { athenaEventQuestsOf } from "../events/fiftyfifty.js";
-import { eventQueueOfPlaylist } from "../events/ltms.js";
+import { eventTagOfPlaylist } from "../events/ltms.js";
 import { currentBuild } from "../builds/context.js";
 import { athenaBattlePassDailyIds, athenaChallengeBundles, athenaCosmetics, athenaDailyIds, athenaObjectiveStat, athenaSeason, dailyWeight, getAthenaQuest, seasonLevels,
   splitOffBackpacks } from "../gamedata/athena.js";
@@ -758,11 +758,12 @@ function settleLevelObjectives(session) {
 // The playlists' tags (PvPTags rows Athena.Playlist.Solo, .Duo, .Squad and 1.10's .FiftyFifty, which 50v50's
 // complete_athena_50v50 asks for), and from 1.11 the event queues', Athena.Playlist.Event.<N> for the playlist of queue
 // AthenaEvent<N> (15 Event.1, 13 .2, 14 .3, 17 .4, 12 .5, 16 .6, 18 .7, 19 .8: events/ltms.js eventQueueOfPlaylist), which
-// the LTMs' complete_athena_event_<N> ask for (Core-Backend #195).
+// the LTMs' complete_athena_event_<N> ask for (Core-Backend #195); 3.5.1's playlists are tagged by their own PlaylistId
+// (events/ltms.js eventTagOfPlaylist).
 // (Looked up when a match is recorded: events/ltms.js imports this module's importers, so it isn't there at load.)
 const playlistTags = { 2: "athena.playlist.solo", 10: "athena.playlist.duo", 9: "athena.playlist.squad", 11: "athena.playlist.fiftyfifty" };
 const playlistTagOf = (playlistId) => playlistTags[playlistId]
-  ?? (eventQueueOfPlaylist[playlistId] ? `athena.playlist.event.${eventQueueOfPlaylist[playlistId]}` : "athena.playlist");
+  ?? (eventTagOfPlaylist(playlistId) ? `athena.playlist.event.${eventTagOfPlaylist(playlistId)}` : "athena.playlist");
 const tagMatches = (tags, tag) => !tags || tags.toLowerCase().split(",").map((one) => one.trim())
   .every((wanted) => tag === wanted || tag.startsWith(`${wanted}.`));
 

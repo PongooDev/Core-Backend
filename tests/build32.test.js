@@ -43,7 +43,7 @@ test("3.2 is known by its version, plays on its own data and is Season 3 with 3.
   assert.equal(allowedBuildList(["3.2"]).join(), v32);
   const season = inBuild(v32, athenaSeason);
   assert.deepEqual(season, inBuild(v30, athenaSeason), "AthenaSeason3 is 3.0's");
-  assert.equal(buildOfSeason(3), "3942182", "Season 3's newest data is 3.3's (build33.test.js)");
+  assert.equal(buildOfSeason(3), "4000805", "Season 3's newest data is 3.5.1's (build351.test.js)");
   assert.deepEqual(inBuild(v32, () => battlePassOffers()).map(({ offerId, storefront, price }) => [offerId, storefront, price]),
     inBuild(v30, () => battlePassOffers()).map(({ offerId, storefront, price }) => [offerId, storefront, price]));
 });

@@ -4,7 +4,7 @@ import { contentPage } from "../src/services/content/pages.js";
 
 // Save the World's "New Updates" popup showed no text on any build (Core-Backend #234): the page had neither
 // survivalmessage nor savetheworldnews.
-const builds = [3541083, 3700114, 3724489, 3757339, 3790078, 3889387, 3915963, 3935073, 3942182, undefined];
+const builds = [3541083, 3700114, 3724489, 3757339, 3790078, 3889387, 3915963, 3935073, 3942182, 4000805, undefined];
 
 test("every build gets the Save the World message in survivalmessage and savetheworldnews", () => {
   for (const build of builds) {

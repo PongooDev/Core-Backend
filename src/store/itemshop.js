@@ -59,8 +59,10 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // season ran on to 3.6 (3.3, CL-3942182, adds no cosmetic: only the rarity of three of 3.2's): 3.2's (CL-3935073: Power Chord, Sgt. Green Clover, Highland Warrior, Battle Hound, their gliders,
 // pickaxes and emotes) and 3.1's (CL-3915963) cosmetics are in on the days Epic sold them (Rex, Burnout, Radiant and
 // Brilliant Striker, Empire Axe, Pick Squeak, Tactical Spade, Make It Rain, Flippin' Sexy, Reanimated; a build sees only
-// those its data has, so 3.0's shop is as it was), the later ones (Raven, Leviathan...) and Battle
-// Pass Tiers are left out. A build's season is its athena data's seasonNumber, Season 1 without one.
+// those its data has, so 3.0's shop is as it was), and so are 3.5.1's (CL-4000805: 3.4's and 3.5's Raven, Rabbit Raider,
+// Bunny Brawler, Dark Vanguard, Leviathan, Tricera Ops, Tomatohead, Cipher, Midnight Ops, Whiplash, their gliders,
+// pickaxes and emotes, from 30 March); the ones no build Core has (Steelsight, Brite Gunner...) and Battle Pass Tiers are
+// left out. A build's season is its athena data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;
   return { days, firstDay: Date.parse(`${days[0].date}T00:00:00Z`) };
@@ -415,11 +417,22 @@ const tileOf = (tile) => {
 // with the Scaly Back Bling", BID_031_Dinosaur). The outfit's hero wears no back bling part, so the pairing is the
 // catalog's, which isn't in the paks (🟡: from the Fortnite Wiki's Rex page); the offer grants both, as Epic's did.
 // 3.2 (CL-3935073) adds Power Chord with Six String (BID_034_RockerPunk) and Highland Warrior with Buckler (BID_035_Scathach), as the
-// wiki's pages name them ("bundled_with"); Battle Hound's Crested Cape is not in 3.2's paks.
+// wiki's pages name them ("bundled_with"); Battle Hound's Crested Cape is not in 3.2's paks. 3.5.1 (CL-4000805) adds 3.4's and
+// 3.5's, as the wiki's pages name them: Raven's Iron Cage, Rabbit Raider's Hard Boiled, Bunny Brawler's Eggshell, Dark
+// Vanguard's Dark Void, Leviathan's Fish Tank, Tricera Ops' Hatchling and Tomatohead's Special Delivery, and Royale Flags
+// (BID_040_Wukong, "bundled_with Wukong", from 28 March 2018) with 2.5's Wukong, on builds whose data has the back bling.
 export const bundledBackBlings = {
   "AthenaCharacter:cid_093_athena_commando_m_dinosaur": "AthenaBackpack:bid_031_dinosaur",
   "AthenaCharacter:cid_097_athena_commando_f_rockerpunk": "AthenaBackpack:bid_034_rockerpunk",
-  "AthenaCharacter:cid_099_athena_commando_f_scathach": "AthenaBackpack:bid_035_scathach"
+  "AthenaCharacter:cid_099_athena_commando_f_scathach": "AthenaBackpack:bid_035_scathach",
+  "AthenaCharacter:cid_102_athena_commando_m_raven": "AthenaBackpack:bid_036_raven",
+  "AthenaCharacter:cid_103_athena_commando_m_bunny": "AthenaBackpack:bid_037_bunnymale",
+  "AthenaCharacter:cid_104_athena_commando_f_bunny": "AthenaBackpack:bid_038_bunnyfemale",
+  "AthenaCharacter:cid_105_athena_commando_f_spaceblack": "AthenaBackpack:bid_039_spaceblackfemale",
+  "AthenaCharacter:cid_107_athena_commando_f_pajamaparty": "AthenaBackpack:bid_041_pajamaparty",
+  "AthenaCharacter:cid_108_athena_commando_m_fishhead": "AthenaBackpack:bid_042_fishhead",
+  "AthenaCharacter:cid_109_athena_commando_m_pizza": "AthenaBackpack:bid_043_pizza",
+  "AthenaCharacter:cid_071_athena_commando_m_wukong": "AthenaBackpack:bid_040_wukong"
 };
 
 // The day's offers by storefront, those the requesting build has the cosmetic for. Never a cosmetic the shop doesn't sell

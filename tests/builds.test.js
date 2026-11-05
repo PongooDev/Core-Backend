@@ -26,11 +26,13 @@ test("the build is the changelist a request's User-Agent names; builds without t
   // 3.2's default HTTP User-Agent (UE 4.20, "%s/%s %s/%s") has the engine version alone (#231).
   assert.equal(getBuild(agent("Fortnite/4.20.0-3935073+++Fortnite+Release-3.2 Windows/10.0.17134.1.256.64bit")), "3935073");
   assert.equal(getBuild(agent("Fortnite/4.20.0-3942182+++Fortnite+Release-3.3 Windows/10.0.17134.1.256.64bit")), "3942182");
+  assert.equal(getBuild(agent("Fortnite/4.20.0-4000805+++Fortnite+Release-3.5 Windows/10.0.17134.1.256.64bit")), "4000805");
   assert.equal(getBuild(agent("Fortnite/Windows")), "unknown");
-  assert.deepEqual(dataBuilds, [certBuild, build12, "3700114", "3724489", "3729133", "3741772", "3757339", "3775276", "3790078", "3807424", "3825894", "3841827", "3847564", "3858292", "3870737", "3889387", "3901517", "3915963", "3935073", "3942182"]);
+  assert.deepEqual(dataBuilds, [certBuild, build12, "3700114", "3724489", "3729133", "3741772", "3757339", "3775276", "3790078", "3807424", "3825894", "3841827", "3847564", "3858292", "3870737", "3889387", "3901517", "3915963", "3935073", "3942182", "4000805"]);
   assert.equal(dataBuild(build12), build12);
   for (const other of [certBuild, "unknown", "3500000", undefined]) assert.equal(dataBuild(other), certBuild);
-  // A build without its own data takes the closest earlier one's: a build after 3.3 would play on 3.1's, 1.7.3 on 1.7.2's.
+  // A build without its own data takes the closest earlier one's: a 3.4 (between 3.3 and 3.5.1) would play on 3.3's, 1.7.3 on
+  // 1.7.2's.
   assert.equal(dataBuild("3724489"), "3724489");
   assert.equal(dataBuild("3729133"), "3729133");
   assert.equal(dataBuild("3741772"), "3741772");
@@ -48,6 +50,8 @@ test("the build is the changelist a request's User-Agent names; builds without t
   assert.equal(dataBuild("3935073"), "3935073");
   assert.equal(dataBuild("3942182"), "3942182");
   assert.equal(dataBuild("3950000"), "3942182");
+  assert.equal(dataBuild("4000805"), "4000805");
+  assert.equal(dataBuild("4010000"), "4000805");
   assert.equal(dataBuild("3710000"), "3700114");
   assert.equal(dataBuild("3600000"), build12);
   assert.equal(activeBuild(), certBuild, "outside a request");

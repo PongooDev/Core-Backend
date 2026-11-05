@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { currentBuild } from "../builds/context.js";
-import { isEventActive, mutantStorms2018, spring2018, winter2017 } from "../events/events.js";
+import { isEventActive, mutantStorms2018, spring2018, storm2018, winter2017 } from "../events/events.js";
 import { getItem } from "../gamedata/items.js";
 import { nextReplayOf, weeklyStoreEnd } from "./itemshop.js";
 
@@ -179,7 +179,10 @@ const weeklyFeaturedByBuild = [
 ];
 const weeklyFeatured = () => weeklyFeaturedByBuild.find(({ firstBuild }) => Number(currentBuild()) >= firstBuild)?.items ?? [];
 const storms2018 = () => !isEventActive(winter2017) && isEventActive(mutantStorms2018);
-const springNow = () => !isEventActive(winter2017) && !storms2018() && isEventActive(spring2018);
+// 3.5.1's (CL-4000805) Into the Storm (events/storm2018.js) keeps Spring It On!'s store: its gold is still Spring It On! Gold
+// ("Added Spring It On! Gold" to Survive the Storm's rewards, a repeatable quest's "100 Spring It On! Gold"), and its notes
+// name no new Event Store item, so the store, its trackers (Spring2018.*) and its countdown run on as 3.3's.
+const springNow = () => !isEventActive(winter2017) && !storms2018() && (isEventActive(spring2018) || isEventActive(storm2018));
 // 3.2's (CL-3935073) notes: "Wukong is available in the Event Store. This is the Mythic version of the Lunar New Year
 // 'Berserker' soldier." (HID_Commando_014_Wukong_SR_T01, in 3.1's data already): a hero at a legendary hero's 2,800, one
 // (🟡: Epic's price and limit aren't recorded), on 3.2 and later.
@@ -190,18 +193,23 @@ const springNow = () => !isEventActive(winter2017) && !storms2018() && isEventAc
 // 3.3's (CL-3942182) notes: "Shamrock Reclaimer Outlander is available in the Event Store." That hero is in no pak of 3.3
 // (no Shamrock or Reclaimer item in its items or characters: Epic delivered it with a content update), so the store has
 // nothing to sell and leaves it out, as every offer a build's data lacks (🟡: add it with its template id when a build has it).
+// 3.4's notes (no 3.4 build is at hand; 3.5.1, CL-4000805, is the first whose data has the hero): "Rabbit Raider Jonesy,
+// Legendary reskin of the Soldier's Raider subclass, has been added to the Event Store" (HID_Commando_011_M_Easter_SR_T01),
+// at a legendary hero's 2,800, one (🟡: Epic's price and limit aren't recorded), on 3.5.1 and later.
 const wukongFirstBuild = 3935073;
-const springItemsNow = () => (Number(currentBuild()) >= wukongFirstBuild
-  ? [...springEventItems, { templateId: "Hero:hid_commando_014_wukong_sr_t01", price: 2800, limit: 1 }] : springEventItems);
+const rabbitRaiderFirstBuild = 4000805;
+const springItemsNow = () => [...springEventItems,
+  ...(Number(currentBuild()) >= wukongFirstBuild ? [{ templateId: "Hero:hid_commando_014_wukong_sr_t01", price: 2800, limit: 1 }] : []),
+  ...(Number(currentBuild()) >= rabbitRaiderFirstBuild ? [{ templateId: "Hero:hid_commando_011_m_easter_sr_t01", price: 2800, limit: 1 }] : [])];
 const eventItemsNow = () => (storms2018() ? stormsEventItems : springNow() ? springItemsNow() : eventItems);
 export const eventStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWSpecialEventStoreFront"
   : springNow() ? "Spring2018.STWSpecialEventStoreFront" : eventStoreInstance);
 export const weeklyStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWRotationalEventStorefront"
   : springNow() ? "Spring2018.STWRotationalEventStorefront" : weeklyStoreInstance);
 
-// The store is open while the requesting build runs Survive the Holidays (or 2.3's to 2.4.2's storms, or 2.5's Spring It
-// On!) and its data has Seasonal Gold.
-export const hasEventStore = () => (isEventActive(winter2017) || isEventActive(mutantStorms2018) || isEventActive(spring2018))
+// The store is open while the requesting build runs Survive the Holidays (or 2.3's to 2.4.2's storms, 2.5's Spring It
+// On! or 3.5.1's Into the Storm) and its data has Seasonal Gold.
+export const hasEventStore = () => (isEventActive(winter2017) || isEventActive(mutantStorms2018) || isEventActive(spring2018) || isEventActive(storm2018))
   && Boolean(getItem(seasonalGold));
 
 const has = ({ templateId }) => Boolean(getItem(templateId));

@@ -78,6 +78,25 @@ const playlistTeamsFrom30 = {
   31: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }
 };
 const playlistClassBuild = 3901517;
+// 3.5.1's (CL-4000805) playlists are FortPlaylistAthena assets (events/ltms.js), each with its MaxTeamCount, MaxTeamSize
+// and MaxSquadSize: where they differ from 3.0's table, 50v50 v2 (50: 2 × 50 in squads of 4), High Explosives v2 (23 solo,
+// 24 squads), Solid Gold v2 Solo (26), Sniper Shootout v2 (39, 40, 41), Sky Supply Duos and Squads (42, 43) and Impact
+// (44, 45, 46); Blitz (19), its Solo and Duos (36, 37), Teams of 20 (22), Solid Gold (27) and Sky Supply (30) keep theirs.
+const playlistTeamsFrom351 = {
+  23: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  24: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  26: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  39: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  40: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  41: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  42: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  43: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  44: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  45: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  46: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  50: { maxTeamCount: 2, maxTeamSize: 50, maxSquadSize: 4 }
+};
+const playlistAssetTeamsBuild = 4000805;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).
 export const teamSquadsOptionBuild = 3915963;
 // Late joining (Core-Backend #122, the admin panel's Matchmaking settings). The servers' MMS client (1.9
@@ -151,8 +170,8 @@ export function parseBucket(bucketId) {
 // HandleAssignMatchMessage's six-field "GameId: %s AppId %s BuildId: %d HotfixVersion: %d RegionId: %s PlaylistId: %d".
 // 3.1 (CL-3915963) keeps every one of them, ticket.status.numNeeded, numQueued and matchStartDelay and the Queued
 // status's queuedPlayers and estimatedWaitSec, SessionAssignment's matchId and the Play message's sessionId and
-// joinDelaySec included (its dump), so it is 3.0's format. 3.2 (CL-3935073) and 3.3 (CL-3942182) take it as 3.1's (🟡: their clients haven't been
-// dumped for this; their notes change no matchmaking).
+// joinDelaySec included (its dump), so it is 3.0's format. 3.2 (CL-3935073), 3.3 (CL-3942182) and 3.5.1 (CL-4000805) take it
+// as 3.1's (🟡: their clients haven't been dumped for this; their notes change no matchmaking).
 export const sixFieldAssignBuild = 3807424;
 const assignGameId = "Fortnite";
 const assignAppId = "Fortnite";
@@ -190,6 +209,7 @@ export function serverRegion(patterns) {
 export const playlistTeamsOf = (bucketId, build = null) => {
   const { playlistId } = parseBucket(bucketId);
   if (playlistId === shootingTestPlaylist) return shootingTestTeams(build ?? 3870737);
+  if (Number(build) >= playlistAssetTeamsBuild && playlistTeamsFrom351[playlistId]) return playlistTeamsFrom351[playlistId];
   if (Number(build) >= playlistClassBuild && playlistTeamsFrom30[playlistId]) return playlistTeamsFrom30[playlistId];
   return playlistTeams[playlistId] ?? null;
 };

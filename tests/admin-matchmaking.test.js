@@ -29,14 +29,19 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
     // Modes default to all true
     assert.deepEqual(ov.modes, { solo: true, duo: true, squad: true, fiftyFifty: true, shootingTest: false, highExplosives: false, sneakySilencers: false, sniperShootout: false,
       speedyStorm: false, takeToTheSkies: false, lotsaLoot: false, blitz: false, fiveByTwenty: false, highJump: false, useItOrLoseIt: false, steadyStorm: false,
-      solidGold: false, skySupply: false, shotguns: false, blitzSolo: false, blitzDuo: false });
+      solidGold: false, skySupply: false, shotguns: false, blitzSolo: false, blitzDuo: false, fiftyFiftyV2: false, highExplosivesSolo: false,
+      highExplosivesSquads: false, sniperShootoutSolo: false, sniperShootoutDuos: false, sniperShootoutSquads: false, skySupplyDuos: false,
+      skySupplySquads: false, solidGoldSolo: false, impactSolo: false, impactDuos: false, impactSquads: false });
 
     // 21 Battle Royale playlists: the 4 canonical ones, Shooting Test #1, the other event queues (#190), 3.0's new ones
-    // and 3.1's Blitz Solo and Duo
-    assert.equal(ov.playlists.length, 21);
+    // and 3.1's Blitz Solo and Duo, and 3.5.1's own twelve
+    assert.equal(ov.playlists.length, 33);
     assert.equal(ov.ltms.originalDates, false);
     assert.deepEqual(ov.ltms.list.map((ltm) => ltm.id), ["fiftyFifty", "highExplosives", "sneakySilencers", "sniperShootout", "shootingTest",
-      "speedyStorm", "takeToTheSkies", "lotsaLoot", "blitz", "fiveByTwenty", "highJump", "useItOrLoseIt", "steadyStorm", "solidGold", "skySupply", "shotguns", "blitzSolo", "blitzDuo"]);
+      "speedyStorm", "takeToTheSkies", "lotsaLoot", "blitz", "fiveByTwenty", "highJump", "useItOrLoseIt", "steadyStorm", "solidGold", "skySupply", "shotguns", "blitzSolo", "blitzDuo",
+      "fiftyFiftyV2", "highExplosivesSolo", "highExplosivesSquads", "sniperShootoutSolo", "sniperShootoutDuos", "sniperShootoutSquads", "skySupplyDuos",
+      "skySupplySquads", "solidGoldSolo", "impactSolo", "impactDuos", "impactSquads"]);
+    assert.equal(ov.playlists.find((p) => p.id === "fiftyFiftyV2").code, "Playlist_50v50");
     const soloPl = ov.playlists.find((p) => p.id === "solo");
     assert.ok(soloPl);
     assert.equal(soloPl.playlistId, 2);
@@ -148,7 +153,9 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
     assert.equal(resetRes.body.success, true);
     assert.deepEqual(resetRes.body.modes, { solo: true, duo: true, squad: true, fiftyFifty: true, shootingTest: false, highExplosives: false, sneakySilencers: false, sniperShootout: false,
       speedyStorm: false, takeToTheSkies: false, lotsaLoot: false, blitz: false, fiveByTwenty: false, highJump: false, useItOrLoseIt: false, steadyStorm: false,
-      solidGold: false, skySupply: false, shotguns: false, blitzSolo: false, blitzDuo: false });
+      solidGold: false, skySupply: false, shotguns: false, blitzSolo: false, blitzDuo: false, fiftyFiftyV2: false, highExplosivesSolo: false,
+      highExplosivesSquads: false, sniperShootoutSolo: false, sniperShootoutDuos: false, sniperShootoutSquads: false, skySupplyDuos: false,
+      skySupplySquads: false, solidGoldSolo: false, impactSolo: false, impactDuos: false, impactSquads: false });
     assert.equal(resetRes.body.timing.gatherSeconds, 10);
     assert.equal(resetRes.body.timing.warmupSeconds, null);
     assert.equal(resetRes.body.timing.lateJoin, false);

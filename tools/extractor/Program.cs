@@ -1024,11 +1024,15 @@ var athenaLevels = new List<object>();
 SortedDictionary<string, object>? athenaSeason = null;
 var challengeSchedules = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var challengeBundles = new SortedDictionary<string, object>(StringComparer.Ordinal);
+var testCosmetics = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "DynamicsTestGlider", "Glider_ProxyTest", "Glider_TestStaticParts", "Pickaxe_ID_zzz_StatDebugger" };
 var cosmeticKeys = new List<(string TemplateId, string Class, string AssetName, string? Hero, string? Icon, string DisplayName)>();
 foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" && f.Path.StartsWith("FortniteGame/Content/Athena/Items/", StringComparison.OrdinalIgnoreCase)))
 {
-    // The test characters: 00_TestAssets, and from 3.2 (CL-3935073) Characters/Dev_TestAsset.
+    // The test characters: 00_TestAssets, and from 3.2 (CL-3935073) Characters/Dev_TestAsset. 3.5 (CL-4000805) adds test
+    // gliders (DynamicsTestGlider, Glider_ProxyTest, Glider_TestStaticParts: "Glider", Handmade) and a debug harvesting tool
+    // (Pickaxe_ID_zzz_StatDebugger, "Use to debug in-match progressive cosmetics", bNeverPersisted), left out the same way.
     if (file.Path.Contains("/00_TestAssets/", StringComparison.OrdinalIgnoreCase) || file.Path.Contains("/Dev_TestAsset.", StringComparison.OrdinalIgnoreCase)) continue;
+    if (testCosmetics.Contains(Path.GetFileNameWithoutExtension(file.Path))) continue;
     var gamePath = "/Game/" + file.PathWithoutExtension["FortniteGame/Content/".Length..];
     var assetName = gamePath.Split('/').Last();
     if (!provider.TryLoadPackage(file, out var package)) continue;

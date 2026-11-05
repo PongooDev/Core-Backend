@@ -1045,8 +1045,8 @@ export function adminRoutes(context) {
     const now = new Date();
     const config = settings?.get?.()?.itemShop ?? { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 };
     const s = requestedSeasonOf(requestedSeason);
-    // Season 3's shop as 3.3 (its newest data) sells it: 3.0's cosmetics, 3.1's and 3.2's (3.3 adds none).
-    const build = { 1: "3724489", 2: "3807424", 3: "3942182" }[s];
+    // Season 3's shop as 3.5.1 (its newest data) sells it: 3.0's cosmetics, 3.1's, 3.2's (3.3 adds none) and 3.4's and 3.5's.
+    const build = { 1: "3724489", 2: "3807424", 3: "4000805" }[s];
     const offers = inBuild(build, () => itemShopOffers(now, config, s));
     const cosmetics = inBuild(build, () => eligibleCosmetics());
     const currentDay = shopDay(now, config, s);
@@ -1132,7 +1132,8 @@ export function adminRoutes(context) {
       { version: "3.1", cl: 3915963, event: "Spring It On!" },
       { version: "3.1.1", cl: 3917250, event: "Spring It On!" },
       { version: "3.2", cl: 3935073, event: "Spring It On!" },
-      { version: "3.3", cl: 3942182, event: "Spring It On!" }
+      { version: "3.3", cl: 3942182, event: "Spring It On!" },
+      { version: "3.5.1", cl: 4000805, event: "Into the Storm" }
     ];
 
     const sampleBuilds = builds.map((b) => ({
@@ -1243,6 +1244,24 @@ export function adminRoutes(context) {
           llama: "Spring Llama (CardPack_Event_2018_Spring, 1000 Firecracker Tickets)",
           questsCount: 19,
           leftoverConversion: "1000 unspent Storm Tickets convert to 1 Storm Llama, and up to 3000 Seasonal Gold to Firecracker Tickets (3 to 1), on 2.5 load"
+        },
+        {
+          id: "storm2018",
+          name: "Into the Storm",
+          subtitle: "Into the Storm: Opening Act, Survive the Storm's return and active Mutant Storms; Spring It On!'s Event Store runs on",
+          buildRange: "3.5.1 (CL 4000805)",
+          flags: ["EventFlag.Storm2018Phase1", "EventFlag.SurviveTheStorm", "EventFlag.ActiveStorms", "EventFlag.PassiveMiniBosses"],
+          theater: "Standard Zones with Mutant Storm and Mini-Boss alerts, plus the Survive the Storm theater",
+          theaterRegions: [
+            { name: "Survive the Storm Start", power: "15", gate: "None" },
+            { name: "Survive the Storm Normal", power: "40", gate: "Launch the Rocket (Stonewood)" },
+            { name: "Survive the Storm Hard", power: "70", gate: "Launch the Rocket (Plankerton)" }
+          ],
+          alertsQuota: "10 Mutant Storms, 3 Survive the Storm 3 Day and 1 7 Day alerts, and 3 Mini-Boss (General) mission alerts per day",
+          currency: "Storm Tickets (AccountResource:eventcurrency_stormzone), Spring It On! Gold in the Event Store",
+          llama: "Into the Storm Llama (CardPack_Event_2018_Storm, 1000 Storm Tickets)",
+          questsCount: 8,
+          leftoverConversion: "Firecracker Tickets convert to Spring Llamas (1 per 1000, and 1 for what is left over) on 3.5.1 load"
         }
       ]
     });
@@ -1516,7 +1535,8 @@ export function adminRoutes(context) {
         id: ltm.id,
         name: ltm.name,
         playlistId: ltm.playlistId,
-        code: `AthenaEvent${ltm.queue}`,
+        // 3.5.1's own playlists have no event queue: their asset's PlaylistName.
+        code: ltm.queue ? `AthenaEvent${ltm.queue}` : ltm.playlistName,
         teamCount: 100,
         teamSize: 4,
         squadSize: 4,

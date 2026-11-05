@@ -1,5 +1,5 @@
 import { convertLeftover } from "./candyllamas.js";
-import { currentEventsConfig, hasEventEnded, isEventActive, mutantStorms, mutantStorms2018 } from "./events.js";
+import { currentEventsConfig, hasEventEnded, isEventActive, mutantStorms, mutantStorms2018, storm2018 } from "./events.js";
 import { stormLlama2018, stormTickets } from "./mutantstorms.js";
 
 // 1.11's notes: "With the end of the Mutant Storms event, every 1,000 unspent Storm Tickets will be converted to a storm
@@ -40,13 +40,14 @@ export function convertLeftoverStormTickets(session) {
 // has been exchanged for Storm Llamas." The storm llama is the return's Storm Llama (CardPack_Event_FirstStorm), the one
 // its tickets bought (store/catalog.js). So the first time an account loads on a build past 2.4.2 whose data still has
 // it, each 1,000 Storm Tickets become an unopened Storm Llama and the rest go (events/leftovers.js). Not while the admin
-// panel runs the storms anyway.
+// panel runs the storms anyway, nor on a build running Into the Storm (3.5.1, events/storm2018.js), whose Storm Tickets
+// buy its own llama: the conversion waits for a build where neither runs.
 export const stormConversion2018 = {
   run: "MutantStorms2018",
   due: () => {
     const cfg = currentEventsConfig();
     return cfg?.autoConvertStormTickets !== false && cfg?.autoConvertCandy !== false && hasEventEnded(mutantStorms2018)
-      && !isEventActive(mutantStorms) && !isEventActive(mutantStorms2018);
+      && !isEventActive(mutantStorms) && !isEventActive(mutantStorms2018) && !isEventActive(storm2018);
   },
   options: () => ({ currency: stormTickets, perLlama: stormTicketsPerLlama, llama: stormLlama2018, label: "Storm Tickets",
     llamaName: "Storm Llama" })

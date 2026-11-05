@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { isEventActive, winter2017 } from "../events/events.js";
+import { isEventActive, surviveTheStorm, winter2017 } from "../events/events.js";
 import { perBuild } from "../gamedata/read.js";
 import { questPath } from "./quests.js";
 
@@ -23,11 +23,20 @@ import { questPath } from "./quests.js";
 // (tagged Stat.Theater.Survival.Difficulty0<n>, what the 7 Day quests' objectives name), the later two opening with the
 // campaign, as Hexsylvania's: Normal after Stonewood's Launch the Rocket, Hard after Plankerton's.
 // The theater is only in world info while the event runs on the requesting build.
+//
+// 3.5.1 (CL-4000805): "Survive the Storm returns!" with Into the Storm (events/events.js): the same missions, difficulties,
+// zone (BP_ZT_Survival, now on the desert tile BP_Hex_Arid01) and quests' stats (StormQuest_2018_CompleteSurviveAny and
+// _CompleteSurvive7Day_D1-D3), its alerts requiring EventFlag.SurviveTheStorm. 3.5's paks have neither the holiday pin nor
+// the holiday button: its theater takes the round pin (WM_Pin_Round, new since 3.3) and the event's own art
+// (T-IntoTheStormEvent2018, HomeScreenNextQuest's event button image) (🟡: Epic's theater isn't recorded).
 export const survivalTag = "Stat.Theater.Survival";
 export const survivalId = crypto.createHash("sha1").update("Core:SurviveTheStorm").digest("hex").slice(0, 32).toUpperCase();
 
 const zoneTheme = "/Game/World/ZoneThemes/FortniteSurvival/BP_ZT_Survival.BP_ZT_Survival_C";
 const pin = "/Game/Environments/WorldMap/Blueprints/WM_PinHoliday.WM_PinHoliday_C";
+const roundPin = "/Game/Environments/WorldMap/Blueprints/WM_Pin_Round.WM_Pin_Round_C";
+const holidayImage = "/Game/UI/Foundation/Textures/Buttons/T-Button-WinterHoliday-Mode.T-Button-WinterHoliday-Mode";
+const intoTheStormImage = "/Game/UI/Frontend/Campaign/Textures/T-IntoTheStormEvent2018.T-IntoTheStormEvent2018";
 export const survivalGenerators = {
   threeDay: "/Game/World/MissionGens/MissionGen_Survival_3Day.MissionGen_Survival_3Day_C",
   sevenDay: "/Game/World/MissionGens/MissionGen_Survival_7Day.MissionGen_Survival_7Day_C"
@@ -63,9 +72,11 @@ function tile(tileType, x, y) {
 
 const layout = perBuild((read) => {
   const { missionGenerators = {}, zoneThemes = {}, difficulties = {}, mapPins = [] } = read("world", {});
-  // A build without the event's content (1.10 has the missions but no holiday pin) has no Survival theater.
+  // A build without the event's content (1.10 has the missions but no holiday pin) has no Survival theater. 3.5.1 has the
+  // round pin in its place.
+  const holiday = mapPins.includes(pin);
   if (!Object.values(survivalGenerators).every((path) => missionGenerators[path]) || !zoneThemes[zoneTheme]
-    || !mapPins.includes(pin) || !regions.every((region) => difficulties[region.rowName])) return null;
+    || !(holiday || mapPins.includes(roundPin)) || !regions.every((region) => difficulties[region.rowName])) return null;
 
   const tiles = [];
   const taken = new Set();
@@ -112,8 +123,8 @@ const layout = perBuild((read) => {
         theaterTags: { gameplayTags: [{ tagName: survivalTag }] },
         theaterVisibilityRequirements: noRequirements(),
         requirements: noRequirements(),
-        worldMapPinClass: pin,
-        theaterImage: "/Game/UI/Foundation/Textures/Buttons/T-Button-WinterHoliday-Mode.T-Button-WinterHoliday-Mode",
+        worldMapPinClass: holiday ? pin : roundPin,
+        theaterImage: holiday ? holidayImage : intoTheStormImage,
         // The Holiday Survival Llama's PackColor.
         theaterColorInfo: { bUseDifficultyToDetermineColor: false, color: { specifiedColor: { r: 1, g: 0.464813, b: 0.063542, a: 1 }, colorUseRule: "UseColor_Specified" } },
         socket: "Survival_Mode",
@@ -128,10 +139,10 @@ const layout = perBuild((read) => {
   };
 });
 
-// The Survive the Storm theater, when the requesting build runs Survive the Holidays and has its content (a fresh
-// copy: world info hands out the theater's objects).
+// The Survive the Storm theater, when the requesting build runs Survive the Holidays (or 3.5.1's Survive the Storm) and has
+// its content (a fresh copy: world info hands out the theater's objects).
 export function survivalTheater() {
-  if (!isEventActive(winter2017)) return null;
+  if (!isEventActive(winter2017) && !isEventActive(surviveTheStorm)) return null;
   const made = layout();
   return made ? structuredClone(made) : null;
 }

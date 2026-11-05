@@ -149,6 +149,29 @@ export const spring2018Phase3 = "EventFlag.Spring2018Phase3";
 // (world/theaters.js places them).
 export const groupMission = "EventFlag.GroupMission";
 
+// 3.5.1 (CL-4000805, ++Fortnite+Release-3.5, 11 April 2018; Core has no 3.4) ends Spring It On! and runs Into the Storm.
+// 3.4's notes closed Spring It On! ("'Spring It On!' comes to a close", The Three Husketeers), and 3.5's paks have no
+// Spring2018_QuestMapWidget left: the home screen's event map is IntoTheStorm2018_QuestMapWidget, whose RefreshPagesEnabled
+// shows "Into the Storm: Opening Act" (pages 1 to 3) from EventFlag.Storm2018Phase1 and "Into the Storm: Encore" (pages 4
+// and 5) from EventFlag.Storm2018Phase2, and HomeScreenNextQuest's UpdateButtonBasedOnEventStatus shows "View Event" while
+// either runs. 3.5's notes start the first: "New Questline: Into the Storm: Opening Act", so 3.5.1 runs Storm2018Phase1
+// (Phase2, the Encore, was a later update's) and none of Spring It On!'s flags. Its other halves:
+// - "Survive the Storm returns!": 3.5's Survival3DayCategory and Survival7DayCategory alert rows (quota 3 and 1, the notes'
+//   "Three 3-Day Survivals" and "One 7-Day Survival per 24 hours") require EventFlag.SurviveTheStorm, where 1.11 to 3.3's
+//   required EventFlag.Winter2017.
+// - "Mutant Storms are more active during this event and award between 100 and 240 Storm Tickets ... Quota: 10 per 24
+//   hours": the StormCategory rows (quota 10, EventFlag.ActiveStorms), not the passive StormLowCategory ones
+//   (EventFlag.PassiveStorms, quota 4), which stop with 3.3.
+// - "Opt-in difficulty boost and group missions do not award tickets during this event": EventFlag.GroupMission (the
+//   Firecracker Ticket group mission alerts) stops with 3.3.
+// The passive Mini-Bosses (General rows, EventFlag.PassiveMiniBosses) run on: 3.5's notes keep Mini-Boss alerts ("can no
+// longer be selected if you have not unlocked the mission"). The event's quests, llama and book pages are
+// events/storm2018.js's.
+export const storm2018 = "Storm2018";
+export const storm2018Phase1 = "EventFlag.Storm2018Phase1";
+export const surviveTheStorm = "EventFlag.SurviveTheStorm";
+export const activeStorms = "EventFlag.ActiveStorms";
+
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
   { name: mutantStorms, flag: "EventFlag.Vindertech", firstBuild: 3775276, lastBuild: 3775276 },
@@ -165,6 +188,10 @@ const events = [
   { name: spring2018, flag: spring2018Phase2, firstBuild: 3915963, lastBuild: 3942182 },
   { name: groupMission, flag: groupMission, firstBuild: 3935073, lastBuild: 3942182 },
   { name: spring2018, flag: spring2018Phase3, firstBuild: 3942182, lastBuild: 3942182 },
+  { name: passiveMiniBosses, flag: passiveMiniBosses, firstBuild: 4000805, lastBuild: 4000805 },
+  { name: storm2018, flag: activeStorms, firstBuild: 4000805, lastBuild: 4000805 },
+  { name: storm2018, flag: surviveTheStorm, firstBuild: 4000805, lastBuild: 4000805 },
+  { name: storm2018, flag: storm2018Phase1, firstBuild: 4000805, lastBuild: 4000805 },
   { name: lobbyWinterDecor, flag: lobbyWinterDecor, firstBuild: 3807424, lastBuild: 3825894 },
   { name: winterBattleBus, flag: winterBattleBus, firstBuild: 3807424, lastBuild: 3825894 },
   { name: supplyDropGift, flag: supplyDropGift, firstBuild: 3807424, lastBuild: 3825894 }

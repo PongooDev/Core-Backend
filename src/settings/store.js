@@ -14,6 +14,10 @@ const limitModes = ["solo", "duo", "squad", "fiftyFifty", "shootingTest", "highE
   "blitzSolo", "blitzDuo"];
 const noLimits = () => Object.fromEntries(limitModes.map((mode) => [mode, 0]));
 
+// 3.5.1's (CL-4000805) own LTMs (events/ltms.js), whose switches the matchmaking modes keep beside the others'.
+const playlistAssetLtms = ["fiftyFiftyV2", "highExplosivesSolo", "highExplosivesSquads", "sniperShootoutSolo", "sniperShootoutDuos",
+  "sniperShootoutSquads", "skySupplyDuos", "skySupplySquads", "solidGoldSolo", "impactSolo", "impactDuos", "impactSquads"];
+
 const defaults = {
   requirePassword: false,
   allowRegistration: true,
@@ -136,7 +140,10 @@ const defaults = {
     shotguns: false,
     // 3.1's Blitz children (Blitz Solo and Duo), off too.
     blitzSolo: false,
-    blitzDuo: false
+    blitzDuo: false,
+    // 3.5.1's own playlists (FortPlaylistAthena assets), off too but 50v50 v2, 3.5.1's new mode, which is on there whatever
+    // its switch.
+    ...Object.fromEntries(playlistAssetLtms.map((id) => [id, false]))
   },
   // The LTMs' original dates (Core-Backend #190, events/ltms.js): on, each runs only in its original window on the
   // season's replay and on the builds Epic ran it on, whatever matchmakingModes says of it.
@@ -166,7 +173,7 @@ export function sanitizeMatchmakingModes(input, current = defaultMatchmakingMode
     sneakySilencers: typeof input.sneakySilencers === "boolean" ? input.sneakySilencers : (current.sneakySilencers === true),
     sniperShootout: typeof input.sniperShootout === "boolean" ? input.sniperShootout : (current.sniperShootout === true),
     ...Object.fromEntries(["speedyStorm", "takeToTheSkies", "lotsaLoot", "blitz", "fiveByTwenty", "highJump", "useItOrLoseIt", "steadyStorm", "solidGold",
-      "skySupply", "shotguns", "blitzSolo", "blitzDuo"].map((id) =>
+      "skySupply", "shotguns", "blitzSolo", "blitzDuo", ...playlistAssetLtms].map((id) =>
       [id, typeof input[id] === "boolean" ? input[id] : (current[id] === true)]))
   };
 }

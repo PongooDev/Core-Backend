@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { currentBuild } from "../builds/context.js";
-import { currentEventsConfig, isEventActive, passiveMiniBosses } from "../events/events.js";
+import { currentEventsConfig, isEventActive, passiveMiniBosses, storm2018 } from "../events/events.js";
 import { candy } from "../events/fortnitemares.js";
 import { miniBossesStay, mutantStorms, mutantStorms2018, stormTickets } from "../events/mutantstorms.js";
 import { firecrackerTickets } from "../events/spring2018.js";
@@ -138,7 +138,7 @@ function missionRewards(seed, tierGroupName, theaterId, rowName, soloTierGroup =
   return { tierGroupName, items: items.map(({ itemType, quantity }) => ({ itemType, quantity })) };
 }
 
-// Seasonal Gold from every mission while the Event Store is open (1.11 to 3.3, store/eventstore.js): 1.11's "Play any
+// Seasonal Gold from every mission while the Event Store is open (1.11 to 3.3 and 3.5.1, store/eventstore.js): 1.11's "Play any
 // mission and earn Seasonal Gold", 2.3's "All missions will continue to award Seasonal Gold". The game's own pack for it
 // is ZCP_EventScaling_T01-T20 ("Seasonal Gold", "Special currency found throughout the world. Can be traded for items in
 // the Event Store."), one a mission tier as the XP packs: Mission_Select_T<nn> takes T<nn>, a storm shield defense
@@ -337,6 +337,13 @@ function rollMissions({ data, fixedMissions }, day, availableUntil) {
 // 2.5's and 3.0's MissionAlertCategories give StormLowCategory Quota 4 and GeneralCategory Quota 3, the General row
 // tagged Stat.MissionAlert.MiniBoss and MissionAlert.Visual.Miniboss (profiles/alerts.js enforces them). The targets are
 // the notes' (Epic's servers placed the alerts). Like 2.3 to 2.4.2's storms, they are placed once a UTC day.
+//
+// 3.5.1 (CL-4000805) runs Into the Storm (events/events.js storm2018): its Mutant Storms are the StormCategory rows again
+// (EventFlag.ActiveStorms, quota 10), "award between 100 and 240 Storm Tickets, scaled based on difficulty", here Storm
+// Tickets as 2.3's storms gave them (🟡 Core's amount, 10 per tile difficulty); its Survive the Storm alerts
+// (EventFlag.SurviveTheStorm) "award between 300 and 1500 tickets, scaled based on Survival length and difficulty": Storm
+// Tickets, 30 per tile difficulty for a 3 Day alert and 50 for a 7 Day one (🟡 Core's: 300 to 900 and 500 to 1,500 on
+// the theater's difficulties 10 to 30). Its passive Mini-Bosses are 2.5's.
 const halloweenAlerts = "Halloween2017_MissionAlert";
 const groupCategory = "GroupMissionCategory";
 const stormTier = (tier) => (tier <= 5 ? 1 : tier <= 10 ? 2 : tier <= 15 ? 3 : 4);
@@ -367,12 +374,14 @@ const alertRewards = {
     [`MissionAlert_Storm_T${String(tier).padStart(2, "0")}`, () => [[`CardPack:zcp_reagent_c_t0${stormTier(tier)}_high`, 1]]])),
   MissionAlert_Storm: (row, mission) => [
     [`CardPack:zcp_reagent_c_t0${zoneOfModifierGroup(row.modifierTierGroup)}_high`, 1],
-    ...(isEventActive(mutantStorms) || isEventActive(mutantStorms2018) ? [[stormTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]] : [])
+    ...(isEventActive(mutantStorms) || isEventActive(mutantStorms2018) || isEventActive(storm2018) ? [[stormTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]] : [])
   ],
   MissionAlert_StormLow: (row) => [[`CardPack:zcp_reagent_c_t0${zoneOfRow(row)}_high`, 1]],
   MissionAlert_GroupMission: (row, mission) => [[firecrackerTickets, groupTicketsFor(mission.missionDifficultyInfo.rowName)]],
-  MissionAlert_Survival3Day: (row, mission) => [[snowflakeTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]],
-  MissionAlert_Survival7Day: (row, mission) => [[snowflakeTickets, 2 * stormTicketsFor(mission.missionDifficultyInfo.rowName)]],
+  MissionAlert_Survival3Day: (row, mission) => (isEventActive(storm2018)
+    ? [[stormTickets, 3 * stormTicketsFor(mission.missionDifficultyInfo.rowName)]] : [[snowflakeTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]]),
+  MissionAlert_Survival7Day: (row, mission) => (isEventActive(storm2018)
+    ? [[stormTickets, 5 * stormTicketsFor(mission.missionDifficultyInfo.rowName)]] : [[snowflakeTickets, 2 * stormTicketsFor(mission.missionDifficultyInfo.rowName)]]),
   MissionAlert_MiniBoss: (row, mission, seed) => [
     [`CardPack:zcp_reagent_c_t0${zoneOfRow(row)}_high`, 1],
     ...(isEventActive(winter2017) ? [[snowflakeTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]]

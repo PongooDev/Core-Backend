@@ -17,6 +17,7 @@ const v30 = "3901517";
 const v31 = "3915963";
 const v32 = "3935073";
 const v33 = "3942182";
+const v351 = "4000805";
 const at = (date) => new Date(`${date}T12:00:00Z`);
 
 function as(agent, port, method, urlPath, token, body) {
@@ -40,8 +41,8 @@ const ticket = (changelist, port, { accountId, token }, playlist) =>
 
 test("the event queues' LTMs are 1.11's to 3.3's, squads, and off by hand until turned on", () => {
   for (const id of ["highExplosives", "sneakySilencers", "sniperShootout"]) {
-    assert.deepEqual([v110, v111, v21, v23, v24, v242, v25, v30, "3915963", "3935073", "3942182", "3950000"].map((build) => hasLtm(id, build)),
-      [false, true, true, true, true, true, true, true, true, true, true, false], id);
+    assert.deepEqual([v110, v111, v21, v23, v24, v242, v25, v30, "3915963", "3935073", "3942182", "3950000", v351].map((build) => hasLtm(id, build)),
+      [false, true, true, true, true, true, true, true, true, true, true, false, false], id);
   }
   assert.equal(ltmOn("sniperShootout", v23, { matchmakingModes: {} }), false);
   assert.equal(ltmOn("sniperShootout", v23, { matchmakingModes: { sniperShootout: true } }), true);
@@ -114,8 +115,9 @@ test("Speedy Storm, Take To The Skies, Lotsa Loot and Blitz: their builds, squad
   const queues = { speedyStorm: ["Event3", 14], takeToTheSkies: ["Event6", 16], lotsaLoot: ["Event4", 17], blitz: ["Event8", 19] };
   for (const [id, [flag, playlist]] of Object.entries(queues)) {
     const from = id === "blitz" ? v242 : v21;
-    assert.deepEqual([v111, v21, v23, v24, v242, v25, v30, "3915963", "3935073", "3942182", "3950000"].map((build) => hasLtm(id, build)),
-      [v111, v21, v23, v24, v242, v25, v30, "3915963", "3935073", "3942182"].map((build) => Number(build) >= Number(from)).concat(false), id);
+    // Blitz runs on to 3.5.1 (Playlist_Blitz_Squads, still 19), the others end with 3.3.
+    assert.deepEqual([v111, v21, v23, v24, v242, v25, v30, "3915963", "3935073", "3942182", "3950000", v351].map((build) => hasLtm(id, build)),
+      [v111, v21, v23, v24, v242, v25, v30, "3915963", "3935073", "3942182"].map((build) => Number(build) >= Number(from)).concat(id === "blitz", id === "blitz"), id);
     assert.equal(ltmOn(id, v25, { matchmakingModes: {} }), false, id);
     assert.equal(ltmOn(id, v25, { matchmakingModes: { [id]: true } }), true, id);
     assert.deepEqual(ltmEventFlags(v25, { matchmakingModes: { [id]: true } }), [flag], id);
@@ -157,7 +159,9 @@ test("3.0's LTMs are its playlist classes: no 50v50 or Shooting Test, duo Skies,
     assert.equal(eventQueueOfPlaylist[playlist], playlist, id);
     assert.deepEqual(playlistTeamsOf(`${v30}:0:NA:${playlist}`, v30), teams, id);
     const listed = ltmSchedule({}).list.find((ltm) => ltm.id === id);
-    assert.deepEqual([listed.seasons, listed.builds, listed.original], [[3], "3.0 to 3.3", null], id);
+    // Teams of 20, Solid Gold and Sky Supply have 3.5.1 playlists too (Playlist_5x20, _SolidGold_Squads, _SkySupply).
+    assert.deepEqual([listed.seasons, listed.builds, listed.original],
+      [[3], ["fiveByTwenty", "solidGold", "skySupply"].includes(id) ? "3.0 to 3.5.1" : "3.0 to 3.3", null], id);
   }
 });
 
@@ -265,8 +269,8 @@ test("Teams of 20 is 3.2's new mode: on there whatever its switch, by hand on 3.
     }
   }
   assert.equal(ltmOn("fiveByTwenty", v31, { matchmakingModes: { fiveByTwenty: true } }), true);
-  // Only Teams of 20 is a build's new mode; 3.2's other LTMs stay by hand.
-  assert.deepEqual(ltms.filter((ltm) => ltm.newIn).map((ltm) => ltm.id), ["fiveByTwenty"]);
+  // Only Teams of 20 (3.2's) and 50v50 v2 (3.5.1's, build351.test.js) are a build's new mode; 3.2's other LTMs stay by hand.
+  assert.deepEqual(ltms.filter((ltm) => ltm.newIn).map((ltm) => ltm.id), ["fiveByTwenty", "fiftyFiftyV2"]);
   assert.deepEqual(ltmForcedQueues(v32, { matchmakingModes: { shotguns: true } }), [22, 31]);
   assert.ok(ltmQuests({ running: true }, v32).includes("athenaevent22_playmatches"));
   // EFortAthenaPlaylist (3.2's SDK): AthenaEvent1 4, AthenaEvent8 11, AthenaPlatoon 12, AthenaEvent21 13, AthenaEvent22 14.

@@ -1,0 +1,6739 @@
+{
+  "Defender:did_defenderassault_basic_m_r_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_m_r_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_m_r_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_m_r_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_m_sr_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_m_sr_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_m_sr_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_m_sr_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_m_sr_t05": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_m_vr_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_m_vr_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_m_vr_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_m_vr_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defenderassault_basic_m_vr_t05": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.AssaultRifle"
+    ]
+  },
+  "Defender:did_defendermelee_basic_f_sr_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Melee"
+    ]
+  },
+  "Defender:did_defendermelee_basic_f_sr_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Melee"
+    ]
+  },
+  "Defender:did_defendermelee_basic_f_sr_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Melee"
+    ]
+  },
+  "Defender:did_defendermelee_basic_f_sr_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Melee"
+    ]
+  },
+  "Defender:did_defendermelee_basic_f_sr_t05": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Melee"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_f_r_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_f_r_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_f_r_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_f_r_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_f_sr_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_f_sr_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_f_sr_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_f_sr_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_f_sr_t05": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_f_vr_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_f_vr_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_f_vr_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_f_vr_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defenderpistol_basic_f_vr_t05": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Pistol"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_f_r_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_f_r_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_f_r_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_f_r_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_f_sr_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_f_sr_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_f_sr_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_f_sr_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_f_sr_t05": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_f_vr_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_f_vr_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_f_vr_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_f_vr_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendershotgun_basic_f_vr_t05": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Shotgun"
+    ]
+  },
+  "Defender:did_defendersniper_basic_m_r_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_m_r_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_m_r_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_m_r_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_m_sr_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_m_sr_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_m_sr_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_m_sr_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_m_sr_t05": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_m_vr_t01": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_m_vr_t02": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_m_vr_t03": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_m_vr_t04": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Defender:did_defendersniper_basic_m_vr_t05": {
+    "tags": [
+      "NPC.CharacterType.Survivor.Defender.Sniper"
+    ]
+  },
+  "Hero:dev_testasset_commando_female": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Gunner"
+    ]
+  },
+  "Hero:dev_testasset_commanod_male": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.LeadStorm"
+    ]
+  },
+  "Hero:dev_testasset_constructor_female": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PowerBASE"
+    ]
+  },
+  "Hero:dev_testasset_constructor_male": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Hotfix"
+    ]
+  },
+  "Hero:dev_testasset_ninja_female": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Alchemist"
+    ]
+  },
+  "Hero:dev_testasset_ninja_male": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Poisoner"
+    ]
+  },
+  "Hero:dev_testasset_outlander_female": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Exploration"
+    ]
+  },
+  "Hero:dev_testasset_outlander_male": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Ursine"
+    ]
+  },
+  "Hero:hid_001_athena_commando_f": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_002_athena_commando_f": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_003_athena_commando_f": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_004_athena_commando_f": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_005_athena_commando_m": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_006_athena_commando_m": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_007_athena_commando_m": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_008_athena_commando_m": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_009_athena_commando_m": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_010_athena_commando_m": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_011_athena_commando_m": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_012_athena_commando_m": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_013_athena_commando_f": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_014_athena_commando_f": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_015_athena_commando_f": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_016_athena_commando_f": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_017_athena_commando_m": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_018_athena_commando_m": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_019_athena_commando_m": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_020_athena_commando_m": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_021_athena_commando_f": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_022_athena_commando_f": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_023_athena_commando_f": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_024_athena_commando_f": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_025_athena_commando_m": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_026_athena_commando_m": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_027_athena_commando_f": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_028_athena_commando_f": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_029_athena_commando_f_halloween": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_030_athena_commando_m_halloween": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_031_athena_commando_m_retro": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_032_athena_commando_m_medieval": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_033_athena_commando_f_medieval": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_034_athena_commando_f_medieval": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_035_athena_commando_m_medieval": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_036_athena_commando_m_wintercamo": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_037_athena_commando_f_wintercamo": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_038_athena_commando_m_disco": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_039_athena_commando_f_disco": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_040_athena_commando_m_district": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_041_athena_commando_f_district": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_042_athena_commando_m_cyberpunk": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_043_athena_commando_f_stealth": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_044_athena_commando_f_scipop": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_045_athena_commando_m_holidaysweater": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_046_athena_commando_f_holidaysweater": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_047_athena_commando_f_holidayreindeer": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_048_athena_commando_f_holidaygingerbread": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_049_athena_commando_m_holidaygingerbread": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_050_athena_commando_m_holidaynutcracker": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_051_athena_commando_m_holidayelf": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_052_athena_commando_f_psblue": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_053_athena_commando_m_skidude": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_054_athena_commando_m_skidude_usa": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_055_athena_commando_m_skidude_can": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_056_athena_commando_m_skidude_gbr": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_057_athena_commando_m_skidude_fra": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_058_athena_commando_m_skidude_ger": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_059_athena_commando_m_skidude_chn": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_060_athena_commando_m_skidude_kor": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_061_athena_commando_f_skigirl": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_062_athena_commando_f_skigirl_usa": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_063_athena_commando_f_skigirl_can": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_064_athena_commando_f_skigirl_gbr": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_065_athena_commando_f_skigirl_fra": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_066_athena_commando_f_skigirl_ger": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_067_athena_commando_f_skigirl_chn": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_068_athena_commando_f_skigirl_kor": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_069_athena_commando_f_pinkbear": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_070_athena_commando_m_cupid": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_071_athena_commando_m_wukong": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_072_athena_commando_m_scout": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_073_athena_commando_f_scuba": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_074_athena_commando_f_stripe": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_075_athena_commando_f_stripe": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_076_athena_commando_f_sup": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_077_athena_commando_m_sup": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_078_athena_commando_m_camo": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_079_athena_commando_f_camo": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_080_athena_commando_m_space": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_081_athena_commando_f_space": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_082_athena_commando_m_scavenger": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_083_athena_commando_f_tactical": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_084_athena_commando_m_assassin": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_085_athena_commando_m_twitch": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_086_athena_commando_m_redsilk": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_087_athena_commando_f_redsilk": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_088_athena_commando_m_spaceblack": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_089_athena_commando_m_retrogrey": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_090_athena_commando_m_tactical": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_091_athena_commando_m_redshirt": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_092_athena_commando_f_redshirt": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_093_athena_commando_m_dinosaur": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_094_athena_commando_m_rider": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_095_athena_commando_m_founder": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_096_athena_commando_f_founder": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_097_athena_commando_f_rockerpunk": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_098_athena_commando_f_stpatty": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_099_athena_commando_f_scathach": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_100_athena_commando_m_cuchulainn": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_101_athena_commando_m_stealth": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_102_athena_commando_m_raven": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_103_athena_commando_m_bunny": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_104_athena_commando_f_bunny": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_105_athena_commando_f_spaceblackfemale": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_106_athena_commando_f_taxi": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_107_athena_commando_f_pajamaparty": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_108_athena_commando_m_fishhead": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_109_athena_commando_m_pizza": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_110_athena_commando_f_circuitbreaker": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_commando_007hw_sr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_007hw_sr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_007hw_sr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_007hw_sr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_007hw_sr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_007hw_vr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_007hw_vr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_007hw_vr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_007hw_vr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_007hw_vr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.StaffSergeant"
+    ]
+  },
+  "Hero:hid_commando_009_m_r_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_m_r_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_m_r_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_m_r_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_m_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_m_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_m_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_m_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_m_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_m_vr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_m_vr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_m_vr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_m_vr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_009_m_vr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.SupportSoldier"
+    ]
+  },
+  "Hero:hid_commando_011_m_easter_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider",
+      "SpecialEvent.Spring.Easter.2018.Bunny.Commando.Male"
+    ]
+  },
+  "Hero:hid_commando_011_m_easter_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider",
+      "SpecialEvent.Spring.Easter.2018.Bunny.Commando.Male"
+    ]
+  },
+  "Hero:hid_commando_011_m_easter_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider",
+      "SpecialEvent.Spring.Easter.2018.Bunny.Commando.Male"
+    ]
+  },
+  "Hero:hid_commando_011_m_easter_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider",
+      "SpecialEvent.Spring.Easter.2018.Bunny.Commando.Male"
+    ]
+  },
+  "Hero:hid_commando_011_m_easter_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "SpecialEvent.Spring.Easter.2018.Bunny.Commando.Male",
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_011_m_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_011_m_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_011_m_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_011_m_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_011_m_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_011_r_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_011_r_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_011_r_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_011_r_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_011_sr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_011_sr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_011_sr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_011_sr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_011_sr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_011_uc_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_011_uc_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_011_uc_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_011_vr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_011_vr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_011_vr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_011_vr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_011_vr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_012_sr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_012_sr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_012_sr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_012_sr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Raider"
+    ]
+  },
+  "Hero:hid_commando_012_sr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.MasterGrenadier"
+    ]
+  },
+  "Hero:hid_commando_013_r_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher"
+    ]
+  },
+  "Hero:hid_commando_013_r_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher"
+    ]
+  },
+  "Hero:hid_commando_013_r_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher"
+    ]
+  },
+  "Hero:hid_commando_013_r_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher"
+    ]
+  },
+  "Hero:hid_commando_013_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher"
+    ]
+  },
+  "Hero:hid_commando_013_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher"
+    ]
+  },
+  "Hero:hid_commando_013_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher"
+    ]
+  },
+  "Hero:hid_commando_013_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher"
+    ]
+  },
+  "Hero:hid_commando_013_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher"
+    ]
+  },
+  "Hero:hid_commando_013_stpatricks_f_v1_sr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher",
+      "SpecialEvent.StPatricks.2018.Shamrock.Commando.Female"
+    ]
+  },
+  "Hero:hid_commando_013_stpatricks_f_v1_sr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher",
+      "SpecialEvent.StPatricks.2018.Shamrock.Commando.Female"
+    ]
+  },
+  "Hero:hid_commando_013_stpatricks_f_v1_sr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher",
+      "SpecialEvent.StPatricks.2018.Shamrock.Commando.Female"
+    ]
+  },
+  "Hero:hid_commando_013_stpatricks_f_v1_sr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher",
+      "SpecialEvent.StPatricks.2018.Shamrock.Commando.Female"
+    ]
+  },
+  "Hero:hid_commando_013_stpatricks_f_v1_sr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher",
+      "SpecialEvent.StPatricks.2018.Shamrock.Commando.Female"
+    ]
+  },
+  "Hero:hid_commando_013_stpatricks_f_v2_sr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher",
+      "SpecialEvent.StPatricks.2018.Warrior.Commando.Female"
+    ]
+  },
+  "Hero:hid_commando_013_stpatricks_f_v2_sr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher",
+      "SpecialEvent.StPatricks.2018.Warrior.Commando.Female"
+    ]
+  },
+  "Hero:hid_commando_013_stpatricks_f_v2_sr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher",
+      "SpecialEvent.StPatricks.2018.Warrior.Commando.Female"
+    ]
+  },
+  "Hero:hid_commando_013_stpatricks_f_v2_sr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher",
+      "SpecialEvent.StPatricks.2018.Warrior.Commando.Female"
+    ]
+  },
+  "Hero:hid_commando_013_stpatricks_f_v2_sr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher",
+      "SpecialEvent.StPatricks.2018.Warrior.Commando.Female"
+    ]
+  },
+  "Hero:hid_commando_013_stpatricks_m_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher",
+      "SpecialEvent.StPatricks.2018.Warrior.Commando.Male"
+    ]
+  },
+  "Hero:hid_commando_013_stpatricks_m_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher",
+      "SpecialEvent.StPatricks.2018.Warrior.Commando.Male"
+    ]
+  },
+  "Hero:hid_commando_013_stpatricks_m_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher",
+      "SpecialEvent.StPatricks.2018.Warrior.Commando.Male"
+    ]
+  },
+  "Hero:hid_commando_013_stpatricks_m_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher",
+      "SpecialEvent.StPatricks.2018.Warrior.Commando.Male"
+    ]
+  },
+  "Hero:hid_commando_013_stpatricks_m_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher",
+      "SpecialEvent.StPatricks.2018.Warrior.Commando.Male"
+    ]
+  },
+  "Hero:hid_commando_013_vr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher"
+    ]
+  },
+  "Hero:hid_commando_013_vr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher"
+    ]
+  },
+  "Hero:hid_commando_013_vr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher"
+    ]
+  },
+  "Hero:hid_commando_013_vr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher"
+    ]
+  },
+  "Hero:hid_commando_013_vr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Demolisher"
+    ]
+  },
+  "Hero:hid_commando_014_m_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Reckless",
+      "SpecialEvent.Spring.Lunar.Heroes.Commando"
+    ]
+  },
+  "Hero:hid_commando_014_m_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Reckless",
+      "SpecialEvent.Spring.Lunar.Heroes.Commando"
+    ]
+  },
+  "Hero:hid_commando_014_m_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Reckless",
+      "SpecialEvent.Spring.Lunar.Heroes.Commando"
+    ]
+  },
+  "Hero:hid_commando_014_m_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Reckless",
+      "SpecialEvent.Spring.Lunar.Heroes.Commando"
+    ]
+  },
+  "Hero:hid_commando_014_m_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Reckless",
+      "SpecialEvent.Spring.Lunar.Heroes.Commando"
+    ]
+  },
+  "Hero:hid_commando_014_r_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Reckless",
+      "SpecialEvent.Spring.Lunar.Heroes.Commando"
+    ]
+  },
+  "Hero:hid_commando_014_r_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Reckless",
+      "SpecialEvent.Spring.Lunar.Heroes.Commando"
+    ]
+  },
+  "Hero:hid_commando_014_r_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Reckless",
+      "SpecialEvent.Spring.Lunar.Heroes.Commando"
+    ]
+  },
+  "Hero:hid_commando_014_r_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Reckless",
+      "SpecialEvent.Spring.Lunar.Heroes.Commando"
+    ]
+  },
+  "Hero:hid_commando_014_sr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Reckless",
+      "SpecialEvent.Spring.Lunar.Heroes.Commando"
+    ]
+  },
+  "Hero:hid_commando_014_sr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Reckless",
+      "SpecialEvent.Spring.Lunar.Heroes.Commando"
+    ]
+  },
+  "Hero:hid_commando_014_sr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Reckless",
+      "SpecialEvent.Spring.Lunar.Heroes.Commando"
+    ]
+  },
+  "Hero:hid_commando_014_sr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Reckless",
+      "SpecialEvent.Spring.Lunar.Heroes.Commando"
+    ]
+  },
+  "Hero:hid_commando_014_sr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Reckless",
+      "SpecialEvent.Spring.Lunar.Heroes.Commando"
+    ]
+  },
+  "Hero:hid_commando_014_vr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Reckless",
+      "SpecialEvent.Spring.Lunar.Heroes.Commando"
+    ]
+  },
+  "Hero:hid_commando_014_vr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Reckless",
+      "SpecialEvent.Spring.Lunar.Heroes.Commando"
+    ]
+  },
+  "Hero:hid_commando_014_vr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Reckless",
+      "SpecialEvent.Spring.Lunar.Heroes.Commando"
+    ]
+  },
+  "Hero:hid_commando_014_vr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Reckless",
+      "SpecialEvent.Spring.Lunar.Heroes.Commando"
+    ]
+  },
+  "Hero:hid_commando_014_vr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Reckless",
+      "SpecialEvent.Spring.Lunar.Heroes.Commando"
+    ]
+  },
+  "Hero:hid_commando_014_wukong_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Reckless",
+      "SpecialEvent.Spring.Lunar.Heroes.Commando.Male.Wukong"
+    ]
+  },
+  "Hero:hid_commando_014_wukong_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Reckless",
+      "SpecialEvent.Spring.Lunar.Heroes.Commando.Male.Wukong"
+    ]
+  },
+  "Hero:hid_commando_014_wukong_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Reckless",
+      "SpecialEvent.Spring.Lunar.Heroes.Commando.Male.Wukong"
+    ]
+  },
+  "Hero:hid_commando_014_wukong_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Reckless",
+      "SpecialEvent.Spring.Lunar.Heroes.Commando.Male.Wukong"
+    ]
+  },
+  "Hero:hid_commando_014_wukong_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Reckless",
+      "SpecialEvent.Spring.Lunar.Heroes.Commando.Male.Wukong"
+    ]
+  },
+  "Hero:hid_commando_015_m_v1_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.BulletStorm",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Commando.Male"
+    ]
+  },
+  "Hero:hid_commando_015_m_v1_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.BulletStorm",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Commando.Male"
+    ]
+  },
+  "Hero:hid_commando_015_m_v1_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.BulletStorm",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Commando.Male"
+    ]
+  },
+  "Hero:hid_commando_015_m_v1_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.BulletStorm",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Commando.Male"
+    ]
+  },
+  "Hero:hid_commando_015_m_v1_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.BulletStorm",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Commando.Male"
+    ]
+  },
+  "Hero:hid_commando_015_m_v1_vr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.BulletStorm",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Commando.Male"
+    ]
+  },
+  "Hero:hid_commando_015_m_v1_vr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.BulletStorm",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Commando.Male"
+    ]
+  },
+  "Hero:hid_commando_015_m_v1_vr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.BulletStorm",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Commando.Male"
+    ]
+  },
+  "Hero:hid_commando_015_m_v1_vr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.BulletStorm",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Commando.Male"
+    ]
+  },
+  "Hero:hid_commando_015_m_v1_vr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.BulletStorm",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Commando.Male"
+    ]
+  },
+  "Hero:hid_commando_athena_05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_athena_06": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_athena_12": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_athena_14": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_athena_18": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_athena_22": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_athena_25": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_athena_26": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman"
+    ]
+  },
+  "Hero:hid_commando_gcgrenade_t_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando",
+      "SpecialEvent.Twitch.2018.GCGrenadeCommando"
+    ]
+  },
+  "Hero:hid_commando_gcgrenade_t_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando",
+      "SpecialEvent.Twitch.2018.GCGrenadeCommando"
+    ]
+  },
+  "Hero:hid_commando_gcgrenade_t_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando",
+      "SpecialEvent.Twitch.2018.GCGrenadeCommando"
+    ]
+  },
+  "Hero:hid_commando_gcgrenade_t_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando",
+      "SpecialEvent.Twitch.2018.GCGrenadeCommando"
+    ]
+  },
+  "Hero:hid_commando_gcgrenade_t_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando",
+      "SpecialEvent.Twitch.2018.GCGrenadeCommando"
+    ]
+  },
+  "Hero:hid_commando_gcgrenade_t_vr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando",
+      "SpecialEvent.Twitch.2018.GCGrenadeCommando"
+    ]
+  },
+  "Hero:hid_commando_gcgrenade_t_vr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando",
+      "SpecialEvent.Twitch.2018.GCGrenadeCommando"
+    ]
+  },
+  "Hero:hid_commando_gcgrenade_t_vr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando",
+      "SpecialEvent.Twitch.2018.GCGrenadeCommando"
+    ]
+  },
+  "Hero:hid_commando_gcgrenade_t_vr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando",
+      "SpecialEvent.Twitch.2018.GCGrenadeCommando"
+    ]
+  },
+  "Hero:hid_commando_gcgrenade_t_vr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando",
+      "SpecialEvent.Twitch.2018.GCGrenadeCommando"
+    ]
+  },
+  "Hero:hid_commando_grenadegun_m_t_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman",
+      "SpecialEvent.Twitch.2018.GunGrenadeCommando"
+    ]
+  },
+  "Hero:hid_commando_grenadegun_m_t_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman",
+      "SpecialEvent.Twitch.2018.GunGrenadeCommando"
+    ]
+  },
+  "Hero:hid_commando_grenadegun_m_t_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman",
+      "SpecialEvent.Twitch.2018.GunGrenadeCommando"
+    ]
+  },
+  "Hero:hid_commando_grenadegun_m_t_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman",
+      "SpecialEvent.Twitch.2018.GunGrenadeCommando"
+    ]
+  },
+  "Hero:hid_commando_grenadegun_m_t_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Infantryman",
+      "SpecialEvent.Twitch.2018.GunGrenadeCommando"
+    ]
+  },
+  "Hero:hid_commando_gunheadshot_starter_m_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot",
+      "SpecialEvent.Starter.2018.Rogue.Commando.Male"
+    ]
+  },
+  "Hero:hid_commando_gunheadshot_starter_m_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot",
+      "SpecialEvent.Starter.2018.Rogue.Commando.Male"
+    ]
+  },
+  "Hero:hid_commando_gunheadshot_starter_m_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot",
+      "SpecialEvent.Starter.2018.Rogue.Commando.Male"
+    ]
+  },
+  "Hero:hid_commando_gunheadshot_starter_m_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot",
+      "SpecialEvent.Starter.2018.Rogue.Commando.Male"
+    ]
+  },
+  "Hero:hid_commando_gunheadshot_starter_m_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot",
+      "SpecialEvent.Starter.2018.Rogue.Commando.Male"
+    ]
+  },
+  "Hero:hid_commando_gunheadshothw_vr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_commando_gunheadshothw_vr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_commando_gunheadshothw_vr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_commando_gunheadshothw_vr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_commando_gunheadshothw_vr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Headshot"
+    ]
+  },
+  "Hero:hid_commando_guntough_valentine_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Survivalist",
+      "SpecialEvent.Valentines.2018.CupidCommando"
+    ]
+  },
+  "Hero:hid_commando_guntough_valentine_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Survivalist",
+      "SpecialEvent.Valentines.2018.CupidCommando"
+    ]
+  },
+  "Hero:hid_commando_guntough_valentine_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Survivalist",
+      "SpecialEvent.Valentines.2018.CupidCommando"
+    ]
+  },
+  "Hero:hid_commando_guntough_valentine_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Survivalist",
+      "SpecialEvent.Valentines.2018.CupidCommando"
+    ]
+  },
+  "Hero:hid_commando_guntough_valentine_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Survivalist",
+      "SpecialEvent.Valentines.2018.CupidCommando"
+    ]
+  },
+  "Hero:hid_commando_prototype": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando"
+    ]
+  },
+  "Hero:hid_commando_sony_sr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_sony_sr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_sony_sr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_sony_sr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_sony_sr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_sony_vr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_sony_vr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_sony_vr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_sony_vr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_sony_vr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_xbox_r_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_xbox_r_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_xbox_r_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_xbox_r_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_xbox_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_xbox_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_xbox_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_xbox_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_xbox_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_xbox_vr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_xbox_vr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_xbox_vr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_xbox_vr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_commando_xbox_vr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Commando"
+    ],
+    "tags": [
+      "Homebase.Class.IsCommando.Commando"
+    ]
+  },
+  "Hero:hid_constructor_007hw_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_007hw_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_007hw_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_007hw_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_007hw_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_007hw_vr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_007hw_vr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_007hw_vr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_007hw_vr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_007hw_vr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Distractor"
+    ]
+  },
+  "Hero:hid_constructor_011_r_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Trap"
+    ]
+  },
+  "Hero:hid_constructor_011_r_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Trap"
+    ]
+  },
+  "Hero:hid_constructor_011_r_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Trap"
+    ]
+  },
+  "Hero:hid_constructor_011_r_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Trap"
+    ]
+  },
+  "Hero:hid_constructor_011_sr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Trap"
+    ]
+  },
+  "Hero:hid_constructor_011_sr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Trap"
+    ]
+  },
+  "Hero:hid_constructor_011_sr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Trap"
+    ]
+  },
+  "Hero:hid_constructor_011_sr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Trap"
+    ]
+  },
+  "Hero:hid_constructor_011_sr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Trap"
+    ]
+  },
+  "Hero:hid_constructor_011_vr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Trap"
+    ]
+  },
+  "Hero:hid_constructor_011_vr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Trap"
+    ]
+  },
+  "Hero:hid_constructor_011_vr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Trap"
+    ]
+  },
+  "Hero:hid_constructor_011_vr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Trap"
+    ]
+  },
+  "Hero:hid_constructor_011_vr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Trap"
+    ]
+  },
+  "Hero:hid_constructor_013_r_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Warden"
+    ]
+  },
+  "Hero:hid_constructor_013_r_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Warden"
+    ]
+  },
+  "Hero:hid_constructor_013_r_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Warden"
+    ]
+  },
+  "Hero:hid_constructor_013_r_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Warden"
+    ]
+  },
+  "Hero:hid_constructor_013_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Warden"
+    ]
+  },
+  "Hero:hid_constructor_013_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Warden"
+    ]
+  },
+  "Hero:hid_constructor_013_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Warden"
+    ]
+  },
+  "Hero:hid_constructor_013_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Warden"
+    ]
+  },
+  "Hero:hid_constructor_013_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Warden"
+    ]
+  },
+  "Hero:hid_constructor_013_uc_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Warden"
+    ]
+  },
+  "Hero:hid_constructor_013_uc_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Warden"
+    ]
+  },
+  "Hero:hid_constructor_013_uc_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Warden"
+    ]
+  },
+  "Hero:hid_constructor_013_vr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Warden"
+    ]
+  },
+  "Hero:hid_constructor_013_vr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Warden"
+    ]
+  },
+  "Hero:hid_constructor_013_vr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Warden"
+    ]
+  },
+  "Hero:hid_constructor_013_vr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Warden"
+    ]
+  },
+  "Hero:hid_constructor_013_vr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Warden"
+    ]
+  },
+  "Hero:hid_constructor_014_f_sr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.RiotControl"
+    ]
+  },
+  "Hero:hid_constructor_014_f_sr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.RiotControl"
+    ]
+  },
+  "Hero:hid_constructor_014_f_sr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.RiotControl"
+    ]
+  },
+  "Hero:hid_constructor_014_f_sr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.RiotControl"
+    ]
+  },
+  "Hero:hid_constructor_014_f_sr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.RiotControl"
+    ]
+  },
+  "Hero:hid_constructor_014_r_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.RiotControl"
+    ]
+  },
+  "Hero:hid_constructor_014_r_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.RiotControl"
+    ]
+  },
+  "Hero:hid_constructor_014_r_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.RiotControl"
+    ]
+  },
+  "Hero:hid_constructor_014_r_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.RiotControl"
+    ]
+  },
+  "Hero:hid_constructor_014_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.RiotControl"
+    ]
+  },
+  "Hero:hid_constructor_014_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.RiotControl"
+    ]
+  },
+  "Hero:hid_constructor_014_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.RiotControl"
+    ]
+  },
+  "Hero:hid_constructor_014_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.RiotControl"
+    ]
+  },
+  "Hero:hid_constructor_014_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.RiotControl"
+    ]
+  },
+  "Hero:hid_constructor_014_vr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.RiotControl"
+    ]
+  },
+  "Hero:hid_constructor_014_vr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.RiotControl"
+    ]
+  },
+  "Hero:hid_constructor_014_vr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.RiotControl"
+    ]
+  },
+  "Hero:hid_constructor_014_vr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.RiotControl"
+    ]
+  },
+  "Hero:hid_constructor_014_vr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.RiotControl"
+    ]
+  },
+  "Hero:hid_constructor_015_r_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Constructor.Male",
+      "Homebase.Class.IsConstructor.HeavyBASE"
+    ]
+  },
+  "Hero:hid_constructor_015_r_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Constructor.Male",
+      "Homebase.Class.IsConstructor.HeavyBASE"
+    ]
+  },
+  "Hero:hid_constructor_015_r_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Constructor.Male",
+      "Homebase.Class.IsConstructor.HeavyBASE"
+    ]
+  },
+  "Hero:hid_constructor_015_r_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Constructor.Male",
+      "Homebase.Class.IsConstructor.HeavyBASE"
+    ]
+  },
+  "Hero:hid_constructor_015_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Constructor.Male",
+      "Homebase.Class.IsConstructor.HeavyBASE"
+    ]
+  },
+  "Hero:hid_constructor_015_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Constructor.Male",
+      "Homebase.Class.IsConstructor.HeavyBASE"
+    ]
+  },
+  "Hero:hid_constructor_015_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Constructor.Male",
+      "Homebase.Class.IsConstructor.HeavyBASE"
+    ]
+  },
+  "Hero:hid_constructor_015_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Constructor.Male",
+      "Homebase.Class.IsConstructor.HeavyBASE"
+    ]
+  },
+  "Hero:hid_constructor_015_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Constructor.Male",
+      "Homebase.Class.IsConstructor.HeavyBASE"
+    ]
+  },
+  "Hero:hid_constructor_015_vr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Constructor.Male",
+      "Homebase.Class.IsConstructor.HeavyBASE"
+    ]
+  },
+  "Hero:hid_constructor_015_vr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Constructor.Male",
+      "Homebase.Class.IsConstructor.HeavyBASE"
+    ]
+  },
+  "Hero:hid_constructor_015_vr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Constructor.Male",
+      "Homebase.Class.IsConstructor.HeavyBASE"
+    ]
+  },
+  "Hero:hid_constructor_015_vr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Constructor.Male",
+      "Homebase.Class.IsConstructor.HeavyBASE"
+    ]
+  },
+  "Hero:hid_constructor_015_vr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Constructor.Male",
+      "Homebase.Class.IsConstructor.HeavyBASE"
+    ]
+  },
+  "Hero:hid_constructor_basehyperhw_vr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Hotfix"
+    ]
+  },
+  "Hero:hid_constructor_basehyperhw_vr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Hotfix"
+    ]
+  },
+  "Hero:hid_constructor_basehyperhw_vr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Hotfix"
+    ]
+  },
+  "Hero:hid_constructor_basehyperhw_vr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Hotfix"
+    ]
+  },
+  "Hero:hid_constructor_basehyperhw_vr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Hotfix"
+    ]
+  },
+  "Hero:hid_constructor_cinematic_test_r_t03": {
+    "gender": "Male"
+  },
+  "Hero:hid_constructor_plasmadamage_easter_sr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaShield",
+      "SpecialEvent.Spring.Easter.2018.Bunny.Constructor.Female"
+    ]
+  },
+  "Hero:hid_constructor_plasmadamage_easter_sr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaShield",
+      "SpecialEvent.Spring.Easter.2018.Bunny.Constructor.Female"
+    ]
+  },
+  "Hero:hid_constructor_plasmadamage_easter_sr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaShield",
+      "SpecialEvent.Spring.Easter.2018.Bunny.Constructor.Female"
+    ]
+  },
+  "Hero:hid_constructor_plasmadamage_easter_sr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaShield",
+      "SpecialEvent.Spring.Easter.2018.Bunny.Constructor.Female"
+    ]
+  },
+  "Hero:hid_constructor_plasmadamage_easter_sr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.PlasmaShield",
+      "SpecialEvent.Spring.Easter.2018.Bunny.Constructor.Female"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_f_sr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_f_sr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_f_sr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_f_sr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_f_sr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_f_vr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_f_vr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_f_vr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_f_vr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_rushbase_f_vr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.BASE"
+    ]
+  },
+  "Hero:hid_constructor_sony_sr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_sony_sr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_sony_sr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_sony_sr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_sony_sr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_sony_vr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_sony_vr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_sony_vr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_sony_vr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_sony_vr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_xbox_r_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_xbox_r_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_xbox_r_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_xbox_r_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_xbox_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_xbox_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_xbox_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_xbox_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_xbox_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_xbox_vr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_xbox_vr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_xbox_vr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_xbox_vr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_constructor_xbox_vr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Constructor"
+    ],
+    "tags": [
+      "Homebase.Class.IsConstructor.Wrecker"
+    ]
+  },
+  "Hero:hid_ninja_009_f_valentine_sr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Skirmisher",
+      "SpecialEvent.Valentines.2018.CupidNinja"
+    ]
+  },
+  "Hero:hid_ninja_009_f_valentine_sr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Skirmisher",
+      "SpecialEvent.Valentines.2018.CupidNinja"
+    ]
+  },
+  "Hero:hid_ninja_009_f_valentine_sr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Skirmisher",
+      "SpecialEvent.Valentines.2018.CupidNinja"
+    ]
+  },
+  "Hero:hid_ninja_009_f_valentine_sr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Skirmisher",
+      "SpecialEvent.Valentines.2018.CupidNinja"
+    ]
+  },
+  "Hero:hid_ninja_009_f_valentine_sr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Skirmisher",
+      "SpecialEvent.Valentines.2018.CupidNinja"
+    ]
+  },
+  "Hero:hid_ninja_010_f_sr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Poisoner"
+    ]
+  },
+  "Hero:hid_ninja_010_f_sr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Poisoner"
+    ]
+  },
+  "Hero:hid_ninja_010_f_sr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Poisoner"
+    ]
+  },
+  "Hero:hid_ninja_010_f_sr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Poisoner"
+    ]
+  },
+  "Hero:hid_ninja_010_f_sr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Poisoner"
+    ]
+  },
+  "Hero:hid_ninja_010_f_vr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Poisoner"
+    ]
+  },
+  "Hero:hid_ninja_010_f_vr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Poisoner"
+    ]
+  },
+  "Hero:hid_ninja_010_f_vr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Poisoner"
+    ]
+  },
+  "Hero:hid_ninja_010_f_vr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Poisoner"
+    ]
+  },
+  "Hero:hid_ninja_010_f_vr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Poisoner"
+    ]
+  },
+  "Hero:hid_ninja_011_r_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.EnergyThief"
+    ]
+  },
+  "Hero:hid_ninja_011_r_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.EnergyThief"
+    ]
+  },
+  "Hero:hid_ninja_011_r_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.EnergyThief"
+    ]
+  },
+  "Hero:hid_ninja_011_r_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.EnergyThief"
+    ]
+  },
+  "Hero:hid_ninja_011_sr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.EnergyThief"
+    ]
+  },
+  "Hero:hid_ninja_011_sr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.EnergyThief"
+    ]
+  },
+  "Hero:hid_ninja_011_sr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.EnergyThief"
+    ]
+  },
+  "Hero:hid_ninja_011_sr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.EnergyThief"
+    ]
+  },
+  "Hero:hid_ninja_011_sr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.EnergyThief"
+    ]
+  },
+  "Hero:hid_ninja_011_vr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.EnergyThief"
+    ]
+  },
+  "Hero:hid_ninja_011_vr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.EnergyThief"
+    ]
+  },
+  "Hero:hid_ninja_011_vr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.EnergyThief"
+    ]
+  },
+  "Hero:hid_ninja_011_vr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.EnergyThief"
+    ]
+  },
+  "Hero:hid_ninja_011_vr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.EnergyThief"
+    ]
+  },
+  "Hero:hid_ninja_013_r_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Alchemist"
+    ]
+  },
+  "Hero:hid_ninja_013_r_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Alchemist"
+    ]
+  },
+  "Hero:hid_ninja_013_r_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Alchemist"
+    ]
+  },
+  "Hero:hid_ninja_013_r_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Alchemist"
+    ]
+  },
+  "Hero:hid_ninja_013_sr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Alchemist"
+    ]
+  },
+  "Hero:hid_ninja_013_sr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Alchemist"
+    ]
+  },
+  "Hero:hid_ninja_013_sr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Alchemist"
+    ]
+  },
+  "Hero:hid_ninja_013_sr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Alchemist"
+    ]
+  },
+  "Hero:hid_ninja_013_sr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Alchemist"
+    ]
+  },
+  "Hero:hid_ninja_013_vr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Alchemist"
+    ]
+  },
+  "Hero:hid_ninja_013_vr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Alchemist"
+    ]
+  },
+  "Hero:hid_ninja_013_vr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Alchemist"
+    ]
+  },
+  "Hero:hid_ninja_013_vr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Alchemist"
+    ]
+  },
+  "Hero:hid_ninja_013_vr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Alchemist"
+    ]
+  },
+  "Hero:hid_ninja_014_f_sr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.ThunderStrike"
+    ]
+  },
+  "Hero:hid_ninja_014_f_sr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.ThunderStrike"
+    ]
+  },
+  "Hero:hid_ninja_014_f_sr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.ThunderStrike"
+    ]
+  },
+  "Hero:hid_ninja_014_f_sr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.ThunderStrike"
+    ]
+  },
+  "Hero:hid_ninja_014_f_sr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.ThunderStrike"
+    ]
+  },
+  "Hero:hid_ninja_014_r_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.ThunderStrike"
+    ]
+  },
+  "Hero:hid_ninja_014_r_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.ThunderStrike"
+    ]
+  },
+  "Hero:hid_ninja_014_r_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.ThunderStrike"
+    ]
+  },
+  "Hero:hid_ninja_014_r_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.ThunderStrike"
+    ]
+  },
+  "Hero:hid_ninja_014_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.ThunderStrike"
+    ]
+  },
+  "Hero:hid_ninja_014_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.ThunderStrike"
+    ]
+  },
+  "Hero:hid_ninja_014_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.ThunderStrike"
+    ]
+  },
+  "Hero:hid_ninja_014_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.ThunderStrike"
+    ]
+  },
+  "Hero:hid_ninja_014_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.ThunderStrike"
+    ]
+  },
+  "Hero:hid_ninja_014_uc_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.ThunderStrike"
+    ]
+  },
+  "Hero:hid_ninja_014_uc_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.ThunderStrike"
+    ]
+  },
+  "Hero:hid_ninja_014_uc_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.ThunderStrike"
+    ]
+  },
+  "Hero:hid_ninja_014_vr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.ThunderStrike"
+    ]
+  },
+  "Hero:hid_ninja_014_vr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.ThunderStrike"
+    ]
+  },
+  "Hero:hid_ninja_014_vr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.ThunderStrike"
+    ]
+  },
+  "Hero:hid_ninja_014_vr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.ThunderStrike"
+    ]
+  },
+  "Hero:hid_ninja_014_vr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.ThunderStrike"
+    ]
+  },
+  "Hero:hid_ninja_015_f_v1_r_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Reaper",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Ninja.Female"
+    ]
+  },
+  "Hero:hid_ninja_015_f_v1_r_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Reaper",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Ninja.Female"
+    ]
+  },
+  "Hero:hid_ninja_015_f_v1_r_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Reaper",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Ninja.Female"
+    ]
+  },
+  "Hero:hid_ninja_015_f_v1_r_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Reaper",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Ninja.Female"
+    ]
+  },
+  "Hero:hid_ninja_015_f_v1_sr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Reaper",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Ninja.Female"
+    ]
+  },
+  "Hero:hid_ninja_015_f_v1_sr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Reaper",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Ninja.Female"
+    ]
+  },
+  "Hero:hid_ninja_015_f_v1_sr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Reaper",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Ninja.Female"
+    ]
+  },
+  "Hero:hid_ninja_015_f_v1_sr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Reaper",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Ninja.Female"
+    ]
+  },
+  "Hero:hid_ninja_015_f_v1_sr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Reaper",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Ninja.Female"
+    ]
+  },
+  "Hero:hid_ninja_015_f_v1_uc_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Reaper",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Ninja.Female"
+    ]
+  },
+  "Hero:hid_ninja_015_f_v1_uc_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Reaper",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Ninja.Female"
+    ]
+  },
+  "Hero:hid_ninja_015_f_v1_uc_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Reaper",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Ninja.Female"
+    ]
+  },
+  "Hero:hid_ninja_015_f_v1_vr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Reaper",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Ninja.Female"
+    ]
+  },
+  "Hero:hid_ninja_015_f_v1_vr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Reaper",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Ninja.Female"
+    ]
+  },
+  "Hero:hid_ninja_015_f_v1_vr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Reaper",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Ninja.Female"
+    ]
+  },
+  "Hero:hid_ninja_015_f_v1_vr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Reaper",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Ninja.Female"
+    ]
+  },
+  "Hero:hid_ninja_015_f_v1_vr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Reaper",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Ninja.Female"
+    ]
+  },
+  "Hero:hid_ninja_slashbreathhw_sr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Dragon",
+      "SpecialEvent.Halloween.MummyNinja"
+    ]
+  },
+  "Hero:hid_ninja_slashbreathhw_sr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Dragon",
+      "SpecialEvent.Halloween.MummyNinja"
+    ]
+  },
+  "Hero:hid_ninja_slashbreathhw_sr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Dragon",
+      "SpecialEvent.Halloween.MummyNinja"
+    ]
+  },
+  "Hero:hid_ninja_slashbreathhw_sr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Dragon",
+      "SpecialEvent.Halloween.MummyNinja"
+    ]
+  },
+  "Hero:hid_ninja_slashbreathhw_sr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Dragon",
+      "SpecialEvent.Halloween.MummyNinja"
+    ]
+  },
+  "Hero:hid_ninja_slashbreathhw_vr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Dragon",
+      "SpecialEvent.Halloween.MummyNinja"
+    ]
+  },
+  "Hero:hid_ninja_slashbreathhw_vr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Dragon",
+      "SpecialEvent.Halloween.MummyNinja"
+    ]
+  },
+  "Hero:hid_ninja_slashbreathhw_vr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Dragon",
+      "SpecialEvent.Halloween.MummyNinja"
+    ]
+  },
+  "Hero:hid_ninja_slashbreathhw_vr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Dragon",
+      "SpecialEvent.Halloween.MummyNinja"
+    ]
+  },
+  "Hero:hid_ninja_slashbreathhw_vr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Dragon",
+      "SpecialEvent.Halloween.MummyNinja"
+    ]
+  },
+  "Hero:hid_ninja_sony_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_sony_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_sony_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_sony_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_sony_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_sony_vr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_sony_vr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_sony_vr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_sony_vr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_sony_vr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_starsrainhw_vr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Shuriken"
+    ]
+  },
+  "Hero:hid_ninja_starsrainhw_vr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Shuriken"
+    ]
+  },
+  "Hero:hid_ninja_starsrainhw_vr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Shuriken"
+    ]
+  },
+  "Hero:hid_ninja_starsrainhw_vr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Shuriken"
+    ]
+  },
+  "Hero:hid_ninja_starsrainhw_vr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Shuriken"
+    ]
+  },
+  "Hero:hid_ninja_test": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_xbox_r_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_xbox_r_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_xbox_r_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_xbox_r_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_xbox_sr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_xbox_sr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_xbox_sr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_xbox_sr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_xbox_sr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_xbox_vr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_xbox_vr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_xbox_vr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_xbox_vr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_ninja_xbox_vr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Ninja"
+    ],
+    "tags": [
+      "Homebase.Class.IsNinja.Assassin"
+    ]
+  },
+  "Hero:hid_outlander_010_m_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Lockdown"
+    ]
+  },
+  "Hero:hid_outlander_010_m_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Lockdown"
+    ]
+  },
+  "Hero:hid_outlander_010_m_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Lockdown"
+    ]
+  },
+  "Hero:hid_outlander_010_m_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Lockdown"
+    ]
+  },
+  "Hero:hid_outlander_010_m_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Lockdown"
+    ]
+  },
+  "Hero:hid_outlander_010_m_vr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Lockdown"
+    ]
+  },
+  "Hero:hid_outlander_010_m_vr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Lockdown"
+    ]
+  },
+  "Hero:hid_outlander_010_m_vr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Lockdown"
+    ]
+  },
+  "Hero:hid_outlander_010_m_vr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Lockdown"
+    ]
+  },
+  "Hero:hid_outlander_010_m_vr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Lockdown"
+    ]
+  },
+  "Hero:hid_outlander_011_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Gunblazer"
+    ]
+  },
+  "Hero:hid_outlander_011_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Gunblazer"
+    ]
+  },
+  "Hero:hid_outlander_011_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Gunblazer"
+    ]
+  },
+  "Hero:hid_outlander_011_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Gunblazer"
+    ]
+  },
+  "Hero:hid_outlander_011_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Gunblazer"
+    ]
+  },
+  "Hero:hid_outlander_011_vr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Gunblazer"
+    ]
+  },
+  "Hero:hid_outlander_011_vr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Gunblazer"
+    ]
+  },
+  "Hero:hid_outlander_011_vr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Gunblazer"
+    ]
+  },
+  "Hero:hid_outlander_011_vr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Gunblazer"
+    ]
+  },
+  "Hero:hid_outlander_011_vr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Shocking",
+      "Homebase.Class.IsOutlander.Gunblazer"
+    ]
+  },
+  "Hero:hid_outlander_013_sr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Reclaimer"
+    ]
+  },
+  "Hero:hid_outlander_013_sr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Reclaimer"
+    ]
+  },
+  "Hero:hid_outlander_013_sr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Reclaimer"
+    ]
+  },
+  "Hero:hid_outlander_013_sr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Reclaimer"
+    ]
+  },
+  "Hero:hid_outlander_013_sr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Reclaimer"
+    ]
+  },
+  "Hero:hid_outlander_013_stpatricks_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Reclaimer",
+      "SpecialEvent.StPatricks.2018.Shamrock.Outlander.Male"
+    ]
+  },
+  "Hero:hid_outlander_013_stpatricks_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Reclaimer",
+      "SpecialEvent.StPatricks.2018.Shamrock.Outlander.Male"
+    ]
+  },
+  "Hero:hid_outlander_013_stpatricks_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Reclaimer",
+      "SpecialEvent.StPatricks.2018.Shamrock.Outlander.Male"
+    ]
+  },
+  "Hero:hid_outlander_013_stpatricks_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Reclaimer",
+      "SpecialEvent.StPatricks.2018.Shamrock.Outlander.Male"
+    ]
+  },
+  "Hero:hid_outlander_013_stpatricks_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Reclaimer",
+      "SpecialEvent.StPatricks.2018.Shamrock.Outlander.Male"
+    ]
+  },
+  "Hero:hid_outlander_013_vr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Reclaimer"
+    ]
+  },
+  "Hero:hid_outlander_013_vr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Reclaimer"
+    ]
+  },
+  "Hero:hid_outlander_013_vr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Reclaimer"
+    ]
+  },
+  "Hero:hid_outlander_013_vr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Reclaimer"
+    ]
+  },
+  "Hero:hid_outlander_013_vr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Reclaimer"
+    ]
+  },
+  "Hero:hid_outlander_014_m_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.HeavyHitter"
+    ]
+  },
+  "Hero:hid_outlander_014_m_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.HeavyHitter"
+    ]
+  },
+  "Hero:hid_outlander_014_m_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.HeavyHitter"
+    ]
+  },
+  "Hero:hid_outlander_014_m_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.HeavyHitter"
+    ]
+  },
+  "Hero:hid_outlander_014_m_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.HeavyHitter"
+    ]
+  },
+  "Hero:hid_outlander_014_r_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.HeavyHitter"
+    ]
+  },
+  "Hero:hid_outlander_014_r_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.HeavyHitter"
+    ]
+  },
+  "Hero:hid_outlander_014_r_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.HeavyHitter"
+    ]
+  },
+  "Hero:hid_outlander_014_r_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.HeavyHitter"
+    ]
+  },
+  "Hero:hid_outlander_014_sr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.HeavyHitter"
+    ]
+  },
+  "Hero:hid_outlander_014_sr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.HeavyHitter"
+    ]
+  },
+  "Hero:hid_outlander_014_sr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.HeavyHitter"
+    ]
+  },
+  "Hero:hid_outlander_014_sr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.HeavyHitter"
+    ]
+  },
+  "Hero:hid_outlander_014_sr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.HeavyHitter"
+    ]
+  },
+  "Hero:hid_outlander_014_vr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.HeavyHitter"
+    ]
+  },
+  "Hero:hid_outlander_014_vr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.HeavyHitter"
+    ]
+  },
+  "Hero:hid_outlander_014_vr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.HeavyHitter"
+    ]
+  },
+  "Hero:hid_outlander_014_vr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.HeavyHitter"
+    ]
+  },
+  "Hero:hid_outlander_014_vr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.HeavyHitter"
+    ]
+  },
+  "Hero:hid_outlander_015_f_v1_r_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.TEDDShot",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Outlander.Female"
+    ]
+  },
+  "Hero:hid_outlander_015_f_v1_r_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.TEDDShot",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Outlander.Female"
+    ]
+  },
+  "Hero:hid_outlander_015_f_v1_r_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.TEDDShot",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Outlander.Female"
+    ]
+  },
+  "Hero:hid_outlander_015_f_v1_r_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.TEDDShot",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Outlander.Female"
+    ]
+  },
+  "Hero:hid_outlander_015_f_v1_sr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.TEDDShot",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Outlander.Female"
+    ]
+  },
+  "Hero:hid_outlander_015_f_v1_sr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.TEDDShot",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Outlander.Female"
+    ]
+  },
+  "Hero:hid_outlander_015_f_v1_sr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.TEDDShot",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Outlander.Female"
+    ]
+  },
+  "Hero:hid_outlander_015_f_v1_sr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.TEDDShot",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Outlander.Female"
+    ]
+  },
+  "Hero:hid_outlander_015_f_v1_sr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.TEDDShot",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Outlander.Female"
+    ]
+  },
+  "Hero:hid_outlander_015_f_v1_vr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.TEDDShot",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Outlander.Female"
+    ]
+  },
+  "Hero:hid_outlander_015_f_v1_vr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.TEDDShot",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Outlander.Female"
+    ]
+  },
+  "Hero:hid_outlander_015_f_v1_vr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.TEDDShot",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Outlander.Female"
+    ]
+  },
+  "Hero:hid_outlander_015_f_v1_vr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.TEDDShot",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Outlander.Female"
+    ]
+  },
+  "Hero:hid_outlander_015_f_v1_vr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.TEDDShot",
+      "SpecialEvent.Spring.IntoTheStorm.2018.Heroes.Outlander.Female"
+    ]
+  },
+  "Hero:hid_outlander_sony_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_sony_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_sony_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_sony_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_sony_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_sony_vr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_sony_vr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_sony_vr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_sony_vr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_sony_vr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_xbox_r_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_xbox_r_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_xbox_r_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_xbox_r_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_xbox_sr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_xbox_sr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_xbox_sr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_xbox_sr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_xbox_sr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_xbox_vr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_xbox_vr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_xbox_vr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_xbox_vr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_xbox_vr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.FragmentHunter"
+    ]
+  },
+  "Hero:hid_outlander_zoneharvesthw_sr_t01": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Harvesting",
+      "SpecialEvent.Halloween.Vampire.Outlander"
+    ]
+  },
+  "Hero:hid_outlander_zoneharvesthw_sr_t02": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Harvesting",
+      "SpecialEvent.Halloween.Vampire.Outlander"
+    ]
+  },
+  "Hero:hid_outlander_zoneharvesthw_sr_t03": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Harvesting",
+      "SpecialEvent.Halloween.Vampire.Outlander"
+    ]
+  },
+  "Hero:hid_outlander_zoneharvesthw_sr_t04": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Harvesting",
+      "SpecialEvent.Halloween.Vampire.Outlander"
+    ]
+  },
+  "Hero:hid_outlander_zoneharvesthw_sr_t05": {
+    "gender": "Male",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Harvesting",
+      "SpecialEvent.Halloween.Vampire.Outlander"
+    ]
+  },
+  "Hero:hid_outlander_zonepistolhw_vr_t01": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Deadeye"
+    ]
+  },
+  "Hero:hid_outlander_zonepistolhw_vr_t02": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Deadeye"
+    ]
+  },
+  "Hero:hid_outlander_zonepistolhw_vr_t03": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Deadeye"
+    ]
+  },
+  "Hero:hid_outlander_zonepistolhw_vr_t04": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Deadeye"
+    ]
+  },
+  "Hero:hid_outlander_zonepistolhw_vr_t05": {
+    "gender": "Female",
+    "requiredTags": [
+      "Unlocks.Class.Outlander"
+    ],
+    "tags": [
+      "Homebase.Class.IsOutlander.Deadeye"
+    ]
+  },
+  "Worker:managerdoctor_sr_noctor_t01": {
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Doctor-Noctor.IconDef-ManagerPortrait-SR-Doctor-noctor"
+  },
+  "Worker:managerdoctor_sr_noctor_t02": {
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Doctor-Noctor.IconDef-ManagerPortrait-SR-Doctor-noctor"
+  },
+  "Worker:managerdoctor_sr_noctor_t03": {
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Doctor-Noctor.IconDef-ManagerPortrait-SR-Doctor-noctor"
+  },
+  "Worker:managerdoctor_sr_noctor_t04": {
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Doctor-Noctor.IconDef-ManagerPortrait-SR-Doctor-noctor"
+  },
+  "Worker:managerdoctor_sr_noctor_t05": {
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-ManagerPortrait-SR-Doctor-Noctor.IconDef-ManagerPortrait-SR-Doctor-noctor"
+  },
+  "Worker:worker_halloween_husk_c_t01": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Husk.IconDef-WorkerPortrait-Husk",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_husk_c_t02": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Husk.IconDef-WorkerPortrait-Husk",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_husk_uc_t01": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Husk.IconDef-WorkerPortrait-Husk",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_husk_uc_t02": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Husk.IconDef-WorkerPortrait-Husk",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_husk_uc_t03": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Husk.IconDef-WorkerPortrait-Husk",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_husky_c_t01": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Husky.IconDef-WorkerPortrait-Husky",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_husky_c_t02": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Husky.IconDef-WorkerPortrait-Husky",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_husky_r_t01": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Husky.IconDef-WorkerPortrait-Husky",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_husky_r_t02": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Husky.IconDef-WorkerPortrait-Husky",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_husky_r_t03": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Husky.IconDef-WorkerPortrait-Husky",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_husky_r_t04": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Husky.IconDef-WorkerPortrait-Husky",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_husky_uc_t01": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Husky.IconDef-WorkerPortrait-Husky",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_husky_uc_t02": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Husky.IconDef-WorkerPortrait-Husky",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_husky_uc_t03": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Husky.IconDef-WorkerPortrait-Husky",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_husky_vr_t01": {
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Husky.IconDef-WorkerPortrait-Husky",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_husky_vr_t02": {
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Husky.IconDef-WorkerPortrait-Husky",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_husky_vr_t03": {
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Husky.IconDef-WorkerPortrait-Husky",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_husky_vr_t04": {
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Husky.IconDef-WorkerPortrait-Husky",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_husky_vr_t05": {
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Husky.IconDef-WorkerPortrait-Husky",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_lobber_r_t01": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Lobber.IconDef-WorkerPortrait-Lobber",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_lobber_r_t02": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Lobber.IconDef-WorkerPortrait-Lobber",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_lobber_r_t03": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Lobber.IconDef-WorkerPortrait-Lobber",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_lobber_r_t04": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Lobber.IconDef-WorkerPortrait-Lobber",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_lobber_sr_t01": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Lobber.IconDef-WorkerPortrait-Lobber",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_lobber_sr_t02": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Lobber.IconDef-WorkerPortrait-Lobber",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_lobber_sr_t03": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Lobber.IconDef-WorkerPortrait-Lobber",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_lobber_sr_t04": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Lobber.IconDef-WorkerPortrait-Lobber",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_lobber_sr_t05": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Lobber.IconDef-WorkerPortrait-Lobber",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_lobber_vr_t01": {
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Lobber.IconDef-WorkerPortrait-Lobber",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_lobber_vr_t02": {
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Lobber.IconDef-WorkerPortrait-Lobber",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_lobber_vr_t03": {
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Lobber.IconDef-WorkerPortrait-Lobber",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_lobber_vr_t04": {
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Lobber.IconDef-WorkerPortrait-Lobber",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_lobber_vr_t05": {
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Lobber.IconDef-WorkerPortrait-Lobber",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_pitcher_c_t01": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Pitcher.IconDef-WorkerPortrait-Pitcher",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_pitcher_c_t02": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Pitcher.IconDef-WorkerPortrait-Pitcher",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_pitcher_r_t01": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Pitcher.IconDef-WorkerPortrait-Pitcher",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_pitcher_r_t02": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Pitcher.IconDef-WorkerPortrait-Pitcher",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_pitcher_r_t03": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Pitcher.IconDef-WorkerPortrait-Pitcher",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_pitcher_r_t04": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Pitcher.IconDef-WorkerPortrait-Pitcher",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_pitcher_uc_t01": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Pitcher.IconDef-WorkerPortrait-Pitcher",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_pitcher_uc_t02": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Pitcher.IconDef-WorkerPortrait-Pitcher",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_pitcher_uc_t03": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Pitcher.IconDef-WorkerPortrait-Pitcher",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_smasher_sr_t01": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Smasher.IconDef-WorkerPortrait-Smasher",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_smasher_sr_t02": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Smasher.IconDef-WorkerPortrait-Smasher",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_smasher_sr_t03": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Smasher.IconDef-WorkerPortrait-Smasher",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_smasher_sr_t04": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Smasher.IconDef-WorkerPortrait-Smasher",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_smasher_sr_t05": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Smasher.IconDef-WorkerPortrait-Smasher",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_troll_sr_t01": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Troll.IconDef-WorkerPortrait-Troll",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_troll_sr_t02": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Troll.IconDef-WorkerPortrait-Troll",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_troll_sr_t03": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Troll.IconDef-WorkerPortrait-Troll",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_troll_sr_t04": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Troll.IconDef-WorkerPortrait-Troll",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_troll_sr_t05": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Troll.IconDef-WorkerPortrait-Troll",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_troll_vr_t01": {
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Troll.IconDef-WorkerPortrait-Troll",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_troll_vr_t02": {
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Troll.IconDef-WorkerPortrait-Troll",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_troll_vr_t03": {
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Troll.IconDef-WorkerPortrait-Troll",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_troll_vr_t04": {
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Troll.IconDef-WorkerPortrait-Troll",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_halloween_troll_vr_t05": {
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Troll.IconDef-WorkerPortrait-Troll",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_leprechaun_vr_t01": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Leprechaun.IconDef-WorkerPortrait-Leprechaun",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_leprechaun_vr_t02": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Leprechaun.IconDef-WorkerPortrait-Leprechaun",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_leprechaun_vr_t03": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Leprechaun.IconDef-WorkerPortrait-Leprechaun",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_leprechaun_vr_t04": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Leprechaun.IconDef-WorkerPortrait-Leprechaun",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  },
+  "Worker:worker_leprechaun_vr_t05": {
+    "gender": "Male",
+    "portrait": "/Game/UI/Icons/Icon-Worker/IconDefinitions/IconDef-WorkerPortrait-Leprechaun.IconDef-WorkerPortrait-Leprechaun",
+    "tags": [
+      "Homebase.Worker.IsWorker",
+      "Homebase.Worker.IsBasicWorker"
+    ]
+  }
+}

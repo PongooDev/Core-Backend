@@ -61,8 +61,8 @@ test("3.0 is known by its version, plays on its own game data and is Season 3", 
   assert.deepEqual([season.seasonNumber, season.numBookLevels, season.numSeasonLevels, season.storefront], [3, 100, 100, "BRSeason3"]);
   assert.equal(season.battlePassLevelOfferId, "E2D7975EFEC54A45900D8D9A6D9D273C");
   assert.deepEqual(season.challengeSchedulesAlwaysShown, ["season3_challenge_schedule"]);
-  // Season 3's newest data is 3.3's (build33.test.js).
-  assert.equal(buildOfSeason(3), "3942182");
+  // Season 3's newest data is 3.5.1's (build351.test.js).
+  assert.equal(buildOfSeason(3), "4000805");
   assert.equal(inBuild(v25, athenaSeason).seasonNumber, 2, "2.5 stays Season 2");
   assert.equal(buildOfSeason(2), v25);
   const cosmetics = inBuild(v30, athenaCosmetics);

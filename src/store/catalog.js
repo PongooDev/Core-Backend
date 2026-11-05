@@ -1,9 +1,10 @@
 import { anyBattlePassOffer, battlePassOffers } from "../battlepass/season2.js";
 import { currentBuild } from "../builds/context.js";
-import { currentEventsConfig, fortnitemares, isEventActive, mutantStorms, mutantStorms2018, spring2018, winter2017 } from "../events/events.js";
+import { currentEventsConfig, fortnitemares, isEventActive, mutantStorms, mutantStorms2018, spring2018, storm2018, winter2017 } from "../events/events.js";
 import { candy } from "../events/fortnitemares.js";
 import { stormLlama2018, stormTickets } from "../events/mutantstorms.js";
 import { firecrackerTickets, springLlama } from "../events/spring2018.js";
+import { intoTheStormLlama } from "../events/storm2018.js";
 import { holidayLlama, snowflakeTickets } from "../events/winter2017.js";
 import { getCardPack, itemIds } from "../gamedata/items.js";
 import { perBuild } from "../gamedata/read.js";
@@ -101,6 +102,9 @@ const voucherOffers = perBuild(() => itemIds()
 // The Spring Llama (CardPack_Event_2018_Spring) is bought with Firecracker Tickets (EventCurrency_Spring) while Spring It
 // On! runs (2.5, events/spring2018.js): "Spring Llama is available in the Loot tab and costs 1000 Firecracker Tickets to
 // purchase."
+//
+// The Into the Storm Llama (CardPack_Event_2018_Storm) is bought with Storm Tickets while Into the Storm runs (3.5.1,
+// events/storm2018.js): "Into the Storm Llama is available in the Loot Tab. Cost: 1000 Storm Tickets."
 const eventOffers = [
   { offerId: "core_event_founders_llama", templateId: "CardPack:cardpack_event_founders_nonexclusive", title: "Launch Event Llama",
     currencyType: "GameItem", currencySubType: "AccountResource:eventcurrency_founders", price: 100, always: true },
@@ -113,7 +117,9 @@ const eventOffers = [
   { offerId: "core_event_storm_llama", templateId: stormLlama2018, title: "Storm Llama",
     currencyType: "GameItem", currencySubType: stormTickets, price: 1000, always: true, event: mutantStorms2018 },
   { offerId: "core_event_spring_llama", templateId: springLlama, title: "Spring Llama",
-    currencyType: "GameItem", currencySubType: firecrackerTickets, price: 1000, always: true, event: spring2018 }
+    currencyType: "GameItem", currencySubType: firecrackerTickets, price: 1000, always: true, event: spring2018 },
+  { offerId: "core_event_intothestorm_llama", templateId: intoTheStormLlama, title: "Into the Storm Llama",
+    currencyType: "GameItem", currencySubType: stormTickets, price: 1000, always: true, event: storm2018 }
 ];
 
 // An event's offers are on sale while the requesting build runs the event and has their llama.

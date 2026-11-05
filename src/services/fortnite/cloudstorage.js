@@ -7,7 +7,7 @@ import { isDedicatedServerToken } from "../../accounts/clients.js";
 import { getBuild } from "../../builds/detect.js";
 import { sendError } from "../../errors.js";
 import { lootHotfixSection } from "../../events/contentupdates.js";
-import { athenaPlaylistOfQueue, ltmForcedQueues, ltmNewMode } from "../../events/ltms.js";
+import { lastSelectedPlaylistOf, ltmForcedQueues, ltmNewMode, ltmPlaylistOverrides } from "../../events/ltms.js";
 import { shootingTestGlobals, shootingTestHotfixTables } from "../../events/shootingtest.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
 import { createNetwork, httpsProxied } from "../../network.js";
@@ -64,9 +64,15 @@ const customKeySection = (changelist) => (Number(changelist) >= customKeyBuild
 // region is in UFortGameInstance's RegionsWithBattleRoyaleEvent<N>QueueDisabled, which is cleared for it. The client
 // takes this file at start-up, so a mode turned on or off shows once the game restarts.
 const forcedQueueGlobals = (changelist) => ltmForcedQueues(changelist).map((queue) => `bEvent${queue}ForceEnabled=true`);
+// 3.5.1 (CL-4000805) has neither setting: its modes are FortPlaylistAthena assets that UFortGameInstance's PlaylistOverrides
+// (Config, {PlaylistName, bEnabled, RegionsDisabled}) turns on (events/ltms.js ltmPlaylistOverrides), one entry a playlist
+// on (🟡: not seen in a running client).
 function forcedQueueSection(changelist) {
   const queues = ltmForcedQueues(changelist);
-  return queues.length ? ["[/Script/FortniteGame.FortGameInstance]", ...queues.map((queue) => `!RegionsWithBattleRoyaleEvent${queue}QueueDisabled=ClearArray`), ""].join("\r\n") : "";
+  const playlists = ltmPlaylistOverrides(changelist);
+  if (!queues.length && !playlists.length) return "";
+  return ["[/Script/FortniteGame.FortGameInstance]", ...queues.map((queue) => `!RegionsWithBattleRoyaleEvent${queue}QueueDisabled=ClearArray`),
+    ...playlists.map((name) => `+PlaylistOverrides=(PlaylistName=${name},bEnabled=true)`), ""].join("\r\n");
 }
 // The Store tab's V-Bucks packs (Core-Backend #223) buy through the purchase flow, whose page is the game config's
 // [EpicPurchaseFlow] Prod= (services/fortnite/purchase.js); the flow reads it when the front end registers for it
@@ -78,11 +84,12 @@ function forcedQueueSection(changelist) {
 // GameUserSettings.ini (3.2 0x5E62D0, the player's Saved/Config GameUserSettings.ini) and reloads the
 // [/Script/FortniteGame.FortGameUserSettings] objects (HotfixIniFile, 0x5E7190); Fortnite's WantsHotfixProcessing
 // (0xD145B0) takes every Default*.ini. It comes at start-up, before the lobby, so each start opens on the new mode, and the
-// player's own pick holds until the game restarts. No other build gets the file.
+// player's own pick holds until the game restarts. No other build gets the file. On 3.5.1 LastSelectedPlaylist is the
+// playlist's name (UFortGameUserSettings +0x230, an FName: 50v50 v2's Playlist_50v50).
 function newModeFiles(changelist) {
   const ltm = ltmNewMode(changelist);
   return ltm ? { "DefaultGameUserSettings.ini": Buffer.from(["[/Script/FortniteGame.FortGameUserSettings]",
-    `LastSelectedPlaylist=${athenaPlaylistOfQueue(ltm.queue)}`, ""].join("\r\n"), "utf8") } : {};
+    `LastSelectedPlaylist=${lastSelectedPlaylistOf(ltm, changelist)}`, ""].join("\r\n"), "utf8") } : {};
 }
 // Battle Royale's global chat (Core-Backend #238). The client asks for a sub game's general chat rooms whenever it
 // enters one (3.2: UFortOnlineAccount 0xD45940 -> 0xD4C450), first leaving its global room (0xD4E380). For Athena it

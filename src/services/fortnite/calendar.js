@@ -40,7 +40,7 @@ import { seasonTemplateId } from "../../profiles/seasons.js";
 // SeasonTemplateId (+0x148), SeasonEnd, WeeklyStoreEnd, StwEventStoreEnd, StwWeeklyStoreEnd}. Its season is Season 2
 // (gamedata AthenaSeason2, profiles/seasons.js): seasonNumber 2, seasonTemplateId "AthenaSeason:athenaseason2", and its
 // Battle Pass tab counts down to seasonEnd (AthenaSeasonTab: GetSeasonStoreEndDate). Its event flags turn the winter
-// lobby on (EventFlag.LobbyWinterDecor, events/events.js). Save the World's Event Store (1.11 to 3.3) counts down to
+// lobby on (EventFlag.LobbyWinterDecor, events/events.js). Save the World's Event Store (1.11 to 3.3, 3.5.1) counts down to
 // stwEventStoreEnd and stwWeeklyStoreEnd (store/eventstore.js).
 export const calendarCacheMinutes = 60;
 const seasonalEventManagerBuild = 3790078;

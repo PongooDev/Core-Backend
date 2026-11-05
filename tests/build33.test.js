@@ -28,13 +28,13 @@ const v31 = "3915963";
 const v30 = "3901517";
 const now = new Date("2026-11-04T12:00:00Z");
 
-test("3.3 is known by its version, plays on its own data and is Season 3's newest, with 3.0's pass", () => {
+test("3.3 is known by its version, plays on its own data and is Season 3, with 3.0's pass", () => {
   assert.equal(versionOf(v33), "3.3");
   assert.equal(dataBuild(v33), v33);
   assert.ok(buildChoices().includes(v33));
   assert.equal(allowedBuildList(["3.3"]).join(), v33);
   assert.deepEqual(inBuild(v33, athenaSeason), inBuild(v30, athenaSeason), "AthenaSeason3 is 3.0's");
-  assert.equal(buildOfSeason(3), v33);
+  assert.equal(buildOfSeason(3), "4000805", "Season 3's newest data is 3.5.1's (build351.test.js)");
   assert.deepEqual(inBuild(v33, () => battlePassOffers()).map(({ offerId, storefront, price }) => [offerId, storefront, price]),
     inBuild(v30, () => battlePassOffers()).map(({ offerId, storefront, price }) => [offerId, storefront, price]));
 });

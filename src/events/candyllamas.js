@@ -41,15 +41,16 @@ export const canConvert = ({ currency, llama }) => Boolean(getCardPack(llama))
 
 // Turns each perLlama of an event currency the account holds (profile0) into an unopened llama, when the requesting
 // build's data has both; what is left over goes too with dropRemainder (the event's end), else stays. Also 1.11's Storm
-// Tickets (events/stormllamas.js) and 2.3's Snowflake Tickets (events/winter2017.js).
-export function convertLeftover(session, { currency, perLlama, llama, label, llamaName, dropRemainder = false }) {
+// Tickets (events/stormllamas.js) and 2.3's Snowflake Tickets (events/winter2017.js). With roundUp what is left over
+// makes one more llama (3.5.1's Firecracker Tickets, events/springgold.js).
+export function convertLeftover(session, { currency, perLlama, llama, label, llamaName, dropRemainder = false, roundUp = false }) {
   if (!canConvert({ currency, llama })) return [];
   const tracker = session.profile("profile0");
   const stacks = stacksOf(tracker.profile, currency);
   const total = stacks.reduce((sum, [, item]) => sum + item.quantity, 0);
-  const llamas = Math.floor(total / perLlama);
+  const llamas = roundUp ? Math.ceil(total / perLlama) : Math.floor(total / perLlama);
 
-  let toSpend = dropRemainder ? total : llamas * perLlama;
+  let toSpend = dropRemainder || roundUp ? total : llamas * perLlama;
   for (const [itemId, item] of stacks) {
     if (toSpend <= 0) break;
     const spent = Math.min(item.quantity, toSpend);
@@ -57,10 +58,10 @@ export function convertLeftover(session, { currency, perLlama, llama, label, lla
     if (item.quantity > spent) tracker.setQuantity(itemId, item.quantity - spent);
     else tracker.removeItem(itemId);
   }
-  const lost = dropRemainder ? total - llamas * perLlama : 0;
+  const lost = dropRemainder && !roundUp ? total - llamas * perLlama : 0;
   if (lost) log("Events", `${session.accountId}'s ${lost} leftover ${label} went with the event`);
   if (llamas < 1) return [];
   const granted = grantItem(session, llama, llamas, { packSource: "Store" });
-  log("Events", `${session.accountId}'s ${llamas * perLlama} unspent ${label} became ${llamas} ${llamaName}(s)`);
+  log("Events", `${session.accountId}'s ${roundUp ? total : llamas * perLlama} unspent ${label} became ${llamas} ${llamaName}(s)`);
   return granted;
 }

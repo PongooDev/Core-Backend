@@ -127,13 +127,17 @@ export const isUnlocked = (session, id) => Boolean(findPageItem(session.profile(
 // - the Vindertech weapons, ranged and melee, ore and crystal ("Vindertech", StormZone2: from 1.9's data, which
 //   already has their schematics, ahead of 1.9.1's Mutant Storms);
 // - Spring It On!'s Lunar New Year: its Dragon weapons, ore and crystal, and its heroes (2.5's data: "Each Llama will
-//   contain a Lunar New Years Hero, or a Dragon weapon").
+//   contain a Lunar New Years Hero, or a Dragon weapon");
+// - Into the Storm's (3.5.1, CL-4000805): the Neon weapons, ranged and melee, ore and crystal, and the Cyberpunk heroes
+//   ("Cyberpunk Heroes ... available in the new 'Into the Storm' event Llama", "Neon Weapon set added").
 export const specialPages = [
   "PageSpecial_Hydraulic", "PageSpecial_Hydraulic_Crystal", "PageSpecial_StormZone_Heroes",
   "PageSpecial_Scavenger", "PageSpecial_Scavenger_Crystal", "PageSpecial_Scavenger_Heroes",
   "PageSpecial_Weapons_Ranged_StormZone2", "PageSpecial_Weapons_Ranged_StormZone2_Crystal",
   "PageSpecial_Weapons_Melee_StormZone2", "PageSpecial_Weapons_Melee_StormZone2_Crystal",
-  "PageSpecial_Weapons_ChineseNewYear2018", "PageSpecial_Weapons_Crystal_ChineseNewYear2018", "PageSpecial_ChineseNewYear2018_Heroes"
+  "PageSpecial_Weapons_ChineseNewYear2018", "PageSpecial_Weapons_Crystal_ChineseNewYear2018", "PageSpecial_ChineseNewYear2018_Heroes",
+  "PageSpecial_StormZoneCyber_Ranged", "PageSpecial_StormZoneCyber_Ranged_Crystal", "PageSpecial_StormZoneCyber_Melee",
+  "PageSpecial_StormZoneCyber_Melee_Crystal", "PageSpecial_StormZoneCyber_Heroes"
 ];
 
 // The requesting build's special pages, where its data has them.

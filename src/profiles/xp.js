@@ -20,7 +20,7 @@ const levelData = (level) => levels().find((entry) => entry.level === level);
 // its DefaultGameData's ScoreToXPLinearRate is 4.106437, 2.1's 0.410644. So from 2.2 a match's XP is ten times as much,
 // and an account's XP into its level, rest XP and boost XP are ten times what they are on 2.1 and earlier.
 // 2.3 (CL-3847564), 2.4 (CL-3858292), 2.4.2 (CL-3870737) and 2.5 (CL-3889387) keep 2.2's scale: their XPAccountLevels,
-// rest XP rows and ScoreToXPLinearRate are 2.2's. So do 3.0 (CL-3901517), whose XPAccountLevels are 2.5's, 3.1 (CL-3915963), whose are 3.0's, 3.2 (CL-3935073), whose are 3.1's, and 3.3 (CL-3942182), whose are 3.2's.
+// rest XP rows and ScoreToXPLinearRate are 2.2's. So do 3.0 (CL-3901517), whose XPAccountLevels are 2.5's, 3.1 (CL-3915963), whose are 3.0's, 3.2 (CL-3935073), whose are 3.1's, 3.3 (CL-3942182), whose are 3.2's, and 3.5.1 (CL-4000805), whose are 3.3's.
 const inflatedXpBuild = 3841827;
 const inflatedXp = () => Number(currentBuild()) >= inflatedXpBuild;
 export const commanderXpScale = () => (inflatedXp() ? 10 : 1);

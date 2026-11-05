@@ -1,8 +1,9 @@
 import { getItem } from "../gamedata/items.js";
 import { log } from "../log.js";
 import { grantItem } from "../profiles/items.js";
-import { currentEventsConfig, isEventActive } from "./events.js";
-import { firecrackerTickets, seasonalGold, spring2018 } from "./spring2018.js";
+import { convertLeftover } from "./candyllamas.js";
+import { currentEventsConfig, hasEventEnded, isEventActive } from "./events.js";
+import { firecrackerTickets, seasonalGold, spring2018, springLlama } from "./spring2018.js";
 
 // The Seasonal Gold conversion (events/leftovers.js): the first time an account loads on a build running Spring It On!
 // whose data has both currencies, up to 3,000 of its Seasonal Gold become Firecracker Tickets, 3 to 1, and the rest of
@@ -11,6 +12,22 @@ export const goldPerFirecracker = 3;
 export const convertedGoldCap = 3000;
 const holding = (profile, currency) => Object.entries(profile.items)
   .filter(([, item]) => item.templateId.toLowerCase() === currency.toLowerCase() && item.quantity > 0);
+// Spring It On!'s end (3.5.1, CL-4000805, the first build past it Core has; events.js): 3.5's notes, "Every 1000 Firecracker
+// Tickets will be converted into a Spring Llama", and 3.5.1's, "We've changed the way we convert event tickets. Players get
+// 1 event Llama per 1000 tickets and 1 Llama for any tickets left over. (Example) If you have 5 tickets left at the end of
+// the event, you still get 1 free event Llama." So the first time an account loads on a build past Spring It On! whose data
+// has the Spring Llama (CardPack_Event_2018_Spring, store/catalog.js), its Firecracker Tickets become unopened Spring
+// Llamas, one a 1,000 and one more for what is left over (events/leftovers.js). Not while the admin panel runs the event
+// anyway. (3.5.1's "Granted all players two free Spring Llamas" is a grant of its own, not done here.)
+export const firecrackersPerLlama = 1000;
+export const firecrackerConversion = {
+  run: "Spring2018",
+  due: () => currentEventsConfig()?.autoConvertCandy !== false && hasEventEnded(spring2018) && !isEventActive(spring2018),
+  options: () => ({ currency: firecrackerTickets, perLlama: firecrackersPerLlama, llama: springLlama, label: "Firecracker Tickets",
+    llamaName: "Spring Llama" }),
+  convert: (session) => convertLeftover(session, { ...firecrackerConversion.options(), roundUp: true })
+};
+
 export const goldConversion = {
   run: "SeasonalGold2018",
   due: () => currentEventsConfig()?.autoConvertCandy !== false && isEventActive(spring2018),
