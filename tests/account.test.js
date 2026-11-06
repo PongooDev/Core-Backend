@@ -48,3 +48,18 @@ test("killing other sessions logs out older logins of the same account", async (
     backend.close();
   }
 });
+
+test("a gameserver's login leaves the other servers on its account logged in (CoreV2 #280)", async () => {
+  const backend = await startBackend();
+  try {
+    const first = await userLogin(backend.port, "Server1");
+    const second = await userLogin(backend.port, "Server1");
+    assert.equal(first.accountId, second.accountId);
+
+    assert.equal((await del(backend.port, "/account/api/oauth/sessions/kill?killType=OTHERS_ACCOUNT_CLIENT_SERVICE", second.token)).status, 204);
+    assert.equal((await get(backend.port, "/account/api/oauth/verify", first.token)).status, 200);
+    assert.equal((await get(backend.port, "/account/api/oauth/verify", second.token)).status, 200);
+  } finally {
+    backend.close();
+  }
+});

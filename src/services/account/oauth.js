@@ -210,8 +210,14 @@ export function oauthRoutes({ accounts, tokens, settings, resetTokens, exchangeC
     res.set("Cache-Control", "no-store").json(exchangeCodes.issue(req.session));
   });
 
+  // Every login sends killType=OTHERS_ACCOUNT_CLIENT_SERVICE, which logs a player's older logins out. A gameserver's
+  // account is never a player's: several servers can log in to one (a launcher server login without {n}, two hosters
+  // on one backend), and a server whose token is killed fails its next minute check and shuts down, kicking its
+  // players with "host closed connection" (CoreV2 #280: 3.1 stops its session the moment the check fails). So a server
+  // account's login leaves its other servers logged in.
   router.delete("/account/api/oauth/sessions/kill", requireAuth(tokens), (req, res) => {
-    tokens.kill(req.session, String(req.query.killType ?? ""));
+    const account = req.session.accountId && accounts.get(req.session.accountId);
+    if (!account || !isServerAccountName(account.displayName)) tokens.kill(req.session, String(req.query.killType ?? ""));
     res.status(204).end();
   });
 
