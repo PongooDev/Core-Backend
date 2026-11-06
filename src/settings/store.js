@@ -8,6 +8,7 @@ import { defaultMeteorStrikePhase, sanitizeMeteorStrike } from "../events/meteor
 import { regionHostingIps, regionList } from "../matchmaking/regions.js";
 import { customMatchServers } from "../matchmaking/custom-servers.js";
 import { allowedBuildList } from "../builds/allowed.js";
+import { battleRoyaleSeasons } from "../builds/detect.js";
 
 // The Battle Royale modes a region's server limits (serverLimits) count, each 0 (no limit) by default.
 const limitModes = ["solo", "duo", "squad", "fiftyFifty", "shootingTest", "highExplosives", "sneakySilencers", "sniperShootout",
@@ -18,6 +19,11 @@ const noLimits = () => Object.fromEntries(limitModes.map((mode) => [mode, 0]));
 // 3.5.1's (CL-4000805) own LTMs (events/ltms.js), whose switches the matchmaking modes keep beside the others'.
 const playlistAssetLtms = ["fiftyFiftyV2", "highExplosivesSolo", "highExplosivesSquads", "sniperShootoutSolo", "sniperShootoutDuos",
   "sniperShootoutSquads", "skySupplyDuos", "skySupplySquads", "solidGoldSolo", "impactSolo", "impactDuos", "impactSquads"];
+
+// Every Battle Royale season's start, unset. Each season Core knows has one (builds/detect.js): a season left out was never
+// kept, so a season anchored to its first served day (Season 4 on 4.0, until this) started again on every day it was
+// asked about, its shop stuck on its first day and its featured countdown at the whole season (72 days).
+const defaultSeasonStarts = () => Object.fromEntries(battleRoyaleSeasons.map(({ season }) => [String(season), null]));
 
 const defaults = {
   requirePassword: false,
@@ -113,8 +119,8 @@ const defaults = {
     weeklyDurationDays: 7,
     customSeasonEnd: null,
     // Each season's replay start, its day 1 ("YYYY-MM-DD", store/itemshop.js seasonStart): Season 2's is set the first
-    // day the backend serves it, and Season 3's; null is the default start.
-    seasonStarts: { 1: null, 2: null, 3: null },
+    // day the backend serves it, and Season 3's and 4's; null is the default start.
+    seasonStarts: defaultSeasonStarts(),
     calendarCacheMinutes: 60,
     // Season 2's content updates (events/contentupdates.js): "season" by their dates on its replay, or "all"; and
     // per-update "on" / "off" overrides.
@@ -289,8 +295,8 @@ function sanitizeEvents(input, current = defaults.events) {
   }
 
   if (input.seasonStarts && typeof input.seasonStarts === "object" && !Array.isArray(input.seasonStarts)) {
-    result.seasonStarts = { 1: null, 2: null, 3: null, ...(result.seasonStarts ?? {}) };
-    for (const season of ["1", "2", "3"]) {
+    result.seasonStarts = { ...defaultSeasonStarts(), ...(result.seasonStarts ?? {}) };
+    for (const season of Object.keys(defaultSeasonStarts())) {
       const value = input.seasonStarts[season];
       if (value === null || value === "") result.seasonStarts[season] = null;
       else if (typeof value === "string" && !isNaN(Date.parse(value))) result.seasonStarts[season] = new Date(Date.parse(value)).toISOString().slice(0, 10);

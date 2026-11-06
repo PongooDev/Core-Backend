@@ -33,9 +33,10 @@ import { createProfileStore } from "../src/profiles/store.js";
 import { setItemFavoriteStatusBatch } from "../src/services/mcp/commands/SetItemFavoriteStatus.js";
 import { findOffer } from "../src/store/catalog.js";
 import { eventStoreInstanceNow, eventStoreOffers, hasEventStore } from "../src/store/eventstore.js";
-import { itemShopOffers } from "../src/store/itemshop.js";
+import { itemShopOffers, seasonEnd } from "../src/store/itemshop.js";
 import { hasRefunds } from "../src/store/refunds.js";
 import { worldInfo } from "../src/world/theaters.js";
+import { send, startBackend, userLogin } from "./helpers.js";
 
 // Fortnite 4.0 (++Fortnite+Release-4.0-CL-4039451, UE 4.20, 1 May 2018, Season 4's first build): its own data
 // (gamedata/4039451), Season 4's Battle Pass, challenges, shop and lobby, and Save the World's Blockbuster.
@@ -279,4 +280,37 @@ test("4.0 keeps 3.6's gates: common profiles, returns, replays' 4.20 loot RowUpd
   assert.deepEqual(inBuild(v40, () => contentUpdateStates(now)), []);
   assert.equal(inBuild(v40, () => lootHotfixSection(now, null, [], meteorStrikeRows(v40), v40)), "");
   assert.equal(meteorStrikePhase(v40), null);
+});
+
+// 4.0's FEATURED ITEMS countdown is GetWeeklyStoreEndDate (0x29681C0: the client-events state's WeeklyStoreEnd, +0x170,
+// as 3.6's 0x28ED810 reads it), so it counts to the calendar's weeklyStoreEnd. It showed 72 days: the settings kept no
+// start for Season 4, so its replay started again on every day it was asked about, every day was its first, the featured
+// pair never changed and the countdown ran to the end of the cycle.
+test("4.0's featured countdown counts to the next featured change, and Season 4's start is kept", async () => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-build40-shop-"));
+  const backend = await startBackend({ dataDir });
+  const dayMs = 86400000;
+  try {
+    const { token } = await userLogin(backend.port, "featured40");
+    const timeline = async (changelist, branch) => (await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/fortnite/api/calendar/v1/timeline",
+      headers: { "User-Agent": `game=Fortnite, engine=UE4, build=++Fortnite+Release-${branch}-CL-${changelist}`, Authorization: `bearer ${token}` } })).body;
+    const body = await timeline(v40, "4.0");
+    const { state } = body.channels["client-events"].states[0];
+    const today = Math.floor(Date.parse(body.currentTime) / dayMs) * dayMs;
+    // Day 1 is today, 1 May 2018's shop; its featured pair changes tomorrow, 2 May's, and the season runs its 72 days.
+    assert.equal(JSON.parse(fs.readFileSync(path.join(dataDir, "settings.json"), "utf8")).events.seasonStarts[4], new Date(today).toISOString().slice(0, 10));
+    assert.equal(state.weeklyStoreEnd, new Date(today + dayMs).toISOString());
+    assert.equal(state.seasonEnd, new Date(today + 72 * dayMs).toISOString());
+    inBuild(v40, () => {
+      assert.equal(itemShopOffers(new Date(today + dayMs)).BRWeeklyStorefront[0].templateId, "AthenaCharacter:cid_093_athena_commando_m_dinosaur");
+      assert.equal(seasonEnd(new Date(today + 10 * dayMs)).toISOString(), state.seasonEnd);
+    });
+    // 3.6 keeps Season 3's: tomorrow too, with its own 68 days.
+    const s3 = (await timeline(v36, "3.6")).channels["client-events"].states[0].state;
+    assert.equal(s3.weeklyStoreEnd, new Date(today + dayMs).toISOString());
+    assert.equal(s3.seasonEnd, new Date(today + 68 * dayMs).toISOString());
+  } finally {
+    await backend.close();
+    fs.rmSync(dataDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+  }
 });

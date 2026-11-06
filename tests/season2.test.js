@@ -175,7 +175,7 @@ test("Season 2 starts on 14 December's shop the day it is first served, keeps th
 
     // An admin sets each season's start, next to the custom season end, which still overrides the countdown.
     assert.equal((await admin(backend.port, "/events/config", { seasonStarts: { 1: "2026-10-01", 2: "2026-10-01" } })).status, 200);
-    assert.deepEqual(settingsOf(), { 1: "2026-10-01", 2: "2026-10-01", 3: null });
+    assert.deepEqual(settingsOf(), { 1: "2026-10-01", 2: "2026-10-01", 3: null, 4: null });
     assert.equal(inBuild(v111, () => shopDay(new Date("2026-10-11T12:00:00Z")).date), "2017-12-24");
     assert.equal(inBuild(v110, () => shopDay(new Date("2026-10-11T12:00:00Z")).date), "2017-11-09");
     assert.equal(inBuild(v111, () => seasonEnd(new Date("2026-10-11T12:00:00Z")).toISOString()), "2026-12-10T00:00:00.000Z");
@@ -185,7 +185,7 @@ test("Season 2 starts on 14 December's shop the day it is first served, keeps th
 
     // Resetting Season 2 starts it again the next day it is served; resetting Season 1 gives back its clock.
     await admin(backend.port, "/events/config", { seasonStarts: { 1: null, 2: null } });
-    assert.deepEqual(settingsOf(), { 1: null, 2: null, 3: null });
+    assert.deepEqual(settingsOf(), { 1: null, 2: null, 3: null, 4: null });
     assert.equal(inBuild(v110, () => shopDay(new Date("2026-11-02T12:00:00Z")).date), "2017-11-04");
     assert.equal(inBuild(v111, () => shopDay(new Date()).date), "2017-12-14");
     assert.equal(settingsOf()[2], today());
