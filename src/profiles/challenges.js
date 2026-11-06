@@ -65,11 +65,19 @@ export const challengeModes = ["original", "interval", "manual"];
 
 const bySeasonDays = (entry) => entry.unlockType === "DaysSinceEventStart";
 const isWeekly = (schedule) => schedule.bundles.some(bySeasonDays);
-// The season's weekly schedule's bundles (Season3_Challenge_Schedule: the one unlocking by days), Week 1 first.
+// The season's weekly schedule's weeks (Season3_Challenge_Schedule: the one unlocking by days), Week 1 first: each
+// DaysSinceEventStart entry is a week, and the entries given with the schedule (OnScheduleGranted) are Week 1 together.
+// Season 3's has one such entry, S3_Week1_QuestBundle. Season 4's (4.0, CL-4039451) has three: QuestBundle_S4_Cumulative
+// and QuestBundle_S4_ProgressiveA before QuestBundle_S4_Week_001, so counting entries made 12 weeks of its 10 and put
+// Week 1 third (Core-Backend #266). A week is {bundle: its own bundle (the last of Week 1's), bundles, unlockType,
+// unlockValue}.
 function weeklyEntries() {
   const schedule = Object.values(athenaChallengeSchedules()).find(isWeekly);
-  const value = (entry) => (bySeasonDays(entry) ? entry.unlockValue : 0);
-  return schedule ? [...schedule.bundles].sort((a, b) => value(a) - value(b)) : [];
+  if (!schedule) return [];
+  const given = schedule.bundles.filter((entry) => !bySeasonDays(entry));
+  const byDays = schedule.bundles.filter(bySeasonDays).sort((a, b) => a.unlockValue - b.unlockValue);
+  const first = given.length ? [{ ...given[given.length - 1], unlockValue: 0, bundles: given.map((entry) => entry.bundle) }] : [];
+  return [...first, ...byDays.map((entry) => ({ ...entry, bundles: [entry.bundle] }))];
 }
 export const challengeWeekCount = () => weeklyEntries().length;
 
@@ -113,7 +121,7 @@ export function weekPlan(now = new Date(), settingsValue = settingsProvider()) {
         : settings.mode === "interval" ? start + i * settings.intervalDays * dayMs : null;
     const open = i < settings.weeksAvailable && (settings.mode === "manual" ? i < settings.manualWeeks
       : settings.mode === "interval" ? now.getTime() >= at : !bySeasonDays(entry) || days >= entry.unlockValue);
-    return { week: i + 1, bundle: entry.bundle, unlocked: open, unlocksAt: at === null ? null : new Date(at).toISOString() };
+    return { week: i + 1, bundle: entry.bundle, bundles: entry.bundles, unlocked: open, unlocksAt: at === null ? null : new Date(at).toISOString() };
   });
   const next = weeks.findIndex((week) => !week.unlocked && week.week <= settings.weeksAvailable);
   let begin = epoch;
@@ -188,7 +196,7 @@ export function settleChallengeSchedules(session, athena, now = new Date()) {
   const schedules = athenaChallengeSchedules();
   const tracker = session.profile("athena");
   const plan = weekPlan(now);
-  const weekOpen = new Map(plan.weeks.map((week) => [week.bundle, week.unlocked]));
+  const weekOpen = new Map(plan.weeks.flatMap((week) => week.bundles.map((bundle) => [bundle, week.unlocked])));
   for (const [scheduleItemId, item] of heldOf(tracker.profile, "challengebundleschedule")) {
     const schedule = schedules[idOf(item.templateId)];
     if (!schedule) continue;

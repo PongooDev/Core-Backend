@@ -24,7 +24,8 @@ import { stormConversion2018, stormConversion2018Storm } from "../src/events/sto
 import { athenaChallengeBundles, athenaChallengeSchedules, athenaCosmetics, athenaSeason, athenaVariantTokens, getAthenaQuest } from "../src/gamedata/athena.js";
 import { getItem } from "../src/gamedata/items.js";
 import { buildGameData, dataBuild } from "../src/gamedata/read.js";
-import { advanceAthenaObjectives, athenaQuestLogin, equipCustomization, seasonRewardFunctions } from "../src/profiles/athena.js";
+import { advanceAthenaObjectives, athenaQuestLogin, equipCustomization, refreshAthenaDailies, seasonRewardFunctions } from "../src/profiles/athena.js";
+import { challengeWeekCount, weekPlan } from "../src/profiles/challenges.js";
 import { mtxProfileId, usesCommonProfiles } from "../src/profiles/common.js";
 import { grantItem } from "../src/profiles/items.js";
 import { buildOfSeason, buyBattlePass, takeUpSeason } from "../src/profiles/seasons.js";
@@ -313,6 +314,25 @@ test("4.0's weekly challenges: a week done gives the weekly token, which the cum
   assert.equal(heldQuest(tracker, "quest_br_s4_cumulative_collecttokens_02")[1].attributes.quest_state, "Active");
   assert.ok(tracker.profile.items["AthenaLoadingScreen:lsid_009_s4cumulative1"], "its loading screen");
   assert.ok(heldQuest(tracker, "quest_br_s4_cumulative_quest1"), "and its hidden challenge");
+}));
+
+// Core-Backend #266: 4.0's and 4.1's quest log (QuestsModal's QuestScreen) lists every quest the athena profile holds
+// that isn't bHidden, under its FortQuestItemDefinition Category, so the starter and weekly challenges Epic filed under
+// BRDailyChallenges show as "Battle Royale Daily Challenges" beside the three dailies. The dailies stay three.
+test("#266: Season 4's weeks are 10, Week 1 with the cumulative and Carbide challenges; dailies stay three", () => withSession("weeks266", (session) => {
+  assert.equal(challengeWeekCount(), 10);
+  const plan = weekPlan(now, { challengeUnlock: { season4: { mode: "manual", manualWeeks: 1 } } });
+  assert.deepEqual(plan.weeks[0].bundles, ["questbundle_s4_cumulative", "questbundle_s4_progressivea", "questbundle_s4_week_001"]);
+  assert.deepEqual(plan.weeks.filter((week) => week.unlocked).map((week) => week.bundle), ["questbundle_s4_week_001"]);
+  assert.equal(plan.weeks[9].bundle, "questbundle_s4_week_010");
+  const original = weekPlan(now, {});
+  assert.equal(Date.parse(original.weeks[1].unlocksAt) - Date.parse(original.begin), 7 * 86_400_000, "Week 2 is 7 days on");
+
+  buyBattlePass(session, seasonRewardFunctions());
+  const tracker = session.profile("athena");
+  for (let day = 0; day < 10; day++) refreshAthenaDailies(session, new Date(now.getTime() + day * 86_400_000));
+  const dailies = itemsOf(tracker, "Quest").filter(([, item]) => getAthenaQuest(item.templateId.split(":")[1])?.type === "AthenaDailyQuest");
+  assert.equal(dailies.length, 3);
 }));
 
 test("4.0: a challenge's Battle Stars past tier 100 are 100 season XP each", () => withSession("overflow", (session) => {
