@@ -12,7 +12,7 @@ import { advanceObjective, applyHeldProgress, grant, revertHeldProgress } from "
 import { heldProgress } from "../../../profiles/missions.js";
 import { createDeployableBase, saveDeployableBase, saveOutpost, updateOutpostCore, updateTierProgression } from "../../../profiles/outposts.js";
 import { earnScore, noXpEarned } from "../../../profiles/xp.js";
-import { atDifficulty, findMission, missionLootLevel, missionPackSource } from "../../../world/theaters.js";
+import { atDifficulty, findMission, missionLootLevel, missionPackSource, missionRewardQuantity } from "../../../world/theaters.js";
 import { clientQuestLogin } from "./ClientQuestLogin.js";
 
 // Commands the gameserver sends for its players (POST .../profile/{accountId}/dedicated_server/{command}), from the
@@ -236,7 +236,7 @@ export const serverCommands = {
   // mission's status; their reward packs (survivor badges: "Rescued Survivor") join the mission's (profiles/badges.js).
   // The reward chest's level (missionLootLevel, from numMissionPoints) multiplies the mission's rewards 🟡: how Epic scaled
   // them by chest level was its server's data, which didn't ship, so a level 4 chest gives four times a level 1's
-  // (Core-Backend #53).
+  // (Core-Backend #53); from 4.2 a storm shield defense's Mini Llamas go by its zone (missionRewardQuantity, #273).
   // difficultyIncreaseTier (3.0's EndPrimaryMission; the BluGlo Difficulty Pylon's AFortGameStateZone
   // DifficultyIncreaseRewardTier, 0 when it wasn't used) puts that tier's rewards in the player's pending difficulty
   // increase rewards when the mission succeeded (profiles/difficultyincrease.js).
@@ -262,7 +262,7 @@ export const serverCommands = {
     const lootLevel = missionLootLevel(Number(numMissionPoints));
     const packSource = missionPackSource(Number(numMissionPoints));
     log("MCP", `EndPrimaryMission: ${missionName} rewards at loot level ${lootLevel} (${Number(numMissionPoints) || 0} mission points)`);
-    for (const { itemType, quantity } of mission.missionRewards.items) grant(session, itemType, quantity * lootLevel, { packSource });
+    for (const { itemType, quantity } of mission.missionRewards.items) grant(session, itemType, missionRewardQuantity(itemType, quantity, lootLevel), { packSource });
     if (mission.missionAlert) completeMissionAlert(session, mission.theaterId, mission.missionAlert);
     const raised = addDifficultyIncreaseRewards(session, Number(difficultyIncreaseTier), mission.missionRewards);
     if (raised) {

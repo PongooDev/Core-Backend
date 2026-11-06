@@ -126,7 +126,8 @@ function shuffled(list, seed) {
 // the Storm mission's group (Mission_Select_Survival_T0<n>) is in no world info: it gives its Survival Rewards pack.
 // A group mission (groupMissions) draws from its solo tier's pool (soloTierGroup) twice over.
 function missionRewards(seed, tierGroupName, theaterId, rowName, soloTierGroup = null) {
-  const { count: soloCount = 0, pool = [] } = layout().rewards[soloTierGroup ?? tierGroupName] ?? {};
+  const { count: soloCount = 0, pool: worldPool = [] } = layout().rewards[soloTierGroup ?? tierGroupName] ?? {};
+  const pool = outpostVouchers(tierGroupName, worldPool);
   const count = soloTierGroup ? 2 * soloCount : soloCount;
   const drawn = pool.reduce((total, reward) => total + reward.weight, 0);
   const items = drawn <= count ? pool.flatMap(({ itemType, quantity, weight }) => Array(weight * (soloTierGroup ? 2 : 1)).fill({ itemType, quantity }))
@@ -137,6 +138,27 @@ function missionRewards(seed, tierGroupName, theaterId, rowName, soloTierGroup =
   const gold = seasonalGoldPack(soloTierGroup ?? tierGroupName);
   if (gold) items.push({ itemType: gold, quantity: 1 });
   return { tierGroupName, items: items.map(({ itemType, quantity }) => ({ itemType, quantity })) };
+}
+
+// 4.2's (CL-4072250) "Mini Llama rewards now scale for Storm Shield Defenses. Before, players could earn a fixed amount of
+// Mini Llamas (1-4) based on mission performance, as it didn't take difficulty into account. The new reward breakdown for
+// Mini Llamas is as follows: Stonewood: 1 to 4, Plankerton: 2 to 5, Canny Valley: 3 to 6, Twine Peaks: 4 to 7" (Core-Backend
+// #273). 4.2's data adds a Mini Reward Llama pack for each zone's defenses, ZCP_Voucher_BasicPack_Outpost_Theater1-4 (loot
+// tier 1 to 4 of ZCP_Voucher_BasicPack_Outpost), so on a build that has them a storm shield defense
+// (Outpost_Select_Theater<n>) gives its zone's pack in place of the plain ZCP_Voucher_BasicPack Epic's world info shows,
+// and the reward chest's level (missionLootLevel, 1 to 6: the "mission performance") sets how many, n - 1 more than the
+// level, the level counted to 4: missionRewardQuantity. Earlier builds keep the plain pack, as many as the chest's level.
+const outpostVoucherPack = (theater) => `CardPack:zcp_voucher_basicpack_outpost_theater${theater}`;
+function outpostVouchers(tierGroupName, pool) {
+  const theater = /^Outpost_Select_Theater(\d)$/.exec(tierGroupName ?? "")?.[1];
+  if (!theater || !getItem(outpostVoucherPack(theater))) return pool;
+  return pool.map((reward) => (reward.itemType.toLowerCase() === "cardpack:zcp_voucher_basicpack" ? { ...reward, itemType: outpostVoucherPack(theater) } : reward));
+}
+// How many of a won mission's reward the player gets at the reward chest's level: the reward's quantity times the level
+// (🟡 Core-Backend #53), but a defense's zone Mini Llama pack (4.2, above): the zone's base and the level up to 4.
+export function missionRewardQuantity(itemType, quantity, lootLevel) {
+  const theater = /^cardpack:zcp_voucher_basicpack_outpost_theater(\d)$/i.exec(itemType ?? "")?.[1];
+  return theater ? quantity * (Number(theater) - 1 + Math.min(lootLevel, 4)) : quantity * lootLevel;
 }
 
 // Seasonal Gold from every mission while the Event Store is open (1.11 to 3.3 and 3.5.1, store/eventstore.js): 1.11's "Play any

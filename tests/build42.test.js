@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { allowedBuildList, buildChoices } from "../src/builds/allowed.js";
+import { rollContents } from "../src/cardpacks/contents.js";
 import { inBuild } from "../src/builds/context.js";
 import { seasonName, versionOf } from "../src/builds/detect.js";
 import { contentUpdateStates, lootHotfixSection } from "../src/events/contentupdates.js";
@@ -18,7 +19,7 @@ import { buildOfSeason } from "../src/profiles/seasons.js";
 import { eventStoreInstanceNow, eventStoreOffers, hasEventStore } from "../src/store/eventstore.js";
 import { itemShopOffers } from "../src/store/itemshop.js";
 import { hasRefunds } from "../src/store/refunds.js";
-import { worldInfo } from "../src/world/theaters.js";
+import { missionRewardQuantity, worldInfo } from "../src/world/theaters.js";
 
 // Fortnite 4.2 (++Fortnite+Release-4.2-CL-4072250, UE 4.20, 16 May 2018): its own data (gamedata/4072250) and Season 4 as
 // 4.0's.
@@ -202,4 +203,30 @@ test("4.2's mission alerts: every group mission has one, and Elemental Storm ale
   const stonewood = inBuild(v42, () => worldInfo(now)).theaters.find((theater) => (theater.runtimeInfo.theaterTags?.gameplayTags ?? [])
     .some(({ tagName }) => tagName === "Stat.Theater.PvE01"));
   if (stonewood) assert.ok(!alerts42.some(({ theaterId, categoryName }) => theaterId === stonewood.uniqueId && /Elemem/.test(categoryName)));
+});
+
+// Core-Backend #273: "Mini Llama rewards now scale for Storm Shield Defenses ... Stonewood: 1 to 4, Plankerton: 2 to 5,
+// Canny Valley: 3 to 6, Twine Peaks: 4 to 7".
+test("4.2's storm shield defenses give their zone's Mini Llamas: 1 to 4, 2 to 5, 3 to 6, 4 to 7 (#273)", () => {
+  const outposts = (build) => inBuild(build, () => worldInfo(now)).missions.flatMap(({ availableMissions }) => availableMissions)
+    .filter(({ missionRewards }) => /^Outpost_Select_Theater\d$/.test(missionRewards.tierGroupName));
+  const defenses42 = outposts(v42);
+  assert.ok(defenses42.length > 0);
+  for (const { missionRewards } of defenses42) {
+    const theater = missionRewards.tierGroupName.at(-1);
+    assert.ok(missionRewards.items.some(({ itemType }) => itemType === `CardPack:zcp_voucher_basicpack_outpost_theater${theater}`), missionRewards.tierGroupName);
+    assert.ok(!missionRewards.items.some(({ itemType }) => itemType === "CardPack:zcp_voucher_basicpack"));
+  }
+  for (const { missionRewards } of outposts(v41)) {
+    assert.ok(!missionRewards.items.some(({ itemType }) => /voucher_basicpack_outpost/.test(itemType)), "4.1 keeps the plain pack");
+  }
+  const llamas = (theater) => [1, 2, 3, 4, 5, 6].map((level) => missionRewardQuantity(`CardPack:zcp_voucher_basicpack_outpost_theater${theater}`, 1, level));
+  assert.deepEqual([1, 2, 3, 4].map(llamas), [[1, 2, 3, 4, 4, 4], [2, 3, 4, 5, 5, 5], [3, 4, 5, 6, 6, 6], [4, 5, 6, 7, 7, 7]]);
+  assert.equal(missionRewardQuantity("CardPack:zcp_voucher_basicpack", 1, 5), 5, "the plain pack still goes by the chest");
+  assert.equal(missionRewardQuantity("CardPack:zcp_heroxp_outpost_theater2", 1, 3), 3);
+  // Each pack is one Mini Reward Llama voucher.
+  for (const theater of [1, 4]) {
+    assert.deepEqual(inBuild(v42, () => rollContents(`CardPack:zcp_voucher_basicpack_outpost_theater${theater}`)).map(({ templateId, quantity }) => [templateId, quantity]),
+      [["AccountResource:voucher_basicpack", 1]]);
+  }
 });
