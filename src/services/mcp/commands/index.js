@@ -1,4 +1,5 @@
 import { activateConsumable } from "./ActivateConsumable.js";
+import { convertLegacyAlterations, respecAlteration, upgradeAlteration } from "./Alterations.js";
 import { assignWorkerToSquad } from "./AssignWorkerToSquad.js";
 import { assignWorkerToSquadBatch } from "./AssignWorkerToSquadBatch.js";
 import { bulkEquipBattleRoyaleCustomization } from "./BulkEquipBattleRoyaleCustomization.js";
@@ -67,6 +68,7 @@ export const clientCommands = {
   ClientQuestLogin: clientQuestLogin,
   CollectExpedition: collectExpeditionCommand,
   ConvertItem: convertItemCommand,
+  ConvertLegacyAlterations: convertLegacyAlterations,
   ConvertSlottedItem: convertSlottedItem,
   CraftWorldItem: craftWorldItem,
   CreateOrUpgradeOutpostItem: createOrUpgradeOutpostItem,
@@ -89,6 +91,7 @@ export const clientCommands = {
   RecycleItemBatch: recycleItemBatchCommand,
   RefreshExpeditions: refreshExpeditions,
   RefundMtxPurchase: refundMtxPurchase,
+  RespecAlteration: respecAlteration,
   RemoveGiftBox: removeGiftBox,
   RequestEventFlags: requestEventFlags,
   SetBattleRoyaleBanner: setBattleRoyaleBanner,
@@ -113,6 +116,7 @@ export const clientCommands = {
   TransmogItem: transmogItem,
   UnassignAllSquads: unassignAllSquads,
   UpdateQuestClientObjectives: updateQuestClientObjectives,
+  UpgradeAlteration: upgradeAlteration,
   UpgradeItem: upgradeItemCommand,
   UpgradeItemRarity: upgradeItemRarityCommand,
   UpgradeSlottedItem: upgradeSlottedItem,

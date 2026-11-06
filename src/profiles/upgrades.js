@@ -1,6 +1,7 @@
 import { McpError } from "../errors.js";
 import { getItem } from "../gamedata/items.js";
 import { upgradeData } from "../gamedata/upgrades.js";
+import { missingAlterations } from "./alterations.js";
 import { grantItem } from "./items.js";
 import { itemChanged } from "./progress.js";
 import { hasUnlocked } from "./unlocks.js";
@@ -40,7 +41,7 @@ function accountItem(tracker, itemId) {
 }
 
 // Takes what a list of costs asks for from the profile's stacks, or fails without taking anything.
-function pay(tracker, costs) {
+export function pay(tracker, costs) {
   const plan = costs.map(({ templateId, quantity }) => {
     const stacks = Object.entries(tracker.profile.items).filter(([, held]) => held.templateId.toLowerCase() === templateId.toLowerCase());
     const have = stacks.reduce((sum, [, held]) => sum + held.quantity, 0);
@@ -89,7 +90,7 @@ export function convertItem(session, itemId, conversionIndex, profileId = "profi
   const [result] = recipe.results;
   const attributes = { ...item.attributes, item_seen: 0 };
   tracker.removeItem(itemId);
-  tracker.addItem(itemId, { templateId: result.templateId, attributes, quantity: 1 });
+  tracker.addItem(itemId, { templateId: result.templateId, attributes: { ...attributes, ...missingAlterations({ templateId: result.templateId, attributes }) }, quantity: 1 });
   itemChanged(session, "Convert", tracker.profile.items[itemId], item.templateId);
   return { templateId: result.templateId, itemId, profileId, quantity: 1 };
 }
@@ -123,7 +124,8 @@ export function levelRelativeRarityCost(item, info, resultInfo) {
 // same recipe as Hero Rarity Upgrade ... Unlocked by the 2-Star Evolution Skill Tree Nodes", Core-Backend #271): its data
 // names every schematic's EvolveRarity.SID.* row, and its 2-star evolution nodes grant Unlocks.RarityUpgrade.Weapon.*
 // and .Trap.*, so they go through here unchanged. 🟡 "Legacy schematics must be converted by the Perk Recombobulator
-// before their rarity can be upgraded" is the client's check, and Core has no Perk Recombobulator yet (#270).
+// before their rarity can be upgraded" is the client's check, and Core has no Perk Recombobulator yet (#270). The perks
+// stay with the item; a result whose loadout has more slots gets new perks for them (profiles/alterations.js).
 export function upgradeItemRarity(session, itemId) {
   const tracker = session.profile("profile0");
   const { item, info } = accountItem(tracker, itemId);
@@ -136,7 +138,7 @@ export function upgradeItemRarity(session, itemId) {
   pay(tracker, xp > 0 ? [...recipe.costs, { templateId: xpResource[info.class], quantity: xp }] : recipe.costs);
   const attributes = { ...item.attributes, item_seen: 0 };
   tracker.removeItem(itemId);
-  tracker.addItem(itemId, { templateId: result.templateId, attributes, quantity: 1 });
+  tracker.addItem(itemId, { templateId: result.templateId, attributes: { ...attributes, ...missingAlterations({ templateId: result.templateId, attributes }) }, quantity: 1 });
   itemChanged(session, "UpgradeRarity", tracker.profile.items[itemId], item.templateId);
   return { templateId: result.templateId, itemId, profileId: "profile0", quantity: 1 };
 }

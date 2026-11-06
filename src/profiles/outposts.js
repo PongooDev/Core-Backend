@@ -124,6 +124,24 @@ export function missedStormShieldQuests(profile) {
   return [...missed];
 }
 
+// The perk resources a claimed Storm Shield Defense gives with a missed quest of the Perk Recombobulator's: 4.2's
+// Plankerton SSD 2 (OutpostQuest_T2_L2) hides Challenge_ReplaceAlteration and rewards 1,200 RE-PERK!, neither of which a
+// claim made before 4.2 gave. Update v4.20: "Players who have already completed Plankerton Storm Shield Defense 2 will
+// already have the quests unlocked, including the initial resources." So when missedStormShieldQuests gives such a
+// quest, these come with it, once (the quest is held from then on).
+export function missedStormShieldResources(profile, missed) {
+  const wanted = new Set(missed.map((questId) => questId.toLowerCase()));
+  const resources = [];
+  for (const item of Object.values(profile.items)) {
+    const quest = item.attributes?.quest_state === "Claimed" && getQuest(questIdOf(item) ?? "");
+    if (!quest?.expandsStormShield) continue;
+    const gives = [...(quest.rewards ?? []), ...(quest.hiddenRewards ?? [])].map(({ templateId }) => templateId.toLowerCase());
+    if (!gives.some((templateId) => templateId.startsWith("quest:") && wanted.has(templateId.slice(6)) && /alteration/.test(templateId))) continue;
+    resources.push(...(quest.rewards ?? []).filter(({ templateId }) => /^accountresource:reagent_alteration/i.test(templateId)));
+  }
+  return resources;
+}
+
 // The storm shield defense a player is up to: world info lists each theater's storm shield at its first defense
 // (Theater_Start_Outpost1, Theater_Normal_Outpost1, ...); Core moves it to <prefix>_Outpost<level + 1> for the core's
 // owner, up to the tenth.

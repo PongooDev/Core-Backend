@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import { McpError } from "../../../errors.js";
 import { getItem } from "../../../gamedata/items.js";
 import { upgradeData } from "../../../gamedata/upgrades.js";
+import { activeAlterations } from "../../../profiles/alterations.js";
 import { hasUnlocked } from "../../../profiles/unlocks.js";
 import { settleBackpack, worldStackCap } from "../../../profiles/vault.js";
 import { unslot } from "./DisassembleWorldItems.js";
@@ -111,6 +112,10 @@ function craft(session, theater, schematicId, times, depth) {
   if (info.neverPersisted) invalid(`${result.templateId} is never persisted`);
   // Weapons and traps carry the schematic's level and full durability; ammo and ingredients carry nothing, as granted.
   const attributes = info.maxDurability !== undefined ? { level: schematic.attributes?.level ?? 1, durability: info.maxDurability } : {};
+  // From 4.2 a weapon or trap carries its schematic's working perks (FFortItemEntry AlterationDefinitions, read by
+  // property name as the rest: UFortItem::GetActiveAlterations, the slots its level and rarity unlock).
+  const alterations = activeAlterations(schematic);
+  if (info.maxDurability !== undefined && alterations.length) attributes.alterationDefinitions = alterations;
   const limit = info.maxStackSize > 0 ? info.maxStackSize : Infinity;
   const key = stableJson(attributes);
   let remaining = result.quantity * times;

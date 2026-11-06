@@ -4,7 +4,7 @@ import { convertEventLeftovers } from "../../../events/leftovers.js";
 import { eventQuestsToRestore, removeEndedEventQuests } from "../../../events/quests.js";
 import { startingQuests } from "../../../gamedata/quests.js";
 import { athenaQuestLogin } from "../../../profiles/athena.js";
-import { missedStormShieldQuests } from "../../../profiles/outposts.js";
+import { missedStormShieldQuests, missedStormShieldResources } from "../../../profiles/outposts.js";
 import { refreshDailyQuests } from "../../../profiles/dailies.js";
 import { grant, refreshHeldItems } from "../../../profiles/progress.js";
 import { eventFlagsNotification } from "./RequestEventFlags.js";
@@ -24,7 +24,8 @@ import { eventFlagsNotification } from "./RequestEventFlags.js";
 // (events/leftovers.js, #129, #174).
 //
 // A Storm Shield Defense already claimed grants the quests a newer build's data added to it, such as 3.0's Hoverboard
-// questline from Stonewood's SSD 5 (profiles/outposts.js, #210).
+// questline from Stonewood's SSD 5 (profiles/outposts.js, #210), and with 4.2's Perk Recombobulator quest from Plankerton's
+// SSD 2 the RE-PERK! the defense now gives (#270).
 //
 // On athena (1.8's Battle Royale quest log), its daily challenges (profiles/athena.js), with the event flags all the
 // same in case that quest manager is the one asking.
@@ -35,7 +36,9 @@ export function clientQuestLogin({ session, notifications, profileId }) {
     convertEventLeftovers(session);
     for (const questId of [...startingQuests(), ...eventQuests()]) grant(session, `Quest:${questId}`, 1);
     for (const questId of eventQuestsToRestore(session.profile("profile0").profile)) grant(session, `Quest:${questId}`, 1);
-    for (const questId of missedStormShieldQuests(session.profile("profile0").profile)) grant(session, `Quest:${questId}`, 1);
+    const missed = missedStormShieldQuests(session.profile("profile0").profile);
+    for (const { templateId, quantity } of missedStormShieldResources(session.profile("profile0").profile, missed)) grant(session, templateId, quantity);
+    for (const questId of missed) grant(session, `Quest:${questId}`, 1);
     refreshDailyQuests(session);
     refreshHeldItems(session);
   }

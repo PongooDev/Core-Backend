@@ -270,10 +270,13 @@ export function refreshHeldItems(session) {
 // UpgradeItem / ConvertItem / UpgradeItemRarity (and the collection book's UpgradeSlottedItem / ConvertSlottedItem) on
 // an account item: each Upgrade and HasUpgraded stat (HasConverted; UpgradeRarity and HasUpgradedRarity) the item
 // matches after the change counts once, as do objectives with the Upgrade (Convert, UpgradeRarity) item event naming
-// the item's template.
+// the item's template. 4.2's RespecAlteration and UpgradeAlteration count the AlterationRespec and AlterationUpgrade
+// stats (EFortQuestObjectiveStatEvent 43, 44: the Perk Recombobulator's tutorial quests, Challenge_ReplaceAlteration's
+// alteration_respec and Challenge_UpgradeAlteration's alteration_upgrade, <any-item>).
 export function itemChanged(session, change, item, templateId = item.templateId) {
   const tracker = session.profile("profile0");
-  const types = { Upgrade: ["Upgrade", "HasUpgraded"], UpgradeRarity: ["UpgradeRarity", "HasUpgradedRarity"] }[change] ?? ["HasConverted"];
+  const types = { Upgrade: ["Upgrade", "HasUpgraded"], UpgradeRarity: ["UpgradeRarity", "HasUpgradedRarity"],
+    AlterationRespec: ["AlterationRespec"], AlterationUpgrade: ["AlterationUpgrade"] }[change] ?? ["HasConverted"];
   for (const { itemId, item: questItem, quest } of activeQuests(tracker)) {
     for (const objective of quest.objectives) {
       const stat = objective.stat && getObjectiveStat(objective.stat);

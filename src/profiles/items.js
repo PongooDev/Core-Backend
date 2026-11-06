@@ -5,6 +5,7 @@ import { bannerTemplateId } from "../gamedata/banners.js";
 import { getItem } from "../gamedata/items.js";
 import { isEndedEventQuest } from "../events/quests.js";
 import { log } from "../log.js";
+import { newSchematicAlterations } from "./alterations.js";
 import { wireItemProfile } from "./common.js";
 import { heroAttributes } from "./heroes.js";
 import { grantQuest } from "./quests.js";
@@ -61,6 +62,8 @@ function addItem(tracker, templateId, quantity, info, options) {
   if (info.class === "FortCardPackItemDefinition") Object.assign(attributes, cardPackAttributes(templateId, options.packSource));
   if (info.class === "FortWorkerType") Object.assign(attributes, rollWorkerAttributes(templateId));
   if (info.class === "FortHeroType") Object.assign(attributes, heroAttributes(templateId));
+  // From 4.2 a weapon or trap schematic comes with its perks (profiles/alterations.js).
+  if (info.class === "FortSchematicItemDefinition") Object.assign(attributes, newSchematicAlterations(templateId));
   if (isMtxCurrency(templateId)) attributes.platform = mtxPlatform;
   tracker.addItem(itemId, { templateId, attributes, quantity });
   return itemId;
