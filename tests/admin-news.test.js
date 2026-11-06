@@ -405,3 +405,36 @@ test("news image uploads take only PNG and JPEG within the size limits, and only
     backend.close();
   }
 });
+
+test("the lobby notice box is edited from the News tab and served in emergencynotice for every build", async () => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-notice-test-"));
+  const backend = await startBackend({ dataDir });
+
+  try {
+    const initial = await admin(backend, "/news");
+    assert.deepEqual(initial.body.lobbyNotice, { enabled: false, title: "", body: "" });
+    for (const cl of ["3532353", "3724489", "3757339", "4019403", "4039451"]) {
+      const section = (await pageFor(backend.port, cl)).body.emergencynotice;
+      assert.equal(section._title, "emergencynotice");
+      assert.deepEqual(section.news.messages, []);
+    }
+
+    const saved = await admin(backend, "/news", { lobbyNotice: { enabled: true, title: " Echo <Beta> ", body: "Expect bugs in v{version}" } });
+    assert.equal(saved.status, 200);
+    assert.deepEqual(saved.body.lobbyNotice, { enabled: true, title: "Echo <Beta>", body: "Expect bugs in v{version}" });
+    const shown = (await pageFor(backend.port, "3724489")).body.emergencynotice.news.messages;
+    assert.deepEqual(shown, [{ _type: "CommonUI Simple Message Base", title: "Echo <Beta>", body: "Expect bugs in v1.8", hidden: false, spotlight: false }]);
+    assert.equal((await pageFor(backend.port, "3532353")).body.emergencynotice.news.messages[0].hidden, false);
+
+    await admin(backend, "/news", { lobbyNotice: { enabled: false, title: "Echo", body: "x" } });
+    const off = (await pageFor(backend.port, "3724489")).body.emergencynotice.news.messages;
+    assert.equal(off.length, 1);
+    assert.equal(off[0].hidden, true);
+
+    await admin(backend, "/news", { lobbyNotice: null });
+    assert.deepEqual((await pageFor(backend.port, "3724489")).body.emergencynotice.news.messages, []);
+  } finally {
+    backend.close();
+    fs.rmSync(dataDir, { recursive: true, force: true });
+  }
+});

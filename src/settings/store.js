@@ -549,6 +549,13 @@ export function createSettingsStore(dataDir) {
           image: String(loaded.battleRoyaleNews.image ?? "")
         };
       }
+      if (loaded.lobbyNotice && typeof loaded.lobbyNotice === "object") {
+        settings.lobbyNotice = {
+          enabled: loaded.lobbyNotice.enabled === true,
+          title: String(loaded.lobbyNotice.title ?? ""),
+          body: String(loaded.lobbyNotice.body ?? "")
+        };
+      }
       if (loaded.loginMessage && typeof loaded.loginMessage === "object") {
         settings.loginMessage = {
           title: String(loaded.loginMessage.title ?? ""),
@@ -612,6 +619,7 @@ export function createSettingsStore(dataDir) {
         battleRoyaleNewsEnabled: typeof settings.battleRoyaleNewsEnabled === "boolean" ? settings.battleRoyaleNewsEnabled : undefined,
         battleRoyaleNews: settings.battleRoyaleNews ? { ...settings.battleRoyaleNews } : undefined,
         loginMessage: settings.loginMessage ? { ...settings.loginMessage } : undefined,
+        lobbyNotice: settings.lobbyNotice ? { ...settings.lobbyNotice } : undefined,
         subgameSelect: settings.subgameSelect ? JSON.parse(JSON.stringify(settings.subgameSelect)) : undefined,
         itemShop: settings.itemShop ? JSON.parse(JSON.stringify(settings.itemShop)) : { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 },
         events: JSON.parse(JSON.stringify(settings.events ?? defaults.events)),
@@ -701,6 +709,15 @@ export function createSettingsStore(dataDir) {
         };
       } else if (partial.battleRoyaleNews === null) {
         delete settings.battleRoyaleNews;
+      }
+      if (partial.lobbyNotice && typeof partial.lobbyNotice === "object") {
+        settings.lobbyNotice = {
+          enabled: partial.lobbyNotice.enabled === true,
+          title: String(partial.lobbyNotice.title ?? ""),
+          body: String(partial.lobbyNotice.body ?? "")
+        };
+      } else if (partial.lobbyNotice === null) {
+        delete settings.lobbyNotice;
       }
       if (partial.loginMessage && typeof partial.loginMessage === "object") {
         settings.loginMessage = {

@@ -160,8 +160,25 @@ export function saveTheWorldNewsFor(configured, changelist) {
   };
 }
 
+// The lobby's notice box, the yellow-headed warning above the PLAY button (Core-Backend #256): the page's emergencynotice
+// section, news.messages[] of {hidden, title, body, spotlight}. Off (or never set), the section carries no message; a
+// notice turned off after being written stays in the list with hidden: true, as Epic's own page keeps a withdrawn one.
+// Every build 1.1 to 4.0 gets the same section; the later emergencynoticev2 shape belongs to builds Core doesn't support.
+export function emergencyNoticeFor(notice, changelist) {
+  const message = notice && (notice.title || notice.body)
+    ? { _type: "CommonUI Simple Message Base", ...messageOf(notice, { title: "", body: "" }, changelist), hidden: notice.enabled !== true, spotlight: false }
+    : undefined;
+  return {
+    _title: "emergencynotice",
+    news: { _type: "Battle Royale News", messages: message ? [message] : [] },
+    _activeDate: "2017-08-25T20:35:56.304Z",
+    lastModified: "2026-10-27T16:30:00.000Z",
+    _locale: "en-US"
+  };
+}
+
 export function contentPage(news = defaultBattleRoyaleNews, loginMessage = defaultLoginMessage, changelist = undefined, subgameSelect = undefined,
-  imageOrigin = undefined, saveTheWorldNews = undefined) {
+  imageOrigin = undefined, saveTheWorldNews = undefined, lobbyNotice = undefined) {
   const battleRoyaleNews = battleRoyaleNewsFor(news, changelist, imageOrigin);
   const page = {
     _title: "Fortnite Game",
@@ -169,6 +186,7 @@ export function contentPage(news = defaultBattleRoyaleNews, loginMessage = defau
     _images_: (battleRoyaleNews.news.messages ?? []).map((message) => message.image).filter(Boolean),
     battleRoyaleNews,
     subgameselectdata: subgameSelectFor(changelist, subgameSelect),
+    emergencynotice: emergencyNoticeFor(lobbyNotice, changelist),
     ...saveTheWorldNewsFor(saveTheWorldNews, changelist)
   };
   if (loginMessage) {
@@ -194,7 +212,8 @@ export function contentRoutes(context, config = {}) {
         : (config.loginMessage !== false));
     const loginMessage = loginMessageEnabled ? (settings.loginMessage ?? config.loginMessage ?? defaultLoginMessage) : null;
     const subgameSelect = settings.subgameSelect ?? config.subgameSelect;
-    res.json(contentPage(news, loginMessage, getBuild(req), subgameSelect, newsImageOrigin(req), settings.saveTheWorldNews ?? config.saveTheWorldNews));
+    res.json(contentPage(news, loginMessage, getBuild(req), subgameSelect, newsImageOrigin(req), settings.saveTheWorldNews ?? config.saveTheWorldNews,
+      settings.lobbyNotice ?? config.lobbyNotice));
   });
   router.get(`${newsImagePath}/:name`, serveNewsImage(context?.dataDir ?? config.dataDir));
 

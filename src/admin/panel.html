@@ -4776,6 +4776,28 @@
         }
       });
 
+      // The lobby notice box (#256)
+      const notice = data.lobbyNotice || { enabled: false, title: "", body: "" };
+      const noticeTitle = el("input", { class: "field", value: notice.title ?? "", placeholder: "e.g. Echo Beta", style: "width:100%" });
+      const noticeBody = el("textarea", {
+        class: "field",
+        rows: "3",
+        placeholder: "The text under the title",
+        style: "width:100%; resize:vertical; font-family:inherit; min-height:80px;"
+      });
+      noticeBody.value = notice.body ?? "";
+      const saveNotice = async (enabled, message) => {
+        const title = noticeTitle.value.trim();
+        const body = noticeBody.value.trim();
+        await act(api("/admin/api/news", { lobbyNotice: (title || body) ? { enabled, title, body } : null }), message);
+        showNews();
+      };
+      const saveNoticeBtn = btn("Save Lobby Notice", () => saveNotice(notice.enabled === true, "Lobby notice updated"), "primary");
+      const clearNoticeBtn = btn("Clear", async () => {
+        await act(api("/admin/api/news", { lobbyNotice: null }), "Lobby notice cleared");
+        showNews();
+      }, "ghost");
+
       // 3. Mode Select: Save the World
       const stwCustom = custom.subgameSelect?.saveTheWorld;
       const stwDefault = defaults.subgameSelect?.saveTheWorld || { title: "Co-op PvE", body: "Cooperative PvE storm-fighting adventure!" };
@@ -4903,6 +4925,28 @@
             el("div", { class: "actions", style: "margin-top:4px;" },
               saveBrBtn,
               resetBrBtn))),
+
+        el("section", { class: "panel", style: "margin-top:16px" },
+          el("div", { class: "panel-head" },
+            el("div", { style: "display:flex; align-items:center; gap:10px;" },
+              el("h2", { text: "Lobby Notice" }),
+              notice.enabled ? chip("Showing", "sky") : chip("Off", "warn")),
+            el("div", { style: "display:flex; align-items:center; gap:12px;" },
+              chip("emergencynotice", "sky"),
+              toggleSwitch(notice.enabled === true, async (checked) => {
+                await saveNotice(checked, checked ? "Lobby notice shown" : "Lobby notice hidden");
+              }))),
+          el("p", { class: "note", text: "The warning box above the PLAY button in the lobby (a warning icon, a title such as \"Echo Beta\", and a body). Off by default; turn it on to show it to every build. Use {version} for the client version." }),
+          el("div", { style: "display:flex; flex-direction:column; gap:12px; margin-top:14px;" },
+            el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
+              el("span", { text: "Title" }),
+              noticeTitle),
+            el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
+              el("span", { text: "Body" }),
+              noticeBody),
+            el("div", { class: "actions", style: "margin-top:4px;" },
+              saveNoticeBtn,
+              clearNoticeBtn))),
 
         el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head" },

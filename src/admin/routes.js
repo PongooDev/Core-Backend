@@ -1013,6 +1013,7 @@ export function adminRoutes(context) {
     return {
       battleRoyaleNewsEnabled,
       loginMessageEnabled,
+      lobbyNotice: current.lobbyNotice ?? context.config?.lobbyNotice ?? { enabled: false, title: "", body: "" },
       custom: {
         battleRoyaleNews: current.battleRoyaleNews ?? configNews ?? null,
         loginMessage: current.loginMessage ?? configLogin ?? null,
@@ -1937,6 +1938,16 @@ export function adminRoutes(context) {
         const image = newsImageValue(req.body.battleRoyaleNews.image, dataDir);
         if (image === null) return invalid(res, "The image must be an http:// or https:// URL, or an uploaded image");
         updates.battleRoyaleNews = (title || body || image) ? { title, body, image } : null;
+      }
+    }
+    // The lobby's notice box (#256): { enabled, title, body }; null clears it.
+    if (req.body?.lobbyNotice !== undefined) {
+      if (req.body.lobbyNotice === null) {
+        updates.lobbyNotice = null;
+      } else if (typeof req.body.lobbyNotice === "object") {
+        const title = String(req.body.lobbyNotice.title ?? "").trim();
+        const body = String(req.body.lobbyNotice.body ?? "").trim();
+        updates.lobbyNotice = (title || body) ? { enabled: req.body.lobbyNotice.enabled === true, title, body } : null;
       }
     }
     if (typeof req.body?.loginMessageEnabled === "boolean") {
