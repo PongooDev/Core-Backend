@@ -7,7 +7,7 @@ import path from "node:path";
 import { loadConfig } from "../src/config.js";
 import { listen } from "../src/listen.js";
 import { createSessionStore, sessionJson } from "../src/matchmaking/sessions.js";
-import { createNetwork, httpsProxied, isPrivate, lanAddresses, validPublicAddress } from "../src/network.js";
+import { createNetwork, httpsProxied, isPrivate, lanAddresses, requestHost, validPublicAddress, viaHttpProxy } from "../src/network.js";
 import { createServer } from "../src/server.js";
 import { get, post, startBackend } from "./helpers.js";
 
@@ -90,6 +90,24 @@ test("a request an https reverse proxy forwarded is answered with the proxy's ho
   assert.equal(createNetwork({ publicAddress: "203.0.113.7" }).reachableAddress(forwarded), "203.0.113.7");
   assert.equal(createNetwork().reachableAddress(proxied({ host: "localhost:8443", "x-forwarded-proto": "https" })), "127.0.0.1");
   assert.equal(createNetwork().reachableAddress(proxied({ host: "127.0.0.1:5595" })), "127.0.0.1");
+});
+
+test("a request the -httpproxy carried is answered with the address its connection came in on (Core-Backend #261)", () => {
+  const request = (socket, headers, extra = {}) => ({ socket: { localPort: 5595, ...socket }, headers, ...extra });
+  const local = { remoteAddress: "::ffff:127.0.0.1", localAddress: "::ffff:127.0.0.1" };
+  const tunnelled = request({ ...local, httpProxyTunnel: "api.echofn.org:443" }, { host: "api.echofn.org" });
+  const absolute = request(local, { host: "api.echofn.org" }, { viaHttpProxy: true });
+  const direct = request(local, { host: "play.example.com:40123" });
+  assert.deepEqual([viaHttpProxy(tunnelled), viaHttpProxy(absolute), viaHttpProxy(direct)], [true, true, false]);
+  assert.equal(requestHost(tunnelled), null);
+  assert.equal(requestHost(absolute), null);
+  assert.equal(requestHost(direct), "play.example.com:40123");
+  assert.equal(createNetwork().directHost(tunnelled), "127.0.0.1:5595");
+  // A friend on the internet whose -httpproxy names this PC: the public address; on its network, the address it used.
+  const friend = request({ remoteAddress: "198.51.100.20", localAddress: "192.168.1.10", httpProxyTunnel: "api.echofn.org:443" }, { host: "api.echofn.org" });
+  assert.equal(createNetwork({ publicAddress: "203.0.113.7" }).directHost(friend), "203.0.113.7:5595");
+  assert.equal(createNetwork().directHost(request({ remoteAddress: "192.168.1.30", localAddress: "192.168.1.10" }, {}, { viaHttpProxy: true })), "192.168.1.10:5595");
+  assert.equal(createNetwork().directHost(request({ remoteAddress: "fd00::30", localAddress: "fd00::10" }, {}, { viaHttpProxy: true })), "[fd00::10]:5595");
 });
 
 test("a public host name is looked up, as the client wants an IP", async () => {

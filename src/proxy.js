@@ -22,6 +22,8 @@ export async function enableProxy(server) {
     if (head.length) socket.unshift(head);
 
     const tlsSocket = new tls.TLSSocket(socket, { isServer: true, secureContext });
+    // What its requests came through (network.js viaHttpProxy): the host the game asked to reach, not this backend.
+    tlsSocket.httpProxyTunnel = req.url;
     tlsSocket.on("error", () => socket.destroy());
     server.emit("connection", tlsSocket);
   });
@@ -29,6 +31,8 @@ export async function enableProxy(server) {
 
 export function originForm(req, res, next) {
   if (!req.url.startsWith("/")) {
+    // A request the -httpproxy carried as is (network.js viaHttpProxy): its Host is the name the game asked for.
+    req.viaHttpProxy = true;
     const url = new URL(req.url);
     req.url = url.pathname + url.search;
     req.originalUrl = req.url;

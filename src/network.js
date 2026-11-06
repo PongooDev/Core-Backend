@@ -182,11 +182,21 @@ function hostHeaderAddress(req) {
   return net.isIPv4(host) && !isLoopback(host) && host !== "0.0.0.0" ? host : null;
 }
 
+// A request the game's -httpproxy carried (Core-Backend #261): in absolute form ("GET http://host/path", proxy.js
+// originForm) or through one of its CONNECT tunnels (proxy.js). Its Host is the name the game asked for (an Epic host,
+// or another backend's such as api.echofn.org), not an address of this backend: what the game reaches without HTTP
+// (the matchmaking WebSocket, libwebsockets, which neither uses the proxy nor goes through CoreRedirect, and the
+// purchase flow's browser) looks that name up itself, and "getaddrinfo failed" when the PC can't. Those are handed
+// the address the connection came in on instead (network.directHost).
+export const viaHttpProxy = (req) => req?.viaHttpProxy === true || Boolean(req?.socket?.httpProxyTunnel);
+
 // The backend's address as the client wrote it for this request: its Host header ("1.2.3.4:5595", "[::1]:5595",
 // "play.example.com:40123"), which CoreRedirect takes from the launcher's backend address, so it is one the client
 // reaches this backend at, whatever the network between (a host name, a VPN, a forwarded or tunnelled port). Null
-// without one, for one that isn't a plain host and port, and for an Epic host (a request the -httpproxy carried as is).
+// without one, for one that isn't a plain host and port, for an Epic host, and for any request the -httpproxy carried
+// (viaHttpProxy), whose Host is the name the game asked for.
 export function requestHost(req) {
+  if (viaHttpProxy(req)) return null;
   const host = String(req?.headers?.host ?? "").trim();
   if (!host || !/^(\[[0-9a-fA-F:.]+\]|[A-Za-z0-9.-]+)(:\d{1,5})?$/.test(host)) return null;
   let hostname;
@@ -292,6 +302,13 @@ export function createNetwork(config = {}) {
       }
       if (isNearby(req?.socket?.remoteAddress)) return local;
       return resolved.address ?? hostHeaderAddress(req) ?? local;
+    },
+
+    // reachableAddress and the port the connection came in on ("127.0.0.1:5595", "[2001:db8::1]:5595"): this backend as
+    // the requester's PC reaches it directly, for a request the -httpproxy carried (viaHttpProxy, Core-Backend #261).
+    directHost(req) {
+      const address = network.reachableAddress(req);
+      return `${net.isIPv6(address) ? `[${address}]` : address}:${req?.socket?.localPort}`;
     },
 
     // The address a gameserver's session is handed out with. A server registered from this PC (loopback) or this network

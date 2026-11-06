@@ -8,22 +8,27 @@ import { log } from "../../log.js";
 import { regionAllowsAddress, regionOf } from "../../matchmaking/regions.js";
 import { parseBucket, serverRegion } from "../../matchmaking/service.js";
 import { managesSession } from "../../matchmaking/sessions.js";
-import { defaultHostingIps, httpsProxied, requestAddress } from "../../network.js";
+import { defaultHostingIps, httpsProxied, requestAddress, viaHttpProxy } from "../../network.js";
 import { notRegionHost } from "./sessions.js";
 
 // Battle Royale's matchmaking tickets (src/matchmaking/service.js): a player's (MatchmakingServiceClient::ObtainTicket
 // 0x3AB6C40) and a gameserver's session's (MatchmakingServiceDedicatedServer ObtainTicket 0x3ABD0B0, sent through the
 // MCP service with the server's token). Their serviceUrl is this backend, whose WebSocket upgrades with an
 // Epic-Signed ticket are the matchmaking service's. Behind a TLS-terminating reverse proxy (X-Forwarded-Proto: https,
-// Core #197) it is wss:// on the host the client used, which the proxy hands back to this backend's WebSocket.
+// Core #197) it is wss:// on the host the client used, which the proxy hands back to this backend's WebSocket. A request
+// the game's -httpproxy carried names the host the game asked for (api.echofn.org in Core-Backend #261), which the
+// WebSocket, outside the proxy, looks up itself ("Lws(Error): getaddrinfo failed", FailedToConnectToMMS): it is ws:// on
+// the address and port the connection came in on (network.js directHost).
 const customKeyLength = { min: 4, max: 16 };
 
-export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings }) {
+export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings, network }) {
   const router = express.Router();
   const base = "/fortnite/api/game/v2/matchmakingservice/ticket";
   const serviceUrl = (req) => {
     const proxied = httpsProxied(req);
-    return proxied ? `wss://${proxied.host}` : `${req.socket.encrypted ? "wss" : "ws"}://${req.get("host")}`;
+    if (proxied) return `wss://${proxied.host}`;
+    if (viaHttpProxy(req) && network) return `ws://${network.directHost(req)}`;
+    return `${req.socket.encrypted ? "wss" : "ws"}://${req.get("host")}`;
   };
   const list = (value) => String(value ?? "").split(",").filter(Boolean);
 

@@ -35,11 +35,12 @@ import { notifyProfiles } from "../mcp/profile.js";
 // and the socket's local port) gave a remote player this PC's network address when no public address was set and the
 // backend was entered by name, 127.0.0.1 behind a tunnel on this PC, and 5595 behind a forwarded or tunnelled port of
 // another number: the browser never reached the page, and the Store sat on a black screen with a spinner
-// (Core-Backend #244). Those stay for a request without a usable Host (an Epic host the -httpproxy carried as is).
+// (Core-Backend #244). Those stay for a request without a usable Host: one the -httpproxy carried, whose Host is the
+// host the game asked for, an Epic one or another backend's (network.js viaHttpProxy, Core-Backend #261).
 export function purchaseFlowUrl(req, network) {
   const proxied = httpsProxied(req);
   if (proxied) return `https:///${proxied.host}/purchase`;
-  return `http:///${requestHost(req) ?? `${network.reachableAddress(req)}:${req.socket.localPort}`}/purchase`;
+  return `http:///${requestHost(req) ?? network.directHost(req)}/purchase`;
 }
 
 // The game config's [EpicPurchaseFlow] section, for builds with the Store tab while the packs are on.

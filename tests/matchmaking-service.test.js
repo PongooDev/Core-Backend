@@ -7,7 +7,7 @@ import os from "node:os";
 import path from "node:path";
 import { assignmentBucket, bucketKey, bucketMatches, estimatedWaitSec, formTeams, parseBucket, playlistTeamsOf, serverRegion, showsMatchStart, withRegion } from "../src/matchmaking/service.js";
 import { regionList, regionOf, servedRegions } from "../src/matchmaking/regions.js";
-import { certUserAgent, dedicatedServerToken, del, get, post, send, startBackend, userLogin } from "./helpers.js";
+import { certUserAgent, dedicatedServerToken, del, get, openTunnel, post, send, startBackend, userLogin } from "./helpers.js";
 
 // MatchmakingServiceClient's connection: a WebSocket with the ticket in its Authorization header, which the browser-style
 // WebSocket can't send. Server frames are unmasked text; client frames are masked.
@@ -319,6 +319,34 @@ test("behind an https reverse proxy a ticket's serviceUrl is wss:// on the proxy
     assert.equal(proxied.status, 200);
     assert.equal(proxied.body.serviceUrl, "wss://core.example.com");
     assert.equal((await ticketOf({ Host: "core.example.com:5595" })).body.serviceUrl, "ws://core.example.com:5595");
+  } finally {
+    backend.close();
+  }
+});
+
+test("a ticket the -httpproxy carried names the address the connection came in on, not the host the game asked for (Core-Backend #261)", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "MmsHttpProxy");
+    const path = `/fortnite/api/game/v2/matchmakingservice/ticket/player/${player.accountId}?bucketId=4013257:0:OCE:2&player.platform=Windows`;
+    const headers = (host) => ({ Host: host, "User-Agent": certUserAgent, Authorization: `bearer ${player.token}` });
+    const direct = `ws://127.0.0.1:${backend.port}`;
+
+    // https://api.echofn.org through the proxy's CONNECT tunnel: the WebSocket, outside the proxy, couldn't look it up.
+    const tunnel = await openTunnel(backend.port, "api.echofn.org");
+    const tunnelled = await send({ createConnection: () => tunnel, path, headers: headers("api.echofn.org") });
+    assert.equal(tunnelled.status, 200);
+    assert.equal(tunnelled.body.serviceUrl, direct);
+    tunnel.destroy();
+
+    // http:// in absolute form, as the proxy carries plain HTTP.
+    const absolute = await send({ host: "127.0.0.1", port: backend.port, path: `http://api.echofn.org${path}`, headers: headers("api.echofn.org") });
+    assert.equal(absolute.body.serviceUrl, direct);
+
+    // A direct request keeps its Host (CoreRedirect's backend address), and an https reverse proxy its forwarded host.
+    const ticketOf = (extra) => send({ host: "127.0.0.1", port: backend.port, path, headers: { ...headers("play.example.com:40123"), ...extra } });
+    assert.equal((await ticketOf()).body.serviceUrl, "ws://play.example.com:40123");
+    assert.equal((await ticketOf({ "X-Forwarded-Proto": "https", "X-Forwarded-Host": "core.example.com" })).body.serviceUrl, "wss://core.example.com");
   } finally {
     backend.close();
   }
