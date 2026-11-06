@@ -1,6 +1,6 @@
 import { currentBuild, inBuild } from "../builds/context.js";
 import { certBuild } from "../builds/detect.js";
-import { athenaSeason, seasonLevels } from "../gamedata/athena.js";
+import { athenaBattlePassDailyIds, athenaChallengeBundles, athenaChallengeSchedules, athenaSeason, getAthenaQuest, seasonLevels } from "../gamedata/athena.js";
 import { bannerTemplateId } from "../gamedata/banners.js";
 import { buildGameData, dataBuilds } from "../gamedata/read.js";
 import { log } from "../log.js";
@@ -66,7 +66,7 @@ export const profileSeason = (profile) => profile.stats.attributes.season_num ??
 const firstAthenaBuild = 3724489;
 export const namesAthenaBuild = () => Number(currentBuild()) >= firstAthenaBuild;
 export const seasonNeedsSwitch = (profile) => (namesAthenaBuild() && profileSeason(profile) !== seasonNumber())
-  || strayStats(profile).length > 0;
+  || strayStats(profile).length > 0 || seasonItemsOutOfPlace(profile);
 
 // The newest data build of a season, for work on a profile outside a request of its build: Season 1's is Cert's (whose
 // athena data is 1.8's, what such work always read).
@@ -114,7 +114,11 @@ export function switchSeason(session) {
   const { attributes } = profile.stats;
   const from = profileSeason(profile);
   const to = namesAthenaBuild() ? seasonNumber() : from;
-  if (from === to) return settleStrayStats(session);
+  if (from === to) {
+    settleStrayStats(session);
+    settleSeasonItems(session);
+    return;
+  }
   const kept = profile.coreSeasons ?? {};
   const previous = kept[from] ?? {};
   const aside = Object.fromEntries(seasonStats(from).map((name) => [name, attributes[name] ?? freshStats(from)[name]]));
@@ -131,7 +135,8 @@ export function switchSeason(session) {
     tracker.setStat("season_num", to);
     // The seasons before this one that were played (a record with any progress).
     const past = Object.entries(kept).map(([season, stats]) => [Number(season), stats])
-      .filter(([season, stats]) => season < to && ((stats.level ?? 1) > 1 || (stats.xp ?? 0) > 0 || stats.book_purchased))
+      .filter(([season, stats]) => season < to && ((stats.level ?? 1) > 1 || (stats.xp ?? 0) > 0 || stats.book_purchased
+        || (stats.book_level ?? 1) > 1))
       .sort(([a], [b]) => a - b)
       .map(([season, stats]) => pastSeason(season, stats, stats.numWins ?? 0));
     if (past.length || attributes.past_seasons) tracker.setStat("past_seasons", past);
@@ -142,6 +147,115 @@ export function switchSeason(session) {
   if (attributes.accountLevel !== accountLevel) tracker.setStat("accountLevel", accountLevel);
   log("Battle Royale", `${session.accountId} moved from Season ${from} to Season ${to}: season level ${taken.level}`
     + (to > firstSeason ? `, Battle Pass tier ${taken.book_level}${taken.book_purchased ? " (bought)" : ""}` : ""));
+  settleSeasonItems(session);
+}
+
+// A new season's first login retires the last season's challenges, as Epic's did: once Season 4 began (4.0, CL-4039451)
+// the athena profile held Season 4's challenge bundle schedules, bundles and their quests, and no longer Season 3's (the
+// weeklies, the tier challenges); once Season 3 began, Season 2's Battle Pass challenges (the pass's
+// Quest:athena_battlepass_questtrigger and the Battle Pass dailies it brought) went. What stays is the account's: the
+// locker, the level and XP (the season's stats are put aside as before), the daily challenges
+// (EFortQuestType::AthenaDailyQuest) and the event challenges, which no season's pass gives, tokens, and what the
+// challenges already gave (their XP, Battle Stars and cosmetics).
+//
+// A season's challenges are what its data gives (buildOfSeason): the ChallengeBundleSchedules its tier rewards name
+// (AthenaSeason3's Season3_Challenge_Schedule, _Tier_2_ and _Tier_100_; AthenaSeason4's Season4_Challenge_Schedule,
+// _StarterChallenge_ and _ProgressiveB_), the bundles those schedules hold, and the quests that come without a bundle
+// from its tier rewards and its bundles' rewards (Season 2's trigger and its pack and dailies, Season 4's hidden
+// Quest_BR_S4_Cumulative_Quest<n>). A schedule is its season's by its id, a bundle by its schedule
+// (challenge_bundle_schedule_id) or else its id, a bundle's quest by its bundle (challenge_bundle_id): Seasons 3 and 4
+// share many bundle quests (Quest_BR_Eliminate...), so a quest's id doesn't tell. A quest without a bundle whose id more
+// than one season gives stays where it is.
+//
+// Accounts are shared by every build, so retired items aren't deleted as Epic's were: they wait in
+// profile.coreSeasonItems (Core's, never sent: {<season>: {<item id>: item}}) and come back as they were, progress and
+// all, the next time a build of their season takes the profile up. Playing 3.6 after 4.0 shows Season 3's challenges
+// again and puts Season 4's aside, and 4.0 swaps them back. A player who stays on one season keeps everything.
+const typeOfTemplate = (templateId) => String(templateId).split(":")[0].toLowerCase();
+const idOfTemplate = (templateId) => String(templateId).split(":")[1]?.toLowerCase();
+
+// The seasons after Season 1 that some build's data has.
+let knownLaterSeasons;
+const laterSeasons = () => (knownLaterSeasons ??= [...new Set(dataBuilds.map((build) => buildGameData(build, "athena", {}).season?.seasonNumber)
+  .filter((season) => season > firstSeason))].sort((a, b) => a - b));
+
+// A season's challenges by its data: {schedules, bundles, quests (those that come without a bundle)}, lower-cased ids.
+const seasonChallengeCache = new Map();
+function seasonChallenges(season) {
+  if (!seasonChallengeCache.has(season)) {
+    seasonChallengeCache.set(season, inBuild(buildOfSeason(season), () => {
+      const pass = athenaSeason();
+      const found = { schedules: new Set(), bundles: new Set(), quests: new Set() };
+      if (pass?.seasonNumber !== season) return found;
+      const rewards = [...(pass.seasonRewards ?? []), ...(pass.bookFreeRewards ?? []), ...(pass.bookPaidRewards ?? [])]
+        .flatMap((entry) => entry.rewards ?? []).map(({ templateId }) => templateId);
+      const schedules = athenaChallengeSchedules() ?? {};
+      const bundles = athenaChallengeBundles() ?? {};
+      const follow = (templateIds) => {
+        for (const id of templateIds.filter((templateId) => typeOfTemplate(templateId) === "quest").map(idOfTemplate)) {
+          if (found.quests.has(id) || !getAthenaQuest(id)) continue;
+          found.quests.add(id);
+          follow((getAthenaQuest(id).rewards ?? []).map(({ templateId }) => templateId));
+        }
+      };
+      follow(rewards);
+      // The Battle Pass dailies Season 2's trigger brings (athenaBattlePassQuestInfo's pack).
+      if (found.quests.size) for (const id of athenaBattlePassDailyIds()) found.quests.add(id.toLowerCase());
+      for (const id of rewards.filter((templateId) => typeOfTemplate(templateId) === "challengebundleschedule").map(idOfTemplate)) {
+        if (!schedules[id]) continue;
+        found.schedules.add(id);
+        for (const { bundle } of schedules[id].bundles) found.bundles.add(bundle.toLowerCase());
+      }
+      for (const bundle of found.bundles) {
+        for (const { quest } of bundles[bundle]?.quests ?? []) follow((getAthenaQuest(quest)?.rewards ?? []).map(({ templateId }) => templateId));
+        follow((bundles[bundle]?.completionRewards ?? []).map(({ templateId }) => templateId));
+      }
+      return found;
+    }));
+  }
+  return seasonChallengeCache.get(season);
+}
+
+// The season an athena item's challenge belongs to, or null for one no season's pass gives (or more than one's).
+function itemSeason(profile, item, seen = new Set()) {
+  const type = typeOfTemplate(item?.templateId);
+  if (!item || !["challengebundleschedule", "challengebundle", "quest"].includes(type)) return null;
+  const linked = type === "challengebundle" ? item.attributes?.challenge_bundle_schedule_id
+    : type === "quest" ? item.attributes?.challenge_bundle_id : null;
+  if (linked && profile.items[linked] && !seen.has(linked)) return itemSeason(profile, profile.items[linked], seen.add(linked));
+  const id = idOfTemplate(item.templateId);
+  const kind = { challengebundleschedule: "schedules", challengebundle: "bundles", quest: "quests" }[type];
+  const seasons = laterSeasons().filter((season) => seasonChallenges(season)[kind].has(id));
+  return seasons.length === 1 ? seasons[0] : null;
+}
+
+// The profile's items of other seasons' challenges, as [itemId, season].
+const otherSeasonItems = (profile) => Object.entries(profile.items)
+  .map(([id, item]) => [id, itemSeason(profile, item)])
+  .filter(([, season]) => season !== null && season !== profileSeason(profile));
+const waitingItems = (profile) => profile.coreSeasonItems?.[profileSeason(profile)] ?? {};
+const seasonItemsOutOfPlace = (profile) => Object.keys(waitingItems(profile)).length > 0 || otherSeasonItems(profile).length > 0;
+
+// The other seasons' challenges go aside, and the profile's season's that were aside come back.
+function settleSeasonItems(session) {
+  const tracker = session.profile("athena");
+  const { profile } = tracker;
+  const season = profileSeason(profile);
+  const retired = {};
+  for (const [id, of] of otherSeasonItems(profile)) {
+    profile.coreSeasonItems ??= {};
+    (profile.coreSeasonItems[of] ??= {})[id] = profile.items[id];
+    retired[of] = (retired[of] ?? 0) + 1;
+    tracker.removeItem(id);
+  }
+  for (const [of, count] of Object.entries(retired)) {
+    log("Battle Royale", `${session.accountId}: Season ${of}'s ${count} challenge items are put aside in Season ${season}`);
+  }
+  const waiting = waitingItems(profile);
+  const back = Object.entries(waiting).filter(([id]) => !profile.items[id]);
+  for (const [id, item] of back) tracker.addItem(id, item);
+  if (profile.coreSeasonItems?.[season]) delete profile.coreSeasonItems[season];
+  if (back.length) log("Battle Royale", `${session.accountId}: Season ${season}'s ${back.length} challenge items are back`);
 }
 
 // A Season 1 profile's stats of later seasons go: those of one switched back before #152 (season_num 1, which hid the
@@ -288,6 +402,8 @@ export function settleSeasonPromise(session, athena) {
   if (!season || profileSeason(profile) !== season.seasonNumber) return;
   const key = String(season.seasonNumber);
   if ((profile.coreSeasonPromises ?? []).includes(key)) return;
+  // A season older than one the profile has played (3.6 after 4.0) takes no tokens: they are a later pass's promise.
+  if (Object.keys(profile.coreSeasons ?? {}).some((played) => Number(played) > season.seasonNumber)) return;
   const account = session.profile("profile0");
   const tokens = Object.entries(account.profile.items).filter(([, item]) => sameTemplate(item.templateId, nextSeasonTierBoost));
   let tiers = tokens.reduce((sum, [, item]) => sum + item.quantity, 0);

@@ -4,6 +4,7 @@ import { bannerTemplateId } from "../gamedata/banners.js";
 import { buildGameData, dataBuilds } from "../gamedata/read.js";
 import { log } from "../log.js";
 import { lockerCosmeticId, removeLockerCosmetic, seasonRewardFunctions } from "../profiles/athena.js";
+import { trackChanges } from "../profiles/changes.js";
 import { defaultBanner } from "../profiles/defaults.js";
 import { battlePassGiftBox, heldGiftBoxes } from "../profiles/giftboxes.js";
 import { findItem } from "../profiles/items.js";
@@ -29,7 +30,8 @@ import { accountLevelOf, buildOfSeason, profileSeason, settleSeasonRewards } fro
 // rewards) come back, as they would have without the pass; Battle Stars from challenges aren't kept apart, so those don't.
 // The V-Bucks the account paid Core for the season's pass, bundle and tiers (profile.coreBattlePassSpend, recorded since
 // #201) are refunded in the kinds they were paid with; a pass bought before then, or given another way, refunds nothing.
-// A season the profile has set aside (profile.coreSeasons) is reset in its record, and its past_seasons entry with it.
+// A season the profile has set aside (profile.coreSeasons) is reset in its record, and its past_seasons entry with it, and
+// its challenges set aside with it (profile.coreSeasonItems) lose what the tiers gave.
 
 const typeOf = (templateId) => String(templateId).split(":")[0].toLowerCase();
 const idOf = (templateId) => String(templateId).split(":")[1]?.toLowerCase();
@@ -118,34 +120,40 @@ export function resetBattlePass(session, season) {
       if (mtxKinds.includes(templateId.toLowerCase())) result.vbucksTaken += takeMtx(account, templateId, quantity);
     }
 
-    // Season 2's Battle Pass dailies and Season 3's challenge schedules the tiers gave.
+    // Season 2's Battle Pass dailies and Season 3's challenge schedules the tiers gave: in the profile, and in a season set
+    // aside, where its challenges wait (profile.coreSeasonItems, profiles/seasons.js).
+    const aside = current ? null : profile.coreSeasonItems?.[season];
+    const holders = [tracker, ...(aside ? [trackChanges({ items: aside })] : [])];
     const quests = new Set(rewards.filter(({ templateId }) => typeOf(templateId) === "quest").map(({ templateId }) => idOf(templateId)));
-    if (quests.size) {
-      for (const [itemId, item] of Object.entries(profile.items)) {
-        const questId = typeOf(item.templateId) === "quest" ? idOf(item.templateId) : null;
-        const daily = questId && getAthenaQuest(questId)?.type === "AthenaBattlePassQuest";
-        if (questId && (quests.has(questId) || daily)) {
-          tracker.removeItem(itemId);
-          result.challenges += 1;
-        }
-      }
-      delete profile.coreBattlePassDaily;
-    }
     const alwaysShown = (pass.challengeSchedulesAlwaysShown ?? []).map((id) => id.toLowerCase());
     const schedules = new Set(rewards.filter(({ templateId }) => typeOf(templateId) === "challengebundleschedule")
       .map(({ templateId }) => idOf(templateId)).filter((id) => !alwaysShown.includes(id)));
-    for (const [scheduleItemId, schedule] of Object.entries(profile.items)) {
-      if (typeOf(schedule.templateId) !== "challengebundleschedule" || !schedules.has(idOf(schedule.templateId))) continue;
-      for (const [bundleItemId, bundle] of Object.entries(profile.items)) {
-        if (typeOf(bundle.templateId) !== "challengebundle" || bundle.attributes.challenge_bundle_schedule_id !== scheduleItemId) continue;
-        for (const [questItemId, quest] of Object.entries(profile.items)) {
-          if (quest.attributes?.challenge_bundle_id === bundleItemId) tracker.removeItem(questItemId);
+    for (const holder of holders) {
+      const { items } = holder.profile;
+      if (quests.size) {
+        for (const [itemId, item] of Object.entries(items)) {
+          const questId = typeOf(item.templateId) === "quest" ? idOf(item.templateId) : null;
+          const daily = questId && getAthenaQuest(questId)?.type === "AthenaBattlePassQuest";
+          if (questId && (quests.has(questId) || daily)) {
+            holder.removeItem(itemId);
+            result.challenges += 1;
+          }
         }
-        tracker.removeItem(bundleItemId);
       }
-      tracker.removeItem(scheduleItemId);
-      result.challenges += 1;
+      for (const [scheduleItemId, schedule] of Object.entries(items)) {
+        if (typeOf(schedule.templateId) !== "challengebundleschedule" || !schedules.has(idOf(schedule.templateId))) continue;
+        for (const [bundleItemId, bundle] of Object.entries(items)) {
+          if (typeOf(bundle.templateId) !== "challengebundle" || bundle.attributes.challenge_bundle_schedule_id !== scheduleItemId) continue;
+          for (const [questItemId, quest] of Object.entries(items)) {
+            if (quest.attributes?.challenge_bundle_id === bundleItemId) holder.removeItem(questItemId);
+          }
+          holder.removeItem(bundleItemId);
+        }
+        holder.removeItem(scheduleItemId);
+        result.challenges += 1;
+      }
     }
+    if (quests.size) delete profile.coreBattlePassDaily;
 
     // Its unopened gift boxes, profile0's (profiles/giftboxes.js).
     for (const [itemId, item] of heldGiftBoxes(account.profile)) if (sameId(item.templateId, battlePassGiftBox)) account.removeItem(itemId);
