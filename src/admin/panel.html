@@ -3843,7 +3843,9 @@
         timing: { ...data.timing },
         bots: { ...data.bots },
         rewards: JSON.parse(JSON.stringify(data.rewards || { enabled: false, modes: {} })),
-        ltmOriginalDates: data.ltms?.originalDates === true
+        ltmOriginalDates: data.ltms?.originalDates === true,
+        // Close Encounters' original date (#258): its whole day or one hour of it.
+        ltmCloseEncounters: { ...(data.ltms?.closeEncounters || { wholeDay: true, hour: 0 }) }
       };
 
       const saveConfig = async () => {
@@ -4117,16 +4119,34 @@
           statusChip.className = `chip ${checked ? "good" : "warn"}`;
           onModeToggled();
         }, form.ltmOriginalDates, l.original ? "Original dates is on: this LTM follows its dates."
-          : "Original dates is on: Epic never ran this LTM in Seasons 1 and 2, so it stays off.");
+          : "Original dates is on: this LTM has no original dates, so it stays off.");
+        // Its windows of the season shown (#258: Seasons 3 and 4 have LTMs that ran more than once), each day or hour.
+        const fmtMoment = (d) => (d.length === 10 ? fmtDay(d) : `${fmtDay(d)} ${d.slice(11, 16)}`);
+        const windows = (l.windows || []).filter((w) => String(w.season) === String(ltmSeason));
+        const windowText = (w) => `${fmtMoment(w.start)} – ${w.end.length === 10 ? fmtDay(w.last) : fmtMoment(w.end)} on ${w.builds}`;
+        // Close Encounters ran for one hour of 25 May 2018: the whole day or a chosen hour (the replay clock's).
+        const closeEncountersControls = () => {
+          const ce = form.ltmCloseEncounters;
+          const hourSelect = el("select", { class: "field", "aria-label": "Close Encounters hour", disabled: ce.wholeDay !== false,
+            onchange: (e) => { ce.hour = Number(e.target.value); renderModeCards(); } },
+            Array.from({ length: 24 }, (_, hour) => el("option", { value: hour, selected: ce.hour === hour, text: `${String(hour).padStart(2, "0")}:00 – ${String((hour + 1) % 24).padStart(2, "0")}:00` })));
+          return el("div", { class: "actions", style: "margin-top:6px; align-items:center; gap:8px; flex-wrap:wrap;" },
+            el("span", { class: "muted", style: "font-size:12px;", text: "Whole day" }),
+            toggleSwitch(ce.wholeDay !== false, (checked) => { ce.wholeDay = checked; renderModeCards(); }),
+            hourSelect,
+            el("div", { class: "muted", style: "font-size:12px; flex-basis:100%;", text: "Off: only the hour chosen (Epic ran it for one hour). Solid Gold v2 stops for it and starts again after it." }));
+        };
         return modeCard(l.name, statusChip, [
-          el("div", { class: "mono muted", style: "font-size:12px; margin-bottom:4px;", text: `Playlist ${l.playlistId}${l.queue ? ` · AthenaEvent${l.queue}` : ""} · ${l.builds}` }),
+          el("div", { class: "mono muted", style: "font-size:12px; margin-bottom:4px;", text: `${l.playlistId === null ? "Playlist from its build's data" : `Playlist ${l.playlistId}`}${l.queue ? ` · AthenaEvent${l.queue}` : ""} · ${l.builds}` }),
           el("div", { class: "sub", style: "font-size:12px; margin-bottom:4px;", text: l.teams }),
           el("div", { class: "sub", style: "font-size:12px; margin-bottom:4px;", text: l.description }),
           ...(l.newIn ? [el("div", { class: "sub", style: "font-size:12px; margin-bottom:4px;",
             text: `${l.newIn}'s new mode: always on there, the mode its lobby opens on, under "New Mode Available!". This switch is for its other builds.` })] : []),
-          el("div", { class: "muted", style: "font-size:12px;", text: l.original
-            ? `Original dates: ${fmtDay(l.original.start)} – ${fmtDay(l.original.last)} on ${l.original.builds}`
-            : "Original dates: none. Epic never ran it in Seasons 1 and 2, so it stays off while Original dates is on." })], toggle);
+          el("div", { class: "muted", style: "font-size:12px;", text: windows.length
+            ? `Original dates: ${windows.map(windowText).join("; ")}`
+            : l.original ? `Original dates: none in Season ${ltmSeason}, so it stays off there while Original dates is on.`
+            : "Original dates: none. Epic never ran it on these builds, so it stays off while Original dates is on." }),
+          ...(l.id === "closeEncounters" ? [closeEncountersControls()] : [])], toggle);
       };
       const replayDayText = el("div", { class: "muted", style: "font-size:12px;" });
       function renderModeCards() {
@@ -4319,7 +4339,7 @@
               sectionModesChip,
               ltmModeChip)),
           el("p", { class: "note", text: "Controls whether each game mode is open for matchmaking. Toggling a mode OFF blocks players from queuing (returning errors.com.epicgames.fortnite.matchmaking_disabled) and updates the calendar matchmaking channel to reflect availability in the game lobby." }),
-          el("p", { class: "note", text: "Solo, Duos and Squads are listed for both seasons; each limited-time mode (LTM) under the season whose builds have it, and it runs only on the builds whose game data has it. By hand, turn each one on or off here. With Original dates on, each LTM runs only during the days Epic ran it, on the season replay clock (Events & Seasons), and only on the builds Epic ran it on; the LTM switches are then ignored. Speedy Storm, Take To The Skies, Lotsa Loot and Blitz are in the game data, but Epic never ran them in Seasons 1 and 2, so they have no original dates and stay off while Original dates is on." }),
+          el("p", { class: "note", text: "Solo, Duos and Squads are listed for both seasons; each limited-time mode (LTM) under the season whose builds have it, and it runs only on the builds whose game data has it. By hand, turn each one on or off here. With Original dates on, each LTM runs only during the days Epic ran it, on the season replay clock (Events & Seasons), and only on the builds Epic ran it on; the LTM switches are then ignored. An LTM with no original dates (Speedy Storm, Take To The Skies and Lotsa Loot, which Epic never ran) stays off while Original dates is on. Seasons 3 and 4's dates are in for every build, so a build Core supports later runs its LTMs on their dates; Close Encounters' card picks its whole day or one hour." }),
           el("div", { style: "display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 16px; margin-top:12px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius);" },
             el("div", {},
               el("div", { class: "font-semibold", text: "Original dates (limited-time modes)" }),

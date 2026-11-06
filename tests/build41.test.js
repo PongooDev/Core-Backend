@@ -108,7 +108,7 @@ test("4.1's new mode is the Infinity Gauntlet (Playlist_Carmine, solo); 4.0's pl
   assert.deepEqual(ltmPlaylistOverrides(v41, { matchmakingModes: { blitz: true } }), ["Playlist_Blitz_Squad", "Playlist_Carmine"]);
   assert.equal(defaultMatchmakingModes.infinityGauntlet, false);
   const entry = ltmSchedule({ matchmakingModes: {} }, now).list.find(({ id }) => id === "infinityGauntlet");
-  assert.deepEqual([entry.builds, entry.newIn, entry.original.start, entry.original.end], ["4.1", "4.1", "2018-05-08", "2018-05-15"]);
+  assert.deepEqual([entry.builds, entry.newIn, entry.original.start, entry.original.end], ["4.1", "4.1", "2018-05-08", "2018-05-17"]);
   assert.equal(inOriginalWindow("infinityGauntlet", v40, now), false);
 });
 

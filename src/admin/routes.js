@@ -1656,6 +1656,8 @@ export function adminRoutes(context) {
     }
     if (typeof req.body.customMatchFallback === "boolean") update.customMatchFallback = req.body.customMatchFallback;
     if (typeof req.body.ltmOriginalDates === "boolean") update.ltmOriginalDates = req.body.ltmOriginalDates;
+    // Close Encounters' whole day or hour (Core-Backend #258): {wholeDay, hour 0 to 23}.
+    if (req.body.ltmCloseEncounters && typeof req.body.ltmCloseEncounters === "object") update.ltmCloseEncounters = req.body.ltmCloseEncounters;
     if (req.body.timing && typeof req.body.timing === "object") {
       if (req.body.timing.gatherSeconds !== undefined) {
         const g = Number(req.body.timing.gatherSeconds);
@@ -1689,6 +1691,7 @@ export function adminRoutes(context) {
     settings.update({
       matchmakingModes: defaultMatchmakingModes,
       ltmOriginalDates: false,
+      ltmCloseEncounters: { wholeDay: true, hour: 0 },
       serverLimits: defaultServerLimits,
       matchmakingGatherSeconds: 10,
       warmupSeconds: defaultWarmupSeconds,

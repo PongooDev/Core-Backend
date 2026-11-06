@@ -96,7 +96,9 @@ const playlistTeamsFrom351 = {
   46: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
   50: { maxTeamCount: 2, maxTeamSize: 50, maxSquadSize: 4 },
   // 4.1's Infinity Gauntlet (Playlist_Carmine): solo.
-  33: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 }
+  33: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  // Playground (35, Playlist_Playground: one team of 4, 4.1's asset), the mode 4.5 ran (Core-Backend #258).
+  35: { maxTeamCount: 1, maxTeamSize: 4, maxSquadSize: 4 }
 };
 const playlistAssetTeamsBuild = 4000805;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).

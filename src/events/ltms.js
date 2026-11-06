@@ -1,4 +1,5 @@
 import { currentBuild } from "../builds/context.js";
+import { buildVersions, versionOf } from "../builds/detect.js";
 import { nextReplayOf, seasonMoment } from "../store/itemshop.js";
 
 // Battle Royale's limited-time modes of Seasons 1 and 2 (Core-Backend #190), and when they run.
@@ -201,8 +202,8 @@ const build40 = 4039451;
 // MeteorSupplyDrop and the HUD CarmineHUD; its AthenaGameData's Default.MeteorDrop.Gauntlet.* and Default.Jim.* rows are
 // the drop's and Thanos's). Its notes open on it: "Starting Tuesday, May 8th, you will be able to become Thanos in the
 // Infinity Gauntlet Limited Time Mashup ... Wield the Gauntlet, Become Thanos, Claim Victory!", so it is 4.1's new mode:
-// on there whatever its switch, and the lobby opens on it. Its original window is 8 May to 15 May 2018, the day 4.2 came
-// (🟡: the end is Core's reading of the wiki's dates). Every 4.0 playlist runs on.
+// on there whatever its switch, and the lobby opens on it. Its original window is 8 to 16 May 2018 (Core-Backend #258), on
+// 4.1 and 4.2. Every 4.0 playlist runs on.
 const build41 = 4053532;
 // Core-Backend #257 asked for 3.5.1's to 4.0's Solid Gold v2 (Squads, Solo), Sniper Shootout v2 (Solo, Duos, Squads), High
 // Explosives v2 (Squads, Solo), Blitz! (Squads, Solo, Duos), Teams of 20 and 50v50 v2. Each is a playlist asset of 3.5.1's
@@ -229,6 +230,47 @@ const build41 = 4053532;
 // The first build whose modes are FortPlaylistAthena assets turned on by PlaylistOverrides (3.5.1, above).
 export const playlistAssetBuild = build351;
 const playlistAssets = (build) => Number(build) >= playlistAssetBuild;
+
+// Seasons 3 and 4's original dates (Core-Backend #258, 90sNath's list, inclusive days of 2018), each on the builds Epic ran
+// it on and replayed on its season's clock as Seasons 1 and 2's are (seasonMoment: Season 3's replay is 22 February to 30
+// April, Season 4's 1 May to 11 July):
+// - Season 3: Solid Gold 27 February to 5 March (3.1, 3.1.1), Teams of 20 8 to 19 March (3.2, 3.3), Blitz 19 to 29 March
+//   (3.3), Sniper Shootout v2 29 March to 4 April (3.5; 3.4, which is lost, once Core has it) and 50v50 v2 19 to 30 April
+//   (3.5.1 to 3.6).
+// - Season 4: 50v50 v2 1 to 8 May (4.0, 4.1), 22 May to 11 June (4.2 to 4.4) and 27 June to 11 July (4.5); Infinity
+//   Gauntlet 8 to 16 May (4.1, 4.2); Solo Showdown 17 to 21 May (4.2); Solid Gold v2 22 to 31 May but for Close
+//   Encounters (4.2 to 4.4); Close Encounters on 25 May (4.2); Blitz v2 1 to 4 June and Sniper Shootout v3 5 to 11 June
+//   (4.4, and the lost 4.3); Teams of 20 v2 12 to 25 June (4.4, 4.4.x); High Explosives v2 22 to 25 June (4.4.x);
+//   Playground 27 June to 11 July (4.5).
+// A window's builds are changelists, or for builds Core doesn't have yet versions ("4.2", "4.4.x" for every 4.4 hotfix),
+// so a build supported later (builds/detect.js buildVersions) picks its dates up. An LTM still runs only on the builds
+// whose data has its playlist (its builds), which each build's bring-up extends once its Athena/Playlists is checked: the
+// windows of 4.2 on wait for that. 4.0's data has no Playlist_Carmine, so Infinity Gauntlet's 8 May isn't on 4.0.
+// Close Encounters ran for one hour on 25 May: the admin panel runs it the whole day or in a chosen hour of that day
+// (settings ltmCloseEncounters {wholeDay, hour}, the hour on the replay's clock), and Solid Gold v2, which it interrupted,
+// stops for it and starts again once it ends: on 26 May after a whole day, else after its hour.
+// The modes no supported build has (Solo Showdown, Close Encounters, Blitz v2, Sniper Shootout v3, Teams of 20 v2) have
+// no playlist here yet (🟡: playlistId and playlistName null until their build's data names them, so no lobby offers
+// them before that); Playground keeps 4.1's Playlist_Playground (35, one team of 4, respawns), the mode 4.5 ran.
+export const closeEncountersDay = "2018-05-25";
+// The admin panel's Close Encounters choice ({wholeDay, hour 0 to 23}): the whole day unless set otherwise.
+export function closeEncountersSetting(settingsValue) {
+  const value = settingsValue?.ltmCloseEncounters;
+  const hour = Number(value?.hour);
+  return { wholeDay: value?.wholeDay !== false, hour: Number.isInteger(hour) && hour >= 0 && hour <= 23 ? hour : 0 };
+}
+// Close Encounters' time on Epic's calendar ({start, end} in ms, UTC).
+export function closeEncountersTime(settingsValue) {
+  const { wholeDay, hour } = closeEncountersSetting(settingsValue);
+  const start = day(closeEncountersDay) + (wholeDay ? 0 : hour * 3600000);
+  return { start, end: start + (wholeDay ? 86400000 : 3600000) };
+}
+const solidGoldV2 = [
+  { builds: ["4.2", "4.2"], start: "2018-05-22", end: (settings) => closeEncountersTime(settings).start },
+  { builds: ["4.2", "4.4"], start: (settings) => closeEncountersTime(settings).end, end: "2018-06-01" }
+];
+const sniperShootoutV2 = [{ builds: ["3.4", build352], start: "2018-03-29", end: "2018-04-05" }];
+const highExplosivesV2 = [{ builds: ["4.4.1", "4.4.x"], start: "2018-06-22", end: "2018-06-26" }];
 
 export const ltms = [
   { id: "fiftyFifty", name: "50v50", playlistId: 11, eventFlag: null, builds: [build110, build25], seasons: [1, 2], defaultOn: true,
@@ -257,11 +299,11 @@ export const ltms = [
     teams: "100 Teams × 4", description: "More loot (Athena/Events/LotsaLoot loot tiers and game data); its lobby tile reads \"Luxurious Loot\"." },
   { id: "blitz", quest: "athenaevent8_playmatches", name: "Blitz", playlistId: 19, queue: 8, eventFlag: "Event8", builds: [build242, build41], seasons: [2, 3, 4],
     playlistName: "Playlist_Blitz_Squad", tag351: 8, name351: "Blitz! (Squads)",
-    original: null,
+    original: [{ builds: [build33, build33], start: "2018-03-19", end: "2018-03-30" }],
     teams: "100 Teams × 4", description: "Shorter matches: a smaller first storm circle, its own loot and resource rates (Athena/Events/Blitz tables)." },
   { id: "fiveByTwenty", quest: "athenaevent22_playmatches", name: "5x20", playlistId: 22, queue: 22, eventFlag: null, builds: [build30, build41], seasons: [3, 4], newIn: build32,
     playlistName: "Playlist_5x20", name351: "Teams of 20",
-    original: null,
+    original: [{ builds: [build32, build33], start: "2018-03-08", end: "2018-03-20" }],
     teams: "5 Teams × 20", description: "Five teams of twenty (Playlist_5x20, a large team game with its own game data)." },
   { id: "highJump", quest: "athenaevent23_playmatches", name: "High Jump", playlistId: 23, queue: 23, eventFlag: null, builds: [build30, build33], seasons: [3],
     original: null,
@@ -274,7 +316,7 @@ export const ltms = [
     teams: "100 Teams × 1", description: "Solo; the storm closes from the warmup on (Athena/Events/SteadyStorm game data)." },
   { id: "solidGold", quest: "athenaevent27_playmatches", name: "Solid Gold", playlistId: 27, queue: 27, eventFlag: null, builds: [build30, build41], seasons: [3, 4],
     playlistName: "Playlist_SolidGold_Squads", name351: "Solid Gold v2 (Squads)",
-    original: null,
+    original: [{ builds: [build31, build311], start: "2018-02-27", end: "2018-03-06" }, ...solidGoldV2],
     teams: "100 Teams × 4", description: "Its own loot tables and resource rates (Athena/Events/SolidGold tables; from 3.5.1 Athena/Playlists/SolidGold's: all weapon drops are Legendary)." },
   { id: "skySupply", quest: "athenaevent30_playmatches", name: "Sky Supply", playlistId: 30, queue: 30, eventFlag: null, builds: [build30, build41], seasons: [3, 4],
     playlistName: "Playlist_SkySupply",
@@ -297,22 +339,23 @@ export const ltms = [
   // (CoreV2 #262: its POI volumes had no brush component, fixed in CoreV2 b1c4fb9). The game runs the mode from its
   // playlist (CoreV2 #260): a bus for each team, the final circle, its storm, supply drops, loot and bleed-out.
   { id: "fiftyFiftyV2", name: "50v50 v2", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build351, build41], seasons: [3, 4], newIn: [build351, build352],
-    original: null,
+    original: [{ builds: [build351, build36], start: "2018-04-19", end: "2018-05-01" }, { builds: [build40, build41], start: "2018-05-01", end: "2018-05-09" },
+      { builds: ["4.2", "4.4"], start: "2018-05-22", end: "2018-06-12" }, { builds: ["4.5", "4.5"], start: "2018-06-27", end: "2018-07-12" }],
     teams: "2 Teams × 50", description: "Two teams of 50 players, massive forts (Playlist_50v50: its own loot, game data and resource rates)." },
   { id: "highExplosivesSolo", name: "High Explosives v2 (Solo)", playlistId: 23, playlistName: "Playlist_HighExplosives_Solo", eventFlag: null, builds: [build351, build41], seasons: [3, 4],
-    original: null,
+    original: highExplosivesV2,
     teams: "100 Teams × 1", description: "Explosive weapons everywhere! (Athena/Playlists/HighExplosives tables)." },
   { id: "highExplosivesSquads", name: "High Explosives v2 (Squads)", playlistId: 24, playlistName: "Playlist_HighExplosives_Squads", eventFlag: null, builds: [build351, build41], seasons: [3, 4],
-    original: null,
+    original: highExplosivesV2,
     teams: "100 Teams × 4", description: "Explosive weapons everywhere! (Athena/Playlists/HighExplosives tables)." },
   { id: "sniperShootoutSolo", name: "Sniper Shootout v2 (Solo)", playlistId: 39, playlistName: "Playlist_Snipers_Solo", eventFlag: null, builds: [build351, build41], seasons: [3, 4],
-    original: null,
+    original: sniperShootoutV2,
     teams: "100 Teams × 1", description: "Sniper weapons only, no down state (Athena/Playlists/Snipers tables)." },
   { id: "sniperShootoutDuos", name: "Sniper Shootout v2 (Duos)", playlistId: 40, playlistName: "Playlist_Snipers_Duos", eventFlag: null, builds: [build351, build41], seasons: [3, 4],
-    original: null,
+    original: sniperShootoutV2,
     teams: "100 Teams × 2", description: "Sniper weapons only, no down state (Athena/Playlists/Snipers tables)." },
   { id: "sniperShootoutSquads", name: "Sniper Shootout v2 (Squads)", playlistId: 41, playlistName: "Playlist_Snipers", eventFlag: null, builds: [build351, build41], seasons: [3, 4],
-    original: null,
+    original: sniperShootoutV2,
     teams: "100 Teams × 4", description: "Sniper weapons only, no down state (Athena/Playlists/Snipers tables)." },
   { id: "skySupplyDuos", name: "Sky Supply (Duos)", playlistId: 42, playlistName: "Playlist_SkySupply_Duos", eventFlag: null, builds: [build351, build41], seasons: [3, 4],
     original: null,
@@ -321,7 +364,7 @@ export const ltms = [
     original: null,
     teams: "100 Teams × 4", description: "Supply drops rain down from the sky (Athena/Playlists/SkySupply tables)." },
   { id: "solidGoldSolo", quest: "athenaevent26_playmatches", name: "Solid Gold v2 (Solo)", playlistId: 26, playlistName: "Playlist_SolidGold_Solo", eventFlag: null, builds: [build351, build41], seasons: [3, 4],
-    original: null,
+    original: solidGoldV2,
     teams: "100 Teams × 1", description: "All weapon drops are Legendary (Athena/Playlists/SolidGold tables)." },
   { id: "impactSolo", name: "Impact (Solo)", playlistId: 44, playlistName: "Playlist_Impact_Solo", eventFlag: null, builds: [build351, build41], seasons: [3, 4],
     original: null,
@@ -332,12 +375,46 @@ export const ltms = [
   { id: "impactSquads", name: "Impact (Squads)", playlistId: 46, playlistName: "Playlist_Impact_Squads", eventFlag: null, builds: [build351, build41], seasons: [3, 4],
     original: null,
     teams: "100 Teams × 4", description: "\"Blam!\" (Athena/Playlists/Impact game data)." },
-  // 4.1's new mode (above).
+  // 4.1's new mode (above), and Season 4's modes of 4.2 on (#258, above).
   { id: "infinityGauntlet", name: "Infinity Gauntlet", playlistId: 33, playlistName: "Playlist_Carmine", eventFlag: null, builds: [build41, build41], seasons: [4], newIn: build41,
-    original: { builds: [build41, build41], start: "2018-05-08", end: "2018-05-15" },
-    teams: "100 Teams × 1", description: "A meteor strike delivers the Infinity Gauntlet: use it to become Thanos; if Thanos is eliminated the Gauntlet drops (Playlist_Carmine: its own loot, game data and resource rates)." }
+    original: [{ builds: [build41, "4.2"], start: "2018-05-08", end: "2018-05-17" }],
+    teams: "100 Teams × 1", description: "A meteor strike delivers the Infinity Gauntlet: use it to become Thanos; if Thanos is eliminated the Gauntlet drops (Playlist_Carmine: its own loot, game data and resource rates)." },
+  { id: "soloShowdown", name: "Solo Showdown", playlistId: null, playlistName: null, eventFlag: null, builds: ["4.2", "4.2"], seasons: [4],
+    original: [{ builds: ["4.2", "4.2"], start: "2018-05-17", end: "2018-05-22" }],
+    teams: "100 Teams × 1", description: "Solo, scored by placement (4.2's: its playlist comes with 4.2's data)." },
+  { id: "closeEncounters", name: "Close Encounters", playlistId: null, playlistName: null, eventFlag: null, builds: ["4.2", "4.2"], seasons: [4],
+    original: [{ builds: ["4.2", "4.2"], start: (settings) => closeEncountersTime(settings).start, end: (settings) => closeEncountersTime(settings).end }],
+    teams: "100 Teams × 4", description: "Jetpacks and shotguns, for one hour on 25 May (4.2's: its playlist comes with 4.2's data)." },
+  { id: "blitzV2", name: "Blitz v2", playlistId: null, playlistName: null, eventFlag: null, builds: ["4.3", "4.4"], seasons: [4],
+    original: [{ builds: ["4.3", "4.4"], start: "2018-06-01", end: "2018-06-05" }],
+    teams: "100 Teams × 4", description: "Blitz again (4.4's: its playlist comes with 4.4's data)." },
+  { id: "sniperShootoutV3", name: "Sniper Shootout v3", playlistId: null, playlistName: null, eventFlag: null, builds: ["4.3", "4.4"], seasons: [4],
+    original: [{ builds: ["4.3", "4.4"], start: "2018-06-05", end: "2018-06-12" }],
+    teams: "100 Teams × 4", description: "Sniper Rifles only (4.4's: its playlist comes with 4.4's data)." },
+  { id: "teamsOf20V2", name: "Teams of 20 v2", playlistId: null, playlistName: null, eventFlag: null, builds: ["4.4", "4.4.x"], seasons: [4],
+    original: [{ builds: ["4.4", "4.4.x"], start: "2018-06-12", end: "2018-06-26" }],
+    teams: "5 Teams × 20", description: "Five teams of twenty again (4.4's: its playlist comes with 4.4's data)." },
+  { id: "playground", name: "Playground", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: ["4.5", "4.5"], seasons: [4],
+    original: [{ builds: ["4.5", "4.5"], start: "2018-06-27", end: "2018-07-12" }],
+    teams: "1 Team × 4", description: "A private island, respawning but in the storm (Playlist_Playground: 4.1's asset, 🟡 4.5's unchecked)." }
 ];
-const inRange = ([first, last], build) => Number(build) >= first && Number(build) <= last;
+// A build range's bounds are changelists or versions ("4.2", "4.4.x"): a version holds only once Core knows the build's.
+const versionParts = (version) => String(version).split(".").map((part) => (part === "x" ? Infinity : Number(part)));
+function compareVersions(a, b) {
+  const [left, right] = [versionParts(a), versionParts(b)];
+  for (let i = 0; i < Math.max(left.length, right.length); i++) {
+    const [x, y] = [left[i] ?? 0, right[i] ?? 0];
+    if (x !== y) return x < y ? -1 : 1;
+  }
+  return 0;
+}
+const versionOfBuild = (build) => versionOf(String(Number(build))) ?? versions[Number(build)] ?? null;
+const compareToBound = (build, bound) => {
+  if (typeof bound === "number") return Math.sign(Number(build) - bound);
+  const version = versionOfBuild(build);
+  return version === null ? NaN : compareVersions(version, bound);
+};
+const inRange = ([first, last], build) => compareToBound(build, first) >= 0 && compareToBound(build, last) <= 0;
 // The builds an LTM is new in (newIn: one changelist or a list).
 const newInBuilds = (ltm) => (ltm.newIn === undefined ? [] : [].concat(ltm.newIn));
 const isNewIn = (ltm, build) => newInBuilds(ltm).includes(Number(build));
@@ -362,16 +439,27 @@ export function eventTagOfPlaylist(playlistId, build = currentBuild()) {
 
 const seasonOf = (build) => (Number(build) >= build40 ? 4 : Number(build) >= build30 ? 3 : Number(build) >= build111 ? 2 : 1);
 const day = (date) => Date.parse(`${date}T00:00:00Z`);
+// An LTM's original windows ([] for none): {builds, start, end, season}, start and end in ms of Epic's calendar (UTC), end
+// the moment after it. A window's start or end is a day ("YYYY-MM-DD") or a function of the settings (Close Encounters'
+// hour, Solid Gold v2 around it).
+const momentOf = (value, settingsValue) => {
+  const resolved = typeof value === "function" ? value(settingsValue) : value;
+  return typeof resolved === "number" ? resolved : day(resolved);
+};
+const seasonOfBound = (bound) => (typeof bound === "number" ? seasonOf(bound) : versionParts(bound)[0]);
+const windowsOf = (ltm, settingsValue) => [].concat(ltm.original ?? []).map(({ builds, start, end }) =>
+  ({ builds, start: momentOf(start, settingsValue), end: momentOf(end, settingsValue), season: seasonOfBound(builds[0]) }));
 
 // Whether a build's data has the LTM.
 export const hasLtm = (id, build) => Boolean(byId.get(id)) && inRange(byId.get(id).builds, build);
 
 // Whether the LTM's original window holds the season's replay now, for a build Epic ran it on.
-export function inOriginalWindow(id, build, now = new Date()) {
+export function inOriginalWindow(id, build, now = new Date(), settingsValue = settingsProvider()) {
   const ltm = byId.get(id);
-  if (!ltm?.original || !inRange(ltm.original.builds, build)) return false;
+  const windows = ltm ? windowsOf(ltm, settingsValue).filter((window) => inRange(window.builds, build)) : [];
+  if (!windows.length) return false;
   const moment = seasonMoment(now, null, seasonOf(build)).getTime();
-  return moment >= day(ltm.original.start) && moment < day(ltm.original.end);
+  return windows.some(({ start, end }) => moment >= start && moment < end);
 }
 
 // The matchmaking modes in force ({solo, duo, ..., <ltm id>: boolean}): the admin's, with each LTM's by its original
@@ -379,7 +467,7 @@ export function inOriginalWindow(id, build, now = new Date()) {
 export function ltmModes(build, settingsValue, now = new Date()) {
   const modes = settingsValue?.matchmakingModes;
   if (settingsValue?.ltmOriginalDates !== true) return modes;
-  return { ...(modes ?? {}), ...Object.fromEntries(ltms.map(({ id }) => [id, inOriginalWindow(id, build, now)])) };
+  return { ...(modes ?? {}), ...Object.fromEntries(ltms.map(({ id }) => [id, inOriginalWindow(id, build, now, settingsValue)])) };
 }
 
 // The settings store's value, for work that has none at hand (the quest login).
@@ -439,21 +527,42 @@ export function ltmQuests({ running }, build = currentBuild(), now = new Date())
 export function nextLtmChange(build, settingsValue, now = new Date()) {
   if (settingsValue?.ltmOriginalDates !== true) return null;
   const season = seasonOf(build);
-  const times = ltms.filter((ltm) => ltm.original && inRange(ltm.original.builds, build))
-    .flatMap((ltm) => [ltm.original.start, ltm.original.end]).map((date) => nextReplayOf(day(date), now, null, season).getTime());
+  const times = ltms.flatMap((ltm) => windowsOf(ltm, settingsValue)).filter((window) => inRange(window.builds, build))
+    .flatMap(({ start, end }) => [start, end]).map((moment) => nextReplayOf(moment, now, null, season).getTime());
   return times.length ? new Date(Math.min(...times)) : null;
 }
 
 // The admin panel's list (its Battle Royale Game Modes, after solo, duos and squads): each LTM with its window and
 // builds, whether it is on by hand, and whether its window holds each season's replay now.
 const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build311]: "3.1.1", [build32]: "3.2", [build33]: "3.3", [build351]: "3.5.1", [build352]: "3.5.2", [build36]: "3.6", [build40]: "4.0", [build41]: "4.1" };
-const buildRange = ([first, last]) => (first === last ? versions[first] : `${versions[first]} to ${versions[last]}`);
+const boundName = (bound) => (typeof bound === "number" ? versions[bound] : bound);
+const buildRange = ([first, last]) => (first === last ? boundName(first) : `${boundName(first)} to ${boundName(last)}`);
+// A window's day or moment for the admin panel: "YYYY-MM-DD" at midnight, else the ISO time; last, its last day.
+const shownMoment = (ms) => (ms % 86400000 === 0 ? new Date(ms).toISOString().slice(0, 10) : new Date(ms).toISOString());
+const shownWindow = ({ builds, start, end, season }) => ({ builds: buildRange(builds), start: shownMoment(start), end: shownMoment(end),
+  last: new Date(end % 86400000 === 0 ? end - 86400000 : end).toISOString().slice(0, 10), season });
+// The last build Core knows in a range (a changelist; past every known one for a range of builds Core doesn't have yet).
+const lastBuildOf = (range) => (typeof range[1] === "number" ? range[1]
+  : Math.max(...Object.keys({ ...buildVersions, ...versions }).map(Number).filter((build) => inRange(range, build)), 0) || 99999999);
+// An LTM's windows for the admin panel: original, its first (null for none: off while Original dates is on); windows, all
+// of them, each with its season; inWindow, whether one of each season's holds that season's replay now.
+function originalOf(ltm, settingsValue, moments) {
+  const windows = windowsOf(ltm, settingsValue);
+  const shown = windows.map(shownWindow);
+  return {
+    original: shown[0] ? (({ season, ...first }) => first)(shown[0]) : null,
+    windows: shown,
+    inWindow: Object.fromEntries(ltm.seasons.map((season) => [season, windows.some((window) => window.season === season &&
+      moments[season] >= window.start && moments[season] < window.end)]))
+  };
+}
 export function ltmSchedule(settingsValue, now = new Date()) {
   const modes = settingsValue?.matchmakingModes ?? {};
-  const moments = { 1: seasonMoment(now, null, 1).getTime(), 2: seasonMoment(now, null, 2).getTime(), 3: seasonMoment(now, null, 3).getTime(),
-    4: seasonMoment(now, null, 4).getTime() };
+  const moments = Object.fromEntries([1, 2, 3, 4].map((season) => [season, seasonMoment(now, null, season).getTime()]));
   return {
     originalDates: settingsValue?.ltmOriginalDates === true,
+    // Close Encounters' day: the whole of it or one hour (#258).
+    closeEncounters: closeEncountersSetting(settingsValue),
     seasonMoments: Object.fromEntries(Object.entries(moments).map(([season, moment]) => [season, new Date(moment).toISOString()])),
     list: ltms.map((ltm) => ({
       id: ltm.id,
@@ -467,17 +576,13 @@ export function ltmSchedule(settingsValue, now = new Date()) {
       seasons: ltm.seasons,
       builds: buildRange(ltm.builds),
       // The last build that has it (its teams there: matchmaking/service.js playlistTeamsOf).
-      lastBuild: ltm.builds[1],
+      lastBuild: lastBuildOf(ltm.builds),
       teams: ltm.teams,
       description: ltm.description,
       enabled: ltm.defaultOn ? modes[ltm.id] !== false : modes[ltm.id] === true,
       // The builds it is new in, where it is on whatever its switch (null for none): "3.2", "3.5.1 and 3.5.2".
       newIn: newInBuilds(ltm).map((build) => versions[build]).join(" and ") || null,
-      // null for an LTM with no original window here (no window: off while Original dates is on).
-      original: ltm.original && { builds: buildRange(ltm.original.builds), start: ltm.original.start, end: ltm.original.end,
-        last: new Date(day(ltm.original.end) - 86400000).toISOString().slice(0, 10) },
-      inWindow: Object.fromEntries(ltm.seasons.map((season) => [season, Boolean(ltm.original) &&
-        moments[season] >= day(ltm.original.start) && moments[season] < day(ltm.original.end)]))
+      ...originalOf(ltm, settingsValue, moments)
     }))
   };
 }

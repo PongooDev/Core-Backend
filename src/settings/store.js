@@ -20,7 +20,17 @@ const noLimits = () => Object.fromEntries(limitModes.map((mode) => [mode, 0]));
 const playlistAssetLtms = ["fiftyFiftyV2", "highExplosivesSolo", "highExplosivesSquads", "sniperShootoutSolo", "sniperShootoutDuos",
   "sniperShootoutSquads", "skySupplyDuos", "skySupplySquads", "solidGoldSolo", "impactSolo", "impactDuos", "impactSquads",
   // 4.1's (CL-4053532) Infinity Gauntlet, its new mode, on there whatever its switch.
-  "infinityGauntlet"];
+  "infinityGauntlet",
+  // Season 4's modes of 4.2 on (Core-Backend #258), for when Core has those builds.
+  "soloShowdown", "closeEncounters", "blitzV2", "sniperShootoutV3", "teamsOf20V2", "playground"];
+// Close Encounters' original date (Core-Backend #258, events/ltms.js): the whole of 25 May 2018, or one hour of it (0 to 23,
+// on the season replay's clock), as Epic ran it.
+export function closeEncountersValue(input, current = { wholeDay: true, hour: 0 }) {
+  if (!input || typeof input !== "object" || Array.isArray(input)) return { ...current };
+  const hour = Number(input.hour);
+  return { wholeDay: typeof input.wholeDay === "boolean" ? input.wholeDay : current.wholeDay !== false,
+    hour: Number.isInteger(hour) && hour >= 0 && hour <= 23 ? hour : current.hour ?? 0 };
+}
 
 // Every Battle Royale season's start, unset. Each season Core knows has one (builds/detect.js): a season left out was never
 // kept, so a season anchored to its first served day (Season 4 on 4.0, until this) started again on every day it was
@@ -165,6 +175,8 @@ const defaults = {
   // The LTMs' original dates (Core-Backend #190, events/ltms.js): on, each runs only in its original window on the
   // season's replay and on the builds Epic ran it on, whatever matchmakingModes says of it.
   ltmOriginalDates: false,
+  // Close Encounters with Original dates on (Core-Backend #258): its whole day, or the hour of it chosen.
+  ltmCloseEncounters: { wholeDay: true, hour: 0 },
   // Season 3's weekly challenges all at once (Core-Backend #207, profiles/challenges.js), not a week at a time on the
   // season's replay.
   challengesAllUnlocked: false,
@@ -513,6 +525,7 @@ export function createSettingsStore(dataDir) {
       if (typeof loaded.defaultFoundersAccess === "boolean") settings.defaultFoundersAccess = loaded.defaultFoundersAccess;
       if (typeof loaded.remoteAdmin === "boolean") settings.remoteAdmin = loaded.remoteAdmin;
       if (typeof loaded.ltmOriginalDates !== "boolean") settings.ltmOriginalDates = defaults.ltmOriginalDates;
+      settings.ltmCloseEncounters = closeEncountersValue(loaded.ltmCloseEncounters, defaults.ltmCloseEncounters);
       if (typeof loaded.challengesAllUnlocked !== "boolean") settings.challengesAllUnlocked = defaults.challengesAllUnlocked;
       settings.challengeUnlock = challengeUnlockValue(loaded.challengeUnlock, {});
       if (loaded.matchmakingModes && typeof loaded.matchmakingModes === "object") {
@@ -688,6 +701,7 @@ export function createSettingsStore(dataDir) {
       if (typeof partial.lateJoin === "boolean") settings.lateJoin = partial.lateJoin;
       if (partial.bots !== undefined) settings.bots = botsValue(partial.bots, settings.bots);
       if (typeof partial.ltmOriginalDates === "boolean") settings.ltmOriginalDates = partial.ltmOriginalDates;
+      if (partial.ltmCloseEncounters !== undefined) settings.ltmCloseEncounters = closeEncountersValue(partial.ltmCloseEncounters, settings.ltmCloseEncounters);
       if (typeof partial.challengesAllUnlocked === "boolean") settings.challengesAllUnlocked = partial.challengesAllUnlocked;
       settings.challengeUnlock = challengeUnlockValue(partial.challengeUnlock, settings.challengeUnlock ?? {});
       if (typeof partial.regionFallback === "boolean") settings.regionFallback = partial.regionFallback;

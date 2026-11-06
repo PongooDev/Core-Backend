@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { athenaPlaylistOfQueue, eventQueueOfPlaylist, hasLtm, inOriginalWindow, ltmEventFlags, ltmForcedQueues, ltmModes, ltmNewMode, ltmOn, ltmQuests, ltms,
   ltmSchedule } from "../src/events/ltms.js";
 import { playlistTeamsOf } from "../src/matchmaking/service.js";
+import { configureEvents } from "../src/events/events.js";
 import { dedicatedServerToken, post, send, startBackend, userLogin } from "./helpers.js";
 
 // Core-Backend #190: the limited-time modes and their original dates (events/ltms.js).
@@ -128,7 +129,8 @@ test("Speedy Storm, Take To The Skies, Lotsa Loot and Blitz: their builds, squad
       assert.equal(ltmOn(id, v25, { ltmOriginalDates: true, matchmakingModes: { [id]: true } }, at(day)), false, `${id} ${day}`);
     }
     const listed = ltmSchedule({ matchmakingModes: { [id]: true } }, at("2018-01-30")).list.find((ltm) => ltm.id === id);
-    assert.equal(listed.original, null, id);
+    // Blitz has Season 3's dates (#258: 19 to 29 March 2018, on 3.3), the others none.
+    assert.deepEqual(listed.original, id === "blitz" ? { builds: "3.3", start: "2018-03-19", end: "2018-03-30", last: "2018-03-29" } : null, id);
     assert.deepEqual(listed.inWindow, { 2: false, 3: false, ...(id === "blitz" ? { 4: false } : {}) }, id);
     assert.equal(listed.enabled, true, id);
   }
@@ -162,7 +164,10 @@ test("3.0's LTMs are its playlist classes: no 50v50 or Shooting Test, duo Skies,
     // Teams of 20, Solid Gold and Sky Supply have 3.5.1 playlists too (Playlist_5x20, _SolidGold_Squads, _SkySupply), which
     // 4.0 keeps.
     const onTo40 = ["fiveByTwenty", "solidGold", "skySupply"].includes(id);
-    assert.deepEqual([listed.seasons, listed.builds, listed.original], [onTo40 ? [3, 4] : [3], onTo40 ? "3.0 to 4.1" : "3.0 to 3.3", null], id);
+    // Teams of 20 and Solid Gold have Season 3's dates (#258), the others none.
+    const firstWindow = { fiveByTwenty: { builds: "3.2 to 3.3", start: "2018-03-08", end: "2018-03-20", last: "2018-03-19" },
+      solidGold: { builds: "3.1 to 3.1.1", start: "2018-02-27", end: "2018-03-06", last: "2018-03-05" } }[id] ?? null;
+    assert.deepEqual([listed.seasons, listed.builds, listed.original], [onTo40 ? [3, 4] : [3], onTo40 ? "3.0 to 4.1" : "3.0 to 3.3", firstWindow], id);
   }
 });
 
@@ -294,6 +299,142 @@ test("Teams of 20 is 3.2's new mode: on there whatever its switch, by hand on 3.
     assert.equal((await ticket(v32, backend.port, player, 22)).status, 200);
     assert.equal((await ticket(v31, backend.port, player, 22)).status, 400);
     assert.equal((await ticket(v33, backend.port, player, 22)).status, 400, "by hand again on 3.3");
+  } finally {
+    backend.close();
+  }
+});
+
+// Core-Backend #258: Seasons 3 and 4's original dates, replayed on each season's clock (22 February and 1 May 2018 are
+// their replays' first days), on the builds Epic ran each on and only where the build's data has its playlist.
+const v311 = "3917250";
+const v352 = "4008490";
+const v36 = "4019403";
+const v40 = "4039451";
+const v41 = "4053532";
+// Seasons 2 to 4's replays from their own first days, so each test day is that day of Epic's season (a backend started
+// before anchors them to the day it first served them).
+function onSeasonReplays(fn) {
+  configureEvents({ mode: "auto", seasonStarts: { 2: "2017-12-14", 3: "2018-02-22", 4: "2018-05-01" } });
+  try {
+    fn();
+  } finally {
+    configureEvents(null);
+  }
+}
+test("Season 3's LTMs run on their original dates and builds (#258)", () => {
+  onSeasonReplays(() => {
+    const dated = { ltmOriginalDates: true, matchmakingModes: {} };
+    // Solid Gold: 27 February to 5 March, 3.1 and 3.1.1.
+    assert.equal(inOriginalWindow("solidGold", v31, at("2018-02-27"), dated), true);
+    assert.equal(inOriginalWindow("solidGold", v311, at("2018-03-05"), dated), true);
+    assert.equal(inOriginalWindow("solidGold", v31, at("2018-03-06"), dated), false);
+    assert.equal(inOriginalWindow("solidGold", v30, at("2018-03-01"), dated), false);
+    // Teams of 20: 8 to 19 March, 3.2 and 3.3; Blitz from 19 March, 3.3.
+    assert.equal(inOriginalWindow("fiveByTwenty", v33, at("2018-03-19"), dated), true);
+    assert.equal(inOriginalWindow("fiveByTwenty", v33, at("2018-03-20"), dated), false);
+    assert.equal(inOriginalWindow("blitz", v33, at("2018-03-19"), dated), true);
+    assert.equal(inOriginalWindow("blitz", v33, at("2018-03-29"), dated), true);
+    assert.equal(inOriginalWindow("blitz", v33, at("2018-03-30"), dated), false);
+    assert.equal(inOriginalWindow("blitz", v32, at("2018-03-20"), dated), false);
+    assert.equal(ltmOn("blitz", v33, dated, at("2018-03-22")), true);
+    assert.equal(ltmOn("blitz", v33, dated, at("2018-03-10")), false);
+    // Sniper Shootout v2: 29 March to 4 April on 3.5 (all three playlists); 3.6 came after.
+    for (const id of ["sniperShootoutSolo", "sniperShootoutDuos", "sniperShootoutSquads"]) {
+      assert.equal(ltmOn(id, v351, dated, at("2018-04-01")), true, id);
+      assert.equal(ltmOn(id, v352, dated, at("2018-04-04")), true, id);
+      assert.equal(ltmOn(id, v351, dated, at("2018-04-05")), false, id);
+      assert.equal(ltmOn(id, v36, dated, at("2018-04-01")), false, id);
+    }
+    // 50v50 v2: 19 to 30 April, 3.5.1 to 3.6 (on 3.5.1 and 3.5.2 it is always on, their new mode).
+    assert.equal(ltmOn("fiftyFiftyV2", v36, dated, at("2018-04-19")), true);
+    assert.equal(ltmOn("fiftyFiftyV2", v36, dated, at("2018-04-30")), true);
+    assert.equal(ltmOn("fiftyFiftyV2", v36, dated, at("2018-04-18")), false);
+    // The existing seasons' dates hold.
+    assert.equal(inOriginalWindow("sniperShootout", v23, at("2018-01-29"), dated), true);
+    const schedule = ltmSchedule(dated, at("2018-03-22"));
+    assert.deepEqual(schedule.list.find((ltm) => ltm.id === "blitz").inWindow, { 2: false, 3: true, 4: false });
+  });
+});
+
+test("Season 4's LTMs run on their original dates, only on builds with their playlist (#258)", () => {
+  onSeasonReplays(() => {
+    const dated = { ltmOriginalDates: true, matchmakingModes: {} };
+    // 50v50 v2: 1 to 8 May on 4.0 and 4.1.
+    assert.equal(inOriginalWindow("fiftyFiftyV2", v40, at("2018-05-01"), dated), true);
+    assert.equal(inOriginalWindow("fiftyFiftyV2", v41, at("2018-05-08"), dated), true);
+    assert.equal(inOriginalWindow("fiftyFiftyV2", v40, at("2018-05-09"), dated), false);
+    assert.equal(ltmOn("fiftyFiftyV2", v40, dated, at("2018-05-03")), true);
+    assert.equal(ltmOn("fiftyFiftyV2", v40, dated, at("2018-05-12")), false);
+    // Infinity Gauntlet: 8 to 16 May, its playlist (Playlist_Carmine, 33) 4.1's: 4.0's data has none.
+    assert.equal(hasLtm("infinityGauntlet", v40), false);
+    assert.equal(hasLtm("infinityGauntlet", v41), true);
+    assert.equal(inOriginalWindow("infinityGauntlet", v41, at("2018-05-08"), dated), true);
+    assert.equal(inOriginalWindow("infinityGauntlet", v41, at("2018-05-16"), dated), true);
+    assert.equal(inOriginalWindow("infinityGauntlet", v41, at("2018-05-17"), dated), false);
+    assert.equal(inOriginalWindow("infinityGauntlet", v40, at("2018-05-10"), dated), false);
+    assert.equal(ltmOn("infinityGauntlet", v40, dated, at("2018-05-10")), false);
+    assert.deepEqual(playlistTeamsOf(`${v41}:0:NA:33`, v41), { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 });
+    // The modes of 4.2 on (Solo Showdown, Close Encounters, Blitz v2, Sniper Shootout v3, Teams of 20 v2, Playground) wait
+    // for their builds: no supported build has them, on their dates or by hand.
+    for (const [id, date] of [["soloShowdown", "2018-05-18"], ["closeEncounters", "2018-05-25"], ["blitzV2", "2018-06-02"],
+      ["sniperShootoutV3", "2018-06-06"], ["teamsOf20V2", "2018-06-13"], ["playground", "2018-06-28"]]) {
+      for (const build of [v40, v41]) {
+        assert.equal(hasLtm(id, build), false, `${id} ${build}`);
+        assert.equal(ltmOn(id, build, dated, at(date)), false, `${id} ${build}`);
+        assert.equal(ltmOn(id, build, { matchmakingModes: { [id]: true } }), false, `${id} ${build}`);
+      }
+    }
+    // Solid Gold v2's 4.2 to 4.4 window and High Explosives v2's 4.4.x one aren't on 4.0 and 4.1.
+    assert.equal(ltmOn("solidGoldSolo", v40, dated, at("2018-05-23")), false);
+    assert.equal(ltmOn("highExplosivesSolo", v41, dated, at("2018-06-23")), false);
+    // Each is listed with its windows under Season 4.
+    const list = ltmSchedule(dated, at("2018-05-10")).list;
+    const of = (id) => list.find((ltm) => ltm.id === id);
+    assert.deepEqual(of("infinityGauntlet").windows, [{ builds: "4.1 to 4.2", start: "2018-05-08", end: "2018-05-17", last: "2018-05-16", season: 4 }]);
+    assert.equal(of("infinityGauntlet").inWindow[4], true);
+    assert.deepEqual(of("fiftyFiftyV2").windows.map((window) => [window.builds, window.start, window.last, window.season]), [
+      ["3.5.1 to 3.6", "2018-04-19", "2018-04-30", 3], ["4.0 to 4.1", "2018-05-01", "2018-05-08", 4],
+      ["4.2 to 4.4", "2018-05-22", "2018-06-11", 4], ["4.5", "2018-06-27", "2018-07-11", 4]]);
+    assert.equal(of("teamsOf20V2").windows[0].builds, "4.4 to 4.4.x");
+    assert.equal(of("playground").windows[0].builds, "4.5");
+    assert.equal(of("soloShowdown").playlistId, null);
+  });
+});
+
+test("Close Encounters runs its whole day or a chosen hour, and Solid Gold v2 stops for it (#258)", () => {
+  onSeasonReplays(() => {
+    const wholeDay = { ltmOriginalDates: true, ltmCloseEncounters: { wholeDay: true, hour: 15 } };
+    const hour = { ltmOriginalDates: true, ltmCloseEncounters: { wholeDay: false, hour: 15 } };
+    const list = (settings) => ltmSchedule(settings, at("2018-05-25")).list;
+    const windows = (settings, id) => list(settings).find((ltm) => ltm.id === id).windows.map(({ start, end }) => [start, end]);
+    // The whole day: 25 May, Solid Gold v2 to 24 May and again from 26 May.
+    assert.deepEqual(windows(wholeDay, "closeEncounters"), [["2018-05-25", "2018-05-26"]]);
+    assert.deepEqual(windows(wholeDay, "solidGold").slice(1), [["2018-05-22", "2018-05-25"], ["2018-05-26", "2018-06-01"]]);
+    assert.deepEqual(windows(wholeDay, "solidGoldSolo"), [["2018-05-22", "2018-05-25"], ["2018-05-26", "2018-06-01"]]);
+    // One hour, 15:00 to 16:00: Solid Gold v2 to 15:00 and again from 16:00.
+    assert.deepEqual(windows(hour, "closeEncounters"), [["2018-05-25T15:00:00.000Z", "2018-05-25T16:00:00.000Z"]]);
+    assert.deepEqual(windows(hour, "solidGoldSolo"), [["2018-05-22", "2018-05-25T15:00:00.000Z"], ["2018-05-25T16:00:00.000Z", "2018-06-01"]]);
+    // Unset, it is the whole day; a bad hour is 0.
+    assert.equal(list({}).find((ltm) => ltm.id === "closeEncounters").windows[0].start, "2018-05-25");
+    assert.deepEqual(ltmSchedule({ ltmCloseEncounters: { wholeDay: false, hour: 99 } }).closeEncounters, { wholeDay: false, hour: 0 });
+    assert.deepEqual(ltmSchedule(hour).closeEncounters, { wholeDay: false, hour: 15 });
+  });
+});
+
+test("the admin panel keeps the Close Encounters choice (#258)", async () => {
+  const backend = await startBackend();
+  try {
+    const before = (await post(backend.port, "/admin/api/matchmaking/config", undefined, {})).body;
+    assert.deepEqual(before.ltms.closeEncounters, { wholeDay: true, hour: 0 });
+    const saved = (await post(backend.port, "/admin/api/matchmaking/config", undefined, { ltmCloseEncounters: { wholeDay: false, hour: 20 } })).body;
+    assert.deepEqual(saved.ltms.closeEncounters, { wholeDay: false, hour: 20 });
+    const ce = saved.ltms.list.find((ltm) => ltm.id === "closeEncounters");
+    assert.deepEqual([ce.windows[0].start, ce.windows[0].end], ["2018-05-25T20:00:00.000Z", "2018-05-25T21:00:00.000Z"]);
+    // A bad hour keeps the one saved.
+    const kept = (await post(backend.port, "/admin/api/matchmaking/config", undefined, { ltmCloseEncounters: { hour: 30 } })).body;
+    assert.deepEqual(kept.ltms.closeEncounters, { wholeDay: false, hour: 20 });
+    const reset = (await post(backend.port, "/admin/api/matchmaking/actions/reset-defaults", undefined, {})).body;
+    assert.deepEqual(reset.ltms.closeEncounters, { wholeDay: true, hour: 0 });
   } finally {
     backend.close();
   }
