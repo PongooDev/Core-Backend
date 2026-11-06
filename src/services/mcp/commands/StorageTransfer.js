@@ -20,6 +20,10 @@ import { unslot } from "./DisassembleWorldItems.js";
 // - Both capacities hold (profiles/vault.js): storage's item count against StorageInventorySizeBonus, the backpack's
 //   limited stacks against its limit and 512 stacks in all. A transfer that would take either past its limit, and
 //   further than it already was, is refused whole.
+// From 3.5 (CL-4000805; 3.6, 4.0, 4.1 and 4.2 the same) the command takes one list instead,
+// {transferOperations: [{itemId, quantity, toStorage, newItemIdHint}]} (FItemTransferOperation): toStorage says the
+// direction, and newItemIdHint names the item the part of a stack becomes. Both forms are read, so every build's
+// request moves its items (#276: 3.5+ sent only transferOperations and got "No items to transfer").
 // 🟡 Epic's service isn't in the client: the merging, the ids and the refusal (Core's error code) are Core's.
 const invalid = (message) => {
   throw new McpError("errors.com.epicgames.validation.validation_failed", message);
@@ -39,7 +43,8 @@ const stableJson = (value) => (value && typeof value === "object" && !Array.isAr
   : JSON.stringify(value));
 
 // The pairs of one direction, checked against the profile they leave: [[itemId, quantity]].
-function takings(profile, pairs, name) {
+// A pair's newItemIdHint goes into hints, by the item it leaves.
+function takings(profile, pairs, name, hints) {
   if (pairs === undefined || pairs === null) return [];
   if (!Array.isArray(pairs)) invalid(`${name} isn't a list`);
   const taking = new Map();
@@ -51,6 +56,7 @@ function takings(profile, pairs, name) {
     const total = (taking.get(itemId) ?? 0) + quantity;
     if (total > profile.items[itemId].quantity) invalid(`Can't transfer ${total} of ${pair.itemId}, the stack holds ${profile.items[itemId].quantity}`);
     taking.set(itemId, total);
+    if (typeof pair.newItemIdHint === "string" && pair.newItemIdHint && !hints.has(itemId)) hints.set(itemId, pair.newItemIdHint);
   }
   return [...taking];
 }
@@ -77,7 +83,7 @@ function deposit(tracker, { templateId, attributes }, quantity, keepId) {
   }
 }
 
-function move(from, to, taking) {
+function move(from, to, taking, hints) {
   const emptied = [];
   for (const [itemId, quantity] of taking) {
     const item = from.profile.items[itemId];
@@ -87,7 +93,7 @@ function move(from, to, taking) {
       from.removeItem(itemId);
       emptied.push(itemId);
     } else from.setQuantity(itemId, item.quantity - quantity);
-    deposit(to, { templateId: item.templateId, attributes }, quantity, whole ? itemId : undefined);
+    deposit(to, { templateId: item.templateId, attributes }, quantity, whole ? itemId : hints.get(itemId));
   }
   return emptied;
 }
@@ -97,8 +103,17 @@ export function storageTransfer({ req, session, profileId }) {
   if (!kind) throw new McpError("errors.com.epicgames.modules.profiles.invalid_command", "StorageTransfer is a theater or outpost profile command");
   const theater = session.profile(`theater${index}`);
   const outpost = session.profile(`outpost${index}`);
-  const toStorage = takings(theater.profile, req.body?.theaterToOutpostItems, "theaterToOutpostItems");
-  const toBackpack = takings(outpost.profile, req.body?.outpostToTheaterItems, "outpostToTheaterItems");
+  const body = req.body ?? {};
+  let toStoragePairs = body.theaterToOutpostItems;
+  let toBackpackPairs = body.outpostToTheaterItems;
+  if (body.transferOperations !== undefined && body.transferOperations !== null) {
+    if (!Array.isArray(body.transferOperations)) invalid("transferOperations isn't a list");
+    toStoragePairs = [...(toStoragePairs ?? []), ...body.transferOperations.filter((operation) => operation?.toStorage === true)];
+    toBackpackPairs = [...(toBackpackPairs ?? []), ...body.transferOperations.filter((operation) => operation?.toStorage !== true)];
+  }
+  const hints = new Map();
+  const toStorage = takings(theater.profile, toStoragePairs, "theaterToOutpostItems", hints);
+  const toBackpack = takings(outpost.profile, toBackpackPairs, "outpostToTheaterItems", hints);
   if (!toStorage.length && !toBackpack.length) invalid("No items to transfer");
 
   const account = session.profile("profile0").profile;
@@ -106,8 +121,8 @@ export function storageTransfer({ req, session, profileId }) {
   const backpackBefore = backpackState(theater.profile, account);
 
   // What leaves each profile goes first, so a swap can use the room it makes.
-  const emptied = move(theater, outpost, toStorage);
-  move(outpost, theater, toBackpack);
+  const emptied = move(theater, outpost, toStorage, hints);
+  move(outpost, theater, toBackpack, hints);
   unslot(theater, emptied);
 
   const storage = storageState(outpost.profile, account);

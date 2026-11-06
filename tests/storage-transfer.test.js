@@ -6,6 +6,7 @@ import { get, post, send, startBackend, userLogin } from "./helpers.js";
 const v111 = "3807424";
 const v21 = "3825894";
 const v22 = "3841827";
+const v42 = "4072250";
 const rifle = "Weapon:wid_assault_auto_sr_ore_t01";
 const spikes = "Trap:tid_floor_spikes_r_t01";
 const storageNodes = ["T1_Main_1B6486FC0", "T1_Main_849930D55"];
@@ -116,6 +117,46 @@ test("StorageTransfer moves backpack items into the storm shield's storage and b
     // It is a world profile command.
     const wrong = await as(v111, backend, player, "StorageTransfer", "profile0", { theaterToOutpostItems: [{ itemId: rifles[0], quantity: 1 }] });
     assert.equal(wrong.body.errorCode, "errors.com.epicgames.modules.profiles.invalid_command");
+  } finally {
+    backend.close();
+  }
+});
+
+// 3.5+ (4.2 here) send one list, transferOperations [{itemId, quantity, toStorage, newItemIdHint}] (#276).
+test("StorageTransfer reads 3.5+'s transferOperations in both directions, and names the split part by newItemIdHint", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "StorageOps");
+    await admin(backend, `/accounts/${player.accountId}/skip-tutorial`, {});
+    for (const node of storageNodes) await admin(backend, `/accounts/${player.accountId}/grant`, { templateId: `HomebaseNode:${node.toLowerCase()}`, quantity: 1 });
+    await admin(backend, `/accounts/${player.accountId}/grant`, { templateId: rifle, quantity: 1 });
+    await admin(backend, `/accounts/${player.accountId}/grant`, { templateId: spikes, quantity: 20 });
+    const backpack = await items(backend, player, "theater0");
+    const [[rifleId]] = ofTemplate(backpack, rifle);
+    const [[spikesId]] = ofTemplate(backpack, spikes);
+    const transfer = (body) => as(v42, backend, player, "StorageTransfer", "theater0", body);
+    const hint = "0123456789abcdef0123456789abcdef";
+
+    let response = await transfer({ transferOperations: [
+      { itemId: spikesId, quantity: 5, toStorage: true, newItemIdHint: hint },
+      { itemId: rifleId, quantity: 1, toStorage: true, newItemIdHint: "" }
+    ] });
+    assert.equal(response.status, 200, JSON.stringify(response.body));
+    assert.equal(response.body.profileChanges[0].profile.items[spikesId].quantity, 15);
+    assert.equal(response.body.profileChanges[0].profile.items[rifleId], undefined);
+    let storage = await items(backend, player, "outpost0");
+    assert.equal(storage[hint].quantity, 5);
+    assert.equal(storage[rifleId].templateId, rifle);
+
+    // Back to the backpack: toStorage false.
+    response = await transfer({ transferOperations: [{ itemId: rifleId, quantity: 1, toStorage: false, newItemIdHint: "" }] });
+    assert.equal(response.status, 200);
+    assert.equal(response.body.profileChanges[0].profile.items[rifleId].templateId, rifle);
+    storage = await items(backend, player, "outpost0");
+    assert.equal(storage[rifleId], undefined);
+
+    response = await transfer({ transferOperations: [] });
+    assert.equal(response.body.errorCode, "errors.com.epicgames.validation.validation_failed");
   } finally {
     backend.close();
   }
