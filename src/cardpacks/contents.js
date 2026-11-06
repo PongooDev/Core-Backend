@@ -105,6 +105,27 @@ function zoneReward(group, templateId, info) {
   return [];
 }
 
+// Item caches (4.0, CoreV2 #290): the card packs a Save the World item cache opens into (UFortItemCacheItemDefinition
+// CardPackReward), granted by EndPrimaryMission for the caches a player picked up (profiles/itemcaches.js).
+// CacheRoll_Schematics_R/VR/SR (Rare, Epic and Legendary Schematic Cache) hold one schematic of their rarity.
+// CacheRoll_Materials (CardPack_Cache_Materials_T01-T04, "Evolution Materials Cache", "A cache stuffed with Upgrade and
+// Evolution resources!") is rolled on Epic's servers and its table doesn't ship, so its contents are Core's (🟡): the
+// pack's tier of evolution material (Pure Drop of Rain at T01 to Storm Shard at T04, reagent_c_t01-t04), 2 of them, and
+// hero, survivor and schematic XP as a zone reward pack of that level gives.
+export const cacheMaterialsCount = 2;
+
+function itemCache(group, templateId) {
+  const resource = (id, quantity) => (hasItem(id) ? [{ templateId: id, quantity }] : []);
+  const schematics = /^cacheroll_schematics_(r|vr|sr)$/.exec(group);
+  if (schematics) return one("schematic", null, schematics[1]);
+  if (group !== "cacheroll_materials") return [];
+  const tier = Math.min(Math.max(Number(/_t0?(\d+)$/.exec(templateId.toLowerCase())?.[1] ?? 1), 1), 4);
+  return [
+    ...resource(`AccountResource:reagent_c_t0${tier}`, cacheMaterialsCount),
+    ...["heroxp", "personnelxp", "schematicxp"].flatMap((xp) => resource(`AccountResource:${xp}`, xpByLevel[tier]))
+  ];
+}
+
 // "Rescued Survivor" (ZCP_Rescued[_Tnn], the survivor badges' BadgeCardPackReward, tier = the zone's loot level): People,
 // "Survivors who have decided to join your Homebase", the cost of transforms and expeditions. Core's amount (🟡, the
 // group's contents are server data): the pack's tier + 1, so 1 untiered, 2 at T01, 21 at T20.
@@ -253,6 +274,7 @@ export function rollContents(templateId) {
   if (name.startsWith("cardpack_gold")) return llama(llamas.cardpack_gold);
   if (group.startsWith("cardpack_bronze") || group.startsWith("cardpack_event")) return llama(llamas.cardpack_bronze);
   if (group.startsWith("zcp_")) return zoneReward(group, templateId, withRarity);
+  if (group.startsWith("cacheroll_")) return itemCache(group, templateId);
   if (group.startsWith("cardpack_founders_")) return founders(group);
 
   let match = group.match(/^cardpack_generic_(defender)(assault|pistol|melee|sniper|shotgun)_(c|uc|r|vr|sr)$/);

@@ -190,6 +190,13 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         if (itemRewards.Count > 0) badge["itemRewards"] = itemRewards;
     }
 
+    // Item caches (4.0's UFortItemCacheItemDefinition, a world item: Cache_EvolveTier_VR_Pickup_T01-T04,
+    // Cache_Schematic_R/VR/SR_Pickup): the card pack a picked-up cache opens into (CardPackReward). The gameserver reports
+    // the caches a player picked up in EndPrimaryMission's earnedItemCaches.
+    if (export.ExportType == "FortItemCacheItemDefinition"
+        && properties?["CardPackReward"] is { } cacheReward && AssetPath(cacheReward) is { Length: > 0 } cachePackPath and not "None")
+        ((SortedDictionary<string, object>)items[templateId])["cardPackReward"] = assetTypes.TemplateId(ObjectPath(cachePackPath));
+
     // Account items level up and are recycled and evolved (UFortAccountItemDefinition): the XPAccountItemLevels and
     // XPAccountItemRewards curve rows, the MetaRecipes rows, and MaxLevel (UFortItemDefinition).
     if (properties?["LevelToXpHandle"]?["RowName"]?.GetValue<string>() is { } levelRow)
@@ -1665,6 +1672,7 @@ static class ItemClasses
         ["FortConsumableItemDefinition"] = "FortWorldItemDefinition",
         ["FortEmoteItemDefinition"] = "FortWorldItemDefinition",
         ["FortGadgetItemDefinition"] = "FortWorldItemDefinition",
+        ["FortItemCacheItemDefinition"] = "FortWorldItemDefinition",
         ["FortIngredientItemDefinition"] = "FortWorldItemDefinition",
         ["FortMissionItemDefinition"] = "FortWorldItemDefinition",
         ["FortNeverPersistItemDefinition"] = "FortWorldItemDefinition",

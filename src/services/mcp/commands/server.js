@@ -6,6 +6,7 @@ import { completeMissionAlert } from "../../../profiles/alerts.js";
 import { addDifficultyIncreaseRewards } from "../../../profiles/difficultyincrease.js";
 import { advanceAthenaObjectives } from "../../../profiles/athena.js";
 import { grantBadgeRewards } from "../../../profiles/badges.js";
+import { grantItemCacheRewards } from "../../../profiles/itemcaches.js";
 import { abortDisintegration, depositPostResources, disintegrateItems, fabricateItem } from "../../../profiles/fabricator.js";
 import { advanceObjective, applyHeldProgress, grant, revertHeldProgress } from "../../../profiles/progress.js";
 import { heldProgress } from "../../../profiles/missions.js";
@@ -239,12 +240,15 @@ export const serverCommands = {
   // difficultyIncreaseTier (3.0's EndPrimaryMission; the BluGlo Difficulty Pylon's AFortGameStateZone
   // DifficultyIncreaseRewardTier, 0 when it wasn't used) puts that tier's rewards in the player's pending difficulty
   // increase rewards when the mission succeeded (profiles/difficultyincrease.js).
+  // earnedItemCaches (4.0: [templateId], the item caches the player picked up, whatever the mission's status) give
+  // their caches' card packs, which the frontend claims (pack_source "ItemCache", profiles/itemcaches.js).
   EndPrimaryMission({ req, session, context, notifications }) {
-    const { advance: updates, missionStatus, matchmakingSessionId, missionName, earnedBadgeData, numMissionPoints, difficultyIncreaseTier } = req.body ?? {};
+    const { advance: updates, missionStatus, matchmakingSessionId, missionName, earnedBadgeData, earnedItemCaches, numMissionPoints, difficultyIncreaseTier } = req.body ?? {};
     const held = context.primaryMissions.end(req.params.accountId) ?? heldProgress();
     advance(session, updates, held);
     if (!context.heldScores?.hasEarnScore(req.params.accountId)) notifications.push({ type: "earnScore", primary: false, ...noXpEarned });
     grantBadgeRewards(session, earnedBadgeData);
+    grantItemCacheRewards(session, earnedItemCaches);
     if (!/succeeded$/i.test(String(missionStatus ?? ""))) {
       revertHeldProgress(session, held);
       return;

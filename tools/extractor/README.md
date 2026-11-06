@@ -35,6 +35,8 @@ packages, as 4.16 writes them, so overlays only hold the builds' own differences
   committed files, 1.10's and 1.11's overlays predate them).
   Badges carry their MCP template's static_cardpack_reward (`cardPackReward`, BadgeCardPackReward) and
   static_item_rewards (`itemRewards`, ItemRewards {templateId, quantity}).
+  Item caches (4.0's `FortItemCacheItemDefinition`, world items) carry the card pack they open into (`cardPackReward`,
+  CardPackReward).
 
 Item template ids are resolved with the build's own asset manager rules (`PrimaryAssetTypesToScan` in
 `DefaultGame.ini`): an asset gets the type of the rule whose directory holds it and whose base class it derives from.

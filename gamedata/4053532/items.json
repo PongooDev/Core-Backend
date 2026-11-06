@@ -94971,6 +94971,76 @@
     "rarity": "Ordinary",
     "tier": "No_Tier"
   },
+  "WorldItem:cache_evolvetier_vr_pickup_t01": {
+    "cardPackReward": "CardPack:cardpack_cache_materials_t01",
+    "class": "FortItemCacheItemDefinition",
+    "inventorySizeLimited": true,
+    "maxStackSize": 1,
+    "name": "Evolution Materials Cache",
+    "profile": "theater",
+    "rarity": "Quality",
+    "tier": "No_Tier"
+  },
+  "WorldItem:cache_evolvetier_vr_pickup_t02": {
+    "cardPackReward": "CardPack:cardpack_cache_materials_t02",
+    "class": "FortItemCacheItemDefinition",
+    "inventorySizeLimited": true,
+    "maxStackSize": 1,
+    "name": "Evolution Materials Cache",
+    "profile": "theater",
+    "rarity": "Quality",
+    "tier": "No_Tier"
+  },
+  "WorldItem:cache_evolvetier_vr_pickup_t03": {
+    "cardPackReward": "CardPack:cardpack_cache_materials_t03",
+    "class": "FortItemCacheItemDefinition",
+    "inventorySizeLimited": true,
+    "maxStackSize": 1,
+    "name": "Evolution Materials Cache",
+    "profile": "theater",
+    "rarity": "Quality",
+    "tier": "No_Tier"
+  },
+  "WorldItem:cache_evolvetier_vr_pickup_t04": {
+    "cardPackReward": "CardPack:cardpack_cache_materials_t04",
+    "class": "FortItemCacheItemDefinition",
+    "inventorySizeLimited": true,
+    "maxStackSize": 1,
+    "name": "Evolution Materials Cache",
+    "profile": "theater",
+    "rarity": "Quality",
+    "tier": "No_Tier"
+  },
+  "WorldItem:cache_schematic_r_pickup": {
+    "cardPackReward": "CardPack:cardpack_cache_schematic_r",
+    "class": "FortItemCacheItemDefinition",
+    "inventorySizeLimited": true,
+    "maxStackSize": 1,
+    "name": "Schematic Cache",
+    "profile": "theater",
+    "rarity": "Sturdy",
+    "tier": "No_Tier"
+  },
+  "WorldItem:cache_schematic_sr_pickup": {
+    "cardPackReward": "CardPack:cardpack_cache_schematic_sr",
+    "class": "FortItemCacheItemDefinition",
+    "inventorySizeLimited": true,
+    "maxStackSize": 1,
+    "name": "Schematic Cache",
+    "profile": "theater",
+    "rarity": "Fine",
+    "tier": "No_Tier"
+  },
+  "WorldItem:cache_schematic_vr_pickup": {
+    "cardPackReward": "CardPack:cardpack_cache_schematic_vr",
+    "class": "FortItemCacheItemDefinition",
+    "inventorySizeLimited": true,
+    "maxStackSize": 1,
+    "name": "Schematic Cache",
+    "profile": "theater",
+    "rarity": "Quality",
+    "tier": "No_Tier"
+  },
   "WorldItem:etm_nonelost": {
     "class": "FortBadgeItemDefinition",
     "maxStackSize": 25,
