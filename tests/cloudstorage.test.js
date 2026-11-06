@@ -417,3 +417,31 @@ test("the system hotfix turns on Battle Royale's global chat", async () => {
     backend.close();
   }
 });
+
+test("a large ClientSettings.Sav, sent chunked or sized, is stored whole and listed with its own hashes (#264)", async () => {
+  const backend = await startBackend();
+  try {
+    const { token, accountId } = await userLogin(backend.port, "BigSettingsPlayer");
+    const base = `/fortnite/api/cloudstorage/user/${accountId}`;
+    const sha1 = (data) => crypto.createHash("sha1").update(data).digest("hex");
+    const put = (body, headers, chunked) => new Promise((resolve, reject) => {
+      const req = http.request({ host: "127.0.0.1", port: backend.port, method: "PUT", path: `${base}/ClientSettings.Sav`,
+        headers: { "User-Agent": certUserAgent, Authorization: `bearer ${token}`, ...headers } }, (res) => { res.resume(); res.on("end", () => resolve(res.statusCode)); });
+      req.on("error", reject);
+      if (chunked) { for (let i = 0; i < body.length; i += 8192) req.write(body.subarray(i, i + 8192)); req.end(); } else req.end(body);
+    });
+    for (const [size, headers, chunked] of [[64 * 1024, { "Content-Type": "application/octet-stream" }, false],
+      [200 * 1024, { "Content-Type": "application/json" }, false], [200 * 1024, { "Content-Type": "text/plain" }, true],
+      [150 * 1024, { "Content-Type": "application/x-www-form-urlencoded" }, true]]) {
+      const data = crypto.randomBytes(size);
+      assert.equal(await put(data, headers, chunked), 204);
+      const [file] = (await get(backend.port, base, token)).body;
+      assert.equal(file.length, size);
+      assert.equal(file.hash, sha1(data));
+      assert.equal(file.hash256, crypto.createHash("sha256").update(data).digest("hex"));
+      assert.ok((await raw(backend.port, "GET", `${base}/ClientSettings.Sav`, token)).body.equals(data));
+    }
+  } finally {
+    backend.close();
+  }
+});
