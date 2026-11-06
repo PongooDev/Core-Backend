@@ -205,10 +205,22 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // quota 10, in place of the passive General rows) and "Mutant Storm Mission Alerts have returned to normal levels and no
 // longer reward event tickets" (StormLowCategory, EventFlag.PassiveStorms; 🟡 the data's quota is 4, the notes say 3).
 // Survive the Storm (EventFlag.SurviveTheStorm) ends with Into the Storm.
+// 4.1 (CL-4053532, 8 May 2018) runs on as 4.0: its notes ("Infinity Gauntlet Limited Time Mashup", the HackSAW in the
+// Weekly Store) start no Save the World event or part, and its quests are 4.0's exactly (gamedata/4053532 changes no
+// quest), so Blockbuster stays at Part 1. Every EventFlag.* in 4.1's paks (the same byte scan, 303,609 files): Items/Events'
+// BR.Allow50v50, BR.CandyCaneGuns, BR.DisallowDuo/Solo/Squad, SupplyDropGift, LobbyHalloweenDecor, LobbyWinterDecor and
+// LobbySeason4; CCNodePages' Horde; HomeScreenNextQuest's, EventQuestMapSideBarData's and Blockbuster2018_QuestMapWidget's
+// Blockbuster2018Phase1, Phase2 and Phase3: 4.0's set, no new flag. The mission alert flags (ActiveMiniBosses,
+// ActiveStorms, Fortnitemares, GroupMission, PassiveMiniBosses, PassiveStorms, SurviveTheStorm) are gone from the paks only
+// because 4.1 cooks DefaultGameData's MissionAlerts out of the client (tools/extractor: its alert rows are 4.0's), and
+// the backend still places those alerts, so they run on. So 4.1 serves 4.0's four: Blockbuster2018Phase1 (Phase2, Part 2
+// "A Hero Is Born", is 30 May's, two updates on), ActiveMiniBosses, PassiveStorms and LobbySeason4. No flag drives
+// Battle Royale's map (events/meteorstrike.js has 4.1's curve rows).
 export const blockbuster2018 = "Blockbuster2018";
 export const blockbuster2018Phase1 = "EventFlag.Blockbuster2018Phase1";
 export const lobbySeason4 = "EventFlag.LobbySeason4";
 const build40 = 4039451;
+const build41 = 4053532;
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
@@ -231,10 +243,10 @@ const events = [
   { name: storm2018, flag: surviveTheStorm, firstBuild: 4000805, lastBuild: 4019403 },
   { name: storm2018, flag: storm2018Phase1, firstBuild: 4000805, lastBuild: 4019403 },
   { name: storm2018, flag: storm2018Phase2, firstBuild: 4008490, lastBuild: 4019403 },
-  { name: blockbuster2018, flag: blockbuster2018Phase1, firstBuild: build40, lastBuild: build40 },
-  { name: blockbuster2018, flag: activeMiniBosses, firstBuild: build40, lastBuild: build40 },
-  { name: passiveStorms, flag: passiveStorms, firstBuild: build40, lastBuild: build40 },
-  { name: lobbySeason4, flag: lobbySeason4, firstBuild: build40, lastBuild: build40 },
+  { name: blockbuster2018, flag: blockbuster2018Phase1, firstBuild: build40, lastBuild: build41 },
+  { name: blockbuster2018, flag: activeMiniBosses, firstBuild: build40, lastBuild: build41 },
+  { name: passiveStorms, flag: passiveStorms, firstBuild: build40, lastBuild: build41 },
+  { name: lobbySeason4, flag: lobbySeason4, firstBuild: build40, lastBuild: build41 },
   { name: lobbyWinterDecor, flag: lobbyWinterDecor, firstBuild: 3807424, lastBuild: 3825894 },
   { name: winterBattleBus, flag: winterBattleBus, firstBuild: 3807424, lastBuild: 3825894 },
   { name: supplyDropGift, flag: supplyDropGift, firstBuild: 3807424, lastBuild: 3825894 }

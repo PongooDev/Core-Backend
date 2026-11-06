@@ -1867,7 +1867,7 @@
       { id: "1", label: "Season 1 (1.8 – 1.10)", from: "1.8+", days: 45 },
       { id: "2", label: "Season 2 (1.11 – 2.5)", from: "1.11+", days: 70 },
       { id: "3", label: "Season 3 (3.0 – 3.6)", from: "3.0+", days: 68 },
-      { id: "4", label: "Season 4 (4.0)", from: "4.0+", days: 72 }
+      { id: "4", label: "Season 4 (4.0 – 4.1)", from: "4.0+", days: 72 }
     ];
     const seasonOf = (id) => SEASONS.find((entry) => entry.id === String(id)) ?? SEASONS[0];
     const seasonRoute = (accountId) => SEASONS.find((entry) => accountId === `season${entry.id}` || accountId === entry.id)?.id ?? null;
@@ -5130,7 +5130,7 @@
               hash: "#/shop/season3"
             },
             {
-              title: "Season 4: Item Shop (4.0)",
+              title: "Season 4: Item Shop (4.0 – 4.1)",
               badge: "72 Days",
               hash: "#/shop/season4"
             }
@@ -6140,7 +6140,7 @@
               hash: "#/battlepass/season3"
             },
             {
-              title: "Season 4: Battle Pass (4.0)",
+              title: "Season 4: Battle Pass (4.0 – 4.1)",
               desc: "Configure 100 tiers of free and premium rewards, pass pricing (950 V-Bucks), and bundle pricing (2,800 V-Bucks)",
               badge: "100 Tiers",
               hash: "#/battlepass/season4"
@@ -6445,8 +6445,8 @@
               hash: "#/events/season3"
             },
             {
-              title: "Season 4 (4.0)",
-              desc: "Blockbuster Part 1, Blockbuster tickets, active Mini-Boss alerts, Raven in the Event Store, the Season 4 lobby & 72-day calendar cycle",
+              title: "Season 4 (4.0 – 4.1)",
+              desc: "Blockbuster Part 1, Blockbuster tickets, active Mini-Boss alerts, Raven in the Event Store, the HackSAW in 4.1's Weekly Store, the Season 4 lobby & 72-day calendar cycle",
               badge: "72 Days",
               hash: "#/events/season4"
             }

@@ -76,7 +76,7 @@ test("3.5.2's lobby: 3.5.1's playlists, 50v50 v2 its new mode too", () => {
   assert.equal(ltmOfPlaylist(23, v352).id, "highExplosivesSolo");
   const listed = ltmSchedule({}, now).list;
   assert.equal(listed.find(({ id }) => id === "fiftyFiftyV2").newIn, "3.5.1 and 3.5.2");
-  assert.equal(listed.find(({ id }) => id === "fiftyFiftyV2").builds, "3.5.1 to 4.0");
+  assert.equal(listed.find(({ id }) => id === "fiftyFiftyV2").builds, "3.5.1 to 4.1");
   assert.deepEqual(playlistTeamsOf(`${v352}:0:NA:50`, v352), { maxTeamCount: 2, maxTeamSize: 50, maxSquadSize: 4 });
   assert.equal(assignmentBucket(`${v352}:0:NA:2`, v352), `Fortnite:Fortnite:${v352}:0:NA:2`);
 });

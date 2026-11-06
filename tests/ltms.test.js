@@ -162,7 +162,7 @@ test("3.0's LTMs are its playlist classes: no 50v50 or Shooting Test, duo Skies,
     // Teams of 20, Solid Gold and Sky Supply have 3.5.1 playlists too (Playlist_5x20, _SolidGold_Squads, _SkySupply), which
     // 4.0 keeps.
     const onTo40 = ["fiveByTwenty", "solidGold", "skySupply"].includes(id);
-    assert.deepEqual([listed.seasons, listed.builds, listed.original], [onTo40 ? [3, 4] : [3], onTo40 ? "3.0 to 4.0" : "3.0 to 3.3", null], id);
+    assert.deepEqual([listed.seasons, listed.builds, listed.original], [onTo40 ? [3, 4] : [3], onTo40 ? "3.0 to 4.1" : "3.0 to 3.3", null], id);
   }
 });
 
@@ -271,7 +271,7 @@ test("Teams of 20 is 3.2's new mode: on there whatever its switch, by hand on 3.
   }
   assert.equal(ltmOn("fiveByTwenty", v31, { matchmakingModes: { fiveByTwenty: true } }), true);
   // Only Teams of 20 (3.2's) and 50v50 v2 (3.5.1's, CoreV2 #260) are a build's new mode.
-  assert.deepEqual(ltms.filter((ltm) => ltm.newIn).map((ltm) => ltm.id), ["fiveByTwenty", "fiftyFiftyV2"]);
+  assert.deepEqual(ltms.filter((ltm) => ltm.newIn).map((ltm) => ltm.id), ["fiveByTwenty", "fiftyFiftyV2", "infinityGauntlet"]);
   assert.deepEqual(ltmForcedQueues(v32, { matchmakingModes: { shotguns: true } }), [22, 31]);
   assert.ok(ltmQuests({ running: true }, v32).includes("athenaevent22_playmatches"));
   // EFortAthenaPlaylist (3.2's SDK): AthenaEvent1 4, AthenaEvent8 11, AthenaPlatoon 12, AthenaEvent21 13, AthenaEvent22 14.

@@ -195,6 +195,15 @@ const build36 = 4019403;
 // Sprays, the map update and Hop Rocks) name no mode, so it has no new mode either: every LTM is on by its switch and the
 // lobby opens on Solo.
 const build40 = 4039451;
+// 4.1 (CL-4053532, 8 May 2018): its Athena/Playlists holds 4.0's 23 assets (Playlist_Fortnite and Playground left out as
+// there) and one more, Playlist_Carmine (PlaylistId 33, AthenaEvent33, Athena.Playlist.Event.33, "Infinity Gauntlet",
+// solo: MaxTeamCount 100, MaxTeamSize 1, its own loot, game data and resource rates, the Gauntlet's meteor drop
+// MeteorSupplyDrop and the HUD CarmineHUD; its AthenaGameData's Default.MeteorDrop.Gauntlet.* and Default.Jim.* rows are
+// the drop's and Thanos's). Its notes open on it: "Starting Tuesday, May 8th, you will be able to become Thanos in the
+// Infinity Gauntlet Limited Time Mashup ... Wield the Gauntlet, Become Thanos, Claim Victory!", so it is 4.1's new mode:
+// on there whatever its switch, and the lobby opens on it. Its original window is 8 May to 15 May 2018, the day 4.2 came
+// (🟡: the end is Core's reading of the wiki's dates). Every 4.0 playlist runs on.
+const build41 = 4053532;
 // Core-Backend #257 asked for 3.5.1's to 4.0's Solid Gold v2 (Squads, Solo), Sniper Shootout v2 (Solo, Duos, Squads), High
 // Explosives v2 (Squads, Solo), Blitz! (Squads, Solo, Duos), Teams of 20 and 50v50 v2. Each is a playlist asset of 3.5.1's
 // and 4.0's Athena/Playlists (and 3.6's, which sits between them, as its note above has it; its paks didn't mount in
@@ -246,11 +255,11 @@ export const ltms = [
   { id: "lotsaLoot", quest: "athenaevent4_playmatches", name: "Lotsa Loot", playlistId: 17, queue: 4, eventFlag: "Event4", builds: [build21, build33], seasons: [2, 3],
     original: null,
     teams: "100 Teams × 4", description: "More loot (Athena/Events/LotsaLoot loot tiers and game data); its lobby tile reads \"Luxurious Loot\"." },
-  { id: "blitz", quest: "athenaevent8_playmatches", name: "Blitz", playlistId: 19, queue: 8, eventFlag: "Event8", builds: [build242, build40], seasons: [2, 3, 4],
+  { id: "blitz", quest: "athenaevent8_playmatches", name: "Blitz", playlistId: 19, queue: 8, eventFlag: "Event8", builds: [build242, build41], seasons: [2, 3, 4],
     playlistName: "Playlist_Blitz_Squad", tag351: 8, name351: "Blitz! (Squads)",
     original: null,
     teams: "100 Teams × 4", description: "Shorter matches: a smaller first storm circle, its own loot and resource rates (Athena/Events/Blitz tables)." },
-  { id: "fiveByTwenty", quest: "athenaevent22_playmatches", name: "5x20", playlistId: 22, queue: 22, eventFlag: null, builds: [build30, build40], seasons: [3, 4], newIn: build32,
+  { id: "fiveByTwenty", quest: "athenaevent22_playmatches", name: "5x20", playlistId: 22, queue: 22, eventFlag: null, builds: [build30, build41], seasons: [3, 4], newIn: build32,
     playlistName: "Playlist_5x20", name351: "Teams of 20",
     original: null,
     teams: "5 Teams × 20", description: "Five teams of twenty (Playlist_5x20, a large team game with its own game data)." },
@@ -263,22 +272,22 @@ export const ltms = [
   { id: "steadyStorm", name: "Steady Storm", playlistId: 26, queue: 26, eventFlag: null, builds: [build30, build33], seasons: [3],
     original: null,
     teams: "100 Teams × 1", description: "Solo; the storm closes from the warmup on (Athena/Events/SteadyStorm game data)." },
-  { id: "solidGold", quest: "athenaevent27_playmatches", name: "Solid Gold", playlistId: 27, queue: 27, eventFlag: null, builds: [build30, build40], seasons: [3, 4],
+  { id: "solidGold", quest: "athenaevent27_playmatches", name: "Solid Gold", playlistId: 27, queue: 27, eventFlag: null, builds: [build30, build41], seasons: [3, 4],
     playlistName: "Playlist_SolidGold_Squads", name351: "Solid Gold v2 (Squads)",
     original: null,
     teams: "100 Teams × 4", description: "Its own loot tables and resource rates (Athena/Events/SolidGold tables; from 3.5.1 Athena/Playlists/SolidGold's: all weapon drops are Legendary)." },
-  { id: "skySupply", quest: "athenaevent30_playmatches", name: "Sky Supply", playlistId: 30, queue: 30, eventFlag: null, builds: [build30, build40], seasons: [3, 4],
+  { id: "skySupply", quest: "athenaevent30_playmatches", name: "Sky Supply", playlistId: 30, queue: 30, eventFlag: null, builds: [build30, build41], seasons: [3, 4],
     playlistName: "Playlist_SkySupply",
     original: null,
     teams: "100 Teams × 1", description: "Solo, with its own loot and game data (Athena/Events/SkySupply tables)." },
   { id: "shotguns", quest: "athenaevent31_playmatches", name: "Shotguns", playlistId: 31, queue: 31, eventFlag: null, builds: [build30, build33], seasons: [3],
     original: null,
     teams: "100 Teams × 4", description: "Shotguns only (Athena/Events/Shotguns tables)." },
-  { id: "blitzSolo", quest: "athenaevent8_playmatches", name: "Blitz (Solo)", playlistId: 36, queue: 36, tagQueue: 8, eventFlag: null, builds: [build31, build40], seasons: [3, 4],
+  { id: "blitzSolo", quest: "athenaevent8_playmatches", name: "Blitz (Solo)", playlistId: 36, queue: 36, tagQueue: 8, eventFlag: null, builds: [build31, build41], seasons: [3, 4],
     playlistName: "Playlist_Blitz_Solo", quest351: null, name351: "Blitz! (Solo)",
     original: null,
     teams: "100 Teams × 1", description: "Blitz alone (Playlist_Blitz_Child_Solo, Blitz's tables); its matches count Blitz's challenge." },
-  { id: "blitzDuo", quest: "athenaevent8_playmatches", name: "Blitz (Duo)", playlistId: 37, queue: 37, tagQueue: 8, eventFlag: null, builds: [build31, build40], seasons: [3, 4],
+  { id: "blitzDuo", quest: "athenaevent8_playmatches", name: "Blitz (Duo)", playlistId: 37, queue: 37, tagQueue: 8, eventFlag: null, builds: [build31, build41], seasons: [3, 4],
     playlistName: "Playlist_Blitz_Duos", quest351: null, name351: "Blitz! (Duos)",
     original: null,
     teams: "100 Teams × 2", description: "Blitz in duos (Playlist_Blitz_Child_Duo, Blitz's tables); its matches count Blitz's challenge." },
@@ -287,42 +296,46 @@ export const ltms = [
   // 3.5.1's matches sat on the loading screen, but every mode did that: the server crashed as the first player spawned
   // (CoreV2 #262: its POI volumes had no brush component, fixed in CoreV2 b1c4fb9). The game runs the mode from its
   // playlist (CoreV2 #260): a bus for each team, the final circle, its storm, supply drops, loot and bleed-out.
-  { id: "fiftyFiftyV2", name: "50v50 v2", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build351, build40], seasons: [3, 4], newIn: [build351, build352],
+  { id: "fiftyFiftyV2", name: "50v50 v2", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build351, build41], seasons: [3, 4], newIn: [build351, build352],
     original: null,
     teams: "2 Teams × 50", description: "Two teams of 50 players, massive forts (Playlist_50v50: its own loot, game data and resource rates)." },
-  { id: "highExplosivesSolo", name: "High Explosives v2 (Solo)", playlistId: 23, playlistName: "Playlist_HighExplosives_Solo", eventFlag: null, builds: [build351, build40], seasons: [3, 4],
+  { id: "highExplosivesSolo", name: "High Explosives v2 (Solo)", playlistId: 23, playlistName: "Playlist_HighExplosives_Solo", eventFlag: null, builds: [build351, build41], seasons: [3, 4],
     original: null,
     teams: "100 Teams × 1", description: "Explosive weapons everywhere! (Athena/Playlists/HighExplosives tables)." },
-  { id: "highExplosivesSquads", name: "High Explosives v2 (Squads)", playlistId: 24, playlistName: "Playlist_HighExplosives_Squads", eventFlag: null, builds: [build351, build40], seasons: [3, 4],
+  { id: "highExplosivesSquads", name: "High Explosives v2 (Squads)", playlistId: 24, playlistName: "Playlist_HighExplosives_Squads", eventFlag: null, builds: [build351, build41], seasons: [3, 4],
     original: null,
     teams: "100 Teams × 4", description: "Explosive weapons everywhere! (Athena/Playlists/HighExplosives tables)." },
-  { id: "sniperShootoutSolo", name: "Sniper Shootout v2 (Solo)", playlistId: 39, playlistName: "Playlist_Snipers_Solo", eventFlag: null, builds: [build351, build40], seasons: [3, 4],
+  { id: "sniperShootoutSolo", name: "Sniper Shootout v2 (Solo)", playlistId: 39, playlistName: "Playlist_Snipers_Solo", eventFlag: null, builds: [build351, build41], seasons: [3, 4],
     original: null,
     teams: "100 Teams × 1", description: "Sniper weapons only, no down state (Athena/Playlists/Snipers tables)." },
-  { id: "sniperShootoutDuos", name: "Sniper Shootout v2 (Duos)", playlistId: 40, playlistName: "Playlist_Snipers_Duos", eventFlag: null, builds: [build351, build40], seasons: [3, 4],
+  { id: "sniperShootoutDuos", name: "Sniper Shootout v2 (Duos)", playlistId: 40, playlistName: "Playlist_Snipers_Duos", eventFlag: null, builds: [build351, build41], seasons: [3, 4],
     original: null,
     teams: "100 Teams × 2", description: "Sniper weapons only, no down state (Athena/Playlists/Snipers tables)." },
-  { id: "sniperShootoutSquads", name: "Sniper Shootout v2 (Squads)", playlistId: 41, playlistName: "Playlist_Snipers", eventFlag: null, builds: [build351, build40], seasons: [3, 4],
+  { id: "sniperShootoutSquads", name: "Sniper Shootout v2 (Squads)", playlistId: 41, playlistName: "Playlist_Snipers", eventFlag: null, builds: [build351, build41], seasons: [3, 4],
     original: null,
     teams: "100 Teams × 4", description: "Sniper weapons only, no down state (Athena/Playlists/Snipers tables)." },
-  { id: "skySupplyDuos", name: "Sky Supply (Duos)", playlistId: 42, playlistName: "Playlist_SkySupply_Duos", eventFlag: null, builds: [build351, build40], seasons: [3, 4],
+  { id: "skySupplyDuos", name: "Sky Supply (Duos)", playlistId: 42, playlistName: "Playlist_SkySupply_Duos", eventFlag: null, builds: [build351, build41], seasons: [3, 4],
     original: null,
     teams: "100 Teams × 2", description: "Supply drops rain down from the sky (Athena/Playlists/SkySupply tables)." },
-  { id: "skySupplySquads", name: "Sky Supply (Squads)", playlistId: 43, playlistName: "Playlist_SkySupply_Squads", eventFlag: null, builds: [build351, build40], seasons: [3, 4],
+  { id: "skySupplySquads", name: "Sky Supply (Squads)", playlistId: 43, playlistName: "Playlist_SkySupply_Squads", eventFlag: null, builds: [build351, build41], seasons: [3, 4],
     original: null,
     teams: "100 Teams × 4", description: "Supply drops rain down from the sky (Athena/Playlists/SkySupply tables)." },
-  { id: "solidGoldSolo", quest: "athenaevent26_playmatches", name: "Solid Gold v2 (Solo)", playlistId: 26, playlistName: "Playlist_SolidGold_Solo", eventFlag: null, builds: [build351, build40], seasons: [3, 4],
+  { id: "solidGoldSolo", quest: "athenaevent26_playmatches", name: "Solid Gold v2 (Solo)", playlistId: 26, playlistName: "Playlist_SolidGold_Solo", eventFlag: null, builds: [build351, build41], seasons: [3, 4],
     original: null,
     teams: "100 Teams × 1", description: "All weapon drops are Legendary (Athena/Playlists/SolidGold tables)." },
-  { id: "impactSolo", name: "Impact (Solo)", playlistId: 44, playlistName: "Playlist_Impact_Solo", eventFlag: null, builds: [build351, build40], seasons: [3, 4],
+  { id: "impactSolo", name: "Impact (Solo)", playlistId: 44, playlistName: "Playlist_Impact_Solo", eventFlag: null, builds: [build351, build41], seasons: [3, 4],
     original: null,
     teams: "100 Teams × 1", description: "\"Blam!\" (Athena/Playlists/Impact game data)." },
-  { id: "impactDuos", name: "Impact (Duos)", playlistId: 45, playlistName: "Playlist_Impact_Duos", eventFlag: null, builds: [build351, build40], seasons: [3, 4],
+  { id: "impactDuos", name: "Impact (Duos)", playlistId: 45, playlistName: "Playlist_Impact_Duos", eventFlag: null, builds: [build351, build41], seasons: [3, 4],
     original: null,
     teams: "100 Teams × 2", description: "\"Blam!\" (Athena/Playlists/Impact game data)." },
-  { id: "impactSquads", name: "Impact (Squads)", playlistId: 46, playlistName: "Playlist_Impact_Squads", eventFlag: null, builds: [build351, build40], seasons: [3, 4],
+  { id: "impactSquads", name: "Impact (Squads)", playlistId: 46, playlistName: "Playlist_Impact_Squads", eventFlag: null, builds: [build351, build41], seasons: [3, 4],
     original: null,
-    teams: "100 Teams × 4", description: "\"Blam!\" (Athena/Playlists/Impact game data)." }
+    teams: "100 Teams × 4", description: "\"Blam!\" (Athena/Playlists/Impact game data)." },
+  // 4.1's new mode (above).
+  { id: "infinityGauntlet", name: "Infinity Gauntlet", playlistId: 33, playlistName: "Playlist_Carmine", eventFlag: null, builds: [build41, build41], seasons: [4], newIn: build41,
+    original: { builds: [build41, build41], start: "2018-05-08", end: "2018-05-15" },
+    teams: "100 Teams × 1", description: "A meteor strike delivers the Infinity Gauntlet: use it to become Thanos; if Thanos is eliminated the Gauntlet drops (Playlist_Carmine: its own loot, game data and resource rates)." }
 ];
 const inRange = ([first, last], build) => Number(build) >= first && Number(build) <= last;
 // The builds an LTM is new in (newIn: one changelist or a list).
@@ -433,11 +446,12 @@ export function nextLtmChange(build, settingsValue, now = new Date()) {
 
 // The admin panel's list (its Battle Royale Game Modes, after solo, duos and squads): each LTM with its window and
 // builds, whether it is on by hand, and whether its window holds each season's replay now.
-const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build311]: "3.1.1", [build32]: "3.2", [build33]: "3.3", [build351]: "3.5.1", [build352]: "3.5.2", [build36]: "3.6", [build40]: "4.0" };
+const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build311]: "3.1.1", [build32]: "3.2", [build33]: "3.3", [build351]: "3.5.1", [build352]: "3.5.2", [build36]: "3.6", [build40]: "4.0", [build41]: "4.1" };
 const buildRange = ([first, last]) => (first === last ? versions[first] : `${versions[first]} to ${versions[last]}`);
 export function ltmSchedule(settingsValue, now = new Date()) {
   const modes = settingsValue?.matchmakingModes ?? {};
-  const moments = { 1: seasonMoment(now, null, 1).getTime(), 2: seasonMoment(now, null, 2).getTime(), 3: seasonMoment(now, null, 3).getTime() };
+  const moments = { 1: seasonMoment(now, null, 1).getTime(), 2: seasonMoment(now, null, 2).getTime(), 3: seasonMoment(now, null, 3).getTime(),
+    4: seasonMoment(now, null, 4).getTime() };
   return {
     originalDates: settingsValue?.ltmOriginalDates === true,
     seasonMoments: Object.fromEntries(Object.entries(moments).map(([season, moment]) => [season, new Date(moment).toISOString()])),

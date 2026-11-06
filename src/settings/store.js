@@ -18,7 +18,9 @@ const noLimits = () => Object.fromEntries(limitModes.map((mode) => [mode, 0]));
 
 // 3.5.1's (CL-4000805) own LTMs (events/ltms.js), whose switches the matchmaking modes keep beside the others'.
 const playlistAssetLtms = ["fiftyFiftyV2", "highExplosivesSolo", "highExplosivesSquads", "sniperShootoutSolo", "sniperShootoutDuos",
-  "sniperShootoutSquads", "skySupplyDuos", "skySupplySquads", "solidGoldSolo", "impactSolo", "impactDuos", "impactSquads"];
+  "sniperShootoutSquads", "skySupplyDuos", "skySupplySquads", "solidGoldSolo", "impactSolo", "impactDuos", "impactSquads",
+  // 4.1's (CL-4053532) Infinity Gauntlet, its new mode, on there whatever its switch.
+  "infinityGauntlet"];
 
 // Every Battle Royale season's start, unset. Each season Core knows has one (builds/detect.js): a season left out was never
 // kept, so a season anchored to its first served day (Season 4 on 4.0, until this) started again on every day it was

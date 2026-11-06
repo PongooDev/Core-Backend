@@ -31,16 +31,16 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       speedyStorm: false, takeToTheSkies: false, lotsaLoot: false, blitz: false, fiveByTwenty: false, highJump: false, useItOrLoseIt: false, steadyStorm: false,
       solidGold: false, skySupply: false, shotguns: false, blitzSolo: false, blitzDuo: false, fiftyFiftyV2: false, highExplosivesSolo: false,
       highExplosivesSquads: false, sniperShootoutSolo: false, sniperShootoutDuos: false, sniperShootoutSquads: false, skySupplyDuos: false,
-      skySupplySquads: false, solidGoldSolo: false, impactSolo: false, impactDuos: false, impactSquads: false });
+      skySupplySquads: false, solidGoldSolo: false, impactSolo: false, impactDuos: false, impactSquads: false, infinityGauntlet: false });
 
     // 21 Battle Royale playlists: the 4 canonical ones, Shooting Test #1, the other event queues (#190), 3.0's new ones
-    // and 3.1's Blitz Solo and Duo, and 3.5.1's own twelve
-    assert.equal(ov.playlists.length, 33);
+    // and 3.1's Blitz Solo and Duo, 3.5.1's own twelve and 4.1's Infinity Gauntlet
+    assert.equal(ov.playlists.length, 34);
     assert.equal(ov.ltms.originalDates, false);
     assert.deepEqual(ov.ltms.list.map((ltm) => ltm.id), ["fiftyFifty", "highExplosives", "sneakySilencers", "sniperShootout", "shootingTest",
       "speedyStorm", "takeToTheSkies", "lotsaLoot", "blitz", "fiveByTwenty", "highJump", "useItOrLoseIt", "steadyStorm", "solidGold", "skySupply", "shotguns", "blitzSolo", "blitzDuo",
       "fiftyFiftyV2", "highExplosivesSolo", "highExplosivesSquads", "sniperShootoutSolo", "sniperShootoutDuos", "sniperShootoutSquads", "skySupplyDuos",
-      "skySupplySquads", "solidGoldSolo", "impactSolo", "impactDuos", "impactSquads"]);
+      "skySupplySquads", "solidGoldSolo", "impactSolo", "impactDuos", "impactSquads", "infinityGauntlet"]);
     assert.equal(ov.playlists.find((p) => p.id === "fiftyFiftyV2").code, "Playlist_50v50");
     // #257: each LTM's playlist asset and teams, and the 3.5.1 lobby's name for the ones kept from 3.0 and 3.1.
     const pl = (id) => ov.playlists.find((p) => p.id === id);
@@ -169,7 +169,7 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       speedyStorm: false, takeToTheSkies: false, lotsaLoot: false, blitz: false, fiveByTwenty: false, highJump: false, useItOrLoseIt: false, steadyStorm: false,
       solidGold: false, skySupply: false, shotguns: false, blitzSolo: false, blitzDuo: false, fiftyFiftyV2: false, highExplosivesSolo: false,
       highExplosivesSquads: false, sniperShootoutSolo: false, sniperShootoutDuos: false, sniperShootoutSquads: false, skySupplyDuos: false,
-      skySupplySquads: false, solidGoldSolo: false, impactSolo: false, impactDuos: false, impactSquads: false });
+      skySupplySquads: false, solidGoldSolo: false, impactSolo: false, impactDuos: false, impactSquads: false, infinityGauntlet: false });
     assert.equal(resetRes.body.timing.gatherSeconds, 10);
     assert.equal(resetRes.body.timing.warmupSeconds, 120);
     assert.equal(resetRes.body.timing.lateJoin, false);

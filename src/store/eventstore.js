@@ -173,7 +173,14 @@ export const spring2018End = "2018-02-22T00:00:00.000Z";
 // Dragon heavy shotgun, SID_Shotgun_Dragon_Drum_SR_Ore_T01 (2.5's data on), in the Bald Eagle's place on 3.1 and later
 // (🟡: the notes don't say the Bald Eagle left; Core features one item a week, the build's newest), at the same price
 // and limit.
+// 4.1's (CL-4053532): "HackSAW is now in the Weekly Store (available Wednesday, May 9 at 8pm ET). A light machine gun
+// variant with a moderate rate of fire, mild recoil, a long reload time, and excellent ammo efficiency." That is the
+// Military LMG, SID_Assault_LMG_Military_SR_Ore_T01 (the M249 SAW's icon, T-Icon-Weapons-SK-M249; in 4.0's data already,
+// a Blockbuster Llama weapon, which 4.1's data makes a store item: no longer recyclable or counted toward the vault,
+// bInventorySizeLimited false), in the DragonFire's place on 4.1 and later, at a legendary schematic's 1,680 Seasonal Gold,
+// one (🟡: Epic's price and limit aren't recorded; Core's week has it from the build's first day, not from 9 May).
 const weeklyFeaturedByBuild = [
+  { firstBuild: 4053532, items: [{ templateId: "Schematic:sid_assault_lmg_military_sr_ore_t01", price: 1680, limit: 1 }] },
   { firstBuild: 3915963, items: [{ templateId: "Schematic:sid_shotgun_dragon_drum_sr_ore_t01", price: 1680, limit: 1 }] },
   { firstBuild: 3901517, items: [{ templateId: "Schematic:sid_pistol_handcannon_de_sr_ore_t01", price: 1680, limit: 1 }] }
 ];
@@ -230,7 +237,7 @@ export const weeklyStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.ST
   : springNow() ? "Spring2018.STWRotationalEventStorefront" : blockbusterNow() ? "Blockbuster2018.STWRotationalEventStorefront" : weeklyStoreInstance);
 
 // The store is open while the requesting build runs Survive the Holidays (or 2.3's to 2.4.2's storms, 2.5's Spring It
-// On!, 3.5.1's Into the Storm or 4.0's Blockbuster) and its data has Seasonal Gold.
+// On!, 3.5.1's Into the Storm or 4.0's and 4.1's Blockbuster) and its data has Seasonal Gold.
 export const hasEventStore = () => (isEventActive(winter2017) || isEventActive(mutantStorms2018) || isEventActive(spring2018) || isEventActive(storm2018)
   || isEventActive(blockbuster2018)) && Boolean(getItem(seasonalGold));
 

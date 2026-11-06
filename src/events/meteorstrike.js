@@ -34,6 +34,12 @@ import { currentEventsConfig, seasonalEventsOn } from "./events.js";
 // SafeZone and AirZone MeteorDropMin/MaxCount) are all 0, as no 4.0 playlist drops meteors. No EventFlag.* drives the
 // map either (events/events.js). The skybox audio was the comet's, the TVs' static and the meteors Season 3's last week,
 // and Easter and St. Patrick's are spring's, so on 4.0 the rows stay as the paks ship them and the phase is 3.6's alone.
+// 4.1 (CL-4053532) takes none either. Its AthenaGameData differs from 4.0's only in rows its paks set themselves: the final
+// circle's Default.SafeZone.Volume.00/01.RejectionChance (0.9 to 0.875 and 0.7 to 0.625: the notes' "Increased the
+// likelihood of the final circle ending near the outer areas of the map by 25%"), Default.MeteorDrop.TimeInterval,
+// TimeDeviation, SpawnMin/MaxWaitTime at 0 and the new Default.MeteorDrop.Gauntlet.* (the Infinity Gauntlet's meteor) and
+// Default.Jim.* (Thanos: health 700, shield 300...) rows, which Playlist_Carmine's own tables use. The skybox, TV,
+// Easter and St. Patrick's rows are still 0, and nothing in 4.1's notes or map turns them on, so it is served no RowUpdate.
 export const meteorStrikeBuild = 4019403;
 export const meteorStrikePhases = ["none", "broadcast", "meteors", "impact"];
 export const defaultMeteorStrikePhase = "meteors";
