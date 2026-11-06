@@ -227,10 +227,29 @@ const springItemsNow = () => [...springEventItems,
 // hero's 2,800, one (🟡: Epic's price and limit aren't recorded, as Wukong's). Spring It On!'s and Into the Storm's
 // items leave with them. Its event items count down to the end of Season 4's replay (blockbuster2018End, 12 July 2018;
 // 🟡: Blockbuster ran on to Part 4, 27 June, and Core's countdown is the season's).
-const blockbusterEventItems = [{ templateId: "Hero:hid_commando_myth02_sr_t01", price: 2800, limit: 1 }];
+// Raven was not alone (Core-Backend #265's screenshot showed the Event Items list with him only, sold out). The Fortnite Wiki's
+// Blockbuster page lists the Event Store's heroes (Raven, The Cloaked Star, 8-Bit Demo, Archaeolo-Jess; Chromium Ramirez,
+// Diecast Jonesy, Old Glory A.C. and Patriot Penny too, which 4.0's and 4.1's data hasn't, so they stay out) and its Military
+// Weapons set, the Blockbuster Llama's: the Military Auto, Surgical and Silenced SMG assault weapons, the Military LMG
+// (the HackSAW), Pistol, Shotgun, Sniper, Crossbow, Spear and Launcher, which 4.0's data has as legendary schematics. So the
+// event items are the four heroes, a legendary Survivor and the weapons, at a legendary hero's 2,800, a legendary
+// Survivor's 700 and a legendary schematic's 1,680, one each (🟡: Epic's prices and limits aren't recorded, except Raven's
+// 2,800 Gold). 4.1 moves the HackSAW to the Weekly Store (weeklyFeaturedByBuild), so there it leaves the event items.
+const blockbusterWeapons = ["assault_military_auto", "assault_military_surgical", "assault_smg_silenced_military", "assault_lmg_military",
+  "pistol_silenced_military", "shotgun_military", "sniper_military", "sniper_crossbow_military", "piercing_spear_military",
+  "explosive_launcher_military"];
+const blockbusterEventItems = [
+  { templateId: "Hero:hid_commando_myth02_sr_t01", price: 2800, limit: 1 },
+  { templateId: "Hero:hid_ninja_myth02_sr_t01", price: 2800, limit: 1 },
+  { templateId: "Hero:hid_constructor_016_m_v1_blockbuster_sr_t01", price: 2800, limit: 1 },
+  { templateId: "Hero:hid_outlander_zoneharvest_blockbuster_sr_t01", price: 2800, limit: 1 },
+  { templateId: "Worker:workerbasic_sr_t01", price: 700, limit: 1 },
+  ...blockbusterWeapons.map((name) => ({ templateId: `Schematic:sid_${name}_sr_ore_t01`, price: 1680, limit: 1 }))
+];
+const blockbusterItems = () => blockbusterEventItems.filter(({ templateId }) => !weeklyFeatured().some((item) => item.templateId === templateId));
 export const blockbuster2018End = "2018-07-12T00:00:00.000Z";
 const blockbusterNow = () => !isEventActive(winter2017) && !storms2018() && !springNow() && isEventActive(blockbuster2018);
-const eventItemsNow = () => (storms2018() ? stormsEventItems : springNow() ? springItemsNow() : blockbusterNow() ? blockbusterEventItems : eventItems);
+const eventItemsNow = () => (storms2018() ? stormsEventItems : springNow() ? springItemsNow() : blockbusterNow() ? blockbusterItems() : eventItems);
 export const eventStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWSpecialEventStoreFront"
   : springNow() ? "Spring2018.STWSpecialEventStoreFront" : blockbusterNow() ? "Blockbuster2018.STWSpecialEventStoreFront" : eventStoreInstance);
 export const weeklyStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWRotationalEventStorefront"

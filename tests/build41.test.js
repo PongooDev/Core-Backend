@@ -84,7 +84,12 @@ test("4.1's Save the World: Blockbuster's quests, llama, Mini-Bosses, Event Stor
   assert.equal(inBuild(v41, hasEventStore), true);
   assert.equal(inBuild(v41, eventStoreInstanceNow), "Blockbuster2018.STWSpecialEventStoreFront");
   const offers41 = inBuild(v41, () => eventStoreOffers(now));
-  assert.deepEqual(offers41.STWSpecialEventStoreFront.map(({ templateId }) => templateId), ["Hero:hid_commando_myth02_sr_t01"]);
+  const events41 = offers41.STWSpecialEventStoreFront.map(({ templateId }) => templateId);
+  assert.equal(events41.length, 14, "the four heroes, a Survivor and nine weapons: the HackSAW is the Weekly Store's");
+  for (const id of ["Hero:hid_commando_myth02_sr_t01", "Hero:hid_ninja_myth02_sr_t01", "Hero:hid_constructor_016_m_v1_blockbuster_sr_t01",
+    "Hero:hid_outlander_zoneharvest_blockbuster_sr_t01", "Schematic:sid_sniper_crossbow_military_sr_ore_t01"]) assert.ok(events41.includes(id), id);
+  assert.ok(!events41.includes(hackSaw));
+  assert.equal(new Set(events41).size, events41.length);
   const saw = offers41.STWRotationalEventStorefront.find(({ templateId }) => templateId === hackSaw);
   assert.deepEqual([saw.price, saw.eventLimit, saw.currencySubType], [1680, 1, "AccountResource:eventcurrency_scaling"]);
   const weekly40 = inBuild(v40, () => eventStoreOffers(now)).STWRotationalEventStorefront;

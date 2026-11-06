@@ -112,6 +112,12 @@ test("4.0's event flags: Blockbuster Part 1, active Mini-Bosses, passive storms 
   assert.ok(!activeEventFlags(v40).some((flag) => /Meteor|Comet|Crater/i.test(flag)), "no flag drives Season 4's map");
 });
 
+// Blockbuster's Event Store (#265): the four heroes, a legendary Survivor and the Military weapons, all in 4.0's data.
+const blockbusterStoreIds = ["Hero:hid_commando_myth02_sr_t01", "Hero:hid_ninja_myth02_sr_t01", "Hero:hid_constructor_016_m_v1_blockbuster_sr_t01",
+  "Hero:hid_outlander_zoneharvest_blockbuster_sr_t01", "Worker:workerbasic_sr_t01",
+  ...["assault_military_auto", "assault_military_surgical", "assault_smg_silenced_military", "assault_lmg_military", "pistol_silenced_military",
+    "shotgun_military", "sniper_military", "sniper_crossbow_military", "piercing_spear_military", "explosive_launcher_military"]
+    .map((name) => `Schematic:sid_${name}_sr_ore_t01`)];
 test("4.0's Blockbuster: its quests, llama, Mini-Boss tickets, Event Store and book pages", () => {
   assert.deepEqual(inBuild(v40, blockbusterEventQuests), blockbusterQuests);
   assert.ok(inBuild(v40, eventQuests).includes("blockbusterquest_2018_reactive_cometshards"));
@@ -132,7 +138,10 @@ test("4.0's Blockbuster: its quests, llama, Mini-Boss tickets, Event Store and b
   assert.equal(inBuild(v40, hasEventStore), true);
   assert.equal(inBuild(v40, eventStoreInstanceNow), "Blockbuster2018.STWSpecialEventStoreFront");
   const store = inBuild(v40, () => eventStoreOffers(now)).STWSpecialEventStoreFront;
-  assert.deepEqual(store.map(({ templateId, price }) => [templateId, price]), [["Hero:hid_commando_myth02_sr_t01", 2800]]);
+  assert.deepEqual(store.map(({ templateId }) => templateId), blockbusterStoreIds);
+  assert.deepEqual(store.map(({ templateId, price }) => [templateId, price]).slice(0, 2), [["Hero:hid_commando_myth02_sr_t01", 2800], ["Hero:hid_ninja_myth02_sr_t01", 2800]]);
+  assert.ok(store.every(({ eventLimit, currencySubType }) => eventLimit === 1 && currencySubType === "AccountResource:eventcurrency_scaling"));
+  assert.ok(store.some(({ templateId }) => templateId === "Schematic:sid_assault_lmg_military_sr_ore_t01"), "the HackSAW is an event item on 4.0");
   assert.ok(inBuild(v40, specialBookPages).includes("PageSpecial_Blockbuster2018_Heroes"));
 });
 
