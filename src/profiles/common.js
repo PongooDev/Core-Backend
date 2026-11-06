@@ -51,8 +51,13 @@ export function usesCommonProfiles(accountId) {
 // The profile the client names for what Core keeps in profile0: profile0's own id before 3.5.
 export const mtxProfileId = (accountId) => (usesCommonProfiles(accountId) ? "common_core" : "profile0");
 
-// Items of profile0 that are common_core's, by template type (and, for tokens, their ProfileType).
-const coreTypes = new Set(["homebasebannericon", "homebasebannercolor", "giftbox", "codetoken"]);
+// Items of profile0 that are common_core's, by template type (and, for tokens, their ProfileType). The Event Store's
+// purchase trackers (EventPurchaseTracker, EFortItemType 69) are too: UFortMcpProfileCommonCore's item types (4.1
+// sub_E19680, in its vtable UFortMcpProfileCommonCore_VFT) are CodeToken, Currency, EventPurchaseTracker, the banners,
+// Token and GiftBox, and the offer's "N left" (4.1 sub_DFC7D0, bound by that profile, sub_E31590; 4.0's is bound the
+// same way) looks the PurchaseLimitingEventId's tracker up among that profile's type-69 items. In campaign the client
+// found none, so every limited offer read as sold out (Core-Backend #274).
+const coreTypes = new Set(["homebasebannericon", "homebasebannercolor", "giftbox", "codetoken", "eventpurchasetracker"]);
 const coreTokens = new Set(["token:campaignaccess", "token:founderspack_1", "token:founderspack_2", "token:founderspack_3",
   "token:founderspack_4", "token:founderspack_5", "token:founderchatunlock", "token:athenaaccess_token",
   "token:athenacancreatecustomgames_token"]);

@@ -197,6 +197,46 @@ test("1.11's Event Store sells for Seasonal Gold up to each offer's limit, count
   }
 });
 
+// From 3.5 the trackers are common_core's: UFortMcpProfileCommonCore holds the EventPurchaseTracker items, and the offer's
+// "N left" looks there (4.1 sub_DFC7D0). In campaign the client found none, and every offer read as sold out (#274).
+test("4.1's Event Store trackers are common_core's, where its \"N left\" counts them (Core-Backend #274)", async () => {
+  const v41 = "4053532";
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "EventStore41");
+    const query = (profileId, name = "QueryProfile", body = {}) => {
+      const text = JSON.stringify(body);
+      return send({ host: "127.0.0.1", port: backend.port, method: "POST",
+        path: `/fortnite/api/game/v2/profile/${player.accountId}/client/${name}?profileId=${profileId}&rvn=-1`,
+        headers: { "User-Agent": agent(v41), Authorization: `bearer ${player.token}`, "Content-Type": "application/json",
+          "Content-Length": Buffer.byteLength(text) } }, text);
+    };
+    const full = (response, profileId) => [response.body, ...(response.body.multiUpdate ?? [])].find((update) => update.profileId === profileId)
+      .profileChanges.find((change) => change.changeType === "fullProfileUpdate").profile;
+    const trackersOf = (profile) => Object.values(profile.items).filter((item) => item.templateId === eventPurchaseTracker);
+    const instances = ["Blockbuster2018.STWSpecialEventStoreFront", "Blockbuster2018.STWRotationalEventStorefront"].sort();
+    // The login's first query, common_core's, holds them; campaign's doesn't.
+    const core = full(await query("common_core"), "common_core");
+    assert.deepEqual(trackersOf(core).map((item) => item.attributes.event_instance_id).sort(), instances);
+    assert.deepEqual(trackersOf(full(await query("campaign"), "campaign")), []);
+
+    const file = path.join(backend.dataDir, "accounts", player.accountId, "profiles", "profile0.json");
+    const saved = JSON.parse(fs.readFileSync(file, "utf8"));
+    saved.items.core_test_gold = { templateId: seasonalGold, attributes: {}, quantity: 5000 };
+    fs.writeFileSync(file, JSON.stringify(saved));
+    // A purchase (through common_core, as 3.5's store buys) counts in common_core's tracker.
+    const raven = entriesOf(v41, eventStorefront).find((entry) => grantOf(entry).templateId === "Hero:hid_commando_myth02_sr_t01");
+    const bought = await query("common_core", "PurchaseCatalogEntry", { offerId: raven.offerId, purchaseQuantity: 1, currency: "GameItem",
+      currencySubType: seasonalGold, expectedPrice: 2800 });
+    assert.equal(bought.status, 200, JSON.stringify(bought.body));
+    const counted = trackersOf(full(await query("common_core"), "common_core"))
+      .find((item) => item.attributes.event_instance_id === "Blockbuster2018.STWSpecialEventStoreFront");
+    assert.deepEqual(counted.attributes.event_purchases, { [raven.offerId]: 1 });
+  } finally {
+    backend.close();
+  }
+});
+
 test("the weekly Daily Coin offers sell for Daily Coins, once each (Core-Backend #173)", async () => {
   const backend = await startBackend();
   try {
