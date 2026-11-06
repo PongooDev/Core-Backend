@@ -14,6 +14,7 @@ import { defaultBanner } from "./defaults.js";
 import { heldGiftBoxes, moveAthenaGiftBoxes } from "./giftboxes.js";
 import { findItem } from "./items.js";
 import { grant } from "./progress.js";
+import { applyHeldVariantTokens, applyVariantUpdates, defaultVariants, grantVariantToken } from "./variants.js";
 import { countBundleQuest, grantChallengeSchedule as grantSchedule, settleChallengeSchedules } from "./challenges.js";
 import { accountLevelOf, addBookXp, giveSeasonReward, namesAthenaBuild, seasonNeedsSwitch, seasonNumber, settleSeasonPromise, settleSeasonRewards, switchSeason } from "./seasons.js";
 
@@ -140,8 +141,9 @@ const migrated = (profile, name) => (profile.coreMigrations ?? []).includes(name
 // time the account's athena profile loads. 1.8 has no winners question (none of 1.7.2's battleroyale/winners or recordwin
 // strings are left): its umbrella is a glider item the locker equips. An umbrella already in a locker stays.
 const victoryUmbrella = "AthenaGlider:solo_umbrella";
-// Season 3's is the Paper Parasol (Umbrella_PaperParasol), 3.0's AthenaSeason3 SeasonFirstWinRewards.
-const seasonVictoryUmbrellas = { 2: "AthenaGlider:umbrella_snowflake", 3: "AthenaGlider:umbrella_paperparasol" };
+// Season 3's is the Paper Parasol (Umbrella_PaperParasol), 3.0's AthenaSeason3 SeasonFirstWinRewards, and Season 4's
+// 4.0's AthenaSeason4 SeasonFirstWinRewards, Umbrella_Season_04 ("Wet Paint").
+const seasonVictoryUmbrellas = { 2: "AthenaGlider:umbrella_snowflake", 3: "AthenaGlider:umbrella_paperparasol", 4: "AthenaGlider:umbrella_season_04" };
 const founderVictoryUmbrella = "AthenaGlider:founderumbrella";
 const victoryUmbrellas = [victoryUmbrella, ...Object.values(seasonVictoryUmbrellas), founderVictoryUmbrella];
 const victoryUmbrellasOf = (accountId, settings, season) => [victoryUmbrella, seasonVictoryUmbrellas[season],
@@ -227,8 +229,11 @@ export function athenaNeedsSetUp(profile, settings = {}) {
     || seasonNeedsSwitch(profile) || danceSlotsNeedSettling(profile) || heldGiftBoxes(profile).length > 0;
 }
 
+// A cosmetic with styles (4.0's Carbide and Omega, profiles/variants.js) comes with its variants at their defaults.
 function addCosmetic(tracker, templateId, seen) {
-  tracker.addItem(templateId, { templateId, attributes: { level: 1, item_seen: seen ? 1 : 0, favorite: 0 }, quantity: 1 });
+  const variants = defaultVariants(templateId);
+  tracker.addItem(templateId, { templateId, attributes: { level: 1, item_seen: seen ? 1 : 0, favorite: 0, ...(variants.length ? { variants } : {}) },
+    quantity: 1 });
 }
 
 // A cosmetic the player now owns for good (bought or earned): added if the locker lacks it, and no longer the blanket
@@ -247,6 +252,8 @@ export function grantCosmetic(session, templateId, { force = false } = {}) {
   log("Battle Royale", `${session.accountId} got ${id}`);
   // An outfit whose back bling 3.0 made an item of its own brings that back bling (Core-Backend #203).
   for (const backpack of splitOffBackpacks(id)) grantCosmetic(session, backpack);
+  // Styles won before the cosmetic came (profiles/variants.js).
+  applyHeldVariantTokens(session);
   return { profileId: "athena", itemId: id, templateId: id, quantity: 1 };
 }
 
@@ -522,8 +529,9 @@ function settleDanceSlots(tracker) {
 }
 
 // EquipBattleRoyaleCustomization {slotName, itemToSlot, indexWithinSlot}: an item of the slot's type, or "" for its
-// default; in 1.11's emote slots, at indexWithinSlot (0 to 5; another index is the first slot).
-export function equipCustomization(session, slotName, itemToSlot, indexWithinSlot = 0) {
+// default; in 1.11's emote slots, at indexWithinSlot (0 to 5; another index is the first slot). From 4.0 (CL-4039451) it
+// also carries variantUpdates [{channel, active, owned}], the style the locker picked (profiles/variants.js).
+export function equipCustomization(session, slotName, itemToSlot, indexWithinSlot = 0, variantUpdates = []) {
   const tracker = session.profile("athena");
   const slot = slotOf(slotName);
   if (!slot) throw new McpError("errors.com.epicgames.fortnite.invalid_parameter", `No locker slot ${slotName}`);
@@ -543,6 +551,7 @@ export function equipCustomization(session, slotName, itemToSlot, indexWithinSlo
     const index = Number.isInteger(indexWithinSlot) && indexWithinSlot >= 0 && indexWithinSlot < held.length ? indexWithinSlot : 0;
     if (held[index] !== itemId) tracker.setStat(stat, held.map((id, at) => (at === index ? itemId : id)));
   } else if (held !== itemId) tracker.setStat(stat, itemId);
+  applyVariantUpdates(session, itemId, variantUpdates);
 }
 
 // The season level. The lobby (1.8's sub_707030) shows level, xp against the level's XpToNextLevel (so xp is the XP
@@ -679,12 +688,16 @@ function completeQuest(session, itemId) {
   // Season 3's challenges (AthenaChallengeBundleQuest, profiles/challenges.js) have no Collect Rewards: 3.0's challenges
   // tab lists their bundles' quests and no claim, so their Battle Stars are paid as they complete, and their bundle
   // counts them.
-  if (quest.type === "AthenaChallengeBundleQuest") {
+  // 4.0's hidden challenges (bHidden: Quest_BR_S4W<n>_Cumulative_CompleteAll, done when a week's challenges are, and the
+  // cumulative challenges' hidden Quest_BR_S4_Cumulative_Quest<n>) are never shown, so they settle the same way.
+  if (quest.type === "AthenaChallengeBundleQuest" || quest.hidden) {
     log("Battle Royale", `${session.accountId} completed the challenge ${questIdOf(item)}`);
     claimAthenaQuest(session, itemId);
     countBundleQuest(session, itemId, (rewardSession, reward) => giveSeasonReward(rewardSession, reward, seasonFunctions));
+    itemObjectives(session, "HasCompletedQuest", `Quest:${questIdOf(item)}`, 1);
     return;
   }
+  itemObjectives(session, "HasCompletedQuest", `Quest:${questIdOf(item)}`, 1);
   log("Battle Royale", `${session.accountId} completed ${questIdOf(item)}, waiting for Collect Rewards`);
   collectEarlierRewards(session, itemId, quest);
 }
@@ -724,9 +737,49 @@ export function claimAthenaQuest(session, itemId) {
   log("Battle Royale", `${session.accountId} collected ${questIdOf(item)}`);
   for (const { templateId, quantity } of quest.rewards ?? []) {
     if (templateId.toLowerCase() === "accountresource:athenaseasonalxp") addSeasonXp(session, quantity);
-    // Battle Stars (1.11's challenges give 5 or 10), to the Battle Pass (profiles/seasons.js).
-    else if (templateId.toLowerCase() === "accountresource:athenaseasonalbp") addBookXp(session, quantity, seasonFunctions);
-    else if (typeOf(templateId) === "quest") grantAthenaQuest(tracker, templateId.split(":")[1]);
+    // Battle Stars (1.11's challenges give 5 or 10), to the Battle Pass (profiles/seasons.js); from Season 4 a challenge's
+    // stars past the last tier are season XP (overflowStarXp).
+    else if (templateId.toLowerCase() === "accountresource:athenaseasonalbp") {
+      if (overflowStarXp(tracker.profile)) addSeasonXp(session, quantity * overflowStarXp(tracker.profile));
+      else addBookXp(session, quantity, seasonFunctions);
+    } else if (typeOf(templateId) === "quest") grantAthenaQuest(tracker, templateId.split(":")[1]);
+    // 4.0's (CL-4039451) challenge rewards: Carbide's and Omega's styles (CosmeticVariantToken, profiles/variants.js), the
+    // cumulative challenges' loading screens (and any cosmetic) to the locker, and the weekly challenge token
+    // (Token:AthenaBattlePass_S4_WeeklyChallenge_Token, "S4 Weekly Challege Token", a week's CompleteAll reward), which the
+    // athena profile holds and the cumulative challenges count (ItemEvent Acquire: Quest_BR_S4_Cumulative_CollectTokens_01
+    // to _07, one to seven tokens).
+    else if (typeOf(templateId) === "cosmeticvarianttoken") grantVariantToken(session, templateId);
+    else if (typeOf(templateId).startsWith("athena")) grantCosmetic(session, templateId);
+    else if (typeOf(templateId) === "token") acquireAthenaToken(session, templateId, quantity);
+  }
+}
+
+// 4.0's (CL-4039451) notes: "New this season: Completing challenges after reaching tier 100 in the Battle Pass will grant
+// you 100 Seasonal XP per star." So from Season 4 a challenge's Battle Stars, once the Battle Pass is at its last tier,
+// are 100 season XP each; 0 before Season 4 or below the last tier (the stars then go to the tiers, profiles/seasons.js).
+const overflowStarXpSeason = 4;
+const xpPerOverflowStar = 100;
+const overflowStarXp = (profile) => ((athenaSeason()?.seasonNumber ?? 0) >= overflowStarXpSeason && athenaSeason().numBookLevels > 0
+  && (profile.stats.attributes.book_level ?? 1) >= athenaSeason().numBookLevels ? xpPerOverflowStar : 0);
+
+// A token an athena challenge gives (4.0's weekly challenge token): held in the athena profile, its count in one item, and
+// counted by the challenges that wait for it (Acquire).
+function acquireAthenaToken(session, templateId, quantity) {
+  const tracker = session.profile("athena");
+  const itemId = Object.keys(tracker.profile.items).find((id) => tracker.profile.items[id].templateId.toLowerCase() === templateId.toLowerCase());
+  if (itemId) tracker.setQuantity(itemId, (tracker.profile.items[itemId].quantity ?? 0) + quantity);
+  else tracker.addItem(crypto.randomUUID(), { templateId, attributes: { item_seen: false }, quantity });
+  log("Battle Royale", `${session.accountId} got ${quantity} ${templateId}`);
+  itemObjectives(session, "Acquire", templateId, quantity);
+}
+
+// Objectives that count an item event (4.0: Acquire of a token, HasCompletedQuest of a challenge) on the open challenges.
+function itemObjectives(session, event, templateId, count) {
+  for (const { itemId, quest } of activeQuests(session.profile("athena"))) {
+    for (const objective of quest.objectives.filter((candidate) => candidate.itemEvent === event && candidate.item
+      && candidate.item.toLowerCase() === templateId.toLowerCase())) {
+      if (session.profile("athena").profile.items[itemId]?.attributes.quest_state === "Active") addProgress(session, itemId, objective, count);
+    }
   }
 }
 

@@ -3,7 +3,7 @@
 export const certBuild = "3532353";
 
 // The Fortnite version players call each build Core knows (as Core-Launcher's KnownBuilds), for what the client shows.
-export const buildVersions = { 3532353: "1.1", 3541083: "1.2", 3700114: "1.7.2", 3724489: "1.8", 3729133: "1.8.1", 3741772: "1.8.2", 3757339: "1.9", 3775276: "1.9.1", 3790078: "1.10", 3807424: "1.11", 3825894: "2.1", 3841827: "2.2", 3847564: "2.3", 3858292: "2.4", 3870737: "2.4.2", 3889387: "2.5", 3901517: "3.0", 3915963: "3.1", 3917250: "3.1.1", 3935073: "3.2", 3942182: "3.3", 4000805: "3.5.1", 4008490: "3.5.2", 4019403: "3.6" };
+export const buildVersions = { 3532353: "1.1", 3541083: "1.2", 3700114: "1.7.2", 3724489: "1.8", 3729133: "1.8.1", 3741772: "1.8.2", 3757339: "1.9", 3775276: "1.9.1", 3790078: "1.10", 3807424: "1.11", 3825894: "2.1", 3841827: "2.2", 3847564: "2.3", 3858292: "2.4", 3870737: "2.4.2", 3889387: "2.5", 3901517: "3.0", 3915963: "3.1", 3917250: "3.1.1", 3935073: "3.2", 3942182: "3.3", 4000805: "3.5.1", 4008490: "3.5.2", 4019403: "3.6", 4039451: "4.0" };
 
 export const versionOf = (changelist) => buildVersions[changelist] ?? null;
 
@@ -24,15 +24,19 @@ export const battleRoyaleBuilds = Object.keys(buildVersions).filter((changelist)
 // ++Fortnite+Release-3.6, 24 April 2018, the season's last update), whose AthenaSeason3 is still 3.0's and whose own data
 // is gamedata/4019403. Core knows no 3.4 (no 3.4 build is at hand):
 // a 3.4 client would play on 3.3's data, the closest earlier build that has its own (src/gamedata/read.js).
+// Season 4 began with 4.0 (CL-4039451, ++Fortnite+Release-4.0, 1 May 2018): its AthenaSeason4 has its own curves and
+// Battle Pass (100 tiers, the BRSeason4 storefront), and its data is gamedata/4039451.
 export const battleRoyaleSeasons = [
   { season: 1, firstVersion: "1.8", lastVersion: "1.10" },
   { season: 2, firstVersion: "1.11", lastVersion: "2.5" },
-  { season: 3, firstVersion: "3.0", lastVersion: "3.6" }
+  { season: 3, firstVersion: "3.0", lastVersion: "3.6" },
+  { season: 4, firstVersion: "4.0", lastVersion: "4.0" }
 ];
-// "Season 2 (1.11 – 2.5)", "1.11 – 2.5".
+// "Season 2 (1.11 – 2.5)", "1.11 – 2.5"; a season of one version Core knows, "Season 4 (4.0)".
 export const seasonVersions = (season) => {
   const known = battleRoyaleSeasons.find((entry) => entry.season === Number(season));
-  return known ? `${known.firstVersion} – ${known.lastVersion}` : "";
+  if (!known) return "";
+  return known.firstVersion === known.lastVersion ? known.firstVersion : `${known.firstVersion} – ${known.lastVersion}`;
 };
 export const seasonName = (season) => `Season ${season} (${seasonVersions(season)})`;
 

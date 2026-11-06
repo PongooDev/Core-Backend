@@ -109,7 +109,14 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   Dev_Test_Pickaxe_StatDebugger, is left out as 3.5's; and its client paks no longer ship most mission infos (48 of the 57
   FortMissionInfo assets its generators name: Gate_Single, DeadDrop, the Survivals... are cooked server-only), so a fifth
   argument, an earlier build's extraction folder (3.5.1's full data: Cert's files with `gamedata/4000805` applied), gives
-  `world.json` those missions' tags; the extractor prints how many it took). Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
+  `world.json` those missions' tags; the extractor prints how many it took), and 4.0's `4.20.0-4039451+++Fortnite+Release-4.0`
+  (a full install with Save the World's paks: every mission info its generators name is in them, so it takes no fifth
+  argument; its world.json has 3.6's primary missions' tags exactly, and four more. Three extractor changes: its sprays,
+  `AthenaSprayItemDefinition` (`AthenaDance:SPID_*`), are cosmetics; a cosmetic's styles (`ItemVariants`, the package's
+  FortCosmetic*Variant exports) are written as `variants`, `[{channel, options, default, unlocked}]` by the tags' last
+  part, and its variant tokens (`Athena/Items/CosmeticVariantTokens`, FortVariantTokenType: Carbide's and Omega's
+  stages) as `variantTokens`, `{templateId: {cosmetic, channel, variant, giftBox}}`; and its test harvesting tool
+  (`Dev_Test_Pickaxe`) and test spray (`SPID_000_TestSpray`) are left out). Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `research.json`: the resource collectors (research points): each CollectedResource template's payout and the
   homebase attributes its rate, capacity and wallet cap come from, what each skill tree node adds to those attributes

@@ -1038,14 +1038,17 @@ var athenaLevels = new List<object>();
 SortedDictionary<string, object>? athenaSeason = null;
 var challengeSchedules = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var challengeBundles = new SortedDictionary<string, object>(StringComparer.Ordinal);
-var testCosmetics = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "DynamicsTestGlider", "Glider_ProxyTest", "Glider_TestStaticParts", "Pickaxe_ID_zzz_StatDebugger", "Dev_Test_Pickaxe_StatDebugger" };
+var variantTokens = new SortedDictionary<string, object>(StringComparer.Ordinal);
+var testCosmetics = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "DynamicsTestGlider", "Glider_ProxyTest", "Glider_TestStaticParts", "Pickaxe_ID_zzz_StatDebugger", "Dev_Test_Pickaxe_StatDebugger",
+    "Dev_Test_Pickaxe", "SPID_000_TestSpray" };
 var cosmeticKeys = new List<(string TemplateId, string Class, string AssetName, string? Hero, string? Icon, string DisplayName)>();
 foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" && f.Path.StartsWith("FortniteGame/Content/Athena/Items/", StringComparison.OrdinalIgnoreCase)))
 {
     // The test characters: 00_TestAssets, and from 3.2 (CL-3935073) Characters/Dev_TestAsset. 3.5 (CL-4000805) adds test
     // gliders (DynamicsTestGlider, Glider_ProxyTest, Glider_TestStaticParts: "Glider", Handmade) and a debug harvesting tool
     // (Pickaxe_ID_zzz_StatDebugger, "Use to debug in-match progressive cosmetics", bNeverPersisted), left out the same way;
-    // 3.6 (CL-4019403) renames that tool Dev_Test_Pickaxe_StatDebugger.
+    // 3.6 (CL-4019403) renames that tool Dev_Test_Pickaxe_StatDebugger. 4.0 (CL-4039451) adds a test harvesting tool
+    // (Dev_Test_Pickaxe, "Test Pickaxe") and a test spray (SPID_000_TestSpray, "Test Spray"), left out too.
     if (file.Path.Contains("/00_TestAssets/", StringComparison.OrdinalIgnoreCase) || file.Path.Contains("/Dev_TestAsset.", StringComparison.OrdinalIgnoreCase)) continue;
     if (testCosmetics.Contains(Path.GetFileNameWithoutExtension(file.Path))) continue;
     var gamePath = "/Game/" + file.PathWithoutExtension["FortniteGame/Content/".Length..];
@@ -1101,6 +1104,25 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         };
         continue;
     }
+    // 4.0's (CL 4039451) cosmetic variant tokens (Athena/Items/CosmeticVariantTokens, FortVariantTokenType): Carbide's
+    // progressive challenges give them, each unlocking one style (VariantNameTag) of a channel (VariantChanelTag, sic) on
+    // its cosmetic_item, written below as athena.json variantTokens.
+    if (export.ExportType == "FortVariantTokenType")
+    {
+        var tokenId = assetTypes.TemplateId($"{gamePath}.{export.Name}", export.ExportType, false) ?? $"CosmeticVariantToken:{export.Name.ToLowerInvariant()}";
+        var cosmeticPath = properties["cosmetic_item"]?["ObjectPath"]?.GetValue<string>();
+        var cosmeticClass = properties["cosmetic_item"]?["ObjectName"]?.GetValue<string>()?.Split('\'')[0];
+        if (cosmeticPath is null) continue;
+        var cosmeticGamePath = "/Game/" + cosmeticPath["FortniteGame/Content/".Length..].Split('.')[0];
+        variantTokens[tokenId] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+        {
+            ["cosmetic"] = assetTypes.TemplateId($"{cosmeticGamePath}.{cosmeticGamePath.Split('/').Last()}", cosmeticClass, false) ?? "",
+            ["channel"] = VariantTagName(properties["VariantChanelTag"]),
+            ["variant"] = VariantTagName(properties["VariantNameTag"]),
+            ["giftBox"] = properties["bCreateGiftbox"]?.GetValue<bool>() ?? false
+        };
+        continue;
+    }
     if (!ItemClasses.AthenaCosmetics.Contains(export.ExportType)) continue;
     var cosmeticId = assetTypes.TemplateId($"{gamePath}.{export.Name}", export.ExportType, false)!;
     var displayName = properties["DisplayName"]?["LocalizedString"]?.GetValue<string>() ?? export.Name;
@@ -1110,6 +1132,30 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         ["name"] = displayName,
         ["rarity"] = Enum(properties["Rarity"]) ?? "Ordinary"
     };
+    // 4.0's styles (ItemVariants: FortCosmeticCharacterPartVariant and the like, the package's own exports): each channel
+    // (VariantChannelTag) with its options' variant tags, the default (bIsDefault) and those unlocked from the start
+    // (bStartUnlocked), as the athena profile's variants attribute names them (the tags' last part: "Progressive",
+    // "Stage1"; 4.0's client puts "Cosmetics.Variant.Channel." and "Cosmetics.Variant.Property." back in front).
+    if (properties["ItemVariants"] is JsonArray { Count: > 0 })
+    {
+        var channels = new List<object>();
+        foreach (var variantExport in package.GetExports().Where(e => e != export && e.ExportType.StartsWith("FortCosmetic") && e.ExportType.EndsWith("Variant")))
+        {
+            var variant = JsonNode.Parse(JsonConvert.SerializeObject(variantExport))!["Properties"] ?? new JsonObject();
+            var variantOptions = variant.AsObject().Where(p => p.Value is JsonArray).SelectMany(p => p.Value!.AsArray())
+                .Where(o => o?["CustomizationVariantTag"] is not null).ToList();
+            if (variantOptions.Count == 0) continue;
+            channels.Add(new SortedDictionary<string, object>(StringComparer.Ordinal)
+            {
+                ["channel"] = VariantTagName(variant["VariantChannelTag"]),
+                ["options"] = variantOptions.Select(o => VariantTagName(o!["CustomizationVariantTag"])).ToList(),
+                ["default"] = variantOptions.Where(o => o!["bIsDefault"]?.GetValue<bool>() == true).Select(o => VariantTagName(o!["CustomizationVariantTag"])).FirstOrDefault()
+                    ?? VariantTagName(variantOptions[0]!["CustomizationVariantTag"]),
+                ["unlocked"] = variantOptions.Where(o => o!["bStartUnlocked"]?.GetValue<bool>() == true).Select(o => VariantTagName(o!["CustomizationVariantTag"])).ToList()
+            });
+        }
+        if (channels.Count > 0) ((SortedDictionary<string, object>)athenaCosmetics[cosmeticId])["variants"] = channels;
+    }
     // The back bling parts (CustomCharacterPart, CharacterPartType Backpack) an outfit wears built in, through its hero's
     // specializations (FortHeroSpecialization CharacterParts), and a back bling's own CharacterParts, as part names: 3.0
     // (CL 3901517) took 2.5's built-in back blings off their outfits (HS_032's Male_Commando_10) and made them back blings
@@ -1362,6 +1408,7 @@ var athenaFile = new SortedDictionary<string, object>(StringComparer.Ordinal)
     ["objectiveStats"] = athenaStats
 };
 if (athenaSeason is not null) athenaFile["season"] = athenaSeason;
+if (variantTokens.Count > 0) athenaFile["variantTokens"] = variantTokens;
 // The challenge schedules the season grants (its rewards and the ones it names) and their bundles: 3.0's.
 if (athenaSeason is not null && athenaSeason.ContainsKey("challengeSchedulesAlwaysShown"))
 {
@@ -1458,6 +1505,9 @@ static string GamePath(string objectPath)
 
 // Soft paths come as "/Game/Dir/Name.Name" or just "/Game/Dir/Name".
 static string AssetName(string path) => path.Split('/').Last().Split('.').Last();
+
+// A variant gameplay tag's last part (Cosmetics.Variant.Property.Stage1 -> Stage1), as the athena profile names variants.
+static string VariantTagName(JsonNode? tag) => (tag?["TagName"]?.GetValue<string>() ?? "None").Split('.').Last();
 
 static List<string> Strings(JsonNode? values) => (values as JsonArray)?.Select(v => v!.GetValue<string>()).ToList() ?? [];
 
@@ -1556,7 +1606,10 @@ static class ItemClasses
         "AthenaEmojiItemDefinition",
         // 3.0's (CL 3901517) contrails (Athena/Items/Cosmetics/Contrails, EAthenaCustomizationCategory::SkyDiveContrail),
         // which its Battle Pass gives.
-        "AthenaSkyDiveContrailItemDefinition"
+        "AthenaSkyDiveContrailItemDefinition",
+        // 4.0's (CL 4039451) sprays (Athena/Items/Cosmetics/Sprays, UAthenaSprayItemDefinition: UAthenaDanceItemDefinition,
+        // AthenaDance:SPID_*), which its Battle Pass gives and the emote slots hold ("INTRODUCING SPRAYS").
+        "AthenaSprayItemDefinition"
     ];
 
     private static readonly Dictionary<string, string> Parents = new()

@@ -1,5 +1,6 @@
 import { convertLeftover } from "./candyllamas.js";
 import { currentEventsConfig, hasEventEnded, isEventActive, mutantStorms, mutantStorms2018, storm2018 } from "./events.js";
+import { intoTheStormLlama } from "./storm2018.js";
 import { stormLlama2018, stormTickets } from "./mutantstorms.js";
 
 // 1.11's notes: "With the end of the Mutant Storms event, every 1,000 unspent Storm Tickets will be converted to a storm
@@ -47,8 +48,28 @@ export const stormConversion2018 = {
   due: () => {
     const cfg = currentEventsConfig();
     return cfg?.autoConvertStormTickets !== false && cfg?.autoConvertCandy !== false && hasEventEnded(mutantStorms2018)
-      && !isEventActive(mutantStorms) && !isEventActive(mutantStorms2018) && !isEventActive(storm2018);
+      && !isEventActive(mutantStorms) && !isEventActive(mutantStorms2018) && !isEventActive(storm2018) && !hasEventEnded(storm2018);
   },
   options: () => ({ currency: stormTickets, perLlama: stormTicketsPerLlama, llama: stormLlama2018, label: "Storm Tickets",
     llamaName: "Storm Llama" })
+};
+
+// Into the Storm (3.5.1 to 3.6, events/storm2018.js) ends with 4.0 (CL-4039451): "Each stack of 1000 Storm Tickets will be
+// converted into Neon Llamas. Anyone who had at least one Storm Ticket will receive a Llama." The Neon Llama is the Into
+// the Storm Llama (CardPack_Event_2018_Storm, "Guarantees at least one Epic or better limited time Neon Weapon or Cyberpunk
+// Hero"), the one its tickets bought (store/catalog.js). So the first time an account loads on a build past 3.6 whose data
+// still has it, its Storm Tickets become unopened Into the Storm Llamas, one a 1,000 and one more for what is left over
+// (roundUp, as 3.5.1's Firecracker Tickets), and none are lost (events/leftovers.js). Past Into the Storm, the storms'
+// return's conversion (stormConversion2018) no longer runs: tickets an account still holds from 2.3's storms are Into the
+// Storm's by then, and become Neon Llamas with the rest.
+export const stormConversion2018Storm = {
+  run: "Storm2018",
+  due: () => {
+    const cfg = currentEventsConfig();
+    return cfg?.autoConvertStormTickets !== false && cfg?.autoConvertCandy !== false && hasEventEnded(storm2018)
+      && !isEventActive(mutantStorms) && !isEventActive(mutantStorms2018) && !isEventActive(storm2018);
+  },
+  options: () => ({ currency: stormTickets, perLlama: stormTicketsPerLlama, llama: intoTheStormLlama, label: "Storm Tickets",
+    llamaName: "Into the Storm Llama" }),
+  convert: (session) => convertLeftover(session, { ...stormConversion2018Storm.options(), roundUp: true })
 };

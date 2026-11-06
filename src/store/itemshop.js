@@ -62,14 +62,20 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // those its data has, so 3.0's shop is as it was), and so are 3.5.1's (CL-4000805: 3.4's and 3.5's Raven, Rabbit Raider,
 // Bunny Brawler, Dark Vanguard, Leviathan, Tricera Ops, Tomatohead, Cipher, Midnight Ops, Whiplash, their gliders,
 // pickaxes and emotes, from 30 March), and 3.6's (CL-4019403: Steelsight with Steelcast, Brite Gunner with Brite Bag,
-// Global Axe, Squat Kick and Tidy, from 27 April); Battle Pass Tiers are left out. A build's season is its athena data's
-// seasonNumber, Season 1 without one.
+// Global Axe, Squat Kick and Tidy, from 27 April); Battle Pass Tiers are left out.
+//
+// 4.0 (CL-4039451) is Season 4, and has its own shop the same way: Epic's of Season 4, day by day from its first day, 1
+// May 2018, to its last, 11 July 2018 (itemshop-season4.json, the same wiki pages, 3 July's Part 1), replayed in a 72-day
+// cycle from the day 4.0 is first served. Only the cosmetics 4.0's data has are in (the season's 4.1 to 4.5 cosmetics,
+// from 17 May on: Hazard Agent, Moisty Merman, the World Cup outfits, Omen, Fate, the Fireworks and Star-Spangled ones...,
+// are left out, and the days Epic featured only those have an empty featured section), and Battle Pass Tiers. A build's
+// season is its athena data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;
   return { days, firstDay: Date.parse(`${days[0].date}T00:00:00Z`) };
 };
 const seasonHistories = { 1: readHistory("itemshop.json"), 2: readHistory("itemshop-season2.json"),
-  3: readHistory("itemshop-season3.json") };
+  3: readHistory("itemshop-season3.json"), 4: readHistory("itemshop-season4.json") };
 export const seasonOfBuild = () => athenaSeason()?.seasonNumber ?? 1;
 const historyOf = (season) => seasonHistories[season] ?? seasonHistories[1];
 // The first day of a season's history (ms, UTC): Season 3's is 22 February 2018, Epic's first day of the season.
@@ -85,8 +91,8 @@ const rotationMsOf = (config) => Math.max(0, Math.min(23, Number(config?.rotatio
 // choice: its replay and countdown have run that way since the shop was added, every running server is somewhere in its
 // cycle, and re-anchoring it would jump their shops and countdowns), unless an admin sets its start too. With no
 // recorder (no settings store), Season 2 also keeps its history's first day. Season 3 starts the same way, on the day
-// 3.0 is first served.
-const anchoredSeasons = [2, 3];
+// 3.0 is first served, and Season 4 on the day 4.0 is.
+const anchoredSeasons = [2, 3, 4];
 let seasonStartRecorder = null;
 let recordSeasonStarts = true;
 export function configureSeasonStarts(recorder) {

@@ -17,7 +17,7 @@ test("admin panel: Season 3's battle pass, item shop and events clock", async ()
     assert.equal(pass.body.tiers.length, 100);
     assert.equal(pass.body.config.battlePassPrice, 950);
     assert.equal(pass.body.config.bundlePrice, 2800);
-    assert.deepEqual(pass.body.availableSeasons.map((s) => s.id), [1, 2, 3]);
+    assert.deepEqual(pass.body.availableSeasons.map((s) => s.id), [1, 2, 3, 4]);
 
     // Core-Backend #207: every week of the weekly challenges at once.
     assert.equal(pass.body.challengesAllUnlocked, false);

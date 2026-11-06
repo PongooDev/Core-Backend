@@ -36,14 +36,21 @@ import { currentBattlePassConfig } from "./season1.js";
 // AthenaSeasonLevelConfirmationModal still has Season 2's BuyTierOfferID: the storefront's tier offer is the season's,
 // and a purchase of either id buys tiers. The offers' texts are Core's (🟡: Epic's Season 3 catalog isn't at hand), in
 // Season 2's form, from what AthenaSeason3's pass and its first 26 tiers give, and the pass's offer id is Core's.
-// The admin panel's Battle Pass tab sets each season's pass and bundle prices (battlepass.season2, battlepass.season3).
+// Season 4's Battle Pass (4.0, CL-4039451) is AthenaSeason4's the same way: 100 tiers, the BRSeason4 storefront, its own
+// display assets (DA_BR_Season4_BattlePass, DA_BR_Season4_BattlePassWithLevels), its own tier offer
+// (BattlePassLevelOfferID E9527AF46F4B4A9CAE98D91F2AA53CB6), at Epic's prices ("100 tiers. OVER 100 rewards. Still 950
+// V-Bucks!"; the bundle 2,800 as Season 3's). Its tier 1 Battle Pass rewards give Carbide and Battlehawk and the weekly
+// challenges (Season4_Challenge_Schedule: each week's, the Carbide progressive challenges and the Blockbuster
+// challenges), its free tier 2 the starter challenges and its tier 100 Omega's (Season4_ProgressiveB_Schedule). The
+// offers' texts are Core's again, in Season 3's form, from what AthenaSeason4's pass and its first 26 tiers give.
+// The admin panel's Battle Pass tab sets each season's pass and bundle prices (battlepass.season2, .season3, .season4).
 export const tierOfferId = "F86AC2ED4B3EA4B2D65EF1B2629572A0";
 export const tierPrice = 150;
 export const bundleTiers = 25;
 
 export const defaultSeasonTwo = { battlePassPrice: 950, bundlePrice: 2800 };
-// Each season's default prices: Season 3's are Season 2's.
-export const defaultSeasonPrices = { 2: defaultSeasonTwo, 3: { battlePassPrice: 950, bundlePrice: 2800 } };
+// Each season's default prices: Season 3's and Season 4's are Season 2's.
+export const defaultSeasonPrices = { 2: defaultSeasonTwo, 3: { battlePassPrice: 950, bundlePrice: 2800 }, 4: { battlePassPrice: 950, bundlePrice: 2800 } };
 
 export function sanitizeSeasonPrices(input, current, defaults = defaultSeasonTwo) {
   const result = { ...defaults, ...(current ?? {}) };
@@ -93,12 +100,30 @@ const season3BundleDescription = [
   "  • 400 V-Bucks", "  • 70% Bonus Season Match XP", "  • 20% Bonus Season Friend Match XP", "  • Exclusive Weekly Challenges", "  • and more!", "",
   "Play to level up your Battle Pass the rest of the way, up to The Reaper at tier 100. Want it all faster? You can use V-Bucks to buy levels any time!"
 ].join("\r\n");
+const season4PassDescription = [
+  "Season 4: May 1 - Jul 12", "",
+  "Instantly get these items:",
+  "  • Carbide Outfit", "  • Battlehawk Outfit", "  • 50% Bonus Season Match XP", "  • 10% Bonus Season Friend Match XP",
+  "  • Exclusive Weekly Challenges", "",
+  "Play to level up your Battle Pass, unlocking up to 100 tiers of rewards (typically takes 75 to 150 hours of play). Want it all faster? You can use V-Bucks to buy levels any time!",
+  "  • Omega plus 4 other outfits", "  • Progressive Carbide and Omega challenges", "  • 1 Harvesting Tool", "  • 3 Gliders", "  • 1 Back Bling",
+  "  • 5 Contrails", "  • 8 Loading Screens", "  • 1300 V-Bucks", "  • 120% Bonus Season Match XP", "  • 40% Bonus Season Friend Match XP",
+  "  • Sprays, Emotes and Emoticons", "  • and more!"
+].join("\r\n");
+const season4BundleDescription = [
+  "Season 4: May 1 - Jul 12", "",
+  `Instantly get the Battle Pass and ${bundleTiers} tiers.`,
+  "  • Carbide Outfit", "  • Battlehawk Outfit", "  • Teknique Outfit", "  • Gale Force Glider", "  • Retro Sci-fi Loading Screen",
+  "  • 300 V-Bucks", "  • 70% Bonus Season Match XP", "  • 20% Bonus Season Friend Match XP", "  • Exclusive Weekly Challenges", "  • and more!", "",
+  "Play to level up your Battle Pass the rest of the way, up to Omega at tier 100. Want it all faster? You can use V-Bucks to buy levels any time!"
+].join("\r\n");
 const seasonTexts = {
   2: { passOfferId: battlePassOfferId, pass: passDescription, bundle: bundleDescription, bundleAsset: "BattlePass" },
-  3: { passOfferId: "core_br_season3_battlepass", pass: season3PassDescription, bundle: season3BundleDescription, bundleAsset: "BattlePassWithLevels" }
+  3: { passOfferId: "core_br_season3_battlepass", pass: season3PassDescription, bundle: season3BundleDescription, bundleAsset: "BattlePassWithLevels" },
+  4: { passOfferId: "core_br_season4_battlepass", pass: season4PassDescription, bundle: season4BundleDescription, bundleAsset: "BattlePassWithLevels" }
 };
 
-// The season's tier offer id: AthenaSeason3's BattlePassLevelOfferID from Season 3, else the modal's.
+// The season's tier offer id: AthenaSeason3's (and AthenaSeason4's) BattlePassLevelOfferID from Season 3, else the modal's.
 const seasonTierOfferId = (season) => season.battlePassLevelOfferId || tierOfferId;
 
 const seasonOffers = () => {

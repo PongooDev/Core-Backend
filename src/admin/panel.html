@@ -1866,7 +1866,8 @@
     const SEASONS = [
       { id: "1", label: "Season 1 (1.8 – 1.10)", from: "1.8+", days: 45 },
       { id: "2", label: "Season 2 (1.11 – 2.5)", from: "1.11+", days: 70 },
-      { id: "3", label: "Season 3 (3.0 – 3.6)", from: "3.0+", days: 68 }
+      { id: "3", label: "Season 3 (3.0 – 3.6)", from: "3.0+", days: 68 },
+      { id: "4", label: "Season 4 (4.0)", from: "4.0+", days: 72 }
     ];
     const seasonOf = (id) => SEASONS.find((entry) => entry.id === String(id)) ?? SEASONS[0];
     const seasonRoute = (accountId) => SEASONS.find((entry) => accountId === `season${entry.id}` || accountId === entry.id)?.id ?? null;
@@ -5126,6 +5127,11 @@
               title: "Season 3: Item Shop (3.0 – 3.6)",
               badge: "68 Days",
               hash: "#/shop/season3"
+            },
+            {
+              title: "Season 4: Item Shop (4.0)",
+              badge: "72 Days",
+              hash: "#/shop/season4"
             }
           ])
         );
@@ -6095,7 +6101,9 @@
         ...(data.challenges ? [weeklyChallengesPanel(season, data)] : []),
         el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" }, el("h2", { text: "Tier Rewards" }), chip(`${tiers.length} tiers`, "accent")),
-          el("p", { class: "note", text: season === "3"
+          el("p", { class: "note", text: season === "4"
+            ? "From 4.0's AthenaSeason4 (100 tiers): the free rewards every player gets and the Battle Pass rewards, given as each tier is reached. Battle Stars (10 a tier) come from season levels and challenges; past tier 100 a challenge's stars are 100 season XP each. The Battle Pass's tier 1 gives the weekly, Carbide and Blockbuster challenges, tier 100 Omega's."
+            : season === "3"
             ? "From 3.0's AthenaSeason3 (100 tiers): the free rewards every player gets and the Battle Pass rewards, given as each tier is reached. Battle Stars (10 a tier) come from season levels and challenges. The Battle Pass's tier 1 gives the weekly challenges instead of a daily one."
             : "From 1.11's AthenaSeason2: the free rewards every player gets and the Battle Pass rewards, given as each tier is reached. Battle Stars (10 a tier) come from season levels and challenges." }),
           table([["Tier", (t) => String(t.tier), "mono"], ["Free", (t) => rewardList(t.free)], ["Battle Pass", (t) => rewardList(t.paid)]], tiers)));
@@ -6129,13 +6137,19 @@
               desc: "Configure 100 tiers of free and premium rewards, pass pricing (950 V-Bucks), and bundle pricing (2,800 V-Bucks)",
               badge: "100 Tiers",
               hash: "#/battlepass/season3"
+            },
+            {
+              title: "Season 4: Battle Pass (4.0)",
+              desc: "Configure 100 tiers of free and premium rewards, pass pricing (950 V-Bucks), and bundle pricing (2,800 V-Bucks)",
+              badge: "100 Tiers",
+              hash: "#/battlepass/season4"
             }
           ])
         );
         return;
       }
 
-      if (state.battlePassSeason === "2" || state.battlePassSeason === "3") return showSeasonPass(state.battlePassSeason);
+      if (["2", "3", "4"].includes(state.battlePassSeason)) return showSeasonPass(state.battlePassSeason);
       const data = await act(api("/admin/api/battlepass/overview"));
       if (!data || state.view !== "battlepass") return;
 
@@ -6428,6 +6442,12 @@
               desc: "Spring It On! continues (Luck Explosion, 3.1's Brave Beginnings), Firecracker tickets, passive storms & Mini-Boss alerts & 68-day calendar cycle",
               badge: "68 Days",
               hash: "#/events/season3"
+            },
+            {
+              title: "Season 4 (4.0)",
+              desc: "Blockbuster Part 1, Blockbuster tickets, active Mini-Boss alerts, Raven in the Event Store, the Season 4 lobby & 72-day calendar cycle",
+              badge: "72 Days",
+              hash: "#/events/season4"
             }
           ])
         );

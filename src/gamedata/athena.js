@@ -8,7 +8,7 @@ import { activeBuild, buildGameData, dataBuilds, perBuild } from "./read.js";
 // overlays it as usual.
 const data = perBuild((read) => {
   const { cosmetics = {}, displayAssets = {}, quests = {}, levels = [], objectiveStats = {}, season, loot = {}, challengeSchedules = {},
-    challengeBundles = {} } = read("athena", {});
+    challengeBundles = {}, variantTokens = {} } = read("athena", {});
   return {
     cosmetics,
     season,
@@ -24,7 +24,8 @@ const data = perBuild((read) => {
     battlePassDailies: Object.keys(quests).filter((id) => quests[id].type === "AthenaBattlePassQuest"),
     loot,
     challengeSchedules,
-    challengeBundles
+    challengeBundles,
+    variantTokens
   };
 });
 
@@ -113,3 +114,7 @@ export const athenaLootTables = () => data().loot;
 // completionThreshold, completionRewards, visualStyle}). Empty for earlier builds.
 export const athenaChallengeSchedules = () => data().challengeSchedules;
 export const athenaChallengeBundles = () => data().challengeBundles;
+
+// 4.0's (CL-4039451) cosmetic variant tokens (tools/extractor; profiles/variants.js), by template id
+// (CosmeticVariantToken:vtid_002_carbideblue_stage1): {cosmetic, channel, variant, giftBox}. Empty for earlier builds.
+export const athenaVariantTokens = () => data().variantTokens;

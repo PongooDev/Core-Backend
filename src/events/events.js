@@ -185,6 +185,31 @@ export const storm2018Phase2 = "EventFlag.Storm2018Phase2";
 export const surviveTheStorm = "EventFlag.SurviveTheStorm";
 export const activeStorms = "EventFlag.ActiveStorms";
 
+// 4.0 (CL-4039451, 1 May 2018, Season 4) ends Into the Storm and runs Blockbuster (events/blockbuster2018.js): "Blockbuster
+// Event - Part 1: Origin Story ... Join Spitfire and Lok as they investigate the comet". Every EventFlag.* in 4.0's paks (a
+// byte scan of every uasset, umap, uexp and ini, the Athena umaps whole; the exe and the Dumper-7 SDK name none, only the
+// manager's ActiveEventFlags, IsEventFlagActive, EventFlagsForcedOn/OffByHotfix):
+// - Save the World: MissionAlerts' ActiveMiniBosses, ActiveStorms, Fortnitemares, GroupMission, Horde, PassiveMiniBosses,
+//   PassiveStorms and SurviveTheStorm (3.6's rows, the same categories and quotas); CCNodePages' Horde; and, new,
+//   Blockbuster2018Phase1, Phase2 and Phase3 (HomeScreenNextQuest's "View Event", EventQuestMapSideBarData and
+//   Blockbuster2018_QuestMapWidget, which shows Part 1's page from Phase1 and Part 2's from Phase2; Phase3 only the side
+//   bar). 3.6's Storm2018Phase1 and Phase2 are gone with IntoTheStorm2018_QuestMapWidget.
+// - Battle Royale and the lobby: Items/Events' BR.Allow50v50, BR.CandyCaneGuns, BR.DisallowDuo/Solo/Squad, SupplyDropGift,
+//   LobbyHalloweenDecor and LobbyWinterDecor (3.6's), and, new, LobbySeason4 (Items/Events/Shared/LobbyBG_Season4, a
+//   LobbyBackgroundTakeoverEvent: the lobby in Maps/UI/Frontend_Lobby_Season4 while it is on).
+// None drives Battle Royale's map: the comet crater and the Hop Rocks are 4.0's map itself (events/meteorstrike.js has
+// what the hotfix rows do).
+// So 4.0 runs Blockbuster2018Phase1 (Part 2, "A Hero Is Born", came with 30 May's update, the Fortnite Wiki's
+// Blockbuster), the Season 4 lobby, and its notes' alerts: "Miniboss Mission Alerts are more common during this event and
+// award between 50 and 120 Blockbuster Tickets ... Quota: 10 per day" (MiniBossCategory, EventFlag.ActiveMiniBosses,
+// quota 10, in place of the passive General rows) and "Mutant Storm Mission Alerts have returned to normal levels and no
+// longer reward event tickets" (StormLowCategory, EventFlag.PassiveStorms; 🟡 the data's quota is 4, the notes say 3).
+// Survive the Storm (EventFlag.SurviveTheStorm) ends with Into the Storm.
+export const blockbuster2018 = "Blockbuster2018";
+export const blockbuster2018Phase1 = "EventFlag.Blockbuster2018Phase1";
+export const lobbySeason4 = "EventFlag.LobbySeason4";
+const build40 = 4039451;
+
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
   { name: mutantStorms, flag: "EventFlag.Vindertech", firstBuild: 3775276, lastBuild: 3775276 },
@@ -206,6 +231,10 @@ const events = [
   { name: storm2018, flag: surviveTheStorm, firstBuild: 4000805, lastBuild: 4019403 },
   { name: storm2018, flag: storm2018Phase1, firstBuild: 4000805, lastBuild: 4019403 },
   { name: storm2018, flag: storm2018Phase2, firstBuild: 4008490, lastBuild: 4019403 },
+  { name: blockbuster2018, flag: blockbuster2018Phase1, firstBuild: build40, lastBuild: build40 },
+  { name: blockbuster2018, flag: activeMiniBosses, firstBuild: build40, lastBuild: build40 },
+  { name: passiveStorms, flag: passiveStorms, firstBuild: build40, lastBuild: build40 },
+  { name: lobbySeason4, flag: lobbySeason4, firstBuild: build40, lastBuild: build40 },
   { name: lobbyWinterDecor, flag: lobbyWinterDecor, firstBuild: 3807424, lastBuild: 3825894 },
   { name: winterBattleBus, flag: winterBattleBus, firstBuild: 3807424, lastBuild: 3825894 },
   { name: supplyDropGift, flag: supplyDropGift, firstBuild: 3807424, lastBuild: 3825894 }

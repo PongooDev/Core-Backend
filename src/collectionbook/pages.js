@@ -129,7 +129,9 @@ export const isUnlocked = (session, id) => Boolean(findPageItem(session.profile(
 // - Spring It On!'s Lunar New Year: its Dragon weapons, ore and crystal, and its heroes (2.5's data: "Each Llama will
 //   contain a Lunar New Years Hero, or a Dragon weapon");
 // - Into the Storm's (3.5.1, CL-4000805): the Neon weapons, ranged and melee, ore and crystal, and the Cyberpunk heroes
-//   ("Cyberpunk Heroes ... available in the new 'Into the Storm' event Llama", "Neon Weapon set added").
+//   ("Cyberpunk Heroes ... available in the new 'Into the Storm' event Llama", "Neon Weapon set added");
+// - Blockbuster's (4.0, CL-4039451): the Military weapons, ore and crystal, and the Shadow Ops heroes ("Added the Military
+//   weapons set, available via Blockbuster Llamas", "[New] 8 "Shadow Ops" Heroes").
 export const specialPages = [
   "PageSpecial_Hydraulic", "PageSpecial_Hydraulic_Crystal", "PageSpecial_StormZone_Heroes",
   "PageSpecial_Scavenger", "PageSpecial_Scavenger_Crystal", "PageSpecial_Scavenger_Heroes",
@@ -137,7 +139,8 @@ export const specialPages = [
   "PageSpecial_Weapons_Melee_StormZone2", "PageSpecial_Weapons_Melee_StormZone2_Crystal",
   "PageSpecial_Weapons_ChineseNewYear2018", "PageSpecial_Weapons_Crystal_ChineseNewYear2018", "PageSpecial_ChineseNewYear2018_Heroes",
   "PageSpecial_StormZoneCyber_Ranged", "PageSpecial_StormZoneCyber_Ranged_Crystal", "PageSpecial_StormZoneCyber_Melee",
-  "PageSpecial_StormZoneCyber_Melee_Crystal", "PageSpecial_StormZoneCyber_Heroes"
+  "PageSpecial_StormZoneCyber_Melee_Crystal", "PageSpecial_StormZoneCyber_Heroes",
+  "PageSpecial_Blockbuster2018_Ranged", "PageSpecial_Blockbuster2018_Ranged_Crystal", "PageSpecial_Blockbuster2018_Heroes"
 ];
 
 // The requesting build's special pages, where its data has them.

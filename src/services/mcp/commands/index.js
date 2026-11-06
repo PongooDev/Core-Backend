@@ -38,7 +38,7 @@ import { setGameplayStats } from "./SetGameplayStats.js";
 import { setHomebaseBanner } from "./SetHomebaseBanner.js";
 import { setHomebaseMeta } from "./SetHomebaseMeta.js";
 import { setHomebaseName } from "./SetHomebaseName.js";
-import { setItemFavoriteStatus } from "./SetItemFavoriteStatus.js";
+import { setItemFavoriteStatus, setItemFavoriteStatusBatch } from "./SetItemFavoriteStatus.js";
 import { setMtxPlatform } from "./SetMtxPlatform.js";
 import { setPinnedQuests } from "./SetPinnedQuests.js";
 import { setReceiveGiftsEnabled } from "./SetReceiveGiftsEnabled.js";
@@ -99,6 +99,7 @@ export const clientCommands = {
   SetHomebaseMeta: setHomebaseMeta,
   SetHomebaseName: setHomebaseName,
   SetItemFavoriteStatus: setItemFavoriteStatus,
+  SetItemFavoriteStatusBatch: setItemFavoriteStatusBatch,
   SetModeLoadout: setModeLoadout,
   SetMtxPlatform: setMtxPlatform,
   SetPinnedQuests: setPinnedQuests,

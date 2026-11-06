@@ -1047,8 +1047,9 @@ export function adminRoutes(context) {
     const now = new Date();
     const config = settings?.get?.()?.itemShop ?? { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 };
     const s = requestedSeasonOf(requestedSeason);
-    // Season 3's shop as 3.6's data (its newest) sells it: 3.0's cosmetics, 3.1's, 3.2's (3.3 adds none), 3.4's, 3.5's and 3.6's.
-    const build = { 1: "3724489", 2: "3807424", 3: "4019403" }[s];
+    // Season 3's shop as 3.6's data (its newest) sells it: 3.0's cosmetics, 3.1's, 3.2's (3.3 adds none), 3.4's, 3.5's and 3.6's;
+    // Season 4's as 4.0's.
+    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4039451" }[s];
     const offers = inBuild(build, () => itemShopOffers(now, config, s));
     const cosmetics = inBuild(build, () => eligibleCosmetics());
     const currentDay = shopDay(now, config, s);
@@ -1138,7 +1139,8 @@ export function adminRoutes(context) {
       { version: "3.3", cl: 3942182, event: "Spring It On!" },
       { version: "3.5.1", cl: 4000805, event: "Into the Storm" },
       { version: "3.5.2", cl: 4008490, event: "Into the Storm" },
-      { version: "3.6", cl: 4019403, event: "Into the Storm" }
+      { version: "3.6", cl: 4019403, event: "Into the Storm" },
+      { version: "4.0", cl: 4039451, event: "Blockbuster" }
     ];
 
     const sampleBuilds = builds.map((b) => ({
@@ -1267,6 +1269,20 @@ export function adminRoutes(context) {
           llama: "Into the Storm Llama (CardPack_Event_2018_Storm, 1000 Storm Tickets)",
           questsCount: 8,
           leftoverConversion: "Firecracker Tickets convert to Spring Llamas (1 per 1000, and 1 for what is left over) on 3.5.1, 3.5.2 or 3.6 load"
+        },
+        {
+          id: "blockbuster2018",
+          name: "Blockbuster",
+          subtitle: "Blockbuster Part 1: Origin Story, active Mini-Boss alerts with Blockbuster Tickets, the Blockbuster Llama and Raven in the Event Store; the Season 4 lobby",
+          buildRange: "4.0 (CL 4039451)",
+          flags: ["EventFlag.Blockbuster2018Phase1", "EventFlag.ActiveMiniBosses", "EventFlag.PassiveStorms", "EventFlag.LobbySeason4"],
+          theater: "Standard Zones with Mini-Boss and passive Mutant Storm alerts",
+          theaterRegions: [],
+          alertsQuota: "10 Mini-Boss mission alerts (50 to 120 Blockbuster Tickets) and 4 passive Mutant Storms per day",
+          currency: "Blockbuster Tickets (AccountResource:eventcurrency_blockbuster), Gold (capped at 5000) in the Event Store",
+          llama: "Blockbuster Llama (CardPack_Event_2018_Blockbuster, 500 Blockbuster Tickets)",
+          questsCount: 3,
+          leftoverConversion: "Storm Tickets convert to Into the Storm (Neon) Llamas (1 per 1000, and 1 for what is left over) on 4.0 load"
         }
       ]
     });
@@ -1357,7 +1373,7 @@ export function adminRoutes(context) {
     res.json({ success: true, resetProfiles });
   });
 
-  // ?season=2|3: Season 2's Battle Pass (1.11 and 2.1) or Season 3's (3.0), battlepass/season2.js: its prices and its tiers' rewards, from the
+  // ?season=2|3|4: Season 2's Battle Pass (1.11 and 2.1), Season 3's (3.0) or Season 4's (4.0), battlepass/season2.js: its prices and its tiers' rewards, from the
   // season's newest data (profiles/seasons.js buildOfSeason).
   // Each season's name by its versions (builds/detect.js battleRoyaleSeasons): Season 2 is 1.11 to 2.5, Season 3 is 3.0 to 3.6.
   const availableSeasons = battleRoyaleSeasons.map(({ season: id }) => ({ id, name: seasonName(id), range: seasonVersions(id), active: true }));

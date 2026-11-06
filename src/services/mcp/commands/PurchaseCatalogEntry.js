@@ -8,6 +8,7 @@ import { grant, itemEvent } from "../../../profiles/progress.js";
 import { findOffer } from "../../../store/catalog.js";
 import { hasRefunds, recordPurchase } from "../../../store/refunds.js";
 import { eventPurchases, recordEventPurchase } from "../../../store/eventstore.js";
+import { blockbusterTickets, upgradeLlamaBlockbusterTickets } from "../../../events/blockbuster2018.js";
 import { stormTickets, upgradeLlamaTickets } from "../../../events/mutantstorms.js";
 import { firecrackerTickets, upgradeLlamaFirecrackers } from "../../../events/spring2018.js";
 
@@ -145,5 +146,7 @@ export function purchaseCatalogEntry({ req, session, notifications }) {
   if (tickets) items.push(...grant(session, stormTickets, tickets).map(lootEntry));
   const firecrackers = upgradeLlamaFirecrackers(offer, count);
   if (firecrackers) items.push(...grant(session, firecrackerTickets, firecrackers).map(lootEntry));
+  const blockbuster = upgradeLlamaBlockbusterTickets(offer, count);
+  if (blockbuster) items.push(...grant(session, blockbusterTickets, blockbuster).map(lootEntry));
   notifications.push({ type: "CatalogPurchase", primary: true, lootResult: { items } });
 }

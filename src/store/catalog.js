@@ -1,5 +1,6 @@
 import { anyBattlePassOffer, battlePassOffers } from "../battlepass/season2.js";
 import { currentBuild } from "../builds/context.js";
+import { blockbuster2018, blockbusterLlama, blockbusterTickets } from "../events/blockbuster2018.js";
 import { currentEventsConfig, fortnitemares, isEventActive, mutantStorms, mutantStorms2018, spring2018, storm2018, winter2017 } from "../events/events.js";
 import { candy } from "../events/fortnitemares.js";
 import { stormLlama2018, stormTickets } from "../events/mutantstorms.js";
@@ -106,6 +107,14 @@ const voucherOffers = perBuild(() => itemIds()
 //
 // The Into the Storm Llama (CardPack_Event_2018_Storm) is bought with Storm Tickets while Into the Storm runs (3.5.1,
 // events/storm2018.js): "Into the Storm Llama is available in the Loot Tab. Cost: 1000 Storm Tickets."
+//
+// The Blockbuster Llama (CardPack_Event_2018_Blockbuster) is bought with Blockbuster Tickets (EventCurrency_Blockbuster)
+// while Blockbuster runs (4.0, events/blockbuster2018.js): "Blockbuster Llama is available in the Loot Tab ... Costs 500
+// Blockbuster Tickets." 4.0's loot llama price cuts ("Upgrade Llama: 100 to 50", the Weapon, Ranged, Melee, People and
+// It's a Trap Llamas 350 to 200, "Bundles containing multiple Llamas have been reduced in price as well") change no Core
+// offer: Core has sold the Upgrade Llama for 50 (and ten for 375) all along, and none of the others, so its Troll Stash
+// Llama refunds ("Players who have purchased these Llamas in the past will receive an equivalent value in free Troll Stash
+// Llamas") are owed to no Core account.
 const eventOffers = [
   { offerId: "core_event_founders_llama", templateId: "CardPack:cardpack_event_founders_nonexclusive", title: "Launch Event Llama",
     currencyType: "GameItem", currencySubType: "AccountResource:eventcurrency_founders", price: 100, always: true },
@@ -120,7 +129,9 @@ const eventOffers = [
   { offerId: "core_event_spring_llama", templateId: springLlama, title: "Spring Llama",
     currencyType: "GameItem", currencySubType: firecrackerTickets, price: 1000, always: true, event: spring2018 },
   { offerId: "core_event_intothestorm_llama", templateId: intoTheStormLlama, title: "Into the Storm Llama",
-    currencyType: "GameItem", currencySubType: stormTickets, price: 1000, always: true, event: storm2018 }
+    currencyType: "GameItem", currencySubType: stormTickets, price: 1000, always: true, event: storm2018 },
+  { offerId: "core_event_blockbuster_llama", templateId: blockbusterLlama, title: "Blockbuster Llama",
+    currencyType: "GameItem", currencySubType: blockbusterTickets, price: 500, always: true, event: blockbuster2018 }
 ];
 
 // An event's offers are on sale while the requesting build runs the event and has their llama.

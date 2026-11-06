@@ -24,6 +24,16 @@ import { currentEventsConfig, seasonalEventsOn } from "./events.js";
 // - "meteors": and meteors at level 1;
 // - "impact": and meteors at level 2, the most often.
 // Easter's rainbow and St. Patrick's river (3.1 to 3.3's holidays) stay off.
+//
+// 4.0 (CL-4039451, Season 4: "Shards of a massive comet have crashed into the map", the crater at Dusty Divot) takes none
+// of it. Its BP_Athena_Event_Components has the comet component disabled and its dedicated server path does nothing (no
+// CometPosition, no SpawnMeteor timer): the client still reads Default.SkyboxAudioEnabled, EasterEnabled and
+// StPatricksDayEnabled, and the TVs Default.BroadcastEnabled, but nothing reads Default.MeteorSpawnLevel any more (only the
+// data tables name it), and AthenaGameData's other new rows (Default.LowGravRock.*: the Hop Rocks' 30 s of low gravity;
+// Default.KnockGrenade.*.Vehicle) are the paks' own values, which no hotfix needs to set; its meteor drop rows (the
+// SafeZone and AirZone MeteorDropMin/MaxCount) are all 0, as no 4.0 playlist drops meteors. No EventFlag.* drives the
+// map either (events/events.js). The skybox audio was the comet's, the TVs' static and the meteors Season 3's last week,
+// and Easter and St. Patrick's are spring's, so on 4.0 the rows stay as the paks ship them and the phase is 3.6's alone.
 export const meteorStrikeBuild = 4019403;
 export const meteorStrikePhases = ["none", "broadcast", "meteors", "impact"];
 export const defaultMeteorStrikePhase = "meteors";

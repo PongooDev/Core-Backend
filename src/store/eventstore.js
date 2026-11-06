@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { currentBuild } from "../builds/context.js";
-import { isEventActive, mutantStorms2018, spring2018, storm2018, winter2017 } from "../events/events.js";
+import { blockbuster2018, isEventActive, mutantStorms2018, spring2018, storm2018, winter2017 } from "../events/events.js";
 import { getItem } from "../gamedata/items.js";
 import { nextReplayOf, weeklyStoreEnd } from "./itemshop.js";
 
@@ -212,16 +212,27 @@ const springItemsNow = () => [...springEventItems,
   ...(Number(currentBuild()) >= rabbitRaiderFirstBuild ? [{ templateId: "Hero:hid_commando_011_m_easter_sr_t01", price: 2800, limit: 1 }] : []),
   ...(Number(currentBuild()) >= mercuryLmgFirstBuild ? [{ templateId: "Schematic:sid_assault_neonglow_lmg_sr_ore_t01", price: 1680, limit: 1 }] : []),
   ...(Number(currentBuild()) >= nobleLauncherFirstBuild ? [{ templateId: "Schematic:sid_explosive_launcher_neonglow_sr_ore_t01", price: 1680, limit: 1 }] : [])];
-const eventItemsNow = () => (storms2018() ? stormsEventItems : springNow() ? springItemsNow() : eventItems);
+// 4.0's (CL-4039451) Blockbuster (events/blockbuster2018.js) has a store of its own: its gold is 4.0's "Gold" ("Seasonal
+// Gold has been renamed to Gold", the same AccountResource:EventCurrency_Scaling, now kept from season to season and
+// capped at 5,000 by its MaxStackSize), its trackers Blockbuster2018.*, and its one named item is the Mythic Soldier
+// Raven ("[New] Mythic Soldier "Raven" - Subclass: Nevermore"; the Fortnite Wiki's Blockbuster: "Raven ... was
+// introduced with Blockbuster in 2018 and was sold in the Event Store"), HID_Commando_Myth02_SR_T01, at a legendary
+// hero's 2,800, one (🟡: Epic's price and limit aren't recorded, as Wukong's). Spring It On!'s and Into the Storm's
+// items leave with them. Its event items count down to the end of Season 4's replay (blockbuster2018End, 12 July 2018;
+// 🟡: Blockbuster ran on to Part 4, 27 June, and Core's countdown is the season's).
+const blockbusterEventItems = [{ templateId: "Hero:hid_commando_myth02_sr_t01", price: 2800, limit: 1 }];
+export const blockbuster2018End = "2018-07-12T00:00:00.000Z";
+const blockbusterNow = () => !isEventActive(winter2017) && !storms2018() && !springNow() && isEventActive(blockbuster2018);
+const eventItemsNow = () => (storms2018() ? stormsEventItems : springNow() ? springItemsNow() : blockbusterNow() ? blockbusterEventItems : eventItems);
 export const eventStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWSpecialEventStoreFront"
-  : springNow() ? "Spring2018.STWSpecialEventStoreFront" : eventStoreInstance);
+  : springNow() ? "Spring2018.STWSpecialEventStoreFront" : blockbusterNow() ? "Blockbuster2018.STWSpecialEventStoreFront" : eventStoreInstance);
 export const weeklyStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWRotationalEventStorefront"
-  : springNow() ? "Spring2018.STWRotationalEventStorefront" : weeklyStoreInstance);
+  : springNow() ? "Spring2018.STWRotationalEventStorefront" : blockbusterNow() ? "Blockbuster2018.STWRotationalEventStorefront" : weeklyStoreInstance);
 
 // The store is open while the requesting build runs Survive the Holidays (or 2.3's to 2.4.2's storms, 2.5's Spring It
-// On! or 3.5.1's Into the Storm) and its data has Seasonal Gold.
-export const hasEventStore = () => (isEventActive(winter2017) || isEventActive(mutantStorms2018) || isEventActive(spring2018) || isEventActive(storm2018))
-  && Boolean(getItem(seasonalGold));
+// On!, 3.5.1's Into the Storm or 4.0's Blockbuster) and its data has Seasonal Gold.
+export const hasEventStore = () => (isEventActive(winter2017) || isEventActive(mutantStorms2018) || isEventActive(spring2018) || isEventActive(storm2018)
+  || isEventActive(blockbuster2018)) && Boolean(getItem(seasonalGold));
 
 const has = ({ templateId }) => Boolean(getItem(templateId));
 const nameOf = (templateId) => templateId.split(":")[1].toLowerCase();
@@ -232,7 +243,7 @@ export const winter2017End = "2018-01-25T00:00:00.000Z";
 // The calendar's Event Store countdowns, none while it is closed.
 export function eventStoreEnds(now = new Date()) {
   if (!hasEventStore()) return {};
-  const end = storms2018() ? mutantStorms2018End : springNow() ? spring2018End : winter2017End;
+  const end = storms2018() ? mutantStorms2018End : springNow() ? spring2018End : blockbusterNow() ? blockbuster2018End : winter2017End;
   return { stwEventStoreEnd: nextReplayOf(end, now), stwWeeklyStoreEnd: weeklyStoreEnd(now) };
 }
 

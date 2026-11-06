@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { currentBuild } from "../builds/context.js";
-import { currentEventsConfig, isEventActive, passiveMiniBosses, storm2018 } from "../events/events.js";
+import { blockbuster2018, currentEventsConfig, isEventActive, passiveMiniBosses, storm2018 } from "../events/events.js";
+import { blockbusterTickets, miniBossTicketsFor } from "../events/blockbuster2018.js";
 import { candy } from "../events/fortnitemares.js";
 import { miniBossesStay, mutantStorms, mutantStorms2018, stormTickets } from "../events/mutantstorms.js";
 import { firecrackerTickets } from "../events/spring2018.js";
@@ -344,6 +345,11 @@ function rollMissions({ data, fixedMissions }, day, availableUntil) {
 // (EventFlag.SurviveTheStorm) "award between 300 and 1500 tickets, scaled based on Survival length and difficulty": Storm
 // Tickets, 30 per tile difficulty for a 3 Day alert and 50 for a 7 Day one (🟡 Core's: 300 to 900 and 500 to 1,500 on
 // the theater's difficulties 10 to 30). Its passive Mini-Bosses are 2.5's.
+//
+// 4.0 (CL-4039451) runs Blockbuster (events/events.js blockbuster2018): its Mini-Bosses are the MiniBossCategory rows
+// (EventFlag.ActiveMiniBosses, quota 10), placed by 2.3's targets with 2.3's rewards (miniBossesStay) and "between 50 and
+// 120 Blockbuster Tickets, scaled based on difficulty ... in addition to their normal rewards" (miniBossTicketsFor); its
+// storms the passive StormLowCategory rows, which "no longer reward event tickets".
 const halloweenAlerts = "Halloween2017_MissionAlert";
 const groupCategory = "GroupMissionCategory";
 const stormTier = (tier) => (tier <= 5 ? 1 : tier <= 10 ? 2 : tier <= 15 ? 3 : 4);
@@ -385,7 +391,9 @@ const alertRewards = {
   MissionAlert_MiniBoss: (row, mission, seed) => [
     [`CardPack:zcp_reagent_c_t0${zoneOfRow(row)}_high`, 1],
     ...(isEventActive(winter2017) ? [[snowflakeTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]]
-      : [[`CardPack:zcp_mtx_boost${zoneOfRow(row) <= 2 ? 50 : 100}`, 1], ...(miniBossesStay() ? miniBossItem(zoneOfRow(row), seed) : [])])
+      : [[`CardPack:zcp_mtx_boost${zoneOfRow(row) <= 2 ? 50 : 100}`, 1], ...(miniBossesStay() ? miniBossItem(zoneOfRow(row), seed) : [])]),
+    // 4.0's Blockbuster (events/blockbuster2018.js): 50 to 120 Blockbuster Tickets on top.
+    ...(isEventActive(blockbuster2018) && getItem(blockbusterTickets) ? [[blockbusterTickets, miniBossTicketsFor(zoneOfRow(row))]] : [])
   ]
 };
 

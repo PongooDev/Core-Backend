@@ -129,7 +129,7 @@ test("Speedy Storm, Take To The Skies, Lotsa Loot and Blitz: their builds, squad
     }
     const listed = ltmSchedule({ matchmakingModes: { [id]: true } }, at("2018-01-30")).list.find((ltm) => ltm.id === id);
     assert.equal(listed.original, null, id);
-    assert.deepEqual(listed.inWindow, { 2: false, 3: false }, id);
+    assert.deepEqual(listed.inWindow, { 2: false, 3: false, ...(id === "blitz" ? { 4: false } : {}) }, id);
     assert.equal(listed.enabled, true, id);
   }
   assert.equal(hasLtm("blitz", v24), false);
@@ -159,9 +159,10 @@ test("3.0's LTMs are its playlist classes: no 50v50 or Shooting Test, duo Skies,
     assert.equal(eventQueueOfPlaylist[playlist], playlist, id);
     assert.deepEqual(playlistTeamsOf(`${v30}:0:NA:${playlist}`, v30), teams, id);
     const listed = ltmSchedule({}).list.find((ltm) => ltm.id === id);
-    // Teams of 20, Solid Gold and Sky Supply have 3.5.1 playlists too (Playlist_5x20, _SolidGold_Squads, _SkySupply).
-    assert.deepEqual([listed.seasons, listed.builds, listed.original],
-      [[3], ["fiveByTwenty", "solidGold", "skySupply"].includes(id) ? "3.0 to 3.6" : "3.0 to 3.3", null], id);
+    // Teams of 20, Solid Gold and Sky Supply have 3.5.1 playlists too (Playlist_5x20, _SolidGold_Squads, _SkySupply), which
+    // 4.0 keeps.
+    const onTo40 = ["fiveByTwenty", "solidGold", "skySupply"].includes(id);
+    assert.deepEqual([listed.seasons, listed.builds, listed.original], [onTo40 ? [3, 4] : [3], onTo40 ? "3.0 to 4.0" : "3.0 to 3.3", null], id);
   }
 });
 
