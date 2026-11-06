@@ -113,3 +113,29 @@ test("4.2: a weapon schematic's rarity goes up with Flux once its 2-star evoluti
     backend.close();
   }
 });
+
+// #271's condition, "Legacy schematics must be converted by the Perk Recombobulator before their rarity can be upgraded":
+// 4.2's client offers the upgrade only when ItemInspectScreen_C.SchematicRequirementsMet holds, which includes
+// !DoesItemHaveLegacyAlterations (a perk in AlterationMigrationMapping). Schematics Core grants carry 4.2's own perks, so
+// they pass; a legacy one is refused here too, before anything is spent.
+test("4.2: a schematic with legacy perks can't have its rarity upgraded until they're converted (#271)", async () => {
+  const { upgradeItemRarity } = await import("../src/profiles/upgrades.js");
+  const { hasLegacyAlterations, rollAlterations } = await import("../src/profiles/alterations.js");
+  const schematic = "Schematic:sid_assault_auto_c_ore_t01";
+  const items = {
+    rifle: { templateId: schematic, quantity: 1, attributes: { level: 1, alterations: ["Alteration:AID_Att_Ranged_Damage"] } },
+    node: { templateId: "HomebaseNode:t2_main_25efb8c70", quantity: 1, attributes: {} },
+    flux: { templateId: "AccountResource:reagent_evolverarity_r", quantity: 10, attributes: {} }
+  };
+  const tracker = { profile: { items }, setQuantity: (id, quantity) => { items[id].quantity = quantity; },
+    removeItem: (id) => { delete items[id]; }, addItem: (id, item) => { items[id] = item; }, setItemAttribute: () => {} };
+  const session = { profile: () => tracker };
+  inBuild("4072250", () => {
+    assert.equal(hasLegacyAlterations(items.rifle), true);
+    assert.throws(() => upgradeItemRarity(session, "rifle"), /legacy perks/);
+    assert.equal(items.flux.quantity, 10);
+    items.rifle.attributes.alterations = rollAlterations(schematic);
+    upgradeItemRarity(session, "rifle");
+    assert.equal(items.rifle.templateId, "Schematic:sid_assault_auto_uc_ore_t01");
+  });
+});

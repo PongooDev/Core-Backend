@@ -1,7 +1,7 @@
 import { McpError } from "../errors.js";
 import { getItem } from "../gamedata/items.js";
 import { upgradeData } from "../gamedata/upgrades.js";
-import { missingAlterations } from "./alterations.js";
+import { hasLegacyAlterations, missingAlterations } from "./alterations.js";
 import { grantItem } from "./items.js";
 import { itemChanged } from "./progress.js";
 import { hasUnlocked } from "./unlocks.js";
@@ -123,9 +123,12 @@ export function levelRelativeRarityCost(item, info, resultInfo) {
 // 4.2 (CL-4072250) adds weapon and trap schematics ("Added the ability to upgrade Weapon and Trap Schematic Rarity. Uses the
 // same recipe as Hero Rarity Upgrade ... Unlocked by the 2-Star Evolution Skill Tree Nodes", Core-Backend #271): its data
 // names every schematic's EvolveRarity.SID.* row, and its 2-star evolution nodes grant Unlocks.RarityUpgrade.Weapon.*
-// and .Trap.*, so they go through here unchanged. 🟡 "Legacy schematics must be converted by the Perk Recombobulator
-// before their rarity can be upgraded" is the client's check, and Core has no Perk Recombobulator yet (#270). The perks
-// stay with the item; a result whose loadout has more slots gets new perks for them (profiles/alterations.js).
+// and .Trap.*, so they go through here. "Legacy schematics must be converted by the Perk Recombobulator before their
+// rarity can be upgraded": the client's check is ItemInspectScreen_C.SchematicRequirementsMet (a Schematic,
+// EnableSchematicRarityUpgrade, the RequiredTags Unlocks.RarityUpgrade.Weapon.* and .Trap.*, and not
+// UFortItemInspectionScreen::DoesItemHaveLegacyAlterations, 4.2's sub_D49140: no perk in AlterationMigrationMapping), and
+// a legacy schematic is refused here too (profiles/alterations.js). The perks stay with the item; a result whose loadout
+// has more slots gets new perks for them.
 export function upgradeItemRarity(session, itemId) {
   const tracker = session.profile("profile0");
   const { item, info } = accountItem(tracker, itemId);
@@ -133,6 +136,7 @@ export function upgradeItemRarity(session, itemId) {
   if (!recipe || recipe.results.length !== 1) fail(`${item.templateId} has no rarity upgrade`);
   if (inOverflow(item)) fail(`${item.templateId} is in the vault overflow and can't be evolved`);
   if (!hasUnlocked(tracker.profile, recipe.catalysts)) locked(recipe.catalysts);
+  if (hasLegacyAlterations(item)) fail(`${item.templateId} has legacy perks: convert them with the Perk Recombobulator first`);
   const [result] = recipe.results;
   const xp = levelRelativeRarityCost(item, info, getItem(result.templateId));
   pay(tracker, xp > 0 ? [...recipe.costs, { templateId: xpResource[info.class], quantity: xp }] : recipe.costs);
