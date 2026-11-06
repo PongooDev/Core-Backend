@@ -124,6 +124,15 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   whole, and the extractor prints how many it took; without a fifth argument it stops. 4.2's is `4.20.0-4072250+++Fortnite+Release-4.2` with 4.1's full data (Cert's files with
   `gamedata/4053532` applied) as the fifth argument, for the same reason (no extractor change). Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
+- `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):
+  `slotLoadouts` (AlterationSlotsLoadouts: each loadout's slots, their unlock level and rarity, slot definition,
+  respeccable flag and SlotInitMin/Max), `slotDefinitions` (AlterationSlotDefinitions: group, BaseRespecCosts),
+  `groups` (AlterationGroups: the perks by rarity with their roll weights and exclusion names), `namedExclusions`,
+  `migration` (AlterationMigrationMapping: a legacy perk's new perk and additional perk) and `intrinsic`
+  (AlterationIntrinsicMapping: the element perk a damage tag gives). In `items.json`, weapons and traps with a loadout
+  carry it (`alterationLoadout`, AlterationSlotsLoadoutRow) and their WeaponStatHandle row's `namedWeightRow`, and perks
+  (FortAlterationItemDefinition) their upgrade row (`rarityUpgrade`, Evolve.AID.*) and AdditionalRespecCosts
+  (`respecCosts`). 4.2's overlay was made with this; no earlier build's data changes.
 - `research.json`: the resource collectors (research points): each CollectedResource template's payout and the
   homebase attributes its rate, capacity and wallet cap come from, what each skill tree node adds to those attributes
   (its CommandConsole_GEImporter rows) and the account buffs that multiply them (BuffEffects modifiers).

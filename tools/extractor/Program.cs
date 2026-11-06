@@ -146,6 +146,31 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     if (properties?["DisplayName"]?["SourceString"]?.GetValue<string>() is { Length: > 0 } displayName)
         ((SortedDictionary<string, object>)items[templateId])["name"] = displayName;
 
+    // From 4.2 (CL 4072250), the Perk Recombobulator (UFortAlterableItem): a weapon's or trap's perk slots are its
+    // AlterationSlotsLoadoutRow (UFortWeaponItemDefinition +0x770) in DefaultGameData's AlterationSlotsLoadouts, and the
+    // perks it never gets are its WeaponStatHandle row's NamedWeightRow (FFortBaseWeaponStats +0x10) in
+    // AlterationNamedExclusions (4.2's UFortAlterableItem::GetAlterationRespecOptions, sub_D32030). A schematic's slots
+    // are the ones of the world item it crafts (UFortSchematicItemDefinition::GetResultWorldItemDefinition, sub_D66020).
+    if (profile == "theater" && properties?["AlterationSlotsLoadoutRow"]?.GetValue<string>() is { } loadoutRow and not "None")
+    {
+        var weapon = (SortedDictionary<string, object>)items[templateId];
+        weapon["alterationLoadout"] = loadoutRow;
+        if (properties["WeaponStatHandle"] is { } weaponStats && weaponStats["RowName"]?.GetValue<string>() is { } weaponStatRow and not "None"
+            && TableRows(weaponStats["DataTable"])[weaponStatRow]?["NamedWeightRow"]?.GetValue<string>() is { } namedWeightRow and not "None")
+            weapon["namedWeightRow"] = namedWeightRow;
+    }
+
+    // 4.2's perks (UFortAlterationItemDefinition): the MetaRecipes row UpgradeAlteration raises one a rarity with
+    // (UpgradeRarityRecipeHandle, the Evolve.AID.* rows; sub_D33F90) and what replacing a slot's perk with it costs on top
+    // of the slot's BaseRespecCosts (AdditionalRespecCosts +0xE80: FIRE-UP!, AMP-UP!, FROST-UP! for the elements).
+    if (export.ExportType == "FortAlterationItemDefinition")
+    {
+        var alteration = (SortedDictionary<string, object>)items[templateId];
+        if (properties?["UpgradeRarityRecipeHandle"]?["RowName"]?.GetValue<string>() is { } alterationUpgrade and not "None")
+            alteration["rarityUpgrade"] = alterationUpgrade;
+        AddItems(alteration, "respecCosts", properties?["AdditionalRespecCosts"], assetTypes);
+    }
+
     // Account buffs (UFortAccountBuffItemDefinition BuffEffects): the gameplay effects the buff puts on the homebase.
     if (export.ExportType == "FortAccountBuffItemDefinition")
         accountBuffEffects[templateId] = (properties?["BuffEffects"]?.AsArray() ?? []).Select(e => AssetPath(e)).ToList();
@@ -988,8 +1013,62 @@ foreach (var (id, row) in LoadRows(provider, JsonValue.Create("/Game/Balance/Dat
     });
 }
 
+// 4.2's (CL 4072250) Perk Recombobulator tables, which DefaultGameData names from 4.2 (UFortGameData +0xF58 to +0x1020;
+// earlier builds name none and get an empty file):
+// - slotLoadouts (AlterationSlotsLoadouts, FAlterationSlotsLoadout): each loadout's slots in order, an item's
+//   alterations[i] being slot i's perk: the level and rarity that unlock it, its slot definition, whether it can be
+//   respecced, and the rarities a new item's perk there starts between (SlotInitMin, SlotInitMax; the SlotRarityInitRow
+//   weights are cooked out of the client).
+// - slotDefinitions (AlterationSlotDefinitions): the group a slot draws its perks from (InitTierGroup) and what replacing
+//   its perk costs (BaseRespecCosts).
+// - groups (AlterationGroups, RarityMapping): by rarity, the perks a slot of the group can hold, their initial roll
+//   weights and the exclusion names a weapon's named exclusions rule them out by.
+// - namedExclusions (AlterationNamedExclusions), migration (AlterationMigrationMapping: a legacy perk's new perk and, for
+//   some, a second one) and intrinsic (AlterationIntrinsicMapping: the element perk a weapon's damage tag gives it).
+var alterationTables = new SortedDictionary<string, object>(StringComparer.Ordinal);
+JsonObject? GameDataTable(string name) =>
+    gameData["Properties"]?[name] is { } reference && AssetPath(reference) is { Length: > 0 } and not "None" ? LoadRows(provider, reference) : null;
+if (GameDataTable("AlterationSlotsLoadouts") is { } loadoutRows)
+{
+    alterationTables["slotLoadouts"] = new SortedDictionary<string, object>(loadoutRows.ToDictionary(row => row.Key, row => (object)
+        (row.Value!["AlterationSlots"]?.AsArray() ?? []).Select(slot => new SortedDictionary<string, object>(StringComparer.Ordinal)
+        {
+            ["unlockLevel"] = slot!["UnlockLevel"]?.GetValue<int>() ?? 0,
+            ["unlockRarity"] = Enum(slot["UnlockRarity"]) ?? "Handmade",
+            ["slotDefinition"] = slot["SlotDefinitionRow"]?.GetValue<string>() ?? "None",
+            ["respeccable"] = slot["bRespeccable"]?.GetValue<bool>() ?? false,
+            ["initMin"] = Enum(slot["SlotInitMin"]) ?? "Handmade",
+            ["initMax"] = Enum(slot["SlotInitMax"]) ?? "Handmade"
+        }).ToList()), StringComparer.Ordinal);
+    alterationTables["slotDefinitions"] = new SortedDictionary<string, object>(GameDataTable("AlterationSlotDefinitions")!.ToDictionary(row => row.Key, row => (object)
+        new SortedDictionary<string, object>(StringComparer.Ordinal)
+        {
+            ["group"] = row.Value!["InitTierGroup"]?.GetValue<string>() ?? "None",
+            ["respecCosts"] = Items(row.Value["BaseRespecCosts"], assetTypes)
+        }), StringComparer.Ordinal);
+    alterationTables["groups"] = new SortedDictionary<string, object>(GameDataTable("AlterationGroups")!.ToDictionary(row => row.Key, row => (object)
+        new SortedDictionary<string, object>((row.Value!["RarityMapping"]?.AsArray() ?? []).ToDictionary(
+            pair => Enum(pair!["Key"])!, pair => (object)(pair!["Value"]?["WeightData"]?.AsArray() ?? []).Select(weight => new SortedDictionary<string, object>(StringComparer.Ordinal)
+            {
+                ["alteration"] = weight!["AID"]?.GetValue<string>() ?? "",
+                ["weight"] = weight["InitialRollWeight"]?.GetValue<int>() ?? 0,
+                ["exclusions"] = Strings(weight["ExclusionNames"])
+            }).ToList()), StringComparer.Ordinal)), StringComparer.Ordinal);
+    alterationTables["namedExclusions"] = new SortedDictionary<string, object>(GameDataTable("AlterationNamedExclusions")!.ToDictionary(
+        row => row.Key, row => (object)Strings(row.Value!["ExclusionNames"])), StringComparer.Ordinal);
+    alterationTables["migration"] = new SortedDictionary<string, object>(GameDataTable("AlterationMigrationMapping")!.ToDictionary(
+        row => row.Key, row => (object)new SortedDictionary<string, object>(StringComparer.Ordinal)
+        {
+            ["alteration"] = row.Value!["NewAlteration"]?.GetValue<string>() ?? "",
+            ["additional"] = row.Value["AdditionalAlteration"]?.GetValue<string>() ?? ""
+        }), StringComparer.Ordinal);
+    alterationTables["intrinsic"] = new SortedDictionary<string, object>(GameDataTable("AlterationIntrinsicMapping")!.ToDictionary(
+        row => row.Key, row => (object)(row.Value!["NewAlteration"]?.GetValue<string>() ?? "")), StringComparer.Ordinal);
+}
+
 Directory.CreateDirectory(output);
 var options = new JsonSerializerOptions { WriteIndented = true };
+File.WriteAllText(Path.Combine(output, "alterations.json"), JsonSerializer.Serialize(alterationTables, options) + "\n");
 File.WriteAllText(Path.Combine(output, "accountlevels.json"), JsonSerializer.Serialize(accountLevels, options) + "\n");
 File.WriteAllText(Path.Combine(output, "upgrades.json"), JsonSerializer.Serialize(upgrades, options) + "\n");
 File.WriteAllText(Path.Combine(output, "expeditions.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal)
