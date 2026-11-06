@@ -4,7 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { createFrameParser, encodeFrame } from "../src/stomp/service.js";
-import { matchVbucks, questKillsOf } from "../src/services/fortnite/battleroyale.js";
+import { matchVbucks, questKillsOf, rewardModeOf } from "../src/services/fortnite/battleroyale.js";
 import { dedicatedServerToken, get, post, send, startBackend, userLogin } from "./helpers.js";
 
 // Core-Backend #100, #124: V-Bucks for Battle Royale kills, wins and placements in solo, duos, squads and 1.10's 50v50 (#135), off unless the
@@ -178,10 +178,46 @@ test("a placement pays its best tier, not their sum, and kills, a win and the pl
   assert.equal(matchVbucks(reversed, 2, { place: 5, kills: 0 }), 250);
   assert.equal(matchVbucks(reversed, 2, { place: 20, kills: 0 }), 100);
   assert.equal(matchVbucks(example, 9, { place: 1, kills: 2 }), 2 * 40 + 400 + 60);
-  assert.equal(matchVbucks(example, 50, { place: 1, kills: 2 }), 0, "a limited-time playlist");
+  assert.equal(matchVbucks(example, 99, { place: 1, kills: 2 }), 0, "a playlist that isn't Battle Royale's");
   // 50v50's two teams place 1st and 2nd (#135).
   assert.equal(matchVbucks(example, 11, { place: 1, kills: 4 }), 4 * 5 + 500);
   assert.equal(matchVbucks(example, 11, { place: 2, kills: 4 }), 4 * 5);
+});
+
+// CoreV2 #294: a limited-time playlist paid nothing; it pays as the mode of its teams in the match's build.
+test("a limited-time playlist pays as its teams' mode: solo, duos, squads or 50v50, nothing for a single team", () => {
+  const build41 = 4053532;
+  assert.equal(rewardModeOf(33, build41), "solo", "4.1's Infinity Gauntlet, 100 teams of 1");
+  assert.equal(rewardModeOf(27, build41), "squads", "Solid Gold, 100 teams of 4");
+  assert.equal(rewardModeOf(40, build41), "duos", "Sniper Shootout duos");
+  assert.equal(rewardModeOf(22, build41), "squads", "Teams of 20, 5 teams of 20");
+  assert.equal(rewardModeOf(50, build41), "fiftyFifty", "50v50 v2, 2 teams of 50");
+  assert.equal(rewardModeOf(35, build41), null, "Playground, one team");
+  assert.equal(rewardModeOf(99, build41), null);
+  assert.equal(rewardModeOf(16, 3901517), "duos", "3.0's Take To The Skies");
+  assert.equal(rewardModeOf(16, 3807424), "squads", "1.11's, 100 teams of 4");
+  assert.equal(matchVbucks(example, 33, { place: 1, kills: 2 }, build41), 2 * 10 + 100 + 250);
+  assert.equal(matchVbucks(example, 27, { place: 2, kills: 1 }, build41), 40 + 60);
+  assert.equal(matchVbucks(example, 35, { place: 1, kills: 5 }, build41), 0);
+});
+
+test("an LTM's report pays its teams' mode once, with the match's build", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "RewardsLtm");
+    const dedicated = await dedicatedServerToken(backend.port);
+    await settings(backend, { battleRoyaleVbucks: true, battleRoyaleRewards: example });
+    const before = await balance(backend, player);
+    // The report's build is the test client's (1.2), whose server table gives Sneaky Silencers (12) 100 teams of 4: a
+    // squads match, 4th with 3 kills (top 6).
+    const body = { playlistId: 12, matchId: "ltm294", results: [{ accountId: player.accountId, place: 4, kills: 3, secondsAlive: 600 }] };
+    assert.equal((await results(backend, dedicated, body)).status, 200);
+    assert.equal(await balance(backend, player), before + 3 * 40 + 60);
+    await results(backend, dedicated, body);
+    assert.equal(await balance(backend, player), before + 3 * 40 + 60, "paid once");
+  } finally {
+    backend.close();
+  }
 });
 
 test("config.json can turn the rewards on and set their amounts, #100's one amount for every mode too", async () => {

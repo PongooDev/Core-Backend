@@ -4,6 +4,7 @@ import { isDedicatedServerToken } from "../../accounts/clients.js";
 import { currentBuild, inBuild } from "../../builds/context.js";
 import { buildVersions } from "../../builds/detect.js";
 import { log } from "../../log.js";
+import { teamsOfPlaylist } from "../../matchmaking/service.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
 import { athenaSeason, seasonLevels } from "../../gamedata/athena.js";
 import { addSeasonXp, awardVictory, matchXp, matchXpAwards, recordMatchProgress, umbrellaTypeOf } from "../../profiles/athena.js";
@@ -46,8 +47,10 @@ import { currentBattlePassConfig } from "../../battlepass/season1.js";
 //   With battleRoyaleVbucks on (Core-Backend #100, #124, the admin panel's Settings), each result in solo, duos,
 //   squads or 1.10's 50v50 also pays V-Bucks, from that mode's battleRoyaleRewards: perKill a kill, perWin for a place 1
 //   (a team's every player, as CoreV2 places them all), and the best of its placement tiers the place is within (top
-//   25 = 100 and top 10 = 250 pay 250 for a 5th place, not 350), all three added up. Another limited-time playlist
-//   pays nothing. A 50v50 result counts toward its event challenge (profiles/athena.js), not the victory umbrellas.
+//   25 = 100 and top 10 = 250 pay 250 for a 5th place, not 350), all three added up. A limited-time playlist pays as
+//   the mode of its teams does (CoreV2 #294: LTMs paid nothing): one of 1 is solo's, 2 duos', more squads', 2 teams of
+//   50 50v50's; one with a single team (Playground) or no Battle Royale teams pays nothing. A 50v50 result counts
+//   toward its event challenge (profiles/athena.js), not the victory umbrellas.
 //   They go to profile0, the balance the game shows, as Currency:mtxgiveaway, the way the admin panel's and the llamas'
 //   V-Bucks do. A result pays once per match: the report's matchId (CoreV2's, one id for the whole match) is kept in the player's profile0 with the V-Bucks it paid
 //   (coreBattleRoyaleRewards, Core's, never sent to the client), so a report sent again pays nothing; a report without
@@ -69,10 +72,22 @@ export function questKillsOf(settings, kills, botKills) {
   return kills - bots;
 }
 
+// The reward mode a playlist pays as: solo, duos, squads and 50v50 their own; a limited-time playlist its teams' mode
+// (matchmaking/service.js teamsOfPlaylist, the build's teams), none for one of a single team or none known.
+export function rewardModeOf(playlistId, build = currentBuild()) {
+  const id = Number(playlistId);
+  const own = Object.keys(rewardModes).find((name) => rewardModes[name] === id);
+  if (own) return own;
+  const teams = Number.isInteger(id) ? teamsOfPlaylist(id, build ?? null) : null;
+  if (!teams || teams.maxTeamCount < 2) return null;
+  if (teams.maxTeamCount === 2 && teams.maxTeamSize === 50) return "fiftyFifty";
+  return teams.maxTeamSize === 1 ? "solo" : teams.maxTeamSize === 2 ? "duos" : "squads";
+}
+
 // What a result earns in its playlist's mode (settings.battleRoyaleRewards): its kills, its win and its best placement
-// tier; nothing in a playlist that isn't one of the modes.
-export function matchVbucks(rewards, playlistId, { place, kills }) {
-  const mode = Object.keys(rewardModes).find((name) => rewardModes[name] === Number(playlistId));
+// tier; nothing in a playlist that pays as none of the modes.
+export function matchVbucks(rewards, playlistId, { place, kills }, build = currentBuild()) {
+  const mode = rewardModeOf(playlistId, build);
   const amounts = mode && rewards?.[mode];
   if (!amounts) return 0;
   const placement = Math.max(0, ...(amounts.placements ?? []).filter(({ top }) => place <= top).map(({ vbucks }) => vbucks));
@@ -81,9 +96,9 @@ export function matchVbucks(rewards, playlistId, { place, kills }) {
 
 // The V-Bucks a result pays (settings, battleRoyaleVbucks), granted into the session's profile0: 0 when off, when it
 // earns nothing, without a match id, or when this match already paid the player.
-function payMatchVbucks(session, settings, matchId, playlistId, result, now = new Date()) {
+function payMatchVbucks(session, settings, matchId, playlistId, result, build, now = new Date()) {
   if (settings.battleRoyaleVbucks !== true) return 0;
-  const amount = matchVbucks(settings.battleRoyaleRewards, playlistId, result);
+  const amount = matchVbucks(settings.battleRoyaleRewards, playlistId, result, build ?? currentBuild());
   if (amount <= 0) return 0;
   if (!matchId) {
     log("Battle Royale", `No V-Bucks for ${session.accountId}: the result has no matchId, so a replay of it couldn't be told apart`);
@@ -222,7 +237,7 @@ export function battleRoyaleRoutes(context) {
       stats.recordResult(result.accountId, playlistId, { place, kills, secondsAlive, score, win, season });
       log("Battle Royale", `${result.accountId} placed ${place} in playlist ${playlistId} with ${kills} kills, ${secondsAlive} s alive,`
         + ` score ${score}` + (win ? " (a win)" : "") + ` in Season ${season}`);
-      const vbucks = payMatchVbucks(session, rewards, matchId, playlistId, { place, kills });
+      const vbucks = payMatchVbucks(session, rewards, matchId, playlistId, { place, kills }, build);
       if (vbucks) log("Battle Royale", `${result.accountId} earned ${vbucks} V-Bucks in match ${matchId}`);
       const progress = () => {
         // The match's XP and challenges count in its build's season, whichever lobby opened the profile last.

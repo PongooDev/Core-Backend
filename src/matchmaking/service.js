@@ -210,8 +210,10 @@ export function serverRegion(patterns) {
 // The teams of a bucket's playlist ({maxTeamCount, maxTeamSize, maxSquadSize}), or null for one the server doesn't know.
 // Shooting Test #1's (15, 2.4 to 2.5) are the build's (events/shootingtest.js: solo from 2.4.2, where the servers' table
 // still has 100 teams of 4), the build being the parties' changelist (their tickets'); without one, 2.4.2's.
-export const playlistTeamsOf = (bucketId, build = null) => {
-  const { playlistId } = parseBucket(bucketId);
+export const playlistTeamsOf = (bucketId, build = null) => teamsOfPlaylist(parseBucket(bucketId).playlistId, build);
+
+// The same by playlist id: what the match results' V-Bucks read a limited-time playlist's mode from (CoreV2 #294).
+export const teamsOfPlaylist = (playlistId, build = null) => {
   if (playlistId === shootingTestPlaylist) return shootingTestTeams(build ?? 3870737);
   if (Number(build) >= playlistAssetTeamsBuild && playlistTeamsFrom351[playlistId]) return playlistTeamsFrom351[playlistId];
   if (Number(build) >= playlistClassBuild && playlistTeamsFrom30[playlistId]) return playlistTeamsFrom30[playlistId];
