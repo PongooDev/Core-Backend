@@ -15,12 +15,15 @@ import { grant } from "../profiles/progress.js";
 //   mtx_purchase_history stat (the FName at 0x458C4F8, read at 0xD91F10, cached by profile revision at 0xD855D0) as
 //   FMtxPurchaseHistory {purchases: [FMtxPurchaseHistoryEntry], refundCredits, refundsUsed} (the SDK's structs), drops the
 //   entries whose purchaseDate is more than 30 days before the server's now (2.592e13 ticks), and sets each entry's
-//   bHasBeenRefunded to refundDate < FDateTime's largest; it lists them ("This list shows purchases within the last {0}
-//   days that are eligible for a refund.", each by its lootResult[0]'s item), and "{0} refunds remaining" is
-//   refundCredits.
+//   bHasBeenRefunded itself, whatever the stat says: refundDate < 0x2BCA2875F4373FFF, FDateTime::MaxValue's ticks
+//   (0xD92094). It lists them ("This list shows purchases within the last {0} days that are eligible for a refund.",
+//   each by its lootResult[0]'s item), and "{0} refunds remaining" is refundCredits. A row (0x2A61850) says "Refunded {0}"
+//   with refundDate when bHasBeenRefunded, "Purchased {0}" with purchaseDate otherwise, both as %m/%d/%y.
 // - FMtxPurchaseHistoryEntry: purchaseId (FString), purchaseDate, refundDate (FDateTime), bHasBeenRefunded, lootResult
-//   ([FMcpLootEntry] {itemType, itemGuid, itemProfile, quantity}), totalMtxPaid. A never-refunded entry's refundDate is
-//   FDateTime's largest (9999-12-31T23:59:59.999Z).
+//   ([FMcpLootEntry] {itemType, itemGuid, itemProfile, quantity}), totalMtxPaid. Profile stats become structs through
+//   the variant converter (0x31D8A0), whose FDateTime from a string is "min" (0), "max" (MaxValue, 9999-12-31
+//   23:59:59.9999999), "now" or an ISO-8601 date. ISO-8601 stops at milliseconds, so no date it can carry reaches
+//   MaxValue: a never-refunded entry's refundDate is "max" (Core-Backend #253; an entry without one is 0, refunded too).
 // - UFortRefundConfirmation ("You can only refund purchases within {0} days", "You have {0} refunds remaining.", its
 //   default 3 without a profile) sends UFortMcpProfileCommonCore::RefundMtxPurchase {purchaseId} on Yes.
 // The command takes the purchase's items out of the locker, gives back the V-Bucks it took (each kind it took), marks it
@@ -29,7 +32,9 @@ import { grant } from "../profiles/progress.js";
 export const refundsBuild = 4019403;
 export const refundWindowDays = 30;
 export const lifetimeRefunds = 3;
-export const notRefunded = "9999-12-31T23:59:59.999Z";
+export const notRefunded = "max";
+// What 3.6's first returns (8aea9a8) stored instead, which the client read as refunded on 31 December 9999 (#253).
+const oldNotRefunded = "9999-12-31T23:59:59.999Z";
 const dayMs = 86400000;
 
 export const hasRefunds = (build = currentBuild()) => Number(build) >= refundsBuild;
@@ -46,16 +51,40 @@ export function purchaseHistoryOf(attributes) {
   };
 }
 
+// Purchases from before 3.6's returns have no entry and can't be given one: Core keeps no record of when or for how
+// much a locker item was bought (its attributes are level, item_seen and favorite; the log lives in memory; profile0's
+// in_app_purchases holds V-Bucks pack receipts, undated).
+//
 // An item shop purchase, on 3.6 and later: its loot ([{itemType, itemGuid, itemProfile, quantity}]), what it cost and
 // which V-Bucks it took ({templateId: amount}).
 export function recordPurchase(tracker, { offerId, lootResult, totalMtxPaid, spent, now = new Date() }) {
   const history = purchaseHistoryOf(tracker.profile.stats.attributes);
   const entry = {
-    purchaseId: crypto.randomUUID(), offerId, purchaseDate: now.toISOString(), refundDate: notRefunded, bHasBeenRefunded: false,
-    lootResult, totalMtxPaid, coreMtxSpent: spent
+    purchaseId: crypto.randomUUID(), offerId, purchaseDate: now.toISOString(), refundDate: notRefunded, lootResult, totalMtxPaid,
+    coreMtxSpent: spent
   };
   tracker.setStat("mtx_purchase_history", { ...history, purchases: [...history.purchases, entry] });
   return entry;
+}
+
+// Whether the entry was returned, as the client reads it: any refundDate but "max" (case aside), none too. The old 9999
+// date counts as not returned, as it was meant, until the entry is migrated.
+export const isRefunded = (entry) => String(entry.refundDate ?? "").toLowerCase() !== notRefunded && entry.refundDate !== oldNotRefunded;
+
+// Entries stored by 8aea9a8 before #253: their refundDate becomes "max" (and the bHasBeenRefunded they carried, which the
+// client sets itself, goes). Returned ones stay as they are.
+const isOldUnrefunded = (entry) => entry?.refundDate === oldNotRefunded;
+export const purchaseHistoryNeedsMigration = (profile) => purchaseHistoryOf(profile.stats.attributes).purchases.some(isOldUnrefunded);
+
+export function migratePurchaseHistory(tracker) {
+  const history = purchaseHistoryOf(tracker.profile.stats.attributes);
+  if (!history.purchases.some(isOldUnrefunded)) return;
+  const purchases = history.purchases.map((entry) => {
+    if (!isOldUnrefunded(entry)) return entry;
+    const { bHasBeenRefunded, ...rest } = entry;
+    return { ...rest, refundDate: notRefunded };
+  });
+  tracker.setStat("mtx_purchase_history", { ...history, purchases });
 }
 
 const refusal = (message) => Object.assign(new Error(message), { refused: true });
@@ -64,7 +93,7 @@ const refusal = (message) => Object.assign(new Error(message), { refused: true }
 export function refundRefusal(history, purchaseId, now = new Date()) {
   const entry = history.purchases.find((candidate) => candidate.purchaseId === purchaseId);
   if (!entry) return `No purchase ${purchaseId}`;
-  if (entry.bHasBeenRefunded || (entry.refundDate && entry.refundDate !== notRefunded)) return "That purchase was returned already";
+  if (entry.bHasBeenRefunded || isRefunded(entry)) return "That purchase was returned already";
   if (now.getTime() - Date.parse(entry.purchaseDate) > refundWindowDays * dayMs) return `Only purchases of the last ${refundWindowDays} days can be returned`;
   if (history.refundCredits < 1) return "You have no returns left";
   return null;
@@ -82,7 +111,7 @@ export function refundPurchase(session, purchaseId, now = new Date()) {
   const spent = entry.coreMtxSpent && Object.keys(entry.coreMtxSpent).length ? entry.coreMtxSpent : { "Currency:mtxpurchased": entry.totalMtxPaid };
   const returned = Object.entries(spent).filter(([, amount]) => amount > 0).flatMap(([templateId, amount]) => grant(session, templateId, amount));
   const purchases = history.purchases.map((candidate) => (candidate === entry
-    ? { ...candidate, refundDate: now.toISOString(), bHasBeenRefunded: true } : candidate));
+    ? { ...candidate, refundDate: now.toISOString() } : candidate));
   tracker.setStat("mtx_purchase_history", { ...history, purchases, refundCredits: history.refundCredits - 1, refundsUsed: history.refundsUsed + 1 });
   return returned;
 }

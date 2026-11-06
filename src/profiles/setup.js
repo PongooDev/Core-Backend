@@ -6,6 +6,7 @@ import { getItem } from "../gamedata/items.js";
 import { readGameData } from "../gamedata/read.js";
 import { log } from "../log.js";
 import { collectorsNeedSetUp, setUpCollectors } from "../research/collector.js";
+import { migratePurchaseHistory, purchaseHistoryNeedsMigration } from "../store/refunds.js";
 import { startingQuests } from "../gamedata/quests.js";
 import { athenaNeedsSetUp, setUpAthena } from "./athena.js";
 import { foundersNeedSetUp, setUpFounders } from "./founders.js";
@@ -100,7 +101,7 @@ export function needsSetUp(profile, settings = {}) {
     || Boolean(leadCandidate(profile)) || schematicMigrations.some(({ name }) => !migrated(profile, name)) || !migrated(profile, "levelXp")
     || xpScaleNeedsSwitch(profile)
     || collectorsNeedSetUp(profile) || expeditionsNeedSetUp(profile) || foundersNeedSetUp(profile, settings)
-    || friendCodesNeedSetUp(profile) || lootLlamaVoucherMissing(profile);
+    || friendCodesNeedSetUp(profile) || lootLlamaVoucherMissing(profile) || purchaseHistoryNeedsMigration(profile);
 }
 
 // theater0's world items granted before Core gave new ones their template's durability (profiles/items.js) get it, once;
@@ -171,6 +172,8 @@ export function setUpProfile(session, profileId = "profile0") {
   }
   setUpCollectors(session);
   setUpExpeditions(session);
+  // 3.6's purchase history entries stored with the wrong "not refunded" date (store/refunds.js, Core-Backend #253).
+  migratePurchaseHistory(session.profile("profile0"));
   if (defaultHero && !heroes(profile).length) grant(session, defaultHero, 1);
   const lead = leadCandidate(profile);
   if (lead) assignToSquad(session, lead, leadSquad(profile), 0);
