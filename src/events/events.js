@@ -216,11 +216,19 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // the backend still places those alerts, so they run on. So 4.1 serves 4.0's four: Blockbuster2018Phase1 (Phase2, Part 2
 // "A Hero Is Born", is 30 May's, two updates on), ActiveMiniBosses, PassiveStorms and LobbySeason4. No flag drives
 // Battle Royale's map (events/meteorstrike.js has 4.1's curve rows).
+// 4.2 (CL-4072250, 16 May 2018) runs on as 4.1: Update v4.20's notes bring the Perk Recombobulator, its resources in the
+// Event Store and the Quad Launcher in the Weekly Store (store/eventstore.js), Elemental Storm Mission Alerts
+// (world/theaters.js) and repeatable perk quests, but start no Save the World event part (Blockbuster's Part 2, "A Hero
+// Is Born", is 30 May's 4.3). Every EventFlag.* in 4.2's paks (the same byte scan, 305,034 files) is 4.1's set exactly:
+// the five BR.* playlist and decor flags, SupplyDropGift, LobbyHalloweenDecor, LobbyWinterDecor, LobbySeason4, Horde and
+// Blockbuster2018Phase1 to 3. So 4.2 serves 4.1's four: Blockbuster2018Phase1, ActiveMiniBosses, PassiveStorms and
+// LobbySeason4. No flag drives Battle Royale's map (events/meteorstrike.js has 4.2's curve rows).
 export const blockbuster2018 = "Blockbuster2018";
 export const blockbuster2018Phase1 = "EventFlag.Blockbuster2018Phase1";
 export const lobbySeason4 = "EventFlag.LobbySeason4";
 const build40 = 4039451;
 const build41 = 4053532;
+const build42 = 4072250;
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
@@ -243,10 +251,10 @@ const events = [
   { name: storm2018, flag: surviveTheStorm, firstBuild: 4000805, lastBuild: 4019403 },
   { name: storm2018, flag: storm2018Phase1, firstBuild: 4000805, lastBuild: 4019403 },
   { name: storm2018, flag: storm2018Phase2, firstBuild: 4008490, lastBuild: 4019403 },
-  { name: blockbuster2018, flag: blockbuster2018Phase1, firstBuild: build40, lastBuild: build41 },
-  { name: blockbuster2018, flag: activeMiniBosses, firstBuild: build40, lastBuild: build41 },
-  { name: passiveStorms, flag: passiveStorms, firstBuild: build40, lastBuild: build41 },
-  { name: lobbySeason4, flag: lobbySeason4, firstBuild: build40, lastBuild: build41 },
+  { name: blockbuster2018, flag: blockbuster2018Phase1, firstBuild: build40, lastBuild: build42 },
+  { name: blockbuster2018, flag: activeMiniBosses, firstBuild: build40, lastBuild: build42 },
+  { name: passiveStorms, flag: passiveStorms, firstBuild: build40, lastBuild: build42 },
+  { name: lobbySeason4, flag: lobbySeason4, firstBuild: build40, lastBuild: build42 },
   { name: lobbyWinterDecor, flag: lobbyWinterDecor, firstBuild: 3807424, lastBuild: 3825894 },
   { name: winterBattleBus, flag: winterBattleBus, firstBuild: 3807424, lastBuild: 3825894 },
   { name: supplyDropGift, flag: supplyDropGift, firstBuild: 3807424, lastBuild: 3825894 }

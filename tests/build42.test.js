@@ -5,7 +5,8 @@ import { allowedBuildList, buildChoices } from "../src/builds/allowed.js";
 import { inBuild } from "../src/builds/context.js";
 import { seasonName, versionOf } from "../src/builds/detect.js";
 import { contentUpdateStates, lootHotfixSection } from "../src/events/contentupdates.js";
-import { configureEvents } from "../src/events/events.js";
+import { activeEventFlags, activeMiniBosses, blockbuster2018, blockbuster2018Phase1, configureEvents, isEventActive, lobbySeason4,
+  passiveStorms } from "../src/events/events.js";
 import { hasLtm, inOriginalWindow, ltmNewMode, ltmOfPlaylist, ltmOn, ltmPlaylistOverrides, ltms } from "../src/events/ltms.js";
 import { meteorStrikePhase, meteorStrikeRows } from "../src/events/meteorstrike.js";
 import { athenaChallengeBundles, athenaCosmetics, athenaLootTables, athenaSeason } from "../src/gamedata/athena.js";
@@ -14,6 +15,7 @@ import { buildGameData, dataBuild } from "../src/gamedata/read.js";
 import { playlistTeamsOf } from "../src/matchmaking/service.js";
 import { mtxProfileId, usesCommonProfiles } from "../src/profiles/common.js";
 import { buildOfSeason } from "../src/profiles/seasons.js";
+import { eventStoreInstanceNow, eventStoreOffers, hasEventStore } from "../src/store/eventstore.js";
 import { itemShopOffers } from "../src/store/itemshop.js";
 import { hasRefunds } from "../src/store/refunds.js";
 
@@ -85,6 +87,34 @@ test("4.2's shop is Season 4's with 4.2's cosmetics, which 4.1 doesn't sell", ()
   assert.ok(daily(v42).includes("AthenaDance:eid_popdance01"));
   assert.ok(!daily(v41).includes("AthenaDance:eid_popdance01"));
   assert.deepEqual(daily(v42).filter((templateId) => templateId !== "AthenaDance:eid_popdance01"), daily(v41));
+});
+
+test("4.2's event flags are 4.1's: Blockbuster Part 1, active Mini-Bosses, passive storms and the Season 4 lobby", () => {
+  assert.deepEqual(activeEventFlags(v42), [blockbuster2018Phase1, activeMiniBosses, passiveStorms, lobbySeason4]);
+  assert.ok(!activeEventFlags(v42).includes("EventFlag.Blockbuster2018Phase2"), "Part 2 is 30 May's");
+  assert.equal(inBuild(v42, () => isEventActive(blockbuster2018)), true);
+});
+
+test("4.2's Event Store: the Quad Launcher in the Weekly Store, the HackSAW back in the event items, perk resources weekly", () => {
+  const quad = "Schematic:sid_explosive_launcher_military_sr_ore_t01";
+  const hackSaw = "Schematic:sid_assault_lmg_military_sr_ore_t01";
+  assert.equal(inBuild(v42, hasEventStore), true);
+  assert.equal(inBuild(v42, eventStoreInstanceNow), "Blockbuster2018.STWSpecialEventStoreFront");
+  const offers = (build) => inBuild(build, () => eventStoreOffers(now));
+  const ids = (list) => list.map(({ templateId }) => templateId);
+  const o42 = offers(v42);
+  const weekly = o42.STWRotationalEventStorefront;
+  assert.deepEqual(ids(weekly).slice(0, 1), [quad]);
+  assert.deepEqual([weekly[0].price, weekly[0].eventLimit], [1680, 1]);
+  assert.ok(!ids(o42.STWSpecialEventStoreFront).includes(quad));
+  assert.ok(ids(o42.STWSpecialEventStoreFront).includes(hackSaw));
+  assert.equal(o42.STWSpecialEventStoreFront.length, 14);
+  const perks = ["AccountResource:reagent_alteration_generic", "AccountResource:reagent_alteration_upgrade_uc", "AccountResource:reagent_alteration_upgrade_r",
+    "AccountResource:reagent_alteration_upgrade_vr", "AccountResource:reagent_alteration_upgrade_sr"];
+  for (const id of perks) assert.ok(ids(weekly).includes(id), id);
+  const weekly41 = ids(offers(v41).STWRotationalEventStorefront);
+  assert.ok(weekly41.includes(hackSaw) && !weekly41.includes(quad));
+  for (const id of perks) assert.ok(!weekly41.includes(id), `4.1 sells no ${id}`);
 });
 
 test("4.2's LTMs: 4.1's but Impact, and Solo Showdown, Close Encounters and Solid Gold v2 Duos; no new mode", () => {

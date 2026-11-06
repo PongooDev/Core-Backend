@@ -75,6 +75,20 @@ const weeklyStaples = [
   { templateId: "AccountResource:reagent_evolverarity_vr", quantity: 10, price: 75, limit: 5 },
   { templateId: "AccountResource:reagent_evolverarity_r", quantity: 10, price: 30, limit: 10 }
 ];
+// 4.2's (CL-4072250) Perk Recombobulator: "Perk resources will be in the Event Store (available Wed., May 16 at 8pm ET)",
+// so from 4.2 every week also sells RE-PERK! (AccountResource:reagent_alteration_generic, which changes a perk and pays
+// part of every upgrade) and the four PERK-UP! (reagent_alteration_upgrade_uc to _sr, a perk's next rarity). The
+// elemental ones (FIRE-UP!, AMP-UP!, FROST-UP!) are the Elemental Storm alerts' rewards and the elemental husk quests'.
+// 🟡 Epic's amounts, prices and limits aren't recorded: these are Core's, in step with the evolution materials above.
+// 4.1's paks have the same resources unnamed (PP.Generic, PP.Upgrade.*), so they are gated on 4.2's build, not the data.
+export const perkResourcesBuild = 4072250;
+const perkResources = [
+  { templateId: "AccountResource:reagent_alteration_generic", quantity: 100, price: 100, limit: 5 },
+  { templateId: "AccountResource:reagent_alteration_upgrade_uc", quantity: 100, price: 50, limit: 5 },
+  { templateId: "AccountResource:reagent_alteration_upgrade_r", quantity: 100, price: 100, limit: 3 },
+  { templateId: "AccountResource:reagent_alteration_upgrade_vr", quantity: 100, price: 150, limit: 2 },
+  { templateId: "AccountResource:reagent_alteration_upgrade_sr", quantity: 50, price: 200, limit: 2 }
+];
 const weeklyResources = [
   { templateId: "AccountResource:reagent_c_t01", quantity: 10, price: 50, limit: 10 },
   { templateId: "AccountResource:reagent_c_t02", quantity: 10, price: 100, limit: 5 },
@@ -179,7 +193,14 @@ export const spring2018End = "2018-02-22T00:00:00.000Z";
 // a Blockbuster Llama weapon, which 4.1's data makes a store item: no longer recyclable or counted toward the vault,
 // bInventorySizeLimited false), in the DragonFire's place on 4.1 and later, at a legendary schematic's 1,680 Seasonal Gold,
 // one (🟡: Epic's price and limit aren't recorded; Core's week has it from the build's first day, not from 9 May).
+// 4.2's (CL-4072250): "Quad Launcher available in Weekly Event Store (available Wed., May 16 at 8pm ET). Holds 4
+// incendiary rockets that leave balls of fire behind after they explode." That is the Military Launcher,
+// SID_Explosive_Launcher_Military_SR_Ore_T01 (the Quad Launcher; in 4.0's data already, one of Blockbuster's Military
+// weapons below, and 4.2 adds its card pack CardPack_Explosive_Launcher_Military_SR), in the HackSAW's place on 4.2 and
+// later, at a legendary schematic's 1,680 Gold, one (🟡: Epic's price and limit aren't recorded). So on 4.2 it leaves the
+// event items and the HackSAW is back among them, as on 4.0.
 const weeklyFeaturedByBuild = [
+  { firstBuild: 4072250, items: [{ templateId: "Schematic:sid_explosive_launcher_military_sr_ore_t01", price: 1680, limit: 1 }] },
   { firstBuild: 4053532, items: [{ templateId: "Schematic:sid_assault_lmg_military_sr_ore_t01", price: 1680, limit: 1 }] },
   { firstBuild: 3915963, items: [{ templateId: "Schematic:sid_shotgun_dragon_drum_sr_ore_t01", price: 1680, limit: 1 }] },
   { firstBuild: 3901517, items: [{ templateId: "Schematic:sid_pistol_handcannon_de_sr_ore_t01", price: 1680, limit: 1 }] }
@@ -234,7 +255,8 @@ const springItemsNow = () => [...springEventItems,
 // (the HackSAW), Pistol, Shotgun, Sniper, Crossbow, Spear and Launcher, which 4.0's data has as legendary schematics. So the
 // event items are the four heroes, a legendary Survivor and the weapons, at a legendary hero's 2,800, a legendary
 // Survivor's 700 and a legendary schematic's 1,680, one each (🟡: Epic's prices and limits aren't recorded, except Raven's
-// 2,800 Gold). 4.1 moves the HackSAW to the Weekly Store (weeklyFeaturedByBuild), so there it leaves the event items.
+// 2,800 Gold). 4.1 moves the HackSAW to the Weekly Store (weeklyFeaturedByBuild), so there it leaves the event items; 4.2
+// moves the Quad Launcher there instead.
 const blockbusterWeapons = ["assault_military_auto", "assault_military_surgical", "assault_smg_silenced_military", "assault_lmg_military",
   "pistol_silenced_military", "shotgun_military", "sniper_military", "sniper_crossbow_military", "piercing_spear_military",
   "explosive_launcher_military"];
@@ -256,7 +278,7 @@ export const weeklyStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.ST
   : springNow() ? "Spring2018.STWRotationalEventStorefront" : blockbusterNow() ? "Blockbuster2018.STWRotationalEventStorefront" : weeklyStoreInstance);
 
 // The store is open while the requesting build runs Survive the Holidays (or 2.3's to 2.4.2's storms, 2.5's Spring It
-// On!, 3.5.1's Into the Storm or 4.0's and 4.1's Blockbuster) and its data has Seasonal Gold.
+// On!, 3.5.1's Into the Storm or 4.0's to 4.2's Blockbuster) and its data has Seasonal Gold.
 export const hasEventStore = () => (isEventActive(winter2017) || isEventActive(mutantStorms2018) || isEventActive(spring2018) || isEventActive(storm2018)
   || isEventActive(blockbuster2018)) && Boolean(getItem(seasonalGold));
 
@@ -297,7 +319,8 @@ function weeklyItems(week) {
     return offered.length
       ? { ...offer, templateId: offered[Math.floor(weekRandom(week, weeklyPicks.length + 2 + index) * offered.length)] } : undefined;
   }).filter(Boolean) : [];
-  return [...weeklyFeatured().filter(has), ...coinPicks, ...picks.slice(0, 3), ...chosen, ...weeklyStaples.filter(has), ...picks.slice(3)];
+  const perks = Number(currentBuild()) >= perkResourcesBuild ? perkResources.filter(has) : [];
+  return [...weeklyFeatured().filter(has), ...coinPicks, ...picks.slice(0, 3), ...chosen, ...weeklyStaples.filter(has), ...perks, ...picks.slice(3)];
 }
 
 const toOffer = (offerId, instance) => ({ templateId, quantity = 1, price, limit, currency = seasonalGold }) => ({

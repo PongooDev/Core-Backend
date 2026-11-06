@@ -1152,7 +1152,8 @@ export function adminRoutes(context) {
       { version: "3.5.2", cl: 4008490, event: "Into the Storm" },
       { version: "3.6", cl: 4019403, event: "Into the Storm" },
       { version: "4.0", cl: 4039451, event: "Blockbuster" },
-      { version: "4.1", cl: 4053532, event: "Blockbuster" }
+      { version: "4.1", cl: 4053532, event: "Blockbuster" },
+      { version: "4.2", cl: 4072250, event: "Blockbuster" }
     ];
 
     const sampleBuilds = builds.map((b) => ({
@@ -1285,8 +1286,8 @@ export function adminRoutes(context) {
         {
           id: "blockbuster2018",
           name: "Blockbuster",
-          subtitle: "Blockbuster Part 1: Origin Story, active Mini-Boss alerts with Blockbuster Tickets, the Blockbuster Llama and Raven in the Event Store (and on 4.1 the HackSAW in the Weekly Store); the Season 4 lobby",
-          buildRange: "4.0 – 4.1 (CL 4039451 – 4053532)",
+          subtitle: "Blockbuster Part 1: Origin Story, active Mini-Boss alerts with Blockbuster Tickets, the Blockbuster Llama and Raven in the Event Store (and in the Weekly Store the HackSAW on 4.1, the Quad Launcher and the perk resources on 4.2); the Season 4 lobby",
+          buildRange: "4.0 – 4.2 (CL 4039451 – 4072250)",
           flags: ["EventFlag.Blockbuster2018Phase1", "EventFlag.ActiveMiniBosses", "EventFlag.PassiveStorms", "EventFlag.LobbySeason4"],
           theater: "Standard Zones with Mini-Boss and passive Mutant Storm alerts",
           theaterRegions: [],
@@ -1294,7 +1295,7 @@ export function adminRoutes(context) {
           currency: "Blockbuster Tickets (AccountResource:eventcurrency_blockbuster), Gold (capped at 5000) in the Event Store",
           llama: "Blockbuster Llama (CardPack_Event_2018_Blockbuster, 500 Blockbuster Tickets)",
           questsCount: 3,
-          leftoverConversion: "Storm Tickets convert to Into the Storm (Neon) Llamas (1 per 1000, and 1 for what is left over) on 4.0 or 4.1 load"
+          leftoverConversion: "Storm Tickets convert to Into the Storm (Neon) Llamas (1 per 1000, and 1 for what is left over) on 4.0, 4.1 or 4.2 load"
         }
       ]
     });
