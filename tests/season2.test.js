@@ -469,6 +469,8 @@ test("recordresults answers what each player's match gave, as the end-of-match s
     { rewardSource: 3, score: 150, seasonXp: 150, bookXp: 0 },
     { rewardSource: 4, score: 100, seasonXp: 100, bookXp: 0 }]);
   assert.equal(result.totalSeasonXpGained, 300);
+  // CoreV2 #286: the screen's boosts share PrePenaltySeasonXpGained (3.2 on); with no penalty it is the XP gained.
+  assert.equal(result.prePenaltySeasonXpGained, 300);
   assert.deepEqual(result.xpMultipliers, []);
   // Level 1 (100 XP) and level 2 (250) take 350: 300 is one level up, with that level's Battle Stars.
   const athena = (await profileOf(backend.port, player, "athena")).stats.attributes;

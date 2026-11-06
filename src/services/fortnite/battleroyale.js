@@ -41,7 +41,7 @@ import { currentBattlePassConfig } from "../../battlepass/season1.js";
 //   win (place 1) in solo, duo or squad the victory umbrellas it lacks in the locker (Core-Backend #77, #84, #157): The
 //   Umbrella in any season, the match's season's own umbrella (Season 2's Snowflake), and a founder's Founder's Umbrella.
 //   1.8's umbrella is a glider item. It is answered {results: [{accountId, levelsGained, bookLevelsGained,
-//   totalSeasonXpGained, totalBookXpGained, xpMultipliers, rewards}]}, what each player with an athena profile was given
+//   totalSeasonXpGained, totalBookXpGained, prePenaltySeasonXpGained, xpMultipliers, rewards}]}, what each player with an athena profile was given
 //   (rewardResult), which CoreV2 shows on their end-of-match screen (CoreV2 #192).
 //   With battleRoyaleVbucks on (Core-Backend #100, #124, the admin panel's Settings), each result in solo, duos,
 //   squads or 1.10's 50v50 also pays V-Bucks, from that mode's battleRoyaleRewards: perKill a kill, perWin for a place 1
@@ -117,6 +117,11 @@ function progressOf(session) {
 // XP by what earned it (FAthenaAwardGroup: rewardSource, score and seasonXp). CoreV2's server sends it to the player's
 // end-of-match screen (ClientSendEndBattleRoyaleMatchForPlayer), whose XP bar plays the groups, then the boost, from the
 // level the client's athena profile had (UAthenaPlayerMatchReport::InitialLevelInfo), and writes the totals.
+// From 3.2 the result also holds PrePenaltySeasonXpGained, the season XP before the anti-addiction penalty, and the
+// screen's boosts share it, not TotalSeasonXpGained: GetXpRewards (4.1 0xA95DB0) writes a positive boost's line as
+// its percent's part of PrePenaltySeasonXpGained less the groups' Scores, the penalty's as its part of
+// PrePenaltySeasonXpGained less TotalSeasonXpGained. Without it the Battle Pass Bonus read "+-1,190", minus the Total
+// Score (CoreV2 #286). No penalty is taken here, so it is the season XP gained.
 const selfMultiplierSource = 1;
 function rewardResult(session, accountId, before, awards, seasonXp) {
   const after = progressOf(session);
@@ -127,6 +132,7 @@ function rewardResult(session, accountId, before, awards, seasonXp) {
     bookLevelsGained: Math.max(0, after.tier - before.tier),
     totalSeasonXpGained: seasonXp,
     totalBookXpGained: Math.max(0, after.stars - before.stars),
+    prePenaltySeasonXpGained: seasonXp,
     xpMultipliers: boost > 0 ? [{ source: selfMultiplierSource, amount: boost }] : [],
     rewards: awards.map(({ rewardSource, xp }) => ({ rewardSource, score: xp, seasonXp: xp, bookXp: 0 }))
   };
