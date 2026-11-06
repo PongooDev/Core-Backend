@@ -10,6 +10,7 @@ import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
 import { purchaseCatalogEntry } from "../src/services/mcp/commands/PurchaseCatalogEntry.js";
 import { refundMtxPurchase } from "../src/services/mcp/commands/RefundMtxPurchase.js";
+import { storefronts } from "../src/store/catalog.js";
 import { configureItemShop } from "../src/store/itemshop.js";
 import { isRefunded, lifetimeRefunds, notRefunded, purchaseHistoryOf, refundRefusal } from "../src/store/refunds.js";
 
@@ -126,4 +127,14 @@ test("entries stored with 8aea9a8's 9999 date become \"max\" when profile0 loads
     assert.match(refundRefusal(history(session), "b"), /returned already/);
     assert.deepEqual([history(session).refundCredits, history(session).refundsUsed], [2, 1]);
   });
+}));
+
+test("3.6's shop offers say whether they can be returned (#255): item shop cosmetics true, the rest false; earlier builds have no field", () => withShop(() => {
+  const fronts = (build) => inBuild(build, () => storefronts(null, new Date(), { athena: { stats: { attributes: {} }, items: {} }, vbuckPacks: true }));
+  const shop = fronts(v36).filter(({ name }) => name === "BRDailyStorefront" || name === "BRWeeklyStorefront").flatMap(({ catalogEntries }) => catalogEntries);
+  assert.ok(shop.some(({ offerId }) => offerId === steelsight));
+  assert.ok(shop.every(({ refundable }) => refundable === true));
+  const rest = fronts(v36).filter(({ name }) => name !== "BRDailyStorefront" && name !== "BRWeeklyStorefront").flatMap(({ catalogEntries }) => catalogEntries);
+  assert.ok(rest.length > 0 && rest.every(({ refundable }) => refundable === false));
+  assert.ok(fronts(v352).flatMap(({ catalogEntries }) => catalogEntries).every((entry) => !("refundable" in entry)));
 }));

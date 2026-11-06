@@ -11,6 +11,7 @@ import { perBuild } from "../gamedata/read.js";
 import { currencyOffers, currencyStorefront } from "./currency.js";
 import { eventStoreOffers } from "./eventstore.js";
 import { itemShopOffers } from "./itemshop.js";
+import { hasRefunds } from "./refunds.js";
 import { seasonShopOffers, seasonStorefront } from "./seasonshop.js";
 
 // The llama store. The client's store reads the CardPackStore and CardPackStorePromo storefronts (FortStorefront);
@@ -183,7 +184,13 @@ function offerJson(offer, sortPriority) {
     displayAssetPath: offer.displayAssetPath ?? "",
     itemGrants: offer.itemGrants ?? [{ templateId, quantity: offer.quantity ?? 1 }],
     requirements: [],
-    denyItemTemplateIds: []
+    denyItemTemplateIds: [],
+    // 3.6's FCatalogOffer has Refundable (0x200; the offer details' UpdateFromOffer reads IsRefundable and shows the
+    // not-returnable disclaimer, NonrefundableText, when it is false, so an offer without it said "not eligible"). The
+    // item shop's cosmetics are the offers a purchase records for return (PurchaseCatalogEntry: athena offers, the
+    // Season Shop's aside; store/refunds.js), so only those say true; the Battle Pass and its tiers, llamas and the
+    // Event Store say false. Earlier builds' offers have no such field.
+    ...(hasRefunds() ? { refundable: Boolean(offer.athena) && !offer.seasonLevel } : {})
   };
 }
 
