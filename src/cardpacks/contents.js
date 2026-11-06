@@ -78,6 +78,14 @@ function zoneReward(group, templateId, info) {
   if (match) return resource(`Ingredient:ingredient_${match[1]}_${match[2]}`, ingredientsByLevel[level]);
   if (group.startsWith("zcp_improvised")) return resource("Ingredient:ingredient_rare_powercell", Math.max(1, Math.ceil(level / 2)));
   if (group.startsWith("zcp_voucher_basicpack") || group.startsWith("zcp_voucher_tutorialpack")) return resource("AccountResource:voucher_basicpack", 1);
+  // 4.2's perk resource packs (Core-Backend #272): "RE-PERK!" (ZCP_Reagent_Alteration_Generic_VeryLow to _VeryHigh,
+  // AccountResource:Reagent_Alteration_Generic) by its level word, and "Uncommon PERK-UP!" to "Legendary PERK-UP!"
+  // (ZCP_Reagent_Alteration_Upgrade_UC to _SR, AccountResource:Reagent_Alteration_Upgrade_<rarity>, no level). 🟡 Epic
+  // rolled the amounts on its servers: Core's 5 to 30 RE-PERK! (a perk's second tier costs 45 with 100 Uncommon PERK-UP!)
+  // and 10 PERK-UP!, times the mission's loot level as its other packs.
+  if (group === "zcp_reagent_alteration_generic") return resource("AccountResource:reagent_alteration_generic", [0, 5, 10, 15, 20, 30][level]);
+  match = group.match(/^zcp_reagent_alteration_upgrade_(uc|r|vr|sr)$/);
+  if (match) return resource(`AccountResource:reagent_alteration_upgrade_${match[1]}`, 10);
   // "10 V-bucks", "50 V-bucks": the amount is in the pack's id (zcp_mtx_10, zcp_mtx_boost50).
   match = templateId.toLowerCase().match(/^cardpack:zcp_mtx_(?:boost)?(\d+)$/);
   if (match) return resource("Currency:mtxgiveaway", Number(match[1]));

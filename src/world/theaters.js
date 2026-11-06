@@ -127,7 +127,7 @@ function shuffled(list, seed) {
 // A group mission (groupMissions) draws from its solo tier's pool (soloTierGroup) twice over.
 function missionRewards(seed, tierGroupName, theaterId, rowName, soloTierGroup = null) {
   const { count: soloCount = 0, pool: worldPool = [] } = layout().rewards[soloTierGroup ?? tierGroupName] ?? {};
-  const pool = outpostVouchers(tierGroupName, worldPool);
+  const pool = perkRewardPool(soloTierGroup ?? tierGroupName, outpostVouchers(tierGroupName, worldPool));
   const count = soloTierGroup ? 2 * soloCount : soloCount;
   const drawn = pool.reduce((total, reward) => total + reward.weight, 0);
   const items = drawn <= count ? pool.flatMap(({ itemType, quantity, weight }) => Array(weight * (soloTierGroup ? 2 : 1)).fill({ itemType, quantity }))
@@ -138,6 +138,44 @@ function missionRewards(seed, tierGroupName, theaterId, rowName, soloTierGroup =
   const gold = seasonalGoldPack(soloTierGroup ?? tierGroupName);
   if (gold) items.push({ itemType: gold, quantity: 1 });
   return { tierGroupName, items: items.map(({ itemType, quantity }) => ({ itemType, quantity })) };
+}
+
+// 4.2's (CL-4072250) "Updated Mission Rewards and Mini-Boss Mission Alerts to sometimes award RE-PERK and PERK-UP as
+// secondary loot rewards, beginning in early Plankerton. As a result: Crafting Materials (Ore, Gizmos, etc.) will appear
+// significantly less often in later zones. XP and Evolution Materials (Drops of Rain, Lightning in a Bottle, etc.) will
+// appear slightly less often." (Core-Backend #272). Epic's world info Core draws mission rewards from predates 4.2, so
+// from 4.2 a mission of tier 6 on (Mission_Select_T06, early Plankerton, and up) draws from its pool reweighted: its
+// crafting materials (ZCP_Ore_*, ZCP_Crystal_*, ZCP_Improvised_*) at half the weight in Plankerton and a quarter later,
+// its XP and evolution materials (ZCP_*XP_*, ZCP_Reagent_C_*) at 85%, and the perk packs in: RE-PERK!
+// (ZCP_Reagent_Alteration_Generic, Low in Plankerton, Medium in Canny Valley, High in Twine Peaks) at weight 2 and the
+// zone's PERK-UP! at 1 between them (the packs' own descriptions: Uncommon "Found in Plankerton and Canny Valley", Rare
+// "Found in Canny Valley", Epic "Found in Canny Valley and Twine Peaks", Legendary "Found in Twine Peaks"). 🟡 The weights
+// are Core's: the notes give only the direction.
+export const perkRewardsBuild = 4072250;
+const perkUpRarities = [[], [], ["uc"], ["uc", "r", "vr"], ["vr", "sr"]];
+const perkLevels = ["", "", "low", "medium", "high"];
+const missionZone = (tier) => (tier <= 5 ? 1 : tier <= 10 ? 2 : tier <= 15 ? 3 : 4);
+const perkRewardsOn = () => Number(currentBuild()) >= perkRewardsBuild && Boolean(getItem("CardPack:zcp_reagent_alteration_generic_low"));
+export function perkRewardPool(tierGroupName, pool) {
+  const tier = Number(/^Mission_Select_T(\d\d)$/.exec(tierGroupName ?? "")?.[1]);
+  if (!tier || tier < 6 || !perkRewardsOn()) return pool;
+  const zone = missionZone(tier);
+  const reweighted = pool.map((reward) => {
+    const id = reward.itemType.toLowerCase();
+    const scale = /^cardpack:zcp_(ore|crystal|improvised)_/.test(id) ? (zone === 2 ? 0.5 : 0.25)
+      : /^cardpack:zcp_(\w+xp_|reagent_c_)/.test(id) ? 0.85 : 1;
+    return { ...reward, weight: reward.weight * scale };
+  });
+  const ups = perkUpRarities[zone];
+  return [...reweighted, { itemType: `CardPack:zcp_reagent_alteration_generic_${perkLevels[zone]}`, quantity: 1, weight: 2 },
+    ...ups.map((rarity) => ({ itemType: `CardPack:zcp_reagent_alteration_upgrade_${rarity}`, quantity: 1, weight: 1 / ups.length }))];
+}
+// A Mini-Boss alert from Plankerton on (4.2 on): one perk pack besides its rewards, RE-PERK! or the zone's PERK-UP! by its
+// seed.
+function miniBossPerkPack(zone, seed) {
+  if (zone < 2 || !perkRewardsOn()) return [];
+  const choices = [`CardPack:zcp_reagent_alteration_generic_${perkLevels[zone]}`, ...perkUpRarities[zone].map((rarity) => `CardPack:zcp_reagent_alteration_upgrade_${rarity}`)];
+  return [[choices[Math.floor(fraction(digest(`${seed}:perk`)) * choices.length)], 1]];
 }
 
 // 4.2's (CL-4072250) "Mini Llama rewards now scale for Storm Shield Defenses. Before, players could earn a fixed amount of
@@ -428,7 +466,9 @@ const alertRewards = {
     ...(isEventActive(winter2017) ? [[snowflakeTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]]
       : [[`CardPack:zcp_mtx_boost${zoneOfRow(row) <= 2 ? 50 : 100}`, 1], ...(miniBossesStay() ? miniBossItem(zoneOfRow(row), seed) : [])]),
     // 4.0's Blockbuster (events/blockbuster2018.js): 50 to 120 Blockbuster Tickets on top.
-    ...(isEventActive(blockbuster2018) && getItem(blockbusterTickets) ? [[blockbusterTickets, miniBossTicketsFor(zoneOfRow(row))]] : [])
+    ...(isEventActive(blockbuster2018) && getItem(blockbusterTickets) ? [[blockbusterTickets, miniBossTicketsFor(zoneOfRow(row))]] : []),
+    // 4.2's perk resources (#272, perkRewardPool).
+    ...miniBossPerkPack(zoneOfRow(row), seed)
   ]
 };
 

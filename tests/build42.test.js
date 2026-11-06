@@ -230,3 +230,36 @@ test("4.2's storm shield defenses give their zone's Mini Llamas: 1 to 4, 2 to 5,
       [["AccountResource:voucher_basicpack", 1]]);
   }
 });
+
+// Core-Backend #272: "Updated Mission Rewards and Mini-Boss Mission Alerts to sometimes award RE-PERK and PERK-UP as
+// secondary loot rewards, beginning in early Plankerton".
+test("4.2's missions from Plankerton and its Mini-Boss alerts sometimes give RE-PERK! and PERK-UP! (#272)", () => {
+  const perk = /^CardPack:zcp_reagent_alteration_/;
+  const missionsOf = (build) => inBuild(build, () => worldInfo(now)).missions.flatMap(({ availableMissions }) => availableMissions);
+  const tierOf = ({ missionRewards }) => Number(/^Mission_Select_(?:Group_)?T(\d\d)$/.exec(missionRewards.tierGroupName)?.[1] ?? 0);
+  const missions42 = missionsOf(v42);
+  const withPerks = missions42.filter(({ missionRewards }) => missionRewards.items.some(({ itemType }) => perk.test(itemType)));
+  assert.ok(withPerks.length > 0, "some missions give perk resources");
+  assert.ok(withPerks.length < missions42.filter((mission) => tierOf(mission) >= 6).length, "only sometimes");
+  for (const mission of withPerks) assert.ok(tierOf(mission) >= 6, mission.missionRewards.tierGroupName);
+  assert.ok(!missionsOf(v41).some(({ missionRewards }) => missionRewards.items.some(({ itemType }) => perk.test(itemType))), "not on 4.1");
+  // Each zone's PERK-UP!: Uncommon in Plankerton, Legendary only in Twine Peaks.
+  for (const mission of withPerks) {
+    for (const { itemType } of mission.missionRewards.items.filter(({ itemType }) => /upgrade_/.test(itemType))) {
+      const rarity = itemType.split("_").at(-1);
+      const tier = tierOf(mission);
+      assert.ok(tier <= 10 ? rarity === "uc" : tier <= 15 ? ["uc", "r", "vr"].includes(rarity) : ["vr", "sr"].includes(rarity), `${tier} ${rarity}`);
+    }
+  }
+  // The perk packs open to their resources.
+  const opened = (id) => inBuild(v42, () => rollContents(id)).map(({ templateId, quantity }) => [templateId, quantity]);
+  assert.deepEqual(opened("CardPack:zcp_reagent_alteration_generic_low"), [["AccountResource:reagent_alteration_generic", 10]]);
+  assert.deepEqual(opened("CardPack:zcp_reagent_alteration_generic_veryhigh"), [["AccountResource:reagent_alteration_generic", 30]]);
+  assert.deepEqual(opened("CardPack:zcp_reagent_alteration_upgrade_sr"), [["AccountResource:reagent_alteration_upgrade_sr", 10]]);
+  // Mini-Boss alerts from Plankerton carry one perk pack; Stonewood's don't.
+  const miniBosses = inBuild(v42, () => worldInfo(now)).missionAlerts.flatMap(({ availableMissionAlerts }) => availableMissionAlerts)
+    .filter(({ categoryName }) => categoryName === "MiniBossCategory");
+  const perked = miniBosses.filter(({ missionAlertRewards }) => missionAlertRewards.items.some(({ itemType }) => perk.test(itemType)));
+  assert.ok(perked.length > 0 && perked.length < miniBosses.length);
+  for (const { missionAlertRewards } of perked) assert.equal(missionAlertRewards.items.filter(({ itemType }) => perk.test(itemType)).length, 1);
+});
