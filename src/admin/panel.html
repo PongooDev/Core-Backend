@@ -3874,8 +3874,9 @@
       const ltmOf = (id) => ltmList.find((l) => l.id === id);
       const isLtm = (id) => Boolean(ltmOf(id));
       const coreModes = [...modeKeys];
-      modeKeys.push(...ltmList.map((l) => ({ id: l.id, name: l.name, playlistId: l.playlistId, teams: l.teams,
-        code: `${l.queue ? `AthenaEvent${l.queue}` : "Playlist_50v50"} · ${l.builds}` })));
+      // An LTM's code is its event queue and, from 3.5.1, its playlist asset's name (#257); its name there too.
+      modeKeys.push(...ltmList.map((l) => ({ id: l.id, name: l.name351 ? `${l.name} / ${l.name351}` : l.name, playlistId: l.playlistId, teams: l.teams,
+        code: `${[l.queue && `AthenaEvent${l.queue}`, l.playlistName].filter(Boolean).join(" / ")} · ${l.builds}` })));
 
       const rewardModesList = [
         { rewardKey: "solo", modeKey: "solo", name: "Solo" },

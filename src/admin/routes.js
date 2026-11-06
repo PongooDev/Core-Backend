@@ -44,6 +44,7 @@ import { cosmeticRarity, cosmeticType, eligibleCosmetics, generateRandomShop, it
 import { activeEventFlags, fortnitemares, mutantStorms } from "../events/events.js";
 import { convertLeftoverCandy } from "../events/candyllamas.js";
 import { ltmIds, ltmSchedule } from "../events/ltms.js";
+import { playlistTeamsOf } from "../matchmaking/service.js";
 import { convertLeftoverStormTickets } from "../events/stormllamas.js";
 import { defaultEvents, defaultMatchmakingModes, defaultServerLimits, defaultWarmupSeconds } from "../settings/store.js";
 import { calendarCacheMinutes } from "../services/fortnite/calendar.js";
@@ -1551,20 +1552,24 @@ export function adminRoutes(context) {
         enabled: modes.shootingTest === true,
         description: "Limited-time mode of 2.4 to 2.5: weapon accuracy for a more precise aim (first-shot accuracy, less headshot damage, damage fall-off). Solo from 2.4.2, squads on 2.4. Off by default."
       },
-      // The other event queues (Core-Backend #190, #191), squads of the builds whose data has them.
-      ...schedule.list.filter((ltm) => ltm.id !== "fiftyFifty" && ltm.id !== "shootingTest").map((ltm) => ({
-        id: ltm.id,
-        name: ltm.name,
-        playlistId: ltm.playlistId,
-        // 3.5.1's own playlists have no event queue: their asset's PlaylistName.
-        code: ltm.queue ? `AthenaEvent${ltm.queue}` : ltm.playlistName,
-        teamCount: 100,
-        teamSize: 4,
-        squadSize: 4,
-        maxPlayers: 100,
-        enabled: modes[ltm.id] === true,
-        description: `Limited-time mode of ${ltm.builds}: ${ltm.description} Off by default.`
-      }))
+      // The other event queues (Core-Backend #190, #191) and 3.5.1's playlists (#257), with their teams on the last build
+      // that has them (the matchmaking's, playlistTeamsOf; 100 teams of 4 for one it doesn't know).
+      ...schedule.list.filter((ltm) => ltm.id !== "fiftyFifty" && ltm.id !== "shootingTest").map((ltm) => {
+        const teams = playlistTeamsOf(`${ltm.lastBuild}:0:NA:${ltm.playlistId}`, ltm.lastBuild) ?? { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 };
+        return {
+          id: ltm.id,
+          name: ltm.name351 ? `${ltm.name} / ${ltm.name351}` : ltm.name,
+          playlistId: ltm.playlistId,
+          // Its event queue, and from 3.5.1 its playlist asset's PlaylistName (3.5.1's own playlists have only that).
+          code: [ltm.queue && `AthenaEvent${ltm.queue}`, ltm.playlistName].filter(Boolean).join(" / "),
+          teamCount: teams.maxTeamCount,
+          teamSize: teams.maxTeamSize,
+          squadSize: teams.maxSquadSize,
+          maxPlayers: 100,
+          enabled: modes[ltm.id] === true,
+          description: `Limited-time mode of ${ltm.builds}: ${ltm.description} Off by default.`
+        };
+      })
     ];
 
     return {

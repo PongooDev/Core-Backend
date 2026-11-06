@@ -42,6 +42,20 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       "fiftyFiftyV2", "highExplosivesSolo", "highExplosivesSquads", "sniperShootoutSolo", "sniperShootoutDuos", "sniperShootoutSquads", "skySupplyDuos",
       "skySupplySquads", "solidGoldSolo", "impactSolo", "impactDuos", "impactSquads"]);
     assert.equal(ov.playlists.find((p) => p.id === "fiftyFiftyV2").code, "Playlist_50v50");
+    // #257: each LTM's playlist asset and teams, and the 3.5.1 lobby's name for the ones kept from 3.0 and 3.1.
+    const pl = (id) => ov.playlists.find((p) => p.id === id);
+    assert.equal(pl("sniperShootoutDuos").code, "Playlist_Snipers_Duos");
+    assert.deepEqual([pl("sniperShootoutDuos").teamCount, pl("sniperShootoutDuos").teamSize], [100, 2]);
+    assert.deepEqual([pl("highExplosivesSolo").teamSize, pl("solidGoldSolo").teamSize], [1, 1]);
+    assert.deepEqual([pl("fiftyFiftyV2").teamCount, pl("fiftyFiftyV2").teamSize, pl("fiftyFiftyV2").squadSize], [2, 50, 4]);
+    assert.equal(pl("solidGold").code, "AthenaEvent27 / Playlist_SolidGold_Squads");
+    assert.equal(pl("solidGold").name, "Solid Gold / Solid Gold v2 (Squads)");
+    assert.equal(pl("blitz").code, "AthenaEvent8 / Playlist_Blitz_Squad");
+    assert.equal(pl("blitzDuo").name, "Blitz (Duo) / Blitz! (Duos)");
+    assert.deepEqual([pl("blitzDuo").teamSize, pl("blitzSolo").teamSize], [2, 1]);
+    assert.deepEqual([pl("fiveByTwenty").teamCount, pl("fiveByTwenty").teamSize], [5, 20]);
+    assert.equal(ov.ltms.list.find((ltm) => ltm.id === "fiveByTwenty").name351, "Teams of 20");
+    assert.ok(panelHtml.body.includes("l.name351 ? `${l.name} / ${l.name351}` : l.name"));
     const soloPl = ov.playlists.find((p) => p.id === "solo");
     assert.ok(soloPl);
     assert.equal(soloPl.playlistId, 2);

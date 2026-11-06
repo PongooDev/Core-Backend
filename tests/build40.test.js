@@ -16,6 +16,7 @@ import { activeEventFlags, activeMiniBosses, blockbuster2018, blockbuster2018Pha
 import { eventQuests } from "../src/events/fortnitemares.js";
 import { convertEventLeftovers } from "../src/events/leftovers.js";
 import { hasLtm, ltmNewMode, ltmOfPlaylist, ltmOn, ltmPlaylistOverrides, ltms } from "../src/events/ltms.js";
+import { playlistTeamsOf } from "../src/matchmaking/service.js";
 import { meteorStrikePhase, meteorStrikeRows } from "../src/events/meteorstrike.js";
 import { stormTickets } from "../src/events/mutantstorms.js";
 import { intoTheStormLlama } from "../src/events/storm2018.js";
@@ -154,6 +155,40 @@ test("4.0's lobby: 3.6's playlists, no new mode", () => {
   assert.equal(ltmOn("fiftyFiftyV2", v40, none), false);
   assert.deepEqual(ltmPlaylistOverrides(v40, { matchmakingModes: { blitz: true } }), ["Playlist_Blitz_Squad"]);
   assert.equal(ltmOfPlaylist(44, v40).id, "impactSolo");
+});
+
+// Core-Backend #257: the LTMs found working on 3.5.1 and later, each by its own switch, with its playlist asset's
+// PlaylistName and teams (3.5.1's, 3.6's and 4.0's Athena/Playlists, FModel).
+const issue257 = [
+  ["solidGold", "Playlist_SolidGold_Squads", 27, [100, 4, 4]],
+  ["solidGoldSolo", "Playlist_SolidGold_Solo", 26, [100, 1, 1]],
+  ["sniperShootoutSolo", "Playlist_Snipers_Solo", 39, [100, 1, 1]],
+  ["sniperShootoutDuos", "Playlist_Snipers_Duos", 40, [100, 2, 2]],
+  ["sniperShootoutSquads", "Playlist_Snipers", 41, [100, 4, 4]],
+  ["highExplosivesSquads", "Playlist_HighExplosives_Squads", 24, [100, 4, 4]],
+  ["highExplosivesSolo", "Playlist_HighExplosives_Solo", 23, [100, 1, 1]],
+  ["blitz", "Playlist_Blitz_Squad", 19, [100, 4, 4]],
+  ["blitzSolo", "Playlist_Blitz_Solo", 36, [100, 1, 1]],
+  ["blitzDuo", "Playlist_Blitz_Duos", 37, [100, 2, 2]],
+  ["fiveByTwenty", "Playlist_5x20", 22, [5, 20, 4]],
+  ["fiftyFiftyV2", "Playlist_50v50", 50, [2, 50, 4]]
+];
+test("#257: 3.5.1's to 4.0's LTMs, each on by its switch, in the lobby by its playlist and matched in its teams", () => {
+  for (const build of ["4000805", "4008490", v36, v40]) {
+    for (const [id, playlistName, playlistId, [maxTeamCount, maxTeamSize, maxSquadSize]] of issue257) {
+      assert.ok(hasLtm(id, build), `${id} on ${build}`);
+      assert.equal(ltmOfPlaylist(playlistId, build).id, id, `${playlistId} on ${build}`);
+      assert.deepEqual(playlistTeamsOf(`${build}:0:NA:${playlistId}`, build), { maxTeamCount, maxTeamSize, maxSquadSize }, `${id} on ${build}`);
+      const on = ltmPlaylistOverrides(build, { matchmakingModes: { [id]: true } });
+      assert.ok(on.includes(playlistName), `${id} on ${build}`);
+      // Off by its switch, but where it is the build's new mode (50v50 v2 on 3.5.1 and 3.5.2).
+      const off = ltmPlaylistOverrides(build, { matchmakingModes: { [id]: false } });
+      assert.equal(off.includes(playlistName), ltmNewMode(build, { matchmakingModes: {} })?.id === id, `${id} on ${build}`);
+    }
+  }
+  // None of them before 3.5.1's playlist assets: 3.3 has no PlaylistOverrides, and its v2 modes don't exist.
+  assert.deepEqual(ltmPlaylistOverrides("3942182", { matchmakingModes: Object.fromEntries(issue257.map(([id]) => [id, true])) }), []);
+  assert.ok(!hasLtm("sniperShootoutSolo", "3942182"));
 });
 
 test("4.0's shop is Season 4's, with only the cosmetics 4.0 has", () => {

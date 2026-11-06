@@ -195,6 +195,28 @@ const build36 = 4019403;
 // Sprays, the map update and Hop Rocks) name no mode, so it has no new mode either: every LTM is on by its switch and the
 // lobby opens on Solo.
 const build40 = 4039451;
+// Core-Backend #257 asked for 3.5.1's to 4.0's Solid Gold v2 (Squads, Solo), Sniper Shootout v2 (Solo, Duos, Squads), High
+// Explosives v2 (Squads, Solo), Blitz! (Squads, Solo, Duos), Teams of 20 and 50v50 v2. Each is a playlist asset of 3.5.1's
+// and 4.0's Athena/Playlists (and 3.6's, which sits between them, as its note above has it; its paks didn't mount in
+// FModel for #257), listed in the game instance's PlaylistManager (Blueprints/PlaylistManager's AthenaPlaylists: all 22
+// of 3.5.1's), with the PlaylistName, PlaylistId and teams below (FModel). Five of them keep an
+// entry from 3.0 or 3.1 and so its switch: the lobby names them as their asset's UIDisplayName does (name351): Solid Gold
+// (27) "Solid Gold v2 (Squads)", Blitz (19) "Blitz! (Squads)", its children (36, 37) "Blitz! (Solo)" and "Blitz! (Duos)", and
+// 5x20 (22) "Teams of 20". 4.0's assets read "Solid Gold v2", "Blitz!" and "Sniper Shootout v2", their mode in a new
+// UIDisplaySubName; the names here are 3.5.1's. The gameserver needs nothing of its own for them (CoreV2): once the game
+// state has the match's CurrentPlaylistData, the game applies the playlist itself. Its tables (loot tiers and packages, game
+// data, resource rates) are copied over the defaults (ApplyPlaylistDataTables, 3.5.1 0x9DC890), and Core rolls the world's
+// loot again from them (CoreV2 f7cda06): Solid Gold's legendary loot, Sniper Shootout's and High Explosives' weapons.
+// - The spawn percents of chests and ammo boxes (Blitz's), the storm's phases and supply drops are the playlist's
+//   AthenaGameData rows.
+// - LootLevel: AFortGameModeAthena::OnPlaylistDataLoaded (0x9EFF70) has the game state's OverrideLootLevel (0x9F0A00)
+//   set the world level from the playlist's LootLevel, else from its MaxSquadSize.
+// - bNoDBNO (Sniper Shootout v2, Solid Gold v2 Solo): the pawn's death (0xA314E0) skips the down state when the game state's
+//   playlist has it.
+// - SafeZoneStartUp and bWarmUpInStorm (Blitz!): OnPlaylistDataLoadCompleted (0x9EFE50) caches the start-up on the game
+//   state for the safe zone's code.
+// - Teams: SetCurrentPlaylistId (0x9FA020) sets the game state's team count to the playlist's MaxTeamCount.
+// None of these playlists has inventory overrides or starting items (no InventoryManagementItemDefinitions).
 // The first build whose modes are FortPlaylistAthena assets turned on by PlaylistOverrides (3.5.1, above).
 export const playlistAssetBuild = build351;
 const playlistAssets = (build) => Number(build) >= playlistAssetBuild;
@@ -225,11 +247,11 @@ export const ltms = [
     original: null,
     teams: "100 Teams × 4", description: "More loot (Athena/Events/LotsaLoot loot tiers and game data); its lobby tile reads \"Luxurious Loot\"." },
   { id: "blitz", quest: "athenaevent8_playmatches", name: "Blitz", playlistId: 19, queue: 8, eventFlag: "Event8", builds: [build242, build40], seasons: [2, 3, 4],
-    playlistName: "Playlist_Blitz_Squad", tag351: 8,
+    playlistName: "Playlist_Blitz_Squad", tag351: 8, name351: "Blitz! (Squads)",
     original: null,
     teams: "100 Teams × 4", description: "Shorter matches: a smaller first storm circle, its own loot and resource rates (Athena/Events/Blitz tables)." },
   { id: "fiveByTwenty", quest: "athenaevent22_playmatches", name: "5x20", playlistId: 22, queue: 22, eventFlag: null, builds: [build30, build40], seasons: [3, 4], newIn: build32,
-    playlistName: "Playlist_5x20",
+    playlistName: "Playlist_5x20", name351: "Teams of 20",
     original: null,
     teams: "5 Teams × 20", description: "Five teams of twenty (Playlist_5x20, a large team game with its own game data)." },
   { id: "highJump", quest: "athenaevent23_playmatches", name: "High Jump", playlistId: 23, queue: 23, eventFlag: null, builds: [build30, build33], seasons: [3],
@@ -242,9 +264,9 @@ export const ltms = [
     original: null,
     teams: "100 Teams × 1", description: "Solo; the storm closes from the warmup on (Athena/Events/SteadyStorm game data)." },
   { id: "solidGold", quest: "athenaevent27_playmatches", name: "Solid Gold", playlistId: 27, queue: 27, eventFlag: null, builds: [build30, build40], seasons: [3, 4],
-    playlistName: "Playlist_SolidGold_Squads",
+    playlistName: "Playlist_SolidGold_Squads", name351: "Solid Gold v2 (Squads)",
     original: null,
-    teams: "100 Teams × 4", description: "Its own loot tables and resource rates (Athena/Events/SolidGold tables)." },
+    teams: "100 Teams × 4", description: "Its own loot tables and resource rates (Athena/Events/SolidGold tables; from 3.5.1 Athena/Playlists/SolidGold's: all weapon drops are Legendary)." },
   { id: "skySupply", quest: "athenaevent30_playmatches", name: "Sky Supply", playlistId: 30, queue: 30, eventFlag: null, builds: [build30, build40], seasons: [3, 4],
     playlistName: "Playlist_SkySupply",
     original: null,
@@ -253,11 +275,11 @@ export const ltms = [
     original: null,
     teams: "100 Teams × 4", description: "Shotguns only (Athena/Events/Shotguns tables)." },
   { id: "blitzSolo", quest: "athenaevent8_playmatches", name: "Blitz (Solo)", playlistId: 36, queue: 36, tagQueue: 8, eventFlag: null, builds: [build31, build40], seasons: [3, 4],
-    playlistName: "Playlist_Blitz_Solo", quest351: null,
+    playlistName: "Playlist_Blitz_Solo", quest351: null, name351: "Blitz! (Solo)",
     original: null,
     teams: "100 Teams × 1", description: "Blitz alone (Playlist_Blitz_Child_Solo, Blitz's tables); its matches count Blitz's challenge." },
   { id: "blitzDuo", quest: "athenaevent8_playmatches", name: "Blitz (Duo)", playlistId: 37, queue: 37, tagQueue: 8, eventFlag: null, builds: [build31, build40], seasons: [3, 4],
-    playlistName: "Playlist_Blitz_Duos", quest351: null,
+    playlistName: "Playlist_Blitz_Duos", quest351: null, name351: "Blitz! (Duos)",
     original: null,
     teams: "100 Teams × 2", description: "Blitz in duos (Playlist_Blitz_Child_Duo, Blitz's tables); its matches count Blitz's challenge." },
   // 3.5.1's own playlists (above): data assets with no event queue, turned on by PlaylistOverrides.
@@ -426,8 +448,12 @@ export function ltmSchedule(settingsValue, now = new Date()) {
       eventFlag: ltm.eventFlag,
       queue: ltm.queue ?? null,
       playlistName: ltm.playlistName ?? null,
+      // The lobby's name for it from 3.5.1 on, where its playlist asset names it otherwise (null where it doesn't).
+      name351: ltm.name351 ?? null,
       seasons: ltm.seasons,
       builds: buildRange(ltm.builds),
+      // The last build that has it (its teams there: matchmaking/service.js playlistTeamsOf).
+      lastBuild: ltm.builds[1],
       teams: ltm.teams,
       description: ltm.description,
       enabled: ltm.defaultOn ? modes[ltm.id] !== false : modes[ltm.id] === true,
