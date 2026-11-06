@@ -27,7 +27,8 @@ import { createMatchmaker } from "./matchmaking/service.js";
 import { createSessionStore } from "./matchmaking/sessions.js";
 import { createStatsStore, isMainPlaylist } from "./stats/store.js";
 import { createNetwork } from "./network.js";
-import { originForm } from "./proxy.js";
+import { forwardImageRequests, originForm } from "./proxy.js";
+import { isImageHost } from "./services/content/imagehosts.js";
 import { oauthRoutes } from "./services/account/oauth.js";
 import { publicAccountRoutes } from "./services/account/public.js";
 import { portalRoutes } from "./services/portal/routes.js";
@@ -154,6 +155,8 @@ export function createApp(config, context = createContext(config)) {
   const app = express();
   app.disable("x-powered-by");
 
+  // A plain http:// picture the -httpproxy carried for an admin-set picture host goes to that site (Core-Backend #260).
+  app.use(forwardImageRequests((target) => isImageHost(target, context.settings?.get?.() ?? {}, config)));
   app.use(originForm);
   // The IP each request came from, through the reverse proxy only when the admin panel says the backend is behind one
   // (network.js clientAddress, Core-Backend #227).

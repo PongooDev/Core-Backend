@@ -11,8 +11,9 @@ import { newsImageUrl } from "./images.js";
 //
 // Epic's own pictures are still on its CDN (checked 2026-11-06: HEAD and GET answer 200 with the PNG or JPEG), under
 // cdn2.unrealengine.com/Fortnite/fortnite-game/playlisttiles/, as Epic's 2018 pages named them (playlistimages entries of
-// type PlaylistImageEntry): the default modes' BR_LobbyTileArt_* and Season 4's BR04_LTM_* tiles. The client fetches them
-// there itself (only epicgames.com and epicgames.net hosts go to the backend), so Core serves their URLs and ships none.
+// type PlaylistImageEntry): the default modes' BR_LobbyTileArt_* and Season 4's BR04_LTM_* tiles. Core serves their URLs
+// and ships none. A client on -httpproxy sends the download to the backend too, which tunnels Epic's image CDN and the
+// admin's picture hosts to the real site (imagehosts.js); before it did, it answered them itself, with a 404.
 // High Explosives' is the tile Epic's later pages used for it (playlistinformation/BR_LTM_HighExplosives); Sky Supply and
 // Impact have no tile of Epic's that could be found, so they keep the default picture unless the host sets one.
 // The admin panel's News page sets a playlist's own picture (settings playlistImages {playlistName: image}): an http(s) URL

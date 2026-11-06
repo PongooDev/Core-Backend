@@ -5,9 +5,9 @@ import { httpsProxied } from "../../network.js";
 
 // Pictures for Battle Royale's lobby news (Core-Backend #215). From 1.9 each news.messages[] entry has an image, a URL
 // the CMS cache (CMSURLCache.cpp) downloads with an ordinary HTTP request ("Unknown image URL protocol in URL (%s)"
-// for anything but http://, https:// and file://). The client redirects only Epic's hosts to the backend, so an image
-// URL is fetched where it points: a picture on another site is fetched from there, and one the admin panel uploaded is
-// served here, at the address the client already reached this backend on for the content page (newsImageOrigin).
+// for anything but http://, https:// and file://). An image URL is fetched where it points (through the backend's
+// tunnel to that host for a client on -httpproxy, imagehosts.js): a picture on another site is fetched from there, and
+// one the admin panel uploaded is served here, at the address the client already reached this backend on for the content page (newsImageOrigin).
 // The cache keeps the files named in the page's _images_ array (each element a URL string, AsString, 0x3969250 on 1.9)
 // and deletes the rest of its CMS folder, so a picture shown is listed there too. It refuses to decode an image whose
 // width * height * 4 is over 10,000,000 bytes ("Image is too large to safely display", 0x3968FF6), so an upload over
