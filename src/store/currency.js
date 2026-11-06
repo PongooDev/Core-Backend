@@ -64,7 +64,24 @@ const starterPack = {
   oncePerAccount: true,
   cosmetics: ["AthenaCharacter:CID_090_Athena_Commando_M_Tactical", "AthenaBackpack:BID_030_TacticalRogue"]
 };
-export const realMoneyOffers = [pack(1000, 0, 999), pack(2800, 300, 2499), pack(7500, 1500, 5999), pack(13500, 3500, 9999), starterPack];
+// The Wingman Starter Pack (Core-Backend #267) is Season 4's: the Wingman outfit (CID_139_Athena_Commando_M_FighterPilot)
+// and the Bogey Bag back bling (BID_056_FighterPilot), both tagged Cosmetics.Source.StarterPack, with 600 V-Bucks for
+// $4.99, one per account, as the Rogue Agent's. Epic sold it from later in Season 4: 4.0's and 4.1's paks (CL-4039451,
+// CL-4053532) end at CID_126 and BID_049 and hold neither, so like the Rogue Agent's on 3.0 it is offered only on a
+// Season 4 build whose cosmetics have both. Its art is Wingman's featured display asset (8.30 has
+// DA_Featured_CID_139_Athena_Commando_M_FighterPilot).
+const wingmanPack = {
+  ...pack(600, 100, 499),
+  offerId: "core_starter_br_s4",
+  title: "Wingman Starter Pack",
+  description: "Wingman outfit, Bogey Bag back bling and 600 V-Bucks",
+  displayAssetPath: displayAsset("DA_Featured_CID_139_Athena_Commando_M_FighterPilot"),
+  season: 4,
+  oncePerAccount: true,
+  cosmetics: ["AthenaCharacter:CID_139_Athena_Commando_M_FighterPilot", "AthenaBackpack:BID_056_FighterPilot"]
+};
+export const realMoneyOffers = [pack(1000, 0, 999), pack(2800, 300, 2499), pack(7500, 1500, 5999), pack(13500, 3500, 9999), starterPack,
+  wingmanPack];
 
 export const hasCurrencyStore = (changelist = currentBuild()) => Number(changelist) >= firstBuild;
 export const findRealMoneyOffer = (offerId) => realMoneyOffers.find((offer) => offer.offerId === offerId);

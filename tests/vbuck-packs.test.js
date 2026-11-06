@@ -1,6 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { certUserAgent, clientToken, post, send, startBackend, userLogin } from "./helpers.js";
+import { inBuild } from "../src/builds/context.js";
+import { lockerCosmeticId } from "../src/profiles/athena.js";
+import { findRealMoneyOffer, isOffered } from "../src/store/currency.js";
 
 // The Store tab's V-Bucks packs (Core-Backend #223, store/currency.js, services/fortnite/purchase.js).
 const agent31 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-3.1-CL-3915963";
@@ -284,6 +287,32 @@ test("the Starter Pack works on 3.5.1, whose V-Bucks are common_core's", async (
     assert.equal(owned(athena, "AthenaBackpack:BID_030_TacticalRogue").length, 1);
     assert.equal(starterOf(await catalog(backend.port, player.token, agent351)), undefined);
     assert.equal((await open(backend.port, id, agent351)).status, 409);
+  } finally {
+    backend.close();
+  }
+});
+
+// Core-Backend #267: the Wingman Starter Pack, Season 4's, offered on a Season 4 build whose paks have Wingman and the
+// Bogey Bag. 4.0's and 4.1's don't (they end at CID_126 and BID_049), so neither starter pack is in their Store tab.
+const agent40 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-4.0-CL-4039451";
+const agent41 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-4.1-CL-4053532";
+test("#267: the Wingman Starter Pack is Season 4's, offered only where the build has Wingman and the Bogey Bag", async () => {
+  const wingman = findRealMoneyOffer("core_starter_br_s4");
+  assert.deepEqual([wingman.title, wingman.season, wingman.price, wingman.oncePerAccount], ["Wingman Starter Pack", 4, 499, true]);
+  assert.deepEqual(wingman.cosmetics, ["AthenaCharacter:CID_139_Athena_Commando_M_FighterPilot", "AthenaBackpack:BID_056_FighterPilot"]);
+  assert.deepEqual(wingman.grants, [{ templateId: "Currency:MtxPurchased", quantity: 500 }, { templateId: "Currency:MtxPurchaseBonus", quantity: 100 }]);
+  for (const build of ["4039451", "4053532"]) {
+    assert.equal(inBuild(build, () => lockerCosmeticId(wingman.cosmetics[0])), undefined, build);
+    assert.equal(inBuild(build, () => isOffered(wingman, undefined)), false, build);
+  }
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "WingmanShopper");
+    for (const userAgent of [agent40, agent41, agent31]) {
+      const offers = currencyOf(await catalog(backend.port, player.token, userAgent))?.catalogEntries ?? [];
+      assert.ok(!offers.some((offer) => offer.offerId === "core_starter_br_s4"), userAgent);
+      assert.equal(offers.some((offer) => offer.offerId === "core_starter_br_s3"), userAgent === agent31, userAgent);
+    }
   } finally {
     backend.close();
   }
