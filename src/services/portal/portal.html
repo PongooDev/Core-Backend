@@ -171,6 +171,15 @@
   .row.done .bar > i { background: var(--good); }
   .empty { color: var(--faint); font-size: 13px; }
   .pill { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; background: var(--blue-soft); color: #a9d5ff; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; margin-bottom: 8px; }
+  .tile { --rar: #6b6f76; display: flex; flex-direction: column; border-radius: 8px; overflow: hidden; background: var(--surface-2); border: 1px solid var(--line); min-width: 0; }
+  .tile .art { aspect-ratio: 1; background: linear-gradient(160deg, var(--rar), color-mix(in srgb, var(--rar) 45%, #000)); display: block; overflow: hidden; }
+  .tile .art img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .tile .cap { padding: 4px 6px; font-size: 11px; line-height: 1.25; overflow: hidden; }
+  .tile .cap b { display: block; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tile .cap span { color: var(--muted); }
+  .tile.owned { opacity: 0.6; }
+  .tile.r-uncommon { --rar: #5aa626; } .tile.r-rare { --rar: #2f8de0; } .tile.r-epic { --rar: #a64be0; } .tile.r-legendary { --rar: #e08a2a; }
   table.matches { width: 100%; border-collapse: collapse; font-size: 13px; }
   table.matches th, table.matches td { text-align: right; padding: 6px 8px; border-top: 1px solid var(--line); }
   table.matches th:first-child, table.matches td:first-child { text-align: left; }
@@ -727,6 +736,32 @@ function statBox(label, value, note) {
   return box;
 }
 
+// Item pictures: the server hands a URL only while the admin has them on; it is checked again here and set as a DOM property.
+// An id without a picture (or a failed load) leaves the plain rarity-coloured tile.
+const imagePrefix = "https://fortnite-api.com/images/cosmetics/br/";
+const rarityClass = (rarity) => ({ ordinary: "common", handmade: "uncommon", sturdy: "rare", quality: "epic", fine: "legendary", elegant: "legendary", masterwork: "legendary", mythic: "legendary" }[String(rarity).toLowerCase()]
+  ?? String(rarity).toLowerCase().replace(/[^a-z]/g, ""));
+function itemTile(item, note, showImages) {
+  const tile = el("div", "tile r-" + rarityClass(item.rarity) + (item.owned ? " owned" : ""));
+  const art = el("span", "art");
+  if (showImages && typeof item.image === "string" && item.image.startsWith(imagePrefix)) {
+    const img = document.createElement("img");
+    img.loading = "lazy";
+    img.alt = item.name;
+    img.referrerPolicy = "no-referrer";
+    img.addEventListener("error", () => img.remove());
+    img.src = item.image;
+    art.append(img);
+  }
+  tile.append(art);
+  const cap = el("div", "cap");
+  cap.title = item.name;
+  cap.append(el("b", "", item.name));
+  if (note) cap.append(el("span", "", note));
+  tile.append(cap);
+  return tile;
+}
+
 function section(title) {
   const node = el("div", "acct-section");
   node.append(el("h3", "", title));
@@ -820,20 +855,21 @@ function renderAccount(data) {
     for (const [title, offers] of [["Featured", data.shop.featured], ["Daily", data.shop.daily]]) {
       if (!offers.length) continue;
       sec.append(el("h4", "", title));
-      for (const offer of offers) {
-        const row = el("div", "row");
-        row.append(el("span", "name", offer.title), el("span", "meta", offer.owned ? "Owned" : num(offer.price) + " V-Bucks"));
-        sec.append(row);
-      }
+      const tiles = el("div", "tiles");
+      for (const offer of offers) tiles.append(itemTile({ name: offer.title, rarity: offer.rarity, image: offer.image, owned: offer.owned }, offer.owned ? "Owned" : num(offer.price) + " V-Bucks", data.images));
+      sec.append(tiles);
     }
     view.append(sec);
   }
 
   const locker = section("Locker");
-  const kinds = data.locker.cosmetics.map((kind) => {
+  const kinds = data.locker.cosmetics.flatMap((kind) => {
     const row = el("div", "row");
     row.append(el("span", "name", kind.label), el("span", "meta", num(kind.owned) + " / " + num(kind.total)));
-    return row;
+    if (!kind.items.length) return [row];
+    const tiles = el("div", "tiles");
+    for (const item of kind.items) tiles.append(itemTile(item, "", data.images));
+    return [row, tiles];
   });
   const banners = el("div", "row");
   banners.append(el("span", "name", "Banners"), el("span", "meta", num(data.locker.banners)));

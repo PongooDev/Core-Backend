@@ -10,6 +10,7 @@ import { RedeemError } from "../../friendcodes/store.js";
 import { log } from "../../log.js";
 import { openSession } from "../../profiles/session.js";
 import { notifyProfiles } from "../mcp/profile.js";
+import { portalContentSecurityPolicy, showItemImages } from "./images.js";
 import { accountSummary } from "./myaccount.js";
 import { createFailureTracker, createRateLimiter, getClientIp } from "./ratelimit.js";
 
@@ -61,15 +62,21 @@ export function portalRoutes(context) {
   // What the portal shows a signed-in player of their own account: never anyone else's.
   const ownAccount = (account) => ({ id: account.id, displayName: account.displayName, email: account.contactEmail ?? null });
 
+  // The page, whose images may come from the image host only while the admin allows it (images.js).
+  function servePortal(req, res) {
+    res.set("Content-Security-Policy", portalContentSecurityPolicy(showItemImages(settings)));
+    res.sendFile(portalFile);
+  }
+
   // Serve the registration and player portal page
-  router.get("/register", (req, res) => res.sendFile(portalFile));
-  router.get("/portal", (req, res) => res.sendFile(portalFile));
-  router.get("/redeem", (req, res) => res.sendFile(portalFile));
-  router.get("/change-password", (req, res) => res.sendFile(portalFile));
-  router.get("/password", (req, res) => res.sendFile(portalFile));
-  router.get("/email", (req, res) => res.sendFile(portalFile));
-  router.get("/my-account", (req, res) => res.sendFile(portalFile));
-  router.get("/reset-password", (req, res) => res.sendFile(portalFile));
+  router.get("/register", servePortal);
+  router.get("/portal", servePortal);
+  router.get("/redeem", servePortal);
+  router.get("/change-password", servePortal);
+  router.get("/password", servePortal);
+  router.get("/email", servePortal);
+  router.get("/my-account", servePortal);
+  router.get("/reset-password", servePortal);
 
   // Public status check for the portal
   router.get("/api/portal/status", (req, res) => {
@@ -77,7 +84,8 @@ export function portalRoutes(context) {
     res.json({
       status: "online",
       requirePassword: Boolean(config.requirePassword),
-      allowRegistration: Boolean(config.allowRegistration)
+      allowRegistration: Boolean(config.allowRegistration),
+      showItemImages: config.showItemImages !== false
     });
   });
 

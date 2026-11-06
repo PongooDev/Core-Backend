@@ -11,6 +11,7 @@ import { questIdOf } from "../../profiles/quests.js";
 import { inProfileSeason, lastTier, profileSeason } from "../../profiles/seasons.js";
 import { openSession } from "../../profiles/session.js";
 import { maxLevel, xpForLevel } from "../../profiles/xp.js";
+import { cosmeticImageUrl, showItemImages } from "./images.js";
 import { hasItemShop, itemShopOffers, nextRotation } from "../../store/itemshop.js";
 
 // What the portal's My account page shows a signed-in player of their own account (Core-Backend #249), read-only and
@@ -122,27 +123,42 @@ const lockerKinds = [["AthenaCharacter", "Outfits"], ["AthenaBackpack", "Back Bl
 const kindOf = (templateId) => String(templateId).split(":")[0].toLowerCase();
 const isReal = (templateId) => !String(templateId).toLowerCase().includes("_random");
 
-function lockerOf(athena, wallet) {
+// The most items of a kind the page lists with their pictures.
+const lockerItemLimit = 300;
+
+// An item the page draws: its name and rarity from the build's game data, and its picture's URL (null when the admin
+// has the pictures off or the id has none; images.js).
+function pictured(templateId, cosmetics, images) {
+  const cosmetic = cosmetics[String(templateId).toLowerCase()];
+  return { name: cosmetic?.name?.trim() || String(templateId).split(":")[1] || String(templateId), rarity: cosmetic?.rarity ?? null, image: cosmeticImageUrl(templateId, { enabled: images }) };
+}
+
+function lockerOf(athena, wallet, images) {
   const all = Object.keys(athenaCosmetics()).filter(isReal);
+  const cosmetics = Object.fromEntries(Object.entries(athenaCosmetics()).map(([templateId, cosmetic]) => [templateId.toLowerCase(), cosmetic]));
   const held = athena ? Object.values(athena.items).map((item) => item.templateId).filter(isReal) : [];
+  const ownedOf = (kind) => [...new Map(held.filter((templateId) => kindOf(templateId) === kind.toLowerCase()).map((id) => [id.toLowerCase(), id])).values()];
   return {
     cosmetics: lockerKinds.map(([kind, label]) => ({
       label,
-      owned: new Set(held.filter((templateId) => kindOf(templateId) === kind.toLowerCase()).map((id) => id.toLowerCase())).size,
-      total: all.filter((templateId) => kindOf(templateId) === kind.toLowerCase()).length
+      owned: ownedOf(kind).length,
+      total: all.filter((templateId) => kindOf(templateId) === kind.toLowerCase()).length,
+      items: ownedOf(kind).slice(0, lockerItemLimit).map((templateId) => pictured(templateId, cosmetics, images))
+        .sort((a, b) => a.name.localeCompare(b.name))
     })).filter((row) => row.total > 0 || row.owned > 0),
     banners: Object.values(wallet?.items ?? {}).filter((item) => kindOf(item.templateId) === "homebasebannericon").length
   };
 }
 
 // The item shop of the day for the build, marking what the account already owns.
-function shopOf(athena, now) {
+function shopOf(athena, now, images) {
   if (!hasItemShop()) return null;
   const offers = itemShopOffers(now);
   // Regional editions of an outfit ("Alpine Ace (USA)") sell in their own country only: the page lists the outfit once.
   const regional = (offer, entries) => /^(.+) \([A-Z]{3}\)$/.test(offer.title) && entries.some(({ title }) => title === offer.title.replace(/ \([A-Z]{3}\)$/, ""));
   const list = (entries) => entries.filter((offer) => !regional(offer, entries)).map((offer) => ({
-    title: offer.title, price: offer.price, owned: Boolean(athena && offer.templateId && findItem(athena, offer.templateId))
+    title: offer.title, price: offer.price, owned: Boolean(athena && offer.templateId && findItem(athena, offer.templateId)),
+    rarity: athenaCosmetics()[offer.templateId]?.rarity ?? null, image: cosmeticImageUrl(offer.templateId, { enabled: images })
   }));
   const featured = list(offers.BRWeeklyStorefront ?? []);
   const daily = list(offers.BRDailyStorefront ?? []);
@@ -185,7 +201,8 @@ function matchesOf(playlists) {
 }
 
 // context: {profiles, stats}; account: the signed-in player's own.
-export function accountSummary({ profiles, stats }, account, now = new Date()) {
+export function accountSummary({ profiles, stats, settings }, account, now = new Date()) {
+  const images = showItemImages(settings);
   const known = versionOf(account.lastBuild) ? account.lastBuild : null;
   const build = known ?? newestBuild;
   return inBuild(build, () => {
@@ -203,8 +220,9 @@ export function accountSummary({ profiles, stats }, account, now = new Date()) {
       battleRoyale: athena ? battleRoyaleOf(athena) : null,
       saveTheWorld: saveTheWorldOf(campaign),
       challenges: athena ? athenaChallenges(athena) : null,
-      shop: shopOf(athena, now),
-      locker: lockerOf(athena, wallet),
+      images,
+      shop: shopOf(athena, now, images),
+      locker: lockerOf(athena, wallet, images),
       matches: matchesOf(stats?.playlists(account.id) ?? {})
     };
   });

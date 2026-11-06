@@ -40,6 +40,8 @@ const defaultSeasonStarts = () => Object.fromEntries(battleRoyaleSeasons.map(({ 
 const defaults = {
   requirePassword: false,
   allowRegistration: true,
+  // Whether the portal and the admin panel show cosmetics' pictures, loaded from fortnite-api.com (portal/images.js; #249).
+  showItemImages: true,
   allowAutoRegistration: true,
   // Whether the seasonal events (events/events.js) run on the builds that shipped them (the admin panel's switch).
   seasonalEvents: true,
@@ -652,6 +654,7 @@ export function createSettingsStore(dataDir) {
     update(partial = {}) {
       if (typeof partial.requirePassword === "boolean") settings.requirePassword = partial.requirePassword;
       if (typeof partial.allowRegistration === "boolean") settings.allowRegistration = partial.allowRegistration;
+      if (typeof partial.showItemImages === "boolean") settings.showItemImages = partial.showItemImages;
       if (typeof partial.allowAutoRegistration === "boolean") settings.allowAutoRegistration = partial.allowAutoRegistration;
       if (partial.battlepass && typeof partial.battlepass === "object") {
         settings.battlepass = sanitizeBattlePass(partial.battlepass, settings.battlepass ?? defaults.battlepass);

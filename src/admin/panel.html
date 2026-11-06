@@ -1825,6 +1825,19 @@
     }
     const btn = (label, onclick, kind = "", extra = {}) => el("button", { type: "button", class: `btn ${kind}`, onclick, ...extra }, el("span", { text: label }));
     const chip = (label, kind = "") => el("span", { class: `chip ${kind}` }, el("span", { text: label }));
+    // A cosmetic's icon from fortnite-api.com (Settings > Show item images), only for a plain id; a failed load just drops the picture.
+    const itemIcon = (templateId, show, size = 40) => {
+      const id = String(templateId || "").split(":")[1]?.toLowerCase();
+      if (!show || !id || !/^[a-z0-9_]+$/.test(id)) return null;
+      const img = document.createElement("img");
+      img.loading = "lazy";
+      img.alt = id;
+      img.referrerPolicy = "no-referrer";
+      img.style.cssText = `width:${size}px; height:${size}px; border-radius:6px; flex:none; object-fit:cover; background:var(--surface-2);`;
+      img.addEventListener("error", () => img.remove());
+      img.src = `https://fortnite-api.com/images/cosmetics/br/${id}/smallicon.png`;
+      return img;
+    };
     const toRarityCode = (rarity, code) => code || {
       common: "c",
       uncommon: "uc",
@@ -5866,6 +5879,7 @@
           },
             el("div", { style: "display:flex; align-items:center; gap:12px; min-width:0;" },
               chip(cosmetic.rarity, code),
+              itemIcon(cosmetic.templateId, shop.showItemImages),
               el("div", { style: "min-width:0;" },
                 el("strong", { style: "display:block; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;", text: cosmetic.name }),
                 el("div", { class: "s mono", style: "font-size:11px; margin-top:2px;", text: cosmetic.templateId }))),
@@ -5948,6 +5962,7 @@
           style: "display:flex; flex-direction:column; justify-content:space-between; min-height:140px; position:relative; overflow:hidden;"
         },
           el("div", {},
+            itemIcon(templateId, shop.showItemImages, 56),
             el("div", { class: "k", text: type }),
             el("div", { class: "t", style: "font-size:16px;", text: name }),
             el("div", { class: "s mono", text: templateId })),
@@ -7287,6 +7302,15 @@
               toggleSwitch(settings.allowAutoRegistration, (checked) =>
                 save({ allowAutoRegistration: checked }, checked ? "In-game auto-creation enabled" : "In-game auto-creation disabled"))),
             el("p", { class: "note", text: "When enabled, logging in with an unknown name automatically creates a new account in-game with the provided password. Only dedicated server accounts (CoreServer{n} or Server{n}) can be created without a password." }))),
+
+        el("section", { class: "panel", style: "margin-top:16px" },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" },
+            el("div", { class: "actions" },
+              el("h2", { text: "Item Images" }),
+              settings.showItemImages !== false ? chip("Shown", "good") : chip("Hidden")),
+            toggleSwitch(settings.showItemImages !== false, (checked) =>
+              save({ showItemImages: checked }, checked ? "Item images shown" : "Item images hidden"))),
+          el("p", { class: "note", text: "Show item images (loaded from fortnite-api.com). The player portal's My Account page and the Item Shop views here show cosmetic icons, loaded from the public fortnite-api.com image host by the viewer's browser. Turn it off and no request goes to that host." })),
 
         el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },

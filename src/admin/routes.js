@@ -57,6 +57,7 @@ import { challengeModes, challengesAllUnlocked, challengeWeekCount, weekPlan } f
 import { isServerAccountName, validatePassword } from "../accounts/password.js";
 import { EmailError } from "../accounts/store.js";
 import { rewardItem } from "../friendcodes/rewards.js";
+import { showItemImages } from "../services/portal/images.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const panel = path.join(here, "panel.html");
@@ -961,6 +962,7 @@ export function adminRoutes(context) {
     const updated = settings.update({
       requirePassword: req.body?.requirePassword,
       allowRegistration: req.body?.allowRegistration,
+      showItemImages: req.body?.showItemImages,
       allowAutoRegistration: req.body?.allowAutoRegistration,
       defaultFoundersAccess: req.body?.defaultFoundersAccess,
       remoteAdmin: req.body?.remoteAdmin,
@@ -1110,7 +1112,8 @@ export function adminRoutes(context) {
       nextRotation: nextRotation(now, config).toISOString(),
       weeklyStoreEnd: weeklyStoreEnd(now, config, s).toISOString(),
       seasonEnd: seasonEnd(now, config, s).toISOString(),
-      availableCosmetics: cosmetics
+      availableCosmetics: cosmetics,
+      showItemImages: showItemImages(settings)
     };
   }
 
