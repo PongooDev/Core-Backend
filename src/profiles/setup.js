@@ -1,5 +1,6 @@
 import { addPageItem, bookData, bookProfiles, pageId, pageTemplateId, refreshPage, unlockPage } from "../collectionbook/pages.js";
 import { eventBookPages } from "../events/fortnitemares.js";
+import { goldKeptNeedsNote, noteGoldKept } from "../events/springgold.js";
 import { expeditionsNeedSetUp, setUpExpeditions } from "../expeditions/expeditions.js";
 import { slotUnlockNode } from "../gamedata/homebase.js";
 import { getItem } from "../gamedata/items.js";
@@ -101,7 +102,8 @@ export function needsSetUp(profile, settings = {}) {
     || Boolean(leadCandidate(profile)) || schematicMigrations.some(({ name }) => !migrated(profile, name)) || !migrated(profile, "levelXp")
     || xpScaleNeedsSwitch(profile)
     || collectorsNeedSetUp(profile) || expeditionsNeedSetUp(profile) || foundersNeedSetUp(profile, settings)
-    || friendCodesNeedSetUp(profile) || lootLlamaVoucherMissing(profile) || purchaseHistoryNeedsMigration(profile);
+    || friendCodesNeedSetUp(profile) || lootLlamaVoucherMissing(profile) || purchaseHistoryNeedsMigration(profile)
+    || goldKeptNeedsNote(profile);
 }
 
 // theater0's world items granted before Core gave new ones their template's durability (profiles/items.js) get it, once;
@@ -174,6 +176,8 @@ export function setUpProfile(session, profileId = "profile0") {
   setUpExpeditions(session);
   // 3.6's purchase history entries stored with the wrong "not refunded" date (store/refunds.js, Core-Backend #253).
   migratePurchaseHistory(session.profile("profile0"));
+  // From 4.0 the account's Gold is kept across seasons (events/springgold.js, Core-Backend #262).
+  noteGoldKept(profile);
   if (defaultHero && !heroes(profile).length) grant(session, defaultHero, 1);
   const lead = leadCandidate(profile);
   if (lead) assignToSquad(session, lead, leadSquad(profile), 0);

@@ -240,8 +240,11 @@ export function grantItem(session, templateId, quantity, options = {}) {
     const amount = Math.min(quantity, limit);
     return [granted(addItem(tracker, templateId, amount, info, options), amount)];
   }
+  // A stack already over its MaxStackSize keeps what it holds and takes no more: 4.0's notes, "Gold caps at 5000. Gold above
+  // this cap will not be lost, but you will stop earning Gold until you have spent enough to drop below the cap" (3.6's
+  // Spring It On! Gold had no cap, so an account can bring more than 5,000 to 4.0; Core-Backend #262).
   const before = tracker.profile.items[existing].quantity;
-  const after = Math.min(before + quantity, limit);
+  const after = Math.max(before, Math.min(before + quantity, limit));
   if (after !== before) tracker.setQuantity(existing, after);
   return [granted(existing, after - before)];
 }

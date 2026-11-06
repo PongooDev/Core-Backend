@@ -1,3 +1,4 @@
+import { currentBuild } from "../builds/context.js";
 import { getItem } from "../gamedata/items.js";
 import { log } from "../log.js";
 import { grantItem } from "../profiles/items.js";
@@ -27,6 +28,18 @@ export const firecrackerConversion = {
     llamaName: "Spring Llama" }),
   convert: (session) => convertLeftover(session, { ...firecrackerConversion.options(), roundUp: true })
 };
+
+// 4.0 (CL-4039451): "Gold no longer resets each season. Seasonal Gold has been renamed to Gold as a result." Accounts are
+// shared by every build, so an account that has loaded on 4.0 or later keeps its Gold from then on: Spring It On!'s start
+// (2.5 to 3.3's builds) no longer takes it, should the account first meet that event afterwards (Core-Backend #262). Its
+// profile0 is set up (profiles/setup.js) with the conversion noted as done, as events/leftovers.js notes one it made.
+// Accounts that never reached 4.0 convert as before.
+export const goldKeptBuild = 4039451;
+const goldMigration = "eventLeftovers.SeasonalGold2018";
+export const goldKeptNeedsNote = (profile) => Number(currentBuild()) >= goldKeptBuild && !(profile.coreMigrations ?? []).includes(goldMigration);
+export function noteGoldKept(profile) {
+  if (goldKeptNeedsNote(profile)) profile.coreMigrations = [...(profile.coreMigrations ?? []), goldMigration];
+}
 
 export const goldConversion = {
   run: "SeasonalGold2018",

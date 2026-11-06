@@ -149,6 +149,55 @@ test("4.0 turns Storm Tickets into Into the Storm (Neon) Llamas, one a 1,000 and
   assert.deepEqual(convertEventLeftovers(session), [], "once");
 }));
 
+// Core-Backend #262, 4.0's notes: "Gold no longer resets each season. Seasonal Gold has been renamed to Gold as a result.
+// Gold caps at 5000. Gold above this cap will not be lost, but you will stop earning Gold until you have spent enough to
+// drop below the cap."
+test("4.0 keeps the account's Gold: no later Spring It On! conversion takes it, and Gold over the cap isn't lost", () => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-build40-gold-"));
+  const store = createProfileStore(dataDir);
+  const gold = "AccountResource:eventcurrency_scaling";
+  const held = (session) => Object.values(session.profile("profile0").profile.items)
+    .filter((item) => item.templateId.toLowerCase() === gold.toLowerCase()).reduce((sum, item) => sum + item.quantity, 0);
+  try {
+    // 3.6 has no cap: 8,000 Spring It On! Gold, past an account's Spring It On! conversion.
+    inBuild(v36, () => {
+      const session = openSession(store, "gold40");
+      session.profile("profile0").profile.coreMigrations.push("eventLeftovers.SeasonalGold2018");
+      grantItem(session, gold, 8000);
+      session.commit();
+    });
+    inBuild(v40, () => {
+      assert.equal(getItem(gold).maxStackSize, 5000);
+      const session = openSession(store, "gold40");
+      assert.equal(held(session), 8000);
+      grantItem(session, gold, 50);
+      assert.equal(held(session), 8000, "over the cap: kept, and no more earned");
+      session.commit();
+    });
+    // An account that first loads on 4.0 and later meets Spring It On! on 3.3 keeps its Gold.
+    inBuild(v40, () => {
+      const session = openSession(store, "fresh40");
+      grantItem(session, gold, 1200);
+      convertEventLeftovers(session);
+      session.commit();
+    });
+    inBuild("3942182", () => {
+      const session = openSession(store, "fresh40");
+      assert.deepEqual(convertEventLeftovers(session), []);
+      assert.equal(held(session), 1200);
+    });
+    // One that never reached 4.0 still converts on 3.3, as Spring It On!'s notes say.
+    inBuild("3942182", () => {
+      const session = openSession(store, "never40");
+      grantItem(session, gold, 1200);
+      convertEventLeftovers(session);
+      assert.equal(held(session), 0);
+    });
+  } finally {
+    fs.rmSync(dataDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+  }
+});
+
 test("4.0's lobby: 3.6's playlists, no new mode", () => {
   for (const ltm of ltms.filter((candidate) => hasLtm(candidate.id, v36))) assert.ok(hasLtm(ltm.id, v40), ltm.id);
   const none = { matchmakingModes: {} };
