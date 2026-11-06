@@ -69,9 +69,9 @@ test("4.0 is known by its version, plays on its own data and is Season 4", () =>
   assert.deepEqual([season.seasonNumber, season.numBookLevels, season.storefront, season.battlePassLevelOfferId],
     [4, 100, "BRSeason4", "E9527AF46F4B4A9CAE98D91F2AA53CB6"]);
   assert.deepEqual(season.challengeSchedulesAlwaysShown, ["season4_challenge_schedule", "season4_starterchallenge_schedule"]);
-  assert.equal(buildOfSeason(4), v40);
+  assert.equal(buildOfSeason(4), "4053532", "Season 4's newest data is 4.1's");
   assert.equal(buildOfSeason(3), v36, "Season 3's newest data stays 3.6's");
-  assert.equal(seasonName(4), "Season 4 (4.0)");
+  assert.equal(seasonName(4), "Season 4 (4.0 – 4.1)");
 });
 
 test("4.0's data: Season 4's cosmetics, its sprays, Carbide's styles and their tokens; no test cosmetics", () => {
@@ -201,7 +201,10 @@ test("4.0's shop is Season 4's, with only the cosmetics 4.0 has", () => {
   const history = JSON.parse(fs.readFileSync(new URL("../src/store/itemshop-season4.json", import.meta.url), "utf8")).days;
   assert.equal(history.length, 72);
   assert.deepEqual([history[0].date, history.at(-1).date], ["2018-05-01", "2018-07-11"]);
-  for (const day of history) for (const [templateId] of [...day.featured, ...day.daily]) assert.ok(cosmetics[templateId], `${day.date} ${templateId}`);
+  // But 4.1's Snap emote (build41.test.js), which 4.0's shop leaves out.
+  for (const day of history) {
+    for (const [templateId] of [...day.featured, ...day.daily].filter(([id]) => id !== "AthenaDance:eid_snap")) assert.ok(cosmetics[templateId], `${day.date} ${templateId}`);
+  }
 });
 
 test("4.0's Battle Pass: BRSeason4 at 950 and 2,800 V-Bucks, its tier offer, and its challenges", () => withSession("season4pass", (session) => {

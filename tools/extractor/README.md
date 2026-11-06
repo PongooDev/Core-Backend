@@ -116,7 +116,10 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   FortCosmetic*Variant exports) are written as `variants`, `[{channel, options, default, unlocked}]` by the tags' last
   part, and its variant tokens (`Athena/Items/CosmeticVariantTokens`, FortVariantTokenType: Carbide's and Omega's
   stages) as `variantTokens`, `{templateId: {cosmetic, channel, variant, giftBox}}`; and its test harvesting tool
-  (`Dev_Test_Pickaxe`) and test spray (`SPID_000_TestSpray`) are left out). Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
+  (`Dev_Test_Pickaxe`) and test spray (`SPID_000_TestSpray`) are left out), and 4.1's `4.20.0-4053532+++Fortnite+Release-4.1` with 4.0's full data (Cert's files with `gamedata/4039451`
+  applied) as the fifth argument: its DefaultGameData names no `MissionAlerts` or `MissionAlertSpreadDatas` (cooked
+  server-only, as 3.6's mission infos), so `world.json`'s `missionAlerts` and `missionAlertSpreads` are the earlier build's,
+  whole, and the extractor prints how many it took; without a fifth argument it stops. Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `research.json`: the resource collectors (research points): each CollectedResource template's payout and the
   homebase attributes its rate, capacity and wallet cap come from, what each skill tree node adds to those attributes

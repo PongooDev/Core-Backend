@@ -757,7 +757,14 @@ foreach (var (id, row) in LoadRows(provider, JsonValue.Create("/Game/Balance/Dat
 // on, the loot tier group its rewards come from, its category (a MissionAlertCategories row: the map's storm swirl is
 // for Storm and StormLow), the event flag it waits for, whether it only spreads storms, and its modifiers' tier group.
 // The client counts the quota as the claim times over 24 hours old.
-var missionAlerts = LoadRows(provider, gameData["Properties"]!["MissionAlerts"]).Select(entry => new SortedDictionary<string, object>(StringComparer.Ordinal)
+// 4.1 (CL-4053532) cooks DefaultGameData's MissionAlerts and MissionAlertSpreadDatas out of the client's paks (the
+// properties are gone, as 3.6's mission infos): the earlier build's world.json (the fifth argument) gives them, whole.
+var earlierWorld = args.Length > 4 && File.Exists(Path.Combine(args[4], "world.json")) ? JsonNode.Parse(File.ReadAllText(Path.Combine(args[4], "world.json"))) : null;
+var missionAlertsFromEarlier = gameData["Properties"]?["MissionAlerts"] is null;
+if (missionAlertsFromEarlier && earlierWorld?["missionAlerts"] is null)
+    throw new InvalidOperationException("DefaultGameData names no MissionAlerts: give an earlier build's extraction folder as the fifth argument");
+var missionAlerts = missionAlertsFromEarlier ? earlierWorld!["missionAlerts"]!.AsArray().Select(alert => JsonSerializer.Deserialize<SortedDictionary<string, object>>(alert!.ToJsonString())!).ToList()
+    : LoadRows(provider, gameData["Properties"]!["MissionAlerts"]).Select(entry => new SortedDictionary<string, object>(StringComparer.Ordinal)
 {
     ["name"] = entry.Key,
     ["category"] = entry.Value!["CategoryRowName"]?.GetValue<string>() ?? "",
@@ -794,7 +801,11 @@ if (gameData["Properties"]?["MissionAlertCategories"] is { } categoryTable)
     }
 }
 var missionAlertSpreads = new SortedDictionary<string, object>(StringComparer.Ordinal);
-if (gameData["Properties"]?["MissionAlertSpreadDatas"] is { } spreadTable)
+if (gameData["Properties"]?["MissionAlertSpreadDatas"] is null && earlierWorld?["missionAlertSpreads"] is JsonObject earlierSpreads)
+{
+    foreach (var (name, spread) in earlierSpreads) missionAlertSpreads[name] = JsonSerializer.Deserialize<SortedDictionary<string, object>>(spread!.ToJsonString())!;
+}
+else if (gameData["Properties"]?["MissionAlertSpreadDatas"] is { } spreadTable)
 {
     foreach (var (name, row) in LoadRows(provider, spreadTable))
     {
@@ -1441,6 +1452,7 @@ Console.WriteLine($"Battle Royale: {athenaCosmetics.Count} cosmetics, {athenaDis
 if (unmatchedDisplayAssets.Count > 0) Console.WriteLine($"Display assets matched to no one cosmetic: {string.Join(", ", unmatchedDisplayAssets)}");
 Console.WriteLine($"{zoneThemes.Count} zone themes, {missionGenerators.Count} mission generators, {difficulties.Count} mission difficulties");
 if (missionsFromEarlier.Count > 0) Console.WriteLine($"{missionsFromEarlier.Count} of {primaryMissions.Count} primary missions' tags from the earlier build's world.json (their FortMissionInfo isn't in these paks)");
+if (missionAlertsFromEarlier) Console.WriteLine($"{missionAlerts.Count} mission alerts and {missionAlertSpreads.Count} storm spreads from the earlier build's world.json (DefaultGameData names no MissionAlerts)");
 Console.WriteLine($"{characters.Count} characters, {cardPacks.Count} card packs, {nodes.Count} skill tree nodes, {squads.Count} squads, {objectiveStats.Count} objective stats");
 Console.WriteLine($"{quests.Count} quests, {items.Count} items and {dailyRewards.Count} daily reward schedules from {version["BranchName"]}-CL-{version["Changelist"]} into {output}");
 if (unmapped.Count > 0) Console.WriteLine($"Skipped item classes with no known profile: {string.Join(", ", unmapped)}");

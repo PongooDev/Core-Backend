@@ -68,8 +68,10 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // May 2018, to its last, 11 July 2018 (itemshop-season4.json, the same wiki pages, 3 July's Part 1), replayed in a 72-day
 // cycle from the day 4.0 is first served. Only the cosmetics 4.0's data has are in (the season's 4.1 to 4.5 cosmetics,
 // from 17 May on: Hazard Agent, Moisty Merman, the World Cup outfits, Omen, Fate, the Fireworks and Star-Spangled ones...,
-// are left out, and the days Epic featured only those have an empty featured section), and Battle Pass Tiers. A build's
-// season is its athena data's seasonNumber, Season 1 without one.
+// are left out, and the days Epic featured only those have an empty featured section), and Battle Pass Tiers. 4.1
+// (CL-4053532, 8 May 2018) shares the season's shop and adds one cosmetic, the Snap emote (AthenaDance:eid_snap), which
+// the wiki's pages have in the daily items of 21 May and 20 June at 200: those days list it, and only 4.1's data has it,
+// so 4.0's shop is as it was. A build's season is its athena data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;
   return { days, firstDay: Date.parse(`${days[0].date}T00:00:00Z`) };
