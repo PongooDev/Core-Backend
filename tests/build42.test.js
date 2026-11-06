@@ -4,11 +4,18 @@ import fs from "node:fs";
 import { allowedBuildList, buildChoices } from "../src/builds/allowed.js";
 import { inBuild } from "../src/builds/context.js";
 import { seasonName, versionOf } from "../src/builds/detect.js";
+import { contentUpdateStates, lootHotfixSection } from "../src/events/contentupdates.js";
+import { configureEvents } from "../src/events/events.js";
+import { hasLtm, inOriginalWindow, ltmNewMode, ltmOfPlaylist, ltmOn, ltmPlaylistOverrides, ltms } from "../src/events/ltms.js";
+import { meteorStrikePhase, meteorStrikeRows } from "../src/events/meteorstrike.js";
 import { athenaChallengeBundles, athenaCosmetics, athenaLootTables, athenaSeason } from "../src/gamedata/athena.js";
 import { getItem } from "../src/gamedata/items.js";
 import { buildGameData, dataBuild } from "../src/gamedata/read.js";
+import { playlistTeamsOf } from "../src/matchmaking/service.js";
+import { mtxProfileId, usesCommonProfiles } from "../src/profiles/common.js";
 import { buildOfSeason } from "../src/profiles/seasons.js";
 import { itemShopOffers } from "../src/store/itemshop.js";
+import { hasRefunds } from "../src/store/refunds.js";
 
 // Fortnite 4.2 (++Fortnite+Release-4.2-CL-4072250, UE 4.20, 16 May 2018): its own data (gamedata/4072250) and Season 4 as
 // 4.0's.
@@ -78,4 +85,52 @@ test("4.2's shop is Season 4's with 4.2's cosmetics, which 4.1 doesn't sell", ()
   assert.ok(daily(v42).includes("AthenaDance:eid_popdance01"));
   assert.ok(!daily(v41).includes("AthenaDance:eid_popdance01"));
   assert.deepEqual(daily(v42).filter((templateId) => templateId !== "AthenaDance:eid_popdance01"), daily(v41));
+});
+
+test("4.2's LTMs: 4.1's but Impact, and Solo Showdown, Close Encounters and Solid Gold v2 Duos; no new mode", () => {
+  const none = { matchmakingModes: {} };
+  for (const ltm of ltms.filter((candidate) => hasLtm(candidate.id, v41))) {
+    assert.equal(hasLtm(ltm.id, v42), !ltm.id.startsWith("impact"), ltm.id);
+  }
+  assert.equal(ltmNewMode(v42, none), null);
+  assert.equal(ltmOn("infinityGauntlet", v42, none), false, "by its switch on 4.2");
+  assert.equal(ltmOn("infinityGauntlet", v42, { matchmakingModes: { infinityGauntlet: true } }), true);
+  const playlists = { soloShowdown: [51, "Playlist_Comp_Solo", 1], closeEncountersSolo: [44, "Playlist_Close_Solo", 1],
+    closeEncountersDuos: [45, "Playlist_Close_Duos", 2], closeEncounters: [46, "Playlist_Close_Squad", 4], solidGoldDuos: [34, "Playlist_SolidGold_Duos", 2] };
+  for (const [id, [playlistId, name, size]] of Object.entries(playlists)) {
+    assert.equal(hasLtm(id, v42), true, id);
+    assert.equal(hasLtm(id, v41), false, id);
+    assert.equal(ltmOfPlaylist(playlistId, v42).id, id);
+    assert.deepEqual(playlistTeamsOf(`${v42}:0:NA:${playlistId}`, v42), { maxTeamCount: 100, maxTeamSize: size, maxSquadSize: size }, id);
+    assert.ok(ltmPlaylistOverrides(v42, { matchmakingModes: { [id]: true } }).includes(name), id);
+  }
+  // 44 to 46 are still Impact on 4.1.
+  assert.equal(ltmOfPlaylist(44, v41).id, "impactSolo");
+  // Original dates on Season 4's replay from its own first day: the Gauntlet to 16 May, Solo Showdown 17 to 21 May, Solid
+  // Gold v2 (Duos too) from 22 May, Close Encounters on 25 May, 50v50 v2 again from 22 May.
+  configureEvents({ mode: "auto", seasonStarts: { 4: "2018-05-01" } });
+  try {
+    const dated = { ltmOriginalDates: true, matchmakingModes: {} };
+    const at = (date) => new Date(`${date}T12:00:00Z`);
+    for (const [id, inside, outside] of [["infinityGauntlet", "2018-05-16", "2018-05-17"], ["soloShowdown", "2018-05-17", "2018-05-22"],
+      ["soloShowdown", "2018-05-21", "2018-05-16"], ["solidGoldDuos", "2018-05-22", "2018-05-21"], ["closeEncountersSolo", "2018-05-25", "2018-05-26"],
+      ["fiftyFiftyV2", "2018-05-22", "2018-05-21"]]) {
+      assert.equal(ltmOn(id, v42, dated, at(inside)), true, `${id} ${inside}`);
+      assert.equal(ltmOn(id, v42, dated, at(outside)), false, `${id} ${outside}`);
+    }
+    assert.equal(inOriginalWindow("solidGoldDuos", v42, at("2018-05-25"), dated), false, "Close Encounters' day");
+    assert.equal(inOriginalWindow("soloShowdown", v41, at("2018-05-18"), dated), false);
+  } finally {
+    configureEvents(null);
+  }
+});
+
+test("4.2 keeps 4.1's gates: common profiles, returns, no content update or curve RowUpdate", () => {
+  assert.equal(inBuild(v42, () => usesCommonProfiles()), true);
+  assert.equal(inBuild(v42, () => mtxProfileId()), "common_core");
+  assert.equal(hasRefunds(v42), true);
+  assert.deepEqual(inBuild(v42, () => contentUpdateStates(now)), []);
+  assert.equal(meteorStrikePhase(v42), null);
+  assert.deepEqual(meteorStrikeRows(v42), []);
+  assert.equal(inBuild(v42, () => lootHotfixSection(now, null, [], meteorStrikeRows(v42), v42)), "");
 });

@@ -121,7 +121,7 @@ test("3.6's lobby: 3.5.2's playlists, no new mode (50v50 v2 by its switch)", () 
   assert.equal(ltmOfPlaylist(23, v36).id, "highExplosivesSolo");
   assert.ok(!ltmOfPlaylist(32, v36), "Playlist_Fortnite is left out");
   const listed = ltmSchedule({}, now).list;
-  assert.equal(listed.find(({ id }) => id === "fiftyFiftyV2").builds, "3.5.1 to 4.1");
+  assert.equal(listed.find(({ id }) => id === "fiftyFiftyV2").builds, "3.5.1 to 4.2");
   assert.equal(listed.find(({ id }) => id === "fiftyFiftyV2").newIn, "3.5.1 and 3.5.2");
   assert.deepEqual(playlistTeamsOf(`${v36}:0:NA:50`, v36), { maxTeamCount: 2, maxTeamSize: 50, maxSquadSize: 4 });
   assert.equal(assignmentBucket(`${v36}:0:NA:2`, v36), `Fortnite:Fortnite:${v36}:0:NA:2`);

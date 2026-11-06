@@ -167,7 +167,7 @@ test("3.0's LTMs are its playlist classes: no 50v50 or Shooting Test, duo Skies,
     // Teams of 20 and Solid Gold have Season 3's dates (#258), the others none.
     const firstWindow = { fiveByTwenty: { builds: "3.2 to 3.3", start: "2018-03-08", end: "2018-03-20", last: "2018-03-19" },
       solidGold: { builds: "3.1 to 3.1.1", start: "2018-02-27", end: "2018-03-06", last: "2018-03-05" } }[id] ?? null;
-    assert.deepEqual([listed.seasons, listed.builds, listed.original], [onTo40 ? [3, 4] : [3], onTo40 ? "3.0 to 4.1" : "3.0 to 3.3", firstWindow], id);
+    assert.deepEqual([listed.seasons, listed.builds, listed.original], [onTo40 ? [3, 4] : [3], onTo40 ? "3.0 to 4.2" : "3.0 to 3.3", firstWindow], id);
   }
 });
 
@@ -375,7 +375,7 @@ test("Season 4's LTMs run on their original dates, only on builds with their pla
     assert.equal(ltmOn("infinityGauntlet", v40, dated, at("2018-05-10")), false);
     assert.deepEqual(playlistTeamsOf(`${v41}:0:NA:33`, v41), { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 });
     // The modes of 4.2 on (Solo Showdown, Close Encounters, Blitz v2, Sniper Shootout v3, Teams of 20 v2, Playground) wait
-    // for their builds: no supported build has them, on their dates or by hand.
+    // for their builds: 4.0 and 4.1 have none of them, on their dates or by hand (4.2's are build42.test.js's).
     for (const [id, date] of [["soloShowdown", "2018-05-18"], ["closeEncounters", "2018-05-25"], ["blitzV2", "2018-06-02"],
       ["sniperShootoutV3", "2018-06-06"], ["teamsOf20V2", "2018-06-13"], ["playground", "2018-06-28"]]) {
       for (const build of [v40, v41]) {
@@ -397,7 +397,8 @@ test("Season 4's LTMs run on their original dates, only on builds with their pla
       ["4.2 to 4.4", "2018-05-22", "2018-06-11", 4], ["4.5", "2018-06-27", "2018-07-11", 4]]);
     assert.equal(of("teamsOf20V2").windows[0].builds, "4.4 to 4.4.x");
     assert.equal(of("playground").windows[0].builds, "4.5");
-    assert.equal(of("soloShowdown").playlistId, null);
+    assert.equal(of("soloShowdown").playlistId, 51);
+    assert.equal(of("blitzV2").playlistId, null);
   });
 });
 

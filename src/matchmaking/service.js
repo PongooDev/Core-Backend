@@ -98,7 +98,11 @@ const playlistTeamsFrom351 = {
   // 4.1's Infinity Gauntlet (Playlist_Carmine): solo.
   33: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
   // Playground (35, Playlist_Playground: one team of 4, 4.1's asset), the mode 4.5 ran (Core-Backend #258).
-  35: { maxTeamCount: 1, maxTeamSize: 4, maxSquadSize: 4 }
+  35: { maxTeamCount: 1, maxTeamSize: 4, maxSquadSize: 4 },
+  // 4.2's Solo Showdown (51, Playlist_Comp_Solo) and Solid Gold v2 Duos (34); its Close Encounters (44, 45, 46) have
+  // Impact's teams above.
+  51: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  34: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 }
 };
 const playlistAssetTeamsBuild = 4000805;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).

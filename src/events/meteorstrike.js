@@ -40,6 +40,9 @@ import { currentEventsConfig, seasonalEventsOn } from "./events.js";
 // TimeDeviation, SpawnMin/MaxWaitTime at 0 and the new Default.MeteorDrop.Gauntlet.* (the Infinity Gauntlet's meteor) and
 // Default.Jim.* (Thanos: health 700, shield 300...) rows, which Playlist_Carmine's own tables use. The skybox, TV,
 // Easter and St. Patrick's rows are still 0, and nothing in 4.1's notes or map turns them on, so it is served no RowUpdate.
+// 4.2 (CL-4072250) takes none either: its AthenaGameData keeps 4.1's rows (the final circle's 0.875 and 0.625, the
+// Gauntlet's and Thanos's) and adds the notes' Apple, Default.ForagedItems.InstantHeal.Apple 5 ("Consuming an Apple will
+// grant 5 health"); the skybox, TV, Easter and St. Patrick's rows are still 0.
 export const meteorStrikeBuild = 4019403;
 export const meteorStrikePhases = ["none", "broadcast", "meteors", "impact"];
 export const defaultMeteorStrikePhase = "meteors";
