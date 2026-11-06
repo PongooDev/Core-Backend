@@ -36,6 +36,7 @@ import { clearSessionCookie, extractAdminToken } from "./auth.js";
 import { createRateLimiter, getClientIp } from "../services/portal/ratelimit.js";
 import { defaultBattleRoyaleNews, defaultLoginMessage, defaultSubgameSelect } from "../services/content/pages.js";
 import { maxNewsImageBytes, maxNewsImagePixels, newsImageValue, pruneNewsImages, saveNewsImage } from "../services/content/images.js";
+import { playlistImageModes } from "../services/content/playlistimages.js";
 import { inBuild } from "../builds/context.js";
 import { allowedBuildList, otherBuilds } from "../builds/allowed.js";
 import { battleRoyaleBuilds, battleRoyaleSeasons, buildVersions, certBuild, seasonName, seasonVersions, versionOf } from "../builds/detect.js";
@@ -1034,9 +1035,15 @@ export function adminRoutes(context) {
       },
       battleRoyaleNews: current.battleRoyaleNews ?? configNews ?? defaultBattleRoyaleNews,
       loginMessage: current.loginMessage ?? configLogin ?? defaultLoginMessage,
-      subgameSelect: current.subgameSelect ?? configSubgame ?? defaultSubgameSelect
+      subgameSelect: current.subgameSelect ?? configSubgame ?? defaultSubgameSelect,
+      // The mode select tiles' pictures (4.0+, #260): each playlist with Epic's picture and the host's own ("" for none).
+      playlistImages: playlistImageModes().map((mode) => ({ ...mode, custom: customPlaylistImages(current)[mode.playlistName] ?? "" }))
     };
   }
+
+  const customPlaylistImages = (current) => current.playlistImages ?? context.config?.playlistImages ?? {};
+  // Every upload the settings still use (the news picture and the playlists'), which pruning keeps.
+  const usedImages = (current) => [current?.battleRoyaleNews?.image, ...Object.values(current?.playlistImages ?? {})];
 
   // In-game news, login messages, and mode select screen text
   router.get("/admin/api/news", (req, res) => {
@@ -1968,6 +1975,24 @@ export function adminRoutes(context) {
         updates.battleRoyaleNews = (title || body || image) ? { title, body, image } : null;
       }
     }
+    // The mode select tiles' pictures (#260): { playlistName: image }, each an http(s) URL or an upload from
+    // /admin/api/news/image; "" or null puts Epic's picture back. Only the playlists the panel lists are taken.
+    if (req.body?.playlistImages !== undefined) {
+      if (req.body.playlistImages === null) {
+        updates.playlistImages = null;
+      } else if (typeof req.body.playlistImages === "object" && !Array.isArray(req.body.playlistImages)) {
+        const known = new Set(playlistImageModes().map(({ playlistName }) => playlistName));
+        const next = { ...(settings.get?.()?.playlistImages ?? {}) };
+        for (const [playlistName, value] of Object.entries(req.body.playlistImages)) {
+          if (!known.has(playlistName)) return invalid(res, `No mode has the playlist ${playlistName}`);
+          const image = value === null ? "" : newsImageValue(value, dataDir);
+          if (image === null) return invalid(res, "The image must be an http:// or https:// URL, or an uploaded image");
+          if (image) next[playlistName] = image;
+          else delete next[playlistName];
+        }
+        updates.playlistImages = Object.keys(next).length ? next : null;
+      }
+    }
     // The lobby's notice box (#256): { enabled, title, body }; null clears it.
     if (req.body?.lobbyNotice !== undefined) {
       if (req.body.lobbyNotice === null) {
@@ -2017,7 +2042,7 @@ export function adminRoutes(context) {
       }
     }
     settings.update(updates);
-    if (updates.battleRoyaleNews !== undefined) pruneNewsImages(dataDir, [settings.get?.()?.battleRoyaleNews?.image]);
+    if (updates.battleRoyaleNews !== undefined || updates.playlistImages !== undefined) pruneNewsImages(dataDir, usedImages(settings.get?.()));
     res.json(getNewsPayload());
   });
 

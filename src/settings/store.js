@@ -387,6 +387,15 @@ function challengeUnlockValue(input, current = {}) {
   return result;
 }
 
+// The mode select tiles' pictures (Core-Backend #260, services/content/playlistimages.js): {playlistName: image}, each a
+// non-empty string the admin route checked (an http(s) URL or an upload). undefined when there are none.
+function playlistImageMap(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return undefined;
+  const entries = Object.entries(value).filter(([playlistName, image]) => /^Playlist_\w{1,64}$/.test(playlistName)
+    && typeof image === "string" && image.trim() && image.length <= 2048).map(([playlistName, image]) => [playlistName, image.trim()]);
+  return entries.length ? Object.fromEntries(entries) : undefined;
+}
+
 function structureLimitValue(value) {
   if (value === null || (typeof value === "string" && !value.trim())) return null;
   const limit = typeof value === "string" ? Number(value) : value;
@@ -572,6 +581,8 @@ export function createSettingsStore(dataDir) {
           image: String(loaded.battleRoyaleNews.image ?? "")
         };
       }
+      const loadedPlaylistImages = playlistImageMap(loaded.playlistImages);
+      if (loadedPlaylistImages) settings.playlistImages = loadedPlaylistImages;
       if (loaded.lobbyNotice && typeof loaded.lobbyNotice === "object") {
         settings.lobbyNotice = {
           enabled: loaded.lobbyNotice.enabled === true,
@@ -643,6 +654,7 @@ export function createSettingsStore(dataDir) {
         battleRoyaleNews: settings.battleRoyaleNews ? { ...settings.battleRoyaleNews } : undefined,
         loginMessage: settings.loginMessage ? { ...settings.loginMessage } : undefined,
         lobbyNotice: settings.lobbyNotice ? { ...settings.lobbyNotice } : undefined,
+        playlistImages: settings.playlistImages ? { ...settings.playlistImages } : undefined,
         subgameSelect: settings.subgameSelect ? JSON.parse(JSON.stringify(settings.subgameSelect)) : undefined,
         itemShop: settings.itemShop ? JSON.parse(JSON.stringify(settings.itemShop)) : { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 },
         events: JSON.parse(JSON.stringify(settings.events ?? defaults.events)),
@@ -734,6 +746,13 @@ export function createSettingsStore(dataDir) {
         };
       } else if (partial.battleRoyaleNews === null) {
         delete settings.battleRoyaleNews;
+      }
+      if (partial.playlistImages === null) {
+        delete settings.playlistImages;
+      } else if (partial.playlistImages !== undefined) {
+        const images = playlistImageMap(partial.playlistImages);
+        if (images) settings.playlistImages = images;
+        else delete settings.playlistImages;
       }
       if (partial.lobbyNotice && typeof partial.lobbyNotice === "object") {
         settings.lobbyNotice = {

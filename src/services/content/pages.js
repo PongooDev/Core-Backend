@@ -1,6 +1,7 @@
 import express from "express";
 import { getBuild, versionOf } from "../../builds/detect.js";
 import { newsImageOrigin, newsImagePath, newsImageUrl, serveNewsImage } from "./images.js";
+import { playlistImagesFor } from "./playlistimages.js";
 
 // The EpicContentService page ([EpicContentService] in DefaultGame.ini), fetched before login. The CMS cache
 // (CMSURLCache.cpp, sub_3620130) needs a JSON object, reads lastModified as an ISO 8601 date ("Invalid last modified
@@ -178,16 +179,20 @@ export function emergencyNoticeFor(notice, changelist) {
 }
 
 export function contentPage(news = defaultBattleRoyaleNews, loginMessage = defaultLoginMessage, changelist = undefined, subgameSelect = undefined,
-  imageOrigin = undefined, saveTheWorldNews = undefined, lobbyNotice = undefined) {
+  imageOrigin = undefined, saveTheWorldNews = undefined, lobbyNotice = undefined, playlistImages = undefined) {
   const battleRoyaleNews = battleRoyaleNewsFor(news, changelist, imageOrigin);
+  // 4.0's mode select tiles (Core-Backend #260, playlistimages.js), whose pictures the CMS cache keeps as the news one.
+  const playlistimages = playlistImagesFor(changelist, playlistImages, imageOrigin);
   const page = {
     _title: "Fortnite Game",
     lastModified: "2026-10-27T16:30:00.000Z",
-    _images_: (battleRoyaleNews.news.messages ?? []).map((message) => message.image).filter(Boolean),
+    _images_: [...new Set([...(battleRoyaleNews.news.messages ?? []).map((message) => message.image),
+      ...(playlistimages?.playlistimages.images ?? []).map((entry) => entry.image)].filter(Boolean))],
     battleRoyaleNews,
     subgameselectdata: subgameSelectFor(changelist, subgameSelect),
     emergencynotice: emergencyNoticeFor(lobbyNotice, changelist),
-    ...saveTheWorldNewsFor(saveTheWorldNews, changelist)
+    ...saveTheWorldNewsFor(saveTheWorldNews, changelist),
+    ...(playlistimages ? { playlistimages } : {})
   };
   if (loginMessage) {
     page.loginmessage = { loginmessage: { message: messageOf(loginMessage, defaultLoginMessage, changelist) } };
@@ -213,7 +218,7 @@ export function contentRoutes(context, config = {}) {
     const loginMessage = loginMessageEnabled ? (settings.loginMessage ?? config.loginMessage ?? defaultLoginMessage) : null;
     const subgameSelect = settings.subgameSelect ?? config.subgameSelect;
     res.json(contentPage(news, loginMessage, getBuild(req), subgameSelect, newsImageOrigin(req), settings.saveTheWorldNews ?? config.saveTheWorldNews,
-      settings.lobbyNotice ?? config.lobbyNotice));
+      settings.lobbyNotice ?? config.lobbyNotice, settings.playlistImages ?? config.playlistImages));
   });
   router.get(`${newsImagePath}/:name`, serveNewsImage(context?.dataDir ?? config.dataDir));
 

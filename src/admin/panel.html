@@ -4915,6 +4915,49 @@
         }
       });
 
+      // The mode select tiles' pictures (4.0+, Core-Backend #260): each playlist's own, else Epic's (from Epic's CDN).
+      const safeImageSrc = (value) => (/^https?:\/\/\S+$/i.test(value) || /^\/content\/api\/news-images\/[0-9a-f]{32}\.(png|jpg)$/.test(value) ? value : "");
+      const tilePreview = (value) => {
+        const src = safeImageSrc(value);
+        if (!src) return el("span", { class: "muted", text: "Default picture" });
+        const img = el("img", { alt: "", style: "width:128px; height:64px; border-radius:6px; border:1px solid var(--line, #333); object-fit:cover; background:var(--surface-2);" });
+        img.referrerPolicy = "no-referrer";
+        img.addEventListener("error", () => img.replaceWith(el("span", { class: "muted", text: "Couldn't load" })));
+        img.src = src;
+        return img;
+      };
+      const savePlaylistImage = async (playlistName, image, message) => {
+        await act(api("/admin/api/news", { playlistImages: { [playlistName]: image } }), message);
+        showNews();
+      };
+      const playlistRows = (data.playlistImages || []).map((mode) => {
+        const input = el("input", { class: "field", value: mode.custom || "", placeholder: mode.epic ? "Epic's picture" : "https://... or upload", style: "width:100%; min-width:220px" });
+        const file = el("input", { type: "file", accept: "image/png,image/jpeg", style: "display:none" });
+        file.addEventListener("change", async () => {
+          const chosen = file.files?.[0];
+          file.value = "";
+          if (!chosen) return;
+          if (chosen.size > 4 * 1024 * 1024) return toast("The image is over 4 MB", true);
+          const encoded = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(String(reader.result).replace(/^data:[^,]*,/, ""));
+            reader.onerror = () => reject(reader.error);
+            reader.readAsDataURL(chosen);
+          }).catch(() => null);
+          if (!encoded) return toast("Couldn't read the image", true);
+          const uploaded = await act(api("/admin/api/news/image", { data: encoded }));
+          if (uploaded?.image) await savePlaylistImage(mode.playlistName, uploaded.image, `${mode.name}'s picture uploaded`);
+        });
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            savePlaylistImage(mode.playlistName, input.value.trim(), `${mode.name}'s picture saved`);
+          }
+        });
+        return { ...mode, input, file };
+      });
+      const customTiles = playlistRows.filter((mode) => mode.custom).length;
+
       $("view").replaceChildren(
         el("div", { class: "view-head" },
           el("div", {},
@@ -4960,6 +5003,24 @@
             el("div", { class: "actions", style: "margin-top:4px;" },
               saveBrBtn,
               resetBrBtn))),
+
+        el("section", { class: "panel", style: "margin-top:16px" },
+          el("div", { class: "panel-head" },
+            el("div", { style: "display:flex; align-items:center; gap:10px;" },
+              el("h2", { text: "Mode Select Images" }),
+              customTiles ? chip(`${customTiles} customized`, "sky") : chip("Epic's pictures")),
+            chip("playlistimages", "sky")),
+          el("p", { class: "note", text: "The picture on each mode's tile in Battle Royale's mode select (4.0 and later). Each mode shows Epic's original picture, loaded from Epic's CDN, unless you set your own: an http:// or https:// URL, or a PNG/JPEG upload (up to 4 MB and 2.5 million pixels; Epic's are 1024x512 or 512x512). A mode without either keeps the game's default picture. Builds before 4.0 have no tile pictures." }),
+          table([
+            ["Mode", (mode) => el("div", {}, el("div", { text: mode.name }), el("div", { class: "tid mono", text: mode.playlistName }))],
+            ["Showing", (mode) => tilePreview(mode.custom || mode.epic || "")],
+            ["Your picture", (mode) => mode.input],
+            ["", (mode) => el("div", { class: "actions" },
+              btn("Save", () => savePlaylistImage(mode.playlistName, mode.input.value.trim(), `${mode.name}'s picture saved`), "primary"),
+              btn("Upload", () => mode.file.click(), "ghost"),
+              btn(mode.epic ? "Use Epic's" : "Clear", () => savePlaylistImage(mode.playlistName, null, `${mode.name} shows ${mode.epic ? "Epic's picture" : "the default picture"}`), "ghost", { disabled: !mode.custom }),
+              mode.file)]
+          ], playlistRows, "No modes have tile pictures.")),
 
         el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head" },
