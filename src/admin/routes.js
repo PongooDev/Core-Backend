@@ -1058,8 +1058,8 @@ export function adminRoutes(context) {
     const config = settings?.get?.()?.itemShop ?? { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 };
     const s = requestedSeasonOf(requestedSeason);
     // Season 3's shop as 3.6's data (its newest) sells it: 3.0's cosmetics, 3.1's, 3.2's (3.3 adds none), 3.4's, 3.5's and 3.6's;
-    // Season 4's as 4.1's: 4.0's cosmetics and 4.1's Snap emote.
-    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4053532" }[s];
+    // Season 4's as 4.2's: 4.0's cosmetics, 4.1's Snap emote and 4.2's Hazard set, Venturion and the rest.
+    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4072250" }[s];
     const offers = inBuild(build, () => itemShopOffers(now, config, s));
     const cosmetics = inBuild(build, () => eligibleCosmetics());
     const currentDay = shopDay(now, config, s);

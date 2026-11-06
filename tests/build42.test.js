@@ -1,0 +1,81 @@
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import { allowedBuildList, buildChoices } from "../src/builds/allowed.js";
+import { inBuild } from "../src/builds/context.js";
+import { seasonName, versionOf } from "../src/builds/detect.js";
+import { athenaChallengeBundles, athenaCosmetics, athenaLootTables, athenaSeason } from "../src/gamedata/athena.js";
+import { getItem } from "../src/gamedata/items.js";
+import { buildGameData, dataBuild } from "../src/gamedata/read.js";
+import { buildOfSeason } from "../src/profiles/seasons.js";
+import { itemShopOffers } from "../src/store/itemshop.js";
+
+// Fortnite 4.2 (++Fortnite+Release-4.2-CL-4072250, UE 4.20, 16 May 2018): its own data (gamedata/4072250) and Season 4 as
+// 4.0's.
+const v42 = "4072250";
+const v41 = "4053532";
+const v40 = "4039451";
+const now = new Date("2026-11-06T12:00:00Z");
+const new42 = ["AthenaBackpack:bid_050_hazmat", "AthenaBackpack:bid_051_merman", "AthenaBackpack:bid_052_hazmatfemale",
+  "AthenaCharacter:cid_127_athena_commando_m_hazmat", "AthenaCharacter:cid_128_athena_commando_f_hazmat", "AthenaCharacter:cid_129_athena_commando_m_deco",
+  "AthenaCharacter:cid_130_athena_commando_m_merman", "AthenaCharacter:cid_131_athena_commando_m_warpaint", "AthenaDance:eid_bendy",
+  "AthenaDance:eid_clapperboard", "AthenaDance:eid_popdance01", "AthenaDance:eid_yeet", "AthenaGlider:glider_id_037_hazmat",
+  "AthenaGlider:glider_id_038_deco", "AthenaPickaxe:pickaxe_id_052_hazmat", "AthenaPickaxe:pickaxe_id_053_deco", "AthenaPickaxe:pickaxe_id_054_filmcamera", "AthenaPickaxe:pickaxe_id_055_stop"];
+
+test("4.2 is known by its version, plays on its own data and is Season 4's newest", () => {
+  assert.equal(versionOf(v42), "4.2");
+  assert.equal(dataBuild(v42), v42);
+  assert.equal(dataBuild(v41), v41);
+  assert.ok(buildChoices().includes(v42));
+  assert.equal(allowedBuildList(["4.2"]).join(), v42);
+  const season = inBuild(v42, athenaSeason);
+  assert.deepEqual(season, inBuild(v40, athenaSeason), "4.2 keeps 4.0's AthenaSeason4");
+  assert.equal(buildOfSeason(4), v42);
+  assert.equal(seasonName(4), "Season 4 (4.0 – 4.2)");
+});
+
+test("4.2's data: eighteen new cosmetics, the revised weekly challenges, the Burst AR and Apples", () => {
+  const cosmetics42 = inBuild(v42, athenaCosmetics);
+  const cosmetics41 = inBuild(v41, athenaCosmetics);
+  assert.deepEqual(Object.keys(cosmetics42).filter((id) => !cosmetics41[id]).sort(), [...new42].sort());
+  assert.deepEqual(new42.slice(3, 8).map((id) => cosmetics42[id].name), ["Toxic Trooper", "Hazard Agent", "Venturion", "Moisty Merman", "Bandolier"]);
+  // The Blockbuster loading screens get their names.
+  assert.deepEqual(["AthenaLoadingScreen:lsid_011_s4cumulative3", "AthenaLoadingScreen:lsid_012_s4cumulative4"].map((id) => [cosmetics41[id].name, cosmetics42[id].name]),
+    [["Blockbuster #3", "A Looming Threat"], ["Blockbuster #4", "Retribution"]]);
+  // Week 9's bundle is 4.2's: its Use a Jetpack challenge, the Content Update's item.
+  const week9 = inBuild(v42, athenaChallengeBundles).questbundle_s4_week_009.quests.map(({ quest }) => quest);
+  assert.ok(week9.includes("quest_br_use_jetpack"));
+  const loot = inBuild(v42, athenaLootTables)["/Game/Items/Datatables/AthenaLootPackages_Client.AthenaLootPackages_Client"];
+  assert.equal(loot["WorldList.AthenaLoot.Weapon.Assault.05"].Weight, 0.075, "the Epic Burst AR on the floor");
+  assert.equal(loot["WorldList.AthenaHighConsumables.12"].Weight, 0.315, "Impulse Grenade +5%");
+  assert.ok(loot["WorldList.ForagedItems.Grassland.01"].ItemDefinition.includes("Athena_Foraged_HealthSmall"), "Apples");
+  // Save the World: the perk resources (4.1's paks have them unnamed: PP.Generic...), their card packs, the scaled Storm
+  // Shield Mini Llamas, schematic rarity upgrades.
+  assert.deepEqual(["AccountResource:reagent_alteration_generic", "AccountResource:reagent_alteration_upgrade_r", "AccountResource:reagent_alteration_ele_fire",
+    "AccountResource:reagent_alteration_ele_nature", "AccountResource:reagent_alteration_ele_water"].map((id) => [inBuild(v41, () => getItem(id)).name, inBuild(v42, () => getItem(id)).name]),
+  [["PP.Generic", "RE-PERK!"], ["PP.Upgrade.R", "Rare PERK-UP!"], ["PP.Ele.Fire", "FIRE-UP!"], ["PP.Ele.Nature", "AMP-UP!"], ["PP.Ele.Water", "FROST-UP!"]]);
+  for (const id of ["CardPack:zcp_reagent_alteration_generic_low", "CardPack:zcp_voucher_basicpack_outpost_theater4"]) {
+    assert.ok(inBuild(v42, () => getItem(id)), id);
+    assert.equal(inBuild(v41, () => getItem(id)), undefined, id);
+  }
+  assert.ok(inBuild(v42, () => getItem("Schematic:sid_blunt_light_c_ore_t01")).rarityUpgrade);
+  const world = (build) => buildGameData(build, "world", {});
+  assert.deepEqual(world(v42).missionAlerts, world(v41).missionAlerts, "4.2's paks name no MissionAlerts: 4.1's (4.0's) rows");
+});
+
+test("4.2's shop is Season 4's with 4.2's cosmetics, which 4.1 doesn't sell", () => {
+  const history = JSON.parse(fs.readFileSync(new URL("../src/store/itemshop-season4.json", import.meta.url), "utf8")).days;
+  const cosmetics = inBuild(v42, athenaCosmetics);
+  for (const day of history) for (const [templateId] of [...day.featured, ...day.daily]) assert.ok(cosmetics[templateId], `${day.date} ${templateId}`);
+  const sold = new Set(history.flatMap((day) => [...day.featured, ...day.daily].map(([templateId]) => templateId)));
+  assert.deepEqual(new42.filter((id) => sold.has(id)).length, 15, "the back blings weren't sold on their own");
+  const may21 = history.find(({ date }) => date === "2018-05-21");
+  assert.deepEqual(may21.featured, [["AthenaCharacter:cid_129_athena_commando_m_deco", 1500],
+    ["AthenaPickaxe:pickaxe_id_053_deco", 800, { tile: 1, banner: "CollectTheSet" }], ["AthenaGlider:glider_id_038_deco", 500, { tile: 1, banner: "CollectTheSet" }]]);
+  // 17 May is the season's day 17: Star Power on 4.2 only.
+  const config = { mode: "fnbr", rotationHour: 0, seasonStarts: { 4: "2026-10-21" } };
+  const daily = (build) => inBuild(build, () => itemShopOffers(now, config)).BRDailyStorefront.map(({ templateId }) => templateId);
+  assert.ok(daily(v42).includes("AthenaDance:eid_popdance01"));
+  assert.ok(!daily(v41).includes("AthenaDance:eid_popdance01"));
+  assert.deepEqual(daily(v42).filter((templateId) => templateId !== "AthenaDance:eid_popdance01"), daily(v41));
+});

@@ -43,8 +43,8 @@ test("4.1 is known by its version, plays on its own data and is Season 4's newes
   assert.deepEqual([season.seasonNumber, season.numBookLevels, season.storefront, season.battlePassLevelOfferId],
     [4, 100, "BRSeason4", "E9527AF46F4B4A9CAE98D91F2AA53CB6"]);
   assert.deepEqual(season, inBuild(v40, athenaSeason), "4.1 keeps 4.0's AthenaSeason4");
-  assert.equal(buildOfSeason(4), v41);
-  assert.equal(seasonName(4), "Season 4 (4.0 – 4.1)");
+  assert.equal(buildOfSeason(4), "4072250", "Season 4's newest data is 4.2's");
+  assert.equal(seasonName(4), "Season 4 (4.0 – 4.2)");
 });
 
 test("4.1's data: 4.0's and the Snap emote; the HackSAW is a store item; 4.0's mission alerts", () => {
@@ -122,7 +122,9 @@ test("4.1's shop is Season 4's: the Snap emote on 21 May and 20 June, only on 4.
   const withSnap = history.filter((day) => day.daily.some(([templateId]) => templateId === snap));
   assert.deepEqual(withSnap.map(({ date, daily }) => [date, daily.at(-1)]), [["2018-05-21", [snap, 200]], ["2018-06-20", [snap, 200]]]);
   const cosmetics = inBuild(v41, athenaCosmetics);
-  for (const day of history) for (const [templateId] of [...day.featured, ...day.daily]) assert.ok(cosmetics[templateId], `${day.date} ${templateId}`);
+  // Every item is 4.1's but 4.2's cosmetics (build42.test.js).
+  const cosmetics42 = inBuild("4072250", athenaCosmetics);
+  for (const day of history) for (const [templateId] of [...day.featured, ...day.daily]) assert.ok(cosmetics[templateId] || cosmetics42[templateId], `${day.date} ${templateId}`);
   // 21 May is the season's day 21.
   const config = { mode: "fnbr", rotationHour: 0, seasonStarts: { 4: "2026-10-17" } };
   const daily = (build) => inBuild(build, () => itemShopOffers(now, config)).BRDailyStorefront.map(({ templateId }) => templateId);

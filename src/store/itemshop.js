@@ -71,7 +71,11 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // are left out, and the days Epic featured only those have an empty featured section), and Battle Pass Tiers. 4.1
 // (CL-4053532, 8 May 2018) shares the season's shop and adds one cosmetic, the Snap emote (AthenaDance:eid_snap), which
 // the wiki's pages have in the daily items of 21 May and 20 June at 200: those days list it, and only 4.1's data has it,
-// so 4.0's shop is as it was. A build's season is its athena data's seasonNumber, Season 1 without one.
+// so 4.0's shop is as it was. 4.2 (CL-4072250, 16 May 2018) adds the shop's next fifteen: Toxic Trooper and Hazard Agent
+// with Autocleave and Meltdown, Venturion with Airfoil and Triumph, Moisty Merman, Bandolier, Director's Cut, Stop Axe,
+// and the Star Power, Zany, Take 14 and Dip emotes, on 22 of the season's days from 17 May on, each where the wiki's page
+// lists it among the day's tiles (its cycling tile and callout too). Only 4.2's data has them, so 4.0's and 4.1's days
+// are as they were. A build's season is its athena data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;
   return { days, firstDay: Date.parse(`${days[0].date}T00:00:00Z`) };
