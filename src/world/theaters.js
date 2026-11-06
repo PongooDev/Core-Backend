@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { currentBuild } from "../builds/context.js";
-import { blockbuster2018, currentEventsConfig, isEventActive, passiveMiniBosses, storm2018 } from "../events/events.js";
+import { blockbuster2018, currentEventsConfig, isEventActive, passiveMiniBosses, spring2018, storm2018 } from "../events/events.js";
 import { blockbusterTickets, miniBossTicketsFor } from "../events/blockbuster2018.js";
 import { candy } from "../events/fortnitemares.js";
 import { miniBossesStay, mutantStorms, mutantStorms2018, stormTickets } from "../events/mutantstorms.js";
@@ -8,7 +8,7 @@ import { firecrackerTickets } from "../events/spring2018.js";
 import { snowflakeTickets, winter2017 } from "../events/winter2017.js";
 import { getItem } from "../gamedata/items.js";
 import { perBuild } from "../gamedata/read.js";
-import { getDifficulty, missionAlertSpread, missionAlertTier } from "../gamedata/world.js";
+import { elementalZones, getDifficulty, missionAlertSpread, missionAlertTier } from "../gamedata/world.js";
 import { hasEventStore } from "../store/eventstore.js";
 import { candyReward, hexsylvania, isHexsylvania } from "./hexsylvania.js";
 import { linkedQuests, questPath } from "./quests.js";
@@ -351,6 +351,11 @@ function rollMissions({ data, fixedMissions }, day, availableUntil) {
 // 120 Blockbuster Tickets, scaled based on difficulty ... in addition to their normal rewards" (miniBossTicketsFor); its
 // storms the passive StormLowCategory rows, which "no longer reward event tickets".
 const halloweenAlerts = "Halloween2017_MissionAlert";
+// The elemental perk currencies (4.2's FIRE-UP!, AMP-UP!, FROST-UP!) and the zone modifiers that lock elemental husks to
+// an element (GameplayModifier:ElementalZone<Element>EnableItem).
+const elementalCurrency = { Fire: "AccountResource:reagent_alteration_ele_fire", Nature: "AccountResource:reagent_alteration_ele_nature",
+  Water: "AccountResource:reagent_alteration_ele_water" };
+const elementalModifier = (element) => `GameplayModifier:elementalzone${element.toLowerCase()}enableitem`;
 const groupCategory = "GroupMissionCategory";
 const stormTier = (tier) => (tier <= 5 ? 1 : tier <= 10 ? 2 : tier <= 15 ? 3 : 4);
 const zones = ["Stonewood", "Plankerton", "CanneyValley", "TwinePeaks"];
@@ -383,7 +388,15 @@ const alertRewards = {
     ...(isEventActive(mutantStorms) || isEventActive(mutantStorms2018) || isEventActive(storm2018) ? [[stormTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]] : [])
   ],
   MissionAlert_StormLow: (row) => [[`CardPack:zcp_reagent_c_t0${zoneOfRow(row)}_high`, 1]],
-  MissionAlert_GroupMission: (row, mission) => [[firecrackerTickets, groupTicketsFor(mission.missionDifficultyInfo.rowName)]],
+  // Outside Spring It On! (4.2's, Core-Backend #277) a group alert pays two of its zone's evolution material packs: 🟡 Epic's
+  // group alert rewards past 3.3 aren't recorded; 3.1's notes have group missions' rewards "roughly double".
+  MissionAlert_GroupMission: (row, mission) => (isEventActive(spring2018)
+    ? [[firecrackerTickets, groupTicketsFor(mission.missionDifficultyInfo.rowName)]]
+    : [[`CardPack:zcp_reagent_c_t0${zoneOfRow(row)}_high`, 2]]),
+  // 4.2's Elemental Storm alerts (gamedata/world.js elementalZoneRows): the element's perk currency, more in later zones.
+  // 🟡 Epic's amounts aren't recorded: Core's 30, 40 and 50 (Plankerton, Canny Valley, Twine Peaks).
+  ...Object.fromEntries(elementalZones.map(([element]) => [`MissionAlert_Elemental${element}`, (row) =>
+    [[elementalCurrency[element], 10 * (zoneOfRow(row) + 1)]]])),
   MissionAlert_Survival3Day: (row, mission) => (isEventActive(storm2018)
     ? [[stormTickets, 3 * stormTicketsFor(mission.missionDifficultyInfo.rowName)]] : [[snowflakeTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]]),
   MissionAlert_Survival7Day: (row, mission) => (isEventActive(storm2018)
@@ -445,6 +458,10 @@ const noLoot = () => ({ tierGroupName: "", items: [] });
 const miniBossModifier = "GameplayModifier:minibossenableprimarymissionitem";
 
 function alertModifiers(row, seed) {
+  const element = /^ElementalZone\.(\w+)$/.exec(row.modifierTierGroup ?? "")?.[1];
+  if (element && getItem(elementalModifier(element))) {
+    return { tierGroupName: row.modifierTierGroup, items: [{ itemType: elementalModifier(element), quantity: 1 }] };
+  }
   if (row.modifierTierGroup?.startsWith("MinibossTG.") && getItem(miniBossModifier)) {
     return { tierGroupName: row.modifierTierGroup, items: [{ itemType: miniBossModifier, quantity: 1 }] };
   }
@@ -600,6 +617,13 @@ function rollAlerts({ data }, missions, day, dayStart, now, availableUntil) {
     if (stormsMiniBosses && zone) {
       for (let index = 0; index < miniBossTargets2018[zone - 1]; index++) {
         alerts.push(...place("MiniBossCategory", `${data.uniqueId}:${day}:alert:miniboss:${index}`, anyRow("MiniBossCategory")));
+      }
+    }
+    // 4.2's Elemental Storm alerts (Core-Backend #277): one of each element in every main theater from Plankerton on (🟡
+    // Core's count: the notes give the quota, 2 each a day, not how many the map showed).
+    if (zone >= 2) {
+      for (const [element, category] of elementalZones) {
+        alerts.push(...place(category, `${data.uniqueId}:${day}:alert:elemental:${element}`, anyRow(category)));
       }
     }
     // 2.5's passive storms and Mini-Bosses (General alerts with the Mini-Boss modifier): the theater's targets.

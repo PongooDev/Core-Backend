@@ -5,7 +5,7 @@ import { allowedBuildList, buildChoices } from "../src/builds/allowed.js";
 import { inBuild } from "../src/builds/context.js";
 import { seasonName, versionOf } from "../src/builds/detect.js";
 import { contentUpdateStates, lootHotfixSection } from "../src/events/contentupdates.js";
-import { activeEventFlags, activeMiniBosses, blockbuster2018, blockbuster2018Phase1, configureEvents, isEventActive, lobbySeason4,
+import { activeEventFlags, activeMiniBosses, blockbuster2018, blockbuster2018Phase1, configureEvents, groupMission, isEventActive, lobbySeason4,
   passiveStorms } from "../src/events/events.js";
 import { hasLtm, inOriginalWindow, ltmNewMode, ltmOfPlaylist, ltmOn, ltmPlaylistOverrides, ltms } from "../src/events/ltms.js";
 import { meteorStrikePhase, meteorStrikeRows } from "../src/events/meteorstrike.js";
@@ -18,6 +18,7 @@ import { buildOfSeason } from "../src/profiles/seasons.js";
 import { eventStoreInstanceNow, eventStoreOffers, hasEventStore } from "../src/store/eventstore.js";
 import { itemShopOffers } from "../src/store/itemshop.js";
 import { hasRefunds } from "../src/store/refunds.js";
+import { worldInfo } from "../src/world/theaters.js";
 
 // Fortnite 4.2 (++Fortnite+Release-4.2-CL-4072250, UE 4.20, 16 May 2018): its own data (gamedata/4072250) and Season 4 as
 // 4.0's.
@@ -89,8 +90,9 @@ test("4.2's shop is Season 4's with 4.2's cosmetics, which 4.1 doesn't sell", ()
   assert.deepEqual(daily(v42).filter((templateId) => templateId !== "AthenaDance:eid_popdance01"), daily(v41));
 });
 
-test("4.2's event flags are 4.1's: Blockbuster Part 1, active Mini-Bosses, passive storms and the Season 4 lobby", () => {
-  assert.deepEqual(activeEventFlags(v42), [blockbuster2018Phase1, activeMiniBosses, passiveStorms, lobbySeason4]);
+test("4.2's event flags are 4.1's and the group missions': Blockbuster Part 1, active Mini-Bosses, passive storms and the Season 4 lobby", () => {
+  assert.deepEqual(activeEventFlags(v42), [groupMission, blockbuster2018Phase1, activeMiniBosses, passiveStorms, lobbySeason4]);
+  assert.ok(!activeEventFlags(v41).includes(groupMission));
   assert.ok(!activeEventFlags(v42).includes("EventFlag.Blockbuster2018Phase2"), "Part 2 is 30 May's");
   assert.equal(inBuild(v42, () => isEventActive(blockbuster2018)), true);
 });
@@ -163,4 +165,41 @@ test("4.2 keeps 4.1's gates: common profiles, returns, no content update or curv
   assert.equal(meteorStrikePhase(v42), null);
   assert.deepEqual(meteorStrikeRows(v42), []);
   assert.equal(inBuild(v42, () => lootHotfixSection(now, null, [], meteorStrikeRows(v42), v42)), "");
+});
+
+// Core-Backend #277: 4.2's map had no group mission alerts and no Elemental Storm alerts.
+test("4.2's mission alerts: every group mission has one, and Elemental Storm alerts from Plankerton (#277)", () => {
+  const alertsOf = (build) => inBuild(build, () => worldInfo(now)).missionAlerts.flatMap(({ theaterId, availableMissionAlerts }) =>
+    availableMissionAlerts.map((alert) => ({ ...alert, theaterId })));
+  const alerts42 = alertsOf(v42);
+  const alerts41 = alertsOf(v41);
+  const group = alerts42.filter(({ categoryName }) => categoryName === "GroupMissionCategory");
+  assert.ok(group.length > 0);
+  assert.ok(!alerts41.some(({ categoryName }) => categoryName === "GroupMissionCategory"));
+  for (const alert of group) {
+    assert.deepEqual(alert.missionAlertRewards.items.map(({ itemType, quantity }) => [itemType.replace(/t0\d/, "t0N"), quantity]),
+      [["CardPack:zcp_reagent_c_t0N_high", 2]], "the zone's evolution materials, no Firecracker Tickets");
+  }
+  const missions = inBuild(v42, () => worldInfo(now)).missions.flatMap(({ availableMissions }) => availableMissions);
+  for (const alert of group) {
+    const mission = missions.find((candidate) => candidate.tileIndex === alert.tileIndex && /_Group(_PVE02on)?\./.test(candidate.missionGenerator));
+    assert.ok(mission, "on a group mission");
+  }
+  const elements = { ElemementalZoneFireCategory: ["fire", "elementalzonefireenableitem"], ElemementalZoneNatureCategory: ["nature", "elementalzonenatureenableitem"],
+    ElemementalZoneWaterCategory: ["water", "elementalzonewaterenableitem"] };
+  for (const [category, [element, modifier]] of Object.entries(elements)) {
+    const ofElement = alerts42.filter(({ categoryName }) => categoryName === category);
+    assert.equal(ofElement.length, 3, `${category}: Plankerton, Canny Valley and Twine Peaks`);
+    for (const alert of ofElement) {
+      assert.deepEqual(alert.missionAlertModifiers.items, [{ itemType: `GameplayModifier:${modifier}`, quantity: 1 }]);
+      const [reward] = alert.missionAlertRewards.items;
+      assert.equal(reward.itemType, `AccountResource:reagent_alteration_ele_${element}`);
+      assert.ok([30, 40, 50].includes(reward.quantity));
+    }
+    assert.ok(!alerts41.some(({ categoryName }) => categoryName === category));
+  }
+  // None in Stonewood's theater (elemental husks are Plankerton's and up).
+  const stonewood = inBuild(v42, () => worldInfo(now)).theaters.find((theater) => (theater.runtimeInfo.theaterTags?.gameplayTags ?? [])
+    .some(({ tagName }) => tagName === "Stat.Theater.PvE01"));
+  if (stonewood) assert.ok(!alerts42.some(({ theaterId, categoryName }) => theaterId === stonewood.uniqueId && /Elemem/.test(categoryName)));
 });

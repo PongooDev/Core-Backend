@@ -223,6 +223,11 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // the five BR.* playlist and decor flags, SupplyDropGift, LobbyHalloweenDecor, LobbyWinterDecor, LobbySeason4, Horde and
 // Blockbuster2018Phase1 to 3. So 4.2 serves 4.1's four: Blockbuster2018Phase1, ActiveMiniBosses, PassiveStorms and
 // LobbySeason4. No flag drives Battle Royale's map (events/meteorstrike.js has 4.2's curve rows).
+// 4.2 also runs EventFlag.GroupMission again (Core-Backend #277): its MissionAlerts rows are 4.0's (cooked out of the
+// client), whose GroupMissionCategory rows (quota 10, repeatable) wait for that flag, and without it 4.2's group missions
+// had no alert. Spring It On!'s Firecracker Tickets are long gone, so outside that event the alert pays the zone's
+// evolution materials instead (world/theaters.js). The flag is the MissionAlerts table's, not the client's: no pak
+// checks it.
 export const blockbuster2018 = "Blockbuster2018";
 export const blockbuster2018Phase1 = "EventFlag.Blockbuster2018Phase1";
 export const lobbySeason4 = "EventFlag.LobbySeason4";
@@ -245,6 +250,8 @@ const events = [
   { name: spring2018, flag: spring2018Phase1, firstBuild: 3889387, lastBuild: 3942182 },
   { name: spring2018, flag: spring2018Phase2, firstBuild: 3915963, lastBuild: 3942182 },
   { name: groupMission, flag: groupMission, firstBuild: 3935073, lastBuild: 3942182 },
+  // 4.2's group mission alerts (Core-Backend #277, world/theaters.js).
+  { name: groupMission, flag: groupMission, firstBuild: build42, lastBuild: build42 },
   { name: spring2018, flag: spring2018Phase3, firstBuild: 3942182, lastBuild: 3942182 },
   { name: passiveMiniBosses, flag: passiveMiniBosses, firstBuild: 4000805, lastBuild: 4019403 },
   { name: storm2018, flag: activeStorms, firstBuild: 4000805, lastBuild: 4019403 },

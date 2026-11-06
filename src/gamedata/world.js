@@ -2,8 +2,32 @@ import { currentEventsConfig, isEventActive } from "../events/events.js";
 import { miniBossesStay } from "../events/mutantstorms.js";
 import { perBuild } from "./read.js";
 
-const data = perBuild((read) => ({ difficulties: {}, missionAlerts: [], dailyMissionAlertQuota: 0, missionAlertCategories: {},
-  missionAlertSpreads: {}, zoneThemes: {}, ...read("world", {}) }));
+// 4.2's (CL-4072250) Elemental Storm Mission Alerts (Core-Backend #277): "Elemental Storm Mission Alerts are now available.
+// All elemental Husks in these zones will be locked to the zone's element. Each zone awards Elemental Perk currencies for
+// their respective elements: FIRE-UP, AMP-UP, and FROST-UP. ... Quota: 2 each", and "Elemental Husks can be found in
+// Plankerton or higher areas". 4.2's MissionAlertCategories has their three categories (ElemementalZoneFireCategory,
+// ...NatureCategory, ...WaterCategory, Epic's spelling, quota 2 each, not repeatable) and its GameplayModifiers the zones'
+// modifiers (ElementalZoneFireEnableItem, ...Nature..., ...Water...), but its MissionAlerts rows are cooked out of the
+// client (tools/extractor: 4.2's rows are 4.0's), so the rows are Core's: one for each element in each zone from
+// Plankerton (tile difficulty 12-21, 22-31, 32-50, as the other categories' rows), no event flag, the loot tier group
+// MissionAlert_Elemental<Element> (world/theaters.js rewards) and the modifier group ElementalZone.<Element>.
+export const elementalZones = [["Fire", "ElemementalZoneFireCategory"], ["Nature", "ElemementalZoneNatureCategory"],
+  ["Water", "ElemementalZoneWaterCategory"]];
+const elementalZoneRows = (world) => {
+  const categories = world.missionAlertCategories ?? {};
+  const rows = world.missionAlerts ?? [];
+  return elementalZones.filter(([, category]) => categories[category] && !rows.some((row) => row.category === category))
+    .flatMap(([element, category]) => [[12, 21], [22, 31], [32, 50]].map(([minimumDifficulty, maximumDifficulty], index) => ({
+      category, lootTier: 0, lootTierGroup: `MissionAlert_Elemental${element}`, maximumDifficulty, minimumDifficulty, missionGenerator: "",
+      modifierTierGroup: `ElementalZone.${element}`, name: `MissionAlert_${category}_0${index + 2}`, onlyUsedForSpreading: false,
+      requiredEventFlag: "", spreadRowName: "", zoneThemes: [] })));
+};
+const data = perBuild((read) => {
+  const world = { difficulties: {}, missionAlerts: [], dailyMissionAlertQuota: 0, missionAlertCategories: {},
+    missionAlertSpreads: {}, zoneThemes: {}, ...read("world", {}) };
+  const elemental = elementalZoneRows(world);
+  return elemental.length ? { ...world, missionAlerts: [...world.missionAlerts, ...elemental] } : world;
+});
 
 export function getDifficulty(rowName) {
   return data().difficulties[rowName];
