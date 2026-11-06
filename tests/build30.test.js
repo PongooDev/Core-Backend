@@ -202,6 +202,35 @@ test("Land at different named locations is done at 10 of its 18 objectives", () 
   assert.equal(inBuild(v30, () => getAthenaQuest("quest_br_land_locations_different")).objectiveCompletionCount, 10);
 }));
 
+// CoreV2 #274: "Dance at different Forbidden locations" has one objective per location (its own BackendName and
+// Athena.Location.Quest.Dance.Forbidden.<NN> row), each counting once; every location the gameserver reports, in this
+// match or a later one, counts, and five of the fifteen complete it.
+test("Each Forbidden location danced at counts on its own objective, and five complete the challenge", () => withSession("forbidden30", (session) => {
+  const tracker = session.profile("athena");
+  const quest = inBuild(v30, () => getAthenaQuest("quest_br_dance_scavengerhunt_forbidden"));
+  const names = quest.objectives.map((objective) => objective.name);
+  assert.equal(new Set(names).size, 15);
+  assert.equal(quest.objectiveCompletionCount, 5);
+  assert.deepEqual(new Set(quest.objectives.map((objective) => inBuild(v30, () => athenaObjectiveStat(objective.stat)).sourceTags)).size, 15);
+  const itemId = grantAthenaQuest(tracker, "quest_br_dance_scavengerhunt_forbidden");
+  const item = () => tracker.profile.items[itemId];
+  const counted = () => names.filter((name) => item().attributes[`completion_${name}`] === 1).length;
+  // The first match: location 15, danced at twice before the save (the gameserver sends 2).
+  advanceAthenaObjectives(session, [{ statName: "battlepass_dance_athena_location_forbidden_15", count: 2 }]);
+  assert.equal(item().attributes.completion_battlepass_dance_athena_location_forbidden_15, 1);
+  // Later matches: different locations, one at a time; 15 again changes nothing.
+  advanceAthenaObjectives(session, [{ statName: "battlepass_dance_athena_location_forbidden_02", count: 1 }]);
+  assert.equal(item().attributes.completion_battlepass_dance_athena_location_forbidden_02, 1);
+  advanceAthenaObjectives(session, [{ statName: "battlepass_dance_athena_location_forbidden_15", count: 1 }]);
+  assert.equal(counted(), 2);
+  advanceAthenaObjectives(session, [{ statName: "battlepass_dance_athena_location_forbidden_07", count: 1 }]);
+  advanceAthenaObjectives(session, [{ statName: "battlepass_dance_athena_location_forbidden_11", count: 1 }]);
+  assert.equal(counted(), 4);
+  assert.equal(item().attributes.quest_state, "Active");
+  advanceAthenaObjectives(session, [{ statName: "BATTLEPASS_DANCE_ATHENA_LOCATION_FORBIDDEN_03", count: 1 }]);
+  assert.notEqual(item().attributes.quest_state, "Active");
+}));
+
 // bAthenaMustCompleteInSingleMatch (UFortQuestManager::UpdateStatsForSingleMatchQuests, 3.0 0xED1EC0): a match that
 // doesn't complete the challenge keeps none of its progress.
 test("Season 3's single-match challenges count only a match that completes them, and Athena.Kills is the match's eliminations", () => withSession("single30", (session) => {
