@@ -28,8 +28,30 @@ export const showsGiftBoxes = () => Number(currentBuild()) >= firstGiftBoxBuild;
 
 // A gift box of loot (grants: {profileId, itemId, templateId, quantity}) in profile0, on a build that shows one. Returns
 // its item id, or null.
+//
+// One screen for the tiers reached between two visits to the lobby (Core-Backend #268): a match's Battle Stars and season
+// XP come in several reports and challenge completions, each settling the tiers it reached (profiles/seasons.js), and
+// each made a box of its own, so two tiers in one match showed two screens, one after the other. A GB_BattlePass box the
+// client hasn't taken yet (RemoveGiftBox takes it before its screen shows) takes the new loot instead, an item already in
+// it gaining the quantity, so the lobby shows every tier reached since in one screen, as Epic's one box of a batch of
+// tier-ups did. Other boxes (GB_BattlePassPromise) stay one each.
 export function giveGiftBox(session, templateId, grants) {
   if (!showsGiftBoxes() || !grants.length) return null;
+  const tracker = session.profile(giftBoxProfile);
+  const pending = templateId.toLowerCase() === battlePassGiftBox.toLowerCase()
+    ? heldGiftBoxes(tracker.profile).find(([, item]) => item.templateId.toLowerCase() === battlePassGiftBox.toLowerCase()) : undefined;
+  if (pending) {
+    const [pendingId, box] = pending;
+    const lootList = (box.attributes.lootList ?? []).map((loot) => ({ ...loot }));
+    for (const loot of grants.map(lootEntry)) {
+      const same = lootList.find((held) => held.itemGuid === loot.itemGuid && held.itemType === loot.itemType && held.itemProfile === loot.itemProfile);
+      if (same) same.quantity = (same.quantity ?? 0) + (loot.quantity ?? 0);
+      else lootList.push(loot);
+    }
+    tracker.setItemAttribute(pendingId, "lootList", lootList);
+    log("Battle Royale", `${session.accountId}'s gift box ${templateId} takes ${grants.length} more items`);
+    return pendingId;
+  }
   const itemId = crypto.randomUUID();
   session.profile(giftBoxProfile).addItem(itemId, {
     templateId,

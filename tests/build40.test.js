@@ -28,7 +28,7 @@ import { advanceAthenaObjectives, athenaQuestLogin, equipCustomization, refreshA
 import { challengeWeekCount, weekPlan } from "../src/profiles/challenges.js";
 import { mtxProfileId, usesCommonProfiles } from "../src/profiles/common.js";
 import { grantItem } from "../src/profiles/items.js";
-import { buildOfSeason, buyBattlePass, takeUpSeason } from "../src/profiles/seasons.js";
+import { addBookXp, buildOfSeason, buyBattlePass, takeUpSeason } from "../src/profiles/seasons.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
 import { setItemFavoriteStatusBatch } from "../src/services/mcp/commands/SetItemFavoriteStatus.js";
@@ -333,6 +333,31 @@ test("#266: Season 4's weeks are 10, Week 1 with the cumulative and Carbide chal
   for (let day = 0; day < 10; day++) refreshAthenaDailies(session, new Date(now.getTime() + day * 86_400_000));
   const dailies = itemsOf(tracker, "Quest").filter(([, item]) => getAthenaQuest(item.templateId.split(":")[1])?.type === "AthenaDailyQuest");
   assert.equal(dailies.length, 3);
+}));
+
+// Core-Backend #268: the tiers reached between two visits to the lobby come in one GiftBox:GB_BattlePass, one screen.
+test("#268: two tiers reached apart in a match share one Battle Pass gift box until the client takes it", () => withSession("onebox", (session) => {
+  buyBattlePass(session, seasonRewardFunctions());
+  const account = session.profile("profile0");
+  const boxes = () => itemsOf(account, "GiftBox").filter(([, item]) => item.templateId.toLowerCase() === "giftbox:gb_battlepass");
+  for (const [id] of boxes()) account.removeItem(id);
+  const athena = session.profile("athena").profile.stats.attributes;
+  const tier = athena.book_level;
+  addBookXp(session, 10, seasonRewardFunctions());
+  assert.equal(athena.book_level, tier + 1);
+  const [[firstId, first]] = boxes();
+  const firstLoot = first.attributes.lootList.length;
+  assert.ok(firstLoot > 0);
+  addBookXp(session, 10, seasonRewardFunctions());
+  assert.equal(athena.book_level, tier + 2);
+  assert.equal(boxes().length, 1, "one screen for both tiers");
+  assert.equal(boxes()[0][0], firstId);
+  assert.ok(boxes()[0][1].attributes.lootList.length > firstLoot, "the second tier's rewards join the first's");
+
+  account.removeItem(firstId);
+  addBookXp(session, 10, seasonRewardFunctions());
+  assert.equal(boxes().length, 1);
+  assert.notEqual(boxes()[0][0], firstId, "a tier after the box was taken gets a box of its own");
 }));
 
 test("4.0: a challenge's Battle Stars past tier 100 are 100 season XP each", () => withSession("overflow", (session) => {
