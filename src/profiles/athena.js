@@ -14,7 +14,7 @@ import { defaultBanner } from "./defaults.js";
 import { heldGiftBoxes, moveAthenaGiftBoxes } from "./giftboxes.js";
 import { findItem } from "./items.js";
 import { grant } from "./progress.js";
-import { applyHeldVariantTokens, applyVariantUpdates, defaultVariants, grantVariantToken } from "./variants.js";
+import { applyHeldVariantTokens, applyVariantUpdates, defaultVariants, grantDefaultVariants, grantVariantToken, itemsMissingVariants } from "./variants.js";
 import { countBundleQuest, grantChallengeSchedule as grantSchedule, settleChallengeSchedules } from "./challenges.js";
 import { accountLevelOf, addBookXp, giveSeasonReward, namesAthenaBuild, seasonNeedsSwitch, seasonNumber, settleSeasonPromise, settleSeasonRewards, switchSeason } from "./seasons.js";
 
@@ -226,7 +226,8 @@ export function athenaNeedsSetUp(profile, settings = {}) {
     || missing(profile, earnedCosmetics(profile, settings)).length > 0
     || (settings.giveAllCosmetics ? missing(profile, lockerCosmetics()).length > 0 : blanket(profile).length > 0)
     || emptyDefaultSlots(profile).length > 0 || heldNonLockerItems(profile).length > 0
-    || seasonNeedsSwitch(profile) || danceSlotsNeedSettling(profile) || heldGiftBoxes(profile).length > 0;
+    || seasonNeedsSwitch(profile) || danceSlotsNeedSettling(profile) || heldGiftBoxes(profile).length > 0
+    || itemsMissingVariants(profile).length > 0;
 }
 
 // A cosmetic with styles (4.0's Carbide and Omega, profiles/variants.js) comes with its variants at their defaults.
@@ -344,6 +345,8 @@ export function setUpAthena(session) {
   }
   if (seasonNeedsSwitch(profile)) switchSeason(session);
   if (danceSlotsNeedSettling(profile)) settleDanceSlots(tracker);
+  // The styles owned cosmetics come with, for items that lack them (profiles/variants.js, Core-Backend #259).
+  grantDefaultVariants(session);
   // Gift boxes are profile0's (profiles/giftboxes.js, Core-Backend #212).
   moveAthenaGiftBoxes(session);
 }

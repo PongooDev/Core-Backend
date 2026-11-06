@@ -13,10 +13,24 @@ import { log } from "../log.js";
 // putting "Cosmetics.Variant.Channel." and "Cosmetics.Variant.Property." back in front: both prefixes are in 4.0's exe).
 // EquipBattleRoyaleCustomization takes the same struct as variantUpdates, the locker's style picker.
 
-// A cosmetic's styles as the profile names them, each channel at its default with its start-unlocked options; [] for a
-// cosmetic without any.
-export const defaultVariants = (templateId) => (athenaCosmetics()[cosmeticKey(templateId)]?.variants ?? [])
-  .map(({ channel, default: active, unlocked }) => ({ channel, active, owned: [...new Set([active, ...unlocked])] }));
+// A cosmetic's styles as the profile names them, each channel at its default with every option the player owns with the
+// cosmetic (Core-Backend #259): Epic gave a cosmetic's owners every style no challenge or token gates, so an option is
+// owned from the start unless a CosmeticVariantToken of the build's data unlocks it (Carbide's and Omega's Stage1 to
+// Stage5, the progressive challenges' rewards); the default and the start-unlocked (bStartUnlocked) ones always are.
+// [] for a cosmetic without any.
+export const defaultVariants = (templateId) => {
+  const key = cosmeticKey(templateId);
+  const gated = tokenGatedVariants(key);
+  return (athenaCosmetics()[key]?.variants ?? []).map(({ channel, default: active, options = [], unlocked = [] }) => ({ channel, active,
+    owned: [...new Set([active, ...unlocked, ...options.filter((option) => !gated.has(`${channel}.${option}`))])] }));
+};
+
+// The "channel.variant" styles of a cosmetic that a variant token unlocks.
+function tokenGatedVariants(cosmeticId) {
+  if (!cosmeticId) return new Set();
+  return new Set(Object.values(athenaVariantTokens()).filter((token) => String(token.cosmetic).toLowerCase() === cosmeticId.toLowerCase())
+    .map((token) => `${token.channel}.${token.variant}`));
+}
 
 const cosmeticKey = (templateId) => Object.keys(athenaCosmetics()).find((id) => id.toLowerCase() === String(templateId).toLowerCase());
 const findHeld = (profile, templateId) => Object.keys(profile.items)
@@ -28,7 +42,8 @@ function variantsOf(item) {
   const channels = defaultVariants(item.templateId);
   const merged = channels.map((channel) => {
     const kept = held.find((entry) => entry?.channel === channel.channel);
-    return kept ? { channel: channel.channel, active: kept.active ?? channel.active, owned: [...new Set([...channel.owned, ...(kept.owned ?? [])])] } : channel;
+    return kept ? { channel: channel.channel, active: typeof kept.active === "string" ? kept.active : channel.active,
+      owned: [...new Set([...channel.owned, ...(Array.isArray(kept.owned) ? kept.owned : [])])] } : channel;
   });
   return [...merged, ...held.filter((entry) => !channels.some((channel) => channel.channel === entry?.channel))];
 }
@@ -86,4 +101,31 @@ export function applyVariantUpdates(session, itemId, updates) {
     return update && typeof update.active === "string" && entry.owned.includes(update.active) ? { ...entry, active: update.active } : entry;
   });
   if (JSON.stringify(updated) !== JSON.stringify(item.attributes.variants)) tracker.setItemAttribute(itemId, "variants", updated);
+}
+
+// Owned cosmetics whose item lacks styles it owns from the start (Core-Backend #259): a cosmetic granted before its build's
+// data had styles (4.0's game data came with 6ec4ace), or by a build without them (the full locker gives every build's
+// cosmetics, with the giving build's styles), has no variants, or a channel or option missing, and the locker's Edit
+// Styles shows them locked. Item ids; [] on a build whose data has no styles.
+export function itemsMissingVariants(profile) {
+  if (!Object.values(athenaCosmetics()).some((cosmetic) => cosmetic.variants?.length)) return [];
+  return Object.keys(profile.items).filter((itemId) => {
+    const item = profile.items[itemId];
+    const channels = defaultVariants(item.templateId);
+    if (!channels.length) return false;
+    const held = Array.isArray(item.attributes?.variants) ? item.attributes.variants : [];
+    return channels.some((channel) => {
+      const kept = held.find((entry) => entry?.channel === channel.channel);
+      return !kept || typeof kept.active !== "string" || !Array.isArray(kept.owned) || channel.owned.some((option) => !kept.owned.includes(option));
+    });
+  });
+}
+
+// Those items' styles filled in, keeping the active style and what challenges unlocked.
+export function grantDefaultVariants(session) {
+  const tracker = session.profile("athena");
+  for (const itemId of itemsMissingVariants(tracker.profile)) {
+    tracker.setItemAttribute(itemId, "variants", variantsOf(tracker.profile.items[itemId]));
+    log("Battle Royale", `${session.accountId}: ${tracker.profile.items[itemId].templateId} gets the styles it owns`);
+  }
 }
