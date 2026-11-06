@@ -73,3 +73,43 @@ test("UpgradeItemRarity spends the Flux and the level-relative XP, and keeps the
     backend.close();
   }
 });
+
+// Core-Backend #271: 4.2's "Added the ability to upgrade Weapon and Trap Schematic Rarity. Uses the same recipe as Hero
+// Rarity Upgrade ... Unlocked by the 2-Star Evolution Skill Tree Nodes for weapons and traps." 4.2's data names every
+// weapon and trap schematic's EvolveRarity.SID.* row (Flux, as the heroes'), and its 2-star evolution nodes (T2_Main_180921FB0
+// melee, T2_Main_25EFB8C70 ranged, T2_Main_A0995FCB0 traps) grant Unlocks.RarityUpgrade.Weapon.* and .Trap.*.
+test("4.2: a weapon schematic's rarity goes up with Flux once its 2-star evolution node is bought (#271)", async () => {
+  const v42 = "4072250";
+  const schematic = "Schematic:sid_assault_auto_c_ore_t01";
+  assert.equal(inBuild(v42, () => getItem(schematic).rarityUpgrade), "EvolveRarity.SID.Assault.Auto.UC.Ore.T01");
+  assert.deepEqual(inBuild(v42, () => upgradeData().recipes["EvolveRarity.SID.Assault.Auto.UC.Ore.T01"]).catalysts, ["Unlocks.RarityUpgrade.Weapon.Assault"]);
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "SchematicRarity");
+    const give = (templateId, quantity = 1) => post(backend.port, `/admin/api/accounts/${player.accountId}/grant`, undefined, { templateId, quantity });
+    const run = async (name, body) => {
+      const text = JSON.stringify(body);
+      // 3.5.1 on, Save the World's profile is campaign (profiles/common.js).
+      return send({ host: "127.0.0.1", port: backend.port, method: "POST", path: route(player.accountId, name).replace("profileId=profile0", "profileId=campaign"), headers: {
+        "User-Agent": `game=Fortnite, engine=UE4, build=++Fortnite+Release-4.2-CL-${v42}`, Authorization: `bearer ${player.token}`,
+        "Content-Type": "application/json", "Content-Length": Buffer.byteLength(text) } }, text);
+    };
+    await give(schematic);
+    const items0 = (await run("QueryProfile", {})).body.profileChanges[0].profile.items;
+    const itemId = Object.keys(items0).find((id) => items0[id].templateId === schematic);
+    assert.ok(itemId);
+    await give("AccountResource:reagent_evolverarity_r", 10);
+    // Without the ranged 2-star evolution node: refused.
+    const refused = await run("UpgradeItemRarity", { targetItemId: itemId });
+    assert.equal(refused.status, 400);
+    assert.match(refused.body.errorMessage, /Unlocks\.RarityUpgrade\.Weapon\.Assault/);
+    await give("HomebaseNode:t2_main_25efb8c70");
+    const response = await run("UpgradeItemRarity", { targetItemId: itemId });
+    assert.equal(response.status, 200, JSON.stringify(response.body));
+    const items = response.body.profileChanges[0].profile.items;
+    assert.equal(items[itemId].templateId, "Schematic:sid_assault_auto_uc_ore_t01");
+    assert.equal(Object.values(items).filter((item) => item.templateId === "AccountResource:reagent_evolverarity_r").reduce((sum, item) => sum + item.quantity, 0), 0);
+  } finally {
+    backend.close();
+  }
+});

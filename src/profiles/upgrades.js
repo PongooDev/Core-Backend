@@ -119,6 +119,11 @@ export function levelRelativeRarityCost(item, info, resultInfo) {
 // the row's RequiredCatalysts on the skill tree (Unlocks.RarityUpgrade.Hero.*), MissingCosts short of a cost or of the
 // level-relative XP. The item keeps its id, level and the rest of its attributes. Returns it as a grant entry.
 // 🟡 Epic's service isn't in the client: the error codes are Core's.
+// 4.2 (CL-4072250) adds weapon and trap schematics ("Added the ability to upgrade Weapon and Trap Schematic Rarity. Uses the
+// same recipe as Hero Rarity Upgrade ... Unlocked by the 2-Star Evolution Skill Tree Nodes", Core-Backend #271): its data
+// names every schematic's EvolveRarity.SID.* row, and its 2-star evolution nodes grant Unlocks.RarityUpgrade.Weapon.*
+// and .Trap.*, so they go through here unchanged. 🟡 "Legacy schematics must be converted by the Perk Recombobulator
+// before their rarity can be upgraded" is the client's check, and Core has no Perk Recombobulator yet (#270).
 export function upgradeItemRarity(session, itemId) {
   const tracker = session.profile("profile0");
   const { item, info } = accountItem(tracker, itemId);
