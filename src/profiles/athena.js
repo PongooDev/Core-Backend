@@ -226,7 +226,7 @@ export function athenaNeedsSetUp(profile, settings = {}) {
     || missing(profile, earnedCosmetics(profile, settings)).length > 0
     || (settings.giveAllCosmetics ? missing(profile, lockerCosmetics()).length > 0 : blanket(profile).length > 0)
     || emptyDefaultSlots(profile).length > 0 || heldNonLockerItems(profile).length > 0
-    || seasonNeedsSwitch(profile) || danceSlotsNeedSettling(profile) || heldGiftBoxes(profile).length > 0
+    || seasonNeedsSwitch(profile) || danceSlotsNeedSettling(profile) || randomSlotsNeedSettling(profile) || heldGiftBoxes(profile).length > 0
     || itemsMissingVariants(profile).length > 0;
 }
 
@@ -345,6 +345,7 @@ export function setUpAthena(session) {
   }
   if (seasonNeedsSwitch(profile)) switchSeason(session);
   if (danceSlotsNeedSettling(profile)) settleDanceSlots(tracker);
+  if (randomSlotsNeedSettling(profile)) settleRandomSlots(tracker);
   // The styles owned cosmetics come with, for items that lack them (profiles/variants.js, Core-Backend #259).
   grantDefaultVariants(session);
   // Gift boxes are profile0's (profiles/giftboxes.js, Core-Backend #212).
@@ -531,6 +532,55 @@ function settleDanceSlots(tracker) {
   }
 }
 
+// The locker's Random entries (Core-Backend #278): from 4.0 (CL-4039451) the client has random customization selectors
+// (UFortKismetLibrary::IsItemDefRandomCustomizationSelector; its data's CID_Random, BID_Random, Glider_Random,
+// Pickaxe_Random, LSID_Random and Trails_Random, "Random Outfit" and so on). They are never profile items: the client
+// makes a local item for each under its template id (4.2's sub_A3D5F0, through sub_E1C8A0) and equips it by that id, so
+// EquipBattleRoyaleCustomization's itemToSlot is e.g. "AthenaCharacter:cid_random". Epic's MCP kept it in the slot as it
+// came, and the client picks at match time: building the loadout from the slots (sub_A3BB00), a random selector becomes
+// one of the account's items of that kind, a favorite first if any (sub_A33F70 and its eight siblings, one per kind).
+// 3.5.1 to 3.6 have the item definitions but no selectors, and older builds neither; on those a slot holding one would
+// load a null cosmetic (a null glider crashed 1.8, Core-Backend #74), so while such a build has the profile the slot
+// holds its default and the random id waits in profile.coreRandomSlots (Core's, never sent), coming back with 4.0 unless
+// the slot was changed meanwhile.
+const firstRandomSelectorsBuild = 4039451;
+const hasRandomSelectors = () => Number(currentBuild()) >= firstRandomSelectorsBuild;
+const isRandomSelectorId = (templateId) => /^athena[a-z]+:[a-z]+_random$/i.test(String(templateId ?? ""));
+
+// The build's random selector for a slot's type, as its data spells it; undefined if the build has none.
+function randomSelectorId(templateId, type) {
+  if (!hasRandomSelectors() || !isRandomSelectorId(templateId)) return undefined;
+  const id = cosmeticId(templateId);
+  return id && typeOf(id) === type.toLowerCase() ? id : undefined;
+}
+
+const heldRandomSlots = (profile) => Object.entries(slots)
+  .filter(([, [, stat]]) => isRandomSelectorId(profile.stats.attributes[stat]));
+
+function randomSlotsNeedSettling(profile) {
+  if (!namesAthenaBuild()) return false;
+  return hasRandomSelectors() ? profile.coreRandomSlots !== undefined : heldRandomSlots(profile).length > 0;
+}
+
+function settleRandomSlots(tracker) {
+  const { profile } = tracker;
+  if (hasRandomSelectors()) {
+    for (const [stat, { random, held }] of Object.entries(profile.coreRandomSlots ?? {})) {
+      const slot = Object.keys(slots).find((name) => slots[name][1] === stat);
+      if (slot && (profile.stats.attributes[stat] ?? "") === held && randomSelectorId(random, slots[slot][0])) tracker.setStat(stat, random);
+    }
+    delete profile.coreRandomSlots;
+    return;
+  }
+  const waiting = { ...(profile.coreRandomSlots ?? {}) };
+  for (const [slot, [, stat]] of heldRandomSlots(profile)) {
+    const held = defaultItemId(profile, slot);
+    waiting[stat] = { random: profile.stats.attributes[stat], held };
+    tracker.setStat(stat, held);
+  }
+  profile.coreRandomSlots = waiting;
+}
+
 // EquipBattleRoyaleCustomization {slotName, itemToSlot, indexWithinSlot}: an item of the slot's type, or "" for its
 // default; in 1.11's emote slots, at indexWithinSlot (0 to 5; another index is the first slot). From 4.0 (CL-4039451) it
 // also carries variantUpdates [{channel, active, owned}], the style the locker picked (profiles/variants.js).
@@ -541,7 +591,9 @@ export function equipCustomization(session, slotName, itemToSlot, indexWithinSlo
   const [type, stat] = slots[slot];
   let itemId = typeof itemToSlot === "string" ? itemToSlot : "";
   itemId ||= defaultItemId(tracker.profile, slot);
-  if (itemId) {
+  const random = itemId && !findItem(tracker.profile, itemId) ? randomSelectorId(itemId, type) : undefined;
+  if (random) itemId = random;
+  else if (itemId) {
     itemId = Object.keys(tracker.profile.items).find((id) => id.toLowerCase() === itemId.toLowerCase());
     const item = itemId && tracker.profile.items[itemId];
     if (!item) throw new McpError("errors.com.epicgames.fortnite.item_not_found", `No item ${itemToSlot}`);
