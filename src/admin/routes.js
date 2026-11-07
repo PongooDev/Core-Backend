@@ -47,7 +47,7 @@ import { convertLeftoverCandy } from "../events/candyllamas.js";
 import { ltmIds, ltmSchedule } from "../events/ltms.js";
 import { playlistTeamsOf } from "../matchmaking/service.js";
 import { convertLeftoverStormTickets } from "../events/stormllamas.js";
-import { defaultEvents, defaultMatchmakingModes, defaultServerLimits, defaultWarmupSeconds } from "../settings/store.js";
+import { defaultEvents, defaultMatchmakingModes, defaultServerLimits, defaultWarmupSeconds, maxSidebarWidth, minSidebarWidth, sidebarWidthValue } from "../settings/store.js";
 import { calendarCacheMinutes } from "../services/fortnite/calendar.js";
 import { defaultBattlePass, enrichedMilestones } from "../battlepass/season1.js";
 import { bundleTiers, seasonPassConfig, seasonTiers, tierPrice } from "../battlepass/season2.js";
@@ -958,6 +958,9 @@ export function adminRoutes(context) {
     if (hosts !== undefined && (!Array.isArray(hosts) || hosts.length > maxHostingIps || !hosts.every(hostingIp))) {
       return invalid(res, `allowedHostingIps must be a list of at most ${maxHostingIps} IP addresses`);
     }
+    if (req.body?.sidebarWidth !== undefined && req.body.sidebarWidth !== null && sidebarWidthValue(req.body.sidebarWidth) === undefined) {
+      return invalid(res, `sidebarWidth must be null (the default) or a number of pixels, kept from ${minSidebarWidth} to ${maxSidebarWidth}`);
+    }
     if (req.body?.allowedBuilds !== undefined && allowedBuildList(req.body.allowedBuilds) === undefined) {
       return invalid(res, "allowedBuilds must be null (every build) or a list of at least one build Core knows, by changelist or version, or \"other\"");
     }
@@ -988,7 +991,7 @@ export function adminRoutes(context) {
       serverRegions: req.body?.serverRegions,
       allowedHostingIps: req.body?.allowedHostingIps,
       allowedBuilds: req.body?.allowedBuilds,
-      sidebarWidth: req.body?.sidebarWidth !== undefined ? (req.body.sidebarWidth === null ? null : Number(req.body.sidebarWidth)) : undefined
+      sidebarWidth: req.body?.sidebarWidth
     });
     const net = network?.settings?.() ?? {};
     const resInfo = network?.resolution?.() ?? {};

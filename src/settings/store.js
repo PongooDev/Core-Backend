@@ -428,6 +428,14 @@ function gatherSeconds(value) {
   const seconds = typeof value === "string" && value.trim() ? Number(value) : value;
   return Number.isInteger(seconds) && seconds >= 0 && seconds <= maxGatherSeconds ? seconds : undefined;
 }
+// The admin panel's sidebar width (#283), in CSS pixels: a finite number, rounded and kept from 64 (collapsed to icons)
+// to 420, or undefined for anything else.
+export const minSidebarWidth = 64;
+export const maxSidebarWidth = 420;
+export function sidebarWidthValue(value) {
+  return typeof value === "number" && Number.isFinite(value)
+    ? Math.min(Math.max(Math.round(value), minSidebarWidth), maxSidebarWidth) : undefined;
+}
 export const maxMatchStartBufferSeconds = 120;
 function matchStartBufferValue(value) {
   const seconds = typeof value === "string" && value.trim() ? Number(value) : value;
@@ -540,6 +548,7 @@ export function createSettingsStore(dataDir) {
       if (typeof loaded.remoteAdmin === "boolean") settings.remoteAdmin = loaded.remoteAdmin;
       if (typeof loaded.ltmOriginalDates !== "boolean") settings.ltmOriginalDates = defaults.ltmOriginalDates;
       settings.ltmCloseEncounters = closeEncountersValue(loaded.ltmCloseEncounters, defaults.ltmCloseEncounters);
+      settings.sidebarWidth = sidebarWidthValue(loaded.sidebarWidth) ?? defaults.sidebarWidth;
       if (typeof loaded.challengesAllUnlocked !== "boolean") settings.challengesAllUnlocked = defaults.challengesAllUnlocked;
       settings.challengeUnlock = challengeUnlockValue(loaded.challengeUnlock, {});
       if (loaded.matchmakingModes && typeof loaded.matchmakingModes === "object") {
@@ -707,10 +716,10 @@ export function createSettingsStore(dataDir) {
       } else if (partial.loginMessageEnabled === null) {
         delete settings.loginMessageEnabled;
       }
-      if (typeof partial.sidebarWidth === "number") {
-        settings.sidebarWidth = Math.min(Math.max(partial.sidebarWidth, 64), 420);
+      if (sidebarWidthValue(partial.sidebarWidth) !== undefined) {
+        settings.sidebarWidth = sidebarWidthValue(partial.sidebarWidth);
       } else if (partial.sidebarWidth === null) {
-        delete settings.sidebarWidth;
+        settings.sidebarWidth = defaults.sidebarWidth;
       }
       settings.battleRoyaleRewards = battleRoyaleRewards(partial.battleRoyaleRewards, legacyRewards(partial, settings.battleRoyaleRewards));
       const structureLimit = structureLimitValue(partial.structureLimit);
