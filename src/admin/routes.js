@@ -41,7 +41,7 @@ import { inBuild } from "../builds/context.js";
 import { allowedBuildList, otherBuilds } from "../builds/allowed.js";
 import { battleRoyaleBuilds, battleRoyaleSeasons, buildVersions, certBuild, seasonName, seasonVersions, versionOf } from "../builds/detect.js";
 import { contentUpdateStates, defaultContentUpdates } from "../events/contentupdates.js";
-import { cosmeticRarity, cosmeticType, eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, seasonEnd, seasonMoment, seasonStart, shopDay, soldCosmeticIds, weeklyStoreEnd, withoutSeasonStartRecording } from "../store/itemshop.js";
+import { cosmeticRarity, cosmeticType, eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, seasonEnd, seasonOfBuild, seasonMoment, seasonStart, shopDay, soldCosmeticIds, weeklyStoreEnd, withoutSeasonStartRecording } from "../store/itemshop.js";
 import { activeEventFlags, fortnitemares, mutantStorms } from "../events/events.js";
 import { convertLeftoverCandy } from "../events/candyllamas.js";
 import { ltmIds, ltmSchedule } from "../events/ltms.js";
@@ -1449,7 +1449,13 @@ export function adminRoutes(context) {
   });
 
   // The broken challenges (profiles/challenges.js brokenChallenges) the season's data holds (call inside inBuild).
-  const brokenOfSeason = () => brokenChallenges.filter((entry) => getAthenaQuest(entry.quest)).map((entry) => ({ ...entry }));
+  // An entry is the season's when one of its builds is of it (CoreV2 #318: 4.2's are listed on Season 4 only).
+  const brokenOfSeason = () => {
+    const season = seasonOfBuild();
+    return brokenChallenges
+      .filter((entry) => getAthenaQuest(entry.quest) && entry.builds.some((build) => inBuild(build, seasonOfBuild) === season))
+      .map((entry) => ({ ...entry }));
+  };
 
   // Complete the challenges that cannot be completed on the build (Core-Backend #269): {enabled}. A player gets them
   // completed at their next login.

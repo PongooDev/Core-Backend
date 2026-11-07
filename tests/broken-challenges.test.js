@@ -39,13 +39,18 @@ function withSession(build, settings, run) {
 const held = (session, questId) => Object.values(session.profile("athena").profile.items).find((item) => item.templateId.toLowerCase() === `quest:${questId}`);
 const stars = (session) => { const stats = session.profile("athena").profile.stats.attributes; return (stats.book_level ?? 1) * 1000 + (stats.book_xp ?? 0) + (stats.xp ?? 0) + (stats.level ?? 1) * 100000; };
 
-test("the list: two confirmed challenges, each with its issue and builds, all with a placeholder objective", () => {
-  assert.deepEqual(brokenChallenges.map((entry) => entry.quest), ["quest_br_watch_replay", "quest_br_visit_scavengerhunt_stormcircles"]);
+test("the list: each confirmed challenge has its issue and builds", () => {
+  assert.deepEqual(brokenChallenges.map((entry) => entry.quest), [
+    "quest_br_watch_replay", "quest_br_visit_scavengerhunt_stormcircles",
+    "quest_br_eliminate_weapon_minigunlmg", "quest_br_eliminate_weapon_minigun", "quest_br_damage_minigun"
+  ]);
   for (const entry of brokenChallenges) {
     assert.match(entry.url, /^https:\/\/github\.com\/PongooDev\/.+\/issues\/\d+$/);
     assert.ok(entry.issue && entry.reason);
-    assert.deepEqual(entry.builds, [v40, v41]);
   }
+  for (const entry of brokenChallenges.slice(0, 2)) assert.deepEqual(entry.builds, [v40, v41]);
+  // CoreV2 #318: 4.2's minigun challenges want a Weapon.Ranged.Heavy.* tag no item carries.
+  for (const entry of brokenChallenges.slice(2)) { assert.deepEqual(entry.builds, [v42]); assert.equal(entry.issue, "CoreV2 #318"); }
 });
 
 test("off (the default): the broken challenges stay open", () => {
@@ -82,11 +87,22 @@ test("on: they are completed on 4.0 and 4.1, paid once, and no other challenge i
   }
 });
 
-test("on: a build without the broken form (4.2) is left alone", () => {
+test("on: 4.2 completes only its minigun challenges (CoreV2 #318), the rest is left alone", () => {
   withSession(v42, { completeBrokenChallenges: true }, (session) => {
     athenaQuestLogin(session);
     assert.equal(held(session, "quest_br_watch_replay"), undefined, "4.2's weeks do not give it");
     assert.equal(held(session, "quest_br_visit_scavengerhunt_stormcircles").attributes.quest_state, "Active", "4.2 counts its own stat");
+    for (const id of ["quest_br_eliminate_weapon_minigunlmg", "quest_br_eliminate_weapon_minigun", "quest_br_damage_minigun"]) {
+      const quest = held(session, id);
+      if (quest) assert.equal(quest.attributes.quest_state, "Claimed", id);
+    }
+  });
+  withSession(v41, { completeBrokenChallenges: true }, (session) => {
+    athenaQuestLogin(session);
+    for (const id of ["quest_br_eliminate_weapon_minigunlmg", "quest_br_eliminate_weapon_minigun", "quest_br_damage_minigun"]) {
+      const quest = held(session, id);
+      if (quest) assert.equal(quest.attributes.quest_state, "Active", `${id} is not confirmed broken on 4.1`);
+    }
   });
 });
 
@@ -102,7 +118,7 @@ test("admin panel: the option, off by default, and the list beside it", async ()
   try {
     const pass = (await get(backend.port, "/admin/api/battlepass/overview?season=4")).body;
     assert.equal(pass.brokenChallenges.enabled, false);
-    assert.equal(pass.brokenChallenges.list.length, 2);
+    assert.equal(pass.brokenChallenges.list.length, 5);
     assert.equal((await get(backend.port, "/admin/api/battlepass/overview?season=3")).body.brokenChallenges, undefined);
     assert.equal((await post(backend.port, "/admin/api/battlepass/broken-challenges", undefined, { enabled: "yes" })).status, 400);
     assert.equal((await post(backend.port, "/admin/api/battlepass/broken-challenges", undefined, { enabled: true })).body.enabled, true);

@@ -79,7 +79,20 @@ export const brokenChallenges = [
     builds: ["4039451", "4053532"], reason: "Its objective is tied to the placeholder stat revive_athena_player and no client code reports a watched replay." },
   { quest: "quest_br_visit_scavengerhunt_stormcircles", title: "Visit the center of different Storm Circles in a single match", issue: "CoreV2 #299",
     url: "https://github.com/PongooDev/CoreV2/issues/299", builds: ["4039451", "4053532"],
-    reason: "Its objective uses the borrowed stat visit_location_animal_building_crab and the item it asks for does not exist in the build." }
+    reason: "Its objective uses the borrowed stat visit_location_animal_building_crab and the item it asks for does not exist in the build." },
+  // 4.2 (CL-4072250), CoreV2 #318: the stat rows of AthenaObjectiveStatTable want Weapon.Ranged.Heavy.Minigun (the LMG one
+  // also accepts Weapon.Ranged.Heavy.LMG) among the killing weapon's tags, and the build's Minigun and LMG items
+  // (WID_Assault_LMG_Athena_*, WID_Assault_LMGSAW_Athena_*) carry only Gameplay.DamageSource.Weapon, Weapon.Ranged.Assault and
+  // a Bacchus.Shoot.* tag, so the stats never count.
+  { quest: "quest_br_eliminate_weapon_minigunlmg", title: "Minigun or Light Machine Gun Eliminations", issue: "CoreV2 #318",
+    url: "https://github.com/PongooDev/CoreV2/issues/318", builds: ["4072250"],
+    reason: "Its stat row killingblow_athena_player_minigunLMG needs the tag Weapon.Ranged.Heavy.Minigun or Weapon.Ranged.Heavy.LMG and no item in the build carries either." },
+  { quest: "quest_br_eliminate_weapon_minigun", title: "Minigun Eliminations", issue: "CoreV2 #318",
+    url: "https://github.com/PongooDev/CoreV2/issues/318", builds: ["4072250"],
+    reason: "Its stat row killingblow_athena_player_minigun needs the tag Weapon.Ranged.Heavy.Minigun and no item in the build carries it." },
+  { quest: "quest_br_damage_minigun", title: "Damage with a Minigun", issue: "CoreV2 #318",
+    url: "https://github.com/PongooDev/CoreV2/issues/318", builds: ["4072250"],
+    reason: "Its stat row damage_athena_player_with_minigun needs the tag Weapon.Ranged.Heavy.Minigun and no item in the build carries it." }
 ];
 export const completeBrokenChallenges = (settingsValue = settingsProvider()) => settingsValue?.completeBrokenChallenges === true;
 // The list entry for a challenge on a build, when it is one of the broken ones there.
