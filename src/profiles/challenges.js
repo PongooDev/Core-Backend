@@ -74,6 +74,11 @@ export const challengeModes = ["original", "interval", "manual"];
 //   week 4): in 4.0 and 4.1 its objective counts visit_location_animal_building_crab, the crab building visit borrowed as
 //   a placeholder, and the storm circle item it asks for does not exist in those builds. 4.2 counts its own stat,
 //   touch_scavengerhunt_stormcircles, so it is not listed.
+// - Quest_BR_Score_Goals, "Score a goal on different pitches" (Season 4 week 7, Core-Backend #287): in 4.0, 4.1 and 4.2
+//   it has one objective, battlepass_athena_score_goals_01 (count 1), on the placeholder stat revive_athena_player (a
+//   RevivePlayer row, context Athena.Playlist), while its ObjectiveCompletionCount is 5, so it can never get past 1/5,
+//   and that one only by reviving a teammate. No goal is reported: the builds' SDKs have no soccer class and the pitches'
+//   quest stats came with a later build.
 export const brokenChallenges = [
   { quest: "quest_br_watch_replay", title: "Watch a Match Replay", issue: "Core-Backend #269", url: "https://github.com/PongooDev/Core-Backend/issues/269",
     builds: ["4039451", "4053532"], reason: "Its objective is tied to the placeholder stat revive_athena_player and no client code reports a watched replay." },
@@ -92,7 +97,10 @@ export const brokenChallenges = [
     reason: "Its stat row killingblow_athena_player_minigun needs the tag Weapon.Ranged.Heavy.Minigun and no item in the build carries it." },
   { quest: "quest_br_damage_minigun", title: "Damage with a Minigun", issue: "CoreV2 #318",
     url: "https://github.com/PongooDev/CoreV2/issues/318", builds: ["4072250"],
-    reason: "Its stat row damage_athena_player_with_minigun needs the tag Weapon.Ranged.Heavy.Minigun and no item in the build carries it." }
+    reason: "Its stat row damage_athena_player_with_minigun needs the tag Weapon.Ranged.Heavy.Minigun and no item in the build carries it." },
+  { quest: "quest_br_score_goals", title: "Score a goal on different pitches", issue: "Core-Backend #287",
+    url: "https://github.com/PongooDev/Core-Backend/issues/287", builds: ["4039451", "4053532", "4072250"],
+    reason: "It needs 5 objectives done but has one, on the placeholder stat revive_athena_player, and nothing reports a goal." }
 ];
 export const completeBrokenChallenges = (settingsValue = settingsProvider()) => settingsValue?.completeBrokenChallenges === true;
 // The list entry for a challenge on a build, when it is one of the broken ones there.

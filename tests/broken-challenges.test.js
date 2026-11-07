@@ -5,6 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { inBuild } from "../src/builds/context.js";
 import { athenaQuestLogin } from "../src/profiles/athena.js";
+import { getAthenaQuest } from "../src/gamedata/athena.js";
 import { brokenChallenges, configureChallenges } from "../src/profiles/challenges.js";
 import { openSession } from "../src/profiles/session.js";
 import { buyBattlePass, takeUpSeason } from "../src/profiles/seasons.js";
@@ -42,7 +43,8 @@ const stars = (session) => { const stats = session.profile("athena").profile.sta
 test("the list: each confirmed challenge has its issue and builds", () => {
   assert.deepEqual(brokenChallenges.map((entry) => entry.quest), [
     "quest_br_watch_replay", "quest_br_visit_scavengerhunt_stormcircles",
-    "quest_br_eliminate_weapon_minigunlmg", "quest_br_eliminate_weapon_minigun", "quest_br_damage_minigun"
+    "quest_br_eliminate_weapon_minigunlmg", "quest_br_eliminate_weapon_minigun", "quest_br_damage_minigun",
+    "quest_br_score_goals"
   ]);
   for (const entry of brokenChallenges) {
     assert.match(entry.url, /^https:\/\/github\.com\/PongooDev\/.+\/issues\/\d+$/);
@@ -50,7 +52,25 @@ test("the list: each confirmed challenge has its issue and builds", () => {
   }
   for (const entry of brokenChallenges.slice(0, 2)) assert.deepEqual(entry.builds, [v40, v41]);
   // CoreV2 #318: 4.2's minigun challenges want a Weapon.Ranged.Heavy.* tag no item carries.
-  for (const entry of brokenChallenges.slice(2)) { assert.deepEqual(entry.builds, [v42]); assert.equal(entry.issue, "CoreV2 #318"); }
+  for (const entry of brokenChallenges.slice(2, 5)) { assert.deepEqual(entry.builds, [v42]); assert.equal(entry.issue, "CoreV2 #318"); }
+  // Core-Backend #287: "Score a goal on different pitches" wants 5 of its one placeholder objective on all three 4.x builds.
+  assert.deepEqual(brokenChallenges[5].builds, [v40, v41, v42]);
+});
+
+test("Score a goal on different pitches (Core-Backend #287): one placeholder objective, 5 needed, completed on 4.0-4.2 with the option on", () => {
+  for (const build of [v40, v41, v42]) {
+    const quest = inBuild(build, () => getAthenaQuest("quest_br_score_goals"));
+    assert.deepEqual(quest.objectives.map((objective) => objective.stat), ["revive_athena_player"]);
+    assert.equal(quest.objectiveCompletionCount, 5);
+    withSession(build, {}, (session) => {
+      athenaQuestLogin(session);
+      assert.equal(held(session, "quest_br_score_goals").attributes.quest_state, "Active", build);
+    });
+    withSession(build, { completeBrokenChallenges: true }, (session) => {
+      athenaQuestLogin(session);
+      assert.equal(held(session, "quest_br_score_goals").attributes.quest_state, "Claimed", build);
+    });
+  }
 });
 
 test("off (the default): the broken challenges stay open", () => {
@@ -87,7 +107,7 @@ test("on: they are completed on 4.0 and 4.1, paid once, and no other challenge i
   }
 });
 
-test("on: 4.2 completes only its minigun challenges (CoreV2 #318), the rest is left alone", () => {
+test("on: 4.2 completes only its listed challenges (CoreV2 #318, Core-Backend #287), the rest is left alone", () => {
   withSession(v42, { completeBrokenChallenges: true }, (session) => {
     athenaQuestLogin(session);
     assert.equal(held(session, "quest_br_watch_replay"), undefined, "4.2's weeks do not give it");
@@ -118,7 +138,7 @@ test("admin panel: the option, off by default, and the list beside it", async ()
   try {
     const pass = (await get(backend.port, "/admin/api/battlepass/overview?season=4")).body;
     assert.equal(pass.brokenChallenges.enabled, false);
-    assert.equal(pass.brokenChallenges.list.length, 5);
+    assert.equal(pass.brokenChallenges.list.length, 6);
     assert.equal((await get(backend.port, "/admin/api/battlepass/overview?season=3")).body.brokenChallenges, undefined);
     assert.equal((await post(backend.port, "/admin/api/battlepass/broken-challenges", undefined, { enabled: "yes" })).status, 400);
     assert.equal((await post(backend.port, "/admin/api/battlepass/broken-challenges", undefined, { enabled: true })).body.enabled, true);
