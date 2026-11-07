@@ -128,6 +128,11 @@ test("4.2's LTMs: 4.1's but Impact, and Solo Showdown, Close Encounters and Soli
   assert.equal(ltmNewMode(v42, none), null);
   assert.equal(ltmOn("infinityGauntlet", v42, none), false, "by its switch on 4.2");
   assert.equal(ltmOn("infinityGauntlet", v42, { matchmakingModes: { infinityGauntlet: true } }), true);
+  // Playground (#279): 4.2's paks have Playlist_Playground, so the panel's switch offers it there (4.1's don't).
+  assert.equal(hasLtm("playground", v42), true);
+  assert.equal(ltmOn("playground", v42, { matchmakingModes: { playground: true } }), true);
+  assert.equal(ltmOn("playground", v42, none), false);
+  assert.ok(ltmPlaylistOverrides(v42, { matchmakingModes: { playground: true } }).includes("Playlist_Playground"));
   const playlists = { soloShowdown: [51, "Playlist_Comp_Solo", 1], closeEncountersSolo: [44, "Playlist_Close_Solo", 1],
     closeEncountersDuos: [45, "Playlist_Close_Duos", 2], closeEncounters: [46, "Playlist_Close_Squad", 4], solidGoldDuos: [34, "Playlist_SolidGold_Duos", 2] };
   for (const [id, [playlistId, name, size]] of Object.entries(playlists)) {

@@ -211,7 +211,7 @@ const build41 = 4053532;
 // players.", solo, Athena.Playlist.Solo, bAccumulateToProfileStats, its HUD CompHUD, an empty widget in 4.2), Close
 // Encounters' Playlist_Close_Solo, _Duos and _Squad (44, 45, 46: Athena/Playlists/Shotguns' loot and game data, "Close
 // Quarters Combat with Shotguns & Jetpacks!") and Playlist_SolidGold_Duos (34, "Solid Gold v2" Duos, no down state).
-// Playlist_Fortnite and Playground are left out as before. Update v4.20's notes name no mode (the Burst Assault Rifle,
+// Playlist_Fortnite is left out as before; Playground is there now (Athena/Playlists/Playground/Playlist_Playground, PlaylistId 35, one team of 4, respawns except in the storm), so it is offered by its switch (Core-Backend #279). Update v4.20's notes name no mode (the Burst Assault Rifle,
 // Apples, the Perk Recombobulator), so 4.2 has no new mode of its own: every LTM is on by its switch or its original
 // window, and the lobby opens on Solo. The Infinity Gauntlet runs on (its window, 8 to 16 May, covers 4.2's first day);
 // Solo Showdown is 17 to 21 May; Solid Gold v2 (now with Duos) and Close Encounters are Content Update v4.20's, 22 and 25
@@ -416,9 +416,9 @@ export const ltms = [
   { id: "teamsOf20V2", name: "Teams of 20 v2", playlistId: null, playlistName: null, eventFlag: null, builds: ["4.4", "4.4.x"], seasons: [4],
     original: [{ builds: ["4.4", "4.4.x"], start: "2018-06-12", end: "2018-06-26" }],
     teams: "5 Teams × 20", description: "Five teams of twenty again (4.4's: its playlist comes with 4.4's data)." },
-  { id: "playground", name: "Playground", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: ["4.5", "4.5"], seasons: [4],
+  { id: "playground", name: "Playground", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build42, "4.5"], seasons: [4],
     original: [{ builds: ["4.5", "4.5"], start: "2018-06-27", end: "2018-07-12" }],
-    teams: "1 Team × 4", description: "A private island, respawning but in the storm (Playlist_Playground: 4.1's asset, 🟡 4.5's unchecked)." }
+    teams: "1 Team × 4", description: "A private island, respawning but in the storm (Playlist_Playground: 4.2's paks already have the asset, a stub described as rewrite; 🟡 4.5's unchecked)." }
 ];
 // A build range's bounds are changelists or versions ("4.2", "4.4.x"): a version holds only once Core knows the build's.
 const versionParts = (version) => String(version).split(".").map((part) => (part === "x" ? Infinity : Number(part)));
