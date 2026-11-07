@@ -7,7 +7,7 @@ import { certClient, certUserAgent, startBackend } from "../helpers.js";
 // Target: 1,800 concurrent simulated players, 9,000 total operations
 test("Extreme Stress Level 7: Enterprise Cluster Node (1,800 players, 9,000 concurrent operations)", { timeout: 360000 }, async () => {
   const backend = await startBackend();
-  const agent = new http.Agent({ keepAlive: true, maxSockets: 120 });
+  const agent = new http.Agent({ keepAlive: true, maxSockets: 120, timeout: 4000 });
 
   function authRequest(username) {
     return new Promise((resolve, reject) => {

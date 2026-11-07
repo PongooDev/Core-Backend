@@ -7,7 +7,7 @@ import { certUserAgent, startBackend, userLogin } from "../helpers.js";
 // Target: 100 concurrent simulated players, 500 total operations
 test("Extreme Stress Level 2: Low-Mid Hardware (100 players, 500 concurrent operations)", { timeout: 90000 }, async () => {
   const backend = await startBackend();
-  const agent = new http.Agent({ keepAlive: true, maxSockets: 200 });
+  const agent = new http.Agent({ keepAlive: true, maxSockets: 200, timeout: 4000 });
 
   function request(path, method = "GET", token, body) {
     return new Promise((resolve, reject) => {
