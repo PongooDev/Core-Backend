@@ -58,6 +58,9 @@ test("HTTP compression and 304 ETag caching on large assets", async () => {
     const cached = await fetchRaw(backend.port, "/admin", { "If-None-Match": etag });
     assert.equal(cached.status, 304);
     assert.equal(cached.buffer.length, 0);
+    // A browser can send it back weak or in a list.
+    assert.equal((await fetchRaw(backend.port, "/admin", { "If-None-Match": `"stale", W/${etag}` })).status, 304);
+    assert.equal((await fetchRaw(backend.port, "/admin", { "If-None-Match": "\"stale\"" })).status, 200);
   } finally {
     backend.close();
   }

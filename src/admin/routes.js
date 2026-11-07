@@ -254,7 +254,8 @@ export function adminRoutes(context) {
     const { content, etag } = getPanelHtml();
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("ETag", etag);
-    if (req.headers["if-none-match"] === etag) {
+    // req.fresh also takes a list of ETags or a weak one (W/"..."), which browsers send back.
+    if (req.fresh) {
       return res.status(304).end();
     }
     res.type("html").send(content);
