@@ -16,6 +16,7 @@
      with hairline borders, Epic blue for the main action. Works offline too (system fonts stand in). */
     :root {
       color-scheme: dark;
+      --sidebar-width: 240px;
       --bg: #121212;
       --sidebar: #121212;
       --surface: #202020;
@@ -30,6 +31,9 @@
       --blue: #0078f2;
       --blue-hover: #268ef5;
       --blue-soft: rgba(0, 120, 242, .16);
+      --accent: var(--blue);
+      --accent-hover: var(--blue-hover);
+      --accent-soft: var(--blue-soft);
       --good: #3ccf6e;
       --warn: #f5b13d;
       --bad: #ef4444;
@@ -124,7 +128,7 @@
     /* App shell: a left sidebar, the page beside it */
     .shell {
       display: grid;
-      grid-template-columns: 240px minmax(0, 1fr);
+      grid-template-columns: var(--sidebar-width, 240px) minmax(0, 1fr);
       min-height: 100vh;
     }
 
@@ -132,12 +136,138 @@
       position: sticky;
       top: 0;
       height: 100vh;
+      max-height: 100vh;
+      overflow-y: auto;
+      overflow-x: hidden;
       display: flex;
       flex-direction: column;
       gap: 6px;
       padding: 20px 14px;
       background: var(--sidebar);
       border-right: 1px solid var(--line);
+      box-sizing: border-box;
+      container-type: inline-size;
+      transition: padding .15s ease;
+      z-index: 50;
+    }
+
+    @container (max-width: 125px) {
+      .sidebar {
+        padding: 20px 8px;
+        align-items: center;
+      }
+      .brand {
+        padding: 4px 0 16px;
+        justify-content: center;
+      }
+      .brand .word {
+        display: none !important;
+      }
+      nav.nav {
+        width: 100%;
+        align-items: center;
+      }
+      nav.nav a {
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        margin: 2px auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        box-sizing: border-box;
+        flex: none;
+      }
+      nav.nav a span {
+        display: none !important;
+      }
+      .server {
+        justify-content: center;
+        padding: 10px 0;
+        width: 100%;
+      }
+      .server #server-line {
+        display: none !important;
+      }
+      .server .pulse {
+        margin: 0;
+      }
+      .admin-user-bar {
+        justify-content: center;
+        padding: 6px 0;
+        width: 100%;
+      }
+      .admin-user-bar #admin-username-label {
+        display: none !important;
+      }
+    }
+
+    html[data-sidebar-collapsed="true"] .sidebar {
+      padding: 20px 8px;
+      align-items: center;
+    }
+    html[data-sidebar-collapsed="true"] .brand {
+      padding: 4px 0 16px;
+      justify-content: center;
+    }
+    html[data-sidebar-collapsed="true"] .brand .word {
+      display: none !important;
+    }
+    html[data-sidebar-collapsed="true"] nav.nav {
+      width: 100%;
+      align-items: center;
+    }
+    html[data-sidebar-collapsed="true"] nav.nav a {
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      margin: 2px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      box-sizing: border-box;
+      flex: none;
+    }
+    html[data-sidebar-collapsed="true"] nav.nav a span {
+      display: none !important;
+    }
+    html[data-sidebar-collapsed="true"] .server {
+      justify-content: center;
+      padding: 10px 0;
+      width: 100%;
+    }
+    html[data-sidebar-collapsed="true"] .server #server-line {
+      display: none !important;
+    }
+    html[data-sidebar-collapsed="true"] .server .pulse {
+      margin: 0;
+    }
+    html[data-sidebar-collapsed="true"] .admin-user-bar {
+      justify-content: center;
+      padding: 6px 0;
+      width: 100%;
+    }
+    html[data-sidebar-collapsed="true"] .admin-user-bar #admin-username-label {
+      display: none !important;
+    }
+
+    .sidebar-resizer {
+      position: absolute;
+      top: 0;
+      right: -3px;
+      width: 6px;
+      height: 100%;
+      cursor: col-resize;
+      z-index: 40;
+      user-select: none;
+      transition: background .15s ease;
+    }
+
+    .sidebar-resizer:hover,
+    .sidebar-resizer.resizing {
+      background: var(--accent, var(--blue));
     }
 
     .brand {
@@ -1719,53 +1849,53 @@
         <span class="word">Core<span>Admin</span></span>
       </a>
       <nav class="nav" aria-label="Sections">
-        <a href="#/dashboard" data-view="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        <a href="#/dashboard" data-view="dashboard" title="Dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.8" stroke-linejoin="round" aria-hidden="true">
             <rect x="3.5" y="3.5" width="7" height="7" rx="2" />
             <rect x="13.5" y="3.5" width="7" height="7" rx="2" />
             <rect x="3.5" y="13.5" width="7" height="7" rx="2" />
             <rect x="13.5" y="13.5" width="7" height="7" rx="2" />
           </svg><span>Dashboard</span></a>
-        <a href="#/players" data-view="players"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        <a href="#/players" data-view="players" title="Players"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
             <circle cx="9" cy="8" r="3.5" />
             <path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5" />
             <path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4M18 14.8c2 .7 3.2 2.5 3.5 5.2" />
           </svg><span>Players</span></a>
-        <a href="#/matchmaking" data-view="matchmaking"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        <a href="#/matchmaking" data-view="matchmaking" title="Matchmaking"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
             <rect x="3.5" y="4" width="17" height="6.5" rx="2" />
             <rect x="3.5" y="13.5" width="17" height="6.5" rx="2" />
             <path d="M7.5 7.25h.01M7.5 16.75h.01M11 7.25h5M11 16.75h5" />
           </svg><span>Matchmaking</span></a>
-        <a href="#/friends" data-view="friends"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        <a href="#/friends" data-view="friends" title="Friends"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
             <circle cx="12" cy="12" r="8.5" />
             <path
               d="M3.5 12h17M12 3.5c2.3 2.4 3.4 5.2 3.4 8.5s-1.1 6.1-3.4 8.5c-2.3-2.4-3.4-5.2-3.4-8.5s1.1-6.1 3.4-8.5z" />
           </svg><span>Friends</span></a>
-        <a href="#/news" data-view="news"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        <a href="#/news" data-view="news" title="News"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
             <path d="M8 8h8M8 12h8M8 16h5" />
           </svg><span>News</span></a>
-        <a href="#/reports" data-view="reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        <a href="#/reports" data-view="reports" title="Reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
             <line x1="4" y1="22" x2="4" y2="15" />
           </svg><span>Reports</span></a>
-        <a href="#/shop" data-view="shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        <a href="#/shop" data-view="shop" title="Shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
             <line x1="3" y1="6" x2="21" y2="6" />
             <path d="M16 10a4 4 0 0 1-8 0" />
           </svg><span>Shop</span></a>
-        <a href="#/battlepass" data-view="battlepass"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        <a href="#/battlepass" data-view="battlepass" title="Battle Pass"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="12" cy="8" r="6" />
             <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11" />
           </svg><span>Battle Pass</span></a>
-        <a href="#/events" data-view="events"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        <a href="#/events" data-view="events" title="Events"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
             <line x1="16" y1="2" x2="16" y2="6" />
@@ -1773,17 +1903,17 @@
             <line x1="3" y1="10" x2="21" y2="10" />
             <path d="m9 16 2 2 4-4" />
           </svg><span>Events</span></a>
-        <a href="#/tournaments" data-view="tournaments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        <a href="#/tournaments" data-view="tournaments" title="Tournaments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z" />
             <path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3" />
           </svg><span>Tournaments</span></a>
-        <a href="#/logs" data-view="logs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+        <a href="#/logs" data-view="logs" title="Logs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="3" y="4" width="18" height="16" rx="2.5" />
             <path d="m7 9.5 3 2.5-3 2.5M12.5 15h4.5" />
           </svg><span>Logs</span></a>
-        <a href="#/settings" data-view="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        <a href="#/settings" data-view="settings" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="12" cy="12" r="3" />
             <path
@@ -1798,6 +1928,7 @@
         </div>
         <button type="button" id="admin-logout-btn" class="btn btn-ghost" style="min-height:24px; padding:0 8px; font-size:12px; border:none;" title="Sign out of admin console">Sign Out</button>
       </div>
+      <div id="sidebar-resizer" class="sidebar-resizer" role="separator" aria-orientation="vertical" title="Drag to resize sidebar (double-click to reset)"></div>
     </aside>
     <main id="view" aria-live="polite"></main>
   </div>
@@ -1805,6 +1936,14 @@
 
   <script>
     "use strict";
+    try {
+      const w = localStorage.getItem("core_admin_sidebar_width");
+      if (w && !isNaN(Number(w))) {
+        const parsed = Math.min(Math.max(Number(w), 64), 420);
+        document.documentElement.style.setProperty("--sidebar-width", `${parsed}px`);
+        if (parsed <= 125) document.documentElement.dataset.sidebarCollapsed = "true";
+      }
+    } catch {}
     const $ = (id) => document.getElementById(id);
     const state = {
       view: "dashboard", accounts: [], account: null, accountId: null, tab: "overview", inventoryProfile: "items",
@@ -1947,9 +2086,9 @@
         el("div", { style: "display:flex; align-items:center; gap:12px; flex-shrink:0;" },
           c.badge ? chip(c.badge, "ghost") : null,
           el("span", {
-            class: "season-card-arrow",
-            style: "display:inline-flex; align-items:center; color:var(--muted); transition:color .15s ease;"
-          }, icon("chevron-right", 18))
+            class: "season-card-arrow mono font-semibold",
+            style: "display:inline-flex; align-items:center; color:var(--muted); font-size:16px; transition:color .15s ease;"
+          }, "→")
         )
       ))
     );
@@ -2902,6 +3041,9 @@
       if (state.view === "reports") {
         state.reportId = accountId || null;
       }
+      if (state.view === "tournaments") {
+        state.tournamentEventId = accountId || null;
+      }
       ({ dashboard: showDashboard, players: showPlayers, matchmaking: showMatchmaking, sessions: showMatchmaking, friends: showFriends, news: showNews, shop: showShop, battlepass: showBattlePass, events: showEvents, tournaments: showTournaments, reports: showReports, logs: showLogs, settings: showSettings })[state.view]();
     }
     window.addEventListener("hashchange", route);
@@ -2997,10 +3139,17 @@
         );
         return;
       }
-      const tabs = [["overview", "Overview"], ["inventory", "Inventory", a.items.length + a.worldItems.length + a.storage.length], ["give", "Give"],
-      ["quests", "Quests", a.quests.length], ["shields", "Storm shields"], ["account", "Account"]];
+      const tabs = [
+        ["overview", "Overview"],
+        ["account", "Account"],
+        ["inventory", "Inventory", a.items.length + a.worldItems.length + a.storage.length],
+        ["give", "Give"],
+        ["quests", "Quests", a.quests.length],
+        ["shields", "Storm shields"],
+        ["manage", "Manage"]
+      ];
       if (!tabs.some(([key]) => key === state.tab)) state.tab = "overview";
-      const body = ({ overview, inventory, give, quests, shields, account: accountTab })[state.tab];
+      const body = ({ overview, account: locker, inventory, give, quests, shields, manage: manageTab })[state.tab];
       holder.replaceChildren(
         el("section", { class: "panel" },
           el("div", { class: "hero-head" },
@@ -3047,7 +3196,6 @@
               btn("Refill rest XP", () => post("rest-xp/refill", {}, "Rest XP refilled"), "ghost small"),
               btn("Reset alert quota", () => post("mission-alerts/reset", {}, "Mission alert quota reset"), "ghost small")))),
         founders(a),
-        locker(a),
         el("h2", { style: "margin:22px 0 10px", text: "Currencies and resources" }),
         el("div", { class: "grid cols-3" }, a.currencies.map((currency) => balance(currency))),
         a.sessions.length ? [el("h2", { style: "margin:22px 0 10px", text: "In game" }), sessionTable(a.sessions, false)] : null);
@@ -3086,44 +3234,209 @@
       const complete = cosmetics.owned >= cosmetics.total && banners.owned >= banners.total;
       const counts = ({ cosmetics: c, banners: b }) => `${fmt(c)} cosmetic${c === 1 ? "" : "s"} and ${fmt(b)} banner${b === 1 ? "" : "s"}`;
       const run = (path, message) => act(api(`/admin/api/accounts/${a.id}/locker/${path}`, {})).then((account) => setAccount(account, account && message(account)));
-      return el("div", { style: "margin-top:22px" },
-        el("h2", { style: "margin-bottom:10px", text: "Battle Royale locker" }),
+      const shopButton = btn("Give all item shop cosmetics", async () => {
+        if (!await confirmModal(`Give ${a.displayName} every cosmetic the item shop has sold (Season 1's, Season 2's and Season 3's shops and the custom shop) that they don't own yet? Battle Pass and victory items aren't included. Remove granted takes them back.`, {
+          title: "Give Item Shop Cosmetics",
+          confirmText: "Give All",
+          confirmKind: "primary"
+        })) return;
+        act(api(`/admin/api/accounts/${a.id}/cosmetics/grant-shop`, {})).then((account) => {
+          if (!account) return;
+          const { granted, alreadyOwned, total } = account.shopGrant;
+          setAccount(account, granted
+            ? `Gave ${a.displayName} ${fmt(granted)} item shop cosmetic${granted === 1 ? "" : "s"}${alreadyOwned ? ` (${fmt(alreadyOwned)} of the ${fmt(total)} already owned)` : ""}`
+            : `Nothing given: ${a.displayName} already owns all ${fmt(total)} item shop cosmetics`);
+        });
+      }, "ghost");
+
+      return el("div", { style: "margin-top:14px" },
+        el("div", { class: "panel-head", style: "margin-bottom:12px;" },
+          el("div", {},
+            el("h2", { style: "margin:0;", text: "Battle Royale Locker" }),
+            el("div", { class: "muted", style: "font-size:12px; margin-top:2px;", text: "Manage cosmetic loadout, granting items, and season progression." })),
+          el("div", { class: "actions" },
+            btn("+ Give Cosmetics", () => openGiveCosmeticsModal(a), "primary"),
+            btn(complete ? "Full locker owned" : "Grant full locker", async () => {
+              if (await confirmModal(`Give ${a.displayName} every Battle Royale cosmetic and banner they don't own yet?`, {
+                title: "Grant Full Locker",
+                confirmText: "Grant All",
+                confirmKind: "primary"
+              })) {
+                run("grant-all", (account) => `Gave ${a.displayName} ${counts(account.granted)}`);
+              }
+            }, "ghost", { disabled: complete }),
+            btn(`Remove granted${granted ? ` (${fmt(granted)})` : ""}`, async () => {
+              if (await confirmModal(`Take back the ${fmt(granted)} cosmetics and banners the full locker and Give all item shop cosmetics gave ${a.displayName}? What they bought or earned since stays.`, {
+                title: "Remove Granted Cosmetics",
+                confirmText: "Take Back",
+                confirmKind: "danger"
+              })) {
+                run("remove-granted", (account) => `Took back ${counts(account.removed)}`);
+              }
+            }, "danger", { disabled: !granted }),
+            shopButton
+          )),
         seasonLevel(a),
-        el("div", { class: "actions" },
+        el("div", { class: "actions", style: "margin-bottom:16px;" },
           chip(`${fmt(cosmetics.owned)} / ${fmt(cosmetics.total)} cosmetics`, cosmetics.owned >= cosmetics.total ? "good" : ""),
-          chip(`${fmt(banners.owned)} / ${fmt(banners.total)} banners`, banners.owned >= banners.total ? "good" : ""),
-          btn(complete ? "Full locker owned" : "Grant full locker", async () => {
-            if (await confirmModal(`Give ${a.displayName} every Battle Royale cosmetic and banner they don't own yet?`, {
-              title: "Grant Full Locker",
-              confirmText: "Grant All",
-              confirmKind: "primary"
-            })) {
-              run("grant-all", (account) => `Gave ${a.displayName} ${counts(account.granted)}`);
-            }
-          }, "primary", { disabled: complete }),
-          btn(`Remove granted${granted ? ` (${fmt(granted)})` : ""}`, async () => {
-            if (await confirmModal(`Take back the ${fmt(granted)} cosmetics and banners the full locker and Give all item shop cosmetics gave ${a.displayName}? What they bought or earned since stays.`, {
-              title: "Remove Granted Cosmetics",
-              confirmText: "Take Back",
-              confirmKind: "danger"
-            })) {
-              run("remove-granted", (account) => `Took back ${counts(account.removed)}`);
-            }
-          }, "danger", { disabled: !granted })),
+          chip(`${fmt(banners.owned)} / ${fmt(banners.total)} banners`, banners.owned >= banners.total ? "good" : "")),
         el("p", { class: "note", text: "Outfits, back blings, pickaxes, gliders, emotes, loading screens and the rest of every build's locker, and every banner for the banner editor. Equipped items that are taken back go back to the default." }),
-        cosmeticPicker(a));
+        lockerShowcase(a)
+      );
     }
 
     // Single Battle Royale cosmetics (Core-Backend #108), from one build's locker: the build picker lists the builds with
     // Battle Royale, and only the chosen build's cosmetics are shown and given (the backend refuses any other).
-    function cosmeticPicker(a) {
-      if (state.cosmetics?.accountId !== a.id) state.cosmetics = { accountId: a.id, build: "", search: "", type: "", data: null, picked: new Map() };
-      const c = state.cosmetics;
+    function lockerShowcase(a) {
+      if (state.lockerShowcase?.accountId !== a.id) {
+        state.lockerShowcase = { accountId: a.id, build: "", search: "", type: "", ownedOnly: true, data: null };
+      }
+      const s = state.lockerShowcase;
       const buildSelect = el("select", { class: "field", "aria-label": "Build" });
       const typeSelect = el("select", { class: "field", "aria-label": "Cosmetic type" });
-      const search = el("input", { class: "field", type: "search", placeholder: "Search outfits, gliders, emotes…", value: c.search, style: "flex:1 1 240px" });
+      const search = el("input", { class: "field", type: "search", placeholder: "Search owned outfits, pickaxes, gliders…", value: s.search, style: "flex:1 1 240px" });
+      const ownedToggle = el("button", {
+        type: "button",
+        class: `btn ${s.ownedOnly ? "primary" : "ghost"} small`,
+        onclick: () => {
+          s.ownedOnly = !s.ownedOnly;
+          ownedToggle.className = `btn ${s.ownedOnly ? "primary" : "ghost"} small`;
+          ownedToggle.querySelector("span").textContent = s.ownedOnly ? "Showing: Owned Only" : "Showing: All Items";
+          render();
+        }
+      }, el("span", { text: s.ownedOnly ? "Showing: Owned Only" : "Showing: All Items" }));
       const summary = el("div", { class: "note" });
       const results = el("div", { class: "catalog" });
+
+      const options = (select, list, chosen) => select.replaceChildren(...list.map(([value, label]) => el("option", { value, text: label, selected: value === chosen })));
+
+      function render() {
+        const data = s.data;
+        if (!data) return;
+        options(buildSelect, data.builds.map(({ build, version }) => [build, `${version} (CL-${build})`]), data.build);
+        options(typeSelect, [["", "Every type"], ...data.types.map((type) => [type, type])], s.type);
+
+        const displayedItems = s.ownedOnly ? data.items.filter((item) => item.owned) : data.items;
+        summary.replaceChildren(
+          `${fmt(data.owned)} / ${fmt(data.total)} cosmetics owned in ${data.version}`,
+          data.hasProfile ? "" : " · no Battle Royale profile yet: a grant makes it",
+          displayedItems.length !== data.items.length ? ` · displaying ${fmt(displayedItems.length)} ${s.ownedOnly ? "owned" : "items"}` : ""
+        );
+
+        if (!displayedItems.length) {
+          results.replaceChildren(el("div", { class: "empty", style: "grid-column:1/-1; padding:28px 16px; text-align:center;" },
+            el("div", { style: "font-weight:600; font-size:15px; margin-bottom:6px;", text: s.ownedOnly ? "No owned cosmetics matching filter." : "Nothing found." }),
+            el("div", { class: "muted", style: "font-size:13px; margin-bottom:12px;", text: s.ownedOnly ? "Click \"+ Give Cosmetics\" to add skins to this player's locker." : "Try adjusting your search or type filter." }),
+            btn("+ Give Cosmetics", () => openGiveCosmeticsModal(a), "primary small")
+          ));
+          return;
+        }
+
+        results.replaceChildren(...displayedItems.map((item) => {
+          const icon = itemIcon(item.templateId, true, 48);
+          return el("div", {
+            class: `card ${item.rarityCode}`,
+            style: "display:flex; flex-direction:column; justify-content:space-between; gap:10px; cursor:default;"
+          },
+            el("div", { style: "display:flex; gap:10px; align-items:flex-start;" },
+              icon,
+              el("div", { style: "min-width:0; flex:1 1 auto;" },
+                el("div", { class: "t", style: "padding-right:0; font-size:14px;", text: item.name }),
+                el("div", { class: "s", style: "margin-top:4px;" },
+                  chip(item.rarity), " ",
+                  item.owned ? chip("Owned", "good") : chip("Not owned", "muted")
+                ),
+                el("div", { class: "s mono", style: "margin-top:4px; font-size:10px; word-break:break-all;", text: item.templateId })
+              )
+            ),
+            el("div", { class: "k", text: item.type }),
+            item.owned ? el("div", { class: "actions", style: "justify-content:flex-end; border-top:1px solid var(--line); padding-top:8px; margin-top:2px;" },
+              btn("Remove", async () => {
+                if (!await confirmModal(`Remove ${item.name} from ${a.displayName}'s locker? Starter cosmetics and earned ones will stay.`, {
+                  title: "Remove Cosmetic",
+                  confirmText: "Remove",
+                  confirmKind: "danger"
+                })) return;
+                act(api(`/admin/api/accounts/${a.id}/cosmetics/remove`, { build: data.build, templateIds: [item.templateId] })).then((account) => {
+                  if (!account) return;
+                  const { removed, notOwned, kept, version } = account.cosmeticRemoval;
+                  const message = [removed.length ? `Removed ${item.name} from ${a.displayName} (${version})` : "Nothing removed",
+                    kept.length ? `kept (${kept.map((k) => k.reason).join(", ")})` : null,
+                    notOwned.length ? "not owned" : null].filter(Boolean).join("; ");
+                  s.data = null;
+                  setAccount(account, message);
+                });
+              }, "danger small")
+            ) : el("div", { class: "actions", style: "justify-content:flex-end; border-top:1px solid var(--line); padding-top:8px; margin-top:2px;" },
+              btn("Give", async () => {
+                act(api(`/admin/api/accounts/${a.id}/cosmetics/grant`, { build: data.build, templateIds: [item.templateId] })).then((account) => {
+                  if (!account) return;
+                  s.data = null;
+                  setAccount(account, `Gave ${a.displayName} ${item.name}`);
+                });
+              }, "primary small")
+            )
+          );
+        }));
+      }
+
+      const load = async () => {
+        s.search = search.value;
+        const query = new URLSearchParams({ build: s.build, search: s.search, type: s.type, limit: "300" });
+        const data = await act(api(`/admin/api/accounts/${a.id}/cosmetics?${query}`));
+        if (!data || state.lockerShowcase !== s) return;
+        s.data = data;
+        s.build = data.build;
+        if (s.type && !data.types.includes(s.type)) s.type = "";
+        render();
+      };
+
+      let timer;
+      search.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(load, 180); });
+      typeSelect.addEventListener("change", () => { s.type = typeSelect.value; load(); });
+      buildSelect.addEventListener("change", () => { s.build = buildSelect.value; load(); });
+
+      if (s.data) render(); else load();
+
+      return el("div", { style: "margin-top:20px" },
+        el("div", { class: "panel-head", style: "margin-bottom:8px;" },
+          el("h3", { style: "margin:0;", text: "Locker items" })),
+        el("div", { class: "actions", style: "margin-top:8px" }, buildSelect, typeSelect, search, ownedToggle),
+        el("div", { style: "margin-top:10px" }, summary),
+        results
+      );
+    }
+
+    function openGiveCosmeticsModal(a) {
+      if (state.cosmeticsModal?.accountId !== a.id) {
+        state.cosmeticsModal = { accountId: a.id, build: "", search: "", type: "", data: null, picked: new Map() };
+      }
+      const c = state.cosmeticsModal;
+
+      const close = () => {
+        window.removeEventListener("keydown", onKeyDown);
+        backdrop.classList.remove("show");
+        setTimeout(() => backdrop.remove(), 160);
+      };
+
+      const onKeyDown = (e) => {
+        if (e.key === "Escape") close();
+      };
+
+      const backdrop = el("div", {
+        class: "modal-backdrop",
+        onclick: (e) => { if (e.target === backdrop) close(); }
+      });
+
+      const buildSelect = el("select", { class: "field", "aria-label": "Build" });
+      const typeSelect = el("select", { class: "field", "aria-label": "Cosmetic type" });
+      const search = el("input", { class: "field", type: "search", placeholder: "Search outfits, gliders, emotes, pickaxes…", value: c.search, style: "flex:1 1 240px" });
+      const summary = el("div", { class: "note" });
+      const results = el("div", {
+        class: "catalog",
+        style: "max-height:50vh; overflow-y:auto; padding-right:4px; margin-top:8px;"
+      });
+
       const giveButton = btn("Give selected", () => {
         const picked = [...c.picked.values()];
         if (!picked.length) return toast("Pick one or more cosmetics first", true);
@@ -3135,16 +3448,17 @@
             granted.length && alreadyOwned.length ? `already owned: ${names(alreadyOwned)}` : null].filter(Boolean).join("; ");
           c.picked.clear();
           c.data = null;
+          if (state.lockerShowcase) state.lockerShowcase.data = null;
           setAccount(account, message);
+          load();
         });
       }, "primary");
-      // Core-Backend #159: the picked cosmetics out of the locker. Starters and earned ones (season level rewards, victory
-      // umbrellas) would come back, so the backend keeps them and says why.
+
       const removeButton = btn("Remove selected", async () => {
         const picked = [...c.picked.values()];
         if (!picked.length) return toast("Pick one or more cosmetics first", true);
         const names = (ids) => ids.map((id) => c.picked.get(id)?.name ?? id).join(", ");
-        if (!await confirmModal(`Remove ${names(picked.map((item) => item.templateId))} from ${a.displayName}'s locker? Equipped ones go back to the default. Starter cosmetics and ones they earned stay, as they'd come back.`, {
+        if (!await confirmModal(`Remove ${names(picked.map((item) => item.templateId))} from ${a.displayName}'s locker? Equipped ones go back to the default. Starter cosmetics and earned ones stay.`, {
           title: "Remove Cosmetics",
           confirmText: "Remove",
           confirmKind: "danger"
@@ -3157,28 +3471,15 @@
             notOwned.length ? `not owned: ${names(notOwned)}` : null].filter(Boolean).join("; ");
           c.picked.clear();
           c.data = null;
+          if (state.lockerShowcase) state.lockerShowcase.data = null;
           setAccount(account, message);
+          load();
         });
       }, "danger");
-      // Core-Backend #163: every cosmetic the item shop has sold (both seasons' histories and the custom shop's lists) that
-      // any build has, given as the full locker gives, so Remove granted takes them back.
-      const shopButton = btn("Give all item shop cosmetics", async () => {
-        if (!await confirmModal(`Give ${a.displayName} every cosmetic the item shop has sold (Season 1's, Season 2's and Season 3's shops and the custom shop) that they don't own yet? Battle Pass and victory items aren't included. Remove granted takes them back.`, {
-          title: "Give Item Shop Cosmetics",
-          confirmText: "Give All",
-          confirmKind: "primary"
-        })) return;
-        act(api(`/admin/api/accounts/${a.id}/cosmetics/grant-shop`, {})).then((account) => {
-          if (!account) return;
-          const { granted, alreadyOwned, total } = account.shopGrant;
-          c.data = null;
-          setAccount(account, granted
-            ? `Gave ${a.displayName} ${fmt(granted)} item shop cosmetic${granted === 1 ? "" : "s"}${alreadyOwned ? ` (${fmt(alreadyOwned)} of the ${fmt(total)} already owned)` : ""}`
-            : `Nothing given: ${a.displayName} already owns all ${fmt(total)} item shop cosmetics`);
-        });
-      }, "primary");
+
       const clearButton = btn("Clear", () => { c.picked.clear(); render(); }, "ghost small");
       const options = (select, list, chosen) => select.replaceChildren(...list.map(([value, label]) => el("option", { value, text: label, selected: value === chosen })));
+
       function render() {
         const data = c.data;
         if (!data) return;
@@ -3192,37 +3493,82 @@
         summary.replaceChildren(`${fmt(data.owned)} / ${fmt(data.total)} of ${data.version}'s cosmetics owned`,
           data.hasProfile ? "" : " · no Battle Royale profile yet: a grant makes it, with the starter cosmetics",
           data.matches > data.items.length ? ` · showing ${fmt(data.items.length)} of ${fmt(data.matches)} matches` : "");
-        results.replaceChildren(...(data.items.length ? data.items.map((item) => el("button", {
-          type: "button", class: `card ${item.rarityCode}`, "aria-pressed": String(c.picked.has(item.templateId)),
-          title: item.owned ? `${a.displayName} owns this already` : "",
-          onclick: () => { if (c.picked.has(item.templateId)) c.picked.delete(item.templateId); else c.picked.set(item.templateId, item); render(); }
-        }, el("div", { class: "k", text: item.type }), el("div", { class: "t", text: item.name }),
-          el("div", { class: "s", style: "margin-top:8px" }, chip(item.rarity), " ", item.owned ? chip("Owned", "good") : null),
-          el("div", { class: "s mono", text: item.templateId }))) : [el("div", { class: "empty", text: "Nothing found." })]));
+
+        results.replaceChildren(...(data.items.length ? data.items.map((item) => {
+          const icon = itemIcon(item.templateId, true, 48);
+          return el("button", {
+            type: "button",
+            class: `card ${item.rarityCode}`,
+            "aria-pressed": String(c.picked.has(item.templateId)),
+            title: item.owned ? `${a.displayName} owns this already` : "",
+            onclick: () => {
+              if (c.picked.has(item.templateId)) c.picked.delete(item.templateId);
+              else c.picked.set(item.templateId, item);
+              render();
+            }
+          },
+            el("div", { style: "display:flex; gap:10px; align-items:flex-start;" },
+              icon,
+              el("div", { style: "min-width:0; flex:1 1 auto; text-align:left;" },
+                el("div", { class: "t", style: "padding-right:0; font-size:14px;", text: item.name }),
+                el("div", { class: "s", style: "margin-top:4px;" },
+                  chip(item.rarity), " ",
+                  item.owned ? chip("Owned", "good") : null
+                ),
+                el("div", { class: "s mono", style: "margin-top:4px; font-size:10px; word-break:break-all;", text: item.templateId })
+              )
+            ),
+            el("div", { class: "k", text: item.type })
+          );
+        }) : [el("div", { class: "empty", text: "Nothing found." })]));
       }
+
       const load = async () => {
         c.search = search.value;
         const query = new URLSearchParams({ build: c.build, search: c.search, type: c.type, limit: "300" });
         const data = await act(api(`/admin/api/accounts/${a.id}/cosmetics?${query}`));
-        if (!data || state.cosmetics !== c) return;
+        if (!data || state.cosmeticsModal !== c) return;
         c.data = data;
         c.build = data.build;
         if (c.type && !data.types.includes(c.type)) c.type = "";
         render();
       };
+
       let timer;
       search.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(load, 180); });
       typeSelect.addEventListener("change", () => { c.type = typeSelect.value; load(); });
-      // Another build's cosmetics: what was picked from the last one may not be in it.
       buildSelect.addEventListener("change", () => { c.build = buildSelect.value; c.picked.clear(); load(); });
-      if (c.data) render(); else load();
-      return el("div", { style: "margin-top:16px" },
-        el("h3", { text: "Give cosmetics" }),
-        el("div", { class: "actions", style: "margin-top:8px" }, buildSelect, typeSelect, search, giveButton, removeButton, clearButton, shopButton),
-        el("div", { style: "margin-top:10px" }, summary),
+
+      const dialog = el("div", {
+        class: "modal-dialog",
+        style: "width:100%; max-width:960px; max-height:88vh; display:flex; flex-direction:column; gap:14px;",
+        onclick: (e) => e.stopPropagation()
+      },
+        el("div", { style: "display:flex; justify-content:space-between; align-items:center;" },
+          el("div", {},
+            el("h2", { style: "margin:0; font-size:18px;", text: `Give Cosmetics: ${a.displayName}` }),
+            el("div", { class: "muted", style: "font-size:12px; margin-top:2px;", text: "Pick cosmetics to grant or remove from this account's locker." })),
+          btn("✕", close, "ghost", { style: "min-height:28px; padding:0 8px; font-size:14px; border:none;" })),
+        el("div", { class: "actions", style: "flex-wrap:wrap; gap:8px;" },
+          buildSelect, typeSelect, search, clearButton),
+        summary,
         results,
-        el("p", { class: "note", text: "Only the chosen build's cosmetics are listed and given. Pick one or more; a cosmetic the account already owns is left as it is. Given cosmetics are the player's for good (Remove granted keeps them), and a player in the game gets them at once. Remove selected takes owned ones out of the locker, putting equipped ones back to the default; starter cosmetics (the default glider, pickaxe, emote, loading screen and bus, the Founder's Glider) and earned ones (season level rewards, victory umbrellas) stay, as they'd come back. Give all item shop cosmetics gives every cosmetic Season 1's, Season 2's and Season 3's item shops sold, and those on the custom shop's lists, from every build (not only the chosen one), as the full locker does: Remove granted takes them back." }));
+        el("div", { class: "actions", style: "justify-content:space-between; border-top:1px solid var(--line); padding-top:12px; margin-top:4px;" },
+          el("div", { class: "actions", style: "gap:8px;" }, giveButton, removeButton),
+          btn("Done", close, "primary"))
+      );
+
+      backdrop.appendChild(dialog);
+      document.body.appendChild(backdrop);
+      window.addEventListener("keydown", onKeyDown);
+      if (c.data) render(); else load();
+      requestAnimationFrame(() => {
+        backdrop.classList.add("show");
+        search.focus();
+      });
     }
+
+    const cosmeticPicker = lockerShowcase;
 
     // Battle Royale's season level (Core-Backend #106): set to the start of a level, with its chase rewards.
     function seasonLevel(a) {
@@ -3701,7 +4047,7 @@
                     el("span", { class: "mono", style: "font-weight:700; color:#fff;", text: c.code })),
                   el("td", {},
                     owner
-                      ? el("a", { href: `#/players/${owner.id}/account`, text: owner.displayName, style: "color:var(--blue); font-weight:600;" })
+                      ? el("a", { href: `#/players/${owner.id}/manage`, text: owner.displayName, style: "color:var(--blue); font-weight:600;" })
                       : el("span", { class: "muted", text: c.accountId || "—" })),
                   el("td", { class: "muted", style: "font-size:12px;", text: ago(c.created) }),
                   el("td", {},
@@ -3735,7 +4081,7 @@
       );
     }
 
-    function accountTab(a) {
+    function manageTab(a) {
       const reason = el("input", { class: "field", placeholder: "Reason (shown when they try to log in)", style: "flex:1 1 260px" });
       const profileBoxes = ["profile0", "theater0", "outpost0", "collection_book_people0", "collection_book_schematics0"].map((profileId) =>
         el("label", { class: "check" }, el("input", { type: "checkbox", value: profileId }), profileId));
@@ -3817,6 +4163,7 @@
             location.hash = "#/players";
           }, "danger"))));
     }
+    const accountTab = manageTab;
 
     /* ---------- sessions ---------- */
     function sessionTable(sessions, withActions = true) {
@@ -4111,6 +4458,7 @@
         updateActiveModesIndicators();
         renderServerLimitsTable();
         renderRewardColumns();
+        renderActiveModes();
       };
       const coreModeCard = (m) => {
         const isEnabled = form.modes[m.id] !== false;
@@ -4167,11 +4515,183 @@
           ...(l.id === "closeEncounters" ? [closeEncountersControls()] : [])], toggle);
       };
       const replayDayText = el("div", { class: "muted", style: "font-size:12px;" });
+      const activeModesTableBox = el("div", { style: "margin-top:14px; overflow-x:auto;" });
+
+      const isModeActive = (m) => {
+        if (form.ltmOriginalDates && isLtm(m.id)) {
+          return ltmOf(m.id)?.inWindow?.[ltmSeason] === true;
+        }
+        return isLtm(m.id)
+          ? (m.id === "fiftyFifty" ? form.modes[m.id] !== false : form.modes[m.id] === true)
+          : form.modes[m.id] !== false;
+      };
+
+      function renderActiveModes() {
+        const activeList = modeKeys.filter(isModeActive);
+
+        if (!activeList.length) {
+          activeModesTableBox.replaceChildren(
+            el("div", {
+              style: "padding:28px 20px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius); text-align:center; color:var(--muted);"
+            },
+              el("div", { style: "font-size:15px; font-weight:600; margin-bottom:6px; color:var(--text);", text: "No Game Modes in Active Queue" }),
+              el("div", { style: "font-size:13px; margin-bottom:14px;", text: "All playlists are currently disabled. Click \"+ Add Game Mode\" to enable playlists for matchmaking." }),
+              btn("+ Add Game Mode", openAddGameModeModal, "primary")
+            )
+          );
+          return;
+        }
+
+        activeModesTableBox.replaceChildren(
+          table([
+            ["Game Mode", (m) => el("div", {},
+              el("div", { style: "font-weight:600; font-size:14px;", text: m.name }),
+              el("div", { class: "mono muted", style: "font-size:12px; margin-top:2px;", text: m.code }))],
+            ["Format", (m) => el("div", { class: "muted font-semibold", style: "font-size:12px;", text: m.teams })],
+            ["Queue Status", (m) => {
+              const inWindow = isLtm(m.id) && ltmOf(m.id)?.inWindow?.[ltmSeason] === true;
+              const byHand = m.id === "fiftyFifty" ? form.modes[m.id] !== false : form.modes[m.id] === true;
+              const isEnabled = form.ltmOriginalDates && isLtm(m.id) ? inWindow : byHand;
+              const datedLabel = isLtm(m.id) && ltmOf(m.id)?.original ? (inWindow ? "In its dates" : "Out of its dates") : "No original dates";
+              return chip(form.ltmOriginalDates && isLtm(m.id) ? datedLabel : (isEnabled ? "Enabled" : "Disabled"), isEnabled ? "good" : "warn");
+            }],
+            ["Availability Toggle", (m) => {
+              const byHand = m.id === "fiftyFifty" ? form.modes[m.id] !== false : form.modes[m.id] === true;
+              return toggleSwitch(byHand, (checked) => {
+                form.modes[m.id] = checked;
+                onModeToggled();
+                renderActiveModes();
+              });
+            }],
+            ["", (m) => el("div", { class: "actions" },
+              btn("Remove", () => {
+                form.modes[m.id] = false;
+                onModeToggled();
+                renderActiveModes();
+              }, "ghost", { title: "Remove from active queue rotation" }))]
+          ], activeList, "No active game modes.")
+        );
+      }
+
+      function openAddGameModeModal() {
+        let filterSeason = ltmSeason;
+        let searchQuery = "";
+
+        const close = () => {
+          window.removeEventListener("keydown", onKeyDown);
+          modalBackdrop.classList.remove("show");
+          setTimeout(() => modalBackdrop.remove(), 160);
+        };
+
+        const onKeyDown = (e) => {
+          if (e.key === "Escape") close();
+        };
+
+        const modalBackdrop = el("div", {
+          class: "modal-backdrop",
+          onclick: (e) => {
+            if (e.target === modalBackdrop) close();
+          }
+        });
+
+        const listContainer = el("div", { style: "display:flex; flex-direction:column; gap:8px; max-height:48vh; overflow-y:auto; padding-right:6px;" });
+
+        const renderModalList = () => {
+          const query = searchQuery.toLowerCase().trim();
+          const items = modeKeys.filter((m) => {
+            if (isLtm(m.id)) {
+              const l = ltmOf(m.id);
+              if (filterSeason !== "all" && !l.seasons.includes(Number(filterSeason))) return false;
+            }
+            if (query && !m.name.toLowerCase().includes(query) && !m.code.toLowerCase().includes(query)) return false;
+            return true;
+          });
+
+          listContainer.replaceChildren(...items.map((m) => {
+            const isEnabled = isModeActive(m);
+            const statusBadge = chip(isEnabled ? "Active" : "Disabled", isEnabled ? "good" : "warn");
+
+            const toggleBtn = btn(isEnabled ? "Disable" : "Enable", () => {
+              form.modes[m.id] = !isEnabled;
+              onModeToggled();
+              renderActiveModes();
+              renderModalList();
+            }, isEnabled ? "ghost" : "primary");
+
+            return el("div", {
+              style: "display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
+            },
+              el("div", { style: "min-width:0;" },
+                el("div", { style: "display:flex; align-items:center; gap:8px; margin-bottom:2px;" },
+                  el("span", { style: "font-weight:700; font-size:14px;", text: m.name }),
+                  statusBadge),
+                el("div", { class: "mono muted", style: "font-size:11px;", text: m.code }),
+                el("div", { class: "sub", style: "font-size:12px; margin-top:2px;", text: m.teams })),
+              toggleBtn);
+          }));
+        };
+
+        const searchInput = el("input", {
+          class: "field",
+          type: "search",
+          placeholder: "Search modes (e.g. Solo, Blitz, 50v50)…",
+          style: "width:100%;",
+          oninput: (e) => {
+            searchQuery = e.target.value;
+            renderModalList();
+          }
+        });
+
+        const seasonPills = el("div", { class: "subtabs", role: "tablist", style: "margin:0;" },
+          [["all", "All Seasons"], ["1", "Season 1"], ["2", "Season 2"], ["3", "Season 3"], ["4", "Season 4"]].map(([sId, sLabel]) =>
+            el("button", {
+              type: "button",
+              role: "tab",
+              "aria-selected": filterSeason === sId ? "true" : "false",
+              onclick: (e) => {
+                filterSeason = sId;
+                for (const b of seasonPills.querySelectorAll("button")) b.setAttribute("aria-selected", "false");
+                e.currentTarget.setAttribute("aria-selected", "true");
+                renderModalList();
+              }
+            }, el("span", { text: sLabel }))
+          )
+        );
+
+        const modalBox = el("div", {
+          class: "modal-dialog",
+          style: "width:100%; max-width:640px; display:flex; flex-direction:column; gap:16px;",
+          onclick: (e) => e.stopPropagation()
+        },
+          el("div", { style: "display:flex; justify-content:space-between; align-items:center;" },
+            el("div", {},
+              el("h2", { style: "margin:0; font-size:18px;", text: "Add Game Mode to Queue" }),
+              el("div", { class: "muted", style: "font-size:12px; margin-top:2px;", text: "Turn playlists on or off for the matchmaking queue." })),
+            btn("✕", close, "ghost", { style: "min-height:28px; padding:0 8px; font-size:14px; border:none;" })),
+          el("div", { style: "display:flex; flex-direction:column; gap:10px;" },
+            searchInput,
+            seasonPills),
+          listContainer,
+          el("div", { class: "actions", style: "justify-content:flex-end; border-top:1px solid var(--line); padding-top:12px; margin-top:4px;" },
+            btn("Done", close, "primary"))
+        );
+
+        modalBackdrop.appendChild(modalBox);
+        document.body.appendChild(modalBackdrop);
+        window.addEventListener("keydown", onKeyDown);
+        renderModalList();
+        requestAnimationFrame(() => {
+          modalBackdrop.classList.add("show");
+          searchInput.focus();
+        });
+      }
+
       function renderModeCards() {
         modeCardsBox.replaceChildren(...coreModes.map(coreModeCard),
           ...ltmList.filter((l) => l.seasons.includes(Number(ltmSeason))).map(ltmCard));
         const replayDay = data.ltms?.seasonMoments?.[ltmSeason];
         replayDayText.textContent = replayDay ? `Season ${ltmSeason} replay day: ${fmtDay(replayDay)}` : "";
+        renderActiveModes();
       }
       const ltmModeChip = chip(form.ltmOriginalDates ? "Original dates" : "By hand", "accent");
       const originalDatesToggle = toggleSwitch(form.ltmOriginalDates, (checked) => {
@@ -4327,54 +4847,34 @@
       }
 
       // --- Main View Assembly ---
-      $("view").replaceChildren(
-        // View Head
-        el("div", { class: "view-head" },
-          el("div", {},
-            el("div", { style: "display:flex; align-items:center; gap:10px; margin-bottom:4px;" },
-              el("h1", { text: "Matchmaking & Game Modes" }),
-              headerModesChip,
-              headerServersChip),
-            el("div", { class: "muted", text: "Configure playlist availability, regional server quotas, queue rules, and live server sessions." })),
+
+      // Section 1: Game Mode Availability
+      const sectionModes = el("section", { class: "panel", style: "margin-top:16px" },
+        el("div", { class: "panel-head", style: "margin-bottom:8px" },
           el("div", { class: "actions" },
-            btn("Save Matchmaking Config", saveConfig, "primary"),
-            btn("Reset Defaults", resetDefaults, "ghost"),
-            btn("Refresh", showMatchmaking, "ghost"))),
+            el("h2", { text: "Battle Royale Game Modes (Queue Availability)" }),
+            sectionModesChip,
+            ltmModeChip),
+          btn("+ Add Game Mode", openAddGameModeModal, "primary")),
+        el("p", { class: "note", text: "Controls whether each game mode is open for matchmaking. Toggling a mode OFF blocks players from queuing (returning errors.com.epicgames.fortnite.matchmaking_disabled) and updates the calendar matchmaking channel to reflect availability in the game lobby." }),
+        el("p", { class: "note", text: "Solo, Duos and Squads are listed for both seasons; each limited-time mode (LTM) under the season whose builds have it, and it runs only on the builds whose game data has it. By hand, turn each one on or off here. With Original dates on, each LTM runs only during the days Epic ran it, on the season replay clock (Events & Seasons), and only on the builds Epic ran it on; the LTM switches are then ignored. An LTM with no original dates (Speedy Storm, Take To The Skies and Lotsa Loot, which Epic never ran) stays off while Original dates is on. Seasons 3 and 4's dates are in for every build, so a build Core supports later runs its LTMs on their dates; Close Encounters' card picks its whole day or one hour." }),
+        el("div", { style: "display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 16px; margin-top:12px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius);" },
+          el("div", {},
+            el("div", { class: "font-semibold", text: "Original dates (limited-time modes)" }),
+            replayDayText),
+          originalDatesToggle),
+        ltmSeasonTabs,
+        activeModesTableBox);
 
-        // Quick Stats Row
-        el("div", { class: "tiles" },
-          tile("Active Gamemodes", activeModesTileVal, "accent text"),
-          tile("Live Sessions", liveSessionsTileVal, "text"),
-          tile("Free Servers", freeServersTileVal, "good text"),
-          tile("Players in Game", inGamePlayersTileVal, "text"),
-          tile("Queue Gather Window", `${form.timing.gatherSeconds}s`, "text")),
-
-        // Section 1: Game Mode Availability
-        el("section", { class: "panel", style: "margin-top:16px" },
-          el("div", { class: "panel-head", style: "margin-bottom:8px" },
-            el("div", { class: "actions" },
-              el("h2", { text: "Battle Royale Game Modes (Queue Availability)" }),
-              sectionModesChip,
-              ltmModeChip)),
-          el("p", { class: "note", text: "Controls whether each game mode is open for matchmaking. Toggling a mode OFF blocks players from queuing (returning errors.com.epicgames.fortnite.matchmaking_disabled) and updates the calendar matchmaking channel to reflect availability in the game lobby." }),
-          el("p", { class: "note", text: "Solo, Duos and Squads are listed for both seasons; each limited-time mode (LTM) under the season whose builds have it, and it runs only on the builds whose game data has it. By hand, turn each one on or off here. With Original dates on, each LTM runs only during the days Epic ran it, on the season replay clock (Events & Seasons), and only on the builds Epic ran it on; the LTM switches are then ignored. An LTM with no original dates (Speedy Storm, Take To The Skies and Lotsa Loot, which Epic never ran) stays off while Original dates is on. Seasons 3 and 4's dates are in for every build, so a build Core supports later runs its LTMs on their dates; Close Encounters' card picks its whole day or one hour." }),
-          el("div", { style: "display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 16px; margin-top:12px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius);" },
-            el("div", {},
-              el("div", { class: "font-semibold", text: "Original dates (limited-time modes)" }),
-              replayDayText),
-            originalDatesToggle),
-          ltmSeasonTabs,
-          modeCardsBox),
-
-        // Section 2: Regional Server Allocation Limits
-        el("section", { class: "panel", style: "margin-top:16px" },
+      // Section 2: Regional Server Allocation Limits
+      const sectionLimits = el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
             el("h2", { text: "Regional Server Allocation Limits" })),
           el("p", { class: "note", text: "Maximum number of dedicated gameservers simultaneously assigned to each game mode per region. Leave at 0 for unlimited server assignments. Only enabled modes are displayed." }),
-          serverLimitsTableBox),
+          serverLimitsTableBox);
 
-        // Section 3: Queue Timers & Assignment Rules
-        el("section", { class: "panel", style: "margin-top:16px" },
+      // Section 3: Queue Timers & Assignment Rules
+      const sectionTiming = el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
             el("h2", { text: "Queue Timers & Assignment Rules" })),
           el("p", { class: "note", text: "Configure wait intervals and server selection behavior when players enter matchmaking queues." }),
@@ -4441,34 +4941,76 @@
                 el("div", { style: "font-weight:700; margin-bottom:4px;", text: "Server Regions" }),
                 el("div", { class: "sub", text: "Players queuing in any region ticked here play on the servers of any other region ticked here. A server still registers one region, its -McpRegion, and each match plays in it: Core Launcher's servers take the first region ticked here, in this list's order (NA when none is), when they start, unless their build's server arguments name another. With none or one ticked, each server only takes its own region's players." })),
               el("div", { style: "margin-top:16px; padding-top:12px; border-top:1px solid var(--line);" },
-                serverRegionChecks)))),
+                serverRegionChecks))));
 
-        // Each region's hosting IPs (Core-Backend #227)
-        regionHostingIpsSection(form, regions, regionLabels),
+      const sectionHostingIps = regionHostingIpsSection(form, regions, regionLabels);
+      const sectionCustomKeys = customMatchmakingSection(data.customMatchmaking || []);
+      const sectionCustomServers = customServersSection(form);
 
-        // Custom matchmaking keys (Core-Backend #186)
-        customMatchmakingSection(data.customMatchmaking || []),
-        // Servers kept for them (Core-Backend #227)
-        customServersSection(form),
-
-        // Section 4: Battle Royale V-Bucks Rewards
-        el("section", { class: "panel", style: "margin-top:16px" },
+      // Section 4: Battle Royale V-Bucks Rewards
+      const sectionRewards = el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
             el("div", { class: "actions" },
               el("h2", { text: "Battle Royale V-Bucks Rewards" }),
               rewardsChip),
             rewardsMasterToggle),
           el("p", { class: "note", text: "Pays V-Bucks in solo, duos, squads and 50v50 when the match's gameserver reports a player's result: an amount for every kill, one for a win, and one for the placement. Only enabled modes are displayed." }),
-          rewardsGridBox),
+          rewardsGridBox);
 
-        // Section 5: Live Game Sessions & Servers
-        el("section", { class: "panel", style: "margin-top:16px" },
+      // Section 5: Live Game Sessions & Servers
+      const sectionSessions = el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
             el("div", { class: "actions" },
               el("h2", { text: "Live Game Sessions & Registered Servers" }),
               sectionSessionsChip)),
           el("p", { class: "note", text: "Servers registered through /fortnite/api/matchmaking/session. Refreshes every 5 seconds without interrupting option editing." }),
-          sessionsContainer)
+          sessionsContainer);
+
+      const mmTabs = [
+        ["modes", "Game Modes & Queues"],
+        ["rules", "Server Rules & Allocation"],
+        ["sessions", "Live Sessions & Servers"]
+      ];
+      if (!mmTabs.some(([k]) => k === state.matchmakingSub)) state.matchmakingSub = "modes";
+
+      const mmSubtabs = el("div", { class: "subtabs", role: "tablist", style: "margin: 14px 0 18px;" },
+        mmTabs.map(([key, label]) => el("button", {
+          type: "button",
+          role: "tab",
+          "aria-selected": state.matchmakingSub === key ? "true" : "false",
+          onclick: () => { state.matchmakingSub = key; showMatchmaking(); }
+        }, el("span", { text: label })))
+      );
+
+      const mmContent = state.matchmakingSub === "modes"
+        ? [sectionModes]
+        : state.matchmakingSub === "rules"
+          ? [sectionLimits, sectionTiming, sectionRewards]
+          : [sectionSessions, sectionHostingIps, sectionCustomServers, sectionCustomKeys];
+
+      $("view").replaceChildren(
+        // View Head
+        el("div", { class: "view-head" },
+          el("div", {},
+            el("div", { style: "display:flex; align-items:center; gap:10px; margin-bottom:4px;" },
+              el("h1", { text: "Matchmaking & Game Modes" }),
+              headerModesChip,
+              headerServersChip),
+            el("div", { class: "muted", text: "Configure playlist availability, regional server quotas, queue rules, and live server sessions." })),
+          el("div", { class: "actions" },
+            btn("Save Matchmaking Config", saveConfig, "primary"),
+            btn("Reset Defaults", resetDefaults, "ghost"),
+            btn("Refresh", showMatchmaking, "ghost"))),
+
+        // Quick Stats Row
+        el("div", { class: "tiles" },
+          tile("Active Gamemodes", activeModesTileVal, "accent text"),
+          tile("Live Sessions", liveSessionsTileVal, "text"),
+          tile("Free Servers", freeServersTileVal, "good text"),
+          tile("In-Game Players", inGamePlayersTileVal, "text")),
+
+        mmSubtabs,
+        ...mmContent
       );
 
       if (!state.timers.length) every(5000, pollLiveSessions);
@@ -4963,33 +5505,27 @@
       });
       const customTiles = playlistRows.filter((mode) => mode.custom).length;
 
-      $("view").replaceChildren(
-        el("div", { class: "view-head" },
-          el("div", {},
-            el("h1", { text: "News & Announcements" }),
-            el("div", { class: "muted", text: "Configure in-game announcements shown in the Battle Royale lobby, on the login screen, and on the mode select screen." })),
-          el("div", { class: "actions" }, btn("Refresh", showNews, "ghost"))),
-
-        el("section", { class: "panel" },
-          el("div", { class: "panel-head" },
-            el("div", { style: "display:flex; align-items:center; gap:10px;" },
-              el("h2", { text: "Battle Royale Lobby News" }),
-              battleRoyaleNewsEnabled
-                ? (isBrCustom ? chip("Customized", "sky") : chip("Default (1:1)"))
-                : chip("Disabled", "warn")),
-            el("div", { style: "display:flex; align-items:center; gap:12px;" },
-              chip("AthenaNews", "sky"),
-              toggleSwitch(battleRoyaleNewsEnabled, async (checked) => {
-                await act(api("/admin/api/news", { battleRoyaleNewsEnabled: checked }), checked ? "Battle Royale news enabled" : "Battle Royale news disabled");
-                showNews();
-              }))),
-          el("p", {
-            class: "note",
-            text: battleRoyaleNewsEnabled
-              ? "Displayed in the Battle Royale lobby news box (1.7.2+, and the News tab on 1.9). Leave blank to use authentic 1:1 defaults. Use {version} to show the client's version automatically. The image shows on 1.9 and later only."
-              : "Battle Royale lobby news is disabled. The news widget in the lobby (or News tab in 1.9+) will be hidden on connected clients."
-          }),
-          el("div", { style: "display:flex; flex-direction:column; gap:12px; margin-top:14px;" },
+      const motdPanel = el("section", { class: "panel" },
+        el("div", { class: "panel-head" },
+          el("div", { style: "display:flex; align-items:center; gap:10px;" },
+            el("h2", { text: "Battle Royale Lobby News" }),
+            battleRoyaleNewsEnabled
+              ? (isBrCustom ? chip("Customized", "sky") : chip("Default (1:1)"))
+              : chip("Disabled", "warn")),
+          el("div", { style: "display:flex; align-items:center; gap:12px;" },
+            chip("AthenaNews", "sky"),
+            toggleSwitch(battleRoyaleNewsEnabled, async (checked) => {
+              await act(api("/admin/api/news", { battleRoyaleNewsEnabled: checked }), checked ? "Battle Royale news enabled" : "Battle Royale news disabled");
+              showNews();
+            }))),
+        el("p", {
+          class: "note",
+          text: battleRoyaleNewsEnabled
+            ? "Displayed in the Battle Royale lobby news box (1.7.2+, and the News tab on 1.9). Leave blank to use authentic 1:1 defaults. Use {version} to show the client's version automatically. The image shows on 1.9 and later only."
+            : "Battle Royale lobby news is disabled. The news widget in the lobby (or News tab in 1.9+) will be hidden on connected clients."
+        }),
+        el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:20px; margin-top:14px; align-items:start;" },
+          el("div", { style: "display:flex; flex-direction:column; gap:12px;" },
             el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
               el("span", { text: "Title" }),
               brTitle),
@@ -5004,116 +5540,155 @@
               removeBrImageBtn,
               brFile,
               el("span", { class: "muted", text: "PNG or JPEG, up to 4 MB and 2.5 million pixels." })),
-            brPreview,
-            el("div", { class: "actions", style: "margin-top:4px;" },
+            el("div", { class: "actions", style: "margin-top:8px;" },
               saveBrBtn,
-              resetBrBtn))),
+              resetBrBtn)),
+          el("div", {
+            style: "background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius); padding:16px; display:flex; flex-direction:column; gap:10px;"
+          },
+            el("div", { class: "muted font-semibold", style: "font-size:12px; text-transform:uppercase; letter-spacing:0.04em;", text: "In-Game MOTD Preview" }),
+            brPreview,
+            el("div", { style: "font-size:16px; font-weight:700; color:var(--text);", text: brCustom?.title || brDefault.title }),
+            el("div", { class: "muted", style: "font-size:13px; line-height:1.4; white-space:pre-wrap;", text: brCustom?.body || brDefault.body }))
+        )
+      );
 
-        el("section", { class: "panel", style: "margin-top:16px" },
-          el("div", { class: "panel-head" },
-            el("div", { style: "display:flex; align-items:center; gap:10px;" },
-              el("h2", { text: "Mode Select Images" }),
-              customTiles ? chip(`${customTiles} customized`, "sky") : chip("Epic's pictures")),
-            chip("playlistimages", "sky")),
-          el("p", { class: "note", text: "The picture on each mode's tile in Battle Royale's mode select (4.0 and later). Each mode shows Epic's original picture, loaded from Epic's CDN, unless you set your own: an http:// or https:// URL, or a PNG/JPEG upload (up to 4 MB and 2.5 million pixels; Epic's are 1024x512 or 512x512). A mode without either keeps the game's default picture. Builds before 4.0 have no tile pictures." }),
-          table([
-            ["Mode", (mode) => el("div", {}, el("div", { text: mode.name }), el("div", { class: "tid mono", text: mode.playlistName }))],
-            ["Showing", (mode) => tilePreview(mode.custom || mode.epic || "")],
-            ["Your picture", (mode) => mode.input],
-            ["", (mode) => el("div", { class: "actions" },
-              btn("Save", () => savePlaylistImage(mode.playlistName, mode.input.value.trim(), `${mode.name}'s picture saved`), "primary"),
-              btn("Upload", () => mode.file.click(), "ghost"),
-              btn(mode.epic ? "Use Epic's" : "Clear", () => savePlaylistImage(mode.playlistName, null, `${mode.name} shows ${mode.epic ? "Epic's picture" : "the default picture"}`), "ghost", { disabled: !mode.custom }),
-              mode.file)]
-          ], playlistRows, "No modes have tile pictures.")),
+      const modeSelectImagesPanel = el("section", { class: "panel", style: "margin-top:16px" },
+        el("div", { class: "panel-head" },
+          el("div", { style: "display:flex; align-items:center; gap:10px;" },
+            el("h2", { text: "Mode Select Images" }),
+            customTiles ? chip(`${customTiles} customized`, "sky") : chip("Epic's pictures")),
+          chip("playlistimages", "sky")),
+        el("p", { class: "note", text: "The picture on each mode's tile in Battle Royale's mode select (4.0 and later). Each mode shows Epic's original picture, loaded from Epic's CDN, unless you set your own: an http:// or https:// URL, or a PNG/JPEG upload (up to 4 MB and 2.5 million pixels; Epic's are 1024x512 or 512x512). A mode without either keeps the game's default picture. Builds before 4.0 have no tile pictures." }),
+        table([
+          ["Mode", (mode) => el("div", {}, el("div", { text: mode.name }), el("div", { class: "tid mono", text: mode.playlistName }))],
+          ["Showing", (mode) => tilePreview(mode.custom || mode.epic || "")],
+          ["Your picture", (mode) => mode.input],
+          ["", (mode) => el("div", { class: "actions" },
+            btn("Save", () => savePlaylistImage(mode.playlistName, mode.input.value.trim(), `${mode.name}'s picture saved`), "primary"),
+            btn("Upload", () => mode.file.click(), "ghost"),
+            btn(mode.epic ? "Use Epic's" : "Clear", () => savePlaylistImage(mode.playlistName, null, `${mode.name} shows ${mode.epic ? "Epic's picture" : "the default picture"}`), "ghost", { disabled: !mode.custom }),
+            mode.file)]
+        ], playlistRows, "No modes have tile pictures."));
 
-        el("section", { class: "panel", style: "margin-top:16px" },
-          el("div", { class: "panel-head" },
-            el("div", { style: "display:flex; align-items:center; gap:10px;" },
-              el("h2", { text: "Lobby Notice" }),
-              notice.enabled ? chip("Showing", "sky") : chip("Off", "warn")),
-            el("div", { style: "display:flex; align-items:center; gap:12px;" },
-              chip("emergencynotice", "sky"),
-              toggleSwitch(notice.enabled === true, async (checked) => {
-                await saveNotice(checked, checked ? "Lobby notice shown" : "Lobby notice hidden");
-              }))),
-          el("p", { class: "note", text: "The warning box above the PLAY button in the lobby (a warning icon, a title such as \"Echo Beta\", and a body). Off by default; turn it on to show it to every build. Use {version} for the client version." }),
-          el("div", { style: "display:flex; flex-direction:column; gap:12px; margin-top:14px;" },
-            el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
-              el("span", { text: "Title" }),
-              noticeTitle),
-            el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
-              el("span", { text: "Body" }),
-              noticeBody),
-            el("div", { class: "actions", style: "margin-top:4px;" },
-              saveNoticeBtn,
-              clearNoticeBtn))),
+      const noticePanel = el("section", { class: "panel" },
+        el("div", { class: "panel-head" },
+          el("div", { style: "display:flex; align-items:center; gap:10px;" },
+            el("h2", { text: "Lobby Notice" }),
+            notice.enabled ? chip("Showing", "sky") : chip("Off", "warn")),
+          el("div", { style: "display:flex; align-items:center; gap:12px;" },
+            chip("emergencynotice", "sky"),
+            toggleSwitch(notice.enabled === true, async (checked) => {
+              await saveNotice(checked, checked ? "Lobby notice shown" : "Lobby notice hidden");
+            }))),
+        el("p", { class: "note", text: "The warning box above the PLAY button in the lobby (a warning icon, a title such as \"Echo Beta\", and a body). Off by default; turn it on to show it to every build. Use {version} for the client version." }),
+        el("div", { style: "display:flex; flex-direction:column; gap:12px; margin-top:14px;" },
+          el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
+            el("span", { text: "Title" }),
+            noticeTitle),
+          el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
+            el("span", { text: "Body" }),
+            noticeBody),
+          el("div", { class: "actions", style: "margin-top:4px;" },
+            saveNoticeBtn,
+            clearNoticeBtn)));
 
-        el("section", { class: "panel", style: "margin-top:16px" },
-          el("div", { class: "panel-head" },
-            el("div", { style: "display:flex; align-items:center; gap:10px;" },
-              el("h2", { text: "Login Screen Message" }),
-              loginMessageEnabled
-                ? (isLoginCustom ? chip("Customized", "sky") : chip("Default (1:1)"))
-                : chip("Disabled", "warn")),
-            el("div", { style: "display:flex; align-items:center; gap:12px;" },
-              chip("Patch Notes", "sky"),
-              toggleSwitch(loginMessageEnabled, async (checked) => {
-                await act(api("/admin/api/news", { loginMessageEnabled: checked }), checked ? "Login screen message enabled" : "Login screen message disabled");
-                showNews();
-              }))),
-          el("p", {
-            class: "note",
-            text: loginMessageEnabled
-              ? "Displayed in the message / patch notes widget on the game's start and login screen. Leave blank to use authentic 1:1 defaults. Use {version} for the client version."
-              : "Login screen message is disabled. The patch notes message box on the client's login screen will be omitted."
-          }),
-          el("div", { style: "display:flex; flex-direction:column; gap:12px; margin-top:14px;" },
-            el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
-              el("span", { text: "Title" }),
-              loginTitle),
-            el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
-              el("span", { text: "Body" }),
-              loginBody),
-            el("div", { class: "actions", style: "margin-top:4px;" },
-              saveLoginBtn,
-              resetLoginBtn))),
+      const loginPanel = el("section", { class: "panel", style: "margin-top:16px" },
+        el("div", { class: "panel-head" },
+          el("div", { style: "display:flex; align-items:center; gap:10px;" },
+            el("h2", { text: "Login Screen Message" }),
+            loginMessageEnabled
+              ? (isLoginCustom ? chip("Customized", "sky") : chip("Default (1:1)"))
+              : chip("Disabled", "warn")),
+          el("div", { style: "display:flex; align-items:center; gap:12px;" },
+            chip("Patch Notes", "sky"),
+            toggleSwitch(loginMessageEnabled, async (checked) => {
+              await act(api("/admin/api/news", { loginMessageEnabled: checked }), checked ? "Login screen message enabled" : "Login screen message disabled");
+              showNews();
+            }))),
+        el("p", {
+          class: "note",
+          text: loginMessageEnabled
+            ? "Displayed in the message / patch notes widget on the game's start and login screen. Leave blank to use authentic 1:1 defaults. Use {version} for the client version."
+            : "Login screen message is disabled. The patch notes message box on the client's login screen will be omitted."
+        }),
+        el("div", { style: "display:flex; flex-direction:column; gap:12px; margin-top:14px;" },
+          el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
+            el("span", { text: "Title" }),
+            loginTitle),
+          el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
+            el("span", { text: "Body" }),
+            loginBody),
+          el("div", { class: "actions", style: "margin-top:4px;" },
+            saveLoginBtn,
+            resetLoginBtn)));
 
-        el("section", { class: "panel", style: "margin-top:16px" },
-          el("div", { class: "panel-head" },
-            el("div", { style: "display:flex; align-items:center; gap:10px;" },
-              el("h2", { text: "Mode Select: Save the World" }),
-              isStwCustom ? chip("Customized", "sky") : chip("Default (1:1)")),
-            chip("SubgameSelect PvE", "sky")),
-          el("p", { class: "note", text: "Displayed on the mode select screen beside and under the Save the World button. Leave blank to adapt to authentic 1:1 sale tags for each detected build (e.g. \"ON SALE NOW!\" on 1.8)." }),
-          el("div", { style: "display:flex; flex-direction:column; gap:12px; margin-top:14px;" },
-            el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
-              el("span", { text: "Button Tag / Title" }),
-              stwTitle),
-            el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
-              el("span", { text: "Description Body" }),
-              stwBody),
-            el("div", { class: "actions", style: "margin-top:4px;" },
-              saveStwBtn,
-              resetStwBtn))),
+      const stwModePanel = el("section", { class: "panel", style: "margin-top:16px" },
+        el("div", { class: "panel-head" },
+          el("div", { style: "display:flex; align-items:center; gap:10px;" },
+            el("h2", { text: "Mode Select: Save the World" }),
+            isStwCustom ? chip("Customized", "sky") : chip("Default (1:1)")),
+          chip("SubgameSelect PvE", "sky")),
+        el("p", { class: "note", text: "Displayed on the mode select screen beside and under the Save the World button. Leave blank to adapt to authentic 1:1 sale tags for each detected build (e.g. \"ON SALE NOW!\" on 1.8)." }),
+        el("div", { style: "display:flex; flex-direction:column; gap:12px; margin-top:14px;" },
+          el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
+            el("span", { text: "Button Tag / Title" }),
+            stwTitle),
+          el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
+            el("span", { text: "Description Body" }),
+            stwBody),
+          el("div", { class: "actions", style: "margin-top:4px;" },
+            saveStwBtn,
+            resetStwBtn)));
 
-        el("section", { class: "panel", style: "margin-top:16px" },
-          el("div", { class: "panel-head" },
-            el("div", { style: "display:flex; align-items:center; gap:10px;" },
-              el("h2", { text: "Mode Select: Battle Royale" }),
-              isBrModeCustom ? chip("Customized", "sky") : chip("Default (1:1)")),
-            chip("SubgameSelect PvP", "sky")),
-          el("p", { class: "note", text: "Displayed on the mode select screen beside and under the Battle Royale button. Leave blank to adapt to authentic 1:1 tags for each detected build (e.g. \"New PVP!\" on 1.8.1)." }),
-          el("div", { style: "display:flex; flex-direction:column; gap:12px; margin-top:14px;" },
-            el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
-              el("span", { text: "Button Tag / Title" }),
-              brModeTitle),
-            el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
-              el("span", { text: "Description Body" }),
-              brModeBody),
-            el("div", { class: "actions", style: "margin-top:4px;" },
-              saveBrModeBtn,
-              resetBrModeBtn)))
+      const brModePanel = el("section", { class: "panel" },
+        el("div", { class: "panel-head" },
+          el("div", { style: "display:flex; align-items:center; gap:10px;" },
+            el("h2", { text: "Mode Select: Battle Royale" }),
+            isBrModeCustom ? chip("Customized", "sky") : chip("Default (1:1)")),
+          chip("SubgameSelect PvP", "sky")),
+        el("p", { class: "note", text: "Displayed on the mode select screen beside and under the Battle Royale button. Leave blank to adapt to authentic 1:1 tags for each detected build (e.g. \"New PVP!\" on 1.8.1)." }),
+        el("div", { style: "display:flex; flex-direction:column; gap:12px; margin-top:14px;" },
+          el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
+            el("span", { text: "Button Tag / Title" }),
+            brModeTitle),
+          el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
+            el("span", { text: "Description Body" }),
+            brModeBody),
+          el("div", { class: "actions", style: "margin-top:4px;" },
+            saveBrModeBtn,
+            resetBrModeBtn)));
+
+      const tabs = [
+        ["motd", "Lobby News & MOTD"],
+        ["modeselect", "Mode Select Screens"],
+        ["notices", "System Notices & Banners"]
+      ];
+      if (!tabs.some(([k]) => k === state.newsTab)) state.newsTab = "motd";
+
+      const subtabs = el("div", { class: "subtabs", role: "tablist", style: "margin: 14px 0 18px;" },
+        tabs.map(([key, label]) => el("button", {
+          type: "button",
+          role: "tab",
+          "aria-selected": state.newsTab === key ? "true" : "false",
+          onclick: () => { state.newsTab = key; showNews(); }
+        }, el("span", { text: label })))
+      );
+
+      const content = state.newsTab === "motd"
+        ? [motdPanel]
+        : state.newsTab === "modeselect"
+          ? [brModePanel, stwModePanel, modeSelectImagesPanel]
+          : [noticePanel, loginPanel];
+
+      $("view").replaceChildren(
+        el("div", { class: "view-head" },
+          el("div", {},
+            el("h1", { text: "News & Announcements" }),
+            el("div", { class: "muted", text: "Configure in-game announcements shown in the Battle Royale lobby, on the login screen, and on the mode select screen." })),
+          el("div", { class: "actions" }, btn("Refresh", showNews, "ghost"))),
+        subtabs,
+        ...content
       );
     }
 
@@ -5787,10 +6362,14 @@
                   onSelect(c, c.defaultPrice);
                 }
               },
-                el("div", {},
-                  el("div", { class: "k", text: c.type || "Cosmetic" }),
-                  el("div", { class: "t", style: "font-weight:700; font-size:15px; line-height:1.3; color:#fff;", text: c.name }),
-                  el("div", { class: "s mono muted", style: "font-size:11px; margin-top:4px;", text: c.templateId })),
+                el("div", { style: "display:flex; gap:12px; align-items:center;" },
+                  itemIcon(c.templateId, true, 48),
+                  el("div", { style: "min-width:0; flex:1;" },
+                    el("div", { class: "k", text: c.type || "Cosmetic" }),
+                    el("div", { class: "t", style: "font-weight:700; font-size:15px; line-height:1.3; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;", text: c.name }),
+                    el("div", { class: "s mono muted", style: "font-size:11px; margin-top:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;", text: c.templateId })
+                  )
+                ),
                 el("div", { style: "display:flex; justify-content:space-between; align-items:center; margin-top:12px; border-top:1px solid var(--line); padding-top:8px;" },
                   chip(c.rarity, code),
                   el("span", { class: "mono", style: "color:var(--amber); font-weight:700; font-size:13px;", text: `${fmt(c.defaultPrice)} V-Bucks` })
@@ -7229,40 +7808,90 @@
             }, "ghost")));
       };
 
-      const eventPanel = (event) => el("section", { class: "panel", style: "margin-top:16px;" },
-        el("div", { class: "panel-head" },
-          el("h2", { text: event.name }),
-          el("div", { class: "actions" },
-            chip(event.status, statusKind[event.status] ?? ""),
+      if (state.tournamentEventId) {
+        const event = data.events.find((e) => e.id === state.tournamentEventId);
+        if (!event) {
+          $("view").replaceChildren(
+            el("div", { class: "view-head" },
+              el("div", { class: "actions", style: "gap:12px; align-items:center;" },
+                btn("← Back to Tournaments", () => { location.hash = "#/tournaments"; }, "ghost"),
+                el("h1", { text: "Event Not Found" }))),
+            el("section", { class: "panel", style: "margin-top:16px;" },
+              el("div", { class: "empty", text: "This tournament event does not exist or was deleted." }),
+              el("div", { class: "actions", style: "justify-content:center; margin-top:14px;" },
+                btn("Return to All Events", () => { location.hash = "#/tournaments"; }, "primary")))
+          );
+          return;
+        }
+
+        $("view").replaceChildren(
+          el("div", { class: "view-head" },
+            el("div", { class: "actions", style: "gap:12px; align-items:center;" },
+              btn("← Back to Tournaments", () => { location.hash = "#/tournaments"; }, "ghost"),
+              el("h1", { text: event.name })),
+            el("div", { class: "actions" },
+              chip(event.status, statusKind[event.status] ?? ""),
+              chip(`Playlist ${event.playlistId}`, "sky"),
+              btn("Reset points", async () => {
+                if (await confirmModal(`Clear every player's points in ${event.name}? It keeps its dates.`, { title: "Reset Event", confirmText: "Reset points", confirmKind: "danger" })) {
+                  if (await act(api(`/admin/api/tournaments/${event.id}/reset`, {}), "Event points reset")) rerender();
+                }
+              }, "ghost"),
+              event.status !== "ended" ? btn("End event", async () => {
+                if (await confirmModal(`End ${event.name} now? It takes no more matches and its leaderboard is final.`, { title: "End Event", confirmText: "End event", confirmKind: "danger" })) {
+                  if (await act(api(`/admin/api/tournaments/${event.id}/end`, {}), "Event ended")) rerender();
+                }
+              }, "ghost") : null,
+              btn("Delete", async () => {
+                if (await confirmModal(`Delete ${event.name} and its leaderboard?`, { title: "Delete Event", confirmText: "Delete", confirmKind: "danger" })) {
+                  if (await act(api(`/admin/api/tournaments/${event.id}`, {}, "DELETE"), "Event deleted")) {
+                    location.hash = "#/tournaments";
+                  }
+                }
+              }, "ghost"))),
+          el("div", { class: "note", style: "margin:8px 0 16px;", text: `${data.rulesets.find((r) => r.id === event.ruleset)?.name ?? event.ruleset}${event.scoring ? " (custom points)" : ""} · starts ${when(event.startsAt ?? event.createdAt)} · ends ${when(event.endedAt ?? event.endsAt)} · ${event.playerCount} players` }),
+          el("section", { class: "panel", style: "margin-top:16px;" },
+            el("div", { class: "panel-head" }, el("h2", { text: "Points & Server Rules" })),
+            eventScoring(event),
+            eventServersBots(event)),
+          el("section", { class: "panel", style: "margin-top:16px;" },
+            el("div", { class: "panel-head" },
+              el("h2", { text: "Player Leaderboard" }),
+              chip(`${event.leaderboard?.length || 0} Ranked`, "sky")),
+            table([
+              ["#", (row) => String(row.rank), "num"],
+              ["Player", (row) => el("a", { href: `#/players/${row.accountId}`, text: row.displayName })],
+              ["Points", (row) => el("strong", { text: fmt(row.points) }), "num"],
+              ["Matches", (row) => String(row.matches), "num"],
+              ["Wins", (row) => String(row.wins), "num"],
+              ["Eliminations", (row) => String(row.eliminations), "num"],
+              ["Avg. place", (row) => (row.averagePlacement === null ? "-" : String(row.averagePlacement)), "num"],
+              ["Qualified", (row) => chip(row.qualified ? "Yes" : "Not yet", row.qualified ? "good" : "")]
+            ], event.leaderboard, "No matches played in this event yet."))
+        );
+        return;
+      }
+
+      const eventCard = (event) => el("div", {
+        class: "card",
+        style: "cursor:pointer; display:flex; flex-direction:column; justify-content:space-between; padding:16px 18px; min-height:130px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); transition:border-color .15s, transform .1s;",
+        onclick: () => { location.hash = `#/tournaments/${event.id}`; }
+      },
+        el("div", {},
+          el("div", { style: "display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:8px;" },
+            el("h3", { style: "font-size:16px; font-weight:700; color:#fff; margin:0; line-height:1.3;", text: event.name }),
+            chip(event.status, statusKind[event.status] ?? "")),
+          el("div", { class: "muted", style: "font-size:12px; line-height:1.4; margin-bottom:10px;", text: `${data.rulesets.find((r) => r.id === event.ruleset)?.name ?? event.ruleset}${event.scoring ? " (custom points)" : ""}` }),
+          el("div", { style: "display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;" },
             chip(`Playlist ${event.playlistId}`, "sky"),
-            btn("Reset points", async () => {
-              if (await confirmModal(`Clear every player's points in ${event.name}? It keeps its dates.`, { title: "Reset Event", confirmText: "Reset points", confirmKind: "danger" })) {
-                if (await act(api(`/admin/api/tournaments/${event.id}/reset`, {}), "Event points reset")) rerender();
-              }
-            }, "ghost"),
-            event.status !== "ended" ? btn("End event", async () => {
-              if (await confirmModal(`End ${event.name} now? It takes no more matches and its leaderboard is final.`, { title: "End Event", confirmText: "End event", confirmKind: "danger" })) {
-                if (await act(api(`/admin/api/tournaments/${event.id}/end`, {}), "Event ended")) rerender();
-              }
-            }, "ghost") : null,
-            btn("Delete", async () => {
-              if (await confirmModal(`Delete ${event.name} and its leaderboard?`, { title: "Delete Event", confirmText: "Delete", confirmKind: "danger" })) {
-                if (await act(api(`/admin/api/tournaments/${event.id}`, {}, "DELETE"), "Event deleted")) rerender();
-              }
-            }, "ghost"))),
-        el("div", { class: "note", style: "margin:8px 0;", text: `${data.rulesets.find((r) => r.id === event.ruleset)?.name ?? event.ruleset}${event.scoring ? " (custom points)" : ""} · starts ${when(event.startsAt ?? event.createdAt)} · ends ${when(event.endedAt ?? event.endsAt)} · ${event.playerCount} players` }),
-        eventScoring(event),
-        eventServersBots(event),
-        table([
-          ["#", (row) => String(row.rank), "num"],
-          ["Player", (row) => el("a", { href: `#/players/${row.accountId}`, text: row.displayName })],
-          ["Points", (row) => el("strong", { text: fmt(row.points) }), "num"],
-          ["Matches", (row) => String(row.matches), "num"],
-          ["Wins", (row) => String(row.wins), "num"],
-          ["Eliminations", (row) => String(row.eliminations), "num"],
-          ["Avg. place", (row) => (row.averagePlacement === null ? "-" : String(row.averagePlacement)), "num"],
-          ["Qualified", (row) => chip(row.qualified ? "Yes" : "Not yet", row.qualified ? "good" : "")]
-        ], event.leaderboard, "No matches played in this event yet."));
+            chip(`${event.playerCount} players`, "accent"),
+            chip(`${event.leaderboard?.length || 0} ranked`, ""))
+        ),
+        el("div", { style: "border-top:1px solid var(--line); padding-top:10px; display:flex; justify-content:space-between; align-items:center;" },
+          el("span", { class: "muted font-semibold", style: "font-size:11px;", text: event.status === "ended" ? `Ended ${when(event.endedAt ?? event.endsAt)}` : `Starts ${when(event.startsAt ?? event.createdAt)}` }),
+          el("span", { style: "color:var(--blue); font-size:12px; font-weight:600;", text: "View Details →" })
+        )
+      );
 
       $("view").replaceChildren(
         el("div", { class: "view-head" },
@@ -7291,8 +7920,16 @@
           el("details", { style: "margin-top:8px;" },
             el("summary", { class: "muted", style: "cursor:pointer;", text: "Servers and bots (optional)" }),
             createServersBots.node)),
-        ...(data.events.length ? data.events.map(eventPanel)
-          : [el("section", { class: "panel", style: "margin-top:16px;" }, el("div", { class: "empty", text: "No tournament events yet." }))]));
+        el("section", { class: "panel", style: "margin-top:16px;" },
+          el("div", { class: "panel-head" },
+            el("h2", { text: "Events" }),
+            chip(`${data.events.length} Total`, "accent")),
+          el("div", { class: "note", text: "Click an event card to view its full details, scoring modifiers, and player leaderboard." }),
+          data.events.length
+            ? el("div", { class: "grid", style: "grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:14px; margin-top:14px;" },
+                ...data.events.map(eventCard))
+            : el("div", { class: "empty", style: "margin-top:14px;", text: "No tournament events yet." }))
+      );
       every(15000, async () => {
         if (state.view !== "tournaments" || document.activeElement?.closest?.("#view .panel") || document.querySelector("#view details[open]")) return;
         const fresh = await api("/admin/api/tournaments").catch(() => null);
@@ -7460,14 +8097,8 @@
         }
       });
 
-      $("view").replaceChildren(
-        el("div", { class: "view-head" },
-          el("div", {},
-            el("h1", { text: "Server Settings" }),
-            el("div", { class: "muted", text: "Configure authentication, password requirements, hosting IP whitelists, and the player web portal." })),
-          el("div", { class: "actions" }, btn("Refresh", showSettings, "ghost"))),
-
-        el("section", { class: "panel" },
+      
+      const panelAdmin = el("section", { class: "panel" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
             el("div", { class: "actions", style: "gap:10px; align-items:center;" },
               el("h2", { text: "Admin From Other Devices" }),
@@ -7521,9 +8152,8 @@
               const created = await addAdminCredentialModal();
               if (created) showSettings();
             }, "primary")) : null
-        ),
-
-        el("section", { class: "panel" },
+        );
+      const panelPassword = el("section", { class: "panel" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
             el("div", { class: "actions" },
               el("h2", { text: "Password Authentication" }),
@@ -7534,10 +8164,8 @@
             class: "note", text: settings.requirePassword
               ? "Passwords are required for in-game login. Players must register an account and enter the matching password to authenticate."
               : "Passwords are not checked: any player connecting to your backend can log in with any name and password."
-          })),
-
-        // Allowed builds (Core-Backend #164): which Fortnite builds may play on this backend.
-        el("section", { class: "panel", style: "margin-top:16px" },
+          }));
+      const panelBuilds = el("section", { class: "panel", style: "margin-top:16px" },
           (() => {
             const builds = settings.knownBuilds ?? [];
             const allowed = settings.allowedBuilds ?? null;
@@ -7570,9 +8198,8 @@
               el("p", { class: "note", text: "The Fortnite builds players may use on this backend. A build that isn't ticked is told an update is required when it starts (\"Update Required: You have required updates pending.\"), its logins are refused (\"Unable to login to Fortnite servers. Please try again later.\") and so are its matchmaking tickets. Gameservers host on any build. A change applies to the next login; players already in keep playing until they queue for a match or log in again." }),
               el("div", { style: "display:flex; flex-wrap:wrap; gap:8px 16px; margin-top:12px;" }, ...checks)
             ];
-          })()),
-
-        el("div", { class: "grid cols-2", style: "margin-top:16px" },
+          })());
+      const panelPortalReg = el("div", { class: "grid cols-2", style: "margin-top:16px" },
           el("section", { class: "panel" },
             el("div", { class: "panel-head", style: "margin-bottom:8px" },
               el("div", { class: "actions" },
@@ -7589,18 +8216,16 @@
                 settings.allowAutoRegistration ? chip("Enabled", "warn") : chip("Disabled")),
               toggleSwitch(settings.allowAutoRegistration, (checked) =>
                 save({ allowAutoRegistration: checked }, checked ? "In-game auto-creation enabled" : "In-game auto-creation disabled"))),
-            el("p", { class: "note", text: "When enabled, logging in with an unknown name automatically creates a new account in-game with the provided password. Only dedicated server accounts (CoreServer{n} or Server{n}) can be created without a password." }))),
-
-        el("section", { class: "panel", style: "margin-top:16px" },
+            el("p", { class: "note", text: "When enabled, logging in with an unknown name automatically creates a new account in-game with the provided password. Only dedicated server accounts (CoreServer{n} or Server{n}) can be created without a password." })));
+      const panelItemImages = el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
             el("div", { class: "actions" },
               el("h2", { text: "Item Images" }),
               settings.showItemImages !== false ? chip("Shown", "good") : chip("Hidden")),
             toggleSwitch(settings.showItemImages !== false, (checked) =>
               save({ showItemImages: checked }, checked ? "Item images shown" : "Item images hidden"))),
-          el("p", { class: "note", text: "Show item images (loaded from fortnite-api.com). The player portal's My Account page and the Item Shop views here show cosmetic icons, loaded from the public fortnite-api.com image host by the viewer's browser. Turn it off and no request goes to that host." })),
-
-        el("section", { class: "panel", style: "margin-top:16px" },
+          el("p", { class: "note", text: "Show item images (loaded from fortnite-api.com). The player portal's My Account page and the Item Shop views here show cosmetic icons, loaded from the public fortnite-api.com image host by the viewer's browser. Turn it off and no request goes to that host." }));
+      const panelFounder = el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
             el("div", { class: "actions" },
               el("h2", { text: "Default Founder & Campaign Access" }),
@@ -7611,26 +8236,21 @@
             class: "note", text: settings.defaultFoundersAccess
               ? "When enabled, newly registered accounts automatically receive Save the World Campaign Access and the Standard Founder's Pack. When disabled, accounts start with no access until granted manually or redeemed with a promotional/friend code."
               : "Newly registered accounts start with no Founder's Edition or Campaign Access. Access can be unlocked by redeeming a valid promotional or friend code on the web portal, or granted by an admin."
-          })),
-
-        el("section", { class: "panel", style: "margin-top:16px" },
+          }));
+      const panelTwitch = el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
             el("div", { class: "actions" },
               el("h2", { text: "Twitch Prime Pack for Season 3 Players" }),
               settings.twitchPrimePack ? chip("Given", "good") : chip("Off")),
             toggleSwitch(settings.twitchPrimePack === true, (checked) =>
               save({ twitchPrimePack: checked }, checked ? "Season 3 players get the Twitch Prime pack" : "The Twitch Prime pack is off"))),
-          el("p", { class: "note", text: "When enabled, a player whose locker loads on a Season 3 build (3.0 and later) is given Twitch Prime Pack #1's Sub Commander outfit and Slipstream glider, if they lack them. Its four sprays aren't in Season 3's builds, so they are not given. Turning it off doesn't take back what was given." })),
-
-        el("section", { class: "panel", style: "margin-top:16px" },
+          el("p", { class: "note", text: "When enabled, a player whose locker loads on a Season 3 build (3.0 and later) is given Twitch Prime Pack #1's Sub Commander outfit and Slipstream glider, if they lack them. Its four sprays aren't in Season 3's builds, so they are not given. Turning it off doesn't take back what was given." }));
+      const panelTimeline = el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
             el("h2", { text: "Seasonal Events & Timelines" })),
           el("p", { class: "note", text: "Seasonal events, event flags, Hexsylvania theater, and live calendar countdowns have moved to their dedicated management view. Configure and monitor all seasonal content on the " },
-            el("a", { href: "#/events", class: "btn ghost", style: "display:inline-flex; align-items:center; gap:4px; margin-left:4px; padding:2px 8px; font-size:12px;", text: "Events Tab →" }))),
-
-        
-
-        el("section", { class: "panel", style: "margin-top:16px" },
+            el("a", { href: "#/events", class: "btn ghost", style: "display:inline-flex; align-items:center; gap:4px; margin-left:4px; padding:2px 8px; font-size:12px;", text: "Events Tab →" })));
+      const panelHosting = el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head" },
             el("h2", { text: "Trusted Hosting IPs" }),
             (() => {
@@ -7659,9 +8279,8 @@
             newIpInput,
             addIpBtn
           )
-        ),
-
-        el("section", { class: "panel", style: "margin-top:16px" },
+        );
+      const panelStormShield = el("section", { class: "panel", style: "margin-top:16px" },
           (() => {
             const own = settings.structureLimits ?? {};
             const custom = settings.structureLimit || Object.keys(own).length;
@@ -7693,9 +8312,8 @@
                 }, "primary"),
                 btn("Use the game's", () => save({ structureLimit: null, structureLimits: Object.fromEntries(shields.map(({ key }) => [key, null])) },
                   "Storm Shields use the game's structure limit"), "ghost")));
-          })()),
-
-        el("section", { class: "panel", style: "margin-top:16px" },
+          })());
+      const panelCheats = el("section", { class: "panel", style: "margin-top:16px" },
           (() => {
             const mode = settings.cheats ?? "everyone";
             const allowedList = settings.cheatAccounts ?? [];
@@ -7751,9 +8369,8 @@
                 nameInput, addBtn,
                 el("datalist", { id: "cheat-account-names" }, players.map((account) => el("option", { value: account.displayName }))))
             ];
-          })()),
-
-        el("section", { class: "panel", style: "margin-top:16px" },
+          })());
+      const panelPortal = el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head" },
             el("h2", { text: "Player Web Portal" }),
             settings.publicAddress ? chip(`Public: ${settings.publicAddress}`, "sky") : null),
@@ -7764,7 +8381,38 @@
               navigator.clipboard.writeText(portalLink);
               toast("Portal URL copied to clipboard");
             }, "ghost"),
-            btn("Open portal", () => window.open(portalLink, "_blank"), "primary")))
+            btn("Open portal", () => window.open(portalLink, "_blank"), "primary")));
+
+      const settingsTabs = [
+        ["general", "General & Access"],
+        ["auth", "Authentication & Portal"],
+        ["gameplay", "Gameplay, STW & Cosmetics"]
+      ];
+      if (!settingsTabs.some(([k]) => k === state.settingsSub)) state.settingsSub = "general";
+
+      const settingsSubtabs = el("div", { class: "subtabs", role: "tablist", style: "margin: 14px 0 18px;" },
+        settingsTabs.map(([key, label]) => el("button", {
+          type: "button",
+          role: "tab",
+          "aria-selected": state.settingsSub === key ? "true" : "false",
+          onclick: () => { state.settingsSub = key; showSettings(); }
+        }, el("span", { text: label })))
+      );
+
+      const settingsContent = state.settingsSub === "general"
+        ? [panelAdmin, panelHosting, panelBuilds, panelCheats]
+        : state.settingsSub === "auth"
+          ? [panelPassword, panelPortalReg, panelPortal]
+          : [panelFounder, panelStormShield, panelTimeline, panelItemImages, panelTwitch];
+
+      $("view").replaceChildren(
+        el("div", { class: "view-head" },
+          el("div", {},
+            el("h1", { text: "Server Settings" }),
+            el("div", { class: "muted", text: "Configure authentication, password requirements, hosting IP whitelists, and the player web portal." })),
+          el("div", { class: "actions" }, btn("Refresh", showSettings, "ghost"))),
+        settingsSubtabs,
+        ...settingsContent
       );
     }
 
@@ -7880,6 +8528,7 @@
           hideLoginScreen();
           route();
           heartbeat();
+          syncRemoteSidebarWidth();
         } else if (data.requireAuth) {
           showLoginScreen();
         } else {
@@ -7887,13 +8536,87 @@
           updateAdminUserBar(null);
           route();
           heartbeat();
+          syncRemoteSidebarWidth();
         }
       } catch {
         route();
         heartbeat();
+        syncRemoteSidebarWidth();
       }
     }
 
+    function syncRemoteSidebarWidth() {
+      api("/admin/api/settings").then((serverSettings) => {
+        if (serverSettings && typeof serverSettings.sidebarWidth === "number") {
+          const width = Math.min(Math.max(serverSettings.sidebarWidth, 64), 420);
+          document.documentElement.style.setProperty("--sidebar-width", `${width}px`);
+          if (width <= 125) document.documentElement.dataset.sidebarCollapsed = "true";
+          else delete document.documentElement.dataset.sidebarCollapsed;
+          try { localStorage.setItem("core_admin_sidebar_width", String(width)); } catch {}
+        }
+      }).catch(() => {});
+    }
+
+    function initSidebarResizer() {
+      const resizer = document.getElementById("sidebar-resizer");
+      if (!resizer) return;
+      let startX = 0;
+      let startWidth = 240;
+      let saveTimer = null;
+
+      const setSidebarWidth = (w, persistRemote = false) => {
+        const width = Math.min(Math.max(w, 64), 420);
+        document.documentElement.style.setProperty("--sidebar-width", `${width}px`);
+        if (width <= 125) {
+          document.documentElement.dataset.sidebarCollapsed = "true";
+        } else {
+          delete document.documentElement.dataset.sidebarCollapsed;
+        }
+        try { localStorage.setItem("core_admin_sidebar_width", String(width)); } catch {}
+        if (persistRemote) {
+          clearTimeout(saveTimer);
+          saveTimer = setTimeout(() => {
+            api("/admin/api/settings", { sidebarWidth: width }).catch(() => {});
+          }, 300);
+        }
+        return width;
+      };
+
+      const onPointerMove = (e) => {
+        const diff = e.clientX - startX;
+        setSidebarWidth(startWidth + diff, false);
+      };
+
+      const onPointerUp = () => {
+        resizer.classList.remove("resizing");
+        document.body.style.removeProperty("cursor");
+        document.body.style.removeProperty("user-select");
+        window.removeEventListener("pointermove", onPointerMove);
+        window.removeEventListener("pointerup", onPointerUp);
+        const current = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--sidebar-width") || "240", 10);
+        setSidebarWidth(current, true);
+      };
+
+      resizer.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        startX = e.clientX;
+        const current = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--sidebar-width") || "240", 10);
+        startWidth = isNaN(current) ? 240 : current;
+        resizer.classList.add("resizing");
+        document.body.style.cursor = "col-resize";
+        document.body.style.userSelect = "none";
+        window.addEventListener("pointermove", onPointerMove);
+        window.addEventListener("pointerup", onPointerUp);
+      });
+
+      resizer.addEventListener("dblclick", () => {
+        const current = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--sidebar-width") || "240", 10);
+        const next = current <= 125 ? 240 : 68;
+        setSidebarWidth(next, true);
+      });
+    }
+
+    initSidebarResizer();
     setInterval(heartbeat, 10000);
     initAuthAndStart();
   </script>
