@@ -75,10 +75,10 @@ export const challengeModes = ["original", "interval", "manual"];
 //   a placeholder, and the storm circle item it asks for does not exist in those builds. 4.2 counts its own stat,
 //   touch_scavengerhunt_stormcircles, so it is not listed.
 export const brokenChallenges = [
-  { quest: "quest_br_watch_replay", title: "Watch a Match Replay", issue: "Core-Backend #269", url: "https://github.com/PongoDev/Core-Backend/issues/269",
+  { quest: "quest_br_watch_replay", title: "Watch a Match Replay", issue: "Core-Backend #269", url: "https://github.com/PongooDev/Core-Backend/issues/269",
     builds: ["4039451", "4053532"], reason: "Its objective is tied to the placeholder stat revive_athena_player and no client code reports a watched replay." },
   { quest: "quest_br_visit_scavengerhunt_stormcircles", title: "Visit the center of different Storm Circles in a single match", issue: "CoreV2 #299",
-    url: "https://github.com/PongoDev/CoreV2/issues/299", builds: ["4039451", "4053532"],
+    url: "https://github.com/PongooDev/CoreV2/issues/299", builds: ["4039451", "4053532"],
     reason: "Its objective uses the borrowed stat visit_location_animal_building_crab and the item it asks for does not exist in the build." }
 ];
 export const completeBrokenChallenges = (settingsValue = settingsProvider()) => settingsValue?.completeBrokenChallenges === true;
