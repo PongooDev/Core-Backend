@@ -6262,10 +6262,28 @@
             el("td", { text: code.multiplePerAccount ? "Repeatable" : "Once" }),
             el("td", { text: code.expiresAt ? new Date(code.expiresAt).toLocaleString() : "Never" }),
             el("td", {}, chip(code.status.replace("_", " "), code.status === "active" ? "good" : "")),
-            el("td", {}, code.status === "revoked" ? null : btn("Revoke", async () => {
-              if (!await confirmModal(`Revoke the code ending ${code.hint}? It can't be used again.`, { confirmText: "Revoke", confirmKind: "danger" })) return;
-              if (await act(api(`/admin/api/purchase-codes/${code.id}/revoke`, {}), "Code revoked")) purchaseShowCodes();
-            }, "ghost"))))))));
+            el("td", {},
+              code.status === "revoked"
+                ? el("div", { class: "actions", style: "gap:6px; justify-content:flex-end;" },
+                    btn("Reactivate", async () => {
+                      if (await act(api(`/admin/api/purchase-codes/${code.id}/reactivate`, {}), "Code reactivated")) purchaseShowCodes();
+                    }, "ghost small"),
+                    btn("Delete", async () => {
+                      if (!await confirmModal(`Delete the code ending ${code.hint} permanently? This cannot be undone.`, { title: "Delete Purchase Code", confirmText: "Delete", confirmKind: "danger" })) return;
+                      if (await act(api(`/admin/api/purchase-codes/${code.id}`, {}, "DELETE"), "Code deleted")) purchaseShowCodes();
+                    }, "ghost small")
+                  )
+                : el("div", { class: "actions", style: "gap:6px; justify-content:flex-end;" },
+                    btn("Revoke", async () => {
+                      if (!await confirmModal(`Revoke the code ending ${code.hint}? It can't be used again.`, { title: "Revoke Purchase Code", confirmText: "Revoke", confirmKind: "danger" })) return;
+                      if (await act(api(`/admin/api/purchase-codes/${code.id}/revoke`, {}), "Code revoked")) purchaseShowCodes();
+                    }, "ghost small"),
+                    btn("Delete", async () => {
+                      if (!await confirmModal(`Delete the code ending ${code.hint} permanently? This cannot be undone.`, { title: "Delete Purchase Code", confirmText: "Delete", confirmKind: "danger" })) return;
+                      if (await act(api(`/admin/api/purchase-codes/${code.id}`, {}, "DELETE"), "Code deleted")) purchaseShowCodes();
+                    }, "ghost small")
+                  )
+            )))))));
       };
       const purchaseMakeCodes = btn("Create code", async () => {
         const body = { code: purchaseCodeInput.value.trim() || undefined, offerId: purchaseCodeOffer.value, maxUses: Number(purchaseCodeUses.value) || 1,
