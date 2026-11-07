@@ -680,12 +680,16 @@ export function adminRoutes(context) {
       .map((cosmetic) => ({ ...cosmetic, owned: held.has(cosmetic.templateId.toLowerCase()) }));
     const type = String(req.query.type ?? "");
     const words = String(req.query.search ?? "").toLowerCase().split(/\s+/).filter(Boolean);
+    // owned=true (the locker's Owned only, #283): only the cosmetics the account owns, so none past the limit are missed.
+    const ownedOnly = req.query.owned === "true" || req.query.owned === "1";
     const matches = all.filter((cosmetic) => !type || cosmetic.type === type)
+      .filter((cosmetic) => !ownedOnly || cosmetic.owned)
       .filter((cosmetic) => words.every((word) => [cosmetic.name, cosmetic.templateId, cosmetic.type, cosmetic.rarity].some((text) => text.toLowerCase().includes(word))));
     res.json({
       build, version: versionOf(build), builds: cosmeticBuilds, hasProfile: Boolean(athena),
       types: [...new Set(all.map((cosmetic) => cosmetic.type))],
       total: all.length, owned: all.filter((cosmetic) => cosmetic.owned).length, matches: matches.length,
+      showItemImages: showItemImages(settings),
       items: matches.slice(0, Math.min(Number(req.query.limit) || 120, 1000))
     });
   });

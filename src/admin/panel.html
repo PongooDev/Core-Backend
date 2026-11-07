@@ -3302,7 +3302,7 @@
           s.ownedOnly = !s.ownedOnly;
           ownedToggle.className = `btn ${s.ownedOnly ? "primary" : "ghost"} small`;
           ownedToggle.querySelector("span").textContent = s.ownedOnly ? "Showing: Owned Only" : "Showing: All Items";
-          render();
+          load();
         }
       }, el("span", { text: s.ownedOnly ? "Showing: Owned Only" : "Showing: All Items" }));
       const summary = el("div", { class: "note" });
@@ -3316,11 +3316,12 @@
         options(buildSelect, data.builds.map(({ build, version }) => [build, `${version} (CL-${build})`]), data.build);
         options(typeSelect, [["", "Every type"], ...data.types.map((type) => [type, type])], s.type);
 
-        const displayedItems = s.ownedOnly ? data.items.filter((item) => item.owned) : data.items;
+        // Owned only asks the backend for the owned ones (owned=true), so none past the 300 shown are missed.
+        const displayedItems = data.items;
         summary.replaceChildren(
           `${fmt(data.owned)} / ${fmt(data.total)} cosmetics owned in ${data.version}`,
           data.hasProfile ? "" : " · no Battle Royale profile yet: a grant makes it",
-          displayedItems.length !== data.items.length ? ` · displaying ${fmt(displayedItems.length)} ${s.ownedOnly ? "owned" : "items"}` : ""
+          data.matches > data.items.length ? ` · showing ${fmt(data.items.length)} of ${fmt(data.matches)} matches` : ""
         );
 
         if (!displayedItems.length) {
@@ -3333,7 +3334,7 @@
         }
 
         results.replaceChildren(...displayedItems.map((item) => {
-          const icon = itemIcon(item.templateId, true, 48);
+          const icon = itemIcon(item.templateId, data.showItemImages !== false, 48);
           return el("div", {
             class: `card ${item.rarityCode}`,
             style: "display:flex; flex-direction:column; justify-content:space-between; gap:10px; cursor:default;"
@@ -3382,7 +3383,7 @@
 
       const load = async () => {
         s.search = search.value;
-        const query = new URLSearchParams({ build: s.build, search: s.search, type: s.type, limit: "300" });
+        const query = new URLSearchParams({ build: s.build, search: s.search, type: s.type, owned: String(s.ownedOnly), limit: "300" });
         const data = await act(api(`/admin/api/accounts/${a.id}/cosmetics?${query}`));
         if (!data || state.lockerShowcase !== s) return;
         s.data = data;
@@ -3495,7 +3496,7 @@
           data.matches > data.items.length ? ` · showing ${fmt(data.items.length)} of ${fmt(data.matches)} matches` : "");
 
         results.replaceChildren(...(data.items.length ? data.items.map((item) => {
-          const icon = itemIcon(item.templateId, true, 48);
+          const icon = itemIcon(item.templateId, data.showItemImages !== false, 48);
           return el("button", {
             type: "button",
             class: `card ${item.rarityCode}`,
@@ -3567,8 +3568,6 @@
         search.focus();
       });
     }
-
-    const cosmeticPicker = lockerShowcase;
 
     // Battle Royale's season level (Core-Backend #106): set to the start of a level, with its chase rewards.
     function seasonLevel(a) {
@@ -4163,7 +4162,6 @@
             location.hash = "#/players";
           }, "danger"))));
     }
-    const accountTab = manageTab;
 
     /* ---------- sessions ---------- */
     function sessionTable(sessions, withActions = true) {
@@ -6363,7 +6361,7 @@
                 }
               },
                 el("div", { style: "display:flex; gap:12px; align-items:center;" },
-                  itemIcon(c.templateId, true, 48),
+                  itemIcon(c.templateId, shop.showItemImages, 48),
                   el("div", { style: "min-width:0; flex:1;" },
                     el("div", { class: "k", text: c.type || "Cosmetic" }),
                     el("div", { class: "t", style: "font-weight:700; font-size:15px; line-height:1.3; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;", text: c.name }),

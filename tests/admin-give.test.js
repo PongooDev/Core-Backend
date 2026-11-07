@@ -67,6 +67,12 @@ test("Give by id refuses an unknown id without force, gives it with force, and r
     assert.equal((await admin(backend, grantPath, { templateId: "AthenaCharacter:cid_core_unknown", force: true })).body.granted, 1);
     const locker = (await admin(backend, `/accounts/${player.accountId}/cosmetics?search=halloween`)).body;
     assert.ok(locker.items.find((item) => item.templateId === cosmetic).owned);
+    assert.equal(typeof locker.showItemImages, "boolean");
+    // Owned only (#283): just the owned ones, however far down the build's list they are.
+    const owned = (await admin(backend, `/accounts/${player.accountId}/cosmetics?owned=true&limit=300`)).body;
+    assert.ok(owned.items.length > 0 && owned.items.every((item) => item.owned));
+    assert.equal(owned.matches, owned.owned);
+    assert.ok(owned.items.some((item) => item.templateId === cosmetic));
 
     for (const templateId of ["nocolon", "Hero:", ":name", "Hero:two words", "Hero:a:b", ""]) {
       const malformed = await admin(backend, grantPath, { templateId, quantity: 1, force: true });
