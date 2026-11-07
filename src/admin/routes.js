@@ -11,7 +11,7 @@ import { getItem } from "../gamedata/items.js";
 import { getQuest, questName } from "../gamedata/quests.js";
 import { athenaCosmetics } from "../gamedata/athena.js";
 import { dataBuilds, readGameData } from "../gamedata/read.js";
-import { recentLogs } from "../log.js";
+import { log, recentLogs } from "../log.js";
 import { sessionSummary } from "../matchmaking/sessions.js";
 import { defaultHostingIps, hostingIp, httpsProxied, invalidIpRanges, maxHostingIps, maxIpRanges } from "../network.js";
 import { customServerProblem, maxCustomServers } from "../matchmaking/custom-servers.js";
@@ -59,6 +59,7 @@ import { isServerAccountName, validatePassword } from "../accounts/password.js";
 import { EmailError } from "../accounts/store.js";
 import { rewardItem } from "../friendcodes/rewards.js";
 import { showItemImages } from "../services/portal/images.js";
+import { leaderboardOf, rulesets, statusOf, tournamentPlaylists } from "../tournaments/store.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const panel = path.join(here, "panel.html");
@@ -1826,6 +1827,46 @@ export function adminRoutes(context) {
     const success = context.friendCodes.delete(req.params.code);
     if (!success) return notFound(res, `Code "${req.params.code}" not found`);
     res.json({ success: true, deleted: req.params.code });
+  });
+
+  // Tournaments (Core-Backend #263, tournaments/store.js): the tournament playlists, their events with each one's
+  // leaderboard of points, and the admin's create, reset, end and delete.
+  const tournamentView = (event) => ({ ...event, players: undefined, status: statusOf(event),
+    playerCount: Object.keys(event.players ?? {}).length,
+    leaderboard: leaderboardOf(event, (accountId) => accounts.get(accountId)?.displayName ?? accountId) });
+  const tournamentsPayload = () => ({
+    playlists: tournamentPlaylists.map(({ id, name, playlistId, builds }) => ({ id, name, playlistId,
+      versions: [...new Set(builds.map((build) => versionOf(build)))] })),
+    rulesets: Object.entries(rulesets).map(([id, ruleset]) => ({ id, ...ruleset })),
+    events: context.tournaments.list().map(tournamentView)
+  });
+  router.get("/admin/api/tournaments", (req, res) => res.json(tournamentsPayload()));
+  router.post("/admin/api/tournaments", (req, res) => {
+    try {
+      const event = context.tournaments.create(req.body ?? {});
+      log("Admin", `Tournament event ${event.name} (${event.id}) created`);
+      res.status(201).json({ event: tournamentView(event), ...tournamentsPayload() });
+    } catch (err) {
+      invalid(res, err.message);
+    }
+  });
+  const tournamentAction = (action, verb) => (req, res) => {
+    const event = context.tournaments[action](req.params.id);
+    if (!event) return notFound(res, `No tournament event ${req.params.id}`);
+    log("Admin", `Tournament event ${event.name} (${event.id}) ${verb}`);
+    res.json({ event: tournamentView(event), ...tournamentsPayload() });
+  };
+  router.get("/admin/api/tournaments/:id", (req, res) => {
+    const event = context.tournaments.get(req.params.id);
+    if (!event) return notFound(res, `No tournament event ${req.params.id}`);
+    res.json(tournamentView(event));
+  });
+  router.post("/admin/api/tournaments/:id/reset", tournamentAction("reset", "reset"));
+  router.post("/admin/api/tournaments/:id/end", tournamentAction("end", "ended"));
+  router.delete("/admin/api/tournaments/:id", (req, res) => {
+    if (!context.tournaments.remove(req.params.id)) return notFound(res, `No tournament event ${req.params.id}`);
+    log("Admin", `Tournament event ${req.params.id} deleted`);
+    res.json({ success: true, ...tournamentsPayload() });
   });
 
   // Purchase codes (Core-Backend #248, store/purchasecodes.js): what the Store tab's purchase page asks for while the

@@ -1773,6 +1773,11 @@
             <line x1="3" y1="10" x2="21" y2="10" />
             <path d="m9 16 2 2 4-4" />
           </svg><span>Events</span></a>
+        <a href="#/tournaments" data-view="tournaments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z" />
+            <path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3" />
+          </svg><span>Tournaments</span></a>
         <a href="#/logs" data-view="logs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="3" y="4" width="18" height="16" rx="2.5" />
@@ -2867,7 +2872,7 @@
       for (const timer of state.timers) clearInterval(timer);
       state.timers = [];
       const resolvedView = view === "sessions" ? "matchmaking" : view;
-      const next = ["dashboard", "players", "matchmaking", "friends", "news", "shop", "battlepass", "events", "reports", "logs", "settings"].includes(resolvedView) ? resolvedView : "dashboard";
+      const next = ["dashboard", "players", "matchmaking", "friends", "news", "shop", "battlepass", "events", "tournaments", "reports", "logs", "settings"].includes(resolvedView) ? resolvedView : "dashboard";
       if (next !== state.view || !$("view").childElementCount) $("view").replaceChildren(el("div", { class: "empty", text: "Loading…" }));
       state.view = next;
       for (const link of document.querySelectorAll("nav.nav a")) link.setAttribute("aria-current", link.dataset.view === state.view ? "page" : "false");
@@ -2897,7 +2902,7 @@
       if (state.view === "reports") {
         state.reportId = accountId || null;
       }
-      ({ dashboard: showDashboard, players: showPlayers, matchmaking: showMatchmaking, sessions: showMatchmaking, friends: showFriends, news: showNews, shop: showShop, battlepass: showBattlePass, events: showEvents, reports: showReports, logs: showLogs, settings: showSettings })[state.view]();
+      ({ dashboard: showDashboard, players: showPlayers, matchmaking: showMatchmaking, sessions: showMatchmaking, friends: showFriends, news: showNews, shop: showShop, battlepass: showBattlePass, events: showEvents, tournaments: showTournaments, reports: showReports, logs: showLogs, settings: showSettings })[state.view]();
     }
     window.addEventListener("hashchange", route);
     const every = (ms, fn) => state.timers.push(setInterval(fn, ms));
@@ -7073,6 +7078,94 @@
       );
     }
     /* ---------- reports ---------- */
+    /* ---------- tournaments (Core-Backend #263) ---------- */
+    // Tournament playlists' events (4.2's Solo Showdown), each with its players' points from the matches they play in it
+    // and its leaderboard, scored by Epic's contest rules (tournaments/store.js). 4.2's client has no tournament screen.
+    async function showTournaments() {
+      const data = await act(api("/admin/api/tournaments"));
+      if (!data || state.view !== "tournaments") return;
+      const rerender = () => showTournaments();
+      const nameInput = el("input", { class: "field", placeholder: "Event name (optional)", maxlength: "64", style: "min-width:200px;" });
+      const playlistSelect = el("select", { class: "field", "aria-label": "Tournament playlist" },
+        data.playlists.map((p) => el("option", { value: p.id, text: `${p.name} (playlist ${p.playlistId}, ${p.versions.join(", ")})` })));
+      const rulesSelect = el("select", { class: "field", "aria-label": "Scoring rules" },
+        data.rulesets.map((r) => el("option", { value: r.id, text: r.name })));
+      const startInput = el("input", { class: "field", type: "datetime-local", "aria-label": "Starts" });
+      const endInput = el("input", { class: "field", type: "datetime-local", "aria-label": "Ends" });
+      const isoOf = (input) => (input.value ? new Date(input.value).toISOString() : null);
+      const rulesText = (id) => {
+        const r = data.rulesets.find((entry) => entry.id === id);
+        if (!r) return "";
+        const brackets = r.placementPoints.map(([upTo, points], i, all) => {
+          const from = i ? all[i - 1][0] + 1 : 1;
+          return `${from === upTo ? `#${upTo}` : `#${from}-${upTo}`}: ${points}`;
+        }).join(", ");
+        return `Placement points (${brackets})${r.pointsPerElimination ? ` + ${r.pointsPerElimination} per elimination` : ", no elimination points"}; `
+          + `only a player's first ${r.countedMatches} matches count, ${r.minimumMatches} to qualify; ties go to wins, then eliminations, then average placement.`;
+      };
+      const rulesNote = el("div", { class: "note", style: "margin-top:8px;", text: rulesText(rulesSelect.value) });
+      rulesSelect.addEventListener("change", () => { rulesNote.textContent = rulesText(rulesSelect.value); });
+      const statusKind = { running: "good", scheduled: "sky", ended: "warn" };
+      const when = (value) => (value ? new Date(value).toLocaleString() : "-");
+
+      const eventPanel = (event) => el("section", { class: "panel", style: "margin-top:16px;" },
+        el("div", { class: "panel-head" },
+          el("h2", { text: event.name }),
+          el("div", { class: "actions" },
+            chip(event.status, statusKind[event.status] ?? ""),
+            chip(`Playlist ${event.playlistId}`, "sky"),
+            btn("Reset points", async () => {
+              if (await confirmModal(`Clear every player's points in ${event.name}? It keeps its dates.`, { title: "Reset Event", confirmText: "Reset points", confirmKind: "danger" })) {
+                if (await act(api(`/admin/api/tournaments/${event.id}/reset`, {}), "Event points reset")) rerender();
+              }
+            }, "ghost"),
+            event.status !== "ended" ? btn("End event", async () => {
+              if (await confirmModal(`End ${event.name} now? It takes no more matches and its leaderboard is final.`, { title: "End Event", confirmText: "End event", confirmKind: "danger" })) {
+                if (await act(api(`/admin/api/tournaments/${event.id}/end`, {}), "Event ended")) rerender();
+              }
+            }, "ghost") : null,
+            btn("Delete", async () => {
+              if (await confirmModal(`Delete ${event.name} and its leaderboard?`, { title: "Delete Event", confirmText: "Delete", confirmKind: "danger" })) {
+                if (await act(api(`/admin/api/tournaments/${event.id}`, {}, "DELETE"), "Event deleted")) rerender();
+              }
+            }, "ghost"))),
+        el("div", { class: "note", style: "margin:8px 0;", text: `${data.rulesets.find((r) => r.id === event.ruleset)?.name ?? event.ruleset} · starts ${when(event.startsAt ?? event.createdAt)} · ends ${when(event.endedAt ?? event.endsAt)} · ${event.playerCount} players` }),
+        table([
+          ["#", (row) => String(row.rank), "num"],
+          ["Player", (row) => el("a", { href: `#/players/${row.accountId}`, text: row.displayName })],
+          ["Points", (row) => el("strong", { text: fmt(row.points) }), "num"],
+          ["Matches", (row) => String(row.matches), "num"],
+          ["Wins", (row) => String(row.wins), "num"],
+          ["Eliminations", (row) => String(row.eliminations), "num"],
+          ["Avg. place", (row) => (row.averagePlacement === null ? "-" : String(row.averagePlacement)), "num"],
+          ["Qualified", (row) => chip(row.qualified ? "Yes" : "Not yet", row.qualified ? "good" : "")]
+        ], event.leaderboard, "No matches played in this event yet."));
+
+      $("view").replaceChildren(
+        el("div", { class: "view-head" },
+          el("h1", { text: "Tournaments" }),
+          el("div", { class: "actions" }, btn("Refresh", rerender, "ghost"))),
+        el("section", { class: "panel" },
+          el("div", { class: "panel-head" }, el("h2", { text: "New event" })),
+          el("div", { class: "note", text: "A match in the event's playlist scores for its players while the event runs. Leave the dates empty to start now and run until you end it." }),
+          el("div", { class: "actions", style: "flex-wrap:wrap; gap:8px; margin-top:12px; align-items:center;" },
+            nameInput, playlistSelect, rulesSelect,
+            el("label", { class: "muted", text: "Starts" }), startInput,
+            el("label", { class: "muted", text: "Ends" }), endInput,
+            btn("Create event", async () => {
+              const body = { name: nameInput.value, playlist: playlistSelect.value, ruleset: rulesSelect.value, startsAt: isoOf(startInput), endsAt: isoOf(endInput) };
+              if (await act(api("/admin/api/tournaments", body), "Event created")) rerender();
+            }, "primary")),
+          rulesNote),
+        ...(data.events.length ? data.events.map(eventPanel)
+          : [el("section", { class: "panel", style: "margin-top:16px;" }, el("div", { class: "empty", text: "No tournament events yet." }))]));
+      every(15000, async () => {
+        if (state.view !== "tournaments" || document.activeElement?.closest?.("#view .panel")) return;
+        const fresh = await api("/admin/api/tournaments").catch(() => null);
+        if (fresh && state.view === "tournaments" && JSON.stringify(fresh.events) !== JSON.stringify(data.events)) rerender();
+      });
+    }
+
     async function showReports() {
       if (state.reportId) {
         const report = await act(api(`/admin/api/reports/${state.reportId}`));

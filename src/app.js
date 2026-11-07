@@ -13,6 +13,7 @@ import { configureBattlePass } from "./battlepass/season1.js";
 import { createFriendStore } from "./friends/store.js";
 import { createFriendCodeStore } from "./friendcodes/store.js";
 import { createPurchaseCodeStore } from "./store/purchasecodes.js";
+import { createTournamentStore } from "./tournaments/store.js";
 import { networkAdminRoutes } from "./admin/network.js";
 import { adminRoutes } from "./admin/routes.js";
 import { createTokenStore } from "./accounts/tokens.js";
@@ -120,6 +121,8 @@ export function createContext(config) {
     friends,
     friendCodes: createFriendCodeStore(config.dataDir),
     purchaseCodes: createPurchaseCodeStore(config.dataDir),
+    // The admin panel's tournament events and their points (Core-Backend #263).
+    tournaments: createTournamentStore(config.dataDir),
     stats,
     profiles,
     mailbox: createMailbox(),

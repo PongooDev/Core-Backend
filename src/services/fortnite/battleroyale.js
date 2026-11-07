@@ -237,6 +237,12 @@ export function battleRoyaleRoutes(context) {
       stats.recordResult(result.accountId, playlistId, { place, kills, secondsAlive, score, win, season });
       log("Battle Royale", `${result.accountId} placed ${place} in playlist ${playlistId} with ${kills} kills, ${secondsAlive} s alive,`
         + ` score ${score}` + (win ? " (a win)" : "") + ` in Season ${season}`);
+      // A tournament event's points (Core-Backend #263, tournaments/store.js): Solo Showdown's placement (and, by the
+      // event's rules, elimination) points.
+      for (const { eventId, points } of context.tournaments?.recordResult(result.accountId, playlistId,
+        { place, kills, matchId, build: build ?? (Object.hasOwn(buildVersions, currentBuild()) ? currentBuild() : null) }) ?? []) {
+        log("Battle Royale", `${result.accountId} scored ${points} points in tournament event ${eventId}`);
+      }
       const vbucks = payMatchVbucks(session, rewards, matchId, playlistId, { place, kills }, build);
       if (vbucks) log("Battle Royale", `${result.accountId} earned ${vbucks} V-Bucks in match ${matchId}`);
       const progress = () => {
