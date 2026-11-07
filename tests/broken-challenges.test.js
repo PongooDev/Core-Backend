@@ -42,7 +42,7 @@ const stars = (session) => { const stats = session.profile("athena").profile.sta
 test("the list: two confirmed challenges, each with its issue and builds, all with a placeholder objective", () => {
   assert.deepEqual(brokenChallenges.map((entry) => entry.quest), ["quest_br_watch_replay", "quest_br_visit_scavengerhunt_stormcircles"]);
   for (const entry of brokenChallenges) {
-    assert.match(entry.url, /^https:\/\/github\.com\/PongoDev\/.+\/issues\/\d+$/);
+    assert.match(entry.url, /^https:\/\/github\.com\/PongooDev\/.+\/issues\/\d+$/);
     assert.ok(entry.issue && entry.reason);
     assert.deepEqual(entry.builds, [v40, v41]);
   }
