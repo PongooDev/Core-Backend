@@ -10,6 +10,15 @@ export function createProfileStore(dataDir, settings = {}) {
   const file = (accountId, profileId) => path.join(dataDir, "accounts", accountId, "profiles", `${profileId}.json`);
   const cache = new Map();
   const cacheKey = (accountId, profileId) => `${accountId}:${profileId}`;
+  // The most recently used profiles, keyed to the file's mtime so an edit on disk is read again. Capped: a full
+  // locker's athena profile is megabytes, and a server with many accounts would otherwise keep every one in memory.
+  const maxCached = 256;
+  const remember = (key, target, profile, stat = fs.statSync(target, { throwIfNoEntry: false })) => {
+    cache.delete(key);
+    if (!stat) return;
+    cache.set(key, { mtimeMs: stat.mtimeMs, profile: structuredClone(profile) });
+    if (cache.size > maxCached) cache.delete(cache.keys().next().value);
+  };
 
   return {
     settings,
@@ -24,20 +33,20 @@ export function createProfileStore(dataDir, settings = {}) {
       const stat = fs.statSync(target, { throwIfNoEntry: false });
 
       if (stat) {
+        // The cache only saves reading and parsing the file: the starting items are the requesting build's (its
+        // starter banners), so a profile last loaded by another build still gets this build's added.
         const cached = cache.get(key);
-        if (cached && cached.mtimeMs === stat.mtimeMs) {
-          return structuredClone(cached.profile);
-        }
-
-        const existing = readJson(target);
+        const existing = cached && cached.mtimeMs === stat.mtimeMs ? structuredClone(cached.profile) : readJson(target);
         const changed = [addMissingStats(existing), addMissingItems(existing), upgradeItems(existing)];
         if (changed.some(Boolean)) {
           existing.rvn += 1;
           writeJson(target, existing);
-          const newStat = fs.statSync(target, { throwIfNoEntry: false });
-          cache.set(key, { mtimeMs: newStat ? newStat.mtimeMs : stat.mtimeMs, profile: structuredClone(existing) });
+          remember(key, target, existing);
+        } else if (!cached || cached.mtimeMs !== stat.mtimeMs) {
+          remember(key, target, existing, stat);
         } else {
-          cache.set(key, { mtimeMs: stat.mtimeMs, profile: structuredClone(existing) });
+          cache.delete(key);
+          cache.set(key, cached);
         }
         return existing;
       }
@@ -58,8 +67,7 @@ export function createProfileStore(dataDir, settings = {}) {
       addMissingStats(profile);
       addMissingItems(profile);
       writeJson(target, profile);
-      const newStat = fs.statSync(target, { throwIfNoEntry: false });
-      cache.set(key, { mtimeMs: newStat ? newStat.mtimeMs : Date.now(), profile: structuredClone(profile) });
+      remember(key, target, profile);
       return profile;
     },
 
@@ -78,11 +86,7 @@ export function createProfileStore(dataDir, settings = {}) {
       profile.updated = new Date().toISOString();
       const target = file(profile.accountId, profile.profileId);
       writeJson(target, profile);
-      const stat = fs.statSync(target, { throwIfNoEntry: false });
-      cache.set(cacheKey(profile.accountId, profile.profileId), {
-        mtimeMs: stat ? stat.mtimeMs : Date.now(),
-        profile: structuredClone(profile)
-      });
+      remember(cacheKey(profile.accountId, profile.profileId), target, profile);
     }
   };
 }
