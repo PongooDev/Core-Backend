@@ -59,7 +59,7 @@ import { isServerAccountName, validatePassword } from "../accounts/password.js";
 import { EmailError } from "../accounts/store.js";
 import { rewardItem } from "../friendcodes/rewards.js";
 import { showItemImages } from "../services/portal/images.js";
-import { leaderboardOf, rulesets, statusOf, tournamentPlaylists } from "../tournaments/store.js";
+import { leaderboardOf, rulesets, scoringOf, statusOf, tournamentPlaylists } from "../tournaments/store.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const panel = path.join(here, "panel.html");
@@ -1830,8 +1830,10 @@ export function adminRoutes(context) {
   });
 
   // Tournaments (Core-Backend #263, tournaments/store.js): the tournament playlists, their events with each one's
-  // leaderboard of points, and the admin's create, reset, end and delete.
-  const tournamentView = (event) => ({ ...event, players: undefined, status: statusOf(event),
+  // leaderboard of points, and the admin's create, reset, end and delete; and an event's custom scoring (#280): its own
+  // placement table and points an elimination, or back to its preset's.
+  const tournamentView = (event) => ({ ...event, players: undefined, status: statusOf(event), scoring: event.scoring ?? null,
+    effectiveScoring: (({ placementPoints, pointsPerElimination }) => ({ placementPoints, pointsPerElimination }))(scoringOf(event)),
     playerCount: Object.keys(event.players ?? {}).length,
     leaderboard: leaderboardOf(event, (accountId) => accounts.get(accountId)?.displayName ?? accountId) });
   const tournamentsPayload = () => ({
@@ -1860,6 +1862,18 @@ export function adminRoutes(context) {
     const event = context.tournaments.get(req.params.id);
     if (!event) return notFound(res, `No tournament event ${req.params.id}`);
     res.json(tournamentView(event));
+  });
+  // Body {scoring: {placementPoints: [[upTo, points], ...], pointsPerElimination}}, or {scoring: null} for the preset's.
+  router.post("/admin/api/tournaments/:id/scoring", (req, res) => {
+    let event;
+    try {
+      event = context.tournaments.setScoring(req.params.id, req.body?.scoring ?? null);
+    } catch (err) {
+      return invalid(res, err.message);
+    }
+    if (!event) return notFound(res, `No tournament event ${req.params.id}`);
+    log("Admin", `Tournament event ${event.name} (${event.id}) scoring ${event.scoring ? "set to custom points" : "reset to its preset's"}`);
+    res.json({ event: tournamentView(event), ...tournamentsPayload() });
   });
   router.post("/admin/api/tournaments/:id/reset", tournamentAction("reset", "reset"));
   router.post("/admin/api/tournaments/:id/end", tournamentAction("end", "ended"));

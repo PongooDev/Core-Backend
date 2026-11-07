@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { createTournamentStore, leaderboardOf, matchPoints, placementPoints, rulesets, statusOf, tournamentPlaylists } from "../src/tournaments/store.js";
+import { createTournamentStore, leaderboardOf, matchPoints, placementPoints, rulesets, scoringOf, statusOf, tournamentPlaylists, validateScoring } from "../src/tournaments/store.js";
 import { dedicatedServerToken, del, get, post, send, startBackend, userLogin } from "./helpers.js";
 
 // The admin panel's Tournaments tab (Core-Backend #263): Solo Showdown events, scored by Epic's contest rules.
@@ -120,6 +120,80 @@ test("the admin panel's Tournaments tab: create an event, matches reported in So
     assert.equal((await del(backend.port, `/admin/api/tournaments/${id}`)).status, 200);
     assert.equal((await get(backend.port, `/admin/api/tournaments/${id}`)).status, 404);
     assert.equal((await post(backend.port, `/admin/api/tournaments/${id}/end`, undefined, {})).status, 404);
+  } finally {
+    backend.close();
+  }
+});
+
+test("an event's custom points: validated, used in place of the preset's, rescoring its matches, and reset to default (#280)", () => withStore((store, dataDir) => {
+  const now = new Date("2026-11-07T12:00:00Z");
+  const scoring = { placementPoints: [[1, 50], [5, 20], [10, 5]], pointsPerElimination: 3 };
+  assert.deepEqual(validateScoring(scoring), scoring);
+  assert.deepEqual(validateScoring({ placementPoints: [{ upTo: 1, points: 10 }] }), { placementPoints: [[1, 10]], pointsPerElimination: 0 });
+  for (const [bad, reason] of [
+    [null, /Scoring is/], [{ placementPoints: [] }, /1 to 100 brackets/], [{ placementPoints: "1:100" }, /1 to 100 brackets/],
+    [{ placementPoints: [[0, 10]] }, /last place is a whole number/], [{ placementPoints: [[101, 10]] }, /last place/],
+    [{ placementPoints: [[1.5, 10]] }, /last place/], [{ placementPoints: [["1", 10]] }, /last place/],
+    [{ placementPoints: [[1, -1]] }, /points are a whole number/], [{ placementPoints: [[1, null]] }, /points are/],
+    [{ placementPoints: [[5, 10], [5, 9]] }, /Bracket 2's last place must come after bracket 1's \(5\)/], [{ placementPoints: [[5, 10], [3, 9]] }, /must come after/],
+    [{ placementPoints: [[1, 10]], pointsPerElimination: -2 }, /Points an elimination/], [{ placementPoints: [[1, 10]], pointsPerElimination: 0.5 }, /Points an elimination/]
+  ]) assert.throws(() => validateScoring(bad), reason, JSON.stringify(bad));
+
+  // Created with custom points: they score its matches; the preset still sets the counted and qualifying matches.
+  const custom = store.create({ ruleset: "soloShowdownMay2018", scoring }, now);
+  assert.deepEqual(custom.scoring, scoring);
+  assert.deepEqual(scoringOf(custom), { ...may, ...scoring });
+  assert.deepEqual(store.recordResult("a", 51, { place: 4, kills: 2, matchId: "m1" }, now).map(({ points }) => points), [20 + 6]);
+  store.recordResult("a", 51, { place: 11, kills: 1, matchId: "m2" }, now);
+  let board = leaderboardOf(createTournamentStore(dataDir).get(custom.id));
+  assert.deepEqual([board[0].points, board[0].qualified], [26 + 3, false]);
+
+  // Reset to default: the preset's points rescore the matches played (May 2018: 4th 88, 11th 55, no eliminations).
+  store.setScoring(custom.id, null);
+  assert.equal(store.get(custom.id).scoring, null);
+  assert.equal(leaderboardOf(store.get(custom.id))[0].points, 88 + 55);
+  // Set again: rescored the other way, and a bad table leaves the event's points as they were.
+  store.setScoring(custom.id, { placementPoints: [[100, 1]], pointsPerElimination: 10 });
+  assert.equal(leaderboardOf(createTournamentStore(dataDir).get(custom.id))[0].points, 1 + 20 + 1 + 10);
+  assert.throws(() => store.setScoring(custom.id, { placementPoints: [[3, 1], [2, 1]] }), /must come after/);
+  assert.deepEqual(store.get(custom.id).scoring, { placementPoints: [[100, 1]], pointsPerElimination: 10 });
+  assert.equal(store.setScoring("nope", null), null);
+  assert.throws(() => store.create({ scoring: { placementPoints: [] } }), /brackets/);
+
+  // An event made before #280 (no scoring field) scores by its preset.
+  const old = store.create({}, now);
+  delete old.scoring;
+  assert.deepEqual(scoringOf(old), may);
+  assert.equal(store.recordResult("b", 51, { place: 1, kills: 4, matchId: "o1" }, now).find(({ eventId }) => eventId === old.id).points, 100);
+}));
+
+test("the admin panel sets an event's custom points and resets them to its preset's (#280)", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "Pointer");
+    const created = await post(backend.port, "/admin/api/tournaments", undefined, { ruleset: "soloShowdownJuly2018", scoring: { placementPoints: [[1, 10]], pointsPerElimination: 1 } });
+    assert.equal(created.status, 201, JSON.stringify(created.body));
+    const { id } = created.body.event;
+    assert.deepEqual(created.body.event.effectiveScoring, { placementPoints: [[1, 10]], pointsPerElimination: 1 });
+    assert.equal((await post(backend.port, "/admin/api/tournaments", undefined, { scoring: { placementPoints: [[2, 5], [1, 9]] } })).status, 400);
+
+    const dedicated = await dedicatedServerToken(backend.port);
+    const text = JSON.stringify({ playlistId: 51, matchId: "p1", countWins: true, results: [{ accountId: player.accountId, place: 1, kills: 3, secondsAlive: 600 }] });
+    await send({ host: "127.0.0.1", port: backend.port, method: "POST", path: "/fortnite/api/game/v2/battleroyale/recordresults", headers: {
+      "User-Agent": "Core V2", Authorization: `bearer ${dedicated}`, "Content-Type": "application/json", "Content-Length": Buffer.byteLength(text) } }, text);
+    assert.equal((await get(backend.port, `/admin/api/tournaments/${id}`)).body.leaderboard[0].points, 13);
+
+    const set = await post(backend.port, `/admin/api/tournaments/${id}/scoring`, undefined, { scoring: { placementPoints: [[1, 200], [100, 1]], pointsPerElimination: 0 } });
+    assert.equal(set.status, 200, JSON.stringify(set.body));
+    assert.equal(set.body.event.leaderboard[0].points, 200);
+    assert.equal((await post(backend.port, `/admin/api/tournaments/${id}/scoring`, undefined, { scoring: { placementPoints: [[1, -5]] } })).status, 400);
+    assert.equal((await post(backend.port, "/admin/api/tournaments/nope/scoring", undefined, { scoring: null })).status, 404);
+
+    // Reset to default: July 2018's, 100 for the win and 6 an elimination.
+    const reset = await post(backend.port, `/admin/api/tournaments/${id}/scoring`, undefined, { scoring: null });
+    assert.equal(reset.body.event.scoring, null);
+    assert.equal(reset.body.event.effectiveScoring.pointsPerElimination, 6);
+    assert.equal(reset.body.event.leaderboard[0].points, 100 + 18);
   } finally {
     backend.close();
   }

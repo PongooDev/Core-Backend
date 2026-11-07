@@ -7104,9 +7104,82 @@
           + `only a player's first ${r.countedMatches} matches count, ${r.minimumMatches} to qualify; ties go to wins, then eliminations, then average placement.`;
       };
       const rulesNote = el("div", { class: "note", style: "margin-top:8px;", text: rulesText(rulesSelect.value) });
-      rulesSelect.addEventListener("change", () => { rulesNote.textContent = rulesText(rulesSelect.value); });
+      const presetScoring = (id) => {
+        const r = data.rulesets.find((entry) => entry.id === id) ?? data.rulesets[0];
+        return { placementPoints: r.placementPoints.map(([upTo, points]) => [upTo, points]), pointsPerElimination: r.pointsPerElimination };
+      };
+      const sameScoring = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+      // An editable placement table (each bracket's last place and its points, its first place following the bracket
+      // before) and the points an elimination (Core-Backend #280). value() is what's typed, as numbers; load() fills it.
+      const scoringEditor = (initial) => {
+        const rowsBox = el("div", { style: "display:grid; gap:6px; margin-top:8px;" });
+        const elimInput = el("input", { class: "field", type: "number", min: "0", step: "1", style: "width:90px;", "aria-label": "Points an elimination" });
+        const numberOf = (input) => (input.value.trim() === "" ? NaN : Number(input.value));
+        let rows = [];
+        const renumber = () => rows.forEach((row, i) => {
+          const from = i ? numberOf(rows[i - 1].upTo) + 1 : 1;
+          row.from.textContent = Number.isFinite(from) ? `#${from} to` : "to";
+        });
+        const addRow = (upTo = "", points = "") => {
+          const row = {
+            from: el("span", { class: "muted", style: "min-width:64px;" }),
+            upTo: el("input", { class: "field", type: "number", min: "1", max: "100", step: "1", value: String(upTo), style: "width:80px;", "aria-label": "Last place of the bracket", oninput: () => renumber() }),
+            points: el("input", { class: "field", type: "number", min: "0", step: "1", value: String(points), style: "width:90px;", "aria-label": "Points for the bracket" })
+          };
+          row.node = el("div", { class: "actions", style: "gap:8px; align-items:center; justify-content:flex-start;" },
+            row.from, row.upTo, el("span", { class: "muted", text: "points" }), row.points,
+            btn("Remove", () => { rows = rows.filter((other) => other !== row); row.node.remove(); renumber(); }, "ghost"));
+          rows.push(row);
+          rowsBox.append(row.node);
+          renumber();
+        };
+        const load = (scoring) => {
+          rows = [];
+          rowsBox.replaceChildren();
+          scoring.placementPoints.forEach(([upTo, points]) => addRow(upTo, points));
+          elimInput.value = String(scoring.pointsPerElimination);
+        };
+        load(initial);
+        return {
+          load,
+          value: () => ({ placementPoints: rows.map((row) => [numberOf(row.upTo), numberOf(row.points)]), pointsPerElimination: numberOf(elimInput) }),
+          node: el("div", {},
+            el("div", { class: "note", style: "margin-top:8px;", text: "Each bracket gives its points to the places from the one after the bracket before down to its last place; a place past the last bracket scores none (places go up to 100)." }),
+            rowsBox,
+            el("div", { class: "actions", style: "gap:8px; margin-top:8px; align-items:center; justify-content:flex-start;" },
+              btn("Add bracket", () => addRow(rows.length ? (numberOf(rows[rows.length - 1].upTo) + 1 || "") : 1, 0), "ghost"),
+              el("label", { class: "muted", text: "Points an elimination" }), elimInput))
+        };
+      };
+      const createScoring = scoringEditor(presetScoring(rulesSelect.value));
+      rulesSelect.addEventListener("change", () => {
+        rulesNote.textContent = rulesText(rulesSelect.value);
+        createScoring.load(presetScoring(rulesSelect.value));
+      });
       const statusKind = { running: "good", scheduled: "sky", ended: "warn" };
       const when = (value) => (value ? new Date(value).toLocaleString() : "-");
+
+      // An event's points (#280): its own placement table and points an elimination, saved over its preset's (its
+      // leaderboard rescores the matches already played), or Reset to default for the preset's again.
+      const eventScoring = (event) => {
+        const editor = scoringEditor(event.effectiveScoring);
+        const preset = presetScoring(event.ruleset);
+        const elim = event.effectiveScoring.pointsPerElimination;
+        return el("details", { style: "margin:8px 0;" },
+          el("summary", { class: "muted", style: "cursor:pointer;", text: `Points: ${event.scoring ? "custom" : "the preset's"}${elim ? `, ${elim} an elimination` : ""} (edit)` }),
+          editor.node,
+          el("div", { class: "actions", style: "gap:8px; margin-top:8px; justify-content:flex-start;" },
+            btn("Save points", async () => {
+              const scoring = editor.value();
+              const body = { scoring: sameScoring(scoring, preset) ? null : scoring };
+              if (await act(api(`/admin/api/tournaments/${event.id}/scoring`, body), "Event points saved")) rerender();
+            }, "primary"),
+            btn("Reset to default", async () => {
+              editor.load(preset);
+              if (!event.scoring) return;
+              if (await act(api(`/admin/api/tournaments/${event.id}/scoring`, { scoring: null }), "Event points back to the preset's")) rerender();
+            }, "ghost")));
+      };
 
       const eventPanel = (event) => el("section", { class: "panel", style: "margin-top:16px;" },
         el("div", { class: "panel-head" },
@@ -7129,7 +7202,8 @@
                 if (await act(api(`/admin/api/tournaments/${event.id}`, {}, "DELETE"), "Event deleted")) rerender();
               }
             }, "ghost"))),
-        el("div", { class: "note", style: "margin:8px 0;", text: `${data.rulesets.find((r) => r.id === event.ruleset)?.name ?? event.ruleset} · starts ${when(event.startsAt ?? event.createdAt)} · ends ${when(event.endedAt ?? event.endsAt)} · ${event.playerCount} players` }),
+        el("div", { class: "note", style: "margin:8px 0;", text: `${data.rulesets.find((r) => r.id === event.ruleset)?.name ?? event.ruleset}${event.scoring ? " (custom points)" : ""} · starts ${when(event.startsAt ?? event.createdAt)} · ends ${when(event.endedAt ?? event.endsAt)} · ${event.playerCount} players` }),
+        eventScoring(event),
         table([
           ["#", (row) => String(row.rank), "num"],
           ["Player", (row) => el("a", { href: `#/players/${row.accountId}`, text: row.displayName })],
@@ -7153,14 +7227,21 @@
             el("label", { class: "muted", text: "Starts" }), startInput,
             el("label", { class: "muted", text: "Ends" }), endInput,
             btn("Create event", async () => {
-              const body = { name: nameInput.value, playlist: playlistSelect.value, ruleset: rulesSelect.value, startsAt: isoOf(startInput), endsAt: isoOf(endInput) };
+              const scoring = createScoring.value();
+              const body = { name: nameInput.value, playlist: playlistSelect.value, ruleset: rulesSelect.value,
+                scoring: sameScoring(scoring, presetScoring(rulesSelect.value)) ? null : scoring, startsAt: isoOf(startInput), endsAt: isoOf(endInput) };
               if (await act(api("/admin/api/tournaments", body), "Event created")) rerender();
             }, "primary")),
-          rulesNote),
+          rulesNote,
+          el("details", { style: "margin-top:8px;" },
+            el("summary", { class: "muted", style: "cursor:pointer;", text: "Custom points (optional)" }),
+            createScoring.node,
+            el("div", { class: "actions", style: "margin-top:8px; justify-content:flex-start;" },
+              btn("Reset to default", () => createScoring.load(presetScoring(rulesSelect.value)), "ghost")))),
         ...(data.events.length ? data.events.map(eventPanel)
           : [el("section", { class: "panel", style: "margin-top:16px;" }, el("div", { class: "empty", text: "No tournament events yet." }))]));
       every(15000, async () => {
-        if (state.view !== "tournaments" || document.activeElement?.closest?.("#view .panel")) return;
+        if (state.view !== "tournaments" || document.activeElement?.closest?.("#view .panel") || document.querySelector("#view details[open]")) return;
         const fresh = await api("/admin/api/tournaments").catch(() => null);
         if (fresh && state.view === "tournaments" && JSON.stringify(fresh.events) !== JSON.stringify(data.events)) rerender();
       });

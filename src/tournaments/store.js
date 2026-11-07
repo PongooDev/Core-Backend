@@ -37,21 +37,53 @@ export function placementPoints(ruleset, place) {
 }
 export const matchPoints = (ruleset, { place, kills }) => placementPoints(ruleset, place) + ruleset.pointsPerElimination * kills;
 
+// An event's custom scoring (Core-Backend #280): the admin's own placement table and points an elimination, in place of
+// its preset's (event.scoring, null for the preset's). The preset still sets the counted and qualifying matches.
+export const maxPlace = 100;
+const maxPoints = 100000;
+const isWhole = (value, min, max) => Number.isInteger(value) && value >= min && value <= max;
+// Checks and normalises custom scoring: {placementPoints: [[upTo, points], ...] (places 1 up, each bracket ending further
+// down, up to place 100; a place past the last bracket scores none), pointsPerElimination}. Throws an Error with the reason.
+export function validateScoring(scoring) {
+  if (!scoring || typeof scoring !== "object" || Array.isArray(scoring)) throw new Error("Scoring is {placementPoints, pointsPerElimination}.");
+  const table = scoring.placementPoints;
+  if (!Array.isArray(table) || !table.length || table.length > maxPlace) throw new Error(`The placement table has 1 to ${maxPlace} brackets.`);
+  const placementPoints = table.map((bracket, index) => {
+    const [upTo, points] = Array.isArray(bracket) ? bracket : [bracket?.upTo, bracket?.points];
+    if (!isWhole(upTo, 1, maxPlace)) throw new Error(`Bracket ${index + 1}'s last place is a whole number from 1 to ${maxPlace}.`);
+    if (!isWhole(points, 0, maxPoints)) throw new Error(`Bracket ${index + 1}'s points are a whole number from 0 to ${maxPoints}.`);
+    return [upTo, points];
+  });
+  placementPoints.forEach(([upTo], index) => {
+    if (index && upTo <= placementPoints[index - 1][0]) throw new Error(`Bracket ${index + 1}'s last place must come after bracket ${index}'s (${placementPoints[index - 1][0]}).`);
+  });
+  const pointsPerElimination = scoring.pointsPerElimination ?? 0;
+  if (!isWhole(pointsPerElimination, 0, maxPoints)) throw new Error(`Points an elimination are a whole number from 0 to ${maxPoints}.`);
+  return { placementPoints, pointsPerElimination };
+}
+
+// The rules an event scores by: its preset, with its custom scoring over it when it has one.
+export function scoringOf(event) {
+  const ruleset = rulesets[event.ruleset] ?? rulesets[defaultRuleset];
+  return event.scoring ? { ...ruleset, ...event.scoring } : ruleset;
+}
+
 const maxEvents = 100;
 const maxName = 64;
 const isDate = (value) => typeof value === "string" && !Number.isNaN(Date.parse(value));
 
 // An event's leaderboard: its players by points, then wins, eliminations and average placement (lower is better), as the
 // contest rules break ties. Ranks are 1 up, a tie on all four sharing one.
+// Each match's points come from the event's scoring now, so a change to it rescores the matches already played.
 export function leaderboardOf(event, nameOf = (accountId) => accountId) {
-  const ruleset = rulesets[event.ruleset] ?? rulesets[defaultRuleset];
+  const ruleset = scoringOf(event);
   const rows = Object.entries(event.players ?? {}).map(([accountId, player]) => {
     const counted = player.matches;
     const sum = (pick) => counted.reduce((total, match) => total + pick(match), 0);
     return {
       accountId,
       displayName: nameOf(accountId),
-      points: sum((match) => match.points),
+      points: sum((match) => matchPoints(ruleset, match)),
       matches: counted.length,
       wins: counted.filter((match) => match.place === 1).length,
       eliminations: sum((match) => match.kills),
@@ -100,8 +132,9 @@ export function createTournamentStore(dataDir) {
 
     get,
 
-    // Makes an event: {name, playlist (a tournamentPlaylists id), ruleset (a rulesets key), startsAt, endsAt (ISO dates,
-    // both optional: it runs from now until ended)}. Throws an Error with the reason.
+    // Makes an event: {name, playlist (a tournamentPlaylists id), ruleset (a rulesets key), scoring (custom scoring, see
+    // validateScoring; optional, the preset's when left out or null), startsAt, endsAt (ISO dates, both optional: it runs
+    // from now until ended)}. Throws an Error with the reason.
     create(options = {}, now = new Date()) {
       const playlist = tournamentPlaylists.find((entry) => entry.id === (options.playlist ?? tournamentPlaylists[0].id));
       if (!playlist) throw new Error(`Unknown tournament playlist ${String(options.playlist)}.`);
@@ -115,10 +148,21 @@ export function createTournamentStore(dataDir) {
       const startsAt = options.startsAt ? new Date(options.startsAt).toISOString() : null;
       const endsAt = options.endsAt ? new Date(options.endsAt).toISOString() : null;
       if (startsAt && endsAt && Date.parse(endsAt) <= Date.parse(startsAt)) throw new Error("An event ends after it starts.");
+      const scoring = options.scoring === undefined || options.scoring === null ? null : validateScoring(options.scoring);
       if (Object.keys(load().events).length >= maxEvents) throw new Error(`At most ${maxEvents} events are kept; delete an old one first.`);
       const event = { id: crypto.randomUUID().replaceAll("-", ""), name, playlist: playlist.id, playlistId: playlist.playlistId, ruleset,
-        startsAt, endsAt, createdAt: now.toISOString(), endedAt: null, players: {} };
+        scoring, startsAt, endsAt, createdAt: now.toISOString(), endedAt: null, players: {} };
       load().events[event.id] = event;
+      save();
+      return event;
+    },
+
+    // Sets an event's custom scoring (validateScoring), or with null puts it back on its preset's. Its leaderboard
+    // rescores the matches already played. Throws an Error with the reason; null when there's no such event.
+    setScoring(id, scoring) {
+      const event = get(id);
+      if (!event) return null;
+      event.scoring = scoring === null || scoring === undefined ? null : validateScoring(scoring);
       save();
       return event;
     },
@@ -158,7 +202,7 @@ export function createTournamentStore(dataDir) {
       for (const event of Object.values(load().events)) {
         if (event.playlistId !== Number(playlistId) || !isRunning(event, now)) continue;
         if (build && !hasLtm(event.playlist, build)) continue;
-        const ruleset = rulesets[event.ruleset] ?? rulesets[defaultRuleset];
+        const ruleset = scoringOf(event);
         const player = (event.players[accountId] ??= { matches: [] });
         if (matchId && player.matches.some((match) => match.matchId === matchId)) continue;
         if (player.matches.length >= ruleset.countedMatches) continue;
