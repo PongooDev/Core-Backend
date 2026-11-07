@@ -175,11 +175,11 @@ test("the admin panel gives the full locker and takes back only what it gave", a
     // drop, Smooth Ride, which 3.6's drop, and Ride the Lightning, which 4.0's drop (1.8.2 adds Aerial Assault One,
     // 1.10 the Winter Bus, 1.11 Season 2's, 2.2 two emoticons, 2.4.2 Alpine Ace and its flags, 2.5 the Valentine's and Lunar New Year ones,
     // 3.0 Season 3's, 3.1 Rex, Burnout and the rest, 3.2 Power Chord and the rest, 3.3 none, 3.5.1 3.4's and 3.5's: Raven,
-    // Rabbit Raider, Leviathan and the rest, and the locker's Random entries, 3.6 Steelsight, Brite Gunner and the rest, 4.0
+    // Rabbit Raider, Leviathan and the rest (not the locker's Random entries, CoreV2 #306), 3.6 Steelsight, Brite Gunner and the rest, 4.0
     // Season 4's, its sprays and loading screens, 4.1 the Snap emote, 4.2 the Hazard set, Venturion and the rest).
     const lockerIds = [...inBuild("4072250", () => Object.keys(athenaCosmetics())), "AthenaBattleBus:bbid_winterbus", "AthenaDance:eid_smoothride",
       "AthenaSkyDiveContrail:trails_id_008_ridethelightning"]
-      .filter((id) => !/cid_00\d_athena_commando_\w_default|duo_umbrella|squad_umbrella|eid_gunshow|emoji_placeholder/i.test(id));
+      .filter((id) => !/cid_00\d_athena_commando_\w_default|duo_umbrella|squad_umbrella|eid_gunshow|emoji_placeholder|^athena[a-z]+:[a-z]+_random$/i.test(id));
     const bannerRows = inBuild("3724489", bannerIds);
     const icon = bannerRows.find((id) => /^HomebaseBannerIcon:FounderTier/.test(id));
     assert.ok(icon && !Object.values((await account()).items).some((item) => item.templateId === icon));
@@ -365,7 +365,7 @@ test("the admin panel gives single cosmetics of the chosen build, and refuses wh
     // unused umbrellas.
     listed = await list("?build=3724489");
     const lockerIds = inBuild("3724489", () => Object.keys(athenaCosmetics()))
-      .filter((id) => !/cid_00\d_athena_commando_\w_default|duo_umbrella|squad_umbrella|eid_gunshow|emoji_placeholder/i.test(id));
+      .filter((id) => !/cid_00\d_athena_commando_\w_default|duo_umbrella|squad_umbrella|eid_gunshow|emoji_placeholder|^athena[a-z]+:[a-z]+_random$/i.test(id));
     assert.deepEqual([listed.body.build, listed.body.total, listed.body.matches], ["3724489", lockerIds.length, lockerIds.length]);
     assert.deepEqual(listed.body.items.map((item) => item.templateId).sort(), [...lockerIds].sort());
     const byId = (body, templateId) => body.items.find((item) => item.templateId === templateId);

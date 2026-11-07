@@ -1,5 +1,12 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { inBuild } from "../src/builds/context.js";
+import { grantCosmetic, grantFullLocker, lockerCosmeticId, lockerCosmetics } from "../src/profiles/athena.js";
+import { openSession } from "../src/profiles/session.js";
+import { createProfileStore } from "../src/profiles/store.js";
 import { post, send, startBackend, userLogin } from "./helpers.js";
 
 // The locker's Random entries (Core-Backend #278): from 4.0 the client equips a random customization selector by its
@@ -84,5 +91,39 @@ test("builds without random selectors refuse them, show the slot's default, and 
     assert.match(back.favorite_pickaxe, /^AthenaPickaxe:halloweenscythe$/i);
   } finally {
     backend.close();
+  }
+});
+
+// CoreV2 #306 (and #298's crash at +0xA5161C): a Random entry held as a profile item crashed 4.1 on loading into a match,
+// the client's own local item for it failing to be made. The full locker gave them. They are never locker items now, and
+// a locker holding one loses the item on its next load, whatever gave it; a slot holding the id keeps it.
+test("the Random entries are never profile items: the full locker leaves them out, and held ones go, keeping the slots (CoreV2 #306)", () => {
+  const randoms = ["AthenaCharacter:cid_random", "AthenaBackpack:bid_random", "AthenaGlider:glider_random", "AthenaPickaxe:pickaxe_random",
+    "AthenaLoadingScreen:lsid_random", "AthenaSkyDiveContrail:trails_random"];
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-backend-random-"));
+  try {
+    inBuild("4053532", () => {
+      for (const id of randoms) assert.equal(lockerCosmeticId(id), undefined, id);
+      assert.ok(!lockerCosmetics().some((id) => /_random$/i.test(id)));
+      // An account the full locker gave them before, with the Random pickaxe equipped.
+      const accountId = "heldrandoms";
+      const file = path.join(dataDir, "accounts", accountId, "profiles", "athena.json");
+      fs.mkdirSync(path.dirname(file), { recursive: true });
+      const items = Object.fromEntries([...randoms, "AthenaGlider:defaultglider", "AthenaPickaxe:defaultpickaxe"]
+        .map((templateId) => [templateId, { templateId, attributes: { level: 1, item_seen: 1, favorite: 0 }, quantity: 1 }]));
+      fs.writeFileSync(file, JSON.stringify({ profileId: "athena", accountId, rvn: 3, wipeNumber: 1, version: "core", commandRevision: 2, items,
+        stats: { attributes: { level: 1, xp: 0, favorite_pickaxe: "AthenaPickaxe:pickaxe_random", favorite_glider: "AthenaGlider:defaultglider",
+          favorite_character: "AthenaCharacter:cid_random" } } }));
+      const session = openSession(createProfileStore(dataDir), accountId);
+      const { profile } = session.profile("athena");
+      for (const id of randoms) assert.equal(profile.items[id], undefined, id);
+      assert.equal(profile.stats.attributes.favorite_pickaxe, "AthenaPickaxe:pickaxe_random");
+      assert.equal(profile.stats.attributes.favorite_character, "AthenaCharacter:cid_random");
+      grantFullLocker(session);
+      for (const id of randoms) assert.equal(session.profile("athena").profile.items[id], undefined, id);
+      assert.equal(grantCosmetic(session, "AthenaPickaxe:pickaxe_random"), null);
+    });
+  } finally {
+    fs.rmSync(dataDir, { recursive: true, force: true });
   }
 });

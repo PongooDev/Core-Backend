@@ -106,8 +106,14 @@ const neverGivenTemplate = (templateId) => {
 // Locker items the shop never sold (Core-Backend #95): the tiered umbrellas and the preseason gliders.
 const notShopGliders = ["AthenaGlider:umbrella_bronze", "AthenaGlider:umbrella_silver", "AthenaGlider:umbrella_gold",
   "AthenaGlider:umbrella_platinum", "AthenaGlider:preseasonglider", "AthenaGlider:preseasonglider_elite"];
+// - The locker's Random entries (CID_Random, BID_Random, Glider_Random, Pickaxe_Random, LSID_Random, Trails_Random; 3.5.1's
+//   data on): the client makes its own local item for each (CoreV2 #306). A profile item of one crashed 4.1 on loading
+//   into a match: the client's sub_A515B0 walks UFortGameData::RandomItemPickers, sub_DFE810 returns null for a picker
+//   the profile already holds as an item, and it reads +0x98 of that null (at +0xA5161C, CoreV2 #298). The full locker
+//   gave them. A locker that holds one loses the item; a slot holding the id keeps it (the Random entry, #278).
+const isRandomSelectorId = (templateId) => /^athena[a-z]+:[a-z]+_random$/i.test(String(templateId ?? ""));
 const isLockerItem = (templateId) => !notLockerItems.some((id) => id.toLowerCase() === String(templateId).toLowerCase())
-  && !neverGivenTemplate(templateId);
+  && !neverGivenTemplate(templateId) && !isRandomSelectorId(templateId);
 const heldNonLockerItems = (profile) => Object.entries(profile.items)
   .filter(([, item]) => !isLockerItem(item.templateId)).map(([itemId]) => itemId);
 // The build's locker cosmetics, as its game data spells them.
@@ -275,6 +281,13 @@ function removeCosmetic(tracker, itemId) {
   if (Array.isArray(profile.coreDances)) profile.coreDances = profile.coreDances.map((id) => (sameId(String(id ?? ""), itemId) ? "" : id));
 }
 
+// A held item that is never a locker item leaves (removeCosmetic), but a Random entry's leaves the slots holding its id:
+// that is the Random entry, which the client resolves without the item (#278, CoreV2 #306).
+function removeNonLockerItem(tracker, itemId) {
+  if (isRandomSelectorId(tracker.profile.items[itemId]?.templateId)) tracker.removeItem(itemId);
+  else removeCosmetic(tracker, itemId);
+}
+
 // A cosmetic leaving the locker by its item id or template id (3.6's returns, store/refunds.js): whether it was there.
 export function removeCosmeticItem(session, idOrTemplate) {
   const tracker = session.profile("athena");
@@ -325,7 +338,7 @@ export function setUpAthena(session) {
   }
   for (const templateId of missing(profile, starterIds(profile, settings))) addCosmetic(tracker, templateId, true);
   for (const templateId of earnedCosmetics(profile, settings)) grantCosmetic(session, templateId);
-  for (const itemId of heldNonLockerItems(profile)) removeCosmetic(tracker, itemId);
+  for (const itemId of heldNonLockerItems(profile)) removeNonLockerItem(tracker, itemId);
   for (const templateId of missingSplitBackpacks(profile)) grantCosmetic(session, templateId);
   for (const templateId of twitchPrimeCosmetics(settings)) grantCosmetic(session, templateId);
   if (settings.giveAllCosmetics) {
@@ -457,7 +470,7 @@ export function removeFullLocker(session) {
   }
   // What is never a locker item goes too, however it came (Core-Backend #161: the full locker gave EID_GunShow).
   for (const itemId of heldNonLockerItems(profile)) {
-    removeCosmetic(tracker, itemId);
+    removeNonLockerItem(tracker, itemId);
     cosmetics += 1;
   }
   profile.coreGrantedCosmetics = [];
@@ -545,8 +558,6 @@ function settleDanceSlots(tracker) {
 // the slot was changed meanwhile.
 const firstRandomSelectorsBuild = 4039451;
 const hasRandomSelectors = () => Number(currentBuild()) >= firstRandomSelectorsBuild;
-const isRandomSelectorId = (templateId) => /^athena[a-z]+:[a-z]+_random$/i.test(String(templateId ?? ""));
-
 // The build's random selector for a slot's type, as its data spells it; undefined if the build has none.
 function randomSelectorId(templateId, type) {
   if (!hasRandomSelectors() || !isRandomSelectorId(templateId)) return undefined;
