@@ -1969,6 +1969,19 @@
     }
     const btn = (label, onclick, kind = "", extra = {}) => el("button", { type: "button", class: `btn ${kind}`, onclick, ...extra }, el("span", { text: label }));
     const chip = (label, kind = "") => el("span", { class: `chip ${kind}` }, el("span", { text: label }));
+    // A page's sub-tabs (#283): [the tab bar, the box showing the chosen tab's sections]. Switching swaps the sections in
+    // place without loading the page again, so what was changed and isn't saved yet stays.
+    const subtabSections = (tabs, chosen, sectionsOf, onChoose) => {
+      const box = el("div", {});
+      const buttons = tabs.map(([key, label]) => el("button", { type: "button", role: "tab", onclick: () => show(key) }, el("span", { text: label })));
+      const show = (key) => {
+        onChoose(key);
+        buttons.forEach((button, index) => button.setAttribute("aria-selected", String(tabs[index][0] === key)));
+        box.replaceChildren(...sectionsOf(key));
+      };
+      show(chosen);
+      return [el("div", { class: "subtabs", role: "tablist", style: "margin: 14px 0 18px;" }, buttons), box];
+    };
     // A cosmetic's icon from fortnite-api.com (Settings > Show item images), only for a plain id; a failed load just drops the picture.
     const itemIcon = (templateId, show, size = 40) => {
       const id = String(templateId || "").split(":")[1]?.toLowerCase();
@@ -3302,7 +3315,7 @@
           s.ownedOnly = !s.ownedOnly;
           ownedToggle.className = `btn ${s.ownedOnly ? "primary" : "ghost"} small`;
           ownedToggle.querySelector("span").textContent = s.ownedOnly ? "Showing: Owned Only" : "Showing: All Items";
-          render();
+          load();
         }
       }, el("span", { text: s.ownedOnly ? "Showing: Owned Only" : "Showing: All Items" }));
       const summary = el("div", { class: "note" });
@@ -3316,11 +3329,12 @@
         options(buildSelect, data.builds.map(({ build, version }) => [build, `${version} (CL-${build})`]), data.build);
         options(typeSelect, [["", "Every type"], ...data.types.map((type) => [type, type])], s.type);
 
-        const displayedItems = s.ownedOnly ? data.items.filter((item) => item.owned) : data.items;
+        // Owned only asks the backend for the owned ones (owned=true), so none past the 300 shown are missed.
+        const displayedItems = data.items;
         summary.replaceChildren(
           `${fmt(data.owned)} / ${fmt(data.total)} cosmetics owned in ${data.version}`,
           data.hasProfile ? "" : " · no Battle Royale profile yet: a grant makes it",
-          displayedItems.length !== data.items.length ? ` · displaying ${fmt(displayedItems.length)} ${s.ownedOnly ? "owned" : "items"}` : ""
+          data.matches > data.items.length ? ` · showing ${fmt(data.items.length)} of ${fmt(data.matches)} matches` : ""
         );
 
         if (!displayedItems.length) {
@@ -3333,7 +3347,7 @@
         }
 
         results.replaceChildren(...displayedItems.map((item) => {
-          const icon = itemIcon(item.templateId, true, 48);
+          const icon = itemIcon(item.templateId, data.showItemImages !== false, 48);
           return el("div", {
             class: `card ${item.rarityCode}`,
             style: "display:flex; flex-direction:column; justify-content:space-between; gap:10px; cursor:default;"
@@ -3382,7 +3396,7 @@
 
       const load = async () => {
         s.search = search.value;
-        const query = new URLSearchParams({ build: s.build, search: s.search, type: s.type, limit: "300" });
+        const query = new URLSearchParams({ build: s.build, search: s.search, type: s.type, owned: String(s.ownedOnly), limit: "300" });
         const data = await act(api(`/admin/api/accounts/${a.id}/cosmetics?${query}`));
         if (!data || state.lockerShowcase !== s) return;
         s.data = data;
@@ -3495,7 +3509,7 @@
           data.matches > data.items.length ? ` · showing ${fmt(data.items.length)} of ${fmt(data.matches)} matches` : "");
 
         results.replaceChildren(...(data.items.length ? data.items.map((item) => {
-          const icon = itemIcon(item.templateId, true, 48);
+          const icon = itemIcon(item.templateId, data.showItemImages !== false, 48);
           return el("button", {
             type: "button",
             class: `card ${item.rarityCode}`,
@@ -3567,8 +3581,6 @@
         search.focus();
       });
     }
-
-    const cosmeticPicker = lockerShowcase;
 
     // Battle Royale's season level (Core-Backend #106): set to the start of a level, with its chase rewards.
     function seasonLevel(a) {
@@ -4163,7 +4175,6 @@
             location.hash = "#/players";
           }, "danger"))));
     }
-    const accountTab = manageTab;
 
     /* ---------- sessions ---------- */
     function sessionTable(sessions, withActions = true) {
@@ -4560,14 +4571,14 @@
               return toggleSwitch(byHand, (checked) => {
                 form.modes[m.id] = checked;
                 onModeToggled();
-                renderActiveModes();
+                renderModeCards();
               });
             }],
             ["", (m) => el("div", { class: "actions" },
               btn("Remove", () => {
                 form.modes[m.id] = false;
                 onModeToggled();
-                renderActiveModes();
+                renderModeCards();
               }, "ghost", { title: "Remove from active queue rotation" }))]
           ], activeList, "No active game modes.")
         );
@@ -4614,7 +4625,7 @@
             const toggleBtn = btn(isEnabled ? "Disable" : "Enable", () => {
               form.modes[m.id] = !isEnabled;
               onModeToggled();
-              renderActiveModes();
+              renderModeCards();
               renderModalList();
             }, isEnabled ? "ghost" : "primary");
 
@@ -4863,8 +4874,12 @@
             el("div", { class: "font-semibold", text: "Original dates (limited-time modes)" }),
             replayDayText),
           originalDatesToggle),
+        el("h3", { style: "margin:16px 0 0;", text: "In the queue now" }),
+        activeModesTableBox,
+        // Each season's modes (#191): every LTM's dates, builds and switch, and Close Encounters' whole day or hour.
+        el("h3", { style: "margin:20px 0 0;", text: "Every mode, by season" }),
         ltmSeasonTabs,
-        activeModesTableBox);
+        modeCardsBox);
 
       // Section 2: Regional Server Allocation Limits
       const sectionLimits = el("section", { class: "panel", style: "margin-top:16px" },
@@ -4973,20 +4988,11 @@
       ];
       if (!mmTabs.some(([k]) => k === state.matchmakingSub)) state.matchmakingSub = "modes";
 
-      const mmSubtabs = el("div", { class: "subtabs", role: "tablist", style: "margin: 14px 0 18px;" },
-        mmTabs.map(([key, label]) => el("button", {
-          type: "button",
-          role: "tab",
-          "aria-selected": state.matchmakingSub === key ? "true" : "false",
-          onclick: () => { state.matchmakingSub = key; showMatchmaking(); }
-        }, el("span", { text: label })))
-      );
-
-      const mmContent = state.matchmakingSub === "modes"
+      const [mmSubtabs, mmContent] = subtabSections(mmTabs, state.matchmakingSub, (key) => key === "modes"
         ? [sectionModes]
-        : state.matchmakingSub === "rules"
+        : key === "rules"
           ? [sectionLimits, sectionTiming, sectionRewards]
-          : [sectionSessions, sectionHostingIps, sectionCustomServers, sectionCustomKeys];
+          : [sectionSessions, sectionHostingIps, sectionCustomServers, sectionCustomKeys], (key) => { state.matchmakingSub = key; });
 
       $("view").replaceChildren(
         // View Head
@@ -5010,7 +5016,7 @@
           tile("In-Game Players", inGamePlayersTileVal, "text")),
 
         mmSubtabs,
-        ...mmContent
+        mmContent
       );
 
       if (!state.timers.length) every(5000, pollLiveSessions);
@@ -5666,20 +5672,11 @@
       ];
       if (!tabs.some(([k]) => k === state.newsTab)) state.newsTab = "motd";
 
-      const subtabs = el("div", { class: "subtabs", role: "tablist", style: "margin: 14px 0 18px;" },
-        tabs.map(([key, label]) => el("button", {
-          type: "button",
-          role: "tab",
-          "aria-selected": state.newsTab === key ? "true" : "false",
-          onclick: () => { state.newsTab = key; showNews(); }
-        }, el("span", { text: label })))
-      );
-
-      const content = state.newsTab === "motd"
+      const [subtabs, content] = subtabSections(tabs, state.newsTab, (key) => key === "motd"
         ? [motdPanel]
-        : state.newsTab === "modeselect"
+        : key === "modeselect"
           ? [brModePanel, stwModePanel, modeSelectImagesPanel]
-          : [noticePanel, loginPanel];
+          : [noticePanel, loginPanel], (key) => { state.newsTab = key; });
 
       $("view").replaceChildren(
         el("div", { class: "view-head" },
@@ -5688,7 +5685,7 @@
             el("div", { class: "muted", text: "Configure in-game announcements shown in the Battle Royale lobby, on the login screen, and on the mode select screen." })),
           el("div", { class: "actions" }, btn("Refresh", showNews, "ghost"))),
         subtabs,
-        ...content
+        content
       );
     }
 
@@ -6381,7 +6378,7 @@
                 }
               },
                 el("div", { style: "display:flex; gap:12px; align-items:center;" },
-                  itemIcon(c.templateId, true, 48),
+                  itemIcon(c.templateId, shop.showItemImages, 48),
                   el("div", { style: "min-width:0; flex:1;" },
                     el("div", { class: "k", text: c.type || "Cosmetic" }),
                     el("div", { class: "t", style: "font-weight:700; font-size:15px; line-height:1.3; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;", text: c.name }),
@@ -7826,6 +7823,13 @@
             }, "ghost")));
       };
 
+      // The list and an event's page (#283) both follow new matches, unless something is being edited.
+      every(15000, async () => {
+        if (state.view !== "tournaments" || document.activeElement?.closest?.("#view .panel") || document.querySelector("#view details[open]")) return;
+        const fresh = await api("/admin/api/tournaments").catch(() => null);
+        if (fresh && state.view === "tournaments" && JSON.stringify(fresh.events) !== JSON.stringify(data.events)) rerender();
+      });
+
       if (state.tournamentEventId) {
         const event = data.events.find((e) => e.id === state.tournamentEventId);
         if (!event) {
@@ -7948,11 +7952,6 @@
                 ...data.events.map(eventCard))
             : el("div", { class: "empty", style: "margin-top:14px;", text: "No tournament events yet." }))
       );
-      every(15000, async () => {
-        if (state.view !== "tournaments" || document.activeElement?.closest?.("#view .panel") || document.querySelector("#view details[open]")) return;
-        const fresh = await api("/admin/api/tournaments").catch(() => null);
-        if (fresh && state.view === "tournaments" && JSON.stringify(fresh.events) !== JSON.stringify(data.events)) rerender();
-      });
     }
 
     async function showReports() {
@@ -8408,20 +8407,11 @@
       ];
       if (!settingsTabs.some(([k]) => k === state.settingsSub)) state.settingsSub = "general";
 
-      const settingsSubtabs = el("div", { class: "subtabs", role: "tablist", style: "margin: 14px 0 18px;" },
-        settingsTabs.map(([key, label]) => el("button", {
-          type: "button",
-          role: "tab",
-          "aria-selected": state.settingsSub === key ? "true" : "false",
-          onclick: () => { state.settingsSub = key; showSettings(); }
-        }, el("span", { text: label })))
-      );
-
-      const settingsContent = state.settingsSub === "general"
+      const [settingsSubtabs, settingsContent] = subtabSections(settingsTabs, state.settingsSub, (key) => key === "general"
         ? [panelAdmin, panelHosting, panelBuilds, panelCheats]
-        : state.settingsSub === "auth"
+        : key === "auth"
           ? [panelPassword, panelPortalReg, panelPortal]
-          : [panelFounder, panelStormShield, panelTimeline, panelItemImages, panelTwitch];
+          : [panelFounder, panelStormShield, panelTimeline, panelItemImages, panelTwitch], (key) => { state.settingsSub = key; });
 
       $("view").replaceChildren(
         el("div", { class: "view-head" },
@@ -8430,7 +8420,7 @@
             el("div", { class: "muted", text: "Configure authentication, password requirements, hosting IP whitelists, and the player web portal." })),
           el("div", { class: "actions" }, btn("Refresh", showSettings, "ghost"))),
         settingsSubtabs,
-        ...settingsContent
+        settingsContent
       );
     }
 

@@ -166,3 +166,20 @@ test("the panel shows the server: overview, game sessions to end, logs and unans
     backend.close();
   }
 });
+
+test("the panel's sidebar width is kept from 64 to 420 pixels, refuses anything but a number, and null puts it back", async () => {
+  const backend = await startBackend();
+  try {
+    assert.equal((await admin(backend, "/settings")).body.sidebarWidth, 240);
+    assert.equal((await admin(backend, "/settings", { sidebarWidth: 200.6 })).body.sidebarWidth, 201);
+    assert.equal((await admin(backend, "/settings", { sidebarWidth: 10 })).body.sidebarWidth, 64);
+    assert.equal((await admin(backend, "/settings", { sidebarWidth: 9000 })).body.sidebarWidth, 420);
+    for (const sidebarWidth of ["abc", "300", true, {}, []]) {
+      assert.equal((await admin(backend, "/settings", { sidebarWidth })).status, 400, JSON.stringify(sidebarWidth));
+    }
+    assert.equal((await admin(backend, "/settings")).body.sidebarWidth, 420);
+    assert.equal((await admin(backend, "/settings", { sidebarWidth: null })).body.sidebarWidth, 240);
+  } finally {
+    backend.close();
+  }
+});
