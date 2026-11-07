@@ -15,7 +15,7 @@ import { heldGiftBoxes, moveAthenaGiftBoxes } from "./giftboxes.js";
 import { findItem } from "./items.js";
 import { grant } from "./progress.js";
 import { applyHeldVariantTokens, applyVariantUpdates, defaultVariants, grantDefaultVariants, grantVariantToken, itemsMissingVariants } from "./variants.js";
-import { countBundleQuest, grantChallengeSchedule as grantSchedule, settleChallengeSchedules } from "./challenges.js";
+import { brokenChallengeOf, completeBrokenChallenges, countBundleQuest, grantChallengeSchedule as grantSchedule, settleChallengeSchedules } from "./challenges.js";
 import { accountLevelOf, addBookXp, giveSeasonReward, namesAthenaBuild, seasonNeedsSwitch, seasonNumber, settleSeasonPromise, settleSeasonRewards, switchSeason } from "./seasons.js";
 
 // Battle Royale's profile from 1.8, athena (UFortMcpProfileAthena, a quest profile): its cosmetics, the loadout the
@@ -1076,11 +1076,24 @@ function settleAthenaEventQuests(session) {
   }
 }
 
+// The admin panel's option to complete the challenges that cannot be completed on this build (Core-Backend #269,
+// profiles/challenges.js brokenChallenges): with it on, each open one is completed as any done challenge is, so its
+// Battle Stars are paid and its bundle counts it, once (only an Active challenge is completed).
+function settleBrokenChallenges(session) {
+  if (!completeBrokenChallenges()) return;
+  for (const { itemId, item } of activeQuests(session.profile("athena"))) {
+    if (!brokenChallengeOf(questIdOf(item), currentBuild())) continue;
+    log("Battle Royale", `${session.accountId}: ${questIdOf(item)} cannot be completed on this build, completed for them`);
+    completeQuest(session, itemId);
+  }
+}
+
 // ClientQuestLogin / ServerQuestLogin on athena.
 export function athenaQuestLogin(session) {
   refreshAthenaDailies(session);
   settleBattlePassDaily(session);
   settleChallengeSchedules(session, seasonFunctions);
+  settleBrokenChallenges(session);
   settleLevelObjectives(session);
   settleAthenaEventQuests(session);
   settleChaseRewards(session);

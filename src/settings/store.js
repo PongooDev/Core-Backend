@@ -189,6 +189,9 @@ const defaults = {
   // {season3: {mode: "original" | "interval" | "manual", startDate, intervalDays, manualWeeks, weeksAvailable}}. A
   // season without one keeps its original dates (or challengesAllUnlocked).
   challengeUnlock: {},
+  // Complete the challenges that cannot be completed on the build (Core-Backend #269, profiles/challenges.js
+  // brokenChallenges), off by default.
+  completeBrokenChallenges: false,
   serverLimits: { NA: noLimits(), EU: noLimits(), OCE: noLimits(), BR: noLimits(), ASIA: noLimits() }
 };
 
@@ -551,6 +554,7 @@ export function createSettingsStore(dataDir) {
       settings.sidebarWidth = sidebarWidthValue(loaded.sidebarWidth) ?? defaults.sidebarWidth;
       if (typeof loaded.challengesAllUnlocked !== "boolean") settings.challengesAllUnlocked = defaults.challengesAllUnlocked;
       settings.challengeUnlock = challengeUnlockValue(loaded.challengeUnlock, {});
+      settings.completeBrokenChallenges = loaded.completeBrokenChallenges === true;
       if (loaded.matchmakingModes && typeof loaded.matchmakingModes === "object") {
         settings.matchmakingModes = sanitizeMatchmakingModes(loaded.matchmakingModes, defaults.matchmakingModes);
       }
@@ -736,6 +740,7 @@ export function createSettingsStore(dataDir) {
       if (partial.ltmCloseEncounters !== undefined) settings.ltmCloseEncounters = closeEncountersValue(partial.ltmCloseEncounters, settings.ltmCloseEncounters);
       if (typeof partial.challengesAllUnlocked === "boolean") settings.challengesAllUnlocked = partial.challengesAllUnlocked;
       settings.challengeUnlock = challengeUnlockValue(partial.challengeUnlock, settings.challengeUnlock ?? {});
+      if (typeof partial.completeBrokenChallenges === "boolean") settings.completeBrokenChallenges = partial.completeBrokenChallenges;
       if (typeof partial.regionFallback === "boolean") settings.regionFallback = partial.regionFallback;
       if (typeof partial.vbuckPacks === "boolean") settings.vbuckPacks = partial.vbuckPacks;
       if (partial.purchaseMode === "free" || partial.purchaseMode === "code") settings.purchaseMode = partial.purchaseMode;

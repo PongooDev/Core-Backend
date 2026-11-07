@@ -63,6 +63,28 @@ export function configureChallenges(provider) {
 }
 export const challengeModes = ["original", "interval", "manual"];
 
+// Challenges that cannot be completed on the builds that give them, which the admin panel can complete for players
+// (Core-Backend #269, settings completeBrokenChallenges, off by default). ONLY challenges that were reported and checked
+// to be impossible to complete belong here, each with its issue and the builds it is broken on:
+// - Quest_BR_Watch_Replay, "Watch a Match Replay" (Season 4 week 3): its objective battlepass_athena_watch_replay counts
+//   the stat revive_athena_player, a placeholder row (a RevivePlayer stat), and no client code reports a watched replay,
+//   so watching one never moves it (reviving a teammate does). In 4.0 and 4.1 (week 3 gives it); 4.2 keeps the
+//   definition but no bundle gives it.
+// - Quest_BR_Visit_ScavengerHunt_StormCircles, "Visit the center of different Storm Circles in a single match" (Season 4
+//   week 4): in 4.0 and 4.1 its objective counts visit_location_animal_building_crab, the crab building visit borrowed as
+//   a placeholder, and the storm circle item it asks for does not exist in those builds. 4.2 counts its own stat,
+//   touch_scavengerhunt_stormcircles, so it is not listed.
+export const brokenChallenges = [
+  { quest: "quest_br_watch_replay", title: "Watch a Match Replay", issue: "Core-Backend #269", url: "https://github.com/PongoDev/Core-Backend/issues/269",
+    builds: ["4039451", "4053532"], reason: "Its objective is tied to the placeholder stat revive_athena_player and no client code reports a watched replay." },
+  { quest: "quest_br_visit_scavengerhunt_stormcircles", title: "Visit the center of different Storm Circles in a single match", issue: "CoreV2 #299",
+    url: "https://github.com/PongoDev/CoreV2/issues/299", builds: ["4039451", "4053532"],
+    reason: "Its objective uses the borrowed stat visit_location_animal_building_crab and the item it asks for does not exist in the build." }
+];
+export const completeBrokenChallenges = (settingsValue = settingsProvider()) => settingsValue?.completeBrokenChallenges === true;
+// The list entry for a challenge on a build, when it is one of the broken ones there.
+export const brokenChallengeOf = (questId, build) => brokenChallenges.find((entry) => entry.quest === String(questId).toLowerCase() && entry.builds.includes(String(build)));
+
 const bySeasonDays = (entry) => entry.unlockType === "DaysSinceEventStart";
 const isWeekly = (schedule) => schedule.bundles.some(bySeasonDays);
 // The season's weekly schedule's weeks (Season3_Challenge_Schedule: the one unlocking by days), Week 1 first: each

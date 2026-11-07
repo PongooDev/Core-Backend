@@ -9,7 +9,7 @@ import { notFound, sendError } from "../errors.js";
 import { getNode } from "../gamedata/homebase.js";
 import { getItem } from "../gamedata/items.js";
 import { getQuest, questName } from "../gamedata/quests.js";
-import { athenaCosmetics } from "../gamedata/athena.js";
+import { athenaCosmetics, getAthenaQuest } from "../gamedata/athena.js";
 import { dataBuilds, readGameData } from "../gamedata/read.js";
 import { log, recentLogs } from "../log.js";
 import { sessionSummary } from "../matchmaking/sessions.js";
@@ -53,7 +53,7 @@ import { defaultBattlePass, enrichedMilestones } from "../battlepass/season1.js"
 import { bundleTiers, seasonPassConfig, seasonTiers, tierPrice } from "../battlepass/season2.js";
 import { battlePassSeasons, resetBattlePass } from "../battlepass/reset.js";
 import { buildOfSeason, inProfileSeason, profileSeason } from "../profiles/seasons.js";
-import { challengeModes, challengesAllUnlocked, challengeWeekCount, weekPlan } from "../profiles/challenges.js";
+import { brokenChallenges, challengeModes, challengesAllUnlocked, challengeWeekCount, completeBrokenChallenges, weekPlan } from "../profiles/challenges.js";
 
 import { isServerAccountName, validatePassword } from "../accounts/password.js";
 import { EmailError } from "../accounts/store.js";
@@ -1433,7 +1433,9 @@ export function adminRoutes(context) {
         tiers: seasonTiers(),
         // The season's weekly challenges (Core-Backend #207, #219, profiles/challenges.js): how they unlock and each week's
         // date, for a season with weekly bundles (Season 3; Season 2's were dailies and the pass).
-        ...(challengeWeekCount() ? { challengesAllUnlocked: challengesAllUnlocked(s), challenges: withoutSeasonStartRecording(() => weekPlan(now, s)) } : {})
+        ...(challengeWeekCount() ? { challengesAllUnlocked: challengesAllUnlocked(s), challenges: withoutSeasonStartRecording(() => weekPlan(now, s)) } : {}),
+        // The challenges that cannot be completed on the season's builds and the option to complete them (Core-Backend #269).
+        ...(brokenOfSeason().length ? { brokenChallenges: { enabled: completeBrokenChallenges(s), list: brokenOfSeason() } } : {})
       })));
     }
     res.json({
@@ -1444,6 +1446,19 @@ export function adminRoutes(context) {
       config: bpConfig,
       milestones: enrichedMilestones(bpConfig)
     });
+  });
+
+  // The broken challenges (profiles/challenges.js brokenChallenges) the season's data holds (call inside inBuild).
+  const brokenOfSeason = () => brokenChallenges.filter((entry) => getAthenaQuest(entry.quest)).map((entry) => ({ ...entry }));
+
+  // Complete the challenges that cannot be completed on the build (Core-Backend #269): {enabled}. A player gets them
+  // completed at their next login.
+  router.post("/admin/api/battlepass/broken-challenges", (req, res) => {
+    if (typeof req.body?.enabled !== "boolean") {
+      return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "enabled must be true or false");
+    }
+    const updated = settings.update({ completeBrokenChallenges: req.body.enabled });
+    res.json({ success: true, enabled: completeBrokenChallenges(updated), list: brokenChallenges });
   });
 
   router.post("/admin/api/battlepass/config", (req, res) => {

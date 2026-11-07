@@ -6756,6 +6756,22 @@
           table([["Week", (w) => String(w.week), "mono"], ["Status", status], ["Unlocks", (w) => unlocks(w)]], plan.weeks)));
     }
 
+    // The challenges that cannot be completed on a build, and the option to complete them for players (Core-Backend #269).
+    function brokenChallengesPanel(data) {
+      const info = data.brokenChallenges;
+      const save = async (enabled) => {
+        const res = await act(api("/admin/api/battlepass/broken-challenges", { enabled }), enabled ? "Broken challenges are completed for players" : "Broken challenges are left as they are");
+        if (res) showBattlePass();
+      };
+      return el("section", { class: "panel", style: "margin-top:16px" },
+        el("div", { class: "panel-head", style: "margin-bottom:8px" }, el("h2", { text: "Broken Challenges" }), chip(info.enabled ? "Completing" : "Off", info.enabled ? "accent" : "")),
+        el("p", { class: "note", text: "Auto-complete challenges that can't be completed on this build. Only the challenges listed here, reported and checked to be impossible to complete, are completed: the player gets them done with their Battle Stars at their next login, once. No other challenge is touched." }),
+        el("div", { style: "margin-top:12px" }, toggleSwitch(info.enabled, (checked) => save(checked))),
+        el("div", { style: "margin-top:12px" },
+          table([["Challenge", (c) => c.title], ["Builds", (c) => c.builds.join(", "), "mono"], ["Why", (c) => c.reason],
+            ["Issue", (c) => el("a", { href: c.url, target: "_blank", rel: "noopener", text: c.issue })], ], info.list)));
+    }
+
     // Season 2 (1.11) and Season 3 (3.0): the Battle Pass and bundle prices, and the tiers' rewards from the season's data.
     async function showSeasonPass(season) {
       const seasonLabel = seasonOf(season).label;
@@ -6795,6 +6811,7 @@
             el("label", { style: "display:flex; align-items:center; gap:8px;" }, el("span", { class: "muted font-semibold", text: "Battle Pass" }), priceInput("battlePassPrice")),
             el("label", { style: "display:flex; align-items:center; gap:8px;" }, el("span", { class: "muted font-semibold", text: "Bundle" }), priceInput("bundlePrice")))),
         ...(data.challenges ? [weeklyChallengesPanel(season, data)] : []),
+        ...(data.brokenChallenges ? [brokenChallengesPanel(data)] : []),
         el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" }, el("h2", { text: "Tier Rewards" }), chip(`${tiers.length} tiers`, "accent")),
           el("p", { class: "note", text: season === "4"
