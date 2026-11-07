@@ -2,6 +2,7 @@ import express from "express";
 import { isDedicatedServerToken } from "../../accounts/clients.js";
 import { requireAuth } from "../../accounts/auth.js";
 import { sendError } from "../../errors.js";
+import { effectiveBots } from "../../tournaments/store.js";
 
 // Core's: a CoreV2 Battle Royale gameserver's warmup (Core-Backend #122, the admin panel's Matchmaking settings).
 //   POST /fortnite/api/game/v2/matchmakingservice/warmup
@@ -22,10 +23,13 @@ import { sendError } from "../../errors.js";
 // the cap itself (bots = min(count, match capacity - connected players - bots on players' teams), re-checked before the
 // bus leaves). teams: whether bots fill the empty places on players' teams in duos and squads; noFill: the match's
 // players whose party doesn't fill (the party leader's player.option.fillTeam false), whose teams get none.
+// A match of a tournament playlist (Core-Backend #282) plays with its running event's own bots when it has them: on with
+// the event's count, or off (tournaments/store.js effectiveBots); the Matchmaking tab's otherwise, and for a report the
+// service can't place in a match yet (no players connected: the gameserver brings no bots in before one is).
 // Only the DedicatedServer client (CoreV2's requests) or a gameserver account hosting a session may ask.
 const maxAccountIds = 200;
 
-export function warmupRoutes({ tokens, sessions, settings, matchmaker }) {
+export function warmupRoutes({ tokens, sessions, settings, matchmaker, tournaments }) {
   const router = express.Router();
 
   router.post("/fortnite/api/game/v2/matchmakingservice/warmup", requireAuth(tokens), (req, res) => {
@@ -39,7 +43,8 @@ export function warmupRoutes({ tokens, sessions, settings, matchmaker }) {
     const lateJoin = current.lateJoin === true;
     const open = lateJoin && req.body?.phase === "Warmup" && Number.isFinite(secondsLeft) && secondsLeft > 0;
     const match = accountIds.length ? matchmaker.warmup({ accountIds, open, secondsLeft }) : null;
-    const bots = current.bots;
+    const event = match?.playlistId !== null && match?.playlistId !== undefined ? tournaments?.botsFor?.(match.playlistId) ?? null : null;
+    const bots = effectiveBots(current.bots, event);
     const forced = bots?.forcePlayerAIs === true && bots.count > 0;
     const teams = bots?.fillPlayerTeams === true;
     res.json({

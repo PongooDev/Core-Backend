@@ -1339,3 +1339,95 @@ test("custom matchmaking servers take only custom matches, their own first, publ
     backend.close();
   }
 });
+
+// Core-Backend #282: a tournament event's dedicated servers and its own bots. While Solo Showdown's event runs, its
+// matches play only on its servers, which take no other playlist's; the warmup answer gives its matches the event's bots.
+const userAgent42 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-4.2-CL-4072250";
+async function queueOn42(backend, player, playlistId) {
+  const ticket = await send({ host: "127.0.0.1", port: backend.port, method: "GET",
+    path: `/fortnite/api/game/v2/matchmakingservice/ticket/player/${player.accountId}?partyPlayerIds=${player.accountId}&bucketId=858118782:0:NA:${playlistId}&player.platform=Windows`,
+    headers: { "User-Agent": userAgent42, Authorization: `bearer ${player.token}` } });
+  assert.equal(ticket.status, 200, JSON.stringify(ticket.body));
+  return matchmakingClient(backend.port, authorizationOf(ticket.body));
+}
+
+test("a tournament event's servers host only its playlist's matches, and its matches play with its own bots (#282)", async () => {
+  const backend = await startBackend({ matchmakingGatherMs: 200 });
+  const connections = [];
+  try {
+    await behindProxy(backend, true);
+    await settingsOf(backend, { allowedHostingIps: ["127.0.0.1", "::1", "203.0.113.5", "198.51.100.9"] });
+    await mmConfig(backend, { modes: { soloShowdown: true } });
+    // Anything but IPs or ranges, or a bot count past 100, is refused.
+    assert.equal((await post(backend.port, "/admin/api/tournaments", undefined, { servers: ["tourney.example.com"] })).status, 400);
+    assert.equal((await post(backend.port, "/admin/api/tournaments", undefined, { bots: { enabled: true, count: 101 } })).status, 400);
+    const created = await post(backend.port, "/admin/api/tournaments", undefined, { name: "Showdown", servers: ["203.0.113.5"], bots: { enabled: true, count: 7 } });
+    assert.equal(created.status, 201);
+    assert.deepEqual([created.body.event.servers, created.body.event.bots], [["203.0.113.5"], { enabled: true, count: 7 }]);
+    const eventId = created.body.event.id;
+
+    // A public server, the event's two, then another public one.
+    const publicA = await serverAt(backend, "CoreServer1", "NA", "198.51.100.9");
+    const kept = await serverAt(backend, "CoreServer2", "NA", "203.0.113.5");
+    const kept2 = await serverAt(backend, "CoreServer3", "NA", "203.0.113.5");
+    const publicB = await serverAt(backend, "CoreServer4", "NA", "198.51.100.9");
+    connections.push(publicA.connection, kept.connection, kept2.connection, publicB.connection);
+    const ready = (server, assign) => server.connection.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: assign.payload.matchId, result: "ready" } }));
+
+    // The Solo Showdown match skips the public server before the event's.
+    const showdown = await userLogin(backend.port, "ShowdownPlayer");
+    connections.push(await queueOn42(backend, showdown, 51));
+    const showdownAssign = await nextOf(kept.connection, "AssignMatch");
+    assert.deepEqual(showdownAssign.payload.teams.flat(2), [showdown.accountId]);
+    ready(kept, showdownAssign);
+    // Solos: the first public server, then the second, past the event's free one.
+    const solo1 = await userLogin(backend.port, "SoloOne");
+    connections.push(await queueOn42(backend, solo1, 2));
+    const solo1Assign = await nextOf(publicA.connection, "AssignMatch");
+    ready(publicA, solo1Assign);
+    const solo2 = await userLogin(backend.port, "SoloTwo");
+    connections.push(await queueOn42(backend, solo2, 2));
+    assert.deepEqual((await nextOf(publicB.connection, "AssignMatch")).payload.teams.flat(2), [solo2.accountId]);
+
+    // The event's bots for its match, the Matchmaking tab's (off) for the solo.
+    const token = await dedicatedServerToken(backend.port);
+    const botsOf = async (player) => (await reportWarmup(backend, token, { phase: "Warmup", accountIds: [player.accountId], secondsLeft: 60 })).body.bots;
+    assert.equal((await botsOf(showdown)).count, 7);
+    assert.equal(await botsOf(solo1), null);
+    // The Matchmaking tab's on and the event's off: the other way round, the tab's level still the solo's.
+    await settingsOf(backend, { bots: { forcePlayerAIs: true, count: 30, level: 3 } });
+    const off = await post(backend.port, `/admin/api/tournaments/${eventId}/settings`, undefined, { bots: { enabled: false } });
+    assert.deepEqual([off.body.event.servers, off.body.event.bots], [["203.0.113.5"], { enabled: false, count: 0 }]);
+    assert.equal(await botsOf(showdown), null);
+    assert.deepEqual([(await botsOf(solo1)).count, (await botsOf(solo1)).level], [30, 3]);
+    // On with its own count, the tab's level; back to the tab's, its count.
+    await post(backend.port, `/admin/api/tournaments/${eventId}/settings`, undefined, { bots: { enabled: true, count: 12 } });
+    assert.deepEqual([(await botsOf(showdown)).count, (await botsOf(showdown)).level], [12, 3]);
+    await post(backend.port, `/admin/api/tournaments/${eventId}/settings`, undefined, { bots: null });
+    assert.equal((await botsOf(showdown)).count, 30);
+    assert.equal((await post(backend.port, `/admin/api/tournaments/${eventId}/settings`, undefined, { servers: ["nope"] })).status, 400);
+    assert.equal((await post(backend.port, "/admin/api/tournaments/nope/settings", undefined, { bots: null })).status, 404);
+  } finally {
+    for (const connection of connections) connection?.close();
+    backend.close();
+  }
+});
+
+test("an ended event's servers take any match again, and its playlist plays on the normal pool (#282)", async () => {
+  const backend = await startBackend({ matchmakingGatherMs: 200 });
+  const connections = [];
+  try {
+    await behindProxy(backend, true);
+    await settingsOf(backend, { allowedHostingIps: ["127.0.0.1", "::1", "203.0.113.5", "198.51.100.9"] });
+    const created = await post(backend.port, "/admin/api/tournaments", undefined, { servers: ["203.0.113.0/24"] });
+    await post(backend.port, `/admin/api/tournaments/${created.body.event.id}/end`, undefined, {});
+    const kept = await serverAt(backend, "CoreServer1", "NA", "203.0.113.5");
+    connections.push(kept.connection);
+    const solo = await userLogin(backend.port, "SoloAfter");
+    connections.push(await queueOn42(backend, solo, 2));
+    assert.deepEqual((await nextOf(kept.connection, "AssignMatch")).payload.teams.flat(2), [solo.accountId]);
+  } finally {
+    for (const connection of connections) connection?.close();
+    backend.close();
+  }
+});

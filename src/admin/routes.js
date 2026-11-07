@@ -1833,6 +1833,7 @@ export function adminRoutes(context) {
   // leaderboard of points, and the admin's create, reset, end and delete; and an event's custom scoring (#280): its own
   // placement table and points an elimination, or back to its preset's.
   const tournamentView = (event) => ({ ...event, players: undefined, status: statusOf(event), scoring: event.scoring ?? null,
+    servers: event.servers ?? [], bots: event.bots ?? null,
     effectiveScoring: (({ placementPoints, pointsPerElimination }) => ({ placementPoints, pointsPerElimination }))(scoringOf(event)),
     playerCount: Object.keys(event.players ?? {}).length,
     leaderboard: leaderboardOf(event, (accountId) => accounts.get(accountId)?.displayName ?? accountId) });
@@ -1873,6 +1874,20 @@ export function adminRoutes(context) {
     }
     if (!event) return notFound(res, `No tournament event ${req.params.id}`);
     log("Admin", `Tournament event ${event.name} (${event.id}) scoring ${event.scoring ? "set to custom points" : "reset to its preset's"}`);
+    res.json({ event: tournamentView(event), ...tournamentsPayload() });
+  });
+  // An event's dedicated servers and bots (#282): body {servers: [IP or CIDR range], bots: null (the Matchmaking tab's)
+  // or {enabled, count}}, either left as it is when not sent.
+  router.post("/admin/api/tournaments/:id/settings", (req, res) => {
+    let event;
+    try {
+      event = context.tournaments.configure(req.params.id, { servers: req.body?.servers, bots: req.body?.bots });
+    } catch (err) {
+      return invalid(res, err.message);
+    }
+    if (!event) return notFound(res, `No tournament event ${req.params.id}`);
+    log("Admin", `Tournament event ${event.name} (${event.id}): ${event.servers.length ? `servers ${event.servers.join(", ")}` : "the normal server pool"}, `
+      + (event.bots ? (event.bots.enabled ? `${event.bots.count} bots` : "no bots") : "the Matchmaking tab's bots"));
     res.json({ event: tournamentView(event), ...tournamentsPayload() });
   });
   router.post("/admin/api/tournaments/:id/reset", tournamentAction("reset", "reset"));

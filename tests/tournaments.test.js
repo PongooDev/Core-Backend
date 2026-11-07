@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { createTournamentStore, leaderboardOf, matchPoints, placementPoints, rulesets, scoringOf, statusOf, tournamentPlaylists, validateScoring } from "../src/tournaments/store.js";
+import { botsOn, createTournamentStore, effectiveBots, validateBots, validateServers, leaderboardOf, matchPoints, placementPoints, rulesets, scoringOf, statusOf, tournamentPlaylists, validateScoring } from "../src/tournaments/store.js";
 import { dedicatedServerToken, del, get, post, send, startBackend, userLogin } from "./helpers.js";
 
 // The admin panel's Tournaments tab (Core-Backend #263): Solo Showdown events, scored by Epic's contest rules.
@@ -198,3 +198,40 @@ test("the admin panel sets an event's custom points and resets them to its prese
     backend.close();
   }
 });
+
+test("an event's dedicated servers and bots: checked, only while it runs, the newest event's bots (#282)", () => withStore((store) => {
+  const now = new Date("2026-11-07T12:00:00Z");
+  assert.deepEqual(validateServers(undefined), []);
+  assert.deepEqual(validateServers("203.0.113.5, 198.51.100.0/24 203.0.113.5"), ["203.0.113.5", "198.51.100.0/24"]);
+  assert.throws(() => validateServers(["server.example.com"]), /Not an IP address/);
+  assert.equal(validateBots(null), null);
+  assert.deepEqual(validateBots({ enabled: false }), { enabled: false, count: 0 });
+  assert.throws(() => validateBots({ enabled: true, count: 101 }), /0 to 100/);
+  assert.throws(() => validateBots({ count: 5 }), /enabled/);
+
+  // A new event: the normal pool and the Matchmaking tab's bots.
+  const plain = store.create({}, now);
+  assert.deepEqual([plain.servers, plain.bots], [[], null]);
+  assert.deepEqual(store.runningServers(now), []);
+  assert.equal(store.botsFor(51, now), null);
+  const own = store.create({ servers: ["203.0.113.5"], bots: { enabled: true, count: 9 } }, new Date(now.getTime() + 1000));
+  assert.deepEqual(store.runningServers(now), [{ playlistId: 51, servers: ["203.0.113.5"] }]);
+  assert.deepEqual(store.botsFor(51, now), { eventId: own.id, enabled: true, count: 9 });
+  assert.equal(store.botsFor(2, now), null);
+  // configure leaves what isn't sent; ended, the event's servers and bots no longer apply.
+  store.configure(own.id, { bots: { enabled: false } });
+  assert.deepEqual([store.get(own.id).servers, store.get(own.id).bots], [["203.0.113.5"], { enabled: false, count: 0 }]);
+  assert.throws(() => store.configure(own.id, { servers: ["x"] }), /Not an IP address/);
+  assert.equal(store.configure("nope", {}), null);
+  store.end(own.id, now);
+  assert.deepEqual(store.runningServers(now), []);
+  assert.equal(store.botsFor(51, now), null);
+
+  // The match's bots: the tab's as they are, or the event's over them.
+  const tab = { forcePlayerAIs: true, count: 40, level: 3, fillPlayerTeams: true };
+  assert.equal(effectiveBots(tab, null), tab);
+  assert.deepEqual(effectiveBots(tab, { enabled: true, count: 5 }), { ...tab, startingHealth: 100, startingShield: 0, eliminationsCountForQuests: true, botFightChance: 30, count: 5 });
+  assert.equal(botsOn(effectiveBots(tab, { enabled: false, count: 5 })), false);
+  assert.equal(botsOn(effectiveBots(undefined, { enabled: true, count: 5 })), true);
+  assert.equal(botsOn(effectiveBots(undefined, null)), false);
+}));

@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { hasLtm, ltms } from "../events/ltms.js";
 import { readJson, writeJson } from "../json-file.js";
+import { ipRange, maxIpRanges } from "../network.js";
 
 // The admin panel's Tournaments tab (Core-Backend #263): events of a tournament playlist, each keeping its players' points
 // from the matches they play in it, and their leaderboard. 4.2's client has no tournament screen (the playlist's own HUD,
@@ -67,6 +68,43 @@ export function scoringOf(event) {
   const ruleset = rulesets[event.ruleset] ?? rulesets[defaultRuleset];
   return event.scoring ? { ...ruleset, ...event.scoring } : ruleset;
 }
+
+// An event's dedicated servers and bots (Core-Backend #282).
+// servers: the gameservers that host its matches, each an IP address or CIDR range (network.js ipRange), as the
+// Matchmaking tab's custom matchmaking servers are (#227). While the event runs, a match of its playlist plays only on
+// one of them, and they take no other playlist's matches; empty (the default), its matches play on the normal pool.
+// bots: null (the default) for the Matchmaking tab's player bots, or {enabled, count}: the event's own, for its
+// playlist's matches while it runs. enabled false: no bots; true: count bots on teams of their own (0 to 100), the
+// Matchmaking tab's level, health, shield, fight chance and the rest still set how they play.
+export const maxBots = 100;
+// Checks and normalises an event's servers. Throws an Error with the reason.
+export function validateServers(servers) {
+  if (servers === undefined || servers === null) return [];
+  const list = typeof servers === "string" ? servers.split(/[\s,]+/).filter(Boolean) : servers;
+  if (!Array.isArray(list)) throw new Error("Servers are a list of IP addresses or CIDR ranges.");
+  if (list.length > maxIpRanges) throw new Error(`At most ${maxIpRanges} servers can be listed for an event.`);
+  const bad = list.filter((entry) => ipRange(entry) === null);
+  if (bad.length) throw new Error(`Not an IP address or CIDR range: ${bad.map(String).join(", ")}`);
+  return [...new Set(list.map(ipRange))];
+}
+// Checks and normalises an event's bots: null for the Matchmaking tab's, else {enabled, count}. Throws an Error.
+export function validateBots(bots) {
+  if (bots === undefined || bots === null) return null;
+  if (typeof bots !== "object" || Array.isArray(bots) || typeof bots.enabled !== "boolean") throw new Error("Bots are null (the Matchmaking tab's) or {enabled, count}.");
+  const count = bots.count === undefined || bots.count === null || bots.count === "" ? 0 : Number(bots.count);
+  if (!isWhole(count, 0, maxBots)) throw new Error(`The bot count is a whole number from 0 to ${maxBots}.`);
+  return { enabled: bots.enabled, count };
+}
+// The player bots a match plays with: the Matchmaking tab's (the settings' bots), or with its playlist's running event's
+// own ({enabled, count}, botsFor) over them. In the settings' shape: {forcePlayerAIs, count, fillPlayerTeams, ...}.
+export function effectiveBots(general, override = null) {
+  if (!override) return general ?? null;
+  const base = { level: 5, startingHealth: 100, startingShield: 0, eliminationsCountForQuests: true, botFightChance: 30, ...(general ?? {}) };
+  return { ...base, forcePlayerAIs: override.enabled, count: override.enabled ? override.count : 0,
+    fillPlayerTeams: override.enabled && base.fillPlayerTeams === true };
+}
+// Whether a match plays with bots, as the warmup answer sends them (services/matchmaking/warmup.js).
+export const botsOn = (bots) => (bots?.forcePlayerAIs === true && bots.count > 0) || bots?.fillPlayerTeams === true;
 
 const maxEvents = 100;
 const maxName = 64;
@@ -134,7 +172,8 @@ export function createTournamentStore(dataDir) {
 
     // Makes an event: {name, playlist (a tournamentPlaylists id), ruleset (a rulesets key), scoring (custom scoring, see
     // validateScoring; optional, the preset's when left out or null), startsAt, endsAt (ISO dates, both optional: it runs
-    // from now until ended)}. Throws an Error with the reason.
+    // from now until ended), servers and bots (#282, validateServers and validateBots; optional: the normal pool and the
+    // Matchmaking tab's bots)}. Throws an Error with the reason.
     create(options = {}, now = new Date()) {
       const playlist = tournamentPlaylists.find((entry) => entry.id === (options.playlist ?? tournamentPlaylists[0].id));
       if (!playlist) throw new Error(`Unknown tournament playlist ${String(options.playlist)}.`);
@@ -149,9 +188,11 @@ export function createTournamentStore(dataDir) {
       const endsAt = options.endsAt ? new Date(options.endsAt).toISOString() : null;
       if (startsAt && endsAt && Date.parse(endsAt) <= Date.parse(startsAt)) throw new Error("An event ends after it starts.");
       const scoring = options.scoring === undefined || options.scoring === null ? null : validateScoring(options.scoring);
+      const servers = validateServers(options.servers);
+      const bots = validateBots(options.bots);
       if (Object.keys(load().events).length >= maxEvents) throw new Error(`At most ${maxEvents} events are kept; delete an old one first.`);
       const event = { id: crypto.randomUUID().replaceAll("-", ""), name, playlist: playlist.id, playlistId: playlist.playlistId, ruleset,
-        scoring, startsAt, endsAt, createdAt: now.toISOString(), endedAt: null, players: {} };
+        scoring, servers, bots, startsAt, endsAt, createdAt: now.toISOString(), endedAt: null, players: {} };
       load().events[event.id] = event;
       save();
       return event;
@@ -165,6 +206,33 @@ export function createTournamentStore(dataDir) {
       event.scoring = scoring === null || scoring === undefined ? null : validateScoring(scoring);
       save();
       return event;
+    },
+
+    // Sets an event's dedicated servers and bots (#282): {servers, bots}, each left as it is when not sent (see
+    // validateServers, validateBots; bots null for the Matchmaking tab's). Throws an Error with the reason; null when
+    // there's no such event.
+    configure(id, { servers, bots } = {}) {
+      const event = get(id);
+      if (!event) return null;
+      const next = { servers: servers === undefined ? event.servers ?? [] : validateServers(servers), bots: bots === undefined ? event.bots ?? null : validateBots(bots) };
+      event.servers = next.servers;
+      event.bots = next.bots;
+      save();
+      return event;
+    },
+
+    // The dedicated servers of the running events (#282), [{playlistId, servers}], for the matchmaking service: a match
+    // of one of these playlists plays only on its servers, and they take no other playlist's matches.
+    runningServers(now = new Date()) {
+      return Object.values(load().events).filter((event) => event.servers?.length && isRunning(event, now))
+        .map((event) => ({ playlistId: event.playlistId, servers: event.servers }));
+    },
+
+    // A playlist's bots from its running event (#282): {eventId, enabled, count} of the newest running event of the
+    // playlist that has bots of its own, or null for the Matchmaking tab's.
+    botsFor(playlistId, now = new Date()) {
+      const event = Object.values(load().events).sort((a, b) => b.createdAt.localeCompare(a.createdAt)).find((entry) => entry.playlistId === Number(playlistId) && entry.bots && isRunning(entry, now));
+      return event ? { eventId: event.id, ...event.bots } : null;
     },
 
     // Ends an event now: it takes no more matches and its leaderboard is final.

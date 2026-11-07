@@ -13,7 +13,7 @@ import { configureBattlePass } from "./battlepass/season1.js";
 import { createFriendStore } from "./friends/store.js";
 import { createFriendCodeStore } from "./friendcodes/store.js";
 import { createPurchaseCodeStore } from "./store/purchasecodes.js";
-import { createTournamentStore } from "./tournaments/store.js";
+import { botsOn, createTournamentStore, effectiveBots } from "./tournaments/store.js";
 import { networkAdminRoutes } from "./admin/network.js";
 import { adminRoutes } from "./admin/routes.js";
 import { createTokenStore } from "./accounts/tokens.js";
@@ -24,7 +24,7 @@ import { createHeldScores } from "./profiles/scores.js";
 import { ownsSaveTheWorld } from "./profiles/founders.js";
 import { createProfileStore } from "./profiles/store.js";
 import { requestLog, unknownRoute } from "./log.js";
-import { createMatchmaker } from "./matchmaking/service.js";
+import { createMatchmaker, parseBucket } from "./matchmaking/service.js";
 import { createSessionStore } from "./matchmaking/sessions.js";
 import { createStatsStore, isMainPlaylist } from "./stats/store.js";
 import { createNetwork } from "./network.js";
@@ -94,6 +94,8 @@ export function createContext(config) {
   const regionHostingIps = () => settings.get().regionHostingIps ?? {};
   const customServers = () => settings.get().customMatchServers ?? [];
   const sessions = createSessionStore({ regionFallback, serverRegions, regionHostingIps, customServers });
+  // The admin panel's tournament events (#263), whose dedicated servers and bots (#282) the matchmaking service follows.
+  const tournaments = createTournamentStore(config.dataDir);
   const stats = createStatsStore(config.dataDir);
   const reports = createReportStore(config.dataDir);
   const profiles = createProfileStore(config.dataDir, {
@@ -122,7 +124,7 @@ export function createContext(config) {
     friendCodes: createFriendCodeStore(config.dataDir),
     purchaseCodes: createPurchaseCodeStore(config.dataDir),
     // The admin panel's tournament events and their points (Core-Backend #263).
-    tournaments: createTournamentStore(config.dataDir),
+    tournaments,
     stats,
     profiles,
     mailbox: createMailbox(),
@@ -135,10 +137,15 @@ export function createContext(config) {
       lateJoin: () => settings.get().lateJoin === true, regionFallback,
       matchStartCountdown: () => settings.get().matchStartCountdown !== false, warmupSeconds: () => settings.get().warmupSeconds ?? null,
       matchStartBuffer: () => settings.get().matchStartBufferSeconds,
-      // Bots on, as the warmup answer sends them (services/matchmaking/warmup.js).
-      playerBots: () => { const bots = settings.get().bots; return (bots?.forcePlayerAIs === true && bots.count > 0) || bots?.fillPlayerTeams === true; },
+      // Bots on, as the warmup answer sends them (services/matchmaking/warmup.js): for a bucket of a tournament playlist,
+      // with its running event's own bots (#282).
+      playerBots: (bucketId) => {
+        const playlistId = bucketId ? parseBucket(bucketId).playlistId : null;
+        return botsOn(effectiveBots(settings.get().bots, playlistId === null ? null : tournaments.botsFor(playlistId)));
+      },
       serverRegions, serverLimits: () => settings.get().serverLimits, matchmakingModes: () => settings.get().matchmakingModes,
-      regionHostingIps, customServers, customFallback: () => settings.get().customMatchFallback === true, quiet: config.requestLog === false }),
+      regionHostingIps, customServers, customFallback: () => settings.get().customMatchFallback === true,
+      tournamentServers: () => tournaments.runningServers(), quiet: config.requestLog === false }),
     network: createNetwork(config),
     emptyServerWaitMs: config.emptyServerWaitMs,
     stomp: createStompService({ tokens, quiet: config.requestLog === false }),

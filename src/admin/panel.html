@@ -7151,6 +7151,54 @@
               el("label", { class: "muted", text: "Points an elimination" }), elimInput))
         };
       };
+      // An event's dedicated servers and bots (Core-Backend #282): the servers hosting its matches (IPs or CIDR ranges,
+      // the normal pool when empty), and its own bots, on with their own count or off, or the Matchmaking tab's.
+      const serversBotsEditor = (initial = { servers: [], bots: null }) => {
+        const serversInput = el("input", { class: "field mono", placeholder: "Server IPs or ranges (normal pool when empty)", "aria-label": "Event servers", style: "flex:1 1 260px;" });
+        const botsSelect = el("select", { class: "field", "aria-label": "Event bots" },
+          el("option", { value: "default", text: "Matchmaking tab's bots" }),
+          el("option", { value: "on", text: "Bots on" }),
+          el("option", { value: "off", text: "Bots off" }));
+        const countInput = el("input", { class: "field", type: "number", min: "0", max: "100", step: "1", style: "width:90px;", "aria-label": "Event bot count" });
+        const sync = () => { countInput.disabled = botsSelect.value !== "on"; };
+        botsSelect.addEventListener("change", sync);
+        const load = ({ servers = [], bots = null } = {}) => {
+          serversInput.value = servers.join(", ");
+          botsSelect.value = bots ? (bots.enabled ? "on" : "off") : "default";
+          countInput.value = String(bots?.count ?? 0);
+          sync();
+        };
+        load(initial);
+        return {
+          load,
+          value: () => ({
+            servers: serversInput.value.split(/[\s,]+/).filter(Boolean),
+            bots: botsSelect.value === "default" ? null : { enabled: botsSelect.value === "on", count: countInput.value.trim() === "" ? 0 : Number(countInput.value) }
+          }),
+          node: el("div", {},
+            el("div", { class: "note", style: "margin-top:8px;", text: "While the event runs, its playlist's matches play only on the servers listed (separated by commas), and those servers take no other matches; with none listed they play on the normal pool. Its bots replace the Matchmaking tab's for its matches: on with their own count (0 to 100, the Matchmaking tab's level, health and shield), or off." }),
+            el("div", { class: "actions", style: "gap:8px; margin-top:8px; align-items:center; justify-content:flex-start; flex-wrap:wrap;" },
+              serversInput, botsSelect, el("label", { class: "muted", text: "Bot count" }), countInput))
+        };
+      };
+      const serversBotsText = (event) => `${event.servers.length ? `${event.servers.length} server${event.servers.length === 1 ? "" : "s"}` : "normal server pool"}, `
+        + (event.bots ? (event.bots.enabled ? `${event.bots.count} bots` : "bots off") : "Matchmaking tab's bots");
+      const eventServersBots = (event) => {
+        const editor = serversBotsEditor(event);
+        return el("details", { style: "margin:8px 0;" },
+          el("summary", { class: "muted", style: "cursor:pointer;", text: `Servers and bots: ${serversBotsText(event)} (edit)` }),
+          editor.node,
+          el("div", { class: "actions", style: "gap:8px; margin-top:8px; justify-content:flex-start;" },
+            btn("Save servers and bots", async () => {
+              if (await act(api(`/admin/api/tournaments/${event.id}/settings`, editor.value()), "Event servers and bots saved")) rerender();
+            }, "primary"),
+            btn("Reset to default", async () => {
+              editor.load({ servers: [], bots: null });
+              if (!event.servers.length && !event.bots) return;
+              if (await act(api(`/admin/api/tournaments/${event.id}/settings`, { servers: [], bots: null }), "Event back on the normal pool and the Matchmaking tab's bots")) rerender();
+            }, "ghost")));
+      };
+      const createServersBots = serversBotsEditor();
       const createScoring = scoringEditor(presetScoring(rulesSelect.value));
       rulesSelect.addEventListener("change", () => {
         rulesNote.textContent = rulesText(rulesSelect.value);
@@ -7204,6 +7252,7 @@
             }, "ghost"))),
         el("div", { class: "note", style: "margin:8px 0;", text: `${data.rulesets.find((r) => r.id === event.ruleset)?.name ?? event.ruleset}${event.scoring ? " (custom points)" : ""} · starts ${when(event.startsAt ?? event.createdAt)} · ends ${when(event.endedAt ?? event.endsAt)} · ${event.playerCount} players` }),
         eventScoring(event),
+        eventServersBots(event),
         table([
           ["#", (row) => String(row.rank), "num"],
           ["Player", (row) => el("a", { href: `#/players/${row.accountId}`, text: row.displayName })],
@@ -7229,7 +7278,8 @@
             btn("Create event", async () => {
               const scoring = createScoring.value();
               const body = { name: nameInput.value, playlist: playlistSelect.value, ruleset: rulesSelect.value,
-                scoring: sameScoring(scoring, presetScoring(rulesSelect.value)) ? null : scoring, startsAt: isoOf(startInput), endsAt: isoOf(endInput) };
+                scoring: sameScoring(scoring, presetScoring(rulesSelect.value)) ? null : scoring, startsAt: isoOf(startInput), endsAt: isoOf(endInput),
+                ...createServersBots.value() };
               if (await act(api("/admin/api/tournaments", body), "Event created")) rerender();
             }, "primary")),
           rulesNote,
@@ -7237,7 +7287,10 @@
             el("summary", { class: "muted", style: "cursor:pointer;", text: "Custom points (optional)" }),
             createScoring.node,
             el("div", { class: "actions", style: "margin-top:8px; justify-content:flex-start;" },
-              btn("Reset to default", () => createScoring.load(presetScoring(rulesSelect.value)), "ghost")))),
+              btn("Reset to default", () => createScoring.load(presetScoring(rulesSelect.value)), "ghost"))),
+          el("details", { style: "margin-top:8px;" },
+            el("summary", { class: "muted", style: "cursor:pointer;", text: "Servers and bots (optional)" }),
+            createServersBots.node)),
         ...(data.events.length ? data.events.map(eventPanel)
           : [el("section", { class: "panel", style: "margin-top:16px;" }, el("div", { class: "empty", text: "No tournament events yet." }))]));
       every(15000, async () => {

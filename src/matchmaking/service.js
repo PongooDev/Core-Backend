@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import { ltms } from "../events/ltms.js";
 import { shootingTestPlaylist, shootingTestTeams } from "../events/shootingtest.js";
 import { log } from "../log.js";
+import { inIpRanges } from "../network.js";
 import { acceptWebSocket } from "../stomp/websocket.js";
 import { hasCustomServers, reservationsOf, serverTakes } from "./custom-servers.js";
 import { regionAllowsAddress, regionName, regionOf, servedRegions } from "./regions.js";
@@ -348,9 +349,13 @@ const newId = () => crypto.randomUUID().replaceAll("-", "");
 // asked each time. regionHostingIps, customServers and customFallback (#227): each region's hosting IPs (regions.js regionAllowsAddress),
 // the custom matchmaking servers (custom-servers.js) and whether a custom match with servers of its own may play on a
 // public one, all asked each time. A server's IP is the one its session was registered from (sessions.js sourceAddress).
+// tournamentServers (#282): the running tournament events' dedicated servers, [{playlistId, servers: [IP or CIDR range]}]
+// (tournaments/store.js runningServers), asked each time: a match of such a playlist plays only on one of them, and
+// they take no other playlist's matches. playerBots is asked with the match's bucket, as a tournament event's bots
+// (#282) can differ from the panel's.
 export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoin = () => false, regionFallback = () => true, serverRegions = () => [], serverLimits = () => ({}), matchmakingModes = () => ({}),
   matchStartCountdown = () => false, warmupSeconds = () => null, matchStartBuffer = () => defaultMatchStartBufferSec, playerBots = () => false,
-  regionHostingIps = () => ({}), customServers = () => [], customFallback = () => false, quiet = false }) {
+  regionHostingIps = () => ({}), customServers = () => [], customFallback = () => false, tournamentServers = () => [], quiet = false }) {
   const say = quiet ? () => {} : (text) => log("Matchmaking", text);
   const gatherOf = () => {
     const value = typeof gatherMs === "function" ? gatherMs() : gatherMs;
@@ -384,7 +389,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
   function warmupAfterSend(bucketId) {
     const panel = warmupSeconds();
     const length = Number.isInteger(panel) && panel > 0 ? panel : gameWarmups.get(parseBucket(bucketId).netcl) ?? null;
-    if (!lateJoin() && !playerBots()) return Math.min(earlyCountdownSec, length ?? earlyCountdownSec);
+    if (!lateJoin() && !playerBots(bucketId)) return Math.min(earlyCountdownSec, length ?? earlyCountdownSec);
     return length;
   }
   // The seconds from Play to the warmup's timer starting (#167): the panel's, or 25.
@@ -454,7 +459,27 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     const matchBucket = server.regionField ? withRegion(bucketId, server.regionField) : bucketId;
     if (!regionAllowsAddress(parseBucket(matchBucket).region, server.address, regionHostingIps())) return false;
     if (!serverTakes(server.address, { customKey: party.customKey, players: party.ticket.partyPlayerIds }, customServers())) return false;
+    if (!party.customKey || !hasOwnServers(party)) {
+      if (!tournamentTakes(server, parseBucket(matchBucket).playlistId)) return false;
+    }
     return !party.customKey || reserved(server) || !hasOwnServers(party) || customFallback();
+  }
+
+  // A running tournament event's dedicated servers (#282): a server listed for one takes only its playlists' matches,
+  // and a match of a playlist whose running events list servers plays only on one of them. A custom match with custom
+  // matchmaking servers of its own (#227) plays on those instead.
+  const tournamentEntries = () => {
+    const list = typeof tournamentServers === "function" ? tournamentServers() : tournamentServers;
+    return Array.isArray(list) ? list : [];
+  };
+  const tournamentPlaylistsOf = (server) => tournamentEntries().filter((entry) => inIpRanges(server.address, entry.servers)).map((entry) => entry.playlistId);
+  function tournamentTakes(server, playlistId) {
+    const entries = tournamentEntries();
+    if (!entries.length) return true;
+    const kept = tournamentPlaylistsOf(server);
+    if (kept.length && !kept.includes(playlistId)) return false;
+    const own = entries.filter((entry) => entry.playlistId === playlistId).flatMap((entry) => entry.servers);
+    return !own.length || inIpRanges(server.address, own);
   }
 
   // Whether a server registered for the bucket's build and region, that may host the party's match, exists at all. When
@@ -782,16 +807,18 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     const noFill = [...(match?.noFill ?? [])];
     // The game's warmup length, for the countdowns of the next matches on servers of this build (#160).
     const reportedBucket = match?.bucketId ?? entry?.bucketId;
+    // The match's playlist, for its tournament event's bots (#282).
+    const playlistId = reportedBucket ? parseBucket(reportedBucket).playlistId : null;
     if (reportedBucket && warmupSeconds() === null && secondsLeft > 0) {
       const netcl = parseBucket(reportedBucket).netcl;
       gameWarmups.set(netcl, Math.max(gameWarmups.get(netcl) ?? 0, Math.ceil(secondsLeft)));
     }
     if (!open || !lateJoin() || !(secondsLeft > 0)) {
       if (lateJoins.delete(sessionId)) say(`Match ${entry.matchId} (session ${sessionId}) takes no more parties`);
-      return { sessionId, open: false, maxPlayers: entry?.maxPlayers ?? match?.maxPlayers ?? null, parties: entry?.parties.map((party) => party.players) ?? [], noFill };
+      return { sessionId, playlistId, open: false, maxPlayers: entry?.maxPlayers ?? match?.maxPlayers ?? null, parties: entry?.parties.map((party) => party.players) ?? [], noFill };
     }
     if (!entry) {
-      if (!match) return { sessionId, open: false, maxPlayers: null, parties: [], noFill };
+      if (!match) return { sessionId, playlistId, open: false, maxPlayers: null, parties: [], noFill };
       const session = sessions.get(sessionId);
       entry = { matchId: match.matchId, bucketId: match.bucketId, customKey: match.customKey ?? null, maxPlayers: match.maxPlayers || session.maxPublicPlayers + session.maxPrivatePlayers,
         parties: [] };
@@ -803,7 +830,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     entry.heard = now;
     entry.until = now + secondsLeft * 1000;
     placeWaiting();
-    return { sessionId, open: true, maxPlayers: entry.maxPlayers, parties: entry.parties.map((party) => party.players), noFill };
+    return { sessionId, playlistId, open: true, maxPlayers: entry.maxPlayers, parties: entry.parties.map((party) => party.players), noFill };
   }
 
   // Whether a custom key is open (#186): a party allowed to use keys queues with it, waiting for a server or in its forming
@@ -889,7 +916,8 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     });
     ws.send(message("Registered", {}));
     say(`Session ${server.sessionId} registered for ${server.patterns.join(", ")} (${regionName(server.region)}, ${server.maxPlayers} players)` +
-      (reserved(server) ? `, a custom matchmaking server (${server.address})` : ""));
+      (reserved(server) ? `, a custom matchmaking server (${server.address})` : "") +
+      (tournamentPlaylistsOf(server).length ? `, a tournament server for playlist ${[...new Set(tournamentPlaylistsOf(server))].join(", ")} (${server.address})` : ""));
     placeWaiting();
   }
 
