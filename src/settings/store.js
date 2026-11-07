@@ -45,6 +45,7 @@ const defaults = {
   // Whether the portal and the admin panel show cosmetics' pictures, loaded from fortnite-api.com (portal/images.js; #249).
   showItemImages: true,
   allowAutoRegistration: true,
+  sidebarWidth: 240,
   // Whether the seasonal events (events/events.js) run on the builds that shipped them (the admin panel's switch).
   seasonalEvents: true,
   // V-Bucks for Battle Royale matches (Core-Backend #100, #124, services/fortnite/battleroyale.js): off unless turned on,
@@ -705,6 +706,11 @@ export function createSettingsStore(dataDir) {
         settings.loginMessageEnabled = partial.loginMessageEnabled;
       } else if (partial.loginMessageEnabled === null) {
         delete settings.loginMessageEnabled;
+      }
+      if (typeof partial.sidebarWidth === "number") {
+        settings.sidebarWidth = Math.min(Math.max(partial.sidebarWidth, 64), 420);
+      } else if (partial.sidebarWidth === null) {
+        delete settings.sidebarWidth;
       }
       settings.battleRoyaleRewards = battleRoyaleRewards(partial.battleRoyaleRewards, legacyRewards(partial, settings.battleRoyaleRewards));
       const structureLimit = structureLimitValue(partial.structureLimit);

@@ -987,7 +987,8 @@ export function adminRoutes(context) {
       matchStartBufferSeconds: req.body?.matchStartBufferSeconds,
       serverRegions: req.body?.serverRegions,
       allowedHostingIps: req.body?.allowedHostingIps,
-      allowedBuilds: req.body?.allowedBuilds
+      allowedBuilds: req.body?.allowedBuilds,
+      sidebarWidth: req.body?.sidebarWidth !== undefined ? (req.body.sidebarWidth === null ? null : Number(req.body.sidebarWidth)) : undefined
     });
     const net = network?.settings?.() ?? {};
     const resInfo = network?.resolution?.() ?? {};
