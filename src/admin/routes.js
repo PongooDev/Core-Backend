@@ -240,9 +240,24 @@ export function adminRoutes(context) {
     stomp?.kick(account.id);
   }
 
+  let cachedPanel = null;
+  let cachedEtag = null;
+  const getPanelHtml = () => {
+    if (!cachedPanel || process.env.NODE_ENV === "development") {
+      cachedPanel = fs.readFileSync(panel);
+      cachedEtag = `"${crypto.createHash("md5").update(cachedPanel).digest("hex")}"`;
+    }
+    return { content: cachedPanel, etag: cachedEtag };
+  };
+
   router.get("/admin", (req, res) => {
-    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-    res.sendFile(panel);
+    const { content, etag } = getPanelHtml();
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("ETag", etag);
+    if (req.headers["if-none-match"] === etag) {
+      return res.status(304).end();
+    }
+    res.type("html").send(content);
   });
   // Browsers ask for this on any page; the panel has its own icon.
   router.get("/favicon.ico", (req, res) => res.status(204).end());

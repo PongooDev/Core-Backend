@@ -1,4 +1,5 @@
 import express from "express";
+import compression from "compression";
 import { createAccountStore } from "./accounts/store.js";
 import { createExchangeCodeStore } from "./accounts/exchange-codes.js";
 import { createResetTokenStore } from "./accounts/reset-tokens.js";
@@ -164,6 +165,14 @@ export function createApp(config, context = createContext(config)) {
 
   const app = express();
   app.disable("x-powered-by");
+
+  app.use(compression({
+    threshold: 1024,
+    filter: (req, res) => {
+      if (req.headers["x-no-compression"]) return false;
+      return compression.filter(req, res);
+    }
+  }));
 
   // A plain http:// picture the -httpproxy carried for an admin-set picture host goes to that site (Core-Backend #260).
   app.use(forwardImageRequests((target) => isImageHost(target, context.settings?.get?.() ?? {}, config)));

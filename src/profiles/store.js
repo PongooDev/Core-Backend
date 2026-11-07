@@ -8,6 +8,8 @@ import { addMissingItems, addMissingStats, upgradeItems } from "./defaults.js";
 // and twitchPrimePack(), whether Season 3's Twitch Prime pack is given (the admin panel's switch).
 export function createProfileStore(dataDir, settings = {}) {
   const file = (accountId, profileId) => path.join(dataDir, "accounts", accountId, "profiles", `${profileId}.json`);
+  const cache = new Map();
+  const cacheKey = (accountId, profileId) => `${accountId}:${profileId}`;
 
   return {
     settings,
@@ -18,12 +20,24 @@ export function createProfileStore(dataDir, settings = {}) {
 
     load(accountId, profileId) {
       const target = file(accountId, profileId);
-      if (fs.existsSync(target)) {
+      const key = cacheKey(accountId, profileId);
+      const stat = fs.statSync(target, { throwIfNoEntry: false });
+
+      if (stat) {
+        const cached = cache.get(key);
+        if (cached && cached.mtimeMs === stat.mtimeMs) {
+          return structuredClone(cached.profile);
+        }
+
         const existing = readJson(target);
         const changed = [addMissingStats(existing), addMissingItems(existing), upgradeItems(existing)];
         if (changed.some(Boolean)) {
           existing.rvn += 1;
           writeJson(target, existing);
+          const newStat = fs.statSync(target, { throwIfNoEntry: false });
+          cache.set(key, { mtimeMs: newStat ? newStat.mtimeMs : stat.mtimeMs, profile: structuredClone(existing) });
+        } else {
+          cache.set(key, { mtimeMs: stat.mtimeMs, profile: structuredClone(existing) });
         }
         return existing;
       }
@@ -44,11 +58,14 @@ export function createProfileStore(dataDir, settings = {}) {
       addMissingStats(profile);
       addMissingItems(profile);
       writeJson(target, profile);
+      const newStat = fs.statSync(target, { throwIfNoEntry: false });
+      cache.set(key, { mtimeMs: newStat ? newStat.mtimeMs : Date.now(), profile: structuredClone(profile) });
       return profile;
     },
 
     // A reset: the next load makes the profile anew from the defaults.
     remove(accountId, profileId) {
+      cache.delete(cacheKey(accountId, profileId));
       fs.rmSync(file(accountId, profileId), { force: true });
     },
 
@@ -59,7 +76,13 @@ export function createProfileStore(dataDir, settings = {}) {
 
     save(profile) {
       profile.updated = new Date().toISOString();
-      writeJson(file(profile.accountId, profile.profileId), profile);
+      const target = file(profile.accountId, profile.profileId);
+      writeJson(target, profile);
+      const stat = fs.statSync(target, { throwIfNoEntry: false });
+      cache.set(cacheKey(profile.accountId, profile.profileId), {
+        mtimeMs: stat ? stat.mtimeMs : Date.now(),
+        profile: structuredClone(profile)
+      });
     }
   };
 }
