@@ -1,13 +1,42 @@
 import assert from "node:assert/strict";
 import http from "node:http";
 import test from "node:test";
-import { certUserAgent, requestToken, startBackend, userLogin } from "./helpers.js";
+import { certClient, certUserAgent, startBackend } from "../helpers.js";
 
-// Hardware Tier 1: Low-End VPS / Mini-PC (1 vCPU, 1GB RAM)
-// Target: 50 concurrent simulated players, 250 total operations
-test("Extreme Stress Level 1: Low-End Hardware (50 players, 250 concurrent operations)", { timeout: 60000 }, async () => {
+// Hardware Tier 4: Standard Dedicated (4-6 vCPU, 8GB RAM)
+// Target: 400 concurrent simulated players, 2,000 total operations
+test("Extreme Stress Level 4: Standard Dedicated (400 players, 2,000 concurrent operations)", { timeout: 180000 }, async () => {
   const backend = await startBackend();
   const agent = new http.Agent({ keepAlive: true, maxSockets: 100 });
+
+  function authRequest(username) {
+    return new Promise((resolve, reject) => {
+      const body = new URLSearchParams({ grant_type: "password", username, password: "test" }).toString();
+      const headers = {
+        Authorization: `basic ${Buffer.from(`${certClient}:secret`).toString("base64")}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Content-Length": Buffer.byteLength(body),
+        "User-Agent": certUserAgent
+      };
+      const req = http.request({
+        host: "127.0.0.1",
+        port: backend.port,
+        method: "POST",
+        path: "/account/api/oauth/token",
+        headers,
+        agent
+      }, (res) => {
+        let text = "";
+        res.on("data", (c) => (text += c));
+        res.on("end", () => {
+          resolve({ status: res.statusCode, body: text ? JSON.parse(text) : null });
+        });
+      });
+      req.on("error", reject);
+      req.write(body);
+      req.end();
+    });
+  }
 
   function request(path, method = "GET", token, body) {
     return new Promise((resolve, reject) => {
@@ -41,14 +70,18 @@ test("Extreme Stress Level 1: Low-End Hardware (50 players, 250 concurrent opera
   }
 
   const startTime = Date.now();
-  const CONCURRENT_PLAYERS = 50;
+  const CONCURRENT_PLAYERS = 400;
   const OPERATIONS_PER_PLAYER = 5;
 
   try {
     // 1. Concurrent Player Registration & Logins
     const authStart = Date.now();
     const players = await Promise.all(
-      Array.from({ length: CONCURRENT_PLAYERS }, (_, i) => userLogin(backend.port, `Tier1_User_${i}`))
+      Array.from({ length: CONCURRENT_PLAYERS }, async (_, i) => {
+        const res = await authRequest(`Tier4_User_${i}`);
+        assert.equal(res.status, 200);
+        return { token: res.body.access_token, accountId: res.body.account_id };
+      })
     );
     const authDuration = Date.now() - authStart;
     assert.equal(players.length, CONCURRENT_PLAYERS);
@@ -73,8 +106,8 @@ test("Extreme Stress Level 1: Low-End Hardware (50 players, 250 concurrent opera
     const totalOps = CONCURRENT_PLAYERS * OPERATIONS_PER_PLAYER;
     const opsPerSec = Math.round((totalOps / (opsDuration / 1000)) * 10) / 10;
 
-    console.log(`[Tier 1 Summary]`);
-    console.log(`- Hardware Profile: Low-End (1 vCPU, 1GB RAM)`);
+    console.log(`[Tier 4 Summary]`);
+    console.log(`- Hardware Profile: Standard Dedicated (4-6 vCPU, 8GB RAM)`);
     console.log(`- Concurrent Players: ${CONCURRENT_PLAYERS}`);
     console.log(`- Total Operations: ${totalOps}`);
     console.log(`- Auth Time: ${authDuration}ms (${Math.round(CONCURRENT_PLAYERS / (authDuration / 1000))} auths/sec)`);
@@ -88,4 +121,3 @@ test("Extreme Stress Level 1: Low-End Hardware (50 players, 250 concurrent opera
     backend.close();
   }
 });
-

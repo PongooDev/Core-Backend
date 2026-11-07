@@ -1,13 +1,13 @@
 import assert from "node:assert/strict";
 import http from "node:http";
 import test from "node:test";
-import { certClient, certUserAgent, startBackend } from "./helpers.js";
+import { certClient, certUserAgent, startBackend } from "../helpers.js";
 
-// Hardware Tier 4: Standard Dedicated (4-6 vCPU, 8GB RAM)
-// Target: 400 concurrent simulated players, 2,000 total operations
-test("Extreme Stress Level 4: Standard Dedicated (400 players, 2,000 concurrent operations)", { timeout: 180000 }, async () => {
+// Hardware Tier 5: Advanced Dedicated (8 vCPU, 16GB RAM)
+// Target: 600 concurrent simulated players, 3,000 total operations
+test("Extreme Stress Level 5: Advanced Dedicated (600 players, 3,000 concurrent operations)", { timeout: 240000 }, async () => {
   const backend = await startBackend();
-  const agent = new http.Agent({ keepAlive: true, maxSockets: 100 });
+  const agent = new http.Agent({ keepAlive: true, maxSockets: 150 });
 
   function authRequest(username) {
     return new Promise((resolve, reject) => {
@@ -70,7 +70,7 @@ test("Extreme Stress Level 4: Standard Dedicated (400 players, 2,000 concurrent 
   }
 
   const startTime = Date.now();
-  const CONCURRENT_PLAYERS = 400;
+  const CONCURRENT_PLAYERS = 600;
   const OPERATIONS_PER_PLAYER = 5;
 
   try {
@@ -78,7 +78,7 @@ test("Extreme Stress Level 4: Standard Dedicated (400 players, 2,000 concurrent 
     const authStart = Date.now();
     const players = await Promise.all(
       Array.from({ length: CONCURRENT_PLAYERS }, async (_, i) => {
-        const res = await authRequest(`Tier4_User_${i}`);
+        const res = await authRequest(`Tier5_User_${i}`);
         assert.equal(res.status, 200);
         return { token: res.body.access_token, accountId: res.body.account_id };
       })
@@ -106,8 +106,8 @@ test("Extreme Stress Level 4: Standard Dedicated (400 players, 2,000 concurrent 
     const totalOps = CONCURRENT_PLAYERS * OPERATIONS_PER_PLAYER;
     const opsPerSec = Math.round((totalOps / (opsDuration / 1000)) * 10) / 10;
 
-    console.log(`[Tier 4 Summary]`);
-    console.log(`- Hardware Profile: Standard Dedicated (4-6 vCPU, 8GB RAM)`);
+    console.log(`[Tier 5 Summary]`);
+    console.log(`- Hardware Profile: Advanced Dedicated (8 vCPU, 16GB RAM)`);
     console.log(`- Concurrent Players: ${CONCURRENT_PLAYERS}`);
     console.log(`- Total Operations: ${totalOps}`);
     console.log(`- Auth Time: ${authDuration}ms (${Math.round(CONCURRENT_PLAYERS / (authDuration / 1000))} auths/sec)`);
@@ -121,3 +121,4 @@ test("Extreme Stress Level 4: Standard Dedicated (400 players, 2,000 concurrent 
     backend.close();
   }
 });
+

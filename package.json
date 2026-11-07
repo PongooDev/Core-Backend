@@ -7,7 +7,8 @@
   "main": "src/main.js",
   "scripts": {
     "start": "node src/main.js",
-    "test": "node --test --test-concurrency=10"
+    "test": "node --test --test-concurrency=10",
+    "test:stress": "node --test --test-concurrency=1 \"tests/stress/*.stress.js\""
   },
   "engines": {
     "node": ">=22"

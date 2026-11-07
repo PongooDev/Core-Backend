@@ -1,13 +1,13 @@
 import assert from "node:assert/strict";
 import http from "node:http";
 import test from "node:test";
-import { certUserAgent, startBackend, userLogin } from "./helpers.js";
+import { certUserAgent, startBackend, userLogin } from "../helpers.js";
 
-// Hardware Tier 2: Low-Mid VPS (2 vCPU, 2GB RAM)
-// Target: 100 concurrent simulated players, 500 total operations
-test("Extreme Stress Level 2: Low-Mid Hardware (100 players, 500 concurrent operations)", { timeout: 90000 }, async () => {
+// Hardware Tier 3: Mid-Tier VPS (4 vCPU, 4GB RAM)
+// Target: 200 concurrent simulated players, 1,000 total operations
+test("Extreme Stress Level 3: Mid-Tier Hardware (200 players, 1,000 concurrent operations)", { timeout: 120000 }, async () => {
   const backend = await startBackend();
-  const agent = new http.Agent({ keepAlive: true, maxSockets: 200 });
+  const agent = new http.Agent({ keepAlive: true, maxSockets: 400 });
 
   function request(path, method = "GET", token, body) {
     return new Promise((resolve, reject) => {
@@ -41,14 +41,14 @@ test("Extreme Stress Level 2: Low-Mid Hardware (100 players, 500 concurrent oper
   }
 
   const startTime = Date.now();
-  const CONCURRENT_PLAYERS = 100;
+  const CONCURRENT_PLAYERS = 200;
   const OPERATIONS_PER_PLAYER = 5;
 
   try {
     // 1. Concurrent Player Registration & Logins
     const authStart = Date.now();
     const players = await Promise.all(
-      Array.from({ length: CONCURRENT_PLAYERS }, (_, i) => userLogin(backend.port, `Tier2_User_${i}`))
+      Array.from({ length: CONCURRENT_PLAYERS }, (_, i) => userLogin(backend.port, `Tier3_User_${i}`))
     );
     const authDuration = Date.now() - authStart;
     assert.equal(players.length, CONCURRENT_PLAYERS);
@@ -73,8 +73,8 @@ test("Extreme Stress Level 2: Low-Mid Hardware (100 players, 500 concurrent oper
     const totalOps = CONCURRENT_PLAYERS * OPERATIONS_PER_PLAYER;
     const opsPerSec = Math.round((totalOps / (opsDuration / 1000)) * 10) / 10;
 
-    console.log(`[Tier 2 Summary]`);
-    console.log(`- Hardware Profile: Low-Mid (2 vCPU, 2GB RAM)`);
+    console.log(`[Tier 3 Summary]`);
+    console.log(`- Hardware Profile: Mid-Tier (4 vCPU, 4GB RAM)`);
     console.log(`- Concurrent Players: ${CONCURRENT_PLAYERS}`);
     console.log(`- Total Operations: ${totalOps}`);
     console.log(`- Auth Time: ${authDuration}ms (${Math.round(CONCURRENT_PLAYERS / (authDuration / 1000))} auths/sec)`);
