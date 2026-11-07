@@ -112,6 +112,22 @@ export function createPurchaseCodeStore(dataDir) {
       return view(entry);
     },
 
+    reactivate(id) {
+      const entry = load().codes[String(id)];
+      if (!entry) return null;
+      entry.revokedAt = null;
+      save();
+      return view(entry);
+    },
+
+    delete(id) {
+      const entry = load().codes[String(id)];
+      if (!entry) return false;
+      delete load().codes[String(id)];
+      save();
+      return true;
+    },
+
     // Claims one use of the code for the account's purchase of the offer. Synchronous from the check to the saved use, so
     // two requests can't both take a single-use code's last use. { id } on success, else { problem } (codeProblems).
     claim(code, { offerId, accountId, now = Date.now() }) {

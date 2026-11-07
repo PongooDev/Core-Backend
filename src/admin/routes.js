@@ -1921,6 +1921,18 @@ export function adminRoutes(context) {
     res.json(revoked);
   });
 
+  router.post("/admin/api/purchase-codes/:id/reactivate", (req, res) => {
+    const reactivated = context.purchaseCodes.reactivate?.(req.params.id);
+    if (!reactivated) return notFound(res, "No such purchase code");
+    res.json(reactivated);
+  });
+
+  router.delete("/admin/api/purchase-codes/:id", (req, res) => {
+    const deleted = context.purchaseCodes.delete?.(req.params.id);
+    if (!deleted) return notFound(res, "No such purchase code");
+    res.json({ ok: true, id: req.params.id });
+  });
+
   // Code Folders
   router.get("/admin/api/code-folders", (req, res) => {
     if (!context.friendCodes?.listFolders) return res.json([]);

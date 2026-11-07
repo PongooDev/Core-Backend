@@ -146,9 +146,21 @@ test("wrong-offer, expired and revoked codes are refused with a message and gran
     const revoked = await makeCode(backend, { code: "GONE-CODE" });
     assert.equal((await post(backend.port, `/admin/api/purchase-codes/${revoked.id}/revoke`, undefined, {})).body.status, "revoked");
     assert.match((await attempt("GONE-CODE")).body.errorMessage, /revoked/);
-
     assert.equal((await post(backend.port, "/admin/api/purchase-codes/nope/revoke", undefined, {})).status, 404);
     assert.equal(vbucks(await profileOf(backend.port, player, "profile0")), 0);
+
+    const reactivated = (await post(backend.port, `/admin/api/purchase-codes/${revoked.id}/reactivate`, undefined, {})).body;
+    assert.equal(reactivated.status, "active");
+    assert.equal(reactivated.revokedAt, null);
+    assert.equal((await post(backend.port, "/admin/api/purchase-codes/nope/reactivate", undefined, {})).status, 404);
+
+    assert.equal((await attempt("GONE-CODE")).status, 200);
+    assert.equal(vbucks(await profileOf(backend.port, player, "profile0")), 1000);
+
+    assert.equal((await del(backend.port, `/admin/api/purchase-codes/${revoked.id}`)).status, 200);
+    assert.equal((await del(backend.port, `/admin/api/purchase-codes/${revoked.id}`)).status, 404);
+    assert.equal((await post(backend.port, `/admin/api/purchase-codes/${revoked.id}/revoke`, undefined, {})).status, 404);
+    assert.equal((await post(backend.port, `/admin/api/purchase-codes/${revoked.id}/reactivate`, undefined, {})).status, 404);
   } finally {
     backend.close();
   }
