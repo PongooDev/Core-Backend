@@ -222,3 +222,18 @@ test("Final Fight: Teams of 20 is 4.4.2's Playlist_Final_20: its new mode, 5 tea
     configureEvents(null);
   }
 });
+
+// PongooDev/CoreV2#326: Update v4.30's Blitz! v2 was 4.3's; 4.4's paks have no Blitz playlist.
+test("Blitz v2 is 4.3's: no 4.4 build offers it, by hand or on its dates, as 4.4's paks have no Blitz playlist (#326)", () => {
+  configureEvents({ mode: "auto", seasonStarts: { 4: "2018-05-01" } });
+  try {
+    for (const build of [...v44, v42]) {
+      assert.equal(hasLtm("blitzV2", build), false, build);
+      assert.equal(ltmOn("blitzV2", build, { matchmakingModes: { blitzV2: true } }), false, build);
+      assert.equal(ltmOn("blitzV2", build, { ltmOriginalDates: true, matchmakingModes: {} }, new Date("2018-06-02T12:00:00Z")), false, build);
+    }
+    for (const id of ["blitz", "blitzSolo", "blitzDuo"]) for (const build of v44) assert.equal(hasLtm(id, build), false, `${id} ${build}`);
+  } finally {
+    configureEvents(null);
+  }
+});

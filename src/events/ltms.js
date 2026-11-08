@@ -265,8 +265,8 @@ const playlistAssets = (build) => Number(build) >= playlistAssetBuild;
 //   (3.5.1 to 3.6).
 // - Season 4: 50v50 v2 1 to 8 May (4.0, 4.1), 22 May to 11 June (4.2 to 4.4) and 27 June to 11 July (4.5); Infinity
 //   Gauntlet 8 to 16 May (4.1, 4.2); Solo Showdown 17 to 21 May (4.2); Solid Gold v2 22 to 31 May but for Close
-//   Encounters (4.2 to 4.4); Close Encounters on 25 May (4.2); Blitz v2 1 to 4 June and Sniper Shootout v3 5 to 11 June
-//   (4.4, and the lost 4.3); Teams of 20 v2 12 to 25 June (4.4, 4.4.x); High Explosives v2 22 to 25 June (4.4.x);
+//   Encounters (4.2 to 4.4); Close Encounters on 25 May (4.2); Blitz v2 1 to 4 June (the lost 4.3's only: 4.4's paks have
+//   no Blitz playlist) and Sniper Shootout v3 5 to 11 June (4.4, and the lost 4.3); Teams of 20 v2 12 to 25 June (4.4, 4.4.x); High Explosives v2 22 to 25 June (4.4.x);
 //   Playground 27 June to 11 July (4.5).
 // A window's builds are changelists, or for builds Core doesn't have yet versions ("4.2", "4.4.x" for every 4.4 hotfix),
 // so a build supported later (builds/detect.js buildVersions) picks its dates up. An LTM still runs only on the builds
@@ -421,9 +421,13 @@ export const ltms = [
   { id: "solidGoldDuos", name: "Solid Gold v2 (Duos)", playlistId: 34, playlistName: "Playlist_SolidGold_Duos", eventFlag: null, builds: [build42, build42], seasons: [4],
     original: solidGoldV2,
     teams: "100 Teams × 2", description: "All weapon drops are Legendary, no down state (Athena/Playlists/SolidGold tables; 4.2's asset)." },
-  { id: "blitzV2", name: "Blitz v2", playlistId: null, playlistName: null, eventFlag: null, builds: ["4.3", "4.4"], seasons: [4],
-    original: [{ builds: ["4.3", "4.4"], start: "2018-06-01", end: "2018-06-05" }],
-    teams: "100 Teams × 4", description: "Blitz again (4.4's: its playlist comes with 4.4's data)." },
+  // Update v4.30's Blitz! v2 (PongooDev/CoreV2#326) was 4.3's, which Core doesn't have, and 4.4's paks have no Blitz
+  // playlist (no Playlist_Blitz_*, no Athena/Playlists/Blitz tables: Epic emptied Athena/Playlists for 4.4, above), so no
+  // build Core knows can offer it: its builds and window are 4.3's alone. 4.2's Blitz (Squads, Solo, Duos) is Blitz v1's
+  // tables.
+  { id: "blitzV2", name: "Blitz v2", playlistId: null, playlistName: null, eventFlag: null, builds: ["4.3", "4.3"], seasons: [4],
+    original: [{ builds: ["4.3", "4.3"], start: "2018-06-01", end: "2018-06-05" }],
+    teams: "100 Teams × 4", description: "Blitz again (4.3's: no build Core has ships its playlist; 4.4's paks have none)." },
   // Update v4.40's Sniper Shootout v3 (PongooDev/CoreV2#327): 4.4's Playlist_Snipers (41, Squads), Playlist_Snipers_Solo
   // (39) and _Duos (40), checked in 4.4.2's paks: 100 teams of 4, 1 and 2, bNoDBNO (the notes' "Reviving Down But Not Out
   // teammates ... is deactivated, players are immediately eliminated"), "Ready, aim, fire! Sniper & Scoped weapons only.",
