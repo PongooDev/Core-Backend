@@ -43,6 +43,11 @@ import { currentEventsConfig, seasonalEventsOn } from "./events.js";
 // 4.2 (CL-4072250) takes none either: its AthenaGameData keeps 4.1's rows (the final circle's 0.875 and 0.625, the
 // Gauntlet's and Thanos's) and adds the notes' Apple, Default.ForagedItems.InstantHeal.Apple 5 ("Consuming an Apple will
 // grant 5 health"); the skybox, TV, Easter and St. Patrick's rows are still 0.
+// 4.4 (4.4.2, CL-4132537, whose data 4.4.0 and 4.4.1 play on) takes none either: its AthenaGameData keeps those rows at 0
+// and adds 4.3's Shopping Carts (Default.ShoppingCart.MinSpawnPercent 50, MaxSpawnPercent 60: Update v4.40's "Shopping
+// Carts ... have been re-enabled" is the paks' own values, so no hotfix turns them back on), Final Fight's
+// Default.WinConditionTime.Final (60) and the later Score Royale's Default.ScoringEvent.* rows. (Final Fight's own circles
+// are events/finalfight.js's.)
 export const meteorStrikeBuild = 4019403;
 export const meteorStrikePhases = ["none", "broadcast", "meteors", "impact"];
 export const defaultMeteorStrikePhase = "meteors";
