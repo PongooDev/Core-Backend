@@ -268,3 +268,13 @@ test("4.2's missions from Plankerton and its Mini-Boss alerts sometimes give RE-
   assert.ok(perked.length > 0 && perked.length < miniBosses.length);
   for (const { missionAlertRewards } of perked) assert.equal(missionAlertRewards.items.filter(({ itemType }) => perk.test(itemType)).length, 1);
 });
+
+// Core-Backend #289: from 4.0 a Mini Reward Llama holds Gold (EventCurrency_Scaling), a silver one more; 3.6's don't.
+test("4.2's Mini Llamas hold Gold, 25 and a silver one 50, and older builds' mini llamas hold none", () => {
+  const goldIn = (build, pack) => inBuild(build, () => rollContents(pack)).filter(({ templateId }) => templateId === "AccountResource:eventcurrency_scaling");
+  assert.deepEqual(goldIn("4072250", "CardPack:cardpack_basic"), [{ templateId: "AccountResource:eventcurrency_scaling", quantity: 25 }]);
+  assert.deepEqual(goldIn("4072250", "CardPack:cardpack_basic_silver"), [{ templateId: "AccountResource:eventcurrency_scaling", quantity: 50 }]);
+  assert.deepEqual(goldIn("4072250", "CardPack:cardpack_bronze"), []);
+  assert.deepEqual(goldIn("4019403", "CardPack:cardpack_basic"), []);
+  assert.deepEqual(goldIn("3541083", "CardPack:cardpack_basic"), []);
+});
