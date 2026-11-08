@@ -24,7 +24,9 @@ const playlistAssetLtms = ["fiftyFiftyV2", "highExplosivesSolo", "highExplosives
   // Season 4's modes of 4.2 on (Core-Backend #258): 4.2's (CL-4072250) Solo Showdown, Close Encounters (Squads, Solo, Duos)
   // and Solid Gold v2 Duos; the later ones for when Core has those builds.
   "soloShowdown", "closeEncounters", "closeEncountersSolo", "closeEncountersDuos", "solidGoldDuos", "blitzV2", "sniperShootoutV3",
-  "teamsOf20V2", "playground"];
+  "teamsOf20V2", "playground",
+  // 4.4's (CL-4117433 to CL-4132537): 50v50 v3 (PongooDev/CoreV2#328).
+  "fiftyFiftyV3"];
 // Close Encounters' original date (Core-Backend #258, events/ltms.js): the whole of 25 May 2018, or one hour of it (0 to 23,
 // on the season replay's clock), as Epic ran it.
 export function closeEncountersValue(input, current = { wholeDay: true, hour: 0 }) {

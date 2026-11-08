@@ -7,7 +7,9 @@ import { seasonName, versionOf } from "../src/builds/detect.js";
 import { contentUpdateStates, lootHotfixSection } from "../src/events/contentupdates.js";
 import { activeEventFlags, activeMiniBosses, blockbuster2018, blockbuster2018Phase1, blockbuster2018Phase2, blockbuster2018Phase3, groupMission,
   isEventActive, lobbySeason4, passiveStorms } from "../src/events/events.js";
-import { hasLtm, ltmNewMode, ltmOn, ltmPlaylistOverrides, ltms } from "../src/events/ltms.js";
+import { configureEvents } from "../src/events/events.js";
+import { hasLtm, inOriginalWindow, ltmNewMode, ltmOfPlaylist, ltmOn, ltmPlaylistOverrides, ltms } from "../src/events/ltms.js";
+import { playlistTeamsOf } from "../src/matchmaking/service.js";
 import { meteorStrikePhase, meteorStrikeRows } from "../src/events/meteorstrike.js";
 import { athenaChallengeBundles, athenaCosmetics, athenaLootTables, athenaSeason } from "../src/gamedata/athena.js";
 import { buildGameData, dataBuild } from "../src/gamedata/read.js";
@@ -133,5 +135,32 @@ test("no broken challenge is listed for 4.4: its goal and Minigun/LMG challenges
     for (const build of v44) assert.equal(brokenChallengeOf(quest, build), undefined, `${quest} on ${build}`);
   }
   assert.ok(brokenChallengeOf("quest_br_score_goals", v42), "4.2's stays listed");
-  assert.equal(ltmNewMode(v441, { matchmakingModes: {} }), null, "4.4.1's notes name no mode");
+});
+
+// PongooDev/CoreV2#328: Update v4.40's 50v50 v3, 4.4's Playlist_50v50.
+test("50v50 v3 is 4.4's Playlist_50v50: 4.4.0's new mode, two teams of 50, by its switch or 50v50's window on 4.4.1 and 4.4.2 (#328)", () => {
+  const none = { matchmakingModes: {} };
+  for (const build of v44) {
+    assert.equal(hasLtm("fiftyFiftyV3", build), true, build);
+    assert.equal(ltmOfPlaylist(50, build).id, "fiftyFiftyV3");
+    assert.deepEqual(playlistTeamsOf(`${build}:0:NA:50`, build), { maxTeamCount: 2, maxTeamSize: 50, maxSquadSize: 4 });
+    assert.ok(ltmPlaylistOverrides(build, { matchmakingModes: { fiftyFiftyV3: true } }).includes("Playlist_50v50"));
+  }
+  assert.equal(ltmNewMode(v440, none).id, "fiftyFiftyV3");
+  assert.equal(ltmOn("fiftyFiftyV3", v440, none), true, "on 4.4.0 whatever its switch");
+  assert.equal(ltmOn("fiftyFiftyV3", v441, none), false);
+  assert.equal(ltmOn("fiftyFiftyV3", v442, { matchmakingModes: { fiftyFiftyV3: true } }), true);
+  assert.equal(hasLtm("fiftyFiftyV3", v42), false);
+  assert.equal(ltmOfPlaylist(50, v42).id, "fiftyFiftyV2");
+  configureEvents({ mode: "auto", seasonStarts: { 4: "2018-05-01" } });
+  try {
+    const dated = { ltmOriginalDates: true, matchmakingModes: {} };
+    const at = (date) => new Date(`${date}T12:00:00Z`);
+    assert.equal(inOriginalWindow("fiftyFiftyV3", v442, at("2018-06-11"), dated), true);
+    assert.equal(inOriginalWindow("fiftyFiftyV3", v442, at("2018-06-12"), dated), false);
+    assert.equal(inOriginalWindow("fiftyFiftyV2", v442, at("2018-06-01"), dated), false, "v2 isn't 4.4's");
+    assert.equal(inOriginalWindow("fiftyFiftyV2", v42, at("2018-06-01"), dated), true);
+  } finally {
+    configureEvents(null);
+  }
 });

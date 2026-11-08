@@ -366,7 +366,7 @@ export const ltms = [
   // playlist (CoreV2 #260): a bus for each team, the final circle, its storm, supply drops, loot and bleed-out.
   { id: "fiftyFiftyV2", name: "50v50 v2", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build351, build42], seasons: [3, 4], newIn: [build351, build352],
     original: [{ builds: [build351, build36], start: "2018-04-19", end: "2018-05-01" }, { builds: [build40, build41], start: "2018-05-01", end: "2018-05-09" },
-      { builds: [build42, "4.4"], start: "2018-05-22", end: "2018-06-12" }, { builds: ["4.5", "4.5"], start: "2018-06-27", end: "2018-07-12" }],
+      { builds: [build42, build42], start: "2018-05-22", end: "2018-06-12" }, { builds: ["4.5", "4.5"], start: "2018-06-27", end: "2018-07-12" }],
     teams: "2 Teams × 50", description: "Two teams of 50 players, massive forts (Playlist_50v50: its own loot, game data and resource rates)." },
   { id: "highExplosivesSolo", name: "High Explosives v2 (Solo)", playlistId: 23, playlistName: "Playlist_HighExplosives_Solo", eventFlag: null, builds: [build351, build42], seasons: [3, 4],
     original: highExplosivesV2,
@@ -431,7 +431,19 @@ export const ltms = [
     teams: "5 Teams × 20", description: "Five teams of twenty again (4.4's: its playlist comes with 4.4's data)." },
   { id: "playground", name: "Playground", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build42, "4.5"], seasons: [4],
     original: [{ builds: ["4.5", "4.5"], start: "2018-06-27", end: "2018-07-12" }],
-    teams: "1 Team × 4", description: "A private island, respawning but in the storm (Playlist_Playground: 4.2's paks already have the asset, a stub described as rewrite; 🟡 4.5's unchecked)." }
+    teams: "1 Team × 4", description: "A private island, respawning but in the storm (Playlist_Playground: 4.2's paks already have the asset, a stub described as rewrite; 🟡 4.5's unchecked)." },
+  // Update v4.40's 50v50 v3 (PongooDev/CoreV2#328): 4.4's Playlist_50v50 (PlaylistId 50: two teams of 50 in squads of 4,
+  // bIsLargeTeamGame, a bus for each team, AirCraftBehavior OpposingAirCraftForEachTeam with its custom path's midpoint
+  // 60,000 out, SafeZoneStartUp StartsWithWarmUp, StormEffectDelay 330, bDisplayFinalStormPosition, no placement rewards)
+  // with its own Athena/Playlists/50v50 loot tiers, loot packages, game data and resource rates: the notes' new first
+  // circle, supply drops in batches of 4 to 8, the default DBNO damage, +25% farming, double and triple ammo are those
+  // tables', which the gameserver plays. The notes ("Large squad" mode: no profile stats) open on it with Sniper Shootout
+  // v3, so it is 4.4.0's new mode (on there whatever its switch). On the replay it takes 50v50 v2's window of 22 May to 11
+  // June on 4.4's builds (Core-Backend #258: 4.2 to 4.4), the asset being v3's there; 4.4.1 and 4.4.2 offer it by its
+  // switch or that window.
+  { id: "fiftyFiftyV3", name: "50v50 v3", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build440, build442], seasons: [4], newIn: build440,
+    original: [{ builds: [build440, build442], start: "2018-05-22", end: "2018-06-12" }],
+    teams: "2 Teams × 50", description: "Two teams of fifty, a bus each (Playlist_50v50, 4.4's: a larger first circle, more supply drops, +25% farming, double ammo)." }
 ];
 // A build range's bounds are changelists or versions ("4.2", "4.4.x"): a version holds only once Core knows the build's.
 const versionParts = (version) => String(version).split(".").map((part) => (part === "x" ? Infinity : Number(part)));
