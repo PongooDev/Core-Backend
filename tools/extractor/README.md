@@ -122,7 +122,12 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   applied) as the fifth argument: its DefaultGameData names no `MissionAlerts` or `MissionAlertSpreadDatas` (cooked
   server-only, as 3.6's mission infos), so `world.json`'s `missionAlerts` and `missionAlertSpreads` are the earlier build's,
   whole, and the extractor prints how many it took; without a fifth argument it stops. 4.2's is `4.20.0-4072250+++Fortnite+Release-4.2` with 4.1's full data (Cert's files with
-  `gamedata/4053532` applied) as the fifth argument, for the same reason (no extractor change). Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
+  `gamedata/4053532` applied) as the fifth argument, for the same reason (no extractor change). 4.4.2's is `4.20.0-4132537+++Fortnite+Release-4.4.x` with
+  4.2's full data (Cert's files with `gamedata/4072250` applied) as the fifth argument, for the same reason, and the main key
+  that FModel's settings already hold for it (`0x81C42E03...`; its six paks, a Battle Royale only archive: pakchunk0,
+  its four splits and pakchunk1; Save the World's data is still in pakchunk0). One extractor change: its MetaRecipes name
+  15 item definitions whose packages aren't in those paks ("None"), which are no item. 4.4.0 (CL-4117433) and 4.4.1
+  (CL-4127312) aren't extracted (Core has no copy of their paks) and play on 4.4.2's data (`src/gamedata/read.js`). Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):
   `slotLoadouts` (AlterationSlotsLoadouts: each loadout's slots, their unlock level and rarity, slot definition,

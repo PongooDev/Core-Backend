@@ -75,7 +75,15 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // with Autocleave and Meltdown, Venturion with Airfoil and Triumph, Moisty Merman, Bandolier, Director's Cut, Stop Axe,
 // and the Star Power, Zany, Take 14 and Dip emotes, on 22 of the season's days from 17 May on, each where the wiki's page
 // lists it among the day's tiles (its cycling tile and callout too). Only 4.2's data has them, so 4.0's and 4.1's days
-// are as they were. A build's season is its athena data's seasonNumber, Season 1 without one.
+// are as they were. 4.4.2 (CL-4132537, 19 June 2018; 4.4.0 and 4.4.1 play on its data) adds 4.3's and 4.4's thirty-nine
+// the shop sold: Jumpshot and Triple Threat with Slam Dunk, Hang Time and Baller, Scoundrel and Rapscallion with Nite Owl
+// and Starry Flight, Laugh It Up, Ventura, Rambunctious, Flytrap with Venus Flyer and Tendril, the eight World Cup outfits
+// with Goalbound, Elite Cleat and Vuvuzela, Red Card and Kick Ups, Omen and Oracle Axe, Waterworks, Pterodactyl and Rawr,
+// Sky Stalker and Propeller Axe, Pop Lock, and Fate with Split Wing and Fated Frame, on 23 of the season's days from 1 June
+// on, placed the same way (a cosmetic that joins a tile of the day's earlier cosmetics takes that tile's number). Their
+// back blings, the Starter Pack and Battle Pass outfits (Blue Striker, Wingman, The Visitor), Boogie Down, the sprays and
+// contrails were never sold on their own. Only 4.4's data has them, so 4.0's to 4.2's days are as they were. A build's
+// season is its athena data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;
   return { days, firstDay: Date.parse(`${days[0].date}T00:00:00Z`) };

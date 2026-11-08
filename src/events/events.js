@@ -228,12 +228,27 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // had no alert. Spring It On!'s Firecracker Tickets are long gone, so outside that event the alert pays the zone's
 // evolution materials instead (world/theaters.js). The flag is the MissionAlerts table's, not the client's: no pak
 // checks it.
+// 4.4.0 (CL-4117433, 12 June 2018), 4.4.1 (CL-4127312, 14 June) and 4.4.2 (CL-4132537, 19 June; 4.4.2's data serves the
+// other two, gamedata/read.js laterData): Update v4.40's notes open Save the World's "Blockbuster Part 3: The Cloaked
+// Star", and Part 2, "A Hero Is Born", came with 4.3 (30 May, Update v4.30: "Blockbuster returns with part two"), which
+// Core skips. Every EventFlag.* in 4.4.2's paks (the same byte scan, 211,927 files of its Battle Royale only archive): Items/
+// Events' BR.CandyCaneGuns, SupplyDropGift, LobbyHalloweenDecor, LobbyWinterDecor and LobbySeason4; CCNodePages' Horde;
+// Blockbuster2018_QuestMapWidget's, EventQuestMapSideBarData's and HomeScreenNextQuest's Blockbuster2018Phase1, Phase2 and
+// Phase3, and EventQuestMapSideBarData's Phase4 (Part 4, 4.5's). 4.2's BR.Allow50v50 and BR.DisallowDuo/Solo/Squad are
+// gone with their Items/Events assets. So 4.4 serves Blockbuster2018Phase1 to Phase3 (the quest map shows Part 1's page
+// from Phase1 and Part 2's from Phase2; Phase3 is Part 3's), 4.2's group missions, ActiveMiniBosses and PassiveStorms
+// (its MissionAlerts rows are still 4.0's, cooked out of the client), and LobbySeason4. No flag drives Battle Royale's
+// map (events/meteorstrike.js has 4.4's curve rows).
 export const blockbuster2018 = "Blockbuster2018";
 export const blockbuster2018Phase1 = "EventFlag.Blockbuster2018Phase1";
+export const blockbuster2018Phase2 = "EventFlag.Blockbuster2018Phase2";
+export const blockbuster2018Phase3 = "EventFlag.Blockbuster2018Phase3";
 export const lobbySeason4 = "EventFlag.LobbySeason4";
 const build40 = 4039451;
 const build41 = 4053532;
 const build42 = 4072250;
+const build440 = 4117433;
+const build442 = 4132537;
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
@@ -251,17 +266,19 @@ const events = [
   { name: spring2018, flag: spring2018Phase2, firstBuild: 3915963, lastBuild: 3942182 },
   { name: groupMission, flag: groupMission, firstBuild: 3935073, lastBuild: 3942182 },
   // 4.2's group mission alerts (Core-Backend #277, world/theaters.js).
-  { name: groupMission, flag: groupMission, firstBuild: build42, lastBuild: build42 },
+  { name: groupMission, flag: groupMission, firstBuild: build42, lastBuild: build442 },
   { name: spring2018, flag: spring2018Phase3, firstBuild: 3942182, lastBuild: 3942182 },
   { name: passiveMiniBosses, flag: passiveMiniBosses, firstBuild: 4000805, lastBuild: 4019403 },
   { name: storm2018, flag: activeStorms, firstBuild: 4000805, lastBuild: 4019403 },
   { name: storm2018, flag: surviveTheStorm, firstBuild: 4000805, lastBuild: 4019403 },
   { name: storm2018, flag: storm2018Phase1, firstBuild: 4000805, lastBuild: 4019403 },
   { name: storm2018, flag: storm2018Phase2, firstBuild: 4008490, lastBuild: 4019403 },
-  { name: blockbuster2018, flag: blockbuster2018Phase1, firstBuild: build40, lastBuild: build42 },
-  { name: blockbuster2018, flag: activeMiniBosses, firstBuild: build40, lastBuild: build42 },
-  { name: passiveStorms, flag: passiveStorms, firstBuild: build40, lastBuild: build42 },
-  { name: lobbySeason4, flag: lobbySeason4, firstBuild: build40, lastBuild: build42 },
+  { name: blockbuster2018, flag: blockbuster2018Phase1, firstBuild: build40, lastBuild: build442 },
+  { name: blockbuster2018, flag: blockbuster2018Phase2, firstBuild: build440, lastBuild: build442 },
+  { name: blockbuster2018, flag: blockbuster2018Phase3, firstBuild: build440, lastBuild: build442 },
+  { name: blockbuster2018, flag: activeMiniBosses, firstBuild: build40, lastBuild: build442 },
+  { name: passiveStorms, flag: passiveStorms, firstBuild: build40, lastBuild: build442 },
+  { name: lobbySeason4, flag: lobbySeason4, firstBuild: build40, lastBuild: build442 },
   { name: lobbyWinterDecor, flag: lobbyWinterDecor, firstBuild: 3807424, lastBuild: 3825894 },
   { name: winterBattleBus, flag: winterBattleBus, firstBuild: 3807424, lastBuild: 3825894 },
   { name: supplyDropGift, flag: supplyDropGift, firstBuild: 3807424, lastBuild: 3825894 }

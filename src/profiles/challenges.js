@@ -79,6 +79,15 @@ export const challengeModes = ["original", "interval", "manual"];
 //   RevivePlayer row, context Athena.Playlist), while its ObjectiveCompletionCount is 5, so it can never get past 1/5,
 //   and that one only by reviving a teammate. No goal is reported: the builds' SDKs have no soccer class and the pitches'
 //   quest stats came with a later build.
+// 4.4 (CL-4132537; 4.4.0 and 4.4.1 play on its data) fixes the ones its bundles still give, so none is listed for it:
+// - Score a goal on different pitches (week 7) has seven objectives, one per pitch (battlepass_athena_score_goals_01 to
+//   07, on the Custom stats scoregoal_location_pitch_01 to 07), five of them to complete: the pitches' own stats, which
+//   the gameserver reports, as 4.4's notes' soccer stadium and balls came with them.
+// - Minigun or Light Machine Gun Eliminations (week 5): its stat row now wants Weapon.Ranged.Minigun or
+//   Weapon.Ranged.LMG, which 4.4's WID_Assault_LMG_Athena_* (Weapon.Ranged.Minigun) and WID_Assault_LMGSAW_Athena_*
+//   (Weapon.Ranged.LMG) carry. Minigun Eliminations' row wants Weapon.Ranged.Minigun too; Damage with a Minigun's still
+//   wants Weapon.Ranged.Heavy.Minigun, which no 4.4 item carries, but no 4.4 bundle gives either of those two.
+// - Watch a Match Replay is in no 4.4 bundle, and the Storm Circles visit counts its own stat, as on 4.2.
 export const brokenChallenges = [
   { quest: "quest_br_watch_replay", title: "Watch a Match Replay", issue: "Core-Backend #269", url: "https://github.com/PongooDev/Core-Backend/issues/269",
     builds: ["4039451", "4053532"], reason: "Its objective is tied to the placeholder stat revive_athena_player and no client code reports a watched replay." },

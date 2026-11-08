@@ -1914,6 +1914,13 @@ sealed class AssetTypes
     public string? TemplateId(string objectPath, string? exportClass, bool strict)
     {
         if (cache.TryGetValue(objectPath, out var known)) return known;
+        // 4.4 (CL 4132537, a Battle Royale only archive): MetaRecipes rows name item definitions as "None" when their
+        // package isn't in these paks; they are no item (Items leaves "None" out).
+        if (!objectPath.StartsWith("/Game/", StringComparison.OrdinalIgnoreCase))
+        {
+            Console.Error.WriteLine($"not an item path: \"{objectPath}\"");
+            return "None";
+        }
 
         var packagePath = objectPath.Split('.')[0];
         var assetName = packagePath.Split('/').Last();

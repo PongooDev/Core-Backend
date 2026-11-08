@@ -218,6 +218,19 @@ const build41 = 4053532;
 // May, which on Epic's side came by a later download with the Jetpack: 4.2's paks have both modes' playlists but no
 // Jetpack item (Close Encounters' chests and supply drops give only its shotguns here).
 const build42 = 4072250;
+// 4.4 (4.4.0 CL-4117433, 12 June 2018; 4.4.1 CL-4127312, 14 June; 4.4.2 CL-4132537, 19 June: Core has 4.4.2's paks, whose
+// data the other two play on, gamedata/read.js laterData): Epic emptied Athena/Playlists for 4.4. 4.4.2's holds 20
+// playlist assets, and none of 4.2's LTMs but two: Playlist_50v50 (50, Update v4.40's 50v50 v3) and Playlist_Playground
+// (35); Blitz, Teams of 20 (Playlist_5x20), Solid Gold, Sky Supply, High Explosives, Impact, Close Encounters, Solo
+// Showdown and the Infinity Gauntlet (Playlist_Carmine) are gone (only Athena/Playlists/Carmine's game data is left), so
+// none of them runs on 4.4 (their builds end at 4.2), whatever its switch or window. The rest: Playlist_Snipers_Solo,
+// _Duos and Playlist_Snipers (39, 40, 41, Update v4.40's Sniper Shootout v3), Playlist_Final_12, _20 and _50 (103, 104, 105,
+// Final Fight: Content Update v4.40's "Final Fight: Teams of 20" is _20), the default Solo, Duo and Squad, and the later
+// LTMs' Ground Game (110 to 112), Score Royale (101, 102) and Playlist_Taxes (130 to 132), which no 4.4 notes name and are
+// left out as Playlist_Fortnite was.
+const build440 = 4117433;
+const build441 = 4127312;
+const build442 = 4132537;
 // Core-Backend #257 asked for 3.5.1's to 4.0's Solid Gold v2 (Squads, Solo), Sniper Shootout v2 (Solo, Duos, Squads), High
 // Explosives v2 (Squads, Solo), Blitz! (Squads, Solo, Duos), Teams of 20 and 50v50 v2. Each is a playlist asset of 3.5.1's
 // and 4.0's Athena/Playlists (and 3.6's, which sits between them, as its note above has it; its paks didn't mount in
@@ -556,7 +569,7 @@ export function nextLtmChange(build, settingsValue, now = new Date()) {
 
 // The admin panel's list (its Battle Royale Game Modes, after solo, duos and squads): each LTM with its window and
 // builds, whether it is on by hand, and whether its window holds each season's replay now.
-const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build311]: "3.1.1", [build32]: "3.2", [build33]: "3.3", [build351]: "3.5.1", [build352]: "3.5.2", [build36]: "3.6", [build40]: "4.0", [build41]: "4.1", [build42]: "4.2" };
+const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build311]: "3.1.1", [build32]: "3.2", [build33]: "3.3", [build351]: "3.5.1", [build352]: "3.5.2", [build36]: "3.6", [build40]: "4.0", [build41]: "4.1", [build42]: "4.2", [build440]: "4.4.0", [build441]: "4.4.1", [build442]: "4.4.2" };
 const boundName = (bound) => (typeof bound === "number" ? versions[bound] : bound);
 const buildRange = ([first, last]) => (first === last ? boundName(first) : `${boundName(first)} to ${boundName(last)}`);
 // A window's day or moment for the admin panel: "YYYY-MM-DD" at midnight, else the ISO time; last, its last day.

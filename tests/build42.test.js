@@ -41,8 +41,8 @@ test("4.2 is known by its version, plays on its own data and is Season 4's newes
   assert.equal(allowedBuildList(["4.2"]).join(), v42);
   const season = inBuild(v42, athenaSeason);
   assert.deepEqual(season, inBuild(v40, athenaSeason), "4.2 keeps 4.0's AthenaSeason4");
-  assert.equal(buildOfSeason(4), v42);
-  assert.equal(seasonName(4), "Season 4 (4.0 – 4.2)");
+  assert.equal(buildOfSeason(4), "4132537", "Season 4's newest data is 4.4.2's (build44.test.js)");
+  assert.equal(seasonName(4), "Season 4 (4.0 – 4.4.2)");
 });
 
 test("4.2's data: eighteen new cosmetics, the revised weekly challenges, the Burst AR and Apples", () => {
@@ -77,7 +77,9 @@ test("4.2's data: eighteen new cosmetics, the revised weekly challenges, the Bur
 test("4.2's shop is Season 4's with 4.2's cosmetics, which 4.1 doesn't sell", () => {
   const history = JSON.parse(fs.readFileSync(new URL("../src/store/itemshop-season4.json", import.meta.url), "utf8")).days;
   const cosmetics = inBuild(v42, athenaCosmetics);
-  for (const day of history) for (const [templateId] of [...day.featured, ...day.daily]) assert.ok(cosmetics[templateId], `${day.date} ${templateId}`);
+  // Every item is 4.2's but 4.4's cosmetics (build44.test.js).
+  const cosmetics44 = inBuild("4132537", athenaCosmetics);
+  for (const day of history) for (const [templateId] of [...day.featured, ...day.daily]) assert.ok(cosmetics[templateId] || cosmetics44[templateId], `${day.date} ${templateId}`);
   const sold = new Set(history.flatMap((day) => [...day.featured, ...day.daily].map(([templateId]) => templateId)));
   assert.deepEqual(new42.filter((id) => sold.has(id)).length, 15, "the back blings weren't sold on their own");
   const may21 = history.find(({ date }) => date === "2018-05-21");

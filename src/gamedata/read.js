@@ -15,8 +15,14 @@ const dir = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "..", 
 export const dataBuilds = [certBuild, ...(fs.existsSync(dir) ? fs.readdirSync(dir, { withFileTypes: true }) : [])
   .filter((entry) => entry.isDirectory() && /^\d+$/.test(entry.name) && entry.name !== certBuild).map((entry) => entry.name)];
 
+// Builds that play on a later build's data: 4.4.0 (CL-4117433) and 4.4.1 (CL-4127312), whose paks Core has no copy of,
+// on 4.4.2's (CL-4132537, gamedata/4132537), the same season and the same week's hotfix line. Without this they would get
+// 4.2's, the closest earlier build with data of its own.
+export const laterData = { 4117433: "4132537", 4127312: "4132537" };
+
 export function dataBuild(changelist) {
   if (dataBuilds.includes(changelist)) return changelist;
+  if (laterData[changelist] && dataBuilds.includes(laterData[changelist])) return laterData[changelist];
   const number = Number(changelist);
   const earlier = Number.isInteger(number) ? dataBuilds.filter((build) => Number(build) <= number) : [];
   return earlier.length ? earlier.reduce((closest, build) => (Number(build) > Number(closest) ? build : closest)) : certBuild;
