@@ -164,3 +164,30 @@ test("50v50 v3 is 4.4's Playlist_50v50: 4.4.0's new mode, two teams of 50, by it
     configureEvents(null);
   }
 });
+
+// PongooDev/CoreV2#327: Update v4.40's Sniper Shootout v3, 4.4's Playlist_Snipers, _Solo and _Duos.
+test("Sniper Shootout v3 is 4.4's Snipers playlists: Solo, Duos and Squads, by its switch or 5 to 11 June (#327)", () => {
+  const playlists = { sniperShootoutV3Solo: [39, "Playlist_Snipers_Solo", 1], sniperShootoutV3Duos: [40, "Playlist_Snipers_Duos", 2], sniperShootoutV3: [41, "Playlist_Snipers", 4] };
+  for (const [id, [playlistId, name, size]] of Object.entries(playlists)) {
+    for (const build of v44) {
+      assert.equal(hasLtm(id, build), true, `${id} ${build}`);
+      assert.equal(ltmOfPlaylist(playlistId, build).id, id);
+      assert.deepEqual(playlistTeamsOf(`${build}:0:NA:${playlistId}`, build), { maxTeamCount: 100, maxTeamSize: size, maxSquadSize: size }, id);
+      assert.ok(ltmPlaylistOverrides(build, { matchmakingModes: { [id]: true } }).includes(name), id);
+      assert.equal(ltmOn(id, build, { matchmakingModes: {} }), false, "by its switch");
+    }
+    assert.equal(hasLtm(id, v42), false, id);
+  }
+  assert.equal(ltmOfPlaylist(39, v42).id, "sniperShootoutSolo", "v2 on 4.2");
+  configureEvents({ mode: "auto", seasonStarts: { 4: "2018-05-01" } });
+  try {
+    const dated = { ltmOriginalDates: true, matchmakingModes: {} };
+    const at = (date) => new Date(`${date}T12:00:00Z`);
+    for (const build of v44) {
+      assert.equal(ltmOn("sniperShootoutV3Duos", build, dated, at("2018-06-05")), true, build);
+      assert.equal(ltmOn("sniperShootoutV3Duos", build, dated, at("2018-06-12")), false, build);
+    }
+  } finally {
+    configureEvents(null);
+  }
+});

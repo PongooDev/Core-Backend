@@ -296,6 +296,7 @@ const solidGoldV2 = [
   { builds: [build42, "4.4"], start: (settings) => closeEncountersTime(settings).end, end: "2018-06-01" }
 ];
 const sniperShootoutV2 = [{ builds: ["3.4", build352], start: "2018-03-29", end: "2018-04-05" }];
+const sniperShootoutV3 = [{ builds: ["4.3", build442], start: "2018-06-05", end: "2018-06-12" }];
 const highExplosivesV2 = [{ builds: ["4.4.1", "4.4.x"], start: "2018-06-22", end: "2018-06-26" }];
 
 export const ltms = [
@@ -423,9 +424,17 @@ export const ltms = [
   { id: "blitzV2", name: "Blitz v2", playlistId: null, playlistName: null, eventFlag: null, builds: ["4.3", "4.4"], seasons: [4],
     original: [{ builds: ["4.3", "4.4"], start: "2018-06-01", end: "2018-06-05" }],
     teams: "100 Teams × 4", description: "Blitz again (4.4's: its playlist comes with 4.4's data)." },
-  { id: "sniperShootoutV3", name: "Sniper Shootout v3", playlistId: null, playlistName: null, eventFlag: null, builds: ["4.3", "4.4"], seasons: [4],
-    original: [{ builds: ["4.3", "4.4"], start: "2018-06-05", end: "2018-06-12" }],
-    teams: "100 Teams × 4", description: "Sniper Rifles only (4.4's: its playlist comes with 4.4's data)." },
+  // Update v4.40's Sniper Shootout v3 (PongooDev/CoreV2#327): 4.4's Playlist_Snipers (41, Squads), Playlist_Snipers_Solo
+  // (39) and _Duos (40), checked in 4.4.2's paks: 100 teams of 4, 1 and 2, bNoDBNO (the notes' "Reviving Down But Not Out
+  // teammates ... is deactivated, players are immediately eliminated"), "Ready, aim, fire! Sniper & Scoped weapons only.",
+  // and Athena/Playlists/Snipers' own loot tiers, loot packages and game data: the notes' Sniper Rifles and Scoped ARs
+  // only, Epic and Legendary snipers on the floor, no Crossbow, half the floor loot, -25% farming, which the gameserver
+  // plays from those tables. 3.5.1's Sniper Shootout v2 had the same PlaylistIds (their builds end at 4.2). On by its switch
+  // or Core-Backend #258's window, 5 to 11 June, on 4.4's builds (and the lost 4.3's); 50v50 v3 is the one the 4.4.0 lobby
+  // opens on.
+  { id: "sniperShootoutV3", name: "Sniper Shootout v3 (Squads)", playlistId: 41, playlistName: "Playlist_Snipers", eventFlag: null, builds: [build440, build442], seasons: [4],
+    original: sniperShootoutV3,
+    teams: "100 Teams × 4", description: "Sniper Rifles and Scoped ARs only, no down state (Athena/Playlists/Snipers tables, 4.4's)." },
   { id: "teamsOf20V2", name: "Teams of 20 v2", playlistId: null, playlistName: null, eventFlag: null, builds: ["4.4", "4.4.x"], seasons: [4],
     original: [{ builds: ["4.4", "4.4.x"], start: "2018-06-12", end: "2018-06-26" }],
     teams: "5 Teams × 20", description: "Five teams of twenty again (4.4's: its playlist comes with 4.4's data)." },
@@ -443,7 +452,13 @@ export const ltms = [
   // switch or that window.
   { id: "fiftyFiftyV3", name: "50v50 v3", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build440, build442], seasons: [4], newIn: build440,
     original: [{ builds: [build440, build442], start: "2018-05-22", end: "2018-06-12" }],
-    teams: "2 Teams × 50", description: "Two teams of fifty, a bus each (Playlist_50v50, 4.4's: a larger first circle, more supply drops, +25% farming, double ammo)." }
+    teams: "2 Teams × 50", description: "Two teams of fifty, a bus each (Playlist_50v50, 4.4's: a larger first circle, more supply drops, +25% farming, double ammo)." },
+  { id: "sniperShootoutV3Solo", name: "Sniper Shootout v3 (Solo)", playlistId: 39, playlistName: "Playlist_Snipers_Solo", eventFlag: null, builds: [build440, build442], seasons: [4],
+    original: sniperShootoutV3,
+    teams: "100 Teams × 1", description: "Sniper Rifles and Scoped ARs only (Athena/Playlists/Snipers tables, 4.4's)." },
+  { id: "sniperShootoutV3Duos", name: "Sniper Shootout v3 (Duos)", playlistId: 40, playlistName: "Playlist_Snipers_Duos", eventFlag: null, builds: [build440, build442], seasons: [4],
+    original: sniperShootoutV3,
+    teams: "100 Teams × 2", description: "Sniper Rifles and Scoped ARs only, no down state (Athena/Playlists/Snipers tables, 4.4's)." }
 ];
 // A build range's bounds are changelists or versions ("4.2", "4.4.x"): a version holds only once Core knows the build's.
 const versionParts = (version) => String(version).split(".").map((part) => (part === "x" ? Infinity : Number(part)));
