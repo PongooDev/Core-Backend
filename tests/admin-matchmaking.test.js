@@ -32,18 +32,19 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       solidGold: false, skySupply: false, shotguns: false, blitzSolo: false, blitzDuo: false, fiftyFiftyV2: false, highExplosivesSolo: false,
       highExplosivesSquads: false, sniperShootoutSolo: false, sniperShootoutDuos: false, sniperShootoutSquads: false, skySupplyDuos: false,
       skySupplySquads: false, solidGoldSolo: false, impactSolo: false, impactDuos: false, impactSquads: false, infinityGauntlet: false,
-      soloShowdown: false, closeEncounters: false, closeEncountersSolo: false, closeEncountersDuos: false, solidGoldDuos: false, blitzV2: false, sniperShootoutV3: false, teamsOf20V2: false, playground: false, fiftyFiftyV3: false, sniperShootoutV3Solo: false, sniperShootoutV3Duos: false });
+      soloShowdown: false, closeEncounters: false, closeEncountersSolo: false, closeEncountersDuos: false, solidGoldDuos: false, blitzV2: false, sniperShootoutV3: false, teamsOf20V2: false, playground: false, fiftyFiftyV3: false, sniperShootoutV3Solo: false, sniperShootoutV3Duos: false, finalFight: false });
 
     // 21 Battle Royale playlists: the 4 canonical ones, Shooting Test #1, the other event queues (#190), 3.0's new ones
     // and 3.1's Blitz Solo and Duo, 3.5.1's own twelve, 4.1's Infinity Gauntlet and the nine of 4.2 on (#258: 4.2's Close Encounters in three, its Solid
-    // Gold v2 Duos) and 4.4's 50v50 v3 (PongooDev/CoreV2#328) and Sniper Shootout v3's Solo and Duos (#327)
-    assert.equal(ov.playlists.length, 46);
+    // Gold v2 Duos) and 4.4's 50v50 v3 (PongooDev/CoreV2#328) and Sniper Shootout v3's Solo and Duos (#327) and
+    // 4.4.2's Final Fight (#325)
+    assert.equal(ov.playlists.length, 47);
     assert.equal(ov.ltms.originalDates, false);
     assert.deepEqual(ov.ltms.list.map((ltm) => ltm.id), ["fiftyFifty", "highExplosives", "sneakySilencers", "sniperShootout", "shootingTest",
       "speedyStorm", "takeToTheSkies", "lotsaLoot", "blitz", "fiveByTwenty", "highJump", "useItOrLoseIt", "steadyStorm", "solidGold", "skySupply", "shotguns", "blitzSolo", "blitzDuo",
       "fiftyFiftyV2", "highExplosivesSolo", "highExplosivesSquads", "sniperShootoutSolo", "sniperShootoutDuos", "sniperShootoutSquads", "skySupplyDuos",
       "skySupplySquads", "solidGoldSolo", "impactSolo", "impactDuos", "impactSquads", "infinityGauntlet", "soloShowdown", "closeEncounters",
-      "closeEncountersSolo", "closeEncountersDuos", "solidGoldDuos", "blitzV2", "sniperShootoutV3", "teamsOf20V2", "playground", "fiftyFiftyV3", "sniperShootoutV3Solo", "sniperShootoutV3Duos"]);
+      "closeEncountersSolo", "closeEncountersDuos", "solidGoldDuos", "blitzV2", "sniperShootoutV3", "teamsOf20V2", "playground", "fiftyFiftyV3", "sniperShootoutV3Solo", "sniperShootoutV3Duos", "finalFight"]);
     assert.equal(ov.playlists.find((p) => p.id === "fiftyFiftyV2").code, "Playlist_50v50");
     // #257: each LTM's playlist asset and teams, and the 3.5.1 lobby's name for the ones kept from 3.0 and 3.1.
     const pl = (id) => ov.playlists.find((p) => p.id === id);
@@ -173,7 +174,7 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       solidGold: false, skySupply: false, shotguns: false, blitzSolo: false, blitzDuo: false, fiftyFiftyV2: false, highExplosivesSolo: false,
       highExplosivesSquads: false, sniperShootoutSolo: false, sniperShootoutDuos: false, sniperShootoutSquads: false, skySupplyDuos: false,
       skySupplySquads: false, solidGoldSolo: false, impactSolo: false, impactDuos: false, impactSquads: false, infinityGauntlet: false,
-      soloShowdown: false, closeEncounters: false, closeEncountersSolo: false, closeEncountersDuos: false, solidGoldDuos: false, blitzV2: false, sniperShootoutV3: false, teamsOf20V2: false, playground: false, fiftyFiftyV3: false, sniperShootoutV3Solo: false, sniperShootoutV3Duos: false });
+      soloShowdown: false, closeEncounters: false, closeEncountersSolo: false, closeEncountersDuos: false, solidGoldDuos: false, blitzV2: false, sniperShootoutV3: false, teamsOf20V2: false, playground: false, fiftyFiftyV3: false, sniperShootoutV3Solo: false, sniperShootoutV3Duos: false, finalFight: false });
     assert.equal(resetRes.body.timing.gatherSeconds, 10);
     assert.equal(resetRes.body.timing.warmupSeconds, 120);
     assert.equal(resetRes.body.timing.lateJoin, false);

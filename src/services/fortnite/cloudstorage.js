@@ -8,6 +8,7 @@ import { getBuild } from "../../builds/detect.js";
 import { sendError } from "../../errors.js";
 import { lootHotfixSection } from "../../events/contentupdates.js";
 import { lastSelectedPlaylistOf, ltmForcedQueues, ltmNewMode, ltmPlaylistOverrides } from "../../events/ltms.js";
+import { finalFightRows } from "../../events/finalfight.js";
 import { meteorStrikeRows } from "../../events/meteorstrike.js";
 import { shootingTestGlobals, shootingTestHotfixTables } from "../../events/shootingtest.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
@@ -139,7 +140,7 @@ function systemFiles(req, network = defaultNetwork, settings = null) {
   const game = gameFile(statsAnswerMinutes(build), [...shootingTestGlobals(build), ...forcedQueueGlobals(build)]) + customKeySection(build)
     + forcedQueueSection(build) + chatSection
     + purchaseFlowSection(req, network, { build, enabled: settings?.get?.()?.vbuckPacks !== false })
-    + lootHotfixSection(new Date(), null, shootingTestHotfixTables(build), meteorStrikeRows(build), build);
+    + lootHotfixSection(new Date(), null, shootingTestHotfixTables(build), [...meteorStrikeRows(build), ...finalFightRows(build)], build);
   return { "DefaultEngine.ini": Buffer.from(engine, "utf8"), "DefaultGame.ini": Buffer.from(game, "utf8"), ...newModeFiles(build),
     ...runtimeOptionsFiles(build) };
 }

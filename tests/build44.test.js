@@ -10,6 +10,7 @@ import { activeEventFlags, activeMiniBosses, blockbuster2018, blockbuster2018Pha
 import { configureEvents } from "../src/events/events.js";
 import { hasLtm, inOriginalWindow, ltmNewMode, ltmOfPlaylist, ltmOn, ltmPlaylistOverrides, ltms } from "../src/events/ltms.js";
 import { playlistTeamsOf } from "../src/matchmaking/service.js";
+import { finalFightRows } from "../src/events/finalfight.js";
 import { meteorStrikePhase, meteorStrikeRows } from "../src/events/meteorstrike.js";
 import { athenaChallengeBundles, athenaCosmetics, athenaLootTables, athenaSeason } from "../src/gamedata/athena.js";
 import { buildGameData, dataBuild } from "../src/gamedata/read.js";
@@ -187,6 +188,36 @@ test("Sniper Shootout v3 is 4.4's Snipers playlists: Solo, Duos and Squads, by i
       assert.equal(ltmOn("sniperShootoutV3Duos", build, dated, at("2018-06-05")), true, build);
       assert.equal(ltmOn("sniperShootoutV3Duos", build, dated, at("2018-06-12")), false, build);
     }
+  } finally {
+    configureEvents(null);
+  }
+});
+
+// PongooDev/CoreV2#325: Content Update v4.40's Final Fight: Teams of 20, 4.4.2's Playlist_Final_20.
+test("Final Fight: Teams of 20 is 4.4.2's Playlist_Final_20: its new mode, 5 teams of 20, its circles as the notes set them (#325)", () => {
+  const none = { matchmakingModes: {} };
+  assert.equal(hasLtm("finalFight", v442), true);
+  assert.equal(hasLtm("finalFight", v441), false, "4.4.0 and 4.4.1 came before it");
+  assert.equal(hasLtm("finalFight", v440), false);
+  assert.equal(ltmOfPlaylist(104, v442).id, "finalFight");
+  assert.deepEqual(playlistTeamsOf(`${v442}:0:NA:104`, v442), { maxTeamCount: 5, maxTeamSize: 20, maxSquadSize: 4 });
+  assert.equal(ltmNewMode(v442, none).id, "finalFight");
+  assert.equal(ltmOn("finalFight", v442, none), true);
+  assert.ok(ltmPlaylistOverrides(v442, none).includes("Playlist_Final_20"));
+  assert.ok(!ltmPlaylistOverrides(v441, { matchmakingModes: { finalFight: true } }).includes("Playlist_Final_20"));
+  // Its circles: the first waits 180 s (240), closes in 90 s (60) to 100,000 (120,000), the second 65,000 (80,000).
+  const table = "/Game/Athena/Playlists/Final/AthenaGameData.AthenaGameData";
+  const section = inBuild(v442, () => lootHotfixSection(now, null, [], finalFightRows(v442), v442)).split(/\r?\n/);
+  assert.deepEqual(section, ["[AssetHotfix]", `+CurveTable=${table};RowUpdate;Default.SafeZone.01.WaitTime;0;180`,
+    `+CurveTable=${table};RowUpdate;Default.SafeZone.01.ShrinkTime;0;90`, `+CurveTable=${table};RowUpdate;Default.SafeZone.01.Radius;0;100000`,
+    `+CurveTable=${table};RowUpdate;Default.SafeZone.02.Radius;0;65000`, ""]);
+  for (const build of [v440, v441, v42]) assert.deepEqual(finalFightRows(build), [], build);
+  configureEvents({ mode: "auto", seasonStarts: { 4: "2018-05-01" } });
+  try {
+    const at = (date) => new Date(`${date}T12:00:00Z`);
+    assert.equal(inOriginalWindow("finalFight", v442, at("2018-06-19"), { ltmOriginalDates: true }), true);
+    assert.equal(inOriginalWindow("finalFight", v442, at("2018-06-25"), { ltmOriginalDates: true }), true);
+    assert.equal(inOriginalWindow("finalFight", v442, at("2018-06-26"), { ltmOriginalDates: true }), false);
   } finally {
     configureEvents(null);
   }

@@ -103,7 +103,9 @@ const playlistTeamsFrom351 = {
   // 4.2's Solo Showdown (51, Playlist_Comp_Solo) and Solid Gold v2 Duos (34); its Close Encounters (44, 45, 46) have
   // Impact's teams above.
   51: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
-  34: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 }
+  34: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  // 4.4.2's Final Fight: Teams of 20 (104, Playlist_Final_20: 5 × 20 in squads of 4, PongooDev/CoreV2#325).
+  104: { maxTeamCount: 5, maxTeamSize: 20, maxSquadSize: 4 }
 };
 const playlistAssetTeamsBuild = 4000805;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).

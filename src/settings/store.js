@@ -27,7 +27,9 @@ const playlistAssetLtms = ["fiftyFiftyV2", "highExplosivesSolo", "highExplosives
   "teamsOf20V2", "playground",
   // 4.4's (CL-4117433 to CL-4132537): 50v50 v3 (PongooDev/CoreV2#328) and Sniper Shootout v3's Solo and Duos (#327; its
   // Squads is sniperShootoutV3 above).
-  "fiftyFiftyV3", "sniperShootoutV3Solo", "sniperShootoutV3Duos"];
+  "fiftyFiftyV3", "sniperShootoutV3Solo", "sniperShootoutV3Duos",
+  // 4.4.2's Final Fight: Teams of 20 (#325).
+  "finalFight"];
 // Close Encounters' original date (Core-Backend #258, events/ltms.js): the whole of 25 May 2018, or one hour of it (0 to 23,
 // on the season replay's clock), as Epic ran it.
 export function closeEncountersValue(input, current = { wholeDay: true, hour: 0 }) {

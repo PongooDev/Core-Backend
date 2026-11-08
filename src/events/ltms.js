@@ -458,7 +458,19 @@ export const ltms = [
     teams: "100 Teams × 1", description: "Sniper Rifles and Scoped ARs only (Athena/Playlists/Snipers tables, 4.4's)." },
   { id: "sniperShootoutV3Duos", name: "Sniper Shootout v3 (Duos)", playlistId: 40, playlistName: "Playlist_Snipers_Duos", eventFlag: null, builds: [build440, build442], seasons: [4],
     original: sniperShootoutV3,
-    teams: "100 Teams × 2", description: "Sniper Rifles and Scoped ARs only, no down state (Athena/Playlists/Snipers tables, 4.4's)." }
+    teams: "100 Teams × 2", description: "Sniper Rifles and Scoped ARs only, no down state (Athena/Playlists/Snipers tables, 4.4's)." },
+  // Content Update v4.40's Final Fight: Teams of 20 (PongooDev/CoreV2#325): 4.4.2's Playlist_Final_20 (PlaylistId 104, read
+  // from its paks): five teams of 20 in squads of 4 (MinPlayers 60), bIsLargeTeamGame, a bus for each team
+  // (OpposingAirCraftForEachTeam), WinConditionType TimedTeamFinalFight with LastSafeZoneIndex 3 (the storm stops after its
+  // third circle and the countdown, Default.WinConditionTime.Final, starts: the team with the most players left wins, ties
+  // win together), no placement rewards, and Athena/Playlists/Final's game data, whose circles the notes changed by hotfix
+  // (events/finalfight.js). The countdown and win are the gameserver's. Its notes are 4.4.2's (19 June), so it is 4.4.2's
+  // new mode, by its switch or from 19 June to 4.5 (26 June) on the replay; 4.4.0 and 4.4.1 don't have it. Its siblings
+  // Playlist_Final_12 (103, 8 teams of 12) and _50 (105, 2 of 50) are in the paks too, but no 4.4 notes name them (later
+  // Final Fight modes): left out.
+  { id: "finalFight", name: "Final Fight: Teams of 20", playlistId: 104, playlistName: "Playlist_Final_20", eventFlag: null, builds: [build442, build442], seasons: [4], newIn: build442,
+    original: [{ builds: [build442, build442], start: "2018-06-19", end: "2018-06-26" }],
+    teams: "5 Teams × 20", description: "The storm stops after its third circle; when the countdown ends, the team with the most players left wins (Playlist_Final_20)." }
 ];
 // A build range's bounds are changelists or versions ("4.2", "4.4.x"): a version holds only once Core knows the build's.
 const versionParts = (version) => String(version).split(".").map((part) => (part === "x" ? Infinity : Number(part)));

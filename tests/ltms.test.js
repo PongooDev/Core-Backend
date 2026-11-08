@@ -276,7 +276,7 @@ test("Teams of 20 is 3.2's new mode: on there whatever its switch, by hand on 3.
   }
   assert.equal(ltmOn("fiveByTwenty", v31, { matchmakingModes: { fiveByTwenty: true } }), true);
   // Only Teams of 20 (3.2's) and 50v50 v2 (3.5.1's, CoreV2 #260) are a build's new mode.
-  assert.deepEqual(ltms.filter((ltm) => ltm.newIn).map((ltm) => ltm.id), ["fiveByTwenty", "fiftyFiftyV2", "infinityGauntlet", "fiftyFiftyV3"]);
+  assert.deepEqual(ltms.filter((ltm) => ltm.newIn).map((ltm) => ltm.id), ["fiveByTwenty", "fiftyFiftyV2", "infinityGauntlet", "fiftyFiftyV3", "finalFight"]);
   assert.deepEqual(ltmForcedQueues(v32, { matchmakingModes: { shotguns: true } }), [22, 31]);
   assert.ok(ltmQuests({ running: true }, v32).includes("athenaevent22_playmatches"));
   // EFortAthenaPlaylist (3.2's SDK): AthenaEvent1 4, AthenaEvent8 11, AthenaPlatoon 12, AthenaEvent21 13, AthenaEvent22 14.
