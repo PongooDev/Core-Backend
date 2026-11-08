@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { inBuild } from "../src/builds/context.js";
 import { getItem } from "../src/gamedata/items.js";
-import { activeAlterations, alterationSlots, convertLegacy, convertedAlterations, hasAlterationData, hasLegacyAlterations,
+import { activeAlterations, allPerks, alterationSlots, perkChoices, perkSection, setPerk, convertLegacy, convertedAlterations, hasAlterationData, hasLegacyAlterations,
   respecOptions, rollAlterations, upgradeRecipe } from "../src/profiles/alterations.js";
 import { post, send, startBackend, userLogin } from "./helpers.js";
 
@@ -168,6 +168,63 @@ test("the admin panel lists a schematic's perk choices and sets a slot to one of
     assert.equal((await admin(`/accounts/${player.accountId}/items/perks`, { itemId, slot: 99, alteration: pick.alteration })).status, 400);
     const hero = account.items.find((item) => /^hero:/i.test(item.templateId));
     assert.equal((await admin(`/accounts/${player.accountId}/items/${hero.itemId}/perks`)).status, 400);
+  } finally {
+    backend.close();
+  }
+});
+
+// Core-Backend #293: the admin panel can put any perk on any slot, in sections, and the loadout's single-perk slots are the game's.
+test("perks are sectioned by type, and an admin may set any perk the build has on any slot (#293)", async () => {
+  assert.equal(perkSection("Alteration:aid_att_damage_t03"), "Damage");
+  assert.equal(perkSection("Alteration:aid_att_critchance_t01"), "Crit");
+  assert.equal(perkSection("Alteration:aid_att_firerate_ranged_t02"), "Fire rate");
+  assert.equal(perkSection("Alteration:aid_att_reloadspeed_ranged_t02"), "Reload");
+  assert.equal(perkSection("Alteration:aid_att_magazinesize_t02"), "Ammo");
+  assert.equal(perkSection("Alteration:aid_ele_fire_t01"), "Element");
+  assert.equal(perkSection("Alteration:aid_g_weapon_stun_v2"), "Gameplay");
+
+  const all = at42(() => allPerks());
+  assert.ok(all.length > 100 && all.some((id) => /aid_ele_fire_t01/i.test(id)));
+  assert.ok(at42(() => all.every((id) => getItem(id))));
+
+  // The rifle's loadout holds a single perk line in a slot that can't be respecced (the game's own rule, 4.2's data).
+  const item = { templateId: rifle, attributes: { level: 1, alterations: at42(() => rollAlterations(rifle)), legacy_alterations: [] } };
+  const slots = at42(() => perkChoices(item));
+  const fixed = slots.find((slot) => !slot.respeccable);
+  assert.ok(fixed);
+  const fire = all.find((id) => /aid_ele_fire_t01/i.test(id));
+  assert.ok(!fixed.choices.some((id) => id.toLowerCase() === fire.toLowerCase()));
+
+  const tracker = { profile: { items: { r: item } }, setItemAttribute(id, name, value) { this.profile.items[id].attributes[name] = value; } };
+  at42(() => {
+    assert.match(setPerk(tracker, "r", fixed.index, fire), /allows/);
+    assert.equal(setPerk(tracker, "r", fixed.index, fire, { any: true }), undefined);
+    assert.equal(item.attributes.alterations[fixed.index].toLowerCase(), fire.toLowerCase());
+    assert.match(setPerk(tracker, "r", fixed.index, "Alteration:aid_not_a_perk", { any: true }), /isn't a perk/);
+  });
+});
+
+test("the admin panel's perk list has every perk with a section, and POST any sets one on any slot (#293)", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "PerkAnyAdmin");
+    const admin = (path, body) => (body === undefined ? send({ host: "127.0.0.1", port: backend.port, method: "GET", path: `/admin/api${path}` })
+      : post(backend.port, `/admin/api${path}`, undefined, body));
+    assert.equal((await admin(`/accounts/${player.accountId}/grant`, { templateId: rifle, quantity: 1 })).status, 200);
+    const { itemId } = (await admin(`/accounts/${player.accountId}`)).body.items.find((item) => item.templateId === rifle);
+    const perks = (await admin(`/accounts/${player.accountId}/items/${itemId}/perks`)).body;
+    assert.ok(perks.allChoices.length > 100);
+    assert.ok(perks.allChoices.every((choice) => choice.section && choice.name));
+    assert.ok(perks.slots.every((slot) => slot.choices.every((choice) => choice.section)));
+    const fixed = perks.slots.find((slot) => !slot.respeccable);
+    const fire = perks.allChoices.find((choice) => /aid_ele_fire_t01/i.test(choice.alteration));
+    const url = `/accounts/${player.accountId}/items/perks`;
+    assert.equal((await admin(url, { itemId, slot: fixed.index, alteration: fire.alteration })).status, 400);
+    assert.equal((await admin(url, { itemId, slot: fixed.index, alteration: fire.alteration, any: "yes" })).status, 400);
+    assert.equal((await admin(url, { itemId, slot: fixed.index, alteration: "Alteration:aid_not_a_perk", any: true })).status, 400);
+    assert.equal((await admin(url, { itemId, slot: fixed.index, alteration: fire.alteration, any: true })).status, 200);
+    const after = (await admin(`/accounts/${player.accountId}/items/${itemId}/perks`)).body;
+    assert.equal(after.slots[fixed.index].current.alteration.toLowerCase(), fire.alteration.toLowerCase());
   } finally {
     backend.close();
   }

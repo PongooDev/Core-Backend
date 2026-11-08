@@ -22,7 +22,7 @@ import { fullLockerState, grantCosmetic, grantFullLocker, grantShopCosmetics, lo
 import { levelRest, restBalance, restValue } from "../profiles/boosts.js";
 import { foundersEditionOf, foundersEditions, setFoundersEdition } from "../profiles/founders.js";
 import { findItem, grantItem, grantPlainItem, worldStacksNeeded } from "../profiles/items.js";
-import { hasAlterationData, perkChoices, setPerk } from "../profiles/alterations.js";
+import { allPerks, hasAlterationData, perkChoices, perkSection, setPerk } from "../profiles/alterations.js";
 import { claimQuest, completeQuest, grant, skipTutorial } from "../profiles/progress.js";
 import { createOutpost, storedCloudSaveProfile } from "../profiles/outposts.js";
 import { questIdOf, tutorialCompleted } from "../profiles/quests.js";
@@ -577,7 +577,7 @@ export function adminRoutes(context) {
   const perkRarities = { Handmade: "Common", Ordinary: "Uncommon", Sturdy: "Rare", Quality: "Epic", Fine: "Legendary" };
   const describePerk = (alteration) => {
     const info = alteration ? getItem(alteration) : undefined;
-    return { alteration, name: info?.name ?? alteration, rarity: perkRarities[info?.rarity] ?? info?.rarity ?? "" };
+    return { alteration, name: info?.name ?? alteration, rarity: perkRarities[info?.rarity] ?? info?.rarity ?? "", section: perkSection(alteration) };
   };
   router.get("/admin/api/accounts/:accountId/items/:itemId/perks", (req, res) => {
     const account = accounts.get(req.params.accountId);
@@ -590,15 +590,17 @@ export function adminRoutes(context) {
       ...slot, current: slot.current ? describePerk(slot.current) : null, choices: slot.choices.map(describePerk)
     })));
     if (!slots) return invalid(res, `${describeItem(item.templateId).name} has no perks`);
-    res.json({ itemId: req.params.itemId, templateId: item.templateId, name: describeItem(item.templateId).name, level: item.attributes?.level ?? 1, slots });
+    // allChoices: every perk of the build, for "all perks" (the admin may override the loadout's rules, #293).
+    const allChoices = inBuild(build, () => allPerks().map(describePerk));
+    res.json({ itemId: req.params.itemId, templateId: item.templateId, name: describeItem(item.templateId).name, level: item.attributes?.level ?? 1, slots, allChoices });
   });
 
   router.post("/admin/api/accounts/:accountId/items/perks", change(({ req, res, session }) => {
-    const { itemId, slot, alteration } = req.body ?? {};
+    const { itemId, slot, alteration, any = false } = req.body ?? {};
     if (typeof itemId !== "string" || typeof alteration !== "string") return invalid(res, "Choose an item and a perk");
     const build = perkBuild();
     if (!build) return invalid(res, "No build Core knows has perk tables");
-    const error = inBuild(build, () => setPerk(session.profile("profile0"), itemId, slot, alteration));
+    const error = inBuild(build, () => setPerk(session.profile("profile0"), itemId, slot, alteration, { any: any === true }));
     if (error) return invalid(res, error);
   }));
 

@@ -305,6 +305,43 @@ export function fitSchematicAlterations(tracker) {
 // without a loadout.
 const perkLine = (alteration) => String(alteration).toLowerCase().replace(/_t\d+$/, "");
 
+// The panel's sections for the perk list (#293), by the perk's line (its id without Alteration: and _tNN).
+const perkSections = [
+  ["Element", /^aid_ele_|^aid_att_damage_physical$/],
+  ["Conditional damage", /^aid_conditional_/],
+  ["Crit", /^aid_att_crit/],
+  ["Headshot", /^aid_att_headshotdamage$/],
+  ["Damage", /^aid_att_damage$/],
+  ["Fire rate", /^aid_att_firerate_/],
+  ["Reload", /^aid_att_reloadspeed_|fasterreload/],
+  ["Ammo", /^aid_att_magazinesize$/],
+  ["Durability", /^aid_att_maxdurability|^aid_att_buildingmaxhealth$/],
+  ["Handling", /^aid_att_(stability|movementspeed|heavyattackstaminacost)$/],
+  ["Survival", /^aid_att_(damageresistance|lifeleech|healing|buildingheal)$/],
+  ["Trap", /^aid_att_(effectduration|knockbackimpact)$/],
+  ["Gameplay", /^aid_g_/]
+];
+
+export function perkSection(alteration) {
+  const line = perkLine(alteration).replace(/^alteration:/, "");
+  return perkSections.find(([, pattern]) => pattern.test(line))?.[0] ?? "Other";
+}
+
+// Every perk the build's data has, in any group, for an admin who overrides the loadout's rules (#293). The ones this
+// build's items don't have are left out.
+export function allPerks() {
+  const seen = new Map();
+  for (const group of Object.values(alterationData().groups)) {
+    for (const rarity of rarities) {
+      for (const entry of group[rarity] ?? []) {
+        const info = getItem(entry.alteration);
+        if (info && !seen.has(entry.alteration.toLowerCase())) seen.set(entry.alteration.toLowerCase(), entry.alteration);
+      }
+    }
+  }
+  return [...seen.values()];
+}
+
 export function perkChoices(item) {
   const slots = item && alterationSlots(item.templateId);
   if (!slots) return undefined;
@@ -325,17 +362,18 @@ export function perkChoices(item) {
   });
 }
 
-// Sets one slot's perk to one of perkChoices', for the admin panel; a legacy schematic is refused until it is converted.
+// Sets one slot's perk to one of perkChoices' (or, with any, to any perk the data has: an admin may override the game's
+// rules, #293), for the admin panel; a legacy schematic is refused until it is converted.
 // Returns an error message, or undefined when it was set.
-export function setPerk(tracker, itemId, slotIndex, alteration) {
+export function setPerk(tracker, itemId, slotIndex, alteration, { any = false } = {}) {
   const item = typeof itemId === "string" ? tracker.profile.items[itemId] : undefined;
   const slots = item && perkChoices(item);
   if (!slots) return `${item ? item.templateId : `Item ${itemId}`} has no perks`;
   if (hasLegacyAlterations(item)) return `${item.templateId} has legacy perks: convert them in the game first`;
   const slot = Number.isInteger(slotIndex) ? slots[slotIndex] : undefined;
   if (!slot) return `${item.templateId} has no perk slot ${slotIndex}`;
-  const choice = slot.choices.find((candidate) => sameId(candidate, alteration));
-  if (!choice) return `${alteration} isn't a perk the Perk Recombobulator allows in slot ${slotIndex}`;
+  const choice = (any ? allPerks() : slot.choices).find((candidate) => sameId(candidate, alteration));
+  if (!choice) return any ? `${alteration} isn't a perk this build has` : `${alteration} isn't a perk the Perk Recombobulator allows in slot ${slotIndex}`;
   setSlot(tracker, itemId, slots.length, slotIndex, choice);
   return undefined;
 }

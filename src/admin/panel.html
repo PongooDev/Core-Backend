@@ -3643,14 +3643,38 @@
       };
       const onKeyDown = (e) => { if (e.key === "Escape") { e.preventDefault(); close(); } };
       const label = (perk) => perk ? `${perk.name}${perk.rarity ? ` (${perk.rarity})` : ""}` : "None";
+      /* The perks go in sections by type (damage, crit, fire rate...). "All perks" offers every perk of the build on any
+         slot (an admin may override the Recombobulator's rules, #293); the backend checks the id either way. */
+      let showAll = false;
+      const sectionOrder = ["Damage", "Crit", "Headshot", "Fire rate", "Reload", "Ammo", "Element", "Conditional damage", "Durability", "Handling", "Survival", "Trap", "Gameplay", "Other"];
+      const grouped = (choices, slot) => {
+        const bySection = new Map();
+        for (const choice of choices) {
+          const key = choice.section || "Other";
+          if (!bySection.has(key)) bySection.set(key, []);
+          bySection.get(key).push(choice);
+        }
+        const names = [...bySection.keys()].sort((x, y) => sectionOrder.indexOf(x) - sectionOrder.indexOf(y));
+        return names.map((name) => el("optgroup", { label: name }, bySection.get(name).map((choice) => el("option", { value: choice.alteration, text: label(choice),
+          selected: Boolean(slot.current) && choice.alteration.toLowerCase() === slot.current.alteration.toLowerCase() }))));
+      };
+      const selects = [];
+      const fillSelects = () => selects.forEach(({ select, slot }) => {
+        select.replaceChildren();
+        if (!slot.current) select.append(el("option", { value: "", text: "None", selected: true }));
+        const choices = showAll ? data.allChoices : slot.choices;
+        const options = grouped(choices, slot);
+        options.forEach((group) => select.append(group));
+        if (slot.current && !choices.some((choice) => choice.alteration.toLowerCase() === slot.current.alteration.toLowerCase())) {
+          select.prepend(el("option", { value: slot.current.alteration, text: label(slot.current), selected: true }));
+        }
+      });
       const rows = data.slots.map((slot) => {
-        const select = el("select", { class: "field", "aria-label": `Perk slot ${slot.index + 1}`, style: "flex:1 1 240px" },
-          slot.current ? null : el("option", { value: "", text: "None", selected: true }),
-          slot.choices.map((choice) => el("option", { value: choice.alteration, text: label(choice),
-            selected: Boolean(slot.current) && choice.alteration.toLowerCase() === slot.current.alteration.toLowerCase() })));
+        const select = el("select", { class: "field", "aria-label": `Perk slot ${slot.index + 1}`, style: "flex:1 1 240px" });
+        selects.push({ select, slot });
         const save = () => {
           if (!select.value) return toast("Choose a perk", true);
-          act(api(`/admin/api/accounts/${a.id}/items/perks`, { itemId: item.itemId, slot: slot.index, alteration: select.value }))
+          act(api(`/admin/api/accounts/${a.id}/items/perks`, { itemId: item.itemId, slot: slot.index, alteration: select.value, any: showAll }))
             .then((account) => account && setAccount(account, `${data.name}: slot ${slot.index + 1} is now ${select.selectedOptions[0]?.textContent ?? select.value}`));
         };
         const lock = `unlocks at level ${slot.unlockLevel}${slot.unlockRarity && slot.unlockRarity !== "Handmade" ? `, ${slot.unlockRarity} rarity` : ""}`;
@@ -3665,8 +3689,12 @@
           el("h2", { text: `Perks: ${data.name}` }),
           btn("✕", close, "ghost", { style: "min-height:28px; padding:0 8px; font-size:14px; border:none;" })),
         el("p", { class: "note", style: "font-size:13px", text: "Each slot can hold the perks the Perk Recombobulator allows there. Changes reach the player at their next profile update." }),
+        el("label", { class: "note", style: "display:flex; gap:8px; align-items:center; font-size:13px; margin:8px 0" },
+          el("input", { type: "checkbox", "aria-label": "Show all perks", onchange: (e) => { showAll = e.target.checked; fillSelects(); } }),
+          el("span", { text: "All perks (any perk or element on any slot, ignoring the Recombobulator's rules)" })),
         rows,
         el("div", { class: "actions", style: "margin-top:16px;" }, btn("Done", close, "primary")));
+      fillSelects();
       const backdrop = el("div", { class: "modal-backdrop", onclick: (e) => { if (e.target === backdrop) close(); } }, dialog);
       document.body.append(backdrop);
       window.addEventListener("keydown", onKeyDown);
