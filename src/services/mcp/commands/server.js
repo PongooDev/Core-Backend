@@ -383,4 +383,6 @@ export const serverCommands = {
   }
 };
 
-export const publicCommands = { QueryProfile: accepted };
+// 4.x clients (4.2 at least) ask for a party member's common_public and campaign with QueryPublicProfile rather than
+// QueryProfile (CoreV2 #322); both read the other player's profile the same way.
+export const publicCommands = { QueryProfile: accepted, QueryPublicProfile: accepted };
