@@ -22,7 +22,7 @@ async function setup(backend, username) {
   const end = (missionStatus, advance = []) =>
     send("EndPrimaryMission", { advance, matchmakingSessionId: "no-session", missionName: "m", missionStatus, earnedBadgeData: [],
       numMissionPoints: 0, bCriticalMatchBonus: false });
-  return { send, progress, start, end, accountId: player.accountId };
+  return { send, progress, start, end, accountId: player.accountId, token: player.token };
 }
 
 const survivors = (count) => [{ statName: "questcollect_survivoritemdata", count }];
@@ -54,12 +54,40 @@ test("progress that needs a won primary mission counts as it comes, and the game
   }
 });
 
-test("outside a primary mission the server's progress counts and completes as it comes", async () => {
+// Core-Backend #290: 4.2's gameserver never sends StartPrimaryMission, so its progress comes outside any mission. It is
+// held as a mission's: a won EndPrimaryMission completes the quest, and a player who left (no EndPrimaryMission, the
+// client's ClientQuestLogin back in the lobby) loses it. Progress before a StartPrimaryMission still counts.
+test("with no StartPrimaryMission, progress needing a won mission is held until EndPrimaryMission and lost when the player leaves", async () => {
   const backend = await startBackend();
   try {
-    const { send, progress } = await setup(backend, "HeldNone");
+    const { send, progress, start, end, accountId, token } = await setup(backend, "HeldNone");
+    const questLogin = () => post(backend.port, route("client", accountId, "ClientQuestLogin"), token, {});
     await send("UpdateQuests", { advance: [...survivors(3), { statName: "complete_pve01_diff2", count: 1 }] });
+    assert.deepEqual(await progress(), { survivors: 3, zone: 1, state: "Active" });
+    await questLogin();
+    assert.deepEqual(await progress(), { survivors: 0, zone: 1, state: "Active" }, "left: the survivors come off");
+
+    await send("UpdateQuests", { advance: survivors(3) });
+    await end("Succeeded");
     assert.notEqual((await progress()).state, "Active");
+    await questLogin();
+    assert.notEqual((await progress()).state, "Active");
+  } finally {
+    backend.close();
+  }
+});
+
+test("with no StartPrimaryMission, a failed mission takes back its progress, and progress before a start counts", async () => {
+  const backend = await startBackend();
+  try {
+    const { send, progress, start, end } = await setup(backend, "HeldNoneFailed");
+    await send("UpdateQuests", { advance: survivors(2) });
+    await end("Failed");
+    assert.equal((await progress()).survivors, 0);
+    await send("UpdateQuests", { advance: survivors(1) });
+    await start();
+    await end("Failed");
+    assert.equal((await progress()).survivors, 1, "from before the start");
   } finally {
     backend.close();
   }

@@ -6,7 +6,7 @@ import { startingQuests } from "../../../gamedata/quests.js";
 import { athenaQuestLogin } from "../../../profiles/athena.js";
 import { missedStormShieldQuests, missedStormShieldResources } from "../../../profiles/outposts.js";
 import { refreshDailyQuests } from "../../../profiles/dailies.js";
-import { grant, refreshHeldItems } from "../../../profiles/progress.js";
+import { grant, refreshHeldItems, revertHeldProgress } from "../../../profiles/progress.js";
 import { eventFlagsNotification } from "./RequestEventFlags.js";
 
 // The client may send this several times a session and logs out after 5 failed retries, so it must always succeed.
@@ -43,4 +43,15 @@ export function clientQuestLogin({ session, notifications, profileId }) {
     refreshHeldItems(session);
   }
   if (activeEventFlags().length) notifications.push(eventFlagsNotification());
+}
+
+// The client's own ClientQuestLogin (the gameserver's ServerQuestLogin is clientQuestLogin): back in the lobby, a Save the
+// World primary mission the gameserver started for the player's progress and never ended (the player left the game,
+// profiles/missions.js heldOrStart) loses what its "in successful missions" progress added (Core-Backend #290).
+export function clientQuestLoginFromClient(args) {
+  if (args.profileId !== "athena") {
+    const abandoned = args.context?.primaryMissions?.abandon(args.req.params.accountId);
+    if (abandoned) revertHeldProgress(args.session, abandoned);
+  }
+  return clientQuestLogin(args);
 }

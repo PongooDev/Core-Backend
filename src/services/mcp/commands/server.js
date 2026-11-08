@@ -118,7 +118,7 @@ function updatePlayer(command, accountId, session, theaterTracker, outpostTracke
   const theater = applyChanges(theaterTracker, update?.theaterItemUpdate);
   const outpost = applyChanges(outpostTracker, update?.outpostItemUpdate);
   const quests = Array.isArray(update?.questObjectiveUpdates) ? update.questObjectiveUpdates.length : 0;
-  advance(session, update?.questObjectiveUpdates, context.primaryMissions.held(accountId));
+  advance(session, update?.questObjectiveUpdates, context.primaryMissions.heldOrStart(accountId));
   log("MCP", `${command} for ${accountId}: ${describeChanges(theaterTracker.profile.profileId, theater, update?.theaterItemUpdate)}; `
     + `${describeChanges(outpostTracker.profile.profileId, outpost, update?.outpostItemUpdate)}; quest updates ${quests}`);
 }
@@ -198,7 +198,7 @@ export const serverCommands = {
   // are skipped there.
   UpdateQuests({ req, session, context, profileId }) {
     if (profileId === "athena") return advanceAthenaObjectives(session, req.body?.advance);
-    advance(session, req.body?.advance, context.primaryMissions.held(req.params.accountId));
+    advance(session, req.body?.advance, context.primaryMissions.heldOrStart(req.params.accountId));
   },
 
   // UFortMcpProfileAthena::EndBattleRoyaleGame {advance, matchType, minutesAlive, personalKills, teamKills, placement,
@@ -218,8 +218,11 @@ export const serverCommands = {
   // starts (the quest manager's bPrimaryMissionStarted, +0x20A). A mission that never ended loses its progress.
   StartPrimaryMission({ req, session, context }) {
     advance(session, req.body?.advance);
+    // Progress the server sent before the start (held by heldOrStart, Core-Backend #290) is the progress from before the
+    // mission, which counts.
     const unended = context.primaryMissions.start(req.params.accountId);
-    if (unended) revertHeldProgress(session, unended);
+    if (unended?.implicit) applyHeldProgress(session, unended);
+    else if (unended) revertHeldProgress(session, unended);
   },
 
   // A finished mission: its quest progress, and when it succeeded (EFortMissionStatus Succeeded) the mission's rewards

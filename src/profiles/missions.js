@@ -40,6 +40,27 @@ export function createPrimaryMissions() {
     held(accountId) {
       return missions.get(accountId) ?? null;
     },
+    // The held progress the gameserver's progress for a player goes to: their primary mission's, or one started now
+    // when none was (Core-Backend #290). A build whose StartPrimaryMission never comes (4.2: CoreV2 sends the stripped
+    // EndPrimaryMission itself, and nothing sends the start) counted "in successful missions" progress at once, so a
+    // player who left the game kept it. A mission started this way ends with EndPrimaryMission, as any other, or is
+    // abandoned when the player is back in the lobby (abandon).
+    heldOrStart(accountId) {
+      let held = missions.get(accountId);
+      if (!held) {
+        held = heldProgress();
+        held.implicit = true;
+        missions.set(accountId, held);
+      }
+      return held;
+    },
+    // A primary mission started by heldOrStart that never ended (the player left): its held progress, or null.
+    abandon(accountId) {
+      const held = missions.get(accountId);
+      if (!held?.implicit) return null;
+      missions.delete(accountId);
+      return held;
+    },
     end(accountId) {
       const held = missions.get(accountId) ?? null;
       missions.delete(accountId);

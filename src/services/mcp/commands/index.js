@@ -14,7 +14,7 @@ import { createOrUpgradeOutpostItem } from "./CreateOrUpgradeOutpostItem.js";
 import { destroyWorldItems } from "./DestroyWorldItems.js";
 import { disassembleWorldItems } from "./DisassembleWorldItems.js";
 import { equipBattleRoyaleCustomization } from "./EquipBattleRoyaleCustomization.js";
-import { clientQuestLogin } from "./ClientQuestLogin.js";
+import { clientQuestLoginFromClient } from "./ClientQuestLogin.js";
 import { claimCollectionBookPageRewards, claimCollectionBookRewards, convertSlottedItem, slotItemInCollectionBook, upgradeSlottedItem } from "./CollectionBook.js";
 import { fortRerollDailyQuest } from "./FortRerollDailyQuest.js";
 import { getMcpTimeForLogin } from "./GetMcpTimeForLogin.js";
@@ -65,7 +65,7 @@ export const clientCommands = {
   ClaimLoginReward: claimLoginReward,
   ClaimMissionAlertRewards: claimMissionAlertRewards,
   ClaimQuestReward: claimQuestReward,
-  ClientQuestLogin: clientQuestLogin,
+  ClientQuestLogin: clientQuestLoginFromClient,
   CollectExpedition: collectExpeditionCommand,
   ConvertItem: convertItemCommand,
   ConvertLegacyAlterations: convertLegacyAlterations,
