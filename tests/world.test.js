@@ -107,6 +107,22 @@ test("GET world/info serves it to a logged in client", async () => {
   }
 });
 
+test("GET homebase/allowed-name-chars serves Epic's allowed homebase name characters (#292)", async () => {
+  const backend = await startBackend();
+  try {
+    const { token } = await userLogin(backend.port, "CoreTest");
+    const response = await get(backend.port, "/fortnite/api/game/v2/homebase/allowed-name-chars", token);
+    assert.equal(response.status, 200);
+    assert.equal(response.body.ranges.length % 2, 0);
+    assert.deepEqual(response.body.ranges.slice(0, 6), [48, 57, 65, 90, 97, 122]);
+    assert.ok(response.body.singlePoints.includes(32));
+    assert.deepEqual(response.body.excludedPoints, [208, 215, 222, 247]);
+    assert.equal((await get(backend.port, "/fortnite/api/game/v2/homebase/allowed-name-chars")).status, 401);
+  } finally {
+    backend.close();
+  }
+});
+
 test("world/validate gives the gameserver the zone it posts, as FFortZoneInstanceDetails", async () => {
   const backend = await startBackend();
   try {
