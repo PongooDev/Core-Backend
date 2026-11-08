@@ -296,3 +296,46 @@ export function fitSchematicAlterations(tracker) {
     for (const [name, value] of Object.entries(missingAlterations(item))) tracker.setItemAttribute(itemId, name, value);
   }
 }
+
+// The admin panel's perk editor (Core-Backend #288): a schematic's slots, each with its perk and every perk the Perk
+// Recombobulator could put there. RespecAlteration changes a respeccable slot's perk to another of its group at the same
+// rarity and UpgradeAlteration moves a perk a rarity up, so a respeccable slot can hold any perk of its group at any rarity;
+// a slot that can't be respecced only moves its own perk up and down the rarities (the perk ids differ by their _tNN).
+// Both leave out what the weapon's named exclusions rule out and what this build doesn't have. Undefined for an item
+// without a loadout.
+const perkLine = (alteration) => String(alteration).toLowerCase().replace(/_t\d+$/, "");
+
+export function perkChoices(item) {
+  const slots = item && alterationSlots(item.templateId);
+  if (!slots) return undefined;
+  const excluded = namedExclusions(item.templateId);
+  return slots.map((slot, index) => {
+    const current = item.attributes?.alterations?.[index] || "";
+    const entries = rarities.flatMap((rarity) => slot.group[rarity] ?? [])
+      .filter((entry) => !excludedBy(entry, excluded) && getItem(entry.alteration))
+      .filter((entry) => slot.respeccable || !current || perkLine(entry.alteration) === perkLine(current));
+    return {
+      index,
+      current,
+      respeccable: Boolean(slot.respeccable),
+      unlockLevel: slot.unlockLevel,
+      unlockRarity: slot.unlockRarity,
+      choices: entries.map((entry) => entry.alteration)
+    };
+  });
+}
+
+// Sets one slot's perk to one of perkChoices', for the admin panel; a legacy schematic is refused until it is converted.
+// Returns an error message, or undefined when it was set.
+export function setPerk(tracker, itemId, slotIndex, alteration) {
+  const item = typeof itemId === "string" ? tracker.profile.items[itemId] : undefined;
+  const slots = item && perkChoices(item);
+  if (!slots) return `${item ? item.templateId : `Item ${itemId}`} has no perks`;
+  if (hasLegacyAlterations(item)) return `${item.templateId} has legacy perks: convert them in the game first`;
+  const slot = Number.isInteger(slotIndex) ? slots[slotIndex] : undefined;
+  if (!slot) return `${item.templateId} has no perk slot ${slotIndex}`;
+  const choice = slot.choices.find((candidate) => sameId(candidate, alteration));
+  if (!choice) return `${alteration} isn't a perk the Perk Recombobulator allows in slot ${slotIndex}`;
+  setSlot(tracker, itemId, slots.length, slotIndex, choice);
+  return undefined;
+}

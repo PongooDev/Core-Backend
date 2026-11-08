@@ -22,6 +22,7 @@ import { fullLockerState, grantCosmetic, grantFullLocker, grantShopCosmetics, lo
 import { levelRest, restBalance, restValue } from "../profiles/boosts.js";
 import { foundersEditionOf, foundersEditions, setFoundersEdition } from "../profiles/founders.js";
 import { findItem, grantItem, grantPlainItem, worldStacksNeeded } from "../profiles/items.js";
+import { hasAlterationData, perkChoices, setPerk } from "../profiles/alterations.js";
 import { claimQuest, completeQuest, grant, skipTutorial } from "../profiles/progress.js";
 import { createOutpost, storedCloudSaveProfile } from "../profiles/outposts.js";
 import { questIdOf, tutorialCompleted } from "../profiles/quests.js";
@@ -567,6 +568,38 @@ export function adminRoutes(context) {
       if (!Number.isInteger(level) || level < 0 || level > cap) return invalid(res, `The level must be 0 to ${cap}`);
       tracker.setItemAttribute(itemId, "level", level);
     }
+  }));
+
+  // A weapon or trap schematic's perks (Core-Backend #288): its slots, each with its perk and the perks the Perk
+  // Recombobulator allows there (profiles/alterations.js perkChoices), read with the newest build that has the perk tables
+  // (4.2's). POST {itemId, slot, alteration} sets one slot's perk to one of those.
+  const perkBuild = () => Object.keys(buildVersions).filter((build) => /^\d+$/.test(build) && inBuild(build, hasAlterationData)).at(-1);
+  const perkRarities = { Handmade: "Common", Ordinary: "Uncommon", Sturdy: "Rare", Quality: "Epic", Fine: "Legendary" };
+  const describePerk = (alteration) => {
+    const info = alteration ? getItem(alteration) : undefined;
+    return { alteration, name: info?.name ?? alteration, rarity: perkRarities[info?.rarity] ?? info?.rarity ?? "" };
+  };
+  router.get("/admin/api/accounts/:accountId/items/:itemId/perks", (req, res) => {
+    const account = accounts.get(req.params.accountId);
+    if (!account) return notFound(res, req.originalUrl);
+    const build = perkBuild();
+    if (!build) return invalid(res, "No build Core knows has perk tables");
+    const item = openSession(profiles, account.id).profile("profile0").profile.items[req.params.itemId];
+    if (!item) return invalid(res, `No item ${req.params.itemId}`);
+    const slots = inBuild(build, () => perkChoices(item)?.map((slot) => ({
+      ...slot, current: slot.current ? describePerk(slot.current) : null, choices: slot.choices.map(describePerk)
+    })));
+    if (!slots) return invalid(res, `${describeItem(item.templateId).name} has no perks`);
+    res.json({ itemId: req.params.itemId, templateId: item.templateId, name: describeItem(item.templateId).name, level: item.attributes?.level ?? 1, slots });
+  });
+
+  router.post("/admin/api/accounts/:accountId/items/perks", change(({ req, res, session }) => {
+    const { itemId, slot, alteration } = req.body ?? {};
+    if (typeof itemId !== "string" || typeof alteration !== "string") return invalid(res, "Choose an item and a perk");
+    const build = perkBuild();
+    if (!build) return invalid(res, "No build Core knows has perk tables");
+    const error = inBuild(build, () => setPerk(session.profile("profile0"), itemId, slot, alteration));
+    if (error) return invalid(res, error);
   }));
 
   // {profileId, itemId}

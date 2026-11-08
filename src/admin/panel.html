@@ -3631,6 +3631,48 @@
           btn("0", () => set(0), "ghost small", { title: "Set to zero" })));
     }
 
+    /* A weapon or trap schematic's perks (Core-Backend #288): each slot's perk can be set to any perk the Perk
+       Recombobulator allows there. The backend sends the choices and checks the one picked; names are set as text. */
+    async function perksModal(a, item) {
+      const data = await act(api(`/admin/api/accounts/${a.id}/items/${encodeURIComponent(item.itemId)}/perks`));
+      if (!data) return;
+      const close = () => {
+        window.removeEventListener("keydown", onKeyDown);
+        backdrop.classList.remove("show");
+        setTimeout(() => backdrop.remove(), 160);
+      };
+      const onKeyDown = (e) => { if (e.key === "Escape") { e.preventDefault(); close(); } };
+      const label = (perk) => perk ? `${perk.name}${perk.rarity ? ` (${perk.rarity})` : ""}` : "None";
+      const rows = data.slots.map((slot) => {
+        const select = el("select", { class: "field", "aria-label": `Perk slot ${slot.index + 1}`, style: "flex:1 1 240px" },
+          slot.current ? null : el("option", { value: "", text: "None", selected: true }),
+          slot.choices.map((choice) => el("option", { value: choice.alteration, text: label(choice),
+            selected: Boolean(slot.current) && choice.alteration.toLowerCase() === slot.current.alteration.toLowerCase() })));
+        const save = () => {
+          if (!select.value) return toast("Choose a perk", true);
+          act(api(`/admin/api/accounts/${a.id}/items/perks`, { itemId: item.itemId, slot: slot.index, alteration: select.value }))
+            .then((account) => account && setAccount(account, `${data.name}: slot ${slot.index + 1} is now ${select.selectedOptions[0]?.textContent ?? select.value}`));
+        };
+        const lock = `unlocks at level ${slot.unlockLevel}${slot.unlockRarity && slot.unlockRarity !== "Handmade" ? `, ${slot.unlockRarity} rarity` : ""}`;
+        return el("div", { class: "actions", style: "flex-wrap:wrap; gap:8px; margin:8px 0;" },
+          el("div", { style: "min-width:140px" },
+            el("div", { text: `Slot ${slot.index + 1}${slot.respeccable ? "" : " (upgrade only)"}` }),
+            el("div", { class: "muted", style: "font-size:12px", text: lock })),
+          select, btn("Set", save, "primary small"));
+      });
+      const dialog = el("div", { class: "modal-dialog", onclick: (e) => e.stopPropagation() },
+        el("div", { class: "panel-head", style: "margin-bottom:8px" },
+          el("h2", { text: `Perks: ${data.name}` }),
+          btn("✕", close, "ghost", { style: "min-height:28px; padding:0 8px; font-size:14px; border:none;" })),
+        el("p", { class: "note", style: "font-size:13px", text: "Each slot can hold the perks the Perk Recombobulator allows there. Changes reach the player at their next profile update." }),
+        rows,
+        el("div", { class: "actions", style: "margin-top:16px;" }, btn("Done", close, "primary")));
+      const backdrop = el("div", { class: "modal-backdrop", onclick: (e) => { if (e.target === backdrop) close(); } }, dialog);
+      document.body.append(backdrop);
+      window.addEventListener("keydown", onKeyDown);
+      requestAnimationFrame(() => backdrop.classList.add("show"));
+    }
+
     /* A big account (thousands of survivors, #34) stays usable: the list shows a page of rows at a time, and "Group copies"
        shows one row per template with how many copies there are and a way to remove the extra ones. */
     const inventoryPageSize = 100;
@@ -3658,6 +3700,7 @@
             if (level !== "") body.level = Number(level);
             post("items/update", body, `${item.name} saved`);
           }, "ghost small"),
+          profileId === "profile0" && /^schematic:/i.test(item.templateId) ? btn("Perks", () => perksModal(a, item), "ghost small") : null,
           btn("Remove", async () => {
             if (await confirmModal(`Remove ${item.name}?`, { title: "Remove Item", confirmText: "Remove", confirmKind: "danger" })) {
               post("items/remove", { profileId, itemId: item.itemId }, `${item.name} removed`);

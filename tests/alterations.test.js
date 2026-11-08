@@ -138,3 +138,37 @@ test("4.2: a Plankerton SSD 2 claimed before 4.2 gives its RE-PERK! with the mis
     assert.deepEqual(missedStormShieldResources(profile, missed.filter((questId) => questId !== "challenge_replacealteration")), []);
   });
 });
+
+// Core-Backend #288: the admin panel sets a schematic's perk to any the Perk Recombobulator allows in that slot.
+test("the admin panel lists a schematic's perk choices and sets a slot to one of them, refusing any other", async () => {
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "PerkAdmin");
+    const admin = (path, body) => (body === undefined ? send({ host: "127.0.0.1", port: backend.port, method: "GET", path: `/admin/api${path}` })
+      : post(backend.port, `/admin/api${path}`, undefined, body));
+    assert.equal((await admin(`/accounts/${player.accountId}/grant`, { templateId: rifle, quantity: 1 })).status, 200);
+    const account = (await admin(`/accounts/${player.accountId}`)).body;
+    const { itemId } = account.items.find((item) => item.templateId === rifle);
+
+    const perks = (await admin(`/accounts/${player.accountId}/items/${itemId}/perks`)).body;
+    assert.equal(perks.slots.length, at42(() => alterationSlots(rifle)).length);
+    const slot = perks.slots.find((candidate) => candidate.respeccable && candidate.choices.length > 1);
+    assert.ok(slot.choices.every((choice) => choice.name && choice.rarity));
+    const rarities = new Set(slot.choices.map((choice) => choice.rarity));
+    assert.ok(rarities.size > 1, "every rarity's perks");
+    const pick = slot.choices.find((choice) => choice.alteration !== slot.current?.alteration);
+
+    const set = await admin(`/accounts/${player.accountId}/items/perks`, { itemId, slot: slot.index, alteration: pick.alteration });
+    assert.equal(set.status, 200);
+    const after = (await admin(`/accounts/${player.accountId}/items/${itemId}/perks`)).body;
+    assert.equal(after.slots[slot.index].current.alteration, pick.alteration);
+
+    const refused = await admin(`/accounts/${player.accountId}/items/perks`, { itemId, slot: slot.index, alteration: "Alteration:aid_not_a_perk" });
+    assert.equal(refused.status, 400);
+    assert.equal((await admin(`/accounts/${player.accountId}/items/perks`, { itemId, slot: 99, alteration: pick.alteration })).status, 400);
+    const hero = account.items.find((item) => /^hero:/i.test(item.templateId));
+    assert.equal((await admin(`/accounts/${player.accountId}/items/${hero.itemId}/perks`)).status, 400);
+  } finally {
+    backend.close();
+  }
+});
