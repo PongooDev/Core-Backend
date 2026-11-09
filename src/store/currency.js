@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { currentBuild, inBuild } from "../builds/context.js";
 import { grantCosmetic, lockerCosmeticId } from "../profiles/athena.js";
+import { foundersEditionOf, foundersEditions, setFoundersEdition } from "../profiles/founders.js";
 import { grantItem } from "../profiles/items.js";
 import { buildOfSeason, namesAthenaBuild, seasonNumber } from "../profiles/seasons.js";
 
@@ -80,8 +81,40 @@ const wingmanPack = {
   oncePerAccount: true,
   cosmetics: ["AthenaCharacter:CID_139_Athena_Commando_M_FighterPilot", "AthenaBackpack:BID_056_FighterPilot"]
 };
+// The Founder's Packs' sale (Core-Backend #300). Update v5.00's notes: from 17 July the Super Deluxe and Limited Founders
+// packs go on sale again. They are the Store tab's other storefront, FoundersPack (StoreMain_Root's StorefrontNames, 5.0's
+// still ["FoundersPack", "CurrencyStorefront"]), real-money offers bought through the same purchase flow as the V-Bucks
+// packs. 5.0's paks have each offer's art as a FortMtxOfferData: DA_FoundersPack_<n> for an edition bought outright and
+// DA_FoundersPack_<from>_<to> for an upgrade (1_3, 2_3, 1_4, 2_4, 3_4), whose details list what the upgrade adds. So the
+// account is offered the two editions above its own (profiles/founders.js foundersEditionOf): outright without one, else
+// as the upgrade from its edition. Buying one raises the edition as the admin panel does (setFoundersEdition, on 5.0's
+// data, whose quests give Legendary Troll Stash Llama tokens instead of friend codes). Only on 5.0 and later.
+// 🟡 Prices: Epic's list prices in US dollars (Standard 39.99, Deluxe 59.99, Super Deluxe 89.99, Limited 149.99), an
+// upgrade the difference; the sale's own discounts aren't recorded.
+export const foundersStorefront = "FoundersPack";
+export const foundersSaleBuild = 4204761;
+const foundersDataBuild = "4214610";
+const foundersListPrice = { 0: 0, 1: 3999, 2: 5999, 3: 8999, 4: 14999 };
+const foundersOnSale = [3, 4];
+const foundersPackOffer = (from, to) => {
+  const name = foundersEditions[to - 1].name;
+  return {
+    offerId: `core_founders_${from}_${to}`,
+    title: from ? `Founder's Pack: ${foundersEditions[from - 1].name} to ${name} Upgrade` : `Founder's Pack: ${name} Edition`,
+    description: from ? `Upgrades your Founder's Pack to the ${name} Edition` : `The ${name} Edition Founder's Pack`,
+    price: foundersListPrice[to] - foundersListPrice[from],
+    currencyCode: "USD",
+    displayAssetPath: displayAsset(from ? `DA_FoundersPack_${from}_${to}` : `DA_FoundersPack_${to}`),
+    metaInfo: {},
+    grants: [],
+    foundersFrom: from,
+    foundersEdition: to
+  };
+};
+const foundersPackOffers = foundersOnSale.flatMap((to) => [0, 1, 2, 3].filter((from) => from < to).map((from) => foundersPackOffer(from, to)));
+
 export const realMoneyOffers = [pack(1000, 0, 999), pack(2800, 300, 2499), pack(7500, 1500, 5999), pack(13500, 3500, 9999), starterPack,
-  wingmanPack];
+  wingmanPack, ...foundersPackOffers];
 
 export const hasCurrencyStore = (changelist = currentBuild()) => Number(changelist) >= firstBuild;
 export const findRealMoneyOffer = (offerId) => realMoneyOffers.find((offer) => offer.offerId === offerId);
@@ -112,13 +145,34 @@ export const purchaseCount = (profile0, offerId) => profile0?.stats?.attributes?
 // have its cosmetics, a one-per-account offer until it is bought.
 export const isOffered = (offer, profile0) => (!offer.season || (namesAthenaBuild() && seasonNumber() === offer.season))
   && (offer.cosmetics ?? []).every((templateId) => lockerCosmeticId(templateId))
-  && !(offer.oncePerAccount && purchaseCount(profile0, offer.offerId) > 0);
+  && (!offer.foundersEdition || Number(currentBuild()) >= foundersSaleBuild)
+  && !offerBlocked(offer, profile0);
+
+// Why the account can't buy the offer now, whatever the build (the purchase page has none), else null: a one-per-account
+// offer it bought, a founder's pack whose edition it no longer starts from.
+export function offerBlocked(offer, profile0) {
+  if (offer.oncePerAccount && purchaseCount(profile0, offer.offerId) > 0) return "This offer can be bought once per account.";
+  if (offer.foundersEdition && foundersEditionOf(profile0 ?? { items: {} }) !== offer.foundersFrom) {
+    return "This Founder's Pack is for another edition than your account's.";
+  }
+  return null;
+}
 
 // The CurrencyStorefront's offers for the account (store/catalog.js offerJson); none before 1.8 or without an account.
 // profile0: the account's, for the offers it can buy once.
 export function currencyOffers(accountId, profile0) {
   if (!hasCurrencyStore() || !accountId) return [];
-  return realMoneyOffers.filter((offer) => isOffered(offer, profile0)).map((offer) => ({
+  return realMoneyOffers.filter((offer) => !offer.foundersEdition && isOffered(offer, profile0)).map((offer) => catalogEntry(offer, accountId));
+}
+
+// The FoundersPack storefront's offers for the account: the founder's packs on sale (5.0 and later), none without one.
+export function foundersOffers(accountId, profile0) {
+  if (!accountId || Number(currentBuild()) < foundersSaleBuild) return [];
+  return foundersPackOffers.filter((offer) => isOffered(offer, profile0)).map((offer) => catalogEntry(offer, accountId));
+}
+
+function catalogEntry(offer, accountId) {
+  return {
     offerId: offer.offerId,
     devName: offer.title,
     templateId: "",
@@ -132,7 +186,7 @@ export function currencyOffers(accountId, profile0) {
     metaInfo: offer.metaInfo,
     displayAssetPath: offer.displayAssetPath,
     itemGrants: []
-  }));
+  };
 }
 
 // The catalog service's offer for an app store id (QueryOffersById's answer).
@@ -160,6 +214,12 @@ export function catalogServiceOffer(appStoreId, { offer }) {
 // how many times each offer was fulfilled). Returns what was granted.
 export function grantRealMoneyOffer(session, offer, transactionId) {
   const granted = offer.grants.flatMap(({ templateId, quantity }) => grantItem(session, templateId, quantity));
+  // A founder's pack raises the account's edition, with 5.0's founders quests.
+  if (offer.foundersEdition) {
+    const result = inBuild(foundersDataBuild, () => setFoundersEdition(session, offer.foundersEdition));
+    if (result.error) throw new Error(result.error);
+    granted.push(...result.granted.map((templateId) => ({ templateId, quantity: 1 })));
+  }
   // Cosmetics go to the athena profile, as the offer's season's newest build spells them (the purchase page has no build).
   if (offer.cosmetics) {
     inBuild(buildOfSeason(offer.season), () => {

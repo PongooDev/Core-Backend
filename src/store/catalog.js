@@ -10,7 +10,7 @@ import { intoTheStormLlama } from "../events/storm2018.js";
 import { holidayLlama, snowflakeTickets } from "../events/winter2017.js";
 import { getCardPack, itemIds } from "../gamedata/items.js";
 import { perBuild } from "../gamedata/read.js";
-import { currencyOffers, currencyStorefront } from "./currency.js";
+import { currencyOffers, currencyStorefront, foundersOffers, foundersStorefront } from "./currency.js";
 import { eventStoreOffers } from "./eventstore.js";
 import { itemShopOffers } from "./itemshop.js";
 import { hasRefunds } from "./refunds.js";
@@ -233,10 +233,12 @@ export function storefronts(profile, now = new Date(), { athena, accountId, vbuc
   const battlePass = passOffers.length ? [{ name: passOffers[0].storefront, catalogEntries: passOffers.map((offer, index) => offerJson(offer, -index)) }] : [];
   // The Store tab's V-Bucks packs, while the admin panel has them on (store/currency.js).
   const currency = { name: currencyStorefront, catalogEntries: (vbuckPacks ? currencyOffers(accountId, profile) : []).map((offer, index) => offerJson(offer, -index)) };
+  // 5.0's Founder's Packs sale (store/currency.js), bought through the same purchase flow.
+  const founders = { name: foundersStorefront, catalogEntries: (vbuckPacks ? foundersOffers(accountId, profile) : []).map((offer, index) => offerJson(offer, -index)) };
   return [
     { name: "CardPackStore", catalogEntries: shown.map((offer, index) => offerJson(offer, -index)) },
     { name: "CardPackStorePromo", catalogEntries: [] },
-    ...[...itemShop, seasonShop, ...eventStore, ...battlePass, currency].filter(({ catalogEntries }) => catalogEntries.length)
+    ...[...itemShop, seasonShop, ...eventStore, ...battlePass, founders, currency].filter(({ catalogEntries }) => catalogEntries.length)
   ];
 }
 

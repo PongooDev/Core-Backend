@@ -1,6 +1,6 @@
 import { getItem } from "../gamedata/items.js";
 import { getQuest } from "../gamedata/quests.js";
-import { blockbuster2018, isEventActive } from "./events.js";
+import { blockbuster2018, currentEventsConfig, hasEventEnded, isEventActive } from "./events.js";
 
 export { blockbuster2018 };
 
@@ -51,3 +51,18 @@ export function upgradeLlamaBlockbusterTickets(offer, count) {
   const upgradeLlama = offer.currencyType === "MtxCurrency" && offer.templateId.toLowerCase() === "cardpack:cardpack_bronze";
   return upgradeLlama && isEventActive(blockbuster2018) && getItem(blockbusterTickets) ? blockbusterTicketsPerUpgradeLlama * count : 0;
 }
+
+// Blockbuster ends with 5.0 (CL-4204761, CL-4214610; Update v5.00's notes: Blockbuster Tickets are converted to Blockbuster
+// Llamas, one for every 500 tickets, plus one more for any leftover under 500, Core-Backend #300). So the first time an
+// account loads on a build past Blockbuster (4.5's is its last, events/events.js) whose data still has the Blockbuster
+// Llama, its tickets become unopened Blockbuster Llamas, one a 500 and one more for what is left over (roundUp, as Into the
+// Storm's at 4.0), none lost (events/leftovers.js, which converts with roundUp: candyllamas.js imports this module through
+// fortnitemares.js, so it can't be imported here). Not while the admin panel runs the event.
+export const blockbusterTicketsPerLlama = 500;
+export const blockbusterConversion = {
+  run: "Blockbuster2018",
+  due: () => currentEventsConfig()?.autoConvertCandy !== false && hasEventEnded(blockbuster2018) && !isEventActive(blockbuster2018),
+  options: () => ({ currency: blockbusterTickets, perLlama: blockbusterTicketsPerLlama, llama: blockbusterLlama, label: "Blockbuster Tickets",
+    llamaName: "Blockbuster Llama" }),
+  roundUp: true
+};

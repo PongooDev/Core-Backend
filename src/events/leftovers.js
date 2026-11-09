@@ -1,3 +1,4 @@
+import { blockbusterConversion } from "./blockbuster2018.js";
 import { candyConversion, canConvert, convertLeftover } from "./candyllamas.js";
 import { firecrackerConversion, goldConversion } from "./springgold.js";
 import { stormConversion, stormConversion2018, stormConversion2018Storm } from "./stormllamas.js";
@@ -11,7 +12,8 @@ import { snowflakeConversion } from "./winter2017.js";
 // conversion of its own (convert). What is left over under the rate is lost ("All other unspent tickets will be lost
 // after this event is over"), but for Spring It On!'s end (3.5.1): its Firecracker Tickets make a Spring Llama a 1,000
 // and one more for what is left over (events/springgold.js); Into the Storm's end (4.0): its Storm Tickets, 1,000 an Into
-// the Storm Llama and one more for what is left over (events/stormllamas.js).
+// the Storm Llama and one more for what is left over (events/stormllamas.js); Blockbuster's end (5.0): its Blockbuster
+// Tickets, 500 a Blockbuster Llama and one more for what is left over (events/blockbuster2018.js).
 //
 // Epic converted every account once, when the event ended. Accounts are shared by every build, so Core converts one when
 // it first loads (QueryProfile, ClientQuestLogin) holding the tickets on a build where the event is over and whose data
@@ -19,7 +21,7 @@ import { snowflakeConversion } from "./winter2017.js";
 // tickets earned afterwards on an older build stay. A build where the event still runs (or the admin panel runs it)
 // never converts.
 const conversions = [candyConversion, stormConversion, snowflakeConversion, stormConversion2018, goldConversion, firecrackerConversion,
-  stormConversion2018Storm];
+  stormConversion2018Storm, blockbusterConversion];
 const migration = (conversion) => `eventLeftovers.${conversion.run}`;
 const converted = (profile, conversion) => (profile.coreMigrations ?? []).includes(migration(conversion));
 const holds = (profile, currency) => Object.values(profile.items)
@@ -33,7 +35,8 @@ export function convertEventLeftovers(session) {
     if (converted(profile, conversion) || !conversion.due()) continue;
     const options = conversion.options();
     if (!(conversion.canConvert ? conversion.canConvert() : canConvert(options)) || !holds(profile, options.currency)) continue;
-    granted.push(...(conversion.convert ? conversion.convert(session) : convertLeftover(session, { ...options, dropRemainder: true })));
+    granted.push(...(conversion.convert ? conversion.convert(session)
+      : convertLeftover(session, { ...options, ...(conversion.roundUp ? { roundUp: true } : { dropRemainder: true }) })));
     profile.coreMigrations = [...(profile.coreMigrations ?? []), migration(conversion)];
   }
   return granted;

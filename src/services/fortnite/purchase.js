@@ -5,7 +5,7 @@ import { sendError } from "../../errors.js";
 import { log } from "../../log.js";
 import { httpsProxied, requestHost } from "../../network.js";
 import { openSession } from "../../profiles/session.js";
-import { catalogServiceOffer, grantRealMoneyOffer, hasCurrencyStore, parseAppStoreId, purchaseCount } from "../../store/currency.js";
+import { catalogServiceOffer, grantRealMoneyOffer, hasCurrencyStore, offerBlocked, parseAppStoreId } from "../../store/currency.js";
 import { codeProblems } from "../../store/purchasecodes.js";
 import { notifyProfiles } from "../mcp/profile.js";
 
@@ -151,9 +151,9 @@ export function purchaseRoutes(context) {
     }
   }
 
-  // An offer of one purchase per account (the Starter Pack) the account has bought.
-  const alreadyBought = ({ offer, accountId }) => Boolean(offer.oncePerAccount)
-    && purchaseCount(openSession(profiles, accountId).profile("profile0").profile, offer.offerId) > 0;
+  // Why the account can't buy the offer now (store/currency.js offerBlocked): an offer of one purchase per account (the
+  // Starter Pack) it has bought, a founder's pack for another edition than its own.
+  const alreadyBought = ({ offer, accountId }) => offerBlocked(offer, openSession(profiles, accountId).profile("profile0").profile);
 
   function prune(now) {
     for (const [id, entry] of pending) if (entry.expires <= now) pending.delete(id);
@@ -199,7 +199,8 @@ export function purchaseRoutes(context) {
     if (!parsed || !accounts.get(parsed.accountId)) return page(res, 400, "Unknown offer", "<h1>Unknown offer</h1><p class=\"error\">Close this window and open the Store again.</p>");
     const viewer = cookieAccount(req, tokens);
     if (viewer !== undefined && viewer !== parsed.accountId) return page(res, 403, "Wrong account", "<h1>Wrong account</h1><p class=\"error\">This offer is another account's.</p>");
-    if (alreadyBought(parsed)) return page(res, 409, "Already bought", "<h1>Already bought</h1><p class=\"error\">This offer can be bought once per account.</p>");
+    const blocked = alreadyBought(parsed);
+    if (blocked) return page(res, 409, "Already bought", `<h1>Already bought</h1><p class="error">${escapeHtml(blocked)}</p>`);
     const now = Date.now();
     prune(now);
     if (pending.size >= maxPending) return page(res, 503, "Busy", "<h1>Try again shortly</h1>");
@@ -302,8 +303,9 @@ ${purchase}
       return sendError(res, 403, "errors.com.epicgames.common.missing_permission", "This offer is another account's");
     }
 
-    if (alreadyBought(parsed)) {
-      return sendError(res, 409, "errors.com.epicgames.purchase.already_owned", "This offer can be bought once per account");
+    const blocked = alreadyBought(parsed);
+    if (blocked) {
+      return sendError(res, 409, "errors.com.epicgames.purchase.already_owned", blocked.replace(/\.$/, ""));
     }
 
     // Paid by a code (Core-Backend #248): rate limited per account and address, claimed (atomically, store/purchasecodes.js)

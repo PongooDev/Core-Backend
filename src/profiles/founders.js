@@ -1,4 +1,6 @@
+import { currentBuild } from "../builds/context.js";
 import { getItem } from "../gamedata/items.js";
+import { getQuest } from "../gamedata/quests.js";
 import { findItem } from "./items.js";
 import { grant } from "./progress.js";
 import { findQuestItem } from "./quests.js";
@@ -147,4 +149,37 @@ export function setFoundersEdition(session, edition) {
   if (unclaimedChoice) tracker.removeItem(unclaimedChoice);
   if (bundles && !findQuestItem(profile, bundles)) give(`Quest:${bundles}`);
   return { granted };
+}
+
+// 5.0 (CL-4204761, CL-4214610; Update v5.00's notes, Core-Backend #300): "Friend codes have been removed from Founders packs
+// and replaced with Legendary Troll Stash Llama tokens", and "Existing founders will receive tokens based on their founders
+// level". 5.0's data has the swap: its FoundersQuest_GetRewards_2_3 and _3_4 give 5 AccountResource:Voucher_CardPack_Jackpot
+// ("Legendary Troll Stash Llama Token", which the llama store turns into CardPack_Jackpot, store/catalog.js) and _4_5 10,
+// where earlier builds' gave 1, 1 and 2 ConsumableAccountItem:FoundersFriendCode; DA_FoundersPack_2_4's details list
+// "Legendary Troll Stash Llama +10" (Super Deluxe's 5 and Limited's 5). So a founder's quests claimed from 5.0 give the
+// tokens themselves, and the first time an account loads on 5.0 or later, each edition quest it claimed before (which gave
+// friend codes) gives its tokens now, as 5.0's data has them: Super Deluxe 5, Limited 10, Ultimate 20 in all. Once
+// (coreMigrations). Friend codes already issued or held stay.
+export const trollStashToken = "AccountResource:voucher_cardpack_jackpot";
+export const foundersTokensBuild = 4204761;
+export const foundersTokensMigration = "foundersTrollStash";
+const trollStashOf = (questId) => (getQuest(questId)?.rewards ?? [])
+  .filter(({ templateId }) => templateId.toLowerCase() === trollStashToken.toLowerCase()).reduce((sum, { quantity }) => sum + quantity, 0);
+
+export const foundersTokensNeedSetUp = (profile) => Number(currentBuild()) >= foundersTokensBuild
+  && !(profile.coreMigrations ?? []).includes(foundersTokensMigration);
+
+// Gives an existing founder its tokens, once. Returns how many.
+export function setUpFoundersTokens(session) {
+  const { profile } = session.profile("profile0");
+  if (!foundersTokensNeedSetUp(profile) || !getItem(trollStashToken)) return 0;
+  let tokens = 0;
+  for (const step of foundersEditions) {
+    const questId = findItem(profile, step.token) ? findQuestItem(profile, step.quest) : null;
+    // An edition quest not claimed yet gives its tokens itself when claimed on this build.
+    if (questId && profile.items[questId].attributes?.quest_state === "Claimed") tokens += trollStashOf(step.quest);
+  }
+  if (tokens > 0) grant(session, trollStashToken, tokens);
+  profile.coreMigrations = [...(profile.coreMigrations ?? []), foundersTokensMigration];
+  return tokens;
 }

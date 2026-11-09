@@ -10,7 +10,7 @@ import { collectorsNeedSetUp, setUpCollectors } from "../research/collector.js";
 import { migratePurchaseHistory, purchaseHistoryNeedsMigration } from "../store/refunds.js";
 import { startingQuests } from "../gamedata/quests.js";
 import { athenaNeedsSetUp, setUpAthena } from "./athena.js";
-import { foundersNeedSetUp, setUpFounders } from "./founders.js";
+import { foundersNeedSetUp, foundersTokensNeedSetUp, setUpFounders, setUpFoundersTokens } from "./founders.js";
 import { friendCodesNeedSetUp, setUpFriendCodes } from "./friendcodes.js";
 import { ownsNode } from "./homebase.js";
 import { lootLlamaVoucher, lootLlamaVoucherMissing } from "./lootllamas.js";
@@ -103,7 +103,7 @@ export function needsSetUp(profile, settings = {}) {
     || xpScaleNeedsSwitch(profile)
     || collectorsNeedSetUp(profile) || expeditionsNeedSetUp(profile) || foundersNeedSetUp(profile, settings)
     || friendCodesNeedSetUp(profile) || lootLlamaVoucherMissing(profile) || purchaseHistoryNeedsMigration(profile)
-    || goldKeptNeedsNote(profile);
+    || goldKeptNeedsNote(profile) || foundersTokensNeedSetUp(profile);
 }
 
 // theater0's world items granted before Core gave new ones their template's durability (profiles/items.js) get it, once;
@@ -156,6 +156,8 @@ export function setUpProfile(session, profileId = "profile0") {
   for (const questId of startingQuests()) grant(session, `Quest:${questId}`, 1);
   setUpFounders(session);
   setUpFriendCodes(session);
+  // 5.0's Legendary Troll Stash Llama tokens for existing founders (profiles/founders.js, Core-Backend #300).
+  setUpFoundersTokens(session);
 
   const { profile } = session.profile("profile0");
   for (const { name, schematics } of schematicMigrations) {

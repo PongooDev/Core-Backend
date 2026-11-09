@@ -89,6 +89,17 @@ const perkResources = [
   { templateId: "AccountResource:reagent_alteration_upgrade_vr", quantity: 100, price: 150, limit: 2 },
   { templateId: "AccountResource:reagent_alteration_upgrade_sr", quantity: 50, price: 200, limit: 2 }
 ];
+// 5.0 (CL-4204761, CL-4214610; Update v5.00's notes, Core-Backend #300): "The Persistent Weekly Store now offers RE-PERKs,
+// Uncommon PERK-UPs and Rare PERK-UPs." So from 5.0 those three are the weekly section's perk staples, and the Epic and
+// Legendary PERK-UP! leave it (the Horde's alerts and Road Trip's rewards give them); the store also opens on 5.0 with no
+// event running (hasEventStore), its event section empty then, as the weekly section is persistent. 🟡 Amounts, prices
+// and limits stay 4.2's (Core's).
+export const persistentWeeklyBuild = 4204761;
+const persistentPerks = ["AccountResource:reagent_alteration_generic", "AccountResource:reagent_alteration_upgrade_uc",
+  "AccountResource:reagent_alteration_upgrade_r"];
+const perksNow = () => (Number(currentBuild()) >= persistentWeeklyBuild
+  ? perkResources.filter(({ templateId }) => persistentPerks.includes(templateId))
+  : Number(currentBuild()) >= perkResourcesBuild ? perkResources : []);
 const weeklyResources = [
   { templateId: "AccountResource:reagent_c_t01", quantity: 10, price: 50, limit: 10 },
   { templateId: "AccountResource:reagent_c_t02", quantity: 10, price: 100, limit: 5 },
@@ -286,8 +297,11 @@ const roadTripEventItems = [
 ];
 export const roadTrip2018End = "2018-09-27T00:00:00.000Z";
 const roadTripNow = () => !isEventActive(winter2017) && !storms2018() && !springNow() && !blockbusterNow() && isEventActive(roadTrip2018);
+// No event running: 5.0's persistent weekly store alone (persistentWeeklyBuild), with no event items.
+const noEventNow = () => !isEventActive(winter2017) && !storms2018() && !springNow() && !blockbusterNow() && !roadTripNow();
+const persistentOnlyNow = () => noEventNow() && Number(currentBuild()) >= persistentWeeklyBuild;
 const eventItemsNow = () => (storms2018() ? stormsEventItems : springNow() ? springItemsNow() : blockbusterNow() ? blockbusterItems()
-  : roadTripNow() ? roadTripEventItems : eventItems);
+  : roadTripNow() ? roadTripEventItems : persistentOnlyNow() ? [] : eventItems);
 export const eventStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWSpecialEventStoreFront"
   : springNow() ? "Spring2018.STWSpecialEventStoreFront" : blockbusterNow() ? "Blockbuster2018.STWSpecialEventStoreFront"
     : roadTripNow() ? "RoadTrip2018.STWSpecialEventStoreFront" : eventStoreInstance);
@@ -296,9 +310,11 @@ export const weeklyStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.ST
     : roadTripNow() ? "RoadTrip2018.STWRotationalEventStorefront" : weeklyStoreInstance);
 
 // The store is open while the requesting build runs Survive the Holidays (or 2.3's to 2.4.2's storms, 2.5's Spring It
-// On!, 3.5.1's Into the Storm, 4.0's to 4.2's Blockbuster or 5.0's Road Trip) and its data has Seasonal Gold.
+// On!, 3.5.1's Into the Storm, 4.0's to 4.2's Blockbuster or 5.0's Road Trip) and its data has Seasonal Gold; on 5.0 and
+// later always (the persistent weekly store).
 export const hasEventStore = () => (isEventActive(winter2017) || isEventActive(mutantStorms2018) || isEventActive(spring2018) || isEventActive(storm2018)
-  || isEventActive(blockbuster2018) || isEventActive(roadTrip2018)) && Boolean(getItem(seasonalGold));
+  || isEventActive(blockbuster2018) || isEventActive(roadTrip2018) || Number(currentBuild()) >= persistentWeeklyBuild)
+  && Boolean(getItem(seasonalGold));
 
 const has = ({ templateId }) => Boolean(getItem(templateId));
 const nameOf = (templateId) => templateId.split(":")[1].toLowerCase();
@@ -310,7 +326,8 @@ export const winter2017End = "2018-01-25T00:00:00.000Z";
 export function eventStoreEnds(now = new Date()) {
   if (!hasEventStore()) return {};
   const end = storms2018() ? mutantStorms2018End : springNow() ? spring2018End : blockbusterNow() ? blockbuster2018End
-    : roadTripNow() ? roadTrip2018End : winter2017End;
+    : roadTripNow() ? roadTrip2018End : persistentOnlyNow() ? null : winter2017End;
+  if (!end) return { stwEventStoreEnd: weeklyStoreEnd(now), stwWeeklyStoreEnd: weeklyStoreEnd(now) };
   return { stwEventStoreEnd: nextReplayOf(end, now), stwWeeklyStoreEnd: weeklyStoreEnd(now) };
 }
 
@@ -338,7 +355,7 @@ function weeklyItems(week) {
     return offered.length
       ? { ...offer, templateId: offered[Math.floor(weekRandom(week, weeklyPicks.length + 2 + index) * offered.length)] } : undefined;
   }).filter(Boolean) : [];
-  const perks = Number(currentBuild()) >= perkResourcesBuild ? perkResources.filter(has) : [];
+  const perks = perksNow().filter(has);
   return [...weeklyFeatured().filter(has), ...coinPicks, ...picks.slice(0, 3), ...chosen, ...weeklyStaples.filter(has), ...perks, ...picks.slice(3)];
 }
 
