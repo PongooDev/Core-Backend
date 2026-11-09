@@ -231,6 +231,15 @@ const build42 = 4072250;
 const build440 = 4117433;
 const build441 = 4127312;
 const build442 = 4132537;
+// 4.5 (CL-4159770, "4.5.0", 27 June 2018, and CL-4166199, "4.5": Core has CL-4166199's paks, whose data the other plays
+// on, gamedata/read.js laterData): its Athena/Playlists holds 4.4.2's assets but the Snipers (gone) and adds Fly
+// Explosives (Playlist_FlyExplosives_*, 120 to 122: 31 July 2018's, Season 5, left out). Update v4.50 names two modes:
+// Playground (Playlist_Playground, 35: one team of 4, InfiniteRespawnExceptStorm, "Low-pressure environment where friends
+// can let their creativity run wild"), its new mode, and Final Fight Teams of 12 (Playlist_Final_12, 103: 8 teams of 12 in
+// squads of 4, TimedTeamFinalFight with LastSafeZoneIndex 3). 50v50 v3 (Playlist_50v50, "50 V 50 v3") is still in. The
+// Soaring 50s (15 August 2018) and Blitz have no 4.5 playlist, so 4.5 offers neither.
+const build450 = 4159770;
+const build45 = 4166199;
 // Core-Backend #257 asked for 3.5.1's to 4.0's Solid Gold v2 (Squads, Solo), Sniper Shootout v2 (Solo, Duos, Squads), High
 // Explosives v2 (Squads, Solo), Blitz! (Squads, Solo, Duos), Teams of 20 and 50v50 v2. Each is a playlist asset of 3.5.1's
 // and 4.0's Athena/Playlists (and 3.6's, which sits between them, as its note above has it; its paks didn't mount in
@@ -367,7 +376,7 @@ export const ltms = [
   // playlist (CoreV2 #260): a bus for each team, the final circle, its storm, supply drops, loot and bleed-out.
   { id: "fiftyFiftyV2", name: "50v50 v2", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build351, build42], seasons: [3, 4], newIn: [build351, build352],
     original: [{ builds: [build351, build36], start: "2018-04-19", end: "2018-05-01" }, { builds: [build40, build41], start: "2018-05-01", end: "2018-05-09" },
-      { builds: [build42, build42], start: "2018-05-22", end: "2018-06-12" }, { builds: ["4.5", "4.5"], start: "2018-06-27", end: "2018-07-12" }],
+      { builds: [build42, build42], start: "2018-05-22", end: "2018-06-12" }],
     teams: "2 Teams × 50", description: "Two teams of 50 players, massive forts (Playlist_50v50: its own loot, game data and resource rates)." },
   { id: "highExplosivesSolo", name: "High Explosives v2 (Solo)", playlistId: 23, playlistName: "Playlist_HighExplosives_Solo", eventFlag: null, builds: [build351, build42], seasons: [3, 4],
     original: highExplosivesV2,
@@ -442,9 +451,11 @@ export const ltms = [
   { id: "teamsOf20V2", name: "Teams of 20 v2", playlistId: null, playlistName: null, eventFlag: null, builds: ["4.4", "4.4.x"], seasons: [4],
     original: [{ builds: ["4.4", "4.4.x"], start: "2018-06-12", end: "2018-06-26" }],
     teams: "5 Teams × 20", description: "Five teams of twenty again (4.4's: its playlist comes with 4.4's data)." },
-  { id: "playground", name: "Playground", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build42, "4.5"], seasons: [4],
-    original: [{ builds: ["4.5", "4.5"], start: "2018-06-27", end: "2018-07-12" }],
-    teams: "1 Team × 4", description: "A private island, respawning but in the storm (Playlist_Playground: 4.2's paks already have the asset, a stub described as rewrite; 🟡 4.5's unchecked)." },
+  // Update v4.50's Playground (4.5's new mode, on there whatever its switch): 27 June, pulled the next day for its servers
+  // and back from 2 July (the Fortnite Wiki's Playground page) to the season's end.
+  { id: "playground", name: "Playground", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build42, build45], seasons: [4], newIn: [build450, build45],
+    original: [{ builds: [build450, build45], start: "2018-06-27", end: "2018-06-28" }, { builds: [build450, build45], start: "2018-07-02", end: "2018-07-12" }],
+    teams: "1 Team × 4", description: "An hour on the island with up to 3 friends: respawns unless the storm kills you, 10x resources, every chest (Playlist_Playground, 4.5's)." },
   // Update v4.40's 50v50 v3 (PongooDev/CoreV2#328): 4.4's Playlist_50v50 (PlaylistId 50: two teams of 50 in squads of 4,
   // bIsLargeTeamGame, a bus for each team, AirCraftBehavior OpposingAirCraftForEachTeam with its custom path's midpoint
   // 60,000 out, SafeZoneStartUp StartsWithWarmUp, StormEffectDelay 330, bDisplayFinalStormPosition, no placement rewards)
@@ -454,8 +465,9 @@ export const ltms = [
   // v3, so it is 4.4.0's new mode (on there whatever its switch). On the replay it takes 50v50 v2's window of 22 May to 11
   // June on 4.4's builds (Core-Backend #258: 4.2 to 4.4), the asset being v3's there; 4.4.1 and 4.4.2 offer it by its
   // switch or that window.
-  { id: "fiftyFiftyV3", name: "50v50 v3", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build440, build442], seasons: [4], newIn: build440,
-    original: [{ builds: [build440, build442], start: "2018-05-22", end: "2018-06-12" }],
+  // 4.5's Playlist_50v50 is v3's still: by its switch, or 50v50's 4.5 window (27 June to 11 July) on the replay.
+  { id: "fiftyFiftyV3", name: "50v50 v3", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build440, build45], seasons: [4], newIn: build440,
+    original: [{ builds: [build440, build442], start: "2018-05-22", end: "2018-06-12" }, { builds: [build450, build45], start: "2018-06-27", end: "2018-07-12" }],
     teams: "2 Teams × 50", description: "Two teams of fifty, a bus each (Playlist_50v50, 4.4's: a larger first circle, more supply drops, +25% farming, double ammo)." },
   { id: "sniperShootoutV3Solo", name: "Sniper Shootout v3 (Solo)", playlistId: 39, playlistName: "Playlist_Snipers_Solo", eventFlag: null, builds: [build440, build442], seasons: [4],
     original: sniperShootoutV3,
@@ -474,7 +486,11 @@ export const ltms = [
   // Final Fight modes): left out.
   { id: "finalFight", name: "Final Fight: Teams of 20", playlistId: 104, playlistName: "Playlist_Final_20", eventFlag: null, builds: [build442, build442], seasons: [4], newIn: build442,
     original: [{ builds: [build442, build442], start: "2018-06-19", end: "2018-06-26" }],
-    teams: "5 Teams × 20", description: "The storm stops after its third circle; when the countdown ends, the team with the most players left wins (Playlist_Final_20)." }
+    teams: "5 Teams × 20", description: "The storm stops after its third circle; when the countdown ends, the team with the most players left wins (Playlist_Final_20)." },
+  // Update v4.50's Final Fight Teams of 12: 4.5's Playlist_Final_12 (103), Final Fight's table and circles
+  // (events/finalfight.js). By its switch: nothing found dates it (🟡).
+  { id: "finalFightTeams12", name: "Final Fight: Teams of 12", playlistId: 103, playlistName: "Playlist_Final_12", eventFlag: null, builds: [build450, build45], seasons: [4],
+    teams: "8 Teams × 12", description: "The storm stops after its third circle; when the countdown ends, the team with the most players left wins (Playlist_Final_12)." }
 ];
 // A build range's bounds are changelists or versions ("4.2", "4.4.x"): a version holds only once Core knows the build's.
 const versionParts = (version) => String(version).split(".").map((part) => (part === "x" ? Infinity : Number(part)));
@@ -612,7 +628,7 @@ export function nextLtmChange(build, settingsValue, now = new Date()) {
 
 // The admin panel's list (its Battle Royale Game Modes, after solo, duos and squads): each LTM with its window and
 // builds, whether it is on by hand, and whether its window holds each season's replay now.
-const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build311]: "3.1.1", [build32]: "3.2", [build33]: "3.3", [build351]: "3.5.1", [build352]: "3.5.2", [build36]: "3.6", [build40]: "4.0", [build41]: "4.1", [build42]: "4.2", [build440]: "4.4.0", [build441]: "4.4.1", [build442]: "4.4.2" };
+const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build311]: "3.1.1", [build32]: "3.2", [build33]: "3.3", [build351]: "3.5.1", [build352]: "3.5.2", [build36]: "3.6", [build40]: "4.0", [build41]: "4.1", [build42]: "4.2", [build440]: "4.4.0", [build441]: "4.4.1", [build442]: "4.4.2", [build450]: "4.5.0", [build45]: "4.5" };
 const boundName = (bound) => (typeof bound === "number" ? versions[bound] : bound);
 const buildRange = ([first, last]) => (first === last ? boundName(first) : `${boundName(first)} to ${boundName(last)}`);
 // A window's day or moment for the admin panel: "YYYY-MM-DD" at midnight, else the ISO time; last, its last day.

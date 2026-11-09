@@ -46,6 +46,7 @@ import { cosmeticRarity, cosmeticType, eligibleCosmetics, generateRandomShop, it
 import { activeEventFlags, fortnitemares, mutantStorms } from "../events/events.js";
 import { convertLeftoverCandy } from "../events/candyllamas.js";
 import { ltmIds, ltmSchedule } from "../events/ltms.js";
+import { launchSequenceSeconds, rocketLaunchStatus, sanitizeRocketLaunch } from "../events/rocketlaunch.js";
 import { playlistTeamsOf } from "../matchmaking/service.js";
 import { convertLeftoverStormTickets } from "../events/stormllamas.js";
 import { defaultEvents, defaultMatchmakingModes, defaultServerLimits, defaultWarmupSeconds, maxSidebarWidth, minSidebarWidth, sidebarWidthValue } from "../settings/store.js";
@@ -1119,8 +1120,9 @@ export function adminRoutes(context) {
     const s = requestedSeasonOf(requestedSeason);
     // Season 3's shop as 3.6's data (its newest) sells it: 3.0's cosmetics, 3.1's, 3.2's (3.3 adds none), 3.4's, 3.5's and 3.6's;
     // Season 4's as 4.4.2's: 4.0's cosmetics, 4.1's Snap emote, 4.2's Hazard set, Venturion and the rest, and 4.3's and 4.4's
-    // (Jumpshot, Scoundrel, the World Cup outfits, Omen, Fate...).
-    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4132537" }[s];
+    // (Jumpshot, Scoundrel, the World Cup outfits, Omen, Fate...), now 4.5's (CL-4166199): 4.5's too (Vertex, Gumshoe,
+    // Criterion, Oblivion...).
+    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4166199" }[s];
     const offers = inBuild(build, () => itemShopOffers(now, config, s));
     const cosmetics = inBuild(build, () => eligibleCosmetics());
     const currentDay = shopDay(now, config, s);
@@ -1217,7 +1219,9 @@ export function adminRoutes(context) {
       { version: "4.2", cl: 4072250, event: "Blockbuster" },
       { version: "4.4.0", cl: 4117433, event: "Blockbuster" },
       { version: "4.4.1", cl: 4127312, event: "Blockbuster" },
-      { version: "4.4.2", cl: 4132537, event: "Blockbuster" }
+      { version: "4.4.2", cl: 4132537, event: "Blockbuster" },
+      { version: "4.5.0", cl: 4159770, event: "Blockbuster" },
+      { version: "4.5", cl: 4166199, event: "Blockbuster" }
     ];
 
     const sampleBuilds = builds.map((b) => ({
@@ -1266,6 +1270,7 @@ export function adminRoutes(context) {
         currentTime: now.toISOString()
       },
       eventsConfig,
+      rocketLaunch: rocketLaunchStatus(now, eventsConfig),
       events: [
         {
           id: "fortnitemares",
@@ -1350,8 +1355,8 @@ export function adminRoutes(context) {
         {
           id: "blockbuster2018",
           name: "Blockbuster",
-          subtitle: "Blockbuster Part 1: Origin Story, active Mini-Boss alerts with Blockbuster Tickets, the Blockbuster Llama and Raven in the Event Store (and in the Weekly Store the HackSAW on 4.1, the Quad Launcher and the perk resources on 4.2); Parts 2 and 3 (A Hero Is Born, The Cloaked Star) on 4.4's quest map; the Season 4 lobby",
-          buildRange: "4.0 – 4.4.2 (CL 4039451 – 4132537)",
+          subtitle: "Blockbuster Part 1: Origin Story, active Mini-Boss alerts with Blockbuster Tickets, the Blockbuster Llama and Raven in the Event Store (and in the Weekly Store the HackSAW on 4.1, the Quad Launcher and the perk resources on 4.2); Parts 2 and 3 (A Hero Is Born, The Cloaked Star) on 4.4's quest map, Part 4 (The Finale) on 4.5's; the Season 4 lobby",
+          buildRange: "4.0 – 4.5 (CL 4039451 – 4166199)",
           flags: ["EventFlag.Blockbuster2018Phase1", "EventFlag.ActiveMiniBosses", "EventFlag.PassiveStorms", "EventFlag.LobbySeason4"],
           theater: "Standard Zones with Mini-Boss and passive Mutant Storm alerts",
           theaterRegions: [],
@@ -1371,6 +1376,33 @@ export function adminRoutes(context) {
     }
     const updated = settings.update({ events: req.body });
     res.json({ success: true, events: updated.events });
+  });
+
+  // 4.5's rocket launch (events/rocketlaunch.js), behind the admin gate like every /admin route: {action: "schedule", at
+  // (an ISO time), countdownHours?}, {action: "now", inSeconds?} (the launch that many seconds from now: 0 starts the
+  // launch sequence at once, a countdown of 600 plays the klaxons) or {action: "clear"} (no launch: the rocket waits).
+  router.post("/admin/api/events/rocket", (req, res) => {
+    const body = typeof req.body === "object" && req.body !== null ? req.body : {};
+    const current = sanitizeRocketLaunch(settings?.get?.()?.events?.rocketLaunch);
+    let next;
+    if (body.action === "clear") next = { ...current, at: null };
+    else if (body.action === "now") {
+      const seconds = body.inSeconds === undefined ? 0 : Number(body.inSeconds);
+      if (!Number.isFinite(seconds) || seconds < -launchSequenceSeconds || seconds > 7 * 86400) {
+        return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "inSeconds must be a number of seconds up to a week");
+      }
+      next = { ...current, at: new Date(Date.now() + seconds * 1000).toISOString() };
+    } else if (body.action === "schedule") {
+      if (typeof body.at !== "string" || Number.isNaN(Date.parse(body.at))) {
+        return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "at must be a date and time");
+      }
+      next = sanitizeRocketLaunch({ at: body.at, countdownHours: body.countdownHours }, current);
+    } else {
+      return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "action must be schedule, now or clear");
+    }
+    if (body.countdownHours !== undefined && body.action !== "schedule") next = sanitizeRocketLaunch({ countdownHours: body.countdownHours }, next);
+    const updated = settings.update({ events: { rocketLaunch: next } });
+    res.json({ success: true, rocketLaunch: rocketLaunchStatus(new Date(), updated.events) });
   });
 
     router.post("/admin/api/events/actions/convert-storm-tickets", (req, res) => {

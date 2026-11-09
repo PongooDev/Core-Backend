@@ -105,7 +105,9 @@ const playlistTeamsFrom351 = {
   51: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
   34: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
   // 4.4.2's Final Fight: Teams of 20 (104, Playlist_Final_20: 5 × 20 in squads of 4, PongooDev/CoreV2#325).
-  104: { maxTeamCount: 5, maxTeamSize: 20, maxSquadSize: 4 }
+  104: { maxTeamCount: 5, maxTeamSize: 20, maxSquadSize: 4 },
+  // 4.5's Final Fight: Teams of 12 (103, Playlist_Final_12: 8 × 12 in squads of 4).
+  103: { maxTeamCount: 8, maxTeamSize: 12, maxSquadSize: 4 }
 };
 const playlistAssetTeamsBuild = 4000805;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).

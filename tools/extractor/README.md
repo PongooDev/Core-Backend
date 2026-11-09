@@ -127,7 +127,11 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   that FModel's settings already hold for it (its six paks, a Battle Royale only archive: pakchunk0,
   its four splits and pakchunk1; Save the World's data is still in pakchunk0). One extractor change: its MetaRecipes name
   15 item definitions whose packages aren't in those paks ("None"), which are no item. 4.4.0 (CL-4117433) and 4.4.1
-  (CL-4127312) aren't extracted (Core has no copy of their paks) and play on 4.4.2's data (`src/gamedata/read.js`). Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
+  (CL-4127312) aren't extracted (Core has no copy of their paks) and play on 4.4.2's data (`src/gamedata/read.js`). 4.5's
+  (CL-4166199) is `4.20.0-4166199+++Fortnite+Release-4.5` with 4.4.2's full data (Cert's files with `gamedata/4132537`
+  applied) as the fifth argument, for the same reason, and the main key FModel's settings hold for its build folder (its
+  six paks, a Battle Royale only archive like 4.4.2's); no extractor change. The earlier 4.5, CL-4159770, isn't extracted
+  (Core has no copy of its paks) and plays on CL-4166199's data. Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):
   `slotLoadouts` (AlterationSlotsLoadouts: each loadout's slots, their unlock level and rarity, slot definition,

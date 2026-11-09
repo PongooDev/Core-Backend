@@ -17,8 +17,9 @@ export const dataBuilds = [certBuild, ...(fs.existsSync(dir) ? fs.readdirSync(di
 
 // Builds that play on a later build's data: 4.4.0 (CL-4117433) and 4.4.1 (CL-4127312), whose paks Core has no copy of,
 // on 4.4.2's (CL-4132537, gamedata/4132537), the same season and the same week's hotfix line. Without this they would get
-// 4.2's, the closest earlier build with data of its own.
-export const laterData = { 4117433: "4132537", 4127312: "4132537" };
+// 4.2's, the closest earlier build with data of its own. 4.5's CL-4159770 (4.5.0), whose paks Core has no copy of either,
+// plays on CL-4166199's (gamedata/4166199), the later build of the same update; it would otherwise get 4.4.2's.
+export const laterData = { 4117433: "4132537", 4127312: "4132537", 4159770: "4166199" };
 
 export function dataBuild(changelist) {
   if (dataBuilds.includes(changelist)) return changelist;

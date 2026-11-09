@@ -11,6 +11,7 @@ import { hasSeasonShop } from "../../store/seasonshop.js";
 import { athenaSeason } from "../../gamedata/athena.js";
 import { challengeSeasonBegin, weekPlan } from "../../profiles/challenges.js";
 import { seasonTemplateId } from "../../profiles/seasons.js";
+import { nextRocketLaunchChange, rocketLaunchStates } from "../../events/rocketlaunch.js";
 
 // 1.8's event calendar (ScheduledEvents' FCalendarDownload): {currentTime, channels: {<channel>: FEventsTimeline
 // {cacheExpire, states: [FEventChannelState {validFrom, activeEvents: [{eventName, activeUntil}], state}]}}}. The
@@ -42,6 +43,12 @@ import { seasonTemplateId } from "../../profiles/seasons.js";
 // Battle Pass tab counts down to seasonEnd (AthenaSeasonTab: GetSeasonStoreEndDate). Its event flags turn the winter
 // lobby on (EventFlag.LobbyWinterDecor, events/events.js). Save the World's Event Store (1.11 to 3.3, 3.5.1) counts down to
 // stwEventStoreEnd and stwWeeklyStoreEnd (store/eventstore.js).
+//
+// 4.5 (CL-4159770, CL-4166199) runs Blast Off, the rocket launch, from this channel (events/rocketlaunch.js): with a
+// launch time set, client-events holds a state for each part of it from the one now on (validFrom its start), each
+// naming the build's flags and the rocket's calendar events (EventFlag.BR_S4_Geode_Countdown, _Begin, _Over and
+// EventFlag.BR_S4_Rift_Growth) with their activeSince and activeUntil, which the map's FortAsyncAction_CalendarEventWatcher
+// counts to; and it is good no later than the next part.
 export const calendarCacheMinutes = 60;
 const seasonalEventManagerBuild = 3790078;
 
@@ -59,7 +66,8 @@ export function calendarRoutes({ tokens, settings }) {
     const challengeChange = seasonBegin ? weekPlan(now).changes : null;
     const cacheMinutes = Math.max(5, Math.min(120, Number(currentEventsConfig()?.calendarCacheMinutes ?? calendarCacheMinutes)));
     const ltmChange = nextLtmChange(currentBuild(), settings?.get?.(), now);
-    const cacheExpire = new Date(Math.min(now.getTime() + cacheMinutes * 60000, weeklyEnd?.getTime() ?? Infinity,
+    const rocketChange = nextRocketLaunchChange(now);
+    const cacheExpire = new Date(Math.min(now.getTime() + cacheMinutes * 60000, weeklyEnd?.getTime() ?? Infinity, rocketChange ?? Infinity,
       seasonEnds?.getTime() ?? Infinity, ltmChange?.getTime() ?? Infinity, challengeChange?.getTime() ?? Infinity, ...Object.values(stwEnds).map((end) => end.getTime()))).toISOString();
     const seasonal = Number(currentBuild()) >= seasonalEventManagerBuild;
     const flags = activeEventFlags();
@@ -73,9 +81,19 @@ export function calendarRoutes({ tokens, settings }) {
       ...Object.fromEntries(Object.entries(stwEnds).map(([name, end]) => [name, end.toISOString()]))
     };
     const validFrom = "2017-01-01T00:00:00.000Z";
+    const rocket = rocketLaunchStates(now);
+    // A part of the rocket launch: the build's events and flags with the rocket's (its first part from validFrom).
+    const states = rocket.length
+      ? rocket.map((part, index) => ({
+        validFrom: index === 0 ? validFrom : new Date(part.validFrom).toISOString(),
+        activeEvents: [...activeEvents, ...part.events.map(({ eventType, activeSince, activeUntil }) =>
+          ({ [seasonal ? "eventType" : "eventName"]: eventType, activeUntil, activeSince }))],
+        state: { ...state, ...(seasonal ? { activeEventFlags: [...flags, ...part.events.map(({ eventType }) => eventType)] } : {}) }
+      }))
+      : [{ validFrom, activeEvents, state }];
     res.json({
       channels: {
-        "client-events": { states: [{ validFrom, activeEvents, state }], cacheExpire },
+        "client-events": { states, cacheExpire },
         ...((() => {
           const modes = ltmModes(currentBuild(), settings?.get?.(), now);
           const duosEnabled = modes ? modes.duo !== false : true;

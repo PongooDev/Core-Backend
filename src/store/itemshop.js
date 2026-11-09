@@ -82,7 +82,13 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // Sky Stalker and Propeller Axe, Pop Lock, and Fate with Split Wing and Fated Frame, on 23 of the season's days from 1 June
 // on, placed the same way (a cosmetic that joins a tile of the day's earlier cosmetics takes that tile's number). Their
 // back blings, the Starter Pack and Battle Pass outfits (Blue Striker, Wingman, The Visitor), Boogie Down, the sprays and
-// contrails were never sold on their own. Only 4.4's data has them, so 4.0's to 4.2's days are as they were. A build's
+// contrails were never sold on their own. Only 4.4's data has them, so 4.0's to 4.2's days are as they were. 4.5
+// (CL-4166199; CL-4159770 plays on its data) adds 22 of its 33 cosmetics on 12 of the season's days from 29 June on, placed
+// the same way: Vertex, Forerunner and Razor Edge, Eagle, Victory Lap, Gumshoe, Sleuth and Noir with Viceroy Mark I and
+// Magnifying Axe, Sparkler, Fireworks Team Leader, the Star-Spangled Ranger and Trooper, Rocket Spinner, Criterion and
+// Crimson Axe, Infinite Dab, True Heart, Oblivion and Terminus, and Bring It (the back blings, the Ice contrail and the
+// Blockbuster outfits were never sold on their own); its data drops the Pinwheel emote, so 4.5 doesn't sell it on 5 July.
+// Only 4.5's data has them, so 4.0's to 4.4's days are as they were. A build's
 // season is its athena data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;

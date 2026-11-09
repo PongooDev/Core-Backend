@@ -5,6 +5,7 @@ import { defaultHostingIps, hostingIp, hostingIps } from "../network.js";
 import { defaultBattlePass, sanitizeBattlePass } from "../battlepass/season1.js";
 import { defaultContentUpdates, sanitizeContentUpdates } from "../events/contentupdates.js";
 import { defaultMeteorStrikePhase, sanitizeMeteorStrike } from "../events/meteorstrike.js";
+import { defaultRocketLaunch, sanitizeRocketLaunch } from "../events/rocketlaunch.js";
 import { regionHostingIps, regionList } from "../matchmaking/regions.js";
 import { customMatchServers } from "../matchmaking/custom-servers.js";
 import { allowedBuildList } from "../builds/allowed.js";
@@ -28,8 +29,8 @@ const playlistAssetLtms = ["fiftyFiftyV2", "highExplosivesSolo", "highExplosives
   // 4.4's (CL-4117433 to CL-4132537): 50v50 v3 (PongooDev/CoreV2#328) and Sniper Shootout v3's Solo and Duos (#327; its
   // Squads is sniperShootoutV3 above).
   "fiftyFiftyV3", "sniperShootoutV3Solo", "sniperShootoutV3Duos",
-  // 4.4.2's Final Fight: Teams of 20 (#325).
-  "finalFight"];
+  // 4.4.2's Final Fight: Teams of 20 (#325); 4.5's Final Fight: Teams of 12.
+  "finalFight", "finalFightTeams12"];
 // Close Encounters' original date (Core-Backend #258, events/ltms.js): the whole of 25 May 2018, or one hour of it (0 to 23,
 // on the season replay's clock), as Epic ran it.
 export function closeEncountersValue(input, current = { wholeDay: true, hour: 0 }) {
@@ -148,7 +149,9 @@ const defaults = {
     // per-update "on" / "off" overrides.
     contentUpdates: defaultContentUpdates,
     // 3.6's Season 3 finale (events/meteorstrike.js): "none", "broadcast", "meteors" or "impact".
-    meteorStrike: defaultMeteorStrikePhase
+    meteorStrike: defaultMeteorStrikePhase,
+    // 4.5's rocket launch, Blast Off (events/rocketlaunch.js): its launch time (null: not scheduled) and countdown.
+    rocketLaunch: defaultRocketLaunch
   },
   battlepass: defaultBattlePass,
   matchmakingModes: {
@@ -340,6 +343,7 @@ function sanitizeEvents(input, current = defaults.events) {
   }
 
   if (input.meteorStrike !== undefined) result.meteorStrike = sanitizeMeteorStrike(input.meteorStrike, result.meteorStrike ?? defaultMeteorStrikePhase);
+  if (input.rocketLaunch !== undefined) result.rocketLaunch = sanitizeRocketLaunch(input.rocketLaunch, result.rocketLaunch ?? defaultRocketLaunch);
 
   return result;
 }

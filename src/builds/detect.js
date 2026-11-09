@@ -3,7 +3,7 @@
 export const certBuild = "3532353";
 
 // The Fortnite version players call each build Core knows (as Core-Launcher's KnownBuilds), for what the client shows.
-export const buildVersions = { 3532353: "1.1", 3541083: "1.2", 3700114: "1.7.2", 3724489: "1.8", 3729133: "1.8.1", 3741772: "1.8.2", 3757339: "1.9", 3775276: "1.9.1", 3790078: "1.10", 3807424: "1.11", 3825894: "2.1", 3841827: "2.2", 3847564: "2.3", 3858292: "2.4", 3870737: "2.4.2", 3889387: "2.5", 3901517: "3.0", 3915963: "3.1", 3917250: "3.1.1", 3935073: "3.2", 3942182: "3.3", 4000805: "3.5.1", 4008490: "3.5.2", 4019403: "3.6", 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4127312: "4.4.1", 4132537: "4.4.2" };
+export const buildVersions = { 3532353: "1.1", 3541083: "1.2", 3700114: "1.7.2", 3724489: "1.8", 3729133: "1.8.1", 3741772: "1.8.2", 3757339: "1.9", 3775276: "1.9.1", 3790078: "1.10", 3807424: "1.11", 3825894: "2.1", 3841827: "2.2", 3847564: "2.3", 3858292: "2.4", 3870737: "2.4.2", 3889387: "2.5", 3901517: "3.0", 3915963: "3.1", 3917250: "3.1.1", 3935073: "3.2", 3942182: "3.3", 4000805: "3.5.1", 4008490: "3.5.2", 4019403: "3.6", 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4127312: "4.4.1", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5" };
 
 export const versionOf = (changelist) => buildVersions[changelist] ?? null;
 
@@ -31,12 +31,14 @@ export const battleRoyaleBuilds = Object.keys(buildVersions).filter((changelist)
 // at hand, as 3.4). 4.4.0 (CL-4117433, ++Fortnite+Release-4.4, Update v4.40, 12 June 2018), 4.4.1 (CL-4127312,
 // ++Fortnite+Release-4.4, Update v4.4.1, 14 June 2018) and 4.4.2 (CL-4132537, ++Fortnite+Release-4.4.x, Content Update
 // v4.40, 19 June 2018) keep it too; 4.4.2's data is gamedata/4132537, and 4.4.0 and 4.4.1, whose paks Core has no copy of,
-// play on it (src/gamedata/read.js laterData).
+// play on it (src/gamedata/read.js laterData). 4.5 (++Fortnite+Release-4.5, Update v4.50, 27 June 2018) is two builds,
+// CL-4159770 (its paks say 4.5.0, so it is "4.5.0" here) and CL-4166199 ("4.5"); both keep AthenaSeason4. 4.5's data is
+// gamedata/4166199 (a Battle Royale only archive), and CL-4159770, whose paks Core has no copy of, plays on it.
 export const battleRoyaleSeasons = [
   { season: 1, firstVersion: "1.8", lastVersion: "1.10" },
   { season: 2, firstVersion: "1.11", lastVersion: "2.5" },
   { season: 3, firstVersion: "3.0", lastVersion: "3.6" },
-  { season: 4, firstVersion: "4.0", lastVersion: "4.4.2" }
+  { season: 4, firstVersion: "4.0", lastVersion: "4.5" }
 ];
 // "Season 2 (1.11 – 2.5)", "1.11 – 2.5"; a season of one version Core knows, "Season 4 (4.0)".
 export const seasonVersions = (season) => {

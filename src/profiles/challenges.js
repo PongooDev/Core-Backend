@@ -88,6 +88,11 @@ export const challengeModes = ["original", "interval", "manual"];
 //   (Weapon.Ranged.LMG) carry. Minigun Eliminations' row wants Weapon.Ranged.Minigun too; Damage with a Minigun's still
 //   wants Weapon.Ranged.Heavy.Minigun, which no 4.4 item carries, but no 4.4 bundle gives either of those two.
 // - Watch a Match Replay is in no 4.4 bundle, and the Storm Circles visit counts its own stat, as on 4.2.
+// 4.5 (CL-4166199; CL-4159770 plays on its data) lists none either. Its weeks 9 and 10 are revised and count their own
+// stats: Ride a Shopping Cart now counts use_vehicle_shoppingcart (4.4's counted the vending machines' interact row), Visit
+// different craters in a single match the nine visit_location_meteor_crater rows (4.4's the taco shops'), and the new
+// mountain summits visit (quest_br_visit_namedlocations_singlematch) its own visit rows; Pass through rings
+// (quest_br_skydive_rings) now needs all 20 of its rings (no ObjectiveCompletionCount). None is tied to a placeholder.
 export const brokenChallenges = [
   { quest: "quest_br_watch_replay", title: "Watch a Match Replay", issue: "Core-Backend #269", url: "https://github.com/PongooDev/Core-Backend/issues/269",
     builds: ["4039451", "4053532"], reason: "Its objective is tied to the placeholder stat revive_athena_player and no client code reports a watched replay." },

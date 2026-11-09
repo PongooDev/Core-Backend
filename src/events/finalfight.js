@@ -9,7 +9,10 @@ import { currentBuild } from "../builds/context.js";
 // RowUpdate lines on that curve table (events/contentupdates.js curveRowHotfixLine, at the curve's key time 0), served to
 // 4.4.2's client and gameserver whether or not the mode is on (only Playlist_Final_* reads the table). 4.4.0 and 4.4.1 have
 // no Final Fight (it came with 4.4.2's content update), so they get none.
+// 4.5 (CL-4159770, CL-4166199) still ships those rows at 240, 60, 120,000 and 80,000, and Epic's hotfix stayed, so 4.5
+// gets the same rows (its Teams of 12, Playlist_Final_12, plays from the same table).
 export const finalFightBuild = 4132537;
+const finalFightLastBuild = 4166199;
 const finalGameData = "/Game/Athena/Playlists/Final/AthenaGameData.AthenaGameData";
 export const finalFightCircles = [
   { row: "Default.SafeZone.01.WaitTime", value: 180 },
@@ -19,5 +22,5 @@ export const finalFightCircles = [
 ];
 
 // The curve rows the requesting build's hotfix sets for Final Fight: [{table, row, column, value}].
-export const finalFightRows = (changelist = currentBuild()) => (Number(changelist) === finalFightBuild
+export const finalFightRows = (changelist = currentBuild()) => (Number(changelist) >= finalFightBuild && Number(changelist) <= finalFightLastBuild
   ? finalFightCircles.map(({ row, value }) => ({ table: finalGameData, row, column: "0", value })) : []);

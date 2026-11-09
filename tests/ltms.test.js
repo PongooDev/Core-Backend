@@ -276,7 +276,7 @@ test("Teams of 20 is 3.2's new mode: on there whatever its switch, by hand on 3.
   }
   assert.equal(ltmOn("fiveByTwenty", v31, { matchmakingModes: { fiveByTwenty: true } }), true);
   // Only Teams of 20 (3.2's) and 50v50 v2 (3.5.1's, CoreV2 #260) are a build's new mode.
-  assert.deepEqual(ltms.filter((ltm) => ltm.newIn).map((ltm) => ltm.id), ["fiveByTwenty", "fiftyFiftyV2", "infinityGauntlet", "fiftyFiftyV3", "finalFight"]);
+  assert.deepEqual(ltms.filter((ltm) => ltm.newIn).map((ltm) => ltm.id), ["fiveByTwenty", "fiftyFiftyV2", "infinityGauntlet", "playground", "fiftyFiftyV3", "finalFight"]);
   assert.deepEqual(ltmForcedQueues(v32, { matchmakingModes: { shotguns: true } }), [22, 31]);
   assert.ok(ltmQuests({ running: true }, v32).includes("athenaevent22_playmatches"));
   // EFortAthenaPlaylist (3.2's SDK): AthenaEvent1 4, AthenaEvent8 11, AthenaPlatoon 12, AthenaEvent21 13, AthenaEvent22 14.
@@ -394,9 +394,9 @@ test("Season 4's LTMs run on their original dates, only on builds with their pla
     assert.equal(of("infinityGauntlet").inWindow[4], true);
     assert.deepEqual(of("fiftyFiftyV2").windows.map((window) => [window.builds, window.start, window.last, window.season]), [
       ["3.5.1 to 3.6", "2018-04-19", "2018-04-30", 3], ["4.0 to 4.1", "2018-05-01", "2018-05-08", 4],
-      ["4.2", "2018-05-22", "2018-06-11", 4], ["4.5", "2018-06-27", "2018-07-11", 4]]);
+      ["4.2", "2018-05-22", "2018-06-11", 4]]);
     assert.equal(of("teamsOf20V2").windows[0].builds, "4.4 to 4.4.x");
-    assert.equal(of("playground").windows[0].builds, "4.5");
+    assert.equal(of("playground").windows[0].builds, "4.5.0 to 4.5");
     assert.equal(of("soloShowdown").playlistId, 51);
     assert.equal(of("blitzV2").playlistId, null);
   });

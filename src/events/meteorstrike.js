@@ -48,6 +48,9 @@ import { currentEventsConfig, seasonalEventsOn } from "./events.js";
 // Carts ... have been re-enabled" is the paks' own values, so no hotfix turns them back on), Final Fight's
 // Default.WinConditionTime.Final (60) and the later Score Royale's Default.ScoringEvent.* rows. (Final Fight's own circles
 // are events/finalfight.js's.)
+// 4.5 (CL-4166199, whose data CL-4159770 plays on) takes none either: its AthenaGameData differs from 4.4's only in rows
+// its paks set (Score Royale's scoring rows, the circles' Default.SafeZone.*.ForceDistanceMin/Max and Default.Oddities.
+// Intensity at 0, the rifts' July oddities, left off). Its rocket launch is the calendar's (events/rocketlaunch.js).
 export const meteorStrikeBuild = 4019403;
 export const meteorStrikePhases = ["none", "broadcast", "meteors", "impact"];
 export const defaultMeteorStrikePhase = "meteors";

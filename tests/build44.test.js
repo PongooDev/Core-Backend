@@ -30,7 +30,7 @@ const v42 = "4072250";
 const v40 = "4039451";
 const now = new Date("2026-11-08T12:00:00Z");
 
-test("4.4.0, 4.4.1 and 4.4.2 are known by their versions, play on 4.4.2's data and are Season 4's newest", () => {
+test("4.4.0, 4.4.1 and 4.4.2 are known by their versions and play on 4.4.2's data", () => {
   assert.deepEqual(v44.map(versionOf), ["4.4.0", "4.4.1", "4.4.2"]);
   for (const build of v44) {
     assert.equal(dataBuild(build), v442, `${build} plays on 4.4.2's data, not 4.2's`);
@@ -42,8 +42,8 @@ test("4.4.0, 4.4.1 and 4.4.2 are known by their versions, play on 4.4.2's data a
   assert.equal(allowedBuildList(["4.4.0", "4.4.1", "4.4.2"]).join(), v44.join());
   assert.deepEqual(inBuild(v442, athenaSeason), inBuild(v40, athenaSeason), "4.4 keeps 4.0's AthenaSeason4");
   for (const build of v44) assert.deepEqual(inBuild(build, athenaCosmetics), inBuild(v442, athenaCosmetics));
-  assert.equal(buildOfSeason(4), v442);
-  assert.equal(seasonName(4), "Season 4 (4.0 – 4.4.2)");
+  assert.equal(buildOfSeason(4), "4166199", "Season 4's newest data is 4.5's (build45.test.js)");
+  assert.equal(seasonName(4), "Season 4 (4.0 – 4.5)");
 });
 
 test("4.4's data: 4.3's and 4.4's cosmetics, the revised weekly challenges, the Stink Bomb, Thermal Scope AR, Bouncer and Mushrooms", () => {
@@ -76,8 +76,10 @@ test("4.4's shop is Season 4's with 4.3's and 4.4's cosmetics, which 4.2 doesn't
   const history = JSON.parse(fs.readFileSync(new URL("../src/store/itemshop-season4.json", import.meta.url), "utf8")).days;
   const cosmetics44 = inBuild(v442, athenaCosmetics);
   const cosmetics42 = inBuild(v42, athenaCosmetics);
-  for (const day of history) for (const [templateId] of [...day.featured, ...day.daily]) assert.ok(cosmetics44[templateId], `${day.date} ${templateId}`);
-  const sold = new Set(history.flatMap((day) => [...day.featured, ...day.daily].map(([templateId]) => templateId)).filter((id) => !cosmetics42[id]));
+  // Every item is 4.4's but 4.5's cosmetics (build45.test.js).
+  const cosmetics45 = inBuild("4166199", athenaCosmetics);
+  for (const day of history) for (const [templateId] of [...day.featured, ...day.daily]) assert.ok(cosmetics44[templateId] || cosmetics45[templateId], `${day.date} ${templateId}`);
+  const sold = new Set(history.flatMap((day) => [...day.featured, ...day.daily].map(([templateId]) => templateId)).filter((id) => !cosmetics42[id] && cosmetics44[id]));
   assert.equal(sold.size, 39);
   const june15 = history.find(({ date }) => date === "2018-06-15");
   assert.deepEqual(june15.featured.slice(0, 2), [["AthenaCharacter:cid_147_athena_commando_m_soccerduded", 1200, { tile: 1, banner: "PickYourStyle" }],
