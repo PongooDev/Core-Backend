@@ -7386,7 +7386,7 @@
         style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
       },
         el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "4.5 Rocket Launch, Blast Off (Battle Royale):" }),
-        el("div", { class: "muted", style: "font-size:12px; margin-bottom:6px;", text: `The calendar's EventFlag.BR_S4_Geode_Countdown (the hologram counts down to the launch), _Begin (the 4-minute launch), _Over and EventFlag.BR_S4_Rift_Growth (the sky crack grows for 13.6 days), on 4.5 only. Epic's launch: ${new Date(rocket.original || "2018-06-30T18:00:00Z").toLocaleString()}. Clients and gameservers pick it up at their next calendar fetch.` }),
+        el("div", { class: "muted", style: "font-size:12px; margin-bottom:6px;", text: `The calendar's EventFlag.BR_S4_Geode_Countdown (the hologram counts down to the launch), _Begin (the 4-minute launch), _Over and EventFlag.BR_S4_Rift_Growth (the sky crack grows for 13.6 days), on 4.5 only. Epic's launch: ${new Date(rocket.original || "2018-06-30T18:00:00Z").toLocaleString()}. Running gameservers pick a change up within 5 seconds (CoreV2's calendar revision watch) and have their players fetch it too; clients in the lobby at their next calendar fetch. Before the launch the map has the rocket in its lair (the pre-event map); after it the lair is gone and the rift grows (the post-event map), switched by the calendar on its own when the launch ends.` }),
         el("div", { style: "font-size:13px; margin-bottom:8px;", text: `Status: ${rocketPhases[rocket.phase] || rocket.phase}${rocket.launch ? ` (launch ${new Date(rocket.launch).toLocaleString()}, countdown from ${new Date(rocket.countdownStart).toLocaleString()})` : ""}` }),
         el("div", { style: "display:flex; flex-wrap:wrap; gap:8px; align-items:center;" },
           rocketAt,
@@ -7397,7 +7397,8 @@
           } }),
           el("button", { class: "btn ghost small", text: "Countdown now (10 min)", onclick: () => rocketAction({ action: "now", inSeconds: 600, countdownHours: Number(rocketHours.value) }, "Rocket launch in 10 minutes") }),
           el("button", { class: "btn ghost small", text: "Launch now", onclick: () => rocketAction({ action: "now", inSeconds: 0 }, "Rocket launching") }),
-          el("button", { class: "btn ghost small", text: "Clear", onclick: () => rocketAction({ action: "clear" }, "Rocket launch cleared") }))
+          el("button", { class: "btn ghost small", text: "Post-event map now", title: "The launch just ended: the lair is gone and the rift grows", onclick: () => rocketAction({ action: "now", inSeconds: -240 }, "Post-event map: the rocket has launched") }),
+          el("button", { class: "btn ghost small", text: "Clear (pre-event map)", onclick: () => rocketAction({ action: "clear" }, "Rocket launch cleared: the rocket waits in its lair") }))
       );
 
       const modeCards = el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; margin-top:12px;" },
