@@ -160,7 +160,8 @@ export function switchSeason(session) {
 //
 // A season's challenges are what its data gives (buildOfSeason): the ChallengeBundleSchedules its tier rewards name
 // (AthenaSeason3's Season3_Challenge_Schedule, _Tier_2_ and _Tier_100_; AthenaSeason4's Season4_Challenge_Schedule,
-// _StarterChallenge_ and _ProgressiveB_), the bundles those schedules hold, and the quests that come without a bundle
+// _StarterChallenge_ and _ProgressiveB_; AthenaSeason5's Season5_Paid_Schedule, _ProgressiveA_ and _ProgressiveB_, and
+// Season5_Free_Schedule, which it gives everyone), the bundles those schedules hold, and the quests that come without a bundle
 // from its tier rewards and its bundles' rewards (Season 2's trigger and its pack and dailies, Season 4's hidden
 // Quest_BR_S4_Cumulative_Quest<n>). A schedule is its season's by its id, a bundle by its schedule
 // (challenge_bundle_schedule_id) or else its id, a bundle's quest by its bundle (challenge_bundle_id): Seasons 3 and 4
@@ -187,8 +188,10 @@ function seasonChallenges(season) {
       const pass = athenaSeason();
       const found = { schedules: new Set(), bundles: new Set(), quests: new Set() };
       if (pass?.seasonNumber !== season) return found;
-      const rewards = [...(pass.seasonRewards ?? []), ...(pass.bookFreeRewards ?? []), ...(pass.bookPaidRewards ?? [])]
-        .flatMap((entry) => entry.rewards ?? []).map(({ templateId }) => templateId);
+      // From 5.0 (Season 5) also what the season gives everyone (SeasonGrantsToEveryone: Season5_Free_Schedule, the free
+      // weekly challenges) and what it takes back at its end (TokensToRemoveAtSeasonEnd: its free and paid schedules).
+      const rewards = [...(pass.seasonRewards ?? []), ...(pass.bookFreeRewards ?? []), ...(pass.bookPaidRewards ?? []), { rewards: pass.grantsToEveryone }]
+        .flatMap((entry) => entry.rewards ?? []).map(({ templateId }) => templateId).concat(pass.removedAtSeasonEnd ?? []);
       const schedules = athenaChallengeSchedules() ?? {};
       const bundles = athenaChallengeBundles() ?? {};
       const follow = (templateIds) => {
@@ -297,6 +300,9 @@ function giveReward(session, { templateId, quantity }, athena) {
   if (id === "token:athenaseasonfriendxpboost") {
     return tracker.setStat("season_friend_match_boost", (attributes.season_friend_match_boost ?? 0) + quantity), [];
   }
+  // The weekly challenge tokens a challenge bundle gives (5.0's completion steps, profiles/challenges.js): held in athena
+  // and counted by the challenges that wait for them (athena.js acquireAthenaToken), as 4.0's quest-given one.
+  if (/^token:athenabattlepass_.*weekly.*_token$/.test(id) && athena.acquireAthenaToken) return athena.acquireAthenaToken(session, templateId, quantity), [];
   const banner = bannerTemplateId(templateId);
   if (banner) return findItem(session.profile("profile0").profile, banner) ? [] : grant(session, banner, 1);
   if (id.startsWith("quest:")) {

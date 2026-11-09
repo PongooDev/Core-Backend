@@ -16,7 +16,7 @@ import { findItem } from "./items.js";
 import { grant } from "./progress.js";
 import { applyHeldVariantTokens, applyVariantUpdates, defaultVariants, grantDefaultVariants, grantVariantToken, itemsMissingVariants } from "./variants.js";
 import { brokenChallengeOf, completeBrokenChallenges, countBundleQuest, grantChallengeSchedule as grantSchedule, settleChallengeSchedules } from "./challenges.js";
-import { accountLevelOf, addBookXp, giveSeasonReward, namesAthenaBuild, seasonNeedsSwitch, seasonNumber, settleSeasonPromise, settleSeasonRewards, switchSeason } from "./seasons.js";
+import { accountLevelOf, addBookXp, giveSeasonReward, namesAthenaBuild, profileSeason, seasonNeedsSwitch, seasonNumber, settleSeasonPromise, settleSeasonRewards, switchSeason } from "./seasons.js";
 
 // Battle Royale's profile from 1.8, athena (UFortMcpProfileAthena, a quest profile): its cosmetics, the loadout the
 // locker equips, the banner, the season level and the daily challenges.
@@ -148,8 +148,10 @@ const migrated = (profile, name) => (profile.coreMigrations ?? []).includes(name
 // strings are left): its umbrella is a glider item the locker equips. An umbrella already in a locker stays.
 const victoryUmbrella = "AthenaGlider:solo_umbrella";
 // Season 3's is the Paper Parasol (Umbrella_PaperParasol), 3.0's AthenaSeason3 SeasonFirstWinRewards, and Season 4's
-// 4.0's AthenaSeason4 SeasonFirstWinRewards, Umbrella_Season_04 ("Wet Paint").
-const seasonVictoryUmbrellas = { 2: "AthenaGlider:umbrella_snowflake", 3: "AthenaGlider:umbrella_paperparasol", 4: "AthenaGlider:umbrella_season_04" };
+// 4.0's AthenaSeason4 SeasonFirstWinRewards, Umbrella_Season_04 ("Wet Paint"), and Season 5's 5.0's AthenaSeason5
+// SeasonFirstWinRewards, Umbrella_Season_05.
+const seasonVictoryUmbrellas = { 2: "AthenaGlider:umbrella_snowflake", 3: "AthenaGlider:umbrella_paperparasol", 4: "AthenaGlider:umbrella_season_04",
+  5: "AthenaGlider:umbrella_season_05" };
 const founderVictoryUmbrella = "AthenaGlider:founderumbrella";
 const victoryUmbrellas = [victoryUmbrella, ...Object.values(seasonVictoryUmbrellas), founderVictoryUmbrella];
 const victoryUmbrellasOf = (accountId, settings, season) => [victoryUmbrella, seasonVictoryUmbrellas[season],
@@ -673,7 +675,7 @@ export function setSeasonLevel(session, level) {
 }
 
 // What profiles/seasons.js gives season rewards with.
-const seasonFunctions = { addSeasonXp, grantCosmetic, grantAthenaQuest, settleBattlePassDaily,
+const seasonFunctions = { addSeasonXp, grantCosmetic, grantAthenaQuest, settleBattlePassDaily, acquireAthenaToken,
   grantChallengeSchedule: (session, templateId) => grantSchedule(session, templateId, seasonFunctions) };
 export const seasonRewardFunctions = () => seasonFunctions;
 
@@ -1088,10 +1090,21 @@ function settleBrokenChallenges(session) {
   }
 }
 
+// What the season gives every player (5.0's AthenaSeason5 SeasonGrantsToEveryone: Season5_Free_Schedule, the free
+// weekly challenges, which no tier gives), once, in the profile's own season.
+function settleSeasonGrants(session) {
+  const season = athenaSeason();
+  if (!season?.grantsToEveryone || profileSeason(session.profile("athena").profile) !== season.seasonNumber) return;
+  for (const { templateId } of season.grantsToEveryone) {
+    if (typeOf(templateId) === "challengebundleschedule") grantSchedule(session, templateId, seasonFunctions);
+  }
+}
+
 // ClientQuestLogin / ServerQuestLogin on athena.
 export function athenaQuestLogin(session) {
   refreshAthenaDailies(session);
   settleBattlePassDaily(session);
+  settleSeasonGrants(session);
   settleChallengeSchedules(session, seasonFunctions);
   settleBrokenChallenges(session);
   settleLevelObjectives(session);

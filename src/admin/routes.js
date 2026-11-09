@@ -1121,8 +1121,8 @@ export function adminRoutes(context) {
     // Season 3's shop as 3.6's data (its newest) sells it: 3.0's cosmetics, 3.1's, 3.2's (3.3 adds none), 3.4's, 3.5's and 3.6's;
     // Season 4's as 4.4.2's: 4.0's cosmetics, 4.1's Snap emote, 4.2's Hazard set, Venturion and the rest, and 4.3's and 4.4's
     // (Jumpshot, Scoundrel, the World Cup outfits, Omen, Fate...), now 4.5's (CL-4166199): 4.5's too (Vertex, Gumshoe,
-    // Criterion, Oblivion...).
-    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4166199" }[s];
+    // Criterion, Oblivion...). Season 5's as 5.0's (CL-4214610).
+    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4166199", 5: "4214610" }[s];
     const offers = inBuild(build, () => itemShopOffers(now, config, s));
     const cosmetics = inBuild(build, () => eligibleCosmetics());
     const currentDay = shopDay(now, config, s);
@@ -1221,7 +1221,9 @@ export function adminRoutes(context) {
       { version: "4.4.1", cl: 4127312, event: "Blockbuster" },
       { version: "4.4.2", cl: 4132537, event: "Blockbuster" },
       { version: "4.5.0", cl: 4159770, event: "Blockbuster" },
-      { version: "4.5", cl: 4166199, event: "Blockbuster" }
+      { version: "4.5", cl: 4166199, event: "Blockbuster" },
+      { version: "5.0.0", cl: 4204761, event: "Season 5" },
+      { version: "5.0", cl: 4214610, event: "Season 5" }
     ];
 
     const sampleBuilds = builds.map((b) => ({
@@ -1482,7 +1484,7 @@ export function adminRoutes(context) {
     res.json({ success: true, resetProfiles });
   });
 
-  // ?season=2|3|4: Season 2's Battle Pass (1.11 and 2.1), Season 3's (3.0) or Season 4's (4.0), battlepass/season2.js: its prices and its tiers' rewards, from the
+  // ?season=2|3|4|5: Season 2's Battle Pass (1.11 and 2.1), Season 3's (3.0), Season 4's (4.0) or Season 5's (5.0), battlepass/season2.js: its prices and its tiers' rewards, from the
   // season's newest data (profiles/seasons.js buildOfSeason).
   // Each season's name by its versions (builds/detect.js battleRoyaleSeasons): Season 2 is 1.11 to 2.5, Season 3 is 3.0 to 3.6.
   const availableSeasons = battleRoyaleSeasons.map(({ season: id }) => ({ id, name: seasonName(id), range: seasonVersions(id), active: true }));

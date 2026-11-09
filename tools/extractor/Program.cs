@@ -43,6 +43,7 @@ var game = engine switch
     "4.16" => EGame.GAME_UE4_16,
     "4.19" => EGame.GAME_UE4_19,
     "4.20" => EGame.GAME_UE4_20,
+    "4.21" => EGame.GAME_UE4_21,
     _ => throw new NotSupportedException($"Engine {engine} is not mapped yet")
 };
 
@@ -1137,7 +1138,7 @@ var challengeSchedules = new SortedDictionary<string, object>(StringComparer.Ord
 var challengeBundles = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var variantTokens = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var testCosmetics = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "DynamicsTestGlider", "Glider_ProxyTest", "Glider_TestStaticParts", "Pickaxe_ID_zzz_StatDebugger", "Dev_Test_Pickaxe_StatDebugger",
-    "Dev_Test_Pickaxe", "SPID_000_TestSpray" };
+    "Dev_Test_Pickaxe", "SPID_000_TestSpray", "TOY_000_TestToy" };
 var cosmeticKeys = new List<(string TemplateId, string Class, string AssetName, string? Hero, string? Icon, string DisplayName)>();
 foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" && f.Path.StartsWith("FortniteGame/Content/Athena/Items/", StringComparison.OrdinalIgnoreCase)))
 {
@@ -1145,7 +1146,8 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     // gliders (DynamicsTestGlider, Glider_ProxyTest, Glider_TestStaticParts: "Glider", Handmade) and a debug harvesting tool
     // (Pickaxe_ID_zzz_StatDebugger, "Use to debug in-match progressive cosmetics", bNeverPersisted), left out the same way;
     // 3.6 (CL-4019403) renames that tool Dev_Test_Pickaxe_StatDebugger. 4.0 (CL-4039451) adds a test harvesting tool
-    // (Dev_Test_Pickaxe, "Test Pickaxe") and a test spray (SPID_000_TestSpray, "Test Spray"), left out too.
+    // (Dev_Test_Pickaxe, "Test Pickaxe") and a test spray (SPID_000_TestSpray, "Test Spray"), left out too, and 5.0
+    // (CL-4214610) a test toy (TOY_000_TestToy).
     if (file.Path.Contains("/00_TestAssets/", StringComparison.OrdinalIgnoreCase) || file.Path.Contains("/Dev_TestAsset.", StringComparison.OrdinalIgnoreCase)) continue;
     if (testCosmetics.Contains(Path.GetFileNameWithoutExtension(file.Path))) continue;
     var gamePath = "/Game/" + file.PathWithoutExtension["FortniteGame/Content/".Length..];
@@ -1188,17 +1190,40 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     }
     if (export.ExportType == "FortChallengeBundleItemDefinition")
     {
-        challengeBundles[export.Name.ToLowerInvariant()] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+        // 5.0 (CL 4214610, Season 5) replaces a quest's bGrantWithBundle with QuestUnlockType
+        // (EChallengeBundleQuestUnlockType): GrantWithBundle, or RequiresBattlePass for the weekly challenges only the Battle
+        // Pass gives ("The first 3 challenges will be available for free while the last 4 are only available if you own the
+        // Battle Pass"), written as grantWithBundle with requiresBattlePass. Its bundles' rewards are steps,
+        // BundleCompletionRewards [{CompletionCount, Rewards}] (-1: every quest), written as completionSteps
+        // [{count, rewards}] in place of CompletionThreshold and CompletionRewards; a NonExportedFakeReward (the
+        // cumulative bundle's Mystery Item, AthenaMysteryTokenSeason5) is only shown, so it is left out.
+        var bundle = new SortedDictionary<string, object>(StringComparer.Ordinal)
         {
-            ["quests"] = (properties["QuestInfos"]?.AsArray() ?? []).Select(info => (object)new SortedDictionary<string, object>(StringComparer.Ordinal)
+            ["quests"] = (properties["QuestInfos"]?.AsArray() ?? []).Select(info =>
             {
-                ["quest"] = AssetName(AssetPath(info!["QuestDefinition"])).ToLowerInvariant(),
-                ["grantWithBundle"] = info["bGrantWithBundle"]?.GetValue<bool>() ?? false
+                var unlock = Enum(info!["QuestUnlockType"]);
+                var quest = new SortedDictionary<string, object>(StringComparer.Ordinal)
+                {
+                    ["quest"] = AssetName(AssetPath(info["QuestDefinition"])).ToLowerInvariant(),
+                    ["grantWithBundle"] = info["bGrantWithBundle"]?.GetValue<bool>() ?? unlock is "GrantWithBundle" or "RequiresBattlePass"
+                };
+                if (unlock == "RequiresBattlePass") quest["requiresBattlePass"] = true;
+                return (object)quest;
             }).ToList(),
             ["completionThreshold"] = properties["CompletionThreshold"]?.GetValue<int>() ?? 0,
             ["completionRewards"] = RewardList(properties["CompletionRewards"]?["Rewards"], assetTypes),
             ["visualStyle"] = Enum(properties["VisualStyle"]) ?? ""
         };
+        if (properties["BundleCompletionRewards"] is JsonArray steps)
+        {
+            bundle["completionSteps"] = steps.OfType<JsonObject>().Select(step => (object)new SortedDictionary<string, object>(StringComparer.Ordinal)
+            {
+                ["count"] = step["CompletionCount"]?.GetValue<int>() ?? -1,
+                ["rewards"] = RewardList(new JsonArray((step["Rewards"]?.AsArray() ?? []).OfType<JsonObject>()
+                    .Where(reward => Enum(reward["RewardType"]) != "NonExportedFakeReward").Select(reward => reward.DeepClone()).ToArray()), assetTypes)
+            }).Where(step => ((List<object>)((SortedDictionary<string, object>)step)["rewards"]).Count > 0).ToList();
+        }
+        challengeBundles[export.Name.ToLowerInvariant()] = bundle;
         continue;
     }
     // 4.0's (CL 4039451) cosmetic variant tokens (Athena/Items/CosmeticVariantTokens, FortVariantTokenType): Carbide's
@@ -1428,6 +1453,13 @@ if (provider.TryLoadPackage("FortniteGame/Content/Balance/AthenaGameData.uasset"
             athenaSeason["firstWinRewards"] = RewardList(newestSeason["SeasonFirstWinRewards"]?["Rewards"], assetTypes);
             athenaSeason["battlePassLevelOfferId"] = newestSeason["BattlePassLevelOfferID"]?.GetValue<string>() ?? "";
         }
+        // From 5.0 (CL 4214610, Season 5): what the season gives every player (SeasonGrantsToEveryone: Season5_Free_Schedule,
+        // the free weekly challenges no tier gives) and what it takes back when it ends (TokensToRemoveAtSeasonEnd: its
+        // schedules, the next season's tier tokens, its tier sales), as template ids.
+        if (RewardList(newestSeason["SeasonGrantsToEveryone"]?["Rewards"], assetTypes) is { Count: > 0 } everyone) athenaSeason["grantsToEveryone"] = everyone;
+        var removedAtEnd = (newestSeason["TokensToRemoveAtSeasonEnd"]?.AsArray() ?? []).Select(entry => assetTypes.TemplateId(ObjectPath(AssetPath(entry))))
+            .Where(templateId => templateId is not (null or "" or "None")).Cast<object>().ToList();
+        if (removedAtEnd.Count > 0) athenaSeason["removedAtSeasonEnd"] = removedAtEnd;
     }
     foreach (var (_, row) in LoadRows(provider, seasonXpTable).OrderBy(r => r.Value!["Level"]!.GetValue<int>()))
     {
@@ -1707,7 +1739,11 @@ static class ItemClasses
         "AthenaSkyDiveContrailItemDefinition",
         // 4.0's (CL 4039451) sprays (Athena/Items/Cosmetics/Sprays, UAthenaSprayItemDefinition: UAthenaDanceItemDefinition,
         // AthenaDance:SPID_*), which its Battle Pass gives and the emote slots hold ("INTRODUCING SPRAYS").
-        "AthenaSprayItemDefinition"
+        "AthenaSprayItemDefinition",
+        // 5.0's (CL 4214610) toys (Athena/Items/Cosmetics/Toys, UAthenaToyItemDefinition, Cosmetics.EmoteType.Toy,
+        // AthenaDance:TOY_*: the Basketball, Golf Ball and Beach Ball and their Elite ones), which its Battle Pass gives and
+        // the emote slots hold.
+        "AthenaToyItemDefinition"
     ];
 
     private static readonly Dictionary<string, string> Parents = new()

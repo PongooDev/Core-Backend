@@ -93,6 +93,14 @@ export const challengeModes = ["original", "interval", "manual"];
 // different craters in a single match the nine visit_location_meteor_crater rows (4.4's the taco shops'), and the new
 // mountain summits visit (quest_br_visit_namedlocations_singlematch) its own visit rows; Pass through rings
 // (quest_br_skydive_rings) now needs all 20 of its rings (no ObjectiveCompletionCount). None is tied to a placeholder.
+// 5.0 (CL-4214610; CL-4204761 plays on its data), checked: of Season 5's 70 weekly challenges one is unfinished in its paks,
+// Quest_BR_Destroy_SpecificTargets (week 3's, a Battle Pass one): its name and objective read "TBD" and its objective counts
+// visit_location_animal_building_crab, the crab building visit borrowed as a placeholder (as 4.0's Storm Circles one,
+// CoreV2 #299), so nothing about it says what to destroy and no target of its own exists in 5.0. Its week came on 26 July,
+// with 5.10. The rest count their own stats: the Custom ones (open_supply_llama, scorebasket_location_basket_01 to 10,
+// touch_flamingrings_vehicle, use_item_riftportal, scorehole_location_green_01 to 07, complete_timed_trial_01 to 07,
+// use_scavengerhunt_danceoff) are the gameserver's to report, and Minigun or Light Machine Gun Eliminations (week 6)
+// wants Weapon.Ranged.Minigun or Weapon.Ranged.LMG, which 5.0's LMGs carry, as on 4.4.
 export const brokenChallenges = [
   { quest: "quest_br_watch_replay", title: "Watch a Match Replay", issue: "Core-Backend #269", url: "https://github.com/PongooDev/Core-Backend/issues/269",
     builds: ["4039451", "4053532"], reason: "Its objective is tied to the placeholder stat revive_athena_player and no client code reports a watched replay." },
@@ -114,7 +122,9 @@ export const brokenChallenges = [
     reason: "Its stat row damage_athena_player_with_minigun needs the tag Weapon.Ranged.Heavy.Minigun and no item in the build carries it." },
   { quest: "quest_br_score_goals", title: "Score a goal on different pitches", issue: "Core-Backend #287",
     url: "https://github.com/PongooDev/Core-Backend/issues/287", builds: ["4039451", "4053532", "4072250"],
-    reason: "It needs 5 objectives done but has one, on the placeholder stat revive_athena_player, and nothing reports a goal." }
+    reason: "It needs 5 objectives done but has one, on the placeholder stat revive_athena_player, and nothing reports a goal." },
+  { quest: "quest_br_destroy_specifictargets", title: "Destroy specific targets (TBD)", issue: "CoreV2 #299", url: "https://github.com/PongooDev/CoreV2/issues/299",
+    builds: ["4204761", "4214610"], reason: "It is unfinished in 5.0's paks: its name and objective read TBD and the objective uses the borrowed stat visit_location_animal_building_crab." }
 ];
 export const completeBrokenChallenges = (settingsValue = settingsProvider()) => settingsValue?.completeBrokenChallenges === true;
 // The list entry for a challenge on a build, when it is one of the broken ones there.
@@ -193,14 +203,23 @@ export function weekPlan(now = new Date(), settingsValue = settingsProvider()) {
   return { ...settings, weeks, begin, changes };
 }
 
+// 5.0's (CL-4214610, Season 5) weekly challenges are "split into two sections, free and Battle Pass. The first 3
+// challenges will be available for free while the last 4 are only available if you own the Battle Pass": each week's
+// bundle (QuestBundle_S5_Week_<n>, in Season5_Free_Schedule, which every player gets) marks its last four
+// RequiresBattlePass (athena.json requiresBattlePass). A player without the pass gets the first three; buying it gives
+// the rest of every week held (topUpBundle, at the purchase's settle and every login).
+const givesQuest = (tracker, { grantWithBundle, requiresBattlePass, quest }) => grantWithBundle && Boolean(getAthenaQuest(quest))
+  && (!requiresBattlePass || tracker.profile.stats.attributes.book_purchased === true);
+
 function grantBundle(session, scheduleItemId, bundleId, athena) {
   const tracker = session.profile("athena");
   const bundle = athenaChallengeBundles()[bundleId];
   if (!bundle) return null;
   const bundleItemId = crypto.randomUUID();
   const questIds = [];
-  for (const { quest, grantWithBundle } of bundle.quests) {
-    if (!grantWithBundle || !getAthenaQuest(quest)) continue;
+  for (const entry of bundle.quests) {
+    const { quest } = entry;
+    if (!givesQuest(tracker, entry)) continue;
     const questItemId = athena.grantAthenaQuest(tracker, quest);
     if (!questItemId) continue;
     tracker.setItemAttribute(questItemId, "challenge_bundle_id", bundleItemId);
@@ -232,8 +251,9 @@ function topUpBundle(session, bundleItemId, bundleId, athena) {
   const questIds = [...(bundleItem.attributes.grantedquestinstanceids ?? [])];
   const heldQuests = new Set(questIds.map((id) => idOf(tracker.profile.items[id]?.templateId)).filter(Boolean));
   const added = [];
-  for (const { quest, grantWithBundle } of bundle.quests) {
-    if (!grantWithBundle || heldQuests.has(quest) || !getAthenaQuest(quest)) continue;
+  for (const entry of bundle.quests) {
+    const { quest } = entry;
+    if (heldQuests.has(quest) || !givesQuest(tracker, entry)) continue;
     const questItemId = athena.grantAthenaQuest(tracker, quest);
     if (!questItemId) continue;
     tracker.setItemAttribute(questItemId, "challenge_bundle_id", bundleItemId);
@@ -286,7 +306,12 @@ export function grantChallengeSchedule(session, templateId, athena, now = new Da
 }
 
 // A bundle's quest done (athena.js completeQuest): the bundle counts it, and gives its CompletionRewards the time the
-// count reaches its CompletionThreshold. giveReward pays a reward (profiles/seasons.js).
+// count reaches its CompletionThreshold. giveReward pays a reward (profiles/seasons.js). From 5.0 (CL-4214610) a bundle's
+// rewards come in steps (BundleCompletionRewards, athena.json completionSteps): each step pays the time the count
+// reaches its count, and a count of -1 when every quest of the bundle is done. A Season 5 week gives a weekly challenge
+// token (Token:AthenaBattlePass_WeeklyChallenge_Token) for each challenge, 5,000 season XP at four, and at all seven the
+// weekly bundle token (Token:AthenaBattlePass_WeeklyBundle_Token) the Road Trip challenges count
+// (Quest_BR_S5_Cumulative_CollectTokens_01 to _07, one to seven weeks done).
 export function countBundleQuest(session, questItemId, giveReward) {
   const tracker = session.profile("athena");
   const bundleItemId = tracker.profile.items[questItemId]?.attributes.challenge_bundle_id;
@@ -299,6 +324,12 @@ export function countBundleQuest(session, questItemId, giveReward) {
   if (done === before) return [];
   tracker.setItemAttribute(bundleItemId, "num_quests_completed", done);
   tracker.setItemAttribute(bundleItemId, "num_progress_quests_completed", done);
+  if (bundle?.completionSteps) {
+    const total = bundle.quests.length;
+    const reached = bundle.completionSteps.filter(({ count }) => (count < 0 ? before < total && done >= total : before < count && done >= count));
+    if (reached.length) log("Battle Royale", `${session.accountId} completed ${done} of ${idOf(bundleItem.templateId)}'s challenges`);
+    return reached.flatMap(({ rewards }) => rewards.flatMap((reward) => giveReward(session, reward)));
+  }
   if (!bundle || before >= bundle.completionThreshold || done < bundle.completionThreshold) return [];
   log("Battle Royale", `${session.accountId} completed ${bundle.completionThreshold} of ${idOf(bundleItem.templateId)}'s challenges`);
   return bundle.completionRewards.flatMap((reward) => giveReward(session, reward));

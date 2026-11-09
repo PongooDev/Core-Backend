@@ -9,7 +9,8 @@ dotnet run -c Release --project tools/extractor -- "<build folder with FortniteG
 
 The engine version and changelist come from the build's `Engine/Build/Build.version`. A build that ships without one
 (1.10, CL 3790078) takes them as a fourth argument, after the output folder, in its User-Agent's form:
-`4.19.0-3790078+++Fortnite+Release-Cert`. UE 4.16, 4.19 and 4.20 (2.5, CL 3889387, the first 4.20 build) are mapped. 4.19 writes soft references with their
+`4.19.0-3790078+++Fortnite+Release-Cert`. UE 4.16, 4.19, 4.20 (2.5, CL 3889387, the first 4.20 build) and 4.21 (5.0, CL 4214610, the
+first 4.21 build) are mapped. 4.19 writes soft references with their
 object name (`/Game/Path/Asset.Asset`); zone themes' tile classes and mission generators' primary missions are kept as
 packages, as 4.16 writes them, so overlays only hold the builds' own differences.
 
@@ -131,7 +132,22 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   (CL-4166199) is `4.20.0-4166199+++Fortnite+Release-4.5` with 4.4.2's full data (Cert's files with `gamedata/4132537`
   applied) as the fifth argument, for the same reason, and the main key FModel's settings hold for its build folder (its
   six paks, a Battle Royale only archive like 4.4.2's); no extractor change. The earlier 4.5, CL-4159770, isn't extracted
-  (Core has no copy of its paks) and plays on CL-4166199's data. Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
+  (Core has no copy of its paks) and plays on CL-4166199's data. 5.0's (CL-4214610, UE 4.21, Season 5) is
+  `4.21.0-4214610+++Fortnite+Release-5.0` (the exe's own build string is ++Fortnite+Release-5.0-CL-4214610; the folder has
+  no `Build.version`) with 4.5's full data (Cert's files with `gamedata/4166199` applied) as the fifth argument, for the
+  same reason, and the main key FModel's settings hold for its build folder (its six paks, a Battle Royale only archive).
+  Four extractor changes: UE 4.21 is mapped (`GAME_UE4_21`); its toys (`AthenaToyItemDefinition`, `AthenaDance:TOY_*`) are
+  cosmetics, its test toy (`TOY_000_TestToy`) left out; its challenge bundles replace a quest's `bGrantWithBundle`
+  with `QuestUnlockType` (GrantWithBundle, or RequiresBattlePass: the Battle Pass half of each week, written as
+  `grantWithBundle` with `requiresBattlePass`) and CompletionThreshold/CompletionRewards with steps,
+  `BundleCompletionRewards` [{CompletionCount, Rewards}], written as `completionSteps` [{count, rewards}] (count -1: every
+  quest; a NonExportedFakeReward, the Road Trip bundle's Mystery Item, is only shown and left out); and AthenaSeason5 names
+  what it gives every player (`SeasonGrantsToEveryone`: Season5_Free_Schedule, written as `season.grantsToEveryone`) and
+  what goes at its end (`TokensToRemoveAtSeasonEnd`, written as `season.removedAtSeasonEnd`). Earlier builds' bundles have
+  neither bundle property and their seasons no SeasonGrantsToEveryone; AthenaSeason4 already names
+  TokensToRemoveAtSeasonEnd (its schedules), so a fresh 4.x extraction adds `removedAtSeasonEnd` to the committed 4.x
+  overlays, which predate it (the schedules it names are the ones its tier rewards give, so nothing reads it differently). The earlier 5.0, CL-4204761, isn't extracted (Core has
+  no copy of its paks) and plays on CL-4214610's data. Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):
   `slotLoadouts` (AlterationSlotsLoadouts: each loadout's slots, their unlock level and rarity, slot definition,

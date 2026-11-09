@@ -2037,7 +2037,8 @@
       { id: "1", label: "Season 1 (1.8 – 1.10)", from: "1.8+", days: 45 },
       { id: "2", label: "Season 2 (1.11 – 2.5)", from: "1.11+", days: 70 },
       { id: "3", label: "Season 3 (3.0 – 3.6)", from: "3.0+", days: 68 },
-      { id: "4", label: "Season 4 (4.0 – 4.5)", from: "4.0+", days: 72 }
+      { id: "4", label: "Season 4 (4.0 – 4.5)", from: "4.0+", days: 72 },
+      { id: "5", label: "Season 5 (5.0)", from: "5.0+", days: 77 }
     ];
     const seasonOf = (id) => SEASONS.find((entry) => entry.id === String(id)) ?? SEASONS[0];
     const seasonRoute = (accountId) => SEASONS.find((entry) => accountId === `season${entry.id}` || accountId === entry.id)?.id ?? null;
@@ -4725,7 +4726,7 @@
         });
 
         const seasonPills = el("div", { class: "subtabs", role: "tablist", style: "margin:0;" },
-          [["all", "All Seasons"], ["1", "Season 1"], ["2", "Season 2"], ["3", "Season 3"], ["4", "Season 4"]].map(([sId, sLabel]) =>
+          [["all", "All Seasons"], ["1", "Season 1"], ["2", "Season 2"], ["3", "Season 3"], ["4", "Season 4"], ["5", "Season 5"]].map(([sId, sLabel]) =>
             el("button", {
               type: "button",
               role: "tab",
@@ -5875,6 +5876,11 @@
               title: "Season 4: Item Shop (4.0 – 4.5)",
               badge: "72 Days",
               hash: "#/shop/season4"
+            },
+            {
+              title: "Season 5: Item Shop (5.0)",
+              badge: "77 Days",
+              hash: "#/shop/season5"
             }
           ])
         );
@@ -6885,7 +6891,9 @@
         ...(data.brokenChallenges ? [brokenChallengesPanel(data)] : []),
         el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" }, el("h2", { text: "Tier Rewards" }), chip(`${tiers.length} tiers`, "accent")),
-          el("p", { class: "note", text: season === "4"
+          el("p", { class: "note", text: season === "5"
+            ? "From 5.0's AthenaSeason5 (100 tiers): the free rewards every player gets and the Battle Pass rewards, given as each tier is reached. Battle Stars (10 a tier) come from season levels and challenges; past tier 100 a challenge's stars are 100 season XP each. Every player gets each week's first three challenges; the Battle Pass's tier 1 gives the other four, the Road Trip and Drift's challenges, tier 100 Ragnarok's."
+            : season === "4"
             ? "From 4.0's AthenaSeason4 (100 tiers): the free rewards every player gets and the Battle Pass rewards, given as each tier is reached. Battle Stars (10 a tier) come from season levels and challenges; past tier 100 a challenge's stars are 100 season XP each. The Battle Pass's tier 1 gives the weekly, Carbide and Blockbuster challenges, tier 100 Omega's."
             : season === "3"
             ? "From 3.0's AthenaSeason3 (100 tiers): the free rewards every player gets and the Battle Pass rewards, given as each tier is reached. Battle Stars (10 a tier) come from season levels and challenges. The Battle Pass's tier 1 gives the weekly challenges instead of a daily one."
@@ -6927,6 +6935,12 @@
               desc: "Configure 100 tiers of free and premium rewards, pass pricing (950 V-Bucks), and bundle pricing (2,800 V-Bucks)",
               badge: "100 Tiers",
               hash: "#/battlepass/season4"
+            },
+            {
+              title: "Season 5: Battle Pass (5.0)",
+              desc: "Configure 100 tiers of free and premium rewards, pass pricing (950 V-Bucks), and bundle pricing (2,800 V-Bucks)",
+              badge: "100 Tiers",
+              hash: "#/battlepass/season5"
             }
           ])
         );
@@ -7171,7 +7185,9 @@
         b.flags.length
           ? el("div", { style: "display:flex; gap:4px; flex-wrap:wrap;" }, b.flags.map((f) => chip(f, "accent")))
           : el("span", { class: "muted", text: "None (Base game)" }),
-        el("span", { class: "muted", text: b.version.startsWith("1.8")
+        el("span", { class: "muted", text: b.version.startsWith("5.")
+          ? "The Season 5 lobby, group missions and ticketless storms; Save the World's Road Trip (its quests, tickets, llama and Challenge the Horde alerts) isn't run"
+          : b.version.startsWith("1.8")
           ? "Hexsylvania (4 tiers), 56 Halloween quests, Candy, Halloween Llamas"
           : b.version.startsWith("1.9.1")
           ? "StormCategory alerts (10/day), 15 Vindertech quests, Storm Tickets, 500 Candy conversion"
@@ -7232,6 +7248,12 @@
               desc: "Blockbuster Part 1, Blockbuster tickets, active Mini-Boss alerts, Raven in the Event Store, the HackSAW in 4.1's Weekly Store, the Quad Launcher and perk resources in 4.2's, the Season 4 lobby & 72-day calendar cycle",
               badge: "72 Days",
               hash: "#/events/season4"
+            },
+            {
+              title: "Season 5 (5.0)",
+              desc: "Worlds Collide: the Season 5 lobby, Save the World's Road Trip flags, rifts on the map & 77-day calendar cycle",
+              badge: "77 Days",
+              hash: "#/events/season5"
             }
           ])
         );

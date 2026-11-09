@@ -142,3 +142,82 @@ test("the admin panel's Season 3 Battle Pass reset takes the tiers' challenges o
     assert.deepEqual(Object.values(aside).filter((item) => typeOf(item) === "challengebundleschedule").map(idOf), ["season3_challenge_schedule"]);
   });
 }));
+
+// Season 4 to Season 5 (5.0, CL-4214610), as Season 3 to 4: a Season 4 profile on 4.5, then 5.0, then back.
+const v45 = "4166199";
+const v50 = "4214610";
+const v500 = "4204761";
+const finish = (session, profile, itemIds) => advanceAthenaObjectives(session, itemIds.flatMap((id) => Object.keys(profile.items[id].attributes)
+  .filter((name) => name.startsWith("completion_")).map((name) => ({ statName: name.slice("completion_".length), count: 100000 }))));
+const bundleQuests = (profile, bundleId) => {
+  const held = Object.values(profile.items).find((item) => item.templateId.toLowerCase() === `challengebundle:${bundleId}`);
+  return held ? held.attributes.grantedquestinstanceids.map((id) => profile.items[id] ? idOf(profile.items[id]) : null) : null;
+};
+
+function playSeasonFour(login) {
+  return login(v45, (session, profile) => {
+    buyBattlePass(session, seasonRewardFunctions());
+    athenaQuestLogin(session);
+    seasonRewardFunctions().grantAthenaQuest(session.profile("athena"), daily);
+    const [, week1] = held(profile, "ChallengeBundle").find(([, item]) => idOf(item) === "questbundle_s4_week_001");
+    const [questId] = week1.attributes.grantedquestinstanceids;
+    finish(session, profile, [questId]);
+    return { questId, state: profile.items[questId].attributes.quest_state, stats: { ...profile.stats.attributes } };
+  });
+}
+
+test("a Season 4 profile's first 5.0 login retires Season 4's challenges, starts Season 5 at level 1 and gives every player the free weeks", () => withAccount((login) => {
+  const before = playSeasonFour(login);
+  assert.notEqual(before.state, "Active");
+  const s4 = login(v45, (session, profile) => ({ schedules: heldIds(profile, "ChallengeBundleSchedule"), items: { ...profile.items } }));
+  assert.ok(s4.schedules.includes("season4_challenge_schedule"));
+  const cosmetics = Object.keys(s4.items).filter((id) => /^athena/i.test(s4.items[id].templateId));
+
+  login(v50, (session, profile) => {
+    const { attributes } = profile.stats;
+    assert.equal(attributes.season_num, 5);
+    assert.equal(attributes.level, 1, "Season 5's level starts again");
+    assert.equal(attributes.xp, 0);
+    assert.equal(attributes.book_purchased, false);
+    // Season 4's Battle Pass gave its next-season tier tokens: Season 5 starts 5 tiers in.
+    assert.equal(attributes.book_level, 6);
+    assert.ok(!heldIds(profile, "ChallengeBundleSchedule").some((id) => id.startsWith("season4")), "no Season 4 schedule");
+    assert.ok(!heldIds(profile, "ChallengeBundle").some((id) => id.includes("_s4_")), "no Season 4 bundle");
+    assert.ok(!profile.items[before.questId]);
+    assert.ok(Object.keys(profile.coreSeasonItems[4]).includes(before.questId), "Season 4's items wait");
+    assert.ok(held(profile, "Quest").some(([, item]) => idOf(item) === daily), "the daily stays");
+    for (const id of cosmetics) assert.ok(profile.items[id], `${id} stays in the locker`);
+    const past = attributes.past_seasons.find((entry) => entry.seasonNumber === 4);
+    assert.deepEqual([past.seasonLevel, past.bookLevel, past.purchasedVIP], [before.stats.level, before.stats.book_level, true]);
+    assert.equal(attributes.accountLevel, attributes.level + attributes.past_seasons.reduce((sum, entry) => sum + entry.seasonLevel, 0));
+    // Every player's free weekly challenges (SeasonGrantsToEveryone): week 1's first three without the pass.
+    assert.deepEqual(heldIds(profile, "ChallengeBundleSchedule"), ["season5_free_schedule"]);
+    assert.deepEqual(bundleQuests(profile, "questbundle_s5_week_001"), ["quest_br_damage_smg", "quest_br_interact_supplyllamas", "quest_br_eliminate_thrownweapon"]);
+    // The pass gives the other four of each week held, the Road Trip and Drift's challenges.
+    buyBattlePass(session, seasonRewardFunctions());
+    assert.deepEqual(heldIds(profile, "ChallengeBundleSchedule"), ["season5_free_schedule", "season5_paid_schedule", "season5_progressivea_schedule"]);
+    assert.equal(bundleQuests(profile, "questbundle_s5_week_001").length, 7);
+    assert.ok(bundleQuests(profile, "questbundle_s5_week_001").includes("quest_br_eliminate_location_retailrow"));
+    assert.equal(bundleQuests(profile, "questbundle_s5_cumulative").length, 7);
+    assert.ok(Object.values(profile.items).some((item) => item.templateId.toLowerCase() === "athenacharacter:cid_161_athena_commando_m_drift"), "Drift");
+    assert.equal(seasonNeedsSwitch(profile), false);
+  });
+
+  // Back on 4.5: Season 4's challenges come back with their progress, Season 5's go aside; 5.0 swaps them again.
+  login(v45, (session, profile) => {
+    assert.equal(profile.stats.attributes.season_num, 4);
+    assert.deepEqual(heldIds(profile, "ChallengeBundleSchedule"), s4.schedules);
+    assert.equal(profile.items[before.questId].attributes.quest_state, before.state);
+    assert.ok(!heldIds(profile, "ChallengeBundleSchedule").some((id) => id.startsWith("season5")), "no Season 5 schedule");
+    assert.ok(!heldIds(profile, "ChallengeBundle").some((id) => id.includes("_s5_")), "no Season 5 bundle");
+    assert.equal(profile.stats.attributes.book_purchased, true, "Season 4's pass");
+    assert.ok(Object.keys(profile.coreSeasonItems[5]).length > 0);
+  });
+  // CL-4204761 plays on CL-4214610's data: the same Season 5.
+  login(v500, (session, profile) => {
+    assert.equal(profile.stats.attributes.season_num, 5);
+    assert.equal(bundleQuests(profile, "questbundle_s5_week_001").length, 7);
+    assert.equal(profile.stats.attributes.book_purchased, true, "Season 5's pass is still bought");
+    assert.ok(!profile.items[before.questId]);
+  });
+}));

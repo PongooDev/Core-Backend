@@ -44,7 +44,7 @@ test("the list: each confirmed challenge has its issue and builds", () => {
   assert.deepEqual(brokenChallenges.map((entry) => entry.quest), [
     "quest_br_watch_replay", "quest_br_visit_scavengerhunt_stormcircles",
     "quest_br_eliminate_weapon_minigunlmg", "quest_br_eliminate_weapon_minigun", "quest_br_damage_minigun",
-    "quest_br_score_goals"
+    "quest_br_score_goals", "quest_br_destroy_specifictargets"
   ]);
   for (const entry of brokenChallenges) {
     assert.match(entry.url, /^https:\/\/github\.com\/PongooDev\/.+\/issues\/\d+$/);
@@ -55,6 +55,8 @@ test("the list: each confirmed challenge has its issue and builds", () => {
   for (const entry of brokenChallenges.slice(2, 5)) { assert.deepEqual(entry.builds, [v42]); assert.equal(entry.issue, "CoreV2 #318"); }
   // Core-Backend #287: "Score a goal on different pitches" wants 5 of its one placeholder objective on all three 4.x builds.
   assert.deepEqual(brokenChallenges[5].builds, [v40, v41, v42]);
+  // 5.0's week 3 Quest_BR_Destroy_SpecificTargets: "TBD", on the borrowed crab building visit, on both 5.0 builds.
+  assert.deepEqual(brokenChallenges[6].builds, ["4204761", "4214610"]);
 });
 
 test("Score a goal on different pitches (Core-Backend #287): one placeholder objective, 5 needed, completed on 4.0-4.2 with the option on", () => {

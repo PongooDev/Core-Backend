@@ -51,6 +51,12 @@ import { currentEventsConfig, seasonalEventsOn } from "./events.js";
 // 4.5 (CL-4166199, whose data CL-4159770 plays on) takes none either: its AthenaGameData differs from 4.4's only in rows
 // its paks set (Score Royale's scoring rows, the circles' Default.SafeZone.*.ForceDistanceMin/Max and Default.Oddities.
 // Intensity at 0, the rifts' July oddities, left off). Its rocket launch is the calendar's (events/rocketlaunch.js).
+// 5.0 (CL-4214610, whose data CL-4204761 plays on) takes none either: its AthenaGameData differs from 4.5's only in Update
+// v5.00's own rows, already in its paks: the moving storm ("The center of Storm circles 7, 8, and 9 can now shift":
+// Default.SafeZone.06.ForceDistanceMin/Max 7,500 and 9,500), the first circle's damage ("The first Storm circle will now
+// consistently do 1 damage": Default.SafeZone.Damage's first level 0.01, was 0.006), the All Terrain Kart's spawn rows
+// (Default.GolfCart.Min/MaxSpawnPercent 50 and 60), the rifts' (Default.Rift.ActiveDuration, Hangtime, TeleportHeight...) and
+// a wider StormCircleCenter quest volume; the skybox, TV, Easter and St. Patrick's rows are still 0.
 export const meteorStrikeBuild = 4019403;
 export const meteorStrikePhases = ["none", "broadcast", "meteors", "impact"];
 export const defaultMeteorStrikePhase = "meteors";

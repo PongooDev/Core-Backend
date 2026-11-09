@@ -240,6 +240,17 @@ const build442 = 4132537;
 // Soaring 50s (15 August 2018) and Blitz have no 4.5 playlist, so 4.5 offers neither.
 const build450 = 4159770;
 const build45 = 4166199;
+// 5.0 (CL-4204761, "5.0.0", 12 July 2018, and CL-4214610, "5.0": Core has CL-4214610's paks, whose data the other plays on),
+// Season 5: Epic emptied Athena/Playlists again, which holds only the default Solo, Duo and Squad, Playlist_Playground (35)
+// and Playlist_50v50 (50). Its 50v50 is a new revision: "50 V 50" (no longer "v3"), "Two teams of fifty players fight to the
+// finish! This mode has extra loot...", SafeZoneStartUp StartsWithAirCraft, the bus path's midpoint 52,500 out, and
+// bRewardForRevivingTeammates (Update v5.00: "You now earn XP for reviving teammates in 50v50 and Teams of 20 LTMs"), so it
+// is an LTM of its own (fiftyFiftySeason5). Update v5.00 names no new mode, so 5.0's lobby opens on Solo; Playground went
+// with Season 4 ("Playground mode is back on Wednesday, July 25", Update v5.10, with a revision of its own), so on the
+// replay neither runs by date on 5.0: both are there by their switches (🟡 nothing found dates a 50v50 between 12 and 24
+// July). The Final Fight, Fly Explosives and Snipers playlists are gone, so 5.0 offers none of them.
+const build500 = 4204761;
+const build50 = 4214610;
 // Core-Backend #257 asked for 3.5.1's to 4.0's Solid Gold v2 (Squads, Solo), Sniper Shootout v2 (Solo, Duos, Squads), High
 // Explosives v2 (Squads, Solo), Blitz! (Squads, Solo, Duos), Teams of 20 and 50v50 v2. Each is a playlist asset of 3.5.1's
 // and 4.0's Athena/Playlists (and 3.6's, which sits between them, as its note above has it; its paks didn't mount in
@@ -453,7 +464,7 @@ export const ltms = [
     teams: "5 Teams × 20", description: "Five teams of twenty again (4.4's: its playlist comes with 4.4's data)." },
   // Update v4.50's Playground (4.5's new mode, on there whatever its switch): 27 June, pulled the next day for its servers
   // and back from 2 July (the Fortnite Wiki's Playground page) to the season's end.
-  { id: "playground", name: "Playground", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build42, build45], seasons: [4], newIn: [build450, build45],
+  { id: "playground", name: "Playground", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build42, build50], seasons: [4, 5], newIn: [build450, build45],
     original: [{ builds: [build450, build45], start: "2018-06-27", end: "2018-06-28" }, { builds: [build450, build45], start: "2018-07-02", end: "2018-07-12" }],
     teams: "1 Team × 4", description: "An hour on the island with up to 3 friends: respawns unless the storm kills you, 10x resources, every chest (Playlist_Playground, 4.5's)." },
   // Update v4.40's 50v50 v3 (PongooDev/CoreV2#328): 4.4's Playlist_50v50 (PlaylistId 50: two teams of 50 in squads of 4,
@@ -490,7 +501,10 @@ export const ltms = [
   // Update v4.50's Final Fight Teams of 12: 4.5's Playlist_Final_12 (103), Final Fight's table and circles
   // (events/finalfight.js). By its switch: nothing found dates it (🟡).
   { id: "finalFightTeams12", name: "Final Fight: Teams of 12", playlistId: 103, playlistName: "Playlist_Final_12", eventFlag: null, builds: [build450, build45], seasons: [4],
-    teams: "8 Teams × 12", description: "The storm stops after its third circle; when the countdown ends, the team with the most players left wins (Playlist_Final_12)." }
+    teams: "8 Teams × 12", description: "The storm stops after its third circle; when the countdown ends, the team with the most players left wins (Playlist_Final_12)." },
+  // 5.0's Playlist_50v50 (above): by its switch.
+  { id: "fiftyFiftySeason5", name: "50v50 (Season 5)", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build500, build50], seasons: [5],
+    teams: "2 Teams × 50", description: "Two teams of fifty, a bus each, extra loot; reviving a teammate earns XP (Playlist_50v50, 5.0's)." }
 ];
 // A build range's bounds are changelists or versions ("4.2", "4.4.x"): a version holds only once Core knows the build's.
 const versionParts = (version) => String(version).split(".").map((part) => (part === "x" ? Infinity : Number(part)));
@@ -531,7 +545,7 @@ export function eventTagOfPlaylist(playlistId, build = currentBuild()) {
   return ltm && inRange(ltm.builds, build) ? ltm.tag351 ?? ltm.playlistId : undefined;
 }
 
-const seasonOf = (build) => (Number(build) >= build40 ? 4 : Number(build) >= build30 ? 3 : Number(build) >= build111 ? 2 : 1);
+const seasonOf = (build) => (Number(build) >= build500 ? 5 : Number(build) >= build40 ? 4 : Number(build) >= build30 ? 3 : Number(build) >= build111 ? 2 : 1);
 const day = (date) => Date.parse(`${date}T00:00:00Z`);
 // An LTM's original windows ([] for none): {builds, start, end, season}, start and end in ms of Epic's calendar (UTC), end
 // the moment after it. A window's start or end is a day ("YYYY-MM-DD") or a function of the settings (Close Encounters'
@@ -628,7 +642,7 @@ export function nextLtmChange(build, settingsValue, now = new Date()) {
 
 // The admin panel's list (its Battle Royale Game Modes, after solo, duos and squads): each LTM with its window and
 // builds, whether it is on by hand, and whether its window holds each season's replay now.
-const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build311]: "3.1.1", [build32]: "3.2", [build33]: "3.3", [build351]: "3.5.1", [build352]: "3.5.2", [build36]: "3.6", [build40]: "4.0", [build41]: "4.1", [build42]: "4.2", [build440]: "4.4.0", [build441]: "4.4.1", [build442]: "4.4.2", [build450]: "4.5.0", [build45]: "4.5" };
+const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build311]: "3.1.1", [build32]: "3.2", [build33]: "3.3", [build351]: "3.5.1", [build352]: "3.5.2", [build36]: "3.6", [build40]: "4.0", [build41]: "4.1", [build42]: "4.2", [build440]: "4.4.0", [build441]: "4.4.1", [build442]: "4.4.2", [build450]: "4.5.0", [build45]: "4.5", [build500]: "5.0.0", [build50]: "5.0" };
 const boundName = (bound) => (typeof bound === "number" ? versions[bound] : bound);
 const buildRange = ([first, last]) => (first === last ? boundName(first) : `${boundName(first)} to ${boundName(last)}`);
 // A window's day or moment for the admin panel: "YYYY-MM-DD" at midnight, else the ISO time; last, its last day.
@@ -652,7 +666,7 @@ function originalOf(ltm, settingsValue, moments) {
 }
 export function ltmSchedule(settingsValue, now = new Date()) {
   const modes = settingsValue?.matchmakingModes ?? {};
-  const moments = Object.fromEntries([1, 2, 3, 4].map((season) => [season, seasonMoment(now, null, season).getTime()]));
+  const moments = Object.fromEntries([1, 2, 3, 4, 5].map((season) => [season, seasonMoment(now, null, season).getTime()]));
   return {
     originalDates: settingsValue?.ltmOriginalDates === true,
     // Close Encounters' day: the whole of it or one hour (#258).

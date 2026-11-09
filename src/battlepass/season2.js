@@ -43,14 +43,24 @@ import { currentBattlePassConfig } from "./season1.js";
 // challenges (Season4_Challenge_Schedule: each week's, the Carbide progressive challenges and the Blockbuster
 // challenges), its free tier 2 the starter challenges and its tier 100 Omega's (Season4_ProgressiveB_Schedule). The
 // offers' texts are Core's again, in Season 3's form, from what AthenaSeason4's pass and its first 26 tiers give.
-// The admin panel's Battle Pass tab sets each season's pass and bundle prices (battlepass.season2, .season3, .season4).
+// Season 5's Battle Pass (5.0, CL-4214610) is AthenaSeason5's the same way: 100 tiers, the BRSeason5 storefront, its own
+// display assets (DA_BR_Season5_BattlePass, DA_BR_Season5_BattlePassWithLevels), its own tier offer
+// (BattlePassLevelOfferID 4B2E310BC1AE40B292A16D5AAD747E0A), at Epic's prices (Update v5.00: "100 levels, over 100 new
+// rewards. Available in-game right now for 950 V-Bucks"; the bundle 2,800 as Season 4's). Its tier 1 Battle Pass rewards
+// give Drift and Huntress, the Battle Pass's half of the weekly challenges and the Road Trip challenges
+// (Season5_Paid_Schedule) and Drift's progressive challenges (_ProgressiveA_), its tier 100 Ragnarok's (_ProgressiveB_);
+// the free half of the weeks is every player's (SeasonGrantsToEveryone, profiles/athena.js). The offers' texts are Core's
+// again, in Season 4's form, from what AthenaSeason5's pass and its first 26 tiers give.
+// The admin panel's Battle Pass tab sets each season's pass and bundle prices (battlepass.season2, .season3, .season4,
+// .season5).
 export const tierOfferId = "F86AC2ED4B3EA4B2D65EF1B2629572A0";
 export const tierPrice = 150;
 export const bundleTiers = 25;
 
 export const defaultSeasonTwo = { battlePassPrice: 950, bundlePrice: 2800 };
-// Each season's default prices: Season 3's and Season 4's are Season 2's.
-export const defaultSeasonPrices = { 2: defaultSeasonTwo, 3: { battlePassPrice: 950, bundlePrice: 2800 }, 4: { battlePassPrice: 950, bundlePrice: 2800 } };
+// Each season's default prices: Season 3's, Season 4's and Season 5's are Season 2's.
+export const defaultSeasonPrices = { 2: defaultSeasonTwo, 3: { battlePassPrice: 950, bundlePrice: 2800 }, 4: { battlePassPrice: 950, bundlePrice: 2800 },
+  5: { battlePassPrice: 950, bundlePrice: 2800 } };
 
 export function sanitizeSeasonPrices(input, current, defaults = defaultSeasonTwo) {
   const result = { ...defaults, ...(current ?? {}) };
@@ -117,13 +127,31 @@ const season4BundleDescription = [
   "  • 300 V-Bucks", "  • 70% Bonus Season Match XP", "  • 20% Bonus Season Friend Match XP", "  • Exclusive Weekly Challenges", "  • and more!", "",
   "Play to level up your Battle Pass the rest of the way, up to Omega at tier 100. Want it all faster? You can use V-Bucks to buy levels any time!"
 ].join("\r\n");
+const season5PassDescription = [
+  "Season 5: Jul 12 - Sep 26", "",
+  "Instantly get these items:",
+  "  • Drift Outfit", "  • Huntress Outfit", "  • 50% Bonus Season Match XP", "  • 10% Bonus Season Friend Match XP",
+  "  • Exclusive Weekly Challenges", "",
+  "Play to level up your Battle Pass, unlocking up to 100 tiers of rewards (typically takes 75 to 150 hours of play). Want it all faster? You can use V-Bucks to buy levels any time!",
+  "  • Ragnarok plus 4 other outfits", "  • Progressive Drift and Ragnarok challenges", "  • 1 Harvesting Tool", "  • 3 Gliders", "  • 1 Back Bling",
+  "  • 4 Contrails", "  • 10 Loading Screens", "  • 1300 V-Bucks", "  • 120% Bonus Season Match XP", "  • 40% Bonus Season Friend Match XP",
+  "  • Toys, Sprays, Emotes and Emoticons", "  • and more!"
+].join("\r\n");
+const season5BundleDescription = [
+  "Season 5: Jul 12 - Sep 26", "",
+  `Instantly get the Battle Pass and ${bundleTiers} tiers.`,
+  "  • Drift Outfit", "  • Huntress Outfit", "  • Redline Outfit", "  • Balloon Axe Harvesting Tool", "  • Cruiser Glider",
+  "  • 400 V-Bucks", "  • 70% Bonus Season Match XP", "  • 20% Bonus Season Friend Match XP", "  • Exclusive Weekly Challenges", "  • and more!", "",
+  "Play to level up your Battle Pass the rest of the way, up to Ragnarok at tier 100. Want it all faster? You can use V-Bucks to buy levels any time!"
+].join("\r\n");
 const seasonTexts = {
   2: { passOfferId: battlePassOfferId, pass: passDescription, bundle: bundleDescription, bundleAsset: "BattlePass" },
   3: { passOfferId: "core_br_season3_battlepass", pass: season3PassDescription, bundle: season3BundleDescription, bundleAsset: "BattlePassWithLevels" },
-  4: { passOfferId: "core_br_season4_battlepass", pass: season4PassDescription, bundle: season4BundleDescription, bundleAsset: "BattlePassWithLevels" }
+  4: { passOfferId: "core_br_season4_battlepass", pass: season4PassDescription, bundle: season4BundleDescription, bundleAsset: "BattlePassWithLevels" },
+  5: { passOfferId: "core_br_season5_battlepass", pass: season5PassDescription, bundle: season5BundleDescription, bundleAsset: "BattlePassWithLevels" }
 };
 
-// The season's tier offer id: AthenaSeason3's (and AthenaSeason4's) BattlePassLevelOfferID from Season 3, else the modal's.
+// The season's tier offer id: AthenaSeason3's (and AthenaSeason4's and 5's) BattlePassLevelOfferID from Season 3, else the modal's.
 const seasonTierOfferId = (season) => season.battlePassLevelOfferId || tierOfferId;
 
 const seasonOffers = () => {

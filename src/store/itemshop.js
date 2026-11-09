@@ -95,7 +95,7 @@ const readHistory = (file) => {
   return { days, firstDay: Date.parse(`${days[0].date}T00:00:00Z`) };
 };
 const seasonHistories = { 1: readHistory("itemshop.json"), 2: readHistory("itemshop-season2.json"),
-  3: readHistory("itemshop-season3.json"), 4: readHistory("itemshop-season4.json") };
+  3: readHistory("itemshop-season3.json"), 4: readHistory("itemshop-season4.json"), 5: readHistory("itemshop-season5.json") };
 export const seasonOfBuild = () => athenaSeason()?.seasonNumber ?? 1;
 const historyOf = (season) => seasonHistories[season] ?? seasonHistories[1];
 // The first day of a season's history (ms, UTC): Season 3's is 22 February 2018, Epic's first day of the season.
@@ -111,8 +111,8 @@ const rotationMsOf = (config) => Math.max(0, Math.min(23, Number(config?.rotatio
 // choice: its replay and countdown have run that way since the shop was added, every running server is somewhere in its
 // cycle, and re-anchoring it would jump their shops and countdowns), unless an admin sets its start too. With no
 // recorder (no settings store), Season 2 also keeps its history's first day. Season 3 starts the same way, on the day
-// 3.0 is first served, and Season 4 on the day 4.0 is.
-const anchoredSeasons = [2, 3, 4];
+// 3.0 is first served, Season 4 on the day 4.0 is, and Season 5 on the day 5.0 is.
+const anchoredSeasons = [2, 3, 4, 5];
 let seasonStartRecorder = null;
 let recordSeasonStarts = true;
 export function configureSeasonStarts(recorder) {
