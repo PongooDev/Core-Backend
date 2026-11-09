@@ -24,6 +24,7 @@ import { eventStoreInstanceNow, eventStoreOffers, hasEventStore } from "../src/s
 import { itemShopOffers } from "../src/store/itemshop.js";
 import { hasRefunds } from "../src/store/refunds.js";
 import { worldInfo } from "../src/world/theaters.js";
+import { dedicatedServerToken, send, startBackend, userLogin } from "./helpers.js";
 
 // Fortnite 4.1 (++Fortnite+Release-4.1-CL-4053532, UE 4.20, 8 May 2018): its own data (gamedata/4053532), Season 4 as
 // 4.0's, the Infinity Gauntlet LTM, the HackSAW in the Weekly Store and Blockbuster Part 1 running on.
@@ -141,4 +142,37 @@ test("4.1 keeps 4.0's gates: common profiles, returns, no content update or curv
   assert.equal(meteorStrikePhase(v41), null);
   assert.deepEqual(meteorStrikeRows(v41), []);
   assert.equal(inBuild(v41, () => lootHotfixSection(now, null, [], meteorStrikeRows(v41), v41)), "");
+});
+
+// Core-Backend #306: a 4.1 win in solo, duo or squad, as CoreV2 reports it (recordresults, its User-Agent naming no build),
+// gives The Umbrella and Season 4's Wet Paint (Umbrella_Season_04, AthenaSeason4's SeasonFirstWinRewards); the Infinity
+// Gauntlet, 4.1's LTM that the lobby opens on, gives none, as no limited-time playlist does (#84).
+function as41(agent, port, method, urlPath, token, body) {
+  const text = body === undefined ? undefined : JSON.stringify(body);
+  const headers = { "User-Agent": agent === v41 ? `game=Fortnite, engine=UE4, build=++Fortnite+Release-4.1-CL-${v41}` : agent };
+  if (token) headers.Authorization = `bearer ${token}`;
+  if (text !== undefined) Object.assign(headers, { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(text) });
+  return send({ host: "127.0.0.1", port, method, path: urlPath, headers }, text);
+}
+test("a 4.1 win in solo, duo or squad gives Season 4's victory umbrella, the Infinity Gauntlet's none", async () => {
+  const backend = await startBackend();
+  try {
+    const umbrellasOf = async (player) => {
+      const { body } = await as41(v41, backend.port, "POST", `/fortnite/api/game/v2/profile/${player.accountId}/client/QueryProfile?profileId=athena&rvn=-1`, player.token, {});
+      const { profile } = [body, ...(body.multiUpdate ?? [])].find((update) => update.profileId === "athena").profileChanges[0];
+      return Object.values(profile.items).map(({ templateId }) => templateId).filter((templateId) => /umbrella/i.test(templateId)).sort();
+    };
+    const dedicated = await dedicatedServerToken(backend.port);
+    const win = (player, playlistId) => as41("Core V2", backend.port, "POST", "/fortnite/api/game/v2/battleroyale/recordresults", dedicated,
+      { playlistId, matchId: `win${playlistId}`, countWins: true, results: [{ accountId: player.accountId, place: 1, kills: 2, botKills: 0, secondsAlive: 900 }] });
+    for (const [name, playlistId, expected] of [["Win41Solo", 2, ["AthenaGlider:solo_umbrella", "AthenaGlider:umbrella_season_04"]],
+      ["Win41Squad", 9, ["AthenaGlider:solo_umbrella", "AthenaGlider:umbrella_season_04"]], ["Win41Gauntlet", 33, []]]) {
+      const player = await userLogin(backend.port, name);
+      assert.deepEqual(await umbrellasOf(player), []);
+      assert.equal((await win(player, playlistId)).status, 200);
+      assert.deepEqual((await umbrellasOf(player)).filter((templateId) => templateId !== "AthenaGlider:founderumbrella"), expected, name);
+    }
+  } finally {
+    backend.close();
+  }
 });
