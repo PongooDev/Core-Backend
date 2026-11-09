@@ -1,10 +1,11 @@
-import { bookProfiles, claimBookLevel, claimPageRewards, slotItem } from "../../../collectionbook/book.js";
+import { bookProfiles, claimBookLevel, claimPageRewards, researchItem, slotItem, unslotItem } from "../../../collectionbook/book.js";
 import { McpError } from "../../../errors.js";
 import { convertItem, upgradeItem } from "../../../profiles/upgrades.js";
 import { conversionResult } from "./Upgrades.js";
 
-// SlotItemInCollectionBook and ClaimCollectionBookRewards are profile0 commands (UFortMcpProfileAccount); the rest
-// are sent to a book profile (UFortMcpProfileCollectionBook).
+// SlotItemInCollectionBook and ClaimCollectionBookRewards are profile0 commands (UFortMcpProfileAccount), 4.5's
+// UnslotItemFromCollectionBook and ResearchItemFromCollectionBook campaign's (UFortMcpProfileCampaign, Core's view of
+// profile0); the rest are sent to a book profile (UFortMcpProfileCollectionBook).
 function bookProfile(profileId) {
   if (!bookProfiles().includes(profileId)) throw new McpError("errors.com.epicgames.modules.profiles.invalid_command", `${profileId} isn't a collection book`);
   return profileId;
@@ -30,4 +31,12 @@ export function upgradeSlottedItem({ req, session, profileId }) {
 export function convertSlottedItem({ req, session, profileId, notifications }) {
   const evolved = convertItem(session, req.body?.targetItemId, req.body?.conversionIndex ?? 0, bookProfile(profileId));
   notifications.push(conversionResult(evolved));
+}
+
+export function unslotItemFromCollectionBook({ req, session, notifications }) {
+  unslotItem(session, req.body?.itemId, req.body?.templateId, notifications);
+}
+
+export function researchItemFromCollectionBook({ req, session, notifications }) {
+  researchItem(session, req.body?.templateId, notifications);
 }

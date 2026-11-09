@@ -58,7 +58,9 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   (`Balance/GameplayTags`; 1.7.2's `Theater.MainProgression`).
 - `collectionbook.json`: the collection book's pages (book profile, sections, rewards), sections (slots, rewards),
   slots (allowed item templates, survivor personalities, XP weight row), the slot XP weights, the rarity factor curve
-  and the book levels (total XP, rewards).
+  and the book levels (total XP, rewards). From 4.5 (CL 4159770) also each slot's `purchase` (its PurchaseCosts row),
+  `recipes` (those CollectionBookRecipes rows: costs, catalysts; what researching or recruiting the slot's item costs)
+  and `unslotCost` (CollectionBookData's UnslotCost, 20 V-Bucks); earlier builds have none of them.
 - `inventory.json`: what each skill tree node and account buff adds to the item limits (FortHomebaseSet
   `InventorySizeBonus` for the account vault, `WorldInventorySizeBonus` for the backpack, `StorageInventorySizeBonus`).
 - `athena.json`: Battle Royale's, from 1.8 (CL 3724489; empty for earlier builds): its cosmetics (`Athena/Items/Cosmetics`

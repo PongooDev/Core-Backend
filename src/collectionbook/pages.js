@@ -12,7 +12,9 @@ import { perBuild } from "../gamedata/read.js";
 // A slot's item is the page profile's item whose template is one of the slot's AllowedItems and, for survivors, whose
 // personality is one of the slot's AllowedWorkerPersonalities (sub_472B20).
 export const bookData = perBuild((read) => {
-  const { pages = {}, sections = {}, slots = {}, weights = {}, rarityFactor = [], levels = [] } = read("collectionbook", {});
+  // From 4.5 (CL 4159770): recipes, what researching or recruiting a slot's item costs (a slot's purchase names its row),
+  // and unslotCost, what taking an item back out costs. Earlier builds have neither.
+  const { pages = {}, sections = {}, slots = {}, weights = {}, rarityFactor = [], levels = [], recipes = {}, unslotCost = [] } = read("collectionbook", {});
   const slotsOf = new Map();
   for (const [slotId, slot] of Object.entries(slots)) {
     for (const templateId of slot.items) {
@@ -32,7 +34,7 @@ export const bookData = perBuild((read) => {
     }
   }
   return {
-    pages, sections, slots, weights, rarityFactor, levels, slotsOf, pageOfSlot, sectionOfSlot,
+    pages, sections, slots, weights, rarityFactor, levels, recipes, unslotCost, slotsOf, pageOfSlot, sectionOfSlot,
     bookProfiles: [...new Set(Object.values(pages).map((page) => page.profile))],
     pageIds: new Map(Object.keys(pages).map((id) => [id.toLowerCase(), id]))
   };

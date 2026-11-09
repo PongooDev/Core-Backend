@@ -958,15 +958,40 @@ foreach (var (id, row) in LoadRows(provider, book["SectionData"]))
         ["slots"] = Strings(row!["SlotRowNames"]),
         ["rewards"] = BookRewards(row["Rewards"], assetTypes)
     };
+// From 4.5 (CL 4159770) a slot's PurchaseCosts (FDataTableRowHandle into CollectionBookRecipes) is what researching or
+// recruiting its item from the book costs (FFortCollectionBookDirectPurchaseData {PurchaseCosts, PurchaseCatalysts}):
+// the slot carries the row's name as `purchase` and `recipes` holds the rows. The book's UnslotCost (20 V-Bucks) is
+// `unslotCost`. Builds before 4.5 have neither, so their files are as they were.
 var bookSlots = new SortedDictionary<string, object>(StringComparer.Ordinal);
+var bookRecipes = new SortedDictionary<string, object>(StringComparer.Ordinal);
+var recipeTables = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
 foreach (var (id, row) in LoadRows(provider, book["SlotData"]))
-    bookSlots[id] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+{
+    var slot = new SortedDictionary<string, object>(StringComparer.Ordinal)
     {
         ["weight"] = row!["SlotXpWeightName"]?.GetValue<string>() ?? "Default",
         ["items"] = (row["AllowedItems"]?.AsArray() ?? []).Select(path => assetTypes.TemplateId(AssetPath(path))).Where(t => t is not null and not "None").ToList(),
         ["personalities"] = (row["AllowedWorkerPersonalities"]?.AsArray() ?? []).Select(tag => tag?["TagName"]?.GetValue<string>())
             .Where(tag => !string.IsNullOrEmpty(tag) && tag != "None").Distinct().ToList()
     };
+    if (row["PurchaseCosts"] is JsonObject handle && handle["DataTable"] is JsonObject table
+        && handle["RowName"]?.GetValue<string>() is { Length: > 0 } recipe && recipe != "None")
+    {
+        var file = PackageFile(table);
+        if (!recipeTables.TryGetValue(file, out var rows)) recipeTables[file] = rows = LoadRows(provider, table);
+        if (rows[recipe] is JsonObject recipeRow)
+        {
+            slot["purchase"] = recipe;
+            bookRecipes[recipe] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+            {
+                ["costs"] = Items(recipeRow["PurchaseCosts"], assetTypes),
+                ["catalysts"] = Strings(recipeRow["PurchaseCatalysts"])
+            };
+        }
+    }
+    bookSlots[id] = slot;
+}
+var unslotCost = Items(book["UnslotCost"], assetTypes);
 var bookWeights = new SortedDictionary<string, object>(StringComparer.Ordinal);
 foreach (var (id, row) in LoadRows(provider, book["XPWeightData"]))
     bookWeights[id] = new SortedDictionary<string, object>(StringComparer.Ordinal)
@@ -1076,11 +1101,14 @@ File.WriteAllText(Path.Combine(output, "expeditions.json"), JsonSerializer.Seria
 {
     ["expeditions"] = expeditions, ["recipes"] = expeditionRecipes, ["slots"] = expeditionSlots, ["criteria"] = expeditionCriteria
 }, options) + "\n");
-File.WriteAllText(Path.Combine(output, "collectionbook.json"), JsonSerializer.Serialize(new SortedDictionary<string, object>(StringComparer.Ordinal)
+var collectionBook = new SortedDictionary<string, object>(StringComparer.Ordinal)
 {
     ["pages"] = bookPages, ["sections"] = bookSections, ["slots"] = bookSlots, ["weights"] = bookWeights,
     ["rarityFactor"] = rarityFactor, ["levels"] = bookLevels
-}, options) + "\n");
+};
+if (bookRecipes.Count > 0) collectionBook["recipes"] = bookRecipes;
+if (unslotCost.Count > 0) collectionBook["unslotCost"] = unslotCost;
+File.WriteAllText(Path.Combine(output, "collectionbook.json"), JsonSerializer.Serialize(collectionBook, options) + "\n");
 File.WriteAllText(Path.Combine(output, "quests.json"), JsonSerializer.Serialize(quests, options) + "\n");
 File.WriteAllText(Path.Combine(output, "items.json"), JsonSerializer.Serialize(items, options) + "\n");
 File.WriteAllText(Path.Combine(output, "dailyrewards.json"), JsonSerializer.Serialize(dailyRewards, options) + "\n");

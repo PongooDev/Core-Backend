@@ -3,7 +3,7 @@ import { bundleTiers } from "../../../battlepass/season2.js";
 import { grantCosmetic, ownsCosmetic, seasonRewardFunctions } from "../../../profiles/athena.js";
 import { battlePassGiftBox, giveGiftBox } from "../../../profiles/giftboxes.js";
 import { buyBattlePass, buyTiers, recordBattlePassSpend, tiersLeft } from "../../../profiles/seasons.js";
-import { lootEntry } from "../../../profiles/items.js";
+import { lootEntry, spendMtx } from "../../../profiles/items.js";
 import { grant, itemEvent } from "../../../profiles/progress.js";
 import { findOffer } from "../../../store/catalog.js";
 import { hasRefunds, recordPurchase } from "../../../store/refunds.js";
@@ -11,28 +11,6 @@ import { eventPurchases, recordEventPurchase } from "../../../store/eventstore.j
 import { blockbusterTickets, upgradeLlamaBlockbusterTickets } from "../../../events/blockbuster2018.js";
 import { stormTickets, upgradeLlamaTickets } from "../../../events/mutantstorms.js";
 import { firecrackerTickets, upgradeLlamaFirecrackers } from "../../../events/spring2018.js";
-
-// V-Bucks are spread over these stacks; the cheapest kinds go first.
-const mtxCurrencies = ["Currency:mtxcomplimentary", "Currency:mtxgiveaway", "Currency:mtxpurchasebonus", "Currency:mtxpurchased"];
-
-// Returns what it took of each kind: {templateId: amount}.
-function spendMtx(tracker, amount) {
-  const stacks = mtxCurrencies.flatMap((templateId) => Object.entries(tracker.profile.items)
-    .filter(([, item]) => item.templateId.toLowerCase() === templateId.toLowerCase()));
-  const held = stacks.reduce((sum, [, item]) => sum + item.quantity, 0);
-  if (held < amount) throw new McpError("errors.com.epicgames.currency.mtx.insufficient", `This costs ${amount} V-Bucks and you have ${held}`);
-  let left = amount;
-  const spent = {};
-  for (const [itemId, item] of stacks) {
-    if (!left) break;
-    const used = Math.min(left, item.quantity);
-    left -= used;
-    spent[item.templateId] = (spent[item.templateId] ?? 0) + used;
-    if (item.quantity > used) tracker.setQuantity(itemId, item.quantity - used);
-    else tracker.removeItem(itemId);
-  }
-  return spent;
-}
 
 // A GameItem price: the account item it names, from its stacks.
 function spendItem(tracker, templateId, amount) {

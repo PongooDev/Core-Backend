@@ -15,7 +15,7 @@ import { destroyWorldItems } from "./DestroyWorldItems.js";
 import { disassembleWorldItems } from "./DisassembleWorldItems.js";
 import { equipBattleRoyaleCustomization } from "./EquipBattleRoyaleCustomization.js";
 import { clientQuestLoginFromClient } from "./ClientQuestLogin.js";
-import { claimCollectionBookPageRewards, claimCollectionBookRewards, convertSlottedItem, slotItemInCollectionBook, upgradeSlottedItem } from "./CollectionBook.js";
+import { claimCollectionBookPageRewards, claimCollectionBookRewards, convertSlottedItem, researchItemFromCollectionBook, slotItemInCollectionBook, unslotItemFromCollectionBook, upgradeSlottedItem } from "./CollectionBook.js";
 import { fortRerollDailyQuest } from "./FortRerollDailyQuest.js";
 import { getMcpTimeForLogin } from "./GetMcpTimeForLogin.js";
 import { incrementNamedCounterStat } from "./IncrementNamedCounterStat.js";
@@ -91,6 +91,7 @@ export const clientCommands = {
   RecycleItemBatch: recycleItemBatchCommand,
   RefreshExpeditions: refreshExpeditions,
   RefundMtxPurchase: refundMtxPurchase,
+  ResearchItemFromCollectionBook: researchItemFromCollectionBook,
   RespecAlteration: respecAlteration,
   RemoveGiftBox: removeGiftBox,
   RequestEventFlags: requestEventFlags,
@@ -115,6 +116,7 @@ export const clientCommands = {
   StorageTransfer: storageTransfer,
   TransmogItem: transmogItem,
   UnassignAllSquads: unassignAllSquads,
+  UnslotItemFromCollectionBook: unslotItemFromCollectionBook,
   UpdateQuestClientObjectives: updateQuestClientObjectives,
   UpgradeAlteration: upgradeAlteration,
   UpgradeItem: upgradeItemCommand,

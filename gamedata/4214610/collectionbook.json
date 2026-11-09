@@ -6963,6 +6963,183 @@
       }
     }
   },
+  "recipes": {
+    "Creation.CollectionBook.Hero.R": {
+      "catalysts": [],
+      "costs": [
+        {
+          "quantity": 80,
+          "templateId": "AccountResource:reagent_people"
+        },
+        {
+          "quantity": 100,
+          "templateId": "AccountResource:reagent_evolverarity_r"
+        }
+      ]
+    },
+    "Creation.CollectionBook.Hero.SR": {
+      "catalysts": [],
+      "costs": [
+        {
+          "quantity": 120,
+          "templateId": "AccountResource:reagent_people"
+        },
+        {
+          "quantity": 100,
+          "templateId": "AccountResource:reagent_evolverarity_sr"
+        }
+      ]
+    },
+    "Creation.CollectionBook.Hero.UC": {
+      "catalysts": [],
+      "costs": [
+        {
+          "quantity": 60,
+          "templateId": "AccountResource:reagent_people"
+        }
+      ]
+    },
+    "Creation.CollectionBook.Hero.UR": {
+      "catalysts": [],
+      "costs": [
+        {
+          "quantity": 300,
+          "templateId": "AccountResource:reagent_people"
+        },
+        {
+          "quantity": 250,
+          "templateId": "AccountResource:reagent_evolverarity_sr"
+        }
+      ]
+    },
+    "Creation.CollectionBook.Hero.VR": {
+      "catalysts": [],
+      "costs": [
+        {
+          "quantity": 100,
+          "templateId": "AccountResource:reagent_people"
+        },
+        {
+          "quantity": 100,
+          "templateId": "AccountResource:reagent_evolverarity_vr"
+        }
+      ]
+    },
+    "Creation.CollectionBook.Trap.C": {
+      "catalysts": [],
+      "costs": [
+        {
+          "quantity": 25,
+          "templateId": "AccountResource:reagent_traps"
+        }
+      ]
+    },
+    "Creation.CollectionBook.Trap.R": {
+      "catalysts": [],
+      "costs": [
+        {
+          "quantity": 40,
+          "templateId": "AccountResource:reagent_traps"
+        },
+        {
+          "quantity": 100,
+          "templateId": "AccountResource:reagent_evolverarity_r"
+        }
+      ]
+    },
+    "Creation.CollectionBook.Trap.SR": {
+      "catalysts": [],
+      "costs": [
+        {
+          "quantity": 60,
+          "templateId": "AccountResource:reagent_traps"
+        },
+        {
+          "quantity": 100,
+          "templateId": "AccountResource:reagent_evolverarity_sr"
+        }
+      ]
+    },
+    "Creation.CollectionBook.Trap.UC": {
+      "catalysts": [],
+      "costs": [
+        {
+          "quantity": 30,
+          "templateId": "AccountResource:reagent_traps"
+        }
+      ]
+    },
+    "Creation.CollectionBook.Trap.VR": {
+      "catalysts": [],
+      "costs": [
+        {
+          "quantity": 50,
+          "templateId": "AccountResource:reagent_traps"
+        },
+        {
+          "quantity": 100,
+          "templateId": "AccountResource:reagent_evolverarity_vr"
+        }
+      ]
+    },
+    "Creation.CollectionBook.Weapon.C": {
+      "catalysts": [],
+      "costs": [
+        {
+          "quantity": 25,
+          "templateId": "AccountResource:reagent_weapons"
+        }
+      ]
+    },
+    "Creation.CollectionBook.Weapon.R": {
+      "catalysts": [],
+      "costs": [
+        {
+          "quantity": 40,
+          "templateId": "AccountResource:reagent_weapons"
+        },
+        {
+          "quantity": 100,
+          "templateId": "AccountResource:reagent_evolverarity_r"
+        }
+      ]
+    },
+    "Creation.CollectionBook.Weapon.SR": {
+      "catalysts": [],
+      "costs": [
+        {
+          "quantity": 60,
+          "templateId": "AccountResource:reagent_weapons"
+        },
+        {
+          "quantity": 100,
+          "templateId": "AccountResource:reagent_evolverarity_sr"
+        }
+      ]
+    },
+    "Creation.CollectionBook.Weapon.UC": {
+      "catalysts": [],
+      "costs": [
+        {
+          "quantity": 30,
+          "templateId": "AccountResource:reagent_weapons"
+        }
+      ]
+    },
+    "Creation.CollectionBook.Weapon.VR": {
+      "catalysts": [],
+      "costs": [
+        {
+          "quantity": 50,
+          "templateId": "AccountResource:reagent_weapons"
+        },
+        {
+          "quantity": 100,
+          "templateId": "AccountResource:reagent_evolverarity_vr"
+        }
+      ]
+    }
+  },
   "sections": {
     "Section_Heroes_ChineseNewYear_1": {
       "rewards": {
@@ -9341,6 +9518,18 @@
       "personalities": [],
       "weight": "Defender"
     },
+    "HID.Commando.007.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Commando.007.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Commando.007.UC.T01": {
+      "purchase": "Creation.CollectionBook.Hero.UC"
+    },
+    "HID.Commando.007.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
     "HID.Commando.007HW.SR.T01": {
       "items": [
         "Hero:hid_commando_007hw_sr_t01",
@@ -9362,6 +9551,15 @@
       ],
       "personalities": [],
       "weight": "Hero"
+    },
+    "HID.Commando.008.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Commando.008.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Commando.008.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
     },
     "HID.Commando.009.M.R.T01": {
       "items": [
@@ -9394,6 +9592,21 @@
       ],
       "personalities": [],
       "weight": "Hero"
+    },
+    "HID.Commando.009.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Commando.009.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Commando.009.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
+    "HID.Commando.010.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Commando.010.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
     },
     "HID.Commando.011.R.T01": {
       "items": [
@@ -9621,6 +9834,36 @@
       "personalities": [],
       "weight": "Hero"
     },
+    "HID.Commando.GCGrenade.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Commando.GCGrenade.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Commando.GCGrenade.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
+    "HID.Commando.GrenadeGun.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Commando.GrenadeGun.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Commando.GrenadeGun.UC.T01": {
+      "purchase": "Creation.CollectionBook.Hero.UC"
+    },
+    "HID.Commando.GrenadeGun.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
+    "HID.Commando.GrenadeMaster.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.UR"
+    },
+    "HID.Commando.GunHeadshot.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Commando.GunHeadshot.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
     "HID.Commando.GunHeadshotHW.VR.T01": {
       "items": [
         "Hero:hid_commando_gunheadshothw_vr_t01",
@@ -9631,6 +9874,39 @@
       ],
       "personalities": [],
       "weight": "Hero"
+    },
+    "HID.Commando.GunTough.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Commando.GunTough.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Commando.GunTough.UC.T01": {
+      "purchase": "Creation.CollectionBook.Hero.UC"
+    },
+    "HID.Commando.GunTough.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
+    "HID.Commando.ShockDamage.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Commando.ShockDamage.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Commando.ShockDamage.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
+    "HID.Constructor.007.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Constructor.007.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Constructor.007.UC.T01": {
+      "purchase": "Creation.CollectionBook.Hero.UC"
+    },
+    "HID.Constructor.007.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
     },
     "HID.Constructor.007HW.SR.T01": {
       "items": [
@@ -9653,6 +9929,30 @@
       ],
       "personalities": [],
       "weight": "Hero"
+    },
+    "HID.Constructor.008.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Constructor.008.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Constructor.008.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
+    "HID.Constructor.009.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Constructor.009.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Constructor.009.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
+    "HID.Constructor.010.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Constructor.010.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
     },
     "HID.Constructor.011.R.T01": {
       "items": [
@@ -9867,6 +10167,18 @@
       "personalities": [],
       "weight": "Hero"
     },
+    "HID.Constructor.BASEBig.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.UR"
+    },
+    "HID.Constructor.BaseHyper.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Constructor.BaseHyper.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Constructor.BaseHyper.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
     "HID.Constructor.BaseHyperHW.SR.T01": {
       "items": [
         "Hero:hid_constructor_basehyperhw_sr_t01",
@@ -9888,6 +10200,33 @@
       ],
       "personalities": [],
       "weight": "Hero"
+    },
+    "HID.Constructor.HammerPlasma.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Constructor.HammerPlasma.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
+    "HID.Constructor.HammerTank.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Constructor.HammerTank.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Constructor.HammerTank.UC.T01": {
+      "purchase": "Creation.CollectionBook.Hero.UC"
+    },
+    "HID.Constructor.HammerTank.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
+    "HID.Constructor.PlasmaDamage.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Constructor.PlasmaDamage.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Constructor.PlasmaDamage.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
     },
     "HID.Constructor.RushBASE.F.SR.T01": {
       "items": [
@@ -9911,6 +10250,48 @@
       "personalities": [],
       "weight": "Hero"
     },
+    "HID.Constructor.RushBASE.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Constructor.RushBASE.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Constructor.RushBASE.UC.T01": {
+      "purchase": "Creation.CollectionBook.Hero.UC"
+    },
+    "HID.Constructor.RushBASE.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
+    "HID.Ninja.007.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Ninja.007.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Ninja.007.UC.T01": {
+      "purchase": "Creation.CollectionBook.Hero.UC"
+    },
+    "HID.Ninja.007.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
+    "HID.Ninja.008.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Ninja.008.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Ninja.008.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
+    "HID.Ninja.009.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Ninja.009.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Ninja.009.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
     "HID.Ninja.010.F.SR.T01": {
       "items": [
         "Hero:hid_ninja_010_f_sr_t01",
@@ -9932,6 +10313,12 @@
       ],
       "personalities": [],
       "weight": "Hero"
+    },
+    "HID.Ninja.010.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Ninja.010.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
     },
     "HID.Ninja.011.R.T01": {
       "items": [
@@ -10155,6 +10542,15 @@
       "personalities": [],
       "weight": "Hero"
     },
+    "HID.Ninja.SlashBreath.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Ninja.SlashBreath.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Ninja.SlashBreath.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
     "HID.Ninja.SlashBreathHW.SR.T01": {
       "items": [
         "Hero:hid_ninja_slashbreathhw_sr_t01",
@@ -10176,6 +10572,45 @@
       ],
       "personalities": [],
       "weight": "Hero"
+    },
+    "HID.Ninja.SlashTail.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Ninja.SlashTail.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Ninja.SlashTail.UC.T01": {
+      "purchase": "Creation.CollectionBook.Hero.UC"
+    },
+    "HID.Ninja.SlashTail.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
+    "HID.Ninja.SmokeDimMak.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Ninja.SmokeDimMak.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Ninja.SmokeDimMak.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
+    "HID.Ninja.StarsAssassin.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Ninja.StarsAssassin.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Ninja.StarsAssassin.UC.T01": {
+      "purchase": "Creation.CollectionBook.Hero.UC"
+    },
+    "HID.Ninja.StarsAssassin.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
+    "HID.Ninja.StarsRain.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Ninja.StarsRain.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
     },
     "HID.Ninja.StarsRainHW.SR.T01": {
       "items": [
@@ -10199,6 +10634,39 @@
       "personalities": [],
       "weight": "Hero"
     },
+    "HID.Ninja.Swordmaster.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.UR"
+    },
+    "HID.Outlander.007.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Outlander.007.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Outlander.007.UC.T01": {
+      "purchase": "Creation.CollectionBook.Hero.UC"
+    },
+    "HID.Outlander.007.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
+    "HID.Outlander.008.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Outlander.008.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Outlander.008.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
+    "HID.Outlander.009.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Outlander.009.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Outlander.009.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
     "HID.Outlander.010.M.SR.T01": {
       "items": [
         "Hero:hid_outlander_010_m_sr_t01",
@@ -10220,6 +10688,12 @@
       ],
       "personalities": [],
       "weight": "Hero"
+    },
+    "HID.Outlander.010.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Outlander.010.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
     },
     "HID.Outlander.011.SR.T01": {
       "items": [
@@ -10395,6 +10869,48 @@
       "personalities": [],
       "weight": "Hero"
     },
+    "HID.Outlander.PunchDamage.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Outlander.PunchDamage.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
+    "HID.Outlander.PunchPhase.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Outlander.PunchPhase.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Outlander.PunchPhase.UC.T01": {
+      "purchase": "Creation.CollectionBook.Hero.UC"
+    },
+    "HID.Outlander.PunchPhase.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
+    "HID.Outlander.SphereFragment.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Outlander.SphereFragment.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Outlander.SphereFragment.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
+    "HID.Outlander.ZoneFragment.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.UR"
+    },
+    "HID.Outlander.ZoneHarvest.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Outlander.ZoneHarvest.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Outlander.ZoneHarvest.UC.T01": {
+      "purchase": "Creation.CollectionBook.Hero.UC"
+    },
+    "HID.Outlander.ZoneHarvest.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
+    },
     "HID.Outlander.ZoneHarvestHW.SR.T01": {
       "items": [
         "Hero:hid_outlander_zoneharvesthw_sr_t01",
@@ -10405,6 +10921,15 @@
       ],
       "personalities": [],
       "weight": "Hero"
+    },
+    "HID.Outlander.ZonePistol.R.T01": {
+      "purchase": "Creation.CollectionBook.Hero.R"
+    },
+    "HID.Outlander.ZonePistol.SR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.SR"
+    },
+    "HID.Outlander.ZonePistol.VR.T01": {
+      "purchase": "Creation.CollectionBook.Hero.VR"
     },
     "HID.Outlander.ZonePistolHW.VR.T01": {
       "items": [
@@ -10417,12 +10942,27 @@
       "personalities": [],
       "weight": "Hero"
     },
+    "SID.Assault.Auto.C.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.C"
+    },
     "SID.Assault.Auto.R.Crystal.T04": {
       "items": [
         "Schematic:sid_assault_auto_r_crystal_t04"
       ],
       "personalities": [],
       "weight": "Ranged"
+    },
+    "SID.Assault.Auto.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Assault.Auto.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Assault.Auto.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Assault.Auto.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
     },
     "SID.Assault.Auto.VT.SR.Crystal.T04": {
       "items": [
@@ -10462,12 +11002,33 @@
       "personalities": [],
       "weight": "Ranged"
     },
+    "SID.Assault.Burst.C.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.C"
+    },
     "SID.Assault.Burst.R.Crystal.T04": {
       "items": [
         "Schematic:sid_assault_burst_r_crystal_t04"
       ],
       "personalities": [],
       "weight": "Ranged"
+    },
+    "SID.Assault.Burst.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Assault.Burst.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Assault.Burst.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Assault.Burst.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
+    "SID.Assault.Doubleshot.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Assault.Doubleshot.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
     },
     "SID.Assault.Dragon.SR.Crystal.T04": {
       "items": [
@@ -10552,6 +11113,15 @@
       "personalities": [],
       "weight": "Ranged"
     },
+    "SID.Assault.LMG.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Assault.LMG.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Assault.LMG.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
     "SID.Assault.NeonGlow.SR.Crystal.T04": {
       "items": [
         "Schematic:sid_assault_neonglow_sr_crystal_t04",
@@ -10589,6 +11159,12 @@
       ],
       "personalities": [],
       "weight": "Ranged"
+    },
+    "SID.Assault.Raygun.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Assault.Raygun.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
     },
     "SID.Assault.SMG.Silenced.Military.SR.Crystal.T04": {
       "items": [
@@ -10683,12 +11259,27 @@
       "personalities": [],
       "weight": "Ranged"
     },
+    "SID.Assault.SemiAuto.C.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.C"
+    },
     "SID.Assault.SemiAuto.R.Crystal.T04": {
       "items": [
         "Schematic:sid_assault_semiauto_r_crystal_t04"
       ],
       "personalities": [],
       "weight": "Ranged"
+    },
+    "SID.Assault.SemiAuto.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Assault.SemiAuto.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Assault.SemiAuto.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Assault.SemiAuto.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
     },
     "SID.Assault.SingleShot.R.Crystal.T04": {
       "items": [
@@ -10697,12 +11288,27 @@
       "personalities": [],
       "weight": "Ranged"
     },
+    "SID.Assault.SingleShot.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Assault.SingleShot.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
     "SID.Assault.SingleShot.VR.Crystal.T04": {
       "items": [
         "Schematic:sid_assault_singleshot_vr_crystal_t04"
       ],
       "personalities": [],
       "weight": "Ranged"
+    },
+    "SID.Assault.SingleShot.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
+    "SID.Assault.Surgical.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Assault.Surgical.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
     },
     "SID.Assault.VacuumTube.SR.Crystal.T04": {
       "items": [
@@ -10742,6 +11348,27 @@
       "personalities": [],
       "weight": "Ranged"
     },
+    "SID.Blunt.Club.Light.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Blunt.Club.Light.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
+    "SID.Blunt.Hammer.Heavy.C.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.C"
+    },
+    "SID.Blunt.Hammer.Heavy.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Blunt.Hammer.Heavy.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Blunt.Hammer.Heavy.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Blunt.Hammer.Heavy.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
     "SID.Blunt.Hammer.Hydraulic.SR.Crystal.T04": {
       "items": [
         "Schematic:sid_blunt_hammer_hydraulic_sr_crystal_t04",
@@ -10779,6 +11406,12 @@
       ],
       "personalities": [],
       "weight": "Melee"
+    },
+    "SID.Blunt.Hammer.Rocket.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Blunt.Hammer.Rocket.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
     },
     "SID.Blunt.Hammer.Rocket.VT.SR.Crystal.T04": {
       "items": [
@@ -10856,6 +11489,57 @@
       "personalities": [],
       "weight": "Melee"
     },
+    "SID.Blunt.Heavy.Paddle.C.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.C"
+    },
+    "SID.Blunt.Heavy.Paddle.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Blunt.Heavy.Paddle.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Blunt.Light.Bat.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Blunt.Light.Bat.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Blunt.Light.C.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.C"
+    },
+    "SID.Blunt.Light.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Blunt.Light.Rocketbat.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Blunt.Light.Rocketbat.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
+    "SID.Blunt.Light.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Blunt.Light.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Blunt.Light.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
+    "SID.Blunt.Medium.C.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.C"
+    },
+    "SID.Blunt.Medium.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Blunt.Medium.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Blunt.Medium.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Blunt.Medium.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
     "SID.Blunt.Scavenger.SR.Crystal.T04": {
       "items": [
         "Schematic:sid_blunt_scavenger_sr_crystal_t04",
@@ -10894,6 +11578,36 @@
       "personalities": [],
       "weight": "Melee"
     },
+    "SID.Blunt.Tool.Light.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Blunt.Tool.Light.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Ceiling.Electric.AOE.R.T01": {
+      "purchase": "Creation.CollectionBook.Trap.R"
+    },
+    "SID.Ceiling.Electric.AOE.SR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.SR"
+    },
+    "SID.Ceiling.Electric.AOE.VR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.VR"
+    },
+    "SID.Ceiling.Electric.Single.C.T01": {
+      "purchase": "Creation.CollectionBook.Trap.C"
+    },
+    "SID.Ceiling.Electric.Single.R.T01": {
+      "purchase": "Creation.CollectionBook.Trap.R"
+    },
+    "SID.Ceiling.Electric.Single.SR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.SR"
+    },
+    "SID.Ceiling.Electric.Single.UC.T01": {
+      "purchase": "Creation.CollectionBook.Trap.UC"
+    },
+    "SID.Ceiling.Electric.Single.VR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.VR"
+    },
     "SID.Ceiling.Falling.R.T01": {
       "items": [
         "Schematic:sid_ceiling_falling_r_t01",
@@ -10902,6 +11616,7 @@
         "Schematic:sid_ceiling_falling_r_t04"
       ],
       "personalities": [],
+      "purchase": "Creation.CollectionBook.Trap.R",
       "weight": "Trap"
     },
     "SID.Ceiling.Falling.SR.T01": {
@@ -10913,6 +11628,7 @@
         "Schematic:sid_ceiling_falling_sr_t05"
       ],
       "personalities": [],
+      "purchase": "Creation.CollectionBook.Trap.SR",
       "weight": "Trap"
     },
     "SID.Ceiling.Falling.VR.T01": {
@@ -10924,7 +11640,23 @@
         "Schematic:sid_ceiling_falling_vr_t05"
       ],
       "personalities": [],
+      "purchase": "Creation.CollectionBook.Trap.VR",
       "weight": "Trap"
+    },
+    "SID.Ceiling.Gas.R.T01": {
+      "purchase": "Creation.CollectionBook.Trap.R"
+    },
+    "SID.Ceiling.Gas.SR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.SR"
+    },
+    "SID.Ceiling.Gas.UC.T01": {
+      "purchase": "Creation.CollectionBook.Trap.UC"
+    },
+    "SID.Ceiling.Gas.VR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.VR"
+    },
+    "SID.Edged.Axe.Heavy.C.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.C"
     },
     "SID.Edged.Axe.Heavy.R.Crystal.T04": {
       "items": [
@@ -10932,6 +11664,18 @@
       ],
       "personalities": [],
       "weight": "Melee"
+    },
+    "SID.Edged.Axe.Heavy.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Edged.Axe.Heavy.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Edged.Axe.Heavy.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Edged.Axe.Heavy.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
     },
     "SID.Edged.Axe.Heavy.VacuumTube.SR.Crystal.T04": {
       "items": [
@@ -10971,6 +11715,9 @@
       "personalities": [],
       "weight": "Melee"
     },
+    "SID.Edged.Axe.Light.C.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.C"
+    },
     "SID.Edged.Axe.Light.R.Crystal.T04": {
       "items": [
         "Schematic:sid_edged_axe_light_r_crystal_t04"
@@ -10978,12 +11725,45 @@
       "personalities": [],
       "weight": "Melee"
     },
+    "SID.Edged.Axe.Light.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Edged.Axe.Light.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Edged.Axe.Light.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Edged.Axe.Light.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
+    "SID.Edged.Axe.Medium.C.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.C"
+    },
+    "SID.Edged.Axe.Medium.Laser.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Edged.Axe.Medium.Laser.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
     "SID.Edged.Axe.Medium.R.Crystal.T04": {
       "items": [
         "Schematic:sid_edged_axe_medium_r_crystal_t04"
       ],
       "personalities": [],
       "weight": "Melee"
+    },
+    "SID.Edged.Axe.Medium.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Edged.Axe.Medium.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Edged.Axe.Medium.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Edged.Axe.Medium.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
     },
     "SID.Edged.Axe.NeonGlow.SR.Crystal.T04": {
       "items": [
@@ -11099,6 +11879,9 @@
       "personalities": [],
       "weight": "Melee"
     },
+    "SID.Edged.Scythe.C.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.C"
+    },
     "SID.Edged.Scythe.Flintlock.SR.Crystal.T04": {
       "items": [
         "Schematic:sid_edged_scythe_flintlock_sr_crystal_t04",
@@ -11136,6 +11919,12 @@
       ],
       "personalities": [],
       "weight": "Melee"
+    },
+    "SID.Edged.Scythe.Laser.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Edged.Scythe.Laser.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
     },
     "SID.Edged.Scythe.NeonGlow.SR.Crystal.T04": {
       "items": [
@@ -11182,6 +11971,18 @@
       "personalities": [],
       "weight": "Melee"
     },
+    "SID.Edged.Scythe.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Edged.Scythe.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Edged.Scythe.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Edged.Scythe.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
     "SID.Edged.Sword.Dragon.SR.Crystal.T04": {
       "items": [
         "Schematic:sid_edged_sword_dragon_sr_crystal_t04",
@@ -11220,12 +12021,27 @@
       "personalities": [],
       "weight": "Melee"
     },
+    "SID.Edged.Sword.Heavy.C.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.C"
+    },
     "SID.Edged.Sword.Heavy.R.Crystal.T04": {
       "items": [
         "Schematic:sid_edged_sword_heavy_r_crystal_t04"
       ],
       "personalities": [],
       "weight": "Melee"
+    },
+    "SID.Edged.Sword.Heavy.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Edged.Sword.Heavy.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Edged.Sword.Heavy.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Edged.Sword.Heavy.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
     },
     "SID.Edged.Sword.Hydraulic.SR.Crystal.T04": {
       "items": [
@@ -11265,6 +12081,9 @@
       "personalities": [],
       "weight": "Melee"
     },
+    "SID.Edged.Sword.Light.C.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.C"
+    },
     "SID.Edged.Sword.Light.R.Crystal.T04": {
       "items": [
         "Schematic:sid_edged_sword_light_r_crystal_t04"
@@ -11272,12 +12091,45 @@
       "personalities": [],
       "weight": "Melee"
     },
+    "SID.Edged.Sword.Light.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Edged.Sword.Light.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Edged.Sword.Light.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Edged.Sword.Light.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
+    "SID.Edged.Sword.Medium.C.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.C"
+    },
+    "SID.Edged.Sword.Medium.Laser.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Edged.Sword.Medium.Laser.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
     "SID.Edged.Sword.Medium.R.Crystal.T04": {
       "items": [
         "Schematic:sid_edged_sword_medium_r_crystal_t04"
       ],
       "personalities": [],
       "weight": "Melee"
+    },
+    "SID.Edged.Sword.Medium.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Edged.Sword.Medium.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Edged.Sword.Medium.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Edged.Sword.Medium.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
     },
     "SID.Edged.Sword.Medium.VT.SR.Crystal.T04": {
       "items": [
@@ -11401,6 +12253,7 @@
         "Schematic:sid_floor_campfire_r_t04"
       ],
       "personalities": [],
+      "purchase": "Creation.CollectionBook.Trap.R",
       "weight": "Trap"
     },
     "SID.Floor.Campfire.SR.T01": {
@@ -11412,6 +12265,7 @@
         "Schematic:sid_floor_campfire_sr_t05"
       ],
       "personalities": [],
+      "purchase": "Creation.CollectionBook.Trap.SR",
       "weight": "Trap"
     },
     "SID.Floor.Campfire.VR.T01": {
@@ -11423,6 +12277,7 @@
         "Schematic:sid_floor_campfire_vr_t05"
       ],
       "personalities": [],
+      "purchase": "Creation.CollectionBook.Trap.VR",
       "weight": "Trap"
     },
     "SID.Floor.FlameGrill.R.T01": {
@@ -11433,6 +12288,7 @@
         "Schematic:sid_floor_flamegrill_r_t04"
       ],
       "personalities": [],
+      "purchase": "Creation.CollectionBook.Trap.R",
       "weight": "Trap"
     },
     "SID.Floor.FlameGrill.SR.T01": {
@@ -11444,6 +12300,7 @@
         "Schematic:sid_floor_flamegrill_sr_t05"
       ],
       "personalities": [],
+      "purchase": "Creation.CollectionBook.Trap.SR",
       "weight": "Trap"
     },
     "SID.Floor.FlameGrill.VR.T01": {
@@ -11455,6 +12312,7 @@
         "Schematic:sid_floor_flamegrill_vr_t05"
       ],
       "personalities": [],
+      "purchase": "Creation.CollectionBook.Trap.VR",
       "weight": "Trap"
     },
     "SID.Floor.Freeze.R.T01": {
@@ -11465,6 +12323,7 @@
         "Schematic:sid_floor_freeze_r_t04"
       ],
       "personalities": [],
+      "purchase": "Creation.CollectionBook.Trap.R",
       "weight": "Trap"
     },
     "SID.Floor.Freeze.SR.T01": {
@@ -11476,6 +12335,7 @@
         "Schematic:sid_floor_freeze_sr_t05"
       ],
       "personalities": [],
+      "purchase": "Creation.CollectionBook.Trap.SR",
       "weight": "Trap"
     },
     "SID.Floor.Freeze.VR.T01": {
@@ -11487,7 +12347,80 @@
         "Schematic:sid_floor_freeze_vr_t05"
       ],
       "personalities": [],
+      "purchase": "Creation.CollectionBook.Trap.VR",
       "weight": "Trap"
+    },
+    "SID.Floor.Health.R.T01": {
+      "purchase": "Creation.CollectionBook.Trap.R"
+    },
+    "SID.Floor.Health.SR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.SR"
+    },
+    "SID.Floor.Health.UC.T01": {
+      "purchase": "Creation.CollectionBook.Trap.UC"
+    },
+    "SID.Floor.Health.VR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.VR"
+    },
+    "SID.Floor.Launcher.R.T01": {
+      "purchase": "Creation.CollectionBook.Trap.R"
+    },
+    "SID.Floor.Launcher.SR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.SR"
+    },
+    "SID.Floor.Launcher.UC.T01": {
+      "purchase": "Creation.CollectionBook.Trap.UC"
+    },
+    "SID.Floor.Launcher.VR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.VR"
+    },
+    "SID.Floor.Spikes.R.T01": {
+      "purchase": "Creation.CollectionBook.Trap.R"
+    },
+    "SID.Floor.Spikes.SR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.SR"
+    },
+    "SID.Floor.Spikes.UC.T01": {
+      "purchase": "Creation.CollectionBook.Trap.UC"
+    },
+    "SID.Floor.Spikes.VR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.VR"
+    },
+    "SID.Floor.Spikes.Wood.C.T01": {
+      "purchase": "Creation.CollectionBook.Trap.C"
+    },
+    "SID.Floor.Spikes.Wood.R.T01": {
+      "purchase": "Creation.CollectionBook.Trap.R"
+    },
+    "SID.Floor.Spikes.Wood.SR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.SR"
+    },
+    "SID.Floor.Spikes.Wood.UC.T01": {
+      "purchase": "Creation.CollectionBook.Trap.UC"
+    },
+    "SID.Floor.Spikes.Wood.VR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.VR"
+    },
+    "SID.Floor.Ward.R.T01": {
+      "purchase": "Creation.CollectionBook.Trap.R"
+    },
+    "SID.Floor.Ward.SR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.SR"
+    },
+    "SID.Floor.Ward.UC.T01": {
+      "purchase": "Creation.CollectionBook.Trap.UC"
+    },
+    "SID.Floor.Ward.VR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.VR"
+    },
+    "SID.Launcher.Grenade.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Launcher.Grenade.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Launcher.Grenade.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
     },
     "SID.Launcher.Hydraulic.SR.Crystal.T04": {
       "items": [
@@ -11549,6 +12482,15 @@
       "personalities": [],
       "weight": "Ranged"
     },
+    "SID.Launcher.Rocket.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Launcher.Rocket.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Launcher.Rocket.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
     "SID.Launcher.VacuumTube.SR.Ore.T01": {
       "items": [
         "Schematic:sid_launcher_vacuumtube_sr_ore_t01",
@@ -11570,6 +12512,9 @@
       ],
       "personalities": [],
       "weight": "Ranged"
+    },
+    "SID.Piercing.Spear.C.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.C"
     },
     "SID.Piercing.Spear.Dragon.SR.Crystal.T04": {
       "items": [
@@ -11647,12 +12592,33 @@
       "personalities": [],
       "weight": "Melee"
     },
+    "SID.Piercing.Spear.Laser.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Piercing.Spear.Laser.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
+    "SID.Piercing.Spear.Military.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Piercing.Spear.Military.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Piercing.Spear.Military.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
     "SID.Piercing.Spear.R.Crystal.T04": {
       "items": [
         "Schematic:sid_piercing_spear_r_crystal_t04"
       ],
       "personalities": [],
       "weight": "Melee"
+    },
+    "SID.Piercing.Spear.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Piercing.Spear.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
     },
     "SID.Piercing.Spear.Scavenger.SR.Crystal.T04": {
       "items": [
@@ -11692,6 +12658,12 @@
       "personalities": [],
       "weight": "Melee"
     },
+    "SID.Piercing.Spear.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Piercing.Spear.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
     "SID.Piercing.Spear.VacuumTube.SR.Crystal.T04": {
       "items": [
         "Schematic:sid_piercing_spear_vacuumtube_sr_crystal_t04",
@@ -11730,12 +12702,36 @@
       "personalities": [],
       "weight": "Melee"
     },
+    "SID.Pistol.Auto.C.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.C"
+    },
     "SID.Pistol.Auto.R.Crystal.T04": {
       "items": [
         "Schematic:sid_pistol_auto_r_crystal_t04"
       ],
       "personalities": [],
       "weight": "Ranged"
+    },
+    "SID.Pistol.Auto.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Pistol.Auto.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Pistol.Auto.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Pistol.Auto.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
+    "SID.Pistol.AutoHeavy.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Pistol.AutoHeavy.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Pistol.AutoHeavy.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
     },
     "SID.Pistol.AutoHeavy.VT.SR.Crystal.T04": {
       "items": [
@@ -11775,6 +12771,15 @@
       "personalities": [],
       "weight": "Ranged"
     },
+    "SID.Pistol.Bolt.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Pistol.Bolt.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
+    "SID.Pistol.BoltRevolver.C.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.C"
+    },
     "SID.Pistol.BoltRevolver.R.Crystal.T04": {
       "items": [
         "Schematic:sid_pistol_boltrevolver_r_crystal_t04"
@@ -11782,12 +12787,33 @@
       "personalities": [],
       "weight": "Ranged"
     },
+    "SID.Pistol.BoltRevolver.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Pistol.BoltRevolver.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Pistol.Dragon.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Pistol.Dragon.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
     "SID.Pistol.FireCracker.R.Crystal.T04": {
       "items": [
         "Schematic:sid_pistol_firecracker_r_crystal_t04"
       ],
       "personalities": [],
       "weight": "Ranged"
+    },
+    "SID.Pistol.FireCracker.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Pistol.FireCracker.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Pistol.FireCracker.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
     },
     "SID.Pistol.Flintlock.SR.Crystal.T04": {
       "items": [
@@ -11827,6 +12853,12 @@
       "personalities": [],
       "weight": "Ranged"
     },
+    "SID.Pistol.Gatling.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Pistol.Gatling.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
     "SID.Pistol.Handcannon.DE.SR.Crystal.T04": {
       "items": [
         "Schematic:sid_pistol_handcannon_de_sr_crystal_t04",
@@ -11844,6 +12876,7 @@
         "Schematic:sid_pistol_handcannon_de_sr_ore_t05"
       ],
       "personalities": [],
+      "purchase": "Creation.CollectionBook.Weapon.SR",
       "weight": "Ranged"
     },
     "SID.Pistol.Handcannon.DE.VR.Crystal.T04": {
@@ -11863,6 +12896,7 @@
         "Schematic:sid_pistol_handcannon_de_vr_ore_t05"
       ],
       "personalities": [],
+      "purchase": "Creation.CollectionBook.Weapon.VR",
       "weight": "Ranged"
     },
     "SID.Pistol.Handcannon.R.Crystal.T04": {
@@ -11871,6 +12905,21 @@
       ],
       "personalities": [],
       "weight": "Ranged"
+    },
+    "SID.Pistol.Handcannon.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Pistol.Handcannon.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Pistol.Handcannon.Semi.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Pistol.Handcannon.Semi.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Pistol.Handcannon.Semi.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
     },
     "SID.Pistol.Handcannon.Semi.VT.SR.Crystal.T04": {
       "items": [
@@ -11909,6 +12958,9 @@
       ],
       "personalities": [],
       "weight": "Ranged"
+    },
+    "SID.Pistol.Handcannon.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
     },
     "SID.Pistol.Handcannon.VT.SR.Crystal.T04": {
       "items": [
@@ -12012,6 +13064,18 @@
       "personalities": [],
       "weight": "Ranged"
     },
+    "SID.Pistol.Rapid.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Pistol.Rapid.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Pistol.Rapid.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
+    "SID.Pistol.Rocket.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
     "SID.Pistol.Scavenger.SR.Crystal.T04": {
       "items": [
         "Schematic:sid_pistol_scavenger_sr_crystal_t04",
@@ -12050,12 +13114,27 @@
       "personalities": [],
       "weight": "Ranged"
     },
+    "SID.Pistol.SemiAuto.C.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.C"
+    },
     "SID.Pistol.SemiAuto.R.Crystal.T04": {
       "items": [
         "Schematic:sid_pistol_semiauto_r_crystal_t04"
       ],
       "personalities": [],
       "weight": "Ranged"
+    },
+    "SID.Pistol.SemiAuto.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Pistol.SemiAuto.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Pistol.SemiAuto.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Pistol.SemiAuto.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
     },
     "SID.Pistol.Silenced.Military.SR.Crystal.T04": {
       "items": [
@@ -12095,12 +13174,27 @@
       "personalities": [],
       "weight": "Ranged"
     },
+    "SID.Pistol.SixShooter.C.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.C"
+    },
     "SID.Pistol.SixShooter.R.Crystal.T04": {
       "items": [
         "Schematic:sid_pistol_sixshooter_r_crystal_t04"
       ],
       "personalities": [],
       "weight": "Ranged"
+    },
+    "SID.Pistol.SixShooter.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Pistol.SixShooter.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Pistol.Space.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Pistol.Space.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
     },
     "SID.Pistol.VacuumTube.Auto.SR.Crystal.T04": {
       "items": [
@@ -12178,12 +13272,33 @@
       "personalities": [],
       "weight": "Ranged"
     },
+    "SID.Pistol.Zapper.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Pistol.Zapper.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
     "SID.Shotgun.Auto.R.Crystal.T04": {
       "items": [
         "Schematic:sid_shotgun_auto_r_crystal_t04"
       ],
       "personalities": [],
       "weight": "Ranged"
+    },
+    "SID.Shotgun.Auto.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Shotgun.Auto.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Shotgun.Auto.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Shotgun.Auto.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
+    "SID.Shotgun.Break.C.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.C"
     },
     "SID.Shotgun.Break.Flintlock.SR.Crystal.T04": {
       "items": [
@@ -12223,12 +13338,30 @@
       "personalities": [],
       "weight": "Ranged"
     },
+    "SID.Shotgun.Break.OU.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Shotgun.Break.OU.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Shotgun.Break.OU.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Shotgun.Break.OU.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
     "SID.Shotgun.Break.R.Crystal.T04": {
       "items": [
         "Schematic:sid_shotgun_break_r_crystal_t04"
       ],
       "personalities": [],
       "weight": "Ranged"
+    },
+    "SID.Shotgun.Break.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Shotgun.Break.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
     },
     "SID.Shotgun.Break.Scavenger.SR.Crystal.T04": {
       "items": [
@@ -12268,6 +13401,12 @@
       "personalities": [],
       "weight": "Ranged"
     },
+    "SID.Shotgun.Break.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Shotgun.Break.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
     "SID.Shotgun.Dragon.SR.Crystal.T04": {
       "items": [
         "Schematic:sid_shotgun_dragon_sr_crystal_t04",
@@ -12305,6 +13444,9 @@
       ],
       "personalities": [],
       "weight": "Ranged"
+    },
+    "SID.Shotgun.Heavy.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
     },
     "SID.Shotgun.Hydraulic.SR.Crystal.T04": {
       "items": [
@@ -12344,6 +13486,12 @@
       "personalities": [],
       "weight": "Ranged"
     },
+    "SID.Shotgun.Longarm.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Shotgun.Longarm.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
     "SID.Shotgun.Military.SR.Crystal.T04": {
       "items": [
         "Schematic:sid_shotgun_military_sr_crystal_t04",
@@ -12381,6 +13529,9 @@
       ],
       "personalities": [],
       "weight": "Ranged"
+    },
+    "SID.Shotgun.Minigun.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
     },
     "SID.Shotgun.NeonGlow.SR.Crystal.T04": {
       "items": [
@@ -12435,6 +13586,7 @@
         "Schematic:sid_shotgun_semiauto_r_ore_t04"
       ],
       "personalities": [],
+      "purchase": "Creation.CollectionBook.Weapon.R",
       "weight": "Ranged"
     },
     "SID.Shotgun.SemiAuto.SR.Crystal.T04": {
@@ -12454,6 +13606,7 @@
         "Schematic:sid_shotgun_semiauto_sr_ore_t05"
       ],
       "personalities": [],
+      "purchase": "Creation.CollectionBook.Weapon.SR",
       "weight": "Ranged"
     },
     "SID.Shotgun.SemiAuto.Scavenger.SR.Crystal.T04": {
@@ -12501,6 +13654,7 @@
         "Schematic:sid_shotgun_semiauto_uc_ore_t03"
       ],
       "personalities": [],
+      "purchase": "Creation.CollectionBook.Weapon.UC",
       "weight": "Ranged"
     },
     "SID.Shotgun.SemiAuto.VR.Crystal.T04": {
@@ -12520,7 +13674,11 @@
         "Schematic:sid_shotgun_semiauto_vr_ore_t05"
       ],
       "personalities": [],
+      "purchase": "Creation.CollectionBook.Weapon.VR",
       "weight": "Ranged"
+    },
+    "SID.Shotgun.Standard.C.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.C"
     },
     "SID.Shotgun.Standard.R.Crystal.T04": {
       "items": [
@@ -12528,6 +13686,18 @@
       ],
       "personalities": [],
       "weight": "Ranged"
+    },
+    "SID.Shotgun.Standard.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Shotgun.Standard.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Shotgun.Standard.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Shotgun.Standard.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
     },
     "SID.Shotgun.Standard.VT.SR.Crystal.T04": {
       "items": [
@@ -12566,6 +13736,24 @@
       ],
       "personalities": [],
       "weight": "Ranged"
+    },
+    "SID.Shotgun.Tactical.C.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.C"
+    },
+    "SID.Shotgun.Tactical.Precision.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Shotgun.Tactical.Precision.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Shotgun.Tactical.Precision.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
+    "SID.Shotgun.Tactical.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Shotgun.Tactical.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
     },
     "SID.Shotgun.VacuumTube.SR.Crystal.T04": {
       "items": [
@@ -12612,12 +13800,36 @@
       "personalities": [],
       "weight": "Ranged"
     },
+    "SID.Sniper.AMR.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Sniper.AMR.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Sniper.AMR.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
     "SID.Sniper.Auto.R.Crystal.T04": {
       "items": [
         "Schematic:sid_sniper_auto_r_crystal_t04"
       ],
       "personalities": [],
       "weight": "Ranged"
+    },
+    "SID.Sniper.Auto.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Sniper.Auto.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Sniper.Auto.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Sniper.Auto.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
+    "SID.Sniper.BoltAction.C.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.C"
     },
     "SID.Sniper.BoltAction.R.Crystal.T04": {
       "items": [
@@ -12626,12 +13838,27 @@
       "personalities": [],
       "weight": "Ranged"
     },
+    "SID.Sniper.BoltAction.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
     "SID.Sniper.BoltAction.Scope.R.Crystal.T04": {
       "items": [
         "Schematic:sid_sniper_boltaction_scope_r_crystal_t04"
       ],
       "personalities": [],
       "weight": "Ranged"
+    },
+    "SID.Sniper.BoltAction.Scope.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Sniper.BoltAction.Scope.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Sniper.BoltAction.Scope.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
+    "SID.Sniper.BoltAction.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
     },
     "SID.Sniper.Crossbow.Military.SR.Crystal.T04": {
       "items": [
@@ -12823,12 +14050,33 @@
       "personalities": [],
       "weight": "Ranged"
     },
+    "SID.Sniper.Shredder.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Sniper.Shredder.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
+    "SID.Sniper.Standard.C.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.C"
+    },
     "SID.Sniper.Standard.R.Crystal.T04": {
       "items": [
         "Schematic:sid_sniper_standard_r_crystal_t04"
       ],
       "personalities": [],
       "weight": "Ranged"
+    },
+    "SID.Sniper.Standard.R.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.R"
+    },
+    "SID.Sniper.Standard.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Sniper.Standard.Scope.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Sniper.Standard.Scope.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
     },
     "SID.Sniper.Standard.Scope.VT.SR.Crystal.T04": {
       "items": [
@@ -12868,6 +14116,18 @@
       "personalities": [],
       "weight": "Ranged"
     },
+    "SID.Sniper.Standard.UC.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.UC"
+    },
+    "SID.Sniper.Standard.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
+    "SID.Sniper.TripleShot.SR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.SR"
+    },
+    "SID.Sniper.TripleShot.VR.Ore.T01": {
+      "purchase": "Creation.CollectionBook.Weapon.VR"
+    },
     "SID.Sniper.VacuumTube.SR.Crystal.T04": {
       "items": [
         "Schematic:sid_sniper_vacuumtube_sr_crystal_t04",
@@ -12905,6 +14165,66 @@
       ],
       "personalities": [],
       "weight": "Ranged"
+    },
+    "SID.Wall.Darts.R.T01": {
+      "purchase": "Creation.CollectionBook.Trap.R"
+    },
+    "SID.Wall.Darts.SR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.SR"
+    },
+    "SID.Wall.Darts.UC.T01": {
+      "purchase": "Creation.CollectionBook.Trap.UC"
+    },
+    "SID.Wall.Darts.VR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.VR"
+    },
+    "SID.Wall.Electric.R.T01": {
+      "purchase": "Creation.CollectionBook.Trap.R"
+    },
+    "SID.Wall.Electric.SR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.SR"
+    },
+    "SID.Wall.Electric.UC.T01": {
+      "purchase": "Creation.CollectionBook.Trap.UC"
+    },
+    "SID.Wall.Electric.VR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.VR"
+    },
+    "SID.Wall.Launcher.R.T01": {
+      "purchase": "Creation.CollectionBook.Trap.R"
+    },
+    "SID.Wall.Launcher.SR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.SR"
+    },
+    "SID.Wall.Launcher.UC.T01": {
+      "purchase": "Creation.CollectionBook.Trap.UC"
+    },
+    "SID.Wall.Launcher.VR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.VR"
+    },
+    "SID.Wall.Light.R.T01": {
+      "purchase": "Creation.CollectionBook.Trap.R"
+    },
+    "SID.Wall.Light.SR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.SR"
+    },
+    "SID.Wall.Light.VR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.VR"
+    },
+    "SID.Wall.Wood.Spikes.C.T01": {
+      "purchase": "Creation.CollectionBook.Trap.C"
+    },
+    "SID.Wall.Wood.Spikes.R.T01": {
+      "purchase": "Creation.CollectionBook.Trap.R"
+    },
+    "SID.Wall.Wood.Spikes.SR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.SR"
+    },
+    "SID.Wall.Wood.Spikes.UC.T01": {
+      "purchase": "Creation.CollectionBook.Trap.UC"
+    },
+    "SID.Wall.Wood.Spikes.VR.T01": {
+      "purchase": "Creation.CollectionBook.Trap.VR"
     },
     "TestSlot_Test": {
       "items": [
@@ -13069,5 +14389,11 @@
       "personalities": [],
       "weight": "Survivor"
     }
-  }
+  },
+  "unslotCost": [
+    {
+      "quantity": 20,
+      "templateId": "Currency:mtxcomplimentary"
+    }
+  ]
 }

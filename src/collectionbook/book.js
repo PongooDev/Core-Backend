@@ -1,9 +1,10 @@
 import { McpError } from "../errors.js";
 import { getItem } from "../gamedata/items.js";
-import { lootEntry } from "../profiles/items.js";
+import { isMtxCurrency, lootEntry, spendMtx } from "../profiles/items.js";
 import { grant, itemEvent, refreshHeldItems } from "../profiles/progress.js";
 import { itemRating } from "../profiles/rating.js";
-import { recyclingRefunds } from "../profiles/upgrades.js";
+import { hasUnlocked } from "../profiles/unlocks.js";
+import { pay, recyclingRefunds } from "../profiles/upgrades.js";
 import { bookData, findPageItem, isUnlocked, pageId, refreshPage, slotFor, slottedItems } from "./pages.js";
 
 export { bookProfiles, isBookPage } from "./pages.js";
@@ -153,4 +154,72 @@ export function claimPageRewards(session, pageTemplateId, sectionId, selectedInd
     grantRewards(session, page.rewards, selectedIndex, notifications, id);
     tracker.setItemAttribute(itemId, "state", "Claimed");
   }
+}
+
+// 4.5's (Update v4.50, CL 4159770 and CL 4166199) two book commands, UFortMcpProfileCampaign's UnslotItemFromCollectionBook
+// and ResearchItemFromCollectionBook, which UFortCollectionBookManager's UnSlotItem (4.5 sub_BCC100) and PurchaseItem send.
+// Their costs are the book data's (CollectionBook/Data/CollectionBookData UnslotCost; each slot's PurchaseCosts row of
+// CollectionBookRecipes), so a build before 4.5, whose data has neither, refuses both.
+
+// The V-Bucks of a cost list are paid from any kind (CollectionBookUnslotPanel counts MtxComplimentary, MtxGiveaway,
+// MtxPurchaseBonus and MtxPurchased alike, the player's MtxBalance), the rest from their stacks. Nothing is taken unless
+// everything is there.
+function payCosts(account, costs) {
+  const mtx = costs.filter(({ templateId }) => isMtxCurrency(templateId)).reduce((sum, { quantity }) => sum + quantity, 0);
+  const held = Object.values(account.profile.items).filter((item) => isMtxCurrency(item.templateId)).reduce((sum, item) => sum + item.quantity, 0);
+  if (held < mtx) throw new McpError("errors.com.epicgames.currency.mtx.insufficient", `This costs ${mtx} V-Bucks and you have ${held}`);
+  pay(account, costs.filter(({ templateId }) => !isMtxCurrency(templateId)));
+  if (mtx) spendMtx(account, mtx);
+}
+
+// UnslotItemFromCollectionBook {itemId, specific, templateId}: "Items can now be unslotted from the Collection Book at a
+// cost of 20 V-Bucks. This will return the same item that you slotted, with the same level and perks" (Update v4.50's
+// notes). The item moves back from its page profile into the account, id and attributes kept, for the book's UnslotCost.
+// Its XP leaves the book (bookXp counts slotted items only) but the level stays: bookLevel is the higher of the XP's
+// level and profile0's collection_book.maxBookXpLevelAchieved, and claimBookLevel wants the next level's whole XP, so
+// "this XP debt will have to be paid back before you can continue to advance the Collection Book's level". Rewards
+// already claimed stay claimed; a page or section that was Completed but not Claimed is Active again. The reply's
+// primary notification is FFortCollectionBookUnslotItemNotification {unslottedItemId} ("collectionBookUnslotItem"),
+// which the completion (4.5 sub_BB4CC0) reads to find the item in the campaign profile.
+export function unslotItem(session, itemId, templateId, notifications = []) {
+  const cost = bookData().unslotCost;
+  if (!cost.length) fail("This build's collection book can't unslot items");
+  const slotted = typeof itemId === "string" && [...slottedItems(session).values()].find((entry) => entry.itemId === itemId);
+  if (!slotted) fail(`No slotted item ${itemId}`);
+  if (templateId && String(templateId).toLowerCase() !== slotted.item.templateId.toLowerCase()) fail(`${itemId} is ${slotted.item.templateId}, not ${templateId}`);
+  const account = session.profile("profile0");
+  payCosts(account, cost);
+  session.profile(slotted.profileId).removeItem(itemId);
+  account.addItem(itemId, { templateId: slotted.item.templateId, attributes: { ...slotted.item.attributes, item_seen: 0 }, quantity: 1 });
+  refreshPage(session, bookData().pageOfSlot.get(slotted.slotId));
+  refreshHeldItems(session);
+  notifications.push({ type: "collectionBookUnslotItem", primary: true, unslottedItemId: itemId });
+}
+
+// ResearchItemFromCollectionBook {templateId}: "Heroes, Trap Schematics, and Weapon Schematics can now be acquired directly
+// from the Collection Book through Recruitment and Research ... This can be an item you do not have yet, or one that you
+// have already collected ... Event Items, Survivors, and Defenders CANNOT be obtained using this feature. This costs Flux,
+// and either Training Manuals, Weapon Designs, or Trap Designs. The resulting item will be level 1, and schematics will
+// have randomized perks." The item is one of a slot's AllowedItems whose PurchaseCosts names a CollectionBookRecipes row
+// (Creation.CollectionBook.<Hero|Weapon|Trap>.<rarity>: Reagent_People, _Weapons or _Traps, and from rare up the rarity's
+// Reagent_EvolveRarity flux); survivors', defenders' and the event pages' slots name none. The slot's page must be
+// unlocked (the book shows no other). The new item comes as any grant does (level 1, a schematic's perks rolled:
+// profiles/items.js). The reply's primary notification is FFortCollectionBookResearchItemNotification {researchedItemId,
+// researchedTemplateId} ("collectionBookResearchedItem"): the completion (4.5 sub_BB45E0) looks the item up only when the
+// template is the one it asked for, character for character, so the request's own string is sent back.
+export function researchItem(session, templateId, notifications = []) {
+  if (typeof templateId !== "string" || !templateId) fail("No item to research");
+  const { slotsOf, slots, recipes, pageOfSlot } = bookData();
+  const slotId = (slotsOf.get(templateId.toLowerCase()) ?? []).find((id) => slots[id].purchase && recipes[slots[id].purchase]);
+  if (!slotId) fail(`${templateId} can't be researched or recruited from the collection book`);
+  const page = pageOfSlot.get(slotId);
+  if (!page || !isUnlocked(session, page)) fail(`The ${page ?? slotId} page isn't unlocked`);
+  const recipe = recipes[slots[slotId].purchase];
+  const account = session.profile("profile0");
+  if (!hasUnlocked(account.profile, recipe.catalysts)) fail(`Unlock ${recipe.catalysts.join(", ")} first`);
+  payCosts(account, recipe.costs);
+  const canonical = slots[slotId].items.find((id) => id.toLowerCase() === templateId.toLowerCase());
+  const [granted] = grant(session, canonical, 1);
+  if (!granted) fail(`${templateId} has no item data`);
+  notifications.push({ type: "collectionBookResearchedItem", primary: true, researchedItemId: granted.itemId, researchedTemplateId: templateId });
 }

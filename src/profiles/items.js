@@ -4,6 +4,7 @@ import { unlockPage } from "../collectionbook/pages.js";
 import { bannerTemplateId } from "../gamedata/banners.js";
 import { getItem } from "../gamedata/items.js";
 import { isEndedEventQuest } from "../events/quests.js";
+import { McpError } from "../errors.js";
 import { log } from "../log.js";
 import { newSchematicAlterations } from "./alterations.js";
 import { wireItemProfile } from "./common.js";
@@ -46,6 +47,26 @@ const unassigned = {
 const mtxCurrencies = new Set(["currency:mtxpurchased", "currency:mtxpurchasebonus", "currency:mtxgiveaway", "currency:mtxcomplimentary"]);
 export const mtxPlatform = "Epic";
 export const isMtxCurrency = (templateId) => mtxCurrencies.has(templateId.toLowerCase());
+
+// V-Bucks are spread over these stacks; the cheapest kinds go first. Returns what it took of each kind: {templateId: amount}.
+const mtxSpendOrder = ["Currency:mtxcomplimentary", "Currency:mtxgiveaway", "Currency:mtxpurchasebonus", "Currency:mtxpurchased"];
+export function spendMtx(tracker, amount) {
+  const stacks = mtxSpendOrder.flatMap((templateId) => Object.entries(tracker.profile.items)
+    .filter(([, item]) => item.templateId.toLowerCase() === templateId.toLowerCase()));
+  const held = stacks.reduce((sum, [, item]) => sum + item.quantity, 0);
+  if (held < amount) throw new McpError("errors.com.epicgames.currency.mtx.insufficient", `This costs ${amount} V-Bucks and you have ${held}`);
+  let left = amount;
+  const spent = {};
+  for (const [itemId, item] of stacks) {
+    if (!left) break;
+    const used = Math.min(left, item.quantity);
+    left -= used;
+    spent[item.templateId] = (spent[item.templateId] ?? 0) + used;
+    if (item.quantity > used) tracker.setQuantity(itemId, item.quantity - used);
+    else tracker.removeItem(itemId);
+  }
+  return spent;
+}
 
 // The client's llama store only opens packs whose pack_source is Store, CollectionBook, Quest, LevelUp or Schedule;
 // the after-mission rewards screen opens "Mission" packs. Choice packs need their options when granted.
