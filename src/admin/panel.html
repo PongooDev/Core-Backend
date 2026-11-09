@@ -179,7 +179,10 @@
         box-sizing: border-box;
         flex: none;
       }
-      nav.nav a span {
+      nav.nav a span,
+      nav.nav .nav-group-title,
+      nav.nav .season-select-wrapper,
+      nav.nav .nav-divider {
         display: none !important;
       }
       .server {
@@ -230,7 +233,10 @@
       box-sizing: border-box;
       flex: none;
     }
-    html[data-sidebar-collapsed="true"] nav.nav a span {
+    html[data-sidebar-collapsed="true"] nav.nav a span,
+    html[data-sidebar-collapsed="true"] nav.nav .nav-group-title,
+    html[data-sidebar-collapsed="true"] nav.nav .season-select-wrapper,
+    html[data-sidebar-collapsed="true"] nav.nav .nav-divider {
       display: none !important;
     }
     html[data-sidebar-collapsed="true"] .server {
@@ -339,6 +345,62 @@
       width: 20px;
       height: 20px;
       flex: none;
+    }
+
+    .nav-group-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--faint, rgba(255, 255, 255, .42));
+      padding: 14px 10px 4px;
+      margin: 0;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-divider {
+      border: none;
+      border-top: 1px solid var(--line, rgba(255, 255, 255, .08));
+      margin: 8px 6px;
+    }
+
+    .season-select-wrapper {
+      padding: 2px 6px 6px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .season-select {
+      width: 100%;
+      background: var(--surface-2, rgba(255, 255, 255, .06));
+      color: #fff;
+      border: 1px solid var(--line, rgba(255, 255, 255, .12));
+      border-radius: var(--radius-sm, 8px);
+      padding: 7px 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+      transition: border-color .15s ease, background .15s ease;
+      appearance: none;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%238a929e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>');
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 28px;
+    }
+
+    .season-select:hover,
+    .season-select:focus {
+      border-color: var(--accent, var(--blue));
+      background-color: var(--surface);
+    }
+
+    .season-select option {
+      background: #1e1e1e;
+      color: #fff;
     }
 
     .server {
@@ -1849,6 +1911,7 @@
         <span class="word">Core<span>Admin</span></span>
       </a>
       <nav class="nav" aria-label="Sections">
+        <div class="nav-group-title">Overview</div>
         <a href="#/dashboard" data-view="dashboard" title="Dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.8" stroke-linejoin="round" aria-hidden="true">
             <rect x="3.5" y="3.5" width="7" height="7" rx="2" />
@@ -1856,34 +1919,55 @@
             <rect x="3.5" y="13.5" width="7" height="7" rx="2" />
             <rect x="13.5" y="13.5" width="7" height="7" rx="2" />
           </svg><span>Dashboard</span></a>
+
+        <div class="nav-group-title">Players &amp; Community</div>
         <a href="#/players" data-view="players" title="Players"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
             <circle cx="9" cy="8" r="3.5" />
             <path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5" />
             <path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4M18 14.8c2 .7 3.2 2.5 3.5 5.2" />
           </svg><span>Players</span></a>
-        <a href="#/matchmaking" data-view="matchmaking" title="Matchmaking"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
-            <rect x="3.5" y="4" width="17" height="6.5" rx="2" />
-            <rect x="3.5" y="13.5" width="17" height="6.5" rx="2" />
-            <path d="M7.5 7.25h.01M7.5 16.75h.01M11 7.25h5M11 16.75h5" />
-          </svg><span>Matchmaking</span></a>
+        <a href="#/codes" data-view="codes" title="Codes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="2" y="6" width="20" height="12" rx="2" />
+            <circle cx="12" cy="12" r="2" />
+            <path d="M6 12h.01M18 12h.01" />
+          </svg><span>Codes</span></a>
         <a href="#/friends" data-view="friends" title="Friends"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
             <circle cx="12" cy="12" r="8.5" />
             <path
               d="M3.5 12h17M12 3.5c2.3 2.4 3.4 5.2 3.4 8.5s-1.1 6.1-3.4 8.5c-2.3-2.4-3.4-5.2-3.4-8.5s1.1-6.1 3.4-8.5z" />
           </svg><span>Friends</span></a>
-        <a href="#/news" data-view="news" title="News"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-            <path d="M8 8h8M8 12h8M8 16h5" />
-          </svg><span>News</span></a>
         <a href="#/reports" data-view="reports" title="Reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
             <line x1="4" y1="22" x2="4" y2="15" />
           </svg><span>Reports</span></a>
+
+        <div class="nav-group-title">Game Operations</div>
+        <a href="#/matchmaking" data-view="matchmaking" title="Matchmaking"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <rect x="3.5" y="4" width="17" height="6.5" rx="2" />
+            <rect x="3.5" y="13.5" width="17" height="6.5" rx="2" />
+            <path d="M7.5 7.25h.01M7.5 16.75h.01M11 7.25h5M11 16.75h5" />
+          </svg><span>Matchmaking</span></a>
+        <a href="#/tournaments" data-view="tournaments" title="Tournaments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z" />
+            <path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3" />
+          </svg><span>Tournaments</span></a>
+
+        <div class="nav-group-title">Season:</div>
+        <div class="season-select-wrapper">
+          <select id="sidebar-season-select" class="season-select" aria-label="Select Season">
+            <option value="1">Season 1</option>
+            <option value="2">Season 2</option>
+            <option value="3">Season 3</option>
+            <option value="4">Season 4</option>
+            <option value="5">Season 5</option>
+          </select>
+        </div>
         <a href="#/shop" data-view="shop" title="Shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
@@ -1892,8 +1976,8 @@
           </svg><span>Shop</span></a>
         <a href="#/battlepass" data-view="battlepass" title="Battle Pass"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="8" r="6" />
-            <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11" />
+            <polygon
+              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
           </svg><span>Battle Pass</span></a>
         <a href="#/events" data-view="events" title="Events"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1903,22 +1987,33 @@
             <line x1="3" y1="10" x2="21" y2="10" />
             <path d="m9 16 2 2 4-4" />
           </svg><span>Events</span></a>
-        <a href="#/tournaments" data-view="tournaments" title="Tournaments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        <a href="#/challenges" data-view="challenges" title="Challenges"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z" />
-            <path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3" />
-          </svg><span>Tournaments</span></a>
-        <a href="#/logs" data-view="logs" title="Logs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect x="3" y="4" width="18" height="16" rx="2.5" />
-            <path d="m7 9.5 3 2.5-3 2.5M12.5 15h4.5" />
-          </svg><span>Logs</span></a>
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="16" y1="13" x2="8" y2="13" />
+            <line x1="16" y1="17" x2="8" y2="17" />
+            <polyline points="10 9 9 9 8 9" />
+          </svg><span>Challenges</span></a>
+        <hr class="nav-divider" />
+        <a href="#/news" data-view="news" title="News"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+            <path d="M8 8h8M8 12h8M8 16h5" />
+          </svg><span>News</span></a>
+
+        <div class="nav-group-title">System &amp; Config</div>
         <a href="#/settings" data-view="settings" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="12" cy="12" r="3" />
             <path
               d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
           </svg><span>Settings</span></a>
+        <a href="#/logs" data-view="logs" title="Logs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="16" rx="2.5" />
+            <path d="m7 9.5 3 2.5-3 2.5M12.5 15h4.5" />
+          </svg><span>Logs</span></a>
       </nav>
       <div class="server" title="Backend status"><span class="pulse" id="pulse"></span><span
           id="server-line">Connecting…</span></div>
@@ -1951,6 +2046,7 @@
       inventoryCategory: "", inventorySearch: "", inventoryPage: 0, inventoryGrouped: null, catalog: { search: "", category: "", items: [], categories: [], picked: null },
       logs: [], logAfter: 0, logPaused: false, logFilter: "", logCategory: "", timers: [],
       eventsSeason: null, battlePassSeason: null, shopSeason: null,
+      activeSeason: (function() { try { return localStorage.getItem("core_admin_active_season") || "1"; } catch { return "1"; } })(),
       codeCreator: { code: "", note: "", maxUses: 1, expiresAt: "", vbucks: 0, foundersEdition: 0, campaignAccess: false, items: [], showForm: false }
     };
 
@@ -2042,70 +2138,7 @@
     ];
     const seasonOf = (id) => SEASONS.find((entry) => entry.id === String(id)) ?? SEASONS[0];
     const seasonRoute = (accountId) => SEASONS.find((entry) => accountId === `season${entry.id}` || accountId === entry.id)?.id ?? null;
-    const seasonBreadcrumb = (parentHash, parentLabel, currentSeasonLabel) => el("div", {
-      class: "season-breadcrumb",
-      style: "display:flex; align-items:center; gap:8px; margin-bottom:14px;"
-    },
-      el("a", {
-        href: parentHash,
-        class: "btn ghost small",
-        style: "display:inline-flex; align-items:center; gap:6px; padding:4px 10px; font-weight:600; text-decoration:none;"
-      }, icon("chevron-left", 14), el("span", { text: parentLabel })),
-      el("span", { class: "muted", style: "font-size:12px;" }, "/"),
-      el("span", { class: "font-semibold text-accent", style: "font-size:12px;" }, currentSeasonLabel)
-    );
-
-    const seasonHubCards = (cards) => el("div", {
-      class: "season-cards-list",
-      style: "display:flex; flex-direction:column; gap:12px; margin:16px 0 24px;"
-    },
-      cards.map((c) => el("div", {
-        class: "season-card",
-        role: "button",
-        tabindex: "0",
-        style: "display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 20px; border-radius:var(--radius-sm); cursor:pointer; background:var(--surface); border:1px solid var(--line); transition:all .15s ease; user-select:none;",
-        onmouseenter: (e) => {
-          e.currentTarget.style.borderColor = "var(--accent, var(--blue))";
-          e.currentTarget.style.background = "var(--surface-2)";
-          const arrow = e.currentTarget.querySelector(".season-card-arrow");
-          if (arrow) arrow.style.color = "var(--accent, var(--blue))";
-        },
-        onmouseleave: (e) => {
-          e.currentTarget.style.borderColor = "var(--line)";
-          e.currentTarget.style.background = "var(--surface)";
-          const arrow = e.currentTarget.querySelector(".season-card-arrow");
-          if (arrow) arrow.style.color = "var(--muted)";
-        },
-        onclick: () => {
-          location.hash = c.hash;
-        },
-        onkeydown: (e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            location.hash = c.hash;
-          }
-        }
-      },
-        el("div", { style: "min-width:0;" },
-          el("div", {
-            style: "font-size:15px; font-weight:700; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;",
-            text: c.title
-          }),
-          c.desc ? el("div", {
-            class: "muted",
-            style: "font-size:13px; margin-top:3px; line-height:1.4;",
-            text: c.desc
-          }) : null
-        ),
-        el("div", { style: "display:flex; align-items:center; gap:12px; flex-shrink:0;" },
-          c.badge ? chip(c.badge, "ghost") : null,
-          el("span", {
-            class: "season-card-arrow mono font-semibold",
-            style: "display:inline-flex; align-items:center; color:var(--muted); font-size:16px; transition:color .15s ease;"
-          }, "→")
-        )
-      ))
-    );
+    const seasonBreadcrumb = (parentHash, parentLabel, currentSeasonLabel) => document.createDocumentFragment();
 
     const icon = (name, size = 16) => {
       const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -3025,7 +3058,7 @@
       for (const timer of state.timers) clearInterval(timer);
       state.timers = [];
       const resolvedView = view === "sessions" ? "matchmaking" : view;
-      const next = ["dashboard", "players", "matchmaking", "friends", "news", "shop", "battlepass", "events", "tournaments", "reports", "logs", "settings"].includes(resolvedView) ? resolvedView : "dashboard";
+      const next = ["dashboard", "players", "codes", "matchmaking", "friends", "news", "shop", "battlepass", "events", "challenges", "seasons", "tournaments", "reports", "logs", "settings"].includes(resolvedView) ? resolvedView : "dashboard";
       if (next !== state.view || !$("view").childElementCount) $("view").replaceChildren(el("div", { class: "empty", text: "Loading…" }));
       state.view = next;
       for (const link of document.querySelectorAll("nav.nav a")) link.setAttribute("aria-current", link.dataset.view === state.view ? "page" : "false");
@@ -3034,31 +3067,68 @@
         if (!accountId) { state.accountId = null; state.account = null; }
         if (tab) state.tab = tab;
       }
+      if (state.view === "codes") {
+        state.codesFolder = accountId || "promotional";
+      }
+      if (state.view === "seasons") {
+        const s = seasonRoute(accountId);
+        if (s) {
+          state.activeSeason = s;
+          try { localStorage.setItem("core_admin_active_season", s); } catch {}
+        }
+      }
+      if (state.view === "challenges") {
+        const s = seasonRoute(accountId);
+        if (s) {
+          state.activeSeason = s;
+          try { localStorage.setItem("core_admin_active_season", s); } catch {}
+        }
+      }
       if (state.view === "shop") {
-        if (seasonRoute(accountId)) {
-          state.shopSeason = seasonRoute(accountId);
-          state.shopFolder = "shop";
+        const s = seasonRoute(accountId);
+        if (s) {
+          state.shopSeason = s;
+          state.activeSeason = s;
+          try { localStorage.setItem("core_admin_active_season", s); } catch {}
         } else if (accountId && accountId !== "shop") {
-          state.shopFolder = accountId;
-          state.shopSeason = null;
+          location.hash = `#/codes/${accountId}`;
+          return;
         } else {
-          state.shopFolder = "shop";
-          state.shopSeason = null;
+          state.shopSeason = state.activeSeason || "1";
         }
       }
       if (state.view === "battlepass") {
-        state.battlePassSeason = seasonRoute(accountId);
+        const s = seasonRoute(accountId);
+        if (s) {
+          state.battlePassSeason = s;
+          state.activeSeason = s;
+          try { localStorage.setItem("core_admin_active_season", s); } catch {}
+        } else {
+          state.battlePassSeason = state.activeSeason || "1";
+        }
       }
       if (state.view === "events") {
-        state.eventsSeason = seasonRoute(accountId);
+        const s = seasonRoute(accountId);
+        if (s) {
+          state.eventsSeason = s;
+          state.activeSeason = s;
+          try { localStorage.setItem("core_admin_active_season", s); } catch {}
+        } else {
+          state.eventsSeason = state.activeSeason || "1";
+        }
       }
+      syncSeasonDropdown();
       if (state.view === "reports") {
         state.reportId = accountId || null;
       }
       if (state.view === "tournaments") {
         state.tournamentEventId = accountId || null;
       }
-      ({ dashboard: showDashboard, players: showPlayers, matchmaking: showMatchmaking, sessions: showMatchmaking, friends: showFriends, news: showNews, shop: showShop, battlepass: showBattlePass, events: showEvents, tournaments: showTournaments, reports: showReports, logs: showLogs, settings: showSettings })[state.view]();
+      ({ dashboard: showDashboard, players: showPlayers, codes: showCodes, matchmaking: showMatchmaking, sessions: showMatchmaking, friends: showFriends, news: showNews, shop: showShop, battlepass: showBattlePass, events: showEvents, challenges: showChallenges, seasons: showSeasons, tournaments: showTournaments, reports: showReports, logs: showLogs, settings: showSettings })[state.view]();
+    }
+    function syncSeasonDropdown() {
+      const sel = $("sidebar-season-select");
+      if (sel && state.activeSeason) sel.value = state.activeSeason;
     }
     window.addEventListener("hashchange", route);
     const every = (ms, fn) => state.timers.push(setInterval(fn, ms));
@@ -4340,22 +4410,61 @@
       const serverLimitsTableBox = el("div", { style: "margin-top:14px; overflow-x:auto;" });
       const rewardsGridBox = el("div", { class: "grid cols-2", style: "margin-top:14px;" });
 
+      let ltmSeason = SEASONS.some((entry) => entry.id === state.matchmakingSeason) ? state.matchmakingSeason : "2";
+      const isModeActive = (m) => {
+        if (form.ltmOriginalDates && isLtm(m.id)) {
+          return ltmOf(m.id)?.inWindow?.[ltmSeason] === true;
+        }
+        return isLtm(m.id)
+          ? (m.id === "fiftyFifty" ? form.modes[m.id] !== false : form.modes[m.id] === true)
+          : form.modes[m.id] !== false;
+      };
+
+      // Track which modes are visible in the queue table
+      let savedDisplayed = null;
+      try { savedDisplayed = JSON.parse(localStorage.getItem("core_admin_mm_displayed_modes")); } catch {}
+      const defaultActive = ["solo", "duo", "squad", ...modeKeys.filter((m) => isModeActive(m)).map((m) => m.id)];
+      const displayedModeIds = new Set(
+        Array.isArray(savedDisplayed) && savedDisplayed.length
+          ? savedDisplayed
+          : defaultActive
+      );
+      for (const m of modeKeys) {
+        if (isModeActive(m)) displayedModeIds.add(m.id);
+      }
+      displayedModeIds.add("solo");
+      displayedModeIds.add("duo");
+      displayedModeIds.add("squad");
+
+      const saveDisplayedModes = () => {
+        try { localStorage.setItem("core_admin_mm_displayed_modes", JSON.stringify([...displayedModeIds])); } catch {}
+      };
+
       // Live Stats Tiles Elements
-      const activeModesTileVal = el("span", { text: `${Object.values(form.modes).filter(Boolean).length} / ${modeKeys.length} Online` });
+      const activeModesCountEl = el("span", { text: "" });
+      const activeModesStatusEl = el("span", { class: "sub", text: "" });
+      const activeModesTileVal = el("div", {}, activeModesCountEl, activeModesStatusEl);
       const liveSessionsTileVal = el("span", { text: fmt(data.sessions.length) });
       const freeServersTileVal = el("span", { text: fmt(data.sessions.filter((s) => s.gameMode === "FORTEMPTY" && !s.currentPlayers).length) });
       const inGamePlayersTileVal = el("span", { text: fmt(data.sessions.reduce((tot, s) => tot + (s.currentPlayers || 0), 0)) });
-      const headerModesChip = chip(`${Object.values(form.modes).filter(Boolean).length}/${modeKeys.length} Modes Online`, Object.values(form.modes).filter(Boolean).length > 0 ? "good" : "warn");
+      const headerModesChip = chip("", "good");
       const headerServersChip = chip(`${data.sessions.length} Live Servers`, "sky");
-      const sectionModesChip = chip(`${Object.values(form.modes).filter(Boolean).length} Active`, "accent");
+      const sectionModesChip = chip("", "accent");
       const sectionSessionsChip = chip(`${data.sessions.length} Registered`, "accent");
+      const queueHeaderEl = el("h3", { style: "margin:16px 0 0;", text: "In the queue now" });
 
       function updateActiveModesIndicators() {
-        const count = Object.values(form.modes).filter(Boolean).length;
-        activeModesTileVal.textContent = `${count} / ${modeKeys.length} Online`;
-        headerModesChip.textContent = `${count}/${modeKeys.length} Modes Online`;
-        headerModesChip.className = `chip ${count > 0 ? "good" : "warn"}`;
-        sectionModesChip.textContent = `${count} Active`;
+        const selectedModes = modeKeys.filter((m) => displayedModeIds.has(m.id));
+        const availableCount = selectedModes.filter(isModeActive).length;
+        const totalSelected = selectedModes.length;
+        const queueStatus = availableCount > 0 ? "Open" : "Closed";
+        activeModesCountEl.textContent = `${availableCount}/${totalSelected}`;
+        activeModesStatusEl.textContent = `Queue Status: ${queueStatus}`;
+        activeModesStatusEl.style.color = availableCount > 0 ? "var(--good, #3ccf6e)" : "var(--warn, #f5b13d)";
+        headerModesChip.textContent = `Queue: ${queueStatus} (${availableCount}/${totalSelected})`;
+        headerModesChip.className = `chip ${availableCount > 0 ? "good" : "warn"}`;
+        sectionModesChip.textContent = `${availableCount}/${totalSelected}`;
+        queueHeaderEl.textContent = `In the queue now (${availableCount}/${totalSelected})`;
       }
 
       // --- Render Section 2: Server Limits (Only showing active/ON modes) ---
@@ -4521,96 +4630,34 @@
         rewardsGridBox.replaceChildren(...columns);
       }
 
-      // --- Section 1: Battle Royale Game Modes, by season (Core-Backend #191): solo, duos and squads, then the season's
-      // limited-time modes, each on by hand or, with Original dates on, by its dates ---
-      let ltmSeason = SEASONS.some((entry) => entry.id === state.matchmakingSeason) ? state.matchmakingSeason : "2";
+      // --- Section 1: Battle Royale Game Modes (Queue Availability) ---
       const fmtDay = (d) => new Date(d.length === 10 ? `${d}T00:00:00Z` : d).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
-      const modeCardsBox = el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:14px; margin-top:14px;" });
-      const modeCard = (name, statusChip, lines, toggle) => el("div", {
-        style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius); display:flex; flex-direction:column; justify-content:space-between; gap:12px;"
-      },
-        el("div", {},
-          el("div", { style: "display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;" },
-            el("div", { style: "font-weight:700; font-size:16px;", text: name }),
-            statusChip),
-          ...lines),
-        el("div", { style: "display:flex; justify-content:space-between; align-items:center; padding-top:8px; border-top:1px solid var(--line);" },
-          el("span", { class: "muted font-semibold", style: "font-size:12px;", text: "Queue Availability" }),
-          toggle));
+      const replayDayText = el("div", { class: "muted", style: "font-size:12px;" });
+      const activeModesTableBox = el("div", { style: "margin-top:14px; overflow-x:auto;" });
+
+      const closeEncountersControls = () => {
+        const ce = form.ltmCloseEncounters;
+        const hourSelect = el("select", { class: "field", "aria-label": "Close Encounters hour", disabled: ce.wholeDay !== false,
+          onchange: (e) => { ce.hour = Number(e.target.value); } },
+          Array.from({ length: 24 }, (_, hour) => el("option", { value: hour, selected: ce.hour === hour, text: `${String(hour).padStart(2, "0")}:00 – ${String((hour + 1) % 24).padStart(2, "0")}:00` })));
+        return el("div", { class: "actions", style: "margin-top:6px; align-items:center; gap:8px; flex-wrap:wrap;" },
+          el("span", { class: "muted", style: "font-size:12px;", text: "Whole day" }),
+          toggleSwitch(ce.wholeDay !== false, (checked) => { ce.wholeDay = checked; hourSelect.disabled = checked; }),
+          hourSelect,
+          el("div", { class: "muted", style: "font-size:12px; flex-basis:100%;", text: "Off: only the hour chosen (Epic ran it for one hour). Solid Gold v2 stops for it and starts again after it." }));
+      };
+
       const onModeToggled = () => {
         updateActiveModesIndicators();
         renderServerLimitsTable();
         renderRewardColumns();
         renderActiveModes();
       };
-      const coreModeCard = (m) => {
-        const isEnabled = form.modes[m.id] !== false;
-        const statusChip = chip(isEnabled ? "Enabled" : "Disabled", isEnabled ? "good" : "warn");
-        const toggle = toggleSwitch(isEnabled, (checked) => {
-          form.modes[m.id] = checked;
-          statusChip.textContent = checked ? "Enabled" : "Disabled";
-          statusChip.className = `chip ${checked ? "good" : "warn"}`;
-          onModeToggled();
-        });
-        return modeCard(m.name, statusChip, [
-          el("div", { class: "mono muted", style: "font-size:12px; margin-bottom:4px;", text: `Playlist ${m.playlistId} · ${m.code}` }),
-          el("div", { class: "sub", style: "font-size:12px;", text: m.teams })], toggle);
-      };
-      const ltmCard = (l) => {
-        const inWindow = l.inWindow?.[ltmSeason] === true;
-        const byHand = l.id === "fiftyFifty" ? form.modes[l.id] !== false : form.modes[l.id] === true;
-        const isEnabled = form.ltmOriginalDates ? inWindow : byHand;
-        const datedLabel = l.original ? (inWindow ? "In its dates" : "Out of its dates") : "No original dates";
-        const statusChip = chip(form.ltmOriginalDates ? datedLabel : (isEnabled ? "Enabled" : "Disabled"), isEnabled ? "good" : "warn");
-        const toggle = toggleSwitch(byHand, (checked) => {
-          form.modes[l.id] = checked;
-          statusChip.textContent = checked ? "Enabled" : "Disabled";
-          statusChip.className = `chip ${checked ? "good" : "warn"}`;
-          onModeToggled();
-        }, form.ltmOriginalDates, l.original ? "Original dates is on: this LTM follows its dates."
-          : "Original dates is on: this LTM has no original dates, so it stays off.");
-        // Its windows of the season shown (#258: Seasons 3 and 4 have LTMs that ran more than once), each day or hour.
-        const fmtMoment = (d) => (d.length === 10 ? fmtDay(d) : `${fmtDay(d)} ${d.slice(11, 16)}`);
-        const windows = (l.windows || []).filter((w) => String(w.season) === String(ltmSeason));
-        const windowText = (w) => `${fmtMoment(w.start)} – ${w.end.length === 10 ? fmtDay(w.last) : fmtMoment(w.end)} on ${w.builds}`;
-        // Close Encounters ran for one hour of 25 May 2018: the whole day or a chosen hour (the replay clock's).
-        const closeEncountersControls = () => {
-          const ce = form.ltmCloseEncounters;
-          const hourSelect = el("select", { class: "field", "aria-label": "Close Encounters hour", disabled: ce.wholeDay !== false,
-            onchange: (e) => { ce.hour = Number(e.target.value); renderModeCards(); } },
-            Array.from({ length: 24 }, (_, hour) => el("option", { value: hour, selected: ce.hour === hour, text: `${String(hour).padStart(2, "0")}:00 – ${String((hour + 1) % 24).padStart(2, "0")}:00` })));
-          return el("div", { class: "actions", style: "margin-top:6px; align-items:center; gap:8px; flex-wrap:wrap;" },
-            el("span", { class: "muted", style: "font-size:12px;", text: "Whole day" }),
-            toggleSwitch(ce.wholeDay !== false, (checked) => { ce.wholeDay = checked; renderModeCards(); }),
-            hourSelect,
-            el("div", { class: "muted", style: "font-size:12px; flex-basis:100%;", text: "Off: only the hour chosen (Epic ran it for one hour). Solid Gold v2 stops for it and starts again after it." }));
-        };
-        return modeCard(l.name, statusChip, [
-          el("div", { class: "mono muted", style: "font-size:12px; margin-bottom:4px;", text: `${l.playlistId === null ? "Playlist from its build's data" : `Playlist ${l.playlistId}`}${l.queue ? ` · AthenaEvent${l.queue}` : ""} · ${l.builds}` }),
-          el("div", { class: "sub", style: "font-size:12px; margin-bottom:4px;", text: l.teams }),
-          el("div", { class: "sub", style: "font-size:12px; margin-bottom:4px;", text: l.description }),
-          ...(l.newIn ? [el("div", { class: "sub", style: "font-size:12px; margin-bottom:4px;",
-            text: `${l.newIn}'s new mode: always on there, the mode its lobby opens on, under "New Mode Available!". This switch is for its other builds.` })] : []),
-          el("div", { class: "muted", style: "font-size:12px;", text: windows.length
-            ? `Original dates: ${windows.map(windowText).join("; ")}`
-            : l.original ? `Original dates: none in Season ${ltmSeason}, so it stays off there while Original dates is on.`
-            : "Original dates: none. Epic never ran it on these builds, so it stays off while Original dates is on." }),
-          ...(l.id === "closeEncounters" ? [closeEncountersControls()] : [])], toggle);
-      };
-      const replayDayText = el("div", { class: "muted", style: "font-size:12px;" });
-      const activeModesTableBox = el("div", { style: "margin-top:14px; overflow-x:auto;" });
-
-      const isModeActive = (m) => {
-        if (form.ltmOriginalDates && isLtm(m.id)) {
-          return ltmOf(m.id)?.inWindow?.[ltmSeason] === true;
-        }
-        return isLtm(m.id)
-          ? (m.id === "fiftyFifty" ? form.modes[m.id] !== false : form.modes[m.id] === true)
-          : form.modes[m.id] !== false;
-      };
 
       function renderActiveModes() {
-        const activeList = modeKeys.filter(isModeActive);
+        const activeList = modeKeys.filter((m) => displayedModeIds.has(m.id));
+        const enabledInQueue = activeList.filter(isModeActive).length;
+        queueHeaderEl.textContent = `In the queue now (${enabledInQueue} / ${activeList.length} Enabled)`;
 
         if (!activeList.length) {
           activeModesTableBox.replaceChildren(
@@ -4618,7 +4665,7 @@
               style: "padding:28px 20px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius); text-align:center; color:var(--muted);"
             },
               el("div", { style: "font-size:15px; font-weight:600; margin-bottom:6px; color:var(--text);", text: "No Game Modes in Active Queue" }),
-              el("div", { style: "font-size:13px; margin-bottom:14px;", text: "All playlists are currently disabled. Click \"+ Add Game Mode\" to enable playlists for matchmaking." }),
+              el("div", { style: "font-size:13px; margin-bottom:14px;", text: "All playlists are currently removed from the queue rotation. Click \"+ Add Game Mode\" to add playlists." }),
               btn("+ Add Game Mode", openAddGameModeModal, "primary")
             )
           );
@@ -4643,21 +4690,21 @@
               return toggleSwitch(byHand, (checked) => {
                 form.modes[m.id] = checked;
                 onModeToggled();
-                renderModeCards();
               });
             }],
             ["", (m) => el("div", { class: "actions" },
               btn("Remove", () => {
+                displayedModeIds.delete(m.id);
+                saveDisplayedModes();
                 form.modes[m.id] = false;
                 onModeToggled();
-                renderModeCards();
               }, "ghost", { title: "Remove from active queue rotation" }))]
           ], activeList, "No active game modes.")
         );
       }
 
       function openAddGameModeModal() {
-        let filterSeason = ltmSeason;
+        let filterSeason = "all";
         let searchQuery = "";
 
         const close = () => {
@@ -4677,7 +4724,9 @@
           }
         });
 
-        const listContainer = el("div", { style: "display:flex; flex-direction:column; gap:8px; max-height:48vh; overflow-y:auto; padding-right:6px;" });
+        const listContainer = el("div", {
+          style: "display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:14px; max-height:56vh; overflow-y:auto; padding:4px;"
+        });
 
         const renderModalList = () => {
           const query = searchQuery.toLowerCase().trim();
@@ -4685,39 +4734,87 @@
             if (isLtm(m.id)) {
               const l = ltmOf(m.id);
               if (filterSeason !== "all" && !l.seasons.includes(Number(filterSeason))) return false;
+            } else if (filterSeason !== "all") {
+              // Core modes exist in all seasons
             }
-            if (query && !m.name.toLowerCase().includes(query) && !m.code.toLowerCase().includes(query)) return false;
+            if (query) {
+              const l = ltmOf(m.id);
+              const desc = l?.description || "";
+              if (!m.name.toLowerCase().includes(query) && !m.code.toLowerCase().includes(query) && !desc.toLowerCase().includes(query)) return false;
+            }
             return true;
           });
 
-          listContainer.replaceChildren(...items.map((m) => {
-            const isEnabled = isModeActive(m);
-            const statusBadge = chip(isEnabled ? "Active" : "Disabled", isEnabled ? "good" : "warn");
+          if (!items.length) {
+            listContainer.replaceChildren(
+              el("div", {
+                style: "grid-column:1/-1; padding:32px 16px; text-align:center; color:var(--muted);"
+              },
+                el("div", { style: "font-size:15px; font-weight:600; margin-bottom:4px; color:var(--text);", text: "No Game Modes Found" }),
+                el("div", { style: "font-size:13px;", text: "Try adjusting your search query or season filter." }))
+            );
+            return;
+          }
 
-            const toggleBtn = btn(isEnabled ? "Disable" : "Enable", () => {
-              form.modes[m.id] = !isEnabled;
-              onModeToggled();
-              renderModeCards();
-              renderModalList();
-            }, isEnabled ? "ghost" : "primary");
+          listContainer.replaceChildren(...items.map((m) => {
+            const isAdded = displayedModeIds.has(m.id);
+            const isEnabled = isModeActive(m);
+            const l = ltmOf(m.id);
+            const desc = l?.description || (m.id === "solo"
+              ? "100 players drop in alone. Last player standing claims the Victory Royale."
+              : m.id === "duo"
+              ? "Team up in pairs of two. 50 teams battle across the island."
+              : m.id === "squad"
+              ? "Squad up with up to 4 players in 25 teams of four."
+              : "Classic Battle Royale playlist.");
+
+            const statusBadge = chip(
+              isAdded ? (isEnabled ? "In Queue (Active)" : "In Queue (Off)") : "Not in Queue",
+              isAdded ? (isEnabled ? "good" : "warn") : ""
+            );
+
+            const actionBtn = isAdded
+              ? btn(isEnabled ? "Disable" : "Enable", () => {
+                  form.modes[m.id] = !isEnabled;
+                  onModeToggled();
+                  renderModalList();
+                }, isEnabled ? "ghost small" : "primary small")
+              : btn("+ Add to Queue", () => {
+                  displayedModeIds.add(m.id);
+                  saveDisplayedModes();
+                  form.modes[m.id] = true;
+                  onModeToggled();
+                  renderModalList();
+                }, "primary small");
 
             return el("div", {
-              style: "display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
+              style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius); display:flex; flex-direction:column; justify-content:space-between; gap:10px; min-height:190px;"
             },
-              el("div", { style: "min-width:0;" },
-                el("div", { style: "display:flex; align-items:center; gap:8px; margin-bottom:2px;" },
-                  el("span", { style: "font-weight:700; font-size:14px;", text: m.name }),
+              el("div", {},
+                el("div", { style: "display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:6px;" },
+                  el("div", { style: "font-weight:700; font-size:15px; line-height:1.2;", text: m.name }),
                   statusBadge),
-                el("div", { class: "mono muted", style: "font-size:11px;", text: m.code }),
-                el("div", { class: "sub", style: "font-size:12px; margin-top:2px;", text: m.teams })),
-              toggleBtn);
+                el("div", { class: "mono muted", style: "font-size:11px; margin-bottom:4px;", text: m.code }),
+                el("div", { class: "sub", style: "font-size:12px; font-weight:600; color:var(--text); margin-bottom:6px;", text: m.teams }),
+                el("div", { class: "sub muted", style: "font-size:12px; line-height:1.4;", text: desc }),
+                ...(l?.builds ? [el("div", { class: "mono muted", style: "font-size:11px; margin-top:6px;", text: `Builds: ${l.builds}` })] : []),
+                ...(m.id === "closeEncounters" ? [
+                  el("div", { style: "margin-top:10px; padding-top:8px; border-top:1px dashed var(--line);" },
+                    el("div", { class: "muted font-semibold", style: "font-size:11px; margin-bottom:4px;", text: "Close Encounters Mode Window:" }),
+                    closeEncountersControls())
+                ] : [])
+              ),
+              el("div", { style: "display:flex; justify-content:space-between; align-items:center; padding-top:10px; border-top:1px solid var(--line); margin-top:auto;" },
+                el("span", { class: "muted font-semibold", style: "font-size:11px;", text: isAdded ? "Queue Status" : "Action" }),
+                actionBtn)
+            );
           }));
         };
 
         const searchInput = el("input", {
           class: "field",
           type: "search",
-          placeholder: "Search modes (e.g. Solo, Blitz, 50v50)…",
+          placeholder: "Search modes by name, playlist, or description…",
           style: "width:100%;",
           oninput: (e) => {
             searchQuery = e.target.value;
@@ -4743,13 +4840,13 @@
 
         const modalBox = el("div", {
           class: "modal-dialog",
-          style: "width:100%; max-width:640px; display:flex; flex-direction:column; gap:16px;",
+          style: "width:100%; max-width:880px; max-height:86vh; display:flex; flex-direction:column; gap:14px;",
           onclick: (e) => e.stopPropagation()
         },
           el("div", { style: "display:flex; justify-content:space-between; align-items:center;" },
             el("div", {},
               el("h2", { style: "margin:0; font-size:18px;", text: "Add Game Mode to Queue" }),
-              el("div", { class: "muted", style: "font-size:12px; margin-top:2px;", text: "Turn playlists on or off for the matchmaking queue." })),
+              el("div", { class: "muted", style: "font-size:12px; margin-top:2px;", text: "Explore playlists across all seasons, view descriptions, and add or enable them for matchmaking." })),
             btn("✕", close, "ghost", { style: "min-height:28px; padding:0 8px; font-size:14px; border:none;" })),
           el("div", { style: "display:flex; flex-direction:column; gap:10px;" },
             searchInput,
@@ -4769,34 +4866,17 @@
         });
       }
 
-      function renderModeCards() {
-        modeCardsBox.replaceChildren(...coreModes.map(coreModeCard),
-          ...ltmList.filter((l) => l.seasons.includes(Number(ltmSeason))).map(ltmCard));
-        const replayDay = data.ltms?.seasonMoments?.[ltmSeason];
-        replayDayText.textContent = replayDay ? `Season ${ltmSeason} replay day: ${fmtDay(replayDay)}` : "";
-        renderActiveModes();
-      }
       const ltmModeChip = chip(form.ltmOriginalDates ? "Original dates" : "By hand", "accent");
       const originalDatesToggle = toggleSwitch(form.ltmOriginalDates, (checked) => {
         form.ltmOriginalDates = checked;
         ltmModeChip.textContent = checked ? "Original dates" : "By hand";
-        renderModeCards();
-        renderServerLimitsTable();
+        onModeToggled();
       });
-      // The season tabs only redraw the cards, so unsaved switches stay.
-      const ltmSeasonButtons = SEASONS.map(({ id: key, label }) => {
-        const button = el("button", {
-          type: "button", "aria-pressed": String(ltmSeason === key),
-          onclick: () => {
-            ltmSeason = state.matchmakingSeason = key;
-            ltmSeasonButtons.forEach(([other, otherButton]) => otherButton.setAttribute("aria-pressed", String(other === key)));
-            renderModeCards();
-          }
-        }, el("span", { text: label }));
-        return [key, button];
-      });
-      const ltmSeasonTabs = el("div", { class: "filters", style: "margin-top:12px;" }, ...ltmSeasonButtons.map(([, button]) => button));
-      renderModeCards();
+
+      const replayDay = data.ltms?.seasonMoments?.[ltmSeason];
+      replayDayText.textContent = replayDay ? `Season ${ltmSeason} replay day: ${fmtDay(replayDay)}` : "";
+      updateActiveModesIndicators();
+      renderActiveModes();
 
       // Initial render for Quotas and Rewards
       renderServerLimitsTable();
@@ -4946,12 +5026,8 @@
             el("div", { class: "font-semibold", text: "Original dates (limited-time modes)" }),
             replayDayText),
           originalDatesToggle),
-        el("h3", { style: "margin:16px 0 0;", text: "In the queue now" }),
-        activeModesTableBox,
-        // Each season's modes (#191): every LTM's dates, builds and switch, and Close Encounters' whole day or hour.
-        el("h3", { style: "margin:20px 0 0;", text: "Every mode, by season" }),
-        ltmSeasonTabs,
-        modeCardsBox);
+        queueHeaderEl,
+        activeModesTableBox);
 
       // Section 2: Regional Server Allocation Limits
       const sectionLimits = el("section", { class: "panel", style: "margin-top:16px" },
@@ -5761,48 +5837,32 @@
       );
     }
 
-    /* ---------- shop ---------- */
-    const pickShopSeason = (season) => {
-      state.shopSeason = String(season);
-      if (location.hash !== `#/shop/season${season}`) {
-        location.hash = `#/shop/season${season}`;
-      } else {
-        showShop();
-      }
-    };
-
-    async function showShop() {
-      const currentShopSeason = seasonOf(state.shopSeason).id;
-      const [shop, codes, folders] = await Promise.all([
-        act(api(`/admin/api/shop?season=${currentShopSeason}`)),
-        api("/admin/api/codes?type=promotional").catch(() => []),
+    /* ---------- reward & promotional codes ---------- */
+    async function showCodes() {
+      const [codes, folders] = await Promise.all([
+        act(api("/admin/api/codes?type=promotional")).catch(() => []),
         api("/admin/api/code-folders").catch(() => [])
       ]);
-      if (!shop || state.view !== "shop") return;
-
-      if (!state.customShop) {
-        state.customShop = JSON.parse(JSON.stringify(shop.custom || { featured: [], daily: [] }));
-      }
+      if (state.view !== "codes") return;
 
       const promoCodes = Array.isArray(codes) ? codes : [];
       const folderList = Array.isArray(folders) && folders.length
         ? folders
         : [{ name: "Promotional", slug: "promotional" }];
 
-      const currentSub = state.shopFolder || "shop";
+      const currentSub = state.codesFolder || "promotional";
       const activeCount = promoCodes.filter((c) => !c.isExpired && !c.isDepleted).length;
       const archivedCount = promoCodes.filter((c) => c.isExpired || c.isDepleted).length;
 
-      // Top Subtabs for Store View
+      // Folder Subtabs
       const storeTabs = [
-        { key: "shop", label: "Item Shop", hash: "#/shop" },
-        { key: "promotional", label: "Promotional", count: promoCodes.filter((c) => (c.folder || "promotional") === "promotional" && !c.isDepleted && !c.isExpired).length, hash: "#/shop/promotional" },
-        { key: "archived-codes", label: "Archived Codes", count: archivedCount, hash: "#/shop/archived-codes" },
+        { key: "promotional", label: "Promotional", count: promoCodes.filter((c) => (c.folder || "promotional") === "promotional" && !c.isDepleted && !c.isExpired).length, hash: "#/codes/promotional" },
+        { key: "archived-codes", label: "Archived Codes", count: archivedCount, hash: "#/codes/archived-codes" },
         ...folderList.filter((f) => f.slug !== "promotional").map((f) => ({
           key: f.slug,
           label: f.name,
           count: promoCodes.filter((c) => (c.folder || "promotional") === f.slug && !c.isDepleted && !c.isExpired).length,
-          hash: `#/shop/${f.slug}`,
+          hash: `#/codes/${f.slug}`,
           custom: true
         }))
       ];
@@ -5831,7 +5891,7 @@
                   confirmKind: "danger"
                 })) return;
                 await act(api(`/admin/api/code-folders/${encodeURIComponent(t.key)}`, {}, "DELETE"), `Deleted folder ${t.label}`);
-                location.hash = "#/shop/promotional";
+                location.hash = "#/codes/promotional";
               }
             }, "✕") : null
           ))
@@ -5839,62 +5899,20 @@
         el("div", { class: "actions", style: "margin-bottom:6px; flex-shrink:0;" },
           btn("+ New Folder", () => {
             openNewFolderModal((res) => {
-              location.hash = `#/shop/${res.slug}`;
-              showShop();
+              location.hash = `#/codes/${res.slug}`;
+              showCodes();
             });
           }, "primary small")
         )
       );
 
-      if (currentSub === "shop" && !state.shopSeason) {
-        // Item Shop Hub: display rectangular season cards (no options underneath)
-        $("view").replaceChildren(
-          el("div", { class: "view-head" },
-            el("div", {},
-              el("h1", { text: "Item Shop", style: "margin:0 0 4px;" }),
-              el("div", { class: "muted", text: "Configure Battle Royale's Store tab (Athena Direct Acquisition) by season, or manage promotional reward codes." })),
-            el("div", { class: "actions" },
-              btn("Refresh", showShop, "ghost"))),
-          topSubtabs,
-          seasonHubCards([
-            {
-              title: "Season 1: Item Shop (1.8 – 1.10)",
-              badge: "45 Days",
-              hash: "#/shop/season1"
-            },
-            {
-              title: "Season 2: Item Shop (1.11 – 2.5)",
-              badge: "70 Days",
-              hash: "#/shop/season2"
-            },
-            {
-              title: "Season 3: Item Shop (3.0 – 3.6)",
-              badge: "68 Days",
-              hash: "#/shop/season3"
-            },
-            {
-              title: "Season 4: Item Shop (4.0 – 4.5)",
-              badge: "72 Days",
-              hash: "#/shop/season4"
-            },
-            {
-              title: "Season 5: Item Shop (5.0)",
-              badge: "77 Days",
-              hash: "#/shop/season5"
-            }
-          ])
-        );
-        return;
-      }
-
-      // --- SECTION A: PROMOTIONAL & REWARD CODES MANAGER ---
       let displayedCodes = [];
       const isArchiveView = currentSub === "archived-codes";
       if (isArchiveView) {
         displayedCodes = promoCodes.filter((c) => c.isExpired || c.isDepleted);
       } else if (currentSub === "all") {
         displayedCodes = promoCodes;
-      } else if (currentSub !== "shop") {
+      } else {
         displayedCodes = promoCodes.filter((c) => (c.folder || "promotional") === currentSub && !c.isDepleted && !c.isExpired);
       }
 
@@ -5962,7 +5980,7 @@
         folderList.map((f) => el("option", {
           value: f.slug,
           text: f.name,
-          selected: (creator.folder || (currentSub !== "shop" && currentSub !== "archived-codes" && currentSub !== "all" ? currentSub : "promotional")) === f.slug
+          selected: (creator.folder || (currentSub !== "archived-codes" && currentSub !== "all" ? currentSub : "promotional")) === f.slug
         }))
       );
 
@@ -6082,7 +6100,7 @@
           state.codeCreator = {
             code: "", note: "", maxUses: 1, expiresAt: "", vbucks: 0, foundersEdition: 0, campaignAccess: false, items: [], showForm: false, folder: payload.folder
           };
-          showShop();
+          showCodes();
         }
       }, "primary");
 
@@ -6213,7 +6231,7 @@
                     confirmKind: "danger"
                   })) return;
                   const res = await act(api(`/admin/api/codes/${encodeURIComponent(c.code)}`, {}, "DELETE"), `Deleted ${c.code}`);
-                  if (res) showShop();
+                  if (res) showCodes();
                 }, "danger small", { title: `Delete ${c.code}` })
               ))
           );
@@ -6251,7 +6269,41 @@
         codesTable
       );
 
-      // --- SECTION B: ITEM SHOP CONFIGURATION & LIVE PREVIEW ---
+      $("view").replaceChildren(
+        el("div", { class: "view-head" },
+          el("div", {},
+            el("h1", { text: "Reward & Promotional Codes", style: "margin:0 0 4px;" }),
+            el("div", { class: "muted", text: "Generate and manage redemption codes for V-Bucks, cosmetics, Founder's packs, and campaign access." })),
+          el("div", { class: "actions" },
+            btn("Redeem Portal ↗", () => window.open("/redeem", "_blank"), "ghost"),
+            btn("Refresh", showCodes, "ghost"))),
+        topSubtabs,
+        codesSection
+      );
+    }
+
+    /* ---------- shop ---------- */
+    const pickShopSeason = (season) => {
+      state.shopSeason = String(season);
+      if (location.hash !== `#/shop/season${season}`) {
+        location.hash = `#/shop/season${season}`;
+      } else {
+        showShop();
+      }
+    };
+
+    async function showShop() {
+      const currentShopSeason = seasonOf(state.shopSeason || state.activeSeason).id;
+      const [shop] = await Promise.all([
+        act(api(`/admin/api/shop?season=${currentShopSeason}`))
+      ]);
+      if (!shop || state.view !== "shop") return;
+
+      if (!state.customShop) {
+        state.customShop = JSON.parse(JSON.stringify(shop.custom || { featured: [], daily: [] }));
+      }
+
+      // --- ITEM SHOP CONFIGURATION & LIVE PREVIEW ---
       const rotationHourSelect = el("select", { class: "field", style: "min-width:150px;" },
         Array.from({ length: 24 }, (_, i) => {
           const str = String(i).padStart(2, "0") + ":00 UTC";
@@ -6730,37 +6782,22 @@
           ))
       );
 
-      // Render the selected view cleanly!
-      if (currentSub === "shop") {
-        $("view").replaceChildren(
-          seasonBreadcrumb("#/shop", "Item Shop", seasonOf(currentShopSeason).label),
-          el("div", { class: "view-head" },
-            el("div", {},
-              el("h1", { text: "Item Shop", style: "margin:0 0 4px;" }),
-              el("div", { class: "muted", text: `Configure Battle Royale's Store tab (Athena Direct Acquisition) for ${seasonOf(currentShopSeason).label}. The mode, timing and custom shop are shared by every season; the history and cosmetics shown are this season's.` })),
-            el("div", { class: "actions" },
-              btn("Refresh", showShop, "ghost"))),
-          timingSettingsSection,
-          vbuckPacksSection,
-          purchaseCodesSection,
-          modePicker,
-          configSection,
-          previewSection
-        );
-      } else {
-        $("view").replaceChildren(
-          el("div", { class: "view-head" },
-            el("div", {},
-              el("h1", { text: currentSub === "archived-codes" ? "Archived Codes" : `${folderList.find((f) => f.slug === currentSub)?.name || "Promotional"} Codes`, style: "margin:0 0 4px;" }),
-              el("div", { class: "muted", text: currentSub === "archived-codes"
-                ? "Archived promotional codes that have been fully redeemed or have expired."
-                : "Manage promotional reward codes. Players redeem codes on the web portal to receive rewards." })),
-            el("div", { class: "actions" },
-              btn("Refresh", showShop, "ghost"))),
-          topSubtabs,
-          codesSection
-        );
-      }
+      // Render the Item Shop view
+      $("view").replaceChildren(
+        seasonBreadcrumb("#/shop", "Item Shop", seasonOf(currentShopSeason).label),
+        el("div", { class: "view-head" },
+          el("div", {},
+            el("h1", { text: "Item Shop", style: "margin:0 0 4px;" }),
+            el("div", { class: "muted", text: `Configure Battle Royale's Store tab (Athena Direct Acquisition) for ${seasonOf(currentShopSeason).label}. The mode, timing and custom shop are shared by every season; the history and cosmetics shown are this season's.` })),
+          el("div", { class: "actions" },
+            btn("Refresh", showShop, "ghost"))),
+        timingSettingsSection,
+        vbuckPacksSection,
+        purchaseCodesSection,
+        modePicker,
+        configSection,
+        previewSection
+      );
     }
 
     /* ---------- battle pass (season 1's Season Shop, season 2's Battle Pass) ---------- */
@@ -6805,7 +6842,10 @@
       showMode();
       const save = async (body, message) => {
         const res = await act(api("/admin/api/battlepass/challenges", { season: Number(season), ...body }), message);
-        if (res) showBattlePass();
+        if (res) {
+          if (state.view === "challenges") showChallenges();
+          else showBattlePass();
+        }
       };
       const status = (week) => {
         if (week.unlocked) return chip("Unlocked", "accent");
@@ -6838,7 +6878,10 @@
       const info = data.brokenChallenges;
       const save = async (enabled) => {
         const res = await act(api("/admin/api/battlepass/broken-challenges", { enabled }), enabled ? "Broken challenges are completed for players" : "Broken challenges are left as they are");
-        if (res) showBattlePass();
+        if (res) {
+          if (state.view === "challenges") showChallenges();
+          else showBattlePass();
+        }
       };
       return el("section", { class: "panel", style: "margin-top:16px" },
         el("div", { class: "panel-head", style: "margin-bottom:8px" }, el("h2", { text: "Broken Challenges" }), chip(info.enabled ? "Completing" : "Off", info.enabled ? "accent" : "")),
@@ -6887,8 +6930,6 @@
           el("div", { style: "display:flex; gap:24px; flex-wrap:wrap; margin-top:12px;" },
             el("label", { style: "display:flex; align-items:center; gap:8px;" }, el("span", { class: "muted font-semibold", text: "Battle Pass" }), priceInput("battlePassPrice")),
             el("label", { style: "display:flex; align-items:center; gap:8px;" }, el("span", { class: "muted font-semibold", text: "Bundle" }), priceInput("bundlePrice")))),
-        ...(data.challenges ? [weeklyChallengesPanel(season, data)] : []),
-        ...(data.brokenChallenges ? [brokenChallengesPanel(data)] : []),
         el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" }, el("h2", { text: "Tier Rewards" }), chip(`${tiers.length} tiers`, "accent")),
           el("p", { class: "note", text: season === "5"
@@ -6902,52 +6943,8 @@
     }
 
     async function showBattlePass() {
-      if (!state.battlePassSeason) {
-        // Battle Pass Hub: display rectangular cards only (no options underneath)
-        $("view").replaceChildren(
-          el("div", { class: "view-head" },
-            el("div", {},
-              el("h1", { text: "Battle Pass & Progression", style: "margin:0 0 4px;" }),
-              el("div", { class: "muted", text: "Select a season to configure Battle Pass tiers, Season Shop unlocks, and progression mechanics." })),
-            el("div", { class: "actions" },
-              btn("Refresh", showBattlePass, "ghost"))),
-          seasonHubCards([
-            {
-              title: "Season 1: Season Shop (1.8 – 1.10)",
-              desc: "Configure Season Shop unlock levels, cosmetic pricing, and match XP multipliers",
-              badge: "Season Shop",
-              hash: "#/battlepass/season1"
-            },
-            {
-              title: "Season 2: Battle Pass (1.11 – 2.5)",
-              desc: "Configure 70 tiers of free and premium rewards, pass pricing (950 V-Bucks), and bundle pricing (2,800 V-Bucks)",
-              badge: "70 Tiers",
-              hash: "#/battlepass/season2"
-            },
-            {
-              title: "Season 3: Battle Pass (3.0 – 3.6)",
-              desc: "Configure 100 tiers of free and premium rewards, pass pricing (950 V-Bucks), and bundle pricing (2,800 V-Bucks)",
-              badge: "100 Tiers",
-              hash: "#/battlepass/season3"
-            },
-            {
-              title: "Season 4: Battle Pass (4.0 – 4.5)",
-              desc: "Configure 100 tiers of free and premium rewards, pass pricing (950 V-Bucks), and bundle pricing (2,800 V-Bucks)",
-              badge: "100 Tiers",
-              hash: "#/battlepass/season4"
-            },
-            {
-              title: "Season 5: Battle Pass (5.0)",
-              desc: "Configure 100 tiers of free and premium rewards, pass pricing (950 V-Bucks), and bundle pricing (2,800 V-Bucks)",
-              badge: "100 Tiers",
-              hash: "#/battlepass/season5"
-            }
-          ])
-        );
-        return;
-      }
-
-      if (["2", "3", "4"].includes(state.battlePassSeason)) return showSeasonPass(state.battlePassSeason);
+      const season = seasonOf(state.battlePassSeason || state.activeSeason).id;
+      if (["2", "3", "4", "5"].includes(season)) return showSeasonPass(season);
       const data = await act(api("/admin/api/battlepass/overview"));
       if (!data || state.view !== "battlepass") return;
 
@@ -7213,52 +7210,6 @@
         ["Broadcast Flags", (r) => r[3]],
         ["Content Features", (r) => r[4]]
       ], buildRows);
-
-      if (!state.eventsSeason) {
-        // Events Hub: display rectangular cards only (no options underneath)
-        $("view").replaceChildren(
-          el("div", { class: "view-head" },
-            el("div", {},
-              el("h1", { text: "Events & Seasons", style: "margin:0 0 4px;" }),
-              el("div", { class: "muted", text: "Select a season to configure limited-time events, Save the World modifiers, and seasonal economies." })),
-            el("div", { class: "actions" },
-              btn("Refresh", showEvents, "ghost"))),
-
-          seasonHubCards([
-            {
-              title: "Season 1 (1.8 – 1.10)",
-              desc: "Fortnitemares Halloween event, Hexsylvania theater, Candy currency, Mutant Storms & 45-day calendar cycle",
-              badge: "45 Days",
-              hash: "#/events/season1"
-            },
-            {
-              title: "Season 2 (1.11 – 2.5)",
-              desc: "Survive the Holidays Winterfest, Snowflake tickets, Mini-Boss alerts, Event Store & 70-day calendar cycle",
-              badge: "70 Days",
-              hash: "#/events/season2"
-            },
-            {
-              title: "Season 3 (3.0 – 3.6)",
-              desc: "Spring It On! continues (Luck Explosion, 3.1's Brave Beginnings), Firecracker tickets, passive storms & Mini-Boss alerts & 68-day calendar cycle",
-              badge: "68 Days",
-              hash: "#/events/season3"
-            },
-            {
-              title: "Season 4 (4.0 – 4.5)",
-              desc: "Blockbuster Part 1, Blockbuster tickets, active Mini-Boss alerts, Raven in the Event Store, the HackSAW in 4.1's Weekly Store, the Quad Launcher and perk resources in 4.2's, the Season 4 lobby & 72-day calendar cycle",
-              badge: "72 Days",
-              hash: "#/events/season4"
-            },
-            {
-              title: "Season 5 (5.0)",
-              desc: "Worlds Collide: the Season 5 lobby, Save the World's Road Trip and Challenge the Horde, rifts on the map & 77-day calendar cycle",
-              badge: "77 Days",
-              hash: "#/events/season5"
-            }
-          ])
-        );
-        return;
-      }
 
       const cfg = data.eventsConfig || {};
 
@@ -8268,6 +8219,167 @@
       );
     }
 
+    /* ---------- challenges ---------- */
+    async function showChallenges() {
+      const season = state.activeSeason || "1";
+      const seasonLabel = seasonOf(season).label;
+      if (season === "1") {
+        $("view").replaceChildren(
+          el("div", { class: "view-head" },
+            el("div", {},
+              el("h1", { text: `Challenges: ${seasonLabel}`, style: "margin:0 0 4px;" }),
+              el("div", { class: "muted", text: "Season 1 (1.8 – 1.10) Battle Royale progression & milestones" })),
+            el("div", { class: "actions" },
+              btn("Open Season Shop", () => { location.hash = "#/battlepass/season1"; }, "primary"),
+              btn("Refresh", showChallenges, "ghost"))),
+          el("div", { class: "panel", style: "padding:24px; text-align:center; max-width:640px; margin:24px auto;" },
+            el("h2", { text: "Season 1 Progression: Season Shop", style: "margin-bottom:8px;" }),
+            el("p", { class: "note", text: "In Season 1, weekly challenges did not exist yet. Battle Royale progression used Season Levels and the Season Shop (Athena Season Store), where cosmetics unlocked at specific levels (Levels 5, 15, 25, 35) and were purchased with V-Bucks." }),
+            el("div", { style: "margin-top:20px;" },
+              btn("Manage Season 1 Shop & Unlock Levels", () => { location.hash = "#/battlepass/season1"; }, "primary")))
+        );
+        return;
+      }
+      if (season === "2") {
+        $("view").replaceChildren(
+          el("div", { class: "view-head" },
+            el("div", {},
+              el("h1", { text: `Challenges: ${seasonLabel}`, style: "margin:0 0 4px;" }),
+              el("div", { class: "muted", text: "Season 2 (1.11 – 2.5) Battle Royale Battle Pass & progression" })),
+            el("div", { class: "actions" },
+              btn("Open Battle Pass", () => { location.hash = "#/battlepass/season2"; }, "primary"),
+              btn("Refresh", showChallenges, "ghost"))),
+          el("div", { class: "panel", style: "padding:24px; text-align:center; max-width:640px; margin:24px auto;" },
+            el("h2", { text: "Season 2 Progression: 70 Tiers & Daily Challenges", style: "margin-bottom:8px;" }),
+            el("p", { class: "note", text: "Season 2 introduced the 70-tier Battle Pass. Battle Stars were earned through Season Levels and Daily Challenges (assigned to Athena quest logs). Weekly challenge bundles were introduced in Season 3." }),
+            el("div", { style: "margin-top:20px;" },
+              btn("Manage Season 2 Battle Pass Tiers & Rewards", () => { location.hash = "#/battlepass/season2"; }, "primary")))
+        );
+        return;
+      }
+
+      const data = await act(api(`/admin/api/battlepass/overview?season=${season}`));
+      if (!data || state.view !== "challenges") return;
+
+      $("view").replaceChildren(
+        el("div", { class: "view-head" },
+          el("div", {},
+            el("h1", { text: `Challenges: ${seasonLabel}`, style: "margin:0 0 4px;" }),
+            el("div", { class: "muted", text: `Weekly challenge unlock schedules and auto-completion for Season ${season}` })),
+          el("div", { class: "actions" },
+            btn("View Battle Pass Tiers", () => { location.hash = `#/battlepass/season${season}`; }, "ghost"),
+            btn("Refresh", showChallenges, "ghost"))),
+        ...(data.challenges ? [weeklyChallengesPanel(season, data)] : []),
+        ...(data.brokenChallenges ? [brokenChallengesPanel(data)] : [])
+      );
+    }
+
+    /* ---------- unified season workspace ---------- */
+    async function showSeasons() {
+      const season = state.activeSeason || "1";
+      const seasonObj = seasonOf(season);
+      const [shopData, bpData, eventsData] = await Promise.all([
+        act(api(`/admin/api/shop?season=${season}`)).catch(() => null),
+        act(api(`/admin/api/battlepass/overview?season=${season}`)).catch(() => null),
+        act(api(`/admin/api/events/overview?season=${season}`)).catch(() => null)
+      ]);
+      if (state.view !== "seasons") return;
+
+      const seasonPills = SEASONS.map((s) => el("button", {
+        type: "button",
+        class: `btn ${s.id === season ? "primary" : "ghost"} small`,
+        style: "display:inline-flex; align-items:center; gap:6px; font-weight:600;",
+        onclick: () => {
+          state.activeSeason = s.id;
+          try { localStorage.setItem("core_admin_active_season", s.id); } catch {}
+          syncSeasonDropdown();
+          showSeasons();
+        }
+      }, el("span", { text: `Season ${s.id}` })));
+
+      const activeEvent = eventsData?.activeEvent || (season === "1" ? "Fortnitemares (1.8) / Vindertech (1.9)" : season === "2" ? "Survive the Holidays (1.11)" : season === "3" ? "Spring It On! (3.0)" : season === "4" ? "Blockbuster (4.0)" : "Road Trip (5.0)");
+      const passInfo = season === "1" ? "Season Shop (Level Unlocks)" : `${bpData?.tiers?.length || (season === "2" ? 70 : 100)} Tiers`;
+
+      $("view").replaceChildren(
+        el("div", { class: "view-head" },
+          el("div", {},
+            el("h1", { text: `Season Workspace: ${seasonObj.label}`, style: "margin:0 0 4px;" }),
+            el("div", { class: "muted", text: "Unified command center for Item Shop, Battle Pass, Events, and Challenges" })),
+          el("div", { class: "actions" },
+            btn("Refresh", showSeasons, "ghost"))),
+        el("div", { style: "display:flex; align-items:center; gap:8px; margin-bottom:20px; flex-wrap:wrap;" },
+          el("span", { class: "muted font-semibold", style: "font-size:12px; margin-right:4px;" }, "SWITCH SEASON:"),
+          ...seasonPills
+        ),
+        el("div", { class: "tiles" },
+          tile("Season Build", seasonObj.from, "accent"),
+          tile("Duration", `${seasonObj.days} Days`),
+          tile("Progression", passInfo),
+          tile("Active Event", activeEvent, "text")),
+        el("div", { class: "grid cols-2", style: "margin-top:20px; gap:16px;" },
+          // Card 1: Item Shop
+          el("section", { class: "panel", style: "display:flex; flex-direction:column; justify-content:space-between;" },
+            el("div", {},
+              el("div", { class: "panel-head" },
+                el("h2", { text: "🛍️ Item Shop" }),
+                chip("Active", "accent")),
+              el("p", { class: "note", text: `Athena Direct Acquisition store catalog for ${seasonObj.label}. Configure featured and daily items, rotation timers, and V-Buck pricing.` }),
+              el("div", { style: "margin:16px 0; display:flex; gap:12px; flex-wrap:wrap;" },
+                el("div", { class: "tile small" }, el("div", { class: "label", text: "Catalog Items" }), el("div", { class: "value", text: String(shopData?.catalog?.length || "—") })),
+                el("div", { class: "tile small" }, el("div", { class: "label", text: "Mode" }), el("div", { class: "value", text: shopData?.mode || "Both" }))
+              )),
+            el("div", { style: "margin-top:14px; border-top:1px solid var(--line); padding-top:12px;" },
+              btn("Open Item Shop →", () => { location.hash = `#/shop/season${season}`; }, "primary small"))),
+
+          // Card 2: Battle Pass
+          el("section", { class: "panel", style: "display:flex; flex-direction:column; justify-content:space-between;" },
+            el("div", {},
+              el("div", { class: "panel-head" },
+                el("h2", { text: "⭐ Battle Pass & Progression" }),
+                chip(passInfo, "accent")),
+              el("p", { class: "note", text: season === "1"
+                ? "Season Shop unlock tiers, XP multipliers, and milestone reward configurations."
+                : `Configure the ${bpData?.tiers?.length || (season === "2" ? 70 : 100)}-tier Battle Pass, V-Bucks pricing (950 / 2,800), and tier rewards.` }),
+              el("div", { style: "margin:16px 0; display:flex; gap:12px; flex-wrap:wrap;" },
+                el("div", { class: "tile small" }, el("div", { class: "label", text: "Pass Price" }), el("div", { class: "value", text: season === "1" ? "N/A" : `${bpData?.config?.battlePassPrice || 950} V-Bucks` })),
+                el("div", { class: "tile small" }, el("div", { class: "label", text: "Bundle" }), el("div", { class: "value", text: season === "1" ? "N/A" : `${bpData?.config?.bundlePrice || 2800} V-Bucks` }))
+              )),
+            el("div", { style: "margin-top:14px; border-top:1px solid var(--line); padding-top:12px;" },
+              btn("Configure Battle Pass →", () => { location.hash = `#/battlepass/season${season}`; }, "primary small"))),
+
+          // Card 3: Events & Flags
+          el("section", { class: "panel", style: "display:flex; flex-direction:column; justify-content:space-between;" },
+            el("div", {},
+              el("div", { class: "panel-head" },
+                el("h2", { text: "⚡ Events & Live Ops" }),
+                chip(activeEvent, "accent")),
+              el("p", { class: "note", text: "Seasonal events, broadcast flags, event ticket conversions, and limited-time mode (LTM) schedules." }),
+              el("div", { style: "margin:16px 0; display:flex; gap:12px; flex-wrap:wrap;" },
+                el("div", { class: "tile small" }, el("div", { class: "label", text: "Sample Builds" }), el("div", { class: "value", text: String(eventsData?.sampleBuilds?.length || 0) })),
+                el("div", { class: "tile small" }, el("div", { class: "label", text: "Live Replay" }), el("div", { class: "value", text: eventsData?.live ? "On" : "Simulated" }))
+              )),
+            el("div", { style: "margin-top:14px; border-top:1px solid var(--line); padding-top:12px;" },
+              btn("Manage Events & Flags →", () => { location.hash = `#/events/season${season}`; }, "primary small"))),
+
+          // Card 4: Challenges & Quests
+          el("section", { class: "panel", style: "display:flex; flex-direction:column; justify-content:space-between;" },
+            el("div", {},
+              el("div", { class: "panel-head" },
+                el("h2", { text: "📜 Challenges & Quests" }),
+                chip(Number(season) >= 3 ? (bpData?.challengesAllUnlocked ? "All Unlocked" : "Scheduled") : "Standard", "accent")),
+              el("p", { class: "note", text: Number(season) >= 3
+                ? `Manage Season ${season}'s 10 weeks of Battle Pass challenges, unlock schedules, and the broken challenge auto-completer.`
+                : `Season ${season} progression mechanics and challenge assignments.` }),
+              el("div", { style: "margin:16px 0; display:flex; gap:12px; flex-wrap:wrap;" },
+                el("div", { class: "tile small" }, el("div", { class: "label", text: "Broken Challenges" }), el("div", { class: "value", text: bpData?.brokenChallenges?.enabled ? "Fixing" : "Off" })),
+                el("div", { class: "tile small" }, el("div", { class: "label", text: "Schedule Mode" }), el("div", { class: "value", text: bpData?.challenges?.mode || "Original" }))
+              )),
+            el("div", { style: "margin-top:14px; border-top:1px solid var(--line); padding-top:12px;" },
+              btn("Manage Challenges →", () => { location.hash = "#/challenges"; }, "primary small")))
+        )
+      );
+    }
+
     /* ---------- settings ---------- */
     async function showSettings() {
       const [settings, accountList, adminUsersData] = await Promise.all([
@@ -8810,7 +8922,29 @@
       });
     }
 
+    function initSidebarSeasonSelect() {
+      const sel = $("sidebar-season-select");
+      if (!sel) return;
+      sel.value = state.activeSeason || "1";
+      sel.addEventListener("change", () => {
+        state.activeSeason = sel.value;
+        try { localStorage.setItem("core_admin_active_season", state.activeSeason); } catch {}
+        if (state.view === "shop") {
+          location.hash = `#/shop/season${state.activeSeason}`;
+        } else if (state.view === "battlepass") {
+          location.hash = `#/battlepass/season${state.activeSeason}`;
+        } else if (state.view === "events") {
+          location.hash = `#/events/season${state.activeSeason}`;
+        } else if (state.view === "challenges") {
+          showChallenges();
+        } else if (state.view === "seasons") {
+          showSeasons();
+        }
+      });
+    }
+
     initSidebarResizer();
+    initSidebarSeasonSelect();
     setInterval(heartbeat, 10000);
     initAuthAndStart();
   </script>
