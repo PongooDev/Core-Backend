@@ -198,3 +198,26 @@ test("Blast Off end to end: the admin schedules or starts the launch, and 4.5's 
     backend.close();
   }
 });
+
+test("The calendar's revision changes when the admin changes the rocket launch, so running gameservers fetch the timeline again", async () => {
+  const backend = await startBackend();
+  try {
+    const { token } = await userLogin(backend.port, "Revision45");
+    const revision = async () => {
+      const response = await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/fortnite/api/game/v2/calendar/revision",
+        headers: { "User-Agent": `game=FortniteGame, engine=UE4, build=++Fortnite+Release-4.5-CL-${v45}`, Authorization: `bearer ${token}` } });
+      assert.equal(response.status, 200);
+      assert.match(response.body.revision, /^[0-9a-f]{12}$/);
+      return response.body.revision;
+    };
+    const first = await revision();
+    assert.equal(await revision(), first, "nothing changed: the same revision");
+    await post(backend.port, "/admin/api/events/rocket", null, { action: "now", inSeconds: 600 });
+    const launched = await revision();
+    assert.notEqual(launched, first, "an admin launch changes it");
+    await post(backend.port, "/admin/api/events/rocket", null, { action: "clear" });
+    assert.notEqual(await revision(), launched, "clearing it changes it again");
+  } finally {
+    backend.close();
+  }
+});

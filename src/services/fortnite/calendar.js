@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
 import { currentBuild } from "../../builds/context.js";
@@ -51,6 +52,23 @@ import { nextRocketLaunchChange, rocketLaunchStates } from "../../events/rocketl
 // counts to; and it is good no later than the next part.
 export const calendarCacheMinutes = 60;
 const seasonalEventManagerBuild = 3790078;
+
+// Core's: the calendar's revision, which changes whenever the admin panel changes what the timeline serves (the events
+// config, the rocket launch among it, the Seasonal Events switch and the LTM queues and their original dates). A
+// gameserver fetches the timeline once and then at its cacheExpire plus up to an hour (4.5's automatic refresh), so a
+// running match would see an admin's change that late; CoreV2 asks here every few seconds and, when the revision
+// changes, calls AFortGameState::Client_RefreshEventCalendar, the game's multicast that has the server and its players
+// fetch the timeline at once.
+//   GET /fortnite/api/game/v2/calendar/revision -> {revision: "<12 hex digits>"}
+// What the timeline serves on its own as time passes (the next part of a scheduled launch, an LTM's window) is in the
+// states and cacheExpire the server already has, so it changes no revision.
+export function calendarRevision(settingsValue) {
+  const value = settingsValue ?? {};
+  const inputs = { events: value.events ?? null, seasonalEvents: value.seasonalEvents !== false,
+    matchmakingModes: value.matchmakingModes ?? null, ltmOriginalDates: value.ltmOriginalDates === true,
+    ltmCloseEncounters: value.ltmCloseEncounters ?? null };
+  return createHash("sha1").update(JSON.stringify(inputs)).digest("hex").slice(0, 12);
+}
 
 export function calendarRoutes({ tokens, settings }) {
   const router = express.Router();
@@ -111,6 +129,10 @@ export function calendarRoutes({ tokens, settings }) {
       cacheIntervalMins: cacheMinutes,
       currentTime: now.toISOString()
     });
+  });
+
+  router.get("/fortnite/api/game/v2/calendar/revision", requireAuth(tokens), (req, res) => {
+    res.json({ revision: calendarRevision(settings?.get?.()) });
   });
 
   return router;
