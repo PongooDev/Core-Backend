@@ -95,9 +95,9 @@ test("5.0's Battle Pass: BRSeason5's pass, bundle and tier offer at Epic's price
   assert.equal(offers[0].displayAssetPath, "/Game/Catalog/DisplayAssets/DA_BR_Season5_BattlePass.DA_BR_Season5_BattlePass");
 });
 
-test("5.0's event flags: the Season 5 lobby, group missions and ticketless storms; no Blockbuster, Road Trip or rocket", () => {
+test("5.0's event flags: the Season 5 lobby, group missions, ticketless storms and Road Trip's; no Blockbuster or rocket", () => {
   for (const build of v50s) {
-    assert.deepEqual(activeEventFlags(build), [groupMission, passiveStorms, lobbySeason5], build);
+    assert.deepEqual(activeEventFlags(build), [groupMission, passiveStorms, lobbySeason5, "EventFlag.RoadTrip2018", "EventFlag.Horde"], build);
     assert.deepEqual(rocketLaunchStates(now, build, { mode: "auto", rocketLaunch: { at: now.toISOString(), countdownHours: 48 } }), [], "no rocket or rift");
   }
   assert.ok(activeEventFlags(v45).includes(lobbySeason4) && activeEventFlags(v45).includes(blockbuster2018Phase4));

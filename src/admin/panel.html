@@ -7186,7 +7186,7 @@
           ? el("div", { style: "display:flex; gap:4px; flex-wrap:wrap;" }, b.flags.map((f) => chip(f, "accent")))
           : el("span", { class: "muted", text: "None (Base game)" }),
         el("span", { class: "muted", text: b.version.startsWith("5.")
-          ? "The Season 5 lobby, group missions and ticketless storms; Save the World's Road Trip (its quests, tickets, llama and Challenge the Horde alerts) isn't run"
+          ? "The Season 5 lobby, group missions and ticketless storms; Road Trip: Challenge the Horde (its desert theater, Horde alerts at 10/day, the Horde Skill Tree), the Horde progression quests, Road Trip Tickets, the Road Trip Llama and the Event Store"
           : b.version.startsWith("1.8")
           ? "Hexsylvania (4 tiers), 56 Halloween quests, Candy, Halloween Llamas"
           : b.version.startsWith("1.9.1")
@@ -7251,7 +7251,7 @@
             },
             {
               title: "Season 5 (5.0)",
-              desc: "Worlds Collide: the Season 5 lobby, Save the World's Road Trip flags, rifts on the map & 77-day calendar cycle",
+              desc: "Worlds Collide: the Season 5 lobby, Save the World's Road Trip and Challenge the Horde, rifts on the map & 77-day calendar cycle",
               badge: "77 Days",
               hash: "#/events/season5"
             }
@@ -7430,7 +7430,7 @@
         if (await act(api("/admin/api/events/flags", payload), message)) showEvents();
       };
       const s4Range = ([first, last]) => {
-        const names = { 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4214610: "5.0" };
+        const names = { 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4204761: "5.0", 4214610: "5.0" };
         return first === last ? names[first] : `${names[first] || first} – ${names[last] || last}`;
       };
       const odditiesLabels = { off: "Off: the rifts wait (switch them below by hand)", launch: "After the rocket launch: Epic's days, counted from the admin's launch time", dates: "Epic's dates (30 June – 10 July) on Season 4's replay" };
@@ -7438,7 +7438,7 @@
       const season4Container = el("div", {
         style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
       },
-        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "Season 4 event flags (4.0 – 4.5):" }),
+        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "Season 4 and 5 event flags (4.0 – 5.0):" }),
         el("div", { class: "muted", style: "font-size:12px; margin-bottom:8px;", text: "Every EventFlag.* in Season 4's paks. Automatic serves what the build served in its day; On or Off overrides it on the builds whose paks have the flag (in the Automatic mode). The rocket's flags follow the Rocket Launch above. Clients pick a change up at their next calendar fetch; running gameservers within 5 seconds." }),
         ...s4.groups.map((group) => el("div", { style: "margin-top:10px;" },
           el("div", { style: "font-weight:700; font-size:12px; margin-bottom:4px;", text: group.name + (group.managedBy ? " (by the Rocket Launch's time)" : "") }),
@@ -7447,7 +7447,9 @@
               el("td", { style: "font-family:var(--mono, monospace); white-space:nowrap;", text: entry.flag }),
               el("td", { class: "muted", text: entry.description }),
               el("td", { style: "white-space:nowrap;", text: s4Range(entry.builds) }),
-              el("td", {}, chip(entry.servedOn45 ? "on in 4.5" : "off in 4.5", entry.servedOn45 ? "good" : "")),
+              el("td", {}, entry.builds[0] >= 4204761
+                ? chip(entry.servedOn50 ? "on in 5.0" : "off in 5.0", entry.servedOn50 ? "good" : "")
+                : chip(entry.servedOn45 ? "on in 4.5" : "off in 4.5", entry.servedOn45 ? "good" : "")),
               el("td", {}, group.managedBy ? el("span", { class: "muted", text: "Rocket Launch" }) :
                 el("select", { class: "field", "aria-label": `${entry.flag} state`, onchange: (e) => s4Action({ flag: entry.flag, state: e.target.value }, `${entry.flag}: ${e.target.value}`) },
                   ...[["auto", "Automatic"], ["on", "On"], ["off", "Off"]].map(([value, text]) => el("option", { value, text, selected: entry.override === value }))))

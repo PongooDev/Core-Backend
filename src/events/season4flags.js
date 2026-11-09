@@ -18,6 +18,7 @@ const b42 = 4072250;
 const b440 = 4117433;
 const b450 = 4159770;
 const b45 = 4166199;
+const b500 = 4204761;
 const b50 = 4214610;
 
 const flag = (name, builds, description) => ({ flag: `EventFlag.${name}`, builds, description });
@@ -60,6 +61,11 @@ export const season4FlagGroups = [
     flag("Blockbuster2018Phase3", [b40, b50], "Part 3, The Cloaked Star: the quest map's side bar"),
     flag("Blockbuster2018Phase4", [b440, b50], "Part 4, The Finale: the quest map's side bar (4.5's pages)")
   ] },
+  // 5.0's Road Trip (events/roadtrip2018.js, Core-Backend #298): its quests, tickets, llama and Event Store go with
+  // RoadTrip2018, Challenge the Horde's theater and alerts with Horde (below), each served by 5.0 itself.
+  { id: "roadTrip", name: "Save the World: Road Trip (5.0)", flags: [
+    flag("RoadTrip2018", [b500, b50], "Road Trip: the quest map's pages, the Horde progression quests, Road Trip Tickets, the Road Trip Llama and the Event Store")
+  ] },
   { id: "alerts", name: "Save the World: mission alerts", flags: [
     flag("ActiveMiniBosses", [b40, b50], "Mini-Boss alerts with Blockbuster Tickets (MiniBossCategory, quota 10)"),
     flag("PassiveMiniBosses", [b40, b50], "Mini-Boss alerts without tickets"),
@@ -68,7 +74,7 @@ export const season4FlagGroups = [
     flag("GroupMission", [b42, b50], "Group mission alerts (GroupMissionCategory, quota 10)"),
     flag("SurviveTheStorm", [b40, b50], "Survive the Storm's alerts"),
     flag("Fortnitemares", [b40, b50], "Fortnitemares' alert rows"),
-    flag("Horde", [b40, b50], "Challenge the Horde's command console page (CCNodePages)")
+    flag("Horde", [b40, b50], "Challenge the Horde: the Horde Skill Tree page (CCNodePages) and, on 5.0, the horde theater and its alerts (HordeCategory, quota 10)")
   ] },
   { id: "lobby", name: "Lobby", flags: [
     flag("LobbySeason4", [b40, b50], "The Season 4 lobby (Frontend_Lobby_Season4)"),

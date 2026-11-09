@@ -56,6 +56,10 @@ provider.PostMount();
 var assetTypes = new AssetTypes(provider);
 
 var quests = new SortedDictionary<string, object>(StringComparer.Ordinal);
+// 5.0 (CL 4214610) moves Save the World's quest rewards out of the quest (Rewards, HiddenRewards, SelectableRewards, all
+// empty) into a table its RewardsTable names (Quests/QuestRewards, FortQuestRewardTableRow rows by QuestTemplateId), read
+// once per table.
+var rewardTables = new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase);
 // Each quest's object path ("/Game/Quests/.../Name.Name"), as world info names quests (theater and region Requirements,
 // tiles' LinkedQuests).
 var questPaths = new SortedDictionary<string, object>(StringComparer.Ordinal);
@@ -65,7 +69,14 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     {
         if (export.ExportType != "FortQuestItemDefinition") continue;
         var properties = JsonNode.Parse(JsonConvert.SerializeObject(export))!["Properties"] ?? new JsonObject();
-        quests[export.Name.ToLowerInvariant()] = Quest(properties, assetTypes);
+        var quest = (SortedDictionary<string, object>)Quest(properties, assetTypes);
+        AddTableRewards(quest, provider, properties, export.Name, rewardTables);
+        // A quest done by some of its objectives (ObjectiveCompletionCount: 5.0's HordeQuest_Hidden_0-7, a Storm Shield
+        // Defense or a Horde progression quest, one of the two).
+        if (properties["ObjectiveCompletionCount"]?.GetValue<int>() is int completionCount and > 0
+            && completionCount < ((List<SortedDictionary<string, object>>)quest["objectives"]).Count)
+            quest["objectiveCompletionCount"] = completionCount;
+        quests[export.Name.ToLowerInvariant()] = quest;
         questPaths[export.Name.ToLowerInvariant()] = "/Game/" + file.PathWithoutExtension["FortniteGame/Content/".Length..] + "." + export.Name;
     }
 }
@@ -1197,6 +1208,7 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         // progress of theirs from a match that didn't complete them (UFortQuestManager::UpdateStatsForSingleMatchQuests).
         if (properties["bAthenaMustCompleteInSingleMatch"]?.GetValue<bool>() == true)
             quest["singleMatch"] = true;
+        AddTableRewards(quest, provider, properties, export.Name, rewardTables);
         athenaQuests[export.Name.ToLowerInvariant()] = quest;
         continue;
     }
@@ -1718,6 +1730,36 @@ static JsonObject LoadRows(DefaultFileProvider provider, JsonNode? reference)
     if (!provider.TryLoadPackage(file, out var package)) throw new InvalidOperationException($"{file} not found");
     var table = package.GetExports().First(e => e.ExportType.EndsWith("DataTable"));
     return JsonNode.Parse(JsonConvert.SerializeObject(table))!["Rows"]!.AsObject();
+}
+
+// A quest's rows of its RewardsTable (5.0's Quests/QuestRewards: FortQuestRewardTableRow {QuestTemplateId, TemplateId,
+// Quantity, Hidden, Selectable}), in row order: a Hidden row is a hidden reward, a Selectable row one choice of its own
+// (the quest's SelectableRewards), any other a reward. Builds before 5.0 name no RewardsTable.
+static void AddTableRewards(SortedDictionary<string, object> quest, DefaultFileProvider provider, JsonNode properties, string questName,
+    Dictionary<string, JsonObject> tables)
+{
+    if (properties["RewardsTable"] is not JsonObject reference || reference["ObjectPath"] is null) return;
+    var key = PackageFile(reference);
+    if (!tables.TryGetValue(key, out var rows)) tables[key] = rows = LoadRows(provider, reference);
+    var templateId = "Quest:" + questName;
+    var rewards = new List<SortedDictionary<string, object>>();
+    var hidden = new List<SortedDictionary<string, object>>();
+    var selectable = new List<List<SortedDictionary<string, object>>>();
+    foreach (var (_, row) in rows.OrderBy(r => r.Key, StringComparer.Ordinal))
+    {
+        if (!string.Equals(row?["QuestTemplateId"]?.GetValue<string>(), templateId, StringComparison.OrdinalIgnoreCase)) continue;
+        var reward = new SortedDictionary<string, object>
+        {
+            ["templateId"] = row!["TemplateId"]!.GetValue<string>(),
+            ["quantity"] = row["Quantity"]?.GetValue<int>() ?? 1
+        };
+        if (row["Selectable"]?.GetValue<bool>() == true) selectable.Add([reward]);
+        else if (row["Hidden"]?.GetValue<bool>() == true) hidden.Add(reward);
+        else rewards.Add(reward);
+    }
+    if (rewards.Count > 0) quest["rewards"] = rewards;
+    if (hidden.Count > 0) quest["hiddenRewards"] = hidden;
+    if (selectable.Count > 0) quest["selectableRewards"] = selectable;
 }
 
 static void AddItems(IDictionary<string, object> target, string key, JsonNode? items, AssetTypes assetTypes)

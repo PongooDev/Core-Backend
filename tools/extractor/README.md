@@ -14,7 +14,12 @@ first 4.21 build) are mapped. 4.19 writes soft references with their
 object name (`/Game/Path/Asset.Asset`); zone themes' tile classes and mission generators' primary missions are kept as
 packages, as 4.16 writes them, so overlays only hold the builds' own differences.
 
-- `quests.json`: every quest's type, objectives, rewards and prerequisites.
+- `quests.json`: every quest's type, objectives, rewards and prerequisites. 5.0 (CL 4214610) moves Save the World's quest
+  rewards out of the quests into the table their `RewardsTable` names (`Quests/QuestRewards`, FortQuestRewardTableRow rows
+  by QuestTemplateId: Hidden rows are hidden rewards, each Selectable row a choice of its own), which the extractor reads
+  back into `rewards`, `hiddenRewards` and `selectableRewards`; a quest done by some of its objectives carries
+  `objectiveCompletionCount` (5.0's HordeQuest_Hidden_0-7). 5.0's first overlay predates this and had no quest rewards
+  (Core-Backend #298); earlier builds name no RewardsTable.
 - `items.json`: every item definition's class, the profile it lives in (`profile` for account items, `theater` for
   world items; from 1.7.2, CL 3700114, `metadata` for storm shields and deployable bases; 3.0's Hoverboard, a FortPersonalVehicleItemDefinition, is an account item) and its stack limit (the asset's `MaxStackSize`, else the class constructor's default). World items of
   weapon definitions (weapons, traps, building pieces) that have durability (`bItemHasDurability`, unless the asset

@@ -261,8 +261,13 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // still watches BR_S4_Rift_Growth (the sky's crack), but Season 5 began with the crack gone and rifts on the map, so 5.0
 // isn't served it (events/rocketlaunch.js stays 4.5's). So 5.0 serves LobbySeason5, the one flag that changes Battle
 // Royale's lobby, and 4.2's group missions and the ticketless storms (its MissionAlerts rows are still 4.0's, cooked out of
-// the client). Blockbuster's flags and its Mini-Boss alerts end with 4.5. RoadTrip2018 isn't served: Core has no Road Trip
-// (its quests, tickets, llama and Challenge the Horde alerts), and the flag alone would open an empty quest map page.
+// the client). Blockbuster's flags and its Mini-Boss alerts end with 4.5.
+// 5.0 also runs Road Trip (roadTrip2018, events/roadtrip2018.js, Core-Backend #298), Update v5.00's "Challenge the Horde is
+// back!", on Epic's dates: from 5.0's release (12 July 2018), the build it shipped with. Its flags are RoadTrip2018 (the
+// Road Trip quest map's pages) and Horde, which CCNodePages' Horde page (the Horde Skill Tree) and the HordeCategory
+// MissionAlerts row (MissionAlert_HordeCategory_01, the Challenge the Horde alerts: world/horde.js) wait for. The event's
+// quests, tickets, llama and Event Store go with RoadTrip2018, the horde theater and its alerts with Horde, so the admin
+// panel switches each (events/season4flags.js).
 export const blockbuster2018 = "Blockbuster2018";
 export const blockbuster2018Phase1 = "EventFlag.Blockbuster2018Phase1";
 export const blockbuster2018Phase2 = "EventFlag.Blockbuster2018Phase2";
@@ -270,6 +275,9 @@ export const blockbuster2018Phase3 = "EventFlag.Blockbuster2018Phase3";
 export const blockbuster2018Phase4 = "EventFlag.Blockbuster2018Phase4";
 export const lobbySeason4 = "EventFlag.LobbySeason4";
 export const lobbySeason5 = "EventFlag.LobbySeason5";
+export const roadTrip2018 = "RoadTrip2018";
+export const roadTrip2018Flag = "EventFlag.RoadTrip2018";
+export const hordeFlag = "EventFlag.Horde";
 const build40 = 4039451;
 const build41 = 4053532;
 const build42 = 4072250;
@@ -311,6 +319,8 @@ const events = [
   { name: passiveStorms, flag: passiveStorms, firstBuild: build40, lastBuild: build50 },
   { name: lobbySeason4, flag: lobbySeason4, firstBuild: build40, lastBuild: build45 },
   { name: lobbySeason5, flag: lobbySeason5, firstBuild: build500, lastBuild: build50 },
+  { name: roadTrip2018, flag: roadTrip2018Flag, firstBuild: build500, lastBuild: build50 },
+  { name: hordeFlag, flag: hordeFlag, firstBuild: build500, lastBuild: build50 },
   { name: lobbyWinterDecor, flag: lobbyWinterDecor, firstBuild: 3807424, lastBuild: 3825894 },
   { name: winterBattleBus, flag: winterBattleBus, firstBuild: 3807424, lastBuild: 3825894 },
   { name: supplyDropGift, flag: supplyDropGift, firstBuild: 3807424, lastBuild: 3825894 }

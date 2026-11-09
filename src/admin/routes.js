@@ -1275,8 +1275,8 @@ export function adminRoutes(context) {
       },
       eventsConfig,
       rocketLaunch: rocketLaunchStatus(now, eventsConfig),
-      // Season 4's event flags, grouped (events/season4flags.js, Core-Backend #296), with what 4.5 serves now.
-      season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(now, eventsConfig, inBuild("4166199", () => activeEventFlags()))),
+      // Season 4's event flags, grouped (events/season4flags.js, Core-Backend #296), with what 4.5 and 5.0 serve now.
+      season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(now, eventsConfig, inBuild("4166199", () => activeEventFlags()), inBuild("4214610", () => activeEventFlags()))),
       events: [
         {
           id: "fortnitemares",
@@ -1371,6 +1371,19 @@ export function adminRoutes(context) {
           llama: "Blockbuster Llama (CardPack_Event_2018_Blockbuster, 500 Blockbuster Tickets)",
           questsCount: 3,
           leftoverConversion: "Storm Tickets convert to Into the Storm (Neon) Llamas (1 per 1000, and 1 for what is left over) on 4.0, 4.1 or 4.2 load"
+        },
+        {
+          id: "roadtrip2018",
+          name: "Road Trip",
+          subtitle: "Challenge the Horde in the desert: nine Horde zones opened by Storm Shield Defense or Horde quest progression, Horde alerts with Road Trip Tickets and Horde Points, the Horde Skill Tree, the Horde progression quests (Wild West heroes, banners), the Road Trip Llama and the Event Store's Flintlock weapons",
+          buildRange: "5.0 (CL 4204761 – 4214610)",
+          flags: ["EventFlag.RoadTrip2018", "EventFlag.Horde", "EventFlag.LobbySeason5"],
+          theater: "Challenge the Horde (Fort Setup and nine zones, 9 to 76 power)",
+          theaterRegions: [],
+          alertsQuota: "10 Horde mission alerts per day (repeatable)",
+          currency: "Road Trip Tickets (AccountResource:eventcurrency_roadtrip), Horde Points (Token:hordepointstier1-4), Gold in the Event Store",
+          llama: "Road Trip Llama (CardPack_Event_2018_RoadTrip, 500 Road Trip Tickets)",
+          questsCount: 9
         }
       ]
     });
@@ -1429,7 +1442,7 @@ export function adminRoutes(context) {
     }
     if (!Object.keys(patch).length) return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "Give a flag and its state, or the oddities mode");
     const updated = settings.update({ events: { season4Flags: patch } });
-    res.json({ success: true, season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(new Date(), updated.events, inBuild("4166199", () => activeEventFlags()))) });
+    res.json({ success: true, season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(new Date(), updated.events, inBuild("4166199", () => activeEventFlags()), inBuild("4214610", () => activeEventFlags()))) });
   });
 
     router.post("/admin/api/events/actions/convert-storm-tickets", (req, res) => {

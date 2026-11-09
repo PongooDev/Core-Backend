@@ -17,8 +17,11 @@ function setState(tracker, itemId, state) {
   tracker.setItemAttribute(itemId, "last_state_change_time", new Date().toISOString());
 }
 
+// A quest is met when all its objectives are, or as many as its objectiveCompletionCount (ObjectiveCompletionCount: 5.0's
+// HordeQuest_Hidden_0-7 need one of their two, a Storm Shield Defense or a Horde progression quest).
 function objectivesMet(item, quest) {
-  return quest.objectives.every((objective) => (item.attributes[`completion_${objective.name}`] ?? 0) >= objective.count);
+  const met = quest.objectives.filter((objective) => (item.attributes[`completion_${objective.name}`] ?? 0) >= objective.count).length;
+  return met >= Math.min(quest.objectiveCompletionCount ?? quest.objectives.length, quest.objectives.length);
 }
 
 // The client's rewards screen only offers a claim for quests with a reward it can show; the rest are claimed at once.
@@ -97,7 +100,7 @@ export function grant(session, templateId, quantity, options = {}) {
     if (entry.profileId !== "profile0") continue;
     if (typeOf(entry.templateId) === "quest") refreshQuest(session, entry.itemId);
     else if (acquiring === null || !sameId(acquiring.templateId, entry.templateId) || acquiring.wanted) {
-      itemEvent(session, ["Acquire"], entry.templateId, entry.quantity);
+      itemEvent(session, ["Acquire", "HasItem"], entry.templateId, entry.quantity);
       acquiring = { templateId: entry.templateId, wanted: wantsAcquire(session.profile("profile0"), entry.templateId) };
     }
   }
@@ -107,7 +110,7 @@ export function grant(session, templateId, quantity, options = {}) {
 
 // Whether an active quest has an Acquire objective for templateId that hasn't reached its count.
 function wantsAcquire(tracker, templateId) {
-  return activeQuests(tracker).some(({ item, quest }) => quest.objectives.some((objective) => objective.itemEvent === "Acquire"
+  return activeQuests(tracker).some(({ item, quest }) => quest.objectives.some((objective) => (objective.itemEvent === "Acquire" || objective.itemEvent === "HasItem")
     && objective.item && sameId(objective.item, templateId) && (item.attributes[`completion_${objective.name}`] ?? 0) < objective.count));
 }
 
@@ -235,7 +238,9 @@ function stateProgress(session, objective) {
   const { profile } = session.profile("profile0");
   const book = bookProgress(session, objective);
   if (book !== undefined) return book;
-  if (objective.itemEvent === "Acquire" && objective.item) {
+  // HasItem naming an item (no stat): that item held, as 4.x's HeroQuest_Ninja_1 (HomebaseNode:T1_Main_8991222D1) and 5.0's
+  // HordeQuest_HordeUnlock (HomebaseNode:T1_Horde_99587FCCD, the Horde Skill Tree's first node) ask.
+  if ((objective.itemEvent === "Acquire" || (objective.itemEvent === "HasItem" && !objective.stat)) && objective.item) {
     return Object.values(profile.items).filter((item) => sameId(item.templateId, objective.item)).reduce((sum, item) => sum + item.quantity, 0);
   }
   if ((objective.itemEvent === "HasCompletedQuest" || objective.itemEvent === "QuestComplete") && objective.item) {

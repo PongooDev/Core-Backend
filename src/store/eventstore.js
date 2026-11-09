@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { currentBuild } from "../builds/context.js";
-import { blockbuster2018, isEventActive, mutantStorms2018, spring2018, storm2018, winter2017 } from "../events/events.js";
+import { blockbuster2018, isEventActive, mutantStorms2018, roadTrip2018, spring2018, storm2018, winter2017 } from "../events/events.js";
 import { getItem } from "../gamedata/items.js";
 import { nextReplayOf, weeklyStoreEnd } from "./itemshop.js";
 
@@ -271,16 +271,34 @@ const blockbusterEventItems = [
 const blockbusterItems = () => blockbusterEventItems.filter(({ templateId }) => !weeklyFeatured().some((item) => item.templateId === templateId));
 export const blockbuster2018End = "2018-07-12T00:00:00.000Z";
 const blockbusterNow = () => !isEventActive(winter2017) && !storms2018() && !springNow() && isEventActive(blockbuster2018);
-const eventItemsNow = () => (storms2018() ? stormsEventItems : springNow() ? springItemsNow() : blockbusterNow() ? blockbusterItems() : eventItems);
+// 5.0's (CL-4204761, CL-4214610) Road Trip (events/roadtrip2018.js) opens a store of its own, sold for Gold as Blockbuster's
+// (its trackers RoadTrip2018.*). The Fortnite Wiki's Road Trip lists the Event Store's weapons, the Bowler, Bundlebuss,
+// Spyglass, Typewriter, Walloper and Wraith, and its heroes (Bladestorm Enforcer, Quickdraw Calamity...). 5.0's data has
+// the first five as legendary schematics (the Flintlock Launcher, Assault, Scoped Sniper and Hammer, and the Autodrum
+// assault rifle, new in 5.0); the Wraith and the heroes aren't in its paks (later content updates), so they stay out. So
+// the event items are those five at a legendary schematic's 1,680 Gold and a legendary Survivor at 700, one each (🟡:
+// Epic's prices and limits aren't recorded). Its event items count down to the event's end, Season 5's (roadTrip2018End,
+// 27 September 2018, Season 6's start with Fortnitemares' return; 🟡 the hour is Core's), on Season 5's replay.
+const roadTripEventItems = [
+  ...["launcher_flintlock", "assault_flintlock", "sniper_flintlock_scope", "blunt_hammer_flintlock", "assault_autodrum"]
+    .map((name) => ({ templateId: `Schematic:sid_${name}_sr_ore_t01`, price: 1680, limit: 1 })),
+  { templateId: "Worker:workerbasic_sr_t01", price: 700, limit: 1 }
+];
+export const roadTrip2018End = "2018-09-27T00:00:00.000Z";
+const roadTripNow = () => !isEventActive(winter2017) && !storms2018() && !springNow() && !blockbusterNow() && isEventActive(roadTrip2018);
+const eventItemsNow = () => (storms2018() ? stormsEventItems : springNow() ? springItemsNow() : blockbusterNow() ? blockbusterItems()
+  : roadTripNow() ? roadTripEventItems : eventItems);
 export const eventStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWSpecialEventStoreFront"
-  : springNow() ? "Spring2018.STWSpecialEventStoreFront" : blockbusterNow() ? "Blockbuster2018.STWSpecialEventStoreFront" : eventStoreInstance);
+  : springNow() ? "Spring2018.STWSpecialEventStoreFront" : blockbusterNow() ? "Blockbuster2018.STWSpecialEventStoreFront"
+    : roadTripNow() ? "RoadTrip2018.STWSpecialEventStoreFront" : eventStoreInstance);
 export const weeklyStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWRotationalEventStorefront"
-  : springNow() ? "Spring2018.STWRotationalEventStorefront" : blockbusterNow() ? "Blockbuster2018.STWRotationalEventStorefront" : weeklyStoreInstance);
+  : springNow() ? "Spring2018.STWRotationalEventStorefront" : blockbusterNow() ? "Blockbuster2018.STWRotationalEventStorefront"
+    : roadTripNow() ? "RoadTrip2018.STWRotationalEventStorefront" : weeklyStoreInstance);
 
 // The store is open while the requesting build runs Survive the Holidays (or 2.3's to 2.4.2's storms, 2.5's Spring It
-// On!, 3.5.1's Into the Storm or 4.0's to 4.2's Blockbuster) and its data has Seasonal Gold.
+// On!, 3.5.1's Into the Storm, 4.0's to 4.2's Blockbuster or 5.0's Road Trip) and its data has Seasonal Gold.
 export const hasEventStore = () => (isEventActive(winter2017) || isEventActive(mutantStorms2018) || isEventActive(spring2018) || isEventActive(storm2018)
-  || isEventActive(blockbuster2018)) && Boolean(getItem(seasonalGold));
+  || isEventActive(blockbuster2018) || isEventActive(roadTrip2018)) && Boolean(getItem(seasonalGold));
 
 const has = ({ templateId }) => Boolean(getItem(templateId));
 const nameOf = (templateId) => templateId.split(":")[1].toLowerCase();
@@ -291,7 +309,8 @@ export const winter2017End = "2018-01-25T00:00:00.000Z";
 // The calendar's Event Store countdowns, none while it is closed.
 export function eventStoreEnds(now = new Date()) {
   if (!hasEventStore()) return {};
-  const end = storms2018() ? mutantStorms2018End : springNow() ? spring2018End : blockbusterNow() ? blockbuster2018End : winter2017End;
+  const end = storms2018() ? mutantStorms2018End : springNow() ? spring2018End : blockbusterNow() ? blockbuster2018End
+    : roadTripNow() ? roadTrip2018End : winter2017End;
   return { stwEventStoreEnd: nextReplayOf(end, now), stwWeeklyStoreEnd: weeklyStoreEnd(now) };
 }
 

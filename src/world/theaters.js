@@ -11,6 +11,8 @@ import { perBuild } from "../gamedata/read.js";
 import { elementalZones, getDifficulty, missionAlertSpread, missionAlertTier } from "../gamedata/world.js";
 import { hasEventStore } from "../store/eventstore.js";
 import { candyReward, hexsylvania, isHexsylvania } from "./hexsylvania.js";
+import { hordeAlertRewards, hordeMissionRewards } from "../events/roadtrip2018.js";
+import { hordeTheater, isHorde, isHordeTierGroup } from "./horde.js";
 import { linkedQuests, questPath } from "./quests.js";
 import { isSurvival, survivalAlertGenerators, survivalReward, survivalTheater } from "./survival.js";
 
@@ -135,6 +137,8 @@ function missionRewards(seed, tierGroupName, theaterId, rowName, soloTierGroup =
   if (isHexsylvania(theaterId)) items.push({ itemType: candy, quantity: candyReward(rowName) });
   const survival = isSurvival(theaterId) && survivalReward(tierGroupName);
   if (survival) items.push(survival);
+  // A Challenge the Horde mission's (5.0, world/horde.js): its zone's Horde Points and perk pack (events/roadtrip2018.js).
+  if (isHordeTierGroup(tierGroupName)) items.push(...hordeMissionRewards(rowName));
   const gold = seasonalGoldPack(soloTierGroup ?? tierGroupName);
   if (gold) items.push({ itemType: gold, quantity: 1 });
   return { tierGroupName, items: items.map(({ itemType, quantity }) => ({ itemType, quantity })) };
@@ -437,6 +441,10 @@ export const stormTicketsFor = (rowName) => {
 export const groupTicketsFor = (rowName) => Math.max(1, getDifficulty(rowName)?.difficulty ?? 1) * 10;
 const alertRewards = {
   [halloweenAlerts]: () => [[candy, 100]],
+  // 5.0's Challenge the Horde alerts (MissionAlert_HordeCategory_01, EventFlag.Horde; world/horde.js): Road Trip Tickets,
+  // Horde Points and perk resources (events/roadtrip2018.js).
+  HordeBash_MissionAlert: (row, mission) => hordeAlertRewards(mission.missionDifficultyInfo.rowName,
+    getDifficulty(mission.missionDifficultyInfo.rowName)?.difficulty),
   MissionAlert_Proto_01: () => [["CardPack:zcp_mtx_boost50", 1], ["CardPack:zcp_reagent_c_t01_medium", 1]],
   MissionAlert_Proto_02: () => [["CardPack:zcp_mtx_boost50", 1], ["CardPack:zcp_reagent_c_t02_medium", 1]],
   MissionAlert_Proto_03: () => [["CardPack:zcp_mtx_boost100", 1], ["CardPack:zcp_reagent_c_t03_medium", 1]],
@@ -619,7 +627,8 @@ function spreadStorm(data, missions, storm, dayStart, now, taken, availableUntil
 // alert a mission. A main theater's are a general one (MissionAlert_1-4) and a storm one (StormLowCategory), and while
 // the Mutant Storms run (1.9.1) each of its zones gets a Mutant Storm (StormCategory) that spreads; while Survive the
 // Holidays runs (1.11) each region also gets a Mini-Boss one (MiniBossCategory); Hexsylvania's are Halloween ones, and
-// each Survive the Storm region gets a 3 Day and a 7 Day one. The alert names its category
+// each Survive the Storm region gets a 3 Day and a 7 Day one, and each Challenge the Horde zone (5.0, world/horde.js) a
+// Horde one (HordeCategory: "Quota: 10 per day", repeatable, profiles/alerts.js). The alert names its category
 // (FFortAvailableMissionAlertData CategoryName), which the map tile looks up in MissionAlertCategories (AFortTheaterMapTile::GetMissionAlertCategory, 1.8 0x8F3D40, the tile's alert's category
 // name): BP_Hex_PARENT's HandleMissionAlert shows every alert's indicator and, for Storm and StormLow, the storm swirl
 // (P_StormAffected) and its timer (Core-Backend #91). Without a name every alert was General.
@@ -629,6 +638,7 @@ function rollAlerts({ data }, missions, day, dayStart, now, availableUntil) {
   const passive = isEventActive(passiveMiniBosses);
   const categories = isHexsylvania(data.uniqueId) ? ["HalloweenCategory"]
     : isSurvival(data.uniqueId) ? ["Survival3DayCategory", "Survival7DayCategory"]
+      : isHorde(data.uniqueId) ? ["HordeCategory"]
       : stormsMiniBosses ? ["StormLowCategory"] : passive ? [] : ["GeneralCategory", "StormLowCategory", "MiniBossCategory"];
   const taken = new Set();
   const storms = [];
@@ -647,7 +657,7 @@ function rollAlerts({ data }, missions, day, dayStart, now, availableUntil) {
   };
   // 3.2's group alerts first, one on every group mission a GroupMissionCategory row fits (tile difficulty 5 and up;
   // EventFlag.GroupMission): the category's Quota of 10 and MissionAlertRepeatable are profiles/alerts.js's.
-  const groupAlerts = isHexsylvania(data.uniqueId) || isSurvival(data.uniqueId) ? [] : missions
+  const groupAlerts = isHexsylvania(data.uniqueId) || isSurvival(data.uniqueId) || isHorde(data.uniqueId) ? [] : missions
     .filter((mission) => isGroupMission(mission.missionGenerator) && alertFor(data, mission, groupCategory))
     .map((mission) => {
       taken.add(mission.missionGuid);
@@ -659,7 +669,7 @@ function rollAlerts({ data }, missions, day, dayStart, now, availableUntil) {
       (mission) => region.tileIndices.includes(mission.tileIndex))))];
   // A Mutant Storm starts in each of the theater's zones (one per StormCategory row its missions can carry, each row a
   // zone and a spread) and spreads from there; from 1.10 each theater has its fixed target of storms instead.
-  if (!isHexsylvania(data.uniqueId) && !isSurvival(data.uniqueId)) {
+  if (!isHexsylvania(data.uniqueId) && !isSurvival(data.uniqueId) && !isHorde(data.uniqueId)) {
     const zone = theaterZone(data);
     const anyRow = (category) => (mission) => Boolean(alertFor(data, mission, category));
     if (spreading) {
@@ -731,7 +741,7 @@ export function worldInfo(now = new Date()) {
   const day = now.toISOString().slice(0, 10);
   const dayStart = new Date(`${day}T00:00:00.000Z`);
   const availableUntil = `${day}T23:59:59.999Z`;
-  const theaters = [...layout().theaters, ...[hexsylvania(), survivalTheater()].filter(Boolean)];
+  const theaters = [...layout().theaters, ...[hexsylvania(), survivalTheater(), hordeTheater()].filter(Boolean)];
   const missions = theaters.map((theater) => rollMissions(theater, day, availableUntil));
   const alerts = theaters.map((theater, index) => rollAlerts(theater, missions[index], day, dayStart, now, availableUntil));
   return {
