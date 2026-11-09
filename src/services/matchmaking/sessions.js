@@ -3,6 +3,7 @@ import { requireAuth } from "../../accounts/auth.js";
 import { currentBuild } from "../../builds/context.js";
 import { notFound, sendError } from "../../errors.js";
 import { log } from "../../log.js";
+import { createDemand, mergeDemand } from "../../matchmaking/demand.js";
 import { regionAllowsAddress, regionName, regionOf } from "../../matchmaking/regions.js";
 import { managesSession, sessionJson, sessionSummary } from "../../matchmaking/sessions.js";
 import { allowsHosting, defaultHostingIps, isLoopback, normalizeAddress, requestAddress } from "../../network.js";
@@ -47,7 +48,7 @@ export function notRegionHost(res, address, region, what) {
     `This IP address can't host for ${region}: add it to ${region}'s hosting IPs in the admin panel's Server Regions to host from it`);
 }
 
-export function sessionRoutes({ tokens, sessions, network, settings, emptyServerWaitMs = defaultEmptyServerWaitMs }) {
+export function sessionRoutes({ tokens, sessions, matchmaker, network, settings, emptyServerWaitMs = defaultEmptyServerWaitMs, demand = createDemand() }) {
   const router = express.Router();
   const base = "/fortnite/api/matchmaking/session";
   const auth = requireAuth(tokens);
@@ -84,7 +85,14 @@ export function sessionRoutes({ tokens, sessions, network, settings, emptyServer
       res.json(found.map((session) => sessionJson(session, req, network)));
     };
     const found = sessions.search(req.body);
-    if (found.length > 0 || !wantsEmptyServer(req.body) || !(emptyServerWaitMs > 0)) return answer(found);
+    if (found.length > 0 && wantsEmptyServer(req.body)) demand.found(currentBuild());
+    if (found.length > 0 || !wantsEmptyServer(req.body)) return answer(found);
+    // No empty server for the client's build: the launcher may move an idle one over (Core-Launcher #18).
+    const searched = demand.searching(currentBuild());
+    if (!(emptyServerWaitMs > 0)) {
+      searched(false);
+      return answer(found);
+    }
 
     const started = Date.now();
     let waiting = true;
@@ -93,6 +101,7 @@ export function sessionRoutes({ tokens, sessions, network, settings, emptyServer
       waiting = false;
       clearTimeout(timer);
       stopWatching();
+      searched(Boolean(result?.length));
       if (!result) return; // The client gave up (cancelled matchmaking or closed the connection).
       const waited = ((Date.now() - started) / 1000).toFixed(1);
       log("Matchmaking", result.length > 0
@@ -164,6 +173,14 @@ export function sessionRoutes({ tokens, sessions, network, settings, emptyServer
   router.get("/core/api/sessions", (req, res) => {
     if (!allowsHosting(requestAddress(req), hostingIps(settings))) return notHosting(res, req, "list the game sessions");
     res.json(sessions.list().map(sessionSummary));
+  });
+
+  // Core's (Core-Launcher #18): the builds whose players wait for a server none of the running ones can take, [{ build:
+  // its changelist, mode: "battleRoyale" or "saveTheWorld", players }], most wanted first. A launcher with an idle server moves it to the first of them it has
+  // (Settings, Servers, "Switch idle servers"). Read by the same PCs as the session listing.
+  router.get("/core/api/demand", (req, res) => {
+    if (!allowsHosting(requestAddress(req), hostingIps(settings))) return notHosting(res, req, "list the builds waiting for a server");
+    res.json(mergeDemand(matchmaker?.waitingBuilds?.() ?? [], demand.list()));
   });
 
   return router;

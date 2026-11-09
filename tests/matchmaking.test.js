@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createSessionStore, normalizeAddress, sessionJson } from "../src/matchmaking/sessions.js";
+import { createDemand, mergeDemand } from "../src/matchmaking/demand.js";
 import { defaultEmptyServerWaitMs } from "../src/services/matchmaking/sessions.js";
 import http from "node:http";
 import { certUserAgent, clientToken, del, get, openTunnel, post, request, send, startBackend, userLogin } from "./helpers.js";
@@ -667,4 +668,53 @@ test("a storm shield is found by the critical mission tile only while its owner 
   } finally {
     backend.close();
   }
+});
+
+test("a build whose players find no empty server is listed for the launcher until one comes up (Core-Launcher #18)", async () => {
+  const backend = await startBackend();
+  try {
+    const server = await clientToken(backend.port);
+    const { token } = await userLogin(backend.port, "DemandPlayer");
+    assert.deepEqual((await get(backend.port, "/core/api/demand")).body, []);
+
+    // A search for a session to join isn't one for a server: only the mission's empty-server search counts.
+    const { maxCurrentPlayers, ...joinSearch } = clientSearch;
+    await post(backend.port, `${base}/matchMakingRequest`, token, joinSearch);
+    assert.deepEqual((await get(backend.port, "/core/api/demand")).body, []);
+
+    assert.deepEqual((await post(backend.port, `${base}/matchMakingRequest`, token, clientSearch)).body, []);
+    assert.deepEqual((await get(backend.port, "/core/api/demand")).body, [{ build: "3532353", mode: "saveTheWorld", players: 1 }]);
+
+    await post(backend.port, base, server, emptyServer);
+    assert.equal((await post(backend.port, `${base}/matchMakingRequest`, token, clientSearch)).body.length, 1);
+    assert.deepEqual((await get(backend.port, "/core/api/demand")).body, [], "the build has a server now");
+  } finally {
+    backend.close();
+  }
+});
+
+test("a build stays wanted while its searches wait and for the hold after the last miss; lists merge by build", () => {
+  let now = 0;
+  const demand = createDemand({ now: () => now, holdMs: 1000 });
+  const first = demand.searching("3700114");
+  const second = demand.searching("3700114");
+  demand.searching("")();
+  assert.deepEqual(demand.list(), [{ build: "3700114", mode: "saveTheWorld", players: 2 }]);
+  first(false);
+  second(false);
+  now = 999;
+  assert.deepEqual(demand.list(), [{ build: "3700114", mode: "saveTheWorld", players: 1 }]);
+  now = 1000;
+  assert.deepEqual(demand.list(), []);
+
+  const waiting = demand.searching(4166199);
+  waiting(true);
+  waiting(false);
+  assert.deepEqual(demand.list(), [], "a search that found a server, ended once");
+
+  const br = "battleRoyale";
+  const stw = "saveTheWorld";
+  assert.deepEqual(mergeDemand([{ build: "1", mode: br, players: 1 }, { build: "2", mode: br, players: 1 }],
+    [{ build: "2", mode: br, players: 2 }, { build: "2", mode: stw, players: 1 }, { build: null, mode: br, players: 5 }]),
+  [{ build: "2", mode: br, players: 3 }, { build: "1", mode: br, players: 1 }, { build: "2", mode: stw, players: 1 }]);
 });

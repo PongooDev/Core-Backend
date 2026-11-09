@@ -129,6 +129,7 @@ test("a whitelisted PC's gameserver logs in, registers its region's session and 
     assert.equal(player.status, 200, "players still log in from anywhere");
     assert.equal((await post(port, base, player.body.access_token, euServer)).status, 403);
     assert.equal((await get(port, "/core/api/sessions")).status, 403);
+    assert.equal((await get(port, "/core/api/demand")).status, 403);
 
     // The admin panel (on this PC) lists the host PC's IP; it takes only IP addresses.
     from.address = "127.0.0.1";

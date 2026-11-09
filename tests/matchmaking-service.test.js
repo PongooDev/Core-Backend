@@ -237,6 +237,8 @@ test("a party's tickets wait for a registered server, which gets the match and s
     // The queue counts everyone queued for the bucket (#55): the party of two. With no server free there's no ETA ("N/A").
     assert.equal(states[2].payload.queuedPlayers, 2);
     assert.equal(states[2].payload.estimatedWaitSec, 0);
+    // The party waits on Cert (the tests' User-Agent) with no server for it: the launcher may move one over (Core-Launcher #18).
+    assert.deepEqual((await get(backend.port, "/core/api/demand")).body, [{ build: "3532353", mode: "battleRoyale", players: 1 }]);
     client.send("ping");
     assert.equal(await client.next(), "pong");
     const followerClient = await matchmakingClient(backend.port, authorizationOf((await ticketOf(follower, party)).body));
@@ -269,6 +271,7 @@ test("a party's tickets wait for a registered server, which gets the match and s
       // The client joins once the service closes its socket.
       assert.equal(await party.next(), null);
     }
+    assert.deepEqual((await get(backend.port, "/core/api/demand")).body, [], "nobody waits once their match has a server");
 
     // The assigned match holds only its players: a party that queues later waits for the next free server.
     const late = await matchmakingClient(backend.port, authorizationOf((await ticketOf(latecomer, latecomer.accountId)).body));

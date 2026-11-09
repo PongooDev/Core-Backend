@@ -954,6 +954,17 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
       clearInterval(countdown);
       for (const ws of sockets) ws.close(1001);
     },
+    // Core's (Core-Launcher #18): the builds whose parties wait for a server, [{ build, mode: "battleRoyale", players }],
+    // so the launcher can move an idle server to one. A party's members each queue with their own ticket, so each counts once.
+    waitingBuilds() {
+      const builds = new Map();
+      for (const party of waiting) {
+        if (party.done || party.ws.closed || !party.ticket.build) continue;
+        const build = String(party.ticket.build);
+        builds.set(build, (builds.get(build) ?? 0) + 1);
+      }
+      return [...builds].map(([build, players]) => ({ build, mode: "battleRoyale", players }));
+    },
     // Core's: what the launcher and the admin panel can show.
     state: () => ({ servers: [...servers].map(({ sessionId, maxPlayers, forming, region }) => ({ sessionId, region, maxPlayers, forming: forming?.matchId ?? null })),
       waiting: waiting.length, matches: [...matches].map(([sessionId, { matchId, bucketId, customKey }]) => ({ sessionId, matchId, bucketId, customKey })),
