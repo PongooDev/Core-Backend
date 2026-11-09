@@ -201,7 +201,8 @@ function offerJson(offer, sortPriority) {
     metaAssetInfo: { structName: "FortCatalogMeta", payload: { chaseItems: [], packDefinition: offer.athena || offer.battlePass || offer.realMoney ? "" : getCardPack(templateId)?.path ?? "" } },
     displayAssetPath: offer.displayAssetPath ?? "",
     itemGrants: offer.itemGrants ?? [{ templateId, quantity: offer.quantity ?? 1 }],
-    requirements: [],
+    // A one-per-account real-money offer's (store/currency.js catalogEntry), which the client checks against the profile.
+    requirements: offer.requirements ?? [],
     denyItemTemplateIds: [],
     // 3.6's FCatalogOffer has Refundable (0x200; the offer details' UpdateFromOffer reads IsRefundable and shows the
     // not-returnable disclaimer, NonrefundableText, when it is false, so an offer without it said "not eligible"). The

@@ -385,3 +385,51 @@ test("#294: after a Starter Pack purchase the client's next profile command brin
     backend.close();
   }
 });
+
+// Core-Backend #248: a bought Starter Pack left the Store tab only after a restart. The client keeps its catalog until the
+// refresh is due and checks each offer's requirements against the profile whenever it lists the tab (ListMtxPackages,
+// store/currency.js offerRequirements), so the pack carries DenyOnFulfillment of its own id, and the purchase's
+// fulfillment count reaches the client in its VerifyRealMoneyPurchase response.
+const fulfillmentCount = (profile, id) => profile?.stats?.attributes?.in_app_purchases?.fulfillmentCounts?.[id] ?? 0;
+// The client's check (4.4.2 0x8465C0) of DenyOnFulfillment, the only requirement type these offers use.
+const passes = (offer, profile) => offer.requirements.every(({ requirementType, requiredId, minQuantity }) => {
+  assert.equal(requirementType, "DenyOnFulfillment");
+  return fulfillmentCount(profile, requiredId) < minQuantity;
+});
+const agent441 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-4.4.1-CL-4127312";
+for (const [build, userAgent, profileId, offerId] of [["3.1", agent31, "profile0", "core_starter_br_s3"],
+  ["3.5.1", agent351, "common_core", "core_starter_br_s3"], ["4.4.1", agent441, "common_core", "core_starter_br_s4"]]) {
+  test(`#248: on ${build} the bought Starter Pack leaves the Store tab's catalog the client already has`, async () => {
+    const backend = await startBackend();
+    try {
+      const player = await userLogin(backend.port, `Gone${build.replaceAll(".", "")}`);
+      const run = (command) => send({ host: "127.0.0.1", port: backend.port, method: "POST",
+        path: `/fortnite/api/game/v2/profile/${player.accountId}/client/${command}?profileId=${profileId}&rvn=${rvn}`,
+        headers: { "User-Agent": userAgent, Authorization: `bearer ${player.token}`, "Content-Type": "application/json", "Content-Length": 2 } }, "{}").then((r) => r.body);
+      let rvn = -1;
+      const login = await run("QueryProfile");
+      rvn = login.profileRevision;
+      const held = login.profileChanges[0].profile;
+
+      const store = currencyOf(await catalog(backend.port, player.token, userAgent));
+      const offer = store.catalogEntries.find((o) => o.offerId === offerId);
+      assert.deepEqual(offer.requirements, [{ requirementType: "DenyOnFulfillment", requiredId: offerId, minQuantity: 1 }]);
+      // The V-Bucks packs can be bought again and again: no requirements.
+      assert.ok(store.catalogEntries.filter((o) => o.offerId.startsWith("core_mtx_")).every((o) => o.requirements.length === 0));
+      assert.equal(passes(offer, held), true);
+
+      await complete(backend.port, purchaseIdOf((await open(backend.port, offer.appStoreId[1], userAgent)).body));
+      // The client's check after the purchase flow, from the revision it holds: the profile comes back with the count.
+      const verify = await run("VerifyRealMoneyPurchase");
+      assert.equal(verify.profileId, profileId);
+      const updated = verify.profileChanges[0].profile;
+      assert.equal(verify.profileChanges[0].changeType, "fullProfileUpdate");
+      assert.equal(fulfillmentCount(updated, offerId), 1);
+      // The offer in the catalog the client already holds now fails its requirement, so the tab leaves it out.
+      assert.equal(passes(offer, updated), false);
+      assert.ok(store.catalogEntries.filter((o) => o.offerId.startsWith("core_mtx_")).every((o) => passes(o, updated)));
+    } finally {
+      backend.close();
+    }
+  });
+}

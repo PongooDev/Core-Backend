@@ -171,6 +171,21 @@ export function foundersOffers(accountId, profile0) {
   return foundersPackOffers.filter((offer) => isOffered(offer, profile0)).map((offer) => catalogEntry(offer, accountId));
 }
 
+// A one-per-account offer's requirements (Core-Backend #248): DenyOnFulfillment of its own offer id, as Epic's starter
+// packs had. The bought pack used to stay in the Store tab until the game was restarted: the backend leaves it out of
+// the next catalog, but the client keeps the catalog it has until its refresh is due. The client checks the requirements
+// itself each time it lists the tab: ListMtxPackages' callback (4.4.2 0xE4B810) gathers each storefront's offers through
+// the catalog helper (0x84B250 -> 0x848020) with the check on and unavailable offers left out (flags 01 00 00 01 01),
+// and the check (0x8465C0) fails DenyOnFulfillment once the profile's in_app_purchases.fulfillmentCounts[requiredId]
+// (0x849E50, or the older fulfillments list) reaches minQuantity. The purchase records that count in profile0
+// (grantRealMoneyOffer; common_core from 3.5), and the client's VerifyRealMoneyPurchase right after brings it back
+// (services/mcp/profile.js: the client's revision is behind, so the profile comes whole), so the pack goes on the next
+// listing without a catalog refetch. FCatalogOffer::Requirements is in every build with the Store tab (1.8 on).
+// Repeatable offers (the V-Bucks packs) and the founder's packs (whose edition the admin panel can set back) have none.
+export const offerRequirements = (offer) => (offer.oncePerAccount
+  ? [{ requirementType: "DenyOnFulfillment", requiredId: offer.offerId, minQuantity: 1 }]
+  : []);
+
 function catalogEntry(offer, accountId) {
   return {
     offerId: offer.offerId,
@@ -185,7 +200,8 @@ function catalogEntry(offer, accountId) {
     appStoreId: ["", appStoreIdOf(offer.offerId, accountId), "", "", "", "", "", ""],
     metaInfo: offer.metaInfo,
     displayAssetPath: offer.displayAssetPath,
-    itemGrants: []
+    itemGrants: [],
+    requirements: offerRequirements(offer)
   };
 }
 
