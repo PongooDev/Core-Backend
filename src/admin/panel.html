@@ -3443,6 +3443,7 @@
             ),
             el("div", { class: "k", text: item.type }),
             item.owned ? el("div", { class: "actions", style: "justify-content:flex-end; border-top:1px solid var(--line); padding-top:8px; margin-top:2px;" },
+              btn("Styles", () => openStylesModal(a, data.build, item.templateId), "ghost small"),
               btn("Remove", async () => {
                 if (!await confirmModal(`Remove ${item.name} from ${a.displayName}'s locker? Starter cosmetics and earned ones will stay.`, {
                   title: "Remove Cosmetic",
@@ -3492,11 +3493,176 @@
 
       return el("div", { style: "margin-top:20px" },
         el("div", { class: "panel-head", style: "margin-bottom:8px;" },
-          el("h3", { style: "margin:0;", text: "Locker items" })),
+          el("h3", { style: "margin:0;", text: "Locker items" }),
+          btn("Edit styles by id", () => openStylesModal(a, s.build), "ghost small")),
         el("div", { class: "actions", style: "margin-top:8px" }, buildSelect, typeSelect, search, ownedToggle),
         el("div", { style: "margin-top:10px" }, summary),
         results
       );
+    }
+
+    // A cosmetic's styles by hand (Core-Backend #305): the channels and owned options of a cosmetic in the locker, as the
+    // locker's Edit Styles reads them. When the build's data names the cosmetic's channels (4.0 on), the channel and its
+    // options are picked from them; any other channel or option is typed in (Mat1, Mat2 or a range, Stage1..Stage4).
+    function openStylesModal(a, build, templateId = "") {
+      const m = { build, data: null };
+      const close = () => {
+        window.removeEventListener("keydown", onKeyDown);
+        backdrop.classList.remove("show");
+        setTimeout(() => backdrop.remove(), 160);
+      };
+      const onKeyDown = (e) => { if (e.key === "Escape") close(); };
+      const backdrop = el("div", { class: "modal-backdrop", onclick: (e) => { if (e.target === backdrop) close(); } });
+
+      const idInput = el("input", { class: "field mono", type: "text", value: templateId, placeholder: "AthenaCharacter:CID_115_Athena_Commando_M_CarbideBlue", style: "flex:1 1 280px", "aria-label": "Cosmetic id" });
+      const title = el("h2", { style: "margin:0; font-size:18px;", text: "Cosmetic styles" });
+      const subtitle = el("div", { class: "muted mono", style: "font-size:11px; margin-top:2px; word-break:break-all;" });
+      const current = el("div", {});
+      const adder = el("div", {});
+
+      // "Stage1..Stage4" (or "Mat1-3") is Stage1, Stage2, Stage3, Stage4; the rest is split on commas and spaces.
+      const expandTags = (text) => String(text).split(/[\s,]+/).filter(Boolean).flatMap((part) => {
+        const range = /^([A-Za-z_]*?)(\d+)(?:\.\.|-)\1?(\d+)$/.exec(part);
+        if (!range) return [part];
+        const [from, to] = [Number(range[2]), Number(range[3])];
+        if (to < from || to - from > 63) return [part];
+        return Array.from({ length: to - from + 1 }, (_, index) => `${range[1]}${from + index}`);
+      });
+
+      const save = (styles, remove, message) => act(api(`/admin/api/accounts/${a.id}/cosmetics/styles`, { build: m.build, templateId: m.data.templateId, styles, remove }))
+        .then((account) => {
+          if (!account) return;
+          const change = account.styleChange;
+          m.data = change;
+          render();
+          const kept = change.kept.length ? `; kept ${change.kept.join(", ")} (owned with the cosmetic)` : "";
+          setAccount(account, change.changed ? `${message}${kept}` : `Nothing changed${kept}`);
+        });
+
+      function renderCurrent() {
+        const d = m.data;
+        if (!d.variants.length) return current.replaceChildren(el("p", { class: "note", text: "No styles yet." }));
+        current.replaceChildren(...d.variants.map((entry) => el("div", { style: "margin-bottom:10px;" },
+          el("div", { style: "font-weight:600; font-size:13px; margin-bottom:4px;", text: entry.channel }),
+          el("div", { class: "actions", style: "flex-wrap:wrap; gap:6px;" },
+            (entry.owned ?? []).map((tag) => el("span", { class: `chip ${tag === entry.active ? "sky" : ""}`, title: tag === entry.active ? "Active style" : "" },
+              el("span", { text: tag === entry.active ? `${tag} (active)` : tag }),
+              tag === entry.active ? null : el("button", { type: "button", class: "btn ghost small", style: "min-height:20px; padding:0 6px; margin-left:4px;", title: `Make ${tag} the active style`,
+                onclick: () => save([{ channel: entry.channel, tags: [tag], active: tag }], false, `${entry.channel}: ${tag} is the active style`) }, el("span", { text: "Use" })),
+              el("button", { type: "button", class: "btn ghost small", style: "min-height:20px; padding:0 6px; margin-left:2px;", title: `Take ${tag} off`, "aria-label": `Take ${tag} off`,
+                onclick: () => save([{ channel: entry.channel, tags: [tag] }], true, `Took ${entry.channel} ${tag} off ${d.name}`) }, el("span", { text: "✕" })))))
+        )));
+      }
+
+      function renderAdder() {
+        const d = m.data;
+        const channels = d.data.channels;
+        const channelSelect = el("select", { class: "field", "aria-label": "Style channel" },
+          channels.map((entry) => el("option", { value: entry.channel, text: entry.channel })),
+          el("option", { value: "", text: channels.length ? "Other (type it)" : "Type the channel" }));
+        const channelInput = el("input", { class: "field", type: "text", placeholder: "Channel, e.g. Material or Progressive", list: "core-style-channels", style: "flex:1 1 180px" });
+        const tagsInput = el("input", { class: "field", type: "text", placeholder: "Styles, e.g. Mat1, Mat2, Mat3 or Stage1..Stage4", style: "flex:1 1 260px" });
+        const options = el("div", { class: "actions", style: "flex-wrap:wrap; gap:8px;" });
+        const activeSelect = el("select", { class: "field", "aria-label": "Active style" });
+        const held = (channel) => d.variants.find((entry) => entry.channel.toLowerCase() === channel.toLowerCase());
+
+        const chosenTags = () => {
+          const picked = [...options.querySelectorAll("input[type=checkbox]:checked:not(:disabled)")].map((box) => box.value);
+          return [...new Set([...picked, ...expandTags(tagsInput.value)])];
+        };
+        const refreshActive = () => {
+          const channel = channelSelect.value || channelInput.value.trim();
+          const owned = held(channel)?.owned ?? [];
+          const all = [...new Set([...owned, ...chosenTags()])];
+          activeSelect.replaceChildren(el("option", { value: "", text: owned.length ? `Keep active (${held(channel).active})` : "Active: the first added" }),
+            ...all.map((tag) => el("option", { value: tag, text: `Active: ${tag}` })));
+        };
+        const refresh = () => {
+          const entry = channels.find((candidate) => candidate.channel === channelSelect.value);
+          channelInput.style.display = entry ? "none" : "";
+          const owned = new Set(held(entry?.channel ?? "")?.owned ?? []);
+          options.replaceChildren(...(entry ? entry.options.map((option) => el("label", { style: "display:flex; align-items:center; gap:4px; font-size:13px;" },
+            el("input", { type: "checkbox", value: option, checked: owned.has(option), disabled: owned.has(option), onchange: refreshActive }),
+            el("span", { text: owned.has(option) ? `${option} (owned)` : option }))) : []));
+          tagsInput.placeholder = entry ? "More styles not in the data (optional)" : "Styles, e.g. Mat1, Mat2, Mat3 or Stage1..Stage4";
+          refreshActive();
+        };
+        channelSelect.addEventListener("change", refresh);
+        channelInput.addEventListener("input", refreshActive);
+        tagsInput.addEventListener("input", refreshActive);
+
+        const add = btn("Add styles", () => {
+          const channel = channelSelect.value || channelInput.value.trim();
+          const tags = chosenTags();
+          if (!channel) return toast("Name the style channel", true);
+          if (!tags.length && !activeSelect.value) return toast("Pick or type the styles to add", true);
+          save([{ channel, tags: tags.length ? tags : [activeSelect.value], active: activeSelect.value || undefined }], false,
+            `Gave ${d.name} ${channel} ${tags.join(", ") || activeSelect.value}`);
+        }, "primary");
+
+        const source = channels.length
+          ? `Channels from ${d.data.version}'s data${d.data.build === d.build ? "" : ` (${d.version}'s data names none)`}.`
+          : "The game data names no styles for this cosmetic: type the channel and its styles as the game's tags name them (the last part, e.g. Cosmetics.Variant.Property.Mat2 is Mat2).";
+        adder.replaceChildren(
+          el("h3", { style: "margin:0 0 6px;", text: "Add styles" }),
+          el("p", { class: "note", text: source }),
+          el("datalist", { id: "core-style-channels" }, ["Material", "Progressive", "Parts", "Emissive", "ClothingColor", "Pattern", "Numeric", "JerseyColor", "Mesh", "Particle"]
+            .map((name) => el("option", { value: name }))),
+          el("div", { class: "actions", style: "flex-wrap:wrap; gap:8px; margin-bottom:8px;" }, channels.length ? channelSelect : null, channelInput),
+          options,
+          el("div", { class: "actions", style: "flex-wrap:wrap; gap:8px; margin-top:8px;" }, tagsInput, activeSelect, add));
+        if (!channels.length) channelSelect.value = "";
+        refresh();
+      }
+
+      function render() {
+        const d = m.data;
+        if (!d) {
+          title.textContent = "Cosmetic styles";
+          subtitle.textContent = "";
+          current.replaceChildren(el("p", { class: "note", text: "Type a cosmetic id from the account's locker and press Load." }));
+          adder.replaceChildren();
+          return;
+        }
+        title.textContent = `Styles: ${d.name}`;
+        subtitle.textContent = `${d.templateId} · ${d.version}`;
+        if (!d.owned) {
+          current.replaceChildren(el("p", { class: "note", text: `${a.displayName} doesn't own this cosmetic: give it first, then add its styles.` }));
+          adder.replaceChildren();
+          return;
+        }
+        renderCurrent();
+        renderAdder();
+      }
+
+      const load = async () => {
+        const id = idInput.value.trim();
+        if (!id) { m.data = null; return render(); }
+        const query = new URLSearchParams({ build: m.build || "", templateId: id });
+        const data = await act(api(`/admin/api/accounts/${a.id}/cosmetics/styles?${query}`));
+        if (!data) return;
+        m.data = data;
+        m.build = data.build;
+        render();
+      };
+      idInput.addEventListener("keydown", (e) => { if (e.key === "Enter") load(); });
+
+      const dialog = el("div", { class: "modal-dialog", style: "width:100%; max-width:720px; max-height:88vh; overflow-y:auto; display:flex; flex-direction:column; gap:14px;", onclick: (e) => e.stopPropagation() },
+        el("div", { style: "display:flex; justify-content:space-between; align-items:flex-start; gap:10px;" },
+          el("div", { style: "min-width:0;" }, title, subtitle),
+          btn("✕", close, "ghost", { style: "min-height:28px; padding:0 8px; font-size:14px; border:none;" })),
+        el("div", { class: "actions", style: "flex-wrap:wrap; gap:8px;" }, idInput, btn("Load", load, "ghost")),
+        el("div", {}, el("h3", { style: "margin:0 0 6px;", text: "Owned styles" }), current),
+        adder,
+        el("p", { class: "note", text: "A player in the game gets the change at once; otherwise they see it at their next login." }),
+        el("div", { class: "actions", style: "justify-content:flex-end; border-top:1px solid var(--line); padding-top:12px;" }, btn("Done", close, "primary")));
+
+      backdrop.appendChild(dialog);
+      document.body.appendChild(backdrop);
+      window.addEventListener("keydown", onKeyDown);
+      render();
+      if (templateId) load();
+      requestAnimationFrame(() => { backdrop.classList.add("show"); if (!templateId) idInput.focus(); });
     }
 
     function openGiveCosmeticsModal(a) {

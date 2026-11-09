@@ -274,6 +274,9 @@ test("admin HTTP routes: login, session cookies, Bearer tokens, and route protec
     backend.from.address = "192.168.1.50";
     assert.equal((await request("GET", "/admin")).status, 200);
     assert.equal((await request("GET", "/admin/api/overview")).status, 401);
+    // A cosmetic's styles (#305) are an admin route like the rest.
+    assert.equal((await request("POST", "/admin/api/accounts/someone/cosmetics/styles", { body: { styles: [] } })).status, 401);
+    assert.equal((await request("GET", "/admin/api/accounts/someone/cosmetics/styles?templateId=x")).status, 401);
     const meRemote = await request("GET", "/admin/api/auth/me");
     assert.equal(meRemote.body.authenticated, false);
     assert.equal(meRemote.body.requireAuth, true);

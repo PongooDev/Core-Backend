@@ -27,6 +27,7 @@ import { claimQuest, completeQuest, grant, skipTutorial } from "../profiles/prog
 import { createOutpost, storedCloudSaveProfile } from "../profiles/outposts.js";
 import { questIdOf, tutorialCompleted } from "../profiles/quests.js";
 import { openSession } from "../profiles/session.js";
+import { dataStyleChannels, editItemStyles, heldItemId, maxStyleChannels, maxStyleOptions, styleTag } from "../profiles/variants.js";
 import { backpackState, inOverflow, vaultState, worldStackCap } from "../profiles/vault.js";
 import { maxLevel, xpForLevel } from "../profiles/xp.js";
 import { notifyProfiles } from "../services/mcp/profile.js";
@@ -810,6 +811,75 @@ export function adminRoutes(context) {
       profiles.save(session.profile("athena").profile);
       return { cosmeticRemoval: { build, version, removed, notOwned, kept } };
     });
+  }));
+
+  // A cosmetic's styles by hand (Core-Backend #305): the channels and owned options of an item the account holds, as the
+  // locker's Edit Styles reads them (profiles/variants.js). The build's data names the channels of the cosmetics with
+  // styles (4.0 on); the newest build that names them is used when the chosen build doesn't, and any other is typed in.
+  const styledCosmetic = (build, value) => {
+    const typed = String(value ?? "").trim();
+    return { typed, templateId: (typed && inBuild(build, () => lockerCosmeticId(typed))) || typed };
+  };
+  const styleChannelsOf = (build, templateId) => {
+    for (const candidate of [build, ...[...battleRoyaleBuilds].reverse().filter((other) => other !== build)]) {
+      const channels = inBuild(candidate, () => dataStyleChannels(templateId));
+      if (channels.length) return { channels, build: candidate, version: versionOf(candidate) };
+    }
+    return { channels: [], build: null, version: null };
+  };
+  const stylesPayload = (build, athena, templateId) => {
+    const itemId = athena ? heldItemId(athena, templateId) : undefined;
+    const item = itemId ? athena.items[itemId] : null;
+    return {
+      build, version: versionOf(build), templateId: item?.templateId ?? templateId, owned: Boolean(item),
+      name: inBuild(build, () => describeCosmetics([item?.templateId ?? templateId]))[0]?.name ?? templateId,
+      variants: Array.isArray(item?.attributes?.variants) ? item.attributes.variants : [],
+      data: styleChannelsOf(build, item?.templateId ?? templateId)
+    };
+  };
+
+  router.get("/admin/api/accounts/:accountId/cosmetics/styles", (req, res) => {
+    const account = accounts.get(req.params.accountId);
+    if (!account) return notFound(res, req.originalUrl);
+    const build = cosmeticBuild(req.query.build);
+    if (!build) return notBattleRoyaleBuild(res, req.query.build);
+    const { typed, templateId } = styledCosmetic(build, req.query.templateId);
+    if (!typed) return invalid(res, "Name the cosmetic, e.g. AthenaCharacter:CID_115_Athena_Commando_M_CarbideBlue");
+    res.json(stylesPayload(build, loadIfExists(account.id, "athena"), templateId));
+  });
+
+  // {build, templateId, styles: [{channel, tags, active}], remove}: owns (or with remove, takes off) those styles on the
+  // account's item of that cosmetic. The item's revision change reaches the client at its next QueryProfile, and a player
+  // in the game at once (change: MCP profile notifications).
+  router.post("/admin/api/accounts/:accountId/cosmetics/styles", change(({ req, res, session }) => {
+    const build = cosmeticBuild(req.body?.build);
+    if (!build) return notBattleRoyaleBuild(res, req.body?.build);
+    const { typed, templateId } = styledCosmetic(build, req.body?.templateId);
+    if (!typed) return invalid(res, "Name the cosmetic whose styles to change");
+    if (!session.hasProfile("athena")) return invalid(res, "The account has no Battle Royale profile yet: give the cosmetic first");
+    const itemId = heldItemId(session.profile("athena").profile, templateId);
+    if (!itemId) return invalid(res, `${typed} isn't in the account's locker: give it first, then add its styles`);
+    const asked = Array.isArray(req.body?.styles) ? req.body.styles : [];
+    if (!asked.length || asked.length > maxStyleChannels) return invalid(res, `Give 1 to ${maxStyleChannels} style channels`);
+    const styles = [];
+    for (const entry of asked) {
+      const channel = styleTag(entry?.channel);
+      if (!channel) return invalid(res, `${entry?.channel ?? "(none)"} isn't a style channel: letters, digits, _ and -, e.g. Material or Progressive`);
+      const list = Array.isArray(entry?.tags) ? entry.tags : String(entry?.tags ?? "").split(/[\s,]+/);
+      const typedTags = list.map((tag) => String(tag ?? "").trim()).filter(Boolean);
+      const tags = [...new Set(typedTags.map(styleTag))];
+      if (!typedTags.length || tags.includes(null)) {
+        return invalid(res, `${channel}: give the styles as tags of letters, digits, _ and -, e.g. Mat1, Mat2 or Stage1`);
+      }
+      if (tags.length > maxStyleOptions) return invalid(res, `${channel}: at most ${maxStyleOptions} styles a channel`);
+      const active = entry?.active === undefined || entry?.active === "" ? undefined : styleTag(entry.active);
+      if (active === null) return invalid(res, `${channel}: ${entry.active} isn't a style tag`);
+      styles.push({ channel, tags, active });
+    }
+    const remove = req.body?.remove === true;
+    const result = inBuild(build, () => editItemStyles(session, itemId, styles, { remove }));
+    const athena = session.profile("athena").profile;
+    return { styleChange: { ...result, remove, ...stylesPayload(build, athena, athena.items[itemId].templateId) } };
   }));
 
   router.post("/admin/api/accounts/:accountId/skip-tutorial", change(({ session }) => skipTutorial(session)));

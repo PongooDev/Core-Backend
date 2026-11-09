@@ -129,3 +129,67 @@ export function grantDefaultVariants(session) {
     log("Battle Royale", `${session.accountId}: ${tracker.profile.items[itemId].templateId} gets the styles it owns`);
   }
 }
+
+// Styles an admin adds by hand (Core-Backend #305): channels and the options owned in them, as the profile names them
+// (the tags' last part: "Material" and "Mat2", "Progressive" and "Stage3"). A full tag (Cosmetics.Variant.Channel.Material,
+// Cosmetics.Variant.Property.Mat2) is cut to its last part, as the client puts the prefixes back in front.
+export const styleTag = (value) => {
+  const tag = String(value ?? "").trim().split(".").at(-1);
+  return /^[A-Za-z0-9_-]{1,64}$/.test(tag) ? tag : null;
+};
+
+export const maxStyleChannels = 16;
+export const maxStyleOptions = 64;
+
+// The held item of a template id (any case; the id without its type, CID_115_..., names the cosmetic too), or undefined.
+export const heldItemId = (profile, templateId) => findHeld(profile, templateId) ?? (String(templateId).includes(":") ? undefined
+  : Object.keys(profile.items).find((itemId) => profile.items[itemId].templateId.toLowerCase().endsWith(`:${String(templateId).toLowerCase()}`)));
+
+// The channels the build's data names for a cosmetic, [{channel, default, options}]; [] when it names none.
+export const dataStyleChannels = (templateId) => (athenaCosmetics()[cosmeticKey(templateId)]?.variants ?? [])
+  .map(({ channel, default: active, options = [] }) => ({ channel, default: active, options: [...options] }));
+
+// styles [{channel, tags, active}] on an owned item. Adding owns each tag in its channel (a channel the item lacks is
+// added, its active style the one asked for or its first tag); remove takes the tags out (a channel left with none goes),
+// except the styles the cosmetic owns from the start (defaultVariants), which would come back at the next login. The
+// active style moves to an owned one when its own goes. Returns {changed, kept: ["channel.tag"]}.
+export function editItemStyles(session, itemId, styles, { remove = false } = {}) {
+  const tracker = session.profile("athena");
+  const item = tracker.profile.items[itemId];
+  let variants = variantsOf(item).map((entry) => ({ ...entry, owned: [...entry.owned] }));
+  const kept = [];
+  for (const { channel, tags, active } of styles) {
+    const entry = variants.find((candidate) => candidate.channel.toLowerCase() === channel.toLowerCase());
+    if (remove) {
+      if (!entry) continue;
+      const fixed = new Set(defaultVariants(item.templateId).find((candidate) => candidate.channel === entry.channel)?.owned ?? []);
+      for (const tag of tags) {
+        const owned = entry.owned.find((option) => option.toLowerCase() === tag.toLowerCase());
+        if (!owned) continue;
+        if (fixed.has(owned)) kept.push(`${entry.channel}.${owned}`);
+        else entry.owned = entry.owned.filter((option) => option !== owned);
+      }
+      if (!entry.owned.includes(entry.active)) entry.active = entry.owned[0];
+      continue;
+    }
+    // A tag of another case than one held or the data's is that one.
+    const data = dataStyleChannels(item.templateId).find((candidate) => candidate.channel.toLowerCase() === channel.toLowerCase());
+    const known = [...(entry?.owned ?? []), ...(data?.options ?? [])];
+    const named = (tag) => known.find((option) => option.toLowerCase() === tag.toLowerCase()) ?? tag;
+    const added = [...new Set(tags.map(named))];
+    if (!entry) {
+      variants.push({ channel: data?.channel ?? channel, active: active && added.includes(named(active)) ? named(active) : added[0], owned: added });
+      continue;
+    }
+    entry.owned = [...new Set([...entry.owned, ...added])];
+    if (active && entry.owned.includes(named(active))) entry.active = named(active);
+  }
+  variants = variants.filter((entry) => entry.owned.length);
+  const changed = JSON.stringify(variants) !== JSON.stringify(item.attributes.variants ?? []);
+  if (changed) {
+    if (variants.length) tracker.setItemAttribute(itemId, "variants", variants);
+    else tracker.removeItemAttribute(itemId, "variants");
+    log("Battle Royale", `${session.accountId}: ${remove ? "took styles off" : "gave styles to"} ${item.templateId} (admin panel)`);
+  }
+  return { changed, kept };
+}
