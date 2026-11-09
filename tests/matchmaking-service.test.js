@@ -1434,3 +1434,89 @@ test("an ended event's servers take any match again, and its playlist plays on t
     backend.close();
   }
 });
+
+// Core-Backend #299: Playground (Playlist_Playground, 35) is its party's alone, as Update v4.50 ran it: a session of its
+// own, assigned at once and sized to the party, which no other party joins, forming or in its warmup.
+const userAgent45 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-4.5-CL-4166199";
+async function queueOn45(backend, player, party = [player], { playlistId = 35, fill = null } = {}) {
+  const ticket = await send({ host: "127.0.0.1", port: backend.port, method: "GET",
+    path: `/fortnite/api/game/v2/matchmakingservice/ticket/player/${player.accountId}?partyPlayerIds=${party.map(({ accountId }) => accountId).join(",")}` +
+      `&bucketId=858118782:0:NA:${playlistId}&player.platform=Windows${fill === null ? "" : `&player.option.fillTeam=${fill}`}`,
+    headers: { "User-Agent": userAgent45, Authorization: `bearer ${player.token}` } });
+  assert.equal(ticket.status, 200, JSON.stringify(ticket.body));
+  const connection = await matchmakingClient(backend.port, authorizationOf(ticket.body));
+  for (let index = 0; index < 2; index++) await connection.next();
+  return connection;
+}
+
+test("Playground is a match of the party's own: assigned at once, no other party joins it, its warmup closed and sized to the party (#299)", async () => {
+  const backend = await startBackend({ matchmakingGatherMs: 5000 });
+  const connections = [];
+  try {
+    await settingsOf(backend, { lateJoin: true, bots: { forcePlayerAIs: false, fillPlayerTeams: true } });
+    const token = await dedicatedServerToken(backend.port);
+    const first = await regionServer(backend, "PlaygroundServer1", "NA");
+    connections.push(first.connection);
+    const leader = await userLogin(backend.port, "PgLeader");
+    const mate = await userLogin(backend.port, "PgMate");
+    const started = Date.now();
+    const leaderConnection = await queueOn45(backend, leader, [leader, mate]);
+    connections.push(leaderConnection);
+    // No gather wait: nobody else would join.
+    const assign = await nextOf(first.connection, "AssignMatch");
+    assert.ok(Date.now() - started < 3000);
+    assert.deepEqual(assign.payload.teams.flat(2), [leader.accountId, mate.accountId]);
+
+    // Another Playground party doesn't join the match while it forms: it waits for a server of its own.
+    const solo = await userLogin(backend.port, "PgSolo");
+    const soloConnection = await queueOn45(backend, solo);
+    connections.push(soloConnection);
+    assert.equal(JSON.parse(await soloConnection.next()).payload.state, "Queued");
+    const second = await regionServer(backend, "PlaygroundServer2", "NA");
+    connections.push(second.connection);
+    assert.deepEqual((await nextOf(second.connection, "AssignMatch")).payload.teams.flat(2), [solo.accountId]);
+
+    // The party's other member follows it.
+    const mateConnection = await queueOn45(backend, mate, [leader, mate]);
+    connections.push(mateConnection);
+    first.connection.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: assign.payload.matchId, result: "ready" } }));
+    assert.equal((await nextOf(leaderConnection, "Play")).payload.sessionId, first.session.id);
+    assert.equal((await nextOf(mateConnection, "Play")).payload.sessionId, first.session.id);
+
+    // In its warmup, with late joining on, the match stays closed, its room the party's, its bots the panel's.
+    const answer = (await reportWarmup(backend, token, { phase: "Warmup", accountIds: [leader.accountId], secondsLeft: 60 })).body;
+    assert.deepEqual([answer.sessionId, answer.open, answer.lateJoin, answer.maxPlayers, answer.parties], [first.session.id, false, false, 2, []]);
+    assert.equal(answer.bots.teams, true);
+    assert.deepEqual(answer.bots.noFill, []);
+    const late = await userLogin(backend.port, "PgLate");
+    const lateConnection = await queueOn45(backend, late);
+    connections.push(lateConnection);
+    assert.equal(JSON.parse(await lateConnection.next()).payload.state, "Queued");
+    await reportWarmup(backend, token, { phase: "Warmup", accountIds: [leader.accountId, mate.accountId], secondsLeft: 50 });
+    // Nothing sends it there: within a second it hears no SessionAssignment.
+    const heard = await Promise.race([lateConnection.next(), new Promise((done) => setTimeout(() => done("none"), 1000))]);
+    assert.ok(heard === "none" || JSON.parse(heard).payload?.state === "Queued", heard);
+
+    // A party playing without fill gets no bot teammates there either.
+    const third = await regionServer(backend, "PlaygroundServer3", "NA");
+    connections.push(third.connection);
+    const lateAssign = await nextOf(third.connection, "AssignMatch");
+    assert.deepEqual(lateAssign.payload.teams.flat(2), [late.accountId]);
+    const noFill = await userLogin(backend.port, "PgNoFill");
+    const noFillConnection = await queueOn45(backend, noFill, [noFill], { fill: false });
+    connections.push(noFillConnection);
+    const fourth = await regionServer(backend, "PlaygroundServer4", "NA");
+    connections.push(fourth.connection);
+    const noFillAssign = await nextOf(fourth.connection, "AssignMatch");
+    fourth.connection.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: noFillAssign.payload.matchId, result: "ready" } }));
+    await nextOf(noFillConnection, "Play");
+    const noFillAnswer = (await reportWarmup(backend, token, { phase: "Warmup", accountIds: [noFill.accountId], secondsLeft: 60 })).body;
+    assert.deepEqual([noFillAnswer.open, noFillAnswer.maxPlayers, noFillAnswer.noFill, noFillAnswer.bots.noFill], [false, 1, [noFill.accountId], [noFill.accountId]]);
+
+    // Duos still gather and open in their warmup as before.
+    assert.equal((await reportWarmup(backend, token, { phase: "Warmup", accountIds: [], secondsLeft: 60 })).body.lateJoin, true);
+  } finally {
+    for (const connection of connections) connection.close();
+    backend.close();
+  }
+});

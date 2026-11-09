@@ -154,6 +154,16 @@ export const customKeyNotSupported = "match.custom_key_not_supported";
 const customKeyRefusedCode = 4000;
 // Which queue a bucket and key are: the bucket's (bucketKey), apart for each key.
 export const queueOf = (bucketId, customKey = null) => bucketKey(bucketId) + (customKey ? `|key:${customKey}` : "");
+// Playground (Core-Backend #299): Update v4.50's Playground (Playlist_Playground, 35, one team of 4) put a party on an
+// island of its own, the party alone, with nobody else matched in: "An hour on the island with up to 3 friends". Epic
+// added a Fill / No Fill choice for it only in a later season, after 5.0, the last build Core supports, so every
+// Playground match here is its party's alone, whatever its Squad Fill: a session of its own (a free server), never
+// shared with another party (forming, late joining or the warmup's late parties), sized to the party and assigned at
+// once (no gather wait, nobody else would come). The party's fill choice still decides the admin panel's "Fill players'
+// teams with bots" teammates (noFill), as anywhere else.
+export const playgroundPlaylists = new Set(ltms.filter((ltm) => /^Playlist_Playground/.test(ltm.playlistName ?? "")).map((ltm) => ltm.playlistId));
+export const isPartyOnlyBucket = (bucketId) => playgroundPlaylists.has(parseBucket(bucketId).playlistId);
+
 // The game's early countdown (WarmupEarlyCountdownDuration, 15 s): with late joining off, a CoreV2 gameserver's warmup
 // shortens to it once the match's assigned players are all in (CoreV2 ApplyWarmupLength), which for a match that has
 // just formed is as soon as they load in.
@@ -591,8 +601,10 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     }
     const key = bucketKey(bucketId, { anyRegion });
 
+    // A Playground party plays alone (#299): no other party's match, forming or in its warmup, takes it.
+    const partyOnly = isPartyOnlyBucket(bucketId);
     // A match still in its warmup takes the party, unless the party's other members are already in a forming match.
-    const late = ![...servers].some((server) => server.forming?.parties.some((entry) => entry.key === party.key)) && lateJoinFor(party, key, anyRegion);
+    const late = !partyOnly && ![...servers].some((server) => server.forming?.parties.some((entry) => entry.key === party.key)) && lateJoinFor(party, key, anyRegion);
     if (late) {
       joinLate(party, ...late);
       return true;
@@ -606,7 +618,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
         same.members.push(party);
         return true;
       }
-      if (forming && forming.customKey === party.customKey && bucketKey(forming.bucketId, { anyRegion }) === bucketKey(inServerRegion(server, bucketId), { anyRegion })
+      if (forming && !partyOnly && !forming.partyOnly && forming.customKey === party.customKey && bucketKey(forming.bucketId, { anyRegion }) === bucketKey(inServerRegion(server, bucketId), { anyRegion })
         && forming.players + party.size <= server.maxPlayers
         && teamsFor([...forming.parties, party], forming.bucketId)) {
         forming.parties.push(party);
@@ -626,11 +638,18 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
       const matchBucket = server.regionField ? withRegion(bucketId, server.regionField) : bucketId;
       const bucket = parseBucket(matchBucket);
       if (!allowsServerAssignment(server.regionField || bucket.region, bucket.playlistId)) continue;
-      server.forming = { matchId: newId(), bucketId: matchBucket, customKey: party.customKey, parties: [party], players: party.size, started: Date.now(), gatherMs: gatherOf() };
+      server.forming = { matchId: newId(), bucketId: matchBucket, customKey: party.customKey, parties: [party], players: party.size, started: Date.now(),
+        gatherMs: partyOnly ? 0 : gatherOf(), partyOnly };
+      say(`Match ${server.forming.matchId} forms on session ${server.sessionId} for bucket ${matchBucket}` +
+        (party.customKey ? `, custom key ${party.customKey}` : "") + (matchBucket === bucketId ? "" : ` (${party.ticket.accountId} queued for ${bucketId})`) +
+        (partyOnly ? `, its party of ${party.size} alone (Playground)` : ""));
+      // A Playground match is its party's alone: it goes to its server straight away (#299).
+      if (partyOnly) {
+        assign(server);
+        return true;
+      }
       server.forming.timer = setTimeout(() => assign(server), server.forming.gatherMs);
       server.forming.timer.unref?.();
-      say(`Match ${server.forming.matchId} forms on session ${server.sessionId} for bucket ${matchBucket}` +
-        (party.customKey ? `, custom key ${party.customKey}` : "") + (matchBucket === bucketId ? "" : ` (${party.ticket.accountId} queued for ${bucketId})`));
       return true;
     }
     return false;
@@ -740,7 +759,9 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     server.ws.close(1000);
     matches.set(server.sessionId, { matchId: forming.matchId, bucketId: forming.bucketId, customKey: forming.customKey ?? null, assigned: Date.now(),
       parties: new Set(forming.parties.map((party) => party.key)), players: new Set(forming.parties.flatMap((party) => party.ticket.partyPlayerIds)),
-      noFill: new Set(forming.parties.filter((party) => !fills(party)).flatMap((party) => party.ticket.partyPlayerIds)), maxPlayers: server.maxPlayers });
+      noFill: new Set(forming.parties.filter((party) => !fills(party)).flatMap((party) => party.ticket.partyPlayerIds)),
+      // A Playground match's room is its party (#299).
+      partyOnly: Boolean(forming.partyOnly), maxPlayers: forming.partyOnly ? forming.players : server.maxPlayers });
     for (const party of forming.parties) play(party, server.sessionId, forming.matchId);
     placeWaiting();
   }
@@ -816,6 +837,11 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     if (reportedBucket && warmupSeconds() === null && secondsLeft > 0) {
       const netcl = parseBucket(reportedBucket).netcl;
       gameWarmups.set(netcl, Math.max(gameWarmups.get(netcl) ?? 0, Math.ceil(secondsLeft)));
+    }
+    // A Playground match takes nobody but its party (#299): closed, its room the party's.
+    if (match?.partyOnly) {
+      if (lateJoins.delete(sessionId)) say(`Match ${match.matchId} (session ${sessionId}) takes no more parties`);
+      return { sessionId, playlistId, open: false, partyOnly: true, maxPlayers: match.maxPlayers, parties: [], noFill };
     }
     if (!open || !lateJoin() || !(secondsLeft > 0)) {
       if (lateJoins.delete(sessionId)) say(`Match ${entry.matchId} (session ${sessionId}) takes no more parties`);

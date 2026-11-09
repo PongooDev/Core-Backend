@@ -16,7 +16,9 @@ import { effectiveBots } from "../../tournaments/store.js";
 // sent, for the server to give each party one team. noFill is the match's players whose party doesn't fill (the party
 // leader's player.option.fillTeam false): in a team of several squads (Teams of 20, CoreV2 #242) the server puts a late
 // player who fills in a squad of players with room, and one who doesn't in a squad of their own. The match is found by
-// its players (matchmaking/service.js).
+// its players (matchmaking/service.js). A Playground match (Core-Backend #299) is its party's alone: never open, lateJoin
+// false, maxPlayers its party's size; its bots still follow the panel ("Fill players' teams with bots" fills the party's
+// team unless the party plays without fill).
 // bots (CoreV2 #233) is the player bots to add, {count, level, health, shield, quests, fights, teams, noFill}, when the
 // admin panel's Force player AIs is on and its count is above 0, or its "Fill players' teams with bots" is on, else null.
 // count is the bots on teams of their own (0 with Force player AIs off), the requested one as is: the gameserver applies
@@ -49,7 +51,9 @@ export function warmupRoutes({ tokens, sessions, settings, matchmaker, tournamen
     const teams = bots?.fillPlayerTeams === true;
     res.json({
       warmupSeconds: current.warmupSeconds ?? null,
-      lateJoin,
+      // A Playground match (Core-Backend #299) is its party's alone: no late joining, so the gameserver's countdown
+      // shortens once the party is in, as with late joining off.
+      lateJoin: lateJoin && match?.partyOnly !== true,
       sessionId: match?.sessionId ?? null,
       open: match?.open ?? false,
       maxPlayers: match?.maxPlayers ?? null,
