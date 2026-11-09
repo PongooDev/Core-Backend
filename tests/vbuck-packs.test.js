@@ -317,3 +317,71 @@ test("#267: the Wingman Starter Pack is Season 4's, offered only where the build
     backend.close();
   }
 });
+
+// Core-Backend #294: the Wingman Starter Pack bought on 4.4.1 (and 4.4.2) gives the Wingman and the Bogey Bag as well as the V-Bucks.
+for (const [build, cl] of [["4.4.1", "4127312"], ["4.4.2", "4132537"]]) {
+  test(`#294: buying the Wingman Starter Pack on ${build} puts the Wingman and the Bogey Bag in the locker`, async () => {
+    const userAgent = `game=Fortnite, engine=UE4, build=++Fortnite+Release-${build}-CL-${cl}`;
+    const backend = await startBackend();
+    try {
+      const player = await userLogin(backend.port, `Wingman${cl}`);
+      const offer = currencyOf(await catalog(backend.port, player.token, userAgent))?.catalogEntries.find((o) => o.offerId === "core_starter_br_s4");
+      assert.ok(offer, build);
+      const done = await complete(backend.port, purchaseIdOf((await open(backend.port, offer.appStoreId[1], userAgent)).body));
+      assert.equal(done.status, 200);
+      const athena = await query(backend.port, player.accountId, player.token, "athena", userAgent);
+      assert.equal(owned(athena, "AthenaCharacter:CID_139_Athena_Commando_M_FighterPilot").length, 1, build);
+      assert.equal(owned(athena, "AthenaBackpack:BID_056_FighterPilot").length, 1, build);
+      assert.equal(vbucks(await profile0(backend.port, player), "Currency:MtxPurchased"), 500);
+    } finally {
+      backend.close();
+    }
+  });
+}
+
+test("#294: the Wingman Starter Pack's cosmetics survive an account that already has a Season 3 or Season 4 locker", async () => {
+  const agent441 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-4.4.1-CL-4127312";
+  const backend = await startBackend();
+  try {
+    for (const [name, first] of [["Wingman3Then4", agent351], ["Wingman4Then4", agent441]]) {
+      const player = await userLogin(backend.port, name);
+      await query(backend.port, player.accountId, player.token, "athena", first);
+      const offer = currencyOf(await catalog(backend.port, player.token, agent441))?.catalogEntries.find((o) => o.offerId === "core_starter_br_s4");
+      const done = await complete(backend.port, purchaseIdOf((await open(backend.port, offer.appStoreId[1], agent441)).body));
+      assert.equal(done.status, 200);
+      const athena = await query(backend.port, player.accountId, player.token, "athena", agent441);
+      assert.equal(owned(athena, "AthenaCharacter:CID_139_Athena_Commando_M_FighterPilot").length, 1, name);
+      assert.equal(owned(athena, "AthenaBackpack:BID_056_FighterPilot").length, 1, name);
+    }
+  } finally {
+    backend.close();
+  }
+});
+
+
+// Core-Backend #294: a Battle Royale client doesn't hear of the purchase's athena change (it never subscribes to STOMP
+// there), so the next command on another profile brings athena along, as it does the V-Bucks.
+test("#294: after a Starter Pack purchase the client's next profile command brings the new cosmetics along", async () => {
+  const agent441 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-4.4.1-CL-4127312";
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "WingmanCatchUp");
+    const run = (profileId, command) => send({ host: "127.0.0.1", port: backend.port, method: "POST",
+      path: `/fortnite/api/game/v2/profile/${player.accountId}/client/${command}?profileId=${profileId}&rvn=-1`,
+      headers: { "User-Agent": agent441, Authorization: `bearer ${player.token}`, "Content-Type": "application/json", "Content-Length": 2 } }, "{}").then((r) => r.body);
+    await run("athena", "QueryProfile");
+    await run("common_core", "QueryProfile");
+    const offer = currencyOf(await catalog(backend.port, player.token, agent441)).catalogEntries.find((o) => o.offerId === "core_starter_br_s4");
+    await complete(backend.port, purchaseIdOf((await open(backend.port, offer.appStoreId[1], agent441)).body));
+    const verify = await run("common_core", "VerifyRealMoneyPurchase");
+    const athena = verify.multiUpdate?.find((update) => update.profileId === "athena");
+    assert.ok(athena, "athena comes along");
+    const items = Object.values(athena.profileChanges[0].profile.items);
+    assert.ok(items.some((item) => item.templateId.toLowerCase() === "athenacharacter:cid_139_athena_commando_m_fighterpilot"));
+    assert.ok(items.some((item) => item.templateId.toLowerCase() === "athenabackpack:bid_056_fighterpilot"));
+    // Once: the next command doesn't send it again.
+    assert.equal((await run("common_core", "QueryProfile")).multiUpdate?.some((update) => update.profileId === "athena") ?? false, false);
+  } finally {
+    backend.close();
+  }
+});

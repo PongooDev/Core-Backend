@@ -83,19 +83,33 @@ function withoutQuests(update) {
 // From 3.5 the V-Bucks are common_core's (profiles/common.js), Core's view of profile0, and that is the one brought
 // along, by its own revision.
 //
-// sent: accountId -> the revision of the V-Bucks' profile last sent to that account's client, in a response or a
-// multiUpdate.
+// A purchase on the store page (services/fortnite/purchase.js) reaches the client the same way: its V-Bucks are the
+// profile0 (common_core) change above, and a Starter Pack's cosmetics a change of athena, which a Battle Royale client
+// doesn't hear of either (Core-Backend #294: the Wingman Starter Pack's V-Bucks came, its outfit and back bling stayed
+// out of the locker until the game was restarted). So athena is brought along the same way, whole, once it has changed
+// since the client was last sent it (a revision the client never had is not caught up: its login query is what it holds).
+//
+// sent: accountId -> {profileId -> the revision of that profile last sent to that account's client, in a response or a
+// multiUpdate}.
+function catchUpProfiles(session, stomp) {
+  return [mtxProfileId(session.accountId), ...(Number(currentBuild()) >= firstAthenaBuild && session.hasProfile("athena") ? ["athena"] : [])]
+    .filter((id) => session.hasProfile(id) && !stomp?.hasProfileSubscription?.(session.accountId));
+}
+
 function mtxCatchUp(sent, session, profileId, stomp) {
-  const mtxProfile = mtxProfileId(session.accountId);
-  if (profileId === mtxProfile || !session.hasProfile(mtxProfile) || stomp?.hasProfileSubscription?.(session.accountId)) return [];
   const known = sent.get(session.accountId);
-  return known === undefined || session.revision(mtxProfile) > known ? [mtxProfile] : [];
+  const mtxProfile = mtxProfileId(session.accountId);
+  return catchUpProfiles(session, stomp).filter((id) => id !== profileId
+    && (id === mtxProfile ? known?.get(id) === undefined || session.revision(id) > known.get(id)
+      : known?.get(id) !== undefined && session.revision(id) > known.get(id)));
 }
 
 function noteMtxSent(sent, accountId, result) {
-  const mtxProfile = mtxProfileId(accountId);
-  const update = [result, ...(result.multiUpdate ?? [])].find(({ profileId }) => profileId === mtxProfile);
-  if (update) sent.set(accountId, update.profileRevision);
+  const known = sent.get(accountId) ?? new Map();
+  for (const update of [result, ...(result.multiUpdate ?? [])]) {
+    if (update.profileId === mtxProfileId(accountId) || update.profileId === "athena") known.set(update.profileId, update.profileRevision);
+  }
+  sent.set(accountId, known);
 }
 
 function runCommand(commands, context, {
