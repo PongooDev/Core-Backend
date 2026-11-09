@@ -1968,6 +1968,11 @@
             <option value="5">Season 5</option>
           </select>
         </div>
+        <a href="#/seasons" data-view="seasons" title="Season Workspace"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3.5" y="4.5" width="17" height="16" rx="2.5" />
+            <path d="M3.5 9.5h17M8 2.5v4M16 2.5v4" />
+          </svg><span>Overview</span></a>
         <a href="#/shop" data-view="shop" title="Shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
@@ -3057,6 +3062,8 @@
       const [view = "dashboard", accountId, tab] = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
       for (const timer of state.timers) clearInterval(timer);
       state.timers = [];
+      // A view that redraws itself in place for the sidebar's season (matchmaking's LTM dates) sets this; others don't.
+      state.onActiveSeason = null;
       const resolvedView = view === "sessions" ? "matchmaking" : view;
       const next = ["dashboard", "players", "codes", "matchmaking", "friends", "news", "shop", "battlepass", "events", "challenges", "seasons", "tournaments", "reports", "logs", "settings"].includes(resolvedView) ? resolvedView : "dashboard";
       if (next !== state.view || !$("view").childElementCount) $("view").replaceChildren(el("div", { class: "empty", text: "Loading…" }));
@@ -4410,7 +4417,9 @@
       const serverLimitsTableBox = el("div", { style: "margin-top:14px; overflow-x:auto;" });
       const rewardsGridBox = el("div", { class: "grid cols-2", style: "margin-top:14px;" });
 
-      let ltmSeason = SEASONS.some((entry) => entry.id === state.matchmakingSeason) ? state.matchmakingSeason : "2";
+      // The season whose LTM dates are shown and used by Original dates (#191): the sidebar's season, redrawn in place
+      // when it changes so unsaved switches stay.
+      let ltmSeason = seasonOf(state.activeSeason).id;
       const isModeActive = (m) => {
         if (form.ltmOriginalDates && isLtm(m.id)) {
           return ltmOf(m.id)?.inWindow?.[ltmSeason] === true;
@@ -4690,7 +4699,8 @@
               return toggleSwitch(byHand, (checked) => {
                 form.modes[m.id] = checked;
                 onModeToggled();
-              });
+              }, form.ltmOriginalDates && isLtm(m.id), ltmOf(m.id)?.original ? "Original dates is on: this LTM follows its dates."
+                : "Original dates is on: this LTM has no original dates, so it stays off.");
             }],
             ["", (m) => el("div", { class: "actions" },
               btn("Remove", () => {
@@ -4768,17 +4778,31 @@
               ? "Squad up with up to 4 players in 25 teams of four."
               : "Classic Battle Royale playlist.");
 
+            const dated = form.ltmOriginalDates && Boolean(l);
             const statusBadge = chip(
-              isAdded ? (isEnabled ? "In Queue (Active)" : "In Queue (Off)") : "Not in Queue",
+              isAdded ? (dated ? (l.original ? (isEnabled ? "In its dates" : "Out of its dates") : "No original dates")
+                : (isEnabled ? "In Queue (Active)" : "In Queue (Off)")) : "Not in Queue",
               isAdded ? (isEnabled ? "good" : "warn") : ""
             );
+            // Its windows (#258: Seasons 3 and 4 have LTMs that ran more than once), each day or hour: the filtered
+            // season's, or the sidebar season's when every season is listed.
+            const datesSeason = filterSeason === "all" ? ltmSeason : filterSeason;
+            const fmtMoment = (d) => (d.length === 10 ? fmtDay(d) : `${fmtDay(d)} ${d.slice(11, 16)}`);
+            const windows = (l?.windows || []).filter((w) => String(w.season) === String(datesSeason));
+            const windowText = (w) => `${fmtMoment(w.start)} – ${w.end.length === 10 ? fmtDay(w.last) : fmtMoment(w.end)} on ${w.builds}`;
+            const datesText = !l ? null : windows.length
+              ? `Original dates (Season ${datesSeason}): ${windows.map(windowText).join("; ")}`
+              : l.original ? `Original dates: none in Season ${datesSeason}, so it stays off there while Original dates is on.`
+              : "Original dates: none. Epic never ran it on these builds, so it stays off while Original dates is on.";
 
             const actionBtn = isAdded
               ? btn(isEnabled ? "Disable" : "Enable", () => {
                   form.modes[m.id] = !isEnabled;
                   onModeToggled();
                   renderModalList();
-                }, isEnabled ? "ghost small" : "primary small")
+                }, isEnabled ? "ghost small" : "primary small", dated
+                  ? { disabled: true, title: l.original ? "Original dates is on: this LTM follows its dates." : "Original dates is on: this LTM has no original dates, so it stays off." }
+                  : {})
               : btn("+ Add to Queue", () => {
                   displayedModeIds.add(m.id);
                   saveDisplayedModes();
@@ -4798,6 +4822,9 @@
                 el("div", { class: "sub", style: "font-size:12px; font-weight:600; color:var(--text); margin-bottom:6px;", text: m.teams }),
                 el("div", { class: "sub muted", style: "font-size:12px; line-height:1.4;", text: desc }),
                 ...(l?.builds ? [el("div", { class: "mono muted", style: "font-size:11px; margin-top:6px;", text: `Builds: ${l.builds}` })] : []),
+                ...(l?.newIn ? [el("div", { class: "sub", style: "font-size:12px; margin-top:6px;",
+                  text: `${l.newIn}'s new mode: always on there, the mode its lobby opens on, under "New Mode Available!". This switch is for its other builds.` })] : []),
+                ...(datesText ? [el("div", { class: "muted", style: "font-size:12px; margin-top:6px;", text: datesText })] : []),
                 ...(m.id === "closeEncounters" ? [
                   el("div", { style: "margin-top:10px; padding-top:8px; border-top:1px dashed var(--line);" },
                     el("div", { class: "muted font-semibold", style: "font-size:11px; margin-bottom:4px;", text: "Close Encounters Mode Window:" }),
@@ -4873,8 +4900,16 @@
         onModeToggled();
       });
 
-      const replayDay = data.ltms?.seasonMoments?.[ltmSeason];
-      replayDayText.textContent = replayDay ? `Season ${ltmSeason} replay day: ${fmtDay(replayDay)}` : "";
+      const showReplayDay = () => {
+        const replayDay = data.ltms?.seasonMoments?.[ltmSeason];
+        replayDayText.textContent = replayDay ? `Season ${ltmSeason} replay day: ${fmtDay(replayDay)}` : `Season ${ltmSeason}: no LTM dates`;
+      };
+      showReplayDay();
+      state.onActiveSeason = (season) => {
+        ltmSeason = seasonOf(season).id;
+        showReplayDay();
+        onModeToggled();
+      };
       updateActiveModesIndicators();
       renderActiveModes();
 
@@ -8241,6 +8276,8 @@
         return;
       }
       if (season === "2") {
+        const data = await act(api("/admin/api/battlepass/overview?season=2"));
+        if (!data || state.view !== "challenges" || state.activeSeason !== "2") return;
         $("view").replaceChildren(
           el("div", { class: "view-head" },
             el("div", {},
@@ -8253,13 +8290,15 @@
             el("h2", { text: "Season 2 Progression: 70 Tiers & Daily Challenges", style: "margin-bottom:8px;" }),
             el("p", { class: "note", text: "Season 2 introduced the 70-tier Battle Pass. Battle Stars were earned through Season Levels and Daily Challenges (assigned to Athena quest logs). Weekly challenge bundles were introduced in Season 3." }),
             el("div", { style: "margin-top:20px;" },
-              btn("Manage Season 2 Battle Pass Tiers & Rewards", () => { location.hash = "#/battlepass/season2"; }, "primary")))
+              btn("Manage Season 2 Battle Pass Tiers & Rewards", () => { location.hash = "#/battlepass/season2"; }, "primary"))),
+          ...(data.challenges ? [weeklyChallengesPanel(season, data)] : []),
+          ...(data.brokenChallenges ? [brokenChallengesPanel(data)] : [])
         );
         return;
       }
 
       const data = await act(api(`/admin/api/battlepass/overview?season=${season}`));
-      if (!data || state.view !== "challenges") return;
+      if (!data || state.view !== "challenges" || state.activeSeason !== season) return;
 
       $("view").replaceChildren(
         el("div", { class: "view-head" },
@@ -8270,7 +8309,9 @@
             btn("View Battle Pass Tiers", () => { location.hash = `#/battlepass/season${season}`; }, "ghost"),
             btn("Refresh", showChallenges, "ghost"))),
         ...(data.challenges ? [weeklyChallengesPanel(season, data)] : []),
-        ...(data.brokenChallenges ? [brokenChallengesPanel(data)] : [])
+        ...(data.brokenChallenges ? [brokenChallengesPanel(data)] : []),
+        ...(!data.challenges && !data.brokenChallenges
+          ? [el("div", { class: "empty", text: `${seasonLabel} has no weekly challenges or broken challenges to manage.` })] : [])
       );
     }
 
@@ -8939,6 +8980,8 @@
           showChallenges();
         } else if (state.view === "seasons") {
           showSeasons();
+        } else if (state.onActiveSeason) {
+          state.onActiveSeason(state.activeSeason);
         }
       });
     }

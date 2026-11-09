@@ -235,3 +235,20 @@ test("Phase 3: Unified Season Workspace and Challenges view integration", async 
     backend.close();
   }
 });
+
+test("the reorganised panel keeps each LTM's original dates, the sidebar's season for them, Season 2's challenges and a link to the Season Workspace", async () => {
+  const backend = await startBackend();
+  try {
+    const body = (await get(backend.port, "/admin")).body;
+    assert.match(body, /href="#\/seasons" data-view="seasons"/);
+    const mmScript = body.slice(body.indexOf("async function showMatchmaking"), body.indexOf("async function showFriends"));
+    assert.match(mmScript, /let ltmSeason = seasonOf\(state\.activeSeason\)\.id;/);
+    assert.match(mmScript, /state\.onActiveSeason = \(season\) =>/);
+    assert.match(mmScript, /Original dates \(Season \$\{datesSeason\}\)/);
+    assert.match(mmScript, /'s new mode: always on there/);
+    const challengesScript = body.slice(body.indexOf("async function showChallenges"), body.indexOf("async function showSeasons"));
+    assert.match(challengesScript, /\/admin\/api\/battlepass\/overview\?season=2/);
+  } finally {
+    backend.close();
+  }
+});
