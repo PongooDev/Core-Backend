@@ -183,3 +183,55 @@ test("the panel's sidebar width is kept from 64 to 420 pixels, refuses anything 
     backend.close();
   }
 });
+
+test("the panel sidebar organizes navigation into groups with Season dropdown and collapses cleanly", async () => {
+  const backend = await startBackend();
+  try {
+    const page = await get(backend.port, "/admin");
+    const body = page.body;
+    assert.match(body, /<div class="nav-group-title">Overview<\/div>/);
+    assert.match(body, /<div class="nav-group-title">Players &amp; Community<\/div>/);
+    assert.match(body, /<div class="nav-group-title">Game Operations<\/div>/);
+    assert.match(body, /<div class="nav-group-title">Season:<\/div>/);
+    assert.match(body, /<div class="nav-group-title">System &amp; Config<\/div>/);
+    assert.match(body, /id="sidebar-season-select"/);
+    assert.match(body, /<option value="1">Season 1<\/option>/);
+    assert.match(body, /<option value="5">Season 5<\/option>/);
+    assert.match(body, /initSidebarSeasonSelect/);
+    assert.match(body, /syncSeasonDropdown/);
+    assert.match(body, /html\[data-sidebar-collapsed="true"\] nav\.nav \.season-select-wrapper/);
+  } finally {
+    backend.close();
+  }
+});
+
+test("Phase 3: Unified Season Workspace and Challenges view integration", async () => {
+  const backend = await startBackend();
+  try {
+    const page = await get(backend.port, "/admin");
+    const body = page.body;
+    assert.match(body, /href="#\/challenges" data-view="challenges"/);
+    assert.match(body, /href="#\/codes" data-view="codes"/);
+    assert.match(body, /showCodes/);
+    assert.match(body, /codes: showCodes/);
+    assert.match(body, /showSeasons/);
+    assert.match(body, /showChallenges/);
+    assert.match(body, /challenges: showChallenges/);
+    assert.match(body, /seasons: showSeasons/);
+    assert.match(body, /Season Workspace/);
+    assert.match(body, /const seasonBreadcrumb = \([^)]*\) => document\.createDocumentFragment\(\);/);
+    const passScript = body.slice(body.indexOf("async function showSeasonPass"), body.indexOf("async function showBattlePass"));
+    assert.ok(!passScript.includes("weeklyChallengesPanel"));
+    assert.ok(!passScript.includes("brokenChallengesPanel"));
+    const challengesScript = body.slice(body.indexOf("async function showChallenges"), body.indexOf("async function showSeasons"));
+    assert.ok(!challengesScript.includes("🏆"));
+    assert.ok(!challengesScript.includes("⭐"));
+    const mmScript = body.slice(body.indexOf("async function showMatchmaking"), body.indexOf("async function showFriends"));
+    assert.ok(!mmScript.includes("Every mode, by season"));
+    assert.match(mmScript, /grid-template-columns:repeat\(auto-fill,\s*minmax\(260px,\s*1fr\)\)/);
+    assert.match(mmScript, /\$\{availableCount\}\/\$\{totalSelected\}/);
+    assert.match(mmScript, /Queue:\s*\$\{queueStatus\}/);
+  } finally {
+    backend.close();
+  }
+});
