@@ -4,7 +4,7 @@ import fs from "node:fs";
 import { activeEventFlags, configureEvents, eventsActiveUntil, isEventActive } from "../src/events/events.js";
 import { mergeTimedStates, odditiesStates, season4FlagsStatus } from "../src/events/oddities.js";
 import { rocketLaunchStates } from "../src/events/rocketlaunch.js";
-import { oddities, sanitizeSeason4Flags, season4Flag, season4FlagGroups } from "../src/events/season4flags.js";
+import { oddities, odditySchedulePatch, sanitizeSeason4Flags, season4Flag, season4FlagGroups, spacedOdditySchedule } from "../src/events/season4flags.js";
 import { seasonHistoryStart } from "../src/store/itemshop.js";
 import { post, send, startBackend, userLogin } from "./helpers.js";
 
@@ -64,8 +64,47 @@ test("the admin switches a Season 4 flag on or off over what each build serves, 
 
 test("the overrides' input: switchable catalog flags only, auto removes one; the rocket's flags follow the launch", () => {
   const current = sanitizeSeason4Flags({ overrides: { "eventflag.horde": "on", "EventFlag.BR_S4_Geode_Begin": "on", "EventFlag.Nope": "on" }, oddities: "launch" });
-  assert.deepEqual(current, { overrides: { "EventFlag.Horde": "on" }, oddities: "launch" });
-  assert.deepEqual(sanitizeSeason4Flags({ overrides: { "EventFlag.Horde": "auto" }, oddities: "sometimes" }, current), { overrides: {}, oddities: "launch" });
+  assert.deepEqual(current, { overrides: { "EventFlag.Horde": "on" }, oddities: "launch", schedule: [] });
+  assert.deepEqual(sanitizeSeason4Flags({ overrides: { "EventFlag.Horde": "auto" }, oddities: "sometimes" }, current), { overrides: {}, oddities: "launch", schedule: [] });
+});
+
+test("the rifts' own times (Core-Backend #304): a start and spacing for all eight, or rift by rift over the current ones", () => {
+  const spaced = spacedOdditySchedule({ startAt: "2026-11-10T18:00:00Z", spacingHours: 12, warningHours: 2 });
+  assert.equal(spaced.length, oddities.length);
+  assert.deepEqual(spaced[0], { number: 1, tellAt: "2026-11-10T18:00:00.000Z", eventAt: "2026-11-10T20:00:00.000Z" });
+  assert.deepEqual(spaced[7], { number: 8, tellAt: "2026-11-14T06:00:00.000Z", eventAt: "2026-11-14T08:00:00.000Z" });
+  assert.equal(spacedOdditySchedule({ startAt: "nope" }), null);
+  assert.equal(spacedOdditySchedule({ startAt: "2026-11-10T18:00:00Z", spacingHours: -1 }), null);
+  // Epic's spacing by default: a day apart, each prop a day after its rift.
+  assert.equal(spacedOdditySchedule({ startAt: "2026-11-10T18:00:00Z" })[1].eventAt, "2026-11-12T18:00:00.000Z");
+
+  const current = sanitizeSeason4Flags({ oddities: "custom", schedule: { startAt: "2026-11-10T18:00:00Z" } });
+  assert.equal(current.schedule.length, 8);
+  const edited = sanitizeSeason4Flags({ schedule: [{ number: 3, tellAt: "2026-12-01T00:00:00Z", eventAt: "2026-12-01T01:00:00Z" }, { number: 8, tellAt: null, eventAt: null }] }, current);
+  assert.deepEqual(edited.schedule.map(({ number }) => number), [1, 2, 3, 4, 5, 6, 7]);
+  assert.equal(edited.schedule[2].eventAt, "2026-12-01T01:00:00.000Z");
+  assert.equal(edited.schedule[0].tellAt, current.schedule[0].tellAt, "the others keep theirs");
+  assert.equal(odditySchedulePatch([{ number: 3, tellAt: "2026-12-02T00:00:00Z", eventAt: "2026-12-01T00:00:00Z" }], current.schedule), null, "a prop can't go before its rift forms");
+  assert.equal(odditySchedulePatch([{ number: 9, tellAt: "2026-12-01T00:00:00Z", eventAt: "2026-12-01T00:00:00Z" }]), null);
+  assert.deepEqual(sanitizeSeason4Flags({ schedule: null }, current).schedule, []);
+  assert.deepEqual(sanitizeSeason4Flags({ schedule: "soon" }, current).schedule, current.schedule, "bad input keeps the current times");
+});
+
+test("the custom mode serves each rift at the admin's times, and a rift without times isn't scheduled", () => {
+  const schedule = [{ number: 1, tellAt: "2026-11-10T18:00:00Z", eventAt: "2026-11-10T20:00:00Z" }, { number: 3, tellAt: "2026-11-11T18:00:00Z", eventAt: "2026-11-12T18:00:00Z" }];
+  const config = { mode: "auto", season4Flags: { oddities: "custom", schedule } };
+  const at = (iso) => new Date(iso);
+  assert.deepEqual(odditiesStates(at("2026-11-10T19:00:00Z"), v45, config)[0].events,
+    [{ eventType: oddities[0].tell, activeSince: "2026-11-10T18:00:00.000Z", activeUntil: "2026-11-10T20:00:00.000Z" }]);
+  const later = odditiesStates(at("2026-11-11T19:00:00Z"), v45, config);
+  assert.deepEqual(later[0].events.map(({ eventType }) => eventType), [oddities[0].event, oddities[2].tell]);
+  assert.equal(later[0].events[0].activeUntil, eventsActiveUntil, "a rifted prop stays rifted");
+  assert.deepEqual(later.slice(1).map(({ validFrom }) => validFrom), [Date.parse("2026-11-12T18:00:00Z")]);
+  assert.deepEqual(odditiesStates(at("2026-11-10T19:00:00Z"), v442, config), [], "4.5 only");
+  const status = season4FlagsStatus(at("2026-11-10T19:00:00Z"), config, []);
+  assert.equal(status.oddities, "custom");
+  assert.equal(status.rifts[2].tellAt, "2026-11-11T18:00:00.000Z");
+  assert.equal(status.rifts[1].tellAt, undefined, "rift 2 has no times");
 });
 
 test("the rifts follow the rocket launch by Epic's days, each _Tell until its _Event, which stays", () => {
@@ -144,6 +183,30 @@ test("the admin panel switches Season 4 flags and the rift schedule, and 4.5's t
     const events = await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/admin/api/events/overview" });
     assert.equal(events.body.season4Flags.oddities, "launch");
     assert.ok(events.body.season4Flags.rifts[0].tellAt);
+
+    // The admin's own times (Core-Backend #304): saved, switched to the custom mode, served, and the revision moves.
+    const revision = async () => (await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/fortnite/api/game/v2/calendar/revision",
+      headers: { "User-Agent": `game=FortniteGame, engine=UE4, build=++Fortnite+Release-4.5-CL-${v45}`, Authorization: `bearer ${token}` } })).body.revision;
+    const before = await revision();
+    const startAt = new Date(Date.now() - 3600000).toISOString();
+    const custom = await post(backend.port, "/admin/api/events/flags", null, { schedule: { startAt, spacingHours: 0.5, warningHours: 2 } });
+    assert.equal(custom.status, 200);
+    assert.equal(custom.body.season4Flags.oddities, "custom");
+    assert.equal(custom.body.season4Flags.schedule.length, 8);
+    assert.notEqual(await revision(), before, "running gameservers refresh");
+    // An hour in, rifts 1 and 2 have formed (0 and 30 minutes ago) and rift 3 forms now; none of the props has gone yet.
+    const customTypes = types((await timeline(v45)).states[0]);
+    assert.ok(customTypes.includes(oddities[0].tell) && customTypes.includes(oddities[1].tell));
+    assert.ok(!customTypes.some((type) => type.endsWith("_Event")));
+    // One rift moved into the past: its prop is gone.
+    const moved = await post(backend.port, "/admin/api/events/flags", null, { schedule: [{ number: 5, tellAt: new Date(Date.now() - 7200000).toISOString(), eventAt: new Date(Date.now() - 60000).toISOString() }] });
+    assert.equal(moved.status, 200);
+    assert.equal(moved.body.season4Flags.schedule.length, 8);
+    assert.ok(types((await timeline(v45)).states[0]).includes(oddities[4].event));
+    assert.equal((await post(backend.port, "/admin/api/events/flags", null, { schedule: [{ number: 5, tellAt: "2026-12-02T00:00:00Z", eventAt: "2026-12-01T00:00:00Z" }] })).status, 400);
+    assert.equal((await post(backend.port, "/admin/api/events/flags", null, { schedule: { startAt: "soon" } })).status, 400);
+    const cleared = await post(backend.port, "/admin/api/events/flags", null, { schedule: null, oddities: "off" });
+    assert.deepEqual([cleared.body.season4Flags.oddities, cleared.body.season4Flags.schedule], ["off", []]);
   } finally {
     backend.close();
   }

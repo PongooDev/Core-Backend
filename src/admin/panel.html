@@ -7419,8 +7419,30 @@
         const names = { 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4204761: "5.0", 4214610: "5.0" };
         return first === last ? names[first] : `${names[first] || first} – ${names[last] || last}`;
       };
-      const odditiesLabels = { off: "Off: the rifts wait (switch them below by hand)", launch: "After the rocket launch: Epic's days, counted from the admin's launch time", dates: "Epic's dates (30 June – 10 July) on Season 4's replay" };
+      const odditiesLabels = { off: "Off: the rifts wait (switch them below by hand)", launch: "After the rocket launch: Epic's days, counted from the admin's launch time", dates: "Epic's dates (30 June – 10 July) on Season 4's replay", custom: "My own times (set below)" };
       const fmtTime = (iso) => (iso ? new Date(iso).toLocaleString() : "—");
+      // The rifts' own times (Core-Backend #304): a start and spacing for all eight, or each rift's; saving switches to "My own times".
+      const riftInputs = s4.rifts.map((rift) => ({ number: rift.number,
+        tell: el("input", { class: "field", type: "datetime-local", "aria-label": `Rift ${rift.number} forms`, value: toLocalInput(rift.tellAt) }),
+        event: el("input", { class: "field", type: "datetime-local", "aria-label": `Rift ${rift.number} prop rifted`, value: toLocalInput(rift.eventAt) }) }));
+      const riftStart = el("input", { class: "field", type: "datetime-local", "aria-label": "First rift forms", value: toLocalInput(s4.rifts[0]?.tellAt) });
+      const riftSpacing = el("input", { class: "field", type: "number", min: "0", max: "720", step: "0.25", style: "width:80px;", "aria-label": "Hours between rifts", value: "24" });
+      const riftWarning = el("input", { class: "field", type: "number", min: "0", max: "720", step: "0.25", style: "width:80px;", "aria-label": "Hours from a rift forming to its prop going", value: "24" });
+      const toIso = (local) => (local ? new Date(local).toISOString() : null);
+      const odditiesEditor = el("div", { style: "margin-top:8px;" },
+        el("div", { class: "muted", style: "font-size:12px; margin-bottom:4px;", text: "Set the rifts' times yourself: each rift forms (the prop shimmers) and later the prop is rifted away or in. Saving switches the schedule to My own times; running gameservers pick it up within 5 seconds." }),
+        el("div", { style: "display:flex; flex-wrap:wrap; gap:8px; align-items:center;" },
+          el("span", { style: "font-size:12px;", text: "First rift forms" }), riftStart,
+          el("span", { style: "font-size:12px;", text: "then one every" }), riftSpacing,
+          el("span", { style: "font-size:12px;", text: "h, each prop going" }), riftWarning,
+          el("span", { style: "font-size:12px;", text: "h after its rift forms" }),
+          el("button", { class: "btn small", text: "Apply to all rifts", onclick: () => s4Action({ schedule: { startAt: toIso(riftStart.value), spacingHours: Number(riftSpacing.value), warningHours: Number(riftWarning.value) } }, "Rift times saved") })),
+        el("div", { class: "table-wrap", style: "margin-top:6px;" }, el("table", { style: "font-size:12px;" },
+          el("thead", {}, el("tr", {}, ...["#", "Rift forms", "Prop rifted"].map((text) => el("th", { text })))),
+          el("tbody", {}, ...riftInputs.map((row) => el("tr", {}, el("td", { text: String(row.number) }), el("td", {}, row.tell), el("td", {}, row.event)))))),
+        el("div", { style: "display:flex; gap:8px; margin-top:6px;" },
+          el("button", { class: "btn small", text: "Save these times", onclick: () => s4Action({ schedule: riftInputs.map((row) => ({ number: row.number, tellAt: toIso(row.tell.value), eventAt: toIso(row.event.value) })) }, "Rift times saved") }),
+          el("button", { class: "btn ghost small", text: "Clear my times", onclick: () => s4Action({ schedule: null, oddities: s4.oddities === "custom" ? "off" : s4.oddities }, "Rift times cleared") })));
       const season4Container = el("div", {
         style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
       },
@@ -7451,7 +7473,8 @@
             el("td", { text: `${rift.prop}, rifted ${rift.rift}` }),
             el("td", { text: fmtTime(rift.tellAt) }),
             el("td", { text: fmtTime(rift.eventAt) }),
-            el("td", { class: "muted", text: new Date(rift.original.event).toUTCString().slice(5, 22) + " UTC" }))))))
+            el("td", { class: "muted", text: new Date(rift.original.event).toUTCString().slice(5, 22) + " UTC" })))))),
+        odditiesEditor
       );
 
       const modeCards = el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; margin-top:12px;" },

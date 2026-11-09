@@ -109,13 +109,54 @@ export const onBuild = (entry, changelist) => {
   return Number.isInteger(number) && number >= entry.builds[0] && number <= entry.builds[1];
 };
 
-export const odditiesModes = ["off", "launch", "dates"];
-export const defaultSeason4Flags = { overrides: {}, oddities: "off" };
+export const odditiesModes = ["off", "launch", "dates", "custom"];
+export const defaultSeason4Flags = { overrides: {}, oddities: "off", schedule: [] };
+
+// The admin's own rift times (the "custom" oddities mode, Core-Backend #304): [{number, tellAt, eventAt}] with ISO times,
+// one per rift that has them, by number. tellAt (the rift forms, _Tell) is no later than eventAt (the prop is rifted,
+// _Event); a rift without times isn't scheduled. They stay, as the "launch" mode's do.
+const validTime = (value) => typeof value === "string" && !Number.isNaN(Date.parse(value));
+const riftEntry = (number, tellAt, eventAt) => ({ number, tellAt: new Date(tellAt).toISOString(), eventAt: new Date(eventAt).toISOString() });
+const maxHours = 24 * 30;
+
+// Every rift's times from a start and a spacing: rift n forms at startAt + (n - 1) * spacingHours, and its prop is
+// rifted warningHours after that. Epic's: a day apart, each prop gone a day after its rift formed (24 and 24).
+export function spacedOdditySchedule({ startAt, spacingHours = 24, warningHours = 24 } = {}) {
+  const spacing = Number(spacingHours);
+  const warning = Number(warningHours);
+  const inRange = (hours) => Number.isFinite(hours) && hours >= 0 && hours <= maxHours;
+  if (!validTime(startAt) || !inRange(spacing) || !inRange(warning)) return null;
+  const start = Date.parse(startAt);
+  const hour = 3600000;
+  return oddities.map(({ number }, index) => riftEntry(number, start + index * spacing * hour, start + (index * spacing + warning) * hour));
+}
+
+// The schedule input: {startAt, spacingHours, warningHours} replaces every rift's times; a list
+// [{number, tellAt, eventAt}] sets those rifts' over the current ones (both times null removes a rift's); null clears
+// it. Returns the new schedule, or null when the input isn't a valid schedule.
+export function odditySchedulePatch(value, current = []) {
+  if (value === null) return [];
+  if (Array.isArray(value)) {
+    const byNumber = new Map((Array.isArray(current) ? current : []).map((entry) => [entry.number, entry]));
+    for (const item of value) {
+      const number = Number(item?.number);
+      if (!oddities.some((oddity) => oddity.number === number)) return null;
+      if (item.tellAt === null && item.eventAt === null) { byNumber.delete(number); continue; }
+      if (!validTime(item.tellAt) || !validTime(item.eventAt) || Date.parse(item.tellAt) > Date.parse(item.eventAt)) return null;
+      byNumber.set(number, riftEntry(number, item.tellAt, item.eventAt));
+    }
+    return [...byNumber.values()].sort((a, b) => a.number - b.number);
+  }
+  if (value && typeof value === "object") return spacedOdditySchedule(value);
+  return null;
+}
 
 // The events config's season4Flags: {overrides: {flag: "on" | "off"} (a switchable flag of the catalog, "auto" or null
-// removes it), oddities: "off" | "launch" | "dates"}. Overrides merge into the current ones.
+// removes it), oddities: "off" | "launch" | "dates" | "custom", schedule: the custom mode's rift times}. Overrides merge
+// into the current ones, and a schedule list into the current schedule by rift (odditySchedulePatch).
 export function sanitizeSeason4Flags(value, current = defaultSeason4Flags) {
-  const result = { overrides: { ...(current?.overrides ?? {}) }, oddities: odditiesModes.includes(current?.oddities) ? current.oddities : "off" };
+  const result = { overrides: { ...(current?.overrides ?? {}) }, oddities: odditiesModes.includes(current?.oddities) ? current.oddities : "off",
+    schedule: (Array.isArray(current?.schedule) && odditySchedulePatch(current.schedule)) || [] };
   if (!value || typeof value !== "object" || Array.isArray(value)) return result;
   if (value.overrides && typeof value.overrides === "object" && !Array.isArray(value.overrides)) {
     for (const [name, state] of Object.entries(value.overrides)) {
@@ -126,6 +167,7 @@ export function sanitizeSeason4Flags(value, current = defaultSeason4Flags) {
     }
   }
   if (odditiesModes.includes(value.oddities)) result.oddities = value.oddities;
+  if (value.schedule !== undefined) result.schedule = odditySchedulePatch(value.schedule, result.schedule) ?? result.schedule;
   return result;
 }
 

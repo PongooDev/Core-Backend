@@ -16,9 +16,18 @@ const iso = (ms) => new Date(ms).toISOString();
 //   (events/rocketlaunch.js), the rifts following the rocket as they did; none without a launch time. They stay.
 // - "dates": Epic's own dates on Season 4's replay (store/itemshop.js seasonMoment, as the LTMs' original dates), until
 //   the replay's 12 July (Season 5); its next lap starts them again.
+// - "custom": the admin's own times (events/season4flags.js's schedule, Core-Backend #304), each rift without times
+//   unscheduled (tellMs and eventMs null). They stay.
 // - "off": none (the flags still switch by hand).
 function riftTimes(now, changelist, config) {
-  const mode = season4Settings(config).oddities;
+  const { oddities: mode, schedule } = season4Settings(config);
+  if (mode === "custom") {
+    const byNumber = new Map(schedule.map((entry) => [entry.number, entry]));
+    return { end: null, list: oddities.map((oddity) => {
+      const own = byNumber.get(oddity.number);
+      return { ...oddity, tellMs: own ? time(own.tellAt) : null, eventMs: own ? time(own.eventAt) : null };
+    }) };
+  }
   if (mode === "launch") {
     const t = rocketLaunchTimes(changelist, config);
     if (!t) return null;
@@ -43,8 +52,9 @@ function riftTimes(now, changelist, config) {
 export function odditiesStates(now = new Date(), changelist = currentBuild(), config = currentEventsConfig()) {
   const entry = season4Flag(oddities[0].tell);
   if (!onBuild(entry, changelist) || !seasonalEventsOn() || config?.mode === "off" || (config?.mode ?? "auto") !== "auto") return [];
-  const times = riftTimes(now, changelist, config);
-  if (!times) return [];
+  const riftsTimes = riftTimes(now, changelist, config);
+  if (!riftsTimes) return [];
+  const times = { ...riftsTimes, list: riftsTimes.list.filter((oddity) => oddity.tellMs !== null) };
   const { off, on } = season4Overrides(changelist, config);
   const skip = new Set([...off, ...on]);
   const until = (ms) => (ms === null ? eventsActiveUntil : iso(ms));
@@ -71,16 +81,17 @@ export function mergeTimedStates(...schedules) {
 // The admin panel's view: each group with each flag's state on the newest Season 4 build (4.5) and whether the admin
 // switched it, the oddities mode and the rifts' times now.
 export function season4FlagsStatus(now = new Date(), config = currentEventsConfig(), servedOn45 = [], servedOn50 = []) {
-  const { overrides, oddities: mode } = season4Settings(config);
+  const { overrides, oddities: mode, schedule } = season4Settings(config);
   const times = riftTimes(now, String(b45), config);
   const replayNext = (original) => nextReplayOf(time(original), now, null, 4).toISOString();
   return {
     oddities: mode,
     odditiesModes,
+    schedule,
     rifts: oddities.map((oddity, index) => ({
       number: oddity.number, prop: oddity.prop, rift: oddity.rift, tell: oddity.tell, event: oddity.event,
       original: { tell: oddity.tellAt, event: oddity.eventAt },
-      ...(times?.list[index] ? { tellAt: iso(times.list[index].tellMs), eventAt: iso(times.list[index].eventMs) } : {}),
+      ...(times?.list[index] && times.list[index].tellMs !== null ? { tellAt: iso(times.list[index].tellMs), eventAt: iso(times.list[index].eventMs) } : {}),
       nextOnReplay: { tell: replayNext(oddity.tellAt), event: replayNext(oddity.eventAt) }
     })),
     groups: season4FlagGroups.map((group) => ({

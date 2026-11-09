@@ -45,7 +45,7 @@ import { contentUpdateStates, defaultContentUpdates } from "../events/contentupd
 import { cosmeticRarity, cosmeticType, eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, seasonEnd, seasonOfBuild, seasonMoment, seasonStart, shopDay, soldCosmeticIds, weeklyStoreEnd, withoutSeasonStartRecording } from "../store/itemshop.js";
 import { activeEventFlags, fortnitemares, mutantStorms } from "../events/events.js";
 import { season4FlagsStatus } from "../events/oddities.js";
-import { odditiesModes, season4Flag } from "../events/season4flags.js";
+import { odditiesModes, odditySchedulePatch, season4Flag } from "../events/season4flags.js";
 import { convertLeftoverCandy } from "../events/candyllamas.js";
 import { ltmIds, ltmSchedule } from "../events/ltms.js";
 import { launchSequenceSeconds, rocketLaunchStatus, sanitizeRocketLaunch } from "../events/rocketlaunch.js";
@@ -1425,7 +1425,9 @@ export function adminRoutes(context) {
   });
 
   // Season 4's event flags (events/season4flags.js): {flag, state: "on" | "off" | "auto"} switches one over what the builds
-  // serve by themselves; {oddities: "off" | "launch" | "dates"} schedules the rifts of July 2018.
+  // serve by themselves; {oddities: "off" | "launch" | "dates" | "custom"} schedules the rifts of July 2018; {schedule}
+  // sets the custom mode's rift times (events/season4flags.js odditySchedulePatch: a start and spacing, or rift by rift;
+  // null clears them) and switches to it. The calendar revision follows the events config, so running servers refresh.
   router.post("/admin/api/events/flags", (req, res) => {
     const body = typeof req.body === "object" && req.body !== null ? req.body : {};
     const patch = {};
@@ -1440,7 +1442,15 @@ export function adminRoutes(context) {
       if (!odditiesModes.includes(body.oddities)) return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", `oddities must be ${odditiesModes.join(", ")}`);
       patch.oddities = body.oddities;
     }
-    if (!Object.keys(patch).length) return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "Give a flag and its state, or the oddities mode");
+    if (body.schedule !== undefined) {
+      const current = settings.get()?.events?.season4Flags?.schedule ?? [];
+      const schedule = odditySchedulePatch(body.schedule, current);
+      if (!schedule) return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "schedule must be {startAt, spacingHours, warningHours} or [{number, tellAt, eventAt}] with each rift's tellAt no later than its eventAt");
+      patch.schedule = schedule.length ? schedule : null;
+      // Times set are times to use: the custom mode, unless the request names a mode.
+      if (patch.oddities === undefined && schedule.length) patch.oddities = "custom";
+    }
+    if (!Object.keys(patch).length) return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "Give a flag and its state, the oddities mode or the rifts' schedule");
     const updated = settings.update({ events: { season4Flags: patch } });
     res.json({ success: true, season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(new Date(), updated.events, inBuild("4166199", () => activeEventFlags()), inBuild("4214610", () => activeEventFlags()))) });
   });
