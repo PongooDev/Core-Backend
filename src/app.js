@@ -51,6 +51,7 @@ import { purchaseRoutes } from "./services/fortnite/purchase.js";
 import { receiptRoutes } from "./services/fortnite/receipts.js";
 import { storefrontRoutes } from "./services/fortnite/storefront.js";
 import { twitchRoutes } from "./services/fortnite/twitch.js";
+import { privacyRoutes } from "./services/fortnite/privacy.js";
 import { versionRoutes } from "./services/fortnite/version.js";
 import { calendarRoutes } from "./services/fortnite/calendar.js";
 import { waitingRoomRoutes } from "./services/fortnite/waitingroom.js";
@@ -221,6 +222,7 @@ export function createApp(config, context = createContext(config)) {
   app.use(battleRoyaleRoutes(context));
   app.use(friendCodeRoutes(context));
   app.use(twitchRoutes(context));
+  app.use(privacyRoutes(context));
   app.use(friendsRoutes(context));
   app.use(datarouterRoutes(context));
   app.use(coreStatusRoutes(context));
