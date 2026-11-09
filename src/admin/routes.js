@@ -73,7 +73,13 @@ const startedAt = new Date().toISOString();
 const profileIds = ["profile0", "metadata", "theater0", "outpost0", "collection_book_people0", "collection_book_schematics0"];
 
 function backendVersion() {
-  const version = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8")).version;
+  // A launcher install that lost its package.json still runs (CoreV2 #344's backend log): show no version, don't fail.
+  let version = null;
+  try {
+    version = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8")).version ?? null;
+  } catch {
+    // No or unreadable package.json.
+  }
   let commit = null;
   try {
     const head = fs.readFileSync(path.join(root, ".git", "HEAD"), "utf8").trim();
