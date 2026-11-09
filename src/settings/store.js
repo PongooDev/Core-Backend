@@ -6,6 +6,7 @@ import { defaultBattlePass, sanitizeBattlePass } from "../battlepass/season1.js"
 import { defaultContentUpdates, sanitizeContentUpdates } from "../events/contentupdates.js";
 import { defaultMeteorStrikePhase, sanitizeMeteorStrike } from "../events/meteorstrike.js";
 import { defaultRocketLaunch, sanitizeRocketLaunch } from "../events/rocketlaunch.js";
+import { defaultSeason4Flags, sanitizeSeason4Flags } from "../events/season4flags.js";
 import { regionHostingIps, regionList } from "../matchmaking/regions.js";
 import { customMatchServers } from "../matchmaking/custom-servers.js";
 import { allowedBuildList } from "../builds/allowed.js";
@@ -153,7 +154,10 @@ const defaults = {
     // 3.6's Season 3 finale (events/meteorstrike.js): "none", "broadcast", "meteors" or "impact".
     meteorStrike: defaultMeteorStrikePhase,
     // 4.5's rocket launch, Blast Off (events/rocketlaunch.js): its launch time (null: not scheduled) and countdown.
-    rocketLaunch: defaultRocketLaunch
+    rocketLaunch: defaultRocketLaunch,
+    // Season 4's event flags (events/season4flags.js, Core-Backend #296): the admin's "on" / "off" per flag over a build's
+    // own, and the rifts of July 2018: "off", "launch" (after the rocket launch) or "dates" (Epic's, on the replay).
+    season4Flags: defaultSeason4Flags
   },
   battlepass: defaultBattlePass,
   matchmakingModes: {
@@ -346,6 +350,7 @@ function sanitizeEvents(input, current = defaults.events) {
 
   if (input.meteorStrike !== undefined) result.meteorStrike = sanitizeMeteorStrike(input.meteorStrike, result.meteorStrike ?? defaultMeteorStrikePhase);
   if (input.rocketLaunch !== undefined) result.rocketLaunch = sanitizeRocketLaunch(input.rocketLaunch, result.rocketLaunch ?? defaultRocketLaunch);
+  if (input.season4Flags !== undefined) result.season4Flags = sanitizeSeason4Flags(input.season4Flags, result.season4Flags ?? defaultSeason4Flags);
 
   return result;
 }

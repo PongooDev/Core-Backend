@@ -32,7 +32,7 @@ import { currentEventsConfig, eventsActiveUntil, seasonalEventsOn } from "./even
 // Before the countdown no flag is served: the rocket waits in its lair. The gameserver reads the same timeline (it runs
 // the BP's server half: the launch sequence and the replicated countdown). Without a launch time nothing is served.
 // Athena_OdditiesActors' EventFlag.BR_S4_Oddity_01 to _08 _Tell and _Event (the rifts that took the map's objects in
-// July, with AthenaGameData's Default.Oddities.Intensity row at 0) are left to the Custom flags.
+// July) are events/season4flags.js's: by Epic's July dates, after the admin's launch, or switched by hand.
 export const rocketLaunchBuilds = [4159770, 4166199];
 export const geodeCountdown = "EventFlag.BR_S4_Geode_Countdown";
 export const geodeBegin = "EventFlag.BR_S4_Geode_Begin";

@@ -12,7 +12,8 @@ import { hasSeasonShop } from "../../store/seasonshop.js";
 import { athenaSeason } from "../../gamedata/athena.js";
 import { challengeSeasonBegin, weekPlan } from "../../profiles/challenges.js";
 import { seasonTemplateId } from "../../profiles/seasons.js";
-import { nextRocketLaunchChange, rocketLaunchStates } from "../../events/rocketlaunch.js";
+import { rocketLaunchStates } from "../../events/rocketlaunch.js";
+import { mergeTimedStates, odditiesStates } from "../../events/oddities.js";
 
 // 1.8's event calendar (ScheduledEvents' FCalendarDownload): {currentTime, channels: {<channel>: FEventsTimeline
 // {cacheExpire, states: [FEventChannelState {validFrom, activeEvents: [{eventName, activeUntil}], state}]}}}. The
@@ -49,7 +50,8 @@ import { nextRocketLaunchChange, rocketLaunchStates } from "../../events/rocketl
 // launch time set, client-events holds a state for each part of it from the one now on (validFrom its start), each
 // naming the build's flags and the rocket's calendar events (EventFlag.BR_S4_Geode_Countdown, _Begin, _Over and
 // EventFlag.BR_S4_Rift_Growth) with their activeSince and activeUntil, which the map's FortAsyncAction_CalendarEventWatcher
-// counts to; and it is good no later than the next part.
+// counts to; and it is good no later than the next part. The rifts of July 2018 (Athena_OdditiesActors' _Tell and _Event
+// flags, events/oddities.js) join those parts the same way when the admin panel schedules them.
 export const calendarCacheMinutes = 60;
 const seasonalEventManagerBuild = 3790078;
 
@@ -84,7 +86,9 @@ export function calendarRoutes({ tokens, settings }) {
     const challengeChange = seasonBegin ? weekPlan(now).changes : null;
     const cacheMinutes = Math.max(5, Math.min(120, Number(currentEventsConfig()?.calendarCacheMinutes ?? calendarCacheMinutes)));
     const ltmChange = nextLtmChange(currentBuild(), settings?.get?.(), now);
-    const rocketChange = nextRocketLaunchChange(now);
+    // The rocket launch's parts and the rifts' (events/oddities.js) as one schedule.
+    const rocket = mergeTimedStates(rocketLaunchStates(now), odditiesStates(now));
+    const rocketChange = rocket[1]?.validFrom ?? null;
     const cacheExpire = new Date(Math.min(now.getTime() + cacheMinutes * 60000, weeklyEnd?.getTime() ?? Infinity, rocketChange ?? Infinity,
       seasonEnds?.getTime() ?? Infinity, ltmChange?.getTime() ?? Infinity, challengeChange?.getTime() ?? Infinity, ...Object.values(stwEnds).map((end) => end.getTime()))).toISOString();
     const seasonal = Number(currentBuild()) >= seasonalEventManagerBuild;
@@ -99,8 +103,7 @@ export function calendarRoutes({ tokens, settings }) {
       ...Object.fromEntries(Object.entries(stwEnds).map(([name, end]) => [name, end.toISOString()]))
     };
     const validFrom = "2017-01-01T00:00:00.000Z";
-    const rocket = rocketLaunchStates(now);
-    // A part of the rocket launch: the build's events and flags with the rocket's (its first part from validFrom).
+    // A part of the rocket launch or the rifts: the build's events and flags with theirs (its first part from validFrom).
     const states = rocket.length
       ? rocket.map((part, index) => ({
         validFrom: index === 0 ? validFrom : new Date(part.validFrom).toISOString(),

@@ -7423,6 +7423,49 @@
           el("button", { class: "btn ghost small", text: "Clear (pre-event map)", onclick: () => rocketAction({ action: "clear" }, "Rocket launch cleared: the rocket waits in its lair") }))
       );
 
+      // Season 4's event flags (events/season4flags.js, Core-Backend #296): every flag 4.0's to 4.5's paks hold, grouped,
+      // each switched on or off over what the builds serve by themselves (the Automatic mode), and the rifts of July 2018.
+      const s4 = data.season4Flags || { groups: [], rifts: [], oddities: "off", odditiesModes: ["off", "launch", "dates"] };
+      const s4Action = async (payload, message) => {
+        if (await act(api("/admin/api/events/flags", payload), message)) showEvents();
+      };
+      const s4Range = ([first, last]) => {
+        const names = { 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4214610: "5.0" };
+        return first === last ? names[first] : `${names[first] || first} – ${names[last] || last}`;
+      };
+      const odditiesLabels = { off: "Off: the rifts wait (switch them below by hand)", launch: "After the rocket launch: Epic's days, counted from the admin's launch time", dates: "Epic's dates (30 June – 10 July) on Season 4's replay" };
+      const fmtTime = (iso) => (iso ? new Date(iso).toLocaleString() : "—");
+      const season4Container = el("div", {
+        style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
+      },
+        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "Season 4 event flags (4.0 – 4.5):" }),
+        el("div", { class: "muted", style: "font-size:12px; margin-bottom:8px;", text: "Every EventFlag.* in Season 4's paks. Automatic serves what the build served in its day; On or Off overrides it on the builds whose paks have the flag (in the Automatic mode). The rocket's flags follow the Rocket Launch above. Clients pick a change up at their next calendar fetch; running gameservers within 5 seconds." }),
+        ...s4.groups.map((group) => el("div", { style: "margin-top:10px;" },
+          el("div", { style: "font-weight:700; font-size:12px; margin-bottom:4px;", text: group.name + (group.managedBy ? " (by the Rocket Launch's time)" : "") }),
+          el("div", { class: "table-wrap" }, el("table", { style: "font-size:12px;" },
+            el("tbody", {}, ...group.flags.map((entry) => el("tr", {},
+              el("td", { style: "font-family:var(--mono, monospace); white-space:nowrap;", text: entry.flag }),
+              el("td", { class: "muted", text: entry.description }),
+              el("td", { style: "white-space:nowrap;", text: s4Range(entry.builds) }),
+              el("td", {}, chip(entry.servedOn45 ? "on in 4.5" : "off in 4.5", entry.servedOn45 ? "good" : "")),
+              el("td", {}, group.managedBy ? el("span", { class: "muted", text: "Rocket Launch" }) :
+                el("select", { class: "field", "aria-label": `${entry.flag} state`, onchange: (e) => s4Action({ flag: entry.flag, state: e.target.value }, `${entry.flag}: ${e.target.value}`) },
+                  ...[["auto", "Automatic"], ["on", "On"], ["off", "Off"]].map(([value, text]) => el("option", { value, text, selected: entry.override === value }))))
+            )))
+          )))),
+        el("div", { style: "margin-top:12px; font-weight:700; font-size:12px;", text: "The rifts of July 2018 (4.5's oddities):" }),
+        el("select", { class: "field", style: "margin-top:4px;", "aria-label": "Rift schedule", onchange: (e) => s4Action({ oddities: e.target.value }, "Rift schedule saved") },
+          ...s4.odditiesModes.map((value) => el("option", { value, text: odditiesLabels[value] || value, selected: s4.oddities === value }))),
+        el("div", { class: "table-wrap", style: "margin-top:6px;" }, el("table", { style: "font-size:12px;" },
+          el("thead", {}, el("tr", {}, ...["#", "Prop", "Rift forms (_Tell)", "Rifted (_Event)", "Epic's"].map((text) => el("th", { text })))),
+          el("tbody", {}, ...s4.rifts.map((rift) => el("tr", {},
+            el("td", { text: String(rift.number) }),
+            el("td", { text: `${rift.prop}, rifted ${rift.rift}` }),
+            el("td", { text: fmtTime(rift.tellAt) }),
+            el("td", { text: fmtTime(rift.eventAt) }),
+            el("td", { class: "muted", text: new Date(rift.original.event).toUTCString().slice(5, 22) + " UTC" }))))))
+      );
+
       const modeCards = el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; margin-top:12px;" },
         ...modeOptions.map((opt) => {
           const isSelected = form.mode === opt.id;
@@ -7657,6 +7700,7 @@
           customFlagsContainer,
           meteorStrikeContainer,
           rocketContainer,
+          season4Container,
           el("div", { style: "margin-top:18px;" },
             el("h3", { style: "font-size:14px; font-weight:700; margin-bottom:10px;", text: "Build-by-Build Event Compatibility Matrix" }),
             matrixTable)

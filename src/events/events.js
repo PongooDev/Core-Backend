@@ -1,5 +1,6 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 import { currentBuild } from "../builds/context.js";
+import { season4Overrides } from "./season4flags.js";
 
 // The seasonal events Core runs. A build runs the event its own update shipped, for as long as it is played: Epic
 // switched events on and off from its servers (its event flags and calendar), so which builds run one is Core's choice.
@@ -246,7 +247,10 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // to Phase4, now on Blockbuster2018QuestMap's pages too) and Battle Royale's map's: BP_GeodeScripting's
 // BR_S4_Geode_Begin, _Countdown and _Over and BP_Athena_Event_Components' BR_S4_Rift_Growth (the rocket launch, served
 // from the calendar by its time: events/rocketlaunch.js), and Athena_OdditiesActors' BR_S4_Oddity_01 to _08 _Tell and
-// _Event (left off). So 4.5 serves 4.4's flags and Blockbuster2018Phase4 (Part 4: The Finale).
+// _Event (the rifts of July 2018: events/season4flags.js, by the admin's choice). So 4.5 serves 4.4's flags and
+// Blockbuster2018Phase4 (Part 4: The Finale).
+// Every one of Season 4's flags is in events/season4flags.js's catalog, where the admin panel switches each on or off over
+// what a build serves by itself (Core-Backend #296).
 // 5.0 (CL-4204761, 12 July 2018, and CL-4214610; CL-4214610's data serves both, gamedata/read.js laterData), Season 5:
 // "Blockbuster is over and the Road Trip event begins!" Every EventFlag.* in CL-4214610's paks (the same byte scan, 207,626
 // files of its Battle Royale only archive): 4.5's Items/Events ones (BR.CandyCaneGuns, SupplyDropGift, LobbyHalloweenDecor,
@@ -365,7 +369,10 @@ export function activeEventFlags(changelist = currentBuild()) {
   }
   const number = Number(changelist);
   if (!Number.isInteger(number)) return [];
-  return events.filter((event) => runsOn(event, number)).map((event) => event.flag);
+  // The Season 4 flags the admin panel switched on or off (events/season4flags.js), over the build's own.
+  const { on, off } = season4Overrides(changelist, config);
+  const own = events.filter((event) => runsOn(event, number)).map((event) => event.flag);
+  return [...new Set([...own, ...on])].filter((flag) => !off.includes(flag));
 }
 
 // Whether the requesting build runs an event, by its name (fortnitemares, mutantStorms) or by an event flag (a mission
@@ -399,6 +406,8 @@ export function isEventActive(nameOrFlag, changelist = currentBuild()) {
     return false;
   }
   const flags = activeEventFlags(changelist);
+  // A flag served by the build (one the admin panel switched on among them) is active.
+  if (flags.includes(nameOrFlag)) return true;
   return events.some((event) => flags.includes(event.flag) && runsOn(event, Number(changelist))
     && (event.name === nameOrFlag || event.flag === nameOrFlag));
 }

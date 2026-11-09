@@ -44,6 +44,8 @@ import { battleRoyaleBuilds, battleRoyaleSeasons, buildVersions, certBuild, seas
 import { contentUpdateStates, defaultContentUpdates } from "../events/contentupdates.js";
 import { cosmeticRarity, cosmeticType, eligibleCosmetics, generateRandomShop, itemShopOffers, nextRotation, seasonEnd, seasonOfBuild, seasonMoment, seasonStart, shopDay, soldCosmeticIds, weeklyStoreEnd, withoutSeasonStartRecording } from "../store/itemshop.js";
 import { activeEventFlags, fortnitemares, mutantStorms } from "../events/events.js";
+import { season4FlagsStatus } from "../events/oddities.js";
+import { odditiesModes, season4Flag } from "../events/season4flags.js";
 import { convertLeftoverCandy } from "../events/candyllamas.js";
 import { ltmIds, ltmSchedule } from "../events/ltms.js";
 import { launchSequenceSeconds, rocketLaunchStatus, sanitizeRocketLaunch } from "../events/rocketlaunch.js";
@@ -1273,6 +1275,8 @@ export function adminRoutes(context) {
       },
       eventsConfig,
       rocketLaunch: rocketLaunchStatus(now, eventsConfig),
+      // Season 4's event flags, grouped (events/season4flags.js, Core-Backend #296), with what 4.5 serves now.
+      season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(now, eventsConfig, inBuild("4166199", () => activeEventFlags()))),
       events: [
         {
           id: "fortnitemares",
@@ -1405,6 +1409,27 @@ export function adminRoutes(context) {
     if (body.countdownHours !== undefined && body.action !== "schedule") next = sanitizeRocketLaunch({ countdownHours: body.countdownHours }, next);
     const updated = settings.update({ events: { rocketLaunch: next } });
     res.json({ success: true, rocketLaunch: rocketLaunchStatus(new Date(), updated.events) });
+  });
+
+  // Season 4's event flags (events/season4flags.js): {flag, state: "on" | "off" | "auto"} switches one over what the builds
+  // serve by themselves; {oddities: "off" | "launch" | "dates"} schedules the rifts of July 2018.
+  router.post("/admin/api/events/flags", (req, res) => {
+    const body = typeof req.body === "object" && req.body !== null ? req.body : {};
+    const patch = {};
+    if (body.flag !== undefined) {
+      const entry = season4Flag(body.flag);
+      if (!entry) return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", `${body.flag} isn't one of Season 4's flags`);
+      if (entry.group.managedBy) return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", `${entry.flag} follows the rocket launch's time`);
+      if (!["on", "off", "auto"].includes(body.state)) return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "state must be on, off or auto");
+      patch.overrides = { [entry.flag]: body.state };
+    }
+    if (body.oddities !== undefined) {
+      if (!odditiesModes.includes(body.oddities)) return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", `oddities must be ${odditiesModes.join(", ")}`);
+      patch.oddities = body.oddities;
+    }
+    if (!Object.keys(patch).length) return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "Give a flag and its state, or the oddities mode");
+    const updated = settings.update({ events: { season4Flags: patch } });
+    res.json({ success: true, season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(new Date(), updated.events, inBuild("4166199", () => activeEventFlags()))) });
   });
 
     router.post("/admin/api/events/actions/convert-storm-tickets", (req, res) => {
