@@ -5,7 +5,7 @@ import fs from "node:fs";
 import http from "node:http";
 import os from "node:os";
 import path from "node:path";
-import { assignmentBucket, bucketKey, bucketMatches, estimatedWaitSec, formTeams, parseBucket, playlistTeamsOf, serverRegion, showsMatchStart, withRegion } from "../src/matchmaking/service.js";
+import { assignmentBucket, bucketKey, bucketMatches, estimatedWaitSec, formTeams, isPartyOnlyBucket, parseBucket, playlistTeamsOf, serverRegion, showsMatchStart, withRegion } from "../src/matchmaking/service.js";
 import { regionList, regionOf, servedRegions } from "../src/matchmaking/regions.js";
 import { certUserAgent, dedicatedServerToken, del, get, openTunnel, post, send, startBackend, userLogin } from "./helpers.js";
 
@@ -147,6 +147,33 @@ test("a bucket names the playlist and region; a server's pattern takes any playl
   assert.ok(bucketMatches("1944448041:0:NA:**", "1944448041:0:NA:10:1:0"));
   assert.ok(!bucketMatches("1944448041:0:NA:**", "1944448041:0:NA"));
   assert.ok(!bucketMatches("1944448041:0:NA:**", "858118782:0:NA:2"));
+});
+
+// From 4.4 (CL-4117433) the client's bucket names its playlist, lowercased ("%u:%d:%s:%s"; 4.2's and earlier
+// "%u:%d:%s:%d"): these are 4.4's, 4.5's and 5.0's own, from their clients' logs.
+test("4.4 to 5.0's buckets name the playlist, which resolves to its id; the bucket the server gets is the client's", () => {
+  const build45 = 4166199;
+  const playground45 = "4148992:0:NAE:playlist_playground";
+  assert.deepEqual([parseBucket(playground45, build45).playlistId, parseBucket(playground45).playlistName], [35, "playlist_playground"]);
+  assert.equal(parseBucket("4148992:0:NAE:playlist_defaultduo", build45).playlistId, 10);
+  assert.equal(parseBucket("4148992:0:NAE:playlist_defaultsolo", build45).playlistId, 2);
+  assert.equal(parseBucket("4124989:0:NAE:playlist_defaultduo", 4132537).playlistId, 10);
+  assert.equal(parseBucket("4198873:0:EU:playlist_playground", 4204761).playlistId, 35);
+  assert.equal(parseBucket("4148992:0:NAE:Playlist_50v50", build45).playlistId, 50);
+  // A name Core has no id for keeps its name and no id; a numeric bucket and a server's wildcards read as before.
+  assert.deepEqual([parseBucket("4148992:0:NAE:playlist_unknown").playlistId, parseBucket("4148992:0:NAE:playlist_unknown").playlistName],
+    [null, "playlist_unknown"]);
+  assert.deepEqual([parseBucket("858118782:0:NA:35").playlistId, parseBucket("858118782:0:NA:35").playlistName], [35, null]);
+  assert.equal(parseBucket("4148992:0:NAE:*").playlistName, null);
+  // Playground plays alone (#299); Duos and Solo have their teams.
+  assert.ok(isPartyOnlyBucket(playground45, build45));
+  assert.ok(isPartyOnlyBucket("4198873:0:EU:playlist_playground", 4204761));
+  assert.ok(!isPartyOnlyBucket("4148992:0:NAE:playlist_defaultduo", build45));
+  assert.deepEqual(playlistTeamsOf("4148992:0:NAE:playlist_defaultduo", build45), { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 });
+  assert.deepEqual(playlistTeamsOf("4148992:0:NAE:playlist_defaultsolo", build45), { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 });
+  // The servers read the bucket as the client sent it.
+  assert.equal(assignmentBucket(withRegion(playground45, "NA"), build45), "Fortnite:Fortnite:4148992:0:NA:playlist_playground");
+  assert.notEqual(bucketKey(playground45), bucketKey("4148992:0:NAE:playlist_defaultduo"));
 });
 
 test("parties that fill share teams up to the playlist's team size; the others play alone (#78)", () => {
@@ -1438,10 +1465,10 @@ test("an ended event's servers take any match again, and its playlist plays on t
 // Core-Backend #299: Playground (Playlist_Playground, 35) is its party's alone, as Update v4.50 ran it: a session of its
 // own, assigned at once and sized to the party, which no other party joins, forming or in its warmup.
 const userAgent45 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-4.5-CL-4166199";
-async function queueOn45(backend, player, party = [player], { playlistId = 35, fill = null } = {}) {
+async function queueOn45(backend, player, party = [player], { playlistId = 35, fill = null, playlist = playlistId } = {}) {
   const ticket = await send({ host: "127.0.0.1", port: backend.port, method: "GET",
     path: `/fortnite/api/game/v2/matchmakingservice/ticket/player/${player.accountId}?partyPlayerIds=${party.map(({ accountId }) => accountId).join(",")}` +
-      `&bucketId=858118782:0:NA:${playlistId}&player.platform=Windows${fill === null ? "" : `&player.option.fillTeam=${fill}`}`,
+      `&bucketId=858118782:0:NA:${playlist}&player.platform=Windows${fill === null ? "" : `&player.option.fillTeam=${fill}`}`,
     headers: { "User-Agent": userAgent45, Authorization: `bearer ${player.token}` } });
   assert.equal(ticket.status, 200, JSON.stringify(ticket.body));
   const connection = await matchmakingClient(backend.port, authorizationOf(ticket.body));
@@ -1515,6 +1542,31 @@ test("Playground is a match of the party's own: assigned at once, no other party
 
     // Duos still gather and open in their warmup as before.
     assert.equal((await reportWarmup(backend, token, { phase: "Warmup", accountIds: [], secondsLeft: 60 })).body.lateJoin, true);
+  } finally {
+    for (const connection of connections) connection.close();
+    backend.close();
+  }
+});
+
+test("a Playground ticket that names its playlist, as 4.5's client sends it, is the party's alone (#299)", async () => {
+  const backend = await startBackend({ matchmakingGatherMs: 5000 });
+  const connections = [];
+  try {
+    const first = await regionServer(backend, "NamedPgServer1", "NA");
+    connections.push(first.connection);
+    const leader = await userLogin(backend.port, "NamedPgLeader");
+    const started = Date.now();
+    connections.push(await queueOn45(backend, leader, [leader], { playlist: "playlist_playground" }));
+    const assign = await nextOf(first.connection, "AssignMatch");
+    assert.ok(Date.now() - started < 3000);
+    assert.equal(assign.payload.bucketId, "858118782:0:NA:playlist_playground");
+    const other = await userLogin(backend.port, "NamedPgOther");
+    const otherConnection = await queueOn45(backend, other, [other], { playlist: "playlist_playground" });
+    connections.push(otherConnection);
+    assert.equal(JSON.parse(await otherConnection.next()).payload.state, "Queued");
+    const second = await regionServer(backend, "NamedPgServer2", "NA");
+    connections.push(second.connection);
+    assert.deepEqual((await nextOf(second.connection, "AssignMatch")).payload.teams.flat(2), [other.accountId]);
   } finally {
     for (const connection of connections) connection.close();
     backend.close();

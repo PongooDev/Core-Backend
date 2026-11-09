@@ -533,6 +533,18 @@ export const ltmOfPlaylist = (playlistId, build = currentBuild()) => {
   const of = ltms.filter((ltm) => ltm.playlistId === Number(playlistId));
   return of.find((ltm) => inRange(ltm.builds, build)) ?? of[0] ?? null;
 };
+// A playlist's id by its PlaylistName, in any case, or null for a name Core has no id for. From 4.4 (CL-4117433) the
+// client's matchmaking bucket names its playlist, lowercased, where 4.2 and earlier gave the id ("%u:%d:%s:%s" against
+// "%u:%d:%s:%d": 4.4's, 4.5's and 5.0's dumps against 1.10's to 4.2's; "4148992:0:NAE:playlist_playground"). The
+// default playlists are 3.5.1's Playlist_DefaultSolo/Duo/Squad (2, 10, 9), the others the LTMs': the requesting build's,
+// else any build's (as ltmOfPlaylist).
+const defaultPlaylistIds = { playlist_defaultsolo: 2, playlist_defaultduo: 10, playlist_defaultsquad: 9 };
+export const playlistIdOfName = (name, build = currentBuild()) => {
+  const key = String(name ?? "").toLowerCase();
+  if (Object.hasOwn(defaultPlaylistIds, key)) return defaultPlaylistIds[key];
+  const of = ltms.filter((ltm) => ltm.playlistName?.toLowerCase() === key);
+  return (of.find((ltm) => inRange(ltm.builds, build)) ?? of[0])?.playlistId ?? null;
+};
 // The event queue's number of each event playlist ({12: 5, 13: 2, 14: 3, 15: 1, 16: 6, 17: 4, 18: 7, 19: 8}, and 3.0's
 // N: N from 22 on): the matchmaking button's AthenaEvent<N> → playlist switch read backwards, so the N of the playlist's
 // Athena.Playlist.Event.<N> and complete_athena_event_<N>; 3.1's Blitz children (36, 37) take Blitz's, 8 (tagQueue).

@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { ltms } from "../events/ltms.js";
+import { ltms, playlistIdOfName } from "../events/ltms.js";
 import { shootingTestPlaylist, shootingTestTeams } from "../events/shootingtest.js";
 import { log } from "../log.js";
 import { inIpRanges } from "../network.js";
@@ -11,7 +11,8 @@ import { regionAllowsAddress, regionName, regionOf, servedRegions } from "./regi
 // Athena-Boot-1.7.2.md §1 C).
 //
 // Players (UFortMatchmakingV2, MatchmakingServiceClient): a ticket from
-// /fortnite/api/game/v2/matchmakingservice/ticket/player/{id}?partyPlayerIds=&bucketId=<netcl>:0:<region>:<playlistId>,
+// /fortnite/api/game/v2/matchmakingservice/ticket/player/{id}?partyPlayerIds=&bucketId=<netcl>:0:<region>:<playlistId>
+// (from 4.4 the playlist's lowercased name, parseBucket),
 // then a WebSocket with "Authorization: Epic-Signed <ticketType> <payload> <signature>" that gets StatusUpdate
 // messages (payload.state Connecting, Waiting {totalPlayers, connectedPlayers}, Queued {ticketId, queuedPlayers,
 // estimatedWaitSec, status}, SessionAssignment {matchId}) and then Play {matchId, sessionId}. When the service closes
@@ -162,7 +163,7 @@ export const queueOf = (bucketId, customKey = null) => bucketKey(bucketId) + (cu
 // once (no gather wait, nobody else would come). The party's fill choice still decides the admin panel's "Fill players'
 // teams with bots" teammates (noFill), as anywhere else.
 export const playgroundPlaylists = new Set(ltms.filter((ltm) => /^Playlist_Playground/.test(ltm.playlistName ?? "")).map((ltm) => ltm.playlistId));
-export const isPartyOnlyBucket = (bucketId) => playgroundPlaylists.has(parseBucket(bucketId).playlistId);
+export const isPartyOnlyBucket = (bucketId, build) => playgroundPlaylists.has(parseBucket(bucketId, build).playlistId);
 
 // The game's early countdown (WarmupEarlyCountdownDuration, 15 s): with late joining off, a CoreV2 gameserver's warmup
 // shortens to it once the match's assigned players are all in (CoreV2 ApplyWarmupLength), which for a match that has
@@ -175,10 +176,18 @@ const earlyCountdownSec = 15;
 // The admin panel's Match Start Buffer sets it (settings matchStartBufferSeconds).
 export const defaultMatchStartBufferSec = 25;
 
-export function parseBucket(bucketId) {
+// A bucket's fields. Its playlist is the PlaylistId 4.2 and earlier send, or from 4.4 (CL-4117433: its, 4.5's and 5.0's
+// clients format the bucket "%u:%d:%s:%s" with the playlist's name lowercased, where 1.10's to 4.2's had "%u:%d:%s:%d")
+// the name, as "4148992:0:NAE:playlist_playground", resolved to its id on the build (the parties' changelist, else the
+// request's; events/ltms.js playlistIdOfName): playlistName keeps the name, and playlistId is null for one Core has no
+// id for. The bucket itself, AssignMatch's included, keeps whatever the client sent: the server reads it as it is.
+export function parseBucket(bucketId, build) {
   const parts = String(bucketId ?? "").split(":");
-  const playlistId = Number(parts[3]);
-  return { netcl: parts[0], region: parts[2] ?? "", playlistId: Number.isInteger(playlistId) ? playlistId : null, parts };
+  const field = parts[3];
+  const number = Number(field);
+  const named = field !== undefined && !Number.isInteger(number) && !/^\*+$/.test(field);
+  const playlistId = named ? playlistIdOfName(field, build ?? undefined) : Number.isInteger(number) ? number : null;
+  return { netcl: parts[0], region: parts[2] ?? "", playlistId, playlistName: named ? field : null, parts };
 }
 
 // AssignMatch's bucketId as the server reads it (Core-Backend #153). 1.11's (CL-3807424) MMS server
@@ -229,7 +238,7 @@ export function serverRegion(patterns) {
 // The teams of a bucket's playlist ({maxTeamCount, maxTeamSize, maxSquadSize}), or null for one the server doesn't know.
 // Shooting Test #1's (15, 2.4 to 2.5) are the build's (events/shootingtest.js: solo from 2.4.2, where the servers' table
 // still has 100 teams of 4), the build being the parties' changelist (their tickets'); without one, 2.4.2's.
-export const playlistTeamsOf = (bucketId, build = null) => teamsOfPlaylist(parseBucket(bucketId).playlistId, build);
+export const playlistTeamsOf = (bucketId, build = null) => teamsOfPlaylist(parseBucket(bucketId, build).playlistId, build);
 
 // The same by playlist id: what the match results' V-Bucks read a limited-time playlist's mode from (CoreV2 #294).
 export const teamsOfPlaylist = (playlistId, build = null) => {
@@ -474,7 +483,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     if (!regionAllowsAddress(parseBucket(matchBucket).region, server.address, regionHostingIps())) return false;
     if (!serverTakes(server.address, { customKey: party.customKey, players: party.ticket.partyPlayerIds }, customServers())) return false;
     if (!party.customKey || !hasOwnServers(party)) {
-      if (!tournamentTakes(server, parseBucket(matchBucket).playlistId)) return false;
+      if (!tournamentTakes(server, parseBucket(matchBucket, party.ticket.build).playlistId)) return false;
     }
     return !party.customKey || reserved(server) || !hasOwnServers(party) || customFallback();
   }
@@ -602,7 +611,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     const key = bucketKey(bucketId, { anyRegion });
 
     // A Playground party plays alone (#299): no other party's match, forming or in its warmup, takes it.
-    const partyOnly = isPartyOnlyBucket(bucketId);
+    const partyOnly = isPartyOnlyBucket(bucketId, party.ticket.build);
     // A match still in its warmup takes the party, unless the party's other members are already in a forming match.
     const late = !partyOnly && ![...servers].some((server) => server.forming?.parties.some((entry) => entry.key === party.key)) && lateJoinFor(party, key, anyRegion);
     if (late) {
@@ -636,7 +645,7 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
       // The match is the server's region's: AssignMatch's bucketId names it as the server does (the server takes its
       // MatchmakingRegionId from it, 1.7.2 0x6D78E0), and its region's players join it.
       const matchBucket = server.regionField ? withRegion(bucketId, server.regionField) : bucketId;
-      const bucket = parseBucket(matchBucket);
+      const bucket = parseBucket(matchBucket, party.ticket.build);
       if (!allowsServerAssignment(server.regionField || bucket.region, bucket.playlistId)) continue;
       server.forming = { matchId: newId(), bucketId: matchBucket, customKey: party.customKey, parties: [party], players: party.size, started: Date.now(),
         gatherMs: partyOnly ? 0 : gatherOf(), partyOnly };
