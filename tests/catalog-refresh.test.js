@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { clientToken, send, startBackend, userLogin } from "./helpers.js";
+import { keychainPlaceholder } from "../src/services/fortnite/storefront.js";
 
 // Core-Backend #242: on 3.3 the Save the World Event Store flickered once a second, its catalog refetched (304) on every
 // store widget timer tick. The price engine's 404 failed the catalog refresh (next one 30 seconds on), and the 304 answers
@@ -69,14 +70,20 @@ test("the catalog expires in the future, no later than any store countdown the c
   }
 });
 
-test("5.21 downloads its asset keychain at login: an empty JSON array, not a 404 that fails the login", async () => {
+test("5.21 downloads its asset keychain at login: one dummy GUID:key entry, since an empty array fails the login", async () => {
   const backend = await startBackend();
   try {
     const { token } = await userLogin(backend.port, "Keychain");
     const res = await ask(backend.port, "GET", "/fortnite/api/storefront/v2/keychain?numKeysDownloaded=0&rvn=1277", token,
       agentOf("Release-5.21-CL-4288479"));
     assert.equal(res.status, 200);
-    assert.deepEqual(res.body, []);
+    assert.deepEqual(res.body, [keychainPlaceholder]);
+    // FMcpKeychainHelper rejects an empty array; OnNewDataEncryptionKeyAdded wants "<32 hex GUID>:<base64 32-byte key>".
+    const [guid, key, ...rest] = keychainPlaceholder.split(":");
+    assert.equal(rest.length, 0);
+    assert.match(guid, /^[0-9A-F]{32}$/);
+    assert.notEqual(guid, "0".repeat(32));
+    assert.equal(Buffer.from(key, "base64").length, 32);
   } finally {
     backend.close();
   }

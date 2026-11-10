@@ -9,6 +9,9 @@ import { nextRotation } from "../../store/itemshop.js";
 // counts its daily items down to the expiration (GetDailyStoreEndDate 0x2E7C840).
 const refreshIntervalHrs = 24;
 
+// The asset keychain's one dummy entry (see the keychain route): a random pak GUID and a random 32-byte AES key.
+export const keychainPlaceholder = "626800062CF86236AB11BB0AB55446DD:OZZPvbTwCqV4SshO6GLe+ZymYKal4kX3kZYCsQZLuTE=";
+
 export function storefrontRoutes({ tokens, profiles, settings }) {
   const router = express.Router();
 
@@ -31,11 +34,15 @@ export function storefrontRoutes({ tokens, profiles, settings }) {
     }));
   });
 
-  // The asset keychain: "<pak guid>:<base64 AES key>:<item id>" strings for encrypted cosmetic paks. 5.21+ asks for it at
-  // login (numKeysDownloaded, rvn) and fails the login ("Failed to download asset keychain") on anything but a 200 JSON
-  // array. Core hands out no pak keys, so the list is empty.
+  // The asset keychain: "<pak guid>:<base64 AES key>" strings for encrypted cosmetic paks. 5.21+ asks for it at login
+  // (numKeysDownloaded, rvn). FMcpKeychainHelper's response handler only accepts a JSON array holding at least one
+  // non-empty string; an empty array logs "Unable to parse json, failed download" and fails the login ("Failed to
+  // download asset keychain"). Each new entry goes to UFortMcpProfileCommonCore::OnNewDataEncryptionKeyAdded, which splits
+  // it on ':' (exactly two parts), parses the GUID and needs a 32-byte key, and only logs anything malformed. Core hands
+  // out no pak keys, so the list holds one dummy entry: a random GUID that no pak uses (a zero GUID could match
+  // unencrypted paks) with a random 32-byte key. Registering it mounts nothing.
   router.get("/fortnite/api/storefront/v2/keychain", requireAuth(tokens), (req, res) => {
-    res.json([]);
+    res.json([keychainPlaceholder]);
   });
 
   return router;
