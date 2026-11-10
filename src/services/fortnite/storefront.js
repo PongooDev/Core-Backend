@@ -1,4 +1,7 @@
 import express from "express";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { requireAuth } from "../../accounts/auth.js";
 import { athenaSeason } from "../../gamedata/athena.js";
 import { openSession } from "../../profiles/session.js";
@@ -9,8 +12,16 @@ import { nextRotation } from "../../store/itemshop.js";
 // counts its daily items down to the expiration (GetDailyStoreEndDate 0x2E7C840).
 const refreshIntervalHrs = 24;
 
-// The asset keychain's one dummy entry (see the keychain route): a random pak GUID and a random 32-byte AES key.
-export const keychainPlaceholder = "626800062CF86236AB11BB0AB55446DD:OZZPvbTwCqV4SshO6GLe+ZymYKal4kX3kZYCsQZLuTE=";
+// The asset keychain (see the keychain route): the encrypted cosmetic paks' published keys, as LawinServer serves them
+// (store/keychain.json, from Lawin0129/LawinServer responses/keychain.json). Entries are "<pak guid>:<base64 key>", later
+// ones with ":<item id>" after. 5.21's handler (UFortMcpProfileCommonCore::OnNewDataEncryptionKeyAdded) takes exactly two
+// parts and only logs the rest as bad strings, so each entry goes out as its GUID and key alone; a malformed one is left out.
+const keychainEntry = /^([0-9A-Fa-f]{32}):([A-Za-z0-9+/]{43}=)(?::.*)?$/;
+export const keychain = [...new Set(JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)),
+  "../../store/keychain.json"), "utf8"))
+  .map((entry) => keychainEntry.exec(entry))
+  .filter(Boolean)
+  .map(([, guid, key]) => `${guid}:${key}`))];
 
 export function storefrontRoutes({ tokens, profiles, settings }) {
   const router = express.Router();
@@ -38,11 +49,10 @@ export function storefrontRoutes({ tokens, profiles, settings }) {
   // (numKeysDownloaded, rvn). FMcpKeychainHelper's response handler only accepts a JSON array holding at least one
   // non-empty string; an empty array logs "Unable to parse json, failed download" and fails the login ("Failed to
   // download asset keychain"). Each new entry goes to UFortMcpProfileCommonCore::OnNewDataEncryptionKeyAdded, which splits
-  // it on ':' (exactly two parts), parses the GUID and needs a 32-byte key, and only logs anything malformed. Core hands
-  // out no pak keys, so the list holds one dummy entry: a random GUID that no pak uses (a zero GUID could match
-  // unencrypted paks) with a random 32-byte key. Registering it mounts nothing.
+  // it on ':' (exactly two parts), parses the GUID and needs a 32-byte key, and only logs anything malformed. A key whose
+  // pak isn't installed is kept and mounts nothing.
   router.get("/fortnite/api/storefront/v2/keychain", requireAuth(tokens), (req, res) => {
-    res.json([keychainPlaceholder]);
+    res.json(keychain);
   });
 
   return router;
