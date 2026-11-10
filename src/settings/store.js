@@ -39,6 +39,11 @@ const playlistAssetLtms = ["fiftyFiftyV2", "highExplosivesSolo", "highExplosives
   "fiftyFiftySeason5", "playgroundV2", "flyExplosives", "flyExplosivesSolo", "flyExplosivesDuos",
   "steadyStormSolo", "steadyStormDuos", "steadyStormSquads", "soaring50s", "sniperShootoutV4", "sniperShootoutV4Solo", "sniperShootoutV4Duos",
   "scoreRoyaleSolo", "scoreRoyaleDuos", "scoreRoyaleSquads", "solidGoldSeason5", "solidGoldSeason5Solo", "solidGoldSeason5Duos", "fiftyFiftySolidGold"];
+// The ones on by default (events/ltms.js defaultOn, Core-Backend #314): Season 5's 50v50 and 5.10's to 5.30's Playground,
+// which those builds' shipped lobbies offer. A settings file from before them (matchmakingModesRevision under 1) kept them
+// off only because that was the default, so they are turned on once.
+const defaultOnPlaylistLtms = ["fiftyFiftySeason5", "playgroundV2"];
+export const matchmakingModesRevision = 1;
 // Close Encounters' original date (Core-Backend #258, events/ltms.js): the whole of 25 May 2018, or one hour of it (0 to 23,
 // on the season replay's clock), as Epic ran it.
 export function closeEncountersValue(input, current = { wholeDay: true, hour: 0 }) {
@@ -197,7 +202,7 @@ const defaults = {
     blitzDuo: false,
     // 3.5.1's own playlists (FortPlaylistAthena assets), off too but 50v50 v2, 3.5.1's and 3.5.2's new mode, on there whatever
     // its switch.
-    ...Object.fromEntries(playlistAssetLtms.map((id) => [id, false]))
+    ...Object.fromEntries(playlistAssetLtms.map((id) => [id, defaultOnPlaylistLtms.includes(id)]))
   },
   // The LTMs' original dates (Core-Backend #190, events/ltms.js): on, each runs only in its original window on the
   // season's replay and on the builds Epic ran it on, whatever matchmakingModes says of it.
@@ -234,7 +239,7 @@ export function sanitizeMatchmakingModes(input, current = defaultMatchmakingMode
     sniperShootout: typeof input.sniperShootout === "boolean" ? input.sniperShootout : (current.sniperShootout === true),
     ...Object.fromEntries(["speedyStorm", "takeToTheSkies", "lotsaLoot", "blitz", "fiveByTwenty", "highJump", "useItOrLoseIt", "steadyStorm", "solidGold",
       "skySupply", "shotguns", "blitzSolo", "blitzDuo", ...playlistAssetLtms].map((id) =>
-      [id, typeof input[id] === "boolean" ? input[id] : (current[id] === true)]))
+      [id, typeof input[id] === "boolean" ? input[id] : defaultOnPlaylistLtms.includes(id) ? current[id] !== false : current[id] === true]))
   };
 }
 
@@ -561,6 +566,7 @@ export function createSettingsStore(dataDir) {
     events: JSON.parse(JSON.stringify(defaults.events)),
     battlepass: JSON.parse(JSON.stringify(defaults.battlepass)),
     matchmakingModes: JSON.parse(JSON.stringify(defaults.matchmakingModes)),
+    matchmakingModesRevision,
     serverLimits: JSON.parse(JSON.stringify(defaults.serverLimits)),
     bots: { ...defaults.bots }
   };
@@ -582,7 +588,9 @@ export function createSettingsStore(dataDir) {
       settings.completeBrokenChallenges = loaded.completeBrokenChallenges === true;
       if (loaded.matchmakingModes && typeof loaded.matchmakingModes === "object") {
         settings.matchmakingModes = sanitizeMatchmakingModes(loaded.matchmakingModes, defaults.matchmakingModes);
+        if (!(Number(loaded.matchmakingModesRevision) >= 1)) for (const id of defaultOnPlaylistLtms) settings.matchmakingModes[id] = true;
       }
+      settings.matchmakingModesRevision = matchmakingModesRevision;
       if (loaded.serverLimits && typeof loaded.serverLimits === "object") {
         settings.serverLimits = sanitizeServerLimits(loaded.serverLimits, defaults.serverLimits);
       }

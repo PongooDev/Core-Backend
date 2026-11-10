@@ -122,10 +122,12 @@ test("5.21's modes: Soaring 50's new, Steady Storm from 7 August, Sniper Shootou
 // Original dates on, in its window on Season 5's replay; Soaring 50's always on 5.21. 4.4+ clients' buckets name the
 // playlist (playlist_soaring_50s), which resolves to its id on both builds.
 test("Playground v2, Soaring 50's and Sniper Shootout v4 reach the lobby and their buckets resolve (CoreV2 #357, #359, #360)", () => {
-  assert.deepEqual(ltmPlaylistOverrides(v521, { matchmakingModes: {} }), ["Playlist_Soaring_50s"]);
-  assert.deepEqual(ltmPlaylistOverrides(v521, { matchmakingModes: { playgroundV2: true, sniperShootoutV4: true, sniperShootoutV4Solo: true, sniperShootoutV4Duos: true } }),
+  // Playground v2 and Season 5's 50v50 are on by default (Core-Backend #314).
+  assert.deepEqual(ltmPlaylistOverrides(v521, { matchmakingModes: {} }), ["Playlist_50v50", "Playlist_Playground", "Playlist_Soaring_50s"]);
+  assert.deepEqual(ltmPlaylistOverrides(v521, { matchmakingModes: { playgroundV2: false, fiftyFiftySeason5: false } }), ["Playlist_Soaring_50s"]);
+  assert.deepEqual(ltmPlaylistOverrides(v521, { matchmakingModes: { playgroundV2: true, fiftyFiftySeason5: false, sniperShootoutV4: true, sniperShootoutV4Solo: true, sniperShootoutV4Duos: true } }),
     ["Playlist_Playground", "Playlist_Soaring_50s", "Playlist_Snipers", "Playlist_Snipers_Solo", "Playlist_Snipers_Duos"]);
-  assert.deepEqual(ltmPlaylistOverrides(v510, { matchmakingModes: { playgroundV2: true } }), ["Playlist_Playground", "Playlist_FlyExplosives_Squads"]);
+  assert.deepEqual(ltmPlaylistOverrides(v510, { matchmakingModes: { playgroundV2: true, fiftyFiftySeason5: false } }), ["Playlist_Playground", "Playlist_FlyExplosives_Squads"]);
   for (const [name, id, builds] of [["playlist_soaring_50s", 53, [v521]], ["playlist_snipers", 41, [v521]], ["playlist_snipers_solo", 39, [v521]],
     ["playlist_snipers_duos", 40, [v521]], ["playlist_playground", 35, [v510, v521]]]) {
     for (const build of builds) assert.equal(parseBucket(`${build}:0:NAE:${name}`, build).playlistId, id, `${name} on ${build}`);

@@ -115,7 +115,8 @@ test("5.10's modes: Playground v2 from 25 July with four teams, Fly Explosives n
   assert.equal(hasLtm("flyExplosives", v5100), false);
   for (const build of v510s) {
     assert.equal(ltmOfPlaylist(35, build).id, "playgroundV2");
-    assert.equal(ltmOn("playgroundV2", build, none), false);
+    assert.equal(ltmOn("playgroundV2", build, none), true, "on by default, as its shipped lobby offers it (Core-Backend #314)");
+    assert.equal(ltmOn("playgroundV2", build, { matchmakingModes: { playgroundV2: false } }), false);
     assert.equal(ltmOn("playground", build, { matchmakingModes: { playground: true } }), false, "4.5's Playground ends with 5.0");
     assert.deepEqual(playlistTeamsOf(`${build}:0:NA:35`, build), { maxTeamCount: 4, maxTeamSize: 4, maxSquadSize: 4 });
     assert.equal(ltmOfPlaylist(50, build).id, "fiftyFiftySeason5");
@@ -123,7 +124,7 @@ test("5.10's modes: Playground v2 from 25 July with four teams, Fly Explosives n
   assert.equal(ltmOfPlaylist(35, v50).id, "playground");
   assert.deepEqual(playlistTeamsOf(`${v50}:0:NA:35`, v50), { maxTeamCount: 1, maxTeamSize: 4, maxSquadSize: 4 });
   assert.deepEqual([120, 121, 122].map((id) => playlistTeamsOf(`${v510}:0:NA:${id}`, v510).maxTeamSize), [1, 2, 4]);
-  assert.deepEqual(ltmPlaylistOverrides(v510, { matchmakingModes: { playgroundV2: true, flyExplosivesSolo: true } }),
+  assert.deepEqual(ltmPlaylistOverrides(v510, { matchmakingModes: { playgroundV2: true, fiftyFiftySeason5: false, flyExplosivesSolo: true } }),
     ["Playlist_Playground", "Playlist_FlyExplosives_Squads", "Playlist_FlyExplosives_Solo"]);
   withConfig({ mode: "auto", seasonStarts: { 5: "2018-07-12" } }, () => {
     const dated = { ltmOriginalDates: true, matchmakingModes: {} };

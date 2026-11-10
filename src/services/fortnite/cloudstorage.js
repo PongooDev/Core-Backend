@@ -7,7 +7,7 @@ import { isDedicatedServerToken } from "../../accounts/clients.js";
 import { getBuild } from "../../builds/detect.js";
 import { sendError } from "../../errors.js";
 import { lootHotfixSection } from "../../events/contentupdates.js";
-import { lastSelectedPlaylistOf, ltmForcedQueues, ltmNewMode, ltmPlaylistOverrides } from "../../events/ltms.js";
+import { lastSelectedPlaylistOf, ltmForcedQueues, ltmFrontEndPlaylists, ltmNewMode, ltmPlaylistOverrides } from "../../events/ltms.js";
 import { finalFightRows } from "../../events/finalfight.js";
 import { meteorStrikeRows } from "../../events/meteorstrike.js";
 import { shootingTestGlobals, shootingTestHotfixTables } from "../../events/shootingtest.js";
@@ -71,12 +71,30 @@ const forcedQueueGlobals = (changelist) => ltmForcedQueues(changelist).map((queu
 // 3.5.1 (CL-4000805) has neither setting: its modes are FortPlaylistAthena assets that UFortGameInstance's PlaylistOverrides
 // (Config, {PlaylistName, bEnabled, RegionsDisabled}) turns on (events/ltms.js ltmPlaylistOverrides), one entry a playlist
 // on (🟡: not seen in a running client).
+// From 5.0 the lobby lists FrontEndPlaylistData (events/ltms.js ltmFrontEndPlaylists, Core-Backend #314): the shipped list
+// (the defaults, 50v50 and Playground, all enabled) is cleared and set again, so the lobby offers what the matchmaking
+// ticket takes. The defaults are as shipped; 5.0's PlaylistAccess has bDisplayAsNew where 5.10's on has AdvertiseType.
+const frontEndDefaults = [["Playlist_DefaultDuo", 1], ["Playlist_DefaultSquad", 2], ["Playlist_DefaultSolo", 0]];
+const advertiseTypeBuild = 4225813;
+function frontEndPlaylistLines(changelist) {
+  const playlists = ltmFrontEndPlaylists(changelist);
+  if (!playlists.length) return [];
+  const advertise = (type) => (Number(changelist) >= advertiseTypeBuild ? `AdvertiseType=${type}` : `bDisplayAsNew=${type === "New"}`);
+  const entry = (name, access) => `+FrontEndPlaylistData=(PlaylistName=${name}, PlaylistAccess=(${access}))`;
+  return ["!FrontEndPlaylistData=ClearArray",
+    ...frontEndDefaults.map(([name, priority]) => entry(name, `bEnabled=true, bIsDefaultPlaylist=true, bVisibleWhenDisabled=true, ` +
+      `${advertise("None")}, bDisplayAsLimitedTime=false, DisplayPriority=${priority}`)),
+    ...playlists.map(({ name, enabled, priority, ltm }) => entry(name, `bEnabled=${enabled}, bIsDefaultPlaylist=false, bVisibleWhenDisabled=false, ` +
+      `${advertise(ltm.id === "playgroundV2" ? "Updated" : "None")}, bDisplayAsLimitedTime=true, DisplayPriority=${priority}`))];
+}
+// The FortGameInstance section: the event queues' globals (3.0), the playlist overrides (3.5.1) and the lobby's playlists (5.0).
 function forcedQueueSection(changelist) {
   const queues = ltmForcedQueues(changelist);
   const playlists = ltmPlaylistOverrides(changelist);
-  if (!queues.length && !playlists.length) return "";
+  const frontEnd = frontEndPlaylistLines(changelist);
+  if (!queues.length && !playlists.length && !frontEnd.length) return "";
   return ["[/Script/FortniteGame.FortGameInstance]", ...queues.map((queue) => `!RegionsWithBattleRoyaleEvent${queue}QueueDisabled=ClearArray`),
-    ...playlists.map((name) => `+PlaylistOverrides=(PlaylistName=${name},bEnabled=true)`), ""].join("\r\n");
+    ...playlists.map((name) => `+PlaylistOverrides=(PlaylistName=${name},bEnabled=true)`), ...frontEnd, ""].join("\r\n");
 }
 // The Store tab's V-Bucks packs (Core-Backend #223) buy through the purchase flow, whose page is the game config's
 // [EpicPurchaseFlow] Prod= (services/fortnite/purchase.js; the key is the MCP environment, "Prod" without -epicenv). This

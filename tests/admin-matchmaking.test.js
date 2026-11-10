@@ -32,8 +32,8 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       solidGold: false, skySupply: false, shotguns: false, blitzSolo: false, blitzDuo: false, fiftyFiftyV2: false, highExplosivesSolo: false,
       highExplosivesSquads: false, sniperShootoutSolo: false, sniperShootoutDuos: false, sniperShootoutSquads: false, skySupplyDuos: false,
       skySupplySquads: false, solidGoldSolo: false, impactSolo: false, impactDuos: false, impactSquads: false, infinityGauntlet: false,
-      soloShowdown: false, closeEncounters: false, closeEncountersSolo: false, closeEncountersDuos: false, solidGoldDuos: false, blitzV2: false, sniperShootoutV3: false, teamsOf20V2: false, playground: false, fiftyFiftyV3: false, sniperShootoutV3Solo: false, sniperShootoutV3Duos: false, finalFight: false, finalFightTeams12: false, fiftyFiftySeason5: false,
-      playgroundV2: false, flyExplosives: false, flyExplosivesSolo: false, flyExplosivesDuos: false, steadyStormSolo: false, steadyStormDuos: false,
+      soloShowdown: false, closeEncounters: false, closeEncountersSolo: false, closeEncountersDuos: false, solidGoldDuos: false, blitzV2: false, sniperShootoutV3: false, teamsOf20V2: false, playground: false, fiftyFiftyV3: false, sniperShootoutV3Solo: false, sniperShootoutV3Duos: false, finalFight: false, finalFightTeams12: false, fiftyFiftySeason5: true,
+      playgroundV2: true, flyExplosives: false, flyExplosivesSolo: false, flyExplosivesDuos: false, steadyStormSolo: false, steadyStormDuos: false,
       steadyStormSquads: false, soaring50s: false, sniperShootoutV4: false, sniperShootoutV4Solo: false, sniperShootoutV4Duos: false,
       scoreRoyaleSolo: false, scoreRoyaleDuos: false, scoreRoyaleSquads: false, solidGoldSeason5: false, solidGoldSeason5Solo: false,
       solidGoldSeason5Duos: false, fiftyFiftySolidGold: false });
@@ -182,8 +182,8 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       solidGold: false, skySupply: false, shotguns: false, blitzSolo: false, blitzDuo: false, fiftyFiftyV2: false, highExplosivesSolo: false,
       highExplosivesSquads: false, sniperShootoutSolo: false, sniperShootoutDuos: false, sniperShootoutSquads: false, skySupplyDuos: false,
       skySupplySquads: false, solidGoldSolo: false, impactSolo: false, impactDuos: false, impactSquads: false, infinityGauntlet: false,
-      soloShowdown: false, closeEncounters: false, closeEncountersSolo: false, closeEncountersDuos: false, solidGoldDuos: false, blitzV2: false, sniperShootoutV3: false, teamsOf20V2: false, playground: false, fiftyFiftyV3: false, sniperShootoutV3Solo: false, sniperShootoutV3Duos: false, finalFight: false, finalFightTeams12: false, fiftyFiftySeason5: false,
-      playgroundV2: false, flyExplosives: false, flyExplosivesSolo: false, flyExplosivesDuos: false, steadyStormSolo: false, steadyStormDuos: false,
+      soloShowdown: false, closeEncounters: false, closeEncountersSolo: false, closeEncountersDuos: false, solidGoldDuos: false, blitzV2: false, sniperShootoutV3: false, teamsOf20V2: false, playground: false, fiftyFiftyV3: false, sniperShootoutV3Solo: false, sniperShootoutV3Duos: false, finalFight: false, finalFightTeams12: false, fiftyFiftySeason5: true,
+      playgroundV2: true, flyExplosives: false, flyExplosivesSolo: false, flyExplosivesDuos: false, steadyStormSolo: false, steadyStormDuos: false,
       steadyStormSquads: false, soaring50s: false, sniperShootoutV4: false, sniperShootoutV4Solo: false, sniperShootoutV4Duos: false,
       scoreRoyaleSolo: false, scoreRoyaleDuos: false, scoreRoyaleSquads: false, solidGoldSeason5: false, solidGoldSeason5Solo: false,
       solidGoldSeason5Duos: false, fiftyFiftySolidGold: false });

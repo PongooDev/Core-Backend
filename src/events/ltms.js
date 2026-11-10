@@ -555,11 +555,14 @@ export const ltms = [
   // (events/finalfight.js). By its switch: nothing found dates it (🟡).
   { id: "finalFightTeams12", name: "Final Fight: Teams of 12", playlistId: 103, playlistName: "Playlist_Final_12", eventFlag: null, builds: [build450, build45], seasons: [4],
     teams: "8 Teams × 12", description: "The storm stops after its third circle; when the countdown ends, the team with the most players left wins (Playlist_Final_12)." },
-  // 5.0's Playlist_50v50 (above): by its switch; 5.10's, 5.21's and 5.30's are the same asset.
-  { id: "fiftyFiftySeason5", name: "50v50 (Season 5)", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build500, build530], seasons: [5],
+  // 5.0's Playlist_50v50 (above); 5.10's, 5.21's and 5.30's are the same asset. On by default (Core-Backend #314): every
+  // Season 5 build's shipped DefaultGame.ini enables it in the lobby (FrontEndPlaylistData, ltmFrontEndPlaylists).
+  { id: "fiftyFiftySeason5", name: "50v50 (Season 5)", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build500, build530], seasons: [5], defaultOn: true,
     teams: "2 Teams × 50", description: "Two teams of fifty, a bus each, extra loot; reviving a teammate earns XP (Playlist_50v50, 5.0's)." },
-  // 5.10's Playground (5.21's and 5.30's too) and Fly Explosives (above).
-  { id: "playgroundV2", name: "Playground v2", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build5100, build530], seasons: [5],
+  // 5.10's Playground (5.21's and 5.30's too) and Fly Explosives (above). On by default (Core-Backend #314): 5.10's, 5.21's
+  // and 5.30's shipped DefaultGame.ini enable Playlist_Playground in the lobby (FrontEndPlaylistData, AdvertiseType Updated),
+  // as Epic ran it from 25 July to the season's end.
+  { id: "playgroundV2", name: "Playground v2", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build5100, build530], seasons: [5], defaultOn: true,
     original: [{ builds: [build5100, build530], start: "2018-07-25", end: "2018-09-27" }],
     teams: "4 Teams × 4", description: "Playground again, with team select: up to four players on up to four teams, respawns, 10x resources, golf carts (Playlist_Playground, 5.10's)." },
   { id: "flyExplosives", name: "Fly Explosives (Squads)", playlistId: 122, playlistName: "Playlist_FlyExplosives_Squads", eventFlag: null, builds: [build510, build510], seasons: [5], newIn: build510,
@@ -724,6 +727,25 @@ export const ltmForcedQueues = (build, settingsValue = settingsProvider(), now =
 // DefaultGame.ini hotfix), none before it.
 export const ltmPlaylistOverrides = (build, settingsValue = settingsProvider(), now = new Date()) => (!playlistAssets(build) ? []
   : ltms.filter((ltm) => ltm.playlistName && ltmOn(ltm.id, build, settingsValue, now)).map((ltm) => ltm.playlistName));
+
+// Season 5's lobby (Core-Backend #314): from 5.0 (CL-4204761) the mode select lists UFortGameInstance's FrontEndPlaylistData
+// (Config, {PlaylistName, PlaylistAccess: {bForcePlaylistOff, bEnabled, bVisibleWhenDisabled, bIsDefaultPlaylist,
+// AdvertiseType (5.0: bDisplayAsNew), bDisplayAsLimitedTime, DisplayPriority}, AccessOverrides}), which the shipped
+// DefaultGame.ini of 5.0, 5.10, 5.21 and 5.30 sets to the default Solo, Duo and Squad, Playlist_50v50 and
+// Playlist_Playground, all enabled (read from their paks). So those builds' lobbies offered 50v50 and Playground whatever
+// the admin panel said, and a ticket for one that was off was refused ("We couldn't connect to the match"). The hotfix
+// (services/fortnite/cloudstorage.js) clears the list and sets it again: the defaults as shipped, and each of the build's
+// LTMs enabled while it is on (ltmOn, as the ticket checks it) and hidden while it is off. Each entry: {name, enabled,
+// priority, ltm}.
+export const frontEndPlaylistBuild = build500;
+const shippedPriority = { Playlist_50v50: 10, Playlist_Playground: 15 };
+export function ltmFrontEndPlaylists(build, settingsValue = settingsProvider(), now = new Date()) {
+  if (Number(build) < frontEndPlaylistBuild) return [];
+  const seen = new Set();
+  return ltms.filter((ltm) => ltm.playlistName && hasLtm(ltm.id, build) && !seen.has(ltm.playlistName) && seen.add(ltm.playlistName))
+    .map((ltm, index) => ({ name: ltm.playlistName, enabled: ltmOn(ltm.id, build, settingsValue, now),
+      priority: shippedPriority[ltm.playlistName] ?? 20 + index, ltm }));
+}
 
 // The lobby's EFortAthenaPlaylist of an event queue (UFortGameUserSettings' LastSelectedPlaylist): AthenaEvent1 to 8
 // are 4 to 11, AthenaPlatoon 12 and AthenaEvent21 to 54 13 to 46 (3.2's SDK).

@@ -1617,3 +1617,50 @@ test("a 5.0 player is matched to a registered 5.0 server on either changelist (#
     }
   }
 });
+
+// Core-Backend #314: 5.10's to 5.30's shipped lobbies offer Playground (FrontEndPlaylistData), so it matchmakes by default:
+// a 5.30 party's playlist_playground ticket is taken with the admin panel untouched, and the party gets a 5.30 server of its
+// own, whose AssignMatch keeps the playlist's name for OnGivenMatchAssignment.
+test("5.30's Playground matchmakes by default: the ticket is taken and the party gets a server of its own (#314)", async () => {
+  const build = "4305896";
+  const agent = `Fortnite/++Fortnite+Release-5.30-CL-${build} Windows/10.0.19045.1.256.64bit`;
+  const as = (port, urlPath, token, method = "GET", body) => {
+    const text = body === undefined ? undefined : JSON.stringify(body);
+    const headers = { "User-Agent": agent, Authorization: `bearer ${token}` };
+    if (text !== undefined) Object.assign(headers, { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(text) });
+    return send({ host: "127.0.0.1", port, method, path: urlPath, headers }, text);
+  };
+  const backend = await startBackend({ matchmakingGatherMs: 5000 });
+  const clients = [];
+  try {
+    const server = await userLogin(backend.port, "Server530");
+    const session = (await as(backend.port, "/fortnite/api/matchmaking/session", server.token, "POST", {
+      ownerId: server.accountId, ownerName: "Core", serverName: "Core-1", serverAddress: "127.0.0.1", serverPort: 7777,
+      maxPublicPlayers: 100, maxPrivatePlayers: 0, buildUniqueId: build, attributes: { GAMEMODE_s: "FORTATHENA", REGION_s: "NAE" }
+    })).body;
+    const gameserver = await matchmakingClient(backend.port, authorizationOf((await as(backend.port,
+      `/fortnite/api/game/v2/matchmakingservice/ticket/session/${session.id}?bucketIds=${encodeURIComponent(`${build}:0:NAE:**`)}&minPlayers=1&maxPlayers=100`,
+      server.token)).body));
+    clients.push(gameserver);
+    assert.equal(JSON.parse(await gameserver.next()).name, "Registered");
+    const leader = await userLogin(backend.port, "Pg530Leader");
+    const mate = await userLogin(backend.port, "Pg530Mate");
+    const party = `${leader.accountId},${mate.accountId}`;
+    const started = Date.now();
+    const ticket = await as(backend.port, `/fortnite/api/game/v2/matchmakingservice/ticket/player/${leader.accountId}?partyPlayerIds=${party}` +
+      `&bucketId=${build}:0:NAE:playlist_playground&player.platform=Windows&player.option.fillTeam=false`, leader.token);
+    assert.equal(ticket.status, 200, JSON.stringify(ticket.body));
+    const client = await matchmakingClient(backend.port, authorizationOf(ticket.body));
+    clients.push(client);
+    const assign = await nextOf(gameserver, "AssignMatch");
+    assert.ok(Date.now() - started < 3000, "assigned at once: nobody else joins a Playground match");
+    assert.equal(assign.payload.bucketId, `Fortnite:Fortnite:${build}:0:NAE:playlist_playground`);
+    assert.deepEqual(assign.payload.teams.flat(2), [leader.accountId, mate.accountId]);
+    gameserver.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: assign.payload.matchId, result: "ready" } }));
+    const play = await nextOf(client, "Play");
+    assert.deepEqual([play.payload.matchId, play.payload.sessionId], [assign.payload.matchId, session.id]);
+  } finally {
+    for (const client of clients) client.close();
+    backend.close();
+  }
+});

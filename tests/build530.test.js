@@ -7,7 +7,7 @@ import { seasonName, versionOf } from "../src/builds/detect.js";
 import { cubeStates } from "../src/events/cube.js";
 import { activeEventFlags, birthdayBattleBus, configureEvents, cubeLake, cubeLightning, cubeMoveTo, cubeMoveToLake, cubeRune, cubeStartMove,
   cubeTurnOn, groupMission, hordeFlag, isEventActive, lobbySeason5, passiveStorms, riftCorrupt, roadTrip2018Flag, tomatoRiftEvent } from "../src/events/events.js";
-import { hasLtm, inOriginalWindow, ltmNewMode, ltmOfPlaylist, ltmPlaylistOverrides, playlistIdOfName } from "../src/events/ltms.js";
+import { hasLtm, inOriginalWindow, ltmFrontEndPlaylists, ltmNewMode, ltmOfPlaylist, ltmOn, ltmPlaylistOverrides, playlistIdOfName } from "../src/events/ltms.js";
 import { eventQuestLine } from "../src/events/quests.js";
 import { roadTrip2018, roadTripEventQuests, weeklyHordeQuests, weeklyHordeWeek } from "../src/events/roadtrip2018.js";
 import { athenaCosmetics, athenaSeason } from "../src/gamedata/athena.js";
@@ -17,6 +17,9 @@ import { getQuest } from "../src/gamedata/quests.js";
 import { dataBuild } from "../src/gamedata/read.js";
 import { parseBucket, playlistTeamsOf } from "../src/matchmaking/service.js";
 import { buildOfSeason } from "../src/profiles/seasons.js";
+import { createSettingsStore } from "../src/settings/store.js";
+import os from "node:os";
+import path from "node:path";
 import { eventStoreOffers, eventStorefront, weeklyStorefront } from "../src/store/eventstore.js";
 import { itemShopOffers } from "../src/store/itemshop.js";
 import { hordeId, hordeTheater, hordeWeeklyId, hordeWeeklyTheater } from "../src/world/horde.js";
@@ -113,7 +116,8 @@ test("5.30's Cube on Season 5's replay: the purple crack, the lightning, Kevin, 
 test("5.30's modes: Score Royale new (Solo 101, Duos 102, Squads 103), Solid Gold and 50v50 Solid Gold from 28 August", () => {
   const none = { matchmakingModes: {} };
   assert.equal(ltmNewMode(v530, none).id, "scoreRoyaleSolo");
-  assert.deepEqual(ltmPlaylistOverrides(v530, none), ["Playlist_Score_Solo", "Playlist_Score_Duos", "Playlist_Score_Squads"]);
+  assert.deepEqual(ltmPlaylistOverrides(v530, none), ["Playlist_50v50", "Playlist_Playground", "Playlist_Score_Solo", "Playlist_Score_Duos", "Playlist_Score_Squads"],
+    "Season 5's 50v50 and Playground v2 on by default (#314)");
   assert.deepEqual([101, 102, 103, 27, 26, 34, 1993, 35, 50, 53].map((id) => ltmOfPlaylist(id, v530)?.id),
     ["scoreRoyaleSolo", "scoreRoyaleDuos", "scoreRoyaleSquads", "solidGoldSeason5", "solidGoldSeason5Solo", "solidGoldSeason5Duos",
       "fiftyFiftySolidGold", "playgroundV2", "fiftyFiftySeason5", "soaring50s"]);
@@ -202,4 +206,38 @@ test("5.30's shop: Season 5's history sells 5.30's cosmetics on 5.30 with their 
   assert.ok(musha);
   assert.deepEqual(musha.itemGrants.map(({ templateId }) => templateId), ["AthenaCharacter:cid_198_athena_commando_m_bluesamurai", "AthenaBackpack:bid_098_bluesamuraimale"]);
   assert.ok(!featured(v521).some(({ templateId }) => !c521[templateId]), "5.21 sells none of them");
+});
+
+// Core-Backend #314: Season 5's shipped DefaultGame.ini enables Playlist_50v50 and Playlist_Playground in the lobby
+// (FrontEndPlaylistData), so both are on by default, and the lobby's list is the backend's: what it offers, the ticket takes.
+test("5.0 to 5.30's lobby lists the playlists the matchmaking ticket takes; Playground v2 and Season 5's 50v50 are on by default (#314)", () => {
+  const v510 = "4240749";
+  const v50 = "4214610";
+  const defaults = createSettingsStore(null).get();
+  for (const build of [v510, v521, v530]) {
+    assert.equal(ltmOn("playgroundV2", build, defaults), true, build);
+    assert.equal(ltmOn("fiftyFiftySeason5", build, defaults), true, build);
+    const listed = Object.fromEntries(ltmFrontEndPlaylists(build, defaults).map(({ name, enabled }) => [name, enabled]));
+    assert.equal(listed.Playlist_Playground, true, build);
+    assert.equal(listed.Playlist_50v50, true, build);
+  }
+  // Switched off, it is off in the lobby too, and Playground on 5.0 (Season 4's) is by its switch.
+  const off = { matchmakingModes: { ...defaults.matchmakingModes, playgroundV2: false } };
+  assert.equal(ltmFrontEndPlaylists(v530, off).find(({ name }) => name === "Playlist_Playground").enabled, false);
+  assert.equal(ltmFrontEndPlaylists(v50, defaults).find(({ name }) => name === "Playlist_Playground").enabled, false);
+  assert.deepEqual(ltmFrontEndPlaylists(v45, defaults), [], "4.5's lobby has no FrontEndPlaylistData");
+  const scoreRoyale = ltmFrontEndPlaylists(v530, defaults).filter(({ name }) => name.startsWith("Playlist_Score_"));
+  assert.deepEqual(scoreRoyale.map(({ enabled }) => enabled), [true, true, true], "5.30's new mode is listed");
+  // A settings file from before #314 had them off by default: turned on once; one saved after keeps the admin's choice.
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-backend-314-"));
+  try {
+    fs.writeFileSync(path.join(dataDir, "settings.json"), JSON.stringify({ matchmakingModes: { playgroundV2: false, fiftyFiftySeason5: false } }));
+    const migrated = createSettingsStore(dataDir).get();
+    assert.deepEqual([migrated.matchmakingModes.playgroundV2, migrated.matchmakingModes.fiftyFiftySeason5], [true, true]);
+    fs.writeFileSync(path.join(dataDir, "settings.json"), JSON.stringify({ matchmakingModesRevision: 1, matchmakingModes: { playgroundV2: false } }));
+    const kept = createSettingsStore(dataDir).get();
+    assert.deepEqual([kept.matchmakingModes.playgroundV2, kept.matchmakingModes.fiftyFiftySeason5], [false, true]);
+  } finally {
+    fs.rmSync(dataDir, { recursive: true, force: true });
+  }
 });

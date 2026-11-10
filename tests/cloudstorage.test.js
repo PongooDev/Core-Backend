@@ -243,6 +243,35 @@ test("the system hotfix keeps stats answers for a minute from 1.8.1 on, and for 
   }
 });
 
+// Core-Backend #314: from 5.0 the lobby lists FrontEndPlaylistData, whose shipped list enables 50v50 and Playground. The
+// hotfix sets the list again from the matchmaking modes, so the lobby offers only what the ticket takes.
+test("the system hotfix sets Season 5's lobby playlists (FrontEndPlaylistData) from the matchmaking modes (#314)", async () => {
+  const backend = await startBackend();
+  try {
+    const token = await clientToken(backend.port);
+    const frontEnd = async (build) => {
+      const agent = `game=Fortnite, engine=UE4, build=${build}`;
+      const download = await raw(backend.port, "GET", "/fortnite/api/cloudstorage/system/DefaultGame.ini", token, undefined, agent);
+      return download.body.toString("utf8").split("\r\n").filter((line) => line.includes("FrontEndPlaylistData"));
+    };
+    const playground = (lines) => lines.find((line) => line.includes("PlaylistName=Playlist_Playground,"));
+    const v530 = await frontEnd("++Fortnite+Release-5.30-CL-4305896");
+    assert.equal(v530[0], "!FrontEndPlaylistData=ClearArray");
+    assert.ok(v530.includes("+FrontEndPlaylistData=(PlaylistName=Playlist_DefaultSolo, PlaylistAccess=(bEnabled=true, bIsDefaultPlaylist=true, " +
+      "bVisibleWhenDisabled=true, AdvertiseType=None, bDisplayAsLimitedTime=false, DisplayPriority=0))"));
+    assert.equal(playground(v530), "+FrontEndPlaylistData=(PlaylistName=Playlist_Playground, PlaylistAccess=(bEnabled=true, bIsDefaultPlaylist=false, " +
+      "bVisibleWhenDisabled=false, AdvertiseType=Updated, bDisplayAsLimitedTime=true, DisplayPriority=15))");
+    // 5.0's Playground (Season 4's) is off by default; its PlaylistAccess has bDisplayAsNew, not AdvertiseType.
+    assert.match(playground(await frontEnd("++Fortnite+Release-5.0-CL-4214610")), /bEnabled=false, .*bDisplayAsNew=false,/);
+    assert.deepEqual(await frontEnd("++Fortnite+Release-4.5-CL-4166199"), [], "4.5 has no FrontEndPlaylistData");
+    // Switched off, the lobby hides it.
+    await post(backend.port, "/admin/api/matchmaking/config", undefined, { modes: { playgroundV2: false } });
+    assert.match(playground(await frontEnd("++Fortnite+Release-5.30-CL-4305896")), /PlaylistAccess=\(bEnabled=false,/);
+  } finally {
+    backend.close();
+  }
+});
+
 // Core-Backend #186: from 2.4 (CL-3858292) the lobby's Custom Matchmaking Key shows, and the ticket carries the key, only
 // with UFortMatchmakingV2's bCustomKeyEnabled.
 test("the system hotfix turns on the custom matchmaking key from 2.4 on (#186)", async () => {
