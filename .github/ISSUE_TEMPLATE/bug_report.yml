@@ -38,6 +38,7 @@ body:
         - "4.4.2"
         - "4.5"
         - "5.0"
+        - "5.10"
         - Not about a build (admin panel, launcher sign-in...)
         - Other (say which below)
     validations:
