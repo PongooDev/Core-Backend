@@ -10,7 +10,7 @@ dotnet run -c Release --project tools/extractor -- "<build folder with FortniteG
 The engine version and changelist come from the build's `Engine/Build/Build.version`. A build that ships without one
 (1.10, CL 3790078) takes them as a fourth argument, after the output folder, in its User-Agent's form:
 `4.19.0-3790078+++Fortnite+Release-Cert`. UE 4.16, 4.19, 4.20 (2.5, CL 3889387, the first 4.20 build) and 4.21 (5.0, CL 4214610, the
-first 4.21 build) are mapped. 4.19 writes soft references with their
+first 4.21 build; 5.10, CL 4240749) are mapped. 4.19 writes soft references with their
 object name (`/Game/Path/Asset.Asset`); zone themes' tile classes and mission generators' primary missions are kept as
 packages, as 4.16 writes them, so overlays only hold the builds' own differences.
 
@@ -154,7 +154,15 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   neither bundle property and their seasons no SeasonGrantsToEveryone; AthenaSeason4 already names
   TokensToRemoveAtSeasonEnd (its schedules), so a fresh 4.x extraction adds `removedAtSeasonEnd` to the committed 4.x
   overlays, which predate it (the schedules it names are the ones its tier rewards give, so nothing reads it differently). The earlier 5.0, CL-4204761, isn't extracted (Core has
-  no copy of its paks) and plays on CL-4214610's data. Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
+  no copy of its paks) and plays on CL-4214610's data. 5.10's (CL-4240749, UE 4.21, Content Update v5.10's build) is
+  `4.21.0-4240749+++Fortnite+Release-5.10` (the exe's own build string is ++Fortnite+Release-5.10-CL-4240749; no
+  `Build.version`) with 5.0's full data (Cert's files with `gamedata/4214610` applied) as the fifth argument, for the same
+  reason, and the main key FModel's settings hold for its build folder (its eight paks, a Battle Royale only archive). One
+  extractor change: a challenge schedule naming the event flag it runs with (`EventName`: 5.10's Schedule_Birthday2018_BR,
+  EventFlag.Anniversary2018_BR, which no tier gives) carries it as `eventName`, and such event schedules are written with
+  the season's, with their bundles. Earlier builds' committed overlays have none. The earlier 5.10, CL-4225813, isn't
+  extracted (Core has no copy of its paks; Core-ServerAssets' pak for it is CL-4240749's, byte for byte) and plays on
+  CL-4240749's data. Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):
   `slotLoadouts` (AlterationSlotsLoadouts: each loadout's slots, their unlock level and rarity, slot definition,

@@ -449,7 +449,9 @@ const tileOf = (tile) => {
 // Vanguard's Dark Void, Leviathan's Fish Tank, Tricera Ops' Hatchling and Tomatohead's Special Delivery, and Royale Flags
 // (BID_040_Wukong, "bundled_with Wukong", from 28 March 2018) with 2.5's Wukong, on builds whose data has the back bling.
 // 3.6 (CL-4019403) adds Steelsight's Steelcast (BID_044_Robo) and Brite Gunner's Brite Bag (BID_026_Brite, in the data
-// since Season 2), as the wiki's pages name them.
+// since Season 2), as the wiki's pages name them. 5.10 (CL-4240749) adds Reef Ranger's Air Tank, Wreck Raider's Diving
+// Tank, Sun Tan Specialist's Rescue Ring, Maverick's Bat Attitude and Archetype's Paradigm, as the wiki's pages name them;
+// Shade's Ballistic is not in 5.10's paks.
 export const bundledBackBlings = {
   "AthenaCharacter:cid_093_athena_commando_m_dinosaur": "AthenaBackpack:bid_031_dinosaur",
   "AthenaCharacter:cid_097_athena_commando_f_rockerpunk": "AthenaBackpack:bid_034_rockerpunk",
@@ -463,7 +465,12 @@ export const bundledBackBlings = {
   "AthenaCharacter:cid_109_athena_commando_m_pizza": "AthenaBackpack:bid_043_pizza",
   "AthenaCharacter:cid_071_athena_commando_m_wukong": "AthenaBackpack:bid_040_wukong",
   "AthenaCharacter:cid_111_athena_commando_f_robo": "AthenaBackpack:bid_044_robo",
-  "AthenaCharacter:cid_112_athena_commando_m_brite": "AthenaBackpack:bid_026_brite"
+  "AthenaCharacter:cid_112_athena_commando_m_brite": "AthenaBackpack:bid_026_brite",
+  "AthenaCharacter:cid_179_athena_commando_f_scuba": "AthenaBackpack:bid_082_scubafemale",
+  "AthenaCharacter:cid_180_athena_commando_m_scuba": "AthenaBackpack:bid_081_scubamale",
+  "AthenaCharacter:cid_176_athena_commando_m_lifeguard": "AthenaBackpack:bid_083_lifeguardmale",
+  "AthenaCharacter:cid_177_athena_commando_m_streetracercobra": "AthenaBackpack:bid_080_streetracercobramale",
+  "AthenaCharacter:cid_182_athena_commando_m_modernmilitary": "AthenaBackpack:bid_085_modernmilitary"
 };
 
 // The day's offers by storefront, those the requesting build has the cosmetic for. Never a cosmetic the shop doesn't sell

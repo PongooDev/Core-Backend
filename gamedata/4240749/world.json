@@ -1,0 +1,1763 @@
+{
+  "difficulties": {
+    "Theater_Horde_Twine_High": null,
+    "Theater_Horde_Twine_Low": null,
+    "Theater_Horde_Twine_Medium": null,
+    "Theater_Horde_Twine_VeryHigh": null,
+    "Theater_Horde_Twine_VeryLow": null,
+    "Theater_Hard_Group_Zone1": {
+      "difficulty": 22,
+      "lootTierGroup": "Mission_Select_Group_T11",
+      "recommendedRating": 46,
+      "threat": "46 - 4 Players"
+    },
+    "Theater_Hard_Group_Zone2": {
+      "difficulty": 24,
+      "lootTierGroup": "Mission_Select_Group_T12",
+      "recommendedRating": 52,
+      "threat": "52 - 4 Players"
+    },
+    "Theater_Hard_Group_Zone3": {
+      "difficulty": 26,
+      "lootTierGroup": "Mission_Select_Group_T13",
+      "recommendedRating": 58,
+      "threat": "58 - 4 Players"
+    },
+    "Theater_Hard_Group_Zone4": {
+      "difficulty": 28,
+      "lootTierGroup": "Mission_Select_Group_T14",
+      "recommendedRating": 64,
+      "threat": "64 - 4 Players"
+    },
+    "Theater_Hard_Group_Zone5": {
+      "difficulty": 30,
+      "lootTierGroup": "Mission_Select_Group_T15",
+      "recommendedRating": 70,
+      "threat": "70 - 4 Players"
+    },
+    "Theater_Horde_Final": {
+      "difficulty": 32,
+      "lootTierGroup": "HordeBash_Final",
+      "recommendedRating": 76,
+      "threat": "76+ - 4 Players"
+    },
+    "Theater_Horde_Plankerton_High": {
+      "lootTierGroup": "HordeBash_Plankerton_High",
+      "threat": "34 - 4 Players"
+    },
+    "Theater_Horde_Plankerton_Low": {
+      "lootTierGroup": "HordeBash_Plankerton_Low",
+      "threat": "23 - 4 Players"
+    },
+    "Theater_Horde_Plankerton_Medium": {
+      "lootTierGroup": "HordeBash_Plankerton_Medium",
+      "threat": "28 - 4 Players"
+    },
+    "Theater_Horde_Plankerton_VeryHigh": {
+      "lootTierGroup": "HordeBash_Plankerton_VeryHigh",
+      "threat": "40 - 4 Players"
+    },
+    "Theater_Horde_Plankerton_VeryLow": {
+      "lootTierGroup": "HordeBash_Plankerton_VeryLow",
+      "threat": "19 - 4 Players"
+    },
+    "Theater_Horde_Stonewood_High": {
+      "lootTierGroup": "HordeBash_Stonewood_High",
+      "threat": "9 - 4 Players"
+    },
+    "Theater_Horde_Stonewood_Low": {
+      "lootTierGroup": "HordeBash_Stonewood_Low",
+      "threat": "3 - 4 Players"
+    },
+    "Theater_Horde_Stonewood_Medium": {
+      "lootTierGroup": "HordeBash_Stonewood_Medium",
+      "threat": "5 - 4 Players"
+    },
+    "Theater_Horde_Stonewood_VeryHigh": {
+      "lootTierGroup": "HordeBash_Stonewood_VeryHigh",
+      "threat": "15 - 4 Players"
+    },
+    "Theater_Horde_Stonewood_VeryLow": {
+      "lootTierGroup": "HordeBash_Stonewood_VeryLow",
+      "threat": "1 - 4 Players"
+    },
+    "Theater_Horde_Uncanny_High": {
+      "lootTierGroup": "HordeBash_Canny_High",
+      "threat": "64 - 4 Players"
+    },
+    "Theater_Horde_Uncanny_Low": {
+      "lootTierGroup": "HordeBash_Canny_Low",
+      "threat": "52 - 4 Players"
+    },
+    "Theater_Horde_Uncanny_Medium": {
+      "lootTierGroup": "HordeBash_Canny_Medium",
+      "threat": "58 - 4 Players"
+    },
+    "Theater_Horde_Uncanny_VeryHigh": {
+      "lootTierGroup": "HordeBash_Canny_VeryHigh",
+      "threat": "70 - 4 Players"
+    },
+    "Theater_Horde_Uncanny_VeryLow": {
+      "lootTierGroup": "HordeBash_Canny_VeryLow",
+      "threat": "46 - 4 Players"
+    },
+    "Theater_Nightmare_Group_Zone1": {
+      "difficulty": 32,
+      "lootTierGroup": "Mission_Select_Group_T16",
+      "recommendedRating": 76,
+      "threat": "76 - 4 Players"
+    },
+    "Theater_Nightmare_Group_Zone2": {
+      "difficulty": 34,
+      "lootTierGroup": "Mission_Select_Group_T17",
+      "recommendedRating": 82,
+      "threat": "82 - 4 Players"
+    },
+    "Theater_Nightmare_Group_Zone3": {
+      "difficulty": 36,
+      "lootTierGroup": "Mission_Select_Group_T18",
+      "recommendedRating": 88,
+      "threat": "88 - 4 Players"
+    },
+    "Theater_Nightmare_Group_Zone4": {
+      "difficulty": 38,
+      "lootTierGroup": "Mission_Select_Group_T19",
+      "recommendedRating": 94,
+      "threat": "94 - 4 Players"
+    },
+    "Theater_Nightmare_Group_Zone5": {
+      "difficulty": 40,
+      "lootTierGroup": "Mission_Select_Group_T20",
+      "recommendedRating": 100,
+      "threat": "100 - 4 Players"
+    },
+    "Theater_Nightmare_Outpost10": {
+      "recommendedRating": 128,
+      "threat": "128"
+    },
+    "Theater_Nightmare_Outpost9": {
+      "recommendedRating": 126,
+      "threat": "126"
+    },
+    "Theater_Normal_Group_Zone1": {
+      "difficulty": 12,
+      "lootTierGroup": "Mission_Select_Group_T06",
+      "recommendedRating": 19,
+      "threat": "19 - 4 Players"
+    },
+    "Theater_Normal_Group_Zone2": {
+      "difficulty": 14,
+      "lootTierGroup": "Mission_Select_Group_T07",
+      "recommendedRating": 23,
+      "threat": "23 - 4 Players"
+    },
+    "Theater_Normal_Group_Zone3": {
+      "difficulty": 16,
+      "lootTierGroup": "Mission_Select_Group_T08",
+      "recommendedRating": 28,
+      "threat": "28 - 4 Players"
+    },
+    "Theater_Normal_Group_Zone4": {
+      "difficulty": 18,
+      "lootTierGroup": "Mission_Select_Group_T09",
+      "recommendedRating": 34,
+      "threat": "34 - 4 Players"
+    },
+    "Theater_Normal_Group_Zone5": {
+      "difficulty": 20,
+      "lootTierGroup": "Mission_Select_Group_T10",
+      "recommendedRating": 40,
+      "threat": "40 - 4 Players"
+    },
+    "Theater_Start_Group_Zone1": {
+      "difficulty": 1,
+      "lootTierGroup": "Mission_Select_Group_T01",
+      "recommendedRating": 1,
+      "threat": "1 - 4 Players"
+    },
+    "Theater_Start_Group_Zone2": {
+      "difficulty": 3,
+      "lootTierGroup": "Mission_Select_Group_T02",
+      "recommendedRating": 3,
+      "threat": "3 - 4 Players"
+    },
+    "Theater_Start_Group_Zone3": {
+      "difficulty": 5,
+      "lootTierGroup": "Mission_Select_Group_T03",
+      "recommendedRating": 5,
+      "threat": "5 - 4 Players"
+    },
+    "Theater_Start_Group_Zone4": {
+      "difficulty": 7,
+      "lootTierGroup": "Mission_Select_Group_T04",
+      "recommendedRating": 9,
+      "threat": "9 - 4 Players"
+    },
+    "Theater_Start_Group_Zone5": {
+      "difficulty": 10,
+      "lootTierGroup": "Mission_Select_Group_T05",
+      "recommendedRating": 15,
+      "threat": "15 - 4 Players"
+    },
+    "Theater_Survival_Hard_Zone5": {
+      "difficulty": 30,
+      "lootTierGroup": "Mission_Select_Survival_T03",
+      "recommendedRating": 70,
+      "threat": "70 - 4 Players"
+    },
+    "Theater_Survival_Normal_Zone5": {
+      "difficulty": 20,
+      "lootTierGroup": "Mission_Select_Survival_T02",
+      "recommendedRating": 40,
+      "threat": "40 - 4 Players"
+    },
+    "Theater_Survival_Start_Zone5": {
+      "difficulty": 10,
+      "lootTierGroup": "Mission_Select_Survival_T01",
+      "recommendedRating": 15,
+      "threat": "15 - 4 Players"
+    }
+  },
+  "globeSockets": [
+    "Creative_Manor",
+    "Creative_ManorCustomization",
+    "Onboarding_Farmstead",
+    "Onboarding_Gate",
+    "PvE_01",
+    "PvE_02",
+    "PvE_03",
+    "PvE_04",
+    "PvP_01",
+    "PvP_02",
+    "Survival_Mode",
+    "TEST_Combat",
+    "TEST_ElderProto",
+    "TEST_FastCook",
+    "TEST_PerfMem",
+    "TEST_PvE_01",
+    "TEST_PvE_02",
+    "TEST_PvP_01",
+    "TEST_StonewoodV2",
+    "TestChinaPvP_Other",
+    "TestChinaPvP_WT"
+  ],
+  "mapPins": [
+    "/Game/Environments/WorldMap/Blueprints/WM_PinEasy.WM_PinEasy_C",
+    "/Game/Environments/WorldMap/Blueprints/WM_PinHard.WM_PinHard_C",
+    "/Game/Environments/WorldMap/Blueprints/WM_PinHorde.WM_PinHorde_C",
+    "/Game/Environments/WorldMap/Blueprints/WM_PinMedium.WM_PinMedium_C",
+    "/Game/Environments/WorldMap/Blueprints/WM_Pin_Master.WM_Pin_Master_C",
+    "/Game/Environments/WorldMap/Blueprints/WM_Pin_Round.WM_Pin_Round_C"
+  ],
+  "missionAlertCategories": {
+    "ElemementalZoneFireCategory": {
+      "category": "ElemementalZoneFireCategory",
+      "quota": 2,
+      "repeatable": false
+    },
+    "ElemementalZoneNatureCategory": {
+      "category": "ElemementalZoneNatureCategory",
+      "quota": 2,
+      "repeatable": false
+    },
+    "ElemementalZoneWaterCategory": {
+      "category": "ElemementalZoneWaterCategory",
+      "quota": 2,
+      "repeatable": false
+    },
+    "GeneralCategory": {
+      "category": "GeneralCategory",
+      "quota": 3,
+      "repeatable": false
+    },
+    "GroupMissionCategory": {
+      "category": "GroupMissionCategory",
+      "quota": 10,
+      "repeatable": true
+    },
+    "HalloweenCategory": {
+      "category": "HalloweenCategory",
+      "quota": 10,
+      "repeatable": true
+    },
+    "HordeCategory": {
+      "category": "HordeCategory",
+      "quota": 10,
+      "repeatable": true
+    },
+    "MiniBossCategory": {
+      "category": "MiniBossCategory",
+      "quota": 10,
+      "repeatable": false
+    },
+    "StormCategory": {
+      "category": "StormCategory",
+      "quota": 10,
+      "repeatable": false
+    },
+    "StormLowCategory": {
+      "category": "StormLowCategory",
+      "quota": 4,
+      "repeatable": false
+    },
+    "Survival3DayCategory": {
+      "category": "Survival3DayCategory",
+      "quota": 3,
+      "repeatable": true
+    },
+    "Survival7DayCategory": {
+      "category": "Survival7DayCategory",
+      "quota": 1,
+      "repeatable": true
+    }
+  },
+  "missionAlertSpreads": {
+    "CannyStormSpread": {
+      "chanceToSpread": 0.66,
+      "maxNumTilesToSpreadTo": 2,
+      "missionAlertRowName": "MissionAlert_StormCategory_03",
+      "spreadInterval": 30,
+      "totalChancesToSpread": 3
+    },
+    "PlankertonStormSpread": {
+      "chanceToSpread": 0.5,
+      "maxNumTilesToSpreadTo": 2,
+      "missionAlertRowName": "MissionAlert_StormCategory_02",
+      "spreadInterval": 45,
+      "totalChancesToSpread": 3
+    },
+    "StonewoordStormSpread": {
+      "chanceToSpread": 0.25,
+      "maxNumTilesToSpreadTo": 1,
+      "missionAlertRowName": "MissionAlert_StormCategory_01",
+      "spreadInterval": 60,
+      "totalChancesToSpread": 3
+    },
+    "TwineStormSpread": {
+      "chanceToSpread": 0.75,
+      "maxNumTilesToSpreadTo": 2,
+      "missionAlertRowName": "MissionAlert_StormCategory_04",
+      "spreadInterval": 30,
+      "totalChancesToSpread": 3
+    }
+  },
+  "missionAlerts": [
+    {
+      "category": "GeneralCategory",
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_Proto_01",
+      "maximumDifficulty": 11,
+      "minimumDifficulty": 5,
+      "missionGenerator": "",
+      "modifierTierGroup": "MinibossTG.EnablePrimaryMission",
+      "name": "MissionAlert_GeneralCategory_01",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "EventFlag.PassiveMiniBosses",
+      "spreadRowName": "",
+      "zoneThemes": []
+    },
+    {
+      "category": "GeneralCategory",
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_Proto_02",
+      "maximumDifficulty": 21,
+      "minimumDifficulty": 12,
+      "missionGenerator": "",
+      "modifierTierGroup": "MinibossTG.EnablePrimaryMission",
+      "name": "MissionAlert_GeneralCategory_02",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "EventFlag.PassiveMiniBosses",
+      "spreadRowName": "",
+      "zoneThemes": []
+    },
+    {
+      "category": "GeneralCategory",
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_Proto_03",
+      "maximumDifficulty": 31,
+      "minimumDifficulty": 22,
+      "missionGenerator": "",
+      "modifierTierGroup": "MinibossTG.EnablePrimaryMission",
+      "name": "MissionAlert_GeneralCategory_03",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "EventFlag.PassiveMiniBosses",
+      "spreadRowName": "",
+      "zoneThemes": []
+    },
+    {
+      "category": "GeneralCategory",
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_Proto_04",
+      "maximumDifficulty": 50,
+      "minimumDifficulty": 32,
+      "missionGenerator": "",
+      "modifierTierGroup": "MinibossTG.EnablePrimaryMission",
+      "name": "MissionAlert_GeneralCategory_04",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "EventFlag.PassiveMiniBosses",
+      "spreadRowName": "",
+      "zoneThemes": []
+    },
+    {
+      "category": "StormCategory",
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_Storm",
+      "maximumDifficulty": 11,
+      "minimumDifficulty": 5,
+      "missionGenerator": "",
+      "modifierTierGroup": "STMZ.ZoneMods_Stonewood",
+      "name": "MissionAlert_StormCategory_01",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "EventFlag.ActiveStorms",
+      "spreadRowName": "",
+      "zoneThemes": []
+    },
+    {
+      "category": "StormCategory",
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_Storm",
+      "maximumDifficulty": 21,
+      "minimumDifficulty": 12,
+      "missionGenerator": "",
+      "modifierTierGroup": "STMZ.ZoneMods_Plankerton",
+      "name": "MissionAlert_StormCategory_02",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "EventFlag.ActiveStorms",
+      "spreadRowName": "",
+      "zoneThemes": []
+    },
+    {
+      "category": "StormCategory",
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_Storm",
+      "maximumDifficulty": 31,
+      "minimumDifficulty": 22,
+      "missionGenerator": "",
+      "modifierTierGroup": "STMZ.ZoneMods_CanneyValley",
+      "name": "MissionAlert_StormCategory_03",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "EventFlag.ActiveStorms",
+      "spreadRowName": "",
+      "zoneThemes": []
+    },
+    {
+      "category": "StormCategory",
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_Storm",
+      "maximumDifficulty": 50,
+      "minimumDifficulty": 32,
+      "missionGenerator": "",
+      "modifierTierGroup": "STMZ.ZoneMods_TwinePeaks",
+      "name": "MissionAlert_StormCategory_04",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "EventFlag.ActiveStorms",
+      "spreadRowName": "",
+      "zoneThemes": []
+    },
+    {
+      "category": "StormLowCategory",
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_StormLow",
+      "maximumDifficulty": 11,
+      "minimumDifficulty": 5,
+      "missionGenerator": "",
+      "modifierTierGroup": "STMZ.ZoneMods_Stonewood",
+      "name": "MissionAlert_StormLowCategory_01",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "EventFlag.PassiveStorms",
+      "spreadRowName": "",
+      "zoneThemes": []
+    },
+    {
+      "category": "StormLowCategory",
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_StormLow",
+      "maximumDifficulty": 21,
+      "minimumDifficulty": 12,
+      "missionGenerator": "",
+      "modifierTierGroup": "STMZ.ZoneMods_Plankerton",
+      "name": "MissionAlert_StormLowCategory_02",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "EventFlag.PassiveStorms",
+      "spreadRowName": "",
+      "zoneThemes": []
+    },
+    {
+      "category": "StormLowCategory",
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_StormLow",
+      "maximumDifficulty": 31,
+      "minimumDifficulty": 22,
+      "missionGenerator": "",
+      "modifierTierGroup": "STMZ.ZoneMods_CanneyValley",
+      "name": "MissionAlert_StormLowCategory_03",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "EventFlag.PassiveStorms",
+      "spreadRowName": "",
+      "zoneThemes": []
+    },
+    {
+      "category": "StormLowCategory",
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_StormLow",
+      "maximumDifficulty": 50,
+      "minimumDifficulty": 32,
+      "missionGenerator": "",
+      "modifierTierGroup": "STMZ.ZoneMods_TwinePeaks",
+      "name": "MissionAlert_StormLowCategory_04",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "EventFlag.PassiveStorms",
+      "spreadRowName": "",
+      "zoneThemes": []
+    },
+    {
+      "category": "HordeCategory",
+      "lootTier": 0,
+      "lootTierGroup": "HordeBash_MissionAlert",
+      "maximumDifficulty": 50,
+      "minimumDifficulty": 1,
+      "missionGenerator": "",
+      "modifierTierGroup": "",
+      "name": "MissionAlert_HordeCategory_01",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "EventFlag.Horde",
+      "spreadRowName": "",
+      "zoneThemes": []
+    },
+    {
+      "category": "HalloweenCategory",
+      "lootTier": 0,
+      "lootTierGroup": "Halloween2017_MissionAlert",
+      "maximumDifficulty": 50,
+      "minimumDifficulty": 1,
+      "missionGenerator": "",
+      "modifierTierGroup": "",
+      "name": "MissionAlert_HalloweenCategory_01",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "EventFlag.Fortnitemares",
+      "spreadRowName": "",
+      "zoneThemes": []
+    },
+    {
+      "category": "MiniBossCategory",
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_MiniBoss",
+      "maximumDifficulty": 11,
+      "minimumDifficulty": 5,
+      "missionGenerator": "",
+      "modifierTierGroup": "MinibossTG.EnablePrimaryMission",
+      "name": "MissionAlert_MiniBossCategory_01",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "EventFlag.ActiveMiniBosses",
+      "spreadRowName": "",
+      "zoneThemes": []
+    },
+    {
+      "category": "MiniBossCategory",
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_MiniBoss",
+      "maximumDifficulty": 21,
+      "minimumDifficulty": 12,
+      "missionGenerator": "",
+      "modifierTierGroup": "MinibossTG.EnablePrimaryMission",
+      "name": "MissionAlert_MiniBossCategory_02",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "EventFlag.ActiveMiniBosses",
+      "spreadRowName": "",
+      "zoneThemes": []
+    },
+    {
+      "category": "MiniBossCategory",
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_MiniBoss",
+      "maximumDifficulty": 31,
+      "minimumDifficulty": 22,
+      "missionGenerator": "",
+      "modifierTierGroup": "MinibossTG.EnablePrimaryMission",
+      "name": "MissionAlert_MiniBossCategory_03",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "EventFlag.ActiveMiniBosses",
+      "spreadRowName": "",
+      "zoneThemes": []
+    },
+    {
+      "category": "MiniBossCategory",
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_MiniBoss",
+      "maximumDifficulty": 50,
+      "minimumDifficulty": 32,
+      "missionGenerator": "",
+      "modifierTierGroup": "MinibossTG.EnablePrimaryMission",
+      "name": "MissionAlert_MiniBossCategory_04",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "EventFlag.ActiveMiniBosses",
+      "spreadRowName": "",
+      "zoneThemes": []
+    },
+    {
+      "category": "Survival3DayCategory",
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_Survival3Day",
+      "maximumDifficulty": 50,
+      "minimumDifficulty": 1,
+      "missionGenerator": "",
+      "modifierTierGroup": "",
+      "name": "MissionAlert_Survival3DayCategory_01",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "EventFlag.SurviveTheStorm",
+      "spreadRowName": "",
+      "zoneThemes": []
+    },
+    {
+      "category": "Survival7DayCategory",
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_Survival7Day",
+      "maximumDifficulty": 50,
+      "minimumDifficulty": 1,
+      "missionGenerator": "",
+      "modifierTierGroup": "",
+      "name": "MissionAlert_Survival7DayCategory_01",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "EventFlag.SurviveTheStorm",
+      "spreadRowName": "",
+      "zoneThemes": []
+    },
+    {
+      "category": "GroupMissionCategory",
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_GroupMission",
+      "maximumDifficulty": 11,
+      "minimumDifficulty": 5,
+      "missionGenerator": "",
+      "modifierTierGroup": "",
+      "name": "MissionAlert_GroupMissionCategory_01",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "EventFlag.GroupMission",
+      "spreadRowName": "",
+      "zoneThemes": []
+    },
+    {
+      "category": "GroupMissionCategory",
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_GroupMission",
+      "maximumDifficulty": 21,
+      "minimumDifficulty": 12,
+      "missionGenerator": "",
+      "modifierTierGroup": "",
+      "name": "MissionAlert_GroupMissionCategory_02",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "EventFlag.GroupMission",
+      "spreadRowName": "",
+      "zoneThemes": []
+    },
+    {
+      "category": "GroupMissionCategory",
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_GroupMission",
+      "maximumDifficulty": 31,
+      "minimumDifficulty": 22,
+      "missionGenerator": "",
+      "modifierTierGroup": "",
+      "name": "MissionAlert_GroupMissionCategory_03",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "EventFlag.GroupMission",
+      "spreadRowName": "",
+      "zoneThemes": []
+    },
+    {
+      "category": "GroupMissionCategory",
+      "lootTier": 0,
+      "lootTierGroup": "MissionAlert_GroupMission",
+      "maximumDifficulty": 50,
+      "minimumDifficulty": 32,
+      "missionGenerator": "",
+      "modifierTierGroup": "",
+      "name": "MissionAlert_GroupMissionCategory_04",
+      "onlyUsedForSpreading": false,
+      "requiredEventFlag": "EventFlag.GroupMission",
+      "spreadRowName": "",
+      "zoneThemes": []
+    }
+  ],
+  "missionGenerators": {
+    "/Game/World/MissionGens/Athena/MissionGen_Athena.MissionGen_Athena_C": {
+      "parent": "FortMissionGenerator"
+    },
+    "/Game/World/MissionGens/Athena/MissionGen_AthenaDuo.MissionGen_AthenaDuo_C": {
+      "parent": "FortMissionGenerator"
+    },
+    "/Game/World/MissionGens/Athena/MissionGen_AthenaEvent50.MissionGen_AthenaEvent50_C": {
+      "parent": "FortMissionGenerator"
+    },
+    "/Game/World/MissionGens/Athena/MissionGen_AthenaSquad.MissionGen_AthenaSquad_C": {
+      "parent": "FortMissionGenerator"
+    },
+    "/Game/World/MissionGens/CannyValley/CV_Landmarks/MissionGen_BuildTheMemorial.MissionGen_BuildTheMemorial_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/CannyValleyLandmarks/BuildTheMonument/CV_Landmark_BuildTheMemorial"
+    },
+    "/Game/World/MissionGens/CannyValley/CV_Landmarks/MissionGen_FightTheGunslinger.MissionGen_FightTheGunslinger_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/CannyValleyLandmarks/FightTheGunslinger/CV_Landmark_FightTheGunslinger"
+    },
+    "/Game/World/MissionGens/CannyValley/CV_Landmarks/MissionGen_HitTheRoad.MissionGen_HitTheRoad_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/CannyValleyLandmarks/HitTheRoad/CV_Landmark_HitTheRoad"
+    },
+    "/Game/World/MissionGens/CannyValley/MissionGen_T3_R5_1Gate.MissionGen_T3_R5_1Gate_C": {
+      "parent": "MissionGen_T2_1Gate_C"
+    },
+    "/Game/World/MissionGens/CannyValley/MissionGen_T3_R5_2Gates.MissionGen_T3_R5_2Gates_C": {
+      "parent": "MissionGen_T2_2Gates_C"
+    },
+    "/Game/World/MissionGens/CannyValley/MissionGen_T3_R5_3Gates.MissionGen_T3_R5_3Gates_C": {
+      "parent": "MissionGen_T2_3Gates_C"
+    },
+    "/Game/World/MissionGens/CannyValley/MissionGen_T3_R5_4Gates.MissionGen_T3_R5_4Gates_C": {
+      "parent": "MissionGen_T2_4Gates_C"
+    },
+    "/Game/World/MissionGens/CannyValley/MissionGen_T3_R5_BuildtheRadarGrid.MissionGen_T3_R5_BuildtheRadarGrid_C": {
+      "parent": "MissionGen_T2_BuildtheRadarGrid_C"
+    },
+    "/Game/World/MissionGens/CannyValley/MissionGen_T3_R5_DtB.MissionGen_T3_R5_DtB_C": {
+      "parent": "MissionGen_T2_DtB_C"
+    },
+    "/Game/World/MissionGens/CannyValley/MissionGen_T3_R5_DtE.MissionGen_T3_R5_DtE_C": {
+      "parent": "MissionGen_T2_DtE_C"
+    },
+    "/Game/World/MissionGens/CannyValley/MissionGen_T3_R5_EtShelter.MissionGen_T3_R5_EtShelter_C": {
+      "parent": "MissionGen_T2_EtShelter_C"
+    },
+    "/Game/World/MissionGens/CannyValley/MissionGen_T3_R5_EtSurvivors.MissionGen_T3_R5_EtSurvivors_C": {
+      "parent": "MissionGen_T2_EtSurvivors_C"
+    },
+    "/Game/World/MissionGens/CannyValley/MissionGen_T3_R5_RtD.MissionGen_T3_R5_RtD_C": {
+      "parent": "MissionGen_T2_RtD_C"
+    },
+    "/Game/World/MissionGens/CannyValley/MissionGen_T3_R5_RtL.MissionGen_T3_R5_RtL_C": {
+      "parent": "MissionGen_T2_RtL_C"
+    },
+    "/Game/World/MissionGens/CannyValley/MissionGen_T3_R5_RtS.MissionGen_T3_R5_RtS_C": {
+      "parent": "MissionGen_T2_RtS_C"
+    },
+    "/Game/World/MissionGens/MissionGen_1Gate_Group.MissionGen_1Gate_Group_C": {
+      "parent": "MissionGen_1Gate_C",
+      "primaryMission": "/Game/Missions/Primary/Gate/GroupGate_Single"
+    },
+    "/Game/World/MissionGens/MissionGen_1Gate_Group_PVE02on.MissionGen_1Gate_Group_PVE02on_C": {
+      "parent": "MissionGen_1Gate_Group_C"
+    },
+    "/Game/World/MissionGens/MissionGen_2Gates_Group.MissionGen_2Gates_Group_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/Gate/GroupGate_Double"
+    },
+    "/Game/World/MissionGens/MissionGen_3Gates_Group.MissionGen_3Gates_Group_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/Gate/GroupGate_Triple"
+    },
+    "/Game/World/MissionGens/MissionGen_4Gates_Group.MissionGen_4Gates_Group_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/Gate/GroupGate_Quadruple"
+    },
+    "/Game/World/MissionGens/MissionGen_BuildTheBase.MissionGen_BuildTheBase_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/ChallengeTheHorde/MissionInfo_BuildTheBase"
+    },
+    "/Game/World/MissionGens/MissionGen_ChallengeTheHorde.MissionGen_ChallengeTheHorde_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/ChallengeTheHorde/MissionInfo_ChallengeTheHorde"
+    },
+    "/Game/World/MissionGens/MissionGen_Debug_PerfMem.MissionGen_Debug_PerfMem_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/Gate/Gate_Triple"
+    },
+    "/Game/World/MissionGens/MissionGen_LtR_CannyValley.MissionGen_LtR_CannyValley_C": {
+      "primaryMission": "/Game/Missions/Primary/StormShield/LtR_CannyValley"
+    },
+    "/Game/World/MissionGens/MissionGen_PVP_Tower_2.MissionGen_PVP_Tower_2_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/PvP/WeatherTheStorm/Missions/WeatherStorm_Info"
+    },
+    "/Game/World/MissionGens/MissionGen_RetrieveTheData_Group.MissionGen_RetrieveTheData_Group_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/DeadDrop/GroupRetrieveTheData"
+    },
+    "/Game/World/MissionGens/MissionGen_RetrieveTheData_Group_PVE02on.MissionGen_RetrieveTheData_Group_PVE02on_C": {
+      "parent": "MissionGen_RetrieveTheData_Group_C"
+    },
+    "/Game/World/MissionGens/MissionGen_RideTheLightning_Group.MissionGen_RideTheLightning_Group_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/LaunchTheBalloon/GroupRideTheStorm"
+    },
+    "/Game/World/MissionGens/MissionGen_RideTheLightning_Group_PVE02on.MissionGen_RideTheLightning_Group_PVE02on_C": {
+      "parent": "MissionGen_RideTheLightning_Group_C"
+    },
+    "/Game/World/MissionGens/MissionGen_RtL_StormQuest2018Landmark.MissionGen_RtL_StormQuest2018Landmark_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/LaunchTheBalloon/RtL_Stormquest_2018"
+    },
+    "/Game/World/MissionGens/MissionGen_Survival_3Day.MissionGen_Survival_3Day_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Modes/FortniteSurvival/FortniteSurvival3Day_NoVote"
+    },
+    "/Game/World/MissionGens/MissionGen_Survival_7Day.MissionGen_Survival_7Day_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Modes/FortniteSurvival/FortniteSurvival7Day_NoVote"
+    },
+    "/Game/World/MissionGens/MissionGen_Survival_Min14Day.MissionGen_Survival_Min14Day_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Modes/FortniteSurvival/FortniteSurvival14Day"
+    },
+    "/Game/World/MissionGens/MissionGen_Survival_Min3Day.MissionGen_Survival_Min3Day_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Modes/FortniteSurvival/FortniteSurvival3Day"
+    },
+    "/Game/World/MissionGens/MissionGen_Survival_Min7Day.MissionGen_Survival_Min7Day_C": {
+      "parent": "_MissionGen_PARENT_C",
+      "primaryMission": "/Game/Missions/Modes/FortniteSurvival/FortniteSurvival7Day"
+    },
+    "/Game/World/MissionGens/Plankerton/ParentMissionGens/MissionGen_DtB_Group.MissionGen_DtB_Group_C": {
+      "parent": "_MissionGen_T2_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/DeliverTheBomb/Mission/GroupDeliverTheBomb"
+    },
+    "/Game/World/MissionGens/Plankerton/ParentMissionGens/MissionGen_DtM_BlockBuster_Landmark.MissionGen_DtM_BlockBuster_Landmark_C": {
+      "parent": "_MissionGen_T2_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/DestroyTheMeteor/DtM_Landmark"
+    },
+    "/Game/World/MissionGens/Plankerton/ParentMissionGens/MissionGen_StC_BlockBuster_Landmark.MissionGen_StC_BlockBuster_Landmark_C": {
+      "parent": "_MissionGen_T2_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/ScanTheComet/StC_Landmark"
+    },
+    "/Game/World/MissionGens/Plankerton/ParentMissionGens/MissionGen_TestTheSuit_BlockBuster_Landmark.MissionGen_TestTheSuit_BlockBuster_Landmark_C": {
+      "parent": "_MissionGen_T2_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/TestTheSuit/TtSuit_Landmark"
+    },
+    "/Game/World/MissionGens/Plankerton/ParentMissionGens/MissionGen_WatchTheSkies_Landmark.MissionGen_WatchTheSkies_Landmark_C": {
+      "parent": "_MissionGen_T2_PARENT_C",
+      "primaryMission": "/Game/Missions/Primary/WatchTheStorm/WtS_Landmark"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_2/MissionGen_RtS_Group.MissionGen_RtS_Group_C": {
+      "parent": "MissionGen_T2_RtS_C",
+      "primaryMission": "/Game/Missions/Primary/RepairTheShelter/GroupRepairTheShelter"
+    },
+    "/Game/World/MissionGens/Plankerton/Region_5/MissionGen_EtShelter_Group.MissionGen_EtShelter_Group_C": {
+      "parent": "MissionGen_T2_EtShelter_C",
+      "primaryMission": "/Game/Missions/Primary/EvacuateTheShelter/GroupEvacuateTheShelter"
+    }
+  },
+  "primaryMissions": {
+    "/Game/Missions/Modes/FortniteSurvival/FortniteSurvival14Day": {
+      "tags": [
+        "Stat.Mission.Survival.Survival14Day"
+      ]
+    },
+    "/Game/Missions/Modes/FortniteSurvival/FortniteSurvival3Day": {
+      "tags": [
+        "Stat.Mission.Survival.Survival3Day"
+      ]
+    },
+    "/Game/Missions/Modes/FortniteSurvival/FortniteSurvival3Day_NoVote": {
+      "tags": [
+        "Stat.Mission.Survival.Survival3Day"
+      ]
+    },
+    "/Game/Missions/Modes/FortniteSurvival/FortniteSurvival7Day": {
+      "tags": [
+        "Stat.Mission.Survival.Survival7Day"
+      ]
+    },
+    "/Game/Missions/Modes/FortniteSurvival/FortniteSurvival7Day_NoVote": {
+      "tags": [
+        "Stat.Mission.Survival.Survival7Day"
+      ]
+    },
+    "/Game/Missions/Primary/CannyValleyLandmarks/BuildTheMonument/CV_Landmark_BuildTheMemorial": {
+      "tags": [
+        "Stat.Mission.Primary.Landmark.BuildTheMonument"
+      ]
+    },
+    "/Game/Missions/Primary/CannyValleyLandmarks/FightTheGunslinger/CV_Landmark_FightTheGunslinger": {
+      "tags": [
+        "Stat.Mission.Primary.Landmark.FightTheGunslinger"
+      ]
+    },
+    "/Game/Missions/Primary/CannyValleyLandmarks/HitTheRoad/CV_Landmark_HitTheRoad": {
+      "tags": [
+        "Stat.Mission.Primary.Landmark.HitTheRoad"
+      ]
+    },
+    "/Game/Missions/Primary/ChallengeTheHorde/MissionInfo_BuildTheBase": {
+      "tags": [
+        "Stat.Mission.Primary.KeepNeighborhood"
+      ]
+    },
+    "/Game/Missions/Primary/ChallengeTheHorde/MissionInfo_ChallengeTheHorde": {
+      "tags": [
+        "Stat.Mission.Primary.Horde"
+      ]
+    },
+    "/Game/Missions/Primary/DeadDrop/1stRetrieveTheData": {
+      "tags": [
+        "Stat.Mission.Primary.RetrieveData.Normal"
+      ]
+    },
+    "/Game/Missions/Primary/DeadDrop/DeadDrop": {
+      "tags": [
+        "Stat.Mission.Primary.RetrieveData.Normal"
+      ]
+    },
+    "/Game/Missions/Primary/DeadDrop/GroupRetrieveTheData": {
+      "tags": [
+        "Stat.Mission.Primary.RetrieveData.Group"
+      ]
+    },
+    "/Game/Missions/Primary/DeliverGoods/Mission/DeliverGoods": {
+      "tags": [
+        "Stat.Mission.Primary.DeliverGoods.Normal"
+      ]
+    },
+    "/Game/Missions/Primary/DeliverTheBomb/Mission/1stDeliverTheBomb": {
+      "tags": [
+        "Stat.Mission.Primary.DeliverGoods.Normal"
+      ]
+    },
+    "/Game/Missions/Primary/DeliverTheBomb/Mission/DeliverTheBomb": {
+      "tags": [
+        "Stat.Mission.Primary.DeliverGoods.Normal"
+      ]
+    },
+    "/Game/Missions/Primary/DeliverTheBomb/Mission/GroupDeliverTheBomb": {
+      "tags": [
+        "Stat.Mission.Primary.DeliverGoods.Group"
+      ]
+    },
+    "/Game/Missions/Primary/DestroyTheMeteor/DtM_Landmark": {
+      "tags": [
+        "Stat.Mission.Primary.Landmark.Meteor.BlockbusterQuest2018"
+      ]
+    },
+    "/Game/Missions/Primary/EvacuateTheShelter/1stEvacuateTheShelter": {
+      "tags": [
+        "Stat.Mission.Primary.EvacuateTheShelter.Normal"
+      ]
+    },
+    "/Game/Missions/Primary/EvacuateTheShelter/EvacuateTheShelter": {
+      "tags": [
+        "Stat.Mission.Primary.EvacuateTheShelter.Normal"
+      ]
+    },
+    "/Game/Missions/Primary/EvacuateTheShelter/GroupEvacuateTheShelter": {
+      "tags": [
+        "Stat.Mission.Primary.EvacuateTheShelter.Group"
+      ]
+    },
+    "/Game/Missions/Primary/Gate/Gate_Double": {
+      "tags": [
+        "Stat.Mission.Primary.Gate.Gate_Double.Normal"
+      ]
+    },
+    "/Game/Missions/Primary/Gate/Gate_Quadruple": {
+      "tags": [
+        "Stat.Mission.Primary.Gate.Gate_Quadruple.Normal"
+      ]
+    },
+    "/Game/Missions/Primary/Gate/Gate_Single": {
+      "tags": [
+        "Stat.Mission.Primary.Gate.Gate_Single.Normal"
+      ]
+    },
+    "/Game/Missions/Primary/Gate/Gate_Single_NoBonus": {
+      "tags": [
+        "Stat.Mission.Primary.Gate.Gate_Single.Normal"
+      ]
+    },
+    "/Game/Missions/Primary/Gate/Gate_Triple": {
+      "tags": [
+        "Stat.Mission.Primary.Gate.Gate_Triple.Normal"
+      ]
+    },
+    "/Game/Missions/Primary/Gate/GroupGate_Double": {
+      "tags": [
+        "Stat.Mission.Primary.Gate.Gate_Double.Group"
+      ]
+    },
+    "/Game/Missions/Primary/Gate/GroupGate_Quadruple": {
+      "tags": [
+        "Stat.Mission.Primary.Gate.Gate_Quadruple.Group"
+      ]
+    },
+    "/Game/Missions/Primary/Gate/GroupGate_Single": {
+      "tags": [
+        "Stat.Mission.Primary.Gate.Gate_Single.Group"
+      ]
+    },
+    "/Game/Missions/Primary/Gate/GroupGate_Triple": {
+      "tags": [
+        "Stat.Mission.Primary.Gate.Gate_Triple.Group"
+      ]
+    },
+    "/Game/Missions/Primary/LaunchTheBalloon/1stLaunchTheBalloon": {
+      "tags": [
+        "Stat.Mission.Primary.LaunchWeatherBalloon.Normal"
+      ]
+    },
+    "/Game/Missions/Primary/LaunchTheBalloon/GroupRideTheStorm": {
+      "tags": [
+        "Stat.Mission.Primary.LaunchWeatherBalloon.Group"
+      ]
+    },
+    "/Game/Missions/Primary/LaunchTheBalloon/LaunchTheBalloon": {
+      "tags": [
+        "Stat.Mission.Primary.LaunchWeatherBalloon.Normal"
+      ]
+    },
+    "/Game/Missions/Primary/LaunchTheBalloon/RideTheStorm": {
+      "tags": [
+        "Stat.Mission.Primary.LaunchWeatherBalloon.Normal"
+      ]
+    },
+    "/Game/Missions/Primary/LaunchTheBalloon/RtL_Stormquest_2018": {
+      "tags": [
+        "Stat.Mission.Primary.LaunchWeatherBalloon.Landmark.StormQuest2018"
+      ]
+    },
+    "/Game/Missions/Primary/RepairTheShelter/1stRepairTheShelter": {
+      "tags": [
+        "Stat.Mission.Primary.PowerReactor.Normal"
+      ]
+    },
+    "/Game/Missions/Primary/RepairTheShelter/GroupRepairTheShelter": {
+      "tags": [
+        "Stat.Mission.Primary.PowerReactor.Group"
+      ]
+    },
+    "/Game/Missions/Primary/RepairTheShelter/RepairTheShelter": {
+      "tags": [
+        "Stat.Mission.Primary.PowerReactor.Normal"
+      ]
+    },
+    "/Game/Missions/Primary/ScanTheComet/StC_Landmark": {
+      "tags": [
+        "Stat.Mission.Primary.Landmark.Observe.BlockbusterQuest2018"
+      ]
+    },
+    "/Game/Missions/Primary/StormShield/LtR_CannyValley": {
+      "tags": [
+        "Stat.Mission.Primary.LaunchRocket"
+      ]
+    },
+    "/Game/Missions/Primary/TestTheSuit/TtSuit_Landmark": {
+      "tags": [
+        "Stat.Mission.Primary.Landmark.Suit.BlockbusterQuest2018"
+      ]
+    },
+    "/Game/Missions/Primary/WatchTheStorm/WtS_Landmark": {
+      "tags": [
+        "Stat.Mission.Primary.Landmark.Observe.StormQuest2018"
+      ]
+    },
+    "/Game/PvP/WeatherTheStorm/Missions/WeatherStorm_Info": {
+      "tags": []
+    }
+  },
+  "questPaths": {
+    "anniversaryquest_2018_complete_cake_repeatable": "/Game/Quests/Events/Anniversary2018/AnniversaryQuest_2018_Complete_Cake_Repeatable.AnniversaryQuest_2018_Complete_Cake_Repeatable",
+    "anniversaryquest_2018_kill_cake_sploders": "/Game/Quests/Events/Anniversary2018/AnniversaryQuest_2018_Kill_Cake_Sploders.AnniversaryQuest_2018_Kill_Cake_Sploders",
+    "blockbusterquest_2018_hidden_1": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Hidden_1.BlockbusterQuest_2018_Hidden_1",
+    "blockbusterquest_2018_hidden_2": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Hidden_2.BlockbusterQuest_2018_Hidden_2",
+    "blockbusterquest_2018_hidden_3": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Hidden_3.BlockbusterQuest_2018_Hidden_3",
+    "blockbusterquest_2018_hidden_enablehusky": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Hidden_EnableHusky.BlockbusterQuest_2018_Hidden_EnableHusky",
+    "blockbusterquest_2018_hidden_watchvideo": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Hidden_WatchVideo.BlockbusterQuest_2018_Hidden_WatchVideo",
+    "blockbusterquest_2018_killchromehusky_repeatable": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_KillChromeHusky_Repeatable.BlockbusterQuest_2018_KillChromeHusky_Repeatable",
+    "blockbusterquest_2018_killfirehusks_repeatable": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_KillFireHusks_Repeatable.BlockbusterQuest_2018_KillFireHusks_Repeatable",
+    "blockbusterquest_2018_killminibosses_repeatable": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_KillMiniBosses_Repeatable.BlockbusterQuest_2018_KillMiniBosses_Repeatable",
+    "blockbusterquest_2018_killmistmonsters_repeatable": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_KillMistMonsters_Repeatable.BlockbusterQuest_2018_KillMistMonsters_Repeatable",
+    "blockbusterquest_2018_killnaturehusks_repeatable": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_KillNatureHusks_Repeatable.BlockbusterQuest_2018_KillNatureHusks_Repeatable",
+    "blockbusterquest_2018_killwaterhusks_repeatable": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_KillWaterHusks_Repeatable.BlockbusterQuest_2018_KillWaterHusks_Repeatable",
+    "blockbusterquest_2018_landmark_comet": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Landmark_Comet.BlockbusterQuest_2018_Landmark_Comet",
+    "blockbusterquest_2018_landmark_meteor": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Landmark_Meteor.BlockbusterQuest_2018_Landmark_Meteor",
+    "blockbusterquest_2018_landmark_suit": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Landmark_Suit.BlockbusterQuest_2018_Landmark_Suit",
+    "blockbusterquest_2018_opencaches_repeatable": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_OpenCaches_Repeatable.BlockbusterQuest_2018_OpenCaches_Repeatable",
+    "blockbusterquest_2018_reactive_barrels": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_Barrels.BlockbusterQuest_2018_Reactive_Barrels",
+    "blockbusterquest_2018_reactive_bees": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_Bees.BlockbusterQuest_2018_Reactive_Bees",
+    "blockbusterquest_2018_reactive_broadcasts": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_Broadcasts.BlockbusterQuest_2018_Reactive_Broadcasts",
+    "blockbusterquest_2018_reactive_carbondating": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_CarbonDating.BlockbusterQuest_2018_Reactive_CarbonDating",
+    "blockbusterquest_2018_reactive_chromehuskdata": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_ChromeHuskData.BlockbusterQuest_2018_Reactive_ChromeHuskData",
+    "blockbusterquest_2018_reactive_clocks": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_Clocks.BlockbusterQuest_2018_Reactive_Clocks",
+    "blockbusterquest_2018_reactive_cometshards": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_CometShards.BlockbusterQuest_2018_Reactive_CometShards",
+    "blockbusterquest_2018_reactive_consoles": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_Consoles.BlockbusterQuest_2018_Reactive_Consoles",
+    "blockbusterquest_2018_reactive_cows": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_Cows.BlockbusterQuest_2018_Reactive_Cows",
+    "blockbusterquest_2018_reactive_deploycbots": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_DeployCBots.BlockbusterQuest_2018_Reactive_DeployCBots",
+    "blockbusterquest_2018_reactive_earthquakes": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_Earthquakes.BlockbusterQuest_2018_Reactive_Earthquakes",
+    "blockbusterquest_2018_reactive_fans": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_Fans.BlockbusterQuest_2018_Reactive_Fans",
+    "blockbusterquest_2018_reactive_flyers": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_Flyers.BlockbusterQuest_2018_Reactive_Flyers",
+    "blockbusterquest_2018_reactive_julyfourth": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_JulyFourth.BlockbusterQuest_2018_Reactive_JulyFourth",
+    "blockbusterquest_2018_reactive_magnets": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_Magnets.BlockbusterQuest_2018_Reactive_Magnets",
+    "blockbusterquest_2018_reactive_mailboxes": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_Mailboxes.BlockbusterQuest_2018_Reactive_Mailboxes",
+    "blockbusterquest_2018_reactive_mattresses": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_Mattresses.BlockbusterQuest_2018_Reactive_Mattresses",
+    "blockbusterquest_2018_reactive_mayhem": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_Mayhem.BlockbusterQuest_2018_Reactive_Mayhem",
+    "blockbusterquest_2018_reactive_portapottys": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_PortaPottys.BlockbusterQuest_2018_Reactive_PortaPottys",
+    "blockbusterquest_2018_reactive_raysignal": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_RaySignal.BlockbusterQuest_2018_Reactive_RaySignal",
+    "blockbusterquest_2018_reactive_rescue": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_Rescue.BlockbusterQuest_2018_Reactive_Rescue",
+    "blockbusterquest_2018_reactive_restaurant": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_Restaurant.BlockbusterQuest_2018_Reactive_Restaurant",
+    "blockbusterquest_2018_reactive_retrievecbots": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_RetrieveCBots.BlockbusterQuest_2018_Reactive_RetrieveCBots",
+    "blockbusterquest_2018_reactive_rubber": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_Rubber.BlockbusterQuest_2018_Reactive_Rubber",
+    "blockbusterquest_2018_reactive_scanners": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_Scanners.BlockbusterQuest_2018_Reactive_Scanners",
+    "blockbusterquest_2018_reactive_shielderdata": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_ShielderData.BlockbusterQuest_2018_Reactive_ShielderData",
+    "blockbusterquest_2018_reactive_tankers": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_Tankers.BlockbusterQuest_2018_Reactive_Tankers",
+    "blockbusterquest_2018_reactive_tombstones": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_Tombstones.BlockbusterQuest_2018_Reactive_Tombstones",
+    "blockbusterquest_2018_reactive_toys": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_Toys.BlockbusterQuest_2018_Reactive_Toys",
+    "blockbusterquest_2018_reactive_trodes": "/Game/Quests/Events/Blockbuster2018/BlockbusterQuest_2018_Reactive_Trodes.BlockbusterQuest_2018_Reactive_Trodes",
+    "cannyvalley_hidden_enablegunslinger": "/Game/Quests/CannyValley/Act1/CannyValley_Hidden_EnableGunslinger.CannyValley_Hidden_EnableGunslinger",
+    "cannyvalley_landmark_highnoon": "/Game/Quests/CannyValley/Act1/CannyValley_Landmark_HighNoon.CannyValley_Landmark_HighNoon",
+    "cannyvalley_landmark_memorial": "/Game/Quests/CannyValley/Act1/CannyValley_Landmark_Memorial.CannyValley_Landmark_Memorial",
+    "cannyvalley_landmark_welcome": "/Game/Quests/CannyValley/Act1/CannyValley_Landmark_Welcome.CannyValley_Landmark_Welcome",
+    "cannyvalley_mechanical_constructor": "/Game/Quests/CannyValley/Act1/CannyValley_Mechanical_Constructor.CannyValley_Mechanical_Constructor",
+    "cannyvalley_reactive_bases": "/Game/Quests/CannyValley/Act1/CannyValley_Reactive_Bases.CannyValley_Reactive_Bases",
+    "cannyvalley_reactive_dinobones": "/Game/Quests/CannyValley/Act1/CannyValley_Reactive_DinoBones.CannyValley_Reactive_DinoBones",
+    "cannyvalley_reactive_glyphs": "/Game/Quests/CannyValley/Act1/CannyValley_Reactive_Glyphs.CannyValley_Reactive_Glyphs",
+    "cannyvalley_reactive_jukeboxes": "/Game/Quests/CannyValley/Act1/CannyValley_Reactive_Jukeboxes.CannyValley_Reactive_Jukeboxes",
+    "cannyvalley_reactive_oilsamples": "/Game/Quests/CannyValley/Act1/CannyValley_Reactive_OilSamples.CannyValley_Reactive_OilSamples",
+    "cannyvalley_reactive_periscopes": "/Game/Quests/CannyValley/Act1/CannyValley_Reactive_Periscopes.CannyValley_Reactive_Periscopes",
+    "cannyvalley_reactive_rockformations": "/Game/Quests/CannyValley/Act1/CannyValley_Reactive_RockFormations.CannyValley_Reactive_RockFormations",
+    "cannyvalley_reactive_route99": "/Game/Quests/CannyValley/Act1/CannyValley_Reactive_Route99.CannyValley_Reactive_Route99",
+    "cannyvalley_reactive_rustedcars": "/Game/Quests/CannyValley/Act1/CannyValley_Reactive_RustedCars.CannyValley_Reactive_RustedCars",
+    "cannyvalley_reactive_seebot": "/Game/Quests/CannyValley/Act1/CannyValley_Reactive_SeeBot.CannyValley_Reactive_SeeBot",
+    "cannyvalley_reactive_servers": "/Game/Quests/CannyValley/Act1/CannyValley_Reactive_Servers.CannyValley_Reactive_Servers",
+    "cannyvalley_reactive_survey": "/Game/Quests/CannyValley/Act1/CannyValley_Reactive_Survey.CannyValley_Reactive_Survey",
+    "cannyvalley_reactive_tabs": "/Game/Quests/CannyValley/Act1/CannyValley_Reactive_Tabs.CannyValley_Reactive_Tabs",
+    "cannyvalley_reactive_trail": "/Game/Quests/CannyValley/Act1/CannyValley_Reactive_Trail.CannyValley_Reactive_Trail",
+    "cannyvalley_reactive_tumbleweed": "/Game/Quests/CannyValley/Act1/CannyValley_Reactive_Tumbleweed.CannyValley_Reactive_Tumbleweed",
+    "cannyvalley_reactive_watertowers": "/Game/Quests/CannyValley/Act1/CannyValley_Reactive_WaterTowers.CannyValley_Reactive_WaterTowers",
+    "cannyvalleyquest_outpost_l2": "/Game/Quests/Outpost/CannyValleyQuest_Outpost_L2.CannyValleyQuest_Outpost_L2",
+    "cannyvalleyquest_outpost_l3": "/Game/Quests/Outpost/CannyValleyQuest_Outpost_L3.CannyValleyQuest_Outpost_L3",
+    "challenge_eldritchabominations_11": "/Game/Quests/Challenges/Challenge_EldritchAbominations_11.Challenge_EldritchAbominations_11",
+    "challenge_eldritchabominations_12": "/Game/Quests/Challenges/Challenge_EldritchAbominations_12.Challenge_EldritchAbominations_12",
+    "challenge_eldritchabominations_13": "/Game/Quests/Challenges/Challenge_EldritchAbominations_13.Challenge_EldritchAbominations_13",
+    "challenge_eldritchabominations_14": "/Game/Quests/Challenges/Challenge_EldritchAbominations_14.Challenge_EldritchAbominations_14",
+    "challenge_eldritchabominations_15": "/Game/Quests/Challenges/Challenge_EldritchAbominations_15.Challenge_EldritchAbominations_15",
+    "challenge_eldritchabominations_16": "/Game/Quests/Challenges/Challenge_EldritchAbominations_16.Challenge_EldritchAbominations_16",
+    "challenge_eldritchabominations_17": "/Game/Quests/Challenges/Challenge_EldritchAbominations_17.Challenge_EldritchAbominations_17",
+    "challenge_eldritchabominations_18": "/Game/Quests/Challenges/Challenge_EldritchAbominations_18.Challenge_EldritchAbominations_18",
+    "challenge_eldritchabominations_19": "/Game/Quests/Challenges/Challenge_EldritchAbominations_19.Challenge_EldritchAbominations_19",
+    "challenge_eldritchabominations_20": "/Game/Quests/Challenges/Challenge_EldritchAbominations_20.Challenge_EldritchAbominations_20",
+    "challenge_herotraining_3": "/Game/Quests/Challenges/Challenge_HeroTraining_3.Challenge_HeroTraining_3",
+    "challenge_holdthedoor_11": "/Game/Quests/Challenges/Challenge_HoldTheDoor_11.Challenge_HoldTheDoor_11",
+    "challenge_holdthedoor_12": "/Game/Quests/Challenges/Challenge_HoldTheDoor_12.Challenge_HoldTheDoor_12",
+    "challenge_holdthedoor_13": "/Game/Quests/Challenges/Challenge_HoldTheDoor_13.Challenge_HoldTheDoor_13",
+    "challenge_holdthedoor_14": "/Game/Quests/Challenges/Challenge_HoldTheDoor_14.Challenge_HoldTheDoor_14",
+    "challenge_holdthedoor_15": "/Game/Quests/Challenges/Challenge_HoldTheDoor_15.Challenge_HoldTheDoor_15",
+    "challenge_holdthedoor_16": "/Game/Quests/Challenges/Challenge_HoldTheDoor_16.Challenge_HoldTheDoor_16",
+    "challenge_holdthedoor_17": "/Game/Quests/Challenges/Challenge_HoldTheDoor_17.Challenge_HoldTheDoor_17",
+    "challenge_holdthedoor_18": "/Game/Quests/Challenges/Challenge_HoldTheDoor_18.Challenge_HoldTheDoor_18",
+    "challenge_holdthedoor_19": "/Game/Quests/Challenges/Challenge_HoldTheDoor_19.Challenge_HoldTheDoor_19",
+    "challenge_holdthedoor_20": "/Game/Quests/Challenges/Challenge_HoldTheDoor_20.Challenge_HoldTheDoor_20",
+    "challenge_leavenoonebehind_11": "/Game/Quests/Challenges/Challenge_LeaveNoOneBehind_11.Challenge_LeaveNoOneBehind_11",
+    "challenge_leavenoonebehind_12": "/Game/Quests/Challenges/Challenge_LeaveNoOneBehind_12.Challenge_LeaveNoOneBehind_12",
+    "challenge_leavenoonebehind_13": "/Game/Quests/Challenges/Challenge_LeaveNoOneBehind_13.Challenge_LeaveNoOneBehind_13",
+    "challenge_leavenoonebehind_14": "/Game/Quests/Challenges/Challenge_LeaveNoOneBehind_14.Challenge_LeaveNoOneBehind_14",
+    "challenge_leavenoonebehind_15": "/Game/Quests/Challenges/Challenge_LeaveNoOneBehind_15.Challenge_LeaveNoOneBehind_15",
+    "challenge_leavenoonebehind_16": "/Game/Quests/Challenges/Challenge_LeaveNoOneBehind_16.Challenge_LeaveNoOneBehind_16",
+    "challenge_leavenoonebehind_17": "/Game/Quests/Challenges/Challenge_LeaveNoOneBehind_17.Challenge_LeaveNoOneBehind_17",
+    "challenge_leavenoonebehind_18": "/Game/Quests/Challenges/Challenge_LeaveNoOneBehind_18.Challenge_LeaveNoOneBehind_18",
+    "challenge_leavenoonebehind_19": "/Game/Quests/Challenges/Challenge_LeaveNoOneBehind_19.Challenge_LeaveNoOneBehind_19",
+    "challenge_leavenoonebehind_20": "/Game/Quests/Challenges/Challenge_LeaveNoOneBehind_20.Challenge_LeaveNoOneBehind_20",
+    "challenge_missionaccomplished_11": "/Game/Quests/Challenges/Challenge_MissionAccomplished_11.Challenge_MissionAccomplished_11",
+    "challenge_missionaccomplished_12": "/Game/Quests/Challenges/Challenge_MissionAccomplished_12.Challenge_MissionAccomplished_12",
+    "challenge_missionaccomplished_13": "/Game/Quests/Challenges/Challenge_MissionAccomplished_13.Challenge_MissionAccomplished_13",
+    "challenge_missionaccomplished_14": "/Game/Quests/Challenges/Challenge_MissionAccomplished_14.Challenge_MissionAccomplished_14",
+    "challenge_missionaccomplished_15": "/Game/Quests/Challenges/Challenge_MissionAccomplished_15.Challenge_MissionAccomplished_15",
+    "challenge_missionaccomplished_16": "/Game/Quests/Challenges/Challenge_MissionAccomplished_16.Challenge_MissionAccomplished_16",
+    "challenge_missionaccomplished_17": "/Game/Quests/Challenges/Challenge_MissionAccomplished_17.Challenge_MissionAccomplished_17",
+    "challenge_missionaccomplished_18": "/Game/Quests/Challenges/Challenge_MissionAccomplished_18.Challenge_MissionAccomplished_18",
+    "challenge_missionaccomplished_19": "/Game/Quests/Challenges/Challenge_MissionAccomplished_19.Challenge_MissionAccomplished_19",
+    "challenge_missionaccomplished_20": "/Game/Quests/Challenges/Challenge_MissionAccomplished_20.Challenge_MissionAccomplished_20",
+    "challenge_replacealteration": "/Game/Quests/Challenges/Challenge_ReplaceAlteration.Challenge_ReplaceAlteration",
+    "challenge_toxictreasures_11": "/Game/Quests/Challenges/Challenge_ToxicTreasures_11.Challenge_ToxicTreasures_11",
+    "challenge_toxictreasures_12": "/Game/Quests/Challenges/Challenge_ToxicTreasures_12.Challenge_ToxicTreasures_12",
+    "challenge_toxictreasures_13": "/Game/Quests/Challenges/Challenge_ToxicTreasures_13.Challenge_ToxicTreasures_13",
+    "challenge_toxictreasures_14": "/Game/Quests/Challenges/Challenge_ToxicTreasures_14.Challenge_ToxicTreasures_14",
+    "challenge_toxictreasures_15": "/Game/Quests/Challenges/Challenge_ToxicTreasures_15.Challenge_ToxicTreasures_15",
+    "challenge_toxictreasures_16": "/Game/Quests/Challenges/Challenge_ToxicTreasures_16.Challenge_ToxicTreasures_16",
+    "challenge_toxictreasures_17": "/Game/Quests/Challenges/Challenge_ToxicTreasures_17.Challenge_ToxicTreasures_17",
+    "challenge_toxictreasures_18": "/Game/Quests/Challenges/Challenge_ToxicTreasures_18.Challenge_ToxicTreasures_18",
+    "challenge_toxictreasures_19": "/Game/Quests/Challenges/Challenge_ToxicTreasures_19.Challenge_ToxicTreasures_19",
+    "challenge_toxictreasures_20": "/Game/Quests/Challenges/Challenge_ToxicTreasures_20.Challenge_ToxicTreasures_20",
+    "challenge_upgradealteration": "/Game/Quests/Challenges/Challenge_UpgradeAlteration.Challenge_UpgradeAlteration",
+    "daily_discovery_industriallocations": "/Game/Quests/Daily/Daily_Discovery_IndustrialLocations.Daily_Discovery_IndustrialLocations",
+    "daily_discovery_rurallocations": "/Game/Quests/Daily/Daily_Discovery_RuralLocations.Daily_Discovery_RuralLocations",
+    "daily_discovery_shelters": "/Game/Quests/Daily/Daily_Discovery_Shelters.Daily_Discovery_Shelters",
+    "daily_discovery_suburbanlocations": "/Game/Quests/Daily/Daily_Discovery_SuburbanLocations.Daily_Discovery_SuburbanLocations",
+    "daily_discovery_urbanlocations": "/Game/Quests/Daily/Daily_Discovery_UrbanLocations.Daily_Discovery_UrbanLocations",
+    "daily_huskextermination_melee": "/Game/Quests/Daily/Daily_HuskExtermination_Melee.Daily_HuskExtermination_Melee",
+    "daily_huskextermination_ranged_assault": "/Game/Quests/Daily/Daily_HuskExtermination_Ranged_Assault.Daily_HuskExtermination_Ranged_Assault",
+    "daily_huskextermination_ranged_pistol": "/Game/Quests/Daily/Daily_HuskExtermination_Ranged_Pistol.Daily_HuskExtermination_Ranged_Pistol",
+    "daily_huskextermination_ranged_shotgun": "/Game/Quests/Daily/Daily_HuskExtermination_Ranged_Shotgun.Daily_HuskExtermination_Ranged_Shotgun",
+    "daily_huskextermination_ranged_sniper": "/Game/Quests/Daily/Daily_HuskExtermination_Ranged_Sniper.Daily_HuskExtermination_Ranged_Sniper",
+    "daily_huskextermination_trap": "/Game/Quests/Daily/Daily_HuskExtermination_Trap.Daily_HuskExtermination_Trap",
+    "daily_mission_buildradar": "/Game/Quests/Daily/Daily_Mission_BuildRadar.Daily_Mission_BuildRadar",
+    "firststormquest_cannydiff_completestormzones": "/Game/Quests/Events/FirstStorm/FirstStormQuest_CannyDiff_CompleteStormZones.FirstStormQuest_CannyDiff_CompleteStormZones",
+    "firststormquest_completestormzones": "/Game/Quests/Events/FirstStorm/FirstStormQuest_CompleteStormZones.FirstStormQuest_CompleteStormZones",
+    "firststormquest_evolve_hydraulic": "/Game/Quests/Events/FirstStorm/FirstStormQuest_Evolve_Hydraulic.FirstStormQuest_Evolve_Hydraulic",
+    "firststormquest_hydraulicstormllama": "/Game/Quests/Events/FirstStorm/FirstStormQuest_HydraulicStormLlama.FirstStormQuest_HydraulicStormLlama",
+    "firststormquest_killenragedhusks": "/Game/Quests/Events/FirstStorm/FirstStormQuest_KillEnragedHusks.FirstStormQuest_KillEnragedHusks",
+    "firststormquest_killexplodingdeathbursthusks": "/Game/Quests/Events/FirstStorm/FirstStormQuest_KillExplodingDeathburstHusks.FirstStormQuest_KillExplodingDeathburstHusks",
+    "firststormquest_killfrenzieddeathbursthusks": "/Game/Quests/Events/FirstStorm/FirstStormQuest_KillFrenziedDeathburstHusks.FirstStormQuest_KillFrenziedDeathburstHusks",
+    "firststormquest_killhealingdeathbursthusks": "/Game/Quests/Events/FirstStorm/FirstStormQuest_KillHealingDeathburstHusks.FirstStormQuest_KillHealingDeathburstHusks",
+    "firststormquest_killhuskstraps": "/Game/Quests/Events/FirstStorm/FirstStormQuest_KillHusksTraps.FirstStormQuest_KillHusksTraps",
+    "firststormquest_killlifeleechattackhusks": "/Game/Quests/Events/FirstStorm/FirstStormQuest_KillLifeLeechAttackHusks.FirstStormQuest_KillLifeLeechAttackHusks",
+    "firststormquest_killmetalcorrosionhusks": "/Game/Quests/Events/FirstStorm/FirstStormQuest_KillMetalCorrosionHusks.FirstStormQuest_KillMetalCorrosionHusks",
+    "firststormquest_killmistmonsters": "/Game/Quests/Events/FirstStorm/FirstStormQuest_KillMistMonsters.FirstStormQuest_KillMistMonsters",
+    "firststormquest_killquickenedhusks": "/Game/Quests/Events/FirstStorm/FirstStormQuest_KillQuickenedHusks.FirstStormQuest_KillQuickenedHusks",
+    "firststormquest_killwallweakeninghusks": "/Game/Quests/Events/FirstStorm/FirstStormQuest_KillWallWeakeningHusks.FirstStormQuest_KillWallWeakeningHusks",
+    "firststormquest_levelup_hydraulic": "/Game/Quests/Events/FirstStorm/FirstStormQuest_LevelUp_Hydraulic.FirstStormQuest_LevelUp_Hydraulic",
+    "foundersquest_getrewards_microsoft": "/Game/Quests/Rewards/Founders/FoundersQuest_GetRewards_Microsoft.FoundersQuest_GetRewards_Microsoft",
+    "genericquest_completestormzones_repeatable": "/Game/Quests/Generic/GenericQuest_CompleteStormZones_Repeatable.GenericQuest_CompleteStormZones_Repeatable",
+    "genericquest_killfirehusks_repeatable": "/Game/Quests/Generic/GenericQuest_KillFireHusks_Repeatable.GenericQuest_KillFireHusks_Repeatable",
+    "genericquest_killmistmonsters_repeatable": "/Game/Quests/Generic/GenericQuest_KillMistMonsters_Repeatable.GenericQuest_KillMistMonsters_Repeatable",
+    "genericquest_killnaturehusks_repeatable": "/Game/Quests/Generic/GenericQuest_KillNatureHusks_Repeatable.GenericQuest_KillNatureHusks_Repeatable",
+    "genericquest_killwaterhusks_repeatable": "/Game/Quests/Generic/GenericQuest_KillWaterHusks_Repeatable.GenericQuest_KillWaterHusks_Repeatable",
+    "halloweenquest_2017_completemissions_1": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_CompleteMissions_1.HalloweenQuest_2017_CompleteMissions_1",
+    "halloweenquest_2017_completemissions_10": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_CompleteMissions_10.HalloweenQuest_2017_CompleteMissions_10",
+    "halloweenquest_2017_completemissions_11": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_CompleteMissions_11.HalloweenQuest_2017_CompleteMissions_11",
+    "halloweenquest_2017_completemissions_12": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_CompleteMissions_12.HalloweenQuest_2017_CompleteMissions_12",
+    "halloweenquest_2017_completemissions_13": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_CompleteMissions_13.HalloweenQuest_2017_CompleteMissions_13",
+    "halloweenquest_2017_completemissions_14": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_CompleteMissions_14.HalloweenQuest_2017_CompleteMissions_14",
+    "halloweenquest_2017_completemissions_2": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_CompleteMissions_2.HalloweenQuest_2017_CompleteMissions_2",
+    "halloweenquest_2017_completemissions_3": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_CompleteMissions_3.HalloweenQuest_2017_CompleteMissions_3",
+    "halloweenquest_2017_completemissions_4": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_CompleteMissions_4.HalloweenQuest_2017_CompleteMissions_4",
+    "halloweenquest_2017_completemissions_5": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_CompleteMissions_5.HalloweenQuest_2017_CompleteMissions_5",
+    "halloweenquest_2017_completemissions_6": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_CompleteMissions_6.HalloweenQuest_2017_CompleteMissions_6",
+    "halloweenquest_2017_completemissions_7": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_CompleteMissions_7.HalloweenQuest_2017_CompleteMissions_7",
+    "halloweenquest_2017_completemissions_8": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_CompleteMissions_8.HalloweenQuest_2017_CompleteMissions_8",
+    "halloweenquest_2017_completemissions_9": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_CompleteMissions_9.HalloweenQuest_2017_CompleteMissions_9",
+    "halloweenquest_2017_epicheroes": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_EpicHeroes.HalloweenQuest_2017_EpicHeroes",
+    "halloweenquest_2017_hidden_1": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_Hidden_1.HalloweenQuest_2017_Hidden_1",
+    "halloweenquest_2017_hidden_2": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_Hidden_2.HalloweenQuest_2017_Hidden_2",
+    "halloweenquest_2017_hidden_3": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_Hidden_3.HalloweenQuest_2017_Hidden_3",
+    "halloweenquest_2017_hidden_4": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_Hidden_4.HalloweenQuest_2017_Hidden_4",
+    "halloweenquest_2017_hidden_5": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_Hidden_5.HalloweenQuest_2017_Hidden_5",
+    "halloweenquest_2017_hidden_6": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_Hidden_6.HalloweenQuest_2017_Hidden_6",
+    "halloweenquest_2017_hidden_watchvideo": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_Hidden_WatchVideo.HalloweenQuest_2017_Hidden_WatchVideo",
+    "halloweenquest_2017_killmistmonsters": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_KillMistMonsters.HalloweenQuest_2017_KillMistMonsters",
+    "halloweenquest_2017_killpumpkinhusks": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_KillPumpkinHusks.HalloweenQuest_2017_KillPumpkinHusks",
+    "halloweenquest_2017_legendaryheroes": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_LegendaryHeroes.HalloweenQuest_2017_LegendaryHeroes",
+    "halloweenquest_2017_opener": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_Opener.HalloweenQuest_2017_Opener",
+    "halloweenquest_2017_trainhero": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_TrainHero.HalloweenQuest_2017_TrainHero",
+    "halloweenquest_2017_tts_intro": "/Game/Quests/Events/Halloween2017/HalloweenQuest_2017_TtS_Intro.HalloweenQuest_2017_TtS_Intro",
+    "hordequest_buildbase": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_BuildBase.HordeQuest_BuildBase",
+    "hordequest_hidden_0": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Hidden_0.HordeQuest_Hidden_0",
+    "hordequest_hidden_1": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Hidden_1.HordeQuest_Hidden_1",
+    "hordequest_hidden_2": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Hidden_2.HordeQuest_Hidden_2",
+    "hordequest_hidden_3": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Hidden_3.HordeQuest_Hidden_3",
+    "hordequest_hidden_4": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Hidden_4.HordeQuest_Hidden_4",
+    "hordequest_hidden_5": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Hidden_5.HordeQuest_Hidden_5",
+    "hordequest_hidden_6": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Hidden_6.HordeQuest_Hidden_6",
+    "hordequest_hidden_7": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Hidden_7.HordeQuest_Hidden_7",
+    "hordequest_hordeunlock": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_HordeUnlock.HordeQuest_HordeUnlock",
+    "hordequest_progression_canny_1": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Canny_1.HordeQuest_Progression_Canny_1",
+    "hordequest_progression_canny_2": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Canny_2.HordeQuest_Progression_Canny_2",
+    "hordequest_progression_canny_3": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Canny_3.HordeQuest_Progression_Canny_3",
+    "hordequest_progression_canny_4": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Canny_4.HordeQuest_Progression_Canny_4",
+    "hordequest_progression_canny_5": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Canny_5.HordeQuest_Progression_Canny_5",
+    "hordequest_progression_canny_5_repeatable": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Canny_5_Repeatable.HordeQuest_Progression_Canny_5_Repeatable",
+    "hordequest_progression_plankerton_1": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Plankerton_1.HordeQuest_Progression_Plankerton_1",
+    "hordequest_progression_plankerton_2": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Plankerton_2.HordeQuest_Progression_Plankerton_2",
+    "hordequest_progression_plankerton_3": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Plankerton_3.HordeQuest_Progression_Plankerton_3",
+    "hordequest_progression_plankerton_4": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Plankerton_4.HordeQuest_Progression_Plankerton_4",
+    "hordequest_progression_plankerton_5": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Plankerton_5.HordeQuest_Progression_Plankerton_5",
+    "hordequest_progression_plankerton_5_repeatable": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Plankerton_5_Repeatable.HordeQuest_Progression_Plankerton_5_Repeatable",
+    "hordequest_progression_stonewood_1": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Stonewood_1.HordeQuest_Progression_Stonewood_1",
+    "hordequest_progression_stonewood_2": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Stonewood_2.HordeQuest_Progression_Stonewood_2",
+    "hordequest_progression_stonewood_3": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Stonewood_3.HordeQuest_Progression_Stonewood_3",
+    "hordequest_progression_stonewood_4": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Stonewood_4.HordeQuest_Progression_Stonewood_4",
+    "hordequest_progression_stonewood_4_repeatable": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Stonewood_4_Repeatable.HordeQuest_Progression_Stonewood_4_Repeatable",
+    "hordequest_progression_twine_1": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Twine_1.HordeQuest_Progression_Twine_1",
+    "hordequest_progression_twine_10": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Twine_10.HordeQuest_Progression_Twine_10",
+    "hordequest_progression_twine_11": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Twine_11.HordeQuest_Progression_Twine_11",
+    "hordequest_progression_twine_12": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Twine_12.HordeQuest_Progression_Twine_12",
+    "hordequest_progression_twine_13": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Twine_13.HordeQuest_Progression_Twine_13",
+    "hordequest_progression_twine_14": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Twine_14.HordeQuest_Progression_Twine_14",
+    "hordequest_progression_twine_2": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Twine_2.HordeQuest_Progression_Twine_2",
+    "hordequest_progression_twine_3": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Twine_3.HordeQuest_Progression_Twine_3",
+    "hordequest_progression_twine_4": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Twine_4.HordeQuest_Progression_Twine_4",
+    "hordequest_progression_twine_5": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Twine_5.HordeQuest_Progression_Twine_5",
+    "hordequest_progression_twine_5_repeatable": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Twine_5_Repeatable.HordeQuest_Progression_Twine_5_Repeatable",
+    "hordequest_progression_twine_6": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Twine_6.HordeQuest_Progression_Twine_6",
+    "hordequest_progression_twine_7": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Twine_7.HordeQuest_Progression_Twine_7",
+    "hordequest_progression_twine_8": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Twine_8.HordeQuest_Progression_Twine_8",
+    "hordequest_progression_twine_9": "/Game/Quests/Events/ChallengeTheHorde/HordeQuest_Progression_Twine_9.HordeQuest_Progression_Twine_9",
+    "lovequest_2018_reactive_chocolates": "/Game/Quests/Events/Spring2018/LoveQuest_2018_Reactive_Chocolates.LoveQuest_2018_Reactive_Chocolates",
+    "lovequest_2018_reactive_flowers": "/Game/Quests/Events/Spring2018/LoveQuest_2018_Reactive_Flowers.LoveQuest_2018_Reactive_Flowers",
+    "lovequest_2018_reactive_mailboxes": "/Game/Quests/Events/Spring2018/LoveQuest_2018_Reactive_Mailboxes.LoveQuest_2018_Reactive_Mailboxes",
+    "lovequest_2018_reactive_rescuedennis": "/Game/Quests/Events/Spring2018/LoveQuest_2018_Reactive_RescueDennis.LoveQuest_2018_Reactive_RescueDennis",
+    "lovequest_2018_reactive_rescuesummer": "/Game/Quests/Events/Spring2018/LoveQuest_2018_Reactive_RescueSummer.LoveQuest_2018_Reactive_RescueSummer",
+    "lovequest_2018_reactive_song": "/Game/Quests/Events/Spring2018/LoveQuest_2018_Reactive_Song.LoveQuest_2018_Reactive_Song",
+    "lovequest_2018_reactive_teddybears": "/Game/Quests/Events/Spring2018/LoveQuest_2018_Reactive_TeddyBears.LoveQuest_2018_Reactive_TeddyBears",
+    "monthrewardquest_getrewards": "/Game/Quests/Rewards/1Month/MonthRewardQuest_GetRewards.MonthRewardQuest_GetRewards",
+    "mutantstormsquest_2018_completestormzones_1": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_CompleteStormZones_1.MutantStormsQuest_2018_CompleteStormZones_1",
+    "mutantstormsquest_2018_completestormzones_2": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_CompleteStormZones_2.MutantStormsQuest_2018_CompleteStormZones_2",
+    "mutantstormsquest_2018_completestormzones_3": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_CompleteStormZones_3.MutantStormsQuest_2018_CompleteStormZones_3",
+    "mutantstormsquest_2018_hydraulicstormllama": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_HydraulicStormLlama.MutantStormsQuest_2018_HydraulicStormLlama",
+    "mutantstormsquest_2018_killenragedhusks_1": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillEnragedHusks_1.MutantStormsQuest_2018_KillEnragedHusks_1",
+    "mutantstormsquest_2018_killenragedhusks_2": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillEnragedHusks_2.MutantStormsQuest_2018_KillEnragedHusks_2",
+    "mutantstormsquest_2018_killenragedhusks_3": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillEnragedHusks_3.MutantStormsQuest_2018_KillEnragedHusks_3",
+    "mutantstormsquest_2018_killexplodingdeathbursthusks_1": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillExplodingDeathburstHusks_1.MutantStormsQuest_2018_KillExplodingDeathburstHusks_1",
+    "mutantstormsquest_2018_killexplodingdeathbursthusks_2": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillExplodingDeathburstHusks_2.MutantStormsQuest_2018_KillExplodingDeathburstHusks_2",
+    "mutantstormsquest_2018_killexplodingdeathbursthusks_3": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillExplodingDeathburstHusks_3.MutantStormsQuest_2018_KillExplodingDeathburstHusks_3",
+    "mutantstormsquest_2018_killfrenzieddeathbursthusks_1": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillFrenziedDeathburstHusks_1.MutantStormsQuest_2018_KillFrenziedDeathburstHusks_1",
+    "mutantstormsquest_2018_killfrenzieddeathbursthusks_2": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillFrenziedDeathburstHusks_2.MutantStormsQuest_2018_KillFrenziedDeathburstHusks_2",
+    "mutantstormsquest_2018_killfrenzieddeathbursthusks_3": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillFrenziedDeathburstHusks_3.MutantStormsQuest_2018_KillFrenziedDeathburstHusks_3",
+    "mutantstormsquest_2018_killhealingdeathbursthusks_1": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillHealingDeathburstHusks_1.MutantStormsQuest_2018_KillHealingDeathburstHusks_1",
+    "mutantstormsquest_2018_killhealingdeathbursthusks_2": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillHealingDeathburstHusks_2.MutantStormsQuest_2018_KillHealingDeathburstHusks_2",
+    "mutantstormsquest_2018_killhealingdeathbursthusks_3": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillHealingDeathburstHusks_3.MutantStormsQuest_2018_KillHealingDeathburstHusks_3",
+    "mutantstormsquest_2018_killhuskstraps": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillHusksTraps.MutantStormsQuest_2018_KillHusksTraps",
+    "mutantstormsquest_2018_killlifeleechattackhusks_1": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillLifeLeechAttackHusks_1.MutantStormsQuest_2018_KillLifeLeechAttackHusks_1",
+    "mutantstormsquest_2018_killlifeleechattackhusks_2": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillLifeLeechAttackHusks_2.MutantStormsQuest_2018_KillLifeLeechAttackHusks_2",
+    "mutantstormsquest_2018_killlifeleechattackhusks_3": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillLifeLeechAttackHusks_3.MutantStormsQuest_2018_KillLifeLeechAttackHusks_3",
+    "mutantstormsquest_2018_killmetalcorrosionhusks_1": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillMetalCorrosionHusks_1.MutantStormsQuest_2018_KillMetalCorrosionHusks_1",
+    "mutantstormsquest_2018_killmetalcorrosionhusks_2": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillMetalCorrosionHusks_2.MutantStormsQuest_2018_KillMetalCorrosionHusks_2",
+    "mutantstormsquest_2018_killmetalcorrosionhusks_3": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillMetalCorrosionHusks_3.MutantStormsQuest_2018_KillMetalCorrosionHusks_3",
+    "mutantstormsquest_2018_killminibosses_repeatable": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillMiniBosses_Repeatable.MutantStormsQuest_2018_KillMiniBosses_Repeatable",
+    "mutantstormsquest_2018_killmistmonsters": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillMistMonsters.MutantStormsQuest_2018_KillMistMonsters",
+    "mutantstormsquest_2018_killquickenedhusks_1": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillQuickenedHusks_1.MutantStormsQuest_2018_KillQuickenedHusks_1",
+    "mutantstormsquest_2018_killquickenedhusks_2": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillQuickenedHusks_2.MutantStormsQuest_2018_KillQuickenedHusks_2",
+    "mutantstormsquest_2018_killquickenedhusks_3": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillQuickenedHusks_3.MutantStormsQuest_2018_KillQuickenedHusks_3",
+    "mutantstormsquest_2018_killwallweakeninghusks_1": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillWallWeakeningHusks_1.MutantStormsQuest_2018_KillWallWeakeningHusks_1",
+    "mutantstormsquest_2018_killwallweakeninghusks_2": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillWallWeakeningHusks_2.MutantStormsQuest_2018_KillWallWeakeningHusks_2",
+    "mutantstormsquest_2018_killwallweakeninghusks_3": "/Game/Quests/Events/MutantStorms2018/MutantStormsQuest_2018_KillWallWeakeningHusks_3.MutantStormsQuest_2018_KillWallWeakeningHusks_3",
+    "reactivequest_findcastles": "/Game/Quests/ReactiveQuests/ReactiveQuest_FindCastles.ReactiveQuest_FindCastles",
+    "reactivequest_findcatacombs": "/Game/Quests/ReactiveQuests/ReactiveQuest_FindCatacombs.ReactiveQuest_FindCatacombs",
+    "reactivequest_findcemetery": "/Game/Quests/ReactiveQuests/ReactiveQuest_FindCemetery.ReactiveQuest_FindCemetery",
+    "reactivequest_finddurrrburger": "/Game/Quests/ReactiveQuests/ReactiveQuest_FindDurrrburger.ReactiveQuest_FindDurrrburger",
+    "reactivequest_findgothicruins": "/Game/Quests/ReactiveQuests/ReactiveQuest_FindGothicRuins.ReactiveQuest_FindGothicRuins",
+    "reactivequest_findmansions": "/Game/Quests/ReactiveQuests/ReactiveQuest_FindMansions.ReactiveQuest_FindMansions",
+    "reactivequest_gathercollect_halloween_1": "/Game/Quests/ReactiveQuests/ReactiveQuest_GatherCollect_Halloween_1.ReactiveQuest_GatherCollect_Halloween_1",
+    "reactivequest_gathercollect_halloween_2": "/Game/Quests/ReactiveQuests/ReactiveQuest_GatherCollect_Halloween_2.ReactiveQuest_GatherCollect_Halloween_2",
+    "reactivequest_gathercollect_halloween_3": "/Game/Quests/ReactiveQuests/ReactiveQuest_GatherCollect_Halloween_3.ReactiveQuest_GatherCollect_Halloween_3",
+    "reactivequest_gathercollect_halloween_4": "/Game/Quests/ReactiveQuests/ReactiveQuest_GatherCollect_Halloween_4.ReactiveQuest_GatherCollect_Halloween_4",
+    "reactivequest_gathercollect_halloween_5": "/Game/Quests/ReactiveQuests/ReactiveQuest_GatherCollect_Halloween_5.ReactiveQuest_GatherCollect_Halloween_5",
+    "reactivequest_gathercollect_halloween_6": "/Game/Quests/ReactiveQuests/ReactiveQuest_GatherCollect_Halloween_6.ReactiveQuest_GatherCollect_Halloween_6",
+    "reactivequest_gatherhydraulic_1": "/Game/Quests/ReactiveQuests/ReactiveQuest_GatherHydraulic_1.ReactiveQuest_GatherHydraulic_1",
+    "reactivequest_gatherhydraulic_2": "/Game/Quests/ReactiveQuests/ReactiveQuest_GatherHydraulic_2.ReactiveQuest_GatherHydraulic_2",
+    "reactivequest_gatherhydraulic_3": "/Game/Quests/ReactiveQuests/ReactiveQuest_GatherHydraulic_3.ReactiveQuest_GatherHydraulic_3",
+    "reactivequest_halloween_destroy_1": "/Game/Quests/ReactiveQuests/ReactiveQuest_Halloween_Destroy_1.ReactiveQuest_Halloween_Destroy_1",
+    "reactivequest_halloween_destroy_10": "/Game/Quests/ReactiveQuests/ReactiveQuest_Halloween_Destroy_10.ReactiveQuest_Halloween_Destroy_10",
+    "reactivequest_halloween_destroy_2": "/Game/Quests/ReactiveQuests/ReactiveQuest_Halloween_Destroy_2.ReactiveQuest_Halloween_Destroy_2",
+    "reactivequest_halloween_destroy_3": "/Game/Quests/ReactiveQuests/ReactiveQuest_Halloween_Destroy_3.ReactiveQuest_Halloween_Destroy_3",
+    "reactivequest_halloween_destroy_4": "/Game/Quests/ReactiveQuests/ReactiveQuest_Halloween_Destroy_4.ReactiveQuest_Halloween_Destroy_4",
+    "reactivequest_halloween_destroy_5": "/Game/Quests/ReactiveQuests/ReactiveQuest_Halloween_Destroy_5.ReactiveQuest_Halloween_Destroy_5",
+    "reactivequest_halloween_destroy_6": "/Game/Quests/ReactiveQuests/ReactiveQuest_Halloween_Destroy_6.ReactiveQuest_Halloween_Destroy_6",
+    "reactivequest_halloween_destroy_7": "/Game/Quests/ReactiveQuests/ReactiveQuest_Halloween_Destroy_7.ReactiveQuest_Halloween_Destroy_7",
+    "reactivequest_halloween_destroy_8": "/Game/Quests/ReactiveQuests/ReactiveQuest_Halloween_Destroy_8.ReactiveQuest_Halloween_Destroy_8",
+    "reactivequest_halloween_destroy_9": "/Game/Quests/ReactiveQuests/ReactiveQuest_Halloween_Destroy_9.ReactiveQuest_Halloween_Destroy_9",
+    "reactivequest_halloween_fetch_1": "/Game/Quests/ReactiveQuests/ReactiveQuest_Halloween_Fetch_1.ReactiveQuest_Halloween_Fetch_1",
+    "reactivequest_halloween_fetch_2": "/Game/Quests/ReactiveQuests/ReactiveQuest_Halloween_Fetch_2.ReactiveQuest_Halloween_Fetch_2",
+    "reactivequest_halloween_fetch_3": "/Game/Quests/ReactiveQuests/ReactiveQuest_Halloween_Fetch_3.ReactiveQuest_Halloween_Fetch_3",
+    "reactivequest_halloween_fetch_4": "/Game/Quests/ReactiveQuests/ReactiveQuest_Halloween_Fetch_4.ReactiveQuest_Halloween_Fetch_4",
+    "reactivequest_halloween_fetch_5": "/Game/Quests/ReactiveQuests/ReactiveQuest_Halloween_Fetch_5.ReactiveQuest_Halloween_Fetch_5",
+    "reactivequest_halloween_fetch_6": "/Game/Quests/ReactiveQuests/ReactiveQuest_Halloween_Fetch_6.ReactiveQuest_Halloween_Fetch_6",
+    "reactivequest_halloween_fetch_7": "/Game/Quests/ReactiveQuests/ReactiveQuest_Halloween_Fetch_7.ReactiveQuest_Halloween_Fetch_7",
+    "reactivequest_halloween_killcollect_pumpkinhusks": "/Game/Quests/ReactiveQuests/ReactiveQuest_Halloween_KillCollect_PumpkinHusks.ReactiveQuest_Halloween_KillCollect_PumpkinHusks",
+    "reactivequest_halloween_killcollect_taker": "/Game/Quests/ReactiveQuests/ReactiveQuest_Halloween_KillCollect_Taker.ReactiveQuest_Halloween_KillCollect_Taker",
+    "reactivequest_scavenger_1": "/Game/Quests/ReactiveQuests/ReactiveQuest_Scavenger_1.ReactiveQuest_Scavenger_1",
+    "reactivequest_scavenger_2": "/Game/Quests/ReactiveQuests/ReactiveQuest_Scavenger_2.ReactiveQuest_Scavenger_2",
+    "reactivequest_shielders": "/Game/Quests/ReactiveQuests/ReactiveQuest_Shielders.ReactiveQuest_Shielders",
+    "scavengerquest_completeexpeditions": "/Game/Quests/Events/Scavenger/ScavengerQuest_CompleteExpeditions.ScavengerQuest_CompleteExpeditions",
+    "scavengerquest_completestormzones": "/Game/Quests/Events/Scavenger/ScavengerQuest_CompleteStormZones.ScavengerQuest_CompleteStormZones",
+    "scavengerquest_evolve_scavenger": "/Game/Quests/Events/Scavenger/ScavengerQuest_Evolve_Scavenger.ScavengerQuest_Evolve_Scavenger",
+    "scavengerquest_killhusks_1": "/Game/Quests/Events/Scavenger/ScavengerQuest_KillHusks_1.ScavengerQuest_KillHusks_1",
+    "scavengerquest_killhusks_10": "/Game/Quests/Events/Scavenger/ScavengerQuest_KillHusks_10.ScavengerQuest_KillHusks_10",
+    "scavengerquest_killhusks_2": "/Game/Quests/Events/Scavenger/ScavengerQuest_KillHusks_2.ScavengerQuest_KillHusks_2",
+    "scavengerquest_killhusks_3": "/Game/Quests/Events/Scavenger/ScavengerQuest_KillHusks_3.ScavengerQuest_KillHusks_3",
+    "scavengerquest_killhusks_4": "/Game/Quests/Events/Scavenger/ScavengerQuest_KillHusks_4.ScavengerQuest_KillHusks_4",
+    "scavengerquest_killhusks_5": "/Game/Quests/Events/Scavenger/ScavengerQuest_KillHusks_5.ScavengerQuest_KillHusks_5",
+    "scavengerquest_killhusks_6": "/Game/Quests/Events/Scavenger/ScavengerQuest_KillHusks_6.ScavengerQuest_KillHusks_6",
+    "scavengerquest_killhusks_7": "/Game/Quests/Events/Scavenger/ScavengerQuest_KillHusks_7.ScavengerQuest_KillHusks_7",
+    "scavengerquest_killhusks_8": "/Game/Quests/Events/Scavenger/ScavengerQuest_KillHusks_8.ScavengerQuest_KillHusks_8",
+    "scavengerquest_killhusks_9": "/Game/Quests/Events/Scavenger/ScavengerQuest_KillHusks_9.ScavengerQuest_KillHusks_9",
+    "scavengerquest_levelup_collection_1": "/Game/Quests/Events/Scavenger/ScavengerQuest_LevelUp_Collection_1.ScavengerQuest_LevelUp_Collection_1",
+    "scavengerquest_levelup_collection_2": "/Game/Quests/Events/Scavenger/ScavengerQuest_LevelUp_Collection_2.ScavengerQuest_LevelUp_Collection_2",
+    "scavengerquest_levelup_scavenger": "/Game/Quests/Events/Scavenger/ScavengerQuest_LevelUp_Scavenger.ScavengerQuest_LevelUp_Scavenger",
+    "scavengerquest_missionalert_constructor": "/Game/Quests/Events/Scavenger/ScavengerQuest_MissionAlert_Constructor.ScavengerQuest_MissionAlert_Constructor",
+    "scavengerquest_missionalert_ninja": "/Game/Quests/Events/Scavenger/ScavengerQuest_MissionAlert_Ninja.ScavengerQuest_MissionAlert_Ninja",
+    "scavengerquest_missionalert_outlander": "/Game/Quests/Events/Scavenger/ScavengerQuest_MissionAlert_Outlander.ScavengerQuest_MissionAlert_Outlander",
+    "scavengerquest_missionalert_soldier": "/Game/Quests/Events/Scavenger/ScavengerQuest_MissionAlert_Soldier.ScavengerQuest_MissionAlert_Soldier",
+    "scavengerquest_purchasellama": "/Game/Quests/Events/Scavenger/ScavengerQuest_PurchaseLlama.ScavengerQuest_PurchaseLlama",
+    "springquest_2018_build_trojan_bunny": "/Game/Quests/Events/Spring2018/SpringQuest_2018_Build_Trojan_Bunny.SpringQuest_2018_Build_Trojan_Bunny",
+    "springquest_2018_complete_bumpeddifficulty": "/Game/Quests/Events/Spring2018/SpringQuest_2018_Complete_BumpedDifficulty.SpringQuest_2018_Complete_BumpedDifficulty",
+    "springquest_2018_complete_fireworkclusters": "/Game/Quests/Events/Spring2018/SpringQuest_2018_Complete_FireworkClusters.SpringQuest_2018_Complete_FireworkClusters",
+    "springquest_2018_evolvedragonweapon": "/Game/Quests/Events/Spring2018/SpringQuest_2018_EvolveDragonWeapon.SpringQuest_2018_EvolveDragonWeapon",
+    "springquest_2018_killhusksdragonweapon": "/Game/Quests/Events/Spring2018/SpringQuest_2018_KillHusksDragonWeapon.SpringQuest_2018_KillHusksDragonWeapon",
+    "springquest_2018_killhusksmelee": "/Game/Quests/Events/Spring2018/SpringQuest_2018_KillHusksMelee.SpringQuest_2018_KillHusksMelee",
+    "springquest_2018_killmistmonstersdragonweapon": "/Game/Quests/Events/Spring2018/SpringQuest_2018_KillMistMonstersDragonWeapon.SpringQuest_2018_KillMistMonstersDragonWeapon",
+    "springquest_2018_reactive_cctv_cameras": "/Game/Quests/Events/Spring2018/SpringQuest_2018_Reactive_CCTV_Cameras.SpringQuest_2018_Reactive_CCTV_Cameras",
+    "springquest_2018_reactive_clothing": "/Game/Quests/Events/Spring2018/SpringQuest_2018_Reactive_Clothing.SpringQuest_2018_Reactive_Clothing",
+    "springquest_2018_reactive_egghunt": "/Game/Quests/Events/Spring2018/SpringQuest_2018_Reactive_EggHunt.SpringQuest_2018_Reactive_EggHunt",
+    "springquest_2018_reactive_fireworks": "/Game/Quests/Events/Spring2018/SpringQuest_2018_Reactive_Fireworks.SpringQuest_2018_Reactive_Fireworks",
+    "springquest_2018_reactive_fireworks_repeatable": "/Game/Quests/Events/Spring2018/SpringQuest_2018_Reactive_Fireworks_Repeatable.SpringQuest_2018_Reactive_Fireworks_Repeatable",
+    "springquest_2018_reactive_fountains": "/Game/Quests/Events/Spring2018/SpringQuest_2018_Reactive_Fountains.SpringQuest_2018_Reactive_Fountains",
+    "springquest_2018_reactive_garden_gnomes": "/Game/Quests/Events/Spring2018/SpringQuest_2018_Reactive_Garden_Gnomes.SpringQuest_2018_Reactive_Garden_Gnomes",
+    "springquest_2018_reactive_gymstuff": "/Game/Quests/Events/Spring2018/SpringQuest_2018_Reactive_GymStuff.SpringQuest_2018_Reactive_GymStuff",
+    "springquest_2018_reactive_huntminiboss_finale": "/Game/Quests/Events/Spring2018/SpringQuest_2018_Reactive_HuntMiniboss_Finale.SpringQuest_2018_Reactive_HuntMiniboss_Finale",
+    "springquest_2018_reactive_killcollect_clovers": "/Game/Quests/Events/Spring2018/SpringQuest_2018_Reactive_KillCollect_Clovers.SpringQuest_2018_Reactive_KillCollect_Clovers",
+    "springquest_2018_reactive_lanterns": "/Game/Quests/Events/Spring2018/SpringQuest_2018_Reactive_Lanterns.SpringQuest_2018_Reactive_Lanterns",
+    "springquest_2018_reactive_leprechaun_traps": "/Game/Quests/Events/Spring2018/SpringQuest_2018_Reactive_Leprechaun_Traps.SpringQuest_2018_Reactive_Leprechaun_Traps",
+    "springquest_2018_reactive_locationdiscovery_pub": "/Game/Quests/Events/Spring2018/SpringQuest_2018_Reactive_LocationDiscovery_Pub.SpringQuest_2018_Reactive_LocationDiscovery_Pub",
+    "springquest_2018_reactive_potsofgold": "/Game/Quests/Events/Spring2018/SpringQuest_2018_Reactive_PotsOfGold.SpringQuest_2018_Reactive_PotsOfGold",
+    "springquest_2018_reactive_quotes": "/Game/Quests/Events/Spring2018/SpringQuest_2018_Reactive_Quotes.SpringQuest_2018_Reactive_Quotes",
+    "springquest_2018_reactive_rescueval": "/Game/Quests/Events/Spring2018/SpringQuest_2018_Reactive_RescueVal.SpringQuest_2018_Reactive_RescueVal",
+    "springquest_2018_reactive_tents": "/Game/Quests/Events/Spring2018/SpringQuest_2018_Reactive_Tents.SpringQuest_2018_Reactive_Tents",
+    "springquest_2018_reactive_vhs": "/Game/Quests/Events/Spring2018/SpringQuest_2018_Reactive_VHS.SpringQuest_2018_Reactive_VHS",
+    "springquest_2018_starterhidden": "/Game/Quests/Events/Spring2018/SpringQuest_2018_StarterHidden.SpringQuest_2018_StarterHidden",
+    "stonewoodquest_ability_hoverboard": "/Game/Quests/Stonewood/StonewoodQuest_Ability_Hoverboard.StonewoodQuest_Ability_Hoverboard",
+    "stonewoodquest_reactive_fetch_hoverboard": "/Game/Quests/Stonewood/StonewoodQuest_Reactive_Fetch_Hoverboard.StonewoodQuest_Reactive_Fetch_Hoverboard",
+    "stormquest_2018_completestormzones_repeatable": "/Game/Quests/Events/Storm2018/StormQuest_2018_CompleteStormZones_Repeatable.StormQuest_2018_CompleteStormZones_Repeatable",
+    "stormquest_2018_completesurvive7day_d1": "/Game/Quests/Events/Storm2018/StormQuest_2018_CompleteSurvive7Day_D1.StormQuest_2018_CompleteSurvive7Day_D1",
+    "stormquest_2018_completesurvive7day_d2": "/Game/Quests/Events/Storm2018/StormQuest_2018_CompleteSurvive7Day_D2.StormQuest_2018_CompleteSurvive7Day_D2",
+    "stormquest_2018_completesurvive7day_d3": "/Game/Quests/Events/Storm2018/StormQuest_2018_CompleteSurvive7Day_D3.StormQuest_2018_CompleteSurvive7Day_D3",
+    "stormquest_2018_completesurviveany": "/Game/Quests/Events/Storm2018/StormQuest_2018_CompleteSurviveAny.StormQuest_2018_CompleteSurviveAny",
+    "stormquest_2018_hidden_1": "/Game/Quests/Events/Storm2018/StormQuest_2018_Hidden_1.StormQuest_2018_Hidden_1",
+    "stormquest_2018_hidden_watchvideo": "/Game/Quests/Events/Storm2018/StormQuest_2018_Hidden_WatchVideo.StormQuest_2018_Hidden_WatchVideo",
+    "stormquest_2018_landmark_lars": "/Game/Quests/Events/Storm2018/StormQuest_2018_Landmark_Lars.StormQuest_2018_Landmark_Lars",
+    "stormquest_2018_landmark_observe": "/Game/Quests/Events/Storm2018/StormQuest_2018_Landmark_Observe.StormQuest_2018_Landmark_Observe",
+    "stormquest_2018_reactive_acparts": "/Game/Quests/Events/Storm2018/StormQuest_2018_Reactive_ACParts.StormQuest_2018_Reactive_ACParts",
+    "stormquest_2018_reactive_equipment": "/Game/Quests/Events/Storm2018/StormQuest_2018_Reactive_Equipment.StormQuest_2018_Reactive_Equipment",
+    "stormquest_2018_reactive_hoverboards": "/Game/Quests/Events/Storm2018/StormQuest_2018_Reactive_Hoverboards.StormQuest_2018_Reactive_Hoverboards",
+    "stormquest_2018_reactive_huskdata": "/Game/Quests/Events/Storm2018/StormQuest_2018_Reactive_HuskData.StormQuest_2018_Reactive_HuskData",
+    "stormquest_2018_reactive_insulators": "/Game/Quests/Events/Storm2018/StormQuest_2018_Reactive_Insulators.StormQuest_2018_Reactive_Insulators",
+    "stormquest_2018_reactive_maps": "/Game/Quests/Events/Storm2018/StormQuest_2018_Reactive_Maps.StormQuest_2018_Reactive_Maps",
+    "stormquest_2018_reactive_payphones": "/Game/Quests/Events/Storm2018/StormQuest_2018_Reactive_Payphones.StormQuest_2018_Reactive_Payphones",
+    "stormquest_2018_reactive_records": "/Game/Quests/Events/Storm2018/StormQuest_2018_Reactive_Records.StormQuest_2018_Reactive_Records",
+    "stormquest_2018_reactive_research": "/Game/Quests/Events/Storm2018/StormQuest_2018_Reactive_Research.StormQuest_2018_Reactive_Research",
+    "stormquest_2018_reactive_servers": "/Game/Quests/Events/Storm2018/StormQuest_2018_Reactive_Servers.StormQuest_2018_Reactive_Servers",
+    "stormquest_2018_reactive_servicecars": "/Game/Quests/Events/Storm2018/StormQuest_2018_Reactive_ServiceCars.StormQuest_2018_Reactive_ServiceCars",
+    "stormquest_2018_reactive_skyatlases": "/Game/Quests/Events/Storm2018/StormQuest_2018_Reactive_SkyAtlases.StormQuest_2018_Reactive_SkyAtlases",
+    "stormquest_2018_reactive_speakers": "/Game/Quests/Events/Storm2018/StormQuest_2018_Reactive_Speakers.StormQuest_2018_Reactive_Speakers",
+    "stormquest_2018_reactive_telescopes": "/Game/Quests/Events/Storm2018/StormQuest_2018_Reactive_Telescopes.StormQuest_2018_Reactive_Telescopes",
+    "survivalmodequest_14days_d1": "/Game/Quests/Events/SurvivalMode/SurvivalModeQuest_14Days_D1.SurvivalModeQuest_14Days_D1",
+    "survivalmodequest_14days_d2": "/Game/Quests/Events/SurvivalMode/SurvivalModeQuest_14Days_D2.SurvivalModeQuest_14Days_D2",
+    "survivalmodequest_14days_d3": "/Game/Quests/Events/SurvivalMode/SurvivalModeQuest_14Days_D3.SurvivalModeQuest_14Days_D3",
+    "survivalmodequest_anymode": "/Game/Quests/Events/SurvivalMode/SurvivalModeQuest_AnyMode.SurvivalModeQuest_AnyMode",
+    "survivalmodequest_anymode_3missions": "/Game/Quests/Events/SurvivalMode/SurvivalModeQuest_AnyMode_3Missions.SurvivalModeQuest_AnyMode_3Missions",
+    "survivalmodequest_plankertondiff_7missions": "/Game/Quests/Events/SurvivalMode/SurvivalModeQuest_PlankertonDiff_7Missions.SurvivalModeQuest_PlankertonDiff_7Missions",
+    "testquestalterations": "/Game/Quests/TestQuests/TestQuestAlterations.TestQuestAlterations",
+    "testquestblockbuster2018": "/Game/Quests/TestQuests/TestQuestBlockbuster2018.TestQuestBlockbuster2018",
+    "testquestrevive": "/Game/Quests/TestQuests/TestQuestRevive.TestQuestRevive",
+    "twinepeaksquest_outpost_l2": "/Game/Quests/Outpost/TwinePeaksQuest_Outpost_L2.TwinePeaksQuest_Outpost_L2",
+    "twinepeaksquest_outpost_l3": "/Game/Quests/Outpost/TwinePeaksQuest_Outpost_L3.TwinePeaksQuest_Outpost_L3",
+    "twinepeaksquest_outpost_l4": "/Game/Quests/Outpost/TwinePeaksQuest_Outpost_L4.TwinePeaksQuest_Outpost_L4",
+    "twinepeaksquest_outpost_l5": "/Game/Quests/Outpost/TwinePeaksQuest_Outpost_L5.TwinePeaksQuest_Outpost_L5",
+    "twinepeaksquest_outpost_l6": "/Game/Quests/Outpost/TwinePeaksQuest_Outpost_L6.TwinePeaksQuest_Outpost_L6",
+    "vindertechquest_completeexplorezones": "/Game/Quests/Events/Vindertech/VindertechQuest_CompleteExploreZones.VindertechQuest_CompleteExploreZones",
+    "vindertechquest_completesafes": "/Game/Quests/Events/Vindertech/VindertechQuest_CompleteSafes.VindertechQuest_CompleteSafes",
+    "vindertechquest_completestorms": "/Game/Quests/Events/Vindertech/VindertechQuest_CompleteStorms.VindertechQuest_CompleteStorms",
+    "vindertechquest_completestorms_1": "/Game/Quests/Events/Vindertech/VindertechQuest_CompleteStorms_1.VindertechQuest_CompleteStorms_1",
+    "vindertechquest_completestorms_2": "/Game/Quests/Events/Vindertech/VindertechQuest_CompleteStorms_2.VindertechQuest_CompleteStorms_2",
+    "vindertechquest_completestorms_3": "/Game/Quests/Events/Vindertech/VindertechQuest_CompleteStorms_3.VindertechQuest_CompleteStorms_3",
+    "vindertechquest_completestorms_4": "/Game/Quests/Events/Vindertech/VindertechQuest_CompleteStorms_4.VindertechQuest_CompleteStorms_4",
+    "vindertechquest_completestorms_5": "/Game/Quests/Events/Vindertech/VindertechQuest_CompleteStorms_5.VindertechQuest_CompleteStorms_5",
+    "vindertechquest_completestorms_6": "/Game/Quests/Events/Vindertech/VindertechQuest_CompleteStorms_6.VindertechQuest_CompleteStorms_6",
+    "vindertechquest_completestorms_7": "/Game/Quests/Events/Vindertech/VindertechQuest_CompleteStorms_7.VindertechQuest_CompleteStorms_7",
+    "vindertechquest_completestorms_8": "/Game/Quests/Events/Vindertech/VindertechQuest_CompleteStorms_8.VindertechQuest_CompleteStorms_8",
+    "vindertechquest_completestorms_melee": "/Game/Quests/Events/Vindertech/VindertechQuest_CompleteStorms_Melee.VindertechQuest_CompleteStorms_Melee",
+    "vindertechquest_completestorms_ranged": "/Game/Quests/Events/Vindertech/VindertechQuest_CompleteStorms_Ranged.VindertechQuest_CompleteStorms_Ranged",
+    "vindertechquest_completetreasurechests": "/Game/Quests/Events/Vindertech/VindertechQuest_CompleteTreasureChests.VindertechQuest_CompleteTreasureChests",
+    "vindertechquest_evolve_vindertech": "/Game/Quests/Events/Vindertech/VindertechQuest_Evolve_Vindertech.VindertechQuest_Evolve_Vindertech",
+    "vindertechquest_explorezones_1": "/Game/Quests/Events/Vindertech/VindertechQuest_ExploreZones_1.VindertechQuest_ExploreZones_1",
+    "vindertechquest_explorezones_2": "/Game/Quests/Events/Vindertech/VindertechQuest_ExploreZones_2.VindertechQuest_ExploreZones_2",
+    "vindertechquest_explorezones_3": "/Game/Quests/Events/Vindertech/VindertechQuest_ExploreZones_3.VindertechQuest_ExploreZones_3",
+    "vindertechquest_explorezones_4": "/Game/Quests/Events/Vindertech/VindertechQuest_ExploreZones_4.VindertechQuest_ExploreZones_4",
+    "vindertechquest_explorezones_5": "/Game/Quests/Events/Vindertech/VindertechQuest_ExploreZones_5.VindertechQuest_ExploreZones_5",
+    "vindertechquest_explorezones_6": "/Game/Quests/Events/Vindertech/VindertechQuest_ExploreZones_6.VindertechQuest_ExploreZones_6",
+    "vindertechquest_explorezones_7": "/Game/Quests/Events/Vindertech/VindertechQuest_ExploreZones_7.VindertechQuest_ExploreZones_7",
+    "vindertechquest_explorezones_8": "/Game/Quests/Events/Vindertech/VindertechQuest_ExploreZones_8.VindertechQuest_ExploreZones_8",
+    "vindertechquest_killenragedhuskyhusks": "/Game/Quests/Events/Vindertech/VindertechQuest_KillEnragedHuskyHusks.VindertechQuest_KillEnragedHuskyHusks",
+    "vindertechquest_killquickenedpitchers": "/Game/Quests/Events/Vindertech/VindertechQuest_KillQuickenedPitchers.VindertechQuest_KillQuickenedPitchers",
+    "vindertechquest_killwallweakeninglobbers": "/Game/Quests/Events/Vindertech/VindertechQuest_KillWallWeakeningLobbers.VindertechQuest_KillWallWeakeningLobbers",
+    "vindertechquest_levelup_vindertech": "/Game/Quests/Events/Vindertech/VindertechQuest_LevelUp_Vindertech.VindertechQuest_LevelUp_Vindertech",
+    "vindertechquest_safes_1": "/Game/Quests/Events/Vindertech/VindertechQuest_Safes_1.VindertechQuest_Safes_1",
+    "vindertechquest_safes_2": "/Game/Quests/Events/Vindertech/VindertechQuest_Safes_2.VindertechQuest_Safes_2",
+    "vindertechquest_safes_3": "/Game/Quests/Events/Vindertech/VindertechQuest_Safes_3.VindertechQuest_Safes_3",
+    "vindertechquest_safes_4": "/Game/Quests/Events/Vindertech/VindertechQuest_Safes_4.VindertechQuest_Safes_4",
+    "vindertechquest_safes_5": "/Game/Quests/Events/Vindertech/VindertechQuest_Safes_5.VindertechQuest_Safes_5",
+    "vindertechquest_safes_6": "/Game/Quests/Events/Vindertech/VindertechQuest_Safes_6.VindertechQuest_Safes_6",
+    "vindertechquest_safes_7": "/Game/Quests/Events/Vindertech/VindertechQuest_Safes_7.VindertechQuest_Safes_7",
+    "vindertechquest_safes_8": "/Game/Quests/Events/Vindertech/VindertechQuest_Safes_8.VindertechQuest_Safes_8",
+    "vindertechquest_treasurechests_1": "/Game/Quests/Events/Vindertech/VindertechQuest_TreasureChests_1.VindertechQuest_TreasureChests_1",
+    "vindertechquest_treasurechests_2": "/Game/Quests/Events/Vindertech/VindertechQuest_TreasureChests_2.VindertechQuest_TreasureChests_2",
+    "vindertechquest_treasurechests_3": "/Game/Quests/Events/Vindertech/VindertechQuest_TreasureChests_3.VindertechQuest_TreasureChests_3",
+    "vindertechquest_treasurechests_4": "/Game/Quests/Events/Vindertech/VindertechQuest_TreasureChests_4.VindertechQuest_TreasureChests_4",
+    "vindertechquest_treasurechests_5": "/Game/Quests/Events/Vindertech/VindertechQuest_TreasureChests_5.VindertechQuest_TreasureChests_5",
+    "vindertechquest_treasurechests_6": "/Game/Quests/Events/Vindertech/VindertechQuest_TreasureChests_6.VindertechQuest_TreasureChests_6",
+    "vindertechquest_treasurechests_7": "/Game/Quests/Events/Vindertech/VindertechQuest_TreasureChests_7.VindertechQuest_TreasureChests_7",
+    "vindertechquest_treasurechests_8": "/Game/Quests/Events/Vindertech/VindertechQuest_TreasureChests_8.VindertechQuest_TreasureChests_8",
+    "winterquest_2017_complete_presentdrop_repeatable": "/Game/Quests/Events/Winter2017/WinterQuest_2017_Complete_PresentDrop_Repeatable.WinterQuest_2017_Complete_PresentDrop_Repeatable",
+    "winterquest_2017_completesurvive7day_d1": "/Game/Quests/Events/Winter2017/WinterQuest_2017_CompleteSurvive7Day_D1.WinterQuest_2017_CompleteSurvive7Day_D1",
+    "winterquest_2017_completesurvive7day_d2": "/Game/Quests/Events/Winter2017/WinterQuest_2017_CompleteSurvive7Day_D2.WinterQuest_2017_CompleteSurvive7Day_D2",
+    "winterquest_2017_completesurvive7day_d3": "/Game/Quests/Events/Winter2017/WinterQuest_2017_CompleteSurvive7Day_D3.WinterQuest_2017_CompleteSurvive7Day_D3",
+    "winterquest_2017_completesurviveany": "/Game/Quests/Events/Winter2017/WinterQuest_2017_CompleteSurviveAny.WinterQuest_2017_CompleteSurviveAny",
+    "winterquest_2017_hidden_1": "/Game/Quests/Events/Winter2017/WinterQuest_2017_Hidden_1.WinterQuest_2017_Hidden_1",
+    "winterquest_2017_hidden_watchvideo": "/Game/Quests/Events/Winter2017/WinterQuest_2017_Hidden_WatchVideo.WinterQuest_2017_Hidden_WatchVideo",
+    "winterquest_2017_killcoallobbers": "/Game/Quests/Events/Winter2017/WinterQuest_2017_KillCoalLobbers.WinterQuest_2017_KillCoalLobbers",
+    "winterquest_2017_killevilhelpers": "/Game/Quests/Events/Winter2017/WinterQuest_2017_KillEvilHelpers.WinterQuest_2017_KillEvilHelpers",
+    "winterquest_2017_killmallsantas": "/Game/Quests/Events/Winter2017/WinterQuest_2017_KillMallSantas.WinterQuest_2017_KillMallSantas",
+    "winterquest_2017_killminibosses": "/Game/Quests/Events/Winter2017/WinterQuest_2017_KillMiniBosses.WinterQuest_2017_KillMiniBosses",
+    "winterquest_2017_killminibosses_repeatable": "/Game/Quests/Events/Winter2017/WinterQuest_2017_KillMiniBosses_Repeatable.WinterQuest_2017_KillMiniBosses_Repeatable",
+    "winterquest_2017_killmistmonsters": "/Game/Quests/Events/Winter2017/WinterQuest_2017_KillMistMonsters.WinterQuest_2017_KillMistMonsters",
+    "winterquest_2017_larslandmarkmission": "/Game/Quests/Events/Winter2017/WinterQuest_2017_LarsLandmarkMission.WinterQuest_2017_LarsLandmarkMission",
+    "winterquest_2017_reactive_fetch_collectpresent": "/Game/Quests/Events/Winter2017/WinterQuest_2017_Reactive_Fetch_CollectPresent.WinterQuest_2017_Reactive_Fetch_CollectPresent",
+    "winterquest_2017_reactive_fetch_decorations": "/Game/Quests/Events/Winter2017/WinterQuest_2017_Reactive_Fetch_Decorations.WinterQuest_2017_Reactive_Fetch_Decorations",
+    "winterquest_2017_reactive_fetch_deploytrees": "/Game/Quests/Events/Winter2017/WinterQuest_2017_Reactive_Fetch_DeployTrees.WinterQuest_2017_Reactive_Fetch_DeployTrees",
+    "winterquest_2017_reactive_fetch_packingpresents": "/Game/Quests/Events/Winter2017/WinterQuest_2017_Reactive_Fetch_PackingPresents.WinterQuest_2017_Reactive_Fetch_PackingPresents",
+    "winterquest_2017_reactive_fetch_radios": "/Game/Quests/Events/Winter2017/WinterQuest_2017_Reactive_Fetch_Radios.WinterQuest_2017_Reactive_Fetch_Radios",
+    "winterquest_2017_reactive_frozentroll": "/Game/Quests/Events/Winter2017/WinterQuest_2017_Reactive_FrozenTroll.WinterQuest_2017_Reactive_FrozenTroll",
+    "winterquest_2017_reactive_gather_books": "/Game/Quests/Events/Winter2017/WinterQuest_2017_Reactive_Gather_Books.WinterQuest_2017_Reactive_Gather_Books",
+    "winterquest_2017_reactive_gather_fridges": "/Game/Quests/Events/Winter2017/WinterQuest_2017_Reactive_Gather_Fridges.WinterQuest_2017_Reactive_Gather_Fridges",
+    "winterquest_2017_reactive_gather_fruitnuts": "/Game/Quests/Events/Winter2017/WinterQuest_2017_Reactive_Gather_FruitNuts.WinterQuest_2017_Reactive_Gather_FruitNuts",
+    "winterquest_2017_reactive_gather_trafficlights": "/Game/Quests/Events/Winter2017/WinterQuest_2017_Reactive_Gather_TrafficLights.WinterQuest_2017_Reactive_Gather_TrafficLights",
+    "winterquest_2017_reactive_gather_trees": "/Game/Quests/Events/Winter2017/WinterQuest_2017_Reactive_Gather_Trees.WinterQuest_2017_Reactive_Gather_Trees",
+    "winterquest_2017_reactive_presents_hidden": "/Game/Quests/Events/Winter2017/WinterQuest_2017_Reactive_Presents_Hidden.WinterQuest_2017_Reactive_Presents_Hidden"
+  },
+  "theaterTags": [
+    "Theater.MainProgression"
+  ],
+  "zoneThemes": {
+    "/Game/World/ZoneThemes/FortniteSurvival/BP_ZT_Survival.BP_ZT_Survival_C": {
+      "name": "Fortnite Survival Prototype",
+      "parent": "FortZoneTheme",
+      "tileClass": "/Game/World/ZoneThemes/ZT_Arid/BP_Hex_Arid01"
+    },
+    "/Game/World/ZoneThemes/Horde/BP_ZT_BuildTheBase_Desert.BP_ZT_BuildTheBase_Desert_C": {
+      "name": "Fort Setup",
+      "parent": "FortZoneTheme",
+      "tileClass": "/Game/World/ZoneThemes/Horde/BP_Hex_BuildTheBase_Desert"
+    },
+    "/Game/World/ZoneThemes/Horde/Canny/BP_ZT_ChallengeTheHorde_Canny_M.BP_ZT_ChallengeTheHorde_Canny_M_C": {
+      "name": "Tier 3",
+      "parent": "FortZoneTheme",
+      "tileClass": "/Game/World/ZoneThemes/ZT_Arid/BP_Hex_Arid01"
+    },
+    "/Game/World/ZoneThemes/Horde/Canny/BP_ZT_ChallengeTheHorde_Canny_VH.BP_ZT_ChallengeTheHorde_Canny_VH_C": {
+      "name": "Tier 3",
+      "parent": "FortZoneTheme",
+      "tileClass": "/Game/World/ZoneThemes/ZT_Arid/BP_Hex_Arid01"
+    },
+    "/Game/World/ZoneThemes/Horde/Canny/BP_ZT_ChallengeTheHorde_Canny_VL.BP_ZT_ChallengeTheHorde_Canny_VL_C": {
+      "name": "Tier 3",
+      "parent": "FortZoneTheme",
+      "tileClass": "/Game/World/ZoneThemes/ZT_Arid/BP_Hex_Arid01"
+    },
+    "/Game/World/ZoneThemes/Horde/Plankerton/BP_ZT_ChallengeTheHorde_Plank_M.BP_ZT_ChallengeTheHorde_Plank_M_C": {
+      "name": "Tier 2",
+      "parent": "FortZoneTheme",
+      "tileClass": "/Game/World/ZoneThemes/ZT_Arid/BP_Hex_Arid01"
+    },
+    "/Game/World/ZoneThemes/Horde/Plankerton/BP_ZT_ChallengeTheHorde_Plank_VH.BP_ZT_ChallengeTheHorde_Plank_VH_C": {
+      "name": "Tier 2",
+      "parent": "FortZoneTheme",
+      "tileClass": "/Game/World/ZoneThemes/ZT_Arid/BP_Hex_Arid01"
+    },
+    "/Game/World/ZoneThemes/Horde/Plankerton/BP_ZT_ChallengeTheHorde_Plank_VL.BP_ZT_ChallengeTheHorde_Plank_VL_C": {
+      "name": "Tier 2",
+      "parent": "FortZoneTheme",
+      "tileClass": "/Game/World/ZoneThemes/ZT_Arid/BP_Hex_Arid01"
+    },
+    "/Game/World/ZoneThemes/Horde/Stonewood/BP_ZT_ChallengeTheHorde_SW_H.BP_ZT_ChallengeTheHorde_SW_H_C": {
+      "name": "Tier 1",
+      "parent": "FortZoneTheme",
+      "tileClass": "/Game/World/ZoneThemes/ZT_Arid/BP_Hex_Arid01"
+    },
+    "/Game/World/ZoneThemes/Horde/Stonewood/BP_ZT_ChallengeTheHorde_SW_VH.BP_ZT_ChallengeTheHorde_SW_VH_C": {
+      "name": "Tier 1",
+      "parent": "FortZoneTheme",
+      "tileClass": "/Game/World/ZoneThemes/ZT_Arid/BP_Hex_Arid01"
+    },
+    "/Game/World/ZoneThemes/Horde/Twinepeaks/BP_ZT_ChallengeTheHorde_Twine.BP_ZT_ChallengeTheHorde_Twine_C": {
+      "name": "Tier 4",
+      "parent": "FortZoneTheme",
+      "tileClass": "/Game/World/ZoneThemes/ZT_Arid/BP_Hex_Arid01"
+    },
+    "/Game/World/ZoneThemes/Landmarks/ZT_TheCrater/BP_ZT_TheCrater.BP_ZT_TheCrater_C": {
+      "name": "The Crater",
+      "parent": "BP_ZT_PVE_C",
+      "tileClass": "/Game/World/ZoneThemes/ZT_TheCity/BP_Hex_TheCity"
+    },
+    "/Game/World/ZoneThemes/PvP/BP_ZT_Athena.BP_ZT_Athena_C": {
+      "name": "[Experimental] PvP Athena",
+      "parent": "FortZoneTheme",
+      "tileClass": "/Game/World/ZoneThemes/ZT_TheForest/BP_Hex_TheForest"
+    },
+    "/Game/World/ZoneThemes/PvP/BP_ZT_Athena_Faceoff.BP_ZT_Athena_Faceoff_C": {
+      "name": "[Experimental] Fortnite PvP",
+      "parent": "FortZoneTheme",
+      "tileClass": "/Game/World/ZoneThemes/ZT_TheIndustrialPark/BP_Hex_TheIndustrialPark"
+    },
+    "/Game/World/ZoneThemes/TestZoneThemes/BP_ZT_PerfMem.BP_ZT_PerfMem_C": {
+      "name": "PerfMem City",
+      "parent": "BP_ZT_PVE_C",
+      "tileClass": "/Game/World/ZoneThemes/ZT_TheCity/BP_Hex_TheCity"
+    },
+    "/Game/World/ZoneThemes/ZT_Arid/BP_ZT_Desert.BP_ZT_Desert_C": {
+      "name": "Desert",
+      "parent": "BP_ZT_PVE_C",
+      "tags": [
+        "Stat.ZoneTheme.Desert"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/ZT_Arid/BP_Hex_Arid01"
+    },
+    "/Game/World/ZoneThemes/ZT_Arid/BP_ZT_Desert_Bunker.BP_ZT_Desert_Bunker_C": {
+      "name": "Desert",
+      "parent": "BP_ZT_PVE_C",
+      "tags": [
+        "Stat.ZoneTheme.Desert.Bunkers"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/ZT_Arid/BP_Hex_Arid01"
+    },
+    "/Game/World/ZoneThemes/ZT_Arid/BP_ZT_Desert_Monument.BP_ZT_Desert_Monument_C": {
+      "name": "Desert",
+      "parent": "BP_ZT_PVE_C",
+      "tags": [
+        "Stat.ZoneTheme.Desert"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/ZT_Arid/BP_Hex_Arid01"
+    },
+    "/Game/World/ZoneThemes/ZT_GhostTown/BP_ZT_GhostTown_HighNoon.BP_ZT_GhostTown_HighNoon_C": {
+      "name": "Ghost Town",
+      "parent": "BP_ZT_PVE_C",
+      "tags": [
+        "Stat.ZoneTheme.GhostTown"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/ZT_GhostTown/BP_Hex_GhostTown"
+    },
+    "/Game/World/ZoneThemes/ZT_IntotheStorm/BP_ZT_LaunchingLars.BP_ZT_LaunchingLars_C": {
+      "difficulties": [
+        "Theater_Start_Zone1",
+        "Theater_Start_Zone2",
+        "Theater_Start_Zone3",
+        "Theater_Start_Zone4",
+        "Theater_Start_Zone5",
+        "Theater_Normal_Zone1",
+        "Theater_Normal_Zone2",
+        "Theater_Normal_Zone3",
+        "Theater_Normal_Zone4",
+        "Theater_Normal_Zone5",
+        "Theater_Hard_Zone1",
+        "Theater_Hard_Zone2",
+        "Theater_Hard_Zone3",
+        "Theater_Hard_Zone4",
+        "Theater_Hard_Zone5",
+        "Theater_Nightmare_Zone1"
+      ],
+      "name": "The Grasslands",
+      "parent": "BP_ZT_PVE_C",
+      "tags": [
+        "Stat.ZoneTheme.TheGrasslands"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/ZT_TheGrasslands/BP_Hex_TheGrasslands"
+    },
+    "/Game/World/ZoneThemes/ZT_IntotheStorm/BP_ZT_ObserveTheSkies.BP_ZT_ObserveTheSkies_C": {
+      "name": "Thunder Route 99",
+      "parent": "BP_ZT_TheGrasslands_C",
+      "tags": [
+        "Stat.ZoneTheme.TheSuburbs"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/ZT_Arid/BP_Hex_Arid01"
+    },
+    "/Game/World/ZoneThemes/ZT_Route99/BP_ZT_Route99_1.BP_ZT_Route99_1_C": {
+      "name": "Thunder Route 99",
+      "parent": "BP_ZT_PVE_C",
+      "tags": [
+        "Stat.ZoneTheme.Route99"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/ZT_Route99/BP_Hex_Route99"
+    },
+    "/Game/World/ZoneThemes/ZT_Route99/BP_ZT_Route99_2.BP_ZT_Route99_2_C": {
+      "name": "Thunder Route 99",
+      "parent": "BP_ZT_PVE_C",
+      "tags": [
+        "Stat.ZoneTheme.Route99"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/ZT_Route99/BP_Hex_Route99"
+    },
+    "/Game/World/ZoneThemes/ZT_Route99/BP_ZT_Route99_Bunker_1.BP_ZT_Route99_Bunker_1_C": {
+      "name": "Thunder Route 99",
+      "parent": "BP_ZT_PVE_C",
+      "tags": [
+        "Stat.ZoneTheme.Route99.Bunkers"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/ZT_Route99/BP_Hex_Route99"
+    },
+    "/Game/World/ZoneThemes/ZT_Route99/BP_ZT_Route99_Bunker_2.BP_ZT_Route99_Bunker_2_C": {
+      "name": "Thunder Route 99",
+      "parent": "BP_ZT_PVE_C",
+      "tags": [
+        "Stat.ZoneTheme.Route99.Bunkers"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/ZT_Route99/BP_Hex_Route99"
+    },
+    "/Game/World/ZoneThemes/ZT_Route99/BP_ZT_Route99_Landmark.BP_ZT_Route99_Landmark_C": {
+      "name": "Thunder Route 99",
+      "parent": "BP_ZT_PVE_C",
+      "tags": [
+        "Stat.ZoneTheme.Route99"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/ZT_Route99/BP_Hex_Route99"
+    },
+    "/Game/World/ZoneThemes/ZT_TheCity/BP_ZT_TheCity_Arid.BP_ZT_TheCity_Arid_C": {
+      "name": "The City",
+      "parent": "BP_ZT_PVE_C",
+      "tags": [
+        "Stat.ZoneTheme.TheCity"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/ZT_TheCity/BP_Hex_TheCity"
+    },
+    "/Game/World/ZoneThemes/ZT_TheDesert/BP_ZT_TheDesert.BP_ZT_TheDesert_C": {
+      "name": "The Desert",
+      "parent": "BP_ZT_PVE_C",
+      "tileClass": "/Game/World/ZoneThemes/ZT_Arid/BP_Hex_Arid01"
+    },
+    "/Game/World/ZoneThemes/ZT_TheIndustrialPark/BP_ZT_TheIndustrialPark_Arid.BP_ZT_TheIndustrialPark_Arid_C": {
+      "name": "The Industrial Park",
+      "parent": "BP_ZT_PVE_C",
+      "tags": [
+        "Stat.ZoneTheme.TheIndustrialPark"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/ZT_TheIndustrialPark/BP_Hex_TheIndustrialPark"
+    },
+    "/Game/World/ZoneThemes/ZT_TheSuburbs/BP_ZT_TheSuburbs_Arid.BP_ZT_TheSuburbs_Arid_C": {
+      "name": "The Suburbs",
+      "parent": "BP_ZT_PVE_C",
+      "tags": [
+        "Stat.ZoneTheme.TheSuburbs"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/ZT_TheSuburbs/BP_Hex_TheSuburbs"
+    },
+    "/Game/World/ZoneThemes/ZT_Winter/BP_ZT_TheForestWinter.BP_ZT_TheForestWinter_C": {
+      "difficulties": [
+        "Theater_Start_Zone1",
+        "Theater_Start_Zone2",
+        "Theater_Start_Zone3",
+        "Theater_Start_Zone4",
+        "Theater_Start_Zone5",
+        "Theater_Normal_Zone1",
+        "Theater_Normal_Zone2",
+        "Theater_Normal_Zone3",
+        "Theater_Normal_Zone4",
+        "Theater_Normal_Zone5",
+        "Theater_Hard_Zone1",
+        "Theater_Hard_Zone2",
+        "Theater_Hard_Zone3",
+        "Theater_Hard_Zone4",
+        "Theater_Hard_Zone5",
+        "Theater_Nightmare_Zone1"
+      ],
+      "name": "The Forest",
+      "parent": "BP_ZT_PVE_C",
+      "tags": [
+        "Stat.ZoneTheme.TheForest"
+      ],
+      "tileClass": "/Game/World/ZoneThemes/ZT_Winter/BP_Hex_TheForestWinter"
+    }
+  }
+}

@@ -1,9 +1,10 @@
 import { perBuild } from "../gamedata/read.js";
 import { isDone, questIdOf } from "../profiles/quests.js";
-import { blockbuster2018, fortnitemares, isEventActive, mutantStorms, mutantStorms2018, roadTrip2018, spring2018, storm2018, winter2017 } from "./events.js";
+import { birthday2018, blockbuster2018, fortnitemares, isEventActive, mutantStorms, mutantStorms2018, roadTrip2018, spring2018, storm2018, winter2017 } from "./events.js";
 import { blockbusterQuests } from "./blockbuster2018.js";
 import { fortnitemaresQuests } from "./fortnitemares.js";
 import { roadTripQuests } from "./roadtrip2018.js";
+import { birthdayQuests } from "./birthday2018.js";
 import { mutantStorms2018Quests, mutantStormsQuests } from "./mutantstorms.js";
 import { luckOfTheStormQuests, springQuests } from "./spring2018.js";
 import { intoTheStormQuests } from "./storm2018.js";
@@ -23,11 +24,13 @@ import { winterQuests } from "./winter2017.js";
 // quests (WinterQuest_2017_*); 2.3's storms' the FirstStorm quests and the repeatable Mini-Boss quest, which so stays
 // on 2.3 when the rest of the winter line goes; 2.4's (and 2.4.2's) its own MutantStormsQuest_2018 line; 2.5's Spring It
 // On! the LoveQuest_2018 and SpringQuest_2018 chains it starts; 3.5.1's Into the Storm the StormQuest_2018 quests; 4.0's Blockbuster the BlockbusterQuest_2018 quests;
-// 5.0's Road Trip the HordeQuest progression and its hidden zone gates (events/roadtrip2018.js).
+// 5.0's Road Trip the HordeQuest progression and its hidden zone gates (events/roadtrip2018.js); 5.10's Birthday its two
+// AnniversaryQuest_2018 quests (events/birthday2018.js).
 const questLines = [{ flag: fortnitemares, starting: fortnitemaresQuests }, { flag: mutantStorms, starting: mutantStormsQuests },
   { flag: winter2017, starting: winterQuests }, { flag: mutantStorms2018, starting: mutantStorms2018Quests },
   { flag: spring2018, starting: [...springQuests, ...luckOfTheStormQuests] }, { flag: storm2018, starting: intoTheStormQuests },
-  { flag: blockbuster2018, starting: blockbusterQuests }, { flag: roadTrip2018, starting: roadTripQuests }];
+  { flag: blockbuster2018, starting: blockbusterQuests }, { flag: roadTrip2018, starting: roadTripQuests },
+  { flag: birthday2018, starting: birthdayQuests }];
 
 const questRewards = (quest) => [...(quest?.rewards ?? []), ...(quest?.hiddenRewards ?? []), ...(quest?.selectableRewards ?? []).flat()]
   .filter((reward) => reward.templateId.toLowerCase().startsWith("quest:"))

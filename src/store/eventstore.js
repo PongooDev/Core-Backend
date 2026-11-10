@@ -290,9 +290,14 @@ const blockbusterNow = () => !isEventActive(winter2017) && !storms2018() && !spr
 // the event items are those five at a legendary schematic's 1,680 Gold and a legendary Survivor at 700, one each (🟡:
 // Epic's prices and limits aren't recorded). Its event items count down to the event's end, Season 5's (roadTrip2018End,
 // 27 September 2018, Season 6's start with Fortnitemares' return; 🟡 the hour is Core's), on Season 5's replay.
+// 5.10 (CL-4225813, CL-4240749; Update v5.10's notes) adds a hero: "Urban Assault Sledgehammer Soldier is available in
+// the Event Store. Available July 25 at 8PM Eastern Time (July 26 at 0000 GMT)": HID_Commando_GunHeadshot_M_V1_RoadTrip_SR
+// ("Urban Assault Sledgehammer", new in 5.10's data, so only 5.10 offers it), at a legendary hero's 2,800 Gold, one (🟡 as
+// Blockbuster's heroes; from 5.10's release, not its hour).
 const roadTripEventItems = [
   ...["launcher_flintlock", "assault_flintlock", "sniper_flintlock_scope", "blunt_hammer_flintlock", "assault_autodrum"]
     .map((name) => ({ templateId: `Schematic:sid_${name}_sr_ore_t01`, price: 1680, limit: 1 })),
+  { templateId: "Hero:hid_commando_gunheadshot_m_v1_roadtrip_sr_t01", price: 2800, limit: 1 },
   { templateId: "Worker:workerbasic_sr_t01", price: 700, limit: 1 }
 ];
 export const roadTrip2018End = "2018-09-27T00:00:00.000Z";

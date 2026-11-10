@@ -1199,8 +1199,9 @@ export function adminRoutes(context) {
     // Season 3's shop as 3.6's data (its newest) sells it: 3.0's cosmetics, 3.1's, 3.2's (3.3 adds none), 3.4's, 3.5's and 3.6's;
     // Season 4's as 4.4.2's: 4.0's cosmetics, 4.1's Snap emote, 4.2's Hazard set, Venturion and the rest, and 4.3's and 4.4's
     // (Jumpshot, Scoundrel, the World Cup outfits, Omen, Fate...), now 4.5's (CL-4166199): 4.5's too (Vertex, Gumshoe,
-    // Criterion, Oblivion...). Season 5's as 5.0's (CL-4214610).
-    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4166199", 5: "4214610" }[s];
+    // Criterion, Oblivion...). Season 5's as 5.10's (CL-4240749): 5.0's cosmetics and 5.10's (Reef Ranger, Wreck Raider,
+    // Maverick, Shade, Sun Tan Specialist, Archetype...).
+    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4166199", 5: "4240749" }[s];
     const offers = inBuild(build, () => itemShopOffers(now, config, s));
     const cosmetics = inBuild(build, () => eligibleCosmetics());
     const currentDay = shopDay(now, config, s);
@@ -1301,7 +1302,9 @@ export function adminRoutes(context) {
       { version: "4.5.0", cl: 4159770, event: "Blockbuster" },
       { version: "4.5", cl: 4166199, event: "Blockbuster" },
       { version: "5.0.0", cl: 4204761, event: "Season 5" },
-      { version: "5.0", cl: 4214610, event: "Season 5" }
+      { version: "5.0", cl: 4214610, event: "Season 5" },
+      { version: "5.10.0", cl: 4225813, event: "Birthday" },
+      { version: "5.10", cl: 4240749, event: "Birthday" }
     ];
 
     const sampleBuilds = builds.map((b) => ({
@@ -1352,7 +1355,7 @@ export function adminRoutes(context) {
       eventsConfig,
       rocketLaunch: rocketLaunchStatus(now, eventsConfig),
       // Season 4's event flags, grouped (events/season4flags.js, Core-Backend #296), with what 4.5 and 5.0 serve now.
-      season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(now, eventsConfig, inBuild("4166199", () => activeEventFlags()), inBuild("4214610", () => activeEventFlags()))),
+      season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(now, eventsConfig, inBuild("4166199", () => activeEventFlags()), inBuild("4214610", () => activeEventFlags()), inBuild("4240749", () => activeEventFlags()))),
       events: [
         {
           id: "fortnitemares",
@@ -1452,7 +1455,7 @@ export function adminRoutes(context) {
           id: "roadtrip2018",
           name: "Road Trip",
           subtitle: "Challenge the Horde in the desert: nine Horde zones opened by Storm Shield Defense or Horde quest progression, Horde alerts with Road Trip Tickets and Horde Points, the Horde Skill Tree, the Horde progression quests (Wild West heroes, banners), the Road Trip Llama and the Event Store's Flintlock weapons",
-          buildRange: "5.0 (CL 4204761 – 4214610)",
+          buildRange: "5.0 – 5.10 (CL 4204761 – 4240749)",
           flags: ["EventFlag.RoadTrip2018", "EventFlag.Horde", "EventFlag.LobbySeason5"],
           theater: "Challenge the Horde (Fort Setup and nine zones, 9 to 76 power)",
           theaterRegions: [],
@@ -1460,6 +1463,19 @@ export function adminRoutes(context) {
           currency: "Road Trip Tickets (AccountResource:eventcurrency_roadtrip), Horde Points (Token:hordepointstier1-4), Gold in the Event Store",
           llama: "Road Trip Llama (CardPack_Event_2018_RoadTrip, 500 Road Trip Tickets)",
           questsCount: 9
+        },
+        {
+          id: "birthday2018",
+          name: "Fortnite Birthday",
+          subtitle: "#Fortnite1st: the Birthday Challenges (a back bling, emoticon and spray), the birthday Battle Bus and supply drops; in Save the World the Sploding Husks quest (Birthday Brigade Ramirez), the repeatable cake quest (Road Trip Tickets), the Birthday Llama and the Urban Assault Sledgehammer in the Event Store",
+          buildRange: "5.10 (CL 4225813 – 4240749)",
+          flags: ["EventFlag.Anniversary2018_BR", "EventFlag.BirthdayBattleBus", "EventFlag.SupplyDropBDay", "EventFlag.RoadTrip2018", "EventFlag.Horde", "EventFlag.LobbySeason5"],
+          theater: "Standard Zones, with Road Trip's Challenge the Horde",
+          theaterRegions: [],
+          alertsQuota: "Road Trip's 10 Horde mission alerts per day",
+          currency: "Road Trip Tickets (AccountResource:eventcurrency_roadtrip)",
+          llama: "Birthday Llama (CardPack_Event_2018_Anniversary, 1,000 Road Trip Tickets)",
+          questsCount: 2
         }
       ]
     });
@@ -1528,7 +1544,7 @@ export function adminRoutes(context) {
     }
     if (!Object.keys(patch).length) return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "Give a flag and its state, the oddities mode or the rifts' schedule");
     const updated = settings.update({ events: { season4Flags: patch } });
-    res.json({ success: true, season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(new Date(), updated.events, inBuild("4166199", () => activeEventFlags()), inBuild("4214610", () => activeEventFlags()))) });
+    res.json({ success: true, season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(new Date(), updated.events, inBuild("4166199", () => activeEventFlags()), inBuild("4214610", () => activeEventFlags()), inBuild("4240749", () => activeEventFlags()))) });
   });
 
     router.post("/admin/api/events/actions/convert-storm-tickets", (req, res) => {

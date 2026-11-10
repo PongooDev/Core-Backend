@@ -5,6 +5,7 @@ import { mutantStorms2018EventQuests, mutantStormsEventQuests } from "./mutantst
 import { springBookPages, springEventQuests } from "./spring2018.js";
 import { blockbusterEventQuests } from "./blockbuster2018.js";
 import { roadTripEventQuests } from "./roadtrip2018.js";
+import { birthdayEventQuests } from "./birthday2018.js";
 import { stormEventQuests } from "./storm2018.js";
 import { winterBookPages, winterEventQuests } from "./winter2017.js";
 
@@ -34,11 +35,12 @@ export const candy = "AccountResource:eventcurrency_candy";
 
 // The requesting build's event quests, when the event runs there (and the Mutant Storms' and their 2.3 return's,
 // events/mutantstorms.js, Survive the Holidays', events/winter2017.js, Spring It On!'s, events/spring2018.js, and Into the
-// Storm's, events/storm2018.js, Blockbuster's, events/blockbuster2018.js, and Road Trip's, events/roadtrip2018.js).
+// Storm's, events/storm2018.js, Blockbuster's, events/blockbuster2018.js, Road Trip's, events/roadtrip2018.js, and the
+// Birthday's, events/birthday2018.js).
 export function eventQuests() {
   return [...(isEventActive(fortnitemares) ? fortnitemaresQuests.filter((questId) => getQuest(questId)) : []), ...mutantStormsEventQuests(),
     ...winterEventQuests(), ...mutantStorms2018EventQuests(), ...springEventQuests(), ...stormEventQuests(),
-    ...blockbusterEventQuests(), ...roadTripEventQuests()];
+    ...blockbusterEventQuests(), ...roadTripEventQuests(), ...birthdayEventQuests()];
 }
 
 // The event's collection book pages, the "Fortnitemares Items" category (CollectionCategoryTable Halloween2017): its

@@ -190,9 +190,11 @@ function seasonChallenges(season) {
       if (pass?.seasonNumber !== season) return found;
       // From 5.0 (Season 5) also what the season gives everyone (SeasonGrantsToEveryone: Season5_Free_Schedule, the free
       // weekly challenges) and what it takes back at its end (TokensToRemoveAtSeasonEnd: its free and paid schedules).
-      const rewards = [...(pass.seasonRewards ?? []), ...(pass.bookFreeRewards ?? []), ...(pass.bookPaidRewards ?? []), { rewards: pass.grantsToEveryone }]
-        .flatMap((entry) => entry.rewards ?? []).map(({ templateId }) => templateId).concat(pass.removedAtSeasonEnd ?? []);
+      // From 5.10 its event schedules too (Schedule_Birthday2018_BR, given while its event flag runs: profiles/athena.js).
       const schedules = athenaChallengeSchedules() ?? {};
+      const rewards = [...(pass.seasonRewards ?? []), ...(pass.bookFreeRewards ?? []), ...(pass.bookPaidRewards ?? []), { rewards: pass.grantsToEveryone }]
+        .flatMap((entry) => entry.rewards ?? []).map(({ templateId }) => templateId).concat(pass.removedAtSeasonEnd ?? [])
+        .concat(Object.keys(schedules).filter((id) => schedules[id].eventName).map((id) => `ChallengeBundleSchedule:${id}`));
       const bundles = athenaChallengeBundles() ?? {};
       const follow = (templateIds) => {
         for (const id of templateIds.filter((templateId) => typeOfTemplate(templateId) === "quest").map(idOfTemplate)) {

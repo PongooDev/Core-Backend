@@ -79,8 +79,9 @@ export function mergeTimedStates(...schedules) {
 }
 
 // The admin panel's view: each group with each flag's state on the newest Season 4 build (4.5) and whether the admin
-// switched it, the oddities mode and the rifts' times now.
-export function season4FlagsStatus(now = new Date(), config = currentEventsConfig(), servedOn45 = [], servedOn50 = []) {
+// switched it, the oddities mode and the rifts' times now; 5.0's flags on 5.0 (CL-4214610), and 5.10's own on 5.10
+// (CL-4240749).
+export function season4FlagsStatus(now = new Date(), config = currentEventsConfig(), servedOn45 = [], servedOn50 = [], servedOn510 = []) {
   const { overrides, oddities: mode, schedule } = season4Settings(config);
   const times = riftTimes(now, String(b45), config);
   const replayNext = (original) => nextReplayOf(time(original), now, null, 4).toISOString();
@@ -100,7 +101,8 @@ export function season4FlagsStatus(now = new Date(), config = currentEventsConfi
         flag: entry.flag, description: entry.description, builds: entry.builds,
         override: group.managedBy ? null : overrides[entry.flag] ?? "auto",
         servedOn45: servedOn45.includes(entry.flag),
-        servedOn50: servedOn50.includes(entry.flag)
+        servedOn50: servedOn50.includes(entry.flag),
+        servedOn510: servedOn510.includes(entry.flag)
       }))
     }))
   };

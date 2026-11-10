@@ -251,6 +251,21 @@ const build45 = 4166199;
 // July). The Final Fight, Fly Explosives and Snipers playlists are gone, so 5.0 offers none of them.
 const build500 = 4204761;
 const build50 = 4214610;
+// 5.10 (CL-4225813, "5.10.0", Update v5.10, 24 July 2018, and CL-4240749, "5.10", Content Update v5.10, 31 July: Core has
+// CL-4240749's paks, whose data the other plays on): Athena/Playlists holds the defaults, 5.0's Playlist_50v50 (unchanged)
+// and Playlist_Playground, now a new revision (four teams of up to four, MaxPlayers 4, bAllowTeamSwitching, LootDropRounds 3,
+// Athena.Creative), and, back, Playlist_FlyExplosives_Solo, _Duos and _Squads (120 to 122; Athena/Playlists/HighExplosives'
+// tables, MissionGen_FlyExplosives), Playlist_Comp_Solo (51, "Solo Showdown") and Playlist_Fortnite (32, "Final Five").
+// Update v5.10: "Playground mode is back on Wednesday, July 25! New team select options let you and your squad set up
+// team battles", so 5.10's Playground (playgroundV2) runs from 25 July to the season's end on the replay (🟡 the end:
+// Core's, as 4.5's) and by its switch, and the lobby opens on it on neither build (it came the day after 5.10). Content
+// Update v5.10 (31 July, CL-4240749's): "This week kicks off with a new LTM, Fly Explosives", a squads mode ("Take flight
+// with your team"; the Fortnite Wiki's Fly Explosives: Squads), so Fly Explosives (Squads) is CL-4240749's new mode, on
+// there from 31 July to 7 August (🟡 the end: Update v5.20's day, whose Steady Storm followed), and its Solo and Duos are
+// by their switches; CL-4225813 predates it (24 July). No 5.10 notes name Solo Showdown or Final Five (later modes), so
+// they are left out as before.
+const build5100 = 4225813;
+const build510 = 4240749;
 // Core-Backend #257 asked for 3.5.1's to 4.0's Solid Gold v2 (Squads, Solo), Sniper Shootout v2 (Solo, Duos, Squads), High
 // Explosives v2 (Squads, Solo), Blitz! (Squads, Solo, Duos), Teams of 20 and 50v50 v2. Each is a playlist asset of 3.5.1's
 // and 4.0's Athena/Playlists (and 3.6's, which sits between them, as its note above has it; its paks didn't mount in
@@ -502,9 +517,20 @@ export const ltms = [
   // (events/finalfight.js). By its switch: nothing found dates it (🟡).
   { id: "finalFightTeams12", name: "Final Fight: Teams of 12", playlistId: 103, playlistName: "Playlist_Final_12", eventFlag: null, builds: [build450, build45], seasons: [4],
     teams: "8 Teams × 12", description: "The storm stops after its third circle; when the countdown ends, the team with the most players left wins (Playlist_Final_12)." },
-  // 5.0's Playlist_50v50 (above): by its switch.
-  { id: "fiftyFiftySeason5", name: "50v50 (Season 5)", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build500, build50], seasons: [5],
-    teams: "2 Teams × 50", description: "Two teams of fifty, a bus each, extra loot; reviving a teammate earns XP (Playlist_50v50, 5.0's)." }
+  // 5.0's Playlist_50v50 (above): by its switch; 5.10's is the same asset.
+  { id: "fiftyFiftySeason5", name: "50v50 (Season 5)", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build500, build510], seasons: [5],
+    teams: "2 Teams × 50", description: "Two teams of fifty, a bus each, extra loot; reviving a teammate earns XP (Playlist_50v50, 5.0's)." },
+  // 5.10's Playground and Fly Explosives (above).
+  { id: "playgroundV2", name: "Playground v2", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build5100, build510], seasons: [5],
+    original: [{ builds: [build5100, build510], start: "2018-07-25", end: "2018-09-27" }],
+    teams: "4 Teams × 4", description: "Playground again, with team select: up to four players on up to four teams, respawns, 10x resources, golf carts (Playlist_Playground, 5.10's)." },
+  { id: "flyExplosives", name: "Fly Explosives (Squads)", playlistId: 122, playlistName: "Playlist_FlyExplosives_Squads", eventFlag: null, builds: [build510, build510], seasons: [5], newIn: build510,
+    original: [{ builds: [build510, build510], start: "2018-07-31", end: "2018-08-07" }],
+    teams: "100 Teams × 4", description: "Explosive weapons only, with jetpacks on the floor; rocket ammo capped at 120 (Athena/Playlists/HighExplosives tables, 5.10's)." },
+  { id: "flyExplosivesSolo", name: "Fly Explosives (Solo)", playlistId: 120, playlistName: "Playlist_FlyExplosives_Solo", eventFlag: null, builds: [build510, build510], seasons: [5],
+    teams: "100 Teams × 1", description: "Explosive weapons only, with jetpacks on the floor (Playlist_FlyExplosives_Solo, 5.10's)." },
+  { id: "flyExplosivesDuos", name: "Fly Explosives (Duos)", playlistId: 121, playlistName: "Playlist_FlyExplosives_Duos", eventFlag: null, builds: [build510, build510], seasons: [5],
+    teams: "100 Teams × 2", description: "Explosive weapons only, with jetpacks on the floor (Playlist_FlyExplosives_Duos, 5.10's)." }
 ];
 // A build range's bounds are changelists or versions ("4.2", "4.4.x"): a version holds only once Core knows the build's.
 const versionParts = (version) => String(version).split(".").map((part) => (part === "x" ? Infinity : Number(part)));
@@ -654,7 +680,7 @@ export function nextLtmChange(build, settingsValue, now = new Date()) {
 
 // The admin panel's list (its Battle Royale Game Modes, after solo, duos and squads): each LTM with its window and
 // builds, whether it is on by hand, and whether its window holds each season's replay now.
-const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build311]: "3.1.1", [build32]: "3.2", [build33]: "3.3", [build351]: "3.5.1", [build352]: "3.5.2", [build36]: "3.6", [build40]: "4.0", [build41]: "4.1", [build42]: "4.2", [build440]: "4.4.0", [build441]: "4.4.1", [build442]: "4.4.2", [build450]: "4.5.0", [build45]: "4.5", [build500]: "5.0.0", [build50]: "5.0" };
+const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build311]: "3.1.1", [build32]: "3.2", [build33]: "3.3", [build351]: "3.5.1", [build352]: "3.5.2", [build36]: "3.6", [build40]: "4.0", [build41]: "4.1", [build42]: "4.2", [build440]: "4.4.0", [build441]: "4.4.1", [build442]: "4.4.2", [build450]: "4.5.0", [build45]: "4.5", [build500]: "5.0.0", [build50]: "5.0", [build5100]: "5.10.0", [build510]: "5.10" };
 const boundName = (bound) => (typeof bound === "number" ? versions[bound] : bound);
 const buildRange = ([first, last]) => (first === last ? boundName(first) : `${boundName(first)} to ${boundName(last)}`);
 // A window's day or moment for the admin panel: "YYYY-MM-DD" at midnight, else the ISO time; last, its last day.

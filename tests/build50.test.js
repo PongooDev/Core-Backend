@@ -42,9 +42,9 @@ test("5.0's two builds are known by their versions, play on CL-4214610's data an
   assert.equal(dataBuild("4190000"), v45, "a build between them Core doesn't know still plays on 4.5's");
   assert.equal(dataBuild("4220000"), v50);
   assert.equal(allowedBuildList(["5.0.0", "5.0"]).join(), v50s.join());
-  assert.equal(buildOfSeason(5), v50);
+  assert.equal(buildOfSeason(5), "4240749", "Season 5's newest data is 5.10's now (build510.test.js)");
   assert.equal(buildOfSeason(4), v45, "Season 4's newest data is still 4.5's");
-  assert.equal(seasonName(5), "Season 5 (5.0)");
+  assert.equal(seasonName(5), "Season 5 (5.0 – 5.10)");
   const season = inBuild(v500, athenaSeason);
   assert.deepEqual([season.seasonNumber, season.numSeasonLevels, season.numBookLevels, season.storefront, season.battlePassLevelOfferId],
     [5, 100, 100, "BRSeason5", "4B2E310BC1AE40B292A16D5AAD747E0A"]);
@@ -75,9 +75,8 @@ test("5.0's shop: Season 5's history from 12 July, with 5.0's cosmetics on their
   assert.deepEqual([history.length, history[0].date, history.at(-1).date], [77, "2018-07-12", "2018-09-26"]);
   const c45 = inBuild(v45, athenaCosmetics);
   const c50 = inBuild(v50, athenaCosmetics);
-  const sold = new Set(history.flatMap((day) => [...day.featured, ...day.daily].map(([id]) => id)));
-  assert.ok([...sold].every((id) => c50[id]), "only 5.0's cosmetics");
-  assert.equal([...sold].filter((id) => !c45[id]).length, 14);
+  const sold = new Set(history.flatMap((day) => [...day.featured, ...day.daily].map(([id]) => id)).filter((id) => c50[id]));
+  assert.equal([...sold].filter((id) => !c45[id]).length, 14, "5.0 sells 14 of its own; 5.10's are build510.test.js's");
   // 9 November is the season's day 2, 13 July 2018: Moniker and Fortune in a tile of their own.
   const config = { mode: "fnbr", rotationHour: 0, seasonStarts: { 5: "2026-11-08" } };
   for (const build of v50s) {

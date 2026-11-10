@@ -1216,7 +1216,7 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
     // and UFortChallengeBundleItemDefinition (Athena/Items/ChallengeBundles), written below when the season grants any.
     if (export.ExportType == "FortChallengeBundleScheduleDefinition")
     {
-        challengeSchedules[export.Name.ToLowerInvariant()] = new SortedDictionary<string, object>(StringComparer.Ordinal)
+        var schedule = new SortedDictionary<string, object>(StringComparer.Ordinal)
         {
             ["category"] = properties["CategoryID"]?.GetValue<string>() ?? "",
             ["bundles"] = (properties["ScheduleEntries"]?.AsArray() ?? []).Select(entry => (object)new SortedDictionary<string, object>(StringComparer.Ordinal)
@@ -1226,6 +1226,10 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
                 ["unlockValue"] = entry["UnlockValue"]?.GetValue<int>() ?? 0
             }).ToList()
         };
+        // 5.10 (CL 4240749) adds an event's schedule, Schedule_Birthday2018_BR, which no tier gives: it names the event
+        // flag it runs with (EventName, EventFlag.Anniversary2018_BR), written as eventName.
+        if (properties["EventName"]?.GetValue<string>() is { Length: > 0 } eventName and not "None") schedule["eventName"] = eventName;
+        challengeSchedules[export.Name.ToLowerInvariant()] = schedule;
         continue;
     }
     if (export.ExportType == "FortChallengeBundleItemDefinition")
@@ -1588,6 +1592,8 @@ if (athenaSeason is not null && athenaSeason.ContainsKey("challengeSchedulesAlwa
         .Select(templateId => templateId.Split(':')[1].ToLowerInvariant())
         .Concat((List<string>)athenaSeason["challengeSchedulesAlwaysShown"])
         .Concat(athenaSeason.TryGetValue("challengeSchedulePaid", out var paid) ? [(string)paid] : Array.Empty<string>())
+        // and the event schedules (5.10's Schedule_Birthday2018_BR, given while its event flag runs).
+        .Concat(challengeSchedules.Where(entry => ((SortedDictionary<string, object>)entry.Value).ContainsKey("eventName")).Select(entry => entry.Key))
         .Where(challengeSchedules.ContainsKey).Distinct().ToList();
     var grantedSchedules = new SortedDictionary<string, object>(StringComparer.Ordinal);
     var bundles = new SortedDictionary<string, object>(StringComparer.Ordinal);

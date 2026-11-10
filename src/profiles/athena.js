@@ -1,10 +1,11 @@
 import crypto from "node:crypto";
 import { inBuild } from "../builds/context.js";
 import { McpError } from "../errors.js";
+import { activeEventFlags } from "../events/events.js";
 import { athenaEventQuestsOf } from "../events/fiftyfifty.js";
 import { eventTagOfPlaylist } from "../events/ltms.js";
 import { currentBuild } from "../builds/context.js";
-import { athenaBattlePassDailyIds, athenaChallengeBundles, athenaCosmetics, athenaDailyIds, athenaObjectiveStat, athenaSeason, dailyWeight, getAthenaQuest, seasonLevels,
+import { athenaBattlePassDailyIds, athenaChallengeBundles, athenaChallengeSchedules, athenaCosmetics, athenaDailyIds, athenaObjectiveStat, athenaSeason, dailyWeight, getAthenaQuest, seasonLevels,
   splitOffBackpacks } from "../gamedata/athena.js";
 import { bannerIds, bannerTemplateId } from "../gamedata/banners.js";
 import { dataBuilds } from "../gamedata/read.js";
@@ -73,7 +74,14 @@ const typeOf = (templateId) => templateId.split(":")[0].toLowerCase();
 // #84). The default glider stays everyone's: it is what an empty glider slot holds.
 const starters = ["AthenaGlider:defaultglider", "AthenaPickaxe:defaultpickaxe", "AthenaDance:eid_dancemoves",
   "AthenaLoadingScreen:lsid_defaultbg", "AthenaBattleBus:bbid_defaultbus"];
-const founderStarters = ["AthenaGlider:founderglider"];
+// From 5.10 (CL-4225813) a founder's locker also holds Warpaint and Rose Team Leader and their back blings (Update v5.10:
+// "Added cosmetic items for Battle Royale to all Founder's Packs. All current and new founders have been granted the
+// following: Warpaint Outfit, Warpaint Backbling, Rose Team Leader Outfit, Rose Team Leader Backbling"; CID_095 and CID_096
+// _Founder, BID_032_FounderMale "Pursuit" and BID_033_FounderFemale "Skirmish", in every build's data from 3.2, sold nowhere).
+const founderCosmeticsBuild = 4225813;
+const founderStarters510 = ["AthenaCharacter:cid_095_athena_commando_m_founder", "AthenaCharacter:cid_096_athena_commando_f_founder",
+  "AthenaBackpack:bid_032_foundermale", "AthenaBackpack:bid_033_founderfemale"];
+const founderStarterIds = () => ["AthenaGlider:founderglider", ...(Number(currentBuild()) >= founderCosmeticsBuild ? founderStarters510 : [])];
 const ownsSaveTheWorld = (accountId, settings = {}) => settings.ownsSaveTheWorld?.(accountId) === true;
 
 // Cosmetics in the game data that are never locker items:
@@ -132,7 +140,7 @@ export function lockerCosmeticId(templateId) {
 }
 
 // The account's starters; without an account, everyone's and the founders' alike.
-const starterIds = (profile, settings) => [...starters, ...(!profile || ownsSaveTheWorld(profile.accountId, settings) ? founderStarters : [])]
+const starterIds = (profile, settings) => [...starters, ...(!profile || ownsSaveTheWorld(profile.accountId, settings) ? founderStarterIds() : [])]
   .map(cosmeticId).filter(Boolean);
 const sameId = (a, b) => a.toLowerCase() === b.toLowerCase();
 const migrated = (profile, name) => (profile.coreMigrations ?? []).includes(name);
@@ -184,7 +192,7 @@ export const battlePassCosmeticIds = () => {
 export const nonShopCosmeticIds = () => [
   ...starters,
   ...battlePassCosmeticIds(),
-  ...founderStarters,
+  "AthenaGlider:founderglider", ...founderStarters510,
   ...chaseRewardIds(),
   ...victoryUmbrellas,
   ...unusedUmbrellas,
@@ -1115,11 +1123,26 @@ function settleSeasonGrants(session) {
   }
 }
 
+// An event's challenges (5.10's Schedule_Birthday2018_BR, the Birthday Challenges: "Complete three birthday event
+// challenges to unlock a new emote, spray, and Backbling"): a schedule naming an event flag (its EventName,
+// EventFlag.Anniversary2018_BR) is given once, at the quest login, while the requesting build serves that flag
+// (events/events.js birthday2018); nothing else grants it (Epic's servers did). Once given it stays.
+function settleEventSchedules(session) {
+  const schedules = athenaChallengeSchedules() ?? {};
+  const event = Object.keys(schedules).filter((id) => schedules[id].eventName);
+  if (!event.length) return;
+  const flags = activeEventFlags().map((flag) => flag.toLowerCase());
+  for (const id of event) {
+    if (flags.includes(schedules[id].eventName.toLowerCase())) grantSchedule(session, `ChallengeBundleSchedule:${id}`, seasonFunctions);
+  }
+}
+
 // ClientQuestLogin / ServerQuestLogin on athena.
 export function athenaQuestLogin(session) {
   refreshAthenaDailies(session);
   settleBattlePassDaily(session);
   settleSeasonGrants(session);
+  settleEventSchedules(session);
   settleChallengeSchedules(session, seasonFunctions);
   settleBrokenChallenges(session);
   settleLevelObjectives(session);

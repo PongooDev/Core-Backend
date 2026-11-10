@@ -1,10 +1,11 @@
+import { currentBuild } from "../builds/context.js";
 import { getItem } from "../gamedata/items.js";
 import { getQuest } from "../gamedata/quests.js";
 import { isEventActive, roadTrip2018 } from "./events.js";
 
 export { roadTrip2018 };
 
-// Road Trip (5.0, CL-4204761 and CL-4214610; events.js roadTrip2018), Save the World's first Season 5 event, and with it
+// Road Trip (5.0, CL-4204761 and CL-4214610, and 5.10's two builds; events.js roadTrip2018), Save the World's first Season 5 event, and with it
 // Challenge the Horde's return (Core-Backend #298, Update v5.00's notes): "Challenge the Horde is back! Challenge the
 // Horde comes to the desert!", "Reduced the total number of Challenge the Horde missions available on the map from 16 to
 // 9", "Challenge the Horde missions now become unlocked based upon your Storm Shield Defense progression or your Horde Quest
@@ -46,12 +47,16 @@ export const roadTripEventQuests = () => (isEventActive(roadTrip2018) ? roadTrip
 // it). A zone here is the difficulty row's, Theater_Horde_Stonewood_* 1, _Plankerton_* 2, _Uncanny_* 3, _Final 4.
 export const hordeZoneOf = (rowName) => (/_Stonewood_/.test(rowName ?? "") ? 1 : /_Plankerton_/.test(rowName ?? "") ? 2
   : /_Uncanny_/.test(rowName ?? "") ? 3 : /_Final$/.test(rowName ?? "") ? 4 : 1);
+// 5.10 (CL-4225813): "Perk Combobulator resource rewards increased +50% across all Horde reward tiers", so 75 RE-PERK! a
+// zone there. Its "Gold reward doubled across all Horde reward tiers" changes nothing of Core's: no Horde reward is Gold.
+export const hordePerkBoostBuild = 4225813;
 export function hordeAlertRewards(rowName, difficulty) {
   const zone = hordeZoneOf(rowName);
+  const perkPerZone = Number(currentBuild()) >= hordePerkBoostBuild ? 75 : 50;
   return [
     ...(getItem(roadTripTickets) ? [[roadTripTickets, 5 * Math.max(1, difficulty ?? 1)]] : []),
     ...(getItem(hordePoints(zone)) ? [[hordePoints(zone), 2]] : []),
-    ...(zone >= 2 && getItem("AccountResource:reagent_alteration_generic") ? [["AccountResource:reagent_alteration_generic", 50 * zone]] : [])
+    ...(zone >= 2 && getItem("AccountResource:reagent_alteration_generic") ? [["AccountResource:reagent_alteration_generic", perkPerZone * zone]] : [])
   ];
 }
 

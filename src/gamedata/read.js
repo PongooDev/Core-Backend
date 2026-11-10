@@ -20,8 +20,10 @@ export const dataBuilds = [certBuild, ...(fs.existsSync(dir) ? fs.readdirSync(di
 // 4.2's, the closest earlier build with data of its own. 4.5's CL-4159770 (4.5.0), whose paks Core has no copy of either,
 // plays on CL-4166199's (gamedata/4166199), the later build of the same update; it would otherwise get 4.4.2's. 5.0's
 // CL-4204761 (5.0.0, the launch build), whose paks Core has no copy of either, plays on CL-4214610's (gamedata/4214610),
-// Season 5's; it would otherwise get 4.5's, a Season 4 build.
-export const laterData = { 4117433: "4132537", 4127312: "4132537", 4159770: "4166199", 4204761: "4214610" };
+// Season 5's; it would otherwise get 4.5's, a Season 4 build. 5.10's CL-4225813 (5.10.0, Update v5.10's build), whose paks
+// Core has no copy of either, plays on CL-4240749's (gamedata/4240749, the later build of the same update, Content Update
+// v5.10's); it would otherwise get 5.0's, without 5.10's cosmetics and Birthday challenges.
+export const laterData = { 4117433: "4132537", 4127312: "4132537", 4159770: "4166199", 4204761: "4214610", 4225813: "4240749" };
 
 export function dataBuild(changelist) {
   if (dataBuilds.includes(changelist)) return changelist;

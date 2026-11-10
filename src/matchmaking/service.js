@@ -108,9 +108,17 @@ const playlistTeamsFrom351 = {
   // 4.4.2's Final Fight: Teams of 20 (104, Playlist_Final_20: 5 × 20 in squads of 4, PongooDev/CoreV2#325).
   104: { maxTeamCount: 5, maxTeamSize: 20, maxSquadSize: 4 },
   // 4.5's Final Fight: Teams of 12 (103, Playlist_Final_12: 8 × 12 in squads of 4).
-  103: { maxTeamCount: 8, maxTeamSize: 12, maxSquadSize: 4 }
+  103: { maxTeamCount: 8, maxTeamSize: 12, maxSquadSize: 4 },
+  // 5.10's (CL-4240749) Fly Explosives: Playlist_FlyExplosives_Solo, _Duos and _Squads (120, 121, 122).
+  120: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  121: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  122: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }
 };
 const playlistAssetTeamsBuild = 4000805;
+// 5.10's (CL-4225813) Playground is a new revision: four teams of up to four (MaxTeamCount 4, MaxTeamSize 4, MaxPlayers 4,
+// bAllowTeamSwitching: "Players can now switch teams in-game").
+const playlistTeamsFrom510 = { 35: { maxTeamCount: 4, maxTeamSize: 4, maxSquadSize: 4 } };
+const playlistTeams510Build = 4225813;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).
 export const teamSquadsOptionBuild = 3915963;
 // Late joining (Core-Backend #122, the admin panel's Matchmaking settings). The servers' MMS client (1.9
@@ -243,6 +251,7 @@ export const playlistTeamsOf = (bucketId, build = null) => teamsOfPlaylist(parse
 // The same by playlist id: what the match results' V-Bucks read a limited-time playlist's mode from (CoreV2 #294).
 export const teamsOfPlaylist = (playlistId, build = null) => {
   if (playlistId === shootingTestPlaylist) return shootingTestTeams(build ?? 3870737);
+  if (Number(build) >= playlistTeams510Build && playlistTeamsFrom510[playlistId]) return playlistTeamsFrom510[playlistId];
   if (Number(build) >= playlistAssetTeamsBuild && playlistTeamsFrom351[playlistId]) return playlistTeamsFrom351[playlistId];
   if (Number(build) >= playlistClassBuild && playlistTeamsFrom30[playlistId]) return playlistTeamsFrom30[playlistId];
   return playlistTeams[playlistId] ?? null;

@@ -3,7 +3,7 @@
 export const certBuild = "3532353";
 
 // The Fortnite version players call each build Core knows (as Core-Launcher's KnownBuilds), for what the client shows.
-export const buildVersions = { 3532353: "1.1", 3541083: "1.2", 3700114: "1.7.2", 3724489: "1.8", 3729133: "1.8.1", 3741772: "1.8.2", 3757339: "1.9", 3775276: "1.9.1", 3790078: "1.10", 3807424: "1.11", 3825894: "2.1", 3841827: "2.2", 3847564: "2.3", 3858292: "2.4", 3870737: "2.4.2", 3889387: "2.5", 3901517: "3.0", 3915963: "3.1", 3917250: "3.1.1", 3935073: "3.2", 3942182: "3.3", 4000805: "3.5.1", 4008490: "3.5.2", 4019403: "3.6", 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4127312: "4.4.1", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4204761: "5.0.0", 4214610: "5.0" };
+export const buildVersions = { 3532353: "1.1", 3541083: "1.2", 3700114: "1.7.2", 3724489: "1.8", 3729133: "1.8.1", 3741772: "1.8.2", 3757339: "1.9", 3775276: "1.9.1", 3790078: "1.10", 3807424: "1.11", 3825894: "2.1", 3841827: "2.2", 3847564: "2.3", 3858292: "2.4", 3870737: "2.4.2", 3889387: "2.5", 3901517: "3.0", 3915963: "3.1", 3917250: "3.1.1", 3935073: "3.2", 3942182: "3.3", 4000805: "3.5.1", 4008490: "3.5.2", 4019403: "3.6", 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4127312: "4.4.1", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4204761: "5.0.0", 4214610: "5.0", 4225813: "5.10.0", 4240749: "5.10" };
 
 export const versionOf = (changelist) => buildVersions[changelist] ?? null;
 
@@ -39,13 +39,17 @@ export const battleRoyaleBuilds = Object.keys(buildVersions).filter((changelist)
 // CL-4214610 ("5.0", the exe's own build string, ++Fortnite+Release-5.0-CL-4214610; its paks are dated 17 July, Content
 // Update v5.00's day, and Core-ServerAssets calls its pak 5.0.1). Its AthenaSeason5 has its own curves and Battle Pass
 // (100 tiers, the BRSeason5 storefront); its data is gamedata/4214610 (a Battle Royale only archive), and CL-4204761
-// plays on it (src/gamedata/read.js laterData).
+// plays on it (src/gamedata/read.js laterData). 5.10 (++Fortnite+Release-5.10, UE 4.21, Update v5.10, 24 July 2018, the
+// Birthday update) is two builds, both v5.10: CL-4225813, the update's own, whose paks Core has no copy of ("5.10.0" here,
+// as 5.0's earlier build is "5.0.0"), and CL-4240749 ("5.10", the exe's own build string, ++Fortnite+Release-5.10-CL-4240749;
+// two of its paks are dated 31 July, Content Update v5.10's day). Both keep AthenaSeason5; 5.10's data is gamedata/4240749
+// (a Battle Royale only archive), and CL-4225813 plays on it.
 export const battleRoyaleSeasons = [
   { season: 1, firstVersion: "1.8", lastVersion: "1.10" },
   { season: 2, firstVersion: "1.11", lastVersion: "2.5" },
   { season: 3, firstVersion: "3.0", lastVersion: "3.6" },
   { season: 4, firstVersion: "4.0", lastVersion: "4.5" },
-  { season: 5, firstVersion: "5.0", lastVersion: "5.0" }
+  { season: 5, firstVersion: "5.0", lastVersion: "5.10" }
 ];
 // "Season 2 (1.11 – 2.5)", "1.11 – 2.5"; a season of one version Core knows, "Season 4 (4.0)".
 export const seasonVersions = (season) => {

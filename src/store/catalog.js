@@ -5,6 +5,7 @@ import { currentEventsConfig, fortnitemares, isEventActive, mutantStorms, mutant
 import { candy } from "../events/fortnitemares.js";
 import { stormLlama2018, stormTickets } from "../events/mutantstorms.js";
 import { roadTrip2018, roadTripLlama, roadTripTickets } from "../events/roadtrip2018.js";
+import { birthday2018, birthdayLlama, birthdayLlamaPrice } from "../events/birthday2018.js";
 import { firecrackerTickets, springLlama } from "../events/spring2018.js";
 import { intoTheStormLlama } from "../events/storm2018.js";
 import { holidayLlama, snowflakeTickets } from "../events/winter2017.js";
@@ -120,6 +121,9 @@ const voucherOffers = perBuild(() => itemIds()
 // The Road Trip Llama (CardPack_Event_2018_RoadTrip, "Guarantees at least one Epic or better limited time Flintlock weapon
 // or Western Hero!") is bought with Road Trip Tickets (EventCurrency_RoadTrip) while Road Trip runs (5.0,
 // events/roadtrip2018.js): the Fortnite Wiki's Road Trip, "Road Trip Llama ... 500 Road Trip Tickets".
+//
+// The Birthday Llama (CardPack_Event_2018_Anniversary) is bought with Road Trip Tickets too while the Birthday runs (5.10,
+// events/birthday2018.js): "Birthday Llama ... Cost: 1,000 Road Trip tickets."
 const eventOffers = [
   { offerId: "core_event_founders_llama", templateId: "CardPack:cardpack_event_founders_nonexclusive", title: "Launch Event Llama",
     currencyType: "GameItem", currencySubType: "AccountResource:eventcurrency_founders", price: 100, always: true },
@@ -138,7 +142,9 @@ const eventOffers = [
   { offerId: "core_event_blockbuster_llama", templateId: blockbusterLlama, title: "Blockbuster Llama",
     currencyType: "GameItem", currencySubType: blockbusterTickets, price: 500, always: true, event: blockbuster2018 },
   { offerId: "core_event_roadtrip_llama", templateId: roadTripLlama, title: "Road Trip Llama",
-    currencyType: "GameItem", currencySubType: roadTripTickets, price: 500, always: true, event: roadTrip2018 }
+    currencyType: "GameItem", currencySubType: roadTripTickets, price: 500, always: true, event: roadTrip2018 },
+  { offerId: "core_event_birthday_llama", templateId: birthdayLlama, title: "Birthday Llama",
+    currencyType: "GameItem", currencySubType: roadTripTickets, price: birthdayLlamaPrice, always: true, event: birthday2018 }
 ];
 
 // An event's offers are on sale while the requesting build runs the event and has their llama.
