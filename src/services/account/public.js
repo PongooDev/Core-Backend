@@ -14,7 +14,7 @@ export function publicAccountRoutes({ accounts, tokens }) {
     next();
   }
 
-  const accountJson = ({ id, displayName, lastLogin }) => ({ id, displayName, lastLogin, headless: false });
+  const accountJson = ({ id, displayName, lastLogin }) => ({ id, displayName, lastLogin, headless: false, tfaEnabled: true });
 
   // QueryUserInfo (sub_37F0AC0): ?accountId=a&accountId=b, an array of accounts; unknown ids are left out.
   router.get("/account/api/public/account", requireAuth(tokens), (req, res) => {
@@ -46,7 +46,7 @@ export function publicAccountRoutes({ accounts, tokens }) {
   // A player's own account info also has its email (#64), as Epic's did; other players' never do.
   router.get("/account/api/public/account/:accountId", requireAuth(tokens), findAccount, (req, res) => {
     const own = req.session.accountId === req.account.id;
-    res.json(own ? { ...accountJson(req.account), email: req.account.email } : accountJson(req.account));
+    res.json(own ? { ...accountJson(req.account), email: req.account.email, emailVerified: true } : accountJson(req.account));
   });
 
   router.get("/account/api/public/account/:accountId/externalAuths", requireAuth(tokens), findAccount, (req, res) => {

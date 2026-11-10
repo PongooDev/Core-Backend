@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { del, get, startBackend, userLogin } from "./helpers.js";
+import { del, get, post, startBackend, userLogin } from "./helpers.js";
 
 test("account info has the id, displayName and lastLogin the client stores", async () => {
   const backend = await startBackend();
@@ -59,6 +59,21 @@ test("a gameserver's login leaves the other servers on its account logged in (Co
     assert.equal((await del(backend.port, "/account/api/oauth/sessions/kill?killType=OTHERS_ACCOUNT_CLIENT_SERVICE", second.token)).status, 204);
     assert.equal((await get(backend.port, "/account/api/oauth/verify", first.token)).status, 200);
     assert.equal((await get(backend.port, "/account/api/oauth/verify", second.token)).status, 200);
+  } finally {
+    backend.close();
+  }
+});
+
+test("two-factor authentication counts as enabled everywhere (#310)", async () => {
+  const backend = await startBackend();
+  try {
+    const { token, accountId } = await userLogin(backend.port, "CoreTest");
+    const info = await get(backend.port, `/account/api/public/account/${accountId}`, token);
+    assert.equal(info.body.tfaEnabled, true);
+    const profile = async (profileId) => (await post(backend.port, `/fortnite/api/game/v2/profile/${accountId}/client/QueryProfile?profileId=${profileId}&rvn=-1`, token, {}))
+      .body.profileChanges[0].profile.stats.attributes;
+    assert.equal((await profile("profile0")).mfa_enabled, true);
+    assert.equal((await profile("athena")).mfa_reward_claimed, true);
   } finally {
     backend.close();
   }

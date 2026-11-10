@@ -7,6 +7,7 @@ import { defaultContentUpdates, sanitizeContentUpdates } from "../events/content
 import { defaultMeteorStrikePhase, sanitizeMeteorStrike } from "../events/meteorstrike.js";
 import { defaultRocketLaunch, sanitizeRocketLaunch } from "../events/rocketlaunch.js";
 import { defaultSeason4Flags, sanitizeSeason4Flags } from "../events/season4flags.js";
+import { defaultDatedFlags, sanitizeDatedFlags } from "../events/datedflags.js";
 import { regionHostingIps, regionList } from "../matchmaking/regions.js";
 import { customMatchServers } from "../matchmaking/custom-servers.js";
 import { allowedBuildList } from "../builds/allowed.js";
@@ -161,7 +162,10 @@ const defaults = {
     rocketLaunch: defaultRocketLaunch,
     // Season 4's event flags (events/season4flags.js, Core-Backend #296): the admin's "on" / "off" per flag over a build's
     // own, and the rifts of July 2018: "off", "launch" (after the rocket launch) or "dates" (Epic's, on the replay).
-    season4Flags: defaultSeason4Flags
+    season4Flags: defaultSeason4Flags,
+    // Season 5's dated event-flag events (events/datedflags.js, Core-Backend #311): 5.21's Tomato Town rift and 5.30's
+    // Cube, each "dates" (Epic's, on the replay), "custom" (the admin's own times per step) or "off".
+    datedFlags: defaultDatedFlags
   },
   battlepass: defaultBattlePass,
   matchmakingModes: {
@@ -355,6 +359,7 @@ function sanitizeEvents(input, current = defaults.events) {
   if (input.meteorStrike !== undefined) result.meteorStrike = sanitizeMeteorStrike(input.meteorStrike, result.meteorStrike ?? defaultMeteorStrikePhase);
   if (input.rocketLaunch !== undefined) result.rocketLaunch = sanitizeRocketLaunch(input.rocketLaunch, result.rocketLaunch ?? defaultRocketLaunch);
   if (input.season4Flags !== undefined) result.season4Flags = sanitizeSeason4Flags(input.season4Flags, result.season4Flags ?? defaultSeason4Flags);
+  if (input.datedFlags !== undefined) result.datedFlags = sanitizeDatedFlags(input.datedFlags, result.datedFlags ?? defaultDatedFlags);
 
   return result;
 }

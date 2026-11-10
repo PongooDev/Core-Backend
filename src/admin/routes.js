@@ -48,6 +48,7 @@ import { activeEventFlags, fortnitemares, mutantStorms } from "../events/events.
 import { season4FlagsStatus } from "../events/oddities.js";
 import { tomatoRiftStates } from "../events/tomatorift.js";
 import { cubeStates } from "../events/cube.js";
+import { datedEvent, datedEvents, datedFlagsStatus, datedModes, datedSchedulePatch, datedSettings } from "../events/datedflags.js";
 import { odditiesModes, odditySchedulePatch, season4Flag } from "../events/season4flags.js";
 import { convertLeftoverCandy } from "../events/candyllamas.js";
 import { ltmIds, ltmSchedule } from "../events/ltms.js";
@@ -111,6 +112,10 @@ const served521 = (now) => inBuild("4288479", () => [...activeEventFlags(),
 // What 5.30 (CL-4305896) serves now: its flags and the Cube's by its dates (events/cube.js).
 const served530 = (now) => inBuild("4305896", () => [...activeEventFlags(),
   ...(cubeStates(now)[0]?.events ?? []).map(({ eventType }) => eventType)]);
+
+// Season 5's dated event-flag events (events/datedflags.js, Core-Backend #311) as the admin panel shows them: each step's
+// times by Epic's dates on the replay's lap now, the admin's own and the ones served now.
+const datedStatus = (now, config) => withoutSeasonStartRecording(() => datedFlagsStatus(now.getTime(), seasonMoment(now, null, 5).getTime(), config));
 
 export function adminRoutes(context) {
   const { accounts, profiles, tokens, sessions, matchmaker, xmpp, stomp, settings, network, dataDir, resetTokens, reports, adminAuth } = context;
@@ -1367,6 +1372,7 @@ export function adminRoutes(context) {
       rocketLaunch: rocketLaunchStatus(now, eventsConfig),
       // Season 4's event flags, grouped (events/season4flags.js, Core-Backend #296), with what 4.5, 5.0, 5.10, 5.21 and 5.30 serve now.
       season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(now, eventsConfig, inBuild("4166199", () => activeEventFlags()), inBuild("4214610", () => activeEventFlags()), inBuild("4240749", () => activeEventFlags()), served521(now), served530(now))),
+      datedFlags: datedStatus(now, eventsConfig),
       events: [
         {
           id: "fortnitemares",
@@ -1556,6 +1562,38 @@ export function adminRoutes(context) {
     if (!Object.keys(patch).length) return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "Give a flag and its state, the oddities mode or the rifts' schedule");
     const updated = settings.update({ events: { season4Flags: patch } });
     res.json({ success: true, season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(new Date(), updated.events, inBuild("4166199", () => activeEventFlags()), inBuild("4214610", () => activeEventFlags()), inBuild("4240749", () => activeEventFlags()), served521(new Date()), served530(new Date()))) });
+  });
+
+  // Season 5's dated event-flag events (events/datedflags.js, Core-Backend #311): {event: "cube" | "tomatoRift"} with
+  // {mode: "dates" | "custom" | "off"} and/or {schedule}: {startAt, step, scale} (every step at Epic's spacing from that
+  // step's start, scale 1 Epic's, 0.5 twice as fast), [{step, startAt, endAt}] (those steps over the current times, or over
+  // the replay's dates now when there are none; both null removes a step's; endAt null stays on), or null (clears them).
+  // Times set are times to use: the custom mode, unless the request names a mode. The calendar revision follows the events
+  // config, so running servers refresh.
+  router.post("/admin/api/events/dated-flags", (req, res) => {
+    const body = typeof req.body === "object" && req.body !== null ? req.body : {};
+    const event = datedEvent(body.event);
+    if (!event) return invalid(res, `event must be ${datedEvents.map(({ id }) => id).join(" or ")}`);
+    if (body.mode === undefined && body.schedule === undefined) return invalid(res, "Give the mode or the schedule");
+    if (body.mode !== undefined && !datedModes.includes(body.mode)) return invalid(res, `mode must be ${datedModes.join(", ")}`);
+    const now = new Date();
+    const current = datedSettings(settings.get()?.events)[event.id];
+    const patch = {};
+    if (body.mode !== undefined) patch.mode = body.mode;
+    const status = datedStatus(now, settings.get()?.events).events.find(({ id }) => id === event.id);
+    const seed = status.steps.map(({ step, dates }) => ({ step, ...dates }));
+    if (body.schedule !== undefined) {
+      const schedule = datedSchedulePatch(event, body.schedule, current.schedule, seed);
+      if (!schedule) {
+        return invalid(res, "schedule must be {startAt, step, scale} (scale 0.001 to 10) or [{step, startAt, endAt}] with known steps, each once, and each endAt null or after its startAt");
+      }
+      patch.schedule = schedule;
+      if (patch.mode === undefined) patch.mode = schedule.length ? "custom" : current.mode === "custom" ? "dates" : current.mode;
+    }
+    // The custom mode without times of its own starts from the replay's dates now.
+    if (patch.mode === "custom" && !(patch.schedule ?? current.schedule).length) patch.schedule = seed;
+    const updated = settings.update({ events: { datedFlags: { [event.id]: patch } } });
+    res.json({ success: true, datedFlags: datedStatus(now, updated.events) });
   });
 
     router.post("/admin/api/events/actions/convert-storm-tickets", (req, res) => {

@@ -8,6 +8,9 @@ import { fillHeroAttributes } from "./heroes.js";
 import { isMtxCurrency, mtxPlatform } from "./items.js";
 import { fillWorkerAttributes } from "./workers.js";
 
+// Stats that stay true on every profile, whatever an earlier build or version wrote (#310).
+const alwaysTrue = new Set(["mfa_enabled", "mfa_reward_claimed"]);
+
 const never = "0001-01-01T00:00:00.000Z";
 
 // The client only counts a player's homebase as set up once townName, bannerIconId or bannerColorId has a value
@@ -36,7 +39,10 @@ const templates = {
     // 1.7.2's front end reads it without checking it is there (sub_70F330 from sub_2D76C70, entering Battle Royale):
     // a profile without it crashes the client. Counters are {currentCount, lastIncrementedTime}
     // (IncrementNamedCounterStat).
-    named_counters: {}
+    named_counters: {},
+    // Two-factor authentication always counts as enabled (#310): 5.30's lobby asks for it ("enable two-factor
+    // authentication") unless common_core's mfa_enabled is true. Core has no 2FA, so every account has it.
+    mfa_enabled: true
   }),
   // Battle Royale's profile from 1.8. Its loadout (FFortAthenaLoadout, built by 1.8's sub_41B610) reads the banner and
   // a favorite_* item id per cosmetic slot from these; an empty id is the slot's default, so a player without
@@ -55,7 +61,9 @@ const templates = {
     favorite_loadingscreen: "",
     favorite_battlebus: "",
     favorite_dance: "",
-    favorite_victorypose: ""
+    favorite_victorypose: "",
+    // The 2FA reward (Battle Royale's emote) counts as claimed, so the client doesn't offer it again (#310).
+    mfa_reward_claimed: true
   }),
   // The gameserver reads the backpack profile's own player_loadout into UFortMcpProfileWorld::CachedPlayerLoadout and
   // won't save the profile while bPlayerIsNew is set; InitializeTheater clears it on the player's first zone.
@@ -75,7 +83,7 @@ export function addMissingStats(profile) {
     profile.coreXpScale = commanderXpScale();
   }
   for (const [name, value] of Object.entries(defaultStats(profile.profileId))) {
-    if (!(name in profile.stats.attributes)) {
+    if (!(name in profile.stats.attributes) || (alwaysTrue.has(name) && profile.stats.attributes[name] !== true)) {
       profile.stats.attributes[name] = value;
       added = true;
     }

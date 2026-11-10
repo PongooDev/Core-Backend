@@ -7615,6 +7615,58 @@
         el("div", { style: "display:flex; gap:8px; margin-top:6px;" },
           el("button", { class: "btn small", text: "Save these times", onclick: () => s4Action({ schedule: riftInputs.map((row) => ({ number: row.number, tellAt: toIso(row.tell.value), eventAt: toIso(row.event.value) })) }, "Rift times saved") }),
           el("button", { class: "btn ghost small", text: "Clear my times", onclick: () => s4Action({ schedule: null, oddities: s4.oddities === "custom" ? "off" : s4.oddities }, "Rift times cleared") })));
+      // Season 5's dated event-flag events (events/datedflags.js, Core-Backend #311): 5.21's Tomato Town rift and 5.30's Cube,
+      // each on Epic's dates on the replay, the admin's own times (step by step, or every step at Epic's spacing from one
+      // step's start) or off.
+      const dated = data.datedFlags || { modes: ["dates", "custom", "off"], events: [] };
+      const datedAction = async (payload, message) => {
+        if (await act(api("/admin/api/events/dated-flags", payload), message)) showEvents();
+      };
+      const datedLabels = { dates: "Epic's dates on Season 5's replay", custom: "My own times (set below)", off: "Off: not served (switch the flags above by hand)" };
+      const datedEditors = dated.events.map((event) => {
+        const rows = event.steps.map((s) => {
+          const shown = s.custom || s.dates;
+          return { step: s.step,
+            start: el("input", { class: "field", type: "datetime-local", "aria-label": `${s.label} starts`, value: toLocalInput(shown.startAt) }),
+            end: el("input", { class: "field", type: "datetime-local", "aria-label": `${s.label} ends (empty: stays on)`, value: toLocalInput(shown.endAt) }) };
+        });
+        const startAt = el("input", { class: "field", type: "datetime-local", "aria-label": `${event.name} start`, value: toLocalInput(new Date().toISOString()) });
+        const anchor = el("select", { class: "field", "aria-label": `${event.name} step to start from` },
+          ...event.steps.map((s) => el("option", { value: s.step, text: s.label, selected: s.step === event.anchor })));
+        const scale = el("input", { class: "field", type: "number", min: "0.001", max: "10", step: "0.001", style: "width:90px;", "aria-label": `${event.name} spacing scale`, value: "1" });
+        const shifted = (at) => datedAction({ event: event.id, schedule: { startAt: at, step: anchor.value, scale: Number(scale.value) } }, `${event.name}: times saved`);
+        return el("div", { style: "margin-top:12px;" },
+          el("div", { style: "font-weight:700; font-size:12px;", text: `When ${event.name} happens:` }),
+          el("select", { class: "field", style: "margin-top:4px;", "aria-label": `${event.name} schedule`, onchange: (e) => datedAction({ event: event.id, mode: e.target.value }, `${event.name}: schedule saved`) },
+            ...dated.modes.map((value) => el("option", { value, text: datedLabels[value] || value, selected: event.mode === value }))),
+          el("div", { class: "muted", style: "font-size:12px; margin:6px 0 4px;", text: "Start the sequence from one step, the others following at Epic's spacing (scale 1; 0.5 is twice as fast, 0.01 runs the Cube's month in about 6 hours). Or set each step below: an empty end stays on. Saving switches to My own times; running gameservers pick it up within 5 seconds, clients at their next calendar fetch." }),
+          el("div", { style: "display:flex; flex-wrap:wrap; gap:8px; align-items:center;" },
+            el("span", { style: "font-size:12px;", text: "Start" }), anchor,
+            el("span", { style: "font-size:12px;", text: "at" }), startAt,
+            el("span", { style: "font-size:12px;", text: "spacing ×" }), scale,
+            el("button", { class: "btn small", text: "Apply", onclick: () => {
+              if (!startAt.value) return toast("Pick a start time", true);
+              shifted(toIso(startAt.value));
+            } }),
+            el("button", { class: "btn ghost small", text: "Start now", onclick: () => shifted(new Date().toISOString()) })),
+          el("div", { class: "table-wrap", style: "margin-top:6px;" }, el("table", { style: "font-size:12px;" },
+            el("thead", {}, el("tr", {}, ...["Step", "Flags", "Now served", "Start", "End", "Epic's"].map((text) => el("th", { text })))),
+            el("tbody", {}, ...event.steps.map((s, index) => el("tr", {},
+              el("td", { text: s.label }),
+              el("td", { class: "muted", style: "font-family:var(--mono, monospace);", text: s.flags.map((f) => f.replace("EventFlag.", "")).join(", ") }),
+              el("td", { style: "white-space:nowrap;", text: s.current ? `${fmtTime(s.current.startAt)} – ${s.current.endAt ? fmtTime(s.current.endAt) : "on"}` : "—" }),
+              el("td", {}, rows[index].start),
+              el("td", {}, rows[index].end),
+              el("td", { class: "muted", style: "white-space:nowrap;", text: new Date(s.original.startAt).toUTCString().slice(5, 22) + " UTC" })))))),
+          el("div", { style: "display:flex; gap:8px; margin-top:6px;" },
+            el("button", { class: "btn small", text: "Save these times", onclick: () => {
+              // A step without a start isn't served.
+              const schedule = rows.map((row) => (row.start.value ? { step: row.step, startAt: toIso(row.start.value), endAt: toIso(row.end.value) } : { step: row.step, startAt: null, endAt: null }));
+              if (!rows.some((row) => row.start.value)) return toast("Set a start time", true);
+              datedAction({ event: event.id, schedule }, `${event.name}: times saved`);
+            } }),
+            el("button", { class: "btn ghost small", text: "Back to Epic's dates", onclick: () => datedAction({ event: event.id, schedule: null, mode: "dates" }, `${event.name}: Epic's dates`) })));
+      });
       const season4Container = el("div", {
         style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
       },
@@ -7652,7 +7704,8 @@
             el("td", { text: fmtTime(rift.tellAt) }),
             el("td", { text: fmtTime(rift.eventAt) }),
             el("td", { class: "muted", text: new Date(rift.original.event).toUTCString().slice(5, 22) + " UTC" })))))),
-        odditiesEditor
+        odditiesEditor,
+        ...datedEditors
       );
 
       const modeCards = el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; margin-top:12px;" },

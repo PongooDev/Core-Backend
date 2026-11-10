@@ -18,7 +18,7 @@ test("a new profile0 has every stat the Cert and 1.7.2 clients read, in its stru
 
     assert.deepEqual(Object.keys(stats).sort(), [
       "client_settings", "collection_book", "current_mtx_platform", "daily_purchases", "daily_rewards",
-      "default_hero_squad_id", "gameplay_stats", "homebase", "in_app_purchases", "level", "mission_alert_redemption_record",
+      "default_hero_squad_id", "gameplay_stats", "homebase", "in_app_purchases", "level", "mfa_enabled", "mission_alert_redemption_record",
       "mode_loadouts", "named_counters", "player_loadout", "quest_manager", "weekly_purchases", "xp"
     ]);
     assert.equal(stats.level, 1);

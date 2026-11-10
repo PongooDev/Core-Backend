@@ -1,7 +1,7 @@
 import { currentBuild } from "../builds/context.js";
 import { seasonMoment } from "../store/itemshop.js";
-import { cubeLake, cubeLightning, cubeMoveTo, cubeMoveToLake, cubeRune, cubeStartMove, cubeTurnOn, currentEventsConfig, riftCorrupt,
-  seasonalEventsOn } from "./events.js";
+import { datedEvent, datedParts, datedSettings, datedWindows, season5EndDay } from "./datedflags.js";
+import { currentEventsConfig, seasonalEventsOn } from "./events.js";
 import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 
 // The Cube, "Kevin" (5.30, CL-4305896; events/events.js). 5.30's paks watch these calendar events:
@@ -28,49 +28,20 @@ import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 // journey, so the replay serves all of it, the Lake to the season's end.
 //
 // On Season 5's replay (store/itemshop.js seasonMoment) these windows are mapped to real time lap by lap (the replay's
-// 12 July to 27 September), as events/tomatorift.js's.
-const at = (day, time = "21:00") => Date.parse(`2018-${day}T${time}:00.000Z`);
-const runeDays = [["08-28", "08-29"], ["09-02", "09-03"], ["09-05", "09-06"], ["09-07", "09-08"], ["09-10", "09-11"], ["09-13", "09-14"],
-  ["09-16", "09-17"]];
-const closure = at("08-24");
-const lakeAt = at("09-19");
-const seasonFirstDay = Date.parse("2018-07-12T00:00:00.000Z");
-const seasonEndDay = Date.parse("2018-09-27T00:00:00.000Z");
-// The legs: [flag, start, end] in Epic's time, the rolls with StartMove alongside.
-const legs = runeDays.flatMap(([stop, leave], index) => {
-  const start = index === 0 ? closure : at(runeDays[index - 1][1]);
-  return [[cubeMoveTo(index + 1), start, at(stop)], [cubeStartMove, start, at(stop)], [cubeRune(index + 1), at(stop), at(leave)]];
-});
-export const cubeSchedule = [
-  [riftCorrupt, at("08-23", "08:00"), closure],
-  [cubeLightning, at("08-23"), closure],
-  [cubeTurnOn, closure, seasonEndDay],
-  ...legs,
-  [cubeMoveToLake, at(runeDays[6][1]), lakeAt],
-  [cubeStartMove, at(runeDays[6][1]), lakeAt],
-  [cubeLake, lakeAt, seasonEndDay]
-].map(([eventType, start, end]) => ({ eventType, start, end }));
-const iso = (ms) => new Date(ms).toISOString();
+// 12 July to 27 September), as events/tomatorift.js's; the admin panel can set its own times instead, step by step or from
+// one step at Epic's spacing, or take the Cube off (events/datedflags.js, Core-Backend #311).
+export const cubeEvent = datedEvent("cube");
+export const cubeSchedule = cubeEvent.steps.flatMap(({ flags, start, end }) => flags.map((eventType) => ({ eventType, start, end: end ?? season5EndDay })));
 
 // The Cube's calendar events as parts [{validFrom (ms), events: [{eventType, activeSince, activeUntil}]}], from the part
 // that holds now on (the next four changes), as events/tomatorift.js's: on 5.30 with the seasonal events on, in the
 // Automatic mode. A flag the admin switched on is served always (season4Overrides) and one switched off never, so neither
 // is scheduled here.
 export function cubeStates(now = new Date(), changelist = currentBuild(), config = currentEventsConfig()) {
-  const entry = season4Flag(cubeTurnOn);
+  const entry = season4Flag(cubeEvent.flag);
   if (!entry || !onBuild(entry, changelist) || !seasonalEventsOn() || (config?.mode ?? "auto") !== "auto") return [];
   const { off, on } = season4Overrides(changelist, config);
-  const skip = new Set([...off, ...on]);
-  const cycle = seasonEndDay - seasonFirstDay;
   const nowMs = now.getTime();
-  const momentNow = seasonMoment(now, null, 5).getTime();
-  // The real time this lap's replay started at, and the laps around it.
-  const lapStart = nowMs - ((((momentNow - seasonFirstDay) % cycle) + cycle) % cycle);
-  const windows = [lapStart - cycle, lapStart, lapStart + cycle].flatMap((lap) => cubeSchedule.map(({ eventType, start, end }) =>
-    ({ eventType, since: lap + (start - seasonFirstDay), until: lap + (end - seasonFirstDay) })))
-    .filter(({ eventType }) => !skip.has(eventType));
-  const eventsAt = (t) => windows.filter(({ since, until }) => t >= since && t < until)
-    .map(({ eventType, since, until }) => ({ eventType, activeSince: iso(since), activeUntil: iso(until) }));
-  const boundaries = [...new Set(windows.flatMap(({ since, until }) => [since, until]))].filter((t) => t > nowMs).sort((a, b) => a - b).slice(0, 4);
-  return [{ validFrom: -Infinity, events: eventsAt(nowMs) }, ...boundaries.map((t) => ({ validFrom: t, events: eventsAt(t) }))];
+  const windows = datedWindows(cubeEvent, datedSettings(config).cube, nowMs, seasonMoment(now, null, 5).getTime());
+  return datedParts(windows, nowMs, cubeEvent.parts, new Set([...off, ...on]));
 }
