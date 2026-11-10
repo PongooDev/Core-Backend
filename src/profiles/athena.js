@@ -653,6 +653,7 @@ export function addSeasonXp(session, amount) {
   }
   const accountLevel = accountLevelOf(tracker.profile, level);
   if (attributes.accountLevel !== accountLevel) tracker.setStat("accountLevel", accountLevel);
+  gainedXpObjectives(session, Math.floor(amount));
   settleChaseRewards(session);
   settleSeasonRewards(session, seasonFunctions);
   settleLevelObjectives(session);
@@ -877,6 +878,20 @@ function settleLevelObjectives(session) {
     for (const objective of quest.objectives.filter((candidate) => candidate.itemEvent === "HasLeveledUpAthenaSeason")) {
       const count = Math.min(level, objective.count) - (item.attributes[`completion_${objective.name}`] ?? 0);
       if (count > 0 && session.profile("athena").profile.items[itemId]?.attributes.quest_state === "Active") addProgress(session, itemId, objective, count);
+    }
+  }
+}
+
+// Objectives that count the season XP gained (5.0's progressive challenges, Core-Backend #307: Drift's and Ragnarok's
+// Quest_BR_S5_Gain_SeasonXP_ProgressiveA/B_01 to _05, ItemEvent HasGainedAthenaSeasonXp, 10,000 to 500,000 XP): each
+// award's XP, from when the challenge is open (Ragnarok's open at tier 100), and past the last season level too, as the
+// XP is gained even where the level keeps none of it. Season 4's Carbide and Omega count the level instead
+// (settleLevelObjectives).
+function gainedXpObjectives(session, amount) {
+  if (!(amount > 0)) return;
+  for (const { itemId, quest } of activeQuests(session.profile("athena"))) {
+    for (const objective of quest.objectives.filter((candidate) => candidate.itemEvent === "HasGainedAthenaSeasonXp")) {
+      if (session.profile("athena").profile.items[itemId]?.attributes.quest_state === "Active") addProgress(session, itemId, objective, amount);
     }
   }
 }

@@ -208,3 +208,32 @@ test("5.0's calendar: Season 5, its lobby flag, and its shop's replay kept from 
     fs.rmSync(dataDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   }
 });
+
+test("#307: 5.0's season XP counts toward Ragnarok's progressive challenges (HasGainedAthenaSeasonXp)", () => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-build50-"));
+  try {
+    const store = createProfileStore(dataDir);
+    inBuild(v50, () => {
+      const session = openSession(store, "ragnarok307");
+      const { profile } = session.profile("athena");
+      athenaQuestLogin(session);
+      buyBattlePass(session, seasonRewardFunctions());
+      // Tier 100's reward: Season5_ProgressiveB_Schedule, Ragnarok's challenges.
+      seasonRewardFunctions().grantChallengeSchedule(session, "ChallengeBundleSchedule:Season5_ProgressiveB_Schedule");
+      const quest = (id) => Object.values(profile.items).find((item) => item.templateId.toLowerCase() === `quest:${id}`);
+      const stage1 = "quest_br_s5_gain_seasonxp_progressiveb_01";
+      const stage2 = "quest_br_s5_gain_seasonxp_progressiveb_02";
+      assert.equal(quest(stage1).attributes.quest_state, "Active");
+      seasonRewardFunctions().addSeasonXp(session, 20000);
+      assert.equal(quest(stage1).attributes.completion_athena_s5_season_gain_xp_progressive_b_01, 20000);
+      seasonRewardFunctions().addSeasonXp(session, 20000);
+      assert.notEqual(quest(stage1).attributes.quest_state, "Active", "35,000 XP completes stage 1");
+      assert.notEqual(quest("quest_br_s5_gain_seasonxp_progressivea_01").attributes.quest_state, "Active", "Drift's 10,000 XP too");
+      assert.equal(quest(stage2).attributes.completion_athena_s5_season_gain_xp_progressive_b_02, 40000);
+      assert.equal(quest(stage2).attributes.quest_state, "Active");
+      session.commit();
+    });
+  } finally {
+    fs.rmSync(dataDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+  }
+});
