@@ -1,5 +1,6 @@
 import { anyBattlePassOffer, battlePassOffers } from "../battlepass/season2.js";
 import { currentBuild } from "../builds/context.js";
+import { dailyLimitOf, upgradeLlamaDailyLimit } from "./dailylimit.js";
 import { blockbuster2018, blockbusterLlama, blockbusterTickets } from "../events/blockbuster2018.js";
 import { currentEventsConfig, fortnitemares, isEventActive, mutantStorms, mutantStorms2018, spring2018, storm2018, winter2017 } from "../events/events.js";
 import { candy } from "../events/fortnitemares.js";
@@ -35,9 +36,11 @@ import { seasonShopOffers, seasonStorefront } from "./seasonshop.js";
 // out of the store ("Removed a few llamas from the store rotation: Double Llama, Fiver Llama, Six Pack Llama, Niner
 // Llama"; their CardPack_Bronze_02x/05x/06x/09x are still in 2.4's data): Core never sold them, so nothing changes.
 const mtxOffers = [
-  { offerId: "core_cardpack_bronze", templateId: "CardPack:cardpack_bronze", title: "Upgrade Llama", currencyType: "MtxCurrency", currencySubType: "", price: 50 },
+  { offerId: "core_cardpack_bronze", templateId: "CardPack:cardpack_bronze", title: "Upgrade Llama", currencyType: "MtxCurrency", currencySubType: "", price: 50,
+    dailyLimit: upgradeLlamaDailyLimit.limit, dailyLimitFirstBuild: upgradeLlamaDailyLimit.firstBuild },
   { offerId: "core_cardpack_bronze_x10", templateId: "CardPack:cardpack_bronze", quantity: 10, title: "10 Upgrade Llamas", currencyType: "MtxCurrency",
-    currencySubType: "", price: 375, firstBuild: 3790078 }
+    currencySubType: "", price: 375, firstBuild: 3790078,
+    dailyLimit: upgradeLlamaDailyLimit.limit, dailyLimitFirstBuild: upgradeLlamaDailyLimit.firstBuild }
 ];
 const inThisBuild = (offer) => !offer.firstBuild || Number(currentBuild()) >= offer.firstBuild;
 const listedVouchers = ["AccountResource:voucher_basicpack", "AccountResource:voucher_cardpack_bronze"];
@@ -192,7 +195,7 @@ function offerJson(offer, sortPriority) {
           // A V-Bucks pack's amounts (store/currency.js).
           : offer.metaInfo ? Object.entries(offer.metaInfo).map(([key, value]) => ({ key, value }))
             : [],
-    dailyLimit: -1,
+    dailyLimit: dailyLimitOf(offer),
     weeklyLimit: -1,
     // An item shop offer's tile, shared with the other offers of its category (store/itemshop.js tileOf).
     categories: offer.category ? [offer.category] : [],

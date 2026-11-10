@@ -7,6 +7,7 @@ import { lootEntry, spendMtx } from "../../../profiles/items.js";
 import { grant, itemEvent } from "../../../profiles/progress.js";
 import { findOffer } from "../../../store/catalog.js";
 import { hasRefunds, recordPurchase } from "../../../store/refunds.js";
+import { dailyLimitOf, dailyPurchases, recordDailyPurchase } from "../../../store/dailylimit.js";
 import { eventPurchases, recordEventPurchase } from "../../../store/eventstore.js";
 import { blockbusterTickets, upgradeLlamaBlockbusterTickets } from "../../../events/blockbuster2018.js";
 import { stormTickets, upgradeLlamaTickets } from "../../../events/mutantstorms.js";
@@ -113,9 +114,19 @@ export function purchaseCatalogEntry({ req, session, notifications }) {
         `${offerId} sells ${offer.eventLimit} and you have bought ${bought}`);
     }
   }
+  // A daily limit (5.10's Upgrade Llamas, store/dailylimit.js) sells that many a day, counted per account from 00:00 UTC.
+  const dailyLimit = dailyLimitOf(offer);
+  if (dailyLimit > 0) {
+    const today = dailyPurchases(tracker.profile, offer);
+    if (today + purchaseQuantity > dailyLimit) {
+      throw new McpError("errors.com.epicgames.modules.gamesubcatalog.purchase_not_allowed",
+        `${offerId} sells ${dailyLimit} a day and you have bought ${today} today`);
+    }
+  }
   if (offer.currencyType === "GameItem") spendItem(tracker, offer.currencySubType, total);
   else spendMtx(tracker, total);
   if (offer.eventLimit) recordEventPurchase(tracker, offer, purchaseQuantity);
+  if (dailyLimit > 0) recordDailyPurchase(tracker, offer, purchaseQuantity);
   // An offer of several (1.10's ten Upgrade Llamas, store/catalog.js) grants its quantity for each one bought.
   const count = purchaseQuantity * (offer.quantity ?? 1);
   const items = grant(session, offer.templateId, count, { packSource: "Store" }).map(lootEntry);
