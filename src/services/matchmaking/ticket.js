@@ -54,6 +54,11 @@ export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings,
     // (events/ltms.js): off unless turned on, by hand or by their original dates. 50v50 stays on unless turned off.
     const off = ltm && !ltm.defaultOn ? !ltmOn(ltm.id, currentBuild(), settingsValue) : modes && modes[mode] === false;
     if (mode && off) {
+      // The client shows this refusal (ObtainTicket's unexpected status, FailedToObtainTicket) as "Weird. We couldn't
+      // connect to the match." (EMatchmakingErrorV2::FailedToContactGameServices, 5.30), so the console names it
+      // (Core-Backend #313).
+      log("Matchmaking", `Refused ${accountId}'s ticket for bucket ${bucketId}: ${ltm?.name ?? mode} is off ` +
+        "(admin panel, Matchmaking, Battle Royale game modes; or outside its original dates while Original dates is on)");
       return sendError(res, 400, "errors.com.epicgames.fortnite.matchmaking_disabled", `Matchmaking for ${mode} is currently disabled`);
     }
     const partyPlayerIds = list(req.query.partyPlayerIds);
