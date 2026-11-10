@@ -31,5 +31,12 @@ export function storefrontRoutes({ tokens, profiles, settings }) {
     }));
   });
 
+  // The asset keychain: "<pak guid>:<base64 AES key>:<item id>" strings for encrypted cosmetic paks. 5.21+ asks for it at
+  // login (numKeysDownloaded, rvn) and fails the login ("Failed to download asset keychain") on anything but a 200 JSON
+  // array. Core hands out no pak keys, so the list is empty.
+  router.get("/fortnite/api/storefront/v2/keychain", requireAuth(tokens), (req, res) => {
+    res.json([]);
+  });
+
   return router;
 }

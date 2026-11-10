@@ -68,3 +68,16 @@ test("the catalog expires in the future, no later than any store countdown the c
     backend.close();
   }
 });
+
+test("5.21 downloads its asset keychain at login: an empty JSON array, not a 404 that fails the login", async () => {
+  const backend = await startBackend();
+  try {
+    const { token } = await userLogin(backend.port, "Keychain");
+    const res = await ask(backend.port, "GET", "/fortnite/api/storefront/v2/keychain?numKeysDownloaded=0&rvn=1277", token,
+      agentOf("Release-5.21-CL-4288479"));
+    assert.equal(res.status, 200);
+    assert.deepEqual(res.body, []);
+  } finally {
+    backend.close();
+  }
+});
