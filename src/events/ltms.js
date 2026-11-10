@@ -266,6 +266,27 @@ const build50 = 4214610;
 // they are left out as before.
 const build5100 = 4225813;
 const build510 = 4240749;
+// 5.21 (CL-4288479, Update v5.21, 15 August 2018; Core has no 5.20, Update v5.20 of 7 August, so 5.21 carries its modes
+// too): Athena/Playlists holds the defaults, 5.10's Playlist_50v50 ("50 V 50", unchanged) and Playlist_Playground (four
+// teams of four still: Update v5.20's "Fill/No Fill option added to game mode selector" and "Chest & floor loot changed
+// back to one weapon spawn each" are its loot tables' and the front end's), and, new, Playlist_Steady_Solo, _Duos and
+// _Squads (160 to 162, "Steady Storm": Athena/Playlists/SteadyStorm's game data, MissionGen_SteadyStorm, profile stats on),
+// Playlist_Soaring_50s (53, "Soaring 50's": two teams of fifty in squads of 4, a bus each, RedeployGlider_Modifier, its
+// own Athena/Playlists/50v50/Soaring loot tables), and, back, Playlist_Snipers_Solo, _Duos and Playlist_Snipers (39 to 41,
+// "Sniper Shootout": 100 teams of 1, 2 and 4, bNoDBNO, Athena/Playlists/Snipers' tables). Fly Explosives' playlists are
+// gone. Update v5.20 (7 August): "Limited Time Mode: Steady Storm ... One Storm that closes in over the course of 15
+// minutes", the mode of 5.20 (which Core lacks), so on 5.21 Steady Storm runs from 7 August to 15 August on the replay (🟡
+// the end: Update v5.21's day) and by its switches. Update v5.21 (15 August): "Redeploy your glider and stay mobile in
+// the newest limited time mode, Soaring 50's", and "Limited Time Mode: Sniper Shootout ... Scoped Assault Rifles have
+// been removed. The Heavy Sniper Rifle has been added" (Athena/Playlists/Snipers' loot, which the gameserver plays): so
+// Soaring 50's is 5.21's new mode, on there from 15 August to 23 August (🟡 the end: Update v5.30's day), and Sniper
+// Shootout v4 (Solo, Duos, Squads) takes the same window (🟡: the notes don't date it) and its switches.
+// Playlist_Velocity_Solo, _Duos and _Squads ("Velocity", PlaylistId 160, Steady Storm Solo's, a placeholder) and
+// Playlist_Comp_Meta_Solo and Playlist_Fortnite_B_* are in the paks too, but no 5.20 or 5.21 notes name them (later
+// modes): left out, as Solo Showdown and Final Five are.
+const build521 = 4288479;
+const steadyStorm = [{ builds: [build521, build521], start: "2018-08-07", end: "2018-08-15" }];
+const update521Window = [{ builds: [build521, build521], start: "2018-08-15", end: "2018-08-23" }];
 // Core-Backend #257 asked for 3.5.1's to 4.0's Solid Gold v2 (Squads, Solo), Sniper Shootout v2 (Solo, Duos, Squads), High
 // Explosives v2 (Squads, Solo), Blitz! (Squads, Solo, Duos), Teams of 20 and 50v50 v2. Each is a playlist asset of 3.5.1's
 // and 4.0's Athena/Playlists (and 3.6's, which sits between them, as its note above has it; its paks didn't mount in
@@ -517,12 +538,12 @@ export const ltms = [
   // (events/finalfight.js). By its switch: nothing found dates it (🟡).
   { id: "finalFightTeams12", name: "Final Fight: Teams of 12", playlistId: 103, playlistName: "Playlist_Final_12", eventFlag: null, builds: [build450, build45], seasons: [4],
     teams: "8 Teams × 12", description: "The storm stops after its third circle; when the countdown ends, the team with the most players left wins (Playlist_Final_12)." },
-  // 5.0's Playlist_50v50 (above): by its switch; 5.10's is the same asset.
-  { id: "fiftyFiftySeason5", name: "50v50 (Season 5)", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build500, build510], seasons: [5],
+  // 5.0's Playlist_50v50 (above): by its switch; 5.10's and 5.21's are the same asset.
+  { id: "fiftyFiftySeason5", name: "50v50 (Season 5)", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build500, build521], seasons: [5],
     teams: "2 Teams × 50", description: "Two teams of fifty, a bus each, extra loot; reviving a teammate earns XP (Playlist_50v50, 5.0's)." },
-  // 5.10's Playground and Fly Explosives (above).
-  { id: "playgroundV2", name: "Playground v2", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build5100, build510], seasons: [5],
-    original: [{ builds: [build5100, build510], start: "2018-07-25", end: "2018-09-27" }],
+  // 5.10's Playground (5.21's too) and Fly Explosives (above).
+  { id: "playgroundV2", name: "Playground v2", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build5100, build521], seasons: [5],
+    original: [{ builds: [build5100, build521], start: "2018-07-25", end: "2018-09-27" }],
     teams: "4 Teams × 4", description: "Playground again, with team select: up to four players on up to four teams, respawns, 10x resources, golf carts (Playlist_Playground, 5.10's)." },
   { id: "flyExplosives", name: "Fly Explosives (Squads)", playlistId: 122, playlistName: "Playlist_FlyExplosives_Squads", eventFlag: null, builds: [build510, build510], seasons: [5], newIn: build510,
     original: [{ builds: [build510, build510], start: "2018-07-31", end: "2018-08-07" }],
@@ -530,7 +551,29 @@ export const ltms = [
   { id: "flyExplosivesSolo", name: "Fly Explosives (Solo)", playlistId: 120, playlistName: "Playlist_FlyExplosives_Solo", eventFlag: null, builds: [build510, build510], seasons: [5],
     teams: "100 Teams × 1", description: "Explosive weapons only, with jetpacks on the floor (Playlist_FlyExplosives_Solo, 5.10's)." },
   { id: "flyExplosivesDuos", name: "Fly Explosives (Duos)", playlistId: 121, playlistName: "Playlist_FlyExplosives_Duos", eventFlag: null, builds: [build510, build510], seasons: [5],
-    teams: "100 Teams × 2", description: "Explosive weapons only, with jetpacks on the floor (Playlist_FlyExplosives_Duos, 5.10's)." }
+    teams: "100 Teams × 2", description: "Explosive weapons only, with jetpacks on the floor (Playlist_FlyExplosives_Duos, 5.10's)." },
+  // 5.21's Steady Storm (Update v5.20's), Soaring 50's and Sniper Shootout v4 (above).
+  { id: "steadyStormSolo", name: "Steady Storm (Solo)", playlistId: 160, playlistName: "Playlist_Steady_Solo", eventFlag: null, builds: [build521, build521], seasons: [5],
+    original: steadyStorm,
+    teams: "100 Teams × 1", description: "One storm that closes in over 15 minutes, no safe zones, 10 damage a second (Athena/Playlists/SteadyStorm game data, 5.21's)." },
+  { id: "steadyStormDuos", name: "Steady Storm (Duos)", playlistId: 161, playlistName: "Playlist_Steady_Duos", eventFlag: null, builds: [build521, build521], seasons: [5],
+    original: steadyStorm,
+    teams: "100 Teams × 2", description: "One storm that closes in over 15 minutes, no safe zones, 10 damage a second (Athena/Playlists/SteadyStorm game data, 5.21's)." },
+  { id: "steadyStormSquads", name: "Steady Storm (Squads)", playlistId: 162, playlistName: "Playlist_Steady_Squads", eventFlag: null, builds: [build521, build521], seasons: [5],
+    original: steadyStorm,
+    teams: "100 Teams × 4", description: "One storm that closes in over 15 minutes, no safe zones, 10 damage a second (Athena/Playlists/SteadyStorm game data, 5.21's)." },
+  { id: "soaring50s", name: "Soaring 50's", playlistId: 53, playlistName: "Playlist_Soaring_50s", eventFlag: null, builds: [build521, build521], seasons: [5], newIn: build521,
+    original: update521Window,
+    teams: "2 Teams × 50", description: "50v50 with glider redeploy from 10 m up, extra Impulse Grenades, Launch Pads and Bounce Pads; no profile stats (Playlist_Soaring_50s, 5.21's)." },
+  { id: "sniperShootoutV4", name: "Sniper Shootout v4 (Squads)", playlistId: 41, playlistName: "Playlist_Snipers", eventFlag: null, builds: [build521, build521], seasons: [5],
+    original: update521Window,
+    teams: "100 Teams × 4", description: "Sniper Rifles only, the Heavy Sniper Rifle in and Scoped ARs out, half the floor loot, no down state (Athena/Playlists/Snipers tables, 5.21's)." },
+  { id: "sniperShootoutV4Solo", name: "Sniper Shootout v4 (Solo)", playlistId: 39, playlistName: "Playlist_Snipers_Solo", eventFlag: null, builds: [build521, build521], seasons: [5],
+    original: update521Window,
+    teams: "100 Teams × 1", description: "Sniper Rifles only, the Heavy Sniper Rifle in and Scoped ARs out, no down state (Athena/Playlists/Snipers tables, 5.21's)." },
+  { id: "sniperShootoutV4Duos", name: "Sniper Shootout v4 (Duos)", playlistId: 40, playlistName: "Playlist_Snipers_Duos", eventFlag: null, builds: [build521, build521], seasons: [5],
+    original: update521Window,
+    teams: "100 Teams × 2", description: "Sniper Rifles only, the Heavy Sniper Rifle in and Scoped ARs out, no down state (Athena/Playlists/Snipers tables, 5.21's)." }
 ];
 // A build range's bounds are changelists or versions ("4.2", "4.4.x"): a version holds only once Core knows the build's.
 const versionParts = (version) => String(version).split(".").map((part) => (part === "x" ? Infinity : Number(part)));
@@ -680,7 +723,7 @@ export function nextLtmChange(build, settingsValue, now = new Date()) {
 
 // The admin panel's list (its Battle Royale Game Modes, after solo, duos and squads): each LTM with its window and
 // builds, whether it is on by hand, and whether its window holds each season's replay now.
-const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build311]: "3.1.1", [build32]: "3.2", [build33]: "3.3", [build351]: "3.5.1", [build352]: "3.5.2", [build36]: "3.6", [build40]: "4.0", [build41]: "4.1", [build42]: "4.2", [build440]: "4.4.0", [build441]: "4.4.1", [build442]: "4.4.2", [build450]: "4.5.0", [build45]: "4.5", [build500]: "5.0.0", [build50]: "5.0", [build5100]: "5.10.0", [build510]: "5.10" };
+const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build311]: "3.1.1", [build32]: "3.2", [build33]: "3.3", [build351]: "3.5.1", [build352]: "3.5.2", [build36]: "3.6", [build40]: "4.0", [build41]: "4.1", [build42]: "4.2", [build440]: "4.4.0", [build441]: "4.4.1", [build442]: "4.4.2", [build450]: "4.5.0", [build45]: "4.5", [build500]: "5.0.0", [build50]: "5.0", [build5100]: "5.10.0", [build510]: "5.10", [build521]: "5.21" };
 const boundName = (bound) => (typeof bound === "number" ? versions[bound] : bound);
 const buildRange = ([first, last]) => (first === last ? boundName(first) : `${boundName(first)} to ${boundName(last)}`);
 // A window's day or moment for the admin panel: "YYYY-MM-DD" at midnight, else the ISO time; last, its last day.

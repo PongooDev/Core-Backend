@@ -10,7 +10,7 @@ dotnet run -c Release --project tools/extractor -- "<build folder with FortniteG
 The engine version and changelist come from the build's `Engine/Build/Build.version`. A build that ships without one
 (1.10, CL 3790078) takes them as a fourth argument, after the output folder, in its User-Agent's form:
 `4.19.0-3790078+++Fortnite+Release-Cert`. UE 4.16, 4.19, 4.20 (2.5, CL 3889387, the first 4.20 build) and 4.21 (5.0, CL 4214610, the
-first 4.21 build; 5.10, CL 4240749) are mapped. 4.19 writes soft references with their
+first 4.21 build; 5.10, CL 4240749; 5.21, CL 4288479) are mapped. 4.19 writes soft references with their
 object name (`/Game/Path/Asset.Asset`); zone themes' tile classes and mission generators' primary missions are kept as
 packages, as 4.16 writes them, so overlays only hold the builds' own differences.
 
@@ -162,7 +162,12 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   EventFlag.Anniversary2018_BR, which no tier gives) carries it as `eventName`, and such event schedules are written with
   the season's, with their bundles. Earlier builds' committed overlays have none. The earlier 5.10, CL-4225813, isn't
   extracted (Core has no copy of its paks; Core-ServerAssets' pak for it is CL-4240749's, byte for byte) and plays on
-  CL-4240749's data. Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
+  CL-4240749's data. 5.21's (CL-4288479, UE 4.21, Update v5.21's build; Core has no 5.20) is
+  `4.21.0-4288479+++Fortnite+Release-5.21` (no `Build.version`) with 5.10's full data (Cert's files with
+  `gamedata/4240749` applied) as the fifth argument, for the same reason, and the main key FModel's settings hold for its
+  build folder (no extractor change). Its install is a full one (Save the World with it); its two small
+  `pakchunk0_94AB24604D6F33B1BDF1B4911CABA3FC` paks are encrypted with a key of their own and aren't read.
+  Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):
   `slotLoadouts` (AlterationSlotsLoadouts: each loadout's slots, their unlock level and rarity, slot definition,

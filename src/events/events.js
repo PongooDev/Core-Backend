@@ -281,6 +281,16 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // Birthday ran from 24 July to 7 August 2018, both modes, Update v5.20's day: so it is 5.10's two builds' own.
 // 5.10 keeps 5.0's LobbySeason5, group missions, ticketless storms, Road Trip and Horde ("Birthday Llama ... Cost: 1,000
 // Road Trip tickets"; "Gold reward doubled across all Horde reward tiers").
+// 5.21 (CL-4288479, Update v5.21, 15 August 2018; Core has no 5.20, Update v5.20 of 7 August, so 5.21 stands for both).
+// Every EventFlag.* in its paks (the same byte scan, 223,827 uasset, umap, uexp and ini files of its full install): 5.10's
+// seventeen, and, new, Athena_GameplayActors' BR_S5_Oddity_Tomato_Tell and _Event, Tomato Town's rift (the Fortnite Wiki's
+// Tomato Town: "A rift started forming on top of Uncle Pete's Pizza Pit" on 15 August, and on 19 August "The rift spits
+// out a small stone tomato head statue", Prop_Tomato_Stone), served by those dates on Season 5's replay through the
+// calendar (events/tomatorift.js). 5.21 keeps 5.10's LobbySeason5, group missions, ticketless storms, Road Trip and
+// Horde (Update v5.20's and v5.21's Weekly Horde Challenges: world/horde.js). The Birthday ended with 5.10 (7 August,
+// Update v5.20's day), so 5.21 doesn't serve its three flags by itself. The Cube ("Kevin") isn't 5.21's: the Fortnite
+// Wiki's Crack Closure has its lightning strike from 23 August and the Cube appear on 24 August, both Update v5.30's,
+// and 5.21's paks hold no cube; the sky's crack stays BR_S5_Rift_Shrink's, which nothing dates (🟡, by its switch).
 export const blockbuster2018 = "Blockbuster2018";
 export const blockbuster2018Phase1 = "EventFlag.Blockbuster2018Phase1";
 export const blockbuster2018Phase2 = "EventFlag.Blockbuster2018Phase2";
@@ -295,6 +305,8 @@ export const birthday2018 = "Birthday2018";
 export const anniversary2018BR = "EventFlag.Anniversary2018_BR";
 export const birthdayBattleBus = "EventFlag.BirthdayBattleBus";
 export const supplyDropBDay = "EventFlag.SupplyDropBDay";
+export const tomatoRiftTell = "EventFlag.BR_S5_Oddity_Tomato_Tell";
+export const tomatoRiftEvent = "EventFlag.BR_S5_Oddity_Tomato_Event";
 const build40 = 4039451;
 const build41 = 4053532;
 const build42 = 4072250;
@@ -306,6 +318,7 @@ const build500 = 4204761;
 const build50 = 4214610;
 const build5100 = 4225813;
 const build510 = 4240749;
+const build521 = 4288479;
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
@@ -323,7 +336,7 @@ const events = [
   { name: spring2018, flag: spring2018Phase2, firstBuild: 3915963, lastBuild: 3942182 },
   { name: groupMission, flag: groupMission, firstBuild: 3935073, lastBuild: 3942182 },
   // 4.2's group mission alerts (Core-Backend #277, world/theaters.js).
-  { name: groupMission, flag: groupMission, firstBuild: build42, lastBuild: build510 },
+  { name: groupMission, flag: groupMission, firstBuild: build42, lastBuild: build521 },
   { name: spring2018, flag: spring2018Phase3, firstBuild: 3942182, lastBuild: 3942182 },
   { name: passiveMiniBosses, flag: passiveMiniBosses, firstBuild: 4000805, lastBuild: 4019403 },
   { name: storm2018, flag: activeStorms, firstBuild: 4000805, lastBuild: 4019403 },
@@ -335,11 +348,11 @@ const events = [
   { name: blockbuster2018, flag: blockbuster2018Phase3, firstBuild: build440, lastBuild: build45 },
   { name: blockbuster2018, flag: blockbuster2018Phase4, firstBuild: build450, lastBuild: build45 },
   { name: blockbuster2018, flag: activeMiniBosses, firstBuild: build40, lastBuild: build45 },
-  { name: passiveStorms, flag: passiveStorms, firstBuild: build40, lastBuild: build510 },
+  { name: passiveStorms, flag: passiveStorms, firstBuild: build40, lastBuild: build521 },
   { name: lobbySeason4, flag: lobbySeason4, firstBuild: build40, lastBuild: build45 },
-  { name: lobbySeason5, flag: lobbySeason5, firstBuild: build500, lastBuild: build510 },
-  { name: roadTrip2018, flag: roadTrip2018Flag, firstBuild: build500, lastBuild: build510 },
-  { name: hordeFlag, flag: hordeFlag, firstBuild: build500, lastBuild: build510 },
+  { name: lobbySeason5, flag: lobbySeason5, firstBuild: build500, lastBuild: build521 },
+  { name: roadTrip2018, flag: roadTrip2018Flag, firstBuild: build500, lastBuild: build521 },
+  { name: hordeFlag, flag: hordeFlag, firstBuild: build500, lastBuild: build521 },
   { name: birthday2018, flag: anniversary2018BR, firstBuild: build5100, lastBuild: build510 },
   { name: birthday2018, flag: birthdayBattleBus, firstBuild: build5100, lastBuild: build510 },
   { name: birthday2018, flag: supplyDropBDay, firstBuild: build5100, lastBuild: build510 },

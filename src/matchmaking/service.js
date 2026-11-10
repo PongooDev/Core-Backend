@@ -112,7 +112,13 @@ const playlistTeamsFrom351 = {
   // 5.10's (CL-4240749) Fly Explosives: Playlist_FlyExplosives_Solo, _Duos and _Squads (120, 121, 122).
   120: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
   121: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
-  122: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }
+  122: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  // 5.21's (CL-4288479) Soaring 50's (53, Playlist_Soaring_50s: 2 × 50 in squads of 4) and Update v5.20's Steady Storm,
+  // Playlist_Steady_Solo, _Duos and _Squads (160, 161, 162).
+  53: { maxTeamCount: 2, maxTeamSize: 50, maxSquadSize: 4 },
+  160: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  161: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  162: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }
 };
 const playlistAssetTeamsBuild = 4000805;
 // 5.10's (CL-4225813) Playground is a new revision: four teams of up to four (MaxTeamCount 4, MaxTeamSize 4, MaxPlayers 4,

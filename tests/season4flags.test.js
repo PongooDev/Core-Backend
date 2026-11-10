@@ -28,12 +28,12 @@ const withConfig = (config, run) => {
 
 test("every event flag of Season 4's paks is in the catalog, in a group", () => {
   // The byte scans events/events.js lists: 4.0's (with the MissionAlerts rows' flags), 4.2's, 4.4.2's and 4.5's, and 5.0's
-  // RoadTrip2018 (Core-Backend #298), and 5.10's (CL-4240749) Birthday and Season 5 map flags.
+  // RoadTrip2018 (Core-Backend #298), 5.10's (CL-4240749) Birthday and Season 5 map flags, and 5.21's Tomato Town rift.
   const scanned = ["ActiveMiniBosses", "ActiveStorms", "Fortnitemares", "GroupMission", "Horde", "PassiveMiniBosses", "PassiveStorms",
     "SurviveTheStorm", "Blockbuster2018Phase1", "Blockbuster2018Phase2", "Blockbuster2018Phase3", "Blockbuster2018Phase4", "BR.Allow50v50",
     "BR.CandyCaneGuns", "BR.DisallowDuo", "BR.DisallowSolo", "BR.DisallowSquad", "SupplyDropGift", "LobbyHalloweenDecor", "LobbyWinterDecor",
     "LobbySeason4", "RoadTrip2018", "Anniversary2018_BR", "BirthdayBattleBus", "SupplyDropBDay", "BR_S5_Rift_Shrink", "BR_S5_RiskyReels_Event",
-    "BR_S4_Geode_Begin", "BR_S4_Geode_Countdown", "BR_S4_Geode_Over", "BR_S4_Rift_Growth",
+    "BR_S5_Oddity_Tomato_Tell", "BR_S5_Oddity_Tomato_Event", "BR_S4_Geode_Begin", "BR_S4_Geode_Countdown", "BR_S4_Geode_Over", "BR_S4_Rift_Growth",
     ...Array.from({ length: 8 }, (_, i) => [`BR_S4_Oddity_0${i + 1}_Tell`, `BR_S4_Oddity_0${i + 1}_Event`]).flat()].map((name) => `EventFlag.${name}`);
   for (const flag of scanned) assert.ok(season4Flag(flag), flag);
   const all = season4FlagGroups.flatMap((group) => group.flags.map(({ flag }) => flag));

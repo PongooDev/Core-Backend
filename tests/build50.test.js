@@ -42,9 +42,9 @@ test("5.0's two builds are known by their versions, play on CL-4214610's data an
   assert.equal(dataBuild("4190000"), v45, "a build between them Core doesn't know still plays on 4.5's");
   assert.equal(dataBuild("4220000"), v50);
   assert.equal(allowedBuildList(["5.0.0", "5.0"]).join(), v50s.join());
-  assert.equal(buildOfSeason(5), "4240749", "Season 5's newest data is 5.10's now (build510.test.js)");
+  assert.equal(buildOfSeason(5), "4288479", "Season 5's newest data is 5.21's now (build521.test.js)");
   assert.equal(buildOfSeason(4), v45, "Season 4's newest data is still 4.5's");
-  assert.equal(seasonName(5), "Season 5 (5.0 – 5.10)");
+  assert.equal(seasonName(5), "Season 5 (5.0 – 5.21)");
   const season = inBuild(v500, athenaSeason);
   assert.deepEqual([season.seasonNumber, season.numSeasonLevels, season.numBookLevels, season.storefront, season.battlePassLevelOfferId],
     [5, 100, 100, "BRSeason5", "4B2E310BC1AE40B292A16D5AAD747E0A"]);

@@ -294,10 +294,18 @@ const blockbusterNow = () => !isEventActive(winter2017) && !storms2018() && !spr
 // the Event Store. Available July 25 at 8PM Eastern Time (July 26 at 0000 GMT)": HID_Commando_GunHeadshot_M_V1_RoadTrip_SR
 // ("Urban Assault Sledgehammer", new in 5.10's data, so only 5.10 offers it), at a legendary hero's 2,800 Gold, one (🟡 as
 // Blockbuster's heroes; from 5.10's release, not its hour).
+// 5.21 (CL-4288479; Core has no 5.20, so it carries Update v5.20's too) adds two: Update v5.20's "Mythic Ragnarok
+// Outlander comes to the Event Store. Available August 8th, at 8PM ET" (HID_Outlander_Myth02_SR_T01, "Ragnarok", new in
+// 5.21's data: 5.10's has only the higher tiers, as "Dark Viking Proto"), at the Fortnite Wiki's 3,200 Gold, and Update
+// v5.21's "New Constructor Machinist: Thora added to the Event Store. Available Wednesday, August 15th at 8pm ET"
+// (HID_Constructor_011_F_V1_RoadTrip_SR_T01, "Machinist Thora"), at the wiki's 2,800 Gold, one each (🟡 the limits are
+// Core's, as the Sledgehammer's; from 5.21's release).
 const roadTripEventItems = [
   ...["launcher_flintlock", "assault_flintlock", "sniper_flintlock_scope", "blunt_hammer_flintlock", "assault_autodrum"]
     .map((name) => ({ templateId: `Schematic:sid_${name}_sr_ore_t01`, price: 1680, limit: 1 })),
   { templateId: "Hero:hid_commando_gunheadshot_m_v1_roadtrip_sr_t01", price: 2800, limit: 1 },
+  { templateId: "Hero:hid_outlander_myth02_sr_t01", price: 3200, limit: 1 },
+  { templateId: "Hero:hid_constructor_011_f_v1_roadtrip_sr_t01", price: 2800, limit: 1 },
   { templateId: "Worker:workerbasic_sr_t01", price: 700, limit: 1 }
 ];
 export const roadTrip2018End = "2018-09-27T00:00:00.000Z";

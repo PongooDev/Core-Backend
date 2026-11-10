@@ -58,6 +58,23 @@ export const hordeZones = [
 // the fort is HordeQuest_BuildBase's (150 tickets).
 const fortRow = "Theater_Horde_Stonewood_VeryLow";
 
+// 5.21's (CL-4288479) Weekly Horde Challenges (Update v5.20 and v5.21; events/roadtrip2018.js): each week's mission,
+// MissionGen_WeeklyHordeChallenge_0<n>, in four zones, World/ZoneThemes/Horde/Challenges' week's themes (week 1's
+// MiniBossArmy, "Minibosses"; week 2's RangeImmune, "Bullet Proof Husks": "bulletproof enemies that must be defeated with
+// melee weapons, traps, or Hero abilities") at the Theater_Horde_*_Weekly rows (15, 28, 58 and 76 power). 🟡 The layout is
+// Core's, as the nine zones': the Stonewood one opens with the theater (Storm Shield Defense 3, the week's hidden quest's
+// objective), and the Plankerton, Canny Valley and Twine Peaks ones with the nine zones' gates to those tiers
+// (HordeQuest_Hidden_1, _4 and _7). Update v5.21's "Removed the Power Rating restrictions on Challenge the Horde missions"
+// is Core's already: no Horde mission has power requirements.
+const weeklyGenerator = (week) => generator(`MissionGen_WeeklyHordeChallenge_0${week}`);
+const weeklyNames = { 1: "Minibosses", 2: "Bullet Proof Husks" };
+const weeklyThemes = { 1: "MiniBossArmy", 2: "RangeImmune" };
+const weeklyZones = (week) => [["SW", "Stonewood", null], ["Plank", "Plankerton", "hordequest_hidden_1"], ["Canny", "Uncanny", "hordequest_hidden_4"],
+  ["Twine", "Final", "hordequest_hidden_7"]].map(([themeTier, rowTier, gate]) => ({
+  theme: theme(`Challenges/${weeklyThemes[week]}/BP_ZT_ChallengeTheHorde_Challenge_${weeklyThemes[week]}_${themeTier}`),
+  rowName: `Theater_Horde_${rowTier}_Weekly`, gate
+}));
+
 const noRequirements = () => ({ commanderLevel: 0, personalPowerRating: 0, partyPowerRating: 0 });
 const everyLanguage = (text) => Object.fromEntries(["de", "ru", "ko", "zh-hant", "pt-br", "en", "it", "fr", "zh-cn", "es", "ar", "ja",
   "pl", "es-419", "tr"].map((language) => [language, text]));
@@ -91,6 +108,17 @@ const layout = perBuild((read) => {
     regions.push({ displayName: `${zoneThemes[zone.theme].name ?? "Challenge the Horde"} (${difficulties[zone.rowName].recommendedRating}+)`,
       regionTags: { gameplayTags: [] }, tileIndices: [tileIndex], requirements: withQuest(zone.gate) });
   });
+  // The week's Weekly Horde Challenge (events/roadtrip2018.js), when the build's data has it: its four zones in a row below
+  // the nine, each a region of one tile hosting the week's mission every day.
+  const week = [2, 1].find((candidate) => missionGenerators[weeklyGenerator(candidate)]
+    && weeklyZones(candidate).every((zone) => zoneThemes[zone.theme] && difficulties[zone.rowName]));
+  for (const [index, zone] of (week ? weeklyZones(week) : []).entries()) {
+    const tileIndex = tiles.push(tile("AlwaysActive", zone.theme, 2 + index, 5, false)) - 1;
+    fixedMissions.push({ tileIndex, missionGenerator: weeklyGenerator(week),
+      missionDifficultyInfo: { dataTable: difficultyTable, rowName: zone.rowName }, tierGroupName: difficulties[zone.rowName].lootTierGroup ?? "" });
+    regions.push({ displayName: `Weekly Horde Challenge: ${weeklyNames[week]} (${difficulties[zone.rowName].recommendedRating}+)`,
+      regionTags: { gameplayTags: [] }, tileIndices: [tileIndex], requirements: withQuest(zone.gate) });
+  }
 
   return {
     data: {

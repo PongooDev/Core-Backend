@@ -14,6 +14,7 @@ import { challengeSeasonBegin, weekPlan } from "../../profiles/challenges.js";
 import { seasonTemplateId } from "../../profiles/seasons.js";
 import { rocketLaunchStates } from "../../events/rocketlaunch.js";
 import { mergeTimedStates, odditiesStates } from "../../events/oddities.js";
+import { tomatoRiftStates } from "../../events/tomatorift.js";
 
 // 1.8's event calendar (ScheduledEvents' FCalendarDownload): {currentTime, channels: {<channel>: FEventsTimeline
 // {cacheExpire, states: [FEventChannelState {validFrom, activeEvents: [{eventName, activeUntil}], state}]}}}. The
@@ -51,7 +52,8 @@ import { mergeTimedStates, odditiesStates } from "../../events/oddities.js";
 // naming the build's flags and the rocket's calendar events (EventFlag.BR_S4_Geode_Countdown, _Begin, _Over and
 // EventFlag.BR_S4_Rift_Growth) with their activeSince and activeUntil, which the map's FortAsyncAction_CalendarEventWatcher
 // counts to; and it is good no later than the next part. The rifts of July 2018 (Athena_OdditiesActors' _Tell and _Event
-// flags, events/oddities.js) join those parts the same way when the admin panel schedules them.
+// flags, events/oddities.js) join those parts the same way when the admin panel schedules them, and so does 5.21's Tomato
+// Town rift (Athena_GameplayActors' BR_S5_Oddity_Tomato_Tell and _Event, events/tomatorift.js) on Season 5's replay.
 export const calendarCacheMinutes = 60;
 const seasonalEventManagerBuild = 3790078;
 
@@ -86,8 +88,9 @@ export function calendarRoutes({ tokens, settings }) {
     const challengeChange = seasonBegin ? weekPlan(now).changes : null;
     const cacheMinutes = Math.max(5, Math.min(120, Number(currentEventsConfig()?.calendarCacheMinutes ?? calendarCacheMinutes)));
     const ltmChange = nextLtmChange(currentBuild(), settings?.get?.(), now);
-    // The rocket launch's parts and the rifts' (events/oddities.js) as one schedule.
-    const rocket = mergeTimedStates(rocketLaunchStates(now), odditiesStates(now));
+    // The rocket launch's parts, the rifts' (events/oddities.js) and 5.21's Tomato Town rift (events/tomatorift.js) as one
+    // schedule.
+    const rocket = mergeTimedStates(rocketLaunchStates(now), odditiesStates(now), tomatoRiftStates(now));
     const rocketChange = rocket[1]?.validFrom ?? null;
     const cacheExpire = new Date(Math.min(now.getTime() + cacheMinutes * 60000, weeklyEnd?.getTime() ?? Infinity, rocketChange ?? Infinity,
       seasonEnds?.getTime() ?? Infinity, ltmChange?.getTime() ?? Infinity, challengeChange?.getTime() ?? Infinity, ...Object.values(stwEnds).map((end) => end.getTime()))).toISOString();

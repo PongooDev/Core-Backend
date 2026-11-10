@@ -5,7 +5,7 @@ import { isEventActive, roadTrip2018 } from "./events.js";
 
 export { roadTrip2018 };
 
-// Road Trip (5.0, CL-4204761 and CL-4214610, and 5.10's two builds; events.js roadTrip2018), Save the World's first Season 5 event, and with it
+// Road Trip (5.0, CL-4204761 and CL-4214610, 5.10's two builds and 5.21; events.js roadTrip2018), Save the World's first Season 5 event, and with it
 // Challenge the Horde's return (Core-Backend #298, Update v5.00's notes): "Challenge the Horde is back! Challenge the
 // Horde comes to the desert!", "Reduced the total number of Challenge the Horde missions available on the map from 16 to
 // 9", "Challenge the Horde missions now become unlocked based upon your Storm Shield Defense progression or your Horde Quest
@@ -36,8 +36,31 @@ export const roadTripQuests = [
   ...Array.from({ length: 8 }, (_, index) => `hordequest_hidden_${index}`)
 ];
 
-// The requesting build's Road Trip quests, when the event runs there.
-export const roadTripEventQuests = () => (isEventActive(roadTrip2018) ? roadTripQuests.filter((questId) => getQuest(questId)) : []);
+// The Weekly Horde Challenges (Update v5.20: "Each week during the run of the Road Trip event, there will be a new Weekly
+// Challenge mission in the Challenge the Horde zone ... Weekly Horde Challenge 1: Minibosses"; Update v5.21: "Weekly Horde
+// Challenge - Bullet Proof Husks ... One time completion Quest Reward 1500 Gold ... Repeatable quest reward 75 Tickets").
+// 5.21's data has both weeks: MissionGen_WeeklyHordeChallenge_01 and _02 (MissionInfo_WeeklyHordeChallenge_01/_02, tagged
+// Stat.Mission.Weekly.Horde.Week01/02), each week's four zone themes (World/ZoneThemes/Horde/Challenges' MiniBossArmy and
+// RangeImmune, _SW, _Plank, _Canny and _Twine) and difficulty rows (Theater_Horde_Stonewood_Weekly, _Plankerton_Weekly,
+// _Uncanny_Weekly, _Final_Weekly: 15, 28, 58 and 76 power), and the week's quests: HordeQuest_Hidden_Weekly<n> (done by
+// Storm Shield Defense 3, OutpostQuest_T1_L3) gives HordeQuest_Weekly<n>_Stonewood1, and _Plankerton1, _Canny1 and
+// _Twine1 are in no quest's rewards (Epic's servers handed them out); each is done by wave 8 of its zone's weekly mission
+// (WaveComplete, the week's tag, Zone.Difficulty 10, 16, 26, 32) and gives its repeatable (75 Road Trip Tickets) besides
+// week 1's choice of a Legendary Flintlock and week 2's 1,500 Gold. A build runs the newest week its data has (5.21: week
+// 2, its notes'), its hidden quest and the three others given at quest login while Road Trip runs, and its four missions
+// in the horde theater (world/horde.js).
+export const weeklyHordeQuests = (week) => [`hordequest_hidden_weekly${week}`,
+  ...["plankerton", "canny", "twine"].map((zone) => `hordequest_weekly${week}_${zone}1`)];
+export const weeklyHordeWeek = () => [2, 1].find((week) => getQuest(`hordequest_hidden_weekly${week}`)) ?? null;
+// Every week's, for the event's quest line (events/quests.js).
+export const roadTripLineQuests = [...roadTripQuests, ...weeklyHordeQuests(1), ...weeklyHordeQuests(2)];
+
+// The requesting build's Road Trip quests, when the event runs there: with its Weekly Horde Challenge's.
+export const roadTripEventQuests = () => {
+  if (!isEventActive(roadTrip2018)) return [];
+  const week = weeklyHordeWeek();
+  return [...roadTripQuests, ...(week ? weeklyHordeQuests(week) : [])].filter((questId) => getQuest(questId));
+};
 
 // "Award Road Trip Tickets ... Award Horde Skill Points ... Perk Recombobulator materials are now distributed in Challenge
 // the Horde including RE-PERK! or PERK-UP! in larger quantities than found in Campaign missions" (the Fortnite Wiki's

@@ -451,7 +451,9 @@ const tileOf = (tile) => {
 // 3.6 (CL-4019403) adds Steelsight's Steelcast (BID_044_Robo) and Brite Gunner's Brite Bag (BID_026_Brite, in the data
 // since Season 2), as the wiki's pages name them. 5.10 (CL-4240749) adds Reef Ranger's Air Tank, Wreck Raider's Diving
 // Tank, Sun Tan Specialist's Rescue Ring, Maverick's Bat Attitude and Archetype's Paradigm, as the wiki's pages name them;
-// Shade's Ballistic is not in 5.10's paks.
+// Shade's Ballistic is not in 5.10's paks. 5.21 (CL-4288479) adds Beef Boss's Deep Fried, Aerobic Assassin's Back Plate,
+// Mullet Marauder's Boombox, Overtaker's Lane Splitter, Whiteout's Ignition, the P.A.N.D.A Team Leader's Bamboo and Sushi
+// Master's Chef's Choice, as the wiki's pages name them.
 export const bundledBackBlings = {
   "AthenaCharacter:cid_093_athena_commando_m_dinosaur": "AthenaBackpack:bid_031_dinosaur",
   "AthenaCharacter:cid_097_athena_commando_f_rockerpunk": "AthenaBackpack:bid_034_rockerpunk",
@@ -470,7 +472,14 @@ export const bundledBackBlings = {
   "AthenaCharacter:cid_180_athena_commando_m_scuba": "AthenaBackpack:bid_081_scubamale",
   "AthenaCharacter:cid_176_athena_commando_m_lifeguard": "AthenaBackpack:bid_083_lifeguardmale",
   "AthenaCharacter:cid_177_athena_commando_m_streetracercobra": "AthenaBackpack:bid_080_streetracercobramale",
-  "AthenaCharacter:cid_182_athena_commando_m_modernmilitary": "AthenaBackpack:bid_085_modernmilitary"
+  "AthenaCharacter:cid_182_athena_commando_m_modernmilitary": "AthenaBackpack:bid_085_modernmilitary",
+  "AthenaCharacter:cid_185_athena_commando_m_durrburgerhero": "AthenaBackpack:bid_091_durrrburgerhero",
+  "AthenaCharacter:cid_189_athena_commando_f_exercise": "AthenaBackpack:bid_086_exercisefemale",
+  "AthenaCharacter:cid_186_athena_commando_m_exercise": "AthenaBackpack:bid_087_exercisemale",
+  "AthenaCharacter:cid_190_athena_commando_m_streetracerwhite": "AthenaBackpack:bid_090_streetracerwhitemale",
+  "AthenaCharacter:cid_188_athena_commando_f_streetracerwhite": "AthenaBackpack:bid_089_streetracerwhitefemale",
+  "AthenaCharacter:cid_187_athena_commando_f_fuzzybearpanda": "AthenaBackpack:bid_092_fuzzybearpanda",
+  "AthenaCharacter:cid_191_athena_commando_m_sushichef": "AthenaBackpack:bid_088_sushichefmale"
 };
 
 // The day's offers by storefront, those the requesting build has the cosmetic for. Never a cosmetic the shop doesn't sell
