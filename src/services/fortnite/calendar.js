@@ -15,6 +15,7 @@ import { seasonTemplateId } from "../../profiles/seasons.js";
 import { rocketLaunchStates } from "../../events/rocketlaunch.js";
 import { mergeTimedStates, odditiesStates } from "../../events/oddities.js";
 import { tomatoRiftStates } from "../../events/tomatorift.js";
+import { birthdayActiveUntil } from "../../events/birthday2018.js";
 import { cubeStates } from "../../events/cube.js";
 
 // 1.8's event calendar (ScheduledEvents' FCalendarDownload): {currentTime, channels: {<channel>: FEventsTimeline
@@ -98,7 +99,7 @@ export function calendarRoutes({ tokens, settings }) {
       seasonEnds?.getTime() ?? Infinity, ltmChange?.getTime() ?? Infinity, challengeChange?.getTime() ?? Infinity, ...Object.values(stwEnds).map((end) => end.getTime()))).toISOString();
     const seasonal = Number(currentBuild()) >= seasonalEventManagerBuild;
     const flags = activeEventFlags();
-    const activeEvents = flags.map((flag) => ({ [seasonal ? "eventType" : "eventName"]: flag, activeUntil: eventsActiveUntil }));
+    const activeEvents = flags.map((flag) => ({ [seasonal ? "eventType" : "eventName"]: flag, activeUntil: birthdayActiveUntil(flag, now) }));
     const state = {
       ...(seasonal ? { activeEventFlags: flags } : {}),
       ...(season ? { seasonNumber: season.seasonNumber, seasonTemplateId: seasonTemplateId() } : {}),

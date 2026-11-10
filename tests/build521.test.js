@@ -5,7 +5,8 @@ import { allowedBuildList, buildChoices } from "../src/builds/allowed.js";
 import { inBuild } from "../src/builds/context.js";
 import { seasonName, versionOf } from "../src/builds/detect.js";
 import { activeEventFlags, anniversary2018BR, birthday2018, configureEvents, groupMission, hordeFlag, isEventActive, lobbySeason5, passiveStorms,
-  roadTrip2018Flag, tomatoRiftEvent, tomatoRiftTell } from "../src/events/events.js";
+  birthdayBattleBus, eventsActiveUntil, roadTrip2018Flag, tomatoRiftEvent, tomatoRiftTell } from "../src/events/events.js";
+import { birthdayActiveUntil } from "../src/events/birthday2018.js";
 import { eventQuests } from "../src/events/fortnitemares.js";
 import { hasLtm, inOriginalWindow, ltmNewMode, ltmOfPlaylist, ltmPlaylistOverrides } from "../src/events/ltms.js";
 import { eventQuestLine } from "../src/events/quests.js";
@@ -180,4 +181,14 @@ test("5.21's shop: Season 5's history sells 5.20's and 5.21's cosmetics on 5.21 
   assert.ok(beef);
   assert.deepEqual(beef.itemGrants.map(({ templateId }) => templateId), ["AthenaCharacter:cid_185_athena_commando_m_durrburgerhero", "AthenaBackpack:bid_091_durrrburgerhero"]);
   assert.ok(!featured(v510).some(({ templateId }) => !c510[templateId]), "5.10 sells none of them");
+});
+
+test("5.10's Birthday flags end at 7 August on Season 5's replay, not never (Core-Backend #312)", () => {
+  withConfig({ mode: "auto", seasonStarts: { 5: "2026-10-25" } }, () => {
+    // 9 November is the replay's day 16, 27 July 2018: the Birthday ends in 11 days, on the replay's 7 August (day 27, 20 November).
+    inBuild(v510, () => assert.equal(birthdayActiveUntil(anniversary2018BR, now), "2026-11-20T00:00:00.000Z"));
+    inBuild(v510, () => assert.equal(birthdayActiveUntil(birthdayBattleBus, now), "2026-11-20T00:00:00.000Z"));
+    inBuild(v510, () => assert.equal(birthdayActiveUntil(passiveStorms, now), eventsActiveUntil));
+    inBuild(v521, () => assert.equal(birthdayActiveUntil(anniversary2018BR, now), eventsActiveUntil, "5.21 has no Birthday"));
+  });
 });

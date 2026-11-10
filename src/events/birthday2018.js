@@ -1,5 +1,6 @@
 import { getQuest } from "../gamedata/quests.js";
-import { birthday2018, isEventActive } from "./events.js";
+import { nextReplayOf } from "../store/itemshop.js";
+import { anniversary2018BR, birthday2018, birthdayBattleBus, eventsActiveUntil, isEventActive, supplyDropBDay } from "./events.js";
 
 export { birthday2018 };
 
@@ -24,3 +25,14 @@ export const birthdayLlamaPrice = 1000;
 
 // The requesting build's Birthday quests, when the event runs there.
 export const birthdayEventQuests = () => (isEventActive(birthday2018) ? birthdayQuests.filter((questId) => getQuest(questId)) : []);
+
+// The Birthday's calendar flags, and when the client is told they end (Core-Backend #312: the Birthday Challenges' time
+// remaining counted down to the never-ending activeUntil, a huge number of days). The Fortnite Wiki's Fortnite 1st Birthday
+// ran to 7 August 2018 (Update v5.20's day), so on Season 5's replay (store/itemshop.js seasonMoment) the event ends when
+// the replay next stands at 7 August, as the other dated events' dates do; 🟡 the wiki gives days, not hours, so at midnight UTC.
+export const birthdayFlags = [anniversary2018BR, birthdayBattleBus, supplyDropBDay];
+export const birthdayEndedAt = Date.parse("2018-08-07T00:00:00.000Z");
+export function birthdayActiveUntil(flag, now = new Date()) {
+  if (!birthdayFlags.includes(flag) || !isEventActive(birthday2018)) return eventsActiveUntil;
+  return nextReplayOf(birthdayEndedAt, now, null, 5).toISOString();
+}
