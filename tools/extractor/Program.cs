@@ -1682,8 +1682,15 @@ static string GamePath(string objectPath)
 // Soft paths come as "/Game/Dir/Name.Name" or just "/Game/Dir/Name".
 static string AssetName(string path) => path.Split('/').Last().Split('.').Last();
 
-// A variant gameplay tag's last part (Cosmetics.Variant.Property.Stage1 -> Stage1), as the athena profile names variants.
-static string VariantTagName(JsonNode? tag) => (tag?["TagName"]?.GetValue<string>() ?? "None").Split('.').Last();
+// A variant gameplay tag below its prefix (Cosmetics.Variant.Property.Stage1 -> Stage1, Cosmetics.Variant.Property.Color.Brazil
+// -> Color.Brazil: the soccer outfits' jersey colours), as the athena profile names variants; the client puts the prefix back.
+static string VariantTagName(JsonNode? tag)
+{
+    var name = tag?["TagName"]?.GetValue<string>() ?? "None";
+    foreach (var prefix in new[] { "Cosmetics.Variant.Property.", "Cosmetics.Variant.Channel." })
+        if (name.StartsWith(prefix, StringComparison.Ordinal) && name.Length > prefix.Length) return name[prefix.Length..];
+    return name.Split('.').Last();
+}
 
 static List<string> Strings(JsonNode? values) => (values as JsonArray)?.Select(v => v!.GetValue<string>()).ToList() ?? [];
 

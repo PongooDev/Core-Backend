@@ -3443,7 +3443,7 @@
             ),
             el("div", { class: "k", text: item.type }),
             item.owned ? el("div", { class: "actions", style: "justify-content:flex-end; border-top:1px solid var(--line); padding-top:8px; margin-top:2px;" },
-              btn("Styles", () => openStylesModal(a, data.build, item.templateId), "ghost small"),
+              item.hasStyles ? btn("Styles", () => openStylesModal(a, data.build, item.templateId), "ghost small") : null,
               btn("Remove", async () => {
                 if (!await confirmModal(`Remove ${item.name} from ${a.displayName}'s locker? Starter cosmetics and earned ones will stay.`, {
                   title: "Remove Cosmetic",
@@ -3602,7 +3602,7 @@
 
         const source = channels.length
           ? `Channels from ${d.data.version}'s data${d.data.build === d.build ? "" : ` (${d.version}'s data names none)`}.`
-          : "The game data names no styles for this cosmetic: type the channel and its styles as the game's tags name them (the last part, e.g. Cosmetics.Variant.Property.Mat2 is Mat2).";
+          : "The game data names no styles for this cosmetic: type the channel and its styles as the game's tags name them (the part after Cosmetics.Variant.Property., e.g. Mat2, or Color.Brazil).";
         adder.replaceChildren(
           el("h3", { style: "margin:0 0 6px;", text: "Add styles" }),
           el("p", { class: "note", text: source }),

@@ -26,7 +26,7 @@ function queryAthena(port, { accountId, token }) {
     .then((update) => ({ ...update.profileChanges[0].profile, revision: update.profileRevision }));
 }
 
-test("style tags: a full gameplay tag is cut to its last part, anything else is refused", () => {
+test("style tags: a full gameplay tag is cut to its prefix, anything else is refused", () => {
   assert.equal(styleTag("Cosmetics.Variant.Property.Mat2"), "Mat2");
   assert.equal(styleTag(" Material "), "Material");
   assert.equal(styleTag("bad tag"), null);
@@ -65,6 +65,11 @@ test("the admin panel adds styles to an owned cosmetic, and the client sees them
     const stylesPath = `/admin/api/accounts/${player.accountId}/cosmetics/styles`;
     const save = (body) => post(backend.port, stylesPath, undefined, body);
     const read = (build, templateId) => get(backend.port, `${stylesPath}?${new URLSearchParams({ build, templateId })}`);
+
+    // The locker list marks the cosmetics with styles (#315), for the Styles button.
+    const listed = (await get(backend.port, `/admin/api/accounts/${player.accountId}/cosmetics?${new URLSearchParams({ build: v40, limit: "1000" })}`)).body.items;
+    assert.equal(listed.find((item) => item.templateId.toLowerCase() === carbide.toLowerCase())?.hasStyles, true);
+    assert.ok(listed.some((item) => item.hasStyles === false));
 
     // No profile, not owned: nothing to style.
     assert.match((await save({ build: v40, templateId: carbide, styles: [{ channel: "Progressive", tags: ["Stage1"] }] })).body.errorMessage, /no Battle Royale profile/);
@@ -110,3 +115,33 @@ test("the admin panel adds styles to an owned cosmetic, and the client sees them
     await backend.close();
   }
 });
+
+// Core-Backend #315: the soccer outfits' jersey colours are tags below the property prefix (Color.Brazil), owned from the start.
+const v530 = "4305896";
+const soccer = "AthenaCharacter:cid_144_athena_commando_m_soccerdudea";
+
+test("a tag below the property prefix keeps its dots", () => {
+  assert.equal(styleTag("Cosmetics.Variant.Property.Color.Brazil"), "Color.Brazil");
+  assert.equal(styleTag("Color.Brazil"), "Color.Brazil");
+});
+
+test("the soccer outfits own their jersey colours as the data names them, and a profile with the cut names is fixed", () => inBuild(v530, () => {
+  const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-soccer-styles-"));
+  try {
+    const session = openSession(createProfileStore(dataDir), "soccer");
+    setUpAthena(session);
+    assert.ok(grantCosmetic(session, soccer));
+    const tracker = session.profile("athena");
+    const itemId = Object.keys(tracker.profile.items).find((id) => tracker.profile.items[id].templateId === soccer);
+    const jersey = () => tracker.profile.items[itemId].attributes.variants.find((entry) => entry.channel === "JerseyColor");
+    assert.equal(jersey().active, "Color.Fortnite");
+    assert.ok(jersey().owned.includes("Color.Brazil") && jersey().owned.length === 32);
+    // A profile an earlier backend wrote, with the names cut to their last part.
+    tracker.setItemAttribute(itemId, "variants", [{ channel: "JerseyColor", active: "Brazil", owned: ["Fortnite", "Brazil"] }]);
+    setUpAthena(session);
+    assert.equal(jersey().active, "Color.Brazil");
+    assert.ok(jersey().owned.length === 32 && !jersey().owned.includes("Brazil"));
+  } finally {
+    fs.rmSync(dataDir, { recursive: true, force: true });
+  }
+}));

@@ -27,7 +27,7 @@ import { claimQuest, completeQuest, grant, skipTutorial } from "../profiles/prog
 import { createOutpost, storedCloudSaveProfile } from "../profiles/outposts.js";
 import { questIdOf, tutorialCompleted } from "../profiles/quests.js";
 import { openSession } from "../profiles/session.js";
-import { dataStyleChannels, editItemStyles, heldItemId, maxStyleChannels, maxStyleOptions, styleTag } from "../profiles/variants.js";
+import { dataStyleChannels, editItemStyles, heldItemId, maxStyleChannels, maxStyleOptions, styledCosmeticIds, styleTag } from "../profiles/variants.js";
 import { backpackState, inOverflow, vaultState, worldStackCap } from "../profiles/vault.js";
 import { maxLevel, xpForLevel } from "../profiles/xp.js";
 import { notifyProfiles } from "../services/mcp/profile.js";
@@ -743,6 +743,14 @@ export function adminRoutes(context) {
   const notBattleRoyaleBuild = (res, value) => invalid(res, `${value} isn't a build with Battle Royale: pick one of ${cosmeticBuilds
     .map(({ build, version }) => `${build} (${version})`).join(", ")}`);
 
+  // Whether a cosmetic has styles (Core-Backend #315), for the Styles button: the chosen build's data names them, or, as the
+  // styles window does for a build without, the newest build that names them.
+  const styledIdsOf = new Map();
+  const hasStyles = (build, templateId) => [build, ...[...battleRoyaleBuilds].reverse().filter((other) => other !== build)].some((candidate) => {
+    if (!styledIdsOf.has(candidate)) styledIdsOf.set(candidate, inBuild(candidate, styledCosmeticIds));
+    return styledIdsOf.get(candidate).has(templateId.toLowerCase());
+  });
+
   router.get("/admin/api/accounts/:accountId/cosmetics", (req, res) => {
     const account = accounts.get(req.params.accountId);
     if (!account) return notFound(res, req.originalUrl);
@@ -764,7 +772,7 @@ export function adminRoutes(context) {
       types: [...new Set(all.map((cosmetic) => cosmetic.type))],
       total: all.length, owned: all.filter((cosmetic) => cosmetic.owned).length, matches: matches.length,
       showItemImages: showItemImages(settings),
-      items: matches.slice(0, Math.min(Number(req.query.limit) || 120, 1000))
+      items: matches.slice(0, Math.min(Number(req.query.limit) || 120, 1000)).map((cosmetic) => ({ ...cosmetic, hasStyles: hasStyles(build, cosmetic.templateId) }))
     });
   });
 

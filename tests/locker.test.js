@@ -378,9 +378,9 @@ test("the admin panel gives single cosmetics of the chosen build, and refuses wh
     assert.deepEqual(listed.body.items.map((item) => item.templateId).sort(), [...lockerIds].sort());
     const byId = (body, templateId) => body.items.find((item) => item.templateId === templateId);
     assert.deepEqual(byId(listed.body, "AthenaPickaxe:halloweenscythe"),
-      { templateId: "AthenaPickaxe:halloweenscythe", name: "Reaper", type: "Harvesting Tool", rarity: "Rare", rarityCode: "r", owned: false });
+      { templateId: "AthenaPickaxe:halloweenscythe", name: "Reaper", type: "Harvesting Tool", rarity: "Rare", rarityCode: "r", owned: false, hasStyles: false });
     assert.deepEqual(byId(listed.body, "AthenaCharacter:cid_029_athena_commando_f_halloween"),
-      { templateId: "AthenaCharacter:cid_029_athena_commando_f_halloween", name: "Ghoul Trooper", type: "Outfit", rarity: "Epic", rarityCode: "vr", owned: false });
+      { templateId: "AthenaCharacter:cid_029_athena_commando_f_halloween", name: "Ghoul Trooper", type: "Outfit", rarity: "Epic", rarityCode: "vr", owned: false, hasStyles: false });
     for (const type of ["Outfit", "Harvesting Tool", "Glider", "Emote", "Loading Screen", "Battle Bus"]) assert.ok(listed.body.types.includes(type), type);
     const emotes = (await list("?build=3724489&type=Emote")).body.items;
     assert.ok(emotes.length && emotes.every((item) => item.type === "Emote"));

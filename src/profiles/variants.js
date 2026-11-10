@@ -36,14 +36,25 @@ const cosmeticKey = (templateId) => Object.keys(athenaCosmetics()).find((id) => 
 const findHeld = (profile, templateId) => Object.keys(profile.items)
   .find((itemId) => profile.items[itemId].templateId.toLowerCase() === String(templateId).toLowerCase());
 
+// A style the way the data names it (Core-Backend #315): the soccer outfits' jersey colours are tags below the property
+// prefix ("Color.Brazil" of Cosmetics.Variant.Property.Color.Brazil), which an earlier extraction cut to their last part
+// ("Brazil"), so profiles may hold that; the client matches the whole name, so it is taken back to the data's.
+const canonicalStyle = (channel, tag) => {
+  if (typeof tag !== "string") return tag;
+  const options = (athenaCosmetics()[channel.cosmetic]?.variants ?? []).find((entry) => entry.channel === channel.channel)?.options ?? [];
+  return options.includes(tag) ? tag : options.find((option) => option.endsWith(`.${tag}`)) ?? tag;
+};
+
 // The item's variants with every channel the data names (a cosmetic granted before its build's data had styles has none).
 function variantsOf(item) {
   const held = Array.isArray(item.attributes.variants) ? item.attributes.variants : [];
   const channels = defaultVariants(item.templateId);
+  const cosmetic = cosmeticKey(item.templateId);
   const merged = channels.map((channel) => {
     const kept = held.find((entry) => entry?.channel === channel.channel);
-    return kept ? { channel: channel.channel, active: typeof kept.active === "string" ? kept.active : channel.active,
-      owned: [...new Set([...channel.owned, ...(Array.isArray(kept.owned) ? kept.owned : [])])] } : channel;
+    const named = (tag) => canonicalStyle({ cosmetic, channel: channel.channel }, tag);
+    return kept ? { channel: channel.channel, active: typeof kept.active === "string" ? named(kept.active) : channel.active,
+      owned: [...new Set([...channel.owned, ...(Array.isArray(kept.owned) ? kept.owned.map(named) : [])])] } : channel;
   });
   return [...merged, ...held.filter((entry) => !channels.some((channel) => channel.channel === entry?.channel))];
 }
@@ -116,7 +127,8 @@ export function itemsMissingVariants(profile) {
     const held = Array.isArray(item.attributes?.variants) ? item.attributes.variants : [];
     return channels.some((channel) => {
       const kept = held.find((entry) => entry?.channel === channel.channel);
-      return !kept || typeof kept.active !== "string" || !Array.isArray(kept.owned) || channel.owned.some((option) => !kept.owned.includes(option));
+      return !kept || typeof kept.active !== "string" || !Array.isArray(kept.owned) || channel.owned.some((option) => !kept.owned.includes(option))
+        || [kept.active, ...kept.owned].some((tag) => canonicalStyle({ cosmetic: cosmeticKey(item.templateId), channel: channel.channel }, tag) !== tag);
     });
   });
 }
@@ -133,9 +145,13 @@ export function grantDefaultVariants(session) {
 // Styles an admin adds by hand (Core-Backend #305): channels and the options owned in them, as the profile names them
 // (the tags' last part: "Material" and "Mat2", "Progressive" and "Stage3"). A full tag (Cosmetics.Variant.Channel.Material,
 // Cosmetics.Variant.Property.Mat2) is cut to its last part, as the client puts the prefixes back in front.
+// A tag below the property prefix keeps its dots (Cosmetics.Variant.Property.Color.Brazil is Color.Brazil, the soccer
+// outfits' jersey colours, Core-Backend #315); a tag typed without it is taken as it is.
 export const styleTag = (value) => {
-  const tag = String(value ?? "").trim().split(".").at(-1);
-  return /^[A-Za-z0-9_-]{1,64}$/.test(tag) ? tag : null;
+  const text = String(value ?? "").trim();
+  const prefix = /^Cosmetics\.Variant\.(?:Property|Channel)\./i.exec(text);
+  const tag = prefix ? text.slice(prefix[0].length) : text;
+  return /^[A-Za-z0-9_-]{1,64}(\.[A-Za-z0-9_-]{1,64}){0,3}$/.test(tag) ? tag : null;
 };
 
 export const maxStyleChannels = 16;
@@ -144,6 +160,9 @@ export const maxStyleOptions = 64;
 // The held item of a template id (any case; the id without its type, CID_115_..., names the cosmetic too), or undefined.
 export const heldItemId = (profile, templateId) => findHeld(profile, templateId) ?? (String(templateId).includes(":") ? undefined
   : Object.keys(profile.items).find((itemId) => profile.items[itemId].templateId.toLowerCase().endsWith(`:${String(templateId).toLowerCase()}`)));
+
+// The template ids (lower case) of the cosmetics the build's data gives styles, for the admin panel's Styles button.
+export const styledCosmeticIds = () => new Set(Object.entries(athenaCosmetics()).filter(([, cosmetic]) => cosmetic.variants?.length).map(([id]) => id.toLowerCase()));
 
 // The channels the build's data names for a cosmetic, [{channel, default, options}]; [] when it names none.
 export const dataStyleChannels = (templateId) => (athenaCosmetics()[cosmeticKey(templateId)]?.variants ?? [])
@@ -175,7 +194,8 @@ export function editItemStyles(session, itemId, styles, { remove = false } = {})
     // A tag of another case than one held or the data's is that one.
     const data = dataStyleChannels(item.templateId).find((candidate) => candidate.channel.toLowerCase() === channel.toLowerCase());
     const known = [...(entry?.owned ?? []), ...(data?.options ?? [])];
-    const named = (tag) => known.find((option) => option.toLowerCase() === tag.toLowerCase()) ?? tag;
+    const named = (tag) => known.find((option) => option.toLowerCase() === tag.toLowerCase())
+      ?? known.find((option) => option.toLowerCase().endsWith(`.${tag.toLowerCase()}`)) ?? tag;
     const added = [...new Set(tags.map(named))];
     if (!entry) {
       variants.push({ channel: data?.channel ?? channel, active: active && added.includes(named(active)) ? named(active) : added[0], owned: added });
