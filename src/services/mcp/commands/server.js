@@ -140,6 +140,65 @@ function keepGoing(command, run) {
   }
 }
 
+// A finished mission for one player (EndPrimaryMission, and each of EndMatch's entries): its quest progress, and when it
+// succeeded the mission's rewards (see EndPrimaryMission below).
+function endPrimaryMission(command, session, accountId, body, context) {
+  const { advance: updates, missionStatus, matchmakingSessionId, missionName, earnedBadgeData, earnedItemCaches, numMissionPoints, difficultyIncreaseTier } = body;
+  const held = context.primaryMissions.end(accountId) ?? heldProgress();
+  advance(session, updates, held);
+  grantBadgeRewards(session, earnedBadgeData);
+  grantItemCacheRewards(session, earnedItemCaches);
+  if (!/succeeded$/i.test(String(missionStatus ?? ""))) {
+    revertHeldProgress(session, held);
+    return;
+  }
+  applyHeldProgress(session, held);
+  const mission = playedMission(context.sessions, matchmakingSessionId);
+  if (!mission) {
+    log("MCP", `${command}: no mission found for session ${matchmakingSessionId} (${missionName}), no rewards`);
+    return;
+  }
+  const lootLevel = missionLootLevel(Number(numMissionPoints));
+  const packSource = missionPackSource(Number(numMissionPoints));
+  log("MCP", `${command}: ${missionName} rewards at loot level ${lootLevel} (${Number(numMissionPoints) || 0} mission points)`);
+  for (const { itemType, quantity } of mission.missionRewards.items) grant(session, itemType, missionRewardQuantity(itemType, quantity, lootLevel), { packSource });
+  if (mission.missionAlert) completeMissionAlert(session, mission.theaterId, mission.missionAlert);
+  const raised = addDifficultyIncreaseRewards(session, Number(difficultyIncreaseTier), mission.missionRewards);
+  if (raised) {
+    log("MCP", `${command}: difficulty increase tier ${raised.difficultyIncreaseTier} rewards pending (${raised.difficultyIncreaseMissionRewards.items
+      .map(({ itemType, quantity }) => `${itemType} x${quantity}`).join(", ") || "none"})`);
+  }
+}
+
+// A player's score as EarnScore gives it: the earnScore notification and a levelUp for each level gained. No score still
+// gets an earnScore with no XP, which finalizes the player's results screen.
+function scoreNotifications(session, totalScore, criticalMatch) {
+  if (!Number.isFinite(totalScore) || totalScore <= 0) return [{ type: "earnScore", primary: false, ...noXpEarned }];
+  const { baseXPEarned, bonusXPEarned, boostXPEarned, boostXPMissed, restXPEarned, groupBoostXPEarned, levels } = earnScore(session, totalScore, { criticalMatch });
+  return [{ type: "earnScore", primary: false, baseXPEarned, bonusXPEarned, boostXPEarned, boostXPMissed, restXPEarned, groupBoostXPEarned },
+    ...levels.map((level) => ({ type: "levelUp", primary: false, level }))];
+}
+
+// The world save's part of an EndMatch entry, when the server filled it in: theater and storm shield item changes (as
+// BatchUpdatePlayers' are), the storm shield core's buildings and the deployable base's build saves.
+function hasChanges(request) {
+  return Boolean(request && ["addRequests", "removeRequests", "changeQuantityRequests", "changeAttributesRequests", "changeStatRequests"]
+    .some((name) => Array.isArray(request[name]) && request[name].length > 0));
+}
+
+function saveWorld(session, accountId, entry) {
+  if (hasChanges(entry.theaterItemUpdate) || hasChanges(entry.outpostItemUpdate)) {
+    const theater = session.profile(`theater${Number.isInteger(entry.theaterNum) ? entry.theaterNum : 0}`);
+    const outpost = session.profile(`outpost${Number.isInteger(entry.outpostNum) ? entry.outpostNum : 0}`);
+    log("MCP", `EndMatch save for ${accountId}: ${describeChanges(theater.profile.profileId, applyChanges(theater, entry.theaterItemUpdate), entry.theaterItemUpdate)}; `
+      + `${describeChanges(outpost.profile.profileId, applyChanges(outpost, entry.outpostItemUpdate), entry.outpostItemUpdate)}`);
+  }
+  if (typeof entry.outpostId === "string" && entry.outpostId) keepGoing("EndMatch", () => saveOutpost(session, entry.outpostId, entry.outpostInfo, entry.cloudSaveInfo));
+  if (typeof entry.deployableBaseItemId === "string" && entry.deployableBaseItemId) {
+    keepGoing("EndMatch", () => saveDeployableBase(session, entry.deployableBaseItemId, entry.cloudSaveInfo));
+  }
+}
+
 export const serverCommands = {
   QueryProfile: accepted,
 
@@ -246,32 +305,37 @@ export const serverCommands = {
   // earnedItemCaches (4.0: [templateId], the item caches the player picked up, whatever the mission's status) give
   // their caches' card packs, which the frontend claims (pack_source "ItemCache", profiles/itemcaches.js).
   EndPrimaryMission({ req, session, context, notifications }) {
-    const { advance: updates, missionStatus, matchmakingSessionId, missionName, earnedBadgeData, earnedItemCaches, numMissionPoints, difficultyIncreaseTier } = req.body ?? {};
-    const held = context.primaryMissions.end(req.params.accountId) ?? heldProgress();
-    advance(session, updates, held);
     if (!context.heldScores?.hasEarnScore(req.params.accountId)) notifications.push({ type: "earnScore", primary: false, ...noXpEarned });
-    grantBadgeRewards(session, earnedBadgeData);
-    grantItemCacheRewards(session, earnedItemCaches);
-    if (!/succeeded$/i.test(String(missionStatus ?? ""))) {
-      revertHeldProgress(session, held);
-      return;
+    endPrimaryMission("EndPrimaryMission", session, req.params.accountId, req.body ?? {}, context);
+  },
+
+  // 5.21's UFortMcpProfileCampaign::EndMatch, which replaced EndPrimaryMission and EarnScore's send:
+  // {playersAndMatchEndData, matchmakingSessionId, missionName, missionStatus, difficultyIncreaseTier}. Each entry
+  // (FAccountIdAndMatchEndData) is one player's EndPrimaryMission {accountId, advance, earnedBadgeData, earnedItemCaches,
+  // numMissionPoints} plus their EarnScore {totalScore, bCriticalMatchBonus}, and the world save's fields (theaterNum,
+  // theaterItemUpdate, outpostNum, outpostItemUpdate, outpostId, outpostInfo, deployableBaseItemId, cloudSaveInfo,
+  // lockCode), applied when the server filled them in. The player's XP comes first, as EarnScore came before
+  // EndPrimaryMission: the server's earnScore handler finalizes the player on the first one it gets. A response's
+  // notifications reach only the player whose profile sent the command, so another player's are held for their next
+  // gameserver response (profiles/scores.js); CoreV2 sends each player's entry through their own profile.
+  EndMatch({ req, session, sessionFor, context, notifications }) {
+    const { matchmakingSessionId, missionName, missionStatus, difficultyIncreaseTier } = req.body ?? {};
+    for (const entry of Array.isArray(req.body?.playersAndMatchEndData) ? req.body.playersAndMatchEndData : []) {
+      const accountId = netIdString(entry?.accountId);
+      const player = accountId && sessionFor(accountId);
+      if (!player) {
+        log("MCP", `EndMatch: unknown account ${accountId || "(none)"}, skipped`);
+        continue;
+      }
+      const earned = scoreNotifications(player, entry.totalScore, entry.bCriticalMatchBonus === true);
+      if (player === session) notifications.push(...earned);
+      else context.heldScores?.hold(accountId, earned);
+      log("MCP", `EndMatch for ${accountId}: ${missionName} ${missionStatus}, total score ${Number(entry.totalScore) || 0} (${earned[0].baseXPEarned} base XP)`
+        + (player === session ? "" : ", XP in their next gameserver response"));
+      endPrimaryMission("EndMatch", player, accountId, { ...entry, matchmakingSessionId, missionName, missionStatus, difficultyIncreaseTier }, context);
+      saveWorld(player, accountId, entry);
     }
-    applyHeldProgress(session, held);
-    const mission = playedMission(context.sessions, matchmakingSessionId);
-    if (!mission) {
-      log("MCP", `EndPrimaryMission: no mission found for session ${matchmakingSessionId} (${missionName}), no rewards`);
-      return;
-    }
-    const lootLevel = missionLootLevel(Number(numMissionPoints));
-    const packSource = missionPackSource(Number(numMissionPoints));
-    log("MCP", `EndPrimaryMission: ${missionName} rewards at loot level ${lootLevel} (${Number(numMissionPoints) || 0} mission points)`);
-    for (const { itemType, quantity } of mission.missionRewards.items) grant(session, itemType, missionRewardQuantity(itemType, quantity, lootLevel), { packSource });
-    if (mission.missionAlert) completeMissionAlert(session, mission.theaterId, mission.missionAlert);
-    const raised = addDifficultyIncreaseRewards(session, Number(difficultyIncreaseTier), mission.missionRewards);
-    if (raised) {
-      log("MCP", `EndPrimaryMission: difficulty increase tier ${raised.difficultyIncreaseTier} rewards pending (${raised.difficultyIncreaseMissionRewards.items
-        .map(({ itemType, quantity }) => `${itemType} x${quantity}`).join(", ") || "none"})`);
-    }
+    context.heldScores?.scored(matchmakingSessionId);
   },
 
   // One call for every player in the match: [{accountId, totalScore, bCriticalMatchBonus}] (FAccountIdAndScore).
