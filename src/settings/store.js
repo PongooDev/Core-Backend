@@ -33,9 +33,11 @@ const playlistAssetLtms = ["fiftyFiftyV2", "highExplosivesSolo", "highExplosives
   // 4.4.2's Final Fight: Teams of 20 (#325); 4.5's Final Fight: Teams of 12.
   "finalFight", "finalFightTeams12",
   // 5.0's (CL-4204761, CL-4214610) 50v50; 5.10's Playground and Fly Explosives (Squads, Solo, Duos); 5.21's Steady Storm,
-  // Soaring 50's and Sniper Shootout v4.
+  // Soaring 50's and Sniper Shootout v4; 5.30's Score Royale (Solo, Duos, Squads), Solid Gold (Squads, Solo, Duos) and 50v50
+  // Solid Gold.
   "fiftyFiftySeason5", "playgroundV2", "flyExplosives", "flyExplosivesSolo", "flyExplosivesDuos",
-  "steadyStormSolo", "steadyStormDuos", "steadyStormSquads", "soaring50s", "sniperShootoutV4", "sniperShootoutV4Solo", "sniperShootoutV4Duos"];
+  "steadyStormSolo", "steadyStormDuos", "steadyStormSquads", "soaring50s", "sniperShootoutV4", "sniperShootoutV4Solo", "sniperShootoutV4Duos",
+  "scoreRoyaleSolo", "scoreRoyaleDuos", "scoreRoyaleSquads", "solidGoldSeason5", "solidGoldSeason5Solo", "solidGoldSeason5Duos", "fiftyFiftySolidGold"];
 // Close Encounters' original date (Core-Backend #258, events/ltms.js): the whole of 25 May 2018, or one hour of it (0 to 23,
 // on the season replay's clock), as Epic ran it.
 export function closeEncountersValue(input, current = { wholeDay: true, hour: 0 }) {

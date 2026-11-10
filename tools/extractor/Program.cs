@@ -539,7 +539,7 @@ foreach (var (id, row) in LoadRows(provider, manager["HomebaseNodeDataTable"]))
     if (grantedTags.Count > 0) node["tags"] = grantedTags;
     var cost = (row["Cost"]?.AsArray() ?? []).Select(c => new SortedDictionary<string, object>(StringComparer.Ordinal)
     {
-        ["templateId"] = assetTypes.TemplateId(AssetPath(c!["ItemDefinition"])),
+        ["templateId"] = ItemAndCountTemplateId(c!, assetTypes),
         ["quantity"] = c["Quantity"]?.GetValue<int>() ?? 0
     }).ToList();
     if (cost.Count > 0) node["cost"] = cost;
@@ -1786,9 +1786,21 @@ static List<object> RewardList(JsonNode? rewards, AssetTypes assetTypes) => (rew
 static List<SortedDictionary<string, object>> Items(JsonNode? items, AssetTypes assetTypes) =>
     (items?.AsArray() ?? []).Select(i => new SortedDictionary<string, object>
     {
-        ["templateId"] = i!["TemplateId"]?.GetValue<string>() ?? assetTypes.TemplateId(AssetPath(i["ItemDefinition"])),
+        ["templateId"] = i!["TemplateId"]?.GetValue<string>() ?? ItemAndCountTemplateId(i, assetTypes),
         ["quantity"] = i["Quantity"]?.GetValue<int>() ?? 1
     }).Where(i => (string)i["templateId"] != "None").ToList();
+
+// FItemAndCount's item: its ItemDefinition's template id; from 5.30 (CL 4305896) the struct names it by primary asset id
+// instead (ItemPrimaryAssetId {PrimaryAssetType {Name}, PrimaryAssetName}: Token:HomebasePoints, the skill tree's costs),
+// written as the template id the item's definition gives ("Token:homebasepoints"); "None" when it names neither.
+static string ItemAndCountTemplateId(JsonNode item, AssetTypes assetTypes)
+{
+    if (item["ItemDefinition"] is { } definition) return assetTypes.TemplateId(AssetPath(definition));
+    var id = item["ItemPrimaryAssetId"];
+    var type = id?["PrimaryAssetType"]?["Name"]?.GetValue<string>();
+    var name = id?["PrimaryAssetName"]?.GetValue<string>();
+    return type is null or "None" || name is null or "None" ? "None" : $"{type}:{name.ToLowerInvariant()}";
+}
 
 static string? Enum(JsonNode? value) => value?.GetValue<string>().Split("::").Last();
 

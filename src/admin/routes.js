@@ -47,6 +47,7 @@ import { cosmeticRarity, cosmeticType, eligibleCosmetics, generateRandomShop, it
 import { activeEventFlags, fortnitemares, mutantStorms } from "../events/events.js";
 import { season4FlagsStatus } from "../events/oddities.js";
 import { tomatoRiftStates } from "../events/tomatorift.js";
+import { cubeStates } from "../events/cube.js";
 import { odditiesModes, odditySchedulePatch, season4Flag } from "../events/season4flags.js";
 import { convertLeftoverCandy } from "../events/candyllamas.js";
 import { ltmIds, ltmSchedule } from "../events/ltms.js";
@@ -107,6 +108,9 @@ const sum = (profile, templates) => Object.values(profile?.items ?? {})
 // What 5.21 (CL-4288479) serves now: its flags and Tomato Town's rift by its dates (events/tomatorift.js).
 const served521 = (now) => inBuild("4288479", () => [...activeEventFlags(),
   ...(tomatoRiftStates(now)[0]?.events ?? []).map(({ eventType }) => eventType)]);
+// What 5.30 (CL-4305896) serves now: its flags and the Cube's by its dates (events/cube.js).
+const served530 = (now) => inBuild("4305896", () => [...activeEventFlags(),
+  ...(cubeStates(now)[0]?.events ?? []).map(({ eventType }) => eventType)]);
 
 export function adminRoutes(context) {
   const { accounts, profiles, tokens, sessions, matchmaker, xmpp, stomp, settings, network, dataDir, resetTokens, reports, adminAuth } = context;
@@ -1203,10 +1207,10 @@ export function adminRoutes(context) {
     // Season 3's shop as 3.6's data (its newest) sells it: 3.0's cosmetics, 3.1's, 3.2's (3.3 adds none), 3.4's, 3.5's and 3.6's;
     // Season 4's as 4.4.2's: 4.0's cosmetics, 4.1's Snap emote, 4.2's Hazard set, Venturion and the rest, and 4.3's and 4.4's
     // (Jumpshot, Scoundrel, the World Cup outfits, Omen, Fate...), now 4.5's (CL-4166199): 4.5's too (Vertex, Gumshoe,
-    // Criterion, Oblivion...). Season 5's as 5.21's (CL-4288479): 5.0's cosmetics, 5.10's (Reef Ranger, Wreck Raider,
-    // Maverick, Shade, Sun Tan Specialist, Archetype...) and 5.20's and 5.21's (Beef Boss, Mullet Marauder, Overtaker,
-    // Sushi Master, the P.A.N.D.A Team Leader...).
-    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4166199", 5: "4288479" }[s];
+    // Criterion, Oblivion...). Season 5's as 5.30's (CL-4305896): 5.0's cosmetics, 5.10's (Reef Ranger, Wreck Raider,
+    // Maverick, Shade, Sun Tan Specialist, Archetype...), 5.20's and 5.21's (Beef Boss, Mullet Marauder, Overtaker,
+    // Sushi Master, the P.A.N.D.A Team Leader...) and 5.30's (Musha and Hime, Ravage, Backbone and Chopper...).
+    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4166199", 5: "4305896" }[s];
     const offers = inBuild(build, () => itemShopOffers(now, config, s));
     const cosmetics = inBuild(build, () => eligibleCosmetics());
     const currentDay = shopDay(now, config, s);
@@ -1310,7 +1314,8 @@ export function adminRoutes(context) {
       { version: "5.0", cl: 4214610, event: "Season 5" },
       { version: "5.10.0", cl: 4225813, event: "Birthday" },
       { version: "5.10", cl: 4240749, event: "Birthday" },
-      { version: "5.21", cl: 4288479, event: "Season 5" }
+      { version: "5.21", cl: 4288479, event: "Season 5" },
+      { version: "5.30", cl: 4305896, event: "Season 5" }
     ];
 
     const sampleBuilds = builds.map((b) => ({
@@ -1360,8 +1365,8 @@ export function adminRoutes(context) {
       },
       eventsConfig,
       rocketLaunch: rocketLaunchStatus(now, eventsConfig),
-      // Season 4's event flags, grouped (events/season4flags.js, Core-Backend #296), with what 4.5, 5.0, 5.10 and 5.21 serve now.
-      season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(now, eventsConfig, inBuild("4166199", () => activeEventFlags()), inBuild("4214610", () => activeEventFlags()), inBuild("4240749", () => activeEventFlags()), served521(now))),
+      // Season 4's event flags, grouped (events/season4flags.js, Core-Backend #296), with what 4.5, 5.0, 5.10, 5.21 and 5.30 serve now.
+      season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(now, eventsConfig, inBuild("4166199", () => activeEventFlags()), inBuild("4214610", () => activeEventFlags()), inBuild("4240749", () => activeEventFlags()), served521(now), served530(now))),
       events: [
         {
           id: "fortnitemares",
@@ -1460,10 +1465,10 @@ export function adminRoutes(context) {
         {
           id: "roadtrip2018",
           name: "Road Trip",
-          subtitle: "Challenge the Horde in the desert: nine Horde zones opened by Storm Shield Defense or Horde quest progression, Horde alerts with Road Trip Tickets and Horde Points, the Horde Skill Tree, the Horde progression quests (Wild West heroes, banners), the Road Trip Llama and the Event Store's Flintlock weapons; on 5.21 the Weekly Horde Challenge (Bullet Proof Husks) and Ragnarok and Machinist Thora in the Event Store",
-          buildRange: "5.0 – 5.21 (CL 4204761 – 4288479)",
+          subtitle: "Challenge the Horde in the desert: nine Horde zones opened by Storm Shield Defense or Horde quest progression, Horde alerts with Road Trip Tickets and Horde Points, the Horde Skill Tree, the Horde progression quests (Wild West heroes, banners), the Road Trip Llama and the Event Store's Flintlock weapons; on 5.21 the Weekly Horde Challenge (Bullet Proof Husks) and Ragnarok and Machinist Thora in the Event Store; on 5.30 Weekly Horde Challenges 3 (Endurance) and 4 (Untrappable), the Bundlebuss in the Weekly Store and Bladestorm Enforcer in the Event Store",
+          buildRange: "5.0 – 5.30 (CL 4204761 – 4305896)",
           flags: ["EventFlag.RoadTrip2018", "EventFlag.Horde", "EventFlag.LobbySeason5"],
-          theater: "Challenge the Horde (Fort Setup and nine zones, 9 to 76 power; on 5.21 four Weekly Horde Challenge zones)",
+          theater: "Challenge the Horde (Fort Setup and nine zones, 9 to 76 power; on 5.21 four Weekly Horde Challenge zones, on 5.30 a Weekly Horde Challenge theater of its own)",
           theaterRegions: [],
           alertsQuota: "10 Horde mission alerts per day (repeatable)",
           currency: "Road Trip Tickets (AccountResource:eventcurrency_roadtrip), Horde Points (Token:hordepointstier1-4), Gold in the Event Store",
@@ -1550,7 +1555,7 @@ export function adminRoutes(context) {
     }
     if (!Object.keys(patch).length) return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "Give a flag and its state, the oddities mode or the rifts' schedule");
     const updated = settings.update({ events: { season4Flags: patch } });
-    res.json({ success: true, season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(new Date(), updated.events, inBuild("4166199", () => activeEventFlags()), inBuild("4214610", () => activeEventFlags()), inBuild("4240749", () => activeEventFlags()), served521(new Date()))) });
+    res.json({ success: true, season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(new Date(), updated.events, inBuild("4166199", () => activeEventFlags()), inBuild("4214610", () => activeEventFlags()), inBuild("4240749", () => activeEventFlags()), served521(new Date()), served530(new Date()))) });
   });
 
     router.post("/admin/api/events/actions/convert-storm-tickets", (req, res) => {

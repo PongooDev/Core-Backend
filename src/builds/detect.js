@@ -3,7 +3,7 @@
 export const certBuild = "3532353";
 
 // The Fortnite version players call each build Core knows (as Core-Launcher's KnownBuilds), for what the client shows.
-export const buildVersions = { 3532353: "1.1", 3541083: "1.2", 3700114: "1.7.2", 3724489: "1.8", 3729133: "1.8.1", 3741772: "1.8.2", 3757339: "1.9", 3775276: "1.9.1", 3790078: "1.10", 3807424: "1.11", 3825894: "2.1", 3841827: "2.2", 3847564: "2.3", 3858292: "2.4", 3870737: "2.4.2", 3889387: "2.5", 3901517: "3.0", 3915963: "3.1", 3917250: "3.1.1", 3935073: "3.2", 3942182: "3.3", 4000805: "3.5.1", 4008490: "3.5.2", 4019403: "3.6", 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4127312: "4.4.1", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4204761: "5.0.0", 4214610: "5.0", 4225813: "5.10.0", 4240749: "5.10", 4288479: "5.21" };
+export const buildVersions = { 3532353: "1.1", 3541083: "1.2", 3700114: "1.7.2", 3724489: "1.8", 3729133: "1.8.1", 3741772: "1.8.2", 3757339: "1.9", 3775276: "1.9.1", 3790078: "1.10", 3807424: "1.11", 3825894: "2.1", 3841827: "2.2", 3847564: "2.3", 3858292: "2.4", 3870737: "2.4.2", 3889387: "2.5", 3901517: "3.0", 3915963: "3.1", 3917250: "3.1.1", 3935073: "3.2", 3942182: "3.3", 4000805: "3.5.1", 4008490: "3.5.2", 4019403: "3.6", 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4127312: "4.4.1", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4204761: "5.0.0", 4214610: "5.0", 4225813: "5.10.0", 4240749: "5.10", 4288479: "5.21", 4305896: "5.30" };
 
 export const versionOf = (changelist) => buildVersions[changelist] ?? null;
 
@@ -46,13 +46,16 @@ export const battleRoyaleBuilds = Object.keys(buildVersions).filter((changelist)
 // (a Battle Royale only archive), and CL-4225813 plays on it. 5.21 (CL-4288479, ++Fortnite+Release-5.21, UE 4.21, Update
 // v5.21, 15 August 2018) is the one build Core knows of 5.20 and 5.21: Core has no 5.20 (Update v5.20, 7 August 2018), so
 // 5.21 carries 5.20's changes too. It keeps AthenaSeason5; its data is gamedata/4288479 (a full install, Save the World's
-// tile maps with it).
+// tile maps with it). 5.30 (CL-4305896, ++Fortnite+Release-5.30, UE 4.21, Update v5.30, 23 August 2018; its paks are dated
+// 23 August) is Update v5.30's build. Content Update v5.30's (28 August) Shockwave Grenade, Solid Gold, Weekly Horde
+// Challenge 4, Bladestorm Enforcer and Redline Ramirez are in its paks already, so it stands for both. It keeps
+// AthenaSeason5; its data is gamedata/4305896 (a full install, Save the World with it).
 export const battleRoyaleSeasons = [
   { season: 1, firstVersion: "1.8", lastVersion: "1.10" },
   { season: 2, firstVersion: "1.11", lastVersion: "2.5" },
   { season: 3, firstVersion: "3.0", lastVersion: "3.6" },
   { season: 4, firstVersion: "4.0", lastVersion: "4.5" },
-  { season: 5, firstVersion: "5.0", lastVersion: "5.21" }
+  { season: 5, firstVersion: "5.0", lastVersion: "5.30" }
 ];
 // "Season 2 (1.11 – 2.5)", "1.11 – 2.5"; a season of one version Core knows, "Season 4 (4.0)".
 export const seasonVersions = (season) => {

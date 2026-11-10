@@ -10,7 +10,7 @@ dotnet run -c Release --project tools/extractor -- "<build folder with FortniteG
 The engine version and changelist come from the build's `Engine/Build/Build.version`. A build that ships without one
 (1.10, CL 3790078) takes them as a fourth argument, after the output folder, in its User-Agent's form:
 `4.19.0-3790078+++Fortnite+Release-Cert`. UE 4.16, 4.19, 4.20 (2.5, CL 3889387, the first 4.20 build) and 4.21 (5.0, CL 4214610, the
-first 4.21 build; 5.10, CL 4240749; 5.21, CL 4288479) are mapped. 4.19 writes soft references with their
+first 4.21 build; 5.10, CL 4240749; 5.21, CL 4288479; 5.30, CL 4305896) are mapped. 4.19 writes soft references with their
 object name (`/Game/Path/Asset.Asset`); zone themes' tile classes and mission generators' primary missions are kept as
 packages, as 4.16 writes them, so overlays only hold the builds' own differences.
 
@@ -166,7 +166,14 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   `4.21.0-4288479+++Fortnite+Release-5.21` (no `Build.version`) with 5.10's full data (Cert's files with
   `gamedata/4240749` applied) as the fifth argument, for the same reason, and the main key FModel's settings hold for its
   build folder (no extractor change). Its install is a full one (Save the World with it); its two small
-  `pakchunk0_94AB24604D6F33B1BDF1B4911CABA3FC` paks are encrypted with a key of their own and aren't read.
+  `pakchunk0_94AB24604D6F33B1BDF1B4911CABA3FC` paks are encrypted with a key of their own and aren't read. 5.30's
+  (CL-4305896, UE 4.21, Update v5.30's build) is `4.21.0-4305896+++Fortnite+Release-5.30` (no `Build.version`) with
+  5.21's full data (Cert's files with `gamedata/4288479` applied) as the fifth argument, for the same reason, and the main
+  key FModel's settings hold for its build folder (a full install, its seven paks all on that key). One extractor change:
+  its FItemAndCount rows (the skill tree's costs, CCNodes; crafting recipes) name their item by `ItemPrimaryAssetId`
+  ({PrimaryAssetType, PrimaryAssetName}: Token:HomebasePoints) instead of `ItemDefinition`, which is written as the template
+  id the definition would give (`Token:homebasepoints`), and some name neither ("None", no item); its skill tree comes out
+  as 5.21's exactly.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

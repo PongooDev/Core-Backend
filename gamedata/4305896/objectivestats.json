@@ -1,0 +1,4256 @@
+{
+  "alteration_respec": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "<any-item>",
+    "type": "AlterationRespec"
+  },
+  "alteration_upgrade": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "<any-item>",
+    "type": "AlterationUpgrade"
+  },
+  "anniversaryquest_2018_complete_cake_repeatable": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_hidden_2": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_hidden_watchvideo": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Client"
+  },
+  "blockbusterquest_2018_landmark_comet": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Landmark.Observe.BlockbusterQuest2018",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "blockbusterquest_2018_landmark_meteor": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Landmark.Meteor.BlockbusterQuest2018",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "blockbusterquest_2018_landmark_suit": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Landmark.Suit.BlockbusterQuest2018",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "blockbusterquest_2018_reactive_barrels": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_bees": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_broadcasts": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_carbondating": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_chromehuskdata": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_clocks": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_cometshards": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_consoles": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_cows": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_deploycbots": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_earthquakes": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_fans": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_flyers": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_julyfourth": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_magnets": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_mailboxes": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_mattresses": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_mayhem": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_portapottys": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_raysignal": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_rescue": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_restaurant": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_retrievecbots": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_rubber": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_scanners": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_shielderdata": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_tankers": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_tombstones": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_toys": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "blockbusterquest_2018_reactive_trodes": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "build_any_wall": {
+    "condition": "",
+    "targetTags": "Building.Type.Wall",
+    "templateId": "",
+    "type": "Build"
+  },
+  "build_athena_any_structures": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Build"
+  },
+  "build_athena_metal_structures": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "targetTags": "Building.Resource.Metal",
+    "templateId": "",
+    "type": "Build"
+  },
+  "build_athena_stone_structures": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "targetTags": "Building.Resource.Stone",
+    "templateId": "",
+    "type": "Build"
+  },
+  "build_athena_wood_structures": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "targetTags": "Building.Resource.Wood",
+    "templateId": "",
+    "type": "Build"
+  },
+  "cannyvalley_landmark_highnoon": {
+    "condition": "Zone.Difficulty >=24",
+    "targetTags": "Stat.Mission.Primary.Landmark.FightTheGunslinger",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "cannyvalley_landmark_memorial": {
+    "condition": "Zone.Difficulty >=22",
+    "targetTags": "Stat.Mission.Primary.Landmark.BuildTheMonument",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "cannyvalley_landmark_welcome": {
+    "condition": "Zone.Difficulty >=22",
+    "targetTags": "Stat.Mission.Primary.Landmark.HitTheRoad",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "cannyvalley_mechanical_constructor": {
+    "condition": "Zone.Difficulty >=24",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Build"
+  },
+  "cannyvalley_reactive_bases": {
+    "condition": "Zone.Difficulty >=24",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "cannyvalley_reactive_dinobones": {
+    "condition": "Zone.Difficulty >=22",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "cannyvalley_reactive_glyphs": {
+    "condition": "Zone.Difficulty >=22",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "cannyvalley_reactive_jukeboxes": {
+    "condition": "Zone.Difficulty >=24",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "cannyvalley_reactive_oilsamples": {
+    "condition": "Zone.Difficulty >=22",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "cannyvalley_reactive_periscopes": {
+    "condition": "Zone.Difficulty >=24",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "cannyvalley_reactive_rockformations": {
+    "condition": "Zone.Difficulty >=22",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "cannyvalley_reactive_route99_diner": {
+    "condition": "Zone.Difficulty >=22",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "cannyvalley_reactive_route99_gasstation": {
+    "condition": "Zone.Difficulty >=22",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "cannyvalley_reactive_route99_motel": {
+    "condition": "Zone.Difficulty >=22",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "cannyvalley_reactive_route99_truckstop": {
+    "condition": "Zone.Difficulty >=22",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "cannyvalley_reactive_rustedcars": {
+    "condition": "Zone.Difficulty >=24",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "cannyvalley_reactive_seebot": {
+    "condition": "Zone.Difficulty >=22",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "cannyvalley_reactive_servers": {
+    "condition": "Zone.Difficulty >=24",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "cannyvalley_reactive_survey": {
+    "condition": "Zone.Difficulty >=22",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "cannyvalley_reactive_tabs": {
+    "condition": "Zone.Difficulty >=24",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "cannyvalley_reactive_trail": {
+    "condition": "Zone.Difficulty >=24",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "cannyvalley_reactive_tumbleweed": {
+    "condition": "Zone.Difficulty >=24",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "cannyvalley_reactive_watertowers": {
+    "condition": "Zone.Difficulty >=24",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "complete_athena": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_50v50": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.FiftyFifty",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_duo": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Duo",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_duo_top_12": {
+    "condition": "Athena.Rank <=12",
+    "contextTags": "Athena.Playlist.Duo",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_duo_top_6": {
+    "condition": "Athena.Rank <= 6",
+    "contextTags": "Athena.Playlist.Duo",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_event": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Event",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_event_1": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Event.1",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_event_2": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Event.2",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_event_22": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Event.22",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_event_23": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Event.23",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_event_24": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Event.24",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_event_25": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Event.25",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_event_26": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Event.26",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_event_27": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Event.27",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_event_28": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Event.28",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_event_29": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Event.29",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_event_3": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Event.3",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_event_30": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Event.30",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_event_31": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Event.31",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_event_32": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Event.32",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_event_33": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Event.33",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_event_34": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Event.34",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_event_4": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Event.4",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_event_5": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Event.5",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_event_6": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Event.6",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_event_7": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Event.7",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_event_8": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Event.8",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_friend": {
+    "condition": "SquadFriend.Count > 0",
+    "contextTags": "Athena.Playlist",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_solo": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Solo",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_solo_top_10": {
+    "condition": "Athena.Rank <=10",
+    "contextTags": "Athena.Playlist.Solo",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_solo_top_25": {
+    "condition": "Athena.Rank <=25",
+    "contextTags": "Athena.Playlist.Solo",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_solo_top_50": {
+    "condition": "Athena.Rank <=50",
+    "contextTags": "Athena.Playlist.Solo",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_squad": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Squad",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_squad_top_12": {
+    "condition": "Athena.Rank <=12",
+    "contextTags": "Athena.Playlist.Squad",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_squad_top_3": {
+    "condition": "Athena.Rank <=3",
+    "contextTags": "Athena.Playlist.Squad",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_athena_squad_top_6": {
+    "condition": "Athena.Rank <=6",
+    "contextTags": "Athena.Playlist.Squad",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "complete_buildradar_1_diff2": {
+    "condition": "Zone.Difficulty >=3",
+    "targetTags": "Stat.Mission.Secondary.BuildRadarTower",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_buildradargrid_3_diff1": {
+    "condition": "Zone.Difficulty >=22",
+    "targetTags": "Stat.Mission.Primary.BuildRadarGrid",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_buildradargrid_3_diff2": {
+    "condition": "Zone.Difficulty >=24",
+    "targetTags": "Stat.Mission.Primary.BuildRadarGrid",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_buildradargrid_3_diff3": {
+    "condition": "Zone.Difficulty >=26",
+    "targetTags": "Stat.Mission.Primary.BuildRadarGrid",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_buildradargrid_3_diff4": {
+    "condition": "Zone.Difficulty >=28",
+    "targetTags": "Stat.Mission.Primary.BuildRadarGrid",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_buildradargrid_3_diff5": {
+    "condition": "Zone.Difficulty >=30",
+    "targetTags": "Stat.Mission.Primary.BuildRadarGrid",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_buildradargrid_4_diff1": {
+    "condition": "Zone.Difficulty >=32",
+    "targetTags": "Stat.Mission.Primary.BuildRadarGrid",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_buildradargrid_4_diff2": {
+    "condition": "Zone.Difficulty >=34",
+    "targetTags": "Stat.Mission.Primary.BuildRadarGrid",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_buildradargrid_4_diff3": {
+    "condition": "Zone.Difficulty >=36",
+    "targetTags": "Stat.Mission.Primary.BuildRadarGrid",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_buildradargrid_4_diff4": {
+    "condition": "Zone.Difficulty >=38",
+    "targetTags": "Stat.Mission.Primary.BuildRadarGrid",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_buildradargrid_4_diff5": {
+    "condition": "Zone.Difficulty >=40",
+    "targetTags": "Stat.Mission.Primary.BuildRadarGrid",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_delivergoods_3_diff1": {
+    "condition": "Zone.Difficulty >=22",
+    "targetTags": "Stat.Mission.Primary.DeliverGoods",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_delivergoods_3_diff2": {
+    "condition": "Zone.Difficulty >=24",
+    "targetTags": "Stat.Mission.Primary.DeliverGoods",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_delivergoods_4_diff1": {
+    "condition": "Zone.Difficulty >=32",
+    "targetTags": "Stat.Mission.Primary.DeliverGoods",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_delivergoods_4_diff2": {
+    "condition": "Zone.Difficulty >=34",
+    "targetTags": "Stat.Mission.Primary.DeliverGoods",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_delivergoods_4_diff3": {
+    "condition": "Zone.Difficulty >=36",
+    "targetTags": "Stat.Mission.Primary.DeliverGoods",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_delivergoods_4_diff4": {
+    "condition": "Zone.Difficulty >=38",
+    "targetTags": "Stat.Mission.Primary.DeliverGoods",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_delivergoods_4_diff5": {
+    "condition": "Zone.Difficulty >=40",
+    "targetTags": "Stat.Mission.Primary.DeliverGoods",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_destroyencamp_3_diff1": {
+    "condition": "Zone.Difficulty >=22",
+    "targetTags": "Stat.Mission.Primary.DestroyTheEncampments",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_destroyencamp_3_diff2": {
+    "condition": "Zone.Difficulty >=24",
+    "targetTags": "Stat.Mission.Primary.DestroyTheEncampments",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_destroyencamp_3_diff3": {
+    "condition": "Zone.Difficulty >=26",
+    "targetTags": "Stat.Mission.Primary.DestroyTheEncampments",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_destroyencamp_4_diff1": {
+    "condition": "Zone.Difficulty >=32",
+    "targetTags": "Stat.Mission.Primary.DestroyTheEncampments",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_destroyencamp_4_diff2": {
+    "condition": "Zone.Difficulty >=34",
+    "targetTags": "Stat.Mission.Primary.DestroyTheEncampments",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_destroyencamp_4_diff3": {
+    "condition": "Zone.Difficulty >=36",
+    "targetTags": "Stat.Mission.Primary.DestroyTheEncampments",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_destroyencamp_4_diff4": {
+    "condition": "Zone.Difficulty >=38",
+    "targetTags": "Stat.Mission.Primary.DestroyTheEncampments",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_destroyencamp_4_diff5": {
+    "condition": "Zone.Difficulty >=40",
+    "targetTags": "Stat.Mission.Primary.DestroyTheEncampments",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_elementalzone": {
+    "condition": "",
+    "contextTags": "Stat.MissionAlert.ElementalZone",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuate_3_diff1": {
+    "condition": "Zone.Difficulty >=22",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheSurvivors",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuate_3_diff2": {
+    "condition": "Zone.Difficulty >=24",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheSurvivors",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuate_4_diff1": {
+    "condition": "Zone.Difficulty >=32",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheSurvivors",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuate_4_diff2": {
+    "condition": "Zone.Difficulty >=34",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheSurvivors",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuate_4_diff3": {
+    "condition": "Zone.Difficulty >=36",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheSurvivors",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuate_4_diff4": {
+    "condition": "Zone.Difficulty >=38",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheSurvivors",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuate_4_diff5": {
+    "condition": "Zone.Difficulty >=40",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheSurvivors",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuateshelter_3_diff1": {
+    "condition": "Zone.Difficulty >=22",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheShelter",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuateshelter_3_diff2": {
+    "condition": "Zone.Difficulty >=24",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheShelter",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuateshelter_3_diff3": {
+    "condition": "Zone.Difficulty >=26",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheShelter",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuateshelter_3_diff4": {
+    "condition": "Zone.Difficulty >=28",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheShelter",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuateshelter_3_diff5": {
+    "condition": "Zone.Difficulty >=30",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheShelter",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuateshelter_4_diff1": {
+    "condition": "Zone.Difficulty >=32",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheShelter",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuateshelter_4_diff2": {
+    "condition": "Zone.Difficulty >=34",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheShelter",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuateshelter_4_diff3": {
+    "condition": "Zone.Difficulty >=36",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheShelter",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuateshelter_4_diff4": {
+    "condition": "Zone.Difficulty >=38",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheShelter",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_evacuateshelter_4_diff5": {
+    "condition": "Zone.Difficulty >=40",
+    "targetTags": "Stat.Mission.Primary.EvacuateTheShelter",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_exploration_3": {
+    "condition": "Zone.Difficulty >=22",
+    "targetTags": "Stat.Mission.Secondary.ExplorationMission",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_exploration_3_diff2": {
+    "condition": "Zone.Difficulty >=24",
+    "targetTags": "Stat.Mission.Secondary.ExplorationMission",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_exploration_3_diff3": {
+    "condition": "Zone.Difficulty >=26",
+    "targetTags": "Stat.Mission.Secondary.ExplorationMission",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_exploration_3_diff4": {
+    "condition": "Zone.Difficulty >=28",
+    "targetTags": "Stat.Mission.Secondary.ExplorationMission",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_exploration_3_diff5": {
+    "condition": "Zone.Difficulty >=30",
+    "targetTags": "Stat.Mission.Secondary.ExplorationMission",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_exploration_4": {
+    "condition": "Zone.Difficulty >=32",
+    "targetTags": "Stat.Mission.Secondary.ExplorationMission",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_exploration_4_diff2": {
+    "condition": "Zone.Difficulty >=34",
+    "targetTags": "Stat.Mission.Secondary.ExplorationMission",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_exploration_4_diff3": {
+    "condition": "Zone.Difficulty >=36",
+    "targetTags": "Stat.Mission.Secondary.ExplorationMission",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_exploration_4_diff4": {
+    "condition": "Zone.Difficulty >=38",
+    "targetTags": "Stat.Mission.Secondary.ExplorationMission",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_exploration_4_diff5": {
+    "condition": "Zone.Difficulty >=40",
+    "targetTags": "Stat.Mission.Secondary.ExplorationMission",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_1": {
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Single"
+  },
+  "complete_gate_1_diff2": {
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Single"
+  },
+  "complete_gate_1_diff3": {
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Single"
+  },
+  "complete_gate_1_diff4": {
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Single"
+  },
+  "complete_gate_1_diff5": {
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Single"
+  },
+  "complete_gate_2": {
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Single"
+  },
+  "complete_gate_2_diff2": {
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Single"
+  },
+  "complete_gate_2_diff3": {
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Single"
+  },
+  "complete_gate_2_diff4": {
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Single"
+  },
+  "complete_gate_2_diff5": {
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Single"
+  },
+  "complete_gate_3_diff1": {
+    "condition": "Zone.Difficulty >=22",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Single",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_3_diff2": {
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Single"
+  },
+  "complete_gate_3_diff3": {
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Single"
+  },
+  "complete_gate_3_diff4": {
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Single"
+  },
+  "complete_gate_3_diff5": {
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Single"
+  },
+  "complete_gate_4_diff1": {
+    "condition": "Zone.Difficulty >=32",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Single",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_4_diff2": {
+    "condition": "Zone.Difficulty >=34",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Single",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_4_diff3": {
+    "condition": "Zone.Difficulty >=36",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Single",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_4_diff4": {
+    "condition": "Zone.Difficulty >=38",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Single",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_4_diff5": {
+    "condition": "Zone.Difficulty >=40",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Single",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_double_4_diff1": {
+    "condition": "Zone.Difficulty >=32",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Double",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_double_4_diff2": {
+    "condition": "Zone.Difficulty >=34",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Double",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_double_4_diff3": {
+    "condition": "Zone.Difficulty >=36",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Double",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_double_4_diff4": {
+    "condition": "Zone.Difficulty >=38",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Double",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_double_4_diff5": {
+    "condition": "Zone.Difficulty >=40",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Double",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_quadruple_3_diff1": {
+    "condition": "Zone.Difficulty >=22",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Quadruple",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_quadruple_4_diff1": {
+    "condition": "Zone.Difficulty >=32",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Quadruple",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_quadruple_4_diff2": {
+    "condition": "Zone.Difficulty >=34",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Quadruple",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_quadruple_4_diff3": {
+    "condition": "Zone.Difficulty >=36",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Quadruple",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_quadruple_4_diff4": {
+    "condition": "Zone.Difficulty >=38",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Quadruple",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_quadruple_4_diff5": {
+    "condition": "Zone.Difficulty >=40",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Quadruple",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_triple_4_diff1": {
+    "condition": "Zone.Difficulty >=32",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Triple",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_triple_4_diff2": {
+    "condition": "Zone.Difficulty >=34",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Triple",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_triple_4_diff3": {
+    "condition": "Zone.Difficulty >=36",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Triple",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_triple_4_diff4": {
+    "condition": "Zone.Difficulty >=38",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Triple",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_gate_triple_4_diff5": {
+    "condition": "Zone.Difficulty >=40",
+    "targetTags": "Stat.Mission.Primary.Gate.Gate_Triple",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_lars_landmark": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.LaunchWeatherBalloon.Landmark",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_launchballoon_3_diff1": {
+    "condition": "Zone.Difficulty >=22",
+    "targetTags": "Stat.Mission.Primary.LaunchWeatherBalloon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_launchballoon_4_diff1": {
+    "condition": "Zone.Difficulty >=32",
+    "targetTags": "Stat.Mission.Primary.LaunchWeatherBalloon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_launchballoon_4_diff2": {
+    "condition": "Zone.Difficulty >=34",
+    "targetTags": "Stat.Mission.Primary.LaunchWeatherBalloon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_launchballoon_4_diff3": {
+    "condition": "Zone.Difficulty >=36",
+    "targetTags": "Stat.Mission.Primary.LaunchWeatherBalloon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_launchballoon_4_diff4": {
+    "condition": "Zone.Difficulty >=38",
+    "targetTags": "Stat.Mission.Primary.LaunchWeatherBalloon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_launchballoon_4_diff5": {
+    "condition": "Zone.Difficulty >=40",
+    "targetTags": "Stat.Mission.Primary.LaunchWeatherBalloon",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_missionalert_construct": {
+    "condition": "",
+    "contextTags": "Stat.MissionAlert",
+    "sourceTags": "Class.IsConstructor",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_missionalert_ninja": {
+    "condition": "",
+    "contextTags": "Stat.MissionAlert",
+    "sourceTags": "Class.IsNinja",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_missionalert_outlander": {
+    "condition": "",
+    "contextTags": "Stat.MissionAlert",
+    "sourceTags": "Class.IsOutlander",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_missionalert_soldier": {
+    "condition": "",
+    "contextTags": "Stat.MissionAlert",
+    "sourceTags": "Class.IsCommando",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_powerreactor_3_diff1": {
+    "condition": "Zone.Difficulty >=22",
+    "targetTags": "Stat.Mission.Primary.PowerReactor",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_powerreactor_4_diff1": {
+    "condition": "Zone.Difficulty >=32",
+    "targetTags": "Stat.Mission.Primary.PowerReactor",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_powerreactor_4_diff2": {
+    "condition": "Zone.Difficulty >=34",
+    "targetTags": "Stat.Mission.Primary.PowerReactor",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_powerreactor_4_diff3": {
+    "condition": "Zone.Difficulty >=36",
+    "targetTags": "Stat.Mission.Primary.PowerReactor",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_powerreactor_4_diff4": {
+    "condition": "Zone.Difficulty >=38",
+    "targetTags": "Stat.Mission.Primary.PowerReactor",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_powerreactor_4_diff5": {
+    "condition": "Zone.Difficulty >=40",
+    "targetTags": "Stat.Mission.Primary.PowerReactor",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_presentdrop": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Secondary.PresentDrop",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_retrievedata_3_diff1": {
+    "condition": "Zone.Difficulty >=22",
+    "targetTags": "Stat.Mission.Primary.RetrieveData",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_retrievedata_4_diff1": {
+    "condition": "Zone.Difficulty >=32",
+    "targetTags": "Stat.Mission.Primary.RetrieveData",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_retrievedata_4_diff2": {
+    "condition": "Zone.Difficulty >=34",
+    "targetTags": "Stat.Mission.Primary.RetrieveData",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_retrievedata_4_diff3": {
+    "condition": "Zone.Difficulty >=36",
+    "targetTags": "Stat.Mission.Primary.RetrieveData",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_retrievedata_4_diff4": {
+    "condition": "Zone.Difficulty >=38",
+    "targetTags": "Stat.Mission.Primary.RetrieveData",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_retrievedata_4_diff5": {
+    "condition": "Zone.Difficulty >=40",
+    "targetTags": "Stat.Mission.Primary.RetrieveData",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormchest_2": {
+    "type": "Custom"
+  },
+  "complete_stormchest_2_diff2": {
+    "type": "Custom"
+  },
+  "complete_stormchest_2_diff3": {
+    "type": "Custom"
+  },
+  "complete_stormchest_2_diff4": {
+    "type": "Custom"
+  },
+  "complete_stormchest_2_diff5": {
+    "type": "Custom"
+  },
+  "complete_stormzone": {
+    "condition": "",
+    "contextTags": "Stat.MissionAlert.Storm",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormzone_1_diff2": {
+    "condition": "Zone.Difficulty >=3",
+    "contextTags": "Stat.MissionAlert.Storm",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormzone_1_diff3": {
+    "condition": "Zone.Difficulty >=5",
+    "contextTags": "Stat.MissionAlert.Storm",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormzone_1_diff4": {
+    "condition": "Zone.Difficulty >=7",
+    "contextTags": "Stat.MissionAlert.Storm",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormzone_1_diff5": {
+    "condition": "Zone.Difficulty >=10",
+    "contextTags": "Stat.MissionAlert.Storm",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormzone_2": {
+    "condition": "Zone.Difficulty >=12",
+    "contextTags": "Stat.MissionAlert.Storm",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormzone_2_diff2": {
+    "condition": "Zone.Difficulty >=14",
+    "contextTags": "Stat.MissionAlert.Storm",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormzone_2_diff3": {
+    "condition": "Zone.Difficulty >=16",
+    "contextTags": "Stat.MissionAlert.Storm",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormzone_2_diff4": {
+    "condition": "Zone.Difficulty >=18",
+    "contextTags": "Stat.MissionAlert.Storm",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormzone_2_diff5": {
+    "condition": "Zone.Difficulty >=20",
+    "contextTags": "Stat.MissionAlert.Storm",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormzone_3": {
+    "condition": "Zone.Difficulty >=22",
+    "contextTags": "Stat.MissionAlert.Storm",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormzone_3_diff2": {
+    "condition": "Zone.Difficulty >=24",
+    "contextTags": "Stat.MissionAlert.Storm",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormzone_3_diff3": {
+    "condition": "Zone.Difficulty >=26",
+    "contextTags": "Stat.MissionAlert.Storm",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormzone_3_diff4": {
+    "condition": "Zone.Difficulty >=28",
+    "contextTags": "Stat.MissionAlert.Storm",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormzone_3_diff5": {
+    "condition": "Zone.Difficulty >=30",
+    "contextTags": "Stat.MissionAlert.Storm",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormzone_4": {
+    "condition": "Zone.Difficulty >=32",
+    "contextTags": "Stat.MissionAlert.Storm",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormzone_4_diff2": {
+    "condition": "Zone.Difficulty >=34",
+    "contextTags": "Stat.MissionAlert.Storm",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormzone_4_diff3": {
+    "condition": "Zone.Difficulty >=36",
+    "contextTags": "Stat.MissionAlert.Storm",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormzone_4_diff4": {
+    "condition": "Zone.Difficulty >=38",
+    "contextTags": "Stat.MissionAlert.Storm",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormzone_4_diff5": {
+    "condition": "Zone.Difficulty >=40",
+    "contextTags": "Stat.MissionAlert.Storm",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormzone_constructor": {
+    "condition": "",
+    "contextTags": "Stat.MissionAlert.Storm",
+    "sourceTags": "Class.IsConstructor",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormzone_ninja": {
+    "condition": "",
+    "contextTags": "Stat.MissionAlert.Storm",
+    "sourceTags": "Class.IsNinja",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormzone_outlander": {
+    "condition": "",
+    "contextTags": "Stat.MissionAlert.Storm",
+    "sourceTags": "Class.IsOutlander",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormzone_pve03": {
+    "condition": "Zone.Difficulty >=30",
+    "contextTags": "Stat.MissionAlert.Storm",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_stormzone_soldier": {
+    "condition": "",
+    "contextTags": "Stat.MissionAlert.Storm",
+    "sourceTags": "Class.IsCommando",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_survivalmode_any": {
+    "condition": "Zone.Difficulty >=10",
+    "contextTags": "Stat.Theater.Survival",
+    "targetTags": "Stat.Mission.Survival.Survival",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "complete_survivalmode_pve01": {
+    "condition": "Zone.Difficulty >=10",
+    "contextTags": "Stat.Theater.Survival.Difficulty01",
+    "targetTags": "Stat.Mission.Survival.Survival14Day",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "complete_survivalmode_pve01_7day": {
+    "condition": "Zone.Difficulty >=10",
+    "contextTags": "Stat.Theater.Survival.Difficulty01",
+    "targetTags": "Stat.Mission.Survival.Survival7Day",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "complete_survivalmode_pve02": {
+    "condition": "Zone.Difficulty >=20",
+    "contextTags": "Stat.Theater.Survival.Difficulty02",
+    "targetTags": "Stat.Mission.Survival.Survival14Day",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "complete_survivalmode_pve02_7day": {
+    "condition": "Zone.Difficulty >=20",
+    "contextTags": "Stat.Theater.Survival.Difficulty02",
+    "targetTags": "Stat.Mission.Survival.Survival7Day",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "complete_survivalmode_pve02_any": {
+    "condition": "Zone.Difficulty >=20",
+    "contextTags": "Stat.Theater.Survival",
+    "targetTags": "Stat.Mission.Survival.Survival",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_survivalmode_pve03": {
+    "condition": "Zone.Difficulty >=30",
+    "contextTags": "Stat.Theater.Survival.Difficulty03",
+    "targetTags": "Stat.Mission.Survival.Survival14Day",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "complete_survivalmode_pve03_7day": {
+    "condition": "Zone.Difficulty >=30",
+    "contextTags": "Stat.Theater.Survival.Difficulty03",
+    "targetTags": "Stat.Mission.Survival.Survival7Day",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "complete_trv_landmark": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "Stat.Mission.Primary.TRV.Landmark",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "complete_trv_trapthestorm": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "Stat.Mission.Primary.TrapTheStorm",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "convert_any_hydraulic": {
+    "condition": "Item HasTag Weapon.Hydraulic",
+    "targetTags": "",
+    "templateId": "Schematic",
+    "type": "HasConverted"
+  },
+  "convert_any_scavenger": {
+    "condition": "Item HasTag WeaponSet.Scavenger",
+    "targetTags": "",
+    "templateId": "Schematic",
+    "type": "HasConverted"
+  },
+  "convert_any_vindertech": {
+    "condition": "Item HasTag WeaponSet.Vindertech",
+    "targetTags": "",
+    "templateId": "Schematic",
+    "type": "HasConverted"
+  },
+  "craft_founders_assault_r": {
+    "templateId": "Weapon"
+  },
+  "craft_founders_assault_vr": {
+    "templateId": "Weapon"
+  },
+  "craft_founders_pistol_r": {
+    "templateId": "Weapon"
+  },
+  "craft_founders_pistol_vr": {
+    "templateId": "Weapon"
+  },
+  "craft_founders_shotgun_r": {
+    "templateId": "Weapon"
+  },
+  "craft_founders_shotgun_vr": {
+    "templateId": "Weapon"
+  },
+  "craft_founders_sword_r": {
+    "templateId": "Weapon"
+  },
+  "craft_founders_sword_vr": {
+    "templateId": "Weapon"
+  },
+  "craft_health_station": {
+    "templateId": "Trap"
+  },
+  "craft_pumpkin_launcher": {
+    "templateId": "Weapon"
+  },
+  "craft_ruler_sword": {
+    "templateId": "Weapon"
+  },
+  "craft_tier_2": {
+    "templateId": "<any-item>"
+  },
+  "custom_pylonused_build": {
+    "targetTags": "Stat.Mission.BluGloPylon.Building"
+  },
+  "custom_pylonused_health": {
+    "targetTags": "Stat.Mission.BluGloPylon.Health"
+  },
+  "custom_pylonused_movement": {
+    "targetTags": "Stat.Mission.BluGloPylon.Speed"
+  },
+  "custom_pylonused_shield": {
+    "targetTags": "Stat.Mission.BluGloPylon.Shield"
+  },
+  "custom_pylonused_stamina": {
+    "targetTags": "Stat.Mission.BluGloPylon.Stamina"
+  },
+  "halloween_completemissions_1": {
+    "condition": "Zone.Difficulty >=5",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "halloween_completemissions_10": {
+    "condition": "Zone.Difficulty >=24",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "halloween_completemissions_11": {
+    "condition": "Zone.Difficulty >=26",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "halloween_completemissions_12": {
+    "condition": "Zone.Difficulty >=28",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "halloween_completemissions_13": {
+    "condition": "Zone.Difficulty >=30",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "halloween_completemissions_14": {
+    "condition": "Zone.Difficulty >=32",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "halloween_completemissions_2": {
+    "condition": "Zone.Difficulty >=7",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "halloween_completemissions_3": {
+    "condition": "Zone.Difficulty >=10",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "halloween_completemissions_4": {
+    "condition": "Zone.Difficulty >=12",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "halloween_completemissions_5": {
+    "condition": "Zone.Difficulty >=14",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "halloween_completemissions_6": {
+    "condition": "Zone.Difficulty >=16",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "halloween_completemissions_7": {
+    "condition": "Zone.Difficulty >=18",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "halloween_completemissions_8": {
+    "condition": "Zone.Difficulty >=20",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "halloween_completemissions_9": {
+    "condition": "Zone.Difficulty >=22",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "Stat.Mission.Primary",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "halloweenquest_2017_hidden_watchvideo": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Client"
+  },
+  "hordequest_buildbase": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Horde",
+    "sourceTags": "Stat.Source.IsInitiator",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Build"
+  },
+  "hordequest_progression_canny_1": {
+    "condition": "Mission.Wave = 8 && ((Mission.Tier >= 1 && Zone.Difficulty >= 22) || (Mission.Tier >=1 && Zone.Difficulty > 22))",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_canny_2": {
+    "condition": "Mission.Wave = 8 && ((Mission.Tier >= 2 && Zone.Difficulty >= 22) || (Mission.Tier >=1 && Zone.Difficulty > 22))",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_canny_3": {
+    "condition": "Mission.Wave = 8 && ((Mission.Tier >= 3 && Zone.Difficulty >= 26) || (Mission.Tier >=1 && Zone.Difficulty > 26))",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_canny_4": {
+    "condition": "Mission.Wave = 8 && ((Mission.Tier >= 4 && Zone.Difficulty >= 26) || (Mission.Tier >=1 && Zone.Difficulty > 26))",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_canny_5": {
+    "condition": "Mission.Wave = 8 && ((Mission.Tier >= 5 && Zone.Difficulty >= 30) || (Mission.Tier >=1 && Zone.Difficulty > 30))",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_canny_5_repeatable": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 5 && Zone.Difficulty = 30",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_plankerton_1": {
+    "condition": "Mission.Wave = 8 && ((Mission.Tier >= 1 && Zone.Difficulty >= 12) || (Mission.Tier >=1 && Zone.Difficulty > 12))",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_plankerton_2": {
+    "condition": "Mission.Wave = 8 && ((Mission.Tier >= 2 && Zone.Difficulty >= 12) || (Mission.Tier >=1 && Zone.Difficulty > 12))",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_plankerton_3": {
+    "condition": "Mission.Wave = 8 && ((Mission.Tier >= 3 && Zone.Difficulty >= 16) || (Mission.Tier >=1 && Zone.Difficulty > 16))",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_plankerton_4": {
+    "condition": "Mission.Wave = 8 && ((Mission.Tier >= 4 && Zone.Difficulty >= 16) || (Mission.Tier >=1 && Zone.Difficulty > 16))",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_plankerton_5": {
+    "condition": "Mission.Wave = 8 && ((Mission.Tier >= 5 && Zone.Difficulty >= 20) || (Mission.Tier >=1 && Zone.Difficulty > 20))",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_plankerton_5_repeatable": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 5 && Zone.Difficulty = 20",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_stonewood_1": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 1 && Zone.Difficulty >= 7",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_stonewood_2": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_stonewood_3": {
+    "condition": "Mission.Wave = 8 && ((Mission.Tier >= 3 && Zone.Difficulty >= 10) || (Mission.Tier >=1 && Zone.Difficulty > 10))",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_stonewood_4": {
+    "condition": "Mission.Wave = 8 && ((Mission.Tier >= 5 && Zone.Difficulty >= 10) || (Mission.Tier >=1 && Zone.Difficulty > 10))",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_stonewood_4_repeatable": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 5 && Zone.Difficulty = 10",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_twine_1": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 2 && Zone.Difficulty >= 32",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_twine_10": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 20 && Zone.Difficulty >= 32",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_twine_11": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 25 && Zone.Difficulty >= 32",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_twine_12": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 30 && Zone.Difficulty >= 32",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_twine_13": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 40 && Zone.Difficulty >= 32",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_twine_14": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 50 && Zone.Difficulty >= 32",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_twine_2": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 4 && Zone.Difficulty >= 32",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_twine_3": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 6 && Zone.Difficulty >= 32",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_twine_4": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 8 && Zone.Difficulty >= 32",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_twine_5": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 10 && Zone.Difficulty >= 32",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_twine_5_repeatable": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 10 && Zone.Difficulty >= 32",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_twine_6": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 12 && Zone.Difficulty >= 32",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_twine_7": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 14 && Zone.Difficulty >= 32",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_twine_8": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 16 && Zone.Difficulty >= 32",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_progression_twine_9": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 18 && Zone.Difficulty >= 32",
+    "contextTags": "Stat.Theater.Horde",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly01_canny_01": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 1 && Zone.Difficulty >= 26",
+    "contextTags": "Stat.Theater.Weekly.Horde.Week01",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly01_canny_01_repeatable": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 1 && Zone.Difficulty >= 26",
+    "contextTags": "Stat.Theater.Weekly.Horde.Week01",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly01_plankerton_01": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 1 && Zone.Difficulty >= 16",
+    "contextTags": "Stat.Theater.Weekly.Horde.Week01",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly01_plankerton_01_repeatable": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 1 && Zone.Difficulty >= 16",
+    "contextTags": "Stat.Theater.Weekly.Horde.Week01",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly01_stonewood_01": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 1 && Zone.Difficulty >= 10",
+    "contextTags": "Stat.Theater.Weekly.Horde.Week01",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly01_stonewood_01_repeatable": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 1 && Zone.Difficulty >= 10",
+    "contextTags": "Stat.Theater.Weekly.Horde.Week01",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly01_twine_01": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 1 && Zone.Difficulty >= 32",
+    "contextTags": "Stat.Theater.Weekly.Horde.Week01",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly01_twine_01_repeatable": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 1 && Zone.Difficulty >= 32",
+    "contextTags": "Stat.Theater.Weekly.Horde.Week01",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly02_canny_01": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 1 && Zone.Difficulty >= 26",
+    "contextTags": "Stat.Theater.Weekly.Horde.Week02",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly02_canny_01_repeatable": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 1 && Zone.Difficulty >= 26",
+    "contextTags": "Stat.Theater.Weekly.Horde.Week02",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly02_plankerton_01": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 1 && Zone.Difficulty >= 16",
+    "contextTags": "Stat.Theater.Weekly.Horde.Week02",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly02_plankerton_01_repeatable": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 1 && Zone.Difficulty >= 16",
+    "contextTags": "Stat.Theater.Weekly.Horde.Week02",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly02_stonewood_01": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 1 && Zone.Difficulty >= 10",
+    "contextTags": "Stat.Theater.Weekly.Horde.Week02",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly02_stonewood_01_repeatable": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 1 && Zone.Difficulty >= 10",
+    "contextTags": "Stat.Theater.Weekly.Horde.Week02",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly02_twine_01": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 1 && Zone.Difficulty >= 32",
+    "contextTags": "Stat.Theater.Weekly.Horde.Week02",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly02_twine_01_repeatable": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 1 && Zone.Difficulty >= 32",
+    "contextTags": "Stat.Theater.Weekly.Horde.Week02",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly03_canny_01": {
+    "condition": "Mission.Wave = 16 && Mission.Tier >= 1 && Zone.Difficulty >= 26",
+    "contextTags": "Stat.Theater.Weekly.Horde.WeekA",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly03_canny_01_repeatable": {
+    "condition": "Mission.Wave = 16 && Mission.Tier >= 1 && Zone.Difficulty >= 26",
+    "contextTags": "Stat.Theater.Weekly.Horde.WeekA",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly03_plankerton_01": {
+    "condition": "Mission.Wave = 16 && Mission.Tier >= 1 && Zone.Difficulty >= 16",
+    "contextTags": "Stat.Theater.Weekly.Horde.WeekA",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly03_plankerton_01_repeatable": {
+    "condition": "Mission.Wave = 16 && Mission.Tier >= 1 && Zone.Difficulty >= 16",
+    "contextTags": "Stat.Theater.Weekly.Horde.WeekA",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly03_stonewood_01": {
+    "condition": "Mission.Wave = 16 && Mission.Tier >= 1 && Zone.Difficulty >= 10",
+    "contextTags": "Stat.Theater.Weekly.Horde.WeekA",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly03_stonewood_01_repeatable": {
+    "condition": "Mission.Wave = 16 && Mission.Tier >= 1 && Zone.Difficulty >= 10",
+    "contextTags": "Stat.Theater.Weekly.Horde.WeekA",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly03_twine_01": {
+    "condition": "Mission.Wave = 16 && Mission.Tier >= 1 && Zone.Difficulty >= 32",
+    "contextTags": "Stat.Theater.Weekly.Horde.WeekA",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly03_twine_01_repeatable": {
+    "condition": "Mission.Wave = 16 && Mission.Tier >= 1 && Zone.Difficulty >= 32",
+    "contextTags": "Stat.Theater.Weekly.Horde.WeekA",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly04_canny_01": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 1 && Zone.Difficulty >= 26",
+    "contextTags": "Stat.Theater.Weekly.Horde.WeekB",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly04_canny_01_repeatable": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 1 && Zone.Difficulty >= 26",
+    "contextTags": "Stat.Theater.Weekly.Horde.WeekB",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly04_plankerton_01": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 1 && Zone.Difficulty >= 16",
+    "contextTags": "Stat.Theater.Weekly.Horde.WeekB",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly04_plankerton_01_repeatable": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 1 && Zone.Difficulty >= 16",
+    "contextTags": "Stat.Theater.Weekly.Horde.WeekB",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly04_stonewood_01": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 1 && Zone.Difficulty >= 10",
+    "contextTags": "Stat.Theater.Weekly.Horde.WeekB",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly04_stonewood_01_repeatable": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 1 && Zone.Difficulty >= 10",
+    "contextTags": "Stat.Theater.Weekly.Horde.WeekB",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly04_twine_01": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 1 && Zone.Difficulty >= 32",
+    "contextTags": "Stat.Theater.Weekly.Horde.WeekB",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "hordequest_weekly04_twine_01_repeatable": {
+    "condition": "Mission.Wave = 8 && Mission.Tier >= 1 && Zone.Difficulty >= 32",
+    "contextTags": "Stat.Theater.Weekly.Horde.WeekB",
+    "targetTags": "",
+    "templateId": "",
+    "type": "WaveComplete"
+  },
+  "interact_athena_ammobox": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "targetTags": "Building.Type.Container.Ammobox",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_ammobox_anarchyacres": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.AnarchyAcres",
+    "targetTags": "Building.Type.Container.Ammobox",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_ammobox_dustydepot": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.DustyDepot",
+    "targetTags": "Building.Type.Container.Ammobox",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_ammobox_fatalfields": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.FatalFields",
+    "targetTags": "Building.Type.Container.Ammobox",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_ammobox_flushfactory": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.FlushFactory",
+    "targetTags": "Building.Type.Container.Ammobox",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_ammobox_greasygrove": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.GreasyGrove",
+    "targetTags": "Building.Type.Container.Ammobox",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_ammobox_hauntedhills": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.LootLake",
+    "targetTags": "Building.Type.Container.Ammobox",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_ammobox_junkjunction": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.JunkJunction",
+    "targetTags": "Building.Type.Container.Ammobox",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_ammobox_lonelylodge": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.LonelyLodge",
+    "targetTags": "Building.Type.Container.Ammobox",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_ammobox_lootlake": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.MoistyMire",
+    "targetTags": "Building.Type.Container.Ammobox",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_ammobox_moistymire": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.HauntedHills",
+    "targetTags": "Building.Type.Container.Ammobox",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_ammobox_pleasantpark": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.PleasantPark",
+    "targetTags": "Building.Type.Container.Ammobox",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_ammobox_retailrow": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.RetailRow",
+    "targetTags": "Building.Type.Container.Ammobox",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_ammobox_saltysprings": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.SaltySprings",
+    "targetTags": "Building.Type.Container.Ammobox",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_ammobox_shiftyshafts": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.ShiftyShafts",
+    "targetTags": "Building.Type.Container.Ammobox",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_ammobox_snobbyshores": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.SnobbyShores",
+    "targetTags": "Building.Type.Container.Ammobox",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_ammobox_tiltedtowers": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.TiltedTowers",
+    "targetTags": "Building.Type.Container.Ammobox",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_ammobox_tomatotown": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.TomatoTown",
+    "targetTags": "Building.Type.Container.Ammobox",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_ammobox_wailingwoods": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.WailingWoods",
+    "targetTags": "Building.Type.Container.Ammobox",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_treasurechest": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_treasurechest_anarchyacres": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.AnarchyAcres",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_treasurechest_dustydepot": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.DustyDepot",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_treasurechest_fatalfields": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.FatalFields",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_treasurechest_flushfactory": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.FlushFactory",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_treasurechest_greasygrove": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.GreasyGrove",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_treasurechest_hauntedhills": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.HauntedHills",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_treasurechest_junkjunction": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.JunkJunction",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_treasurechest_lonelylodge": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.LonelyLodge",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_treasurechest_lootlake": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.LootLake",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_treasurechest_moistymire": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.MoistyMire",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_treasurechest_pleasantpark": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.PleasantPark",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_treasurechest_retailrow": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.RetailRow",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_treasurechest_saltysprings": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.SaltySprings",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_treasurechest_shiftyshafts": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.ShiftyShafts",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_treasurechest_snobbyshores": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.SnobbyShores",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_treasurechest_tiltedtowers": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.TiltedTowers",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_treasurechest_tomatotown": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.TomatoTown",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_athena_treasurechest_wailingwoods": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Athena.Location.POI.WailingWoods",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_safe_pve01_diff2": {
+    "condition": "Zone.Difficulty >=3",
+    "targetTags": "Building.Type.Container.Safe",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_safe_pve01_diff3": {
+    "condition": "Zone.Difficulty >=5",
+    "targetTags": "Building.Type.Container.Safe",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_safe_pve01_diff4": {
+    "condition": "Zone.Difficulty >=7",
+    "targetTags": "Building.Type.Container.Safe",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_safe_pve01_diff5": {
+    "condition": "Zone.Difficulty >=10",
+    "targetTags": "Building.Type.Container.Safe",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_safe_pve02": {
+    "condition": "Zone.Difficulty >=12",
+    "targetTags": "Building.Type.Container.Safe",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_safe_pve02_diff2": {
+    "condition": "Zone.Difficulty >=14",
+    "targetTags": "Building.Type.Container.Safe",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_safe_pve02_diff3": {
+    "condition": "Zone.Difficulty >=16",
+    "targetTags": "Building.Type.Container.Safe",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_safe_pve02_diff4": {
+    "condition": "Zone.Difficulty >=18",
+    "targetTags": "Building.Type.Container.Safe",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_safe_pve02_diff5": {
+    "condition": "Zone.Difficulty >=20",
+    "targetTags": "Building.Type.Container.Safe",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_safe_pve03_diff2": {
+    "condition": "Zone.Difficulty >=24",
+    "targetTags": "Building.Type.Container.Safe",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_safe_pve04": {
+    "condition": "Zone.Difficulty >=32",
+    "targetTags": "Building.Type.Container.Safe",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_safe_pve04_diff2": {
+    "condition": "Zone.Difficulty >=34",
+    "targetTags": "Building.Type.Container.Safe",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_safe_pve04_diff3": {
+    "condition": "Zone.Difficulty >=36",
+    "targetTags": "Building.Type.Container.Safe",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_safe_pve04_diff4": {
+    "condition": "Zone.Difficulty >=38",
+    "targetTags": "Building.Type.Container.Safe",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_safe_pve04_diff5": {
+    "condition": "Zone.Difficulty >=40",
+    "targetTags": "Building.Type.Container.Safe",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_treasurechest_pve03": {
+    "condition": "Zone.Difficulty >=22",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_treasurechest_pve03_diff2": {
+    "condition": "Zone.Difficulty >=24",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_treasurechest_pve03_diff3": {
+    "condition": "Zone.Difficulty >=26",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_treasurechest_pve03_diff4": {
+    "condition": "Zone.Difficulty >=28",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_treasurechest_pve03_diff5": {
+    "condition": "Zone.Difficulty >=30",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_treasurechest_pve04": {
+    "condition": "Zone.Difficulty >=32",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_treasurechest_pve04_diff2": {
+    "condition": "Zone.Difficulty >=34",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_treasurechest_pve04_diff3": {
+    "condition": "Zone.Difficulty >=36",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_treasurechest_pve04_diff4": {
+    "condition": "Zone.Difficulty >=38",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "interact_treasurechest_pve04_diff5": {
+    "condition": "Zone.Difficulty >=40",
+    "targetTags": "Building.Type.Container.TreasureChest",
+    "templateId": "",
+    "type": "Interact"
+  },
+  "kill_husk_assault": {
+    "condition": "",
+    "sourceTags": "weapon.ranged.assault",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_chromehusky": {
+    "condition": "",
+    "targetTags": "SpecialEvent.2018.Blockbuster.Husky",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_coal_lobbers": {
+    "condition": "",
+    "targetTags": "SpecialEvent.Holiday.LobberCoal",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_ele_fire": {
+    "condition": "Zone.Difficulty >=16",
+    "targetTags": "NPC.CharacterType.Husk,NPC.Elemental.Fire",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_ele_nature": {
+    "condition": "Zone.Difficulty >=18",
+    "targetTags": "NPC.CharacterType.Husk,NPC.Elemental.Lightning",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_ele_water": {
+    "condition": "Zone.Difficulty >=20",
+    "targetTags": "NPC.CharacterType.Husk,NPC.Elemental.Ice",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_enraged": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Husk,NPC.Status.Enraged",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_enraged_husky": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Husk.Husky,NPC.Status.Enraged",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_explodingdeathburst": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Husk,GameplayModifier.Enemy.OnDeath.Explode",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_frenzieddeathburst_pve02": {
+    "condition": "Zone.Difficulty >=16",
+    "targetTags": "NPC.CharacterType.Husk,GameplayModifier.Enemy.OnDeath.SpeedBuff",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_healingdeathburst_pve03": {
+    "condition": "Zone.Difficulty >=26",
+    "targetTags": "NPC.CharacterType.Husk,GameplayModifier.Enemy.OnDeath.AreaHeal",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_lifeleechattacks_pve03": {
+    "condition": "Zone.Difficulty >=26",
+    "targetTags": "NPC.CharacterType.Husk,GameplayModifier.Enemy.OnDmgDealt.LifeLeech",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_little_evil_helpers": {
+    "condition": "",
+    "targetTags": "SpecialEvent.Holiday.Elf",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_mall_santas": {
+    "condition": "",
+    "targetTags": "SpecialEvent.Holiday.Santa",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_metalcorrosion_pve02": {
+    "condition": "Zone.Difficulty >=16",
+    "targetTags": "NPC.CharacterType.Husk,GameplayModifier.Enemy.OnDmgDealt.MetalCorrosion",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_pistol": {
+    "condition": "",
+    "sourceTags": "weapon.ranged.pistol",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_quickened": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Husk,GameplayModifier.Enemy.OnDmgReceived.MoveSpeedBuff",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_quickened_pitcher": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.Husk.Pitcher,GameplayModifier.Enemy.OnDmgReceived.MoveSpeedBuff",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_scavenger": {
+    "condition": "",
+    "sourceTags": "WeaponSet.Scavenger",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_scavenger_1_diff2": {
+    "condition": "Zone.Difficulty >=3",
+    "sourceTags": "WeaponSet.Scavenger",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_scavenger_1_diff3": {
+    "condition": "Zone.Difficulty >=5",
+    "sourceTags": "WeaponSet.Scavenger",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_scavenger_1_diff4": {
+    "condition": "Zone.Difficulty >=7",
+    "sourceTags": "WeaponSet.Scavenger",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_scavenger_1_diff5": {
+    "condition": "Zone.Difficulty >=10",
+    "sourceTags": "WeaponSet.Scavenger",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_scavenger_2": {
+    "condition": "Zone.Difficulty >=12",
+    "sourceTags": "WeaponSet.Scavenger",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_scavenger_2_diff2": {
+    "condition": "Zone.Difficulty >=14",
+    "sourceTags": "WeaponSet.Scavenger",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_scavenger_2_diff3": {
+    "condition": "Zone.Difficulty >=16",
+    "sourceTags": "WeaponSet.Scavenger",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_scavenger_2_diff4": {
+    "condition": "Zone.Difficulty >=18",
+    "sourceTags": "WeaponSet.Scavenger",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_scavenger_2_diff5": {
+    "condition": "Zone.Difficulty >=20",
+    "sourceTags": "WeaponSet.Scavenger",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_scavenger_3": {
+    "condition": "Zone.Difficulty >=22",
+    "sourceTags": "WeaponSet.Scavenger",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_scavenger_3_diff2": {
+    "condition": "Zone.Difficulty >=24",
+    "sourceTags": "WeaponSet.Scavenger",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_scavenger_3_diff3": {
+    "condition": "Zone.Difficulty >=26",
+    "sourceTags": "WeaponSet.Scavenger",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_scavenger_3_diff4": {
+    "condition": "Zone.Difficulty >=28",
+    "sourceTags": "WeaponSet.Scavenger",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_scavenger_3_diff5": {
+    "condition": "Zone.Difficulty >=30",
+    "sourceTags": "WeaponSet.Scavenger",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_scavenger_4": {
+    "condition": "Zone.Difficulty >=32",
+    "sourceTags": "WeaponSet.Scavenger",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_scavenger_4_diff2": {
+    "condition": "Zone.Difficulty >=34",
+    "sourceTags": "WeaponSet.Scavenger",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_scavenger_4_diff3": {
+    "condition": "Zone.Difficulty >=36",
+    "sourceTags": "WeaponSet.Scavenger",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_scavenger_4_diff4": {
+    "condition": "Zone.Difficulty >=38",
+    "sourceTags": "WeaponSet.Scavenger",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_scavenger_4_diff5": {
+    "condition": "Zone.Difficulty >=40",
+    "sourceTags": "WeaponSet.Scavenger",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_shotgun": {
+    "condition": "",
+    "sourceTags": "weapon.ranged.shotgun",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_sniper": {
+    "condition": "",
+    "sourceTags": "weapon.ranged.sniper",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_sploder": {
+    "condition": "Zone.Difficulty >=5",
+    "targetTags": "NPC.CharacterType.Husk.Sploder",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_trap": {
+    "condition": "",
+    "sourceTags": "Trap",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_trap_survivalmode": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Survival",
+    "sourceTags": "Trap",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_wallweakening_lobber": {
+    "condition": "Pawn.Tags HasTag NPC.CharacterType.Husk.Bombshell || Pawn.Tags HasTag NPC.CharacterType.Husk.PoisonLobber",
+    "targetTags": "GameplayModifier.Enemy.OnDmgDealt.WeakenBuildings",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_husk_wallweakening_pve02": {
+    "condition": "Zone.Difficulty >=16",
+    "targetTags": "NPC.CharacterType.Husk,GameplayModifier.Enemy.OnDmgDealt.WeakenBuildings",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_miniboss": {
+    "condition": "",
+    "targetTags": "NPC.CharacterType.MiniBoss",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_miniboss_constructor": {
+    "condition": "",
+    "sourceTags": "Class.IsConstructor",
+    "targetTags": "NPC.CharacterType.MiniBoss",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_miniboss_missionalert": {
+    "condition": "",
+    "contextTags": "Stat.MissionAlert.MiniBoss",
+    "targetTags": "NPC.CharacterType.MiniBoss",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_miniboss_ninja": {
+    "condition": "",
+    "sourceTags": "Class.IsNinja",
+    "targetTags": "NPC.CharacterType.MiniBoss",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_miniboss_outlander": {
+    "condition": "",
+    "sourceTags": "Class.IsOutlander",
+    "targetTags": "NPC.CharacterType.MiniBoss",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_miniboss_soldier": {
+    "condition": "",
+    "sourceTags": "Class.IsCommando",
+    "targetTags": "NPC.CharacterType.MiniBoss",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_miniboss_survivalmode": {
+    "condition": "Zone.Difficulty >=10",
+    "contextTags": "Stat.Theater.Survival",
+    "targetTags": "NPC.CharacterType.MiniBoss",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_mist_monster": {
+    "condition": "",
+    "targetTags": "NPC.Mist.Large",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_mist_monster_1_diff4": {
+    "condition": "Zone.Difficulty >=7",
+    "targetTags": "NPC.Mist.Large",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_mist_monster_1_diff5": {
+    "condition": "Zone.Difficulty >=10",
+    "targetTags": "NPC.Mist.Large",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_mist_monster_2_diff1": {
+    "condition": "Zone.Difficulty >=12",
+    "targetTags": "NPC.Mist.Large",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_mist_monster_2_diff2": {
+    "condition": "Zone.Difficulty >=14",
+    "targetTags": "NPC.Mist.Large",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_mist_monster_2_diff3": {
+    "condition": "Zone.Difficulty >=16",
+    "targetTags": "NPC.Mist.Large",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_mist_monster_2_diff4": {
+    "condition": "Zone.Difficulty >=18",
+    "targetTags": "NPC.Mist.Large",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_mist_monster_2_diff5": {
+    "condition": "Zone.Difficulty >=20",
+    "targetTags": "NPC.Mist.Large",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_mist_monster_3_diff1": {
+    "condition": "Zone.Difficulty >=22",
+    "targetTags": "NPC.Mist.Large",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_mist_monster_3_diff2": {
+    "condition": "Zone.Difficulty >=24",
+    "targetTags": "NPC.Mist.Large",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_mist_monster_3_diff3": {
+    "condition": "Zone.Difficulty >=26",
+    "targetTags": "NPC.Mist.Large",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_mist_monster_3_diff4": {
+    "condition": "Zone.Difficulty >=28",
+    "targetTags": "NPC.Mist.Large",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_mist_monster_3_diff5": {
+    "condition": "Zone.Difficulty >=30",
+    "targetTags": "NPC.Mist.Large",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_mist_monster_halloween_outlander": {
+    "condition": "",
+    "sourceTags": "SpecialEvent.Halloween.Vampire.Outlander",
+    "targetTags": "NPC.Mist.Large",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_mist_monster_hydraulic": {
+    "condition": "Zone.Difficulty >=7",
+    "sourceTags": "Weapon.Hydraulic",
+    "targetTags": "NPC.Mist.Large",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "kill_mist_monster_vacuumtube": {
+    "condition": "Zone.Difficulty >=10",
+    "sourceTags": "WeaponSet.VacuumTube",
+    "targetTags": "NPC.Mist.Large",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "killcontribution_athena_player": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "killingblow_athena_player": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_anarchyacres": {
+    "condition": "Source.Tags HasTag Athena.Location.POI.AnarchyAcres || Target.Tags HasTag Athena.Location.POI.AnarchyAcres",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_assault": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class,Weapon.Ranged.assault",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_dustydepot": {
+    "condition": "Source.Tags HasTag Athena.Location.POI.DustyDepot || Target.Tags HasTag Athena.Location.POI.DustyDepot",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_fatalfields": {
+    "condition": "Source.Tags HasTag Athena.Location.POI.FatalFields || Target.Tags HasTag Athena.Location.POI.FatalFields",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_flushfactory": {
+    "condition": "Source.Tags HasTag Athena.Location.POI.FlushFactory || Target.Tags HasTag Athena.Location.POI.FlushFactory",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_greasygrove": {
+    "condition": "Source.Tags HasTag Athena.Location.POI.GreasyGrove || Target.Tags HasTag Athena.Location.POI.GreasyGrove",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_grenade_launcher": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class,Weapon.Ranged.Heavy.grenade_launcher",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_hauntedhills": {
+    "condition": "Source.Tags HasTag Athena.Location.POI.HauntedHills || Target.Tags HasTag Athena.Location.POI.HauntedHills",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_junkjunction": {
+    "condition": "Source.Tags HasTag Athena.Location.POI.JunkJunction || Target.Tags HasTag Athena.Location.POI.JunkJunction",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_lonelylodge": {
+    "condition": "Source.Tags HasTag Athena.Location.POI.LonelyLodge || Target.Tags HasTag Athena.Location.POI.LonelyLodge",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_lootlake": {
+    "condition": "Source.Tags HasTag Athena.Location.POI.LootLake || Target.Tags HasTag Athena.Location.POI.LootLake",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_moistymire": {
+    "condition": "Source.Tags HasTag Athena.Location.POI.MoistyMire || Target.Tags HasTag Athena.Location.POI.MoistyMire",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_pistol": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class,Weapon.Ranged.pistol",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_pleasantpark": {
+    "condition": "Source.Tags HasTag Athena.Location.POI.PleasantPark || Target.Tags HasTag Athena.Location.POI.PleasantPark",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_retailrow": {
+    "condition": "Source.Tags HasTag Athena.Location.POI.RetailRow || Target.Tags HasTag Athena.Location.POI.RetailRow",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_rocket_launcher": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class,Weapon.Ranged.Heavy.rocket_launcher",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_saltysprings": {
+    "condition": "Source.Tags HasTag Athena.Location.POI.SaltySprings || Target.Tags HasTag Athena.Location.POI.SaltySprings",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_shiftyshafts": {
+    "condition": "Source.Tags HasTag Athena.Location.POI.ShiftyShafts || Target.Tags HasTag Athena.Location.POI.ShiftyShafts",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_shotgun": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class,Weapon.Ranged.shotgun",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_smg": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class,weapon.ranged.smg",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_sniper": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class,Weapon.Ranged.sniper",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_snobbyshores": {
+    "condition": "Source.Tags HasTag Athena.Location.POI.SnobbyShores || Target.Tags HasTag Athena.Location.POI.SnobbyShores",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_tiltedtowers": {
+    "condition": "Source.Tags HasTag Athena.Location.POI.TiltedTowers || Target.Tags HasTag Athena.Location.POI.TiltedTowers",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_tomatotown": {
+    "condition": "Source.Tags HasTag Athena.Location.POI.TomatoTown || Target.Tags HasTag Athena.Location.POI.TomatoTown",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_wailingwoods": {
+    "condition": "Source.Tags HasTag Athena.Location.POI.WailingWoods || Target.Tags HasTag Athena.Location.POI.WailingWoods",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_with_explosives": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class,Gameplay.Damage.Physical.Explosive",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "killingblow_athena_player_with_pickaxe": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "sourceTags": "Homebase.Class,Weapon.Melee.Impact.Pickaxe",
+    "targetTags": "Homebase.Class",
+    "templateId": "",
+    "type": "Kill"
+  },
+  "lovequest_2018_reactive_chocolates": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "lovequest_2018_reactive_flowers": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "lovequest_2018_reactive_mailboxes": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "lovequest_2018_reactive_rescuedennis": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "lovequest_2018_reactive_rescuesummer": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "lovequest_2018_reactive_song": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "lovequest_2018_reactive_teddybears": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "open_caches": {
+    "condition": "Pack.Source == ItemCache",
+    "targetTags": "",
+    "templateId": "CardPack",
+    "type": "OpenCardPack"
+  },
+  "outlive_athena": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaOutlive"
+  },
+  "outlive_athena_duo": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Duo",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaOutlive"
+  },
+  "outlive_athena_solo": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Solo",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaOutlive"
+  },
+  "outlive_athena_squad": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Squad",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaOutlive"
+  },
+  "quest_reactive_destroy_halloween_1": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_destroy_halloween_10": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_destroy_halloween_2": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_destroy_halloween_3": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_destroy_halloween_4": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_destroy_halloween_5": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_destroy_halloween_6": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_destroy_halloween_7": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_destroy_halloween_8": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_destroy_halloween_9": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_discover_bunker": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_discover_constructionsite": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_discover_emergencybuilding": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_discover_fastfood": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_discover_ruinedhouse": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_discover_shelter": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_fetch_halloween_1": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_fetch_halloween_2": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_fetch_halloween_3": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_fetch_halloween_4": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_fetch_halloween_5": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_fetch_halloween_6": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_fetch_halloween_7": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_fetch_halloween_8": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_find_castle_1": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_find_castle_2": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_find_castle_3": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_find_castle_4": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_find_castle_5": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_find_castle_6": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_find_catacomb_1": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_find_catacomb_2": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_find_catacomb_3": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_find_catacomb_4": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_find_catacomb_5": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_find_catacomb_6": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_find_cemeteries": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_find_durburger": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_find_gothic_ruins": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_find_mansion_1": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_find_mansion_2": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_find_mansion_3": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_find_mansion_4": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_find_mansion_5": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_gather_halloween_1": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_gather_halloween_2": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_gather_halloween_3": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_gather_halloween_4": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_gather_halloween_5": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_gather_halloween_6": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_gatherhydraulic_1": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_gatherhydraulic_2": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_gatherhydraulic_3": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_killpumpkinhusk_halloween": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_killtaker_halloween": {
+    "condition": "",
+    "contextTags": "Stat.Theater.Transylvania",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_scavenger_1": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_scavenger_2": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "quest_reactive_shielders": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "revive_athena_duo_player": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Duo",
+    "targetTags": "",
+    "templateId": "",
+    "type": "RevivePlayer"
+  },
+  "revive_athena_fifty_v_fifty_player": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.FiftyFifty",
+    "targetTags": "",
+    "templateId": "",
+    "type": "RevivePlayer"
+  },
+  "revive_athena_player": {
+    "condition": "",
+    "contextTags": "Athena.Playlist",
+    "targetTags": "",
+    "templateId": "",
+    "type": "RevivePlayer"
+  },
+  "revive_athena_squad_player": {
+    "condition": "",
+    "contextTags": "Athena.Playlist.Squad",
+    "targetTags": "",
+    "templateId": "",
+    "type": "RevivePlayer"
+  },
+  "revive_player": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "RevivePlayer"
+  },
+  "springquest_2018_build_trojan_bunny": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.BTB.Landmark",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "springquest_2018_complete_bumpeddifficulty": {
+    "condition": "",
+    "targetTags": "Stat.Mission.BluGloPylon.Difficulty",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "springquest_2018_complete_fireworkclusters": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "springquest_2018_evolvedragonweapon": {
+    "condition": "Item HasTag SpecialEvent.Spring.Lunar.Weapons",
+    "targetTags": "",
+    "templateId": "Schematic",
+    "type": "HasConverted"
+  },
+  "springquest_2018_killhusksdragonweapon": {
+    "condition": "",
+    "sourceTags": "SpecialEvent.Spring.Lunar.Weapons",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "springquest_2018_killhusksmelee": {
+    "condition": "",
+    "sourceTags": "weapon.melee",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "springquest_2018_killmistmonstersdragonweapon": {
+    "condition": "Zone.Difficulty >=7",
+    "sourceTags": "SpecialEvent.Spring.Lunar.Weapons",
+    "targetTags": "NPC.Mist.Large",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "springquest_2018_reactive_cctv_cameras": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "springquest_2018_reactive_clothing": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "springquest_2018_reactive_egghunt": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "springquest_2018_reactive_fireworks": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "springquest_2018_reactive_fireworks_repeatable": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "springquest_2018_reactive_fountains": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "springquest_2018_reactive_garden_gnomes": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "springquest_2018_reactive_gymstuff": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "springquest_2018_reactive_huntminiboss_finale": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "springquest_2018_reactive_killcollect_clovers": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "springquest_2018_reactive_lanterns": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "springquest_2018_reactive_leprechaun_traps": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "springquest_2018_reactive_locationdiscovery_pub": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "springquest_2018_reactive_potsofgold": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "springquest_2018_reactive_quotes": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "springquest_2018_reactive_rescueval": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "springquest_2018_reactive_tents": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "springquest_2018_reactive_vhs": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "stonewoodquest_ability_hoverboard": {
+    "condition": "",
+    "targetTags": "Gameplay.Action.Player.PersonalVehicle",
+    "templateId": "",
+    "type": "Ability"
+  },
+  "stonewoodquest_joelkarolina_killhusks": {
+    "condition": "Zone.Difficulty >=20",
+    "targetTags": "NPC.CharacterType.Husk",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "stonewoodquest_joelkarolina_killmistmonsters": {
+    "condition": "Zone.Difficulty >=20",
+    "targetTags": "NPC.Mist.Large",
+    "templateId": "",
+    "type": "KillContribution"
+  },
+  "stonewoodquest_reactive_fetch_hoverboard": {
+    "condition": "Zone.Difficulty >=7",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "stonewoodquest_reactive_joelkarolina_gatherportraits": {
+    "condition": "Zone.Difficulty >=20",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "stonewoodquest_reactive_joelkarolina_visitpubs": {
+    "condition": "Zone.Difficulty >=20",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "stormquest_2018_hidden_watchvideo": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Client"
+  },
+  "stormquest_2018_landmark_lars": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.LaunchWeatherBalloon.Landmark.StormQuest2018",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "stormquest_2018_landmark_observe": {
+    "condition": "",
+    "targetTags": "Stat.Mission.Primary.Landmark.Observe.StormQuest2018",
+    "templateId": "",
+    "type": "Complete"
+  },
+  "stormquest_2018_reactive_acparts": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "stormquest_2018_reactive_equipment": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "stormquest_2018_reactive_hoverboards": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "stormquest_2018_reactive_huskdata": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "stormquest_2018_reactive_insulators": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "stormquest_2018_reactive_maps": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "stormquest_2018_reactive_payphones": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "stormquest_2018_reactive_records": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "stormquest_2018_reactive_research": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "stormquest_2018_reactive_servers": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "stormquest_2018_reactive_servicecars": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "stormquest_2018_reactive_skyatlases": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "stormquest_2018_reactive_speakers": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "stormquest_2018_reactive_telescopes": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "upgrade_any_hydraulic": {
+    "condition": "Item HasTag Weapon.Hydraulic",
+    "targetTags": "",
+    "templateId": "Schematic",
+    "type": "HasUpgraded"
+  },
+  "upgrade_any_scavenger": {
+    "condition": "Item HasTag WeaponSet.Scavenger",
+    "targetTags": "",
+    "templateId": "Schematic",
+    "type": "HasUpgraded"
+  },
+  "upgrade_any_vindertech": {
+    "condition": "Item HasTag WeaponSet.Vindertech",
+    "targetTags": "",
+    "templateId": "Schematic",
+    "type": "HasUpgraded"
+  },
+  "upgrade_halloween_outlander": {
+    "condition": "Item HasTag SpecialEvent.Halloween.Vampire.Outlander && Item.Level >= 20",
+    "targetTags": "",
+    "templateId": "Hero",
+    "type": "HasUpgraded"
+  },
+  "upgraderarity_hero": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "Hero",
+    "type": "HasUpgradedRarity"
+  },
+  "win_athena_duo": {
+    "condition": "Athena.Rank == 1",
+    "contextTags": "Athena.Playlist.Duo",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "win_athena_match": {
+    "condition": "Athena.Rank == 1",
+    "contextTags": "Athena.Playlist",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "win_athena_solo": {
+    "condition": "Athena.Rank == 1",
+    "contextTags": "Athena.Playlist.Solo",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "win_athena_squad": {
+    "condition": "Athena.Rank == 1",
+    "contextTags": "Athena.Playlist.Squad",
+    "targetTags": "",
+    "templateId": "",
+    "type": "AthenaRank"
+  },
+  "winterquest_2017_hidden_watchvideo": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Client"
+  },
+  "winterquest_2017_reactive_fetch_collectpresent": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "winterquest_2017_reactive_fetch_decoration": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "winterquest_2017_reactive_fetch_deploytree": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "winterquest_2017_reactive_fetch_presentfiller": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "winterquest_2017_reactive_fetch_radio": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "winterquest_2017_reactive_frozentroll": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "winterquest_2107_reactive_gather_book": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "winterquest_2107_reactive_gather_fridge": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "winterquest_2107_reactive_gather_fruit": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "winterquest_2107_reactive_gather_pinetree": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "winterquest_2107_reactive_gather_trafficlight": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  },
+  "winterquest_2107_reactive_presents_hidden": {
+    "condition": "",
+    "targetTags": "",
+    "templateId": "",
+    "type": "Custom"
+  }
+}

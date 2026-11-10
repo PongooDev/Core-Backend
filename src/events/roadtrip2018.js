@@ -1,11 +1,12 @@
 import { currentBuild } from "../builds/context.js";
 import { getItem } from "../gamedata/items.js";
 import { getQuest } from "../gamedata/quests.js";
+import { seasonMoment } from "../store/itemshop.js";
 import { isEventActive, roadTrip2018 } from "./events.js";
 
 export { roadTrip2018 };
 
-// Road Trip (5.0, CL-4204761 and CL-4214610, 5.10's two builds and 5.21; events.js roadTrip2018), Save the World's first Season 5 event, and with it
+// Road Trip (5.0, CL-4204761 and CL-4214610, 5.10's two builds, 5.21 and 5.30; events.js roadTrip2018), Save the World's first Season 5 event, and with it
 // Challenge the Horde's return (Core-Backend #298, Update v5.00's notes): "Challenge the Horde is back! Challenge the
 // Horde comes to the desert!", "Reduced the total number of Challenge the Horde missions available on the map from 16 to
 // 9", "Challenge the Horde missions now become unlocked based upon your Storm Shield Defense progression or your Horde Quest
@@ -49,16 +50,27 @@ export const roadTripQuests = [
 // week 1's choice of a Legendary Flintlock and week 2's 1,500 Gold. A build runs the newest week its data has (5.21: week
 // 2, its notes'), its hidden quest and the three others given at quest login while Road Trip runs, and its four missions
 // in the horde theater (world/horde.js).
+// 5.30's data (CL-4305896) has weeks 3 and 4 too: Update v5.30's "Horde Weekly Challenge 3 is now available! ... 16 waves
+// of shorter wave phases, less time to prepare and faster enemies ... choose from two legendary Flintlock weapons"
+// (HordeQuest_Weekly3_*: Wave = 16, the Flintlock Walloper or Scythe; World/ZoneThemes/Horde/Challenges/EnduranceMode)
+// and Content Update v5.30's "Weekly Horde Challenge 4 ... Available August 29, at 8 PM ET ... Husks will not trigger
+// traps ... Win a Legendary Redline Ramirez" (HordeQuest_Weekly4_*: Redline Ramirez; Challenges/Untrappable), each
+// repeatable for 75 Road Trip Tickets. Its stat rows count them by the theater's tags now (Stat.Theater.Weekly.Horde.WeekA
+// and WeekB, and Stat.Theater.Horde for the nine zones' quests, where 5.21's counted Stat.Mission.*): world/horde.js.
+// A week with a start (weeklyHordeStarts, Epic's time) runs from then on Season 5's replay, so 5.30 runs week 3 until 30
+// August 00:00 UTC (8 PM ET on 29 August) and week 4 from then; the others from the build's release.
 export const weeklyHordeQuests = (week) => [`hordequest_hidden_weekly${week}`,
   ...["plankerton", "canny", "twine"].map((zone) => `hordequest_weekly${week}_${zone}1`)];
-export const weeklyHordeWeek = () => [2, 1].find((week) => getQuest(`hordequest_hidden_weekly${week}`)) ?? null;
+export const weeklyHordeStarts = { 4: "2018-08-30T00:00:00.000Z" };
+export const weeklyHordeWeek = (now = new Date()) => [4, 3, 2, 1].find((week) => getQuest(`hordequest_hidden_weekly${week}`)
+  && (!weeklyHordeStarts[week] || seasonMoment(now, null, 5).getTime() >= Date.parse(weeklyHordeStarts[week]))) ?? null;
 // Every week's, for the event's quest line (events/quests.js).
-export const roadTripLineQuests = [...roadTripQuests, ...weeklyHordeQuests(1), ...weeklyHordeQuests(2)];
+export const roadTripLineQuests = [...roadTripQuests, ...[1, 2, 3, 4].flatMap(weeklyHordeQuests)];
 
 // The requesting build's Road Trip quests, when the event runs there: with its Weekly Horde Challenge's.
-export const roadTripEventQuests = () => {
+export const roadTripEventQuests = (now = new Date()) => {
   if (!isEventActive(roadTrip2018)) return [];
-  const week = weeklyHordeWeek();
+  const week = weeklyHordeWeek(now);
   return [...roadTripQuests, ...(week ? weeklyHordeQuests(week) : [])].filter((questId) => getQuest(questId));
 };
 

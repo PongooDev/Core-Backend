@@ -210,7 +210,14 @@ export const spring2018End = "2018-02-22T00:00:00.000Z";
 // weapons below, and 4.2 adds its card pack CardPack_Explosive_Launcher_Military_SR), in the HackSAW's place on 4.2 and
 // later, at a legendary schematic's 1,680 Gold, one (🟡: Epic's price and limit aren't recorded). So on 4.2 it leaves the
 // event items and the HackSAW is back among them, as on 4.0.
+// 5.30's (CL-4305896): "Bundlebuss Assault Rifle is now available in the Weekly Store. Available from August 23 at 4 AM ET
+// to August 29 at 8 PM ET. A surprisingly accurate multi-barreled Flintlock rifle that fires in powerful bursts." That is
+// the Flintlock assault rifle, SID_Assault_Flintlock_SR_Ore_T01 (Road Trip's Event Store weapon since 5.0, below; 5.30's
+// data gives it its own alteration loadout, SlotLoadout.Event.Flintlock.Explicit.AssaultRfile), in the Quad Launcher's
+// place on 5.30 and later, at a legendary schematic's 1,680 Gold, one (🟡: Epic's price and limit aren't recorded; Core's
+// week has it from the build's first day, and keeps it after 29 August), so on 5.30 it leaves Road Trip's event items.
 const weeklyFeaturedByBuild = [
+  { firstBuild: 4305896, items: [{ templateId: "Schematic:sid_assault_flintlock_sr_ore_t01", price: 1680, limit: 1 }] },
   { firstBuild: 4072250, items: [{ templateId: "Schematic:sid_explosive_launcher_military_sr_ore_t01", price: 1680, limit: 1 }] },
   { firstBuild: 4053532, items: [{ templateId: "Schematic:sid_assault_lmg_military_sr_ore_t01", price: 1680, limit: 1 }] },
   { firstBuild: 3915963, items: [{ templateId: "Schematic:sid_shotgun_dragon_drum_sr_ore_t01", price: 1680, limit: 1 }] },
@@ -300,21 +307,27 @@ const blockbusterNow = () => !isEventActive(winter2017) && !storms2018() && !spr
 // v5.21's "New Constructor Machinist: Thora added to the Event Store. Available Wednesday, August 15th at 8pm ET"
 // (HID_Constructor_011_F_V1_RoadTrip_SR_T01, "Machinist Thora"), at the wiki's 2,800 Gold, one each (🟡 the limits are
 // Core's, as the Sledgehammer's; from 5.21's release).
-const roadTripEventItems = [
+// 5.30 (CL-4305896; Content Update v5.30's hero is in its data): "Mythic Bladestorm Enforcer Ninja. Available in the Event
+// Store August 29, at 8 PM ET. Features new subclass - Bladestorm" (HID_Ninja_Myth03_SR_T01, "Bladestorm Enforcer", new
+// in 5.30's data), at a Mythic hero's 3,200 Gold as Ragnarok's, one (🟡 the price is Ragnarok's, the limit Core's; from
+// 5.30's release). Its Bundlebuss moves to the Weekly Store (weeklyFeaturedByBuild).
+const roadTripEventItemList = [
   ...["launcher_flintlock", "assault_flintlock", "sniper_flintlock_scope", "blunt_hammer_flintlock", "assault_autodrum"]
     .map((name) => ({ templateId: `Schematic:sid_${name}_sr_ore_t01`, price: 1680, limit: 1 })),
   { templateId: "Hero:hid_commando_gunheadshot_m_v1_roadtrip_sr_t01", price: 2800, limit: 1 },
   { templateId: "Hero:hid_outlander_myth02_sr_t01", price: 3200, limit: 1 },
   { templateId: "Hero:hid_constructor_011_f_v1_roadtrip_sr_t01", price: 2800, limit: 1 },
+  { templateId: "Hero:hid_ninja_myth03_sr_t01", price: 3200, limit: 1 },
   { templateId: "Worker:workerbasic_sr_t01", price: 700, limit: 1 }
 ];
+const roadTripEventItems = () => roadTripEventItemList.filter(({ templateId }) => !weeklyFeatured().some((item) => item.templateId === templateId));
 export const roadTrip2018End = "2018-09-27T00:00:00.000Z";
 const roadTripNow = () => !isEventActive(winter2017) && !storms2018() && !springNow() && !blockbusterNow() && isEventActive(roadTrip2018);
 // No event running: 5.0's persistent weekly store alone (persistentWeeklyBuild), with no event items.
 const noEventNow = () => !isEventActive(winter2017) && !storms2018() && !springNow() && !blockbusterNow() && !roadTripNow();
 const persistentOnlyNow = () => noEventNow() && Number(currentBuild()) >= persistentWeeklyBuild;
 const eventItemsNow = () => (storms2018() ? stormsEventItems : springNow() ? springItemsNow() : blockbusterNow() ? blockbusterItems()
-  : roadTripNow() ? roadTripEventItems : persistentOnlyNow() ? [] : eventItems);
+  : roadTripNow() ? roadTripEventItems() : persistentOnlyNow() ? [] : eventItems);
 export const eventStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWSpecialEventStoreFront"
   : springNow() ? "Spring2018.STWSpecialEventStoreFront" : blockbusterNow() ? "Blockbuster2018.STWSpecialEventStoreFront"
     : roadTripNow() ? "RoadTrip2018.STWSpecialEventStoreFront" : eventStoreInstance);

@@ -125,6 +125,16 @@ const playlistAssetTeamsBuild = 4000805;
 // bAllowTeamSwitching: "Players can now switch teams in-game").
 const playlistTeamsFrom510 = { 35: { maxTeamCount: 4, maxTeamSize: 4, maxSquadSize: 4 } };
 const playlistTeams510Build = 4225813;
+// 5.30's (CL-4305896) Score Royale, Playlist_Score_Solo, _Duos and _Squads (101, 102, 103: 100 teams of 1, 2 and 4; 103 was
+// 4.5's Final Fight: Teams of 12), and 50v50 Solid Gold (1993, Playlist_50v50SAU: 2 × 50 in squads of 4); its Solid Gold
+// Solo, Duos and Squads (26, 34, 27) have 3.5.1's and 4.2's teams above.
+const playlistTeamsFrom530 = {
+  101: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  102: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  103: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  1993: { maxTeamCount: 2, maxTeamSize: 50, maxSquadSize: 4 }
+};
+const playlistTeams530Build = 4305896;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).
 export const teamSquadsOptionBuild = 3915963;
 // Late joining (Core-Backend #122, the admin panel's Matchmaking settings). The servers' MMS client (1.9
@@ -257,6 +267,7 @@ export const playlistTeamsOf = (bucketId, build = null) => teamsOfPlaylist(parse
 // The same by playlist id: what the match results' V-Bucks read a limited-time playlist's mode from (CoreV2 #294).
 export const teamsOfPlaylist = (playlistId, build = null) => {
   if (playlistId === shootingTestPlaylist) return shootingTestTeams(build ?? 3870737);
+  if (Number(build) >= playlistTeams530Build && playlistTeamsFrom530[playlistId]) return playlistTeamsFrom530[playlistId];
   if (Number(build) >= playlistTeams510Build && playlistTeamsFrom510[playlistId]) return playlistTeamsFrom510[playlistId];
   if (Number(build) >= playlistAssetTeamsBuild && playlistTeamsFrom351[playlistId]) return playlistTeamsFrom351[playlistId];
   if (Number(build) >= playlistClassBuild && playlistTeamsFrom30[playlistId]) return playlistTeamsFrom30[playlistId];

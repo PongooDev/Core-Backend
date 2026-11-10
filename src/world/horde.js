@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import { hordeFlag, isEventActive } from "../events/events.js";
+import { weeklyHordeWeek } from "../events/roadtrip2018.js";
 import { perBuild } from "../gamedata/read.js";
 import { questPath } from "./quests.js";
 
@@ -32,6 +33,8 @@ import { questPath } from "./quests.js";
 // no Horde socket, so the theater sits in Survive the Storm's (Survival_Mode), which 5.0 doesn't run.
 // The theater is in world info while the requesting build serves EventFlag.Horde.
 export const hordeId = crypto.createHash("sha1").update("Core:ChallengeTheHorde").digest("hex").slice(0, 32).toUpperCase();
+// 5.30's Weekly Horde Challenge theater (below).
+export const hordeWeeklyId = crypto.createHash("sha1").update("Core:WeeklyHordeChallenge").digest("hex").slice(0, 32).toUpperCase();
 
 const theme = (path) => `/Game/World/ZoneThemes/Horde/${path}.${path.split("/").pop()}_C`;
 const generator = (name) => `/Game/World/MissionGens/${name}.${name}_C`;
@@ -66,9 +69,25 @@ const fortRow = "Theater_Horde_Stonewood_VeryLow";
 // objective), and the Plankerton, Canny Valley and Twine Peaks ones with the nine zones' gates to those tiers
 // (HordeQuest_Hidden_1, _4 and _7). Update v5.21's "Removed the Power Rating restrictions on Challenge the Horde missions"
 // is Core's already: no Horde mission has power requirements.
-const weeklyGenerator = (week) => generator(`MissionGen_WeeklyHordeChallenge_0${week}`);
-const weeklyNames = { 1: "Minibosses", 2: "Bullet Proof Husks" };
-const weeklyThemes = { 1: "MiniBossArmy", 2: "RangeImmune" };
+// 5.30 (CL-4305896) has weeks 3 and 4 (events/roadtrip2018.js): Update v5.30's endurance challenge ("16 waves of shorter
+// wave phases, less time to prepare and faster enemies": Challenges/EnduranceMode's themes, their
+// Challenge_EnduranceMode_*Layout) and Content Update v5.30's "no-trap challenge" (Challenges/Untrappable's), at the same
+// rows, and no mission generator of their own (its paks have MissionGen_WeeklyHordeChallenge_01 and _02 only; the week is
+// its themes' layouts), so weeks 3 and 4 run on _02 (🟡). And 5.30 counts Challenge the Horde's quests by the theater's tags,
+// not the mission's: its stat rows' context tags are Stat.Theater.Horde (the nine zones' progression quests, the fort's)
+// and Stat.Theater.Weekly.Horde.WeekA and WeekB (weeks 3 and 4; Week02 for week 2), where 5.21's were MissionInfo tags
+// (Stat.Mission.Primary.Horde, Stat.Mission.Weekly.Horde.Week02): Update v5.30's "Weekly Challenge Horde Quests no longer
+// give credit for primary Challenge the Horde Quests". So on a build whose stat rows name a Stat.Theater.* tag, the Horde
+// theater carries the nine zones' tag, and the week's four zones are a theater of their own (hordeWeeklyId) carrying the
+// week's, both as the stat rows name them (🟡 Epic's layout of it isn't recorded; Core's is the same row of four zones, in
+// the Horde theater's socket).
+const weeklyGenerator = (week) => generator(`MissionGen_WeeklyHordeChallenge_0${Math.min(week, 2)}`);
+const weeklyNames = { 1: "Minibosses", 2: "Bullet Proof Husks", 3: "Endurance", 4: "Untrappable" };
+const weeklyThemes = { 1: "MiniBossArmy", 2: "RangeImmune", 3: "EnduranceMode", 4: "Untrappable" };
+// The theater tag a stat row counts, when it is one (5.30's), else null.
+const theaterTagOf = (objectiveStats, statName) => (/^Stat\.Theater\./.test(objectiveStats[statName]?.contextTags ?? "")
+  ? objectiveStats[statName].contextTags : null);
+const theaterTags = (tag) => ({ gameplayTags: tag ? [{ tagName: tag }] : [] });
 const weeklyZones = (week) => [["SW", "Stonewood", null], ["Plank", "Plankerton", "hordequest_hidden_1"], ["Canny", "Uncanny", "hordequest_hidden_4"],
   ["Twine", "Final", "hordequest_hidden_7"]].map(([themeTier, rowTier, gate]) => ({
   theme: theme(`Challenges/${weeklyThemes[week]}/BP_ZT_ChallengeTheHorde_Challenge_${weeklyThemes[week]}_${themeTier}`),
@@ -90,8 +109,30 @@ function tile(tileType, zoneTheme, x, y, canBeMissionAlert) {
   };
 }
 
+const theaterData = (uniqueId, name, description, tag, tiles, regions) => ({
+  displayName: everyLanguage(name),
+  uniqueId,
+  theaterSlot: 0,
+  bIsTestTheater: false,
+  description: everyLanguage(description),
+  runtimeInfo: {
+    theaterType: "Standard",
+    theaterTags: theaterTags(tag),
+    theaterVisibilityRequirements: noRequirements(),
+    requirements: withQuest(theaterGate),
+    worldMapPinClass: pin,
+    theaterImage: image,
+    theaterColorInfo: { bUseDifficultyToDetermineColor: false, color: { specifiedColor: { r: 0.85, g: 0.45, b: 0.15, a: 1 }, colorUseRule: "UseColor_Specified" } },
+    socket: "Survival_Mode",
+    missionAlertRequirements: noRequirements()
+  },
+  tiles,
+  regions
+});
+
 const layout = perBuild((read) => {
   const { missionGenerators = {}, zoneThemes = {}, difficulties = {}, mapPins = [] } = read("world", {});
+  const objectiveStats = read("objectivestats", {});
   // A build without 5.0's desert horde (1.7.2's Horde Bash had other themes and generators' rows) has no Horde theater.
   if (!Object.values(hordeGenerators).every((path) => missionGenerators[path]) || !zoneThemes[fortTheme] || !mapPins.includes(pin)
     || !hordeZones.every((zone) => zoneThemes[zone.theme] && difficulties[zone.rowName]) || !difficulties[fortRow]) return null;
@@ -108,51 +149,63 @@ const layout = perBuild((read) => {
     regions.push({ displayName: `${zoneThemes[zone.theme].name ?? "Challenge the Horde"} (${difficulties[zone.rowName].recommendedRating}+)`,
       regionTags: { gameplayTags: [] }, tileIndices: [tileIndex], requirements: withQuest(zone.gate) });
   });
-  // The week's Weekly Horde Challenge (events/roadtrip2018.js), when the build's data has it: its four zones in a row below
-  // the nine, each a region of one tile hosting the week's mission every day.
-  const week = [2, 1].find((candidate) => missionGenerators[weeklyGenerator(candidate)]
-    && weeklyZones(candidate).every((zone) => zoneThemes[zone.theme] && difficulties[zone.rowName]));
-  for (const [index, zone] of (week ? weeklyZones(week) : []).entries()) {
-    const tileIndex = tiles.push(tile("AlwaysActive", zone.theme, 2 + index, 5, false)) - 1;
-    fixedMissions.push({ tileIndex, missionGenerator: weeklyGenerator(week),
-      missionDifficultyInfo: { dataTable: difficultyTable, rowName: zone.rowName }, tierGroupName: difficulties[zone.rowName].lootTierGroup ?? "" });
-    regions.push({ displayName: `Weekly Horde Challenge: ${weeklyNames[week]} (${difficulties[zone.rowName].recommendedRating}+)`,
-      regionTags: { gameplayTags: [] }, tileIndices: [tileIndex], requirements: withQuest(zone.gate) });
-  }
+  // Each week's Weekly Horde Challenge (events/roadtrip2018.js) the build's data has: its four zones in a row below the
+  // nine, each a region of one tile hosting the week's mission every day; on 5.30 in a theater of their own (above).
+  const weeks = Object.fromEntries([1, 2, 3, 4].filter((candidate) => missionGenerators[weeklyGenerator(candidate)]
+    && weeklyZones(candidate).every((zone) => zoneThemes[zone.theme] && difficulties[zone.rowName])).map((week) => {
+    const tag = theaterTagOf(objectiveStats, `hordequest_weekly0${week}_stonewood_01`);
+    const zones = weeklyZones(week).map((zone, index) => ({
+      tile: tile("AlwaysActive", zone.theme, 2 + index, tag ? 2 : 5, false),
+      mission: { missionGenerator: weeklyGenerator(week),
+        missionDifficultyInfo: { dataTable: difficultyTable, rowName: zone.rowName }, tierGroupName: difficulties[zone.rowName].lootTierGroup ?? "" },
+      region: { displayName: `Weekly Horde Challenge: ${weeklyNames[week]} (${difficulties[zone.rowName].recommendedRating}+)`,
+        regionTags: { gameplayTags: [] }, requirements: withQuest(zone.gate) }
+    }));
+    return [week, { tag, zones }];
+  }));
 
+  // The missions' own description (MissionGen_ChallengeTheHorde's MissionDescription).
   return {
-    data: {
-      displayName: everyLanguage("Challenge the Horde"),
-      uniqueId: hordeId,
-      theaterSlot: 0,
-      bIsTestTheater: false,
-      // The missions' own description (MissionGen_ChallengeTheHorde's MissionDescription).
-      description: everyLanguage("Defend your deployable forts from the unrelenting horde!"),
-      runtimeInfo: {
-        theaterType: "Standard",
-        theaterTags: { gameplayTags: [] },
-        theaterVisibilityRequirements: noRequirements(),
-        requirements: withQuest(theaterGate),
-        worldMapPinClass: pin,
-        theaterImage: image,
-        theaterColorInfo: { bUseDifficultyToDetermineColor: false, color: { specifiedColor: { r: 0.85, g: 0.45, b: 0.15, a: 1 }, colorUseRule: "UseColor_Specified" } },
-        socket: "Survival_Mode",
-        missionAlertRequirements: noRequirements()
-      },
-      tiles,
-      regions
-    },
-    fixedMissions
+    data: theaterData(hordeId, "Challenge the Horde", "Defend your deployable forts from the unrelenting horde!",
+      theaterTagOf(objectiveStats, "hordequest_progression_stonewood_1"), tiles, regions),
+    fixedMissions,
+    weeks
   };
 });
 
+// A theater's four weekly zones added to its tiles, regions and missions.
+const withWeek = (theater, { zones }) => {
+  for (const zone of zones) {
+    const tileIndex = theater.data.tiles.push(zone.tile) - 1;
+    theater.fixedMissions.push({ tileIndex, ...zone.mission });
+    theater.data.regions.push({ ...zone.region, tileIndices: [tileIndex] });
+  }
+  return theater;
+};
+// The week the requesting build runs now (events/roadtrip2018.js), when its horde has its zones.
+const weekNow = (made, now) => made.weeks[weeklyHordeWeek(now)] ?? null;
+
 // The Horde theater, when the requesting build serves EventFlag.Horde and has 5.0's horde (a fresh copy: world info hands
-// out the theater's objects).
-export function hordeTheater() {
+// out the theater's objects), with the week's zones on a build that counts them by the mission (5.21).
+export function hordeTheater(now = new Date()) {
   if (!isEventActive(hordeFlag)) return null;
   const made = layout();
-  return made ? structuredClone(made) : null;
+  if (!made) return null;
+  const theater = structuredClone({ data: made.data, fixedMissions: made.fixedMissions });
+  const week = weekNow(made, now);
+  return week && !week.tag ? withWeek(theater, structuredClone(week)) : theater;
 }
 
-export const isHorde = (theaterId) => theaterId === hordeId;
+// 5.30's Weekly Horde Challenge theater: the week's four zones, carrying the week's theater tag, while the Horde theater is
+// served.
+export function hordeWeeklyTheater(now = new Date()) {
+  if (!isEventActive(hordeFlag)) return null;
+  const made = layout();
+  const week = made && weekNow(made, now);
+  if (!week?.tag) return null;
+  return withWeek({ data: theaterData(hordeWeeklyId, "Weekly Horde Challenge", "Defend your deployable forts from the unrelenting horde!",
+    week.tag, [], []), fixedMissions: [] }, structuredClone(week));
+}
+
+export const isHorde = (theaterId) => theaterId === hordeId || theaterId === hordeWeeklyId;
 export const isHordeTierGroup = (tierGroupName) => /^HordeBash_/.test(tierGroupName ?? "");

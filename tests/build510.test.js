@@ -60,8 +60,8 @@ test("5.10's two builds are known by their versions, play on CL-4240749's data a
   assert.equal(dataBuild("4220000"), v50, "a build between 5.0 and 5.10 Core doesn't know still plays on 5.0's");
   assert.equal(dataBuild("4230000"), v50, "nor one between 5.10's two");
   assert.equal(allowedBuildList(["5.10.0", "5.10"]).join(), v510s.join());
-  assert.equal(buildOfSeason(5), "4288479", "Season 5's newest data is 5.21's now (build521.test.js)");
-  assert.equal(seasonName(5), "Season 5 (5.0 – 5.21)");
+  assert.equal(buildOfSeason(5), "4305896", "Season 5's newest data is 5.30's now (build530.test.js)");
+  assert.equal(seasonName(5), "Season 5 (5.0 – 5.30)");
   for (const build of v510s) {
     const season = inBuild(build, athenaSeason);
     assert.deepEqual([season.seasonNumber, season.numBookLevels, season.storefront, season.battlePassLevelOfferId], [5, 100, "BRSeason5", "4B2E310BC1AE40B292A16D5AAD747E0A"]);
@@ -165,7 +165,7 @@ test("5.10's shop: Season 5's history sells 5.10's cosmetics on 5.10 with their 
   const history = JSON.parse(fs.readFileSync(new URL("../src/store/itemshop-season5.json", import.meta.url), "utf8")).days;
   const c510 = inBuild(v510, athenaCosmetics);
   const c50 = inBuild(v50, athenaCosmetics);
-  // The history keeps 5.21's cosmetics too (build521.test.js); 5.10 sells those its data has.
+  // The history keeps 5.21's and 5.30's cosmetics too (build521.test.js, build530.test.js); 5.10 sells those its data has.
   const sold = new Set(history.flatMap((day) => [...day.featured, ...day.daily].map(([id]) => id)).filter((id) => c510[id]));
   assert.equal([...sold].filter((id) => !c50[id]).length, 16);
   assert.equal(history.find((day) => [...day.featured, ...day.daily].some(([id]) => id === "AthenaCharacter:cid_179_athena_commando_f_scuba")).date, "2018-07-27");

@@ -12,7 +12,7 @@ import { elementalZones, getDifficulty, missionAlertSpread, missionAlertTier } f
 import { hasEventStore } from "../store/eventstore.js";
 import { candyReward, hexsylvania, isHexsylvania } from "./hexsylvania.js";
 import { hordeAlertRewards, hordeMissionRewards } from "../events/roadtrip2018.js";
-import { hordeTheater, isHorde, isHordeTierGroup } from "./horde.js";
+import { hordeTheater, hordeWeeklyTheater, isHorde, isHordeTierGroup } from "./horde.js";
 import { linkedQuests, questPath } from "./quests.js";
 import { isSurvival, survivalAlertGenerators, survivalReward, survivalTheater } from "./survival.js";
 
@@ -741,7 +741,7 @@ export function worldInfo(now = new Date()) {
   const day = now.toISOString().slice(0, 10);
   const dayStart = new Date(`${day}T00:00:00.000Z`);
   const availableUntil = `${day}T23:59:59.999Z`;
-  const theaters = [...layout().theaters, ...[hexsylvania(), survivalTheater(), hordeTheater()].filter(Boolean)];
+  const theaters = [...layout().theaters, ...[hexsylvania(), survivalTheater(), hordeTheater(now), hordeWeeklyTheater(now)].filter(Boolean)];
   const missions = theaters.map((theater) => rollMissions(theater, day, availableUntil));
   const alerts = theaters.map((theater, index) => rollAlerts(theater, missions[index], day, dayStart, now, availableUntil));
   return {
