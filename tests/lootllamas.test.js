@@ -79,13 +79,54 @@ test("a defense won with its rewards gives the one voucher, through the rewards 
 
     await p.gameserver("UpdateQuests", { advance: onboarding });
     await p.gameserver("EndPrimaryMission", { matchmakingSessionId: registered.body.id, missionName: "m", missionStatus: "Succeeded", advance: firstLeg });
-    await p.claimDefense();
-    assert.equal((await p.quest()).attributes.quest_state, "Active");
-    // The mission's voucher pack is on its way to the rewards screen: no voucher of Core's as well.
-    assert.equal(await p.held(voucher), 0);
+    // The rewards screen opens the mission's packs before the defense's quest is claimed: its voucher is the one.
     const packs = (await p.items()).filter(([, item]) => item.templateId.startsWith("CardPack:zcp_")).map(([itemId]) => itemId);
     assert.equal((await p.client("OpenCardPackBatch", { cardPackItemIds: packs })).status, 200);
     assert.equal(await p.held(voucher), 1);
+    await p.claimDefense();
+    assert.equal((await p.quest()).attributes.quest_state, "Active");
+    assert.equal(await p.held(voucher), 1, "no voucher of Core's as well");
+  } finally {
+    backend.close();
+  }
+});
+
+// Core-Launcher #16 (1.1): back from the storm shield the client claims the defense's quest without opening the
+// mission's packs, so ZCP_Voucher_BasicPack waited while the locked Loot tab, with no voucher, showed nothing. The claim
+// that starts Loot Llamas opens that pack for its voucher, so the claim's own answer has it and the Mini Reward Llama offer.
+test("claiming the defense with its voucher pack unopened gives that pack's voucher at once, and only once", async () => {
+  const backend = await startBackend();
+  try {
+    const server = await userLogin(backend.port, "LootLlamaServer11");
+    const p = await player(backend, "LootLlamasCert");
+    const info = (await get(backend.port, "/fortnite/api/game/v2/world/info", p.token)).body;
+    const stonewood = info.missions.find(({ availableMissions }) => availableMissions.some(({ missionGenerator }) => /TheOutpost_PvE_01/.test(missionGenerator)));
+    const mission = stonewood.availableMissions.find(({ missionGenerator }) => /TheOutpost_PvE_01/.test(missionGenerator));
+    const zone = { worldId: "", theaterId: stonewood.theaterId, theaterMissionId: mission.missionGuid, theaterMissionAlertId: "", zoneThemeClass: "" };
+    const registered = await post(backend.port, "/fortnite/api/matchmaking/session", server.token, {
+      ownerId: server.accountId, ownerName: "LootLlamaServer11", serverName: "Core-1", serverAddress: "127.0.0.1", serverPort: 7777,
+      maxPublicPlayers: 4, maxPrivatePlayers: 0, buildUniqueId: "595160781",
+      attributes: { ZONEINSTANCEID_s: JSON.stringify(zone), GAMEMODE_s: "FORTPVE" }
+    });
+
+    await p.gameserver("UpdateQuests", { advance: onboarding });
+    await p.gameserver("EndPrimaryMission", { matchmakingSessionId: registered.body.id, missionName: "m", missionStatus: "Succeeded", advance: firstLeg });
+    const [questId] = (await p.items()).find(([, item]) => item.templateId === "Quest:outpostquest_t1_l1");
+    const claimed = await p.client("ClaimQuestReward", { questId, selectedRewardIndex: -1 });
+    assert.equal(claimed.status, 200);
+    const changes = claimed.body.profileChanges;
+    const added = changes.filter((change) => change.changeType === "itemAdded").map(({ item }) => item.templateId);
+    assert.ok(added.includes(voucher) || changes.some((change) => change.changeType === "fullProfileUpdate"
+      && Object.values(change.profile.items).some((item) => item.templateId === voucher)), "the claim's answer has the voucher");
+
+    assert.equal(await p.held(voucher), 1);
+    assert.equal(await p.held("CardPack:zcp_voucher_basicpack"), 0, "opened for it");
+    assert.equal(await p.held("CardPack:zcp_heroxp_outpost_theater1"), 1, "the defense's other pack still waits");
+    // The next login's pending Mission packs: no second voucher.
+    const packs = (await p.items()).filter(([, item]) => item.templateId.startsWith("CardPack:zcp_")).map(([itemId]) => itemId);
+    assert.equal((await p.client("OpenCardPackBatch", { cardPackItemIds: packs })).status, 200);
+    assert.equal(await p.held(voucher), 1);
+    assert.equal((await p.quest()).attributes.completion_open_card_pack, 0, "opening the voucher pack is not redeeming the llama");
   } finally {
     backend.close();
   }

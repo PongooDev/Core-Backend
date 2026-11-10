@@ -13,7 +13,7 @@ import { athenaNeedsSetUp, setUpAthena } from "./athena.js";
 import { foundersNeedSetUp, foundersTokensNeedSetUp, setUpFounders, setUpFoundersTokens } from "./founders.js";
 import { friendCodesNeedSetUp, setUpFriendCodes } from "./friendcodes.js";
 import { ownsNode } from "./homebase.js";
-import { lootLlamaVoucher, lootLlamaVoucherMissing } from "./lootllamas.js";
+import { giveLootLlamaVoucher, lootLlamaVoucherMissing } from "./lootllamas.js";
 import { tidyWorldStacks } from "./items.js";
 import { grant } from "./progress.js";
 import { findQuestItem } from "./quests.js";
@@ -183,8 +183,5 @@ export function setUpProfile(session, profileId = "profile0") {
   if (defaultHero && !heroes(profile).length) grant(session, defaultHero, 1);
   const lead = leadCandidate(profile);
   if (lead) assignToSquad(session, lead, leadSquad(profile), 0);
-  if (lootLlamaVoucherMissing(profile)) {
-    grant(session, lootLlamaVoucher, 1);
-    log("Profiles", `${session.accountId}: on the Loot Llamas step with no Mini Reward Llama to open, given one voucher`);
-  }
+  giveLootLlamaVoucher(session);
 }
