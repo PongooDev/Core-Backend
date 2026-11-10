@@ -7,7 +7,7 @@ import { seasonName, versionOf } from "../src/builds/detect.js";
 import { activeEventFlags, anniversary2018BR, birthday2018, configureEvents, groupMission, hordeFlag, isEventActive, lobbySeason5, passiveStorms,
   roadTrip2018Flag, tomatoRiftEvent, tomatoRiftTell } from "../src/events/events.js";
 import { eventQuests } from "../src/events/fortnitemares.js";
-import { hasLtm, inOriginalWindow, ltmNewMode, ltmOfPlaylist } from "../src/events/ltms.js";
+import { hasLtm, inOriginalWindow, ltmNewMode, ltmOfPlaylist, ltmPlaylistOverrides } from "../src/events/ltms.js";
 import { eventQuestLine } from "../src/events/quests.js";
 import { roadTrip2018, weeklyHordeQuests } from "../src/events/roadtrip2018.js";
 import { tomatoRiftStates } from "../src/events/tomatorift.js";
@@ -15,7 +15,7 @@ import { athenaCosmetics, athenaSeason } from "../src/gamedata/athena.js";
 import { getItem } from "../src/gamedata/items.js";
 import { getQuest } from "../src/gamedata/quests.js";
 import { dataBuild } from "../src/gamedata/read.js";
-import { playlistTeamsOf } from "../src/matchmaking/service.js";
+import { isPartyOnlyBucket, parseBucket, playlistTeamsOf } from "../src/matchmaking/service.js";
 import { buildOfSeason } from "../src/profiles/seasons.js";
 import { eventStoreOffers, eventStorefront } from "../src/store/eventstore.js";
 import { itemShopOffers } from "../src/store/itemshop.js";
@@ -114,6 +114,27 @@ test("5.21's modes: Soaring 50's new, Steady Storm from 7 August, Sniper Shootou
     assert.equal(inOriginalWindow("soaring50s", v521, new Date("2018-08-16T12:00:00Z"), dated), true);
     assert.equal(inOriginalWindow("sniperShootoutV4", v521, new Date("2018-08-22T12:00:00Z"), dated), true);
     assert.equal(inOriginalWindow("soaring50s", v521, new Date("2018-08-24T12:00:00Z"), dated), false);
+  });
+});
+
+// PongooDev/CoreV2#357, #359, #360: the lobby offers each by its switch (Matchmaking's Battle Royale game modes) or, with
+// Original dates on, in its window on Season 5's replay; Soaring 50's always on 5.21. 4.4+ clients' buckets name the
+// playlist (playlist_soaring_50s), which resolves to its id on both builds.
+test("Playground v2, Soaring 50's and Sniper Shootout v4 reach the lobby and their buckets resolve (CoreV2 #357, #359, #360)", () => {
+  assert.deepEqual(ltmPlaylistOverrides(v521, { matchmakingModes: {} }), ["Playlist_Soaring_50s"]);
+  assert.deepEqual(ltmPlaylistOverrides(v521, { matchmakingModes: { playgroundV2: true, sniperShootoutV4: true, sniperShootoutV4Solo: true, sniperShootoutV4Duos: true } }),
+    ["Playlist_Playground", "Playlist_Soaring_50s", "Playlist_Snipers", "Playlist_Snipers_Solo", "Playlist_Snipers_Duos"]);
+  assert.deepEqual(ltmPlaylistOverrides(v510, { matchmakingModes: { playgroundV2: true } }), ["Playlist_Playground", "Playlist_FlyExplosives_Squads"]);
+  for (const [name, id, builds] of [["playlist_soaring_50s", 53, [v521]], ["playlist_snipers", 41, [v521]], ["playlist_snipers_solo", 39, [v521]],
+    ["playlist_snipers_duos", 40, [v521]], ["playlist_playground", 35, [v510, v521]]]) {
+    for (const build of builds) assert.equal(parseBucket(`${build}:0:NAE:${name}`, build).playlistId, id, `${name} on ${build}`);
+  }
+  assert.equal(isPartyOnlyBucket(`${v510}:0:NAE:playlist_playground`, v510), true, "a Playground match is its party's alone");
+  assert.equal(isPartyOnlyBucket(`${v521}:0:NAE:playlist_soaring_50s`, v521), false);
+  withConfig({ mode: "auto", seasonStarts: { 5: "2018-07-12" } }, () => {
+    const dated = { ltmOriginalDates: true, matchmakingModes: {} };
+    assert.deepEqual(ltmPlaylistOverrides(v521, dated, new Date("2018-08-21T12:00:00Z")),
+      ["Playlist_Playground", "Playlist_Soaring_50s", "Playlist_Snipers", "Playlist_Snipers_Solo", "Playlist_Snipers_Duos"]);
   });
 });
 
