@@ -86,6 +86,7 @@ const fortRow = "Theater_Horde_Stonewood_VeryLow";
 // v5.40's "players have no shields" (Challenges/NoShields) and Update v5.41's crowd-control-immune Husks
 // (Challenges/CCImmune), at the same rows, counted by WeekA, WeekB and WeekC; and a third mission generator,
 // MissionGen_WeeklyHordeChallenge_03 (MissionInfo_WeeklyHordeChallenge_03), which they run on (🟡 nothing names its week).
+// 5.41 (CL-4363240) has the same weeks, themes and generators.
 const weeklyGenerator = (week) => generator(`MissionGen_WeeklyHordeChallenge_0${week >= 5 ? 3 : Math.min(week, 2)}`);
 const weeklyNames = { 1: "Minibosses", 2: "Bullet Proof Husks", 3: "Endurance", 4: "Untrappable", 5: "Indestructible", 6: "No Shields", 7: "Unstoppable Husks" };
 const weeklyThemes = { 1: "MiniBossArmy", 2: "RangeImmune", 3: "EnduranceMode", 4: "Untrappable", 5: "Indestructible", 6: "NoShields", 7: "CCImmune" };

@@ -314,6 +314,13 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // tile carries one alert, so 5.40's group missions carry Mega Alerts in place of the group alerts. LobbySeason5, Road
 // Trip and Horde (Update v5.40's Weekly Horde Challenge 5, Content Update v5.40's 6 and Update v5.41's 7: world/horde.js)
 // run on too.
+// 5.41 (CL-4363240, Update v5.41, 18 September 2018). Every EventFlag.* in its paks (the same byte scan, 232,519 of its
+// 249,208 files: a full install, its pakchunk1000 again on a key of its own) is 5.40's, name for name: the Cube's legs,
+// runes, _MoveTo8 and _Destination, and LTM_Heist. So the Cube and High Stakes run on 5.41 by their dates as on 5.40 (High
+// Stakes ended with Update v5.41, 18 September: on Season 5's replay its window is before 5.41's, as the Cube's journey
+// on 5.30 runs past it). Its mission infos are back in its paks, but its DefaultGameData still names no MissionAlerts: its
+// alerts are 5.40's (5.30's rows), and its MissionAlertCategories keeps MegaAlertCategory, so its group missions carry
+// Mega Alerts too. LobbySeason5, Road Trip and Horde (Update v5.41's Weekly Horde Challenge 7: world/horde.js) run on.
 export const blockbuster2018 = "Blockbuster2018";
 export const blockbuster2018Phase1 = "EventFlag.Blockbuster2018Phase1";
 export const blockbuster2018Phase2 = "EventFlag.Blockbuster2018Phase2";
@@ -356,7 +363,7 @@ const build5100 = 4225813;
 const build510 = 4240749;
 const build521 = 4288479;
 const build530 = 4305896;
-const build540 = 4352937;
+const build541 = 4363240;
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
@@ -387,11 +394,11 @@ const events = [
   { name: blockbuster2018, flag: blockbuster2018Phase3, firstBuild: build440, lastBuild: build45 },
   { name: blockbuster2018, flag: blockbuster2018Phase4, firstBuild: build450, lastBuild: build45 },
   { name: blockbuster2018, flag: activeMiniBosses, firstBuild: build40, lastBuild: build45 },
-  { name: passiveStorms, flag: passiveStorms, firstBuild: build40, lastBuild: build540 },
+  { name: passiveStorms, flag: passiveStorms, firstBuild: build40, lastBuild: build541 },
   { name: lobbySeason4, flag: lobbySeason4, firstBuild: build40, lastBuild: build45 },
-  { name: lobbySeason5, flag: lobbySeason5, firstBuild: build500, lastBuild: build540 },
-  { name: roadTrip2018, flag: roadTrip2018Flag, firstBuild: build500, lastBuild: build540 },
-  { name: hordeFlag, flag: hordeFlag, firstBuild: build500, lastBuild: build540 },
+  { name: lobbySeason5, flag: lobbySeason5, firstBuild: build500, lastBuild: build541 },
+  { name: roadTrip2018, flag: roadTrip2018Flag, firstBuild: build500, lastBuild: build541 },
+  { name: hordeFlag, flag: hordeFlag, firstBuild: build500, lastBuild: build541 },
   { name: birthday2018, flag: anniversary2018BR, firstBuild: build5100, lastBuild: build510 },
   { name: birthday2018, flag: birthdayBattleBus, firstBuild: build5100, lastBuild: build510 },
   { name: birthday2018, flag: supplyDropBDay, firstBuild: build5100, lastBuild: build510 },

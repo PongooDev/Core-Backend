@@ -6,7 +6,7 @@ import { isEventActive, roadTrip2018 } from "./events.js";
 
 export { roadTrip2018 };
 
-// Road Trip (5.0, CL-4204761 and CL-4214610, 5.10's two builds, 5.21, 5.30 and 5.40; events.js roadTrip2018), Save the World's first Season 5 event, and with it
+// Road Trip (5.0, CL-4204761 and CL-4214610, 5.10's two builds, 5.21, 5.30, 5.40 and 5.41; events.js roadTrip2018), Save the World's first Season 5 event, and with it
 // Challenge the Horde's return (Core-Backend #298, Update v5.00's notes): "Challenge the Horde is back! Challenge the
 // Horde comes to the desert!", "Reduced the total number of Challenge the Horde missions available on the map from 16 to
 // 9", "Challenge the Horde missions now become unlocked based upon your Storm Shield Defense progression or your Horde Quest
@@ -66,7 +66,9 @@ export const roadTripQuests = [
 // v5.41's "Weekly Horde Challenge 7 ... immune to crowd control effects ... Earn 1500 Gold ... Available Wednesday,
 // September 19th at 8 PM ET" (HordeQuest_Weekly7_*; Challenges/CCImmune, GM_Enemy_CCImmune "Unstoppable Husks"), each
 // repeatable for 75 Road Trip Tickets, counted by Stat.Theater.Weekly.Horde.WeekA, WeekB and (new) WeekC. So 5.40 runs
-// week 5 until 13 September 00:00 UTC, week 6 until 20 September 00:00 UTC and week 7 from then.
+// week 5 until 13 September 00:00 UTC, week 6 until 20 September 00:00 UTC and week 7 from then. 5.41's data (CL-4363240,
+// Update v5.41's build) has the same weeks, quests and stat rows (its mission infos, back in its paks, tag the weeks'
+// missions Stat.Mission.Weekly.Horde.WeekA to WeekC, which no stat row counts), so it runs them by the same dates.
 export const weeklyHordeWeeks = [1, 2, 3, 4, 5, 6, 7];
 export const weeklyHordeQuests = (week) => [`hordequest_hidden_weekly${week}`,
   ...["plankerton", "canny", "twine"].map((zone) => `hordequest_weekly${week}_${zone}1`)];

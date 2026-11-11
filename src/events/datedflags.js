@@ -2,8 +2,8 @@ import { anniversary2018BR, cubeDestination, cubeLake, cubeLightning, cubeMoveTo
   eventsActiveUntil, ltmHeist, riftCorrupt, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
 
 // Season 5's small dated event-flag events, step by step, and the admin's own times for them (Core-Backend #311): 5.21's
-// Tomato Town rift (events/tomatorift.js), 5.30's Cube (events/cube.js; 5.40's too) and 5.40's High Stakes
-// (events/highstakes.js). Each step is one or more calendar events served
+// Tomato Town rift (events/tomatorift.js), 5.30's Cube (events/cube.js; 5.40's and 5.41's too) and 5.40's High Stakes
+// (events/highstakes.js; 5.41's paks keep it). Each step is one or more calendar events served
 // from its start to its end (null: on to the replay's end, or, on the admin's own times, for good). The events config's
 // datedFlags.<event> picks the times:
 // - "dates": Epic's dates on Season 5's replay (store/itemshop.js seasonMoment), lap by lap (the default);
@@ -22,7 +22,8 @@ export const season5EndDay = Date.parse("2018-09-27T00:00:00.000Z");
 
 // The Cube's steps in Epic's time (events/cube.js has the sources): every change at 21:00 UTC, the purple crack from Update
 // v5.30's morning; each leg to a rune runs BR_S5_Cube_StartMove alongside its MoveTo. 5.40's CUBE names the leg to the
-// lake BR_S5_Cube_MoveTo8 and the lake BR_S5_Cube_Destination, served with 5.30's names (each build watches its own).
+// lake BR_S5_Cube_MoveTo8 and the lake BR_S5_Cube_Destination (5.41's too), served with 5.30's names (each build watches
+// its own).
 const at = (day, time = "21:00") => Date.parse(`2018-${day}T${time}:00.000Z`);
 const runeStops = [["08-28", "08-29", "Fatal Fields"], ["09-02", "09-03", "Greasy Grove"], ["09-05", "09-06", "Salty Springs"],
   ["09-07", "09-08", "Retail Row"], ["09-10", "09-11", "Wailing Woods"], ["09-13", "09-14", "Lazy Links"], ["09-16", "09-17", "Pleasant Park"]];
@@ -36,7 +37,7 @@ const cubeLocations = ["spawn", ...runeStops.map((_, index) => `rune${index + 1}
 const cubeLegs = { ...Object.fromEntries(runeStops.map((_, index) => [`moveTo${index + 1}`, `rune${index + 1}`])), moveToLake: "lake" };
 
 export const datedEvents = [
-  { id: "cube", name: "the Cube (5.30 – 5.40)", flag: cubeTurnOn, anchor: "crack", parts: 4, locations: cubeLocations, legs: cubeLegs, steps: [
+  { id: "cube", name: "the Cube (5.30 – 5.41)", flag: cubeTurnOn, anchor: "crack", parts: 4, locations: cubeLocations, legs: cubeLegs, steps: [
     step("crack", "The sky's crack turns purple", [riftCorrupt], at("08-23", "08:00"), closure),
     step("lightning", "Lightning strikes the hill", [cubeLightning], at("08-23"), closure),
     step("spawn", "The Cube appears (the crack closes)", [cubeTurnOn], closure, null),
@@ -49,8 +50,8 @@ export const datedEvents = [
     step("lake", "Sinks into Loot Lake", [cubeLake, cubeDestination], lakeAt, null)
   ] },
   // On the replay the rift is formed from the lap's start (5.21 shipped with it formed) until the head comes out.
-  // High Stakes (5.40, events/highstakes.js): from Update v5.40's morning to Update v5.41's.
-  { id: "highStakes", name: "High Stakes (5.40)", flag: ltmHeist, anchor: "challenges", parts: 1, challenges: "Schedule_LTM_Heist", steps: [
+  // High Stakes (5.40, events/highstakes.js; 5.41's paks keep it): from Update v5.40's morning to Update v5.41's.
+  { id: "highStakes", name: "High Stakes (5.40 – 5.41)", flag: ltmHeist, anchor: "challenges", parts: 1, challenges: "Schedule_LTM_Heist", steps: [
     step("challenges", "The High Stakes Challenges", [ltmHeist], Date.parse("2018-09-06T08:00:00.000Z"), Date.parse("2018-09-18T08:00:00.000Z"))
   ] },
   // The Birthday Challenges (5.10, Schedule_Birthday2018_BR, events/birthday2018.js; 5.21's paks keep them): the Fortnite

@@ -45,14 +45,14 @@ const withConfig = (config, run) => {
 };
 const at = (iso) => new Date(iso);
 
-test("5.40 is known by its version, plays on its own data and is Season 5's newest", () => {
+test("5.40 is known by its version and plays on its own data", () => {
   assert.equal(versionOf(v540), "5.40");
   assert.equal(dataBuild(v540), v540);
   assert.ok(buildChoices().includes(v540));
   assert.equal(allowedBuildList(["5.40"]).join(), v540);
   assert.equal(dataBuild("4330000"), v530, "a build between 5.30 and 5.40 Core doesn't know plays on 5.30's");
-  assert.equal(buildOfSeason(5), v540);
-  assert.equal(seasonName(5), "Season 5 (5.0 – 5.40)");
+  assert.equal(buildOfSeason(5), "4363240", "Season 5's newest data is 5.41's now (build541.test.js)");
+  assert.equal(seasonName(5), "Season 5 (5.0 – 5.41)");
   const season = inBuild(v540, athenaSeason);
   assert.deepEqual([season.seasonNumber, season.numBookLevels, season.storefront], [5, 100, "BRSeason5"]);
 });
@@ -202,8 +202,8 @@ test("5.40's shop: Season 5's history sells 5.40's cosmetics on 5.40 with their 
   const history = JSON.parse(fs.readFileSync(new URL("../src/store/itemshop-season5.json", import.meta.url), "utf8")).days;
   const c540 = inBuild(v540, athenaCosmetics);
   const c530 = inBuild(v530, athenaCosmetics);
-  const sold = new Set(history.flatMap((day) => [...day.featured, ...day.daily].map(([id]) => id)));
-  assert.ok([...sold].every((id) => c540[id]), "only 5.40's cosmetics");
+  // The history keeps 5.41's too (build541.test.js); 5.40 sells only its own.
+  const sold = new Set(history.flatMap((day) => [...day.featured, ...day.daily].map(([id]) => id)).filter((id) => c540[id]));
   assert.equal([...sold].filter((id) => !c530[id]).length, 19);
   assert.equal(history.find((day) => [...day.featured, ...day.daily].some(([id]) => id === "AthenaCharacter:cid_206_athena_commando_m_bling")).date, "2018-09-07");
   // 7 September 2018 is the season's day 58: with the season from 27 September 2026, 23 November 2026.

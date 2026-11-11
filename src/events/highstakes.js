@@ -16,7 +16,9 @@ import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 // Getaway LTM has switched back to Squads. Call the crew and complete those challenges now before High Stakes ends next
 // week with the update", Update v5.41 (18 September). So the flag runs from Update v5.40's morning to Update v5.41's (🟡
 // the hours are Core's: 08:00 UTC, 4 AM ET, as the Cube's purple crack from Update v5.30's; the wiki's "to September 11th"
-// is the challenges' first end, which the tweet outlasts). The Getaway's own windows are events/ltms.js's.
+// is the challenges' first end, which the tweet outlasts). The Getaway's own windows are events/ltms.js's. 5.41 (CL-4363240)
+// keeps the schedule and the flag in its paks: on Season 5's replay its window is before 5.41's release, as the Cube's
+// journey on 5.30 runs past 5.30's, and the admin's own times or switch serve it whenever.
 //
 // On Season 5's replay (store/itemshop.js seasonMoment) the window is mapped to real time lap by lap, as the Cube's; the
 // admin panel can set its own times instead, or take it off (events/datedflags.js), or switch the flag on or off
@@ -24,7 +26,7 @@ import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 export const highStakesEvent = datedEvent("highStakes");
 
 // The flag's calendar events as parts [{validFrom (ms), events: [{eventType, activeSince, activeUntil}]}], from the part
-// that holds now on, as events/cube.js's: on 5.40 with the seasonal events on, in the Automatic mode. A flag the admin
+// that holds now on, as events/cube.js's: on 5.40 and 5.41 with the seasonal events on, in the Automatic mode. A flag the admin
 // switched on is served always (season4Overrides) and one switched off never, so neither is scheduled here.
 export function highStakesStates(now = new Date(), changelist = currentBuild(), config = currentEventsConfig()) {
   const entry = season4Flag(highStakesEvent.flag);

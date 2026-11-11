@@ -33,12 +33,13 @@ import { newsImageUrl } from "./images.js";
 // High Explosives', Close Encounters', Solo Showdown's and Final Fight's are the tiles Epic's later page (its
 // playlistinformation, same copy) names for them. The Getaway's (Playlist_Bling_*) is that page's tile for the same
 // playlists, High Stakes' (the mode's return under that name), with its HighStakes border: 5.40's own tile of September 2018
-// is neither on Epic's CDN nor in any copy of its pages that could be found. Sky Supply and Impact never ran (Epic made no
+// is neither on Epic's CDN nor in any copy of its pages that could be found. 5.41's Soaring Solos, Duos and Squads
+// (Playlist_Soaring_Solo, _Duos, _Squads) take Soaring 50's tile, as that later page names it for all three. Sky Supply and Impact never ran (Epic made no
 // tile for either), so they keep the default picture unless the host sets one.
 // The admin panel's News page sets a playlist's own picture (settings playlistImages {playlistName: image}): an http(s) URL
 // or a PNG/JPEG uploaded as the news pictures are (images.js), served here.
 export const playlistImagesBuild = 4039451;
-// The first build that reads playlistinformation, not playlistimages: 5.40.
+// The first build that reads playlistinformation, not playlistimages: 5.40 (5.41's exe reads it too).
 export const playlistInformationBuild = 4352937;
 
 const cdn = "https://cdn2.unrealengine.com/Fortnite/fortnite-game";
@@ -101,7 +102,10 @@ export const epicPlaylistImages = {
   Playlist_50v50SAU: solidGoldTile,
   Playlist_Bling_Squads: highStakesTile,
   Playlist_Bling_Duos: highStakesTile,
-  Playlist_Bling_Solo: highStakesTile
+  Playlist_Bling_Solo: highStakesTile,
+  Playlist_Soaring_Solo: soaringFiftiesTile,
+  Playlist_Soaring_Duos: soaringFiftiesTile,
+  Playlist_Soaring_Squads: soaringFiftiesTile
 };
 
 // The border Epic's page gave a playlist's tile (playlistinformation special_border, 5.40 on): The Getaway's High Stakes one.

@@ -43,8 +43,8 @@ test("5.21 is known by its version and plays on its own data", () => {
   assert.ok(buildChoices().includes(v521));
   assert.equal(allowedBuildList(["5.21"]).join(), v521);
   assert.equal(dataBuild("4260000"), v510, "a build between 5.10 and 5.21 Core doesn't know plays on 5.10's");
-  assert.equal(buildOfSeason(5), "4352937", "Season 5's newest data is 5.40's now (build540.test.js)");
-  assert.equal(seasonName(5), "Season 5 (5.0 – 5.40)");
+  assert.equal(buildOfSeason(5), "4363240", "Season 5's newest data is 5.41's now (build541.test.js)");
+  assert.equal(seasonName(5), "Season 5 (5.0 – 5.41)");
   const season = inBuild(v521, athenaSeason);
   assert.deepEqual([season.seasonNumber, season.numBookLevels, season.storefront], [5, 100, "BRSeason5"]);
 });

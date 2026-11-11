@@ -218,6 +218,15 @@ export function profileRoutes(context) {
     requireAuth(context.tokens), requireDedicatedServer, requireExistingAccount(context), waitForEarnScore(context),
     runCommand(serverCommands, context, { deliverScores: true, locks: context.locks, notify: true }));
 
+  // The profile token check (5.41, CL-4363240: UFortOnlineAccount's VerifyProfileToken, 0x10B37D0, through the MCP's
+  // authed request): POST profileToken/verify/<accountId>, application/json, FVerifyProfileTokenPayload {profileTokens:
+  // {name: value}}. 5.41 sends it when its app environment check fails (code 4, 0x12F6770: the profile's version,
+  // migrationType, class and progressHash), before it closes. Its handler (0x10B41C0) takes a 204, or a 2xx JSON body
+  // without an errorCode, as verified, and only logs anything else ("profile token not found" was the backend's 404).
+  // Core keeps no profile tokens, so every one is fine.
+  router.post("/fortnite/api/game/v2/profileToken/verify/:accountId", requireAuth(context.tokens), requireOwnAccount,
+    (req, res) => res.status(204).end());
+
   // The client's DevSkipTutorial cheat posts here.
   router.post("/fortnite/api/admin/account/:accountId/:profileId/command/:command",
     requireLoopback, requireAuth(context.tokens), requireOwnAccount, runCommand(adminCommands, context));

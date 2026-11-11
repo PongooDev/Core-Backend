@@ -178,7 +178,15 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   `5.40-CL-4352937\Fortnite`) with 5.30's full data (Cert's files with `gamedata/4305896` applied) as the fifth argument, and
   the main key FModel's settings hold for its build folder (no extractor change). Its install has Save the World, but only
   one of the 57 mission infos its generators name (56 come from the fifth argument) and no MissionAlerts (24 alerts and 4
-  storm spreads from it); its `pakchunk1000` is on a key of its own and isn't read.
+  storm spreads from it); its `pakchunk1000` is on a key of its own and isn't read. 5.41's (CL-4363240, UE 4.21, Update
+  v5.41's build) is `4.21.0-4363240+++Fortnite+Release-5.41` (no `Build.version`; the build folder is
+  `5.41-CL-4363240\Fortnite`) with 5.40's full data (Cert's files with `gamedata/4352937` applied) as the fifth argument, and
+  the main key FModel's settings hold for its build folder (no extractor change). Its install is a full one: all 57 mission
+  infos its generators name are in its paks (the weekly Horde ones now tagged Stat.Mission.Weekly.Horde.WeekA to WeekC), but
+  its DefaultGameData still names no MissionAlerts (24 alerts and 4 storm spreads from the fifth argument); its
+  `pakchunk1000` is on a key of its own and isn't read. Against 5.40 it adds 7 cosmetics (Valkyrie, Valkyrie Wings and
+  Frostwing, Nite Nite, Balloon Llama and Battle Balloon, and Grill Sergeant, which 5.40's readable paks lack), their
+  heroes, Battle Royale's loot tables and Season 5's cumulative quests in `season.removedAtSeasonEnd`.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

@@ -2139,7 +2139,7 @@
       { id: "2", label: "Season 2 (1.11 – 2.5)", from: "1.11+", days: 70 },
       { id: "3", label: "Season 3 (3.0 – 3.6)", from: "3.0+", days: 68 },
       { id: "4", label: "Season 4 (4.0 – 4.5)", from: "4.0+", days: 72 },
-      { id: "5", label: "Season 5 (5.0 – 5.40)", from: "5.0+", days: 77 }
+      { id: "5", label: "Season 5 (5.0 – 5.41)", from: "5.0+", days: 77 }
     ];
     const seasonOf = (id) => SEASONS.find((entry) => entry.id === String(id)) ?? SEASONS[0];
     const seasonRoute = (accountId) => SEASONS.find((entry) => accountId === `season${entry.id}` || accountId === entry.id)?.id ?? null;
@@ -7384,7 +7384,9 @@
         b.flags.length
           ? el("div", { style: "display:flex; gap:4px; flex-wrap:wrap;" }, b.flags.map((f) => chip(f, "accent")))
           : el("span", { class: "muted", text: "None (Base game)" }),
-        el("span", { class: "muted", text: b.version.startsWith("5.40")
+        el("span", { class: "muted", text: b.version.startsWith("5.41")
+          ? "Soaring Solos, its new mode, and Close Encounters; the Getaway and the High Stakes Challenges by their switches and dates; the Cube's runes and Loot Lake by their dates; Save the World's Weekly Horde Challenge 7 and the Bowler in the Weekly Store, with Road Trip and Challenge the Horde"
+          : b.version.startsWith("5.40")
           ? "High Stakes: the Getaway LTM and the High Stakes Challenges (6 to 18 September); the Cube's runes and Loot Lake by their dates; Save the World's Weekly Horde Challenges 5 to 7, the Wraith and the Bowler in the Weekly Store and Harvester Fiona in the Event Store, with Road Trip and Challenge the Horde"
           : b.version.startsWith("5.30")
           ? "The Cube: the purple crack and its lightning (23 August), Kevin from 24 August, its seven runes and Loot Lake by their dates; Save the World's Weekly Horde Challenges 3 and 4, the Bundlebuss in the Weekly Store and Bladestorm Enforcer in the Event Store, with Road Trip and Challenge the Horde"
@@ -7591,7 +7593,7 @@
         if (await act(api("/admin/api/events/flags", payload), message)) showEvents();
       };
       const s4Range = ([first, last]) => {
-        const names = { 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4204761: "5.0", 4214610: "5.0", 4225813: "5.10", 4240749: "5.10", 4288479: "5.21", 4305896: "5.30", 4352937: "5.40" };
+        const names = { 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4204761: "5.0", 4214610: "5.0", 4225813: "5.10", 4240749: "5.10", 4288479: "5.21", 4305896: "5.30", 4352937: "5.40", 4363240: "5.41" };
         return first === last ? names[first] : `${names[first] || first} – ${names[last] || last}`;
       };
       const odditiesLabels = { off: "Off: the rifts wait (switch them below by hand)", launch: "After the rocket launch: Epic's days, counted from the admin's launch time", dates: "Epic's dates (30 June – 10 July) on Season 4's replay", custom: "My own times (set below)" };
@@ -7618,7 +7620,7 @@
         el("div", { style: "display:flex; gap:8px; margin-top:6px;" },
           el("button", { class: "btn small", text: "Save these times", onclick: () => s4Action({ schedule: riftInputs.map((row) => ({ number: row.number, tellAt: toIso(row.tell.value), eventAt: toIso(row.event.value) })) }, "Rift times saved") }),
           el("button", { class: "btn ghost small", text: "Clear my times", onclick: () => s4Action({ schedule: null, oddities: s4.oddities === "custom" ? "off" : s4.oddities }, "Rift times cleared") })));
-      // Season 5's dated event-flag events (events/datedflags.js, Core-Backend #311): 5.21's Tomato Town rift, 5.30's Cube, and the event challenges (5.10's Birthday and 5.40's High Stakes, #316),
+      // Season 5's dated event-flag events (events/datedflags.js, Core-Backend #311): 5.21's Tomato Town rift, 5.30's Cube, and the event challenges (5.10's Birthday and 5.40's and 5.41's High Stakes, #316),
       // each on Epic's dates on the replay, the admin's own times (step by step, or every step at Epic's spacing from one
       // step's start) or off.
       const dated = data.datedFlags || { modes: ["dates", "custom", "off"], events: [] };
@@ -7651,7 +7653,7 @@
               if (await act(api("/admin/api/events/dated-flags/roll", { event: event.id }), (res) => `The Cube rolls on: ${res.label}`)) showEvents();
             } }),
             el("button", { class: "btn ghost small", text: "Back to Epic's dates", onclick: () => datedAction({ event: event.id, schedule: null, mode: "dates" }, `${event.name}: Epic's dates`) })),
-          el("div", { class: "muted", style: "font-size:12px; margin-top:4px;", text: "Puts the Cube at its next location now (its hill, then each rune, then Loot Lake) and keeps it there until you roll it again; this switches it to My own times. Matches running on 5.30 or 5.40 pick it up within 5 seconds: the Cube rolls onto the rune (its last roll, not the whole way there) and prints it. New matches start with it there. Loot Lake: 5.40 rolls it into the lake; 5.30's paks have no lake sequence, so there it stays put and the next match starts it on its hill." })) : null;
+          el("div", { class: "muted", style: "font-size:12px; margin-top:4px;", text: "Puts the Cube at its next location now (its hill, then each rune, then Loot Lake) and keeps it there until you roll it again; this switches it to My own times. Matches running on 5.30, 5.40 or 5.41 pick it up within 5 seconds: the Cube rolls onto the rune (its last roll, not the whole way there) and prints it. New matches start with it there. Loot Lake: 5.40 and 5.41 roll it into the lake; 5.30's paks have no lake sequence, so there it stays put and the next match starts it on its hill." })) : null;
         return el("div", { style: "margin-top:12px;" },
           el("div", { style: "font-weight:700; font-size:12px;", text: event.challenges ? `${event.name[0].toUpperCase()}${event.name.slice(1)} (${event.challenges}):` : `When ${event.name} happens:` }),
           rollBox,
@@ -7687,19 +7689,19 @@
             ...((event.modes || []).includes("build") ? [el("button", { class: "btn ghost small", text: "Back to the build's own", onclick: () => datedAction({ event: event.id, schedule: null, mode: "build" }, `${event.name}: the build's own`) })] : [])));
       };
       const datedEditors = dated.events.filter((event) => !event.challenges).map(datedEditor);
-      // The Battle Royale event challenges (Core-Backend #316): 5.10's Birthday Challenges and 5.40's High Stakes Challenges,
+      // The Battle Royale event challenges (Core-Backend #316): 5.10's Birthday Challenges and 5.40's (and 5.41's) High Stakes Challenges,
       // each on or off and when (events/datedflags.js).
       const challengeEvents = dated.events.filter((event) => event.challenges);
       const challengesContainer = challengeEvents.length ? el("div", {
         style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
       },
-        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "Event challenges (5.10 – 5.40):" }),
+        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "Event challenges (5.10 – 5.41):" }),
         el("div", { class: "muted", style: "font-size:12px; margin-bottom:4px;", text: "Battle Royale's event challenges: each is given at a player's next quest login while it is on, and the challenges tab counts down to its end. Off, or outside its times, it isn't given and its event flag isn't served. Challenges a player already has stay in their profile, with their progress. These work in the Automatic mode; the flag's switch in the Season 4 and 5 event flags below still overrides it." }),
         ...challengeEvents.map(datedEditor)) : null;
       const season4Container = el("div", {
         style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
       },
-        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "Season 4 and 5 event flags (4.0 – 5.40):" }),
+        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "Season 4 and 5 event flags (4.0 – 5.41):" }),
         el("div", { class: "muted", style: "font-size:12px; margin-bottom:8px;", text: "Every EventFlag.* in Season 4's paks. Automatic serves what the build served in its day; On or Off overrides it on the builds whose paks have the flag (in the Automatic mode). The rocket's flags follow the Rocket Launch above. Clients pick a change up at their next calendar fetch; running gameservers within 5 seconds." }),
         ...s4.groups.map((group) => el("div", { style: "margin-top:10px;" },
           el("div", { style: "font-weight:700; font-size:12px; margin-bottom:4px;", text: group.name + (group.managedBy ? " (by the Rocket Launch's time)" : "") }),

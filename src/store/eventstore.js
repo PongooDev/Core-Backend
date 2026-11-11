@@ -222,7 +222,8 @@ export const spring2018End = "2018-02-22T00:00:00.000Z";
 // "Bowler Flintlock Launcher added to the Weekly Store ... Available Wednesday, September 19 at 8 PM ET until Wednesday,
 // September 26 at 8 PM ET" (the Flintlock Launcher, SID_Launcher_Flintlock_SR_Ore_T01, Road Trip's since 5.0): each in its
 // week on Season 5's replay (store/itemshop.js seasonMoment; from 13 and 20 September 00:00 UTC), the Bundlebuss before
-// them, at the same price and limit (🟡 as the Bundlebuss's). The Bowler leaves Road Trip's event items in its week.
+// them, at the same price and limit (🟡 as the Bundlebuss's). The Bowler leaves Road Trip's event items in its week. 5.41
+// (CL-4363240, Update v5.41's build, whose notes name the Bowler) keeps 5.40's weeks.
 const weeklyFeaturedByBuild = [
   { firstBuild: 4352937, weeks: [
     { from: "2018-09-20T00:00:00.000Z", items: [{ templateId: "Schematic:sid_launcher_flintlock_sr_ore_t01", price: 1680, limit: 1 }] },

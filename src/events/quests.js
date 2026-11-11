@@ -24,7 +24,7 @@ import { winterQuests } from "./winter2017.js";
 // quests (WinterQuest_2017_*); 2.3's storms' the FirstStorm quests and the repeatable Mini-Boss quest, which so stays
 // on 2.3 when the rest of the winter line goes; 2.4's (and 2.4.2's) its own MutantStormsQuest_2018 line; 2.5's Spring It
 // On! the LoveQuest_2018 and SpringQuest_2018 chains it starts; 3.5.1's Into the Storm the StormQuest_2018 quests; 4.0's Blockbuster the BlockbusterQuest_2018 quests;
-// 5.0's Road Trip the HordeQuest progression and its hidden zone gates (and 5.21's to 5.40's Weekly Horde Challenges', events/roadtrip2018.js); 5.10's Birthday its two
+// 5.0's Road Trip the HordeQuest progression and its hidden zone gates (and 5.21's to 5.41's Weekly Horde Challenges', events/roadtrip2018.js); 5.10's Birthday its two
 // AnniversaryQuest_2018 quests (events/birthday2018.js).
 // A function: roadtrip2018.js reads Season 5's replay clock (store/itemshop.js), whose imports come back here.
 const questLines = () => [{ flag: fortnitemares, starting: fortnitemaresQuests }, { flag: mutantStorms, starting: mutantStormsQuests },

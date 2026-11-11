@@ -1231,9 +1231,10 @@ export function adminRoutes(context) {
     // (Jumpshot, Scoundrel, the World Cup outfits, Omen, Fate...), now 4.5's (CL-4166199): 4.5's too (Vertex, Gumshoe,
     // Criterion, Oblivion...). Season 5's as 5.30's (CL-4305896): 5.0's cosmetics, 5.10's (Reef Ranger, Wreck Raider,
     // Maverick, Shade, Sun Tan Specialist, Archetype...), 5.20's and 5.21's (Beef Boss, Mullet Marauder, Overtaker,
-    // Sushi Master, the P.A.N.D.A Team Leader...), 5.30's (Musha and Hime, Ravage, Backbone and Chopper...) and 5.40's
-    // (Wild Card, Field Surgeon, Hacivat, Stage Slayer...).
-    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4166199", 5: "4352937" }[s];
+    // Sushi Master, the P.A.N.D.A Team Leader...), 5.30's (Musha and Hime, Ravage, Backbone and Chopper...), 5.40's
+    // (Wild Card, Field Surgeon, Hacivat, Stage Slayer...) and, now 5.41's (CL-4363240), 5.41's (Valkyrie, Nite Nite, Grill
+    // Sergeant, Frostwing).
+    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4166199", 5: "4363240" }[s];
     const offers = inBuild(build, () => itemShopOffers(now, config, s));
     const cosmetics = inBuild(build, () => eligibleCosmetics());
     const currentDay = shopDay(now, config, s);
@@ -1339,7 +1340,8 @@ export function adminRoutes(context) {
       { version: "5.10", cl: 4240749, event: "Birthday" },
       { version: "5.21", cl: 4288479, event: "Season 5" },
       { version: "5.30", cl: 4305896, event: "Season 5" },
-      { version: "5.40", cl: 4352937, event: "High Stakes" }
+      { version: "5.40", cl: 4352937, event: "High Stakes" },
+      { version: "5.41", cl: 4363240, event: "Season 5" }
     ];
 
     const sampleBuilds = builds.map((b) => ({
@@ -1490,8 +1492,8 @@ export function adminRoutes(context) {
         {
           id: "roadtrip2018",
           name: "Road Trip",
-          subtitle: "Challenge the Horde in the desert: nine Horde zones opened by Storm Shield Defense or Horde quest progression, Horde alerts with Road Trip Tickets and Horde Points, the Horde Skill Tree, the Horde progression quests (Wild West heroes, banners), the Road Trip Llama and the Event Store's Flintlock weapons; on 5.21 the Weekly Horde Challenge (Bullet Proof Husks) and Ragnarok and Machinist Thora in the Event Store; on 5.30 Weekly Horde Challenges 3 (Endurance) and 4 (Untrappable), the Bundlebuss in the Weekly Store and Bladestorm Enforcer in the Event Store; on 5.40 Weekly Horde Challenges 5 to 7 (Indestructible, No Shields, Unstoppable Husks), the Wraith and the Bowler in the Weekly Store and Harvester Fiona in the Event Store",
-          buildRange: "5.0 – 5.40 (CL 4204761 – 4352937)",
+          subtitle: "Challenge the Horde in the desert: nine Horde zones opened by Storm Shield Defense or Horde quest progression, Horde alerts with Road Trip Tickets and Horde Points, the Horde Skill Tree, the Horde progression quests (Wild West heroes, banners), the Road Trip Llama and the Event Store's Flintlock weapons; on 5.21 the Weekly Horde Challenge (Bullet Proof Husks) and Ragnarok and Machinist Thora in the Event Store; on 5.30 Weekly Horde Challenges 3 (Endurance) and 4 (Untrappable), the Bundlebuss in the Weekly Store and Bladestorm Enforcer in the Event Store; on 5.40 and 5.41 Weekly Horde Challenges 5 to 7 (Indestructible, No Shields, Unstoppable Husks), the Wraith and the Bowler in the Weekly Store and Harvester Fiona in the Event Store",
+          buildRange: "5.0 – 5.41 (CL 4204761 – 4363240)",
           flags: ["EventFlag.RoadTrip2018", "EventFlag.Horde", "EventFlag.LobbySeason5"],
           theater: "Challenge the Horde (Fort Setup and nine zones, 9 to 76 power; on 5.21 four Weekly Horde Challenge zones, from 5.30 a Weekly Horde Challenge theater of its own)",
           theaterRegions: [],

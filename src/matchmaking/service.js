@@ -143,6 +143,13 @@ const playlistTeamsFrom540 = {
   142: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }
 };
 const playlistTeams540Build = 4352937;
+// 5.41's (CL-4363240) Soaring Solos, Playlist_Soaring_Solo, _Duos and _Squads (185, 186, 187: 100 teams of 1, 2 and 4).
+const playlistTeamsFrom541 = {
+  185: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  186: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  187: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }
+};
+const playlistTeams541Build = 4363240;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).
 export const teamSquadsOptionBuild = 3915963;
 // The first build whose client sends player.option.fillTeam only as "true" (Fill), leaving it out for No Fill: its
@@ -280,6 +287,7 @@ export const playlistTeamsOf = (bucketId, build = null) => teamsOfPlaylist(parse
 // The same by playlist id: what the match results' V-Bucks read a limited-time playlist's mode from (CoreV2 #294).
 export const teamsOfPlaylist = (playlistId, build = null) => {
   if (playlistId === shootingTestPlaylist) return shootingTestTeams(build ?? 3870737);
+  if (Number(build) >= playlistTeams541Build && playlistTeamsFrom541[playlistId]) return playlistTeamsFrom541[playlistId];
   if (Number(build) >= playlistTeams540Build && playlistTeamsFrom540[playlistId]) return playlistTeamsFrom540[playlistId];
   if (Number(build) >= playlistTeams530Build && playlistTeamsFrom530[playlistId]) return playlistTeamsFrom530[playlistId];
   if (Number(build) >= playlistTeams510Build && playlistTeamsFrom510[playlistId]) return playlistTeamsFrom510[playlistId];
