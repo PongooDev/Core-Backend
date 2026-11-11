@@ -37,7 +37,7 @@ const cubeLocations = ["spawn", ...runeStops.map((_, index) => `rune${index + 1}
 const cubeLegs = { ...Object.fromEntries(runeStops.map((_, index) => [`moveTo${index + 1}`, `rune${index + 1}`])), moveToLake: "lake" };
 
 export const datedEvents = [
-  { id: "cube", name: "the Cube (5.30 – 5.41)", flag: cubeTurnOn, anchor: "crack", parts: 4, locations: cubeLocations, legs: cubeLegs, steps: [
+  { id: "cube", name: "the Cube (5.30 – 5.41)", flag: cubeTurnOn, anchor: "crack", parts: 4, locations: cubeLocations, legs: cubeLegs, spawn: "spawn", steps: [
     step("crack", "The sky's crack turns purple", [riftCorrupt], at("08-23", "08:00"), closure),
     step("lightning", "Lightning strikes the hill", [cubeLightning], at("08-23"), closure),
     step("spawn", "The Cube appears (the crack closes)", [cubeTurnOn], closure, null),
@@ -223,8 +223,31 @@ export function datedRollSchedule(event, steps, nowMs) {
   return validDatedSchedule(event, [...kept, { step: next, startAt: at, endAt: null }]);
 }
 
+// The Cube's appearing, the Crack Closure (Core-Backend #295; events/cube.js has how 5.30 plays it): every step at Epic's
+// spacing from its appearing at spawnAtMs, as the admin's own times. The game's sequence counts to the lightning's end,
+// which is the appearing: the crack is purple and the lightning on from a day and a half and a day before, so a match
+// within the last hour sees the strikes, the final bolt from 20 seconds before and the Cube at the end; rune 1 four days
+// after. Null for an event without one.
+export const spawnLeadSeconds = 30;
+export const minSpawnLeadSeconds = 25;
+const spawnStrikesMs = 3600000;
+export function datedSpawnSchedule(event, spawnAtMs) {
+  if (!event.spawn || !Number.isFinite(spawnAtMs)) return null;
+  return shiftedDatedSchedule(event, { startAt: iso(spawnAtMs), step: event.spawn, scale: 1 });
+}
+
+// When it appears on its times now and Epic's: {at (null: not served), original, phase}, the phase "unscheduled",
+// "scheduled", "lightning" (its last hour: the strikes and the final bolt) or "spawned".
+export function datedSpawnStatus(event, steps, nowMs) {
+  const own = steps.find(({ step }) => step === event.spawn);
+  const at = own.current?.startAt ?? null;
+  const ms = at === null ? null : Date.parse(at);
+  const phase = ms === null ? "unscheduled" : nowMs < ms - spawnStrikesMs ? "scheduled" : nowMs < ms ? "lightning" : "spawned";
+  return { at, original: own.original.startAt, phase };
+}
+
 // The admin panel's view of each event: its mode and each step's Epic date, its times on the replay's lap now, the
-// admin's own times and the times it runs at now (by the mode); the Cube's place too.
+// admin's own times and the times it runs at now (by the mode); the Cube's place and its appearing too.
 export function datedFlagsStatus(nowMs, momentNowMs, config) {
   const settings = datedSettings(config);
   return {
@@ -243,7 +266,8 @@ export function datedFlagsStatus(nowMs, momentNowMs, config) {
       return {
         id: event.id, name: event.name, mode: setting.mode, modes: datedModesOf(event), challenges: event.challenges ?? null,
         anchor: event.anchor, schedule: setting.schedule, steps,
-        place: event.locations ? datedPlace(event, steps, nowMs) : null
+        place: event.locations ? datedPlace(event, steps, nowMs) : null,
+        spawn: event.spawn ? datedSpawnStatus(event, steps, nowMs) : null
       };
     })
   };

@@ -35,6 +35,33 @@ import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 // 12 July to 27 September), as events/tomatorift.js's; the admin panel can set its own times instead, step by step or from
 // one step at Epic's spacing, or take the Cube off (events/datedflags.js, Core-Backend #311), or roll it to its next
 // location now and hold it there (datedRollSchedule, Core-Backend #322: how a running match rolls it is there).
+//
+// The appearing, the Crack Closure (Core-Backend #295: the admin panel's "Spawn the Cube now", datedSpawnSchedule). 5.30's
+// paks script it from the end of EventFlag.BR_S5_Cube_Lightning; no level sequence plays it (5.30's CUBE and
+// BP_Athena_Event_Components, as served in its pakchunkCoreServerAssets pak; the placed actors are Athena_GameplayActors'):
+// - BP_Athena_Event_Components (on the server, from the match's start: OnHandleMatchHasStarted, then a second) watches
+//   the lightning. On OnEventActive and OnEventUpdated it keeps TotalTimeEvent (TimeSinceBegin + TimeUntilEnd) and, only
+//   when TimeUntilEnd is at most MinutesOfFinalLightning (0.25) + 60 minutes, sets EnableFinalLightning for
+//   TimeUntilEnd - 15 s - LightningWarmupTime (5 s) and DisableFinalLightning 18 s after it, and DoLighting for the next
+//   strike (CalculateTimeToNextStrike: CountdownFrequency 60, 30, 15, 7.5 then 3 minutes by the part of TotalTimeEvent
+//   gone, CountdownTiming 0, 0.2, 0.4, 0.6, 0.8, on the minutes left that are a multiple of it). Further from the end it
+//   only works out which cacti earlier strikes took (CactusHitIndex). Each strike is SingleLightning (NetMulticast):
+//   5 seconds' warm-up on LightningStrikePoints[n] (the hill), then the bolt (strength 3, a beam, in the last 30
+//   minutes). EnableFinalLightning sets FinalLightningActive (replicated): its bolt 4 on the hill's centre, a 15-second
+//   beam (CubeAppearEffects' LightingStrikeEffects, 12.5 s, launching players near it), and 12.5 s after it strikes,
+//   on each client, the rift closes (CentralCrack hidden, P_Geode_Rift_Close, Crack_EndEvent_Start_Cue).
+// - CUBE (on the server, from the match's start: TurnOn's and _Lake's watchers at once, the lightning's 2 s later)
+//   on the lightning's OnEventActive (not OnEventUpdated), with under 60 minutes to its end: SetSpecificTimeOfDay so
+//   that it is SpawnTimeOfDay (3:30, night) at the end, and SpawnCube TimeUntilEnd - CubeAppearEffectTime (2.5 s) on,
+//   which plays CubeSpawnEffect (NetMulticast: P_Cube_Spawn and Cube_Spawn_Cue on its hill, Steps[0]) and 2.5 s later
+//   TurnOn: PathIndex 0, CubeVisibleWithCollision (OnRep_CubeHidden: CubeAppear's glow) and CubeTurnedOn.
+//   BR_S5_Cube_TurnOn turning on does the same at once unless SpawnCube's timer is still running.
+// So the lightning's end is the appearing, and _TurnOn (and the first leg) start there. A running match sees the
+// change within 5 seconds (CoreV2's calendar revision) as the lightning newly on, so the appearing must be over 20
+// seconds away (the final bolt's warm-up) and under an hour (CUBE's limit): the panel's "now" is 30 seconds. A match
+// where the lightning was already on gets OnEventUpdated, which CUBE ignores (the Cube then appears without its spawn
+// effect at _TurnOn), and one whose Cube is out already keeps it. 5.40's and 5.41's CUBE watch no lightning and set no
+// SpawnCube timer, and their paks have neither flag of the crack: _TurnOn alone puts the Cube on its hill there.
 export const cubeEvent = datedEvent("cube");
 export const cubeSchedule = cubeEvent.steps.flatMap(({ flags, start, end }) => flags.map((eventType) => ({ eventType, start, end: end ?? season5EndDay })));
 

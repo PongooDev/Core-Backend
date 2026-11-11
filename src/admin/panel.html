@@ -7689,6 +7689,30 @@
             ...((event.modes || []).includes("build") ? [el("button", { class: "btn ghost small", text: "Back to the build's own", onclick: () => datedAction({ event: event.id, schedule: null, mode: "build" }, `${event.name}: the build's own`) })] : [])));
       };
       const datedEditors = dated.events.filter((event) => !event.challenges).map(datedEditor);
+      // 5.30's Crack Closure, the Cube appearing (events/cube.js, Core-Backend #295): when it appears, on the Cube's times.
+      const cubeDated = dated.events.find((event) => event.id === "cube");
+      const cubeSpawn = cubeDated?.spawn;
+      const spawnPhases = { unscheduled: "Off: the Cube isn't served", scheduled: "Scheduled: the crack is purple", lightning: "Lightning strikes the hill (its last hour)", spawned: "The Cube is out" };
+      const spawnAtInput = el("input", { class: "field", type: "datetime-local", "aria-label": "The Cube appears at", value: toLocalInput(cubeSpawn?.at) });
+      const spawnAction = async (payload, message) => {
+        if (await act(api("/admin/api/events/dated-flags/spawn", { event: "cube", ...payload }), message)) showEvents();
+      };
+      const cubeSpawnContainer = cubeSpawn ? el("div", {
+        style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
+      },
+        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "5.30 The Cube Spawns, Crack Closure (Battle Royale):" }),
+        el("div", { class: "muted", style: "font-size:12px; margin-bottom:6px;", text: `5.30 plays it from the calendar's EventFlag.BR_S5_Cube_Lightning: in its last hour the crack's lightning strikes the hill by Paradise Palms every few minutes; 20 seconds before its end the final bolt warms up and strikes for 15 seconds, night falls, the rift closes, and the Cube appears as it ends (EventFlag.BR_S5_Cube_TurnOn from then). These set every step of the Cube at Epic's spacing from its appearing (the purple crack and the lightning from the day before, rune 1 four days after) as My own times in the Cube's schedule below. Epic's: ${new Date(cubeSpawn.original).toLocaleString()}. Running 5.30 gameservers pick a change up within 5 seconds; a match whose Cube is already out keeps it, so start a fresh match first. 5.40 and 5.41 have the Cube but not its lightning or spawn: there it just appears at the time. Needs the Automatic mode with seasonal events on.` }),
+        el("div", { style: "font-size:13px; margin-bottom:8px;", text: `Status: ${spawnPhases[cubeSpawn.phase] || cubeSpawn.phase}${cubeSpawn.at ? ` (the Cube ${cubeSpawn.phase === "spawned" ? "appeared" : "appears"} ${new Date(cubeSpawn.at).toLocaleString()}${cubeDated.mode === "dates" ? ", Epic's dates on the replay" : ""})` : ""}` }),
+        el("div", { style: "display:flex; flex-wrap:wrap; gap:8px; align-items:center;" },
+          spawnAtInput,
+          el("button", { class: "btn small", text: "Schedule", onclick: () => {
+            if (!spawnAtInput.value) return toast("Pick when the Cube appears", true);
+            spawnAction({ at: toIso(spawnAtInput.value) }, "The Cube's appearing scheduled");
+          } }),
+          el("button", { class: "btn ghost small", text: "Lightning now (10 min)", title: "The strikes on the hill every 3 minutes, then the final bolt and the Cube", onclick: () => spawnAction({ inSeconds: 600 }, "Lightning on the hill: the Cube appears in 10 minutes") }),
+          el("button", { class: "btn ghost small", text: "Spawn the Cube now", title: "The final bolt in 10 seconds, the Cube 30 seconds from now", onclick: () => spawnAction({ inSeconds: 30 }, "The Cube appears in 30 seconds") }),
+          el("button", { class: "btn ghost small", text: "Back to Epic's dates", onclick: () => datedAction({ event: "cube", schedule: null, mode: "dates" }, "The Cube: Epic's dates") }))
+      ) : null;
       // The Battle Royale event challenges (Core-Backend #316): 5.10's Birthday Challenges and 5.40's (and 5.41's) High Stakes Challenges,
       // each on or off and when (events/datedflags.js).
       const challengeEvents = dated.events.filter((event) => event.challenges);
@@ -7975,6 +7999,7 @@
           customFlagsContainer,
           meteorStrikeContainer,
           rocketContainer,
+          ...(cubeSpawnContainer ? [cubeSpawnContainer] : []),
           ...(challengesContainer ? [challengesContainer] : []),
           season4Container,
           el("div", { style: "margin-top:18px;" },

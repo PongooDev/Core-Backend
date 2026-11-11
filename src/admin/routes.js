@@ -49,7 +49,8 @@ import { season4FlagsStatus } from "../events/oddities.js";
 import { tomatoRiftStates } from "../events/tomatorift.js";
 import { cubeStates } from "../events/cube.js";
 import { highStakesStates } from "../events/highstakes.js";
-import { datedEvent, datedEvents, datedFlagsStatus, datedModesOf, datedRollSchedule, datedSchedulePatch, datedSettings, defaultDatedMode } from "../events/datedflags.js";
+import { datedEvent, datedEvents, datedFlagsStatus, datedModesOf, datedRollSchedule, datedSchedulePatch, datedSettings, datedSpawnSchedule, defaultDatedMode,
+  minSpawnLeadSeconds, spawnLeadSeconds } from "../events/datedflags.js";
 import { birthdayChallengeStates } from "../events/birthday2018.js";
 import { odditiesModes, odditySchedulePatch, season4Flag } from "../events/season4flags.js";
 import { convertLeftoverCandy } from "../events/candyllamas.js";
@@ -1632,6 +1633,32 @@ export function adminRoutes(context) {
     const updated = settings.update({ events: { datedFlags: { [event.id]: { mode: "custom", schedule } } } });
     const rolledTo = schedule.at(-1).step;
     res.json({ success: true, rolledTo, label: event.steps.find(({ id }) => id === rolledTo).label, datedFlags: datedStatus(now, updated.events) });
+  });
+
+  // The Cube's appearing, the Crack Closure (Core-Backend #295): {event: "cube", inSeconds?} has it appear that many
+  // seconds from now (30 by default; at least 25, as the final lightning bolt starts 20 seconds before), {event: "cube",
+  // at} at that time. Every step at Epic's spacing from it, on the admin's own times (events/datedflags.js
+  // datedSpawnSchedule); 5.30's matches play the strikes and the final bolt in the lightning's last hour and the Cube
+  // appears at its end (events/cube.js). "Back to Epic's dates" is the route above.
+  router.post("/admin/api/events/dated-flags/spawn", (req, res) => {
+    const body = typeof req.body === "object" && req.body !== null ? req.body : {};
+    const event = datedEvent(body.event);
+    if (!event?.spawn) return invalid(res, `event must be ${datedEvents.filter(({ spawn }) => spawn).map(({ id }) => id).join(" or ")}`);
+    const now = new Date();
+    let spawnAt;
+    if (body.at !== undefined) {
+      if (typeof body.at !== "string" || Number.isNaN(Date.parse(body.at))) return invalid(res, "at must be a date and time");
+      spawnAt = Date.parse(body.at);
+    } else {
+      const seconds = body.inSeconds === undefined ? spawnLeadSeconds : Number(body.inSeconds);
+      if (!Number.isFinite(seconds) || seconds < minSpawnLeadSeconds || seconds > 7 * 86400) {
+        return invalid(res, `inSeconds must be ${minSpawnLeadSeconds} seconds to a week: the final lightning bolt starts 20 seconds before the Cube appears`);
+      }
+      spawnAt = now.getTime() + seconds * 1000;
+    }
+    const schedule = datedSpawnSchedule(event, spawnAt);
+    const updated = settings.update({ events: { datedFlags: { [event.id]: { mode: "custom", schedule } } } });
+    res.json({ success: true, spawnAt: new Date(spawnAt).toISOString(), datedFlags: datedStatus(now, updated.events) });
   });
 
     router.post("/admin/api/events/actions/convert-storm-tickets", (req, res) => {

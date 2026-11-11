@@ -2,10 +2,10 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { inBuild } from "../src/builds/context.js";
 import { cubeStates } from "../src/events/cube.js";
-import { datedEvent, datedFlagsStatus, datedRollSchedule, datedSchedulePatch, defaultDatedFlags, sanitizeDatedFlags, shiftedDatedSchedule,
-  validDatedSchedule } from "../src/events/datedflags.js";
-import { configureEvents, cubeDestination, cubeLake, cubeMoveTo, cubeRune, cubeStartMove, cubeTurnOn, eventsActiveUntil, riftCorrupt,
-  tomatoRiftEvent, tomatoRiftTell } from "../src/events/events.js";
+import { datedEvent, datedFlagsStatus, datedRollSchedule, datedSchedulePatch, datedSpawnSchedule, defaultDatedFlags, sanitizeDatedFlags,
+  shiftedDatedSchedule, validDatedSchedule } from "../src/events/datedflags.js";
+import { configureEvents, cubeDestination, cubeLake, cubeLightning, cubeMoveTo, cubeRune, cubeStartMove, cubeTurnOn, eventsActiveUntil,
+  riftCorrupt, tomatoRiftEvent, tomatoRiftTell } from "../src/events/events.js";
 import { tomatoRiftStates } from "../src/events/tomatorift.js";
 import { post, send, startBackend, userLogin } from "./helpers.js";
 
@@ -255,6 +255,96 @@ test("the admin panel rolls the Cube to its next location, and 5.30's and 5.40's
     const back = await post(backend.port, "/admin/api/events/dated-flags", null, { event: "cube", schedule: null, mode: "dates" });
     const cubeBack = back.body.datedFlags.events.find(({ id }) => id === "cube");
     assert.deepEqual([cubeBack.mode, cubeBack.schedule], ["dates", []]);
+  } finally {
+    await backend.close();
+  }
+});
+
+// The Cube's appearing, the Crack Closure (Core-Backend #295): every step at Epic's spacing from it, the lightning ending as
+// it appears, so 5.30's CUBE and BP_Athena_Event_Components play the final bolt and the spawn at the lightning's end.
+test("the Cube's appearing: the crack and the lightning end as it appears, at Epic's spacing", () => {
+  const spawnAt = Date.parse("2026-11-10T12:00:00Z");
+  const schedule = datedSpawnSchedule(cube, spawnAt);
+  const of = (id) => schedule.find(({ step }) => step === id);
+  assert.equal(schedule.length, cube.steps.length);
+  assert.deepEqual(of("spawn"), { step: "spawn", startAt: "2026-11-10T12:00:00.000Z", endAt: null }, "it stays out");
+  assert.deepEqual(of("lightning"), { step: "lightning", startAt: "2026-11-09T12:00:00.000Z", endAt: "2026-11-10T12:00:00.000Z" }, "a day of lightning to it");
+  assert.deepEqual(of("crack"), { step: "crack", startAt: "2026-11-08T23:00:00.000Z", endAt: "2026-11-10T12:00:00.000Z" }, "the purple crack from 37 hours before");
+  assert.equal(of("moveTo1").startAt, "2026-11-10T12:00:00.000Z", "it starts rolling then");
+  assert.equal(of("rune1").startAt, "2026-11-14T12:00:00.000Z", "rune 1 four days on");
+  assert.equal(datedSpawnSchedule(tomato, spawnAt), null, "only the Cube appears");
+  assert.equal(datedSpawnSchedule(cube, Number.NaN), null);
+
+  // Its status: when it appears now and Epic's, and the phase.
+  const custom = { cube: { mode: "custom", schedule } };
+  const at = (nowMs) => cubeStatus(custom, nowMs).spawn;
+  assert.deepEqual(at(spawnAt - 2 * hour), { at: "2026-11-10T12:00:00.000Z", original: "2018-08-24T21:00:00.000Z", phase: "scheduled" });
+  assert.equal(at(spawnAt - 10 * 60000).phase, "lightning", "the strikes in its last hour");
+  assert.equal(at(spawnAt).phase, "spawned");
+  assert.deepEqual(cubeStatus({ cube: { mode: "off" } }, spawnAt).spawn, { at: null, original: "2018-08-24T21:00:00.000Z", phase: "unscheduled" });
+  assert.equal(datedFlagsStatus(spawnAt, spawnAt, {}).events.find(({ id }) => id === "tomatoRift").spawn, null);
+
+  // 5.30's timeline 30 seconds before: the lightning newly on, ending as the Cube's part starts; 5.40 has no lightning.
+  withConfig({ mode: "auto", datedFlags: custom }, () => {
+    const parts = inBuild(v530, () => cubeStates(new Date(spawnAt - 30000)));
+    assert.deepEqual(types(parts[0]), [riftCorrupt, cubeLightning].sort());
+    assert.deepEqual(parts[0].events.find(({ eventType }) => eventType === cubeLightning),
+      { eventType: cubeLightning, activeSince: "2026-11-09T12:00:00.000Z", activeUntil: "2026-11-10T12:00:00.000Z" });
+    assert.equal(parts[1].validFrom, spawnAt);
+    assert.deepEqual(types(parts[1]), [cubeMoveTo(1), cubeStartMove, cubeTurnOn].sort(), "the Cube out and rolling as the lightning ends");
+    const parts540 = inBuild(v540, () => cubeStates(new Date(spawnAt - 30000)));
+    assert.deepEqual(parts540[0].events, [], "5.40: nothing before");
+    assert.deepEqual(types(parts540[1]), [cubeMoveTo(1), cubeStartMove, cubeTurnOn].sort(), "it just appears");
+    const parts541 = inBuild("4363240", () => cubeStates(new Date(spawnAt - 30000)));
+    assert.deepEqual([parts541[0].events, types(parts541[1])], [[], types(parts540[1])], "5.41 as 5.40");
+  });
+});
+
+test("the admin panel spawns the Cube now or at a time, and 5.30's timeline counts the lightning to it", async () => {
+  const backend = await startBackend();
+  try {
+    const { token } = await userLogin(backend.port, "CubeSpawn");
+    const timeline = async (cl = v530, version = "5.30") => (await send({ host: "127.0.0.1", port: backend.port, method: "GET",
+      path: "/fortnite/api/calendar/v1/timeline",
+      headers: { "User-Agent": `game=FortniteGame, engine=UE4, build=++Fortnite+Release-${version}-CL-${cl}`, Authorization: `bearer ${token}` } }))
+      .body.channels["client-events"];
+    const revision = async () => (await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/fortnite/api/game/v2/calendar/revision",
+      headers: { Authorization: `bearer ${token}` } })).body.revision;
+    const spawn = (body) => post(backend.port, "/admin/api/events/dated-flags/spawn", null, body);
+
+    for (const bad of [{}, { event: "nope" }, { event: "tomatoRift" }, { event: "cube", inSeconds: 5 }, { event: "cube", inSeconds: "soon" },
+      { event: "cube", inSeconds: 8 * 86400 }, { event: "cube", at: "soon" }, { event: "cube", at: 5 }]) {
+      assert.equal((await spawn(bad)).status, 400, JSON.stringify(bad));
+    }
+
+    // Now: in 30 seconds, the lightning on until then.
+    const before = await revision();
+    const sent = Date.now();
+    const now = await spawn({ event: "cube" });
+    assert.equal(now.status, 200);
+    const spawnAt = Date.parse(now.body.spawnAt);
+    assert.ok(spawnAt >= sent + 30000 && spawnAt <= Date.now() + 30000, now.body.spawnAt);
+    assert.notEqual(await revision(), before, "running gameservers see it");
+    const status = now.body.datedFlags.events.find(({ id }) => id === "cube");
+    assert.equal(status.mode, "custom");
+    assert.deepEqual(status.spawn, { at: now.body.spawnAt, original: "2018-08-24T21:00:00.000Z", phase: "lightning" });
+    const channel = await timeline();
+    const lightning = channel.states[0].activeEvents.find(({ eventType }) => eventType === cubeLightning);
+    assert.equal(lightning?.activeUntil, now.body.spawnAt, "the lightning ends as it appears");
+    assert.ok(!channel.states[0].activeEvents.some(({ eventType }) => eventType === cubeTurnOn), "not out yet");
+    assert.equal(channel.states[1].validFrom, now.body.spawnAt);
+    assert.ok(channel.states[1].activeEvents.some(({ eventType }) => eventType === cubeTurnOn));
+    assert.ok(Date.parse(channel.cacheExpire) <= spawnAt, "asked again by then");
+    assert.ok(!(await timeline(v540, "5.40")).states[0].activeEvents.some(({ eventType }) => eventType === cubeLightning), "5.40 has no lightning");
+
+    // The countdown, and a time of the admin's.
+    const countdown = await spawn({ event: "cube", inSeconds: 600 });
+    assert.equal(countdown.body.datedFlags.events.find(({ id }) => id === "cube").spawn.phase, "lightning");
+    const later = await spawn({ event: "cube", at: "2030-01-01T18:00:00Z" });
+    assert.equal(later.body.spawnAt, "2030-01-01T18:00:00.000Z");
+    const scheduled = later.body.datedFlags.events.find(({ id }) => id === "cube");
+    assert.equal(scheduled.spawn.phase, "scheduled");
+    assert.equal(scheduled.steps.find(({ step }) => step === "lightning").current.endAt, "2030-01-01T18:00:00.000Z");
   } finally {
     await backend.close();
   }
