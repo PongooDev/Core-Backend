@@ -7,25 +7,33 @@ export { cramSession2018 };
 // Cram Session (6.00, CL-4395664 and CL-4402180; events.js cramSession2018), Save the World's Season 6 mini-event, Update
 // v6.00: "Level-up and evolve your favorite items during the Cram Session mini event! Mini-Boss Mission Alerts are active,
 // and up to 10 can be completed per day. For the duration of the event, Mini-Boss Mission Alerts will drop two XP,
-// Evolution Material, Transform Keys or V-Bucks. Mini-Boss Mission Alerts will drop Gold instead of Tickets. Mini-Boss
-// Mission Alerts will not drop Heroes, Schematics, Survivors, Mini Reward Llamas, Transform Keys or V-Bucks during this
-// event. Added four quest lines, each of which has ten stages that grant increasingly better one time rewards upon
-// completion, (Hero/Schematic/Survivor XP, Evolution Materials, PERK-UPs or Gold). Has repeatable quests that award
-// Elemental PERK-UPs, RE-PERKs and Evolution Materials", and "Event Store will feature MEGA B.A.S.E. Kyle for the
-// duration of Cram Session". It runs on 6.00 by its build, as Road Trip on 5.0 (🟡 its end: Update v6.00 doesn't date it;
+// Evolution Material, RE-Perk, or Perk-UP rewards instead of one. Mini-Boss Mission Alerts will drop Gold instead of
+// Tickets. Mini-Boss Mission Alerts will not drop Heroes, Schematics, Survivors, Mini-Llamas, Transform Keys or V-Bucks
+// during this event. Added four quest lines, each of which has ten stages that grant increasingly better one time
+// rewards upon completion, (Hero/Schematic/Survivor XP, Evolution Materials, PERK-UPs or Gold). Has repeatable quests
+// that award Elemental PERK-UPs, RE-PERKs and Evolution Materials", and "Event Store will feature MEGA B.A.S.E. Kyle for
+// the duration of Cram Session". It runs on 6.00 by its build, as Road Trip on 5.0 (🟡 its end: Update v6.00 doesn't date it;
 // its Event Store items count down to Season 6's end on the replay, cramSession2018End).
 //
-// Its quests (Quests/Events/Autumn, QuestCategoryTable's Cram row), which nothing in 6.00's data grants (Epic's servers
-// handed them out), granted at quest login while it runs:
-// - the four lines' first stages, AutumnQuest_ExploreZones_1 ("Let's Explore": fully explore 3 zones in 5+ missions),
-//   AutumnQuest_TreasureChests_1 ("Treasure Hunter": 3 chests), AutumnQuest_Safes_1 ("Safecracking": a safe, 300 Gold) and
-//   AutumnQuest_KillHusks_1 ("The Air Itself is Filled with Husks": 500 husks); each stage's hidden reward is the next
-//   (_2 to _10), so the rest of each line follows from the data;
-// - GenericQuest_KillMiniBosses_Repeatable (a Mini-Boss alert's Mini-Boss, a TransientQuest): a choice of evolution
-//   materials, granting itself again (its hidden reward).
+// Its quests, every quest whose Category is QuestCategoryTable's LTE_Autumn row ("Event: Cram Session"), which nothing in
+// 6.00's data grants (Epic's servers handed them out), granted at quest login while it runs:
+// - the four lines' first stages (Quests/Events/Autumn), AutumnQuest_ExploreZones_1 ("Let's Explore": fully explore 3
+//   zones in 5+ missions), AutumnQuest_TreasureChests_1 ("Treasure Hunter": 3 chests), AutumnQuest_Safes_1
+//   ("Safecracking": a safe, 300 Gold) and AutumnQuest_KillHusks_1 ("The Air Itself is Filled with Husks": 500 husks);
+//   each stage's hidden reward is the next (_2 to _10), so the rest of each line follows from the data;
+// - the notes' "repeatable quests that award Elemental PERK-UPs, RE-PERKs and Evolution Materials" (Quests/Generic, each
+//   a TransientQuest granting itself again as its hidden reward, Core-Backend #329): GenericQuest_KillFireHusks_Repeatable
+//   ("Set the World on Fire": 300 Fire Husks, 100 FIRE-UP!), _KillNatureHusks_ ("Forces of Nature": 300 Nature Husks,
+//   100 AMP-UP!), _KillWaterHusks_ ("A Watery Grave": 300 Water Husks, 100 FROST-UP!), _KillMistMonsters_ ("Danger in the
+//   Mist": 50 Mist Monsters, 100 RE-PERK!) and _KillMiniBosses_ ("You're Not the "Mini-Boss" of Me": a Mini-Boss alert's
+//   Mini-Boss, a choice of 8, 4 or 2 of the first three evolution materials). The four perk quests are in Core's data
+//   from 5.0 (CL-4214610), granted by nothing; GenericQuest_CompleteStormZones_Repeatable, beside them, is Road Trip's
+//   (LTE_HordeBash) in 6.00's data.
 // HalloweenQuest_KillVlad, new in 6.00's data too, is Fortnitemares 2018's (Update v6.20), not Cram Session's.
 export const cramSessionQuests = ["autumnquest_explorezones_1", "autumnquest_treasurechests_1", "autumnquest_safes_1",
-  "autumnquest_killhusks_1", "genericquest_killminibosses_repeatable"];
+  "autumnquest_killhusks_1", "genericquest_killfirehusks_repeatable", "genericquest_killnaturehusks_repeatable",
+  "genericquest_killwaterhusks_repeatable", "genericquest_killmistmonsters_repeatable",
+  "genericquest_killminibosses_repeatable"];
 
 // The requesting build's Cram Session quests, when the event runs there.
 export const cramSessionEventQuests = () => (isEventActive(cramSession2018) ? cramSessionQuests.filter((questId) => getQuest(questId)) : []);

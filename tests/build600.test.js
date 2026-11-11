@@ -161,6 +161,20 @@ test("6.00's Save the World: Cram Session's quests, Mini-Boss alerts with Gold, 
     assert.deepEqual(eventQuests(), cramSessionQuests);
     assert.ok(cramSessionQuests.every((id) => getQuest(id)));
     assert.deepEqual(getQuest("autumnquest_explorezones_1").hiddenRewards, [{ quantity: 1, templateId: "Quest:autumnquest_explorezones_2" }]);
+    // Core-Backend #329: "Has repeatable quests that award Elemental PERK-UPs, RE-PERKs, and Evolution Materials", the
+    // LTE_Autumn GenericQuest repeatables, each granting itself again.
+    const repeatables = { genericquest_killfirehusks_repeatable: "AccountResource:reagent_alteration_ele_fire",
+      genericquest_killnaturehusks_repeatable: "AccountResource:reagent_alteration_ele_nature",
+      genericquest_killwaterhusks_repeatable: "AccountResource:reagent_alteration_ele_water",
+      genericquest_killmistmonsters_repeatable: "AccountResource:reagent_alteration_generic" };
+    for (const [questId, reward] of Object.entries(repeatables)) {
+      assert.ok(eventQuests().includes(questId), questId);
+      assert.deepEqual(getQuest(questId).rewards, [{ quantity: 100, templateId: reward }], questId);
+      assert.deepEqual(getQuest(questId).hiddenRewards, [{ quantity: 1, templateId: `Quest:${questId}` }], questId);
+    }
+    assert.deepEqual(getQuest("genericquest_killminibosses_repeatable").selectableRewards.flat().map(({ templateId }) => templateId),
+      ["AccountResource:reagent_c_t01", "AccountResource:reagent_c_t02", "AccountResource:reagent_c_t03"]);
+    assert.ok(!eventQuests().includes("genericquest_completestormzones_repeatable"), "Road Trip's, not Cram Session's");
     const now = at("2018-09-28T12:00:00Z");
     const offers = eventStoreOffers(now);
     assert.deepEqual(offers[eventStorefront].map(({ templateId }) => templateId), cramSessionEventItems.map(({ templateId }) => templateId));

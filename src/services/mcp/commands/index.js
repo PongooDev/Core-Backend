@@ -7,6 +7,7 @@ import { claimCollectedResources } from "./ClaimCollectedResources.js";
 import { claimDifficultyIncreaseRewards } from "./ClaimDifficultyIncreaseRewards.js";
 import { claimImportFriendsReward } from "./ClaimImportFriendsReward.js";
 import { claimLoginReward } from "./ClaimLoginReward.js";
+import { claimMfaEnabled } from "./ClaimMfaEnabled.js";
 import { claimMissionAlertRewards } from "./ClaimMissionAlertRewards.js";
 import { claimQuestReward } from "./ClaimQuestReward.js";
 import { craftWorldItem } from "./CraftWorldItem.js";
@@ -63,6 +64,7 @@ export const clientCommands = {
   ClaimDifficultyIncreaseRewards: claimDifficultyIncreaseRewards,
   ClaimImportFriendsReward: claimImportFriendsReward,
   ClaimLoginReward: claimLoginReward,
+  ClaimMfaEnabled: claimMfaEnabled,
   ClaimMissionAlertRewards: claimMissionAlertRewards,
   ClaimQuestReward: claimQuestReward,
   ClientQuestLogin: clientQuestLoginFromClient,
