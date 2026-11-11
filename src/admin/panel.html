@@ -6566,11 +6566,12 @@
             const res = await act(api("/admin/api/settings", { vbuckPacks: checked }), checked ? "V-Bucks packs are on" : "V-Bucks packs are off");
             if (res) showShop();
           })),
-        el("p", { class: "note", style: "margin:0;", text: "From 1.8, the Store tab sells Epic's four V-Bucks packs (1,000, 2,800, 7,500 and 13,500). Buying one opens a page with a Complete purchase button that gives the V-Bucks for free, as a simulated real-money purchase. On Season 3 builds it also sells the Battle Royale Starter Pack (Rogue Agent outfit, Catalyst back bling and 600 V-Bucks, once per account). Turn this off to hide the packs." }));
+        el("p", { class: "note", style: "margin:0;", text: "From 1.8, the Store tab sells Epic's four V-Bucks packs (1,000, 2,800, 7,500 and 13,500). Buying one opens a page with a Complete purchase button that gives the V-Bucks for free, as a simulated real-money purchase. It also sells each season's Starter Pack, once per account, on that season's builds that have its cosmetics: Season 3's Battle Royale Starter Pack (Rogue Agent outfit, Catalyst back bling and 600 V-Bucks), Season 4's Wingman Starter Pack (Wingman outfit, Bogey Bag back bling and 600 V-Bucks, from 4.4) and Season 5's Ace Pack (The Ace outfit, Swag Bag back bling and 600 V-Bucks, from 5.30). Turn this off to hide the packs." }));
 
       // How the packs are paid (Core-Backend #248): free, or with a purchase code (store/purchasecodes.js) made here.
       const purchaseCodeOffers = [["any", "Any offer"], ["core_mtx_1000", "1,000 V-Bucks pack"], ["core_mtx_2800", "2,800 V-Bucks pack"],
-        ["core_mtx_7500", "7,500 V-Bucks pack"], ["core_mtx_13500", "13,500 V-Bucks pack"], ["core_starter_br_s3", "Battle Royale Starter Pack"]];
+        ["core_mtx_7500", "7,500 V-Bucks pack"], ["core_mtx_13500", "13,500 V-Bucks pack"], ["core_starter_br_s3", "Battle Royale Starter Pack"],
+        ["core_starter_br_s4", "Wingman Starter Pack"], ["core_starter_br_s5", "The Ace Pack"]];
       const purchaseOfferName = (offerId) => (purchaseCodeOffers.find(([id]) => id === offerId) ?? [offerId, offerId])[1];
       const purchaseCodeList = el("div", { style: "margin-top:14px;" });
       const purchaseNewCode = el("div", { style: "margin-top:10px;" });

@@ -81,6 +81,26 @@ const wingmanPack = {
   oncePerAccount: true,
   cosmetics: ["AthenaCharacter:CID_139_Athena_Commando_M_FighterPilot", "AthenaBackpack:BID_056_FighterPilot"]
 };
+// The Ace Pack (Core-Backend #323) is Season 5's: The Ace outfit (CID_195_Athena_Commando_F_Bling, "Stack the deck.") and
+// the Swag Bag back bling (BID_101_BlingFemale), both Epic rarity of the Bling (heist) set, with 600 V-Bucks for $4.99, one
+// per account, as the two before it. Epic put it on sale with Content Update v5.30 (28 August 2018), in place of the
+// Wingman pack, and sold it on until the Summit Striker pack took its place on 7 November 2018 (6.22). 5.21's paks
+// (CL-4288479) hold neither cosmetic, 5.30's (CL-4305896) are the first with both, and 5.40's (CL-4352937) tag The Ace
+// Cosmetics.Source.StarterPack, so like the Wingman's it is offered on a Season 5 build whose cosmetics have both: 5.30 on
+// (5.41's paks have them too). It is in the Store tab's CurrencyStorefront with the V-Bucks packs (StoreMain_Root's
+// StorefrontNames are still ["FoundersPack", "CurrencyStorefront"] on 5.30, 5.40 and 5.41). Its art is The Ace's featured
+// display asset (DA_Featured_CID_195_Athena_Commando_F_Bling, a FortMtxOfferData in each of those builds' paks; none of
+// them has a starter pack display asset).
+const acePack = {
+  ...pack(600, 100, 499),
+  offerId: "core_starter_br_s5",
+  title: "The Ace Pack",
+  description: "The Ace outfit, Swag Bag back bling and 600 V-Bucks",
+  displayAssetPath: displayAsset("DA_Featured_CID_195_Athena_Commando_F_Bling"),
+  season: 5,
+  oncePerAccount: true,
+  cosmetics: ["AthenaCharacter:CID_195_Athena_Commando_F_Bling", "AthenaBackpack:BID_101_BlingFemale"]
+};
 // The Founder's Packs' sale (Core-Backend #300). Update v5.00's notes: from 17 July the Super Deluxe and Limited Founders
 // packs go on sale again. They are the Store tab's other storefront, FoundersPack (StoreMain_Root's StorefrontNames, 5.0's
 // still ["FoundersPack", "CurrencyStorefront"]), real-money offers bought through the same purchase flow as the V-Bucks
@@ -114,7 +134,7 @@ const foundersPackOffer = (from, to) => {
 const foundersPackOffers = foundersOnSale.flatMap((to) => [0, 1, 2, 3].filter((from) => from < to).map((from) => foundersPackOffer(from, to)));
 
 export const realMoneyOffers = [pack(1000, 0, 999), pack(2800, 300, 2499), pack(7500, 1500, 5999), pack(13500, 3500, 9999), starterPack,
-  wingmanPack, ...foundersPackOffers];
+  wingmanPack, acePack, ...foundersPackOffers];
 
 export const hasCurrencyStore = (changelist = currentBuild()) => Number(changelist) >= firstBuild;
 export const findRealMoneyOffer = (offerId) => realMoneyOffers.find((offer) => offer.offerId === offerId);

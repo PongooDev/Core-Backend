@@ -433,3 +433,93 @@ for (const [build, userAgent, profileId, offerId] of [["3.1", agent31, "profile0
     }
   });
 }
+
+// Core-Backend #323: the Ace Pack, Season 5's, offered on a Season 5 build whose paks have The Ace and the Swag Bag (5.30
+// on; 5.0's to 5.21's have neither), in the Store tab's CurrencyStorefront with the V-Bucks packs.
+const agent442 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-4.4.2-CL-4132537";
+const agent521 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-5.21-CL-4288479";
+const agent530 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-5.30-CL-4305896";
+const agent540 = "game=Fortnite, engine=UE4, build=++Fortnite+Release-5.40-CL-4352937";
+const aceCosmetics = ["AthenaCharacter:CID_195_Athena_Commando_F_Bling", "AthenaBackpack:BID_101_BlingFemale"];
+const aceOf = (body) => currencyOf(body)?.catalogEntries.find((offer) => offer.offerId === "core_starter_br_s5");
+test("#323: the Ace Pack is Season 5's, in the Store tab from 5.30, the first build with The Ace and the Swag Bag", async () => {
+  const ace = findRealMoneyOffer("core_starter_br_s5");
+  assert.deepEqual([ace.title, ace.season, ace.price, ace.currencyCode, ace.oncePerAccount], ["The Ace Pack", 5, 499, "USD", true]);
+  assert.deepEqual(ace.cosmetics, aceCosmetics);
+  assert.deepEqual(ace.grants, [{ templateId: "Currency:MtxPurchased", quantity: 500 }, { templateId: "Currency:MtxPurchaseBonus", quantity: 100 }]);
+  for (const build of ["4214610", "4240749", "4288479"]) {
+    assert.equal(inBuild(build, () => lockerCosmeticId(aceCosmetics[0])), undefined, build);
+    assert.equal(inBuild(build, () => lockerCosmeticId(aceCosmetics[1])), undefined, build);
+    assert.equal(inBuild(build, () => isOffered(ace, undefined)), false, build);
+  }
+  for (const build of ["4305896", "4352937"]) assert.equal(inBuild(build, () => isOffered(ace, undefined)), true, build);
+
+  const backend = await startBackend();
+  try {
+    const player = await userLogin(backend.port, "AceShopper");
+    for (const userAgent of [agent530, agent540]) {
+      const offer = aceOf(await catalog(backend.port, player.token, userAgent));
+      assert.ok(offer, userAgent);
+      assert.equal(offer.title, "The Ace Pack");
+      assert.equal(offer.prices[0].currencyType, "RealMoney");
+      assert.ok(offer.appStoreId[1].startsWith(`core_starter_br_s5.${player.accountId}.`));
+      assert.deepEqual(offer.metaInfo.map(({ key, value }) => `${key}=${value}`), ["MtxQuantity=600", "MtxBonus=100"]);
+      assert.equal(offer.displayAssetPath, "/Game/Catalog/DisplayAssets/DA_Featured_CID_195_Athena_Commando_F_Bling.DA_Featured_CID_195_Athena_Commando_F_Bling");
+      assert.deepEqual(offer.requirements, [{ requirementType: "DenyOnFulfillment", requiredId: "core_starter_br_s5", minQuantity: 1 }]);
+      // The season's one starter pack: the earlier seasons' aren't sold beside it.
+      const ids = currencyOf(await catalog(backend.port, player.token, userAgent)).catalogEntries.map((entry) => entry.offerId);
+      assert.ok(!ids.includes("core_starter_br_s3") && !ids.includes("core_starter_br_s4"), userAgent);
+    }
+    // Not on 5.21, whose paks lack both cosmetics, nor in Season 4 (4.4.2 sells the Wingman's) or Season 3.
+    assert.equal(aceOf(await catalog(backend.port, player.token, agent521)), undefined);
+    assert.equal(aceOf(await catalog(backend.port, player.token, agent442)), undefined);
+    assert.equal(aceOf(await catalog(backend.port, player.token, agent31)), undefined);
+
+    // The catalog service prices it, $4.99.
+    const id = aceOf(await catalog(backend.port, player.token, agent530)).appStoreId[1];
+    const priced = (await as(backend.port, `/catalog/api/shared/bulk/offers?id=${id}&returnItemDetails=false`, await clientToken(backend.port), agent530)).body;
+    assert.deepEqual([priced[id].price, priced[id].currencyCode, priced[id].title], [499, "USD", "The Ace Pack"]);
+
+    // The packs' admin setting turns it off too.
+    await post(backend.port, "/admin/api/settings", undefined, { vbuckPacks: false });
+    assert.equal(aceOf(await catalog(backend.port, player.token, agent530)), undefined);
+  } finally {
+    backend.close();
+  }
+});
+
+for (const [build, userAgent] of [["5.30", agent530], ["5.40", agent540]]) {
+  test(`#323: buying the Ace Pack on ${build} gives The Ace, the Swag Bag and 600 V-Bucks once, and it can't be bought twice`, async () => {
+    const backend = await startBackend();
+    try {
+      const player = await userLogin(backend.port, `AceBuyer${build.replace(".", "")}`);
+      const id = aceOf(await catalog(backend.port, player.token, userAgent)).appStoreId[1];
+      const page = await open(backend.port, id, userAgent);
+      assert.equal(page.status, 200);
+      assert.match(page.body, /The Ace Pack/);
+      const second = purchaseIdOf((await open(backend.port, id, userAgent)).body);
+
+      const done = await complete(backend.port, purchaseIdOf(page.body));
+      assert.equal(done.status, 200);
+      assert.equal(done.body.receipt.TransactionState, "Purchased");
+      const athena = await query(backend.port, player.accountId, player.token, "athena", userAgent);
+      for (const templateId of aceCosmetics) assert.equal(owned(athena, templateId).length, 1, templateId);
+      const core = await query(backend.port, player.accountId, player.token, "common_core", userAgent);
+      assert.equal(vbucks(core, "Currency:MtxPurchased"), 500);
+      assert.equal(vbucks(core, "Currency:MtxPurchaseBonus"), 100);
+      assert.deepEqual(core.stats.attributes.in_app_purchases.fulfillmentCounts, { core_starter_br_s5: 1 });
+
+      // Gone from the Store tab; its page and a second Complete purchase (opened before) are refused, and nothing more is given.
+      assert.equal(aceOf(await catalog(backend.port, player.token, userAgent)), undefined);
+      assert.equal((await open(backend.port, id, userAgent)).status, 409);
+      assert.equal((await complete(backend.port, second)).status, 409);
+      assert.equal(vbucks(await query(backend.port, player.accountId, player.token, "common_core", userAgent), "Currency:MtxPurchased"), 500);
+
+      // Another account still has it.
+      const other = await userLogin(backend.port, `AceOther${build.replace(".", "")}`);
+      assert.ok(aceOf(await catalog(backend.port, other.token, userAgent)));
+    } finally {
+      backend.close();
+    }
+  });
+}
