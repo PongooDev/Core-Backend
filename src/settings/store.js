@@ -172,7 +172,8 @@ const defaults = {
     // own, and the rifts of July 2018: "off", "launch" (after the rocket launch) or "dates" (Epic's, on the replay).
     season4Flags: defaultSeason4Flags,
     // Season 5's dated event-flag events (events/datedflags.js, Core-Backend #311): 5.21's Tomato Town rift, 5.30's
-    // Cube and 5.40's High Stakes, each "dates" (Epic's, on the replay), "custom" (the admin's own times per step) or "off".
+    // Cube and 5.40's High Stakes, each "dates" (Epic's, on the replay), "custom" (the admin's own times per step) or "off";
+    // and 5.10's Birthday Challenges (Core-Backend #316), those or "build" (as the build serves them, the default).
     datedFlags: defaultDatedFlags
   },
   battlepass: defaultBattlePass,

@@ -407,6 +407,9 @@ const miniBossFlagBuild = 3858292;
 const forcedStorms = (changelist) => (Number(changelist) >= storms2018Build ? mutantStorms2018 : mutantStorms);
 const forcedMiniBosses = (changelist) => Number(changelist) >= miniBossFlagBuild;
 
+// The Birthday Challenges' modes that schedule its flag apart from the build (events/datedflags.js; "build" is the default).
+const birthdayDatedModes = ["dates", "custom", "off"];
+
 let eventsConfigProvider = null;
 
 export function configureEvents(provider) {
@@ -451,7 +454,10 @@ export function activeEventFlags(changelist = currentBuild()) {
   if (!Number.isInteger(number)) return [];
   // The Season 4 flags the admin panel switched on or off (events/season4flags.js), over the build's own.
   const { on, off } = season4Overrides(changelist, config);
-  const own = events.filter((event) => runsOn(event, number)).map((event) => event.flag);
+  // The Birthday Challenges' flag on Epic's dates, the admin's own times or off (the admin panel's Event challenges,
+  // Core-Backend #316: events/datedflags.js, events/birthday2018.js birthdayChallengeStates) isn't the build's own then.
+  const birthdayDated = birthdayDatedModes.includes(config?.datedFlags?.birthday?.mode);
+  const own = events.filter((event) => runsOn(event, number) && !(birthdayDated && event.flag === anniversary2018BR)).map((event) => event.flag);
   return [...new Set([...own, ...on])].filter((flag) => !off.includes(flag));
 }
 

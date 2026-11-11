@@ -1,6 +1,10 @@
+import { currentBuild } from "../builds/context.js";
 import { getQuest } from "../gamedata/quests.js";
-import { nextReplayOf } from "../store/itemshop.js";
-import { anniversary2018BR, birthday2018, birthdayBattleBus, eventsActiveUntil, isEventActive, supplyDropBDay } from "./events.js";
+import { nextReplayOf, seasonMoment } from "../store/itemshop.js";
+import { datedEvent, datedParts, datedSettings, datedWindows } from "./datedflags.js";
+import { anniversary2018BR, birthday2018, birthdayBattleBus, currentEventsConfig, eventsActiveUntil, isEventActive, seasonalEventsOn,
+  supplyDropBDay } from "./events.js";
+import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 
 export { birthday2018 };
 
@@ -36,3 +40,29 @@ export function birthdayActiveUntil(flag, now = new Date()) {
   if (!birthdayFlags.includes(flag) || !isEventActive(birthday2018)) return eventsActiveUntil;
   return nextReplayOf(birthdayEndedAt, now, null, 5).toISOString();
 }
+
+// The Birthday Challenges' timing from the admin panel (Event challenges, Core-Backend #316; events/datedflags.js): by
+// default ("build") 5.10 serves Anniversary2018_BR itself, as above. On Epic's dates (24 July to 7 August on Season 5's
+// replay, lap by lap) or the admin's own times the flag is served through the calendar in those windows only, with their
+// end as activeUntil (the challenges tab's countdown), on 5.10 and 5.21 (both have Schedule_Birthday2018_BR); off, never.
+// The schedule is given at the quest login while the flag is served (profiles/athena.js settleEventSchedules). The flag's
+// switch (events/season4flags.js) still wins: on, always served; off, never. The Birthday's other two flags keep Save the
+// World's Birthday running on 5.10 as before.
+const birthdayChallenges = datedEvent("birthday");
+
+// The flag's calendar events as parts [{validFrom (ms), events: [{eventType, activeSince, activeUntil}]}], as
+// events/highstakes.js's: on 5.10 and 5.21 with the seasonal events on, in the Automatic mode.
+export function birthdayChallengeStates(now = new Date(), changelist = currentBuild(), config = currentEventsConfig()) {
+  const entry = season4Flag(birthdayChallenges.flag);
+  if (!entry || !onBuild(entry, changelist) || !seasonalEventsOn() || (config?.mode ?? "auto") !== "auto") return [];
+  const setting = datedSettings(config).birthday;
+  if (setting.mode === "build") return [];
+  const { off, on } = season4Overrides(changelist, config);
+  const nowMs = now.getTime();
+  const windows = datedWindows(birthdayChallenges, setting, nowMs, seasonMoment(now, null, 5).getTime());
+  return datedParts(windows, nowMs, birthdayChallenges.parts, new Set([...off, ...on]));
+}
+
+// The Birthday Challenges' flag served now by those times (none outside them), for the quest login's event schedules.
+export const birthdayChallengeFlagsNow = (now = new Date(), changelist = currentBuild()) =>
+  (birthdayChallengeStates(now, changelist)[0]?.events ?? []).map(({ eventType }) => eventType);

@@ -3,6 +3,7 @@ import { inBuild } from "../builds/context.js";
 import { McpError } from "../errors.js";
 import { activeEventFlags } from "../events/events.js";
 import { highStakesFlagsNow } from "../events/highstakes.js";
+import { birthdayChallengeFlagsNow } from "../events/birthday2018.js";
 import { athenaEventQuestsOf } from "../events/fiftyfifty.js";
 import { eventTagOfPlaylist } from "../events/ltms.js";
 import { currentBuild } from "../builds/context.js";
@@ -1129,12 +1130,12 @@ function settleSeasonGrants(session) {
 // EventFlag.Anniversary2018_BR) is given once, at the quest login, while the requesting build serves that flag
 // (events/events.js birthday2018); nothing else grants it (Epic's servers did). Once given it stays. 5.40's
 // Schedule_LTM_Heist (the High Stakes Challenges, EventFlag.LTM_Heist) the same while its dates serve the flag
-// (events/highstakes.js).
+// (events/highstakes.js), and the Birthday Challenges' on the admin panel's times (events/birthday2018.js, Core-Backend #316).
 function settleEventSchedules(session) {
   const schedules = athenaChallengeSchedules() ?? {};
   const event = Object.keys(schedules).filter((id) => schedules[id].eventName);
   if (!event.length) return;
-  const flags = [...activeEventFlags(), ...highStakesFlagsNow()].map((flag) => flag.toLowerCase());
+  const flags = [...activeEventFlags(), ...highStakesFlagsNow(), ...birthdayChallengeFlagsNow()].map((flag) => flag.toLowerCase());
   for (const id of event) {
     if (flags.includes(schedules[id].eventName.toLowerCase())) grantSchedule(session, `ChallengeBundleSchedule:${id}`, seasonFunctions);
   }

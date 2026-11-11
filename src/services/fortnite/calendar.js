@@ -15,7 +15,7 @@ import { seasonTemplateId } from "../../profiles/seasons.js";
 import { rocketLaunchStates } from "../../events/rocketlaunch.js";
 import { mergeTimedStates, odditiesStates } from "../../events/oddities.js";
 import { tomatoRiftStates } from "../../events/tomatorift.js";
-import { birthdayActiveUntil } from "../../events/birthday2018.js";
+import { birthdayActiveUntil, birthdayChallengeStates } from "../../events/birthday2018.js";
 import { cubeStates } from "../../events/cube.js";
 import { highStakesStates } from "../../events/highstakes.js";
 
@@ -94,8 +94,10 @@ export function calendarRoutes({ tokens, settings }) {
     const cacheMinutes = Math.max(5, Math.min(120, Number(currentEventsConfig()?.calendarCacheMinutes ?? calendarCacheMinutes)));
     const ltmChange = nextLtmChange(currentBuild(), settings?.get?.(), now);
     // The rocket launch's parts, the rifts' (events/oddities.js), 5.21's Tomato Town rift (events/tomatorift.js), 5.30's
-    // Cube (events/cube.js) and 5.40's High Stakes (events/highstakes.js) as one schedule.
-    const rocket = mergeTimedStates(rocketLaunchStates(now), odditiesStates(now), tomatoRiftStates(now), cubeStates(now), highStakesStates(now));
+    // Cube (events/cube.js), 5.40's High Stakes (events/highstakes.js) and the Birthday Challenges on the admin's times
+    // (events/birthday2018.js) as one schedule.
+    const rocket = mergeTimedStates(rocketLaunchStates(now), odditiesStates(now), tomatoRiftStates(now), cubeStates(now), highStakesStates(now),
+      birthdayChallengeStates(now));
     const rocketChange = rocket[1]?.validFrom ?? null;
     const cacheExpire = new Date(Math.min(now.getTime() + cacheMinutes * 60000, weeklyEnd?.getTime() ?? Infinity, rocketChange ?? Infinity,
       seasonEnds?.getTime() ?? Infinity, ltmChange?.getTime() ?? Infinity, challengeChange?.getTime() ?? Infinity, ...Object.values(stwEnds).map((end) => end.getTime()))).toISOString();

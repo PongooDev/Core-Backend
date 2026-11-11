@@ -7617,7 +7617,7 @@
         el("div", { style: "display:flex; gap:8px; margin-top:6px;" },
           el("button", { class: "btn small", text: "Save these times", onclick: () => s4Action({ schedule: riftInputs.map((row) => ({ number: row.number, tellAt: toIso(row.tell.value), eventAt: toIso(row.event.value) })) }, "Rift times saved") }),
           el("button", { class: "btn ghost small", text: "Clear my times", onclick: () => s4Action({ schedule: null, oddities: s4.oddities === "custom" ? "off" : s4.oddities }, "Rift times cleared") })));
-      // Season 5's dated event-flag events (events/datedflags.js, Core-Backend #311): 5.21's Tomato Town rift, 5.30's Cube and 5.40's High Stakes,
+      // Season 5's dated event-flag events (events/datedflags.js, Core-Backend #311): 5.21's Tomato Town rift, 5.30's Cube, and the event challenges (5.10's Birthday and 5.40's High Stakes, #316),
       // each on Epic's dates on the replay, the admin's own times (step by step, or every step at Epic's spacing from one
       // step's start) or off.
       const dated = data.datedFlags || { modes: ["dates", "custom", "off"], events: [] };
@@ -7625,7 +7625,10 @@
         if (await act(api("/admin/api/events/dated-flags", payload), message)) showEvents();
       };
       const datedLabels = { dates: "Epic's dates on Season 5's replay", custom: "My own times (set below)", off: "Off: not served (switch the flags above by hand)" };
-      const datedEditors = dated.events.map((event) => {
+      // The event challenges' (Core-Backend #316): on means given at the quest login while their flag is served.
+      const challengeLabels = { build: "On, as the build serves them (5.10: always, counting down to 7 August on the replay)",
+        dates: "On, on Epic's dates on Season 5's replay", custom: "On, at my own times (set below)", off: "Off: not given (their event flag isn't served)" };
+      const datedEditor = (event) => {
         const rows = event.steps.map((s) => {
           const shown = s.custom || s.dates;
           return { step: s.step,
@@ -7638,9 +7641,9 @@
         const scale = el("input", { class: "field", type: "number", min: "0.001", max: "10", step: "0.001", style: "width:90px;", "aria-label": `${event.name} spacing scale`, value: "1" });
         const shifted = (at) => datedAction({ event: event.id, schedule: { startAt: at, step: anchor.value, scale: Number(scale.value) } }, `${event.name}: times saved`);
         return el("div", { style: "margin-top:12px;" },
-          el("div", { style: "font-weight:700; font-size:12px;", text: `When ${event.name} happens:` }),
+          el("div", { style: "font-weight:700; font-size:12px;", text: event.challenges ? `${event.name[0].toUpperCase()}${event.name.slice(1)} (${event.challenges}):` : `When ${event.name} happens:` }),
           el("select", { class: "field", style: "margin-top:4px;", "aria-label": `${event.name} schedule`, onchange: (e) => datedAction({ event: event.id, mode: e.target.value }, `${event.name}: schedule saved`) },
-            ...dated.modes.map((value) => el("option", { value, text: datedLabels[value] || value, selected: event.mode === value }))),
+            ...(event.modes || dated.modes).map((value) => el("option", { value, text: (event.challenges ? challengeLabels : datedLabels)[value] || value, selected: event.mode === value }))),
           el("div", { class: "muted", style: "font-size:12px; margin:6px 0 4px;", text: "Start the sequence from one step, the others following at Epic's spacing (scale 1; 0.5 is twice as fast, 0.01 runs the Cube's month in about 6 hours). Or set each step below: an empty end stays on. Saving switches to My own times; running gameservers pick it up within 5 seconds, clients at their next calendar fetch." }),
           el("div", { style: "display:flex; flex-wrap:wrap; gap:8px; align-items:center;" },
             el("span", { style: "font-size:12px;", text: "Start" }), anchor,
@@ -7656,7 +7659,7 @@
             el("tbody", {}, ...event.steps.map((s, index) => el("tr", {},
               el("td", { text: s.label }),
               el("td", { class: "muted", style: "font-family:var(--mono, monospace);", text: s.flags.map((f) => f.replace("EventFlag.", "")).join(", ") }),
-              el("td", { style: "white-space:nowrap;", text: s.current ? `${fmtTime(s.current.startAt)} – ${s.current.endAt ? fmtTime(s.current.endAt) : "on"}` : "—" }),
+              el("td", { style: "white-space:nowrap;", text: s.current ? `${fmtTime(s.current.startAt)} – ${s.current.endAt ? fmtTime(s.current.endAt) : "on"}` : event.mode === "build" ? "By the build" : "—" }),
               el("td", {}, rows[index].start),
               el("td", {}, rows[index].end),
               el("td", { class: "muted", style: "white-space:nowrap;", text: new Date(s.original.startAt).toUTCString().slice(5, 22) + " UTC" })))))),
@@ -7667,8 +7670,19 @@
               if (!rows.some((row) => row.start.value)) return toast("Set a start time", true);
               datedAction({ event: event.id, schedule }, `${event.name}: times saved`);
             } }),
-            el("button", { class: "btn ghost small", text: "Back to Epic's dates", onclick: () => datedAction({ event: event.id, schedule: null, mode: "dates" }, `${event.name}: Epic's dates`) })));
-      });
+            el("button", { class: "btn ghost small", text: "Back to Epic's dates", onclick: () => datedAction({ event: event.id, schedule: null, mode: "dates" }, `${event.name}: Epic's dates`) }),
+            ...((event.modes || []).includes("build") ? [el("button", { class: "btn ghost small", text: "Back to the build's own", onclick: () => datedAction({ event: event.id, schedule: null, mode: "build" }, `${event.name}: the build's own`) })] : [])));
+      };
+      const datedEditors = dated.events.filter((event) => !event.challenges).map(datedEditor);
+      // The Battle Royale event challenges (Core-Backend #316): 5.10's Birthday Challenges and 5.40's High Stakes Challenges,
+      // each on or off and when (events/datedflags.js).
+      const challengeEvents = dated.events.filter((event) => event.challenges);
+      const challengesContainer = challengeEvents.length ? el("div", {
+        style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
+      },
+        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "Event challenges (5.10 – 5.40):" }),
+        el("div", { class: "muted", style: "font-size:12px; margin-bottom:4px;", text: "Battle Royale's event challenges: each is given at a player's next quest login while it is on, and the challenges tab counts down to its end. Off, or outside its times, it isn't given and its event flag isn't served. Challenges a player already has stay in their profile, with their progress. These work in the Automatic mode; the flag's switch in the Season 4 and 5 event flags below still overrides it." }),
+        ...challengeEvents.map(datedEditor)) : null;
       const season4Container = el("div", {
         style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
       },
@@ -7946,6 +7960,7 @@
           customFlagsContainer,
           meteorStrikeContainer,
           rocketContainer,
+          ...(challengesContainer ? [challengesContainer] : []),
           season4Container,
           el("div", { style: "margin-top:18px;" },
             el("h3", { style: "font-size:14px; font-weight:700; margin-bottom:10px;", text: "Build-by-Build Event Compatibility Matrix" }),

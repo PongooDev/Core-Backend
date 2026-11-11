@@ -49,7 +49,8 @@ import { season4FlagsStatus } from "../events/oddities.js";
 import { tomatoRiftStates } from "../events/tomatorift.js";
 import { cubeStates } from "../events/cube.js";
 import { highStakesStates } from "../events/highstakes.js";
-import { datedEvent, datedEvents, datedFlagsStatus, datedModes, datedSchedulePatch, datedSettings } from "../events/datedflags.js";
+import { datedEvent, datedEvents, datedFlagsStatus, datedModesOf, datedSchedulePatch, datedSettings, defaultDatedMode } from "../events/datedflags.js";
+import { birthdayChallengeStates } from "../events/birthday2018.js";
 import { odditiesModes, odditySchedulePatch, season4Flag } from "../events/season4flags.js";
 import { convertLeftoverCandy } from "../events/candyllamas.js";
 import { ltmIds, ltmSchedule } from "../events/ltms.js";
@@ -107,9 +108,13 @@ const invalid = (res, message) => sendError(res, 400, "errors.com.epicgames.comm
 const sum = (profile, templates) => Object.values(profile?.items ?? {})
   .filter((item) => templates.some((templateId) => templateId.toLowerCase() === item.templateId.toLowerCase()))
   .reduce((total, item) => total + item.quantity, 0);
-// What 5.21 (CL-4288479) serves now: its flags and Tomato Town's rift by its dates (events/tomatorift.js).
+// What 5.10 (CL-4240749) serves now: its flags and the Birthday Challenges' on the admin's times (events/birthday2018.js).
+const served510 = (now) => inBuild("4240749", () => [...activeEventFlags(),
+  ...(birthdayChallengeStates(now)[0]?.events ?? []).map(({ eventType }) => eventType)]);
+// What 5.21 (CL-4288479) serves now: its flags, Tomato Town's rift by its dates (events/tomatorift.js) and the Birthday
+// Challenges' on the admin's times.
 const served521 = (now) => inBuild("4288479", () => [...activeEventFlags(),
-  ...(tomatoRiftStates(now)[0]?.events ?? []).map(({ eventType }) => eventType)]);
+  ...[...(tomatoRiftStates(now)[0]?.events ?? []), ...(birthdayChallengeStates(now)[0]?.events ?? [])].map(({ eventType }) => eventType)]);
 // What 5.30 (CL-4305896) serves now: its flags and the Cube's by its dates (events/cube.js).
 const served530 = (now) => inBuild("4305896", () => [...activeEventFlags(),
   ...(cubeStates(now)[0]?.events ?? []).map(({ eventType }) => eventType)]);
@@ -1385,7 +1390,7 @@ export function adminRoutes(context) {
       eventsConfig,
       rocketLaunch: rocketLaunchStatus(now, eventsConfig),
       // Season 4's event flags, grouped (events/season4flags.js, Core-Backend #296), with what 4.5, 5.0, 5.10, 5.21, 5.30 and 5.40 serve now.
-      season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(now, eventsConfig, inBuild("4166199", () => activeEventFlags()), inBuild("4214610", () => activeEventFlags()), inBuild("4240749", () => activeEventFlags()), served521(now), served530(now), served540(now))),
+      season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(now, eventsConfig, inBuild("4166199", () => activeEventFlags()), inBuild("4214610", () => activeEventFlags()), served510(now), served521(now), served530(now), served540(now))),
       datedFlags: datedStatus(now, eventsConfig),
       events: [
         {
@@ -1575,11 +1580,12 @@ export function adminRoutes(context) {
     }
     if (!Object.keys(patch).length) return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "Give a flag and its state, the oddities mode or the rifts' schedule");
     const updated = settings.update({ events: { season4Flags: patch } });
-    res.json({ success: true, season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(new Date(), updated.events, inBuild("4166199", () => activeEventFlags()), inBuild("4214610", () => activeEventFlags()), inBuild("4240749", () => activeEventFlags()), served521(new Date()), served530(new Date()), served540(new Date()))) });
+    res.json({ success: true, season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(new Date(), updated.events, inBuild("4166199", () => activeEventFlags()), inBuild("4214610", () => activeEventFlags()), served510(new Date()), served521(new Date()), served530(new Date()), served540(new Date()))) });
   });
 
-  // Season 5's dated event-flag events (events/datedflags.js, Core-Backend #311): {event: "cube" | "tomatoRift"} with
-  // {mode: "dates" | "custom" | "off"} and/or {schedule}: {startAt, step, scale} (every step at Epic's spacing from that
+  // Season 5's dated event-flag events (events/datedflags.js, Core-Backend #311) and the event challenges (#316):
+  // {event: "cube" | "tomatoRift" | "highStakes" | "birthday"} with {mode: "dates" | "custom" | "off" (the Birthday
+  // Challenges also "build", their default)} and/or {schedule}: {startAt, step, scale} (every step at Epic's spacing from that
   // step's start, scale 1 Epic's, 0.5 twice as fast), [{step, startAt, endAt}] (those steps over the current times, or over
   // the replay's dates now when there are none; both null removes a step's; endAt null stays on), or null (clears them).
   // Times set are times to use: the custom mode, unless the request names a mode. The calendar revision follows the events
@@ -1589,7 +1595,7 @@ export function adminRoutes(context) {
     const event = datedEvent(body.event);
     if (!event) return invalid(res, `event must be ${datedEvents.map(({ id }) => id).join(" or ")}`);
     if (body.mode === undefined && body.schedule === undefined) return invalid(res, "Give the mode or the schedule");
-    if (body.mode !== undefined && !datedModes.includes(body.mode)) return invalid(res, `mode must be ${datedModes.join(", ")}`);
+    if (body.mode !== undefined && !datedModesOf(event).includes(body.mode)) return invalid(res, `mode must be ${datedModesOf(event).join(", ")}`);
     const now = new Date();
     const current = datedSettings(settings.get()?.events)[event.id];
     const patch = {};
@@ -1602,7 +1608,7 @@ export function adminRoutes(context) {
         return invalid(res, "schedule must be {startAt, step, scale} (scale 0.001 to 10) or [{step, startAt, endAt}] with known steps, each once, and each endAt null or after its startAt");
       }
       patch.schedule = schedule;
-      if (patch.mode === undefined) patch.mode = schedule.length ? "custom" : current.mode === "custom" ? "dates" : current.mode;
+      if (patch.mode === undefined) patch.mode = schedule.length ? "custom" : current.mode === "custom" ? defaultDatedMode(event) : current.mode;
     }
     // The custom mode without times of its own starts from the replay's dates now.
     if (patch.mode === "custom" && !(patch.schedule ?? current.schedule).length) patch.schedule = seed;

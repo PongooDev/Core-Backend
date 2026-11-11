@@ -1,5 +1,5 @@
-import { cubeDestination, cubeLake, cubeLightning, cubeMoveTo, cubeMoveToLake, cubeRune, cubeStartMove, cubeTurnOn, eventsActiveUntil,
-  ltmHeist, riftCorrupt, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
+import { anniversary2018BR, cubeDestination, cubeLake, cubeLightning, cubeMoveTo, cubeMoveToLake, cubeRune, cubeStartMove, cubeTurnOn,
+  eventsActiveUntil, ltmHeist, riftCorrupt, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
 
 // Season 5's small dated event-flag events, step by step, and the admin's own times for them (Core-Backend #311): 5.21's
 // Tomato Town rift (events/tomatorift.js), 5.30's Cube (events/cube.js; 5.40's too) and 5.40's High Stakes
@@ -9,7 +9,12 @@ import { cubeDestination, cubeLake, cubeLightning, cubeMoveTo, cubeMoveToLake, c
 // - "dates": Epic's dates on Season 5's replay (store/itemshop.js seasonMoment), lap by lap (the default);
 // - "custom": the admin's own times [{step, startAt, endAt}] (ISO; endAt null: stays on), which stay, as the custom rift
 //   times of events/season4flags.js do; a step without times isn't served;
-// - "off": none of its steps (the flags still switch by hand, events/season4flags.js).
+// - "off": none of its steps (the flags still switch by hand, events/season4flags.js);
+// - "build" (the Birthday Challenges only, its default): as the build serves the flag by itself (events/events.js: 5.10
+//   always, counting down to 7 August on the replay, events/birthday2018.js; 5.21 never).
+// The Battle Royale event challenges (Core-Backend #316) are two of them: 5.10's Birthday Challenges and 5.40's High
+// Stakes Challenges (an event's `challenges`, its ChallengeBundleSchedule), given at the quest login while their flag is
+// served (profiles/athena.js settleEventSchedules) and counting down to its activeUntil; the admin panel shows them apart.
 // 4.5's rifts have their own times already (events/season4flags.js's oddities schedule) and the rocket its launch time
 // (events/rocketlaunch.js).
 export const season5FirstDay = Date.parse("2018-07-12T00:00:00.000Z");
@@ -40,9 +45,15 @@ export const datedEvents = [
   ] },
   // On the replay the rift is formed from the lap's start (5.21 shipped with it formed) until the head comes out.
   // High Stakes (5.40, events/highstakes.js): from Update v5.40's morning to Update v5.41's.
-  { id: "highStakes", name: "High Stakes (5.40)", flag: ltmHeist, anchor: "challenges", parts: 1, steps: [
+  { id: "highStakes", name: "High Stakes (5.40)", flag: ltmHeist, anchor: "challenges", parts: 1, challenges: "Schedule_LTM_Heist", steps: [
     step("challenges", "The High Stakes Challenges", [ltmHeist], Date.parse("2018-09-06T08:00:00.000Z"), Date.parse("2018-09-18T08:00:00.000Z"))
   ] },
+  // The Birthday Challenges (5.10, Schedule_Birthday2018_BR, events/birthday2018.js; 5.21's paks keep them): the Fortnite
+  // Wiki's Fortnite 1st Birthday, 24 July to 7 August 2018 (🟡 days, not hours: midnight UTC, as birthdayEndedAt).
+  { id: "birthday", name: "the Birthday Challenges (5.10 – 5.21)", flag: anniversary2018BR, anchor: "challenges", parts: 1,
+    challenges: "Schedule_Birthday2018_BR", modes: ["build", "dates", "custom", "off"], defaultMode: "build", steps: [
+      step("challenges", "The Birthday Challenges", [anniversary2018BR], Date.parse("2018-07-24T00:00:00.000Z"), Date.parse("2018-08-07T00:00:00.000Z"))
+    ] },
   { id: "tomatoRift", name: "Tomato Town's rift (5.21)", flag: tomatoRiftTell, anchor: "event", parts: 2, steps: [
     step("tell", "A rift forms over Uncle Pete's Pizza Pit", [tomatoRiftTell], season5FirstDay, Date.parse("2018-08-19T00:00:00.000Z")),
     step("event", "The rift spits out the stone tomato head", [tomatoRiftEvent], Date.parse("2018-08-19T00:00:00.000Z"), null)
@@ -50,7 +61,9 @@ export const datedEvents = [
 ];
 export const datedEvent = (id) => datedEvents.find((event) => event.id === id);
 export const datedModes = ["dates", "custom", "off"];
-export const defaultDatedFlags = Object.fromEntries(datedEvents.map(({ id }) => [id, { mode: "dates", schedule: [] }]));
+export const datedModesOf = (event) => event.modes ?? datedModes;
+export const defaultDatedMode = (event) => event.defaultMode ?? "dates";
+export const defaultDatedFlags = Object.fromEntries(datedEvents.map((event) => [event.id, { mode: defaultDatedMode(event), schedule: [] }]));
 
 const validTime = (value) => typeof value === "string" && !Number.isNaN(Date.parse(value));
 const iso = (ms) => new Date(ms).toISOString();
@@ -106,10 +119,11 @@ export function sanitizeDatedFlags(value, current = defaultDatedFlags) {
   const result = {};
   for (const event of datedEvents) {
     const own = current?.[event.id];
-    const next = { mode: datedModes.includes(own?.mode) ? own.mode : "dates", schedule: validDatedSchedule(event, own?.schedule ?? []) ?? [] };
+    const modes = datedModesOf(event);
+    const next = { mode: modes.includes(own?.mode) ? own.mode : defaultDatedMode(event), schedule: validDatedSchedule(event, own?.schedule ?? []) ?? [] };
     const input = value?.[event.id];
     if (input && typeof input === "object" && !Array.isArray(input)) {
-      if (datedModes.includes(input.mode)) next.mode = input.mode;
+      if (modes.includes(input.mode)) next.mode = input.mode;
       if (input.schedule === null) next.schedule = [];
       else if (input.schedule !== undefined) next.schedule = validDatedSchedule(event, input.schedule) ?? next.schedule;
     }
@@ -132,9 +146,9 @@ export function datedStepsThisLap(event, nowMs, momentNowMs) {
 }
 
 // The event's windows [{eventType, since, until (ms, Infinity: for good)}] by its mode: Epic's dates on the laps around
-// now, or the admin's times.
+// now, or the admin's times (none in the "build" mode: the build serves the flag itself).
 export function datedWindows(event, setting, nowMs, momentNowMs) {
-  if (setting.mode === "off") return [];
+  if (setting.mode === "off" || setting.mode === "build") return [];
   if (setting.mode === "custom") {
     return setting.schedule.flatMap(({ step: id, startAt, endAt }) => event.steps.find((own) => own.id === id).flags
       .map((eventType) => ({ eventType, since: Date.parse(startAt), until: endAt === null ? Infinity : Date.parse(endAt) })));
@@ -169,13 +183,14 @@ export function datedFlagsStatus(nowMs, momentNowMs, config) {
       const lap = datedStepsThisLap(event, nowMs, momentNowMs);
       const custom = new Map(setting.schedule.map((entry) => [entry.step, entry]));
       return {
-        id: event.id, name: event.name, mode: setting.mode, anchor: event.anchor, schedule: setting.schedule,
+        id: event.id, name: event.name, mode: setting.mode, modes: datedModesOf(event), challenges: event.challenges ?? null,
+        anchor: event.anchor, schedule: setting.schedule,
         steps: event.steps.map(({ id, label, flags, start, end }, index) => ({
           step: id, label, flags,
           original: { startAt: iso(start), endAt: end === null ? null : iso(end) },
           dates: { startAt: lap[index].startAt, endAt: end === null ? null : lap[index].endAt },
           custom: custom.get(id) ?? null,
-          current: setting.mode === "off" ? null : setting.mode === "custom" ? custom.get(id) ?? null : lap[index]
+          current: setting.mode === "off" || setting.mode === "build" ? null : setting.mode === "custom" ? custom.get(id) ?? null : lap[index]
         }))
       };
     })
