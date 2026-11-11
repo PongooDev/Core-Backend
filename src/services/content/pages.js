@@ -1,5 +1,7 @@
 import express from "express";
+import { inBuild } from "../../builds/context.js";
 import { getBuild, versionOf } from "../../builds/detect.js";
+import { athenaSeason } from "../../gamedata/athena.js";
 import { newsImageOrigin, newsImagePath, newsImageUrl, serveNewsImage } from "./images.js";
 import { playlistImagesFor, playlistInformationFor } from "./playlistimages.js";
 
@@ -91,6 +93,35 @@ const saleTitles = {
   3741772: { battleRoyale: "New PVP!" }
 };
 
+// The mode select screen's key art, the picture beside the buttons (Core-Backend #331). From 5.30 the screen takes it from
+// this page: 5.30's, 5.40's and 6.00's SubgameSelectScreen have the event OnSubGameImageLoadedFromCMS (5.21's and older
+// don't). On construct (6.00 CL-4395664 sub_3009350) the native screen asks for Battle Royale's and Save the World's
+// pictures (sub_30043F0). It reads subgameselectdata.{battleRoyale | saveTheWorld}.message.image: sub_2FF8F10 names the
+// key, adding "Unowned" for a player without Save the World, and sub_2FF8B80 reads the field. The CMS image cache then
+// downloads the picture and hands it to OnSubGameImageLoadedFromCMS. The blueprint keeps it in SubGameCMSTexture, and
+// SetCMSTextureToKeyArt sets it as the key art material's GameMode_BR or GameMode_STW. With no image the material keeps its
+// cooked picture. 6.00 still cooks Season 5's (UI/Login/SubGameSelect/Textures/T_BR_Right_S5a: Drift and Ragnarok),
+// because Epic gave Season 6's from the page. So 6.00's mode select showed Season 5's characters.
+// Epic's Season 6 picture is BR06_In-Game_Mode-Select (Calamity, DJ Yonder and Bonesy, the Battle Pass of 27 September
+// 2018). It is still on Epic's CDN under fortnite-game/subgameselect/ (checked 2026-11-11: GET answers 200 with the
+// 1920x1080 JPEG, and the hash in its name is the file's SHA-1). The only copy of Epic's page found (the Neon backend's)
+// names it, on a mirror, for battleRoyale. That copy has a second BR06_In-Game_Mode-Select, with
+// ...0966cb19586efe754abcb74e3e7caea764086ef8 (Shogun). Shogun reached the shop on 18 November 2018, so that picture is
+// a later one of the season's, not 6.00's.
+// A season's picture goes to the builds whose game data is that season's (AthenaSeason). Seasons 1 to 5 have none: their
+// builds before 5.30 don't read the field, and 5.30 to 5.41 cook Season 5's own picture. Save the World keeps its cooked
+// picture, as no Epic picture for it was found.
+const subgameSelectCdn = "https://cdn2.unrealengine.com/Fortnite/fortnite-game/subgameselect";
+export const subgameSelectImages = {
+  6: { battleRoyale: `${subgameSelectCdn}/BR06_In-Game_Mode-Select-1920x1080-4c0975cfecd29167b1c2ddf5d916fafbdcaa0f6c.jpg` }
+};
+
+// The Battle Royale season of a build's game data (Cert's, season 1, for a request naming no build).
+const seasonOfBuild = (changelist) => inBuild(changelist === undefined ? undefined : String(changelist),
+  () => athenaSeason()?.seasonNumber ?? 1);
+
+export const subgameSelectImagesFor = (changelist) => subgameSelectImages[seasonOfBuild(changelist)] ?? {};
+
 // A build Core doesn't know shows its changelist ("CL-3807424", without the "v"), and a request naming none "Core".
 function messageOf(configured, fallback, changelist) {
   const version = versionOf(changelist);
@@ -110,6 +141,8 @@ export function subgameSelectFor(changelist, configured = undefined) {
   const filled = (text) => (text ? { title: text.title || undefined, body: text.body || undefined } : undefined);
   const stw = messageOf(filled(configured?.saveTheWorld), { title: defaultStwTitle, body: defaultStwBody }, changelist);
   const br = messageOf(filled(configured?.battleRoyale), { title: defaultBrTitle, body: defaultBrBody }, changelist);
+  const images = subgameSelectImagesFor(changelist);
+  if (images.battleRoyale) br.image = images.battleRoyale;
 
   return {
     saveTheWorld: { message: stw },
@@ -185,14 +218,16 @@ export function contentPage(news = defaultBattleRoyaleNews, loginMessage = defau
   // playlistinformation (#321), whose pictures the CMS cache keeps as the news one.
   const playlistimages = playlistImagesFor(changelist, playlistImages, imageOrigin);
   const playlistinformation = playlistInformationFor(changelist, playlistImages, imageOrigin);
+  const subgameselectdata = subgameSelectFor(changelist, subgameSelect);
   const page = {
     _title: "Fortnite Game",
     lastModified: "2026-10-27T16:30:00.000Z",
     _images_: [...new Set([...(battleRoyaleNews.news.messages ?? []).map((message) => message.image),
       ...(playlistimages?.playlistimages.images ?? []).map((entry) => entry.image),
-      ...(playlistinformation?.playlist_info.playlists ?? []).map((entry) => entry.image)].filter(Boolean))],
+      ...(playlistinformation?.playlist_info.playlists ?? []).map((entry) => entry.image),
+      ...Object.values(subgameselectdata).map((entry) => entry.message.image)].filter(Boolean))],
     battleRoyaleNews,
-    subgameselectdata: subgameSelectFor(changelist, subgameSelect),
+    subgameselectdata,
     emergencynotice: emergencyNoticeFor(lobbyNotice, changelist),
     ...saveTheWorldNewsFor(saveTheWorldNews, changelist),
     ...(playlistimages ? { playlistimages } : {}),
