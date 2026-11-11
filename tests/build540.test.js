@@ -21,7 +21,13 @@ import { clientToken, post, send, startBackend, userLogin } from "./helpers.js";
 import { createSettingsStore } from "../src/settings/store.js";
 import { eventStoreOffers, eventStorefront, weeklyStorefront } from "../src/store/eventstore.js";
 import { itemShopOffers } from "../src/store/itemshop.js";
+import { missionAlertCategory } from "../src/gamedata/world.js";
+import { alertsRemaining, completeMissionAlert } from "../src/profiles/alerts.js";
+import { trackChanges } from "../src/profiles/changes.js";
+import { defaultStats } from "../src/profiles/defaults.js";
+import { season4Flag } from "../src/events/season4flags.js";
 import { hordeTheater, hordeWeeklyTheater } from "../src/world/horde.js";
+import { isGroupMission, worldInfo } from "../src/world/theaters.js";
 
 // Fortnite 5.40, Season 5: CL-4352937 (++Fortnite+Release-5.40, Update v5.40, 6 September 2018), on its own data
 // (gamedata/4352937). Content Update v5.40's (11 September) and Update v5.41's (18 September) items are in its paks already.
@@ -74,8 +80,10 @@ test("5.40's data: 30 new cosmetics, the Grappler, Port-a-Fortress, Field Agent 
   inBuild(v530, () => assert.equal(getItem("Hero:hid_outlander_myth03_sr_t01"), undefined));
 });
 
-test("5.40's event flags: 5.30's, and High Stakes (EventFlag.LTM_Heist) from 6 to 18 September on Season 5's replay", () => {
-  assert.deepEqual(activeEventFlags(v540), [groupMission, passiveStorms, lobbySeason5, roadTrip2018Flag, hordeFlag]);
+test("5.40's event flags: 5.30's but GroupMission (#317), and High Stakes (EventFlag.LTM_Heist) from 6 to 18 September on Season 5's replay", () => {
+  assert.deepEqual(activeEventFlags(v540), [passiveStorms, lobbySeason5, roadTrip2018Flag, hordeFlag], "its group missions carry Mega Alerts");
+  assert.ok(activeEventFlags(v530).includes(groupMission));
+  assert.deepEqual(season4Flag(groupMission).builds, [4072250, 4305896], "the admin's switch stops at 5.30");
   withConfig(replay, () => {
     const types = (iso) => inBuild(v540, () => highStakesStates(at(iso)))[0]?.events.map(({ eventType }) => eventType) ?? [];
     assert.deepEqual(types("2018-09-05T12:00:00Z"), []);
@@ -233,4 +241,66 @@ test("5.40's lobby lists The Getaway and its matchmaking ticket is taken; switch
   } finally {
     backend.close();
   }
+});
+
+// Core-Backend #317: "New Mega Alerts now show up on all group missions. A Mega Alert combines Elemental Storms with Mutant
+// Storm modifiers, and has a Miniboss too! They may grant XP, evolution materials, perk materials, schematics or
+// survivors ... These rewards can be earned 3 times every 24 hours."
+test("5.40's Mega Alerts: one on every group mission, an element, the storm mutations and a Mini-Boss, 3 a day (#317)", () => {
+  const now = at("2026-11-11T12:00:00Z");
+  const mapOf = (build) => {
+    const info = inBuild(build, () => worldInfo(now));
+    const missions = info.missions.flatMap(({ theaterId, availableMissions }) => availableMissions.map((mission) => ({ ...mission, theaterId })));
+    const alerts = info.missionAlerts.flatMap(({ theaterId, availableMissionAlerts }) => availableMissionAlerts.map((alert) => ({ ...alert, theaterId })));
+    return { missions, alerts };
+  };
+  const { missions, alerts } = mapOf(v540);
+  const groups = missions.filter(({ missionGenerator }) => isGroupMission(missionGenerator));
+  const megas = alerts.filter(({ categoryName }) => categoryName === "MegaAlertCategory");
+  assert.ok(groups.length > 0);
+  assert.equal(megas.length, groups.length, "every group mission, Stonewood's first ones too");
+  assert.ok(!alerts.some(({ categoryName }) => categoryName === "GroupMissionCategory"), "in place of the group alerts");
+  const zones = new Set();
+  for (const mega of megas) {
+    const mission = missions.find(({ theaterId, tileIndex }) => theaterId === mega.theaterId && tileIndex === mega.tileIndex);
+    assert.ok(isGroupMission(mission.missionGenerator), "only on group missions");
+    assert.equal(alerts.filter(({ theaterId, tileIndex }) => theaterId === mega.theaterId && tileIndex === mega.tileIndex).length, 1, "one alert a tile");
+    // Its modifiers: an Elemental Storm's zone modifier, the zone's storm mutations, the Mini-Boss.
+    const zone = /^MegaAlert\.ZoneMods_(\w+)$/.exec(mega.missionAlertModifiers.tierGroupName)?.[1];
+    zones.add(zone);
+    const modifiers = mega.missionAlertModifiers.items.map(({ itemType }) => itemType);
+    assert.match(modifiers[0], /^GameplayModifier:elementalzone(fire|nature|water)enableitem$/);
+    assert.equal(modifiers.at(-1), "GameplayModifier:minibossenableprimarymissionitem");
+    const mutations = modifiers.slice(1, -1);
+    assert.equal(mutations.length, { Stonewood: 1, Plankerton: 2, CanneyValley: 2, TwinePeaks: 3 }[zone], zone);
+    assert.ok(mutations.every((itemType) => /^GameplayModifier:gm_(enemy|basehusk)_/.test(itemType)));
+    // Its rewards: one kind of the notes'.
+    assert.equal(mega.missionAlertRewards.tierGroupName, "MissionAlert_MegaAlert");
+    const rewards = mega.missionAlertRewards.items.map(({ itemType, quantity }) => `${itemType} x${quantity}`).join(", ");
+    assert.match(rewards, /^(CardPack:zcp_(heroxp|schematicxp|personnelxp)_t\d\d x5|CardPack:zcp_reagent_c_t0\d_veryhigh x3|CardPack:zcp_reagent_alteration_generic_(medium|high|veryhigh) x3, CardPack:zcp_reagent_alteration_upgrade_(uc|r|vr|sr) x3|CardPack:cardpack_(ranged|melee|trap|worker)_(vr|sr) x1)$/, rewards);
+    if (zone === "Stonewood") assert.doesNotMatch(rewards, /alteration/, "perk materials from Plankerton");
+    const tier = /_T(\d\d)$/.exec(mission.missionRewards.tierGroupName)[1];
+    if (/xp_t/.test(rewards)) assert.ok(rewards.includes(`_t${tier} `), "XP of the mission's tier");
+  }
+  assert.ok(zones.size >= 3, [...zones].join());
+  assert.equal(new Set(megas.map(({ missionAlertGuid }) => missionAlertGuid)).size, megas.length);
+  assert.deepEqual(inBuild(v540, () => worldInfo(now)).missionAlerts, inBuild(v540, () => worldInfo(now)).missionAlerts, "the same all day");
+  // 5.30 has none: its group missions keep their group alerts.
+  const on530 = mapOf(v530).alerts;
+  assert.ok(!on530.some(({ categoryName }) => categoryName === "MegaAlertCategory"));
+  assert.ok(on530.some(({ categoryName }) => categoryName === "GroupMissionCategory"));
+  // The category's quota: 3 a day, each alert once.
+  inBuild(v540, () => {
+    assert.deepEqual(missionAlertCategory("MegaAlertCategory"), { category: "MegaAlertCategory", quota: 3, repeatable: false });
+    const trackers = {};
+    const session = { profile: (profileId) => (trackers[profileId] ??= trackChanges({ profileId, stats: { attributes: defaultStats(profileId) }, items: {} })) };
+    const record = () => session.profile("profile0").profile.stats.attributes.mission_alert_redemption_record;
+    assert.equal(completeMissionAlert(session, megas[0].theaterId, megas[0], now), true);
+    assert.equal(completeMissionAlert(session, megas[0].theaterId, megas[0], now), false, "not repeatable");
+    assert.equal(completeMissionAlert(session, megas[1].theaterId, megas[1], now), true);
+    assert.equal(completeMissionAlert(session, megas[2].theaterId, megas[2], now), true);
+    assert.equal(alertsRemaining(record(), now, "MegaAlertCategory"), 0);
+    assert.equal(completeMissionAlert(session, megas[3].theaterId, megas[3], now), false, "3 a day");
+    assert.equal(alertsRemaining(record(), new Date(now.getTime() + 24 * 60 * 60 * 1000), "MegaAlertCategory"), 3, "back the next day");
+  });
 });

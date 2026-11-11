@@ -22,11 +22,29 @@ const elementalZoneRows = (world) => {
       modifierTierGroup: `ElementalZone.${element}`, name: `MissionAlert_${category}_0${index + 2}`, onlyUsedForSpreading: false,
       requiredEventFlag: "", spreadRowName: "", zoneThemes: [] })));
 };
+// 5.40's (CL-4352937) Mega Alerts (Core-Backend #317): "New Mega Alerts now show up on all group missions. A Mega Alert
+// combines Elemental Storms with Mutant Storm modifiers, and has a Miniboss too! They may grant XP, evolution materials,
+// perk materials, schematics or survivors. The amounts granted are considerably higher than normal Mission Alerts. These
+// rewards can be earned 3 times every 24 hours." 5.40's MissionAlertCategories adds MegaAlertCategory (Priority 20, Quota
+// 3, not repeatable, Stat.MissionAlert.MegaAlert, MissionAlert.Visual.MegaAlert: the storm icon and the storm swirl on
+// the hex, BP_Hex_PARENT HandleMissionAlert and MissionAlertIndicator), but its MissionAlerts rows are cooked out of the
+// client (its alert rows are 5.30's), so the rows are Core's: one a zone (tile difficulty 1-11, so Stonewood's first
+// group missions too, 12-21, 22-31, 32-50), no event flag, the loot tier group MissionAlert_MegaAlert and the modifier
+// group MegaAlert.ZoneMods_<zone> (world/theaters.js gives both their items). world/theaters.js keeps them to group missions.
+export const megaAlertCategory = "MegaAlertCategory";
+const megaAlertZones = [["Stonewood", 1, 11], ["Plankerton", 12, 21], ["CanneyValley", 22, 31], ["TwinePeaks", 32, 50]];
+const megaAlertRows = (world) => {
+  if (!world.missionAlertCategories?.[megaAlertCategory] || (world.missionAlerts ?? []).some((row) => row.category === megaAlertCategory)) return [];
+  return megaAlertZones.map(([zone, minimumDifficulty, maximumDifficulty], index) => ({
+    category: megaAlertCategory, lootTier: 0, lootTierGroup: "MissionAlert_MegaAlert", maximumDifficulty, minimumDifficulty, missionGenerator: "",
+    modifierTierGroup: `MegaAlert.ZoneMods_${zone}`, name: `MissionAlert_${megaAlertCategory}_0${index + 1}`, onlyUsedForSpreading: false,
+    requiredEventFlag: "", spreadRowName: "", zoneThemes: [] }));
+};
 const data = perBuild((read) => {
   const world = { difficulties: {}, missionAlerts: [], dailyMissionAlertQuota: 0, missionAlertCategories: {},
     missionAlertSpreads: {}, zoneThemes: {}, ...read("world", {}) };
-  const elemental = elementalZoneRows(world);
-  return elemental.length ? { ...world, missionAlerts: [...world.missionAlerts, ...elemental] } : world;
+  const added = [...elementalZoneRows(world), ...megaAlertRows(world)];
+  return added.length ? { ...world, missionAlerts: [...world.missionAlerts, ...added] } : world;
 });
 
 export function getDifficulty(rowName) {

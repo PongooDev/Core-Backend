@@ -12,7 +12,8 @@ import { geodeBegin, geodeCountdown, geodeOver, riftGrowth } from "./rocketlaunc
 // keep every one 5.21's do but Anniversary2018_BR and the Tomato Town rift's, so those run to 5.30, and add the Cube's
 // (below). 5.40's (CL-4352937) keep every one 5.30's do but the crack's (BR_S5_Rift_Corrupt, BR_S5_Cube_Lightning,
 // BR_S5_Rift_Shrink) and the lake's two (_MoveToLake, _Lake, now _MoveTo8 and _Destination), so those run to 5.40, and add
-// the High Stakes event's LTM_Heist (below); the mission alert flags run to 5.40 by its alert rows (5.30's: events/events.js).
+// the High Stakes event's LTM_Heist (below); the mission alert flags run to 5.40 by its alert rows (5.30's: events/events.js),
+// but GroupMission, whose group missions carry 5.40's Mega Alerts.
 //
 // The admin panel switches each one "on" or "off" over what the build serves by itself (events config
 // season4Flags.overrides; absent: the build's own, events/events.js), in the Automatic mode. On, a flag is served with
@@ -89,7 +90,8 @@ export const season4FlagGroups = [
     flag("PassiveMiniBosses", [b40, b540], "Mini-Boss alerts without tickets"),
     flag("ActiveStorms", [b40, b540], "Mutant Storm alerts with tickets"),
     flag("PassiveStorms", [b40, b540], "Mutant Storm alerts without tickets (StormLowCategory)"),
-    flag("GroupMission", [b42, b540], "Group mission alerts (GroupMissionCategory, quota 10)"),
+    // 5.40's group missions carry its Mega Alerts instead (Core-Backend #317), so the switch stops at 5.30.
+    flag("GroupMission", [b42, b530], "Group mission alerts (GroupMissionCategory, quota 10; 5.40's group missions carry Mega Alerts)"),
     flag("SurviveTheStorm", [b40, b540], "Survive the Storm's alerts"),
     flag("Fortnitemares", [b40, b540], "Fortnitemares' alert rows"),
     flag("Horde", [b40, b540], "Challenge the Horde: the Horde Skill Tree page (CCNodePages) and, on 5.0 to 5.40, the horde theater and its alerts (HordeCategory, quota 10)")

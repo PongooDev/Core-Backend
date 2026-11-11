@@ -8,7 +8,7 @@ import { firecrackerTickets } from "../events/spring2018.js";
 import { snowflakeTickets, winter2017 } from "../events/winter2017.js";
 import { getItem } from "../gamedata/items.js";
 import { perBuild } from "../gamedata/read.js";
-import { elementalZones, getDifficulty, missionAlertSpread, missionAlertTier } from "../gamedata/world.js";
+import { elementalZones, getDifficulty, megaAlertCategory, missionAlertSpread, missionAlertTier } from "../gamedata/world.js";
 import { hasEventStore } from "../store/eventstore.js";
 import { candyReward, hexsylvania, isHexsylvania } from "./hexsylvania.js";
 import { hordeAlertRewards, hordeMissionRewards } from "../events/roadtrip2018.js";
@@ -414,6 +414,11 @@ function rollMissions({ data, fixedMissions }, day, availableUntil) {
 // (EventFlag.ActiveMiniBosses, quota 10), placed by 2.3's targets with 2.3's rewards (miniBossesStay) and "between 50 and
 // 120 Blockbuster Tickets, scaled based on difficulty ... in addition to their normal rewards" (miniBossTicketsFor); its
 // storms the passive StormLowCategory rows, which "no longer reward event tickets".
+//
+// 5.40 (CL-4352937) puts a Mega Alert (MegaAlertCategory, gamedata/world.js's rows, Core-Backend #317) on every group
+// mission, in place of the group alert (a tile carries one alert: AFortTheaterMapTile MissionAlertData), so 5.40's
+// group missions run no EventFlag.GroupMission (events/events.js). What it gives is megaAlertItems' and what it
+// brings into the mission alertModifiers' (below).
 const halloweenAlerts = "Halloween2017_MissionAlert";
 // The elemental perk currencies (4.2's FIRE-UP!, AMP-UP!, FROST-UP!) and the zone modifiers that lock elemental husks to
 // an element (GameplayModifier:ElementalZone<Element>EnableItem).
@@ -477,8 +482,42 @@ const alertRewards = {
     ...(isEventActive(blockbuster2018) && getItem(blockbusterTickets) ? [[blockbusterTickets, miniBossTicketsFor(zoneOfRow(row))]] : []),
     // 4.2's perk resources (#272, perkRewardPool).
     ...miniBossPerkPack(zoneOfRow(row), seed)
-  ]
+  ],
+  // 5.40's Mega Alerts (#317, megaAlertItems).
+  MissionAlert_MegaAlert: (row, mission, seed) => megaAlertItems(zoneOfRow(row), mission, seed)
 };
+
+// 5.40's Mega Alert rewards: "They may grant XP, evolution materials, perk materials, schematics or survivors. The amounts
+// granted are considerably higher than normal Mission Alerts." No shipped table has their loot tier group
+// (MissionAlert_MegaAlert), so each alert gives one kind, rolled from its seed, from the client's own packs (🟡 the odds
+// and amounts are Core's; a storm alert gives one evolution pack, 2 of the zone's material):
+// - XP: five Hero, Schematic or Survivor XP packs of the mission's tier (ZCP_HeroXP/SchematicXP/PersonnelXP_T<nn>, the
+//   tier of its Mission_Select_Group_T<nn>: 500 XP at tier 1, 7,000 from tier 6);
+// - evolution materials: three of the zone's ZCP_Reagent_C_T0<zone>_VeryHigh (9 of its material);
+// - perk materials, from Plankerton ("Found in Plankerton and above"): three RE-PERK! packs a level above the Mini-Boss
+//   alerts' (Medium in Plankerton, High in Canny Valley, VeryHigh in Twine Peaks: 45, 60, 90) and three of one of the
+//   zone's PERK-UP! (30);
+// - a schematic (CardPack_Ranged/Melee/Trap_<rarity>) or a survivor (CardPack_Worker_<rarity>), Epic in Stonewood and
+//   Plankerton and Legendary from Canny Valley, a rarity above the Mini-Boss alerts' item.
+const megaRarities = ["vr", "vr", "sr", "sr"];
+const megaPerkLevels = ["", "", "medium", "high", "veryhigh"];
+const megaKinds = [
+  { weight: 30, items: (zone, tier) => ["heroxp", "schematicxp", "personnelxp"].map((kind) => [[`CardPack:zcp_${kind}_t${tier}`, 5]]) },
+  { weight: 25, items: (zone) => [[[`CardPack:zcp_reagent_c_t0${zone}_veryhigh`, 3]]] },
+  { weight: 20, items: (zone) => (zone < 2 || !perkRewardsOn() ? [] : perkUpRarities[zone].map((rarity) =>
+    [[`CardPack:zcp_reagent_alteration_generic_${megaPerkLevels[zone]}`, 3], [`CardPack:zcp_reagent_alteration_upgrade_${rarity}`, 3]])) },
+  { weight: 15, items: (zone) => ["ranged", "melee", "trap"].map((kind) => [[`CardPack:cardpack_${kind}_${megaRarities[zone - 1]}`, 1]]) },
+  { weight: 10, items: (zone) => [[[`CardPack:cardpack_worker_${megaRarities[zone - 1]}`, 1]]] }
+];
+export function megaAlertItems(zone, mission, seed) {
+  const tierGroup = mission.missionRewards?.tierGroupName ?? getDifficulty(mission.missionDifficultyInfo.rowName)?.lootTierGroup ?? "";
+  const tier = /_T(\d\d)$/.exec(tierGroup)?.[1] ?? String(5 * zone).padStart(2, "0");
+  const kinds = megaKinds.map((kind) => ({ ...kind, items: kind.items(zone, tier).filter((choice) => choice.every(([templateId]) => getItem(templateId))) }))
+    .filter((kind) => kind.items.length);
+  if (!kinds.length) return [];
+  const { items } = weighted(kinds, `${seed}:mega`);
+  return items[Math.floor(fraction(digest(`${seed}:mega:pick`)) * items.length)];
+}
 
 // 2.3's Mini-Boss items (see above), by kind: the core transform keys (CCK_<kind>_Consumable_<rarity>, "<Kind> Transform
 // Schematic"), the generic schematic, survivor, hero and defender packs (CardPack_Ranged/Melee/Trap/Worker/Hero/
@@ -527,7 +566,21 @@ const noLoot = () => ({ tierGroupName: "", items: [] });
 // the mission.
 const miniBossModifier = "GameplayModifier:minibossenableprimarymissionitem";
 
+// 5.40's Mega Alerts' modifiers (MegaAlert.ZoneMods_<zone>, gamedata/world.js): "A Mega Alert combines Elemental Storms with
+// Mutant Storm modifiers, and has a Miniboss too!": one of the Elemental Storms' zone modifiers (ElementalZone<Element>
+// EnableItem, its mutator turning the mission's elemental husks to that element), the zone's count of storm mutations
+// as the storm alerts', and the Mini-Boss modifier. 🟡 Which element and which mutations are Core's, rolled per alert.
+function megaAlertModifiers(row, seed) {
+  const elements = elementalZones.map(([element]) => elementalModifier(element)).filter((templateId) => getItem(templateId));
+  const element = elements.length ? [elements[Math.floor(fraction(digest(`${seed}:element`)) * elements.length)]] : [];
+  const mutations = shuffled(stormMutations.filter((templateId) => getItem(templateId)), `${seed}:modifiers`)
+    .slice(0, modifierCounts[zoneOfModifierGroup(row.modifierTierGroup) - 1]);
+  const miniBoss = getItem(miniBossModifier) ? [miniBossModifier] : [];
+  return { tierGroupName: row.modifierTierGroup, items: [...element, ...mutations, ...miniBoss].map((itemType) => ({ itemType, quantity: 1 })) };
+}
+
 function alertModifiers(row, seed) {
+  if (row.modifierTierGroup?.startsWith("MegaAlert.")) return megaAlertModifiers(row, seed);
   const element = /^ElementalZone\.(\w+)$/.exec(row.modifierTierGroup ?? "")?.[1];
   if (element && getItem(elementalModifier(element))) {
     return { tierGroupName: row.modifierTierGroup, items: [{ itemType: elementalModifier(element), quantity: 1 }] };
@@ -547,8 +600,11 @@ function alertModifiers(row, seed) {
 function alertFor(data, mission, category) {
   const tile = data.tiles[mission.tileIndex];
   const tier = missionAlertTier(mission.missionDifficultyInfo.rowName, category);
-  // "Every Group Mission now has a Mission Alert": a group alert goes on its mission's tile whatever the tile says.
-  if (!(tile?.canBeMissionAlert || (tile && category === groupCategory)) || !tier || !alertRewards[tier.lootTierGroup]) return undefined;
+  // "Every Group Mission now has a Mission Alert": a group alert goes on its mission's tile whatever the tile says, and so
+  // does 5.40's Mega Alert, which only group missions carry.
+  const onGroupMission = category === groupCategory || category === megaAlertCategory;
+  if (category === megaAlertCategory && !isGroupMission(mission.missionGenerator)) return undefined;
+  if (!(tile?.canBeMissionAlert || (tile && onGroupMission)) || !tier || !alertRewards[tier.lootTierGroup]) return undefined;
   if (tier.zoneThemes.length && !tier.zoneThemes.includes(tile.zoneTheme)) return undefined;
   if (tier.missionGenerator && tier.missionGenerator !== mission.missionGenerator) return undefined;
   if (survivalAlertGenerators[category] && survivalAlertGenerators[category] !== mission.missionGenerator) return undefined;
@@ -656,12 +712,15 @@ function rollAlerts({ data }, missions, day, dayStart, now, availableUntil) {
     return [alert];
   };
   // 3.2's group alerts first, one on every group mission a GroupMissionCategory row fits (tile difficulty 5 and up;
-  // EventFlag.GroupMission): the category's Quota of 10 and MissionAlertRepeatable are profiles/alerts.js's.
+  // EventFlag.GroupMission): the category's Quota of 10 and MissionAlertRepeatable are profiles/alerts.js's. From 5.40
+  // every group mission carries a Mega Alert there instead (MegaAlertCategory, Quota 3, not repeatable).
   const groupAlerts = isHexsylvania(data.uniqueId) || isSurvival(data.uniqueId) || isHorde(data.uniqueId) ? [] : missions
-    .filter((mission) => isGroupMission(mission.missionGenerator) && alertFor(data, mission, groupCategory))
-    .map((mission) => {
+    .filter((mission) => isGroupMission(mission.missionGenerator))
+    .flatMap((mission) => {
+      const category = [megaAlertCategory, groupCategory].find((name) => alertFor(data, mission, name));
+      if (!category) return [];
       taken.add(mission.missionGuid);
-      return alertOn(mission, alertFor(data, mission, groupCategory), groupCategory, `${mission.missionGuid}:alert:${groupCategory}`, availableUntil);
+      return [alertOn(mission, alertFor(data, mission, category), category, `${mission.missionGuid}:alert:${category}`, availableUntil)];
     });
   // The general alert keeps the seed alerts had before categories, so a day's alerts kept their guids.
   const alerts = [...groupAlerts, ...data.regions.flatMap((region, regionIndex) => categories.flatMap((category) =>

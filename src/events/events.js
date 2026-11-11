@@ -309,8 +309,11 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // Challenges, with the Getaway LTM: events/highstakes.js), served by its dates on Season 5's replay. Its paks no longer
 // name the mission alert flags (ActiveMiniBosses ... GroupMission, PassiveStorms): its install has almost no mission infos
 // (cooked server-only), and its alerts are 5.30's (the extractor's fifth argument), so they run on to 5.40 as 5.30's
-// data has them; LobbySeason5, Road Trip and Horde (Update v5.40's Weekly Horde Challenge 5, Content Update v5.40's 6 and
-// Update v5.41's 7: world/horde.js) run on too.
+// data has them, but for EventFlag.GroupMission: Update v5.40's "New Mega Alerts now show up on all group missions"
+// (MegaAlertCategory, new in its MissionAlertCategories: gamedata/world.js, world/theaters.js; Core-Backend #317), and a
+// tile carries one alert, so 5.40's group missions carry Mega Alerts in place of the group alerts. LobbySeason5, Road
+// Trip and Horde (Update v5.40's Weekly Horde Challenge 5, Content Update v5.40's 6 and Update v5.41's 7: world/horde.js)
+// run on too.
 export const blockbuster2018 = "Blockbuster2018";
 export const blockbuster2018Phase1 = "EventFlag.Blockbuster2018Phase1";
 export const blockbuster2018Phase2 = "EventFlag.Blockbuster2018Phase2";
@@ -370,8 +373,9 @@ const events = [
   { name: spring2018, flag: spring2018Phase1, firstBuild: 3889387, lastBuild: 3942182 },
   { name: spring2018, flag: spring2018Phase2, firstBuild: 3915963, lastBuild: 3942182 },
   { name: groupMission, flag: groupMission, firstBuild: 3935073, lastBuild: 3942182 },
-  // 4.2's group mission alerts (Core-Backend #277, world/theaters.js).
-  { name: groupMission, flag: groupMission, firstBuild: build42, lastBuild: build540 },
+  // 4.2's group mission alerts (Core-Backend #277, world/theaters.js), until 5.40's Mega Alerts take every group mission
+  // (Core-Backend #317).
+  { name: groupMission, flag: groupMission, firstBuild: build42, lastBuild: build530 },
   { name: spring2018, flag: spring2018Phase3, firstBuild: 3942182, lastBuild: 3942182 },
   { name: passiveMiniBosses, flag: passiveMiniBosses, firstBuild: 4000805, lastBuild: 4019403 },
   { name: storm2018, flag: activeStorms, firstBuild: 4000805, lastBuild: 4019403 },
