@@ -11,6 +11,7 @@ import { lastSelectedPlaylistOf, ltmForcedQueues, ltmFrontEndPlaylists, ltmNewMo
 import { finalFightRows } from "../../events/finalfight.js";
 import { meteorStrikeRows } from "../../events/meteorstrike.js";
 import { shootingTestGlobals, shootingTestHotfixTables } from "../../events/shootingtest.js";
+import { stormDestructionEngineSection } from "../../events/stormdestruction.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
 import { createNetwork, httpsProxied } from "../../network.js";
 import { purchaseFlowSection } from "./purchase.js";
@@ -150,7 +151,7 @@ function systemFiles(req, network = defaultNetwork, settings = null) {
   const address = network.reachableAddress(req);
   const port = req.socket.localPort;
   const proxied = httpsProxied(req);
-  const engine = [
+  const engineNetwork = [
     "[OnlineSubsystemMcp.XMPP]", `ServerAddr=${address}`, `ServerPort=${port}`, "bUseSSL=false", "",
     "[OnlineSubsystemMcp.StompServiceMcp]", `Protocol=${proxied ? "wss" : "ws"}`, `Domain=${proxied ? proxied.host : `${address}:${port}`}`, ""
   ].join("\r\n");
@@ -159,6 +160,8 @@ function systemFiles(req, network = defaultNetwork, settings = null) {
     + forcedQueueSection(build) + chatSection
     + purchaseFlowSection(req, network, { build, enabled: settings?.get?.()?.vbuckPacks !== false })
     + lootHotfixSection(new Date(), null, shootingTestHotfixTables(build), [...meteorStrikeRows(build), ...finalFightRows(build)], build);
+  // 5.40's and 5.41's Storm Destruction switch, Athena.bMegaStormEnabled (events/stormdestruction.js, PongooDev/CoreV2#395).
+  const engine = engineNetwork + stormDestructionEngineSection(build);
   return { "DefaultEngine.ini": Buffer.from(engine, "utf8"), "DefaultGame.ini": Buffer.from(game, "utf8"), ...newModeFiles(build),
     ...runtimeOptionsFiles(build) };
 }

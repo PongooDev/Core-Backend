@@ -7440,7 +7440,8 @@
         seasonStarts: Object.fromEntries(SEASONS.map(({ id }) => [id, cfg.seasonStarts?.[id] || ""])),
         calendarCacheMinutes: Number(cfg.calendarCacheMinutes ?? 60),
         contentUpdates: { mode: cfg.contentUpdates?.mode || "season", overrides: { ...(cfg.contentUpdates?.overrides ?? {}) } },
-        meteorStrike: cfg.meteorStrike || "meteors"
+        meteorStrike: cfg.meteorStrike || "meteors",
+        stormDestruction: { mode: cfg.stormDestruction?.mode || "dates", percent: Number(cfg.stormDestruction?.percent ?? 10) }
       };
 
       // The season the page shows: its clock, its Season Start row and, for Season 2, its content updates.
@@ -7506,7 +7507,8 @@
             mode: form.contentUpdates.mode,
             overrides: Object.fromEntries((data.contentUpdates?.builds?.[0]?.updates ?? []).map((u) => [u.id, form.contentUpdates.overrides[u.id] || "auto"]))
           },
-          meteorStrike: form.meteorStrike
+          meteorStrike: form.meteorStrike,
+          stormDestruction: form.stormDestruction
         };
         await act(api("/admin/api/events/config", payload), "Event configuration saved");
         showEvents();
@@ -7555,6 +7557,30 @@
         el("div", { class: "muted", style: "font-size:12px; margin-bottom:6px;", text: "Season 3's last week, set by the hotfix on 3.6 (no event flag drives it). The comet's position is the gameserver's clock: at its closest on any date after 30 April 2018. Restart the game and the server after a change." }),
         el("select", { class: "field", "aria-label": "3.6 Meteor Strike phase", onchange: (e) => { form.meteorStrike = e.target.value; } },
           ...meteorStrikeOptions.map(([value, text]) => el("option", { value, text, selected: form.meteorStrike === value })))
+      );
+
+      // 5.40's Storm Destruction (events/stormdestruction.js, PongooDev/CoreV2#395): when the hotfix turns the game's mega storm
+      // on (Athena.bMegaStormEnabled) and the share of matches the gameserver gives it.
+      const storm = data.stormDestruction || { mode: "dates", percent: 10, original: { start: "2018-09-07T00:00:00Z", end: "2018-09-08T00:00:00Z" }, builds: {} };
+      const stormLabels = { dates: "Epic's dates on Season 5's replay (5.40 only)", always: "Always (5.40 and 5.41)", off: "Off" };
+      const stormOn = (build) => (storm.builds?.[build] ? "on" : "off");
+      const stormPercent = el("input", { class: "field", type: "number", min: "0", max: "100", step: "1", style: "width:80px;", "aria-label": "Storm Destruction share of matches (%)",
+        value: String(form.stormDestruction.percent), oninput: (e) => { form.stormDestruction.percent = Number(e.target.value); } });
+      const stormContainer = el("div", {
+        style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
+      },
+        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "5.40 Storm Destruction (Battle Royale):" }),
+        el("div", { class: "muted", style: "font-size:12px; margin-bottom:6px;", text: `The storm's edge flashes and destroys structures in the last four circles (circles 7 to 10), as 5.40's own data has it. Epic's dates: ${new Date(storm.original.start).toUTCString().slice(5, 16)} until its removal on ${new Date(storm.original.end).toUTCString().slice(5, 16)}. While it is on, each match gets it at the share below (Epic's paks: every match that gets that far, 100%). Set by the hotfix: restart the game and the server after a change. Now: 5.40 ${stormOn(4352937)}, 5.41 ${stormOn(4363240)}.` }),
+        el("div", { style: "display:flex; flex-wrap:wrap; gap:8px; align-items:center;" },
+          el("select", { class: "field", "aria-label": "Storm Destruction schedule", onchange: (e) => { form.stormDestruction.mode = e.target.value; } },
+            ...(storm.modes || ["dates", "always", "off"]).map((value) => el("option", { value, text: stormLabels[value] || value, selected: form.stormDestruction.mode === value }))),
+          el("span", { style: "font-size:12px;", text: "Share of matches (%):" }), stormPercent,
+          el("button", { class: "btn small", text: "Save", onclick: () => {
+            const percent = Number(stormPercent.value);
+            if (!Number.isFinite(percent) || percent < 0 || percent > 100) return toast("The share of matches is 0 to 100", true);
+            form.stormDestruction.percent = Math.round(percent);
+            saveConfig();
+          } }))
       );
 
       // 4.5's rocket launch, Blast Off (events/rocketlaunch.js): the launch time the calendar counts to.
@@ -8017,7 +8043,8 @@
                   seasonStarts: Object.fromEntries(SEASONS.map(({ id }) => [id, null])),
                   calendarCacheMinutes: 60,
                   contentUpdates: { mode: "season", overrides: Object.fromEntries((data.contentUpdates?.builds?.[0]?.updates ?? []).map((u) => [u.id, "auto"])) },
-                  meteorStrike: "meteors"
+                  meteorStrike: "meteors",
+                  stormDestruction: { mode: "dates", percent: 10 }
                 }), "Reset to default event settings");
                 showEvents();
               }
@@ -8042,6 +8069,7 @@
           modeCards,
           customFlagsContainer,
           meteorStrikeContainer,
+          stormContainer,
           rocketContainer,
           ...(cubeSpawnContainer ? [cubeSpawnContainer] : []),
           ...(cubeStagesContainer ? [cubeStagesContainer] : []),

@@ -876,7 +876,7 @@ test("only a gameserver reports its warmup, and hears the warmup time (#122)", a
     assert.equal((await reportWarmup(backend, undefined, { phase: "Setup" })).status, 401);
     const token = await dedicatedServerToken(backend.port);
     assert.deepEqual((await reportWarmup(backend, token, { phase: "Setup", accountIds: [] })).body,
-      { warmupSeconds: 120, lateJoin: false, sessionId: null, open: false, maxPlayers: null, parties: [], noFill: [], bots: null });
+      { warmupSeconds: 120, lateJoin: false, sessionId: null, open: false, maxPlayers: null, parties: [], noFill: [], bots: null, stormDestructionPercent: 10 });
     await settingsOf(backend, { warmupSeconds: 300 });
     assert.equal((await reportWarmup(backend, token, { phase: "Setup", accountIds: [] })).body.warmupSeconds, 300);
     await settingsOf(backend, { warmupSeconds: "" });

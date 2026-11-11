@@ -56,6 +56,7 @@ import { odditiesModes, odditySchedulePatch, season4Flag } from "../events/seaso
 import { convertLeftoverCandy } from "../events/candyllamas.js";
 import { ltmIds, ltmSchedule } from "../events/ltms.js";
 import { launchSequenceSeconds, rocketLaunchStatus, sanitizeRocketLaunch } from "../events/rocketlaunch.js";
+import { stormDestructionStatus } from "../events/stormdestruction.js";
 import { playlistTeamsOf } from "../matchmaking/service.js";
 import { convertLeftoverStormTickets } from "../events/stormllamas.js";
 import { defaultEvents, defaultMatchmakingModes, defaultServerLimits, defaultWarmupSeconds, maxSidebarWidth, minSidebarWidth, sidebarWidthValue } from "../settings/store.js";
@@ -1395,6 +1396,8 @@ export function adminRoutes(context) {
       // Season 4's event flags, grouped (events/season4flags.js, Core-Backend #296), with what 4.5, 5.0, 5.10, 5.21, 5.30 and 5.40 serve now.
       season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(now, eventsConfig, inBuild("4166199", () => activeEventFlags()), inBuild("4214610", () => activeEventFlags()), served510(now), served521(now), served530(now), served540(now))),
       datedFlags: datedStatus(now, eventsConfig),
+      // 5.40's Storm Destruction (events/stormdestruction.js, PongooDev/CoreV2#395): its mode, share of matches and switch now.
+      stormDestruction: withoutSeasonStartRecording(() => stormDestructionStatus(now, eventsConfig)),
       events: [
         {
           id: "fortnitemares",

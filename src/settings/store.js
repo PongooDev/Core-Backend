@@ -8,6 +8,7 @@ import { defaultMeteorStrikePhase, sanitizeMeteorStrike } from "../events/meteor
 import { defaultRocketLaunch, sanitizeRocketLaunch } from "../events/rocketlaunch.js";
 import { defaultSeason4Flags, sanitizeSeason4Flags } from "../events/season4flags.js";
 import { defaultDatedFlags, sanitizeDatedFlags } from "../events/datedflags.js";
+import { defaultStormDestruction, sanitizeStormDestruction } from "../events/stormdestruction.js";
 import { regionHostingIps, regionList } from "../matchmaking/regions.js";
 import { customMatchServers } from "../matchmaking/custom-servers.js";
 import { allowedBuildList } from "../builds/allowed.js";
@@ -176,7 +177,10 @@ const defaults = {
     // Season 5's dated event-flag events (events/datedflags.js, Core-Backend #311): 5.21's Tomato Town rift, 5.30's
     // Cube and 5.40's High Stakes, each "dates" (Epic's, on the replay), "custom" (the admin's own times per step) or "off";
     // and 5.10's Birthday Challenges (Core-Backend #316), those or "build" (as the build serves them, the default).
-    datedFlags: defaultDatedFlags
+    datedFlags: defaultDatedFlags,
+    // 5.40's Storm Destruction (events/stormdestruction.js, PongooDev/CoreV2#395): "dates" (Epic's, on the replay), "always"
+    // or "off", and the share of matches (0 to 100) the gameserver gives it while it is on.
+    stormDestruction: defaultStormDestruction
   },
   battlepass: defaultBattlePass,
   matchmakingModes: {
@@ -371,6 +375,7 @@ function sanitizeEvents(input, current = defaults.events) {
   if (input.rocketLaunch !== undefined) result.rocketLaunch = sanitizeRocketLaunch(input.rocketLaunch, result.rocketLaunch ?? defaultRocketLaunch);
   if (input.season4Flags !== undefined) result.season4Flags = sanitizeSeason4Flags(input.season4Flags, result.season4Flags ?? defaultSeason4Flags);
   if (input.datedFlags !== undefined) result.datedFlags = sanitizeDatedFlags(input.datedFlags, result.datedFlags ?? defaultDatedFlags);
+  if (input.stormDestruction !== undefined) result.stormDestruction = sanitizeStormDestruction(input.stormDestruction, result.stormDestruction ?? defaultStormDestruction);
 
   return result;
 }

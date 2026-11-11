@@ -2,12 +2,14 @@ import express from "express";
 import { isDedicatedServerToken } from "../../accounts/clients.js";
 import { requireAuth } from "../../accounts/auth.js";
 import { sendError } from "../../errors.js";
+import { stormDestructionPercent } from "../../events/stormdestruction.js";
 import { effectiveBots } from "../../tournaments/store.js";
 
 // Core's: a CoreV2 Battle Royale gameserver's warmup (Core-Backend #122, the admin panel's Matchmaking settings).
 //   POST /fortnite/api/game/v2/matchmakingservice/warmup
 //   {phase: "Setup"|"Warmup"|"Aircraft"|..., accountIds: [the players connected], secondsLeft: <the warmup's>}
-//   -> {warmupSeconds, lateJoin, sessionId, open, maxPlayers, parties: [[accountId]], noFill: [accountId], bots}
+//   -> {warmupSeconds, lateJoin, sessionId, open, maxPlayers, parties: [[accountId]], noFill: [accountId], bots,
+//       stormDestructionPercent}
 // The server asks from its world's start, every 30 seconds until its warmup begins, then every second until the bus
 // leaves, and once more after. warmupSeconds (null: the game's own) is how long its warmup lasts: the game mode's
 // WarmupCountdownDuration, which the game has from its config and no match option sets (1.9's OnGivenMatchAssignment
@@ -28,6 +30,9 @@ import { effectiveBots } from "../../tournaments/store.js";
 // A match of a tournament playlist (Core-Backend #282) plays with its running event's own bots when it has them: on with
 // the event's count, or off (tournaments/store.js effectiveBots); the Matchmaking tab's otherwise, and for a report the
 // service can't place in a match yet (no players connected: the gameserver brings no bots in before one is).
+// stormDestructionPercent (PongooDev/CoreV2#395, events/stormdestruction.js) is the events config's share of matches
+// (0 to 100) that get 5.40's Storm Destruction: the gameserver rolls each match against it once, while the build's
+// Athena.bMegaStormEnabled (the hotfix's switch) is on, and turns the switch off for a match that doesn't get it.
 // Only the DedicatedServer client (CoreV2's requests) or a gameserver account hosting a session may ask.
 const maxAccountIds = 200;
 
@@ -62,7 +67,8 @@ export function warmupRoutes({ tokens, sessions, settings, matchmaker, tournamen
       bots: forced || teams
         ? { count: forced ? bots.count : 0, level: bots.level, health: bots.startingHealth, shield: bots.startingShield, quests: bots.eliminationsCountForQuests,
           fights: bots.botFightChance ?? 30, teams, noFill: match?.noFill ?? [] }
-        : null
+        : null,
+      stormDestructionPercent: stormDestructionPercent(current.events)
     });
   });
 
