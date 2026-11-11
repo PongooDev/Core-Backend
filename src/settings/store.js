@@ -42,13 +42,15 @@ const playlistAssetLtms = ["fiftyFiftyV2", "highExplosivesSolo", "highExplosives
   "steadyStormSolo", "steadyStormDuos", "steadyStormSquads", "soaring50s", "sniperShootoutV4", "sniperShootoutV4Solo", "sniperShootoutV4Duos",
   "scoreRoyaleSolo", "scoreRoyaleDuos", "scoreRoyaleSquads", "solidGoldSeason5", "solidGoldSeason5Solo", "solidGoldSeason5Duos", "fiftyFiftySolidGold",
   "getaway", "getawayDuos", "getawaySolo", "closeEncountersSeason5", "closeEncountersSeason5Solo", "closeEncountersSeason5Duos",
-  "soaringSolos", "soaringDuos", "soaringSquads"];
+  "soaringSolos", "soaringDuos", "soaringSquads",
+  // 6.00's (CL-4395664, CL-4402180) 50v50.
+  "fiftyFiftySeason6"];
 // The ones on by default (events/ltms.js defaultOn, Core-Backend #314): Season 5's 50v50 and 5.10's to 5.30's Playground,
 // which those builds' shipped lobbies offer. A settings file from before them (matchmakingModesRevision under 1) kept them
 // off only because that was the default, so they are turned on once.
-// 5.40's Getaway (Squads, Duos) and 5.41's Soaring Solos are on by default from the start: a settings file without its key
-// takes the default.
-const defaultOnPlaylistLtms = ["fiftyFiftySeason5", "playgroundV2", "getaway", "getawayDuos", "soaringSolos"];
+// 5.40's Getaway (Squads, Duos), 5.41's Soaring Solos and 6.00's 50v50 are on by default from the start: a settings file
+// without its key takes the default.
+const defaultOnPlaylistLtms = ["fiftyFiftySeason5", "playgroundV2", "getaway", "getawayDuos", "soaringSolos", "fiftyFiftySeason6"];
 export const matchmakingModesRevision = 1;
 // Close Encounters' original date (Core-Backend #258, events/ltms.js): the whole of 25 May 2018, or one hour of it (0 to 23,
 // on the season replay's clock), as Epic ran it.

@@ -39,7 +39,8 @@ import { newsImageUrl } from "./images.js";
 // The admin panel's News page sets a playlist's own picture (settings playlistImages {playlistName: image}): an http(s) URL
 // or a PNG/JPEG uploaded as the news pictures are (images.js), served here.
 export const playlistImagesBuild = 4039451;
-// The first build that reads playlistinformation, not playlistimages: 5.40 (5.41's exe reads it too).
+// The first build that reads playlistinformation, not playlistimages: 5.40 (5.41's and 6.00's exes read it too; 6.00's
+// LTMs, 50v50, Playground and Soaring 50's, keep their Season 5 tiles).
 export const playlistInformationBuild = 4352937;
 
 const cdn = "https://cdn2.unrealengine.com/Fortnite/fortnite-game";

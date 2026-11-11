@@ -1,7 +1,8 @@
 import crypto from "node:crypto";
 import { currentBuild } from "../builds/context.js";
-import { blockbuster2018, currentEventsConfig, isEventActive, passiveMiniBosses, spring2018, storm2018 } from "../events/events.js";
+import { blockbuster2018, cramSession2018, currentEventsConfig, isEventActive, passiveMiniBosses, spring2018, storm2018 } from "../events/events.js";
 import { blockbusterTickets, miniBossTicketsFor } from "../events/blockbuster2018.js";
+import { cramSessionMiniBossRewards } from "../events/cramsession2018.js";
 import { candy } from "../events/fortnitemares.js";
 import { miniBossesStay, mutantStorms, mutantStorms2018, stormTickets } from "../events/mutantstorms.js";
 import { firecrackerTickets } from "../events/spring2018.js";
@@ -9,7 +10,7 @@ import { snowflakeTickets, winter2017 } from "../events/winter2017.js";
 import { getItem } from "../gamedata/items.js";
 import { perBuild } from "../gamedata/read.js";
 import { elementalZones, getDifficulty, megaAlertCategory, missionAlertSpread, missionAlertTier } from "../gamedata/world.js";
-import { hasEventStore } from "../store/eventstore.js";
+import { hasEventStore, seasonalGold } from "../store/eventstore.js";
 import { candyReward, hexsylvania, isHexsylvania } from "./hexsylvania.js";
 import { hordeAlertRewards, hordeMissionRewards } from "../events/roadtrip2018.js";
 import { hordeTheater, hordeWeeklyTheater, isHorde, isHordeTierGroup } from "./horde.js";
@@ -419,6 +420,11 @@ function rollMissions({ data, fixedMissions }, day, availableUntil) {
 // mission, in place of the group alert (a tile carries one alert: AFortTheaterMapTile MissionAlertData), so 5.40's
 // group missions run no EventFlag.GroupMission (events/events.js). What it gives is megaAlertItems' and what it
 // brings into the mission alertModifiers' (below).
+//
+// 6.00 (CL-4402180; CL-4395664 plays on its data) runs Cram Session (events/cramsession2018.js): "Mini-Boss Mission Alerts
+// are active, and up to 10 can be completed per day" (MiniBossCategory, EventFlag.ActiveMiniBosses, quota 10), placed by
+// 2.3's targets as Blockbuster's (miniBossesStay) and rewarded by cramSessionAlertItems: two XP, evolution or perk packs
+// and Gold instead of tickets, and none of the hero, schematic, survivor, transform key or V-Bucks rewards.
 const halloweenAlerts = "Halloween2017_MissionAlert";
 // The elemental perk currencies (4.2's FIRE-UP!, AMP-UP!, FROST-UP!) and the zone modifiers that lock elemental husks to
 // an element (GameplayModifier:ElementalZone<Element>EnableItem).
@@ -474,7 +480,7 @@ const alertRewards = {
     ? [[stormTickets, 3 * stormTicketsFor(mission.missionDifficultyInfo.rowName)]] : [[snowflakeTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]]),
   MissionAlert_Survival7Day: (row, mission) => (isEventActive(storm2018)
     ? [[stormTickets, 5 * stormTicketsFor(mission.missionDifficultyInfo.rowName)]] : [[snowflakeTickets, 2 * stormTicketsFor(mission.missionDifficultyInfo.rowName)]]),
-  MissionAlert_MiniBoss: (row, mission, seed) => [
+  MissionAlert_MiniBoss: (row, mission, seed) => (isEventActive(cramSession2018) ? cramSessionAlertItems(zoneOfRow(row), mission, seed) : [
     [`CardPack:zcp_reagent_c_t0${zoneOfRow(row)}_high`, 1],
     ...(isEventActive(winter2017) ? [[snowflakeTickets, stormTicketsFor(mission.missionDifficultyInfo.rowName)]]
       : [[`CardPack:zcp_mtx_boost${zoneOfRow(row) <= 2 ? 50 : 100}`, 1], ...(miniBossesStay() ? miniBossItem(zoneOfRow(row), seed) : [])]),
@@ -482,7 +488,7 @@ const alertRewards = {
     ...(isEventActive(blockbuster2018) && getItem(blockbusterTickets) ? [[blockbusterTickets, miniBossTicketsFor(zoneOfRow(row))]] : []),
     // 4.2's perk resources (#272, perkRewardPool).
     ...miniBossPerkPack(zoneOfRow(row), seed)
-  ],
+  ]),
   // 5.40's Mega Alerts (#317, megaAlertItems).
   MissionAlert_MegaAlert: (row, mission, seed) => megaAlertItems(zoneOfRow(row), mission, seed)
 };
@@ -499,6 +505,20 @@ const alertRewards = {
 //   zone's PERK-UP! (30);
 // - a schematic (CardPack_Ranged/Melee/Trap_<rarity>) or a survivor (CardPack_Worker_<rarity>), Epic in Stonewood and
 //   Plankerton and Legendary from Canny Valley, a rarity above the Mini-Boss alerts' item.
+// The mission's tier (01 to 20) by its reward tier group (Mission_Select_Group_T<nn>), else the zone's last.
+const missionTierOf = (zone, mission) => {
+  const tierGroup = mission.missionRewards?.tierGroupName ?? getDifficulty(mission.missionDifficultyInfo.rowName)?.lootTierGroup ?? "";
+  return /_T(\d\d)$/.exec(tierGroup)?.[1] ?? String(5 * zone).padStart(2, "0");
+};
+// 6.00's Cram Session Mini-Boss alerts (events/cramsession2018.js): two XP, evolution or perk packs, and Gold, in place of
+// the alert's item, V-Bucks and tickets.
+function cramSessionAlertItems(zone, mission, seed) {
+  const perkPacks = zone < 2 || !perkRewardsOn() ? []
+    : [`CardPack:zcp_reagent_alteration_generic_${perkLevels[zone]}`, ...perkUpRarities[zone].map((rarity) => `CardPack:zcp_reagent_alteration_upgrade_${rarity}`)]
+      .map((templateId) => [templateId, 1]);
+  return cramSessionMiniBossRewards(zone, missionTierOf(zone, mission), seed, { perkPacks, gold: seasonalGold,
+    pick: (choices, pickSeed) => choices[Math.floor(fraction(digest(pickSeed)) * choices.length)] });
+}
 const megaRarities = ["vr", "vr", "sr", "sr"];
 const megaPerkLevels = ["", "", "medium", "high", "veryhigh"];
 const megaKinds = [

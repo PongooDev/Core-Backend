@@ -1838,7 +1838,13 @@ static class ItemClasses
         // 5.0's (CL 4214610) toys (Athena/Items/Cosmetics/Toys, UAthenaToyItemDefinition, Cosmetics.EmoteType.Toy,
         // AthenaDance:TOY_*: the Basketball, Golf Ball and Beach Ball and their Elite ones), which its Battle Pass gives and
         // the emote slots hold.
-        "AthenaToyItemDefinition"
+        "AthenaToyItemDefinition",
+        // 6.00's (CL 4402180, Season 6) pets (Athena/Items/Cosmetics/PetCarriers, UAthenaPetCarrierItemDefinition:
+        // UAthenaBackpackItemDefinition, a back bling carrying its DefaultPet, Athena/Items/Cosmetics/Pets' PetID_*), which its
+        // Battle Pass gives and the back bling slot holds ("Pets are now available in-game!"), and its lobby music
+        // (Athena/Items/Cosmetics/MusicPacks, UAthenaMusicPackItemDefinition, EAthenaCustomizationCategory::MusicPack: "Players will
+        // now have an option in the Locker to select their preferred music choice").
+        "AthenaPetCarrierItemDefinition", "AthenaMusicPackItemDefinition"
     ];
 
     private static readonly Dictionary<string, string> Parents = new()

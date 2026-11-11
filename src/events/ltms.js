@@ -343,6 +343,21 @@ const getawaySquads = [{ builds: [build540, build541], start: "2018-09-06", end:
   { builds: [build540, build541], start: "2018-09-13", end: "2018-09-18" }];
 const getawayDuos = [{ builds: [build540, build541], start: "2018-09-11", end: "2018-09-13" }];
 const update541Window = [{ builds: [build541, build541], start: "2018-09-18", end: "2018-09-27" }];
+// 6.00 (CL-4395664, "6.00.0", and CL-4402180, "6.00", Update v6.00, 27 September 2018: Core has CL-4402180's paks, whose
+// data the other plays on), Season 6: Athena/Playlists (every playlist asset of its 15 paks) holds only the defaults,
+// Playlist_50v50 (50 V 50, PlaylistId 50, now with "Press jump to redeploy your glider when falling from large heights"),
+// Playlist_Playground (35, Playground's four teams of four, Athena.Creative), Playlist_Soaring_50s (53) and
+// Playlist_Fortnite_B_* / Playlist_Fortnite ("Final Five", left out as on 5.40). The Getaway's, Close Encounters', 50v50
+// Solid Gold's and Soaring Solos' playlists are gone (High Stakes ended with Update v5.41). Its shipped DefaultGame.ini
+// lists 5.41's lobby: the default Solo, Duo and Squad, Playlist_50v50 and Playlist_Playground (AdvertiseType Updated), all
+// enabled. Update v6.00 names no limited time mode, so 6.00's lobby opens on Solo: its 50v50 (fiftyFiftySeason6, the new
+// revision) and Season 5's Playground are on by default, as the shipped lobby has them (Update v6.01's "Playground Custom
+// Options" and v6.20's spawnables have Playground running through Season 6, so with Original dates it runs from 27
+// September to the season's end, 6 December), and Soaring 50's is there by its switch (🟡 nothing found dates it in
+// Season 6).
+const build6000 = 4395664;
+const build600 = 4402180;
+const season6Window = [{ builds: [build6000, build600], start: "2018-09-27", end: "2018-12-06" }];
 // Core-Backend #257 asked for 3.5.1's to 4.0's Solid Gold v2 (Squads, Solo), Sniper Shootout v2 (Solo, Duos, Squads), High
 // Explosives v2 (Squads, Solo), Blitz! (Squads, Solo, Duos), Teams of 20 and 50v50 v2. Each is a playlist asset of 3.5.1's
 // and 4.0's Athena/Playlists (and 3.6's, which sits between them, as its note above has it; its paks didn't mount in
@@ -598,11 +613,11 @@ export const ltms = [
   // Season 5 build's shipped DefaultGame.ini enables it in the lobby (FrontEndPlaylistData, ltmFrontEndPlaylists).
   { id: "fiftyFiftySeason5", name: "50v50 (Season 5)", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build500, build541], seasons: [5], defaultOn: true,
     teams: "2 Teams × 50", description: "Two teams of fifty, a bus each, extra loot; reviving a teammate earns XP (Playlist_50v50, 5.0's)." },
-  // 5.10's Playground (5.21's to 5.41's too) and Fly Explosives (above). On by default (Core-Backend #314): 5.10's, 5.21's
-  // and 5.30's shipped DefaultGame.ini enable Playlist_Playground in the lobby (FrontEndPlaylistData, AdvertiseType Updated),
-  // as Epic ran it from 25 July to the season's end.
-  { id: "playgroundV2", name: "Playground v2", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build5100, build541], seasons: [5], defaultOn: true,
-    original: [{ builds: [build5100, build541], start: "2018-07-25", end: "2018-09-27" }],
+  // 5.10's Playground (5.21's to 5.41's and 6.00's too) and Fly Explosives (above). On by default (Core-Backend #314): 5.10's,
+  // 5.21's, 5.30's and 6.00's shipped DefaultGame.ini enable Playlist_Playground in the lobby (FrontEndPlaylistData,
+  // AdvertiseType Updated), as Epic ran it from 25 July to the season's end, and on through Season 6.
+  { id: "playgroundV2", name: "Playground v2", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build5100, build600], seasons: [5, 6], defaultOn: true,
+    original: [{ builds: [build5100, build541], start: "2018-07-25", end: "2018-09-27" }, ...season6Window],
     teams: "4 Teams × 4", description: "Playground again, with team select: up to four players on up to four teams, respawns, 10x resources, golf carts (Playlist_Playground, 5.10's)." },
   { id: "flyExplosives", name: "Fly Explosives (Squads)", playlistId: 122, playlistName: "Playlist_FlyExplosives_Squads", eventFlag: null, builds: [build510, build510], seasons: [5], newIn: build510,
     original: [{ builds: [build510, build510], start: "2018-07-31", end: "2018-08-07" }],
@@ -621,7 +636,7 @@ export const ltms = [
   { id: "steadyStormSquads", name: "Steady Storm (Squads)", playlistId: 162, playlistName: "Playlist_Steady_Squads", eventFlag: null, builds: [build521, build521], seasons: [5],
     original: steadyStorm,
     teams: "100 Teams × 4", description: "One storm that closes in over 15 minutes, no safe zones, 10 damage a second (Athena/Playlists/SteadyStorm game data, 5.21's)." },
-  { id: "soaring50s", name: "Soaring 50's", playlistId: 53, playlistName: "Playlist_Soaring_50s", eventFlag: null, builds: [build521, build541], seasons: [5], newIn: build521,
+  { id: "soaring50s", name: "Soaring 50's", playlistId: 53, playlistName: "Playlist_Soaring_50s", eventFlag: null, builds: [build521, build600], seasons: [5, 6], newIn: build521,
     original: update521Window,
     teams: "2 Teams × 50", description: "50v50 with glider redeploy from 10 m up, extra Impulse Grenades, Launch Pads and Bounce Pads; no profile stats (Playlist_Soaring_50s, 5.21's)." },
   { id: "sniperShootoutV4", name: "Sniper Shootout v4 (Squads)", playlistId: 41, playlistName: "Playlist_Snipers", eventFlag: null, builds: [build521, build521], seasons: [5],
@@ -682,7 +697,11 @@ export const ltms = [
     teams: "100 Teams × 2", description: "Classic Battle Royale with glider redeploy: press Jump when falling from a height (Playlist_Soaring_Duos, 5.41's)." },
   { id: "soaringSquads", name: "Soaring Squads", playlistId: 187, playlistName: "Playlist_Soaring_Squads", eventFlag: null, builds: [build541, build541], seasons: [5],
     advertise: "New",
-    teams: "100 Teams × 4", description: "Classic Battle Royale with glider redeploy: press Jump when falling from a height (Playlist_Soaring_Squads, 5.41's)." }
+    teams: "100 Teams × 4", description: "Classic Battle Royale with glider redeploy: press Jump when falling from a height (Playlist_Soaring_Squads, 5.41's)." },
+  // 6.00's Playlist_50v50 (above), a new revision: glider redeploy ("Press jump to redeploy your glider when falling from large
+  // heights"), so an LTM of its own, as 5.0's was. On by default: 6.00's shipped DefaultGame.ini enables it in the lobby.
+  { id: "fiftyFiftySeason6", name: "50v50 (Season 6)", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build6000, build600], seasons: [6], defaultOn: true,
+    teams: "2 Teams × 50", description: "Two teams of fifty, a bus each, extra loot, and glider redeploy when falling from a height (Playlist_50v50, 6.00's)." }
 ];
 // A build range's bounds are changelists or versions ("4.2", "4.4.x"): a version holds only once Core knows the build's.
 const versionParts = (version) => String(version).split(".").map((part) => (part === "x" ? Infinity : Number(part)));
@@ -735,7 +754,8 @@ export function eventTagOfPlaylist(playlistId, build = currentBuild()) {
   return ltm && inRange(ltm.builds, build) ? ltm.tag351 ?? ltm.playlistId : undefined;
 }
 
-const seasonOf = (build) => (Number(build) >= build500 ? 5 : Number(build) >= build40 ? 4 : Number(build) >= build30 ? 3 : Number(build) >= build111 ? 2 : 1);
+const seasonOf = (build) => (Number(build) >= build6000 ? 6 : Number(build) >= build500 ? 5 : Number(build) >= build40 ? 4 : Number(build) >= build30 ? 3
+  : Number(build) >= build111 ? 2 : 1);
 const day = (date) => Date.parse(`${date}T00:00:00Z`);
 // An LTM's original windows ([] for none): {builds, start, end, season}, start and end in ms of Epic's calendar (UTC), end
 // the moment after it. A window's start or end is a day ("YYYY-MM-DD") or a function of the settings (Close Encounters'
@@ -851,7 +871,7 @@ export function nextLtmChange(build, settingsValue, now = new Date()) {
 
 // The admin panel's list (its Battle Royale Game Modes, after solo, duos and squads): each LTM with its window and
 // builds, whether it is on by hand, and whether its window holds each season's replay now.
-const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build311]: "3.1.1", [build32]: "3.2", [build33]: "3.3", [build351]: "3.5.1", [build352]: "3.5.2", [build36]: "3.6", [build40]: "4.0", [build41]: "4.1", [build42]: "4.2", [build440]: "4.4.0", [build441]: "4.4.1", [build442]: "4.4.2", [build450]: "4.5.0", [build45]: "4.5", [build500]: "5.0.0", [build50]: "5.0", [build5100]: "5.10.0", [build510]: "5.10", [build521]: "5.21", [build530]: "5.30", [build540]: "5.40", [build541]: "5.41" };
+const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build311]: "3.1.1", [build32]: "3.2", [build33]: "3.3", [build351]: "3.5.1", [build352]: "3.5.2", [build36]: "3.6", [build40]: "4.0", [build41]: "4.1", [build42]: "4.2", [build440]: "4.4.0", [build441]: "4.4.1", [build442]: "4.4.2", [build450]: "4.5.0", [build45]: "4.5", [build500]: "5.0.0", [build50]: "5.0", [build5100]: "5.10.0", [build510]: "5.10", [build521]: "5.21", [build530]: "5.30", [build540]: "5.40", [build541]: "5.41", [build6000]: "6.00.0", [build600]: "6.00" };
 const boundName = (bound) => (typeof bound === "number" ? versions[bound] : bound);
 const buildRange = ([first, last]) => (first === last ? boundName(first) : `${boundName(first)} to ${boundName(last)}`);
 // A window's day or moment for the admin panel: "YYYY-MM-DD" at midnight, else the ISO time; last, its last day.
@@ -875,7 +895,7 @@ function originalOf(ltm, settingsValue, moments) {
 }
 export function ltmSchedule(settingsValue, now = new Date()) {
   const modes = settingsValue?.matchmakingModes ?? {};
-  const moments = Object.fromEntries([1, 2, 3, 4, 5].map((season) => [season, seasonMoment(now, null, season).getTime()]));
+  const moments = Object.fromEntries([1, 2, 3, 4, 5, 6].map((season) => [season, seasonMoment(now, null, season).getTime()]));
   return {
     originalDates: settingsValue?.ltmOriginalDates === true,
     // Close Encounters' day: the whole of it or one hour (#258).

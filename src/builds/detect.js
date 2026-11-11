@@ -3,7 +3,7 @@
 export const certBuild = "3532353";
 
 // The Fortnite version players call each build Core knows (as Core-Launcher's KnownBuilds), for what the client shows.
-export const buildVersions = { 3532353: "1.1", 3541083: "1.2", 3700114: "1.7.2", 3724489: "1.8", 3729133: "1.8.1", 3741772: "1.8.2", 3757339: "1.9", 3775276: "1.9.1", 3790078: "1.10", 3807424: "1.11", 3825894: "2.1", 3841827: "2.2", 3847564: "2.3", 3858292: "2.4", 3870737: "2.4.2", 3889387: "2.5", 3901517: "3.0", 3915963: "3.1", 3917250: "3.1.1", 3935073: "3.2", 3942182: "3.3", 4000805: "3.5.1", 4008490: "3.5.2", 4019403: "3.6", 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4127312: "4.4.1", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4204761: "5.0.0", 4214610: "5.0", 4225813: "5.10.0", 4240749: "5.10", 4288479: "5.21", 4305896: "5.30", 4352937: "5.40", 4363240: "5.41" };
+export const buildVersions = { 3532353: "1.1", 3541083: "1.2", 3700114: "1.7.2", 3724489: "1.8", 3729133: "1.8.1", 3741772: "1.8.2", 3757339: "1.9", 3775276: "1.9.1", 3790078: "1.10", 3807424: "1.11", 3825894: "2.1", 3841827: "2.2", 3847564: "2.3", 3858292: "2.4", 3870737: "2.4.2", 3889387: "2.5", 3901517: "3.0", 3915963: "3.1", 3917250: "3.1.1", 3935073: "3.2", 3942182: "3.3", 4000805: "3.5.1", 4008490: "3.5.2", 4019403: "3.6", 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4127312: "4.4.1", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4204761: "5.0.0", 4214610: "5.0", 4225813: "5.10.0", 4240749: "5.10", 4288479: "5.21", 4305896: "5.30", 4352937: "5.40", 4363240: "5.41", 4395664: "6.00.0", 4402180: "6.00" };
 
 export const versionOf = (changelist) => buildVersions[changelist] ?? null;
 
@@ -57,12 +57,18 @@ export const battleRoyaleBuilds = Object.keys(buildVersions).filter((changelist)
 // 3.6's). 5.41 (CL-4363240, ++Fortnite+Release-5.41, UE 4.21, Update v5.41, 18 September 2018, the season's last update:
 // Update v6.00 began Season 6 on 27 September) is Update v5.41's build. It keeps AthenaSeason5; its data is
 // gamedata/4363240 (a full install, Save the World with every mission info: 5.40's server-only ones are back in its paks).
+// Season 6 began with 6.00 (++Fortnite+Release-6.00, UE 4.21, Update v6.00, 27 September 2018, "Darkness Rises"), two
+// builds both called v6.00: CL-4395664, the earlier, whose paks Core has no copy of ("6.00.0" here, as 5.10's earlier build
+// is "5.10.0"), and CL-4402180 ("6.00", the owner's build). Its AthenaSeason6 has its own Battle Pass (100 tiers, the
+// BRSeason6 storefront; Season 5's level and tier curves, unchanged); its data is gamedata/4402180 (a full install, Save
+// the World with it), and CL-4395664 plays on it (src/gamedata/read.js laterData).
 export const battleRoyaleSeasons = [
   { season: 1, firstVersion: "1.8", lastVersion: "1.10" },
   { season: 2, firstVersion: "1.11", lastVersion: "2.5" },
   { season: 3, firstVersion: "3.0", lastVersion: "3.6" },
   { season: 4, firstVersion: "4.0", lastVersion: "4.5" },
-  { season: 5, firstVersion: "5.0", lastVersion: "5.41" }
+  { season: 5, firstVersion: "5.0", lastVersion: "5.41" },
+  { season: 6, firstVersion: "6.00", lastVersion: "6.00" }
 ];
 // "Season 2 (1.11 – 2.5)", "1.11 – 2.5"; a season of one version Core knows, "Season 4 (4.0)".
 export const seasonVersions = (season) => {

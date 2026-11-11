@@ -181,12 +181,13 @@ test("the admin panel gives the full locker and takes back only what it gave", a
     // and the rest; 4.5 drops 4.4's Pinwheel, which stays; 5.0 Season 5's: Drift, Huntress, Ragnarok, the toys and the rest;
     // 5.10 Reef Ranger, the Birthday's and the rest; 5.21 Beef Boss, Overtaker, Sushi Master, the P.A.N.D.A Team Leader and the rest;
     // 5.30 Musha and Hime, Ravage, Backbone and Chopper and the rest; 5.40 Wild Card, Field Surgeon, Hacivat, Stage Slayer and the rest;
-    // 5.41 Valkyrie, Nite Nite, Grill Sergeant and the rest).
+    // 5.41 Valkyrie, Nite Nite, Grill Sergeant and the rest; 6.00 Season 6's: DJ Yonder, Calamity, Dire, the pets, the music
+    // (not MusicPack_000_Default, the empty slot's) and the rest, and drops 5.41's Purple Bus and Birthday emoticon, which stay).
     const lockerIds = [...new Set([...inBuild("4132537", () => Object.keys(athenaCosmetics())), ...inBuild("4166199", () => Object.keys(athenaCosmetics())),
-      ...inBuild("4363240", () => Object.keys(athenaCosmetics()))]),
+      ...inBuild("4363240", () => Object.keys(athenaCosmetics())), ...inBuild("4402180", () => Object.keys(athenaCosmetics()))]),
       "AthenaBattleBus:bbid_winterbus", "AthenaDance:eid_smoothride",
       "AthenaSkyDiveContrail:trails_id_008_ridethelightning"]
-      .filter((id) => !/cid_00\d_athena_commando_\w_default|duo_umbrella|squad_umbrella|eid_gunshow|emoji_placeholder|^athena[a-z]+:[a-z]+_random$/i.test(id));
+      .filter((id) => !/cid_00\d_athena_commando_\w_default|duo_umbrella|squad_umbrella|eid_gunshow|emoji_placeholder|musicpack_000_default|^athena[a-z]+:[a-z]+_random$/i.test(id));
     const bannerRows = inBuild("3724489", bannerIds);
     const icon = bannerRows.find((id) => /^HomebaseBannerIcon:FounderTier/.test(id));
     assert.ok(icon && !Object.values((await account()).items).some((item) => item.templateId === icon));
@@ -247,15 +248,16 @@ test("what giveAllCosmetics gave stays once the panel gives the full locker", ()
   const held = Object.values(session.profile("profile0").profile.items).filter((item) => /^HomebaseBanner/.test(item.templateId)).length;
   // giveAllCosmetics gave 4.0's; the full locker adds the 215 cosmetics it lacks, the Winter Bus (1.11 to 3.3), Smooth
   // Ride (to 3.5.2), Ride the Lightning (to 3.6), 4.1's Snap emote, 4.2's eighteen, 4.4's fifty-six, 4.5's thirty-three and
-  // 5.0's hundred and four (its toys too), 5.10's twenty-five, 5.21's thirty, 5.30's forty-seven, 5.40's twenty-nine (not its Random bus), 5.41's seven, and every banner, 5.0's twenty-two Season 5
-  // icons too.
-  assert.deepEqual(grantFullLocker(session), { cosmetics: 353, banners: inBuild("4363240", bannerIds).length - held });
+  // 5.0's hundred and four (its toys too), 5.10's twenty-five, 5.21's thirty, 5.30's forty-seven, 5.40's twenty-nine (not its Random bus), 5.41's seven,
+  // 6.00's hundred and seven (not its default or Random music), and every banner, 5.0's twenty-two Season 5 icons too, and
+  // 6.00's Season 6 ones.
+  assert.deepEqual(grantFullLocker(session), { cosmetics: 460, banners: inBuild("4402180", bannerIds).length - held });
   session.commit();
   for (const profileId of ["athena", "profile0"]) createProfileStore(dataDir).save(session.profile(profileId).profile);
 
   session = locker({});
-  assert.equal(Object.keys(session.profile("athena").profile.items).length, total + 353);
-  assert.equal(removeFullLocker(session).cosmetics, total + 353 - 6);
+  assert.equal(Object.keys(session.profile("athena").profile.items).length, total + 460);
+  assert.equal(removeFullLocker(session).cosmetics, total + 460 - 6);
 })));
 
 // Core-Backend #161: the full locker gave Cert's EID_GunShow, a consumable emote no one was given, which 1.11's emote
@@ -314,7 +316,8 @@ test("the admin panel sets an account's Battle Royale season level, with its cha
     assert.equal(set.status, 200);
     assert.deepEqual(set.body.battleRoyale, { level: 30, xp: 0, maxLevel: set.body.battleRoyale.maxLevel, season: 1,
       battlePasses: [{ season: 2, tier: 1, purchased: false, paid: 0 }, { season: 3, tier: 1, purchased: false, paid: 0 },
-        { season: 4, tier: 1, purchased: false, paid: 0 }, { season: 5, tier: 1, purchased: false, paid: 0 }] });
+        { season: 4, tier: 1, purchased: false, paid: 0 }, { season: 5, tier: 1, purchased: false, paid: 0 },
+        { season: 6, tier: 1, purchased: false, paid: 0 }] });
     const after = await athena(backend.port, player);
     assert.ok((await revision()) > beforeRvn);
     assert.equal(after.stats.attributes.level, 30);
@@ -363,8 +366,8 @@ test("the admin panel gives single cosmetics of the chosen build, and refuses wh
     // The builds with Battle Royale, the newest the default (no build a player last played is recorded).
     let listed = await list();
     assert.equal(listed.status, 200);
-    assert.deepEqual(listed.body.builds, [{ build: "3724489", version: "1.8" }, { build: "3729133", version: "1.8.1" }, { build: "3741772", version: "1.8.2" }, { build: "3757339", version: "1.9" }, { build: "3775276", version: "1.9.1" }, { build: "3790078", version: "1.10" }, { build: "3807424", version: "1.11" }, { build: "3825894", version: "2.1" }, { build: "3841827", version: "2.2" }, { build: "3847564", version: "2.3" }, { build: "3858292", version: "2.4" }, { build: "3870737", version: "2.4.2" }, { build: "3889387", version: "2.5" }, { build: "3901517", version: "3.0" }, { build: "3915963", version: "3.1" }, { build: "3917250", version: "3.1.1" }, { build: "3935073", version: "3.2" }, { build: "3942182", version: "3.3" }, { build: "4000805", version: "3.5.1" }, { build: "4008490", version: "3.5.2" }, { build: "4019403", version: "3.6" }, { build: "4039451", version: "4.0" }, { build: "4053532", version: "4.1" }, { build: "4072250", version: "4.2" }, { build: "4117433", version: "4.4.0" }, { build: "4127312", version: "4.4.1" }, { build: "4132537", version: "4.4.2" }, { build: "4159770", version: "4.5.0" }, { build: "4166199", version: "4.5" }, { build: "4204761", version: "5.0.0" }, { build: "4214610", version: "5.0" }, { build: "4225813", version: "5.10.0" }, { build: "4240749", version: "5.10" }, { build: "4288479", version: "5.21" }, { build: "4305896", version: "5.30" }, { build: "4352937", version: "5.40" }, { build: "4363240", version: "5.41" }]);
-    assert.deepEqual([listed.body.build, listed.body.version, listed.body.hasProfile], ["4363240", "5.41", false]);
+    assert.deepEqual(listed.body.builds, [{ build: "3724489", version: "1.8" }, { build: "3729133", version: "1.8.1" }, { build: "3741772", version: "1.8.2" }, { build: "3757339", version: "1.9" }, { build: "3775276", version: "1.9.1" }, { build: "3790078", version: "1.10" }, { build: "3807424", version: "1.11" }, { build: "3825894", version: "2.1" }, { build: "3841827", version: "2.2" }, { build: "3847564", version: "2.3" }, { build: "3858292", version: "2.4" }, { build: "3870737", version: "2.4.2" }, { build: "3889387", version: "2.5" }, { build: "3901517", version: "3.0" }, { build: "3915963", version: "3.1" }, { build: "3917250", version: "3.1.1" }, { build: "3935073", version: "3.2" }, { build: "3942182", version: "3.3" }, { build: "4000805", version: "3.5.1" }, { build: "4008490", version: "3.5.2" }, { build: "4019403", version: "3.6" }, { build: "4039451", version: "4.0" }, { build: "4053532", version: "4.1" }, { build: "4072250", version: "4.2" }, { build: "4117433", version: "4.4.0" }, { build: "4127312", version: "4.4.1" }, { build: "4132537", version: "4.4.2" }, { build: "4159770", version: "4.5.0" }, { build: "4166199", version: "4.5" }, { build: "4204761", version: "5.0.0" }, { build: "4214610", version: "5.0" }, { build: "4225813", version: "5.10.0" }, { build: "4240749", version: "5.10" }, { build: "4288479", version: "5.21" }, { build: "4305896", version: "5.30" }, { build: "4352937", version: "5.40" }, { build: "4363240", version: "5.41" }, { build: "4395664", version: "6.00.0" }, { build: "4402180", version: "6.00" }]);
+    assert.deepEqual([listed.body.build, listed.body.version, listed.body.hasProfile], ["4402180", "6.00", false]);
     for (const bad of ["3700114", "3532353", "nope"]) {
       assert.equal((await list(`?build=${bad}`)).status, 400, bad);
       assert.equal((await give({ build: bad, templateIds: ["AthenaPickaxe:halloweenscythe"] })).status, 400, bad);
@@ -374,7 +377,7 @@ test("the admin panel gives single cosmetics of the chosen build, and refuses wh
     // unused umbrellas.
     listed = await list("?build=3724489");
     const lockerIds = inBuild("3724489", () => Object.keys(athenaCosmetics()))
-      .filter((id) => !/cid_00\d_athena_commando_\w_default|duo_umbrella|squad_umbrella|eid_gunshow|emoji_placeholder|^athena[a-z]+:[a-z]+_random$/i.test(id));
+      .filter((id) => !/cid_00\d_athena_commando_\w_default|duo_umbrella|squad_umbrella|eid_gunshow|emoji_placeholder|musicpack_000_default|^athena[a-z]+:[a-z]+_random$/i.test(id));
     assert.deepEqual([listed.body.build, listed.body.total, listed.body.matches], ["3724489", lockerIds.length, lockerIds.length]);
     assert.deepEqual(listed.body.items.map((item) => item.templateId).sort(), [...lockerIds].sort());
     const byId = (body, templateId) => body.items.find((item) => item.templateId === templateId);

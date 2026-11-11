@@ -22,8 +22,11 @@ export const dataBuilds = [certBuild, ...(fs.existsSync(dir) ? fs.readdirSync(di
 // CL-4204761 (5.0.0, the launch build), whose paks Core has no copy of either, plays on CL-4214610's (gamedata/4214610),
 // Season 5's; it would otherwise get 4.5's, a Season 4 build. 5.10's CL-4225813 (5.10.0, Update v5.10's build), whose paks
 // Core has no copy of either, plays on CL-4240749's (gamedata/4240749, the later build of the same update, Content Update
-// v5.10's); it would otherwise get 5.0's, without 5.10's cosmetics and Birthday challenges.
-export const laterData = { 4117433: "4132537", 4127312: "4132537", 4159770: "4166199", 4204761: "4214610", 4225813: "4240749" };
+// v5.10's); it would otherwise get 5.0's, without 5.10's cosmetics and Birthday challenges. 6.00's CL-4395664 (6.00.0, the
+// earlier of Update v6.00's two builds), whose paks Core has no copy of either, plays on CL-4402180's (gamedata/4402180,
+// Season 6's); it would otherwise get 5.41's, a Season 5 build.
+export const laterData = { 4117433: "4132537", 4127312: "4132537", 4159770: "4166199", 4204761: "4214610", 4225813: "4240749",
+  4395664: "4402180" };
 
 export function dataBuild(changelist) {
   if (dataBuilds.includes(changelist)) return changelist;

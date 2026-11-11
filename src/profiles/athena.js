@@ -39,7 +39,11 @@ const slots = {
   ConsumableEmote: ["AthenaConsumableEmote", "favorite_consumableemote"],
   VictoryPose: ["AthenaVictoryPose", "favorite_victorypose"],
   // 3.0's (CL-3901517) contrails (EAthenaCustomizationCategory::SkyDiveContrail, favorite_skydivecontrail).
-  SkyDiveContrail: ["AthenaSkyDiveContrail", "favorite_skydivecontrail"]
+  SkyDiveContrail: ["AthenaSkyDiveContrail", "favorite_skydivecontrail"],
+  // 6.00's (CL-4402180) lobby music (EAthenaCustomizationCategory::MusicPack, AthenaMusicPack:*, favorite_musicpack:
+  // Update v6.00's "Players will now have an option in the Locker to select their preferred music choice"). Its pets are
+  // back blings (AthenaBackpack:PetCarrier_*, UAthenaPetCarrierItemDefinition), so they go in the Backpack slot.
+  MusicPack: ["AthenaMusicPack", "favorite_musicpack"]
 };
 const slotOrder = ["None", ...Object.keys(slots)];
 
@@ -97,7 +101,10 @@ const ownsSaveTheWorld = (accountId, settings = {}) => settings.ownsSaveTheWorld
 // A locker that holds one loses it; nothing gives one.
 const randomCharacters = [1, 2, 3, 4, 5, 6, 7, 8].map((n) => `AthenaCharacter:cid_00${n}_athena_commando_${n <= 4 ? "f" : "m"}_default`);
 const unusedUmbrellas = ["AthenaGlider:duo_umbrella", "AthenaGlider:squad_umbrella"];
-const notLockerItems = [...randomCharacters, ...unusedUmbrellas];
+// - 6.00's MusicPack_000_Default (its display name still "TBD"): the lobby music an empty music slot plays, which no tier,
+//   offer or quest gives.
+const defaultMusicPack = "AthenaMusicPack:musicpack_000_default";
+const notLockerItems = [...randomCharacters, ...unusedUmbrellas, defaultMusicPack];
 
 // The cosmetics whose definition says they were never anyone's (Core-Backend #161):
 // - a consumable emote (AthenaConsumableEmoteItemDefinition): an item with a count that playing it uses up, not a
@@ -159,9 +166,10 @@ const migrated = (profile, name) => (profile.coreMigrations ?? []).includes(name
 const victoryUmbrella = "AthenaGlider:solo_umbrella";
 // Season 3's is the Paper Parasol (Umbrella_PaperParasol), 3.0's AthenaSeason3 SeasonFirstWinRewards, and Season 4's
 // 4.0's AthenaSeason4 SeasonFirstWinRewards, Umbrella_Season_04 ("Wet Paint"), and Season 5's 5.0's AthenaSeason5
-// SeasonFirstWinRewards, Umbrella_Season_05.
+// SeasonFirstWinRewards, Umbrella_Season_05, and Season 6's 6.00's AthenaSeason6 SeasonFirstWinRewards, Umbrella_Season_06
+// ("Webrella").
 const seasonVictoryUmbrellas = { 2: "AthenaGlider:umbrella_snowflake", 3: "AthenaGlider:umbrella_paperparasol", 4: "AthenaGlider:umbrella_season_04",
-  5: "AthenaGlider:umbrella_season_05" };
+  5: "AthenaGlider:umbrella_season_05", 6: "AthenaGlider:umbrella_season_06" };
 const founderVictoryUmbrella = "AthenaGlider:founderumbrella";
 const victoryUmbrellas = [victoryUmbrella, ...Object.values(seasonVictoryUmbrellas), founderVictoryUmbrella];
 const victoryUmbrellasOf = (accountId, settings, season) => [victoryUmbrella, seasonVictoryUmbrellas[season],

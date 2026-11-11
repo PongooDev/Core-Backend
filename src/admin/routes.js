@@ -1235,8 +1235,8 @@ export function adminRoutes(context) {
     // Maverick, Shade, Sun Tan Specialist, Archetype...), 5.20's and 5.21's (Beef Boss, Mullet Marauder, Overtaker,
     // Sushi Master, the P.A.N.D.A Team Leader...), 5.30's (Musha and Hime, Ravage, Backbone and Chopper...), 5.40's
     // (Wild Card, Field Surgeon, Hacivat, Stage Slayer...) and, now 5.41's (CL-4363240), 5.41's (Valkyrie, Nite Nite, Grill
-    // Sergeant, Frostwing).
-    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4166199", 5: "4363240" }[s];
+    // Sergeant, Frostwing). Season 6's as 6.00's (CL-4402180).
+    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4166199", 5: "4363240", 6: "4402180" }[s];
     const offers = inBuild(build, () => itemShopOffers(now, config, s));
     const cosmetics = inBuild(build, () => eligibleCosmetics());
     const currentDay = shopDay(now, config, s);
@@ -1343,7 +1343,9 @@ export function adminRoutes(context) {
       { version: "5.21", cl: 4288479, event: "Season 5" },
       { version: "5.30", cl: 4305896, event: "Season 5" },
       { version: "5.40", cl: 4352937, event: "High Stakes" },
-      { version: "5.41", cl: 4363240, event: "Season 5" }
+      { version: "5.41", cl: 4363240, event: "Season 5" },
+      { version: "6.00.0", cl: 4395664, event: "Cram Session" },
+      { version: "6.00", cl: 4402180, event: "Cram Session" }
     ];
 
     const sampleBuilds = builds.map((b) => ({
@@ -1505,6 +1507,19 @@ export function adminRoutes(context) {
           currency: "Road Trip Tickets (AccountResource:eventcurrency_roadtrip), Horde Points (Token:hordepointstier1-4), Gold in the Event Store",
           llama: "Road Trip Llama (CardPack_Event_2018_RoadTrip, 500 Road Trip Tickets)",
           questsCount: 9
+        },
+        {
+          id: "cramsession2018",
+          name: "Cram Session",
+          subtitle: "Season 6's mini-event: active Mini-Boss alerts (10 a day) giving two XP, evolution or perk packs and Gold, four ten-stage quest lines (Let's Explore, Treasure Hunter, Safecracking, The Air Itself is Filled with Husks) and the repeatable Mini-Boss quest, MEGA B.A.S.E. Kyle in the Event Store, the Ratatat and the Hydraulic Sledge in the Weekly Store; the Season 6 lobby",
+          buildRange: "6.00 (CL 4395664 – 4402180)",
+          flags: ["EventFlag.ActiveMiniBosses", "EventFlag.PassiveStorms", "EventFlag.LobbySeason6"],
+          theater: "Standard Zones with Mini-Boss and passive Mutant Storm alerts",
+          theaterRegions: [],
+          alertsQuota: "10 Mini-Boss mission alerts (Gold, two XP, evolution or perk packs) and 4 passive Mutant Storms per day",
+          currency: "Gold (capped at 5000) in the Event Store",
+          llama: "None",
+          questsCount: 5
         },
         {
           id: "birthday2018",

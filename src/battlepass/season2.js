@@ -51,16 +51,26 @@ import { currentBattlePassConfig } from "./season1.js";
 // (Season5_Paid_Schedule) and Drift's progressive challenges (_ProgressiveA_), its tier 100 Ragnarok's (_ProgressiveB_);
 // the free half of the weeks is every player's (SeasonGrantsToEveryone, profiles/athena.js). The offers' texts are Core's
 // again, in Season 4's form, from what AthenaSeason5's pass and its first 26 tiers give.
+// Season 6's Battle Pass (6.00, CL-4402180; CL-4395664 plays on its data) is AthenaSeason6's the same way: 100 tiers, the
+// BRSeason6 storefront, its own display assets (DA_BR_Season6_BattlePass, DA_BR_Season6_BattlePassWithLevels), its own
+// tier offer (BattlePassLevelOfferID A6FE59C497B844068E1B5D84396F19BA), at Epic's prices (Update v6.00: "New Season, new
+// Battle Pass. 100 levels, over 100 new rewards. Available in-game right now for 950 V-Bucks"; the bundle 2,800, the
+// Fortnite Wiki's Season 6). Its tier 1 Battle Pass rewards give DJ Yonder and Calamity, the Hunting Party challenges
+// (Season6_Paid_Schedule) and Calamity's progressive challenges (_ProgressiveA_, her Reckoning pickaxe), its tier 100 Dire's
+// (_ProgressiveB_, his Wolfpack back bling); the free half of the weeks is every player's (Season6_Free_Schedule,
+// SeasonGrantsToEveryone). It is the first with pets (Bonesy, Camo, Scales: back blings) and lobby music (Squeaky Clean,
+// Eerie, OG (Remix)). The offers' texts are Core's again, in Season 5's form, from what AthenaSeason6's pass and its
+// first 26 tiers give.
 // The admin panel's Battle Pass tab sets each season's pass and bundle prices (battlepass.season2, .season3, .season4,
-// .season5).
+// .season5, .season6).
 export const tierOfferId = "F86AC2ED4B3EA4B2D65EF1B2629572A0";
 export const tierPrice = 150;
 export const bundleTiers = 25;
 
 export const defaultSeasonTwo = { battlePassPrice: 950, bundlePrice: 2800 };
-// Each season's default prices: Season 3's, Season 4's and Season 5's are Season 2's.
+// Each season's default prices: Season 3's, Season 4's, Season 5's and Season 6's are Season 2's.
 export const defaultSeasonPrices = { 2: defaultSeasonTwo, 3: { battlePassPrice: 950, bundlePrice: 2800 }, 4: { battlePassPrice: 950, bundlePrice: 2800 },
-  5: { battlePassPrice: 950, bundlePrice: 2800 } };
+  5: { battlePassPrice: 950, bundlePrice: 2800 }, 6: { battlePassPrice: 950, bundlePrice: 2800 } };
 
 export function sanitizeSeasonPrices(input, current, defaults = defaultSeasonTwo) {
   const result = { ...defaults, ...(current ?? {}) };
@@ -144,14 +154,33 @@ const season5BundleDescription = [
   "  • 400 V-Bucks", "  • 70% Bonus Season Match XP", "  • 20% Bonus Season Friend Match XP", "  • Exclusive Weekly Challenges", "  • and more!", "",
   "Play to level up your Battle Pass the rest of the way, up to Ragnarok at tier 100. Want it all faster? You can use V-Bucks to buy levels any time!"
 ].join("\r\n");
+const season6PassDescription = [
+  "Season 6: Sep 27 - Dec 5", "",
+  "Instantly get these items:",
+  "  • DJ Yonder Outfit", "  • Calamity Outfit", "  • 50% Bonus Season Match XP", "  • 10% Bonus Season Friend Match XP",
+  "  • Exclusive Weekly Challenges", "",
+  "Play to level up your Battle Pass, unlocking up to 100 tiers of rewards (typically takes 75 to 150 hours of play). Want it all faster? You can use V-Bucks to buy levels any time!",
+  "  • Dire plus 4 other outfits", "  • Progressive Calamity and Dire challenges", "  • 3 Pets", "  • 3 Music Tracks", "  • 1 Harvesting Tool",
+  "  • 3 Gliders", "  • 2 Back Blings", "  • 4 Contrails", "  • 10 Loading Screens", "  • 1300 V-Bucks", "  • 120% Bonus Season Match XP",
+  "  • 40% Bonus Season Friend Match XP", "  • Toys, Sprays, Emotes and Emoticons", "  • and more!"
+].join("\r\n");
+const season6BundleDescription = [
+  "Season 6: Sep 27 - Dec 5", "",
+  `Instantly get the Battle Pass and ${bundleTiers} tiers.`,
+  "  • DJ Yonder Outfit", "  • Calamity Outfit", "  • Giddy-up Outfit", "  • Bonesy Pet", "  • Smash Up Harvesting Tool", "  • Picnic Glider",
+  "  • Squeaky Clean Music", "  • 300 V-Bucks", "  • 70% Bonus Season Match XP", "  • 20% Bonus Season Friend Match XP", "  • Exclusive Weekly Challenges",
+  "  • and more!", "",
+  "Play to level up your Battle Pass the rest of the way, up to Dire at tier 100. Want it all faster? You can use V-Bucks to buy levels any time!"
+].join("\r\n");
 const seasonTexts = {
   2: { passOfferId: battlePassOfferId, pass: passDescription, bundle: bundleDescription, bundleAsset: "BattlePass" },
   3: { passOfferId: "core_br_season3_battlepass", pass: season3PassDescription, bundle: season3BundleDescription, bundleAsset: "BattlePassWithLevels" },
   4: { passOfferId: "core_br_season4_battlepass", pass: season4PassDescription, bundle: season4BundleDescription, bundleAsset: "BattlePassWithLevels" },
-  5: { passOfferId: "core_br_season5_battlepass", pass: season5PassDescription, bundle: season5BundleDescription, bundleAsset: "BattlePassWithLevels" }
+  5: { passOfferId: "core_br_season5_battlepass", pass: season5PassDescription, bundle: season5BundleDescription, bundleAsset: "BattlePassWithLevels" },
+  6: { passOfferId: "core_br_season6_battlepass", pass: season6PassDescription, bundle: season6BundleDescription, bundleAsset: "BattlePassWithLevels" }
 };
 
-// The season's tier offer id: AthenaSeason3's (and AthenaSeason4's and 5's) BattlePassLevelOfferID from Season 3, else the modal's.
+// The season's tier offer id: AthenaSeason3's (and AthenaSeason4's, 5's and 6's) BattlePassLevelOfferID from Season 3, else the modal's.
 const seasonTierOfferId = (season) => season.battlePassLevelOfferId || tierOfferId;
 
 const seasonOffers = () => {

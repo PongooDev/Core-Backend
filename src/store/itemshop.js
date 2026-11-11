@@ -88,14 +88,23 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // Magnifying Axe, Sparkler, Fireworks Team Leader, the Star-Spangled Ranger and Trooper, Rocket Spinner, Criterion and
 // Crimson Axe, Infinite Dab, True Heart, Oblivion and Terminus, and Bring It (the back blings, the Ice contrail and the
 // Blockbuster outfits were never sold on their own); its data drops the Pinwheel emote, so 4.5 doesn't sell it on 5 July.
-// Only 4.5's data has them, so 4.0's to 4.4's days are as they were. A build's
-// season is its athena data's seasonNumber, Season 1 without one.
+// Only 4.5's data has them, so 4.0's to 4.4's days are as they were.
+//
+// 6.00 (CL-4402180; CL-4395664 plays on its data) is Season 6, with its own shop the same way: Epic's of Season 6, day by
+// day from its first day, 27 September 2018, to its last, 5 December 2018 (itemshop-season6.json, the same wiki pages, 24
+// October, 1, 24 and 27 November from their Part 1), replayed in a 70-day cycle from the day 6.00 is first served, so the
+// season's countdown and its weeks' unlock days (DaysSinceEventStart) run on Season 6's own calendar. Only the cosmetics
+// 6.00's data has are in: its paks already hold Season 6's October cosmetics (Airheart, Ludwig and Heidi, Peekaboo...), so
+// 6.00's own days (27 September to 3 October, before Update v6.01) are whole, and the later days keep what 6.00 has (the
+// Fortnitemares and November cosmetics, Maximilian, Hay Man, Skull Ranger, the football outfits..., are left out, so 33 of
+// the 70 days have an empty featured section). A build's season is its athena data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;
   return { days, firstDay: Date.parse(`${days[0].date}T00:00:00Z`) };
 };
 const seasonHistories = { 1: readHistory("itemshop.json"), 2: readHistory("itemshop-season2.json"),
-  3: readHistory("itemshop-season3.json"), 4: readHistory("itemshop-season4.json"), 5: readHistory("itemshop-season5.json") };
+  3: readHistory("itemshop-season3.json"), 4: readHistory("itemshop-season4.json"), 5: readHistory("itemshop-season5.json"),
+  6: readHistory("itemshop-season6.json") };
 export const seasonOfBuild = () => athenaSeason()?.seasonNumber ?? 1;
 const historyOf = (season) => seasonHistories[season] ?? seasonHistories[1];
 // The first day of a season's history (ms, UTC): Season 3's is 22 February 2018, Epic's first day of the season.
@@ -111,8 +120,8 @@ const rotationMsOf = (config) => Math.max(0, Math.min(23, Number(config?.rotatio
 // choice: its replay and countdown have run that way since the shop was added, every running server is somewhere in its
 // cycle, and re-anchoring it would jump their shops and countdowns), unless an admin sets its start too. With no
 // recorder (no settings store), Season 2 also keeps its history's first day. Season 3 starts the same way, on the day
-// 3.0 is first served, Season 4 on the day 4.0 is, and Season 5 on the day 5.0 is.
-const anchoredSeasons = [2, 3, 4, 5];
+// 3.0 is first served, Season 4 on the day 4.0 is, Season 5 on the day 5.0 is, and Season 6 on the day 6.00 is.
+const anchoredSeasons = [2, 3, 4, 5, 6];
 let seasonStartRecorder = null;
 let recordSeasonStarts = true;
 export function configureSeasonStarts(recorder) {
@@ -460,7 +469,10 @@ const tileOf = (tile) => {
 // Synth Star's Keytar, Hacivat's Crafted Carrier, Triage Trooper's Care Package and Field Surgeon's Gurney Gear, as 5.40's
 // back bling names pair them (bid_108_blingmale, bid_106_garagebandmale, bid_107_garagebandfemale, bid_108_hacivatmale,
 // bid_109_medicmale, bid_110_medicfemale). 5.41 (CL-4363240) adds Valkyrie's Valkyrie Wings (bid_113_darkvikingfemale) and Nite
-// Nite's Balloon Llama (bid_112_clownmale), as the wiki's pages name them ("bundled_with").
+// Nite's Balloon Llama (bid_112_clownmale), as the wiki's pages name them ("bundled_with"). 6.00 (CL-4402180) adds those of
+// the Season 6 outfits its days sell: Airheart's Airflow (bid_116_dieselpunkfemale), Ludwig's Clockworks
+// (bid_117_octoberfestmale), Heidi's Pretzel Protector (bid_118_octoberfestfemale) and Peekaboo's Battle Balloon
+// (bid_111_clownfemale), as 6.00's back bling names pair them (🟡 Season 6's pages carry no bundled_with).
 export const bundledBackBlings = {
   "AthenaCharacter:cid_093_athena_commando_m_dinosaur": "AthenaBackpack:bid_031_dinosaur",
   "AthenaCharacter:cid_097_athena_commando_f_rockerpunk": "AthenaBackpack:bid_034_rockerpunk",
@@ -501,7 +513,11 @@ export const bundledBackBlings = {
   "AthenaCharacter:cid_217_athena_commando_m_medic": "AthenaBackpack:bid_109_medicmale",
   "AthenaCharacter:cid_216_athena_commando_f_medic": "AthenaBackpack:bid_110_medicfemale",
   "AthenaCharacter:cid_222_athena_commando_f_darkviking": "AthenaBackpack:bid_113_darkvikingfemale",
-  "AthenaCharacter:cid_221_athena_commando_m_clown": "AthenaBackpack:bid_112_clownmale"
+  "AthenaCharacter:cid_221_athena_commando_m_clown": "AthenaBackpack:bid_112_clownmale",
+  "AthenaCharacter:cid_224_athena_commando_f_dieselpunk": "AthenaBackpack:bid_116_dieselpunkfemale",
+  "AthenaCharacter:cid_225_athena_commando_m_octoberfest": "AthenaBackpack:bid_117_octoberfestmale",
+  "AthenaCharacter:cid_226_athena_commando_f_octoberfest": "AthenaBackpack:bid_118_octoberfestfemale",
+  "AthenaCharacter:cid_220_athena_commando_f_clown": "AthenaBackpack:bid_111_clownfemale"
 };
 
 // The day's offers by storefront, those the requesting build has the cosmetic for. Never a cosmetic the shop doesn't sell

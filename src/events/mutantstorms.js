@@ -1,6 +1,6 @@
 import { getItem } from "../gamedata/items.js";
 import { getQuest } from "../gamedata/quests.js";
-import { blockbuster2018, isEventActive, mutantStorms, mutantStorms2018 } from "./events.js";
+import { blockbuster2018, cramSession2018, isEventActive, mutantStorms, mutantStorms2018 } from "./events.js";
 
 export { mutantStorms, mutantStorms2018 };
 
@@ -117,5 +117,6 @@ export function upgradeLlamaTickets(offer, count) {
 
 // Whether the requesting build's Mini-Boss alerts run without Survive the Holidays (2.3's to 2.4.2's storms, and 4.0's
 // Blockbuster: "Miniboss Mission Alerts are more common during this event", its MiniBossCategory rows on
-// EventFlag.ActiveMiniBosses, placed and rewarded as 2.3's, world/theaters.js).
-export const miniBossesStay = () => isEventActive(mutantStorms2018) || isEventActive(blockbuster2018);
+// EventFlag.ActiveMiniBosses, placed and rewarded as 2.3's, world/theaters.js), and 6.00's Cram Session (placed as 2.3's,
+// rewarded by events/cramsession2018.js).
+export const miniBossesStay = () => isEventActive(mutantStorms2018) || isEventActive(blockbuster2018) || isEventActive(cramSession2018);

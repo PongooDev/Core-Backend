@@ -968,6 +968,13 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     say(`${ticket.accountId} (party of ${party.size}) queued for bucket ${ticket.bucketId}${party.customKey ? ` with custom key ${party.customKey}` : ""}`);
     if (!place(party)) waiting.push(party);
     if (!party.done) announceQueue(queueKey(party));
+    // A party no queue announces (a Playground match, assigned at once; a member following its party into a forming match)
+    // hears Queued now: without it the client stays in WaitingForParty, which shows "Connecting to matchmaking service...",
+    // until the server answers AssignMatch (Core-Backend #325).
+    if (!party.done && !party.queued && !ws.closed) {
+      party.queued = true;
+      ws.send(status("Queued", { ticketId: ticket.ticketId, queuedPlayers: party.size, estimatedWaitSec: 0, status: {} }));
+    }
   }
 
   function acceptServer(ws, ticket) {

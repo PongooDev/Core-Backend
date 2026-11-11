@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { currentBuild } from "../builds/context.js";
-import { blockbuster2018, isEventActive, mutantStorms2018, roadTrip2018, spring2018, storm2018, winter2017 } from "../events/events.js";
+import { blockbuster2018, cramSession2018, isEventActive, mutantStorms2018, roadTrip2018, spring2018, storm2018, winter2017 } from "../events/events.js";
+import { cramSession2018End, cramSessionEventItems } from "../events/cramsession2018.js";
 import { getItem } from "../gamedata/items.js";
 import { nextReplayOf, seasonMoment, weeklyStoreEnd } from "./itemshop.js";
 
@@ -224,7 +225,18 @@ export const spring2018End = "2018-02-22T00:00:00.000Z";
 // week on Season 5's replay (store/itemshop.js seasonMoment; from 13 and 20 September 00:00 UTC), the Bundlebuss before
 // them, at the same price and limit (🟡 as the Bundlebuss's). The Bowler leaves Road Trip's event items in its week. 5.41
 // (CL-4363240, Update v5.41's build, whose notes name the Bowler) keeps 5.40's weeks.
+// 6.00's (CL-4395664, CL-4402180; Update v6.00): "Added Ratatat Machine Pistol to the Weekly Store. Ratatat is a fast firing
+// Automatic Pistol ... Available until October 3 at 8 PM EST" (SID_Pistol_RatRod_SR_Ore_T01, "Ratatat", new in 6.00's
+// data) and "The Weekly Store will also feature some returning items during Cram Session. The Hydraulic Sledge is back the
+// first week" (SID_Blunt_Hammer_Hydraulic_VR_Ore_T01, the Epic hammer 6.00's data names "Hydraulic Sledge"; its Legendary
+// is "Pulverizer"): both every week on 6.00, as 5.30's Bundlebuss (🟡 Core's: Update v6.01's Lead Sled and Obliterator week
+// is 6.01's), the Ratatat at a legendary schematic's 1,680 Gold and the Sledge at an epic one's 600, one each (🟡 Epic's
+// prices and limits aren't recorded). A build's weeks count on its own season's replay (season, 5 when unset).
 const weeklyFeaturedByBuild = [
+  { firstBuild: 4395664, season: 6, weeks: [
+    { from: null, items: [{ templateId: "Schematic:sid_pistol_ratrod_sr_ore_t01", price: 1680, limit: 1 },
+      { templateId: "Schematic:sid_blunt_hammer_hydraulic_vr_ore_t01", price: 600, limit: 1 }] }
+  ] },
   { firstBuild: 4352937, weeks: [
     { from: "2018-09-20T00:00:00.000Z", items: [{ templateId: "Schematic:sid_launcher_flintlock_sr_ore_t01", price: 1680, limit: 1 }] },
     { from: "2018-09-13T00:00:00.000Z", items: [{ templateId: "Schematic:sid_assault_military_silenced_sr_ore_t01", price: 1680, limit: 1 }] },
@@ -236,11 +248,11 @@ const weeklyFeaturedByBuild = [
   { firstBuild: 3915963, items: [{ templateId: "Schematic:sid_shotgun_dragon_drum_sr_ore_t01", price: 1680, limit: 1 }] },
   { firstBuild: 3901517, items: [{ templateId: "Schematic:sid_pistol_handcannon_de_sr_ore_t01", price: 1680, limit: 1 }] }
 ];
-// The build's featured weekly items now: a build with weeks has the newest week begun on Season 5's replay.
+// The build's featured weekly items now: a build with weeks has the newest week begun on its season's replay.
 const weeklyFeatured = (now = new Date()) => {
   const entry = weeklyFeaturedByBuild.find(({ firstBuild }) => Number(currentBuild()) >= firstBuild);
   if (!entry?.weeks) return entry?.items ?? [];
-  const moment = seasonMoment(now, null, 5).getTime();
+  const moment = seasonMoment(now, null, entry.season ?? 5).getTime();
   return entry.weeks.find(({ from }) => from === null || moment >= Date.parse(from))?.items ?? [];
 };
 const storms2018 = () => !isEventActive(winter2017) && isEventActive(mutantStorms2018);
@@ -346,23 +358,29 @@ const roadTripEventItemList = [
 const roadTripEventItems = (now) => roadTripEventItemList.filter(({ templateId }) => !weeklyFeatured(now).some((item) => item.templateId === templateId));
 export const roadTrip2018End = "2018-09-27T00:00:00.000Z";
 const roadTripNow = () => !isEventActive(winter2017) && !storms2018() && !springNow() && !blockbusterNow() && isEventActive(roadTrip2018);
+// 6.00's Cram Session (events/cramsession2018.js) sells MEGA B.A.S.E. Kyle, counted by trackers of its own
+// (CramSession2018.*), its items counting down to Season 6's end on the replay (cramSession2018End).
+const cramSessionItems = (now) => cramSessionEventItems.filter(({ templateId }) => !weeklyFeatured(now).some((item) => item.templateId === templateId));
+const cramSessionNow = () => !isEventActive(winter2017) && !storms2018() && !springNow() && !blockbusterNow() && !roadTripNow()
+  && isEventActive(cramSession2018);
 // No event running: 5.0's persistent weekly store alone (persistentWeeklyBuild), with no event items.
-const noEventNow = () => !isEventActive(winter2017) && !storms2018() && !springNow() && !blockbusterNow() && !roadTripNow();
+const noEventNow = () => !isEventActive(winter2017) && !storms2018() && !springNow() && !blockbusterNow() && !roadTripNow() && !cramSessionNow();
 const persistentOnlyNow = () => noEventNow() && Number(currentBuild()) >= persistentWeeklyBuild;
 const eventItemsNow = (now = new Date()) => (storms2018() ? stormsEventItems : springNow() ? springItemsNow() : blockbusterNow() ? blockbusterItems(now)
-  : roadTripNow() ? roadTripEventItems(now) : persistentOnlyNow() ? [] : eventItems);
+  : roadTripNow() ? roadTripEventItems(now) : cramSessionNow() ? cramSessionItems(now) : persistentOnlyNow() ? [] : eventItems);
 export const eventStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWSpecialEventStoreFront"
   : springNow() ? "Spring2018.STWSpecialEventStoreFront" : blockbusterNow() ? "Blockbuster2018.STWSpecialEventStoreFront"
-    : roadTripNow() ? "RoadTrip2018.STWSpecialEventStoreFront" : eventStoreInstance);
+    : roadTripNow() ? "RoadTrip2018.STWSpecialEventStoreFront" : cramSessionNow() ? "CramSession2018.STWSpecialEventStoreFront" : eventStoreInstance);
 export const weeklyStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWRotationalEventStorefront"
   : springNow() ? "Spring2018.STWRotationalEventStorefront" : blockbusterNow() ? "Blockbuster2018.STWRotationalEventStorefront"
-    : roadTripNow() ? "RoadTrip2018.STWRotationalEventStorefront" : weeklyStoreInstance);
+    : roadTripNow() ? "RoadTrip2018.STWRotationalEventStorefront" : cramSessionNow() ? "CramSession2018.STWRotationalEventStorefront"
+      : weeklyStoreInstance);
 
 // The store is open while the requesting build runs Survive the Holidays (or 2.3's to 2.4.2's storms, 2.5's Spring It
-// On!, 3.5.1's Into the Storm, 4.0's to 4.2's Blockbuster or 5.0's Road Trip) and its data has Seasonal Gold; on 5.0 and
-// later always (the persistent weekly store).
+// On!, 3.5.1's Into the Storm, 4.0's to 4.2's Blockbuster, 5.0's Road Trip or 6.00's Cram Session) and its data has
+// Seasonal Gold; on 5.0 and later always (the persistent weekly store).
 export const hasEventStore = () => (isEventActive(winter2017) || isEventActive(mutantStorms2018) || isEventActive(spring2018) || isEventActive(storm2018)
-  || isEventActive(blockbuster2018) || isEventActive(roadTrip2018) || Number(currentBuild()) >= persistentWeeklyBuild)
+  || isEventActive(blockbuster2018) || isEventActive(roadTrip2018) || isEventActive(cramSession2018) || Number(currentBuild()) >= persistentWeeklyBuild)
   && Boolean(getItem(seasonalGold));
 
 const has = ({ templateId }) => Boolean(getItem(templateId));
@@ -375,7 +393,7 @@ export const winter2017End = "2018-01-25T00:00:00.000Z";
 export function eventStoreEnds(now = new Date()) {
   if (!hasEventStore()) return {};
   const end = storms2018() ? mutantStorms2018End : springNow() ? spring2018End : blockbusterNow() ? blockbuster2018End
-    : roadTripNow() ? roadTrip2018End : persistentOnlyNow() ? null : winter2017End;
+    : roadTripNow() ? roadTrip2018End : cramSessionNow() ? cramSession2018End : persistentOnlyNow() ? null : winter2017End;
   if (!end) return { stwEventStoreEnd: weeklyStoreEnd(now), stwWeeklyStoreEnd: weeklyStoreEnd(now) };
   return { stwEventStoreEnd: nextReplayOf(end, now), stwWeeklyStoreEnd: weeklyStoreEnd(now) };
 }

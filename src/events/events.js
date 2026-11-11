@@ -321,6 +321,23 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // on 5.30 runs past it). Its mission infos are back in its paks, but its DefaultGameData still names no MissionAlerts: its
 // alerts are 5.40's (5.30's rows), and its MissionAlertCategories keeps MegaAlertCategory, so its group missions carry
 // Mega Alerts too. LobbySeason5, Road Trip and Horde (Update v5.41's Weekly Horde Challenge 7: world/horde.js) run on.
+// 6.00 (CL-4395664 and CL-4402180, Update v6.00, 27 September 2018; CL-4402180's data serves both, gamedata/read.js
+// laterData), Season 6, "Darkness Rises". Every EventFlag.* in CL-4402180's paks (the same byte scan, all 335,787 files of
+// its full install, its pakchunk1000 and 1001 read with FModel's dynamic keys): 5.41's less LTM_Heist's and the lobby
+// decor's (LobbyHalloweenDecor, LobbyWinterDecor, LobbySeason4), the Cube's legs and runes still in CUBE (and
+// Cube_Dest_Scripting's _Destination), and, new, LobbySeason6 (Items/Events/Shared/LobbyBG_Season6: the lobby in
+// Maps/UI/Frontend_Lobby_Season6) and Fortnitemares, FortnitemaresPhase1 and Phase2 (the quest map's Fortnitemares pages,
+// Update v6.20's event). Its map has no flag of its own: the floating island (Athena/Prototype/Blueprints/Island/
+// BP_IslandScripting, placed in Athena_POI_Foundations) takes its position from the server-only BP_IslandServerOnly,
+// which isn't in the client's paks (nor in Core-ServerAssets' 6.00 pak), and replicates it (IslandPosition,
+// CubeletGrowthstage); the corrupted areas (the rune seals and vents, BP_Athena_RuneSeal) follow it. Season 6 began with
+// the Cube risen under the floating island over Leaky Lake, so the Cube's Season 5 flags and High Stakes end with 5.41
+// (events/cube.js, events/highstakes.js), Road Trip and Challenge the Horde with Season 5 (roadTrip2018End, 🟡 the Horde's
+// end: Update v6.00 names neither), and LobbySeason5 with LobbySeason6. 6.00 serves LobbySeason6 and the ticketless
+// storms, and Save the World's Cram Session (events/cramsession2018.js): "Mini-Boss Mission Alerts are active, and up to 10
+// can be completed per day", so EventFlag.ActiveMiniBosses (MiniBossCategory, quota 10). Its group missions keep 5.40's
+// Mega Alerts (Update v6.00: "MEGA Alerts will now show the correct reward quantities"). Fortnitemares isn't 6.00's (24
+// October, Update v6.20's day): by the admin's switch only.
 export const blockbuster2018 = "Blockbuster2018";
 export const blockbuster2018Phase1 = "EventFlag.Blockbuster2018Phase1";
 export const blockbuster2018Phase2 = "EventFlag.Blockbuster2018Phase2";
@@ -328,6 +345,9 @@ export const blockbuster2018Phase3 = "EventFlag.Blockbuster2018Phase3";
 export const blockbuster2018Phase4 = "EventFlag.Blockbuster2018Phase4";
 export const lobbySeason4 = "EventFlag.LobbySeason4";
 export const lobbySeason5 = "EventFlag.LobbySeason5";
+export const lobbySeason6 = "EventFlag.LobbySeason6";
+// 6.00's Save the World mini-event (events/cramsession2018.js).
+export const cramSession2018 = "CramSession2018";
 export const roadTrip2018 = "RoadTrip2018";
 export const roadTrip2018Flag = "EventFlag.RoadTrip2018";
 export const hordeFlag = "EventFlag.Horde";
@@ -364,6 +384,8 @@ const build510 = 4240749;
 const build521 = 4288479;
 const build530 = 4305896;
 const build541 = 4363240;
+const build6000 = 4395664;
+const build600 = 4402180;
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
@@ -394,9 +416,11 @@ const events = [
   { name: blockbuster2018, flag: blockbuster2018Phase3, firstBuild: build440, lastBuild: build45 },
   { name: blockbuster2018, flag: blockbuster2018Phase4, firstBuild: build450, lastBuild: build45 },
   { name: blockbuster2018, flag: activeMiniBosses, firstBuild: build40, lastBuild: build45 },
-  { name: passiveStorms, flag: passiveStorms, firstBuild: build40, lastBuild: build541 },
+  { name: passiveStorms, flag: passiveStorms, firstBuild: build40, lastBuild: build600 },
   { name: lobbySeason4, flag: lobbySeason4, firstBuild: build40, lastBuild: build45 },
   { name: lobbySeason5, flag: lobbySeason5, firstBuild: build500, lastBuild: build541 },
+  { name: lobbySeason6, flag: lobbySeason6, firstBuild: build6000, lastBuild: build600 },
+  { name: cramSession2018, flag: activeMiniBosses, firstBuild: build6000, lastBuild: build600 },
   { name: roadTrip2018, flag: roadTrip2018Flag, firstBuild: build500, lastBuild: build541 },
   { name: hordeFlag, flag: hordeFlag, firstBuild: build500, lastBuild: build541 },
   { name: birthday2018, flag: anniversary2018BR, firstBuild: build5100, lastBuild: build510 },

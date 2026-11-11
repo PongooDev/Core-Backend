@@ -186,7 +186,20 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   its DefaultGameData still names no MissionAlerts (24 alerts and 4 storm spreads from the fifth argument); its
   `pakchunk1000` is on a key of its own and isn't read. Against 5.40 it adds 7 cosmetics (Valkyrie, Valkyrie Wings and
   Frostwing, Nite Nite, Balloon Llama and Battle Balloon, and Grill Sergeant, which 5.40's readable paks lack), their
-  heroes, Battle Royale's loot tables and Season 5's cumulative quests in `season.removedAtSeasonEnd`.
+  heroes, Battle Royale's loot tables and Season 5's cumulative quests in `season.removedAtSeasonEnd`. 6.00's (CL-4402180,
+  UE 4.21, Update v6.00's build, Season 6) is `4.21.0-4402180+++Fortnite+Release-6.00` (no `Build.version`; the build folder
+  is `6.00-CL-4402180\Fortnite`) with 5.41's full data (Cert's files with `gamedata/4363240` applied) as the fifth argument,
+  and the main key FModel's settings hold for its build folder. A full install: every mission info is in its paks, its
+  DefaultGameData still names no MissionAlerts (24 alerts and 4 storm spreads from the fifth argument); its `pakchunk1000`
+  and `pakchunk1001` are on keys of their own and aren't read. One extractor change: its pets
+  (`AthenaPetCarrierItemDefinition`, a UAthenaBackpackItemDefinition: `AthenaBackpack:PetCarrier_001_Dog` "Bonesy",
+  `_002_Chameleon` "Camo", `_003_Dragon` "Scales") and its lobby music (`AthenaMusicPackItemDefinition`,
+  `AthenaMusicPack:MusicPack_*`) are cosmetics. AthenaSeason6 has its own Battle Pass (BRSeason6, Season6_Free_Schedule's
+  ten weeks, the Hunting Party's Season6_Paid_Schedule, Calamity's and Dire's progressive schedules) on Season 5's level
+  and tier curves. Against 5.41 it adds 109 cosmetics (the Season 6 Battle Pass, Airheart, Ludwig and Heidi, Peekaboo, the
+  Fortnitemares outfits Epic sold in October...) and drops four (BBID_PurpleBus, BBID_Random, Emoji_Birthday2018, and
+  Glider_ID_TBD_ModernMilitaryRed, now Glider_ID_075 "Rotor"); Save the World adds Cram Session's AutumnQuest lines, the
+  repeatable Mini-Boss quest, the Ratatat and Lead Sled.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):
