@@ -64,7 +64,8 @@ export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings,
     const partyPlayerIds = list(req.query.partyPlayerIds);
     // player.option.fillTeam: the party leader's client sends "false" for Squads with Squad Fill on No Fill
     // (FFortPartyRepState::bSquadFill) and "true" otherwise (1.7.2 0x2E68050, 1.8 0x2EACF10); the other members' tickets
-    // leave it out.
+    // leave it out. From 4.4 it sends only "true", for Fill, and nothing for No Fill (matchmaking/service.js
+    // fillTeamTrueOnlyBuild, CoreV2 #377).
     const fill = req.query["player.option.fillTeam"];
     // player.option.customKey: the lobby's custom matchmaking key (Core-Backend #186, matchmaking/service.js), sent only
     // when it isn't empty. Epic's ticket service refused a key outside 4 to 16 characters with invalid_custom_match_key,

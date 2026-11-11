@@ -145,6 +145,11 @@ const playlistTeamsFrom540 = {
 const playlistTeams540Build = 4352937;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).
 export const teamSquadsOptionBuild = 3915963;
+// The first build whose client sends player.option.fillTeam only as "true" (Fill), leaving it out for No Fill: its
+// ticket attributes (4.4.2 CL-4132537 0x2A15A10, 4.5 0x2A54AA0, 5.0 0x2CE1FA0, 5.10 0x2D14850) add it only while the
+// party's Squad Fill is on, where 4.2 (0x29A3F10) and earlier send "true" or "false". 4.4.0 (CL-4117433) is taken as
+// 4.4.2 (CoreV2 #377).
+export const fillTeamTrueOnlyBuild = 4117433;
 // Late joining (Core-Backend #122, the admin panel's Matchmaking settings). The servers' MMS client (1.9
 // MatchmakingServiceDedicatedServer 0x3BF2730) knows only Registered, AssignMatch and UnassignMatch, takes an
 // AssignMatch only while Registered, and leaves the service once its match is assigned (0x709370), so the protocol has
@@ -552,8 +557,12 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
 
   const sizeOf = (ticket) => Math.max(1, ticket.partyPlayerIds.length);
   // Whether a party fills its team with others. Only the party leader's ticket says (the others' have no
-  // player.option.fillTeam); without it the party fills, as the client asks for every playlist but Squads with No Fill.
-  const fills = (party) => [party, ...party.members].map((member) => member.ticket.fillTeam).find((fill) => typeof fill === "boolean") ?? true;
+  // player.option.fillTeam). Up to 4.2 the leader's client sends "false" for No Fill and "true" otherwise, so a party
+  // without it fills; from 4.4 it sends only "true", for Fill, and leaves the option out for No Fill (CoreV2 #377).
+  const fills = (party) => {
+    const given = [party, ...party.members].map((member) => member.ticket.fillTeam).find((fill) => typeof fill === "boolean");
+    return given ?? !(Number(party.ticket.build) >= fillTeamTrueOnlyBuild);
+  };
   // AssignMatch's teams for a match's parties, or null when the playlist's teams have no room for them all.
   // In the format of the server's build when it is known (formTeams: teams of squads before 3.1, the beacon's teams from).
   const teamsFor = (parties, bucketId, serverBuild = null) => {

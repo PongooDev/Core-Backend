@@ -1487,7 +1487,8 @@ test("Playground is a match of the party's own: assigned at once, no other party
     const leader = await userLogin(backend.port, "PgLeader");
     const mate = await userLogin(backend.port, "PgMate");
     const started = Date.now();
-    const leaderConnection = await queueOn45(backend, leader, [leader, mate]);
+    // On Fill: from 4.4 a party without player.option.fillTeam plays without fill (#377).
+    const leaderConnection = await queueOn45(backend, leader, [leader, mate], { fill: true });
     connections.push(leaderConnection);
     // No gather wait: nobody else would join.
     const assign = await nextOf(first.connection, "AssignMatch");
@@ -1542,6 +1543,35 @@ test("Playground is a match of the party's own: assigned at once, no other party
 
     // Duos still gather and open in their warmup as before.
     assert.equal((await reportWarmup(backend, token, { phase: "Warmup", accountIds: [], secondsLeft: 60 })).body.lateJoin, true);
+  } finally {
+    for (const connection of connections) connection.close();
+    backend.close();
+  }
+});
+
+// CoreV2 #377: from 4.4 the leader's client sends player.option.fillTeam only as "true" (Fill) and leaves it out for
+// No Fill, so a 4.4+ party whose tickets don't carry it plays without fill: no bots on its team.
+test("a 4.4+ party whose tickets leave out player.option.fillTeam plays without fill; one that sends true fills (#377)", async () => {
+  const backend = await startBackend({ matchmakingGatherMs: 300 });
+  const connections = [];
+  try {
+    await settingsOf(backend, { bots: { forcePlayerAIs: false, fillPlayerTeams: true } });
+    const token = await dedicatedServerToken(backend.port);
+    const leader = await userLogin(backend.port, "NoFillLeader");
+    const mate = await userLogin(backend.port, "NoFillMate");
+    const filler = await userLogin(backend.port, "FillLeader");
+    connections.push(await queueOn45(backend, leader, [leader, mate], { playlistId: 9 }));
+    connections.push(await queueOn45(backend, mate, [leader, mate], { playlistId: 9 }));
+    connections.push(await queueOn45(backend, filler, [filler], { playlistId: 9, fill: true }));
+    const server = await regionServer(backend, "NoFillServer", "NA");
+    connections.push(server.connection);
+    const assign = await nextOf(server.connection, "AssignMatch");
+    // The No Fill pair keeps its squad to itself; the solo that fills is in one of its own.
+    assert.deepEqual(assign.payload.teams.map((team) => team.flat().sort()).sort(),
+      [[leader.accountId, mate.accountId].sort(), [filler.accountId]].sort());
+    server.connection.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: assign.payload.matchId, result: "ready" } }));
+    const answer = (await reportWarmup(backend, token, { phase: "Warmup", accountIds: [leader.accountId], secondsLeft: 60 })).body;
+    assert.deepEqual([...answer.bots.noFill].sort(), [leader.accountId, mate.accountId].sort());
   } finally {
     for (const connection of connections) connection.close();
     backend.close();
