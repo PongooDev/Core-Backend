@@ -5,7 +5,7 @@ import path from "node:path";
 import zlib from "node:zlib";
 import { ltms } from "../src/events/ltms.js";
 import { contentPage } from "../src/services/content/pages.js";
-import { epicPlaylistImages, playlistImageModes, playlistImagesFor } from "../src/services/content/playlistimages.js";
+import { epicPlaylistImages, playlistImageModes, playlistImagesFor, playlistInformationFor } from "../src/services/content/playlistimages.js";
 import { get, post, send, startBackend } from "./helpers.js";
 
 // Core-Backend #260: 4.0's mode select tiles read the content page's playlistimages.playlistimages.images[]
@@ -13,6 +13,8 @@ import { get, post, send, startBackend } from "./helpers.js";
 const v40 = "4039451";
 const v41 = "4053532";
 const v36 = "4019403";
+const v530 = "4305896";
+const v540 = "4352937";
 
 const admin = (backend, url, body) => (body === undefined ? get(backend.port, `/admin/api${url}`) : post(backend.port, `/admin/api${url}`, undefined, body));
 const pageFor = (port, changelist) => send({ host: "127.0.0.1", port, method: "GET", path: "/content/api/pages/fortnite-game",
@@ -122,6 +124,88 @@ test("the admin panel sets, validates and resets a playlist's picture, and keeps
     assert.ok(reset.body.playlistImages.every((mode) => mode.custom === ""));
     assert.equal(fs.existsSync(path.join(backend.dataDir, "news-images", name)), false);
     assert.equal(imageOf((await pageFor(backend.port, v40)).body, "Playlist_DefaultSolo"), epicPlaylistImages.Playlist_DefaultSolo);
+  } finally {
+    backend.close();
+  }
+});
+
+// Core-Backend #319: every LTM the backend offers on a build with tile pictures has Epic's picture, but the two Epic never
+// ran (Sky Supply, Impact), which keep the default one unless the host sets one.
+test("every LTM of 4.0 on has Epic's tile picture but Sky Supply and Impact (#319)", () => {
+  const without = playlistImageModes().filter(({ epic }) => !epic).map(({ playlistName }) => playlistName).sort();
+  assert.deepEqual(without, ["Playlist_Impact_Duos", "Playlist_Impact_Solo", "Playlist_Impact_Squads", "Playlist_SkySupply",
+    "Playlist_SkySupply_Duos", "Playlist_SkySupply_Squads"]);
+  const score = "https://cdn2.unrealengine.com/Fortnite/fortnite-game/playlisttiles/BR05_LobbyTile_LTM_ScoreRoyale-1024x512-b608aaf7840cdf6b7a702c5cbe1848a2247516d6.jpg";
+  for (const name of ["Playlist_Score_Solo", "Playlist_Score_Duos", "Playlist_Score_Squads"]) assert.equal(epicPlaylistImages[name], score, name);
+  // Season 5's others, as Epic's page of 28 August 2018 named them.
+  assert.match(epicPlaylistImages.Playlist_Steady_Duos, /BR05_LobbyTile_LTM-Steady-Storm-/);
+  assert.match(epicPlaylistImages.Playlist_FlyExplosives_Solo, /BR05_LTM_FlyExplosives-/);
+  assert.match(epicPlaylistImages.Playlist_Soaring_50s, /BR05_LTM_Soaring50s-/);
+  assert.equal(epicPlaylistImages.Playlist_50v50SAU, epicPlaylistImages.Playlist_SolidGold_Squads, "50v50 Solid Gold has Solid Gold's tile");
+  assert.match(epicPlaylistImages.Playlist_Close_Squad, /BR04_LTM_CloseEncounters-/);
+  assert.match(epicPlaylistImages.Playlist_Bling_Squads, /08BR_HighStakes_ModeTile-/);
+});
+
+test("5.30 gets Score Royale's own tile in playlistimages, and 5.0 to 5.30 every Season 5 LTM's (#319)", () => {
+  const page = contentPage(undefined, undefined, v530);
+  assert.equal(page.playlistinformation, undefined, "5.30 reads playlistimages only");
+  const byName = Object.fromEntries(page.playlistimages.playlistimages.images.map((entry) => [entry.playlistname, entry.image]));
+  for (const name of ["Playlist_Score_Solo", "Playlist_Score_Duos", "Playlist_Score_Squads", "Playlist_SolidGold_Duos", "Playlist_50v50SAU",
+    "Playlist_Playground", "Playlist_50v50"]) {
+    assert.equal(byName[name], epicPlaylistImages[name], name);
+    assert.ok(page._images_.includes(byName[name]), `${name} precached`);
+  }
+  for (const build of ["4214610", "4240749", "4288479"]) {
+    const images = contentPage(undefined, undefined, build).playlistimages.playlistimages.images.map((entry) => entry.playlistname);
+    for (const name of ["Playlist_FlyExplosives_Squads", "Playlist_Steady_Solo", "Playlist_Soaring_50s", "Playlist_Snipers"]) assert.ok(images.includes(name), `${build} ${name}`);
+  }
+});
+
+// Core-Backend #321: 5.40 reads playlistinformation (playlist_info.playlists[] {playlist_name, image, special_border}), not
+// playlistimages, so every 5.40 tile kept the default picture.
+test("5.40 gets playlistinformation: every mode's picture, The Getaway's with the High Stakes border (#321)", () => {
+  const page = contentPage(undefined, undefined, v540);
+  assert.equal(page.playlistimages, undefined, "5.40 has no playlistimages reader");
+  const section = page.playlistinformation;
+  assert.equal(section._title, "playlistinformation");
+  assert.equal(section.frontend_matchmaking_header_style, "None");
+  assert.equal(section.frontend_matchmaking_header_text, "");
+  assert.equal(section.playlist_info._type, "Playlist Information");
+  const byName = Object.fromEntries(section.playlist_info.playlists.map((entry) => [entry.playlist_name, entry]));
+  assert.deepEqual(byName.Playlist_DefaultSolo, { image: epicPlaylistImages.Playlist_DefaultSolo, playlist_name: "Playlist_DefaultSolo",
+    special_border: "None", _type: "FortPlaylistInfo" });
+  for (const name of ["Playlist_DefaultDuo", "Playlist_DefaultSquad", "Playlist_50v50", "Playlist_Playground", "Playlist_Soaring_50s",
+    "Playlist_50v50SAU", "Playlist_Close_Squad", "Playlist_Close_Solo", "Playlist_Close_Duos"]) {
+    assert.equal(byName[name].image, epicPlaylistImages[name], name);
+    assert.equal(byName[name].special_border, "None", name);
+  }
+  for (const name of ["Playlist_Bling_Squads", "Playlist_Bling_Duos", "Playlist_Bling_Solo"]) {
+    assert.equal(byName[name].image, epicPlaylistImages[name], name);
+    assert.equal(byName[name].special_border, "HighStakes", name);
+  }
+  for (const entry of section.playlist_info.playlists) {
+    assert.ok(entry.image, entry.playlist_name);
+    assert.ok(page._images_.includes(entry.image), `${entry.playlist_name} precached`);
+    assert.equal(entry.description, undefined, "the tile keeps the playlist's own text");
+  }
+  // A host's own picture there too; builds before 5.40 get no section.
+  const custom = playlistInformationFor(v540, { Playlist_Bling_Squads: "https://example.com/getaway.png" });
+  assert.equal(custom.playlist_info.playlists.find((entry) => entry.playlist_name === "Playlist_Bling_Squads").image, "https://example.com/getaway.png");
+  for (const build of [v530, v40, v36, undefined]) assert.equal(playlistInformationFor(build), undefined, String(build));
+});
+
+test("the content page route serves 5.40 its playlistinformation (#321)", async () => {
+  const backend = await startBackend();
+  try {
+    const page = await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/content/api/pages/fortnite-game",
+      headers: { "User-Agent": `Fortnite/++Fortnite+Release-5.40-CL-${v540} Windows/10.0.19045.1.768.64bit` } });
+    assert.equal(page.status, 200);
+    assert.equal(page.body.playlistimages, undefined);
+    const getaway = page.body.playlistinformation.playlist_info.playlists.find((entry) => entry.playlist_name === "Playlist_Bling_Squads");
+    assert.equal(getaway.image, epicPlaylistImages.Playlist_Bling_Squads);
+    assert.equal(getaway.special_border, "HighStakes");
+    const score = (await pageFor(backend.port, v530)).body.playlistimages.playlistimages.images.find((entry) => entry.playlistname === "Playlist_Score_Solo");
+    assert.equal(score.image, epicPlaylistImages.Playlist_Score_Solo);
   } finally {
     backend.close();
   }

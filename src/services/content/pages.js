@@ -1,7 +1,7 @@
 import express from "express";
 import { getBuild, versionOf } from "../../builds/detect.js";
 import { newsImageOrigin, newsImagePath, newsImageUrl, serveNewsImage } from "./images.js";
-import { playlistImagesFor } from "./playlistimages.js";
+import { playlistImagesFor, playlistInformationFor } from "./playlistimages.js";
 
 // The EpicContentService page ([EpicContentService] in DefaultGame.ini), fetched before login. The CMS cache
 // (CMSURLCache.cpp, sub_3620130) needs a JSON object, reads lastModified as an ISO 8601 date ("Invalid last modified
@@ -181,18 +181,22 @@ export function emergencyNoticeFor(notice, changelist) {
 export function contentPage(news = defaultBattleRoyaleNews, loginMessage = defaultLoginMessage, changelist = undefined, subgameSelect = undefined,
   imageOrigin = undefined, saveTheWorldNews = undefined, lobbyNotice = undefined, playlistImages = undefined) {
   const battleRoyaleNews = battleRoyaleNewsFor(news, changelist, imageOrigin);
-  // 4.0's mode select tiles (Core-Backend #260, playlistimages.js), whose pictures the CMS cache keeps as the news one.
+  // The mode select tiles (playlistimages.js): 4.0's to 5.30's playlistimages (Core-Backend #260, #319) and 5.40's
+  // playlistinformation (#321), whose pictures the CMS cache keeps as the news one.
   const playlistimages = playlistImagesFor(changelist, playlistImages, imageOrigin);
+  const playlistinformation = playlistInformationFor(changelist, playlistImages, imageOrigin);
   const page = {
     _title: "Fortnite Game",
     lastModified: "2026-10-27T16:30:00.000Z",
     _images_: [...new Set([...(battleRoyaleNews.news.messages ?? []).map((message) => message.image),
-      ...(playlistimages?.playlistimages.images ?? []).map((entry) => entry.image)].filter(Boolean))],
+      ...(playlistimages?.playlistimages.images ?? []).map((entry) => entry.image),
+      ...(playlistinformation?.playlist_info.playlists ?? []).map((entry) => entry.image)].filter(Boolean))],
     battleRoyaleNews,
     subgameselectdata: subgameSelectFor(changelist, subgameSelect),
     emergencynotice: emergencyNoticeFor(lobbyNotice, changelist),
     ...saveTheWorldNewsFor(saveTheWorldNews, changelist),
-    ...(playlistimages ? { playlistimages } : {})
+    ...(playlistimages ? { playlistimages } : {}),
+    ...(playlistinformation ? { playlistinformation } : {})
   };
   if (loginMessage) {
     page.loginmessage = { loginmessage: { message: messageOf(loginMessage, defaultLoginMessage, changelist) } };
