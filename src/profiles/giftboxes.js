@@ -19,12 +19,32 @@ import { lootEntry } from "./items.js";
 // gives, so a box with the pass's rewards is the purchase screen of Epic's Season 3.
 // 2.5 (CL-3889387) and earlier have no such screen: 2.5's GB_BattlePass names no header and its paks have no
 // ItemReceived widgets, 1.11 to 2.4.2 no gift boxes at all, so their purchases give none.
+//
+// The Battle Pass purchase's own box (Core-Backend #326): from Season 5 the purchase animation plays only for a
+// GiftBox:GB_BattlePassPurchased. Its definition (5.21's and 6.00's paks) names a GiftBoxPreMessageWidget,
+// BP_BattlePassUnlockAnim (a UFortItemReceivedPrePrompt whose Intro plays BattlePass_Buy_Cue), and once RemoveGiftBox
+// succeeds UFortUIStateWidget_Frontend::HandleGiftBoxRemoved (6.00 CL-4395664 0x2FFB8A0, 5.21 0x2F12EE0) creates that
+// widget and queues it ahead of the box; when its Intro ends it pushes ItemReceived_Base with the box, the list of what the
+// purchase gave. GB_BattlePass names no such widget, so a purchase in one is the list alone, and ItemReceived_Base's own
+// "Check if Battlepass upgrade" can't stand in: 5.21's and 6.00's still look for Season 4's tier 1,
+// CID_115_Athena_Commando_M_CarbideBlue, which no later pass gives. So from 5.0 (CL-4204761) the pass, or the pass with 25
+// tiers, comes in a GB_BattlePassPurchased; 3.0 to 4.5 keep GB_BattlePass, whose ItemReceived_Base animation their tier 1
+// (the Mission Specialist, Carbide) plays. Tiers bought on their own stay a GB_BattlePass, the screen of the tiers reached.
 const firstGiftBoxBuild = 3901517;
+const firstPurchasedGiftBoxBuild = 4204761;
 export const battlePassGiftBox = "GiftBox:gb_battlepass";
+export const battlePassPurchasedGiftBox = "GiftBox:gb_battlepasspurchased";
 export const giftBoxProfile = "profile0";
 const typeOf = (templateId) => String(templateId).split(":")[0].toLowerCase();
 
 export const showsGiftBoxes = () => Number(currentBuild()) >= firstGiftBoxBuild;
+
+// The box a purchase of the Battle Pass itself (not tiers alone) comes in, on the request's build.
+export const battlePassPurchaseGiftBox = () => (Number(currentBuild()) >= firstPurchasedGiftBoxBuild ? battlePassPurchasedGiftBox : battlePassGiftBox);
+
+// The boxes of a season's Battle Pass, which its admin reset takes back unopened (battlepass/reset.js).
+export const isBattlePassGiftBox = (templateId) => [battlePassGiftBox, battlePassPurchasedGiftBox]
+  .some((id) => id.toLowerCase() === String(templateId).toLowerCase());
 
 // A gift box of loot (grants: {profileId, itemId, templateId, quantity}) in profile0, on a build that shows one. Returns
 // its item id, or null.

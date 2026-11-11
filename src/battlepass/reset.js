@@ -6,7 +6,7 @@ import { log } from "../log.js";
 import { lockerCosmeticId, removeLockerCosmetic, seasonRewardFunctions } from "../profiles/athena.js";
 import { trackChanges } from "../profiles/changes.js";
 import { defaultBanner } from "../profiles/defaults.js";
-import { battlePassGiftBox, heldGiftBoxes } from "../profiles/giftboxes.js";
+import { heldGiftBoxes, isBattlePassGiftBox } from "../profiles/giftboxes.js";
 import { findItem } from "../profiles/items.js";
 import { grant } from "../profiles/progress.js";
 import { accountLevelOf, buildOfSeason, profileSeason, settleSeasonRewards } from "../profiles/seasons.js";
@@ -25,7 +25,7 @@ import { accountLevelOf, buildOfSeason, profileSeason, settleSeasonRewards } fro
 // - Season 2's Battle Pass daily challenges (the pass's Quest:athena_battlepass_questtrigger, and the dailies it brought);
 // - Season 3's challenge schedules the tiers gave, with their bundles and quests, apart from the season's own weekly
 //   challenges, which every player has (AthenaSeason3's ChallengeSchedulesAlwaysShown);
-// - 3.0's Battle Pass gift boxes not yet opened (profiles/giftboxes.js), whose items are gone.
+// - 3.0's Battle Pass gift boxes not yet opened (profiles/giftboxes.js), whose items are gone, and 5.0's purchase box.
 // Then the season's level gives its Battle Stars again, so the free tiers the player's own level reaches (and their free
 // rewards) come back, as they would have without the pass; Battle Stars from challenges aren't kept apart, so those don't.
 // The V-Bucks the account paid Core for the season's pass, bundle and tiers (profile.coreBattlePassSpend, recorded since
@@ -156,7 +156,7 @@ export function resetBattlePass(session, season) {
     if (quests.size) delete profile.coreBattlePassDaily;
 
     // Its unopened gift boxes, profile0's (profiles/giftboxes.js).
-    for (const [itemId, item] of heldGiftBoxes(account.profile)) if (sameId(item.templateId, battlePassGiftBox)) account.removeItem(itemId);
+    for (const [itemId, item] of heldGiftBoxes(account.profile)) if (isBattlePassGiftBox(item.templateId)) account.removeItem(itemId);
 
     // The pass's stats, and the season XP its tiers gave.
     result.seasonXpTaken = rewards.filter(({ templateId }) => sameId(templateId, "AccountResource:athenaseasonalxp"))

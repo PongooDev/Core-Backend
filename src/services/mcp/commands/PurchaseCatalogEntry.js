@@ -1,7 +1,7 @@
 import { McpError } from "../../../errors.js";
 import { bundleTiers } from "../../../battlepass/season2.js";
 import { grantCosmetic, ownsCosmetic, seasonRewardFunctions } from "../../../profiles/athena.js";
-import { battlePassGiftBox, giveGiftBox } from "../../../profiles/giftboxes.js";
+import { battlePassGiftBox, battlePassPurchaseGiftBox, giveGiftBox } from "../../../profiles/giftboxes.js";
 import { buyBattlePass, buyTiers, recordBattlePassSpend, tiersLeft } from "../../../profiles/seasons.js";
 import { lootEntry, spendMtx } from "../../../profiles/items.js";
 import { grant, itemEvent } from "../../../profiles/progress.js";
@@ -69,8 +69,9 @@ export function purchaseCatalogEntry({ req, session, notifications }) {
     const items = [];
     if (offer.battlePass !== "tier") items.push(...buyBattlePass(session, seasonRewardFunctions()));
     if (tiers) items.push(...buyTiers(session, tiers, seasonRewardFunctions()));
-    // 3.0's purchase screen (Core-Backend #202): a GiftBox:GB_BattlePass of what the purchase gave (profiles/giftboxes.js).
-    giveGiftBox(session, battlePassGiftBox, items);
+    // 3.0's purchase screen (Core-Backend #202): a GiftBox:GB_BattlePass of what the purchase gave (profiles/giftboxes.js);
+    // from 5.0 the pass's own purchase is a GiftBox:GB_BattlePassPurchased, whose animation plays first (#326).
+    giveGiftBox(session, offer.battlePass === "tier" ? battlePassGiftBox : battlePassPurchaseGiftBox(), items);
     notifications.push({ type: "CatalogPurchase", primary: true, lootResult: { items: items.map(lootEntry) } });
     return;
   }
