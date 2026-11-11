@@ -173,7 +173,12 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   its FItemAndCount rows (the skill tree's costs, CCNodes; crafting recipes) name their item by `ItemPrimaryAssetId`
   ({PrimaryAssetType, PrimaryAssetName}: Token:HomebasePoints) instead of `ItemDefinition`, which is written as the template
   id the definition would give (`Token:homebasepoints`), and some name neither ("None", no item); its skill tree comes out
-  as 5.21's exactly.
+  as 5.21's exactly. 5.40's (CL-4352937, UE 4.21, Update v5.40's build; its paks carry Content Update v5.40's and Update
+  v5.41's items too) is `4.21.0-4352937+++Fortnite+Release-5.40` (no `Build.version`; the build folder is
+  `5.40-CL-4352937\Fortnite`) with 5.30's full data (Cert's files with `gamedata/4305896` applied) as the fifth argument, and
+  the main key FModel's settings hold for its build folder (no extractor change). Its install has Save the World, but only
+  one of the 57 mission infos its generators name (56 come from the fifth argument) and no MissionAlerts (24 alerts and 4
+  storm spreads from it); its `pakchunk1000` is on a key of its own and isn't read.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

@@ -81,9 +81,10 @@ export function mergeTimedStates(...schedules) {
 // The admin panel's view: each group with each flag's state on the newest Season 4 build (4.5) and whether the admin
 // switched it, the oddities mode and the rifts' times now; 5.0's flags on 5.0 (CL-4214610), and 5.10's own on 5.10
 // (CL-4240749), and 5.21's on 5.21 (CL-4288479, the Tomato Town rift's by its dates now: events/tomatorift.js), and 5.30's
-// on 5.30 (CL-4305896, the Cube's by its dates now: events/cube.js).
+// on 5.30 (CL-4305896, the Cube's by its dates now: events/cube.js), and 5.40's on 5.40 (CL-4352937, the Cube's and High
+// Stakes' by their dates now: events/highstakes.js).
 export function season4FlagsStatus(now = new Date(), config = currentEventsConfig(), servedOn45 = [], servedOn50 = [], servedOn510 = [], servedOn521 = [],
-  servedOn530 = []) {
+  servedOn530 = [], servedOn540 = []) {
   const { overrides, oddities: mode, schedule } = season4Settings(config);
   const times = riftTimes(now, String(b45), config);
   const replayNext = (original) => nextReplayOf(time(original), now, null, 4).toISOString();
@@ -106,7 +107,8 @@ export function season4FlagsStatus(now = new Date(), config = currentEventsConfi
         servedOn50: servedOn50.includes(entry.flag),
         servedOn510: servedOn510.includes(entry.flag),
         servedOn521: servedOn521.includes(entry.flag),
-        servedOn530: servedOn530.includes(entry.flag)
+        servedOn530: servedOn530.includes(entry.flag),
+        servedOn540: servedOn540.includes(entry.flag)
       }))
     }))
   };

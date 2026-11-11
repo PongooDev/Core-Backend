@@ -36,14 +36,16 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       playgroundV2: true, flyExplosives: false, flyExplosivesSolo: false, flyExplosivesDuos: false, steadyStormSolo: false, steadyStormDuos: false,
       steadyStormSquads: false, soaring50s: false, sniperShootoutV4: false, sniperShootoutV4Solo: false, sniperShootoutV4Duos: false,
       scoreRoyaleSolo: false, scoreRoyaleDuos: false, scoreRoyaleSquads: false, solidGoldSeason5: false, solidGoldSeason5Solo: false,
-      solidGoldSeason5Duos: false, fiftyFiftySolidGold: false });
+      solidGoldSeason5Duos: false, fiftyFiftySolidGold: false, getaway: true, getawayDuos: true, getawaySolo: false, closeEncountersSeason5: false,
+      closeEncountersSeason5Solo: false, closeEncountersSeason5Duos: false });
 
     // 21 Battle Royale playlists: the 4 canonical ones, Shooting Test #1, the other event queues (#190), 3.0's new ones
     // and 3.1's Blitz Solo and Duo, 3.5.1's own twelve, 4.1's Infinity Gauntlet and the nine of 4.2 on (#258: 4.2's Close Encounters in three, its Solid
     // Gold v2 Duos) and 4.4's 50v50 v3 (PongooDev/CoreV2#328) and Sniper Shootout v3's Solo and Duos (#327) and
     // 4.4.2's Final Fight (#325), 4.5's Final Fight: Teams of 12, 5.0's 50v50, 5.10's Playground and Fly Explosives and
-    // 5.21's Steady Storm, Soaring 50's and Sniper Shootout v4, and 5.30's Score Royale, Solid Gold and 50v50 Solid Gold
-    assert.equal(ov.playlists.length, 67);
+    // 5.21's Steady Storm, Soaring 50's and Sniper Shootout v4, and 5.30's Score Royale, Solid Gold and 50v50 Solid Gold,
+    // and 5.40's Getaway and Close Encounters
+    assert.equal(ov.playlists.length, 73);
     assert.equal(ov.ltms.originalDates, false);
     assert.deepEqual(ov.ltms.list.map((ltm) => ltm.id), ["fiftyFifty", "highExplosives", "sneakySilencers", "sniperShootout", "shootingTest",
       "speedyStorm", "takeToTheSkies", "lotsaLoot", "blitz", "fiveByTwenty", "highJump", "useItOrLoseIt", "steadyStorm", "solidGold", "skySupply", "shotguns", "blitzSolo", "blitzDuo",
@@ -52,7 +54,8 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       "closeEncountersSolo", "closeEncountersDuos", "solidGoldDuos", "blitzV2", "sniperShootoutV3", "teamsOf20V2", "playground", "fiftyFiftyV3", "sniperShootoutV3Solo", "sniperShootoutV3Duos", "finalFight", "finalFightTeams12", "fiftyFiftySeason5",
       "playgroundV2", "flyExplosives", "flyExplosivesSolo", "flyExplosivesDuos", "steadyStormSolo", "steadyStormDuos", "steadyStormSquads",
       "soaring50s", "sniperShootoutV4", "sniperShootoutV4Solo", "sniperShootoutV4Duos", "scoreRoyaleSolo", "scoreRoyaleDuos", "scoreRoyaleSquads",
-      "solidGoldSeason5", "solidGoldSeason5Solo", "solidGoldSeason5Duos", "fiftyFiftySolidGold"]);
+      "solidGoldSeason5", "solidGoldSeason5Solo", "solidGoldSeason5Duos", "fiftyFiftySolidGold", "getaway", "getawayDuos", "getawaySolo",
+      "closeEncountersSeason5", "closeEncountersSeason5Solo", "closeEncountersSeason5Duos"]);
     assert.equal(ov.playlists.find((p) => p.id === "fiftyFiftyV2").code, "Playlist_50v50");
     // #257: each LTM's playlist asset and teams, and the 3.5.1 lobby's name for the ones kept from 3.0 and 3.1.
     const pl = (id) => ov.playlists.find((p) => p.id === id);
@@ -186,7 +189,8 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       playgroundV2: true, flyExplosives: false, flyExplosivesSolo: false, flyExplosivesDuos: false, steadyStormSolo: false, steadyStormDuos: false,
       steadyStormSquads: false, soaring50s: false, sniperShootoutV4: false, sniperShootoutV4Solo: false, sniperShootoutV4Duos: false,
       scoreRoyaleSolo: false, scoreRoyaleDuos: false, scoreRoyaleSquads: false, solidGoldSeason5: false, solidGoldSeason5Solo: false,
-      solidGoldSeason5Duos: false, fiftyFiftySolidGold: false });
+      solidGoldSeason5Duos: false, fiftyFiftySolidGold: false, getaway: true, getawayDuos: true, getawaySolo: false, closeEncountersSeason5: false,
+      closeEncountersSeason5Solo: false, closeEncountersSeason5Duos: false });
     assert.equal(resetRes.body.timing.gatherSeconds, 10);
     assert.equal(resetRes.body.timing.warmupSeconds, 120);
     assert.equal(resetRes.body.timing.lateJoin, false);

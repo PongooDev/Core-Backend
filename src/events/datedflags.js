@@ -1,8 +1,9 @@
-import { cubeLake, cubeLightning, cubeMoveTo, cubeMoveToLake, cubeRune, cubeStartMove, cubeTurnOn, eventsActiveUntil, riftCorrupt,
-  tomatoRiftEvent, tomatoRiftTell } from "./events.js";
+import { cubeDestination, cubeLake, cubeLightning, cubeMoveTo, cubeMoveToLake, cubeRune, cubeStartMove, cubeTurnOn, eventsActiveUntil,
+  ltmHeist, riftCorrupt, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
 
 // Season 5's small dated event-flag events, step by step, and the admin's own times for them (Core-Backend #311): 5.21's
-// Tomato Town rift (events/tomatorift.js) and 5.30's Cube (events/cube.js). Each step is one or more calendar events served
+// Tomato Town rift (events/tomatorift.js), 5.30's Cube (events/cube.js; 5.40's too) and 5.40's High Stakes
+// (events/highstakes.js). Each step is one or more calendar events served
 // from its start to its end (null: on to the replay's end, or, on the admin's own times, for good). The events config's
 // datedFlags.<event> picks the times:
 // - "dates": Epic's dates on Season 5's replay (store/itemshop.js seasonMoment), lap by lap (the default);
@@ -15,7 +16,8 @@ export const season5FirstDay = Date.parse("2018-07-12T00:00:00.000Z");
 export const season5EndDay = Date.parse("2018-09-27T00:00:00.000Z");
 
 // The Cube's steps in Epic's time (events/cube.js has the sources): every change at 21:00 UTC, the purple crack from Update
-// v5.30's morning; each leg to a rune runs BR_S5_Cube_StartMove alongside its MoveTo.
+// v5.30's morning; each leg to a rune runs BR_S5_Cube_StartMove alongside its MoveTo. 5.40's CUBE names the leg to the
+// lake BR_S5_Cube_MoveTo8 and the lake BR_S5_Cube_Destination, served with 5.30's names (each build watches its own).
 const at = (day, time = "21:00") => Date.parse(`2018-${day}T${time}:00.000Z`);
 const runeStops = [["08-28", "08-29", "Fatal Fields"], ["09-02", "09-03", "Greasy Grove"], ["09-05", "09-06", "Salty Springs"],
   ["09-07", "09-08", "Retail Row"], ["09-10", "09-11", "Wailing Woods"], ["09-13", "09-14", "Lazy Links"], ["09-16", "09-17", "Pleasant Park"]];
@@ -24,7 +26,7 @@ const lakeAt = at("09-19");
 const step = (id, label, flags, start, end) => ({ id, label, flags, start, end });
 
 export const datedEvents = [
-  { id: "cube", name: "the Cube (5.30)", flag: cubeTurnOn, anchor: "crack", parts: 4, steps: [
+  { id: "cube", name: "the Cube (5.30 – 5.40)", flag: cubeTurnOn, anchor: "crack", parts: 4, steps: [
     step("crack", "The sky's crack turns purple", [riftCorrupt], at("08-23", "08:00"), closure),
     step("lightning", "Lightning strikes the hill", [cubeLightning], at("08-23"), closure),
     step("spawn", "The Cube appears (the crack closes)", [cubeTurnOn], closure, null),
@@ -33,10 +35,14 @@ export const datedEvents = [
       return [step(`moveTo${index + 1}`, `Rolls to rune ${index + 1} (${place})`, [cubeMoveTo(index + 1), cubeStartMove], start, at(stop)),
         step(`rune${index + 1}`, `Prints rune ${index + 1} (${place})`, [cubeRune(index + 1)], at(stop), at(leave))];
     }),
-    step("moveToLake", "Rolls to Loot Lake", [cubeMoveToLake, cubeStartMove], at(runeStops[6][1]), lakeAt),
-    step("lake", "Sinks into Loot Lake", [cubeLake], lakeAt, null)
+    step("moveToLake", "Rolls to Loot Lake", [cubeMoveToLake, cubeMoveTo(8), cubeStartMove], at(runeStops[6][1]), lakeAt),
+    step("lake", "Sinks into Loot Lake", [cubeLake, cubeDestination], lakeAt, null)
   ] },
   // On the replay the rift is formed from the lap's start (5.21 shipped with it formed) until the head comes out.
+  // High Stakes (5.40, events/highstakes.js): from Update v5.40's morning to Update v5.41's.
+  { id: "highStakes", name: "High Stakes (5.40)", flag: ltmHeist, anchor: "challenges", parts: 1, steps: [
+    step("challenges", "The High Stakes Challenges", [ltmHeist], Date.parse("2018-09-06T08:00:00.000Z"), Date.parse("2018-09-18T08:00:00.000Z"))
+  ] },
   { id: "tomatoRift", name: "Tomato Town's rift (5.21)", flag: tomatoRiftTell, anchor: "event", parts: 2, steps: [
     step("tell", "A rift forms over Uncle Pete's Pizza Pit", [tomatoRiftTell], season5FirstDay, Date.parse("2018-08-19T00:00:00.000Z")),
     step("event", "The rift spits out the stone tomato head", [tomatoRiftEvent], Date.parse("2018-08-19T00:00:00.000Z"), null)

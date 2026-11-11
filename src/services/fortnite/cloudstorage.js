@@ -85,7 +85,7 @@ function frontEndPlaylistLines(changelist) {
     ...frontEndDefaults.map(([name, priority]) => entry(name, `bEnabled=true, bIsDefaultPlaylist=true, bVisibleWhenDisabled=true, ` +
       `${advertise("None")}, bDisplayAsLimitedTime=false, DisplayPriority=${priority}`)),
     ...playlists.map(({ name, enabled, priority, ltm }) => entry(name, `bEnabled=${enabled}, bIsDefaultPlaylist=false, bVisibleWhenDisabled=false, ` +
-      `${advertise(ltm.id === "playgroundV2" ? "Updated" : "None")}, bDisplayAsLimitedTime=true, DisplayPriority=${priority}`))];
+      `${advertise(ltm.id === "playgroundV2" ? "Updated" : ltm.advertise ?? "None")}, bDisplayAsLimitedTime=true, DisplayPriority=${priority}`))];
 }
 // The FortGameInstance section: the event queues' globals (3.0), the playlist overrides (3.5.1) and the lobby's playlists (5.0).
 function forcedQueueSection(changelist) {

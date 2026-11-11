@@ -6,7 +6,7 @@ import { isEventActive, roadTrip2018 } from "./events.js";
 
 export { roadTrip2018 };
 
-// Road Trip (5.0, CL-4204761 and CL-4214610, 5.10's two builds, 5.21 and 5.30; events.js roadTrip2018), Save the World's first Season 5 event, and with it
+// Road Trip (5.0, CL-4204761 and CL-4214610, 5.10's two builds, 5.21, 5.30 and 5.40; events.js roadTrip2018), Save the World's first Season 5 event, and with it
 // Challenge the Horde's return (Core-Backend #298, Update v5.00's notes): "Challenge the Horde is back! Challenge the
 // Horde comes to the desert!", "Reduced the total number of Challenge the Horde missions available on the map from 16 to
 // 9", "Challenge the Horde missions now become unlocked based upon your Storm Shield Defense progression or your Horde Quest
@@ -59,13 +59,22 @@ export const roadTripQuests = [
 // and WeekB, and Stat.Theater.Horde for the nine zones' quests, where 5.21's counted Stat.Mission.*): world/horde.js.
 // A week with a start (weeklyHordeStarts, Epic's time) runs from then on Season 5's replay, so 5.30 runs week 3 until 30
 // August 00:00 UTC (8 PM ET on 29 August) and week 4 from then; the others from the build's release.
+// 5.40's data (CL-4352937) has weeks 5 to 7: Update v5.40's "Horde Weekly Challenge 5 ... buff Husks ... bat players away
+// with strong knockbacks ... Win 1500 Gold" (HordeQuest_Weekly5_*: 1,500 Gold; Challenges/Indesctructible), Content Update
+// v5.40's "Weekly Horde Challenge 6 ... Available Wednesday, September 12 at 8 PM ET ... players have no shields ... Earn
+// Field Agent Rio" (HordeQuest_Weekly6_*: Field Agent Rio, HID_Outlander_Myth03_SR_T01; Challenges/NoShields) and Update
+// v5.41's "Weekly Horde Challenge 7 ... immune to crowd control effects ... Earn 1500 Gold ... Available Wednesday,
+// September 19th at 8 PM ET" (HordeQuest_Weekly7_*; Challenges/CCImmune, GM_Enemy_CCImmune "Unstoppable Husks"), each
+// repeatable for 75 Road Trip Tickets, counted by Stat.Theater.Weekly.Horde.WeekA, WeekB and (new) WeekC. So 5.40 runs
+// week 5 until 13 September 00:00 UTC, week 6 until 20 September 00:00 UTC and week 7 from then.
+export const weeklyHordeWeeks = [1, 2, 3, 4, 5, 6, 7];
 export const weeklyHordeQuests = (week) => [`hordequest_hidden_weekly${week}`,
   ...["plankerton", "canny", "twine"].map((zone) => `hordequest_weekly${week}_${zone}1`)];
-export const weeklyHordeStarts = { 4: "2018-08-30T00:00:00.000Z" };
-export const weeklyHordeWeek = (now = new Date()) => [4, 3, 2, 1].find((week) => getQuest(`hordequest_hidden_weekly${week}`)
+export const weeklyHordeStarts = { 4: "2018-08-30T00:00:00.000Z", 6: "2018-09-13T00:00:00.000Z", 7: "2018-09-20T00:00:00.000Z" };
+export const weeklyHordeWeek = (now = new Date()) => [...weeklyHordeWeeks].reverse().find((week) => getQuest(`hordequest_hidden_weekly${week}`)
   && (!weeklyHordeStarts[week] || seasonMoment(now, null, 5).getTime() >= Date.parse(weeklyHordeStarts[week]))) ?? null;
 // Every week's, for the event's quest line (events/quests.js).
-export const roadTripLineQuests = [...roadTripQuests, ...[1, 2, 3, 4].flatMap(weeklyHordeQuests)];
+export const roadTripLineQuests = [...roadTripQuests, ...weeklyHordeWeeks.flatMap(weeklyHordeQuests)];
 
 // The requesting build's Road Trip quests, when the event runs there: with its Weekly Horde Challenge's.
 export const roadTripEventQuests = (now = new Date()) => {

@@ -17,6 +17,7 @@ import { mergeTimedStates, odditiesStates } from "../../events/oddities.js";
 import { tomatoRiftStates } from "../../events/tomatorift.js";
 import { birthdayActiveUntil } from "../../events/birthday2018.js";
 import { cubeStates } from "../../events/cube.js";
+import { highStakesStates } from "../../events/highstakes.js";
 
 // 1.8's event calendar (ScheduledEvents' FCalendarDownload): {currentTime, channels: {<channel>: FEventsTimeline
 // {cacheExpire, states: [FEventChannelState {validFrom, activeEvents: [{eventName, activeUntil}], state}]}}}. The
@@ -56,7 +57,8 @@ import { cubeStates } from "../../events/cube.js";
 // counts to; and it is good no later than the next part. The rifts of July 2018 (Athena_OdditiesActors' _Tell and _Event
 // flags, events/oddities.js) join those parts the same way when the admin panel schedules them, and so does 5.21's Tomato
 // Town rift (Athena_GameplayActors' BR_S5_Oddity_Tomato_Tell and _Event, events/tomatorift.js) on Season 5's replay, and
-// 5.30's Cube (its crack, lightning, rolls, runes and the lake: events/cube.js).
+// 5.30's Cube (its crack, lightning, rolls, runes and the lake: events/cube.js; 5.40's too), and 5.40's High Stakes
+// (EventFlag.LTM_Heist, events/highstakes.js).
 export const calendarCacheMinutes = 60;
 const seasonalEventManagerBuild = 3790078;
 
@@ -91,9 +93,9 @@ export function calendarRoutes({ tokens, settings }) {
     const challengeChange = seasonBegin ? weekPlan(now).changes : null;
     const cacheMinutes = Math.max(5, Math.min(120, Number(currentEventsConfig()?.calendarCacheMinutes ?? calendarCacheMinutes)));
     const ltmChange = nextLtmChange(currentBuild(), settings?.get?.(), now);
-    // The rocket launch's parts, the rifts' (events/oddities.js), 5.21's Tomato Town rift (events/tomatorift.js) and 5.30's
-    // Cube (events/cube.js) as one schedule.
-    const rocket = mergeTimedStates(rocketLaunchStates(now), odditiesStates(now), tomatoRiftStates(now), cubeStates(now));
+    // The rocket launch's parts, the rifts' (events/oddities.js), 5.21's Tomato Town rift (events/tomatorift.js), 5.30's
+    // Cube (events/cube.js) and 5.40's High Stakes (events/highstakes.js) as one schedule.
+    const rocket = mergeTimedStates(rocketLaunchStates(now), odditiesStates(now), tomatoRiftStates(now), cubeStates(now), highStakesStates(now));
     const rocketChange = rocket[1]?.validFrom ?? null;
     const cacheExpire = new Date(Math.min(now.getTime() + cacheMinutes * 60000, weeklyEnd?.getTime() ?? Infinity, rocketChange ?? Infinity,
       seasonEnds?.getTime() ?? Infinity, ltmChange?.getTime() ?? Infinity, challengeChange?.getTime() ?? Infinity, ...Object.values(stwEnds).map((end) => end.getTime()))).toISOString();

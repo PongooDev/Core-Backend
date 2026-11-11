@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import { currentBuild } from "../builds/context.js";
 import { blockbuster2018, isEventActive, mutantStorms2018, roadTrip2018, spring2018, storm2018, winter2017 } from "../events/events.js";
 import { getItem } from "../gamedata/items.js";
-import { nextReplayOf, weeklyStoreEnd } from "./itemshop.js";
+import { nextReplayOf, seasonMoment, weeklyStoreEnd } from "./itemshop.js";
 
 // Save the World's Event Store, from 1.11 (CL-3807424): "A new store with items you can purchase using in-game
 // currency! Play any mission and earn Seasonal Gold. Use this currency to snag some seasonal items or see what the
@@ -216,14 +216,32 @@ export const spring2018End = "2018-02-22T00:00:00.000Z";
 // data gives it its own alteration loadout, SlotLoadout.Event.Flintlock.Explicit.AssaultRfile), in the Quad Launcher's
 // place on 5.30 and later, at a legendary schematic's 1,680 Gold, one (🟡: Epic's price and limit aren't recorded; Core's
 // week has it from the build's first day, and keeps it after 29 August), so on 5.30 it leaves Road Trip's event items.
+// 5.40's (CL-4352937; Content Update v5.40's and Update v5.41's weapons are in its data): Content Update v5.40's "Wraith
+// Assault Rifle added to the Weekly Store ... A silenced assault rifle ... Available Wednesday, September 12 at 8 PM ET until
+// Wednesday, September 19 at 8 PM ET" (SID_Assault_Military_Silenced_SR_Ore_T01, new in 5.40's data) and Update v5.41's
+// "Bowler Flintlock Launcher added to the Weekly Store ... Available Wednesday, September 19 at 8 PM ET until Wednesday,
+// September 26 at 8 PM ET" (the Flintlock Launcher, SID_Launcher_Flintlock_SR_Ore_T01, Road Trip's since 5.0): each in its
+// week on Season 5's replay (store/itemshop.js seasonMoment; from 13 and 20 September 00:00 UTC), the Bundlebuss before
+// them, at the same price and limit (🟡 as the Bundlebuss's). The Bowler leaves Road Trip's event items in its week.
 const weeklyFeaturedByBuild = [
+  { firstBuild: 4352937, weeks: [
+    { from: "2018-09-20T00:00:00.000Z", items: [{ templateId: "Schematic:sid_launcher_flintlock_sr_ore_t01", price: 1680, limit: 1 }] },
+    { from: "2018-09-13T00:00:00.000Z", items: [{ templateId: "Schematic:sid_assault_military_silenced_sr_ore_t01", price: 1680, limit: 1 }] },
+    { from: null, items: [{ templateId: "Schematic:sid_assault_flintlock_sr_ore_t01", price: 1680, limit: 1 }] }
+  ] },
   { firstBuild: 4305896, items: [{ templateId: "Schematic:sid_assault_flintlock_sr_ore_t01", price: 1680, limit: 1 }] },
   { firstBuild: 4072250, items: [{ templateId: "Schematic:sid_explosive_launcher_military_sr_ore_t01", price: 1680, limit: 1 }] },
   { firstBuild: 4053532, items: [{ templateId: "Schematic:sid_assault_lmg_military_sr_ore_t01", price: 1680, limit: 1 }] },
   { firstBuild: 3915963, items: [{ templateId: "Schematic:sid_shotgun_dragon_drum_sr_ore_t01", price: 1680, limit: 1 }] },
   { firstBuild: 3901517, items: [{ templateId: "Schematic:sid_pistol_handcannon_de_sr_ore_t01", price: 1680, limit: 1 }] }
 ];
-const weeklyFeatured = () => weeklyFeaturedByBuild.find(({ firstBuild }) => Number(currentBuild()) >= firstBuild)?.items ?? [];
+// The build's featured weekly items now: a build with weeks has the newest week begun on Season 5's replay.
+const weeklyFeatured = (now = new Date()) => {
+  const entry = weeklyFeaturedByBuild.find(({ firstBuild }) => Number(currentBuild()) >= firstBuild);
+  if (!entry?.weeks) return entry?.items ?? [];
+  const moment = seasonMoment(now, null, 5).getTime();
+  return entry.weeks.find(({ from }) => from === null || moment >= Date.parse(from))?.items ?? [];
+};
 const storms2018 = () => !isEventActive(winter2017) && isEventActive(mutantStorms2018);
 // 3.5.1's (CL-4000805) Into the Storm (events/storm2018.js) keeps Spring It On!'s store: its gold is still Spring It On! Gold
 // ("Added Spring It On! Gold" to Survive the Storm's rewards, a repeatable quest's "100 Spring It On! Gold"), and its notes
@@ -286,7 +304,7 @@ const blockbusterEventItems = [
   { templateId: "Worker:workerbasic_sr_t01", price: 700, limit: 1 },
   ...blockbusterWeapons.map((name) => ({ templateId: `Schematic:sid_${name}_sr_ore_t01`, price: 1680, limit: 1 }))
 ];
-const blockbusterItems = () => blockbusterEventItems.filter(({ templateId }) => !weeklyFeatured().some((item) => item.templateId === templateId));
+const blockbusterItems = (now) => blockbusterEventItems.filter(({ templateId }) => !weeklyFeatured(now).some((item) => item.templateId === templateId));
 export const blockbuster2018End = "2018-07-12T00:00:00.000Z";
 const blockbusterNow = () => !isEventActive(winter2017) && !storms2018() && !springNow() && isEventActive(blockbuster2018);
 // 5.0's (CL-4204761, CL-4214610) Road Trip (events/roadtrip2018.js) opens a store of its own, sold for Gold as Blockbuster's
@@ -311,6 +329,9 @@ const blockbusterNow = () => !isEventActive(winter2017) && !storms2018() && !spr
 // Store August 29, at 8 PM ET. Features new subclass - Bladestorm" (HID_Ninja_Myth03_SR_T01, "Bladestorm Enforcer", new
 // in 5.30's data), at a Mythic hero's 3,200 Gold as Ragnarok's, one (🟡 the price is Ragnarok's, the limit Core's; from
 // 5.30's release). Its Bundlebuss moves to the Weekly Store (weeklyFeaturedByBuild).
+// 5.40 (CL-4352937): "Harvester Fiona available in the Event Store. A new look for the Husk Harvester Ninja"
+// (HID_Ninja_015_F_V1_RoadTrip_SR_T01, "Harvester Fiona", new in 5.40's data), at a legendary hero's 2,800 Gold as Thora's,
+// one (🟡 the price and limit are Core's; from 5.40's release).
 const roadTripEventItemList = [
   ...["launcher_flintlock", "assault_flintlock", "sniper_flintlock_scope", "blunt_hammer_flintlock", "assault_autodrum"]
     .map((name) => ({ templateId: `Schematic:sid_${name}_sr_ore_t01`, price: 1680, limit: 1 })),
@@ -318,16 +339,17 @@ const roadTripEventItemList = [
   { templateId: "Hero:hid_outlander_myth02_sr_t01", price: 3200, limit: 1 },
   { templateId: "Hero:hid_constructor_011_f_v1_roadtrip_sr_t01", price: 2800, limit: 1 },
   { templateId: "Hero:hid_ninja_myth03_sr_t01", price: 3200, limit: 1 },
+  { templateId: "Hero:hid_ninja_015_f_v1_roadtrip_sr_t01", price: 2800, limit: 1 },
   { templateId: "Worker:workerbasic_sr_t01", price: 700, limit: 1 }
 ];
-const roadTripEventItems = () => roadTripEventItemList.filter(({ templateId }) => !weeklyFeatured().some((item) => item.templateId === templateId));
+const roadTripEventItems = (now) => roadTripEventItemList.filter(({ templateId }) => !weeklyFeatured(now).some((item) => item.templateId === templateId));
 export const roadTrip2018End = "2018-09-27T00:00:00.000Z";
 const roadTripNow = () => !isEventActive(winter2017) && !storms2018() && !springNow() && !blockbusterNow() && isEventActive(roadTrip2018);
 // No event running: 5.0's persistent weekly store alone (persistentWeeklyBuild), with no event items.
 const noEventNow = () => !isEventActive(winter2017) && !storms2018() && !springNow() && !blockbusterNow() && !roadTripNow();
 const persistentOnlyNow = () => noEventNow() && Number(currentBuild()) >= persistentWeeklyBuild;
-const eventItemsNow = () => (storms2018() ? stormsEventItems : springNow() ? springItemsNow() : blockbusterNow() ? blockbusterItems()
-  : roadTripNow() ? roadTripEventItems() : persistentOnlyNow() ? [] : eventItems);
+const eventItemsNow = (now = new Date()) => (storms2018() ? stormsEventItems : springNow() ? springItemsNow() : blockbusterNow() ? blockbusterItems(now)
+  : roadTripNow() ? roadTripEventItems(now) : persistentOnlyNow() ? [] : eventItems);
 export const eventStoreInstanceNow = () => (storms2018() ? "MutantStorms2018.STWSpecialEventStoreFront"
   : springNow() ? "Spring2018.STWSpecialEventStoreFront" : blockbusterNow() ? "Blockbuster2018.STWSpecialEventStoreFront"
     : roadTripNow() ? "RoadTrip2018.STWSpecialEventStoreFront" : eventStoreInstance);
@@ -366,9 +388,9 @@ function weekRandom(week, index) {
 }
 
 // The week's picks, from the items the requesting build has: one from each pick's pool, and two resources.
-function weeklyItems(week) {
+function weeklyItems(week, now = new Date()) {
   const picks = weeklyPicks.map(({ pool, price, limit }, index) => {
-    const offered = pool.filter((templateId) => getItem(templateId) && !eventItemsNow().some((item) => item.templateId === templateId));
+    const offered = pool.filter((templateId) => getItem(templateId) && !eventItemsNow(now).some((item) => item.templateId === templateId));
     return offered.length ? { templateId: offered[Math.floor(weekRandom(week, index) * offered.length)], price, limit } : undefined;
   }).filter(Boolean);
   const resources = weeklyResources.filter(has);
@@ -382,7 +404,7 @@ function weeklyItems(week) {
       ? { ...offer, templateId: offered[Math.floor(weekRandom(week, weeklyPicks.length + 2 + index) * offered.length)] } : undefined;
   }).filter(Boolean) : [];
   const perks = perksNow().filter(has);
-  return [...weeklyFeatured().filter(has), ...coinPicks, ...picks.slice(0, 3), ...chosen, ...weeklyStaples.filter(has), ...perks, ...picks.slice(3)];
+  return [...weeklyFeatured(now).filter(has), ...coinPicks, ...picks.slice(0, 3), ...chosen, ...weeklyStaples.filter(has), ...perks, ...picks.slice(3)];
 }
 
 const toOffer = (offerId, instance) => ({ templateId, quantity = 1, price, limit, currency = seasonalGold }) => ({
@@ -404,8 +426,8 @@ export function eventStoreOffers(now = new Date()) {
   const week = storeWeek(now);
   const offerName = (item) => `${nameOf(item.templateId)}${item.quantity > 1 ? `_x${item.quantity}` : ""}${item.currency === dailyCoins ? "_dailycoins" : ""}`;
   return {
-    [eventStorefront]: eventItemsNow().filter(has).map((item) => toOffer(`core_stw_event_${offerName(item)}`, eventStoreInstanceNow())(item)),
-    [weeklyStorefront]: weeklyItems(week).map((item) => toOffer(`core_stw_weekly_${week}_${offerName(item)}`, weeklyStoreInstanceNow())(item))
+    [eventStorefront]: eventItemsNow(now).filter(has).map((item) => toOffer(`core_stw_event_${offerName(item)}`, eventStoreInstanceNow())(item)),
+    [weeklyStorefront]: weeklyItems(week, now).map((item) => toOffer(`core_stw_weekly_${week}_${offerName(item)}`, weeklyStoreInstanceNow())(item))
   };
 }
 

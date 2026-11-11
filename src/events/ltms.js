@@ -304,6 +304,29 @@ const update521Window = [{ builds: [build521, build521], start: "2018-08-15", en
 const build530 = 4305896;
 const scoreRoyale = [{ builds: [build530, build530], start: "2018-08-23", end: "2018-08-28" }];
 const solidGold530 = [{ builds: [build530, build530], start: "2018-08-28", end: "2018-09-06" }];
+// 5.40 (CL-4352937, Update v5.40, 6 September 2018; Content Update v5.40's and Update v5.41's items are in its paks):
+// Athena/Playlists holds the defaults (and Athena/Playlists/Up's Playlist_Up_Solo, _Duos and _Squads, 180 to 182, more
+// default playlists, bIsDefaultPlaylist, which no notes name: left out), Playlist_50v50, Playlist_50v50SAU, Playlist_Playground
+// and Playlist_Soaring_50s, unchanged, and, new, Athena/Playlists/Bling's Playlist_Bling_Solo, _Duos and _Squads (140, 141,
+// 142: "The Getaway", 100 teams of 1, 2 and 4, WinConditionType MutatorControlled, VictoryUIType Heist, MissionGen_Bling,
+// BlingModifierDefinition, the safes' BlingSupplyDrop, the vans' Bling_VanInfo, the Jewel Athena_Bling_Pack; its
+// description: "players will race to find a Jewel and then escape in one of the getaway vans! The first four squads to
+// escape win the Victory Royale!"), and Close Encounters' Playlist_Close_Solo, _Duos and _Squad (44, 45, 46: 4.2's ids,
+// Athena/Playlists/Shotguns' loot, MissionGen_AthenaEvent44: Update v5.41's "Limited Time Mode: Close Encounters ...
+// Decreased Jetpack fuel burn rate by 50% ... Grapplers have been added"). Score Royale's and Solid Gold's three are gone.
+// The Getaway is 5.40's new mode (Update v5.40: "It added both the Grappler and Getaway LTM"). Epic's tweets (the Fortnite
+// Wiki's High Stakes Challenges): the High Stakes event began on 6 September with the Getaway, and on 13 September "The
+// Getaway LTM has switched back to Squads ... before High Stakes ends next week with the update" (Update v5.41, 18
+// September). So the Getaway ran in Squads from 6 September, in Duos for a while before 13 September (🟡 from Content
+// Update v5.40's day, 11 September, which fixed the mode's bugs: the tweet gives only its end), and in Squads again from 13
+// to 18 September; Solo by its switch (nothing names it). Squads and Duos are on by default on 5.40 (their switches turn
+// them off): its shipped lobby has no FrontEndPlaylistData entry for them, so the backend's list (ltmFrontEndPlaylists)
+// puts them there, as New (AdvertiseType, advertise); Original dates runs them by the windows. Close Encounters by its
+// switches (🟡 Update v5.41 names it, not its days); 50v50 Solid Gold by its switch (its window is 5.30's).
+const build540 = 4352937;
+const getawaySquads = [{ builds: [build540, build540], start: "2018-09-06", end: "2018-09-11" },
+  { builds: [build540, build540], start: "2018-09-13", end: "2018-09-18" }];
+const getawayDuos = [{ builds: [build540, build540], start: "2018-09-11", end: "2018-09-13" }];
 // Core-Backend #257 asked for 3.5.1's to 4.0's Solid Gold v2 (Squads, Solo), Sniper Shootout v2 (Solo, Duos, Squads), High
 // Explosives v2 (Squads, Solo), Blitz! (Squads, Solo, Duos), Teams of 20 and 50v50 v2. Each is a playlist asset of 3.5.1's
 // and 4.0's Athena/Playlists (and 3.6's, which sits between them, as its note above has it; its paks didn't mount in
@@ -555,15 +578,15 @@ export const ltms = [
   // (events/finalfight.js). By its switch: nothing found dates it (🟡).
   { id: "finalFightTeams12", name: "Final Fight: Teams of 12", playlistId: 103, playlistName: "Playlist_Final_12", eventFlag: null, builds: [build450, build45], seasons: [4],
     teams: "8 Teams × 12", description: "The storm stops after its third circle; when the countdown ends, the team with the most players left wins (Playlist_Final_12)." },
-  // 5.0's Playlist_50v50 (above); 5.10's, 5.21's and 5.30's are the same asset. On by default (Core-Backend #314): every
+  // 5.0's Playlist_50v50 (above); 5.10's, 5.21's, 5.30's and 5.40's are the same asset. On by default (Core-Backend #314): every
   // Season 5 build's shipped DefaultGame.ini enables it in the lobby (FrontEndPlaylistData, ltmFrontEndPlaylists).
-  { id: "fiftyFiftySeason5", name: "50v50 (Season 5)", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build500, build530], seasons: [5], defaultOn: true,
+  { id: "fiftyFiftySeason5", name: "50v50 (Season 5)", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build500, build540], seasons: [5], defaultOn: true,
     teams: "2 Teams × 50", description: "Two teams of fifty, a bus each, extra loot; reviving a teammate earns XP (Playlist_50v50, 5.0's)." },
-  // 5.10's Playground (5.21's and 5.30's too) and Fly Explosives (above). On by default (Core-Backend #314): 5.10's, 5.21's
+  // 5.10's Playground (5.21's, 5.30's and 5.40's too) and Fly Explosives (above). On by default (Core-Backend #314): 5.10's, 5.21's
   // and 5.30's shipped DefaultGame.ini enable Playlist_Playground in the lobby (FrontEndPlaylistData, AdvertiseType Updated),
   // as Epic ran it from 25 July to the season's end.
-  { id: "playgroundV2", name: "Playground v2", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build5100, build530], seasons: [5], defaultOn: true,
-    original: [{ builds: [build5100, build530], start: "2018-07-25", end: "2018-09-27" }],
+  { id: "playgroundV2", name: "Playground v2", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build5100, build540], seasons: [5], defaultOn: true,
+    original: [{ builds: [build5100, build540], start: "2018-07-25", end: "2018-09-27" }],
     teams: "4 Teams × 4", description: "Playground again, with team select: up to four players on up to four teams, respawns, 10x resources, golf carts (Playlist_Playground, 5.10's)." },
   { id: "flyExplosives", name: "Fly Explosives (Squads)", playlistId: 122, playlistName: "Playlist_FlyExplosives_Squads", eventFlag: null, builds: [build510, build510], seasons: [5], newIn: build510,
     original: [{ builds: [build510, build510], start: "2018-07-31", end: "2018-08-07" }],
@@ -582,7 +605,7 @@ export const ltms = [
   { id: "steadyStormSquads", name: "Steady Storm (Squads)", playlistId: 162, playlistName: "Playlist_Steady_Squads", eventFlag: null, builds: [build521, build521], seasons: [5],
     original: steadyStorm,
     teams: "100 Teams × 4", description: "One storm that closes in over 15 minutes, no safe zones, 10 damage a second (Athena/Playlists/SteadyStorm game data, 5.21's)." },
-  { id: "soaring50s", name: "Soaring 50's", playlistId: 53, playlistName: "Playlist_Soaring_50s", eventFlag: null, builds: [build521, build530], seasons: [5], newIn: build521,
+  { id: "soaring50s", name: "Soaring 50's", playlistId: 53, playlistName: "Playlist_Soaring_50s", eventFlag: null, builds: [build521, build540], seasons: [5], newIn: build521,
     original: update521Window,
     teams: "2 Teams × 50", description: "50v50 with glider redeploy from 10 m up, extra Impulse Grenades, Launch Pads and Bounce Pads; no profile stats (Playlist_Soaring_50s, 5.21's)." },
   { id: "sniperShootoutV4", name: "Sniper Shootout v4 (Squads)", playlistId: 41, playlistName: "Playlist_Snipers", eventFlag: null, builds: [build521, build521], seasons: [5],
@@ -611,9 +634,27 @@ export const ltms = [
     teams: "100 Teams × 1", description: "Legendary weapons only, no down state (Athena/Playlists/SolidGold tables, 5.30's)." },
   { id: "solidGoldSeason5Duos", name: "Solid Gold (Season 5, Duos)", playlistId: 34, playlistName: "Playlist_SolidGold_Duos", eventFlag: null, builds: [build530, build530], seasons: [5],
     teams: "100 Teams × 2", description: "Legendary weapons only (Athena/Playlists/SolidGold tables, 5.30's)." },
-  { id: "fiftyFiftySolidGold", name: "50v50 Solid Gold", playlistId: 1993, playlistName: "Playlist_50v50SAU", eventFlag: null, builds: [build530, build530], seasons: [5],
+  { id: "fiftyFiftySolidGold", name: "50v50 Solid Gold", playlistId: 1993, playlistName: "Playlist_50v50SAU", eventFlag: null, builds: [build530, build540], seasons: [5],
     original: solidGold530,
-    teams: "2 Teams × 50", description: "50v50 with legendary weapons and items only (Athena/Playlists/50v50/50v50SAU tables, 5.30's)." }
+    teams: "2 Teams × 50", description: "50v50 with legendary weapons and items only (Athena/Playlists/50v50/50v50SAU tables, 5.30's)." },
+  // 5.40's Getaway (Update v5.40's new mode) and Close Encounters (Update v5.41's; above).
+  { id: "getaway", name: "The Getaway (Squads)", playlistId: 142, playlistName: "Playlist_Bling_Squads", eventFlag: null, builds: [build540, build540], seasons: [5],
+    advertise: "New", defaultOn: true,
+    original: getawaySquads,
+    teams: "100 Teams × 4", description: "Find a Jewel in a supply drop safe and escape in one of the floating getaway vans; the first four squads to escape win (Playlist_Bling_Squads, 5.40's)." },
+  { id: "getawayDuos", name: "The Getaway (Duos)", playlistId: 141, playlistName: "Playlist_Bling_Duos", eventFlag: null, builds: [build540, build540], seasons: [5],
+    advertise: "New", defaultOn: true,
+    original: getawayDuos,
+    teams: "100 Teams × 2", description: "Find a Jewel in a supply drop safe and escape in one of the floating getaway vans; the first four duos to escape win (Playlist_Bling_Duos, 5.40's)." },
+  { id: "getawaySolo", name: "The Getaway (Solo)", playlistId: 140, playlistName: "Playlist_Bling_Solo", eventFlag: null, builds: [build540, build540], seasons: [5],
+    advertise: "New",
+    teams: "100 Teams × 1", description: "Find a Jewel in a supply drop safe and escape in one of the floating getaway vans; the first four players to escape win (Playlist_Bling_Solo, 5.40's)." },
+  { id: "closeEncountersSeason5", name: "Close Encounters (Season 5, Squads)", playlistId: 46, playlistName: "Playlist_Close_Squad", eventFlag: null, builds: [build540, build540], seasons: [5],
+    teams: "100 Teams × 4", description: "Shotguns and jetpacks only, close quarters (Athena/Playlists/Shotguns tables; Update v5.41's)." },
+  { id: "closeEncountersSeason5Solo", name: "Close Encounters (Season 5, Solo)", playlistId: 44, playlistName: "Playlist_Close_Solo", eventFlag: null, builds: [build540, build540], seasons: [5],
+    teams: "100 Teams × 1", description: "Shotguns and jetpacks only, close quarters (Athena/Playlists/Shotguns tables; Update v5.41's)." },
+  { id: "closeEncountersSeason5Duos", name: "Close Encounters (Season 5, Duos)", playlistId: 45, playlistName: "Playlist_Close_Duos", eventFlag: null, builds: [build540, build540], seasons: [5],
+    teams: "100 Teams × 2", description: "Shotguns and jetpacks only, close quarters (Athena/Playlists/Shotguns tables; Update v5.41's)." }
 ];
 // A build range's bounds are changelists or versions ("4.2", "4.4.x"): a version holds only once Core knows the build's.
 const versionParts = (version) => String(version).split(".").map((part) => (part === "x" ? Infinity : Number(part)));
@@ -731,7 +772,7 @@ export const ltmPlaylistOverrides = (build, settingsValue = settingsProvider(), 
 // Season 5's lobby (Core-Backend #314): from 5.0 (CL-4204761) the mode select lists UFortGameInstance's FrontEndPlaylistData
 // (Config, {PlaylistName, PlaylistAccess: {bForcePlaylistOff, bEnabled, bVisibleWhenDisabled, bIsDefaultPlaylist,
 // AdvertiseType (5.0: bDisplayAsNew), bDisplayAsLimitedTime, DisplayPriority}, AccessOverrides}), which the shipped
-// DefaultGame.ini of 5.0, 5.10, 5.21 and 5.30 sets to the default Solo, Duo and Squad, Playlist_50v50 and
+// DefaultGame.ini of 5.0, 5.10, 5.21, 5.30 and 5.40 sets to the default Solo, Duo and Squad, Playlist_50v50 and
 // Playlist_Playground, all enabled (read from their paks). So those builds' lobbies offered 50v50 and Playground whatever
 // the admin panel said, and a ticket for one that was off was refused ("We couldn't connect to the match"). The hotfix
 // (services/fortnite/cloudstorage.js) clears the list and sets it again: the defaults as shipped, and each of the build's
@@ -782,7 +823,7 @@ export function nextLtmChange(build, settingsValue, now = new Date()) {
 
 // The admin panel's list (its Battle Royale Game Modes, after solo, duos and squads): each LTM with its window and
 // builds, whether it is on by hand, and whether its window holds each season's replay now.
-const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build311]: "3.1.1", [build32]: "3.2", [build33]: "3.3", [build351]: "3.5.1", [build352]: "3.5.2", [build36]: "3.6", [build40]: "4.0", [build41]: "4.1", [build42]: "4.2", [build440]: "4.4.0", [build441]: "4.4.1", [build442]: "4.4.2", [build450]: "4.5.0", [build45]: "4.5", [build500]: "5.0.0", [build50]: "5.0", [build5100]: "5.10.0", [build510]: "5.10", [build521]: "5.21", [build530]: "5.30" };
+const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build311]: "3.1.1", [build32]: "3.2", [build33]: "3.3", [build351]: "3.5.1", [build352]: "3.5.2", [build36]: "3.6", [build40]: "4.0", [build41]: "4.1", [build42]: "4.2", [build440]: "4.4.0", [build441]: "4.4.1", [build442]: "4.4.2", [build450]: "4.5.0", [build45]: "4.5", [build500]: "5.0.0", [build50]: "5.0", [build5100]: "5.10.0", [build510]: "5.10", [build521]: "5.21", [build530]: "5.30", [build540]: "5.40" };
 const boundName = (bound) => (typeof bound === "number" ? versions[bound] : bound);
 const buildRange = ([first, last]) => (first === last ? boundName(first) : `${boundName(first)} to ${boundName(last)}`);
 // A window's day or moment for the admin panel: "YYYY-MM-DD" at midnight, else the ISO time; last, its last day.

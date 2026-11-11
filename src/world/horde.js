@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { hordeFlag, isEventActive } from "../events/events.js";
-import { weeklyHordeWeek } from "../events/roadtrip2018.js";
+import { weeklyHordeWeek, weeklyHordeWeeks } from "../events/roadtrip2018.js";
 import { perBuild } from "../gamedata/read.js";
 import { questPath } from "./quests.js";
 
@@ -81,16 +81,23 @@ const fortRow = "Theater_Horde_Stonewood_VeryLow";
 // theater carries the nine zones' tag, and the week's four zones are a theater of their own (hordeWeeklyId) carrying the
 // week's, both as the stat rows name them (🟡 Epic's layout of it isn't recorded; Core's is the same row of four zones, in
 // the Horde theater's socket).
-const weeklyGenerator = (week) => generator(`MissionGen_WeeklyHordeChallenge_0${Math.min(week, 2)}`);
-const weeklyNames = { 1: "Minibosses", 2: "Bullet Proof Husks", 3: "Endurance", 4: "Untrappable" };
-const weeklyThemes = { 1: "MiniBossArmy", 2: "RangeImmune", 3: "EnduranceMode", 4: "Untrappable" };
+// 5.40 (CL-4352937) has weeks 5 to 7 (events/roadtrip2018.js): Update v5.40's buff, knockback Husks
+// (Challenges/Indesctructible, as the folder is spelled: BP_ZT_ChallengeTheHorde_Challenge_Indestructible_*), Content Update
+// v5.40's "players have no shields" (Challenges/NoShields) and Update v5.41's crowd-control-immune Husks
+// (Challenges/CCImmune), at the same rows, counted by WeekA, WeekB and WeekC; and a third mission generator,
+// MissionGen_WeeklyHordeChallenge_03 (MissionInfo_WeeklyHordeChallenge_03), which they run on (🟡 nothing names its week).
+const weeklyGenerator = (week) => generator(`MissionGen_WeeklyHordeChallenge_0${week >= 5 ? 3 : Math.min(week, 2)}`);
+const weeklyNames = { 1: "Minibosses", 2: "Bullet Proof Husks", 3: "Endurance", 4: "Untrappable", 5: "Indestructible", 6: "No Shields", 7: "Unstoppable Husks" };
+const weeklyThemes = { 1: "MiniBossArmy", 2: "RangeImmune", 3: "EnduranceMode", 4: "Untrappable", 5: "Indestructible", 6: "NoShields", 7: "CCImmune" };
+// A week's theme folder, where it isn't the theme's name.
+const weeklyFolders = { 5: "Indesctructible" };
 // The theater tag a stat row counts, when it is one (5.30's), else null.
 const theaterTagOf = (objectiveStats, statName) => (/^Stat\.Theater\./.test(objectiveStats[statName]?.contextTags ?? "")
   ? objectiveStats[statName].contextTags : null);
 const theaterTags = (tag) => ({ gameplayTags: tag ? [{ tagName: tag }] : [] });
 const weeklyZones = (week) => [["SW", "Stonewood", null], ["Plank", "Plankerton", "hordequest_hidden_1"], ["Canny", "Uncanny", "hordequest_hidden_4"],
   ["Twine", "Final", "hordequest_hidden_7"]].map(([themeTier, rowTier, gate]) => ({
-  theme: theme(`Challenges/${weeklyThemes[week]}/BP_ZT_ChallengeTheHorde_Challenge_${weeklyThemes[week]}_${themeTier}`),
+  theme: theme(`Challenges/${weeklyFolders[week] ?? weeklyThemes[week]}/BP_ZT_ChallengeTheHorde_Challenge_${weeklyThemes[week]}_${themeTier}`),
   rowName: `Theater_Horde_${rowTier}_Weekly`, gate
 }));
 
@@ -150,8 +157,8 @@ const layout = perBuild((read) => {
       regionTags: { gameplayTags: [] }, tileIndices: [tileIndex], requirements: withQuest(zone.gate) });
   });
   // Each week's Weekly Horde Challenge (events/roadtrip2018.js) the build's data has: its four zones in a row below the
-  // nine, each a region of one tile hosting the week's mission every day; on 5.30 in a theater of their own (above).
-  const weeks = Object.fromEntries([1, 2, 3, 4].filter((candidate) => missionGenerators[weeklyGenerator(candidate)]
+  // nine, each a region of one tile hosting the week's mission every day; from 5.30 in a theater of their own (above).
+  const weeks = Object.fromEntries(weeklyHordeWeeks.filter((candidate) => missionGenerators[weeklyGenerator(candidate)]
     && weeklyZones(candidate).every((zone) => zoneThemes[zone.theme] && difficulties[zone.rowName])).map((week) => {
     const tag = theaterTagOf(objectiveStats, `hordequest_weekly0${week}_stonewood_01`);
     const zones = weeklyZones(week).map((zone, index) => ({

@@ -135,6 +135,14 @@ const playlistTeamsFrom530 = {
   1993: { maxTeamCount: 2, maxTeamSize: 50, maxSquadSize: 4 }
 };
 const playlistTeams530Build = 4305896;
+// 5.40's (CL-4352937) Getaway, Playlist_Bling_Solo, _Duos and _Squads (140, 141, 142: 100 teams of 1, 2 and 4); its Close
+// Encounters (44, 45, 46) has 3.5.1's teams above.
+const playlistTeamsFrom540 = {
+  140: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  141: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  142: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }
+};
+const playlistTeams540Build = 4352937;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).
 export const teamSquadsOptionBuild = 3915963;
 // Late joining (Core-Backend #122, the admin panel's Matchmaking settings). The servers' MMS client (1.9
@@ -267,6 +275,7 @@ export const playlistTeamsOf = (bucketId, build = null) => teamsOfPlaylist(parse
 // The same by playlist id: what the match results' V-Bucks read a limited-time playlist's mode from (CoreV2 #294).
 export const teamsOfPlaylist = (playlistId, build = null) => {
   if (playlistId === shootingTestPlaylist) return shootingTestTeams(build ?? 3870737);
+  if (Number(build) >= playlistTeams540Build && playlistTeamsFrom540[playlistId]) return playlistTeamsFrom540[playlistId];
   if (Number(build) >= playlistTeams530Build && playlistTeamsFrom530[playlistId]) return playlistTeamsFrom530[playlistId];
   if (Number(build) >= playlistTeams510Build && playlistTeamsFrom510[playlistId]) return playlistTeamsFrom510[playlistId];
   if (Number(build) >= playlistAssetTeamsBuild && playlistTeamsFrom351[playlistId]) return playlistTeamsFrom351[playlistId];

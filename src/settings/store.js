@@ -36,13 +36,16 @@ const playlistAssetLtms = ["fiftyFiftyV2", "highExplosivesSolo", "highExplosives
   // 5.0's (CL-4204761, CL-4214610) 50v50; 5.10's Playground and Fly Explosives (Squads, Solo, Duos); 5.21's Steady Storm,
   // Soaring 50's and Sniper Shootout v4; 5.30's Score Royale (Solo, Duos, Squads), Solid Gold (Squads, Solo, Duos) and 50v50
   // Solid Gold.
+  // 5.40's Getaway (Squads, Duos, Solo) and Close Encounters (Squads, Solo, Duos).
   "fiftyFiftySeason5", "playgroundV2", "flyExplosives", "flyExplosivesSolo", "flyExplosivesDuos",
   "steadyStormSolo", "steadyStormDuos", "steadyStormSquads", "soaring50s", "sniperShootoutV4", "sniperShootoutV4Solo", "sniperShootoutV4Duos",
-  "scoreRoyaleSolo", "scoreRoyaleDuos", "scoreRoyaleSquads", "solidGoldSeason5", "solidGoldSeason5Solo", "solidGoldSeason5Duos", "fiftyFiftySolidGold"];
+  "scoreRoyaleSolo", "scoreRoyaleDuos", "scoreRoyaleSquads", "solidGoldSeason5", "solidGoldSeason5Solo", "solidGoldSeason5Duos", "fiftyFiftySolidGold",
+  "getaway", "getawayDuos", "getawaySolo", "closeEncountersSeason5", "closeEncountersSeason5Solo", "closeEncountersSeason5Duos"];
 // The ones on by default (events/ltms.js defaultOn, Core-Backend #314): Season 5's 50v50 and 5.10's to 5.30's Playground,
 // which those builds' shipped lobbies offer. A settings file from before them (matchmakingModesRevision under 1) kept them
 // off only because that was the default, so they are turned on once.
-const defaultOnPlaylistLtms = ["fiftyFiftySeason5", "playgroundV2"];
+// 5.40's Getaway (Squads, Duos) is on by default from the start: a settings file without its key takes the default.
+const defaultOnPlaylistLtms = ["fiftyFiftySeason5", "playgroundV2", "getaway", "getawayDuos"];
 export const matchmakingModesRevision = 1;
 // Close Encounters' original date (Core-Backend #258, events/ltms.js): the whole of 25 May 2018, or one hour of it (0 to 23,
 // on the season replay's clock), as Epic ran it.
@@ -168,8 +171,8 @@ const defaults = {
     // Season 4's event flags (events/season4flags.js, Core-Backend #296): the admin's "on" / "off" per flag over a build's
     // own, and the rifts of July 2018: "off", "launch" (after the rocket launch) or "dates" (Epic's, on the replay).
     season4Flags: defaultSeason4Flags,
-    // Season 5's dated event-flag events (events/datedflags.js, Core-Backend #311): 5.21's Tomato Town rift and 5.30's
-    // Cube, each "dates" (Epic's, on the replay), "custom" (the admin's own times per step) or "off".
+    // Season 5's dated event-flag events (events/datedflags.js, Core-Backend #311): 5.21's Tomato Town rift, 5.30's
+    // Cube and 5.40's High Stakes, each "dates" (Epic's, on the replay), "custom" (the admin's own times per step) or "off".
     datedFlags: defaultDatedFlags
   },
   battlepass: defaultBattlePass,

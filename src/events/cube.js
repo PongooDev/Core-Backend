@@ -25,7 +25,10 @@ import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 // their hours: every change is put at 21:00 UTC (5 PM EDT, the Crack Closure's hour), the purple crack from Update v5.30's
 // release (23 August, 4 AM ET), and the first roll from the cube's appearing (the wiki: "Though it first appeared to be a
 // stationary object, it began to move"). 5.30 was played until Update v5.40 (6 September); its paks have the whole
-// journey, so the replay serves all of it, the Lake to the season's end.
+// journey, so the replay serves all of it, the Lake to the season's end. 5.40 (CL-4352937) plays the same journey from its
+// release (the Cube between Salty Springs and Retail Row): its CUBE binds _MoveTo1 to _8 and _Rune1 to _7 (EventsToBindTo),
+// its eighth leg the one to the lake (5.30's _MoveToLake), and its Cube_Dest_Scripting watches BR_S5_Cube_Destination
+// (5.30's _Lake); the crack's two aren't in its paks. Each step names both builds' flags, and a build is served its own.
 //
 // On Season 5's replay (store/itemshop.js seasonMoment) these windows are mapped to real time lap by lap (the replay's
 // 12 July to 27 September), as events/tomatorift.js's; the admin panel can set its own times instead, step by step or from
@@ -34,7 +37,7 @@ export const cubeEvent = datedEvent("cube");
 export const cubeSchedule = cubeEvent.steps.flatMap(({ flags, start, end }) => flags.map((eventType) => ({ eventType, start, end: end ?? season5EndDay })));
 
 // The Cube's calendar events as parts [{validFrom (ms), events: [{eventType, activeSince, activeUntil}]}], from the part
-// that holds now on (the next four changes), as events/tomatorift.js's: on 5.30 with the seasonal events on, in the
+// that holds now on (the next four changes), as events/tomatorift.js's: on 5.30 and 5.40 with the seasonal events on, in the
 // Automatic mode. A flag the admin switched on is served always (season4Overrides) and one switched off never, so neither
 // is scheduled here.
 export function cubeStates(now = new Date(), changelist = currentBuild(), config = currentEventsConfig()) {
@@ -43,5 +46,7 @@ export function cubeStates(now = new Date(), changelist = currentBuild(), config
   const { off, on } = season4Overrides(changelist, config);
   const nowMs = now.getTime();
   const windows = datedWindows(cubeEvent, datedSettings(config).cube, nowMs, seasonMoment(now, null, 5).getTime());
-  return datedParts(windows, nowMs, cubeEvent.parts, new Set([...off, ...on]));
+  // Each build only the names its paks have (5.30's _MoveToLake and _Lake, 5.40's _MoveTo8 and _Destination).
+  const elsewhere = cubeEvent.steps.flatMap(({ flags }) => flags).filter((flag) => !onBuild(season4Flag(flag), changelist));
+  return datedParts(windows, nowMs, cubeEvent.parts, new Set([...off, ...on, ...elsewhere]));
 }
