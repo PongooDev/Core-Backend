@@ -32,12 +32,16 @@ const lakeAt = at("09-19");
 const step = (id, label, flags, start, end) => ({ id, label, flags, start, end });
 
 // The Cube's locations, in order (its hill, the seven runes, Loot Lake), and the leg that rolls it to each: the admin
-// panel rolls it to the next one (Core-Backend #322, datedRollSchedule).
+// panel rolls it to the next one (Core-Backend #322, datedRollSchedule) or straight to any of them (Core-Backend #295,
+// datedMoveSchedule), each with its short name.
 const cubeLocations = ["spawn", ...runeStops.map((_, index) => `rune${index + 1}`), "lake"];
 const cubeLegs = { ...Object.fromEntries(runeStops.map((_, index) => [`moveTo${index + 1}`, `rune${index + 1}`])), moveToLake: "lake" };
+const cubeStops = { spawn: "Its hill (Paradise Palms)", ...Object.fromEntries(runeStops.map(([, , place], index) => [`rune${index + 1}`, `Rune ${index + 1}: ${place}`])),
+  lake: "Loot Lake" };
 
 export const datedEvents = [
-  { id: "cube", name: "the Cube (5.30 – 5.41)", flag: cubeTurnOn, anchor: "crack", parts: 4, locations: cubeLocations, legs: cubeLegs, spawn: "spawn", steps: [
+  { id: "cube", name: "the Cube (5.30 – 5.41)", flag: cubeTurnOn, anchor: "crack", parts: 4, locations: cubeLocations, legs: cubeLegs, stops: cubeStops,
+    spawn: "spawn", sink: "lake", sinkLeg: "moveToLake", steps: [
     step("crack", "The sky's crack turns purple", [riftCorrupt], at("08-23", "08:00"), closure),
     step("lightning", "Lightning strikes the hill", [cubeLightning], at("08-23"), closure),
     step("spawn", "The Cube appears (the crack closes)", [cubeTurnOn], closure, null),
@@ -212,15 +216,87 @@ export function datedPlace(event, steps, nowMs) {
   return { now: leg ?? at ?? on.at(-1) ?? null, next };
 }
 
-// The admin's times that roll it to its next location now and hold it there: the next location from now on, with the steps
-// on now that Epic's schedule keeps on for good (the Cube's appearing, _TurnOn) kept from their start. Null after the last.
+// The Cube's stage at nowMs for the admin panel's track of its stops: `toward` the location a leg on now rolls it to (null:
+// none) and `at` the location it is at, or rolls from on a leg (null: not out).
+export function datedStage(event, steps, nowMs) {
+  const on = steps.filter(({ current }) => onAt(current, nowMs)).map(({ step: id }) => id);
+  const leg = on.find((id) => event.legs[id]) ?? null;
+  const toward = leg ? event.legs[leg] : null;
+  const at = toward ? event.locations[event.locations.indexOf(toward) - 1] ?? null : event.locations.filter((id) => on.includes(id)).at(-1) ?? null;
+  return { at, toward };
+}
+
+// The admin's times that put it at one of its locations now and hold it there (Core-Backend #295's movement stages): that
+// location from now on, with the Cube's appearing (_TurnOn) kept from its start, or from now when it isn't out yet. Loot
+// Lake is the sink: datedSinkSchedule, it rolls in sinkLeadSeconds from now. Null for a location it doesn't have.
+// What a running match plays (a Core gameserver fetches the calendar within 5 seconds of the change): a rune newly on
+// rolls the Cube onto it from the path's step before it, whichever stop it was at, and prints it (the roll above); its hill
+// changes nothing there (_TurnOn stays on and the game has no roll back), so new matches start it there; and the sink.
+export function datedMoveSchedule(event, steps, to, nowMs) {
+  if (!event.locations?.includes(to)) return null;
+  if (to === event.sink) return datedSinkSchedule(event, nowMs + sinkLeadSeconds * 1000);
+  const appearing = steps.find(({ step: id }) => id === event.spawn);
+  const out = { step: event.spawn, startAt: onAt(appearing.current, nowMs) ? appearing.current.startAt : iso(nowMs), endAt: null };
+  return validDatedSchedule(event, to === event.spawn ? [out] : [out, { step: to, startAt: iso(nowMs), endAt: null }]);
+}
+
+// The admin's times that roll it to its next location now and hold it there: datedMoveSchedule to the next location. Null
+// after the last, and while it rolls into Loot Lake (the sink's last stretch, which matches already play: datedSinkStatus).
 export function datedRollSchedule(event, steps, nowMs) {
   const { next } = datedPlace(event, steps, nowMs);
-  if (next === null) return null;
-  const at = iso(nowMs);
-  const kept = steps.filter(({ step: id, original, current }) => id !== next && original.endAt === null && onAt(current, nowMs))
-    .map(({ step: id, current }) => ({ step: id, startAt: current.startAt, endAt: null }));
-  return validDatedSchedule(event, [...kept, { step: next, startAt: at, endAt: null }]);
+  if (next === null || (next === event.sink && datedSinkStatus(event, steps, nowMs).phase === "rollingIn")) return null;
+  return datedMoveSchedule(event, steps, next, nowMs);
+}
+
+// The Cube sinking into Loot Lake (Core-Backend #295), 19 September 2018 (the Fortnite Wiki's Kevin the Cube: it rolled
+// into the lake and dissolved, and the lake turned bouncy), played on 5.41. How 5.40's and 5.41's paks play it (their CUBE
+// and Cube_Dest_Scripting are the same but for 5.41's tilted-impact sound and replay fixes; events/cube.js): its leg to the
+// lake (BR_S5_Cube_MoveTo8, with BR_S5_Cube_StartMove) and then BR_S5_Cube_Destination.
+// - CUBE, on _MoveTo8's OnEventActive, puts PathIndex at Runes[6] (460) plus the leg's progress times its 104 steps (the
+//   path's last but one, 564, is the lake's surface): CalculateNextMove, rolling there from the step before it, and sets
+//   IncrementIndex for the next step's time less its 12.5-second roll and 5 seconds, if under an hour away; IncrementIndex
+//   waits 5 seconds and rolls one step on. In the leg's last hour it also sets the time of day to reach
+//   DestinationTimeOfDay (21:30) at its end. So a match where the leg turns on in its last 104th (27.7 minutes at Epic's two
+//   days) rolls the Cube to the lake's edge (563) and, 12.5 seconds before the leg's end, onto the water (564), landing
+//   as it ends: CubeRollFeedback splashes (Cube_Dest_Scripting's CubeSplash, the water boils) and shakes the camera, and
+//   5 seconds on ImpactLake plays LakeTimeline (80 s): the Cube sinks over 60 seconds (Steps 564 to 565) while the lake's
+//   corruption spreads (MPC_Landscape's LakeCorruption, CubeStartSinking), at 60 s DoneSinking (CubeStopSinking, the
+//   Cube off) and at 67 s TurnOn: Cube_Dest_Scripting's LakeTurnOn turns the lake on (LakeState 2, its purple material,
+//   P_C_L_TurnOn and the lake made Bouncy) and DestTurnedOn. After the roll onto the water, IncrementIndex's next timer
+//   (from BR_S5_Cube_StartMove's end, the leg's) works out below zero, so no roll follows it.
+// - _Destination's OnEventActive, with the Cube not at the lake's surface or under it, puts it under it (565, rolling
+//   down in a running match) and turns the lake on at once; a new match after the sink starts so: the Cube gone, the
+//   lake purple and bouncy.
+// A match where the leg was already on gets OnEventUpdated, which 5.40's and 5.41's CUBE ignore, so it gets that quick
+// version once it sees _Destination. 5.30's paks have no lake sequence (its _Lake calls an empty ImpactLake, and it has
+// no Cube_Dest_Scripting), and 6.00's place neither the Cube nor the lake's scripting (its Loot Lake is Season 6's,
+// with the floating island; events/cube.js). Each schedule here sets every step at Epic's spacing from the Cube rolling
+// onto the water at sinkAtMs, as the admin's own times: the leg to the lake from two days before, rune 7 the day before
+// that. "Now" is a minute on, so a running match sees the leg newly on within its last 104th with time for both rolls.
+export const sinkLeadSeconds = 60;
+export const minSinkLeadSeconds = 30;
+export const sinkPlaysSeconds = 85;
+export const cubeLakeLegSteps = 104;
+export function datedSinkSchedule(event, sinkAtMs) {
+  if (!event.sink || !Number.isFinite(sinkAtMs)) return null;
+  return shiftedDatedSchedule(event, { startAt: iso(sinkAtMs), step: event.sink, scale: 1 });
+}
+
+// When it sinks on its times now and Epic's: {at (null: not served), original, playsFrom, phase}. playsFrom is when its leg
+// to the lake reaches its last 104th: a match whose leg turns on from then (one that starts then, or any running one
+// when the admin's change is that late) plays the sink. The phase: "unscheduled", "scheduled", "rolling" (on its leg to
+// the lake), "rollingIn" (the last 104th), "sinking" (sinkPlaysSeconds from it: the roll lands, it sinks and the lake
+// turns) or "sunk" (the lake bouncy).
+export function datedSinkStatus(event, steps, nowMs) {
+  const own = steps.find(({ step }) => step === event.sink);
+  const leg = steps.find(({ step }) => step === event.sinkLeg);
+  const at = own.current?.startAt ?? null;
+  const ms = at === null ? null : Date.parse(at);
+  const legStart = leg.current && leg.current.endAt !== null && Date.parse(leg.current.endAt) === ms ? Date.parse(leg.current.startAt) : null;
+  const playsFrom = ms === null ? null : legStart === null ? ms : ms - Math.floor((ms - legStart) / cubeLakeLegSteps);
+  const phase = ms === null ? "unscheduled" : nowMs >= ms + sinkPlaysSeconds * 1000 ? "sunk" : nowMs >= ms ? "sinking"
+    : nowMs >= playsFrom ? "rollingIn" : onAt(leg.current, nowMs) ? "rolling" : "scheduled";
+  return { at, original: own.original.startAt, playsFrom: playsFrom === null ? null : iso(playsFrom), phase };
 }
 
 // The Cube's appearing, the Crack Closure (Core-Backend #295; events/cube.js has how 5.30 plays it): every step at Epic's
@@ -267,7 +343,10 @@ export function datedFlagsStatus(nowMs, momentNowMs, config) {
         id: event.id, name: event.name, mode: setting.mode, modes: datedModesOf(event), challenges: event.challenges ?? null,
         anchor: event.anchor, schedule: setting.schedule, steps,
         place: event.locations ? datedPlace(event, steps, nowMs) : null,
-        spawn: event.spawn ? datedSpawnStatus(event, steps, nowMs) : null
+        stops: event.locations ? event.locations.map((id) => ({ id, label: event.stops[id] })) : null,
+        stage: event.locations ? datedStage(event, steps, nowMs) : null,
+        spawn: event.spawn ? datedSpawnStatus(event, steps, nowMs) : null,
+        sink: event.sink ? datedSinkStatus(event, steps, nowMs) : null
       };
     })
   };

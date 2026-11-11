@@ -7643,20 +7643,13 @@
           ...event.steps.map((s) => el("option", { value: s.step, text: s.label, selected: s.step === event.anchor })));
         const scale = el("input", { class: "field", type: "number", min: "0.001", max: "10", step: "0.001", style: "width:90px;", "aria-label": `${event.name} spacing scale`, value: "1" });
         const shifted = (at) => datedAction({ event: event.id, schedule: { startAt: at, step: anchor.value, scale: Number(scale.value) } }, `${event.name}: times saved`);
-        // The Cube's roll (Core-Backend #322): where it is now, and a button that rolls it to its next location and holds it there.
+        // The Cube's place: its stages, the roll and the sink are in their own boxes above (Core-Backend #295, #322).
         const labelOf = (id) => event.steps.find((s) => s.step === id)?.label || "Not on the island";
-        const rollBox = event.place ? el("div", { style: "margin:6px 0 8px;" },
-          el("div", { style: "font-size:12px;" }, el("span", { class: "muted", text: "Now: " }), el("span", { text: labelOf(event.place.now) }),
-            el("span", { class: "muted", text: " · Next: " }), el("span", { text: event.place.next ? labelOf(event.place.next) : "none, it is at its last location" })),
-          el("div", { style: "display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:4px;" },
-            el("button", { class: "btn small", text: "Roll the Cube to its next location", disabled: !event.place.next, onclick: async () => {
-              if (await act(api("/admin/api/events/dated-flags/roll", { event: event.id }), (res) => `The Cube rolls on: ${res.label}`)) showEvents();
-            } }),
-            el("button", { class: "btn ghost small", text: "Back to Epic's dates", onclick: () => datedAction({ event: event.id, schedule: null, mode: "dates" }, `${event.name}: Epic's dates`) })),
-          el("div", { class: "muted", style: "font-size:12px; margin-top:4px;", text: "Puts the Cube at its next location now (its hill, then each rune, then Loot Lake) and keeps it there until you roll it again; this switches it to My own times. Matches running on 5.30, 5.40 or 5.41 pick it up within 5 seconds: the Cube rolls onto the rune (its last roll, not the whole way there) and prints it. New matches start with it there. Loot Lake: 5.40 and 5.41 roll it into the lake; 5.30's paks have no lake sequence, so there it stays put and the next match starts it on its hill." })) : null;
+        const placeLine = event.place ? el("div", { style: "font-size:12px; margin:4px 0 6px;" }, el("span", { class: "muted", text: "Now: " }), el("span", { text: labelOf(event.place.now) }),
+          el("span", { class: "muted", text: " · Next: " }), el("span", { text: event.place.next ? labelOf(event.place.next) : "none, it is at its last location" })) : null;
         return el("div", { style: "margin-top:12px;" },
           el("div", { style: "font-weight:700; font-size:12px;", text: event.challenges ? `${event.name[0].toUpperCase()}${event.name.slice(1)} (${event.challenges}):` : `When ${event.name} happens:` }),
-          rollBox,
+          placeLine,
           el("select", { class: "field", style: "margin-top:4px;", "aria-label": `${event.name} schedule`, onchange: (e) => datedAction({ event: event.id, mode: e.target.value }, `${event.name}: schedule saved`) },
             ...(event.modes || dated.modes).map((value) => el("option", { value, text: (event.challenges ? challengeLabels : datedLabels)[value] || value, selected: event.mode === value }))),
           el("div", { class: "muted", style: "font-size:12px; margin:6px 0 4px;", text: "Start the sequence from one step, the others following at Epic's spacing (scale 1; 0.5 is twice as fast, 0.01 runs the Cube's month in about 6 hours). Or set each step below: an empty end stays on. Saving switches to My own times; running gameservers pick it up within 5 seconds, clients at their next calendar fetch." }),
@@ -7711,6 +7704,57 @@
           } }),
           el("button", { class: "btn ghost small", text: "Lightning now (10 min)", title: "The strikes on the hill every 3 minutes, then the final bolt and the Cube", onclick: () => spawnAction({ inSeconds: 600 }, "Lightning on the hill: the Cube appears in 10 minutes") }),
           el("button", { class: "btn ghost small", text: "Spawn the Cube now", title: "The final bolt in 10 seconds, the Cube 30 seconds from now", onclick: () => spawnAction({ inSeconds: 30 }, "The Cube appears in 30 seconds") }),
+          el("button", { class: "btn ghost small", text: "Back to Epic's dates", onclick: () => datedAction({ event: "cube", schedule: null, mode: "dates" }, "The Cube: Epic's dates") }))
+      ) : null;
+      // The Cube's movement stages (Core-Backend #295, #322): where it is on its way (its hill, the seven runes, Loot Lake), and a button per stop
+      // that puts it there now and holds it there; a running match plays the arrival.
+      const cubeStops = cubeDated?.stops || [];
+      const cubeStage = cubeDated?.stage || { at: null, toward: null };
+      const stopLabel = (id) => cubeStops.find((stop) => stop.id === id)?.label || id;
+      const moveAction = async (to) => {
+        if (await act(api("/admin/api/events/dated-flags/move", { event: "cube", to }), (res) => (res.sinkAt ? `The Cube rolls into Loot Lake at ${new Date(res.sinkAt).toLocaleTimeString()}` : `The Cube moves to ${res.label}`))) showEvents();
+      };
+      const cubeStagesContainer = cubeStops.length ? el("div", {
+        style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
+      },
+        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "The Cube's stages, 5.30 – 5.41 (Battle Royale):" }),
+        el("div", { style: "font-size:13px; margin-bottom:8px;", text: `Now: ${cubeStage.toward ? `rolling to ${stopLabel(cubeStage.toward)}${cubeStage.at ? `, from ${stopLabel(cubeStage.at)}` : ""}` : cubeStage.at ? stopLabel(cubeStage.at) : "not on the island"}${cubeDated.mode === "dates" ? " (Epic's dates on the replay)" : cubeDated.mode === "off" ? " (the Cube is off)" : ""}` }),
+        el("div", { style: "display:flex; flex-wrap:wrap; gap:6px; align-items:center;", role: "group", "aria-label": "The Cube's stops" },
+          ...cubeStops.map((stop, index) => el("button", {
+            class: stop.id === cubeStage.at && !cubeStage.toward ? "btn small" : "btn ghost small",
+            style: stop.id === cubeStage.toward ? "border-style:dashed;" : "",
+            "aria-pressed": String(stop.id === cubeStage.at && !cubeStage.toward),
+            title: stop.id === "lake" ? "Sink it: it rolls onto the water a minute from now (5.40 and 5.41)" : stop.id === "spawn" ? "New matches start it on its hill" : `Roll it onto this rune and print it`,
+            text: `${index ? "→ " : ""}${stop.label}${stop.id === cubeStage.at ? " ●" : stop.id === cubeStage.toward ? " …" : ""}`,
+            onclick: () => moveAction(stop.id)
+          }))),
+        el("div", { style: "display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:8px;" },
+          el("button", { class: "btn small", text: "Roll the Cube to its next location", disabled: !cubeDated.place?.next || cubeDated.sink?.phase === "rollingIn", onclick: async () => {
+            if (await act(api("/admin/api/events/dated-flags/roll", { event: "cube" }), (res) => `The Cube rolls on: ${res.label}`)) showEvents();
+          } }),
+          el("button", { class: "btn ghost small", text: "Back to Epic's dates", onclick: () => datedAction({ event: "cube", schedule: null, mode: "dates" }, "The Cube: Epic's dates") })),
+        el("div", { class: "muted", style: "font-size:12px; margin-top:6px;", text: "Pick a stop to put the Cube there now and keep it there (My own times in the Cube's schedule below). Matches running on 5.30, 5.40 or 5.41 pick it up within 5 seconds and play the game's own arrival, whichever stop it was at: the Cube appears one step before the rune, rolls onto it (12.5 seconds, with the slam and the camera shake) and prints it (the rune glows and its low-gravity dome comes up). The game moves the Cube one roll per calendar change, so it can't replay the days-long roll between two runes in one match; each stop plays its last roll. Its hill: running matches keep the Cube where it is (the game has no roll back), new matches start it there. Loot Lake: the sink below, a minute on. Back from Loot Lake: running matches keep the bouncy lake, new matches have the normal one. Needs the Automatic mode with seasonal events on." })
+      ) : null;
+      // The Cube sinking into Loot Lake (Core-Backend #295): 5.40's and 5.41's CUBE and Cube_Dest_Scripting play it from the end of its leg to the lake.
+      const cubeSink = cubeDated?.sink;
+      const sinkPhases = { unscheduled: cubeDated?.mode === "off" ? "Off: the Cube isn't served" : "Not scheduled: the Cube's times have no sink", scheduled: "Scheduled", rolling: "Rolling to Loot Lake", rollingIn: "Rolling into Loot Lake: matches that start now play the sink", sinking: "Sinking: the lake turns purple and bouncy", sunk: "Sunk: Loot Lake is bouncy" };
+      const sinkAtInput = el("input", { class: "field", type: "datetime-local", "aria-label": "The Cube rolls into Loot Lake at", value: toLocalInput(cubeSink?.at) });
+      const sinkAction = async (payload, message) => {
+        if (await act(api("/admin/api/events/dated-flags/sink", { event: "cube", ...payload }), message)) showEvents();
+      };
+      const cubeSinkContainer = cubeSink ? el("div", {
+        style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
+      },
+        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "5.40 – 5.41 The Cube Sinks into Loot Lake (Battle Royale):" }),
+        el("div", { class: "muted", style: "font-size:12px; margin-bottom:6px;", text: `5.40 and 5.41 play it from the end of the Cube's leg to the lake (EventFlag.BR_S5_Cube_MoveTo8): evening falls, the Cube rolls to the lake's edge and, as the leg ends, onto the water with a splash; 5 seconds later it sinks for a minute while the purple spreads over the lake, and then the lake turns on and goes bouncy (EventFlag.BR_S5_Cube_Destination from then: new matches start with the Cube gone and the lake bouncy). These set every step of the Cube at Epic's spacing from it, as My own times. Sink the Cube now: it rolls onto the water a minute from now, and matches already running play it, unless they were already on its leg to the lake (those just get the bouncy lake when they next fetch the calendar). Scheduled: matches that start in its last ${cubeSink.playsFrom && cubeSink.at ? Math.round((Date.parse(cubeSink.at) - Date.parse(cubeSink.playsFrom)) / 60000) : 28} minutes play it. Epic's: ${new Date(cubeSink.original).toLocaleString()}. 5.30's files have no lake sequence (its Cube stays where it is), and 6.00's map has Season 6's Loot Lake, with the floating island, instead. Needs the Automatic mode with seasonal events on.` }),
+        el("div", { style: "font-size:13px; margin-bottom:8px;", text: `Status: ${sinkPhases[cubeSink.phase] || cubeSink.phase}${cubeSink.at ? ` (the Cube ${cubeSink.phase === "sinking" || cubeSink.phase === "sunk" ? "rolled" : "rolls"} into Loot Lake ${new Date(cubeSink.at).toLocaleString()}${cubeDated.mode === "dates" ? ", Epic's dates on the replay" : ""})` : ""}` }),
+        el("div", { style: "display:flex; flex-wrap:wrap; gap:8px; align-items:center;" },
+          sinkAtInput,
+          el("button", { class: "btn small", text: "Schedule", onclick: () => {
+            if (!sinkAtInput.value) return toast("Pick when the Cube rolls into Loot Lake", true);
+            sinkAction({ at: toIso(sinkAtInput.value) }, "The Cube's sinking scheduled");
+          } }),
+          el("button", { class: "btn ghost small", text: "Sink the Cube now", title: "It rolls onto the water a minute from now, sinks, and the lake turns bouncy", onclick: () => sinkAction({ inSeconds: 60 }, "The Cube rolls into Loot Lake in a minute") }),
           el("button", { class: "btn ghost small", text: "Back to Epic's dates", onclick: () => datedAction({ event: "cube", schedule: null, mode: "dates" }, "The Cube: Epic's dates") }))
       ) : null;
       // The Battle Royale event challenges (Core-Backend #316): 5.10's Birthday Challenges and 5.40's (and 5.41's) High Stakes Challenges,
@@ -8000,6 +8044,8 @@
           meteorStrikeContainer,
           rocketContainer,
           ...(cubeSpawnContainer ? [cubeSpawnContainer] : []),
+          ...(cubeStagesContainer ? [cubeStagesContainer] : []),
+          ...(cubeSinkContainer ? [cubeSinkContainer] : []),
           ...(challengesContainer ? [challengesContainer] : []),
           season4Container,
           el("div", { style: "margin-top:18px;" },

@@ -49,8 +49,8 @@ import { season4FlagsStatus } from "../events/oddities.js";
 import { tomatoRiftStates } from "../events/tomatorift.js";
 import { cubeStates } from "../events/cube.js";
 import { highStakesStates } from "../events/highstakes.js";
-import { datedEvent, datedEvents, datedFlagsStatus, datedModesOf, datedRollSchedule, datedSchedulePatch, datedSettings, datedSpawnSchedule, defaultDatedMode,
-  minSpawnLeadSeconds, spawnLeadSeconds } from "../events/datedflags.js";
+import { datedEvent, datedEvents, datedFlagsStatus, datedModesOf, datedMoveSchedule, datedRollSchedule, datedSchedulePatch, datedSettings, datedSinkSchedule,
+  datedSpawnSchedule, defaultDatedMode, minSinkLeadSeconds, minSpawnLeadSeconds, sinkLeadSeconds, spawnLeadSeconds } from "../events/datedflags.js";
 import { birthdayChallengeStates } from "../events/birthday2018.js";
 import { odditiesModes, odditySchedulePatch, season4Flag } from "../events/season4flags.js";
 import { convertLeftoverCandy } from "../events/candyllamas.js";
@@ -1620,8 +1620,9 @@ export function adminRoutes(context) {
   });
 
   // The Cube's roll (Core-Backend #322): {event: "cube"} rolls it to its next location now (its hill, the next rune or Loot
-  // Lake) and holds it there, on the admin's own times (events/datedflags.js datedRollSchedule). Running gameservers
-  // fetch the calendar within 5 seconds and the cube rolls there; "Back to Epic's dates" is the route above.
+  // Lake, the sink a minute on) and holds it there, on the admin's own times (events/datedflags.js datedRollSchedule).
+  // Running gameservers fetch the calendar within 5 seconds and the cube rolls there; "Back to Epic's dates" is the route
+  // above.
   router.post("/admin/api/events/dated-flags/roll", (req, res) => {
     const body = typeof req.body === "object" && req.body !== null ? req.body : {};
     const event = datedEvent(body.event);
@@ -1629,10 +1630,51 @@ export function adminRoutes(context) {
     const now = new Date();
     const status = datedStatus(now, settings.get()?.events).events.find(({ id }) => id === event.id);
     const schedule = datedRollSchedule(event, status.steps, now.getTime());
-    if (!schedule) return invalid(res, `${event.name} is at its last location; go back to Epic's dates or set its times to start it again`);
+    if (!schedule) return invalid(res, `${event.name} is at its last location or rolling into it; go back to Epic's dates or set its times to start it again`);
     const updated = settings.update({ events: { datedFlags: { [event.id]: { mode: "custom", schedule } } } });
     const rolledTo = schedule.at(-1).step;
     res.json({ success: true, rolledTo, label: event.steps.find(({ id }) => id === rolledTo).label, datedFlags: datedStatus(now, updated.events) });
+  });
+
+  // The Cube's movement stages (Core-Backend #295): {event: "cube", to: "spawn" | "rune1" … "rune7" | "lake"} puts it at that
+  // location now, from wherever it is, and holds it there (events/datedflags.js datedMoveSchedule): a running match rolls it
+  // onto a rune and prints it; Loot Lake is the sink, a minute on (the route below's "now").
+  router.post("/admin/api/events/dated-flags/move", (req, res) => {
+    const body = typeof req.body === "object" && req.body !== null ? req.body : {};
+    const event = datedEvent(body.event);
+    if (!event?.locations) return invalid(res, `event must be ${datedEvents.filter(({ locations }) => locations).map(({ id }) => id).join(" or ")}`);
+    if (!event.locations.includes(body.to)) return invalid(res, `to must be ${event.locations.join(", ")}`);
+    const now = new Date();
+    const status = datedStatus(now, settings.get()?.events).events.find(({ id }) => id === event.id);
+    const schedule = datedMoveSchedule(event, status.steps, body.to, now.getTime());
+    const updated = settings.update({ events: { datedFlags: { [event.id]: { mode: "custom", schedule } } } });
+    const sinkAt = body.to === event.sink ? schedule.find(({ step }) => step === event.sink).startAt : null;
+    res.json({ success: true, movedTo: body.to, label: event.stops[body.to], sinkAt, datedFlags: datedStatus(now, updated.events) });
+  });
+
+  // The Cube sinking into Loot Lake (Core-Backend #295): {event: "cube", inSeconds?} has it roll onto the water that many
+  // seconds from now (60 by default; at least 30, for its last two rolls in a running match), {event: "cube", at} at that
+  // time. Every step at Epic's spacing from it, on the admin's own times (events/datedflags.js datedSinkSchedule); 5.40's and
+  // 5.41's matches whose leg to the lake turns on in its last 104th roll it in, sink it and turn the lake bouncy.
+  router.post("/admin/api/events/dated-flags/sink", (req, res) => {
+    const body = typeof req.body === "object" && req.body !== null ? req.body : {};
+    const event = datedEvent(body.event);
+    if (!event?.sink) return invalid(res, `event must be ${datedEvents.filter(({ sink }) => sink).map(({ id }) => id).join(" or ")}`);
+    const now = new Date();
+    let sinkAt;
+    if (body.at !== undefined) {
+      if (typeof body.at !== "string" || Number.isNaN(Date.parse(body.at))) return invalid(res, "at must be a date and time");
+      sinkAt = Date.parse(body.at);
+    } else {
+      const seconds = body.inSeconds === undefined ? sinkLeadSeconds : Number(body.inSeconds);
+      if (!Number.isFinite(seconds) || seconds < minSinkLeadSeconds || seconds > 7 * 86400) {
+        return invalid(res, `inSeconds must be ${minSinkLeadSeconds} seconds to a week: the Cube's last two rolls into the lake take 25 seconds`);
+      }
+      sinkAt = now.getTime() + seconds * 1000;
+    }
+    const schedule = datedSinkSchedule(event, sinkAt);
+    const updated = settings.update({ events: { datedFlags: { [event.id]: { mode: "custom", schedule } } } });
+    res.json({ success: true, sinkAt: new Date(sinkAt).toISOString(), datedFlags: datedStatus(now, updated.events) });
   });
 
   // The Cube's appearing, the Crack Closure (Core-Backend #295): {event: "cube", inSeconds?} has it appear that many

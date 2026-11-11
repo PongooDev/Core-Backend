@@ -62,6 +62,21 @@ import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 // where the lightning was already on gets OnEventUpdated, which CUBE ignores (the Cube then appears without its spawn
 // effect at _TurnOn), and one whose Cube is out already keeps it. 5.40's and 5.41's CUBE watch no lightning and set no
 // SpawnCube timer, and their paks have neither flag of the crack: _TurnOn alone puts the Cube on its hill there.
+//
+// The sinking into Loot Lake (Core-Backend #295: the admin panel's "Sink the Cube now", datedSinkSchedule, which has how the
+// game plays it): 19 September 2018, on 5.41 (the Fortnite Wiki's Kevin the Cube; Game Informer and others reported it that
+// day: it rolled onto the lake, dissolved, and the lake turned purple and bouncy). 5.40's and 5.41's CUBE (Runes 42, 114,
+// 186, 240, 314, 381, 460 of 566 Steps; 5.41's differs by a tilted-impact sound and replay fixes) and Cube_Dest_Scripting
+// (placed in Athena_POI_Lake_001, with its LakeActor, BP_Athena_Water_LootLake_Child) play it from the end of _MoveTo8 and
+// from _Destination; the CUBE itself is placed in Level_CUBE, a streaming level of Athena_Terrain. 5.30's has no lake
+// sequence. 6.00's (CL-4402180) paks still hold CUBE and Cube_Dest_Scripting, but no map places them (it has no Level_CUBE
+// and no BP_Athena_Water_LootLake_Child): its Loot Lake is Season 6's (Athena_POI_Lake_002 and _LakeIsland_002), with
+// the floating island (Athena_POI_Foundations' BP_IslandScripting and CUBE_Simple) whose calendar events are named by the
+// server-only BP_IslandServerOnly, which its PC paks lack; so 6.00 plays neither the Cube nor the sink, and isn't served
+// the Cube's flags. The panel also puts the Cube straight at any of its stops (datedMoveSchedule): a running match rolls
+// it onto a rune from the path's step before it and prints it, the game's own arrival; it can't replay the days-long roll
+// between two runes (a leg's MoveTo moves it one step per calendar change, and IncrementIndex's next timer comes out below
+// zero after its one roll).
 export const cubeEvent = datedEvent("cube");
 export const cubeSchedule = cubeEvent.steps.flatMap(({ flags, start, end }) => flags.map((eventType) => ({ eventType, start, end: end ?? season5EndDay })));
 

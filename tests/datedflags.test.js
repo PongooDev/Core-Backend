@@ -2,9 +2,9 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { inBuild } from "../src/builds/context.js";
 import { cubeStates } from "../src/events/cube.js";
-import { datedEvent, datedFlagsStatus, datedRollSchedule, datedSchedulePatch, datedSpawnSchedule, defaultDatedFlags, sanitizeDatedFlags,
-  shiftedDatedSchedule, validDatedSchedule } from "../src/events/datedflags.js";
-import { configureEvents, cubeDestination, cubeLake, cubeLightning, cubeMoveTo, cubeRune, cubeStartMove, cubeTurnOn, eventsActiveUntil,
+import { cubeLakeLegSteps, datedEvent, datedFlagsStatus, datedMoveSchedule, datedRollSchedule, datedSchedulePatch, datedSinkSchedule, datedSpawnSchedule,
+  defaultDatedFlags, sanitizeDatedFlags, shiftedDatedSchedule, sinkLeadSeconds, sinkPlaysSeconds, validDatedSchedule } from "../src/events/datedflags.js";
+import { configureEvents, cubeDestination, cubeLake, cubeLightning, cubeMoveTo, cubeMoveToLake, cubeRune, cubeStartMove, cubeTurnOn, eventsActiveUntil,
   riftCorrupt, tomatoRiftEvent, tomatoRiftTell } from "../src/events/events.js";
 import { tomatoRiftStates } from "../src/events/tomatorift.js";
 import { post, send, startBackend, userLogin } from "./helpers.js";
@@ -188,7 +188,15 @@ test("the Cube's place on its schedule, and a roll to its next location that hol
       break;
     }
     assert.equal(next.at(-1).step, status.place.next);
-    assert.deepEqual(next.map(({ step }) => step), ["spawn", status.place.next]);
+    // Loot Lake is the sink, a minute on (Core-Backend #295); a rune is held from now.
+    if (status.place.next === "lake") {
+      assert.deepEqual(next, datedSinkSchedule(cube, at + sinkLeadSeconds * 1000));
+      const rolling = cubeStatus({ cube: { mode: "custom", schedule: next } }, at + 1000);
+      assert.deepEqual([rolling.place, rolling.sink.phase], [{ now: "moveToLake", next: "lake" }, "rollingIn"]);
+      assert.equal(datedRollSchedule(cube, rolling.steps, at + 1000), null, "not again while it rolls in");
+    } else {
+      assert.deepEqual(next.map(({ step }) => step), ["spawn", status.place.next]);
+    }
     visited.push(status.place.next);
     current = next;
   }
@@ -247,9 +255,11 @@ test("the admin panel rolls the Cube to its next location, and 5.30's and 5.40's
     }
 
     for (let rune = 2; rune <= 7; rune += 1) assert.equal((await roll({ event: "cube" })).body.rolledTo, `rune${rune}`);
+    // The lake: its leg on now and the sink a minute on (Core-Backend #295).
     assert.equal((await roll({ event: "cube" })).body.rolledTo, "lake");
-    assert.ok((await served(v540, "5.40")).includes(cubeDestination));
-    assert.equal((await roll({ event: "cube" })).status, 400, "nothing after the lake");
+    const rollingIn = await served(v540, "5.40");
+    assert.ok(rollingIn.includes(cubeMoveTo(8)) && !rollingIn.includes(cubeDestination), rollingIn.join(", "));
+    assert.equal((await roll({ event: "cube" })).status, 400, "nothing more while it rolls into the lake");
 
     // Back to Epic's dates.
     const back = await post(backend.port, "/admin/api/events/dated-flags", null, { event: "cube", schedule: null, mode: "dates" });
@@ -345,6 +355,169 @@ test("the admin panel spawns the Cube now or at a time, and 5.30's timeline coun
     const scheduled = later.body.datedFlags.events.find(({ id }) => id === "cube");
     assert.equal(scheduled.spawn.phase, "scheduled");
     assert.equal(scheduled.steps.find(({ step }) => step === "lightning").current.endAt, "2030-01-01T18:00:00.000Z");
+  } finally {
+    await backend.close();
+  }
+});
+
+// The Cube sinking into Loot Lake (Core-Backend #295): 5.40's and 5.41's CUBE roll it onto the water as its leg to the lake
+// ends, in a match where that leg turned on in its last 104th, then sink it and turn the lake bouncy (events/datedflags.js).
+const v541 = "4363240";
+const isoOf = (ms) => new Date(ms).toISOString();
+
+test("the Cube's sinking: its leg to the lake ends as it rolls onto the water, at Epic's spacing", () => {
+  const sinkAt = Date.parse("2026-11-10T12:00:00Z");
+  const schedule = datedSinkSchedule(cube, sinkAt);
+  const of = (id) => schedule.find(({ step }) => step === id);
+  assert.equal(schedule.length, cube.steps.length);
+  assert.deepEqual(of("lake"), { step: "lake", startAt: "2026-11-10T12:00:00.000Z", endAt: null }, "the lake stays bouncy");
+  assert.deepEqual(of("moveToLake"), { step: "moveToLake", startAt: "2026-11-08T12:00:00.000Z", endAt: "2026-11-10T12:00:00.000Z" }, "two days' roll to it");
+  assert.deepEqual(of("rune7"), { step: "rune7", startAt: "2026-11-07T12:00:00.000Z", endAt: "2026-11-08T12:00:00.000Z" });
+  assert.equal(of("spawn").endAt, null, "out all along");
+  assert.equal(datedSinkSchedule(tomato, sinkAt), null, "only the Cube sinks");
+  assert.equal(datedSinkSchedule(cube, Number.NaN), null);
+
+  // Its status: matches that start in the leg's last 104th play it.
+  const custom = { cube: { mode: "custom", schedule } };
+  const sink = (nowMs) => cubeStatus(custom, nowMs).sink;
+  const playsFrom = isoOf(sinkAt - Math.floor(2 * 24 * hour / cubeLakeLegSteps));
+  assert.deepEqual(sink(sinkAt - 3 * 24 * hour), { at: "2026-11-10T12:00:00.000Z", original: "2018-09-19T21:00:00.000Z", playsFrom, phase: "scheduled" });
+  assert.equal(sink(sinkAt - hour).phase, "rolling");
+  assert.equal(sink(sinkAt - 60000).phase, "rollingIn");
+  assert.equal(sink(sinkAt).phase, "sinking");
+  assert.equal(sink(sinkAt + sinkPlaysSeconds * 1000).phase, "sunk");
+  assert.deepEqual(cubeStatus({ cube: { mode: "off" } }, sinkAt).sink, { at: null, original: "2018-09-19T21:00:00.000Z", playsFrom: null, phase: "unscheduled" });
+  assert.equal(datedFlagsStatus(sinkAt, sinkAt, {}).events.find(({ id }) => id === "tomatoRift").sink, null);
+  assert.deepEqual(cubeStatus(custom, sinkAt - 60000).stage, { at: "rune7", toward: "lake" }, "rolling from rune 7");
+  assert.deepEqual(cubeStatus(custom, sinkAt).stage, { at: "lake", toward: null });
+
+  // A minute before, 5.40's and 5.41's timelines have the leg newly on in its last 104th: CUBE's CalculateNextMove puts the
+  // Cube at Runes[6] (460) plus the leg's progress times its 104 steps, the lake's edge (563), and IncrementIndex rolls it
+  // onto the water (564) 12.5 seconds before the leg's end, from a timer that has to be above zero. The lake from then.
+  withConfig({ mode: "auto", datedFlags: custom }, () => {
+    const nowMs = sinkAt - 60000;
+    for (const cl of [v540, v541]) {
+      const parts = inBuild(cl, () => cubeStates(new Date(nowMs)));
+      assert.deepEqual(types(parts[0]), [cubeMoveTo(8), cubeStartMove, cubeTurnOn].sort(), cl);
+      const leg = parts[0].events.find(({ eventType }) => eventType === cubeMoveTo(8));
+      const untilEnd = Date.parse(leg.activeUntil) - nowMs;
+      const total = Date.parse(leg.activeUntil) - Date.parse(leg.activeSince);
+      assert.equal(460 + Math.floor((1 - untilEnd / total) * cubeLakeLegSteps), 563, "the lake's edge");
+      assert.ok(untilEnd / 1000 - 12.5 - 5 > 0, "time for the roll onto the water");
+      assert.equal(parts[0].events.find(({ eventType }) => eventType === cubeStartMove).activeUntil, leg.activeUntil, "its roll timer reads the leg's end");
+      assert.equal(parts[1].validFrom, sinkAt);
+      assert.deepEqual(types(parts[1]), [cubeDestination, cubeTurnOn].sort(), "the lake for good");
+    }
+    const parts530 = inBuild(v530, () => cubeStates(new Date(nowMs)));
+    assert.deepEqual([types(parts530[0]), types(parts530[1])], [[cubeMoveToLake, cubeStartMove, cubeTurnOn].sort(), [cubeLake, cubeTurnOn].sort()], "5.30's names");
+    assert.deepEqual(inBuild("4402180", () => cubeStates(new Date(nowMs))), [], "6.00 places no Cube");
+  });
+});
+
+test("the Cube's stages: straight to any stop now and held there, Loot Lake the sink a minute on", () => {
+  const start = Date.parse("2026-11-10T12:00:00Z");
+  const custom = { cube: { mode: "custom", schedule: shiftedDatedSchedule(cube, { startAt: isoOf(start), step: "spawn", scale: 0.1 }) } };
+  const now = start + hour;
+  const status = cubeStatus(custom, now);
+  assert.deepEqual(status.stage, { at: "spawn", toward: "rune1" }, "rolling from its hill to rune 1");
+  assert.deepEqual(status.stops.map(({ id }) => id), ["spawn", "rune1", "rune2", "rune3", "rune4", "rune5", "rune6", "rune7", "lake"]);
+  assert.deepEqual([status.stops[0].label, status.stops[3].label, status.stops[8].label], ["Its hill (Paradise Palms)", "Rune 3: Salty Springs", "Loot Lake"]);
+  assert.equal(datedFlagsStatus(now, now, {}).events.find(({ id }) => id === "tomatoRift").stops, null);
+
+  // Straight to rune 5: its appearing kept, rune 5 from now; 5.40 serves it, and it stays.
+  const five = datedMoveSchedule(cube, status.steps, "rune5", now);
+  assert.deepEqual(five, [{ step: "spawn", startAt: isoOf(start), endAt: null }, { step: "rune5", startAt: isoOf(now), endAt: null }]);
+  withConfig({ mode: "auto", datedFlags: { cube: { mode: "custom", schedule: five } } }, () => {
+    const parts = inBuild(v540, () => cubeStates(new Date(now + 1000)));
+    assert.deepEqual([types(parts[0]), parts.length], [[cubeRune(5), cubeTurnOn].sort(), 1]);
+  });
+  const atFive = cubeStatus({ cube: { mode: "custom", schedule: five } }, now + 1000);
+  assert.deepEqual(atFive.stage, { at: "rune5", toward: null });
+  // And back to rune 2.
+  assert.deepEqual(datedMoveSchedule(cube, atFive.steps, "rune2", now + 2000),
+    [{ step: "spawn", startAt: isoOf(start), endAt: null }, { step: "rune2", startAt: isoOf(now + 2000), endAt: null }]);
+  // Its hill: its appearing alone, kept.
+  assert.deepEqual(datedMoveSchedule(cube, atFive.steps, "spawn", now + 2000), [{ step: "spawn", startAt: isoOf(start), endAt: null }]);
+  // Not out yet: it appears now, with the rune.
+  assert.deepEqual(datedMoveSchedule(cube, cubeStatus({ cube: { mode: "off" } }, now).steps, "rune3", now),
+    [{ step: "spawn", startAt: isoOf(now), endAt: null }, { step: "rune3", startAt: isoOf(now), endAt: null }]);
+  // Loot Lake: the sink, a minute on.
+  const lake = datedMoveSchedule(cube, status.steps, "lake", now);
+  assert.deepEqual(lake, datedSinkSchedule(cube, now + sinkLeadSeconds * 1000));
+  assert.deepEqual(cubeStatus({ cube: { mode: "custom", schedule: lake } }, now + 1000).stage, { at: "rune7", toward: "lake" });
+  // Only its stops.
+  assert.equal(datedMoveSchedule(cube, status.steps, "moveTo3", now), null);
+  assert.equal(datedMoveSchedule(tomato, datedFlagsStatus(now, now, {}).events.find(({ id }) => id === "tomatoRift").steps, "event", now), null);
+});
+
+test("the admin panel moves the Cube to any stop and sinks it now or at a time, and 5.40's and 5.41's timelines serve it", async () => {
+  const backend = await startBackend();
+  try {
+    const { token } = await userLogin(backend.port, "CubeSink");
+    const timeline = async (cl, version) => (await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/fortnite/api/calendar/v1/timeline",
+      headers: { "User-Agent": `game=FortniteGame, engine=UE4, build=++Fortnite+Release-${version}-CL-${cl}`, Authorization: `bearer ${token}` } }))
+      .body.channels["client-events"];
+    const served = async (cl, version) => (await timeline(cl, version)).states[0].activeEvents.map(({ eventType }) => eventType);
+    const revision = async () => (await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/fortnite/api/game/v2/calendar/revision",
+      headers: { Authorization: `bearer ${token}` } })).body.revision;
+    const move = (body) => post(backend.port, "/admin/api/events/dated-flags/move", null, body);
+    const sink = (body) => post(backend.port, "/admin/api/events/dated-flags/sink", null, body);
+
+    for (const bad of [{}, { event: "tomatoRift", to: "event" }, { event: "cube" }, { event: "cube", to: "moveTo3" }, { event: "cube", to: "nowhere" }]) {
+      assert.equal((await move(bad)).status, 400, JSON.stringify(bad));
+    }
+    for (const bad of [{}, { event: "nope" }, { event: "tomatoRift" }, { event: "cube", inSeconds: 10 }, { event: "cube", inSeconds: "soon" },
+      { event: "cube", inSeconds: 8 * 86400 }, { event: "cube", at: "soon" }, { event: "cube", at: 5 }]) {
+      assert.equal((await sink(bad)).status, 400, JSON.stringify(bad));
+    }
+
+    // Straight to rune 4, then back to rune 1: each newly on, so a running match rolls onto it and prints it.
+    let before = await revision();
+    const four = await move({ event: "cube", to: "rune4" });
+    assert.equal(four.status, 200);
+    assert.deepEqual([four.body.movedTo, four.body.label, four.body.sinkAt], ["rune4", "Rune 4: Retail Row", null]);
+    const fourStatus = four.body.datedFlags.events.find(({ id }) => id === "cube");
+    assert.deepEqual([fourStatus.mode, fourStatus.stage], ["custom", { at: "rune4", toward: null }]);
+    assert.notEqual(await revision(), before, "running gameservers see it");
+    for (const [cl, version] of [[v540, "5.40"], [v541, "5.41"], [v530, "5.30"]]) {
+      const eventTypes = await served(cl, version);
+      assert.ok(eventTypes.includes(cubeRune(4)) && eventTypes.includes(cubeTurnOn), `${version}: ${eventTypes.join(", ")}`);
+    }
+    assert.equal((await move({ event: "cube", to: "rune1" })).body.datedFlags.events.find(({ id }) => id === "cube").stage.at, "rune1");
+    assert.ok((await served(v540, "5.40")).includes(cubeRune(1)));
+
+    // Loot Lake from the stops: the sink a minute on.
+    const lake = await move({ event: "cube", to: "lake" });
+    assert.ok(Date.parse(lake.body.sinkAt) > Date.now() + 50000, lake.body.sinkAt);
+    assert.equal(lake.body.datedFlags.events.find(({ id }) => id === "cube").sink.phase, "rollingIn");
+
+    // Sink now: the leg to the lake on until it rolls onto the water a minute on, the lake from then.
+    before = await revision();
+    const sent = Date.now();
+    const now = await sink({ event: "cube" });
+    assert.equal(now.status, 200);
+    const sinkAt = Date.parse(now.body.sinkAt);
+    assert.ok(sinkAt >= sent + 60000 && sinkAt <= Date.now() + 60000, now.body.sinkAt);
+    assert.notEqual(await revision(), before, "running gameservers see it");
+    const status = now.body.datedFlags.events.find(({ id }) => id === "cube");
+    assert.deepEqual([status.sink.at, status.sink.phase, status.stage], [now.body.sinkAt, "rollingIn", { at: "rune7", toward: "lake" }]);
+    for (const [cl, version] of [[v540, "5.40"], [v541, "5.41"]]) {
+      const channel = await timeline(cl, version);
+      const leg = channel.states[0].activeEvents.find(({ eventType }) => eventType === cubeMoveTo(8));
+      assert.equal(leg?.activeUntil, now.body.sinkAt, `${version}: its leg ends as it rolls onto the water`);
+      assert.ok(!channel.states[0].activeEvents.some(({ eventType }) => eventType === cubeDestination), "not sunk yet");
+      assert.equal(channel.states[1].validFrom, now.body.sinkAt);
+      assert.ok(channel.states[1].activeEvents.some(({ eventType }) => eventType === cubeDestination), "the lake from then");
+    }
+
+    // A time of the admin's, and back to Epic's dates.
+    const later = await sink({ event: "cube", at: "2030-01-01T18:00:00Z" });
+    assert.equal(later.body.sinkAt, "2030-01-01T18:00:00.000Z");
+    const scheduled = later.body.datedFlags.events.find(({ id }) => id === "cube");
+    assert.equal(scheduled.sink.phase, "scheduled");
+    assert.equal(scheduled.steps.find(({ step }) => step === "moveToLake").current.endAt, "2030-01-01T18:00:00.000Z");
+    const back = await post(backend.port, "/admin/api/events/dated-flags", null, { event: "cube", schedule: null, mode: "dates" });
+    assert.equal(back.body.datedFlags.events.find(({ id }) => id === "cube").mode, "dates");
   } finally {
     await backend.close();
   }
