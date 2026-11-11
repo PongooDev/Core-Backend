@@ -49,7 +49,7 @@ import { season4FlagsStatus } from "../events/oddities.js";
 import { tomatoRiftStates } from "../events/tomatorift.js";
 import { cubeStates } from "../events/cube.js";
 import { highStakesStates } from "../events/highstakes.js";
-import { datedEvent, datedEvents, datedFlagsStatus, datedModesOf, datedSchedulePatch, datedSettings, defaultDatedMode } from "../events/datedflags.js";
+import { datedEvent, datedEvents, datedFlagsStatus, datedModesOf, datedRollSchedule, datedSchedulePatch, datedSettings, defaultDatedMode } from "../events/datedflags.js";
 import { birthdayChallengeStates } from "../events/birthday2018.js";
 import { odditiesModes, odditySchedulePatch, season4Flag } from "../events/season4flags.js";
 import { convertLeftoverCandy } from "../events/candyllamas.js";
@@ -1614,6 +1614,22 @@ export function adminRoutes(context) {
     if (patch.mode === "custom" && !(patch.schedule ?? current.schedule).length) patch.schedule = seed;
     const updated = settings.update({ events: { datedFlags: { [event.id]: patch } } });
     res.json({ success: true, datedFlags: datedStatus(now, updated.events) });
+  });
+
+  // The Cube's roll (Core-Backend #322): {event: "cube"} rolls it to its next location now (its hill, the next rune or Loot
+  // Lake) and holds it there, on the admin's own times (events/datedflags.js datedRollSchedule). Running gameservers
+  // fetch the calendar within 5 seconds and the cube rolls there; "Back to Epic's dates" is the route above.
+  router.post("/admin/api/events/dated-flags/roll", (req, res) => {
+    const body = typeof req.body === "object" && req.body !== null ? req.body : {};
+    const event = datedEvent(body.event);
+    if (!event?.locations) return invalid(res, `event must be ${datedEvents.filter(({ locations }) => locations).map(({ id }) => id).join(" or ")}`);
+    const now = new Date();
+    const status = datedStatus(now, settings.get()?.events).events.find(({ id }) => id === event.id);
+    const schedule = datedRollSchedule(event, status.steps, now.getTime());
+    if (!schedule) return invalid(res, `${event.name} is at its last location; go back to Epic's dates or set its times to start it again`);
+    const updated = settings.update({ events: { datedFlags: { [event.id]: { mode: "custom", schedule } } } });
+    const rolledTo = schedule.at(-1).step;
+    res.json({ success: true, rolledTo, label: event.steps.find(({ id }) => id === rolledTo).label, datedFlags: datedStatus(now, updated.events) });
   });
 
     router.post("/admin/api/events/actions/convert-storm-tickets", (req, res) => {

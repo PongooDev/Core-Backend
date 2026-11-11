@@ -2,9 +2,10 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { inBuild } from "../src/builds/context.js";
 import { cubeStates } from "../src/events/cube.js";
-import { datedEvent, datedSchedulePatch, defaultDatedFlags, sanitizeDatedFlags, shiftedDatedSchedule, validDatedSchedule } from "../src/events/datedflags.js";
-import { configureEvents, cubeLake, cubeMoveTo, cubeRune, cubeStartMove, cubeTurnOn, eventsActiveUntil, riftCorrupt, tomatoRiftEvent,
-  tomatoRiftTell } from "../src/events/events.js";
+import { datedEvent, datedFlagsStatus, datedRollSchedule, datedSchedulePatch, defaultDatedFlags, sanitizeDatedFlags, shiftedDatedSchedule,
+  validDatedSchedule } from "../src/events/datedflags.js";
+import { configureEvents, cubeDestination, cubeLake, cubeMoveTo, cubeRune, cubeStartMove, cubeTurnOn, eventsActiveUntil, riftCorrupt,
+  tomatoRiftEvent, tomatoRiftTell } from "../src/events/events.js";
 import { tomatoRiftStates } from "../src/events/tomatorift.js";
 import { post, send, startBackend, userLogin } from "./helpers.js";
 
@@ -144,6 +145,116 @@ test("the admin panel sets the Cube's times, checks them, and 5.30's timeline se
     const custom = await dated({ event: "tomatoRift", mode: "custom" });
     assert.equal(custom.status, 200);
     assert.equal(custom.body.datedFlags.events.find(({ id }) => id === "tomatoRift").schedule.length, 2);
+  } finally {
+    await backend.close();
+  }
+});
+
+// The Cube rolled to its next location from the admin panel (Core-Backend #322): its hill, each rune, then Loot Lake, each
+// held from the roll on.
+const v540 = "4352937";
+const cubeStatus = (datedFlags, nowMs, momentMs = nowMs) => datedFlagsStatus(nowMs, momentMs, { datedFlags }).events.find(({ id }) => id === "cube");
+
+test("the Cube's place on its schedule, and a roll to its next location that holds it there", () => {
+  const start = Date.parse("2026-11-10T12:00:00Z");
+  const schedule = shiftedDatedSchedule(cube, { startAt: new Date(start).toISOString(), step: "spawn", scale: 0.1 });
+  const custom = { cube: { mode: "custom", schedule } };
+  assert.deepEqual(cubeStatus(custom, start - hour).place, { now: "lightning", next: "spawn" }, "before it appears: its lightning");
+  assert.deepEqual(cubeStatus(custom, start + hour).place, { now: "moveTo1", next: "rune1" }, "rolling to rune 1");
+  assert.deepEqual(cubeStatus({ cube: { mode: "off" } }, start).place, { now: null, next: "spawn" }, "off: not on the island");
+  assert.equal(datedFlagsStatus(start, start, {}).events.find(({ id }) => id === "tomatoRift").place, null, "only the Cube has places");
+
+  // Rolled while it rolls to rune 1: rune 1 from now on, its appearing kept from its start, nothing else.
+  const now = start + hour;
+  const rolled = datedRollSchedule(cube, cubeStatus(custom, now).steps, now);
+  assert.deepEqual(rolled, [{ step: "spawn", startAt: "2026-11-10T12:00:00.000Z", endAt: null },
+    { step: "rune1", startAt: new Date(now).toISOString(), endAt: null }]);
+  withConfig({ mode: "auto", datedFlags: { cube: { mode: "custom", schedule: rolled } } }, () => {
+    const parts = inBuild(v530, () => cubeStates(new Date(now + 1000)));
+    assert.deepEqual(types(parts[0]), [cubeRune(1), cubeTurnOn].sort(), "it prints rune 1");
+    assert.equal(parts.length, 1, "and stays there");
+  });
+
+  // Roll on, one location at a time, to the lake, and no further.
+  let current = rolled;
+  let at = now;
+  const visited = [];
+  for (;;) {
+    at += 60000;
+    const status = cubeStatus({ cube: { mode: "custom", schedule: current } }, at);
+    const next = datedRollSchedule(cube, status.steps, at);
+    if (!next) {
+      assert.deepEqual(status.place, { now: "lake", next: null });
+      break;
+    }
+    assert.equal(next.at(-1).step, status.place.next);
+    assert.deepEqual(next.map(({ step }) => step), ["spawn", status.place.next]);
+    visited.push(status.place.next);
+    current = next;
+  }
+  assert.deepEqual(visited, ["rune2", "rune3", "rune4", "rune5", "rune6", "rune7", "lake"]);
+  withConfig({ mode: "auto", datedFlags: { cube: { mode: "custom", schedule: current } } }, () => {
+    assert.deepEqual(types(inBuild(v530, () => cubeStates(new Date(at)))[0]), [cubeLake, cubeTurnOn].sort(), "5.30's lake");
+    assert.deepEqual(types(inBuild(v540, () => cubeStates(new Date(at)))[0]), [cubeDestination, cubeTurnOn].sort(), "5.40's");
+  });
+
+  // Not out yet: the first roll has it appear on its hill.
+  assert.deepEqual(datedRollSchedule(cube, cubeStatus({ cube: { mode: "off" } }, start).steps, start),
+    [{ step: "spawn", startAt: "2026-11-10T12:00:00.000Z", endAt: null }]);
+});
+
+test("rolled from Epic's dates on the replay: the next rune now, its appearing kept from the lap's", () => {
+  // Season 5's replay at 2 September 2018 22:00 UTC: rune 2 (Greasy Grove) prints until 3 September 21:00.
+  const nowMs = Date.parse("2026-11-10T12:00:00Z");
+  const moment = Date.parse("2018-09-02T22:00:00Z");
+  const status = cubeStatus({ cube: { mode: "dates" } }, nowMs, moment);
+  assert.deepEqual(status.place, { now: "rune2", next: "rune3" });
+  const appeared = nowMs - (moment - Date.parse("2018-08-24T21:00:00Z"));
+  assert.deepEqual(datedRollSchedule(cube, status.steps, nowMs), [{ step: "spawn", startAt: new Date(appeared).toISOString(), endAt: null },
+    { step: "rune3", startAt: new Date(nowMs).toISOString(), endAt: null }]);
+  // On a leg (rolling to rune 3 on 4 September), the roll goes to the rune it rolls to.
+  assert.deepEqual(cubeStatus({ cube: { mode: "dates" } }, nowMs, Date.parse("2018-09-04T12:00:00Z")).place, { now: "moveTo3", next: "rune3" });
+});
+
+test("the admin panel rolls the Cube to its next location, and 5.30's and 5.40's timelines serve it", async () => {
+  const backend = await startBackend();
+  try {
+    const { token } = await userLogin(backend.port, "CubeRoll");
+    const served = async (cl, version) => (await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/fortnite/api/calendar/v1/timeline",
+      headers: { "User-Agent": `game=FortniteGame, engine=UE4, build=++Fortnite+Release-${version}-CL-${cl}`, Authorization: `bearer ${token}` } }))
+      .body.channels["client-events"].states[0].activeEvents.map(({ eventType }) => eventType);
+    const revision = async () => (await send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/fortnite/api/game/v2/calendar/revision",
+      headers: { Authorization: `bearer ${token}` } })).body.revision;
+    const roll = (body) => post(backend.port, "/admin/api/events/dated-flags/roll", null, body);
+
+    for (const bad of [{}, { event: "nope" }, { event: "tomatoRift" }]) assert.equal((await roll(bad)).status, 400, JSON.stringify(bad));
+
+    // Off first: the first roll has it appear on its hill, the next prints rune 1.
+    assert.equal((await post(backend.port, "/admin/api/events/dated-flags", null, { event: "cube", mode: "off" })).status, 200);
+    const before = await revision();
+    const appear = await roll({ event: "cube" });
+    assert.equal(appear.status, 200);
+    assert.deepEqual([appear.body.rolledTo, appear.body.label], ["spawn", "The Cube appears (the crack closes)"]);
+    assert.notEqual(await revision(), before, "running gameservers see the change");
+    const first = await roll({ event: "cube" });
+    assert.equal(first.body.rolledTo, "rune1");
+    const status = first.body.datedFlags.events.find(({ id }) => id === "cube");
+    assert.equal(status.mode, "custom");
+    assert.deepEqual(status.place, { now: "rune1", next: "rune2" });
+    for (const [cl, version] of [[v530, "5.30"], [v540, "5.40"]]) {
+      const eventTypes = await served(cl, version);
+      assert.ok(eventTypes.includes(cubeRune(1)) && eventTypes.includes(cubeTurnOn) && !eventTypes.includes(cubeMoveTo(1)), `${version}: ${eventTypes.join(", ")}`);
+    }
+
+    for (let rune = 2; rune <= 7; rune += 1) assert.equal((await roll({ event: "cube" })).body.rolledTo, `rune${rune}`);
+    assert.equal((await roll({ event: "cube" })).body.rolledTo, "lake");
+    assert.ok((await served(v540, "5.40")).includes(cubeDestination));
+    assert.equal((await roll({ event: "cube" })).status, 400, "nothing after the lake");
+
+    // Back to Epic's dates.
+    const back = await post(backend.port, "/admin/api/events/dated-flags", null, { event: "cube", schedule: null, mode: "dates" });
+    const cubeBack = back.body.datedFlags.events.find(({ id }) => id === "cube");
+    assert.deepEqual([cubeBack.mode, cubeBack.schedule], ["dates", []]);
   } finally {
     await backend.close();
   }

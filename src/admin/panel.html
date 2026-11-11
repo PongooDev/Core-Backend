@@ -7640,8 +7640,20 @@
           ...event.steps.map((s) => el("option", { value: s.step, text: s.label, selected: s.step === event.anchor })));
         const scale = el("input", { class: "field", type: "number", min: "0.001", max: "10", step: "0.001", style: "width:90px;", "aria-label": `${event.name} spacing scale`, value: "1" });
         const shifted = (at) => datedAction({ event: event.id, schedule: { startAt: at, step: anchor.value, scale: Number(scale.value) } }, `${event.name}: times saved`);
+        // The Cube's roll (Core-Backend #322): where it is now, and a button that rolls it to its next location and holds it there.
+        const labelOf = (id) => event.steps.find((s) => s.step === id)?.label || "Not on the island";
+        const rollBox = event.place ? el("div", { style: "margin:6px 0 8px;" },
+          el("div", { style: "font-size:12px;" }, el("span", { class: "muted", text: "Now: " }), el("span", { text: labelOf(event.place.now) }),
+            el("span", { class: "muted", text: " · Next: " }), el("span", { text: event.place.next ? labelOf(event.place.next) : "none, it is at its last location" })),
+          el("div", { style: "display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:4px;" },
+            el("button", { class: "btn small", text: "Roll the Cube to its next location", disabled: !event.place.next, onclick: async () => {
+              if (await act(api("/admin/api/events/dated-flags/roll", { event: event.id }), (res) => `The Cube rolls on: ${res.label}`)) showEvents();
+            } }),
+            el("button", { class: "btn ghost small", text: "Back to Epic's dates", onclick: () => datedAction({ event: event.id, schedule: null, mode: "dates" }, `${event.name}: Epic's dates`) })),
+          el("div", { class: "muted", style: "font-size:12px; margin-top:4px;", text: "Puts the Cube at its next location now (its hill, then each rune, then Loot Lake) and keeps it there until you roll it again; this switches it to My own times. Matches running on 5.30 or 5.40 pick it up within 5 seconds: the Cube rolls onto the rune (its last roll, not the whole way there) and prints it. New matches start with it there. Loot Lake: 5.40 rolls it into the lake; 5.30's paks have no lake sequence, so there it stays put and the next match starts it on its hill." })) : null;
         return el("div", { style: "margin-top:12px;" },
           el("div", { style: "font-weight:700; font-size:12px;", text: event.challenges ? `${event.name[0].toUpperCase()}${event.name.slice(1)} (${event.challenges}):` : `When ${event.name} happens:` }),
+          rollBox,
           el("select", { class: "field", style: "margin-top:4px;", "aria-label": `${event.name} schedule`, onchange: (e) => datedAction({ event: event.id, mode: e.target.value }, `${event.name}: schedule saved`) },
             ...(event.modes || dated.modes).map((value) => el("option", { value, text: (event.challenges ? challengeLabels : datedLabels)[value] || value, selected: event.mode === value }))),
           el("div", { class: "muted", style: "font-size:12px; margin:6px 0 4px;", text: "Start the sequence from one step, the others following at Epic's spacing (scale 1; 0.5 is twice as fast, 0.01 runs the Cube's month in about 6 hours). Or set each step below: an empty end stays on. Saving switches to My own times; running gameservers pick it up within 5 seconds, clients at their next calendar fetch." }),

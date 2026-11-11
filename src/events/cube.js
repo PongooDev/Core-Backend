@@ -32,7 +32,8 @@ import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 //
 // On Season 5's replay (store/itemshop.js seasonMoment) these windows are mapped to real time lap by lap (the replay's
 // 12 July to 27 September), as events/tomatorift.js's; the admin panel can set its own times instead, step by step or from
-// one step at Epic's spacing, or take the Cube off (events/datedflags.js, Core-Backend #311).
+// one step at Epic's spacing, or take the Cube off (events/datedflags.js, Core-Backend #311), or roll it to its next
+// location now and hold it there (datedRollSchedule, Core-Backend #322: how a running match rolls it is there).
 export const cubeEvent = datedEvent("cube");
 export const cubeSchedule = cubeEvent.steps.flatMap(({ flags, start, end }) => flags.map((eventType) => ({ eventType, start, end: end ?? season5EndDay })));
 

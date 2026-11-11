@@ -30,8 +30,13 @@ const closure = at("08-24");
 const lakeAt = at("09-19");
 const step = (id, label, flags, start, end) => ({ id, label, flags, start, end });
 
+// The Cube's locations, in order (its hill, the seven runes, Loot Lake), and the leg that rolls it to each: the admin
+// panel rolls it to the next one (Core-Backend #322, datedRollSchedule).
+const cubeLocations = ["spawn", ...runeStops.map((_, index) => `rune${index + 1}`), "lake"];
+const cubeLegs = { ...Object.fromEntries(runeStops.map((_, index) => [`moveTo${index + 1}`, `rune${index + 1}`])), moveToLake: "lake" };
+
 export const datedEvents = [
-  { id: "cube", name: "the Cube (5.30 – 5.40)", flag: cubeTurnOn, anchor: "crack", parts: 4, steps: [
+  { id: "cube", name: "the Cube (5.30 – 5.40)", flag: cubeTurnOn, anchor: "crack", parts: 4, locations: cubeLocations, legs: cubeLegs, steps: [
     step("crack", "The sky's crack turns purple", [riftCorrupt], at("08-23", "08:00"), closure),
     step("lightning", "Lightning strikes the hill", [cubeLightning], at("08-23"), closure),
     step("spawn", "The Cube appears (the crack closes)", [cubeTurnOn], closure, null),
@@ -172,8 +177,53 @@ export function datedParts(windows, nowMs, count, skip = new Set()) {
   return [{ validFrom: -Infinity, events: eventsAt(nowMs) }, ...boundaries.map((t) => ({ validFrom: t, events: eventsAt(t) }))];
 }
 
+// Rolling the Cube to its next location (Core-Backend #322). The game moves it by its calendar events alone:
+// Athena/Prototype/Blueprints/Cube/CUBE (5.30 and 5.40) watches each of its EventsToBindTo with a
+// FortAsyncAction_CalendarEventWatcher, which at every calendar download (5.30 dump 0x1060F30) calls OnEventActive for an
+// event active now that wasn't before, OnEventUpdated for one still active and OnEventEnded for one gone. On OnEventActive
+// a _RuneN puts the cube's PathIndex on Runes[N - 1] and OnRep_PathIndex runs PerformStep: the first time in a match
+// (InitialSetup) it is put there, afterwards it rolls there (RollTimeline at PlayRate 0.08, 12.5 s, from the path's step
+// before it), lands (LandedAtRune) and prints the rune (StartRuneSequence). So a rune that turns on in a running match
+// rolls the cube onto it, its last roll and not the path's 42 to 106 steps between stops (Runes 42, 114, 186, 244, 318,
+// 382, 461 of 567 Steps); a new match starts it there. A _MoveToN
+// that turns on puts it as far along the path as the leg's progress, the next roll timed from BR_S5_Cube_StartMove's end
+// and set only under an hour away (CalculateNextMove): it rolls in Epic's days, not at once, so the panel's roll goes to
+// the next rune, not the leg. On OnEventUpdated 5.30 puts it where the event says (InitialSetup) and 5.40 does nothing.
+// BR_S5_Cube_TurnOn turning on puts it on step 0, its hill. The lake: 5.40's CUBE watches BR_S5_Cube_Destination, which
+// puts PathIndex on the path's last step (rolling into Loot Lake in a running match) and turns Cube_Dest_Scripting's lake
+// on (LakeTurnOn); 5.30's BR_S5_Cube_Lake calls ImpactLake, which is empty, so there the cube stays where it was and starts
+// a new match on its hill (its _TurnOn). A running Core gameserver fetches the calendar within 5 seconds of a change
+// (CoreV2's AFortGameModeAthena::AskEventCalendarRevision and Client_RefreshEventCalendar), its players with it.
+//
+// A step's times now (the status's `current`) hold nowMs.
+const onAt = (current, nowMs) => Boolean(current) && Date.parse(current.startAt) <= nowMs && (current.endAt === null || nowMs < Date.parse(current.endAt));
+
+// Where an event with locations (the Cube) is on its schedule at nowMs, from its steps' times now: `now` the step that says
+// so (a leg it is rolling on, else the last location it is at, else another step on, the crack or its lightning; null:
+// none), and `next` the location a roll takes it to (null after the last).
+export function datedPlace(event, steps, nowMs) {
+  const on = steps.filter(({ current }) => onAt(current, nowMs)).map(({ step: id }) => id);
+  const at = event.locations.filter((id) => on.includes(id)).at(-1) ?? null;
+  const leg = on.find((id) => event.legs[id]) ?? null;
+  const reached = at === null ? -1 : event.locations.indexOf(at);
+  const rolling = leg ? event.legs[leg] : null;
+  const next = rolling !== null && event.locations.indexOf(rolling) > reached ? rolling : event.locations[reached + 1] ?? null;
+  return { now: leg ?? at ?? on.at(-1) ?? null, next };
+}
+
+// The admin's times that roll it to its next location now and hold it there: the next location from now on, with the steps
+// on now that Epic's schedule keeps on for good (the Cube's appearing, _TurnOn) kept from their start. Null after the last.
+export function datedRollSchedule(event, steps, nowMs) {
+  const { next } = datedPlace(event, steps, nowMs);
+  if (next === null) return null;
+  const at = iso(nowMs);
+  const kept = steps.filter(({ step: id, original, current }) => id !== next && original.endAt === null && onAt(current, nowMs))
+    .map(({ step: id, current }) => ({ step: id, startAt: current.startAt, endAt: null }));
+  return validDatedSchedule(event, [...kept, { step: next, startAt: at, endAt: null }]);
+}
+
 // The admin panel's view of each event: its mode and each step's Epic date, its times on the replay's lap now, the
-// admin's own times and the times it runs at now (by the mode).
+// admin's own times and the times it runs at now (by the mode); the Cube's place too.
 export function datedFlagsStatus(nowMs, momentNowMs, config) {
   const settings = datedSettings(config);
   return {
@@ -182,16 +232,17 @@ export function datedFlagsStatus(nowMs, momentNowMs, config) {
       const setting = settings[event.id];
       const lap = datedStepsThisLap(event, nowMs, momentNowMs);
       const custom = new Map(setting.schedule.map((entry) => [entry.step, entry]));
+      const steps = event.steps.map(({ id, label, flags, start, end }, index) => ({
+        step: id, label, flags,
+        original: { startAt: iso(start), endAt: end === null ? null : iso(end) },
+        dates: { startAt: lap[index].startAt, endAt: end === null ? null : lap[index].endAt },
+        custom: custom.get(id) ?? null,
+        current: setting.mode === "off" || setting.mode === "build" ? null : setting.mode === "custom" ? custom.get(id) ?? null : lap[index]
+      }));
       return {
         id: event.id, name: event.name, mode: setting.mode, modes: datedModesOf(event), challenges: event.challenges ?? null,
-        anchor: event.anchor, schedule: setting.schedule,
-        steps: event.steps.map(({ id, label, flags, start, end }, index) => ({
-          step: id, label, flags,
-          original: { startAt: iso(start), endAt: end === null ? null : iso(end) },
-          dates: { startAt: lap[index].startAt, endAt: end === null ? null : lap[index].endAt },
-          custom: custom.get(id) ?? null,
-          current: setting.mode === "off" || setting.mode === "build" ? null : setting.mode === "custom" ? custom.get(id) ?? null : lap[index]
-        }))
+        anchor: event.anchor, schedule: setting.schedule, steps,
+        place: event.locations ? datedPlace(event, steps, nowMs) : null
       };
     })
   };
