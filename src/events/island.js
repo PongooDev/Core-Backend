@@ -10,7 +10,8 @@ import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 //   EventBindings with one FortAsyncAction_CalendarMultiEventWatcher. Those are, in its order (CL-4395664's server-assets
 //   pak, Core-ServerAssets release cl-4395664, read with CUE4Parse): EventFlag.BR_S6_Island_MoveTo1 to _MoveTo7,
 //   _Rune0 to _Rune7, _MoveTo8. 6.00's client paks (CL-4402180) don't have BP_IslandServerOnly, so a host's server needs
-//   the server-assets pak for the island to be placed at all.
+//   the server-assets pak for the island to be placed at all. Core-ServerAssets has one for each 6.00 CL (CL-4402180's is
+//   CL-4395664's, republished: Core-ServerAssets 2a9bd8e).
 // - Only OnEventActive (an event active at a calendar download that wasn't at the one before) does anything; OnEventUpdated
 //   and OnEventEnded keep the event's name and times and stop. An event whose name holds "Rune" sets CachedTime to the
 //   name's last digit; one whose name holds "MoveTo" sets it to that digit less one plus Lerp(0.08, 0.97, the event's
@@ -63,13 +64,14 @@ import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 // Its event names are read as 6.00's ("Rune" and "MoveTo" by their last digit, the leg's progress 8% to 97%) over the
 // same nine spline points (its Spline is 6.00's, point for point), and they are the same sixteen: 6.01's own
 // BP_IslandServerOnly (Core-ServerAssets' CL-4417689 pak, release cl-4417689) binds 6.00's names in 6.00's order. A
-// CL-4424678 host needs that asset too: Core-ServerAssets has no pak for it yet (2026-11-12).
+// CL-4424678 host needs that asset too, and has it: release cl-4424678 is CL-4417689's pak, republished (Core-ServerAssets
+// 5d1790b).
 //
 // 6.02 (CL-4442095 and CL-4461277) keeps it as 6.01 has it: CL-4461277's BP_IslandScripting is 6.01's byte for byte
 // (uasset and uexp), and 6.02's own BP_IslandServerOnly (Core-ServerAssets' CL-4442095 pak, release cl-4442095, read over
 // HTTP ranges) binds the same sixteen names in the same order. Update v6.02 came on 10 October, the day the island left
 // the Retail Row rune for Wailing Woods' (MoveTo5), where the replay has a 6.02 match find it. A CL-4461277 host needs
-// that asset too: Core-ServerAssets has CL-4442095's pak only (2026-11-12).
+// that asset too, and has it: release cl-4461277 is CL-4442095's pak, republished (Core-ServerAssets 98dbe4b).
 export const islandEvent = datedEvent("island");
 
 // The island's calendar events as parts [{validFrom (ms), events: [{eventType, activeSince, activeUntil}]}], from the part
