@@ -855,6 +855,33 @@ export function claimAthenaQuest(session, itemId) {
   // client ever holding it: here too it is counted and no item is added.
   for (const { templateId, quantity } of quest.hiddenRewards ?? []) {
     if (typeOf(templateId) === "token") itemObjectives(session, "Acquire", templateId, quantity);
+    else grantHiddenBanner(session, templateId, questIdOf(item));
+  }
+}
+
+// A banner a challenge gives hidden (the quests' rewards table, Hidden): the secret banners of the loading screens.
+// From 5.30 (CL-4305896) Road Trip's weeks 8 and 9 lead to Quest_BR_S5_Cumulative_Quest8 and _Quest9 (hidden, done by
+// the interact the gameserver reports, interact_athena_s5_cumulative_quest_08 and _09), whose only reward is
+// HomebaseBannerIcon:BRSeason05Crown and BRSeason05Glyph; 6.00's (CL-4402180) Hunting Party has them on its even weeks,
+// Quest_BR_S6_Cumulative_Quest2 (BRSeason06Werewolf) and _Quest4, _6, _8 and _10 (still BRSeason05Crown in 6.00's to
+// 6.02's files, as the data is given). The claim paid only a hidden reward that was a token (6.02's daily challenge
+// token), so these quests completed and gave nothing. A banner goes to profile0, where the banner editor finds it
+// (common_core from 3.5), once; other hidden rewards are left as they were.
+function grantHiddenBanner(session, templateId, questId) {
+  const banner = bannerTemplateId(templateId);
+  if (!banner || findItem(session.profile("profile0").profile, banner)) return;
+  grant(session, banner, 1);
+  log("Battle Royale", `${session.accountId} got the banner ${banner}, ${questId}'s hidden reward`);
+}
+
+// The hidden banners of challenges collected before they were given (above): a Claimed challenge the profile holds gives
+// the banner it names to an account that lacks it, at the quest login.
+function settleHiddenBanners(session) {
+  for (const item of Object.values(session.profile("athena").profile.items)) {
+    if (item.attributes?.quest_state !== "Claimed") continue;
+    for (const { templateId } of athenaQuestOf(item)?.hiddenRewards ?? []) {
+      if (typeOf(templateId) !== "token") grantHiddenBanner(session, templateId, questIdOf(item));
+    }
   }
 }
 
@@ -1200,5 +1227,6 @@ export function athenaQuestLogin(session) {
   settleHeldItemObjectives(session);
   settleAthenaEventQuests(session);
   settleChaseRewards(session);
+  settleHiddenBanners(session);
   settleSeasonPromise(session, seasonFunctions);
 }
