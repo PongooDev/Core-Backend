@@ -55,7 +55,10 @@ export const isBattlePassGiftBox = (templateId) => [battlePassGiftBox, battlePas
 // client hasn't taken yet (RemoveGiftBox takes it before its screen shows) takes the new loot instead, an item already in
 // it gaining the quantity, so the lobby shows every tier reached since in one screen, as Epic's one box of a batch of
 // tier-ups did. Other boxes (GB_BattlePassPromise) stay one each.
-export function giveGiftBox(session, templateId, grants) {
+// params: the box's own (FortGiftBoxItem's params, strings by name), which a header reads with
+// UFortGiftBoxItem::RetrieveItemDefintionFromParam (6.02 0xF95F50: the named param as a template id, to its item
+// definition): GB_ChallengeComplete's HeaderTemplateId, the challenge bundle its reward is for (profiles/challenges.js).
+export function giveGiftBox(session, templateId, grants, params = {}) {
   if (!showsGiftBoxes() || !grants.length) return null;
   const tracker = session.profile(giftBoxProfile);
   const pending = templateId.toLowerCase() === battlePassGiftBox.toLowerCase()
@@ -75,7 +78,7 @@ export function giveGiftBox(session, templateId, grants) {
   const itemId = crypto.randomUUID();
   session.profile(giftBoxProfile).addItem(itemId, {
     templateId,
-    attributes: { fromAccountId: "", lootList: grants.map(lootEntry), params: {}, giftedOn: new Date().toISOString() },
+    attributes: { fromAccountId: "", lootList: grants.map(lootEntry), params: { ...params }, giftedOn: new Date().toISOString() },
     quantity: 1
   });
   log("Battle Royale", `${session.accountId} got the gift box ${templateId} (${grants.length} items)`);

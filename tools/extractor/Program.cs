@@ -1229,6 +1229,10 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         // 5.10 (CL 4240749) adds an event's schedule, Schedule_Birthday2018_BR, which no tier gives: it names the event
         // flag it runs with (EventName, EventFlag.Anniversary2018_BR), written as eventName.
         if (properties["EventName"]?.GetValue<string>() is { Length: > 0 } eventName and not "None") schedule["eventName"] = eventName;
+        // CleanUpOnBundleCompletion (the MCP template's static_cleanup_on_bundle_completion): a schedule that leaves the
+        // profile once its bundle is completed, written as cleanUpOnBundleCompletion when set (5.40's Schedule_LTM_Heist,
+        // the seasons' ProgressiveA and B schedules from Season 5, the Styles schedules).
+        if (properties["CleanUpOnBundleCompletion"]?.GetValue<bool>() == true) schedule["cleanUpOnBundleCompletion"] = true;
         challengeSchedules[export.Name.ToLowerInvariant()] = schedule;
         continue;
     }
@@ -1240,7 +1244,9 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
         // Battle Pass"), written as grantWithBundle with requiresBattlePass. Its bundles' rewards are steps,
         // BundleCompletionRewards [{CompletionCount, Rewards}] (-1: every quest), written as completionSteps
         // [{count, rewards}] in place of CompletionThreshold and CompletionRewards; a NonExportedFakeReward (the
-        // cumulative bundle's Mystery Item, AthenaMysteryTokenSeason5) is only shown, so it is left out.
+        // cumulative bundle's Mystery Item, AthenaMysteryTokenSeason5) is only shown, so it is left out. A reward that
+        // names the gift box it comes in (GiftBoxToUse: GB_ChallengeComplete, "You have received a reward for completing
+        // the ... Challenge") carries it as giftBox, the box's template id.
         var bundle = new SortedDictionary<string, object>(StringComparer.Ordinal)
         {
             ["quests"] = (properties["QuestInfos"]?.AsArray() ?? []).Select(info =>
@@ -1255,7 +1261,7 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
                 return (object)quest;
             }).ToList(),
             ["completionThreshold"] = properties["CompletionThreshold"]?.GetValue<int>() ?? 0,
-            ["completionRewards"] = RewardList(properties["CompletionRewards"]?["Rewards"], assetTypes),
+            ["completionRewards"] = RewardList(properties["CompletionRewards"]?["Rewards"], assetTypes, giftBoxes: true),
             ["visualStyle"] = Enum(properties["VisualStyle"]) ?? ""
         };
         if (properties["BundleCompletionRewards"] is JsonArray steps)
@@ -1264,7 +1270,7 @@ foreach (var file in provider.Files.Values.Where(f => f.Extension == "uasset" &&
             {
                 ["count"] = step["CompletionCount"]?.GetValue<int>() ?? -1,
                 ["rewards"] = RewardList(new JsonArray((step["Rewards"]?.AsArray() ?? []).OfType<JsonObject>()
-                    .Where(reward => Enum(reward["RewardType"]) != "NonExportedFakeReward").Select(reward => reward.DeepClone()).ToArray()), assetTypes)
+                    .Where(reward => Enum(reward["RewardType"]) != "NonExportedFakeReward").Select(reward => reward.DeepClone()).ToArray()), assetTypes, giftBoxes: true)
             }).Where(step => ((List<object>)((SortedDictionary<string, object>)step)["rewards"]).Count > 0).ToList();
         }
         challengeBundles[export.Name.ToLowerInvariant()] = bundle;
@@ -1786,11 +1792,18 @@ static void AddItems(IDictionary<string, object> target, string key, JsonNode? i
 
 // FAthenaRewardItemReference {ItemDefinition, TemplateId, Quantity} as {templateId, quantity}: the TemplateId when set,
 // else the item definition's.
-static List<object> RewardList(JsonNode? rewards, AssetTypes assetTypes) => (rewards?.AsArray() ?? [])
-    .Select(reward => new SortedDictionary<string, object>(StringComparer.Ordinal)
+// giftBoxes: a reward naming a gift box (FAthenaRewardItemReference's GiftBoxToUse, a challenge bundle's completion
+// rewards) also carries its template id, GiftBox:<the definition's name>, as giftBox.
+static List<object> RewardList(JsonNode? rewards, AssetTypes assetTypes, bool giftBoxes = false) => (rewards?.AsArray() ?? [])
+    .Select(reward =>
     {
-        ["templateId"] = reward!["TemplateId"]?.GetValue<string>() is { Length: > 0 } templateId ? templateId : assetTypes.TemplateId(ObjectPath(AssetPath(reward["ItemDefinition"]))),
-        ["quantity"] = reward["Quantity"]?.GetValue<int>() ?? 1
+        var entry = new SortedDictionary<string, object>(StringComparer.Ordinal)
+        {
+            ["templateId"] = reward!["TemplateId"]?.GetValue<string>() is { Length: > 0 } templateId ? templateId : assetTypes.TemplateId(ObjectPath(AssetPath(reward["ItemDefinition"]))),
+            ["quantity"] = reward["Quantity"]?.GetValue<int>() ?? 1
+        };
+        if (giftBoxes && reward["GiftBoxToUse"] is { } box && AssetName(AssetPath(box)) is { Length: > 0 } giftBox and not "None") entry["giftBox"] = $"GiftBox:{giftBox.ToLowerInvariant()}";
+        return entry;
     }).Where(reward => (string)reward["templateId"] is not ("" or "None")).Cast<object>().ToList();
 
 static List<SortedDictionary<string, object>> Items(JsonNode? items, AssetTypes assetTypes) =>

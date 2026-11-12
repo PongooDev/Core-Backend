@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import { athenaChallengeBundles, athenaChallengeSchedules, athenaSeason, getAthenaQuest } from "../gamedata/athena.js";
 import { log } from "../log.js";
 import { seasonHistoryStart, seasonMoment } from "../store/itemshop.js";
+import { giveGiftBox } from "./giftboxes.js";
 import { findItem } from "./items.js";
 
 // Season 3's challenges (3.0, CL-3901517): the Battle Pass's weekly challenges and the tier challenges, in challenge
@@ -327,6 +328,12 @@ export function grantChallengeSchedule(session, templateId, athena, now = new Da
 // (VTID_052_Skull_Trooper_RedFlames, its ClothingColor Mat1) and the Ghost Portal's purple (VTID_053, its Particle1).
 // Core keeps no record of when a cosmetic was bought, so nobody gets them by themselves; the Green Glow and the blue and
 // green portals are unlocked for everyone, as the data has them.
+// 🟡 Not sent: GiftBox:GB_SkullTrooperStyleChallenge and GB_TomatoHeadStyleChallenge, the boxes that announced the
+// challenges (the first's header, ItemReceivedSkullTrooperStyleChallenge: "HE'S BACK!", "SKULL TROOPER CHALLENGES
+// AVAILABLE!", "Complete the Skull Trooper challenges to unlock the Ghost Portal Back Bling!"). Only the asset registry
+// names them: no schedule, bundle or reward does, and what Epic's servers listed in one isn't in the client. The reward's
+// own box is the one its bundle names, GB_ChallengeComplete (giveBundleRewards), and the schedules go once done
+// (settleCompletedSchedules).
 export const styleSchedules = {
   bundleschedule_styles_tomatohead: "AthenaCharacter:cid_109_athena_commando_m_pizza",
   bundleschedule_styles_skulltrooper: "AthenaCharacter:cid_030_athena_commando_m_halloween"
@@ -336,7 +343,61 @@ export function settleStyleSchedules(session, athena, now = new Date()) {
   const tracker = session.profile("athena");
   for (const [scheduleId, outfit] of Object.entries(styleSchedules)) {
     if (schedules[scheduleId]?.category !== "Styles" || heldSchedule(tracker.profile, scheduleId)) continue;
+    // Done and cleaned up (settleCompletedSchedules): they don't start over.
+    if (scheduleCleanedUp(tracker.profile, scheduleId)) continue;
     if (findItem(tracker.profile, outfit)) grantChallengeSchedule(session, `ChallengeBundleSchedule:${scheduleId}`, athena, now);
+  }
+}
+
+// CleanUpOnBundleCompletion (athena.json's schedules' cleanUpOnBundleCompletion, tools/extractor): a schedule that goes
+// once its bundle is completed. The client only writes the flag into the schedule's MCP template (6.02, CL-4461277,
+// 0xD8D730: static_cleanup_on_bundle_completion, beside static_bundle_list and static_event_name) and reads it nowhere
+// else, so the cleaning up was Epic's service's. In 6.02's files seven schedules have it, each with one bundle given
+// with the schedule: the outfits' own (BundleSchedule_Styles_SkullTrooper and _Tomatohead), Season 5's and 6's
+// ProgressiveA and B (Drift's and Ragnarok's, Calamity's and Dire's) and High Stakes' Schedule_LTM_Heist; the weekly
+// schedules, which the season's end takes, don't.
+// 🟡 What the service removed isn't in the client. Core takes the schedule out with its bundles and their quests once
+// every quest of every bundle of it is done (a bundle's rewards may come before that: Calamity's harvesting tool at five
+// of eight), at the quest login, so the lobby the player comes back to no longer lists challenges that are all done.
+// What the challenges gave stays (the locker's items and styles are no quest's). The schedule is noted
+// (profile.coreCleanedUpSchedules, Core's, never sent) so the ones given at the quest login, the outfits' and the
+// events', aren't given again; a Battle Pass tier gives its schedule once anyway (profiles/seasons.js). Only a build
+// whose data has the flag cleans up: overlays made before the extractor kept it (6.01's and earlier) leave theirs.
+export const scheduleCleanedUp = (profile, scheduleId) => (profile.coreCleanedUpSchedules ?? []).includes(String(scheduleId).toLowerCase());
+
+function bundleDone(tracker, bundleItem) {
+  const bundle = athenaChallengeBundles()[idOf(bundleItem.templateId)];
+  if (!bundle) return false;
+  const questIds = bundleItem.attributes.grantedquestinstanceids ?? [];
+  const held = questIds.map((id) => tracker.profile.items[id]).filter(Boolean);
+  // Every quest the bundle gives this player is held (none still to come from newer data, topUpBundle) and done.
+  const given = new Set(held.map((quest) => idOf(quest.templateId)));
+  return bundle.quests.filter((entry) => givesQuest(tracker, entry)).every(({ quest }) => given.has(quest))
+    && held.length > 0 && held.every((quest) => ["Completed", "Claimed"].includes(quest.attributes.quest_state));
+}
+
+export function settleCompletedSchedules(session) {
+  const schedules = athenaChallengeSchedules() ?? {};
+  const tracker = session.profile("athena");
+  const { profile } = tracker;
+  for (const [scheduleItemId, item] of heldOf(profile, "challengebundleschedule")) {
+    const scheduleId = idOf(item.templateId);
+    const schedule = schedules[scheduleId];
+    if (!schedule?.cleanUpOnBundleCompletion) continue;
+    const bundles = schedule.bundles.map((entry) => heldBundle(profile, entry.bundle));
+    if (!bundles.length || !bundles.every((held) => held && bundleDone(tracker, held[1]))) continue;
+    let quests = 0;
+    for (const [bundleItemId, bundleItem] of bundles) {
+      for (const questItemId of bundleItem.attributes.grantedquestinstanceids ?? []) {
+        if (!profile.items[questItemId]) continue;
+        tracker.removeItem(questItemId);
+        quests += 1;
+      }
+      tracker.removeItem(bundleItemId);
+    }
+    tracker.removeItem(scheduleItemId);
+    profile.coreCleanedUpSchedules = [...new Set([...(profile.coreCleanedUpSchedules ?? []), scheduleId])];
+    log("Battle Royale", `${session.accountId} completed ${scheduleId}: the schedule, its ${bundles.length === 1 ? "bundle" : `${bundles.length} bundles`} and ${quests} challenges are cleaned up`);
   }
 }
 
@@ -359,14 +420,40 @@ export function countBundleQuest(session, questItemId, giveReward) {
   if (done === before) return [];
   tracker.setItemAttribute(bundleItemId, "num_quests_completed", done);
   tracker.setItemAttribute(bundleItemId, "num_progress_quests_completed", done);
+  const bundleId = idOf(bundleItem.templateId);
   if (bundle?.completionSteps) {
     const total = bundle.quests.length;
     const reached = bundle.completionSteps.filter(({ count }) => (count < 0 ? before < total && done >= total : before < count && done >= count));
-    if (reached.length) log("Battle Royale", `${session.accountId} completed ${done} of ${idOf(bundleItem.templateId)}'s challenges`);
-    return reached.flatMap(({ rewards }) => rewards.flatMap((reward) => giveReward(session, reward)));
+    if (reached.length) log("Battle Royale", `${session.accountId} completed ${done} of ${bundleId}'s challenges`);
+    return giveBundleRewards(session, bundleId, reached.flatMap(({ rewards }) => rewards), giveReward);
   }
   if (!bundle || before >= bundle.completionThreshold || done < bundle.completionThreshold) return [];
-  log("Battle Royale", `${session.accountId} completed ${bundle.completionThreshold} of ${idOf(bundleItem.templateId)}'s challenges`);
-  return bundle.completionRewards.flatMap((reward) => giveReward(session, reward));
+  log("Battle Royale", `${session.accountId} completed ${bundle.completionThreshold} of ${bundleId}'s challenges`);
+  return giveBundleRewards(session, bundleId, bundle.completionRewards, giveReward);
+}
+
+// A bundle's rewards given, the ones that name a gift box (FAthenaRewardItemReference's GiftBoxToUse, athena.json's
+// giftBox) shown in it. 6.02's (CL-4461277) files name GB_ChallengeComplete for the Ghost Portal of the Skull Trooper
+// Challenges and Tomatohead's Crown, for Calamity's and Dire's rewards and for each Season 6 week's season XP at four
+// challenges (the weeks' tokens, hidden rewards, name none); its header, ItemReceivedChallengeCompleteHeader, reads "You
+// have received a reward for completing the {Bundle Name} {Number}Challenge" from the bundle the box's param
+// HeaderTemplateId names (the bundle definition's ShortName and ShortNameNumber: "Skull Trooper", "Week" and "1"), so
+// the box carries its bundle's template id there. Season XP and Battle Stars are no item: the box lists the resource, as
+// the promise box does its Battle Stars. A reward that gave nothing new (a cosmetic already owned) isn't listed, and a
+// box with nothing to list isn't sent. Only a build whose data names the box sends one: overlays made before the
+// extractor kept it (6.01's and earlier) give their bundles' rewards without one, as before.
+function giveBundleRewards(session, bundleId, rewards, giveReward) {
+  const given = [];
+  const boxes = new Map();
+  for (const reward of rewards) {
+    const loot = giveReward(session, reward);
+    given.push(...loot);
+    if (!reward.giftBox) continue;
+    const shown = loot.length || typeOf(reward.templateId) !== "accountresource" ? loot
+      : [{ profileId: "athena", itemId: reward.templateId, templateId: reward.templateId, quantity: reward.quantity }];
+    boxes.set(reward.giftBox, [...(boxes.get(reward.giftBox) ?? []), ...shown]);
+  }
+  for (const [templateId, loot] of boxes) giveGiftBox(session, templateId, loot, { HeaderTemplateId: `ChallengeBundle:${bundleId}` });
+  return given;
 }
 

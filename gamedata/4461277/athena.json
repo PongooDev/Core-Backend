@@ -85,6 +85,7 @@
           "count": 5,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 1,
               "templateId": "AthenaPickaxe:pickaxe_id_104_cowgirl"
             }
@@ -135,6 +136,7 @@
           "count": 5,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 1,
               "templateId": "AthenaBackpack:bid_120_werewolf"
             }
@@ -212,6 +214,7 @@
           "count": 4,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 5000,
               "templateId": "AccountResource:athenaseasonalxp"
             },
@@ -324,6 +327,7 @@
           "count": 4,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 5000,
               "templateId": "AccountResource:athenaseasonalxp"
             },
@@ -436,6 +440,7 @@
           "count": 4,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 5000,
               "templateId": "AccountResource:athenaseasonalxp"
             },
@@ -548,6 +553,7 @@
           "count": 4,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 5000,
               "templateId": "AccountResource:athenaseasonalxp"
             },
@@ -660,6 +666,7 @@
           "count": 4,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 5000,
               "templateId": "AccountResource:athenaseasonalxp"
             },
@@ -772,6 +779,7 @@
           "count": 4,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 6000,
               "templateId": "AccountResource:athenaseasonalxp"
             },
@@ -884,6 +892,7 @@
           "count": 4,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 7000,
               "templateId": "AccountResource:athenaseasonalxp"
             },
@@ -996,6 +1005,7 @@
           "count": 4,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 8000,
               "templateId": "AccountResource:athenaseasonalxp"
             },
@@ -1108,6 +1118,7 @@
           "count": 4,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 9000,
               "templateId": "AccountResource:athenaseasonalxp"
             },
@@ -1220,6 +1231,7 @@
           "count": 4,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 10000,
               "templateId": "AccountResource:athenaseasonalxp"
             },
@@ -1305,6 +1317,7 @@
           "count": -1,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 1,
               "templateId": "AthenaBackpack:bid_105_ghostportal"
             }
@@ -1343,6 +1356,7 @@
           "count": -1,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 1,
               "templateId": "CosmeticVariantToken:vtid_032_tomatohead_crown"
             }
@@ -1376,7 +1390,8 @@
           "unlockValue": 0
         }
       ],
-      "category": "Styles"
+      "category": "Styles",
+      "cleanUpOnBundleCompletion": true
     },
     "bundleschedule_styles_tomatohead": {
       "bundles": [
@@ -1386,7 +1401,8 @@
           "unlockValue": 0
         }
       ],
-      "category": "Styles"
+      "category": "Styles",
+      "cleanUpOnBundleCompletion": true
     },
     "schedule_ltm_heist": {
       "bundles": [
@@ -1397,6 +1413,7 @@
         }
       ],
       "category": "Heist",
+      "cleanUpOnBundleCompletion": true,
       "eventName": "EventFlag.LTM_Heist"
     },
     "season6_free_schedule": {
@@ -1472,7 +1489,8 @@
           "unlockValue": 0
         }
       ],
-      "category": "BattlePass"
+      "category": "BattlePass",
+      "cleanUpOnBundleCompletion": true
     },
     "season6_progressiveb_schedule": {
       "bundles": [
@@ -1482,7 +1500,8 @@
           "unlockValue": 0
         }
       ],
-      "category": "BattlePass"
+      "category": "BattlePass",
+      "cleanUpOnBundleCompletion": true
     }
   },
   "cosmetics": {

@@ -23,10 +23,10 @@ import { getQuest } from "../src/gamedata/quests.js";
 import { dataBuild } from "../src/gamedata/read.js";
 import { customMatchOptionsOf, parseBucket, playlistTeamsOf } from "../src/matchmaking/service.js";
 import { advanceAthenaObjectives, athenaQuestLogin, claimAthenaQuest, grantAthenaQuest, grantCosmetic, recordMatchProgress,
-  setUpAthena } from "../src/profiles/athena.js";
+  seasonRewardFunctions, setUpAthena } from "../src/profiles/athena.js";
 import { styleSchedules } from "../src/profiles/challenges.js";
-import { battlePassPurchaseGiftBox } from "../src/profiles/giftboxes.js";
-import { buildOfSeason } from "../src/profiles/seasons.js";
+import { battlePassPurchaseGiftBox, heldGiftBoxes } from "../src/profiles/giftboxes.js";
+import { buildOfSeason, buyBattlePass } from "../src/profiles/seasons.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
 import { subgameSelectImages, subgameSelectImagesFor } from "../src/services/content/pages.js";
@@ -144,7 +144,8 @@ test("6.02 keeps Season 6's Battle Pass: the same tiers and season challenges, t
   const [schedules602, schedules601] = [inBuild(v602, athenaChallengeSchedules), inBuild(v601, athenaChallengeSchedules)];
   // 6.02's data adds the outfits' own schedules, and nothing else.
   assert.deepEqual(Object.keys(schedules602).filter((id) => !schedules601[id]), ["bundleschedule_styles_skulltrooper", "bundleschedule_styles_tomatohead"]);
-  for (const id of Object.keys(schedules601)) assert.deepEqual(schedules602[id], schedules601[id], id);
+  // The rest are 6.01's entry for entry; 6.02's extraction also keeps CleanUpOnBundleCompletion, which 6.01's overlay predates.
+  for (const id of Object.keys(schedules601)) assert.deepEqual({ ...schedules602[id], cleanUpOnBundleCompletion: undefined }, { ...schedules601[id], cleanUpOnBundleCompletion: undefined }, id);
   for (const build of builds602) {
     assert.equal(inBuild(build, battlePassPurchaseGiftBox), "GiftBox:gb_battlepasspurchased", build);
     const tier59 = inBuild(build, athenaSeason).bookPaidRewards.find(({ level }) => level === 59).rewards.map(({ templateId }) => templateId);
@@ -421,6 +422,8 @@ test("a 6.02 client's ClaimMfaEnabled gives the Save the World 2FA reward once (
 const skullTrooper = "AthenaCharacter:cid_030_athena_commando_m_halloween";
 const ghostPortal = "AthenaBackpack:bid_105_ghostportal";
 const tomatohead = "AthenaCharacter:cid_109_athena_commando_m_pizza";
+const tomatoCrown = "CosmeticVariantToken:vtid_032_tomatohead_crown";
+const challengeCompleteBox = "GiftBox:gb_challengecomplete";
 function withSession(build, name, run) {
   return inBuild(build, () => {
     const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-build602-"));
@@ -440,18 +443,26 @@ const questOf = (session, questId) => heldOf(session, `Quest:${questId}`);
 test("6.02's data has the outfits' own challenges: the Skull Trooper's five for the Ghost Portal, Tomatohead's three for the Crown", () => inBuild(v602, () => {
   assert.deepEqual(styleSchedules, { bundleschedule_styles_tomatohead: tomatohead, bundleschedule_styles_skulltrooper: skullTrooper });
   assert.deepEqual(athenaChallengeSchedules().bundleschedule_styles_skulltrooper,
-    { bundles: [{ bundle: "questbundle_styles_skulltrooper", unlockType: "OnScheduleGranted", unlockValue: 0 }], category: "Styles" });
+    { bundles: [{ bundle: "questbundle_styles_skulltrooper", unlockType: "OnScheduleGranted", unlockValue: 0 }], category: "Styles", cleanUpOnBundleCompletion: true });
   const bundle = athenaChallengeBundles().questbundle_styles_skulltrooper;
   assert.deepEqual(bundle.quests.map(({ quest }) => [quest, getAthenaQuest(quest).objectives[0].count]), [
     ["quest_br_styles_skulltrooper_complete_daily_challenges", 7], ["quest_br_styles_skulltrooper_play_matches", 50],
     ["quest_br_styles_skulltrooper_min1elimination", 14], ["quest_br_styles_skulltrooper_interact_chests_singlematch", 10],
     ["quest_br_styles_skulltrooper_damage_singlematch", 1000]]);
-  assert.deepEqual(bundle.completionSteps, [{ count: -1, rewards: [{ quantity: 1, templateId: ghostPortal }] }]);
+  assert.deepEqual(bundle.completionSteps, [{ count: -1, rewards: [{ giftBox: challengeCompleteBox, quantity: 1, templateId: ghostPortal }] }]);
   assert.equal(bundle.visualStyle, "FNSkullTrooperStyle");
   assert.deepEqual(getAthenaQuest("quest_br_styles_skulltrooper_complete_daily_challenges").objectives,
     [{ count: 7, item: "Token:athena_dailychallenge_token", itemEvent: "Acquire", name: "athena_skulltrooper_complete_daily_challenges" }]);
   assert.deepEqual(athenaChallengeBundles().questbundle_styles_tomatohead.completionSteps,
-    [{ count: -1, rewards: [{ quantity: 1, templateId: "CosmeticVariantToken:vtid_032_tomatohead_crown" }] }]);
+    [{ count: -1, rewards: [{ giftBox: challengeCompleteBox, quantity: 1, templateId: tomatoCrown }] }]);
+  // The schedules that go once their bundle is completed (CleanUpOnBundleCompletion), and the rewards that come in
+  // GB_ChallengeComplete: each week's season XP at four challenges, not its tokens.
+  assert.deepEqual(Object.entries(athenaChallengeSchedules()).filter(([, schedule]) => schedule.cleanUpOnBundleCompletion).map(([id]) => id).sort(),
+    ["bundleschedule_styles_skulltrooper", "bundleschedule_styles_tomatohead", "schedule_ltm_heist", "season6_progressivea_schedule", "season6_progressiveb_schedule"]);
+  assert.deepEqual(athenaChallengeBundles().questbundle_s6_week_001.completionSteps.flatMap(({ count, rewards }) => rewards
+    .filter((reward) => reward.giftBox).map((reward) => [count, reward.templateId, reward.quantity, reward.giftBox])),
+  [[4, "AccountResource:athenaseasonalxp", 5000, challengeCompleteBox]]);
+  assert.equal(athenaChallengeBundles().questbundle_ltm_heist.completionSteps[0].rewards[0].giftBox, undefined, "High Stakes' names none");
   for (const outfit of Object.values(styleSchedules)) assert.ok(athenaCosmetics()[outfit], outfit);
   // 6.01's overlay was made before the extractor kept them.
   assert.equal(inBuild(v601, athenaChallengeSchedules).bundleschedule_styles_skulltrooper, undefined);
@@ -538,6 +549,119 @@ test("the Skull Trooper Challenges: seven daily challenges collected count by th
     // The blue and green portals are everyone's; the purple one was the 2017 owners', which Core gives nobody by itself.
     assert.deepEqual(portal.attributes.variants, [{ channel: "Particle", active: "Particle0", owned: ["Particle0", "Particle2"] }]);
     assert.deepEqual(heldOf(session, skullTrooper)[1].attributes.variants, [{ channel: "ClothingColor", active: "Mat0", owned: ["Mat0", "Mat2"] }]);
+  });
+});
+
+// A bundle's challenges done as the gameserver and the match results report them. Returns the bundle's item.
+function finishBundle(session, bundleId, upTo = Infinity) {
+  const tracker = session.profile("athena");
+  const [, bundle] = heldOf(session, `ChallengeBundle:${bundleId}`);
+  for (const questItemId of bundle.attributes.grantedquestinstanceids.slice(0, upTo)) {
+    const questId = tracker.profile.items[questItemId].templateId.split(":")[1];
+    advanceAthenaObjectives(session, getAthenaQuest(questId).objectives.map(({ name }) => ({ statName: name, count: 1_000_000 })));
+  }
+  // The ones counted from match results (play matches, matches with an elimination).
+  if (upTo === Infinity) for (let match = 0; match < 60; match++) recordMatchProgress(session, 2, { place: 10, kills: 1 });
+  return bundle;
+}
+const challengeBoxes = (session) => heldGiftBoxes(session.profile("profile0").profile).map(([, item]) => item)
+  .filter((item) => item.templateId === challengeCompleteBox);
+const boxOf = (session, bundleId) => challengeBoxes(session).filter((item) => item.attributes.params.HeaderTemplateId === `ChallengeBundle:${bundleId}`);
+
+// GiftBoxToUse and CleanUpOnBundleCompletion (profiles/challenges.js): the reward's screen names the bundle it is for,
+// and a schedule that is all done leaves the challenges tab.
+test("the outfits' challenges done: the reward comes in GB_ChallengeComplete naming its bundle, and the schedule is cleaned up at the next quest login", () => {
+  withSession(v602, "skullbox", (session) => {
+    const { profile } = session.profile("athena");
+    grantCosmetic(session, skullTrooper);
+    grantCosmetic(session, tomatohead);
+    athenaQuestLogin(session);
+    // One of five: no reward, no box, and nothing to clean up.
+    finishBundle(session, "questbundle_styles_skulltrooper", 1);
+    athenaQuestLogin(session);
+    assert.deepEqual(challengeBoxes(session), []);
+    assert.ok(heldOf(session, "ChallengeBundleSchedule:bundleschedule_styles_skulltrooper"));
+
+    finishBundle(session, "questbundle_styles_skulltrooper");
+    const [, portal] = heldOf(session, ghostPortal);
+    const [box] = boxOf(session, "questbundle_styles_skulltrooper");
+    assert.equal(challengeBoxes(session).length, 1);
+    const portalId = Object.keys(profile.items).find((id) => profile.items[id] === portal);
+    assert.deepEqual(box.attributes.lootList, [{ itemType: ghostPortal, itemGuid: portalId, itemProfile: "athena", quantity: 1 }]);
+    assert.deepEqual(box.attributes.params, { HeaderTemplateId: "ChallengeBundle:questbundle_styles_skulltrooper" });
+    // Until the lobby's quest login the finished challenges are as they completed.
+    assert.equal(heldOf(session, "ChallengeBundle:questbundle_styles_skulltrooper")[1].attributes.num_quests_completed, 5);
+
+    athenaQuestLogin(session);
+    assert.equal(heldOf(session, "ChallengeBundleSchedule:bundleschedule_styles_skulltrooper"), undefined);
+    assert.equal(heldOf(session, "ChallengeBundle:questbundle_styles_skulltrooper"), undefined);
+    assert.deepEqual(itemsOf(session, "quest").filter(([, item]) => /styles_skulltrooper/.test(item.templateId)), []);
+    assert.deepEqual(profile.coreCleanedUpSchedules, ["bundleschedule_styles_skulltrooper"]);
+    assert.ok(heldOf(session, ghostPortal), "what they gave stays");
+    // Tomatohead's, not all done (the matches played count for its first), stay; the Skull Trooper's don't start over.
+    assert.equal(heldOf(session, "ChallengeBundle:questbundle_styles_tomatohead")[1].attributes.num_quests_completed, 1);
+    assert.ok(heldOf(session, "ChallengeBundleSchedule:bundleschedule_styles_tomatohead"));
+    athenaQuestLogin(session);
+    assert.equal(heldOf(session, "ChallengeBundleSchedule:bundleschedule_styles_skulltrooper"), undefined);
+    assert.equal(challengeBoxes(session).length, 1, "one box, once");
+
+    // Tomatohead's three give the Crown, a style: the box lists its token.
+    finishBundle(session, "questbundle_styles_tomatohead");
+    const [crown] = boxOf(session, "questbundle_styles_tomatohead");
+    assert.deepEqual(crown.attributes.lootList, [{ itemType: tomatoCrown, itemGuid: tomatoCrown, itemProfile: "athena", quantity: 1 }]);
+    athenaQuestLogin(session);
+    assert.deepEqual(profile.coreCleanedUpSchedules, ["bundleschedule_styles_skulltrooper", "bundleschedule_styles_tomatohead"]);
+    assert.deepEqual(itemsOf(session, "challengebundleschedule").filter(([, item]) => /styles_/.test(item.templateId)), []);
+  });
+});
+
+test("Season 6's bundles on 6.02: a week's season XP and Calamity's reward come in GB_ChallengeComplete, and Calamity's go when all eight are done; 6.01's data has neither", () => {
+  withSession(v602, "week1", (session) => {
+    const { profile } = session.profile("athena");
+    athenaQuestLogin(session);
+    buyBattlePass(session, seasonRewardFunctions());
+    athenaQuestLogin(session);
+    // Three of week 1's challenges: their tokens, and no box.
+    finishBundle(session, "questbundle_s6_week_001", 3);
+    assert.deepEqual(challengeBoxes(session), []);
+    finishBundle(session, "questbundle_s6_week_001", 4);
+    const [week] = boxOf(session, "questbundle_s6_week_001");
+    assert.deepEqual(week.attributes.lootList, [{ itemType: "AccountResource:athenaseasonalxp", itemGuid: "AccountResource:athenaseasonalxp", itemProfile: "athena", quantity: 5000 }]);
+    finishBundle(session, "questbundle_s6_week_001", 7);
+    assert.equal(boxOf(session, "questbundle_s6_week_001").length, 1, "the rest of the week gives tokens only");
+    athenaQuestLogin(session);
+    assert.ok(heldOf(session, "ChallengeBundle:questbundle_s6_week_001"), "a week stays to the season's end");
+
+    // Calamity's: her harvesting tool at five, in a box of its own; all eight done, the schedule goes and her styles stay.
+    const calamity = "AthenaCharacter:cid_237_athena_commando_f_cowgirl";
+    finishBundle(session, "questbundle_s6_progressivea", 5);
+    const [tool] = boxOf(session, "questbundle_s6_progressivea");
+    assert.deepEqual(tool.attributes.lootList.map(({ itemType }) => itemType), ["AthenaPickaxe:pickaxe_id_104_cowgirl"]);
+    athenaQuestLogin(session);
+    assert.ok(heldOf(session, "ChallengeBundleSchedule:season6_progressivea_schedule"), "five of eight isn't all of them");
+    finishBundle(session, "questbundle_s6_progressivea", 8);
+    const styles = structuredClone(heldOf(session, calamity)[1].attributes.variants);
+    athenaQuestLogin(session);
+    assert.equal(heldOf(session, "ChallengeBundleSchedule:season6_progressivea_schedule"), undefined);
+    assert.equal(heldOf(session, "ChallengeBundle:questbundle_s6_progressivea"), undefined);
+    assert.ok(profile.coreCleanedUpSchedules.includes("season6_progressivea_schedule"));
+    assert.deepEqual(heldOf(session, calamity)[1].attributes.variants, styles);
+    assert.ok(heldOf(session, "ChallengeBundleSchedule:season6_free_schedule") && heldOf(session, "ChallengeBundle:questbundle_s6_week_001"), "the weeks stay");
+    athenaQuestLogin(session);
+    assert.equal(heldOf(session, "ChallengeBundleSchedule:season6_progressivea_schedule"), undefined, "a tier gives its schedule once");
+  });
+  // 6.01's overlay predates both: its bundles' rewards come without a box and its finished schedules stay, as before.
+  withSession(v601, "week1on601", (session) => {
+    athenaQuestLogin(session);
+    buyBattlePass(session, seasonRewardFunctions());
+    athenaQuestLogin(session);
+    finishBundle(session, "questbundle_s6_week_001", 7);
+    finishBundle(session, "questbundle_s6_progressivea", 8);
+    athenaQuestLogin(session);
+    assert.deepEqual(challengeBoxes(session), []);
+    assert.ok(heldOf(session, "ChallengeBundleSchedule:season6_progressivea_schedule"));
+    assert.equal(heldOf(session, "ChallengeBundle:questbundle_s6_progressivea")[1].attributes.num_quests_completed, 8);
+    assert.equal(session.profile("athena").profile.coreCleanedUpSchedules, undefined);
   });
 });
 

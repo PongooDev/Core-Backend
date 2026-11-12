@@ -240,7 +240,12 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   as in 6.01),
   `fabricator.json` (those weapons' values) and `world.json` (one mission generator, MissionGen_AthenaEvent23, High
   Explosives'). Save the World's quests and every other file are 6.01's. The earlier 6.02, CL-4442095, isn't extracted
-  (Core has no copy of its paks) and plays on CL-4461277's data.
+  (Core has no copy of its paks) and plays on CL-4461277's data. Two later extractor changes, with 6.02 extracted again
+  (only `athena.json` differs, by these): a challenge schedule whose `CleanUpOnBundleCompletion` is set carries
+  `cleanUpOnBundleCompletion` (Schedule_LTM_Heist, Season 6's ProgressiveA and B and the two `Styles` schedules), and a
+  bundle's completion reward that names the gift box it comes in (`GiftBoxToUse`) carries its template id as `giftBox`
+  (`GiftBox:gb_challengecomplete`: each Season 6 week's season XP at four challenges, Calamity's and Dire's rewards, the
+  Ghost Portal and Tomatohead's Crown); 6.01's and earlier committed overlays predate both.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

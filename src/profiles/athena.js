@@ -19,8 +19,8 @@ import { findItem } from "./items.js";
 import { grant } from "./progress.js";
 import { applyHeldVariantTokens, applyVariantUpdates, defaultVariants, grantDefaultVariants, grantMissingVariantTokens, grantVariantToken, itemsMissingVariants,
   missingVariantTokens } from "./variants.js";
-import { brokenChallengeOf, completeBrokenChallenges, countBundleQuest, grantChallengeSchedule as grantSchedule, settleChallengeSchedules,
-  settleStyleSchedules } from "./challenges.js";
+import { brokenChallengeOf, completeBrokenChallenges, countBundleQuest, grantChallengeSchedule as grantSchedule, scheduleCleanedUp, settleChallengeSchedules,
+  settleCompletedSchedules, settleStyleSchedules } from "./challenges.js";
 import { accountLevelOf, addBookXp, giveSeasonReward, givenVariantTokens, namesAthenaBuild, profileSeason, seasonNeedsSwitch, seasonNumber, settleSeasonPromise,
   settleSeasonRewards, switchSeason } from "./seasons.js";
 
@@ -1209,7 +1209,10 @@ function settleEventSchedules(session) {
   const event = Object.keys(schedules).filter((id) => schedules[id].eventName);
   if (!event.length) return;
   const flags = [...activeEventFlags(), ...highStakesFlagsNow(), ...birthdayChallengeFlagsNow()].map((flag) => flag.toLowerCase());
+  const { profile } = session.profile("athena");
   for (const id of event) {
+    // One completed and cleaned up (profiles/challenges.js settleCompletedSchedules) doesn't start over while its event runs.
+    if (scheduleCleanedUp(profile, id)) continue;
     if (flags.includes(schedules[id].eventName.toLowerCase())) grantSchedule(session, `ChallengeBundleSchedule:${id}`, seasonFunctions);
   }
 }
@@ -1219,6 +1222,7 @@ export function athenaQuestLogin(session) {
   refreshAthenaDailies(session);
   settleBattlePassDaily(session);
   settleSeasonGrants(session);
+  settleCompletedSchedules(session);
   settleEventSchedules(session);
   settleStyleSchedules(session, seasonFunctions);
   settleChallengeSchedules(session, seasonFunctions);
