@@ -318,8 +318,9 @@ export function grantChallengeSchedule(session, templateId, athena, now = new Da
 //   match) and gives BID_105_GhostPortal when all five are done.
 // - BundleSchedule_Styles_Tomatohead (5.30's, in 6.02's data too): "Tomatohead Challenges", the wiki's "available since
 //   August 23rd 2018 for anyone who has purchased the Tomatohead Outfit", three challenges for the Crown style
-//   (VTID_032_Tomatohead_Crown). Only a build whose data has the schedule gives it: 5.30's to 6.01's overlays were made
-//   before the extractor kept these, so there it starts with 6.02 (🟡 until those builds are extracted again).
+//   (VTID_032_Tomatohead_Crown). Only a build whose data has the schedule gives it: 5.30's to 6.00's overlays were made
+//   before the extractor kept these, so there it starts with 6.01, extracted again for #334 (🟡 until those builds are
+//   extracted again).
 // Nothing in the game's files ties a schedule to its outfit (Epic's servers gave it with the purchase, and to those who
 // already owned the outfit), so the outfits are named here. A player whose locker holds the outfit gets its schedule at
 // the quest login, once; the challenges tab then lists it. It is no season's (profiles/seasons.js retires only what a
@@ -362,7 +363,10 @@ export function settleStyleSchedules(session, athena, now = new Date()) {
 // What the challenges gave stays (the locker's items and styles are no quest's). The schedule is noted
 // (profile.coreCleanedUpSchedules, Core's, never sent) so the ones given at the quest login, the outfits' and the
 // events', aren't given again; a Battle Pass tier gives its schedule once anyway (profiles/seasons.js). Only a build
-// whose data has the flag cleans up: overlays made before the extractor kept it (6.01's and earlier) leave theirs.
+// whose data has the flag cleans up: overlays made before the extractor kept it (6.00's and earlier) leave theirs.
+// The flag is what lets a schedule outlast its season: Season 5's ProgressiveA and B aren't among what AthenaSeason5's
+// end takes (profiles/seasons.js keptPast, Core-Backend #334), so in Season 6 a pass owner still has Drift's and
+// Ragnarok's until their five stages are done, and then they go this way, on 6.01 and 6.02.
 export const scheduleCleanedUp = (profile, scheduleId) => (profile.coreCleanedUpSchedules ?? []).includes(String(scheduleId).toLowerCase());
 
 function bundleDone(tracker, bundleItem) {
@@ -441,7 +445,7 @@ export function countBundleQuest(session, questItemId, giveReward) {
 // the box carries its bundle's template id there. Season XP and Battle Stars are no item: the box lists the resource, as
 // the promise box does its Battle Stars. A reward that gave nothing new (a cosmetic already owned) isn't listed, and a
 // box with nothing to list isn't sent. Only a build whose data names the box sends one: overlays made before the
-// extractor kept it (6.01's and earlier) give their bundles' rewards without one, as before.
+// extractor kept it (6.00's and earlier) give their bundles' rewards without one, as before.
 function giveBundleRewards(session, bundleId, rewards, giveReward) {
   const given = [];
   const boxes = new Map();

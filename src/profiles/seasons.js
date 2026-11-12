@@ -173,6 +173,8 @@ export function switchSeason(session) {
 // profile.coreSeasonItems (Core's, never sent: {<season>: {<item id>: item}}) and come back as they were, progress and
 // all, the next time a build of their season takes the profile up. Playing 3.6 after 4.0 shows Season 3's challenges
 // again and puts Season 4's aside, and 4.0 swaps them back. A player who stays on one season keeps everything.
+// From Season 5 a season's own definition leaves some of its schedules out of what its end takes (Drift's and
+// Ragnarok's): those aren't retired (keptPast below, Core-Backend #334).
 const typeOfTemplate = (templateId) => String(templateId).split(":")[0].toLowerCase();
 const idOfTemplate = (templateId) => String(templateId).split(":")[1]?.toLowerCase();
 
@@ -222,25 +224,94 @@ function seasonChallenges(season) {
   return seasonChallengeCache.get(season);
 }
 
-// The season an athena item's challenge belongs to, or null for one no season's pass gives (or more than one's).
-function itemSeason(profile, item, seen = new Set()) {
+// The item a challenge item hangs from, as far as items holds them: a quest's bundle, a bundle's schedule.
+const challengeKinds = { challengebundleschedule: "schedules", challengebundle: "bundles", quest: "quests" };
+function challengeRoot(items, item, seen = new Set()) {
   const type = typeOfTemplate(item?.templateId);
-  if (!item || !["challengebundleschedule", "challengebundle", "quest"].includes(type)) return null;
   const linked = type === "challengebundle" ? item.attributes?.challenge_bundle_schedule_id
     : type === "quest" ? item.attributes?.challenge_bundle_id : null;
-  if (linked && profile.items[linked] && !seen.has(linked)) return itemSeason(profile, profile.items[linked], seen.add(linked));
-  const id = idOfTemplate(item.templateId);
-  const kind = { challengebundleschedule: "schedules", challengebundle: "bundles", quest: "quests" }[type];
+  return linked && items[linked] && !seen.has(linked) ? challengeRoot(items, items[linked], seen.add(linked)) : item;
+}
+
+// The season an athena item's challenge belongs to, or null for one no season's pass gives (or more than one's).
+function itemSeason(profile, item) {
+  if (!item || !challengeKinds[typeOfTemplate(item.templateId)]) return null;
+  const root = challengeRoot(profile.items, item);
+  const kind = challengeKinds[typeOfTemplate(root?.templateId)];
+  if (!kind) return null;
+  const id = idOfTemplate(root.templateId);
   const seasons = laterSeasons().filter((season) => seasonChallenges(season)[kind].has(id));
   return seasons.length === 1 ? seasons[0] : null;
 }
 
-// The profile's items of other seasons' challenges, as [itemId, season].
-const otherSeasonItems = (profile) => Object.entries(profile.items)
-  .map(([id, item]) => [id, itemSeason(profile, item)])
-  .filter(([, season]) => season !== null && season !== profileSeason(profile));
+// The challenges that outlast their season (Core-Backend #334). A season takes back what its definition names
+// (UAthenaSeasonItemDefinition's TokensToRemoveAtSeasonEnd) and nothing else. In 6.01's and 6.02's files (CL-4424678,
+// CL-4461277), which still hold AthenaSeason3 to 5:
+// - AthenaSeason5 gives Season5_ProgressiveA_Schedule ("Drift Challenges", "Earn additional styles for Drift.", a
+//   hidden reward of tier 1's Battle Pass rewards) and Season5_ProgressiveB_Schedule ("Ragnarok Challenges", tier 100's),
+//   and takes back Season5_Free_Schedule and Season5_Paid_Schedule (the weeks and the Road Trip), its tokens and the
+//   Road Trip's hidden quests, not those two. Both are CleanUpOnBundleCompletion (profiles/challenges.js): they go
+//   once their bundle is done, not with the season. Their bundles (QuestBundle_S5_ProgressiveA and B), the ten
+//   challenges (Quest_BR_S5_Gain_SeasonXP_ProgressiveA/B_01 to _05, HasGainedAthenaSeasonXp), the stages' tokens and
+//   the two harvesting tools are all still there. So a Season 5 pass owner who hadn't finished Drift's or Ragnarok's
+//   styles kept the challenges in Season 6, as they stood.
+// - AthenaSeason4 takes back every schedule it gives: Season4_Challenge_Schedule (the weeks, Carbide's
+//   QuestBundle_S4_ProgressiveA and the Blockbuster bundle), Season4_StarterChallenge_Schedule and
+//   Season4_ProgressiveB_Schedule (Omega's). AthenaSeason3 names its three too. Nothing of theirs stays.
+// The extractor writes such a schedule into the later build's challengeSchedules with keptPastSeason, the season that
+// gave it, and its bundles with it. Core keeps a season's challenges aside while another season has the profile
+// (settleSeasonItems), so on a build whose data names a schedule so, that schedule, its bundles and their quests aren't
+// another season's: they stay in the profile, and the ones put aside before come back as they were, progress and all.
+// Their XP challenges then count Season 6's XP from where they stood (profiles/athena.js gainedXpObjectives), a stage
+// done stays done, and the bundle's reward comes once, when its count is reached (profiles/challenges.js). Nobody is
+// given one anew: only Season 5's tiers give them, on a Season 5 build.
+// 🟡 That the XP of a later season counts on from the progress held is Core's: the files show the challenges stay and
+// name the same objective as in Season 5 (HasGainedAthenaSeasonXp), which Core counts by the XP gained while the
+// challenge is open (Core-Backend #307); the counting itself was Epic's service's.
+// Only a build whose data has it: 6.00's overlay (CL-4402180, and CL-4395664 on it) was made before the extractor
+// kept these and its paks aren't at hand, so there Season 5's stay aside as before (🟡 until it is extracted again).
+// A request that names no build reads the profile in its season's newest data (inProfileSeason) and so leaves a kept
+// schedule where it is, but only a build's own request brings one back, so a 6.00 player's doesn't go back and forth.
+const keptPast = (profile, schedules, root, season) => {
+  if (!root || !(season < profileSeason(profile))) return false;
+  const id = idOfTemplate(root.templateId);
+  const type = typeOfTemplate(root.templateId);
+  if (type === "challengebundleschedule") return schedules[id]?.keptPastSeason === season;
+  return type === "challengebundle" && Object.values(schedules)
+    .some((schedule) => schedule.keptPastSeason === season && (schedule.bundles ?? []).some(({ bundle }) => bundle.toLowerCase() === id));
+};
+const keepsAny = (schedules) => Object.values(schedules).some((schedule) => Number.isInteger(schedule.keptPastSeason));
+// The schedules the profile is read with: the requesting build's, or its season's newest data's (as inProfileSeason,
+// found once a season) for a request that names none.
+const seasonSchedules = new Map();
+function schedulesInUse(profile) {
+  if (namesAthenaBuild()) return athenaChallengeSchedules() ?? {};
+  const season = profileSeason(profile);
+  if (!seasonSchedules.has(season)) seasonSchedules.set(season, inBuild(buildOfSeason(season), () => athenaChallengeSchedules() ?? {}));
+  return seasonSchedules.get(season);
+}
+
+// The profile's items of other seasons' challenges, as [itemId, season]: not the ones its season's data keeps.
+function otherSeasonItems(profile) {
+  const others = Object.entries(profile.items).map(([id, item]) => [id, itemSeason(profile, item)])
+    .filter(([, season]) => season !== null && season !== profileSeason(profile));
+  if (!others.length) return others;
+  const schedules = schedulesInUse(profile);
+  if (!keepsAny(schedules)) return others;
+  return others.filter(([id, season]) => !keptPast(profile, schedules, challengeRoot(profile.items, profile.items[id]), season));
+}
+// The kept schedules' items waiting with their season, as [season, itemId], for the requesting build to bring back.
+function keptWaitingItems(profile) {
+  if (!namesAthenaBuild() || !profile.coreSeasonItems) return [];
+  const schedules = athenaChallengeSchedules() ?? {};
+  if (!keepsAny(schedules)) return [];
+  return Object.entries(profile.coreSeasonItems).flatMap(([of, aside]) => Object.keys(aside)
+    .filter((id) => !profile.items[id] && keptPast(profile, schedules, challengeRoot(aside, aside[id]), Number(of)))
+    .map((id) => [of, id]));
+}
 const waitingItems = (profile) => profile.coreSeasonItems?.[profileSeason(profile)] ?? {};
-const seasonItemsOutOfPlace = (profile) => Object.keys(waitingItems(profile)).length > 0 || otherSeasonItems(profile).length > 0;
+const seasonItemsOutOfPlace = (profile) => Object.keys(waitingItems(profile)).length > 0 || otherSeasonItems(profile).length > 0
+  || keptWaitingItems(profile).length > 0;
 
 // The other seasons' challenges go aside, and the profile's season's that were aside come back.
 function settleSeasonItems(session) {
@@ -262,6 +333,17 @@ function settleSeasonItems(session) {
   for (const [id, item] of back) tracker.addItem(id, item);
   if (profile.coreSeasonItems?.[season]) delete profile.coreSeasonItems[season];
   if (back.length) log("Battle Royale", `${session.accountId}: Season ${season}'s ${back.length} challenge items are back`);
+  // The earlier seasons' schedules that outlast them (keptPast), put aside before: back as they were.
+  const kept = {};
+  for (const [of, id] of keptWaitingItems(profile)) {
+    tracker.addItem(id, profile.coreSeasonItems[of][id]);
+    delete profile.coreSeasonItems[of][id];
+    kept[of] = (kept[of] ?? 0) + 1;
+  }
+  for (const [of, count] of Object.entries(kept)) {
+    if (!Object.keys(profile.coreSeasonItems[of]).length) delete profile.coreSeasonItems[of];
+    log("Battle Royale", `${session.accountId}: Season ${of}'s ${count} challenge items that outlast it are back in Season ${season}`);
+  }
 }
 
 // A Season 1 profile's stats of later seasons go: those of one switched back before #152 (season_num 1, which hid the

@@ -30,6 +30,84 @@
       ],
       "visualStyle": "FNHeist"
     },
+    "questbundle_s5_progressivea": {
+      "completionRewards": [],
+      "completionSteps": [
+        {
+          "count": 4,
+          "rewards": [
+            {
+              "giftBox": "GiftBox:gb_challengecomplete",
+              "quantity": 1,
+              "templateId": "AthenaPickaxe:pickaxe_id_068_drift"
+            }
+          ]
+        }
+      ],
+      "completionThreshold": 0,
+      "quests": [
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_s5_gain_seasonxp_progressivea_01"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_s5_gain_seasonxp_progressivea_02"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_s5_gain_seasonxp_progressivea_03"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_s5_gain_seasonxp_progressivea_04"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_s5_gain_seasonxp_progressivea_05"
+        }
+      ],
+      "visualStyle": "BattlePassPaid"
+    },
+    "questbundle_s5_progressiveb": {
+      "completionRewards": [],
+      "completionSteps": [
+        {
+          "count": 4,
+          "rewards": [
+            {
+              "giftBox": "GiftBox:gb_challengecomplete",
+              "quantity": 1,
+              "templateId": "AthenaPickaxe:pickaxe_id_069_darkviking"
+            }
+          ]
+        }
+      ],
+      "completionThreshold": 0,
+      "quests": [
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_s5_gain_seasonxp_progressiveb_01"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_s5_gain_seasonxp_progressiveb_02"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_s5_gain_seasonxp_progressiveb_03"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_s5_gain_seasonxp_progressiveb_04"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_s5_gain_seasonxp_progressiveb_05"
+        }
+      ],
+      "visualStyle": "BattlePassPaid"
+    },
     "questbundle_s6_cumulative": {
       "completionRewards": [],
       "completionSteps": [],
@@ -85,6 +163,7 @@
           "count": 5,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 1,
               "templateId": "AthenaPickaxe:pickaxe_id_104_cowgirl"
             }
@@ -135,6 +214,7 @@
           "count": 5,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 1,
               "templateId": "AthenaBackpack:bid_120_werewolf"
             }
@@ -212,6 +292,7 @@
           "count": 4,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 5000,
               "templateId": "AccountResource:athenaseasonalxp"
             },
@@ -324,6 +405,7 @@
           "count": 4,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 5000,
               "templateId": "AccountResource:athenaseasonalxp"
             },
@@ -436,6 +518,7 @@
           "count": 4,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 5000,
               "templateId": "AccountResource:athenaseasonalxp"
             },
@@ -548,6 +631,7 @@
           "count": 4,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 5000,
               "templateId": "AccountResource:athenaseasonalxp"
             },
@@ -660,6 +744,7 @@
           "count": 4,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 5000,
               "templateId": "AccountResource:athenaseasonalxp"
             },
@@ -772,6 +857,7 @@
           "count": 4,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 6000,
               "templateId": "AccountResource:athenaseasonalxp"
             },
@@ -884,6 +970,7 @@
           "count": 4,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 7000,
               "templateId": "AccountResource:athenaseasonalxp"
             },
@@ -996,6 +1083,7 @@
           "count": 4,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 8000,
               "templateId": "AccountResource:athenaseasonalxp"
             },
@@ -1108,6 +1196,7 @@
           "count": 4,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 9000,
               "templateId": "AccountResource:athenaseasonalxp"
             },
@@ -1220,6 +1309,7 @@
           "count": 4,
           "rewards": [
             {
+              "giftBox": "GiftBox:gb_challengecomplete",
               "quantity": 10000,
               "templateId": "AccountResource:athenaseasonalxp"
             },
@@ -1297,9 +1387,51 @@
         }
       ],
       "visualStyle": "FreePassWeekly"
+    },
+    "questbundle_styles_tomatohead": {
+      "completionRewards": [],
+      "completionSteps": [
+        {
+          "count": -1,
+          "rewards": [
+            {
+              "giftBox": "GiftBox:gb_challengecomplete",
+              "quantity": 1,
+              "templateId": "CosmeticVariantToken:vtid_032_tomatohead_crown"
+            }
+          ]
+        }
+      ],
+      "completionThreshold": 0,
+      "quests": [
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_styles_tomatohead_play_matches_01"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_styles_tomatohead_damage_01"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_styles_tomatohead_gainxp_01"
+        }
+      ],
+      "visualStyle": "FNTomatoStyle"
     }
   },
   "challengeSchedules": {
+    "bundleschedule_styles_tomatohead": {
+      "bundles": [
+        {
+          "bundle": "questbundle_styles_tomatohead",
+          "unlockType": "OnScheduleGranted",
+          "unlockValue": 0
+        }
+      ],
+      "category": "Styles",
+      "cleanUpOnBundleCompletion": true
+    },
     "schedule_ltm_heist": {
       "bundles": [
         {
@@ -1309,7 +1441,32 @@
         }
       ],
       "category": "Heist",
+      "cleanUpOnBundleCompletion": true,
       "eventName": "EventFlag.LTM_Heist"
+    },
+    "season5_progressivea_schedule": {
+      "bundles": [
+        {
+          "bundle": "questbundle_s5_progressivea",
+          "unlockType": "OnScheduleGranted",
+          "unlockValue": 0
+        }
+      ],
+      "category": "BattlePass",
+      "cleanUpOnBundleCompletion": true,
+      "keptPastSeason": 5
+    },
+    "season5_progressiveb_schedule": {
+      "bundles": [
+        {
+          "bundle": "questbundle_s5_progressiveb",
+          "unlockType": "OnScheduleGranted",
+          "unlockValue": 0
+        }
+      ],
+      "category": "BattlePass",
+      "cleanUpOnBundleCompletion": true,
+      "keptPastSeason": 5
     },
     "season6_free_schedule": {
       "bundles": [
@@ -1384,7 +1541,8 @@
           "unlockValue": 0
         }
       ],
-      "category": "BattlePass"
+      "category": "BattlePass",
+      "cleanUpOnBundleCompletion": true
     },
     "season6_progressiveb_schedule": {
       "bundles": [
@@ -1394,7 +1552,8 @@
           "unlockValue": 0
         }
       ],
-      "category": "BattlePass"
+      "category": "BattlePass",
+      "cleanUpOnBundleCompletion": true
     }
   },
   "cosmetics": {

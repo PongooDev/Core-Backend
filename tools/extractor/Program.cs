@@ -47,9 +47,19 @@ var game = engine switch
     _ => throw new NotSupportedException($"Engine {engine} is not mapped yet")
 };
 
-var provider = new DefaultFileProvider(Path.Combine(buildRoot, "FortniteGame", "Content", "Paks"), SearchOption.TopDirectoryOnly,
-    new VersionContainer(game), StringComparer.OrdinalIgnoreCase);
-provider.Initialize();
+var paksFolder = new DirectoryInfo(Path.Combine(buildRoot, "FortniteGame", "Content", "Paks"));
+var provider = new DefaultFileProvider(paksFolder, SearchOption.TopDirectoryOnly, new VersionContainer(game), StringComparer.OrdinalIgnoreCase);
+// Core's own pak isn't the build's data: Core-Launcher installs the server assets beside the build's paks
+// (pakchunkCoreServerAssets-WindowsClient_P.pak, Core-ServerAssets), and read with them it doubles the build's files
+// (6.01's folder with it: no display asset matched, the map pins doubled, heroes the build's own readable paks lack). A
+// folder holding one has only its other paks read; a folder without one is read whole, as before.
+var corePaks = paksFolder.Exists ? paksFolder.GetFiles("*CoreServerAssets*.pak") : [];
+if (corePaks.Length > 0)
+{
+    foreach (var pak in paksFolder.GetFiles("*.pak").Where(pak => !corePaks.Any(core => core.FullName == pak.FullName))) provider.RegisterVfs(pak);
+    Console.WriteLine($"Not read, Core's own: {string.Join(", ", corePaks.Select(pak => pak.Name))}");
+}
+else provider.Initialize();
 provider.SubmitKeys([new KeyValuePair<FGuid, FAesKey>(new FGuid(), new FAesKey(aesKey))]);
 provider.PostMount();
 
@@ -1175,6 +1185,8 @@ var athenaLevels = new List<object>();
 SortedDictionary<string, object>? athenaSeason = null;
 var challengeSchedules = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var challengeBundles = new SortedDictionary<string, object>(StringComparer.Ordinal);
+// The earlier seasons' challenge schedules that their season's end doesn't take, by id, with that season's number.
+var keptSchedules = new SortedDictionary<string, int>(StringComparer.Ordinal);
 var variantTokens = new SortedDictionary<string, object>(StringComparer.Ordinal);
 var testCosmetics = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "DynamicsTestGlider", "Glider_ProxyTest", "Glider_TestStaticParts", "Pickaxe_ID_zzz_StatDebugger", "Dev_Test_Pickaxe_StatDebugger",
     "Dev_Test_Pickaxe", "SPID_000_TestSpray", "TOY_000_TestToy" };
@@ -1510,6 +1522,32 @@ if (provider.TryLoadPackage("FortniteGame/Content/Balance/AthenaGameData.uasset"
         var removedAtEnd = (newestSeason["TokensToRemoveAtSeasonEnd"]?.AsArray() ?? []).Select(entry => assetTypes.TemplateId(ObjectPath(AssetPath(entry))))
             .Where(templateId => templateId is not (null or "" or "None")).Cast<object>().ToList();
         if (removedAtEnd.Count > 0) athenaSeason["removedAtSeasonEnd"] = removedAtEnd;
+        // The seasons before it, whose definitions the build still has (6.02, CL 4461277, has AthenaSeason3 to 5 beside its
+        // own AthenaSeason6): a challenge schedule such a season's rewards give that its TokensToRemoveAtSeasonEnd doesn't
+        // name isn't taken when that season ends, so a player who got it still has it in this build's season. AthenaSeason5
+        // gives Season5_ProgressiveA_Schedule ("Drift Challenges", a hidden reward of tier 1's Battle Pass rewards) and
+        // Season5_ProgressiveB_Schedule ("Ragnarok Challenges", tier 100's), and what it takes back names neither: its
+        // Season5_Free_Schedule and Season5_Paid_Schedule (the weeks and the Road Trip), its tokens and the Road Trip's
+        // hidden quests. Both are CleanUpOnBundleCompletion, going once their bundle is completed. AthenaSeason3 and
+        // AthenaSeason4 name every schedule they give (Season4_Challenge_Schedule, which holds Carbide's and the
+        // Blockbuster bundles, and Season4_ProgressiveB_Schedule, Omega's, among them), so nothing of theirs stays.
+        // Written below with the season's own schedules, each with keptPastSeason, the number of the season that gave it.
+        // A season that names no TokensToRemoveAtSeasonEnd says nothing about its end and is passed over.
+        IEnumerable<string> RewardIds(JsonNode? rewards) => (rewards?.AsArray() ?? []).OfType<JsonObject>()
+            .Select(reward => reward["TemplateId"]?.GetValue<string>() is { Length: > 0 } templateId ? templateId : assetTypes.TemplateId(ObjectPath(AssetPath(reward["ItemDefinition"]))))
+            .Where(templateId => templateId is not (null or "" or "None")).Cast<string>();
+        var newestNumber = newestSeason["SeasonNumber"]!.GetValue<int>();
+        foreach (var earlier in seasons.OfType<JsonNode>().Where(season => season["SeasonNumber"]?.GetValue<int>() < newestNumber).OrderBy(season => season["SeasonNumber"]!.GetValue<int>()))
+        {
+            if (earlier["TokensToRemoveAtSeasonEnd"] is not JsonArray taken) continue;
+            var takenIds = taken.Select(entry => assetTypes.TemplateId(ObjectPath(AssetPath(entry)))).Where(templateId => templateId is not (null or "" or "None"))
+                .Cast<string>().ToHashSet(StringComparer.OrdinalIgnoreCase);
+            var given = new[] { "SeasonXpScheduleFree", "BookXpScheduleFree", "BookXpSchedulePaid" }
+                .SelectMany(name => (earlier[name]?["Levels"]?.AsArray() ?? []).SelectMany(level => RewardIds(level?["Rewards"])))
+                .Concat(RewardIds(earlier["SeasonGrantsToEveryone"]?["Rewards"]));
+            foreach (var templateId in given.Where(templateId => templateId.StartsWith("ChallengeBundleSchedule:", StringComparison.OrdinalIgnoreCase) && !takenIds.Contains(templateId)))
+                keptSchedules[templateId.Split(':')[1].ToLowerInvariant()] = earlier["SeasonNumber"]!.GetValue<int>();
+        }
     }
     foreach (var (_, row) in LoadRows(provider, seasonXpTable).OrderBy(r => r.Value!["Level"]!.GetValue<int>()))
     {
@@ -1603,7 +1641,14 @@ if (athenaSeason is not null && athenaSeason.ContainsKey("challengeSchedulesAlwa
         // and an outfit's own challenges (CategoryID "Styles": 5.30's BundleSchedule_Styles_Tomatohead and 6.02's
         // BundleSchedule_Styles_SkullTrooper, "Earn additional styles for Skull Trooper"), which the outfit's owners get.
         .Concat(challengeSchedules.Where(entry => (string)((SortedDictionary<string, object>)entry.Value)["category"] == "Styles").Select(entry => entry.Key))
+        // and the earlier seasons' schedules their end doesn't take (6.01's and 6.02's files: Season 5's ProgressiveA and
+        // B, Drift's and Ragnarok's), each marked with the season that gave it.
+        .Concat(keptSchedules.Keys)
         .Where(challengeSchedules.ContainsKey).Distinct().ToList();
+    foreach (var (id, season) in keptSchedules)
+    {
+        if (challengeSchedules.TryGetValue(id, out var kept)) ((SortedDictionary<string, object>)kept)["keptPastSeason"] = season;
+    }
     var grantedSchedules = new SortedDictionary<string, object>(StringComparer.Ordinal);
     var bundles = new SortedDictionary<string, object>(StringComparer.Ordinal);
     foreach (var id in granted)

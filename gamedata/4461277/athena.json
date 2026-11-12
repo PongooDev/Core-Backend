@@ -30,6 +30,84 @@
       ],
       "visualStyle": "FNHeist"
     },
+    "questbundle_s5_progressivea": {
+      "completionRewards": [],
+      "completionSteps": [
+        {
+          "count": 4,
+          "rewards": [
+            {
+              "giftBox": "GiftBox:gb_challengecomplete",
+              "quantity": 1,
+              "templateId": "AthenaPickaxe:pickaxe_id_068_drift"
+            }
+          ]
+        }
+      ],
+      "completionThreshold": 0,
+      "quests": [
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_s5_gain_seasonxp_progressivea_01"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_s5_gain_seasonxp_progressivea_02"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_s5_gain_seasonxp_progressivea_03"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_s5_gain_seasonxp_progressivea_04"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_s5_gain_seasonxp_progressivea_05"
+        }
+      ],
+      "visualStyle": "BattlePassPaid"
+    },
+    "questbundle_s5_progressiveb": {
+      "completionRewards": [],
+      "completionSteps": [
+        {
+          "count": 4,
+          "rewards": [
+            {
+              "giftBox": "GiftBox:gb_challengecomplete",
+              "quantity": 1,
+              "templateId": "AthenaPickaxe:pickaxe_id_069_darkviking"
+            }
+          ]
+        }
+      ],
+      "completionThreshold": 0,
+      "quests": [
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_s5_gain_seasonxp_progressiveb_01"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_s5_gain_seasonxp_progressiveb_02"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_s5_gain_seasonxp_progressiveb_03"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_s5_gain_seasonxp_progressiveb_04"
+        },
+        {
+          "grantWithBundle": true,
+          "quest": "quest_br_s5_gain_seasonxp_progressiveb_05"
+        }
+      ],
+      "visualStyle": "BattlePassPaid"
+    },
     "questbundle_s6_cumulative": {
       "completionRewards": [],
       "completionSteps": [],
@@ -1415,6 +1493,30 @@
       "category": "Heist",
       "cleanUpOnBundleCompletion": true,
       "eventName": "EventFlag.LTM_Heist"
+    },
+    "season5_progressivea_schedule": {
+      "bundles": [
+        {
+          "bundle": "questbundle_s5_progressivea",
+          "unlockType": "OnScheduleGranted",
+          "unlockValue": 0
+        }
+      ],
+      "category": "BattlePass",
+      "cleanUpOnBundleCompletion": true,
+      "keptPastSeason": 5
+    },
+    "season5_progressiveb_schedule": {
+      "bundles": [
+        {
+          "bundle": "questbundle_s5_progressiveb",
+          "unlockType": "OnScheduleGranted",
+          "unlockValue": 0
+        }
+      ],
+      "category": "BattlePass",
+      "cleanUpOnBundleCompletion": true,
+      "keptPastSeason": 5
     },
     "season6_free_schedule": {
       "bundles": [

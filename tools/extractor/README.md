@@ -225,7 +225,8 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   isn't read (13 of its 14 paks mount, 337,735 files). One extractor change: the challenge schedules of category `Styles`
   (an outfit's own challenges, which no season's tier gives: 5.30's `BundleSchedule_Styles_Tomatohead` and 6.02's
   `BundleSchedule_Styles_SkullTrooper`) are written with their bundles, beside the season's and the events'; 5.30's to
-  6.01's committed overlays predate it and have none. Against 6.01 five files change: `athena.json` (20 cosmetics added:
+  6.00's committed overlays predate it and have none (6.01's did too, until it was extracted again: below). Against 6.01 as
+  it then was five files change: `athena.json` (20 cosmetics added:
   Dark Bomber and her Dark Bag, which 6.01 kept in its keyed paks, Skull Ranger, Skull Sickle and Crypt Cruiser, Plague,
   Scourge, Dismal Cape, Arcanum, Herald's Wand and Lamplight, Hollowhead, Mouldering Cloak and Carver, Jack Gourdon,
   Bullseye, and the emotes Electro Swing, Headbanger, Behold! and Sprinkler; the Skull Trooper's and the Ghost Portal's
@@ -245,7 +246,20 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   `cleanUpOnBundleCompletion` (Schedule_LTM_Heist, Season 6's ProgressiveA and B and the two `Styles` schedules), and a
   bundle's completion reward that names the gift box it comes in (`GiftBoxToUse`) carries its template id as `giftBox`
   (`GiftBox:gb_challengecomplete`: each Season 6 week's season XP at four challenges, Calamity's and Dire's rewards, the
-  Ghost Portal and Tomatohead's Crown); 6.01's and earlier committed overlays predate both.
+  Ghost Portal and Tomatohead's Crown); 6.00's and earlier committed overlays predate both. Two more for Core-Backend #334,
+  with 6.01 and 6.02 extracted again. The seasons before the build's are still in its files (6.02 has AthenaSeason3 to 5
+  beside AthenaSeason6), and a challenge schedule such a season's rewards give that its `TokensToRemoveAtSeasonEnd` doesn't
+  name isn't taken at that season's end: it is written with the build's own schedules, its bundles with it, and carries
+  `keptPastSeason`, the season that gave it. In 6.01 and 6.02 that is `season5_progressivea_schedule` ("Drift Challenges", a
+  hidden reward of AthenaSeason5's tier 1 Battle Pass rewards) and `season5_progressiveb_schedule` ("Ragnarok Challenges",
+  tier 100's), both `cleanUpOnBundleCompletion`; AthenaSeason3 and AthenaSeason4 name every schedule they give (Carbide's
+  bundle is in Season4_Challenge_Schedule, Omega's is Season4_ProgressiveB_Schedule), so none of theirs is kept. A season
+  that names no `TokensToRemoveAtSeasonEnd` is passed over. And Core's own pak in a build's Paks folder
+  (`pakchunkCoreServerAssets-WindowsClient_P.pak`, the server assets Core-Launcher installs) isn't the build's data and isn't
+  read: with it 6.01's folder gave doubled files and no display assets. Against the committed overlays only `athena.json`
+  differs: 6.02's by the two kept schedules and their bundles, 6.01's by those and by what the two changes before it keep,
+  which its overlay predated (`bundleschedule_styles_tomatohead` and its bundle, `cleanUpOnBundleCompletion` and `giftBox`).
+  6.00's and Season 5's overlays aren't refreshed (their paks aren't at hand), so they keep no earlier season's schedule.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

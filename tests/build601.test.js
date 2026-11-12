@@ -115,8 +115,19 @@ test("6.01 keeps 6.00's Battle Pass: the same tiers, styles and challenges, and 
   const [s601, s600] = [inBuild(v601, athenaSeason), inBuild(v600, athenaSeason)];
   assert.deepEqual(s601, s600, "AthenaSeason6 is unchanged");
   assert.deepEqual(inBuild(v601, athenaVariantTokens), inBuild(v600, athenaVariantTokens));
-  assert.deepEqual(inBuild(v601, athenaChallengeSchedules), inBuild(v600, athenaChallengeSchedules));
-  assert.deepEqual(inBuild(v601, athenaChallengeBundles), inBuild(v600, athenaChallengeBundles));
+  // Season 6's schedules and bundles are 6.00's, entry for entry. 6.01's overlay, extracted again for #334, also has what
+  // the extractor has kept since 6.00's was made (6.00's paks aren't at hand): CleanUpOnBundleCompletion, the rewards'
+  // gift box, Tomatohead's own schedule and the two of Season 5 that outlast it (Drift's and Ragnarok's), with their bundles.
+  const [schedules601, schedules600] = [inBuild(v601, athenaChallengeSchedules), inBuild(v600, athenaChallengeSchedules)];
+  assert.deepEqual(Object.keys(schedules601).filter((id) => !schedules600[id]),
+    ["bundleschedule_styles_tomatohead", "season5_progressivea_schedule", "season5_progressiveb_schedule"]);
+  for (const id of Object.keys(schedules600)) {
+    assert.deepEqual({ ...schedules601[id], cleanUpOnBundleCompletion: undefined }, { ...schedules600[id], cleanUpOnBundleCompletion: undefined }, id);
+  }
+  const [bundles601, bundles600] = [inBuild(v601, athenaChallengeBundles), inBuild(v600, athenaChallengeBundles)];
+  assert.deepEqual(Object.keys(bundles601).filter((id) => !bundles600[id]), ["questbundle_s5_progressivea", "questbundle_s5_progressiveb", "questbundle_styles_tomatohead"]);
+  const withoutGiftBox = (bundle) => JSON.parse(JSON.stringify(bundle, (key, value) => (key === "giftBox" ? undefined : value)));
+  for (const id of Object.keys(bundles600)) assert.deepEqual(withoutGiftBox(bundles601[id]), bundles600[id], id);
   for (const build of builds601) {
     assert.equal(inBuild(build, battlePassPurchaseGiftBox), "GiftBox:gb_battlepasspurchased", build);
     // Bonesy's white style at tier 59 (#332).
