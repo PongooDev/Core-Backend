@@ -72,12 +72,25 @@ const variantToken = (tokenId) => {
   return tokens[Object.keys(tokens).find((id) => id.toLowerCase() === String(tokenId).toLowerCase())];
 };
 
+// The styles the admin panel's full locker gave that the player hasn't earned since (profile.coreGrantedStyles, Core's,
+// never sent: token ids, lower case), for Remove granted to take back (Core-Backend #335), as coreGrantedCosmetics lists
+// its cosmetics (profiles/athena.js).
+const panelStyles = (profile) => profile.coreGrantedStyles ?? [];
+
 // A CosmeticVariantToken reward: its style owned on its cosmetic's item. Returns whether the token is one the requesting
 // build's data has. A token for a cosmetic the locker lacks is kept (profile.coreVariantTokens, Core's, never sent) and
-// unlocks the style once the cosmetic comes (applyHeldVariantTokens).
+// unlocks the style once the cosmetic comes (applyHeldVariantTokens). A style earned this way is the player's for good:
+// no longer the panel's to take back, if the full locker gave it first.
 export function grantVariantToken(session, tokenId) {
   const token = variantToken(tokenId);
   if (!token) return false;
+  const { profile } = session.profile("athena");
+  const id = String(tokenId).toLowerCase();
+  if (panelStyles(profile).includes(id)) profile.coreGrantedStyles = panelStyles(profile).filter((held) => held !== id);
+  return ownVariantToken(session, tokenId, token);
+}
+
+function ownVariantToken(session, tokenId, token) {
   const tracker = session.profile("athena");
   const { profile } = tracker;
   const itemId = findHeld(profile, token.cosmetic);
@@ -160,6 +173,30 @@ export function takeBackVariantToken(session, tokenId) {
   if (updated.length) tracker.setItemAttribute(itemId, "variants", updated);
   else tracker.removeItemAttribute(itemId, "variants");
   log("Battle Royale", `${session.accountId} no longer owns ${token.cosmetic}'s style ${token.variant}`);
+  return true;
+}
+
+// Whether the locker owns a token's style ({cosmetic, channel, variant}) as its item holds it, whichever build's data
+// names the token.
+export function ownsTokenStyle(profile, token) {
+  const itemId = findHeld(profile, token.cosmetic);
+  const held = itemId && Array.isArray(profile.items[itemId].attributes?.variants) ? profile.items[itemId].attributes.variants : [];
+  return held.some((entry) => entry?.channel === token.channel && Array.isArray(entry.owned) && entry.owned.includes(token.variant));
+}
+
+// The admin panel's full locker (Core-Backend #335, profiles/athena.js grantLockerStyles): a style of the requesting
+// build's data (its token) owned on a cosmetic the locker holds and that lacks it, noted as the panel's
+// (coreGrantedStyles). Returns whether it was given.
+export function grantPanelVariantToken(session, tokenId) {
+  const token = variantToken(tokenId);
+  const { profile } = session.profile("athena");
+  if (!token || !findHeld(profile, token.cosmetic)) return false;
+  // One the player won before the cosmetic came is theirs, not the panel's.
+  applyHeldVariantTokens(session);
+  const id = String(tokenId).toLowerCase();
+  if (!missingVariantTokens(profile, [id]).length) return false;
+  ownVariantToken(session, tokenId, token);
+  profile.coreGrantedStyles = [...new Set([...panelStyles(profile), id])];
   return true;
 }
 

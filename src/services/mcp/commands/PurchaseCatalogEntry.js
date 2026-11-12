@@ -4,6 +4,7 @@ import { grantCosmetic, ownsCosmetic, seasonRewardFunctions } from "../../../pro
 import { battlePassGiftBox, battlePassPurchaseGiftBox, giveGiftBox } from "../../../profiles/giftboxes.js";
 import { buyBattlePass, buyTiers, recordBattlePassSpend, tiersLeft } from "../../../profiles/seasons.js";
 import { lootEntry, spendMtx } from "../../../profiles/items.js";
+import { noteShopPurchase } from "../../../profiles/origins.js";
 import { grant, itemEvent } from "../../../profiles/progress.js";
 import { findOffer } from "../../../store/catalog.js";
 import { hasRefunds, recordPurchase } from "../../../store/refunds.js";
@@ -98,13 +99,15 @@ export function purchaseCatalogEntry({ req, session, notifications }) {
       .map(({ templateId }) => grantCosmetic(session, templateId)).filter(Boolean);
     const loot = [item, ...extras].filter(Boolean).map(lootEntry);
     notifications.push({ type: "CatalogPurchase", primary: true, lootResult: { items: loot } });
-    // From 3.6 the item shop's cosmetics can be returned (store/refunds.js): the purchase is recorded with every locker item
-    // it added (an outfit's split-off back bling too) and the V-Bucks it took. The Season Shop's (1.8.2) aren't.
-    if (hasRefunds() && !offer.seasonLevel) {
-      const added = Object.entries(session.profile("athena").profile.items).filter(([itemId]) => !before.has(itemId))
-        .map(([itemId, held]) => lootEntry({ profileId: "athena", itemId, templateId: held.templateId, quantity: held.quantity ?? 1 }));
-      recordPurchase(tracker, { offerId, lootResult: added.length ? added : loot, totalMtxPaid: total, spent });
-    }
+    // Every locker item the purchase added (an outfit's split-off back bling too).
+    const added = Object.entries(session.profile("athena").profile.items).filter(([itemId]) => !before.has(itemId))
+      .map(([itemId, held]) => lootEntry({ profileId: "athena", itemId, templateId: held.templateId, quantity: held.quantity ?? 1 }));
+    // The build whose shop sold them is noted (profiles/origins.js, Core-Backend #335): a Skull Trooper bought on a Season 1
+    // build is an original owner's.
+    noteShopPurchase(session.profile("athena").profile, added.map(({ itemType }) => itemType));
+    // From 3.6 the item shop's cosmetics can be returned (store/refunds.js): the purchase is recorded with those items and
+    // the V-Bucks it took. The Season Shop's (1.8.2) aren't.
+    if (hasRefunds() && !offer.seasonLevel) recordPurchase(tracker, { offerId, lootResult: added.length ? added : loot, totalMtxPaid: total, spent });
     return;
   }
   // An Event Store offer (store/eventstore.js) sells as many as its limit, counted in the account's tracker.

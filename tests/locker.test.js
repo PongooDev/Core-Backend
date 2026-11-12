@@ -208,7 +208,8 @@ test("the admin panel gives the full locker and takes back only what it gave", a
     assert.ok(given.body.granted.banners > 0);
     const { cosmetics, banners, granted } = given.body.locker;
     assert.deepEqual([cosmetics.owned, banners.owned], [cosmetics.total, banners.total]);
-    assert.equal(granted, given.body.granted.cosmetics + given.body.granted.banners);
+    // Every style too (Core-Backend #335, tests/original-owner.test.js).
+    assert.equal(granted, given.body.granted.cosmetics + given.body.granted.banners + given.body.granted.styles);
 
     // The 1.8 client sees every cosmetic of its build and every banner at a new revision; a later build's (1.8.2's
     // Aerial Assault One) is kept from it.
@@ -218,7 +219,7 @@ test("the admin panel gives the full locker and takes back only what it gave", a
     const accountItems = Object.values((await account()).items).map((item) => item.templateId.toLowerCase());
     for (const id of bannerRows) assert.ok(accountItems.includes(id.toLowerCase()), id);
     assert.ok(await revision() > beforeRvn);
-    assert.deepEqual((await admin("grant-all")).body.granted, { cosmetics: 0, banners: 0 });
+    assert.deepEqual((await admin("grant-all")).body.granted, { cosmetics: 0, banners: 0, styles: 0 });
 
     // Equipped, and a win that earns the umbrellas the full locker gave.
     assert.equal((await command(backend.port, player, "EquipBattleRoyaleCustomization", "athena",
@@ -231,7 +232,7 @@ test("the admin panel gives the full locker and takes back only what it gave", a
 
     const removed = await admin("remove-granted");
     assert.equal(removed.status, 200);
-    assert.deepEqual(removed.body.removed, { cosmetics: given.body.granted.cosmetics - 2, banners: given.body.granted.banners });
+    assert.deepEqual(removed.body.removed, { cosmetics: given.body.granted.cosmetics - 2, banners: given.body.granted.banners, styles: 0 });
     assert.equal(removed.body.locker.granted, 0);
     const after = await athena(backend.port, player);
     assert.deepEqual(Object.keys(after.items).filter((id) => !id.startsWith("Quest:") && after.items[id].templateId === id).sort(),
@@ -239,7 +240,7 @@ test("the admin panel gives the full locker and takes back only what it gave", a
     assert.equal(after.stats.attributes.favorite_glider, "AthenaGlider:defaultglider");
     assert.equal(after.stats.attributes.banner_icon, "StandardBanner1");
     assert.ok(!Object.values((await account()).items).some((item) => item.templateId === icon));
-    assert.deepEqual((await admin("remove-granted")).body.removed, { cosmetics: 0, banners: 0 });
+    assert.deepEqual((await admin("remove-granted")).body.removed, { cosmetics: 0, banners: 0, styles: 0 });
   } finally {
     backend.close();
   }

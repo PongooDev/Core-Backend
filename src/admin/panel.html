@@ -3320,12 +3320,13 @@
         el("p", { class: "note", text: "Each edition up to the one chosen adds its \"<Edition> Edition Rewards!\" quest (and Limited and Ultimate their hero bundles), as Epic's store did. They complete with the Loot Llamas store tutorial and the player claims them in the game." }));
     }
 
-    // Battle Royale's full locker (Core-Backend #97): every cosmetic and banner any build has, and taking back what that
-    // gave (what the player bought or earned since stays).
+    // Battle Royale's full locker (Core-Backend #97): every cosmetic and banner any build has, with every style of those
+    // cosmetics (#335), and taking back what that gave (what the player bought or earned since stays).
     function locker(a) {
       const { cosmetics, banners, granted } = a.locker;
-      const complete = cosmetics.owned >= cosmetics.total && banners.owned >= banners.total;
-      const counts = ({ cosmetics: c, banners: b }) => `${fmt(c)} cosmetic${c === 1 ? "" : "s"} and ${fmt(b)} banner${b === 1 ? "" : "s"}`;
+      const styles = a.locker.styles ?? { owned: 0, total: 0 };
+      const complete = cosmetics.owned >= cosmetics.total && banners.owned >= banners.total && styles.owned >= styles.total;
+      const counts = ({ cosmetics: c, banners: b, styles: st = 0 }) => `${fmt(c)} cosmetic${c === 1 ? "" : "s"}, ${fmt(b)} banner${b === 1 ? "" : "s"} and ${fmt(st)} style${st === 1 ? "" : "s"}`;
       const run = (path, message) => act(api(`/admin/api/accounts/${a.id}/locker/${path}`, {})).then((account) => setAccount(account, account && message(account)));
       const shopButton = btn("Give all item shop cosmetics", async () => {
         if (!await confirmModal(`Give ${a.displayName} every cosmetic the item shop has sold (Season 1's, Season 2's and Season 3's shops and the custom shop) that they don't own yet? Battle Pass and victory items aren't included. Remove granted takes them back.`, {
@@ -3350,7 +3351,7 @@
           el("div", { class: "actions" },
             btn("+ Give Cosmetics", () => openGiveCosmeticsModal(a), "primary"),
             btn(complete ? "Full locker owned" : "Grant full locker", async () => {
-              if (await confirmModal(`Give ${a.displayName} every Battle Royale cosmetic and banner they don't own yet?`, {
+              if (await confirmModal(`Give ${a.displayName} every Battle Royale cosmetic and banner they don't own yet, and every style of every cosmetic?`, {
                 title: "Grant Full Locker",
                 confirmText: "Grant All",
                 confirmKind: "primary"
@@ -3359,7 +3360,7 @@
               }
             }, "ghost", { disabled: complete }),
             btn(`Remove granted${granted ? ` (${fmt(granted)})` : ""}`, async () => {
-              if (await confirmModal(`Take back the ${fmt(granted)} cosmetics and banners the full locker and Give all item shop cosmetics gave ${a.displayName}? What they bought or earned since stays.`, {
+              if (await confirmModal(`Take back the ${fmt(granted)} cosmetics, banners and styles the full locker and Give all item shop cosmetics gave ${a.displayName}? What they bought or earned since stays.`, {
                 title: "Remove Granted Cosmetics",
                 confirmText: "Take Back",
                 confirmKind: "danger"
@@ -3372,8 +3373,9 @@
         seasonLevel(a),
         el("div", { class: "actions", style: "margin-bottom:16px;" },
           chip(`${fmt(cosmetics.owned)} / ${fmt(cosmetics.total)} cosmetics`, cosmetics.owned >= cosmetics.total ? "good" : ""),
-          chip(`${fmt(banners.owned)} / ${fmt(banners.total)} banners`, banners.owned >= banners.total ? "good" : "")),
-        el("p", { class: "note", text: "Outfits, back blings, pickaxes, gliders, emotes, loading screens and the rest of every build's locker, and every banner for the banner editor. Equipped items that are taken back go back to the default." }),
+          chip(`${fmt(banners.owned)} / ${fmt(banners.total)} banners`, banners.owned >= banners.total ? "good" : ""),
+          styles.total ? chip(`${fmt(styles.owned)} / ${fmt(styles.total)} unlockable styles`, styles.owned >= styles.total ? "good" : "") : null),
+        el("p", { class: "note", text: "Outfits, back blings, pickaxes, gliders, emotes, loading screens and the rest of every build's locker, every banner for the banner editor, and every style a challenge, a tier or an original purchase unlocks (Carbide's stages, the Skull Trooper's Purple Glow…). Equipped items that are taken back go back to the default." }),
         lockerShowcase(a)
       );
     }
@@ -3521,6 +3523,7 @@
       const subtitle = el("div", { class: "muted mono", style: "font-size:11px; margin-top:2px; word-break:break-all;" });
       const current = el("div", {});
       const adder = el("div", {});
+      const owner = el("div", {});
 
       // "Stage1..Stage4" (or "Mat1-3") is Stage1, Stage2, Stage3, Stage4; the rest is split on commas and spaces.
       const expandTags = (text) => String(text).split(/[\s,]+/).filter(Boolean).flatMap((part) => {
@@ -3537,7 +3540,7 @@
           const change = account.styleChange;
           m.data = change;
           render();
-          const kept = change.kept.length ? `; kept ${change.kept.join(", ")} (owned with the cosmetic or a tier reached)` : "";
+          const kept = change.kept.length ? `; kept ${change.kept.join(", ")} (owned with the cosmetic, a tier reached or an original owner's)` : "";
           setAccount(account, change.changed ? `${message}${kept}` : `Nothing changed${kept}`);
         });
 
@@ -3554,6 +3557,30 @@
               el("button", { type: "button", class: "btn ghost small", style: "min-height:20px; padding:0 6px; margin-left:2px;", title: `Take ${tag} off`, "aria-label": `Take ${tag} off`,
                 onclick: () => save([{ channel: entry.channel, tags: [tag] }], true, `Took ${entry.channel} ${tag} off ${d.name}`) }, el("span", { text: "✕" })))))
         )));
+      }
+
+      // An outfit whose first buyers have styles of their own (Core-Backend #335, the Skull Trooper's Purple Glow): whether
+      // the account is one, and the mark for an account that bought it before purchases were noted.
+      function renderOwner() {
+        const o = m.data.originalOwner;
+        if (!o) return owner.replaceChildren();
+        const d = m.data;
+        const why = o.shopBuild
+          ? `Bought from the item shop on ${o.shopVersion ?? `CL-${o.shopBuild}`} (Season ${o.shopSeason}).`
+          : "No item shop purchase is noted for it: it was bought before purchases were noted, or given.";
+        const mark = (original) => act(api(`/admin/api/accounts/${a.id}/cosmetics/original-owner`, { build: m.build, templateId: d.templateId, original }))
+          .then((account) => {
+            if (!account) return;
+            m.data = account.originalOwnerChange;
+            render();
+            setAccount(account, original ? `${d.name}: ${a.displayName} is marked as an original owner` : `${d.name}: the original owner mark is off`);
+          });
+        owner.replaceChildren(
+          el("h3", { style: "margin:0 0 6px;", text: "Original owner" }),
+          el("div", { class: "actions", style: "flex-wrap:wrap; gap:8px;" },
+            chip(o.original ? "Original owner" : "Later owner", o.original ? "good" : ""),
+            o.marked ? btn("Take the mark off", () => mark(false), "ghost small") : btn("Mark as original owner", () => mark(true), "ghost small")),
+          el("p", { class: "note", text: `${why} The styles of its original owners go to an account that bought it in a Season ${o.season} build's item shop, or one marked here; the mark is off until you set it.` }));
       }
 
       function renderAdder() {
@@ -3624,6 +3651,7 @@
           subtitle.textContent = "";
           current.replaceChildren(el("p", { class: "note", text: "Type a cosmetic id from the account's locker and press Load." }));
           adder.replaceChildren();
+          owner.replaceChildren();
           return;
         }
         title.textContent = `Styles: ${d.name}`;
@@ -3631,9 +3659,11 @@
         if (!d.owned) {
           current.replaceChildren(el("p", { class: "note", text: `${a.displayName} doesn't own this cosmetic: give it first, then add its styles.` }));
           adder.replaceChildren();
+          owner.replaceChildren();
           return;
         }
         renderCurrent();
+        renderOwner();
         renderAdder();
       }
 
@@ -3655,6 +3685,7 @@
           btn("✕", close, "ghost", { style: "min-height:28px; padding:0 8px; font-size:14px; border:none;" })),
         el("div", { class: "actions", style: "flex-wrap:wrap; gap:8px;" }, idInput, btn("Load", load, "ghost")),
         el("div", {}, el("h3", { style: "margin:0 0 6px;", text: "Owned styles" }), current),
+        owner,
         adder,
         el("p", { class: "note", text: "A player in the game gets the change at once; otherwise they see it at their next login." }),
         el("div", { class: "actions", style: "justify-content:flex-end; border-top:1px solid var(--line); padding-top:12px;" }, btn("Done", close, "primary")));

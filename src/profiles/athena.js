@@ -7,8 +7,8 @@ import { birthdayChallengeFlagsNow } from "../events/birthday2018.js";
 import { athenaEventQuestsOf } from "../events/fiftyfifty.js";
 import { eventTagOfPlaylist } from "../events/ltms.js";
 import { currentBuild } from "../builds/context.js";
-import { athenaBattlePassDailyIds, athenaChallengeBundles, athenaChallengeSchedules, athenaCosmetics, athenaDailyIds, athenaObjectiveStat, athenaSeason, dailyWeight, getAthenaQuest, seasonLevels,
-  splitOffBackpacks } from "../gamedata/athena.js";
+import { athenaBattlePassDailyIds, athenaChallengeBundles, athenaChallengeSchedules, athenaCosmetics, athenaDailyIds, athenaObjectiveStat, athenaSeason, athenaVariantTokens, dailyWeight,
+  getAthenaQuest, seasonLevels, splitOffBackpacks } from "../gamedata/athena.js";
 import { bannerIds, bannerTemplateId } from "../gamedata/banners.js";
 import { dataBuilds } from "../gamedata/read.js";
 import { log } from "../log.js";
@@ -16,11 +16,12 @@ import { placements } from "../stats/store.js";
 import { defaultBanner } from "./defaults.js";
 import { heldGiftBoxes, moveAthenaGiftBoxes } from "./giftboxes.js";
 import { findItem } from "./items.js";
+import { forgetOrigin } from "./origins.js";
 import { grant } from "./progress.js";
-import { applyHeldVariantTokens, applyVariantUpdates, defaultVariants, grantDefaultVariants, grantMissingVariantTokens, grantVariantToken, itemsMissingVariants,
-  missingVariantTokens } from "./variants.js";
-import { brokenChallengeOf, completeBrokenChallenges, countBundleQuest, grantChallengeSchedule as grantSchedule, scheduleCleanedUp, settleChallengeSchedules,
-  settleCompletedSchedules, settleStyleSchedules } from "./challenges.js";
+import { applyHeldVariantTokens, applyVariantUpdates, defaultVariants, grantDefaultVariants, grantMissingVariantTokens, grantPanelVariantToken, grantVariantToken,
+  itemsMissingVariants, missingVariantTokens, ownsTokenStyle, takeBackVariantToken } from "./variants.js";
+import { brokenChallengeOf, completeBrokenChallenges, countBundleQuest, grantChallengeSchedule as grantSchedule, originalOwnerStyles, originalOwnerTokens,
+  scheduleCleanedUp, settleChallengeSchedules, settleCompletedSchedules, settleOriginalOwnerStyles, settleStyleSchedules } from "./challenges.js";
 import { accountLevelOf, addBookXp, giveSeasonReward, givenVariantTokens, namesAthenaBuild, profileSeason, seasonNeedsSwitch, seasonNumber, settleSeasonPromise,
   settleSeasonRewards, switchSeason } from "./seasons.js";
 
@@ -256,7 +257,8 @@ export function athenaNeedsSetUp(profile, settings = {}) {
     || (settings.giveAllCosmetics ? missing(profile, lockerCosmetics()).length > 0 : blanket(profile).length > 0)
     || emptyDefaultSlots(profile).length > 0 || heldNonLockerItems(profile).length > 0
     || seasonNeedsSwitch(profile) || danceSlotsNeedSettling(profile) || randomSlotsNeedSettling(profile) || heldGiftBoxes(profile).length > 0
-    || itemsMissingVariants(profile).length > 0 || missingVariantTokens(profile, givenVariantTokens(profile)).length > 0;
+    || itemsMissingVariants(profile).length > 0 || missingVariantTokens(profile, givenVariantTokens(profile)).length > 0
+    || missingVariantTokens(profile, originalOwnerTokens(profile)).length > 0;
 }
 
 // A cosmetic with styles (4.0's Carbide and Omega, profiles/variants.js) comes with its variants at their defaults.
@@ -292,6 +294,16 @@ export const ownsCosmetic = (session, templateId) => Boolean(findItem(session.pr
 // A slot holding an item that leaves the locker goes back to its default (the default glider and pickaxe, "" elsewhere:
 // slotDefaults).
 function removeCosmetic(tracker, itemId) {
+  // Where it came from goes with it (profiles/origins.js): given again, it is a later copy. So do the full locker's
+  // styles on it, which are no longer there to take back.
+  const leaving = tracker.profile.items[itemId]?.templateId;
+  if (leaving) {
+    forgetOrigin(tracker.profile, leaving);
+    if (adminStyles(tracker.profile).length) {
+      tracker.profile.coreGrantedStyles = adminStyles(tracker.profile)
+        .filter((tokenId) => !sameId(String(everyStyleToken().get(tokenId)?.cosmetic), leaving));
+    }
+  }
   tracker.removeItem(itemId);
   for (const [slot, [, stat]] of Object.entries(slots)) {
     const held = tracker.profile.stats.attributes[stat];
@@ -386,6 +398,8 @@ export function setUpAthena(session) {
   grantDefaultVariants(session);
   // The styles of the season's tiers already reached (6.00's pets, Core-Backend #332), which went nowhere before.
   grantMissingVariantTokens(session, givenVariantTokens(profile));
+  // The styles of an outfit's original owners (the Skull Trooper's Purple Glow, Core-Backend #335; profiles/challenges.js).
+  settleOriginalOwnerStyles(session);
   // Gift boxes are profile0's (profiles/giftboxes.js, Core-Backend #212).
   moveAthenaGiftBoxes(session);
 }
@@ -407,16 +421,90 @@ function inEveryBuild(ids) {
   return [...found.values()];
 }
 
+// The full locker's styles (Core-Backend #335): every style of its cosmetics that isn't owned with the cosmetic, which is
+// every style a CosmeticVariantToken of some build's data unlocks (profiles/variants.js defaultVariants: an option is
+// owned from the start unless a token gates it): Carbide's and Omega's stages (4.0), Drift's and Ragnarok's, Tomatohead's
+// Crown, the pets' colours, Calamity's and Dire's, the Skull Trooper's Purple Glow and the Ghost Portal's purple (6.02).
+// Accounts are shared by every build, so it is every build's tokens, each as the newest build that has it names it. A
+// build without styles (before 4.0) has no token and adds nothing; an item's variants are the item's whichever build
+// asks, as they have been since #259 (a 1.8 client is sent the Skull Trooper with the styles a 6.02 login or this gave
+// it, an attribute it doesn't read). Made on first use.
+let styleTokens;
+function everyStyleToken() {
+  if (!styleTokens) {
+    styleTokens = new Map();
+    for (const build of [...dataBuilds].sort((a, b) => Number(a) - Number(b))) {
+      for (const [id, token] of Object.entries(inBuild(build, () => athenaVariantTokens() ?? {}))) styleTokens.set(id.toLowerCase(), { ...token, build });
+    }
+  }
+  return styleTokens;
+}
+const adminStyles = (profile) => profile.coreGrantedStyles ?? [];
+
 // The panel's count of what the full locker holds and what the account has of it. Reads the profiles as saved.
 export function fullLockerState(athena, account) {
   const cosmetics = inEveryBuild(lockerCosmetics);
   const banners = inEveryBuild(bannerIds);
   const owned = (profile, ids) => (profile ? ids.filter((id) => findItem(profile, id)).length : 0);
+  const given = new Set(cosmetics.map((id) => id.toLowerCase()));
+  const styles = [...everyStyleToken().values()].filter((token) => given.has(String(token.cosmetic).toLowerCase()));
   return {
     cosmetics: { owned: owned(athena, cosmetics), total: cosmetics.length },
     banners: { owned: owned(account, banners), total: banners.length },
-    granted: (athena ? adminGranted(athena).length : 0) + (account ? adminBanners(account).length : 0)
+    styles: { owned: athena ? styles.filter((token) => ownsTokenStyle(athena, token)).length : 0, total: styles.length },
+    granted: (athena ? adminGranted(athena).length + adminStyles(athena).length : 0) + (account ? adminBanners(account).length : 0)
   };
+}
+
+// The full locker's styles given: each on the cosmetic the locker holds, those it lacks, noted as the panel's
+// (profile.coreGrantedStyles, profiles/variants.js) so Remove granted takes them back. A style the player earns later (a
+// challenge's or a tier's token) is theirs from then on. Returns how many were added.
+export function grantLockerStyles(session) {
+  let styles = 0;
+  for (const [tokenId, { build }] of everyStyleToken()) {
+    if (inBuild(build, () => grantPanelVariantToken(session, tokenId))) styles += 1;
+  }
+  if (styles) log("Battle Royale", `${session.accountId} was given the full locker's styles: ${styles}`);
+  return styles;
+}
+
+// The admin panel's original owner mark changed (Core-Backend #335, profiles/origins.js): the styles the rule now gives
+// (profiles/challenges.js originalOwnerStyles) come at once, each as the newest build that has its token names it, and
+// those it no longer gives go, unless the full locker gave them. Returns the tokens given and taken.
+export function settleOriginalOwnerMark(session) {
+  const { profile } = session.profile("athena");
+  const result = { given: [], taken: [] };
+  for (const { token } of originalOwnerStyles) {
+    const id = token.toLowerCase();
+    const build = everyStyleToken().get(id)?.build;
+    if (!build) continue;
+    inBuild(build, () => {
+      if (originalOwnerTokens(profile).some((earned) => earned.toLowerCase() === id)) {
+        if (missingVariantTokens(profile, [id]).length && grantVariantToken(session, id)) result.given.push(token);
+      } else if (!adminStyles(profile).includes(id) && takeBackVariantToken(session, id)) result.taken.push(token);
+    });
+  }
+  return result;
+}
+
+// Takes back the styles grantLockerStyles gave, off the cosmetics still in the locker, except what the player has earned
+// besides: a tier's style of the season's rewards reached, an original owner's (they would come back at the next login).
+// A cosmetic showing a style that goes shows its default. Returns how many were removed.
+export function removeLockerStyles(session) {
+  const { profile } = session.profile("athena");
+  let styles = 0;
+  for (const tokenId of adminStyles(profile)) {
+    const build = everyStyleToken().get(tokenId)?.build;
+    if (!build) continue;
+    const taken = inBuild(build, () => {
+      const earned = [...givenVariantTokens(profile), ...originalOwnerTokens(profile)].some((id) => id.toLowerCase() === tokenId);
+      return !earned && takeBackVariantToken(session, tokenId);
+    });
+    if (taken) styles += 1;
+  }
+  profile.coreGrantedStyles = [];
+  if (styles) log("Battle Royale", `${session.accountId}'s full locker styles were taken back: ${styles}`);
+  return styles;
 }
 
 // The panel's cosmetics of templateIds that the account lacks, noted as the panel's (coreGrantedCosmetics) for Remove

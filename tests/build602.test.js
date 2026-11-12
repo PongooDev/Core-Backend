@@ -570,7 +570,8 @@ test("the Skull Trooper Challenges: seven daily challenges collected count by th
     assert.equal(bundle.attributes.num_quests_completed, 5);
     for (const { quest } of athenaChallengeBundles().questbundle_styles_skulltrooper.quests) assert.equal(stateOf(quest).quest_state, "Claimed", quest);
     const [, portal] = heldOf(session, ghostPortal);
-    // The blue and green portals are everyone's; the purple one was the 2017 owners', which Core gives nobody by itself.
+    // The blue and green portals are everyone's; the purple one is the original owners' (#335, tests/original-owner.test.js),
+    // and a Skull Trooper that was given is a later owner's.
     assert.deepEqual(portal.attributes.variants, [{ channel: "Particle", active: "Particle0", owned: ["Particle0", "Particle2"] }]);
     assert.deepEqual(heldOf(session, skullTrooper)[1].attributes.variants, [{ channel: "ClothingColor", active: "Mat0", owned: ["Mat0", "Mat2"] }]);
   });

@@ -17,13 +17,15 @@ import { defaultHostingIps, hostingIp, httpsProxied, invalidIpRanges, maxHosting
 import { customServerProblem, maxCustomServers } from "../matchmaking/custom-servers.js";
 import { regionList } from "../matchmaking/regions.js";
 import { alertsRemaining, clearedAlertRecord, emptyAlertRecord, withQuotaSlots } from "../profiles/alerts.js";
-import { fullLockerState, grantCosmetic, grantFullLocker, grantShopCosmetics, lockerCosmeticId, lockerCosmetics, maxSeasonLevel, ownsCosmetic, removeFullLocker, removeLockerCosmetic,
-  setSeasonLevel } from "../profiles/athena.js";
+import { fullLockerState, grantCosmetic, grantFullLocker, grantLockerStyles, grantShopCosmetics, lockerCosmeticId, lockerCosmetics, maxSeasonLevel, ownsCosmetic, removeFullLocker,
+  removeLockerCosmetic, removeLockerStyles, setSeasonLevel, settleOriginalOwnerMark } from "../profiles/athena.js";
 import { levelRest, restBalance, restValue } from "../profiles/boosts.js";
+import { hasOriginalOwnerStyles, originalOwnerStyles, originalOwnerTokens } from "../profiles/challenges.js";
 import { foundersEditionOf, foundersEditions, setFoundersEdition } from "../profiles/founders.js";
 import { findItem, grantItem, grantPlainItem, worldStacksNeeded } from "../profiles/items.js";
 import { allPerks, hasAlterationData, perkChoices, perkSection, setPerk } from "../profiles/alterations.js";
 import { claimQuest, completeQuest, grant, skipTutorial } from "../profiles/progress.js";
+import { isOriginalOwner, markOriginalOwner, markedOriginalOwner, shopBuildOf, shopSeasonOf } from "../profiles/origins.js";
 import { createOutpost, storedCloudSaveProfile } from "../profiles/outposts.js";
 import { questIdOf, tutorialCompleted } from "../profiles/quests.js";
 import { openSession } from "../profiles/session.js";
@@ -744,8 +746,10 @@ export function adminRoutes(context) {
     for (const profileId of ["athena", "profile0"]) profiles.save(session.profile(profileId).profile);
     return { battlePassReset };
   }));
-  router.post("/admin/api/accounts/:accountId/locker/grant-all", lockerChange((session) => ({ granted: grantFullLocker(session) })));
-  router.post("/admin/api/accounts/:accountId/locker/remove-granted", lockerChange((session) => ({ removed: removeFullLocker(session) })));
+  // The full locker's styles too (Core-Backend #335): every style of its cosmetics, any build's, on the cosmetics the
+  // account holds once the locker is given; Remove granted takes them off what stays in the locker.
+  router.post("/admin/api/accounts/:accountId/locker/grant-all", lockerChange((session) => ({ granted: { ...grantFullLocker(session), styles: grantLockerStyles(session) } })));
+  router.post("/admin/api/accounts/:accountId/locker/remove-granted", lockerChange((session) => ({ removed: { ...removeFullLocker(session), styles: removeLockerStyles(session) } })));
 
   // Battle Royale cosmetics one by one (Core-Backend #108): a build's locker cosmetics, of every type, with which the
   // account owns, and giving some of them. Profiles are shared by every build, so the panel names the build whose
@@ -871,6 +875,18 @@ export function adminRoutes(context) {
     }
     return { channels: [], build: null, version: null };
   };
+  // originalOwner (Core-Backend #335): for an outfit whose first buyers have styles of their own (the Skull Trooper,
+  // profiles/challenges.js originalOwnerStyles), whether the account is one, and why: the build whose item shop sold it
+  // (profiles/origins.js; none noted for a cosmetic bought before purchases were, or given) or the admin's mark.
+  const originalOwnerOf = (athena, item) => {
+    if (!item || !hasOriginalOwnerStyles(item.templateId)) return null;
+    const { season } = originalOwnerStyles.find(({ outfit }) => outfit.toLowerCase() === item.templateId.toLowerCase());
+    const shopBuild = shopBuildOf(athena, item.templateId);
+    return {
+      season, original: isOriginalOwner(athena, item.templateId, season), marked: markedOriginalOwner(athena, item.templateId),
+      shopBuild, shopVersion: shopBuild ? versionOf(shopBuild) : null, shopSeason: shopSeasonOf(athena, item.templateId)
+    };
+  };
   const stylesPayload = (build, athena, templateId) => {
     const itemId = athena ? heldItemId(athena, templateId) : undefined;
     const item = itemId ? athena.items[itemId] : null;
@@ -878,7 +894,8 @@ export function adminRoutes(context) {
       build, version: versionOf(build), templateId: item?.templateId ?? templateId, owned: Boolean(item),
       name: inBuild(build, () => describeCosmetics([item?.templateId ?? templateId]))[0]?.name ?? templateId,
       variants: Array.isArray(item?.attributes?.variants) ? item.attributes.variants : [],
-      data: styleChannelsOf(build, item?.templateId ?? templateId)
+      data: styleChannelsOf(build, item?.templateId ?? templateId),
+      originalOwner: originalOwnerOf(athena, item)
     };
   };
 
@@ -921,11 +938,33 @@ export function adminRoutes(context) {
       styles.push({ channel, tags, active });
     }
     const remove = req.body?.remove === true;
-    // A style the season's tiers gave stays, as it would come back (Core-Backend #332).
+    // A style the season's tiers gave stays, as it would come back (Core-Backend #332); so does an original owner's (#335).
     const result = inBuild(build, () => editItemStyles(session, itemId, styles,
-      { remove, earnedTokens: givenVariantTokens(session.profile("athena").profile) }));
+      { remove, earnedTokens: [...givenVariantTokens(session.profile("athena").profile), ...originalOwnerTokens(session.profile("athena").profile)] }));
     const athena = session.profile("athena").profile;
     return { styleChange: { ...result, remove, ...stylesPayload(build, athena, athena.items[itemId].templateId) } };
+  }));
+
+  // {build, templateId, original}: marks the account's item of an outfit as bought at its first release, or takes the
+  // mark off (Core-Backend #335; off for every account until an admin sets it). For an account that bought the outfit
+  // before purchases were noted, which nothing in its profile tells from a later owner. The styles the rule then gives
+  // come at once, and the ones it no longer gives go (profiles/athena.js settleOriginalOwnerMark). What only Core's
+  // bookkeeping holds is saved even when no item changed.
+  router.post("/admin/api/accounts/:accountId/cosmetics/original-owner", change(({ req, res, session }) => {
+    const build = cosmeticBuild(req.body?.build);
+    if (!build) return notBattleRoyaleBuild(res, req.body?.build);
+    const { typed, templateId } = styledCosmetic(build, req.body?.templateId);
+    if (!typed) return invalid(res, "Name the outfit to mark");
+    if (typeof req.body?.original !== "boolean") return invalid(res, "original must be true or false");
+    if (!hasOriginalOwnerStyles(templateId)) return invalid(res, `${typed} has no styles for its original owners`);
+    if (!session.hasProfile("athena")) return invalid(res, "The account has no Battle Royale profile yet: give the cosmetic first");
+    const athena = session.profile("athena").profile;
+    const itemId = heldItemId(athena, templateId);
+    if (!itemId) return invalid(res, `${typed} isn't in the account's locker: give it first, then mark it`);
+    const changed = markOriginalOwner(athena, athena.items[itemId].templateId, req.body.original);
+    const styles = settleOriginalOwnerMark(session);
+    profiles.save(athena);
+    return { originalOwnerChange: { changed, ...styles, ...stylesPayload(build, athena, athena.items[itemId].templateId) } };
   }));
 
   router.post("/admin/api/accounts/:accountId/skip-tutorial", change(({ session }) => skipTutorial(session)));

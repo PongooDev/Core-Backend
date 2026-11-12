@@ -4,6 +4,8 @@ import { log } from "../log.js";
 import { seasonHistoryStart, seasonMoment } from "../store/itemshop.js";
 import { giveGiftBox } from "./giftboxes.js";
 import { findItem } from "./items.js";
+import { isOriginalOwner } from "./origins.js";
+import { grantVariantToken, missingVariantTokens } from "./variants.js";
 
 // Season 3's challenges (3.0, CL-3901517): the Battle Pass's weekly challenges and the tier challenges, in challenge
 // bundles (tools/extractor: athena.json challengeSchedules, challengeBundles). AthenaSeason3's tier rewards grant the
@@ -325,10 +327,9 @@ export function grantChallengeSchedule(session, templateId, athena, now = new Da
 // already owned the outfit), so the outfits are named here. A player whose locker holds the outfit gets its schedule at
 // the quest login, once; the challenges tab then lists it. It is no season's (profiles/seasons.js retires only what a
 // pass gives), so it stays.
-// 🟡 Not given: the styles for "original owners who bought Skull Trooper in 2017", the outfit's Purple Glow
-// (VTID_052_Skull_Trooper_RedFlames, its ClothingColor Mat1) and the Ghost Portal's purple (VTID_053, its Particle1).
-// Core keeps no record of when a cosmetic was bought, so nobody gets them by themselves; the Green Glow and the blue and
-// green portals are unlocked for everyone, as the data has them.
+// The styles for "original owners who bought Skull Trooper in 2017", the outfit's Purple Glow and the Ghost Portal's
+// purple, are originalOwnerStyles' below; the Green Glow and the blue and green portals are unlocked for everyone, as the
+// data has them.
 // 🟡 Not sent: GiftBox:GB_SkullTrooperStyleChallenge and GB_TomatoHeadStyleChallenge, the boxes that announced the
 // challenges (the first's header, ItemReceivedSkullTrooperStyleChallenge: "HE'S BACK!", "SKULL TROOPER CHALLENGES
 // AVAILABLE!", "Complete the Skull Trooper challenges to unlock the Ghost Portal Back Bling!"). Only the asset registry
@@ -347,6 +348,70 @@ export function settleStyleSchedules(session, athena, now = new Date()) {
     // Done and cleaned up (settleCompletedSchedules): they don't start over.
     if (scheduleCleanedUp(tracker.profile, scheduleId)) continue;
     if (findItem(tracker.profile, outfit)) grantChallengeSchedule(session, `ChallengeBundleSchedule:${scheduleId}`, athena, now);
+  }
+}
+
+// The styles of an outfit's original owners (Core-Backend #335): the Skull Trooper's Purple Glow and the Ghost Portal's
+// purple, "for original owners who bought Skull Trooper in 2017".
+// What 6.02's (CL-4461277) files say:
+// - CosmeticVariantToken:VTID_052_Skull_Trooper_RedFlames, "Purple Glow Skull Trooper", is CID_030_Athena_Commando_M_
+//   Halloween's channel ClothingColor, option Mat1 ("PURPLE GLOW", its picture T-Variant-M-Grave-OG-Variant), and
+//   VTID_053_Ghost_Portal__RedFlames, "Purple Glow Ghost Portal", is BID_105_GhostPortal's channel Particle, option
+//   Particle1 ("PURPLE"). Both options are bStartUnlocked false and bHideIfNotOwned true, with no UnlockRequirements text:
+//   by the flag's name, a locker that doesn't own one doesn't list it. (Mat2, "GREEN GLOW", and Particle2, "GREEN", start
+//   unlocked.)
+// - Nothing read gives either token: none of the 429 Battle Royale quests' rewards (shown, hidden or their rewards table's
+//   rows), none of the completion rewards of the bundles the extractor keeps (Season 6's, the outfits', High Stakes' and
+//   Season 5's two that outlast it) and no tier of AthenaSeason6 names them. The paks' other 39 bundles are Season 3's to
+//   5's weeks, the Birthday's and SocialPlay's by their names, and weren't opened.
+// - The Skull Trooper Challenges are one schedule with one bundle of five quests, each given with the bundle, and one
+//   completion step (every quest, CompletionCount -1) with one reward, the back bling. There is no second bundle, quest
+//   or stage for the purple portal, and none that only some players get: of the 57 bundles, 18 schedules and the quests
+//   of Athena/Items/Quests/Styles in the paks, the only ones of the Skull Trooper are these.
+// So who got the tokens was Epic's service's, from when the outfit was bought, and the rule here is 🟡 Core's reading of
+// what players saw (the reporter's words on #335, and the Fortnite Wiki's "original owners"):
+// - the Purple Glow is the outfit's original owners': an account whose Skull Trooper was bought from the item shop of a
+//   Season 1 build (1.8 to 1.10: the shop's replay of 30 October to 13 December 2017, the outfit's first release), as
+//   profiles/origins.js notes purchases, or one an admin marked;
+// - the purple portal is theirs once they have done the Skull Trooper Challenges (the schedule: its bundle's five, which
+//   give the back bling); nobody else gets it, and no challenge is added or shown for it, as the files have none.
+// Everyone else's stay locked (hidden, as the options say): a Skull Trooper bought in a later season's shop, given by the
+// panel or held from before purchases were noted is a later owner's. The admin panel's full locker and styles window
+// give them as they give any style.
+// 🟡 No gift box announces them: the tokens ask for one (bCreateGiftbox) and name none, and what box Epic's service made
+// isn't in the client. The styles are owned on their items, which is what the locker reads.
+const skullTrooper = "AthenaCharacter:cid_030_athena_commando_m_halloween";
+export const originalOwnerStyles = [
+  { token: "CosmeticVariantToken:vtid_052_skull_trooper_redflames", outfit: skullTrooper, season: 1 },
+  { token: "CosmeticVariantToken:vtid_053_ghost_portal__redflames", outfit: skullTrooper, season: 1, schedule: "bundleschedule_styles_skulltrooper" }
+];
+// Whether an outfit has styles for its original owners (the admin panel's mark).
+export const hasOriginalOwnerStyles = (templateId) => originalOwnerStyles.some(({ outfit }) => outfit.toLowerCase() === String(templateId).toLowerCase());
+
+// Every challenge of a schedule done: cleaned up since (settleCompletedSchedules), or each of its bundles held with all
+// its quests done.
+function scheduleDone(profile, scheduleId) {
+  if (scheduleCleanedUp(profile, scheduleId)) return true;
+  const schedule = (athenaChallengeSchedules() ?? {})[scheduleId];
+  if (!schedule?.bundles.length) return false;
+  return schedule.bundles.every((entry) => {
+    const held = heldBundle(profile, entry.bundle);
+    return Boolean(held) && bundleDone({ profile }, held[1]);
+  });
+}
+
+// The tokens the rule gives this profile, whether or not the requesting build's data has them.
+export const originalOwnerTokens = (profile) => originalOwnerStyles
+  .filter(({ outfit, season, schedule }) => isOriginalOwner(profile, outfit, season) && (!schedule || scheduleDone(profile, schedule)))
+  .map(({ token }) => token);
+
+// Those the locker lacks, given: at the athena profile's setup (a login) and when a bundle's last challenge is done, so
+// the back bling comes with its purple.
+export function settleOriginalOwnerStyles(session) {
+  const { profile } = session.profile("athena");
+  for (const tokenId of missingVariantTokens(profile, originalOwnerTokens(profile))) {
+    log("Battle Royale", `${session.accountId}: ${tokenId}, an original owner's style`);
+    grantVariantToken(session, tokenId);
   }
 }
 
@@ -458,6 +523,8 @@ function giveBundleRewards(session, bundleId, rewards, giveReward) {
     boxes.set(reward.giftBox, [...(boxes.get(reward.giftBox) ?? []), ...shown]);
   }
   for (const [templateId, loot] of boxes) giveGiftBox(session, templateId, loot, { HeaderTemplateId: `ChallengeBundle:${bundleId}` });
+  // A reward an original owner's style waits for (the Ghost Portal's purple, Core-Backend #335) comes with that style.
+  settleOriginalOwnerStyles(session);
   return given;
 }
 
