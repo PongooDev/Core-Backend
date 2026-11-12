@@ -106,6 +106,77 @@ test("one EndMatch for several players: the sender's XP is in the response, anot
   }
 });
 
+// 5.40's UFortMcpProfileCampaign::FailsafeSaveMissionResults: one player's EndZoneScoreAndAwards, which the server sends
+// through the player's own campaign profile when they leave with their results still unsaved.
+const failsafe = (backend, accountId, dedicated, missionStatus, playerScoreData, matchmakingSessionId = "failsafe-session") =>
+  mcp(backend, accountId, dedicated, "dedicated_server", "FailsafeSaveMissionResults", {
+    playerScoreData: { bResultsPendingSave: true, totalScore: 0, bCriticalMatchBonus: false, earnedBadgeData: [], earnedItemCaches: [], numMissionPoints: 0, ...playerScoreData },
+    matchmakingSessionId, missionName: "MissionInfo_Fighting", missionStatus, difficultyIncreaseTier: 0 });
+const earnScores = (response) => (response.body.notifications ?? []).filter((notification) => notification.type === "earnScore");
+
+test("FailsafeSaveMissionResults saves a leaving player's results as their EndMatch entry would have: the score's XP and the mission's end", async () => {
+  const backend = await startBackend();
+  try {
+    const dedicated = await dedicatedServerToken(backend.port);
+    const player = await userLogin(backend.port, "FailsafeWon");
+    await post(backend.port, `/admin/api/accounts/${player.accountId}/grant`, undefined, { templateId: quest, quantity: 1 });
+    await mcp(backend, player.accountId, dedicated, "dedicated_server", "StartPrimaryMission", { advance: [], matchmakingSessionId: "failsafe-session", missionName: "m" });
+    // Progress that needs the mission won, reported in the zone and held until the mission's end.
+    await mcp(backend, player.accountId, dedicated, "dedicated_server", "UpdateQuests", { advance: [{ statName: "questcollect_survivoritemdata", count: 3 },
+      { statName: "complete_pve01_diff2", count: 1 }] });
+    assert.deepEqual(await questState(backend, player), { survivors: 3, state: "Active" });
+
+    const saved = await failsafe(backend, player.accountId, dedicated, "Succeeded", { totalScore: 17029, earnedItemCaches: ["WorldItem:cache_evolvetier_vr_pickup_t02"] });
+    assert.equal(saved.status, 200, JSON.stringify(saved.body));
+    const [earned] = earnScores(saved);
+    assert.ok(earned.baseXPEarned > 0, "the score's XP, as EarnScore gives it");
+    assert.equal(earned.restXPEarned, earned.baseXPEarned);
+    assert.notEqual((await questState(backend, player)).state, "Active", "the won mission completes the quest");
+    const { profile } = (await mcp(backend, player.accountId, player.token, "client", "QueryProfile")).body.profileChanges[0];
+    assert.ok(Object.values(profile.items).some((item) => item.templateId.toLowerCase().startsWith("cardpack:cardpack_cache_materials_t02")), "the item cache's pack");
+
+    // The timer's second send for the same game session gives nothing more.
+    const level = profile.stats.attributes.level;
+    const again = await failsafe(backend, player.accountId, dedicated, "Succeeded", { totalScore: 17029 });
+    assert.equal(again.status, 200);
+    assert.deepEqual(earnScores(again), []);
+    const after = (await mcp(backend, player.accountId, player.token, "client", "QueryProfile")).body.profileChanges[0].profile;
+    assert.deepEqual([after.stats.attributes.level, after.stats.attributes.xp], [level, profile.stats.attributes.xp]);
+  } finally {
+    await backend.close();
+  }
+});
+
+test("FailsafeSaveMissionResults gives nothing twice after EndMatch saved the same game session, and takes a lost mission's progress back", async () => {
+  const backend = await startBackend();
+  try {
+    const dedicated = await dedicatedServerToken(backend.port);
+    const saved = await userLogin(backend.port, "FailsafeAfterEndMatch");
+    const sessionId = "ended-session";
+    const ended = await mcp(backend, saved.accountId, dedicated, "dedicated_server", "EndMatch", { playersAndMatchEndData: [entry(saved.accountId, { totalScore: 5000 })],
+      matchmakingSessionId: sessionId, missionName: "MissionInfo_Fighting", missionStatus: "Succeeded", difficultyIncreaseTier: 0 });
+    assert.equal(earnScores(ended).length, 1);
+    const before = (await mcp(backend, saved.accountId, saved.token, "client", "QueryProfile")).body.profileChanges[0].profile.stats.attributes;
+    const skipped = await failsafe(backend, saved.accountId, dedicated, "Succeeded", { totalScore: 5000 }, sessionId);
+    assert.equal(skipped.status, 200);
+    assert.deepEqual(earnScores(skipped), [], "EndMatch had saved them");
+    const after = (await mcp(backend, saved.accountId, saved.token, "client", "QueryProfile")).body.profileChanges[0].profile.stats.attributes;
+    assert.deepEqual([after.level, after.xp], [before.level, before.xp]);
+    // Another game session's results are their own.
+    assert.equal(earnScores(await failsafe(backend, saved.accountId, dedicated, "Succeeded", { totalScore: 5000 }, "another-session")).length, 1);
+
+    const lost = await userLogin(backend.port, "FailsafeLost");
+    await post(backend.port, `/admin/api/accounts/${lost.accountId}/grant`, undefined, { templateId: quest, quantity: 1 });
+    await mcp(backend, lost.accountId, dedicated, "dedicated_server", "StartPrimaryMission", { advance: [], matchmakingSessionId: "lost-session", missionName: "m" });
+    await mcp(backend, lost.accountId, dedicated, "dedicated_server", "UpdateQuests", { advance: [{ statName: "questcollect_survivoritemdata", count: 2 }] });
+    const failed = await failsafe(backend, lost.accountId, dedicated, "Failed", {}, "lost-session");
+    assert.deepEqual(earnScores(failed).map((notification) => notification.baseXPEarned), [0]);
+    assert.deepEqual(await questState(backend, lost), { survivors: 0, state: "Active" });
+  } finally {
+    await backend.close();
+  }
+});
+
 test("an EndMatch entry's world save is applied when the server filled it in", async () => {
   const backend = await startBackend();
   try {

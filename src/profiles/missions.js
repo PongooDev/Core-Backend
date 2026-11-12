@@ -29,11 +29,15 @@ export function heldProgress() {
 
 export function createPrimaryMissions() {
   const missions = new Map();
+  // The game session each player's mission results were last saved for (end below), until their next mission starts,
+  // which the gameserver's failsafe save asks about (savedFor): one entry a player, in memory.
+  const saved = new Map();
   return {
     // Starts the player's primary mission. Returns the progress of one that never ended, or null.
     start(accountId) {
       const unended = missions.get(accountId) ?? null;
       missions.set(accountId, heldProgress());
+      saved.delete(accountId);
       return unended;
     },
     // The held progress of the player's primary mission, or null outside one.
@@ -61,10 +65,17 @@ export function createPrimaryMissions() {
       missions.delete(accountId);
       return held;
     },
-    end(accountId) {
+    // Ends the player's primary mission: its held progress, or null. sessionId: the game session whose results are
+    // being saved with it (EndPrimaryMission, EndMatch, FailsafeSaveMissionResults).
+    end(accountId, sessionId) {
       const held = missions.get(accountId) ?? null;
       missions.delete(accountId);
+      if (typeof sessionId === "string" && sessionId) saved.set(accountId, sessionId);
       return held;
+    },
+    // Whether the player's results of that game session were saved already.
+    savedFor(accountId, sessionId) {
+      return typeof sessionId === "string" && sessionId !== "" && saved.get(accountId) === sessionId;
     }
   };
 }

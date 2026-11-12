@@ -34,6 +34,7 @@ import { refundMtxPurchase } from "./RefundMtxPurchase.js";
 import { abandonExpeditionCommand, collectExpeditionCommand, refreshExpeditions, startExpeditionCommand } from "./RefreshExpeditions.js";
 import { requestEventFlags } from "./RequestEventFlags.js";
 import { setAffiliateName } from "./SetAffiliateName.js";
+import { setBansViewed } from "./SetBansViewed.js";
 import { removeGiftBox } from "./RemoveGiftBox.js";
 import { setBattleRoyaleBanner } from "./SetBattleRoyaleBanner.js";
 import { setDefaultHeroSquad } from "./SetDefaultHeroSquad.js";
@@ -53,6 +54,26 @@ import { updateQuestClientObjectives } from "./UpdateQuestClientObjectives.js";
 import { verifyRealMoneyPurchase } from "./VerifyRealMoneyPurchase.js";
 import { convertItemCommand, recycleItemBatchCommand, recycleItemCommand, upgradeItemCommand, upgradeItemRarityCommand } from "./Upgrades.js";
 
+// Client commands the builds register (their SDKs list the UFunction) that Core doesn't answer, because no player can
+// send them and what Epic's service did with them isn't in the client. A command's generated wrapper reads a static FName
+// made from its name (FindFunctionChecked + ProcessEvent); where nothing but the FName's initialiser references it, the
+// linker dropped the wrapper and no code in that exe can send the command. Read in the exes of 27 builds from 1.1 to
+// 6.02 (CL-4461277: the FNames at 0x5388A88 to 0x5388BC0; 6.01's read the same):
+// - UnloadWarehouse {resourceTypes}, UnslotAllWorkers {buildingIds}, UpdateBuildingLevelAndRating {buildingId,
+//   lastBuildingLevel, lastBuildingRating} (in 1.1 already, for homebase buildings no shipped profile has): no wrapper in
+//   any of them.
+// - EquipCampaignCustomization {slotName, itemToSlot, indexWithinSlot} (in 3.0, CL-3901517, and not in 2.2; 2.3 to 2.5
+//   weren't read): no wrapper in any of them.
+// - EquipCharCosmetic {characterId, cosmeticId, typeId} (in 1.1 already): 1.1's one sender is the cheat manager's
+//   McpEquipCharCosmetic; the wrapper stays to 4.0 and is gone from 4.2.
+// - ApplyAlteration {targetItemId, alterationItemId} (in 1.1 already): sent by UFortMcpContext::ApplyAlteration (6.02
+//   0x10712D0, Blueprint callable, with the ids of a UFortAlterableItem and a UFortAlterationItem) and, to 4.0, by a
+//   second caller, in 1.1 the cheat manager's McpApplyAlteration. No file of 6.02's paks names the function (13 of its 14
+//   paks; pakchunk1000's key is unknown), so no Blueprint there calls it, and it takes an Alteration account item, which
+//   nothing gives: Core's perks are ids on their schematic (profiles/alterations.js), and 4.2's Perk Recombobulator has
+//   its own commands (Alterations.js). Which slot it filled and what it used up was the service's.
+// Each is told "Unknown command" (errors.com.epicgames.fortnite.operation_not_found, HTTP 400) and logged with the
+// build's unknown requests, as before.
 export const clientCommands = {
   AbandonExpedition: abandonExpeditionCommand,
   ActivateConsumable: activateConsumable,
@@ -99,6 +120,7 @@ export const clientCommands = {
   RemoveGiftBox: removeGiftBox,
   RequestEventFlags: requestEventFlags,
   SetAffiliateName: setAffiliateName,
+  SetBansViewed: setBansViewed,
   SetBattleRoyaleBanner: setBattleRoyaleBanner,
   SetDefaultHeroSquad: setDefaultHeroSquad,
   SetGameplayStats: setGameplayStats,

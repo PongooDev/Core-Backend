@@ -144,7 +144,7 @@ function keepGoing(command, run) {
 // succeeded the mission's rewards (see EndPrimaryMission below).
 function endPrimaryMission(command, session, accountId, body, context) {
   const { advance: updates, missionStatus, matchmakingSessionId, missionName, earnedBadgeData, earnedItemCaches, numMissionPoints, difficultyIncreaseTier } = body;
-  const held = context.primaryMissions.end(accountId) ?? heldProgress();
+  const held = context.primaryMissions.end(accountId, matchmakingSessionId) ?? heldProgress();
   advance(session, updates, held);
   grantBadgeRewards(session, earnedBadgeData);
   grantItemCacheRewards(session, earnedItemCaches);
@@ -336,6 +336,42 @@ export const serverCommands = {
       saveWorld(player, accountId, entry);
     }
     context.heldScores?.scored(matchmakingSessionId);
+  },
+
+  // 5.40's (CL-4352937; 5.30's SDK has no such function) UFortMcpProfileCampaign::FailsafeSaveMissionResults
+  // {playerScoreData, matchmakingSessionId, missionName, missionStatus, difficultyIncreaseTier}: one player's mission
+  // results, saved as they leave the server when nothing had saved them. playerScoreData is the player's
+  // UFortRegisteredPlayerInfo::EndZoneScoreAndAwards (FEndZoneScoreAndAwards {bResultsPendingSave, totalScore,
+  // bCriticalMatchBonus, earnedBadgeData, earnedItemCaches, numMissionPoints}): an EndMatch entry's score and awards,
+  // without its quest progress and world save. Who sends it (6.02, CL-4461277):
+  // - UFortRegisteredPlayerInfo::StartUnregistration (0xF05550) and ProfileUnlockRequest_Completed (0xF00060), for a
+  //   player whose bResultsPendingSave (+0x298) is still set, save the results first (0xF05290, UnregistrationStatus
+  //   UnregistrationWaitingForScoreSave): on the player's own campaign profile (AccountProfile, +0xE8), answered by
+  //   HandleFallbackSavePlayerResultsComplete (0xEF8B60), which clears bResultsPendingSave on success, logs "Unable to
+  //   save player results" otherwise, and goes on unregistering the player either way. OnUnregisterFailsafeTimerExpired
+  //   (0xEFD5B0) sends it once more, unanswered, while the flag is still set.
+  // - Both calls (0xF0532F, 0xEFD637) go to the shipped exe's empty stub (0x29E340) and the profile's wrapper is gone
+  //   (its name's FName, 0x5388B10, has no reader), as EndMatch's is. CoreV2 restores neither call and, ending missions
+  //   with its own EndMatch, never sets bResultsPendingSave, so no Core gameserver sends this yet; one that did was told
+  //   "Unknown command FailsafeSaveMissionResults" (errors.com.epicgames.fortnite.operation_not_found), which the game
+  //   takes as results not saved.
+  // The player is given what their EndMatch entry would have: the score's XP and the mission's end (endPrimaryMission:
+  // badges, item caches, and the mission's rewards when it succeeded). The game sends it only for results still pending,
+  // so results EndMatch or EndPrimaryMission already saved for that game session aren't given twice (🟡 Core's guard:
+  // Epic's service isn't in the client).
+  FailsafeSaveMissionResults({ req, session, context, notifications }) {
+    const { playerScoreData, matchmakingSessionId, missionName, missionStatus, difficultyIncreaseTier } = req.body ?? {};
+    const accountId = req.params.accountId;
+    if (context.primaryMissions.savedFor(accountId, matchmakingSessionId)) {
+      log("MCP", `FailsafeSaveMissionResults for ${accountId}: ${missionName}'s results were saved already, skipped`);
+      return;
+    }
+    const results = playerScoreData && typeof playerScoreData === "object" ? playerScoreData : {};
+    const earned = scoreNotifications(session, results.totalScore, results.bCriticalMatchBonus === true);
+    notifications.push(...earned);
+    log("MCP", `FailsafeSaveMissionResults for ${accountId}: ${missionName} ${missionStatus}, total score ${Number(results.totalScore) || 0} (${earned[0].baseXPEarned} base XP)`);
+    endPrimaryMission("FailsafeSaveMissionResults", session, accountId, { earnedBadgeData: results.earnedBadgeData, earnedItemCaches: results.earnedItemCaches,
+      numMissionPoints: results.numMissionPoints, matchmakingSessionId, missionName, missionStatus, difficultyIncreaseTier }, context);
   },
 
   // One call for every player in the match: [{accountId, totalScore, bCriticalMatchBonus}] (FAccountIdAndScore).
