@@ -12,6 +12,13 @@ import { log } from "../log.js";
 // FMcpVariantReader 4.0's UFortMcpProfileAthena reads (Channel, Active, Owned: FStrings, the tags' last part, the client
 // putting "Cosmetics.Variant.Channel." and "Cosmetics.Variant.Property." back in front: both prefixes are in 4.0's exe).
 // EquipBattleRoyaleCustomization takes the same struct as variantUpdates, the locker's style picker.
+//
+// From 6.00 (CL-4402180, Season 6) Battle Pass tiers give tokens too (Core-Backend #332): AthenaSeason6's
+// BookXpSchedulePaid has VTID_033_PetCarrier_Dog_StyleB at tier 59, VTID_035_PetCarrier_Dragon_StyleB at 74,
+// VTID_034_PetCarrier_Dog_StyleC at 90 and VTID_036_PetCarrier_Dragon_StyleC at 98 (Bonesy's and Scales' Material Mat1 and
+// Mat2, "Unlock at Tier 59" in the locker; bCreateGiftbox false, the tier's GB_BattlePass lists them), given as a challenge's
+// are (profiles/seasons.js). Calamity's and Dire's stages and colours are their progressive challenges' rewards
+// (Quest_BR_S6_Gain_SeasonXP_ProgressiveA/B_*, Quest_BR_S6_Complete_WeeklyChallenges_ProgressiveA/B_*: profiles/athena.js).
 
 // A cosmetic's styles as the profile names them, each channel at its default with every option the player owns with the
 // cosmetic (Core-Backend #259): Epic gave a cosmetic's owners every style no challenge or token gates, so an option is
@@ -59,11 +66,17 @@ function variantsOf(item) {
   return [...merged, ...held.filter((entry) => !channels.some((channel) => channel.channel === entry?.channel))];
 }
 
+// A CosmeticVariantToken of the build's data by its template id (any case), or undefined.
+const variantToken = (tokenId) => {
+  const tokens = athenaVariantTokens() ?? {};
+  return tokens[Object.keys(tokens).find((id) => id.toLowerCase() === String(tokenId).toLowerCase())];
+};
+
 // A CosmeticVariantToken reward: its style owned on its cosmetic's item. Returns whether the token is one the requesting
 // build's data has. A token for a cosmetic the locker lacks is kept (profile.coreVariantTokens, Core's, never sent) and
 // unlocks the style once the cosmetic comes (applyHeldVariantTokens).
 export function grantVariantToken(session, tokenId) {
-  const token = athenaVariantTokens()[Object.keys(athenaVariantTokens()).find((id) => id.toLowerCase() === String(tokenId).toLowerCase())];
+  const token = variantToken(tokenId);
   if (!token) return false;
   const tracker = session.profile("athena");
   const { profile } = tracker;
@@ -97,6 +110,57 @@ export function applyHeldVariantTokens(session) {
   if (!ready.length) return;
   profile.coreVariantTokens = kept.filter((tokenId) => !ready.includes(tokenId));
   for (const tokenId of ready) grantVariantToken(session, tokenId);
+}
+
+// Of tokenIds (CosmeticVariantToken template ids), those whose style the locker lacks: the build's data has the token, it
+// isn't kept for a cosmetic still to come (profile.coreVariantTokens), and the cosmetic's item doesn't own the style.
+// Lower-cased ids.
+export function missingVariantTokens(profile, tokenIds) {
+  const kept = new Set(profile.coreVariantTokens ?? []);
+  return [...new Set(tokenIds.map((tokenId) => String(tokenId).toLowerCase()))].filter((tokenId) => {
+    const token = variantToken(tokenId);
+    if (!token || kept.has(tokenId)) return false;
+    const itemId = findHeld(profile, token.cosmetic);
+    return !itemId || !variantsOf(profile.items[itemId]).some((entry) => entry.channel === token.channel && entry.owned.includes(token.variant));
+  });
+}
+
+// Styles the season's rewards gave that the locker lacks (Core-Backend #332): until then a tier's CosmeticVariantToken
+// (6.00's Bonesy and Scales styles) went nowhere, so tiers reached before then come with their styles now.
+export function grantMissingVariantTokens(session, tokenIds) {
+  for (const tokenId of missingVariantTokens(session.profile("athena").profile, tokenIds)) {
+    log("Battle Royale", `${session.accountId}: ${tokenId}, a season reward already reached, gives its style`);
+    grantVariantToken(session, tokenId);
+  }
+}
+
+// A style token taken back (the admin panel's Battle Pass reset, battlepass/reset.js): no longer kept for a cosmetic to
+// come, and its style no longer owned on the cosmetic's item, unless the cosmetic owns that style from the start; an item
+// showing it goes back to the channel's default. Returns whether anything changed.
+export function takeBackVariantToken(session, tokenId) {
+  const token = variantToken(tokenId);
+  if (!token) return false;
+  const tracker = session.profile("athena");
+  const { profile } = tracker;
+  const id = String(tokenId).toLowerCase();
+  const kept = profile.coreVariantTokens ?? [];
+  const wasKept = kept.includes(id);
+  if (wasKept) profile.coreVariantTokens = kept.filter((held) => held !== id);
+  const itemId = findHeld(profile, token.cosmetic);
+  const start = itemId && defaultVariants(profile.items[itemId].templateId).find((entry) => entry.channel === token.channel);
+  if (!itemId || start?.owned.includes(token.variant)) return wasKept;
+  const variants = variantsOf(profile.items[itemId]);
+  const owning = variants.find((entry) => entry.channel === token.channel && entry.owned.includes(token.variant));
+  if (!owning) return wasKept;
+  const updated = variants.map((entry) => {
+    if (entry !== owning) return entry;
+    const owned = entry.owned.filter((tag) => tag !== token.variant);
+    return { ...entry, active: entry.active === token.variant ? start?.active ?? owned[0] : entry.active, owned };
+  }).filter((entry) => entry.owned.length);
+  if (updated.length) tracker.setItemAttribute(itemId, "variants", updated);
+  else tracker.removeItemAttribute(itemId, "variants");
+  log("Battle Royale", `${session.accountId} no longer owns ${token.cosmetic}'s style ${token.variant}`);
+  return true;
 }
 
 // EquipBattleRoyaleCustomization's variantUpdates on the slotted item: each channel's active style, when the item owns it.
@@ -171,17 +235,20 @@ export const dataStyleChannels = (templateId) => (athenaCosmetics()[cosmeticKey(
 // styles [{channel, tags, active}] on an owned item. Adding owns each tag in its channel (a channel the item lacks is
 // added, its active style the one asked for or its first tag); remove takes the tags out (a channel left with none goes),
 // except the styles the cosmetic owns from the start (defaultVariants), which would come back at the next login. The
-// active style moves to an owned one when its own goes. Returns {changed, kept: ["channel.tag"]}.
-export function editItemStyles(session, itemId, styles, { remove = false } = {}) {
+// active style moves to an owned one when its own goes. The styles of earnedTokens (the season's rewards reached,
+// profiles/seasons.js givenVariantTokens) stay too, as they would also come back. Returns {changed, kept: ["channel.tag"]}.
+export function editItemStyles(session, itemId, styles, { remove = false, earnedTokens = [] } = {}) {
   const tracker = session.profile("athena");
   const item = tracker.profile.items[itemId];
   let variants = variantsOf(item).map((entry) => ({ ...entry, owned: [...entry.owned] }));
+  const earned = earnedTokens.map(variantToken).filter((token) => token && String(token.cosmetic).toLowerCase() === item.templateId.toLowerCase());
   const kept = [];
   for (const { channel, tags, active } of styles) {
     const entry = variants.find((candidate) => candidate.channel.toLowerCase() === channel.toLowerCase());
     if (remove) {
       if (!entry) continue;
-      const fixed = new Set(defaultVariants(item.templateId).find((candidate) => candidate.channel === entry.channel)?.owned ?? []);
+      const fixed = new Set([...(defaultVariants(item.templateId).find((candidate) => candidate.channel === entry.channel)?.owned ?? []),
+        ...earned.filter((token) => token.channel === entry.channel).map((token) => token.variant)]);
       for (const tag of tags) {
         const owned = entry.owned.find((option) => option.toLowerCase() === tag.toLowerCase());
         if (!owned) continue;

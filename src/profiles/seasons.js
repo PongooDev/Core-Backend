@@ -7,6 +7,7 @@ import { log } from "../log.js";
 import { findItem } from "./items.js";
 import { battlePassGiftBox, giveGiftBox } from "./giftboxes.js";
 import { grant } from "./progress.js";
+import { grantVariantToken } from "./variants.js";
 
 // Battle Royale's seasons (Core-Backend #145). 1.8 to 1.10 are Season 1; 1.11 (CL-3807424) is Season 2, which starts every
 // player again at level 1 with a Battle Pass, as Epic's did when Season 1 ended on 13 December 2017. 2.1 (CL-3825894, 10
@@ -289,6 +290,19 @@ function givenSoFar(profile) {
 const rewardsUpTo = (schedule, after, upTo) => (schedule ?? []).filter(({ level }) => level > after && level <= upTo)
   .flatMap(({ rewards }) => rewards);
 
+// The style tokens (CosmeticVariantToken) the season's rewards have given so far, by the bookkeeping above: the season
+// levels after 1 up to seasonLevel, the free tiers up to free and the Battle Pass tiers up to paid (Core-Backend #332, 6.00's
+// pet styles). The requesting build's season, while the profile is in it; [] otherwise.
+export function givenVariantTokens(profile) {
+  const season = athenaSeason();
+  if (!season || profileSeason(profile) !== season.seasonNumber) return [];
+  const given = profile.coreSeasonRewards?.[String(season.seasonNumber)];
+  if (!given) return [];
+  return [...rewardsUpTo(season.seasonRewards, 1, given.seasonLevel ?? 1), ...rewardsUpTo(season.bookFreeRewards, 0, given.free ?? 0),
+    ...rewardsUpTo(season.bookPaidRewards, 0, given.paid ?? 0)]
+    .map(({ templateId }) => templateId).filter((templateId) => typeOfTemplate(templateId) === "cosmeticvarianttoken");
+}
+
 // A season reward: Battle Stars to the Battle Pass, season XP to the level, the boosts to their stats, banners to profile0
 // (where the banner editor finds them), V-Bucks to profile0, the Battle Pass challenges' trigger quest to athena and
 // cosmetics to the locker. Returns what went to the locker or profile0, as loot.
@@ -317,6 +331,13 @@ function giveReward(session, { templateId, quantity }, athena) {
   }
   // Season 3's challenges (profiles/challenges.js): the schedule, which gives its bundles as they unlock.
   if (id.startsWith("challengebundleschedule:")) return athena.grantChallengeSchedule?.(session, templateId), [];
+  // A style (Core-Backend #332): 6.00's tiers 59, 74, 90 and 98 give Bonesy's and Scales' (CosmeticVariantToken), owned on
+  // the pet's item as a challenge's token is (profiles/variants.js); before, they went to grant, which has no item data
+  // for them, and nothing was given. The tiers' screen lists the token, whose definition is the style's card ("Bonesy
+  // (White)", "Style"); athena items go by their template id, so it is the token's too, as no item holds it.
+  if (id.startsWith("cosmeticvarianttoken:")) {
+    return grantVariantToken(session, templateId) ? [{ profileId: "athena", itemId: templateId, templateId, quantity: 1 }] : [];
+  }
   if (id.startsWith("athena")) {
     const item = athena.grantCosmetic(session, templateId);
     return item ? [item] : [];

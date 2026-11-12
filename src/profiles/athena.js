@@ -17,9 +17,11 @@ import { defaultBanner } from "./defaults.js";
 import { heldGiftBoxes, moveAthenaGiftBoxes } from "./giftboxes.js";
 import { findItem } from "./items.js";
 import { grant } from "./progress.js";
-import { applyHeldVariantTokens, applyVariantUpdates, defaultVariants, grantDefaultVariants, grantVariantToken, itemsMissingVariants } from "./variants.js";
+import { applyHeldVariantTokens, applyVariantUpdates, defaultVariants, grantDefaultVariants, grantMissingVariantTokens, grantVariantToken, itemsMissingVariants,
+  missingVariantTokens } from "./variants.js";
 import { brokenChallengeOf, completeBrokenChallenges, countBundleQuest, grantChallengeSchedule as grantSchedule, settleChallengeSchedules } from "./challenges.js";
-import { accountLevelOf, addBookXp, giveSeasonReward, namesAthenaBuild, profileSeason, seasonNeedsSwitch, seasonNumber, settleSeasonPromise, settleSeasonRewards, switchSeason } from "./seasons.js";
+import { accountLevelOf, addBookXp, giveSeasonReward, givenVariantTokens, namesAthenaBuild, profileSeason, seasonNeedsSwitch, seasonNumber, settleSeasonPromise,
+  settleSeasonRewards, switchSeason } from "./seasons.js";
 
 // Battle Royale's profile from 1.8, athena (UFortMcpProfileAthena, a quest profile): its cosmetics, the loadout the
 // locker equips, the banner, the season level and the daily challenges.
@@ -253,7 +255,7 @@ export function athenaNeedsSetUp(profile, settings = {}) {
     || (settings.giveAllCosmetics ? missing(profile, lockerCosmetics()).length > 0 : blanket(profile).length > 0)
     || emptyDefaultSlots(profile).length > 0 || heldNonLockerItems(profile).length > 0
     || seasonNeedsSwitch(profile) || danceSlotsNeedSettling(profile) || randomSlotsNeedSettling(profile) || heldGiftBoxes(profile).length > 0
-    || itemsMissingVariants(profile).length > 0;
+    || itemsMissingVariants(profile).length > 0 || missingVariantTokens(profile, givenVariantTokens(profile)).length > 0;
 }
 
 // A cosmetic with styles (4.0's Carbide and Omega, profiles/variants.js) comes with its variants at their defaults.
@@ -381,6 +383,8 @@ export function setUpAthena(session) {
   if (randomSlotsNeedSettling(profile)) settleRandomSlots(tracker);
   // The styles owned cosmetics come with, for items that lack them (profiles/variants.js, Core-Backend #259).
   grantDefaultVariants(session);
+  // The styles of the season's tiers already reached (6.00's pets, Core-Backend #332), which went nowhere before.
+  grantMissingVariantTokens(session, givenVariantTokens(profile));
   // Gift boxes are profile0's (profiles/giftboxes.js, Core-Backend #212).
   moveAthenaGiftBoxes(session);
 }
@@ -695,7 +699,11 @@ export function setSeasonLevel(session, level) {
 
 // What profiles/seasons.js gives season rewards with.
 const seasonFunctions = { addSeasonXp, grantCosmetic, grantAthenaQuest, settleBattlePassDaily, acquireAthenaToken,
-  grantChallengeSchedule: (session, templateId) => grantSchedule(session, templateId, seasonFunctions) };
+  // A schedule a tier gives (6.00's progressive ones at the pass's tier 1) counts the tokens already held at once.
+  grantChallengeSchedule: (session, templateId) => {
+    grantSchedule(session, templateId, seasonFunctions);
+    settleHeldItemObjectives(session);
+  } };
 export const seasonRewardFunctions = () => seasonFunctions;
 
 // The chase rewards of the levels reached that the player lacks: banners go to profile0, where the banner editor finds
@@ -858,6 +866,24 @@ function acquireAthenaToken(session, templateId, quantity) {
   else tracker.addItem(crypto.randomUUID(), { templateId, attributes: { item_seen: false }, quantity });
   log("Battle Royale", `${session.accountId} got ${quantity} ${templateId}`);
   itemObjectives(session, "Acquire", templateId, quantity);
+  settleHeldItemObjectives(session);
+}
+
+// Objectives that count an item held (ItemEvent HasItem, Core-Backend #332): 6.00's Calamity and Dire colours
+// (Quest_BR_S6_Complete_WeeklyChallenges_ProgressiveA_01 to _03, 10, 25 and 50 weekly challenges; _ProgressiveB_, 20, 40
+// and 60: Token:AthenaBattlePass_WeeklyChallenge_Token, one a weekly challenge, their colours' tokens VTID_046 to _048 and
+// VTID_039, _040 and _040_Color3) and Season 5's and 6's Road Trip and Hunting Party 8 and 9 (the weekly bundle token):
+// the count athena holds, up to the objective's, so the tokens held before the challenge came count too.
+function settleHeldItemObjectives(session) {
+  const tracker = session.profile("athena");
+  for (const { itemId, quest } of activeQuests(tracker)) {
+    for (const objective of quest.objectives.filter((candidate) => candidate.itemEvent === "HasItem" && candidate.item)) {
+      const held = Object.values(tracker.profile.items).filter((item) => item.templateId.toLowerCase() === objective.item.toLowerCase())
+        .reduce((sum, item) => sum + (item.quantity ?? 0), 0);
+      const count = Math.min(held, objective.count) - (tracker.profile.items[itemId]?.attributes[`completion_${objective.name}`] ?? 0);
+      if (count > 0 && tracker.profile.items[itemId]?.attributes.quest_state === "Active") addProgress(session, itemId, objective, count);
+    }
+  }
 }
 
 // Objectives that count an item event (4.0: Acquire of a token, HasCompletedQuest of a challenge) on the open challenges.
@@ -904,11 +930,14 @@ function settleLevelObjectives(session) {
 // Quest_BR_S5_Gain_SeasonXP_ProgressiveA/B_01 to _05, ItemEvent HasGainedAthenaSeasonXp, 10,000 to 500,000 XP): each
 // award's XP, from when the challenge is open (Ragnarok's open at tier 100), and past the last season level too, as the
 // XP is gained even where the level keeps none of it. Season 4's Carbide and Omega count the level instead
-// (settleLevelObjectives).
+// (settleLevelObjectives). 6.00's (CL-4402180) Calamity and Dire (Quest_BR_S6_Gain_SeasonXP_ProgressiveA/B_01 to _05,
+// "athena_season_xp_gained", 20,000 to 250,000 XP, their stages' tokens VTID_041 to _045 and VTID_037, _038 and _049 to
+// _051) name the event GainAthenaSeasonXp, counted the same (Core-Backend #332).
+const gainedXpEvents = ["HasGainedAthenaSeasonXp", "GainAthenaSeasonXp"];
 function gainedXpObjectives(session, amount) {
   if (!(amount > 0)) return;
   for (const { itemId, quest } of activeQuests(session.profile("athena"))) {
-    for (const objective of quest.objectives.filter((candidate) => candidate.itemEvent === "HasGainedAthenaSeasonXp")) {
+    for (const objective of quest.objectives.filter((candidate) => gainedXpEvents.includes(candidate.itemEvent))) {
       if (session.profile("athena").profile.items[itemId]?.attributes.quest_state === "Active") addProgress(session, itemId, objective, amount);
     }
   }
@@ -1158,6 +1187,7 @@ export function athenaQuestLogin(session) {
   settleChallengeSchedules(session, seasonFunctions);
   settleBrokenChallenges(session);
   settleLevelObjectives(session);
+  settleHeldItemObjectives(session);
   settleAthenaEventQuests(session);
   settleChaseRewards(session);
   settleSeasonPromise(session, seasonFunctions);

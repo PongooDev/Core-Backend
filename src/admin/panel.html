@@ -3537,7 +3537,7 @@
           const change = account.styleChange;
           m.data = change;
           render();
-          const kept = change.kept.length ? `; kept ${change.kept.join(", ")} (owned with the cosmetic)` : "";
+          const kept = change.kept.length ? `; kept ${change.kept.join(", ")} (owned with the cosmetic or a tier reached)` : "";
           setAccount(account, change.changed ? `${message}${kept}` : `Nothing changed${kept}`);
         });
 

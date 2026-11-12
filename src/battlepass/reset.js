@@ -10,6 +10,7 @@ import { heldGiftBoxes, isBattlePassGiftBox } from "../profiles/giftboxes.js";
 import { findItem } from "../profiles/items.js";
 import { grant } from "../profiles/progress.js";
 import { accountLevelOf, buildOfSeason, profileSeason, settleSeasonRewards } from "../profiles/seasons.js";
+import { takeBackVariantToken } from "../profiles/variants.js";
 
 // The admin panel's Battle Pass reset (Core-Backend #201): a season's pass back to before the player bought it. The pass
 // isn't bought (book_purchased), its tiers and Battle Stars start over (book_level 1, book_xp 0) and its boosts go
@@ -18,6 +19,8 @@ import { accountLevelOf, buildOfSeason, profileSeason, settleSeasonRewards } fro
 // rewards bookkeeping, profile.coreSeasonRewards, says they were given):
 // - cosmetics leave the locker, the slots showing them back to their default, unless something else gives them (a starter,
 //   a season level reward, a victory umbrella: athena.js removeLockerCosmetic keeps those);
+// - styles (6.00's pet styles, CosmeticVariantToken: profiles/variants.js takeBackVariantToken), off a cosmetic that stays,
+//   or no longer waiting for their cosmetic to come;
 // - banners leave profile0, unless the full locker gave them (coreGrantedBanners), and a banner showing one goes back to
 //   the default;
 // - the V-Bucks they gave, as far as the account still has them (never below 0);
@@ -87,8 +90,8 @@ export function resetBattlePass(session, season) {
     const purchased = record.book_purchased === true;
     const given = profile.coreSeasonRewards?.[String(season)];
     const rewards = [...rewardsUpTo(pass.bookFreeRewards, given?.free ?? tier), ...rewardsUpTo(pass.bookPaidRewards, given?.paid ?? (purchased ? tier : 0))];
-    const result = { season, wasPurchased: purchased, tier, cosmetics: [], keptCosmetics: [], banners: [], vbucksTaken: 0, seasonXpTaken: 0,
-      challenges: 0, refunded: 0 };
+    const result = { season, wasPurchased: purchased, tier, cosmetics: [], keptCosmetics: [], styles: [], banners: [], vbucksTaken: 0,
+      seasonXpTaken: 0, challenges: 0, refunded: 0 };
 
     // Cosmetics and banners.
     const account = session.profile("profile0");
@@ -107,7 +110,7 @@ export function resetBattlePass(session, season) {
         const removal = removeLockerCosmetic(session, cosmetic);
         if (removal.removed) result.cosmetics.push(cosmetic);
         else if (removal.kept) result.keptCosmetics.push({ templateId: cosmetic, reason: removal.kept });
-      }
+      } else if (typeOf(templateId) === "cosmeticvarianttoken" && takeBackVariantToken(session, templateId)) result.styles.push(templateId);
     }
     const gone = (row) => removedBanners.includes(String(row ?? "").toLowerCase());
     const { attributes } = profile.stats;

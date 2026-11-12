@@ -65,7 +65,7 @@ import { calendarCacheMinutes } from "../services/fortnite/calendar.js";
 import { defaultBattlePass, enrichedMilestones } from "../battlepass/season1.js";
 import { bundleTiers, seasonPassConfig, seasonTiers, tierPrice } from "../battlepass/season2.js";
 import { battlePassSeasons, resetBattlePass } from "../battlepass/reset.js";
-import { buildOfSeason, inProfileSeason, profileSeason } from "../profiles/seasons.js";
+import { buildOfSeason, givenVariantTokens, inProfileSeason, profileSeason } from "../profiles/seasons.js";
 import { brokenChallenges, challengeModes, challengesAllUnlocked, challengeWeekCount, completeBrokenChallenges, weekPlan } from "../profiles/challenges.js";
 
 import { isServerAccountName, validatePassword } from "../accounts/password.js";
@@ -919,7 +919,9 @@ export function adminRoutes(context) {
       styles.push({ channel, tags, active });
     }
     const remove = req.body?.remove === true;
-    const result = inBuild(build, () => editItemStyles(session, itemId, styles, { remove }));
+    // A style the season's tiers gave stays, as it would come back (Core-Backend #332).
+    const result = inBuild(build, () => editItemStyles(session, itemId, styles,
+      { remove, earnedTokens: givenVariantTokens(session.profile("athena").profile) }));
     const athena = session.profile("athena").profile;
     return { styleChange: { ...result, remove, ...stylesPayload(build, athena, athena.items[itemId].templateId) } };
   }));
