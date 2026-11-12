@@ -1,12 +1,13 @@
 import { anniversary2018BR, cubeDestination, cubeLake, cubeLightning, cubeMoveTo, cubeMoveToLake, cubeRune, cubeStartMove, cubeTurnOn,
-  eventsActiveUntil, ltmHeist, riftCorrupt, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
+  eventsActiveUntil, islandMoveTo, islandRune, ltmHeist, riftCorrupt, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
 
 // Season 5's small dated event-flag events, step by step, and the admin's own times for them (Core-Backend #311): 5.21's
 // Tomato Town rift (events/tomatorift.js), 5.30's Cube (events/cube.js; 5.40's and 5.41's too) and 5.40's High Stakes
-// (events/highstakes.js; 5.41's paks keep it). Each step is one or more calendar events served
+// (events/highstakes.js; 5.41's paks keep it); and Season 6's floating island (6.00, events/island.js), on Season 6's
+// replay (an event's `season`, 5 without one). Each step is one or more calendar events served
 // from its start to its end (null: on to the replay's end, or, on the admin's own times, for good). The events config's
 // datedFlags.<event> picks the times:
-// - "dates": Epic's dates on Season 5's replay (store/itemshop.js seasonMoment), lap by lap (the default);
+// - "dates": Epic's dates on its season's replay (store/itemshop.js seasonMoment), lap by lap (the default);
 // - "custom": the admin's own times [{step, startAt, endAt}] (ISO; endAt null: stays on), which stay, as the custom rift
 //   times of events/season4flags.js do; a step without times isn't served;
 // - "off": none of its steps (the flags still switch by hand, events/season4flags.js);
@@ -19,6 +20,14 @@ import { anniversary2018BR, cubeDestination, cubeLake, cubeLightning, cubeMoveTo
 // (events/rocketlaunch.js).
 export const season5FirstDay = Date.parse("2018-07-12T00:00:00.000Z");
 export const season5EndDay = Date.parse("2018-09-27T00:00:00.000Z");
+// Season 6's replay: its 70 days, 27 September to 5 December 2018 (store/itemshop-season6.json).
+export const season6FirstDay = Date.parse("2018-09-27T00:00:00.000Z");
+export const season6EndDay = Date.parse("2018-12-06T00:00:00.000Z");
+const seasonDays = { 5: [season5FirstDay, season5EndDay], 6: [season6FirstDay, season6EndDay] };
+export const datedSeasonOf = (event) => event.season ?? 5;
+const daysOf = (event) => seasonDays[datedSeasonOf(event)];
+// The replay's moment now for an event's season: momentNowMs is that moment (ms), or a function of the season that gives it.
+const momentOf = (momentNowMs, event) => (typeof momentNowMs === "function" ? momentNowMs(datedSeasonOf(event)) : momentNowMs);
 
 // The Cube's steps in Epic's time (events/cube.js has the sources): every change at 21:00 UTC, the purple crack from Update
 // v5.30's morning; each leg to a rune runs BR_S5_Cube_StartMove alongside its MoveTo. 5.40's CUBE names the leg to the
@@ -39,6 +48,32 @@ const cubeLegs = { ...Object.fromEntries(runeStops.map((_, index) => [`moveTo${i
 const cubeStops = { spawn: "Its hill (Paradise Palms)", ...Object.fromEntries(runeStops.map(([, , place], index) => [`rune${index + 1}`, `Rune ${index + 1}: ${place}`])),
   lake: "Loot Lake" };
 
+// The floating island's steps in Epic's time (6.00, events/island.js has the sources and how 6.00 plays them): the Fortnite
+// Wiki's days, each change 🟡 at 00:00 UTC (no source gives the hours), its rune 0 (Loot Lake) from the replay's first day.
+// Each stop: the day it leaves for the rune, the day it reaches it, the rune's place (short, and as the wiki puts it).
+// The 6.00 island's spline runs Loot Lake, the seven runes and Loot Lake again (its point 8); its leg 8 is the way back.
+const at6 = (day) => Date.parse(`2018-${day}T00:00:00.000Z`);
+const islandRuneStops = [["09-28", "09-29", "Pleasant Park", "southwest of Pleasant Park"], ["10-01", "10-03", "Shifty Shafts", "by Shifty Shafts"],
+  ["10-05", "10-06", "Fatal Fields", "northwest of Fatal Fields"], ["10-08", "10-09", "Retail Row", "south of Retail Row"],
+  ["10-10", "10-13", "Wailing Woods", "in Wailing Woods"], ["10-14", "10-16", "Lazy Links", "by Lazy Links"],
+  ["10-17", "10-18", "the map's middle", "in the map's middle"]];
+const islandBackAt = at6("10-20");
+const islandHomeAt = at6("10-21");
+const islandLocations = ["lake", ...islandRuneStops.map((_, index) => `rune${index + 1}`), "home"];
+const islandLegs = { ...Object.fromEntries(islandRuneStops.map((_, index) => [`moveTo${index + 1}`, `rune${index + 1}`])), moveTo8: "home" };
+const islandStops = { lake: "Loot Lake (rune 0)", ...Object.fromEntries(islandRuneStops.map(([, , place], index) => [`rune${index + 1}`, `Rune ${index + 1}: ${place}`])),
+  home: "Back over Loot Lake" };
+const islandSteps = [
+  step("lake", "Hangs over Loot Lake (rune 0)", [islandRune(0)], season6FirstDay, at6(islandRuneStops[0][0])),
+  ...islandRuneStops.flatMap(([leave, reach, , place], index) => [
+    step(`moveTo${index + 1}`, `Floats to rune ${index + 1} (${place})`, [islandMoveTo(index + 1)], at6(leave), at6(reach)),
+    step(`rune${index + 1}`, `Over rune ${index + 1} (${place}): the Cube lifts it`, [islandRune(index + 1)], at6(reach),
+      index + 1 < islandRuneStops.length ? at6(islandRuneStops[index + 1][0]) : islandBackAt)
+  ]),
+  step("moveTo8", "Floats back to Loot Lake", [islandMoveTo(8)], islandBackAt, islandHomeAt),
+  step("home", "Back over Loot Lake (rune 0)", [islandRune(0)], islandHomeAt, null)
+];
+
 export const datedEvents = [
   { id: "cube", name: "the Cube (5.30 – 5.41)", flag: cubeTurnOn, anchor: "crack", parts: 4, locations: cubeLocations, legs: cubeLegs, stops: cubeStops,
     spawn: "spawn", sink: "lake", sinkLeg: "moveToLake", steps: [
@@ -53,6 +88,10 @@ export const datedEvents = [
     step("moveToLake", "Rolls to Loot Lake", [cubeMoveToLake, cubeMoveTo(8), cubeStartMove], at(runeStops[6][1]), lakeAt),
     step("lake", "Sinks into Loot Lake", [cubeLake, cubeDestination], lakeAt, null)
   ] },
+  // The floating island (6.00, events/island.js): one of its flags at a time, as its scripting takes the last one that
+  // turns on. The admin panel puts it straight at any of its stops (datedMoveSchedule).
+  { id: "island", name: "the floating island (6.00)", season: 6, flag: islandRune(0), anchor: "lake", parts: 4, locations: islandLocations,
+    legs: islandLegs, stops: islandStops, steps: islandSteps },
   // On the replay the rift is formed from the lap's start (5.21 shipped with it formed) until the head comes out.
   // High Stakes (5.40, events/highstakes.js; 5.41's paks keep it): from Update v5.40's morning to Update v5.41's.
   { id: "highStakes", name: "High Stakes (5.40 – 5.41)", flag: ltmHeist, anchor: "challenges", parts: 1, challenges: "Schedule_LTM_Heist", steps: [
@@ -144,15 +183,17 @@ export function sanitizeDatedFlags(value, current = defaultDatedFlags) {
 
 export const datedSettings = (config) => sanitizeDatedFlags(config?.datedFlags);
 
-// Epic's steps on the replay's lap that holds now, as real times: lapStart is the real time that lap began.
-const lapOf = (nowMs, momentNowMs) => {
-  const cycle = season5EndDay - season5FirstDay;
-  return { cycle, lapStart: nowMs - ((((momentNowMs - season5FirstDay) % cycle) + cycle) % cycle) };
+// Epic's steps on the replay's lap that holds now, as real times: lapStart is the real time that lap began. The replay is
+// the event's season's (momentNowMs: that season's moment now, store/itemshop.js seasonMoment).
+const lapOf = (event, nowMs, momentNowMs) => {
+  const [first, end] = daysOf(event);
+  const cycle = end - first;
+  return { cycle, first, end, lapStart: nowMs - ((((momentNowMs - first) % cycle) + cycle) % cycle) };
 };
 export function datedStepsThisLap(event, nowMs, momentNowMs) {
-  const { lapStart } = lapOf(nowMs, momentNowMs);
-  const real = (ms) => lapStart + (ms - season5FirstDay);
-  return event.steps.map(({ id, start, end }) => ({ step: id, startAt: iso(real(start)), endAt: iso(real(end ?? season5EndDay)) }));
+  const { lapStart, first, end: seasonEnd } = lapOf(event, nowMs, momentNowMs);
+  const real = (ms) => lapStart + (ms - first);
+  return event.steps.map(({ id, start, end }) => ({ step: id, startAt: iso(real(start)), endAt: iso(real(end ?? seasonEnd)) }));
 }
 
 // The event's windows [{eventType, since, until (ms, Infinity: for good)}] by its mode: Epic's dates on the laps around
@@ -163,9 +204,9 @@ export function datedWindows(event, setting, nowMs, momentNowMs) {
     return setting.schedule.flatMap(({ step: id, startAt, endAt }) => event.steps.find((own) => own.id === id).flags
       .map((eventType) => ({ eventType, since: Date.parse(startAt), until: endAt === null ? Infinity : Date.parse(endAt) })));
   }
-  const { cycle, lapStart } = lapOf(nowMs, momentNowMs);
+  const { cycle, lapStart, first, end: seasonEnd } = lapOf(event, nowMs, momentNowMs);
   return [lapStart - cycle, lapStart, lapStart + cycle].flatMap((lap) => event.steps.flatMap(({ flags, start, end }) => flags.map((eventType) =>
-    ({ eventType, since: lap + (start - season5FirstDay), until: lap + ((end ?? season5EndDay) - season5FirstDay) }))));
+    ({ eventType, since: lap + (start - first), until: lap + ((end ?? seasonEnd) - first) }))));
 }
 
 // Windows as calendar parts [{validFrom (ms), events: [{eventType, activeSince, activeUntil}]}], from the part that holds
@@ -232,9 +273,12 @@ export function datedStage(event, steps, nowMs) {
 // What a running match plays (a Core gameserver fetches the calendar within 5 seconds of the change): a rune newly on
 // rolls the Cube onto it from the path's step before it, whichever stop it was at, and prints it (the roll above); its hill
 // changes nothing there (_TurnOn stays on and the game has no roll back), so new matches start it there; and the sink.
+// The floating island (no appearing, no sink) is that stop's flag alone from now on: one island flag at a time
+// (events/island.js has what a running match plays).
 export function datedMoveSchedule(event, steps, to, nowMs) {
   if (!event.locations?.includes(to)) return null;
   if (to === event.sink) return datedSinkSchedule(event, nowMs + sinkLeadSeconds * 1000);
+  if (!event.spawn) return validDatedSchedule(event, [{ step: to, startAt: iso(nowMs), endAt: null }]);
   const appearing = steps.find(({ step: id }) => id === event.spawn);
   const out = { step: event.spawn, startAt: onAt(appearing.current, nowMs) ? appearing.current.startAt : iso(nowMs), endAt: null };
   return validDatedSchedule(event, to === event.spawn ? [out] : [out, { step: to, startAt: iso(nowMs), endAt: null }]);
@@ -323,14 +367,15 @@ export function datedSpawnStatus(event, steps, nowMs) {
 }
 
 // The admin panel's view of each event: its mode and each step's Epic date, its times on the replay's lap now, the
-// admin's own times and the times it runs at now (by the mode); the Cube's place and its appearing too.
+// admin's own times and the times it runs at now (by the mode); the Cube's place and its appearing too. momentNowMs is
+// Season 5's replay moment now, or a function of the season that gives its replay's (the floating island's is Season 6's).
 export function datedFlagsStatus(nowMs, momentNowMs, config) {
   const settings = datedSettings(config);
   return {
     modes: datedModes,
     events: datedEvents.map((event) => {
       const setting = settings[event.id];
-      const lap = datedStepsThisLap(event, nowMs, momentNowMs);
+      const lap = datedStepsThisLap(event, nowMs, momentOf(momentNowMs, event));
       const custom = new Map(setting.schedule.map((entry) => [entry.step, entry]));
       const steps = event.steps.map(({ id, label, flags, start, end }, index) => ({
         step: id, label, flags,
@@ -340,7 +385,7 @@ export function datedFlagsStatus(nowMs, momentNowMs, config) {
         current: setting.mode === "off" || setting.mode === "build" ? null : setting.mode === "custom" ? custom.get(id) ?? null : lap[index]
       }));
       return {
-        id: event.id, name: event.name, mode: setting.mode, modes: datedModesOf(event), challenges: event.challenges ?? null,
+        id: event.id, name: event.name, season: datedSeasonOf(event), mode: setting.mode, modes: datedModesOf(event), challenges: event.challenges ?? null,
         anchor: event.anchor, schedule: setting.schedule, steps,
         place: event.locations ? datedPlace(event, steps, nowMs) : null,
         stops: event.locations ? event.locations.map((id) => ({ id, label: event.stops[id] })) : null,

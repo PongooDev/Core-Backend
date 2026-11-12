@@ -19,7 +19,8 @@ import { geodeBegin, geodeCountdown, geodeOver, riftGrowth } from "./rocketlaunc
 // Reels' projector, so those run to 6.00, and its mission alert flags by its alert rows (5.40's again), but Horde (Road Trip's
 // Challenge the Horde ended with Season 5); they drop the lobby decor and LobbySeason4 and add LobbySeason6 (below). Its
 // Cube flags and High Stakes' stay 5.41's: they are dated events (events/cube.js, events/highstakes.js), and Season 6 began
-// after both (the Cube risen under the floating island).
+// after both (the Cube risen under the floating island). The floating island's sixteen (below) aren't in 6.00's client paks
+// but in the server-only BP_IslandServerOnly (Core-ServerAssets' CL-4395664 pak), and are a dated event too (events/island.js).
 //
 // The admin panel switches each one "on" or "off" over what the build serves by itself (events config
 // season4Flags.overrides; absent: the build's own, events/events.js), in the Automatic mode. On, a flag is served with
@@ -150,6 +151,20 @@ export const season4FlagGroups = [
     flag("BR_S5_Cube_Lake", [b530, b530], "The Cube sinks into Loot Lake and the lake turns bouncy (from 19 September)"),
     flag("BR_S5_Cube_MoveTo8", [b540, b541], "5.40's and 5.41's leg to the lake: the Cube rolls through Tilted Towers to Loot Lake (17 to 19 September)"),
     flag("BR_S5_Cube_Destination", [b540, b541], "5.40's and 5.41's lake: the Cube sinks into Loot Lake and the lake turns bouncy (from 19 September)")
+  ] },
+  // 6.00's floating island (BP_IslandServerOnly's EventBindings, which BP_IslandScripting watches, events/island.js): served
+  // by the Fortnite Wiki's dates on Season 6's replay, or always or never by their switch (one island flag at a time: with
+  // two on, the island goes where the last to turn on says).
+  { id: "island", name: "Battle Royale map: the floating island (6.00)", flags: [
+    flag("BR_S6_Island_Rune0", [b6000, b600], "The island hangs over Loot Lake (from Season 6's start, 27 September 2018, and again from 21 October)"),
+    ...[["southwest of Pleasant Park", "28 September", "29 September to 1 October"], ["by Shifty Shafts", "1 to 3 October", "3 to 5 October"],
+      ["northwest of Fatal Fields", "5 to 6 October", "6 to 8 October"], ["south of Retail Row", "8 to 9 October", "9 to 10 October"],
+      ["in Wailing Woods", "10 to 13 October", "13 to 14 October"], ["by Lazy Links", "14 to 16 October", "16 to 17 October"],
+      ["in the map's middle", "17 to 18 October", "18 to 20 October"]].flatMap(([place, leg, stay], index) => [
+      flag(`BR_S6_Island_MoveTo${index + 1}`, [b6000, b600], `The island floats to rune ${index + 1}, ${place} (${leg})`),
+      flag(`BR_S6_Island_Rune${index + 1}`, [b6000, b600], `The island over rune ${index + 1}, ${place}: the Cube lifts it, the map icon lit (${stay})`)
+    ]),
+    flag("BR_S6_Island_MoveTo8", [b6000, b600], "The island floats back to Loot Lake (20 to 21 October)")
   ] },
   // 5.40's High Stakes (Athena/Items/ChallengeBundleSchedules/LTM/Schedule_LTM_Heist, events/highstakes.js): served by its
   // dates on Season 5's replay, or always or never by its switch. 5.41's paks keep it.

@@ -72,8 +72,9 @@ import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 // sequence. 6.00's (CL-4402180) paks still hold CUBE and Cube_Dest_Scripting, but no map places them (it has no Level_CUBE
 // and no BP_Athena_Water_LootLake_Child): its Loot Lake is Season 6's (Athena_POI_Lake_002 and _LakeIsland_002), with
 // the floating island (Athena_POI_Foundations' BP_IslandScripting and CUBE_Simple) whose calendar events are named by the
-// server-only BP_IslandServerOnly, which its PC paks lack; so 6.00 plays neither the Cube nor the sink, and isn't served
-// the Cube's flags. The panel also puts the Cube straight at any of its stops (datedMoveSchedule): a running match rolls
+// server-only BP_IslandServerOnly (not in CL-4402180's client paks; Core-ServerAssets' CL-4395664 pak has it) and served
+// by Season 6's dates (events/island.js); so 6.00 plays neither the Cube nor the sink, and isn't served the Cube's flags.
+// The panel also puts the Cube straight at any of its stops (datedMoveSchedule): a running match rolls
 // it onto a rune from the path's step before it and prints it, the game's own arrival; it can't replay the days-long roll
 // between two runes (a leg's MoveTo moves it one step per calendar change, and IncrementIndex's next timer comes out below
 // zero after its one roll).

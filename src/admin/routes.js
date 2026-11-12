@@ -49,6 +49,7 @@ import { season4FlagsStatus } from "../events/oddities.js";
 import { tomatoRiftStates } from "../events/tomatorift.js";
 import { cubeStates } from "../events/cube.js";
 import { highStakesStates } from "../events/highstakes.js";
+import { islandStates } from "../events/island.js";
 import { datedEvent, datedEvents, datedFlagsStatus, datedModesOf, datedMoveSchedule, datedRollSchedule, datedSchedulePatch, datedSettings, datedSinkSchedule,
   datedSpawnSchedule, defaultDatedMode, minSinkLeadSeconds, minSpawnLeadSeconds, sinkLeadSeconds, spawnLeadSeconds } from "../events/datedflags.js";
 import { birthdayChallengeStates } from "../events/birthday2018.js";
@@ -123,10 +124,13 @@ const served530 = (now) => inBuild("4305896", () => [...activeEventFlags(),
 // What 5.40 (CL-4352937) serves now: its flags, the Cube's and High Stakes' by their dates (events/cube.js, events/highstakes.js).
 const served540 = (now) => inBuild("4352937", () => [...activeEventFlags(),
   ...[...(cubeStates(now)[0]?.events ?? []), ...(highStakesStates(now)[0]?.events ?? [])].map(({ eventType }) => eventType)]);
+// What 6.00 (CL-4402180) serves now: its flags and the floating island's by its dates (events/island.js).
+const served600 = (now) => inBuild("4402180", () => [...activeEventFlags(),
+  ...(islandStates(now)[0]?.events ?? []).map(({ eventType }) => eventType)]);
 
-// Season 5's dated event-flag events (events/datedflags.js, Core-Backend #311) as the admin panel shows them: each step's
-// times by Epic's dates on the replay's lap now, the admin's own and the ones served now.
-const datedStatus = (now, config) => withoutSeasonStartRecording(() => datedFlagsStatus(now.getTime(), seasonMoment(now, null, 5).getTime(), config));
+// Season 5's dated event-flag events (events/datedflags.js, Core-Backend #311) and Season 6's floating island as the admin
+// panel shows them: each step's times by Epic's dates on its season's replay lap now, the admin's own and the ones served now.
+const datedStatus = (now, config) => withoutSeasonStartRecording(() => datedFlagsStatus(now.getTime(), (season) => seasonMoment(now, null, season).getTime(), config));
 
 export function adminRoutes(context) {
   const { accounts, profiles, tokens, sessions, matchmaker, xmpp, stomp, settings, network, dataDir, resetTokens, reports, adminAuth } = context;
@@ -1395,8 +1399,8 @@ export function adminRoutes(context) {
       },
       eventsConfig,
       rocketLaunch: rocketLaunchStatus(now, eventsConfig),
-      // Season 4's event flags, grouped (events/season4flags.js, Core-Backend #296), with what 4.5, 5.0, 5.10, 5.21, 5.30 and 5.40 serve now.
-      season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(now, eventsConfig, inBuild("4166199", () => activeEventFlags()), inBuild("4214610", () => activeEventFlags()), served510(now), served521(now), served530(now), served540(now))),
+      // Season 4's event flags, grouped (events/season4flags.js, Core-Backend #296), with what 4.5, 5.0, 5.10, 5.21, 5.30, 5.40 and 6.00 serve now.
+      season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(now, eventsConfig, inBuild("4166199", () => activeEventFlags()), inBuild("4214610", () => activeEventFlags()), served510(now), served521(now), served530(now), served540(now), served600(now))),
       datedFlags: datedStatus(now, eventsConfig),
       // 5.40's Storm Destruction (events/stormdestruction.js, PongooDev/CoreV2#395): its mode, share of matches and switch now.
       stormDestruction: withoutSeasonStartRecording(() => stormDestructionStatus(now, eventsConfig)),
@@ -1601,11 +1605,11 @@ export function adminRoutes(context) {
     }
     if (!Object.keys(patch).length) return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "Give a flag and its state, the oddities mode or the rifts' schedule");
     const updated = settings.update({ events: { season4Flags: patch } });
-    res.json({ success: true, season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(new Date(), updated.events, inBuild("4166199", () => activeEventFlags()), inBuild("4214610", () => activeEventFlags()), served510(new Date()), served521(new Date()), served530(new Date()), served540(new Date()))) });
+    res.json({ success: true, season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(new Date(), updated.events, inBuild("4166199", () => activeEventFlags()), inBuild("4214610", () => activeEventFlags()), served510(new Date()), served521(new Date()), served530(new Date()), served540(new Date()), served600(new Date()))) });
   });
 
-  // Season 5's dated event-flag events (events/datedflags.js, Core-Backend #311) and the event challenges (#316):
-  // {event: "cube" | "tomatoRift" | "highStakes" | "birthday"} with {mode: "dates" | "custom" | "off" (the Birthday
+  // Season 5's dated event-flag events (events/datedflags.js, Core-Backend #311), the event challenges (#316) and 6.00's
+  // floating island: {event: "cube" | "island" | "tomatoRift" | "highStakes" | "birthday"} with {mode: "dates" | "custom" | "off" (the Birthday
   // Challenges also "build", their default)} and/or {schedule}: {startAt, step, scale} (every step at Epic's spacing from that
   // step's start, scale 1 Epic's, 0.5 twice as fast), [{step, startAt, endAt}] (those steps over the current times, or over
   // the replay's dates now when there are none; both null removes a step's; endAt null stays on), or null (clears them).
@@ -1656,7 +1660,9 @@ export function adminRoutes(context) {
 
   // The Cube's movement stages (Core-Backend #295): {event: "cube", to: "spawn" | "rune1" … "rune7" | "lake"} puts it at that
   // location now, from wherever it is, and holds it there (events/datedflags.js datedMoveSchedule): a running match rolls it
-  // onto a rune and prints it; Loot Lake is the sink, a minute on (the route below's "now").
+  // onto a rune and prints it; Loot Lake is the sink, a minute on (the route below's "now"). The floating island's
+  // (PongooDev/CoreV2#401): {event: "island", to: "lake" | "rune1" … "rune7" | "home"}, that stop's flag alone from now; a
+  // running 6.00 match puts the island there (events/island.js).
   router.post("/admin/api/events/dated-flags/move", (req, res) => {
     const body = typeof req.body === "object" && req.body !== null ? req.body : {};
     const event = datedEvent(body.event);

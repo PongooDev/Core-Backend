@@ -7623,7 +7623,7 @@
         if (await act(api("/admin/api/events/flags", payload), message)) showEvents();
       };
       const s4Range = ([first, last]) => {
-        const names = { 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4204761: "5.0", 4214610: "5.0", 4225813: "5.10", 4240749: "5.10", 4288479: "5.21", 4305896: "5.30", 4352937: "5.40", 4363240: "5.41" };
+        const names = { 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4204761: "5.0", 4214610: "5.0", 4225813: "5.10", 4240749: "5.10", 4288479: "5.21", 4305896: "5.30", 4352937: "5.40", 4363240: "5.41", 4395664: "6.00.0", 4402180: "6.00" };
         return first === last ? names[first] : `${names[first] || first} – ${names[last] || last}`;
       };
       const odditiesLabels = { off: "Off: the rifts wait (switch them below by hand)", launch: "After the rocket launch: Epic's days, counted from the admin's launch time", dates: "Epic's dates (30 June – 10 July) on Season 4's replay", custom: "My own times (set below)" };
@@ -7681,7 +7681,7 @@
           el("div", { style: "font-weight:700; font-size:12px;", text: event.challenges ? `${event.name[0].toUpperCase()}${event.name.slice(1)} (${event.challenges}):` : `When ${event.name} happens:` }),
           placeLine,
           el("select", { class: "field", style: "margin-top:4px;", "aria-label": `${event.name} schedule`, onchange: (e) => datedAction({ event: event.id, mode: e.target.value }, `${event.name}: schedule saved`) },
-            ...(event.modes || dated.modes).map((value) => el("option", { value, text: (event.challenges ? challengeLabels : datedLabels)[value] || value, selected: event.mode === value }))),
+            ...(event.modes || dated.modes).map((value) => el("option", { value, text: (!event.challenges && value === "dates" ? `Epic's dates on Season ${event.season || 5}'s replay` : (event.challenges ? challengeLabels : datedLabels)[value]) || value, selected: event.mode === value }))),
           el("div", { class: "muted", style: "font-size:12px; margin:6px 0 4px;", text: "Start the sequence from one step, the others following at Epic's spacing (scale 1; 0.5 is twice as fast, 0.01 runs the Cube's month in about 6 hours). Or set each step below: an empty end stays on. Saving switches to My own times; running gameservers pick it up within 5 seconds, clients at their next calendar fetch." }),
           el("div", { style: "display:flex; flex-wrap:wrap; gap:8px; align-items:center;" },
             el("span", { style: "font-size:12px;", text: "Start" }), anchor,
@@ -7712,6 +7712,34 @@
             ...((event.modes || []).includes("build") ? [el("button", { class: "btn ghost small", text: "Back to the build's own", onclick: () => datedAction({ event: event.id, schedule: null, mode: "build" }, `${event.name}: the build's own`) })] : [])));
       };
       const datedEditors = dated.events.filter((event) => !event.challenges).map(datedEditor);
+      // 6.00's floating island (events/island.js, PongooDev/CoreV2#401): where it is on its way (Loot Lake, the seven runes, back over Loot Lake),
+      // and a button per stop that puts it there now and holds it there.
+      const islandDated = dated.events.find((event) => event.id === "island");
+      const islandStops = islandDated?.stops || [];
+      const islandStage = islandDated?.stage || { at: null, toward: null };
+      const islandLabel = (id) => islandStops.find((stop) => stop.id === id)?.label || id;
+      const islandMove = async (to) => {
+        if (await act(api("/admin/api/events/dated-flags/move", { event: "island", to }), (res) => `The floating island moves to ${res.label}`)) showEvents();
+      };
+      const islandStagesContainer = islandStops.length ? el("div", {
+        style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
+      },
+        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "6.00 The Floating Island's stops (Battle Royale):" }),
+        el("div", { class: "muted", style: "font-size:12px; margin-bottom:6px;", text: "6.00 places the island from the calendar: over Loot Lake (EventFlag.BR_S6_Island_Rune0), over one of the seven runes (_Rune1 to _Rune7, the map's island icon lit), or on its way to the next (_MoveTo1 to _MoveTo8, partway along by the leg's progress). Epic's dates are the Fortnite Wiki's days on Season 6's replay: it hung over Loot Lake from 27 September 2018, reached the Pleasant Park rune on 29 September and the last, in the map's middle, on 18 October, and was back over Loot Lake on 21 October. The days are approximate and their hours unknown, so each change is at midnight UTC. The game server needs BP_IslandServerOnly, which is in the 6.00 server-assets pak and not in the client's files; without it the island is never placed." }),
+        el("div", { style: "font-size:13px; margin-bottom:8px;", text: `Now: ${islandStage.toward ? `floating to ${islandLabel(islandStage.toward)}${islandStage.at ? `, from ${islandLabel(islandStage.at)}` : ""}` : islandStage.at ? islandLabel(islandStage.at) : "not placed (no island flag served)"}${islandDated.mode === "dates" ? " (Epic's dates on Season 6's replay)" : islandDated.mode === "off" ? " (the island's flags are off)" : ""}` }),
+        el("div", { style: "display:flex; flex-wrap:wrap; gap:6px; align-items:center;", role: "group", "aria-label": "The floating island's stops" },
+          ...islandStops.map((stop, index) => el("button", {
+            class: stop.id === islandStage.at && !islandStage.toward ? "btn small" : "btn ghost small",
+            style: stop.id === islandStage.toward ? "border-style:dashed;" : "",
+            "aria-pressed": String(stop.id === islandStage.at && !islandStage.toward),
+            title: stop.id === "lake" || stop.id === "home" ? "Put it over Loot Lake (rune 0)" : "Put it over this rune (the map icon lit)",
+            text: `${index ? "→ " : ""}${stop.label}${stop.id === islandStage.at ? " ●" : stop.id === islandStage.toward ? " …" : ""}`,
+            onclick: () => islandMove(stop.id)
+          }))),
+        el("div", { style: "display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:8px;" },
+          el("button", { class: "btn ghost small", text: "Back to Epic's dates", onclick: () => datedAction({ event: "island", schedule: null, mode: "dates" }, "The floating island: Epic's dates") })),
+        el("div", { class: "muted", style: "font-size:12px; margin-top:6px;", text: "Pick a stop to put the island there now and keep it there (My own times in the island's schedule below: that stop's flag alone). Matches running 6.00 pick it up within 5 seconds: the island jumps straight there, and the map's island icon moves with it. What a running match can't play: 6.00 places the island once each time an island flag turns on, so no match shows it flying between two stops (a match that starts during a leg has it partway along, and it stays there for that match). The runes rising and flying to the island, the sky portal, the island breaking up and the Cube's end came with later updates and aren't in 6.00's files, so it just stays over Loot Lake after 21 October. Needs the Automatic mode with seasonal events on." })
+      ) : null;
       // 5.30's Crack Closure, the Cube appearing (events/cube.js, Core-Backend #295): when it appears, on the Cube's times.
       const cubeDated = dated.events.find((event) => event.id === "cube");
       const cubeSpawn = cubeDated?.spawn;
@@ -7799,7 +7827,7 @@
       const season4Container = el("div", {
         style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
       },
-        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "Season 4 and 5 event flags (4.0 – 5.41):" }),
+        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "Season 4, 5 and 6 event flags (4.0 – 6.00):" }),
         el("div", { class: "muted", style: "font-size:12px; margin-bottom:8px;", text: "Every EventFlag.* in Season 4's paks. Automatic serves what the build served in its day; On or Off overrides it on the builds whose paks have the flag (in the Automatic mode). The rocket's flags follow the Rocket Launch above. Clients pick a change up at their next calendar fetch; running gameservers within 5 seconds." }),
         ...s4.groups.map((group) => el("div", { style: "margin-top:10px;" },
           el("div", { style: "font-weight:700; font-size:12px; margin-bottom:4px;", text: group.name + (group.managedBy ? " (by the Rocket Launch's time)" : "") }),
@@ -7808,7 +7836,9 @@
               el("td", { style: "font-family:var(--mono, monospace); white-space:nowrap;", text: entry.flag }),
               el("td", { class: "muted", text: entry.description }),
               el("td", { style: "white-space:nowrap;", text: s4Range(entry.builds) }),
-              el("td", {}, entry.builds[0] >= 4352937
+              el("td", {}, entry.builds[0] >= 4395664
+                ? chip(entry.servedOn600 ? "on in 6.00" : "off in 6.00", entry.servedOn600 ? "good" : "")
+                : entry.builds[0] >= 4352937
                 ? chip(entry.servedOn540 ? "on in 5.40" : "off in 5.40", entry.servedOn540 ? "good" : "")
                 : entry.builds[0] >= 4305896
                 ? chip(entry.servedOn530 ? "on in 5.30" : "off in 5.30", entry.servedOn530 ? "good" : "")
@@ -8078,6 +8108,7 @@
           ...(cubeSpawnContainer ? [cubeSpawnContainer] : []),
           ...(cubeStagesContainer ? [cubeStagesContainer] : []),
           ...(cubeSinkContainer ? [cubeSinkContainer] : []),
+          ...(islandStagesContainer ? [islandStagesContainer] : []),
           ...(challengesContainer ? [challengesContainer] : []),
           season4Container,
           el("div", { style: "margin-top:18px;" },

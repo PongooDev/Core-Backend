@@ -327,10 +327,12 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // decor's (LobbyHalloweenDecor, LobbyWinterDecor, LobbySeason4), the Cube's legs and runes still in CUBE (and
 // Cube_Dest_Scripting's _Destination), and, new, LobbySeason6 (Items/Events/Shared/LobbyBG_Season6: the lobby in
 // Maps/UI/Frontend_Lobby_Season6) and Fortnitemares, FortnitemaresPhase1 and Phase2 (the quest map's Fortnitemares pages,
-// Update v6.20's event). Its map has no flag of its own: the floating island (Athena/Prototype/Blueprints/Island/
-// BP_IslandScripting, placed in Athena_POI_Foundations) takes its position from the server-only BP_IslandServerOnly,
-// which isn't in the client's paks (nor in Core-ServerAssets' 6.00 pak), and replicates it (IslandPosition,
-// CubeletGrowthstage); the corrupted areas (the rune seals and vents, BP_Athena_RuneSeal) follow it. Season 6 began with
+// Update v6.20's event). Its map's floating island (Athena/Prototype/Blueprints/Island/BP_IslandScripting, placed in
+// Athena_POI_Foundations) has flags the client's paks don't name: on the server it loads the server-only
+// BP_IslandServerOnly, whose EventBindings are the island's calendar events (EventFlag.BR_S6_Island_Rune0 to _Rune7 and
+// _MoveTo1 to _MoveTo8), and it replicates the position the active one gives (IslandPosition, CubeletGrowthstage). The
+// CL-4402180 client paks lack BP_IslandServerOnly; Core-ServerAssets' CL-4395664 pak has it. Those flags are served by
+// Epic's Season 6 dates on Season 6's replay (events/island.js). Season 6 began with
 // the Cube risen under the floating island over Leaky Lake, so the Cube's Season 5 flags and High Stakes end with 5.41
 // (events/cube.js, events/highstakes.js), Road Trip and Challenge the Horde with Season 5 (roadTrip2018End, 🟡 the Horde's
 // end: Update v6.00 names neither), and LobbySeason5 with LobbySeason6. 6.00 serves LobbySeason6 and the ticketless
@@ -368,6 +370,9 @@ export const cubeMoveToLake = "EventFlag.BR_S5_Cube_MoveToLake";
 export const cubeLake = "EventFlag.BR_S5_Cube_Lake";
 // 5.40's: the Cube at Loot Lake (Cube_Dest_Scripting; its leg there is cubeMoveTo(8)), and the High Stakes event.
 export const cubeDestination = "EventFlag.BR_S5_Cube_Destination";
+// 6.00's floating island (BP_IslandServerOnly's EventBindings, events/island.js): rune 0 is Loot Lake.
+export const islandRune = (stop) => `EventFlag.BR_S6_Island_Rune${stop}`;
+export const islandMoveTo = (stop) => `EventFlag.BR_S6_Island_MoveTo${stop}`;
 export const highStakes2018 = "HighStakes2018";
 export const ltmHeist = "EventFlag.LTM_Heist";
 const build40 = 4039451;
