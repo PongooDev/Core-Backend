@@ -34,22 +34,25 @@ test("a friend request, its acceptance and a removal reach both players, with pr
     const [one, two] = await players(backend.port);
 
     assert.equal((await post(backend.port, friendsUrl(one.accountId, two.accountId), one.token)).status, 204);
-    assert.deepEqual((await get(backend.port, `${friendsUrl(one.accountId)}?includePending=true`, one.token)).body,
-      [{ accountId: two.accountId, status: "PENDING", direction: "OUTBOUND" }]);
+    // Each friend as Epic's service had it, with when the request was made (the client reads created, #398).
+    const pending = (await get(backend.port, `${friendsUrl(one.accountId)}?includePending=true`, one.token)).body;
+    const created = pending[0]?.created;
+    assert.ok(Date.parse(created) && new Date(created).toISOString() === created, "created is ISO 8601");
+    assert.deepEqual(pending, [{ accountId: two.accountId, status: "PENDING", direction: "OUTBOUND", created, favorite: false }]);
     assert.deepEqual((await get(backend.port, `${friendsUrl(two.accountId)}?includePending=true`, two.token)).body,
-      [{ accountId: one.accountId, status: "PENDING", direction: "INBOUND" }]);
+      [{ accountId: one.accountId, status: "PENDING", direction: "INBOUND", created, favorite: false }]);
     assert.deepEqual((await get(backend.port, friendsUrl(two.accountId), two.token)).body, []);
-    assert.deepEqual(await notification(two.client, "Friend"), { accountId: one.accountId, status: "PENDING", direction: "INBOUND" });
-    assert.deepEqual(await notification(one.client, "Friend"), { accountId: two.accountId, status: "PENDING", direction: "OUTBOUND" });
+    assert.deepEqual(await notification(two.client, "Friend"), { accountId: one.accountId, status: "PENDING", direction: "INBOUND", created, favorite: false });
+    assert.deepEqual(await notification(one.client, "Friend"), { accountId: two.accountId, status: "PENDING", direction: "OUTBOUND", created, favorite: false });
     await two.client.nothing((stanza) => stanza.name === "presence");
 
     // A second request changes nothing; the other side asking back accepts.
     assert.equal((await post(backend.port, friendsUrl(one.accountId, two.accountId), one.token)).status, 204);
     assert.equal((await post(backend.port, friendsUrl(two.accountId, one.accountId), two.token)).status, 204);
-    assert.deepEqual(await notification(one.client, "Friend"), { accountId: two.accountId, status: "ACCEPTED", direction: "OUTBOUND" });
-    assert.deepEqual(await notification(two.client, "Friend"), { accountId: one.accountId, status: "ACCEPTED", direction: "INBOUND" });
+    assert.deepEqual(await notification(one.client, "Friend"), { accountId: two.accountId, status: "ACCEPTED", direction: "OUTBOUND", created, favorite: false });
+    assert.deepEqual(await notification(two.client, "Friend"), { accountId: one.accountId, status: "ACCEPTED", direction: "INBOUND", created, favorite: false });
     assert.deepEqual((await get(backend.port, friendsUrl(one.accountId), one.token)).body,
-      [{ accountId: two.accountId, status: "ACCEPTED", direction: "OUTBOUND" }]);
+      [{ accountId: two.accountId, status: "ACCEPTED", direction: "OUTBOUND", created, favorite: false }]);
 
     // Friends see each other's presence from then on.
     const seen = await two.client.next((stanza) => stanza.name === "presence");
