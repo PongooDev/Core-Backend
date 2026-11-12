@@ -241,6 +241,8 @@ const v601 = "4424678";
 const v6010 = "4417689";
 const v602 = "4461277";
 const v6020 = "4442095";
+// 6.10's three changelists (tests/build610.test.js): its data keeps the same two schedules.
+const builds610 = ["4480234", "4476098", "4464155"];
 const drift = "AthenaCharacter:cid_161_athena_commando_m_drift";
 const ragnarok = "AthenaCharacter:cid_165_athena_commando_m_darkviking";
 const riftEdge = "AthenaPickaxe:pickaxe_id_068_drift";
@@ -276,7 +278,7 @@ function playSeasonFive(login, { xp = 30000, tiers = 0 } = {}) {
 }
 
 test("the data: 6.01 and 6.02 keep Season 5's Drift and Ragnarok schedules past its end and nothing of Seasons 3 and 4; 6.00's and the earlier seasons' don't", () => {
-  for (const build of [v601, v6010, v602, v6020]) {
+  for (const build of [v601, v6010, v602, v6020, ...builds610]) {
     inBuild(build, () => {
       const schedules = athenaChallengeSchedules();
       assert.deepEqual(Object.entries(schedules).filter(([, schedule]) => schedule.keptPastSeason !== undefined).map(([id, schedule]) => [id, schedule.keptPastSeason]),
@@ -314,7 +316,7 @@ test("the data: 6.01 and 6.02 keep Season 5's Drift and Ragnarok schedules past 
 });
 
 test("a Season 5 pass owner's unfinished Drift challenges are still theirs on 6.01 and 6.02, as they stood, and Season 6's XP counts on", () => {
-  for (const build of [v602, v6020, v601, v6010]) {
+  for (const build of [v602, v6020, v601, v6010, ...builds610]) {
     withAccount((login) => {
       const before = playSeasonFive(login);
       assert.deepEqual(before.drift, [["Claimed", 10000], ["Claimed", 25000], ["Active", 30000], ["Active", 30000], ["Active", 30000]]);
@@ -462,7 +464,7 @@ test("a build whose data keeps no schedule leaves Season 5's aside: 6.00 as befo
 }));
 
 test("a Season 6 player who never had Season 5's pass gets none of its challenges, with Drift in the locker or without", () => {
-  for (const build of [v602, v601]) {
+  for (const build of [v602, v601, builds610[0]]) {
     withAccount((login) => {
       const fresh = login(build, (session, profile) => {
         buyBattlePass(session, seasonRewardFunctions());

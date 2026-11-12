@@ -1,6 +1,6 @@
 import { currentBuild } from "../builds/context.js";
 import { seasonMoment } from "../store/itemshop.js";
-import { datedEvent, datedParts, datedSettings, datedWindows } from "./datedflags.js";
+import { datedEvent, datedEventOn, datedParts, datedSettings, datedWindows } from "./datedflags.js";
 import { currentEventsConfig, seasonalEventsOn } from "./events.js";
 import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 
@@ -72,10 +72,26 @@ import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 // HTTP ranges) binds the same sixteen names in the same order. Update v6.02 came on 10 October, the day the island left
 // the Retail Row rune for Wailing Woods' (MoveTo5), where the replay has a 6.02 match find it. A CL-4461277 host needs
 // that asset too, and has it: release cl-4461277 is CL-4442095's pak, republished (Core-ServerAssets 98dbe4b).
+//
+// 6.10 (CL-4464155, CL-4476098 and CL-4480234) keeps it too, with one more flag. Its own BP_IslandServerOnly (Core-
+// ServerAssets' CL-4464155 pak, read with CUE4Parse) binds seventeen names: 6.00's sixteen in 6.00's order and, last,
+// EventFlag.BR_S6_Island_Rune8. CL-4480234's BP_IslandScripting (its client paks, decompiled) reads them as 6.01's does
+// ("Rune" and "MoveTo" by the name's last digit, the leg's progress 8% to 97%, the first one found active and then no
+// more: HasSetIslandPosition), on the same spline, whose point 8 is Loot Lake again. So _Rune8 puts the island back over
+// Loot Lake at CachedTime 8, where _Rune0 has it at 0, and that is what differs: the Cube's crack is whole
+// (SetupCrackProgress, FMin(CachedTime, 7) / 7), Growthstage is 8, the map's island icon is lit (CachedTime above 0 and whole),
+// and, new in 6.10, OnRep_IslandPosition on clients spawns Athena/Environments/Island/CubeGrowth/BP_Growth_HouseGlow at
+// the island whenever CachedTime is above 7 (with IslandCachedTime and StageProgress, the leg's progress): the island's
+// house glowing with the Cube grown through it, on the way back from the last rune (_MoveTo8, 7.08 to 7.97) and over
+// Loot Lake after it (_Rune8). Update v6.10 came on 16 October, the day the island reached Lazy Links' rune; it flew back
+// to Loot Lake on 20 and 21 October, in 6.10's days. So on 6.10 the replay's last step, back over Loot Lake from 21
+// October, is _Rune8 and not _Rune0 (events/datedflags.js laterFlags; 🟡 that Epic's calendar had _Rune8 from that day is
+// read from the build's files, which bind and play it, not from a recording of the calendar). 6.00 to 6.02 are as they
+// were: their BP_IslandServerOnly doesn't bind _Rune8, so they are served _Rune0 there.
 export const islandEvent = datedEvent("island");
 
 // The island's calendar events as parts [{validFrom (ms), events: [{eventType, activeSince, activeUntil}]}], from the part
-// that holds now on (the next four changes), as events/cube.js's: on 6.00 to 6.02 with the seasonal events on, in the
+// that holds now on (the next four changes), as events/cube.js's: on 6.00 to 6.10 with the seasonal events on, in the
 // Automatic mode. A flag the admin switched on is served always (season4Overrides) and one switched off never, so neither is
 // scheduled here.
 export function islandStates(now = new Date(), changelist = currentBuild(), config = currentEventsConfig()) {
@@ -83,6 +99,6 @@ export function islandStates(now = new Date(), changelist = currentBuild(), conf
   if (!entry || !onBuild(entry, changelist) || !seasonalEventsOn() || (config?.mode ?? "auto") !== "auto") return [];
   const { off, on } = season4Overrides(changelist, config);
   const nowMs = now.getTime();
-  const windows = datedWindows(islandEvent, datedSettings(config).island, nowMs, seasonMoment(now, null, 6).getTime());
+  const windows = datedWindows(datedEventOn(islandEvent, changelist), datedSettings(config).island, nowMs, seasonMoment(now, null, 6).getTime());
   return datedParts(windows, nowMs, islandEvent.parts, new Set([...off, ...on]));
 }

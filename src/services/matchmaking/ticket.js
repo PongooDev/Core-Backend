@@ -9,6 +9,7 @@ import { regionAllowsAddress, regionOf } from "../../matchmaking/regions.js";
 import { customMatchOptionsOf, customMatchOptionsText, parseBucket, serverRegion } from "../../matchmaking/service.js";
 import { managesSession } from "../../matchmaking/sessions.js";
 import { defaultHostingIps, httpsProxied, requestAddress, viaHttpProxy } from "../../network.js";
+import { showdownTicket, tournamentIdOf } from "../../tournaments/showdown.js";
 import { notRegionHost } from "./sessions.js";
 
 // Battle Royale's matchmaking tickets (src/matchmaking/service.js): a player's (MatchmakingServiceClient::ObtainTicket
@@ -21,7 +22,7 @@ import { notRegionHost } from "./sessions.js";
 // the address and port the connection came in on (network.js directHost).
 const customKeyLength = { min: 4, max: 16 };
 
-export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings, network }) {
+export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings, network, tournaments }) {
   const router = express.Router();
   const base = "/fortnite/api/game/v2/matchmakingservice/ticket";
   const serviceUrl = (req) => {
@@ -52,7 +53,24 @@ export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings,
     const modes = ltmModes(currentBuild(), settingsValue);
     // The event queues' LTMs (Shooting Test #1, Sniper Shootout, ...) queue only while the build's lobby offers them
     // (events/ltms.js): off unless turned on, by hand or by their original dates. 50v50 stays on unless turned off.
-    const off = ltm && !ltm.defaultOn ? !ltmOn(ltm.id, currentBuild(), settingsValue) : modes && modes[mode] === false;
+    const partyPlayerIds = list(req.query.partyPlayerIds);
+    // 6.10's in-game tournaments (tournaments/showdown.js): a Showdown playlist is no lobby mode, so its ticket is taken
+    // while a tournament event of it runs, for a full party. The client names the event with player.option.tournamentId
+    // and player.option.windowId (UFortMatchmakingV2::StartMatchmaking, CL-4480234 0x10DDA70) when its Events tab has it
+    // live; a refusal carries the code Epic's service gave, which the lobby has a text for ("Sorry, this tournament is
+    // not currently active.", "You need to be in a full party for this tournament."). The match is an ordinary one of
+    // the playlist: the event's points come from its results (services/fortnite/battleroyale.js).
+    let tournamentEvent = null;
+    if (ltm?.tournament) {
+      const { event, error } = showdownTicket({ playlistId, tournamentId: String(req.query["player.option.tournamentId"] ?? ""),
+        windowId: String(req.query["player.option.windowId"] ?? ""), partySize: partyPlayerIds.length || 1, build: currentBuild() }, new Date(), tournaments);
+      if (error) {
+        log("Matchmaking", `Refused ${accountId}'s ticket for bucket ${bucketId}: ${error.message} (${error.code}; admin panel, Tournaments)`);
+        return sendError(res, 400, error.code, error.message);
+      }
+      tournamentEvent = event;
+    }
+    const off = tournamentEvent ? false : ltm && !ltm.defaultOn ? !ltmOn(ltm.id, currentBuild(), settingsValue) : modes && modes[mode] === false;
     if (mode && off) {
       // The client shows this refusal (ObtainTicket's unexpected status, FailedToObtainTicket) as "Weird. We couldn't
       // connect to the match." (EMatchmakingErrorV2::FailedToContactGameServices, 5.30), so the console names it
@@ -61,7 +79,6 @@ export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings,
         "(admin panel, Matchmaking, Battle Royale game modes; or outside its original dates while Original dates is on)");
       return sendError(res, 400, "errors.com.epicgames.fortnite.matchmaking_disabled", `Matchmaking for ${mode} is currently disabled`);
     }
-    const partyPlayerIds = list(req.query.partyPlayerIds);
     // player.option.fillTeam: the party leader's client sends "false" for Squads with Squad Fill on No Fill
     // (FFortPartyRepState::bSquadFill) and "true" otherwise (1.7.2 0x2E68050, 1.8 0x2EACF10); the other members' tickets
     // leave it out. From 4.4 it sends only "true", for Fill, and nothing for No Fill (matchmaking/service.js
@@ -95,7 +112,8 @@ export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings,
     const fills = ticket.fillTeam === null ? "" : ticket.fillTeam ? ", fill" : ", no fill";
     const keyed = ticket.customKey ? `, custom key ${ticket.customKey}${ticket.customKeyHost ? "" : " (not allowed to open it)"}` : "";
     const optioned = ticket.customMatchOptions ? `, custom options ${customMatchOptionsText(ticket.customMatchOptions)}` : "";
-    log("Matchmaking", `Ticket for ${accountId}, party of ${ticket.partyPlayerIds.length}${fills}, bucket ${ticket.bucketId}${keyed}${optioned}`);
+    const evented = tournamentEvent ? `, tournament event ${tournamentEvent.name} (${tournamentIdOf(tournamentEvent)})` : "";
+    log("Matchmaking", `Ticket for ${accountId}, party of ${ticket.partyPlayerIds.length}${fills}, bucket ${ticket.bucketId}${keyed}${optioned}${evented}`);
     res.json(response);
   });
 

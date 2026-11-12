@@ -9,10 +9,11 @@ import { send, startBackend } from "./helpers.js";
 const v600 = "4402180";
 const v600early = "4395664";
 // 6.01 (CL-4424678 and CL-4417689) cooks the same Season 5 picture, and its SubgameSelectScreen is 6.00's; 6.02's
-// (CL-4461277 and CL-4442095) are 6.01's byte for byte.
+// (CL-4461277 and CL-4442095) are 6.01's byte for byte, and 6.10's (CL-4480234, CL-4476098 and CL-4464155) 6.02's.
 const v601 = "4424678";
 const v601early = "4417689";
 const v602 = "4461277";
+const builds610 = ["4480234", "4476098", "4464155"];
 const v602early = "4442095";
 const seasonSixArt = "https://cdn2.unrealengine.com/Fortnite/fortnite-game/subgameselect/"
   + "BR06_In-Game_Mode-Select-1920x1080-4c0975cfecd29167b1c2ddf5d916fafbdcaa0f6c.jpg";
@@ -31,7 +32,7 @@ test("Season 6's picture is Epic's, on its CDN", () => {
 });
 
 test("6.00's and 6.01's builds get Season 6's Battle Royale picture, precached; Save the World keeps its own", () => {
-  for (const build of [v600, v600early, v601, v601early, v602, v602early]) {
+  for (const build of [v600, v600early, v601, v601early, v602, v602early, ...builds610]) {
     const page = contentPage(undefined, undefined, build);
     const select = page.subgameselectdata;
     assert.deepEqual(select.battleRoyale.message,
@@ -69,7 +70,7 @@ test("the page a 6.00 client fetches names Season 6's picture", async () => {
   try {
     const pageFor = (changelist) => send({ host: "127.0.0.1", port: backend.port, method: "GET", path: "/content/api/pages/fortnite-game",
       headers: { "User-Agent": `Fortnite/++Fortnite+Release-6.00-CL-${changelist} Windows/10.0.19045.1.768.64bit` } });
-    for (const build of [v600, v600early, v601, v601early, v602, v602early]) {
+    for (const build of [v600, v600early, v601, v601early, v602, v602early, ...builds610]) {
       const page = (await pageFor(build)).body;
       assert.equal(page.subgameselectdata.battleRoyale.message.image, seasonSixArt, build);
       assert.ok(page._images_.includes(seasonSixArt), build);

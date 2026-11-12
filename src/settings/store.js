@@ -48,7 +48,10 @@ const playlistAssetLtms = ["fiftyFiftyV2", "highExplosivesSolo", "highExplosives
   "fiftyFiftySeason6", "discoDomination",
   // 6.02's (CL-4442095, CL-4461277) Disco Domination, its new mode, the 32 a side one, High Explosives and Steady Storm.
   "discoDomination602", "discoDomination32", "highExplosivesSeason6Solo", "highExplosivesSeason6Squads",
-  "steadyStormSeason6Solo", "steadyStormSeason6Duos", "steadyStormSeason6Squads"];
+  "steadyStormSeason6Solo", "steadyStormSeason6Duos", "steadyStormSeason6Squads",
+  // 6.10's (CL-4464155, CL-4476098, CL-4480234) two more Disco Dominations, Blitz! v2 and the defaults with glider redeploy.
+  "discoDomination40", "discoDominationAlt", "blitzSeason6Solo", "blitzSeason6Duos", "blitzSeason6Squads",
+  "gliderRedeploySolo", "gliderRedeployDuos", "gliderRedeploySquads"];
 // The ones on by default (events/ltms.js defaultOn, Core-Backend #314): Season 5's 50v50 and 5.10's to 5.30's Playground,
 // which those builds' shipped lobbies offer. A settings file from before them (matchmakingModesRevision under 1) kept them
 // off only because that was the default, so they are turned on once.
@@ -106,6 +109,9 @@ const defaults = {
   // Support-A-Creator's creators (store/creators.js): the names 6.02 and later players may enter in the item shop's
   // Support a Creator. None by default, which leaves the feature off, as the game ships it.
   creatorNames: [],
+  // 6.10's Events tab (tournaments/showdown.js): hide it while no in-game tournament is listed. Off by default, which
+  // leaves the tab as the game ships it.
+  hideEmptyEventsTab: false,
   // Battle Royale's matchmaking waits (Core-Backend #122, matchmaking/service.js and services/matchmaking/warmup.js):
   // how long a match forming on a free gameserver takes in more parties before it is assigned (the ETA the queue counts
   // down), how long the warmup island lasts before the bus leaves on a CoreV2 gameserver (null: the game's own), and
@@ -625,6 +631,7 @@ export function createSettingsStore(dataDir) {
       settings.cheats = cheatMode(loaded.cheats) ?? defaults.cheats;
       settings.cheatAccounts = cheatAccounts(loaded.cheatAccounts) ?? [];
       settings.creatorNames = sanitizeCreatorNames(loaded.creatorNames) ?? [];
+      settings.hideEmptyEventsTab = loaded.hideEmptyEventsTab === true;
       settings.matchmakingGatherSeconds = gatherSeconds(loaded.matchmakingGatherSeconds) ?? defaults.matchmakingGatherSeconds;
       // A blank (null) length saved stays the game's; one missing or out of range is the default.
       const warmup = warmupSecondsValue(loaded.warmupSeconds);
@@ -787,6 +794,7 @@ export function createSettingsStore(dataDir) {
       settings.cheats = cheatMode(partial.cheats) ?? settings.cheats;
       settings.cheatAccounts = cheatAccounts(partial.cheatAccounts) ?? settings.cheatAccounts;
       settings.creatorNames = sanitizeCreatorNames(partial.creatorNames) ?? settings.creatorNames ?? [];
+      if (typeof partial.hideEmptyEventsTab === "boolean") settings.hideEmptyEventsTab = partial.hideEmptyEventsTab;
       settings.matchmakingGatherSeconds = gatherSeconds(partial.matchmakingGatherSeconds) ?? settings.matchmakingGatherSeconds;
       const warmup = warmupSecondsValue(partial.warmupSeconds);
       if (partial.warmupSeconds !== undefined && warmup !== undefined) settings.warmupSeconds = warmup;

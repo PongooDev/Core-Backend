@@ -3,7 +3,7 @@ import { anniversary2018BR, cubeDestination, cubeLake, cubeLightning, cubeMoveTo
 
 // Season 5's small dated event-flag events, step by step, and the admin's own times for them (Core-Backend #311): 5.21's
 // Tomato Town rift (events/tomatorift.js), 5.30's Cube (events/cube.js; 5.40's and 5.41's too) and 5.40's High Stakes
-// (events/highstakes.js; 5.41's paks keep it); and Season 6's floating island (6.00 to 6.02, events/island.js), on
+// (events/highstakes.js; 5.41's paks keep it); and Season 6's floating island (6.00 to 6.10, events/island.js), on
 // Season 6's replay (an event's `season`, 5 without one). Each step is one or more calendar events served
 // from its start to its end (null: on to the replay's end, or, on the admin's own times, for good). The events config's
 // datedFlags.<event> picks the times:
@@ -73,6 +73,9 @@ const islandSteps = [
   step("moveTo8", "Floats back to Loot Lake", [islandMoveTo(8)], islandBackAt, islandHomeAt),
   step("home", "Back over Loot Lake (rune 0)", [islandRune(0)], islandHomeAt, null)
 ];
+// 6.10 (CL-4464155 on, events/island.js): back over Loot Lake the island is at its rune 8, the spline's last point, not
+// rune 0 again, so its "home" step is that flag there (a step's flags from a build on: datedEventOn).
+const islandRune8Build = 4464155;
 
 export const datedEvents = [
   { id: "cube", name: "the Cube (5.30 – 5.41)", flag: cubeTurnOn, anchor: "crack", parts: 4, locations: cubeLocations, legs: cubeLegs, stops: cubeStops,
@@ -88,11 +91,11 @@ export const datedEvents = [
     step("moveToLake", "Rolls to Loot Lake", [cubeMoveToLake, cubeMoveTo(8), cubeStartMove], at(runeStops[6][1]), lakeAt),
     step("lake", "Sinks into Loot Lake", [cubeLake, cubeDestination], lakeAt, null)
   ] },
-  // The floating island (6.00 to 6.02, events/island.js): one of its flags at a time, as 6.00's scripting takes the last
-  // one that turns on (6.01's and 6.02's the first, once a match). The admin panel puts it straight at any of its stops
-  // (datedMoveSchedule).
-  { id: "island", name: "the floating island (6.00 – 6.02)", season: 6, flag: islandRune(0), anchor: "lake", parts: 4, locations: islandLocations,
-    legs: islandLegs, stops: islandStops, steps: islandSteps },
+  // The floating island (6.00 to 6.10, events/island.js): one of its flags at a time, as 6.00's scripting takes the last
+  // one that turns on (6.01's, 6.02's and 6.10's the first, once a match). The admin panel puts it straight at any of its
+  // stops (datedMoveSchedule).
+  { id: "island", name: "the floating island (6.00 – 6.10)", season: 6, flag: islandRune(0), anchor: "lake", parts: 4, locations: islandLocations,
+    legs: islandLegs, stops: islandStops, steps: islandSteps, laterFlags: [{ step: "home", firstBuild: islandRune8Build, flags: [islandRune(8)] }] },
   // On the replay the rift is formed from the lap's start (5.21 shipped with it formed) until the head comes out.
   // High Stakes (5.40, events/highstakes.js; 5.41's paks keep it): from Update v5.40's morning to Update v5.41's.
   { id: "highStakes", name: "High Stakes (5.40 – 5.41)", flag: ltmHeist, anchor: "challenges", parts: 1, challenges: "Schedule_LTM_Heist", steps: [
@@ -195,6 +198,16 @@ export function datedStepsThisLap(event, nowMs, momentNowMs) {
   const { lapStart, first, end: seasonEnd } = lapOf(event, nowMs, momentNowMs);
   const real = (ms) => lapStart + (ms - first);
   return event.steps.map(({ id, start, end }) => ({ step: id, startAt: iso(real(start)), endAt: iso(real(end ?? seasonEnd)) }));
+}
+
+// An event as a build has it: its steps with the flags that build's files give them (an event's laterFlags: a step's
+// flags from a build on, the newest that holds). An event without any is itself on every build.
+export function datedEventOn(event, changelist) {
+  const build = Number(changelist);
+  const later = (event.laterFlags ?? []).filter(({ firstBuild }) => Number.isInteger(build) && build >= firstBuild);
+  if (!later.length) return event;
+  const flagsOf = (id) => later.filter(({ step: own }) => own === id).sort((a, b) => b.firstBuild - a.firstBuild)[0]?.flags;
+  return { ...event, steps: event.steps.map((own) => (flagsOf(own.id) ? { ...own, flags: flagsOf(own.id) } : own)) };
 }
 
 // The event's windows [{eventType, since, until (ms, Infinity: for good)}] by its mode: Epic's dates on the laps around

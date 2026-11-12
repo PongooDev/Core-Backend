@@ -16,6 +16,8 @@ import { createFriendStore } from "./friends/store.js";
 import { createFriendCodeStore } from "./friendcodes/store.js";
 import { createPurchaseCodeStore } from "./store/purchasecodes.js";
 import { botsOn, createTournamentStore, effectiveBots } from "./tournaments/store.js";
+import { configureShowdown } from "./tournaments/showdown.js";
+import { eventRoutes } from "./services/fortnite/events.js";
 import { networkAdminRoutes } from "./admin/network.js";
 import { adminRoutes } from "./admin/routes.js";
 import { createTokenStore } from "./accounts/tokens.js";
@@ -85,7 +87,7 @@ export function createContext(config) {
   if (config.allowRegistration !== undefined) settings.update({ allowRegistration: config.allowRegistration });
   if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
   if (config.seasonalEvents !== undefined) settings.update({ seasonalEvents: config.seasonalEvents });
-  for (const key of ["battleRoyaleVbucks", "battleRoyaleRewards", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits", "cheats", "cheatAccounts", "creatorNames",
+  for (const key of ["battleRoyaleVbucks", "battleRoyaleRewards", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits", "cheats", "cheatAccounts", "creatorNames", "hideEmptyEventsTab",
     "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "bots", "regionFallback", "vbuckPacks", "purchaseMode", "twitchPrimePack", "matchStartCountdown", "matchStartBufferSeconds", "serverRegions", "allowedBuilds", "defaultFoundersAccess", "remoteAdmin", "events", "battlepass", "matchmakingModes", "ltmOriginalDates", "ltmCloseEncounters", "serverLimits", "regionHostingIps", "customMatchServers", "customMatchFallback"]) {
     if (config[key] !== undefined) settings.update({ [key]: config[key] });
   }
@@ -100,6 +102,7 @@ export function createContext(config) {
   const sessions = createSessionStore({ regionFallback, serverRegions, regionHostingIps, customServers });
   // The admin panel's tournament events (#263), whose dedicated servers and bots (#282) the matchmaking service follows.
   const tournaments = createTournamentStore(config.dataDir);
+  configureShowdown(() => tournaments);
   const stats = createStatsStore(config.dataDir);
   const reports = createReportStore(config.dataDir);
   const profiles = createProfileStore(config.dataDir, {
@@ -222,6 +225,7 @@ export function createApp(config, context = createContext(config)) {
   app.use(statsRoutes(context));
   app.use(feedbackRoutes(context));
   app.use(battleRoyaleRoutes(context));
+  app.use(eventRoutes(context));
   app.use(friendCodeRoutes(context));
   app.use(twitchRoutes(context));
   app.use(privacyRoutes(context));

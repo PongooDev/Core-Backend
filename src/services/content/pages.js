@@ -1,3 +1,4 @@
+import { tournamentInformationFor } from "../../tournaments/showdown.js";
 import express from "express";
 import { inBuild } from "../../builds/context.js";
 import { getBuild, versionOf } from "../../builds/detect.js";
@@ -213,6 +214,7 @@ export function emergencyNoticeFor(notice, changelist) {
   };
 }
 
+// (the Events tab's tournaments: tournaments/showdown.js tournamentInformationFor)
 export function contentPage(news = defaultBattleRoyaleNews, loginMessage = defaultLoginMessage, changelist = undefined, subgameSelect = undefined,
   imageOrigin = undefined, saveTheWorldNews = undefined, lobbyNotice = undefined, playlistImages = undefined) {
   const battleRoyaleNews = battleRoyaleNewsFor(news, changelist, imageOrigin);
@@ -221,6 +223,7 @@ export function contentPage(news = defaultBattleRoyaleNews, loginMessage = defau
   const playlistimages = playlistImagesFor(changelist, playlistImages, imageOrigin);
   const playlistinformation = playlistInformationFor(changelist, playlistImages, imageOrigin);
   const subgameselectdata = subgameSelectFor(changelist, subgameSelect);
+  const tournamentinformation = tournamentInformationFor(changelist);
   const page = {
     _title: "Fortnite Game",
     lastModified: "2026-10-27T16:30:00.000Z",
@@ -233,7 +236,9 @@ export function contentPage(news = defaultBattleRoyaleNews, loginMessage = defau
     emergencynotice: emergencyNoticeFor(lobbyNotice, changelist),
     ...saveTheWorldNewsFor(saveTheWorldNews, changelist),
     ...(playlistimages ? { playlistimages } : {}),
-    ...(playlistinformation ? { playlistinformation } : {})
+    ...(playlistinformation ? { playlistinformation } : {}),
+    // 6.10's Events tab: its tournaments' texts (tournaments/showdown.js).
+    ...(tournamentinformation ? { tournamentinformation } : {})
   };
   if (loginMessage) {
     page.loginmessage = { loginmessage: { message: messageOf(loginMessage, defaultLoginMessage, changelist) } };

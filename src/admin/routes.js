@@ -125,7 +125,8 @@ const served530 = (now) => inBuild("4305896", () => [...activeEventFlags(),
 const served540 = (now) => inBuild("4352937", () => [...activeEventFlags(),
   ...[...(cubeStates(now)[0]?.events ?? []), ...(highStakesStates(now)[0]?.events ?? [])].map(({ eventType }) => eventType)]);
 // What 6.00 (CL-4402180) serves now: its flags and the floating island's by its dates (events/island.js). 6.01 and 6.02
-// serve the same ones (their paks drop only BirthdayBattleBus, which none serves by itself).
+// serve the same ones (their paks drop only BirthdayBattleBus, which none serves by itself), and 6.10 too, but back over
+// Loot Lake, where it is served its own BR_S6_Island_Rune8 (events/island.js).
 const served600 = (now) => inBuild("4402180", () => [...activeEventFlags(),
   ...(islandStates(now)[0]?.events ?? []).map(({ eventType }) => eventType)]);
 
@@ -1152,6 +1153,7 @@ export function adminRoutes(context) {
       cheats: req.body?.cheats,
       cheatAccounts: req.body?.cheatAccounts,
       creatorNames: req.body?.creatorNames,
+      hideEmptyEventsTab: req.body?.hideEmptyEventsTab,
       matchmakingGatherSeconds: req.body?.matchmakingGatherSeconds,
       warmupSeconds: req.body?.warmupSeconds,
       lateJoin: req.body?.lateJoin,
@@ -1245,8 +1247,9 @@ export function adminRoutes(context) {
     // (Wild Card, Field Surgeon, Hacivat, Stage Slayer...) and, now 5.41's (CL-4363240), 5.41's (Valkyrie, Nite Nite, Grill
     // Sergeant, Frostwing). Season 6's as 6.02's (CL-4461277): 6.00's cosmetics, 6.01's (Maximilian, Hay Man, Straw Ops,
     // Thunder Crash, Dark Glyph, Harvester, Field Wraith, T-Pose) and 6.02's (Dark Bomber, Skull Ranger, Plague, Scourge,
-    // Hollowhead, Jack Gourdon, Bullseye, their tools, gliders and emotes).
-    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4166199", 5: "4363240", 6: "4461277" }[s];
+    // Hollowhead, Jack Gourdon, Bullseye, their tools, gliders and emotes), now as 6.10's (CL-4480234), with its own
+    // (Moonrise, Spider Knight, Arachne, Web Breaker, Hatchling, Guan Yu, Guandao, Divine Dragon).
+    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4166199", 5: "4363240", 6: "4480234" }[s];
     const offers = inBuild(build, () => itemShopOffers(now, config, s));
     const cosmetics = inBuild(build, () => eligibleCosmetics());
     const currentDay = shopDay(now, config, s);
@@ -1361,7 +1364,10 @@ export function adminRoutes(context) {
       { version: "6.01.0", cl: 4417689, event: "Cram Session" },
       { version: "6.01", cl: 4424678, event: "Cram Session" },
       { version: "6.02.0", cl: 4442095, event: "Cram Session" },
-      { version: "6.02", cl: 4461277, event: "Cram Session" }
+      { version: "6.02", cl: 4461277, event: "Cram Session" },
+      { version: "6.10.0", cl: 4464155, event: "Cram Session" },
+      { version: "6.10.1", cl: 4476098, event: "Cram Session" },
+      { version: "6.10", cl: 4480234, event: "Cram Session" }
     ];
 
     const sampleBuilds = builds.map((b) => ({
@@ -1527,8 +1533,8 @@ export function adminRoutes(context) {
         {
           id: "cramsession2018",
           name: "Cram Session",
-          subtitle: "Season 6's mini-event: active Mini-Boss alerts (10 a day) giving two XP, evolution or perk packs and Gold, four ten-stage quest lines (Let's Explore, Treasure Hunter, Safecracking, The Air Itself is Filled with Husks) and the repeatable Mini-Boss quest, MEGA B.A.S.E. Kyle in the Event Store, the Ratatat and the Hydraulic Sledge in the Weekly Store, and on 6.01 the Lead Sled and the Obliterator from 4 October on the replay, on 6.02 the Noble Launcher and the Vindertech Disintegrator from 11 October; the Season 6 lobby",
-          buildRange: "6.00 – 6.02 (CL 4395664 – 4461277)",
+          subtitle: "Season 6's mini-event: active Mini-Boss alerts (10 a day) giving two XP, evolution or perk packs and Gold, four ten-stage quest lines (Let's Explore, Treasure Hunter, Safecracking, The Air Itself is Filled with Husks) and the repeatable Mini-Boss quest, MEGA B.A.S.E. Kyle in the Event Store, the Ratatat and the Hydraulic Sledge in the Weekly Store, and on 6.01 the Lead Sled and the Obliterator from 4 October on the replay, on 6.02 the Noble Launcher and the Vindertech Disintegrator from 11 October, on 6.10 the Rat King and the Grave Digger from 18 October; the Season 6 lobby",
+          buildRange: "6.00 – 6.10 (CL 4395664 – 4480234)",
           flags: ["EventFlag.ActiveMiniBosses", "EventFlag.PassiveStorms", "EventFlag.LobbySeason6"],
           theater: "Standard Zones with Mini-Boss and passive Mutant Storm alerts",
           theaterRegions: [],
@@ -2288,8 +2294,11 @@ export function adminRoutes(context) {
     playerCount: Object.keys(event.players ?? {}).length,
     leaderboard: leaderboardOf(event, (accountId) => accounts.get(accountId)?.displayName ?? accountId) });
   const tournamentsPayload = () => ({
-    playlists: tournamentPlaylists.map(({ id, name, playlistId, builds }) => ({ id, name, playlistId,
+    // inGame: 6.10's Showdown playlists, whose events the client's Events tab lists (tournaments/showdown.js).
+    playlists: tournamentPlaylists.map(({ id, name, playlistId, builds, inGame }) => ({ id, name, playlistId, inGame,
       versions: [...new Set(builds.map((build) => versionOf(build)))] })),
+    // The Events tab hidden while it has no tournament (settings hideEmptyEventsTab, set with /admin/api/settings).
+    hideEmptyEventsTab: context.settings?.get?.()?.hideEmptyEventsTab === true,
     rulesets: Object.entries(rulesets).map(([id, ruleset]) => ({ id, ...ruleset })),
     events: context.tournaments.list().map(tournamentView)
   });

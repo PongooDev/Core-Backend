@@ -158,6 +158,21 @@ const playlistTeams601Build = 4417689;
 // Explosives (23, 24) and Steady Storm (160 to 162) have 3.5.1's and 5.21's teams above, and Disco Domination (202) 6.01's.
 const playlistTeamsFrom602 = { 217: { maxTeamCount: 2, maxTeamSize: 32, maxSquadSize: 4 } };
 const playlistTeams602Build = 4442095;
+// 6.10's (CL-4464155, CL-4476098, CL-4480234) two more Disco Dominations (218, Playlist_Disco_40: 2 × 40; 230,
+// Playlist_Disco_Alt: 2 × 50; both in squads of 4), the default modes with glider redeploy (223 to 225, Playlist_GRD_Solo,
+// _Duos and _Squads) and the in-game tournaments' Showdown playlists (58071 to 58073, Playlist_Showdown_Solo, _Duos and
+// _Squads: 100 teams of 1, 2 and 4). Its Blitz! v2 (36, 37, 19) has 3.0's and 3.1's teams above.
+const playlistTeamsFrom610 = {
+  218: { maxTeamCount: 2, maxTeamSize: 40, maxSquadSize: 4 },
+  230: { maxTeamCount: 2, maxTeamSize: 50, maxSquadSize: 4 },
+  223: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  224: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  225: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 },
+  58071: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
+  58072: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },
+  58073: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }
+};
+const playlistTeams610Build = 4464155;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).
 export const teamSquadsOptionBuild = 3915963;
 // The first build whose client sends player.option.fillTeam only as "true" (Fill), leaving it out for No Fill: its
@@ -333,6 +348,7 @@ export const playlistTeamsOf = (bucketId, build = null) => teamsOfPlaylist(parse
 // The same by playlist id: what the match results' V-Bucks read a limited-time playlist's mode from (CoreV2 #294).
 export const teamsOfPlaylist = (playlistId, build = null) => {
   if (playlistId === shootingTestPlaylist) return shootingTestTeams(build ?? 3870737);
+  if (Number(build) >= playlistTeams610Build && playlistTeamsFrom610[playlistId]) return playlistTeamsFrom610[playlistId];
   if (Number(build) >= playlistTeams602Build && playlistTeamsFrom602[playlistId]) return playlistTeamsFrom602[playlistId];
   if (Number(build) >= playlistTeams601Build && playlistTeamsFrom601[playlistId]) return playlistTeamsFrom601[playlistId];
   if (Number(build) >= playlistTeams541Build && playlistTeamsFrom541[playlistId]) return playlistTeamsFrom541[playlistId];

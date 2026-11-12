@@ -111,7 +111,11 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // challenges.js styleSchedules), Plague and Scourge with Herald's Wand and Lamplight (12 and 13 October, 4 December),
 // Hollowhead and Carver (14 and 15 October, 31 October and 1 November), Jack Gourdon (four days), Bullseye, and the
 // emotes Behold!, Sprinkler, Electro Swing and Headbanger. Only 6.02's data has them, so 6.00's and 6.01's days are as they
-// were (28 empty days of the 70 on 6.02). A build's season is its athena data's seasonNumber, Season 1 without one.
+// were (28 empty days of the 70 on 6.02). 6.10 (CL-4480234; CL-4464155 and CL-4476098 play on its data) adds its eight the
+// shop sold, the same way: Moonrise (19 and 20 October, 28 November), Spider Knight and Arachne with Web Breaker and
+// Hatchling (21 and 22 October, 29 November) and Guan Yu with Guandao and Divine Dragon (2 and 3 December). Only 6.10's
+// data has them, so 6.00's to 6.02's days are as they were (22 empty days of the 70 on 6.10). A build's season is its
+// athena data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;
   return { days, firstDay: Date.parse(`${days[0].date}T00:00:00Z`) };
@@ -490,7 +494,9 @@ const tileOf = (tile) => {
 // adds Maximilian's Para-Provisions (bid_115_dieselpunkmale), Hay Man's Hay Nest (bid_124_scarecrowmale) and Straw Ops'
 // Birdhovel (bid_125_scarecrowfemale), paired the same way, and 6.02 (CL-4461277) Dark Bomber's Dark Bag
 // (bid_126_darkbomber), Plague's Dismal Cape (bid_127_plaguemale), Scourge's Arcanum (bid_128_plaguefemale) and
-// Hollowhead's Mouldering Cloak (bid_129_pumpkinslice).
+// Hollowhead's Mouldering Cloak (bid_129_pumpkinslice), and 6.10 (CL-4480234) Arachne's Long Legs
+// (bid_131_blackwidowfemale), Spider Knight's Spider Shield (bid_132_blackwidowmale) and Guan Yu's Loyal Shield
+// (bid_133_guanyu).
 export const bundledBackBlings = {
   "AthenaCharacter:cid_093_athena_commando_m_dinosaur": "AthenaBackpack:bid_031_dinosaur",
   "AthenaCharacter:cid_097_athena_commando_f_rockerpunk": "AthenaBackpack:bid_034_rockerpunk",
@@ -542,7 +548,10 @@ export const bundledBackBlings = {
   "AthenaCharacter:cid_229_athena_commando_f_darkbomber": "AthenaBackpack:bid_126_darkbomber",
   "AthenaCharacter:cid_241_athena_commando_m_plague": "AthenaBackpack:bid_127_plaguemale",
   "AthenaCharacter:cid_240_athena_commando_f_plague": "AthenaBackpack:bid_128_plaguefemale",
-  "AthenaCharacter:cid_243_athena_commando_m_pumpkinslice": "AthenaBackpack:bid_129_pumpkinslice"
+  "AthenaCharacter:cid_243_athena_commando_m_pumpkinslice": "AthenaBackpack:bid_129_pumpkinslice",
+  "AthenaCharacter:cid_249_athena_commando_f_blackwidow": "AthenaBackpack:bid_131_blackwidowfemale",
+  "AthenaCharacter:cid_248_athena_commando_m_blackwidow": "AthenaBackpack:bid_132_blackwidowmale",
+  "AthenaCharacter:cid_247_athena_commando_m_guanyu": "AthenaBackpack:bid_133_guanyu"
 };
 
 // The day's offers by storefront, those the requesting build has the cosmetic for. Never a cosmetic the shop doesn't sell

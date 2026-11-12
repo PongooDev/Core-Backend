@@ -18,7 +18,10 @@ export { cramSession2018 };
 // Update v6.01's are the second week's (the Lead Sled and the Obliterator, store/eventstore.js); its notes end nothing,
 // and its data has the same quests (6.01's quests.json is 6.00's). 6.02 (CL-4442095 and CL-4461277) runs it as well:
 // Update v6.02's Weekly Store items are the third week's (the Noble Launcher and the Vindertech Disintegrator), and its
-// quests.json is 6.00's still.
+// quests.json is 6.00's still. 6.10 (CL-4464155, CL-4476098 and CL-4480234) runs it too: Update v6.10's Weekly Store items
+// are the fourth week's (the Rat King and the Grave Digger), its notes end nothing (Fortnitemares came with Update v6.20),
+// and its quests.json keeps every Cram Session quest (it adds the Beta Storm's ten, NewMissionIntro_RtDRedux_1 to _10,
+// which nothing here gives: their mission alert isn't in the client's files).
 //
 // Its quests, every quest whose Category is QuestCategoryTable's LTE_Autumn row ("Event: Cram Session"), which nothing in
 // 6.00's data grants (Epic's servers handed them out), granted at quest login while it runs:

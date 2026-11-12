@@ -28,9 +28,12 @@ export const dataBuilds = [certBuild, ...(fs.existsSync(dir) ? fs.readdirSync(di
 // builds), whose paks Core has no copy of either, plays on CL-4424678's (gamedata/4424678); it would otherwise get 6.00's,
 // without the Chiller, 6.01's cosmetics and the later stages of Season 6's staged challenges. 6.02's CL-4442095 (6.02.0, the
 // earlier of Update v6.02's two builds), whose paks Core has no copy of either, plays on CL-4461277's (gamedata/4461277); it
-// would otherwise get 6.01's, without the Quad Launcher, 6.02's cosmetics and the Skull Trooper Challenges.
+// would otherwise get 6.01's, without the Quad Launcher, 6.02's cosmetics and the Skull Trooper Challenges. 6.10's CL-4464155
+// (6.10.0) and CL-4476098 (6.10.1), the two earlier of Update v6.10's three builds, whose paks Core has no copy of either,
+// play on CL-4480234's (gamedata/4480234); they would otherwise get 6.02's, without 6.10's cosmetics, weeks 4 to 7 of Season
+// 6's challenges as Epic ran them and the Showdown (tournament) playlists' data.
 export const laterData = { 4117433: "4132537", 4127312: "4132537", 4159770: "4166199", 4204761: "4214610", 4225813: "4240749",
-  4395664: "4402180", 4417689: "4424678", 4442095: "4461277" };
+  4395664: "4402180", 4417689: "4424678", 4442095: "4461277", 4464155: "4480234", 4476098: "4480234" };
 
 export function dataBuild(changelist) {
   if (dataBuilds.includes(changelist)) return changelist;

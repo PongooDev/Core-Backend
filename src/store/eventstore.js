@@ -248,7 +248,24 @@ export const spring2018End = "2018-02-22T00:00:00.000Z";
 // (SID_Shotgun_Standard_VT_SR_Ore_T01, "Vindertech Disintegrator" in 6.02's data): both from 11 October 00:00 UTC on Season
 // 6's replay, 6.01's weeks before them, at a legendary schematic's 1,680 Gold, one each (🟡 Epic's prices and limits aren't
 // recorded; Core keeps the week after 17 October, when Update v6.10 brought the next).
+// 6.10's (CL-4464155, CL-4476098, CL-4480234; Update v6.10): "Rat King Assault Rifle added to the Weekly Store. Semi automatic
+// slug rifle that fires powerful rounds ... Available Wednesday, October 17 at 8 PM ET until Wednesday, October 24 at 8 PM
+// ET" (SID_Assault_RatRod_Slug_SR_Ore_T01, new in 6.10's data) and "Grave Digger Assault Rifle has returned and been added
+// to the Weekly Store. A spooky assault rifle that fires medium ammo ... Available Wednesday, October 17 at 8 PM ET until
+// Wednesday, October 24 at 8 PM ET" (SID_Assault_Auto_Halloween_SR_Ore_T01, Fortnitemares 2017's): both from 18 October
+// 00:00 UTC on Season 6's replay, 6.02's weeks before them, at a legendary schematic's 1,680 Gold, one each (🟡 Epic's
+// prices and limits aren't recorded; Core keeps the week after 24 October, when Update v6.20 brought the next).
 const weeklyFeaturedByBuild = [
+  { firstBuild: 4464155, season: 6, weeks: [
+    { from: "2018-10-18T00:00:00.000Z", items: [{ templateId: "Schematic:sid_assault_ratrod_slug_sr_ore_t01", price: 1680, limit: 1 },
+      { templateId: "Schematic:sid_assault_auto_halloween_sr_ore_t01", price: 1680, limit: 1 }] },
+    { from: "2018-10-11T00:00:00.000Z", items: [{ templateId: "Schematic:sid_explosive_launcher_neonglow_sr_ore_t01", price: 1680, limit: 1 },
+      { templateId: "Schematic:sid_shotgun_standard_vt_sr_ore_t01", price: 1680, limit: 1 }] },
+    { from: "2018-10-04T00:00:00.000Z", items: [{ templateId: "Schematic:sid_blunt_hammer_ratrod_sr_ore_t01", price: 1680, limit: 1 },
+      { templateId: "Schematic:sid_sniper_military_sr_ore_t01", price: 1680, limit: 1 }] },
+    { from: null, items: [{ templateId: "Schematic:sid_pistol_ratrod_sr_ore_t01", price: 1680, limit: 1 },
+      { templateId: "Schematic:sid_blunt_hammer_hydraulic_vr_ore_t01", price: 600, limit: 1 }] }
+  ] },
   { firstBuild: 4442095, season: 6, weeks: [
     { from: "2018-10-11T00:00:00.000Z", items: [{ templateId: "Schematic:sid_explosive_launcher_neonglow_sr_ore_t01", price: 1680, limit: 1 },
       { templateId: "Schematic:sid_shotgun_standard_vt_sr_ore_t01", price: 1680, limit: 1 }] },

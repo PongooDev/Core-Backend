@@ -11,10 +11,12 @@ import { ipRange, maxIpRanges } from "../network.js";
 // as {events: {<id>: event}}, like the panel's other data (store/purchasecodes.js).
 //
 // The tournament playlists: 4.2's Solo Showdown (Playlist_Comp_Solo, PlaylistId 51, events/ltms.js), Battle Royale's
-// first scored mode. A later build's tournament playlist goes here.
-export const tournamentPlaylists = ["soloShowdown"].map((id) => {
+// first scored mode, and 6.10's three Showdown playlists (Playlist_Showdown_Solo, _Duos and _Squads, 58071 to 58073), the
+// in-game tournaments' (inGame): an event of one is listed in the client's Events tab, queued from it and scored on
+// screen (tournaments/showdown.js). A later build's tournament playlist goes here.
+export const tournamentPlaylists = ["soloShowdown", "showdownSolo", "showdownDuos", "showdownSquads"].map((id) => {
   const ltm = ltms.find((entry) => entry.id === id);
-  return { id, name: ltm.name, playlistId: ltm.playlistId, builds: ltm.builds };
+  return { id, name: ltm.name, playlistId: ltm.playlistId, builds: ltm.builds, inGame: ltm.tournament === true };
 });
 
 // Epic's Solo Showdown contest rules. Each match scores by its placement (the same table both times); only a player's
@@ -106,6 +108,16 @@ export function effectiveBots(general, override = null) {
 // Whether a match plays with bots, as the warmup answer sends them (services/matchmaking/warmup.js).
 export const botsOn = (bots) => (bots?.forcePlayerAIs === true && bots.count > 0) || bots?.fillPlayerTeams === true;
 
+// An in-game event's pin (6.10's Events tab: "Score enough points during any scheduled event session and you'll earn a
+// golden pin"): the points that earn it, or null for an event without one. Throws an Error with the reason.
+export const maxPinScore = 1000000;
+export function validatePinScore(pinScore) {
+  if (pinScore === undefined || pinScore === null || pinScore === "") return null;
+  const value = Number(pinScore);
+  if (!isWhole(value, 1, maxPinScore)) throw new Error(`The pin score is a whole number from 1 to ${maxPinScore}.`);
+  return value;
+}
+
 const maxEvents = 100;
 const maxName = 64;
 const isDate = (value) => typeof value === "string" && !Number.isNaN(Date.parse(value));
@@ -173,7 +185,8 @@ export function createTournamentStore(dataDir) {
     // Makes an event: {name, playlist (a tournamentPlaylists id), ruleset (a rulesets key), scoring (custom scoring, see
     // validateScoring; optional, the preset's when left out or null), startsAt, endsAt (ISO dates, both optional: it runs
     // from now until ended), servers and bots (#282, validateServers and validateBots; optional: the normal pool and the
-    // Matchmaking tab's bots)}. Throws an Error with the reason.
+    // Matchmaking tab's bots), pinScore (an in-game event's pin, validatePinScore; optional)}. Throws an Error with the
+    // reason.
     create(options = {}, now = new Date()) {
       const playlist = tournamentPlaylists.find((entry) => entry.id === (options.playlist ?? tournamentPlaylists[0].id));
       if (!playlist) throw new Error(`Unknown tournament playlist ${String(options.playlist)}.`);
@@ -190,9 +203,10 @@ export function createTournamentStore(dataDir) {
       const scoring = options.scoring === undefined || options.scoring === null ? null : validateScoring(options.scoring);
       const servers = validateServers(options.servers);
       const bots = validateBots(options.bots);
+      const pinScore = playlist.inGame ? validatePinScore(options.pinScore) : null;
       if (Object.keys(load().events).length >= maxEvents) throw new Error(`At most ${maxEvents} events are kept; delete an old one first.`);
       const event = { id: crypto.randomUUID().replaceAll("-", ""), name, playlist: playlist.id, playlistId: playlist.playlistId, ruleset,
-        scoring, servers, bots, startsAt, endsAt, createdAt: now.toISOString(), endedAt: null, players: {} };
+        scoring, servers, bots, ...(playlist.inGame ? { pinScore } : {}), startsAt, endsAt, createdAt: now.toISOString(), endedAt: null, players: {} };
       load().events[event.id] = event;
       save();
       return event;
@@ -265,17 +279,19 @@ export function createTournamentStore(dataDir) {
     // A player's match result (services/fortnite/battleroyale.js recordresults): it scores in every running event of the
     // match's playlist (on a build that has it, when the match's build is known), up to the event's counted matches.
     // A report sent again for the same match (CoreV2's matchId) doesn't count twice. Returns the points it scored, by event.
-    recordResult(accountId, playlistId, { place, kills, matchId = null, build = null }, now = new Date()) {
+    // team: the accounts the player played the match with, themselves among them (an in-game event's history names
+    // them; kills are then the team's). only: one event's id, for a report that names its event.
+    recordResult(accountId, playlistId, { place, kills, matchId = null, build = null, team = null, only = null }, now = new Date()) {
       const scored = [];
       for (const event of Object.values(load().events)) {
-        if (event.playlistId !== Number(playlistId) || !isRunning(event, now)) continue;
+        if (event.playlistId !== Number(playlistId) || !isRunning(event, now) || (only !== null && event.id !== only)) continue;
         if (build && !hasLtm(event.playlist, build)) continue;
         const ruleset = scoringOf(event);
         const player = (event.players[accountId] ??= { matches: [] });
         if (matchId && player.matches.some((match) => match.matchId === matchId)) continue;
         if (player.matches.length >= ruleset.countedMatches) continue;
         const points = matchPoints(ruleset, { place, kills });
-        player.matches.push({ matchId, place, kills, points, at: now.toISOString() });
+        player.matches.push({ matchId, place, kills, points, ...(Array.isArray(team) && team.length > 1 ? { team: [...team] } : {}), at: now.toISOString() });
         scored.push({ eventId: event.id, points });
       }
       if (scored.length) save();

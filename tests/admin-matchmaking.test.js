@@ -39,7 +39,9 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       solidGoldSeason5Duos: false, fiftyFiftySolidGold: false, getaway: true, getawayDuos: true, getawaySolo: false, closeEncountersSeason5: false,
       closeEncountersSeason5Solo: false, closeEncountersSeason5Duos: false, soaringSolos: true, soaringDuos: false, soaringSquads: false,
       fiftyFiftySeason6: true, discoDomination: false, discoDomination602: true, discoDomination32: false, highExplosivesSeason6Solo: false,
-      highExplosivesSeason6Squads: false, steadyStormSeason6Solo: false, steadyStormSeason6Duos: false, steadyStormSeason6Squads: false });
+      highExplosivesSeason6Squads: false, steadyStormSeason6Solo: false, steadyStormSeason6Duos: false, steadyStormSeason6Squads: false,
+      discoDomination40: false, discoDominationAlt: false, blitzSeason6Solo: false, blitzSeason6Duos: false, blitzSeason6Squads: false,
+      gliderRedeploySolo: false, gliderRedeployDuos: false, gliderRedeploySquads: false });
 
     // 21 Battle Royale playlists: the 4 canonical ones, Shooting Test #1, the other event queues (#190), 3.0's new ones
     // and 3.1's Blitz Solo and Duo, 3.5.1's own twelve, 4.1's Infinity Gauntlet and the nine of 4.2 on (#258: 4.2's Close Encounters in three, its Solid
@@ -47,8 +49,10 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
     // 4.4.2's Final Fight (#325), 4.5's Final Fight: Teams of 12, 5.0's 50v50, 5.10's Playground and Fly Explosives and
     // 5.21's Steady Storm, Soaring 50's and Sniper Shootout v4, and 5.30's Score Royale, Solid Gold and 50v50 Solid Gold,
     // and 5.40's Getaway and Close Encounters, and 5.41's Soaring Solos (Solo, Duos, Squads), and 6.00's 50v50, and 6.01's
-    // Disco Domination, and 6.02's seven (Disco Domination, its 32 a side one, High Explosives and Steady Storm)
-    assert.equal(ov.playlists.length, 85);
+    // Disco Domination, and 6.02's seven (Disco Domination, its 32 a side one, High Explosives and Steady Storm), and
+    // 6.10's eight (two more Disco Dominations, Blitz! v2 and the defaults with glider redeploy; its three tournament
+    // playlists are the Tournaments tab's, not modes)
+    assert.equal(ov.playlists.length, 93);
     assert.equal(ov.ltms.originalDates, false);
     assert.deepEqual(ov.ltms.list.map((ltm) => ltm.id), ["fiftyFifty", "highExplosives", "sneakySilencers", "sniperShootout", "shootingTest",
       "speedyStorm", "takeToTheSkies", "lotsaLoot", "blitz", "fiveByTwenty", "highJump", "useItOrLoseIt", "steadyStorm", "solidGold", "skySupply", "shotguns", "blitzSolo", "blitzDuo",
@@ -60,7 +64,8 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       "solidGoldSeason5", "solidGoldSeason5Solo", "solidGoldSeason5Duos", "fiftyFiftySolidGold", "getaway", "getawayDuos", "getawaySolo",
       "closeEncountersSeason5", "closeEncountersSeason5Solo", "closeEncountersSeason5Duos", "soaringSolos", "soaringDuos", "soaringSquads",
       "fiftyFiftySeason6", "discoDomination", "discoDomination602", "discoDomination32", "highExplosivesSeason6Solo", "highExplosivesSeason6Squads",
-      "steadyStormSeason6Solo", "steadyStormSeason6Duos", "steadyStormSeason6Squads"]);
+      "steadyStormSeason6Solo", "steadyStormSeason6Duos", "steadyStormSeason6Squads", "discoDomination40", "discoDominationAlt",
+      "blitzSeason6Solo", "blitzSeason6Duos", "blitzSeason6Squads", "gliderRedeploySolo", "gliderRedeployDuos", "gliderRedeploySquads"]);
     assert.equal(ov.playlists.find((p) => p.id === "fiftyFiftyV2").code, "Playlist_50v50");
     // #257: each LTM's playlist asset and teams, and the 3.5.1 lobby's name for the ones kept from 3.0 and 3.1.
     const pl = (id) => ov.playlists.find((p) => p.id === id);
@@ -197,7 +202,9 @@ test("admin matchmaking tab: navigation, overview, gamemode toggles, server limi
       solidGoldSeason5Duos: false, fiftyFiftySolidGold: false, getaway: true, getawayDuos: true, getawaySolo: false, closeEncountersSeason5: false,
       closeEncountersSeason5Solo: false, closeEncountersSeason5Duos: false, soaringSolos: true, soaringDuos: false, soaringSquads: false,
       fiftyFiftySeason6: true, discoDomination: false, discoDomination602: true, discoDomination32: false, highExplosivesSeason6Solo: false,
-      highExplosivesSeason6Squads: false, steadyStormSeason6Solo: false, steadyStormSeason6Duos: false, steadyStormSeason6Squads: false });
+      highExplosivesSeason6Squads: false, steadyStormSeason6Solo: false, steadyStormSeason6Duos: false, steadyStormSeason6Squads: false,
+      discoDomination40: false, discoDominationAlt: false, blitzSeason6Solo: false, blitzSeason6Duos: false, blitzSeason6Squads: false,
+      gliderRedeploySolo: false, gliderRedeployDuos: false, gliderRedeploySquads: false });
     assert.equal(resetRes.body.timing.gatherSeconds, 10);
     assert.equal(resetRes.body.timing.warmupSeconds, 120);
     assert.equal(resetRes.body.timing.lateJoin, false);

@@ -39,7 +39,8 @@ test("every event flag of Season 4's paks is in the catalog, in a group", () => 
     "BR_S4_Geode_Begin", "BR_S4_Geode_Countdown", "BR_S4_Geode_Over", "BR_S4_Rift_Growth",
     ...Array.from({ length: 8 }, (_, i) => [`BR_S4_Oddity_0${i + 1}_Tell`, `BR_S4_Oddity_0${i + 1}_Event`]).flat(),
     ...Array.from({ length: 7 }, (_, i) => `BR_S6_Island_MoveTo${i + 1}`), ...Array.from({ length: 8 }, (_, i) => `BR_S6_Island_Rune${i}`),
-    "BR_S6_Island_MoveTo8"].map((name) => `EventFlag.${name}`);
+    // and 6.10's seventeenth (CL-4464155's server-assets pak).
+    "BR_S6_Island_MoveTo8", "BR_S6_Island_Rune8"].map((name) => `EventFlag.${name}`);
   for (const flag of scanned) assert.ok(season4Flag(flag), flag);
   const all = season4FlagGroups.flatMap((group) => group.flags.map(({ flag }) => flag));
   assert.equal(new Set(all).size, all.length, "each flag once");

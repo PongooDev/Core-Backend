@@ -14,6 +14,7 @@ import { shootingTestGlobals, shootingTestHotfixTables } from "../../events/shoo
 import { stormDestructionEngineSection } from "../../events/stormdestruction.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
 import { affiliateRuntimeOptions } from "../../store/creators.js";
+import { showdownRuntimeOptions } from "../../tournaments/showdown.js";
 import { createNetwork, httpsProxied } from "../../network.js";
 import { purchaseFlowSection } from "./purchase.js";
 
@@ -76,8 +77,13 @@ const forcedQueueGlobals = (changelist) => ltmForcedQueues(changelist).map((queu
 // From 5.0 the lobby lists FrontEndPlaylistData (events/ltms.js ltmFrontEndPlaylists, Core-Backend #314): the shipped list
 // (the defaults, 50v50 and Playground, all enabled) is cleared and set again, so the lobby offers what the matchmaking
 // ticket takes. The defaults are as shipped; 5.0's PlaylistAccess has bDisplayAsNew where 5.10's on has AdvertiseType.
+// 6.10's (CL-4464155 on) shipped list differs in two ways, kept: Playlist_50v50 is one of the defaults (bIsDefaultPlaylist
+// and bVisibleWhenDisabled set, no limited time banner, DisplayPriority 3; hidden again while its switch is off), and the
+// in-game tournaments' three Showdown playlists are listed disabled at 50 to 52 (events/ltms.js `tournament`): the client
+// turns on the one its current event names itself, but only an entry that is in the list (tournaments/showdown.js).
 const frontEndDefaults = [["Playlist_DefaultDuo", 1], ["Playlist_DefaultSquad", 2], ["Playlist_DefaultSolo", 0]];
 const advertiseTypeBuild = 4225813;
+const defaultFiftyFiftyBuild = 4464155;
 function frontEndPlaylistLines(changelist) {
   const playlists = ltmFrontEndPlaylists(changelist);
   if (!playlists.length) return [];
@@ -86,8 +92,17 @@ function frontEndPlaylistLines(changelist) {
   return ["!FrontEndPlaylistData=ClearArray",
     ...frontEndDefaults.map(([name, priority]) => entry(name, `bEnabled=true, bIsDefaultPlaylist=true, bVisibleWhenDisabled=true, ` +
       `${advertise("None")}, bDisplayAsLimitedTime=false, DisplayPriority=${priority}`)),
-    ...playlists.map(({ name, enabled, priority, ltm }) => entry(name, `bEnabled=${enabled}, bIsDefaultPlaylist=false, bVisibleWhenDisabled=false, ` +
-      `${advertise(ltm.id === "playgroundV2" ? "Updated" : ltm.advertise ?? "None")}, bDisplayAsLimitedTime=true, DisplayPriority=${priority}`))];
+    ...playlists.map(({ name, enabled, priority, ltm }, index) => {
+      if (ltm.tournament) {
+        return entry(name, `bEnabled=false, bIsDefaultPlaylist=false, bVisibleWhenDisabled=false, ${advertise("None")}, bDisplayAsLimitedTime=false, ` +
+          `DisplayPriority=${50 + playlists.slice(0, index).filter((other) => other.ltm.tournament).length}`);
+      }
+      if (name === "Playlist_50v50" && Number(changelist) >= defaultFiftyFiftyBuild) {
+        return entry(name, `bEnabled=${enabled}, bIsDefaultPlaylist=true, bVisibleWhenDisabled=${enabled}, ${advertise("None")}, bDisplayAsLimitedTime=false, DisplayPriority=3`);
+      }
+      return entry(name, `bEnabled=${enabled}, bIsDefaultPlaylist=false, bVisibleWhenDisabled=false, ` +
+        `${advertise(ltm.id === "playgroundV2" ? "Updated" : ltm.advertise ?? "None")}, bDisplayAsLimitedTime=true, DisplayPriority=${priority}`);
+    })];
 }
 // The FortGameInstance section: the event queues' globals (3.0), the playlist overrides (3.5.1) and the lobby's playlists (5.0).
 function forcedQueueSection(changelist) {
@@ -144,10 +159,13 @@ const chatSection = ["[/Script/FortniteGame.FortOnlineAccount]", "bIsAthenaGloba
 // replay in a newer engine's format (file version 7, where 3.5's is 3) can't be read at all.
 // 6.02's (CL-4442095) Support-A-Creator (store/creators.js) is off in the same object as shipped (bDisableAffiliateFeature)
 // and takes its creators from it (AffiliateNames): while the admin panel lists a creator, the file turns it on with them.
+// 6.10's (CL-4464155) Events tab reads the same object (bEnableShowdown, ShowdownTournamentCacheExpirationHours): the file
+// has its lines while an in-game tournament is listed or the admin hides the empty tab (tournaments/showdown.js).
 const replaysBuild = 4000805;
 const runtimeOptionsFiles = (changelist, settingsValue) => (Number(changelist) >= replaysBuild ? {
   "DefaultRuntimeOptions.ini": Buffer.from(["[/Script/FortniteGame.FortRuntimeOptions]", "bEnableReplayBrowser=true",
-    "bEnableReplayRecording=true", "bEnableLargeTeamReplayRecording=true", ...affiliateRuntimeOptions(changelist, settingsValue), ""].join("\r\n"), "utf8")
+    "bEnableReplayRecording=true", "bEnableLargeTeamReplayRecording=true", ...affiliateRuntimeOptions(changelist, settingsValue),
+    ...showdownRuntimeOptions(changelist, settingsValue), ""].join("\r\n"), "utf8")
 } : {});
 const defaultNetwork = createNetwork();
 function systemFiles(req, network = defaultNetwork, settings = null) {

@@ -1,3 +1,4 @@
+import { isShowdownPlaylist, tournamentsCompleteMessage } from "../../tournaments/showdown.js";
 import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
 import { isDedicatedServerToken } from "../../accounts/clients.js";
@@ -238,10 +239,20 @@ export function battleRoyaleRoutes(context) {
       log("Battle Royale", `${result.accountId} placed ${place} in playlist ${playlistId} with ${kills} kills, ${secondsAlive} s alive,`
         + ` score ${score}` + (win ? " (a win)" : "") + ` in Season ${season}`);
       // A tournament event's points (Core-Backend #263, tournaments/store.js): Solo Showdown's placement (and, by the
-      // event's rules, elimination) points.
+      // event's rules, elimination) points. 6.10's in-game tournaments (tournaments/showdown.js) score a team: the report
+      // names no teams, but a team's players share its place (as squadFriendsOf above reads it), so on a Showdown playlist
+      // the players of the report with this place are the team, its eliminations theirs together, and each is told with
+      // the XMPP message their client asks its window's history on (com.epicgames.tournaments.complete; 🟡 Epic's came
+      // from the player's own client after the server's ClientNotifyTournamentStatsFinal: that a service message is
+      // taken the same way isn't seen in a running client).
+      const showdown = isShowdownPlaylist(playlistId);
+      const team = showdown ? results.filter((other) => other?.place === result.place && typeof other?.accountId === "string" && accounts.get(other.accountId)) : [];
+      const teamKills = showdown ? team.reduce((total, other) => total + (count(other.kills, 1000) ?? 0), 0) : kills;
       for (const { eventId, points } of context.tournaments?.recordResult(result.accountId, playlistId,
-        { place, kills, matchId, build: build ?? (Object.hasOwn(buildVersions, currentBuild()) ? currentBuild() : null) }) ?? []) {
+        { place, kills: teamKills, matchId, team: team.map((other) => other.accountId),
+          build: build ?? (Object.hasOwn(buildVersions, currentBuild()) ? currentBuild() : null) }) ?? []) {
         log("Battle Royale", `${result.accountId} scored ${points} points in tournament event ${eventId}`);
+        if (showdown) context.xmpp?.notify(result.accountId, tournamentsCompleteMessage, {});
       }
       const vbucks = payMatchVbucks(session, rewards, matchId, playlistId, { place, kills }, build);
       if (vbucks) log("Battle Royale", `${result.accountId} earned ${vbucks} V-Bucks in match ${matchId}`);

@@ -260,6 +260,28 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   differs: 6.02's by the two kept schedules and their bundles, 6.01's by those and by what the two changes before it keep,
   which its overlay predated (`bundleschedule_styles_tomatohead` and its bundle, `cleanUpOnBundleCompletion` and `giftBox`).
   6.00's and Season 5's overlays aren't refreshed (their paks aren't at hand), so they keep no earlier season's schedule.
+  6.10's (CL-4480234, UE 4.21, the latest of Update v6.10's three builds) is `4.21.0-4480234+++Fortnite+Release-6.10` (no
+  `Build.version`; the build folder is `6.10-CL-4480234\Fortnite`) with 6.02's full data (Cert's files with
+  `gamedata/4461277` applied) as the fifth argument, and the main key FModel's settings hold for its build folder; no
+  extractor change. A full install with Save the World, and all of its 8 paks mount (263,299 files: it has no keyed pak
+  and none of 6.02's leftover language paks); its DefaultGameData still names no MissionAlerts (24 alerts and 4 storm
+  spreads from the fifth argument). Against 6.02 nine files change: `athena.json` (13 cosmetics added: Guan Yu with
+  Loyal Shield, Guandao and Divine Dragon, Spider Knight and Arachne with Spider Shield, Long Legs, Web Breaker and
+  Hatchling, Moonrise, the Onesie outfit and the Fortnite Birthday! emoticon; 29 quests, weeks 4 to 7 of Season 6's
+  challenges as Epic ran them, with their staged chains, and Quest_BR_Styles_SkullTrooper_GainXP, which no bundle names;
+  those four weeks' bundles; the Skull Trooper Challenges eased to 300 damage and 6 chests in a single match; Hunting
+  Party's fourth banner, BRSeason06Tattered, where 6.02 still named Season 5's crown; 28 objective stats; and the loot
+  tables with new weights: the Quad Launcher's 0.61 and 0.085 to 0.3 and 0.1, the Grenade Launcher's 1.5 to 0.6), `items.json`,
+  `characters.json`, `fabricator.json` and `upgrades.json` (the four new outfits' heroes, three harvesting tools, the Rat
+  King, SID_Assault_RatRod_Slug_SR, with its weapons and recipes, the daily challenge token, Token:Athena_DailyChallenge_
+  Token, an item now, the Player Jump Pads out of the armory's count, and two melee perks gone), `alterations.json` (the Rat King's and the
+  Halloween weapons' explicit perk loadouts), `quests.json` and `objectivestats.json` (the Beta Storm's ten quests,
+  NewMissionIntro_RtDRedux_1 to _10, and Canny Valley's reactive stats) and `world.json` (MissionAlertCategories gains
+  NewMissionIntroductionCategory, quota 5; the Athena generators of Blitz, MissionGen_AthenaEvent36, 37 and 8; and
+  Fortnitemares 2017's Hexsylvania is gone from the paks: eight mission generators, five primary missions and the four
+  BP_ZT_TRV_HF zone themes). The Quadcrasher is in no table: the map places it (Athena/DrivableVehicles/Athena_QuadSpawner).
+  The two earlier 6.10s, CL-4464155 and CL-4476098, aren't extracted (Core has no copy of their paks) and play on
+  CL-4480234's data.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):
