@@ -199,7 +199,24 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   and tier curves. Against 5.41 it adds 109 cosmetics (the Season 6 Battle Pass, Airheart, Ludwig and Heidi, Peekaboo, the
   Fortnitemares outfits Epic sold in October...) and drops four (BBID_PurpleBus, BBID_Random, Emoji_Birthday2018, and
   Glider_ID_TBD_ModernMilitaryRed, now Glider_ID_075 "Rotor"); Save the World adds Cram Session's AutumnQuest lines, the
-  repeatable Mini-Boss quest, the Ratatat and Lead Sled.
+  repeatable Mini-Boss quest, the Ratatat and Lead Sled. 6.01's (CL-4424678, UE 4.21, Update v6.01's build) is
+  `4.21.0-4424678+++Fortnite+Release-6.01` (no `Build.version`; the build folder is `6.01-CL-4424678\Fortnite`) with 6.00's
+  full data (Cert's files with `gamedata/4402180` applied) as the fifth argument, and the main key FModel's settings hold
+  for its build folder (6.00's; no extractor change). A full install: every mission info is in its paks, its
+  DefaultGameData still names no MissionAlerts (24 alerts and 4 storm spreads from the fifth argument); its `pakchunk1000`
+  and `pakchunk1001` (Dark Bomber and her Dark Bag, each on a key of its own) aren't read. Against 6.00 only four files
+  change: `athena.json` (11 cosmetics added: Maximilian and Para-Provisions, which 6.00 kept in its own two keyed paks, Hay
+  Man, Straw Ops, Hay Nest, Birdhovel, Field Wraith, Harvester, T-Pose, Dark Glyph and Thunder Crash; the Birthday Bus
+  dropped with the three Birthday quests and their ten cake stats; the later stages of two staged Season 6 challenges,
+  Quest_BR_Land_Chain_02B to _02E and Quest_BR_Dance_ScavengerHunt_Locations_Chain_01B and _01C, and Quest_BR_Shoot_Target;
+  and the loot tables, with the Chiller, TID_Context_Freeze_Athena, in), `characters.json` (the three new outfits' heroes),
+  `items.json` (those heroes, two harvesting tools and the Creative Control Panel trap in; 28 items out: Battle Royale's
+  Drum Gun, Revolver, Tactical and Suppressed Submachine Guns, Crossbow with its bolts and Explosive Crossbow, Quad
+  Launcher, Balloons, falling ceiling trap and six decos named "Air Strike", and two gameplay modifiers; the Freeze
+  Trap's floor, wall and ceiling items, which the Chiller places, lose trap.hostile, the Cozy Campfire, Launch Pad and
+  Port-a-Fortress gain a tier, the notes' "star ratings to the UI elements of all trap items", and the Shadow Stone goes
+  from Uncommon to Epic) and `fabricator.json` (those items' values). Save the World's quests, world and every other file
+  are 6.00's. The earlier 6.01, CL-4417689, isn't extracted (Core has no copy of its paks) and plays on CL-4424678's data.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

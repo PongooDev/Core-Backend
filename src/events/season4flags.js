@@ -21,6 +21,9 @@ import { geodeBegin, geodeCountdown, geodeOver, riftGrowth } from "./rocketlaunc
 // Cube flags and High Stakes' stay 5.41's: they are dated events (events/cube.js, events/highstakes.js), and Season 6 began
 // after both (the Cube risen under the floating island). The floating island's sixteen (below) aren't in 6.00's client paks
 // but in the server-only BP_IslandServerOnly (Core-ServerAssets' CL-4395664 pak), and are a dated event too (events/island.js).
+// 6.01's (CL-4424678; CL-4417689 plays on its data) are 6.00's, name for name, less BirthdayBattleBus, so every other flag
+// that runs to 6.00 runs to 6.01 (its mission alert flags by its alert rows, 5.40's still), LobbySeason6 and the floating
+// island's with them (6.01's own BP_IslandServerOnly, in Core-ServerAssets' CL-4417689 pak, binds the same sixteen).
 //
 // The admin panel switches each one "on" or "off" over what the build serves by itself (events config
 // season4Flags.overrides; absent: the build's own, events/events.js), in the Automatic mode. On, a flag is served with
@@ -40,6 +43,7 @@ const b540 = 4352937;
 const b541 = 4363240;
 const b6000 = 4395664;
 const b600 = 4402180;
+const b601 = 4424678;
 
 const flag = (name, builds, description) => ({ flag: `EventFlag.${name}`, builds, description });
 
@@ -76,10 +80,10 @@ export const oddities = oddityProps.map(([prop, rift, tell, event], index) => ({
 
 export const season4FlagGroups = [
   { id: "blockbuster", name: "Save the World: Blockbuster", flags: [
-    flag("Blockbuster2018Phase1", [b40, b600], "Part 1, Origin Story: the front end's View Event and the quest map's Part 1 page"),
-    flag("Blockbuster2018Phase2", [b40, b600], "Part 2, A Hero Is Born: the quest map's Part 2 page"),
-    flag("Blockbuster2018Phase3", [b40, b600], "Part 3, The Cloaked Star: the quest map's side bar"),
-    flag("Blockbuster2018Phase4", [b440, b600], "Part 4, The Finale: the quest map's side bar (4.5's pages)")
+    flag("Blockbuster2018Phase1", [b40, b601], "Part 1, Origin Story: the front end's View Event and the quest map's Part 1 page"),
+    flag("Blockbuster2018Phase2", [b40, b601], "Part 2, A Hero Is Born: the quest map's Part 2 page"),
+    flag("Blockbuster2018Phase3", [b40, b601], "Part 3, The Cloaked Star: the quest map's side bar"),
+    flag("Blockbuster2018Phase4", [b440, b601], "Part 4, The Finale: the quest map's side bar (4.5's pages)")
   ] },
   // 5.0's Road Trip (events/roadtrip2018.js, Core-Backend #298): its quests, tickets, llama and Event Store go with
   // RoadTrip2018, Challenge the Horde's theater and alerts with Horde (below), each served by 5.0 itself.
@@ -89,42 +93,42 @@ export const season4FlagGroups = [
   // 5.10's Birthday (events/events.js birthday2018, events/birthday2018.js): served by 5.10 itself, its Save the World
   // quests, Birthday Llama and Event Store hero with Anniversary2018_BR. 5.21's paks keep its three flags, but the
   // Birthday ended on 7 August (5.20's day), so 5.21 serves them only by their switch. 5.30's keep the bus's and the
-  // supply drops' (by their switch), not Anniversary2018_BR's.
+  // supply drops' (by their switch), not Anniversary2018_BR's. 6.01's drop the bus's (BR_Decor_BirthdayBus is gone).
   { id: "birthday", name: "Fortnite Birthday (5.10)", flags: [
     flag("Anniversary2018_BR", [b5100, b521], "The Birthday Challenges (Schedule_Birthday2018_BR) and Save the World's Birthday quests, Birthday Llama and Urban Assault Sledgehammer"),
     flag("BirthdayBattleBus", [b5100, b600], "The birthday Battle Bus (BR_Decor_BirthdayBus)"),
-    flag("SupplyDropBDay", [b5100, b600], "Birthday supply drops (BR_Decor_SupplyDropBDay)")
+    flag("SupplyDropBDay", [b5100, b601], "Birthday supply drops (BR_Decor_SupplyDropBDay)")
   ] },
   { id: "alerts", name: "Save the World: mission alerts", flags: [
-    flag("ActiveMiniBosses", [b40, b600], "Mini-Boss alerts with Blockbuster Tickets (MiniBossCategory, quota 10; 6.00's Cram Session, with Gold)"),
-    flag("PassiveMiniBosses", [b40, b600], "Mini-Boss alerts without tickets"),
-    flag("ActiveStorms", [b40, b600], "Mutant Storm alerts with tickets"),
-    flag("PassiveStorms", [b40, b600], "Mutant Storm alerts without tickets (StormLowCategory)"),
+    flag("ActiveMiniBosses", [b40, b601], "Mini-Boss alerts with Blockbuster Tickets (MiniBossCategory, quota 10; 6.00's and 6.01's Cram Session, with Gold)"),
+    flag("PassiveMiniBosses", [b40, b601], "Mini-Boss alerts without tickets"),
+    flag("ActiveStorms", [b40, b601], "Mutant Storm alerts with tickets"),
+    flag("PassiveStorms", [b40, b601], "Mutant Storm alerts without tickets (StormLowCategory)"),
     // 5.40's and 5.41's group missions carry Mega Alerts instead (Core-Backend #317), so the switch stops at 5.30.
     flag("GroupMission", [b42, b530], "Group mission alerts (GroupMissionCategory, quota 10; 5.40's and 5.41's group missions carry Mega Alerts)"),
-    flag("SurviveTheStorm", [b40, b600], "Survive the Storm's alerts"),
-    flag("Fortnitemares", [b40, b600], "Fortnitemares' alert rows"),
+    flag("SurviveTheStorm", [b40, b601], "Survive the Storm's alerts"),
+    flag("Fortnitemares", [b40, b601], "Fortnitemares' alert rows"),
     flag("Horde", [b40, b541], "Challenge the Horde: the Horde Skill Tree page (CCNodePages) and, on 5.0 to 5.41, the horde theater and its alerts (HordeCategory, quota 10)")
   ] },
   { id: "lobby", name: "Lobby", flags: [
     flag("LobbySeason4", [b40, b541], "The Season 4 lobby (Frontend_Lobby_Season4)"),
     flag("LobbyHalloweenDecor", [b40, b541], "The Halloween lobby"),
     flag("LobbyWinterDecor", [b40, b541], "The winter lobby"),
-    flag("LobbySeason6", [b6000, b600], "The Season 6 lobby (Frontend_Lobby_Season6), 6.00's own")
+    flag("LobbySeason6", [b6000, b601], "The Season 6 lobby (Frontend_Lobby_Season6_D), 6.00's and 6.01's own")
   ] },
   { id: "battleRoyale", name: "Battle Royale: items and modes", flags: [
-    flag("BR.CandyCaneGuns", [b40, b600], "Candy cane guns (BR_Winter_CandyCaneGuns)"),
-    flag("SupplyDropGift", [b40, b600], "Supply drops as presents"),
+    flag("BR.CandyCaneGuns", [b40, b601], "Candy cane guns (BR_Winter_CandyCaneGuns)"),
+    flag("SupplyDropGift", [b40, b601], "Supply drops as presents"),
     flag("BR.Allow50v50", [b40, b42], "Allows the 50v50 playlist"),
     flag("BR.DisallowSolo", [b40, b42], "Takes Solo off the lobby"),
     flag("BR.DisallowDuo", [b40, b42], "Takes Duos off the lobby"),
     flag("BR.DisallowSquad", [b40, b42], "Takes Squads off the lobby")
   ] },
   // 5.10's two map flags: nothing dates them (🟡), so no build serves them by itself; 5.21's and 5.30's paks keep both,
-  // 5.40's and 5.41's only the drive-in's.
-  { id: "season5Map", name: "Battle Royale map: Season 5 (5.10 – 6.00)", flags: [
+  // 5.40's and 5.41's only the drive-in's, as 6.00's and 6.01's.
+  { id: "season5Map", name: "Battle Royale map: Season 5 (5.10 – 6.01)", flags: [
     flag("BR_S5_Rift_Shrink", [b5100, b530], "The sky's rift shrinks (BP_Athena_Event_Components)"),
-    flag("BR_S5_RiskyReels_Event", [b5100, b600], "Risky Reels' drive-in projector event (DriveIn_Projector)")
+    flag("BR_S5_RiskyReels_Event", [b5100, b601], "Risky Reels' drive-in projector event (DriveIn_Projector)")
   ] },
   // 5.21's Tomato Town rift (Athena_GameplayActors' BR_S5_Oddity_Tomato_Tell and _Event, events/tomatorift.js): served by
   // their dates on Season 5's replay, or always or never by their switch.
@@ -154,17 +158,17 @@ export const season4FlagGroups = [
   ] },
   // 6.00's floating island (BP_IslandServerOnly's EventBindings, which BP_IslandScripting watches, events/island.js): served
   // by the Fortnite Wiki's dates on Season 6's replay, or always or never by their switch (one island flag at a time: with
-  // two on, the island goes where the last to turn on says).
-  { id: "island", name: "Battle Royale map: the floating island (6.00)", flags: [
-    flag("BR_S6_Island_Rune0", [b6000, b600], "The island hangs over Loot Lake (from Season 6's start, 27 September 2018, and again from 21 October)"),
+  // two on, the island goes where the last to turn on says; on 6.01, where the first says). 6.01 keeps them.
+  { id: "island", name: "Battle Royale map: the floating island (6.00 – 6.01)", flags: [
+    flag("BR_S6_Island_Rune0", [b6000, b601], "The island hangs over Loot Lake (from Season 6's start, 27 September 2018, and again from 21 October)"),
     ...[["southwest of Pleasant Park", "28 September", "29 September to 1 October"], ["by Shifty Shafts", "1 to 3 October", "3 to 5 October"],
       ["northwest of Fatal Fields", "5 to 6 October", "6 to 8 October"], ["south of Retail Row", "8 to 9 October", "9 to 10 October"],
       ["in Wailing Woods", "10 to 13 October", "13 to 14 October"], ["by Lazy Links", "14 to 16 October", "16 to 17 October"],
       ["in the map's middle", "17 to 18 October", "18 to 20 October"]].flatMap(([place, leg, stay], index) => [
-      flag(`BR_S6_Island_MoveTo${index + 1}`, [b6000, b600], `The island floats to rune ${index + 1}, ${place} (${leg})`),
-      flag(`BR_S6_Island_Rune${index + 1}`, [b6000, b600], `The island over rune ${index + 1}, ${place}: the Cube lifts it, the map icon lit (${stay})`)
+      flag(`BR_S6_Island_MoveTo${index + 1}`, [b6000, b601], `The island floats to rune ${index + 1}, ${place} (${leg})`),
+      flag(`BR_S6_Island_Rune${index + 1}`, [b6000, b601], `The island over rune ${index + 1}, ${place}: the Cube lifts it, the map icon lit (${stay})`)
     ]),
-    flag("BR_S6_Island_MoveTo8", [b6000, b600], "The island floats back to Loot Lake (20 to 21 October)")
+    flag("BR_S6_Island_MoveTo8", [b6000, b601], "The island floats back to Loot Lake (20 to 21 October)")
   ] },
   // 5.40's High Stakes (Athena/Items/ChallengeBundleSchedules/LTM/Schedule_LTM_Heist, events/highstakes.js): served by its
   // dates on Season 5's replay, or always or never by its switch. 5.41's paks keep it.

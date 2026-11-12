@@ -97,7 +97,14 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // 6.00's data has are in: its paks already hold Season 6's October cosmetics (Airheart, Ludwig and Heidi, Peekaboo...), so
 // 6.00's own days (27 September to 3 October, before Update v6.01) are whole, and the later days keep what 6.00 has (the
 // Fortnitemares and November cosmetics, Maximilian, Hay Man, Skull Ranger, the football outfits..., are left out, so 33 of
-// the 70 days have an empty featured section). A build's season is its athena data's seasonNumber, Season 1 without one.
+// the 70 days have an empty featured section). 6.01 (CL-4424678; CL-4417689 plays on its data) shares the season's shop and
+// adds its eight the shop sold, each on the days the wiki's pages list it, in its tile and at its price: Maximilian (30
+// September and 1 October in Airheart's tile, the day Epic first sold him, when he was still in one of 6.00's two keyed
+// paks; 29 October, 1 December), Thunder Crash and Dark Glyph (5 and 6 October, 21 November: Dark Bomber's set, without
+// her, who is in 6.01's own keyed pak, pakchunk1000, as her Dark Bag is in pakchunk1001), Hay Man and Straw Ops with
+// Harvester and Field Wraith (7 and 8 October, 15 November) and the T-Pose emote (7 and 18 October, 10 and 23 November).
+// Only 6.01's data has them, so 6.00's days are as they were, and 6.01's 5 to 8 October have a featured section (29 empty
+// days of the 70). A build's season is its athena data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;
   return { days, firstDay: Date.parse(`${days[0].date}T00:00:00Z`) };
@@ -472,7 +479,9 @@ const tileOf = (tile) => {
 // Nite's Balloon Llama (bid_112_clownmale), as the wiki's pages name them ("bundled_with"). 6.00 (CL-4402180) adds those of
 // the Season 6 outfits its days sell: Airheart's Airflow (bid_116_dieselpunkfemale), Ludwig's Clockworks
 // (bid_117_octoberfestmale), Heidi's Pretzel Protector (bid_118_octoberfestfemale) and Peekaboo's Battle Balloon
-// (bid_111_clownfemale), as 6.00's back bling names pair them (🟡 Season 6's pages carry no bundled_with).
+// (bid_111_clownfemale), as 6.00's back bling names pair them (🟡 Season 6's pages carry no bundled_with). 6.01 (CL-4424678)
+// adds Maximilian's Para-Provisions (bid_115_dieselpunkmale), Hay Man's Hay Nest (bid_124_scarecrowmale) and Straw Ops'
+// Birdhovel (bid_125_scarecrowfemale), paired the same way.
 export const bundledBackBlings = {
   "AthenaCharacter:cid_093_athena_commando_m_dinosaur": "AthenaBackpack:bid_031_dinosaur",
   "AthenaCharacter:cid_097_athena_commando_f_rockerpunk": "AthenaBackpack:bid_034_rockerpunk",
@@ -517,7 +526,10 @@ export const bundledBackBlings = {
   "AthenaCharacter:cid_224_athena_commando_f_dieselpunk": "AthenaBackpack:bid_116_dieselpunkfemale",
   "AthenaCharacter:cid_225_athena_commando_m_octoberfest": "AthenaBackpack:bid_117_octoberfestmale",
   "AthenaCharacter:cid_226_athena_commando_f_octoberfest": "AthenaBackpack:bid_118_octoberfestfemale",
-  "AthenaCharacter:cid_220_athena_commando_f_clown": "AthenaBackpack:bid_111_clownfemale"
+  "AthenaCharacter:cid_220_athena_commando_f_clown": "AthenaBackpack:bid_111_clownfemale",
+  "AthenaCharacter:cid_223_athena_commando_m_dieselpunk": "AthenaBackpack:bid_115_dieselpunkmale",
+  "AthenaCharacter:cid_235_athena_commando_m_scarecrow": "AthenaBackpack:bid_124_scarecrowmale",
+  "AthenaCharacter:cid_236_athena_commando_f_scarecrow": "AthenaBackpack:bid_125_scarecrowfemale"
 };
 
 // The day's offers by storefront, those the requesting build has the cosmetic for. Never a cosmetic the shop doesn't sell

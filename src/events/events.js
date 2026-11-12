@@ -340,6 +340,15 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // can be completed per day", so EventFlag.ActiveMiniBosses (MiniBossCategory, quota 10). Its group missions keep 5.40's
 // Mega Alerts (Update v6.00: "MEGA Alerts will now show the correct reward quantities"). Fortnitemares isn't 6.00's (24
 // October, Update v6.20's day): by the admin's switch only.
+// 6.01 (CL-4417689 and CL-4424678, Update v6.01, 3 October 2018; CL-4424678's data serves both). Every EventFlag.* in
+// CL-4424678's paks (the same byte scan, all 336,321 files of its 15 paks; its pakchunk1000 and 1001, Dark Bomber and her
+// back bling, read with their keys of the published keychain, store/keychain.json) is 6.00's scan, name for name, less
+// BirthdayBattleBus (its Battle Bus item, BBID_BirthdayBus, is gone): the Cube's, Blockbuster's four, Fortnitemares' three,
+// Horde, LTM_Heist (Schedule_LTM_Heist is still cooked, as in 6.00), LobbySeason5 and LobbySeason6, RoadTrip2018,
+// SupplyDropBDay, SupplyDropGift, BR.CandyCaneGuns and Risky Reels'. Update v6.01 names no event of its own, and its
+// Weekly Store runs "during Cram Session" still (store/eventstore.js), so 6.01 serves what 6.00 does: LobbySeason6, the
+// ticketless storms and Cram Session's ActiveMiniBosses. Its floating island is 6.00's by the same flags (events/island.js,
+// which has what 6.01's BP_IslandScripting changed).
 export const blockbuster2018 = "Blockbuster2018";
 export const blockbuster2018Phase1 = "EventFlag.Blockbuster2018Phase1";
 export const blockbuster2018Phase2 = "EventFlag.Blockbuster2018Phase2";
@@ -390,7 +399,7 @@ const build521 = 4288479;
 const build530 = 4305896;
 const build541 = 4363240;
 const build6000 = 4395664;
-const build600 = 4402180;
+const build601 = 4424678;
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
@@ -421,11 +430,11 @@ const events = [
   { name: blockbuster2018, flag: blockbuster2018Phase3, firstBuild: build440, lastBuild: build45 },
   { name: blockbuster2018, flag: blockbuster2018Phase4, firstBuild: build450, lastBuild: build45 },
   { name: blockbuster2018, flag: activeMiniBosses, firstBuild: build40, lastBuild: build45 },
-  { name: passiveStorms, flag: passiveStorms, firstBuild: build40, lastBuild: build600 },
+  { name: passiveStorms, flag: passiveStorms, firstBuild: build40, lastBuild: build601 },
   { name: lobbySeason4, flag: lobbySeason4, firstBuild: build40, lastBuild: build45 },
   { name: lobbySeason5, flag: lobbySeason5, firstBuild: build500, lastBuild: build541 },
-  { name: lobbySeason6, flag: lobbySeason6, firstBuild: build6000, lastBuild: build600 },
-  { name: cramSession2018, flag: activeMiniBosses, firstBuild: build6000, lastBuild: build600 },
+  { name: lobbySeason6, flag: lobbySeason6, firstBuild: build6000, lastBuild: build601 },
+  { name: cramSession2018, flag: activeMiniBosses, firstBuild: build6000, lastBuild: build601 },
   { name: roadTrip2018, flag: roadTrip2018Flag, firstBuild: build500, lastBuild: build541 },
   { name: hordeFlag, flag: hordeFlag, firstBuild: build500, lastBuild: build541 },
   { name: birthday2018, flag: anniversary2018BR, firstBuild: build5100, lastBuild: build510 },

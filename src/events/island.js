@@ -49,11 +49,26 @@ import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 // of it on Season 6's 70 days (store/itemshop.js seasonMoment), lap by lap from the day 6.00 is first served, as the Cube's
 // on Season 5's (events/cube.js). The admin panel can set its own times (events/datedflags.js) or put the island straight
 // at any of its stops and keep it there (datedMoveSchedule: that stop's flag alone, from now).
+//
+// 6.01 (CL-4417689 and CL-4424678) keeps the island, served by the same flags and dates (season4flags.js). Its
+// BP_IslandScripting (CL-4424678's client paks, against 6.00's) is 6.00's with three changes:
+// - OnEventActive does nothing once HasSetIslandPosition is set, which the server does the first time it gives
+//   IslandPosition a place (after OnRep_IslandPosition). So a 6.01 match places the island once, by the first island
+//   event it finds active, and keeps it there: an island flag that turns on later (the next leg or rune on the replay, or
+//   the admin's stop) moves it in the next match, not in a running one, where 6.00 took the last to turn on.
+// - GetIslandPosition, without MCP (UFortKismetLibrary::IsRunningNoMCP), puts CachedTime at 1, the first rune, instead of
+//   binding the calendar's events. A Core server runs with MCP, so it binds them as 6.00's does.
+// - On clients OnRep_IslandPosition goes through TrySetIslandLocation, which waits (a one second timer) for the game
+//   state before SetFloatingIslandInformation, the map's island icon.
+// Its event names are read as 6.00's ("Rune" and "MoveTo" by their last digit, the leg's progress 8% to 97%) over the
+// same nine spline points (its Spline is 6.00's, point for point), and they are the same sixteen: 6.01's own
+// BP_IslandServerOnly (Core-ServerAssets' CL-4417689 pak, release cl-4417689) binds 6.00's names in 6.00's order. A
+// CL-4424678 host needs that asset too: Core-ServerAssets has no pak for it yet (2026-11-12).
 export const islandEvent = datedEvent("island");
 
 // The island's calendar events as parts [{validFrom (ms), events: [{eventType, activeSince, activeUntil}]}], from the part
-// that holds now on (the next four changes), as events/cube.js's: on 6.00 with the seasonal events on, in the Automatic
-// mode. A flag the admin switched on is served always (season4Overrides) and one switched off never, so neither is
+// that holds now on (the next four changes), as events/cube.js's: on 6.00 and 6.01 with the seasonal events on, in the
+// Automatic mode. A flag the admin switched on is served always (season4Overrides) and one switched off never, so neither is
 // scheduled here.
 export function islandStates(now = new Date(), changelist = currentBuild(), config = currentEventsConfig()) {
   const entry = season4Flag(islandEvent.flag);

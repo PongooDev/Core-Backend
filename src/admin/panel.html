@@ -2141,7 +2141,7 @@
       { id: "3", label: "Season 3 (3.0 – 3.6)", from: "3.0+", days: 68 },
       { id: "4", label: "Season 4 (4.0 – 4.5)", from: "4.0+", days: 72 },
       { id: "5", label: "Season 5 (5.0 – 5.41)", from: "5.0+", days: 77 },
-      { id: "6", label: "Season 6 (6.00)", from: "6.00+", days: 70 }
+      { id: "6", label: "Season 6 (6.00 – 6.01)", from: "6.00+", days: 70 }
     ];
     const seasonOf = (id) => SEASONS.find((entry) => entry.id === String(id)) ?? SEASONS[0];
     const seasonRoute = (accountId) => SEASONS.find((entry) => accountId === `season${entry.id}` || accountId === entry.id)?.id ?? null;
@@ -7388,7 +7388,11 @@
         b.flags.length
           ? el("div", { style: "display:flex; gap:4px; flex-wrap:wrap;" }, b.flags.map((f) => chip(f, "accent")))
           : el("span", { class: "muted", text: "None (Base game)" }),
-        el("span", { class: "muted", text: b.version.startsWith("5.41")
+        el("span", { class: "muted", text: b.version.startsWith("6.01")
+          ? "Playground's custom options (health, shields, gravity, time of day and more, sent to the match's server), the Chiller, and Disco Domination by its switch; the floating island by its dates, placed once a match; Save the World's Cram Session with the Lead Sled and the Obliterator in the Weekly Store"
+          : b.version.startsWith("6.00")
+          ? "Season 6: its Battle Pass, pets and lobby music, 50v50 with glider redeploy and Playground; the floating island by its dates; Save the World's Cram Session (Mini-Boss alerts with Gold, its quest lines, MEGA B.A.S.E. Kyle, the Ratatat and the Hydraulic Sledge)"
+          : b.version.startsWith("5.41")
           ? "Soaring Solos, its new mode, and Close Encounters; the Getaway and the High Stakes Challenges by their switches and dates; the Cube's runes and Loot Lake by their dates; Save the World's Weekly Horde Challenge 7 and the Bowler in the Weekly Store, with Road Trip and Challenge the Horde"
           : b.version.startsWith("5.40")
           ? "High Stakes: the Getaway LTM and the High Stakes Challenges (6 to 18 September); the Cube's runes and Loot Lake by their dates; Save the World's Weekly Horde Challenges 5 to 7, the Wraith and the Bowler in the Weekly Store and Harvester Fiona in the Event Store, with Road Trip and Challenge the Horde"
@@ -7623,7 +7627,7 @@
         if (await act(api("/admin/api/events/flags", payload), message)) showEvents();
       };
       const s4Range = ([first, last]) => {
-        const names = { 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4204761: "5.0", 4214610: "5.0", 4225813: "5.10", 4240749: "5.10", 4288479: "5.21", 4305896: "5.30", 4352937: "5.40", 4363240: "5.41", 4395664: "6.00.0", 4402180: "6.00" };
+        const names = { 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4204761: "5.0", 4214610: "5.0", 4225813: "5.10", 4240749: "5.10", 4288479: "5.21", 4305896: "5.30", 4352937: "5.40", 4363240: "5.41", 4395664: "6.00.0", 4402180: "6.00", 4417689: "6.01.0", 4424678: "6.01" };
         return first === last ? names[first] : `${names[first] || first} – ${names[last] || last}`;
       };
       const odditiesLabels = { off: "Off: the rifts wait (switch them below by hand)", launch: "After the rocket launch: Epic's days, counted from the admin's launch time", dates: "Epic's dates (30 June – 10 July) on Season 4's replay", custom: "My own times (set below)" };
@@ -7712,7 +7716,7 @@
             ...((event.modes || []).includes("build") ? [el("button", { class: "btn ghost small", text: "Back to the build's own", onclick: () => datedAction({ event: event.id, schedule: null, mode: "build" }, `${event.name}: the build's own`) })] : [])));
       };
       const datedEditors = dated.events.filter((event) => !event.challenges).map(datedEditor);
-      // 6.00's floating island (events/island.js, PongooDev/CoreV2#401): where it is on its way (Loot Lake, the seven runes, back over Loot Lake),
+      // 6.00's and 6.01's floating island (events/island.js, PongooDev/CoreV2#401): where it is on its way (Loot Lake, the seven runes, back over Loot Lake),
       // and a button per stop that puts it there now and holds it there.
       const islandDated = dated.events.find((event) => event.id === "island");
       const islandStops = islandDated?.stops || [];
@@ -7724,8 +7728,8 @@
       const islandStagesContainer = islandStops.length ? el("div", {
         style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
       },
-        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "6.00 The Floating Island's stops (Battle Royale):" }),
-        el("div", { class: "muted", style: "font-size:12px; margin-bottom:6px;", text: "6.00 places the island from the calendar: over Loot Lake (EventFlag.BR_S6_Island_Rune0), over one of the seven runes (_Rune1 to _Rune7, the map's island icon lit), or on its way to the next (_MoveTo1 to _MoveTo8, partway along by the leg's progress). Epic's dates are the Fortnite Wiki's days on Season 6's replay: it hung over Loot Lake from 27 September 2018, reached the Pleasant Park rune on 29 September and the last, in the map's middle, on 18 October, and was back over Loot Lake on 21 October. The days are approximate and their hours unknown, so each change is at midnight UTC. The game server needs BP_IslandServerOnly, which is in the 6.00 server-assets pak and not in the client's files; without it the island is never placed." }),
+        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "6.00 – 6.01 The Floating Island's stops (Battle Royale):" }),
+        el("div", { class: "muted", style: "font-size:12px; margin-bottom:6px;", text: "6.00 and 6.01 place the island from the calendar: over Loot Lake (EventFlag.BR_S6_Island_Rune0), over one of the seven runes (_Rune1 to _Rune7, the map's island icon lit), or on its way to the next (_MoveTo1 to _MoveTo8, partway along by the leg's progress). Epic's dates are the Fortnite Wiki's days on Season 6's replay: it hung over Loot Lake from 27 September 2018, reached the Pleasant Park rune on 29 September and the last, in the map's middle, on 18 October, and was back over Loot Lake on 21 October. The days are approximate and their hours unknown, so each change is at midnight UTC. The game server needs BP_IslandServerOnly, which is in the build's server-assets pak and not in the client's files; without it the island is never placed." }),
         el("div", { style: "font-size:13px; margin-bottom:8px;", text: `Now: ${islandStage.toward ? `floating to ${islandLabel(islandStage.toward)}${islandStage.at ? `, from ${islandLabel(islandStage.at)}` : ""}` : islandStage.at ? islandLabel(islandStage.at) : "not placed (no island flag served)"}${islandDated.mode === "dates" ? " (Epic's dates on Season 6's replay)" : islandDated.mode === "off" ? " (the island's flags are off)" : ""}` }),
         el("div", { style: "display:flex; flex-wrap:wrap; gap:6px; align-items:center;", role: "group", "aria-label": "The floating island's stops" },
           ...islandStops.map((stop, index) => el("button", {
@@ -7738,7 +7742,7 @@
           }))),
         el("div", { style: "display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:8px;" },
           el("button", { class: "btn ghost small", text: "Back to Epic's dates", onclick: () => datedAction({ event: "island", schedule: null, mode: "dates" }, "The floating island: Epic's dates") })),
-        el("div", { class: "muted", style: "font-size:12px; margin-top:6px;", text: "Pick a stop to put the island there now and keep it there (My own times in the island's schedule below: that stop's flag alone). Matches running 6.00 pick it up within 5 seconds: the island jumps straight there, and the map's island icon moves with it. What a running match can't play: 6.00 places the island once each time an island flag turns on, so no match shows it flying between two stops (a match that starts during a leg has it partway along, and it stays there for that match). The runes rising and flying to the island, the sky portal, the island breaking up and the Cube's end came with later updates and aren't in 6.00's files, so it just stays over Loot Lake after 21 October. Needs the Automatic mode with seasonal events on." })
+        el("div", { class: "muted", style: "font-size:12px; margin-top:6px;", text: "Pick a stop to put the island there now and keep it there (My own times in the island's schedule below: that stop's flag alone). Matches running 6.00 pick it up within 5 seconds: the island jumps straight there, and the map's island icon moves with it. 6.01 places the island once a match, by the first island flag it finds on, so a running 6.01 match keeps its island and the next match has it at the new stop. What a running match can't play: 6.00 places the island once each time an island flag turns on, so no match shows it flying between two stops (a match that starts during a leg has it partway along, and it stays there for that match). The runes rising and flying to the island, the sky portal, the island breaking up and the Cube's end came with later updates and aren't in 6.00's or 6.01's files, so it just stays over Loot Lake after 21 October. Needs the Automatic mode with seasonal events on." })
       ) : null;
       // 5.30's Crack Closure, the Cube appearing (events/cube.js, Core-Backend #295): when it appears, on the Cube's times.
       const cubeDated = dated.events.find((event) => event.id === "cube");
@@ -7827,7 +7831,7 @@
       const season4Container = el("div", {
         style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
       },
-        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "Season 4, 5 and 6 event flags (4.0 – 6.00):" }),
+        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "Season 4, 5 and 6 event flags (4.0 – 6.01):" }),
         el("div", { class: "muted", style: "font-size:12px; margin-bottom:8px;", text: "Every EventFlag.* in Season 4's paks. Automatic serves what the build served in its day; On or Off overrides it on the builds whose paks have the flag (in the Automatic mode). The rocket's flags follow the Rocket Launch above. Clients pick a change up at their next calendar fetch; running gameservers within 5 seconds." }),
         ...s4.groups.map((group) => el("div", { style: "margin-top:10px;" },
           el("div", { style: "font-weight:700; font-size:12px; margin-bottom:4px;", text: group.name + (group.managedBy ? " (by the Rocket Launch's time)" : "") }),

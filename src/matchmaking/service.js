@@ -150,6 +150,10 @@ const playlistTeamsFrom541 = {
   187: { maxTeamCount: 100, maxTeamSize: 4, maxSquadSize: 4 }
 };
 const playlistTeams541Build = 4363240;
+// 6.01's (CL-4417689, CL-4424678) Disco Domination (202, Playlist_Disco: 2 × 50 in squads of 4); its 50v50 (50), Soaring
+// 50's (53) and Playground (35) have the teams above.
+const playlistTeamsFrom601 = { 202: { maxTeamCount: 2, maxTeamSize: 50, maxSquadSize: 4 } };
+const playlistTeams601Build = 4417689;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).
 export const teamSquadsOptionBuild = 3915963;
 // The first build whose client sends player.option.fillTeam only as "true" (Fill), leaving it out for No Fill: its
@@ -208,6 +212,44 @@ export const queueOf = (bucketId, customKey = null) => bucketKey(bucketId) + (cu
 // teams with bots" teammates (noFill), as anywhere else.
 export const playgroundPlaylists = new Set(ltms.filter((ltm) => /^Playlist_Playground/.test(ltm.playlistName ?? "")).map((ltm) => ltm.playlistId));
 export const isPartyOnlyBucket = (bucketId, build) => playgroundPlaylists.has(parseBucket(bucketId, build).playlistId);
+
+// Custom match options (Update v6.01's "Playground Custom Options": starting health and shields, gravity, time of day...).
+// A playlist names its options (UFortPlaylist::UserOptions, a UPlaylistUserOptions: 6.01's Playlist_Playground has
+// Playgrounds_UserKnobsV1, seven of them), each a property (OptionKey) of a mutator class (OptionScope) with the values
+// the lobby offers. When the party leader queues, 6.01's lobby (CL-4424678 0x2E2D0A0, called by the matchmaking widget's
+// ticket attributes beside player.option.fillTeam, 0x2E3B660) adds one ticket attribute for each custom match option
+// the player has saved for the playlist (SavedCustomMatchOptions), "player.option.custom_match_option.<key>" (<key> as
+// UPlaylistUserOption names it, "<scope class>:<OptionKey>", 0xEF0A60) with the chosen value as text, unless
+// UFortRuntimeOptions' bDisableMatchmakingKnobs is set (Epic's name for them: knobs). The other members' tickets carry
+// none, and 6.00's lobby has none of this.
+// The server reads them back from its match assignment: 6.01's game mode (OnGivenMatchAssignment, 0xE481D0, where
+// match.option.customKey is read too) takes "match.option.customMatchOptions" (0xE4C2A0), a list
+// "<key>=<value>;<key>=<value>" (split on ";", then each on its first "="), adds each pair no match option already has,
+// unless the key is one of UFortRuntimeOptions' DisabledMatchmakingKnobs (or bDisableMatchmakingKnobs is set), and gives
+// the game state the lot, where the playlist's UserKnobsModifier mutators find their properties. Its constructor
+// (0x1378770) leaves both off and no shipped config of 6.01 sets either, so nothing needs a hotfix.
+// So the matchmaking service's part, Epic's then and this one's now, is to carry the party's options from its ticket to
+// AssignMatch. Only a match that is its party's alone takes them (Playground, #299): a party's options never change a
+// match it shares with others.
+export const customMatchOptionPrefix = "player.option.custom_match_option.";
+export const customMatchOptionsKey = "match.option.customMatchOptions";
+const customMatchOptionLimit = 32;
+const customMatchOptionName = /^[A-Za-z0-9_.:/-]{1,160}$/;
+const customMatchOptionValue = /^[A-Za-z0-9_.:/ +-]{1,64}$/;
+// A ticket request's custom match options ({key: value}, null for none): its query's player.option.custom_match_option.*
+// fields whose key and value can stand in the server's list (no "=" in a key, no ";" in either).
+export function customMatchOptionsOf(query) {
+  const options = {};
+  for (const [name, given] of Object.entries(query ?? {})) {
+    if (!name.startsWith(customMatchOptionPrefix) || Object.keys(options).length >= customMatchOptionLimit) continue;
+    const key = name.slice(customMatchOptionPrefix.length);
+    const value = String(Array.isArray(given) ? given[0] : given ?? "");
+    if (customMatchOptionName.test(key) && customMatchOptionValue.test(value)) options[key] = value;
+  }
+  return Object.keys(options).length ? options : null;
+}
+// AssignMatch's match.option.customMatchOptions for them.
+export const customMatchOptionsText = (options) => Object.entries(options ?? {}).map(([key, value]) => `${key}=${value}`).join(";");
 
 // The game's early countdown (WarmupEarlyCountdownDuration, 15 s): with late joining off, a CoreV2 gameserver's warmup
 // shortens to it once the match's assigned players are all in (CoreV2 ApplyWarmupLength), which for a match that has
@@ -287,6 +329,7 @@ export const playlistTeamsOf = (bucketId, build = null) => teamsOfPlaylist(parse
 // The same by playlist id: what the match results' V-Bucks read a limited-time playlist's mode from (CoreV2 #294).
 export const teamsOfPlaylist = (playlistId, build = null) => {
   if (playlistId === shootingTestPlaylist) return shootingTestTeams(build ?? 3870737);
+  if (Number(build) >= playlistTeams601Build && playlistTeamsFrom601[playlistId]) return playlistTeamsFrom601[playlistId];
   if (Number(build) >= playlistTeams541Build && playlistTeamsFrom541[playlistId]) return playlistTeamsFrom541[playlistId];
   if (Number(build) >= playlistTeams540Build && playlistTeamsFrom540[playlistId]) return playlistTeamsFrom540[playlistId];
   if (Number(build) >= playlistTeams530Build && playlistTeamsFrom530[playlistId]) return playlistTeamsFrom530[playlistId];
@@ -677,6 +720,12 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
       const same = forming?.parties.find((entry) => entry.key === party.key);
       if (same) {
         same.members.push(party);
+        // A Playground match goes to its server with the first ticket of its party (#299). The leader's is the one with
+        // the custom options and is asked for first; should a member's have come in before it, the match is already
+        // assigned without them, and the console says so.
+        if (forming.sent && forming.partyOnly && !forming.customOptions && party.ticket.customMatchOptions) {
+          say(`Match ${forming.matchId} was assigned before ${party.ticket.accountId}'s custom options came: it plays without them`);
+        }
         return true;
       }
       if (forming && !partyOnly && !forming.partyOnly && forming.customKey === party.customKey && bucketKey(forming.bucketId, { anyRegion }) === bucketKey(inServerRegion(server, bucketId), { anyRegion })
@@ -795,9 +844,15 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     // not fit, each party is a team of its own.
     const teams = teamsFor(forming.parties, forming.bucketId, server.build) ?? forming.parties.map((party) => [party.ticket.partyPlayerIds]);
     say(`Assigning match ${forming.matchId} (${forming.players} players in ${teams.length} teams, bucket ${forming.bucketId}) to session ${server.sessionId}`);
+    // A Playground party's custom match options (6.01, customMatchOptionsOf): its leader's ticket carries them.
+    const custom = forming.partyOnly ? forming.parties.flatMap((party) => [party, ...party.members])
+      .map((member) => member.ticket.customMatchOptions).find((given) => given && Object.keys(given).length) : null;
+    forming.customOptions = custom ?? null;
+    if (custom) say(`Match ${forming.matchId} takes its party's custom options: ${customMatchOptionsText(custom)}`);
     // In the format of the server's build, the one its session ticket was asked from (a netcl isn't always a changelist).
     const options = { ...matchOptions, ...(forming.customKey ? { "match.option.customKey": forming.customKey } : {}),
-      ...(teams.squads ? { "match.option.squads": teams.squads } : {}) };
+      ...(teams.squads ? { "match.option.squads": teams.squads } : {}),
+      ...(custom ? { [customMatchOptionsKey]: customMatchOptionsText(custom) } : {}) };
     server.ws.send(message("AssignMatch", { matchId: forming.matchId, bucketId: assignmentBucket(forming.bucketId, server.build), matchOptions: options, teams }));
   }
 

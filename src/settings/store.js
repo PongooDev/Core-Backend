@@ -43,8 +43,8 @@ const playlistAssetLtms = ["fiftyFiftyV2", "highExplosivesSolo", "highExplosives
   "scoreRoyaleSolo", "scoreRoyaleDuos", "scoreRoyaleSquads", "solidGoldSeason5", "solidGoldSeason5Solo", "solidGoldSeason5Duos", "fiftyFiftySolidGold",
   "getaway", "getawayDuos", "getawaySolo", "closeEncountersSeason5", "closeEncountersSeason5Solo", "closeEncountersSeason5Duos",
   "soaringSolos", "soaringDuos", "soaringSquads",
-  // 6.00's (CL-4395664, CL-4402180) 50v50.
-  "fiftyFiftySeason6"];
+  // 6.00's (CL-4395664, CL-4402180) 50v50, 6.01's too, and 6.01's (CL-4417689, CL-4424678) Disco Domination.
+  "fiftyFiftySeason6", "discoDomination"];
 // The ones on by default (events/ltms.js defaultOn, Core-Backend #314): Season 5's 50v50 and 5.10's to 5.30's Playground,
 // which those builds' shipped lobbies offer. A settings file from before them (matchmakingModesRevision under 1) kept them
 // off only because that was the default, so they are turned on once.

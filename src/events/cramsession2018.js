@@ -13,7 +13,10 @@ export { cramSession2018 };
 // rewards upon completion, (Hero/Schematic/Survivor XP, Evolution Materials, PERK-UPs or Gold). Has repeatable quests
 // that award Elemental PERK-UPs, RE-PERKs and Evolution Materials", and "Event Store will feature MEGA B.A.S.E. Kyle for
 // the duration of Cram Session". It runs on 6.00 by its build, as Road Trip on 5.0 (🟡 its end: Update v6.00 doesn't date it;
-// its Event Store items count down to Season 6's end on the replay, cramSession2018End).
+// its Event Store items count down to Season 6's end on the replay, cramSession2018End). 6.01 (CL-4417689 and CL-4424678)
+// runs it too: Update v6.00 has the Weekly Store "feature some returning items during Cram Session", a week each, and
+// Update v6.01's are the second week's (the Lead Sled and the Obliterator, store/eventstore.js); its notes end nothing,
+// and its data has the same quests (6.01's quests.json is 6.00's).
 //
 // Its quests, every quest whose Category is QuestCategoryTable's LTE_Autumn row ("Event: Cram Session"), which nothing in
 // 6.00's data grants (Epic's servers handed them out), granted at quest login while it runs:

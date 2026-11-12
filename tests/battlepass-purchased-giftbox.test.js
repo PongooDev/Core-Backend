@@ -42,7 +42,7 @@ async function buy(port, player, profileId, offerId, expectedPrice, agent, purch
 
 test("#326: the Battle Pass's own purchase is a GB_BattlePassPurchased from 5.0 on, a GB_BattlePass before; tiers stay GB_BattlePass", () => {
   for (const build of ["3901517", "4039451", "4166199"]) assert.equal(inBuild(build, battlePassPurchaseGiftBox), "GiftBox:gb_battlepass", build);
-  for (const build of ["4204761", "4214610", "4288479", "4363240", "4395664", "4402180"]) {
+  for (const build of ["4204761", "4214610", "4288479", "4363240", "4395664", "4402180", "4417689", "4424678"]) {
     assert.equal(inBuild(build, battlePassPurchaseGiftBox), "GiftBox:gb_battlepasspurchased", build);
   }
   assert.ok(isBattlePassGiftBox("GiftBox:GB_BattlePass") && isBattlePassGiftBox("GiftBox:GB_BattlePassPurchased"));

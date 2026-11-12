@@ -54,9 +54,10 @@ test("6.00's two changelists are known, both play on CL-4402180's data, Season 6
   assert.equal(allowedBuildList(["6.00"]).join(), v600);
   assert.equal(allowedBuildList(["6.00.0"]).join(), v6000);
   assert.equal(dataBuild("4380000"), v541, "a build between 5.41 and 6.00 Core doesn't know plays on 5.41's");
-  assert.equal(buildOfSeason(6), v600);
+  // Season 6's newest data is 6.01's now (tests/build601.test.js).
+  assert.equal(buildOfSeason(6), "4424678");
   assert.equal(buildOfSeason(5), v541);
-  assert.equal(seasonName(6), "Season 6 (6.00)");
+  assert.equal(seasonName(6), "Season 6 (6.00 – 6.01)");
   for (const build of builds600) {
     const season = inBuild(build, athenaSeason);
     assert.deepEqual([season.seasonNumber, season.numSeasonLevels, season.numBookLevels, season.storefront], [6, 100, 100, "BRSeason6"]);
@@ -105,7 +106,7 @@ test("6.00's event flags: LobbySeason6, the ticketless storms and Cram Session's
   }
   assert.equal(inBuild(v541, () => isEventActive(cramSession2018)), false);
   for (const flag of [cubeTurnOn, ltmHeist, "EventFlag.RoadTrip2018", "EventFlag.Horde"]) assert.equal(season4Flag(flag).builds[1], Number(v541), flag);
-  assert.equal(season4Flag(lobbySeason6).builds[1], Number(v600));
+  assert.deepEqual(season4Flag(lobbySeason6).builds, [Number(v6000), 4424678], "LobbySeason6 runs on to 6.01");
   withConfig(replay, () => {
     assert.deepEqual(inBuild(v600, () => cubeStates(at("2018-10-01T00:00:00Z"))), []);
     assert.deepEqual(inBuild(v600, () => highStakesStates(at("2018-10-01T00:00:00Z"))), []);
@@ -144,7 +145,15 @@ test("6.00's shop: Season 6's history from 27 September 2018, 70 days, with Airh
   assert.equal(history.length, 70);
   assert.deepEqual([history[0].date, history.at(-1).date], ["2018-09-27", "2018-12-05"]);
   const c600 = inBuild(v600, athenaCosmetics);
-  assert.ok(history.every((day) => [...day.featured, ...day.daily].every(([id]) => c600[id])), "only 6.00's cosmetics");
+  // The history holds 6.01's eight too (tests/build601.test.js); a build is shown only what its own data has.
+  const later = [...new Set(history.flatMap((day) => [...day.featured, ...day.daily]).map(([id]) => id).filter((id) => !c600[id]))];
+  assert.deepEqual(later.sort(), ["AthenaCharacter:cid_223_athena_commando_m_dieselpunk", "AthenaCharacter:cid_235_athena_commando_m_scarecrow",
+    "AthenaCharacter:cid_236_athena_commando_f_scarecrow", "AthenaDance:eid_tpose", "AthenaGlider:glider_id_082_scarecrow",
+    "AthenaGlider:glider_id_083_darkbomber", "AthenaPickaxe:pickaxe_id_105_scarecrow", "AthenaPickaxe:pickaxe_id_106_darkbomber"], "6.01's, and nothing later");
+  for (const iso of ["2018-09-30T12:00:00Z", "2018-10-05T12:00:00Z", "2018-10-07T12:00:00Z", "2018-11-15T12:00:00Z"]) {
+    const offers = inBuild(v600, () => itemShopOffers(at(iso), { mode: "fnbr", rotationHour: 0, seasonStarts: { 6: "2018-09-27" } }));
+    assert.ok([...offers.BRWeeklyStorefront, ...offers.BRDailyStorefront].every(({ templateId }) => c600[templateId]), `6.00's own on ${iso}`);
+  }
   const config = { mode: "fnbr", rotationHour: 0, seasonStarts: { 6: "2018-09-27" } };
   // 28 September 2018: Ludwig and Heidi (Oktoberfest).
   const featured = inBuild(v600, () => itemShopOffers(at("2018-09-28T12:00:00Z"), config)).BRWeeklyStorefront;

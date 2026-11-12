@@ -13,6 +13,7 @@ const v540 = 4352937;
 const v541 = 4363240;
 const v530 = 4305896;
 const v600 = 4402180;
+const v601 = 4424678;
 
 test("Storm Destruction's setting: Epic's dates and 10% by default, a bad mode or share keeps the current one", () => {
   assert.deepEqual(defaultStormDestruction, { mode: "dates", percent: 10 });
@@ -37,8 +38,8 @@ test("Epic's switch runs on Epic's dates on Season 5's replay on 5.40, always or
     assert.equal(stormDestructionOn(v540, after), false);
     // Epic's days were 5.40's: 5.41 shipped with it off ("no longer destroys structures").
     assert.equal(stormDestructionOn(v541, during), false);
-    // The builds before 5.40 have no mega storm, and 6.00's paks turn it off themselves: nothing served.
-    for (const build of [v530, v600, 3532353]) {
+    // The builds before 5.40 have no mega storm, and 6.00's and 6.01's paks turn it off themselves: nothing served.
+    for (const build of [v530, v600, v601, 4417689, 3532353]) {
       assert.equal(stormDestructionOn(build, during), null, String(build));
       assert.equal(stormDestructionEngineSection(build, during), "", String(build));
     }

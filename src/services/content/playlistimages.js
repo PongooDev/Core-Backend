@@ -40,7 +40,10 @@ import { newsImageUrl } from "./images.js";
 // or a PNG/JPEG uploaded as the news pictures are (images.js), served here.
 export const playlistImagesBuild = 4039451;
 // The first build that reads playlistinformation, not playlistimages: 5.40 (5.41's and 6.00's exes read it too; 6.00's
-// LTMs, 50v50, Playground and Soaring 50's, keep their Season 5 tiles).
+// LTMs, 50v50, Playground and Soaring 50's, keep their Season 5 tiles). 6.01's exe (CL-4424678) reads it as well
+// (playlist_info and special_border at 0x2DDFE50 and 0x2DDE880, no "playlistimages"); its Playlist_Disco, Update v6.02's
+// Disco Domination, has the tile Epic's later page names for it, BR06_LobbyTile_LTM_DiscoDomination (on Epic's CDN,
+// checked 2026-11-12: 200, the hash in its name the file's SHA-1).
 export const playlistInformationBuild = 4352937;
 
 const cdn = "https://cdn2.unrealengine.com/Fortnite/fortnite-game";
@@ -63,6 +66,7 @@ const steadyStormTile = `${cdn}/playlisttiles/BR05_LobbyTile_LTM-Steady-Storm-10
 const soaringFiftiesTile = `${cdn}/playlisttiles/BR05_LTM_Soaring50s-1024x512-80762dcc260cc959c11dac2ca2f6ae176eb63ef3.jpg`;
 const scoreRoyaleTile = `${cdn}/playlisttiles/BR05_LobbyTile_LTM_ScoreRoyale-1024x512-b608aaf7840cdf6b7a702c5cbe1848a2247516d6.jpg`;
 const highStakesTile = `${cdn}/playlistinformation/08BR_HighStakes_ModeTile-1024x512-741e576e8ae2e30c256ff3508011760ace890711.jpg`;
+const discoDominationTile = `${cdn}/playlistinformation/BR06_LobbyTile_LTM_DiscoDomination-1024x512-c79f07de78d8283656fcf4d1ee757f880911d775.jpg`;
 
 // Epic's picture of each playlist, by PlaylistName.
 export const epicPlaylistImages = {
@@ -106,7 +110,8 @@ export const epicPlaylistImages = {
   Playlist_Bling_Solo: highStakesTile,
   Playlist_Soaring_Solo: soaringFiftiesTile,
   Playlist_Soaring_Duos: soaringFiftiesTile,
-  Playlist_Soaring_Squads: soaringFiftiesTile
+  Playlist_Soaring_Squads: soaringFiftiesTile,
+  Playlist_Disco: discoDominationTile
 };
 
 // The border Epic's page gave a playlist's tile (playlistinformation special_border, 5.40 on): The Getaway's High Stakes one.

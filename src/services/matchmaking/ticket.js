@@ -6,7 +6,7 @@ import { notFound, sendError } from "../../errors.js";
 import { ltmModes, ltmOfPlaylist, ltmOn } from "../../events/ltms.js";
 import { log } from "../../log.js";
 import { regionAllowsAddress, regionOf } from "../../matchmaking/regions.js";
-import { parseBucket, serverRegion } from "../../matchmaking/service.js";
+import { customMatchOptionsOf, customMatchOptionsText, parseBucket, serverRegion } from "../../matchmaking/service.js";
 import { managesSession } from "../../matchmaking/sessions.js";
 import { defaultHostingIps, httpsProxied, requestAddress, viaHttpProxy } from "../../network.js";
 import { notRegionHost } from "./sessions.js";
@@ -85,13 +85,17 @@ export function ticketRoutes({ tokens, accounts, sessions, matchmaker, settings,
       customKey: customKey || null,
       // Whether the party may open a key: one of its players has the admin panel's Custom Matchmaking permission.
       customKeyHost: Boolean(customKey) && party.some((id) => accounts?.get(id)?.customMatchmaking === true),
+      // player.option.custom_match_option.*: the party leader's Playground custom options (6.01, matchmaking/service.js),
+      // which its match's server gets with AssignMatch.
+      customMatchOptions: customMatchOptionsOf(req.query),
       // The client's build (its User-Agent's changelist): 1.7.2 to 2.4.2's show the match start countdown (#160).
       build: Number(currentBuild()) || null,
       serviceUrl: serviceUrl(req)
     });
     const fills = ticket.fillTeam === null ? "" : ticket.fillTeam ? ", fill" : ", no fill";
     const keyed = ticket.customKey ? `, custom key ${ticket.customKey}${ticket.customKeyHost ? "" : " (not allowed to open it)"}` : "";
-    log("Matchmaking", `Ticket for ${accountId}, party of ${ticket.partyPlayerIds.length}${fills}, bucket ${ticket.bucketId}${keyed}`);
+    const optioned = ticket.customMatchOptions ? `, custom options ${customMatchOptionsText(ticket.customMatchOptions)}` : "";
+    log("Matchmaking", `Ticket for ${accountId}, party of ${ticket.partyPlayerIds.length}${fills}, bucket ${ticket.bucketId}${keyed}${optioned}`);
     res.json(response);
   });
 
