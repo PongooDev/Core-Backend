@@ -10,6 +10,7 @@ import { requestBuild } from "./builds/context.js";
 import { configureEvents, seasonalEvents } from "./events/events.js";
 import { configureLtms } from "./events/ltms.js";
 import { configureChallenges } from "./profiles/challenges.js";
+import { configureCreators } from "./store/creators.js";
 import { configureBattlePass } from "./battlepass/season1.js";
 import { createFriendStore } from "./friends/store.js";
 import { createFriendCodeStore } from "./friendcodes/store.js";
@@ -77,13 +78,14 @@ export function createContext(config) {
   configureEvents(() => settings.get().events);
   configureLtms(() => settings.get());
   configureChallenges(() => settings.get());
+  configureCreators(() => settings.get());
   configureSeasonStarts((season, date) => settings.recordSeasonStart(season, date));
   configureBattlePass(() => settings.get().battlepass);
   if (config.requirePassword !== undefined) settings.update({ requirePassword: config.requirePassword });
   if (config.allowRegistration !== undefined) settings.update({ allowRegistration: config.allowRegistration });
   if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
   if (config.seasonalEvents !== undefined) settings.update({ seasonalEvents: config.seasonalEvents });
-  for (const key of ["battleRoyaleVbucks", "battleRoyaleRewards", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits", "cheats", "cheatAccounts",
+  for (const key of ["battleRoyaleVbucks", "battleRoyaleRewards", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits", "cheats", "cheatAccounts", "creatorNames",
     "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "bots", "regionFallback", "vbuckPacks", "purchaseMode", "twitchPrimePack", "matchStartCountdown", "matchStartBufferSeconds", "serverRegions", "allowedBuilds", "defaultFoundersAccess", "remoteAdmin", "events", "battlepass", "matchmakingModes", "ltmOriginalDates", "ltmCloseEncounters", "serverLimits", "regionHostingIps", "customMatchServers", "customMatchFallback"]) {
     if (config[key] !== undefined) settings.update({ [key]: config[key] });
   }

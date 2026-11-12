@@ -102,7 +102,8 @@ const saleTitles = {
 // SetCMSTextureToKeyArt sets it as the key art material's GameMode_BR or GameMode_STW. With no image the material keeps its
 // cooked picture. 6.00 still cooks Season 5's (UI/Login/SubGameSelect/Textures/T_BR_Right_S5a: Drift and Ragnarok),
 // because Epic gave Season 6's from the page. So 6.00's mode select showed Season 5's characters. 6.01 (CL-4424678) still
-// cooks that picture, and its SubgameSelectScreen is 6.00's byte for byte, so it takes Season 6's from the page too.
+// cooks that picture, and its SubgameSelectScreen is 6.00's byte for byte, so it takes Season 6's from the page too. 6.02's
+// (CL-4461277) picture and screen are 6.01's byte for byte.
 // Epic's Season 6 picture is BR06_In-Game_Mode-Select (Calamity, DJ Yonder and Bonesy, the Battle Pass of 27 September
 // 2018). It is still on Epic's CDN under fortnite-game/subgameselect/ (checked 2026-11-11: GET answers 200 with the
 // 1920x1080 JPEG, and the hash in its name is the file's SHA-1). The only copy of Epic's page found (the Neon backend's)

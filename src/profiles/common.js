@@ -72,7 +72,7 @@ export function itemView(templateId) {
 // profile0's stats that are common_core's (the account's purchases, gifts and platform). common_public's come from
 // profile0's homebase stat {townName, bannerIconId, bannerColorId}, which campaign keeps too.
 const coreStats = new Set(["current_mtx_platform", "in_app_purchases", "daily_purchases", "weekly_purchases", "monthly_purchases",
-  "mtx_purchase_history", "mtx_affiliate", "gift_history", "allowed_to_receive_gifts", "allowed_to_send_gifts",
+  "mtx_purchase_history", "mtx_affiliate", "mtx_affiliate_set_time", "gift_history", "allowed_to_receive_gifts", "allowed_to_send_gifts",
   "import_friends_claimed", "mfa_enabled"]);
 
 export const statView = (name) => (coreStats.has(name) ? "common_core" : "campaign");

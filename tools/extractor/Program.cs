@@ -1594,6 +1594,9 @@ if (athenaSeason is not null && athenaSeason.ContainsKey("challengeSchedulesAlwa
         .Concat(athenaSeason.TryGetValue("challengeSchedulePaid", out var paid) ? [(string)paid] : Array.Empty<string>())
         // and the event schedules (5.10's Schedule_Birthday2018_BR, given while its event flag runs).
         .Concat(challengeSchedules.Where(entry => ((SortedDictionary<string, object>)entry.Value).ContainsKey("eventName")).Select(entry => entry.Key))
+        // and an outfit's own challenges (CategoryID "Styles": 5.30's BundleSchedule_Styles_Tomatohead and 6.02's
+        // BundleSchedule_Styles_SkullTrooper, "Earn additional styles for Skull Trooper"), which the outfit's owners get.
+        .Concat(challengeSchedules.Where(entry => (string)((SortedDictionary<string, object>)entry.Value)["category"] == "Styles").Select(entry => entry.Key))
         .Where(challengeSchedules.ContainsKey).Distinct().ToList();
     var grantedSchedules = new SortedDictionary<string, object>(StringComparer.Ordinal);
     var bundles = new SortedDictionary<string, object>(StringComparer.Ordinal);

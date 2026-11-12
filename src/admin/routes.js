@@ -124,8 +124,8 @@ const served530 = (now) => inBuild("4305896", () => [...activeEventFlags(),
 // What 5.40 (CL-4352937) serves now: its flags, the Cube's and High Stakes' by their dates (events/cube.js, events/highstakes.js).
 const served540 = (now) => inBuild("4352937", () => [...activeEventFlags(),
   ...[...(cubeStates(now)[0]?.events ?? []), ...(highStakesStates(now)[0]?.events ?? [])].map(({ eventType }) => eventType)]);
-// What 6.00 (CL-4402180) serves now: its flags and the floating island's by its dates (events/island.js). 6.01 serves
-// the same ones (its paks drop only BirthdayBattleBus, which neither serves by itself).
+// What 6.00 (CL-4402180) serves now: its flags and the floating island's by its dates (events/island.js). 6.01 and 6.02
+// serve the same ones (their paks drop only BirthdayBattleBus, which none serves by itself).
 const served600 = (now) => inBuild("4402180", () => [...activeEventFlags(),
   ...(islandStates(now)[0]?.events ?? []).map(({ eventType }) => eventType)]);
 
@@ -1151,6 +1151,7 @@ export function adminRoutes(context) {
       structureLimits: req.body?.structureLimits,
       cheats: req.body?.cheats,
       cheatAccounts: req.body?.cheatAccounts,
+      creatorNames: req.body?.creatorNames,
       matchmakingGatherSeconds: req.body?.matchmakingGatherSeconds,
       warmupSeconds: req.body?.warmupSeconds,
       lateJoin: req.body?.lateJoin,
@@ -1242,9 +1243,10 @@ export function adminRoutes(context) {
     // Maverick, Shade, Sun Tan Specialist, Archetype...), 5.20's and 5.21's (Beef Boss, Mullet Marauder, Overtaker,
     // Sushi Master, the P.A.N.D.A Team Leader...), 5.30's (Musha and Hime, Ravage, Backbone and Chopper...), 5.40's
     // (Wild Card, Field Surgeon, Hacivat, Stage Slayer...) and, now 5.41's (CL-4363240), 5.41's (Valkyrie, Nite Nite, Grill
-    // Sergeant, Frostwing). Season 6's as 6.01's (CL-4424678): 6.00's cosmetics and 6.01's (Maximilian, Hay Man, Straw Ops,
-    // Thunder Crash, Dark Glyph, Harvester, Field Wraith, T-Pose).
-    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4166199", 5: "4363240", 6: "4424678" }[s];
+    // Sergeant, Frostwing). Season 6's as 6.02's (CL-4461277): 6.00's cosmetics, 6.01's (Maximilian, Hay Man, Straw Ops,
+    // Thunder Crash, Dark Glyph, Harvester, Field Wraith, T-Pose) and 6.02's (Dark Bomber, Skull Ranger, Plague, Scourge,
+    // Hollowhead, Jack Gourdon, Bullseye, their tools, gliders and emotes).
+    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4166199", 5: "4363240", 6: "4461277" }[s];
     const offers = inBuild(build, () => itemShopOffers(now, config, s));
     const cosmetics = inBuild(build, () => eligibleCosmetics());
     const currentDay = shopDay(now, config, s);
@@ -1287,6 +1289,8 @@ export function adminRoutes(context) {
       // The Store tab's V-Bucks packs (store/currency.js), switched with /admin/api/settings.
       vbuckPacks: settings?.get?.()?.vbuckPacks !== false,
       purchaseMode: settings?.get?.()?.purchaseMode === "code" ? "code" : "free",
+      // Support-A-Creator's creators (store/creators.js), set with /admin/api/settings.
+      creatorNames: [...(settings?.get?.()?.creatorNames ?? [])],
       currentShop: {
         featured: offers.BRWeeklyStorefront.map(mapOffer),
         daily: offers.BRDailyStorefront.map(mapOffer)
@@ -1355,7 +1359,9 @@ export function adminRoutes(context) {
       { version: "6.00.0", cl: 4395664, event: "Cram Session" },
       { version: "6.00", cl: 4402180, event: "Cram Session" },
       { version: "6.01.0", cl: 4417689, event: "Cram Session" },
-      { version: "6.01", cl: 4424678, event: "Cram Session" }
+      { version: "6.01", cl: 4424678, event: "Cram Session" },
+      { version: "6.02.0", cl: 4442095, event: "Cram Session" },
+      { version: "6.02", cl: 4461277, event: "Cram Session" }
     ];
 
     const sampleBuilds = builds.map((b) => ({
@@ -1521,8 +1527,8 @@ export function adminRoutes(context) {
         {
           id: "cramsession2018",
           name: "Cram Session",
-          subtitle: "Season 6's mini-event: active Mini-Boss alerts (10 a day) giving two XP, evolution or perk packs and Gold, four ten-stage quest lines (Let's Explore, Treasure Hunter, Safecracking, The Air Itself is Filled with Husks) and the repeatable Mini-Boss quest, MEGA B.A.S.E. Kyle in the Event Store, the Ratatat and the Hydraulic Sledge in the Weekly Store, and on 6.01 the Lead Sled and the Obliterator from 4 October on the replay; the Season 6 lobby",
-          buildRange: "6.00 – 6.01 (CL 4395664 – 4424678)",
+          subtitle: "Season 6's mini-event: active Mini-Boss alerts (10 a day) giving two XP, evolution or perk packs and Gold, four ten-stage quest lines (Let's Explore, Treasure Hunter, Safecracking, The Air Itself is Filled with Husks) and the repeatable Mini-Boss quest, MEGA B.A.S.E. Kyle in the Event Store, the Ratatat and the Hydraulic Sledge in the Weekly Store, and on 6.01 the Lead Sled and the Obliterator from 4 October on the replay, on 6.02 the Noble Launcher and the Vindertech Disintegrator from 11 October; the Season 6 lobby",
+          buildRange: "6.00 – 6.02 (CL 4395664 – 4461277)",
           flags: ["EventFlag.ActiveMiniBosses", "EventFlag.PassiveStorms", "EventFlag.LobbySeason6"],
           theater: "Standard Zones with Mini-Boss and passive Mutant Storm alerts",
           theaterRegions: [],

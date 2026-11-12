@@ -43,7 +43,8 @@ export const playlistImagesBuild = 4039451;
 // LTMs, 50v50, Playground and Soaring 50's, keep their Season 5 tiles). 6.01's exe (CL-4424678) reads it as well
 // (playlist_info and special_border at 0x2DDFE50 and 0x2DDE880, no "playlistimages"); its Playlist_Disco, Update v6.02's
 // Disco Domination, has the tile Epic's later page names for it, BR06_LobbyTile_LTM_DiscoDomination (on Epic's CDN,
-// checked 2026-11-12: 200, the hash in its name the file's SHA-1).
+// checked 2026-11-12: 200, the hash in its name the file's SHA-1). 6.02's exe (CL-4461277) has the same two names and no
+// new one (its strings against 6.01's), and its Playlist_Disco_32, the 32 a side Disco Domination, takes the mode's tile.
 export const playlistInformationBuild = 4352937;
 
 const cdn = "https://cdn2.unrealengine.com/Fortnite/fortnite-game";
@@ -111,7 +112,8 @@ export const epicPlaylistImages = {
   Playlist_Soaring_Solo: soaringFiftiesTile,
   Playlist_Soaring_Duos: soaringFiftiesTile,
   Playlist_Soaring_Squads: soaringFiftiesTile,
-  Playlist_Disco: discoDominationTile
+  Playlist_Disco: discoDominationTile,
+  Playlist_Disco_32: discoDominationTile
 };
 
 // The border Epic's page gave a playlist's tile (playlistinformation special_border, 5.40 on): The Getaway's High Stakes one.

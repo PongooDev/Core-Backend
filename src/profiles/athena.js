@@ -19,7 +19,8 @@ import { findItem } from "./items.js";
 import { grant } from "./progress.js";
 import { applyHeldVariantTokens, applyVariantUpdates, defaultVariants, grantDefaultVariants, grantMissingVariantTokens, grantVariantToken, itemsMissingVariants,
   missingVariantTokens } from "./variants.js";
-import { brokenChallengeOf, completeBrokenChallenges, countBundleQuest, grantChallengeSchedule as grantSchedule, settleChallengeSchedules } from "./challenges.js";
+import { brokenChallengeOf, completeBrokenChallenges, countBundleQuest, grantChallengeSchedule as grantSchedule, settleChallengeSchedules,
+  settleStyleSchedules } from "./challenges.js";
 import { accountLevelOf, addBookXp, giveSeasonReward, givenVariantTokens, namesAthenaBuild, profileSeason, seasonNeedsSwitch, seasonNumber, settleSeasonPromise,
   settleSeasonRewards, switchSeason } from "./seasons.js";
 
@@ -847,6 +848,14 @@ export function claimAthenaQuest(session, itemId) {
     else if (typeOf(templateId).startsWith("athena")) grantCosmetic(session, templateId);
     else if (typeOf(templateId) === "token") acquireAthenaToken(session, templateId, quantity);
   }
+  // 6.02's (CL-4461277) daily challenges each give, hidden, a daily challenge token (the quests' rewards table:
+  // Token:Athena_DailyChallenge_Token, Hidden), which the Skull Trooper Challenges' "Complete daily challenges" counts
+  // (Quest_BR_Styles_SkullTrooper_Complete_Daily_Challenges: ItemEvent Acquire of that token, 7). The token has no item
+  // definition in the client's paks (no such asset in 6.02's 337,735 files), so Epic's servers counted it without the
+  // client ever holding it: here too it is counted and no item is added.
+  for (const { templateId, quantity } of quest.hiddenRewards ?? []) {
+    if (typeOf(templateId) === "token") itemObjectives(session, "Acquire", templateId, quantity);
+  }
 }
 
 // 4.0's (CL-4039451) notes: "New this season: Completing challenges after reaching tier 100 in the Battle Pass will grant
@@ -1184,6 +1193,7 @@ export function athenaQuestLogin(session) {
   settleBattlePassDaily(session);
   settleSeasonGrants(session);
   settleEventSchedules(session);
+  settleStyleSchedules(session, seasonFunctions);
   settleChallengeSchedules(session, seasonFunctions);
   settleBrokenChallenges(session);
   settleLevelObjectives(session);

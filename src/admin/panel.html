@@ -2141,7 +2141,7 @@
       { id: "3", label: "Season 3 (3.0 – 3.6)", from: "3.0+", days: 68 },
       { id: "4", label: "Season 4 (4.0 – 4.5)", from: "4.0+", days: 72 },
       { id: "5", label: "Season 5 (5.0 – 5.41)", from: "5.0+", days: 77 },
-      { id: "6", label: "Season 6 (6.00 – 6.01)", from: "6.00+", days: 70 }
+      { id: "6", label: "Season 6 (6.00 – 6.02)", from: "6.00+", days: 70 }
     ];
     const seasonOf = (id) => SEASONS.find((entry) => entry.id === String(id)) ?? SEASONS[0];
     const seasonRoute = (accountId) => SEASONS.find((entry) => accountId === `season${entry.id}` || accountId === entry.id)?.id ?? null;
@@ -6570,6 +6570,37 @@
           })),
         el("p", { class: "note", style: "margin:0;", text: "From 1.8, the Store tab sells Epic's four V-Bucks packs (1,000, 2,800, 7,500 and 13,500). Buying one opens a page with a Complete purchase button that gives the V-Bucks for free, as a simulated real-money purchase. It also sells each season's Starter Pack, once per account, on that season's builds that have its cosmetics: Season 3's Battle Royale Starter Pack (Rogue Agent outfit, Catalyst back bling and 600 V-Bucks), Season 4's Wingman Starter Pack (Wingman outfit, Bogey Bag back bling and 600 V-Bucks, from 4.4) and Season 5's Ace Pack (The Ace outfit, Swag Bag back bling and 600 V-Bucks, from 5.30). Turn this off to hide the packs." }));
 
+      // Support-A-Creator (6.02, store/creators.js): the creators a player may enter in the item shop's Support a Creator.
+      const creatorList = shop.creatorNames || [];
+      const saveCreators = async (names, message) => {
+        const res = await act(api("/admin/api/settings", { creatorNames: names }), message);
+        if (res) showShop();
+      };
+      const creatorInput = el("input", { class: "field", placeholder: "Creator name (3 to 32 letters, digits, spaces, _ . -)", "aria-label": "Creator name", maxlength: "32", style: "flex:1 1 240px;" });
+      const creatorAdd = btn("Add creator", () => {
+        const typed = creatorInput.value.trim();
+        if (!/^[A-Za-z0-9][A-Za-z0-9 _.-]{1,30}[A-Za-z0-9_.-]$/.test(typed)) return toast("A creator's name is 3 to 32 letters, digits, spaces, _ . or -", true);
+        if (creatorList.some((name) => name.toLowerCase() === typed.toLowerCase())) return toast(`${typed} is already a creator`, true);
+        saveCreators([...creatorList, typed], `${typed} can be supported from the item shop`);
+      }, "primary");
+      creatorInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          creatorAdd.click();
+        }
+      });
+      const creatorsSection = el("section", { class: "panel" },
+        el("div", { class: "panel-head", style: "margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; gap:12px;" },
+          el("h2", { text: "Support-A-Creator" }),
+          creatorList.length ? chip(`${creatorList.length} creator${creatorList.length === 1 ? "" : "s"}`, "sky") : chip("Off")),
+        el("p", { class: "note", style: "margin:0;", text: "From 6.02, the item shop has a Support a Creator button: the player enters a creator's name and the shop shows who they support. The game ships with it off and only takes the names its hotfix lists, so it shows while at least one creator is listed here, and a player can pick only these names. Nothing is paid to anyone: the choice is only kept, with the day it was made. A change shows once the player's game restarts." }),
+        el("div", { class: "actions", style: "margin-top:10px; gap:8px; flex-wrap:wrap;" },
+          creatorList.length ? creatorList.map((name) => el("span", {
+            class: "chip sky removable", title: `${name}: click to remove`, style: "display:inline-flex; align-items:center; padding:4px 10px;",
+            onclick: () => saveCreators(creatorList.filter((other) => other !== name), `${name} removed from the creators`)
+          }, el("span", { text: name }), el("span", { class: "remove-x", text: "✕" }))) : el("span", { class: "muted", text: "No creators: the button stays hidden." })),
+        el("div", { class: "actions", style: "margin-top:12px; align-items:center; width:100%" }, creatorInput, creatorAdd));
+
       // How the packs are paid (Core-Backend #248): free, or with a purchase code (store/purchasecodes.js) made here.
       const purchaseCodeOffers = [["any", "Any offer"], ["core_mtx_1000", "1,000 V-Bucks pack"], ["core_mtx_2800", "2,800 V-Bucks pack"],
         ["core_mtx_7500", "7,500 V-Bucks pack"], ["core_mtx_13500", "13,500 V-Bucks pack"], ["core_starter_br_s3", "Battle Royale Starter Pack"],
@@ -6998,6 +7029,7 @@
         timingSettingsSection,
         vbuckPacksSection,
         purchaseCodesSection,
+        creatorsSection,
         modePicker,
         configSection,
         previewSection
@@ -7388,7 +7420,9 @@
         b.flags.length
           ? el("div", { style: "display:flex; gap:4px; flex-wrap:wrap;" }, b.flags.map((f) => chip(f, "accent")))
           : el("span", { class: "muted", text: "None (Base game)" }),
-        el("span", { class: "muted", text: b.version.startsWith("6.01")
+        el("span", { class: "muted", text: b.version.startsWith("6.02")
+          ? "Disco Domination, its new mode (the 32 a side one, High Explosives and Steady Storm by their switches), the Quad Launcher, the Skull Trooper Challenges for the outfit's owners, and Support-A-Creator in the item shop while creators are listed (Item Shop page); the floating island by its dates; Save the World's Cram Session with the Noble Launcher and the Vindertech Disintegrator in the Weekly Store"
+          : b.version.startsWith("6.01")
           ? "Playground's custom options (health, shields, gravity, time of day and more, sent to the match's server), the Chiller, and Disco Domination by its switch; the floating island by its dates, placed once a match; Save the World's Cram Session with the Lead Sled and the Obliterator in the Weekly Store"
           : b.version.startsWith("6.00")
           ? "Season 6: its Battle Pass, pets and lobby music, 50v50 with glider redeploy and Playground; the floating island by its dates; Save the World's Cram Session (Mini-Boss alerts with Gold, its quest lines, MEGA B.A.S.E. Kyle, the Ratatat and the Hydraulic Sledge)"
@@ -7627,7 +7661,7 @@
         if (await act(api("/admin/api/events/flags", payload), message)) showEvents();
       };
       const s4Range = ([first, last]) => {
-        const names = { 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4204761: "5.0", 4214610: "5.0", 4225813: "5.10", 4240749: "5.10", 4288479: "5.21", 4305896: "5.30", 4352937: "5.40", 4363240: "5.41", 4395664: "6.00.0", 4402180: "6.00", 4417689: "6.01.0", 4424678: "6.01" };
+        const names = { 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4204761: "5.0", 4214610: "5.0", 4225813: "5.10", 4240749: "5.10", 4288479: "5.21", 4305896: "5.30", 4352937: "5.40", 4363240: "5.41", 4395664: "6.00.0", 4402180: "6.00", 4417689: "6.01.0", 4424678: "6.01", 4442095: "6.02.0", 4461277: "6.02" };
         return first === last ? names[first] : `${names[first] || first} – ${names[last] || last}`;
       };
       const odditiesLabels = { off: "Off: the rifts wait (switch them below by hand)", launch: "After the rocket launch: Epic's days, counted from the admin's launch time", dates: "Epic's dates (30 June – 10 July) on Season 4's replay", custom: "My own times (set below)" };
@@ -7716,7 +7750,7 @@
             ...((event.modes || []).includes("build") ? [el("button", { class: "btn ghost small", text: "Back to the build's own", onclick: () => datedAction({ event: event.id, schedule: null, mode: "build" }, `${event.name}: the build's own`) })] : [])));
       };
       const datedEditors = dated.events.filter((event) => !event.challenges).map(datedEditor);
-      // 6.00's and 6.01's floating island (events/island.js, PongooDev/CoreV2#401): where it is on its way (Loot Lake, the seven runes, back over Loot Lake),
+      // 6.00's to 6.02's floating island (events/island.js, PongooDev/CoreV2#401): where it is on its way (Loot Lake, the seven runes, back over Loot Lake),
       // and a button per stop that puts it there now and holds it there.
       const islandDated = dated.events.find((event) => event.id === "island");
       const islandStops = islandDated?.stops || [];
@@ -7728,8 +7762,8 @@
       const islandStagesContainer = islandStops.length ? el("div", {
         style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
       },
-        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "6.00 – 6.01 The Floating Island's stops (Battle Royale):" }),
-        el("div", { class: "muted", style: "font-size:12px; margin-bottom:6px;", text: "6.00 and 6.01 place the island from the calendar: over Loot Lake (EventFlag.BR_S6_Island_Rune0), over one of the seven runes (_Rune1 to _Rune7, the map's island icon lit), or on its way to the next (_MoveTo1 to _MoveTo8, partway along by the leg's progress). Epic's dates are the Fortnite Wiki's days on Season 6's replay: it hung over Loot Lake from 27 September 2018, reached the Pleasant Park rune on 29 September and the last, in the map's middle, on 18 October, and was back over Loot Lake on 21 October. The days are approximate and their hours unknown, so each change is at midnight UTC. The game server needs BP_IslandServerOnly, which is in the build's server-assets pak and not in the client's files; without it the island is never placed." }),
+        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "6.00 – 6.02 The Floating Island's stops (Battle Royale):" }),
+        el("div", { class: "muted", style: "font-size:12px; margin-bottom:6px;", text: "6.00 to 6.02 place the island from the calendar: over Loot Lake (EventFlag.BR_S6_Island_Rune0), over one of the seven runes (_Rune1 to _Rune7, the map's island icon lit), or on its way to the next (_MoveTo1 to _MoveTo8, partway along by the leg's progress). Epic's dates are the Fortnite Wiki's days on Season 6's replay: it hung over Loot Lake from 27 September 2018, reached the Pleasant Park rune on 29 September and the last, in the map's middle, on 18 October, and was back over Loot Lake on 21 October. The days are approximate and their hours unknown, so each change is at midnight UTC. The game server needs BP_IslandServerOnly, which is in the build's server-assets pak and not in the client's files; without it the island is never placed." }),
         el("div", { style: "font-size:13px; margin-bottom:8px;", text: `Now: ${islandStage.toward ? `floating to ${islandLabel(islandStage.toward)}${islandStage.at ? `, from ${islandLabel(islandStage.at)}` : ""}` : islandStage.at ? islandLabel(islandStage.at) : "not placed (no island flag served)"}${islandDated.mode === "dates" ? " (Epic's dates on Season 6's replay)" : islandDated.mode === "off" ? " (the island's flags are off)" : ""}` }),
         el("div", { style: "display:flex; flex-wrap:wrap; gap:6px; align-items:center;", role: "group", "aria-label": "The floating island's stops" },
           ...islandStops.map((stop, index) => el("button", {
@@ -7742,7 +7776,7 @@
           }))),
         el("div", { style: "display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:8px;" },
           el("button", { class: "btn ghost small", text: "Back to Epic's dates", onclick: () => datedAction({ event: "island", schedule: null, mode: "dates" }, "The floating island: Epic's dates") })),
-        el("div", { class: "muted", style: "font-size:12px; margin-top:6px;", text: "Pick a stop to put the island there now and keep it there (My own times in the island's schedule below: that stop's flag alone). Matches running 6.00 pick it up within 5 seconds: the island jumps straight there, and the map's island icon moves with it. 6.01 places the island once a match, by the first island flag it finds on, so a running 6.01 match keeps its island and the next match has it at the new stop. What a running match can't play: 6.00 places the island once each time an island flag turns on, so no match shows it flying between two stops (a match that starts during a leg has it partway along, and it stays there for that match). The runes rising and flying to the island, the sky portal, the island breaking up and the Cube's end came with later updates and aren't in 6.00's or 6.01's files, so it just stays over Loot Lake after 21 October. Needs the Automatic mode with seasonal events on." })
+        el("div", { class: "muted", style: "font-size:12px; margin-top:6px;", text: "Pick a stop to put the island there now and keep it there (My own times in the island's schedule below: that stop's flag alone). Matches running 6.00 pick it up within 5 seconds: the island jumps straight there, and the map's island icon moves with it. 6.01 and 6.02 place the island once a match, by the first island flag they find on, so a running 6.01 or 6.02 match keeps its island and the next match has it at the new stop. What a running match can't play: 6.00 places the island once each time an island flag turns on, so no match shows it flying between two stops (a match that starts during a leg has it partway along, and it stays there for that match). The runes rising and flying to the island, the sky portal, the island breaking up and the Cube's end came with later updates and aren't in 6.00's, 6.01's or 6.02's files, so it just stays over Loot Lake after 21 October. Needs the Automatic mode with seasonal events on." })
       ) : null;
       // 5.30's Crack Closure, the Cube appearing (events/cube.js, Core-Backend #295): when it appears, on the Cube's times.
       const cubeDated = dated.events.find((event) => event.id === "cube");
@@ -7831,7 +7865,7 @@
       const season4Container = el("div", {
         style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
       },
-        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "Season 4, 5 and 6 event flags (4.0 – 6.01):" }),
+        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "Season 4, 5 and 6 event flags (4.0 – 6.02):" }),
         el("div", { class: "muted", style: "font-size:12px; margin-bottom:8px;", text: "Every EventFlag.* in Season 4's paks. Automatic serves what the build served in its day; On or Off overrides it on the builds whose paks have the flag (in the Automatic mode). The rocket's flags follow the Rocket Launch above. Clients pick a change up at their next calendar fetch; running gameservers within 5 seconds." }),
         ...s4.groups.map((group) => el("div", { style: "margin-top:10px;" },
           el("div", { style: "font-weight:700; font-size:12px; margin-bottom:4px;", text: group.name + (group.managedBy ? " (by the Rocket Launch's time)" : "") }),

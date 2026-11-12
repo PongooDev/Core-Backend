@@ -104,7 +104,14 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // her, who is in 6.01's own keyed pak, pakchunk1000, as her Dark Bag is in pakchunk1001), Hay Man and Straw Ops with
 // Harvester and Field Wraith (7 and 8 October, 15 November) and the T-Pose emote (7 and 18 October, 10 and 23 November).
 // Only 6.01's data has them, so 6.00's days are as they were, and 6.01's 5 to 8 October have a featured section (29 empty
-// days of the 70). A build's season is its athena data's seasonNumber, Season 1 without one.
+// days of the 70). 6.02 (CL-4461277; CL-4442095 plays on its data) adds its sixteen the shop sold, the same way: Dark
+// Bomber, now in its main paks (5 and 6 October, 21 November, with Thunder Crash and Dark Glyph), the Skull Squad's Skull
+// Ranger, Skull Sickle and Crypt Cruiser (11 to 14 October and 1 November, beside the Skull Trooper, whose return they
+// came with: "The Skull Squad Gear is available now. Complete challenges to earn the Ghost Portal Back Bling", profiles/
+// challenges.js styleSchedules), Plague and Scourge with Herald's Wand and Lamplight (12 and 13 October, 4 December),
+// Hollowhead and Carver (14 and 15 October, 31 October and 1 November), Jack Gourdon (four days), Bullseye, and the
+// emotes Behold!, Sprinkler, Electro Swing and Headbanger. Only 6.02's data has them, so 6.00's and 6.01's days are as they
+// were (28 empty days of the 70 on 6.02). A build's season is its athena data's seasonNumber, Season 1 without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;
   return { days, firstDay: Date.parse(`${days[0].date}T00:00:00Z`) };
@@ -481,7 +488,9 @@ const tileOf = (tile) => {
 // (bid_117_octoberfestmale), Heidi's Pretzel Protector (bid_118_octoberfestfemale) and Peekaboo's Battle Balloon
 // (bid_111_clownfemale), as 6.00's back bling names pair them (🟡 Season 6's pages carry no bundled_with). 6.01 (CL-4424678)
 // adds Maximilian's Para-Provisions (bid_115_dieselpunkmale), Hay Man's Hay Nest (bid_124_scarecrowmale) and Straw Ops'
-// Birdhovel (bid_125_scarecrowfemale), paired the same way.
+// Birdhovel (bid_125_scarecrowfemale), paired the same way, and 6.02 (CL-4461277) Dark Bomber's Dark Bag
+// (bid_126_darkbomber), Plague's Dismal Cape (bid_127_plaguemale), Scourge's Arcanum (bid_128_plaguefemale) and
+// Hollowhead's Mouldering Cloak (bid_129_pumpkinslice).
 export const bundledBackBlings = {
   "AthenaCharacter:cid_093_athena_commando_m_dinosaur": "AthenaBackpack:bid_031_dinosaur",
   "AthenaCharacter:cid_097_athena_commando_f_rockerpunk": "AthenaBackpack:bid_034_rockerpunk",
@@ -529,7 +538,11 @@ export const bundledBackBlings = {
   "AthenaCharacter:cid_220_athena_commando_f_clown": "AthenaBackpack:bid_111_clownfemale",
   "AthenaCharacter:cid_223_athena_commando_m_dieselpunk": "AthenaBackpack:bid_115_dieselpunkmale",
   "AthenaCharacter:cid_235_athena_commando_m_scarecrow": "AthenaBackpack:bid_124_scarecrowmale",
-  "AthenaCharacter:cid_236_athena_commando_f_scarecrow": "AthenaBackpack:bid_125_scarecrowfemale"
+  "AthenaCharacter:cid_236_athena_commando_f_scarecrow": "AthenaBackpack:bid_125_scarecrowfemale",
+  "AthenaCharacter:cid_229_athena_commando_f_darkbomber": "AthenaBackpack:bid_126_darkbomber",
+  "AthenaCharacter:cid_241_athena_commando_m_plague": "AthenaBackpack:bid_127_plaguemale",
+  "AthenaCharacter:cid_240_athena_commando_f_plague": "AthenaBackpack:bid_128_plaguefemale",
+  "AthenaCharacter:cid_243_athena_commando_m_pumpkinslice": "AthenaBackpack:bid_129_pumpkinslice"
 };
 
 // The day's offers by storefront, those the requesting build has the cosmetic for. Never a cosmetic the shop doesn't sell

@@ -217,6 +217,30 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   Port-a-Fortress gain a tier, the notes' "star ratings to the UI elements of all trap items", and the Shadow Stone goes
   from Uncommon to Epic) and `fabricator.json` (those items' values). Save the World's quests, world and every other file
   are 6.00's. The earlier 6.01, CL-4417689, isn't extracted (Core has no copy of its paks) and plays on CL-4424678's data.
+  6.02's (CL-4461277, UE 4.21, Update v6.02's later build) is `4.21.0-4461277+++Fortnite+Release-6.02` (no `Build.version`;
+  the build folder is `6.02-CL-4461277\Fortnite`) with 6.01's full data (Cert's files with `gamedata/4424678` applied) as
+  the fifth argument, and the main key FModel's settings hold for its build folder (6.01's). A full install: every mission
+  info is in its paks, its DefaultGameData still names no MissionAlerts (24 alerts and 4 storm spreads from the fifth
+  argument); its `pakchunk1000` is on a key of its own that neither FModel's settings nor the published keychain has, and
+  isn't read (13 of its 14 paks mount, 337,735 files). One extractor change: the challenge schedules of category `Styles`
+  (an outfit's own challenges, which no season's tier gives: 5.30's `BundleSchedule_Styles_Tomatohead` and 6.02's
+  `BundleSchedule_Styles_SkullTrooper`) are written with their bundles, beside the season's and the events'; 5.30's to
+  6.01's committed overlays predate it and have none. Against 6.01 five files change: `athena.json` (20 cosmetics added:
+  Dark Bomber and her Dark Bag, which 6.01 kept in its keyed paks, Skull Ranger, Skull Sickle and Crypt Cruiser, Plague,
+  Scourge, Dismal Cape, Arcanum, Herald's Wand and Lamplight, Hollowhead, Mouldering Cloak and Carver, Jack Gourdon,
+  Bullseye, and the emotes Electro Swing, Headbanger, Behold! and Sprinkler; the Skull Trooper's and the Ghost Portal's
+  styles, with their two tokens, VTID_052 and VTID_053; nine quests, the Skull Trooper Challenges' five and the later
+  stages of week 3's Quest_BR_Visit_TwoNamedLocs_Chain_01; week 3's doorbells swapped for Quest_BR_Eliminate_Trap, the
+  tomato challenge on a stat of its own, hit_player_with_tomato_toy, and the timed trials down from five to three; every
+  daily challenge's hidden Token:Athena_DailyChallenge_Token, a token with no item definition in the paks; the two
+  `Styles` schedules and their bundles; and the loot tables with the Quad Launcher,
+  WID_Launcher_Military_Athena_VR/SR_Ore_T03, in the chest, supply drop and vending machine rocket lists), `characters.json`
+  and `items.json` (the seven new outfits' heroes, three harvesting tools, the Quad Launcher's two items and the three
+  Suppressed Submachine Guns, WID_Pistol_AutoHeavySuppressed_Athena_*, back in the paks, their seven loot rows at weight 0
+  as in 6.01),
+  `fabricator.json` (those weapons' values) and `world.json` (one mission generator, MissionGen_AthenaEvent23, High
+  Explosives'). Save the World's quests and every other file are 6.01's. The earlier 6.02, CL-4442095, isn't extracted
+  (Core has no copy of its paks) and plays on CL-4461277's data.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

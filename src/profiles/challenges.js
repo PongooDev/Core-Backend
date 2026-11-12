@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import { athenaChallengeBundles, athenaChallengeSchedules, athenaSeason, getAthenaQuest } from "../gamedata/athena.js";
 import { log } from "../log.js";
 import { seasonHistoryStart, seasonMoment } from "../store/itemshop.js";
+import { findItem } from "./items.js";
 
 // Season 3's challenges (3.0, CL-3901517): the Battle Pass's weekly challenges and the tier challenges, in challenge
 // bundles (tools/extractor: athena.json challengeSchedules, challengeBundles). AthenaSeason3's tier rewards grant the
@@ -303,6 +304,40 @@ export function grantChallengeSchedule(session, templateId, athena, now = new Da
   });
   log("Battle Royale", `${session.accountId} got the challenge schedule ${scheduleId}`);
   settleChallengeSchedules(session, athena, now);
+}
+
+// An outfit's own challenges (athena.json's challengeSchedules of category "Styles", tools/extractor): a schedule no
+// season's pass gives, whose one bundle comes with it (OnScheduleGranted) and earns the outfit something more.
+// - BundleSchedule_Styles_SkullTrooper, 6.02's (CL-4461277): "Skull Trooper Challenges", "Earn additional styles for
+//   Skull Trooper". The Fortnite Wiki: "available from October 10th 2018 for anyone who has purchased the Skull Trooper
+//   Outfit ... rewarded players with the Ghost Portal Back Bling", and Epic's post of that day: "Patch v6.02 is available
+//   now with a return from beyond the grave! The Skull Squad Gear is available now. Complete challenges to earn the
+//   Ghost Portal Back Bling." Its bundle, QuestBundle_Styles_SkullTrooper, has five challenges (complete 7 daily
+//   challenges, play 50 matches, 14 matches with an elimination, search 10 chests and deal 1,000 damage in a single
+//   match) and gives BID_105_GhostPortal when all five are done.
+// - BundleSchedule_Styles_Tomatohead (5.30's, in 6.02's data too): "Tomatohead Challenges", the wiki's "available since
+//   August 23rd 2018 for anyone who has purchased the Tomatohead Outfit", three challenges for the Crown style
+//   (VTID_032_Tomatohead_Crown). Only a build whose data has the schedule gives it: 5.30's to 6.01's overlays were made
+//   before the extractor kept these, so there it starts with 6.02 (🟡 until those builds are extracted again).
+// Nothing in the game's files ties a schedule to its outfit (Epic's servers gave it with the purchase, and to those who
+// already owned the outfit), so the outfits are named here. A player whose locker holds the outfit gets its schedule at
+// the quest login, once; the challenges tab then lists it. It is no season's (profiles/seasons.js retires only what a
+// pass gives), so it stays.
+// 🟡 Not given: the styles for "original owners who bought Skull Trooper in 2017", the outfit's Purple Glow
+// (VTID_052_Skull_Trooper_RedFlames, its ClothingColor Mat1) and the Ghost Portal's purple (VTID_053, its Particle1).
+// Core keeps no record of when a cosmetic was bought, so nobody gets them by themselves; the Green Glow and the blue and
+// green portals are unlocked for everyone, as the data has them.
+export const styleSchedules = {
+  bundleschedule_styles_tomatohead: "AthenaCharacter:cid_109_athena_commando_m_pizza",
+  bundleschedule_styles_skulltrooper: "AthenaCharacter:cid_030_athena_commando_m_halloween"
+};
+export function settleStyleSchedules(session, athena, now = new Date()) {
+  const schedules = athenaChallengeSchedules() ?? {};
+  const tracker = session.profile("athena");
+  for (const [scheduleId, outfit] of Object.entries(styleSchedules)) {
+    if (schedules[scheduleId]?.category !== "Styles" || heldSchedule(tracker.profile, scheduleId)) continue;
+    if (findItem(tracker.profile, outfit)) grantChallengeSchedule(session, `ChallengeBundleSchedule:${scheduleId}`, athena, now);
+  }
 }
 
 // A bundle's quest done (athena.js completeQuest): the bundle counts it, and gives its CompletionRewards the time the

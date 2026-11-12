@@ -16,7 +16,9 @@ export { cramSession2018 };
 // its Event Store items count down to Season 6's end on the replay, cramSession2018End). 6.01 (CL-4417689 and CL-4424678)
 // runs it too: Update v6.00 has the Weekly Store "feature some returning items during Cram Session", a week each, and
 // Update v6.01's are the second week's (the Lead Sled and the Obliterator, store/eventstore.js); its notes end nothing,
-// and its data has the same quests (6.01's quests.json is 6.00's).
+// and its data has the same quests (6.01's quests.json is 6.00's). 6.02 (CL-4442095 and CL-4461277) runs it as well:
+// Update v6.02's Weekly Store items are the third week's (the Noble Launcher and the Vindertech Disintegrator), and its
+// quests.json is 6.00's still.
 //
 // Its quests, every quest whose Category is QuestCategoryTable's LTE_Autumn row ("Event: Cram Session"), which nothing in
 // 6.00's data grants (Epic's servers handed them out), granted at quest login while it runs:

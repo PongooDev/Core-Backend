@@ -9,6 +9,7 @@ import { defaultRocketLaunch, sanitizeRocketLaunch } from "../events/rocketlaunc
 import { defaultSeason4Flags, sanitizeSeason4Flags } from "../events/season4flags.js";
 import { defaultDatedFlags, sanitizeDatedFlags } from "../events/datedflags.js";
 import { defaultStormDestruction, sanitizeStormDestruction } from "../events/stormdestruction.js";
+import { sanitizeCreatorNames } from "../store/creators.js";
 import { regionHostingIps, regionList } from "../matchmaking/regions.js";
 import { customMatchServers } from "../matchmaking/custom-servers.js";
 import { allowedBuildList } from "../builds/allowed.js";
@@ -44,13 +45,16 @@ const playlistAssetLtms = ["fiftyFiftyV2", "highExplosivesSolo", "highExplosives
   "getaway", "getawayDuos", "getawaySolo", "closeEncountersSeason5", "closeEncountersSeason5Solo", "closeEncountersSeason5Duos",
   "soaringSolos", "soaringDuos", "soaringSquads",
   // 6.00's (CL-4395664, CL-4402180) 50v50, 6.01's too, and 6.01's (CL-4417689, CL-4424678) Disco Domination.
-  "fiftyFiftySeason6", "discoDomination"];
+  "fiftyFiftySeason6", "discoDomination",
+  // 6.02's (CL-4442095, CL-4461277) Disco Domination, its new mode, the 32 a side one, High Explosives and Steady Storm.
+  "discoDomination602", "discoDomination32", "highExplosivesSeason6Solo", "highExplosivesSeason6Squads",
+  "steadyStormSeason6Solo", "steadyStormSeason6Duos", "steadyStormSeason6Squads"];
 // The ones on by default (events/ltms.js defaultOn, Core-Backend #314): Season 5's 50v50 and 5.10's to 5.30's Playground,
 // which those builds' shipped lobbies offer. A settings file from before them (matchmakingModesRevision under 1) kept them
 // off only because that was the default, so they are turned on once.
-// 5.40's Getaway (Squads, Duos), 5.41's Soaring Solos and 6.00's 50v50 are on by default from the start: a settings file
-// without its key takes the default.
-const defaultOnPlaylistLtms = ["fiftyFiftySeason5", "playgroundV2", "getaway", "getawayDuos", "soaringSolos", "fiftyFiftySeason6"];
+// 5.40's Getaway (Squads, Duos), 5.41's Soaring Solos, 6.00's 50v50 and 6.02's Disco Domination are on by default from the
+// start: a settings file without its key takes the default.
+const defaultOnPlaylistLtms = ["fiftyFiftySeason5", "playgroundV2", "getaway", "getawayDuos", "soaringSolos", "fiftyFiftySeason6", "discoDomination602"];
 export const matchmakingModesRevision = 1;
 // Close Encounters' original date (Core-Backend #258, events/ltms.js): the whole of 25 May 2018, or one hour of it (0 to 23,
 // on the season replay's clock), as Epic ran it.
@@ -99,6 +103,9 @@ const defaults = {
   // gameserver asks for each player before it runs their "cheat" command, and again every 30 seconds.
   cheats: "everyone",
   cheatAccounts: [],
+  // Support-A-Creator's creators (store/creators.js): the names 6.02 and later players may enter in the item shop's
+  // Support a Creator. None by default, which leaves the feature off, as the game ships it.
+  creatorNames: [],
   // Battle Royale's matchmaking waits (Core-Backend #122, matchmaking/service.js and services/matchmaking/warmup.js):
   // how long a match forming on a free gameserver takes in more parties before it is assigned (the ETA the queue counts
   // down), how long the warmup island lasts before the bus leaves on a CoreV2 gameserver (null: the game's own), and
@@ -617,6 +624,7 @@ export function createSettingsStore(dataDir) {
       settings.structureLimits = structureLimits(loaded.structureLimits);
       settings.cheats = cheatMode(loaded.cheats) ?? defaults.cheats;
       settings.cheatAccounts = cheatAccounts(loaded.cheatAccounts) ?? [];
+      settings.creatorNames = sanitizeCreatorNames(loaded.creatorNames) ?? [];
       settings.matchmakingGatherSeconds = gatherSeconds(loaded.matchmakingGatherSeconds) ?? defaults.matchmakingGatherSeconds;
       // A blank (null) length saved stays the game's; one missing or out of range is the default.
       const warmup = warmupSecondsValue(loaded.warmupSeconds);
@@ -712,6 +720,7 @@ export function createSettingsStore(dataDir) {
         structureLimits: { ...settings.structureLimits },
         battleRoyaleRewards: JSON.parse(JSON.stringify(settings.battleRoyaleRewards)),
         cheatAccounts: [...settings.cheatAccounts],
+        creatorNames: [...(settings.creatorNames ?? [])],
         battleRoyaleNewsEnabled: typeof settings.battleRoyaleNewsEnabled === "boolean" ? settings.battleRoyaleNewsEnabled : undefined,
         battleRoyaleNews: settings.battleRoyaleNews ? { ...settings.battleRoyaleNews } : undefined,
         loginMessage: settings.loginMessage ? { ...settings.loginMessage } : undefined,
@@ -777,6 +786,7 @@ export function createSettingsStore(dataDir) {
       settings.structureLimits = structureLimits(partial.structureLimits, settings.structureLimits);
       settings.cheats = cheatMode(partial.cheats) ?? settings.cheats;
       settings.cheatAccounts = cheatAccounts(partial.cheatAccounts) ?? settings.cheatAccounts;
+      settings.creatorNames = sanitizeCreatorNames(partial.creatorNames) ?? settings.creatorNames ?? [];
       settings.matchmakingGatherSeconds = gatherSeconds(partial.matchmakingGatherSeconds) ?? settings.matchmakingGatherSeconds;
       const warmup = warmupSecondsValue(partial.warmupSeconds);
       if (partial.warmupSeconds !== undefined && warmup !== undefined) settings.warmupSeconds = warmup;

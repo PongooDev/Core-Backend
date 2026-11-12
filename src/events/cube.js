@@ -74,7 +74,8 @@ import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 // the floating island (Athena_POI_Foundations' BP_IslandScripting and CUBE_Simple) whose calendar events are named by the
 // server-only BP_IslandServerOnly (not in CL-4402180's client paks; Core-ServerAssets' CL-4395664 pak has it) and served
 // by Season 6's dates (events/island.js); so 6.00 plays neither the Cube nor the sink, and isn't served the Cube's flags.
-// 6.01's (CL-4424678) paks are the same there (CUBE and Cube_Dest_Scripting cooked, placed by no map), so neither is 6.01.
+// 6.01's (CL-4424678) paks are the same there (CUBE and Cube_Dest_Scripting cooked, placed by no map), so neither is 6.01,
+// nor 6.02 (CL-4461277: its CUBE is 6.01's byte for byte).
 // The panel also puts the Cube straight at any of its stops (datedMoveSchedule): a running match rolls
 // it onto a rune from the path's step before it and prints it, the game's own arrival; it can't replay the days-long roll
 // between two runes (a leg's MoveTo moves it one step per calendar change, and IncrementIndex's next timer comes out below

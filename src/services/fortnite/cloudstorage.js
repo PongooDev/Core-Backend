@@ -13,6 +13,7 @@ import { meteorStrikeRows } from "../../events/meteorstrike.js";
 import { shootingTestGlobals, shootingTestHotfixTables } from "../../events/shootingtest.js";
 import { stormDestructionEngineSection } from "../../events/stormdestruction.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
+import { affiliateRuntimeOptions } from "../../store/creators.js";
 import { createNetwork, httpsProxied } from "../../network.js";
 import { purchaseFlowSection } from "./purchase.js";
 
@@ -141,10 +142,12 @@ const chatSection = ["[/Script/FortniteGame.FortOnlineAccount]", "bIsAthenaGloba
 // settings stay the player's (🟡: not seen in a running client). Replays from another build stay unplayable, which no file
 // changes: the screen (AthenaReplayBrowserTab) won't play a row marked old or corrupt (RowData.IsOld, bIsCorrupt), and a
 // replay in a newer engine's format (file version 7, where 3.5's is 3) can't be read at all.
+// 6.02's (CL-4442095) Support-A-Creator (store/creators.js) is off in the same object as shipped (bDisableAffiliateFeature)
+// and takes its creators from it (AffiliateNames): while the admin panel lists a creator, the file turns it on with them.
 const replaysBuild = 4000805;
-const runtimeOptionsFiles = (changelist) => (Number(changelist) >= replaysBuild ? {
+const runtimeOptionsFiles = (changelist, settingsValue) => (Number(changelist) >= replaysBuild ? {
   "DefaultRuntimeOptions.ini": Buffer.from(["[/Script/FortniteGame.FortRuntimeOptions]", "bEnableReplayBrowser=true",
-    "bEnableReplayRecording=true", "bEnableLargeTeamReplayRecording=true", ""].join("\r\n"), "utf8")
+    "bEnableReplayRecording=true", "bEnableLargeTeamReplayRecording=true", ...affiliateRuntimeOptions(changelist, settingsValue), ""].join("\r\n"), "utf8")
 } : {});
 const defaultNetwork = createNetwork();
 function systemFiles(req, network = defaultNetwork, settings = null) {
@@ -163,7 +166,7 @@ function systemFiles(req, network = defaultNetwork, settings = null) {
   // 5.40's and 5.41's Storm Destruction switch, Athena.bMegaStormEnabled (events/stormdestruction.js, PongooDev/CoreV2#395).
   const engine = engineNetwork + stormDestructionEngineSection(build);
   return { "DefaultEngine.ini": Buffer.from(engine, "utf8"), "DefaultGame.ini": Buffer.from(game, "utf8"), ...newModeFiles(build),
-    ...runtimeOptionsFiles(build) };
+    ...runtimeOptionsFiles(build, settings?.get?.()) };
 }
 
 // What the client reads per file (OnlineTitleFileMcp, sub_37C8D10): hash (SHA-1 hex, also its cache key), hash256,

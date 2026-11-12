@@ -373,7 +373,33 @@ const build600 = 4402180;
 // it: Update v6.02 brought it, so it has no Original dates here).
 const build6010 = 4417689;
 const build601 = 4424678;
-const season6Window = [{ builds: [build6000, build601], start: "2018-09-27", end: "2018-12-06" }];
+// 6.02 (CL-4442095, "6.02.0", and CL-4461277, "6.02", Update v6.02, 10 October 2018: Core has CL-4461277's paks, whose data
+// the other plays on): Athena/Playlists (every playlist asset of the 13 paks that mount, against 6.01's) keeps the
+// defaults, Playlist_50v50, Playlist_Soaring_50s, Playlist_Disco and the "Final Five" ones byte for byte (Playground gains
+// bForceCameraFadeOnRespawn, false) and adds six:
+// - 50v50/Disco's Playlist_Disco_32 (PlaylistId 217, "Disco Domination" again: two teams of 32 in squads of 4, 24 to 64
+//   players, the same MissionGen_Disco, RedeployGlider_Modifier and DiscoGameModifier), a smaller Disco Domination no
+//   notes name;
+// - HighExplosives' Playlist_HighExplosives_Solo and _Squads (23 and 24, 3.5.1's ids: "High Explosives", "Explosive
+//   weapons everywhere!", MissionGen_AthenaEvent23 and the ResourceCapModifier; the Solo one on 5.10's Fly Explosives
+//   tables, AthenaCompositeLTD/LP/GD_FlyExplosives, the Squads one on HighExplosives' own);
+// - SteadyStorm's Playlist_Steady_Solo, _Duos and _Squads (160 to 162, 5.21's ids and assets' names: "The storm absolutely
+//   will... not... stop. Ever!", MissionGen_SteadyStorm, profile stats on).
+// Update v6.02: "Limited Time Mode: Disco Domination ... Two teams battle it out! Respawning will be turned on until the
+// third (last) storm circle. Five dance floors will appear on the map whenever the storm is not moving ... The first team
+// to fill their dance bar to 100% will win the match ... Glider redeploy is activated in this mode ... This mode uses 50v50
+// levels of loot and resources": Playlist_Disco, 6.02's new mode (the Fortnite Wiki's Disco Domination: "introduced on
+// October 10th 2018"). Its shipped DefaultGame.ini is 6.01's byte for byte, so it lists 6.00's lobby and Epic turned the
+// mode on from its servers. So on 6.02 Disco Domination is on by default (its switch turns it off) and listed by the
+// backend as New, as 5.41's Soaring Solos; with Original dates it runs from 10 October to Update v6.10's day, 16 October
+// (🟡 the end: Update v6.10's notes still list the mode, "What's New? Reduced all bandage spawns by 50% ...", so Epic ran
+// it on into 6.10; 6.02 itself was played until that day). The 32 a side one, High Explosives and Steady Storm are there
+// by their switches (🟡 nothing found names or dates them in October 2018). 50v50, Playground and Soaring 50's are as on
+// 6.01.
+const build6020 = 4442095;
+const build602 = 4461277;
+const season6Window = [{ builds: [build6000, build602], start: "2018-09-27", end: "2018-12-06" }];
+const discoDominationWindow = [{ builds: [build6020, build602], start: "2018-10-10", end: "2018-10-16" }];
 // Core-Backend #257 asked for 3.5.1's to 4.0's Solid Gold v2 (Squads, Solo), Sniper Shootout v2 (Solo, Duos, Squads), High
 // Explosives v2 (Squads, Solo), Blitz! (Squads, Solo, Duos), Teams of 20 and 50v50 v2. Each is a playlist asset of 3.5.1's
 // and 4.0's Athena/Playlists (and 3.6's, which sits between them, as its note above has it; its paks didn't mount in
@@ -629,11 +655,11 @@ export const ltms = [
   // Season 5 build's shipped DefaultGame.ini enables it in the lobby (FrontEndPlaylistData, ltmFrontEndPlaylists).
   { id: "fiftyFiftySeason5", name: "50v50 (Season 5)", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build500, build541], seasons: [5], defaultOn: true,
     teams: "2 Teams × 50", description: "Two teams of fifty, a bus each, extra loot; reviving a teammate earns XP (Playlist_50v50, 5.0's)." },
-  // 5.10's Playground (5.21's to 5.41's, 6.00's and 6.01's too) and Fly Explosives (above). On by default (Core-Backend
-  // #314): 5.10's, 5.21's, 5.30's, 6.00's and 6.01's shipped DefaultGame.ini enable Playlist_Playground in the lobby
+  // 5.10's Playground (5.21's to 5.41's and 6.00's to 6.02's too) and Fly Explosives (above). On by default (Core-Backend
+  // #314): 5.10's, 5.21's, 5.30's and 6.00's to 6.02's shipped DefaultGame.ini enable Playlist_Playground in the lobby
   // (FrontEndPlaylistData, AdvertiseType Updated), as Epic ran it from 25 July to the season's end, and on through Season
   // 6. 6.01's has the custom options (above): the same playlist, so the same mode here.
-  { id: "playgroundV2", name: "Playground v2", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build5100, build601], seasons: [5, 6], defaultOn: true,
+  { id: "playgroundV2", name: "Playground v2", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build5100, build602], seasons: [5, 6], defaultOn: true,
     original: [{ builds: [build5100, build541], start: "2018-07-25", end: "2018-09-27" }, ...season6Window],
     teams: "4 Teams × 4", description: "Playground again, with team select: up to four players on up to four teams, respawns, 10x resources, golf carts (Playlist_Playground, 5.10's)." },
   { id: "flyExplosives", name: "Fly Explosives (Squads)", playlistId: 122, playlistName: "Playlist_FlyExplosives_Squads", eventFlag: null, builds: [build510, build510], seasons: [5], newIn: build510,
@@ -653,7 +679,7 @@ export const ltms = [
   { id: "steadyStormSquads", name: "Steady Storm (Squads)", playlistId: 162, playlistName: "Playlist_Steady_Squads", eventFlag: null, builds: [build521, build521], seasons: [5],
     original: steadyStorm,
     teams: "100 Teams × 4", description: "One storm that closes in over 15 minutes, no safe zones, 10 damage a second (Athena/Playlists/SteadyStorm game data, 5.21's)." },
-  { id: "soaring50s", name: "Soaring 50's", playlistId: 53, playlistName: "Playlist_Soaring_50s", eventFlag: null, builds: [build521, build601], seasons: [5, 6], newIn: build521,
+  { id: "soaring50s", name: "Soaring 50's", playlistId: 53, playlistName: "Playlist_Soaring_50s", eventFlag: null, builds: [build521, build602], seasons: [5, 6], newIn: build521,
     original: update521Window,
     teams: "2 Teams × 50", description: "50v50 with glider redeploy from 10 m up, extra Impulse Grenades, Launch Pads and Bounce Pads; no profile stats (Playlist_Soaring_50s, 5.21's)." },
   { id: "sniperShootoutV4", name: "Sniper Shootout v4 (Squads)", playlistId: 41, playlistName: "Playlist_Snipers", eventFlag: null, builds: [build521, build521], seasons: [5],
@@ -717,13 +743,33 @@ export const ltms = [
     teams: "100 Teams × 4", description: "Classic Battle Royale with glider redeploy: press Jump when falling from a height (Playlist_Soaring_Squads, 5.41's)." },
   // 6.00's Playlist_50v50 (above), a new revision: glider redeploy ("Press jump to redeploy your glider when falling from large
   // heights"), so an LTM of its own, as 5.0's was. On by default: 6.00's shipped DefaultGame.ini enables it in the lobby.
-  // 6.01's is the same asset, enabled the same way.
-  { id: "fiftyFiftySeason6", name: "50v50 (Season 6)", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build6000, build601], seasons: [6], defaultOn: true,
+  // 6.01's and 6.02's are the same asset, enabled the same way.
+  { id: "fiftyFiftySeason6", name: "50v50 (Season 6)", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build6000, build602], seasons: [6], defaultOn: true,
     teams: "2 Teams × 50", description: "Two teams of fifty, a bus each, extra loot, and glider redeploy when falling from a height (Playlist_50v50, 6.00's)." },
   // 6.01's Playlist_Disco (above), Update v6.02's Disco Domination, in 6.01's paks already: by its switch, listed as New.
   { id: "discoDomination", name: "Disco Domination", playlistId: 202, playlistName: "Playlist_Disco", eventFlag: null, builds: [build6010, build601], seasons: [6],
     advertise: "New",
-    teams: "2 Teams × 50", description: "Two teams of fifty capture dance floors by emoting on them; respawns until the last circle, glider redeploy, 50v50's loot (Playlist_Disco, in 6.01's paks; Update v6.02's mode)." }
+    teams: "2 Teams × 50", description: "Two teams of fifty capture dance floors by emoting on them; respawns until the last circle, glider redeploy, 50v50's loot (Playlist_Disco, in 6.01's paks; Update v6.02's mode)." },
+  // 6.02's Disco Domination (above), Update v6.02's new mode: the same playlist, on by default there and listed as New,
+  // so an LTM of its own beside 6.01's, which stays by its switch. Its 32 a side playlist, High Explosives and Steady
+  // Storm by their switches.
+  { id: "discoDomination602", name: "Disco Domination (6.02)", playlistId: 202, playlistName: "Playlist_Disco", eventFlag: null, builds: [build6020, build602], seasons: [6],
+    advertise: "New", defaultOn: true,
+    original: discoDominationWindow,
+    teams: "2 Teams × 50", description: "Two teams of fifty capture dance floors by emoting on them; respawns until the last circle, glider redeploy, 50v50's loot (Playlist_Disco, Update v6.02's mode)." },
+  { id: "discoDomination32", name: "Disco Domination (32 v 32)", playlistId: 217, playlistName: "Playlist_Disco_32", eventFlag: null, builds: [build6020, build602], seasons: [6],
+    advertise: "New",
+    teams: "2 Teams × 32", description: "Disco Domination with two teams of thirty-two, for 24 to 64 players (Playlist_Disco_32, 6.02's)." },
+  { id: "highExplosivesSeason6Solo", name: "High Explosives (Season 6, Solo)", playlistId: 23, playlistName: "Playlist_HighExplosives_Solo", eventFlag: null, builds: [build6020, build602], seasons: [6],
+    teams: "100 Teams × 1", description: "Explosive weapons everywhere! (Playlist_HighExplosives_Solo on the Fly Explosives tables, 6.02's)." },
+  { id: "highExplosivesSeason6Squads", name: "High Explosives (Season 6, Squads)", playlistId: 24, playlistName: "Playlist_HighExplosives_Squads", eventFlag: null, builds: [build6020, build602], seasons: [6],
+    teams: "100 Teams × 4", description: "Explosive weapons everywhere! (Athena/Playlists/HighExplosives tables, 6.02's)." },
+  { id: "steadyStormSeason6Solo", name: "Steady Storm (Season 6, Solo)", playlistId: 160, playlistName: "Playlist_Steady_Solo", eventFlag: null, builds: [build6020, build602], seasons: [6],
+    teams: "100 Teams × 1", description: "One storm that never stops closing in, no safe zones (Athena/Playlists/SteadyStorm game data, 6.02's)." },
+  { id: "steadyStormSeason6Duos", name: "Steady Storm (Season 6, Duos)", playlistId: 161, playlistName: "Playlist_Steady_Duos", eventFlag: null, builds: [build6020, build602], seasons: [6],
+    teams: "100 Teams × 2", description: "One storm that never stops closing in, no safe zones (Athena/Playlists/SteadyStorm game data, 6.02's)." },
+  { id: "steadyStormSeason6Squads", name: "Steady Storm (Season 6, Squads)", playlistId: 162, playlistName: "Playlist_Steady_Squads", eventFlag: null, builds: [build6020, build602], seasons: [6],
+    teams: "100 Teams × 4", description: "One storm that never stops closing in, no safe zones (Athena/Playlists/SteadyStorm game data, 6.02's)." }
 ];
 // A build range's bounds are changelists or versions ("4.2", "4.4.x"): a version holds only once Core knows the build's.
 const versionParts = (version) => String(version).split(".").map((part) => (part === "x" ? Infinity : Number(part)));
@@ -893,7 +939,7 @@ export function nextLtmChange(build, settingsValue, now = new Date()) {
 
 // The admin panel's list (its Battle Royale Game Modes, after solo, duos and squads): each LTM with its window and
 // builds, whether it is on by hand, and whether its window holds each season's replay now.
-const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build311]: "3.1.1", [build32]: "3.2", [build33]: "3.3", [build351]: "3.5.1", [build352]: "3.5.2", [build36]: "3.6", [build40]: "4.0", [build41]: "4.1", [build42]: "4.2", [build440]: "4.4.0", [build441]: "4.4.1", [build442]: "4.4.2", [build450]: "4.5.0", [build45]: "4.5", [build500]: "5.0.0", [build50]: "5.0", [build5100]: "5.10.0", [build510]: "5.10", [build521]: "5.21", [build530]: "5.30", [build540]: "5.40", [build541]: "5.41", [build6000]: "6.00.0", [build600]: "6.00", [build6010]: "6.01.0", [build601]: "6.01" };
+const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build311]: "3.1.1", [build32]: "3.2", [build33]: "3.3", [build351]: "3.5.1", [build352]: "3.5.2", [build36]: "3.6", [build40]: "4.0", [build41]: "4.1", [build42]: "4.2", [build440]: "4.4.0", [build441]: "4.4.1", [build442]: "4.4.2", [build450]: "4.5.0", [build45]: "4.5", [build500]: "5.0.0", [build50]: "5.0", [build5100]: "5.10.0", [build510]: "5.10", [build521]: "5.21", [build530]: "5.30", [build540]: "5.40", [build541]: "5.41", [build6000]: "6.00.0", [build600]: "6.00", [build6010]: "6.01.0", [build601]: "6.01", [build6020]: "6.02.0", [build602]: "6.02" };
 const boundName = (bound) => (typeof bound === "number" ? versions[bound] : bound);
 const buildRange = ([first, last]) => (first === last ? boundName(first) : `${boundName(first)} to ${boundName(last)}`);
 // A window's day or moment for the admin panel: "YYYY-MM-DD" at midnight, else the ISO time; last, its last day.

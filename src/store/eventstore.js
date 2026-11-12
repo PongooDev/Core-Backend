@@ -240,7 +240,23 @@ export const spring2018End = "2018-02-22T00:00:00.000Z";
 // "Obliterator" in 6.01's data): both from 4 October 00:00 UTC on Season 6's replay, 6.00's Ratatat and Sledge before them,
 // at a legendary schematic's 1,680 Gold, one each (🟡 Epic's prices and limits aren't recorded; Core keeps the week after 10
 // October, when Update v6.02 brought the next).
+// 6.02's (CL-4442095, CL-4461277; Update v6.02): "Noble Launcher has returned to the Weekly Store. Heavy launcher that fires
+// a wave of piercing energy ... Available Wednesday, Oct 10 at 8 PM Eastern Time until Wednesday, Oct 17 at 8 PM Eastern
+// Time" (SID_Explosive_Launcher_NeonGlow_SR_Ore_T01, Into the Storm's, in the data since 3.5.1) and "Vindertech
+// Disintegrator Shotgun has returned and is available in the Weekly Store. Energy shotgun that fires an explosive ball of
+// plasma ... Available Wednesday, Oct 10 at 8 PM Eastern Time until Wednesday, Oct 17 at 8 PM Eastern Time"
+// (SID_Shotgun_Standard_VT_SR_Ore_T01, "Vindertech Disintegrator" in 6.02's data): both from 11 October 00:00 UTC on Season
+// 6's replay, 6.01's weeks before them, at a legendary schematic's 1,680 Gold, one each (🟡 Epic's prices and limits aren't
+// recorded; Core keeps the week after 17 October, when Update v6.10 brought the next).
 const weeklyFeaturedByBuild = [
+  { firstBuild: 4442095, season: 6, weeks: [
+    { from: "2018-10-11T00:00:00.000Z", items: [{ templateId: "Schematic:sid_explosive_launcher_neonglow_sr_ore_t01", price: 1680, limit: 1 },
+      { templateId: "Schematic:sid_shotgun_standard_vt_sr_ore_t01", price: 1680, limit: 1 }] },
+    { from: "2018-10-04T00:00:00.000Z", items: [{ templateId: "Schematic:sid_blunt_hammer_ratrod_sr_ore_t01", price: 1680, limit: 1 },
+      { templateId: "Schematic:sid_sniper_military_sr_ore_t01", price: 1680, limit: 1 }] },
+    { from: null, items: [{ templateId: "Schematic:sid_pistol_ratrod_sr_ore_t01", price: 1680, limit: 1 },
+      { templateId: "Schematic:sid_blunt_hammer_hydraulic_vr_ore_t01", price: 600, limit: 1 }] }
+  ] },
   { firstBuild: 4417689, season: 6, weeks: [
     { from: "2018-10-04T00:00:00.000Z", items: [{ templateId: "Schematic:sid_blunt_hammer_ratrod_sr_ore_t01", price: 1680, limit: 1 },
       { templateId: "Schematic:sid_sniper_military_sr_ore_t01", price: 1680, limit: 1 }] },

@@ -33,6 +33,7 @@ import { queryProfile } from "./QueryProfile.js";
 import { refundMtxPurchase } from "./RefundMtxPurchase.js";
 import { abandonExpeditionCommand, collectExpeditionCommand, refreshExpeditions, startExpeditionCommand } from "./RefreshExpeditions.js";
 import { requestEventFlags } from "./RequestEventFlags.js";
+import { setAffiliateName } from "./SetAffiliateName.js";
 import { removeGiftBox } from "./RemoveGiftBox.js";
 import { setBattleRoyaleBanner } from "./SetBattleRoyaleBanner.js";
 import { setDefaultHeroSquad } from "./SetDefaultHeroSquad.js";
@@ -97,6 +98,7 @@ export const clientCommands = {
   RespecAlteration: respecAlteration,
   RemoveGiftBox: removeGiftBox,
   RequestEventFlags: requestEventFlags,
+  SetAffiliateName: setAffiliateName,
   SetBattleRoyaleBanner: setBattleRoyaleBanner,
   SetDefaultHeroSquad: setDefaultHeroSquad,
   SetGameplayStats: setGameplayStats,

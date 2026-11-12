@@ -10,7 +10,8 @@ import { tomatoRiftStates } from "../src/events/tomatorift.js";
 import { get, post, send, startBackend, userLogin } from "./helpers.js";
 
 // 6.00's floating island (PongooDev/CoreV2#401): BP_IslandServerOnly's calendar events, served by Season 6's dates. 6.01
-// (CL-4417689, CL-4424678) keeps it: its flags run to 6.01 (tests/build601.test.js).
+// (CL-4417689, CL-4424678) and 6.02 (CL-4442095, CL-4461277) keep it: its flags run to 6.02 (tests/build601.test.js,
+// tests/build602.test.js).
 const v600 = "4402180";
 const v6000 = "4395664";
 const v601 = "4424678";
@@ -46,7 +47,7 @@ test("the island's steps are BP_IslandServerOnly's sixteen calendar events, one 
   assert.equal(isoOf(islandEvent.steps[0].start), "2018-09-27T00:00:00.000Z", "over Loot Lake from Season 6's first day");
   assert.equal(islandEvent.steps.at(-1).end, null, "and back there to the season's end");
   assert.deepEqual(islandEvent.steps.filter(({ flags }) => flags[0] === islandRune(0)).map(({ id }) => id), ["lake", "home"]);
-  for (const flag of bindings) assert.deepEqual(season4Flag(flag).builds, [Number(v6000), Number(v601)], flag);
+  for (const flag of bindings) assert.deepEqual(season4Flag(flag).builds, [Number(v6000), 4461277], flag);
 });
 
 test("6.00 serves the island by Epic's Season 6 dates on its replay, on both changelists; 5.41 doesn't", () => {

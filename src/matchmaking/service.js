@@ -154,6 +154,10 @@ const playlistTeams541Build = 4363240;
 // 50's (53) and Playground (35) have the teams above.
 const playlistTeamsFrom601 = { 202: { maxTeamCount: 2, maxTeamSize: 50, maxSquadSize: 4 } };
 const playlistTeams601Build = 4417689;
+// 6.02's (CL-4442095, CL-4461277) smaller Disco Domination (217, Playlist_Disco_32: 2 × 32 in squads of 4); its High
+// Explosives (23, 24) and Steady Storm (160 to 162) have 3.5.1's and 5.21's teams above, and Disco Domination (202) 6.01's.
+const playlistTeamsFrom602 = { 217: { maxTeamCount: 2, maxTeamSize: 32, maxSquadSize: 4 } };
+const playlistTeams602Build = 4442095;
 // From 3.1 AssignMatch's teams are the beacon's teams, their squads in match.option.squads (formTeams).
 export const teamSquadsOptionBuild = 3915963;
 // The first build whose client sends player.option.fillTeam only as "true" (Fill), leaving it out for No Fill: its
@@ -329,6 +333,7 @@ export const playlistTeamsOf = (bucketId, build = null) => teamsOfPlaylist(parse
 // The same by playlist id: what the match results' V-Bucks read a limited-time playlist's mode from (CoreV2 #294).
 export const teamsOfPlaylist = (playlistId, build = null) => {
   if (playlistId === shootingTestPlaylist) return shootingTestTeams(build ?? 3870737);
+  if (Number(build) >= playlistTeams602Build && playlistTeamsFrom602[playlistId]) return playlistTeamsFrom602[playlistId];
   if (Number(build) >= playlistTeams601Build && playlistTeamsFrom601[playlistId]) return playlistTeamsFrom601[playlistId];
   if (Number(build) >= playlistTeams541Build && playlistTeamsFrom541[playlistId]) return playlistTeamsFrom541[playlistId];
   if (Number(build) >= playlistTeams540Build && playlistTeamsFrom540[playlistId]) return playlistTeamsFrom540[playlistId];

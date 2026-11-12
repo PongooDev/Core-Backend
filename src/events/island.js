@@ -64,10 +64,16 @@ import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 // same nine spline points (its Spline is 6.00's, point for point), and they are the same sixteen: 6.01's own
 // BP_IslandServerOnly (Core-ServerAssets' CL-4417689 pak, release cl-4417689) binds 6.00's names in 6.00's order. A
 // CL-4424678 host needs that asset too: Core-ServerAssets has no pak for it yet (2026-11-12).
+//
+// 6.02 (CL-4442095 and CL-4461277) keeps it as 6.01 has it: CL-4461277's BP_IslandScripting is 6.01's byte for byte
+// (uasset and uexp), and 6.02's own BP_IslandServerOnly (Core-ServerAssets' CL-4442095 pak, release cl-4442095, read over
+// HTTP ranges) binds the same sixteen names in the same order. Update v6.02 came on 10 October, the day the island left
+// the Retail Row rune for Wailing Woods' (MoveTo5), where the replay has a 6.02 match find it. A CL-4461277 host needs
+// that asset too: Core-ServerAssets has CL-4442095's pak only (2026-11-12).
 export const islandEvent = datedEvent("island");
 
 // The island's calendar events as parts [{validFrom (ms), events: [{eventType, activeSince, activeUntil}]}], from the part
-// that holds now on (the next four changes), as events/cube.js's: on 6.00 and 6.01 with the seasonal events on, in the
+// that holds now on (the next four changes), as events/cube.js's: on 6.00 to 6.02 with the seasonal events on, in the
 // Automatic mode. A flag the admin switched on is served always (season4Overrides) and one switched off never, so neither is
 // scheduled here.
 export function islandStates(now = new Date(), changelist = currentBuild(), config = currentEventsConfig()) {
