@@ -44,10 +44,11 @@ test("the list: each confirmed challenge has its issue and builds", () => {
   assert.deepEqual(brokenChallenges.map((entry) => entry.quest), [
     "quest_br_watch_replay", "quest_br_visit_scavengerhunt_stormcircles",
     "quest_br_eliminate_weapon_minigunlmg", "quest_br_eliminate_weapon_minigun", "quest_br_damage_minigun",
-    "quest_br_score_goals", "quest_br_destroy_specifictargets"
+    "quest_br_score_goals", "quest_br_destroy_specifictargets", "quest_fnm_damage_monsterspawners"
   ]);
   for (const entry of brokenChallenges) {
-    assert.match(entry.url, /^https:\/\/github\.com\/PongooDev\/.+\/issues\/\d+$/);
+    // An issue, or the commit that found it where no one opened one.
+    assert.match(entry.url, /^https:\/\/github\.com\/PongooDev\/.+\/(issues\/\d+|commit\/[0-9a-f]{7,40})$/);
     assert.ok(entry.issue && entry.reason);
   }
   for (const entry of brokenChallenges.slice(0, 2)) assert.deepEqual(entry.builds, [v40, v41]);
@@ -57,6 +58,9 @@ test("the list: each confirmed challenge has its issue and builds", () => {
   assert.deepEqual(brokenChallenges[5].builds, [v40, v41, v42]);
   // 5.0's week 3 Quest_BR_Destroy_SpecificTargets: "TBD", on the borrowed crab building visit, on both 5.0 builds.
   assert.deepEqual(brokenChallenges[6].builds, ["4204761", "4214610"]);
+  // 6.20's Fortnitemares Part 4 "Deal damage to Cube Fragments": nothing in 6.20 makes the DamageDone.Deimos.Spawner record
+  // its stat needs; 6.21 fixed it, so only 6.20 is listed.
+  assert.deepEqual(brokenChallenges[7].builds, ["4497486"]);
 });
 
 test("Score a goal on different pitches (Core-Backend #287): one placeholder objective, 5 needed, completed on 4.0-4.2 with the option on", () => {

@@ -128,7 +128,14 @@ export const brokenChallenges = [
     url: "https://github.com/PongooDev/Core-Backend/issues/287", builds: ["4039451", "4053532", "4072250"],
     reason: "It needs 5 objectives done but has one, on the placeholder stat revive_athena_player, and nothing reports a goal." },
   { quest: "quest_br_destroy_specifictargets", title: "Destroy specific targets (TBD)", issue: "CoreV2 #299", url: "https://github.com/PongooDev/CoreV2/issues/299",
-    builds: ["4204761", "4214610"], reason: "It is unfinished in 5.0's paks: its name and objective read TBD and the objective uses the borrowed stat visit_location_animal_building_crab." }
+    builds: ["4204761", "4214610"], reason: "It is unfinished in 5.0's paks: its name and objective read TBD and the objective uses the borrowed stat visit_location_animal_building_crab." },
+  // 6.20 (CL-4497486), Fortnitemares Part 4: damage_athena_deimos_monsterspawner wants a DamageDone.Deimos.Spawner damage
+  // record, and nothing in 6.20's code or data makes one (the pawn's RecordDamage only fills its five built-in groups, and
+  // building damage is recorded only for pieces a player placed). 6.21 (CL-4526925) fixed it in its code and game data
+  // (CoreV2 40dcb906 has the details), so only 6.20 is listed.
+  { quest: "quest_fnm_damage_monsterspawners", title: "Deal damage to Cube Fragments", issue: "CoreV2 40dcb906",
+    url: "https://github.com/PongooDev/CoreV2/commit/40dcb906", builds: ["4497486"],
+    reason: "Its stat damage_athena_deimos_monsterspawner needs a DamageDone.Deimos.Spawner damage record, which nothing in 6.20 creates; 6.21 fixed it." }
 ];
 export const completeBrokenChallenges = (settingsValue = settingsProvider()) => settingsValue?.completeBrokenChallenges === true;
 // The list entry for a challenge on a build, when it is one of the broken ones there.
