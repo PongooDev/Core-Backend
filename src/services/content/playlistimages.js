@@ -49,7 +49,12 @@ export const playlistImagesBuild = 4039451;
 // take the mode's tile, and its tournaments have a page of their own, tournamentinformation (tournaments/showdown.js),
 // whose playlist_tile_image Core has no picture for. 6.20's exe (CL-4497486) keeps the same names and adds none (its strings
 // against 6.10's); its Playlist_Disco_40_Alt and _32_Alt take the mode's tile, and its Fortnitemares playlists
-// (Playlist_Deimos_Solo, _Duo, _Squad) have no tile Core knows Epic's page gave them, so they show the client's own.
+// (Playlist_Deimos_Solo, _Duo, _Squad) have no tile Core knows Epic's page gave them, so they show the client's own. 6.21's
+// exe (CL-4526925) keeps the same names and adds none (its strings against 6.20's), and adds no playlist. Its new content
+// section, koreancafe (FCmsJsonMessages.KoreanCafe: {_title, __locale, cafe_info: {cafes: [{korean_cafe, korean_cafe_header,
+// korean_cafe_description}]}}), is read only by UCMSContext::GetLatestPCBInfo (0x2EAFDE0: the whole page converted into
+// FCmsJsonMessages, the result not checked) for the Korean PC bang panel (UFortPCBInfoPannel); without it the panel's data
+// is empty, so Core serves none. The news, the playlists and the tournaments are read as on 6.20.
 export const playlistInformationBuild = 4352937;
 
 const cdn = "https://cdn2.unrealengine.com/Fortnite/fortnite-game";

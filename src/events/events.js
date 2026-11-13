@@ -384,6 +384,43 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // playlists' GameplayMod_DeimosAI, _DeimosMissions, _DeimosRiftDrop and _DeimosDifficulty* mutators, Athena/Deimos's rifts
 // and AI director), which the Deimos playlists bring (events/ltms.js fortnitemares2018*). Its lobby, bus and challenges'
 // flags are served by the build, with LobbySeason6 (the floating island, events/island.js, keeps 6.10's flags).
+// 6.20's island scripting, now read whole: its BP_IslandServerOnly (Core-ServerAssets' CL-4497486 pak, installed beside
+// 6.20's paks) lists EventBindings (the island's _MoveTo and _Rune flags), EventBinding1 ["POI0", "POI1"] and EventBinding2
+// "EventFlag.BR_S6_Island_Crack", and 6.20's BP_IslandScripting watches only the last two: EventBinding1 with a
+// FortAsyncAction_CalendarMultiEventWatcher, whose first event active in a match sets the Leaky Lake's state from its last
+// digit (0: the Cube Monsters' days, IsDeimosActive, the house glowing at the Cube; 1: after the Cube), and EventBinding2,
+// whose progress (TimeSinceBegin over its whole span) is the Cube's CrackProgress. So 6.20 serves POI0 by itself (the
+// island exploded on 24 October, Fortnitemares' first day), and POI1 and the crack by their switches only.
+//
+// 6.21 (CL-4526925, Update v6.21, 1 November 2018: "Fortnitemares in Battle Royale ends on Sunday, November 4 at 1 PM
+// Eastern Time ... be in-match at that time to witness the event"). Every EventFlag.* in its paks (the same byte scan, all
+// 204,092 uasset, umap, uexp, ini and json files of its 6 paks; its install has no pakchunk1, and the same tool finds 6.20's
+// 36 names in 6.20's 14) is 6.20's 36 and two new ones, 38 names:
+// - EventFlag.LTM_LilKevin: Athena/Items/ChallengeBundleSchedules/LTM/Schedule_LTM_LilKevin's EventName, the Lil' Kev
+//   challenges (QuestBundle_LTM_LilKevin: play 15 matches, earn 5,000 season XP, outlast 500 opponents; Lil' Kev,
+//   BID_147_LilKev, in GB_FortnitemaresChallenges). The Fortnite Wiki's Lil' Kev quotes Epic's tweet of 4 November, the
+//   Butterfly's day: "Login anytime before 1PM ET (6PM UTC) Nov 5 to unlock the Lil' Kev challenge pack";
+// - EventFlag.Fortnitemares_Part4: BP_HauntedObject_Rework (Fortnitemares' haunted furniture) watches it with a
+//   FortAsyncAction_CalendarEventWatcher whose handlers only keep the event's times and close a gate nothing reads.
+// Two calendar names that aren't EventFlag.* matter more. 6.21's AFortMission_RiftSpawners (the Cube Monsters' spawners)
+// gains RequiredEventFlag, and both Deimos missions (Deimos_Mission_RiftSpawners_Static and _Dynamic) name "POI0": when the
+// mission starts, its native EvaluateEventCalendar (0x107D190) asks the game instance's seasonal event manager
+// IsEventFlagActive (0x11B8FB0, what UFortSeasonalEventManager::execIsEventFlagActive calls) and, the flag off, clears
+// bCalendarAllowsSpawning and shuts the spawners down (0x107C050: every ActiveRiftSpawnerData's encounter ended, the
+// AssociatedSupplyDropIDs' SupplyDrop_Deimos stopped). So without POI0 a 6.21 Fortnitemares match has no Cube Monsters.
+// 6.21's BP_IslandScripting keeps 6.20's two bindings, adds EventBinding3 (the Cube draining; 🟡 its name is in 6.21's
+// server-only BP_IslandServerOnly, Core-ServerAssets' CL-4526925 pak, not on this PC) and plays the Butterfly: POI1 turning
+// active in a match that began on POI0 runs BP_Butterfly's ButterflySequence (the Cube's flash, the In-Between, the
+// Mutator_ButterflyEvent that Athena_GameMode now registers in every match as a core gameplay modifier, the DeimosShutoff
+// mission event), and in POI0's last 30 minutes the storm heads for the Butterfly's place (Mutator.Butterfly.StormLocation).
+// 6.21 serves by itself 6.20's (Fortnitemares and FortnitemaresPhase1, ActiveMiniBosses with Candy, LTM_Fortnitemares,
+// LobbySeason6Halloween, HalloweenBattleBus, POI0, PassiveStorms, LobbySeason6), Fortnitemares_Part4 and LTM_LilKevin; POI1,
+// the crack and FortnitemaresPhase2 by their switches. FortnitemaresPhase2 stays a switch: 6.21's data holds Part 2's heroes
+// (HID_Ninja_019, HID_Outlander_018) and the Candy Corn LMG (SID_Assault_LMG_Halloween), but no Part 2 quest (its
+// quests.json is 6.20's but for three rewards), and Update v6.22 (6 November) is the one that says "Jump in and explore
+// Fortnitemares Part 2". 🟡 Epic's POI0 ended and POI1 began at the Butterfly, 4 November 18:00 UTC; Core serves POI0 for as
+// long as 6.21 runs, as its Fortnitemares modes are on by default, and the admin's switches play the Butterfly (POI0 off and
+// POI1 on, in a running match).
 export const blockbuster2018 = "Blockbuster2018";
 export const blockbuster2018Phase1 = "EventFlag.Blockbuster2018Phase1";
 export const blockbuster2018Phase2 = "EventFlag.Blockbuster2018Phase2";
@@ -399,6 +436,12 @@ export const lobbySeason6Halloween = "EventFlag.LobbySeason6Halloween";
 export const halloweenBattleBus = "EventFlag.HalloweenBattleBus";
 export const fortnitemaresPhase1 = "EventFlag.FortnitemaresPhase1";
 export const fortnitemaresPhase2 = "EventFlag.FortnitemaresPhase2";
+// 6.20's and 6.21's island scripting's calendar names (above): the Leaky Lake's state (POI0, the Cube Monsters' days; POI1,
+// after the Butterfly) and the Cube's cracks; 6.21's Lil' Kev challenges and Fortnitemares' Part 4 flag.
+export const islandPoi = (state) => `POI${state}`;
+export const islandCrack = "EventFlag.BR_S6_Island_Crack";
+export const ltmLilKevin = "EventFlag.LTM_LilKevin";
+export const fortnitemaresPart4 = "EventFlag.Fortnitemares_Part4";
 // 6.00's Save the World mini-event (events/cramsession2018.js).
 export const cramSession2018 = "CramSession2018";
 export const roadTrip2018 = "RoadTrip2018";
@@ -443,17 +486,22 @@ const build541 = 4363240;
 const build6000 = 4395664;
 const build610 = 4480234;
 const build620 = 4497486;
+const build621 = 4526925;
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
-  // 6.20's Fortnitemares (above): Save the World's Part 1 (Hexsylvania, its quests and Candy, events/fortnitemares.js), its
-  // Mini-Bosses with Candy, and Battle Royale's challenges, lobby and bus.
-  { name: fortnitemares, flag: fortnitemares, firstBuild: build620, lastBuild: build620 },
-  { name: fortnitemares, flag: fortnitemaresPhase1, firstBuild: build620, lastBuild: build620 },
-  { name: fortnitemares2018, flag: activeMiniBosses, firstBuild: build620, lastBuild: build620 },
-  { name: fortnitemares2018, flag: ltmFortnitemares, firstBuild: build620, lastBuild: build620 },
-  { name: fortnitemares2018, flag: lobbySeason6Halloween, firstBuild: build620, lastBuild: build620 },
-  { name: fortnitemares2018, flag: halloweenBattleBus, firstBuild: build620, lastBuild: build620 },
+  // 6.20's and 6.21's Fortnitemares (above): Save the World's Part 1 (Hexsylvania, its quests and Candy,
+  // events/fortnitemares.js), its Mini-Bosses with Candy, Battle Royale's challenges, lobby and bus, and the Leaky Lake's
+  // POI0 (which 6.21's Cube Monsters' spawners need); 6.21's Part 4 flag and the Lil' Kev challenges.
+  { name: fortnitemares, flag: fortnitemares, firstBuild: build620, lastBuild: build621 },
+  { name: fortnitemares, flag: fortnitemaresPhase1, firstBuild: build620, lastBuild: build621 },
+  { name: fortnitemares2018, flag: activeMiniBosses, firstBuild: build620, lastBuild: build621 },
+  { name: fortnitemares2018, flag: ltmFortnitemares, firstBuild: build620, lastBuild: build621 },
+  { name: fortnitemares2018, flag: lobbySeason6Halloween, firstBuild: build620, lastBuild: build621 },
+  { name: fortnitemares2018, flag: halloweenBattleBus, firstBuild: build620, lastBuild: build621 },
+  { name: fortnitemares2018, flag: islandPoi(0), firstBuild: build620, lastBuild: build621 },
+  { name: fortnitemares2018, flag: fortnitemaresPart4, firstBuild: build621, lastBuild: build621 },
+  { name: fortnitemares2018, flag: ltmLilKevin, firstBuild: build621, lastBuild: build621 },
   { name: mutantStorms, flag: "EventFlag.Vindertech", firstBuild: 3775276, lastBuild: 3775276 },
   { name: mutantStorms, flag: "EventFlag.ActiveStorms", firstBuild: 3790078, lastBuild: 3790078 },
   { name: mutantStorms2018, flag: "EventFlag.ActiveStorms", firstBuild: 3847564, lastBuild: 3870737 },
@@ -481,10 +529,10 @@ const events = [
   { name: blockbuster2018, flag: blockbuster2018Phase3, firstBuild: build440, lastBuild: build45 },
   { name: blockbuster2018, flag: blockbuster2018Phase4, firstBuild: build450, lastBuild: build45 },
   { name: blockbuster2018, flag: activeMiniBosses, firstBuild: build40, lastBuild: build45 },
-  { name: passiveStorms, flag: passiveStorms, firstBuild: build40, lastBuild: build620 },
+  { name: passiveStorms, flag: passiveStorms, firstBuild: build40, lastBuild: build621 },
   { name: lobbySeason4, flag: lobbySeason4, firstBuild: build40, lastBuild: build45 },
   { name: lobbySeason5, flag: lobbySeason5, firstBuild: build500, lastBuild: build541 },
-  { name: lobbySeason6, flag: lobbySeason6, firstBuild: build6000, lastBuild: build620 },
+  { name: lobbySeason6, flag: lobbySeason6, firstBuild: build6000, lastBuild: build621 },
   { name: cramSession2018, flag: activeMiniBosses, firstBuild: build6000, lastBuild: build610 },
   { name: roadTrip2018, flag: roadTrip2018Flag, firstBuild: build500, lastBuild: build541 },
   { name: hordeFlag, flag: hordeFlag, firstBuild: build500, lastBuild: build541 },

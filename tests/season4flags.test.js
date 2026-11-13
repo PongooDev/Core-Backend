@@ -41,8 +41,12 @@ test("every event flag of Season 4's paks is in the catalog, in a group", () => 
     ...Array.from({ length: 7 }, (_, i) => `BR_S6_Island_MoveTo${i + 1}`), ...Array.from({ length: 8 }, (_, i) => `BR_S6_Island_Rune${i}`),
     // and 6.10's seventeenth (CL-4464155's server-assets pak),
     "BR_S6_Island_MoveTo8", "BR_S6_Island_Rune8",
-    // and 6.20's three new ones and the Fortnitemares quest map's two (events/events.js).
-    "LTM_Fortnitemares", "LobbySeason6Halloween", "HalloweenBattleBus", "FortnitemaresPhase1", "FortnitemaresPhase2"].map((name) => `EventFlag.${name}`);
+    // and 6.20's three new ones and the Fortnitemares quest map's two (events/events.js),
+    "LTM_Fortnitemares", "LobbySeason6Halloween", "HalloweenBattleBus", "FortnitemaresPhase1", "FortnitemaresPhase2",
+    // and 6.20's island scripting's crack (CL-4497486's server-assets pak) and 6.21's two new ones,
+    "BR_S6_Island_Crack", "LTM_LilKevin", "Fortnitemares_Part4"].map((name) => `EventFlag.${name}`)
+    // and that scripting's POI0 and POI1, which aren't EventFlag.* (events/events.js islandPoi).
+    .concat(["POI0", "POI1"]);
   for (const flag of scanned) assert.ok(season4Flag(flag), flag);
   const all = season4FlagGroups.flatMap((group) => group.flags.map(({ flag }) => flag));
   assert.equal(new Set(all).size, all.length, "each flag once");

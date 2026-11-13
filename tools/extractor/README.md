@@ -307,6 +307,28 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   primary missions, WM_PinHalloween and the NoMinRating difficulties), `quests.json` and `objectivestats.json` (the
   repeatable Mini-Boss quest pays 50 Gold, reactivequest_gathercollect_halloween_2 no longer starts HalloweenQuest_2017_
   Hidden_3, Canny Valley's pamphlets and exploration stat) and `banners.json`.
+  6.21's (CL-4526925, UE 4.21, Update v6.21's build, its one changelist) is `4.21.0-4526925+++Fortnite+Release-6.21` (no
+  `Build.version`; the build folder is `6.21-CL-4526925\Fortnite`) with 6.20's full data (Cert's files with
+  `gamedata/4497486` applied) as the fifth argument, and the main key FModel's settings hold for its build folder; no
+  extractor change. Its install has 6 paks, pakchunk0 and its s1 to s5 (219,974 files): no pakchunk1 or pakchunk1_s1
+  (Save the World's mission maps and tiles, 62 of 63 primary missions' FortMissionInfo: their tags come from the fifth
+  argument), no keyed pak (6.20's Bunnymoon is in pakchunk0 now) and no language paks, and no Core server-assets pak in
+  its folder. Its DefaultGameData still names no MissionAlerts (24 alerts and 4 storm spreads from the fifth argument).
+  Against 6.20 nine files change: `athena.json` (27 cosmetics: Shogun with Bladed Wings, Kabuto and Jawblade, Spooky Team
+  Leader with Goodie Gourd, Reflex and Instinct with Response Unit, Reaction Tank, Pivot and Angular Axe, Ruckus and Mayhem
+  with Spike Chamber, Puncture Pack, Junkjet and Splinterstrike, Growler and Flapjackie with Woofs, Nibbles, Poofy Parasail
+  and Jackspammer, Yee-Haw!, Lil' Kev and Crazy Feet; 18 display assets, Cloaked Star's among them; the Lil' Kev challenges,
+  `schedule_ltm_lilkevin` (EventName EventFlag.LTM_LilKevin) with its bundle and three quests; the Fortnitemares bundles'
+  rewards in GB_FortnitemaresChallenges and quest_fnm_completequests counting the tokens held (HasItem); Season 6's weeks 6
+  and 7 with one challenge each changed; three objective stats (complete_athena_deimos, outlive_athena_deimos,
+  killingblow_athena_player_rarity_grey) and six changed; the loot tables with the Balloons in the gadget, chest, vending machine
+  and supply drop lists, and new weights for the rocket and vending machine rows and two floor loot and chest tiers),
+  `items.json`, `characters.json`, `cardpacks.json`, `fabricator.json`, `upgrades.json` and `alterations.json` (Dim Mak
+  Igor, HID_Ninja_018, and Fortnitemares Part 2's two heroes, HID_Ninja_019 and HID_Outlander_018; the Candy Corn LMG and the
+  Halloween hand cannon with their recipes; the Perk Caches, Cache_Perk_UC/R/VR/SR_Pickup and their CacheRoll_PerkMaterials
+  packs; the Balloons; the new outfits' heroes and harvesting tools; the Oil Slick Trap gone), `quests.json` (Kill Vlad and
+  two Hexsylvania fetch quests lose their visible rewards), `world.json` (MissionGen_AthenaEvent47 to 49 gone: the Deimos
+  playlists use MissionGen_Athena); `banners.json`, `collectionbook.json` and the rest are 6.20's.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):

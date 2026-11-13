@@ -70,14 +70,14 @@ const withSession = (build, name, run) => {
   }
 };
 
-test("6.20 is known, on its own data, Season 6's newest", () => {
+test("6.20 is known, on its own data, in Season 6", () => {
   assert.equal(versionOf(v620), "6.20");
   assert.equal(allowedBuildList(["6.20"]).join(), v620);
   assert.equal(dataBuild(v620), v620);
   assert.equal(dataBuild("4490000"), v610, "a build between 6.10 and 6.20 plays on 6.10's");
   assert.equal(dataBuild(v610), v610, "6.10 keeps its own data");
-  assert.equal(buildOfSeason(6), v620);
-  assert.equal(seasonName(6), "Season 6 (6.00 – 6.20)");
+  assert.equal(buildOfSeason(6), "4526925", "Season 6's newest data is 6.21's now (tests/build621.test.js)");
+  assert.equal(seasonName(6), "Season 6 (6.00 – 6.21)");
   assert.equal(inBuild(v620, athenaSeason).seasonNumber, 6);
 });
 
@@ -199,9 +199,10 @@ test("the Fortnitemares Challenges: the Cube Monsters a player destroys are the 
   }));
 });
 
-test("6.20's event flags: Fortnitemares (its quest map's Part 1, the Mini-Bosses, the challenges, the Halloween lobby and bus) beside 6.10's; Cram Session over", () => {
+test("6.20's event flags: Fortnitemares (its quest map's Part 1, the Mini-Bosses, the challenges, the Halloween lobby and bus, the Leaky Lake's POI0) beside 6.10's; Cram Session over", () => {
+  // POI0: 6.20's BP_IslandServerOnly's EventBinding1, read with 6.21's bring-up (tests/build621.test.js).
   assert.deepEqual(activeEventFlags(v620), ["EventFlag.Fortnitemares", "EventFlag.FortnitemaresPhase1", "EventFlag.ActiveMiniBosses", ltmFortnitemares,
-    lobbySeason6Halloween, halloweenBattleBus, "EventFlag.PassiveStorms", lobbySeason6]);
+    lobbySeason6Halloween, halloweenBattleBus, "POI0", "EventFlag.PassiveStorms", lobbySeason6]);
   assert.deepEqual(activeEventFlags(v610), ["EventFlag.PassiveStorms", lobbySeason6, "EventFlag.ActiveMiniBosses"], "6.10 is as it was");
   assert.equal(inBuild(v620, () => isEventActive(fortnitemares)), true);
   assert.equal(inBuild(v620, () => isEventActive(fortnitemares2018)), true);
@@ -212,9 +213,9 @@ test("6.20's event flags: Fortnitemares (its quest map's Part 1, the Mini-Bosses
   assert.equal(inBuild(v620, () => hasEventEnded(fortnitemares)), false);
   assert.equal(inBuild(v18, () => isEventActive(fortnitemares)), true, "1.8's own run");
   for (const flag of [ltmFortnitemares, lobbySeason6Halloween, halloweenBattleBus, "EventFlag.FortnitemaresPhase1", "EventFlag.FortnitemaresPhase2"]) {
-    assert.deepEqual(season4Flag(flag).builds, [Number(v620), Number(v620)], flag);
+    assert.deepEqual(season4Flag(flag).builds, [Number(v620), 4526925], flag);
   }
-  assert.deepEqual(season4Flag(lobbySeason6).builds, [4395664, Number(v620)]);
+  assert.deepEqual(season4Flag(lobbySeason6).builds, [4395664, 4526925], "and on to 6.21 (tests/build621.test.js)");
   assert.equal(season4Flag("EventFlag.BR.CandyCaneGuns").builds[1], Number(v610), "BR_Winter_CandyCaneGuns is gone from 6.20's paks");
   // The admin's switches: Part 2's quest map on, the lobby off.
   withConfig({ mode: "auto", season4Flags: { overrides: { "EventFlag.FortnitemaresPhase2": "on", "EventFlag.LobbySeason6Halloween": "off" } } }, () => {
@@ -316,14 +317,16 @@ test("6.20's shop: Season 6's history with its sixteen cosmetics on their days a
   const history = JSON.parse(fs.readFileSync(new URL("../src/store/itemshop-season6.json", import.meta.url), "utf8")).days;
   assert.equal(history.length, 70);
   const [c620, c610] = [inBuild(v620, athenaCosmetics), inBuild(v610, athenaCosmetics)];
-  assert.ok(history.every((day) => [...day.featured, ...day.daily].every(([id]) => c620[id])), "only 6.20's cosmetics");
+  // The history holds 6.21's fourteen too (tests/build621.test.js); 6.20 is shown its own.
+  const c621 = inBuild("4526925", athenaCosmetics);
+  assert.ok(history.every((day) => [...day.featured, ...day.daily].every(([id]) => c621[id])), "only 6.21's cosmetics");
   const days = (id) => history.filter((day) => [...day.featured, ...day.daily].some(([entry]) => entry === id)).map(({ date }) => date.slice(5));
   assert.deepEqual(days("AthenaCharacter:cid_250_athena_commando_m_evilcowboy"), ["10-25", "10-28", "10-29"]);
   assert.deepEqual(days("AthenaCharacter:cid_228_athena_commando_m_vampire"), ["10-19", "10-20", "11-28"]);
   assert.deepEqual(days("AthenaCharacter:cid_255_athena_commando_f_halloweenbunny"), ["10-28", "10-31", "11-01"]);
   for (const id of ["AthenaCharacter:cid_252_athena_commando_m_muertos", "AthenaCharacter:cid_251_athena_commando_f_muertos", "AthenaGlider:glider_id_089_muertos",
     "AthenaPickaxe:pickaxe_id_113_muertos"]) assert.deepEqual(days(id), ["11-02", "11-03"], id);
-  const own = [...new Set(history.flatMap((day) => [...day.featured, ...day.daily]).map(([id]) => id).filter((id) => !c610[id]))];
+  const own = [...new Set(history.flatMap((day) => [...day.featured, ...day.daily]).map(([id]) => id).filter((id) => !c610[id] && c620[id]))];
   assert.equal(own.length, 16);
   // 2 November: Dante and Rosa share a tile (Pick your Style!), Spirit and Six String Striker another (Collect the Set!).
   const nov2 = history.find(({ date }) => date === "2018-11-02");
@@ -355,7 +358,11 @@ test("6.20's Save the World: Fortnitemares Part 1 with Hexsylvania and its quest
   assert.equal(inBuild(v18, () => findOffer("core_event_fortnitemares2018_llama")), undefined);
   assert.equal(inBuild(v620, eventStoreInstanceNow), "Fortnitemares2018.STWSpecialEventStoreFront");
   const store = JSON.stringify(inBuild(v620, () => eventStoreOffers(at("2018-10-25T12:00:00Z"))));
-  for (const { templateId } of fortnitemares2018EventItems) assert.ok(store.includes(templateId), templateId);
+  // 6.21's Dim Mak Igor isn't 6.20's (tests/build621.test.js).
+  for (const { templateId } of fortnitemares2018EventItems.filter(({ templateId }) => inBuild(v620, () => getItem(templateId)))) {
+    assert.ok(store.includes(templateId), templateId);
+  }
+  assert.equal(store.includes("hid_ninja_018"), false);
   assert.ok(!JSON.stringify(inBuild(v610, () => eventStoreOffers(at("2018-10-20T12:00:00Z")))).includes("hid_commando_018"), "6.10's store as it was");
   assert.equal(inBuild(v610, eventStoreInstanceNow), "CramSession2018.STWSpecialEventStoreFront");
 });

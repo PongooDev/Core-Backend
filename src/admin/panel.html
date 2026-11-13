@@ -2141,7 +2141,7 @@
       { id: "3", label: "Season 3 (3.0 – 3.6)", from: "3.0+", days: 68 },
       { id: "4", label: "Season 4 (4.0 – 4.5)", from: "4.0+", days: 72 },
       { id: "5", label: "Season 5 (5.0 – 5.41)", from: "5.0+", days: 77 },
-      { id: "6", label: "Season 6 (6.00 – 6.20)", from: "6.00+", days: 70 }
+      { id: "6", label: "Season 6 (6.00 – 6.21)", from: "6.00+", days: 70 }
     ];
     const seasonOf = (id) => SEASONS.find((entry) => entry.id === String(id)) ?? SEASONS[0];
     const seasonRoute = (accountId) => SEASONS.find((entry) => accountId === `season${entry.id}` || accountId === entry.id)?.id ?? null;
@@ -7451,7 +7451,9 @@
         b.flags.length
           ? el("div", { style: "display:flex; gap:4px; flex-wrap:wrap;" }, b.flags.map((f) => chip(f, "accent")))
           : el("span", { class: "muted", text: "None (Base game)" }),
-        el("span", { class: "muted", text: b.version.startsWith("6.20")
+        el("span", { class: "muted", text: b.version.startsWith("6.21")
+          ? "Fortnitemares' last days: the Cube Monsters' modes as 6.20's (their spawners now run only while the calendar serves POI0, which 6.21 serves by itself; switch POI0 off and POI1 on in a running match for the Butterfly), the Lil' Kev challenges (the Lil' Kev back bling), the Balloons; Shogun, Spooky Team Leader, Ruckus and Mayhem, Growler and Flapjackie, Yee-Haw! and Crazy Feet in the shop on their days; Save the World: Dim Mak Igor in the Event Store (2,800 Gold), Perk Caches, and RE-PERK! and PERK-UP! of every rarity from mid-Plankerton (Fortnitemares Part 2 is Update v6.22's: by its switch only)"
+          : b.version.startsWith("6.20")
           ? "Fortnitemares: the Cube Monsters' modes (Fortnitemares Solo, Duos and Squads, on by default; Original dates 24 October to 4 November) and their tournament playlists, the Fortnitemares Challenges (four parts, the Dark Engine glider), the Halloween lobby and Battle Bus, the Six Shooter and the Fiend Hunter Crossbow; two more Disco Dominations by their switches; glider redeploy in every mode (the game's own data); the Skull Trooper and Tomatohead Challenges as before; the floating island back over Loot Lake; Support-A-Creator's name check; Save the World's Fortnitemares Part 1: Hexsylvania, Vlad Moon Rising, Candy from Mini-Bosses, the Fortnitemares Llama (500 Candy), Quickdraw Calamity and Bloodfinder A.C. in the Event Store, a founder's Skull Ranger Ramirez and Brainiac Jonesy"
           : b.version.startsWith("6.10")
           ? "The Events tab: in-game tournaments, the events made on the Tournaments page for its Tournament playlists (none by default); the Quadcrasher; Disco Domination still (two more of it, Blitz! v2 and the default modes with glider redeploy by their switches); weeks 4 to 7 of Season 6's challenges; the floating island by its dates, back over Loot Lake with its house glowing; Save the World's Cram Session with the Rat King and the Grave Digger in the Weekly Store (its Beta Storms aren't served: their mission alert isn't in the game's files)"
@@ -7696,7 +7698,7 @@
         if (await act(api("/admin/api/events/flags", payload), message)) showEvents();
       };
       const s4Range = ([first, last]) => {
-        const names = { 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4204761: "5.0", 4214610: "5.0", 4225813: "5.10", 4240749: "5.10", 4288479: "5.21", 4305896: "5.30", 4352937: "5.40", 4363240: "5.41", 4395664: "6.00.0", 4402180: "6.00", 4417689: "6.01.0", 4424678: "6.01", 4442095: "6.02.0", 4461277: "6.02", 4464155: "6.10.0", 4476098: "6.10.1", 4480234: "6.10", 4497486: "6.20" };
+        const names = { 4039451: "4.0", 4053532: "4.1", 4072250: "4.2", 4117433: "4.4.0", 4132537: "4.4.2", 4159770: "4.5.0", 4166199: "4.5", 4204761: "5.0", 4214610: "5.0", 4225813: "5.10", 4240749: "5.10", 4288479: "5.21", 4305896: "5.30", 4352937: "5.40", 4363240: "5.41", 4395664: "6.00.0", 4402180: "6.00", 4417689: "6.01.0", 4424678: "6.01", 4442095: "6.02.0", 4461277: "6.02", 4464155: "6.10.0", 4476098: "6.10.1", 4480234: "6.10", 4497486: "6.20", 4526925: "6.21" };
         return first === last ? names[first] : `${names[first] || first} – ${names[last] || last}`;
       };
       const odditiesLabels = { off: "Off: the rifts wait (switch them below by hand)", launch: "After the rocket launch: Epic's days, counted from the admin's launch time", dates: "Epic's dates (30 June – 10 July) on Season 4's replay", custom: "My own times (set below)" };
@@ -7900,7 +7902,7 @@
       const season4Container = el("div", {
         style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
       },
-        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "Season 4, 5 and 6 event flags (4.0 – 6.20):" }),
+        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "Season 4, 5 and 6 event flags (4.0 – 6.21):" }),
         el("div", { class: "muted", style: "font-size:12px; margin-bottom:8px;", text: "Every EventFlag.* in Season 4's paks. Automatic serves what the build served in its day; On or Off overrides it on the builds whose paks have the flag (in the Automatic mode). The rocket's flags follow the Rocket Launch above. Clients pick a change up at their next calendar fetch; running gameservers within 5 seconds." }),
         ...s4.groups.map((group) => el("div", { style: "margin-top:10px;" },
           el("div", { style: "font-weight:700; font-size:12px; margin-bottom:4px;", text: group.name + (group.managedBy ? " (by the Rocket Launch's time)" : "") }),

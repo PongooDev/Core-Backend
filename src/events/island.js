@@ -92,7 +92,11 @@ import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 // 6.20 (CL-4497486, 24 October) keeps the island: its client paks' BP_IslandScripting is still placed, and it plays in
 // 6.10's days' end state, back over Loot Lake since 21 October, so it is served 6.10's _Rune8 there (datedflags.js
 // laterFlags, from CL-4464155 on). 🟡 6.20's own BP_IslandServerOnly (Core-ServerAssets' CL-4497486 pak) wasn't read: that
-// it still binds _Rune8 is 6.10's.
+// it still binds _Rune8 is 6.10's. Read since (with 6.21's bring-up, the pak installed beside 6.20's paks), it still lists
+// the island's seventeen as EventBindings, but 6.20's new BP_IslandScripting watches only its two other bindings, POI0 and
+// POI1 and BR_S6_Island_Crack (events/events.js islandPoi): the island's flags place nothing on 6.20, and are served as
+// they were. 6.21 (CL-4526925) has no island here: its BP_IslandScripting watches POI0 and POI1, the crack and a third
+// binding (the Cube draining), so the island's flags stop at 6.20 (events/season4flags.js).
 export const islandEvent = datedEvent("island");
 
 // The island's calendar events as parts [{validFrom (ms), events: [{eventType, activeSince, activeUntil}]}], from the part

@@ -453,9 +453,16 @@ const build610 = 4480234;
 //   Playlist_Disco_Alt.
 // The shipped list also enables Playlist_CreativeTestIsland (DisplayPriority 16), whose playlist asset isn't in the paks:
 // it isn't listed here. Disco Domination's Original dates end on 24 October (above), so on 6.20 it is there by its switch.
+// 6.21 (CL-4526925, Update v6.21, 1 November 2018): Athena/Playlists (every playlist asset of its 6 paks, against 6.20's)
+// keeps every 6.20 playlist and adds none; the Deimos ones (and their CN ones) change, on MissionGen_Athena now (6.20's
+// MissionGen_AthenaEvent47 to 49 are gone), and Playlist_Playground gains PlaygroundModifiers (CreativeMutator_POIOverride),
+// beside a new GameplayModifier, ButterflyEventModifier, which Athena_GameMode registers in every match. Its DefaultGame.ini's
+// lobby list is 6.20's line for line. So every 6.20 mode runs to 6.21, as it was, Fortnitemares' Original dates with them
+// (they end on 4 November, 6.21's fourth day: events/events.js has the POI0 its spawners now need).
 const build620 = 4497486;
-const season6Window = [{ builds: [build6000, build620], start: "2018-09-27", end: "2018-12-06" }];
-const fortnitemaresWindow = [{ builds: [build620, build620], start: "2018-10-24", end: Date.parse("2018-11-04T18:00:00.000Z") }];
+const build621 = 4526925;
+const season6Window = [{ builds: [build6000, build621], start: "2018-09-27", end: "2018-12-06" }];
+const fortnitemaresWindow = [{ builds: [build620, build621], start: "2018-10-24", end: Date.parse("2018-11-04T18:00:00.000Z") }];
 const discoDominationWindow = [{ builds: [build6020, build602], start: "2018-10-10", end: "2018-10-16" },
   { builds: [build6100, build610], start: "2018-10-16", end: "2018-10-24" }];
 // Core-Backend #257 asked for 3.5.1's to 4.0's Solid Gold v2 (Squads, Solo), Sniper Shootout v2 (Solo, Duos, Squads), High
@@ -717,7 +724,7 @@ export const ltms = [
   // #314): 5.10's, 5.21's, 5.30's and 6.00's to 6.10's shipped DefaultGame.ini enable Playlist_Playground in the lobby
   // (FrontEndPlaylistData, AdvertiseType Updated), as Epic ran it from 25 July to the season's end, and on through Season
   // 6. 6.01's has the custom options (above): the same playlist, so the same mode here.
-  { id: "playgroundV2", name: "Playground v2", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build5100, build620], seasons: [5, 6], defaultOn: true,
+  { id: "playgroundV2", name: "Playground v2", playlistId: 35, playlistName: "Playlist_Playground", eventFlag: null, builds: [build5100, build621], seasons: [5, 6], defaultOn: true,
     original: [{ builds: [build5100, build541], start: "2018-07-25", end: "2018-09-27" }, ...season6Window],
     teams: "4 Teams × 4", description: "Playground again, with team select: up to four players on up to four teams, respawns, 10x resources, golf carts (Playlist_Playground, 5.10's)." },
   { id: "flyExplosives", name: "Fly Explosives (Squads)", playlistId: 122, playlistName: "Playlist_FlyExplosives_Squads", eventFlag: null, builds: [build510, build510], seasons: [5], newIn: build510,
@@ -737,7 +744,7 @@ export const ltms = [
   { id: "steadyStormSquads", name: "Steady Storm (Squads)", playlistId: 162, playlistName: "Playlist_Steady_Squads", eventFlag: null, builds: [build521, build521], seasons: [5],
     original: steadyStorm,
     teams: "100 Teams × 4", description: "One storm that closes in over 15 minutes, no safe zones, 10 damage a second (Athena/Playlists/SteadyStorm game data, 5.21's)." },
-  { id: "soaring50s", name: "Soaring 50's", playlistId: 53, playlistName: "Playlist_Soaring_50s", eventFlag: null, builds: [build521, build620], seasons: [5, 6], newIn: build521,
+  { id: "soaring50s", name: "Soaring 50's", playlistId: 53, playlistName: "Playlist_Soaring_50s", eventFlag: null, builds: [build521, build621], seasons: [5, 6], newIn: build521,
     original: update521Window,
     teams: "2 Teams × 50", description: "50v50 with glider redeploy from 10 m up, extra Impulse Grenades, Launch Pads and Bounce Pads; no profile stats (Playlist_Soaring_50s, 5.21's)." },
   { id: "sniperShootoutV4", name: "Sniper Shootout v4 (Squads)", playlistId: 41, playlistName: "Playlist_Snipers", eventFlag: null, builds: [build521, build521], seasons: [5],
@@ -802,7 +809,7 @@ export const ltms = [
   // 6.00's Playlist_50v50 (above), a new revision: glider redeploy ("Press jump to redeploy your glider when falling from large
   // heights"), so an LTM of its own, as 5.0's was. On by default: 6.00's shipped DefaultGame.ini enables it in the lobby.
   // 6.01's and 6.02's are the same asset, enabled the same way; 6.10's (above) is listed as a default playlist.
-  { id: "fiftyFiftySeason6", name: "50v50 (Season 6)", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build6000, build620], seasons: [6], defaultOn: true,
+  { id: "fiftyFiftySeason6", name: "50v50 (Season 6)", playlistId: 50, playlistName: "Playlist_50v50", eventFlag: null, builds: [build6000, build621], seasons: [6], defaultOn: true,
     teams: "2 Teams × 50", description: "Two teams of fifty, a bus each, extra loot, and glider redeploy when falling from a height (Playlist_50v50, 6.00's)." },
   // 6.01's Playlist_Disco (above), Update v6.02's Disco Domination, in 6.01's paks already: by its switch, listed as New.
   { id: "discoDomination", name: "Disco Domination", playlistId: 202, playlistName: "Playlist_Disco", eventFlag: null, builds: [build6010, build601], seasons: [6],
@@ -812,16 +819,16 @@ export const ltms = [
   // so an LTM of its own beside 6.01's, which stays by its switch. Its 32 a side playlist, High Explosives and Steady
   // Storm by their switches. 6.10 keeps the mode (Update v6.10's "What's New?"), the 32 a side one and High Explosives;
   // Steady Storm's playlists are gone from its paks.
-  { id: "discoDomination602", name: "Disco Domination (6.02 – 6.20)", playlistId: 202, playlistName: "Playlist_Disco", eventFlag: null, builds: [build6020, build620], seasons: [6],
+  { id: "discoDomination602", name: "Disco Domination (6.02 – 6.21)", playlistId: 202, playlistName: "Playlist_Disco", eventFlag: null, builds: [build6020, build621], seasons: [6],
     advertise: "New", defaultOn: true,
     original: discoDominationWindow,
     teams: "2 Teams × 50", description: "Two teams of fifty capture dance floors by emoting on them; respawns until the last circle, glider redeploy, 50v50's loot (Playlist_Disco, Update v6.02's mode; 6.10: fewer bandages, no Common weapons)." },
-  { id: "discoDomination32", name: "Disco Domination (32 v 32)", playlistId: 217, playlistName: "Playlist_Disco_32", eventFlag: null, builds: [build6020, build620], seasons: [6],
+  { id: "discoDomination32", name: "Disco Domination (32 v 32)", playlistId: 217, playlistName: "Playlist_Disco_32", eventFlag: null, builds: [build6020, build621], seasons: [6],
     advertise: "New",
     teams: "2 Teams × 32", description: "Disco Domination with two teams of thirty-two, for 24 to 64 players (Playlist_Disco_32, 6.02's)." },
-  { id: "highExplosivesSeason6Solo", name: "High Explosives (Season 6, Solo)", playlistId: 23, playlistName: "Playlist_HighExplosives_Solo", eventFlag: null, builds: [build6020, build620], seasons: [6],
+  { id: "highExplosivesSeason6Solo", name: "High Explosives (Season 6, Solo)", playlistId: 23, playlistName: "Playlist_HighExplosives_Solo", eventFlag: null, builds: [build6020, build621], seasons: [6],
     teams: "100 Teams × 1", description: "Explosive weapons everywhere! (Playlist_HighExplosives_Solo on the Fly Explosives tables, 6.02's)." },
-  { id: "highExplosivesSeason6Squads", name: "High Explosives (Season 6, Squads)", playlistId: 24, playlistName: "Playlist_HighExplosives_Squads", eventFlag: null, builds: [build6020, build620], seasons: [6],
+  { id: "highExplosivesSeason6Squads", name: "High Explosives (Season 6, Squads)", playlistId: 24, playlistName: "Playlist_HighExplosives_Squads", eventFlag: null, builds: [build6020, build621], seasons: [6],
     teams: "100 Teams × 4", description: "Explosive weapons everywhere! (Athena/Playlists/HighExplosives tables, 6.02's)." },
   { id: "steadyStormSeason6Solo", name: "Steady Storm (Season 6, Solo)", playlistId: 160, playlistName: "Playlist_Steady_Solo", eventFlag: null, builds: [build6020, build602], seasons: [6],
     teams: "100 Teams × 1", description: "One storm that never stops closing in, no safe zones (Athena/Playlists/SteadyStorm game data, 6.02's)." },
@@ -830,17 +837,17 @@ export const ltms = [
   { id: "steadyStormSeason6Squads", name: "Steady Storm (Season 6, Squads)", playlistId: 162, playlistName: "Playlist_Steady_Squads", eventFlag: null, builds: [build6020, build602], seasons: [6],
     teams: "100 Teams × 4", description: "One storm that never stops closing in, no safe zones (Athena/Playlists/SteadyStorm game data, 6.02's)." },
   // 6.10's (above): two more Disco Dominations, Blitz! v2 and the default modes with glider redeploy, by their switches.
-  { id: "discoDomination40", name: "Disco Domination (40 v 40)", playlistId: 218, playlistName: "Playlist_Disco_40", eventFlag: null, builds: [build6100, build620], seasons: [6],
+  { id: "discoDomination40", name: "Disco Domination (40 v 40)", playlistId: 218, playlistName: "Playlist_Disco_40", eventFlag: null, builds: [build6100, build621], seasons: [6],
     advertise: "New",
     teams: "2 Teams × 40", description: "Disco Domination with two teams of forty, for 24 to 80 players (Playlist_Disco_40, 6.10's)." },
-  { id: "discoDominationAlt", name: "Disco Domination (Alt)", playlistId: 230, playlistName: "Playlist_Disco_Alt", eventFlag: null, builds: [build6100, build620], seasons: [6],
+  { id: "discoDominationAlt", name: "Disco Domination (Alt)", playlistId: 230, playlistName: "Playlist_Disco_Alt", eventFlag: null, builds: [build6100, build621], seasons: [6],
     advertise: "New",
     teams: "2 Teams × 50", description: "Disco Domination on its other modifier, DiscoGameModifierNoA (Playlist_Disco_Alt, 6.10's)." },
-  { id: "blitzSeason6Solo", name: "Blitz! v2 (Season 6, Solo)", playlistId: 36, playlistName: "Playlist_Blitz_Solo", eventFlag: null, builds: [build6100, build620], seasons: [6],
+  { id: "blitzSeason6Solo", name: "Blitz! v2 (Season 6, Solo)", playlistId: 36, playlistName: "Playlist_Blitz_Solo", eventFlag: null, builds: [build6100, build621], seasons: [6],
     teams: "100 Teams × 1", description: "The storm closes in from the start, shorter waits between circles, extra loot and resources: matches of 15 minutes or less (Athena/Playlists/Blitz tables, 6.10's)." },
-  { id: "blitzSeason6Duos", name: "Blitz! v2 (Season 6, Duos)", playlistId: 37, playlistName: "Playlist_Blitz_Duos", eventFlag: null, builds: [build6100, build620], seasons: [6],
+  { id: "blitzSeason6Duos", name: "Blitz! v2 (Season 6, Duos)", playlistId: 37, playlistName: "Playlist_Blitz_Duos", eventFlag: null, builds: [build6100, build621], seasons: [6],
     teams: "100 Teams × 2", description: "The storm closes in from the start, shorter waits between circles, extra loot and resources: matches of 15 minutes or less (Athena/Playlists/Blitz tables, 6.10's)." },
-  { id: "blitzSeason6Squads", name: "Blitz! v2 (Season 6, Squads)", playlistId: 19, playlistName: "Playlist_Blitz_Squad", eventFlag: null, builds: [build6100, build620], seasons: [6],
+  { id: "blitzSeason6Squads", name: "Blitz! v2 (Season 6, Squads)", playlistId: 19, playlistName: "Playlist_Blitz_Squad", eventFlag: null, builds: [build6100, build621], seasons: [6],
     teams: "100 Teams × 4", description: "The storm closes in from the start, shorter waits between circles, extra loot and resources: matches of 15 minutes or less (Athena/Playlists/Blitz tables, 6.10's)." },
   { id: "gliderRedeploySolo", name: "Solo with glider redeploy", playlistId: 223, playlistName: "Playlist_GRD_Solo", eventFlag: null, builds: [build6100, build610], seasons: [6],
     teams: "100 Teams × 1", description: "Solo with glider redeploy: press Jump when falling from a height (Playlist_GRD_Solo, 6.10's)." },
@@ -850,32 +857,32 @@ export const ltms = [
     teams: "100 Teams × 4", description: "Squads with glider redeploy: press Jump when falling from a height (Playlist_GRD_Squads, 6.10's)." },
   // 6.10's Showdown playlists (above), the in-game tournaments' (tournaments/store.js): no lobby mode and no switch. The
   // lobby lists each as shipped, disabled, and a ticket for one is taken while a tournament event of it runs.
-  { id: "showdownSolo", name: "Tournament (Solo)", playlistId: 58071, playlistName: "Playlist_Showdown_Solo", eventFlag: null, builds: [build6100, build620], seasons: [6], tournament: true,
+  { id: "showdownSolo", name: "Tournament (Solo)", playlistId: 58071, playlistName: "Playlist_Showdown_Solo", eventFlag: null, builds: [build6100, build621], seasons: [6], tournament: true,
     teams: "100 Teams × 1", description: "The in-game tournaments' Solo playlist: points for placements and eliminations, shown in the match (Playlist_Showdown_Solo, 6.10's)." },
-  { id: "showdownDuos", name: "Tournament (Duos)", playlistId: 58072, playlistName: "Playlist_Showdown_Duos", eventFlag: null, builds: [build6100, build620], seasons: [6], tournament: true,
+  { id: "showdownDuos", name: "Tournament (Duos)", playlistId: 58072, playlistName: "Playlist_Showdown_Duos", eventFlag: null, builds: [build6100, build621], seasons: [6], tournament: true,
     teams: "100 Teams × 2", description: "The in-game tournaments' Duos playlist, for full duos (Playlist_Showdown_Duos, 6.10's)." },
-  { id: "showdownSquads", name: "Tournament (Squads)", playlistId: 58073, playlistName: "Playlist_Showdown_Squads", eventFlag: null, builds: [build6100, build620], seasons: [6], tournament: true,
+  { id: "showdownSquads", name: "Tournament (Squads)", playlistId: 58073, playlistName: "Playlist_Showdown_Squads", eventFlag: null, builds: [build6100, build621], seasons: [6], tournament: true,
     teams: "100 Teams × 4", description: "The in-game tournaments' Squads playlist, for full squads (Playlist_Showdown_Squads, 6.10's)." },
   // 6.20's (above): Fortnitemares, on by default by its Original dates, and two more Disco Dominations by their switches.
-  { id: "fortnitemares2018Solo", name: "Fortnitemares (Solo)", playlistId: 47, playlistName: "Playlist_Deimos_Solo", eventFlag: null, builds: [build620, build620], seasons: [6],
+  { id: "fortnitemares2018Solo", name: "Fortnitemares (Solo)", playlistId: 47, playlistName: "Playlist_Deimos_Solo", eventFlag: null, builds: [build620, build621], seasons: [6],
     advertise: "New", defaultOn: true, original: fortnitemaresWindow,
     teams: "100 Teams × 1", description: "Battle Royale with the Cube Monsters: Cube Fragments spawn Fiends and Brutes that drop loot and give shield (Playlist_Deimos_Solo, 6.20's)." },
-  { id: "fortnitemares2018Duos", name: "Fortnitemares (Duos)", playlistId: 48, playlistName: "Playlist_Deimos_Duo", eventFlag: null, builds: [build620, build620], seasons: [6],
+  { id: "fortnitemares2018Duos", name: "Fortnitemares (Duos)", playlistId: 48, playlistName: "Playlist_Deimos_Duo", eventFlag: null, builds: [build620, build621], seasons: [6],
     advertise: "New", defaultOn: true, original: fortnitemaresWindow,
     teams: "100 Teams × 2", description: "Battle Royale with the Cube Monsters, in duos (Playlist_Deimos_Duo, 6.20's)." },
-  { id: "fortnitemares2018Squads", name: "Fortnitemares (Squads)", playlistId: 49, playlistName: "Playlist_Deimos_Squad", eventFlag: null, builds: [build620, build620], seasons: [6],
+  { id: "fortnitemares2018Squads", name: "Fortnitemares (Squads)", playlistId: 49, playlistName: "Playlist_Deimos_Squad", eventFlag: null, builds: [build620, build621], seasons: [6],
     advertise: "New", defaultOn: true, original: fortnitemaresWindow,
     teams: "100 Teams × 4", description: "Battle Royale with the Cube Monsters, in squads (Playlist_Deimos_Squad, 6.20's)." },
-  { id: "discoDomination40Alt", name: "Disco Domination (40 v 40, Alt)", playlistId: 231, playlistName: "Playlist_Disco_40_Alt", eventFlag: null, builds: [build620, build620], seasons: [6],
+  { id: "discoDomination40Alt", name: "Disco Domination (40 v 40, Alt)", playlistId: 231, playlistName: "Playlist_Disco_40_Alt", eventFlag: null, builds: [build620, build621], seasons: [6],
     teams: "2 Teams × 40", description: "Disco Domination with two teams of forty on DiscoGameModifierNoA (Playlist_Disco_40_Alt, 6.20's)." },
-  { id: "discoDomination32Alt", name: "Disco Domination (32 v 32, Alt)", playlistId: 232, playlistName: "Playlist_Disco_32_Alt", eventFlag: null, builds: [build620, build620], seasons: [6],
+  { id: "discoDomination32Alt", name: "Disco Domination (32 v 32, Alt)", playlistId: 232, playlistName: "Playlist_Disco_32_Alt", eventFlag: null, builds: [build620, build621], seasons: [6],
     teams: "2 Teams × 32", description: "Disco Domination with two teams of thirty-two on DiscoGameModifierNoA (Playlist_Disco_32_Alt, 6.20's)." },
   // 6.20's Fortnitemares tournament playlists (above): in-game tournaments' as the Showdown ones, no lobby mode.
-  { id: "fortnitemaresShowSolo", name: "Fortnitemares Tournament (Solo)", playlistId: 59071, playlistName: "Playlist_Deimos_SoloShow", eventFlag: null, builds: [build620, build620], seasons: [6], tournament: true,
+  { id: "fortnitemaresShowSolo", name: "Fortnitemares Tournament (Solo)", playlistId: 59071, playlistName: "Playlist_Deimos_SoloShow", eventFlag: null, builds: [build620, build621], seasons: [6], tournament: true,
     teams: "100 Teams × 1", description: "The in-game tournaments' Fortnitemares Solo playlist, with the Cube Monsters (Playlist_Deimos_SoloShow, 6.20's)." },
-  { id: "fortnitemaresShowDuos", name: "Fortnitemares Tournament (Duos)", playlistId: 59072, playlistName: "Playlist_Deimos_DuoShow", eventFlag: null, builds: [build620, build620], seasons: [6], tournament: true,
+  { id: "fortnitemaresShowDuos", name: "Fortnitemares Tournament (Duos)", playlistId: 59072, playlistName: "Playlist_Deimos_DuoShow", eventFlag: null, builds: [build620, build621], seasons: [6], tournament: true,
     teams: "100 Teams × 2", description: "The in-game tournaments' Fortnitemares Duos playlist, for full duos (Playlist_Deimos_DuoShow, 6.20's)." },
-  { id: "fortnitemaresShowSquads", name: "Fortnitemares Tournament (Squads)", playlistId: 59073, playlistName: "Playlist_Deimos_SquadShow", eventFlag: null, builds: [build620, build620], seasons: [6], tournament: true,
+  { id: "fortnitemaresShowSquads", name: "Fortnitemares Tournament (Squads)", playlistId: 59073, playlistName: "Playlist_Deimos_SquadShow", eventFlag: null, builds: [build620, build621], seasons: [6], tournament: true,
     teams: "100 Teams × 4", description: "The in-game tournaments' Fortnitemares Squads playlist, for full squads (Playlist_Deimos_SquadShow, 6.20's)." }
 ];
 // A build range's bounds are changelists or versions ("4.2", "4.4.x"): a version holds only once Core knows the build's.
@@ -1047,7 +1054,7 @@ export function nextLtmChange(build, settingsValue, now = new Date()) {
 
 // The admin panel's list (its Battle Royale Game Modes, after solo, duos and squads): each LTM with its window and
 // builds, whether it is on by hand, and whether its window holds each season's replay now.
-const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build311]: "3.1.1", [build32]: "3.2", [build33]: "3.3", [build351]: "3.5.1", [build352]: "3.5.2", [build36]: "3.6", [build40]: "4.0", [build41]: "4.1", [build42]: "4.2", [build440]: "4.4.0", [build441]: "4.4.1", [build442]: "4.4.2", [build450]: "4.5.0", [build45]: "4.5", [build500]: "5.0.0", [build50]: "5.0", [build5100]: "5.10.0", [build510]: "5.10", [build521]: "5.21", [build530]: "5.30", [build540]: "5.40", [build541]: "5.41", [build6000]: "6.00.0", [build600]: "6.00", [build6010]: "6.01.0", [build601]: "6.01", [build6020]: "6.02.0", [build602]: "6.02", [build6100]: "6.10.0", [build6101]: "6.10.1", [build610]: "6.10", [build620]: "6.20" };
+const versions = { [build110]: "1.10", [build111]: "1.11", [build21]: "2.1", [build23]: "2.3", [build24]: "2.4", [build242]: "2.4.2", [build25]: "2.5", [build30]: "3.0", [build31]: "3.1", [build311]: "3.1.1", [build32]: "3.2", [build33]: "3.3", [build351]: "3.5.1", [build352]: "3.5.2", [build36]: "3.6", [build40]: "4.0", [build41]: "4.1", [build42]: "4.2", [build440]: "4.4.0", [build441]: "4.4.1", [build442]: "4.4.2", [build450]: "4.5.0", [build45]: "4.5", [build500]: "5.0.0", [build50]: "5.0", [build5100]: "5.10.0", [build510]: "5.10", [build521]: "5.21", [build530]: "5.30", [build540]: "5.40", [build541]: "5.41", [build6000]: "6.00.0", [build600]: "6.00", [build6010]: "6.01.0", [build601]: "6.01", [build6020]: "6.02.0", [build602]: "6.02", [build6100]: "6.10.0", [build6101]: "6.10.1", [build610]: "6.10", [build620]: "6.20", [build621]: "6.21" };
 const boundName = (bound) => (typeof bound === "number" ? versions[bound] : bound);
 const buildRange = ([first, last]) => (first === last ? boundName(first) : `${boundName(first)} to ${boundName(last)}`);
 // A window's day or moment for the admin panel: "YYYY-MM-DD" at midnight, else the ISO time; last, its last day.

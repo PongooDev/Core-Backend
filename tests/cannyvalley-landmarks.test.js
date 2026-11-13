@@ -10,8 +10,8 @@ import { send, startBackend, userLogin } from "./helpers.js";
 // Core-Backend #339: 5.10's Canny Valley Act 1 landmark quests had no mission on the map, so 6.02's quest log showed no
 // Play for "Please Hold" (CannyValley_Landmark_Welcome) and the pinned quest's Find found nothing.
 const now = new Date("2026-11-13T12:00:00Z");
-// 5.10 (CL-4240749), 6.02.0 (CL-4442095, the reporter's, on 6.02's data), 6.02 (CL-4461277), 6.10 (CL-4480234) and 6.20 (CL-4497486).
-const actOneBuilds = ["4240749", "4442095", "4461277", "4480234", "4497486"];
+// 5.10 (CL-4240749), 6.02.0 (CL-4442095, the reporter's, on 6.02's data), 6.02 (CL-4461277), 6.10 (CL-4480234), 6.20 (CL-4497486) and 6.21 (CL-4526925).
+const actOneBuilds = ["4240749", "4442095", "4461277", "4480234", "4497486", "4526925"];
 const zoneTag = (region) => (region.regionTags?.gameplayTags ?? []).map(({ tagName }) => /^Stat\.Theater\.PvE03\.Difficulty0(\d)$/.exec(tagName)?.[1]).find(Boolean);
 const cannyValleyOf = (info) => {
   const index = info.theaters.findIndex((theater) => theater.runtimeInfo.theaterTags.gameplayTags.some(({ tagName }) => tagName === "Stat.Theater.PvE03"));

@@ -119,8 +119,13 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // (19 and 20 October, 28 November), Deadfire and Dark Shard (25, 28 and 29 October), Brainiac (26, 27 and 31 October, 1
 // November), Bunnymoon (28 and 31 October, 1 November; in its keyed pak, which the backend's keychain opens), Treat Yourself,
 // Patch Patroller, Howl, Jugglin', Dante and Rosa with Spirit and Six String Striker (2 and 3 November), Criss Cross, Busy and
-// Tai Chi. Only 6.20's data has them, so 6.00's to 6.10's days are as they were. A build's season is its athena data's
-// seasonNumber, Season 1 without one.
+// Tai Chi. Only 6.20's data has them, so 6.00's to 6.10's days are as they were. 6.21 (CL-4526925) adds its fourteen the
+// shop sold in Season 6, on 8 days, the same way: Spooky Team Leader (2 November), Ruckus and Mayhem with Junkjet and
+// Splinterstrike (4 and 5 November), Growler and Flapjackie with Jackspammer and Poofy Parasail (9 November), Yee-Haw! (13
+// November), Shogun with Jawblade and Kabuto (18 and 19 November) and Crazy Feet (22 November). Its other outfits, Reflex
+// and Instinct with Pivot and Angular Axe, weren't sold in Season 6, and Lil' Kev is a challenge reward. Only 6.21's data
+// has them, so 6.00's to 6.20's days are as they were. A build's season is its athena data's seasonNumber, Season 1
+// without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;
   return { days, firstDay: Date.parse(`${days[0].date}T00:00:00Z`) };
@@ -504,7 +509,11 @@ const tileOf = (tile) => {
 // (bid_133_guanyu), and 6.20 (CL-4497486) Sanctum's Coven Cape (bid_130_vampiremale02), Summit Striker's Top Notch
 // (bid_134_militaryfashion), Rosa's Calavera (bid_135_muertosfemale), Dante's Spirit Cape (bid_136_muertosmale),
 // Deadfire's Shackled Stone (bid_137_evilcowboy: "Deadfire also comes with the Shackled Stone Back Bling", the Fortnite
-// Wiki's Fortnitemares 2018) and Frostbite's Freezing Point (bid_142_raptorarcticcamo).
+// Wiki's Fortnitemares 2018) and Frostbite's Freezing Point (bid_142_raptorarcticcamo), and 6.21 (CL-4526925) Spooky Team
+// Leader's Goodie Gourd (bid_139_fuzzybearhalloween), Shogun's Bladed Wings (bid_142_samuraiultra), Ruckus's Spike Chamber
+// (bid_143_madcommandermale), Mayhem's Puncture Pack (bid_144_madcommanderfemale), Growler's Woofs
+// (bid_145_animaljacketsmale) and Flapjackie's Nibbles (bid_146_animaljacketsfemale) (each outfit's "bundled with" on the
+// Fortnite Wiki).
 export const bundledBackBlings = {
   "AthenaCharacter:cid_093_athena_commando_m_dinosaur": "AthenaBackpack:bid_031_dinosaur",
   "AthenaCharacter:cid_097_athena_commando_f_rockerpunk": "AthenaBackpack:bid_034_rockerpunk",
@@ -565,7 +574,13 @@ export const bundledBackBlings = {
   "AthenaCharacter:cid_251_athena_commando_f_muertos": "AthenaBackpack:bid_135_muertosfemale",
   "AthenaCharacter:cid_252_athena_commando_m_muertos": "AthenaBackpack:bid_136_muertosmale",
   "AthenaCharacter:cid_250_athena_commando_m_evilcowboy": "AthenaBackpack:bid_137_evilcowboy",
-  "AthenaCharacter:cid_261_athena_commando_m_raptorarcticcamo": "AthenaBackpack:bid_142_raptorarcticcamo"
+  "AthenaCharacter:cid_261_athena_commando_m_raptorarcticcamo": "AthenaBackpack:bid_142_raptorarcticcamo",
+  "AthenaCharacter:cid_258_athena_commando_f_fuzzybearhalloween": "AthenaBackpack:bid_139_fuzzybearhalloween",
+  "AthenaCharacter:cid_257_athena_commando_m_samuraiultra": "AthenaBackpack:bid_142_samuraiultra",
+  "AthenaCharacter:cid_262_athena_commando_m_madcommander": "AthenaBackpack:bid_143_madcommandermale",
+  "AthenaCharacter:cid_263_athena_commando_f_madcommander": "AthenaBackpack:bid_144_madcommanderfemale",
+  "AthenaCharacter:cid_264_athena_commando_m_animaljackets": "AthenaBackpack:bid_145_animaljacketsmale",
+  "AthenaCharacter:cid_265_athena_commando_f_animaljackets": "AthenaBackpack:bid_146_animaljacketsfemale"
 };
 
 // The day's offers by storefront, those the requesting build has the cosmetic for. Never a cosmetic the shop doesn't sell

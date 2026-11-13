@@ -130,11 +130,23 @@ function zoneReward(group, templateId, info) {
 // pack's tier of evolution material (Pure Drop of Rain at T01 to Storm Shard at T04, reagent_c_t01-t04), 2 of them, and
 // hero, survivor and schematic XP as a zone reward pack of that level gives.
 export const cacheMaterialsCount = 2;
+// 6.21's (CL-4526925) Perk Caches, CacheRoll_PerkMaterials (CardPack_Cache_Perk_UC, _R, _VR and _SR, "A cache full of
+// RE-PERK and PERK-UP!"; Update v6.21: "New Cache type that can drop both RE-Perk and Perk-UP ... can drop from Mini-bosses
+// and treasure chests"), rolled on Epic's servers too, so Core's (🟡): RE-PERK! as a zone reward pack of the cache's
+// rarity gives (Uncommon low, Rare medium, Epic high, Legendary very high: 10, 15, 20, 30) and one PERK-UP! pack of its
+// rarity (10).
+export const perkCacheRePerk = { uc: 10, r: 15, vr: 20, sr: 30 };
+export const perkCachePerkUp = 10;
 
 function itemCache(group, templateId) {
   const resource = (id, quantity) => (hasItem(id) ? [{ templateId: id, quantity }] : []);
   const schematics = /^cacheroll_schematics_(r|vr|sr)$/.exec(group);
   if (schematics) return one("schematic", null, schematics[1]);
+  const perks = group === "cacheroll_perkmaterials" && /_(uc|r|vr|sr)$/.exec(templateId.toLowerCase());
+  if (perks) {
+    return [...resource("AccountResource:reagent_alteration_generic", perkCacheRePerk[perks[1]]),
+      ...resource(`AccountResource:reagent_alteration_upgrade_${perks[1]}`, perkCachePerkUp)];
+  }
   if (group !== "cacheroll_materials") return [];
   const tier = Math.min(Math.max(Number(/_t0?(\d+)$/.exec(templateId.toLowerCase())?.[1] ?? 1), 1), 4);
   return [

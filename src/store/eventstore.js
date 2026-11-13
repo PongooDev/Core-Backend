@@ -419,8 +419,12 @@ const cramSessionNow = () => !isEventActive(winter2017) && !storms2018() && !spr
 // ZoneHarvestHW_SR_T01, "Bloodfinder A.C."), counted by trackers of its own (Fortnitemares2018.*). 🟡 The notes give no
 // prices: Road Trip's and Cram Session's, 3,200 Gold for a Mythic hero and 2,800 for a Legendary one, one each; and no end:
 // its items count down to Season 6's end on the replay, as Cram Session's.
+// 6.21 (CL-4526925; Update v6.21's "Dim Mak Igor (Save the World): Throw Smoke Bombs at enemy Husks while you resist damage
+// with Shadow Stance") adds Dim Mak Igor (Hero:HID_Ninja_018_SR_T01, new in 6.21's data): the Fortnite Wiki's Plague
+// Doctor Igor (his later name) "can be purchased from the Event Store for 2,800 Gold", from 1 November 2018. A build sells
+// the ones its data has (eventStoreOffers), so 6.20's store is as it was.
 export const fortnitemares2018EventItems = [{ templateId: "Hero:hid_commando_018_sr_t01", price: 3200, limit: 1 },
-  { templateId: "Hero:hid_outlander_zoneharvesthw_sr_t01", price: 2800, limit: 1 }];
+  { templateId: "Hero:hid_outlander_zoneharvesthw_sr_t01", price: 2800, limit: 1 }, { templateId: "Hero:hid_ninja_018_sr_t01", price: 2800, limit: 1 }];
 export const fortnitemares2018StoreEnd = "2018-12-06T00:00:00.000Z";
 const fortnitemaresItems = (now) => fortnitemares2018EventItems.filter(({ templateId }) => !weeklyFeatured(now).some((item) => item.templateId === templateId));
 const fortnitemaresNow = () => !isEventActive(winter2017) && !storms2018() && !springNow() && !blockbusterNow() && !roadTripNow() && !cramSessionNow()

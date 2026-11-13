@@ -175,7 +175,8 @@ const playlistTeamsFrom610 = {
 const playlistTeams610Build = 4464155;
 // 6.20's (CL-4497486) Fortnitemares (47 to 49, Playlist_Deimos_Solo, _Duo and _Squad: 100 teams of 1, 2 and 4), its
 // tournament playlists (59071 to 59073, Playlist_Deimos_SoloShow, _DuoShow and _SquadShow, the same) and two more Disco
-// Dominations (231, Playlist_Disco_40_Alt: 2 × 40; 232, Playlist_Disco_32_Alt: 2 × 32; both in squads of 4).
+// Dominations (231, Playlist_Disco_40_Alt: 2 × 40; 232, Playlist_Disco_32_Alt: 2 × 32; both in squads of 4). 6.21
+// (CL-4526925) keeps every one of them as it was (events/ltms.js).
 const playlistTeamsFrom620 = {
   47: { maxTeamCount: 100, maxTeamSize: 1, maxSquadSize: 1 },
   48: { maxTeamCount: 100, maxTeamSize: 2, maxSquadSize: 2 },

@@ -169,6 +169,16 @@ const perkUpRarities = [[], [], ["uc"], ["uc", "r", "vr"], ["vr", "sr"]];
 const perkLevels = ["", "", "low", "medium", "high"];
 const missionZone = (tier) => (tier <= 5 ? 1 : tier <= 10 ? 2 : tier <= 15 ? 3 : 4);
 const perkRewardsOn = () => Number(currentBuild()) >= perkRewardsBuild && Boolean(getItem("CardPack:zcp_reagent_alteration_generic_low"));
+// 6.21 (CL-4526925): "All rarities of Perk-UP and RE-Perk materials are now distributed starting in mid-Plankerton and
+// beyond. This applies to mission rewards and Miniboss Mission Alerts." So from a tier 8 mission (Mission_Select_T08,
+// Plankerton's middle) the perk packs are every RE-PERK! level (Low, Medium, High) and every PERK-UP! rarity (Uncommon to
+// Legendary), the same weights split between them; early Plankerton and earlier builds keep 4.2's zone packs.
+export const perkAllRaritiesBuild = 4526925;
+export const perkAllRaritiesTier = 8;
+const allPerkLevels = ["low", "medium", "high"];
+const allPerkUpRarities = ["uc", "r", "vr", "sr"];
+const perkPacksOf = (zone, tier) => (Number(currentBuild()) >= perkAllRaritiesBuild && tier >= perkAllRaritiesTier
+  ? { levels: allPerkLevels, ups: allPerkUpRarities } : { levels: [perkLevels[zone]], ups: perkUpRarities[zone] });
 export function perkRewardPool(tierGroupName, pool) {
   const tier = Number(/^Mission_Select_T(\d\d)$/.exec(tierGroupName ?? "")?.[1]);
   if (!tier || tier < 6 || !perkRewardsOn()) return pool;
@@ -179,15 +189,16 @@ export function perkRewardPool(tierGroupName, pool) {
       : /^cardpack:zcp_(\w+xp_|reagent_c_)/.test(id) ? 0.85 : 1;
     return { ...reward, weight: reward.weight * scale };
   });
-  const ups = perkUpRarities[zone];
-  return [...reweighted, { itemType: `CardPack:zcp_reagent_alteration_generic_${perkLevels[zone]}`, quantity: 1, weight: 2 },
+  const { levels, ups } = perkPacksOf(zone, tier);
+  return [...reweighted, ...levels.map((level) => ({ itemType: `CardPack:zcp_reagent_alteration_generic_${level}`, quantity: 1, weight: 2 / levels.length })),
     ...ups.map((rarity) => ({ itemType: `CardPack:zcp_reagent_alteration_upgrade_${rarity}`, quantity: 1, weight: 1 / ups.length }))];
 }
 // A Mini-Boss alert from Plankerton on (4.2 on): one perk pack besides its rewards, RE-PERK! or the zone's PERK-UP! by its
-// seed.
-function miniBossPerkPack(zone, seed) {
+// seed; from 6.21 any level or rarity from mid-Plankerton (the alert's mission tier, missionTierOf).
+function miniBossPerkPack(zone, seed, tier = 0) {
   if (zone < 2 || !perkRewardsOn()) return [];
-  const choices = [`CardPack:zcp_reagent_alteration_generic_${perkLevels[zone]}`, ...perkUpRarities[zone].map((rarity) => `CardPack:zcp_reagent_alteration_upgrade_${rarity}`)];
+  const { levels, ups } = perkPacksOf(zone, Number(tier));
+  const choices = [...levels.map((level) => `CardPack:zcp_reagent_alteration_generic_${level}`), ...ups.map((rarity) => `CardPack:zcp_reagent_alteration_upgrade_${rarity}`)];
   return [[choices[Math.floor(fraction(digest(`${seed}:perk`)) * choices.length)], 1]];
 }
 
@@ -503,7 +514,7 @@ const alertRewards = {
     // notes give none).
     ...(isEventActive(fortnitemares2018) && getItem(candy) ? [[candy, miniBossTicketsFor(zoneOfRow(row))]] : []),
     // 4.2's perk resources (#272, perkRewardPool).
-    ...miniBossPerkPack(zoneOfRow(row), seed)
+    ...miniBossPerkPack(zoneOfRow(row), seed, missionTierOf(zoneOfRow(row), mission))
   ]),
   // 5.40's Mega Alerts (#317, megaAlertItems).
   MissionAlert_MegaAlert: (row, mission, seed) => megaAlertItems(zoneOfRow(row), mission, seed)

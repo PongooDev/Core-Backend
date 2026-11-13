@@ -9,7 +9,8 @@ import { fortnitemares2018, isEventActive } from "./events.js";
 // ("Brainiac Jonesy"), Legendary, tier I. Nothing in the files grants them (Epic's service did), so a founder (an account
 // whose campaign profile holds a Founder's Pack token, profiles/founders.js) gets both at the quest login while the
 // requesting build runs Fortnitemares, once: the profile notes it (coreFortnitemares2018FounderHeroes, Core's, never sent
-// to a client), so a hero recycled later doesn't come back. 🟡 "The first few weeks" aren't dated: while 6.20 runs the event.
+// to a client), so a hero recycled later doesn't come back. 🟡 "The first few weeks" aren't dated: while 6.20 and 6.21 run
+// the event.
 export const founderHeroes2018 = ["Hero:hid_commando_gunheadshothw_rs01_sr_t01", "Hero:hid_commando_007hw_rs01_sr_t01"];
 
 // The heroes the account is owed now (none once given, for a non-founder or off the event).

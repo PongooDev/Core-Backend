@@ -83,9 +83,9 @@ test("6.10's three changelists are known, all play on CL-4480234's data, Season 
   assert.equal(dataBuild(v602), v602, "6.02 keeps its own data");
   assert.equal(dataBuild(v6020), v602);
   assert.equal(dataBuild(v601), v601);
-  assert.equal(buildOfSeason(6), "4497486", "Season 6's newest data is 6.20's now (tests/build620.test.js)");
+  assert.equal(buildOfSeason(6), "4526925", "Season 6's newest data is 6.21's now (tests/build621.test.js)");
   assert.equal(buildOfSeason(5), v541);
-  assert.equal(seasonName(6), "Season 6 (6.00 – 6.20)");
+  assert.equal(seasonName(6), "Season 6 (6.00 – 6.21)");
 });
 
 test("6.10's data against 6.02's: thirteen cosmetics, weeks 4 to 7 as Epic ran them, the eased Skull Trooper Challenges, the loot's new weights", () => {
@@ -192,12 +192,13 @@ test("6.10's event flags are 6.02's: LobbySeason6, the ticketless storms and Cra
     assert.deepEqual(activeEventFlags(build), activeEventFlags(v602));
     assert.equal(inBuild(build, () => isEventActive(cramSession2018)), true);
   }
-  // Every range that ran to 6.10 runs to 6.20 now (tests/build620.test.js), but BR.CandyCaneGuns', whose item 6.20 drops.
-  assert.deepEqual(season4Flag(lobbySeason6).builds, [4395664, 4497486]);
+  // Every range that ran to 6.10 runs to 6.21 now (tests/build620.test.js, tests/build621.test.js), but BR.CandyCaneGuns',
+  // whose item 6.20 drops.
+  assert.deepEqual(season4Flag(lobbySeason6).builds, [4395664, 4526925]);
   assert.equal(season4Flag("EventFlag.BR.CandyCaneGuns").builds[1], Number(v610));
   for (const flag of ["EventFlag.SupplyDropBDay", "EventFlag.SupplyDropGift", "EventFlag.BR_S5_RiskyReels_Event",
     "EventFlag.Blockbuster2018Phase4", "EventFlag.Fortnitemares", "EventFlag.ActiveMiniBosses", "EventFlag.PassiveStorms"]) {
-    assert.equal(season4Flag(flag).builds[1], 4497486, flag);
+    assert.equal(season4Flag(flag).builds[1], 4526925, flag);
   }
   for (const flag of ["EventFlag.BR_S5_Cube_TurnOn", "EventFlag.LTM_Heist", "EventFlag.RoadTrip2018", "EventFlag.Horde"]) {
     assert.equal(season4Flag(flag).builds[1], Number(v541), flag);
@@ -357,9 +358,10 @@ test("6.10's shop: Season 6's history with its eight cosmetics on their days; 6.
   const history = JSON.parse(fs.readFileSync(new URL("../src/store/itemshop-season6.json", import.meta.url), "utf8")).days;
   assert.equal(history.length, 70);
   const [c610, c602] = [inBuild(v610, athenaCosmetics), inBuild(v602, athenaCosmetics)];
-  // The history holds 6.20's sixteen too (tests/build620.test.js); 6.10 is shown its own.
-  const c620 = inBuild("4497486", athenaCosmetics);
-  assert.ok(history.every((day) => [...day.featured, ...day.daily].every(([id]) => c620[id])), "only 6.20's cosmetics");
+  // The history holds 6.20's sixteen and 6.21's fourteen too (tests/build620.test.js, tests/build621.test.js); 6.10 is
+  // shown its own.
+  const c620 = inBuild("4526925", athenaCosmetics);
+  assert.ok(history.every((day) => [...day.featured, ...day.daily].every(([id]) => c620[id])), "only 6.21's cosmetics");
   const days = (id) => history.filter((day) => [...day.featured, ...day.daily].some(([entry]) => entry === id)).map(({ date }) => date.slice(5));
   assert.deepEqual(days("AthenaPickaxe:pickaxe_id_110_vampire"), ["10-19", "10-20", "11-28"]);
   for (const id of ["AthenaCharacter:cid_248_athena_commando_m_blackwidow", "AthenaCharacter:cid_249_athena_commando_f_blackwidow",

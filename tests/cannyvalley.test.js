@@ -13,8 +13,9 @@ import { send, startBackend, userLogin } from "./helpers.js";
 // Core served Epic's 2017 Canny Valley to every build: forest, grassland and towns, the storm shield the only desert tile.
 const now = new Date("2026-11-13T12:00:00Z");
 const day = 86400000;
-// 5.10 (CL-4240749), 6.02.0 (CL-4442095, the reporter's, on 6.02's data), 6.02 (CL-4461277), 6.10 (CL-4480234), 6.20 (CL-4497486).
-const actOneBuilds = ["4240749", "4442095", "4461277", "4480234", "4497486"];
+// 5.10 (CL-4240749), 6.02.0 (CL-4442095, the reporter's, on 6.02's data), 6.02 (CL-4461277), 6.10 (CL-4480234), 6.20 (CL-4497486),
+// 6.21 (CL-4526925).
+const actOneBuilds = ["4240749", "4442095", "4461277", "4480234", "4497486", "4526925"];
 const olderBuilds = ["3532353", "3700114", "3807424", "4166199", "4214610"];
 const route99 = /\/ZT_Route99\/BP_ZT_Route99_[12]\./;
 const bunkers = /\/(ZT_Arid\/BP_ZT_Desert_Bunker|ZT_Route99\/BP_ZT_Route99_Bunker_[12])\./;
