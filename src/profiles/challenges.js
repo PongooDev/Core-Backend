@@ -283,6 +283,19 @@ export function weekPlan(now = new Date(), settingsValue = settingsProvider()) {
 const givesQuest = (tracker, { grantWithBundle, requiresBattlePass, quest }) => grantWithBundle && Boolean(getAthenaQuest(quest))
   && (!requiresBattlePass || tracker.profile.stats.attributes.book_purchased === true);
 
+// One quest item per quest definition (CoreV2 #433). The game keeps a player's quests by their definition: the quest
+// manager's GetQuestWithDefinition returns the one quest of a definition, and the progress the gameserver shows the client
+// (AFortPlayerController::UpdatedObjectiveStats, 6.20's setter 0x129BDD0) is keyed by the quest's definition and the
+// objective's BackendName. The client's InitQuests (6.20 0x12FB140, run by OnRep_UpdatedObjectiveStats 0x15BB820) gives
+// that count to every quest item of the definition (0x12FA8D0 reads it through 0x1254230) and announces each item whose
+// count moved, one popup after the other. Several bundles in the paks name the same quest, the later weeks' placeholders
+// of builds made before those weeks were written (6.20's Week 7 and Week 8 both Quest_BR_Eliminate_Weapon_Shotgun, 6.21's
+// Weeks 6 to 8, 4.0's Week 5, 7 and 9 Quest_BR_Use_Jetpack). Given an item each, a player holding both weeks saw "Eliminate
+// opponents with a Shotgun" go 1 to 2, leave the screen, and go 1 to 2 again: the other week's item. So a bundle naming a
+// quest the player already holds lists that item (grantedquestinstanceids) instead of a second one; the quest keeps the
+// bundle it came with (challenge_bundle_id), and every bundle listing it counts it once it is done (countBundleQuest).
+const heldQuest = (profile, questId) => heldOf(profile, "quest").find(([, item]) => idOf(item.templateId) === String(questId).toLowerCase());
+
 function grantBundle(session, scheduleItemId, bundleId, athena) {
   const tracker = session.profile("athena");
   const bundle = athenaChallengeBundles()[bundleId];
@@ -292,6 +305,11 @@ function grantBundle(session, scheduleItemId, bundleId, athena) {
   for (const entry of bundle.quests) {
     const { quest } = entry;
     if (!givesQuest(tracker, entry)) continue;
+    const held = heldQuest(tracker.profile, quest);
+    if (held) {
+      if (!questIds.includes(held[0])) questIds.push(held[0]);
+      continue;
+    }
     const questItemId = athena.grantAthenaQuest(tracker, quest);
     if (!questItemId) continue;
     tracker.setItemAttribute(questItemId, "challenge_bundle_id", bundleItemId);
@@ -326,6 +344,12 @@ function topUpBundle(session, bundleItemId, bundleId, athena) {
   for (const entry of bundle.quests) {
     const { quest } = entry;
     if (heldQuests.has(quest) || !givesQuest(tracker, entry)) continue;
+    const held = heldQuest(tracker.profile, quest);
+    if (held) {
+      heldQuests.add(quest);
+      if (!questIds.includes(held[0]) && !added.includes(held[0])) added.push(held[0]);
+      continue;
+    }
     const questItemId = athena.grantAthenaQuest(tracker, quest);
     if (!questItemId) continue;
     tracker.setItemAttribute(questItemId, "challenge_bundle_id", bundleItemId);
@@ -339,12 +363,47 @@ function topUpBundle(session, bundleItemId, bundleId, athena) {
   log("Battle Royale", `${session.accountId} got ${added.length} more of ${bundleId}'s challenges`);
 }
 
+// A profile given a quest twice before (CoreV2 #433: a later week's bundle naming a quest an earlier week's gave) keeps
+// one item of it: the one furthest on (Claimed, then Completed, then the most progress, then the oldest), which the
+// bundles that listed the others list instead. The gameserver advanced every item of a quest together (UpdateQuests,
+// athena.js advanceAthenaObjectives), so the one kept has the progress the others had.
+const stateRank = { Claimed: 3, Completed: 2, Active: 1 };
+const progressOf = (item) => Object.entries(item.attributes ?? {})
+  .reduce((sum, [name, value]) => sum + (name.startsWith("completion_") && Number.isFinite(value) ? value : 0), 0);
+function furtherOn([, a], [, b]) {
+  return (stateRank[a.attributes?.quest_state] ?? 0) - (stateRank[b.attributes?.quest_state] ?? 0) || progressOf(a) - progressOf(b)
+    || String(b.attributes?.creation_time ?? "").localeCompare(String(a.attributes?.creation_time ?? ""));
+}
+
+export function mergeDuplicateQuests(session) {
+  const tracker = session.profile("athena");
+  const { profile } = tracker;
+  const byQuest = new Map();
+  for (const held of heldOf(profile, "quest")) {
+    const questId = idOf(held[1].templateId);
+    byQuest.set(questId, [...(byQuest.get(questId) ?? []), held]);
+  }
+  for (const [questId, held] of byQuest) {
+    if (held.length < 2) continue;
+    const [keep] = [...held].sort((a, b) => furtherOn(b, a))[0];
+    const merged = new Set(held.map(([itemId]) => itemId).filter((itemId) => itemId !== keep));
+    for (const [bundleItemId, bundleItem] of heldOf(profile, "challengebundle")) {
+      const questIds = bundleItem.attributes.grantedquestinstanceids ?? [];
+      if (!questIds.some((itemId) => merged.has(itemId))) continue;
+      tracker.setItemAttribute(bundleItemId, "grantedquestinstanceids", [...new Set(questIds.map((itemId) => (merged.has(itemId) ? keep : itemId)))]);
+    }
+    for (const itemId of merged) tracker.removeItem(itemId);
+    log("Battle Royale", `${session.accountId} held ${questId} ${held.length} times: one item of it is kept, ${keep}`);
+  }
+}
+
 // Gives the schedules' bundles that have unlocked (the weekly schedule's by the admin's settings, weekPlan; an event's that
 // unlock by days by its own, eventPlan), and keeps
-// their unlock_epoch on the calendar's seasonBegin.
+// their unlock_epoch on the calendar's seasonBegin. Quests held twice are merged first (mergeDuplicateQuests).
 export function settleChallengeSchedules(session, athena, now = new Date()) {
   const schedules = athenaChallengeSchedules();
   const tracker = session.profile("athena");
+  mergeDuplicateQuests(session);
   const plan = weekPlan(now);
   const weekOpen = new Map(plan.weeks.flatMap((week) => week.bundles.map((bundle) => [bundle, week.unlocked])));
   const eventOpen = (scheduleId, bundle) => eventPlan(scheduleId, now).parts.find((part) => part.bundle === bundle)?.unlocked === true;
@@ -551,9 +610,18 @@ export function settleCompletedSchedules(session) {
 // token (Token:AthenaBattlePass_WeeklyChallenge_Token) for each challenge, 5,000 season XP at four, and at all seven the
 // weekly bundle token (Token:AthenaBattlePass_WeeklyBundle_Token) the Road Trip challenges count
 // (Quest_BR_S5_Cumulative_CollectTokens_01 to _07, one to seven weeks done).
+// A quest two bundles list (CoreV2 #433, mergeDuplicateQuests) counts in each.
 export function countBundleQuest(session, questItemId, giveReward) {
   const tracker = session.profile("athena");
   const bundleItemId = tracker.profile.items[questItemId]?.attributes.challenge_bundle_id;
+  const listing = heldOf(tracker.profile, "challengebundle")
+    .filter(([itemId, item]) => itemId !== bundleItemId && (item.attributes.grantedquestinstanceids ?? []).includes(questItemId))
+    .map(([itemId]) => itemId);
+  return [bundleItemId, ...listing].filter(Boolean).flatMap((itemId) => countBundle(session, itemId, giveReward));
+}
+
+function countBundle(session, bundleItemId, giveReward) {
+  const tracker = session.profile("athena");
   const bundleItem = bundleItemId && tracker.profile.items[bundleItemId];
   if (!bundleItem) return [];
   const bundle = athenaChallengeBundles()[idOf(bundleItem.templateId)];

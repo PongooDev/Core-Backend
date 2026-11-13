@@ -20,7 +20,7 @@ import { getItem } from "../src/gamedata/items.js";
 import { buildGameData, dataBuild } from "../src/gamedata/read.js";
 import { parseBucket, playlistTeamsOf } from "../src/matchmaking/service.js";
 import { advanceAthenaObjectives, athenaQuestLogin, grantCosmetic, recordMatchProgress, seasonRewardFunctions, setUpAthena } from "../src/profiles/athena.js";
-import { isStylesCategory, originalOwnerStyles, settleChallengeSchedules, styleSchedules, weekPlan } from "../src/profiles/challenges.js";
+import { configureChallenges, isStylesCategory, originalOwnerStyles, settleChallengeSchedules, styleSchedules, weekPlan } from "../src/profiles/challenges.js";
 import { buildOfSeason, buyBattlePass } from "../src/profiles/seasons.js";
 import { openSession } from "../src/profiles/session.js";
 import { createProfileStore } from "../src/profiles/store.js";
@@ -199,7 +199,72 @@ test("the Fortnitemares Challenges: the Cube Monsters a player destroys are the 
   }));
 });
 
-test("6.20's event flags: Fortnitemares (its quest map's Part 1, the Mini-Bosses, the challenges, the Halloween lobby and bus, the Leaky Lake's POI0) beside 6.10's; Cram Session over", () => {
+// CoreV2 #433: Weeks 7 and 8 both name Quest_BR_Eliminate_Weapon_Shotgun, and a player holding both items saw each
+// elimination's progress twice (the client announces every item of the quest's definition).
+test("6.20's Weeks 7 and 8 share their Shotgun challenge: one quest item, both weeks list it and count it once it is done", () => {
+  const bundles = inBuild(v620, athenaChallengeBundles);
+  for (const week of ["questbundle_s6_week_007", "questbundle_s6_week_008"]) {
+    assert.ok(bundles[week].quests.some(({ quest }) => quest === "quest_br_eliminate_weapon_shotgun"), week);
+  }
+  configureChallenges({ challengesAllUnlocked: true });
+  try {
+    withSession(v620, "shotgun620", (session) => {
+      setUpAthena(session);
+      buyBattlePass(session, seasonRewardFunctions());
+      athenaQuestLogin(session);
+      const items = () => session.profile("athena").profile.items;
+      const shotguns = () => Object.entries(items()).filter(([, item]) => item.templateId === "Quest:quest_br_eliminate_weapon_shotgun");
+      const week = (id) => Object.values(items()).find(({ templateId }) => templateId === `ChallengeBundle:${id}`);
+      assert.equal(shotguns().length, 1);
+      const [[shotgun]] = shotguns();
+      assert.ok(week("questbundle_s6_week_007").attributes.grantedquestinstanceids.includes(shotgun));
+      assert.ok(week("questbundle_s6_week_008").attributes.grantedquestinstanceids.includes(shotgun));
+      const before = ["questbundle_s6_week_007", "questbundle_s6_week_008"].map((id) => week(id).attributes.num_quests_completed);
+      advanceAthenaObjectives(session, [{ statName: "battlepass_killingblow_athena_player_shotgun", count: 3 }]);
+      assert.equal(items()[shotgun].attributes.quest_state, "Claimed");
+      assert.deepEqual(["questbundle_s6_week_007", "questbundle_s6_week_008"].map((id) => week(id).attributes.num_quests_completed), before.map((count) => count + 1));
+      // The next quest login gives it again to neither.
+      athenaQuestLogin(session);
+      assert.equal(shotguns().length, 1);
+    });
+  } finally {
+    configureChallenges(undefined);
+  }
+});
+
+test("a profile given 6.20's Shotgun challenge twice keeps the item furthest on at its quest login, which both weeks list", () => {
+  configureChallenges({ challengesAllUnlocked: true });
+  try {
+    withSession(v620, "shotgun620twice", (session) => {
+      setUpAthena(session);
+      buyBattlePass(session, seasonRewardFunctions());
+      athenaQuestLogin(session);
+      const tracker = session.profile("athena");
+      const items = () => tracker.profile.items;
+      const week = (id) => Object.entries(items()).find(([, { templateId }]) => templateId === `ChallengeBundle:${id}`);
+      // As the backend gave it before: Week 8 with an item of its own.
+      const [[first]] = Object.entries(items()).filter(([, item]) => item.templateId === "Quest:quest_br_eliminate_weapon_shotgun");
+      tracker.setItemAttribute(first, "completion_battlepass_killingblow_athena_player_shotgun", 1);
+      const second = crypto.randomUUID();
+      tracker.addItem(second, { templateId: "Quest:quest_br_eliminate_weapon_shotgun", quantity: 1, attributes: { ...items()[first].attributes,
+        completion_battlepass_killingblow_athena_player_shotgun: 2, creation_time: new Date(Date.now() + 1000).toISOString() } });
+      const [week8, week8Item] = week("questbundle_s6_week_008");
+      tracker.setItemAttribute(week8, "grantedquestinstanceids", week8Item.attributes.grantedquestinstanceids.map((id) => (id === first ? second : id)));
+      athenaQuestLogin(session);
+      const left = Object.entries(items()).filter(([, item]) => item.templateId === "Quest:quest_br_eliminate_weapon_shotgun");
+      assert.deepEqual(left.map(([id]) => id), [second], "the one with more progress");
+      assert.equal(left[0][1].attributes.completion_battlepass_killingblow_athena_player_shotgun, 2);
+      for (const id of ["questbundle_s6_week_007", "questbundle_s6_week_008"]) {
+        const ids = week(id)[1].attributes.grantedquestinstanceids;
+        assert.ok(ids.includes(second) && !ids.includes(first), id);
+      }
+    });
+  } finally {
+    configureChallenges(undefined);
+  }
+});
+
+test("6.20's event flags:Fortnitemares (its quest map's Part 1, the Mini-Bosses, the challenges, the Halloween lobby and bus, the Leaky Lake's POI0) beside 6.10's; Cram Session over", () => {
   // POI0: 6.20's BP_IslandServerOnly's EventBinding1, read with 6.21's bring-up (tests/build621.test.js).
   assert.deepEqual(activeEventFlags(v620), ["EventFlag.Fortnitemares", "EventFlag.FortnitemaresPhase1", "EventFlag.ActiveMiniBosses", ltmFortnitemares,
     lobbySeason6Halloween, halloweenBattleBus, "POI0", "EventFlag.PassiveStorms", lobbySeason6]);
