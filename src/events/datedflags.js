@@ -1,10 +1,10 @@
 import { anniversary2018BR, cubeDestination, cubeLake, cubeLightning, cubeMoveTo, cubeMoveToLake, cubeRune, cubeStartMove, cubeTurnOn,
-  eventsActiveUntil, islandMoveTo, islandRune, ltmHeist, riftCorrupt, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
+  eventsActiveUntil, islandCrack, islandDrain, islandMoveTo, islandPoi, islandRune, ltmHeist, riftCorrupt, tomatoRiftEvent, tomatoRiftTell } from "./events.js";
 
 // Season 5's small dated event-flag events, step by step, and the admin's own times for them (Core-Backend #311): 5.21's
 // Tomato Town rift (events/tomatorift.js), 5.30's Cube (events/cube.js; 5.40's and 5.41's too) and 5.40's High Stakes
-// (events/highstakes.js; 5.41's paks keep it); and Season 6's floating island (6.00 to 6.20, events/island.js), on
-// Season 6's replay (an event's `season`, 5 without one). Each step is one or more calendar events served
+// (events/highstakes.js; 5.41's paks keep it); and Season 6's floating island (6.00 to 6.20, events/island.js) and 6.21's
+// Butterfly (events/butterfly.js), on Season 6's replay (an event's `season`, 5 without one). Each step is one or more calendar events served
 // from its start to its end (null: on to the replay's end, or, on the admin's own times, for good). The events config's
 // datedFlags.<event> picks the times:
 // - "dates": Epic's dates on its season's replay (store/itemshop.js seasonMoment), lap by lap (the default);
@@ -13,6 +13,8 @@ import { anniversary2018BR, cubeDestination, cubeLake, cubeLightning, cubeMoveTo
 // - "off": none of its steps (the flags still switch by hand, events/season4flags.js);
 // - "build" (the Birthday Challenges only, its default): as the build serves the flag by itself (events/events.js: 5.10
 //   always, counting down to 7 August on the replay, events/birthday2018.js; 5.21 never).
+// The Butterfly is off by default, as the rocket's launch waits for its time (events/rocketlaunch.js): 6.21 then serves
+// POI0 by itself and the rest by the switches.
 // The Battle Royale event challenges (Core-Backend #316) are two of them: 5.10's Birthday Challenges and 5.40's High
 // Stakes Challenges (an event's `challenges`, its ChallengeBundleSchedule), given at the quest login while their flag is
 // served (profiles/athena.js settleEventSchedules) and counting down to its activeUntil; the admin panel shows them apart.
@@ -77,6 +79,16 @@ const islandSteps = [
 // rune 0 again, so its "home" step is that flag there (a step's flags from a build on: datedEventOn).
 const islandRune8Build = 4464155;
 
+// 6.21's Butterfly (events/butterfly.js has how 6.21 plays it): Epic's 4 November 2018 at 18:00 UTC (Update v6.21's
+// "Fortnitemares in Battle Royale ends on Sunday, November 4 at 1 PM Eastern Time"). Before it the Leaky Lake is in its
+// Cube Monsters' days (POI0, from the replay's first day, as 6.21 serves it by itself), the Cube cracks and then drains:
+// 🟡 the drain's 24 hours are read from CUBE_Simple (BigDrip takes 1/24 of the drain off a drip, and BP_IslandScripting
+// times a drip to each whole hour before the drain's end, the Butterfly's LastDrip the 24th); the crack 🟡 from Update v6.20's
+// day (24 October, 08:00 UTC: Fortnitemares' first, when the island burst and left the Cube in the lake) to the drain.
+const butterflyAt = Date.parse("2018-11-04T18:00:00.000Z");
+const butterflyDrainAt = butterflyAt - 24 * 3600000;
+const butterflyCrackAt = Date.parse("2018-10-24T08:00:00.000Z");
+
 export const datedEvents = [
   { id: "cube", name: "the Cube (5.30 – 5.41)", flag: cubeTurnOn, anchor: "crack", parts: 4, locations: cubeLocations, legs: cubeLegs, stops: cubeStops,
     spawn: "spawn", sink: "lake", sinkLeg: "moveToLake", steps: [
@@ -96,6 +108,16 @@ export const datedEvents = [
   // stops (datedMoveSchedule).
   { id: "island", name: "the floating island (6.00 – 6.20)", season: 6, flag: islandRune(0), anchor: "lake", parts: 4, locations: islandLocations,
     legs: islandLegs, stops: islandStops, steps: islandSteps, laterFlags: [{ step: "home", firstBuild: islandRune8Build, flags: [islandRune(8)] }] },
+  // 6.21's Butterfly (events/butterfly.js): opt-in, as the rocket's launch is. Its steps run to the Butterfly, after which
+  // the Leaky Lake is POI1's; "Start now" (or any time on the Butterfly's step) plays it then, the crack and drain before it at
+  // Epic's spacing.
+  { id: "butterfly", name: "the Butterfly (6.21)", season: 6, flag: islandPoi(1), anchor: "butterfly", parts: 4,
+    modes: ["off", "dates", "custom"], defaultMode: "off", steps: [
+      step("deimos", "Fortnitemares' Leaky Lake: the Cube Monsters' days", [islandPoi(0)], season6FirstDay, butterflyAt),
+      step("crack", "The Cube cracks (its last crack 8 seconds before the drain)", [islandCrack], butterflyCrackAt, butterflyDrainAt),
+      step("drain", "The Cube drains into the lake, a drip each hour", [islandDrain], butterflyDrainAt, butterflyAt),
+      step("butterfly", "The Butterfly: the Cube bursts and every player goes to the In-Between and back", [islandPoi(1)], butterflyAt, null)
+    ] },
   // On the replay the rift is formed from the lap's start (5.21 shipped with it formed) until the head comes out.
   // High Stakes (5.40, events/highstakes.js; 5.41's paks keep it): from Update v5.40's morning to Update v5.41's.
   { id: "highStakes", name: "High Stakes (5.40 – 5.41)", flag: ltmHeist, anchor: "challenges", parts: 1, challenges: "Schedule_LTM_Heist", steps: [

@@ -19,6 +19,7 @@ import { birthdayActiveUntil, birthdayChallengeStates } from "../../events/birth
 import { cubeStates } from "../../events/cube.js";
 import { highStakesStates } from "../../events/highstakes.js";
 import { islandStates } from "../../events/island.js";
+import { butterflyStates } from "../../events/butterfly.js";
 
 // 1.8's event calendar (ScheduledEvents' FCalendarDownload): {currentTime, channels: {<channel>: FEventsTimeline
 // {cacheExpire, states: [FEventChannelState {validFrom, activeEvents: [{eventName, activeUntil}], state}]}}}. The
@@ -60,7 +61,8 @@ import { islandStates } from "../../events/island.js";
 // Town rift (Athena_GameplayActors' BR_S5_Oddity_Tomato_Tell and _Event, events/tomatorift.js) on Season 5's replay, and
 // 5.30's Cube (its crack, lightning, rolls, runes and the lake: events/cube.js; 5.40's and 5.41's too), and 5.40's High
 // Stakes (EventFlag.LTM_Heist, events/highstakes.js; 5.41's too), and 6.00's floating island (EventFlag.BR_S6_Island_*,
-// events/island.js) on Season 6's replay.
+// events/island.js) on Season 6's replay, and 6.21's Butterfly (POI0, the Cube's crack and drain, POI1: events/butterfly.js)
+// when the admin panel schedules it.
 export const calendarCacheMinutes = 60;
 const seasonalEventManagerBuild = 3790078;
 
@@ -96,10 +98,10 @@ export function calendarRoutes({ tokens, settings }) {
     const cacheMinutes = Math.max(5, Math.min(120, Number(currentEventsConfig()?.calendarCacheMinutes ?? calendarCacheMinutes)));
     const ltmChange = nextLtmChange(currentBuild(), settings?.get?.(), now);
     // The rocket launch's parts, the rifts' (events/oddities.js), 5.21's Tomato Town rift (events/tomatorift.js), 5.30's
-    // Cube (events/cube.js), 5.40's High Stakes (events/highstakes.js), 6.00's floating island (events/island.js) and the
-    // Birthday Challenges on the admin's times (events/birthday2018.js) as one schedule.
+    // Cube (events/cube.js), 5.40's High Stakes (events/highstakes.js), 6.00's floating island (events/island.js), 6.21's
+    // Butterfly (events/butterfly.js) and the Birthday Challenges on the admin's times (events/birthday2018.js) as one schedule.
     const rocket = mergeTimedStates(rocketLaunchStates(now), odditiesStates(now), tomatoRiftStates(now), cubeStates(now), highStakesStates(now),
-      islandStates(now), birthdayChallengeStates(now));
+      islandStates(now), butterflyStates(now), birthdayChallengeStates(now));
     const rocketChange = rocket[1]?.validFrom ?? null;
     const cacheExpire = new Date(Math.min(now.getTime() + cacheMinutes * 60000, weeklyEnd?.getTime() ?? Infinity, rocketChange ?? Infinity,
       seasonEnds?.getTime() ?? Infinity, ltmChange?.getTime() ?? Infinity, challengeChange?.getTime() ?? Infinity, ...Object.values(stwEnds).map((end) => end.getTime()))).toISOString();

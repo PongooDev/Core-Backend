@@ -197,12 +197,14 @@ export const season4FlagGroups = [
     flag("BR_S6_Island_Rune8", [b6100, b620], "6.10: the island back over Loot Lake, the house on it glowing (from 21 October)")
   ] },
   // 6.20's and 6.21's island scripting (events/events.js islandPoi): BP_IslandServerOnly's EventBinding1, POI0 and POI1 (no
-  // "EventFlag." prefix), and EventBinding2, BR_S6_Island_Crack. POI0 is served by 6.20 and 6.21 themselves (6.21's Cube
-  // Monsters' spawners need it), POI1 and the crack only by their switches.
+  // "EventFlag." prefix), and EventBinding2, BR_S6_Island_Crack; 6.21's EventBinding3, BR_S6_Island_Drain. POI0 is served by
+  // 6.20 and 6.21 themselves (6.21's Cube Monsters' spawners need it), POI1, the crack and the drain only by their switches,
+  // or on 6.21 by the Butterfly's schedule (events/butterfly.js), which then serves POI0 too.
   { id: "cubeEnd", name: "Battle Royale map: the Cube's end (6.20 – 6.21)", flags: [
     { flag: "POI0", builds: [b620, b621], description: "Fortnitemares' Leaky Lake: the Cube Monsters' days (the house glowing at the Cube; 6.21's Cube Monster spawners run only while it is served)" },
     { flag: "POI1", builds: [b620, b621], description: "After the Cube: 6.21 plays the Butterfly in a match that began on POI0 when this turns on (switch POI0 off with it; Epic's 4 November 2018, 18:00 UTC)" },
-    flag("BR_S6_Island_Crack", [b620, b621], "The Cube cracks (its CrackProgress is the event's progress; 6.21's leadup plays in its last 25 minutes)")
+    flag("BR_S6_Island_Crack", [b620, b621], "The Cube cracks (its CrackProgress is the event's progress; 6.21's leadup plays in its last 25 minutes)"),
+    flag("BR_S6_Island_Drain", [b621, b621], "6.21: the Cube drains into the lake, a drip at each whole hour before the event's end (the Butterfly's LastDrip the 24th)")
   ] },
   // 5.40's High Stakes (Athena/Items/ChallengeBundleSchedules/LTM/Schedule_LTM_Heist, events/highstakes.js): served by its
   // dates on Season 5's replay, or always or never by its switch. 5.41's paks keep it.

@@ -408,19 +408,21 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // IsEventFlagActive (0x11B8FB0, what UFortSeasonalEventManager::execIsEventFlagActive calls) and, the flag off, clears
 // bCalendarAllowsSpawning and shuts the spawners down (0x107C050: every ActiveRiftSpawnerData's encounter ended, the
 // AssociatedSupplyDropIDs' SupplyDrop_Deimos stopped). So without POI0 a 6.21 Fortnitemares match has no Cube Monsters.
-// 6.21's BP_IslandScripting keeps 6.20's two bindings, adds EventBinding3 (the Cube draining; 🟡 its name is in 6.21's
-// server-only BP_IslandServerOnly, Core-ServerAssets' CL-4526925 pak, not on this PC) and plays the Butterfly: POI1 turning
-// active in a match that began on POI0 runs BP_Butterfly's ButterflySequence (the Cube's flash, the In-Between, the
-// Mutator_ButterflyEvent that Athena_GameMode now registers in every match as a core gameplay modifier, the DeimosShutoff
-// mission event), and in POI0's last 30 minutes the storm heads for the Butterfly's place (Mutator.Butterfly.StormLocation).
+// 6.21's BP_IslandScripting keeps 6.20's two bindings, adds EventBinding3 (the Cube draining: EventFlag.BR_S6_Island_Drain,
+// read from 6.21's server-only BP_IslandServerOnly in Core-ServerAssets' CL-4526925 pak with CUE4Parse) and plays the
+// Butterfly: POI1 turning active in a match that began on POI0 runs BP_Butterfly's ButterflySequence (the Cube's flash, the
+// In-Between, the Mutator_ButterflyEvent that Athena_GameMode now registers in every match as a core gameplay modifier, the
+// DeimosShutoff mission event), and in POI0's last 30 minutes the storm heads for the Butterfly's place
+// (Mutator.Butterfly.StormLocation). The admin panel can play it on its time, as Epic did (events/butterfly.js).
 // 6.21 serves by itself 6.20's (Fortnitemares and FortnitemaresPhase1, ActiveMiniBosses with Candy, LTM_Fortnitemares,
 // LobbySeason6Halloween, HalloweenBattleBus, POI0, PassiveStorms, LobbySeason6), Fortnitemares_Part4 and LTM_LilKevin; POI1,
 // the crack and FortnitemaresPhase2 by their switches. FortnitemaresPhase2 stays a switch: 6.21's data holds Part 2's heroes
 // (HID_Ninja_019, HID_Outlander_018) and the Candy Corn LMG (SID_Assault_LMG_Halloween), but no Part 2 quest (its
 // quests.json is 6.20's but for three rewards), and Update v6.22 (6 November) is the one that says "Jump in and explore
-// Fortnitemares Part 2". 🟡 Epic's POI0 ended and POI1 began at the Butterfly, 4 November 18:00 UTC; Core serves POI0 for as
-// long as 6.21 runs, as its Fortnitemares modes are on by default, and the admin's switches play the Butterfly (POI0 off and
-// POI1 on, in a running match).
+// Fortnitemares Part 2". Epic's POI0 ended and POI1 began at the Butterfly, 4 November 18:00 UTC. By default Core serves POI0
+// for as long as 6.21 runs, as its Fortnitemares modes are on by default, and the admin's switches play the Butterfly (POI0
+// off and POI1 on, in a running match); the admin panel's Butterfly schedule (events/butterfly.js, off by default) plays it
+// on Epic's dates or the admin's time instead, with the Cube's crack and drain before it.
 export const blockbuster2018 = "Blockbuster2018";
 export const blockbuster2018Phase1 = "EventFlag.Blockbuster2018Phase1";
 export const blockbuster2018Phase2 = "EventFlag.Blockbuster2018Phase2";
@@ -440,6 +442,8 @@ export const fortnitemaresPhase2 = "EventFlag.FortnitemaresPhase2";
 // after the Butterfly) and the Cube's cracks; 6.21's Lil' Kev challenges and Fortnitemares' Part 4 flag.
 export const islandPoi = (state) => `POI${state}`;
 export const islandCrack = "EventFlag.BR_S6_Island_Crack";
+// 6.21's third binding (BP_IslandServerOnly's EventBinding3): the Cube draining, a drip each hour (events/butterfly.js).
+export const islandDrain = "EventFlag.BR_S6_Island_Drain";
 export const ltmLilKevin = "EventFlag.LTM_LilKevin";
 export const fortnitemaresPart4 = "EventFlag.Fortnitemares_Part4";
 // 6.00's Save the World mini-event (events/cramsession2018.js).
@@ -557,6 +561,9 @@ const forcedMiniBosses = (changelist) => Number(changelist) >= miniBossFlagBuild
 
 // The Birthday Challenges' modes that schedule its flag apart from the build (events/datedflags.js; "build" is the default).
 const birthdayDatedModes = ["dates", "custom", "off"];
+// 6.21's Butterfly on a schedule (events/butterfly.js; "off", its default, leaves POI0 the build's own): POI0 is then
+// one of its steps, served until the Butterfly, not the build's own for good.
+const butterflyScheduledModes = ["dates", "custom"];
 
 let eventsConfigProvider = null;
 
@@ -605,7 +612,9 @@ export function activeEventFlags(changelist = currentBuild()) {
   // The Birthday Challenges' flag on Epic's dates, the admin's own times or off (the admin panel's Event challenges,
   // Core-Backend #316: events/datedflags.js, events/birthday2018.js birthdayChallengeStates) isn't the build's own then.
   const birthdayDated = birthdayDatedModes.includes(config?.datedFlags?.birthday?.mode);
-  const own = events.filter((event) => runsOn(event, number) && !(birthdayDated && event.flag === anniversary2018BR)).map((event) => event.flag);
+  const butterflyScheduled = number === build621 && butterflyScheduledModes.includes(config?.datedFlags?.butterfly?.mode);
+  const own = events.filter((event) => runsOn(event, number) && !(birthdayDated && event.flag === anniversary2018BR)
+    && !(butterflyScheduled && event.flag === islandPoi(0))).map((event) => event.flag);
   return [...new Set([...own, ...on])].filter((flag) => !off.includes(flag));
 }
 
