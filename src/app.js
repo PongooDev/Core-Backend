@@ -10,7 +10,8 @@ import { requestBuild } from "./builds/context.js";
 import { configureEvents, seasonalEvents } from "./events/events.js";
 import { configureLtms } from "./events/ltms.js";
 import { configureChallenges } from "./profiles/challenges.js";
-import { affiliateRoutes, configureCreators } from "./store/creators.js";
+import { affiliateRoutes, configureCreators, isEnabledCreator } from "./store/creators.js";
+import { createCreatorPayoutStore } from "./store/creatorpayouts.js";
 import { configureBattlePass } from "./battlepass/season1.js";
 import { createFriendStore } from "./friends/store.js";
 import { createFriendCodeStore } from "./friendcodes/store.js";
@@ -87,7 +88,7 @@ export function createContext(config) {
   if (config.allowRegistration !== undefined) settings.update({ allowRegistration: config.allowRegistration });
   if (config.allowAutoRegistration !== undefined) settings.update({ allowAutoRegistration: config.allowAutoRegistration });
   if (config.seasonalEvents !== undefined) settings.update({ seasonalEvents: config.seasonalEvents });
-  for (const key of ["battleRoyaleVbucks", "battleRoyaleRewards", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits", "cheats", "cheatAccounts", "creatorNames", "hideEmptyEventsTab",
+  for (const key of ["battleRoyaleVbucks", "battleRoyaleRewards", "vbucksPerKill", "vbucksPerWin", "structureLimit", "structureLimits", "cheats", "cheatAccounts", "creatorNames", "creators", "creatorPayoutPercent", "creatorTwitchPrimePacks", "hideEmptyEventsTab",
     "matchmakingGatherSeconds", "warmupSeconds", "lateJoin", "bots", "regionFallback", "vbuckPacks", "purchaseMode", "twitchPrimePack", "matchStartCountdown", "matchStartBufferSeconds", "serverRegions", "allowedBuilds", "defaultFoundersAccess", "remoteAdmin", "events", "battlepass", "matchmakingModes", "ltmOriginalDates", "ltmCloseEncounters", "serverLimits", "regionHostingIps", "regionPingServers", "customMatchServers", "customMatchFallback"]) {
     if (config[key] !== undefined) settings.update({ [key]: config[key] });
   }
@@ -111,6 +112,9 @@ export function createContext(config) {
     wonSeasons: (accountId) => stats.wonSeasons(accountId),
     // The admin panel's Twitch Prime pack for Season 3 players (Core-Backend #229, profiles/athena.js).
     twitchPrimePack: () => settings.get().twitchPrimePack === true,
+    // Support-A-Creator's Twitch Prime packs (Core-Backend #349, profiles/athena.js): whether the account is given them, an
+    // enabled creator while the panel's switch is on.
+    creatorTwitchPrimePacks: (accountId) => settings.get().creatorTwitchPrimePacks !== false && isEnabledCreator(accountId, settings.get()),
     // The account's recorded wins in solo, duo and squad, for a season's past_seasons record (profiles/seasons.js).
     winCount: (accountId) => Object.entries(stats.playlists(accountId))
       .filter(([playlistId]) => isMainPlaylist(playlistId)).reduce((sum, [, playlist]) => sum + (playlist.placetop1 ?? 0), 0),
@@ -130,6 +134,8 @@ export function createContext(config) {
     friends,
     friendCodes: createFriendCodeStore(config.dataDir),
     purchaseCodes: createPurchaseCodeStore(config.dataDir),
+    // Support-A-Creator's payouts (Core-Backend #349).
+    creatorPayouts: createCreatorPayoutStore(config.dataDir),
     // The admin panel's tournament events and their points (Core-Backend #263).
     tournaments,
     stats,

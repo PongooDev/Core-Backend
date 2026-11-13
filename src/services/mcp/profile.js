@@ -159,7 +159,9 @@ function runCommand(commands, context, {
     }
     session.commit();
     for (const other of others.values()) other.commit();
-    if (notify) for (const changed of [session, ...others.values()]) notifyProfiles(context, changed);
+    // The other accounts a command changed hear of it on their STOMP topic either way (a Support-A-Creator payout from a
+    // client's purchase, store/creatorpayouts.js); the requesting account's own client is answered.
+    for (const changed of notify ? [session, ...others.values()] : others.values()) notifyProfiles(context, changed);
     if (deliverMail) notifications.push(...(context.mailbox?.take(req.params.accountId) ?? []));
     // Another player's EarnScore XP for this one (profiles/scores.js), first: the server's handler finalizes the player
     // on the first earnScore it gets.

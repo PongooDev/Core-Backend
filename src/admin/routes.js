@@ -74,6 +74,7 @@ import { brokenChallenges, challengeModes, challengesAllUnlocked, challengeWeekC
 import { isServerAccountName, validatePassword } from "../accounts/password.js";
 import { EmailError } from "../accounts/store.js";
 import { rewardItem } from "../friendcodes/rewards.js";
+import { creatorCodePattern, creatorList, creatorNames, maxCreators, payoutPercent, payoutPercentValue } from "../store/creators.js";
 import { showItemImages } from "../services/portal/images.js";
 import { defaultInGameRuleset, defaultRuleset, leaderboardOf, rulesets, scoringOf, statusOf, tournamentPlaylists } from "../tournaments/store.js";
 import { currentShowdownEvent, customShowdownImages, showdownBuild, showdownImagePath, showdownImageSlots } from "../tournaments/showdown.js";
@@ -1179,6 +1180,14 @@ export function adminRoutes(context) {
     if (req.body?.allowedBuilds !== undefined && allowedBuildList(req.body.allowedBuilds) === undefined) {
       return invalid(res, "allowedBuilds must be null (every build) or a list of at least one build Core knows, by changelist or version, or \"other\"");
     }
+    if (req.body?.creatorPayoutPercent !== undefined && payoutPercentValue(req.body.creatorPayoutPercent) === undefined) {
+      return invalid(res, "creatorPayoutPercent must be a whole number from 0 to 100");
+    }
+    if (req.body?.creatorTwitchPrimePacks !== undefined && typeof req.body.creatorTwitchPrimePacks !== "boolean") {
+      return invalid(res, "creatorTwitchPrimePacks must be true or false");
+    }
+    // The creators themselves change through /admin/api/creators.
+    if (req.body?.creators !== undefined) return invalid(res, "Change the creators with /admin/api/creators");
     const updated = settings.update({
       requirePassword: req.body?.requirePassword,
       allowRegistration: req.body?.allowRegistration,
@@ -1194,6 +1203,8 @@ export function adminRoutes(context) {
       cheats: req.body?.cheats,
       cheatAccounts: req.body?.cheatAccounts,
       creatorNames: req.body?.creatorNames,
+      creatorPayoutPercent: req.body?.creatorPayoutPercent,
+      creatorTwitchPrimePacks: req.body?.creatorTwitchPrimePacks,
       hideEmptyEventsTab: req.body?.hideEmptyEventsTab,
       matchmakingGatherSeconds: req.body?.matchmakingGatherSeconds,
       warmupSeconds: req.body?.warmupSeconds,
@@ -1340,8 +1351,8 @@ export function adminRoutes(context) {
       // The Store tab's V-Bucks packs (store/currency.js), switched with /admin/api/settings.
       vbuckPacks: settings?.get?.()?.vbuckPacks !== false,
       purchaseMode: settings?.get?.()?.purchaseMode === "code" ? "code" : "free",
-      // Support-A-Creator's creators (store/creators.js), set with /admin/api/settings.
-      creatorNames: [...(settings?.get?.()?.creatorNames ?? [])],
+      // Support-A-Creator's enabled codes (store/creators.js), set with /admin/api/creators.
+      creatorNames: creatorNames(settings?.get?.() ?? {}),
       currentShop: {
         featured: offers.BRWeeklyStorefront.map(mapOffer),
         daily: offers.BRDailyStorefront.map(mapOffer)
@@ -2243,6 +2254,100 @@ export function adminRoutes(context) {
       serverRegions: []
     });
     res.json({ success: true, ...getMatchmakingPayload() });
+  });
+
+  // Support-A-Creator (Core-Backend #349, store/creators.js): the accounts that are creators, each with a code of its own
+  // that players enter in 6.02 and later's item shop, on or off; what they have been paid (store/creatorpayouts.js); the
+  // payout's share and the Twitch Prime packs' switch (both /admin/api/settings). Codes are told apart in any case, as
+  // the game compares them, and only these routes, behind the admin gate, make anyone a creator.
+  const creatorPayouts = context.creatorPayouts;
+  const nameOf = (accountId) => accounts.get(accountId)?.displayName ?? null;
+  function creatorsView() {
+    const value = settings.get();
+    return {
+      payoutPercent: payoutPercent(value),
+      // What Epic paid its creators, for the panel's note.
+      epicPayoutPercent: 5,
+      twitchPrimePacks: value.creatorTwitchPrimePacks !== false,
+      maxCreators,
+      creators: creatorList(value).map((creator) => ({
+        ...creator,
+        displayName: creator.accountId ? nameOf(creator.accountId) : null,
+        accountMissing: Boolean(creator.accountId && !accounts.get(creator.accountId)),
+        totals: creator.accountId && creatorPayouts ? creatorPayouts.totals(creator.accountId) : null,
+        recent: creator.accountId && creatorPayouts
+          ? creatorPayouts.recent(creator.accountId, 5).map((entry) => ({ ...entry, buyerName: nameOf(entry.buyerAccountId) })) : []
+      }))
+    };
+  }
+  // The creator account a request names, by id or display name: {account} or {error}.
+  function creatorAccount(value) {
+    const typed = typeof value === "string" ? value.trim() : "";
+    if (!typed) return { error: "Pick the account that gets the code" };
+    const account = accounts.get(typed) ?? accounts.findByName(typed);
+    if (!account || !isPlayer(account)) return { error: `No player account ${typed}` };
+    return { account };
+  }
+  // A code a request gives, checked against the other creators (`except`, the one being changed): {code} or {error}.
+  function creatorCode(value, list, except = null) {
+    const code = typeof value === "string" ? value.trim() : "";
+    if (!creatorCodePattern.test(code)) return { error: "A creator code is 3 to 32 letters, digits, spaces, _ . or -, starting with a letter or digit" };
+    const taken = list.find((creator) => creator.id !== except && creator.code.toLowerCase() === code.toLowerCase());
+    if (taken) return { error: `${taken.code} is already a creator code` };
+    return { code };
+  }
+  const saveCreators = (list) => settings.update({ creators: list });
+
+  router.get("/admin/api/creators", (req, res) => res.json(creatorsView()));
+
+  // {account (id or display name), code, enabled (default true)}: a new creator.
+  router.post("/admin/api/creators", (req, res) => {
+    const list = creatorList(settings.get());
+    if (list.length >= maxCreators) return invalid(res, `There can be at most ${maxCreators} creators`);
+    const { account, error } = creatorAccount(req.body?.account ?? req.body?.accountId);
+    if (error) return invalid(res, error);
+    if (list.some((creator) => creator.accountId === account.id)) return invalid(res, `${account.displayName} is already a creator`);
+    const code = creatorCode(req.body?.code, list);
+    if (code.error) return invalid(res, code.error);
+    if (req.body?.enabled !== undefined && typeof req.body.enabled !== "boolean") return invalid(res, "enabled must be true or false");
+    saveCreators([...list, { id: crypto.randomUUID(), accountId: account.id, code: code.code, enabled: req.body?.enabled !== false, added: new Date().toISOString() }]);
+    log("Support-A-Creator", `${account.displayName} (${account.id}) is a creator with code ${code.code}${req.body?.enabled === false ? ", disabled" : ""}`);
+    res.json(creatorsView());
+  });
+
+  // {code?, enabled?, account?}: a creator's code, switch or account changes.
+  router.post("/admin/api/creators/:id", (req, res) => {
+    const list = creatorList(settings.get());
+    const creator = list.find((entry) => entry.id === req.params.id);
+    if (!creator) return notFound(res, req.originalUrl);
+    const changed = { ...creator };
+    if (req.body?.code !== undefined) {
+      const code = creatorCode(req.body.code, list, creator.id);
+      if (code.error) return invalid(res, code.error);
+      changed.code = code.code;
+    }
+    if (req.body?.enabled !== undefined) {
+      if (typeof req.body.enabled !== "boolean") return invalid(res, "enabled must be true or false");
+      changed.enabled = req.body.enabled;
+    }
+    if (req.body?.account !== undefined || req.body?.accountId !== undefined) {
+      const { account, error } = creatorAccount(req.body?.account ?? req.body?.accountId);
+      if (error) return invalid(res, error);
+      if (list.some((entry) => entry.id !== creator.id && entry.accountId === account.id)) return invalid(res, `${account.displayName} is already a creator`);
+      changed.accountId = account.id;
+    }
+    saveCreators(list.map((entry) => (entry.id === creator.id ? changed : entry)));
+    log("Support-A-Creator", `Creator ${changed.code} (${changed.accountId ?? "no account"}) is ${changed.enabled ? "enabled" : "disabled"}`);
+    res.json(creatorsView());
+  });
+
+  router.delete("/admin/api/creators/:id", (req, res) => {
+    const list = creatorList(settings.get());
+    const creator = list.find((entry) => entry.id === req.params.id);
+    if (!creator) return notFound(res, req.originalUrl);
+    saveCreators(list.filter((entry) => entry.id !== creator.id));
+    log("Support-A-Creator", `Creator code ${creator.code} removed`);
+    res.json(creatorsView());
   });
 
   router.get("/admin/api/shop", (req, res) => {

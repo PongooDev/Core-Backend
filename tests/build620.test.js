@@ -385,12 +385,14 @@ test("a founder logging in on 6.20 gets Skull Ranger Ramirez and Brainiac Jonesy
   });
 });
 
-test("6.20's creator code check: a listed creator is ACTIVE as the list spells it, any other name the service's 404; Support-A-Creator's hotfix as 6.02's", async () => {
+test("6.20's creator code check: a listed creator is ACTIVE as the list spells it, any other name the service's 404; the hotfix asks the service (#349)", async () => {
   const settings = { creatorNames: ["CoreCreator"] };
   assert.deepEqual(affiliateCheck("corecreator", settings), { id: affiliateCheck("CoreCreator", settings).id, slug: "CoreCreator", displayName: "CoreCreator",
     avatar: "", status: "ACTIVE", verified: false });
   assert.equal(affiliateCheck("someoneelse", settings), null);
-  assert.deepEqual(affiliateRuntimeOptions(v620, settings), affiliateRuntimeOptions(v602, settings));
+  // 6.02's lines, with the hotfixed array off: 6.20's modal asks CheckAffiliateName (Core-Backend #349).
+  assert.deepEqual(affiliateRuntimeOptions(v620, settings),
+    affiliateRuntimeOptions(v602, settings).map((line) => (line === "bUseHotfixedAffiliateNamesArray=true" ? "bUseHotfixedAffiliateNamesArray=false" : line)));
   const backend = await startBackend({ creatorNames: ["CoreCreator"] });
   try {
     const { token } = await userLogin(backend.port, "Creator620");

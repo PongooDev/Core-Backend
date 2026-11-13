@@ -9,8 +9,9 @@ import { creatorNamed } from "../../../store/creators.js";
 // Core didn't know the command, so a 6.02 client sending it would have been told "Unknown command SetAffiliateName"
 // (errors.com.epicgames.fortnite.operation_not_found); none did, as the feature is off until the hotfix turns it on.
 //
-// A listed creator's name is kept as the list spells it, with the time; an empty name clears the choice, as the modal
-// sends when it finds no entry. A name that isn't listed is refused and nothing changes (🟡 Core's error: Epic's code
+// An enabled creator code (the admin panel's, Core-Backend #349) is kept as the panel spells it, with the time; an empty
+// name clears the choice, as 6.02's modal sends when it finds no entry (6.20's sends the typed code). One that isn't an
+// enabled code is refused and nothing changes (🟡 Core's error: Epic's code
 // for an unknown creator isn't recorded; the modal closes the same way on any answer). The same creator again keeps
 // the name and starts its time over, as choosing it again did on Epic ("players can select the same Creator Code for
 // another 14-day period").

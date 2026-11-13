@@ -7,6 +7,7 @@ import { lootEntry, spendMtx } from "../../../profiles/items.js";
 import { noteShopPurchase } from "../../../profiles/origins.js";
 import { grant, itemEvent } from "../../../profiles/progress.js";
 import { findOffer } from "../../../store/catalog.js";
+import { payCreator } from "../../../store/creatorpayouts.js";
 import { hasRefunds, recordPurchase } from "../../../store/refunds.js";
 import { dailyLimitOf, dailyPurchases, recordDailyPurchase } from "../../../store/dailylimit.js";
 import { eventPurchases, recordEventPurchase } from "../../../store/eventstore.js";
@@ -31,7 +32,7 @@ function spendItem(tracker, templateId, amount) {
 
 // FCatalogPurchaseInfo {offerId, purchaseQuantity, currency, currencySubType, expectedPrice}; the client is told what
 // it got as CatalogPurchase {lootResult} (FCatalogPurchaseNotification).
-export function purchaseCatalogEntry({ req, session, notifications }) {
+export function purchaseCatalogEntry({ req, session, notifications, sessionFor, context }) {
   const { offerId, purchaseQuantity = 1, currency, currencySubType, expectedPrice } = req.body ?? {};
   const offer = findOffer(offerId);
   if (!offer) throw new McpError("errors.com.epicgames.modules.gamesubcatalog.catalog_out_of_date", `Offer ${offerId} isn't in the store`);
@@ -105,9 +106,12 @@ export function purchaseCatalogEntry({ req, session, notifications }) {
     // The build whose shop sold them is noted (profiles/origins.js, Core-Backend #335): a Skull Trooper bought on a Season 1
     // build is an original owner's.
     noteShopPurchase(session.profile("athena").profile, added.map(({ itemType }) => itemType));
+    // Support-A-Creator (Core-Backend #349, store/creatorpayouts.js): the creator whose code the player supports is paid
+    // the panel's share of the V-Bucks spent, unless it is the player's own code. Not the Season Shop's (1.8.2).
+    const payout = offer.seasonLevel ? null : payCreator({ session, sessionFor, payouts: context?.creatorPayouts, offerId, spent: total });
     // From 3.6 the item shop's cosmetics can be returned (store/refunds.js): the purchase is recorded with those items and
     // the V-Bucks it took. The Season Shop's (1.8.2) aren't.
-    if (hasRefunds() && !offer.seasonLevel) recordPurchase(tracker, { offerId, lootResult: added.length ? added : loot, totalMtxPaid: total, spent });
+    if (hasRefunds() && !offer.seasonLevel) recordPurchase(tracker, { offerId, lootResult: added.length ? added : loot, totalMtxPaid: total, spent, creatorPayout: payout });
     return;
   }
   // An Event Store offer (store/eventstore.js) sells as many as its limit, counted in the account's tracker.

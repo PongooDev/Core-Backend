@@ -6656,36 +6656,106 @@
           })),
         el("p", { class: "note", style: "margin:0;", text: "From 1.8, the Store tab sells Epic's four V-Bucks packs (1,000, 2,800, 7,500 and 13,500). Buying one opens a page with a Complete purchase button that gives the V-Bucks for free, as a simulated real-money purchase. It also sells each season's Starter Pack, once per account, on that season's builds that have its cosmetics: Season 3's Battle Royale Starter Pack (Rogue Agent outfit, Catalyst back bling and 600 V-Bucks), Season 4's Wingman Starter Pack (Wingman outfit, Bogey Bag back bling and 600 V-Bucks, from 4.4) and Season 5's Ace Pack (The Ace outfit, Swag Bag back bling and 600 V-Bucks, from 5.30). Turn this off to hide the packs." }));
 
-      // Support-A-Creator (6.02, store/creators.js): the creators a player may enter in the item shop's Support a Creator.
-      const creatorList = shop.creatorNames || [];
-      const saveCreators = async (names, message) => {
-        const res = await act(api("/admin/api/settings", { creatorNames: names }), message);
-        if (res) showShop();
-      };
-      const creatorInput = el("input", { class: "field", placeholder: "Creator name (3 to 32 letters, digits, spaces, _ . -)", "aria-label": "Creator name", maxlength: "32", style: "flex:1 1 240px;" });
-      const creatorAdd = btn("Add creator", () => {
-        const typed = creatorInput.value.trim();
-        if (!/^[A-Za-z0-9][A-Za-z0-9 _.-]{1,30}[A-Za-z0-9_.-]$/.test(typed)) return toast("A creator's name is 3 to 32 letters, digits, spaces, _ . or -", true);
-        if (creatorList.some((name) => name.toLowerCase() === typed.toLowerCase())) return toast(`${typed} is already a creator`, true);
-        saveCreators([...creatorList, typed], `${typed} can be supported from the item shop`);
-      }, "primary");
-      creatorInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          creatorAdd.click();
+      // Support-A-Creator (6.02, store/creators.js, Core-Backend #349): the accounts that are creators, each with its own
+      // code, the payout's share of what a supporter spends, and the creators' Twitch Prime packs.
+      const creatorsSection = el("section", { class: "panel" });
+      const creatorCodeRule = /^[A-Za-z0-9][A-Za-z0-9 _.-]{1,30}[A-Za-z0-9_.-]$/;
+      const creatorCodeHint = "A creator code is 3 to 32 letters, digits, spaces, _ . or -, starting with a letter or digit";
+      const renderCreators = async () => {
+        const [view, players] = await Promise.all([
+          api("/admin/api/creators").catch((error) => ({ error: error.message })),
+          api("/admin/api/accounts").catch(() => [])
+        ]);
+        if (view.error) {
+          creatorsSection.replaceChildren(el("h2", { text: "Support-A-Creator" }), el("p", { class: "note", text: view.error }));
+          return;
         }
-      });
-      const creatorsSection = el("section", { class: "panel" },
-        el("div", { class: "panel-head", style: "margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; gap:12px;" },
-          el("h2", { text: "Support-A-Creator" }),
-          creatorList.length ? chip(`${creatorList.length} creator${creatorList.length === 1 ? "" : "s"}`, "sky") : chip("Off")),
-        el("p", { class: "note", style: "margin:0;", text: "From 6.02, the item shop has a Support a Creator button: the player enters a creator's name and the shop shows who they support. The game ships with it off and only takes the names its hotfix lists, so it shows while at least one creator is listed here, and a player can pick only these names. Nothing is paid to anyone: the choice is only kept, with the day it was made. A change shows once the player's game restarts." }),
-        el("div", { class: "actions", style: "margin-top:10px; gap:8px; flex-wrap:wrap;" },
-          creatorList.length ? creatorList.map((name) => el("span", {
-            class: "chip sky removable", title: `${name}: click to remove`, style: "display:inline-flex; align-items:center; padding:4px 10px;",
-            onclick: () => saveCreators(creatorList.filter((other) => other !== name), `${name} removed from the creators`)
-          }, el("span", { text: name }), el("span", { class: "remove-x", text: "✕" }))) : el("span", { class: "muted", text: "No creators: the button stays hidden." })),
-        el("div", { class: "actions", style: "margin-top:12px; align-items:center; width:100%" }, creatorInput, creatorAdd));
+        const creatorAct = async (promise, message) => {
+          if (await act(promise, message)) renderCreators();
+        };
+        const enabled = view.creators.filter((creator) => creator.enabled).length;
+
+        // The payout's share and the packs' switch (/admin/api/settings).
+        const percentInput = el("input", { type: "number", class: "field", min: "0", max: "100", step: "1", value: String(view.payoutPercent), "aria-label": "Creator payout percentage", style: "width:90px;" });
+        const savePercent = btn("Save", () => {
+          const value = Number(percentInput.value);
+          if (!Number.isInteger(value) || value < 0 || value > 100) return toast("The payout is a whole number from 0 to 100", true);
+          creatorAct(api("/admin/api/settings", { creatorPayoutPercent: value }), `Creators get ${value}% of what their supporters spend`);
+        }, "primary");
+        const settingsRow = el("div", { style: "display:flex; gap:24px; align-items:flex-end; flex-wrap:wrap; margin-top:14px;" },
+          el("label", { style: "display:flex; flex-direction:column; gap:6px; font-size:12px; font-weight:600; color:var(--muted);" },
+            el("span", { text: "Payout (% of V-Bucks spent)" }),
+            el("div", { class: "actions", style: "gap:8px;" }, percentInput, savePercent)),
+          el("div", { style: "display:flex; align-items:center; gap:10px;" },
+            toggleSwitch(view.twitchPrimePacks, (checked) => creatorAct(api("/admin/api/settings", { creatorTwitchPrimePacks: checked }),
+              checked ? "Enabled creators get Twitch Prime Packs #1 and #2" : "Creators no longer get the Twitch Prime packs")),
+            el("span", { style: "font-size:13px; font-weight:600;", text: "Give creators Twitch Prime Packs #1 and #2" })));
+
+        // A new creator: an account and its code.
+        const accountInput = el("input", { class: "field", placeholder: "Account (display name or id)", "aria-label": "Creator account", list: "creator-account-names", style: "flex:1 1 200px;" });
+        const codeInput = el("input", { class: "field", placeholder: "Creator code", "aria-label": "Creator code", maxlength: "32", style: "flex:1 1 180px;" });
+        const addCreator = btn("Add creator", () => {
+          const account = accountInput.value.trim();
+          const code = codeInput.value.trim();
+          if (!account) return toast("Pick the account that gets the code", true);
+          if (!creatorCodeRule.test(code)) return toast(creatorCodeHint, true);
+          if (view.creators.some((creator) => creator.code.toLowerCase() === code.toLowerCase())) return toast(`${code} is already a creator code`, true);
+          creatorAct(api("/admin/api/creators", { account, code }), `${code} is ${account}'s creator code`);
+        }, "primary");
+        codeInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            addCreator.click();
+          }
+        });
+
+        const creatorRow = (creator) => {
+          const editCode = el("input", { class: "field", value: creator.code, maxlength: "32", "aria-label": `${creator.code}'s code`, style: "width:150px;" });
+          const saveCode = btn("Save", () => {
+            const code = editCode.value.trim();
+            if (code === creator.code) return;
+            if (!creatorCodeRule.test(code)) return toast(creatorCodeHint, true);
+            creatorAct(api(`/admin/api/creators/${encodeURIComponent(creator.id)}`, { code }), `The code is now ${code}`);
+          }, "ghost small");
+          const accountCell = creator.accountId
+            ? el("td", {}, el("div", { text: creator.displayName ?? "Deleted account", style: creator.accountMissing ? "color:var(--bad, #e66);" : "" }),
+                el("div", { class: "muted", style: "font-size:11px;", text: creator.accountId }))
+            : el("td", {}, el("span", { class: "muted", text: "No account (paid to no one)" }));
+          const totals = creator.totals;
+          const recentTitle = (creator.recent ?? []).map((entry) => `${new Date(entry.at).toLocaleString()}: ${entry.vbucks} from ${entry.buyerName ?? entry.buyerAccountId}'s ${entry.offerId} (${entry.spent} spent)${entry.returnedAt ? ", returned" : ""}`).join("\n");
+          return el("tr", {},
+            accountCell,
+            el("td", {}, el("div", { class: "actions", style: "gap:6px; flex-wrap:nowrap;" }, editCode, saveCode)),
+            el("td", {}, el("div", { class: "actions", style: "gap:8px; flex-wrap:nowrap;" },
+              toggleSwitch(creator.enabled, (checked) => creatorAct(api(`/admin/api/creators/${encodeURIComponent(creator.id)}`, { enabled: checked }),
+                checked ? `${creator.code} is enabled` : `${creator.code} is disabled`)),
+              creator.enabled ? chip("Enabled", "good") : chip("Disabled"))),
+            el("td", { title: recentTitle || "No payouts yet", text: totals ? `${totals.vbucks.toLocaleString()} V-Bucks (${totals.purchases} purchase${totals.purchases === 1 ? "" : "s"})` : "—" }),
+            el("td", {}, el("div", { class: "actions", style: "justify-content:flex-end;" },
+              btn("Remove", async () => {
+                if (await confirmModal(`Remove the creator code ${creator.code}? Players who support it stop paying anyone, and the account keeps what it was given.`, {
+                  title: "Remove Creator", confirmText: "Remove", confirmKind: "danger"
+                })) creatorAct(api(`/admin/api/creators/${encodeURIComponent(creator.id)}`, undefined, "DELETE"), `${creator.code} removed`);
+              }, "ghost small"))));
+        };
+
+        creatorsSection.replaceChildren(
+          el("div", { class: "panel-head", style: "margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; gap:12px;" },
+            el("h2", { text: "Support-A-Creator" }),
+            enabled ? chip(`${enabled} creator${enabled === 1 ? "" : "s"} enabled`, "sky") : chip("Off")),
+          el("p", { class: "note", style: "margin:0;", text: "From 6.02 the item shop has a Support a Creator button: the player enters a creator code and the shop shows who they support. Pick the accounts that are creators here and give each its own code (codes match in any case). The button shows while at least one code is enabled, and View Approved Creators opens this backend's list of the enabled codes. On 6.02 and 6.10 the game reads the codes when it starts, so a change shows after a restart; from 6.20 it asks this backend about each code as it is entered." }),
+          el("p", { class: "note", style: "margin:8px 0 0;", text: `When a player buys from the item shop with a creator's code set, the creator is given the payout's share of the V-Bucks spent (100% by default: the same amount; Epic paid its creators ${view.epicPayoutPercent}%). A creator buying with their own code gets nothing, and a purchase that is returned takes its payout back. An enabled creator is also given Twitch Prime Pack #1 (Havoc, Sub Commander, Backup Plan, Slipstream, Instigator) and #2 (Trailblazer, True North, Tenderizer, Freestylin') the next time their locker loads, as far as their build has them; disabling the code doesn't take them back.` }),
+          settingsRow,
+          el("div", { class: "actions", style: "margin-top:14px; align-items:center; width:100%; gap:8px;" },
+            accountInput, codeInput, addCreator,
+            el("datalist", { id: "creator-account-names" }, players.map((account) => el("option", { value: account.displayName })))),
+          view.creators.length
+            ? el("div", { class: "table-wrap", style: "margin-top:14px;" }, el("table", {},
+                el("thead", {}, el("tr", {}, ["Account", "Code", "Status", "Paid", ""].map((text) => el("th", { text })))),
+                el("tbody", {}, view.creators.map(creatorRow))))
+            : el("p", { class: "muted", style: "margin-top:12px;", text: "No creators: the button stays hidden." }));
+      };
+      renderCreators();
 
       // How the packs are paid (Core-Backend #248): free, or with a purchase code (store/purchasecodes.js) made here.
       const purchaseCodeOffers = [["any", "Any offer"], ["core_mtx_1000", "1,000 V-Bucks pack"], ["core_mtx_2800", "2,800 V-Bucks pack"],
@@ -9286,7 +9356,7 @@
               settings.twitchPrimePack ? chip("Given", "good") : chip("Off")),
             toggleSwitch(settings.twitchPrimePack === true, (checked) =>
               save({ twitchPrimePack: checked }, checked ? "Season 3 players get the Twitch Prime pack" : "The Twitch Prime pack is off"))),
-          el("p", { class: "note", text: "When enabled, a player whose locker loads on a Season 3 build (3.0 and later) is given Twitch Prime Pack #1's Sub Commander outfit and Slipstream glider, if they lack them. Its four sprays aren't in Season 3's builds, so they are not given. Turning it off doesn't take back what was given." }));
+          el("p", { class: "note", text: "When enabled, a player whose locker loads on a Season 3 build (3.0 and later) is given Twitch Prime Pack #1's Sub Commander outfit and Slipstream glider, if they lack them. Its four sprays aren't in Season 3's builds, so they are not given. Turning it off doesn't take back what was given. Creators (Item Shop, Support-A-Creator) get both full Twitch Prime packs with a switch of their own there." }));
       const panelTimeline = el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
             el("h2", { text: "Seasonal Events & Timelines" })),

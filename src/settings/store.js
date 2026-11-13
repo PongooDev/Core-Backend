@@ -9,7 +9,7 @@ import { defaultRocketLaunch, sanitizeRocketLaunch } from "../events/rocketlaunc
 import { defaultSeason4Flags, sanitizeSeason4Flags } from "../events/season4flags.js";
 import { defaultDatedFlags, sanitizeDatedFlags } from "../events/datedflags.js";
 import { defaultStormDestruction, sanitizeStormDestruction } from "../events/stormdestruction.js";
-import { sanitizeCreatorNames } from "../store/creators.js";
+import { defaultPayoutPercent, payoutPercentValue, sanitizeCreatorNames, sanitizeCreators, withLegacyNames } from "../store/creators.js";
 import { regionPingServers } from "../matchmaking/qos.js";
 import { regionHostingIps, regionList, serverRegionCodes } from "../matchmaking/regions.js";
 import { customMatchServers } from "../matchmaking/custom-servers.js";
@@ -110,9 +110,14 @@ const defaults = {
   // gameserver asks for each player before it runs their "cheat" command, and again every 30 seconds.
   cheats: "everyone",
   cheatAccounts: [],
-  // Support-A-Creator's creators (store/creators.js): the names 6.02 and later players may enter in the item shop's
-  // Support a Creator. None by default, which leaves the feature off, as the game ships it.
-  creatorNames: [],
+  // Support-A-Creator's creators (store/creators.js, Core-Backend #349): each {id, accountId, code, enabled, added}, the
+  // codes 6.02 and later players may enter in the item shop's Support a Creator. None by default, which leaves the
+  // feature off, as the game ships it. A creator is paid creatorPayoutPercent of what a supporter spends in the item shop
+  // (store/creatorpayouts.js), and with creatorTwitchPrimePacks on an enabled creator is given Twitch Prime Packs #1 and #2
+  // (profiles/athena.js). Settings of before #349 kept creatorNames, which become creators without an account.
+  creators: [],
+  creatorPayoutPercent: defaultPayoutPercent,
+  creatorTwitchPrimePacks: true,
   // 6.10's Events tab (tournaments/showdown.js): hide it while no in-game tournament is listed. Off by default, which
   // leaves the tab as the game ships it.
   hideEmptyEventsTab: false,
@@ -603,7 +608,8 @@ export function createSettingsStore(dataDir) {
     matchmakingModes: JSON.parse(JSON.stringify(defaults.matchmakingModes)),
     matchmakingModesRevision,
     serverLimits: JSON.parse(JSON.stringify(defaults.serverLimits)),
-    bots: { ...defaults.bots }
+    bots: { ...defaults.bots },
+    creators: []
   };
 
   if (file && fs.existsSync(file)) {
@@ -639,7 +645,10 @@ export function createSettingsStore(dataDir) {
       settings.structureLimits = structureLimits(loaded.structureLimits);
       settings.cheats = cheatMode(loaded.cheats) ?? defaults.cheats;
       settings.cheatAccounts = cheatAccounts(loaded.cheatAccounts) ?? [];
-      settings.creatorNames = sanitizeCreatorNames(loaded.creatorNames) ?? [];
+      settings.creators = sanitizeCreators(loaded.creators) ?? withLegacyNames([], sanitizeCreatorNames(loaded.creatorNames) ?? []);
+      delete settings.creatorNames;
+      settings.creatorPayoutPercent = payoutPercentValue(loaded.creatorPayoutPercent) ?? defaultPayoutPercent;
+      settings.creatorTwitchPrimePacks = loaded.creatorTwitchPrimePacks !== false;
       settings.hideEmptyEventsTab = loaded.hideEmptyEventsTab === true;
       settings.matchmakingGatherSeconds = gatherSeconds(loaded.matchmakingGatherSeconds) ?? defaults.matchmakingGatherSeconds;
       // A blank (null) length saved stays the game's; one missing or out of range is the default.
@@ -738,7 +747,7 @@ export function createSettingsStore(dataDir) {
         structureLimits: { ...settings.structureLimits },
         battleRoyaleRewards: JSON.parse(JSON.stringify(settings.battleRoyaleRewards)),
         cheatAccounts: [...settings.cheatAccounts],
-        creatorNames: [...(settings.creatorNames ?? [])],
+        creators: (settings.creators ?? []).map((creator) => ({ ...creator })),
         battleRoyaleNewsEnabled: typeof settings.battleRoyaleNewsEnabled === "boolean" ? settings.battleRoyaleNewsEnabled : undefined,
         battleRoyaleNews: settings.battleRoyaleNews ? { ...settings.battleRoyaleNews } : undefined,
         loginMessage: settings.loginMessage ? { ...settings.loginMessage } : undefined,
@@ -804,7 +813,13 @@ export function createSettingsStore(dataDir) {
       settings.structureLimits = structureLimits(partial.structureLimits, settings.structureLimits);
       settings.cheats = cheatMode(partial.cheats) ?? settings.cheats;
       settings.cheatAccounts = cheatAccounts(partial.cheatAccounts) ?? settings.cheatAccounts;
-      settings.creatorNames = sanitizeCreatorNames(partial.creatorNames) ?? settings.creatorNames ?? [];
+      if (partial.creators !== undefined) settings.creators = sanitizeCreators(partial.creators) ?? settings.creators ?? [];
+      // The old way (config.json's creatorNames, scripts): the creators without an account become these names.
+      const legacyNames = sanitizeCreatorNames(partial.creatorNames);
+      if (legacyNames) settings.creators = withLegacyNames(settings.creators, legacyNames);
+      const payout = payoutPercentValue(partial.creatorPayoutPercent);
+      if (payout !== undefined) settings.creatorPayoutPercent = payout;
+      if (typeof partial.creatorTwitchPrimePacks === "boolean") settings.creatorTwitchPrimePacks = partial.creatorTwitchPrimePacks;
       if (typeof partial.hideEmptyEventsTab === "boolean") settings.hideEmptyEventsTab = partial.hideEmptyEventsTab;
       settings.matchmakingGatherSeconds = gatherSeconds(partial.matchmakingGatherSeconds) ?? settings.matchmakingGatherSeconds;
       const warmup = warmupSecondsValue(partial.warmupSeconds);

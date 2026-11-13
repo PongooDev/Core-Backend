@@ -249,10 +249,25 @@ const twitchPrimePack = ["AthenaCharacter:cid_085_athena_commando_m_twitch", "At
 export const twitchPrimeCosmetics = (settings = {}) => namesAthenaBuild() && seasonNumber() === 3 && settings.twitchPrimePack?.() === true
   ? twitchPrimePack.map(cosmeticId).filter(Boolean) : [];
 
+// Support-A-Creator's Twitch Prime packs (Core-Backend #349, the admin panel's creatorTwitchPrimePacks, on by default):
+// an account whose creator code is enabled is given Twitch Prime Pack #1 (Havoc, Sub Commander, Backup Plan, Slipstream,
+// Instigator) and Pack #2 (Trailblazer, True North, Tenderizer, Freestylin'), as far as the build's cosmetics have them:
+// 3.0's paks hold Havoc, Sub Commander and its back bling, and the Slipstream; Instigator comes with 3.5; all nine from 4.0
+// (the game data's names). Given if missing, and kept when the code is disabled. [] for anyone else.
+const creatorTwitchPrimePacks = [
+  "AthenaCharacter:CID_089_Athena_Commando_M_RetroGrey", "AthenaCharacter:CID_085_Athena_Commando_M_Twitch",
+  "AthenaBackpack:BID_029_RetroGrey", "AthenaGlider:Glider_ID_018_Twitch", "AthenaPickaxe:Pickaxe_ID_039_TacticalBlack",
+  "AthenaCharacter:CID_114_Athena_Commando_F_TacticalWoodland", "AthenaBackpack:BID_049_TacticalWoodland",
+  "AthenaPickaxe:Pickaxe_ID_044_TacticalUrbanHammer", "AthenaDance:EID_HipHop01"
+];
+export const creatorPackCosmetics = (profile, settings = {}) => namesAthenaBuild() && settings.creatorTwitchPrimePacks?.(profile.accountId) === true
+  ? creatorTwitchPrimePacks.map(cosmeticId).filter(Boolean) : [];
+
 export function athenaNeedsSetUp(profile, settings = {}) {
   return !migrated(profile, "athenaLocker") || missing(profile, starterIds(profile, settings)).length > 0
     || missingSplitBackpacks(profile).length > 0
     || missing(profile, twitchPrimeCosmetics(settings)).length > 0
+    || missing(profile, creatorPackCosmetics(profile, settings)).length > 0
     || missing(profile, earnedCosmetics(profile, settings)).length > 0
     || (settings.giveAllCosmetics ? missing(profile, lockerCosmetics()).length > 0 : blanket(profile).length > 0)
     || emptyDefaultSlots(profile).length > 0 || heldNonLockerItems(profile).length > 0
@@ -376,6 +391,7 @@ export function setUpAthena(session) {
   for (const itemId of heldNonLockerItems(profile)) removeNonLockerItem(tracker, itemId);
   for (const templateId of missingSplitBackpacks(profile)) grantCosmetic(session, templateId);
   for (const templateId of twitchPrimeCosmetics(settings)) grantCosmetic(session, templateId);
+  for (const templateId of creatorPackCosmetics(profile, settings)) grantCosmetic(session, templateId);
   if (settings.giveAllCosmetics) {
     const given = missing(profile, lockerCosmetics());
     for (const templateId of given) addCosmetic(tracker, templateId, true);

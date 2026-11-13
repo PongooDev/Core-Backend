@@ -16,7 +16,7 @@ import { qosEngineLines } from "../../matchmaking/qos.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
 import { affiliateRuntimeOptions } from "../../store/creators.js";
 import { showdownRuntimeOptions } from "../../tournaments/showdown.js";
-import { createNetwork, httpsProxied } from "../../network.js";
+import { createNetwork, httpsProxied, requestHost } from "../../network.js";
 import { purchaseFlowSection } from "./purchase.js";
 
 const validFilename = /^[A-Za-z0-9._-]{1,128}$/;
@@ -167,13 +167,19 @@ const chatSection = ["[/Script/FortniteGame.FortOnlineAccount]", "bIsAthenaGloba
 // changes: the screen (AthenaReplayBrowserTab) won't play a row marked old or corrupt (RowData.IsOld, bIsCorrupt), and a
 // replay in a newer engine's format (file version 7, where 3.5's is 3) can't be read at all.
 // 6.02's (CL-4442095) Support-A-Creator (store/creators.js) is off in the same object as shipped (bDisableAffiliateFeature)
-// and takes its creators from it (AffiliateNames): while the admin panel lists a creator, the file turns it on with them.
+// and takes its creators from it (AffiliateNames, or from 6.20 the affiliate service): while the admin panel has a code
+// enabled, the file turns it on with them, and points "View Approved Creators" (ListOfCreatorsURL, opened in the player's
+// own browser, which no redirect reaches) at this backend's list as the game reached it, as the purchase flow's page is.
 // 6.10's (CL-4464155) Events tab reads the same object (bEnableShowdown, ShowdownTournamentCacheExpirationHours): the file
 // keeps the tab's list from being cached, or hides the empty tab when the admin asks (tournaments/showdown.js, #336).
 const replaysBuild = 4000805;
-const runtimeOptionsFiles = (changelist, settingsValue) => (Number(changelist) >= replaysBuild ? {
+const creatorsUrl = (req, network) => {
+  const proxied = httpsProxied(req);
+  return proxied ? `https://${proxied.host}/affiliate/creators` : `http://${requestHost(req) ?? network.directHost(req)}/affiliate/creators`;
+};
+const runtimeOptionsFiles = (changelist, settingsValue, url = null) => (Number(changelist) >= replaysBuild ? {
   "DefaultRuntimeOptions.ini": Buffer.from(["[/Script/FortniteGame.FortRuntimeOptions]", "bEnableReplayBrowser=true",
-    "bEnableReplayRecording=true", "bEnableLargeTeamReplayRecording=true", ...affiliateRuntimeOptions(changelist, settingsValue),
+    "bEnableReplayRecording=true", "bEnableLargeTeamReplayRecording=true", ...affiliateRuntimeOptions(changelist, settingsValue, { creatorsUrl: url }),
     ...showdownRuntimeOptions(changelist, settingsValue), ""].join("\r\n"), "utf8")
 } : {});
 const defaultNetwork = createNetwork();
@@ -196,7 +202,7 @@ function systemFiles(req, network = defaultNetwork, settings = null) {
   const qos = qosEngineLines(build, settings?.get?.()?.regionPingServers);
   const engine = engineNetwork + stormDestructionEngineSection(build) + (qos.length ? [...qos, ""].join("\r\n") : "");
   return { "DefaultEngine.ini": Buffer.from(engine, "utf8"), "DefaultGame.ini": Buffer.from(game, "utf8"), ...newModeFiles(build),
-    ...runtimeOptionsFiles(build, settings?.get?.()) };
+    ...runtimeOptionsFiles(build, settings?.get?.(), creatorsUrl(req, network)) };
 }
 
 // What the client reads per file (OnlineTitleFileMcp, sub_37C8D10): hash (SHA-1 hex, also its cache key), hash256,

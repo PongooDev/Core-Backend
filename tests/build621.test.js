@@ -345,7 +345,7 @@ test("6.20's, 6.10's and 6.02's work on 6.21: the Events tab and its page, the o
   assert.ok(page.tournamentinformation && page.playlistinformation);
   assert.equal(page.koreancafe, undefined, "6.21's Korean PC bang section isn't served");
   assert.deepEqual(contentPage(undefined, undefined, v620).tournamentinformation, page.tournamentinformation);
-  assert.deepEqual(affiliateRuntimeOptions(v621, { creatorNames: ["CoreCreator"] }), affiliateRuntimeOptions(v602, { creatorNames: ["CoreCreator"] }));
+  assert.deepEqual(affiliateRuntimeOptions(v621, { creatorNames: ["CoreCreator"] }), affiliateRuntimeOptions(v620, { creatorNames: ["CoreCreator"] }));
   withSession(v621, "skull621", (session) => {
     setUpAthena(session);
     grantCosmetic(session, "AthenaCharacter:cid_030_athena_commando_m_halloween");

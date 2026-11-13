@@ -57,11 +57,13 @@ export function purchaseHistoryOf(attributes) {
 //
 // An item shop purchase, on 3.6 and later: its loot ([{itemType, itemGuid, itemProfile, quantity}]), what it cost and
 // which V-Bucks it took ({templateId: amount}).
-export function recordPurchase(tracker, { offerId, lootResult, totalMtxPaid, spent, now = new Date() }) {
+export function recordPurchase(tracker, { offerId, lootResult, totalMtxPaid, spent, creatorPayout = null, now = new Date() }) {
   const history = purchaseHistoryOf(tracker.profile.stats.attributes);
   const entry = {
     purchaseId: crypto.randomUUID(), offerId, purchaseDate: now.toISOString(), refundDate: notRefunded, lootResult, totalMtxPaid,
-    coreMtxSpent: spent
+    coreMtxSpent: spent,
+    // The Support-A-Creator payout the purchase made (store/creatorpayouts.js), which its return takes back.
+    ...(creatorPayout ? { coreCreatorPayout: creatorPayout } : {})
   };
   tracker.setStat("mtx_purchase_history", { ...history, purchases: [...history.purchases, entry] });
   return entry;

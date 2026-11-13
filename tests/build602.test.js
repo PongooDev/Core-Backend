@@ -33,7 +33,7 @@ import { subgameSelectImages, subgameSelectImagesFor } from "../src/services/con
 import { playlistInformationFor } from "../src/services/content/playlistimages.js";
 import { stwMfaRewardOffered, stwMfaRewards } from "../src/services/mcp/commands/ClaimMfaEnabled.js";
 import { createSettingsStore } from "../src/settings/store.js";
-import { affiliateBuild, affiliateOffered, affiliateRuntimeOptions, creatorNamed, sanitizeCreatorNames } from "../src/store/creators.js";
+import { affiliateBuild, affiliateOffered, affiliateRuntimeOptions, creatorNamed, creatorNames, sanitizeCreatorNames } from "../src/store/creators.js";
 import { eventStoreEnds, eventStoreOffers, eventStorefront, weeklyStorefront } from "../src/store/eventstore.js";
 import { bundledBackBlings, itemShopOffers, seasonEnd } from "../src/store/itemshop.js";
 import { post, send, startBackend, userLogin } from "./helpers.js";
@@ -710,7 +710,7 @@ test("Season 6's bundles on 6.02: a week's season XP and Calamity's reward come 
 // Support-A-Creator (store/creators.js): 6.02's exe is the first with SetAffiliateName, the one MCP command it adds.
 test("Support-A-Creator's creators: the admin's list, the hotfix that turns 6.02's button on with them, and nothing while none is listed", () => {
   assert.equal(affiliateBuild, Number(v6020));
-  assert.deepEqual(createSettingsStore(null).get().creatorNames, [], "none by default: the feature stays off, as shipped");
+  assert.deepEqual(createSettingsStore(null).get().creators, [], "none by default: the feature stays off, as shipped");
   assert.deepEqual(sanitizeCreatorNames(["  Ninja ", "ninja", "ab", "bad=name", "semi;colon", "ok_name.1", 5, "x".repeat(40), "Two Words"]), ["Ninja", "ok_name.1", "Two Words"]);
   assert.equal(sanitizeCreatorNames("Ninja"), undefined);
   const listed = { creatorNames: ["Ninja", "Core Creator"] };
@@ -727,9 +727,10 @@ test("Support-A-Creator's creators: the admin's list, the hotfix that turns 6.02
   assert.equal(creatorNamed("Somebody", listed), null);
   const store = createSettingsStore(null);
   store.update({ creatorNames: ["Ninja", "ninja", "!!"] });
-  assert.deepEqual(store.get().creatorNames, ["Ninja"]);
+  // The old list's names are creators without an account (Core-Backend #349).
+  assert.deepEqual(creatorNames(store.get()), ["Ninja"]);
   store.update({ warmupSeconds: 60 });
-  assert.deepEqual(store.get().creatorNames, ["Ninja"], "kept by an update that doesn't name it");
+  assert.deepEqual(creatorNames(store.get()), ["Ninja"], "kept by an update that doesn't name it");
 });
 
 test("a 6.02 client's SetAffiliateName keeps the creator and the time in common_core, on either changelist; the hotfix lists the creators", async () => {
