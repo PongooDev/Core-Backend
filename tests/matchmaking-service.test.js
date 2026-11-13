@@ -957,7 +957,7 @@ test("only a gameserver reports its warmup, and hears the warmup time (#122)", a
     assert.equal((await reportWarmup(backend, undefined, { phase: "Setup" })).status, 401);
     const token = await dedicatedServerToken(backend.port);
     assert.deepEqual((await reportWarmup(backend, token, { phase: "Setup", accountIds: [] })).body,
-      { warmupSeconds: 120, lateJoin: false, sessionId: null, open: false, maxPlayers: null, parties: [], noFill: [], bots: null, stormDestructionPercent: 10 });
+      { warmupSeconds: 120, lateJoin: false, sessionId: null, open: false, maxPlayers: null, parties: [], noFill: [], bots: null, botsMode: null, stormDestructionPercent: 10 });
     await settingsOf(backend, { warmupSeconds: 300 });
     assert.equal((await reportWarmup(backend, token, { phase: "Setup", accountIds: [] })).body.warmupSeconds, 300);
     await settingsOf(backend, { warmupSeconds: "" });
@@ -1161,6 +1161,30 @@ test("with player bots on, the countdown runs to the warmup's end, which the gam
     let queued;
     do queued = JSON.parse(await connection.next()); while (Number(startOf(queued)[1]) > 46);
     assert.ok(Number(startOf(queued)[1]) >= 40, startOf(queued)[1]);
+  } finally {
+    for (const connection of connections) connection.close();
+    backend.close();
+  }
+});
+
+test("a match of a mode the panel has bots off in gets none, whatever playlist its server reports (Core-Backend #352)", async () => {
+  const backend = await startBackend();
+  const connections = [];
+  try {
+    await settingsOf(backend, { matchmakingGatherSeconds: 1, bots: { forcePlayerAIs: true, count: 50, modes: { duo: false } } });
+    const na = await regionServer(backend, "CoreServer1", "NA");
+    connections.push(na.connection);
+    const player = await userLogin(backend.port, "DuoNoBots");
+    const connection = await queueOnBuild(backend, player, 3700114);
+    connections.push(connection);
+    // No bots in Duos: the early countdown (late joining off), not the warmup in full.
+    assert.ok(Number(startOf(JSON.parse(await connection.next()))[1]) < 60);
+    const assign = await nextOf(na.connection, "AssignMatch");
+    na.connection.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: assign.payload.matchId, result: "ready" } }));
+    // The match's playlist wins over the one its server reports.
+    const token = await dedicatedServerToken(backend.port);
+    const answer = (await reportWarmup(backend, token, { phase: "Warmup", accountIds: [player.accountId], secondsLeft: 60, playlistId: 2 })).body;
+    assert.deepEqual([answer.bots, answer.botsMode], [null, { id: "duo", enabled: false }]);
   } finally {
     for (const connection of connections) connection.close();
     backend.close();

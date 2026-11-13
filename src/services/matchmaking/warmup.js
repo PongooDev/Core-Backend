@@ -3,13 +3,14 @@ import { isDedicatedServerToken } from "../../accounts/clients.js";
 import { requireAuth } from "../../accounts/auth.js";
 import { sendError } from "../../errors.js";
 import { stormDestructionPercent } from "../../events/stormdestruction.js";
-import { effectiveBots } from "../../tournaments/store.js";
+import { botModeOf, botsInMode, matchBots } from "../../matchmaking/botmodes.js";
 
 // Core's: a CoreV2 Battle Royale gameserver's warmup (Core-Backend #122, the admin panel's Matchmaking settings).
 //   POST /fortnite/api/game/v2/matchmakingservice/warmup
-//   {phase: "Setup"|"Warmup"|"Aircraft"|..., accountIds: [the players connected], secondsLeft: <the warmup's>}
+//   {phase: "Setup"|"Warmup"|"Aircraft"|..., accountIds: [the players connected], secondsLeft: <the warmup's>,
+//    playlistId, playlistName}
 //   -> {warmupSeconds, lateJoin, sessionId, open, maxPlayers, parties: [[accountId]], noFill: [accountId], bots,
-//       stormDestructionPercent}
+//       botsMode: {id, enabled}, stormDestructionPercent}
 // The server asks from its world's start, every 30 seconds until its warmup begins, then every second until the bus
 // leaves, and once more after. warmupSeconds (null: the game's own) is how long its warmup lasts: the game mode's
 // WarmupCountdownDuration, which the game has from its config and no match option sets (1.9's OnGivenMatchAssignment
@@ -30,6 +31,12 @@ import { effectiveBots } from "../../tournaments/store.js";
 // A match of a tournament playlist (Core-Backend #282) plays with its running event's own bots when it has them: on with
 // the event's count, or off (tournaments/store.js effectiveBots); the Matchmaking tab's otherwise, and for a report the
 // service can't place in a match yet (no players connected: the gameserver brings no bots in before one is).
+// The Matchmaking tab's bots play only in the game modes it has them on in (Core-Backend #352, matchmaking/botmodes.js):
+// in one that is off, bots is null. The match's mode is its playlist's: the matchmaking service's for a match it placed,
+// else the one the gameserver reports (playlistId, the game mode's CurrentPlaylistId, or from 5.30 playlistName, its
+// CurrentPlaylistName; a gameserver from before #352 sends neither), so a server is told before its first player is
+// placed. botsMode is that mode ({id: the panel's mode id, enabled: whether its bots play there}), or null when the
+// playlist isn't known yet; a gameserver from before #352 ignores it.
 // stormDestructionPercent (PongooDev/CoreV2#395, events/stormdestruction.js) is the events config's share of matches
 // (0 to 100) that get 5.40's Storm Destruction: the gameserver rolls each match against it once, while the build's
 // Athena.bMegaStormEnabled (the hotfix's switch) is on, and turns the switch off for a match that doesn't get it.
@@ -51,7 +58,10 @@ export function warmupRoutes({ tokens, sessions, settings, matchmaker, tournamen
     const open = lateJoin && req.body?.phase === "Warmup" && Number.isFinite(secondsLeft) && secondsLeft > 0;
     const match = accountIds.length ? matchmaker.warmup({ accountIds, open, secondsLeft }) : null;
     const event = match?.playlistId !== null && match?.playlistId !== undefined ? tournaments?.botsFor?.(match.playlistId) ?? null : null;
-    const bots = effectiveBots(current.bots, event);
+    const reported = Number(req.body?.playlistId);
+    const mode = botModeOf(match?.playlistId ?? (Number.isInteger(reported) && reported > 0 ? reported
+      : typeof req.body?.playlistName === "string" && req.body.playlistName.length <= 128 ? req.body.playlistName : null));
+    const bots = matchBots(current.bots, event, mode);
     const forced = bots?.forcePlayerAIs === true && bots.count > 0;
     const teams = bots?.fillPlayerTeams === true;
     res.json({
@@ -68,6 +78,7 @@ export function warmupRoutes({ tokens, sessions, settings, matchmaker, tournamen
         ? { count: forced ? bots.count : 0, level: bots.level, health: bots.startingHealth, shield: bots.startingShield, quests: bots.eliminationsCountForQuests,
           fights: bots.botFightChance ?? 30, teams, noFill: match?.noFill ?? [] }
         : null,
+      botsMode: mode === null ? null : { id: mode, enabled: event ? true : botsInMode(current.bots, mode) },
       stormDestructionPercent: stormDestructionPercent(current.events)
     });
   });

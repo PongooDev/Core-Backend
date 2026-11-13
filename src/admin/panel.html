@@ -5223,6 +5223,81 @@
         el("div", { class: "muted font-semibold", style: "margin-bottom:4px;", text: title }),
         el("div", { style: "display:flex; align-items:center; gap:8px;" }, input, el("span", { class: "muted font-semibold", text: range })));
 
+      // The game modes the bots play in (Core-Backend #352): each of the Battle Royale Game Modes, every one ticked unless
+      // turned off here. A match of a mode that is off gets no bots, whatever the switches above. Listed by season (the
+      // sidebar's at first), the default modes always.
+      form.bots.modes = { ...(data.bots?.modes || {}) };
+      const botModeOn = (id) => form.bots.modes[id] !== false;
+      let botModesSeason = String(ltmSeason);
+      let botModesQuery = "";
+      const botModesChip = chip("", "good");
+      const botModesList = el("div", {
+        style: "display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:6px 12px; max-height:240px; overflow-y:auto; padding:6px 2px; margin-top:8px;"
+      });
+      const shownBotModes = () => modeKeys.filter((m) => {
+        const l = ltmOf(m.id);
+        if (l && botModesSeason !== "all" && !l.seasons.includes(Number(botModesSeason))) return false;
+        return !botModesQuery || m.name.toLowerCase().includes(botModesQuery) || (m.code || "").toLowerCase().includes(botModesQuery);
+      });
+      const updateBotModesChip = () => {
+        const off = modeKeys.filter((m) => !botModeOn(m.id)).length;
+        botModesChip.textContent = off ? `Off in ${off} of ${modeKeys.length} modes` : "Every mode";
+        botModesChip.className = `chip ${off ? "warn" : "good"}`;
+      };
+      const renderBotModes = () => {
+        const items = shownBotModes();
+        botModesList.replaceChildren(...(items.length ? items.map((m) => el("label", { class: "check", title: m.code || m.name },
+          el("input", {
+            type: "checkbox",
+            checked: botModeOn(m.id),
+            "aria-label": `Player bots in ${m.name}`,
+            onchange: (e) => {
+              form.bots.modes[m.id] = e.target.checked;
+              updateBotModesChip();
+            }
+          }),
+          el("span", { text: m.name })))
+          : [el("div", { class: "sub", style: "grid-column:1/-1;", text: "No modes match." })]));
+      };
+      const setShownBotModes = (on) => {
+        for (const m of shownBotModes()) form.bots.modes[m.id] = on;
+        renderBotModes();
+        updateBotModesChip();
+      };
+      const botModesSeasonSelect = el("select", {
+        class: "field",
+        "aria-label": "Season of the modes listed",
+        onchange: (e) => {
+          botModesSeason = e.target.value;
+          renderBotModes();
+        }
+      }, ...[["all", "All seasons"], ...[1, 2, 3, 4, 5, 6].map((season) => [String(season), `Season ${season}`])].map(([value, label]) =>
+        el("option", { value, text: label, selected: value === botModesSeason })));
+      const botModesSearch = el("input", {
+        class: "field",
+        type: "search",
+        placeholder: "Search modes…",
+        "aria-label": "Search the modes",
+        style: "flex:1; min-width:120px;",
+        oninput: (e) => {
+          botModesQuery = e.target.value.toLowerCase().trim();
+          renderBotModes();
+        }
+      });
+      const botModesBox = el("details", { style: "margin-top:12px; padding-top:12px; border-top:1px solid var(--line);" },
+        el("summary", { style: "cursor:pointer;" },
+          el("span", { class: "muted font-semibold", style: "margin-right:8px;", text: "Game modes with bots" }),
+          botModesChip),
+        el("div", { class: "sub", style: "margin-top:6px;", text: "Bots join only the matches of the modes ticked here, as Force player AIs and Fill players' teams with bots set them. Every mode is ticked until you untick it. A tournament event's own bots (Tournaments tab) aren't affected." }),
+        el("div", { style: "display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:8px;" },
+          botModesSeasonSelect,
+          botModesSearch,
+          btn("Tick listed", () => setShownBotModes(true), "ghost small"),
+          btn("Untick listed", () => setShownBotModes(false), "ghost small")),
+        botModesList);
+      renderBotModes();
+      updateBotModesChip();
+
       const regionFallbackToggle = toggleSwitch(form.timing.regionFallback !== false, (checked) => {
         form.timing.regionFallback = checked;
       });
@@ -5364,7 +5439,8 @@
                 botsFillTeamsToggle),
               el("div", { style: "margin-top:12px; display:flex; justify-content:space-between; align-items:center; gap:12px;" },
                 el("span", { class: "muted font-semibold", text: "Bot eliminations count for quests" }),
-                botsQuestsToggle)),
+                botsQuestsToggle),
+              botModesBox),
             el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius); display:flex; flex-direction:column; justify-content:space-between;" },
               el("div", {},
                 el("div", { style: "font-weight:700; margin-bottom:4px;", text: "Cross-Region Fallback" }),

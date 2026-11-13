@@ -14,6 +14,7 @@ import { dataBuilds, readGameData } from "../gamedata/read.js";
 import { log, recentLogs } from "../log.js";
 import { sessionSummary } from "../matchmaking/sessions.js";
 import { defaultHostingIps, hostingIp, httpsProxied, invalidIpRanges, maxHostingIps, maxIpRanges } from "../network.js";
+import { sanitizeBotModes } from "../matchmaking/botmodes.js";
 import { customServerProblem, maxCustomServers } from "../matchmaking/custom-servers.js";
 import { invalidPingServers, maxPingServers } from "../matchmaking/qos.js";
 import { regionLabels, regionList, serverRegionCodes } from "../matchmaking/regions.js";
@@ -64,7 +65,7 @@ import { buildsNow, eventSchedules, scheduleEventPatch } from "./eventschedules.
 import { stormDestructionStatus } from "../events/stormdestruction.js";
 import { playlistTeamsOf } from "../matchmaking/service.js";
 import { convertLeftoverStormTickets } from "../events/stormllamas.js";
-import { defaultEvents, defaultMatchmakingModes, defaultServerLimits, defaultWarmupSeconds, maxSidebarWidth, minSidebarWidth, sidebarWidthValue } from "../settings/store.js";
+import { defaultBots, defaultEvents, defaultMatchmakingModes, defaultServerLimits, defaultWarmupSeconds, maxSidebarWidth, minSidebarWidth, sidebarWidthValue } from "../settings/store.js";
 import { calendarCacheMinutes } from "../services/fortnite/calendar.js";
 import { defaultBattlePass, enrichedMilestones } from "../battlepass/season1.js";
 import { bundleTiers, seasonPassConfig, seasonTiers, tierPrice } from "../battlepass/season2.js";
@@ -2206,8 +2207,9 @@ export function adminRoutes(context) {
         matchStartCountdown: s.matchStartCountdown !== false,
         matchStartBufferSeconds: s.matchStartBufferSeconds ?? 25
       },
-      // The player bots (CoreV2 #233).
-      bots: { ...s.bots },
+      // The player bots (CoreV2 #233), with the game modes they play in (#352: {<playlists' id>: boolean}, every one on
+      // unless turned off).
+      bots: { ...s.bots, modes: sanitizeBotModes(s.bots?.modes) },
       rewards: {
         enabled: s.battleRoyaleVbucks === true,
         modes: s.battleRoyaleRewards ?? {}
@@ -2330,7 +2332,7 @@ export function adminRoutes(context) {
       regionFallback: true,
       matchStartCountdown: true,
       matchStartBufferSeconds: 25,
-      bots: { forcePlayerAIs: false, count: 0, level: 5, startingHealth: 100, startingShield: 0, eliminationsCountForQuests: true, botFightChance: 30, fillPlayerTeams: false },
+      bots: defaultBots(),
       serverRegions: []
     });
     res.json({ success: true, ...getMatchmakingPayload() });

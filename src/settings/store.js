@@ -14,6 +14,7 @@ import { regionPingServers } from "../matchmaking/qos.js";
 import { regionHostingIps, regionList, serverRegionCodes } from "../matchmaking/regions.js";
 import { customMatchServers } from "../matchmaking/custom-servers.js";
 import { allowedBuildList } from "../builds/allowed.js";
+import { defaultBotModes, sanitizeBotModes } from "../matchmaking/botmodes.js";
 import { battleRoyaleSeasons } from "../builds/detect.js";
 
 // The Battle Royale modes a region's server limits (serverLimits) count, each 0 (no limit) by default.
@@ -137,7 +138,9 @@ const defaults = {
   // Battle Royale player bots (CoreV2 #233): Core's backport of Epic's player bots, for builds without native ones (every
   // build before 8.30). Off by default. fillPlayerTeams ("Fill players' teams with bots") puts bots in the empty places on
   // the teams of players whose party fills, in duos and squads; unlike forcePlayerAIs it isn't tied to the backport.
-  bots: { forcePlayerAIs: false, count: 0, level: 5, startingHealth: 100, startingShield: 0, eliminationsCountForQuests: true, botFightChance: 30, fillPlayerTeams: false },
+  // modes: the game modes they play in (Core-Backend #352, matchmaking/botmodes.js), every one by default.
+  bots: { forcePlayerAIs: false, count: 0, level: 5, startingHealth: 100, startingShield: 0, eliminationsCountForQuests: true, botFightChance: 30, fillPlayerTeams: false,
+    modes: defaultBotModes() },
   // 1.7.2 to 2.4.2's match start countdown (Core-Backend #160, matchmaking/service.js showsMatchStart): while a match
   // forms, the matchmaking panel shows "Match starting in 0:25... / Players Connected: 4", as Epic's service had it.
   matchStartCountdown: true,
@@ -272,6 +275,7 @@ const defaults = {
 export const defaultMatchmakingModes = defaults.matchmakingModes;
 export const defaultServerLimits = defaults.serverLimits;
 export const defaultWarmupSeconds = defaults.warmupSeconds;
+export const defaultBots = () => ({ ...defaults.bots, modes: defaultBotModes() });
 
 export function sanitizeMatchmakingModes(input, current = defaultMatchmakingModes) {
   if (!input || typeof input !== "object" || Array.isArray(input)) return JSON.parse(JSON.stringify(current));
@@ -555,7 +559,10 @@ function botsValue(value, base) {
     // The percent chance a bot takes on another bot it sees (CoreV2 #233); the gameserver doubles it late in a match.
     botFightChance: botInteger(given.botFightChance, 0, 100, base.botFightChance),
     // Bots on the teams of players whose party fills (CoreV2 #233), on or off whatever forcePlayerAIs is.
-    fillPlayerTeams: typeof given.fillPlayerTeams === "boolean" ? given.fillPlayerTeams : base.fillPlayerTeams
+    fillPlayerTeams: typeof given.fillPlayerTeams === "boolean" ? given.fillPlayerTeams : base.fillPlayerTeams,
+    // The game modes they play in (Core-Backend #352), each switch on its own: a settings file from before them, and a
+    // mode added since, take the base's (every mode on by default).
+    modes: sanitizeBotModes(given.modes, base.modes)
   };
 }
 function warmupSecondsValue(value) {
@@ -632,7 +639,7 @@ export function createSettingsStore(dataDir) {
     matchmakingModes: JSON.parse(JSON.stringify(defaults.matchmakingModes)),
     matchmakingModesRevision,
     serverLimits: JSON.parse(JSON.stringify(defaults.serverLimits)),
-    bots: { ...defaults.bots },
+    bots: { ...defaults.bots, modes: defaultBotModes() },
     creators: []
   };
 

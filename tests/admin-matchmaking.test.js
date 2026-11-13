@@ -229,18 +229,23 @@ test("the player bots settings: defaults, sanitizing, the config round-trip and 
   const backend = await startBackend();
   try {
     const defaults = { forcePlayerAIs: false, count: 0, level: 5, startingHealth: 100, startingShield: 0, eliminationsCountForQuests: true, botFightChance: 30, fillPlayerTeams: false };
-    assert.deepEqual((await admin(backend, "/matchmaking/overview")).body.bots, defaults);
+    // The game modes they play in (#352) are their own test (bot-modes.test.js): every one on here.
+    const plain = ({ modes, ...rest }) => {
+      assert.ok(modes && Object.values(modes).every((on) => on === true), "every mode keeps its bots");
+      return rest;
+    };
+    assert.deepEqual(plain((await admin(backend, "/matchmaking/overview")).body.bots), defaults);
 
     let res = await admin(backend, "/matchmaking/config", { bots: { forcePlayerAIs: true, count: 40, level: 8, startingHealth: 50, startingShield: 25, eliminationsCountForQuests: false, botFightChance: 45, fillPlayerTeams: true } });
     assert.equal(res.status, 200);
-    assert.deepEqual(res.body.bots, { forcePlayerAIs: true, count: 40, level: 8, startingHealth: 50, startingShield: 25, eliminationsCountForQuests: false, botFightChance: 45, fillPlayerTeams: true });
+    assert.deepEqual(plain(res.body.bots), { forcePlayerAIs: true, count: 40, level: 8, startingHealth: 50, startingShield: 25, eliminationsCountForQuests: false, botFightChance: 45, fillPlayerTeams: true });
     assert.deepEqual((await admin(backend, "/matchmaking/overview")).body.bots, res.body.bots);
 
     // Invalid fields keep their value; a partial update merges.
     res = await admin(backend, "/matchmaking/config", { bots: { count: 101, level: 0, startingHealth: 0, startingShield: -1, forcePlayerAIs: "yes", eliminationsCountForQuests: 1, botFightChance: 101, fillPlayerTeams: "yes" } });
-    assert.deepEqual(res.body.bots, { forcePlayerAIs: true, count: 40, level: 8, startingHealth: 50, startingShield: 25, eliminationsCountForQuests: false, botFightChance: 45, fillPlayerTeams: true });
+    assert.deepEqual(plain(res.body.bots), { forcePlayerAIs: true, count: 40, level: 8, startingHealth: 50, startingShield: 25, eliminationsCountForQuests: false, botFightChance: 45, fillPlayerTeams: true });
     res = await admin(backend, "/matchmaking/config", { bots: { count: 12, level: 1.5 } });
-    assert.deepEqual(res.body.bots, { forcePlayerAIs: true, count: 12, level: 8, startingHealth: 50, startingShield: 25, eliminationsCountForQuests: false, botFightChance: 45, fillPlayerTeams: true });
+    assert.deepEqual(plain(res.body.bots), { forcePlayerAIs: true, count: 12, level: 8, startingHealth: 50, startingShield: 25, eliminationsCountForQuests: false, botFightChance: 45, fillPlayerTeams: true });
     // The bounds are inclusive.
     res = await admin(backend, "/matchmaking/config", { bots: { count: 100, level: 10, startingHealth: 1, startingShield: 100, botFightChance: 100 } });
     assert.deepEqual([res.body.bots.count, res.body.bots.level, res.body.bots.startingHealth, res.body.bots.startingShield, res.body.bots.botFightChance], [100, 10, 1, 100, 100]);
@@ -251,7 +256,7 @@ test("the player bots settings: defaults, sanitizing, the config round-trip and 
     assert.deepEqual([res.body.bots.fillPlayerTeams, res.body.bots.forcePlayerAIs], [false, true]);
 
     res = await admin(backend, "/matchmaking/actions/reset-defaults", {});
-    assert.deepEqual(res.body.bots, defaults);
+    assert.deepEqual(plain(res.body.bots), defaults);
   } finally {
     backend.close();
   }

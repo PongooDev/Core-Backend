@@ -16,7 +16,8 @@ import { configureBattlePass } from "./battlepass/season1.js";
 import { createFriendStore } from "./friends/store.js";
 import { createFriendCodeStore } from "./friendcodes/store.js";
 import { createPurchaseCodeStore } from "./store/purchasecodes.js";
-import { botsOn, createTournamentStore, effectiveBots } from "./tournaments/store.js";
+import { botsOn, createTournamentStore } from "./tournaments/store.js";
+import { botModeOf, matchBots } from "./matchmaking/botmodes.js";
 import { configureShowdown, createShowdownRefresh, customShowdownImages } from "./tournaments/showdown.js";
 import { eventRoutes } from "./services/fortnite/events.js";
 import { networkAdminRoutes } from "./admin/network.js";
@@ -151,10 +152,12 @@ export function createContext(config) {
       matchStartCountdown: () => settings.get().matchStartCountdown !== false, warmupSeconds: () => settings.get().warmupSeconds ?? null,
       matchStartBuffer: () => settings.get().matchStartBufferSeconds,
       // Bots on, as the warmup answer sends them (services/matchmaking/warmup.js): for a bucket of a tournament playlist,
-      // with its running event's own bots (#282).
+      // with its running event's own bots (#282), else the panel's in the bucket's mode (#352, matchmaking/botmodes.js).
       playerBots: (bucketId) => {
-        const playlistId = bucketId ? parseBucket(bucketId).playlistId : null;
-        return botsOn(effectiveBots(settings.get().bots, playlistId === null ? null : tournaments.botsFor(playlistId)));
+        const bucket = bucketId ? parseBucket(bucketId) : null;
+        const playlistId = bucket ? bucket.playlistId : null;
+        const mode = playlistId === null ? null : botModeOf(playlistId, bucket.netcl);
+        return botsOn(matchBots(settings.get().bots, playlistId === null ? null : tournaments.botsFor(playlistId), mode));
       },
       serverRegions, serverLimits: () => settings.get().serverLimits, matchmakingModes: () => settings.get().matchmakingModes,
       regionHostingIps, customServers, customFallback: () => settings.get().customMatchFallback === true,
