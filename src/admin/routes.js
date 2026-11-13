@@ -58,8 +58,9 @@ import { datedEvent, datedEvents, datedFlagsStatus, datedModesOf, datedMoveSched
 import { birthdayChallengeStates } from "../events/birthday2018.js";
 import { odditiesModes, odditySchedulePatch, season4Flag } from "../events/season4flags.js";
 import { convertLeftoverCandy } from "../events/candyllamas.js";
-import { ltmIds, ltmSchedule } from "../events/ltms.js";
+import { ltmIds, ltmSchedule, replacesDefaultsOn } from "../events/ltms.js";
 import { launchSequenceSeconds, rocketLaunchStatus, sanitizeRocketLaunch } from "../events/rocketlaunch.js";
+import { buildsNow, eventSchedules, scheduleEventPatch } from "./eventschedules.js";
 import { stormDestructionStatus } from "../events/stormdestruction.js";
 import { playlistTeamsOf } from "../matchmaking/service.js";
 import { convertLeftoverStormTickets } from "../events/stormllamas.js";
@@ -135,6 +136,56 @@ const served540 = (now) => inBuild("4352937", () => [...activeEventFlags(),
 // Loot Lake, where it is served its own BR_S6_Island_Rune8 (events/island.js).
 const served600 = (now) => inBuild("4402180", () => [...activeEventFlags(),
   ...(islandStates(now)[0]?.events ?? []).map(({ eventType }) => eventType)]);
+
+// Each build the admin panel's Events page lists, with the event it shipped with (its own, as Epic ran it).
+const eventBuilds = [
+  { version: "1.7.2", cl: 3532353, event: "Base Campaign" },
+  { version: "1.8 – 1.9", cl: 3724489, event: "Fortnitemares" },
+  { version: "1.9.1", cl: 3775276, event: "Mutant Storms" },
+  { version: "1.10", cl: 3790078, event: "Mutant Storms" },
+  { version: "1.11", cl: 3807424, event: "Survive the Holidays" },
+  { version: "2.1", cl: 3825894, event: "Survive the Holidays" },
+  { version: "2.2", cl: 3841827, event: "Survive the Holidays" },
+  { version: "2.3", cl: 3847564, event: "Mutant Storms" },
+  { version: "2.4", cl: 3858292, event: "Mutant Storms" },
+  { version: "2.4.2", cl: 3870737, event: "Mutant Storms" },
+  { version: "2.5", cl: 3889387, event: "Spring It On!" },
+  { version: "3.0", cl: 3901517, event: "Spring It On!" },
+  { version: "3.1", cl: 3915963, event: "Spring It On!" },
+  { version: "3.1.1", cl: 3917250, event: "Spring It On!" },
+  { version: "3.2", cl: 3935073, event: "Spring It On!" },
+  { version: "3.3", cl: 3942182, event: "Spring It On!" },
+  { version: "3.5.1", cl: 4000805, event: "Into the Storm" },
+  { version: "3.5.2", cl: 4008490, event: "Into the Storm" },
+  { version: "3.6", cl: 4019403, event: "Into the Storm" },
+  { version: "4.0", cl: 4039451, event: "Blockbuster" },
+  { version: "4.1", cl: 4053532, event: "Blockbuster" },
+  { version: "4.2", cl: 4072250, event: "Blockbuster" },
+  { version: "4.4.0", cl: 4117433, event: "Blockbuster" },
+  { version: "4.4.1", cl: 4127312, event: "Blockbuster" },
+  { version: "4.4.2", cl: 4132537, event: "Blockbuster" },
+  { version: "4.5.0", cl: 4159770, event: "Blockbuster" },
+  { version: "4.5", cl: 4166199, event: "Blockbuster" },
+  { version: "5.0.0", cl: 4204761, event: "Season 5" },
+  { version: "5.0", cl: 4214610, event: "Season 5" },
+  { version: "5.10.0", cl: 4225813, event: "Birthday" },
+  { version: "5.10", cl: 4240749, event: "Birthday" },
+  { version: "5.21", cl: 4288479, event: "Season 5" },
+  { version: "5.30", cl: 4305896, event: "Season 5" },
+  { version: "5.40", cl: 4352937, event: "High Stakes" },
+  { version: "5.41", cl: 4363240, event: "Season 5" },
+  { version: "6.00.0", cl: 4395664, event: "Cram Session" },
+  { version: "6.00", cl: 4402180, event: "Cram Session" },
+  { version: "6.01.0", cl: 4417689, event: "Cram Session" },
+  { version: "6.01", cl: 4424678, event: "Cram Session" },
+  { version: "6.02.0", cl: 4442095, event: "Cram Session" },
+  { version: "6.02", cl: 4461277, event: "Cram Session" },
+  { version: "6.10.0", cl: 4464155, event: "Cram Session" },
+  { version: "6.10.1", cl: 4476098, event: "Cram Session" },
+  { version: "6.10", cl: 4480234, event: "Cram Session" },
+  { version: "6.20", cl: 4497486, event: "Fortnitemares" },
+  { version: "6.21", cl: 4526925, event: "Fortnitemares" }
+];
 
 // Season 5's dated event-flag events (events/datedflags.js, Core-Backend #311) and Season 6's floating island as the admin
 // panel shows them: each step's times by Epic's dates on its season's replay lap now, the admin's own and the ones served now.
@@ -1376,6 +1427,28 @@ export function adminRoutes(context) {
     };
   }
 
+  // The Events page's plain-words view (admin/eventschedules.js, Core-Backend #351): each event's state and control, from the
+  // stores' own status views, and what each build's players see now. Fortnitemares 2018 links to its challenge parts
+  // (Challenges, Core-Backend #345) and its modes' place in the mode select (Matchmaking, #348).
+  function eventScheduleView(now, s) {
+    const eventsConfig = s.events ?? defaultEvents;
+    const storm = withoutSeasonStartRecording(() => stormDestructionStatus(now, eventsConfig));
+    const fortnitemaresParts = withoutSeasonStartRecording(() => inBuild(buildOfSeason(6), () => eventDaySchedules().map((id) => eventPlan(id, now, s))))
+      .find((plan) => plan.parts.length);
+    const links = { fortnitemares2018: [
+      ...(fortnitemaresParts ? [{ text: `Challenge parts: ${fortnitemaresParts.mode === "manual" ? "unlocked by hand" : "unlock on Epic's days"}, ${fortnitemaresParts.parts.filter((p) => p.unlocked).length} of ${fortnitemaresParts.totalParts} unlocked now`, href: "#/challenges/season6" }] : []),
+      { text: `Fortnitemares modes take Solo's, Duos' and Squads' place: ${replacesDefaultsOn(s) ? "on" : "off"}`, href: "#/matchmaking" }
+    ] };
+    const schedules = eventSchedules({
+      now, config: eventsConfig, seasonalEvents: s.seasonalEvents !== false,
+      rocket: withoutSeasonStartRecording(() => rocketLaunchStatus(now, eventsConfig)),
+      dated: datedStatus(now, eventsConfig),
+      season4: withoutSeasonStartRecording(() => season4FlagsStatus(now, eventsConfig)),
+      storm, links
+    });
+    return { schedules, buildsNow: buildsNow(eventBuilds, schedules, storm) };
+  }
+
   router.get("/admin/api/events/overview", (req, res) => {
     const now = new Date();
     const s = settings?.get?.() ?? {};
@@ -1383,56 +1456,8 @@ export function adminRoutes(context) {
     const seasonalEventsEnabled = s.seasonalEvents !== false && eventsConfig.mode !== "off";
     const shopConfig = s.itemShop ?? { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 };
 
-    const builds = [
-      { version: "1.7.2", cl: 3532353, event: "Base Campaign" },
-      { version: "1.8 – 1.9", cl: 3724489, event: "Fortnitemares" },
-      { version: "1.9.1", cl: 3775276, event: "Mutant Storms" },
-      { version: "1.10", cl: 3790078, event: "Mutant Storms" },
-      { version: "1.11", cl: 3807424, event: "Survive the Holidays" },
-      { version: "2.1", cl: 3825894, event: "Survive the Holidays" },
-      { version: "2.2", cl: 3841827, event: "Survive the Holidays" },
-      { version: "2.3", cl: 3847564, event: "Mutant Storms" },
-      { version: "2.4", cl: 3858292, event: "Mutant Storms" },
-      { version: "2.4.2", cl: 3870737, event: "Mutant Storms" },
-      { version: "2.5", cl: 3889387, event: "Spring It On!" },
-      { version: "3.0", cl: 3901517, event: "Spring It On!" },
-      { version: "3.1", cl: 3915963, event: "Spring It On!" },
-      { version: "3.1.1", cl: 3917250, event: "Spring It On!" },
-      { version: "3.2", cl: 3935073, event: "Spring It On!" },
-      { version: "3.3", cl: 3942182, event: "Spring It On!" },
-      { version: "3.5.1", cl: 4000805, event: "Into the Storm" },
-      { version: "3.5.2", cl: 4008490, event: "Into the Storm" },
-      { version: "3.6", cl: 4019403, event: "Into the Storm" },
-      { version: "4.0", cl: 4039451, event: "Blockbuster" },
-      { version: "4.1", cl: 4053532, event: "Blockbuster" },
-      { version: "4.2", cl: 4072250, event: "Blockbuster" },
-      { version: "4.4.0", cl: 4117433, event: "Blockbuster" },
-      { version: "4.4.1", cl: 4127312, event: "Blockbuster" },
-      { version: "4.4.2", cl: 4132537, event: "Blockbuster" },
-      { version: "4.5.0", cl: 4159770, event: "Blockbuster" },
-      { version: "4.5", cl: 4166199, event: "Blockbuster" },
-      { version: "5.0.0", cl: 4204761, event: "Season 5" },
-      { version: "5.0", cl: 4214610, event: "Season 5" },
-      { version: "5.10.0", cl: 4225813, event: "Birthday" },
-      { version: "5.10", cl: 4240749, event: "Birthday" },
-      { version: "5.21", cl: 4288479, event: "Season 5" },
-      { version: "5.30", cl: 4305896, event: "Season 5" },
-      { version: "5.40", cl: 4352937, event: "High Stakes" },
-      { version: "5.41", cl: 4363240, event: "Season 5" },
-      { version: "6.00.0", cl: 4395664, event: "Cram Session" },
-      { version: "6.00", cl: 4402180, event: "Cram Session" },
-      { version: "6.01.0", cl: 4417689, event: "Cram Session" },
-      { version: "6.01", cl: 4424678, event: "Cram Session" },
-      { version: "6.02.0", cl: 4442095, event: "Cram Session" },
-      { version: "6.02", cl: 4461277, event: "Cram Session" },
-      { version: "6.10.0", cl: 4464155, event: "Cram Session" },
-      { version: "6.10.1", cl: 4476098, event: "Cram Session" },
-      { version: "6.10", cl: 4480234, event: "Cram Session" },
-      { version: "6.20", cl: 4497486, event: "Fortnitemares" },
-      { version: "6.21", cl: 4526925, event: "Fortnitemares" }
-    ];
 
-    const sampleBuilds = builds.map((b) => ({
+    const sampleBuilds = eventBuilds.map((b) => ({
       ...b,
       flags: inBuild(String(b.cl), () => activeEventFlags())
     }));
@@ -1478,7 +1503,10 @@ export function adminRoutes(context) {
         currentTime: now.toISOString()
       },
       eventsConfig,
-      rocketLaunch: rocketLaunchStatus(now, eventsConfig),
+      rocketLaunch: withoutSeasonStartRecording(() => rocketLaunchStatus(now, eventsConfig)),
+      // Every event in plain words, with its state now and its one control, and what players on each build see now
+      // (admin/eventschedules.js, Core-Backend #351).
+      ...eventScheduleView(now, s),
       // Season 4's event flags, grouped (events/season4flags.js, Core-Backend #296), with what 4.5, 5.0, 5.10, 5.21, 5.30, 5.40 and 6.00 serve now.
       season4Flags: withoutSeasonStartRecording(() => season4FlagsStatus(now, eventsConfig, inBuild("4166199", () => activeEventFlags()), inBuild("4214610", () => activeEventFlags()), served510(now), served521(now), served530(now), served540(now), served600(now))),
       datedFlags: datedStatus(now, eventsConfig),
@@ -1635,29 +1663,45 @@ export function adminRoutes(context) {
 
   // 4.5's rocket launch (events/rocketlaunch.js), behind the admin gate like every /admin route: {action: "schedule", at
   // (an ISO time), countdownHours?}, {action: "now", inSeconds?} (the launch that many seconds from now: 0 starts the
-  // launch sequence at once, a countdown of 600 plays the klaxons) or {action: "clear"} (no launch: the rocket waits).
+  // launch sequence at once, a countdown of 600 plays the klaxons), {action: "dates"} (Epic's launch on Season 4's replay,
+  // Core-Backend #351) or {action: "clear"} (no launch: the rocket waits).
   router.post("/admin/api/events/rocket", (req, res) => {
     const body = typeof req.body === "object" && req.body !== null ? req.body : {};
     const current = sanitizeRocketLaunch(settings?.get?.()?.events?.rocketLaunch);
     let next;
-    if (body.action === "clear") next = { ...current, at: null };
+    if (body.action === "clear") next = { ...current, mode: "off", at: null };
+    else if (body.action === "dates") next = { ...current, mode: "dates" };
     else if (body.action === "now") {
       const seconds = body.inSeconds === undefined ? 0 : Number(body.inSeconds);
       if (!Number.isFinite(seconds) || seconds < -launchSequenceSeconds || seconds > 7 * 86400) {
         return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "inSeconds must be a number of seconds up to a week");
       }
-      next = { ...current, at: new Date(Date.now() + seconds * 1000).toISOString() };
+      next = { ...current, mode: "custom", at: new Date(Date.now() + seconds * 1000).toISOString() };
     } else if (body.action === "schedule") {
       if (typeof body.at !== "string" || Number.isNaN(Date.parse(body.at))) {
         return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "at must be a date and time");
       }
-      next = sanitizeRocketLaunch({ at: body.at, countdownHours: body.countdownHours }, current);
+      next = sanitizeRocketLaunch({ mode: "custom", at: body.at, countdownHours: body.countdownHours }, current);
     } else {
-      return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "action must be schedule, now or clear");
+      return sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", "action must be schedule, now, dates or clear");
     }
     if (body.countdownHours !== undefined && body.action !== "schedule") next = sanitizeRocketLaunch({ countdownHours: body.countdownHours }, next);
     const updated = settings.update({ events: { rocketLaunch: next } });
-    res.json({ success: true, rocketLaunch: rocketLaunchStatus(new Date(), updated.events) });
+    res.json({ success: true, rocketLaunch: withoutSeasonStartRecording(() => rocketLaunchStatus(new Date(), updated.events)) });
+  });
+
+  // The Events page's one control per event (Core-Backend #351, admin/eventschedules.js scheduleEventPatch): {event, mode:
+  // "off" | "dates" | "custom" | "now" (and an event's own: the rifts' "launch", the Birthday Challenges' "build", Storm
+  // Destruction's "always", the loot updates' "season" | "all", the meteor shower's phase), startAt?, endAt?, countdownHours?,
+  // percent?}. It sets the stores the routes above set (rocketLaunch, season4Flags, datedFlags, stormDestruction,
+  // contentUpdates, meteorStrike); the calendar revision follows the events config, so running servers refresh.
+  router.post("/admin/api/events/schedule", (req, res) => {
+    const body = typeof req.body === "object" && req.body !== null ? req.body : {};
+    const now = new Date();
+    const { patch, error } = scheduleEventPatch(body, settings.get()?.events ?? defaultEvents, now);
+    if (error) return invalid(res, error);
+    const updated = settings.update({ events: patch });
+    res.json({ success: true, ...eventScheduleView(now, updated) });
   });
 
   // Season 4's event flags (events/season4flags.js): {flag, state: "on" | "off" | "auto"} switches one over what the builds

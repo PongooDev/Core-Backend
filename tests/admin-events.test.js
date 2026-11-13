@@ -241,7 +241,8 @@ test("the admin panel's script parses, and the Events page shows the season pick
     const events = script.slice(script.indexOf("async function showEvents()"), script.indexOf("/* ---------- reports ---------- */"));
     assert.match(events, /const season = seasonOf\(state\.eventsSeason\)\.id;/);
     assert.match(events, /seasonBreadcrumb\(["']#\/events["']/);
-    assert.match(events, /const contentSection = season !== "2" \? null : el\("section"/);
+    // Each event card is the picked season's (Core-Backend #351): Season 2's content updates only on Season 2's page.
+    assert.match(events, /const cardsHere = \(data\.schedules \|\| \[\]\)\.filter\(\(card\) => card\.seasons\.includes\(seasonNumber\)\);/);
     assert.ok(!events.includes("seasonSelector"));
   } finally {
     backend.close();

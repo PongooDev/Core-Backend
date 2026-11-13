@@ -197,7 +197,8 @@ const defaults = {
     contentUpdates: defaultContentUpdates,
     // 3.6's Season 3 finale (events/meteorstrike.js): "none", "broadcast", "meteors" or "impact".
     meteorStrike: defaultMeteorStrikePhase,
-    // 4.5's rocket launch, Blast Off (events/rocketlaunch.js): its launch time (null: not scheduled) and countdown.
+    // 4.5's rocket launch, Blast Off (events/rocketlaunch.js): its mode ("off", "dates": Epic's on the replay, "custom": its
+    // launch time), the time and the countdown.
     rocketLaunch: defaultRocketLaunch,
     // Season 4's event flags (events/season4flags.js, Core-Backend #296): the admin's "on" / "off" per flag over a build's
     // own, and the rifts of July 2018: "off", "launch" (after the rocket launch) or "dates" (Epic's, on the replay).

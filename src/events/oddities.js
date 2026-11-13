@@ -29,7 +29,7 @@ function riftTimes(now, changelist, config) {
     }) };
   }
   if (mode === "launch") {
-    const t = rocketLaunchTimes(changelist, config);
+    const t = rocketLaunchTimes(changelist, config, now);
     if (!t) return null;
     const shift = t.launch - time(originalRocketLaunch);
     return { end: null, list: oddities.map((oddity) => ({ ...oddity, tellMs: time(oddity.tellAt) + shift, eventMs: time(oddity.eventAt) + shift })) };

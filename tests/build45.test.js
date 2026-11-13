@@ -155,8 +155,8 @@ test("Blast Off: the rocket's calendar events by the admin's launch time, on 4.5
   assert.equal(nextRocketLaunchChange(at(launch + 20 * 86400000), v45, config), null);
   assert.deepEqual(rocketLaunchFlags(at(launch + 1000), v45, { ...config, mode: "off" }), [], "the events off");
   // The admin's input and status.
-  assert.deepEqual(sanitizeRocketLaunch({ at: "nonsense", countdownHours: 500 }), { at: null, countdownHours: 48 });
-  assert.deepEqual(sanitizeRocketLaunch({ at: "2026-11-10T18:00:00Z", countdownHours: 0 }), { at: "2026-11-10T18:00:00.000Z", countdownHours: 0 });
+  assert.deepEqual(sanitizeRocketLaunch({ at: "nonsense", countdownHours: 500 }), { mode: "off", at: null, countdownHours: 48 });
+  assert.deepEqual(sanitizeRocketLaunch({ at: "2026-11-10T18:00:00Z", countdownHours: 0 }), { mode: "custom", at: "2026-11-10T18:00:00.000Z", countdownHours: 0 });
   assert.equal(rocketLaunchStatus(at(launch - 3600000), config).phase, "countdown");
   assert.equal(rocketLaunchStatus(now, { mode: "auto" }).phase, "unscheduled");
   // A zero-hour countdown goes straight to the launch.

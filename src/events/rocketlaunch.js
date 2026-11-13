@@ -1,5 +1,7 @@
 import { currentBuild } from "../builds/context.js";
+import { seasonMoment } from "../store/itemshop.js";
 import { currentEventsConfig, eventsActiveUntil, seasonalEventsOn } from "./events.js";
+import { geodeBegin, geodeCountdown, geodeOver, riftGrowth } from "./season4flags.js";
 
 // Blast Off, Season 4's live event: the rocket that left the villain lair north of Snobby Shores on 30 June 2018 at 18:00
 // UTC, cracked the sky and left a rift behind (Update v4.50's season, 4.5: CL-4159770 and CL-4166199). No hotfix or
@@ -34,36 +36,57 @@ import { currentEventsConfig, eventsActiveUntil, seasonalEventsOn } from "./even
 // Athena_OdditiesActors' EventFlag.BR_S4_Oddity_01 to _08 _Tell and _Event (the rifts that took the map's objects in
 // July) are events/season4flags.js's: by Epic's July dates, after the admin's launch, or switched by hand.
 export const rocketLaunchBuilds = [4159770, 4166199];
-export const geodeCountdown = "EventFlag.BR_S4_Geode_Countdown";
-export const geodeBegin = "EventFlag.BR_S4_Geode_Begin";
-export const geodeOver = "EventFlag.BR_S4_Geode_Over";
-export const riftGrowth = "EventFlag.BR_S4_Rift_Growth";
+// The four flags are named in events/season4flags.js's catalog of Season 4's flags, which doesn't import this file: this one
+// reads Season 4's replay clock (store/itemshop.js), whose imports come back round to the catalog.
+export { geodeBegin, geodeCountdown, geodeOver, riftGrowth };
 // Epic's: 30 June 2018, 18:00 UTC (2 PM Eastern).
 export const originalRocketLaunch = "2018-06-30T18:00:00.000Z";
 export const launchSequenceSeconds = 240;
 export const riftGrowthDays = 13.6;
 export const defaultCountdownHours = 48;
-export const defaultRocketLaunch = { at: null, countdownHours: defaultCountdownHours };
+// The launch's mode (Core-Backend #351): "off" (no launch: the rocket waits in its lair), "dates" (Epic's 30 June 2018,
+// 18:00 UTC, on Season 4's replay, store/itemshop.js seasonMoment, as the rifts' "dates" mode, events/oddities.js) or
+// "custom" (the admin's time, at). A config saved before the mode existed has none: "custom" with a time, "off" without.
+export const rocketLaunchModes = ["off", "dates", "custom"];
+export const defaultRocketLaunch = { mode: "off", at: null, countdownHours: defaultCountdownHours };
 
 export const hasRocketLaunch = (changelist = currentBuild()) => rocketLaunchBuilds.includes(Number(changelist));
 
-// The events config's rocketLaunch: {at: ISO time or null, countdownHours 0 to 168}.
+// The events config's rocketLaunch: {mode, at: ISO time or null, countdownHours 0 to 168}. A time given without a mode is
+// the admin's own ("custom"), and clearing it ("at": null) turns the launch off.
+const modeOf = (value) => (rocketLaunchModes.includes(value?.mode) ? value.mode : value?.at ? "custom" : "off");
 export function sanitizeRocketLaunch(value, current = defaultRocketLaunch) {
   const result = { ...defaultRocketLaunch, ...(current ?? {}) };
+  result.mode = modeOf(current ?? {});
   if (!value || typeof value !== "object" || Array.isArray(value)) return result;
-  if (value.at === null || value.at === "") result.at = null;
-  else if (typeof value.at === "string" && !Number.isNaN(Date.parse(value.at))) result.at = new Date(Date.parse(value.at)).toISOString();
+  if (value.at === null || value.at === "") {
+    result.at = null;
+    if (value.mode === undefined && result.mode === "custom") result.mode = "off";
+  } else if (typeof value.at === "string" && !Number.isNaN(Date.parse(value.at))) {
+    result.at = new Date(Date.parse(value.at)).toISOString();
+    if (value.mode === undefined) result.mode = "custom";
+  }
+  if (rocketLaunchModes.includes(value.mode)) result.mode = value.mode;
+  // The admin's own mode needs its time.
+  if (result.mode === "custom" && !result.at) result.mode = "off";
   const hours = Number(value.countdownHours);
   if (value.countdownHours !== undefined && Number.isFinite(hours) && hours >= 0 && hours <= 168) result.countdownHours = hours;
   return result;
 }
 
-// The launch's moments (ms) on a 4.5 build with a launch time set and the seasonal events on; null otherwise.
-export function rocketLaunchTimes(changelist = currentBuild(), config = currentEventsConfig()) {
+// Epic's launch on Season 4's replay as a real time (ms): the lap's 30 June, before or after now as the replay stands.
+export function replayRocketLaunch(now = new Date()) {
+  const moment = seasonMoment(now, null, 4).getTime();
+  return now.getTime() + (Date.parse(originalRocketLaunch) - moment);
+}
+
+// The launch's moments (ms) on a 4.5 build with a launch (the admin's time, or Epic's on the replay) and the seasonal
+// events on; null otherwise.
+export function rocketLaunchTimes(changelist = currentBuild(), config = currentEventsConfig(), now = new Date()) {
   if (!hasRocketLaunch(changelist) || !seasonalEventsOn() || config?.mode === "off") return null;
-  const { at, countdownHours } = sanitizeRocketLaunch(config?.rocketLaunch);
-  if (!at) return null;
-  const launch = Date.parse(at);
+  const { mode, at, countdownHours } = sanitizeRocketLaunch(config?.rocketLaunch);
+  if (mode === "off" || (mode === "custom" && !at)) return null;
+  const launch = mode === "dates" ? replayRocketLaunch(now) : Date.parse(at);
   const sequenceEnd = launch + launchSequenceSeconds * 1000;
   return { countdownStart: launch - countdownHours * 3600000, launch, sequenceEnd, riftEnd: sequenceEnd + Math.round(riftGrowthDays * 86400000) };
 }
@@ -73,7 +96,7 @@ const iso = (ms) => new Date(ms).toISOString();
 // The calendar events of each part of the launch: [{validFrom (ms), events: [{eventType, activeSince, activeUntil}]}],
 // from the part that holds now on (an empty list without a launch time). Before the countdown the part has no events.
 export function rocketLaunchStates(now = new Date(), changelist = currentBuild(), config = currentEventsConfig()) {
-  const t = rocketLaunchTimes(changelist, config);
+  const t = rocketLaunchTimes(changelist, config, now);
   if (!t) return [];
   const event = (eventType, since, until) => ({ eventType, activeSince: iso(since), activeUntil: until === null ? eventsActiveUntil : iso(until) });
   const parts = [
@@ -99,13 +122,13 @@ export function nextRocketLaunchChange(now = new Date(), changelist = currentBui
   return next ? next.validFrom : null;
 }
 
-// The admin panel's view: the launch time, the countdown, the phase now and the four moments.
+// The admin panel's view: the mode, the launch time, the countdown, the phase now and the four moments.
 export function rocketLaunchStatus(now = new Date(), config = currentEventsConfig()) {
-  const { at, countdownHours } = sanitizeRocketLaunch(config?.rocketLaunch);
-  const t = at ? rocketLaunchTimes(rocketLaunchBuilds[1], config) : null;
+  const { mode, at, countdownHours } = sanitizeRocketLaunch(config?.rocketLaunch);
+  const t = mode !== "off" ? rocketLaunchTimes(rocketLaunchBuilds[1], config, now) : null;
   const time = now.getTime();
-  const phase = !at ? "unscheduled" : !t ? "off" : time < t.countdownStart ? "scheduled" : time < t.launch ? "countdown"
+  const phase = mode === "off" ? "unscheduled" : !t ? "off" : time < t.countdownStart ? "scheduled" : time < t.launch ? "countdown"
     : time < t.sequenceEnd ? "launching" : time < t.riftEnd ? "rift" : "over";
-  return { at, countdownHours, phase, original: originalRocketLaunch,
+  return { mode, at, countdownHours, phase, original: originalRocketLaunch,
     ...(t ? { countdownStart: iso(t.countdownStart), launch: iso(t.launch), sequenceEnd: iso(t.sequenceEnd), riftEnd: iso(t.riftEnd) } : {}) };
 }

@@ -1157,6 +1157,39 @@
       margin-top: 10px;
     }
 
+    /* A segmented control (the Events page's one control per event, Core-Backend #351). */
+    .seg {
+      display: inline-flex;
+      flex-wrap: wrap;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .seg button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+
+    .seg button+button {
+      border-left: 1px solid var(--line);
+    }
+
+    .seg button:hover {
+      color: #fff;
+    }
+
+    .seg button[aria-pressed="true"] {
+      background: var(--blue);
+      color: #fff;
+    }
+
     .subtabs {
       display: flex;
       gap: 22px;
@@ -7705,6 +7738,19 @@
         stormDestruction: { mode: cfg.stormDestruction?.mode || "dates", percent: Number(cfg.stormDestruction?.percent ?? 10) }
       };
 
+      // Times on this page are the browser's own, and the page says which (Core-Backend #351).
+      const tzOffset = (() => {
+        const minutes = -new Date().getTimezoneOffset();
+        const abs = Math.abs(minutes);
+        return `UTC${minutes >= 0 ? "+" : "−"}${String(Math.floor(abs / 60)).padStart(2, "0")}:${String(abs % 60).padStart(2, "0")}`;
+      })();
+      const tzLabel = `${Intl.DateTimeFormat().resolvedOptions().timeZone || "your time zone"} (${tzOffset})`;
+      const fmtWhen = (iso) => new Date(iso).toLocaleString(undefined, { weekday: "short", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+      // The one control per event (/admin/api/events/schedule): Off, Epic's dates, Custom start/end, Start now.
+      const scheduleAction = async (payload, message) => {
+        if (await act(api("/admin/api/events/schedule", payload), message)) showEvents();
+      };
+
       // The season the page shows: its clock, its Season Start row and, for Season 2, its content updates.
       const season = seasonOf(state.eventsSeason).id;
       const dailyTarget = new Date(data.calendar.dailyStoreEnd).getTime();
@@ -7751,8 +7797,6 @@
 
       const saveConfig = async () => {
         const payload = {
-          mode: form.mode,
-          customFlags: form.customFlags,
           hexsylvaniaGates: form.hexsylvaniaGates,
           candyMultiplier: form.candyMultiplier,
           stormAlertQuota: form.stormAlertQuota,
@@ -7763,27 +7807,15 @@
           weeklyDurationDays: form.weeklyDurationDays,
           customSeasonEnd: form.customSeasonEnd ? new Date(form.customSeasonEnd).toISOString() : null,
           seasonStarts: Object.fromEntries(SEASONS.map(({ id }) => [id, form.seasonStarts[id] || null])),
-          calendarCacheMinutes: form.calendarCacheMinutes,
-          contentUpdates: {
-            mode: form.contentUpdates.mode,
-            overrides: Object.fromEntries((data.contentUpdates?.builds?.[0]?.updates ?? []).map((u) => [u.id, form.contentUpdates.overrides[u.id] || "auto"]))
-          },
-          meteorStrike: form.meteorStrike,
-          stormDestruction: form.stormDestruction
+          calendarCacheMinutes: form.calendarCacheMinutes
         };
-        await act(api("/admin/api/events/config", payload), "Event configuration saved");
+        await act(api("/admin/api/events/config", payload), "Settings saved");
         showEvents();
       };
-
-      // Mode Selector Cards
-      const modeOptions = [
-        { id: "auto", title: "Auto (Per-Build)", desc: "Native event per build (1.8: Fortnitemares, 1.9.1: Vindertech, 1.10: ActiveStorms).", badge: "Recommended" },
-        { id: "force_fortnitemares", title: "Force Fortnitemares", desc: "Forces EventFlag.Fortnitemares & Hexsylvania across all connected client builds.", badge: "Halloween" },
-        { id: "force_mutantstorms", title: "Force Mutant Storms", desc: "Forces Mutant Storms & StormCategory alerts across all builds: Vindertech quests, or 2.3's Hydraulic quests, Storm Llama, Mini-Bosses & Event Store.", badge: "Storms" },
-        { id: "force_winter2017", title: "Force Survive the Holidays", desc: "Forces Winterfest, Mini-Boss alerts & Holiday Survival across all builds.", badge: "Winterfest" },
-        { id: "custom", title: "Custom Flags", desc: "Broadcast arbitrary event flags defined below to all client builds.", badge: "Custom" },
-        { id: "off", title: "Disabled", desc: "Deactivates all limited-time seasonal events (Base campaign mode only).", badge: "Off" }
-      ];
+      // The event mode (Automatic, one event forced on every build, only listed flags, or none).
+      const saveEventMode = async () => {
+        if (await act(api("/admin/api/events/config", { mode: form.mode, customFlags: form.customFlags }), "Event mode saved")) showEvents();
+      };
 
       const customFlagsInput = el("input", {
         class: "field",
@@ -7804,43 +7836,24 @@
         customFlagsInput
       );
 
-      // 3.6's Season 3 finale (events/meteorstrike.js): the AthenaGameData rows its DefaultGame.ini hotfix sets.
-      const meteorStrikeOptions = [
-        ["none", "None: the comet and its shooting stars only"],
-        ["broadcast", "Broadcast: TVs show static, skybox audio"],
-        ["meteors", "Meteors: and meteors (level 1)"],
-        ["impact", "Impact: and meteors at their most (level 2)"]
-      ];
-      const meteorStrikeContainer = el("div", {
-        style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
-      },
-        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "3.6 Meteor Strike phase (Battle Royale):" }),
-        el("div", { class: "muted", style: "font-size:12px; margin-bottom:6px;", text: "Season 3's last week, set by the hotfix on 3.6 (no event flag drives it). The comet's position is the gameserver's clock: at its closest on any date after 30 April 2018. Restart the game and the server after a change." }),
-        el("select", { class: "field", "aria-label": "3.6 Meteor Strike phase", onchange: (e) => { form.meteorStrike = e.target.value; } },
-          ...meteorStrikeOptions.map(([value, text]) => el("option", { value, text, selected: form.meteorStrike === value })))
-      );
 
       // 5.40's Storm Destruction (events/stormdestruction.js, PongooDev/CoreV2#395): when the hotfix turns the game's mega storm
       // on (Athena.bMegaStormEnabled) and the share of matches the gameserver gives it.
       const storm = data.stormDestruction || { mode: "dates", percent: 10, original: { start: "2018-09-07T00:00:00Z", end: "2018-09-08T00:00:00Z" }, builds: {} };
-      const stormLabels = { dates: "Epic's dates on Season 5's replay (5.40 only)", always: "Always (5.40 and 5.41)", off: "Off" };
       const stormOn = (build) => (storm.builds?.[build] ? "on" : "off");
       const stormPercent = el("input", { class: "field", type: "number", min: "0", max: "100", step: "1", style: "width:80px;", "aria-label": "Storm Destruction share of matches (%)",
         value: String(form.stormDestruction.percent), oninput: (e) => { form.stormDestruction.percent = Number(e.target.value); } });
       const stormContainer = el("div", {
         style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
       },
-        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "5.40 Storm Destruction (Battle Royale):" }),
+        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "Share of matches:" }),
         el("div", { class: "muted", style: "font-size:12px; margin-bottom:6px;", text: `The storm's edge flashes and destroys structures in the last four circles (circles 7 to 10), as 5.40's own data has it. Epic's dates: ${new Date(storm.original.start).toUTCString().slice(5, 16)} until its removal on ${new Date(storm.original.end).toUTCString().slice(5, 16)}. While it is on, each match gets it at the share below (Epic's paks: every match that gets that far, 100%). Set by the hotfix: restart the game and the server after a change. Now: 5.40 ${stormOn(4352937)}, 5.41 ${stormOn(4363240)}.` }),
         el("div", { style: "display:flex; flex-wrap:wrap; gap:8px; align-items:center;" },
-          el("select", { class: "field", "aria-label": "Storm Destruction schedule", onchange: (e) => { form.stormDestruction.mode = e.target.value; } },
-            ...(storm.modes || ["dates", "always", "off"]).map((value) => el("option", { value, text: stormLabels[value] || value, selected: form.stormDestruction.mode === value }))),
           el("span", { style: "font-size:12px;", text: "Share of matches (%):" }), stormPercent,
           el("button", { class: "btn small", text: "Save", onclick: () => {
             const percent = Number(stormPercent.value);
             if (!Number.isFinite(percent) || percent < 0 || percent > 100) return toast("The share of matches is 0 to 100", true);
-            form.stormDestruction.percent = Math.round(percent);
-            saveConfig();
+            scheduleAction({ event: "stormDestruction", mode: form.stormDestruction.mode, percent: Math.round(percent) }, "Storm Destruction: share of matches saved");
           } }))
       );
 
@@ -7857,7 +7870,7 @@
       const rocketContainer = el("div", {
         style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
       },
-        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "4.5 Rocket Launch, Blast Off (Battle Royale):" }),
+        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "More launch controls:" }),
         el("div", { class: "muted", style: "font-size:12px; margin-bottom:6px;", text: `The calendar's EventFlag.BR_S4_Geode_Countdown (the hologram counts down to the launch), _Begin (the 4-minute launch), _Over and EventFlag.BR_S4_Rift_Growth (the sky crack grows for 13.6 days), on 4.5 only. Epic's launch: ${new Date(rocket.original || "2018-06-30T18:00:00Z").toLocaleString()}. Running gameservers pick a change up within 5 seconds (CoreV2's calendar revision watch) and have their players fetch it too; clients in the lobby at their next calendar fetch. Before the launch the map has the rocket in its lair (the pre-event map); after it the lair is gone and the rift grows (the post-event map), switched by the calendar on its own when the launch ends.` }),
         el("div", { style: "font-size:13px; margin-bottom:8px;", text: `Status: ${rocketPhases[rocket.phase] || rocket.phase}${rocket.launch ? ` (launch ${new Date(rocket.launch).toLocaleString()}, countdown from ${new Date(rocket.countdownStart).toLocaleString()})` : ""}` }),
         el("div", { style: "display:flex; flex-wrap:wrap; gap:8px; align-items:center;" },
@@ -7968,7 +7981,6 @@
             el("button", { class: "btn ghost small", text: "Back to Epic's dates", onclick: () => datedAction({ event: event.id, schedule: null, mode: "dates" }, `${event.name}: Epic's dates`) }),
             ...((event.modes || []).includes("build") ? [el("button", { class: "btn ghost small", text: "Back to the build's own", onclick: () => datedAction({ event: event.id, schedule: null, mode: "build" }, `${event.name}: the build's own`) })] : [])));
       };
-      const datedEditors = dated.events.filter((event) => !event.challenges).map(datedEditor);
       // 6.00's to 6.10's floating island (events/island.js, PongooDev/CoreV2#401): where it is on its way (Loot Lake, the seven runes, back over Loot Lake),
       // and a button per stop that puts it there now and holds it there.
       const islandDated = dated.events.find((event) => event.id === "island");
@@ -8072,20 +8084,11 @@
           el("button", { class: "btn ghost small", text: "Sink the Cube now", title: "It rolls onto the water a minute from now, sinks, and the lake turns bouncy", onclick: () => sinkAction({ inSeconds: 60 }, "The Cube rolls into Loot Lake in a minute") }),
           el("button", { class: "btn ghost small", text: "Back to Epic's dates", onclick: () => datedAction({ event: "cube", schedule: null, mode: "dates" }, "The Cube: Epic's dates") }))
       ) : null;
-      // The Battle Royale event challenges (Core-Backend #316): 5.10's Birthday Challenges and 5.40's (and 5.41's) High Stakes Challenges,
-      // each on or off and when (events/datedflags.js).
-      const challengeEvents = dated.events.filter((event) => event.challenges);
-      const challengesContainer = challengeEvents.length ? el("div", {
-        style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
-      },
-        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "Event challenges (5.10 – 5.41):" }),
-        el("div", { class: "muted", style: "font-size:12px; margin-bottom:4px;", text: "Battle Royale's event challenges: each is given at a player's next quest login while it is on, and the challenges tab counts down to its end. Off, or outside its times, it isn't given and its event flag isn't served. Challenges a player already has stay in their profile, with their progress. These work in the Automatic mode; the flag's switch in the Season 4 and 5 event flags below still overrides it." }),
-        ...challengeEvents.map(datedEditor)) : null;
       const season4Container = el("div", {
         style: "margin-top:14px; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);"
       },
-        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "Season 4, 5 and 6 event flags (4.0 – 6.21):" }),
-        el("div", { class: "muted", style: "font-size:12px; margin-bottom:8px;", text: "Every EventFlag.* in Season 4's paks. Automatic serves what the build served in its day; On or Off overrides it on the builds whose paks have the flag (in the Automatic mode). The rocket's flags follow the Rocket Launch above. Clients pick a change up at their next calendar fetch; running gameservers within 5 seconds." }),
+        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "Flag switches, Seasons 4 to 6 (4.0 – 6.21):" }),
+        el("div", { class: "muted", style: "font-size:12px; margin-bottom:8px;", text: "Every EventFlag.* in Season 4's to 6's paks. Automatic serves what the build served in its day (and the events above by their schedules); On or Off overrides it on the builds whose paks have the flag, in the Automatic event mode. The rocket's flags follow the Rocket launch above. Clients pick a change up at their next calendar fetch; running gameservers within 5 seconds." }),
         ...s4.groups.map((group) => el("div", { style: "margin-top:10px;" },
           el("div", { style: "font-weight:700; font-size:12px; margin-bottom:4px;", text: group.name + (group.managedBy ? " (by the Rocket Launch's time)" : "") }),
           el("div", { class: "table-wrap" }, el("table", { style: "font-size:12px;" },
@@ -8110,10 +8113,10 @@
                 el("select", { class: "field", "aria-label": `${entry.flag} state`, onchange: (e) => s4Action({ flag: entry.flag, state: e.target.value }, `${entry.flag}: ${e.target.value}`) },
                   ...[["auto", "Automatic"], ["on", "On"], ["off", "Off"]].map(([value, text]) => el("option", { value, text, selected: entry.override === value }))))
             )))
-          )))),
-        el("div", { style: "margin-top:12px; font-weight:700; font-size:12px;", text: "The rifts of July 2018 (4.5's oddities):" }),
-        el("select", { class: "field", style: "margin-top:4px;", "aria-label": "Rift schedule", onchange: (e) => s4Action({ oddities: e.target.value }, "Rift schedule saved") },
-          ...s4.odditiesModes.map((value) => el("option", { value, text: odditiesLabels[value] || value, selected: s4.oddities === value }))),
+          )))));
+
+      // The rifts' times, each rift's object and Epic's day, and the editor of each rift's times.
+      const odditiesContainer = el("div", {},
         el("div", { class: "table-wrap", style: "margin-top:6px;" }, el("table", { style: "font-size:12px;" },
           el("thead", {}, el("tr", {}, ...["#", "Prop", "Rift forms (_Tell)", "Rifted (_Event)", "Epic's"].map((text) => el("th", { text })))),
           el("tbody", {}, ...s4.rifts.map((rift) => el("tr", {},
@@ -8122,33 +8125,101 @@
             el("td", { text: fmtTime(rift.tellAt) }),
             el("td", { text: fmtTime(rift.eventAt) }),
             el("td", { class: "muted", text: new Date(rift.original.event).toUTCString().slice(5, 22) + " UTC" })))))),
-        odditiesEditor,
-        ...datedEditors
-      );
+        odditiesEditor);
 
-      const modeCards = el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; margin-top:12px;" },
-        ...modeOptions.map((opt) => {
-          const isSelected = form.mode === opt.id;
-          const card = el("div", {
-            style: `padding:12px 14px; background:${isSelected ? "var(--surface-2)" : "var(--surface)"}; border:2px solid ${isSelected ? "var(--blue)" : "var(--line)"}; border-radius:var(--radius-sm); cursor:pointer; transition:border-color .15s, background .15s;`,
-            onclick: () => {
-              form.mode = opt.id;
-              Array.from(modeCards.children).forEach((c, idx) => {
-                const sel = modeOptions[idx].id === form.mode;
-                c.style.borderColor = sel ? "var(--blue)" : "var(--line)";
-                c.style.background = sel ? "var(--surface-2)" : "var(--surface)";
-              });
-              customFlagsContainer.style.display = form.mode === "custom" ? "block" : "none";
+      // Each event as players know it (Core-Backend #351, admin/eventschedules.js): its builds, its state in plain words and one
+      // control (Off, Epic's dates, Custom start/end, Start now). The flags and the step-by-step controls are in its Advanced.
+      const toneChips = { on: ["On now", "good"], scheduled: ["Scheduled", "sky"], dates: ["Epic's dates", "yellow"], off: ["Off", ""], over: ["Over", ""] };
+      const stateText = (state) => state.text.replace("{at}", state.at ? fmtWhen(state.at) : "—");
+      const timePicker = (label, iso, ariaLabel) => {
+        const input = el("input", { class: "field", type: "datetime-local", "aria-label": `${ariaLabel}, ${tzLabel}`, value: toLocalInput(iso) });
+        return { input, node: el("label", { style: "display:flex; flex-direction:column; gap:4px; font-size:12px;" },
+          el("span", { class: "font-semibold", text: label }), input, el("span", { class: "muted", style: "font-size:11px;", text: tzLabel })) };
+      };
+      // An event's Advanced: the flags it serves, and the controls it had before (#351 keeps every one).
+      const advancedOf = (card) => {
+        const datedOwn = card.kind === "dated" ? dated.events.find((event) => event.id === card.id) : null;
+        return {
+          rocket: [rocketContainer],
+          oddities: [odditiesContainer],
+          cube: [cubeSpawnContainer, cubeStagesContainer, cubeSinkContainer],
+          island: [islandStagesContainer],
+          stormDestruction: [stormContainer],
+          contentUpdates: [contentAdvanced]
+        }[card.id]?.concat(datedOwn ? [datedEditor(datedOwn)] : []) ?? (datedOwn ? [datedEditor(datedOwn)] : []);
+      };
+      const eventCardView = (card) => {
+        const [toneLabel, toneKind] = toneChips[card.state.tone] || [card.state.tone, ""];
+        const timed = (card.modes || []).includes("custom");
+        const start = timed ? timePicker(card.startLabel || "Starts", card.startAt, `${card.name}: ${card.startLabel || "start"}`) : null;
+        const end = timed && card.endLabel ? timePicker(`${card.endLabel} (optional)`, card.endAt, `${card.name}: ${card.endLabel}`) : null;
+        const hours = card.kind === "rocket" ? el("input", { class: "field", type: "number", min: "0", max: "168", step: "1", style: "width:90px;", "aria-label": "Countdown hours", value: String(card.countdownHours ?? 48) }) : null;
+        const customRow = timed ? el("div", { style: `display:${card.mode === "custom" ? "flex" : "none"}; flex-wrap:wrap; gap:12px; align-items:flex-end; margin-top:10px; padding:10px 12px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);` },
+          start.node,
+          end ? end.node : null,
+          hours ? el("label", { style: "display:flex; flex-direction:column; gap:4px; font-size:12px;" }, el("span", { class: "font-semibold", text: "Countdown (hours)" }), hours, el("span", { class: "muted", style: "font-size:11px;", text: "before the launch" })) : null,
+          btn("Save times", () => {
+            if (!start.input.value) return toast(`Pick when: ${card.startLabel || "the start"}`, true);
+            scheduleAction({ event: card.id, mode: "custom", startAt: toIso(start.input.value), ...(end && end.input.value ? { endAt: toIso(end.input.value) } : {}),
+              ...(hours ? { countdownHours: Number(hours.value) } : {}) }, `${card.name}: times saved`);
+          }, "primary small"),
+          el("div", { class: "muted", style: "font-size:11px; flex-basis:100%;", text: card.kind === "rocket"
+            ? "The countdown, the launch and the sky's crack follow from the launch time."
+            : card.endLabel ? "The steps between keep Epic's spacing, stretched or squeezed to fit the end you pick. Leave the end empty to keep Epic's own spacing."
+            : "The other steps keep Epic's spacing from this moment." })) : null;
+        const segButtons = (card.modes || []).map((mode) => el("button", { type: "button", "aria-pressed": String(card.mode === mode), text: card.modeLabels[mode] || mode,
+          onclick: () => {
+            if (mode === "custom") {
+              customRow.style.display = "flex";
+              segButtons.forEach((button) => button.setAttribute("aria-pressed", String(button === segButtons[card.modes.indexOf("custom")])));
+              start.input.focus();
+              return;
             }
-          },
-            el("div", { style: "display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;" },
-              el("span", { style: "font-weight:700; font-size:13px;", text: opt.title }),
-              chip(opt.badge, isSelected ? "accent" : "")),
-            el("div", { class: "muted", style: "font-size:11px; line-height:1.4;", text: opt.desc })
-          );
-          return card;
-        })
-      );
+            scheduleAction({ event: card.id, mode }, `${card.name}: ${card.modeLabels[mode] || mode}`);
+          } }));
+        const startNow = card.now ? btn(card.kind === "rocket" ? "Launch now" : "Start now", async () => {
+          const ok = await confirmModal(`Start ${card.name} now? Players in matches running on ${card.builds} see it within a few seconds, the others at their next match.`,
+            { title: "Start now", confirmText: "Start now" });
+          if (ok) scheduleAction({ event: card.id, mode: "now" }, `${card.name}: started now`);
+        }, "ghost small") : null;
+        const extra = advancedOf(card).filter(Boolean);
+        return el("div", { "data-event": card.id, style: "padding:14px 16px; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-sm);" },
+          el("div", { style: "display:flex; justify-content:space-between; gap:8px; align-items:flex-start; flex-wrap:wrap;" },
+            el("div", {},
+              el("div", { style: "font-weight:700; font-size:14px;", text: card.name }),
+              el("div", { class: "muted", style: "font-size:12px;", text: `Builds ${card.builds}` })),
+            chip(toneLabel, toneKind)),
+          el("div", { class: "muted", style: "font-size:12px; margin-top:6px; line-height:1.4;", text: card.about }),
+          el("div", { class: "event-state", style: "font-size:13px; margin-top:8px;", text: stateText(card.state) }),
+          segButtons.length
+            ? el("div", { style: "display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:10px;" },
+              el("div", { class: "seg", role: "group", "aria-label": `When ${card.name} runs` }, segButtons), startNow)
+            : el("div", { class: "muted", style: "font-size:12px; margin-top:8px;", text: "Runs on its builds by itself; the event mode above switches it." }),
+          customRow,
+          (card.links || []).length ? el("div", { style: "margin-top:8px;" }, card.links.map((link) => el("a", { href: link.href, style: "display:block; font-size:12px; margin-top:4px;", text: `${link.text} →` }))) : null,
+          card.flags.length || extra.length ? el("details", { style: "margin-top:10px;" },
+            el("summary", { class: "muted", style: "cursor:pointer; font-size:12px;", text: "Advanced" }),
+            card.flags.length ? el("div", { style: "margin-top:8px;" },
+              el("div", { class: "muted", style: "font-size:12px; margin-bottom:4px;", text: "Calendar flags it serves:" }),
+              el("div", { style: "display:flex; gap:4px; flex-wrap:wrap;" }, card.flags.map((flagName) => chip(flagName, "accent")))) : null,
+            ...extra) : null);
+      };
+      // The event mode: Automatic (each build its own events, and the schedules below), one event forced everywhere, only
+      // listed flags, or none.
+      const eventModeOptions = [
+        ["auto", "Automatic: each build runs its own events, as Epic ran them (recommended)"],
+        ["force_fortnitemares", "Fortnitemares 2017 on every build"],
+        ["force_mutantstorms", "Mutant Storms on every build"],
+        ["force_winter2017", "Survive the Holidays on every build"],
+        ["custom", "Only the flags I list"],
+        ["off", "No events at all"]
+      ];
+      const eventModeSelect = el("select", { class: "field", "aria-label": "Event mode", style: "min-width:min(100%, 420px);",
+        onchange: (e) => { form.mode = e.target.value; customFlagsContainer.style.display = form.mode === "custom" ? "block" : "none"; } },
+        ...eventModeOptions.map(([value, text]) => el("option", { value, text, selected: form.mode === value })));
+      // A build's season by its changelist (the sidebar's seasons), for the players' line.
+      const seasonFirstCl = { 1: 0, 2: 3807424, 3: 3901517, 4: 4039451, 5: 4204761, 6: 4395664 };
+      const seasonOfCl = (cl) => Number(Object.entries(seasonFirstCl).filter(([, first]) => cl >= first).at(-1)[0]);
 
       // Section 2: STW Modifiers & Gates Inputs
       const gatesSelect = el("select", {
@@ -8262,9 +8333,6 @@
       const content = data.contentUpdates ?? { builds: [] };
       const [content111, content21, content23, content24] = content.builds;
       const updateWhy = { season: "by date", all: "all on", on: "forced on", off: "forced off", shipped: "always (2.1)" };
-      const contentModeSelect = el("select", { class: "field", onchange: (e) => { form.contentUpdates.mode = e.target.value; } },
-        el("option", { value: "season", text: "Follow the season's dates", selected: form.contentUpdates.mode === "season" }),
-        el("option", { value: "all", text: "Everything on", selected: form.contentUpdates.mode === "all" }));
       const contentRow = (update) => {
         const on21 = content21?.updates.find((u) => u.id === update.id);
         return el("div", { style: "display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:8px 0; border-top:1px solid var(--line);" },
@@ -8277,10 +8345,9 @@
             ...[["auto", "Auto"], ["on", "Force on"], ["off", "Force off"]].map(([value, text]) =>
               el("option", { value, text, selected: (form.contentUpdates.overrides[update.id] || "auto") === value }))));
       };
-      const contentSection = season !== "2" ? null : el("section", { class: "panel", style: "margin-top:16px" },
-        el("div", { class: "panel-head", style: "margin-bottom:8px" },
-          el("div", { class: "actions" }, el("h2", { text: "Season 2 Content Updates" }), contentModeSelect)),
-        el("p", { class: "note", text: `Epic's loot hotfixes of Season 2, served to 1.11 and 2.1 clients and gameservers in DefaultGame.ini's [AssetHotfix]. On 1.11 they follow Season 2's replay (day 1 = 14 Dec 2017; today stands for ${content.seasonDate ? new Date(content.seasonDate).toUTCString().slice(5, 22) : "—"} UTC) or are all on; 2.1 always has all of them and its Cozy Campfire; 2.2 ships them in its own loot tables and needs none; 2.3 always has its Chug Jug (2.4 ships it in); 2.4 always has its Minigun and Suppressed Pistol cut (2.4.2 ships them in); 2.4.2's paks have no Crossbow (2.5 ships it in, with its own changes). A gameserver takes them when it starts.` }),
+      const contentAdvanced = el("div", { style: "margin-top:8px;" },
+        el("div", { style: "font-weight:700; font-size:13px; margin-bottom:4px;", text: "Season 2 Content Updates, one by one:" }),
+        el("div", { class: "muted", style: "font-size:12px;", text: `Epic's loot hotfixes of Season 2, served to 1.11 and 2.1 clients and gameservers in DefaultGame.ini's [AssetHotfix]. On 1.11 they follow Season 2's replay (day 1 = 14 Dec 2017; today stands for ${content.seasonDate ? new Date(content.seasonDate).toUTCString().slice(5, 22) : "—"} UTC) or are all on; 2.1 always has all of them and its Cozy Campfire; 2.2 ships them in its own loot tables and needs none; 2.3 always has its Chug Jug (2.4 ships it in); 2.4 always has its Minigun and Suppressed Pistol cut (2.4.2 ships them in); 2.4.2's paks have no Crossbow (2.5 ships it in, with its own changes). A gameserver takes them when it starts.` }),
         ...(content111?.updates ?? []).map(contentRow),
         ...(content21?.updates ?? []).filter((u) => !(content111?.updates ?? []).some((o) => o.id === u.id)).map((u) =>
           el("div", { style: "display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:8px 0; border-top:1px solid var(--line);" },
@@ -8296,7 +8363,11 @@
           el("div", { style: "display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:8px 0; border-top:1px solid var(--line);" },
             el("div", { style: "min-width:260px; flex:1;" }, el("div", { class: "font-semibold", text: u.name }),
               el("div", { class: "muted", style: "font-size:11px;", text: "2.4's own" })),
-            chip(`2.4: ${u.on ? "in" : "out"}`, u.on ? "good" : "warn"))));
+            chip(`2.4: ${u.on ? "in" : "out"}`, u.on ? "good" : "warn"))),
+        el("div", { style: "margin-top:8px;" }, btn("Save the overrides", async () => {
+          const overrides = Object.fromEntries((content111?.updates ?? []).map((u) => [u.id, form.contentUpdates.overrides[u.id] || "auto"]));
+          if (await act(api("/admin/api/events/config", { contentUpdates: { mode: form.contentUpdates.mode, overrides } }), "Loot update overrides saved")) showEvents();
+        }, "primary small")));
 
       const cacheMinsInput = el("input", {
         class: "field num",
@@ -8308,17 +8379,20 @@
         oninput: (e) => { form.calendarCacheMinutes = Math.max(5, Math.min(120, parseInt(e.target.value, 10) || 60)); }
       });
 
+      const seasonNumber = Number(season);
+      const cardsHere = (data.schedules || []).filter((card) => card.seasons.includes(seasonNumber));
+      const buildsHere = (data.buildsNow || []).filter((build) => seasonOfCl(build.cl) === seasonNumber);
+      const notAutomatic = form.mode !== "auto";
       $("view").replaceChildren(
         seasonBreadcrumb("#/events", "Events & Seasons", seasonOf(season).label),
         // View Header
         el("div", { class: "view-head" },
           el("div", {},
             el("h1", { text: `Events & Seasons: ${seasonOf(season).label}`, style: "margin:0 0 4px;" }),
-            el("div", { class: "muted", text: "Customizable event activation, STW mission modifiers, and live calendar timelines" })),
+            el("div", { class: "muted", text: `Pick when each event runs. Times on this page are in your time zone: ${tzLabel}.` })),
           el("div", { class: "actions" },
-            btn("Save Event Configuration", saveConfig, "primary"),
             btn("Reset Defaults", async () => {
-              if (await confirmModal("Reset all event configuration back to system defaults?", { title: "Reset Event Defaults" })) {
+              if (await confirmModal("Reset the event mode, the meteor shower, Storm Destruction, the loot updates and the settings below back to their defaults? The events' own schedules stay.", { title: "Reset Event Defaults" })) {
                 await act(api("/admin/api/events/config", {
                   mode: "auto",
                   customFlags: [],
@@ -8348,36 +8422,49 @@
           tile("Weekly Store Reset", [weeklyTimerEl, el("span", { class: "sub", text: `${weeklyResetDate.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })} · ${weeklyResetDate.toUTCString().slice(17, 22)} UTC` })]),
           tile(`Season ${season} Clock`, [seasonTimerEl, el("span", { class: "sub", text: `Ends ${seasonResetDate.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}` })])),
 
-        ...(contentSection ? [contentSection] : []),
-
-        // Section 1: Activation Mode & Flags
+        // The events (Core-Backend #351): the season's, each with its state and one control.
         el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
-            el("div", { class: "actions" },
-              el("h2", { text: "Seasonal Event Activation Mode" }),
-              chip(modeLabels[form.mode] || form.mode, form.mode !== "off" ? "good" : "warn"))),
-          el("p", { class: "note", text: "Select how Core activates limited-time seasonal events across your gameservers and connected clients. Changes are persisted and applied immediately." }),
-          modeCards,
-          customFlagsContainer,
-          meteorStrikeContainer,
-          stormContainer,
-          rocketContainer,
-          ...(cubeSpawnContainer ? [cubeSpawnContainer] : []),
-          ...(cubeStagesContainer ? [cubeStagesContainer] : []),
-          ...(cubeSinkContainer ? [cubeSinkContainer] : []),
-          ...(islandStagesContainer ? [islandStagesContainer] : []),
-          ...(challengesContainer ? [challengesContainer] : []),
-          season4Container,
-          el("div", { style: "margin-top:18px;" },
-            el("h3", { style: "font-size:14px; font-weight:700; margin-bottom:10px;", text: "Build-by-Build Event Compatibility Matrix" }),
-            matrixTable)
-        ),
+            el("h2", { text: `${seasonOf(season).label.split(" (")[0]}'s events` }),
+            el("div", { class: "seg", role: "group", "aria-label": "Season" },
+              SEASONS.map(({ id }) => el("button", { type: "button", "aria-pressed": String(id === String(season)), text: `Season ${id}`, onclick: () => pickEventsSeason(id) })))),
+          el("p", { class: "note", text: "Each event runs on its own builds. Off: it doesn't run. Epic's dates: it runs on the days Epic ran it, on the season's replay. Custom: it runs at the times you pick. Start now: it starts at once. Running matches pick a change up within a few seconds." }),
+          notAutomatic ? el("div", { class: "note", style: "margin-top:8px; color:var(--warn);", text: form.mode === "off"
+            ? "The event mode is No events at all: nothing below runs until you set it back to Automatic."
+            : "The event mode isn't Automatic: the scheduled events below are paused until you set it back (all but the rocket, the meteor shower, Storm Destruction and the loot updates)." }) : null,
+          cardsHere.length
+            ? el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 360px), 1fr)); gap:12px; margin-top:12px;" }, cardsHere.map(eventCardView))
+            : el("div", { class: "empty", text: "No events for this season." })),
+
+        // What players on each of the season's builds see now.
+        el("section", { class: "panel", style: "margin-top:16px" },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" }, el("h2", { text: "What players see now" })),
+          el("p", { class: "note", text: "For each build of the season: the events its players get right now." }),
+          table([["Build", (b) => el("span", { class: "mono font-semibold", text: b.version })], ["Players see now", (b) => el("span", { text: b.sees })]], buildsHere, "No builds for this season.")),
+
+        // The event mode.
+        el("section", { class: "panel", style: "margin-top:16px" },
+          el("div", { class: "panel-head", style: "margin-bottom:8px" },
+            el("h2", { text: "Event mode" }),
+            el("div", { class: "actions" }, chip(modeLabels[form.mode] || form.mode, form.mode !== "off" ? "good" : "warn"), btn("Save", saveEventMode, "primary small"))),
+          el("p", { class: "note", text: "Automatic runs every build's own events and the schedules above. The other modes override them on every build: one Save the World event everywhere, only the flags you list, or no events at all." }),
+          eventModeSelect,
+          customFlagsContainer),
+
+        // The raw flags, for those who know them.
+        el("section", { class: "panel", style: "margin-top:16px" },
+          el("details", {},
+            el("summary", { style: "cursor:pointer; font-weight:700;", text: "Advanced: event flags by build" }),
+            season4Container,
+            el("div", { style: "margin-top:18px;" },
+              el("h3", { style: "font-size:14px; font-weight:700; margin-bottom:10px;", text: "Build-by-Build Event Compatibility Matrix" }),
+              matrixTable))),
 
         // Section 2: Save the World Modifiers & Quest Gates
         el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
             el("h2", { text: "Save the World Modifiers & Story Gates" }),
-            chip("STW Campaign", "accent")),
+            el("div", { class: "actions" }, chip("STW Campaign", "accent"), btn("Save", saveConfig, "primary small"))),
           el("p", { class: "note", text: "Customize mission difficulty bounds, quest unlocks, and currency drop rates across Hexsylvania and standard theaters." }),
           el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px; margin-top:14px;" },
             el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
@@ -8416,7 +8503,7 @@
         el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
             el("h2", { text: "Seasonal Currencies & Event Llamas" }),
-            chip("Event Economy", "accent")),
+            el("div", { class: "actions" }, chip("Event Economy", "accent"), btn("Save", saveConfig, "primary small"))),
           el("p", { class: "note", text: "Configure event currency pricing, conversion thresholds, and trigger administrative batch actions." }),
           el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px; margin-top:14px;" },
             el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); display:flex; flex-direction:column; justify-content:space-between;" },
@@ -8467,7 +8554,7 @@
         el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
             el("h2", { text: "Live Calendar & Shop Rotation Timelines" }),
-            chip("Calendar System", "accent")),
+            el("div", { class: "actions" }, chip("Calendar System", "accent"), btn("Save", saveConfig, "primary small"))),
           el("p", { class: "note", text: "Configure global reset hours, weekly durations, and seasonal start times. Changes apply immediately to player clients upon next calendar request." }),
 
           el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:14px; margin-top:14px;" },

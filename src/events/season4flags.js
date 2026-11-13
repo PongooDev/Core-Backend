@@ -1,6 +1,5 @@
 import { currentBuild } from "../builds/context.js";
 import { currentEventsConfig } from "./events.js";
-import { geodeBegin, geodeCountdown, geodeOver, riftGrowth } from "./rocketlaunch.js";
 
 // Every event flag Season 4's paks hold (Core-Backend #296): the byte scans of every uasset, umap, uexp and ini of 4.0
 // (CL-4039451), 4.1, 4.2, 4.4.2 and 4.5 (CL-4166199) that events/events.js lists build by build, grouped for the admin
@@ -61,6 +60,13 @@ const b6100 = 4464155;
 const b610 = 4480234;
 const b620 = 4497486;
 const b621 = 4526925;
+
+// 4.5's rocket launch, Blast Off (events/rocketlaunch.js, which serves them by the launch time): BP_GeodeScripting's three and
+// BP_Athena_Event_Components' crack.
+export const geodeCountdown = "EventFlag.BR_S4_Geode_Countdown";
+export const geodeBegin = "EventFlag.BR_S4_Geode_Begin";
+export const geodeOver = "EventFlag.BR_S4_Geode_Over";
+export const riftGrowth = "EventFlag.BR_S4_Rift_Growth";
 
 const flag = (name, builds, description) => ({ flag: `EventFlag.${name}`, builds, description });
 
