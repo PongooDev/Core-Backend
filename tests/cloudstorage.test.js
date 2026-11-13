@@ -4,8 +4,9 @@ import crypto from "node:crypto";
 import http from "node:http";
 import { certUserAgent, clientToken, dedicatedServerToken, del, get, openTunnel, post, request, send, startBackend, userLogin } from "./helpers.js";
 
-// Battle Royale's global chat (Core-Backend #238), in every build's DefaultGame.ini.
-const athenaGlobalChat = ["[/Script/FortniteGame.FortOnlineAccount]", "bIsAthenaGlobalChatEnabled=true"];
+// Battle Royale's global chat (Core-Backend #238), in every build's DefaultGame.ini; 6.20 keeps it in UFortChatManager (#344).
+const athenaGlobalChat = ["[/Script/FortniteGame.FortOnlineAccount]", "bIsAthenaGlobalChatEnabled=true", "",
+  "[/Script/FortniteGame.FortChatManager]", "bIsAthenaGlobalChatEnabled=true"];
 
 function raw(port, method, path, token, body, userAgent = certUserAgent) {
   return new Promise((resolve, reject) => {
@@ -441,6 +442,27 @@ test("the system hotfix turns on Battle Royale's global chat", async () => {
         `game=Fortnite, engine=UE4, build=${build}`)).body.toString("utf8").split("\r\n");
       const section = lines.indexOf("[/Script/FortniteGame.FortOnlineAccount]");
       assert.equal(lines[section + 1], "bIsAthenaGlobalChatEnabled=true", build);
+    }
+  } finally {
+    backend.close();
+  }
+});
+
+// Core-Backend #344: 6.20 moved the setting to UFortChatManager (+0x1F3, read by AttemptJoinRecommendedChatRooms,
+// 0x10D2C80), so its hotfix sets it there; UFortOnlineAccount's stays for the builds before.
+test("the system hotfix turns on Battle Royale's general chat in UFortChatManager too, for 6.20 and later", async () => {
+  const backend = await startBackend();
+  try {
+    const token = await clientToken(backend.port);
+    for (const build of ["++Fortnite+Release-3.2-CL-3935073", "++Fortnite+Release-6.10-CL-4480234",
+      "++Fortnite+Release-6.20-CL-4497486", "++Fortnite+Release-6.21-CL-4526925"]) {
+      const lines = (await raw(backend.port, "GET", "/fortnite/api/cloudstorage/system/DefaultGame.ini", token, undefined,
+        `game=Fortnite, engine=UE4, build=${build}`)).body.toString("utf8").split("\r\n");
+      for (const name of ["[/Script/FortniteGame.FortOnlineAccount]", "[/Script/FortniteGame.FortChatManager]"]) {
+        const section = lines.indexOf(name);
+        assert.notEqual(section, -1, `${build}: ${name}`);
+        assert.equal(lines[section + 1], "bIsAthenaGlobalChatEnabled=true", `${build}: ${name}`);
+      }
     }
   } finally {
     backend.close();

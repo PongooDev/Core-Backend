@@ -518,3 +518,61 @@ test("3.2 keeps global chat through Battle Royale, Save the World and back to Ba
     backend.close();
   }
 });
+
+// Core-Backend #344: 6.20's Founders tab, in Battle Royale's lobby. 6.20 moved general chat to UFortChatManager, which
+// keeps bIsAthenaGlobalChatEnabled itself (+0x1F3). 6.x starts in Battle Royale, so the first sub game entered is Athena,
+// and UFortChatManager::AttemptJoinRecommendedChatRooms (0x10D2C80) then asks for rooms only with that setting, or with
+// Token:founderchatunlock (0x11661B0) while the Founders room isn't joined; otherwise it disables the Global tab and asks
+// for nothing. HandleQueryRecommendedChatRoomsComplete (0x10DD170) joins the first room of each list (UFortChatRoomJoinHelper,
+// 0x10D3330 -> USocialChatManager::JoinChatRoomPublic, 0x3DEC70). A message is a groupchat to the room's bare JID
+// (FXmppMultiUserChatStrophe's SendChat, 0x2C2F2A0), and the room hands it to everyone in it, the sender too.
+// Replayed for two players without the token, with the setting as the client has it once the system hotfix is merged.
+test("6.20: both general chat tabs join their rooms in Battle Royale's lobby, and a message reaches everyone in them", async () => {
+  const backend = await startBackend();
+  try {
+    const hotfix = (await send({ host: "127.0.0.1", port: backend.port, path: "/fortnite/api/cloudstorage/system/DefaultGame.ini",
+      headers: { "User-Agent": "game=Fortnite, engine=UE4, build=++Fortnite+Release-6.20-CL-4497486",
+        Authorization: `bearer ${(await userLogin(backend.port, "ChatHotfix620")).token}` } })).body.toString("utf8").split("\r\n");
+    const section = hotfix.indexOf("[/Script/FortniteGame.FortChatManager]");
+    const athenaGeneralChat = section !== -1 && hotfix[section + 1] === "bIsAthenaGlobalChatEnabled=true";
+    const hasFounderToken = false;
+
+    const players = [];
+    for (const name of ["Founder620A", "Founder620B"]) {
+      const { accountId, token } = await userLogin(backend.port, name);
+      const { client } = await login(backend.port, accountId, token);
+      players.push({ accountId, token, client, tabs: {} });
+    }
+    for (const player of players) {
+      assert.ok(athenaGeneralChat || hasFounderToken, "entering Battle Royale, 6.20 asks for no rooms: the Founders tab never joins");
+      const answer = await post(backend.port, `/fortnite/api/game/v2/chat/${player.accountId}/recommendGeneralChatRooms/Athena/pc`,
+        player.token, {});
+      assert.equal(answer.body.bIsFounderChatDisabled, false);
+      assert.equal(answer.body.bNeedsPaidAccessForFounderChat, false);
+      for (const [tab, rooms] of [["Global", answer.body.globalChatRooms], ["Founders", answer.body.founderChatRooms]]) {
+        const jid = `${rooms[0].roomName}@muc.${domain}`;
+        player.client.send(`<presence to="${jid}/${player.accountId}"><x xmlns="http://jabber.org/protocol/muc"/></presence>`);
+        const self = await player.client.next((stanza) => stanza.name === "presence" && stanza.attrs.from === `${jid}/${player.accountId}`);
+        assert.equal(self.attrs.type, undefined, `${tab}: joined`);
+        player.tabs[tab] = jid;
+      }
+    }
+    assert.equal(players[0].tabs.Global, `GlobalBattleRoyale@muc.${domain}`);
+    assert.equal(players[0].tabs.Founders, `Founders@muc.${domain}`);
+
+    for (const tab of ["Founders", "Global"]) {
+      const [sender] = players;
+      sender.client.send(`<message to="${sender.tabs[tab]}" type="groupchat" id="${tab}-1"><body>hello ${tab}</body></message>`);
+      for (const player of players) {
+        const message = await player.client.next((stanza) => stanza.name === "message" && stanza.attrs.id === `${tab}-1`);
+        assert.equal(message.attrs.type, "groupchat");
+        assert.equal(message.attrs.from, `${sender.tabs[tab]}/${sender.accountId}`, `${tab}: from the sender's nick`);
+        assert.equal(message.child("body").text(), `hello ${tab}`);
+        assert.equal(message.child("error"), undefined);
+      }
+    }
+    for (const player of players) player.client.close();
+  } finally {
+    backend.close();
+  }
+});

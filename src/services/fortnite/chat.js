@@ -54,6 +54,8 @@ export function chatRoutes({ tokens, xmpp }) {
   // (Core-Backend #62: it only worked once Save the World had joined the Founders room).
   // Entering Athena the client only asks with bIsAthenaGlobalChatEnabled, which the system hotfix turns on
   // (services/fortnite/cloudstorage.js, Core-Backend #238); its login asks once as sub game "[NoMode]" (3.2 0xC4B520).
+  // 6.20 asks from UFortChatManager, which keeps that setting itself, and starts in Athena: without it the Founders tab
+  // was never given a room in Battle Royale's lobby (Core-Backend #344, cloudstorage.js).
   router.post("/fortnite/api/game/v2/chat/:accountId/recommendGeneralChatRooms/:subGame/:platform", requireAuth(tokens), requireOwnAccount, async (req, res) => {
     await afterGlobalRoomLeft(xmpp, req.params.accountId);
     const athena = req.params.subGame.toLowerCase() === "athena";

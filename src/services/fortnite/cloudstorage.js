@@ -143,7 +143,15 @@ function newModeFiles(changelist) {
 // 3.1 and 3.2), so only a room from before the first switch (the login's request, as sub game "[NoMode]") ever showed in
 // Battle Royale: Battle Royale, Save the World and back left Global unavailable. Core gives Battle Royale its own room
 // (services/fortnite/chat.js). A build without the setting ignores it.
-const chatSection = ["[/Script/FortniteGame.FortOnlineAccount]", "bIsAthenaGlobalChatEnabled=true", ""].join("\r\n");
+// 6.20 (CL-4497486) moved general chat to UFortChatManager (a USocialChatManager), and the setting with it
+// (bIsAthenaGlobalChatEnabled, +0x1F3; UFortOnlineAccount has none), so the old section stopped reaching it (Core-Backend
+// #344). UFortChatManager::AttemptJoinRecommendedChatRooms (6.20 0x10D2C80) runs on entering a sub game, and 6.x starts
+// in Battle Royale's lobby: for Athena without the setting it disables the Global tab and asks for rooms only when the
+// account holds Token:founderchatunlock (0x11661B0) and its Founders room isn't joined yet. Without that token no
+// rooms were asked for at all, so the Founders tab never joined its room and a message sent there went nowhere. With
+// the setting it asks every time, and HandleQueryRecommendedChatRoomsComplete (0x10DD170) joins both answered rooms.
+const chatSection = ["[/Script/FortniteGame.FortOnlineAccount]", "bIsAthenaGlobalChatEnabled=true", "",
+  "[/Script/FortniteGame.FortChatManager]", "bIsAthenaGlobalChatEnabled=true", ""].join("\r\n");
 // Battle Royale replays (Core-Backend #251), Season 3.5's: the client records each match itself, to its Saved/Demos folder
 // (FLocalFileNetworkReplayStreamer, UnsavedReplay-<date>.replay), and the Career tab's Replays screen lists that folder; no
 // service is asked. UFortRuntimeOptions (config RuntimeOptions, GetDefault: 3.5.2 0x105DD40) holds the game's three replay
