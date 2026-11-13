@@ -14,6 +14,7 @@ import { hasEventStore, seasonalGold } from "../store/eventstore.js";
 import { candyReward, hexsylvania, isHexsylvania } from "./hexsylvania.js";
 import { hordeAlertRewards, hordeMissionRewards } from "../events/roadtrip2018.js";
 import { hordeTheater, hordeWeeklyTheater, isHorde, isHordeTierGroup } from "./horde.js";
+import { placeLandmarks } from "./landmarks.js";
 import { linkedQuests, questPath } from "./quests.js";
 import { isSurvival, survivalAlertGenerators, survivalReward, survivalTheater } from "./survival.js";
 
@@ -76,7 +77,8 @@ const withAlertCategoryRequirements = (data) => (theaterZone(data) && miniBosses
 
 const layout = perBuild((read) => {
   const { theaters = [], rewards = {} } = read("theaters", {});
-  const { theaterTags = [] } = read("world", {});
+  const world = read("world", {});
+  const { theaterTags = [] } = world;
   for (const { data } of theaters) {
     if (theaterTags.includes(mainProgression) && isMainTheater(data)) {
       data.runtimeInfo.theaterTags = { gameplayTags: [...data.runtimeInfo.theaterTags.gameplayTags, { tagName: mainProgression }] };
@@ -87,6 +89,8 @@ const layout = perBuild((read) => {
       const zoneQuest = zoneGate(region);
       if (zoneQuest) region.requirements = { ...region.requirements, questDefinition: zoneQuest };
     }
+    // 5.10's Canny Valley landmark missions (world/landmarks.js, Core-Backend #339), before the tiles are linked.
+    placeLandmarks(data, world);
     const links = linkedQuests(data);
     data.tiles.forEach((tile, index) => {
       tile.linkedQuests = (links.get(index) ?? []).flatMap((questId) => {
