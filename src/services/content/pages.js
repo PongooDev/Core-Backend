@@ -1,4 +1,4 @@
-import { tournamentInformationFor } from "../../tournaments/showdown.js";
+import { serveShowdownImage, showdownImagePath, showdownImagesFor, tournamentInformationFor } from "../../tournaments/showdown.js";
 import express from "express";
 import { inBuild } from "../../builds/context.js";
 import { getBuild, versionOf } from "../../builds/detect.js";
@@ -223,14 +223,16 @@ export function contentPage(news = defaultBattleRoyaleNews, loginMessage = defau
   const playlistimages = playlistImagesFor(changelist, playlistImages, imageOrigin);
   const playlistinformation = playlistInformationFor(changelist, playlistImages, imageOrigin);
   const subgameselectdata = subgameSelectFor(changelist, subgameSelect);
-  const tournamentinformation = tournamentInformationFor(changelist);
+  // 6.10's tournaments: their texts, colours and pictures (Core-Backend #336), the pictures on this page's address.
+  const tournamentinformation = tournamentInformationFor(changelist, new Date(), undefined, imageOrigin);
   const page = {
     _title: "Fortnite Game",
     lastModified: "2026-10-27T16:30:00.000Z",
     _images_: [...new Set([...(battleRoyaleNews.news.messages ?? []).map((message) => message.image),
       ...(playlistimages?.playlistimages.images ?? []).map((entry) => entry.image),
       ...(playlistinformation?.playlist_info.playlists ?? []).map((entry) => entry.image),
-      ...Object.values(subgameselectdata).map((entry) => entry.message.image)].filter(Boolean))],
+      ...Object.values(subgameselectdata).map((entry) => entry.message.image),
+      ...showdownImagesFor(changelist, new Date(), undefined, imageOrigin)].filter(Boolean))],
     battleRoyaleNews,
     subgameselectdata,
     emergencynotice: emergencyNoticeFor(lobbyNotice, changelist),
@@ -267,6 +269,8 @@ export function contentRoutes(context, config = {}) {
       settings.lobbyNotice ?? config.lobbyNotice, settings.playlistImages ?? config.playlistImages));
   });
   router.get(`${newsImagePath}/:name`, serveNewsImage(context?.dataDir ?? config.dataDir));
+  // The tournaments' own pictures (tournaments/showdown.js showdownImageSlots, Core-Backend #336).
+  router.get(`${showdownImagePath}/:name`, serveShowdownImage);
 
   return router;
 }

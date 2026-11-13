@@ -75,6 +75,7 @@ import { EmailError } from "../accounts/store.js";
 import { rewardItem } from "../friendcodes/rewards.js";
 import { showItemImages } from "../services/portal/images.js";
 import { leaderboardOf, rulesets, scoringOf, statusOf, tournamentPlaylists } from "../tournaments/store.js";
+import { currentShowdownEvent, customShowdownImages, showdownBuild, showdownImagePath, showdownImageSlots } from "../tournaments/showdown.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const panel = path.join(here, "panel.html");
@@ -1263,7 +1264,9 @@ export function adminRoutes(context) {
 
   const customPlaylistImages = (current) => current.playlistImages ?? context.config?.playlistImages ?? {};
   // Every upload the settings still use (the news picture and the playlists'), which pruning keeps.
-  const usedImages = (current) => [current?.battleRoyaleNews?.image, ...Object.values(current?.playlistImages ?? {})];
+  // The uploads still in use: the news picture, the mode select tiles' and the in-game events' pictures (#336).
+  const usedImages = (current) => [current?.battleRoyaleNews?.image, ...Object.values(current?.playlistImages ?? {}),
+    ...customShowdownImages(context.tournaments)];
 
   // In-game news, login messages, and mode select screen text
   router.get("/admin/api/news", (req, res) => {
@@ -2338,14 +2341,21 @@ export function adminRoutes(context) {
       versions: [...new Set(builds.map((build) => versionOf(build)))] })),
     // The Events tab hidden while it has no tournament (settings hideEmptyEventsTab, set with /admin/api/settings).
     hideEmptyEventsTab: context.settings?.get?.()?.hideEmptyEventsTab === true,
+    // An in-game event's picture slots (#336), each with Core's own picture (a path on this backend) or none.
+    imageSlots: showdownImageSlots.map(({ key, label, size, file }) => ({ key, label, size, default: file ? `${showdownImagePath}/${file}` : null })),
+    // The event the game's lobby plays now (the client's current event, tournaments/showdown.js): one at a time.
+    currentInGameEvent: currentShowdownEvent(showdownBuild, new Date(), context.tournaments)?.id ?? null,
     rulesets: Object.entries(rulesets).map(([id, ruleset]) => ({ id, ...ruleset })),
     events: context.tournaments.list().map(tournamentView)
   });
+  // The game's lobbies ask again for their events (#336, tournaments/showdown.js createShowdownRefresh).
+  const tournamentsChanged = () => context.showdownRefresh?.changed();
   router.get("/admin/api/tournaments", (req, res) => res.json(tournamentsPayload()));
   router.post("/admin/api/tournaments", (req, res) => {
     try {
       const event = context.tournaments.create(req.body ?? {});
       log("Admin", `Tournament event ${event.name} (${event.id}) created`);
+      tournamentsChanged();
       res.status(201).json({ event: tournamentView(event), ...tournamentsPayload() });
     } catch (err) {
       invalid(res, err.message);
@@ -2355,8 +2365,24 @@ export function adminRoutes(context) {
     const event = context.tournaments[action](req.params.id);
     if (!event) return notFound(res, `No tournament event ${req.params.id}`);
     log("Admin", `Tournament event ${event.name} (${event.id}) ${verb}`);
+    if (action === "end") tournamentsChanged();
     res.json({ event: tournamentView(event), ...tournamentsPayload() });
   };
+  // An in-game event's pictures (#336): body {images: {posterFront, posterBack, playlistTile, loadingScreen}}, each an
+  // http(s) URL or an upload from /admin/api/news/image, "" or null for Core's own; slots not sent stay as they are.
+  router.post("/admin/api/tournaments/:id/images", (req, res) => {
+    let event;
+    try {
+      event = context.tournaments.setImages(req.params.id, req.body?.images ?? {});
+    } catch (err) {
+      return invalid(res, err.message);
+    }
+    if (!event) return notFound(res, `No tournament event ${req.params.id}`);
+    pruneNewsImages(dataDir, usedImages(settings.get?.()));
+    log("Admin", `Tournament event ${event.name} (${event.id}) pictures: ${Object.keys(event.images ?? {}).join(", ") || "Core's own"}`);
+    tournamentsChanged();
+    res.json({ event: tournamentView(event), ...tournamentsPayload() });
+  });
   router.get("/admin/api/tournaments/:id", (req, res) => {
     const event = context.tournaments.get(req.params.id);
     if (!event) return notFound(res, `No tournament event ${req.params.id}`);
@@ -2393,6 +2419,8 @@ export function adminRoutes(context) {
   router.delete("/admin/api/tournaments/:id", (req, res) => {
     if (!context.tournaments.remove(req.params.id)) return notFound(res, `No tournament event ${req.params.id}`);
     log("Admin", `Tournament event ${req.params.id} deleted`);
+    pruneNewsImages(dataDir, usedImages(settings.get?.()));
+    tournamentsChanged();
     res.json({ success: true, ...tournamentsPayload() });
   });
 

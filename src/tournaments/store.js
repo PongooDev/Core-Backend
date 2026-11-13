@@ -4,6 +4,7 @@ import path from "node:path";
 import { hasLtm, ltms } from "../events/ltms.js";
 import { readJson, writeJson } from "../json-file.js";
 import { ipRange, maxIpRanges } from "../network.js";
+import { newsImageValue } from "../services/content/images.js";
 
 // The admin panel's Tournaments tab (Core-Backend #263): events of a tournament playlist, each keeping its players' points
 // from the matches they play in it, and their leaderboard. 4.2's client has no tournament screen (the playlist's own HUD,
@@ -118,6 +119,27 @@ export function validatePinScore(pinScore) {
   return value;
 }
 
+// An in-game event's pictures (Core-Backend #336, tournaments/showdown.js showdownImageSlots): {posterFront, posterBack,
+// playlistTile, loadingScreen}, each an http(s) URL or a picture uploaded through the admin panel (services/content/
+// images.js, the news pictures' store); a slot left out takes Core's own picture. Checks and merges a change into the
+// current ones: a slot sent as "" or null goes back to Core's. Throws an Error with the reason.
+export const imageSlotKeys = ["posterFront", "posterBack", "playlistTile", "loadingScreen"];
+export function validateImages(images, current = {}, dataDir = null) {
+  if (!images || typeof images !== "object" || Array.isArray(images)) throw new Error("Pictures are {posterFront, posterBack, playlistTile, loadingScreen}.");
+  const next = { ...current };
+  for (const [key, value] of Object.entries(images)) {
+    if (!imageSlotKeys.includes(key)) throw new Error(`No picture slot ${key}.`);
+    if (value === null || value === undefined || String(value).trim() === "") {
+      delete next[key];
+      continue;
+    }
+    const image = newsImageValue(value, dataDir);
+    if (!image) throw new Error("A picture is an http:// or https:// URL, or an uploaded image.");
+    next[key] = image;
+  }
+  return next;
+}
+
 const maxEvents = 100;
 const maxName = 64;
 const isDate = (value) => typeof value === "string" && !Number.isNaN(Date.parse(value));
@@ -185,8 +207,8 @@ export function createTournamentStore(dataDir) {
     // Makes an event: {name, playlist (a tournamentPlaylists id), ruleset (a rulesets key), scoring (custom scoring, see
     // validateScoring; optional, the preset's when left out or null), startsAt, endsAt (ISO dates, both optional: it runs
     // from now until ended), servers and bots (#282, validateServers and validateBots; optional: the normal pool and the
-    // Matchmaking tab's bots), pinScore (an in-game event's pin, validatePinScore; optional)}. Throws an Error with the
-    // reason.
+    // Matchmaking tab's bots), pinScore (an in-game event's pin, validatePinScore; optional), images (an in-game event's
+    // pictures, validateImages; optional, Core's own where left out)}. Throws an Error with the reason.
     create(options = {}, now = new Date()) {
       const playlist = tournamentPlaylists.find((entry) => entry.id === (options.playlist ?? tournamentPlaylists[0].id));
       if (!playlist) throw new Error(`Unknown tournament playlist ${String(options.playlist)}.`);
@@ -204,9 +226,10 @@ export function createTournamentStore(dataDir) {
       const servers = validateServers(options.servers);
       const bots = validateBots(options.bots);
       const pinScore = playlist.inGame ? validatePinScore(options.pinScore) : null;
+      const images = playlist.inGame && options.images ? validateImages(options.images, {}, dataDir) : {};
       if (Object.keys(load().events).length >= maxEvents) throw new Error(`At most ${maxEvents} events are kept; delete an old one first.`);
       const event = { id: crypto.randomUUID().replaceAll("-", ""), name, playlist: playlist.id, playlistId: playlist.playlistId, ruleset,
-        scoring, servers, bots, ...(playlist.inGame ? { pinScore } : {}), startsAt, endsAt, createdAt: now.toISOString(), endedAt: null, players: {} };
+        scoring, servers, bots, ...(playlist.inGame ? { pinScore, images } : {}), startsAt, endsAt, createdAt: now.toISOString(), endedAt: null, players: {} };
       load().events[event.id] = event;
       save();
       return event;
@@ -231,6 +254,18 @@ export function createTournamentStore(dataDir) {
       const next = { servers: servers === undefined ? event.servers ?? [] : validateServers(servers), bots: bots === undefined ? event.bots ?? null : validateBots(bots) };
       event.servers = next.servers;
       event.bots = next.bots;
+      save();
+      return event;
+    },
+
+    // Sets an in-game event's pictures (#336, validateImages: a slot "" or null back to Core's own). Throws an Error with
+    // the reason; null when there's no such event.
+    setImages(id, images, now = new Date()) {
+      const event = get(id);
+      if (!event) return null;
+      if (!tournamentPlaylists.find((entry) => entry.id === event.playlist)?.inGame) throw new Error("Only an event in the game's Events tab (6.10+) has pictures.");
+      event.images = validateImages(images, event.images ?? {}, dataDir);
+      event.imagesSetAt = now.toISOString();
       save();
       return event;
     },

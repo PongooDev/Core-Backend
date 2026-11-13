@@ -4,14 +4,16 @@ import { createApp, createContext } from "./app.js";
 import { isLoopback } from "./network.js";
 import { enableProxy } from "./proxy.js";
 import { isImageHost } from "./services/content/imagehosts.js";
+import { customShowdownImages } from "./tournaments/showdown.js";
 import { enableStomp } from "./stomp/service.js";
 import { enableXmpp } from "./xmpp/service.js";
 
 export async function createServer(config) {
   const context = createContext(config);
   const server = http.createServer(createApp(config, context));
-  // Picture hosts (Core-Backend #260) are tunnelled to the real site; every other CONNECT is the backend's own.
-  await enableProxy(server, (target) => isImageHost(target, context.settings?.get?.() ?? {}, config));
+  // Picture hosts (Core-Backend #260; the tournaments' too, #336) are tunnelled to the real site; every other CONNECT is
+  // the backend's own.
+  await enableProxy(server, (target) => isImageHost(target, context.settings?.get?.() ?? {}, config, customShowdownImages(context.tournaments)));
   enableXmpp(server, context.xmpp);
   enableStomp(server, context.stomp, context.matchmaker);
   // After enableXmpp, which takes over "connection" to tell XMPP streams from HTTP: this one runs before both.

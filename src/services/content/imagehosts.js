@@ -36,18 +36,20 @@ export function imageHostOf(value) {
 }
 
 // Every "host:port" the proxy tunnels for the current settings: Epic's image CDN on 443 and the admin's picture hosts.
-export function imageHosts(settings = {}, config = {}) {
+// extra: other pictures the admin set outside the settings (the tournaments' pictures, Core-Backend #336).
+export function imageHosts(settings = {}, config = {}, extra = []) {
   const custom = [
     ...Object.values(settings.playlistImages ?? config.playlistImages ?? {}),
-    (settings.battleRoyaleNews ?? config.battleRoyaleNews)?.image
+    (settings.battleRoyaleNews ?? config.battleRoyaleNews)?.image,
+    ...extra
   ];
   return new Set([...epicImageHosts.map((host) => `${host}:443`), ...custom.map(imageHostOf).filter(Boolean)]);
 }
 
 // Whether a CONNECT target ("host:port") or an absolute-form request's host and port is a picture host to tunnel to.
-export function isImageHost(target, settings = {}, config = {}) {
+export function isImageHost(target, settings = {}, config = {}, extra = []) {
   const text = String(target ?? "").trim().toLowerCase();
   const match = /^(\[[0-9a-f:.]+\]|[a-z0-9.-]+):(\d{1,5})$/.exec(text);
   if (!match) return false;
-  return imageHosts(settings, config).has(`${match[1].replace(/\.$/, "")}:${Number(match[2])}`);
+  return imageHosts(settings, config, extra).has(`${match[1].replace(/\.$/, "")}:${Number(match[2])}`);
 }

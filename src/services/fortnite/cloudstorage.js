@@ -160,7 +160,7 @@ const chatSection = ["[/Script/FortniteGame.FortOnlineAccount]", "bIsAthenaGloba
 // 6.02's (CL-4442095) Support-A-Creator (store/creators.js) is off in the same object as shipped (bDisableAffiliateFeature)
 // and takes its creators from it (AffiliateNames): while the admin panel lists a creator, the file turns it on with them.
 // 6.10's (CL-4464155) Events tab reads the same object (bEnableShowdown, ShowdownTournamentCacheExpirationHours): the file
-// has its lines while an in-game tournament is listed or the admin hides the empty tab (tournaments/showdown.js).
+// keeps the tab's list from being cached, or hides the empty tab when the admin asks (tournaments/showdown.js, #336).
 const replaysBuild = 4000805;
 const runtimeOptionsFiles = (changelist, settingsValue) => (Number(changelist) >= replaysBuild ? {
   "DefaultRuntimeOptions.ini": Buffer.from(["[/Script/FortniteGame.FortRuntimeOptions]", "bEnableReplayBrowser=true",

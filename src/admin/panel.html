@@ -8495,6 +8495,59 @@
             }, "ghost")));
       };
 
+      // An in-game event's pictures (#336): for each slot the game shows, an http(s) URL or an uploaded PNG/JPEG (the
+      // news pictures' upload), or Core's own picture when left empty. A player sees a change at their next lobby.
+      const tournamentImageSrc = (value) => (/^https?:\/\/\S+$/i.test(value) || /^\/content\/api\/(news-images\/[0-9a-f]{32}\.(png|jpg)|tournament-images\/[A-Za-z0-9_.-]+\.jpg)$/.test(value) ? value : "");
+      const imagePreview = (value, wide) => {
+        const src = tournamentImageSrc(value || "");
+        if (!src) return el("span", { class: "muted", text: "No picture" });
+        const img = el("img", { alt: "", style: `${wide ? "width:128px; height:64px;" : "width:64px; height:92px;"} border-radius:6px; border:1px solid var(--line, #333); object-fit:cover; background:var(--surface-2);` });
+        img.referrerPolicy = "no-referrer";
+        img.addEventListener("error", () => img.replaceWith(el("span", { class: "muted", text: "Couldn't load" })));
+        img.src = src;
+        return img;
+      };
+      const readImageFile = (file) => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result).replace(/^data:[^,]*,/, ""));
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+      }).catch(() => null);
+      const eventImages = (event) => {
+        const custom = event.images || {};
+        const save = async (key, value, message) => {
+          if (await act(api(`/admin/api/tournaments/${event.id}/images`, { images: { [key]: value } }), message)) rerender();
+        };
+        const rows = (data.imageSlots || []).map((slot) => {
+          const input = el("input", { class: "field", value: custom[slot.key] || "", placeholder: slot.default ? "Core's picture, or https://... or upload" : "None, or https://... or upload", style: "flex:1; min-width:220px;" });
+          const file = el("input", { type: "file", accept: "image/png,image/jpeg", style: "display:none" });
+          file.addEventListener("change", async () => {
+            const chosen = file.files?.[0];
+            file.value = "";
+            if (!chosen) return;
+            if (chosen.size > 4 * 1024 * 1024) return toast("The image is over 4 MB", true);
+            const encoded = await readImageFile(chosen);
+            if (!encoded) return toast("Couldn't read the image", true);
+            const uploaded = await act(api("/admin/api/news/image", { data: encoded }));
+            if (uploaded?.image) await save(slot.key, uploaded.image, "Picture uploaded");
+          });
+          return el("div", { style: "display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding:8px 0; border-top:1px solid var(--line);" },
+            imagePreview(custom[slot.key] || slot.default, slot.size === "1024x512" || slot.size === "1920x1080"),
+            el("div", { style: "flex:1; min-width:220px;" },
+              el("div", { style: "font-weight:600;", text: slot.label }),
+              el("div", { class: "muted", style: "font-size:12px;", text: `${custom[slot.key] ? "The admin's picture" : slot.default ? "Core's own picture" : "No picture"} · ${slot.size} works best, PNG or JPEG` })),
+            input, file,
+            btn("Save", () => save(slot.key, input.value.trim(), "Picture saved"), "primary small"),
+            btn("Upload", () => file.click(), "ghost small"),
+            custom[slot.key] ? btn("Use Core's", () => save(slot.key, null, "Back to Core's picture"), "ghost small") : null);
+        });
+        return el("section", { class: "panel", style: "margin-top:16px;" },
+          el("div", { class: "panel-head" }, el("h2", { text: "Pictures in the game" }),
+            data.currentInGameEvent === event.id ? chip("Playable in the lobby now", "good") : chip("Not the lobby's event now", "")),
+          el("div", { class: "note", text: "The Events tab's tile and poster, the EVENT DETAILS side and the box above PLAY. Empty, a slot shows Core's own picture (from the game's own Season 6 art). A player sees a change at their next lobby. The game plays one event at a time: of the events not ended, the one that starts first." }),
+          ...rows);
+      };
+
       // The list and an event's page (#283) both follow new matches, unless something is being edited.
       every(15000, async () => {
         if (state.view !== "tournaments" || document.activeElement?.closest?.("#view .panel") || document.querySelector("#view details[open]")) return;
@@ -8548,6 +8601,7 @@
             el("div", { class: "panel-head" }, el("h2", { text: "Points & Server Rules" })),
             eventScoring(event),
             eventServersBots(event)),
+          inGameOf(event.playlist) ? eventImages(event) : null,
           el("section", { class: "panel", style: "margin-top:16px;" },
             el("div", { class: "panel-head" },
               el("h2", { text: "Player Leaderboard" }),
@@ -8579,6 +8633,7 @@
           el("div", { style: "display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;" },
             chip(`Playlist ${event.playlistId}`, "sky"),
             ...(inGameOf(event.playlist) ? [chip("In the Events tab", "good")] : []),
+            ...(data.currentInGameEvent === event.id ? [chip("Playable in the lobby now", "good")] : []),
             chip(`${event.playerCount} players`, "accent"),
             chip(`${event.leaderboard?.length || 0} ranked`, ""))
         ),
@@ -8594,7 +8649,7 @@
           el("div", { class: "actions" }, btn("Refresh", rerender, "ghost"))),
         el("section", { class: "panel" },
           el("div", { class: "panel-head" }, el("h2", { text: "New event" })),
-          el("div", { class: "note", text: "A match in the event's playlist scores for its players while the event runs. Leave the dates empty to start now and run until you end it. From 6.10 the game has its own Events tab: an event on one of the Tournament playlists (Solo, Duos, Squads) is listed there with its name, times and points, players queue for it from the tab with a full party, and their points show in the match and on the tab (give it an end, which the tab counts down to). It appears at a player's next return to the lobby. Nothing is listed until you make one." }),
+          el("div", { class: "note", text: "A match in the event's playlist scores for its players while the event runs. Leave the dates empty to start now and run until you end it. From 6.10 the game has its own Events tab: an event on one of the Tournament playlists (Solo, Duos, Squads) is listed there with its name, times and points, players queue for it from the tab with a full party, and their points show in the match and on the tab (give it an end, which the tab counts down to). It appears at a player's next return to the lobby, and the backend tells the lobbies already open to ask again when an event is made, starts or ends. The game plays one event at a time: of the events not ended, the one that starts first. Set an event's pictures on its page (Core's own are used otherwise). Nothing is listed until you make one." }),
           el("div", { class: "actions", style: "flex-wrap:wrap; gap:8px; margin-top:12px; align-items:center;" },
             nameInput, playlistSelect, rulesSelect,
             el("label", { class: "muted", text: "Starts" }), startInput,

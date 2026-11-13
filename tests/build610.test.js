@@ -476,7 +476,8 @@ test("an in-game event as the client reads it: one tournament of one window, the
       announcementTime: "2026-11-12T10:00:00.000Z", beginTime: "2026-11-12T10:00:00.000Z", endTime: "2026-11-12T21:00:00.000Z", eventWindows: undefined });
     assert.equal(tournament.eventWindows.length, 1);
     const [window] = tournament.eventWindows;
-    assert.deepEqual({ ...window, eventData: undefined }, { eventWindowId: event.id, countdownBeginTime: "2026-11-12T18:00:00.000Z", beginTime: "2026-11-12T18:00:00.000Z",
+    // The countdown begins with the announcement (#336): the lobby's Showdown state from the first list that holds it.
+    assert.deepEqual({ ...window, eventData: undefined }, { eventWindowId: event.id, countdownBeginTime: "2026-11-12T10:00:00.000Z", beginTime: "2026-11-12T18:00:00.000Z",
       endTime: "2026-11-12T21:00:00.000Z", bIsTBD: false, eventData: undefined });
     assert.equal(window.eventData.playlistId, "Playlist_Showdown_Solo");
     assert.deepEqual(window.eventData.rewardTable, []);
@@ -599,14 +600,15 @@ test("a ticket for a tournament playlist: taken while an event of it runs, for a
   }
 });
 
-test("the Events tab's hotfix lines: none as shipped, the list refreshed each lobby while an event is listed, the tab hidden only by the admin's switch", () => {
+test("the Events tab's hotfix lines: the list refreshed each lobby, an event or not (#336), the tab hidden only by the admin's switch", () => {
   const dir = tempDir();
   try {
     const store = createTournamentStore(dir);
     const now = at("2026-11-12T12:00:00.000Z");
     assert.equal(createSettingsStore(null).get().hideEmptyEventsTab, false, "off by default");
     for (const build of builds610) {
-      assert.deepEqual(showdownRuntimeOptions(build, { hideEmptyEventsTab: false }, now, store), [], build);
+      // An empty list isn't kept for ten hours either: an event made after the game started shows at the next lobby.
+      assert.deepEqual(showdownRuntimeOptions(build, { hideEmptyEventsTab: false }, now, store), ["ShowdownTournamentCacheExpirationHours=0"], build);
       assert.deepEqual(showdownRuntimeOptions(build, { hideEmptyEventsTab: true }, now, store), ["bEnableShowdown=false"], build);
     }
     assert.deepEqual(showdownRuntimeOptions(v602, { hideEmptyEventsTab: true }, now, store), [], "6.02 has no such option to set");
@@ -748,11 +750,13 @@ test("a 6.10 client's Events tab end to end: the empty list, an admin's event li
       const pageOf = async () => (await as(backend.port, "/content/api/pages/fortnite-game", ann.token)).body.tournamentinformation;
       const runtimeIni = async () => (await as(backend.port, "/fortnite/api/cloudstorage/system/DefaultRuntimeOptions.ini", ann.token)).body.toString();
 
-      // As shipped: the tab's request is answered with no tournament, the page has none, and the hotfix sets nothing.
+      // As shipped: the tab's request is answered with no tournament and the page has none; the hotfix only keeps the
+      // empty list from being cached (#336), so an event made later shows at the next lobby.
       const empty = await list();
       assert.deepEqual([empty.status, empty.body], [200, { eventTournaments: [], eventWindowHistories: [] }], build);
       assert.deepEqual((await pageOf()).tournament_info.tournaments, []);
-      assert.equal(/Showdown/.test(await runtimeIni()), false);
+      assert.match(await runtimeIni(), /\r\nShowdownTournamentCacheExpirationHours=0\r\n/);
+      assert.equal(/bEnableShowdown/.test(await runtimeIni()), false);
       // Somebody else's list isn't the player's to read, and a tournament ticket without an event is refused.
       const bob = await userLogin(backend.port, `Bob${build}`);
       assert.equal((await as(backend.port, `${base}/tournamentandhistory/${bob.accountId}/NAE/WindowsClient`, ann.token)).status, 403);

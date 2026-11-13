@@ -16,7 +16,7 @@ import { createFriendStore } from "./friends/store.js";
 import { createFriendCodeStore } from "./friendcodes/store.js";
 import { createPurchaseCodeStore } from "./store/purchasecodes.js";
 import { botsOn, createTournamentStore, effectiveBots } from "./tournaments/store.js";
-import { configureShowdown } from "./tournaments/showdown.js";
+import { configureShowdown, createShowdownRefresh, customShowdownImages } from "./tournaments/showdown.js";
 import { eventRoutes } from "./services/fortnite/events.js";
 import { networkAdminRoutes } from "./admin/network.js";
 import { adminRoutes } from "./admin/routes.js";
@@ -180,8 +180,14 @@ export function createApp(config, context = createContext(config)) {
     }
   }));
 
-  // A plain http:// picture the -httpproxy carried for an admin-set picture host goes to that site (Core-Backend #260).
-  app.use(forwardImageRequests((target) => isImageHost(target, context.settings?.get?.() ?? {}, config)));
+  // A plain http:// picture the -httpproxy carried for an admin-set picture host goes to that site (Core-Backend #260;
+  // the tournaments' pictures too, #336).
+  app.use(forwardImageRequests((target) => isImageHost(target, context.settings?.get?.() ?? {}, config, customShowdownImages(context.tournaments))));
+  // The lobbies of 6.10+ follow the in-game events' starts and ends (tournaments/showdown.js, Core-Backend #336).
+  if (context.tournaments && context.xmpp && !context.showdownRefresh) {
+    context.showdownRefresh = createShowdownRefresh({ store: context.tournaments, xmpp: context.xmpp, accounts: context.accounts });
+    context.showdownRefresh.schedule();
+  }
   app.use(originForm);
   // The IP each request came from, through the reverse proxy only when the admin panel says the backend is behind one
   // (network.js clientAddress, Core-Backend #227).
