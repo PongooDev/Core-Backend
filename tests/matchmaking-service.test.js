@@ -6,7 +6,7 @@ import http from "node:http";
 import os from "node:os";
 import path from "node:path";
 import { assignmentBucket, bucketKey, bucketMatches, estimatedWaitSec, formTeams, isPartyOnlyBucket, parseBucket, playlistTeamsOf, serverRegion, showsMatchStart, withRegion } from "../src/matchmaking/service.js";
-import { regionList, regionOf, servedRegions } from "../src/matchmaking/regions.js";
+import { regionGroup, regionList, regionMembers, regionOf, regionsOverlap, servedRegions } from "../src/matchmaking/regions.js";
 import { certUserAgent, dedicatedServerToken, del, get, openTunnel, post, send, startBackend, userLogin } from "./helpers.js";
 
 // MatchmakingServiceClient's connection: a WebSocket with the ticket in its Authorization header, which the browser-style
@@ -529,18 +529,32 @@ test("a 1.11 server's AssignMatch names 50v50's playlist in its six-field bucket
   }
 });
 
-test("regions compare in any spelling: a server's -McpRegion against the client's selected region (#121)", () => {
+test("regions compare in any spelling: a server's -McpRegion against the client's selected region (#121, #123)", () => {
+  // NA-East and NA-West are regions of their own (3.0 on), North America (NA) their group (#123); the hidden regions go
+  // where their ping servers are.
   assert.deepEqual(["NA", "nae", "NAW", " naC ", "OH", "EU", "gb", "OCE", "BR", "ASIA", "Test01", "TEST02", "ME", "xx", "NONE", "", undefined, "UND"].map(regionOf),
-    ["NA", "NA", "NA", "NA", "NA", "EU", "EU", "OCE", "BR", "ASIA", "ASIA", "ASIA", "ME", "XX", null, null, null, null]);
+    ["NA", "NAE", "NAW", "NA", "NAE", "EU", "EU", "OCE", "BR", "ASIA", "ASIA", "ASIA", "ME", "XX", null, null, null, null]);
+  assert.deepEqual(["Testtj", "Testsa", "Testou", "Testpf", "Testdi", "USW"].map(regionOf), ["ASIA", "ASIA", "NAW", "EU", "EU", "NAW"]);
+  // An NA server (-McpRegion=NA, the launcher's default) takes NA's, NAE's and NAW's players; NAE's and NAW's servers
+  // take their own and NA's (an old build's), never each other's.
   assert.ok(bucketMatches("3775276:0:nae:**", "3775276:0:NA:2"));
   assert.ok(bucketMatches("858118782:0:NA:*", "858118782:0:NAW:10"));
+  assert.ok(bucketMatches("858118782:0:NA:*", "858118782:0:nae:10"));
+  assert.ok(!bucketMatches("858118782:0:NAE:*", "858118782:0:NAW:10"));
+  assert.ok(!bucketMatches("858118782:0:NAW:*", "858118782:0:EU:10"));
+  assert.ok(regionsOverlap("na", "NAW") && regionsOverlap("OH", "NA") && !regionsOverlap("NAE", "NAW") && !regionsOverlap("NA", "EU"));
+  assert.ok(regionsOverlap("NONE", "") && !regionsOverlap("NONE", "NA"));
+  assert.deepEqual([regionMembers("NA"), regionMembers("nae"), regionMembers("EU"), regionMembers("NONE")], [["NA", "NAE", "NAW"], ["NAE"], ["EU"], []]);
+  assert.deepEqual([regionGroup("NAE"), regionGroup("naw"), regionGroup("NA"), regionGroup("EU")], ["NA", "NA", null, null]);
   assert.ok(!bucketMatches("858118782:0:NA:*", "858118782:0:EU:10"));
   assert.ok(bucketMatches("858118782:0:NA:*", "858118782:0:EU:10", { anyRegion: true }));
   // Any region, but still the same build and number of fields.
   assert.ok(!bucketMatches("858118782:0:NA:*", "1:0:EU:10", { anyRegion: true }));
   assert.ok(!bucketMatches("858118782:0:NA:*:*:*", "858118782:0:EU:10", { anyRegion: true }));
   assert.ok(bucketMatches("858118782:0:NONE:*", "858118782:0:NONE:10"));
-  assert.equal(bucketKey("858118782:0:nae:10"), "858118782:0:NA:10");
+  assert.equal(bucketKey("858118782:0:nae:10"), "858118782:0:NAE:10");
+  assert.equal(bucketKey("858118782:0:oh:10"), "858118782:0:NAE:10");
+  assert.notEqual(bucketKey("858118782:0:NAE:10"), bucketKey("858118782:0:NAW:10"));
   assert.equal(bucketKey("858118782:0:EU:10", { anyRegion: true }), "858118782:0:*:10");
   assert.equal(bucketKey("858118782:0::10"), "858118782:0:NONE:10");
   assert.equal(withRegion("858118782:0:EU:10", "NA"), "858118782:0:NA:10");
@@ -695,13 +709,21 @@ test("with the region fallback off, a player only matches in the region they pic
 
 // Core-Backend #142: the admin panel's server regions.
 test("a server in one of the server regions takes all of their players; any other server only its own region's (#142)", () => {
-  assert.deepEqual(regionList(["eu", "NAW", "EU", "xx", 5, "NONE"]), ["EU", "NA"]);
+  assert.deepEqual(regionList(["eu", "NAW", "EU", "xx", 5, "NONE"]), ["EU", "NAW"]);
   // One region's code, as a string, is that region; anything else is no list at all.
   assert.deepEqual([regionList("gb"), regionList(""), regionList([]), regionList(5), regionList(null)], [["EU"], [], [], undefined, undefined]);
-  assert.deepEqual([...servedRegions("eu", ["EU", "NA"])], ["EU", "NA"]);
+  // NA ticked is all of North America (#123), as when NAE and NAW were NA's spellings.
+  assert.deepEqual([...servedRegions("eu", ["EU", "NA"])], ["EU", "NA", "NAE", "NAW"]);
+  assert.deepEqual([...servedRegions("NAW", ["EU", "NA"])], ["NAW", "NA", "EU", "NAE"]);
   assert.deepEqual([...servedRegions("OCE", ["EU", "NA"])], ["OCE"]);
-  assert.deepEqual([...servedRegions("NA", [])], ["NA"]);
+  assert.deepEqual([...servedRegions("NA", [])], ["NA", "NAE", "NAW"]);
+  assert.deepEqual([...servedRegions("NAE", [])], ["NAE", "NA"]);
   assert.deepEqual([...servedRegions("NONE", ["EU", "NA"])], [null]);
+  // NAE ticked is NA-East (and NA's old builds): EU's server takes them, an NAW server isn't among them.
+  assert.deepEqual([...servedRegions("EU", ["EU", "NAE"])], ["EU", "NAE", "NA"]);
+  assert.deepEqual([...servedRegions("NAW", ["EU", "NAE"])], ["NAW", "NA"]);
+  // An NA server with only NAE ticked takes North America's, not EU's: NA isn't ticked.
+  assert.deepEqual([...servedRegions("NA", ["NAE", "EU"])], ["NA", "NAE", "NAW"]);
 });
 
 test("with EU and NA the server regions, EU's server takes NA's players into its EU matches, within EU's server quotas (#142)", async () => {
@@ -744,6 +766,65 @@ test("with EU and NA the server regions, EU's server takes NA's players into its
   }
 });
 
+// Core-Backend #123: NA-East and NA-West are regions of their own, North America (NA) the group of both.
+test("NA-East and NA-West players play on their own region's servers, NA's take both, and NA's limits count all of North America (#123)", async () => {
+  const backend = await startBackend({ matchmakingGatherMs: 200, regionFallback: false });
+  const connections = [];
+  try {
+    const east = await regionServer(backend, "CoreServer1", "NAE");
+    const west = await regionServer(backend, "CoreServer2", "NAW");
+    connections.push(east.connection, west.connection);
+    // Each player goes to their own region's server, never the other North American one.
+    const eastPlayer = await regionPlayer(backend, "EastPlayer", "NAE");
+    const westPlayer = await regionPlayer(backend, "WestPlayer", "naw");
+    connections.push(eastPlayer.connection, westPlayer.connection);
+    const eastAssign = await nextOf(east.connection, "AssignMatch");
+    const westAssign = await nextOf(west.connection, "AssignMatch");
+    assert.deepEqual([eastAssign.payload.teams, eastAssign.payload.bucketId], [[[[eastPlayer.accountId]]], "858118782:0:NAE:10"]);
+    assert.deepEqual([westAssign.payload.teams, westAssign.payload.bucketId], [[[[westPlayer.accountId]]], "858118782:0:NAW:10"]);
+    for (const [server, assign] of [[east, eastAssign], [west, westAssign]]) {
+      server.connection.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: assign.payload.matchId, result: "ready" } }));
+    }
+    assert.equal((await nextOf(eastPlayer.connection, "Play")).payload.sessionId, east.session.id);
+    assert.equal((await nextOf(westPlayer.connection, "Play")).payload.sessionId, west.session.id);
+    assert.deepEqual((await get(backend.port, "/admin/api/matchmaking/overview")).body.serverCounts.NA.duo, 2);
+
+    // North America's Duos limit of 2 is full with those two: an NA server (the launcher's default region) waits, and
+    // so does an old build's NA player, who may play on any North American server.
+    await post(backend.port, "/admin/api/matchmaking/config", undefined, { serverLimits: { NA: { duo: 2 } } });
+    const na = await regionServer(backend, "CoreServer3", "NA");
+    connections.push(na.connection);
+    const oldPlayer = await regionPlayer(backend, "OldNAPlayer", "NA");
+    connections.push(oldPlayer.connection);
+    const queued = JSON.parse(await oldPlayer.connection.next());
+    assert.deepEqual([queued.payload.state, queued.payload.estimatedWaitSec], ["Queued", 0]);
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    // Room for a third: the NA server takes them, in an NA match.
+    await post(backend.port, "/admin/api/matchmaking/config", undefined, { serverLimits: { NA: { duo: 3 } } });
+    const naAssign = await nextOf(na.connection, "AssignMatch");
+    assert.deepEqual([naAssign.payload.teams, naAssign.payload.bucketId], [[[[oldPlayer.accountId]]], "858118782:0:NA:10"]);
+    na.connection.send(JSON.stringify({ name: "AssignMatchResult", payload: { matchId: naAssign.payload.matchId, result: "ready" } }));
+
+    // NA-East's own limit of 1 is full with the first match: a second NA-East server waits for room, and NA-West's
+    // server, though free again, never takes the NA-East player.
+    await post(backend.port, "/admin/api/matchmaking/config", undefined, { serverLimits: { NA: { duo: 0 }, NAE: { duo: 1 } } });
+    const east2 = await regionServer(backend, "CoreServer4", "NAE");
+    const west2 = await regionServer(backend, "CoreServer5", "NAW");
+    connections.push(east2.connection, west2.connection);
+    const eastWaiter = await regionPlayer(backend, "EastWaiter", "NAE");
+    connections.push(eastWaiter.connection);
+    const eastQueued = JSON.parse(await eastWaiter.connection.next());
+    assert.equal(eastQueued.payload.state, "Queued");
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    await post(backend.port, "/admin/api/matchmaking/config", undefined, { serverLimits: { NAE: { duo: 2 } } });
+    const east2Assign = await nextOf(east2.connection, "AssignMatch");
+    assert.deepEqual([east2Assign.payload.teams, east2Assign.payload.bucketId], [[[[eastWaiter.accountId]]], "858118782:0:NAE:10"]);
+  } finally {
+    for (const connection of connections) connection.close();
+    backend.close();
+  }
+});
+
 test("the server regions are a setting, kept over a restart, and a single region's code still reads as that region (#142)", async () => {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-backend-regions-"));
   fs.writeFileSync(path.join(dataDir, "settings.json"), JSON.stringify({ serverRegion: "eu" }));
@@ -752,12 +833,12 @@ test("the server regions are a setting, kept over a restart, and a single region
     let saved = (await settingsOf(backend)).body;
     assert.deepEqual([saved.serverRegions, saved.serverRegion], [["EU"], undefined]);
     saved = (await settingsOf(backend, { serverRegions: ["NAW", "eu", "nowhere"] })).body;
-    assert.deepEqual(saved.serverRegions, ["NA", "EU"]);
+    assert.deepEqual(saved.serverRegions, ["NAW", "EU"]);
     // Not a list or a region: ignored.
     saved = (await settingsOf(backend, { serverRegions: 5 })).body;
-    assert.deepEqual(saved.serverRegions, ["NA", "EU"]);
+    assert.deepEqual(saved.serverRegions, ["NAW", "EU"]);
     // The matchmaking tab shows and sets them, and its defaults clear them.
-    assert.deepEqual((await get(backend.port, "/admin/api/matchmaking/overview")).body.serverRegions, ["NA", "EU"]);
+    assert.deepEqual((await get(backend.port, "/admin/api/matchmaking/overview")).body.serverRegions, ["NAW", "EU"]);
     assert.deepEqual((await post(backend.port, "/admin/api/matchmaking/config", undefined, { serverRegions: ["OCE", "BR"] })).body.serverRegions, ["OCE", "BR"]);
     backend.close();
     backend = await startBackend({ dataDir });

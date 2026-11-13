@@ -156,9 +156,9 @@ test("the config file and command line take the network options", () => {
   try {
     const file = path.join(dir, "core.json");
     fs.writeFileSync(file, JSON.stringify({ remoteAccess: true, publicAddress: "my-house.duckdns.org" }));
-    assert.deepEqual(loadConfig(["--config", file]), { port: 5595, dataDir: "data", remoteAccess: true, publicAddress: "my-house.duckdns.org" });
+    assert.deepEqual(loadConfig(["--config", file]), { port: 5595, dataDir: "data", qosPingPort: 22222, remoteAccess: true, publicAddress: "my-house.duckdns.org" });
     assert.deepEqual(loadConfig(["--config", file, "--local-only", "--listen", "192.168.1.10", "--public-address", "203.0.113.7"]),
-      { port: 5595, dataDir: "data", remoteAccess: false, listenAddress: "192.168.1.10", publicAddress: "203.0.113.7", fromCommandLine: ["remoteAccess", "listenAddress", "publicAddress"] });
+      { port: 5595, dataDir: "data", qosPingPort: 22222, remoteAccess: false, listenAddress: "192.168.1.10", publicAddress: "203.0.113.7", fromCommandLine: ["remoteAccess", "listenAddress", "publicAddress"] });
     assert.equal(loadConfig(["--remote-access"]).remoteAccess, true);
     assert.throws(() => loadConfig(["--remote-access", "--local-only"]), /both/);
     assert.throws(() => loadConfig(["--listen", "my-pc"]), /listenAddress/);

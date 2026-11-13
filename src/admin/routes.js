@@ -15,7 +15,8 @@ import { log, recentLogs } from "../log.js";
 import { sessionSummary } from "../matchmaking/sessions.js";
 import { defaultHostingIps, hostingIp, httpsProxied, invalidIpRanges, maxHostingIps, maxIpRanges } from "../network.js";
 import { customServerProblem, maxCustomServers } from "../matchmaking/custom-servers.js";
-import { regionList } from "../matchmaking/regions.js";
+import { invalidPingServers, maxPingServers } from "../matchmaking/qos.js";
+import { regionLabels, regionList, serverRegionCodes } from "../matchmaking/regions.js";
 import { alertsRemaining, clearedAlertRecord, emptyAlertRecord, withQuotaSlots } from "../profiles/alerts.js";
 import { fullLockerState, grantCosmetic, grantFullLocker, grantLockerStyles, grantShopCosmetics, lockerCosmeticId, lockerCosmetics, maxSeasonLevel, ownsCosmetic, removeFullLocker,
   removeLockerCosmetic, removeLockerStyles, setSeasonLevel, settleOriginalOwnerMark } from "../profiles/athena.js";
@@ -1999,7 +2000,7 @@ export function adminRoutes(context) {
     // The LTMs by season, their original dates and whether those hold now (Core-Backend #190, #191).
     const schedule = withoutSeasonStartRecording(() => ltmSchedule(s, new Date()));
 
-    const regions = ["NA", "EU", "OCE", "BR", "ASIA"];
+    const regions = serverRegionCodes;
     const modeKeys = ["solo", "duo", "squad", ...ltmIds];
     const serverCounts = {};
     for (const r of regions) {
@@ -2098,8 +2099,14 @@ export function adminRoutes(context) {
       serverLimits,
       serverCounts,
       serverRegions: s.serverRegions ?? [],
+      // The panel's regions in its order, North America (NA) the group of NA-East and NA-West (matchmaking/regions.js, #123).
+      regions: regions.map((code) => ({ code, label: regionLabels[code] })),
       // Each region's hosting IPs and the custom matchmaking servers (#227), their accounts with their names.
       regionHostingIps: s.regionHostingIps ?? {},
+      // Each region's QoS ping servers, what the client's Auto region pings (#123, matchmaking/qos.js), and the UDP port
+      // this backend answers them on (main.js; null when it doesn't).
+      regionPingServers: s.regionPingServers ?? {},
+      qosPingPort: network?.qosPing?.port ?? null,
       customMatchServers: (s.customMatchServers ?? []).map((entry) => ({ ...entry,
         accounts: entry.accounts.map((id) => ({ id, displayName: accounts.get(id)?.displayName ?? id })) })),
       customMatchFallback: s.customMatchFallback === true,
@@ -2154,6 +2161,19 @@ export function adminRoutes(context) {
         if (bad.length) return invalid(res, `Not an IP address or CIDR range (${region}): ${bad.map(String).join(", ")}`);
       }
       update.regionHostingIps = value;
+    }
+    // Each region's QoS ping servers (#123): { EU: ["203.0.113.5", "ping.example.org:22222"] }, IPv4 addresses or host names.
+    if (req.body.regionPingServers !== undefined) {
+      const value = req.body.regionPingServers;
+      if (!value || typeof value !== "object" || Array.isArray(value)) return invalid(res, "regionPingServers must map regions to lists of ping servers");
+      for (const [region, list] of Object.entries(value)) {
+        if (!regionList(region)?.length) return invalid(res, `Unknown region ${region}`);
+        if (!Array.isArray(list)) return invalid(res, `${region}'s ping servers must be a list`);
+        if (list.length > maxPingServers) return invalid(res, `At most ${maxPingServers} ping servers can be listed for ${region}`);
+        const bad = invalidPingServers(list);
+        if (bad.length) return invalid(res, `Not an IPv4 address or host name, with an optional port (${region}): ${bad.map(String).join(", ")}`);
+      }
+      update.regionPingServers = value;
     }
     // The custom matchmaking servers (#227): [{ address, keys, accounts }], accounts by id or display name.
     if (req.body.customMatchServers !== undefined) {

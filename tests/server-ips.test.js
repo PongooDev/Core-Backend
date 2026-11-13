@@ -47,12 +47,23 @@ test("a request's IP: X-Forwarded-For only in proxy mode, only from the proxy, a
 
 test("each region's hosting IPs: canonical regions, any IP when a region lists none", () => {
   const ips = regionHostingIps({ eu: ["203.0.113.0/24", "bad"], gb: ["198.51.100.1"], nae: ["192.0.2.1"], XX: ["1.1.1.1"], OCE: [] });
-  assert.deepEqual(ips, { EU: ["203.0.113.0/24", "198.51.100.1"], NA: ["192.0.2.1"] });
+  assert.deepEqual(ips, { EU: ["203.0.113.0/24", "198.51.100.1"], NAE: ["192.0.2.1"] });
   assert.equal(regionHostingIps([]), undefined);
   assert.equal(regionAllowsAddress("EU", "203.0.113.9", ips), true);
   assert.equal(regionAllowsAddress("uk", "198.51.100.1", ips), true);
   assert.equal(regionAllowsAddress("EU", "192.0.2.1", ips), false);
-  assert.equal(regionAllowsAddress("NAW", "203.0.113.9", ips), false);
+  assert.equal(regionAllowsAddress("NAE", "203.0.113.9", ips), false);
+  assert.equal(regionAllowsAddress("oh", "192.0.2.1", ips), true);
+  // NAW lists none and neither does North America: any IP (#123).
+  assert.equal(regionAllowsAddress("NAW", "203.0.113.9", ips), true);
+  // NA's IPs (North America's) may host NA, NAE and NAW too; NAE's only NAE.
+  const north = regionHostingIps({ NA: ["198.51.100.0/24"], NAE: ["192.0.2.1"] });
+  assert.equal(regionAllowsAddress("NA", "198.51.100.7", north), true);
+  assert.equal(regionAllowsAddress("NA", "192.0.2.1", north), false);
+  assert.equal(regionAllowsAddress("NAE", "192.0.2.1", north), true);
+  assert.equal(regionAllowsAddress("NAE", "198.51.100.7", north), true);
+  assert.equal(regionAllowsAddress("NAW", "198.51.100.7", north), true);
+  assert.equal(regionAllowsAddress("NAW", "192.0.2.1", north), false);
   assert.equal(regionAllowsAddress("OCE", "203.0.113.9", ips), true);
   assert.equal(regionAllowsAddress("NONE", "203.0.113.9", ips), true);
   assert.equal(regionAllowsAddress("EU", "203.0.113.9", {}), true);

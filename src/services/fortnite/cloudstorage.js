@@ -12,6 +12,7 @@ import { finalFightRows } from "../../events/finalfight.js";
 import { meteorStrikeRows } from "../../events/meteorstrike.js";
 import { shootingTestGlobals, shootingTestHotfixTables } from "../../events/shootingtest.js";
 import { stormDestructionEngineSection } from "../../events/stormdestruction.js";
+import { qosEngineLines } from "../../matchmaking/qos.js";
 import { sessionMembers } from "../../matchmaking/sessions.js";
 import { affiliateRuntimeOptions } from "../../store/creators.js";
 import { showdownRuntimeOptions } from "../../tournaments/showdown.js";
@@ -182,7 +183,10 @@ function systemFiles(req, network = defaultNetwork, settings = null) {
     + purchaseFlowSection(req, network, { build, enabled: settings?.get?.()?.vbuckPacks !== false })
     + lootHotfixSection(new Date(), null, shootingTestHotfixTables(build), [...meteorStrikeRows(build), ...finalFightRows(build)], build);
   // 5.40's and 5.41's Storm Destruction switch, Athena.bMegaStormEnabled (events/stormdestruction.js, PongooDev/CoreV2#395).
-  const engine = engineNetwork + stormDestructionEngineSection(build);
+  // The regions' QoS ping servers, the admin panel's (matchmaking/qos.js, Core-Backend #123): what the client's Auto
+  // region and first region pick pings.
+  const qos = qosEngineLines(build, settings?.get?.()?.regionPingServers);
+  const engine = engineNetwork + stormDestructionEngineSection(build) + (qos.length ? [...qos, ""].join("\r\n") : "");
   return { "DefaultEngine.ini": Buffer.from(engine, "utf8"), "DefaultGame.ini": Buffer.from(game, "utf8"), ...newModeFiles(build),
     ...runtimeOptionsFiles(build, settings?.get?.()) };
 }

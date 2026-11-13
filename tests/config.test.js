@@ -11,8 +11,11 @@ test("the command line overrides the config file, which overrides the defaults",
   try {
     const file = path.join(dir, "core.json");
     fs.writeFileSync(file, JSON.stringify({ port: 6000, dataDir: "from-file" }));
-    assert.deepEqual(loadConfig(["--config", file]), { port: 6000, dataDir: "from-file" });
-    assert.deepEqual(loadConfig(["--config", file, "--port", "6001", "--data", "from-args"]), { port: 6001, dataDir: "from-args" });
+    assert.deepEqual(loadConfig(["--config", file]), { port: 6000, dataDir: "from-file", qosPingPort: 22222 });
+    assert.deepEqual(loadConfig(["--config", file, "--port", "6001", "--data", "from-args"]), { port: 6001, dataDir: "from-args", qosPingPort: 22222 });
+    // The QoS ping answer's UDP port (Core-Backend #123): Epic's 22222, another, or 0 for none.
+    assert.equal(loadConfig(["--config", file, "--qos-ping-port", "0"]).qosPingPort, 0);
+    assert.throws(() => loadConfig(["--qos-ping-port", "70000"]), /Invalid qosPingPort/);
     assert.throws(() => loadConfig(["--config", path.join(dir, "missing.json")]), /not found/);
     assert.throws(() => loadConfig(["--port", "seventy"]), /Invalid port/);
   } finally {
@@ -22,7 +25,7 @@ test("the command line overrides the config file, which overrides the defaults",
 
 test("a launcher can start the backend with one command and its own port and data folder", async () => {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "core-launch-"));
-  const child = spawn(process.execPath, ["src/main.js", "--port", "0", "--data", dataDir], { stdio: ["ignore", "pipe", "pipe"] });
+  const child = spawn(process.execPath, ["src/main.js", "--port", "0", "--data", dataDir, "--qos-ping-port", "0"], { stdio: ["ignore", "pipe", "pipe"] });
   try {
     const port = await new Promise((resolve, reject) => {
       let output = "";

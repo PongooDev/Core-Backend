@@ -4561,6 +4561,8 @@
         serverRegions: [...(data.serverRegions || [])],
         // Each region's hosting IPs and the custom matchmaking servers (Core-Backend #227), players by name.
         regionHostingIps: JSON.parse(JSON.stringify(data.regionHostingIps || {})),
+        // Each region's QoS ping servers, what the game's Auto region pings (Core-Backend #123).
+        regionPingServers: JSON.parse(JSON.stringify(data.regionPingServers || {})),
         customMatchServers: (data.customMatchServers || []).map((entry) => ({ address: entry.address, keys: [...entry.keys],
           accounts: entry.accounts.map((account) => account.displayName) })),
         customMatchFallback: data.customMatchFallback === true,
@@ -4587,8 +4589,12 @@
         if (updated) showMatchmaking();
       };
 
-      const regions = ["NA", "EU", "OCE", "BR", "ASIA"];
-      const regionLabels = { NA: "North America (NA)", EU: "Europe (EU)", OCE: "Oceania (OCE)", BR: "Brazil (BR)", ASIA: "Asia (ASIA)" };
+      // The backend's regions in its order (Core-Backend #123): North America (NA, 1.1's to 2.5's region and the group of
+      // the two), NA-East and NA-West (3.0 on), Europe, Oceania, Brazil, Asia.
+      const regionEntries = Array.isArray(data.regions) && data.regions.length ? data.regions
+        : ["NA", "EU", "OCE", "BR", "ASIA"].map((code) => ({ code, label: code }));
+      const regions = regionEntries.map((entry) => entry.code);
+      const regionLabels = Object.fromEntries(regionEntries.map((entry) => [entry.code, entry.label || entry.code]));
       const modeKeys = [
         { id: "solo", name: "Solo", playlistId: 2, code: "Playlist_DefaultSolo", teams: "100 Teams × 1" },
         { id: "duo", name: "Duos", playlistId: 10, code: "Playlist_DefaultDuo", teams: "100 Teams × 2" },
@@ -5267,7 +5273,7 @@
       const sectionLimits = el("section", { class: "panel", style: "margin-top:16px" },
           el("div", { class: "panel-head", style: "margin-bottom:8px" },
             el("h2", { text: "Regional Server Allocation Limits" })),
-          el("p", { class: "note", text: "Maximum number of dedicated gameservers simultaneously assigned to each game mode per region. Leave at 0 for unlimited server assignments. Only enabled modes are displayed." }),
+          el("p", { class: "note", text: "Maximum number of dedicated gameservers simultaneously assigned to each game mode per region. Leave at 0 for unlimited server assignments. Only enabled modes are displayed. North America (NA) counts every North American server, NA-East's and NA-West's too, which also count against their own." }),
           serverLimitsTableBox);
 
       // Section 3: Queue Timers & Assignment Rules
@@ -5336,11 +5342,13 @@
             el("div", { style: "padding:16px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius); display:flex; flex-direction:column; justify-content:space-between;" },
               el("div", {},
                 el("div", { style: "font-weight:700; margin-bottom:4px;", text: "Server Regions" }),
-                el("div", { class: "sub", text: "Players queuing in any region ticked here play on the servers of any other region ticked here. A server still registers one region, its -McpRegion, and each match plays in it: Core Launcher's servers take the first region ticked here, in this list's order (NA when none is), when they start, unless their build's server arguments name another. With none or one ticked, each server only takes its own region's players." })),
+                el("div", { class: "sub", text: "Players queuing in any region ticked here play on the servers of any other region ticked here. A server still registers one region, its -McpRegion, and each match plays in it: Core Launcher's servers take the first region ticked here, in this list's order (NA when none is; NA for NA-East or NA-West, as the launcher only knows NA, EU, OCE, BR and ASIA), when they start, unless their build's server arguments name another (-McpRegion=NAE). With none or one ticked, each server only takes its own region's players." }),
+                el("div", { class: "sub", style: "margin-top:8px;", text: "North America (NA) is 1.1's to 2.5's region and covers NA-East and NA-West, which 3.0 and later builds offer: an NA server takes NA, NA-East and NA-West players, an NA-East server NA-East and NA players (never NA-West's), and ticking NA ticks all of North America. NA's server limits count every North American server, and NA's hosting IPs may host NA-East and NA-West too." })),
               el("div", { style: "margin-top:16px; padding-top:12px; border-top:1px solid var(--line);" },
                 serverRegionChecks))));
 
       const sectionHostingIps = regionHostingIpsSection(form, regions, regionLabels);
+      const sectionPingServers = regionPingServersSection(form, regions, regionLabels, data.qosPingPort ?? null);
       const sectionCustomKeys = customMatchmakingSection(data.customMatchmaking || []);
       const sectionCustomServers = customServersSection(form);
 
@@ -5374,7 +5382,7 @@
         ? [sectionModes]
         : key === "rules"
           ? [sectionLimits, sectionTiming, sectionRewards]
-          : [sectionSessions, sectionHostingIps, sectionCustomServers, sectionCustomKeys], (key) => { state.matchmakingSub = key; });
+          : [sectionSessions, sectionHostingIps, sectionPingServers, sectionCustomServers, sectionCustomKeys], (key) => { state.matchmakingSub = key; });
 
       $("view").replaceChildren(
         // View Head
@@ -5431,6 +5439,36 @@
             el("h2", { text: "Region Hosting IPs" }),
             chip(`${Object.keys(form.regionHostingIps).length} Restricted`, "accent"))),
         el("p", { class: "note", text: "The IPs a region's gameservers must come from, so an EU server can't run on an NA IP and the other way round. One IP address or CIDR range (203.0.113.0/24) a line. A region left empty takes servers from any IP. A server whose IP isn't listed for its region (its -McpRegion) is refused when it registers, and the log says why. This PC's own servers come from 127.0.0.1: list it to host a restricted region here. Behind a reverse proxy, turn on Behind a reverse proxy under Play with friends so the servers' real IPs are seen. Saved with Save Matchmaking Config." }),
+        ...rows);
+    }
+
+    // Each region's QoS ping servers (Core-Backend #123, matchmaking/qos.js): what the game pings for the region, so its
+    // Auto region (2.5 on) and its first pick are the region with the lowest ping. Saved with Save Matchmaking Config.
+    function regionPingServersSection(form, regions, regionLabels, qosPingPort) {
+      const rows = regions.map((r) => {
+        const box = el("textarea", {
+          class: "field mono", rows: 2, style: "width:100%; min-height:44px; resize:vertical;",
+          placeholder: r === "NA" ? "None (e.g. 203.0.113.7 or ping.example.org:22222); NA-East's and NA-West's when empty"
+            : r === "NAE" || r === "NAW" ? "None (e.g. 203.0.113.7 or ping.example.org:22222); North America's when empty"
+              : "None (e.g. 203.0.113.7 or ping.example.org:22222)",
+          "aria-label": `Ping servers for ${regionLabels[r] || r}`,
+          oninput: (e) => {
+            const list = splitList(e.target.value);
+            if (list.length) form.regionPingServers[r] = list;
+            else delete form.regionPingServers[r];
+          }
+        });
+        box.value = (form.regionPingServers[r] || []).join("\n");
+        return el("div", { style: "display:grid; grid-template-columns:minmax(140px, 200px) 1fr; gap:12px; align-items:start; margin-top:10px;" },
+          el("div", { class: "font-semibold", style: "padding-top:8px;", text: regionLabels[r] || r }), box);
+      });
+      return el("section", { class: "panel", style: "margin-top:16px" },
+        el("div", { class: "panel-head", style: "margin-bottom:8px" },
+          el("div", { class: "actions" },
+            el("h2", { text: "Auto Region (Ping Servers)" }),
+            chip(`${Object.keys(form.regionPingServers).length} Pinged`, "accent"),
+            chip(qosPingPort ? `This backend answers on UDP ${qosPingPort}` : "This backend doesn't answer pings", qosPingPort ? "good" : "warn"))),
+        el("p", { class: "note", text: "The game picks its matchmaking region by ping: from 2.5 the Matchmaking Region setting's Auto, and on every build a player who never picked one, take the region with the lowest ping. Epic's ping servers are gone, so without ping servers here every region is unreachable and Auto takes the list's first, NA (up to 2.5) or NA-East (3.0 on). List a region's ping servers and the game pings them instead (from 1.9; it reads them when it starts, so players restart the game after a change): one IPv4 address or host name a line, with :port when it isn't 22222. Each must answer the game's ping, which this backend does on its own UDP port (see the chip; config qosPingPort), so list this PC's address for the regions whose servers run here. On another machine, run npm run qos-ping-server from Core-Backend there (or any UDP echo on the port), next to that region's servers. A region left empty keeps Epic's, which never answer. Saved with Save Matchmaking Config." }),
         ...rows);
     }
 

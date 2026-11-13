@@ -10,7 +10,8 @@ import { defaultSeason4Flags, sanitizeSeason4Flags } from "../events/season4flag
 import { defaultDatedFlags, sanitizeDatedFlags } from "../events/datedflags.js";
 import { defaultStormDestruction, sanitizeStormDestruction } from "../events/stormdestruction.js";
 import { sanitizeCreatorNames } from "../store/creators.js";
-import { regionHostingIps, regionList } from "../matchmaking/regions.js";
+import { regionPingServers } from "../matchmaking/qos.js";
+import { regionHostingIps, regionList, serverRegionCodes } from "../matchmaking/regions.js";
 import { customMatchServers } from "../matchmaking/custom-servers.js";
 import { allowedBuildList } from "../builds/allowed.js";
 import { battleRoyaleSeasons } from "../builds/detect.js";
@@ -150,6 +151,10 @@ const defaults = {
   // Each region's hosting IPs (Core-Backend #227, matchmaking/regions.js regionAllowsAddress): { EU: ["203.0.113.0/24"] },
   // the IPs and CIDR ranges a gameserver hosting for the region must come from. A region left out takes any IP.
   regionHostingIps: {},
+  // Each region's QoS ping servers (Core-Backend #123, matchmaking/qos.js): { EU: ["203.0.113.5", "ping.example.org:22222"] },
+  // what the client pings for the region instead of Epic's (gone) ones, so its Auto region and its first pick are the
+  // region with the lowest ping. A region left out keeps the pak's.
+  regionPingServers: {},
   // Custom matchmaking servers (#227, matchmaking/custom-servers.js): [{ address, keys, accounts }], gameservers kept for
   // custom matchmaking keys' matches and never used for public ones. customMatchFallback: whether a custom match with
   // servers of its own plays on a public server when none of its own is free (off: it waits for one).
@@ -247,7 +252,9 @@ const defaults = {
   // Complete the challenges that cannot be completed on the build (Core-Backend #269, profiles/challenges.js
   // brokenChallenges), off by default.
   completeBrokenChallenges: false,
-  serverLimits: { NA: noLimits(), EU: noLimits(), OCE: noLimits(), BR: noLimits(), ASIA: noLimits() }
+  // Each of the admin panel's regions (matchmaking/regions.js serverRegionCodes): NA's count all of North America, NAE's
+  // and NAW's their own (Core-Backend #123).
+  serverLimits: Object.fromEntries(serverRegionCodes.map((region) => [region, noLimits()]))
 };
 
 export const defaultMatchmakingModes = defaults.matchmakingModes;
@@ -274,8 +281,7 @@ export function sanitizeMatchmakingModes(input, current = defaultMatchmakingMode
 export function sanitizeServerLimits(input, current = defaultServerLimits) {
   if (!input || typeof input !== "object" || Array.isArray(input)) return JSON.parse(JSON.stringify(current));
   const result = JSON.parse(JSON.stringify(current));
-  const regions = ["NA", "EU", "OCE", "BR", "ASIA"];
-  for (const r of regions) {
+  for (const r of serverRegionCodes) {
     if (input[r] && typeof input[r] === "object" && !Array.isArray(input[r])) {
       result[r] = result[r] || noLimits();
       for (const m of limitModes) {
@@ -651,6 +657,7 @@ export function createSettingsStore(dataDir) {
       delete settings.serverRegion;
       settings.allowedHostingIps = hostingIps(loaded.allowedHostingIps) ?? [...defaults.allowedHostingIps];
       settings.regionHostingIps = regionHostingIps(loaded.regionHostingIps) ?? {};
+      settings.regionPingServers = regionPingServers(loaded.regionPingServers) ?? {};
       settings.customMatchServers = customMatchServers(loaded.customMatchServers) ?? [];
       settings.customMatchFallback = loaded.customMatchFallback === true;
       settings.allowedBuilds = allowedBuildList(loaded.allowedBuilds) ?? null;
@@ -724,6 +731,7 @@ export function createSettingsStore(dataDir) {
         remoteAdmin: settings.remoteAdmin === true,
         allowedHostingIps: [...(settings.allowedHostingIps ?? defaults.allowedHostingIps)],
         regionHostingIps: JSON.parse(JSON.stringify(settings.regionHostingIps ?? {})),
+        regionPingServers: JSON.parse(JSON.stringify(settings.regionPingServers ?? {})),
         customMatchServers: JSON.parse(JSON.stringify(settings.customMatchServers ?? [])),
         customMatchFallback: settings.customMatchFallback === true,
         allowedBuilds: settings.allowedBuilds ? [...settings.allowedBuilds] : null,
@@ -823,6 +831,7 @@ export function createSettingsStore(dataDir) {
       }
       settings.allowedHostingIps = hostingIps(partial.allowedHostingIps) ?? settings.allowedHostingIps;
       settings.regionHostingIps = regionHostingIps(partial.regionHostingIps) ?? settings.regionHostingIps;
+      settings.regionPingServers = regionPingServers(partial.regionPingServers) ?? settings.regionPingServers;
       settings.customMatchServers = customMatchServers(partial.customMatchServers) ?? settings.customMatchServers;
       if (typeof partial.customMatchFallback === "boolean") settings.customMatchFallback = partial.customMatchFallback;
       const builds = allowedBuildList(partial.allowedBuilds);

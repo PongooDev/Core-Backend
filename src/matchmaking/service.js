@@ -5,7 +5,7 @@ import { log } from "../log.js";
 import { inIpRanges } from "../network.js";
 import { acceptWebSocket } from "../stomp/websocket.js";
 import { hasCustomServers, reservationsOf, serverTakes } from "./custom-servers.js";
-import { regionAllowsAddress, regionName, regionOf, servedRegions } from "./regions.js";
+import { regionAllowsAddress, regionGroup, regionMembers, regionName, regionOf, regionsOverlap, servedRegions } from "./regions.js";
 
 // Battle Royale's matchmaking service (MMS, from 1.7.2), both sides (Core-Docs Athena-Matchmaking-1.7.2.md and
 // Athena-Boot-1.7.2.md §1 C).
@@ -338,8 +338,8 @@ export function withRegion(bucketId, region) {
   return parts.join(":");
 }
 
-// Which queue a bucket is: the same bucket in any spelling of its region ("1:0:nae:10" and "1:0:NA:10"), or with
-// anyRegion the same build and playlist in any region.
+// Which queue a bucket is: the same bucket in any spelling of its region ("1:0:nae:10" and "1:0:NAE:10"; NA, NAE and
+// NAW are three queues, #123), or with anyRegion the same build and playlist in any region.
 export function bucketKey(bucketId, { anyRegion = false } = {}) {
   const { parts } = parseBucket(bucketId);
   if (parts.length > 2) parts[2] = anyRegion ? "*" : regionOf(parts[2]) ?? "NONE";
@@ -467,13 +467,14 @@ export function formTeams(parties, teams, { teamsAreSquads = true } = {}) {
 // matching anything, with the same number of fields. A last field of "**" matches whatever fields are left: 1.8's
 // servers register one pattern, "<netcl>:0:NA:**", where 1.7.2's registered "...:*" and "...:*:*:*" (Core-Backend #74:
 // 1.8 players were never matched). The region field (the third) compares regions, so a server started with
-// -McpRegion=nae takes NA's players (regions.js); with anyRegion it takes any region's.
+// -McpRegion=na takes NA's, NAE's and NAW's players and an NAE server NAE's and NA's (regions.js regionsOverlap, #123);
+// with anyRegion it takes any region's.
 export function bucketMatches(pattern, bucketId, { anyRegion = false } = {}) {
   const want = String(pattern).split(":");
   const have = String(bucketId).split(":");
   const rest = want.at(-1) === "**";
   const fields = rest ? want.slice(0, -1) : want;
-  const same = (field, index) => field === "*" || (index === 2 ? anyRegion || regionOf(field) === regionOf(have[index]) : field === have[index]);
+  const same = (field, index) => field === "*" || (index === 2 ? anyRegion || regionsOverlap(field, have[index]) : field === have[index]);
   return (rest ? have.length > fields.length : want.length === have.length) && fields.every(same);
 }
 
@@ -556,19 +557,21 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     return { "ticket.status.numQueued": String(players), "ticket.status.matchStartDelay": String(Math.max(0, Math.ceil(delaySec))) };
   }
 
+  // The servers playing or forming a match of the mode in the region: NA's count North America's, NAE's and NAW's too
+  // (regions.js regionMembers, #123).
   function activeServersCount(region, mode) {
     let count = 0;
-    const canRegion = regionOf(region);
+    const members = regionMembers(region);
     for (const match of matches.values()) {
       const bucket = parseBucket(match.bucketId);
-      if (regionOf(bucket.region) === canRegion && modeByPlaylist[bucket.playlistId] === mode) {
+      if (members.includes(regionOf(bucket.region)) && modeByPlaylist[bucket.playlistId] === mode) {
         count++;
       }
     }
     for (const server of servers) {
       if (server.forming) {
         const bucket = parseBucket(server.forming.bucketId);
-        if (regionOf(bucket.region || server.region) === canRegion && modeByPlaylist[bucket.playlistId] === mode) {
+        if (members.includes(regionOf(bucket.region || server.region)) && modeByPlaylist[bucket.playlistId] === mode) {
           count++;
         }
       }
@@ -576,17 +579,18 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     return count;
   }
 
+  // The admin panel's server limits: a match of the region's needs room under its region's limit and, for NAE and NAW,
+  // under North America's (NA's) too (#123).
   function allowsServerAssignment(region, playlistId) {
     const limits = typeof serverLimits === "function" ? serverLimits() : serverLimits;
     if (!limits) return true;
     const mode = modeByPlaylist[playlistId];
     if (!mode) return true;
     const canRegion = regionOf(region) || "NA";
-    const regionLim = limits[canRegion];
-    if (!regionLim) return true;
-    const limit = Number(regionLim[mode]);
-    if (!Number.isInteger(limit) || limit <= 0) return true;
-    return activeServersCount(canRegion, mode) < limit;
+    return [canRegion, regionGroup(canRegion)].filter(Boolean).every((code) => {
+      const limit = Number(limits[code]?.[mode]);
+      return !Number.isInteger(limit) || limit <= 0 || activeServersCount(code, mode) < limit;
+    });
   }
   const sockets = new Set();
 
@@ -1136,6 +1140,9 @@ export function createMatchmaker({ sessions, gatherMs = defaultGatherMs, lateJoi
     isMatchmakingUpgrade: (req) => String(req.headers.authorization ?? "").startsWith("Epic-Signed "),
     handleUpgrade,
     warmup,
+    // The servers playing or forming a match of a mode in a region: the admin panel's Regional Server Allocation Limits
+    // show them against each limit (#123).
+    activeServersCount,
     closeAll() {
       clearInterval(countdown);
       for (const ws of sockets) ws.close(1001);

@@ -4,7 +4,9 @@ import { validateNetwork } from "./network.js";
 
 const defaults = {
   port: 5595,
-  dataDir: "data"
+  dataDir: "data",
+  // The UDP port the game's QoS region pings are answered on (matchmaking/qos.js, Core-Backend #123): Epic's, 22222. 0: none.
+  qosPingPort: 22222
 };
 
 // Precedence: command line, then the config file, then the defaults. A launcher can pass everything on the command line.
@@ -20,7 +22,8 @@ export function loadConfig(argv = process.argv.slice(2)) {
       "remote-access": { type: "boolean" },
       "local-only": { type: "boolean" },
       listen: { type: "string" },
-      "public-address": { type: "string" }
+      "public-address": { type: "string" },
+      "qos-ping-port": { type: "string" }
     }
   });
 
@@ -31,7 +34,9 @@ export function loadConfig(argv = process.argv.slice(2)) {
 
   if (values.port !== undefined) config.port = Number(values.port);
   if (values.data !== undefined) config.dataDir = values.data;
+  if (values["qos-ping-port"] !== undefined) config.qosPingPort = Number(values["qos-ping-port"]);
   if (!Number.isInteger(config.port) || config.port < 0 || config.port > 65535) throw new Error(`Invalid port ${config.port}`);
+  if (!Number.isInteger(config.qosPingPort) || config.qosPingPort < 0 || config.qosPingPort > 65535) throw new Error(`Invalid qosPingPort ${config.qosPingPort}`);
 
   const fromCommandLine = [];
   if (values["remote-access"] && values["local-only"]) throw new Error("--remote-access and --local-only can't both be given");

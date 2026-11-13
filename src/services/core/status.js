@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { isContactEmailLogin } from "../../accounts/email.js";
+import { regionGroup } from "../../matchmaking/regions.js";
 import { createRateLimiter } from "../portal/ratelimit.js";
 
 const packageFile = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..", "package.json");
@@ -12,7 +13,10 @@ const version = JSON.parse(fs.readFileSync(packageFile, "utf8")).version;
 // with it before starting the game ("Join a friend"). It is the one /core/api route other machines get (when remote
 // access is on): the rest is for the launcher on this PC. It also names the admin panel's Server Regions (#142, nothing
 // else of the settings): a launcher hosting servers for this backend, on this PC or a friend's, gives them the first as
-// their -McpRegion (Core-Launcher #8).
+// their -McpRegion (Core-Launcher #8). The launcher knows NA, EU, OCE, BR and ASIA and skips any other region, so NA-East
+// and NA-West (Core-Backend #123) are named as North America, which takes both: ticked first, the launcher's servers
+// are NA's, not the next region's. A build's own -McpRegion=NAE in the launcher makes its servers NA-East's.
+const launcherRegions = (regions) => [...new Set(regions.map((region) => regionGroup(region) ?? region))];
 export function coreStatusRoutes(context = {}) {
   const router = express.Router();
   const authRequirementsLimiter = createRateLimiter({
@@ -53,7 +57,7 @@ export function coreStatusRoutes(context = {}) {
     }
     next();
   }, (req, res) => {
-    const base = { name: "Core-Backend", version, serverRegions: [...(context.settings?.get?.().serverRegions ?? [])] };
+    const base = { name: "Core-Backend", version, serverRegions: launcherRegions(context.settings?.get?.().serverRegions ?? []) };
     if (req.query.username !== undefined || req.query.auth !== undefined) {
       return res.json({
         ...base,

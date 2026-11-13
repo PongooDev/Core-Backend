@@ -312,8 +312,26 @@ test("with the region fallback off, the mission search finds only the region ask
   assert.deepEqual(store.search(searchIn("EU")).map(({ id }) => id), [na.id]);
 });
 
+test("the mission search: NA's server is found by NA-East's and NA-West's players, an NA-East server by NA's but never NA-West's (#123)", () => {
+  const store = createSessionStore({ regionFallback: () => false });
+  const searchIn = (region) => ({ ...clientSearch, criteria: [{ type: "EQUAL", key: "REGION_s", value: region }, ...clientSearch.criteria.slice(1)] });
+  const na = store.create({ ...emptyServer, attributes: { ...emptyServer.attributes, REGION_s: "NA" } }, "127.0.0.1", "CoreServer1");
+  for (const region of ["NA", "nae", "NAW", "OH"]) assert.deepEqual(store.search(searchIn(region)).map(({ id }) => id), [na.id], region);
+  assert.deepEqual(store.search(searchIn("EU")), []);
+  let fallback = false;
+  const other = createSessionStore({ regionFallback: () => fallback });
+  const east = other.create({ ...emptyServer, attributes: { ...emptyServer.attributes, REGION_s: "NAE" } }, "127.0.0.1", "CoreServer2");
+  assert.deepEqual(other.search(searchIn("NAE")).map(({ id }) => id), [east.id]);
+  assert.deepEqual(other.search(searchIn("NA")).map(({ id }) => id), [east.id]);
+  assert.deepEqual(other.search(searchIn("NAW")), []);
+  // NA-West has no server of its own (NA-East's isn't one), NA has: with the fallback on only NA-West's search falls back.
+  fallback = true;
+  assert.deepEqual(other.regionFallback(searchIn("NAW")), { region: "NAW" });
+  assert.equal(other.regionFallback(searchIn("NA")), null);
+});
+
 test("a server in one of the server regions is found by the mission search of any of them (#142)", () => {
-  let regions = ["EU", "nae"];
+  let regions = ["EU", "na"];
   let fallback = false;
   const store = createSessionStore({ regionFallback: () => fallback, serverRegions: () => regions });
   const searchIn = (region) => ({ ...clientSearch, criteria: [{ type: "EQUAL", key: "REGION_s", value: region }, ...clientSearch.criteria.slice(1)] });
