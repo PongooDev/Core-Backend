@@ -39,7 +39,7 @@ import { createAdminGate } from "./local.js";
 import { clearSessionCookie, extractAdminToken } from "./auth.js";
 import { createRateLimiter, getClientIp } from "../services/portal/ratelimit.js";
 import { defaultBattleRoyaleNews, defaultLoginMessage, defaultSubgameSelect } from "../services/content/pages.js";
-import { maxNewsImageBytes, maxNewsImagePixels, newsImageValue, pruneNewsImages, saveNewsImage } from "../services/content/images.js";
+import { maxNewsImageBytes, maxNewsImagePixels, newsImageSizes, newsImageValue, pruneNewsImages, saveNewsImage } from "../services/content/images.js";
 import { playlistImageModes } from "../services/content/playlistimages.js";
 import { inBuild } from "../builds/context.js";
 import { allowedBuildList, otherBuilds } from "../builds/allowed.js";
@@ -1258,7 +1258,10 @@ export function adminRoutes(context) {
       loginMessage: current.loginMessage ?? configLogin ?? defaultLoginMessage,
       subgameSelect: current.subgameSelect ?? configSubgame ?? defaultSubgameSelect,
       // The mode select tiles' pictures (4.0+, #260): each playlist with Epic's picture and the host's own ("" for none).
-      playlistImages: playlistImageModes().map((mode) => ({ ...mode, custom: customPlaylistImages(current)[mode.playlistName] ?? "" }))
+      playlistImages: playlistImageModes().map((mode) => ({ ...mode, custom: customPlaylistImages(current)[mode.playlistName] ?? "" })),
+      // How each build draws the news picture (#343), shown next to the upload, and the upload's limits.
+      newsImageSizes,
+      newsImageLimits: { maxBytes: maxNewsImageBytes, maxPixels: maxNewsImagePixels }
     };
   }
 

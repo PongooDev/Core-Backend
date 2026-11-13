@@ -5636,10 +5636,13 @@
       brBody.value = brCustom?.body ?? "";
 
       // The news picture (1.9+, Core-Backend #215): a URL, or a PNG/JPEG uploaded to the backend, which serves it to the game.
+      // Next to it, how each build draws it (#343: the backend's newsImageSizes, read from the builds' own widgets).
+      const newsSizes = data.newsImageSizes || [];
+      const tileSize = newsSizes.find((row) => row.width && row.height);
       const brImage = el("input", {
         class: "field",
         value: brCustom?.image ?? "",
-        placeholder: "https://... or upload a PNG/JPEG (1024x512 works best)",
+        placeholder: tileSize ? `https://... or upload a PNG/JPEG (${tileSize.width}x${tileSize.height})` : "https://... or upload a PNG/JPEG",
         style: "width:100%",
         disabled: !battleRoyaleNewsEnabled
       });
@@ -5670,23 +5673,30 @@
         if (!uploaded?.image) return;
         brImage.value = uploaded.image;
         showPreview();
-        saveBrBtn.click();
+        // The tile (5.30+) keeps the picture's shape, so say when it isn't the slot's.
+        const shape = tileSize && uploaded.width && uploaded.height
+          ? (uploaded.width * tileSize.height === uploaded.height * tileSize.width
+            ? `, the news tile's ${tileSize.width}x${tileSize.height} shape`
+            : `. The news tile (5.30+) is ${tileSize.width}x${tileSize.height} (2:1) and shows it in its own shape instead`)
+          : "";
+        saveBr(`Picture uploaded: ${uploaded.width}x${uploaded.height}${shape}`);
       });
       const uploadBrImageBtn = btn("Upload Image", () => brFile.click(), "ghost", { disabled: !battleRoyaleNewsEnabled });
       const removeBrImageBtn = btn("Remove Image", () => {
         brImage.value = "";
         showPreview();
-        saveBrBtn.click();
+        saveBr();
       }, "ghost", { disabled: !battleRoyaleNewsEnabled || !brCustom?.image });
 
-      const saveBrBtn = btn("Save Battle Royale News", async () => {
+      const saveBr = async (message) => {
         const title = brTitle.value.trim();
         const body = brBody.value.trim();
         const image = brImage.value.trim();
         const payload = (title || body || image) ? { battleRoyaleNews: { title, body, image } } : { battleRoyaleNews: null };
-        await act(api("/admin/api/news", payload), payload.battleRoyaleNews ? "Battle Royale news updated" : "Battle Royale news reset to 1:1 default");
+        await act(api("/admin/api/news", payload), payload.battleRoyaleNews ? (message || "Battle Royale news updated") : "Battle Royale news reset to 1:1 default");
         showNews();
-      }, "primary", { disabled: !battleRoyaleNewsEnabled });
+      };
+      const saveBrBtn = btn("Save Battle Royale News", () => saveBr(), "primary", { disabled: !battleRoyaleNewsEnabled });
 
       const resetBrBtn = btn("Reset to Default", async () => {
         brTitle.value = "";
@@ -5909,7 +5919,7 @@
         el("p", {
           class: "note",
           text: battleRoyaleNewsEnabled
-            ? "Displayed in the Battle Royale lobby news box (1.7.2+, and the News tab on 1.9). Leave blank to use authentic 1:1 defaults. Use {version} to show the client's version automatically. The image shows on 1.9 and later only."
+            ? "Displayed in Battle Royale's lobby news (the news box from 1.7.2, the News screen from 1.9; on 5.30 and later the News screen's tile after login). Leave blank to use authentic 1:1 defaults. Use {version} to show the client's version automatically. The picture shows on 1.9 and later; the table under it says at what size."
             : "Battle Royale lobby news is disabled. The news widget in the lobby (or News tab in 1.9+) will be hidden on connected clients."
         }),
         el("div", { style: "display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:20px; margin-top:14px; align-items:start;" },
@@ -5921,13 +5931,20 @@
               el("span", { text: "Body" }),
               brBody),
             el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
-              el("span", { text: "Image (1.9+)" }),
+              el("span", { text: tileSize ? `Picture (upload ${tileSize.width}x${tileSize.height})` : "Picture" }),
               brImage),
             el("div", { style: "display:flex; align-items:center; gap:10px; flex-wrap:wrap;" },
               uploadBrImageBtn,
               removeBrImageBtn,
               brFile,
-              el("span", { class: "muted", text: "PNG or JPEG, up to 4 MB and 2.5 million pixels." })),
+              el("span", { class: "muted", text: `PNG or JPEG, up to ${Math.round((data.newsImageLimits?.maxBytes ?? 4194304) / 1048576)} MB and ${((data.newsImageLimits?.maxPixels ?? 2500000) / 1e6).toLocaleString("en-US")} million pixels.` })),
+            // The picture's size in each build's own news widget (#343).
+            newsSizes.length ? el("div", { style: "display:flex; flex-direction:column; gap:6px;" },
+              el("div", { class: "muted font-semibold", style: "font-size:12px; text-transform:uppercase; letter-spacing:0.04em;", text: "Picture size in the game" }),
+              ...newsSizes.map((row) => el("div", { style: "display:grid; grid-template-columns:minmax(84px, auto) minmax(84px, auto) 1fr; gap:10px; align-items:baseline; padding:6px 0; border-top:1px solid var(--line);" },
+                el("span", { style: "font-weight:600; white-space:nowrap;", text: row.builds }),
+                el("span", { class: row.width ? "mono" : "muted", style: "white-space:nowrap;", text: row.size }),
+                el("span", { class: "muted", style: "font-size:12px; line-height:1.4;", text: row.shows })))) : null,
             el("div", { class: "actions", style: "margin-top:8px;" },
               saveBrBtn,
               resetBrBtn)),
@@ -5969,7 +5986,7 @@
             toggleSwitch(notice.enabled === true, async (checked) => {
               await saveNotice(checked, checked ? "Lobby notice shown" : "Lobby notice hidden");
             }))),
-        el("p", { class: "note", text: "The warning box above the PLAY button in the lobby (a warning icon, a title such as \"Echo Beta\", and a body). Off by default; turn it on to show it to every build. Use {version} for the client version." }),
+        el("p", { class: "note", text: "The yellow warning box in the lobby (a warning icon, a title such as \"Echo Beta\", and a body), the page's emergencynotice. Off by default: write it, then turn it on with the switch. Builds from 2.4.2 to 6.21 show it (1.1 to 2.2 have no notice box). Give it a title: 6.10 hides a notice without one. Use {version} for the client version." }),
         el("div", { style: "display:flex; flex-direction:column; gap:12px; margin-top:14px;" },
           el("label", { style: "display:flex; flex-direction:column; gap:6px; font-weight:500;" },
             el("span", { text: "Title" }),
@@ -6050,7 +6067,7 @@
       const tabs = [
         ["motd", "Lobby News & MOTD"],
         ["modeselect", "Mode Select Screens"],
-        ["notices", "System Notices & Banners"]
+        ["notices", "Lobby Notice & Login Message"]
       ];
       if (!tabs.some(([k]) => k === state.newsTab)) state.newsTab = "motd";
 

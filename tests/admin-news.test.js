@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import vm from "node:vm";
 import { get, post, send, startBackend } from "./helpers.js";
 
 const admin = (backend, path, body) => (body === undefined
@@ -426,15 +427,95 @@ test("the lobby notice box is edited from the News tab and served in emergencyno
     assert.deepEqual(shown, [{ _type: "CommonUI Simple Message Base", title: "Echo <Beta>", body: "Expect bugs in v1.8", hidden: false, spotlight: false }]);
     assert.equal((await pageFor(backend.port, "3532353")).body.emergencynotice.news.messages[0].hidden, false);
 
-    await admin(backend, "/news", { lobbyNotice: { enabled: false, title: "Echo", body: "x" } });
-    const off = (await pageFor(backend.port, "3724489")).body.emergencynotice.news.messages;
-    assert.equal(off.length, 1);
-    assert.equal(off[0].hidden, true);
+    // Turned off, the notice is kept for the panel but served as no message (#343): 6.x reads no "hidden" and would show it.
+    const turnedOff = await admin(backend, "/news", { lobbyNotice: { enabled: false, title: "Echo", body: "x" } });
+    assert.deepEqual(turnedOff.body.lobbyNotice, { enabled: false, title: "Echo", body: "x" });
+    for (const cl of ["3724489", "4039451", "4480234", "4526925"]) {
+      assert.deepEqual((await pageFor(backend.port, cl)).body.emergencynotice.news.messages, [], cl);
+    }
 
     await admin(backend, "/news", { lobbyNotice: null });
     assert.deepEqual((await pageFor(backend.port, "3724489")).body.emergencynotice.news.messages, []);
   } finally {
     backend.close();
     fs.rmSync(dataDir, { recursive: true, force: true });
+  }
+});
+
+// 4.x to 6.x (#343): the same emergencynotice section, which every one of them reads (none reads emergencynoticev2).
+test("4.0 to 6.21 get the lobby notice in emergencynotice.news.messages[], with their own version (#343)", async () => {
+  const backend = await startBackend();
+  try {
+    await admin(backend, "/news", { lobbyNotice: { enabled: true, title: "Core {version}", body: "Discord: example" } });
+    for (const [cl, version] of [["4039451", "4.0"], ["4166199", "4.5"], ["4305896", "5.30"], ["4461277", "6.02"], ["4480234", "6.10"],
+      ["4497486", "6.20"], ["4526925", "6.21"]]) {
+      const page = (await pageFor(backend.port, cl)).body;
+      assert.equal(page.emergencynotice._title, "emergencynotice", cl);
+      assert.equal(page.emergencynoticev2, undefined, cl);
+      assert.deepEqual(page.emergencynotice.news, { _type: "Battle Royale News", messages: [
+        { _type: "CommonUI Simple Message Base", title: `Core ${version}`, body: "Discord: example", hidden: false, spotlight: false }] }, cl);
+    }
+  } finally {
+    backend.close();
+  }
+});
+
+// The News screen's tile on 5.30 to 6.21 (#343) shows the same messages[] picture as 1.9.
+test("5.30 to 6.21 get the uploaded news picture in battleRoyaleNews.news.messages[] and _images_ (#343)", async () => {
+  const backend = await startBackend();
+  try {
+    const uploaded = await upload(backend, png(1024, 512));
+    assert.equal(uploaded.status, 200);
+    assert.equal(uploaded.body.width, 1024);
+    assert.equal(uploaded.body.height, 512);
+    await admin(backend, "/news", { battleRoyaleNews: { title: "Battle Royale - {version}", body: "Welcome!", image: uploaded.body.image } });
+    const url = `http://127.0.0.1:${backend.port}${uploaded.body.image}`;
+    for (const [cl, version] of [["4305896", "5.30"], ["4402180", "6.00"], ["4461277", "6.02"], ["4480234", "6.10"], ["4497486", "6.20"],
+      ["4526925", "6.21"]]) {
+      const page = (await pageFor(backend.port, cl)).body;
+      assert.deepEqual(page.battleRoyaleNews.news.messages, [{ title: `Battle Royale - ${version}`, body: "Welcome!", image: url }], cl);
+      assert.ok(page._images_.includes(url), cl);
+    }
+
+    // A picture saved with the text boxes left blank (the panel's Upload Image saves at once) keeps Core's title and body.
+    await admin(backend, "/news", { battleRoyaleNews: { title: "", body: "", image: uploaded.body.image } });
+    assert.deepEqual((await pageFor(backend.port, "4480234")).body.battleRoyaleNews.news.messages,
+      [{ title: "Battle Royale - 6.10", body: "Welcome to Battle Royale on Core!", image: url }]);
+    assert.deepEqual((await pageFor(backend.port, "3724489")).body.battleRoyaleNews.news.message,
+      { title: "Battle Royale - 1.8", body: "Welcome to Battle Royale on Core!" });
+
+    // With no picture set, the tile shows its own default one, as #343's 6.10 screenshot did.
+    await admin(backend, "/news", { battleRoyaleNews: null });
+    const page610 = (await pageFor(backend.port, "4480234")).body;
+    assert.equal(page610.battleRoyaleNews.news.messages[0].image, "");
+    assert.equal(page610._images_.includes(url), false);
+  } finally {
+    backend.close();
+  }
+});
+
+test("the admin news API states the news picture's size in each build range, read from the game's widgets (#343)", async () => {
+  const backend = await startBackend();
+  try {
+    const { body } = await admin(backend, "/news");
+    assert.deepEqual(body.newsImageLimits, { maxBytes: 4 * 1024 * 1024, maxPixels: 2_500_000 });
+    const sizes = body.newsImageSizes;
+    assert.deepEqual(sizes.map((row) => row.builds), ["1.1 to 1.8.2", "1.9 to 3.5", "3.6 to 5.21", "5.30 to 6.21"]);
+    const tile = sizes.find((row) => row.builds === "5.30 to 6.21");
+    assert.equal(tile.size, "1024x512");
+    assert.equal(tile.width, 1024);
+    assert.equal(tile.height, 512);
+    assert.equal(sizes.filter((row) => row.width).length, 1);
+    for (const row of sizes) assert.ok(row.size && row.shows, row.builds);
+
+    // The panel shows them next to the upload, and the notice on its own tab.
+    const html = (await get(backend.port, "/admin")).body;
+    const script = html.slice(html.indexOf("<script>") + "<script>".length, html.lastIndexOf("</script>"));
+    assert.doesNotThrow(() => new vm.Script(script, { filename: "panel.html" }));
+    assert.match(html, /newsImageSizes/);
+    assert.match(html, /Picture size in the game/);
+    assert.match(html, /Lobby Notice & Login Message/);
+  } finally {
+    backend.close();
   }
 });

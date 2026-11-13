@@ -15,6 +15,28 @@ import { httpsProxied } from "../../network.js";
 export const newsImagePath = "/content/api/news-images";
 export const maxNewsImageBytes = 4 * 1024 * 1024;
 export const maxNewsImagePixels = 2_500_000;
+
+// How each build draws the news picture, read from its own widgets (Core-Backend #343), for the admin panel to show next to
+// the upload. The CMS image (UEpicCMSImage) makes its brush the downloaded picture's own width and height (6.10 sub_396DA0),
+// so a slot only has a size where the widget gives it one.
+// - Before 1.9 the news box reads news.message, title and body alone (pages.js).
+// - 1.9 to 5.21: UFortAthenaNewsWidget's three entries (AthenaNews Image1..3, EpicCMSImage). Each picture sits in an
+//   auto-sized HorizontalBoxSlot (HAlign_Left, VAlign_Center, 8 right padding) left of its title and body, with no brush size,
+//   SizeBox or ScaleBox of its own, so it is drawn at its own size. AthenaNewsModal holds the entries in a ScrollBox inside a
+//   SizeBox 920 wide. Read from 2.4.2's, 3.0's and 3.5's paks. No pak of 1.9 to 2.2 or 3.6 to 5.21 is on hand: their exes
+//   have the same widget class and no news tile class.
+// - 5.30 to 6.21: UFortAthenaNewsTile, which 5.30's exe is the first to have (5.21's has none). AthenaNewsTile's
+//   CMSImage_NewsImage has a 1024x512 brush on T_Athena_Tile_Matchmaking_Default (1024x512 DXT1, the picture SetDefaultImage
+//   shows for a message without one), in a ScaleBox (ScaleToFitX) inside SizeBox_Tile (560 wide). The spotlight and special
+//   event tiles have the same 1024x512 brush. The tile scales a picture to its width and keeps its shape. Read from 6.02's,
+//   6.20's and 6.21's paks; 6.10's tile code (sub_2EB8270: title, body, adSpace, then the CMS image or SetDefaultImage) is
+//   theirs. Epic's own news picture from 4.2 (BR04_MOTD_Shield-1024x512) was 1024x512 too.
+export const newsImageSizes = [
+  { builds: "1.1 to 1.8.2", size: "No picture", shows: "The lobby news box shows the title and body only (from 1.7.2)." },
+  { builds: "1.9 to 3.5", size: "Its own size", shows: "Drawn at its own pixel size, left of the title and body, in a news column 920 pixels wide. A 1024x512 picture is wider than the column; a small one fits." },
+  { builds: "3.6 to 5.21", size: "Not read", shows: "These builds' widgets aren't on hand to read. They use 1.9's news widget, not the later tile; Epic's own news picture in 4.2 was 1024x512." },
+  { builds: "5.30 to 6.21", size: "1024x512", width: 1024, height: 512, shows: "The news tile's picture slot (2:1). The tile scales the picture to its width and keeps its shape, so a 2:1 picture fills the slot as Epic's did." }
+];
 const maxImageUrlLength = 2048;
 
 const types = { png: "image/png", jpg: "image/jpeg" };

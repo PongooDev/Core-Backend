@@ -26,8 +26,13 @@ import { playlistImagesFor, playlistInformationFor } from "./playlistimages.js";
 // build Core doesn't know that is newer than 1.9 gets the array.
 // The message's image (Core-Backend #215) is the admin panel's "image": another site's picture URL, or an upload the
 // backend serves itself (images.js), handed out on the address the client asked for this page on. It is listed in
-// _images_ too, which the CMS cache keeps. Builds before 1.9 have no image in their news box and get none. The login
-// message and Save the World's survivalmessage read title and body alone (1.9: 0x3121F55, 0x2FE6908), so they have none.
+// _images_ too, which the CMS cache keeps. Builds before 1.9 have no image in their news box and get none. 5.30 to 6.21
+// show the same messages[] as news tiles, picture included (Core-Backend #343): 6.10 reads each with sub_2E49170 (title,
+// body, image, adSpace, spotlight, subgame; its news reader is sub_2E4A670), and the tile (sub_2EB8270) hands a non-empty
+// image to the CMS image cache, else shows its default picture (T_Athena_Tile_Matchmaking_Default, the one #343's 6.10
+// News screen showed: no picture had been set). Where each build draws the picture, and at what size: images.js
+// newsImageSizes. The login message and Save the World's survivalmessage read title and body alone (1.9: 0x3121F55,
+// 0x2FE6908), so they have none.
 // The mode select screen's descriptions next to Save the World and Battle Royale (0x3018C70 body, 0x301A360 title, both
 // through 0x30184B0) read subgameselectdata.{saveTheWorld | battleRoyale}.message {title, body} (Core-Backend #63);
 // saveTheWorldUnowned is for players without Save the World, whom Core doesn't have. The title is the short line in the
@@ -166,7 +171,9 @@ export function battleRoyaleNewsFor(news, changelist, imageOrigin = undefined) {
     }
     return { news: { region_messages: [], platform_messages: [] } };
   }
-  const message = messageOf(news, defaultBattleRoyaleNews, changelist);
+  // A field left blank keeps Core's text, as the panel says, so a picture uploaded on its own (the panel saves it at once)
+  // doesn't empty the tile's title and body: 6.10's tile (sub_2EB8270) collapses an empty title or body (#343).
+  const message = messageOf({ title: news.title || undefined, body: news.body || undefined }, defaultBattleRoyaleNews, changelist);
   if (readsNewsMessages(changelist)) {
     const image = newsImageUrl(news.image, imageOrigin);
     return { news: { messages: [{ ...message, image }], region_messages: [], platform_messages: [] } };
@@ -198,12 +205,21 @@ export function saveTheWorldNewsFor(configured, changelist) {
 }
 
 // The lobby's notice box, the yellow-headed warning above the PLAY button (Core-Backend #256): the page's emergencynotice
-// section, news.messages[] of {hidden, title, body, spotlight}. Off (or never set), the section carries no message; a
-// notice turned off after being written stays in the list with hidden: true, as Epic's own page keeps a withdrawn one.
-// Every build 1.1 to 4.0 gets the same section; the later emergencynoticev2 shape belongs to builds Core doesn't support.
+// section, news.messages[] of {hidden, title, body, spotlight}. Every build gets the same section, and every build Core
+// supports that has the box reads it there (Core-Backend #343): 2.4.2's paks have the box (EmergencyNoticeWidget, a
+// UEmergencyNoticeBase), and the exes checked from 2.5 to 6.21 (2.5, 3.0, 3.3, 3.5.2, 3.6, 4.0, 4.2, 4.4, 4.5, 5.0, 5.10,
+// 5.21, 5.30, 5.40, 6.00, 6.02, 6.10, 6.20, 6.21) all name "emergencynotice" and none "emergencynoticev2" (the later
+// emergencynotices[] shape; 8.30's exe doesn't have it either, 16.40's does). 1.1 to 2.2 have no notice box: the exes
+// checked (1.1, 1.2, 1.7.2, 1.8, 1.9, 1.9.1, 1.10, 1.11, 2.2) have neither "emergencynotice" nor UEmergencyNoticeBase.
+// 2.3 and 2.4 weren't checked.
+// 6.10's GetLatestEmergencyNotice (sub_2E49F10) takes the first match of news.region_messages, then platform_messages
+// ("Windows"), then messages[], each read as title, body, image, adSpace, spotlight and subgame ("stw", "br", else every
+// mode; sub_2E49170). It reads no "hidden", and UEmergencyNoticeBase (sub_2EB2260) shows any message with a title and hides
+// the box only when the title is empty. So a notice turned off is served as no message at all: kept with hidden: true, as
+// it was, 6.10 went on showing it.
 export function emergencyNoticeFor(notice, changelist) {
-  const message = notice && (notice.title || notice.body)
-    ? { _type: "CommonUI Simple Message Base", ...messageOf(notice, { title: "", body: "" }, changelist), hidden: notice.enabled !== true, spotlight: false }
+  const message = notice?.enabled === true && (notice.title || notice.body)
+    ? { _type: "CommonUI Simple Message Base", ...messageOf(notice, { title: "", body: "" }, changelist), hidden: false, spotlight: false }
     : undefined;
   return {
     _title: "emergencynotice",
