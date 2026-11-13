@@ -30,9 +30,10 @@ import { missionMeets, missionObjectives, questPath } from "./quests.js";
 // Memorial in zone 1, Theater_Hard_Zone1, difficulty 22; HighNoon in zone 2, 24), made an AlwaysActive tile of its zone
 // theme running only its generator at that zone's difficulty, no mission alert, with the quest as its
 // ActiveQuestDefinition. world/quests.js linkedQuests then links the quest to it, as any fixed tile.
-// What isn't placed: 5.10's re-themed Canny Valley (Thunder Route 99's, the desert's, Ghost Town's tiles: BP_ZT_Route99_1
-// and _2, BP_ZT_Desert, the _Arid city, suburbs and industrial park), whose map content the Act 1 reactive quests ("Can be
-// only completed in a Thunder Route 99 zone") need.
+// The zones around them (Thunder Route 99's, the desert's and the bunkers' tiles, which the Act 1 reactive quests such as
+// Road Trip, "Can be only completed in a Thunder Route 99 zone", need) are world/cannyvalley.js's (#341), which keeps
+// these tiles: the Welcome tile ends up among zone 1's Route 99 tiles, the Memorial in its desert, High Noon's ghost town
+// in zone 2's desert.
 export const landmarkMissions = [
   {
     questId: "cannyvalley_landmark_welcome",

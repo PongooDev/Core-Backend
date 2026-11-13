@@ -341,4 +341,5 @@ Without the Cert build at hand, the committed `gamedata/*.json` (all but `theate
 they are what this extractor makes from Cert (a fresh 1.7.2 extraction is exactly Cert's files with
 `gamedata/3700114` applied), and 1.8's overlay (`gamedata/3724489`) was made against them.
 
-`theaters.json` isn't extracted and is shared by every build.
+`theaters.json` isn't extracted and is shared by every build. From 5.10, whose data has Canny Valley's first act, the
+backend redraws that act on it (`src/world/landmarks.js`, `src/world/cannyvalley.js`) from the build's `world.json`.

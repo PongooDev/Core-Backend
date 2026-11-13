@@ -1,0 +1,91 @@
+// Canny Valley's first act in the desert (5.10, CL-4240749; Core-Backend #341). Update v5.10 reworked Canny Valley's
+// story: its first act moved into a desert. 5.10's paks (and every build after it Core has, to 6.20) ship what that act
+// is made of, and no layout for it:
+// - its quests, Quests/CannyValley/Act1 (21 of them): Storm Shield Defense 1 (OutpostQuest_T3_L1) grants
+//   CannyValley_Landmark_Welcome, whose chain runs through Road Trip (CannyValley_Reactive_Route99: "Visit a diner, motel,
+//   gas station, and a truck stop. Can be only completed in a Thunder Route 99 zone."), the Vinderman Memorial and the
+//   desert's reactive quests (Seebot, the survey, oil samples, dinosaur bones, rock formations, glyphs) to
+//   CannyValleyQuest_Outpost_L2 (Storm Shield Defense 2 done), then the periscopes and bases (the bunkers), rusted cars,
+//   servers, tabs, jukeboxes, trail, water towers, the constructor and the tumbleweeds to CannyValley_Landmark_HighNoon
+//   and CannyValleyQuest_Outpost_L3. Their objectives ask for Zone.Difficulty >= 22 before the second defense and >= 24
+//   after it: the rows of Canny Valley's first two zones (Theater_Hard_Zone1, 22, and Theater_Hard_Zone2, 24; regions
+//   Stat.Theater.PvE03.Difficulty01 and Difficulty02, opened by Storm Shield Defense 1 and 2);
+// - its three landmark missions, which world/landmarks.js places (#339);
+// - its zones (World/ZoneThemes), each drawn on the world map by its TheaterMapTileClass (world.json tileClass):
+//   ZT_Arid's BP_ZT_Desert ("Canny Valley's vast desert landscapes", Zone_Arid_Desert) and BP_ZT_Desert_Bunker
+//   (Zone_Arid_Desert_B, Stat.ZoneTheme.Desert.Bunkers), on the desert tile BP_Hex_Arid01; ZT_Route99's BP_ZT_Route99_1
+//   and _2 ("Thunder Route 99", Zone_Arid_ThunderRoute99_01 and _02, built of Maps/*/Arid's ThunderRoute99 diners,
+//   motels, gas stations, truck stops, houses and junkyards: the Activities.Placement.LocationUnique tags Road Trip's
+//   Mission_CannyValley_Reactive_Route99 looks for) and _Bunker_1 and _2 (their _B maps, Stat.ZoneTheme.Route99.Bunkers),
+//   on the highway tile BP_Hex_Route99; and the arid twins of the town zones, BP_ZT_TheCity_Arid and
+//   BP_ZT_TheIndustrialPark_Arid (Zone_Arid_Urban, Zone_Arid_Industrial, drawn on the town tiles BP_Hex_TheCity and
+//   BP_Hex_TheIndustrialPark).
+// Acts 2 and 3 are in none of them (6.20's paks start Act2 with one quest), so the rest of Canny Valley stays as it was.
+//
+// No theater layout ships with the client (World/Theaters has only Theater_Athena and Theater_TEST_PerfMem), and the world
+// info the layouts come from (tools/theaters) is Epic's of 2017-07-25, before the rework: its Canny Valley is forest,
+// grassland and town, the storm shield the only desert tile (its BP_Hex_Outpost_Theater3 redrawn by 5.10). So on a build
+// whose data has the act's zones, Core lays the act out on that map (🟡 Core's placement: Epic's 5.10 world info isn't
+// recorded): each tile of the first two zones takes the act's zone for what it was, and world/landmarks.js's three
+// landmark tiles keep theirs.
+// - Zone 1 is Thunder Route 99: the wilds (forest, grassland) the desert, and everything built (suburbs, city,
+//   industrial park) the highway, Route 99's two maps in turn, so Road Trip always has a Route 99 mission at 22 (the
+//   zone's AlwaysActive city tile becomes one).
+// - Zone 2 is where the bunkers are (the periscopes and bases ask for >= 24): the wilds the desert's bunker map, the
+//   suburbs the highway's bunker maps, the city and the industrial park their arid twins.
+// - The map's scenery (NonMission tiles) whose nearest playable tile is one of those zones' or the storm shield is desert.
+// An older build, or one missing any of these zones, keeps the 2017 map.
+export const cannyValleyId = "E6ECBD064B153234656CB4BDE6743870";
+
+const theme = (folder, name) => `/Game/World/ZoneThemes/${folder}/${name}.${name}_C`;
+export const act1Zones = {
+  desert: theme("ZT_Arid", "BP_ZT_Desert"),
+  desertBunker: theme("ZT_Arid", "BP_ZT_Desert_Bunker"),
+  route99: [theme("ZT_Route99", "BP_ZT_Route99_1"), theme("ZT_Route99", "BP_ZT_Route99_2")],
+  route99Bunker: [theme("ZT_Route99", "BP_ZT_Route99_Bunker_1"), theme("ZT_Route99", "BP_ZT_Route99_Bunker_2")],
+  city: theme("ZT_TheCity", "BP_ZT_TheCity_Arid"),
+  industrial: theme("ZT_TheIndustrialPark", "BP_ZT_TheIndustrialPark_Arid")
+};
+// Each zone's themes by the 2017 tile's kind; several take turns in the region's tile order.
+const zones = {
+  "Stat.Theater.PvE03.Difficulty01": { wilds: [act1Zones.desert], homes: act1Zones.route99, city: act1Zones.route99, industrial: act1Zones.route99 },
+  "Stat.Theater.PvE03.Difficulty02": { wilds: [act1Zones.desertBunker], homes: act1Zones.route99Bunker, city: [act1Zones.city], industrial: [act1Zones.industrial] }
+};
+// The kind of a tile by its 2017 zone theme's folder; the act's own zones (landmarks) have none.
+const kindOf = (zoneTheme) => ({ ZT_TheForest: "wilds", ZT_TheGrasslands: "wilds", ZT_TheSuburbs: "homes", ZT_TheCity: "city",
+  ZT_TheIndustrialPark: "industrial" })[/^\/Game\/World\/ZoneThemes\/(\w+)\/BP_ZT_\w+\.BP_ZT_\w+_C$/.exec(zoneTheme ?? "")?.[1]];
+const tempered = (zoneTheme) => Boolean(kindOf(zoneTheme)) && !/_Arid\./.test(zoneTheme);
+
+export const act1ZoneThemes = [...new Set(Object.values(act1Zones).flat())];
+export const hasAct1Zones = ({ zoneThemes = {} } = {}) => act1ZoneThemes.every((path) => zoneThemes[path]);
+
+// Redraws Canny Valley's theater data (FFortTheaterMapData, tools/theaters' shape) in place for the requesting build's
+// world data; any other theater, or a build without the act's zones, is left alone. Runs after world/landmarks.js.
+export function drawCannyValleyAct1(data, world) {
+  if (data.uniqueId !== cannyValleyId || !hasAct1Zones(world)) return;
+  const shield = data.tiles.find((tile) => tile.tileType === "Outpost");
+  if (!shield) return;
+  const actTiles = new Set();
+  for (const region of data.regions) {
+    const zone = (region.regionTags?.gameplayTags ?? []).map(({ tagName }) => zones[tagName]).find(Boolean);
+    if (!zone) continue;
+    const turns = {};
+    for (const index of region.tileIndices) {
+      actTiles.add(index);
+      const tile = data.tiles[index];
+      const kind = tempered(tile.zoneTheme) && kindOf(tile.zoneTheme);
+      if (!kind) continue;
+      const choices = zone[kind];
+      const turn = turns[choices[0]] ?? 0;
+      turns[choices[0]] = turn + 1;
+      tile.zoneTheme = choices[turn % choices.length];
+    }
+  }
+  const distance = (a, b) => Math.hypot(a.xCoordinate - b.xCoordinate, a.yCoordinate - b.yCoordinate);
+  const playable = data.tiles.map((tile, index) => ({ tile, index })).filter(({ tile }) => tile.tileType !== "NonMission");
+  for (const tile of data.tiles) {
+    if (tile.tileType !== "NonMission" || !tempered(tile.zoneTheme)) continue;
+    const [nearest] = [...playable].sort((a, b) => distance(a.tile, tile) - distance(b.tile, tile) || a.index - b.index);
+    if (nearest && (actTiles.has(nearest.index) || nearest.tile === shield)) tile.zoneTheme = act1Zones.desert;
+  }
+}

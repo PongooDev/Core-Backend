@@ -14,6 +14,7 @@ import { hasEventStore, seasonalGold } from "../store/eventstore.js";
 import { candyReward, hexsylvania, isHexsylvania } from "./hexsylvania.js";
 import { hordeAlertRewards, hordeMissionRewards } from "../events/roadtrip2018.js";
 import { hordeTheater, hordeWeeklyTheater, isHorde, isHordeTierGroup } from "./horde.js";
+import { drawCannyValleyAct1 } from "./cannyvalley.js";
 import { placeLandmarks } from "./landmarks.js";
 import { linkedQuests, questPath } from "./quests.js";
 import { isSurvival, survivalAlertGenerators, survivalReward, survivalTheater } from "./survival.js";
@@ -51,7 +52,8 @@ function zoneGate(region) {
 // only meets the objectives, 3). The dump kept these entries without their quests; see linkedQuests for the rebuild.
 //
 // Theater layouts come from Epic's world info (see tools/theaters/import.mjs); the client ships none. Every build has
-// the same layouts, finished with the requesting build's quests.
+// the same layouts, finished with the requesting build's quests, but Canny Valley from 5.10: its first act's landmarks
+// (world/landmarks.js) and zones (world/cannyvalley.js), which that world info predates.
 //
 // 1.7.2 tags the campaign's theaters Theater.MainProgression (its ActivitiesTags define the tag), and only a theater with
 // it takes quest driven missions (SharedMissionLists TheaterTagQuery: the tapes of ReactiveQuest_DistressCalls and the
@@ -89,8 +91,10 @@ const layout = perBuild((read) => {
       const zoneQuest = zoneGate(region);
       if (zoneQuest) region.requirements = { ...region.requirements, questDefinition: zoneQuest };
     }
-    // 5.10's Canny Valley landmark missions (world/landmarks.js, Core-Backend #339), before the tiles are linked.
+    // 5.10's Canny Valley landmark missions (world/landmarks.js, Core-Backend #339), before the tiles are linked, and its
+    // first act's desert, Thunder Route 99 and bunker zones around them (world/cannyvalley.js, #341).
     placeLandmarks(data, world);
+    drawCannyValleyAct1(data, world);
     const links = linkedQuests(data);
     data.tiles.forEach((tile, index) => {
       tile.linkedQuests = (links.get(index) ?? []).flatMap((questId) => {

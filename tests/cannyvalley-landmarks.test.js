@@ -67,12 +67,17 @@ test("builds before 5.10 keep Canny Valley as it was: no landmark mission and no
     assert.ok(tiles.every((tile) => !tile.requirements.activeQuestDefinition), build);
     assert.ok(tiles.every((tile) => tile.missionWeightOverrides.every((weight) => !generators.has(weight.missionGenerator))), build);
   }
-  // The tiles 5.10 takes were Normal tiles of their zones, and stay so before it.
+  // The tiles 5.10 takes were Normal tiles of their zones, and stay so before it. 5.10's other changes to Canny Valley are
+  // its first act's zones (world/cannyvalley.js, #341): only their zone themes.
   const before = tilesOf("4214610");
   const after = tilesOf("4240749");
   const changed = after.map((tile, index) => index).filter((index) => JSON.stringify(after[index]) !== JSON.stringify(before[index]));
-  assert.equal(changed.length, landmarkMissions.length);
-  for (const index of changed) assert.equal(before[index].tileType, "Normal");
+  const landmarkTiles = changed.filter((index) => after[index].tileType !== before[index].tileType);
+  assert.equal(landmarkTiles.length, landmarkMissions.length);
+  for (const index of landmarkTiles) assert.equal(before[index].tileType, "Normal");
+  for (const index of changed.filter((candidate) => !landmarkTiles.includes(candidate))) {
+    assert.deepEqual({ ...after[index], zoneTheme: before[index].zoneTheme }, before[index], `tile ${index}`);
+  }
 });
 
 test("a 6.02 client's world info has the landmark mission it plays Please Hold on (#339)", async () => {
