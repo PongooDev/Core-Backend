@@ -443,8 +443,12 @@ const build610 = 4480234;
 //   challenges count only there (their objective stats' context Athena.Playlist.Deimos). The shipped DefaultGame.ini lists
 //   none of them (Epic's lobby turned them on), so they are an LTM of their own here, on by default and listed as New, with
 //   Original dates from Update v6.20's day, 24 October, to Update v6.21's "Fortnitemares in Battle Royale ends on Sunday,
-//   November 4 at 1 PM Eastern Time" (18:00 UTC). 🟡 Whether Epic's lobby put them in the defaults' place isn't in the
-//   files read; here the defaults stay beside them.
+//   November 4 at 1 PM Eastern Time" (18:00 UTC). Epic's lobby put them in the defaults' place (Core-Backend #348: during
+//   Fortnitemares the mode select had Fortnitemares Solo, Duos and Squads, not the normal three), which the files don't say:
+//   that was Epic's FrontEndPlaylistData hotfix. So while each is on, its default (`replaces`) is taken off the lobby and
+//   it takes the default's place (defaultReplacements, services/fortnite/cloudstorage.js), unless the admin panel turns
+//   that off (settings fortnitemaresReplacesDefaults, on by default). 🟡 Epic's exact access values for them aren't in any
+//   file read; Core gives them the defaults' own (bIsDefaultPlaylist, the defaults' priorities, no limited time banner).
 // - Playlist_Deimos_SoloCN, _DuoCN and _SquadCN (147 to 149): the same for China's region, no mode here.
 // - Playlist_Deimos_SoloShow, _DuoShow and _SquadShow (59071 to 59073, "Tournament"): Fortnitemares' tournament playlists,
 //   which the shipped DefaultGame.ini lists disabled at 53 to 55 beside the Showdown ones' 50 to 52, so in-game
@@ -865,13 +869,13 @@ export const ltms = [
     teams: "100 Teams × 4", description: "The in-game tournaments' Squads playlist, for full squads (Playlist_Showdown_Squads, 6.10's)." },
   // 6.20's (above): Fortnitemares, on by default by its Original dates, and two more Disco Dominations by their switches.
   { id: "fortnitemares2018Solo", name: "Fortnitemares (Solo)", playlistId: 47, playlistName: "Playlist_Deimos_Solo", eventFlag: null, builds: [build620, build621], seasons: [6],
-    advertise: "New", defaultOn: true, original: fortnitemaresWindow,
+    advertise: "New", defaultOn: true, original: fortnitemaresWindow, replaces: "Playlist_DefaultSolo",
     teams: "100 Teams × 1", description: "Battle Royale with the Cube Monsters: Cube Fragments spawn Fiends and Brutes that drop loot and give shield (Playlist_Deimos_Solo, 6.20's)." },
   { id: "fortnitemares2018Duos", name: "Fortnitemares (Duos)", playlistId: 48, playlistName: "Playlist_Deimos_Duo", eventFlag: null, builds: [build620, build621], seasons: [6],
-    advertise: "New", defaultOn: true, original: fortnitemaresWindow,
+    advertise: "New", defaultOn: true, original: fortnitemaresWindow, replaces: "Playlist_DefaultDuo",
     teams: "100 Teams × 2", description: "Battle Royale with the Cube Monsters, in duos (Playlist_Deimos_Duo, 6.20's)." },
   { id: "fortnitemares2018Squads", name: "Fortnitemares (Squads)", playlistId: 49, playlistName: "Playlist_Deimos_Squad", eventFlag: null, builds: [build620, build621], seasons: [6],
-    advertise: "New", defaultOn: true, original: fortnitemaresWindow,
+    advertise: "New", defaultOn: true, original: fortnitemaresWindow, replaces: "Playlist_DefaultSquad",
     teams: "100 Teams × 4", description: "Battle Royale with the Cube Monsters, in squads (Playlist_Deimos_Squad, 6.20's)." },
   { id: "discoDomination40Alt", name: "Disco Domination (40 v 40, Alt)", playlistId: 231, playlistName: "Playlist_Disco_40_Alt", eventFlag: null, builds: [build620, build621], seasons: [6],
     teams: "2 Teams × 40", description: "Disco Domination with two teams of forty on DiscoGameModifierNoA (Playlist_Disco_40_Alt, 6.20's)." },
@@ -1019,6 +1023,16 @@ export function ltmFrontEndPlaylists(build, settingsValue = settingsProvider(), 
       priority: shippedPriority[ltm.playlistName] ?? 20 + index, ltm }));
 }
 
+// The LTMs that take a default mode's place in the build's lobby now (Core-Backend #348: 6.20's and 6.21's Fortnitemares
+// Solo, Duos and Squads, each `replaces` its default): each of them that is on (ltmOn), while the admin panel lets them
+// (settings fortnitemaresReplacesDefaults, on unless false). Returns {<default PlaylistName>: ltm}; a default whose LTM is
+// off stays as shipped.
+export const replacesDefaultsOn = (settingsValue) => settingsValue?.fortnitemaresReplacesDefaults !== false;
+export function defaultReplacements(build, settingsValue = settingsProvider(), now = new Date()) {
+  if (Number(build) < frontEndPlaylistBuild || !replacesDefaultsOn(settingsValue)) return {};
+  return Object.fromEntries(ltms.filter((ltm) => ltm.replaces && ltmOn(ltm.id, build, settingsValue, now)).map((ltm) => [ltm.replaces, ltm]));
+}
+
 // The lobby's EFortAthenaPlaylist of an event queue (UFortGameUserSettings' LastSelectedPlaylist): AthenaEvent1 to 8
 // are 4 to 11, AthenaPlatoon 12 and AthenaEvent21 to 54 13 to 46 (3.2's SDK).
 export const athenaPlaylistOfQueue = (queue) => (queue <= 8 ? queue + 3 : queue === 20 ? 12 : queue - 8);
@@ -1083,6 +1097,8 @@ export function ltmSchedule(settingsValue, now = new Date()) {
     originalDates: settingsValue?.ltmOriginalDates === true,
     // Close Encounters' day: the whole of it or one hour (#258).
     closeEncounters: closeEncountersSetting(settingsValue),
+    // Whether 6.20's and 6.21's Fortnitemares modes take Solo's, Duos' and Squads' place while on (#348).
+    fortnitemaresReplacesDefaults: replacesDefaultsOn(settingsValue),
     seasonMoments: Object.fromEntries(Object.entries(moments).map(([season, moment]) => [season, new Date(moment).toISOString()])),
     list: ltms.filter((ltm) => !ltm.tournament).map((ltm) => ({
       id: ltm.id,

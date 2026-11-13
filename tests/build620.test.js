@@ -292,7 +292,7 @@ test("6.20's modes: Fortnitemares on by default by its dates, two more Disco Dom
   }
 });
 
-test("a 6.20 client's hotfix lists Fortnitemares as New and its tournament playlists disabled after the Showdown ones", async () => {
+test("a 6.20 client's hotfix lists Fortnitemares in the default modes' place and its tournament playlists disabled after the Showdown ones", async () => {
   const backend = await startBackend();
   try {
     const { token } = await userLogin(backend.port, "Lobby620");
@@ -300,7 +300,11 @@ test("a 6.20 client's hotfix lists Fortnitemares as New and its tournament playl
       headers: { "User-Agent": agentOf(build, version), Authorization: `bearer ${token}` } })).body.toString();
     const lines = (await gameIni(v620)).split("\r\n").filter((line) => line.includes("FrontEndPlaylistData"));
     const of = (name) => lines.find((line) => line.includes(`PlaylistName=${name},`));
-    assert.match(of("Playlist_Deimos_Solo"), /bEnabled=true, bIsDefaultPlaylist=false, bVisibleWhenDisabled=false, AdvertiseType=New, bDisplayAsLimitedTime=true/);
+    // Core-Backend #348: Fortnitemares Solo, Duos and Squads take the defaults' place, which are off and hidden.
+    for (const [mode, normal, priority] of [["Solo", "Solo", 0], ["Duo", "Duo", 1], ["Squad", "Squad", 2]]) {
+      assert.ok(of(`Playlist_Deimos_${mode}`).includes(`(bEnabled=true, bIsDefaultPlaylist=true, bVisibleWhenDisabled=true, AdvertiseType=None, bDisplayAsLimitedTime=false, DisplayPriority=${priority})`), mode);
+      assert.ok(of(`Playlist_Default${normal}`).includes(`(bEnabled=false, bIsDefaultPlaylist=true, bVisibleWhenDisabled=false, AdvertiseType=None, bDisplayAsLimitedTime=false, DisplayPriority=${priority})`), normal);
+    }
     assert.match(of("Playlist_50v50"), /bIsDefaultPlaylist=true, .*DisplayPriority=3\)\)/);
     assert.deepEqual(["Showdown_Solo", "Showdown_Duos", "Showdown_Squads", "Deimos_SoloShow", "Deimos_DuoShow", "Deimos_SquadShow"]
       .map((name) => /DisplayPriority=(\d+)/.exec(of(`Playlist_${name}`))[1]), ["50", "51", "52", "53", "54", "55"]);
@@ -308,6 +312,7 @@ test("a 6.20 client's hotfix lists Fortnitemares as New and its tournament playl
     assert.equal(lines.some((line) => line.includes("CreativeTestIsland")), false, "its playlist asset isn't in the paks");
     const lines610 = (await gameIni(v610, "6.10")).split("\r\n").filter((line) => line.includes("FrontEndPlaylistData"));
     assert.equal(lines610.some((line) => line.includes("Deimos")), false, "6.10's as it was");
+    assert.ok(lines610.find((line) => line.includes("PlaylistName=Playlist_DefaultSolo,")).includes("bEnabled=true, bIsDefaultPlaylist=true, bVisibleWhenDisabled=true"), "6.10's Solo as it was");
   } finally {
     await backend.close();
   }

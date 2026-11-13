@@ -247,6 +247,9 @@ const defaults = {
   ltmOriginalDates: false,
   // Close Encounters with Original dates on (Core-Backend #258): its whole day, or the hour of it chosen.
   ltmCloseEncounters: { wholeDay: true, hour: 0 },
+  // 6.20's and 6.21's Fortnitemares Solo, Duos and Squads in the default modes' place while they're on (Core-Backend #348,
+  // events/ltms.js defaultReplacements), as Epic's lobby had them; off, the defaults stay beside them.
+  fortnitemaresReplacesDefaults: true,
   // Season 3's weekly challenges all at once (Core-Backend #207, profiles/challenges.js), not a week at a time on the
   // season's replay.
   challengesAllUnlocked: false,
@@ -254,6 +257,9 @@ const defaults = {
   // {season3: {mode: "original" | "interval" | "manual", startDate, intervalDays, manualWeeks, weeksAvailable}}. A
   // season without one keeps its original dates (or challengesAllUnlocked).
   challengeUnlock: {},
+  // How an event's challenges unlock (Core-Backend #345, profiles/challenges.js eventChallengeUnlock), by its schedule:
+  // {schedule_fortnitemares: {mode: "original" | "manual", manualParts}}. One without settings keeps its original days.
+  eventChallengeUnlock: {},
   // Complete the challenges that cannot be completed on the build (Core-Backend #269, profiles/challenges.js
   // brokenChallenges), off by default.
   completeBrokenChallenges: false,
@@ -463,6 +469,23 @@ function challengeUnlockValue(input, current = {}) {
   return result;
 }
 
+// eventChallengeUnlock's schedules (Core-Backend #345): each given schedule's settings over its current ones. The parts are
+// held to the schedule's own count where they're used (profiles/challenges.js eventChallengeUnlock).
+const eventChallengeModeNames = ["original", "manual"];
+function eventChallengeUnlockValue(input, current = {}) {
+  if (!input || typeof input !== "object" || Array.isArray(input)) return current;
+  const result = { ...current };
+  for (const [key, value] of Object.entries(input)) {
+    if (!/^[a-z0-9_]{1,64}$/.test(key) || !value || typeof value !== "object") continue;
+    const entry = { ...(current[key] ?? {}) };
+    if (eventChallengeModeNames.includes(value.mode)) entry.mode = value.mode;
+    const parts = Number(value.manualParts);
+    if (value.manualParts !== undefined && value.manualParts !== null && Number.isInteger(parts) && parts >= 0 && parts <= 52) entry.manualParts = parts;
+    result[key] = entry;
+  }
+  return result;
+}
+
 // The mode select tiles' pictures (Core-Backend #260, services/content/playlistimages.js): {playlistName: image}, each a
 // non-empty string the admin route checked (an http(s) URL or an upload). undefined when there are none.
 function playlistImageMap(value) {
@@ -626,6 +649,8 @@ export function createSettingsStore(dataDir) {
       settings.sidebarWidth = sidebarWidthValue(loaded.sidebarWidth) ?? defaults.sidebarWidth;
       if (typeof loaded.challengesAllUnlocked !== "boolean") settings.challengesAllUnlocked = defaults.challengesAllUnlocked;
       settings.challengeUnlock = challengeUnlockValue(loaded.challengeUnlock, {});
+      settings.eventChallengeUnlock = eventChallengeUnlockValue(loaded.eventChallengeUnlock, {});
+      settings.fortnitemaresReplacesDefaults = loaded.fortnitemaresReplacesDefaults !== false;
       settings.completeBrokenChallenges = loaded.completeBrokenChallenges === true;
       if (loaded.matchmakingModes && typeof loaded.matchmakingModes === "object") {
         settings.matchmakingModes = sanitizeMatchmakingModes(loaded.matchmakingModes, defaults.matchmakingModes);
@@ -757,7 +782,8 @@ export function createSettingsStore(dataDir) {
         itemShop: settings.itemShop ? JSON.parse(JSON.stringify(settings.itemShop)) : { mode: "fnbr", rotationHour: 0, weeklyDurationDays: 7 },
         events: JSON.parse(JSON.stringify(settings.events ?? defaults.events)),
         battlepass: JSON.parse(JSON.stringify(settings.battlepass ?? defaults.battlepass)),
-        challengeUnlock: JSON.parse(JSON.stringify(settings.challengeUnlock ?? {}))
+        challengeUnlock: JSON.parse(JSON.stringify(settings.challengeUnlock ?? {})),
+        eventChallengeUnlock: JSON.parse(JSON.stringify(settings.eventChallengeUnlock ?? {}))
       };
     },
 
@@ -830,6 +856,8 @@ export function createSettingsStore(dataDir) {
       if (partial.ltmCloseEncounters !== undefined) settings.ltmCloseEncounters = closeEncountersValue(partial.ltmCloseEncounters, settings.ltmCloseEncounters);
       if (typeof partial.challengesAllUnlocked === "boolean") settings.challengesAllUnlocked = partial.challengesAllUnlocked;
       settings.challengeUnlock = challengeUnlockValue(partial.challengeUnlock, settings.challengeUnlock ?? {});
+      settings.eventChallengeUnlock = eventChallengeUnlockValue(partial.eventChallengeUnlock, settings.eventChallengeUnlock ?? {});
+      if (typeof partial.fortnitemaresReplacesDefaults === "boolean") settings.fortnitemaresReplacesDefaults = partial.fortnitemaresReplacesDefaults;
       if (typeof partial.completeBrokenChallenges === "boolean") settings.completeBrokenChallenges = partial.completeBrokenChallenges;
       if (typeof partial.regionFallback === "boolean") settings.regionFallback = partial.regionFallback;
       if (typeof partial.vbuckPacks === "boolean") settings.vbuckPacks = partial.vbuckPacks;

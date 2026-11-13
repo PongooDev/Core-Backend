@@ -144,13 +144,66 @@ export const brokenChallengeOf = (questId, build) => brokenChallenges.find((entr
 const bySeasonDays = (entry) => entry.unlockType === "DaysSinceEventStart";
 // The season's weekly schedule unlocks by days and names no event. 6.20's (CL-4497486) Schedule_Fortnitemares unlocks its
 // Parts 2 to 4 by days too (DaysSinceEventStart 32, 34 and 36) but is an event's (EventName EventFlag.LTM_Fortnitemares),
-// and sorts before the season's: it isn't the weeks the admin panel's challenge settings move (eventBundleOpen).
+// and sorts before the season's: it isn't the weeks the admin panel's challenge settings move (eventPlan).
 const isWeekly = (schedule) => schedule.bundles.some(bySeasonDays) && !schedule.eventName;
-// An event schedule's bundle that unlocks by days: open once that many days of the season's replay have passed, the same
-// count the client's "Unlocks in" countdown takes from the calendar's seasonBegin by the original dates (Schedule_
-// Fortnitemares: 29 October, 31 October and 2 November on Season 6's replay, whose day 1 is 27 September). 🟡 The Fortnite
-// Wiki's Fortnitemares 2018 Challenges dates Parts 2 to 4 on 27, 29 and 31 October; the days are the files'.
-const eventBundleOpen = (entry, now) => !bySeasonDays(entry) || replayDays(now).days >= entry.unlockValue;
+
+// An event's challenges that unlock by days (Core-Backend #345): 6.20's and 6.21's Schedule_Fortnitemares, the
+// Fortnitemares Challenges, Part 1 given with the schedule (OnScheduleGranted) and Parts 2 to 4 at DaysSinceEventStart 32,
+// 34 and 36. How 6.20's challenges tab shows a part that isn't in the profile yet: UFortChallengeBundleInfo's lock reason
+// (0x2E2B5F0) for a DaysSinceEventStart entry is TimeLeftBeforeUnlock with its UnlockValue in days, and the page's
+// ChallengeBundleLockedReasonDisplay formats it (FormatLockedReason, 0x2E22540) with ChallengeBundlePage's
+// GetAthenaEventTime, UFortDateTimeLibrary::GetTimeSinceAthenaSeasonStart: "Unlocks in {0}" for the days less the time
+// since the calendar's seasonBegin, and "Unlocking Soon" once under 13 hours are left (a FTimespan of 13 hours,
+// 0x575D120) or the time has passed. So the game counts the parts from the season's start, as the weeks, and a part
+// stays "Unlocking Soon" until the profile has it. The admin panel's event challenge settings (settings
+// eventChallengeUnlock.<schedule>):
+// - mode "original": each part on its day of the season's replay, the files' days (Schedule_Fortnitemares: 29 October,
+//   31 October and 2 November on Season 6's replay, whose day 1 is 27 September). With the weekly challenges on their
+//   original dates the calendar's seasonBegin is the replay's day 1 too, so the tab counts down to those days. 🟡 The
+//   Fortnite Wiki's Fortnitemares 2018 Challenges dates Parts 2 to 4 on 27, 29 and 31 October; the days are the files'.
+//   With the weeks on another mode the calendar's seasonBegin moves (weekPlan), so the tab's countdown to a part doesn't
+//   match its day and can read "Unlocking Soon" early;
+// - mode "manual": the first manualParts parts, now (the ones given with the schedule always); "Unlock all parts now" is
+//   manual with every part.
+// A player gets them at their next login (settleChallengeSchedules), as the weeks.
+const isEventByDays = (schedule) => Boolean(schedule?.eventName) && schedule.bundles.some(bySeasonDays);
+export const eventChallengeModes = ["original", "manual"];
+// The schedules of the requesting build's data that are an event's and unlock by days (Schedule_Fortnitemares).
+export const eventDaySchedules = () => Object.entries(athenaChallengeSchedules() ?? {}).filter(([, schedule]) => isEventByDays(schedule)).map(([id]) => id);
+// A schedule's parts in order: the ones given with it first, then the rest by their days.
+function eventParts(schedule) {
+  const given = schedule.bundles.filter((entry) => !bySeasonDays(entry));
+  const byDays = schedule.bundles.filter(bySeasonDays).sort((a, b) => a.unlockValue - b.unlockValue);
+  return [...given, ...byDays];
+}
+// The settings of an event schedule, filled in and held to its parts.
+export function eventChallengeUnlock(scheduleId, settingsValue = settingsProvider()) {
+  const schedule = (athenaChallengeSchedules() ?? {})[String(scheduleId).toLowerCase()];
+  const parts = schedule ? eventParts(schedule) : [];
+  const given = parts.filter((entry) => !bySeasonDays(entry)).length;
+  const saved = settingsValue?.eventChallengeUnlock?.[String(scheduleId).toLowerCase()] ?? {};
+  return {
+    mode: eventChallengeModes.includes(saved.mode) ? saved.mode : "original",
+    manualParts: whole(saved.manualParts, given, parts.length, parts.length),
+    totalParts: parts.length,
+    givenParts: given
+  };
+}
+// Which parts of an event schedule are unlocked now and when each unlocks on the replay (null: no date, manual).
+export function eventPlan(scheduleId, now = new Date(), settingsValue = settingsProvider()) {
+  const id = String(scheduleId).toLowerCase();
+  const schedule = (athenaChallengeSchedules() ?? {})[id];
+  const settings = eventChallengeUnlock(id, settingsValue);
+  if (!schedule) return { schedule: id, eventName: null, ...settings, parts: [] };
+  const { days, epoch } = replayDays(now);
+  const parts = eventParts(schedule).map((entry, index) => {
+    const dated = bySeasonDays(entry);
+    const unlocked = !dated || (settings.mode === "manual" ? index < settings.manualParts : days >= entry.unlockValue);
+    const at = dated && settings.mode === "original" ? new Date(Date.parse(epoch) + entry.unlockValue * dayMs).toISOString() : null;
+    return { part: index + 1, bundle: entry.bundle, unlocked, unlocksAt: at, days: dated ? entry.unlockValue : 0 };
+  });
+  return { schedule: id, eventName: schedule.eventName, category: schedule.category ?? null, ...settings, parts };
+}
 // The season's weekly schedule's weeks (Season3_Challenge_Schedule: the one unlocking by days), Week 1 first: each
 // DaysSinceEventStart entry is a week, and the entries given with the schedule (OnScheduleGranted) are Week 1 together.
 // Season 3's has one such entry, S3_Week1_QuestBundle. Season 4's (4.0, CL-4039451) has three: QuestBundle_S4_Cumulative
@@ -286,20 +339,23 @@ function topUpBundle(session, bundleItemId, bundleId, athena) {
   log("Battle Royale", `${session.accountId} got ${added.length} more of ${bundleId}'s challenges`);
 }
 
-// Gives the schedules' bundles that have unlocked (the weekly schedule's by the admin's settings, weekPlan), and keeps
+// Gives the schedules' bundles that have unlocked (the weekly schedule's by the admin's settings, weekPlan; an event's that
+// unlock by days by its own, eventPlan), and keeps
 // their unlock_epoch on the calendar's seasonBegin.
 export function settleChallengeSchedules(session, athena, now = new Date()) {
   const schedules = athenaChallengeSchedules();
   const tracker = session.profile("athena");
   const plan = weekPlan(now);
   const weekOpen = new Map(plan.weeks.flatMap((week) => week.bundles.map((bundle) => [bundle, week.unlocked])));
+  const eventOpen = (scheduleId, bundle) => eventPlan(scheduleId, now).parts.find((part) => part.bundle === bundle)?.unlocked === true;
   for (const [scheduleItemId, item] of heldOf(tracker.profile, "challengebundleschedule")) {
     const schedule = schedules[idOf(item.templateId)];
     if (!schedule) continue;
     if (item.attributes.unlock_epoch !== plan.begin) tracker.setItemAttribute(scheduleItemId, "unlock_epoch", plan.begin);
     const granted = [...(item.attributes.granted_bundles ?? [])];
     for (const entry of schedule.bundles) {
-      const open = isWeekly(schedule) ? weekOpen.get(entry.bundle) === true : schedule.eventName ? eventBundleOpen(entry, now) : !bySeasonDays(entry);
+      const open = isWeekly(schedule) ? weekOpen.get(entry.bundle) === true
+        : isEventByDays(schedule) ? eventOpen(idOf(item.templateId), entry.bundle) : !bySeasonDays(entry);
       const held = heldBundle(tracker.profile, entry.bundle);
       if (held) topUpBundle(session, held[0], entry.bundle, athena);
       if (!open || held) continue;

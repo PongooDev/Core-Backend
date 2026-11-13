@@ -7,7 +7,7 @@ import { isDedicatedServerToken } from "../../accounts/clients.js";
 import { getBuild } from "../../builds/detect.js";
 import { sendError } from "../../errors.js";
 import { lootHotfixSection } from "../../events/contentupdates.js";
-import { lastSelectedPlaylistOf, ltmForcedQueues, ltmFrontEndPlaylists, ltmNewMode, ltmPlaylistOverrides } from "../../events/ltms.js";
+import { defaultReplacements, lastSelectedPlaylistOf, ltmForcedQueues, ltmFrontEndPlaylists, ltmNewMode, ltmPlaylistOverrides } from "../../events/ltms.js";
 import { finalFightRows } from "../../events/finalfight.js";
 import { meteorStrikeRows } from "../../events/meteorstrike.js";
 import { shootingTestGlobals, shootingTestHotfixTables } from "../../events/shootingtest.js";
@@ -82,6 +82,12 @@ const forcedQueueGlobals = (changelist) => ltmForcedQueues(changelist).map((queu
 // and bVisibleWhenDisabled set, no limited time banner, DisplayPriority 3; hidden again while its switch is off), and the
 // in-game tournaments' three Showdown playlists are listed disabled at 50 to 52 (events/ltms.js `tournament`): the client
 // turns on the one its current event names itself, but only an entry that is in the list (tournaments/showdown.js).
+// 6.20's and 6.21's Fortnitemares Solo, Duos and Squads take the defaults' place while on (Core-Backend #348,
+// events/ltms.js defaultReplacements): the default is listed off and hidden (bEnabled and bVisibleWhenDisabled false),
+// and its Fortnitemares mode is listed as a default at its priority (bIsDefaultPlaylist, no limited time banner). The
+// mode select's pick (CL-4497486 0x2F009D0) takes a playlist the player had when the mode select's own entries hold it,
+// else the first of its entries with both of its flags (+8 clear, +9 set), else Playlist_DefaultSolo. 🟡 Read statically:
+// that a hidden default isn't among those entries, so a lobby whose Solo is hidden opens on Fortnitemares Solo, needs a client.
 const frontEndDefaults = [["Playlist_DefaultDuo", 1], ["Playlist_DefaultSquad", 2], ["Playlist_DefaultSolo", 0]];
 const advertiseTypeBuild = 4225813;
 const defaultFiftyFiftyBuild = 4464155;
@@ -90,10 +96,18 @@ function frontEndPlaylistLines(changelist) {
   if (!playlists.length) return [];
   const advertise = (type) => (Number(changelist) >= advertiseTypeBuild ? `AdvertiseType=${type}` : `bDisplayAsNew=${type === "New"}`);
   const entry = (name, access) => `+FrontEndPlaylistData=(PlaylistName=${name}, PlaylistAccess=(${access}))`;
+  const replaced = defaultReplacements(changelist);
+  const priorityOf = Object.fromEntries(frontEndDefaults);
+  const replacing = new Map(Object.entries(replaced).map(([name, ltm]) => [ltm.playlistName, priorityOf[name]]));
   return ["!FrontEndPlaylistData=ClearArray",
-    ...frontEndDefaults.map(([name, priority]) => entry(name, `bEnabled=true, bIsDefaultPlaylist=true, bVisibleWhenDisabled=true, ` +
-      `${advertise("None")}, bDisplayAsLimitedTime=false, DisplayPriority=${priority}`)),
+    ...frontEndDefaults.map(([name, priority]) => entry(name, replaced[name]
+      ? `bEnabled=false, bIsDefaultPlaylist=true, bVisibleWhenDisabled=false, ${advertise("None")}, bDisplayAsLimitedTime=false, DisplayPriority=${priority}`
+      : `bEnabled=true, bIsDefaultPlaylist=true, bVisibleWhenDisabled=true, ${advertise("None")}, bDisplayAsLimitedTime=false, DisplayPriority=${priority}`)),
     ...playlists.map(({ name, enabled, priority, ltm }, index) => {
+      if (replacing.has(name)) {
+        return entry(name, `bEnabled=true, bIsDefaultPlaylist=true, bVisibleWhenDisabled=true, ${advertise("None")}, bDisplayAsLimitedTime=false, ` +
+          `DisplayPriority=${replacing.get(name)}`);
+      }
       if (ltm.tournament) {
         return entry(name, `bEnabled=false, bIsDefaultPlaylist=false, bVisibleWhenDisabled=false, ${advertise("None")}, bDisplayAsLimitedTime=false, ` +
           `DisplayPriority=${50 + playlists.slice(0, index).filter((other) => other.ltm.tournament).length}`);

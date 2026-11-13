@@ -1,6 +1,7 @@
 import { getItem } from "../gamedata/items.js";
 import { foundersEditionOf } from "../profiles/founders.js";
-import { fortnitemares2018, isEventActive } from "./events.js";
+import { nextReplayOf } from "../store/itemshop.js";
+import { eventsActiveUntil, fortnitemares2018, isEventActive, ltmFortnitemares } from "./events.js";
 
 // 6.20's Fortnitemares (CL-4497486, events/events.js fortnitemares2018), Update v6.20: "All Founders will receive a pair of
 // new Heroes when they log in during the first few weeks of Fortnitemares: Skull Ranger Ramirez, Brainiac Jonesy", and the
@@ -27,4 +28,20 @@ export function settleFounderHeroes2018(session, grant) {
   for (const templateId of owed) grant(session, templateId, 1);
   session.profile("profile0").profile.coreFortnitemares2018FounderHeroes = true;
   return owed;
+}
+
+// When the Fortnitemares Challenges end (Core-Backend #345: the challenges tab's FORTNITEMARES CHALLENGES header read
+// "2,912,126 Days", the count to the calendar's never-ending activeUntil). The header is the category's expiration date:
+// UFortChallengeBundleCategoryInfo::GetExpirationDate (CL-4497486 0x2E24E10) takes the EventName of its schedule
+// (Schedule_FortNitemares: EventFlag.LTM_Fortnitemares) and asks the seasonal event manager how long that event has left
+// (0x119A6C0), which is the calendar's activeUntil for it. Epic's end: "Fortnitemares in Battle Royale ends on Sunday,
+// November 4 at 1 PM Eastern Time" (Update v6.21's notes; Epic's tweet of 31 October: "Finish your Fortnitemares Challenges
+// by then to unlock the Dark Engine Glider"), 4 November 2018 18:00 UTC. On Season 6's replay (store/itemshop.js
+// seasonMoment, its day 1 27 September) the flag ends when the replay next stands at that moment, as the Birthday
+// Challenges' end (events/birthday2018.js). Only while the build runs the event (6.20 and 6.21, events/events.js); a flag
+// the admin panel switches on outside it keeps the never-ending end.
+export const fortnitemares2018EndedAt = Date.parse("2018-11-04T18:00:00.000Z");
+export function fortnitemaresActiveUntil(flag, now = new Date()) {
+  if (flag !== ltmFortnitemares || !isEventActive(fortnitemares2018)) return eventsActiveUntil;
+  return nextReplayOf(fortnitemares2018EndedAt, now, null, 6).toISOString();
 }

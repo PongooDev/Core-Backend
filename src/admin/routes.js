@@ -69,7 +69,8 @@ import { defaultBattlePass, enrichedMilestones } from "../battlepass/season1.js"
 import { bundleTiers, seasonPassConfig, seasonTiers, tierPrice } from "../battlepass/season2.js";
 import { battlePassSeasons, resetBattlePass } from "../battlepass/reset.js";
 import { buildOfSeason, givenVariantTokens, inProfileSeason, profileSeason } from "../profiles/seasons.js";
-import { brokenChallenges, challengeModes, challengesAllUnlocked, challengeWeekCount, completeBrokenChallenges, weekPlan } from "../profiles/challenges.js";
+import { brokenChallenges, challengeModes, challengesAllUnlocked, challengeWeekCount, completeBrokenChallenges, eventChallengeModes, eventDaySchedules, eventPlan,
+  weekPlan } from "../profiles/challenges.js";
 
 import { isServerAccountName, validatePassword } from "../accounts/password.js";
 import { EmailError } from "../accounts/store.js";
@@ -1909,6 +1910,9 @@ export function adminRoutes(context) {
         // The season's weekly challenges (Core-Backend #207, #219, profiles/challenges.js): how they unlock and each week's
         // date, for a season with weekly bundles (Season 3; Season 2's were dailies and the pass).
         ...(challengeWeekCount() ? { challengesAllUnlocked: challengesAllUnlocked(s), challenges: withoutSeasonStartRecording(() => weekPlan(now, s)) } : {}),
+        // The season's event challenges that unlock by days (Core-Backend #345, Season 6's Fortnitemares Challenges): how
+        // their parts unlock and each part's day.
+        ...(eventDaySchedules().length ? { eventChallenges: withoutSeasonStartRecording(() => eventDaySchedules().map((id) => eventPlan(id, now, s))) } : {}),
         // The challenges that cannot be completed on the season's builds and the option to complete them (Core-Backend #269).
         ...(brokenOfSeason().length ? { brokenChallenges: { enabled: completeBrokenChallenges(s), list: brokenOfSeason() } } : {})
       })));
@@ -1991,6 +1995,35 @@ export function adminRoutes(context) {
       }
       const updated = settings.update({ challengesAllUnlocked: false, challengeUnlock: { [`season${season}`]: entry } });
       res.json({ success: true, challengesAllUnlocked: challengesAllUnlocked(updated), challenges: withoutSeasonStartRecording(() => weekPlan(new Date(), updated)) });
+    });
+  });
+
+  // How an event's challenges unlock (Core-Backend #345, profiles/challenges.js eventPlan): {season (default 6), schedule,
+  // mode "original" | "manual", manualParts}, or {season, schedule, allUnlocked}: true is "Unlock all parts now" (manual,
+  // every part), false the original days. A player gets the parts at their next login.
+  router.post("/admin/api/battlepass/event-challenges", (req, res) => {
+    const body = req.body ?? {};
+    const season = requestedSeasonOf(body.season ?? 6);
+    const invalid = (message) => sendError(res, 400, "errors.com.epicgames.common.invalid_parameter", message);
+    return inBuild(buildOfSeason(season), () => {
+      const schedule = String(body.schedule ?? "").toLowerCase();
+      if (!eventDaySchedules().includes(schedule)) return invalid(`${seasonName(season)} has no event challenges named ${body.schedule}`);
+      const { totalParts, givenParts } = eventPlan(schedule, new Date(), settings?.get?.());
+      let entry;
+      if (body.allUnlocked !== undefined) {
+        if (typeof body.allUnlocked !== "boolean") return invalid("allUnlocked must be true or false");
+        entry = body.allUnlocked ? { mode: "manual", manualParts: totalParts } : { mode: "original" };
+      } else {
+        if (!eventChallengeModes.includes(body.mode)) return invalid(`mode must be one of ${eventChallengeModes.join(", ")}`);
+        entry = { mode: body.mode };
+        if (body.manualParts !== undefined) {
+          const parts = Number(body.manualParts);
+          if (!Number.isInteger(parts) || parts < givenParts || parts > totalParts) return invalid(`manualParts must be ${givenParts} to ${totalParts}`);
+          entry.manualParts = parts;
+        }
+      }
+      const updated = settings.update({ eventChallengeUnlock: { [schedule]: entry } });
+      res.json({ success: true, eventChallenges: withoutSeasonStartRecording(() => eventDaySchedules().map((id) => eventPlan(id, new Date(), updated))) });
     });
   });
 
@@ -2207,6 +2240,8 @@ export function adminRoutes(context) {
     }
     if (typeof req.body.customMatchFallback === "boolean") update.customMatchFallback = req.body.customMatchFallback;
     if (typeof req.body.ltmOriginalDates === "boolean") update.ltmOriginalDates = req.body.ltmOriginalDates;
+    // 6.20's and 6.21's Fortnitemares modes in the default modes' place while on (#348, events/ltms.js defaultReplacements).
+    if (typeof req.body.fortnitemaresReplacesDefaults === "boolean") update.fortnitemaresReplacesDefaults = req.body.fortnitemaresReplacesDefaults;
     // Close Encounters' whole day or hour (Core-Backend #258): {wholeDay, hour 0 to 23}.
     if (req.body.ltmCloseEncounters && typeof req.body.ltmCloseEncounters === "object") update.ltmCloseEncounters = req.body.ltmCloseEncounters;
     if (req.body.timing && typeof req.body.timing === "object") {
@@ -2243,6 +2278,7 @@ export function adminRoutes(context) {
       matchmakingModes: defaultMatchmakingModes,
       ltmOriginalDates: false,
       ltmCloseEncounters: { wholeDay: true, hour: 0 },
+      fortnitemaresReplacesDefaults: true,
       serverLimits: defaultServerLimits,
       matchmakingGatherSeconds: 10,
       warmupSeconds: defaultWarmupSeconds,

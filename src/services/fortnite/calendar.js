@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import express from "express";
 import { requireAuth } from "../../accounts/auth.js";
 import { currentBuild } from "../../builds/context.js";
-import { activeEventFlags, currentEventsConfig, eventsActiveUntil, isEventActive } from "../../events/events.js";
+import { activeEventFlags, currentEventsConfig, eventsActiveUntil, isEventActive, ltmFortnitemares } from "../../events/events.js";
 import { fiftyFifty, fiftyFiftyRegions } from "../../events/fiftyfifty.js";
 import { ltmEventFlags, ltmModes, nextLtmChange } from "../../events/ltms.js";
 import { regionCodes } from "../../matchmaking/regions.js";
@@ -20,6 +20,7 @@ import { cubeStates } from "../../events/cube.js";
 import { highStakesStates } from "../../events/highstakes.js";
 import { islandStates } from "../../events/island.js";
 import { butterflyStates } from "../../events/butterfly.js";
+import { fortnitemaresActiveUntil } from "../../events/fortnitemares2018.js";
 
 // 1.8's event calendar (ScheduledEvents' FCalendarDownload): {currentTime, channels: {<channel>: FEventsTimeline
 // {cacheExpire, states: [FEventChannelState {validFrom, activeEvents: [{eventName, activeUntil}], state}]}}}. The
@@ -107,7 +108,10 @@ export function calendarRoutes({ tokens, settings }) {
       seasonEnds?.getTime() ?? Infinity, ltmChange?.getTime() ?? Infinity, challengeChange?.getTime() ?? Infinity, ...Object.values(stwEnds).map((end) => end.getTime()))).toISOString();
     const seasonal = Number(currentBuild()) >= seasonalEventManagerBuild;
     const flags = activeEventFlags();
-    const activeEvents = flags.map((flag) => ({ [seasonal ? "eventType" : "eventName"]: flag, activeUntil: birthdayActiveUntil(flag, now) }));
+    // The Birthday's and Fortnitemares' challenges count down to their event's end (events/birthday2018.js,
+    // events/fortnitemares2018.js); every other flag never ends.
+    const untilOf = (flag) => (flag === ltmFortnitemares ? fortnitemaresActiveUntil(flag, now) : birthdayActiveUntil(flag, now));
+    const activeEvents = flags.map((flag) => ({ [seasonal ? "eventType" : "eventName"]: flag, activeUntil: untilOf(flag) }));
     const state = {
       ...(seasonal ? { activeEventFlags: flags } : {}),
       ...(season ? { seasonNumber: season.seasonNumber, seasonTemplateId: seasonTemplateId() } : {}),

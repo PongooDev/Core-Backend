@@ -134,8 +134,8 @@ test("the admin panel sets, validates and resets a playlist's picture, and keeps
 test("every LTM of 4.0 on has Epic's tile picture but Sky Supply and Impact (#319)", () => {
   const without = playlistImageModes().filter(({ epic }) => !epic).map(({ playlistName }) => playlistName).sort();
   // 6.10's default modes with glider redeploy and its tournament playlists had no tile of their own either, nor 6.20's
-  // Fortnitemares modes and tournament playlists.
-  assert.deepEqual(without, ["Playlist_Deimos_Duo", "Playlist_Deimos_DuoShow", "Playlist_Deimos_Solo", "Playlist_Deimos_SoloShow", "Playlist_Deimos_Squad",
+  // Fortnitemares tournament playlists. 6.20's Fortnitemares modes have Epic's (#348, below).
+  assert.deepEqual(without, ["Playlist_Deimos_DuoShow", "Playlist_Deimos_SoloShow",
     "Playlist_Deimos_SquadShow", "Playlist_GRD_Duos", "Playlist_GRD_Solo", "Playlist_GRD_Squads", "Playlist_Impact_Duos", "Playlist_Impact_Solo", "Playlist_Impact_Squads",
     "Playlist_Showdown_Duos", "Playlist_Showdown_Solo", "Playlist_Showdown_Squads", "Playlist_SkySupply", "Playlist_SkySupply_Duos", "Playlist_SkySupply_Squads"]);
   const score = "https://cdn2.unrealengine.com/Fortnite/fortnite-game/playlisttiles/BR05_LobbyTile_LTM_ScoreRoyale-1024x512-b608aaf7840cdf6b7a702c5cbe1848a2247516d6.jpg";
@@ -211,5 +211,20 @@ test("the content page route serves 5.40 its playlistinformation (#321)", async 
     assert.equal(score.image, epicPlaylistImages.Playlist_Score_Solo);
   } finally {
     backend.close();
+  }
+});
+
+// Core-Backend #348: 6.20's Fortnitemares Solo, Duos and Squads had no tile; Epic's later page names one for each, on its CDN.
+test("6.20's and 6.21's Fortnitemares modes have Epic's tiles in playlistinformation (#348)", () => {
+  const cdn = "https://cdn2.unrealengine.com/Fortnite/fortnite-game/playlistinformation/";
+  assert.equal(epicPlaylistImages.Playlist_Deimos_Solo, `${cdn}BR06_Fortnitemares_In-GamePlaylist_1024x512_-Solo-1024x512-7e7fe76e48beb3a06da0592cb26e412265986e4d.jpg`);
+  assert.equal(epicPlaylistImages.Playlist_Deimos_Duo, `${cdn}BR06_Fortnitemares_In-GamePlaylist_1024x512_Duos-1024x512-1eadb7cfab62c9eb5c90c65577c676d5d0bb15c2.jpg`);
+  assert.equal(epicPlaylistImages.Playlist_Deimos_Squad, `${cdn}BR06_Fortnitemares_In-GamePlaylist_1024x512_Squads-1024x512-783a0812f6acf1f5931c8015e6ad13c0b76c5a9c.jpg`);
+  for (const build of ["4497486", "4526925"]) {
+    const entries = playlistInformationFor(build).playlist_info.playlists;
+    for (const name of ["Playlist_Deimos_Solo", "Playlist_Deimos_Duo", "Playlist_Deimos_Squad"]) {
+      assert.deepEqual(entries.find((entry) => entry.playlist_name === name), { image: epicPlaylistImages[name], playlist_name: name, special_border: "None", _type: "FortPlaylistInfo" }, `${build} ${name}`);
+    }
+    assert.equal(entries.some((entry) => entry.playlist_name === "Playlist_Deimos_SoloShow"), false, "the tournament playlists have none");
   }
 });

@@ -4571,7 +4571,9 @@
         rewards: JSON.parse(JSON.stringify(data.rewards || { enabled: false, modes: {} })),
         ltmOriginalDates: data.ltms?.originalDates === true,
         // Close Encounters' original date (#258): its whole day or one hour of it.
-        ltmCloseEncounters: { ...(data.ltms?.closeEncounters || { wholeDay: true, hour: 0 }) }
+        ltmCloseEncounters: { ...(data.ltms?.closeEncounters || { wholeDay: true, hour: 0 }) },
+        // 6.20's and 6.21's Fortnitemares modes in Solo's, Duos' and Squads' place while on (#348).
+        fortnitemaresReplacesDefaults: data.ltms?.fortnitemaresReplacesDefaults !== false
       };
 
       const saveConfig = async () => {
@@ -5105,6 +5107,10 @@
         onModeToggled();
       });
 
+      const fortnitemaresReplacesToggle = toggleSwitch(form.fortnitemaresReplacesDefaults, (checked) => {
+        form.fortnitemaresReplacesDefaults = checked;
+      });
+
       const showReplayDay = () => {
         const replayDay = data.ltms?.seasonMoments?.[ltmSeason];
         replayDayText.textContent = replayDay ? `Season ${ltmSeason} replay day: ${fmtDay(replayDay)}` : `Season ${ltmSeason}: no LTM dates`;
@@ -5266,6 +5272,11 @@
             el("div", { class: "font-semibold", text: "Original dates (limited-time modes)" }),
             replayDayText),
           originalDatesToggle),
+        el("div", { style: "display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 16px; margin-top:8px; background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius);" },
+          el("div", {},
+            el("div", { class: "font-semibold", text: "Fortnitemares replaces Solo, Duos and Squads (6.20 – 6.21)" }),
+            el("div", { class: "muted", text: "As in Epic's lobby: while a Fortnitemares mode is on, it takes its normal mode's place in the mode select. Off, the normal modes stay beside them. Save, then restart the game: the lobby's list comes at start-up." })),
+          fortnitemaresReplacesToggle),
         queueHeaderEl,
         activeModesTableBox);
 
@@ -7265,6 +7276,52 @@
           table([["Week", (w) => String(w.week), "mono"], ["Status", status], ["Unlocks", (w) => unlocks(w)]], plan.weeks)));
     }
 
+    // An event's challenges that unlock part by part (Core-Backend #345: Season 6's Fortnitemares Challenges): on their
+    // original days of the season's replay, or by hand (the first parts now, or every part).
+    function eventChallengesPanel(season, plan) {
+      const form = { mode: plan.mode, manualParts: plan.manualParts };
+      const title = `${plan.category || plan.schedule} Challenges`;
+      const modeLabels = { original: "Original days", manual: "Manual" };
+      const help = {
+        original: `Each part unlocks on its day of Season ${season}'s replay, as the game files have it (the Fortnitemares Challenges' Parts 2, 3 and 4 32, 34 and 36 days into the season: 29 October, 31 October and 2 November on the replay). With the weekly challenges on their original dates the challenges tab counts down to these days; with the weeks on another mode its countdown is off and can read "Unlocking soon" early.`,
+        manual: "The first parts you set are unlocked now; the others stay locked until you raise the number. The challenges tab shows a locked part as \"Unlocking soon\" or with a countdown from the season's start, which doesn't apply here."
+      };
+      const dateText = (iso) => new Date(iso).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+      const partsInput = el("input", {
+        class: "field num", type: "number", min: String(plan.givenParts), max: String(plan.totalParts), value: String(form.manualParts), style: "width:90px;",
+        oninput: (e) => { form.manualParts = Math.max(plan.givenParts, Math.min(plan.totalParts, parseInt(e.target.value, 10) || plan.givenParts)); }
+      });
+      const field = (label, input) => el("label", { style: "display:flex; align-items:center; gap:8px;" }, el("span", { class: "muted font-semibold", text: label }), input);
+      const manualField = field("Parts unlocked now", partsInput);
+      const helpNote = el("p", { class: "note", style: "margin-top:8px", text: help[form.mode] });
+      const showMode = () => { manualField.style.display = form.mode === "manual" ? "flex" : "none"; helpNote.textContent = help[form.mode]; };
+      const modeSelect = el("select", { class: "field", "aria-label": "Unlock mode", onchange: (e) => { form.mode = e.target.value; showMode(); } },
+        Object.entries(modeLabels).map(([value, label]) => el("option", { value, text: label, selected: value === form.mode })));
+      showMode();
+      const save = async (body, message) => {
+        const res = await act(api("/admin/api/battlepass/event-challenges", { season: Number(season), schedule: plan.schedule, ...body }), message);
+        if (res) {
+          if (state.view === "challenges") showChallenges();
+          else showBattlePass();
+        }
+      };
+      const allUnlocked = plan.parts.every((part) => part.unlocked);
+      const unlocks = (part) => (part.unlocked ? "—" : part.unlocksAt ? dateText(part.unlocksAt) : "When you raise the number");
+      return el("section", { class: "panel", style: "margin-top:16px" },
+        el("div", { class: "panel-head", style: "margin-bottom:8px" }, el("h2", { text: title }),
+          chip(`${modeLabels[plan.mode]} · ${plan.parts.filter((p) => p.unlocked).length} of ${plan.totalParts} unlocked`, allUnlocked ? "accent" : "")),
+        el("p", { class: "note", text: `Choose when the ${plan.totalParts} parts of the event's challenges unlock (${plan.eventName}: given while the event runs). Changes reach a player at their next login. "Unlock all parts now" sets Manual with every part.` }),
+        el("div", { style: "display:flex; gap:24px; flex-wrap:wrap; align-items:center; margin-top:12px;" }, field("Unlock mode", modeSelect), manualField),
+        helpNote,
+        el("div", { class: "actions", style: "margin-top:12px" },
+          btn("Save", () => save({ mode: form.mode, ...(form.mode === "manual" ? { manualParts: form.manualParts } : {}) }, `${title}: settings saved`), "primary"),
+          btn("Unlock all parts now", () => save({ allUnlocked: true }, `Every part of the ${title} is unlocked`), allUnlocked ? "ghost" : ""),
+          btn("Back to original days", () => save({ allUnlocked: false }, `${title} unlock on their original days`), "ghost")),
+        el("div", { style: "margin-top:12px" },
+          table([["Part", (p) => String(p.part), "mono"], ["Status", (p) => chip(p.unlocked ? "Unlocked" : "Locked", p.unlocked ? "accent" : "")],
+            ["Unlocks", unlocks]], plan.parts)));
+    }
+
     // The challenges that cannot be completed on a build, and the option to complete them for players (Core-Backend #269).
     function brokenChallengesPanel(data) {
       const info = data.brokenChallenges;
@@ -9065,8 +9122,9 @@
             btn("View Battle Pass Tiers", () => { location.hash = `#/battlepass/season${season}`; }, "ghost"),
             btn("Refresh", showChallenges, "ghost"))),
         ...(data.challenges ? [weeklyChallengesPanel(season, data)] : []),
+        ...(data.eventChallenges || []).map((plan) => eventChallengesPanel(season, plan)),
         ...(data.brokenChallenges ? [brokenChallengesPanel(data)] : []),
-        ...(!data.challenges && !data.brokenChallenges
+        ...(!data.challenges && !data.brokenChallenges && !(data.eventChallenges || []).length
           ? [el("div", { class: "empty", text: `${seasonLabel} has no weekly challenges or broken challenges to manage.` })] : [])
       );
     }
