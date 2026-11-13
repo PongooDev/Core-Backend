@@ -74,7 +74,7 @@ import { isServerAccountName, validatePassword } from "../accounts/password.js";
 import { EmailError } from "../accounts/store.js";
 import { rewardItem } from "../friendcodes/rewards.js";
 import { showItemImages } from "../services/portal/images.js";
-import { leaderboardOf, rulesets, scoringOf, statusOf, tournamentPlaylists } from "../tournaments/store.js";
+import { defaultInGameRuleset, defaultRuleset, leaderboardOf, rulesets, scoringOf, statusOf, tournamentPlaylists } from "../tournaments/store.js";
 import { currentShowdownEvent, customShowdownImages, showdownBuild, showdownImagePath, showdownImageSlots } from "../tournaments/showdown.js";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -2339,7 +2339,8 @@ export function adminRoutes(context) {
   // placement table and points an elimination, or back to its preset's.
   const tournamentView = (event) => ({ ...event, players: undefined, status: statusOf(event), scoring: event.scoring ?? null,
     servers: event.servers ?? [], bots: event.bots ?? null,
-    effectiveScoring: (({ placementPoints, pointsPerElimination }) => ({ placementPoints, pointsPerElimination }))(scoringOf(event)),
+    effectiveScoring: (({ placementPoints, pointsPerElimination, eliminationPoints = [] }) => ({ placementPoints, pointsPerElimination,
+      ...(eliminationPoints.length ? { eliminationPoints } : {}) }))(scoringOf(event)),
     playerCount: Object.keys(event.players ?? {}).length,
     leaderboard: leaderboardOf(event, (accountId) => accounts.get(accountId)?.displayName ?? accountId) });
   const tournamentsPayload = () => ({
@@ -2353,6 +2354,9 @@ export function adminRoutes(context) {
     // The event the game's lobby plays now (the client's current event, tournaments/showdown.js): one at a time.
     currentInGameEvent: currentShowdownEvent(showdownBuild, new Date(), context.tournaments)?.id ?? null,
     rulesets: Object.entries(rulesets).map(([id, ruleset]) => ({ id, ...ruleset })),
+    // The preset a new event starts on (#427): Epic's in-game one on an in-game playlist, whose tiers are a point each as
+    // the match HUD's running total counts them.
+    defaultRulesets: { inGame: defaultInGameRuleset, other: defaultRuleset },
     events: context.tournaments.list().map(tournamentView)
   });
   // The game's lobbies ask again for their events (#336, tournaments/showdown.js createShowdownRefresh).
@@ -2395,7 +2399,8 @@ export function adminRoutes(context) {
     if (!event) return notFound(res, `No tournament event ${req.params.id}`);
     res.json(tournamentView(event));
   });
-  // Body {scoring: {placementPoints: [[upTo, points], ...], pointsPerElimination}}, or {scoring: null} for the preset's.
+  // Body {scoring: {placementPoints: [[upTo, points], ...], pointsPerElimination, eliminationPoints: [[eliminations,
+  // points], ...] (optional)}}, or {scoring: null} for the preset's.
   router.post("/admin/api/tournaments/:id/scoring", (req, res) => {
     let event;
     try {

@@ -110,6 +110,16 @@ import { matchPoints, scoringOf, statusOf } from "./store.js";
 //   0x3072420): tiers add up. A window's score is the payload.pointsEarned of the history whose eventWindowId is the
 //   window's and whose teammateIds are the party's members (0x1192530); the results summary splits pointBreakdown's keys
 //   at ":" (0x3060070). The pin is unlocked once that score reaches the content entry's pin_score_requirement.
+// - The match HUD (#427; 6.20 CL-4497486, 6.21 CL-4526925 the same; read in the exe and the paks). A tier reached adds
+//   its pointsEarned to the window's local history (UFortTournamentManager, 6.20 0x1201A00, 6.10 0x11C5930) and calls
+//   the alert's ScorePointAlert(RuleLookup "Eliminations" or "Placement", TotalScore = the tier's keyValue, PointDelta =
+//   its pointsEarned) (6.20 0x31CDA80). The playlist's ShowdownScoringHUD (UI/Frontend/Showdown) shows "+{PointDelta}
+//   POINTS" with the rule's line, then calls its ShowdownScoringHUD_Progress's AddCurrentMatchPoint, which adds 1 to
+//   CurrentMatchPoints, whatever PointDelta is. That widget's number, next to the health bar, is CurrentMatchPoints plus
+//   PreviousMatchPoints, the window's score (GetCurrentEventScore) when it was made, and its RefreshDataBP does nothing:
+//   so the running total is right only when every tier is worth 1 point, as Epic's in-game tournaments' were (the
+//   inGameOctober2018 ruleset, tournaments/store.js). A tier worth more shows its own "+N POINTS" and counts in the window's
+//   score and the leaderboard, but adds 1 to the running total until the next match.
 // - After a match the game server tells each player (the client RPC ClientNotifyTournamentStatsFinal, 0xC7A560), whose
 //   client then sends an XMPP message of type com.epicgames.tournaments.complete to its party; on receiving one
 //   (UFortTournamentManager::HandleXmppReceived, 0x11A2450) a client asks GetEventWindowHistoryUrl, GET /api/game/v2/
@@ -133,9 +143,10 @@ export const showdownBuild = 4464155;
 export const tournamentsCompleteMessage = "com.epicgames.tournaments.complete";
 export const placementStat = "PLACEMENT_STAT_INDEX";
 export const eliminationsStat = "TEAM_ELIMS_STAT_INDEX";
-// An event that counts eliminations gives its points for each one, where the client wants a tier for every count that
-// scores: one tier per elimination up to this many. A match's eliminations past it still score (the last tier's history
-// entry holds them), but have no alert of their own in the match.
+// An event that gives points for each elimination gives them for each one, where the client wants a tier for every count
+// that scores: one tier per elimination up to this many. A match's eliminations past it still score (the last tier's
+// history entry holds them), but have no alert of their own in the match. An event's elimination steps (#427) are a tier
+// each, at their own count.
 export const maxEliminationTiers = 20;
 // How long an ended event stays in the Events tab, as a completed tournament.
 const listedAfterEndMs = 14 * 24 * 60 * 60 * 1000;
@@ -231,13 +242,18 @@ export const windowOf = (event) => ({ beginTime: event.startsAt ?? event.created
 
 // An event's scoring as the client's reward tiers. Placement: the event's table gives a place the points of the first
 // bracket it is within; a tier is earned the moment the team is that high, so each bracket's tier holds what it adds to
-// the bracket below it (a team that ends in a bracket has passed every one below). Eliminations: a tier for each one.
+// the bracket below it (a team that ends in a bracket has passed every one below). Eliminations: a tier for each one
+// (points an elimination) and one for each step (eliminationPoints), a count that is both holding both's points (the
+// client's alert takes the first tier of a count).
 export function showdownTiers(event) {
   const rules = scoringOf(event);
   const brackets = [...rules.placementPoints].sort((a, b) => a[0] - b[0]);
   const placement = brackets.map(([upTo, points], index) => ({ keyValue: upTo, pointsEarned: points - (brackets[index + 1]?.[1] ?? 0) }));
-  const eliminations = rules.pointsPerElimination > 0
-    ? Array.from({ length: maxEliminationTiers }, (_, index) => ({ keyValue: index + 1, pointsEarned: rules.pointsPerElimination })) : [];
+  const perElimination = rules.pointsPerElimination > 0 ? rules.pointsPerElimination : 0;
+  const steps = new Map(rules.eliminationPoints ?? []);
+  const counts = new Set([...(perElimination ? Array.from({ length: maxEliminationTiers }, (_, index) => index + 1) : []), ...steps.keys()]);
+  const eliminations = [...counts].sort((a, b) => a - b)
+    .map((keyValue) => ({ keyValue, pointsEarned: (keyValue <= maxEliminationTiers ? perElimination : 0) + (steps.get(keyValue) ?? 0) }));
   return { placement, eliminations };
 }
 const scoringRulesOf = (event) => {
@@ -324,7 +340,9 @@ function rulesText(event) {
   const rules = scoringOf(event);
   const counted = rules.countedMatches ? `Your first ${rules.countedMatches} matches count.` : "";
   const elims = rules.pointsPerElimination > 0 ? ` and ${rules.pointsPerElimination} for each elimination` : "";
-  return `Points for placement${elims}. ${counted}`.trim();
+  const steps = (rules.eliminationPoints ?? []).length
+    ? `, ${rules.eliminationPoints.map(([count, points]) => `${points} at ${count} eliminations`).join(", ")}` : "";
+  return `Points for placement${elims}${steps}. ${counted}`.trim();
 }
 // The content page's tournamentinformation for a build (services/content/pages.js): an entry for each listed event,
 // keyed by its displayDataId, with its texts, the colours (showdownColors) and its pictures (showdownImageUrl; origin is

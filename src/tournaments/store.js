@@ -31,27 +31,48 @@ export const tournamentPlaylists = ["soloShowdown", "showdownSolo", "showdownDuo
 //   ("Solo Showdown Official Contest Rules - July", fortnite.com.)
 const placementTable = [[1, 100], [2, 94], [3, 91], [4, 88], [5, 85], [6, 80], [7, 75], [8, 70], [9, 65], [10, 60],
   [15, 55], [20, 50], [30, 45], [40, 40], [50, 35], [75, 30], [100, 25]];
+// - In-game tournaments, October 2018 (6.10's Events tab, from the Alpha Tournament of 18 October on; #427): a point for
+//   each step a match reaches, the steps adding up. Placement: Top 10, Top 3 and the Victory Royale (3 points for a win);
+//   eliminations: 3, 5 and 7 (3 points for 7). At most 6 points a match, and each window counts every match played in it.
+//   (Press coverage of the 6.10 launch: points "begin at 3 eliminations", then "1 extra point at 5 eliminations and 7
+//   eliminations", and "in 1 point increments for reaching the Top 10, the Top 3, or a Top 1 Victory Royale".) Each step
+//   is one of the client's reward tiers (tournaments/showdown.js), and one point each is what its match HUD counts: the
+//   running total next to the health bar adds 1 for each "+N POINTS" alert, whatever N is.
+// countedMatches null: every match counts; minimumMatches 0: nobody waits to be ranked.
 export const rulesets = {
   soloShowdownMay2018: { name: "Solo Showdown, May 2018 (4.2)", placementPoints: placementTable, pointsPerElimination: 0, countedMatches: 50, minimumMatches: 50 },
-  soloShowdownJuly2018: { name: "Solo Showdown, July 2018", placementPoints: placementTable, pointsPerElimination: 6, countedMatches: 25, minimumMatches: 25 }
+  soloShowdownJuly2018: { name: "Solo Showdown, July 2018", placementPoints: placementTable, pointsPerElimination: 6, countedMatches: 25, minimumMatches: 25 },
+  inGameOctober2018: { name: "In-game tournament, October 2018 (6.10+: a point a step)", placementPoints: [[1, 3], [3, 2], [10, 1]], pointsPerElimination: 0,
+    eliminationPoints: [[3, 1], [5, 1], [7, 1]], countedMatches: null, minimumMatches: 0 }
 };
 export const defaultRuleset = "soloShowdownMay2018";
+// An event on an in-game tournament playlist (6.10+) made without a ruleset scores Epic's in-game way.
+export const defaultInGameRuleset = "inGameOctober2018";
 
 // A placement's points: the first bracket (up to its place) it is within; none past the table's last place.
 export function placementPoints(ruleset, place) {
   return ruleset.placementPoints.find(([upTo]) => place <= upTo)?.[1] ?? 0;
 }
-export const matchPoints = (ruleset, { place, kills }) => placementPoints(ruleset, place) + ruleset.pointsPerElimination * kills;
+// The elimination steps' points (eliminationPoints: [[eliminations, points], ...]): each step the match's eliminations
+// reach adds its points. None without steps.
+export const eliminationStepPoints = (ruleset, kills) => (ruleset.eliminationPoints ?? []).reduce((total, [atLeast, points]) => total + (kills >= atLeast ? points : 0), 0);
+export const matchPoints = (ruleset, { place, kills }) => placementPoints(ruleset, place) + ruleset.pointsPerElimination * kills + eliminationStepPoints(ruleset, kills);
+// Whether a player's next match still counts in an event (a ruleset without countedMatches counts every match).
+export const countsAnotherMatch = (ruleset, played) => !Number.isInteger(ruleset.countedMatches) || played < ruleset.countedMatches;
 
-// An event's custom scoring (Core-Backend #280): the admin's own placement table and points an elimination, in place of
-// its preset's (event.scoring, null for the preset's). The preset still sets the counted and qualifying matches.
+// An event's custom scoring (Core-Backend #280): the admin's own placement table, points an elimination and elimination
+// steps (#427), in place of its preset's (event.scoring, null for the preset's). The preset still sets the counted and
+// qualifying matches.
 export const maxPlace = 100;
+export const maxEliminationSteps = 100;
 const maxPoints = 100000;
 const isWhole = (value, min, max) => Number.isInteger(value) && value >= min && value <= max;
 // Checks and normalises custom scoring: {placementPoints: [[upTo, points], ...] (places 1 up, each bracket ending further
-// down, up to place 100; a place past the last bracket scores none), pointsPerElimination}. Throws an Error with the reason.
+// down, up to place 100; a place past the last bracket scores none), pointsPerElimination, eliminationPoints (optional:
+// [[eliminations, points], ...], from 1 elimination up, each step after the one before, up to 100; each step reached adds
+// its points)}. Throws an Error with the reason.
 export function validateScoring(scoring) {
-  if (!scoring || typeof scoring !== "object" || Array.isArray(scoring)) throw new Error("Scoring is {placementPoints, pointsPerElimination}.");
+  if (!scoring || typeof scoring !== "object" || Array.isArray(scoring)) throw new Error("Scoring is {placementPoints, pointsPerElimination, eliminationPoints}.");
   const table = scoring.placementPoints;
   if (!Array.isArray(table) || !table.length || table.length > maxPlace) throw new Error(`The placement table has 1 to ${maxPlace} brackets.`);
   const placementPoints = table.map((bracket, index) => {
@@ -65,13 +86,25 @@ export function validateScoring(scoring) {
   });
   const pointsPerElimination = scoring.pointsPerElimination ?? 0;
   if (!isWhole(pointsPerElimination, 0, maxPoints)) throw new Error(`Points an elimination are a whole number from 0 to ${maxPoints}.`);
-  return { placementPoints, pointsPerElimination };
+  const steps = scoring.eliminationPoints ?? [];
+  if (!Array.isArray(steps) || steps.length > maxEliminationSteps) throw new Error(`The elimination steps are a list of at most ${maxEliminationSteps}.`);
+  const eliminationPoints = steps.map((step, index) => {
+    const [eliminations, points] = Array.isArray(step) ? step : [step?.eliminations, step?.points];
+    if (!isWhole(eliminations, 1, maxEliminationSteps)) throw new Error(`Elimination step ${index + 1}'s eliminations are a whole number from 1 to ${maxEliminationSteps}.`);
+    if (!isWhole(points, 0, maxPoints)) throw new Error(`Elimination step ${index + 1}'s points are a whole number from 0 to ${maxPoints}.`);
+    return [eliminations, points];
+  });
+  eliminationPoints.forEach(([eliminations], index) => {
+    if (index && eliminations <= eliminationPoints[index - 1][0]) throw new Error(`Elimination step ${index + 1} must come after step ${index} (${eliminationPoints[index - 1][0]} eliminations).`);
+  });
+  return { placementPoints, pointsPerElimination, ...(eliminationPoints.length ? { eliminationPoints } : {}) };
 }
 
-// The rules an event scores by: its preset, with its custom scoring over it when it has one.
+// The rules an event scores by: its preset, with its custom scoring over it when it has one (in place of all the preset's
+// points: custom scoring without elimination steps has none).
 export function scoringOf(event) {
   const ruleset = rulesets[event.ruleset] ?? rulesets[defaultRuleset];
-  return event.scoring ? { ...ruleset, ...event.scoring } : ruleset;
+  return event.scoring ? { ...ruleset, eliminationPoints: [], ...event.scoring } : ruleset;
 }
 
 // An event's dedicated servers and bots (Core-Backend #282).
@@ -206,7 +239,8 @@ export function createTournamentStore(dataDir) {
 
     get,
 
-    // Makes an event: {name, playlist (a tournamentPlaylists id), ruleset (a rulesets key), scoring (custom scoring, see
+    // Makes an event: {name, playlist (a tournamentPlaylists id), ruleset (a rulesets key; when left out, the in-game one
+    // on an in-game playlist, else defaultRuleset), scoring (custom scoring, see
     // validateScoring; optional, the preset's when left out or null), startsAt, endsAt (ISO dates, both optional: it runs
     // from now until ended), servers and bots (#282, validateServers and validateBots; optional: the normal pool and the
     // Matchmaking tab's bots), pinScore (an in-game event's pin, validatePinScore; optional), images (an in-game event's
@@ -214,7 +248,7 @@ export function createTournamentStore(dataDir) {
     create(options = {}, now = new Date()) {
       const playlist = tournamentPlaylists.find((entry) => entry.id === (options.playlist ?? tournamentPlaylists[0].id));
       if (!playlist) throw new Error(`Unknown tournament playlist ${String(options.playlist)}.`);
-      const ruleset = options.ruleset ?? defaultRuleset;
+      const ruleset = options.ruleset ?? (playlist.inGame ? defaultInGameRuleset : defaultRuleset);
       if (!Object.hasOwn(rulesets, ruleset)) throw new Error(`Unknown scoring rules ${String(ruleset)}.`);
       const name = String(options.name ?? "").trim() || playlist.name;
       if (name.length > maxName) throw new Error(`A name is at most ${maxName} characters.`);
@@ -326,7 +360,7 @@ export function createTournamentStore(dataDir) {
         const ruleset = scoringOf(event);
         const player = (event.players[accountId] ??= { matches: [] });
         if (matchId && player.matches.some((match) => match.matchId === matchId)) continue;
-        if (player.matches.length >= ruleset.countedMatches) continue;
+        if (!countsAnotherMatch(ruleset, player.matches.length)) continue;
         const points = matchPoints(ruleset, { place, kills });
         player.matches.push({ matchId, place, kills, points, ...(Array.isArray(team) && team.length > 1 ? { team: [...team] } : {}), at: now.toISOString() });
         scored.push({ eventId: event.id, points });

@@ -582,6 +582,52 @@ test("a player's history in an in-game event: the matches, the team, and the poi
   }
 });
 
+// #427: the match HUD's running total (6.20's ShowdownScoringHUD_Progress) adds 1 for each tier reached, so Epic's in-game
+// points serve tiers of one point each; elimination steps are tiers at their own counts.
+test("Epic's in-game points as reward tiers: a point each, so the match HUD's running total is the score (#427)", () => {
+  const dir = tempDir();
+  try {
+    const store = createTournamentStore(dir);
+    const now = at("2026-11-13T10:00:00.000Z");
+    const event = store.create({ name: "Alpha", playlist: "showdownSolo" }, now);
+    const [rules] = tournamentAndHistory("player", v610, now, store).eventTournaments[0].eventWindows.map(({ eventData }) => eventData.scoringRules);
+    assert.deepEqual(rules, [
+      { trackedStat: placementStat, rewardTiers: [{ keyValue: 1, pointsEarned: 1 }, { keyValue: 3, pointsEarned: 1 }, { keyValue: 10, pointsEarned: 1 }] },
+      { trackedStat: eliminationsStat, rewardTiers: [{ keyValue: 3, pointsEarned: 1 }, { keyValue: 5, pointsEarned: 1 }, { keyValue: 7, pointsEarned: 1 }] }]);
+    // A win with 8 eliminations: 6 tiers, 6 points, one a tier in the history.
+    store.recordResult("ann", 58071, { place: 1, kills: 8, matchId: "a1", build: v610, team: ["ann"] }, now);
+    const [history] = historiesOf(store.get(event.id), "ann");
+    assert.equal(history.payload.pointsEarned, 6);
+    assert.deepEqual(history.payload.pointBreakdown, Object.fromEntries([`${placementStat}:1`, `${placementStat}:3`, `${placementStat}:10`,
+      `${eliminationsStat}:3`, `${eliminationsStat}:5`, `${eliminationsStat}:7`].map((key) => [key, { timesAchieved: 1, pointsEarned: 1 }])));
+    assert.match(tournamentInformationFor(v610, now, store).tournament_info.tournaments[0].details_description,
+      /^Points for placement, 1 at 3 eliminations, 1 at 5 eliminations, 1 at 7 eliminations\.$/);
+
+    // Points an elimination and steps together: one tier a count, holding both; the tiers reached add up to the points.
+    const mixed = eventOn(store, { name: "Mixed", playlist: "showdownDuos" }, now);
+    store.setScoring(mixed.id, { placementPoints: [[1, 10], [5, 4]], pointsPerElimination: 2, eliminationPoints: [[3, 5], [25, 10]] });
+    const { placement, eliminations } = showdownTiers(store.get(mixed.id));
+    assert.deepEqual(eliminations.length, maxEliminationTiers + 1);
+    assert.deepEqual([eliminations[0], eliminations[2], eliminations.at(-2), eliminations.at(-1)],
+      [{ keyValue: 1, pointsEarned: 2 }, { keyValue: 3, pointsEarned: 7 }, { keyValue: maxEliminationTiers, pointsEarned: 2 }, { keyValue: 25, pointsEarned: 10 }]);
+    const scoring = { ...rulesets.soloShowdownJuly2018, ...store.get(mixed.id).scoring };
+    for (const place of [1, 3, 6]) {
+      for (const kills of [0, 2, 3, 20, 24, 25, 30]) {
+        const tiered = placement.filter((tier) => place <= tier.keyValue).reduce((total, tier) => total + tier.pointsEarned, 0)
+          + eliminations.filter((tier) => kills >= tier.keyValue).reduce((total, tier) => total + tier.pointsEarned, 0)
+          + 2 * Math.max(0, kills - maxEliminationTiers);
+        assert.equal(tiered, matchPoints(scoring, { place, kills }), `place ${place}, ${kills} eliminations`);
+      }
+    }
+    store.recordResult("bob", 58072, { place: 1, kills: 30, matchId: "b1", build: v610, team: ["bob", "cat"] }, now);
+    const bob = historiesOf(store.get(mixed.id), "bob")[0].payload;
+    assert.equal(bob.pointsEarned, 10 + 60 + 5 + 10);
+    assert.equal(Object.values(bob.pointBreakdown).reduce((total, { pointsEarned }) => total + pointsEarned, 0), bob.pointsEarned, "the breakdown is the points");
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test("a ticket for a tournament playlist: taken while an event of it runs, for a full party; refused as Epic's service named it", () => {
   const dir = tempDir();
   try {

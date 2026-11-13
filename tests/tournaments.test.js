@@ -144,7 +144,7 @@ test("an event's custom points: validated, used in place of the preset's, rescor
   // Created with custom points: they score its matches; the preset still sets the counted and qualifying matches.
   const custom = store.create({ ruleset: "soloShowdownMay2018", scoring }, now);
   assert.deepEqual(custom.scoring, scoring);
-  assert.deepEqual(scoringOf(custom), { ...may, ...scoring });
+  assert.deepEqual(scoringOf(custom), { ...may, eliminationPoints: [], ...scoring });
   assert.deepEqual(store.recordResult("a", 51, { place: 4, kills: 2, matchId: "m1" }, now).map(({ points }) => points), [20 + 6]);
   store.recordResult("a", 51, { place: 11, kills: 1, matchId: "m2" }, now);
   let board = leaderboardOf(createTournamentStore(dataDir).get(custom.id));
@@ -167,6 +167,40 @@ test("an event's custom points: validated, used in place of the preset's, rescor
   delete old.scoring;
   assert.deepEqual(scoringOf(old), may);
   assert.equal(store.recordResult("b", 51, { place: 1, kills: 4, matchId: "o1" }, now).find(({ eventId }) => eventId === old.id).points, 100);
+}));
+
+test("Epic's in-game tournament points: a point a step, every match counted, the in-game playlists' default; elimination steps in custom points (#427)", () => withStore((store, dataDir) => {
+  const now = new Date("2026-11-13T12:00:00Z");
+  const inGame = rulesets.inGameOctober2018;
+  // Top 10, Top 3 and the win a point each; 3, 5 and 7 eliminations a point each: 6 at most.
+  for (const [place, kills, points] of [[1, 7, 6], [1, 0, 3], [2, 2, 2], [3, 3, 3], [4, 4, 2], [10, 5, 3], [11, 6, 2], [50, 9, 3], [11, 2, 0]]) {
+    assert.equal(matchPoints(inGame, { place, kills }), points, `place ${place}, ${kills} eliminations`);
+  }
+  // An in-game playlist's event without a ruleset is made on it; 4.2's keeps May 2018's.
+  const event = store.create({ name: "Alpha", playlist: "showdownSolo" }, now);
+  assert.equal(event.ruleset, "inGameOctober2018");
+  assert.equal(store.create({ playlist: "fortnitemaresShowSquads" }, now).ruleset, "inGameOctober2018");
+  assert.equal(store.create({ playlist: "soloShowdown" }, now).ruleset, "soloShowdownMay2018");
+  assert.equal(store.create({ playlist: "showdownSolo", ruleset: "soloShowdownJuly2018" }, now).ruleset, "soloShowdownJuly2018");
+  // Every match counts (no countedMatches), and nobody waits to be ranked.
+  for (let n = 0; n < 60; n += 1) store.recordResult("a", 58071, { place: 1, kills: 7, matchId: `m${n}` }, now);
+  const [row] = leaderboardOf(createTournamentStore(dataDir).get(event.id));
+  assert.deepEqual([row.matches, row.points, row.qualified], [60, 360, true]);
+
+  // Custom points with elimination steps: checked, in place of the preset's steps, and none when left out.
+  const steps = { placementPoints: [[1, 10]], pointsPerElimination: 2, eliminationPoints: [[3, 5], [25, 10]] };
+  assert.deepEqual(validateScoring(steps), steps);
+  assert.deepEqual(validateScoring({ placementPoints: [[1, 1]], eliminationPoints: [{ eliminations: 2, points: 1 }] }), { placementPoints: [[1, 1]], pointsPerElimination: 0, eliminationPoints: [[2, 1]] });
+  assert.deepEqual(validateScoring({ placementPoints: [[1, 1]], eliminationPoints: [] }), { placementPoints: [[1, 1]], pointsPerElimination: 0 });
+  for (const [bad, reason] of [
+    [{ eliminationPoints: "3:1" }, /elimination steps are a list/], [{ eliminationPoints: [[0, 1]] }, /step 1's eliminations are a whole number/],
+    [{ eliminationPoints: [[101, 1]] }, /eliminations are a whole number from 1 to 100/], [{ eliminationPoints: [[3, -1]] }, /step 1's points/],
+    [{ eliminationPoints: [[3, 1], [3, 1]] }, /step 2 must come after step 1 \(3 eliminations\)/], [{ eliminationPoints: [[5, 1], [3, 1]] }, /must come after/]
+  ]) assert.throws(() => validateScoring({ placementPoints: [[1, 1]], ...bad }), reason, JSON.stringify(bad));
+  assert.equal(matchPoints(scoringOf({ ruleset: "soloShowdownMay2018", scoring: validateScoring(steps) }), { place: 1, kills: 30 }), 10 + 60 + 5 + 10);
+  store.setScoring(event.id, { placementPoints: [[1, 5]], pointsPerElimination: 1 });
+  assert.deepEqual(scoringOf(store.get(event.id)).eliminationPoints, [], "custom points without steps have none of the preset's");
+  assert.equal(leaderboardOf(store.get(event.id))[0].points, 60 * (5 + 7));
 }));
 
 test("the admin panel sets an event's custom points and resets them to its preset's (#280)", async () => {
@@ -196,6 +230,18 @@ test("the admin panel sets an event's custom points and resets them to its prese
     assert.equal(reset.body.event.scoring, null);
     assert.equal(reset.body.event.effectiveScoring.pointsPerElimination, 6);
     assert.equal(reset.body.event.leaderboard[0].points, 100 + 18);
+
+    // #427: an in-game playlist's event starts on Epic's in-game points, steps and all; custom steps are saved.
+    const inGame = await post(backend.port, "/admin/api/tournaments", undefined, { name: "Alpha", playlist: "showdownSolo" });
+    assert.equal(inGame.status, 201, JSON.stringify(inGame.body));
+    assert.deepEqual(inGame.body.defaultRulesets, { inGame: "inGameOctober2018", other: "soloShowdownMay2018" });
+    assert.deepEqual([inGame.body.event.ruleset, inGame.body.event.effectiveScoring],
+      ["inGameOctober2018", { placementPoints: [[1, 3], [3, 2], [10, 1]], pointsPerElimination: 0, eliminationPoints: [[3, 1], [5, 1], [7, 1]] }]);
+    const stepped = await post(backend.port, `/admin/api/tournaments/${inGame.body.event.id}/scoring`, undefined,
+      { scoring: { placementPoints: [[1, 2]], pointsPerElimination: 0, eliminationPoints: [[2, 1], [4, 1]] } });
+    assert.deepEqual(stepped.body.event.effectiveScoring, { placementPoints: [[1, 2]], pointsPerElimination: 0, eliminationPoints: [[2, 1], [4, 1]] });
+    assert.equal((await post(backend.port, `/admin/api/tournaments/${inGame.body.event.id}/scoring`, undefined,
+      { scoring: { placementPoints: [[1, 2]], eliminationPoints: [[4, 1], [2, 1]] } })).status, 400);
   } finally {
     backend.close();
   }

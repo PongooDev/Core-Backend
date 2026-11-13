@@ -8360,6 +8360,20 @@
       syncPin();
       const rulesSelect = el("select", { class: "field", "aria-label": "Scoring rules" },
         data.rulesets.map((r) => el("option", { value: r.id, text: r.name })));
+      // A new event starts on its playlist's preset (#427): Epic's in-game one (a point a step) on an in-game playlist.
+      const defaultRulesetFor = (playlist) => (inGameOf(playlist) ? data.defaultRulesets?.inGame : data.defaultRulesets?.other) ?? data.rulesets[0].id;
+      rulesSelect.value = defaultRulesetFor(playlistSelect.value);
+      // The game's match HUD (6.20+) adds 1 to its running total, next to the health bar, for each "+N POINTS" alert,
+      // whatever N is (tournaments/showdown.js): with a tier worth more than one point the total there falls short of
+      // the real score until the next match. A tier is a placement bracket, an elimination or an elimination step.
+      const tierPointsOf = (scoring) => {
+        const brackets = [...scoring.placementPoints].sort((a, b) => a[0] - b[0]);
+        const placement = brackets.map(([, points], i) => points - (brackets[i + 1]?.[1] ?? 0));
+        return [...placement, ...(scoring.pointsPerElimination > 0 ? [scoring.pointsPerElimination] : []), ...(scoring.eliminationPoints ?? []).map(([, points]) => points)];
+      };
+      const hudNoteText = (scoring) => (tierPointsOf(scoring).every((points) => points === 1)
+        ? "Every step is worth 1 point, as in Epic's in-game tournaments: the match's running total next to the health bar shows the real score."
+        : "Some steps are worth other than 1 point: in a match the game's running total next to the health bar still adds 1 for each \"+N POINTS\" alert (its own way, made for Epic's one-point steps), so it falls short of the real score until the next match. The alerts, the Events tab and the leaderboard show the real points.");
       const startInput = el("input", { class: "field", type: "datetime-local", "aria-label": "Starts" });
       const endInput = el("input", { class: "field", type: "datetime-local", "aria-label": "Ends" });
       const isoOf = (input) => (input.value ? new Date(input.value).toISOString() : null);
@@ -8370,13 +8384,17 @@
           const from = i ? all[i - 1][0] + 1 : 1;
           return `${from === upTo ? `#${upTo}` : `#${from}-${upTo}`}: ${points}`;
         }).join(", ");
-        return `Placement points (${brackets})${r.pointsPerElimination ? ` + ${r.pointsPerElimination} per elimination` : ", no elimination points"}; `
-          + `only a player's first ${r.countedMatches} matches count, ${r.minimumMatches} to qualify; ties go to wins, then eliminations, then average placement.`;
+        const steps = (r.eliminationPoints ?? []).map(([count, points]) => `+${points} at ${count}`).join(", ");
+        const elims = [r.pointsPerElimination ? `${r.pointsPerElimination} per elimination` : "", steps ? `eliminations ${steps}` : ""].filter(Boolean).join(", ");
+        return `Placement points (${brackets})${elims ? ` + ${elims}` : ", no elimination points"}; `
+          + `${Number.isInteger(r.countedMatches) ? `only a player's first ${r.countedMatches} matches count` : "every match counts"}, `
+          + `${r.minimumMatches ? `${r.minimumMatches} to qualify` : "no minimum to qualify"}; ties go to wins, then eliminations, then average placement.`;
       };
       const rulesNote = el("div", { class: "note", style: "margin-top:8px;", text: rulesText(rulesSelect.value) });
       const presetScoring = (id) => {
         const r = data.rulesets.find((entry) => entry.id === id) ?? data.rulesets[0];
-        return { placementPoints: r.placementPoints.map(([upTo, points]) => [upTo, points]), pointsPerElimination: r.pointsPerElimination };
+        return { placementPoints: r.placementPoints.map(([upTo, points]) => [upTo, points]), pointsPerElimination: r.pointsPerElimination,
+          eliminationPoints: (r.eliminationPoints ?? []).map(([count, points]) => [count, points]) };
       };
       const sameScoring = (a, b) => JSON.stringify(a) === JSON.stringify(b);
       // An editable placement table (each bracket's last place and its points, its first place following the bracket
@@ -8403,22 +8421,45 @@
           rowsBox.append(row.node);
           renumber();
         };
+        // Elimination steps (#427): reaching a step's eliminations adds its points, the steps adding up (Epic's in-game
+        // tournaments: a point at 3, 5 and 7).
+        const stepsBox = el("div", { style: "display:grid; gap:6px; margin-top:8px;" });
+        let steps = [];
+        const addStep = (count = "", points = "") => {
+          const step = {
+            count: el("input", { class: "field", type: "number", min: "1", max: "100", step: "1", value: String(count), style: "width:80px;", "aria-label": "Eliminations of the step" }),
+            points: el("input", { class: "field", type: "number", min: "0", step: "1", value: String(points), style: "width:90px;", "aria-label": "Points for the step" })
+          };
+          step.node = el("div", { class: "actions", style: "gap:8px; align-items:center; justify-content:flex-start;" },
+            el("span", { class: "muted", style: "min-width:64px;", text: "At" }), step.count, el("span", { class: "muted", text: "eliminations, +" }), step.points,
+            btn("Remove", () => { steps = steps.filter((other) => other !== step); step.node.remove(); }, "ghost"));
+          steps.push(step);
+          stepsBox.append(step.node);
+        };
         const load = (scoring) => {
           rows = [];
           rowsBox.replaceChildren();
           scoring.placementPoints.forEach(([upTo, points]) => addRow(upTo, points));
           elimInput.value = String(scoring.pointsPerElimination);
+          steps = [];
+          stepsBox.replaceChildren();
+          (scoring.eliminationPoints ?? []).forEach(([count, points]) => addStep(count, points));
         };
         load(initial);
         return {
           load,
-          value: () => ({ placementPoints: rows.map((row) => [numberOf(row.upTo), numberOf(row.points)]), pointsPerElimination: numberOf(elimInput) }),
+          value: () => ({ placementPoints: rows.map((row) => [numberOf(row.upTo), numberOf(row.points)]), pointsPerElimination: numberOf(elimInput),
+            eliminationPoints: steps.map((step) => [numberOf(step.count), numberOf(step.points)]) }),
           node: el("div", {},
             el("div", { class: "note", style: "margin-top:8px;", text: "Each bracket gives its points to the places from the one after the bracket before down to its last place; a place past the last bracket scores none (places go up to 100)." }),
             rowsBox,
             el("div", { class: "actions", style: "gap:8px; margin-top:8px; align-items:center; justify-content:flex-start;" },
               btn("Add bracket", () => addRow(rows.length ? (numberOf(rows[rows.length - 1].upTo) + 1 || "") : 1, 0), "ghost"),
-              el("label", { class: "muted", text: "Points an elimination" }), elimInput))
+              el("label", { class: "muted", text: "Points an elimination" }), elimInput),
+            el("div", { class: "note", style: "margin-top:8px;", text: "Elimination steps (optional): a match that reaches a step's eliminations scores its points, and the steps add up (Epic's in-game tournaments gave a point at 3, 5 and 7)." }),
+            stepsBox,
+            el("div", { class: "actions", style: "gap:8px; margin-top:8px; justify-content:flex-start;" },
+              btn("Add elimination step", () => addStep(steps.length ? (numberOf(steps[steps.length - 1].count) + 1 || "") : 1, 1), "ghost")))
         };
       };
       // An event's dedicated servers and bots (Core-Backend #282): the servers hosting its matches (IPs or CIDR ranges,
@@ -8470,33 +8511,52 @@
       };
       const createServersBots = serversBotsEditor();
       const createScoring = scoringEditor(presetScoring(rulesSelect.value));
-      rulesSelect.addEventListener("change", () => {
+      const createHudNote = el("div", { class: "note", style: "margin-top:8px;" });
+      const syncRules = () => {
         rulesNote.textContent = rulesText(rulesSelect.value);
         createScoring.load(presetScoring(rulesSelect.value));
+        createHudNote.textContent = hudNoteText(presetScoring(rulesSelect.value));
+        createHudNote.style.display = inGameOf(playlistSelect.value) ? "" : "none";
+      };
+      rulesSelect.addEventListener("change", syncRules);
+      playlistSelect.addEventListener("change", () => {
+        rulesSelect.value = defaultRulesetFor(playlistSelect.value);
+        syncRules();
       });
+      syncRules();
       const statusKind = { running: "good", scheduled: "sky", ended: "warn" };
       const when = (value) => (value ? new Date(value).toLocaleString() : "-");
 
       // An event's points (#280): its own placement table and points an elimination, saved over its preset's (its
       // leaderboard rescores the matches already played), or Reset to default for the preset's again.
       const eventScoring = (event) => {
-        const editor = scoringEditor(event.effectiveScoring);
+        const effective = { eliminationPoints: [], ...event.effectiveScoring };
+        const editor = scoringEditor(effective);
         const preset = presetScoring(event.ruleset);
-        const elim = event.effectiveScoring.pointsPerElimination;
-        return el("details", { style: "margin:8px 0;" },
-          el("summary", { class: "muted", style: "cursor:pointer;", text: `Points: ${event.scoring ? "custom" : "the preset's"}${elim ? `, ${elim} an elimination` : ""} (edit)` }),
-          editor.node,
-          el("div", { class: "actions", style: "gap:8px; margin-top:8px; justify-content:flex-start;" },
-            btn("Save points", async () => {
-              const scoring = editor.value();
-              const body = { scoring: sameScoring(scoring, preset) ? null : scoring };
-              if (await act(api(`/admin/api/tournaments/${event.id}/scoring`, body), "Event points saved")) rerender();
-            }, "primary"),
-            btn("Reset to default", async () => {
-              editor.load(preset);
-              if (!event.scoring) return;
-              if (await act(api(`/admin/api/tournaments/${event.id}/scoring`, { scoring: null }), "Event points back to the preset's")) rerender();
-            }, "ghost")));
+        const elim = effective.pointsPerElimination;
+        const steps = effective.eliminationPoints.length;
+        const inGame = inGameOf(event.playlist);
+        // An in-game event (#427): whether the match HUD's running total can show its points, and Epic's in-game points
+        // to put in the editor for one made on another preset.
+        const inGamePreset = data.defaultRulesets?.inGame;
+        return el("div", {},
+          inGame ? el("div", { class: "note", style: "margin:8px 0;", text: hudNoteText(effective) }) : null,
+          el("details", { style: "margin:8px 0;" },
+            el("summary", { class: "muted", style: "cursor:pointer;", text: `Points: ${event.scoring ? "custom" : "the preset's"}${elim ? `, ${elim} an elimination` : ""}${steps ? `, ${steps} elimination step${steps === 1 ? "" : "s"}` : ""} (edit)` }),
+            editor.node,
+            el("div", { class: "actions", style: "gap:8px; margin-top:8px; justify-content:flex-start;" },
+              btn("Save points", async () => {
+                const scoring = editor.value();
+                const body = { scoring: sameScoring(scoring, preset) ? null : scoring };
+                if (await act(api(`/admin/api/tournaments/${event.id}/scoring`, body), "Event points saved")) rerender();
+              }, "primary"),
+              btn("Reset to default", async () => {
+                editor.load(preset);
+                if (!event.scoring) return;
+                if (await act(api(`/admin/api/tournaments/${event.id}/scoring`, { scoring: null }), "Event points back to the preset's")) rerender();
+              }, "ghost"),
+              inGame && inGamePreset && event.ruleset !== inGamePreset
+                ? btn("Load Epic's in-game points", () => editor.load(presetScoring(inGamePreset)), "ghost") : null)));
       };
 
       // An in-game event's pictures (#336): for each slot the game shows, an http(s) URL or an uploaded PNG/JPEG (the
@@ -8667,6 +8727,7 @@
               if (await act(api("/admin/api/tournaments", body), "Event created")) rerender();
             }, "primary")),
           rulesNote,
+          createHudNote,
           el("details", { style: "margin-top:8px;" },
             el("summary", { class: "muted", style: "cursor:pointer;", text: "Custom points (optional)" }),
             createScoring.node,
