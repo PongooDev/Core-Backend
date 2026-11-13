@@ -46,12 +46,17 @@ test("GetMcpTimeForLogin returns the server time as the primary notification", a
     const { token, accountId } = await userLogin(backend.port, "CoreTest");
     const path = (name) => `/fortnite/api/game/v2/profile/${accountId}/client/${name}?profileId=profile0&rvn=-1`;
 
+    // The server's time while it answered: within the request's own start and end (a loaded test machine can take
+    // seconds to answer, so not a fixed distance from now).
+    const sent = Date.now();
     const time = await post(backend.port, path("GetMcpTimeForLogin"), token, {});
+    const received = Date.now();
     assert.equal(time.status, 200);
     const [notification] = time.body.notifications;
     assert.equal(notification.primary, true);
     assert.equal(typeof notification.type, "string");
-    assert.ok(Math.abs(Date.parse(notification.mcpTime) - Date.now()) < 5000);
+    const mcpTime = Date.parse(notification.mcpTime);
+    assert.ok(mcpTime >= sent - 1000 && mcpTime <= received + 1000, `${notification.mcpTime} is outside the request (${new Date(sent).toISOString()} to ${new Date(received).toISOString()})`);
 
     const quests = await post(backend.port, path("ClientQuestLogin"), token, {});
     assert.equal(quests.status, 200);
