@@ -1,3 +1,6 @@
+import crypto from "node:crypto";
+import express from "express";
+import { sendError } from "../errors.js";
 // Support-A-Creator, 6.02's (CL-4442095, CL-4461277): the item shop's "Support a Creator" button and its creator code.
 // The Fortnite Wiki's Support-A-Creator: "Players declare their support for a Fortnite Creator in-game by entering the
 // creator's code via the Support-A-Creator button in the Item Shop ... Once selected, that Creator Code will be set for
@@ -72,4 +75,30 @@ export function affiliateRuntimeOptions(build, settingsValue = settingsProvider(
   if (!affiliateOffered(build, settingsValue)) return [];
   return ["bDisableAffiliateFeature=false", "bUseHotfixedAffiliateNamesArray=true", "!AffiliateNames=ClearArray",
     ...creatorNames(settingsValue).map((name) => `+AffiliateNames=${name}`)];
+}
+
+// 6.20's (CL-4497486) check of a typed creator code, UFortMcpContext::CheckAffiliateName (FOnlineAccessMcp.CheckAffiliateName):
+// a new service of its own, OnlineSubsystemMcp.OnlineAffiliateServiceMcp (DefaultEngine.ini: ServiceName "affiliate",
+// Domain affiliate-public-service-prod.ol.epicgames.com), asked GET /affiliate/api/public/affiliates/slug/{affiliatename}
+// (its CheckAffiliateNameUrl, 0x4766F3; config may override it). The answer (0x490FE0) is read into a struct of id,
+// displayName, avatar, slug and status (0x4F46F0), and the name is valid only with status "ACTIVE" (in any case); the
+// delegate then reports bWasValidAffiliateName and the name checked. The modal keeps 6.02's SetAffiliateName and the hotfixed
+// array (AffiliateNames, bUseHotfixedAffiliateNamesArray, both still in UFortRuntimeOptions), so the list is the same
+// one: a listed creator (the admin panel's, any case) is ACTIVE, as the list spells it, with an id of Core's (the name's
+// hash) and no avatar; any other name is the service's 404. Nothing is paid to anyone.
+const affiliateId = (name) => crypto.createHash("sha1").update(`Core:affiliate:${name.toLowerCase()}`).digest("hex").slice(0, 32);
+export function affiliateCheck(slug, settingsValue = settingsProvider()) {
+  const name = creatorNamed(slug, settingsValue);
+  return name ? { id: affiliateId(name), slug: name, displayName: name, avatar: "", status: "ACTIVE", verified: false } : null;
+}
+export function affiliateRoutes() {
+  const router = express.Router();
+  router.get("/affiliate/api/public/affiliates/slug/:slug", (req, res) => {
+    const found = affiliateCheck(req.params.slug);
+    if (!found) {
+      return sendError(res, 404, "errors.com.epicgames.ecommerce.affiliate.not_found", `Affiliate ${req.params.slug} was not found`);
+    }
+    res.json(found);
+  });
+  return router;
 }

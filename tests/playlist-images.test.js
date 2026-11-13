@@ -133,8 +133,10 @@ test("the admin panel sets, validates and resets a playlist's picture, and keeps
 // ran (Sky Supply, Impact), which keep the default one unless the host sets one.
 test("every LTM of 4.0 on has Epic's tile picture but Sky Supply and Impact (#319)", () => {
   const without = playlistImageModes().filter(({ epic }) => !epic).map(({ playlistName }) => playlistName).sort();
-  // 6.10's default modes with glider redeploy and its tournament playlists had no tile of their own either.
-  assert.deepEqual(without, ["Playlist_GRD_Duos", "Playlist_GRD_Solo", "Playlist_GRD_Squads", "Playlist_Impact_Duos", "Playlist_Impact_Solo", "Playlist_Impact_Squads",
+  // 6.10's default modes with glider redeploy and its tournament playlists had no tile of their own either, nor 6.20's
+  // Fortnitemares modes and tournament playlists.
+  assert.deepEqual(without, ["Playlist_Deimos_Duo", "Playlist_Deimos_DuoShow", "Playlist_Deimos_Solo", "Playlist_Deimos_SoloShow", "Playlist_Deimos_Squad",
+    "Playlist_Deimos_SquadShow", "Playlist_GRD_Duos", "Playlist_GRD_Solo", "Playlist_GRD_Squads", "Playlist_Impact_Duos", "Playlist_Impact_Solo", "Playlist_Impact_Squads",
     "Playlist_Showdown_Duos", "Playlist_Showdown_Solo", "Playlist_Showdown_Squads", "Playlist_SkySupply", "Playlist_SkySupply_Duos", "Playlist_SkySupply_Squads"]);
   const score = "https://cdn2.unrealengine.com/Fortnite/fortnite-game/playlisttiles/BR05_LobbyTile_LTM_ScoreRoyale-1024x512-b608aaf7840cdf6b7a702c5cbe1848a2247516d6.jpg";
   for (const name of ["Playlist_Score_Solo", "Playlist_Score_Duos", "Playlist_Score_Squads"]) assert.equal(epicPlaylistImages[name], score, name);

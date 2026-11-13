@@ -10,7 +10,7 @@ import { requestBuild } from "./builds/context.js";
 import { configureEvents, seasonalEvents } from "./events/events.js";
 import { configureLtms } from "./events/ltms.js";
 import { configureChallenges } from "./profiles/challenges.js";
-import { configureCreators } from "./store/creators.js";
+import { affiliateRoutes, configureCreators } from "./store/creators.js";
 import { configureBattlePass } from "./battlepass/season1.js";
 import { createFriendStore } from "./friends/store.js";
 import { createFriendCodeStore } from "./friendcodes/store.js";
@@ -232,6 +232,7 @@ export function createApp(config, context = createContext(config)) {
   app.use(feedbackRoutes(context));
   app.use(battleRoyaleRoutes(context));
   app.use(eventRoutes(context));
+  app.use(affiliateRoutes());
   app.use(friendCodeRoutes(context));
   app.use(twitchRoutes(context));
   app.use(privacyRoutes(context));

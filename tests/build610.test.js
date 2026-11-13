@@ -83,9 +83,9 @@ test("6.10's three changelists are known, all play on CL-4480234's data, Season 
   assert.equal(dataBuild(v602), v602, "6.02 keeps its own data");
   assert.equal(dataBuild(v6020), v602);
   assert.equal(dataBuild(v601), v601);
-  assert.equal(buildOfSeason(6), v610, "Season 6's newest data");
+  assert.equal(buildOfSeason(6), "4497486", "Season 6's newest data is 6.20's now (tests/build620.test.js)");
   assert.equal(buildOfSeason(5), v541);
-  assert.equal(seasonName(6), "Season 6 (6.00 – 6.10)");
+  assert.equal(seasonName(6), "Season 6 (6.00 – 6.20)");
 });
 
 test("6.10's data against 6.02's: thirteen cosmetics, weeks 4 to 7 as Epic ran them, the eased Skull Trooper Challenges, the loot's new weights", () => {
@@ -192,10 +192,12 @@ test("6.10's event flags are 6.02's: LobbySeason6, the ticketless storms and Cra
     assert.deepEqual(activeEventFlags(build), activeEventFlags(v602));
     assert.equal(inBuild(build, () => isEventActive(cramSession2018)), true);
   }
-  assert.deepEqual(season4Flag(lobbySeason6).builds, [4395664, Number(v610)]);
-  for (const flag of ["EventFlag.SupplyDropBDay", "EventFlag.SupplyDropGift", "EventFlag.BR.CandyCaneGuns", "EventFlag.BR_S5_RiskyReels_Event",
+  // Every range that ran to 6.10 runs to 6.20 now (tests/build620.test.js), but BR.CandyCaneGuns', whose item 6.20 drops.
+  assert.deepEqual(season4Flag(lobbySeason6).builds, [4395664, 4497486]);
+  assert.equal(season4Flag("EventFlag.BR.CandyCaneGuns").builds[1], Number(v610));
+  for (const flag of ["EventFlag.SupplyDropBDay", "EventFlag.SupplyDropGift", "EventFlag.BR_S5_RiskyReels_Event",
     "EventFlag.Blockbuster2018Phase4", "EventFlag.Fortnitemares", "EventFlag.ActiveMiniBosses", "EventFlag.PassiveStorms"]) {
-    assert.equal(season4Flag(flag).builds[1], Number(v610), flag);
+    assert.equal(season4Flag(flag).builds[1], 4497486, flag);
   }
   for (const flag of ["EventFlag.BR_S5_Cube_TurnOn", "EventFlag.LTM_Heist", "EventFlag.RoadTrip2018", "EventFlag.Horde"]) {
     assert.equal(season4Flag(flag).builds[1], Number(v541), flag);
@@ -207,8 +209,8 @@ test("6.10's event flags are 6.02's: LobbySeason6, the ticketless storms and Cra
 
 test("6.10 keeps the floating island and has its last stop: back over Loot Lake it is served _Rune8, where 6.00 to 6.02 get _Rune0", () => {
   const sixteen = [...[1, 2, 3, 4, 5, 6, 7, 8].map(islandMoveTo), ...[0, 1, 2, 3, 4, 5, 6, 7].map(islandRune)];
-  for (const flag of sixteen) assert.deepEqual(season4Flag(flag).builds, [4395664, Number(v610)], flag);
-  assert.deepEqual(season4Flag(islandRune(8)).builds, [Number(v6100), Number(v610)], "6.10's own");
+  for (const flag of sixteen) assert.deepEqual(season4Flag(flag).builds, [4395664, 4497486], flag);
+  assert.deepEqual(season4Flag(islandRune(8)).builds, [Number(v6100), 4497486], "6.10's own, and 6.20's");
   const served = (build, iso) => inBuild(build, () => islandStates(at(iso)))[0].events.map(({ eventType }) => eventType);
   withConfig(replay, () => {
     // Until the island is back, 6.10 is served what 6.00 is.
@@ -355,7 +357,9 @@ test("6.10's shop: Season 6's history with its eight cosmetics on their days; 6.
   const history = JSON.parse(fs.readFileSync(new URL("../src/store/itemshop-season6.json", import.meta.url), "utf8")).days;
   assert.equal(history.length, 70);
   const [c610, c602] = [inBuild(v610, athenaCosmetics), inBuild(v602, athenaCosmetics)];
-  assert.ok(history.every((day) => [...day.featured, ...day.daily].every(([id]) => c610[id])), "only 6.10's cosmetics");
+  // The history holds 6.20's sixteen too (tests/build620.test.js); 6.10 is shown its own.
+  const c620 = inBuild("4497486", athenaCosmetics);
+  assert.ok(history.every((day) => [...day.featured, ...day.daily].every(([id]) => c620[id])), "only 6.20's cosmetics");
   const days = (id) => history.filter((day) => [...day.featured, ...day.daily].some(([entry]) => entry === id)).map(({ date }) => date.slice(5));
   assert.deepEqual(days("AthenaPickaxe:pickaxe_id_110_vampire"), ["10-19", "10-20", "11-28"]);
   for (const id of ["AthenaCharacter:cid_248_athena_commando_m_blackwidow", "AthenaCharacter:cid_249_athena_commando_f_blackwidow",
@@ -363,9 +367,9 @@ test("6.10's shop: Season 6's history with its eight cosmetics on their days; 6.
   for (const id of ["AthenaCharacter:cid_247_athena_commando_m_guanyu", "AthenaPickaxe:pickaxe_id_112_guanyu", "AthenaGlider:glider_id_087_guanyu"]) {
     assert.deepEqual(days(id), ["12-02", "12-03"], id);
   }
-  const own = [...new Set(history.flatMap((day) => [...day.featured, ...day.daily]).map(([id]) => id).filter((id) => !c602[id]))];
+  const own = [...new Set(history.flatMap((day) => [...day.featured, ...day.daily]).map(([id]) => id).filter((id) => !c602[id] && c610[id]))];
   assert.equal(own.length, 8);
-  assert.equal(history.filter((day) => !day.featured.length).length, 22);
+  assert.equal(history.filter((day) => !day.featured.some(([id]) => c610[id])).length, 22);
 
   const featured = (build, iso) => inBuild(build, () => itemShopOffers(at(iso), shopConfig)).BRWeeklyStorefront;
   for (const build of builds610) {
@@ -446,7 +450,9 @@ const eventOn = (store, options, now) => store.create({ name: "Core Cup", playli
 
 test("the tournament playlists: 4.2's Solo Showdown and 6.10's three, the in-game ones; an event's pin score is an in-game event's", () => {
   assert.deepEqual(tournamentPlaylists.map(({ id, playlistId, inGame }) => [id, playlistId, inGame]),
-    [["soloShowdown", 51, false], ["showdownSolo", 58071, true], ["showdownDuos", 58072, true], ["showdownSquads", 58073, true]]);
+    [["soloShowdown", 51, false], ["showdownSolo", 58071, true], ["showdownDuos", 58072, true], ["showdownSquads", 58073, true],
+      // 6.20's Fortnitemares ones (tests/build620.test.js).
+      ["fortnitemaresShowSolo", 59071, true], ["fortnitemaresShowDuos", 59072, true], ["fortnitemaresShowSquads", 59073, true]]);
   const dir = tempDir();
   try {
     const store = createTournamentStore(dir);
@@ -774,7 +780,8 @@ test("a 6.10 client's Events tab end to end: the empty list, an admin's event li
       assert.equal(made.status, 201, JSON.stringify(made.body));
       const eventId = made.body.event.id;
       assert.deepEqual(made.body.playlists.map(({ id, inGame }) => [id, inGame]),
-        [["soloShowdown", false], ["showdownSolo", true], ["showdownDuos", true], ["showdownSquads", true]]);
+        [["soloShowdown", false], ["showdownSolo", true], ["showdownDuos", true], ["showdownSquads", true],
+          ["fortnitemaresShowSolo", true], ["fortnitemaresShowDuos", true], ["fortnitemaresShowSquads", true]]);
       const listed = (await list()).body;
       assert.deepEqual(listed.eventTournaments.map(({ tournamentId, displayDataId }) => [tournamentId, displayDataId]), [[eventId, eventId]]);
       assert.equal(listed.eventTournaments[0].eventWindows[0].eventData.playlistId, "Playlist_Showdown_Solo");

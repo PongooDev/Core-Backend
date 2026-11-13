@@ -363,6 +363,27 @@ export const activeStorms = "EventFlag.ActiveStorms";
 // with Update v6.20. So 6.10 serves what 6.02 does: LobbySeason6, the ticketless storms and Cram Session's
 // ActiveMiniBosses, and the floating island, whose own BP_IslandServerOnly binds one more flag there, BR_S6_Island_Rune8
 // (events/island.js).
+// 6.20 (CL-4497486, Update v6.20, 24 October 2018: "Trick or Treat", Fortnitemares). Every EventFlag.* in its paks (the
+// same byte scan, all 331,618 uasset, umap, uexp, ini and json files of its 14 paks; its pakchunk1000, Bunnymoon, read with
+// its key of the published keychain) is 6.10's scan less BR.CandyCaneGuns (BR_Winter_CandyCaneGuns is gone) and three new
+// ones, 36 names:
+// - EventFlag.LTM_Fortnitemares: Athena/Items/ChallengeBundleSchedules/LTM/Schedule_FortNitemares's EventName, the
+//   Fortnitemares Challenges (profiles/athena.js settleEventSchedules gives the schedule while the flag is served);
+// - EventFlag.LobbySeason6Halloween: Items/Events/Shared/LobbyBG_Season6Halloween (Battle Royale's lobby
+//   Frontend_Lobby_Season6_B, Save the World's Frontend_Lobby_Season6), EventPriority 3 over LobbySeason6's 2;
+// - EventFlag.HalloweenBattleBus: Items/Events/Athena/BR_Decor_HalloweenBus, the Battle Bus as BBID_HalloweenBus.
+// Save the World's Fortnitemares pages (QuestMapScreen's EventFlag.Fortnitemares, FortnitemaresQuestMap's and
+// EventQuestMapSideBarData's FortnitemaresPhase1 and Phase2) are 6.00's flags still. Update v6.20: "Fortnitemares Part 1 is
+// now available! ... Venture into the creepy lands of Hexsylvania and experience the 'Vlad Moon Rising' questline", and
+// "Miniboss Mission Alerts have been returned to their normal reward amounts, and once again grant Event Tickets (Candy)
+// instead of Gold": Hexsylvania's zone themes, generators and difficulties are back in its paks (6.10's had none), so 6.20
+// runs Fortnitemares by its build (fortnitemares: Fortnitemares and FortnitemaresPhase1, Part 1; 🟡 Phase2 is Part 2,
+// which the Fortnite Wiki's Fortnitemares 2018 has "released in two parts" after 6.20, so by the admin's switch only),
+// ActiveMiniBosses with Candy (fortnitemares2018, world/theaters.js) and Cram Session is over (events/cramsession2018.js).
+// Battle Royale's Fortnitemares (the Cube Monsters) is no calendar flag: the scan finds none in its Deimos content (the
+// playlists' GameplayMod_DeimosAI, _DeimosMissions, _DeimosRiftDrop and _DeimosDifficulty* mutators, Athena/Deimos's rifts
+// and AI director), which the Deimos playlists bring (events/ltms.js fortnitemares2018*). Its lobby, bus and challenges'
+// flags are served by the build, with LobbySeason6 (the floating island, events/island.js, keeps 6.10's flags).
 export const blockbuster2018 = "Blockbuster2018";
 export const blockbuster2018Phase1 = "EventFlag.Blockbuster2018Phase1";
 export const blockbuster2018Phase2 = "EventFlag.Blockbuster2018Phase2";
@@ -371,6 +392,13 @@ export const blockbuster2018Phase4 = "EventFlag.Blockbuster2018Phase4";
 export const lobbySeason4 = "EventFlag.LobbySeason4";
 export const lobbySeason5 = "EventFlag.LobbySeason5";
 export const lobbySeason6 = "EventFlag.LobbySeason6";
+// 6.20's (above): Fortnitemares 2018, its Battle Royale challenges', lobby's and bus's flags and Save the World's quest map.
+export const fortnitemares2018 = "Fortnitemares2018";
+export const ltmFortnitemares = "EventFlag.LTM_Fortnitemares";
+export const lobbySeason6Halloween = "EventFlag.LobbySeason6Halloween";
+export const halloweenBattleBus = "EventFlag.HalloweenBattleBus";
+export const fortnitemaresPhase1 = "EventFlag.FortnitemaresPhase1";
+export const fortnitemaresPhase2 = "EventFlag.FortnitemaresPhase2";
 // 6.00's Save the World mini-event (events/cramsession2018.js).
 export const cramSession2018 = "CramSession2018";
 export const roadTrip2018 = "RoadTrip2018";
@@ -414,9 +442,18 @@ const build530 = 4305896;
 const build541 = 4363240;
 const build6000 = 4395664;
 const build610 = 4480234;
+const build620 = 4497486;
 
 const events = [
   { name: fortnitemares, flag: fortnitemares, firstBuild: 3724489, lastBuild: 3757339 },
+  // 6.20's Fortnitemares (above): Save the World's Part 1 (Hexsylvania, its quests and Candy, events/fortnitemares.js), its
+  // Mini-Bosses with Candy, and Battle Royale's challenges, lobby and bus.
+  { name: fortnitemares, flag: fortnitemares, firstBuild: build620, lastBuild: build620 },
+  { name: fortnitemares, flag: fortnitemaresPhase1, firstBuild: build620, lastBuild: build620 },
+  { name: fortnitemares2018, flag: activeMiniBosses, firstBuild: build620, lastBuild: build620 },
+  { name: fortnitemares2018, flag: ltmFortnitemares, firstBuild: build620, lastBuild: build620 },
+  { name: fortnitemares2018, flag: lobbySeason6Halloween, firstBuild: build620, lastBuild: build620 },
+  { name: fortnitemares2018, flag: halloweenBattleBus, firstBuild: build620, lastBuild: build620 },
   { name: mutantStorms, flag: "EventFlag.Vindertech", firstBuild: 3775276, lastBuild: 3775276 },
   { name: mutantStorms, flag: "EventFlag.ActiveStorms", firstBuild: 3790078, lastBuild: 3790078 },
   { name: mutantStorms2018, flag: "EventFlag.ActiveStorms", firstBuild: 3847564, lastBuild: 3870737 },
@@ -444,10 +481,10 @@ const events = [
   { name: blockbuster2018, flag: blockbuster2018Phase3, firstBuild: build440, lastBuild: build45 },
   { name: blockbuster2018, flag: blockbuster2018Phase4, firstBuild: build450, lastBuild: build45 },
   { name: blockbuster2018, flag: activeMiniBosses, firstBuild: build40, lastBuild: build45 },
-  { name: passiveStorms, flag: passiveStorms, firstBuild: build40, lastBuild: build610 },
+  { name: passiveStorms, flag: passiveStorms, firstBuild: build40, lastBuild: build620 },
   { name: lobbySeason4, flag: lobbySeason4, firstBuild: build40, lastBuild: build45 },
   { name: lobbySeason5, flag: lobbySeason5, firstBuild: build500, lastBuild: build541 },
-  { name: lobbySeason6, flag: lobbySeason6, firstBuild: build6000, lastBuild: build610 },
+  { name: lobbySeason6, flag: lobbySeason6, firstBuild: build6000, lastBuild: build620 },
   { name: cramSession2018, flag: activeMiniBosses, firstBuild: build6000, lastBuild: build610 },
   { name: roadTrip2018, flag: roadTrip2018Flag, firstBuild: build500, lastBuild: build541 },
   { name: hordeFlag, flag: hordeFlag, firstBuild: build500, lastBuild: build541 },
@@ -569,7 +606,10 @@ export function hasEventEnded(name, changelist = currentBuild()) {
   if (config?.mode === "force_winter2017" && (name === winter2017 || name === "EventFlag.Winter2017")) return false;
   const number = Number(changelist);
   const runs = events.filter((candidate) => candidate.name === name || candidate.flag === name);
-  return runs.length > 0 && Number.isInteger(number) && number > Math.max(...runs.map((event) => event.lastBuild));
+  // An event that runs again later (Fortnitemares: 1.8 to 1.9, and 6.20) has ended on the builds between its runs, as it
+  // had before the later run was known, and isn't over on a build that runs it.
+  return runs.length > 0 && Number.isInteger(number) && runs.some((event) => number > event.lastBuild)
+    && !runs.some((event) => runsOn(event, number));
 }
 
 // When the client is told an event ends: never, as far as Core goes (FDateTime's largest day).

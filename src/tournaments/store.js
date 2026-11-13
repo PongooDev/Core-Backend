@@ -14,8 +14,10 @@ import { newsImageValue } from "../services/content/images.js";
 // The tournament playlists: 4.2's Solo Showdown (Playlist_Comp_Solo, PlaylistId 51, events/ltms.js), Battle Royale's
 // first scored mode, and 6.10's three Showdown playlists (Playlist_Showdown_Solo, _Duos and _Squads, 58071 to 58073), the
 // in-game tournaments' (inGame): an event of one is listed in the client's Events tab, queued from it and scored on
-// screen (tournaments/showdown.js). A later build's tournament playlist goes here.
-export const tournamentPlaylists = ["soloShowdown", "showdownSolo", "showdownDuos", "showdownSquads"].map((id) => {
+// screen (tournaments/showdown.js). 6.20's Fortnitemares ones (Playlist_Deimos_SoloShow, _DuoShow and _SquadShow, 59071 to
+// 59073: the Showdown playlists with the Cube Monsters) are in-game ones too. A later build's tournament playlist goes here.
+export const tournamentPlaylists = ["soloShowdown", "showdownSolo", "showdownDuos", "showdownSquads",
+  "fortnitemaresShowSolo", "fortnitemaresShowDuos", "fortnitemaresShowSquads"].map((id) => {
   const ltm = ltms.find((entry) => entry.id === id);
   return { id, name: ltm.name, playlistId: ltm.playlistId, builds: ltm.builds, inGame: ltm.tournament === true };
 });

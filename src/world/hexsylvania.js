@@ -29,6 +29,10 @@ export const hexsylvaniaId = crypto.createHash("sha1").update("Core:Hexsylvania"
 
 const spooky = (name) => `/Game/World/ZoneThemes/TestZoneThemes/Spooky/${name}.${name}_C`;
 const zoneThemes = { forest: spooky("BP_ZT_TRV_HF"), castle: spooky("BP_ZT_TRV_HF_Castle"), castleB: spooky("BP_ZT_TRV_HF_CastleB"), intro: spooky("BP_ZT_TRV_HF_Intro") };
+// 6.20 (CL-4497486, Fortnitemares 2018: "The spooky scenery of Hexsylvania has returned") has the same four themes moved
+// out of TestZoneThemes, /Game/World/ZoneThemes/Spooky/ (its world.json; 6.10's paks had none of them); the generators and
+// difficulty rows are 1.8's paths still.
+const moved2018 = (path) => path.replace("/ZoneThemes/TestZoneThemes/Spooky/", "/ZoneThemes/Spooky/");
 const generator = (path) => `/Game/World/MissionGens/${path}.${path.split("/").pop()}_C`;
 const generators = {
   landmark: generator("TRV/MissionGen_TRV_Landmark"),
@@ -102,7 +106,8 @@ function eventLinks(read, tiles) {
 const layout = perBuild((read) => {
   const { missionGenerators = {}, zoneThemes: themes = {}, difficulties = {} } = read("world", {});
   // A build without the event's content has no Hexsylvania.
-  if (!Object.values(generators).every((path) => missionGenerators[path]) || !Object.values(zoneThemes).every((path) => themes[path])) return null;
+  const relocate = Object.values(zoneThemes).every((path) => themes[path]) ? (path) => path : moved2018;
+  if (!Object.values(generators).every((path) => missionGenerators[path]) || !Object.values(zoneThemes).every((path) => themes[relocate(path)])) return null;
 
   const tiles = [];
   const byCell = new Map();
@@ -144,6 +149,7 @@ const layout = perBuild((read) => {
       if (!byCell.has(`${x},${y}`)) filler.push(add(tile("NonMission", x, y, zoneThemes.forest)));
     }
   }
+  for (const made of tiles) made.zoneTheme = relocate(made.zoneTheme);
   eventLinks(read, tiles);
 
   return {

@@ -114,8 +114,13 @@ import { isNonShopCosmetic } from "../profiles/athena.js";
 // were (28 empty days of the 70 on 6.02). 6.10 (CL-4480234; CL-4464155 and CL-4476098 play on its data) adds its eight the
 // shop sold, the same way: Moonrise (19 and 20 October, 28 November), Spider Knight and Arachne with Web Breaker and
 // Hatchling (21 and 22 October, 29 November) and Guan Yu with Guandao and Divine Dragon (2 and 3 December). Only 6.10's
-// data has them, so 6.00's to 6.02's days are as they were (22 empty days of the 70 on 6.10). A build's season is its
-// athena data's seasonNumber, Season 1 without one.
+// data has them, so 6.00's to 6.02's days are as they were (22 empty days of the 70 on 6.10). 6.20 (CL-4497486) adds its
+// sixteen the shop sold, on 16 days from 19 October, each after the day's kept items before it on the wiki's page: Sanctum
+// (19 and 20 October, 28 November), Deadfire and Dark Shard (25, 28 and 29 October), Brainiac (26, 27 and 31 October, 1
+// November), Bunnymoon (28 and 31 October, 1 November; in its keyed pak, which the backend's keychain opens), Treat Yourself,
+// Patch Patroller, Howl, Jugglin', Dante and Rosa with Spirit and Six String Striker (2 and 3 November), Criss Cross, Busy and
+// Tai Chi. Only 6.20's data has them, so 6.00's to 6.10's days are as they were. A build's season is its athena data's
+// seasonNumber, Season 1 without one.
 const readHistory = (file) => {
   const days = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), file), "utf8")).days;
   return { days, firstDay: Date.parse(`${days[0].date}T00:00:00Z`) };
@@ -496,7 +501,10 @@ const tileOf = (tile) => {
 // (bid_126_darkbomber), Plague's Dismal Cape (bid_127_plaguemale), Scourge's Arcanum (bid_128_plaguefemale) and
 // Hollowhead's Mouldering Cloak (bid_129_pumpkinslice), and 6.10 (CL-4480234) Arachne's Long Legs
 // (bid_131_blackwidowfemale), Spider Knight's Spider Shield (bid_132_blackwidowmale) and Guan Yu's Loyal Shield
-// (bid_133_guanyu).
+// (bid_133_guanyu), and 6.20 (CL-4497486) Sanctum's Coven Cape (bid_130_vampiremale02), Summit Striker's Top Notch
+// (bid_134_militaryfashion), Rosa's Calavera (bid_135_muertosfemale), Dante's Spirit Cape (bid_136_muertosmale),
+// Deadfire's Shackled Stone (bid_137_evilcowboy: "Deadfire also comes with the Shackled Stone Back Bling", the Fortnite
+// Wiki's Fortnitemares 2018) and Frostbite's Freezing Point (bid_142_raptorarcticcamo).
 export const bundledBackBlings = {
   "AthenaCharacter:cid_093_athena_commando_m_dinosaur": "AthenaBackpack:bid_031_dinosaur",
   "AthenaCharacter:cid_097_athena_commando_f_rockerpunk": "AthenaBackpack:bid_034_rockerpunk",
@@ -551,7 +559,13 @@ export const bundledBackBlings = {
   "AthenaCharacter:cid_243_athena_commando_m_pumpkinslice": "AthenaBackpack:bid_129_pumpkinslice",
   "AthenaCharacter:cid_249_athena_commando_f_blackwidow": "AthenaBackpack:bid_131_blackwidowfemale",
   "AthenaCharacter:cid_248_athena_commando_m_blackwidow": "AthenaBackpack:bid_132_blackwidowmale",
-  "AthenaCharacter:cid_247_athena_commando_m_guanyu": "AthenaBackpack:bid_133_guanyu"
+  "AthenaCharacter:cid_247_athena_commando_m_guanyu": "AthenaBackpack:bid_133_guanyu",
+  "AthenaCharacter:cid_228_athena_commando_m_vampire": "AthenaBackpack:bid_130_vampiremale02",
+  "AthenaCharacter:cid_253_athena_commando_m_militaryfashion2": "AthenaBackpack:bid_134_militaryfashion",
+  "AthenaCharacter:cid_251_athena_commando_f_muertos": "AthenaBackpack:bid_135_muertosfemale",
+  "AthenaCharacter:cid_252_athena_commando_m_muertos": "AthenaBackpack:bid_136_muertosmale",
+  "AthenaCharacter:cid_250_athena_commando_m_evilcowboy": "AthenaBackpack:bid_137_evilcowboy",
+  "AthenaCharacter:cid_261_athena_commando_m_raptorarcticcamo": "AthenaBackpack:bid_142_raptorarcticcamo"
 };
 
 // The day's offers by storefront, those the requesting build has the cosmetic for. Never a cosmetic the shop doesn't sell

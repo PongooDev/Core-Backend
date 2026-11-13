@@ -47,9 +47,9 @@ test("the island's steps are BP_IslandServerOnly's sixteen calendar events, one 
   assert.equal(isoOf(islandEvent.steps[0].start), "2018-09-27T00:00:00.000Z", "over Loot Lake from Season 6's first day");
   assert.equal(islandEvent.steps.at(-1).end, null, "and back there to the season's end");
   assert.deepEqual(islandEvent.steps.filter(({ flags }) => flags[0] === islandRune(0)).map(({ id }) => id), ["lake", "home"]);
-  // They run to 6.10 now, which has one more, its own (tests/build610.test.js).
-  for (const flag of bindings) assert.deepEqual(season4Flag(flag).builds, [Number(v6000), 4480234], flag);
-  assert.deepEqual(season4Flag(islandRune(8)).builds, [4464155, 4480234]);
+  // They run to 6.20 now; 6.10 has one more, its own (tests/build610.test.js), which 6.20 keeps (tests/build620.test.js).
+  for (const flag of bindings) assert.deepEqual(season4Flag(flag).builds, [Number(v6000), 4497486], flag);
+  assert.deepEqual(season4Flag(islandRune(8)).builds, [4464155, 4497486]);
 });
 
 test("6.00 serves the island by Epic's Season 6 dates on its replay, on both changelists; 5.41 doesn't", () => {

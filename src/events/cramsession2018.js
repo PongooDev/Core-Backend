@@ -22,6 +22,9 @@ export { cramSession2018 };
 // are the fourth week's (the Rat King and the Grave Digger), its notes end nothing (Fortnitemares came with Update v6.20),
 // and its quests.json keeps every Cram Session quest (it adds the Beta Storm's ten, NewMissionIntro_RtDRedux_1 to _10,
 // which nothing here gives: their mission alert isn't in the client's files).
+// 6.20 (CL-4497486) ends it: Update v6.20's "Miniboss Mission Alerts have been returned to their normal reward amounts, and
+// once again grant Event Tickets (Candy) instead of Gold" is Fortnitemares' (events/events.js fortnitemares2018), so
+// Cram Session runs to 6.10 (🟡 Epic's last day isn't in the notes: the replay keeps it to Season 6's end on 6.00 to 6.10).
 //
 // Its quests, every quest whose Category is QuestCategoryTable's LTE_Autumn row ("Event: Cram Session"), which nothing in
 // 6.00's data grants (Epic's servers handed them out), granted at quest login while it runs:

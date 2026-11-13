@@ -132,6 +132,11 @@ const eventOffers = [
     currencyType: "GameItem", currencySubType: "AccountResource:eventcurrency_founders", price: 100, always: true },
   { offerId: "core_event_fortnitemares_llama", templateId: "CardPack:cardpack_event_2017_halloween", title: "Fortnitemares Llama",
     currencyType: "GameItem", currencySubType: candy, price: 500, always: true, event: fortnitemares },
+  // 6.20's Fortnitemares (events/events.js) sells its own llama, CardPack_Event_2018_Halloween ("Guarantees at least one
+  // Epic or better limited time Fortnitemares Weapon or Hero plus at least one Fortnitemares Survivor!"), in 2017's place:
+  // the Fortnite Wiki's Fortnitemares Llama, "can be purchased for 500 Candy".
+  { offerId: "core_event_fortnitemares2018_llama", templateId: "CardPack:cardpack_event_2018_halloween", title: "Fortnitemares Llama",
+    currencyType: "GameItem", currencySubType: candy, price: 500, always: true, event: fortnitemares, replaces: "core_event_fortnitemares_llama" },
   { offerId: "core_event_vindertech_llama", templateId: "CardPack:cardpack_event_vindertech", title: "Vindertech Llama",
     currencyType: "GameItem", currencySubType: stormTickets, price: 1000, always: true, event: mutantStorms },
   { offerId: "core_event_winter_llama", templateId: holidayLlama, title: "Holiday Survival Llama",
@@ -150,8 +155,10 @@ const eventOffers = [
     currencyType: "GameItem", currencySubType: roadTripTickets, price: birthdayLlamaPrice, always: true, event: birthday2018 }
 ];
 
-// An event's offers are on sale while the requesting build runs the event and has their llama.
-const onSale = (offer) => !offer.event || (isEventActive(offer.event) && Boolean(getCardPack(offer.templateId)));
+// An event's offers are on sale while the requesting build runs the event and has their llama, but not one a later
+// llama of the same event on sale replaces.
+const onSaleAlone = (offer) => !offer.event || (isEventActive(offer.event) && Boolean(getCardPack(offer.templateId)));
+const onSale = (offer) => onSaleAlone(offer) && !eventOffers.some((other) => other.replaces === offer.offerId && onSaleAlone(other));
 
 const allOffers = () => {
   const customCandy = currentEventsConfig()?.candyPerLlama ?? 500;
@@ -159,7 +166,7 @@ const allOffers = () => {
   return [
     ...mtxOffers.filter(inThisBuild),
     ...eventOffers.filter(onSale).map((offer) => {
-      if (offer.offerId === "core_event_fortnitemares_llama") return { ...offer, price: customCandy };
+      if (offer.offerId === "core_event_fortnitemares_llama" || offer.offerId === "core_event_fortnitemares2018_llama") return { ...offer, price: customCandy };
       if (offer.offerId === "core_event_winter_llama") return { ...offer, price: customSnowflake };
       return offer;
     }),

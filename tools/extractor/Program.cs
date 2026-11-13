@@ -61,6 +61,31 @@ if (corePaks.Length > 0)
 }
 else provider.Initialize();
 provider.SubmitKeys([new KeyValuePair<FGuid, FAesKey>(new FGuid(), new FAesKey(aesKey))]);
+// A pak on a key of its own is read when the backend's own keychain (src/store/keychain.json, "<pak guid>:<base64 key>"
+// entries, what the storefront's keychain route serves) has its key: the client is given that key at login and mounts the
+// pak (6.20's pakchunk1000, Bunnymoon), so its cosmetics are the build's. A pak whose key isn't in it stays unread, as
+// before. Nothing of the key is printed.
+var keychainFile = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", "src", "store", "keychain.json"));
+if (File.Exists(keychainFile) && provider.RequiredKeys.Count > 0)
+{
+    var required = provider.RequiredKeys.ToHashSet();
+    var keyed = new List<KeyValuePair<FGuid, FAesKey>>();
+    foreach (var entry in JsonNode.Parse(File.ReadAllText(keychainFile))!.AsArray())
+    {
+        // "<32 hex digits>:<base64 key>[:<what the pak holds>]"; other entries (a few name a pak's asset) aren't a key.
+        var parts = entry!.GetValue<string>().Split(':');
+        if (parts.Length < 2 || !Regex.IsMatch(parts[0], "^[0-9A-Fa-f]{32}$") || !Regex.IsMatch(parts[1], "^[A-Za-z0-9+/]{43}=$")) continue;
+        var guid = new FGuid(parts[0]);
+        if (!required.Contains(guid) || keyed.Any(pair => pair.Key == guid)) continue;
+        keyed.Add(new KeyValuePair<FGuid, FAesKey>(guid, new FAesKey("0x" + Convert.ToHexString(Convert.FromBase64String(parts[1])))));
+    }
+    var before = provider.MountedVfs.Select(vfs => vfs.Name).ToHashSet();
+    if (keyed.Count > 0) provider.SubmitKeys(keyed);
+    var mounted = provider.MountedVfs.Select(vfs => vfs.Name).Where(name => !before.Contains(name)).ToList();
+    if (mounted.Count > 0) Console.WriteLine($"Read on the backend's keychain: {string.Join(", ", mounted)}");
+    var unread = provider.UnloadedVfs.Select(vfs => vfs.Name).ToList();
+    if (unread.Count > 0) Console.WriteLine($"Not read, on a key neither given nor in the keychain: {string.Join(", ", unread)}");
+}
 provider.PostMount();
 
 var assetTypes = new AssetTypes(provider);
@@ -1640,7 +1665,9 @@ if (athenaSeason is not null && athenaSeason.ContainsKey("challengeSchedulesAlwa
         .Concat(challengeSchedules.Where(entry => ((SortedDictionary<string, object>)entry.Value).ContainsKey("eventName")).Select(entry => entry.Key))
         // and an outfit's own challenges (CategoryID "Styles": 5.30's BundleSchedule_Styles_Tomatohead and 6.02's
         // BundleSchedule_Styles_SkullTrooper, "Earn additional styles for Skull Trooper"), which the outfit's owners get.
-        .Concat(challengeSchedules.Where(entry => (string)((SortedDictionary<string, object>)entry.Value)["category"] == "Styles").Select(entry => entry.Key))
+        // 6.20 (CL-4497486) gives each its own CategoryID, "Styles_SkullTrooper" and "Styles_Tomatohead".
+        .Concat(challengeSchedules.Where(entry => (string)((SortedDictionary<string, object>)entry.Value)["category"] is var category
+            && (category == "Styles" || category.StartsWith("Styles_", StringComparison.Ordinal))).Select(entry => entry.Key))
         // and the earlier seasons' schedules their end doesn't take (6.01's and 6.02's files: Season 5's ProgressiveA and
         // B, Drift's and Ragnarok's), each marked with the season that gave it.
         .Concat(keptSchedules.Keys)

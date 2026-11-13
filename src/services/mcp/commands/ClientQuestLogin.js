@@ -1,5 +1,6 @@
 import { activeEventFlags } from "../../../events/events.js";
 import { eventQuests } from "../../../events/fortnitemares.js";
+import { settleFounderHeroes2018 } from "../../../events/fortnitemares2018.js";
 import { convertEventLeftovers } from "../../../events/leftovers.js";
 import { eventQuestsToRestore, removeEndedEventQuests } from "../../../events/quests.js";
 import { startingQuests } from "../../../gamedata/quests.js";
@@ -39,6 +40,8 @@ export function clientQuestLogin({ session, notifications, profileId }) {
     const missed = missedStormShieldQuests(session.profile("profile0").profile);
     for (const { templateId, quantity } of missedStormShieldResources(session.profile("profile0").profile, missed)) grant(session, templateId, quantity);
     for (const questId of missed) grant(session, `Quest:${questId}`, 1);
+    // 6.20's Fortnitemares: a founder's two heroes (events/fortnitemares2018.js).
+    settleFounderHeroes2018(session, grant);
     refreshDailyQuests(session);
     refreshHeldItems(session);
   }

@@ -135,7 +135,15 @@ export const completeBrokenChallenges = (settingsValue = settingsProvider()) => 
 export const brokenChallengeOf = (questId, build) => brokenChallenges.find((entry) => entry.quest === String(questId).toLowerCase() && entry.builds.includes(String(build)));
 
 const bySeasonDays = (entry) => entry.unlockType === "DaysSinceEventStart";
-const isWeekly = (schedule) => schedule.bundles.some(bySeasonDays);
+// The season's weekly schedule unlocks by days and names no event. 6.20's (CL-4497486) Schedule_Fortnitemares unlocks its
+// Parts 2 to 4 by days too (DaysSinceEventStart 32, 34 and 36) but is an event's (EventName EventFlag.LTM_Fortnitemares),
+// and sorts before the season's: it isn't the weeks the admin panel's challenge settings move (eventBundleOpen).
+const isWeekly = (schedule) => schedule.bundles.some(bySeasonDays) && !schedule.eventName;
+// An event schedule's bundle that unlocks by days: open once that many days of the season's replay have passed, the same
+// count the client's "Unlocks in" countdown takes from the calendar's seasonBegin by the original dates (Schedule_
+// Fortnitemares: 29 October, 31 October and 2 November on Season 6's replay, whose day 1 is 27 September). 🟡 The Fortnite
+// Wiki's Fortnitemares 2018 Challenges dates Parts 2 to 4 on 27, 29 and 31 October; the days are the files'.
+const eventBundleOpen = (entry, now) => !bySeasonDays(entry) || replayDays(now).days >= entry.unlockValue;
 // The season's weekly schedule's weeks (Season3_Challenge_Schedule: the one unlocking by days), Week 1 first: each
 // DaysSinceEventStart entry is a week, and the entries given with the schedule (OnScheduleGranted) are Week 1 together.
 // Season 3's has one such entry, S3_Week1_QuestBundle. Season 4's (4.0, CL-4039451) has three: QuestBundle_S4_Cumulative
@@ -284,7 +292,7 @@ export function settleChallengeSchedules(session, athena, now = new Date()) {
     if (item.attributes.unlock_epoch !== plan.begin) tracker.setItemAttribute(scheduleItemId, "unlock_epoch", plan.begin);
     const granted = [...(item.attributes.granted_bundles ?? [])];
     for (const entry of schedule.bundles) {
-      const open = isWeekly(schedule) ? weekOpen.get(entry.bundle) === true : !bySeasonDays(entry);
+      const open = isWeekly(schedule) ? weekOpen.get(entry.bundle) === true : schedule.eventName ? eventBundleOpen(entry, now) : !bySeasonDays(entry);
       const held = heldBundle(tracker.profile, entry.bundle);
       if (held) topUpBundle(session, held[0], entry.bundle, athena);
       if (!open || held) continue;
@@ -336,6 +344,9 @@ export function grantChallengeSchedule(session, templateId, athena, now = new Da
 // names them: no schedule, bundle or reward does, and what Epic's servers listed in one isn't in the client. The reward's
 // own box is the one its bundle names, GB_ChallengeComplete (giveBundleRewards), and the schedules go once done
 // (settleCompletedSchedules).
+// 6.20 (CL-4497486) gives each its own CategoryID, "Styles_SkullTrooper" and "Styles_Tomatohead" (the schedules, bundles
+// and quests are 6.10's otherwise).
+export const isStylesCategory = (category) => category === "Styles" || String(category ?? "").startsWith("Styles_");
 export const styleSchedules = {
   bundleschedule_styles_tomatohead: "AthenaCharacter:cid_109_athena_commando_m_pizza",
   bundleschedule_styles_skulltrooper: "AthenaCharacter:cid_030_athena_commando_m_halloween"
@@ -344,7 +355,7 @@ export function settleStyleSchedules(session, athena, now = new Date()) {
   const schedules = athenaChallengeSchedules() ?? {};
   const tracker = session.profile("athena");
   for (const [scheduleId, outfit] of Object.entries(styleSchedules)) {
-    if (schedules[scheduleId]?.category !== "Styles" || heldSchedule(tracker.profile, scheduleId)) continue;
+    if (!isStylesCategory(schedules[scheduleId]?.category) || heldSchedule(tracker.profile, scheduleId)) continue;
     // Done and cleaned up (settleCompletedSchedules): they don't start over.
     if (scheduleCleanedUp(tracker.profile, scheduleId)) continue;
     if (findItem(tracker.profile, outfit)) grantChallengeSchedule(session, `ChallengeBundleSchedule:${scheduleId}`, athena, now);

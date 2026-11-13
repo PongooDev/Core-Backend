@@ -88,10 +88,15 @@ import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 // October, is _Rune8 and not _Rune0 (events/datedflags.js laterFlags; 🟡 that Epic's calendar had _Rune8 from that day is
 // read from the build's files, which bind and play it, not from a recording of the calendar). 6.00 to 6.02 are as they
 // were: their BP_IslandServerOnly doesn't bind _Rune8, so they are served _Rune0 there.
+//
+// 6.20 (CL-4497486, 24 October) keeps the island: its client paks' BP_IslandScripting is still placed, and it plays in
+// 6.10's days' end state, back over Loot Lake since 21 October, so it is served 6.10's _Rune8 there (datedflags.js
+// laterFlags, from CL-4464155 on). 🟡 6.20's own BP_IslandServerOnly (Core-ServerAssets' CL-4497486 pak) wasn't read: that
+// it still binds _Rune8 is 6.10's.
 export const islandEvent = datedEvent("island");
 
 // The island's calendar events as parts [{validFrom (ms), events: [{eventType, activeSince, activeUntil}]}], from the part
-// that holds now on (the next four changes), as events/cube.js's: on 6.00 to 6.10 with the seasonal events on, in the
+// that holds now on (the next four changes), as events/cube.js's: on 6.00 to 6.20 with the seasonal events on, in the
 // Automatic mode. A flag the admin switched on is served always (season4Overrides) and one switched off never, so neither is
 // scheduled here.
 export function islandStates(now = new Date(), changelist = currentBuild(), config = currentEventsConfig()) {

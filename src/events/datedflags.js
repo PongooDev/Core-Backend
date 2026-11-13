@@ -3,7 +3,7 @@ import { anniversary2018BR, cubeDestination, cubeLake, cubeLightning, cubeMoveTo
 
 // Season 5's small dated event-flag events, step by step, and the admin's own times for them (Core-Backend #311): 5.21's
 // Tomato Town rift (events/tomatorift.js), 5.30's Cube (events/cube.js; 5.40's and 5.41's too) and 5.40's High Stakes
-// (events/highstakes.js; 5.41's paks keep it); and Season 6's floating island (6.00 to 6.10, events/island.js), on
+// (events/highstakes.js; 5.41's paks keep it); and Season 6's floating island (6.00 to 6.20, events/island.js), on
 // Season 6's replay (an event's `season`, 5 without one). Each step is one or more calendar events served
 // from its start to its end (null: on to the replay's end, or, on the admin's own times, for good). The events config's
 // datedFlags.<event> picks the times:
@@ -91,10 +91,10 @@ export const datedEvents = [
     step("moveToLake", "Rolls to Loot Lake", [cubeMoveToLake, cubeMoveTo(8), cubeStartMove], at(runeStops[6][1]), lakeAt),
     step("lake", "Sinks into Loot Lake", [cubeLake, cubeDestination], lakeAt, null)
   ] },
-  // The floating island (6.00 to 6.10, events/island.js): one of its flags at a time, as 6.00's scripting takes the last
+  // The floating island (6.00 to 6.20, events/island.js): one of its flags at a time, as 6.00's scripting takes the last
   // one that turns on (6.01's, 6.02's and 6.10's the first, once a match). The admin panel puts it straight at any of its
   // stops (datedMoveSchedule).
-  { id: "island", name: "the floating island (6.00 – 6.10)", season: 6, flag: islandRune(0), anchor: "lake", parts: 4, locations: islandLocations,
+  { id: "island", name: "the floating island (6.00 – 6.20)", season: 6, flag: islandRune(0), anchor: "lake", parts: 4, locations: islandLocations,
     legs: islandLegs, stops: islandStops, steps: islandSteps, laterFlags: [{ step: "home", firstBuild: islandRune8Build, flags: [islandRune(8)] }] },
   // On the replay the rift is formed from the lap's start (5.21 shipped with it formed) until the head comes out.
   // High Stakes (5.40, events/highstakes.js; 5.41's paks keep it): from Update v5.40's morning to Update v5.41's.

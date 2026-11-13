@@ -80,9 +80,9 @@ test("6.02's two changelists are known, both play on CL-4461277's data, Season 6
   assert.equal(dataBuild(v601), v601, "6.01 keeps its own data");
   assert.equal(dataBuild(v6010), v601);
   assert.equal(dataBuild(v600), v600);
-  assert.equal(buildOfSeason(6), "4480234", "Season 6's newest data is 6.10's now (tests/build610.test.js)");
+  assert.equal(buildOfSeason(6), "4497486", "Season 6's newest data is 6.20's now (tests/build620.test.js)");
   assert.equal(buildOfSeason(5), v541);
-  assert.equal(seasonName(6), "Season 6 (6.00 – 6.10)");
+  assert.equal(seasonName(6), "Season 6 (6.00 – 6.20)");
 });
 
 test("6.02's data against 6.01's: twenty cosmetics, the Quad Launcher in the loot, week 3's later stages, the Skull Trooper's styles", () => {
@@ -197,11 +197,12 @@ test("6.02's event flags are 6.01's: LobbySeason6, the ticketless storms and Cra
     assert.deepEqual(activeEventFlags(build), activeEventFlags(v601));
     assert.equal(inBuild(build, () => isEventActive(cramSession2018)), true);
   }
-  // Every range that ran to 6.02 runs to 6.10 now (tests/build610.test.js).
-  const v610 = "4480234";
+  // Every range that ran to 6.02 runs to 6.20 now (tests/build610.test.js, tests/build620.test.js), but BR.CandyCaneGuns'.
+  const v610 = "4497486";
+  assert.equal(season4Flag("EventFlag.BR.CandyCaneGuns").builds[1], 4480234);
   assert.deepEqual(season4Flag(lobbySeason6).builds, [4395664, Number(v610)]);
   assert.equal(season4Flag("EventFlag.BirthdayBattleBus").builds[1], Number(v600), "gone since 6.01");
-  for (const flag of ["EventFlag.SupplyDropBDay", "EventFlag.SupplyDropGift", "EventFlag.BR.CandyCaneGuns", "EventFlag.BR_S5_RiskyReels_Event",
+  for (const flag of ["EventFlag.SupplyDropBDay", "EventFlag.SupplyDropGift", "EventFlag.BR_S5_RiskyReels_Event",
     "EventFlag.Blockbuster2018Phase4", "EventFlag.Fortnitemares", "EventFlag.ActiveMiniBosses", "EventFlag.PassiveStorms"]) {
     assert.equal(season4Flag(flag).builds[1], Number(v610), flag);
   }
@@ -213,7 +214,7 @@ test("6.02's event flags are 6.01's: LobbySeason6, the ticketless storms and Cra
 
 test("6.02 keeps the floating island: the same sixteen flags by Season 6's dates, on both changelists", () => {
   const flags = [...[1, 2, 3, 4, 5, 6, 7, 8].map(islandMoveTo), ...[0, 1, 2, 3, 4, 5, 6, 7].map(islandRune)];
-  for (const flag of flags) assert.deepEqual(season4Flag(flag).builds, [4395664, 4480234], flag);
+  for (const flag of flags) assert.deepEqual(season4Flag(flag).builds, [4395664, 4497486], flag);
   withConfig(replay, () => {
     for (const iso of ["2018-09-27T12:00:00Z", "2018-10-03T12:00:00Z", "2018-10-10T12:00:00Z", "2018-10-13T12:00:00Z", "2018-10-20T12:00:00Z",
       "2018-11-15T00:00:00Z", "2018-12-07T12:00:00Z"]) {
@@ -322,9 +323,9 @@ test("6.02's shop: Season 6's history with its sixteen cosmetics on their days; 
   const history = JSON.parse(fs.readFileSync(new URL("../src/store/itemshop-season6.json", import.meta.url), "utf8")).days;
   assert.equal(history.length, 70);
   const [c602, c601] = [inBuild(v602, athenaCosmetics), inBuild(v601, athenaCosmetics)];
-  // The history holds 6.10's eight too (tests/build610.test.js); 6.02 is shown its own.
-  const c610 = inBuild("4480234", athenaCosmetics);
-  assert.ok(history.every((day) => [...day.featured, ...day.daily].every(([id]) => c610[id])), "only 6.10's cosmetics");
+  // The history holds 6.10's eight and 6.20's sixteen too (tests/build610.test.js, tests/build620.test.js); 6.02 is shown its own.
+  const c610 = inBuild("4497486", athenaCosmetics);
+  assert.ok(history.every((day) => [...day.featured, ...day.daily].every(([id]) => c610[id])), "only 6.20's cosmetics");
   const days = (id) => history.filter((day) => [...day.featured, ...day.daily].some(([entry]) => entry === id)).map(({ date }) => date.slice(5));
   assert.deepEqual(days("AthenaCharacter:cid_229_athena_commando_f_darkbomber"), ["10-05", "10-06", "11-21"]);
   for (const id of ["AthenaCharacter:cid_246_athena_commando_f_grave", "AthenaPickaxe:pickaxe_id_109_skulltrooper", "AthenaGlider:glider_id_085_skulltrooper"]) {

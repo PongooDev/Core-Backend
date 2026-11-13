@@ -1290,8 +1290,9 @@ export function adminRoutes(context) {
     // Sergeant, Frostwing). Season 6's as 6.02's (CL-4461277): 6.00's cosmetics, 6.01's (Maximilian, Hay Man, Straw Ops,
     // Thunder Crash, Dark Glyph, Harvester, Field Wraith, T-Pose) and 6.02's (Dark Bomber, Skull Ranger, Plague, Scourge,
     // Hollowhead, Jack Gourdon, Bullseye, their tools, gliders and emotes), now as 6.10's (CL-4480234), with its own
-    // (Moonrise, Spider Knight, Arachne, Web Breaker, Hatchling, Guan Yu, Guandao, Divine Dragon).
-    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4166199", 5: "4363240", 6: "4480234" }[s];
+    // (Moonrise, Spider Knight, Arachne, Web Breaker, Hatchling, Guan Yu, Guandao, Divine Dragon), now as 6.20's
+    // (CL-4497486), with its own (store/itemshop.js: Deadfire, Sanctum, Dante, Rosa, Brainiac, Bunnymoon, Patch Patroller...).
+    const build = { 1: "3724489", 2: "3807424", 3: "4019403", 4: "4166199", 5: "4363240", 6: "4497486" }[s];
     const offers = inBuild(build, () => itemShopOffers(now, config, s));
     const cosmetics = inBuild(build, () => eligibleCosmetics());
     const currentDay = shopDay(now, config, s);
@@ -1409,7 +1410,8 @@ export function adminRoutes(context) {
       { version: "6.02", cl: 4461277, event: "Cram Session" },
       { version: "6.10.0", cl: 4464155, event: "Cram Session" },
       { version: "6.10.1", cl: 4476098, event: "Cram Session" },
-      { version: "6.10", cl: 4480234, event: "Cram Session" }
+      { version: "6.10", cl: 4480234, event: "Cram Session" },
+      { version: "6.20", cl: 4497486, event: "Fortnitemares" }
     ];
 
     const sampleBuilds = builds.map((b) => ({
@@ -1469,8 +1471,9 @@ export function adminRoutes(context) {
           id: "fortnitemares",
           name: "Fortnitemares",
           subtitle: "Halloween 2017 Event",
-          buildRange: "1.8 – 1.9 (CL 3724489 – 3757339)",
-          flags: ["EventFlag.Fortnitemares"],
+          buildRange: "1.8 – 1.9 (CL 3724489 – 3757339), and 6.20 (CL 4497486, Fortnitemares 2018)",
+          flags: ["EventFlag.Fortnitemares", "EventFlag.FortnitemaresPhase1 (6.20)", "EventFlag.ActiveMiniBosses (6.20, Candy)",
+            "EventFlag.LTM_Fortnitemares (6.20, the Battle Royale challenges)", "EventFlag.LobbySeason6Halloween (6.20)", "EventFlag.HalloweenBattleBus (6.20)"],
           theater: "Hexsylvania",
           theaterZones: [
             { name: "Hexsylvania Start", power: "5+", gate: "None" },
@@ -1479,7 +1482,8 @@ export function adminRoutes(context) {
             { name: "Hexsylvania Nightmare", power: "34+", gate: eventsConfig.hexsylvaniaGates === "open" ? "None (Open Access)" : "Launch the Rocket (Canny Valley)" }
           ],
           currency: "Candy (AccountResource:eventcurrency_candy)",
-          llama: `Fortnitemares Llama (CardPack_Event_2017_Halloween, ${eventsConfig.candyPerLlama ?? 500} Candy)`,
+          llama: `Fortnitemares Llama (CardPack_Event_2017_Halloween; 6.20's CardPack_Event_2018_Halloween, ${eventsConfig.candyPerLlama ?? 500} Candy)`,
+          eventStore: "6.20: Quickdraw Calamity (3,200 Gold) and Bloodfinder A.C. (2,800 Gold); founders get Skull Ranger Ramirez and Brainiac Jonesy",
           questsCount: 56,
           bookPages: ["Halloween2017_Heroes", "Halloween2017_Workers"]
         },

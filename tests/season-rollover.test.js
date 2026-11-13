@@ -241,8 +241,8 @@ const v601 = "4424678";
 const v6010 = "4417689";
 const v602 = "4461277";
 const v6020 = "4442095";
-// 6.10's three changelists (tests/build610.test.js): its data keeps the same two schedules.
-const builds610 = ["4480234", "4476098", "4464155"];
+// 6.10's three changelists (tests/build610.test.js) and 6.20 (tests/build620.test.js): their data keeps the same two schedules.
+const builds610 = ["4480234", "4476098", "4464155", "4497486"];
 const drift = "AthenaCharacter:cid_161_athena_commando_m_drift";
 const ragnarok = "AthenaCharacter:cid_165_athena_commando_m_darkviking";
 const riftEdge = "AthenaPickaxe:pickaxe_id_068_drift";

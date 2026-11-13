@@ -20,7 +20,7 @@ const itemsOf = (profile) => Object.values(profile.items).map(({ templateId, qua
 
 test("the Save the World 2FA reward is 6.00's: Armory Slot and Backpack Slot tokens and the Troll Stash Llama, all in the build's data", () => {
   // 6.01's, 6.02's and 6.10's builds keep it.
-  for (const cl of ["4395664", "4402180", "4417689", "4424678", "4442095", "4461277", "4464155", "4476098", "4480234"]) {
+  for (const cl of ["4395664", "4402180", "4417689", "4424678", "4442095", "4461277", "4464155", "4476098", "4480234", "4497486"]) {
     inBuild(cl, () => {
       assert.equal(stwMfaRewardOffered(), true, cl);
       assert.deepEqual(stwMfaRewards.map(({ templateId }) => getItem(templateId)?.name),

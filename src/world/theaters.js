@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { currentBuild } from "../builds/context.js";
-import { blockbuster2018, cramSession2018, currentEventsConfig, isEventActive, passiveMiniBosses, spring2018, storm2018 } from "../events/events.js";
+import { blockbuster2018, cramSession2018, currentEventsConfig, fortnitemares2018, isEventActive, passiveMiniBosses, spring2018, storm2018 } from "../events/events.js";
 import { blockbusterTickets, miniBossTicketsFor } from "../events/blockbuster2018.js";
 import { cramSessionMiniBossRewards } from "../events/cramsession2018.js";
 import { candy } from "../events/fortnitemares.js";
@@ -425,6 +425,11 @@ function rollMissions({ data, fixedMissions }, day, availableUntil) {
 // are active, and up to 10 can be completed per day" (MiniBossCategory, EventFlag.ActiveMiniBosses, quota 10), placed by
 // 2.3's targets as Blockbuster's (miniBossesStay) and rewarded by cramSessionAlertItems: two XP, evolution or perk packs
 // and Gold instead of tickets, and none of the hero, schematic, survivor, transform key or V-Bucks rewards.
+//
+// 6.20 (CL-4497486) runs Fortnitemares (events/events.js fortnitemares2018): "Miniboss Mission Alerts have been returned to
+// their normal reward amounts, and once again grant Event Tickets (Candy) instead of Gold", so its Mini-Bosses
+// (EventFlag.ActiveMiniBosses) give the alerts' own rewards again and Candy (AccountResource:eventcurrency_candy) as
+// Blockbuster's gave its tickets. Hexsylvania (world/hexsylvania.js) is back in its paks and runs with it.
 const halloweenAlerts = "Halloween2017_MissionAlert";
 // The elemental perk currencies (4.2's FIRE-UP!, AMP-UP!, FROST-UP!) and the zone modifiers that lock elemental husks to
 // an element (GameplayModifier:ElementalZone<Element>EnableItem).
@@ -486,6 +491,9 @@ const alertRewards = {
       : [[`CardPack:zcp_mtx_boost${zoneOfRow(row) <= 2 ? 50 : 100}`, 1], ...(miniBossesStay() ? miniBossItem(zoneOfRow(row), seed) : [])]),
     // 4.0's Blockbuster (events/blockbuster2018.js): 50 to 120 Blockbuster Tickets on top.
     ...(isEventActive(blockbuster2018) && getItem(blockbusterTickets) ? [[blockbusterTickets, miniBossTicketsFor(zoneOfRow(row))]] : []),
+    // 6.20's Fortnitemares (events/events.js fortnitemares2018): Candy on top, Blockbuster's amounts (🟡 Core's: 6.20's
+    // notes give none).
+    ...(isEventActive(fortnitemares2018) && getItem(candy) ? [[candy, miniBossTicketsFor(zoneOfRow(row))]] : []),
     // 4.2's perk resources (#272, perkRewardPool).
     ...miniBossPerkPack(zoneOfRow(row), seed)
   ]),

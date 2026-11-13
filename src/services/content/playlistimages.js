@@ -47,7 +47,9 @@ export const playlistImagesBuild = 4039451;
 // new one (its strings against 6.01's), and its Playlist_Disco_32, the 32 a side Disco Domination, takes the mode's tile.
 // 6.10's exe (CL-4480234) keeps both names too; its two further Disco Dominations (Playlist_Disco_40, Playlist_Disco_Alt)
 // take the mode's tile, and its tournaments have a page of their own, tournamentinformation (tournaments/showdown.js),
-// whose playlist_tile_image Core has no picture for.
+// whose playlist_tile_image Core has no picture for. 6.20's exe (CL-4497486) keeps the same names and adds none (its strings
+// against 6.10's); its Playlist_Disco_40_Alt and _32_Alt take the mode's tile, and its Fortnitemares playlists
+// (Playlist_Deimos_Solo, _Duo, _Squad) have no tile Core knows Epic's page gave them, so they show the client's own.
 export const playlistInformationBuild = 4352937;
 
 const cdn = "https://cdn2.unrealengine.com/Fortnite/fortnite-game";
@@ -118,7 +120,9 @@ export const epicPlaylistImages = {
   Playlist_Disco: discoDominationTile,
   Playlist_Disco_32: discoDominationTile,
   Playlist_Disco_40: discoDominationTile,
-  Playlist_Disco_Alt: discoDominationTile
+  Playlist_Disco_Alt: discoDominationTile,
+  Playlist_Disco_40_Alt: discoDominationTile,
+  Playlist_Disco_32_Alt: discoDominationTile
 };
 
 // The border Epic's page gave a playlist's tile (playlistinformation special_border, 5.40 on): The Getaway's High Stakes one.

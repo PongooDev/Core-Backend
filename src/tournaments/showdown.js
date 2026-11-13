@@ -335,7 +335,9 @@ export function tournamentInformationFor(build, now = new Date(), store = storeP
     const ltm = showdownPlaylistOf(event);
     const { beginTime, endTime } = windowOf(event);
     const until = endTime === noEnd ? "until it is ended" : `to ${day(endTime)} UTC`;
-    const mode = ltm.playlistName.replace("Playlist_Showdown_", "");
+    // 6.20's Fortnitemares ones (Playlist_Deimos_SoloShow, _DuoShow, _SquadShow) are named the Showdown ones' way.
+    const mode = ltm.playlistName.replace("Playlist_Showdown_", "")
+      .replace(/^Playlist_Deimos_(Solo|Duo|Squad)Show$/, (whole, size) => ({ Solo: "Solo", Duo: "Duos", Squad: "Squads" })[size]);
     return {
       tournament_display_id: tournamentIdOf(event),
       title_line_1: event.name,
@@ -393,7 +395,7 @@ export function showdownTicket({ playlistId, tournamentId = "", windowId = "", p
   const event = named ?? events.find((own) => statusOf(own, now) === "running");
   if (!event || statusOf(event, now) !== "running") return refuse("event_window_time_invalid", "Sorry, this tournament is not currently active.");
   const ltm = showdownPlaylistOf(event);
-  const teamSize = { showdownSolo: 1, showdownDuos: 2, showdownSquads: 4 }[ltm.id];
+  const teamSize = { showdownSolo: 1, showdownDuos: 2, showdownSquads: 4, fortnitemaresShowSolo: 1, fortnitemaresShowDuos: 2, fortnitemaresShowSquads: 4 }[ltm.id];
   if (partySize !== teamSize) return refuse("wrong_number_of_event_players", "You need to be in a full party for this tournament.");
   return { event };
 }

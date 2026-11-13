@@ -76,7 +76,8 @@ import { onBuild, season4Flag, season4Overrides } from "./season4flags.js";
 // by Season 6's dates (events/island.js); so 6.00 plays neither the Cube nor the sink, and isn't served the Cube's flags.
 // 6.01's (CL-4424678) paks are the same there (CUBE and Cube_Dest_Scripting cooked, placed by no map), so neither is 6.01,
 // nor 6.02 (CL-4461277: its CUBE is 6.01's byte for byte), nor 6.10 (CL-4480234: CUBE's and Cube_Dest_Scripting's uexp are
-// 6.02's byte for byte, and its scan has no new flag).
+// 6.02's byte for byte, and its scan has no new flag), nor 6.20 (CL-4497486: its scan has no new Cube flag either; its
+// Cube Monsters are the Deimos playlists', events/ltms.js, not the calendar's).
 // The panel also puts the Cube straight at any of its stops (datedMoveSchedule): a running match rolls
 // it onto a rune from the path's step before it and prints it, the game's own arrival; it can't replay the days-long roll
 // between two runes (a leg's MoveTo moves it one step per calendar change, and IncrementIndex's next timer comes out below

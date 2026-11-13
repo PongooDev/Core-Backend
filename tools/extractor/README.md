@@ -282,6 +282,31 @@ Item template ids are resolved with the build's own asset manager rules (`Primar
   BP_ZT_TRV_HF zone themes). The Quadcrasher is in no table: the map places it (Athena/DrivableVehicles/Athena_QuadSpawner).
   The two earlier 6.10s, CL-4464155 and CL-4476098, aren't extracted (Core has no copy of their paks) and play on
   CL-4480234's data.
+  6.20's (CL-4497486, UE 4.21, Update v6.20's build, its one changelist) is `4.21.0-4497486+++Fortnite+Release-6.20` (no
+  `Build.version`; the build folder is `6.20-CL-4497486\Fortnite`) with 6.10's full data (Cert's files with
+  `gamedata/4480234` applied) as the fifth argument, and the main key FModel's settings hold for its build folder. A full
+  install with Save the World, 14 paks; its DefaultGameData still names no MissionAlerts (24 alerts and 4 storm spreads from
+  the fifth argument). Two extractor changes. A pak on a key of its own is read when the backend's own keychain
+  (`src/store/keychain.json`, what the storefront's keychain route serves the client) has its key: 6.20's `pakchunk1000`,
+  Bunnymoon (CID_255_Athena_Commando_F_HalloweenBunny), which the client mounts with that key at login; a pak whose key
+  isn't there stays unread, and nothing of a key is printed. And 6.20 gives the outfits' schedules CategoryIDs of their
+  own (`Styles_SkullTrooper`, `Styles_Tomatohead`), which are kept as `Styles` was. Earlier overlays aren't refreshed (a
+  fresh extraction of a build whose keyed pak is in the keychain, 6.01's Dark Bomber, would now read it). Against 6.10
+  twelve files change: `athena.json` (37 cosmetics: Fortnitemares' Deadfire with Shackled Stone, Dark Shard and Dark
+  Engine, Sanctum and Coven Cape, Dante, Rosa, Calavera, Spirit Cape, Spirit and Six String Striker, Brainiac, Bunnymoon,
+  Patch Patroller, Summit Striker, Frostbite, the Halloween Bus, the Fortnitemares Challenges' Fiery, Deadfire spray and
+  Virulent Flames, the Season 6 level 100 emoticon and spray, emotes...; the Onesie gone; Musha's and Hime's styles all
+  start unlocked; the Fortnitemares Challenges, `schedule_fortnitemares` (EventName EventFlag.LTM_Fortnitemares, Part 1
+  with the schedule and Parts 2 to 4 at DaysSinceEventStart 32, 34 and 36) with its four bundles, 26 quests and 70
+  objective stats, all in context Athena.Playlist.Deimos; level 100's new rewards; the loot tables with the Six Shooter,
+  WID_Pistol_Revolver_SingleAction_Athena_UC/R/VR, the Fiend Hunter Crossbow, WID_Special_FiendHunter_Athena_VR_Ore_T03,
+  and the Port-A playsets' grenades), `items.json`, `characters.json`, `cardpacks.json`, `fabricator.json`, `upgrades.json`
+  and `alterations.json` (Quickdraw Calamity, Skull Ranger Ramirez and Brainiac Jonesy, the Rat Rod set with its recipes,
+  the Halloween choice packs, the new outfits' heroes), `collectionbook.json` (PageSpecial_RatRod_Weapons and _Crystal),
+  `world.json` (Hexsylvania back: the four BP_ZT_TRV_HF zone themes, now under ZoneThemes/Spooky, its generators and
+  primary missions, WM_PinHalloween and the NoMinRating difficulties), `quests.json` and `objectivestats.json` (the
+  repeatable Mini-Boss quest pays 50 Gold, reactivequest_gathercollect_halloween_2 no longer starts HalloweenQuest_2017_
+  Hidden_3, Canny Valley's pamphlets and exploration stat) and `banners.json`.
   Unlike the other files, the committed `gamedata/athena.json` is 1.8's, not Cert's (empty): requests that
   name no build (CoreV2's match reports) need it (`src/gamedata/athena.js`).
 - `alterations.json`: from 4.2 (CL 4072250), the Perk Recombobulator's tables DefaultGameData names (empty before):
